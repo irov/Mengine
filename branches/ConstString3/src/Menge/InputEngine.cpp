@@ -19,16 +19,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setDimentions( const Resolution & _contentResolution, const Viewport & _viewport )
 	{
-		m_viewport = _viewport;
-
 		float viewport_width = _viewport.getWidth();
 		float viewport_height = _viewport.getHeight();
 
-		float width_scale = viewport_width / float(_contentResolution.getWidth());
-		float height_scale = viewport_height / float(_contentResolution.getHeight());
+		m_dimentions.x = float(_contentResolution.getWidth());
+		m_dimentions.y = float(_contentResolution.getHeight());
+
+		float width_scale = viewport_width / m_dimentions.x;
+		float height_scale = viewport_height / m_dimentions.y;
+
+		m_inputOffset = _viewport.begin;
 
 		m_inputScale.x = 1.f / width_scale;
 		m_inputScale.y = 1.f / height_scale;
+		
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize()
@@ -116,12 +121,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::validCursorPosition( const mt::vec2f & _point ) const
 	{
-		if( _point.x < 0.f || _point.x > m_viewport.getWidth() )
+		printf("%f:%f - %f:%f\n", _point.x, _point.y, m_dimentions.x, m_dimentions.y);
+
+		if( _point.x < 0.f || _point.x > m_dimentions.x )
 		{
 			return false;
 		}
 
-		if( _point.y < 0.f || _point.y > m_viewport.getHeight() )
+		if( _point.y < 0.f || _point.y > m_dimentions.y )
 		{
 			return false;
 		}
@@ -132,7 +139,7 @@ namespace Menge
 	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local ) const
 	{
 		mt::vec2f scale_point;
-		mt::vec2f offset_point = _point - m_viewport.begin;
+		mt::vec2f offset_point = _point - m_inputOffset;
 		//mt::vec2f offset_point = _point;
 		mt::scale_v2_v2( scale_point, offset_point, m_inputScale );
 

@@ -827,8 +827,21 @@ namespace Menge
 
 		const Resolution & contentResolution = m_game->getContentResolution();
 
+		MENGE_LOG_INFO( "Application::createRenderWindow %d Current Resolution %d %d"
+			, m_fullscreen
+			, m_currentResolution.getWidth()
+			, m_currentResolution.getHeight()
+			);
+
 		Viewport renderViewport;
 		this->calcRenderViewport_( renderViewport, m_currentResolution );
+
+		MENGE_LOG_INFO( "Application::createRenderWindow Render Viewport %f %f - %f %f"
+			, renderViewport.begin.x
+			, renderViewport.begin.y
+			, renderViewport.getWidth()
+			, renderViewport.getHeight()
+			);
 
 		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, renderViewport, bits, m_fullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
@@ -1488,9 +1501,22 @@ namespace Menge
 
 		m_platform->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
+		MENGE_LOG_INFO( "Application::setFullscreenMode %d Current Resolution %d %d"
+			, _fullscreen
+			, m_currentResolution.getWidth()
+			, m_currentResolution.getHeight()
+			);
+
 		Viewport renderViewport;
 		this->calcRenderViewport_( renderViewport, m_currentResolution );
 		//m_renderEngine->applyRenderViewport( renderViewport );
+
+		MENGE_LOG_INFO( "Application::createRenderWindow Render Viewport %f %f - %f %f"
+			, renderViewport.begin.x
+			, renderViewport.begin.y
+			, renderViewport.getWidth()
+			, renderViewport.getHeight()
+			);
 
 		if( m_fullscreen == true )
 		{

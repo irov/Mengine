@@ -101,7 +101,7 @@ namespace Menge
 
 	private:
 		mt::vec2f m_cursorPosition;
-		Viewport m_viewport;
+		mt::vec2f m_dimentions;
 
 		typedef std::vector<CursorPositionProvider*> TVectorCursorPositionProviders;
 		TVectorCursorPositionProviders m_cursorPositionProviders;
@@ -114,6 +114,6 @@ namespace Menge
 		bool m_mouseBuffer[3];
 
 		mt::vec2f m_inputScale;
-		mt::vec2f m_inputOffset;
+		mt::vec2f m_inputOffset;		
 	};
 }

@@ -119,8 +119,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::validCursorPosition( const mt::vec2f & _point ) const
 	{
-		printf("%f:%f - %f:%f\n", _point.x, _point.y, m_dimentions.x, m_dimentions.y);
-
 		if( _point.x < 0.f || _point.x > m_dimentions.x )
 		{
 			return false;

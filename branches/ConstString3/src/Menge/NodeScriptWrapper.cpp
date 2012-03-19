@@ -1162,6 +1162,14 @@ namespace Menge
 
 			PyObject * pyret = pybind::list_new(0);
 
+			bool onFocus = Application::get()
+				->isFocus();
+
+			if( onFocus == false )
+			{
+				return pyret;
+			}
+
 			for( TVectorPickerTraps::iterator
 				it = traps.begin(),
 				it_end = traps.end();

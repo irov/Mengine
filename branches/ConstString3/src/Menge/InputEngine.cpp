@@ -32,8 +32,6 @@ namespace Menge
 
 		m_inputScale.x = 1.f / width_scale;
 		m_inputScale.y = 1.f / height_scale;
-		
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize()

@@ -38,15 +38,15 @@ namespace	Menge
 		, m_currentImageIndex(0)
 		, m_currentAlphaImageIndex(0)
 		, m_centerAlign(false)
-		, m_percent(0.0f, 0.0f, 0.0f, 0.0f)
 		, m_flipX(false)
 		, m_flipY(false)
-		, m_materialGroup(NULL)
+		, m_percent(0.0f, 0.0f, 0.0f, 0.0f)
+        , m_materialGroup(NULL)
 		, m_material(NULL)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
+   		, m_flexible(false)  
 		, m_textureMatrixOffset(0.0f, 0.0f)
-		, m_flexible(false)
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;

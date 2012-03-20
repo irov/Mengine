@@ -22,8 +22,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
 		: m_offsetClick(0.f,0.f)
-		, m_hided(false)
 		, m_invalidateClickMatrix(true)
+		, m_hided(false)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )

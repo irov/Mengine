@@ -13,9 +13,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::Playlist( ResourcePlaylist * _resource )
 		: m_loop(false)
+		, m_playlistResource(_resource)    
 		, m_oneTrackPlayed(false)
 		, m_oneTrackLooped(false)
-		, m_playlistResource(_resource)
 	{
 		if( m_playlistResource ) 
 		{

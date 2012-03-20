@@ -12,9 +12,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
 		: m_parallax(1.0f, 1.0f)
-		, m_cameraRevision(1)
+		, m_target(0)    
 		, m_invalidateViewport(true)
-		, m_target(0)
+		, m_cameraRevision(1)    
 		, m_offsetProvider(0)
 	{
 	}

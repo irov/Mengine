@@ -1411,6 +1411,16 @@ namespace Menge
 
 		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void OGLRenderSystem::clear( uint32 _color )
+    {
+    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderImageInterface * OGLRenderSystem::createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format )
+    {
+        return NULL;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::makeProjection2D( float _left, float _right, 
 											float _top, float _bottom, 

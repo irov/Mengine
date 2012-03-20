@@ -28,8 +28,8 @@ namespace Menge
 		, m_musicVolume(1.0f)
 		, m_initialized(false)
 		, m_muted(false)
-		, m_enumerator(0)
 		, m_turn(false)
+        , m_enumerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

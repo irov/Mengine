@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface\StringizeInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 namespace Menge
 {	

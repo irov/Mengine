@@ -54,10 +54,17 @@ class iOSApplication
     : public PlatformInterface
 {
 	iOSTimer							timer;
-    iOSFileLogger *                     logger;
+    iOSFileLogger *                     m_loggerConsole;
 	Resolution							resolution;
     LogServiceInterface *               logService;
 	ApplicationInterface *				application;
+    
+    ServiceProviderInterface * m_serviceProvider;
+    
+    LogServiceInterface * m_logService;
+    
+    String m_userPath;
+    String m_applicationPath;
     
 public:
     iOSApplication( void );
@@ -66,6 +73,7 @@ public:
 public:
 	const bool Init( void );
 	void Frame( void );
+    void Finalize( void );
     
     bool OpenAL_OtherAudioIsPlaying();
     
@@ -103,9 +111,13 @@ public:
 	virtual void notifyCursorClipping( const Viewport & _viewport );
 	virtual void notifyCursorUnClipping( void );
     
-    virtual void notifySoundInitialize();
+    virtual void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider );
     
 	virtual void setAsScreensaver( bool _set );
+    
+public:
+    void setupLogService();
+    void setupFileService();
 };
 	
 }

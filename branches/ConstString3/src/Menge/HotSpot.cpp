@@ -126,21 +126,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( const mt::vec2f& _point, Arrow * _arrow )
 	{
-		Camera2D * camera = Player::get()
-			->getRenderCamera2D();
-
-		const Viewport & viewport = camera->getViewport();
-
-		//const mt::box2f & myBB = this->getBoundingBox();
-		//const mt::box2f & otherBB = _hotspot->getBoundingBox();
-
 		Layer * layer = this->getLayer();
 
 		if( layer == 0 )
 		{
 			return false;
 		}
+		
+        Camera2D * camera = Player::get()
+            ->getRenderCamera2D();
 
+        //const Viewport & viewport = camera->getViewport();
+        
+		//const mt::box2f & myBB = this->getBoundingBox();
+		//const mt::box2f & otherBB = _hotspot->getBoundingBox();
+        
 		//if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
 		//{
 		//	return false;

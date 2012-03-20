@@ -332,7 +332,7 @@ namespace	Menge
 
 		size_t sequenceCount = m_resourceSequence->getSequenceCount();
 
-		if( _frame >= sequenceCount || _frame < 0 )	
+		if( _frame >= sequenceCount )	
 		{
 			MENGE_LOG_ERROR( "Animation.setCurrentFrame: '%s' _frame(%d) <> sequenceCount(%d)"
 				, m_name.c_str()

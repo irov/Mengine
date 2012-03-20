@@ -42,7 +42,7 @@ iOSFileInput::iOSFileInput( void ) :
 bool iOSFileInput::open( const String & _filename )
 {
 	stream = fopen( _filename.c_str(), "rb" );
-    //static_cast< iOSFileSystem * >( FileEngine::get()->getFileSystemInterface() )->Open( _filename.c_str(), "rb" );
+
 	return stream;
 }
 
@@ -88,7 +88,6 @@ iOSFileOutput::iOSFileOutput( void ) :
 bool iOSFileOutput::open( const String & _filename )
 {
 	stream = fopen( _filename.c_str(), "wb" );
-    //static_cast< iOSFileSystem * >( FileEngine::get()->getFileSystemInterface() )->Open( _filename.c_str(), "wb" );
     
 	return stream;
 }
@@ -171,21 +170,26 @@ void iOSFileSystem::closeInputStream( FileInputStreamInterface* _stream )
 	if( !_stream )
 		return;
     
-	static_cast< iOSFileInput * >( _stream )->close();
-	delete static_cast< iOSFileInput * >( _stream );
+    iOSFileInput * f = static_cast<iOSFileInput *>( _stream );
+    
+	f->close();
+	delete f;
 }
 
 FileOutputStreamInterface * iOSFileSystem::openOutputStream( const String & _filename )
 {
 	iOSFileOutput * f = new iOSFileOutput();
 	f->open( _filename );
+    
 	return f;
 }
 
 void iOSFileSystem::closeOutputStream( FileOutputStreamInterface * _stream )
 {
-	static_cast< iOSFileOutput * >( _stream )->close();
-	delete static_cast< iOSFileOutput * >( _stream );
+    iOSFileOutput * f = static_cast<iOSFileOutput *>( _stream );
+	f->close();
+    
+	delete f;
 }
 
 void * iOSFileSystem::openMappedFile( const String & _filename, int * _size )

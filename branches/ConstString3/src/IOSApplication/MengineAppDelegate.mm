@@ -47,7 +47,9 @@ Menge::iOSApplication * pApplication = 0;
     }
     
     Menge::ApplicationInterface * app = pApplication->getApplication();
-    app->onFocus( false );
+    
+    mt::vec2f touch(512.f, 384.f);
+    app->onFocus( false, touch );
     
     NSLog( @"applicationWillResignActive TurnSoundOff" );
     AudioSessionSetActive(NO);
@@ -67,7 +69,9 @@ Menge::iOSApplication * pApplication = 0;
     }
      
     Menge::ApplicationInterface * app = pApplication->getApplication();
-    app->onFocus( true );
+    
+    mt::vec2f touch(512.f, 384.f);
+    app->onFocus( true, touch );
     
     [glView startAnimation];
 
@@ -109,12 +113,15 @@ Menge::iOSApplication * pApplication = 0;
     [glView stopAnimation];
 
     Menge::ApplicationInterface * app = pApplication->getApplication();
-    app->onFocus( false );
+    mt::vec2f touch(512.f, 384.f);
+    app->onFocus( false, touch );
 }
 
 - (void)dealloc
 {
     NSLog( @"pApplication dealloc" );
+    
+    pApplication->Finalize();
     
     delete pApplication;
     pApplication = 0;

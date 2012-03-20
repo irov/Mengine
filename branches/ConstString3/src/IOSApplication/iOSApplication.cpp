@@ -123,6 +123,34 @@ const bool iOSApplication::Init( void )
 		
     AudioSessionInitialize(NULL, NULL, NULL, NULL);
     
+    
+    char resDirectory[ 1024 ];
+    
+	[ [ [ NSBundle mainBundle] resourcePath ] getCString : resDirectory
+											   maxLength : sizeof( resDirectory ) - 1
+												encoding : NSASCIIStringEncoding ];    
+    
+    m_applicationPath = resDirectory + String("/");
+    
+    NSLog( @"m_applicationPath %s"
+          , m_applicationPath.c_str() 
+          );      
+    
+    char docDirectory[ 1024 ];
+    
+	[ [ NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES ) objectAtIndex : 0 ]
+     getCString : docDirectory
+     maxLength : sizeof( docDirectory ) - 1
+     encoding : NSASCIIStringEncoding ];   
+    
+    m_userPath = docDirectory + String("/");
+    
+    NSLog( @"m_userPath %s"
+          , m_userPath.c_str() 
+          );  
+    
+    m_loggerConsole = new iOSFileLogger();
+    
     //NSLog( @"resDirectory %s", resDirectory );
     //NSLog( @"docDirectory %s", docDirectory );
     
@@ -150,65 +178,6 @@ const bool iOSApplication::Init( void )
 	application->setMaxClientAreaSize( resolution.getWidth(), resolution.getHeight() );
 	
     ServiceProviderInterface * serviceProvider = application->getServiceProvider();
-
-    logService = serviceProvider->getServiceT<LogServiceInterface>("LogService");
-    
-    logService->setVerboseLevel( LM_MAX );
-    
-    Menge::String config_file = "application";
-    
-    FileServiceInterface * fileService = serviceProvider->getServiceT<FileServiceInterface>("FileService");
-    
-        
-    char resDirectory[ 1024 ];
-    
-	[ [ [ NSBundle mainBundle] resourcePath ] getCString : resDirectory
-											   maxLength : sizeof( resDirectory ) - 1
-												encoding : NSASCIIStringEncoding ];    
-        
-    String applicationPath = resDirectory + String("/");
-    
-    NSLog( @"mountFileSystem applicationPath %s"
-          , applicationPath.c_str() 
-          );
-    
-    // mount root  
-    if( fileService->mountFileSystem( ConstString(""), applicationPath, ConstString("dir"), false ) == false )
-    {
-        LOGGER_ERROR(logService)( "WinApplication: failed to mount application directory %s"
-                                   , applicationPath.c_str()
-                                   );
-            
-        return false;
-    }
-    
-    char docDirectory[ 1024 ];
-    
-	[ [ NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES ) objectAtIndex : 0 ]
-            getCString : docDirectory
-            maxLength : sizeof( docDirectory ) - 1
-            encoding : NSASCIIStringEncoding ];   
-    
-    String userPath = docDirectory + String("/");
-    
-    NSLog( @"mountFileSystem userPath %s"
-          , userPath.c_str() 
-          );
-    
-    // mount user directory
-    if( fileService->mountFileSystem( ConstString("user"), userPath, ConstString("dir"), true ) == false )
-    {
-        LOGGER_ERROR(logService)( "WinApplication: failed to mount user directory %s"
-                                   , userPath.c_str()
-                                   );
-            
-        //return false; //WTF???
-    }    
-    
-    
-    logger = new iOSFileLogger();
-    
-    logService->registerLogger( logger );
     
     String configFile = "application";
     application->loadConfig( configFile );
@@ -216,7 +185,7 @@ const bool iOSApplication::Init( void )
     ConstString c_languagePack("rus");
     application->setLanguagePack( c_languagePack );
     
-    String baseDir = applicationPath + "data/";
+    String baseDir = m_applicationPath + "data/";
     
     application->setBaseDir(baseDir);
     
@@ -303,6 +272,23 @@ void iOSApplication::Frame( void )
         application->onFlush();
     }
 }
+    
+    void iOSApplication::Finalize( void )
+    {
+        if( application )
+        {
+            application->finalize();
+        
+            ServiceProviderInterface * serviceProvider = application->getServiceProvider();
+            
+            logService = serviceProvider->getServiceT<LogServiceInterface>("LogService");
+        
+            logService->unregisterLogger( m_loggerConsole );
+            delete m_loggerConsole;
+        }        
+        
+        delete application;
+    }
     
     bool iOSApplication::OpenAL_OtherAudioIsPlaying()
     {
@@ -521,9 +507,104 @@ void iOSApplication::notifyCursorUnClipping( void )
 
     
     
-    void iOSApplication::notifySoundInitialize()
+    //void iOSApplication::notifySoundInitialize()
+    //{
+    //    AudioSessionSetActive(true);
+    //}
+    //////////////////////////////////////////////////////////////////////////
+    namespace
     {
-        AudioSessionSetActive(true);
+        //////////////////////////////////////////////////////////////////////////
+        class iOSApplicationFileService
+         : public ServiceListenerInterface
+        {
+        public:
+            iOSApplicationFileService( iOSApplication * _application )
+            : m_application(_application)
+            {
+            }
+            
+        protected:
+            void onRegistryService( ServiceProviderInterface * _serviceProvide, ServiceInterface * _service )
+            {
+                m_application->setupFileService();
+            }
+            
+        protected:
+            iOSApplication * m_application;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        class iOSApplicationLogService
+         : public ServiceListenerInterface
+        {
+        public:
+            iOSApplicationLogService( iOSApplication * _application )
+            : m_application(_application)
+            {
+            }
+            
+        protected:
+            void onRegistryService( ServiceProviderInterface * _serviceProvide, ServiceInterface * _service )
+            {
+                m_application->setupLogService();
+            }
+            
+        protected:
+            iOSApplication * m_application;
+        };
+    }    
+    
+    //////////////////////////////////////////////////////////////////////////
+    void iOSApplication::notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+        
+        m_serviceProvider->addServiceListener( "LogService", new iOSApplicationLogService(this) );
+        m_serviceProvider->addServiceListener( "FileService", new iOSApplicationFileService(this) );
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    void iOSApplication::setupLogService()
+    {
+        m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
+        
+        if( m_loggerConsole != NULL )
+        {
+            m_logService->registerLogger( m_loggerConsole );
+        }
+        
+# ifndef MENGE_MASTER_RELEASE
+        m_logService->setVerboseLevel( LM_LOG );
+# endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSApplication::setupFileService()
+    {
+        FileServiceInterface * fileService = m_serviceProvider->getServiceT<FileServiceInterface>("FileService");
+        
+        NSLog( @"iOSApplication::setupFileService m_applicationPath %s"
+              , m_applicationPath.c_str()
+              );
+        
+        // mount root  
+        if( fileService->mountFileSystem( ConstString(""), m_applicationPath, ConstString("dir"), false ) == false )
+        {
+            LOGGER_ERROR(m_logService)( "iOSApplication: failed to mount application directory %s"
+                                       , m_applicationPath.c_str()
+                                       ); 
+        }
+        
+        NSLog( @"iOSApplication::setupFileService m_userPath %s"
+              , m_userPath.c_str()
+              );
+        
+        // mount user directory
+        if( fileService->mountFileSystem( ConstString("user"), m_userPath, ConstString("dir"), true ) == false )
+        {
+            LOGGER_ERROR(m_logService)( "iOSApplication: failed to mount user directory %s"
+                                       , m_userPath.c_str()
+                                       );
+        }
     }
 
 void iOSApplication::setAsScreensaver( bool _set )

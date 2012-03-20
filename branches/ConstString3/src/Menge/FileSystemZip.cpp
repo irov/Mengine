@@ -21,8 +21,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemZip::FileSystemZip()
-		: m_zipFile(NULL)
-		, m_fileEngine(NULL)
+		: m_fileEngine(NULL)
+		, m_zipFile(NULL)
 	{
 
 	}

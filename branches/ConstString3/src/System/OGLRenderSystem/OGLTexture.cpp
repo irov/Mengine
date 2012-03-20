@@ -27,6 +27,11 @@ namespace Menge
 		*_pitch = static_cast<int>( pitch );
 		return m_lock;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    unsigned char* OGLTexture::lockRect( int* _pitch, const Rect& _rect, bool _readOnly )
+    {
+        return NULL;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OGLTexture::unlock()
 	{

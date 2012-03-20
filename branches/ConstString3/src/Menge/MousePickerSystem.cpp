@@ -325,7 +325,7 @@ namespace Menge
 			return;
 		}
 
-		bool handle = false;
+		//bool handle = false;
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),

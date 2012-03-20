@@ -100,8 +100,11 @@ namespace Menge
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		//RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
+		// RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
 		// удаления изображения
+        
+        RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
+        
 		void releaseImage( RenderImageInterface * _image ) override;
 
 		bool beginScene() override;
@@ -133,6 +136,8 @@ namespace Menge
 
 		void unlockTexture( GLuint _uid, GLint _internalFormat,
 			GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data );
+        
+        void clear( uint32 _color ) override;
 
 	private:
         ServiceProviderInterface* m_serviceProvider;

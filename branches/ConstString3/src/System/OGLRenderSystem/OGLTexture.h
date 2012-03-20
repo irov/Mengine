@@ -24,6 +24,7 @@ namespace Menge
 
 	public:
 		unsigned char* lock( int* _pitch, bool _readOnly /* = true  */ ) override;
+        unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
 		void unlock() override;
 
 	public:

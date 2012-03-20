@@ -7,7 +7,7 @@
 
 //Factory * Class::genFactory(){\
 //	return new FactoryDefault<Class>();\
-//}\
+//}
 
 #	define RESOURCE_IMPLEMENT( Class )\
 	void Class::accept( ResourceVisitor * _visitor ){ _visitor->visit(this); }\

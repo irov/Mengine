@@ -36,7 +36,7 @@ namespace Menge
 			, b(1.f)
 			, a(1.f)
 			, m_argb(0xFFFFFFFF)
-			, m_invalidateARGB(false)
+            , m_invalidateARGB(false)        
 			, m_identity(true)
 		{ 
 		}
@@ -61,8 +61,8 @@ namespace Menge
 			, g(_copy.g)
 			, b(_copy.b)
 			, a(_copy.a)
+			, m_argb(_copy.m_argb)        
 			, m_invalidateARGB(_copy.m_invalidateARGB)
-			, m_argb(_copy.m_argb)
 			, m_identity(_copy.m_identity)
 		{
 		}

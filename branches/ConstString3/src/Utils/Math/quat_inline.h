@@ -10,10 +10,10 @@ namespace mt
 	{}
 
 	MATH_INLINE quatf::quatf(float _w, float _x, float _y, float _z)
-		:w(_w)
-		,x(_x)
+		:x(_x)
 		,y(_y)
 		,z(_z)
+        ,w(_w)
 	{}
 
 	MATH_INLINE quatf::quatf(float _angle, const mt::vec3f & _v)
@@ -22,10 +22,10 @@ namespace mt
 	}
 
 	MATH_INLINE quatf::quatf(const quatf& _q)
-		:w(_q.w)
-		,x(_q.x)
+		:x(_q.x)
 		,y(_q.y)
 		,z(_q.z)
+        ,w(_q.w)
 	{}
 
 	MATH_INLINE float& quatf::operator[](int i)

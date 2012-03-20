@@ -48,5 +48,18 @@ namespace Menge
 	{
 		m_depthInterface = _d3dInterface;
 	}
+
+	void DX9RenderTexture::release()
+	{
+		if( m_depthInterface != NULL )
+		{
+			m_depthInterface->Release();
+		}
+
+		if( m_d3dInterface != NULL )
+		{
+			m_d3dInterface->Release();
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

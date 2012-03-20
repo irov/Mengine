@@ -63,7 +63,7 @@ getdepend http://www.ijg.org/files/jpegsr8d.zip jpegsr8d.zip jpeg-8d libjpeg
 getdepend http://prdownloads.sourceforge.net/libpng/lpng159.zip lpng159.zip lpng159 libpng
 getdepend http://box2d.googlecode.com/files/Box2D_v2.2.1.zip Box2D_v2.2.1.zip Box2D_v2.2.1 box2d
 getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip libogg-1.3.0.zip libogg-1.3.0 ogg
-getdepend http://netcologne.dl.sourceforge.net/project/pybind/pybind-1.2.zip pybind-1.2.zip pybind-1.2 pybind
+getdepend http://netcologne.dl.sourceforge.net/project/pybind/pybind-1.3.zip pybind-1.3.zip pybind-1.3 pybind
 getdepend_tgz http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tgz Python-2.7.2.tgz Python-2.7.2 Python
 getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.zip libvorbis-1.3.2.zip libvorbis-1.3.2 vorbis
 getdepend http://zlib.net/zlib126.zip zlib126.zip zlib-1.2.6 zlib

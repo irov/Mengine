@@ -8,18 +8,13 @@ namespace Menge
 		, m_emitterId(0)
 		, m_sizes(0,0,0,0)
 		, m_duration(0.0f)
+		, m_relative(true)
 	{
-		//memset( m_name, 0, EMITTER_DESCRIPTION_NAME_LENGTH );
 	}
 	///////////////////////////////////////////////////////////
-	//void EmitterDescription::setName( const ConstString& _name )
-	//{
-	//	//m_name = _name;
-	//}
 	void EmitterDescription::setName( const String& _name )
 	{
 		m_name = _name;
-		//strcpy(m_name, _name.c_str());
 	}
 	///////////////////////////////////////////////////////////
 	void EmitterDescription::setDuration( float _duration )
@@ -75,6 +70,16 @@ namespace Menge
 	int EmitterDescription::getEmitterId() const
 	{
 		return m_emitterId;
+	}
+	///////////////////////////////////////////////////////////
+	void EmitterDescription::setRelative( bool _relative )
+	{
+		m_relative = _relative;
+	}
+	///////////////////////////////////////////////////////////
+	bool EmitterDescription::getRelative() const 
+	{
+		return m_relative;
 	}
 	///////////////////////////////////////////////////////////
 }

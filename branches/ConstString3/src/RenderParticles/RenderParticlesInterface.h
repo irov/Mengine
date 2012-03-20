@@ -18,6 +18,7 @@ namespace Menge
 		virtual float getRightBorder() const = 0;
 		virtual int getEmitterId() const = 0;
 		virtual const String& getName() const = 0;
+		virtual bool getRelative() const = 0;
 		virtual const Rect& getSize() const = 0;
 	};
 	typedef std::vector<EmitterDescriptionInterface *> TVectorEmitterDescriptionInterface;
@@ -58,7 +59,7 @@ namespace Menge
 		virtual void addListener( RenderParticlesListener * _listener ) = 0;
 		virtual void removeListener( RenderParticlesListener * _listener ) = 0;
 		virtual void loadAstralaxFile( const String& _path ) = 0;
-		virtual void createEmitterFromFile( const String& _path, const String & _emitterName ) = 0;
+		virtual void loadEmitterFromFile( const String& _path, const String & _emitterName, bool _isCached ) = 0;
 		virtual void loadFrame( RenderParticlesFrame * _frame, const TVectorEmitterDescriptionInterface& _emittersToUpdate  ) = 0;
 		virtual void log( const String & _message ) = 0;
 	};

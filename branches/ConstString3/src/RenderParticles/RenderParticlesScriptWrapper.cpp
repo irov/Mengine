@@ -87,11 +87,13 @@ namespace Menge
 			.def( "setDuration", &EmitterDescription::setDuration )
 			.def( "setEmitterId", &EmitterDescription::setEmitterId )
 			.def( "setSize", &EmitterDescription::setSize )
+			.def( "setRelative", &EmitterDescription::setRelative )
 
 			.def( "getName", &EmitterDescription::getName )
 			.def( "getLeftBorder", &EmitterDescription::getLeftBorder )
 			.def( "getRightBorder", &EmitterDescription::getRightBorder )
 			.def( "getDuration", &EmitterDescription::getDuration )
+			.def( "getRelative", &EmitterDescription::getRelative )
 			;
 		pybind::class_<ParticlesAtlas>("ParticlesAtlas")
 			.def( pybind::init<const String &,const String &>() )

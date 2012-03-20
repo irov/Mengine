@@ -103,13 +103,13 @@ namespace Menge
 		m_scriptWrapper->callFunction( "loadAstralaxFile", "(s)", _path.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////
-	void RenderParticlesSuites::createEmitterFromFile( const String& _path, const String & _emitterName )
+	void RenderParticlesSuites::loadEmitterFromFile( const String& _path, const String & _emitterName, bool _isCached )
 	{
 		char name[255] = {'\0'};
 		char path[255] = {'\0'};
 		strcpy(name, _emitterName.c_str());
 		strcpy(path, _path.c_str());
-		m_scriptWrapper->callFunction( "loadEmitterFromFile", "(ss)", path, name );
+		m_scriptWrapper->callFunction( "loadEmitterFromFile", "(ssb)", path, name, _isCached );
 	}
 	//////////////////////////////////////////////////////////////////////
 	void RenderParticlesSuites::loop()

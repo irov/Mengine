@@ -51,14 +51,15 @@ namespace Menge
 
 	void DX9RenderTexture::release()
 	{
+		long count;
 		if( m_depthInterface != NULL )
 		{
-			m_depthInterface->Release();
+			count = m_depthInterface->Release();
 		}
 
 		if( m_d3dInterface != NULL )
 		{
-			m_d3dInterface->Release();
+			count = m_d3dInterface->Release();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

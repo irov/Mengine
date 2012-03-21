@@ -539,8 +539,6 @@ namespace Menge
 			,"A8R8G8B8"
 		};
 
-		m_currentRenderTarget = NULL;
-
 		m_screenResolution.setWidth(_width);
 		m_screenResolution.setHeight(_height);
 
@@ -736,7 +734,7 @@ namespace Menge
 		LPDIRECT3DSURFACE9 renderTarget;
 		HRESULT hr;
 		D3DSURFACE_DESC rtDesc;
-
+		
 		hr = m_pD3DDevice->GetRenderTarget( 0, &renderTarget );
 
 		if( !renderTarget || FAILED(hr) )
@@ -754,10 +752,10 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_logService)( "D3D Error: failed to CreateOffscreenPlainSurface" );
 			renderTarget->Release();
-			offscreenSurface->Release();
+			//offscreenSurface->Release();
 			return;
 		}
-
+		
 		hr = m_pD3DDevice->GetRenderTargetData( renderTarget, offscreenSurface );
 
 		if(! SUCCEEDED(hr))
@@ -804,7 +802,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_logService)( "D3D Error: failed to loadSurfaceFromSurface_" );
 		}
-
+				
 		renderTarget->Release();
 		offscreenSurface->Release();
 	}
@@ -985,149 +983,7 @@ namespace Menge
 				return false;
 			}
 		}
-		/*
-		D3DBLEND_ZERO               = 1,
-		D3DBLEND_ONE                = 2,
-		D3DBLEND_SRCCOLOR           = 3,
-		D3DBLEND_INVSRCCOLOR        = 4,
-		D3DBLEND_SRCALPHA           = 5,
-		D3DBLEND_INVSRCALPHA        = 6,
-		D3DBLEND_DESTALPHA          = 7,
-		D3DBLEND_INVDESTALPHA       = 8,
-		D3DBLEND_DESTCOLOR          = 9,
-		D3DBLEND_INVDESTCOLOR       = 10,
-		D3DBLEND_SRCALPHASAT        = 11,
-		D3DBLEND_BOTHSRCALPHA       = 12,
-		D3DBLEND_BOTHINVSRCALPHA    = 13,
-		D3DBLEND_BLENDFACTOR        = 14,
-		D3DBLEND_INVBLENDFACTOR     = 15, 
-		
-		D3DBLENDOP_ADD              = 1,
-		D3DBLENDOP_SUBTRACT         = 2,
-		D3DBLENDOP_REVSUBTRACT      = 3,
-		D3DBLENDOP_MIN              = 4,
-		D3DBLENDOP_MAX              = 5,
-		
-		
-		D3DTOP_DISABLE              = 1,      // disables stage
-		D3DTOP_SELECTARG1           = 2,      // the default
-		D3DTOP_SELECTARG2           = 3,
 
-		// Modulate
-		D3DTOP_MODULATE             = 4,      // multiply args together
-		D3DTOP_MODULATE2X           = 5,      // multiply and  1 bit
-		D3DTOP_MODULATE4X           = 6,      // multiply and  2 bits
-
-		// Add
-		D3DTOP_ADD                  =  7,   // add arguments together
-		D3DTOP_ADDSIGNED            =  8,   // add with -0.5 bias
-		D3DTOP_ADDSIGNED2X          =  9,   // as above but left  1 bit
-		D3DTOP_SUBTRACT             = 10,   // Arg1 - Arg2, with no saturation
-		D3DTOP_ADDSMOOTH            = 11,   // add 2 args, subtract product
-		// Arg1 + Arg2 - Arg1*Arg2
-		// = Arg1 + (1-Arg1)*Arg2
-
-		// Linear alpha blend: Arg1*(Alpha) + Arg2*(1-Alpha)
-		D3DTOP_BLENDDIFFUSEALPHA    = 12, // iterated alpha
-		D3DTOP_BLENDTEXTUREALPHA    = 13, // texture alpha
-		D3DTOP_BLENDFACTORALPHA     = 14, // alpha from D3DRS_TEXTUREFACTOR
-
-		// Linear alpha blend with pre-multiplied arg1 input: Arg1 + Arg2*(1-Alpha)
-		D3DTOP_BLENDTEXTUREALPHAPM  = 15, // texture alpha
-		D3DTOP_BLENDCURRENTALPHA    = 16, // by alpha of current color
-
-		// Specular mapping
-		D3DTOP_PREMODULATE            = 17,     // modulate with next texture before use
-		D3DTOP_MODULATEALPHA_ADDCOLOR = 18,     // Arg1.RGB + Arg1.A*Arg2.RGB
-		// COLOROP only
-		D3DTOP_MODULATECOLOR_ADDALPHA = 19,     // Arg1.RGB*Arg2.RGB + Arg1.A
-		// COLOROP only
-		D3DTOP_MODULATEINVALPHA_ADDCOLOR = 20,  // (1-Arg1.A)*Arg2.RGB + Arg1.RGB
-		// COLOROP only
-		D3DTOP_MODULATEINVCOLOR_ADDALPHA = 21,  // (1-Arg1.RGB)*Arg2.RGB + Arg1.A
-		// COLOROP only
-
-		// Bump mapping
-		D3DTOP_BUMPENVMAP           = 22, // per pixel env map perturbation
-		D3DTOP_BUMPENVMAPLUMINANCE  = 23, // with luminance channel
-
-		// This can do either diffuse or specular bump mapping with correct input.
-		// Performs the function (Arg1.R*Arg2.R + Arg1.G*Arg2.G + Arg1.B*Arg2.B)
-		// where each component has been scaled and offset to make it signed.
-		// The result is replicated into all four (including alpha) channels.
-		// This is a valid COLOROP only.
-		D3DTOP_DOTPRODUCT3          = 24,
-
-		// Triadic ops
-		D3DTOP_MULTIPLYADD          = 25, // Arg0 + Arg1*Arg2
-		D3DTOP_LERP                 = 26, // (Arg0)*Arg1 + (1-Arg0)*Arg2
-		
-
-
-
-		#define D3DTA_SELECTMASK        0x0000000f  // mask for arg selector
-		#define D3DTA_DIFFUSE           0x00000000  // select diffuse color (read only)
-		#define D3DTA_CURRENT           0x00000001  // select stage destination register (read/write)
-		#define D3DTA_TEXTURE           0x00000002  // select texture color (read only)
-		#define D3DTA_TFACTOR           0x00000003  // select D3DRS_TEXTUREFACTOR (read only)
-		#define D3DTA_SPECULAR          0x00000004  // select specular color (read only)
-		#define D3DTA_TEMP              0x00000005  // select temporary register color (read/write)
-		#define D3DTA_CONSTANT          0x00000006  // select texture stage constant
-		#define D3DTA_COMPLEMENT        0x00000010  // take 1.0 - x (read modifier)
-		#define D3DTA_ALPHAREPLICATE    0x00000020  // 
-		*/
-		/*
-		m_pD3DDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-		m_pD3DDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-		m_pD3DDevice->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);   //Ignored
-		
-		
-		
-		
-		
-		m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA);
-		m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND,D3DBLEND_INVSRCALPHA);
-		m_pD3DDevice->SetRenderState(D3DRS_BLENDOP,D3DBLENDOP_ADD);
-		m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-		*/
-
-		
-		
-		//m_pD3DDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTSS_COLORARG1  );
-		//m_pD3DDevice->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
-		//m_pD3DDevice->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_TEXTURE);   //Ignored
-		
-		///m_pD3DDevice->SetRenderState( D3DRS_VERTEXBLEND, D3DVBF_DISABLE );
-		//m_pD3DDevice->SetRenderState( D3DRS_INDEXEDVERTEXBLENDENABLE, FALSE );
-		/*
-		m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA );
-		m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-		m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-		*/
-		
-
-		/*
-		m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP);
-		m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP);
-
-		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-	
-		////destination blend factor
-		
-
-		
-
-		m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-		*/
 		hr = m_pD3DDevice->BeginScene();
 		
 		if( FAILED( hr ) )
@@ -1218,6 +1074,7 @@ namespace Menge
 	{
 		// empty
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setRenderViewport( const Viewport & _viewport )
 	{
 		float width = _viewport.getWidth();
@@ -1424,14 +1281,14 @@ namespace Menge
 					);
 			}
 			
-			
+			/*
 			hr = m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 3, 0, 1 );
 			if( FAILED( hr ) )
 			{
 				LOGGER_ERROR(m_logService)( "Error: DX9RenderSystem::syncCPU_ failed to DrawIndexedPrimitive (hr:%p)"
 					, hr 
 					);
-			}
+			}*/
 			if( m_curRenderTexture )
 			{
 				LPDIRECT3DSURFACE9 surf;
@@ -1868,7 +1725,11 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			it->second.pVB->Release();
+			useCount = it->second.pVB->Release();
+			/*if(useCount != 0)
+			{
+				int debug = 1;
+			}*/
 		}
 
 		for( TMapIBInfo::iterator 
@@ -1877,36 +1738,28 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			it->second.pIB->Release();
+			useCount = it->second.pIB->Release();
+			/*if(useCount != 0)
+			{
+				int debug = 1;
+			}*/
 		}
-
-
+		
 		if(m_pD3DDevice) 
 		{ 
 			useCount = m_pD3DDevice->Release(); 
 			m_pD3DDevice = 0; 
 		}
+
 		if(m_pD3D) 
 		{ 
 			useCount = m_pD3D->Release();
 			m_pD3D = 0; 
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::onRestoreDevice_()
 	{
-		// restoring render targets
-		/*for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
-			it != it_end;
-			it++ )
-		{
-			if( it->second.texture != 0 )
-			{
-				HTEXTURE htex = m_hge->Target_GetTexture( it->second.handle );
-				it->second.texture->restore( htex );
-			}
-		}*/
 		if( m_listener != NULL )
 		{
 			m_listener->onDeviceRestored();
@@ -2603,9 +2456,9 @@ namespace Menge
 			//}
 			//else
 			{
-				hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 1.0f, 0 );
+				//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 );
 				//DWORD color = D3DCOLOR_ARGB(0, 0, 0, 0);
-				//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 0.0f, 0 );
+				hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 0.0f, 0 );
 				
 				if( FAILED( hr ) )
 				{
@@ -2632,7 +2485,7 @@ namespace Menge
 			m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
 			}*/
 			
-			//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, 0, 0, 0), 0.0f, 0 );
+			//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 255, 255, 255), 0.0f, 0 );
 			hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 );
 			if( FAILED( hr ) )
 			{
@@ -2670,6 +2523,36 @@ namespace Menge
 				, _h
 				);
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::setSeparateAlphaBlendMode()
+	{
+		/*
+		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
+		m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP);
+		m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP);
+		m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+		
+		m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);		
+		m_pD3DDevice->SetRenderState(D3DRS_BLENDOP,D3DBLENDOP_ADD);
+		m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA );
+		m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+		*/
+		m_pD3DDevice->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRS_BLENDOPALPHA, D3DBLENDOP_ADD);
+		m_pD3DDevice->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ONE);
+		m_pD3DDevice->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

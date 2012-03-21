@@ -263,6 +263,11 @@ namespace Menge
 			}
 
 			this->updateFrame2D_( layer, node, frame, wm );
+
+			if( fabsf(layer.in) <= 0.001f )
+			{
+				node->localHide(false);
+			}
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -301,6 +306,11 @@ namespace Menge
 			}
 
 			Helper::s_applyFrame3D( sprite, frame );
+
+			if( fabsf(layer.in) <= 0.001f )
+			{
+				sprite->localHide(false);
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -341,6 +351,11 @@ namespace Menge
 			}
 
 			this->updateFrame2D_( layer, node, frame, wm );
+
+			if( fabsf(layer.out - m_out) <= 0.001f )
+			{
+				node->localHide(false);
+			}
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -379,6 +394,11 @@ namespace Menge
 			Sprite * sprite = it_index->second;
 
 			Helper::s_applyFrame3D( sprite, frame );
+
+			if( fabsf(layer.out - m_out) <= 0.001f )
+			{
+				sprite->localHide(false);
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

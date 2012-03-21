@@ -834,12 +834,19 @@ namespace Menge
 			const ConstString & pakLocale = pak->getLocale();
 			const String & pakPlatform = pak->getPlatfrom();
 
-			if( pakLocale == _locale && pakPlatform == _platform )
+			if( pakPlatform.empty() == false && pakPlatform != _platform )
 			{
-				m_paks.push_back( pak );
-
-				hasLocale = true;
+				continue;
 			}
+			
+			if( pakLocale != _locale )
+			{
+				continue;
+			}
+
+			m_paks.push_back( pak );
+
+			hasLocale = true;
 		}
 
 		return hasLocale;

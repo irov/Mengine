@@ -257,7 +257,7 @@ namespace Menge
 		m_applicationPath += "\\";
 		m_userPath += "\\";
 
-		String platformName = "IPAD";
+		String platformName = "WIN";
 
 		if( initInterfaceSystem( &m_application ) == false )
 		{

@@ -742,7 +742,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::loadGame()
 	{
-		m_game = new Game( m_baseDir );
+		m_game = new Game( m_baseDir, m_platformName );
 
 		Game::keep( m_game );
 
@@ -888,11 +888,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initGame( const String & _scriptInitParams )
 	{
-		if( m_game->initialize( _scriptInitParams, m_platformName ) == false )
+		if( m_game->initialize( _scriptInitParams ) == false )
 		{
-			MENGE_LOG_ERROR("Application::initGame invalid initialize %s %s"
+			MENGE_LOG_ERROR("Application::initGame invalid initialize %s"
 				, _scriptInitParams.c_str()
-				, m_platformName.c_str()
 				);
 
 			return false;

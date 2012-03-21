@@ -59,8 +59,9 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Game::Game( const String & _baseDir )
+	Game::Game( const String & _baseDir, const String & _platformName )
 		: m_baseDir(_baseDir)
+		, m_platformName(_platformName)
 		, m_title(Consts::get()->c_Game)
 		, m_fixedContentResolution(false)
 		, m_fullScreen(true)
@@ -150,6 +151,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak_desc.name );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak_desc.path );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Locale, pak_desc.locale );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Platform, pak_desc.platform );
 					//BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak.type );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak_desc.description );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak_desc.preload );
@@ -522,7 +524,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const String& _scriptInitParams, const String & _platformName )
+	bool Game::initialize( const String& _scriptInitParams )
 	{
 		m_player = new Player;
 
@@ -562,7 +564,7 @@ namespace Menge
 #	endif	
 				
 		bool result = false;
-		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), _platformName.c_str(), pybind::get_bool(isMasterRelease) ) == false )
+		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMasterRelease) ) == false )
 		{
 			return true;
 		}
@@ -817,7 +819,7 @@ namespace Menge
 		return needQuit;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadLocalePaksByName_( const ConstString & _locale )
+	bool Game::loadLocalePaksByName_( const ConstString & _locale, const String & _platform )
 	{
 		bool hasLocale = false;
 
@@ -830,8 +832,9 @@ namespace Menge
 			ResourcePak * pak = *it;
 
 			const ConstString & pakLocale = pak->getLocale();
+			const String & pakPlatform = pak->getPlatfrom();
 
-			if( pakLocale == _locale )
+			if( pakLocale == _locale && pakPlatform == _platform )
 			{
 				m_paks.push_back( pak );
 
@@ -846,10 +849,10 @@ namespace Menge
 	{
 		m_paks.insert( m_paks.begin(), m_resourcePaks.begin(), m_resourcePaks.end() );
 
-		if( this->loadLocalePaksByName_( m_languagePak ) == false )			
+		if( this->loadLocalePaksByName_( m_languagePak, m_platformName ) == false )			
 		{
 			ConstString c_eng("eng");
-			if( this->loadLocalePaksByName_( c_eng ) == false )
+			if( this->loadLocalePaksByName_( c_eng, m_platformName ) == false )
 			{
 				if( m_languagePaks.empty() == false )
 				{
@@ -857,7 +860,7 @@ namespace Menge
 
 					const ConstString & pakName = firstPak->getName();
 
-					this->loadLocalePaksByName_( pakName );
+					this->loadLocalePaksByName_( pakName, m_platformName );
 				}
 				else
 				{

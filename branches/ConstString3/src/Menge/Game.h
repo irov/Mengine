@@ -39,7 +39,7 @@ namespace Menge
 		, public Loadable
 	{
 	public:
-		Game( const String & _baseDir );
+		Game( const String & _baseDir, const String & _platformName );
 		~Game();
 
 	public:
@@ -48,7 +48,7 @@ namespace Menge
 		bool render( unsigned int _debugMask = 0 );
 
 	public:
-		bool initialize( const String& _scriptInitParams, const String & _platformName );
+		bool initialize( const String& _scriptInitParams );
 		void finalize();
 
 		void initializeRenderResources();
@@ -64,7 +64,7 @@ namespace Menge
 		const String& getScreensaverName() const;
 
 	protected:
-		bool loadLocalePaksByName_( const ConstString & _locale );
+		bool loadLocalePaksByName_( const ConstString & _locale, const String & _platform );
 			
 	public:
 		//bool loader( const String& _iniFile );
@@ -169,6 +169,8 @@ namespace Menge
 		TVectorResourcePak m_languagePaks;
 
 		ConstString m_languagePak;
+		String m_platformName;
+
 		ConstString m_projectName;
 		bool m_personalityHasOnClose;
 

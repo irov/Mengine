@@ -23,7 +23,7 @@ namespace Menge
 	bool TextManager::loadResource( const ConstString & _name, const ResourceDesc & _desc )
 	{
 		String xml_path = _desc.path;
-		xml_path += "/";
+		xml_path += MENGE_FOLDER_DELIM;
 		xml_path += Helper::to_str(_name);
 
 		bool exist = false;
@@ -137,9 +137,13 @@ namespace Menge
 			MENGE_LOG_INFO( "TextManager::addTextEntry: duplicate key found %s"
 				, _key.c_str() 
 				);
-		}
 
-		m_textMap.insert( std::make_pair( _key, _entry ) );
+			it_find->second = _entry;
+		}
+		else
+		{
+			m_textMap.insert( std::make_pair( _key, _entry ) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TextEntry & TextManager::getTextEntry( const ConstString& _key ) const

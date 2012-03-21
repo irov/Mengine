@@ -39,6 +39,11 @@ namespace Menge
 		return m_desc.locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & ResourcePak::getPlatfrom() const
+	{
+		return m_desc.platform;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const String & ResourcePak::getPath() const
 	{
 		return m_desc.path;

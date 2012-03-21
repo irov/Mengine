@@ -20,6 +20,7 @@ namespace Menge
 		ConstString name;		
 		ConstString type;
 		ConstString locale;
+		String platform;
 		String path;
 		String description;
 		bool preload;
@@ -36,6 +37,7 @@ namespace Menge
 
 		const ConstString & getName() const;
 		const ConstString & getLocale() const;
+		const String & getPlatfrom() const;
 		const String & getPath() const;
 
 	public:

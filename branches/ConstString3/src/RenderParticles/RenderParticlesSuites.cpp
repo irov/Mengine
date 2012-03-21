@@ -47,10 +47,15 @@ namespace Menge
 		m_scriptWrapper = new RenderParticlesScriptWrapper();
 		RenderParticlesScriptWrapper::keep(m_scriptWrapper);
 		
-
 		String modulePath;
+		String line;
 		String curDir;
-		WindowsLayer::getCurrentDirectory(curDir);
+
+		WindowsLayer::getModuleFileName(NULL,line);
+		//WindowsLayer::getCommandLine(line);
+		size_t pos = line.find_last_of("\\");
+		curDir = line.substr(0,pos);
+
 		modulePath = curDir + String("\\Plug-ins\\");
 		//modulePath = "c:\\Adobe\\Adobe After Effects CS4\\Support Files\\Plug-ins\\";
 		
@@ -67,11 +72,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////
 	void RenderParticlesSuites::destroy()
 	{
-		if( m_render != NULL )
+		if( m_scriptWrapper != NULL )
 		{
-			m_render->finalize();
-			delete m_render;
-			m_render = NULL;
+			m_scriptWrapper->callFunction("destroyMengeEnvironment","()");
+			RenderParticlesScriptWrapper::clear();
+			delete m_scriptWrapper;
+			m_scriptWrapper = NULL;
 		}
 		if( m_emitterDescriptionManager != NULL )
 		{
@@ -80,11 +86,11 @@ namespace Menge
 			delete m_emitterDescriptionManager;
 			m_emitterDescriptionManager = NULL; 
 		}
-		if( m_scriptWrapper != NULL )
+		if( m_render != NULL )
 		{
-			RenderParticlesScriptWrapper::clear();
-			delete m_scriptWrapper;
-			m_scriptWrapper = NULL;
+			m_render->finalize();
+			delete m_render;
+			m_render = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////
@@ -114,6 +120,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////
 	void RenderParticlesSuites::loop()
 	{
+		//For debug
 		int i = 0;
 		while( true )
 		{
@@ -128,6 +135,7 @@ namespace Menge
 	void RenderParticlesSuites::loadFrame( RenderParticlesFrame * _frame, const TVectorEmitterDescriptionInterface& _emittersToUpdate )
 	{
 		m_render->beginRender();
+		//m_scriptWrapper->callFunction("updateScene","(f)",11);
 		for(TVectorEmitterDescriptionInterface::const_iterator
 			it = _emittersToUpdate.begin(),
 			it_end = _emittersToUpdate.end();
@@ -137,8 +145,8 @@ namespace Menge
 				int emitterId = (*it)->getEmitterId();
 				m_scriptWrapper->callFunction("playEmitter","(if)", emitterId, _frame->time);
 			}	
-
-		m_scriptWrapper->callFunction("updateScene","(f)", _frame->time);
+		
+		m_scriptWrapper->callFunction("updateScene","(f)",_frame->time);
 		
 		for(TVectorEmitterDescriptionInterface::const_iterator
 			it = _emittersToUpdate.begin(),

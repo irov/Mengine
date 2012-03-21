@@ -17,8 +17,8 @@
 #	include <iomanip>
 
 //for debug 
-//#	include "Menge/RenderEngine.h"
-//#	include "Menge/Texture.h"
+#	include "Menge/RenderEngine.h"
+#	include "Menge/Texture.h"
 
 static  LRESULT CALLBACK s_wndProc(HWND hWnd, unsigned int Msg, WPARAM wParam, LPARAM lParam)
 {
@@ -213,6 +213,7 @@ namespace Menge
 		m_renderhWnd = this->createWindow_(m_hInstance, "RenderWindow","RenderWindowClass", m_resolution );
 
 		m_renderService->setVSync(true);
+		
 
 		int bits = 32;
 		int FSAAType = 0;
@@ -239,6 +240,7 @@ namespace Menge
 		m_renderTargetImage = m_renderService->createRenderTargetTexture( m_renderTargetName, m_resolution.getWidth(), m_resolution.getHeight(), PF_A8R8G8B8 );
 		
 		m_renderService->setRenderTargetTexture( m_renderTargetImage ,true);
+		m_renderService->setSeparateAlphaBlendMode();
 		return true;	
 	}
 	//////////////////////////////////////////////////////////////////////////////
@@ -246,6 +248,37 @@ namespace Menge
 	{
 		m_renderService->releaseTexture(m_renderImage);
 		m_renderService->releaseTexture(m_renderTargetImage);
+		
+		if( m_renderhWnd )
+		{
+			WindowsLayer::destroyWindow( m_renderhWnd );
+			m_renderhWnd = NULL;
+		}
+
+		if( m_application != NULL )
+		{
+			m_application->finalize();
+		}
+		
+		if( m_logger != NULL )
+		{
+			if( m_logService )
+			{
+				m_logService->unregisterLogger( m_logger );
+			}
+			
+			delete m_logger;
+			m_logger = NULL;
+		}
+		
+		if( m_application != NULL )
+		{
+			m_application->destroy();
+
+			releaseInterfaceSystem( m_application );
+
+			m_application = NULL;
+		}
 	}
 	////////////////////////////////////////////////////////////////////////////////
 	void RenderParticles::beginRender()
@@ -263,7 +296,7 @@ namespace Menge
 	void RenderParticles::getRenderData( RenderParticlesFrame * _frame )
 	{
 		m_renderService->screenshot( m_renderImage, mt::vec4f( 0, 0, _frame->width, _frame->height ) );
-		//RenderEngine::get()->saveImage( m_renderImage,ConstString(""),String("d:\\temp.png"));
+		RenderEngine::get()->saveImage( m_renderImage,ConstString(""),String("d:\\temp.png"));
 		int pitch;
 		Rect rect( 0, 0, _frame->width, _frame->height );
 		unsigned char * source = m_renderImage->lockRect( &pitch, rect, true );

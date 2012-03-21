@@ -49,7 +49,7 @@ namespace Menge
 				
 		wrap_();
 
-		ScriptEngine::TListModulePath paths;
+		TVectorString paths;
 		
 		paths.push_back( _modulePath );
 

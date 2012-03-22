@@ -1031,7 +1031,6 @@ namespace Menge
 				{
 					m_cursorInArea = true;
 
-					
 					m_application->onAppMouseEnter( point );
 
 					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };

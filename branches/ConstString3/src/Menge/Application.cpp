@@ -195,6 +195,7 @@ namespace Menge
 		, m_debugCRT(false)
 		, m_inputMouseButtonEventBlock(false)
 		, m_countThreads(1)
+		, m_mouseEnter(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1080,7 +1081,14 @@ namespace Menge
 	{
 		if( m_inputEngine->validCursorPosition( _point ) == false )
 		{
+			m_mouseEnter = false;
+
 			return false;
+		}
+
+		if( m_mouseEnter == false )
+		{
+			this->onAppMouseEnter( _point );
 		}
 
 		return m_game->handleMouseMove( _point, _dx, _dy, _whell );
@@ -1088,6 +1096,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onAppMouseLeave()
 	{
+		m_mouseEnter = false;
+
 		m_game->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1098,6 +1108,8 @@ namespace Menge
 		{
 			return;
 		}
+
+		m_mouseEnter = true;
 
 		m_game->onAppMouseEnter( _point );
 	}

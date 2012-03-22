@@ -330,6 +330,7 @@ namespace Menge
 		bool m_invalidateVsync;
 		bool m_cursorMode;
 		bool m_invalidateCursorMode;
+		bool m_mouseEnter;
 
 		bool m_inputMouseButtonEventBlock;
 	};

@@ -47,19 +47,25 @@ namespace Menge
 			_node->setAngle( _frame.angle );
 			_node->setLocalAlpha( _frame.opacity );
 		}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_applyRelationFrame2D( Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm  )
-		{
-			_node->setOrigin( _frame.anchorPoint );
+		////////////////////////////////////////////////////////////////////////////
+		//static void s_applyRelationFrame2D( Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm  )
+		//{
+		//	mt::vec2f wm_anchorPoint;
+		//	mt::mul_v2_m3(wm_anchorPoint, _frame.anchorPoint, _wm);
+		//	_node->setOrigin( wm_anchorPoint );
 
-			mt::vec2f wm_pos;
-			mt::mul_v2_m3(wm_pos, _frame.position, _wm);
+		//	mt::vec2f wm_pos;
+		//	mt::mul_v2_m3(wm_pos, _frame.position, _wm);
+		//	_node->setLocalPosition( wm_pos );
 
-			_node->setLocalPosition( wm_pos );
-			_node->setScale( _frame.scale );
-			_node->setAngle( _frame.angle );
-			_node->setPersonalAlpha( _frame.opacity );
-		}
+		//	mt::vec2f wm_scale;
+		//	wm_scale, _frame.scale, _wm);
+		//	_node->setScale( wm_scale );
+
+		//	float wm_angle;
+		//	_node->setAngle( _frame.angle );
+		//	_node->setPersonalAlpha( _frame.opacity );
+		//}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_applyFrame3D( Sprite * _sprite, const MovieFrame3D & _frame )
 		{
@@ -154,7 +160,7 @@ namespace Menge
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateFrame2D_( const MovieLayer2D & _layer, Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm )
+	void Movie::updateFrame2D_( const MovieLayer2D & _layer, Node * _node, const MovieFrame2D & _frame )
 	{
 		if( _layer.internal == true )
 		{
@@ -166,13 +172,23 @@ namespace Menge
 
 			if( _layer.parent == 0 )
 			{
+				const mt::mat3f & wm = this->getWorldMatrix();
+
 				mt::vec2f wm_pos;
-				mt::mul_v2_m3(wm_pos, _frame.position, _wm);
+				mt::mul_v2_m3(wm_pos, _frame.position, wm);
+				PyObject * py_position = pybind::ptr(wm_pos);
 
 				PyObject * py_node = pybind::ptr(_node);
 				PyObject * py_anchorPoint = pybind::ptr(_frame.anchorPoint);
-				PyObject * py_position = pybind::ptr(wm_pos);
-				PyObject * py_scale = pybind::ptr(_frame.scale);
+
+				const mt::vec2f & movie_scale = this->getScale();
+
+				mt::vec2f wm_scale;
+				wm_scale.x = movie_scale.x * _frame.scale.x;
+				wm_scale.y = movie_scale.y * _frame.scale.y;
+
+				PyObject * py_scale = pybind::ptr(wm_scale);
+
 				PyObject * py_angle = pybind::ptr(_frame.angle);
 				PyObject * py_opacity = pybind::ptr(_frame.opacity);
 
@@ -236,9 +252,7 @@ namespace Menge
 
 			return;
 		}
-
-		const mt::mat3f & wm = this->getWorldMatrix();
-
+				
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -262,7 +276,7 @@ namespace Menge
 				return;
 			}
 
-			this->updateFrame2D_( layer, node, frame, wm );
+			this->updateFrame2D_( layer, node, frame );
 
 			if( fabsf(layer.in) <= 0.001f )
 			{
@@ -324,9 +338,7 @@ namespace Menge
 
 			return;
 		}
-
-		const mt::mat3f & wm = this->getWorldMatrix();
-
+		
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -350,7 +362,7 @@ namespace Menge
 				return;
 			}
 
-			this->updateFrame2D_( layer, node, frame, wm );
+			this->updateFrame2D_( layer, node, frame );
 
 			if( fabsf(layer.out - m_out) <= 0.001f )
 			{
@@ -1059,9 +1071,7 @@ namespace Menge
 			m_timing += _timing * m_speedFactor;
 
 		}
-
-		const mt::mat3f & wm = this->getWorldMatrix();
-			
+							
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -1163,7 +1173,7 @@ namespace Menge
 				}
 			}
 
-			this->updateFrame2D_( layer, node, frame, wm );
+			this->updateFrame2D_( layer, node, frame );
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();

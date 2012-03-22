@@ -64,7 +64,7 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		void updateFrame2D_( const MovieLayer2D & layer, Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm );
+		void updateFrame2D_( const MovieLayer2D & layer, Node * _node, const MovieFrame2D & _frame );
 
 	private:
 		void updateParent_();

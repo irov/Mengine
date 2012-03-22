@@ -82,6 +82,10 @@ namespace Menge
 		const ConstString & getResourceType( const ConstString & _name ) const;
 
 	public:
+		void visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor );
+			
+
+	public:
 		bool directResourceCompile( const ConstString& _name );
 		void directResourceRelease( const ConstString& _name );
 

@@ -2357,9 +2357,8 @@ namespace Menge
 			: public ResourceVisitor
 		{
 		public:
-			ResourceVisitorGetAlreadyCompiled( bool _isCompiled, PyObject * _cb )
-				: m_isCompiled(_isCompiled)
-				, m_cb(_cb)
+			ResourceVisitorGetAlreadyCompiled( PyObject * _cb )
+				: m_cb(_cb)
 			{
 				pybind::incref( m_cb );
 			}
@@ -2372,34 +2371,29 @@ namespace Menge
 		protected:
 			void visit( ResourceReference* _resource )
 			{
-				if( m_isCompiled == true )
+				if( _resource->isCompile() == false )
 				{
-					if( _resource->isCompile() == false )
-					{
-						return;
-					}
+					return;
 				}
 
-				PyObject * py_resource = pybind::ptr(_resource);
+				PyObject * py_resource = pybind::ptr( _resource );
 
 				pybind::call( m_cb, "(O)", py_resource );
+
+				pybind::decref( py_resource );
 			}
 
 		protected:
-			bool m_isCompiled;
-
 			PyObject * m_cb;
 		};
 
-		//static bool s_visitResources( const ConstString & _category, const ConstString & _groupName, bool _isCompiled, PyObject * _cb )
-		//{
-		//	ResourceVisitorGetAlreadyCompiled rv_gac(_isCompiled, _cb);
+		static void s_visitCompiledResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+		{
+			ResourceVisitorGetAlreadyCompiled rv_gac(_cb);
 
-		//	bool exist = ResourceManager::get()
-		//		->visitResources( _category, _groupName, &rv_gac );
-
-		//	return exist;
-		//}
+			ResourceManager::get()
+				->visitResources( _category, _groupName, &rv_gac );						
+		}
 		
 		static bool s_validResource( const ConstString & _resourceName )
 		{
@@ -2840,8 +2834,6 @@ namespace Menge
 			.def( "getAngle", &Transformation2D::getAngle )
 
 			.def( "translate", &Transformation2D::translate )
-			.def( "setFixedRotation", &Transformation2D::setFixedRotation )
-			.def( "isFixedRotation", &Transformation2D::isFixedRotation )
 
 			.def( "resetTransformation", &Transformation2D::resetTransformation )
 
@@ -3478,7 +3470,7 @@ namespace Menge
 			pybind::def_function( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
 			pybind::def_function( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
 
-			//pybind::def_function( "visitResources", &ScriptMethod::s_visitResources );
+			pybind::def_function( "visitCompiledResources", &ScriptMethod::s_visitCompiledResources );
 
 			pybind::def_function( "validResource", &ScriptMethod::s_validResource );
 

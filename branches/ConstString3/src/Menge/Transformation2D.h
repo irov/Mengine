@@ -38,9 +38,6 @@ namespace Menge
 		inline float getAngle() const;
 
 	public:
-		void setFixedRotation( bool _fixed );
-		bool isFixedRotation() const;
-
 		bool isScaled() const;
 
 		void resetTransformation();
@@ -74,7 +71,6 @@ namespace Menge
 		mt::vec2f m_direction;
 		float m_angle;
 
-		bool m_fixedRotation;
 		bool m_scaled;
 		
 		bool m_invalidateWorldMatrix;

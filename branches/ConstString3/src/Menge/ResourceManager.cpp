@@ -8,6 +8,8 @@
 
 #	include "LogEngine.h"
 
+#	include "ResourceVisitor.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -334,6 +336,33 @@ namespace Menge
 		const ConstString & type = resource->getType();
 
 		return type;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor )
+	{
+		for( TMapResource::iterator
+			it = m_resources.begin(),
+			it_end = m_resources.end();
+		it != it_end;
+		++it )
+		{
+			const ResourceEntry & entry = it->second;
+
+			const ConstString & category = entry.resource->getCategory();
+			const ConstString & group = entry.resource->getGroup();
+
+			if( category != _category )
+			{
+				continue;
+			}
+
+			if( group != _groupName )
+			{
+				continue;
+			}
+
+			_visitor->visit( entry.resource );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const ConstString& _name )

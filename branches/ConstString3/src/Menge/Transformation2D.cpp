@@ -10,7 +10,6 @@ namespace Menge
 	Transformation2D::Transformation2D()
 		: m_invalidateWorldMatrix(true)
 		, m_invalidateLocalMatrix(true)
-		, m_fixedRotation(false)
 		, m_origin(0.f, 0.f)
 		, m_coordinate(0.f, 0.f)
 		, m_position(0.f, 0.f)
@@ -70,18 +69,6 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setFixedRotation( bool _fixed )
-	{
-		m_fixedRotation = _fixed;
-
-		invalidateWorldMatrix();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Transformation2D::isFixedRotation() const
-	{
-		return m_fixedRotation;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Transformation2D::isScaled() const
 	{
 		return m_scaled;
@@ -89,7 +76,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::resetTransformation()
 	{
-		m_fixedRotation = false;
 		m_origin = mt::vec2f(0.f, 0.f);
 		m_coordinate = mt::vec2f(0.f, 0.f);
 		m_position = mt::vec2f(0.f, 0.f);
@@ -113,15 +99,7 @@ namespace Menge
 
 		const mt::mat3f& localMatrix = this->getLocalMatrix();
 
-		if( m_fixedRotation == true )
-		{
-			m_worldMatrix = localMatrix;
-			mt::mul_v2_m3( m_worldMatrix.v2.to_vec2f(), localMatrix.v2.to_vec2f(), _parentMatrix );
-		}
-		else
-		{
-			mt::mul_m3_m3( m_worldMatrix, localMatrix, _parentMatrix );
-		}		
+		mt::mul_m3_m3( m_worldMatrix, localMatrix, _parentMatrix );
 
 		return m_worldMatrix;
 	}
@@ -137,10 +115,10 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Angle, &Transformation2D::setAngle );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Origin, &Transformation2D::setOrigin );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Scale, &Transformation2D::setScale );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_FixedRotation, &Transformation2D::setFixedRotation );
+			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_FixedRotation, &Transformation2D::setFixedRotation );
 
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scale_Value, &Transformation2D::setScale ); //depricated
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::FixedRotation_Value, &Transformation2D::setFixedRotation ); //depricated
+			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::FixedRotation_Value, &Transformation2D::setFixedRotation ); //depricated
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -184,17 +162,7 @@ namespace Menge
 	void Transformation2D::setScale( const mt::vec2f& _scale )
 	{
 		m_scale = _scale;
-
-		//if( fabsf(m_scale.x - 1.f) < 0.001f &&
-		//	fabsf(m_scale.y - 1.f) < 0.001f )
-		//{
-		//	m_scaled = false;
-		//}
-		//else
-		//{
-		//	m_scaled = true;
-		//}
-
+		
 		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////

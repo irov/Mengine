@@ -21,6 +21,11 @@ ADD_SUBDIRECTORY( pybind )
 #ADD_SUBDIRECTORY( Python_2_6)
 
 if(WIN32)
+    ADD_SUBDIRECTORY( Python_3_2 )
+    ADD_SUBDIRECTORY( pybind32 )
+endif(WIN32)
+
+if(WIN32)
     ADD_SUBDIRECTORY( tinyxml )
     ADD_SUBDIRECTORY( Python_2_7 )
 endif(WIN32)

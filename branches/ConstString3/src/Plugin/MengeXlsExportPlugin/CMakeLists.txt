@@ -1,19 +1,92 @@
-
 set( MY_LIB_NAME MengeXlsExportPlugin )
 
 ADD_FILTER(
 src
 	XlsExportPlugin.h
-	XlsExportPlugin.cpp
-    
+	XlsExportPlugin.cpp 
     XlsExportPlugin.def
 )
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
+					 ${THIRDPARTY_DIR}
+					 ${THIRDPARTY_DIR}/pybind32/include
+					 ${THIRDPARTY_DIR}/Python32/include
+                     ${THIRDPARTY_DIR}/boost
+)
+
+if( WIN32 )
+	INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/Python32/PC )
+endif( WIN32 )
+
 					 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
 
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ ${MY_LIB_NAME}
+)
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ PARENT_SCOPE
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+ ${THIRDPARTY_DIR}/ffmpeg/lib/
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+ PARENT_SCOPE
+)
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+ PARENT_SCOPE
+)
+
+
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
+
+
+
+#SET( PYTHON_LIB_DIR ${THIRDPARTY_DIR}/Python32/libs )
+
+SET(
+ PYTHON_STATIC_LIBS
+  #${PYTHON_LIB_DIR}/_ctypes.lib
+  #${PYTHON_LIB_DIR}/_ctypes_test.lib
+  #${PYTHON_LIB_DIR}/_elementtree.lib
+  #${PYTHON_LIB_DIR}/_hashlib.lib
+  #${PYTHON_LIB_DIR}/_msi.lib
+  #${PYTHON_LIB_DIR}/_multiprocessing.lib
+  #${PYTHON_LIB_DIR}/_socket.lib
+  #${PYTHON_LIB_DIR}/_sqlite3.lib
+  #${PYTHON_LIB_DIR}/_ssl.lib
+  #${PYTHON_LIB_DIR}/_testcapi.lib
+  #${PYTHON_LIB_DIR}/_tkinter.lib
+  #${PYTHON_LIB_DIR}/bz2.lib
+  
+  #${PYTHON_LIB_DIR}/pyexpat.lib
+  #${PYTHON_LIB_DIR}/python32_d.lib
+  #${PYTHON_LIB_DIR}/select.lib
+  #${PYTHON_LIB_DIR}/unicodedata.lib
+  #${PYTHON_LIB_DIR}/winsound.lib
+ )
+
+
+#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${PYTHON_STATIC_LIBS} )
+#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${PYTHON_LIB_DIR}/libpython32.lib )
+
+
+add_definitions(-DPYBIND_PYTHON_3)
+add_definitions(-DPy_BUILD_CORE)
+
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/Debug/${MENGINE_LIB_PREFIX}pybind32_static)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/Debug/${MENGINE_LIB_PREFIX}python32_static)
 
 #SET( APPLICATION_DEPENDENCIES
 # ${APPLICATION_DEPENDENCIES}

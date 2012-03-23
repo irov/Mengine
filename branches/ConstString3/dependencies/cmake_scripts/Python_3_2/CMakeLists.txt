@@ -89,6 +89,7 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
 file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/Python)
+file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/Include)
 file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
 file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 
@@ -222,11 +223,12 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/thread.c
                 ${SOURCE_DIR}/Python/thread_nt.h
                 ${SOURCE_DIR}/Python/traceback.c
-                ${SOURCE_DIR}/Python/dynload_win.c
-                
-               
+                ${SOURCE_DIR}/Python/dynload_win.c         
+                             
                 ${SOURCE_DIR}/PC/dl_nt.c
-            
+                ${SOURCE_DIR}/PC/getpathp.c
+                ${SOURCE_DIR}/PC/import_nt.c
+                
                 #${MACHDEP_SRCS}
                 ${THREAD_SRC}
                 ${DYNLOAD_SRC}
@@ -319,7 +321,7 @@ if(WIN32)
 endif(WIN32)
 
 add_definitions(-DPy_BUILD_CORE)
-add_definitions(-DPy_NO_ENABLE_SHARED )
+#add_definitions(-DPy_NO_ENABLE_SHARED )
 #if(NOT HAVE_HYPOT)
  # add_definitions(-DWITHOUT_COMPLEX)
 #endif(NOT HAVE_HYPOT)
@@ -331,8 +333,17 @@ add_definitions(-DPy_NO_ENABLE_SHARED )
               # ${MODULE_SRCS}
              #${SIGNAL_SRCS}
               # )
-			  
-add_library( ${PROJECT_NAME}_static STATIC
+		  
+#add_library( ${PROJECT_NAME}_static STATIC
+			  #${SOURCE_DIR}/Modules/getbuildinfo.c 
+#			  ${SOURCE_DIR}/Modules/_typesmodule.c
+              #${PARSER_SRCS}
+              #${OBJECT_SRCS}
+              #${PYTHON_SRCS}
+              #${MODULE_SRCS}
+              #)
+
+add_library( ${PROJECT_NAME}_static SHARED
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
 #			  ${SOURCE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
@@ -340,8 +351,8 @@ add_library( ${PROJECT_NAME}_static STATIC
               ${PYTHON_SRCS}
               ${MODULE_SRCS}
               
-              )
-
+              )  
+            
 target_link_libraries(${PROJECT_NAME}_static ${extraLibs})
 #set_target_properties(pythonLib PROPERTIES OUTPUT_NAME ${python_LIB_NAME})
 

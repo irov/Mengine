@@ -335,7 +335,7 @@ add_definitions(-DPy_NO_ENABLE_SHARED )
 		  
 add_library( ${PROJECT_NAME}_static STATIC
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
-			  ${SOURCE_DIR}/Modules/_typesmodule.c
+			  #${SOURCE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}

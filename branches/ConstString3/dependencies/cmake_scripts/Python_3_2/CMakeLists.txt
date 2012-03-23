@@ -89,6 +89,9 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
 file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/Python)
+file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
+
+
 
 configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")

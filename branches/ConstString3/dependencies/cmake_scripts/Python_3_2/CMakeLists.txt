@@ -90,7 +90,7 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 
 file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/Python)
 file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
-
+file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 
 
 configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
@@ -223,6 +223,8 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/thread_nt.h
                 ${SOURCE_DIR}/Python/traceback.c
                 ${SOURCE_DIR}/Python/dynload_win.c
+                
+               
                 ${SOURCE_DIR}/PC/dl_nt.c
             
                 #${MACHDEP_SRCS}

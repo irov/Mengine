@@ -320,7 +320,7 @@ if(WIN32)
 endif(WIN32)
 
 add_definitions(-DPy_BUILD_CORE)
-#add_definitions(-DPy_NO_ENABLE_SHARED )
+add_definitions(-DPy_NO_ENABLE_SHARED )
 #if(NOT HAVE_HYPOT)
  # add_definitions(-DWITHOUT_COMPLEX)
 #endif(NOT HAVE_HYPOT)
@@ -333,24 +333,16 @@ add_definitions(-DPy_BUILD_CORE)
              #${SIGNAL_SRCS}
               # )
 		  
-#add_library( ${PROJECT_NAME}_static STATIC
-			  #${SOURCE_DIR}/Modules/getbuildinfo.c 
-#			  ${SOURCE_DIR}/Modules/_typesmodule.c
-              #${PARSER_SRCS}
-              #${OBJECT_SRCS}
-              #${PYTHON_SRCS}
-              #${MODULE_SRCS}
-              #)
-
-add_library( ${PROJECT_NAME}_static SHARED
+add_library( ${PROJECT_NAME}_static STATIC
 			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
-#			  ${SOURCE_DIR}/Modules/_typesmodule.c
+			  ${SOURCE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}
               ${MODULE_SRCS}
-              
-              )  
+              )
+
+
             
 target_link_libraries(${PROJECT_NAME}_static ${extraLibs})
 #set_target_properties(pythonLib PROPERTIES OUTPUT_NAME ${python_LIB_NAME})

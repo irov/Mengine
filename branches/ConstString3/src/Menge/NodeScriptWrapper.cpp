@@ -702,6 +702,7 @@ namespace Menge
 
 			return result;
 		}
+
 		static Reference *  s_getResourceReference( const ConstString& _nameResource )
 		{
 			Reference * reference = ResourceManager::get()->getResourceReference( _nameResource );
@@ -2387,6 +2388,26 @@ namespace Menge
 			PyObject * m_cb;
 		};
 
+		static void s_visitChild( Node * _node, PyObject * _cb )
+		{
+			const TListChild & child = _node->getChild();
+			
+			for( TListChild::const_iterator
+				it = child.begin(),
+				it_end = child.end();
+			it != it_end;
+			++it )
+			{
+				Node * children = *it;
+				PyObject * py_children = pybind::ptr(children);
+
+				pybind::call(_cb, "(O)", py_children);
+
+				pybind::decref(py_children);
+			}
+		}
+
+
 		static void s_visitCompiledResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
 		{
 			ResourceVisitorGetAlreadyCompiled rv_gac(_cb);
@@ -3469,6 +3490,8 @@ namespace Menge
 			
 			pybind::def_function( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
 			pybind::def_function( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
+
+			pybind::def_function( "visitChild", &ScriptMethod::s_visitChild );
 
 			pybind::def_function( "visitCompiledResources", &ScriptMethod::s_visitCompiledResources );
 

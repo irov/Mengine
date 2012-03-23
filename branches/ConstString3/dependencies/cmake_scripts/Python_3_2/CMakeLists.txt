@@ -88,7 +88,7 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 #endif(WIN32)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
-file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/Python)
+file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/PC)
 file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
 file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 

@@ -32,51 +32,70 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		
-		//pybind::initialize(false);
-		//
-		//wchar_t* home = Py_GetPythonHome();
-		//wchar_t * path = Py_GetPath();
-		//Py_SetPythonHome(L"C:\\Python32");
-		
-		Py_IgnoreEnvironmentFlag = 1;
-		//Py_VerboseFlag = 1;
-		//Py_NoUserSiteDirectory = 1;
-		Py_NoSiteFlag = 1;
-
-		Py_SetPath(L"d:\\Projects\\Antoinette\\Bin2\\XlsxExport\\");
-
-		Py_Initialize();
-
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
 		if( logService == 0 )
 		{
 			return;
 		}
-
-
-		//
-		//Py_Initialize();
-
-
-
+		
 		TMapParam::const_iterator it_found = _params.find("ProjectName");
 
-		if( it_found != _params.end() )
+		if( it_found == _params.end() )
 		{
-			const std::string & path = it_found->second;
-			PyRun_SimpleString("from xlsxExporter import export\n");
-			char buffer[255] = {'\0'};
-			sprintf( buffer, "export(\"%s\")", path.c_str() );
-			PyRun_SimpleString( buffer );
+			return;
 		}
 
-		Py_Finalize();
+		const String & projectName = it_found->second;
+		
+		Py_IgnoreEnvironmentFlag = 1;
+		//Py_VerboseFlag = 1;
+		//Py_NoUserSiteDirectory = 1;
+		Py_NoSiteFlag = 1;
+		
+		WString xlsxExportPath = L"d:\\Projects\\Antoinette\\Bin2\\XlsxExport\\";
+		Py_SetPath(xlsxExportPath.c_str());
+				
+		pybind::initialize(false, false);
+
+		std::string stdPath = "d:\\Projects\\Antoinette\\Bin2\\XlsxExport\\";
+
+		PyObject * py_syspath = pybind::list_new(0);
+
+		PyObject * py_stdPath = pybind::unicode_from_utf8(stdPath.c_str(), stdPath.size());
+
+		pybind::list_appenditem( py_syspath, py_stdPath );
+
+		pybind::decref( py_stdPath );
+
+		pybind::set_syspath( py_syspath );
+
+		pybind::decref( py_syspath );		
+
+		this->proccess( projectName );
+
+		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::finalize()
 	{
 		delete this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool XlsExportPlugin::proccess( const String & _projectName )
+	{
+		bool exist = false;
+		PyObject * py_xlsxExporter = pybind::module_import( "xlsxExporter", exist );
+
+		if( py_xlsxExporter == 0 )
+		{
+			return false;
+		}
+
+		pybind::call_method( py_xlsxExporter, "export", "(s)"
+			, _projectName.c_str() 
+			);
+
+		return true;
 	}
 }

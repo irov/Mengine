@@ -16,5 +16,8 @@ namespace Menge
 	protected:
 		void initialize( ServiceProviderInterface * _provider, const TMapParam & _params ) override;
 		void finalize() override;
+
+	protected:
+		bool proccess( const String & _projectName );
 	};
 }

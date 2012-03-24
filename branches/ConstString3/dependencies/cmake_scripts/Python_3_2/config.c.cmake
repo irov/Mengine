@@ -46,15 +46,9 @@ extern PyObject* PyInit__struct(void);
 extern PyObject* PyInit__datetime(void);
 extern PyObject* PyInit__functools(void);
 extern PyObject* PyInit__json(void);
-extern PyObject* PyInit_zlib(void);
+//extern PyObject* PyInit_zlib(void);
 
 extern PyObject* PyInit__multibytecodec(void);
-extern PyObject* PyInit__codecs_cn(void);
-extern PyObject* PyInit__codecs_hk(void);
-extern PyObject* PyInit__codecs_iso2022(void);
-extern PyObject* PyInit__codecs_jp(void);
-extern PyObject* PyInit__codecs_kr(void);
-extern PyObject* PyInit__codecs_tw(void);
 extern PyObject* PyInit__subprocess(void);
 extern PyObject* PyInit__lsprof(void);
 extern PyObject* PyInit__ast(void);
@@ -63,6 +57,9 @@ extern PyObject* PyInit__pickle(void);
 extern PyObject* PyInit_atexit(void);
 extern PyObject* _PyWarnings_Init(void);
 extern PyObject* PyInit__string(void);
+
+extern PyObject* PyInit_pyexpat(void);
+extern PyObject* PyInit_zlib(void);
 
 /* tools/freeze/makeconfig.py marker for additional "extern" */
 /* -- ADDMODULE MARKER 1 -- */
@@ -123,16 +120,10 @@ struct _inittab _PyImport_Inittab[] = {
 
     {"xxsubtype", PyInit_xxsubtype},
     {"zipimport", PyInit_zipimport},
-    {"zlib", PyInit_zlib},
+//    {"zlib", PyInit_zlib},
 
     /* CJK codecs */
     {"_multibytecodec", PyInit__multibytecodec},
-    {"_codecs_cn", PyInit__codecs_cn},
-    {"_codecs_hk", PyInit__codecs_hk},
-    {"_codecs_iso2022", PyInit__codecs_iso2022},
-    {"_codecs_jp", PyInit__codecs_jp},
-    {"_codecs_kr", PyInit__codecs_kr},
-    {"_codecs_tw", PyInit__codecs_tw},
 
 /* tools/freeze/makeconfig.py marker for additional "_inittab" entries */
 /* -- ADDMODULE MARKER 2 -- */
@@ -153,6 +144,8 @@ struct _inittab _PyImport_Inittab[] = {
     {"_io", PyInit__io},
     {"_pickle", PyInit__pickle},
     {"atexit", PyInit_atexit},
+    {"pyexpat", PyInit_pyexpat},
+    {"zlib", PyInit_zlib},
 
     /* Sentinel */
     {0, 0}

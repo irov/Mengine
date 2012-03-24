@@ -93,11 +93,13 @@ file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
 file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 
 
-configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
+#configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
-configure_file(Modules/wininit.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c COPYONLY)
+#configure_file(Modules/wininit.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c COPYONLY)
 
 if( WIN32 )
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/config.c.cmake ${SOURCE_DIR}/PC/config.c COPYONLY)
+    #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/wininit.c.cmake ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 else( WIN32 )
 	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
@@ -223,10 +225,15 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/thread_nt.h
                 ${SOURCE_DIR}/Python/traceback.c
                 ${SOURCE_DIR}/Python/dynload_win.c         
-                             
+                
+                ${SOURCE_DIR}/PC/_subprocess.c                
+                ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/PC/dl_nt.c
                 ${SOURCE_DIR}/PC/getpathp.c
                 ${SOURCE_DIR}/PC/import_nt.c
+                ${SOURCE_DIR}/PC/msvcrtmodule.c
+                ${SOURCE_DIR}/PC/winreg.c
+                
                 
                 #${MACHDEP_SRCS}
                 ${THREAD_SRC}
@@ -240,7 +247,7 @@ set(PYTHON_SRCS
 #endif( WIN32 )
   
                 
-set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
+set(MODULE_SRCS 
                 #${SOURCE_DIR}/Modules/getpath.c 
                 #${SOURCE_DIR}/Modules/main.c 
                # ${SOURCE_DIR}/Modules/gcmodule.c
@@ -263,6 +270,17 @@ set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c
                 ${SOURCE_DIR}/Modules/_time.c
                 ${SOURCE_DIR}/Modules/_time.h
                 ${SOURCE_DIR}/Modules/_weakref.c
+                
+                ${SOURCE_DIR}/Modules/_io/_iomodule.c
+                ${SOURCE_DIR}/Modules/_io/bufferedio.c
+                ${SOURCE_DIR}/Modules/_io/bytesio.c
+                ${SOURCE_DIR}/Modules/_io/fileio.c
+                ${SOURCE_DIR}/Modules/_io/iobase.c
+                ${SOURCE_DIR}/Modules/_io/stringio.c
+                ${SOURCE_DIR}/Modules/_io/textio.c
+                
+                ${SOURCE_DIR}/Modules/cjkcodecs/multibytecodec.c
+                
                 ${SOURCE_DIR}/Modules/arraymodule.c
                 ${SOURCE_DIR}/Modules/atexitmodule.c
                 ${SOURCE_DIR}/Modules/audioop.c
@@ -292,6 +310,15 @@ set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c
                 ${SOURCE_DIR}/Modules/zipimport.c
                 
                 
+                ${SOURCE_DIR}/Modules/pyexpat.c
+                
+                ${SOURCE_DIR}/Modules/expat/xmlparse.c
+                ${SOURCE_DIR}/Modules/expat/xmlrole.c
+                ${SOURCE_DIR}/Modules/expat/xmltok.c
+                
+                ${SOURCE_DIR}/Modules/zlibmodule.c
+                
+                
                 #${SOURCE_DIR}/Modules/timemodule.c
 				#${SOURCE_DIR}/Modules/cStringIO.c
 				#${SOURCE_DIR}/Modules/arraymodule.c
@@ -311,13 +338,24 @@ set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_F
 
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 if(WIN32)
-  include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python)
+  include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python ${SOURCE_DIR}/Modules/expat)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../zlib)
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
   else(MSVC)
 	  add_definitions(-D_WINDOWS)
   endif(MSVC)
 endif(WIN32)
+
+
+add_definitions(-DPYEXPAT_EXPORTS)
+add_definitions(-DHAVE_EXPAT_H)
+add_definitions(-DXML_NS)
+add_definitions(-DXML_DTD)
+add_definitions(-DBYTEORDER=1234)
+add_definitions(-DXML_CONTEXT_BYTES=1024)
+add_definitions(-DXML_STATIC)
+add_definitions(-DHAVE_MEMMOVE)
 
 add_definitions(-DPy_BUILD_CORE)
 add_definitions(-DPy_NO_ENABLE_SHARED )
@@ -345,6 +383,8 @@ add_library( ${PROJECT_NAME}_static STATIC
 
             
 target_link_libraries(${PROJECT_NAME}_static ${extraLibs})
+
+
 #set_target_properties(pythonLib PROPERTIES OUTPUT_NAME ${python_LIB_NAME})
 
 #add_executable(python Modules/python.c )

@@ -128,7 +128,7 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Sprite: '%s' Image resource not found '%s'"
+			MENGE_LOG_ERROR( "Sprite: '%s' Image resource not found resource '%s'"
 				, m_name.c_str()
 				, m_resourceName.c_str() 
 				);

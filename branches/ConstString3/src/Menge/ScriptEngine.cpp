@@ -55,9 +55,9 @@ namespace Menge
 //		++Py_NoSiteFlag;
 //		//Py_IgnoreEnvironmentFlag++;
 #	ifndef _DEBUG
-		pybind::initialize(false);
+		pybind::initialize(false, false);
 #	else
-		pybind::initialize(false);
+		pybind::initialize(false, false);
 #	endif
 
 

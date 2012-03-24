@@ -34,15 +34,18 @@ namespace Menge
 	{
 		
 		//pybind::initialize(false);
-		//PyInit_pyexpat();
-		wchar_t* home = Py_GetPythonHome();
-		wchar_t * path = Py_GetPath();
-		Py_SetPythonHome(L"C:\\Python32");
-		Py_SetPath(L"C:\\Python32");
+		//
+		//wchar_t* home = Py_GetPythonHome();
+		//wchar_t * path = Py_GetPath();
+		//Py_SetPythonHome(L"C:\\Python32");
+		
 		Py_IgnoreEnvironmentFlag = 1;
-		Py_VerboseFlag = 1;
-		Py_NoUserSiteDirectory = 1;
+		//Py_VerboseFlag = 1;
+		//Py_NoUserSiteDirectory = 1;
 		Py_NoSiteFlag = 1;
+
+		Py_SetPath(L"d:\\Projects\\Antoinette\\Bin2\\XlsxExport\\");
+
 		Py_Initialize();
 
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
@@ -54,10 +57,10 @@ namespace Menge
 
 
 		//
-		/*Py_Initialize();
-		
-						
-		
+		//Py_Initialize();
+
+
+
 		TMapParam::const_iterator it_found = _params.find("ProjectName");
 
 		if( it_found != _params.end() )
@@ -68,8 +71,8 @@ namespace Menge
 			sprintf( buffer, "export(\"%s\")", path.c_str() );
 			PyRun_SimpleString( buffer );
 		}
-		
-		Py_Finalize();*/
+
+		Py_Finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::finalize()

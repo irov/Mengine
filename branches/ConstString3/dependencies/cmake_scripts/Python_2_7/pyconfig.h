@@ -517,7 +517,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 //#define WITH_DOC_STRINGS 1
 
 /* Define if you want to compile in rudimentary thread support */
-/* #undef WITH_THREAD */
+#undef WITH_THREAD
 
 /* Define if you want to use the GNU readline library */
 /* #define WITH_READLINE 1 */

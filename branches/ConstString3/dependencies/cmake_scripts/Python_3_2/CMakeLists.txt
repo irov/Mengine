@@ -8,12 +8,12 @@ REMOVE_DEFINITIONS(-Doverride)
 
 include(ConfigureChecks.cmake)
 
-option(WITH_THREAD "compile in rudimentary thread support" OFF)
-option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)
-option(Py_USING_UNICODE "Enable unicode support" OFF)
-option(Py_DEBUG "Build debugging interpreter" OFF)
-option(WITH_PYMALLOC "Define if you want to compile in Python-specific mallocs" ON)
-option(HAVE_LARGEFILE_SUPPORT "Large file support " ON)
+#option(WITH_THREAD "compile in rudimentary thread support" OFF)
+#option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)
+#option(Py_USING_UNICODE "Enable unicode support" ON)
+#option(Py_DEBUG "Build debugging interpreter" OFF)
+#option(WITH_PYMALLOC "Define if you want to compile in Python-specific mallocs" ON)
+#option(HAVE_LARGEFILE_SUPPORT "Large file support " ON)
 
 set(extraLibs)
 
@@ -170,10 +170,7 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/weakrefobject.c
         )
    
-if(Py_USING_UNICODE)
-  set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c
-                    ${SOURCE_DIR}/Objects/unicodectype.c)
-endif(Py_USING_UNICODE)
+set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
 
 
 set(PYTHON_SRCS              

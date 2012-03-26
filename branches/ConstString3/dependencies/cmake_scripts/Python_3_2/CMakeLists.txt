@@ -95,11 +95,9 @@ file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
-#configure_file(Modules/wininit.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c COPYONLY)
 
 if( WIN32 )
     configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/config.c.cmake ${SOURCE_DIR}/PC/config.c COPYONLY)
-    #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/wininit.c.cmake ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 else( WIN32 )
 	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
@@ -329,7 +327,6 @@ if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
 else( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} 
-	${SOURCE_DIR}/Modules/wininit.c
 	${SOURCE_DIR}/PC/getpathp.c	)
 endif( NOT WIN32 )
 

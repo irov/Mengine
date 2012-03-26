@@ -329,7 +329,7 @@ if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
 else( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} 
-	${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c
+	${SOURCE_DIR}/Modules/wininit.c
 	${SOURCE_DIR}/PC/getpathp.c	)
 endif( NOT WIN32 )
 

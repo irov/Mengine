@@ -35,8 +35,8 @@ namespace Menge
 		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create ) override;
 		void unmountFileSystem( const ConstString& _fileSystemName ) override;
 
-		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const override;
-		bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const override;
+		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const /*override*/;
+		bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const /*override*/;
 
 		bool existFile( const ConstString& _fileSystemName, const String& _filename ) const override;
 

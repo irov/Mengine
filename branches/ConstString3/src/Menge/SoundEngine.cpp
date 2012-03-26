@@ -205,14 +205,6 @@ namespace Menge
 			return NULL;
 		}
 
-		//this need for ffmpeg to ogg convertion
-		SoundCodecOptions opt;
-		String inputFileFullPath;
-		FileEngine::get()->getFullPath( _pakName, _filename, inputFileFullPath );
-		opt.inputFileFullPath = inputFileFullPath;
-		desc.codec->setOptions(&opt);
-		//end
-
 		SoundBufferInterface* sample = 
 			m_interface->createSoundBuffer( desc.codec, _isStream );
 

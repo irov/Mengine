@@ -1,26 +1,26 @@
 #	pragma once
 
 #	include "Interface/PluginInterface.h"
-#	include "Interface/CodecInterface.h"
+#	include "Interface/ConverterInterface.h"
 
 namespace Menge
 {
 	
-	class SoundCodecDecoderSystem
-		: public DecoderSystemInterface
+	class SoundConverterSystem
+		: public ConverterSystemInterface
 	{
 	public:
-		SoundCodecDecoderSystem( const ConstString & _name );
+		SoundConverterSystem( const ConstString & _name );
 
 	public:
 		const ConstString & getName() const;
 
 	protected:
-		void setService( CodecServiceInterface * _service ) override;
+		void setService( ConverterServiceInterface * _service ) override;
 
 	protected:
 		ConstString m_name;
-		CodecServiceInterface * m_service;
+		ConverterServiceInterface * m_service;
 	};
 
 
@@ -35,9 +35,9 @@ namespace Menge
 		void finalize() override;
 
 	protected:
-		typedef std::vector<SoundCodecDecoderSystem * > TVectorSoundDecoders;
-		TVectorSoundDecoders m_decoders;
-		CodecServiceInterface * m_codecService;
+		typedef std::vector<SoundConverterSystem * > TVectorSoundConverters;
+		TVectorSoundConverters m_converters;
+		ConverterServiceInterface * m_converterService;
 		
 	};
 }

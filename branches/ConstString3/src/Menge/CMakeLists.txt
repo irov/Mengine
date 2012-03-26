@@ -95,6 +95,11 @@ Engine\\\\Codec
 	CodecEngine.h
 )
 
+ADD_FILTER(
+Engine\\\\Converter
+	ConverterEngine.cpp
+	ConverterEngine.h
+)
 
 ADD_FILTER(
 Engine\\\\Input

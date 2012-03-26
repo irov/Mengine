@@ -5,10 +5,10 @@ src
 	SoundCodecPlugin.cpp
 	SoundCodecPlugin.def
 	SoundCodecPlugin.h
-	SoundDecoderConverter.cpp
-	SoundDecoderConverter.h
-	SoundDecoderConverterFFMPEGToOGG.cpp
-	SoundDecoderConverterFFMPEGToOGG.h
+	SoundConverter.cpp
+	SoundConverter.h
+	SoundConverterFFMPEGToOGG.cpp
+	SoundConverterFFMPEGToOGG.h
 )
 
 INCLUDE_DIRECTORIES(

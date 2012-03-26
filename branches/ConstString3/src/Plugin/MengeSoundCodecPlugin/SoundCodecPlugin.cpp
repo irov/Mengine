@@ -1,7 +1,9 @@
 #	include "SoundCodecPlugin.h"
-#	include "SoundDecoderConverterFFMPEGToOGG.h"
+#	include "SoundConverterFFMPEGToOGG.h"
 #	include "Utils/Core/File.h"
 #	include "Interface/LogSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 {
@@ -12,18 +14,18 @@ __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	SoundCodecDecoderSystem::SoundCodecDecoderSystem( const ConstString & _name )
+	SoundConverterSystem::SoundConverterSystem( const ConstString & _name )
 		: m_name(_name)
 		, m_service(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & SoundCodecDecoderSystem::getName() const
+	const ConstString & SoundConverterSystem::getName() const
 	{
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecDecoderSystem::setService( CodecServiceInterface * _service )
+	void SoundConverterSystem::setService( ConverterServiceInterface * _service )
 	{
 		m_service = _service;
 	}
@@ -31,72 +33,78 @@ namespace Menge
 	namespace Detail
 	{
 		template<class T>
-		class SoundDecoderSystem
-			: public SoundCodecDecoderSystem
+		class SoundConverterFactory
+			: public SoundConverterSystem
 		{
 		public:
-			SoundDecoderSystem( const ConstString & _name, LogServiceInterface * _logService ,FileServiceInterface * _fileService)
-				: SoundCodecDecoderSystem(_name)
-				, m_logService(_logService)
+			SoundConverterFactory( const ConstString & _name, FileServiceInterface * _fileService, LogServiceInterface * _logService, StringizeServiceInterface * _stringize )
+				: SoundConverterSystem( _name )
+				, m_logService( _logService )
 				, m_fileService( _fileService )
+				, m_stringize( _stringize )
 			{
 			}
 
 		protected:
-			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
+			ConverterInterface * createConverter( ) override
 			{				
-				return new T(m_service, _stream, m_logService, m_fileService);
+				return new T(m_service, m_fileService, m_logService, m_stringize);
 			}
 
 		protected:
 			FileServiceInterface * m_fileService;
 			LogServiceInterface * m_logService;
+			StringizeServiceInterface * m_stringize;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundCodecPlugin::SoundCodecPlugin()
+		: m_converterService(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
+		m_converterService = _provider->getServiceT<ConverterServiceInterface>( "ConverterService" );
 
-		if( m_codecService == 0 )
+		if( m_converterService == 0 )
 		{
 			return;
 		}
 
 		FileServiceInterface * fileService = _provider->getServiceT<FileServiceInterface>( "FileService" );
-		
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
-		//m_decoders.push_back( new Detail::SoundDecoderSystem<SoundDecoderConverterFFMPEGToOGG>("ffmpegToOggSound", logService, fileService));
+		StringizeServiceInterface * stringizeService = _provider->getServiceT<StringizeServiceInterface>( "StringizeService" );
+		const ConstString & c_ffmpegToOgg = stringizeService->stringize("ffmpegToOggSound");
+
+		m_converters.push_back( new Detail::SoundConverterFactory<SoundConverterFFMPEGToOGG>( c_ffmpegToOgg, fileService, logService, stringizeService));
 		
-		for( TVectorSoundDecoders::iterator
-			it = m_decoders.begin(),
-			it_end = m_decoders.end();
+		for( TVectorSoundConverters::iterator
+			it = m_converters.begin(),
+			it_end = m_converters.end();
 		it != it_end;
 		++it )
 		{
 			const ConstString & name = (*it)->getName();
-			m_codecService->registerDecoder( name, (*it) );
+			m_converterService->registerConverter( name, (*it) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundCodecPlugin::finalize()
 	{
-		for( TVectorSoundDecoders::iterator
-			it = m_decoders.begin(),
-			it_end = m_decoders.end();
+		for( TVectorSoundConverters::iterator
+			it = m_converters.begin(),
+			it_end = m_converters.end();
 		it != it_end;
 		++it )
 		{
 			const ConstString & name = (*it)->getName();
-			m_codecService->unregisterDecoder( name );
+			m_converterService->unregisterConverter( name );
 
 			delete (*it);
 		}
+
 		delete this;
 	}
 }

@@ -37,6 +37,8 @@
 
 #	include "CodecEngine.h"
 
+#	include "ConverterEngine.h"
+
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
 #	include "ArrowManager.h"
@@ -286,6 +288,7 @@ namespace Menge
 		exinit.add( &Application::initializeLoaderEngine_);
 		exinit.add( &Application::initializeScriptEngine_);
 		exinit.add( &Application::initializeCodecEngine_);
+		exinit.add( &Application::initializeConverterEngine_);
 		exinit.add( &Application::initializeResourceManager_);
 		exinit.add( &Application::initializeArrowManager_);
 		exinit.add( &Application::initializeSceneManager_);
@@ -603,6 +606,19 @@ namespace Menge
 
 		m_serviceProvider->registryService( "CodecService", m_codecEngine );
 		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeConverterEngine_()
+	{
+		MENGE_LOG_INFO( "Inititalizing Converter..." );
+
+		m_converterEngine = new ConverterEngine();
+
+		ConverterEngine::keep( m_converterEngine );
+
+		m_serviceProvider->registryService( "ConverterService", m_converterEngine );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1397,6 +1413,9 @@ namespace Menge
 		delete m_taskManager;
 
 		delete m_threadEngine;
+
+		m_serviceProvider->unregistryService( "ConverterService" );
+		delete m_converterEngine;
 
 		m_serviceProvider->unregistryService( "CodecService" );
 		delete m_codecEngine;

@@ -25,8 +25,8 @@ namespace Menge
 
 	public:
 		void setPath( const ConstString& _path );
-		void setCodec( const ConstString& _path );
-
+		void setCodec( const ConstString& _codec );
+		void setConverter( const ConstString& _converter );
 	public:
 		bool isStreamable() const;
 		const ConstString& getFilename() const;
@@ -41,10 +41,11 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-
+		bool _convert();
 	protected:
 		ConstString m_path;
 		ConstString m_codec;
+		ConstString m_converter;
 		float m_defaultVolume;
 
 		bool m_isStreamable;

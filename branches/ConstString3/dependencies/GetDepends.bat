@@ -28,6 +28,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 
+%toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/3.2.2/Python-3.2.2.tgz
+
 
 if EXIST boost rmdir /s /q boost
 7za x -y boost_1_49_0.zip
@@ -67,6 +69,11 @@ if EXIST Python rmdir /s /q Python
 7za x -y Python-2.7.2.tgz
 7za x -y Python-2.7.2.tar
 move Python-2.7.2 Python
+
+if EXIST Python32 rmdir /s /q Python32
+7za x -y Python-3.2.2.tgz
+7za x -y Python-3.2.2.tar
+move Python-3.2.2 Python32
 
 if EXIST ffmpeg rmdir /s /q ffmpeg
 7za x -y ffmpeg-git-b55dd10-win32-dev.7z

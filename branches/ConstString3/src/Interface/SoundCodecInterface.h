@@ -17,7 +17,6 @@ namespace Menge
 	struct SoundCodecOptions
 		: public CodecOptions
 	{
-		String inputFileFullPath;
 	};
 
 	class SoundDecoderInterface

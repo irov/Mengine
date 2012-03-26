@@ -927,60 +927,6 @@ namespace Menge
 			return Application::get()->getFullscreenMode();
 		}
 
-		class ScriptResourceManagerListener
-			: public ResourceManagerListener
-		{
-		public:
-			ScriptResourceManagerListener( PyObject* _eventLoaded, PyObject* _eventUnLoaded )
-				: m_eventLoaded(_eventLoaded)
-				, m_eventUnLoaded(_eventUnLoaded)
-			{
-			}
-
-			~ScriptResourceManagerListener()
-			{
-				pybind::decref(m_eventLoaded);
-				pybind::decref(m_eventUnLoaded);
-			}
-
-		public:
-			void onResourceLoaded( const ConstString& _name ) override
-			{
-				if( m_eventLoaded == 0 )
-				{
-					return;
-				}
-
-				String nameAnsi;
-
-				Application::get()
-					->utf8ToAnsi( Helper::to_str(_name), nameAnsi );
-
-				ScriptEngine::get()
-					->callFunction( m_eventLoaded, "(s)", nameAnsi.c_str() );
-			}
-
-			void onResourceUnLoaded( const ConstString& _name ) override
-			{
-				if( m_eventLoaded == 0 )
-				{
-					return;
-				}
-
-				String nameAnsi;
-
-				Application::get()
-					->utf8ToAnsi( Helper::to_str(_name), nameAnsi );
-
-				ScriptEngine::get()
-					->callFunction( m_eventUnLoaded, "(s)", nameAnsi.c_str() );			
-			}
-
-		protected:
-			PyObject * m_eventLoaded;
-			PyObject * m_eventUnLoaded;
-		};
-		
 		static void renderOneFrame()
 		{
 			RenderEngine::get()->beginScene();

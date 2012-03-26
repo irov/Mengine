@@ -264,6 +264,8 @@ namespace Menge
 
 		m_serviceProvider = new ServiceProvider;
 
+		m_serviceProvider->registryService( "ApplicationService", this );
+
 		m_platform->notifyServiceProviderReady( m_serviceProvider );
 
 		m_stringizeService = new StringizeService;
@@ -356,6 +358,11 @@ namespace Menge
 		//this->setBaseDir( m_baseDir );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PlatformInterface * Application::getPlatform() const
+	{
+		return m_platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ServiceProviderInterface * Application::getServiceProvider() const
@@ -748,7 +755,8 @@ namespace Menge
 		Game::keep( m_game );
 
 		MENGE_LOG_INFO( "Application::loadGame mount game pak '%s'"
-			, m_gamePackName.c_str() );
+			, m_gamePackName.c_str() 
+			);
 
 		//m_game->setBaseDir( m_baseDir );
 
@@ -1621,17 +1629,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::ansiToUtf8( const String& _ansi, String & _utf8 )
 	{
-		m_platform->ansiToUtf8( _ansi, _utf8 );
+		_utf8 = m_platform->ansiToUtf8( _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::utf8ToAnsi( const String& _utf8, String & _ansi )
 	{
-		m_platform->utf8ToAnsi( _utf8, _ansi );
+		_ansi = m_platform->utf8ToAnsi( _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::utf8Count( const String& _utf8, size_t & _size )
 	{
-		m_platform->utf8Count( _utf8, _size );
+		_size = m_platform->utf8Count( _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getHasWindowPanel() const

@@ -36,7 +36,10 @@ namespace Menge
 
 	public:
 		WindowHandle createWindow( const Menge::String & _name, const Resolution & _resolution, bool _fullscreen );
+
 		const Resolution & getDesktopResolution() const override;
+
+		const WString & getCurrentPath() const override;
 
 		void minimizeWindow() override;
 		void setDesktopResolution( const Resolution & _resolution );
@@ -47,9 +50,9 @@ namespace Menge
 
 		TimerInterface * getTimer() const override;
 		
-		void ansiToUtf8( const String& _ansi, String & _utf8 ) override;
-		void utf8ToAnsi( const String& _utf8, String & _ansi ) override;
-		void utf8Count( const String& _utf8, size_t & _size ) override;
+		String ansiToUtf8( const String& _ansi ) override;
+		String utf8ToAnsi( const String& _utf8 ) override;
+		size_t utf8Count( const String& _utf8 ) override;
 
 		void showKeyboard() override;
 		void hideKeyboard() override;
@@ -104,6 +107,9 @@ namespace Menge
 		TMapCursors m_cursors;
 		
 		String m_name;
+
+		
+		WString m_currentPath;
 
 		String m_applicationPath;
 		String m_userPath;

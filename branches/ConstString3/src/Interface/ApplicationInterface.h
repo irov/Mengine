@@ -6,6 +6,8 @@
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
+#	include "Interface/ServiceInterface.h"
+
 namespace Menge
 {
 	class LogServiceInterface;
@@ -37,6 +39,7 @@ namespace Menge
 		virtual void stop() = 0;
 
 		virtual const Resolution & getDesktopResolution() const = 0;
+		virtual const WString & getCurrentPath() const = 0;
 
 		virtual void minimizeWindow() = 0;
 
@@ -49,9 +52,9 @@ namespace Menge
 		virtual void showKeyboard() = 0;
 		virtual void hideKeyboard() = 0;
 
-		virtual void ansiToUtf8( const String& _ansi, String & _utf8 ) = 0;
-		virtual void utf8ToAnsi( const String& _utf8, String & _ansi ) = 0;
-		virtual void utf8Count( const String& _utf8, size_t & _size ) = 0;
+		virtual String ansiToUtf8( const String& _ansi ) = 0;
+		virtual String utf8ToAnsi( const String& _utf8 ) = 0;
+		virtual size_t utf8Count( const String& _utf8 ) = 0;
 
 		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) = 0;
 		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) = 0;
@@ -72,14 +75,17 @@ namespace Menge
 	};
 
 	class ApplicationInterface
+		: public ServiceInterface
 	{
 	public:
 		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args ) = 0;
 		virtual bool loadConfig( const String& _configFile ) = 0;
 
 		virtual void setBaseDir( const String& _baseDir ) = 0;
-
+		virtual const String& getBaseDir() const = 0;
+		
 	public:
+		virtual PlatformInterface * getPlatform() const = 0;
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:

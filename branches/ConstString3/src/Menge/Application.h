@@ -72,8 +72,10 @@ namespace Menge
 		bool loadConfig( const String& _configFile ) override;
 
 		void setBaseDir( const String & _dir ) override;
+		const String & getBaseDir() const override;
 
 	public:
+		PlatformInterface * getPlatform() const override;
 		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
@@ -146,9 +148,7 @@ namespace Menge
 		void quit();
 
 		const String & getPathGameFile() const;
-				
-		const String & getBaseDir() const;
-
+		
 	public:
 		void loader( BinParser * _parser ) override;
 		
@@ -311,6 +311,7 @@ namespace Menge
 
 		void parseArguments_( const String& _arguments );
 
+		WString m_applicationPath;
 		String m_baseDir;
 		
 		ConstString m_gamePackName;

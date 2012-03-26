@@ -1,6 +1,10 @@
 #	include "XlsExportPlugin.h"
+
 #	include "Interface/LogSystemInterface.h"
 #	include "Logger/Logger.h"
+
+#	include "Interface/ApplicationInterface.h"
+
 #	include <Windows.h>
 #	include "Python.h"
 #	include <pybind\pybind.hpp>
@@ -47,22 +51,29 @@ namespace Menge
 		}
 
 		const String & projectName = it_found->second;
+
+		ApplicationInterface * applicationService = _provider->getServiceT<ApplicationInterface>( "ApplicationService" );
 		
+		PlatformInterface * platform = applicationService->getPlatform();
+
 		Py_IgnoreEnvironmentFlag = 1;
 		//Py_VerboseFlag = 1;
 		//Py_NoUserSiteDirectory = 1;
 		Py_NoSiteFlag = 1;
+
+		const WString & currentPath = platform->getCurrentPath();
 		
-		WString xlsxExportPath = L"d:\\Projects\\Antoinette\\Bin2\\XlsxExport\\";
+		WString xlsxExportPath = currentPath + L"\\XlsxExport\\";
+		
 		Py_SetPath(xlsxExportPath.c_str());
 				
 		pybind::initialize(false, false);
 
-		std::string stdPath = "d:\\Projects\\Antoinette\\Bin2\\XlsxExport\\";
+		WString stdPath = currentPath + L"\\XlsxExport\\";
 
 		PyObject * py_syspath = pybind::list_new(0);
 
-		PyObject * py_stdPath = pybind::unicode_from_utf8(stdPath.c_str(), stdPath.size());
+		PyObject * py_stdPath = pybind::unicode_from_wchar(stdPath.c_str(), stdPath.size());
 
 		pybind::list_appenditem( py_syspath, py_stdPath );
 

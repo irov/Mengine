@@ -125,6 +125,7 @@ namespace Menge
 		, m_logService(NULL)
 		, m_winTimer(NULL)
 		, m_isDoubleClick(false)
+		, m_cursor(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -252,8 +253,14 @@ namespace Menge
 			}
 		}
 
-		WindowsLayer::getCurrentDirectory( m_applicationPath );
+		wchar_t buffer[MAX_PATH];
+		::GetCurrentDirectoryW( MAX_PATH, buffer );
 
+		m_currentPath.assign(buffer);
+
+		//WindowsLayer::getCurrentDirectory( m_applicationPath );
+		WindowsLayer::wstrToUtf8( m_currentPath, m_applicationPath );
+		
 		m_applicationPath += "\\";
 		m_userPath += "\\";
 
@@ -1172,6 +1179,11 @@ namespace Menge
 		return m_desktopResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const WString & WinApplication::getCurrentPath() const
+	{
+		return m_currentPath;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::minimizeWindow()
 	{
 		::ShowWindow( m_hWnd, SW_MINIMIZE );
@@ -1204,19 +1216,25 @@ namespace Menge
 		WindowsLayer::messageBox( m_hWnd, _message, _header, MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::ansiToUtf8( const String& _ansi, String & _utf8 )
+	String WinApplication::ansiToUtf8( const String& _ansi )
 	{
-		WindowsLayer::ansiToUtf8( _ansi, _utf8 );
+		String utf8;
+		WindowsLayer::ansiToUtf8( _ansi, utf8 );
+		return utf8;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::utf8ToAnsi( const String& _utf8, Menge::String & _ansi )
+	String WinApplication::utf8ToAnsi( const String& _utf8 )
 	{
-		WindowsLayer::utf8ToAnsi( _utf8, _ansi );
+		String ansi;
+		WindowsLayer::utf8ToAnsi( _utf8, ansi );
+		return ansi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::utf8Count( const String& _utf8, size_t & _size )
+	size_t WinApplication::utf8Count( const String& _utf8 )
 	{
-		WindowsLayer::utf8Count( _utf8, _size );
+		size_t size;
+		WindowsLayer::utf8Count( _utf8, size );
+		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showKeyboard()

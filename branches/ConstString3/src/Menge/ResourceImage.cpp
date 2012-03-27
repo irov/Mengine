@@ -1,11 +1,15 @@
 #	include "ResourceImage.h"
-
 #	include "BinParser.h"
 
 #	include "RenderEngine.h"
-
 #	include "LogEngine.h"
 #	include "Texture.h"
+
+#	include "Interface/ImageCodecInterface.h"
+
+#	include "FileEngine.h"
+#	include "CodecEngine.h"
+#	include "LogEngine.h"
 
 #	include "Core/File.h"
 
@@ -149,14 +153,53 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::getWrapX( size_t _frame ) const
+	bool ResourceImage::getWrapX() const
 	{
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::getWrapY( size_t _frame ) const
+	bool ResourceImage::getWrapY() const
 	{
 		return false;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	ImageDecoderInterface * ResourceImage::createDecoder_(  FileInputStreamInterface * _file, const ConstString& _codec )
+	{
+		ImageDecoderInterface * imageDecoder = CodecEngine::get()
+			->createDecoderT<ImageDecoderInterface>( _codec, _file );
+
+		if( imageDecoder == 0 )
+		{
+			return NULL;
+		}
+
+		const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
+
+		if( dataInfo->format == PF_UNKNOWN )
+		{
+			imageDecoder->destroy();
+			return NULL;
+		}
+
+		return imageDecoder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileInputStreamInterface * ResourceImage::createStream_( const ConstString& _pakName, const ConstString & _filename )
+	{
+		FileInputStreamInterface * stream = FileEngine::get()
+			->openInputFile( _pakName, Helper::to_str(_filename) );
+
+		if( stream == 0 )
+		{
+			return NULL;
+		}
+
+		return stream;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	//size_t ResourceImage::getCount() const
+	//{
+	//	return 1;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 }

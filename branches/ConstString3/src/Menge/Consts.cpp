@@ -24,6 +24,7 @@ namespace Menge
 		, c_user("user")
 		, c_WhitePixel("WhitePixel")
 		, c_ResourceSound("ResourceSound")
+		, c_ResourceImageInAtlas("ResourceImageInAtlas")
 		, c_ResourceImageDefault("ResourceImageDefault")
 		, c_ResourceImageDynamic("ResourceImageDynamic")
 		, c_ResourceHotspotImage("ResourceHotspotImage")

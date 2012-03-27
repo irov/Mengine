@@ -62,29 +62,26 @@ namespace Menge
 			{
 				continue;
 			}
-			
-			size_t countFiles = resource->getFilenameCount();
-			for( size_t i = 0; i < countFiles; ++i )
-			{
-				const ConstString & filename = resource->getFileName( i );
+						
+			const ConstString & filename = resource->getFileName();
 
-				if( filename == Consts::get()->c_CreateTexture || 
-					filename == Consts::get()->c_CreateTarget || 
-					RenderEngine::get()->hasTexture( filename ) == true )
-				{
-					continue;
-				}
-		     	
-				TextureJob job;
-				job.filename = filename;
-				job.file = FileEngine::get()->createInputFile(m_category);
-				job.decoder = NULL;
-				job.texture = NULL;
-				job.textureBuffer = NULL;
-				job.textureBufferPitch = 0;
-				
-				m_textureJobs.push_back(job);
+			if( filename == Consts::get()->c_CreateTexture || 
+				filename == Consts::get()->c_CreateTarget || 
+				RenderEngine::get()->hasTexture( filename ) == true )
+			{
+				continue;
 			}
+		     	
+			TextureJob job;
+			job.filename = filename;
+			job.file = FileEngine::get()->createInputFile(m_category);
+			job.decoder = NULL;
+			job.texture = NULL;
+			job.textureBuffer = NULL;
+			job.textureBufferPitch = 0;
+				
+			m_textureJobs.push_back(job);
+			
 		}
 		return true;
 	}
@@ -97,7 +94,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( isCanceled() == true )
+			if( isInterrupt() == true )
 			{
 				return false;
 			}
@@ -144,13 +141,13 @@ namespace Menge
 			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
 
 			job.texture->loadImageData( job.textureBuffer, job.textureBufferPitch, job.decoder );
-			
+
 			job.decoder->destroy();
 			job.decoder = NULL;
-			
+
 			job.file->close();
 			job.file = NULL;
-			
+
 			job.texture->unlock();
 			job.texture = NULL;
 		}
@@ -178,10 +175,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadImageResources::_onJoin()
-	{
-	}	
-	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadImageResources::_onCancel()
 	{
 		for( TVectorResourceImages::iterator 
@@ -198,7 +191,7 @@ namespace Menge
 		pybind::call( m_callbackComplete, "(O)", pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadImageResources::_onError()
+	void TaskLoadImageResources::_onInterrupt()
 	{
 		for( TTextureJobVector::iterator 
 			it = m_textureJobs.begin(), 

@@ -27,15 +27,12 @@ namespace Menge
 		
 	public:	
 		bool isComplete() const;
-		bool isJoin() const;
-		bool isCanceled() const;
+		bool isInterrupt() const;
 
 	public:
 		bool main() override;
-		void join() override;
 		void cancel();
 		void update();
-
 	public:
 		bool onMain();
 	
@@ -43,26 +40,23 @@ namespace Menge
 		bool onRun();
 		void onCancel();
 		void onComplete();
-		void onJoin();
 		void onUpdate();
-		void onError();
+		void onInterrupt();
 	protected:
 		virtual bool _onMain();
 
 	protected:
 		virtual bool _onRun();
 		virtual void _onComplete();
-		virtual void _onJoin();
 		virtual void _onCancel();
 		virtual void _onUpdate();
-		virtual void _onError();
+		virtual void _onInterrupt();
 	public:
 		void addListener( TaskListener * _listener );
 
 	protected:
-		bool m_join;
 		bool m_complete;
-		bool m_cancel;
+		bool m_interrupt;
 		typedef std::vector<TaskListener *> TVectorTaskListener;
 		TVectorTaskListener m_listeners;
 	};

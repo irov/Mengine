@@ -44,29 +44,24 @@ namespace Menge
 
 			return false;
 		}
-		
-		size_t countFiles = m_resource->getFilenameCount();
-			
+					
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
+		
+		const ConstString & filename = m_resource->getFileName();
 
-		for( size_t i = 0; i < countFiles; ++i )
+		if( filename == Consts::get()->c_CreateTexture || 
+			filename == Consts::get()->c_CreateTarget || 
+			RenderEngine::get()->hasTexture( filename ) == true )
 		{
-			const ConstString & filename = m_resource->getFileName( i );
-
-			if( filename == Consts::get()->c_CreateTexture || 
-				filename == Consts::get()->c_CreateTarget || 
-				RenderEngine::get()->hasTexture( filename ) == true )
-			{
-				continue;
-			}
-			
-			TextureJob job;
-			job.filename = filename;
-			job.file = FileEngine::get()->createInputFile(m_category);
-			
-			m_textureJobs.push_back(job);
+			return true;
 		}
-
+			
+		TextureJob job;
+		job.filename = filename;
+		job.file = FileEngine::get()->createInputFile(m_category);
+			
+		m_textureJobs.push_back(job);
+		
 		ResourceManager::get()->lockResource( m_resourceName );
 
 		return true;
@@ -161,7 +156,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadResourceImage::_onJoin()
+	void TaskLoadResourceImage::_onInterrupt()
 	{
 		pybind::call( m_callbackComplete, "(O)", pybind::get_bool(false) );
 	}	

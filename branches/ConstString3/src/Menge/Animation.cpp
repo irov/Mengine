@@ -2,7 +2,9 @@
 
 #	include "ResourceManager.h"
 
-#	include "ResourceSequence.h"
+#	include "ResourceAnimation.h"
+
+#	include "ResourceImage.h"
 
 #	include "BinParser.h"
 
@@ -16,19 +18,18 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
-	: m_resourceSequence(0)
-	, m_timinig(0)
-	, m_currentFrame(0)
-	, m_onEndFrameTick(false)
-	, m_onEndFrameEvent(false)
-	, m_onEndAnimationEvent(false)
-	, m_animationFactor(1.f)
+		: m_resourceAnimation(0)
+		, m_timing(0)
+		, m_currentFrame(0)
+		, m_onEndFrameTick(false)
+		, m_onEndFrameEvent(false)
+		, m_onEndAnimationEvent(false)
+		, m_animationFactor(1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Animation::~Animation()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::loader( BinParser * _parser )
@@ -37,25 +38,26 @@ namespace	Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceSequenceName );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_currentFrame );
+			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setSequenceResource( const ConstString& _resource )
+	void Animation::setAnimationResource( const ConstString& _resource )
 	{
-		if( m_resourceSequenceName == _resource ) 
+		if( m_resourceAnimationName == _resource ) 
 		{
 			return;
 		}
-		
-		m_resourceSequenceName = _resource;
+
+		m_resourceAnimationName = _resource;
 
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Animation::getSequenceResource() const
+	const ConstString & Animation::getAnimationResource() const
 	{
-		return m_resourceSequenceName;
+		return m_resourceAnimationName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationFactor( float _factor )
@@ -70,24 +72,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( float _timing )
 	{
-		Sprite::_update( _timing );
-
 		if( this->isPlay() == false )
 		{
 			return; 
 		}
 
-		size_t frameSize = m_resourceSequence->getSequenceCount();
+		size_t frameSize = m_resourceAnimation->getSequenceCount();
 
-		m_timinig += _timing;
+		m_timing += _timing;
 
-		float delay = m_resourceSequence->getSequenceDelay( m_currentFrame );
+		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 		delay *= m_animationFactor;
 
-		while( m_timinig >= delay )
+		while( m_timing >= delay )
 		{
-			m_timinig -= delay;
-			
+			m_timing -= delay;
+
 			if( m_onEndFrameEvent == true )
 			{
 				this->callEvent( EVENT_FRAME_END, "(OI)", this->getEmbed(), m_currentFrame );
@@ -115,68 +115,71 @@ namespace	Menge
 				}
 			}	
 
-			delay = m_resourceSequence->getSequenceDelay( m_currentFrame );
+			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 			delay *= m_animationFactor;
 		}
 
-		size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
+		this->updateCurrentImageResource_();
+
+		Sprite::_update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()
 	{
-		if( Sprite::_activate() == false )
-		{
-			return false;
-		}
-
-		if( m_resourceSequenceName.empty() == true )
+		if( m_resourceAnimationName.empty() == true )
 		{
 			return false;
 		}
 
 		m_currentFrame = 0;
 
-		if( m_resourceSequence == NULL )
+		if( m_resourceAnimation == NULL )
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' Image resource not getting '%s'"
 				, getName().c_str()
-				, m_resourceSequenceName.c_str() 
+				, m_resourceAnimationName.c_str() 
 				);
 
 			return false;
 		}
 
-		size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
-		this->setImageIndex( currentImageIndex );
-
+		if( this->updateCurrentImageResource_() == false )
+		{
+			return false;
+		}
+			
+		if( Sprite::_activate() == false )
+		{
+			return false;
+		}
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_compile()
 	{
-		if( Sprite::_compile() == false )
-		{
-			return false;
-		}
-
-		if( m_resourceSequenceName.empty() == false )
+		if( m_resourceAnimationName.empty() == false )
 		{	
-			m_resourceSequence = ResourceManager::get()
-				->getResourceT<ResourceSequence>( m_resourceSequenceName );
+			m_resourceAnimation = ResourceManager::get()
+				->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
-			if( m_resourceSequence == 0 )
+			if( m_resourceAnimation == 0 )
 			{
 				MENGE_LOG_ERROR( "Animation: '%s' no found resource with name '%s'"
 					, m_name.c_str()
-					, m_resourceSequenceName.c_str() 
+					, m_resourceAnimationName.c_str() 
 					);
 
 				return false;
 			}
 
 			m_currentFrame = 0;
-			m_timinig = 0.0f;
+			m_timing = 0.0f;
+		}
+
+		if( this->updateCurrentImageResource_() == false )
+		{
+			return false;
 		}
 
 		return true;
@@ -185,11 +188,11 @@ namespace	Menge
 	void Animation::_release()
 	{
 		Sprite::_release();
-				
-		if( m_resourceSequence != 0 )
+
+		if( m_resourceAnimation != 0 )
 		{
-			m_resourceSequence->decrementReference();
-			m_resourceSequence = 0;
+			m_resourceAnimation->decrementReference();
+			m_resourceAnimation = 0;
 		}
 
 		m_play = false;
@@ -205,11 +208,14 @@ namespace	Menge
 
 			return false;
 		}
-
-		//m_currentFrame = 0; 
-		//m_timinig = 0.f;
-
-		this->updateCurrentImageIndex_();
+		
+		m_currentFrame = 0; 
+		m_timing = 0.f;
+	
+		if( this->updateCurrentImageResource_() == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -226,52 +232,69 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( size_t _enumerator )
 	{
-		if( this->isActivate() == false )
-		{
-			MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
-				, getName().c_str()
-				);
+			if( this->isActivate() == false )
+			{
+				MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
+					, getName().c_str()
+					);
 
-			return;
-		}
+				return;
+			}
 
-		m_currentFrame = 0;
-		m_timinig = 0.f;
+			m_currentFrame = 0;
+			m_timing = 0.f;
 
-		this->updateCurrentImageIndex_();
+			if( this->updateCurrentImageResource_() == false )
+			{
+				return;
+			}
 
-		if( m_onEndAnimationEvent == true )
-		{
-			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
-		}
+			if( m_onEndAnimationEvent == true )
+			{
+				this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+			}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_end( size_t _enumerator )
 	{
-		if( this->isActivate() == false )
-		{
-			MENGE_LOG_ERROR( "Animation: '%s' end not activate"
-				, getName().c_str()
-				);
+			if( this->isActivate() == false )
+			{
+				MENGE_LOG_ERROR( "Animation: '%s' end not activate"
+					, getName().c_str()
+					);
 
-			return;
-		}
+				return;
+			}
 
-		m_timinig = 0.f;
-		m_currentFrame = 0;
-		
-		this->updateCurrentImageIndex_();
+			m_timing = 0.f;
+			//m_currentFrame = m_resourceAnimation->getLastFrameIndex();
+			m_currentFrame = 0;
 
-		if( m_onEndAnimationEvent == true )
-		{
-			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
-		}
+			if( this->updateCurrentImageResource_() == false )
+			{
+				return;
+			}
+
+			if( m_onEndAnimationEvent == true )
+			{
+				this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+			}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::updateCurrentImageIndex_()
+	bool Animation::updateCurrentImageResource_()
 	{
-		size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
-		this->setImageIndex( currentImageIndex );
+		//const ConstString& currentResourceName = m_resourceAnimation->getSequenceResourceName( m_currentFrame );
+		//setImageResource( currentResourceName );
+		m_resource = NULL;
+
+		m_resourceName =  m_resourceAnimation->getSequenceResourceName( m_currentFrame );
+
+		if( Sprite::_compile() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setEventListener( PyObject * _listener )
@@ -291,32 +314,32 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animation::getFrameCount() const
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Animation.getFrameCount: '%s' not compiled resource '%s'"
 				, m_name.c_str()
-				, m_resourceSequenceName.c_str()
+				, m_resourceAnimationName.c_str()
 				);
 
 			return 0;
 		}
 
-		return m_resourceSequence->getSequenceCount();
+		return m_resourceAnimation->getSequenceCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Animation::getFrameDelay( size_t  _frame ) const
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Animation.getFrameDelay: '%s' not compiled resource '%s'"
 				, m_name.c_str()
-				, m_resourceSequenceName.c_str()
+				, m_resourceAnimationName.c_str()
 				);
 
 			return 0;
 		}
 
-		return m_resourceSequence->getSequenceDelay( _frame );
+		return m_resourceAnimation->getSequenceDelay( _frame );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setCurrentFrame( size_t _frame )
@@ -330,7 +353,7 @@ namespace	Menge
 			return;
 		}
 
-		size_t sequenceCount = m_resourceSequence->getSequenceCount();
+		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
 		if( _frame >= sequenceCount )	
 		{
@@ -345,7 +368,7 @@ namespace	Menge
 
 		m_currentFrame = _frame;
 
-		this->updateCurrentImageIndex_();
+		this->updateCurrentImageResource_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setTiming( float _timing )
@@ -358,14 +381,14 @@ namespace	Menge
 
 			return;
 		}
-
-		m_timinig = _timing;
-
-		this->updateCurrentImageIndex_();
+				
+		m_timing = _timing;
+		this->updateCurrentImageResource_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Animation::getTiming() const
 	{
-		return m_timinig;
+		return m_timing;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

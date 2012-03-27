@@ -81,7 +81,7 @@ namespace Menge
 		float relation_time = _timing - _layer.in;
 
 		size_t index = size_t(relation_time / m_duration);
-	
+
 		const MovieFrame2D & frame_1 = _layer.frames[index+0];
 		const MovieFrame2D & frame_2 = _layer.frames[index+1];
 
@@ -179,7 +179,7 @@ namespace Menge
 		}
 
 		_frame = _layer.frames.front();
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ namespace Menge
 		}
 
 		_frame = _layer.frames.back();
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ namespace Menge
 		}
 
 		_internal = it_found->second;
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -236,6 +236,11 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Out, ml.out );
 				}
 
+				if( ml.in < 0.0f )
+				{
+					ml.in = 0.0f;
+				}
+
 				BIN_PARSE_METHOD_ARG1( this, &ResourceMovie::loaderMovieLayer2D_, ml );
 			}
 
@@ -260,7 +265,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraInterest, layer.cameraInterest );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraFOV, layer.cameraFOV );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraAspect, layer.cameraAspect );
-					
+
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Width, layer.width );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Height, layer.height );
 				}
@@ -280,6 +285,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml )
 	{
+
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_NODE( Protocol::KeyFrame2D )
@@ -297,8 +303,8 @@ namespace Menge
 					frame.anchorPoint = old_frame.anchorPoint;
 				}
 
-				size_t count = 0;
-				
+				size_t count = 1;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, frame.anchorPoint );
@@ -308,7 +314,8 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Index, count );
 				}
-								
+
+
 				for( size_t i = 0; i != count; ++i )
 				{
 					_ml.frames.push_back(frame);
@@ -359,6 +366,12 @@ namespace Menge
 				->getResourceType( it->source );
 
 			if( resourceType == Consts::get()->c_ResourceImageDefault )
+			{
+				it->internal = false;
+				it->animatable = false;
+				it->movie = false;
+			}
+			else if( resourceType == Consts::get()->c_ResourceImageInAtlas )
 			{
 				it->internal = false;
 				it->animatable = false;
@@ -427,6 +440,12 @@ namespace Menge
 				it->animatable = false;
 				it->movie = false;
 			}
+			else if( resourceType == Consts::get()->c_ResourceImageInAtlas )
+			{
+				it->internal = false;
+				it->animatable = false;
+				it->movie = false;
+			}
 			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
 				it->internal = false;
@@ -474,7 +493,7 @@ namespace Menge
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

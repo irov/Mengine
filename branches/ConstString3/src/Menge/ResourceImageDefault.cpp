@@ -19,78 +19,60 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getMaxSize( size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getMaxSize() const
 	{
-		return m_vectorImageFrames[ _frame ].maxSize;
+		return m_imageFrame.maxSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageDefault::getCount() const
+	const mt::vec2f & ResourceImageDefault::getSize() const
 	{
-		return m_vectorImageFrames.size();
+		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getSize( size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getOffset() const
 	{
-		return m_vectorImageFrames[ _frame ].size;
+		return m_imageFrame.offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getOffset( size_t _frame ) const
+	const mt::vec4f & ResourceImageDefault::getUV() const
 	{
-		return m_vectorImageFrames[ _frame ].offset;
+		return m_imageFrame.uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUV( size_t _frame ) const
+	const mt::vec4f & ResourceImageDefault::getUVImage() const
 	{
-		return m_vectorImageFrames[ _frame ].uv;
+		return m_imageFrame.uv_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUVImage( size_t _frame ) const
+	TextureInterface* ResourceImageDefault::getTexture() const
 	{
-		return m_vectorImageFrames[ _frame ].uv_image;
+		return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* ResourceImageDefault::getTexture( size_t _frame ) const
+	bool ResourceImageDefault::isAlpha() const
 	{
-		return m_vectorImageFrames[ _frame ].texture;
+		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::isAlpha( size_t _frame ) const
+	const ConstString & ResourceImageDefault::getFileName() const
 	{
-		return m_vectorImageFrames[ _frame ].isAlpha;
+		return m_imageDesc.fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDefault::getFileName( size_t _frame ) const
+	const ConstString & ResourceImageDefault::getCodecType() const
 	{
-		return m_vectorImageDescs[ _frame ].fileName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDefault::getCodecType( size_t _frame ) const
-	{
-		return m_vectorImageDescs[ _frame ].codecType;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageDefault::getFilenameCount() const
-	{
-		//неверно, есть еще CreateImage
-		return m_vectorImageDescs.size();
+		return m_imageDesc.codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::isValid() const
 	{
 		const ConstString & category = this->getCategory();
 
-		for( TVectorImageDesc::const_iterator
-			it = m_vectorImageDescs.begin(),
-			it_end = m_vectorImageDescs.end();
-		it != it_end;
-		++it )
-		{
-			bool exist = this->validImageFrame_( category, it->fileName, it->codecType );
+		bool exist = this->validImageFrame_( category, m_imageDesc.fileName, m_imageDesc.codecType );
 
-			if( exist == false )
-			{
-				return false;
-			}
+		if( exist == false )
+		{
+			return false;
 		}
 
 		return true;
@@ -125,7 +107,7 @@ namespace Menge
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
-					
+
 					BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
 					BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
 					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, desc.isCombined );
@@ -136,8 +118,8 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
-					
-					
+
+
 					BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
 					BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
@@ -153,10 +135,7 @@ namespace Menge
 					desc.fileNameAlpha = fileNameAlpha;
 					desc.fileNameRGB = fileNameRGB;
 				}
-				
-				
-				//else
-				//{
+
 				if( fileName.empty() )
 				{				
 					if( ! fileNameRGB.empty() )
@@ -174,161 +153,91 @@ namespace Menge
 				{
 					desc.codecType = s_getImageCodec( fileName );
 				}
-					
-					//desc.isCombined = false;
-				//}
-				if( from >= 0 && to >= 0 )
-				{
-					char* fname = new char[fileName.size() * 2];
-					if( step > 0 )
-					{
-						for( int i = from; i <= to; i += step )
-						{
-							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = ConstString(fname);
-
-							m_vectorImageDescs.push_back( desc );
-						}
-					}
-					else if( step < 0 )
-					{
-						for( int i = from; i >= to; i += step )
-						{
-							sprintf( fname, fileName.c_str(), i );
-
-							desc.fileName = ConstString(fname);
-
-							m_vectorImageDescs.push_back( desc );
-						}
-					}
-					delete[] fname;
-				}
-				else
-				{
-					desc.fileName = fileName;
-					m_vectorImageDescs.push_back( desc );
-				}
+				desc.fileName = fileName;
+				m_imageDesc = desc;
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{	
-		int i = 0;
+		ImageFrame frame;
 
-		for( TVectorImageDesc::iterator
-			it = m_vectorImageDescs.begin(),
-			it_end = m_vectorImageDescs.end();
-		it != it_end;
-		++it)
+		if( m_imageDesc.fileName == Consts::get()->c_CreateImage )
 		{
-			ImageFrame frame;
+			const ConstString & name = getName();
 
-			if( it->fileName == Consts::get()->c_CreateImage )
+			String createImageName = Helper::to_str(name);
+
+			ConstString c_createImageName(createImageName);
+			if( createImageFrame_( frame, c_createImageName, m_imageDesc.size ) == false )
 			{
-				const ConstString & name = getName();
+				return false;
+			}
+		}
+		else
+		{
+			const ConstString & category = this->getCategory();
 
-				String createImageName = Helper::to_str(name) + Utils::toString( i++ );
+			if( m_imageDesc.codecType.empty() == true )
+			{
+				m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
+			}
 
-				ConstString c_createImageName(createImageName);
-				if( createImageFrame_( frame, c_createImageName, it->size ) == false )
+			if( m_imageDesc.isCombined == false )
+			{
+				if( this->loadImageFrame_( frame, category, m_imageDesc.fileName, m_imageDesc.codecType ) == false )
 				{
 					return false;
 				}
 			}
-			//else if( it->fileName == Consts::get()->c_CreateTarget )
-			//{
-			//	const ConstString & name = getName();
-
-			//	if( createRenderTargetFrame_( frame, name, it->size ) == false )
-			//	{
-			//		return false;
-			//	}
-			//}
-			else
+			else 
 			{
-				const ConstString & category = this->getCategory();
-
-				if( it->codecType.empty() == true )
+				if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, m_imageDesc.fileNameRGB, m_imageDesc.fileNameAlpha, m_imageDesc.codecTypeRGB, m_imageDesc.codecTypeAlpha ) == false )
 				{
-					it->codecType = s_getImageCodec( it->fileName );
+					return false;
 				}
-
-				if( it->isCombined == false )
-				{
-					if( this->loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
-					{
-						return false;
-					}
-				}
-				else 
-				{
-					if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, it->fileNameRGB, it->fileNameAlpha, it->codecTypeRGB, it->codecTypeAlpha ) == false )
-					{
-						return false;
-					}
-				}
-				
-				
-			}
-
-			frame.uv = it->uv;
-			frame.uv_image = it->uv;
-			
-			frame.maxSize = it->maxSize;
-			frame.offset =  it->offset;
-
-			float ku = frame.uv.z - frame.uv.x;
-			float kv = frame.uv.w - frame.uv.y;
-			frame.size.x *= ku;
-			frame.size.y *= kv;
-
-			//frame.size.x = ::floorf( frame.size.x + 0.5f );
-			//frame.size.y = ::floorf( frame.size.y + 0.5f );
-			//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
-
-			frame.uv.x *= frame.pow_scale.x;
-			frame.uv.y *= frame.pow_scale.y;
-			frame.uv.z *= frame.pow_scale.x;
-			frame.uv.w *= frame.pow_scale.y;
-
-			if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
-			{
-				frame.maxSize = frame.size;
-			}
-			/*else
-			{
-				frame.size = it->size;
-			}*/
-
-			frame.isAlpha = it->isAlpha;
-			frame.wrapX = it->wrapX;
-			frame.wrapY = it->wrapY;
-
-			m_vectorImageFrames.push_back( frame );
+			}		
 		}
 
-		if( m_vectorImageFrames.empty() == true )
+		frame.uv = m_imageDesc.uv;
+		frame.uv_image = m_imageDesc.uv;
+
+		frame.maxSize = m_imageDesc.maxSize;
+		frame.offset =  m_imageDesc.offset;
+
+		float ku = frame.uv.z - frame.uv.x;
+		float kv = frame.uv.w - frame.uv.y;
+		frame.size.x *= ku;
+		frame.size.y *= kv;
+
+		//frame.size.x = ::floorf( frame.size.x + 0.5f );
+		//frame.size.y = ::floorf( frame.size.y + 0.5f );
+		//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
+
+		frame.uv.x *= frame.pow_scale.x;
+		frame.uv.y *= frame.pow_scale.y;
+		frame.uv.z *= frame.pow_scale.x;
+		frame.uv.w *= frame.pow_scale.y;
+
+		if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
 		{
-			return false;
+			frame.maxSize = frame.size;
 		}
+
+		frame.isAlpha = m_imageDesc.isAlpha;
+		frame.wrapX = m_imageDesc.wrapX;
+		frame.wrapY = m_imageDesc.wrapY;
+
+		m_imageFrame = frame;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::_release()
 	{
-		for( TVectorImageFrame::iterator
-			it = m_vectorImageFrames.begin(),
-			it_end = m_vectorImageFrames.end();
-		it != it_end;
-		++it)
-		{
-			this->releaseImageFrame_( *it );
-		}
-
-		m_vectorImageFrames.clear();
+		this->releaseImageFrame_( m_imageFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::addImagePath( const ConstString& _imagePath, const mt::vec2f & _size )
@@ -346,17 +255,17 @@ namespace Menge
 		desc.isCombined = false;
 		desc.codecType = s_getImageCodec(_imagePath);
 
-		m_vectorImageDescs.push_back( desc );
+		m_imageDesc = desc;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::getWrapX( size_t _frame ) const 
+	bool ResourceImageDefault::getWrapX() const 
 	{
-		return m_vectorImageFrames[ _frame ].wrapX;
+		return m_imageFrame.wrapX;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::getWrapY( size_t _frame ) const 
+	bool ResourceImageDefault::getWrapY() const 
 	{
-		return m_vectorImageFrames[ _frame ].wrapY;
+		return m_imageFrame.wrapY;
 	}
 	/////////////////////////////////////////////////////////////////////////
 }

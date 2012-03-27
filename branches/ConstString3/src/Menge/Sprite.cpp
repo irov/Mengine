@@ -35,17 +35,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 		: m_resource(0)
-		, m_currentImageIndex(0)
-		, m_currentAlphaImageIndex(0)
 		, m_centerAlign(false)
 		, m_flipX(false)
 		, m_flipY(false)
 		, m_percent(0.0f, 0.0f, 0.0f, 0.0f)
-        , m_materialGroup(NULL)
+		, m_materialGroup(NULL)
 		, m_material(NULL)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
-   		, m_flexible(false)  
+		, m_flexible(false)  
 		, m_textureMatrixOffset(0.0f, 0.0f)
 	{ 
 		m_textures[0] = NULL;
@@ -66,7 +64,6 @@ namespace	Menge
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_currentImageIndex );
 			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
 			BIN_CASE_ATTRIBUTE( Protocol::PercentVisibility_Value, m_percent );
 		}
@@ -81,18 +78,6 @@ namespace	Menge
 
 		if( this->compileResource_() == false )
 		{
-			return false;
-		}
-
-		size_t max = m_resource->getCount();
-		if( m_currentImageIndex >= max )
-		{
-			MENGE_LOG_WARNING( "Sprite: %s compile index (%d) >= image count(%d)"
-				, m_name.c_str()
-				, m_currentImageIndex
-				, max
-				);
-
 			return false;
 		}
 
@@ -142,7 +127,7 @@ namespace	Menge
 	void Sprite::_release()
 	{
 		Node::_release();
-	
+
 		if( m_resource != 0 )
 		{
 			m_resource->decrementReference();
@@ -187,33 +172,6 @@ namespace	Menge
 		return m_flipY;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageIndex( size_t _index )
-	{
-		if( m_resource != NULL )
-		{
-			size_t max = m_resource->getCount();
-			if( _index >= max )
-			{
-				MENGE_LOG_WARNING( "Warning: (Sprite::setImageIndex) index (%d) >= image count(%d)"
-					, _index
-					, max
-					);
-
-				return;
-			}
-		}
-
-		m_currentImageIndex = _index;
-
-		invalidateVertices();
-		invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t Sprite::getImageIndex() const
-	{
-		return m_currentImageIndex;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageResource( const ConstString& _name )
 	{
 		if( m_resourceName == _name )
@@ -222,10 +180,10 @@ namespace	Menge
 		}
 
 		m_resourceName = _name;
+		this->recompile();
 
-		m_currentImageIndex = 0; //?? wtf
-
-		recompile();
+		this->invalidateVertices();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& Sprite::getImageResource() const
@@ -240,19 +198,24 @@ namespace	Menge
 			return;
 		}
 
-		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
-		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
+		if(strcmp(m_resourceName.c_str(),"MovieImage_GardenAccess_1.png") == 0)
+		{
+			int x =1;
+		}
+
+		bool wrapX = m_resource->getWrapX();
+		bool wrapY = m_resource->getWrapY();
 
 		if( _invalidateVertices & ESVI_TEXTURE )
 		{
-			m_textures[0] = m_resource->getTexture( m_currentImageIndex );
+			m_textures[0] = m_resource->getTexture();
 		}
 
 		if( _invalidateVertices & ESVI_POSITION && m_flexible == false )
 		{
-			mt::vec2f size = m_resource->getSize( m_currentImageIndex );
-			const mt::vec2f& maxSize = m_resource->getMaxSize( m_currentImageIndex );
-			mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );
+			mt::vec2f size = m_resource->getSize();
+			const mt::vec2f& maxSize = m_resource->getMaxSize();
+			mt::vec2f offset = m_resource->getOffset();
 
 			mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
 				m_percent.z * maxSize.x, m_percent.w * maxSize.y );
@@ -309,7 +272,7 @@ namespace	Menge
 
 			if( _invalidateVertices == ESVI_FULL )
 			{
-				mt::vec4f uv = m_resource->getUV( m_currentImageIndex );
+				mt::vec4f uv = m_resource->getUV();
 
 				float uvX = uv.z - uv.x;
 				float uvY = uv.w - uv.y;
@@ -428,7 +391,7 @@ namespace	Menge
 
 			bool solid = (( argb & 0xFF000000 ) == 0xFF000000 );
 
-			if( m_resource->isAlpha( m_currentImageIndex ) == true || solid == false )
+			if( m_resource->isAlpha() == true || solid == false )
 			{
 				m_materialGroup = RenderEngine::get()
 					->getMaterialGroup( CONST_STRING(BlendSprite) );
@@ -440,8 +403,8 @@ namespace	Menge
 			}
 		}
 
-		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
-		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
+		bool wrapX = m_resource->getWrapX();
+		bool wrapY = m_resource->getWrapY();
 
 		ETextureAddressMode textureU = wrapX ? TAM_WRAP : TAM_CLAMP;
 		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
@@ -451,13 +414,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( Camera2D * _camera )
 	{
+		if(strcmp(m_resourceName.c_str(),"MovieImage_GardenAccess_1.png") == 0)
+		{
+			int x =1;
+		}
 		Node::_render( _camera );
 
 
 		const Vertex2D * vertices = this->getVertices();
 
 		bool scaled = this->isScaled();
-
+		if( m_material == NULL )
+		{
+			recompile();
+		}
 		RenderEngine::get()
 			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, scaled, LPT_QUAD );
 	}
@@ -500,8 +470,7 @@ namespace	Menge
 		}
 
 		const mt::vec2f & size = 
-			m_resource->getMaxSize( m_currentImageIndex );
-		//m_resource->getSize( m_currentImageIndex );
+			m_resource->getMaxSize();
 
 		return size;
 	}
@@ -509,21 +478,6 @@ namespace	Menge
 	bool Sprite::getCenterAlign() const
 	{
 		return m_centerAlign;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t Sprite::getImageCount()
-	{
-		if( this->compileResource_() == false )
-		{
-			MENGE_LOG_ERROR( "Sprite %s: Can't get image count, because resource is NULL '%s'"
-				, getName().c_str()
-				, m_resourceName.c_str() 
-				);
-
-			return 0;
-		}
-
-		return m_resource->getCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setCenterAlign( bool _centerAlign )

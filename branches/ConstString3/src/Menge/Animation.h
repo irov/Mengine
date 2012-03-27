@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class ResourceSequence;
+	class ResourceAnimation;
 
 	class Animation
 		: public Sprite
@@ -17,15 +17,15 @@ namespace Menge
 		~Animation();
 
 	public:
-		void setSequenceResource( const ConstString& _resource );
-		const ConstString& getSequenceResource() const;
+		void setAnimationResource( const ConstString& _resource );
+		const ConstString& getAnimationResource() const;
 
 		void setAnimationFactor( float _factor );
 		float getAnimationFactor() const;
 
 		size_t getFrameCount() const;
 		float getFrameDelay( size_t  _frame ) const;
-		
+
 		void setCurrentFrame( size_t _frame );
 		size_t getCurrentFrame() const;
 
@@ -50,15 +50,15 @@ namespace Menge
 		void _release() override;
 
 		void _setEventListener( PyObject * _listener ) override;
-		
-	protected:
-		void updateCurrentImageIndex_();
 
 	protected:
-		ResourceSequence * m_resourceSequence;
-		ConstString m_resourceSequenceName;
-	
-		float m_timinig;
+		bool updateCurrentImageResource_();
+
+	protected:
+		ResourceAnimation * m_resourceAnimation;
+		ConstString m_resourceAnimationName;
+
+		float m_timing;
 
 		size_t m_currentFrame;
 

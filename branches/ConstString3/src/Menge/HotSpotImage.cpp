@@ -25,7 +25,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::HotSpotImage()
 		: m_resourceHotspotImage( NULL )
-		, m_frame( 0 )
 		, m_alphaTest( 0.f )
 	{
 	}
@@ -41,7 +40,6 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_frame );
 			BIN_CASE_ATTRIBUTE( Protocol::AlphaTest_Value, m_alphaTest );
 		}
 	}
@@ -58,14 +56,14 @@ namespace Menge
 			return false;
 		}
 
-		ConstString resourceHotspotImageName = ConstString(Helper::to_str(m_resourceName) + "_ResourceHotspotImage" + Utils::toString( ( unsigned int )m_frame ));
+		ConstString resourceHotspotImageName = ConstString( Helper::to_str(m_resourceName) + "_ResourceHotspotImage" );
 
 		if( ResourceManager::get()->hasResource( resourceHotspotImageName ) == false )
 		{
 			ResourceHotspotImage * resourceHotspotImage = ResourceManager::get()
 				->createResourceT<ResourceHotspotImage>( Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, resourceHotspotImageName, Consts::get()->c_ResourceHotspotImage );
 
-			resourceHotspotImage->setImageResource( m_resourceName, m_frame );
+			resourceHotspotImage->setImageResource( m_resourceName );
 		}
 
 		m_resourceHotspotImage = ResourceManager::get()
@@ -150,22 +148,22 @@ namespace Menge
 		return m_resourceName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setFrame( size_t _frame )
-	{
-		if( m_frame == _frame )
-		{
-			return;
-		}
-		
-		m_frame = _frame;
+	//void HotSpotImage::setFrame( size_t _frame )
+	//{
+	//	if( m_frame == _frame )
+	//	{
+	//		return;
+	//	}
+	//	
+	//	m_frame = _frame;
 
-		recompile();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t HotSpotImage::getFrame() const
-	{
-		return m_frame;
-	}
+	//	recompile();
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//size_t HotSpotImage::getFrame() const
+	//{
+	//	return m_frame;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )
 	{

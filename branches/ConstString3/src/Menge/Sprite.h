@@ -40,13 +40,9 @@ namespace Menge
 		~Sprite();
 
 	public:
-		void setImageIndex( size_t _index );
-		size_t getImageIndex() const;
 
 		void setImageResource( const ConstString& _name );
 		const ConstString& getImageResource() const;
-
-		size_t getImageCount();
 
 		const mt::vec2f & getImageSize();
 		bool getCenterAlign() const;
@@ -66,7 +62,6 @@ namespace Menge
 
 		void setFlexible( bool _value );
 		bool getFlexible() const;
-		
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -90,18 +85,15 @@ namespace Menge
 
 	protected:
 		bool compileResource_();
-		
+
 	protected:
 		ResourceImage * m_resource;
 		ConstString m_resourceName;	
 
-		size_t m_currentImageIndex;
-		size_t m_currentAlphaImageIndex;
-
 		bool m_centerAlign;
 		bool m_flipX;
 		bool m_flipY;
-		
+
 		bool m_flexible;
 
 		mt::vec4f m_percent;

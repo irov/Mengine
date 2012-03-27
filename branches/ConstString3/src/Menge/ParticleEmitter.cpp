@@ -465,7 +465,7 @@ namespace	Menge
 			}
 
 			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
-			const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
+			const ResourceImage::ImageFrame & frame = image->getImageFrame();
 
 			TextureInterface* texture = frame.texture;
 
@@ -594,7 +594,7 @@ namespace	Menge
 		size_t alphaHeight = 0;
 
 		unsigned char * alphaMap = AlphaChannelManager::get()
-			->getAlphaBuffer( m_emitterImageName, resourceImage, 0, alphaWidth, alphaHeight );
+			->getAlphaBuffer( m_emitterImageName, resourceImage, alphaWidth, alphaHeight );
 
 		if (m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 ) == false)
 		{

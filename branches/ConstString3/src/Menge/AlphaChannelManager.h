@@ -26,11 +26,11 @@ namespace Menge
 	
 	public:
 		unsigned char* createAlphaBuffer( const ConstString& _name, size_t _width, size_t _height );
-		unsigned char* getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, size_t _frame, size_t & _width, size_t & _height );	// increases ref counter
+		unsigned char* getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage,  size_t & _width, size_t & _height );	// increases ref counter
 		void releaseAlphaBuffer( const ConstString& _name );			// decrease ref counter
 
 	protected:
-		bool makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage, size_t _frame );
+		bool makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage );
 
 	protected:
 		struct AlphaBuffer

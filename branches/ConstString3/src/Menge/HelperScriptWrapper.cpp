@@ -593,7 +593,7 @@ namespace Menge
 		//		->addTask( task );
 		//}
 
-		static size_t s_getImageCount( const ConstString & _resourceName )
+		/*static size_t s_getImageCount( const ConstString & _resourceName )
 		{
 			ResourceImage* resImage = ResourceManager::get()
 				->getResourceT<ResourceImage>( _resourceName );
@@ -608,11 +608,11 @@ namespace Menge
 			}
 
 			size_t count = resImage->getCount();
-			
+
 			resImage->decrementReference();
 
 			return count;
-		}
+		}*/
 
 		static void s_setVSync( bool _vSync )
 		{
@@ -706,17 +706,17 @@ namespace Menge
 				}
 
 				PyObject * py_delay = pybind::tuple_getitem( py_element, 0 );
-				PyObject * py_index = pybind::tuple_getitem( py_element, 1 );
+				PyObject * py_resourceName = pybind::tuple_getitem( py_element, 1 );
 
 				AnimationSequence seq;
 				seq.delay = pybind::extract<float>(py_delay);
-				seq.index = pybind::extract<size_t>(py_index);
+				seq.resourceName = pybind::extract<ConstString>(py_resourceName);
 
 				sequence.push_back(seq);
 			}
 
-			ResourceSequence * resource = ResourceManager::get()
-				->createResourceT<ResourceSequence>(Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, _name, Consts::get()->c_ResourceSequence);
+			ResourceAnimation * resource = ResourceManager::get()
+				->createResourceT<ResourceAnimation>(Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, _name, Consts::get()->c_ResourceSequence);
 
 			if( resource == NULL )
 			{
@@ -1004,7 +1004,7 @@ namespace Menge
 		
 
 		//pybind::def_function( "loadPak", &ScriptHelper::s_loadPak );
-		pybind::def_function( "getImageCount", &ScriptHelper::s_getImageCount );
+		//pybind::def_function( "getImageCount", &ScriptHelper::s_getImageCount );
 		pybind::def_function( "setVSync", &ScriptHelper::s_setVSync );
 		pybind::def_function( "getVSync", &ScriptHelper::s_getVSync );
 		pybind::def_function( "setCursorMode", &ScriptHelper::s_setCursorMode );

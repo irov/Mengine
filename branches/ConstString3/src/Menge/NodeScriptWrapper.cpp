@@ -840,82 +840,82 @@ namespace Menge
 		//		->directResourceFileRelease( _category, _group );
 		//}
 
-		static PyObject * createShot( const ConstString& _name, const mt::vec2f & _min,  const mt::vec2f & _max )
-		{
-			mt::vec4f rect( _min, _max );
+		//static PyObject * createShot( const ConstString& _name, const mt::vec2f & _min,  const mt::vec2f & _max )
+		//{
+		//	mt::vec4f rect( _min, _max );
 
-			ResourceImageDynamic * resourceImage 
-				= ResourceManager::get()->getResourceT<ResourceImageDynamic>( _name );
+		//	ResourceImageDynamic * resourceImage 
+		//		= ResourceManager::get()->getResourceT<ResourceImageDynamic>( _name );
 
-			if( resourceImage == NULL )
-			{
-				ConstString group;
+		//	if( resourceImage == NULL )
+		//	{
+		//		ConstString group;
 
-				Account * acc = AccountManager::get()
-					->getCurrentAccount();
+		//		Account * acc = AccountManager::get()
+		//			->getCurrentAccount();
 
-				if( acc != 0 )
-				{
-					group = acc->getFolder();
-				}
+		//		if( acc != 0 )
+		//		{
+		//			group = acc->getFolder();
+		//		}
 
-				resourceImage = ResourceManager::get()
-					->createResourceT<ResourceImageDynamic>( Consts::get()->c_user, group, _name, Consts::get()->c_ResourceImageDynamic );
+		//		resourceImage = ResourceManager::get()
+		//			->createResourceT<ResourceImageDynamic>( Consts::get()->c_user, group, _name, Consts::get()->c_ResourceImageDynamic );
 
-				//FIXME
-				TextureInterface* texture
-					= RenderEngine::get()->createTexture( _name, 
-					::floorf( rect[2] - rect[0] + 0.5f ), 
-					::floorf( rect[3] - rect[1] + 0.5f ), PF_R8G8B8 );
+		//		//FIXME
+		//		TextureInterface* texture
+		//			= RenderEngine::get()->createTexture( _name, 
+		//			::floorf( rect[2] - rect[0] + 0.5f ), 
+		//			::floorf( rect[3] - rect[1] + 0.5f ), PF_R8G8B8 );
 
-				resourceImage->setRenderImage( texture );
-			}
+		//		resourceImage->setRenderImage( texture );
+		//	}
 
-			TextureInterface* image = resourceImage->getTexture( 0 );
+		//	TextureInterface* image = resourceImage->getTexture( 0 );
 
-			//Holder<Application>::get()->update( 0.0f );
-			Game::get()->tick(0.0f);
+		//	//Holder<Application>::get()->update( 0.0f );
+		//	Game::get()->tick(0.0f);
 
-			RenderEngine::get()->beginScene();
+		//	RenderEngine::get()->beginScene();
 
-			Game::get()->render();
+		//	Game::get()->render();
 
-			RenderEngine::get()->endScene();
+		//	RenderEngine::get()->endScene();
 
-			Application::get()->screenshot( image, mt::vec4f( _min.x, _min.y, _max.x, _max.y) );
+		//	Application::get()->screenshot( image, mt::vec4f( _min.x, _min.y, _max.x, _max.y) );
 
 
-			//image->writeToFile( "bl.bmp" );
+		//	//image->writeToFile( "bl.bmp" );
 
-			ConstString name("shotSprite");
+		//	ConstString name("shotSprite");
 
-			Sprite * node = NodeManager::get()
-				->createNodeT<Sprite>( name, Consts::get()->c_Sprite, Consts::get()->c_builtin_empty );
+		//	Sprite * node = NodeManager::get()
+		//		->createNodeT<Sprite>( name, Consts::get()->c_Sprite, Consts::get()->c_builtin_empty );
 
-			if( node == 0 )
-			{
-				return pybind::ret_none();
-			}
+		//	if( node == 0 )
+		//	{
+		//		return pybind::ret_none();
+		//	}
 
-			node->setImageResource( _name );
+		//	node->setImageResource( _name );
 
-			node->enable();
+		//	node->enable();
 
-			Game::get()
-				->addHomeless( node );
+		//	Game::get()
+		//		->addHomeless( node );
 
-			PyObject * py_embedding = node->getEmbed();
+		//	PyObject * py_embedding = node->getEmbed();
 
-			if( py_embedding == 0 )
-			{
-				node->destroy();
-				return pybind::ret_none();
-			}
+		//	if( py_embedding == 0 )
+		//	{
+		//		node->destroy();
+		//		return pybind::ret_none();
+		//	}
 
-			pybind::incref( py_embedding );
+		//	pybind::incref( py_embedding );
 
-			return py_embedding;		
-		}
+		//	return py_embedding;		
+		//}
 
 		static void setFullscreenMode( bool _fullscreen )
 		{
@@ -935,7 +935,7 @@ namespace Menge
 			RenderEngine::get()->swapBuffers();
 		}
 
-		static void writeImageToFile( const ConstString& _resource, int _frame, const String& _filename )
+		static void writeImageToFile( const ConstString& _resource, const String& _filename )
 		{
 			ResourceImage * resource = ResourceManager::get()
 				->getResourceT<ResourceImage>( _resource );
@@ -949,7 +949,7 @@ namespace Menge
 				return;
 			}
 
-			TextureInterface * img = resource->getTexture( _frame );
+			TextureInterface * img = resource->getTexture();
 
 			RenderEngine::get()
 				->saveImage( img, Consts::get()->c_user, _filename );
@@ -3172,16 +3172,16 @@ namespace Menge
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
 					.def( "setImageResource", &HotSpotImage::setImageResource )
 					.def( "getImageResource", &HotSpotImage::getImageResource )
-					.def( "setFrame", &HotSpotImage::setFrame )
-					.def( "getFrame", &HotSpotImage::getFrame )
+					//.def( "setFrame", &HotSpotImage::setFrame )
+					//.def( "getFrame", &HotSpotImage::getFrame )
 					.def( "setAlphaTest", &HotSpotImage::setAlphaTest )
 					.def( "getAlphaTest", &HotSpotImage::getAlphaTest )
 					;
 				
 				pybind::proxy_<Sprite, pybind::bases<Node> >("Sprite", false)
-					.def( "setImageIndex", &Sprite::setImageIndex )
-					.def( "getImageIndex", &Sprite::getImageIndex )
-					.def( "getImageCount", &Sprite::getImageCount )
+					//.def( "setImageIndex", &Sprite::setImageIndex )
+					//.def( "getImageIndex", &Sprite::getImageIndex )
+					//.def( "getImageCount", &Sprite::getImageCount )
 					.def( "setImageResource", &Sprite::setImageResource )
 					.def( "getImageResource", &Sprite::getImageResource )
 					.def( "getImageSize", &Sprite::getImageSize )
@@ -3204,8 +3204,8 @@ namespace Menge
 					;
 				{
 					pybind::proxy_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
-						.def( "setAnimationResource", &Animation::setSequenceResource )
-						.def( "getAnimationResource", &Animation::getSequenceResource )
+						.def( "setAnimationResource", &Animation::setAnimationResource )
+						.def( "getAnimationResource", &Animation::getAnimationResource )
 						.def( "setAnimationFactor", &Animation::setAnimationFactor )
 						.def( "getAnimationFactor", &Animation::getAnimationFactor )
 						.def( "getFrameCount", &Animation::getFrameCount )
@@ -3366,7 +3366,7 @@ namespace Menge
 			pybind::def_function( "loadImageResources", &ScriptMethod::s_loadImageResources );
 
 			pybind::def_function( "quitApplication", &ScriptMethod::quitApplication );
-			pybind::def_function( "createShot", &ScriptMethod::createShot );
+			//pybind::def_function( "createShot", &ScriptMethod::createShot );
 			pybind::def_function( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
 			pybind::def_function( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
 			pybind::def_function( "renderOneFrame", &ScriptMethod::renderOneFrame );

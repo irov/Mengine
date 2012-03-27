@@ -1,18 +1,11 @@
 #	include "ResourceImageAtlas.h"
-
 #	include "ResourceImplement.h"
-
 #	include "BinParser.h"
-
-//#	include <FreeImage.h>
-
-#	include <sstream>
-
-#	include "Utils/Core/PixelFormat.h"
-
-//#	include "ImageCodec.h"
-
+#	include "Utils/Core/Rect.h"
 #	include "RenderEngine.h"
+#	include "Texture.h"
+#	include "LogEngine.h"
+#	include "Interface/ImageCodecInterface.h"
 
 namespace Menge
 {
@@ -20,127 +13,29 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceImageAtlas );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageAtlas::ResourceImageAtlas()
+		: m_texture(NULL)
+		, m_size(0.f,0.f)
+		, m_pixelFormat(PF_A8R8G8B8)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getMaxSize( size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].maxSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageAtlas::getCount() const
-	{
-		return m_vectorImageFrames.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageAtlas::getFileName( size_t _frame ) const
-	{
-		return m_vectorImageDescs[ _frame ].fileName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageAtlas::getCodecType( size_t _frame ) const
-	{
-		return m_vectorImageDescs[ _frame ].codecType;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageAtlas::getFilenameCount() const
-	{
-		//õç
-		return m_vectorImageDescs.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getSize( size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getOffset( size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageAtlas::getUV( size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageAtlas::getUVImage( size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].uv_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* ResourceImageAtlas::getTexture( size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageAtlas::isAlpha( size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageAtlas::loader( BinParser * _parser )
 	{
-		ResourceImage::loader( _parser );
+		ResourceReference::loader( _parser );
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE( Protocol::File )
-			{
-				ImageDesc desc;
-				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-				desc.offset = mt::vec2f(0.f,0.f);
-				desc.maxSize = mt::vec2f(-1.f,-1.f);
-				desc.size = mt::vec2f(-1.f,-1.f);
-				desc.isAlpha = true; //
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::File_Path, desc.fileName );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
-					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
-					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
-				}
-
-				if( desc.codecType.empty() == true )
-				{
-					desc.codecType = s_getImageCodec( desc.fileName );
-				}
-
-				m_vectorImageDescs.push_back( desc );
-			}
+			BIN_CASE_ATTRIBUTE( Protocol::Size_Value, m_size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageAtlas::_compile()
 	{	
-		for( TVectorImageDesc::iterator
-			it = m_vectorImageDescs.begin(),
-			it_end = m_vectorImageDescs.end();
-		it != it_end;
-		++it)
+		m_texture = RenderEngine::get()->createTexture(m_name, m_size.x, m_size.y, m_pixelFormat );
+		if( m_texture == NULL )
 		{
-			const ConstString & category = this->getCategory();
-
-			ImageFrame frame;
-			
-			if( this->loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
-			{
-				return false;
-			}
-
-			frame.uv = it->uv;
-			frame.uv_image = it->uv;
-
-			frame.maxSize = it->maxSize;
-			frame.offset =  it->offset;
-			frame.size = it->size;
-			frame.isAlpha = it->isAlpha;
-
-			m_vectorImageFrames.push_back( frame );
+			MENGE_LOG_ERROR("Texture::ResourceImageAtlas: Invalid create texture");
+			return false;
 		}
 
 		return true;
@@ -148,15 +43,70 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageAtlas::_release()
 	{
-		for( TVectorImageFrame::iterator
-			it = m_vectorImageFrames.begin(),
-			it_end = m_vectorImageFrames.end();
-		it != it_end;
-		++it)
+		RenderEngine::get()
+			->releaseTexture(m_texture);
+
+		m_texture = NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TextureInterface* ResourceImageAtlas::getTexture() const 
+	{
+		return m_texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageAtlas::_getRectForUV( Rect& _destRect, const mt::vec4f & _uv )
+	{
+		//float uvX = uv.z - uv.x;
+		//float uvY = uv.w - uv.y;
+		_destRect.left =  _uv.x * m_size.x;
+		_destRect.top =  _uv.y * m_size.y;
+		_destRect.right = _uv.z * m_size.x;
+		_destRect.bottom = _uv.w * m_size.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageAtlas::loadFrame( ImageDecoderInterface * _imageDecoder, ResourceImage::ImageFrame & _frame )
+	{
+		Rect rect;
+		int pitch;
+
+		_getRectForUV( rect, _frame.uv );
+		int width = rect.getWidth();
+		int height = rect.getHeight();
+
+		unsigned char* buffer = m_texture->lockRect( &pitch, rect, false );
+		if( buffer == NULL )
 		{
-			this->releaseImageFrame_( *it );
+			return false;
 		}
 
-		m_vectorImageFrames.clear();
+		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
+
+		ImageCodecOptions options;
+
+		options.flags |= DF_COUNT_ALPHA;
+
+		if( pitch != width )
+		{
+			options.pitch = pitch;
+			options.flags |= DF_CUSTOM_PITCH;
+		}		
+
+		_imageDecoder->setOptions( &options );
+
+		unsigned int bufferSize = pitch * height;
+		_imageDecoder->decode( buffer, bufferSize );
+
+		m_texture->unlock();
+
+		_frame.texture = m_texture;
+		_frame.size.x = width;
+		_frame.size.y = height;
+		_frame.maxSize = _frame.size;
+		_frame.uv_image = _frame.uv;
+		_frame.pow_scale = mt::vec2f( 1.0f, 1.0f );
+		_frame.isAlpha = true;
+
+		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

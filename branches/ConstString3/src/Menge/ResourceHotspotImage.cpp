@@ -35,7 +35,6 @@ namespace Menge
 		, m_resourceImageHeight(0)
 		, m_offset(0.f, 0.f)
 		, m_size(0.f, 0.f)
-		, m_frame(0)
 	{
 
 	}
@@ -70,10 +69,10 @@ namespace Menge
 			return false;
 		}
 
-		m_offset = m_resourceImage->getOffset( m_frame );
-		m_size = m_resourceImage->getMaxSize( m_frame );
-		const mt::vec4f& uv = m_resourceImage->getUVImage( m_frame );
-		const mt::vec2f& size = m_resourceImage->getSize( m_frame );
+		m_offset = m_resourceImage->getOffset();
+		m_size = m_resourceImage->getMaxSize();
+		const mt::vec4f& uv = m_resourceImage->getUVImage();
+		const mt::vec2f& size = m_resourceImage->getSize();
 		//m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
 		//m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
 
@@ -83,7 +82,7 @@ namespace Menge
 		size_t alphaWidth = 0;
 		size_t alphaHeight = 0;
 		m_alphaMap = AlphaChannelManager::get()
-			->getAlphaBuffer( m_resourceImageName, m_resourceImage, m_frame, alphaWidth, alphaHeight );
+			->getAlphaBuffer( m_resourceImageName, m_resourceImage, alphaWidth, alphaHeight );
 		
 		if( m_alphaMap == NULL )
 		{
@@ -116,10 +115,9 @@ namespace Menge
 		m_alphaMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHotspotImage::setImageResource( const ConstString& _resourceName, size_t _frame )
+	void ResourceHotspotImage::setImageResource( const ConstString& _resourceName )
 	{
 		m_resourceImageName = _resourceName;
-		m_frame = _frame;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHotspotImage::testPoint( const mt::vec2f& _point, float _minAlpha /*= 0.0f */ ) const

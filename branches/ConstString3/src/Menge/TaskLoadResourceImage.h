@@ -24,7 +24,7 @@ namespace Menge
 		bool _onRun() override;
 		bool _onMain() override;
 		void _onComplete() override;
-		void _onJoin() override;
+		void _onInterrupt() override;
 		void _onCancel() override;
 	protected:
 		ConstString m_category;

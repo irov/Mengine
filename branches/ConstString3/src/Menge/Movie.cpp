@@ -31,7 +31,7 @@ namespace Menge
 	{
 		//////////////////////////////////////////////////////////////////////////
 		static void s_applyFrame2D( Node * _node, const MovieFrame2D & _frame )
-		{
+		{	
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
@@ -119,7 +119,7 @@ namespace Menge
 		{
 			return false;
 		}
-		
+
 		if( m_reverse == true )
 		{
 			m_timing = m_out;
@@ -130,9 +130,9 @@ namespace Menge
 			m_timing = 0.f;
 			this->setFirstFrame();
 		}
-		
+
 		this->updateParent_();
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -252,7 +252,7 @@ namespace Menge
 
 			return;
 		}
-				
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -338,7 +338,7 @@ namespace Menge
 
 			return;
 		}
-		
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -464,7 +464,7 @@ namespace Menge
 
 			return NULL;
 		}
-		
+
 		return scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -504,13 +504,14 @@ namespace Menge
 			const ConstString & resourceType = ResourceManager::get()
 				->getResourceType( layer.source );
 
-			if( resourceType == Consts::get()->c_ResourceImageDefault )
+			if( resourceType == Consts::get()->c_ResourceImageDefault
+				|| resourceType == Consts::get()->c_ResourceImageInAtlas )
 			{
 				Sprite * layer_sprite = NodeManager::get()
 					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
 
 				layer_sprite->setImageResource( layer.source );
-								
+
 				//layer_sprite->disable();
 
 				if( layer_sprite->compile() == false )
@@ -546,11 +547,7 @@ namespace Menge
 					return false;
 				}
 
-				const ConstString & resourceImageName = resourceAnimation->getResourceImageName();
-				const ConstString & resourceSequenceName = resourceAnimation->getResourceSequenceName();
-
-				layer_animation->setImageResource( resourceImageName );
-				layer_animation->setSequenceResource( resourceSequenceName );
+				layer_animation->setAnimationResource( layer.source );
 
 				layer_animation->setLoop( true );				
 				//layer_animation->disable();
@@ -603,7 +600,7 @@ namespace Menge
 				{
 					return false;
 				}				
-				
+
 				Node * layer_node = dynamic_cast<Node*>(scriptable);
 
 				if( layer_node == 0 )
@@ -674,12 +671,12 @@ namespace Menge
 					->createNodeT<ParticleEmitter>( layer.name, Consts::get()->c_ParticleEmitter, Consts::get()->c_Image );
 
 				layer_particles->setResource( layer.source );
-				
+
 				layer_particles->setLoop( true );				
 				//layer_movie->disable();
-				
+
 				//layer_particles->setEmitterRelative(true);
-				
+
 				if( layer_particles->compile() == false )
 				{
 					MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
@@ -716,7 +713,7 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer3D & layer = *it;
-			
+
 			if( layer.internal == false )
 			{
 				Sprite * layer_sprite = NodeManager::get()
@@ -769,7 +766,7 @@ namespace Menge
 			else
 			{
 				Scriptable * scriptable = this->findInternalObject_( layer.source, EVENT_MOVIE_FIND_INTERNAL_SPRITE );
-				
+
 				if( scriptable == NULL )
 				{
 					return false;
@@ -798,6 +795,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateParent_()
 	{
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator 
@@ -925,7 +927,7 @@ namespace Menge
 			{
 				continue;
 			}
-			
+
 			TMapNode::const_iterator it_node = m_nodies.find( layer.index );
 
 			if( it_node == m_nodies.end() )
@@ -981,7 +983,7 @@ namespace Menge
 
 			sprite->destroy();
 		}
-		
+
 		m_nodies.clear();
 
 		if( m_resourceMovie != 0 )
@@ -1071,7 +1073,7 @@ namespace Menge
 			m_timing += _timing * m_speedFactor;
 
 		}
-							
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -1128,7 +1130,7 @@ namespace Menge
 					}
 				}
 			}
-			
+
 			if( layerOut < lastTiming )
 			{
 				continue;
@@ -1188,7 +1190,7 @@ namespace Menge
 
 			float layerIn = layer.in;
 			float layerOut = layer.out;
-			
+
 			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
 
 			if( it_index == m_flexSprites.end() )

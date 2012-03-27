@@ -1,20 +1,21 @@
 #	pragma once
 
 #	include "ResourceImage.h"
-
 #	include "Config/Typedef.h"
 
 #	include <vector>
 
 namespace Menge
 {
-	class ResourceImageDefault
+	class ResourceImageAtlas;
+
+	class ResourceImageInAtlas
 		: public ResourceImage
 	{
-		RESOURCE_DECLARE( ResourceImageDefault )
+		RESOURCE_DECLARE( ResourceImageInAtlas )
 
 	public:
-		ResourceImageDefault();
+		ResourceImageInAtlas();
 
 	public:
 		const mt::vec2f & getMaxSize() const override;
@@ -26,20 +27,19 @@ namespace Menge
 		bool isAlpha() const override;
 		bool getWrapX() const override;
 		bool getWrapY() const override;
-		
-		TextureInterface * getTexture() const override;
 
+		TextureInterface * getTexture() const override;
 		void addImagePath( const ConstString& _imagePath, const mt::vec2f & _size );
 
 		const ConstString & getFileName() const override;
 		const ConstString & getCodecType() const override;
-
+		
 	public:
 		inline const ResourceImage::ImageFrame & getImageFrame() const;
 
 	protected:
 		bool isValid() const override;
-
+				
 	protected:
 		void loader( BinParser * _parser ) override;
 
@@ -49,7 +49,7 @@ namespace Menge
         		
 	protected:
 		ResourceImage::ImageFrame m_imageFrame;
-	
+	private:
 		struct ImageDesc
 		{
 			ConstString fileName;
@@ -67,10 +67,13 @@ namespace Menge
 			bool wrapX;
 			bool wrapY;
 		};
+
+		ResourceImageAtlas * m_resourceAtlas;
+		ConstString m_resourceAtlasName;
 		ImageDesc m_imageDesc;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const ResourceImage::ImageFrame & ResourceImageDefault::getImageFrame( ) const
+	inline const ResourceImage::ImageFrame & ResourceImageInAtlas::getImageFrame( ) const
 	{
 		return m_imageFrame;
 	}

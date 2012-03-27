@@ -61,13 +61,13 @@ namespace Menge
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char * AlphaChannelManager::getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, size_t _frame, size_t & _width, size_t & _height )
+	unsigned char* AlphaChannelManager::getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, size_t & _width, size_t & _height )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		
 		if( it_find == m_bufferMap.end() )
 		{
-			if( this->makeAlphaBuffer_( _name, _resourceImage, _frame) == false )
+			if( this->makeAlphaBuffer_( _name, _resourceImage ) == false )
 			{
 				return 0;
 			}
@@ -84,17 +84,17 @@ namespace Menge
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage, size_t _frame )
+	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage )
 	{
-		const mt::vec2f & offset = _resourceImage->getOffset( _frame );
-		const mt::vec2f & size = _resourceImage->getSize( _frame );
+		const mt::vec2f & offset = _resourceImage->getOffset();
+		const mt::vec2f & size = _resourceImage->getSize();
 
 		size_t width = (size_t)size.x;
 		size_t height = (size_t)size.y;
 
-		const ConstString & alphaBufferName = _resourceImage->getFileName( _frame );
-		const ConstString & alphaBufferCodec = _resourceImage->getCodecType( _frame );
-		bool isAlpha = _resourceImage->isAlpha( _frame );
+		const ConstString & alphaBufferName = _resourceImage->getFileName();
+		const ConstString & alphaBufferCodec = _resourceImage->getCodecType();
+		bool isAlpha = _resourceImage->isAlpha();
 
 		const ConstString& category = _resourceImage->getCategory();
 

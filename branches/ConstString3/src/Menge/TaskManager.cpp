@@ -113,19 +113,17 @@ namespace Menge
 			}
 
 			m_threadSystem->joinThread( threadIdentity );
-			
-			if( _task->isComplete() == true )
+					
+			if( _task->isInterrupt() == true )
+			{
+				_task->onInterrupt();
+			}
+			else if( _task->isComplete() == true )
 			{
 				_task->onComplete();
 			}
-
-			if( _task->isJoin() == true )
-			{
-				_task->onJoin();
-			}
-
+						
 			m_tasks.erase( it_add_find );
-			
 			return;
 		}
 
@@ -192,7 +190,7 @@ namespace Menge
 					return false;
 				}
 
-				if( task->isJoin() == true )
+				if( task->isInterrupt() == true )
 				{
 					return false;
 				}
@@ -230,14 +228,14 @@ namespace Menge
 
 			Task * task = taskThread.task;
 
-			if( task->isComplete() == true )
+			if( task->isInterrupt() == true )
 			{
-				task->onComplete();
+				task->onInterrupt();
 			}
 
-			if( task->isJoin() == true )
+			else if( task->isComplete() == true )
 			{
-				task->onJoin();
+				task->onComplete();
 			}
 		}
 

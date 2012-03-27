@@ -109,7 +109,7 @@ namespace Menge
 		{
 			Helper::s_linerp_v3( _frame.vertices[it].pos, frame_1.vertices[it].pos, frame_2.vertices[it].pos, timeScale );
 			Helper::s_linerp_v2( _frame.vertices[it].uv, frame_1.vertices[it].uv, frame_2.vertices[it].uv, timeScale );
-			
+
 			_frame.vertices[it].color = frame_1.vertices[it].color;
 		}
 
@@ -158,7 +158,7 @@ namespace Menge
 			{
 				_animationMesh.frameMeshes.push_back( AnimationMesh::FrameMesh() );
 				AnimationMesh::FrameMesh & frameMesh = _animationMesh.frameMeshes.back();
-			
+
 				BIN_PARSE_METHOD_ARG1( this, &ResourceModel::loaderVertices_, frameMesh.vertices );
 			}
 		}
@@ -230,7 +230,7 @@ namespace Menge
 				return false;
 			}
 
-			mesh.texture = mesh.resourceImage->getTexture( 0 );
+			mesh.texture = mesh.resourceImage->getTexture();
 
 			if( mesh.texture == 0 )
 			{
@@ -278,7 +278,7 @@ namespace Menge
 		++it )
 		{
 			AnimationMesh & mesh = *it;
-	
+
 			mesh.resourceImage->decrementReference();
 		}
 	}

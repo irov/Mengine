@@ -31,7 +31,7 @@ namespace Menge
 		void _release() override;
 
 	public:
-		void setImageResource( const ConstString& _resourceName, size_t _frame );
+		void setImageResource( const ConstString& _resourceName );
 		bool testPoint( const mt::vec2f& _point, float _minAlpha ) const;
 		const mt::vec2f& getSize() const;
 
@@ -39,7 +39,6 @@ namespace Menge
 		ConstString m_resourceImageName;
 		ResourceImage * m_resourceImage;
 
-		size_t m_frame;
 		unsigned char* m_alphaMap;
 		size_t m_resourceImageWidth;
 		size_t m_resourceImageHeight;

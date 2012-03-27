@@ -538,16 +538,21 @@ ADD_FILTER(
 Resource\\\\Image
 	ResourceImage.cpp
 	ResourceImage.h
-	ResourceImageAtlas.cpp
-	ResourceImageAtlas.h
-	ResourceImageCell.cpp
-	ResourceImageCell.h
 	ResourceImageDefault.cpp
 	ResourceImageDefault.h
-	ResourceImageDynamic.cpp
-	ResourceImageDynamic.h
-	ResourceImageSet.cpp
-	ResourceImageSet.h
+	ResourceImageAtlas.cpp
+	ResourceImageAtlas.h
+	ResourceImageInAtlas.cpp
+	ResourceImageInAtlas.h
+	ResourceImageCombineRGBAndAlpha.cpp
+	ResourceImageCombineRGBAndAlpha.h
+	
+	#ResourceImageCell.cpp
+	#ResourceImageCell.h
+	#ResourceImageDynamic.cpp
+	#ResourceImageDynamic.h
+	#ResourceImageSet.cpp
+	#ResourceImageSet.h
 )
 
 ADD_FILTER(

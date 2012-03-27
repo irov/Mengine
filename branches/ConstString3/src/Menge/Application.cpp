@@ -85,17 +85,21 @@
 #	include "PhysicalBody2D.h"
 #	include "Layer2DPhysic.h"
 // All Resource type
-#	include "ResourceSequence.h"
+//#	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceFont.h"
 #	include "ResourceGlyph.h"
 #	include "ResourceTilePolygon.h"
-#	include "ResourceImageAtlas.h"
-#	include "ResourceImageCell.h"
+
+//#	include "ResourceImageAtlas.h"
+//#	include "ResourceImageCell.h"
+//#	include "ResourceImageDynamic.h"
+//#	include "ResourceImageSet.h"
+
 #	include "ResourceImageDefault.h"
-#	include "ResourceImageDynamic.h"
-#	include "ResourceImageSet.h"
+#	include "ResourceImageInAtlas.h"
+#	include "ResourceImageAtlas.h"
 #	include "ResourceBinary.h"
 #	include "ResourceMovie.h"
 #	include "ResourceVideo.h"
@@ -196,7 +200,7 @@ namespace Menge
 		, m_nodeManager(0)
 		, m_debugCRT(false)
 		, m_inputMouseButtonEventBlock(false)
-		, m_countThreads(1)
+		, m_countThreads(2)
 		, m_mouseEnter(false)
 	{
 	}
@@ -656,22 +660,25 @@ namespace Menge
 		m_resourceManager->registerFactory( c_##Type, Helper::createFactoryDefault<Type>() );\
 	} while(false)
 
-
 		MENGE_LOG_INFO( "Creating Resource Factory..." );
-		RESOURCE_FACTORY( ResourceSequence );
 		RESOURCE_FACTORY( ResourceAnimation );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
 		RESOURCE_FACTORY( ResourceBinary );
-		RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceTilePolygon );
-		RESOURCE_FACTORY( ResourceImageCell );
+		
+		//RESOURCE_FACTORY( ResourceSequence );
+		//RESOURCE_FACTORY( ResourceImageAtlas );
+		//RESOURCE_FACTORY( ResourceImageCell );
+		//RESOURCE_FACTORY( ResourceImageDynamic );
+		//RESOURCE_FACTORY( ResourceImageSet );
+		//RESOURCE_FACTORY( ResourceMesh );
+
 		RESOURCE_FACTORY( ResourceImageDefault );
-		RESOURCE_FACTORY( ResourceImageDynamic );
-		RESOURCE_FACTORY( ResourceImageSet );
+		RESOURCE_FACTORY( ResourceImageInAtlas );
+		RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceMovie );
 		RESOURCE_FACTORY( ResourceVideo );
-		//RESOURCE_FACTORY( ResourceMesh );
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
 		RESOURCE_FACTORY( ResourceGlyph );

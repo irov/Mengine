@@ -86,7 +86,7 @@ namespace Menge
 			double duration = Magic_GetInterval2( _emitter );
 			double timing = Magic_GetUpdateTime( _emitter );
 
-			double curTime = 0.0f;
+			double curTime = Magic_GetInterval1( _emitter );
 			unsigned int height = 0;
 			unsigned int width = 0;
 
@@ -105,7 +105,7 @@ namespace Menge
 				box.maximum.x = std::max( box.maximum.x, magic_box.corner2.x );
 				box.maximum.y = std::max( box.maximum.y, magic_box.corner2.y );
 				
-				curTime+=200;
+				curTime+=100;
 			}
 
 			Magic_Restart( _emitter );
@@ -329,13 +329,14 @@ namespace Menge
 		double currentTime = Magic_GetPosition( m_id );
 		double delta = currentTime - m_total_rate;
 		delta = _time;
-				
+		restart();
+		/*	
 		if( delta <= 0)
 		{
 			restart();
 			delta = _time;
 		}
-		
+		*/
 		while( delta >= rate )
 		{
 			delta -= rate;

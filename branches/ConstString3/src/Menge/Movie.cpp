@@ -678,7 +678,7 @@ namespace Menge
 				layer_particles->setLoop( true );				
 				//layer_movie->disable();
 				
-				layer_particles->setEmitterRelative(true);
+				//layer_particles->setEmitterRelative(true);
 				
 				if( layer_particles->compile() == false )
 				{

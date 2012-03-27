@@ -186,14 +186,22 @@ namespace Menge
 		String data(_data);
 		int posOpen = data.find_first_of('[');
 		int posClose = data.find_first_of(']');
+		
 		if( posOpen == String::npos || posClose == String::npos )
 		{
 			return;
 		}
 
 		String values = data.substr( posOpen + 1, posClose - posOpen - 1 );
+		Utils::trim(values);
+
 		TVectorString keysAndValues; 
 		Utils::split(keysAndValues, values, false, ";");
+		if( keysAndValues.empty() == true )
+		{
+			keysAndValues.push_back(values);
+		}
+		
 		for(TVectorString::iterator 
 			it = keysAndValues.begin()
 			, it_end = keysAndValues.end();
@@ -207,9 +215,11 @@ namespace Menge
 			{
 				return;
 			}
-
+			
 			String key = keyValue.at(0);
 			String val = keyValue.at(1);
+			Utils::trim(key);
+			Utils::trim(val);
 			if( key.compare("Size") == 0 )
 			{
 				TVectorString widthHeight;
@@ -221,6 +231,8 @@ namespace Menge
 
 				String width = widthHeight.at(0);
 				String height = widthHeight.at(1);
+				Utils::trim(width);
+				Utils::trim(height);
 				m_metaData.size.x = (float) atof(width.c_str());
 				m_metaData.size.y = (float) atof(height.c_str());
 			}

@@ -77,14 +77,12 @@ namespace Menge
 			//if folder
 			else
 			{
-				if( _container->isMetaData(magicName) )
+				if( _container->isMetaData(magicName) == true )
 				{	
 					_container->setMetaData( magicName );
 				}
-				else
-				{
-					loadEmittersFolder( magicName, _file, _container );
-				}
+				
+				loadEmittersFolder( magicName, _file, _container );
 			}
 		
 			magicName = Magic_FindNext( _file, &find );

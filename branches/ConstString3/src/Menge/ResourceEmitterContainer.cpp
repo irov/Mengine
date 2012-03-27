@@ -20,6 +20,7 @@ namespace Menge
 		: m_container(0)
 		, m_emitterStartPosition(0.f)
 		, m_emitterPositionOffset(0.f,0.f)
+		, m_emitterRelative(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -54,6 +55,7 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Emitter_Name, &ResourceEmitterContainer::setEmitterName );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::StartPosition_Value, &ResourceEmitterContainer::setEmitterStartPosition );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PositionOffset_Value, &ResourceEmitterContainer::setEmitterPositionOffset );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::EmitterRelative_Value,  &ResourceEmitterContainer::setEmitterRelative );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -175,6 +177,16 @@ namespace Menge
 	const mt::vec2f& ResourceEmitterContainer::getEmitterPositionOffset() const
 	{
 		return m_emitterPositionOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::setEmitterRelative( bool _relative )
+	{
+		m_emitterRelative = _relative;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceEmitterContainer::getEmitterRelative() const
+	{
+		return m_emitterRelative;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

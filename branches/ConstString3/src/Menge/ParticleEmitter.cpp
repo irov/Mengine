@@ -135,8 +135,9 @@ namespace	Menge
 		if( m_emitterName.empty() == true )
 		{
 			m_emitterName = m_resource->getEmitterName();
+			m_emitterRelative = m_resource->getEmitterRelative();
 		}
-		
+				
 		if( m_startPosition == 0.f  )
 		{
 			m_startPosition = m_resource->getEmitterStartPosition();	
@@ -768,6 +769,5 @@ namespace	Menge
 		const EmitterContainerMetaData & meta = container->getMetaData();
 		return meta.size;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 }

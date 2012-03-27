@@ -42,6 +42,9 @@ namespace Menge
 		void setEmitterPositionOffset( const mt::vec2f& _offset );
 		const mt::vec2f& getEmitterPositionOffset() const;
 
+		void setEmitterRelative( bool _relative );
+		bool getEmitterRelative() const;
+
 	public:
 		EmitterContainerInterface * getContainer() const;
 
@@ -66,7 +69,8 @@ namespace Menge
 		ConstString m_emitterName;
 		float m_emitterStartPosition;
 		mt::vec2f m_emitterPositionOffset;
-		
+		bool m_emitterRelative;
+
 		EmitterContainerInterface * m_container;
 
 		typedef std::vector<ResourceImageDefault *> TVectorAtlasImages;

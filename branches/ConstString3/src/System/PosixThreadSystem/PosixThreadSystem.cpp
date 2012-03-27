@@ -148,7 +148,7 @@ namespace Menge
 			return;
 		}
 
-		listener->join();
+		//listener->join();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PosixThreadSystem::sleep( unsigned int _ms )

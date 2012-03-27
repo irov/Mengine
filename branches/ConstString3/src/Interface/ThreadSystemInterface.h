@@ -10,7 +10,7 @@ namespace Menge
 	{
 	public:
 		virtual bool main() = 0;
-		virtual void join() = 0;
+		//virtual void join() = 0;
 	};
 
 	class ThreadIdentity

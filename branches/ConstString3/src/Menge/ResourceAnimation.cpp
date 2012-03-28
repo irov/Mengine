@@ -48,7 +48,51 @@ namespace Menge
 			return false;
 		}
 
+		for( TVectorAnimationSequence::iterator
+			it = m_sequence.begin(),
+			it_end = m_sequence.end();
+		it != it_end;
+		++it )
+		{
+			AnimationSequence & sequence = *(it);
+			
+			ResourceImage * resource  = ResourceManager::get()
+				->getResourceT<ResourceImage>( sequence.resourceName );
+
+			if( resource == 0 )
+			{
+				MENGE_LOG_ERROR( "ResourceAnimation: '%s' Image resource not found resource '%s'"
+					, m_name.c_str()
+					, sequence.resourceName.c_str() 
+					);
+
+				return false;
+			}
+
+			sequence.resource = resource;
+		}
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceAnimation::_release()
+	{
+		for( TVectorAnimationSequence::iterator
+			it = m_sequence.begin(),
+			it_end = m_sequence.end();
+		it != it_end;
+		++it )
+		{
+			AnimationSequence & sequence = *(it);
+
+			if( sequence.resource == NULL )
+			{
+				continue;
+			}
+			
+			sequence.resource->decrementReference();
+			sequence.resource = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceAnimation::getSequenceCount() const
@@ -79,6 +123,11 @@ namespace Menge
 	const TVectorAnimationSequence & ResourceAnimation::getSequences() const
 	{
 		return m_sequence;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage * ResourceAnimation::getSequenceResource( size_t _sequence ) const
+	{
+		return m_sequence[_sequence].resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

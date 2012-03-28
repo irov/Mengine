@@ -1,13 +1,21 @@
 #	pragma once
 
 #	include "ResourceReference.h"
+#	include "ResourceImage.h"
 
 #	include <vector>
 
 namespace Menge
 {
+	
 	struct AnimationSequence
 	{
+		AnimationSequence()
+			: resource(NULL)
+			, delay(0.0f)
+		{}
+		
+		ResourceImage * resource;
 		float delay;
 		ConstString resourceName;
 	};
@@ -26,6 +34,7 @@ namespace Menge
 		size_t getSequenceCount() const;
 		float getSequenceDelay( size_t _sequence ) const;
 		const ConstString& getSequenceResourceName( size_t _sequence ) const;
+		ResourceImage *  getSequenceResource( size_t _sequence ) const;
 		size_t getLastFrameIndex() const;
 
 	public:
@@ -37,7 +46,7 @@ namespace Menge
 
 	protected:
 		bool _compile() override;
-
+		void _release() override;
 	private:		
 		TVectorAnimationSequence m_sequence;
 	};

@@ -241,53 +241,53 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( size_t _enumerator )
 	{
-			if( this->isActivate() == false )
-			{
-				MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
-					, getName().c_str()
-					);
+		if( this->isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
+				, getName().c_str()
+				);
 
-				return;
-			}
+			return;
+		}
 
-			m_currentFrame = 0;
-			m_timing = 0.f;
+		m_currentFrame = 0;
+		m_timing = 0.f;
 
-			if( this->updateCurrentImageResource_() == false )
-			{
-				return;
-			}
+		if( this->updateCurrentImageResource_() == false )
+		{
+			return;
+		}
 
-			if( m_onEndAnimationEvent == true )
-			{
-				this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
-			}
+		if( m_onEndAnimationEvent == true )
+		{
+			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_end( size_t _enumerator )
 	{
-			if( this->isActivate() == false )
-			{
-				MENGE_LOG_ERROR( "Animation: '%s' end not activate"
-					, getName().c_str()
-					);
+		if( this->isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation: '%s' end not activate"
+				, getName().c_str()
+				);
 
-				return;
-			}
+			return;
+		}
 
-			m_timing = 0.f;
-			//m_currentFrame = m_resourceAnimation->getLastFrameIndex();
-			m_currentFrame = 0;
+		m_timing = 0.f;
+		//m_currentFrame = m_resourceAnimation->getLastFrameIndex();
+		m_currentFrame = 0;
 
-			if( this->updateCurrentImageResource_() == false )
-			{
-				return;
-			}
+		if( this->updateCurrentImageResource_() == false )
+		{
+			return;
+		}
 
-			if( m_onEndAnimationEvent == true )
-			{
-				this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
-			}
+		if( m_onEndAnimationEvent == true )
+		{
+			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::updateCurrentImageResource_()
@@ -350,7 +350,7 @@ namespace	Menge
 				, m_resourceAnimationName.c_str()
 				);
 
-			return 0;
+			return 0.f;
 		}
 
 		return m_resourceAnimation->getSequenceDelay( _frame );
@@ -371,7 +371,7 @@ namespace	Menge
 
 		if( _frame >= sequenceCount )	
 		{
-			MENGE_LOG_ERROR( "Animation.setCurrentFrame: '%s' _frame(%d) <> sequenceCount(%d)"
+			MENGE_LOG_ERROR( "Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
 				, m_name.c_str()
 				, _frame
 				, sequenceCount
@@ -397,6 +397,7 @@ namespace	Menge
 		}
 				
 		m_timing = _timing;
+
 		this->updateCurrentImageResource_();
 	}
 	//////////////////////////////////////////////////////////////////////////

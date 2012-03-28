@@ -22,6 +22,7 @@ namespace Menge
 	public:
 		ResourceAnimation();
 
+	public:
 		size_t getSequenceCount() const;
 		float getSequenceDelay( size_t _sequence ) const;
 		const ConstString& getSequenceResourceName( size_t _sequence ) const;
@@ -30,7 +31,10 @@ namespace Menge
 	public:
 		void setSequences( const TVectorAnimationSequence & _sequence );
 		const TVectorAnimationSequence & getSequences() const;
+
+	protected:
 		void loader( BinParser * _parser ) override;
+
 	protected:
 		bool _compile() override;
 

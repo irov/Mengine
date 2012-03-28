@@ -194,7 +194,7 @@ namespace	Menge
 	void Animation::_release()
 	{
 		//set resource to NULL because sprite not create it
-		m_resource = NULL;
+		//m_resource = NULL;
 		
 		Sprite::_release();
 
@@ -292,8 +292,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::updateCurrentImageResource_()
 	{
+		if( m_resource != NULL )
+		{
+			m_resource->decrementReference();
+		}
+
 		m_resourceName =  m_resourceAnimation->getSequenceResourceName( m_currentFrame );
 		m_resource =  m_resourceAnimation->getSequenceResource( m_currentFrame );
+		m_resource->incrementReference();
 
 		//MENGE_LOG_ERROR( "Animation: '%s'  name  resourceName %s ", m_name.c_str(), m_resourceName.c_str()	);
 		

@@ -3404,7 +3404,7 @@ namespace Menge
 			
 			
 
-			pybind::def_function( "getParam", &ScriptMethod::s_getParam );
+			//pybind::def_function( "getParam", &ScriptMethod::s_getParam );
 			pybind::def_function( "addJoin", &ScriptMethod::s_addJoin );
 			pybind::def_function( "removeJoin", &ScriptMethod::s_removeJoin );
 			pybind::def_function( "isJoin", &ScriptMethod::s_isJoin );			

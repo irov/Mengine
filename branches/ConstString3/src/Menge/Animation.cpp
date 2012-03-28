@@ -158,25 +158,31 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_compile()
 	{
-		if( m_resourceAnimationName.empty() == false )
+		if( m_resourceAnimationName.empty() == true )
 		{	
-			m_resourceAnimation = ResourceManager::get()
-				->getResourceT<ResourceAnimation>( m_resourceAnimationName );
+			MENGE_LOG_ERROR( "Animation: '%s' no set resource name"
+				, m_name.c_str()
+				);
 
-			if( m_resourceAnimation == 0 )
-			{
-				MENGE_LOG_ERROR( "Animation: '%s' no found resource with name '%s'"
-					, m_name.c_str()
-					, m_resourceAnimationName.c_str() 
-					);
+			return false;
+		}
+		
+		m_resourceAnimation = ResourceManager::get()
+			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
-				return false;
-			}
+		if( m_resourceAnimation == 0 )
+		{
+			MENGE_LOG_ERROR( "Animation: '%s' no found resource with name '%s'"
+				, m_name.c_str()
+				, m_resourceAnimationName.c_str() 
+				);
 
-			m_currentFrame = 0;
-			m_timing = 0.0f;
+			return false;
 		}
 
+		m_currentFrame = 0;
+		m_timing = 0.0f;
+		
 		if( this->updateCurrentImageResource_() == false )
 		{
 			return false;

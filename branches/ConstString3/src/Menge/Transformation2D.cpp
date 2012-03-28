@@ -16,7 +16,7 @@ namespace Menge
 		, m_scale(1.f, 1.f)
 		, m_direction(1.f, 0.f)
 		, m_angle(0.f)
-		, m_scaled(false)
+		, m_scaled(true)
 	{
 		mt::ident_m3( m_localMatrix );
 		mt::ident_m3( m_worldMatrix );

@@ -785,12 +785,16 @@ namespace Menge
 
 		//m_fileEngine->loadPak( m_gamePack );
 		String fullGamePackPath = m_baseDir;
-		fullGamePackPath += m_gamePackPath;
-		fullGamePackPath += MENGE_FOLDER_DELIM;
+
+		if( m_gamePackPath.empty() == false )
+		{
+			fullGamePackPath += m_gamePackPath;
+			fullGamePackPath += MENGE_FOLDER_DELIM;
+		}
 
 		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, m_gamePackType, false ) == false )
 		{
-			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak %s:%s"
+			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak '%s' [%s]"
 				, m_gamePackPath.c_str() 
 				, fullGamePackPath.c_str()
 				);

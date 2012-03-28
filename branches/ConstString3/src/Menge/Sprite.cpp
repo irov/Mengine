@@ -414,20 +414,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( Camera2D * _camera )
 	{
-		if(strcmp(m_resourceName.c_str(),"MovieImage_GardenAccess_1.png") == 0)
-		{
-			int x =1;
-		}
 		Node::_render( _camera );
-
-
+		
 		const Vertex2D * vertices = this->getVertices();
 
 		bool scaled = this->isScaled();
-		if( m_material == NULL )
-		{
-			recompile();
-		}
+	
 		RenderEngine::get()
 			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, scaled, LPT_QUAD );
 	}

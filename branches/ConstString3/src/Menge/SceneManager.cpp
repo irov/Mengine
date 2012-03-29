@@ -111,13 +111,13 @@ namespace Menge
 		}
 
 		scene->setName( _name );
-
+		/*
 		String xml_path = desc.path;
 		xml_path += "/";
 		xml_path += Helper::to_str(_name);
 		xml_path += "/";
 		xml_path += Helper::to_str(_name);
-
+		
 		SceneLoadable loadable(scene);
 
 		bool exist = false;
@@ -136,7 +136,7 @@ namespace Menge
 				return 0;
 			}
 		}
-
+		*/
 		return scene;
 	}
 }

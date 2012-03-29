@@ -181,13 +181,13 @@ namespace Menge
 				PyObject * py_node = pybind::ptr(_node);
 				PyObject * py_anchorPoint = pybind::ptr(_frame.anchorPoint);
 
-				const mt::vec2f & movie_scale = this->getScale();
+				//const mt::vec2f & movie_scale = this->getScale();
 
-				mt::vec2f wm_scale;
-				wm_scale.x = movie_scale.x * _frame.scale.x;
-				wm_scale.y = movie_scale.y * _frame.scale.y;
+				//mt::vec2f wm_scale;
+				//wm_scale.x = movie_scale.x * _frame.scale.x;
+				//wm_scale.y = movie_scale.y * _frame.scale.y;
 
-				PyObject * py_scale = pybind::ptr(wm_scale);
+				PyObject * py_scale = pybind::ptr(_frame.scale);
 
 				PyObject * py_angle = pybind::ptr(_frame.angle);
 				PyObject * py_opacity = pybind::ptr(_frame.opacity);

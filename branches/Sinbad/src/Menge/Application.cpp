@@ -101,6 +101,7 @@ namespace Menge
 		, m_invalidateVsync( false )
 		, m_invalidateCursorMode( false )
 		, m_fullscreen(false)
+		, m_maxWindowHeight(800)
 	{
 		m_logEngine = new LogEngine();
 		if( m_logEngine->initialize() == false )
@@ -279,6 +280,14 @@ namespace Menge
 		m_textManager = new TextManager();
 
 		loadGame( _loadPersonality );
+
+		const Resolution & resolution = getDesktopResolution();
+		float height = resolution.getHeight();
+		
+		if( height < m_maxWindowHeight )
+		{
+			m_fullscreen = true;
+		}
 
 		//if( m_console != NULL )
 		//{

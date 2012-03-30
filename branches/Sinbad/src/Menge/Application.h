@@ -188,6 +188,7 @@ namespace Menge
 		bool m_update;
 
 		bool m_fullscreen;
+
 		Resolution m_renderResolution;
 
 		bool m_createRenderWindow;
@@ -197,6 +198,7 @@ namespace Menge
 		bool m_resetTiming;
 		float m_phycisTiming;
 		float m_maxTiming;
+		float m_maxWindowHeight;
 
 		LogEngine * m_logEngine;
 		FileEngine * m_fileEngine;

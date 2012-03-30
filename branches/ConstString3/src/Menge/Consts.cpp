@@ -59,4 +59,20 @@ namespace Menge
 		, c_LayerCamera2D("LayerCamera2D")
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Consts::cache( const char * _str, size_t _size )
+	{
+		m_companator.assign( _str, _size );
+
+		TMapConstString::iterator it_found = m_cache.find( m_companator );
+
+		if( it_found == m_cache.end() )
+		{
+			ConstString cstr(m_companator);
+
+			it_found = m_cache.insert( std::make_pair(m_companator, cstr) ).first;
+		}
+
+		return it_found->second;
+	}
 }

@@ -2408,14 +2408,13 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
 
-	static struct extract_const_string_type
+	static struct extract_ConstString_type
 		: public pybind::type_cast_result<ConstString>
 	{
 		bool apply( PyObject * _obj, ConstString & _value ) override
 		{
 			if( pybind::string_check( _obj ) == true )
 			{
-
 				size_t ch_size;
 
 				const char * ch_buff = pybind::string_to_char( _obj, ch_size );
@@ -2425,9 +2424,10 @@ namespace Menge
 					_value = Consts::get()->c_builtin_empty;
 					
 					return true;
-				}		
+				}
 
-				_value = ConstString( ch_buff, ch_size );
+				_value = Consts::get()->cache( ch_buff, ch_size );
+				//_value = ConstString( ch_buff, ch_size );
 			}
 			else if( pybind::unicode_check( _obj ) )
 			{
@@ -2442,7 +2442,8 @@ namespace Menge
 					return true;
 				}
 				
-				_value = ConstString( ch_buff, ch_size );
+				_value = Consts::get()->cache( ch_buff, ch_size );
+				//_value = ConstString( ch_buff, ch_size );
 			}
 			else
 			{
@@ -2452,13 +2453,11 @@ namespace Menge
 			return true;
 		}
         
-        
-
 		PyObject * wrap( pybind::type_cast_result<ConstString>::TCastRef _value ) override
 		{
 			return pybind::string_from_char( _value.c_str(), _value.size() );
 		}
-	}s_extract_const_string_type;
+	}s_extract_ConstString_type;
 
 	static struct extract_TVectorString_type
 		: public pybind::type_cast_result<TVectorString>

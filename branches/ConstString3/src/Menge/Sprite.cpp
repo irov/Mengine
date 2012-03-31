@@ -18,9 +18,9 @@
 #	include "math/clamp.h"
 
 //#	 include "ResourceTexture.h"
-#	include "Material.h"
+#	include "RenderMaterial.h"
 #	include "Affector.h"
-#	include "Texture.h"
+#	include "RenderTexture.h"
 
 namespace	Menge
 {

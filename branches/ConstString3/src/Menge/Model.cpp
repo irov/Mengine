@@ -3,7 +3,7 @@
 #	include "ResourceManager.h"
 
 #	include "RenderEngine.h"
-#	include "Texture.h"
+#	include "RenderTexture.h"
 
 #	include "Consts.h"
 #	include "BinParser.h"
@@ -194,7 +194,7 @@ namespace Menge
 	{
 		Node::_render( _camera );
 
-		const Material * material = m_resourceModel->getMaterial();
+		const RenderMaterial * material = m_resourceModel->getMaterial();
 
 		for( TVectorRenderModelMesh::iterator 
 			it = m_renderModelMesh.begin(),

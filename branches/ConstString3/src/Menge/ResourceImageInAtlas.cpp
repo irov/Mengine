@@ -45,7 +45,7 @@ namespace Menge
 		return m_imageFrame.uv_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* ResourceImageInAtlas::getTexture() const
+	RenderTextureInterface* ResourceImageInAtlas::getTexture() const
 	{
 		return m_resourceAtlas->getTexture();
 		//return m_imageFrame.texture;

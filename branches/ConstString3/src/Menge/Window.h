@@ -44,7 +44,7 @@ namespace Menge
 
 		mt::vec2f m_initialSizes[MAX_WINDOW_ELEMENTS];
 		
-		const Material * m_material[MAX_WINDOW_ELEMENTS];
-		const TextureInterface * m_textures[MAX_WINDOW_ELEMENTS];
+		const RenderMaterial * m_material[MAX_WINDOW_ELEMENTS];
+		const RenderTextureInterface * m_textures[MAX_WINDOW_ELEMENTS];
 	};
 }	// namespace Menge

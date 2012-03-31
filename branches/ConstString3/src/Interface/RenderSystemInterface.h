@@ -270,7 +270,7 @@ namespace Menge
 
 	class ImageDecoderInterface;
 
-	class TextureInterface
+	class RenderTextureInterface
 	{
 	public:
 		virtual RenderImageInterface* getInterface() const = 0;
@@ -289,58 +289,9 @@ namespace Menge
 		virtual size_t getHWWidth() const = 0;
 		virtual size_t getHWHeight() const = 0;
 		virtual PixelFormat getHWPixelFormat() const = 0;
-		virtual const mt::mat4f* getUVMask() const = 0;
 
 		virtual bool loadImageData( ImageDecoderInterface* _imageDecoder ) = 0;
-		virtual bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) = 0;
-				
-	};
-
-	enum LightType
-	{
-		LT_POINT,
-		LT_DIRECTIONAL,
-		LT_SPOT
-	};
-
-	class LightInterface
-	{
-	public:
-		virtual ~LightInterface(){};
-
-		virtual void setType( LightType _type ) = 0;
-		virtual LightType getType() const = 0;
-
-		virtual void setAttenuation( float _range, float _constant, float _linear, float _quadratic ) = 0;
-		virtual float getAttenuationRange() const = 0;
-		virtual float getAttenuationConstFactor() const = 0;
-		virtual float getAttenuationLinearFactor() const = 0;
-		virtual float getAttenuationQuadraticFactor() const = 0;
-
-		virtual void setSpotlightRange( float _innerAngle, float _outerAngle, float _falloff ) = 0;
-		virtual float getSpotlightInnerAngle() const = 0;
-		virtual float getSpotlightOuterAngle() const = 0;
-		virtual float getSpotlightFalloff() const = 0;
-
-		virtual void setDiffuseColour( float _r, float _g, float _b ) = 0;
-		virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
-
-		virtual bool isVisible() const = 0;
-		virtual void setVisible( bool _enabled ) = 0;
-		virtual void setCastsShadows( bool _enabled ) = 0;
-
-		virtual void setDirection( float _x, float _y, float _z ) = 0;
-		virtual void setPosition( float _x, float _y, float _z ) = 0;
-	};
-
-	enum EFrustumPlanes
-	{
-		PLANE_NEAR   = 0,
-		PLANE_FAR    = 1,
-		PLANE_LEFT   = 2,
-		PLANE_RIGHT  = 3,
-		PLANE_TOP    = 4,
-		PLANE_BOTTOM = 5
+		virtual bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) = 0;				
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -452,8 +403,8 @@ namespace Menge
 		virtual bool supportTextureFormat( PixelFormat _format ) = 0;
 
 		//new
-		virtual LightInterface * createLight( const String & _name ) = 0;
-		virtual void releaseLight( LightInterface * _light ) = 0;
+		//virtual LightInterface * createLight( const String & _name ) = 0;
+		//virtual void releaseLight( LightInterface * _light ) = 0;
 
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onWindowClose() = 0;
@@ -466,20 +417,24 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual TextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
-		virtual TextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
-		virtual void setRenderTargetTexture( TextureInterface * _image, bool _clear ) = 0;
+		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
+			WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) = 0;
+
+	public:
 		virtual void clear( uint32 _color ) = 0;
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
-		virtual void screenshot( TextureInterface * _renderTargetImage, const mt::vec4f & _rect ) = 0;
-		virtual void releaseTexture( const TextureInterface* _texture ) = 0;
+		virtual void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect ) = 0;
+		virtual void releaseTexture( const RenderTextureInterface* _texture ) = 0;
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual bool getVSync() const = 0;
 
-		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
-			WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) = 0;
+	public:
+		virtual RenderTextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual RenderTextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
+
+		virtual void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) = 0;
 	};
 }
 

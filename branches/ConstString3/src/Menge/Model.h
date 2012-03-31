@@ -55,7 +55,7 @@ namespace Menge
 			TVectorIndices::size_type indices_size;
 
 			IBHandle ibHandle;
-			const TextureInterface * texture;
+			const RenderTextureInterface * texture;
 
 			bool active;
 		};

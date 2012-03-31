@@ -949,7 +949,7 @@ namespace Menge
 				return;
 			}
 
-			TextureInterface * img = resource->getTexture();
+			RenderTextureInterface * img = resource->getTexture();
 
 			RenderEngine::get()
 				->saveImage( img, Consts::get()->c_user, _filename );

@@ -5,9 +5,9 @@
 #	include "BinParser.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
-#	include "Material.h"
+#	include "RenderMaterial.h"
 
-#	include "Texture.h"
+#	include "RenderTexture.h"
 
 #	include "Consts.h"
 
@@ -63,7 +63,7 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			TextureInterface* image = m_resource->getImage( i );
+			RenderTextureInterface* image = m_resource->getImage( i );
 			if( image != NULL )
 			{
 				m_initialSizes[i].x = image->getWidth();
@@ -71,7 +71,7 @@ namespace Menge
 			}
 		}
 
-		const MaterialGroup * mg_sprite = RenderEngine::get()
+		const RenderMaterialGroup * mg_sprite = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )

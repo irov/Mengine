@@ -116,7 +116,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Material * ResourceModel::getMaterial() const
+	const RenderMaterial * ResourceModel::getMaterial() const
 	{
 		return m_material;
 	}
@@ -256,7 +256,7 @@ namespace Menge
 			}
 		}
 
-		const MaterialGroup * materialGroup = RenderEngine::get()
+		const RenderMaterialGroup * materialGroup = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		if( materialGroup == 0 )

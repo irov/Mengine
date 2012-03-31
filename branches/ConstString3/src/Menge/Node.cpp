@@ -24,7 +24,7 @@
 
 #	include <algorithm>
 
-#	include "Material.h"
+#	include "RenderMaterial.h"
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
@@ -617,7 +617,7 @@ namespace Menge
 		GlobalHandleAdapter::activateGlobalHandle();
 
 #ifndef MENGE_MASTER_RELEASE
-		const MaterialGroup * mg_debug = RenderEngine::get()
+		const RenderMaterialGroup * mg_debug = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(Debug) );
 
 		m_debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );

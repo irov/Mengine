@@ -44,7 +44,7 @@ namespace Menge
 		return m_imageFrame.uv_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* ResourceImageDefault::getTexture() const
+	RenderTextureInterface* ResourceImageDefault::getTexture() const
 	{
 		return m_imageFrame.texture;
 	}

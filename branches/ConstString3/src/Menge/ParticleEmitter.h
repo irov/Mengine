@@ -18,7 +18,7 @@ namespace Menge
 	class EmitterInterface;
 	class ResourceImage;
 	class ResourceImageDefault;
-	struct Material;
+	struct RenderMaterial;
 	
 
 	class ParticleEmitter
@@ -115,7 +115,7 @@ namespace Menge
 
 		float m_startPosition;
 
-		const Material * m_materials[2]; //intensive and non intensive
+		const RenderMaterial * m_materials[2]; //intensive and non intensive
 
 		typedef std::vector<TVectorVertex2D> TVectorVertices;
 		TVectorVertex2D m_vertices;
@@ -124,8 +124,8 @@ namespace Menge
 		{
 			TVectorVertices::size_type begin;
 			TVectorVertices::size_type size;
-			const TextureInterface * texture[1];
-			const Material * material;
+			const RenderTextureInterface * texture[1];
+			const RenderMaterial * material;
 		};
 
 		typedef std::vector<Batch> TVectorBatchs;

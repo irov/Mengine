@@ -10,9 +10,9 @@ namespace Menge
 	//class ResourceSound;
 	class SoundEmitter;
 	class SoundSourceInterface;
-	class TextureInterface;
+	class RenderTextureInterface;
 
-	struct MaterialGroup;
+	struct RenderMaterialGroup;
 
 	/*! xml - файл имеет следующую структуру:
 	*	<Node Name = "имя_ноды" Type = "Video">
@@ -70,11 +70,11 @@ namespace Menge
 		ConstString m_resourceVideoName;
 		ConstString m_resourceSoundName;
 
-		const TextureInterface * m_textures[1];
+		const RenderTextureInterface * m_textures[1];
 		SoundEmitter* m_soundEmitter;
 
-		const MaterialGroup * m_materialGroup;
-		const Material * m_material;	
+		const RenderMaterialGroup * m_materialGroup;
+		const RenderMaterial * m_material;	
 
 		bool m_autoStart;
 		bool m_loop;

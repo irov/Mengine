@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class TextureInterface;
+	class RenderTextureInterface;
 	class FileInputStreamInterface;
 	class ImageDecoderInterface;
 
@@ -26,7 +26,7 @@ namespace Menge
 			mt::vec4f uv;
 			mt::vec2f pow_scale;
 			bool isAlpha;
-			TextureInterface* texture;
+			RenderTextureInterface* texture;
 			bool wrapX;
 			bool wrapY;
 		};
@@ -39,7 +39,7 @@ namespace Menge
 
 		virtual bool isAlpha() const = 0;
 
-		virtual TextureInterface* getTexture() const = 0;
+		virtual RenderTextureInterface* getTexture() const = 0;
 		virtual const ConstString & getFileName() const = 0;
 		virtual const ConstString & getCodecType() const = 0;
 
@@ -55,7 +55,7 @@ namespace Menge
 		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const ConstString& _fileNameRGB, const ConstString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
-		bool prepareImageFrame_( ImageFrame & _frame, TextureInterface * texture ) const;
+		bool prepareImageFrame_( ImageFrame & _frame, RenderTextureInterface * texture ) const;
 		ImageDecoderInterface * createDecoder_( FileInputStreamInterface * _stream,  const ConstString& _codec );
 		FileInputStreamInterface * createStream_( const ConstString& _pakName, const ConstString & _filename );
 

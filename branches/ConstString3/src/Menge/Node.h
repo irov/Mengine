@@ -27,7 +27,7 @@ namespace Menge
 	class Layer;
 	class Scene;
 
-	struct Material;
+	struct RenderMaterial;
 
 	class Affector;
 
@@ -233,7 +233,7 @@ namespace Menge
 
 #ifndef MENGE_MASTER_RELEASE
 	protected:
-		const Material* m_debugMaterial;
+		const RenderMaterial* m_debugMaterial;
 		Vertex2D m_debugBox[5];
 #endif
 	};

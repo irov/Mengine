@@ -10,7 +10,7 @@ namespace Menge
 {
 	class ResourceImageDefault;
 	
-	struct Material;
+	struct RenderMaterial;
 
 	struct AnimationMesh
 	{
@@ -28,7 +28,7 @@ namespace Menge
 		ConstString textureName;
 		ResourceImageDefault * resourceImage;
 
-		const TextureInterface * texture;
+		const RenderTextureInterface * texture;
 
 		float in;
 		float out;
@@ -59,7 +59,7 @@ namespace Menge
 
 	public:
 		const TVectorAnimationMesh & getAnimationMeshes() const;
-		const Material * getMaterial() const;
+		const RenderMaterial * getMaterial() const;
 
 		bool getFrameMeshFirst( const AnimationMesh & _am, AnimationMesh::FrameMesh & _frame );
 		bool getFrameMeshLast( const AnimationMesh & _am, AnimationMesh::FrameMesh & _frame );
@@ -82,7 +82,7 @@ namespace Menge
 		TVectorAnimationMesh m_animationMeshes;
 
 		float m_duration;
-		const Material * m_material;
+		const RenderMaterial * m_material;
 		//std::string m_skeletonName;
 		//std::string m_materialName;
 	};

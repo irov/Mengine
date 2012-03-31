@@ -7,7 +7,7 @@
 #	include "TextManager.h"
 
 #	include "ResourceFont.h"
-#	include "Material.h"
+#	include "RenderMaterial.h"
 
 #	include "Consts.h"
 
@@ -122,7 +122,7 @@ namespace Menge
 			m_lineOffset = m_height;
 		}
 
-		const MaterialGroup * mg_sprite = RenderEngine::get()
+		const RenderMaterialGroup * mg_sprite = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		m_materialText = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
@@ -225,7 +225,7 @@ namespace Menge
 		}
 
 		TVectorVertex2D & textVertices = this->getTextVertices();
-		const TextureInterface * fontTexture = m_resourceFont->getImage();
+		const RenderTextureInterface * fontTexture = m_resourceFont->getImage();
 
 		int countOfVertices;
 		
@@ -262,7 +262,7 @@ namespace Menge
 			countOfVertices = m_maxCharCount * 4;
 		}
 
-		const TextureInterface* outlineTexture = m_resourceFont->getOutlineImage();
+		const RenderTextureInterface* outlineTexture = m_resourceFont->getOutlineImage();
 
 		if( outlineVertices.empty() == false )
 		{

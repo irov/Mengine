@@ -3,7 +3,7 @@
 #	include "BinParser.h"
 #	include "Utils/Core/Rect.h"
 #	include "RenderEngine.h"
-#	include "Texture.h"
+#	include "RenderTexture.h"
 #	include "LogEngine.h"
 #	include "Interface/ImageCodecInterface.h"
 
@@ -49,7 +49,7 @@ namespace Menge
 		m_texture = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* ResourceImageAtlas::getTexture() const 
+	RenderTextureInterface* ResourceImageAtlas::getTexture() const 
 	{
 		return m_texture;
 	}

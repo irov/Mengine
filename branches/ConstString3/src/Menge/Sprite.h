@@ -17,8 +17,8 @@ namespace Menge
 {
 	class ResourceImage;
 	
-	struct Material;
-	struct MaterialGroup;
+	struct RenderMaterial;
+	struct RenderMaterialGroup;
 
 	//! Sprite - —прайт. ¬ качестве ресурса принимает ResourceImage, поэтому может содержать (в зависимости от типа ресурса, например ResourceImageDefault или ResourceImageSet) N изображений. Ёто необходимо дл€ того, что бы под одно описание анимации можно было подгон€ть различные изображени€ и наоборот. ѕоэтому Animation наследуетс€ от Sprite и через Sprite::getImageIndex получает текущий индекс изображени€.
 
@@ -98,14 +98,14 @@ namespace Menge
 
 		mt::vec4f m_percent;
 
-		const MaterialGroup * m_materialGroup;
-		const Material * m_material;
+		const RenderMaterialGroup * m_materialGroup;
+		const RenderMaterial * m_material;
 
 		bool m_disableTextureColor;
 		int m_texturesNum;
 		mt::vec2f m_textureMatrixOffset;
 
-		const TextureInterface * m_textures[2];
+		const RenderTextureInterface * m_textures[2];
 		mt::mat4f * m_textureMatrix[2];
 	};
 }

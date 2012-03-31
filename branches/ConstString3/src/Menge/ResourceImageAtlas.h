@@ -19,7 +19,7 @@ namespace Menge
 
 	public:
 		bool loadFrame( ImageDecoderInterface * _decoder, ResourceImage::ImageFrame & _frame );
-		TextureInterface* getTexture() const;
+		RenderTextureInterface* getTexture() const;
 		void loader( BinParser * _parser ) override;
 
 	protected:
@@ -29,6 +29,6 @@ namespace Menge
 
 		Menge::PixelFormat m_pixelFormat;
 		mt::vec2f m_size;
-		TextureInterface * m_texture;
+		RenderTextureInterface * m_texture;
 	};
 }

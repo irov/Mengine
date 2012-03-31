@@ -147,9 +147,6 @@ namespace Menge
 
 		bool supportTextureFormat( PixelFormat _format ) override;
 
-		LightInterface * createLight( const String & _name ) override;
-		void releaseLight( LightInterface * _light ) override;
-
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
 
@@ -168,8 +165,8 @@ namespace Menge
 		int m_screenBits;
 		bool m_fullscreen;
 
-		IDirect3D8*				m_pD3D;
-		IDirect3DDevice8*		m_pD3DDevice;
+		IDirect3D8*			m_pD3D;
+		IDirect3DDevice8*	m_pD3DDevice;
 		IDirect3DSurface8*	m_screenSurf;
 		IDirect3DSurface8*	m_screenDepth;
 

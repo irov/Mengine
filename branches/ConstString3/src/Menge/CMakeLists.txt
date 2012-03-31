@@ -125,11 +125,13 @@ Engine\\\\Physic
 
 ADD_FILTER(
 Engine\\\\Render
-	RenderEngine.cpp
-	RenderEngine.h
-	Material.h
-	Texture.h
-	Texture.cpp
+    RenderEngine.h
+	RenderEngine.cpp	
+    Megatextures.h  
+    Megatextures.cpp
+	RenderMaterial.h
+	RenderTexture.h
+	RenderTexture.cpp
 	Vertex.h
 	Vertex.cpp
 )
@@ -832,6 +834,11 @@ SET( APPLICATION_DEPENDENCIES
  PARENT_SCOPE
 )
 
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+debug ${MENGINE_LIB_PREFIX}AtlasAllocator_static${MENGINE_LIB_SUFFIXD}
+optimized ${MENGINE_LIB_PREFIX}AtlasAllocator_static${MENGINE_LIB_SUFFIX}
+)
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

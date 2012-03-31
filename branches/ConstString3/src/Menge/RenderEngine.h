@@ -15,7 +15,7 @@
 #	include <vector>
 #	include <map>
 
-#	include "Material.h"
+#	include "RenderMaterial.h"
 #	include "Core/ConstString.h"
 
 //#	include "ColourValue.h"
@@ -24,7 +24,7 @@ namespace Menge
 {
 	//struct Material;
 	class Camera;
-	class Texture;
+	class RenderTexture;
 	struct Vertex2D;
 
 	enum ELogicPrimitiveType
@@ -72,7 +72,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen );
 
 	public:
-		void renderObject2D( const Material* _material, const TextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+		void renderObject2D( const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 			const Vertex2D * _vertices, size_t _verticesNum, bool _scale,
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
@@ -87,31 +87,31 @@ namespace Menge
 		void updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count );
 
 	public:
-		void screenshot( TextureInterface * _renderTargetImage, const mt::vec4f & _rect ) override;
+		void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect ) override;
 
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
-		bool createMaterialGroup( const ConstString & _name, const Material & _material );
-		const MaterialGroup * getMaterialGroup( const ConstString & _name );
+		bool createMaterialGroup( const ConstString & _name, const RenderMaterial & _material );
+		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name );
 		void removeMaterialGroup( const ConstString & _name );
 
 		bool hasTexture( const ConstString & _name );
 
-		TextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
-		Texture* createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
+		RenderTextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
+		RenderTexture* createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
 		
 		//Astralax
-		TextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
-		Texture * createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
-		void setRenderTargetTexture( TextureInterface * _image, bool _clear ) override;
+		RenderTextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
+		RenderTexture * createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
+		void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
 		
-		TextureInterface * getTexture( const ConstString & _name ) const;
+		RenderTextureInterface * getTexture( const ConstString & _name ) const;
 		bool validTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
-		TextureInterface* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
-		TextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
-		bool saveImage( TextureInterface* _image, const ConstString& _fileSystemName, const String & _filename );
-		void releaseTexture( const TextureInterface* _texture ) override;
+		RenderTextureInterface* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
+		RenderTextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
+		bool saveImage( RenderTextureInterface* _image, const ConstString& _fileSystemName, const String & _filename );
+		void releaseTexture( const RenderTextureInterface* _texture ) override;
 		
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
@@ -126,9 +126,6 @@ namespace Menge
 		void endLayer3D();
 
 		void applyRenderViewport( const Viewport & _renderViewport );
-		
-		LightInterface * createLight( const ConstString & _name );
-		void releaseLight( LightInterface * _light );
 
 		void onDeviceRestored();
 
@@ -164,7 +161,7 @@ namespace Menge
 		bool supportA8() const;
 
 	private:
-		void destroyTexture_( const Texture* _texture );
+		void destroyTexture_( const RenderTexture* _texture );
 		void renderPass_( RenderObject* _renderObject );
 		void disableTextureStage_( size_t _stage );
 
@@ -221,11 +218,11 @@ namespace Menge
 		size_t m_currentBaseVertexIndex;
 
 		size_t m_currentTextureStages;
-		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
+		RenderTextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f * m_currentMatrixUV[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f * m_currentMaskUV[MENGE_MAX_TEXTURE_STAGES];
 
-		const Material * m_currentMaterial;
+		const RenderMaterial * m_currentMaterial;
 
 		int m_currentTexturesID[MENGE_MAX_TEXTURE_STAGES];
 		//const mt::mat4f* m_uvMask[MENGE_MAX_TEXTURE_STAGES];
@@ -242,17 +239,17 @@ namespace Menge
 
 		RenderPass* m_currentPass;
 
-		typedef std::map<ConstString, Texture*> TMapTextures;
+		typedef std::map<ConstString, RenderTexture*> TMapTextures;
 		TMapTextures m_textures;
 
-		Texture* m_nullTexture;	// white pixel
+		RenderTexture* m_nullTexture;	// white pixel
 
 		DebugInfo m_debugInfo;	// debug info
 
 		//typedef Pool<RenderObject> TPoolRenderObject;
 		//TPoolRenderObject m_renderObjectPool;
 
-		typedef std::map<ConstString, MaterialGroup *> TMapMaterialGroup;
+		typedef std::map<ConstString, RenderMaterialGroup *> TMapMaterialGroup;
 		TMapMaterialGroup m_mapMaterialGroup;
 
 		uint16 m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];

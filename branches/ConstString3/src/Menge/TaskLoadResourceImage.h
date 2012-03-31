@@ -9,7 +9,7 @@
 namespace Menge
 {
 	class ResourceImage;
-	class TextureInterface;
+	class RenderTextureInterface;
 	class ImageDecoderInterface;
 	class FileInputStreamInterface;
 		
@@ -39,7 +39,7 @@ namespace Menge
 			ConstString filename;
 			FileInputStreamInterface* file;
 			ImageDecoderInterface * decoder;
-			TextureInterface* texture;
+			RenderTextureInterface* texture;
 			unsigned char* textureBuffer;
 			int textureBufferPitch;
 		};

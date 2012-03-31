@@ -14,7 +14,7 @@
 namespace Menge
 {
 	
-	struct TextureStage
+	struct RenderTextureStage
 	{
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;
@@ -28,7 +28,7 @@ namespace Menge
 		ETextureArgument alphaArg1;
 		ETextureArgument alphaArg2;
 
-		TextureStage()
+		RenderTextureStage()
 			: addressU(TAM_CLAMP)
 			, addressV(TAM_CLAMP)
 			, filter(TF_LINEAR)
@@ -42,9 +42,9 @@ namespace Menge
 		}
 	};
 
-	struct Material
+	struct RenderMaterial
 	{
-		Material()
+		RenderMaterial()
 			: blendSrc(BF_ONE)
 			, blendDst(BF_ZERO)
 			, depthBufferWriteEnable(false)
@@ -53,7 +53,7 @@ namespace Menge
 		{
 		}
 
-		TextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
+		RenderTextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
 
 		EBlendFactor blendSrc;
 		EBlendFactor blendDst;
@@ -62,20 +62,20 @@ namespace Menge
 		bool alphaTestEnable;
 		bool alphaBlendEnable;
 
-		const Material * filterMaterial;
+		const RenderMaterial * filterMaterial;
 
-		const Material * getFilterMaterial() const
+		const RenderMaterial * getFilterMaterial() const
 		{
 			return filterMaterial;
 		}
 	};
 
-	struct MaterialGroup
+	struct RenderMaterialGroup
 	{
-		Material group[4];
-		Material filter_group[4];
+		RenderMaterial group[4];
+		RenderMaterial filter_group[4];
 
-		inline const Material * getMaterial( ETextureAddressMode _textureU, ETextureAddressMode _textureV) const
+		inline const RenderMaterial * getMaterial( ETextureAddressMode _textureU, ETextureAddressMode _textureV) const
 		{
 			return &group[_textureU + (_textureV * 2)];
 		}

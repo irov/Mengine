@@ -13,7 +13,7 @@
 #	include "Core/String.h"
 
 #	include "RenderEngine.h"
-#	include "Texture.h"
+#	include "RenderTexture.h"
 
 #	include <cstdio>
 namespace Menge
@@ -30,12 +30,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextureInterface * ResourceFont::getImage() const
+	const RenderTextureInterface * ResourceFont::getImage() const
 	{
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextureInterface * ResourceFont::getOutlineImage() const
+	const RenderTextureInterface * ResourceFont::getOutlineImage() const
 	{
 		return m_outline;
 	}

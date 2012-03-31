@@ -6,7 +6,7 @@
 #	include "RenderEngine.h"
 #	include "EventManager.h"
 
-#	include "Material.h"
+#	include "RenderMaterial.h"
 #	include "Camera2D.h"
 
 #	include "Player.h"
@@ -32,7 +32,7 @@
 #	include "math/angle.h"
 //#	include "math/triangulation.h"
 
-#	include "Texture.h"
+#	include "RenderTexture.h"
 
 namespace	Menge
 {
@@ -174,10 +174,10 @@ namespace	Menge
 		//	m_interface->setAngle( rads );
 		//}
 
-		const MaterialGroup * mg_intensive = RenderEngine::get()
+		const RenderMaterialGroup * mg_intensive = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(ParticleIntensive) );
 
-		const MaterialGroup * mg_nonintensive = RenderEngine::get()
+		const RenderMaterialGroup * mg_nonintensive = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(ParticleBlend) );
 
 		m_materials[0] = mg_intensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
@@ -467,7 +467,7 @@ namespace	Menge
 			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
 			const ResourceImage::ImageFrame & frame = image->getImageFrame();
 
-			TextureInterface* texture = frame.texture;
+			RenderTextureInterface* texture = frame.texture;
 
 			//++partCount;
 

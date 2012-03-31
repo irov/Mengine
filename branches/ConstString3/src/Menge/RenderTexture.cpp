@@ -6,7 +6,7 @@
  *
  */
 
-#	include "Texture.h"
+#	include "RenderTexture.h"
 #	include "Interface/ImageCodecInterface.h"
 #	include "math/mat4.h"
 
@@ -15,7 +15,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Texture::Texture( RenderImageInterface* _interface
+	RenderTexture::RenderTexture( RenderImageInterface* _interface
 						, const ConstString & _name
 						, size_t _width
 						, size_t _height
@@ -33,7 +33,6 @@ namespace Menge
 		, m_hwHeight(_hwHeight)
 		, m_hwPixelFormat(_hwPixelFormat)
 		, m_ref(1)
-		, m_uvMask(NULL)
 		, m_id(_id)
 	{
 		//if( _width != _hwWidth 
@@ -46,7 +45,7 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture::~Texture()
+	RenderTexture::~RenderTexture()
 	{
 		//if( m_uvMask != NULL )
 		//{
@@ -55,77 +54,72 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* Texture::getInterface() const
+	RenderImageInterface* RenderTexture::getInterface() const
 	{
 		return m_iTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Texture::getName() const
+	const ConstString & RenderTexture::getName() const
 	{
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::getWidth() const
+	size_t RenderTexture::getWidth() const
 	{
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::getHeight() const
+	size_t RenderTexture::getHeight() const
 	{
 		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PixelFormat Texture::getPixelFormat() const
+	PixelFormat RenderTexture::getPixelFormat() const
 	{
 		return m_pixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::addRef() const
+	size_t RenderTexture::addRef() const
 	{
 		return ++m_ref;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::decRef() const
+	size_t RenderTexture::decRef() const
 	{
 		return --m_ref;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char* Texture::lock( int* _pitch, bool _readOnly /*= true */ ) const
+	unsigned char* RenderTexture::lock( int* _pitch, bool _readOnly /*= true */ ) const
 	{
 		return m_iTexture->lock( _pitch, _readOnly );
 	}
     /////////////////////////////////////////////////////////////////////////////
-	unsigned char* Texture::lockRect( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
+	unsigned char* RenderTexture::lockRect( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
 	{
 		return m_iTexture->lockRect( _pitch, _rect, _readOnly );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Texture::unlock() const
+	void RenderTexture::unlock() const
 	{
 		m_iTexture->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::getHWWidth() const
+	size_t RenderTexture::getHWWidth() const
 	{
 		return m_hwWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::getHWHeight() const
+	size_t RenderTexture::getHWHeight() const
 	{
 		return m_hwHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::PixelFormat Texture::getHWPixelFormat() const
+	Menge::PixelFormat RenderTexture::getHWPixelFormat() const
 	{
 		return m_hwPixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f* Texture::getUVMask() const
-	{
-		return m_uvMask;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Texture::loadImageData( ImageDecoderInterface* _imageDecoder )
+	bool RenderTexture::loadImageData( ImageDecoderInterface* _imageDecoder )
 	{
 		int pitch = 0;
 		unsigned char* textureBuffer = lock( &pitch, false );
@@ -144,7 +138,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Texture::loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder )
+	bool RenderTexture::loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder )
 	{
 		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
 
@@ -211,7 +205,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Texture::getID() const
+	int RenderTexture::getID() const
 	{
 		return m_id;
 	}

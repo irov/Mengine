@@ -20,7 +20,7 @@ namespace Menge
 	class ResourceFont;
 	class ResourceImage;
 
-	struct Material;
+	struct RenderMaterial;
 
 	//! TextField - класс для отрисовки шрифта. 
 
@@ -173,8 +173,8 @@ namespace Menge
 		void createFormattedMessage_( const String& _text );
 		void splitLine(const std::string& str);
 
-		const Material * m_materialText;
-		const Material * m_materialOutline;
+		const RenderMaterial * m_materialText;
+		const RenderMaterial * m_materialOutline;
 
 		TVectorVertex2D m_vertexDataText;
 		TVectorVertex2D m_vertexDataOutline;

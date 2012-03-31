@@ -28,7 +28,7 @@ namespace Menge
 		bool getWrapX() const override;
 		bool getWrapY() const override;
 
-		TextureInterface * getTexture() const override;
+		RenderTextureInterface * getTexture() const override;
 		void addImagePath( const ConstString& _imagePath, const mt::vec2f & _size );
 
 		const ConstString & getFileName() const override;

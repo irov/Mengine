@@ -13,11 +13,11 @@
 
 //#	include "ResourceTexture.h"
 #	include "ResourceImage.h"
-#	include "Material.h"
+#	include "RenderMaterial.h"
 
 #	include "Camera.h"
 
-#	include "Texture.h"
+#	include "RenderTexture.h"
 #	include "Vertex.h"
 
 #	include "Core/PixelFormat.h"
@@ -34,10 +34,10 @@ namespace Menge
 {
 	struct RenderObject
 	{
-		const Material * material;
+		const RenderMaterial * material;
 
 		size_t textureStages;
-		const Texture* textures[MENGE_MAX_TEXTURE_STAGES];
+		const RenderTexture* textures[MENGE_MAX_TEXTURE_STAGES];
 
 		mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
 
@@ -182,7 +182,7 @@ namespace Menge
 		}
 		
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = true;
 			mt.alphaTestEnable = false;
@@ -197,7 +197,7 @@ namespace Menge
 		}
 
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = false;
 			mt.alphaTestEnable = false;
@@ -212,7 +212,7 @@ namespace Menge
 		}
 
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = true;
 			mt.alphaTestEnable = true;
@@ -227,7 +227,7 @@ namespace Menge
 		}
 
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = true;
 			mt.alphaTestEnable = true;
@@ -236,7 +236,7 @@ namespace Menge
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 
-			TextureStage & ts0 = mt.textureStage[0];
+			RenderTextureStage & ts0 = mt.textureStage[0];
 
 			ts0.colorOp = TOP_MODULATE;
 			ts0.colorArg1 = TARG_TEXTURE;
@@ -244,7 +244,7 @@ namespace Menge
 			ts0.alphaOp = TOP_SELECTARG1;
 			ts0.alphaArg1 = TARG_DIFFUSE;
 
-			TextureStage & ts1 = mt.textureStage[1];
+			RenderTextureStage & ts1 = mt.textureStage[1];
 
 			ts1.colorOp = TOP_SELECTARG1;
 			ts1.colorArg1 = TARG_CURRENT;
@@ -256,7 +256,7 @@ namespace Menge
 		}
 
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = true;
 			mt.alphaTestEnable = true;
@@ -271,7 +271,7 @@ namespace Menge
 		}
 
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = false;
 			mt.alphaTestEnable = false;
@@ -287,7 +287,7 @@ namespace Menge
 		}
 
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = true;
 			mt.alphaTestEnable = false;
@@ -303,7 +303,7 @@ namespace Menge
 		}
 
 		{
-			Material mt;
+			RenderMaterial mt;
 
 			mt.alphaBlendEnable = true;
 			mt.alphaTestEnable = false;
@@ -349,9 +349,9 @@ namespace Menge
 		// Выноси такое в отдельные функции, читать невозможно
 		//////////////////////////////////////////////////////////////////////////
 		
-		TextureInterface * texture  = createTexture( Consts::get()->c_NullTexture, 2, 2, PF_R8G8B8 );
+		RenderTextureInterface * texture  = createTexture( Consts::get()->c_NullTexture, 2, 2, PF_R8G8B8 );
 		
-		m_nullTexture = dynamic_cast<Texture*>(texture);
+		m_nullTexture = dynamic_cast<RenderTexture*>(texture);
 		
 		if( m_nullTexture )
 		{
@@ -392,7 +392,7 @@ namespace Menge
 		restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::screenshot( TextureInterface* _image, const mt::vec4f & _rect )
+	void RenderEngine::screenshot( RenderTextureInterface* _image, const mt::vec4f & _rect )
 	{
 		RenderImageInterface* iInterface = _image->getInterface();
 
@@ -452,7 +452,7 @@ namespace Menge
 	//	renderObject( ro );
 	//}	
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createMaterialGroup( const ConstString & _name, const Material & _material )
+	bool RenderEngine::createMaterialGroup( const ConstString & _name, const RenderMaterial & _material )
 	{
 		TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
 
@@ -465,7 +465,7 @@ namespace Menge
 			return false;
 		}
 
-		MaterialGroup * materialGroup = new MaterialGroup;
+		RenderMaterialGroup * materialGroup = new RenderMaterialGroup;
 
 		materialGroup->filter_group[0] = _material;
 		materialGroup->filter_group[0].textureStage[0].addressU = TAM_CLAMP;
@@ -517,7 +517,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const MaterialGroup * RenderEngine::getMaterialGroup( const ConstString & _name )
+	const RenderMaterialGroup * RenderEngine::getMaterialGroup( const ConstString & _name )
 	{
 		TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
 
@@ -551,7 +551,7 @@ namespace Menge
 		m_mapMaterialGroup.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface * RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	RenderTextureInterface * RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _name );
 
@@ -564,7 +564,7 @@ namespace Menge
 			return 0;
 		}
 				
-		Texture * texture = createTexture_( _name, _width, _height, _format );
+		RenderTexture * texture = createTexture_( _name, _width, _height, _format );
 
 		if( texture == 0 )
 		{
@@ -576,7 +576,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	RenderTexture* RenderEngine::createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
 		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
 			, _name.c_str()
@@ -609,12 +609,12 @@ namespace Menge
 
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
-		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
+		RenderTexture* texture = new RenderTexture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
 
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( TextureInterface* _image, const ConstString & _fileSystemName, const String & _filename )
+	bool RenderEngine::saveImage( RenderTextureInterface* _image, const ConstString & _fileSystemName, const String & _filename )
 	{
 		FileOutputStreamInterface * stream = FileEngine::get()
 			->openOutputFile( _fileSystemName, _filename );
@@ -695,7 +695,7 @@ namespace Menge
 		return exist;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface * RenderEngine::getTexture( const ConstString & _name ) const
+	RenderTextureInterface * RenderEngine::getTexture( const ConstString & _name ) const
 	{
 		TMapTextures::const_iterator it_find = m_textures.find( _name );
 		
@@ -708,7 +708,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
+	RenderTextureInterface* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
 	
@@ -759,7 +759,7 @@ namespace Menge
 			return NULL;
 		}
 		
-		Texture * texture = createTexture_( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
+		RenderTexture * texture = createTexture_( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
 
 		if( texture == NULL )
 		{
@@ -781,7 +781,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
+	RenderTextureInterface* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
 	{
 		
 		ConstString textureName = _fileNameAlpha;
@@ -894,7 +894,7 @@ namespace Menge
 		*/
 		const ImageCodecDataInfo* dataInfo = imageCombiner->getCodecDataInfo();
 
-		Texture * texture = createTexture_( textureName, dataInfo->width, dataInfo->height, dataInfo->format );
+		RenderTexture * texture = createTexture_( textureName, dataInfo->width, dataInfo->height, dataInfo->format );
 
 		if( texture == NULL )
 		{
@@ -922,9 +922,9 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseTexture( const TextureInterface* _texture )
+	void RenderEngine::releaseTexture( const RenderTextureInterface* _texture )
 	{
-		const Texture* texture = static_cast<const Texture*>( _texture );
+		const RenderTexture* texture = static_cast<const RenderTexture*>( _texture );
 		if( texture == NULL )
 		{
 			return;
@@ -939,7 +939,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::destroyTexture_( const Texture* _texture )
+	void RenderEngine::destroyTexture_( const RenderTexture* _texture )
 	{
 		RenderImageInterface* image = _texture->getInterface();
 
@@ -955,16 +955,6 @@ namespace Menge
 		m_interface->releaseImage( image );
 
 		delete _texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	LightInterface * RenderEngine::createLight( const ConstString& _name )
-	{
-		return m_interface->createLight( Helper::to_str(_name) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseLight( LightInterface * _light )
-	{
-		return m_interface->releaseLight( _light );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Resolution RenderEngine::getBestDisplayResolution( const Resolution & _resolution, float _aspect )
@@ -1166,13 +1156,13 @@ namespace Menge
 			}
 		}
 
-		const Material* material = _renderObject->material;
+		const RenderMaterial* material = _renderObject->material;
 
 		m_currentTextureStages = _renderObject->textureStages;
 
 		for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
-			const Texture * texture = _renderObject->textures[stageId];
+			const RenderTexture * texture = _renderObject->textures[stageId];
 
 			if( texture == NULL )
 			{
@@ -1189,8 +1179,8 @@ namespace Menge
 
 			if( m_currentMaterial != material )
 			{
-				TextureStage & current_stage = m_currentTextureStage[stageId];
-				const TextureStage & stage = material->textureStage[stageId];
+				RenderTextureStage & current_stage = m_currentTextureStage[stageId];
+				const RenderTextureStage & stage = material->textureStage[stageId];
 
 				if( current_stage.filter != stage.filter )
 				{
@@ -1299,7 +1289,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::disableTextureStage_( size_t _stage )
 	{
-		TextureStage & stage = m_currentTextureStage[_stage];
+		RenderTextureStage & stage = m_currentTextureStage[_stage];
 
 		m_currentTexturesID[_stage] = 0;
 
@@ -1366,7 +1356,7 @@ namespace Menge
 		
 		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			TextureStage & stage = m_currentTextureStage[i];
+			RenderTextureStage & stage = m_currentTextureStage[i];
 
 			//stage = TextureStage();
 
@@ -1524,7 +1514,7 @@ namespace Menge
 	//FIXME: _vertices меняеться внутри рендера, поэтому нельзя рендерить несколько нод в разных местах :(
 	//FIXED! уже можно!
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( const Material* _material, const TextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+	void RenderEngine::renderObject2D( const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum, bool _scale,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
@@ -1578,7 +1568,7 @@ namespace Menge
 			}
 			else
 			{
-				const Texture * texture = static_cast< const Texture * >( _textures[i] );
+				const RenderTexture * texture = static_cast< const RenderTexture * >( _textures[i] );
 				ro->textures[i] = texture;
 			}
 			
@@ -2240,14 +2230,14 @@ namespace Menge
 		m_interface->clear( _color );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderTargetTexture( TextureInterface * _texture, bool _clear )
+	void RenderEngine::setRenderTargetTexture( RenderTextureInterface * _texture, bool _clear )
 	{
 		RenderImageInterface * _image = _texture->getInterface();
 		m_interface->setRenderTarget( _image, _clear );
 		restoreRenderSystemStates_();
 	}
 	///////////////////////////////////////////////////////////////////////////
-	TextureInterface * RenderEngine::createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	RenderTextureInterface * RenderEngine::createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _name );
 
@@ -2260,7 +2250,7 @@ namespace Menge
 			return 0;
 		}
 
-		Texture * texture = createRenderTargetTexture_( _name, _width, _height, _format );
+		RenderTexture * texture = createRenderTargetTexture_( _name, _width, _height, _format );
 
 		if( texture == 0 )
 		{
@@ -2272,7 +2262,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture * RenderEngine::createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	RenderTexture * RenderEngine::createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
 		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
 			, _name.c_str()
@@ -2305,7 +2295,7 @@ namespace Menge
 
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
-		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
+		RenderTexture* texture = new RenderTexture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
 
 		return texture;
 	}

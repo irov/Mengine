@@ -1601,7 +1601,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::screenshot( TextureInterface* _renderTargetImage, const mt::vec4f & _rect )
+	void Application::screenshot( RenderTextureInterface* _renderTargetImage, const mt::vec4f & _rect )
 	{
 		const Resolution & contentResolution = m_game->getContentResolution();
 

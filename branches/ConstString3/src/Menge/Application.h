@@ -57,7 +57,7 @@ namespace Menge
 	class PluginInterface;
 
 	class Consts;
-	class TextureInterface;
+	class RenderTextureInterface;
 
 	class Application 
 		: public Holder<Application>
@@ -145,7 +145,7 @@ namespace Menge
 	public:
 		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle ) override;
 
-		void screenshot( TextureInterface * _renderTargetImage, const mt::vec4f & _rect );
+		void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect );
 
 		void quit();
 

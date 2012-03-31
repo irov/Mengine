@@ -2,7 +2,7 @@
 #	include "ResourceWindow.h"
 
 #	include "ResourceImplement.h"
-#	include "Texture.h"
+#	include "RenderTexture.h"
 #	include "RenderEngine.h"
 #	include "ResourceImage.h"
 
@@ -98,7 +98,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextureInterface* ResourceWindow::getImage( int _type )
+	RenderTextureInterface* ResourceWindow::getImage( int _type )
 	{
 		return m_images[_type].image;
 	}

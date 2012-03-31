@@ -47,7 +47,7 @@ namespace Menge
 		TU_DEFAULT = TU_AUTOMIPMAP | TU_STATIC_WRITE_ONLY
 	};
 
-	class TextureInterface
+	class RenderTextureInterface
 	{
 	public:
 		virtual void loadImpl() = 0;

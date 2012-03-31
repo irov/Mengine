@@ -11,7 +11,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://www.cmake.org/files/v2.8/cmake-2.8.6-win32-x86.zip
 %toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib126.zip
 %toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
-%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng159.zip
+%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng1510.zip
 %toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr8d.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.2.1.zip
@@ -54,8 +54,8 @@ if EXIST pthreads rmdir /s /q pthreads
 move pthreads-w32-2-8-0-release pthreads
 
 if EXIST libpng rmdir /s /q libpng
-7za x -y lpng159.zip
-move lpng159 libpng
+7za x -y lpng1510.zip
+move lpng1510 libpng
 
 if EXIST libjpeg rmdir /s /q libjpeg
 7za x -y jpegsr8d.zip
@@ -107,6 +107,7 @@ move svn-win32-1.6.6 svn
 :: svn\bin\svn export --force http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0 vorbis
 :: svn\bin\svn export --force http://svn.xiph.org/tags/theora/theora-1.0beta3 theora
 svn\bin\svn checkout https://pybind.svn.sourceforge.net/svnroot/pybind pybind
+svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator
 ::svn\bin\svn export --force -r2465 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
 
 goto end

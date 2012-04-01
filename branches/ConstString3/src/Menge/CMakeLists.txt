@@ -132,6 +132,8 @@ Engine\\\\Render
 	RenderMaterial.h
 	RenderTexture.h
 	RenderTexture.cpp
+	RenderSubTexture.h
+	RenderSubTexture.cpp
 	Vertex.h
 	Vertex.cpp
 )

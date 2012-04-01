@@ -9,7 +9,6 @@
 #	include "LogEngine.h"
 #	include "FileEngine.h"
 #	include "CodecEngine.h"
-#	include "RenderTexture.h"
 #	include "Consts.h"
 
 #	include "Utils/Core/File.h"

@@ -3,7 +3,6 @@
 #	include "ResourceManager.h"
 
 #	include "RenderEngine.h"
-#	include "RenderTexture.h"
 
 #	include "Consts.h"
 #	include "BinParser.h"

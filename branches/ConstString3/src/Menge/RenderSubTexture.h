@@ -17,11 +17,11 @@ namespace Menge
 {
 	class ImageDecoderInterface;
 
-	class RenderTexture
+	class RenderSubTexture
 		: public RenderTextureInterface
 	{
 	public:
-		RenderTexture( RenderImageInterface* _interface
+		RenderSubTexture( RenderImageInterface* _interface
 				, const ConstString & _name
 				, size_t _width
 				, size_t _height
@@ -31,13 +31,11 @@ namespace Menge
 				, PixelFormat _hwPixelFormat
 				, int _id );
 
-		~RenderTexture();
+		~RenderSubTexture();
 		
 	public:
 		RenderImageInterface* getInterface() const override;
-
 		const ConstString & getName() const override;
-
 		size_t getWidth() const override;
 		size_t getHeight() const override;
 		PixelFormat getPixelFormat() const override;
@@ -47,7 +45,6 @@ namespace Menge
 		
 		unsigned char* lock( int* _pitch, bool _readOnly = true ) const override;
 		unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
-
 		void unlock() const override;
 
 		size_t getHWWidth() const override;
@@ -71,13 +68,13 @@ namespace Menge
 		size_t m_width;
 		size_t m_height;
 		PixelFormat m_pixelFormat;
-		
+
 		size_t m_hwWidth;		// hardware width
 		size_t m_hwHeight;		// hardware height
 		PixelFormat m_hwPixelFormat;	// hardware pixel format
 
-		mt::vec4f m_uv;
-
 		int m_id;
+
+		mt::vec4f m_uv;
 	};
 }	// namespace Menge

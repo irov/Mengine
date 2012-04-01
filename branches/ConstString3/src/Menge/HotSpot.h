@@ -65,6 +65,8 @@ namespace Menge
 
 	protected:
 		Polygon m_polygon;
+		Polygon m_polygonWM;
+		Polygon m_polygonScreen;
 
 #	ifndef MENGE_MASTER_RELEASE
 	protected:

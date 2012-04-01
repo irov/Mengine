@@ -3,7 +3,6 @@
 
 #	include "RenderEngine.h"
 #	include "LogEngine.h"
-#	include "RenderTexture.h"
 
 #	include "Interface/ImageCodecInterface.h"
 

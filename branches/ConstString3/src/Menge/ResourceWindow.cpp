@@ -2,7 +2,7 @@
 #	include "ResourceWindow.h"
 
 #	include "ResourceImplement.h"
-#	include "RenderTexture.h"
+
 #	include "RenderEngine.h"
 #	include "ResourceImage.h"
 

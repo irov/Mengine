@@ -3,7 +3,6 @@
 #	include "BinParser.h"
 #	include "Utils/Core/Rect.h"
 #	include "RenderEngine.h"
-#	include "RenderTexture.h"
 #	include "LogEngine.h"
 #	include "Interface/ImageCodecInterface.h"
 

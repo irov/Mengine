@@ -7,8 +7,6 @@
 #	include "RenderEngine.h"
 #	include "RenderMaterial.h"
 
-#	include "RenderTexture.h"
-
 #	include "Consts.h"
 
 namespace Menge

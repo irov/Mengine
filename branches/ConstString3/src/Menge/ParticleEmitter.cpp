@@ -32,8 +32,6 @@
 #	include "math/angle.h"
 //#	include "math/triangulation.h"
 
-#	include "RenderTexture.h"
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////

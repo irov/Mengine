@@ -13,7 +13,6 @@
 #	include "Core/String.h"
 
 #	include "RenderEngine.h"
-#	include "RenderTexture.h"
 
 #	include <cstdio>
 namespace Menge

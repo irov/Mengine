@@ -20,7 +20,6 @@
 //#	 include "ResourceTexture.h"
 #	include "RenderMaterial.h"
 #	include "Affector.h"
-#	include "RenderTexture.h"
 
 namespace	Menge
 {

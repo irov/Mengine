@@ -308,8 +308,8 @@ namespace	Menge
 	{
 		bool intersect = false;
 
-		Polygon self_wm_polygon;
-		polygon_wm( self_wm_polygon, m_polygon, _transform );
+		m_polygonWM.clear();
+		polygon_wm( m_polygonWM, m_polygon, _transform );
 
 		size_t num_of_screen_poly_points = boost::geometry::num_points(_screenPoly);
 
@@ -320,17 +320,17 @@ namespace	Menge
 			mt::vec2f wmp;
 			mt::mul_v2_m3( wmp, ring[0], _screenTransform );
 
-			Polygon other_wm_polygon;
-			boost::geometry::append(other_wm_polygon, wmp);
+			m_polygonScreen.clear();
+			boost::geometry::append(m_polygonScreen, wmp);
 			
-			intersect = boost::geometry::intersects( self_wm_polygon, other_wm_polygon );
+			intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
 		}
 		else
 		{
-			Polygon other_wm_polygon;
-			polygon_wm( other_wm_polygon, _screenPoly, _screenTransform );
+			m_polygonScreen.clear();
+			polygon_wm( m_polygonScreen, _screenPoly, _screenTransform );
 
-			intersect = boost::geometry::intersects( self_wm_polygon, other_wm_polygon );
+			intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
 		}
 
 		return intersect;

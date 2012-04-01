@@ -12,7 +12,6 @@
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
 #	include "pybind/system.hpp"
-#	include "RenderTexture.h"
 #	include "Consts.h"
 
 namespace	Menge

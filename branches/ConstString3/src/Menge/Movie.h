@@ -41,6 +41,9 @@ namespace Menge
 		void setReverse( bool _value);
 		bool getReverse() const;
 
+		void setTiming( float _timming );
+		float getTiming() const;
+
 	protected:
 		bool _play() override;
 		bool _restart( size_t _enumerator ) override;

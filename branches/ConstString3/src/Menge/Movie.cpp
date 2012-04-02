@@ -113,6 +113,27 @@ namespace Menge
 		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::setTiming( float _timing )
+	{
+		if( this->isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Movie.setTiming: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		m_timing = _timing;
+
+		this->update( 0.f );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Movie::getTiming() const
+	{
+		return m_timing;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play()
 	{
 		if( isActivate() == false )

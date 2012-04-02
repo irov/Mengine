@@ -8,6 +8,8 @@
 
 #	include "FileSystemDirectory.h"
 
+#	include "FileBufferProvider.h"
+
 #	include "BufferedFileInput.h"
 #	include "FileEngine.h"
 #	include "LogEngine.h"
@@ -24,12 +26,14 @@ namespace Menge
 	FileSystemDirectory::FileSystemDirectory()
 		: m_interface(NULL)
 		, m_fileEngine(NULL)
+		, m_fileBufferProvider(NULL)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemDirectory::~FileSystemDirectory()
 	{
+		delete m_fileBufferProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::initialize( const String& _path, FileEngine * _fileEngine, bool _create )
@@ -73,6 +77,8 @@ namespace Menge
 				return true;
 			}
 		}
+
+		m_fileBufferProvider = new FileBufferProvider();
 		
 		return true;
 	}
@@ -86,28 +92,36 @@ namespace Menge
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
+
 		return m_interface->existFile( fullname );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileBufferProvider * FileSystemDirectory::getBufferProvider() const
+	{
+		return m_fileBufferProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* FileSystemDirectory::createInputFile()
 	{
 		//BufferedFileInput* bufferedFi = m_fileInputPool.get();
 		BufferedFileInput* bufferedFi = new BufferedFileInput;
+				
 		bufferedFi->setFileSystem( this );
+
 		return bufferedFi;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::openInputFile( const String& _filename, FileInputStreamInterface* _file )
 	{
-		String fullname;
-		makeFullname_( _filename, fullname );
+		//String fullname;
+		makeFullname_( _filename, m_fullnameCache );
 
-		FileInputStreamInterface* fi = m_interface->openInputStream( fullname );
+		FileInputStreamInterface* fi = m_interface->openInputStream( m_fullnameCache );
 
 		if( fi == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'"
-				, fullname.c_str() 
+				, m_fullnameCache.c_str() 
 				);
 
 			return false;
@@ -152,14 +166,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutputStreamInterface* _file )
 	{
-		String fullname;
-		makeFullname_( _filename, fullname );
+		makeFullname_( _filename, m_fullnameCache );
 		
-		FileOutputStreamInterface* fo = m_interface->openOutputStream( fullname );
+		FileOutputStreamInterface* fo = m_interface->openOutputStream( m_fullnameCache );
 		if( fo == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%s'"
-				, fullname.c_str() 
+				, m_fullnameCache.c_str() 
 				);
 
 			return false;
@@ -192,26 +205,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::createDirectory( const String& _path )
 	{
-		String fullname;
-		makeFullname_( _path, fullname );
+		makeFullname_( _path, m_fullnameCache );
 	
-		return m_interface->createFolder( fullname );
+		return m_interface->createFolder( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::removeDirectory( const String& _path )
 	{
-		String fullname;
-		makeFullname_( _path, fullname );
+		makeFullname_( _path, m_fullnameCache );
 
-		m_interface->deleteFolder( fullname );
+		m_interface->deleteFolder( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::removeFile( const String& _filename )
 	{
-		String fullname;
-		makeFullname_( _filename, fullname );
+		makeFullname_( _filename, m_fullnameCache );
 
-		m_interface->deleteFile( fullname );
+		m_interface->deleteFile( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::makeFullname_( const String& _path, String& _fullname )

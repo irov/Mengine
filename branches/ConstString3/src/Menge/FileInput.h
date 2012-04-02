@@ -22,15 +22,15 @@ namespace Menge
 		virtual ~FileInput();
 
 	public:
-		void setFileSystem( FileSystem* _fileSystem );
-		FileSystem* getFileSystem();
+		void setFileSystem( FileSystem * _fileSystem );
+		FileSystem * getFileSystem() const;
 
 	public:
 		bool open( const String& _filename ) override;
 		void close() override;
 
 	protected:
-		FileSystem* m_fileSystem;
+		FileSystem * m_fileSystem;
 		bool m_opened;
 	};
 }	// namespace Menge

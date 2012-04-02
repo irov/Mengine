@@ -15,6 +15,7 @@ namespace Menge
 {
 	class FileInputStreamInterface;
 	class FileOutputStreamInterface;
+	class FileBufferProvider;
 
 	class FileEngine;
 
@@ -30,7 +31,12 @@ namespace Menge
 		virtual FileInputStreamInterface* createInputFile() = 0;
 		virtual bool openInputFile( const String& _filename, FileInputStreamInterface* _file ) = 0;
 		virtual void closeInputFile( FileInputStreamInterface* _file ) = 0;
+		
 
+	public:
+		virtual FileBufferProvider * getBufferProvider() const = 0;
+
+	public:
 		virtual FileOutputStreamInterface* createOutputFile() { return 0; }
 		virtual bool openOutputFile( const String& _filename, FileOutputStreamInterface* _file ) { return false; }
 		virtual void closeOutputFile( FileOutputStreamInterface* _outStream ) { }

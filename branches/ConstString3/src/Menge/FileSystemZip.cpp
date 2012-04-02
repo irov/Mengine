@@ -160,4 +160,9 @@ namespace Menge
 		delete memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	FileBufferProvider * FileSystemZip::getBufferProvider() const
+	{
+		//TODO
+		return 0;
+	}
 }	// namespace Menge

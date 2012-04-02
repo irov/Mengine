@@ -35,17 +35,24 @@ namespace Menge
 		void closeInputFile( FileInputStreamInterface* _inputFile ) override;
 		
 		FileOutputStreamInterface* createOutputFile() override;
+
 		bool openOutputFile( const String& _filename, FileOutputStreamInterface* _file ) override;
 		void closeOutputFile( FileOutputStreamInterface* _outputFile ) override;
 		bool createDirectory( const String& _path ) override;
 		void removeDirectory( const String& _path ) override;
 		void removeFile( const String& _filename ) override;
 
+	public:
+		FileBufferProvider * getBufferProvider() const override;
+
 	private:
 		void makeFullname_( const String& _filename, String& _fullname );
 
 	private:
 		String m_path;
+
+		String m_fullnameCache;
+
 		FileSystemInterface* m_interface;
 		FileEngine * m_fileEngine;
 
@@ -54,5 +61,7 @@ namespace Menge
 
 		//typedef Pool<SimpleFileOutput, PoolPlacementPolicyErase> TFileOutputPool;
 		//TFileOutputPool m_fileOutputPool;
+
+		FileBufferProvider * m_fileBufferProvider;
 	};
 }	// namespace Menge

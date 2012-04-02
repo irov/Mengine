@@ -2639,7 +2639,7 @@ namespace Menge
 		//	.def_mapping( &ScriptMethod::NodeGetChild::getChild )
 		//	;
 
-		pybind::class_<mt::vec2f>("vec2f")
+		pybind::struct_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
 			.def_convert( &ScriptMethod::vec2f_convert )
 			.def_static_sequence( &ScriptMethod::vec2_sequence )
@@ -2660,20 +2660,20 @@ namespace Menge
 			//.def( boost::python::self /= float() )
 			;
 	
-		pybind::class_<PhysicJoint2DInterface>("Joint2D")
+		pybind::interface_<PhysicJoint2DInterface>("Joint2D")
 			;
 
 //		pybind::proxy_<Task>("Task")
 //			;
 
-		pybind::class_<mt::vec3f>("vec3f")
+		pybind::struct_<mt::vec3f>("vec3f")
 			.def( pybind::init<float,float,float>() )
 			.def_member( "x", &mt::vec3f::x )
 			.def_member( "y", &mt::vec3f::y )
 			.def_member( "z", &mt::vec3f::z )
 			;
 
-		pybind::class_<mt::vec4f>("vec4f")
+		pybind::struct_<mt::vec4f>("vec4f")
 			.def( pybind::init<float,float,float,float>() )
 			.def_convert( &ScriptMethod::vec4f_convert )
 			.def_static_sequence( &ScriptMethod::vec4_sequence )
@@ -2683,14 +2683,14 @@ namespace Menge
 			.def_member( "w", &mt::vec4f::w )
 			;
 
-		pybind::class_<mt::box2f>("box2f")
+		pybind::struct_<mt::box2f>("box2f")
 			.def( pybind::init<mt::vec2f,mt::vec2f>() )
 			.def_convert( &ScriptMethod::box2f_convert )
 			.def_member( "minimum", &mt::box2f::minimum )
 			.def_member( "maximum", &mt::box2f::maximum )
 			;
 
-		pybind::class_<Rect>("Rect")
+		pybind::struct_<Rect>("Rect")
 			.def( pybind::init<int,int,int,int>() )
 			.def_convert( &ScriptMethod::Rect_convert )
 			.def_member( "left", &Rect::left )
@@ -2702,7 +2702,7 @@ namespace Menge
 			;
 
 		
-		pybind::class_<mt::quatf>("quatf")
+		pybind::struct_<mt::quatf>("quatf")
 			.def( pybind::init<float,float,float,float>() )
 			.def_member( "w", &mt::quatf::w )
 			.def_member( "x", &mt::quatf::x )
@@ -2710,12 +2710,12 @@ namespace Menge
 			.def_member( "z", &mt::quatf::z )			
 			;
 
-		pybind::class_<Polygon>("Polygon")
+		pybind::struct_<Polygon>("Polygon")
 			.def_convert( &ScriptMethod::Polygon_convert )
 			.def_static("getPoints", &ScriptMethod::PolygonAdapter::s_getPoints)
 			;
 
-		pybind::class_<Viewport>("Viewport")
+		pybind::struct_<Viewport>("Viewport")
 			.def( pybind::init<mt::vec2f,mt::vec2f>() )
 			.def_convert( &ScriptMethod::Viewport_convert )
 			.def_member( "begin", &Viewport::begin )
@@ -2739,7 +2739,7 @@ namespace Menge
 		.def( "getB", &Color::getB )
 		;*/
 
-		pybind::class_<ColourValue>("Color")
+		pybind::struct_<ColourValue>("Color")
 			.def( pybind::init<float, float, float, float>() )
 			.def_convert( &ScriptMethod::color_convert )
 			.def( "getA", &ColourValue::getA )
@@ -2758,7 +2758,7 @@ namespace Menge
 		//	.def( "getRight", Join::getRight )
 		//	;
 
-		pybind::class_<Resolution>("Resolution")
+		pybind::struct_<Resolution>("Resolution")
 			.def( pybind::init<size_t, size_t>() )
 			.def_convert( &ScriptMethod::resolution_convert )
 			.def( "setWidth", &Resolution::setWidth )

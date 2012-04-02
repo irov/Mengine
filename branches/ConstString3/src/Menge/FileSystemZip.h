@@ -33,6 +33,9 @@ namespace Menge
 		bool openInputFile( const String& _filename, FileInputStreamInterface* _file ) override;
 		void closeInputFile( FileInputStreamInterface* _file ) override;
 
+	public:
+		FileBufferProvider * getBufferProvider() const;
+
 	private:
 		String m_path;
 		FileEngine * m_fileEngine;

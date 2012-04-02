@@ -599,7 +599,10 @@ namespace Menge
 			}
 
 			FileOutputStreamInterface * fileLogInterface = m_fileLog->getFileInterface();
-			fileLogInterface->close();
+			if( fileLogInterface != NULL )
+			{
+				fileLogInterface->close();
+			}
 
 			delete m_fileLog;
 			m_fileLog = NULL;

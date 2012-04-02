@@ -27,15 +27,17 @@ namespace Menge
 
 	public:
 		int tell() const override;
+
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
+
 		int size() const override;
 		bool time( time_t & _time ) const override;
 
 	protected:
-		FileInputStreamInterface* m_iStream;
+		FileInputStreamInterface * m_iStream;
 
-		TBlobject m_buffer;
+		TBlobject * m_buffer;
 		int m_bufferBegin;
 		int m_iStreamCursor;
 		int m_iStreamSize;

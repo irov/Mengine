@@ -7,6 +7,9 @@
  */
 
 #	include "BufferedFileInput.h"
+#	include "FileBufferProvider.h"
+
+#	include "FileSystem.h"
 
 namespace Menge
 {
@@ -14,6 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BufferedFileInput::BufferedFileInput()
 		: m_iStream(NULL)
+		, m_buffer(NULL)
 		, m_bufferBegin(0)
 		, m_iStreamCursor(0)
 		, m_iStreamSize(0)
@@ -23,6 +27,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BufferedFileInput::~BufferedFileInput()
 	{
+		if( m_buffer )
+		{
+			FileBufferProvider * bufferProvider = m_fileSystem->getBufferProvider();
+
+			bufferProvider->releaseBuffer( m_buffer );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BufferedFileInput::loadStream( FileInputStreamInterface* _iStream )
@@ -39,22 +49,27 @@ namespace Menge
 		m_iStreamSize = m_iStream->size();
 		m_bufferMaxSize = std::min( m_iStreamSize, s_maxFileBufferSize );
 
-		m_buffer.reserve( m_bufferMaxSize );
+		FileBufferProvider * bufferProvider = m_fileSystem->getBufferProvider();
+		
+		m_buffer = bufferProvider->getBuffer();
+		m_buffer->reserve( m_bufferMaxSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* BufferedFileInput::unloadStream()
 	{
 		FileInputStreamInterface* stream = m_iStream;
+
 		m_iStream = NULL;
+
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int BufferedFileInput::tell() const
 	{
-		return m_iStreamCursor - m_buffer.size() + m_bufferBegin;
+		return m_iStreamCursor - m_buffer->size() + m_bufferBegin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int BufferedFileInput::read( void* _buf, int _count )
+	int BufferedFileInput::read( void * _buf, int _count )
 	{
 		if( m_iStream == NULL )
 		{
@@ -67,7 +82,7 @@ namespace Menge
 		TBlobject::value_type * dstBuf = static_cast<TBlobject::value_type*>( _buf );
 
 		// check how much data we have
-		int bytesLeft = m_buffer.size() - m_bufferBegin + m_iStreamSize - m_iStreamCursor;
+		int bytesLeft = m_buffer->size() - m_bufferBegin + m_iStreamSize - m_iStreamCursor;
 		if( bytesLeft < _count )
 		{
 			_count = bytesLeft;
@@ -76,11 +91,11 @@ namespace Menge
 		while( _count > 0 )
 		{
 			// buffer is empty - fill it
-			if( m_bufferBegin == m_buffer.size() )
+			if( m_bufferBegin == m_buffer->size() )
 			{
 				int readSize = std::min( m_bufferMaxSize, m_iStreamSize - m_iStreamCursor );
-				m_buffer.resize( readSize );
-				int ret = m_iStream->read( &(m_buffer[0]), readSize );
+				m_buffer->resize( readSize );
+				int ret = m_iStream->read( &m_buffer->front(), readSize );
 				m_iStreamCursor += ret;
 				m_bufferBegin = 0;
 				if( ret < readSize )	// something wrong
@@ -90,9 +105,9 @@ namespace Menge
 			}
 
 			// copy buffer data
-			int bytesToCopy = std::min( static_cast<int>( m_buffer.size() ) - m_bufferBegin, _count );
-			std::copy( &(m_buffer[0]) + m_bufferBegin
-				, &(m_buffer[0]) + m_bufferBegin + bytesToCopy
+			int bytesToCopy = std::min( static_cast<int>( m_buffer->size() ) - m_bufferBegin, _count );
+			std::copy( &m_buffer->front() + m_bufferBegin
+				, &m_buffer->front() + m_bufferBegin + bytesToCopy
 				, dstBuf );
 			m_bufferBegin += bytesToCopy;
 			dstBuf += bytesToCopy;
@@ -111,17 +126,17 @@ namespace Menge
 		}
 
 		if( _pos > m_iStreamCursor
-			|| _pos < m_iStreamCursor - static_cast<int>( m_buffer.size() ) )
+			|| _pos < m_iStreamCursor - static_cast<int>( m_buffer->size() ) )
 		{
 			m_iStream->seek( _pos );
 			// set new pointer and drop buffer
 			m_iStreamCursor = _pos;
-			m_buffer.clear();
+			m_buffer->clear();
 			m_bufferBegin = 0;
 		}
 		else	// we're still in buffer, just fix m_bufferBegin
 		{
-			m_bufferBegin = _pos - m_iStreamCursor + m_buffer.size();
+			m_bufferBegin = _pos - m_iStreamCursor + m_buffer->size();
 		}
 
 	}

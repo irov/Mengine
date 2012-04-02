@@ -69,6 +69,8 @@ ADD_FILTER(
 	FileSystemMemoryMapped.cpp
 	FileSystemZip.h
 	FileSystemZip.cpp
+    FileBufferProvider.h
+    FileBufferProvider.cpp
 	SimpleFileOutput.h
 	SimpleFileOutput.cpp
 	FileOutput.h

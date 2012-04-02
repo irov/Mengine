@@ -24,12 +24,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileInput::setFileSystem( FileSystem* _fileSystem )
+	void FileInput::setFileSystem( FileSystem * _fileSystem )
 	{
 		m_fileSystem = _fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystem* FileInput::getFileSystem()
+	FileSystem * FileInput::getFileSystem() const
 	{
 		return m_fileSystem;
 	}

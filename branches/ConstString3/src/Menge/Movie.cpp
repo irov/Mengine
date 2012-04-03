@@ -76,7 +76,6 @@ namespace Menge
 	Movie::Movie()
 		: m_resourceMovie(NULL)
 		, m_timing(0.f)
-		, m_out(0.f)
 		, m_reverse(false)
 		, m_parentMovie(false)
 		, m_speedFactor(1.f)
@@ -134,6 +133,20 @@ namespace Menge
 		return m_timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float Movie::getWorkAreaDuration() const
+	{
+		if( this->isCompile() == false )
+		{
+			MENGE_LOG_ERROR("Movie.getWorkAreaDuration %s not compile"
+				, m_name.c_str()
+				);
+
+			return 0.f;
+		}
+
+		return m_resourceMovie->getWorkAreaDuration();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play()
 	{
 		if( isActivate() == false )
@@ -143,7 +156,10 @@ namespace Menge
 
 		if( m_reverse == true )
 		{
-			m_timing = m_out;
+			float out = this->getWorkAreaDuration();
+
+			m_timing = out;
+
 			this->setLastFrame();
 		}
 		else
@@ -360,6 +376,8 @@ namespace Menge
 			return;
 		}
 
+		float out = this->getWorkAreaDuration();
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -385,7 +403,7 @@ namespace Menge
 
 			this->updateFrame2D_( layer, node, frame );
 
-			if( fabsf(layer.out - m_out) <= 0.001f )
+			if( fabsf(layer.out - out) <= 0.001f )
 			{
 				node->localHide(false);
 			}
@@ -428,7 +446,7 @@ namespace Menge
 
 			Helper::s_applyFrame3D( sprite, frame );
 
-			if( fabsf(layer.out - m_out) <= 0.001f )
+			if( fabsf(layer.out - out) <= 0.001f )
 			{
 				sprite->localHide(false);
 			}
@@ -510,7 +528,7 @@ namespace Menge
 			return false;
 		}
 
-		m_out = m_resourceMovie->getWorkAreaDuration();
+		float out = this->getWorkAreaDuration();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -1092,8 +1110,9 @@ namespace Menge
 		else
 		{
 			m_timing += _timing * m_speedFactor;
-
 		}
+
+		float out = this->getWorkAreaDuration();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -1108,9 +1127,9 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			if( layerOut > m_out )
+			if( layerOut > out )
 			{
-				layerOut = m_out;
+				layerOut = out;
 			}
 
 			//if (m_reverse)
@@ -1172,7 +1191,7 @@ namespace Menge
 
 				if( layer.internal == false )
 				{
-					//if( layerIn > 0.001f || fabsf(layerOut - m_out) > 0.001f )
+					//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
 					//{
 					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
 					node->localHide(true);
@@ -1276,7 +1295,7 @@ namespace Menge
 			{
 				if( this->getLoop() == true )
 				{
-					m_timing = m_out + m_timing;
+					m_timing = out + m_timing;
 				}
 				else
 				{
@@ -1286,11 +1305,11 @@ namespace Menge
 		}
 		else
 		{
-			if( m_out >= lastTiming && m_out <= m_timing )
+			if( out >= lastTiming && out <= m_timing )
 			{
 				if( this->getLoop() == true )
 				{
-					//m_timing = m_timing - m_out;
+					//m_timing = m_timing - out;
 					m_timing = 0.f;
 
 					this->setFirstFrame();

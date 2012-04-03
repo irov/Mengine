@@ -44,6 +44,9 @@ namespace Menge
 		void setTiming( float _timming );
 		float getTiming() const;
 
+	public:
+		float getWorkAreaDuration() const;
+
 	protected:
 		bool _play() override;
 		bool _restart( size_t _enumerator ) override;
@@ -92,8 +95,6 @@ namespace Menge
 
 		float m_timing;
 		float m_speedFactor;
-
-		float m_out;
 
 		bool m_parentMovie;
 		bool m_reverse;

@@ -657,7 +657,9 @@ namespace Menge
 			const ConstString & resourceCategory = resource->getCategory();
 			const ConstString & resourcePath = resource->getPath();
 
-			String path;
+			static String path;
+			path.c_str();
+
 			if( FileEngine::get()
 				->getFullPath( resourceCategory, resourcePath, path ) == false )
 			{

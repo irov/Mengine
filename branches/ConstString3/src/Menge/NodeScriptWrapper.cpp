@@ -3281,6 +3281,7 @@ namespace Menge
 					.def( "getSpeedFactor", &Movie::getSpeedFactor )
 					.def( "setTiming", &Movie::setTiming )
 					.def( "getTiming", &Movie::getTiming )
+					.def( "getWorkAreaDuration", &Movie::getWorkAreaDuration )
 					;
 
 				pybind::proxy_< Video, pybind::bases< Node , Animatable > >("Video", false)

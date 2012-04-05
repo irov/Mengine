@@ -28,6 +28,7 @@ extern void PyMarshal_Init(void);
 extern void initimp(void);
 extern void initgc(void);
 extern void init_ast(void);
+extern void initunicodedata(void);
 //extern void initnt(void);
 
 struct _inittab _PyImport_Inittab[] = {
@@ -54,6 +55,7 @@ struct _inittab _PyImport_Inittab[] = {
 
 	/* This lives in gcmodule.c */
 	{"gc", initgc},
+    //{"unicodedata", initunicodedata},
     
 	/* Sentinel */
 	{0, 0}

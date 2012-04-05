@@ -28,7 +28,8 @@ if(WIN32)
 endif(WIN32)
 
 if(WIN32)
-    ADD_SUBDIRECTORY( tinyxml )
+    #ADD_SUBDIRECTORY( tinyxml )
+    ADD_SUBDIRECTORY( pugixml )
     ADD_SUBDIRECTORY( Python_2_7 )
 endif(WIN32)
 

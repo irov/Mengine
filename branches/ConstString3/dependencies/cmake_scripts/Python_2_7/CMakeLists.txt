@@ -71,6 +71,8 @@ add_python_module(_symtable MOD_SRCS ${SOURCE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${SOURCE_DIR}/Modules/xxsubtype.c)
 add_python_module(_struct MOD_SRCS ${SOURCE_DIR}/Modules/_struct.c)
 add_python_module(binascii MOD_SRCS ${SOURCE_DIR}/Modules/binascii.c)
+add_python_module(unicodedata MOD_SRCS ${SOURCE_DIR}/Modules/unicodedata.c)
+
 
 set( HAVE_CHROOT 0 )
 set( HAVE_FSYNC 0 )

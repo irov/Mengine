@@ -79,7 +79,7 @@ namespace	Menge
 
 		size_t frameSize = m_resourceAnimation->getSequenceCount();
 
-		m_timing += _timing;
+		m_timing += _timing * m_speedFactor;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 		delay *= m_animationFactor;

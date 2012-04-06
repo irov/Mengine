@@ -23,34 +23,34 @@ namespace Menge
 			it = _text.begin(), 
 			it_end = _text.end();
 		it != it_end; 
-		/*++it*/ )
+		++it )
 		{
 			CharData charData;
 
 			unsigned char byte = (*it);
-			unsigned char mask = 0x80;
-			int i = 0;
-			charData.code = 0;
-			if( ( byte & mask ) == 0 )
-			{
-				charData.code = byte;
-				++it;
-			}
-			else
-			{
-				while( ( byte & (mask >> i) ) != 0 )
-				{
-					if( it == it_end )
-					{
-						MENGE_LOG_ERROR( "TextField::setText: Invalid Text Encoding (not utf-8)" );
-						break;
-					}
-					unsigned char glyphPart = (*it);
-					charData.code |= ( glyphPart << (i*8) );
-					++it;
-					++i;
-				}
-			}
+			//unsigned char mask = 0x80;
+			//int i = 0;
+			charData.code = (int)(*it);
+			//if( ( byte & mask ) == 0 )
+			//{
+			//	charData.code = byte;
+			//	++it;
+			//}
+			//else
+			//{
+			//	while( ( byte & (mask >> i) ) != 0 )
+			//	{
+			//		if( it == it_end )
+			//		{
+			//			MENGE_LOG_ERROR( "TextField::setText: Invalid Text Encoding (not utf-8)" );
+			//			break;
+			//		}
+			//		unsigned char glyphPart = (*it);
+			//		charData.code |= ( glyphPart << (i*8) );
+			//		++it;
+			//		++i;
+			//	}
+			//}
 
 			//charData.code = *it;
 			/*if( charData.code == 32 )
@@ -59,12 +59,17 @@ namespace Menge
 			charData.ratio = 0.5f;
 			}
 			else*/
-			{
-				charData.uv = _resource->getUV( charData.code );
-				charData.ratio = _resource->getCharRatio( charData.code );
-				charData.offset = _resource->getOffset( charData.code );
-				charData.size = _resource->getSize( charData.code ) * m_height / _resource->getInitSize();
-			}
+			//{
+				//charData.uv = _resource->getUV( charData.code );
+				//charData.ratio = _resource->getCharRatio( charData.code );
+				//charData.offset = _resource->getOffset( charData.code );
+				//charData.size = _resource->getSize( charData.code ) * m_height / _resource->getInitSize();
+			//}
+
+			charData.uv = _resource->getUV( charData.code );
+			charData.ratio = _resource->getCharRatio( charData.code );
+			charData.offset = _resource->getOffset( charData.code );
+			charData.size = _resource->getSize( charData.code ) * m_height / _resource->getInitSize();
 
 			m_charsData.push_back( charData );
 

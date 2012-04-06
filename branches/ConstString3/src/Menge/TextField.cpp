@@ -632,10 +632,16 @@ namespace Menge
 		}
 
 		size_t size = textEntry.text.size() + 16;
-		WString format_text;
-		format_text.resize(size);
-		swprintf( &format_text[0], size, m_format.c_str(), textEntry.text.c_str(), _number );
+		wchar_t * buff = new wchar_t[size];
+		if( swprintf( buff, size, m_format.c_str(), textEntry.text.c_str(), _number ) == 0 )
+		{
+			return;
+		}
 		
+		WString format_text(buff);
+
+		delete [] buff;
+
 		this->setText( format_text );
 	}
 	//////////////////////////////////////////////////////////////////////////

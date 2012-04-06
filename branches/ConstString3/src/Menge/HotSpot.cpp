@@ -237,7 +237,7 @@ namespace	Menge
 
 		//const mt::vec2f & direction = this->getWorldDirection();
 		//const mt::vec2f & position = this->getScreenPosition();
-		const mt::box2f& myBBox = getBoundingBox();
+		const mt::box2f& myBBox = this->getBoundingBox();
 
 		if( m_layer != 0 )
 		{
@@ -253,6 +253,11 @@ namespace	Menge
 		}
 		else
 		{
+			if( mt::is_intersect( myBBox, mt::box2f( _p, _p ) ) == false )
+			{
+				return false;
+			}
+
 			const mt::mat3f& wm = getWorldMatrix();
 			
 			mt::vec2f wmp;

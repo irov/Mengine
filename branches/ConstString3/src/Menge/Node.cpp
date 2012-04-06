@@ -785,11 +785,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_checkVisibility( const Viewport & _viewport )
 	{
-		const mt::box2f & bbox = this->getBoundingBox();
+		//const mt::box2f & bbox = this->getBoundingBox();
 
-		bool result = _viewport.testBBox( bbox );
+		//bool result = _viewport.testBBox( bbox );
 
-		return result;
+		//return result;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Node::_embedded()

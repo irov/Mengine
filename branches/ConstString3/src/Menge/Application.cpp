@@ -611,6 +611,7 @@ namespace Menge
 		m_serviceProvider->registryService( "CodecService", m_codecEngine );
 
 		m_codecEngine->registerCodecExt(L"png", ConstString("pngImage"));
+		m_codecEngine->registerCodecExt(L"jpg", ConstString("jpgImage"));		
 		
 		return true;
 	}

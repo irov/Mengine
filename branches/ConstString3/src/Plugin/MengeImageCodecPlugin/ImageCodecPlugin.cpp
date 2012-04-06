@@ -143,7 +143,7 @@ namespace Menge
 		
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderPNG>(ConstString("pngImage"), logService) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpegImage"), logService) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logService) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>(ConstString("ddsImage"), logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logService) );

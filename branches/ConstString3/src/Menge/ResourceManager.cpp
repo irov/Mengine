@@ -8,6 +8,9 @@
 
 #	include "LogEngine.h"
 
+#	include "Application.h"
+#	include "Interface/ApplicationInterface.h"
+
 #	include "ResourceVisitor.h"
 
 namespace Menge
@@ -93,9 +96,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const ConstString & _name, const ResourceDesc & _desc )
 	{
-		String xml_path = _desc.path;
-		xml_path += "/";
-		xml_path += Helper::to_str(_name);
+		WString xml_path = _desc.path;
+		xml_path += MENGE_FOLDER_DELIM;
+
+		PlatformInterface * platform = Application::get()
+			->getPlatform();
+
+		const String & resource_name = _name.to_str();
+			
+		xml_path += platform->ansiToUnicode( resource_name );
 
 		LoadableResourceManager loadable(this, _desc.pak, _name);
 

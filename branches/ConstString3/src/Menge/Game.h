@@ -39,7 +39,7 @@ namespace Menge
 		, public Loadable
 	{
 	public:
-		Game( const String & _baseDir, const String & _platformName );
+		Game( const WString & _baseDir, const String & _platformName );
 		~Game();
 
 	public:
@@ -54,14 +54,14 @@ namespace Menge
 		void initializeRenderResources();
 		void finalizeRenderResources();
 
-		bool loadDescription( const ConstString & _gamePackName, const String & _gameDescription );
+		bool loadDescription( const ConstString & _gamePackName, const WString & _gameDescription );
 
 		bool loadPersonality();
 		
 		void loadConfigPaks();
 		void applyConfigPaks();
 		void setLanguagePack( const ConstString& _packName );
-		const String& getScreensaverName() const;
+		const WString& getScreensaverName() const;
 
 	protected:
 		bool loadLocalePaksByName_( const ConstString & _locale, const String & _platform );
@@ -107,7 +107,7 @@ namespace Menge
 		const Resolution & getResolution() const;
 		const Resolution & getContentResolution() const;
 		bool isContentResolutionFixed() const;
-		const String & getTitle() const;
+		const WString & getTitle() const;
 		int getBits() const;
 		bool getFullscreen() const;
 		bool getTextureFiltering() const;
@@ -132,7 +132,7 @@ namespace Menge
 		
 		//LightSystem* m_lightSystem;
 
-		ConstString m_title;
+		WString m_title;
 		bool m_localizedTitle;
 
 		Resolution m_contentResolution;
@@ -144,7 +144,7 @@ namespace Menge
 		ConstString m_defaultArrowPrototype;
 		ConstString m_personalityModule;
 
-		String m_screensaverName;
+		WString m_screensaverName;
 
 		Arrow * m_defaultArrow;
 
@@ -160,7 +160,7 @@ namespace Menge
 		bool m_hasWindowPanel;
 		float m_timingFactor;
 
-		String m_baseDir;
+		WString m_baseDir;
 		String m_iconPath;
 
 		typedef std::vector<ResourcePak *> TVectorResourcePak;

@@ -5,6 +5,8 @@
 
 #	include "LogEngine.h"
 
+#	include "Application.h"
+
 #	include "Utils/Core/String.h"
 
 //#	include "Utils.h"
@@ -22,9 +24,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadResource( const ConstString & _name, const ResourceDesc & _desc )
 	{
-		String xml_path = _desc.path;
+		WString xml_path = _desc.path;
 		xml_path += MENGE_FOLDER_DELIM;
-		xml_path += Helper::to_str(_name);
+
+		PlatformInterface * platform = Application::get()
+			->getPlatform();
+
+		const String & resource_name = _name.to_str();
+
+		xml_path += platform->ansiToUnicode(resource_name);
 
 		bool exist = false;
 

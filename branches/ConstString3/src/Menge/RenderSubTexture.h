@@ -35,14 +35,11 @@ namespace Menge
 		
 	public:
 		RenderImageInterface* getInterface() const override;
-		const ConstString & getName() const override;
+		
 		size_t getWidth() const override;
 		size_t getHeight() const override;
 		PixelFormat getPixelFormat() const override;
-
-		size_t addRef() const override;
-		size_t decRef() const override;
-		
+	
 		unsigned char* lock( int* _pitch, bool _readOnly = true ) const override;
 		unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
 		void unlock() const override;
@@ -54,7 +51,14 @@ namespace Menge
 		bool loadImageData( ImageDecoderInterface* _imageDecoder ) override;
 		bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) override;
 
+	public:
+		void setName( const ConstString & _name );
+		const ConstString & getName() const;
+
 		const mt::vec4f & getUV() const;
+
+		size_t addRef() const;
+		size_t decRef() const;
 
 		int getID() const;
 

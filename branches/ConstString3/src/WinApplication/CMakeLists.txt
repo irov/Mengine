@@ -41,6 +41,7 @@ src
 )
 
 add_definitions(-DUNICODE)
+add_definitions(-D_UNICODE)
 
 if(MINGW)
     # resource compilation for mingw

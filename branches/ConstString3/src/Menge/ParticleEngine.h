@@ -30,7 +30,7 @@ namespace Menge
 		bool initialize();
 
 	public:
-		EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename );
+		EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const WString & _filename );
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
 
 		//EmitterInterface * createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container );

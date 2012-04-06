@@ -51,8 +51,8 @@ namespace Menge
 	bool FileEngine::initialize()
 	{
 		FactoryManager::registerFactory( Consts::get()->c_dir, new FactoryDefault<FileSystemDirectory>() );
-		FactoryManager::registerFactory( Consts::get()->c_pak, new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( Consts::get()->c_zip, new FactoryDefault<FileSystemZip>() );
+		//FactoryManager::registerFactory( Consts::get()->c_pak, new FactoryDefault<FileSystemZip>() );
+		//FactoryManager::registerFactory( Consts::get()->c_zip, new FactoryDefault<FileSystemZip>() );
 		//FactoryManager::registerFactory( Consts::get()->c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
 
 		//m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::get()->c_memory );
@@ -71,9 +71,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create )
+	bool FileEngine::mountFileSystem( const ConstString& _fileSystemName, const WString& _path, const ConstString & _type, bool _create )
 	{
-        MENGE_LOG_INFO( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%s' _type '%s'"
+        MENGE_LOG_INFO( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%S' _type '%s'"
                        , _fileSystemName.c_str() 
                        , _path.c_str()
                        , _type.c_str()
@@ -136,29 +136,33 @@ namespace Menge
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const
+	bool FileEngine::getFullPath( const ConstString& _fileSystemName, const WString & _path, WString & _fullPath ) const
 	{
 		if( this->getFileSystemPath( _fileSystemName, _fullPath ) == false )
 		{
 			return false;
 		}
 
-		_fullPath += Helper::to_str(_path);
+		_fullPath += _path;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const
+	bool FileEngine::getFileSystemPath( const ConstString& _fileSystemName, WString & _fileSystemPath ) const
 	{
 		if( _fileSystemName.empty() )
 		{
 			return false;
 		}
-
-
+		
 		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
+			MENGE_LOG_WARNING("FileEngine::getFileSystemPath not found '%s' '%S'"
+				, _fileSystemName.c_str()
+				, _fileSystemPath.c_str()
+				);
+
 			return false;
 		}
 
@@ -167,7 +171,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const ConstString& _fileSystemName, const String& _filename ) const
+	bool FileEngine::existFile( const ConstString& _fileSystemName, const WString& _filename ) const
 	{
 		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -176,12 +180,7 @@ namespace Menge
 		}
 		
 		FileSystem * fileSystem = it_find->second;
-        
-        MENGE_LOG_INFO( "FileEngine::existFile '%s' '%s'"
-                       , _fileSystemName.c_str()
-                       , _filename.c_str()
-                       );
-		
+
 		return fileSystem->existFile( _filename );		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -203,23 +202,28 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface* FileEngine::openInputFile( const ConstString& _fileSystemName, const String& _filename )
+	FileInputStreamInterface* FileEngine::openInputFile( const ConstString& _fileSystemName, const WString& _filename )
 	{
-        MENGE_LOG_INFO( "FileEngine::openInputFile '%s' '%s'"
-                       , _fileSystemName.c_str()
-                       , _filename.c_str()
-                       );
-        
 		FileInputStreamInterface * file = this->createInputFile( _fileSystemName );
 
 		if( file == 0 )
 		{
+			MENGE_LOG_ERROR("FileEngine::openInputFile can't create input file '%s'"
+				, _fileSystemName.c_str()
+				);
+
 			return 0;
 		}
 
 		if( file->open( _filename ) == false )
 		{
 			file->close();
+
+			MENGE_LOG_ERROR("FileEngine::openInputFile can't open input file '%s' '%S'"
+				, _fileSystemName.c_str()
+				, _filename.c_str()
+				);
+
 			return 0;
 		}		
 
@@ -243,32 +247,47 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputStreamInterface* FileEngine::openOutputFile( const ConstString& _fileSystemName, const String& _filename )
+	FileOutputStreamInterface* FileEngine::openOutputFile( const ConstString & _fileSystemName, const WString& _filename )
 	{
 		FileOutputStreamInterface * file = this->createOutputFile( _fileSystemName );
 
 		if( file == 0 )
 		{
+			MENGE_LOG_ERROR("FileEngine::openOutputFile can't create output file '%s'"
+				, _fileSystemName.c_str()
+				);
+
 			return 0;
 		}
 
 		if( file->open( _filename ) == false )
 		{
 			file->close();
+
+			MENGE_LOG_ERROR("FileEngine::openOutputFile can't open output file '%s' '%S'"
+				, _fileSystemName.c_str()
+				, _filename.c_str()
+				);
+			
 			file = NULL;
 		}
 
 		return file;
 	}
-	bool FileEngine::createDirectoryPathFileSystem_( FileSystem * _fs, const String& _path )
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::createDirectoryPathFileSystem_( FileSystem * _fs, const WString& _path ) const
 	{
-		String dir_path = _path;
+		WString dir_path = _path;
 
-		String::size_type idx = 0;
-		idx = dir_path.find( '/', idx );
+		WString::size_type idx = 0;
+		idx = dir_path.find( L'\\', idx );
+		if( idx == String::npos )
+		{
+			idx = dir_path.find( L'/', idx );
+		}
 		while( idx != String::npos )
 		{
-			String subDir = dir_path.substr( 0, idx );
+			WString subDir = dir_path.substr( 0, idx );
 
 			if( _fs->existFile( subDir ) == false &&
 				_fs->createDirectory( subDir ) == false )
@@ -276,13 +295,18 @@ namespace Menge
 				return false;
 			}
 
-			idx = dir_path.find( '/', idx+1 );
+			//idx = dir_path.find( MENGE_FOLDER_DELIM, idx+1 );
+			idx = dir_path.find( L'\\', idx + 1 );
+			if( idx == String::npos )
+			{
+				idx = dir_path.find( L'/', idx + 1 );
+			}
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const String& _path )
+	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const WString& _path )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -309,7 +333,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::removeDirectory( const ConstString& _fileSystemName, const String& _path )
+	void FileEngine::removeDirectory( const ConstString& _fileSystemName, const WString& _path )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -324,7 +348,7 @@ namespace Menge
 		it_find->second->removeDirectory( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::removeFile( const ConstString& _fileSystemName, const String& _filename )
+	void FileEngine::removeFile( const ConstString& _fileSystemName, const WString& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )

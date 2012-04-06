@@ -34,8 +34,13 @@ namespace Menge
 		
 		DecoderInterface * createDecoder( const ConstString& _type, InputStreamInterface * _stream ) override;
 	
+	public:
+		bool registerCodecExt( const WString & _ext, const ConstString & _codecType ) override;
+		const ConstString & findCodecType( const WString & _ext ) override;
+
 	protected:
 		bool supportA8() override;
+
 	public:
 		EncoderInterface * createEncoder( const ConstString& _type, OutputStreamInterface * stream );
 
@@ -51,5 +56,8 @@ namespace Menge
 
 		typedef std::map<ConstString, EncoderSystemInterface *> TMapEncoderSystem;
 		TMapEncoderSystem m_mapEncoderSystem;
+
+		typedef std::map<WString, ConstString> TMapCodecTypes;
+		TMapCodecTypes m_codecTypes;
 	};
 }

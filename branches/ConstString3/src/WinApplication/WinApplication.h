@@ -35,7 +35,7 @@ namespace Menge
 		void stop()	override;
 
 	public:
-		WindowHandle createWindow( const Menge::String & _name, const Resolution & _resolution, bool _fullscreen );
+		WindowHandle createWindow( const Menge::WString & _name, const Resolution & _resolution, bool _fullscreen );
 
 		const Resolution & getDesktopResolution() const override;
 
@@ -46,13 +46,18 @@ namespace Menge
 		void setHandleMouse( bool _handle ) override;
 		void setCursorPosition( int _x, int _y ) override;
 		
-		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
+		void showMessageBox( const WString& _message, const WString& _caption, unsigned int _style ) override;
 
 		TimerInterface * getTimer() const override;
 		
 		String ansiToUtf8( const String& _ansi ) override;
 		String utf8ToAnsi( const String& _utf8 ) override;
 		size_t utf8Count( const String& _utf8 ) override;
+
+		String unicodeToAnsi( const WString& _unicode ) override;
+		WString ansiToUnicode( const String& _utf8 ) override;
+
+		WString utf8ToUnicode( const String& _utf8 ) override;
 
 		void showKeyboard() override;
 		void hideKeyboard() override;
@@ -63,7 +68,7 @@ namespace Menge
 		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
 		void notifyCursorModeChanged( bool _mode ) override;
-		void notifyCursorIconSetup( const String& _fileName ) override;
+		void notifyCursorIconSetup( const WString& _fileName ) override;
 
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
@@ -103,16 +108,17 @@ namespace Menge
 		bool	m_cursorInArea;
 		HCURSOR m_cursor;
 
-		typedef std::map<String, HCURSOR> TMapCursors;
+		typedef std::map<WString, HCURSOR> TMapCursors;
 		TMapCursors m_cursors;
 		
-		String m_name;
+		WString m_name;
 
+		WString m_windowClassName;
 		
 		WString m_currentPath;
 
-		String m_applicationPath;
-		String m_userPath;
+		WString m_applicationPath;
+		WString m_userPath;
 
 		Resolution m_windowResolution;
 		Resolution m_desktopResolution;

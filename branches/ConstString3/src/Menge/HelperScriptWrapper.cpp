@@ -271,12 +271,12 @@ namespace Menge
 			return str.str();
 		}
 
-		static TVectorString s_getAccounts()
+		static TVectorWString s_getAccounts()
 		{
 			const TMapAccounts & accounts = AccountManager::get()
 				->getAccounts();
 
-			TVectorString v_accounts;
+			TVectorWString v_accounts;
 
 			for( TMapAccounts::const_iterator
 				it = accounts.begin(),
@@ -290,7 +290,7 @@ namespace Menge
 			return v_accounts;
 		}
 
-		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
+		static void s_addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
@@ -306,82 +306,158 @@ namespace Menge
 			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 		}
 
-		static void s_changeSetting( const String& _setting, const String& _value )
+		static void s_changeSetting( const WString& _setting, const WString& _value )
 		{
 			AccountManager::get()
 				->changeSetting( _setting, _value );
 		}
 
-		static const String& s_getSetting( const String& _setting )
+		static PyObject * s_getSetting( const WString& _setting )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "Error getSetting: currentAccount is none"
+				MENGE_LOG_ERROR( "getSetting: currentAccount is none [%S]"
+					, _setting.c_str()
 					);
 
-				static String empty;
-				return empty;
+				return pybind::ret_none();
 			}
 
-			return currentAccount->getSetting( _setting );
+			const WString & value = currentAccount->getSetting( _setting );
+
+			PyObject * py_value = pybind::ptr( value );
+
+			return py_value;
 		}
 
-		static PyObject* s_getAccountSetting( const String& _accountID, const String& _setting )
+		static PyObject * s_getSettingUInt( const WString& _setting )
+		{
+			Account* currentAccount = AccountManager::get()
+				->getCurrentAccount();
+
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "getSettingUInt: currentAccount is none [%S]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = currentAccount->getSetting( _setting );
+
+			unsigned int value;
+			if( swscanf( setting.c_str(), L"%u", &value ) != 1 )
+			{
+				MENGE_LOG_ERROR( "getSettingUInt: can't scanf from [%S]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( value );
+
+			return py_value;
+		}
+
+		static PyObject * s_getSettingFloat( const WString& _setting )
+		{
+			Account* currentAccount = AccountManager::get()
+				->getCurrentAccount();
+
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "getSettingFloat: currentAccount is none [%S]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = currentAccount->getSetting( _setting );
+
+			float value;
+			if( swscanf( setting.c_str(), L"%f", &value ) != 1 )
+			{
+				MENGE_LOG_ERROR( "getSettingFloat: can't scanf from [%S]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( value );
+
+			return py_value;
+		}
+
+		static PyObject* s_getAccountSetting( const WString& _accountID, const WString& _setting )
 		{
 			Account* account = AccountManager::get()
 				->getAccount( _accountID );
-			
-			
+						
 			if( account == NULL )
 			{
-				MENGE_LOG_ERROR( "Error getAccountSetting: Account %s is none"
+				MENGE_LOG_ERROR( "Error getAccountSetting: Account '%S' is none"
 					, _accountID.c_str()
 					);
 
 				return pybind::ret_none();
 			}
 
-			const String & setting = account->getSetting( _setting );
+			const WString & value = account->getSetting( _setting );
 
-			PyObject* py_setting = pybind::string_from_char( setting.c_str(), setting.length() );
+			PyObject * py_value = pybind::ptr( value );
 
-			return py_setting;
+			return py_value;
 		}
 
-
-		static PyObject* s_getAccountSettingU( const String& _accountID, const String& _setting )
+		static PyObject* s_getAccountSettingUInt( const WString& _accountID, const WString& _setting )
 		{
 			Account* account = AccountManager::get()
 				->getAccount( _accountID );
 
-
 			if( account == NULL )
 			{
-				MENGE_LOG_ERROR( "Error getAccountSetting: Account %s is none"
+				MENGE_LOG_ERROR( "Error getAccountSetting: Account '%S' is none"
 					, _accountID.c_str()
 					);
 
 				return pybind::ret_none();
 			}
 
-			const String & settingU = account->getSettingU( _setting );
+			const WString & setting = account->getSetting( _setting );
 
-			PyObject* py_settingU = pybind::unicode_from_utf8( settingU.c_str(), settingU.length() );
+			PyObject* py_setting = pybind::ptr( setting );
 
-			return py_settingU;
+			unsigned int value;
+			if( swscanf( setting.c_str(), L"%u", &value ) != 1 )
+			{
+				MENGE_LOG_ERROR( "getSettingUInt: can't scanf from [%S]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( value );
+
+			return py_value;
 		}
-		
 
-		static String s_createAccount()
+		static WString s_createAccount()
 		{
-			return AccountManager::get()
-				->createAccount();
+			WString accountId = AccountManager::get()
+				->createAccount(); 
+
+			return accountId;
 		}
 
-		static void s_selectAccount( const String& _accountID )
+		static void s_selectAccount( const WString& _accountID )
 		{
 			AccountManager::get()
 				->selectAccount( _accountID );
@@ -393,13 +469,13 @@ namespace Menge
 				->hasCurrentAccount();
 		}
 
-		static void s_setDefaultAccount( const String & _accountID )
+		static void s_setDefaultAccount( const WString & _accountID )
 		{
 			return AccountManager::get()
 				->setDefaultAccount( _accountID );
 		}
 
-		static const String & s_getDefaultAccount()
+		static const WString & s_getDefaultAccount()
 		{
 			return AccountManager::get()
 				->getDefaultAccount();
@@ -439,13 +515,13 @@ namespace Menge
 				->saveAccountsInfo();
 		}
 
-		static void s_deleteAccount( const String& _accountName )
+		static void s_deleteAccount( const WString& _accountName )
 		{
 			AccountManager::get()
 				->deleteAccount( _accountName );
 		}
 				
-		static const ConstString & s_getCurrentAccountName()
+		static const WString & s_getCurrentAccountName()
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
@@ -455,13 +531,15 @@ namespace Menge
 				MENGE_LOG_ERROR( "Error getCurrentAccountName: currentAccount is none"
 					);
 
-				return Consts::get()->c_builtin_empty;
+				return Utils::emptyWString();
 			}
 
-			return currentAccount->getFolder();
+			const WString & name = currentAccount->getName();
+
+			return name;
 		}
 
-		static bool s_writeBinaryFile( const String & _filename, const String & _data )
+		static bool s_writeBinaryFile( const WString & _filename, const String & _data )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
@@ -482,9 +560,9 @@ namespace Menge
 				return false;
 			}
 
-			const ConstString & folder = currentAccount->getFolder();
+			const WString & folder = currentAccount->getName();
 
-			String fullpath = Helper::to_str(folder) + "/" + _filename;
+			WString fullpath = folder + MENGE_FOLDER_DELIM + _filename;
 
 			if( file->open( fullpath ) == false )
 			{
@@ -499,7 +577,7 @@ namespace Menge
 			return true;
 		}
 
-		static String s_loadBinaryFile( const String & _filename )
+		static String s_loadBinaryFile( const WString & _filename )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
@@ -508,7 +586,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "Error loadBinaryFile: currentAccount is none"
+				MENGE_LOG_ERROR( "loadBinaryFile: currentAccount is none"
 					);
 
 				return data;
@@ -519,15 +597,23 @@ namespace Menge
 
 			if( file == 0 )
 			{
+				MENGE_LOG_ERROR( "loadBinaryFile: invalid create input file '%S'"
+					, _filename.c_str()
+					);
+
 				return data;
 			}
 
-			const ConstString & folder = currentAccount->getFolder();
+			const WString & folder = currentAccount->getName();
 
-			String fullpath = Helper::to_str(folder) + "/" + _filename;
+			WString fullpath = folder + MENGE_FOLDER_DELIM + _filename;
 			
 			if( file->open( fullpath ) == false )
 			{
+				MENGE_LOG_ERROR( "loadBinaryFile: invalid open input file '%S'"
+					, _filename.c_str()
+					);
+				
 				file->close();
 
 				return data;
@@ -562,7 +648,7 @@ namespace Menge
 			return pybind::ptr( Utils::AToW( _string ) );
 		}
 
-		static String s_getTextByKey( const ConstString& _key )
+		static WString s_getTextByKey( const ConstString& _key )
 		{
 			const TextEntry & entry = TextManager::get()
 				->getTextEntry( _key );
@@ -575,12 +661,12 @@ namespace Menge
 			const TextEntry & entry = TextManager::get()
 				->getTextEntry( _key );
 
-			size_t count;
+			//size_t count;
 
-			Application::get()
-				->utf8Count( entry.text, count );
+			//Application::get()
+				//->utf8Count( entry.text, count );
 
-			return count;
+			return entry.text.size();
 		}
 
 		//static void s_loadPak( const ConstString& _pakName, PyObject* _doneCallback )
@@ -655,15 +741,15 @@ namespace Menge
 				->getResourceT<ResourceCursorICO>(_resourceName);
 
 			const ConstString & resourceCategory = resource->getCategory();
-			const ConstString & resourcePath = resource->getPath();
+			const WString & resourcePath = resource->getPath();
 
-			static String path;
+			static WString path;
 			path.c_str();
 
 			if( FileEngine::get()
 				->getFullPath( resourceCategory, resourcePath, path ) == false )
 			{
-				MENGE_LOG_ERROR( "Error: can't set cursor icon getFullPath '%s' '%s'"
+				MENGE_LOG_ERROR( "Error: can't set cursor icon getFullPath '%s' '%S'"
 					, resourceCategory.c_str()
 					, resourcePath.c_str()
 					);
@@ -972,11 +1058,16 @@ namespace Menge
 		pybind::def_function( "getAccounts", &ScriptHelper::s_getAccounts );
 		pybind::def_function( "addSetting", &ScriptHelper::s_addSetting );
 		pybind::def_function( "getSetting", &ScriptHelper::s_getSetting );
+		pybind::def_function( "getSettingUInt", &ScriptHelper::s_getSettingUInt );
+		pybind::def_function( "getSettingFloat", &ScriptHelper::s_getSettingFloat );
+		
+
 		pybind::def_function( "changeSetting", &ScriptHelper::s_changeSetting );
 		
 
 		pybind::def_function( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
-		pybind::def_function( "getAccountSettingU", &ScriptHelper::s_getAccountSettingU );
+		pybind::def_function( "getAccountSettingUInt", &ScriptHelper::s_getAccountSettingUInt );
+		
 				
 
 		pybind::def_function( "createAccount", &ScriptHelper::s_createAccount );

@@ -244,23 +244,23 @@ namespace Menge
 		//	return result;
 		//}
 
-		static PyObject * s_getParam( const ConstString & _name )
-		{
-			TVectorParams params;
-			if( ParamManager::get()
-				->getParam( _name, params ) == false )
-			{
-				MENGE_LOG_ERROR("Menge.getParam: %s not found"
-					, _name.c_str()
-					);
+		//static PyObject * s_getParam( const ConstString & _name )
+		//{
+		//	TVectorParams params;
+		//	if( ParamManager::get()
+		//		->getParam( _name, params ) == false )
+		//	{
+		//		MENGE_LOG_ERROR("Menge.getParam: %s not found"
+		//			, _name.c_str()
+		//			);
 
-				return pybind::ret_none();
-			}
+		//		return pybind::ret_none();
+		//	}
 
-			PyObject * py_param = pybind::ptr( params );
+		//	PyObject * py_param = pybind::ptr( params );
 
-			return py_param;
-		}
+		//	return py_param;
+		//}
 
 		static void s_blockInput( bool _value )
 		{
@@ -664,31 +664,31 @@ namespace Menge
 			return node;
 		}
 
-		static PyObject * createNodeFromBinary( const ConstString & _name, const ConstString & _tag, const ConstString & _binary )
-		{
-			Node * node = NodeManager::get()
-				->createNodeFromBinary( _name, _tag, _binary );
+		//static PyObject * createNodeFromBinary( const ConstString & _name, const ConstString & _tag, const ConstString & _binary )
+		//{
+		//	Node * node = NodeManager::get()
+		//		->createNodeFromBinary( _name, _tag, _binary );
 
-			if( node == 0 )
-			{
-				return pybind::ret_none();
-			}
+		//	if( node == 0 )
+		//	{
+		//		return pybind::ret_none();
+		//	}
 
-			Game::get()
-				->addHomeless( node );
+		//	Game::get()
+		//		->addHomeless( node );
 
-			PyObject * py_embedding = node->getEmbed();
+		//	PyObject * py_embedding = node->getEmbed();
 
-			if( py_embedding == 0 )
-			{
-				node->destroy();
-				return pybind::ret_none();
-			}
+		//	if( py_embedding == 0 )
+		//	{
+		//		node->destroy();
+		//		return pybind::ret_none();
+		//	}
 
-			pybind::incref( py_embedding );
+		//	pybind::incref( py_embedding );
 
-			return py_embedding;
-		}
+		//	return py_embedding;
+		//}
 
 		static void quitApplication()
 		{
@@ -935,7 +935,7 @@ namespace Menge
 			RenderEngine::get()->swapBuffers();
 		}
 
-		static void writeImageToFile( const ConstString& _resource, const String& _filename )
+		static void writeImageToFile( const ConstString& _resource, const WString& _filename )
 		{
 			ResourceImage * resource = ResourceManager::get()
 				->getResourceT<ResourceImage>( _resource );
@@ -963,7 +963,7 @@ namespace Menge
 			Application::get()->setParticlesEnabled( _enabled );
 		}
 
-		static void s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const ConstString& _filename )
+		static void s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const WString& _filename )
 		{
 			ResourceImageDefault* resImage = ResourceManager::get()
 				->getResourceT<ResourceImageDefault>( _resourceName );
@@ -2259,23 +2259,24 @@ namespace Menge
 			{
 				PyObject * py_dict = pybind::dict_new();
 				PyObject * py_node_file = pybind::ptr((*it).file);
-				PyObject * py_node_path = pybind::ptr((*it).path);
+				//PyObject * py_node_path = pybind::ptr((*it).path);
 				
 				pybind::dict_set(py_dict,"file",py_node_file);
-				pybind::dict_set(py_dict,"path",py_node_path);
+				//pybind::dict_set(py_dict,"path",py_node_path);
 				
 				pybind::decref( py_node_file );
-				pybind::decref( py_node_path );
+				//pybind::decref( py_node_path );
 				pybind::list_appenditem( py_list_atlas, py_dict );
 			}
 
 			pybind::dict_set(py_dict_result,"Emitters",py_list_names);
 			pybind::dict_set(py_dict_result,"Atlasses",py_list_atlas);
+
 			return py_dict_result;
 		}
 
-		static bool s_createParticlesResource( const ConstString & _resourceName, const ConstString& _pakName,  const ConstString & _fileName
-			, const ConstString & _folderName, const ConstString& _emitterName  )
+		static bool s_createParticlesResource( const ConstString & _resourceName, const ConstString& _pakName,  const WString & _fileName
+			, const WString & _folderName, const ConstString& _emitterName  )
 		{
 				ResourceEmitterContainer* resource = ResourceManager::get()
 					->getResourceT<ResourceEmitterContainer>( _resourceName );
@@ -2475,7 +2476,7 @@ namespace Menge
 					PyObject * py_string = pybind::list_getitem( _obj, it );
 
 					String key;
-					pybind::extract<String>(py_string, key);
+					pybind::extract(py_string, key);
 
 					_value.push_back( key );
 
@@ -2511,12 +2512,12 @@ namespace Menge
 		}
 	}s_extract_TVectorString_type;
 
-	static struct extract_TVectorParams_type
-		: public pybind::type_cast_result<TVectorParams>
+	static struct extract_TVectorWString_type
+		: public pybind::type_cast_result<TVectorWString>
 	{
-		bool apply( PyObject * _obj, TVectorParams & _value ) override
+		bool apply( PyObject * _obj, TVectorWString & _value ) override
 		{
-			TVectorParams values;
+			TVectorWString value;
 
 			if( pybind::list_check( _obj ) == true )
 			{
@@ -2524,14 +2525,14 @@ namespace Menge
 
 				for( size_t it = 0; it != size; ++it )
 				{
-					PyObject * py_value = pybind::list_getitem( _obj, it );
+					PyObject * py_string = pybind::list_getitem( _obj, it );
 
-					TVectorString param;
-					pybind::extract<TVectorString>( py_value, param );
+					WString key;
+					pybind::extract(py_string, key);
 
-					_value.push_back( param );
+					_value.push_back( key );
 
-					pybind::decref( py_value );
+					pybind::decref( py_string );
 				}
 			}
 			else
@@ -2542,26 +2543,78 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * wrap( pybind::type_cast_result<TVectorParams>::TCastRef _value ) override
+		PyObject * wrap( pybind::type_cast_result<TVectorWString>::TCastRef _value ) override
 		{
-			PyObject * py_param = pybind::list_new(0);
+			PyObject * py_value = pybind::list_new(0);
 
-			for( TVectorParams::const_iterator
+			for( TVectorWString::const_iterator
 				it = _value.begin(),
 				it_end = _value.end();
 			it != it_end;
 			++it )
 			{
-				PyObject * py_value = pybind::ptr( *it );
+				PyObject * py_string = pybind::ptr( *it );
 
-				pybind::list_appenditem( py_param, py_value );
+				pybind::list_appenditem( py_value, py_string );
 
-				pybind::decref( py_value );
+				pybind::decref( py_string );
 			}
 
-			return py_param;
+			return py_value;
 		}
-	}s_extract_TVectorParams_type;
+	}s_extract_TVectorWString_type;
+
+	//static struct extract_TVectorParams_type
+	//	: public pybind::type_cast_result<TVectorParams>
+	//{
+	//	bool apply( PyObject * _obj, TVectorParams & _value ) override
+	//	{
+	//		TVectorParams values;
+
+	//		if( pybind::list_check( _obj ) == true )
+	//		{
+	//			size_t size = pybind::list_size( _obj );
+
+	//			for( size_t it = 0; it != size; ++it )
+	//			{
+	//				PyObject * py_value = pybind::list_getitem( _obj, it );
+
+	//				TVectorString param;
+	//				pybind::extract<TVectorString>( py_value, param );
+
+	//				_value.push_back( param );
+
+	//				pybind::decref( py_value );
+	//			}
+	//		}
+	//		else
+	//		{
+	//			return false;
+	//		}
+
+	//		return true;
+	//	}
+
+	//	PyObject * wrap( pybind::type_cast_result<TVectorParams>::TCastRef _value ) override
+	//	{
+	//		PyObject * py_param = pybind::list_new(0);
+
+	//		for( TVectorParams::const_iterator
+	//			it = _value.begin(),
+	//			it_end = _value.end();
+	//		it != it_end;
+	//		++it )
+	//		{
+	//			PyObject * py_value = pybind::ptr( *it );
+
+	//			pybind::list_appenditem( py_param, py_value );
+
+	//			pybind::decref( py_value );
+	//		}
+
+	//		return py_param;
+	//	}
+	//}s_extract_TVectorParams_type;
 
 	static struct extract_TMapParam_type
 		: public pybind::type_cast_result<TMapParam>
@@ -2572,7 +2625,7 @@ namespace Menge
 			{
 				return false;
 			}
-			
+
 			PyObject * py_items = pybind::dict_items( _obj );
 			size_t size = pybind::list_size( py_items );
 
@@ -2585,8 +2638,8 @@ namespace Menge
 
 				String key;
 				String value;
-				pybind::extract<String>(py_key, key);
-				pybind::extract<String>(py_value, value );
+				pybind::extract(py_key, key);
+				pybind::extract(py_value, value );
 
 				_param.insert( std::make_pair( key, value ) );
 			}
@@ -2624,6 +2677,7 @@ namespace Menge
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
+
 	void ScriptWrapper::nodeWrap()
 	{
 		classWrapping();
@@ -3207,8 +3261,6 @@ namespace Menge
 					pybind::proxy_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
 						.def( "setAnimationResource", &Animation::setAnimationResource )
 						.def( "getAnimationResource", &Animation::getAnimationResource )
-						.def( "setAnimationFactor", &Animation::setAnimationFactor )
-						.def( "getAnimationFactor", &Animation::getAnimationFactor )
 						.def( "getFrameCount", &Animation::getFrameCount )
 						.def( "getFrameDelay", &Animation::getFrameDelay )
 						.def( "setCurrentFrame", &Animation::setCurrentFrame )
@@ -3322,7 +3374,7 @@ namespace Menge
 			pybind::def_function( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
 
 			pybind::def_function( "createNode", &ScriptMethod::createNode );
-			pybind::def_function( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
+			//pybind::def_function( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
 			pybind::def_function( "destroyNode", &ScriptMethod::destroyNode );
 
 			pybind::def_function( "timing", &ScriptMethod::timing );

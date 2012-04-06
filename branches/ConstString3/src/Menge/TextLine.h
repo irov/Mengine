@@ -29,7 +29,7 @@ namespace Menge
 		TextLine( float _height, float _charOffset );
 
 	public:
-		void initialize( const ResourceFont * _resource, const String& _text );
+		void initialize( const ResourceFont * _resource, const WString& _text );
 
 	public:
 		void prepareRenderObject(

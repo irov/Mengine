@@ -26,7 +26,7 @@ namespace Menge
 		FileSystem * getFileSystem() const;
 
 	public:
-		bool open( const String& _filename ) override;
+		bool open( const WString & _filename ) override;
 		void close() override;
 
 	protected:

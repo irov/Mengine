@@ -313,7 +313,7 @@ namespace Menge
 		return m_outlineColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setText( const String& _text )
+	void TextField::setText( const WString& _text )
 	{
 		if( m_text == _text )
 		{
@@ -343,7 +343,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& TextField::getText() const
+	const WString& TextField::getText() const
 	{
 		return m_text;
 	}
@@ -359,16 +359,16 @@ namespace Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::createFormattedMessage_( const String& _text )
+	void TextField::createFormattedMessage_( const WString& _text )
 	{
 		m_lines.clear();
 		m_charCount = 0;
-		TVectorString lines;
+		TVectorWString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
-		Utils::split( lines, _text, false, "\n" );
+		Utils::wsplit( lines, _text, false, L"\n" );
 
-		for(TVectorString::iterator 
+		for(TVectorWString::iterator 
 			it = lines.begin(),
 			it_end = lines.end(); 
 		it != it_end; 
@@ -380,16 +380,16 @@ namespace Menge
 
 			if( textLine.getLength() > m_maxWidth )
 			{
-				TVectorString words;
-				Utils::split( words, *it, false, " " );
+				TVectorWString words;
+				Utils::wsplit( words, *it, false, L" " );
 			
-				String newLine = words.front();
+				WString newLine = words.front();
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
 					TextLine tl(m_height, m_charOffset);
 					
-					String tl_string( newLine + String( " " ) + ( *words.begin() ) );
+					WString tl_string( newLine + WString(L" ") + words.front() );
 					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
@@ -406,7 +406,7 @@ namespace Menge
 					}
 					else
 					{
-						newLine += String( " " ) + ( *words.begin() );
+						newLine += WString(L" ") + words.front();
 						words.erase( words.begin() );
 					}
 				}
@@ -596,7 +596,7 @@ namespace Menge
 		setText( textEntry.text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number )
+	void TextField::setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number )
 	{
 		if( _key.empty() == true )
 		{
@@ -631,24 +631,12 @@ namespace Menge
 			setLineOffset( textEntry.lineOffset );
 		}
 
-		String ansi;
-		Application::get()
-			->utf8ToAnsi(textEntry.text, ansi);
-
 		size_t size = textEntry.text.size() + 16;
-		char * buff = new char[size];
-		memset( buff, '\0', size );
-		sprintf( buff, m_format.c_str(), ansi.c_str(), _number );
-
-		size_t str_size = strlen(buff);
-		String ansi_buff(buff, str_size);
-		delete [] buff;
-
-		String utf8;
-		Application::get()
-			->ansiToUtf8(ansi_buff, utf8);
+		WString format_text;
+		format_text.resize(size);
+		swprintf( &format_text[0], size, m_format.c_str(), textEntry.text.c_str(), _number );
 		
-		this->setText( utf8 );
+		this->setText( format_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getTextKey() const

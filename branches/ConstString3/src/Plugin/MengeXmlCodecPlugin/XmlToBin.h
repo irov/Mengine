@@ -3,6 +3,8 @@
 #	include <map>
 #	include <iostream>
 
+#	include "pugixml.hpp"
+
 struct AttributeXml
 {
 	size_t id;
@@ -19,20 +21,17 @@ struct NodeXml
 
 typedef std::map<std::string, NodeXml> TMapNodes;
 
-class TiXmlNode;
-class TiXmlElement;
-
 class XmlToBin
 {
 public:
-	bool readProtocol( const char * _file );
-	void writeHeader( const char * _file );
-	bool writeBinary( const char * _source, const char * _bin );
+	bool readProtocol( const wchar_t * _file );
+	void writeHeader( const wchar_t * _file );
+	bool writeBinary( const wchar_t * _source, const wchar_t * _bin );
 
-	const std::string & getLastError();
+	const std::string & getLastError() const;
 
 protected:
-	bool writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element );
+	bool writeNodeBinary_( std::ofstream & _stream, const pugi::xml_node & _element );
 
 protected:
 	TMapNodes m_nodes;
@@ -49,5 +48,5 @@ protected:
 	std::string m_error;
 };
 
-extern "C" bool writeHeader( const char * _protocol, const char * _header );
-extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin, char * _error );
+extern "C" bool writeHeader( const wchar_t * _protocol, const wchar_t * _header );
+extern "C" bool writeBinary( const wchar_t * _protocol, const wchar_t * _source, const wchar_t * _bin, char * _error );

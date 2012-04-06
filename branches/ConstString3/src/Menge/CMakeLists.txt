@@ -184,8 +184,6 @@ Service
 
 ADD_FILTER(
 Game
-	Account.cpp
-	Account.h
 	ResourcePak.cpp	
 	ResourcePak.h
 	Game.cpp
@@ -732,9 +730,10 @@ Manager\\\\Arrow
 
 ADD_FILTER(
 Manager\\\\Account
-
 	AccountManager.cpp	
 	AccountManager.h
+  	Account.cpp
+	Account.h
 )
 
 ADD_FILTER(
@@ -796,8 +795,6 @@ ScriptWrapper
 
 ADD_FILTER(
 Utils
-	ConfigFile.cpp
-	ConfigFile.h
 	VersionInfo.h
 )
 
@@ -806,6 +803,7 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 					 ${THIRDPARTY_DIR}/pybind/include
 					 ${THIRDPARTY_DIR}/python/include
                      ${THIRDPARTY_DIR}/boost
+                     ${THIRDPARTY_DIR}/simpleini
 )
 
 if( WIN32 )

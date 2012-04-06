@@ -18,7 +18,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePak::ResourcePak( const ResourcePakDesc & _desc, const String & _baseDir )
+	ResourcePak::ResourcePak( const ResourcePakDesc & _desc, const WString & _baseDir )
 		: m_desc(_desc)
 		, m_baseDir(_baseDir)
 	{
@@ -44,23 +44,23 @@ namespace Menge
 		return m_desc.platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourcePak::getPath() const
+	const WString & ResourcePak::getPath() const
 	{
 		return m_desc.path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{
-		String fullPakPath = m_baseDir;
+		WString fullPakPath = m_baseDir;
 		fullPakPath += m_desc.path;
 		fullPakPath += MENGE_FOLDER_DELIM;
 
 		if( FileEngine::get()
 			->mountFileSystem( m_desc.name, fullPakPath, m_desc.type, false ) == false )
 		{
-			MENGE_LOG_ERROR( "ResourcePak::load: failed to mount pak '%s': '%s'"
+			MENGE_LOG_ERROR( "ResourcePak::load failed to mount pak '%S': '%S'"
 				, m_desc.name.c_str()
-				, m_desc.path.c_str()
+				, fullPakPath.c_str()
 				);
 
 			return false;
@@ -68,28 +68,28 @@ namespace Menge
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( m_desc.name, m_desc.description, this, exist ) == false )
+			->load( m_desc.name, m_desc.filename, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid resource file '%s %s' '%s'"
+			MENGE_LOG_ERROR( "ResourcePak::load Invalid resource file '%S %s' '%S'"
 				, m_desc.path.c_str()
 				, m_desc.name.c_str()
-				, m_desc.description.c_str()
+				, m_desc.filename.c_str()
 				);
 
 			return false;
 		}
 
-		TVectorString listModulePath;
+		TVectorWString listModulePath;
 
-		String scriptPakPath = m_baseDir + Helper::to_str(m_desc.name);
+		WString scriptPakPath = m_baseDir + m_desc.path;
 
-		for( TVectorString::iterator
+		for( TVectorWString::iterator
 			it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end();
 		it != it_end;
 		++it )
 		{
-			String path = scriptPakPath + "/" + *it;
+			WString path = scriptPakPath + L'\\' + *it;
 			//Utils::collapsePath( scriptPakPath + "\\" + *it, path );
 			listModulePath.push_back( path );
 		}
@@ -143,16 +143,6 @@ namespace Menge
 				->loadResource( it->first, it->second );
 		}
 
-		for( TMapParamDesc::iterator
-			it = m_paramsDesc.begin(),
-			it_end = m_paramsDesc.end();
-		it != it_end;
-		++it )
-		{
-			ParamManager::get()
-				->registerParam( it->first, it->second );
-		}
-
 		for( TMapTextDesc::iterator
 			it = m_textsDesc.begin(),
 			it_end = m_textsDesc.end();
@@ -178,7 +168,7 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::Scenes )
 			{
-				String path;
+				WString path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -190,7 +180,7 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::Arrows )
 			{
-				String path;
+				WString path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -202,7 +192,7 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::Entities )
 			{
-				String path;
+				WString path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -214,7 +204,7 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::Resources )
 			{
-				String path;
+				WString path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -224,23 +214,11 @@ namespace Menge
 				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderResources_, path );
 			}
 
-			BIN_CASE_NODE( Protocol::Params )
-			{
-				String path;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Params_Path, path );
-				}
-
-				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderParams_, path );
-			}
-
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scripts_Path, &ResourcePak::addScriptPath_ );
 
 			BIN_CASE_NODE( Protocol::Texts )
 			{
-				String path;
+				WString path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -257,7 +235,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderScenes_( BinParser * _parser, const String & _path )
+	void ResourcePak::loaderScenes_( BinParser * _parser, const WString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -272,12 +250,12 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::Scene_Script, script );
 				}
 
-				this->addScene_(name, _path, script);
+				this->addScene_( name, _path, script );
 			}			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderArrows_( BinParser * _parser, const String & _path )
+	void ResourcePak::loaderArrows_( BinParser * _parser, const WString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -285,7 +263,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderEntities_( BinParser * _parser, const String & _path )
+	void ResourcePak::loaderEntities_( BinParser * _parser, const WString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -293,7 +271,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderResources_( BinParser * _parser, const String & _path )
+	void ResourcePak::loaderResources_( BinParser * _parser, const WString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -301,22 +279,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderParams_( BinParser * _parser, const String & _path )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Param_Name, &ResourcePak::addParam_, _path );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderTexts_( BinParser * _parser, const String & _path )
+	void ResourcePak::loaderTexts_( BinParser * _parser, const WString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_NODE( Protocol::Text )
 			{
 				ConstString Name;
-				String File;
+				WString File;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -329,7 +299,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScene_( const ConstString & _name, const String & _path, bool _script )
+	void ResourcePak::addScene_( const ConstString & _name, const WString & _path, bool _script )
 	{
 		ResourceDesc desc;
 		desc.pak = m_desc.name;
@@ -342,7 +312,7 @@ namespace Menge
 		//	->registerScene( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addArrow_( const ConstString & _name, const String & _path )
+	void ResourcePak::addArrow_( const ConstString & _name, const WString & _path )
 	{
 		ResourceDesc desc;
 		desc.pak = m_desc.name;
@@ -354,7 +324,7 @@ namespace Menge
 		//	->registerArrow( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addEntity_( const ConstString & _name, const String & _path )
+	void ResourcePak::addEntity_( const ConstString & _name, const WString & _path )
 	{
 		ResourceDesc desc;
 		desc.pak = m_desc.name;
@@ -365,7 +335,7 @@ namespace Menge
 		//	->addPrototype( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addResource_( const ConstString & _name, const String & _path )
+	void ResourcePak::addResource_( const ConstString & _name, const WString & _path )
 	{
 		ResourceDesc desc;
 		desc.pak = m_desc.name;
@@ -389,20 +359,7 @@ namespace Menge
 		//	->loadResource( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addParam_( const ConstString & _name, const String & _path )
-	{
-		ResourceDesc desc;
-
-		desc.pak = m_desc.name;
-		desc.path = _path;
-
-		m_paramsDesc.insert( std::make_pair(_name, desc) );
-
-		//ParamManager::get()
-		//	->registerParam( m_desc.name, _name, path );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addText_( const ConstString & _name, const String & _path, const String & _file )
+	void ResourcePak::addText_( const ConstString & _name, const WString & _path, const WString & _file )
 	{
 		ResourceDesc desc;
 
@@ -415,8 +372,8 @@ namespace Menge
 		//	->addResourceFile( _name, m_desc.name, filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScriptPath_( const String & _name )
+	void ResourcePak::addScriptPath_( const WString & _path )
 	{
-		m_pathScripts.push_back( _name );
+		m_pathScripts.push_back( _path );
 	}
 }

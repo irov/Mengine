@@ -24,7 +24,6 @@ namespace	Menge
 		, m_onEndFrameTick(false)
 		, m_onEndFrameEvent(false)
 		, m_onEndAnimationEvent(false)
-		, m_animationFactor(1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,16 +59,6 @@ namespace	Menge
 		return m_resourceAnimationName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimationFactor( float _factor )
-	{
-		m_animationFactor = _factor;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Animation::getAnimationFactor() const
-	{
-		return m_animationFactor;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( float _timing )
 	{
 		if( this->isPlay() == false )
@@ -82,7 +71,9 @@ namespace	Menge
 		m_timing += _timing * m_speedFactor;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-		delay *= m_animationFactor;
+		
+		float speedFactor = this->getSpeedFactor();
+		delay *= speedFactor;
 
 		while( m_timing >= delay )
 		{
@@ -116,7 +107,9 @@ namespace	Menge
 			}	
 
 			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-			delay *= m_animationFactor;
+
+			float speedFactor = this->getSpeedFactor();
+			delay *= speedFactor;
 		}
 
 		this->updateCurrentImageResource_();

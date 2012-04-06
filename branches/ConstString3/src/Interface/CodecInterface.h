@@ -98,6 +98,10 @@ namespace Menge
 		}
 			
 		virtual DecoderInterface * createDecoder( const ConstString & _type, InputStreamInterface * _stream ) = 0; 
+
+	public:
+		virtual bool registerCodecExt( const WString & _ext, const ConstString & _codecType ) = 0;
+		virtual const ConstString & findCodecType( const WString & _ext ) = 0;
 	};
 
 }	// namespace Menge

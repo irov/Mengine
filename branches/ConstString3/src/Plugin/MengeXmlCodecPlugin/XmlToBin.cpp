@@ -1,7 +1,5 @@
 #	include "XmlToBin.h"
 
-#	include <tinyxml.h>
-
 #	include <sstream>
 #	include <fstream>
 
@@ -9,64 +7,99 @@
 
 #	include <time.h>
 
+#	include <windows.h>
 
 //////////////////////////////////////////////////////////////////////////
-bool XmlToBin::readProtocol( const char * _file )
+bool XmlToBin::readProtocol( const wchar_t * _file )
 {
-	TiXmlDocument doc;
+	//TiXmlDocument doc;
+	pugi::xml_document doc;
 
-	if( doc.LoadFile( _file ) == false )
+	pugi::xml_parse_result result = doc.load_file( _file );
+
+	if( result == false )
 	{
 		printf("%s"
-			, doc.ErrorDesc() 
+			, result.description()
 			);
 
 		return false;
 	}
 
-	TiXmlNode * protocol = doc.FirstChild();
+	pugi::xml_node root = doc.document_element();
 
-	if( protocol == 0 )
+	//TiXmlNode * protocol = doc.FirstChild();
+
+	if( root.empty() == true )
 	{
 		return 0;
 	}
 
 	size_t enumerator = 0;
 
-	for( TiXmlNode * node = protocol->FirstChild(); node; node = protocol->IterateChildren( node ) )
+	for( pugi::xml_node::iterator
+		it = root.begin(),
+		it_end = root.end();
+	it != it_end;
+	++it )
 	{
-		TiXmlElement * element = node->ToElement();
+		const pugi::xml_node & element = *it;
 
-		if( element == 0 )
-		{
-			continue;
-		}
+		//element->attribute()
 
-		const char * NodeType = element->Attribute("NodeType");
-		const char * AttrName = element->Attribute("AttrName");
-		const char * AttrType = element->Attribute("AttrType");
+		pugi::xml_attribute NodeType = element.attribute("NodeType");
+		pugi::xml_attribute AttrName = element.attribute("AttrName");
+		pugi::xml_attribute AttrType = element.attribute("AttrType");
 
-		NodeXml & nodeXml = m_nodes[NodeType];
+		NodeXml & nodeXml = m_nodes[NodeType.value()];
 
 		nodeXml.id = ++enumerator;
 
-		if( AttrName == 0 || AttrType == 0 )
+		if( AttrName.empty() == true || AttrType.empty() == true )
 		{
 			continue;
 		}
 
-		AttributeXml & attributeXml = nodeXml.attr[ AttrName ];
+		AttributeXml & attributeXml = nodeXml.attr[ AttrName.value() ];
 
 		attributeXml.id = ++enumerator;
-		attributeXml.type = AttrType;
+		attributeXml.type = AttrType.value();
 	}
+	
+	//for( TiXmlNode * node = protocol->FirstChild(); node; node = protocol->IterateChildren( node ) )
+	//{
+	//	TiXmlElement * element = node->ToElement();
 
-	doc.Clear();
+	//	if( element == 0 )
+	//	{
+	//		continue;
+	//	}
+
+	//	const char * NodeType = element->Attribute("NodeType");
+	//	const char * AttrName = element->Attribute("AttrName");
+	//	const char * AttrType = element->Attribute("AttrType");
+
+	//	NodeXml & nodeXml = m_nodes[NodeType];
+
+	//	nodeXml.id = ++enumerator;
+
+	//	if( AttrName == 0 || AttrType == 0 )
+	//	{
+	//		continue;
+	//	}
+
+	//	AttributeXml & attributeXml = nodeXml.attr[ AttrName ];
+
+	//	attributeXml.id = ++enumerator;
+	//	attributeXml.type = AttrType;
+	//}
+
+	//doc.Clear();
 
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void XmlToBin::writeHeader( const char * _file )
+void XmlToBin::writeHeader( const wchar_t * _file )
 {
 	std::stringstream ss;
 
@@ -347,11 +380,31 @@ namespace
 
 		return true;
 	}
+
+	static bool s_writeStringW( std::ofstream & _stream, const char * _str )
+	{
+		int size = ::MultiByteToWideChar( CP_UTF8, 0, _str, -1, 0, 0 );
+		
+		s_writeStream( _stream, size );
+
+		//static WString s_buffer;
+		
+		wchar_t * buffer = new wchar_t[size];
+		::MultiByteToWideChar( CP_UTF8, 0, _str, -1, buffer, size );
+
+		//size_t size = wcslen(_str);
+		s_writeStream( _stream, buffer, size );
+
+		delete [] buffer;
+
+		return true;
+	}
 };
 //////////////////////////////////////////////////////////////////////////
-bool XmlToBin::writeBinary( const char * _source, const char * _bin )
+bool XmlToBin::writeBinary( const wchar_t * _source, const wchar_t * _bin )
 {
 	m_serialization["Menge::String"] = &s_writeString;
+	m_serialization["Menge::WString"] = &s_writeStringW;
 	m_serialization["Menge::ConstString"] = &s_writeString;
 	m_serialization["bool"] = &s_writeBool;
 	m_serialization["unsigned short"] = &s_writeUnsignedShort;
@@ -371,14 +424,19 @@ bool XmlToBin::writeBinary( const char * _source, const char * _bin )
 	m_setSkipNodesAttributes["File"]["NoJPEG"] = 1;
 	m_setSkipNodesAttributes["Text"]["MaxSize"] = 1;
 
-	TiXmlDocument doc;
+	//TiXmlDocument doc;
+	pugi::xml_document doc;
 
-	if( doc.LoadFile( _source ) == false )
+	pugi::xml_parse_result result = doc.load_file( _source );
+
+	if( result == false )
 	{
-		m_error = doc.ErrorDesc();
+		m_error = result.description();
 
 		return false;
 	}
+
+	//TiXmlNode * protocol = doc.FirstChild();
 
 	std::ofstream fs( _bin, std::ios_base::binary );
 
@@ -386,31 +444,55 @@ bool XmlToBin::writeBinary( const char * _source, const char * _bin )
 	s_writeStream( fs, magic_number );
 	//s_writeStream( fs, _version );
 
-	TiXmlNode * node = doc.FirstChild();
+	//TiXmlNode * node = doc.FirstChild();
+
+	pugi::xml_node root = doc.document_element();
+
+	if( root.empty() == true )
+	{
+		return true;
+	}
 
 	bool done = true;
 
-	for( TiXmlNode * node = doc.FirstChild(); node; node = doc.IterateChildren( node ) )
+	if( this->writeNodeBinary_( fs, root ) == false )
 	{
-		TiXmlElement * element = node->ToElement();
-
-		if( element == 0 )
-		{
-			continue;
-		}
-
-		if( this->writeNodeBinary_( fs, element ) == false )
-		{
-			done = false;
-			break;			 
-		}
+		done = false;	 
 	}
+	
+	//for( TiXmlNode * node = doc.FirstChild(); node; node = doc.IterateChildren( node ) )
+	//for( pugi::xml_node::iterator
+	//	it = root.begin(),
+	//	it_end = root.end();
+	//it != it_end;
+	//++it )
+	//{
+	//	const pugi::xml_node & node = *it;
+
+	//	//TiXmlElement * element = node->ToElement();
+
+	//	if( node.empty() == true )
+	//	{
+	//		continue;
+	//	}
+
+	//	//if( element == 0 )
+	//	//{
+	//	//	continue;
+	//	//}
+
+	//	if( this->writeNodeBinary_( fs, node ) == false )
+	//	{
+	//		done = false;
+	//		break;			 
+	//	}
+	//}
 
 	fs.close();
 
 	if( done == false )
 	{
-		remove( _bin );
+		//remove( _bin );
 
 		return false;
 	}
@@ -418,14 +500,14 @@ bool XmlToBin::writeBinary( const char * _source, const char * _bin )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-const std::string & XmlToBin::getLastError()
+const std::string & XmlToBin::getLastError() const
 {
 	return m_error;
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element )
+bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, const pugi::xml_node & _node )
 {
-	const char * nodeName = _element->Value();
+	const char * nodeName = _node.name();
 
 	TMapNodes::const_iterator it_found = m_nodes.find( nodeName );
 
@@ -443,9 +525,17 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 
 	size_t sizeAttr = 0;
 
-	for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
+	//for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
+	
+	for( pugi::xml_node::attribute_iterator
+		it = _node.attributes_begin(),
+		it_end = _node.attributes_end();
+	it != it_end;
+	++it )
 	{
-		const char * attrName = attr->Name();
+		const pugi::xml_attribute & attr = *it;
+
+		const char * attrName = attr.name();
 
 		TMapAttributes::const_iterator it_attr_found = it_found->second.attr.find( attrName );
 
@@ -470,9 +560,17 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 
 	s_writeStream( _stream, sizeAttr );
 
-	for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
+	//for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
+
+	for( pugi::xml_node::attribute_iterator
+		it = _node.attributes_begin(),
+		it_end = _node.attributes_end();
+	it != it_end;
+	++it )
 	{
-		const char * attrName = attr->Name();
+		const pugi::xml_attribute & attr = *it;
+
+		const char * attrName = attr.name();
 
 		TMapAttributes::const_iterator it_attr_found = it_found->second.attr.find( attrName );
 
@@ -509,7 +607,7 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 			return false;
 		}
 
-		const char * attrValue = attr->Value();
+		const char * attrValue = attr.value();
 
 		if( (*it_found->second)( _stream, attrValue ) == false )
 		{
@@ -523,11 +621,19 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 
 	size_t sizeNode = 0;
 
-	for( TiXmlNode * node = _element->FirstChild(); node; node = _element->IterateChildren( node ) )
-	{
-		TiXmlElement * element = node->ToElement();
+	//for( TiXmlNode * node = _element->FirstChild(); node; node = _element->IterateChildren( node ) )
 
-		if( element == 0 )
+	for( pugi::xml_node::iterator
+		it = _node.begin(),
+		it_end = _node.end();
+	it != it_end;
+	++it )
+	{
+		const pugi::xml_node & element = *it;
+
+		//TiXmlElement * element = node->ToElement();
+
+		if( element.empty() == true )
 		{
 			continue;
 		}
@@ -537,11 +643,19 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 
 	s_writeStream( _stream, sizeNode );
 
-	for( TiXmlNode * node = _element->FirstChild(); node; node = _element->IterateChildren( node ) )
-	{
-		TiXmlElement * element = node->ToElement();
+	//for( TiXmlNode * node = _element->FirstChild(); node; node = _element->IterateChildren( node ) )
 
-		if( element == 0 )
+	for( pugi::xml_node::iterator
+		it = _node.begin(),
+		it_end = _node.end();
+	it != it_end;
+	++it )
+	{
+		const pugi::xml_node & element = *it;
+
+		//TiXmlElement * element = node->ToElement();
+
+		if( element.empty() == true )
 		{
 			continue;
 		}
@@ -555,7 +669,7 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-extern "C" bool writeHeader( const char * _protocol, const char * _header )
+extern "C" bool writeHeader( const wchar_t * _protocol, const wchar_t * _header )
 {
 	XmlToBin x2b;
 
@@ -569,7 +683,7 @@ extern "C" bool writeHeader( const char * _protocol, const char * _header )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin, char * _error )
+extern "C" bool writeBinary( const wchar_t * _protocol, const wchar_t * _source, const wchar_t * _bin, char * _error )
 {
 	XmlToBin x2b;
 

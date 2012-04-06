@@ -18,7 +18,7 @@ namespace Menge
 	struct BlobjectCache
 	{
 		ConstString pak;
-		String path;
+		WString path;
 
 		TBlobject blob;
 	};
@@ -30,21 +30,21 @@ namespace Menge
 		LoaderEngine();
 
 	public:
-		bool cache( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist );
-		bool load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist );
+		bool cache( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist );
+		bool load( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist );
 
 	public:
 		bool loadBinary( const Archive & _blob, Loadable * _loadable );
 
 	public:
-		bool import( const ConstString & _pak, const String & _path, Archive & _archive, bool & _exist );
+		bool import( const ConstString & _pak, const WString & _path, Archive & _archive, bool & _exist );
 
 	private:
 		bool importBin_( FileInputStreamInterface * _bin, Archive & _archive, bool & _reimport );
-		bool openBin_( const ConstString & _pak, const String & _path, FileInputStreamInterface ** _file, bool & _exist );
+		bool openBin_( const ConstString & _pak, const WString & _path, FileInputStreamInterface ** _file, bool & _exist );
 
 #	ifndef MENGE_MASTER_RELEASE
-		bool makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin );
+		bool makeBin_( const ConstString & _pak, const WString & _pathXml, const WString & _pathBin );
 #	endif
 
 	protected:

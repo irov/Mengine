@@ -34,6 +34,26 @@ namespace Menge
 		_value.assign(str, size);
 		delete [] str;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( ArchiveRead & ar, WString & _value )
+	{
+		size_t size;
+		ar.read( size );
+
+		if( size == 0 )
+		{
+			return;
+		}
+
+		wchar_t * str = new wchar_t[size];
+
+		Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
+		ar.readBuffer( buff, size * sizeof(wchar_t) );
+
+		_value.assign(str, size - 1);
+
+		delete [] str;
+	}
 #	ifdef MENGE_CONST_STRING
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, ConstString & _value )

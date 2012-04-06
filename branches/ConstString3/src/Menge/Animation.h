@@ -20,9 +20,6 @@ namespace Menge
 		void setAnimationResource( const ConstString& _resource );
 		const ConstString& getAnimationResource() const;
 
-		void setAnimationFactor( float _factor );
-		float getAnimationFactor() const;
-
 		size_t getFrameCount() const;
 		float getFrameDelay( size_t  _frame ) const;
 
@@ -61,9 +58,7 @@ namespace Menge
 		float m_timing;
 
 		size_t m_currentFrame;
-
-		float m_animationFactor;
-
+		
 		bool m_onEndFrameEvent;
 		bool m_onEndFrameTick;
 		bool m_onEndAnimationEvent;

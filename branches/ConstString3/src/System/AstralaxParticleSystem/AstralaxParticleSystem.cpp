@@ -143,7 +143,7 @@ namespace Menge
 			EmitterContainerInterface::EmitterAtlas atlas;
 
 			atlas.file = magicAtlas.file;
-			atlas.path = magicAtlas.path;
+			//atlas.path = magicAtlas.path;
 	
 			container->addAtlas( atlas );
 		}

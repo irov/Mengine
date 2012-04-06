@@ -32,29 +32,29 @@ namespace Menge
 		bool initialize();
 
 	public:	// FileEngine Interface
-		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create ) override;
+		bool mountFileSystem( const ConstString& _fileSystemName, const WString& _path, const ConstString & _type, bool _create ) override;
 		void unmountFileSystem( const ConstString& _fileSystemName ) override;
 
-		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const /*override*/;
-		bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const /*override*/;
+		bool getFullPath( const ConstString& _fileSystemName, const WString & _path, WString & _fullPath ) const /*override*/;
+		bool getFileSystemPath( const ConstString& _fileSystemName, WString & _fileSystemPath ) const /*override*/;
 
-		bool existFile( const ConstString& _fileSystemName, const String& _filename ) const override;
+		bool existFile( const ConstString& _fileSystemName, const WString& _filename ) const override;
 
 		FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) override;
-		FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename ) override;
+		FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const WString& _filename ) override;
 
 		FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName ) override;
-		FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename ) override;
+		FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const WString& _filename ) override;
 
 	public:
-		bool createDirectory( const ConstString& _fileSystemName, const String& _path );
-		void removeDirectory( const ConstString& _fileSystemName, const String& _path );
-		void removeFile( const ConstString& _fileSystemName, const String& _filename );
+		bool createDirectory( const ConstString& _fileSystemName, const WString& _path );
+		void removeDirectory( const ConstString& _fileSystemName, const WString& _path );
+		void removeFile( const ConstString& _fileSystemName, const WString& _filename );
 
 		FileSystemInterface* getFileSystemInterface() const;
 
 	private:
-		bool createDirectoryPathFileSystem_( FileSystem * _fs, const String& _path );
+		bool createDirectoryPathFileSystem_( FileSystem * _fs, const WString& _path ) const;
 
 	private:
 		typedef std::map<ConstString, FileSystem*> TFileSystemMap;

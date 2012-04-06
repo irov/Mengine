@@ -9,6 +9,8 @@
 
 #	include "Entity.h"
 
+#	include "Application.h"
+
 #	include "Consts.h"
 
 #	include <iostream>
@@ -160,7 +162,7 @@ namespace Menge
 		pybind::decref( _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addModulePath( const TVectorString& _listPath )
+	void ScriptEngine::addModulePath( const TVectorWString& _listPath )
 	{
 		m_modulePaths.insert( m_modulePaths.end(), _listPath.begin(), _listPath.end() );
 
@@ -171,15 +173,15 @@ namespace Menge
 	{
 		PyObject * path_packet = pybind::list_new(0);
 
-		for( TVectorString::const_iterator
+		for( TVectorWString::const_iterator
 			it = m_modulePaths.begin(),
 			it_end = m_modulePaths.end();
 		it != it_end;
 		++it)
 		{
-			const String & path = *it;
+			const WString & path = *it;
 
-			PyObject * py_path = pybind::unicode_from_utf8( path.c_str(), path.size() );
+			PyObject * py_path = pybind::unicode_from_wchar( path.c_str(), path.size() );
 
 			pybind::list_appenditem( path_packet, py_path );
 
@@ -265,7 +267,7 @@ namespace Menge
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const String & _path, bool & _exist )
+	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const WString & _path, bool & _exist )
 	{
 		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
 
@@ -288,9 +290,14 @@ namespace Menge
 			return it_find->second;
 		}
 
+		PlatformInterface * platform = Application::get()
+			->getPlatform();
+
+		String path = platform->unicodeToAnsi(_path);
+
 		String py_path = Helper::to_str(_pak);
 		py_path += ".";
-		py_path += _path;
+		py_path += path;
 		py_path += ".";
 		py_path += Helper::to_str(_prototype);
 		py_path += ".";
@@ -362,7 +369,7 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const String & _path )
+	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const WString & _path )
 	{
 		bool exist = false;
 

@@ -21,7 +21,7 @@ namespace Menge
 		AlreadyRunningMonitor( LogServiceInterface * _logService );
 
 	public:
-		bool run( int _policy, const String & _title );
+		bool run( int _policy, const WString & _windowClassName, const WString & _title );
 		void stop();
 
 	protected:

@@ -92,7 +92,7 @@ namespace Menge
 			SoundBufferInterface * _sample,
 			bool _music = false ) = 0;
 
-		virtual SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
+		virtual SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const WString & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
 		virtual SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem ) = 0;
 
 		virtual void setSoundVolume( float _volume ) = 0;

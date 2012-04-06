@@ -76,7 +76,7 @@ namespace Menge
 			return false;
 		}
 
-		SoundBufferInterface * soundBuffer = m_resource->get();
+		SoundBufferInterface * soundBuffer = m_resource->getSoundBuffer();
 
 		m_sourceID = SoundEngine::get()
 			->createSoundSource( 

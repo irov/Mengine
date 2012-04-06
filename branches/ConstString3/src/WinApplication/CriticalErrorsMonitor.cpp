@@ -10,9 +10,9 @@
 
 namespace Menge
 {
-	static const char* s_versionInfo = NULL;
-	static const char* s_userPath = NULL;
-	static const char* s_logFileName = NULL;
+	static const char * s_versionInfo = NULL;
+	static const wchar_t * s_userPath = NULL;
+	static const wchar_t * s_logFileName = NULL;
 	//////////////////////////////////////////////////////////////////////////
 	static void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )
 	{
@@ -74,9 +74,9 @@ namespace Menge
 		EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
 		CONTEXT* pContext = pExceptionPointers->ContextRecord;
 
-		char fullFileName[MAX_PATH];
-		strncpy( fullFileName, s_userPath, MAX_PATH );
-		strncpy( fullFileName, s_logFileName, MAX_PATH );
+		wchar_t fullFileName[MAX_PATH];
+		wcsncpy( fullFileName, s_userPath, MAX_PATH );
+		wcsncpy( fullFileName, s_logFileName, MAX_PATH );
 
 		HANDLE hFile = WindowsLayer::createFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
 			FILE_SHARE_WRITE|FILE_SHARE_READ, OPEN_ALWAYS );
@@ -142,7 +142,7 @@ namespace Menge
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::run( const char * _versionInfo, const char* _userPath, const char* _logFileName )
+	void CriticalErrorsMonitor::run( const char * _versionInfo, const wchar_t * _userPath, const wchar_t * _logFileName )
 	{
 		s_versionInfo = _versionInfo;
 		s_userPath = _userPath;

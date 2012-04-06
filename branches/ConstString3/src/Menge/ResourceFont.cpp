@@ -47,26 +47,26 @@ namespace Menge
 		return m_glyph->getInitSize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setImagePath_( const ConstString& _path )
+	void ResourceFont::setImagePath_( const WString& _path )
 	{
 		m_imageFile = _path;
 
 		m_imageCodec = ResourceImage::s_getImageCodec( m_imageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setOutlineImagePath_( const ConstString& _path )
+	const WString& ResourceFont::getImagePath() const
+	{
+		return m_imageFile;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceFont::setOutlineImagePath_( const WString& _path )
 	{
 		m_outlineImageFile = _path;
 
 		m_outlineImageCodec = ResourceImage::s_getImageCodec( m_outlineImageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceFont::getImagePath() const
-	{
-		return m_imageFile;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceFont::getOutlineImagePath() const
+	const WString& ResourceFont::getOutlineImagePath() const
 	{
 		return m_outlineImageFile;
 	}

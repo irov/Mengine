@@ -11,31 +11,36 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AlreadyRunningMonitor::run( int _policy, const String & _title )
+	bool AlreadyRunningMonitor::run( int _policy, const WString & _windowClassName, const WString & _title )
 	{
 		// try to create mutex to sure that we are not running already
-		WString titleW = StringConversion::utf8ToWChar( _title );
-		WString mutexName = WString( MENGE_TEXT("MengeMutex_") ) + titleW;
+		WString mutexName = WString(L"MengineMutex_") + _title;
 		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
 		DWORD error = ::GetLastError();
 		// already running
-		if( error == ERROR_ALREADY_EXISTS )
-		{
-			if( _policy == EARP_SETFOCUS )
-			{
-				HWND otherHwnd = ::FindWindowW( L"MengeWnd", titleW.c_str() );
-				::SetForegroundWindow( otherHwnd );
-				return false;
-			}
-			else if( _policy == EARP_SHOWMESSAGE )
-			{
-				WString message = WString( MENGE_TEXT("Another instance of ") ) 
-					+ titleW 
-					+ WString( MENGE_TEXT(" is already running") );
 
-				::MessageBoxW( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
-				return false;
-			}
+		if( error != ERROR_ALREADY_EXISTS )
+		{
+			return true;
+		}
+				 
+		if( _policy == EARP_SETFOCUS )
+		{
+			HWND otherHwnd = ::FindWindowW( _windowClassName.c_str(), _title.c_str() );
+			::SetForegroundWindow( otherHwnd );
+
+			return false;
+		}
+
+		if( _policy == EARP_SHOWMESSAGE )
+		{
+			WString message = WString(L"Another instance of ") 
+				+ _title 
+				+ WString(L" is already running");
+
+			::MessageBoxW( NULL, message.c_str(), _title.c_str(), MB_ICONWARNING );
+
+			return false;
 		}
 
 		return true;

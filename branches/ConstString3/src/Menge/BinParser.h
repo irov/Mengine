@@ -35,6 +35,7 @@ namespace Menge
 	};
 
 	void operator >> ( ArchiveRead & ar, String & _value );
+	void operator >> ( ArchiveRead & ar, WString & _value );
 
 	void operator >> ( ArchiveRead & ar, ConstString & _value );
 	void operator >> ( ArchiveRead & ar, Resolution & _value );

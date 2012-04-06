@@ -24,7 +24,7 @@ namespace Menge
 
 	struct TrackDesc
 	{
-		ConstString path;
+		WString path;
 		ConstString codec;
 		float volume;
 	};

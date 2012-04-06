@@ -152,7 +152,7 @@ namespace	Menge
 		}
 
 		m_textures[0] = RenderEngine::get()
-			->createTexture( m_resourceVideoName, size.x, size.y, colorMode );
+			->createTexture( size.x, size.y, colorMode );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
 

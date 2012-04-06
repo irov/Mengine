@@ -44,18 +44,19 @@ namespace Menge
 			return false;
 		}
 					
-		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
+		TVectorTextureJob::iterator it_jobs = m_textureJobs.begin();
 		
-		const ConstString & filename = m_resource->getFileName();
-
-		if( filename == Consts::get()->c_CreateTexture || 
-			filename == Consts::get()->c_CreateTarget || 
-			RenderEngine::get()->hasTexture( filename ) == true )
+		const WString & filename = m_resource->getFileName();
+		
+		if( RenderEngine::get()->hasTexture( filename ) == true )
 		{
 			return true;
 		}
+
+		const ConstString & name = m_resource->getName();
 			
 		TextureJob job;
+		job.name = name;
 		job.filename = filename;
 		job.file = FileEngine::get()->createInputFile(m_category);
 			
@@ -68,7 +69,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TaskLoadResourceImage::_onMain()
 	{
-		for( TTextureJobVector::iterator 
+		for( TVectorTextureJob::iterator 
 			it = m_textureJobs.begin(), 
 			it_end = m_textureJobs.end();
 		it != it_end;
@@ -76,7 +77,7 @@ namespace Menge
 		{
 			TextureJob & job = (*it);
 			
-			if( job.file->open( Helper::to_str(job.filename) ) == false )
+			if( job.file->open( job.filename ) == false )
 			{
 				MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
 					, job.filename.c_str()
@@ -111,12 +112,17 @@ namespace Menge
 				return false;
 			}
 			//const mt::vec2f & texture_size = m_resource->getMaxSize( i );
-			job.texture = RenderEngine::get()->createTexture( job.filename, dataInfo->width, dataInfo->height, dataInfo->format );
+			job.texture = RenderEngine::get()
+				->createTexture( dataInfo->width, dataInfo->height, dataInfo->format );
+
 			if( job.texture == NULL )
 			{
 				job.file->close();
 				return false;
 			}
+
+			RenderEngine::get()
+				->cacheFileTexture( job.filename, job.texture );
 
 			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
 

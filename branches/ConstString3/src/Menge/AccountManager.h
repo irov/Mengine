@@ -14,61 +14,67 @@ namespace Menge
 	class AccountManagerListener
 	{
 	public:
-		virtual void onCreateAccount( const String & _accountID ) = 0;
+		virtual void onCreateAccount( const WString & _accountID ) = 0;
 	};
 
-	typedef std::map<String, Account *> TMapAccounts;
+	typedef std::map<WString, Account *> TMapAccounts;
 
 	class AccountManager
 		: public Holder<AccountManager>
 	{
 	public:
-		AccountManager( AccountManagerListener * _listener );
+		AccountManager( const WString & _accountsPath, AccountManagerListener * _listener );
 		~AccountManager();
 
 	public:
-		String createAccount();
+		WString createAccount();
 
 	public:
-		void addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
-		void changeSetting( const String & _setting, const String & _value );
+		void addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc );
+		void changeSetting( const WString & _setting, const WString & _value );
 
 	public:
-		void deleteAccount( const String& _accountID );
-		void selectAccount( const String& _accountID );
-		void saveAccount( const String& _accountID );
+		void deleteAccount( const WString& _accountID );
+		bool selectAccount( const WString& _accountID );
+		void saveAccount( const WString& _accountID );
+
+	public:
 		void saveAccounts();
+
+	public:
+		bool loadAccountsInfo();
 		void saveAccountsInfo();
 
 	public:
-		void setDefaultAccount( const String & _accountID );
-		const String & getDefaultAccount() const;
+		void setDefaultAccount( const WString & _accountID );
+		const WString & getDefaultAccount() const;
 
 		bool selectDefaultAccount();
 
 	public:
 		bool hasCurrentAccount() const;
 		Account * getCurrentAccount();
-		Account * getAccount( const String& _accountID );
+		Account * getAccount( const WString& _accountID );
 
 		const TMapAccounts & getAccounts() const;
 
 	public:
-		bool loadAccounts( const String & _accFilename );
+		
 
 	protected:
-		Account* loadAccount_( const String& _accountID );
-		void createAccount_( const String& _accountID );
+		Account* loadAccount_( const WString& _accountID );
+		void createAccount_( const WString& _accountID );
 
 	protected:
-		AccountManagerListener * m_listener;
+		WString m_accountsPath;
 
+		AccountManagerListener * m_listener;		
 		
 		TMapAccounts m_accounts;
 
-		String m_defaultAccountID;
+		WString m_defaultAccountID;
 
-		Account* m_currentAccount;
+		Account * m_currentAccount;
 
 		unsigned int m_playerEnumerator;
 	};

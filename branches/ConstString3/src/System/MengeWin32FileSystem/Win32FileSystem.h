@@ -18,17 +18,17 @@ namespace Menge
 		~Win32FileSystem();
 
 	public:
-		FileInputStreamInterface* openInputStream( const String& _filename ) override;
+		FileInputStreamInterface* openInputStream( const WString& _filename ) override;
 		void closeInputStream( FileInputStreamInterface * _fd ) override;
 
-		FileOutputStreamInterface* openOutputStream( const Menge::String& _filename ) override;
+		FileOutputStreamInterface* openOutputStream( const WString& _filename ) override;
 		void closeOutputStream( FileOutputStreamInterface* _stream ) override;
 
-		bool existFile( const String& _filename  ) override;
-		bool deleteFile( const String& _filename ) override;
+		bool existFile( const WString& _filename  ) override;
+		bool deleteFile( const WString& _filename ) override;
 
-		bool createFolder( const String& _path ) override;
-		bool deleteFolder( const String& _path ) override;
+		bool createFolder( const WString& _path ) override;
+		bool deleteFolder( const WString& _path ) override;
 
 	private:
 		struct FileMappingInfo

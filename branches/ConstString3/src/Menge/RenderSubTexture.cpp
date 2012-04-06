@@ -60,6 +60,11 @@ namespace Menge
 		return m_iTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderSubTexture::setName( const ConstString & _name )
+	{
+		m_name = _name;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString & RenderSubTexture::getName() const
 	{
 		return m_name;

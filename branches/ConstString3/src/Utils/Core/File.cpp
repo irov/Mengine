@@ -19,98 +19,91 @@ namespace Menge
 		{
 			return _stream->tell() == _stream->size();
 		}
+		////////////////////////////////////////////////////////////////////////////
+		//String getLine( InputStreamInterface* _stream, bool _trimAfter /*= true */ )
+		//{
+		//	char tmpBuf[stream_temp_size];
+		//	String retString;
+		//	size_t readCount;
+		//	// Keep looping while not hitting delimiter
+		//	while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
+		//	{
+		//		size_t term = readCount;
+		//		// Terminate string
+		//		tmpBuf[term] = '\0';
+
+		//		char* p = StdStrchr( tmpBuf, '\n' );
+		//		if ( p != 0 )
+		//		{
+		//			// Reposition backwards
+		//			skip( _stream, (int)( ( p + 1 - tmpBuf ) - readCount ) );
+		//			*p = MENGE_TEXT('\0');
+		//		}
+
+		//		retString += tmpBuf;
+
+		//		if ( p != 0 )
+		//		{
+		//			// Trim off trailing CR if this was a CR/LF entry
+		//			if ( retString.length() && retString[retString.length()-1] == '\r' )
+		//			{
+		//				retString.erase( retString.length() - 1, 1 );
+		//			}
+
+		//			// Found terminator, break out
+		//			break;
+		//		}
+		//	}
+
+		//	if( _trimAfter )
+		//	{
+		//		trim( retString );
+		//	}
+
+		//	return retString;
+		//}
 		//////////////////////////////////////////////////////////////////////////
-		String getLine( InputStreamInterface* _stream, bool _trimAfter /*= true */ )
-		{
-			TChar tmpBuf[stream_temp_size];
-			String retString;
-			size_t readCount;
-			// Keep looping while not hitting delimiter
-			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
-			{
-				size_t term = readCount;
-				// Terminate string
-				tmpBuf[term] = '\0';
+		//int skipLine( InputStreamInterface* _stream, const String& _delim /*= "\n" */ )
+		//{
+		//	char tmpBuf[stream_temp_size];
+		//	int total = 0;
+		//	int readCount;
+		//	// Keep looping while not hitting delimiter
+		//	while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
+		//	{
+		//		// Terminate string
+		//		int term = readCount / sizeof(TChar);
+		//		tmpBuf[term] = '\0';
 
-				TChar* p = StdStrchr( tmpBuf, '\n' );
-				if ( p != 0 )
-				{
-					// Reposition backwards
-					skip( _stream, (int)( ( p + 1 - tmpBuf ) - readCount ) );
-					*p = MENGE_TEXT('\0');
-				}
+		//		// Find first delimiter
 
-				retString += tmpBuf;
+		//		int pos = strcspn( tmpBuf, _delim.c_str() );
 
-				if ( p != 0 )
-				{
-					// Trim off trailing CR if this was a CR/LF entry
-					if ( retString.length() && retString[retString.length()-1] == '\r' )
-					{
-						retString.erase( retString.length() - 1, 1 );
-					}
+		//		if( pos < term )
+		//		{
+		//			// Found terminator, reposition backwards
+		//			int rep = ( pos + 1 - term );
+		//			skip( _stream, rep );
 
-					// Found terminator, break out
-					break;
-				}
-			}
+		//			total += ( pos + 1 );
 
-			if( _trimAfter )
-			{
-				trim( retString );
-			}
+		//			// break out
+		//			break;
+		//		}
 
-			return retString;
-		}
+		//		total += readCount;
+		//	}
+
+		//	return total;
+		//}
 		//////////////////////////////////////////////////////////////////////////
-		int skipLine( InputStreamInterface* _stream, const String& _delim /*= "\n" */ )
+		bool getFileExt( const WString & _filename, WString & _out )
 		{
-			TChar tmpBuf[stream_temp_size];
-			int total = 0;
-			int readCount;
-			// Keep looping while not hitting delimiter
-			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
-			{
-				// Terminate string
-				int term = readCount / sizeof(TChar);
-				tmpBuf[term] = '\0';
+			//WString::size_type seppos = _filename.find_last_of( MENGE_FOLDER_DELIM );
 
-				// Find first delimiter
+			WString::size_type pos = _filename.find_last_of( L'.' );
 
-				int pos = strcspn( tmpBuf, _delim.c_str() );
-
-				if( pos < term )
-				{
-					// Found terminator, reposition backwards
-					int rep = ( pos + 1 - term );
-					skip( _stream, rep );
-
-					total += ( pos + 1 );
-
-					// break out
-					break;
-				}
-
-				total += readCount;
-			}
-
-			return total;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool getFileExt( String & _out, const ConstString & _filename )
-		{
-			const String & r_filename = Helper::to_str(_filename);
-
-			return getFileExt( _out, r_filename );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool getFileExt( String & _out, const String & _filename )
-		{
-			String::size_type seppos = _filename.find_last_of( '/' );
-
-			String::size_type pos = _filename.find_first_of( ".", seppos );
-
-			if( pos == String::npos )
+			if( pos == WString::npos )
 			{
 				return false;
 			}
@@ -122,61 +115,12 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void stringWrite( OutputStreamInterface* _stream, const String& _string )
 		{
-			_stream->write( _string.c_str(), _string.size() );
+			_stream->write( (void *)_string.c_str(), _string.size() * sizeof(String::value_type) );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void collapsePath( const String& _path, String & _collapsedPath )
+		void stringWriteU( OutputStreamInterface * _stream, const WString& _string )
 		{
-			// Don't ignore empty: we do want to keep trailing slashes.
-			TVectorString as;
-
-			Utils::split( as, _path, false, "/" );
-
-			// pass to remove duplicate '/' ( .//foo, ..//foo )
-			for( TVectorString::size_type i = 0
-				; i < as.size()
-				; /**/ )
-			{
-				if( as[i].empty() == true && i > 0 && ( as[i-1] == ".." || as[i-1] == "." ) )
-				{
-					as.erase( as.begin() + i );
-				}
-				else
-				{
-					++i;
-				}
-			}
-
-			for( TVectorString::size_type i = 0; i < as.size(); ++i )
-			{
-				if( as[i] == ".." && i != 0 )
-				{
-					/* If the previous element is also "..", then we have a path beginning
-					* with multiple "../"--one .. can't eat another .., since that would
-					* cause "../../foo" to become "foo". */
-					if( as[i-1] != ".." )
-					{
-						as.erase( as.begin()+i-1 );
-						as.erase( as.begin()+i-1 );
-						i -= 2;
-					}
-				}
-				else if( as[i] == "" && i != 0 && i != 1 && i+1 < as.size() )
-				{
-					/* Remove empty parts that aren't at the beginning or end;
-					* "foo//bar/" -> "foo/bar/", but "/foo" -> "/foo" and "foo/"
-					* to "foo/". */
-					as.erase( as.begin()+i );
-					i -= 1;
-				}
-				else if( as[i] == "." )
-				{
-					as.erase( as.begin()+i );
-					i -= 1;
-				}
-			}
-            
-			join( "/", as, _collapsedPath );
+			_stream->write( (void *)_string.c_str(), _string.size() * sizeof(WString::value_type) );
 		}
 	}
 }

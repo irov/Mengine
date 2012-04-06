@@ -12,14 +12,14 @@ namespace Menge
 
 	struct ConverterDataInfo 
 	{
-		ConstString outputFileName;
+		WString outputFileName;
 	};
 	
 	struct ConverterOptions
-	{
-		ConstString inputFileName;
+	{		
 		ConstString pakName;
-		String pakNameFullPath;
+		WString inputFileName;
+		WString pakNameFullPath;
 	};
 	
 	class ConverterInterface

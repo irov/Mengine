@@ -31,19 +31,19 @@ namespace Menge
 			return false;
 		}
 		
-		String inputFile =  m_options.inputFileName.to_str();
-		String fileSystemPath = m_options.pakNameFullPath;
+		WString inputFile =  m_options.inputFileName;
+		WString fileSystemPath = m_options.pakNameFullPath;
 		
-		String inputFileFullPath = fileSystemPath + inputFile;
+		WString inputFileFullPath = fileSystemPath + inputFile;
 		
-		int pointPos = inputFile.find_last_of(".");
-		String outputFile = inputFile.substr( 0 , pointPos );
-		outputFile += ".ogg";
+		int pointPos = inputFile.find_last_of(L'.');
+		WString outputFile = inputFile.substr( 0 , pointPos );
+		outputFile += L".ogg";
 
-		String outputFileFullPath = fileSystemPath + outputFile;
+		WString outputFileFullPath = fileSystemPath + outputFile;
 		if( m_fileService->existFile( m_options.pakName, inputFile ) == false )
 		{
-			LOGGER_ERROR(m_logService)( "Error: Can't open  input file '%s'"
+			LOGGER_ERROR(m_logService)( "Error: Can't open  input file '%S'"
 				, inputFile.c_str()
 				);
 
@@ -54,7 +54,7 @@ namespace Menge
 		{
 			if( this->convert_( inputFileFullPath, outputFileFullPath ) == false)
 			{
-				LOGGER_ERROR(m_logService)( "Error: Can't convert  sound file '%s'"
+				LOGGER_ERROR(m_logService)( "Error: Can't convert  sound file '%S'"
 					, inputFileFullPath.c_str()
 					);
 		
@@ -98,22 +98,23 @@ namespace Menge
 			}
 		}
 
-		m_dataInfo.outputFileName = m_stringizeService->stringize(outputFile);
+		m_dataInfo.outputFileName = outputFile;
+
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool SoundConverterFFMPEGToOGG::convert_( const String & input, const String & output )
+	bool SoundConverterFFMPEGToOGG::convert_( const WString & _input, const WString & _output )
 	{
-		String buffer; 
-		buffer = "ffmpeg.exe -loglevel error -y -i \""  + input + "\" -strict experimental   -acodec vorbis -aq 100 \""+ output +"\"";
+		WString buffer = L"ffmpeg.exe -loglevel error -y -i \""  + _input + L"\" -strict experimental   -acodec vorbis -aq 100 \""+ _output + L"\"";
+		
 		LOGGER_INFO(m_logService)( "SoundDecoderConverterFFMPEGToOGG:: conferting file  '%s' to '%s' "
-			, input.c_str()
-			, output.c_str() 
+			, _input.c_str()
+			, _output.c_str() 
 			);
 
-		int result = system(buffer.c_str());
+		int result = _wsystem( buffer.c_str() );
 		
-		if(result == 0)
+		if( result == 0 )
 		{
 			return true;
 		}

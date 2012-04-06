@@ -274,13 +274,20 @@ namespace Menge
 	{
 	public:
 		virtual RenderImageInterface* getInterface() const = 0;
-		virtual const ConstString & getName() const = 0;
-		virtual size_t getWidth() const = 0;
-		virtual size_t getHeight() const = 0;
-		virtual PixelFormat getPixelFormat() const = 0;
+		
+		virtual size_t getId() const = 0;
 
 		virtual size_t addRef() const = 0;
 		virtual size_t decRef() const = 0;
+
+		virtual const mt::vec4f & getUV() const = 0;
+
+		virtual void setFileName( const WString & _filename ) = 0;
+		virtual const WString & getFileName() const = 0;
+
+		virtual size_t getWidth() const = 0;
+		virtual size_t getHeight() const = 0;
+		virtual PixelFormat getPixelFormat() const = 0;
 
 		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) const = 0;
 		virtual unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) const = 0;
@@ -431,8 +438,8 @@ namespace Menge
 		virtual bool getVSync() const = 0;
 
 	public:
-		virtual RenderTextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
-		virtual RenderTextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual RenderTextureInterface* createTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
 
 		virtual void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) = 0;
 	};

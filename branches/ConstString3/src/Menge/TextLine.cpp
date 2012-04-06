@@ -15,11 +15,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::initialize( const ResourceFont * _resource, const String& _text )
+	void TextLine::initialize( const ResourceFont * _resource, const WString& _text )
 	{
 		m_charsData.reserve( _text.length() );
 
-		for( String::const_iterator
+		for( WString::const_iterator
 			it = _text.begin(), 
 			it_end = _text.end();
 		it != it_end; 

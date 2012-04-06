@@ -18,6 +18,12 @@ namespace Menge
 			return empty;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		const WString& emptyWString()
+		{
+			static WString empty;
+			return empty;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		const ConstString& emptyConstString()
 		{
 			static ConstString empty;
@@ -25,6 +31,46 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
+		{
+			// Pre-allocate some space for performance
+			_outStrings.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
+
+			unsigned int numSplits = 0;
+
+			// Use STL methods 
+			size_t start, pos;
+			start = 0;
+			do 
+			{
+				pos = _str.find_first_of(_delims, start);
+				/*if (pos == start)
+				{
+				// Do nothing
+				start = pos + 1;
+				}
+				else */if (pos == String::npos || (_maxSplits && numSplits == _maxSplits))
+				{
+					// Copy the rest of the string
+					_outStrings.push_back( _str.substr(start) );
+					break;
+				}
+				else
+				{
+					// Copy up to delimiter
+					_outStrings.push_back( _str.substr(start, pos - start) );
+					start = pos + 1;
+				}
+				// parse up to next real data
+				if( _trimDelims == true )
+				{
+					start = _str.find_first_not_of(_delims, start);
+				}
+				++numSplits;
+
+			} while (pos != String::npos);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
 		{
 			// Pre-allocate some space for performance
 			_outStrings.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
@@ -110,26 +156,41 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		AString WToA( const WString& _value )
+		WString toWString( int x )
+		{
+			WStringstream str;
+			str << x;
+			return str.str();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		WString toWString( unsigned int _x )
+		{
+			WStringstream str;
+			str << _x;
+			return str.str();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		String WToA( const WString& _value )
 		{
 			//return Holder<Application>::get()->WToA( _stringw );
 			//size_t converted = 0;
 			size_t size = _value.size() + 1;
-			TCharA* stra = new TCharA[size];
+			char * stra = new char[size];
 			//wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
 			wcstombs( stra, _value.c_str(), size );
-			AString out( stra );
+			String out( stra );
 			delete[] stra;
+
 			return out;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		WString AToW( const AString& _value )
+		WString AToW( const String& _value )
 		{
 			setlocale( LC_CTYPE, "" );
 			//return Holder<Application>::get()->AToW( _String );
 			//size_t converted = 0;
 			size_t size = _value.size() + 1;
-			TCharW* strw = new TCharW[size];
+			wchar_t * strw = new wchar_t[size];
 			//mbstowcs_s( &converted, strw, size, _String.c_str(), _TRUNCATE );
 			mbstowcs( strw, _value.c_str(), size );
 			WString out( strw );

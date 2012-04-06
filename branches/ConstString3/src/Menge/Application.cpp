@@ -100,7 +100,7 @@
 #	include "ResourceImageDefault.h"
 #	include "ResourceImageInAtlas.h"
 #	include "ResourceImageAtlas.h"
-#	include "ResourceBinary.h"
+//#	include "ResourceBinary.h"
 #	include "ResourceMovie.h"
 #	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
@@ -337,7 +337,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadConfig( const String& _configFile )
+	bool Application::loadConfig( const WString& _configFile )
 	{
 		MENGE_LOG_INFO( "load config %s ..."
 			, _configFile.c_str()
@@ -347,7 +347,7 @@ namespace Menge
 		if( m_loaderEngine
 			->load( Consts::get()->c_builtin_empty, _configFile, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Application::loadConfig parse '%s' failed '%d'"
+			MENGE_LOG_ERROR( "Application::loadConfig parse '%S' failed '%d'"
 				, _configFile.c_str() 
                 , exist
 				);
@@ -555,7 +555,7 @@ namespace Menge
 		//NODE_FACTORY( TileMap );
 		NODE_FACTORY( Track );
 		NODE_FACTORY( Movie );
-		NODE_FACTORY( Model );
+		//NODE_FACTORY( Model );
 		NODE_FACTORY( Video );
 		NODE_FACTORY( Layer2D );
 		NODE_FACTORY( Layer2DPhysic );
@@ -609,6 +609,8 @@ namespace Menge
 		CodecEngine::keep( m_codecEngine );
 
 		m_serviceProvider->registryService( "CodecService", m_codecEngine );
+
+		m_codecEngine->registerCodecExt(L"png", ConstString("pngImage"));
 		
 		return true;
 	}
@@ -664,7 +666,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceAnimation );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
-		RESOURCE_FACTORY( ResourceBinary );
+		//RESOURCE_FACTORY( ResourceBinary );
 		RESOURCE_FACTORY( ResourceTilePolygon );
 		
 		//RESOURCE_FACTORY( ResourceSequence );
@@ -682,7 +684,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
 		RESOURCE_FACTORY( ResourceGlyph );
-		RESOURCE_FACTORY( ResourceModel );
+		//RESOURCE_FACTORY( ResourceModel );
 		//RESOURCE_FACTORY( ResourceTileMap );
 		//RESOURCE_FACTORY( ResourceTileSet );
 		//RESOURCE_FACTORY( ResourceMeshMS3D );
@@ -703,9 +705,9 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "initialize Param Manager..." );
 
-		m_paramManager = new ParamManager();
+		//m_paramManager = new ParamManager();
 
-		ParamManager::keep( m_paramManager );
+		//ParamManager::keep( m_paramManager );
 
 		return true;
 	}
@@ -743,30 +745,30 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Application::getPathGameFile() const
+	const WString & Application::getPathGameFile() const
 	{
 		return m_gameDescription;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setBaseDir( const String & _dir )
+	void Application::setBaseDir( const WString & _dir )
 	{
 		m_baseDir = _dir;
 
-		MENGE_LOG_WARNING( "setBaseDir '%s' fullpath '%s'"
+		MENGE_LOG_WARNING( "setBaseDir '%S' fullpath '%S'"
 			, _dir.c_str()
 			, m_baseDir.c_str()
 			);
 
 		if( m_scriptEngine )
 		{
-			TVectorString paths;
-			paths.push_back(m_baseDir);
+			TVectorWString paths;
+			paths.push_back( m_baseDir );
 
 			m_scriptEngine->addModulePath( paths );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Application::getBaseDir() const
+	const WString& Application::getBaseDir() const
 	{
 		return m_baseDir;
 	}
@@ -784,7 +786,7 @@ namespace Menge
 		//m_game->setBaseDir( m_baseDir );
 
 		//m_fileEngine->loadPak( m_gamePack );
-		String fullGamePackPath = m_baseDir;
+		WString fullGamePackPath = m_baseDir;
 
 		if( m_gamePackPath.empty() == false )
 		{
@@ -794,7 +796,7 @@ namespace Menge
 
 		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, m_gamePackType, false ) == false )
 		{
-			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak '%s' [%s]"
+			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak '%s' [%S]"
 				, m_gamePackPath.c_str() 
 				, fullGamePackPath.c_str()
 				);
@@ -802,14 +804,14 @@ namespace Menge
 			return false;
 		}
         
-        MENGE_LOG_INFO( "Application:loadGame load game pak '%s' desc '%s'"
+        MENGE_LOG_INFO( "Application:loadGame load game pak '%s' desc '%S'"
                        , m_gamePackName.c_str() 
                        , m_gameDescription.c_str()
                        );
 
 		if( m_game->loadDescription( m_gamePackName, m_gameDescription ) == false )
 		{
-			MENGE_LOG_ERROR( "Application:loadGame invalid load game file '%s' '%s'"
+			MENGE_LOG_ERROR( "Application:loadGame invalid load game file '%s' '%S'"
 				, m_gamePackName.c_str()
 				, m_gameDescription.c_str()
 				);
@@ -1400,7 +1402,7 @@ namespace Menge
 
 		delete m_game;
 
-		delete m_paramManager;
+		//delete m_paramManager;
 		delete m_arrowManager;
 
 		delete m_textManager;
@@ -1629,7 +1631,7 @@ namespace Menge
 		return m_debugMask;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::showMessageBox( const String& _message, const String& _header, unsigned int _style )
+	void Application::showMessageBox( const WString& _message, const WString& _header, unsigned int _style )
 	{
 		m_platform->showMessageBox( _message, _header, _style );
 	}
@@ -1647,7 +1649,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Application::getProjectTitle() const
+	const WString & Application::getProjectTitle() const
 	{
 		return m_game->getTitle();
 	}
@@ -1867,7 +1869,7 @@ namespace Menge
 		return m_cursorMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setCursorIcon(const String& _fileName)
+	void Application::setCursorIcon(const WString& _fileName)
 	{
 		m_platform->notifyCursorIconSetup(_fileName);
 	}
@@ -1911,7 +1913,7 @@ namespace Menge
 		m_platform->hideKeyboard();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Application::getScreensaverName() const
+	const WString & Application::getScreensaverName() const
 	{
 		return m_game->getScreensaverName();
 	}

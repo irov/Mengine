@@ -25,33 +25,33 @@ namespace Menge
 		~FileSystemDirectory();
 
 	public:
-		bool initialize( const String& _path,  FileEngine * _fileEngine, bool _create ) override;
-		const String & getPath() const override;
+		bool initialize( const WString& _path,  FileEngine * _fileEngine, bool _create ) override;
+		const WString & getPath() const override;
 
 	public:
-		bool existFile( const String& _filename ) override;
+		bool existFile( const WString& _filename ) override;
 		FileInputStreamInterface* createInputFile() override;
-		bool openInputFile( const String& _filename, FileInputStreamInterface* _file ) override;
+		bool openInputFile( const WString& _filename, FileInputStreamInterface* _file ) override;
 		void closeInputFile( FileInputStreamInterface* _inputFile ) override;
 		
 		FileOutputStreamInterface* createOutputFile() override;
 
-		bool openOutputFile( const String& _filename, FileOutputStreamInterface* _file ) override;
+		bool openOutputFile( const WString& _filename, FileOutputStreamInterface* _file ) override;
 		void closeOutputFile( FileOutputStreamInterface* _outputFile ) override;
-		bool createDirectory( const String& _path ) override;
-		void removeDirectory( const String& _path ) override;
-		void removeFile( const String& _filename ) override;
+		bool createDirectory( const WString& _path ) override;
+		void removeDirectory( const WString& _path ) override;
+		void removeFile( const WString& _filename ) override;
 
 	public:
 		FileBufferProvider * getBufferProvider() const override;
 
 	private:
-		void makeFullname_( const String& _filename, String& _fullname );
+		void makeFullname_( const WString& _filename, WString& _fullname );
 
 	private:
-		String m_path;
+		WString m_path;
 
-		String m_fullnameCache;
+		WString m_fullnameCache;
 
 		FileSystemInterface* m_interface;
 		FileEngine * m_fileEngine;

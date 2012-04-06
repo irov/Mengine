@@ -9,6 +9,10 @@
 #	include "ParticleEngine.h"
 #	include "LogEngine.h"
 
+#	include "Application.h"
+
+#	include "Interface/ApplicationInterface.h"
+
 #	include "Consts.h"
 
 namespace Menge
@@ -24,22 +28,22 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFilePath( const ConstString& _path )
+	void ResourceEmitterContainer::setFilePath( const WString& _path )
 	{
 		m_filename = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFolderPath( const ConstString& _path )
-	{
-		m_folder = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceEmitterContainer::getFilePath() const
+	const WString& ResourceEmitterContainer::getFilePath() const
 	{
 		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceEmitterContainer::getFolderPath() const
+	void ResourceEmitterContainer::setFolderPath( const WString& _folder )
+	{
+		m_folder = _folder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const WString& ResourceEmitterContainer::getFolderPath() const
 	{
 		return m_folder;
 	}
@@ -83,16 +87,24 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ConstString fullname( Helper::to_str(m_folder) + "/" + it->path + it->file );
+			
+			//String fullname = m_folder + MENGE_FOLDER_DELIM + it->file;
+			ConstString name = ConstString(m_name.to_str() + it->file);
 
 			if( ResourceManager::get()
-				->hasResource( fullname ) == false )
+				->hasResource( name ) == false )
 			{
-				this->createResource_( fullname );
+				PlatformInterface * platform = Application::get()
+					->getPlatform();
+
+				WString filename = platform->utf8ToUnicode( it->file );				
+				WString filepath = m_folder + MENGE_FOLDER_DELIM + filename;
+
+				this->createResource_( name, filepath );
 			}
 			
 			ResourceImageDefault * image = ResourceManager::get()
-				->getResourceT<ResourceImageDefault>( fullname );
+				->getResourceT<ResourceImageDefault>( name );
 
 			m_atlasImages.push_back( image );
 		}
@@ -104,7 +116,8 @@ namespace Menge
 
 		return true;
 	}
-	void ResourceEmitterContainer::createResource_( const ConstString & _fullname )
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::createResource_( const ConstString & _fullname, const WString & _path )
 	{
 		const ConstString & category = this->getCategory();
 		const ConstString & group = this->getGroup();
@@ -112,7 +125,7 @@ namespace Menge
 		ResourceImageDefault * image = ResourceManager::get()
 			->createResourceT<ResourceImageDefault>( category, group, _fullname, Consts::get()->c_ResourceImageDefault );
 
-		image->addImagePath( _fullname, mt::vec2f(-1.f,-1.f) );
+		image->addImagePath( _path, mt::vec2f(-1.f,-1.f) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::_release()

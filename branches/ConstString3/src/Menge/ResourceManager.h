@@ -17,7 +17,7 @@ namespace Menge
 	struct ResourceDesc
 	{
 		ConstString pak;
-		String path;
+		WString path;
 		bool script;
 	};
 

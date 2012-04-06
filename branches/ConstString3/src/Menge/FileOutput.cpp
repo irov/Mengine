@@ -34,7 +34,7 @@ namespace Menge
 		return m_fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileOutput::open( const String& _filename )
+	bool FileOutput::open( const WString& _filename )
 	{
 		if( m_fileSystem == NULL )
 		{

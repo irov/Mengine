@@ -3,9 +3,12 @@
 
 #	include "Core/String.h"
 #	include "Core/File.h"
+
+#	include "Config/Typedef.h"
+
 #	include "LogEngine.h"
 
-#	include "ConfigFile.h"
+#	include "ConfigFile/ConfigFile.h"
 
 #	include "Consts.h"
 
@@ -18,8 +21,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AccountManager::AccountManager( AccountManagerListener * _listener )
-		: m_listener(_listener)
+	AccountManager::AccountManager( const WString & _accountsPath, AccountManagerListener * _listener )
+		: m_accountsPath(_accountsPath)
+		, m_listener(_listener)
 		, m_currentAccount(0)
 		, m_playerEnumerator(0)
 	{
@@ -37,19 +41,20 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String AccountManager::createAccount()
+	WString AccountManager::createAccount()
 	{
-		String accountID = "Player_";
-		accountID += Utils::toString( m_playerEnumerator );
-		
-		createAccount_( accountID );
+		wchar_t buff_accountID[256];
+		swprintf( buff_accountID, L"Player_%d", m_playerEnumerator );
+		WString accountID(buff_accountID);
+
+		this->createAccount_( accountID );
 		
 		++m_playerEnumerator;
 		
 		return accountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
+	void AccountManager::addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc )
 	{
 		if( m_currentAccount == 0 )
 		{
@@ -59,17 +64,22 @@ namespace Menge
 		m_currentAccount->addSetting( _setting, _defaultValue, _applyFunc );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::changeSetting( const String & _setting, const String & _value )
+	void AccountManager::changeSetting( const WString & _setting, const WString & _value )
 	{
 		if( m_currentAccount == 0 )
 		{
+			MENGE_LOG_ERROR("AccountManager::changeSetting not setup currentAccount [%S, %S]"
+				, _setting.c_str()
+				, _value.c_str()
+				);
+
 			return;
 		}
 
 		m_currentAccount->changeSetting( _setting, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::createAccount_( const String& _accountID )
+	void AccountManager::createAccount_( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 		if( it_find != m_accounts.end() )
@@ -80,8 +90,9 @@ namespace Menge
 
 			return;
 		}
-
+				
 		Account* newAccount = new Account( _accountID );
+
 		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
 		m_currentAccount = newAccount;
@@ -103,16 +114,17 @@ namespace Menge
 		//	MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		//}
 
-		const ConstString & folder = newAccount->getFolder();
+		const WString & folder = newAccount->getName();
 
 		FileEngine::get()
-			->createDirectory( Consts::get()->c_user, Helper::to_str(folder) );
+			->createDirectory( Consts::get()->c_user, folder );
 
 		newAccount->save();
-		saveAccountsInfo();
+
+		this->saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::deleteAccount( const String& _accountID )
+	void AccountManager::deleteAccount( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -127,18 +139,18 @@ namespace Menge
 
 		if( m_currentAccount )
 		{
-			const ConstString & folder = m_currentAccount->getFolder();
+			const WString & name = m_currentAccount->getName();
 				
-			if( Helper::to_str(folder) == _accountID )
+			if( name == _accountID )
 			{
 				m_currentAccount = 0;
 			}
 		}
 
-		const ConstString & folder = it_find->second->getFolder();
+		const WString & folder = it_find->second->getName();
 
 		FileEngine::get()->
-			removeDirectory( Consts::get()->c_user, Helper::to_str(folder) );
+			removeDirectory( Consts::get()->c_user, folder );
 
 		delete it_find->second;
 
@@ -147,17 +159,17 @@ namespace Menge
 		saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::selectAccount( const String& _accountID )
+	bool AccountManager::selectAccount( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find == m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Can't select account '%s'. There is no account with such ID"
+			MENGE_LOG_ERROR( "Can't select account '%S'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 			
-			return;
+			return false;
 		}
 
 		m_currentAccount = it_find->second;
@@ -165,6 +177,8 @@ namespace Menge
 		m_currentAccount->apply();
 
 		saveAccountsInfo();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::hasCurrentAccount() const
@@ -177,13 +191,13 @@ namespace Menge
 		return m_currentAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Account* AccountManager::getAccount( const String& _accountID )
+	Account* AccountManager::getAccount( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 		
 		if( it_find == m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Account with ID '%s' not found"
+			MENGE_LOG_ERROR( "Account with ID '%S' not found"
 				, _accountID.c_str() 
 				);
 
@@ -198,14 +212,14 @@ namespace Menge
 		return m_accounts;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::setDefaultAccount( const String & _accountID )
+	void AccountManager::setDefaultAccount( const WString & _accountID )
 	{
 		m_defaultAccountID = _accountID;
 
 		this->saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & AccountManager::getDefaultAccount() const
+	const WString & AccountManager::getDefaultAccount() const
 	{
 		return m_defaultAccountID;
 	}
@@ -222,7 +236,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Account* AccountManager::loadAccount_( const String& _accountID )
+	Account* AccountManager::loadAccount_( const WString& _accountID )
 	{
 		Account* account = new Account( _accountID );
 
@@ -235,52 +249,64 @@ namespace Menge
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AccountManager::loadAccounts( const String & _accFilename )
+	bool AccountManager::loadAccountsInfo()
 	{
 		//String accFilename = "Accounts.xml";
 
 		bool accountsExist = FileEngine::get()
-			->existFile( Consts::get()->c_user, _accFilename );
+			->existFile( Consts::get()->c_user, m_accountsPath );
 
 		if( accountsExist == false )
 		{
+			MENGE_LOG_ERROR( "AccountManager::loadAccounts not exist accounts '%S'"
+				, m_accountsPath.c_str()
+				);
+
 			return false;
 		}
 
 		//if( loaderAccounts_( accFilename ) == false )
 
 		ConfigFile config;
+
+		FileInputStreamInterface* file = FileEngine::get()
+			->openInputFile( Consts::get()->c_user, m_accountsPath );
 		
-		if( config.load( Consts::get()->c_user, _accFilename ) == false )
+		if( config.load( file ) == false )
 		{
-			MENGE_LOG_ERROR( "Parsing Accounts failed 'Accounts.ini'"
+			MENGE_LOG_ERROR( "AccountManager::loadAccounts parsing accounts failed '%S'"
+				, m_accountsPath.c_str()
 				);
 
 			return false;
 		}
-		
 
-		unsigned int playerCount;
+		file->close();		
 
-		config.getSettingUInt( "AccountCount", "SETTINGS", playerCount );
-		config.getSettingUInt( "AccountEnumerator", "SETTINGS", m_playerEnumerator );
-		config.getSetting( "DefaultAccountID", "SETTINGS", m_defaultAccountID );
+		//unsigned int playerCount;
 
-		String selectAccountID;
-		config.getSetting( "SelectAccountID", "SETTINGS", selectAccountID );
+		//config.getSettingUInt( L"SETTINGS", L"AccountCount", playerCount );
+		config.getSettingUInt( L"SETTINGS", L"AccountEnumerator", m_playerEnumerator );
+		config.getSetting( L"SETTINGS", L"DefaultAccountID", m_defaultAccountID );
 
-		for( unsigned int
-			it = 0, 
-			it_end = playerCount;
+		WString selectAccountID;
+		config.getSetting( L"SETTINGS", L"SelectAccountID", selectAccountID );
+
+		TVectorWString values;
+		config.getSettings( L"ACCOUNTS", L"Account", values );
+
+		for( TVectorWString::const_iterator
+			it = values.begin(), 
+			it_end = values.end();
 		it != it_end;
 		++it )
 		{
-			String accountID;
-			config.indexSetting( it, "Account", "ACCOUNTS", accountID );
+			const WString & name = *it;
+			//config.indexSetting( it, "ACCOUNTS", "Account", accountID );
 
-			Account * account = this->loadAccount_( accountID );
+			Account * account = this->loadAccount_( name );
 
-			m_accounts.insert( std::make_pair( accountID, account ) );
+			m_accounts.insert( std::make_pair( name, account ) );
 		}
 
 		if( selectAccountID.empty() == false )
@@ -294,34 +320,41 @@ namespace Menge
 	void AccountManager::saveAccountsInfo()
 	{
 		FileOutputStreamInterface* file = FileEngine::get()
-			->openOutputFile( Consts::get()->c_user, "Accounts.ini" );
+			->openOutputFile( Consts::get()->c_user, m_accountsPath );
 
 		if( file == 0 )
 		{
-			MENGE_LOG_ERROR( "can't open file for writing. Accounts 'Accounts.ini' settings not saved"
+			MENGE_LOG_ERROR( "AccountManager::saveAccountsInfo can't open file for writing. Accounts '%S' settings not saved"
+				, m_accountsPath.c_str()
 				);
 
 			return;
 		}
 
-		Utils::stringWrite( file, "[SETTINGS]\n" );
+		ConfigFile config;
+
+		//Utils::stringWriteU( file, L"[SETTINGS]\n" );
 
 		if( m_defaultAccountID.empty() == false )
 		{
-			Utils::stringWrite( file, "DefaultAccountID = " + m_defaultAccountID + "\n" );
+			config.setSetting( L"SETTINGS", L"DefaultAccountID", m_defaultAccountID );
+			//Utils::stringWriteU( file, L"DefaultAccountID = " + m_defaultAccountID + L"\n" );
 		}
 
 		if( m_currentAccount )
 		{
-			const ConstString & folder = m_currentAccount->getFolder();
-			Utils::stringWrite( file, "SelectAccountID = " + Helper::to_str(folder) + "\n" );
+			const WString & name = m_currentAccount->getName();
+
+			config.setSetting( L"SETTINGS", L"SelectAccountID", name );
+			//Utils::stringWriteU( file, L"SelectAccountID = " + name + L"\n" );
 		}
 
-		Utils::stringWrite( file, "AccountCount = " + Utils::toString( ( unsigned int )m_accounts.size() ) + "\n" );
-		Utils::stringWrite( file, "AccountEnumerator = " + Utils::toString( m_playerEnumerator ) + "\n" );
-		
+		//Utils::stringWriteU( file, L"AccountCount = " + Utils::toString( ( unsigned int )m_accounts.size() ) + "\n" );
 
-		Utils::stringWrite( file, "[ACCOUNTS]\n" );
+		config.setSetting( L"SETTINGS", L"AccountEnumerator", Utils::toWString( m_playerEnumerator ) );
+		//Utils::stringWriteU( file, L"AccountEnumerator = " + Utils::toWString( m_playerEnumerator ) + L"\n" );
+		
+		//Utils::stringWriteU( file, L"[ACCOUNTS]\n" );
 
 		for( TMapAccounts::iterator 
 			it = m_accounts.begin(), 
@@ -329,19 +362,22 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			Utils::stringWrite( file, "Account = " + it->first + "\n" );
+			config.setSetting( L"ACCOUNTS", L"Account", it->first );
+			//Utils::stringWriteU( file, L"Account = " + it->first + L"\n" );
 		}
+
+		config.save( file );
 
 		file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::saveAccount( const String& _accountID )
+	void AccountManager::saveAccount( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find == m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Warning: Account with ID '%s' does not exist. Can't save"
+			MENGE_LOG_ERROR( "Warning: Account with ID '%S' does not exist. Can't save"
 				, _accountID.c_str() 
 				);
 

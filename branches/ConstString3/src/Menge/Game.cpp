@@ -27,7 +27,6 @@
 
 #	include "Consts.h"
 
-#	include "ConfigFile.h"
 #	include "TextManager.h"
 
 #	include "NodeManager.h"
@@ -59,10 +58,9 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Game::Game( const String & _baseDir, const String & _platformName )
+	Game::Game( const WString & _baseDir, const String & _platformName )
 		: m_baseDir(_baseDir)
 		, m_platformName(_platformName)
-		, m_title(Consts::get()->c_Game)
 		, m_fixedContentResolution(false)
 		, m_fullScreen(true)
 		, m_textureFiltering(true)
@@ -128,14 +126,14 @@ namespace Menge
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak_desc.name );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak_desc.path );
 					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Locale, pak_desc.locale );
-                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak_desc.description );
+                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak_desc.filename );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak_desc.preload );
                 }
 
                 
                 //BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Type, desc.type );
                
-                ResourcePak * pak = new ResourcePak(pak_desc, m_baseDir);
+                ResourcePak * pak = new ResourcePak( pak_desc, m_baseDir );
 
 				m_resourcePaks.push_back( pak );
 			}
@@ -153,7 +151,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Locale, pak_desc.locale );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Platform, pak_desc.platform );
 					//BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak.type );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak_desc.description );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak_desc.filename );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak_desc.preload );
 				}
 
@@ -423,7 +421,7 @@ namespace Menge
 		return m_player->isChangedScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadDescription( const ConstString & _gamePackName, const String & _gameDescription )
+	bool Game::loadDescription( const ConstString & _gamePackName, const WString & _gameDescription )
 	{
 		bool exist = false;
 
@@ -514,9 +512,9 @@ namespace Menge
 			}
 
 		protected:
-			void onCreateAccount( const String & _accountID ) override
+			void onCreateAccount( const WString & _accountID ) override
 			{
-				m_game->callEvent( EVENT_CREATE_ACCOUNT, "(s)", _accountID.c_str() );
+				m_game->callEvent( EVENT_CREATE_ACCOUNT, "(u)", _accountID.c_str() );
 			}
 
 		protected:
@@ -540,11 +538,11 @@ namespace Menge
 
 		m_accountLister = new ApplicationAccountManagerListener(this);
 
-		m_accountManager = new AccountManager(m_accountLister);
+		m_accountManager = new AccountManager( L"accounts.ini", m_accountLister );
 
 		AccountManager::keep(m_accountManager);
 
-		m_accountManager->loadAccounts( "Accounts.ini");
+		m_accountManager->loadAccountsInfo();
 		
 		m_defaultArrow = ArrowManager::get()
 			->createArrow( m_defaultArrowName, m_defaultArrowPrototype );
@@ -703,21 +701,22 @@ namespace Menge
 		return m_contentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Game::getTitle() const
+	const WString & Game::getTitle() const
 	{
 		if( m_localizedTitle == false )
 		{
-			return Helper::to_str(m_title);
+			return m_title;
 		}
 
 		TextManager * textMgr = TextManager::get();
 
 		if( textMgr == 0 )
 		{
-			return Helper::to_str(m_title);
+			return m_title;
 		}
 
-		const TextEntry & entry = textMgr->getTextEntry( m_title );
+		ConstString key("APPLICATION_TITLE");
+		const TextEntry & entry = textMgr->getTextEntry(key);
 
 		return entry.text;
 	}
@@ -782,16 +781,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initPredefinedResources_()
 	{
-		ResourceImageDefault * image = ResourceManager::get()
-			->createResourceT<ResourceImageDefault>( 
-			Consts::get()->c_builtin_empty, 
-			Consts::get()->c_builtin_empty, 
-			Consts::get()->c_WhitePixel, 
-			Consts::get()->c_ResourceImageDefault 
-			);
+		//ResourceImageDefault * image = ResourceManager::get()
+		//	->createResourceT<ResourceImageDefault>( 
+		//	Consts::get()->c_builtin_empty, 
+		//	Consts::get()->c_builtin_empty, 
+		//	Consts::get()->c_WhitePixel, 
+		//	Consts::get()->c_ResourceImageDefault 
+		//	);
 
-		image->addImagePath( Consts::get()->c_CreateImage, mt::vec2f(1.f,1.f) );
-		image->incrementReference();
+		//image->addImagePath( Consts::get()->c_CreateImage, mt::vec2f(1.f,1.f) );
+		//image->incrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::removePredefinedResources_()
@@ -942,7 +941,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Game::getScreensaverName() const
+	const WString& Game::getScreensaverName() const
 	{
 		return m_screensaverName;
 	}

@@ -87,7 +87,7 @@ namespace Menge
 		struct EmitterAtlas
 		{
 			String file;
-			String path;
+			//WString path;
 		};
 		
 		class EmitterContainerVisitor

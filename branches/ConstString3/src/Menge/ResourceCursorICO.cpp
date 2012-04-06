@@ -18,8 +18,8 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_path );
 		}
 	}
-
-	const ConstString& ResourceCursorICO::getPath() const
+	//////////////////////////////////////////////////////////////////////////
+	const WString& ResourceCursorICO::getPath() const
 	{
 		return m_path;
 	}

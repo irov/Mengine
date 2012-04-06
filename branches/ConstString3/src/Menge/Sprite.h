@@ -1,11 +1,13 @@
 #	pragma once
 
-#	include "../Interface/RenderSystemInterface.h"
 #	include "Node.h"
+
 #	include "Core/ColourValue.h"
 #	include "ValueInterpolator.h"
 
 #	include "FixedVertices.h"
+
+#	include "../Interface/RenderSystemInterface.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"

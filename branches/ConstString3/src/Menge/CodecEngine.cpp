@@ -6,6 +6,8 @@
 
 #	include "Utils/Core/File.h"
 
+#	include "LogEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -74,6 +76,44 @@ namespace Menge
 		}
 
 		return decoder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool CodecEngine::registerCodecExt( const WString & _ext, const ConstString & _codecType )
+	{
+		TMapCodecTypes::iterator it_find = m_codecTypes.find( _ext );
+
+		if( it_find != m_codecTypes.end() )
+		{
+			MENGE_LOG_ERROR("CodecEngine::registerCodecExt '%S' '%s' alredy registry in '%s'"
+				, _ext.c_str()
+				, _codecType.c_str()
+				, it_find->second.c_str()
+				);
+
+			return false;
+		}
+
+		m_codecTypes.insert( std::make_pair(_ext, _codecType) );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & CodecEngine::findCodecType( const WString & _ext )
+	{
+		TMapCodecTypes::iterator it_find = m_codecTypes.find( _ext );
+
+		if( it_find == m_codecTypes.end() )
+		{
+			MENGE_LOG_WARNING("CodecEngine::findCodecType codec for '%S' not found"
+				, _ext.c_str()
+				);
+
+			return ConstString::none;
+		}
+
+		const ConstString & codecType = it_find->second;
+
+		return codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EncoderInterface * CodecEngine::createEncoder( const ConstString& _type, OutputStreamInterface * _stream )

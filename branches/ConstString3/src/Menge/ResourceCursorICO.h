@@ -9,13 +9,13 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceCursorICO )
 
 	public:
-		const ConstString& getPath() const;
+		const WString& getPath() const;
 
 	protected:
 		void loader( BinParser * _parser ) override;
 
 	protected:
-		ConstString m_path;
+		WString m_path;
 
 	};
 }

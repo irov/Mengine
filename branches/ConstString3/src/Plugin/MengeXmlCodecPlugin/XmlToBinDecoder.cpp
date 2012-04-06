@@ -35,13 +35,13 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		writeHeader( m_options.protocol.c_str(), "BinProtocol.h" );
+		writeHeader( m_options.pathProtocol.c_str(), L"BinProtocol.h" );
 		char error[256];
 		
-		if( writeBinary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), error ) == false )
+		if( writeBinary( m_options.pathProtocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), error ) == false )
 		{
 			LOGGER_ERROR(m_logService)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
-				, m_options.protocol.c_str()
+				, m_options.pathProtocol.c_str()
 				, m_options.pathXml.c_str()
 				, m_options.pathBin.c_str()
 				//, m_options.version

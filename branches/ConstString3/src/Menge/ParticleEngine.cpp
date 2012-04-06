@@ -33,14 +33,15 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename )
+	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const WString & _filename )
 	{
 		FileInputStreamInterface* file = FileEngine::get()
-								->openInputFile( _fileSystemName, Helper::to_str(_filename) );
+								->openInputFile( _fileSystemName, _filename );
 
 		if( file == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEngine can't open file '%s'"
+			MENGE_LOG_ERROR( "ParticleEngine %s can't open file %S"				
+				, _fileSystemName.c_str()
 				, _filename.c_str() 
 				);
 
@@ -57,7 +58,7 @@ namespace Menge
 
 		if( container == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEngine can't create emitter container '%s'"
+			MENGE_LOG_ERROR( "ParticleEngine can't create emitter container '%S'"
 				, _filename.c_str() 
 				);
 

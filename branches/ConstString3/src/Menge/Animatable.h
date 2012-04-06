@@ -12,6 +12,7 @@ namespace Menge
 	public:
 		void setLoop( bool _value );
 		bool getLoop() const;
+
 		void setSpeedFactor( float _factor );
 		float getSpeedFactor() const;
 
@@ -35,12 +36,12 @@ namespace Menge
 		virtual void _setLoop( bool _value );
 
 	protected:
+		float m_speedFactor;
+
 		size_t m_enumerator;
 
 		bool m_play;
 
 		bool m_loop;
-
-		float m_speedFactor;
 	};
 }

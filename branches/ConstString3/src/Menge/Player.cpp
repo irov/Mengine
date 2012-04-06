@@ -931,7 +931,13 @@ namespace Menge
 				->visitFactories( &pfmv );
 
 			const std::string & str = ss.str();
-			m_debugText->setText( str );
+
+			PlatformInterface * platform = Application::get()
+				->getPlatform();
+
+			WString unicode = platform->ansiToUnicode( str );
+
+			m_debugText->setText( unicode );
 			m_debugText->render( m_renderCamera2D );
 		}
 #	endif

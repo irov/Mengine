@@ -51,11 +51,11 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		m_videoFile = FileEngine::get()
-			->openInputFile( category, Helper::to_str(m_filePath) );
+			->openInputFile( category, m_filePath );
 
 		if( m_videoFile == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceVideo: can't open video file '%s'"
+			MENGE_LOG_ERROR( "ResourceVideo: can't open video file '%S'"
 				, m_filePath.c_str()
 				);
 
@@ -64,7 +64,7 @@ namespace Menge
 
 		if( m_codecType.empty() == true )
 		{
-			MENGE_LOG_ERROR( "ResourceVideo: you must determine codec for file '%s'"
+			MENGE_LOG_ERROR( "ResourceVideo: you must determine codec for file '%S'"
 				, m_filePath.c_str()
 				);
 
@@ -76,7 +76,7 @@ namespace Menge
 				
 		if( m_videoDecoder == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%s'"
+			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%S'"
 				, m_filePath.c_str()
 				);
 
@@ -125,7 +125,7 @@ namespace Menge
 		return m_alpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceVideo::getFilePath() const
+	const WString & ResourceVideo::getFilePath() const
 	{
 		return m_filePath;
 	}

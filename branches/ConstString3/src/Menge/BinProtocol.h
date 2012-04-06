@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1332854522;
+		static const int version = 1333560622;
 		struct AccountID
 		{
 			static const int id = 125;
@@ -139,7 +139,7 @@ namespace Menge
 		struct Arrows_Path
 		{
 			static const int id = 78;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct AutoPlay
 		{
@@ -171,7 +171,7 @@ namespace Menge
 		struct Background_Image
 		{
 			static const int id = 402;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct BaseDir
 		{
@@ -180,7 +180,7 @@ namespace Menge
 		struct BaseDir_Value
 		{
 			static const int id = 2;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct BinaryNode
 		{
@@ -221,7 +221,7 @@ namespace Menge
 		struct Bottom_Image
 		{
 			static const int id = 426;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct CategoryBits
 		{
@@ -470,7 +470,7 @@ namespace Menge
 		struct Entities_Path
 		{
 			static const int id = 72;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Entity
 		{
@@ -542,17 +542,17 @@ namespace Menge
 		struct File_Path
 		{
 			static const int id = 310;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct File_PathAlpha
 		{
 			static const int id = 308;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct File_PathRGB
 		{
 			static const int id = 306;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct File_Size
 		{
@@ -623,7 +623,7 @@ namespace Menge
 		struct Folder_Path
 		{
 			static const int id = 278;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct Font
 		{
@@ -677,7 +677,7 @@ namespace Menge
 		struct GamePack_Description
 		{
 			static const int id = 8;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct GamePack_Name
 		{
@@ -687,7 +687,7 @@ namespace Menge
 		struct GamePack_Path
 		{
 			static const int id = 6;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Glyph
 		{
@@ -777,7 +777,7 @@ namespace Menge
 		struct Image_Path
 		{
 			static const int id = 282;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct ImageAlpha
 		{
@@ -954,7 +954,7 @@ namespace Menge
 		struct LanguagePack_Description
 		{
 			static const int id = 64;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct LanguagePack_Locale
 		{
@@ -969,7 +969,7 @@ namespace Menge
 		struct LanguagePack_Path
 		{
 			static const int id = 62;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct LanguagePack_Platform
 		{
@@ -993,7 +993,7 @@ namespace Menge
 		struct Left_Image
 		{
 			static const int id = 434;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct LeftBottom
 		{
@@ -1007,7 +1007,7 @@ namespace Menge
 		struct LeftBottom_Image
 		{
 			static const int id = 430;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct LeftTop
 		{
@@ -1021,7 +1021,7 @@ namespace Menge
 		struct LeftTop_Image
 		{
 			static const int id = 406;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct LineOffset
 		{
@@ -1256,7 +1256,7 @@ namespace Menge
 		struct OutlineImage_Path
 		{
 			static const int id = 284;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct Pak
 		{
@@ -1539,7 +1539,7 @@ namespace Menge
 		struct Resource_Path
 		{
 			static const int id = 74;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Resource_Type
 		{
@@ -1585,7 +1585,7 @@ namespace Menge
 		struct ResourcePack_Description
 		{
 			static const int id = 52;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct ResourcePack_Locale
 		{
@@ -1600,7 +1600,7 @@ namespace Menge
 		struct ResourcePack_Path
 		{
 			static const int id = 50;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct ResourcePack_PreLoad
 		{
@@ -1659,7 +1659,7 @@ namespace Menge
 		struct Resources_Path
 		{
 			static const int id = 511;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Restitution
 		{
@@ -1682,7 +1682,7 @@ namespace Menge
 		struct Right_Image
 		{
 			static const int id = 418;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct RightAlign
 		{
@@ -1705,7 +1705,7 @@ namespace Menge
 		struct RightBottom_Image
 		{
 			static const int id = 422;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct RightTop
 		{
@@ -1719,7 +1719,7 @@ namespace Menge
 		struct RightTop_Image
 		{
 			static const int id = 414;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct Scale
 		{
@@ -1756,7 +1756,7 @@ namespace Menge
 		struct Scenes_Path
 		{
 			static const int id = 70;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Screensaver
 		{
@@ -1765,7 +1765,7 @@ namespace Menge
 		struct Screensaver_Name
 		{
 			static const int id = 539;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Scripts
 		{
@@ -1774,7 +1774,7 @@ namespace Menge
 		struct Scripts_Path
 		{
 			static const int id = 76;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Sequence
 		{
@@ -1878,7 +1878,7 @@ namespace Menge
 		struct Text_File
 		{
 			static const int id = 84;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Text_Font
 		{
@@ -1903,7 +1903,7 @@ namespace Menge
 		struct Text_Value
 		{
 			static const int id = 480;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct TextKey
 		{
@@ -1936,7 +1936,7 @@ namespace Menge
 		struct Texts_Path
 		{
 			static const int id = 80;
-			typedef Menge::String Type;
+			typedef Menge::WString Type;
 		};
 		struct Texture
 		{
@@ -2034,7 +2034,7 @@ namespace Menge
 		struct Title_Value
 		{
 			static const int id = 14;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct Top
 		{
@@ -2048,7 +2048,7 @@ namespace Menge
 		struct Top_Image
 		{
 			static const int id = 410;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct Track
 		{
@@ -2062,7 +2062,7 @@ namespace Menge
 		struct Track_File
 		{
 			static const int id = 374;
-			typedef Menge::ConstString Type;
+			typedef Menge::WString Type;
 		};
 		struct Track_Volume
 		{

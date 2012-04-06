@@ -75,7 +75,7 @@ namespace Menge
 			SoundBufferInterface * _sample,
 			bool _music = false ) override;
 
-		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream ) override;  
+		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const WString & _filename, const ConstString & _codecType, bool _isStream ) override;  
 		SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem ) override;
 
 		void setSoundVolume( float _volume ) override;

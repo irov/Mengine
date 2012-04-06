@@ -30,7 +30,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageAtlas::_compile()
 	{	
-		m_texture = RenderEngine::get()->createTexture(m_name, m_size.x, m_size.y, m_pixelFormat );
+		m_texture = RenderEngine::get()
+			->createTexture( m_size.x, m_size.y, m_pixelFormat );
+
 		if( m_texture == NULL )
 		{
 			MENGE_LOG_ERROR("Texture::ResourceImageAtlas: Invalid create texture");

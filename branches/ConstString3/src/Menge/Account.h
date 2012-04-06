@@ -12,33 +12,27 @@ namespace Menge
 	class Account
 	{		
 	public:
-		Account( const String& _folder );
+		Account( const WString & _name );
 		~Account();
 
 	public:
-		//const String& getName() const;
-		const ConstString& getFolder() const;
+		const WString& getName() const;
 
-		void addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
-		void changeSetting( const String& _setting, const String& _value );
-		const String& getSetting( const String& _setting );
+		void addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc );
+		void changeSetting( const WString& _setting, const WString& _value );
+		const WString& getSetting( const WString& _setting ) const;
 
-		void addSettingU( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
-		void changeSettingU( const String& _setting, const String& _value );
-		const String& getSettingU( const String& _setting );
-
+	public:
 		void apply();
 
-		void load();
+		bool load();
 		void save();
 	
 	protected:
-		//String m_name;
-		ConstString m_folder;
+		WString m_name;
 
-		typedef std::pair<String, PyObject*> TPairSettings;
-		typedef std::map<String, TPairSettings> TMapSettings;
+		typedef std::pair<WString, PyObject*> TPairSettings;
+		typedef std::map<WString, TPairSettings> TMapSettings;
 		TMapSettings m_settings;
-		TMapSettings m_settingsU;
 	};
 }	// namespace Menge

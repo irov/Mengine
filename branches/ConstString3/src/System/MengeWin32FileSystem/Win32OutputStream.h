@@ -24,7 +24,7 @@ namespace Menge
 		~Win32OutputStream();
 
 	public:
-		bool open( const String& _filename ) override;
+		bool open( const WString& _filename ) override;
 		void close() override;
 
 		int tell() override;

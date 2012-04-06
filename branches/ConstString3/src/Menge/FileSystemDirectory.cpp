@@ -36,7 +36,7 @@ namespace Menge
 		delete m_fileBufferProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::initialize( const String& _path, FileEngine * _fileEngine, bool _create )
+	bool FileSystemDirectory::initialize( const WString& _path, FileEngine * _fileEngine, bool _create )
 	{
 		m_interface = FileEngine::get()
 			->getFileSystemInterface();
@@ -57,20 +57,20 @@ namespace Menge
 		{
 			if( _create == false )
 			{
-				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to open directory %s"
+				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to open directory %S"
 					, m_path.c_str() 
 					);
                 
 				return false;
 			}
 
-			MENGE_LOG_WARNING( "FileSystemDirectory::initialize create directory %s"
+			MENGE_LOG_WARNING( "FileSystemDirectory::initialize create directory %S"
 				, m_path.c_str() 
 				);
 
 			if( m_interface->createFolder( m_path ) == false )
 			{
-				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to create directory %s"
+				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to create directory %S"
 					, m_path.c_str() 
 					);
 
@@ -83,17 +83,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & FileSystemDirectory::getPath() const
+	const WString & FileSystemDirectory::getPath() const
 	{
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::existFile( const String& _filename )
+	bool FileSystemDirectory::existFile( const WString& _filename )
 	{
-		String fullname;
-		makeFullname_( _filename, fullname );
+		this->makeFullname_( _filename, m_fullnameCache );
 
-		return m_interface->existFile( fullname );
+		return m_interface->existFile( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileBufferProvider * FileSystemDirectory::getBufferProvider() const
@@ -111,16 +110,15 @@ namespace Menge
 		return bufferedFi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::openInputFile( const String& _filename, FileInputStreamInterface* _file )
+	bool FileSystemDirectory::openInputFile( const WString& _filename, FileInputStreamInterface* _file )
 	{
-		//String fullname;
-		makeFullname_( _filename, m_fullnameCache );
+		this->makeFullname_( _filename, m_fullnameCache );
 
 		FileInputStreamInterface* fi = m_interface->openInputStream( m_fullnameCache );
 
 		if( fi == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'"
+			MENGE_LOG_ERROR( "FileSystemDirectory::openInputFile failed to open input stream '%S'"
 				, m_fullnameCache.c_str() 
 				);
 
@@ -160,18 +158,20 @@ namespace Menge
 	{
 		//SimpleFileOutput* fileOutput = m_fileOutputPool.get();
 		SimpleFileOutput* fileOutput = new SimpleFileOutput;
+
 		fileOutput->setFileSystem( this );
+
 		return fileOutput;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutputStreamInterface* _file )
+	bool FileSystemDirectory::openOutputFile( const WString& _filename, FileOutputStreamInterface* _file )
 	{
-		makeFullname_( _filename, m_fullnameCache );
+		this->makeFullname_( _filename, m_fullnameCache );
 		
 		FileOutputStreamInterface* fo = m_interface->openOutputStream( m_fullnameCache );
 		if( fo == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%s'"
+			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%S'"
 				, m_fullnameCache.c_str() 
 				);
 
@@ -203,28 +203,28 @@ namespace Menge
 		delete fileOutput;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::createDirectory( const String& _path )
+	bool FileSystemDirectory::createDirectory( const WString& _path )
 	{
 		makeFullname_( _path, m_fullnameCache );
 	
 		return m_interface->createFolder( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeDirectory( const String& _path )
+	void FileSystemDirectory::removeDirectory( const WString& _path )
 	{
 		makeFullname_( _path, m_fullnameCache );
 
 		m_interface->deleteFolder( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeFile( const String& _filename )
+	void FileSystemDirectory::removeFile( const WString& _filename )
 	{
 		makeFullname_( _filename, m_fullnameCache );
 
 		m_interface->deleteFile( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::makeFullname_( const String& _path, String& _fullname )
+	void FileSystemDirectory::makeFullname_( const WString& _path, WString& _fullname )
 	{
 		_fullname = m_path;
 		_fullname += _path;

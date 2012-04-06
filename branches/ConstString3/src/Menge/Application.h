@@ -70,10 +70,10 @@ namespace Menge
 
 	public:
 		bool initialize( PlatformInterface* _platform, const String & _platformName, const String& _args ) override;
-		bool loadConfig( const String& _configFile ) override;
+		bool loadConfig( const WString& _configFile ) override;
 
-		void setBaseDir( const String & _dir ) override;
-		const String & getBaseDir() const override;
+		void setBaseDir( const WString & _dir ) override;
+		const WString & getBaseDir() const override;
 
 	public:
 		PlatformInterface * getPlatform() const override;
@@ -111,7 +111,7 @@ namespace Menge
 
 	public:
 		//bool initialize( const String& _applicationFile, const String& _args );
-		const String& getScreensaverName() const override;
+		const WString& getScreensaverName() const override;
 
 	public:
 		const String & getPlatformName() const;
@@ -149,7 +149,7 @@ namespace Menge
 
 		void quit();
 
-		const String & getPathGameFile() const;
+		const WString & getPathGameFile() const;
 		
 	public:
 		void loader( BinParser * _parser ) override;
@@ -202,13 +202,13 @@ namespace Menge
 
 		unsigned int getDebugMask() const;
 
-		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
+		void showMessageBox( const WString& _message, const WString& _header, unsigned int _style );
 
 		void ansiToUtf8( const String& _ansi, String & _utf8 );
 		void utf8ToAnsi( const String& _utf8, String & _ansi );
 		void utf8Count( const String& _utf8, size_t & _size );
 
-		const String & getProjectTitle() const;
+		const WString & getProjectTitle() const;
 		
 		static const char* getVersionInfo();
 
@@ -225,7 +225,7 @@ namespace Menge
 		void setVSync( bool _vsync );
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
-		void setCursorIcon(const String& _fileName);
+		void setCursorIcon(const WString& _fileName);
 
 		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
 		void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
@@ -258,7 +258,7 @@ namespace Menge
 
 		Game * m_game;
 
-		String m_gameDescription;
+		WString m_gameDescription;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
@@ -300,7 +300,7 @@ namespace Menge
 		ThreadEngine* m_threadEngine;
 		TaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;
-		ParamManager * m_paramManager;
+		//ParamManager * m_paramManager;
 		AlphaChannelManager* m_alphaChannelManager;
 		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;
@@ -315,10 +315,10 @@ namespace Menge
 		void parseArguments_( const String& _arguments );
 
 		WString m_applicationPath;
-		String m_baseDir;
+		WString m_baseDir;
 		
 		ConstString m_gamePackName;
-		String m_gamePackPath;
+		WString m_gamePackPath;
 		ConstString m_gamePackType;
 		ConstString m_languagePackOverride;
 

@@ -92,21 +92,22 @@ namespace Menge
 		size_t width = (size_t)size.x;
 		size_t height = (size_t)size.y;
 
-		const ConstString & alphaBufferName = _resourceImage->getFileName();
+		const WString & alphaBufferName = _resourceImage->getFileName();
 		const ConstString & alphaBufferCodec = _resourceImage->getCodecType();
 		bool isAlpha = _resourceImage->isAlpha();
 
 		const ConstString& category = _resourceImage->getCategory();
 
 		FileInputStreamInterface * stream = FileEngine::get()
-			->openInputFile( category, Helper::to_str(alphaBufferName) );
+			->openInputFile( category, alphaBufferName );
 
 		ImageDecoderInterface * decoder = CodecEngine::get()
 			->createDecoderT<ImageDecoderInterface>( alphaBufferCodec, stream );
 
 		if( decoder == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: ResourceHotspotImage - Can't create image decoder for file '%s'"
+			MENGE_LOG_ERROR( "AlphaChannelManager::makeAlphaBuffer_ %s create image decoder for file '%S'"
+				, _name.c_str()
 				, alphaBufferName.c_str() 
 				);
 

@@ -86,7 +86,7 @@ namespace Menge
 
 		m_currentPlayList->setTrack(_index);
 
-		prepareSound_( category, desc->path, desc->codec );
+		this->prepareSound_( category, desc->path, desc->codec );
 
 		float musicVolume = 
 			SoundEngine::get()->getMusicVolume();
@@ -276,9 +276,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::prepareSound_( const ConstString& _pakName, const ConstString& _file, const ConstString& _codec )
+	void Amplifier::prepareSound_( const ConstString& _pakName, const WString& _file, const ConstString& _codec )
 	{
-		stop();
+		this->stop();
 		//_release();
 
 		m_buffer = SoundEngine::get()

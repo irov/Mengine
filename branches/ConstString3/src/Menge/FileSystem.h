@@ -23,13 +23,13 @@ namespace Menge
 		: public Factorable
 	{
 	public:
-		virtual bool initialize( const String& _path, FileEngine * _fileEngine, bool _create ) = 0;
-		virtual const String & getPath() const = 0;
+		virtual bool initialize( const WString& _path, FileEngine * _fileEngine, bool _create ) = 0;
+		virtual const WString & getPath() const = 0;
 
 	public:
-		virtual bool existFile( const String& _filename ) = 0;
+		virtual bool existFile( const WString& _filename ) = 0;
 		virtual FileInputStreamInterface* createInputFile() = 0;
-		virtual bool openInputFile( const String& _filename, FileInputStreamInterface* _file ) = 0;
+		virtual bool openInputFile( const WString& _filename, FileInputStreamInterface* _file ) = 0;
 		virtual void closeInputFile( FileInputStreamInterface* _file ) = 0;
 		
 
@@ -38,10 +38,10 @@ namespace Menge
 
 	public:
 		virtual FileOutputStreamInterface* createOutputFile() { return 0; }
-		virtual bool openOutputFile( const String& _filename, FileOutputStreamInterface* _file ) { return false; }
+		virtual bool openOutputFile( const WString& _filename, FileOutputStreamInterface* _file ) { return false; }
 		virtual void closeOutputFile( FileOutputStreamInterface* _outStream ) { }
-		virtual bool createDirectory( const String& _path ) { return false; }
-		virtual void removeDirectory( const String& _path ) { }
-		virtual void removeFile( const String& _filename ) { }
+		virtual bool createDirectory( const WString& _path ) { return false; }
+		virtual void removeDirectory( const WString& _path ) { }
+		virtual void removeFile( const WString& _filename ) { }
 	};
 }	// namespace Menge

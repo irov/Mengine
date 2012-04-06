@@ -21,6 +21,6 @@ namespace Menge
 		StringizeServiceInterface * m_stringizeService;
 
 	private:
-		bool convert_( const String & input, const String & output );
+		bool convert_( const WString & _input, const WString & _output );
 	};
 }	// namespace Menge

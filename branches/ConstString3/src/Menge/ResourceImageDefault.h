@@ -29,9 +29,9 @@ namespace Menge
 		
 		RenderTextureInterface * getTexture() const override;
 
-		void addImagePath( const ConstString& _imagePath, const mt::vec2f & _size );
+		void addImagePath( const WString& _imagePath, const mt::vec2f & _size );
 
-		const ConstString & getFileName() const override;
+		const WString & getFileName() const override;
 		const ConstString & getCodecType() const override;
 
 	public:
@@ -52,25 +52,30 @@ namespace Menge
 	
 		struct ImageDesc
 		{
-			ConstString fileName;
-			ConstString fileNameAlpha;
-			ConstString fileNameRGB;
+			WString fileName;
 			ConstString codecType;
+
+			WString fileNameAlpha;
 			ConstString codecTypeAlpha;
+
+			WString fileNameRGB;			
 			ConstString codecTypeRGB;
+
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;
 			mt::vec2f size;
+
 			bool isAlpha;
 			bool isCombined;
 			bool wrapX;
 			bool wrapY;
 		};
+
 		ImageDesc m_imageDesc;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const ResourceImage::ImageFrame & ResourceImageDefault::getImageFrame( ) const
+	inline const ResourceImage::ImageFrame & ResourceImageDefault::getImageFrame() const
 	{
 		return m_imageFrame;
 	}

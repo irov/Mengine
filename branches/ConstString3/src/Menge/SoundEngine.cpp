@@ -184,19 +184,19 @@ namespace Menge
 		return	soundId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream )
+	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const WString & _filename, const ConstString & _codecType, bool _isStream )
 	{
 		SoundDesc desc;
 
 		desc.stream = FileEngine::get()
-			->openInputFile( _pakName, Helper::to_str(_filename) );
+			->openInputFile( _pakName, _filename );
 
 		desc.codec = CodecEngine::get()
 			->createDecoderT<SoundDecoderInterface>( _codecType, desc.stream );
 		
     	if( desc.codec == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file '%s'"
+			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file '%S'"
 				, _filename.c_str() 
 				);
 

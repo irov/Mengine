@@ -19,9 +19,9 @@ namespace Menge
 
 	struct WindowImageDesc
 	{
-		ConstString path;
+		WString path;
 		ConstString codec;
-		RenderTextureInterface * image;
+		RenderTextureInterface * texture;
 	};
 
 	class ResourceWindow

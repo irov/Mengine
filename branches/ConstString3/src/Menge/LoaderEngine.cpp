@@ -51,7 +51,7 @@ namespace Menge
 		class FFindBlobject
 		{
 		public:
-			FFindBlobject( const ConstString & _pak, const String & _path )
+			FFindBlobject( const ConstString & _pak, const WString & _path )
 				: m_pak(_pak)
 				, m_path(_path)
 			{
@@ -76,11 +76,11 @@ namespace Menge
 
 		protected:
 			const ConstString & m_pak;
-			const String & m_path;
+			const WString & m_path;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::cache( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
+	bool LoaderEngine::cache( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist )
 	{
 		TBlobjectCache::iterator it_found = std::find_if( m_cache.begin(), m_cache.end(), FFindBlobject(_pak, _path) ); 
 
@@ -128,9 +128,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
+	bool LoaderEngine::load( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist )
 	{
-        MENGE_LOG_INFO( "LoaderEngine::load pak '%s' path '%s'"
+        MENGE_LOG_INFO( "LoaderEngine::load pak '%s' path '%S'"
                        , _pak.c_str()
                        , _path.c_str()
                        );
@@ -170,7 +170,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive, bool & _exist )
+	bool LoaderEngine::import( const ConstString & _pak, const WString & _path, Archive & _archive, bool & _exist )
 	{
 		FileInputStreamInterface * file_bin;
 		
@@ -193,8 +193,8 @@ namespace Menge
 		{
 			file_bin->close();
 
-			String path_xml = _path + ".xml";
-			String path_bin = _path + ".bin";
+			WString path_xml = _path + L".xml";
+			WString path_bin = _path + L".bin";
 
 			if( this->makeBin_( _pak, path_xml, path_bin ) == false )
 			{
@@ -248,10 +248,10 @@ namespace Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputStreamInterface ** _file, bool & _exist )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const WString & _path, FileInputStreamInterface ** _file, bool & _exist )
 	{
-		String path_xml = _path + ".xml";
-		String path_bin = _path + ".bin";
+		WString path_xml = _path + L".xml";
+		WString path_bin = _path + L".bin";
 
 		if( FileEngine::get()
 			->existFile( _pak, path_xml ) == false )
@@ -337,7 +337,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin )
+	bool LoaderEngine::makeBin_( const ConstString & _pak, const WString & _pathXml, const WString & _pathBin )
 	{
 		XmlDecoderInterface * decoder = CodecEngine::get()
 			->createDecoderT<XmlDecoderInterface>( Consts::get()->c_xml2bin, 0 );
@@ -353,9 +353,9 @@ namespace Menge
 		}
 
 		XmlCodecOptions options;
-		options.protocol = "protocol.xml";
+		options.pathProtocol = L"protocol.xml";
 
-		String path;
+		WString path;
 			
 		if( FileEngine::get()
 			->getFileSystemPath( _pak, path ) == false )
@@ -365,8 +365,8 @@ namespace Menge
 		}
 		else
 		{
-			options.pathXml = path + "\\" + _pathXml;
-			options.pathBin = path + "\\" + _pathBin;
+			options.pathXml = path + MENGE_FOLDER_DELIM + _pathXml;
+			options.pathBin = path + MENGE_FOLDER_DELIM + _pathBin;
 		}
 
 		//options.version = Menge::Protocol::version;

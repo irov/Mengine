@@ -2,10 +2,12 @@
 #	include "ResourceImplement.h"
 
 #	include "FileEngine.h"
+#	include "CodecEngine.h"
 
 #	include "BinParser.h"
 
 #	include "LogEngine.h"
+
 #	include "Core/String.h"
 #	include "Core/File.h"
 
@@ -53,7 +55,7 @@ namespace Menge
 				const ConstString & category = this->getCategory();
 
 				if( FileEngine::get()
-					->existFile( category, Helper::to_str(desc.path) ) == false )
+					->existFile( category, desc.path ) == false )
 				{
 					MENGE_LOG_ERROR( "ResourcePlaylist: sound '%s' not exist"
 						, desc.path.c_str() 
@@ -64,11 +66,11 @@ namespace Menge
 
 				if( desc.codec.empty() == true )
 				{
-					String codecType;
-					Utils::getFileExt( codecType, desc.path );
-					codecType += "Sound";
+					WString codecExt;
+					Utils::getFileExt( codecExt, desc.path );
 
-					desc.codec = ConstString(codecType);
+					desc.codec = CodecEngine::get()
+						->findCodecType( codecExt );
 				}
 
 				m_tracks.push_back( desc );

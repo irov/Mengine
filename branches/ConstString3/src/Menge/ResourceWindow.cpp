@@ -17,7 +17,7 @@ namespace Menge
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			m_images[i].image = NULL;
+			m_images[i].texture = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ namespace Menge
 					= ResourceImage::s_getImageCodec( m_images[i].path );
 			}
 
-			m_images[i].image = RenderEngine::get()
+			m_images[i].texture = RenderEngine::get()
 				->loadTexture( category, m_images[i].path, m_images[i].codec );
 		}
 
@@ -88,19 +88,19 @@ namespace Menge
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			if( m_images[i].image != NULL )
+			if( m_images[i].texture != NULL )
 			{
 				RenderEngine::get()
-					->releaseTexture( m_images[i].image );
+					->releaseTexture( m_images[i].texture );
 
-				m_images[i].image = NULL;
+				m_images[i].texture = NULL;
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface* ResourceWindow::getImage( int _type )
 	{
-		return m_images[_type].image;
+		return m_images[_type].texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -2,6 +2,8 @@
 
 #	include "ResourceImplement.h"
 
+#	include "FileEngine.h"
+
 #	include <cstdio>
 
 #	include "BinParser.h"
@@ -54,7 +56,7 @@ namespace Menge
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDefault::getFileName() const
+	const WString & ResourceImageDefault::getFileName() const
 	{
 		return m_imageDesc.fileName;
 	}
@@ -68,8 +70,9 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		bool exist = this->validImageFrame_( category, m_imageDesc.fileName, m_imageDesc.codecType );
-
+		bool exist = FileEngine::get()
+			->existFile( category, m_imageDesc.fileName );
+				
 		if( exist == false )
 		{
 			return false;
@@ -95,9 +98,10 @@ namespace Menge
 				desc.wrapX = false;
 				desc.wrapY = false;
 				desc.isCombined = false;
-				ConstString fileName;
-				ConstString fileNameAlpha;
-				ConstString fileNameRGB;
+
+				WString fileName;
+				WString fileNameAlpha;
+				WString fileNameRGB;
 
 				String format;
 				int from = -1;
@@ -164,42 +168,27 @@ namespace Menge
 	{	
 		ImageFrame frame;
 
-		if( m_imageDesc.fileName == Consts::get()->c_CreateImage )
+		const ConstString & category = this->getCategory();
+
+		if( m_imageDesc.codecType.empty() == true )
 		{
-			const ConstString & name = getName();
+			m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
+		}
 
-			String createImageName = Helper::to_str(name);
-
-			ConstString c_createImageName(createImageName);
-			if( createImageFrame_( frame, c_createImageName, m_imageDesc.size ) == false )
+		if( m_imageDesc.isCombined == false )
+		{
+			if( this->loadImageFrame_( frame, category, m_imageDesc.fileName, m_imageDesc.codecType ) == false )
 			{
 				return false;
 			}
 		}
-		else
+		else 
 		{
-			const ConstString & category = this->getCategory();
-
-			if( m_imageDesc.codecType.empty() == true )
+			if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, m_imageDesc.fileNameRGB, m_imageDesc.fileNameAlpha, m_imageDesc.codecTypeRGB, m_imageDesc.codecTypeAlpha ) == false )
 			{
-				m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
+				return false;
 			}
-
-			if( m_imageDesc.isCombined == false )
-			{
-				if( this->loadImageFrame_( frame, category, m_imageDesc.fileName, m_imageDesc.codecType ) == false )
-				{
-					return false;
-				}
-			}
-			else 
-			{
-				if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, m_imageDesc.fileNameRGB, m_imageDesc.fileNameAlpha, m_imageDesc.codecTypeRGB, m_imageDesc.codecTypeAlpha ) == false )
-				{
-					return false;
-				}
-			}		
-		}
+		}		
 
 		frame.uv = m_imageDesc.uv;
 		frame.uv_image = m_imageDesc.uv;
@@ -240,7 +229,7 @@ namespace Menge
 		this->releaseImageFrame_( m_imageFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addImagePath( const ConstString& _imagePath, const mt::vec2f & _size )
+	void ResourceImageDefault::addImagePath( const WString& _imagePath, const mt::vec2f & _size )
 	{
 		ImageDesc desc;
 		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);

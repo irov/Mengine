@@ -1,11 +1,15 @@
 #	include "ResourceSound.h"
 
 #	include "ResourceImplement.h"
+
 #	include "FileEngine.h"
 #	include "LogEngine.h"
 #	include "SoundEngine.h"
-#	include "BinParser.h"
+#	include "CodecEngine.h"
 #	include "ConverterEngine.h"
+
+#	include "BinParser.h"
+
 #	include "Utils/Core/File.h"
 
 
@@ -21,7 +25,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setPath( const ConstString& _path )
+	void ResourceSound::setPath( const WString& _path )
 	{
 		m_path = _path;
 	}
@@ -56,7 +60,7 @@ namespace Menge
 		return m_isStreamable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceSound::getFilename() const
+	const WString & ResourceSound::getPath() const
 	{
 		return m_path;
 	}
@@ -68,7 +72,7 @@ namespace Menge
 		//perform convertation if we need
 		if ( m_converter.empty() == false )
 		{
-			if( this->_convert() == false )
+			if( this->convert() == false )
 			{
 				return false;
 			}
@@ -76,11 +80,11 @@ namespace Menge
 
 		if( m_codec.empty() == true )
 		{
-			String codecType;
-			Utils::getFileExt( codecType, m_path );
-			codecType += "Sound";
+			WString codecExt;
+			Utils::getFileExt( m_path, codecExt );
 
-			m_codec = ConstString(codecType);	
+			m_codec = CodecEngine::get()
+				->findCodecType( codecExt );
 		}
 
 		m_interface = SoundEngine::get()
@@ -99,7 +103,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSound::_convert()
+	bool ResourceSound::convert()
 	{
 		const ConstString & category = this->getCategory();
 
@@ -119,23 +123,25 @@ namespace Menge
 		options.inputFileName = m_path;
 		
 		FileEngine::get()
-			->getFileSystemPath( category,options.pakNameFullPath );
+			->getFileSystemPath( category, options.pakNameFullPath );
 			
 		converter->setOptions( &options );
 		
 		if ( converter->convert() == false )
 		{
-
-			MENGE_LOG_INFO( "resource sound [%s] can't  convert '%s'\n"
+			MENGE_LOG_INFO( "ResourceSound::convert resource sound [%s] can't  convert '%s'\n"
 				, getName().c_str() 
 				, m_converter.c_str()
 				);
 
 			converter->destroy();
+
 			return false;
 		} 
-		const ConverterDataInfo *  convertResult = converter->getConverterDataInfo();
+		const ConverterDataInfo * convertResult = converter->getConverterDataInfo();
+
 		m_path = convertResult->outputFileName;
+
 		converter->destroy();
 
 		return true;
@@ -147,7 +153,7 @@ namespace Menge
 			->releaseSoundBuffer( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * ResourceSound::get()
+	SoundBufferInterface * ResourceSound::getSoundBuffer() const
 	{
 		return m_interface;
 	}

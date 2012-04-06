@@ -20,7 +20,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::open( const String& _filename )
+	bool Win32InputStream::open( const WString& _filename )
 	{
 		DWORD shareAttrib = FILE_SHARE_READ;
 		m_hFile = WindowsLayer::createFile( _filename,    // file to open

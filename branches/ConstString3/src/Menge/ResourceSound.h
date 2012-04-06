@@ -24,26 +24,32 @@ namespace Menge
 		ResourceSound();
 
 	public:
-		void setPath( const ConstString& _path );
+		void setPath( const WString& _path );
+		const WString& getPath() const;
+				
 		void setCodec( const ConstString& _codec );
 		void setConverter( const ConstString& _converter );
+
 	public:
-		bool isStreamable() const;
-		const ConstString& getFilename() const;
+		bool isStreamable() const;		
 		float getDefaultVolume() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
 
 	public:
-		SoundBufferInterface * get();
+		SoundBufferInterface * getSoundBuffer() const;
 
 	protected:
 		bool _compile() override;
 		void _release() override;
-		bool _convert();
+
 	protected:
-		ConstString m_path;
+		bool convert();
+
+	protected:
+		WString m_path;
+
 		ConstString m_codec;
 		ConstString m_converter;
 		float m_defaultVolume;

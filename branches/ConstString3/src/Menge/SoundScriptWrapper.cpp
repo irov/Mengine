@@ -91,7 +91,7 @@ namespace	Menge
 				return 0;
 			}
 
-			SoundBufferInterface * soundBuffer = resource->get();
+			SoundBufferInterface * soundBuffer = resource->getSoundBuffer();
 
 			bool streamable = resource->isStreamable();
 

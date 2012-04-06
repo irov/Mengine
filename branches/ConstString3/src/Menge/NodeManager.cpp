@@ -110,41 +110,41 @@ namespace Menge
 			NodeManager * m_manager;
 		};
 	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromBinary( const ConstString& _name, const ConstString & _tag, const ConstString & _binResource )
-	{	
-		ResourceBinary * binary = ResourceManager::get()
-			->getResourceT<ResourceBinary>( _binResource );
+	////////////////////////////////////////////////////////////////////////////
+	//Node * NodeManager::createNodeFromBinary( const ConstString& _name, const ConstString & _tag, const ConstString & _binResource )
+	//{	
+	//	ResourceBinary * binary = ResourceManager::get()
+	//		->getResourceT<ResourceBinary>( _binResource );
 
-		if( binary == 0 )
-		{
-			return 0;
-		}
+	//	if( binary == 0 )
+	//	{
+	//		return 0;
+	//	}
 
-		const TBlobject & blob = binary->getBlobject();
+	//	const TBlobject & blob = binary->getBlobject();
 
-		Node * node = 0;
+	//	Node * node = 0;
 
-		NodeLoaderListener loadable(&node, _name, _tag, this);
+	//	NodeLoaderListener loadable(&node, _name, _tag, this);
 
-		if(  LoaderEngine::get()
-			->loadBinary( blob, &loadable ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid parse external binary node data '%s'"
-				, _binResource.c_str() 
-				);
+	//	if(  LoaderEngine::get()
+	//		->loadBinary( blob, &loadable ) == false )
+	//	{
+	//		MENGE_LOG_ERROR( "Invalid parse external binary node data '%s'"
+	//			, _binResource.c_str() 
+	//			);
 
-			return 0;
-		}
+	//		return 0;
+	//	}
 
-		if( node == 0 )
-		{
-			MENGE_LOG_ERROR( "This xml have invalid external binary node format" );
+	//	if( node == 0 )
+	//	{
+	//		MENGE_LOG_ERROR( "This xml have invalid external binary node format" );
 
-			return 0;
-		}
+	//		return 0;
+	//	}
 
-		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
+	//	return node;
+	//}
+	////////////////////////////////////////////////////////////////////////////
 }

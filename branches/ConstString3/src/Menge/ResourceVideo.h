@@ -21,7 +21,7 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	public:
-		const ConstString & getFilePath() const;
+		const WString & getFilePath() const;
 
 	public:
 		bool sync( float _timing );
@@ -31,11 +31,13 @@ namespace Menge
 		void seek( float _timing );
 		bool isAlpha() const;
 		void rewind();
+
 	protected:
 		bool _compile() override;
 		void _release() override;
 		
-		ConstString m_filePath;
+	protected:
+		WString m_filePath;
 		bool m_alpha;
 		ConstString m_codecType;
 		FileInputStreamInterface * m_videoFile;

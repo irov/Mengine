@@ -26,6 +26,7 @@ namespace Menge
 		void _onComplete() override;
 		void _onInterrupt() override;
 		void _onCancel() override;
+
 	protected:
 		ConstString m_category;
 		
@@ -36,7 +37,8 @@ namespace Menge
 
 		struct TextureJob
 		{
-			ConstString filename;
+			ConstString name;
+			WString filename;
 			FileInputStreamInterface* file;
 			ImageDecoderInterface * decoder;
 			RenderTextureInterface* texture;
@@ -44,7 +46,7 @@ namespace Menge
 			int textureBufferPitch;
 		};
 		
-		typedef std::vector<TextureJob> TTextureJobVector;
-		TTextureJobVector m_textureJobs;
+		typedef std::vector<TextureJob> TVectorTextureJob;
+		TVectorTextureJob m_textureJobs;
 	};
 }	// namespace Menge

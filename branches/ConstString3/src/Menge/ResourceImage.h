@@ -16,17 +16,20 @@ namespace Menge
 	{
 	public:
 		ResourceImage();
+
 	public:
 		struct ImageFrame
 		{
+			RenderTextureInterface* texture;
+
 			mt::vec2f maxSize;
 			mt::vec2f size;
 			mt::vec2f offset;
 			mt::vec4f uv_image;
 			mt::vec4f uv;
-			mt::vec2f pow_scale;
+			mt::vec2f pow_scale;		
+
 			bool isAlpha;
-			RenderTextureInterface* texture;
 			bool wrapX;
 			bool wrapY;
 		};
@@ -40,7 +43,7 @@ namespace Menge
 		virtual bool isAlpha() const = 0;
 
 		virtual RenderTextureInterface* getTexture() const = 0;
-		virtual const ConstString & getFileName() const = 0;
+		virtual const WString & getFileName() const = 0;
 		virtual const ConstString & getCodecType() const = 0;
 
 		virtual bool getWrapX() const;
@@ -50,17 +53,17 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	protected:
-		bool validImageFrame_( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
-		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
-		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const ConstString& _fileNameRGB, const ConstString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
-		bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
+		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const WString& _filename, const ConstString& _codec ) const;
+		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
+		//bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
 		bool prepareImageFrame_( ImageFrame & _frame, RenderTextureInterface * texture ) const;
+
+	protected:
 		ImageDecoderInterface * createDecoder_( FileInputStreamInterface * _stream,  const ConstString& _codec );
-		FileInputStreamInterface * createStream_( const ConstString& _pakName, const ConstString & _filename );
 
 	public:
-		static ConstString s_getImageCodec( const ConstString & _filename );
+		static const ConstString & s_getImageCodec( const WString & _filename );
 		
 	protected:
 		size_t m_filter;

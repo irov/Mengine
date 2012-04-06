@@ -17,6 +17,9 @@ namespace Menge
 		virtual void write( const String& _msg );
 
 	public:
+		PyObject * py_write( PyObject * _args, PyObject * _kwds );
+		
+	public:
 		void setSoftspace( int _softspace );
 		int getSoftspace() const;
 
@@ -37,7 +40,7 @@ namespace Menge
 
 	public:
 		void write( const String& _msg ) override;
-
+		
 	public:
 		PyObject * embedding() override;
 	};

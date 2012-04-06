@@ -95,23 +95,27 @@ namespace Menge
 		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name );
 		void removeMaterialGroup( const ConstString & _name );
 
-		bool hasTexture( const ConstString & _name );
+		bool hasTexture( const WString & _filename );
 
-		RenderTextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
-		RenderTexture* createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
+		RenderTextureInterface * createTexture( size_t _width, size_t _height, PixelFormat _format ) override;
+		void releaseTexture( const RenderTextureInterface* _texture ) override;
+
+		void cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture );
 		
 		//Astralax
-		RenderTextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
-		RenderTexture * createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
+		RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) override;
+		
 		void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
 		
-		RenderTextureInterface * getTexture( const ConstString & _name ) const;
-		bool validTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
-		RenderTextureInterface* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
-		RenderTextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
-		bool saveImage( RenderTextureInterface* _image, const ConstString& _fileSystemName, const String & _filename );
-		void releaseTexture( const RenderTextureInterface* _texture ) override;
+		//RenderTextureInterface * getTexture( const ConstString & _name ) const;
+		//bool validTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
+
+		RenderTextureInterface* loadTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
+		RenderTextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const WString & _fileNameRGB, const WString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
+				
+		bool saveImage( RenderTextureInterface* _image, const ConstString& _fileSystemName, const WString & _filename );
+		
 		
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
@@ -161,7 +165,8 @@ namespace Menge
 		bool supportA8() const;
 
 	private:
-		void destroyTexture_( const RenderTexture* _texture );
+		void destroyTexture_( const RenderTextureInterface * _texture );
+
 		void renderPass_( RenderObject* _renderObject );
 		void disableTextureStage_( size_t _stage );
 
@@ -239,7 +244,7 @@ namespace Menge
 
 		RenderPass* m_currentPass;
 
-		typedef std::map<ConstString, RenderTexture*> TMapTextures;
+		typedef std::map<WString, RenderTextureInterface*> TMapTextures;
 		TMapTextures m_textures;
 
 		RenderTexture* m_nullTexture;	// white pixel

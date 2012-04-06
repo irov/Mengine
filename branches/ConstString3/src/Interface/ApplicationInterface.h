@@ -45,7 +45,7 @@ namespace Menge
 
 		virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void setCursorPosition( int _x, int _y ) = 0;
-		virtual void showMessageBox( const String& _message, const String& _header, unsigned int _style ) = 0;
+		virtual void showMessageBox( const WString& _message, const WString& _header, unsigned int _style ) = 0;
 
 		virtual TimerInterface * getTimer() const = 0;
 
@@ -56,13 +56,18 @@ namespace Menge
 		virtual String utf8ToAnsi( const String& _utf8 ) = 0;
 		virtual size_t utf8Count( const String& _utf8 ) = 0;
 
+		virtual String unicodeToAnsi( const WString& _unicode ) = 0;
+		virtual WString ansiToUnicode( const String& _utf8 ) = 0;
+
+		virtual WString utf8ToUnicode( const String & _utf8 ) = 0;
+
 		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) = 0;
 		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) = 0;
 
 		virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void notifyVsyncChanged( bool _vsync ) = 0;
 		virtual void notifyCursorModeChanged( bool _mode ) = 0;
-		virtual void notifyCursorIconSetup( const String & _filename ) = 0;
+		virtual void notifyCursorIconSetup( const WString & _filename ) = 0;
 
 		virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
 		virtual void notifyCursorUnClipping() = 0;
@@ -79,10 +84,10 @@ namespace Menge
 	{
 	public:
 		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args ) = 0;
-		virtual bool loadConfig( const String& _configFile ) = 0;
+		virtual bool loadConfig( const WString& _configFile ) = 0;
 
-		virtual void setBaseDir( const String& _baseDir ) = 0;
-		virtual const String& getBaseDir() const = 0;
+		virtual void setBaseDir( const WString& _baseDir ) = 0;
+		virtual const WString& getBaseDir() const = 0;
 		
 	public:
 		virtual PlatformInterface * getPlatform() const = 0;
@@ -124,7 +129,7 @@ namespace Menge
 		virtual bool loadPersonality() = 0;
 
 	public:
-		virtual const String & getProjectTitle() const = 0;
+		virtual const WString & getProjectTitle() const = 0;
 
 	public:
 		virtual int getAlreadyRunningPolicy() const = 0;
@@ -155,7 +160,7 @@ namespace Menge
 	public:
 		virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
 
-		virtual const String& getScreensaverName() const = 0;
+		virtual const WString& getScreensaverName() const = 0;
 	};
 	
 	typedef void* (*TDynamicLibraryFunction)(ApplicationInterface * _interface);

@@ -81,7 +81,7 @@ namespace	Menge
 		void	listenSoundNodePaused();
 		void	listenSoundNodeStopped();
 		void	release_();	
-		void	prepareSound_( const ConstString& _pakName, const ConstString& _file, const ConstString& _codec );
+		void	prepareSound_( const ConstString& _pakName, const WString& _file, const ConstString& _codec );
 		bool	loadPlayList_( const ConstString& _playlistResource );
 		bool	preparePlay_();
 		void	play_();

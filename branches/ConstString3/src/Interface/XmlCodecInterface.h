@@ -13,9 +13,9 @@ namespace Menge
 	struct XmlCodecOptions
 		: public CodecOptions
 	{
-		String protocol;
-		String pathXml;
-		String pathBin;
+		WString pathProtocol;
+		WString pathXml;
+		WString pathBin;
 		//int version;
 	};
 

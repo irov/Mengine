@@ -57,10 +57,10 @@ namespace Menge
 
 	public:
 		void setMaxLen( float _len );
-		void setText( const String& _text );
+		void setText( const WString& _text );
 		void setHeight( float _height );
 		float getHeight() const;
-		const String& getText() const;
+		const WString& getText() const;
 		void setOutlineColor( const ColourValue& _color );
 		const ColourValue& getOutlineColor() const;
 
@@ -107,7 +107,7 @@ namespace Menge
 		void setPixelsnap( bool _pixelsnap );
 		bool getPixelsnap() const;
 
-		void setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number );
+		void setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number );
 
 	protected:
 		void loader( BinParser * _parser ) override;
@@ -145,8 +145,8 @@ namespace Menge
 
 		ColourValue m_outlineColor;
 
-		String m_text;
-		String m_format;
+		WString m_text;
+		WString m_format;
 		size_t m_number;
 
 		float m_height;		
@@ -170,7 +170,7 @@ namespace Menge
 		TListTextLine m_lines;
 
 		void updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData );
-		void createFormattedMessage_( const String& _text );
+		void createFormattedMessage_( const WString& _text );
 		void splitLine(const std::string& str);
 
 		const RenderMaterial * m_materialText;

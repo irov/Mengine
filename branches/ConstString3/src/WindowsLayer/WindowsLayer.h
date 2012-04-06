@@ -39,30 +39,35 @@ namespace WindowsLayer
 	void setProcessDPIAware();
 	bool supportUnicode();
 
-	void utf8ToWstr( const Menge::String& _utf8, Menge::WString & _wstr );
-	void wstrToUtf8( const Menge::WString& _wstr, Menge::String & _utf8 );
-	void ansiToWstr( const Menge::String& _ansi, Menge::WString & _wstr );
-	void wstrToAnsi( const Menge::WString& _wstr, Menge::String & _ansi );
+	void utf8ToUnicode( const Menge::String& _utf8, Menge::WString & _wstr );
+	void unicodeToUtf8( const Menge::WString& _wstr, Menge::String & _utf8 );
+	void ansiToUnicode( const Menge::String& _ansi, Menge::WString & _wstr );
+	void unicodeToAnsi( const Menge::WString& _wstr, Menge::String & _ansi );
 
 	void utf8ToAnsi( const Menge::String& _utf8, Menge::String & _ansi );
 	void ansiToUtf8( const Menge::String& _ansi, Menge::String & _utf8 );
 	void utf8Count( const Menge::String& _utf8, size_t & _size );
 
-	bool setCurrentDirectory( const Menge::String& _path );
+	bool setCurrentDirectory( const Menge::WString& _path );
 	bool setModuleCurrentDirectory();
-	bool createDirectory( const Menge::String& _path );
-	bool fileExists( const Menge::String& _path );
-	HANDLE createFile( const Menge::String& _filename, DWORD _desiredAccess,
+	bool createDirectory( const Menge::WString& _path );
+	bool fileExists( const Menge::WString& _path );
+
+	HANDLE createFile( const Menge::WString& _filename, DWORD _desiredAccess,
 		DWORD _sharedMode, DWORD _creationDisposition );
+
 	ATOM registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra
 		, HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
-		, const Menge::String& _className );
-	BOOL unregisterClass( const Menge::String& _className, HINSTANCE _hInstance );
-	HWND createWindow( const Menge::String& _className, const Menge::String& _windowName
+		, const Menge::WString& _className );
+
+	BOOL unregisterClass( const Menge::WString& _className, HINSTANCE _hInstance );
+
+	HWND createWindow( const Menge::WString& _className, const Menge::WString& _windowName
 		, DWORD _style, int _x, int _y, int _width, int _height, HWND _parent, HMENU _hMenu
 		, HINSTANCE _hInstance, LPVOID _param );
-	HWND createWindowEx( DWORD _exStyle, const Menge::String& _className
-		, const Menge::String& _windowName,	DWORD _style, int _x, int _y
+
+	HWND createWindowEx( DWORD _exStyle, const Menge::WString& _className
+		, const Menge::WString& _windowName,	DWORD _style, int _x, int _y
 		, int _width, int _height, HWND _parent, HMENU _hMenu
 		, HINSTANCE _hInstance,	LPVOID _param );
 
@@ -73,14 +78,15 @@ namespace WindowsLayer
 	LONG_PTR setWindowLongPtr( HWND _hWnd, int _index, LONG_PTR _newLong );
 	LONG_PTR getWindowLongPtr( HWND _hWnd, int _index );
 	LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam );
-	void getCurrentDirectory( Menge::String & _path );
+	void getCurrentDirectory( Menge::WString & _path );
 	BOOL peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax
 		, UINT _removeMsg );
 	LRESULT dispatchMessage( const MSG* _msg );
-	int messageBox( HWND _hWnd, const Menge::String& _text,	const Menge::String& _caption
-		, UINT _type );
-	void getModuleFileName( HMODULE hModule, Menge::String & _moduleFilename );
-	LONG setRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
-	LONG deleteRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName );
-	void getShortPathName( const Menge::String& _longPathName, Menge::String & _shortPathName );
+	
+	int messageBox( HWND _hWnd, const Menge::WString& _text, const Menge::WString& _caption, UINT _type );
+
+	void getModuleFileName( HMODULE hModule, Menge::WString & _moduleFilename );
+	LONG setRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
+	LONG deleteRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName );
+	bool getShortPathName( const Menge::WString& _longPathName, Menge::WString & _shortPathName );
 }	// namespace WindowsLayer

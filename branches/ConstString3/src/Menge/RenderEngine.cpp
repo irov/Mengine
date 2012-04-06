@@ -37,7 +37,7 @@ namespace Menge
 		const RenderMaterial * material;
 
 		size_t textureStages;
-		const RenderTexture* textures[MENGE_MAX_TEXTURE_STAGES];
+		const RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
 
 		mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
 
@@ -349,7 +349,7 @@ namespace Menge
 		// Выноси такое в отдельные функции, читать невозможно
 		//////////////////////////////////////////////////////////////////////////
 		
-		RenderTextureInterface * texture  = createTexture( Consts::get()->c_NullTexture, 2, 2, PF_R8G8B8 );
+		RenderTextureInterface * texture  = this->createTexture( 2, 2, PF_R8G8B8 );
 		
 		m_nullTexture = dynamic_cast<RenderTexture*>(texture);
 		
@@ -551,35 +551,9 @@ namespace Menge
 		m_mapMaterialGroup.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	RenderTextureInterface * RenderEngine::createTexture( size_t _width, size_t _height, PixelFormat _format )
 	{
-		TMapTextures::iterator it_find = m_textures.find( _name );
-
-		if( it_find != m_textures.end() )
-		{
-			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image '%s' already exist"
-				, _name.c_str()
-				);
-
-			return 0;
-		}
-				
-		RenderTexture * texture = createTexture_( _name, _width, _height, _format );
-
-		if( texture == 0 )
-		{
-			return 0;
-		}
-
-		m_textures.insert( std::make_pair( _name, texture ) );
-
-		return texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderTexture* RenderEngine::createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
-	{
-		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
-			, _name.c_str()
+		MENGE_LOG_INFO( "Creating texture %dx%d %d"
 			, _width
 			, _height
 			, _format 
@@ -589,32 +563,31 @@ namespace Menge
 		size_t hwHeight;
 		PixelFormat hwFormat = _format;
 
-		RenderImageInterface* image = NULL;
-		image = m_interface->createImage( _width, _height, hwWidth, hwHeight, hwFormat );
+		RenderImageInterface * image = m_interface->createImage( _width, _height, hwWidth, hwHeight, hwFormat );
 				
 		if( image == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (RenderEngine::createImage) RenderSystem couldn't create image '%s' %dx%d"
-				, _name.c_str()
+			MENGE_LOG_ERROR( "RenderEngine::createTexture_ couldn't create image %dx%d"
 				, _width
-				, _height 
+				, _height
 				);
 
 			return NULL;
 		}
 
 		size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, hwFormat );
+
 		m_debugInfo.textureMemory += memroy_size;
 		++m_debugInfo.textureCount;
 
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
-		RenderTexture* texture = new RenderTexture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
+		RenderTexture * texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
 
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( RenderTextureInterface* _image, const ConstString & _fileSystemName, const String & _filename )
+	bool RenderEngine::saveImage( RenderTextureInterface* _image, const ConstString & _fileSystemName, const WString & _filename )
 	{
 		FileOutputStreamInterface * stream = FileEngine::get()
 			->openOutputFile( _fileSystemName, _filename );
@@ -686,44 +659,52 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::validTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec )
-	{
-		bool exist = FileEngine::get()
-			->existFile( _pakName, Helper::to_str(_filename) );
+	////////////////////////////////////////////////////////////////////////////
+	//bool RenderEngine::validTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec )
+	//{
+	//	bool exist = FileEngine::get()
+	//		->existFile( _pakName, _filename );
 
-		return exist;
+	//	return exist;
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//RenderTextureInterface * RenderEngine::getTexture( const ConstString & _name ) const
+	//{
+	//	TMapTextures::const_iterator it_find = m_textures.find( _name );
+	//	
+	//	if( it_find == m_textures.end() )
+	//	{
+	//		return NULL;
+	//	}
+
+	//	it_find->second->addRef();
+	//	return it_find->second;
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture )
+	{
+		_texture->setFileName( _filename );
+
+		m_textures.insert( std::make_pair( _filename, _texture ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * RenderEngine::getTexture( const ConstString & _name ) const
-	{
-		TMapTextures::const_iterator it_find = m_textures.find( _name );
-		
-		if( it_find == m_textures.end() )
-		{
-			return NULL;
-		}
-
-		it_find->second->addRef();
-		return it_find->second;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
+	RenderTextureInterface* RenderEngine::loadTexture( const ConstString& _pakName, const WString & _filename, const ConstString& _codec )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
 	
 		if( it_find != m_textures.end() )
 		{
 			it_find->second->addRef();
+
 			return it_find->second;
 		}
 		
 		FileInputStreamInterface * stream = FileEngine::get()
-			->openInputFile( _pakName, Helper::to_str(_filename) );
+			->openInputFile( _pakName, _filename );
 		
 		if( stream == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
+			MENGE_LOG_ERROR( "RenderEngine::loadTexture: Image file '%S' was not found"
 				, _filename.c_str() 
 				);
 
@@ -735,7 +716,7 @@ namespace Menge
 
 		if( imageDecoder == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
+			MENGE_LOG_ERROR( "RenderEngine::loadTexture: Image decoder for file '%S' was not found"
 				, _filename.c_str() 
 				);
 
@@ -748,8 +729,8 @@ namespace Menge
 
 		if( dataInfo->format == PF_UNKNOWN )
 		{
-			MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
-				, _filename.c_str() 
+			MENGE_LOG_ERROR( "RenderEngine::loadTexture: Image file '%S' Invalid format [PF_UNKNOWN]"
+				, _filename.c_str()
 				);
 
 			imageDecoder->destroy();
@@ -759,8 +740,8 @@ namespace Menge
 			return NULL;
 		}
 		
-		RenderTexture * texture = createTexture_( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
-
+		RenderTextureInterface * texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->format );
+		
 		if( texture == NULL )
 		{
 			imageDecoder->destroy();
@@ -775,18 +756,17 @@ namespace Menge
 		imageDecoder->destroy();
 
 		stream->close();
-
-		m_textures.insert( std::make_pair( _filename, texture ) );
-
+		
+		this->cacheFileTexture( _filename, texture );
+		
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
-	{
-		
-		ConstString textureName = _fileNameAlpha;
+	RenderTextureInterface* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const WString & _fileNameRGB, const WString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
+	{		
+		//WString textureName = _fileNameAlpha;
 
-		TMapTextures::iterator it_find = m_textures.find( textureName );
+		TMapTextures::iterator it_find = m_textures.find( _fileNameRGB );
 
 		if( it_find != m_textures.end() )
 		{
@@ -797,11 +777,11 @@ namespace Menge
 		////////////////////////////////////// init RGB Decoder
 		///Load RGB data
 		FileInputStreamInterface * streamRGB = FileEngine::get()
-			->openInputFile( _pakName, Helper::to_str(_fileNameRGB) );
+			->openInputFile( _pakName, _fileNameRGB );
 
 		if( streamRGB == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with RGB data '%s' was not found"
+			MENGE_LOG_ERROR( "RenderEngine::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
 				, _fileNameRGB.c_str() 
 				);
 
@@ -842,7 +822,7 @@ namespace Menge
 		////////////////////////////////////// init Alpha Decoder
 		///Load Alpha data
 		FileInputStreamInterface * streamAlpha = FileEngine::get()
-			->openInputFile( _pakName, Helper::to_str(_fileNameAlpha) );
+			->openInputFile( _pakName, _fileNameAlpha );
 
 		if( streamAlpha == 0 )
 		{
@@ -894,11 +874,10 @@ namespace Menge
 		*/
 		const ImageCodecDataInfo* dataInfo = imageCombiner->getCodecDataInfo();
 
-		RenderTexture * texture = createTexture_( textureName, dataInfo->width, dataInfo->height, dataInfo->format );
+		RenderTextureInterface * texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->format );
 
 		if( texture == NULL )
-		{
-			
+		{			
 			imageDecoderRGB->destroy();
 			imageDecoderAlpha->destroy();
 			imageCombiner->destroy();
@@ -917,29 +896,34 @@ namespace Menge
 		streamAlpha->close();
 		streamRGB->close();
 
-		m_textures.insert( std::make_pair( textureName, texture ) );
+		this->cacheFileTexture( _fileNameRGB, texture );
 
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseTexture( const RenderTextureInterface* _texture )
 	{
-		const RenderTexture* texture = static_cast<const RenderTexture*>( _texture );
+		const RenderTexture* texture = 
+			static_cast<const RenderTexture*>( _texture );
+
 		if( texture == NULL )
 		{
 			return;
 		}
 
-		if( texture->decRef() == 0 )
+		if( texture->decRef() > 0 )
 		{
-			const ConstString & name = texture->getName();
-			m_textures.erase( name );
-
-			this->destroyTexture_( texture );
+			return;
 		}
+
+		const WString & filename = texture->getFileName();
+		
+		m_textures.erase( filename );
+
+		this->destroyTexture_( texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::destroyTexture_( const RenderTexture* _texture )
+	void RenderEngine::destroyTexture_( const RenderTextureInterface * _texture )
 	{
 		RenderImageInterface* image = _texture->getInterface();
 
@@ -1162,16 +1146,16 @@ namespace Menge
 
 		for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
-			const RenderTexture * texture = _renderObject->textures[stageId];
+			const RenderTextureInterface * texture = _renderObject->textures[stageId];
 
 			if( texture == NULL )
 			{
 				texture = m_nullTexture;
 			}
 		
-			if( texture->getID() != m_currentTexturesID[stageId] || m_currentTexturesID[stageId] != 0 )
+			if( texture->getId() != m_currentTexturesID[stageId] || m_currentTexturesID[stageId] != 0 )
 			{
-				m_currentTexturesID[stageId] = texture->getID();
+				m_currentTexturesID[stageId] = texture->getId();
 				RenderImageInterface* t = texture->getInterface();
 
 				m_interface->setTexture( stageId, t );
@@ -1442,9 +1426,9 @@ namespace Menge
 		return m_debugInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::hasTexture( const ConstString & _name )
+	bool RenderEngine::hasTexture( const WString & _filename )
 	{
-		TMapTextures::iterator it_find = m_textures.find( _name );
+		TMapTextures::iterator it_find = m_textures.find( _filename );
 
 		if( it_find == m_textures.end() )
 		{
@@ -2236,36 +2220,10 @@ namespace Menge
 		m_interface->setRenderTarget( _image, _clear );
 		restoreRenderSystemStates_();
 	}
-	///////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * RenderEngine::createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
-	{
-		TMapTextures::iterator it_find = m_textures.find( _name );
-
-		if( it_find != m_textures.end() )
-		{
-			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image '%s' already exist"
-				, _name.c_str()
-				);
-
-			return 0;
-		}
-
-		RenderTexture * texture = createRenderTargetTexture_( _name, _width, _height, _format );
-
-		if( texture == 0 )
-		{
-			return 0;
-		}
-
-		m_textures.insert( std::make_pair( _name, texture ) );
-
-		return texture;
-	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTexture * RenderEngine::createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	RenderTextureInterface * RenderEngine::createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format )
 	{
-		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
-			, _name.c_str()
+		MENGE_LOG_INFO( "Creating texture %dx%d %d"
 			, _width
 			, _height
 			, _format 
@@ -2280,8 +2238,7 @@ namespace Menge
 
 		if( image == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTargetTexture '%s' %dx%d"
-				, _name.c_str()
+			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTargetTexture %dx%d"
 				, _width
 				, _height 
 				);
@@ -2295,7 +2252,7 @@ namespace Menge
 
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
-		RenderTexture* texture = new RenderTexture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
+		RenderTexture* texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
 
 		return texture;
 	}

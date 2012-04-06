@@ -6,6 +6,8 @@ src
 	WindowsLayer.h
 )
 
+add_definitions(-DUNICODE)
+
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES

@@ -16,16 +16,14 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture( RenderImageInterface* _interface
-						, const ConstString & _name
 						, size_t _width
 						, size_t _height
 						, PixelFormat _format
 						, size_t _hwWidth
 						, size_t _hwHeight
 						, PixelFormat _hwPixelFormat
-						, int _id )
+						, size_t _id )
 		: m_iTexture(_interface)
-		, m_name(_name)
 		, m_width(_width)
 		, m_height(_height)
 		, m_pixelFormat(_format)
@@ -36,23 +34,10 @@ namespace Menge
 		, m_uv(0.f, 0.f, 1.f, 1.f)
 		, m_id(_id)
 	{
-		//if( _width != _hwWidth 
-		//	|| _height != _hwHeight )
-		//{
-		//	m_uvMask = new mt::mat4f();
-		//	mt::ident_m4( *m_uvMask );
-		//	m_uvMask->v0.x = static_cast<float>( _width ) / _hwWidth;
-		//	m_uvMask->v1.y = static_cast<float>( _height ) / _hwHeight;
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::~RenderTexture()
 	{
-		//if( m_uvMask != NULL )
-		//{
-		//	delete m_uvMask;
-		//	m_uvMask = NULL;
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderTexture::getInterface() const
@@ -60,9 +45,19 @@ namespace Menge
 		return m_iTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & RenderTexture::getName() const
+	size_t RenderTexture::getId() const
 	{
-		return m_name;
+		return m_id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderTexture::setFileName( const WString & _filename )
+	{
+		m_filename = _filename;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const WString & RenderTexture::getFileName() const
+	{
+		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getWidth() const
@@ -209,11 +204,6 @@ namespace Menge
 	const mt::vec4f & RenderTexture::getUV() const
 	{
 		return m_uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int RenderTexture::getID() const
-	{
-		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

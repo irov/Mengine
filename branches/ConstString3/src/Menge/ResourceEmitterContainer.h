@@ -27,11 +27,11 @@ namespace Menge
 		ResourceEmitterContainer();
 
 	public:
-		void setFilePath( const ConstString& _path );
-		const ConstString& getFilePath() const;
+		void setFilePath( const WString& _path );
+		const WString& getFilePath() const;
 
-		void setFolderPath( const ConstString& _path );
-		const ConstString& getFolderPath() const;
+		void setFolderPath( const WString& _path );
+		const WString& getFolderPath() const;
 		
 		void setEmitterName( const ConstString& _name );
 		const ConstString& getEmitterName() const;
@@ -59,11 +59,11 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		void createResource_( const ConstString & _fullname );
+		void createResource_( const ConstString & _fullname, const WString & _path );
 
 	private:
-		ConstString m_filename;
-		ConstString m_folder;
+		WString m_filename;
+		WString m_folder;
 		
 		//added for setup particle emitter at movie export 
 		ConstString m_emitterName;

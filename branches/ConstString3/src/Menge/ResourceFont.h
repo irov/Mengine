@@ -49,16 +49,16 @@ namespace Menge
 		*/
 		float getCharRatio( unsigned int _id ) const;
 
-		const mt::vec2f& getOffset( unsigned int _char ) const;
-		const mt::vec2f& getSize( unsigned int _char ) const;
+		const mt::vec2f & getOffset( unsigned int _char ) const;
+		const mt::vec2f & getSize( unsigned int _char ) const;
 
 		const RenderTextureInterface * getImage() const;
 		const RenderTextureInterface * getOutlineImage() const;
 
 		float getInitSize() const;
 
-		const ConstString& getImagePath() const;
-		const ConstString& getOutlineImagePath() const;
+		const WString & getImagePath() const;
+		const WString & getOutlineImagePath() const;
 
 		const ColourValue & getColor() const;
 
@@ -70,19 +70,19 @@ namespace Menge
 		void _release() override;
 
 	private:
-		void setImagePath_( const ConstString& _path );
-		void setOutlineImagePath_( const ConstString& _path );
+		void setImagePath_( const WString & _path );
+		void setOutlineImagePath_( const WString & _path );
 
 	private:
 		ConstString m_glyphResource;
 		ResourceGlyph * m_glyph;
 		
-		ConstString m_imageFile;
+		WString m_imageFile;
 		ConstString m_imageCodec;
 
-		String m_fontdefPath;
+		//String m_fontdefPath;
 
-		ConstString m_outlineImageFile;
+		WString m_outlineImageFile;
 		ConstString m_outlineImageCodec;
 
 		float m_whsRatio;

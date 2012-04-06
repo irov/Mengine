@@ -56,7 +56,7 @@ namespace Menge
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageInAtlas::getFileName() const
+	const WString & ResourceImageInAtlas::getFileName() const
 	{
 		return m_imageDesc.fileName;
 	}
@@ -80,7 +80,8 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		bool exist = this->validImageFrame_( category, m_imageDesc.fileName, m_imageDesc.codecType );
+		bool exist = FileEngine::get()
+			->existFile( category, m_imageDesc.fileName );
 
 		if( exist == false )
 		{
@@ -102,9 +103,10 @@ namespace Menge
 		desc.wrapX = false;
 		desc.wrapY = false;
 		desc.isCombined = false;
-		ConstString fileName;
-		ConstString fileNameAlpha;
-		ConstString fileNameRGB;
+		
+		WString fileName;
+		WString fileNameAlpha;
+		WString fileNameRGB;
 		
 		BIN_SWITCH_ID( _parser )
 		{
@@ -209,35 +211,44 @@ namespace Menge
 
 		if( m_imageDesc.isCombined == false )
 		{
-			FileInputStreamInterface * file = this->createStream_( category ,  m_imageDesc.fileName );
+			FileInputStreamInterface * stream = FileEngine::get()
+				->openInputFile( category, m_imageDesc.fileName );
 			
-			if( file == NULL )
+			if( stream == NULL )
 			{
-				MENGE_LOG_ERROR( "ResourceImageInAtlas:: Image file '%s' was not found"
+				MENGE_LOG_ERROR( "ResourceImageInAtlas:: Image file '%S' was not found"
 					, m_imageDesc.fileName.c_str() 
 					);
 				
 				return false;
 			}
 			
-			ImageDecoderInterface * decoder = this->createDecoder_( file, m_imageDesc.codecType );
+			ImageDecoderInterface * decoder = this->createDecoder_( stream, m_imageDesc.codecType );
+
 			if( decoder == NULL )
 			{
-				MENGE_LOG_ERROR("ResourceImageInAtlas:: Can`t create Decoder for file %s codec %s", m_imageDesc.fileName.c_str(), m_imageDesc.codecType.c_str());
-				file->close();
+				MENGE_LOG_ERROR("ResourceImageInAtlas:: Can`t create Decoder for file %S codec %s"
+					, m_imageDesc.fileName.c_str()
+					, m_imageDesc.codecType.c_str()
+					);
+
+				stream->close();
+
 				return false;
 			}
 			
 			bool result = m_resourceAtlas->loadFrame( decoder, m_imageFrame );
+			
+			decoder->destroy();
+			stream->close();
+
 			if( result == false )
 			{
-				MENGE_LOG_ERROR("Texture::ResourceImageInAtlas: Invalid fill atlas texture");
-				decoder->destroy();
-				file->close();
+				MENGE_LOG_ERROR("Texture::ResourceImageInAtlas: Invalid fill atlas texture"
+					);
+
 				return false;
-			}		
-			decoder->destroy();
-			file->close();
+			}
 		}
 		else 
 		{

@@ -20,14 +20,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::validImageFrame_( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const
-	{
-		bool exist = RenderEngine::get()
-			->validTexture(_pakName, _filename, _codec);
-
-		return exist;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::prepareImageFrame_( ImageFrame & _frame, RenderTextureInterface* texture ) const
 	{
 		float width = (float)texture->getWidth();
@@ -58,7 +50,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _fileName, const ConstString& _codec ) const
+	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const WString& _fileName, const ConstString& _codec ) const
 	{
 		//printf( "loadImageFrame %s\n", _fileName.c_str() );
 
@@ -67,7 +59,7 @@ namespace Menge
 
 		if( texture == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: resource '%s' can't load image file '%s'"
+			MENGE_LOG_ERROR( "Warning: resource '%s' can't load image file '%S'"
 				, getName().c_str()
 				, _fileName.c_str() 
 				);
@@ -76,17 +68,18 @@ namespace Menge
 		}
 
 		bool res = prepareImageFrame_( _frame, texture );
+
 		return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName,  const ConstString& _fileNameRGB, const ConstString& _fileNameAlpha,const ConstString & _codecRGB , const ConstString & _codecAlpha  ) const
+	bool ResourceImage::loadImageFrameCombineRGBAndAlpha_( ImageFrame & _frame, const ConstString& _pakName,  const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB , const ConstString & _codecAlpha  ) const
 	{
 		RenderTextureInterface* texture = RenderEngine::get()
 			->loadTextureCombineRGBAndAlpha( _pakName, _fileNameRGB, _fileNameAlpha , _codecRGB ,_codecAlpha );
 
 		if( texture == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: resource '%s' can't load image file  with alpha data '%s' and rgb data %s "
+			MENGE_LOG_ERROR( "ResourceImage::loadImageFrameCombineRGBAndAlpha_: resource '%s' can't load image file  with alpha data '%S' and rgb data %S "
 				, getName().c_str()
 				, _fileNameAlpha.c_str() 
 				, _fileNameRGB.c_str() 
@@ -96,16 +89,19 @@ namespace Menge
 		}
 
 		bool res = prepareImageFrame_( _frame, texture );
+
 		return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConstString ResourceImage::s_getImageCodec( const ConstString & _filename )
+	const ConstString & ResourceImage::s_getImageCodec( const WString & _filename )
 	{
-		String codecType;
-		Utils::getFileExt( codecType, _filename );
-		codecType += "Image";
+		WString codecExt;
+		Utils::getFileExt( _filename, codecExt );
 
-		return ConstString(codecType);
+		const ConstString & codecType = CodecEngine::get()
+			->findCodecType( codecExt );
+
+		return codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImage::releaseImageFrame_(const ImageFrame & _frame) const
@@ -123,34 +119,34 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::Filter_Value, m_filter );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const
-	{
-		//::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f )
-		RenderTextureInterface* texture = RenderEngine::get()
-			->createTexture( _name, _size.x, _size.y, Menge::PF_A8R8G8B8 );
+	////////////////////////////////////////////////////////////////////////////
+	//bool ResourceImage::createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const
+	//{
+	//	//::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f )
+	//	RenderTextureInterface* texture = RenderEngine::get()
+	//		->createTexture( _name, _size.x, _size.y, Menge::PF_A8R8G8B8 );
 
-		if( texture == 0 )
-		{
-			MENGE_LOG_ERROR( "Warning: resource '%s' can't create image file '%s'"
-				, getName().c_str()
-				, _name.c_str() 
-				);
+	//	if( texture == 0 )
+	//	{
+	//		MENGE_LOG_ERROR( "Warning: resource '%s' can't create image file '%s'"
+	//			, getName().c_str()
+	//			, _name.c_str() 
+	//			);
 
-			return false;
-		}
+	//		return false;
+	//	}
 
-		// fill with white color
-		int pitch = 0;
-		unsigned char* tData = texture->lock( &pitch, false );
-		std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
-		texture->unlock();
+	//	// fill with white color
+	//	int pitch = 0;
+	//	unsigned char* tData = texture->lock( &pitch, false );
+	//	std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
+	//	texture->unlock();
 
-		_frame.size = _size;
-		_frame.texture = texture;
+	//	_frame.size = _size;
+	//	_frame.texture = texture;
 
-		return true;
-	}
+	//	return true;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::getWrapX() const
 	{
@@ -181,19 +177,6 @@ namespace Menge
 		}
 
 		return imageDecoder;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface * ResourceImage::createStream_( const ConstString& _pakName, const ConstString & _filename )
-	{
-		FileInputStreamInterface * stream = FileEngine::get()
-			->openInputFile( _pakName, Helper::to_str(_filename) );
-
-		if( stream == 0 )
-		{
-			return NULL;
-		}
-
-		return stream;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//size_t ResourceImage::getCount() const

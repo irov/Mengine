@@ -14,7 +14,6 @@
 #	include "Win32OutputStream.h"
 
 
-#define  PATH_DELIM '\\'
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 {
@@ -46,7 +45,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface* Win32FileSystem::openInputStream( const String& _filename )
+	FileInputStreamInterface* Win32FileSystem::openInputStream( const WString& _filename )
 	{
 		Win32InputStream* inputStream = new Win32InputStream();
 
@@ -68,7 +67,7 @@ namespace Menge
 		delete inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::existFile( const String& _filename )
+	bool Win32FileSystem::existFile( const WString& _filename )
 	{
 		if( _filename.empty() == true )	// current dir
 		{
@@ -82,37 +81,38 @@ namespace Menge
 		}
 
 		bool found = WindowsLayer::fileExists( _filename );
+
 		return found;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::createFolder( const String& _path )
+	bool Win32FileSystem::createFolder( const WString& _path )
 	{
 		bool result = WindowsLayer::createDirectory( _path );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::deleteFolder( const String& _path )
+	bool Win32FileSystem::deleteFolder( const WString& _path )
 	{
-		String path_correct = _path;
-		String::size_type pos = path_correct.find("/");
-		while( pos != String::npos )
+		static WString path_correct;
+		path_correct = _path;
+
+		WString::size_type pos = path_correct.find(L"/");
+		while( pos != WString::npos )
 		{
-			path_correct[pos] = PATH_DELIM;
-			pos = path_correct.find("/");
+			path_correct[pos] = MENGE_FOLDER_DELIM;
+
+			pos = path_correct.find(L"/");
 		}
-		//StringW path_w = Utils::AToW( _path );
-		WString path_w;
-		WindowsLayer::utf8ToWstr( path_correct, path_w );
 
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
 		fs.hwnd = NULL;
 
-		Menge::TCharW path[MAX_PATH];
-		wcscpy( path, path_w.c_str() );
-		path[ path_w.size() + 1 ] = 0;
-		fs.pFrom = path;
+		//Menge::TCharW path[MAX_PATH];
+		//wcscpy( path, path_correct.c_str() );
+		//path[ path_w.size() + 1 ] = 0;
+		fs.pFrom = path_correct.c_str();
 
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
@@ -143,7 +143,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputStreamInterface* Win32FileSystem::openOutputStream( const String& _filename )
+	FileOutputStreamInterface* Win32FileSystem::openOutputStream( const WString& _filename )
 	{
 		Win32OutputStream* outStream = new Win32OutputStream();
 		if( outStream->open( _filename ) == false )
@@ -165,14 +165,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::deleteFile( const String& _filename )
+	bool Win32FileSystem::deleteFile( const WString& _filename )
 	{
-		String path_correct = _filename;
-		String::size_type pos = path_correct.find("/");
+		static WString path_correct;
+
+		path_correct = _filename;
+
+		WString::size_type pos = path_correct.find(L"/");
+
 		while( pos != String::npos )
 		{
-			path_correct[pos] = PATH_DELIM;
-			pos = path_correct.find("/");
+			path_correct[pos] = MENGE_FOLDER_DELIM;
+			pos = path_correct.find(L"/");
 		}
 
 		SHFILEOPSTRUCT fs;
@@ -180,19 +184,21 @@ namespace Menge
 		fs.hwnd = NULL;
 
 		//StringW filename_w = Utils::AToW( _filename );
-		WString filename_w;
-		WindowsLayer::utf8ToWstr( path_correct, filename_w );
+		//WString filename_w;
+		//WindowsLayer::utf8ToWstr( path_correct, filename_w );
 
-		const Menge::TCharW* lpszW = filename_w.c_str();
+		//const Menge::TCharW* lpszW = filename_w.c_str();
 
-		fs.pFrom = lpszW;
+		fs.pFrom = path_correct.c_str();
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
+		
 		if( ::SHFileOperation( &fs ) != 0 )
 		{
 			return false;
 		}
+
 		return true;
 	}
 }

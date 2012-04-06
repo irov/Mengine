@@ -46,8 +46,8 @@
  
 namespace Menge
 {
-	static char s_logFileName[] = "\\Game.log";
-	static char s_userPath[MAX_PATH] = "";
+	static wchar_t s_logFileName[] = L"\\Game.log";
+	static wchar_t s_userPath[MAX_PATH] = L"";
 
 	//////////////////////////////////////////////////////////////////////////
 	static const unsigned long s_activeFrameTime = 1000.f/60.f;
@@ -105,7 +105,8 @@ namespace Menge
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running(true)
 		, m_active(false)
-		, m_name("Mengine")
+		, m_name(L"Mengine")
+		, m_windowClassName(L"MengeWnd")
 		, m_hWnd(0)
 		, m_cursorInArea(false)
 		, m_hInstance(_hInstance)
@@ -172,7 +173,7 @@ namespace Menge
 		//	m_userPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
 		//}
 
-		m_userPath = "Antoinette";
+		m_userPath = L"Antoinette";
 
 		if( m_userPath.empty() == false )
 		{
@@ -193,8 +194,8 @@ namespace Menge
 		if( docsAndSettings == false || m_windowsType == WindowsLayer::EWT_98 )
 		{
 			WindowsLayer::getCurrentDirectory( m_userPath );
-			m_userPath += "\\User";
-			strncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
+			m_userPath += L"\\User";
+			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
@@ -206,11 +207,13 @@ namespace Menge
 			BOOL result = SHGetPathFromIDListW( itemIDList, buffer );
 			CoTaskMemFree( itemIDList );
 			
-			Menge::String userSysPath;
-			WindowsLayer::wstrToUtf8( Menge::WString( buffer ), userSysPath );
-			m_userPath = userSysPath + "\\" + m_userPath;
+			//Menge::String userSysPath;
+			//WindowsLayer::unicodeToUtf8( Menge::WString( buffer ), userSysPath );
+			m_userPath = buffer;
+			m_userPath += MENGE_FOLDER_DELIM;
+			m_userPath += m_userPath;
 
-			strncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
+			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
@@ -223,9 +226,12 @@ namespace Menge
 
 		if( languagePack.empty() == true )
 		{
-			char localeBuff[64];
-			int localeBuffSize = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuff, 64 );
-			languagePack = std::string(localeBuff, localeBuffSize);
+			wchar_t localeBuff[64];
+			int localeBuffSize = ::GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuff, 64 );
+			WString languagePackW = std::wstring(localeBuff, localeBuffSize);
+
+			WindowsLayer::unicodeToAnsi( languagePackW, languagePack );
+
 			std::transform( languagePack.begin(), languagePack.end(), 
 				languagePack.begin(), std::ptr_fun( &::tolower ) );
 		}
@@ -259,10 +265,10 @@ namespace Menge
 		m_currentPath.assign(buffer);
 
 		//WindowsLayer::getCurrentDirectory( m_applicationPath );
-		WindowsLayer::wstrToUtf8( m_currentPath, m_applicationPath );
+		m_applicationPath = m_currentPath;
 		
-		m_applicationPath += "\\";
-		m_userPath += "\\";
+		m_applicationPath += MENGE_FOLDER_DELIM;
+		m_userPath += MENGE_FOLDER_DELIM;
 
 		String platformName = "WIN";
 
@@ -285,7 +291,7 @@ namespace Menge
 		m_application->setDesktopResolution( m_desktopResolution );
 
 		RECT workArea;
-		SystemParametersInfoA(SPI_GETWORKAREA, 0, &workArea, 0);
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
 
 		RECT clientArea = workArea;
 		::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
@@ -306,13 +312,16 @@ namespace Menge
 			, platformName.c_str() 
 			);
 
-		String config_file = "application";
-		m_application->loadConfig( config_file );
+		WString config_file = L"application";
+		if( m_application->loadConfig( config_file ) == false )
+		{
+			return false;
+		}
 		
 		ConstString c_languagePack(languagePack);
 		m_application->setLanguagePack( c_languagePack );
 		
-		String baseDir = m_applicationPath;
+		WString baseDir = m_applicationPath;
 		baseDir += MENGE_DEFAULT_BASE_DIR;
 
 		m_application->setBaseDir( baseDir );
@@ -327,7 +336,7 @@ namespace Menge
 			return false;
 		}
 
-		const String & title = m_application->getProjectTitle();
+		const WString & title = m_application->getProjectTitle();
 
 		bool screenSaverMode = this->isSaverRunning();
 
@@ -342,7 +351,7 @@ namespace Menge
 			}
 			else if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
 			{
-				if( WindowsLayer::messageBox( m_hWnd, "This screensaver has no options you can set\nDo you want to launch game?", title, MB_YESNO ) == IDNO )
+				if( WindowsLayer::messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", title, MB_YESNO ) == IDNO )
 				{
 					return false;
 				}
@@ -366,13 +375,14 @@ namespace Menge
 			, tm.wSecond 
 			);
 
-		OSVERSIONINFOA os_ver;
+		OSVERSIONINFO os_ver;
 		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-		GetVersionExA(&os_ver);
-		LOGGER_INFO(m_logService)( "OS: Windows %ld.%ld.%ld"
+		GetVersionEx(&os_ver);
+		LOGGER_INFO(m_logService)( "OS: Windows %ld.%ld.%ld %S"
 			, os_ver.dwMajorVersion
 			, os_ver.dwMinorVersion
 			, os_ver.dwBuildNumber 
+			, os_ver.szCSDVersion
 			);
 
 		MEMORYSTATUS mem_st;
@@ -394,7 +404,7 @@ namespace Menge
 		if( m_windowsType != WindowsLayer::EWT_98 && policy != EARP_NONE )
 		{	
 			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
-			if( m_alreadyRunningMonitor->run( policy, title ) == false )
+			if( m_alreadyRunningMonitor->run( policy, m_windowClassName, title ) == false )
 			{
 				LOGGER_ERROR(m_logService)( "Application already running" );
 
@@ -505,7 +515,10 @@ namespace Menge
 
 		logFilename += ".log";
 
-		FileOutputStreamInterface* fileLogInterface = fileService->openOutputFile( ConstString("user"), logFilename );
+		WString logFilenameW;
+		WindowsLayer::ansiToUnicode( logFilename, logFilenameW );
+
+		FileOutputStreamInterface* fileLogInterface = fileService->openOutputFile( ConstString("user"), logFilenameW );
 
 		m_fileLog = new FileLogger();
 		m_fileLog->setFileInterface( fileLogInterface );
@@ -576,7 +589,7 @@ namespace Menge
 
 		if( m_hInstance )
 		{
-			WindowsLayer::unregisterClass( Menge::String( "MengeWnd" ), m_hInstance );
+			WindowsLayer::unregisterClass( m_windowClassName, m_hInstance );
 		}	
 
 		if( m_fpsMonitor != NULL )
@@ -683,17 +696,16 @@ namespace Menge
 		return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( const Menge::String & _name, const Resolution & _resolution, bool _fullscreen )
+	WindowHandle WinApplication::createWindow( const Menge::WString & _name, const Resolution & _resolution, bool _fullscreen )
 	{
 		m_windowResolution = _resolution;
 
 		m_name = _name;
 
-		// Register the window class
-		Menge::String windowName( "MengeWnd" );
+		// Register the window class		
 		ATOM result = WindowsLayer::registerClass( s_wndProc, 0, 0, m_hInstance, IDI_MENGE
 					, (HBRUSH)GetStockObject(BLACK_BRUSH)
-					, windowName 
+					, m_windowClassName
 					);
 
 		if( result == FALSE )
@@ -706,7 +718,7 @@ namespace Menge
 		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
 
 		DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
-		m_hWnd = WindowsLayer::createWindowEx( exStyle, "MengeWnd", m_name, dwStyle
+		m_hWnd = WindowsLayer::createWindowEx( exStyle, m_windowClassName, m_name, dwStyle
 				, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
 				, NULL, NULL, m_hInstance, (LPVOID)this );
 
@@ -803,7 +815,7 @@ namespace Menge
 			AdjustWindowRect( &rc, dwStyle, FALSE );
 
 			RECT workArea;
-			SystemParametersInfoA(SPI_GETWORKAREA, 0, &workArea, 0);
+			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
 
 			LONG width = rc.right - rc.left;
 			LONG height = rc.bottom - rc.top;
@@ -958,7 +970,7 @@ namespace Menge
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
-				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
@@ -970,7 +982,7 @@ namespace Menge
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
-				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
@@ -1143,7 +1155,7 @@ namespace Menge
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
-				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
@@ -1155,7 +1167,7 @@ namespace Menge
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
-				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
@@ -1214,15 +1226,16 @@ namespace Menge
 		ClientToScreen( m_hWnd, &cPos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
+	void WinApplication::showMessageBox( const WString& _message, const WString& _caption, unsigned int _style )
 	{
-		WindowsLayer::messageBox( m_hWnd, _message, _header, MB_ICONERROR | MB_OK );
+		WindowsLayer::messageBox( m_hWnd, _message, _caption, MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String WinApplication::ansiToUtf8( const String& _ansi )
 	{
 		String utf8;
 		WindowsLayer::ansiToUtf8( _ansi, utf8 );
+
 		return utf8;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1230,6 +1243,7 @@ namespace Menge
 	{
 		String ansi;
 		WindowsLayer::utf8ToAnsi( _utf8, ansi );
+
 		return ansi;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1237,7 +1251,31 @@ namespace Menge
 	{
 		size_t size;
 		WindowsLayer::utf8Count( _utf8, size );
+
 		return size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	WString WinApplication::utf8ToUnicode( const String& _utf8 )
+	{
+		WString unicode;
+		WindowsLayer::utf8ToUnicode( _utf8, unicode );
+
+		return unicode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String WinApplication::unicodeToAnsi( const WString& _unicode )
+	{
+		String ansi;
+		WindowsLayer::unicodeToAnsi( _unicode, ansi );
+		return ansi;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	WString WinApplication::ansiToUnicode( const String& _utf8 )
+	{
+		WString unicode;
+		WindowsLayer::ansiToUnicode( _utf8, unicode );
+
+		return unicode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showKeyboard()
@@ -1358,15 +1396,13 @@ namespace Menge
 		m_serviceProvider->addServiceListener( "FileService", new WinApplicationFileService(this) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorIconSetup( const String& _fileName )
+	void WinApplication::notifyCursorIconSetup( const WString& _fileName )
 	{
 		TMapCursors::iterator it_found = m_cursors.find( _fileName );
 
 		if( it_found == m_cursors.end() )
 		{
-			WString wFileName;
-			WindowsLayer::utf8ToWstr(_fileName, wFileName);
-			HCURSOR cursor = LoadCursorFromFile( wFileName.c_str() );
+			HCURSOR cursor = LoadCursorFromFile( _fileName.c_str() );
 
 			DWORD errCode = GetLastError();
 
@@ -1417,8 +1453,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::isSaverRunning()
 	{ 
-		Menge::String fileName = "";
-		Menge::String extention = "";
+		Menge::WString fileName;
+		Menge::WString extention;
 		WindowsLayer::getModuleFileName(NULL, fileName);
 		if( fileName.length() < 4 )
 		{
@@ -1427,13 +1463,13 @@ namespace Menge
 
 		extention = fileName.substr(fileName.length()-4);
 
-		std::transform( extention.begin(), extention.end(), extention.begin(), std::ptr_fun( ::tolower ) );
+		//std::transform( extention.begin(), extention.end(), extention.begin(), std::ptr_fun( ::tolower ) );
 		/*for( int i=0; i<extention.length(); ++i )
 		{
 			extention[i] = tolower(extention[i]);
 		}*/
 
-		if( extention == ".scr" )
+		if( extention == L".scr" )
 		{
 			return true;
 		}
@@ -1445,22 +1481,29 @@ namespace Menge
 	{
 		if( _set == true )
 		{
-			String screensaverName = m_application->getScreensaverName();
+			WString screensaverName = m_application->getScreensaverName();
 
-			String fullModuleName = "";
+			WString fullModuleName;
 			WindowsLayer::getModuleFileName(NULL, fullModuleName);
 
-			size_t separatorPos = fullModuleName.find_last_of('\\');
-			String binFolderPath = fullModuleName.substr(0, separatorPos);
-			String fullScreensaverPath = binFolderPath + "\\" + screensaverName;
+			size_t separatorPos = fullModuleName.find_last_of(MENGE_FOLDER_DELIM);
+			WString binFolderPath = fullModuleName.substr(0, separatorPos);
+			WString fullScreensaverPath = binFolderPath + MENGE_FOLDER_DELIM + screensaverName;
 
-			String fullScreensaverPathShort;
+			WString fullScreensaverPathShort;
 			WindowsLayer::getShortPathName( fullScreensaverPath, fullScreensaverPathShort );
-			WindowsLayer::setRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE", REG_SZ, reinterpret_cast<const BYTE*>( fullScreensaverPathShort.c_str() ), fullScreensaverPathShort.length()+1 );
+
+			WindowsLayer::setRegistryValue( HKEY_CURRENT_USER
+				, L"Control Panel\\Desktop"
+				, L"SCRNSAVE.EXE"
+				, REG_SZ
+				, reinterpret_cast<const BYTE*>( fullScreensaverPathShort.c_str() )
+				, fullScreensaverPathShort.length() + 1 
+				);
 		}
 		else
 		{
-			WindowsLayer::deleteRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE" );
+			WindowsLayer::deleteRegistryValue( HKEY_CURRENT_USER, L"Control Panel\\Desktop", L"SCRNSAVE.EXE" );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

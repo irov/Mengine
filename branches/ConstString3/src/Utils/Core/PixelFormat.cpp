@@ -11,7 +11,7 @@ namespace Menge
 	struct PixelFormatDescription 
 	{
 		// Name of the format, as in the enum 
-		const TChar *name;
+		const char *name;
 		// Number of bytes one element (colour value) takes.
 		unsigned char elemBytes;
 		// Pixel format flags, see enum PixelFormatFlags for the bit field

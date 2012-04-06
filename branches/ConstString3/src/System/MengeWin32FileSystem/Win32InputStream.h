@@ -22,7 +22,7 @@ namespace Menge
 		~Win32InputStream();
 
 	public:
-		bool open( const String& _filename ) override;
+		bool open( const WString& _filename ) override;
 		void close() override;
 		
 		bool time( time_t & _time ) const override;
@@ -31,8 +31,7 @@ namespace Menge
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
 		int tell() const override;
-		int size() const override;
-		
+		int size() const override;		
 
 	private:
 		HANDLE m_hFile;

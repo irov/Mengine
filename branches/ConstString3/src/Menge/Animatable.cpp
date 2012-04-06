@@ -7,6 +7,7 @@ namespace Menge
 		: m_enumerator(0)
 		, m_play(false)
 		, m_loop(false)
+		, m_speedFactor(1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -18,6 +19,16 @@ namespace Menge
 	bool Animatable::getLoop() const
 	{
 		return m_loop;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::setSpeedFactor( float _factor )
+	{
+		m_speedFactor = _factor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Animatable::getSpeedFactor() const
+	{
+		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animatable::play()
@@ -84,4 +95,5 @@ namespace Menge
 	{
 		//Empty
 	}
+	
 }

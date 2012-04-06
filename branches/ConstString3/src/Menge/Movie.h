@@ -28,9 +28,6 @@ namespace Menge
 		void setParentMovie( bool _value );
 		bool isParentMovie( bool _value ) const;
 
-		void setSpeedFactor( float _factor );
-		float getSpeedFactor() const;
-
 		size_t getFrameCount() const;
 		float getFrameDelay( size_t  _frame ) const;
 
@@ -94,7 +91,6 @@ namespace Menge
 		TMapFlexSprite m_flexSprites;
 
 		float m_timing;
-		float m_speedFactor;
 
 		bool m_parentMovie;
 		bool m_reverse;

@@ -492,7 +492,7 @@ bool XmlToBin::writeBinary( const wchar_t * _source, const wchar_t * _bin )
 
 	if( done == false )
 	{
-		//remove( _bin );
+		_wremove( _bin );
 
 		return false;
 	}

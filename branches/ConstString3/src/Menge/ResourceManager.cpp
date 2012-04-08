@@ -114,14 +114,14 @@ namespace Menge
 		{
 			if( exist == false )
 			{
-				MENGE_LOG_ERROR( "ResourceManager: resource '%s:%s' not found"
+				MENGE_LOG_ERROR( "ResourceManager: resource '%s:%S' not found"
 					, _name.c_str()
 					, xml_path.c_str()
 					);
 			}
 			else
 			{
-				MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s:%s'"
+				MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s:%S'"
 					, _name.c_str()
 					, xml_path.c_str()
 					);

@@ -99,10 +99,9 @@ namespace Menge
 	bool Movie::isParentMovie( bool _value ) const
 	{
 		return m_parentMovie;
-	}
-	
+	}	
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setTiming( float _timing )
+	void Movie::_setTiming( float _timing )
 	{
 		if( this->isActivate() == false )
 		{
@@ -118,7 +117,7 @@ namespace Menge
 		this->update( 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Movie::getTiming() const
+	float Movie::_getTiming() const
 	{
 		return m_timing;
 	}

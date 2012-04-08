@@ -16,6 +16,13 @@ namespace Menge
 		void setSpeedFactor( float _factor );
 		float getSpeedFactor() const;
 
+		void setTiming( float _timing );
+		float getTiming() const;
+
+	public:
+		virtual void _setTiming( float _timing );
+		virtual float _getTiming() const;
+
 	public:
 		size_t play();
 		bool stop();

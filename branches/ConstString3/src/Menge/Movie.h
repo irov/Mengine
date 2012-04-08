@@ -38,8 +38,9 @@ namespace Menge
 		void setReverse( bool _value);
 		bool getReverse() const;
 
-		void setTiming( float _timming );
-		float getTiming() const;
+	protected:
+		void _setTiming( float _timing ) override;
+		float _getTiming() const override;
 
 	public:
 		float getWorkAreaDuration() const;

@@ -2918,6 +2918,8 @@ namespace Menge
 			.def( "getPlayId", &Animatable::getPlayId )
 			.def( "setSpeedFactor", &Animatable::setSpeedFactor )
 			.def( "getSpeedFactor", &Animatable::getSpeedFactor )
+			.def( "setTiming", &Animatable::setTiming )
+			.def( "getTiming", &Animatable::getTiming )
 			.def( "setLoop", &Animatable::setLoop )
 			.def( "getLoop", &Animatable::getLoop )
 			;
@@ -3265,8 +3267,6 @@ namespace Menge
 						.def( "getFrameDelay", &Animation::getFrameDelay )
 						.def( "setCurrentFrame", &Animation::setCurrentFrame )
 						.def( "getCurrentFrame", &Animation::getCurrentFrame )
-						.def( "setTiming", &Animation::setTiming )
-						.def( "getTiming", &Animation::getTiming )
 						;
 				}
 
@@ -3331,8 +3331,6 @@ namespace Menge
 					.def( "setReverse", &Movie::setReverse )
 					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )
-					.def( "setTiming", &Movie::setTiming )
-					.def( "getTiming", &Movie::getTiming )
 					.def( "getWorkAreaDuration", &Movie::getWorkAreaDuration )
 					;
 

@@ -26,8 +26,9 @@ namespace Menge
 		void setCurrentFrame( size_t _frame );
 		size_t getCurrentFrame() const;
 
-		void setTiming( float _timming );
-		float getTiming() const;
+	protected:
+		void _setTiming( float _timming ) override;
+		float _getTiming() const override;
 
 	protected:
 		bool _play() override;
@@ -49,13 +50,14 @@ namespace Menge
 		void _setEventListener( PyObject * _listener ) override;
 
 	protected:
+		size_t getFrame_( float _timing, float & _delthaTiming ) const;
 		bool updateCurrentImageResource_();
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;
 		ConstString m_resourceAnimationName;
 
-		float m_timing;
+		float m_frameTiming;
 
 		size_t m_currentFrame;
 		

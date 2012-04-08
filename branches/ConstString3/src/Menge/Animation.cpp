@@ -19,7 +19,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
 		: m_resourceAnimation(0)
-		, m_timing(0)
+		, m_frameTiming(0.f)
 		, m_currentFrame(0)
 		, m_onEndFrameTick(false)
 		, m_onEndFrameEvent(false)
@@ -68,16 +68,16 @@ namespace	Menge
 
 		size_t frameSize = m_resourceAnimation->getSequenceCount();
 
-		m_timing += _timing * m_speedFactor;
+		m_frameTiming += _timing * m_speedFactor;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 		
 		float speedFactor = this->getSpeedFactor();
 		delay *= speedFactor;
 
-		while( m_timing >= delay )
+		while( m_frameTiming >= delay )
 		{
-			m_timing -= delay;
+			m_frameTiming -= delay;
 
 			if( m_onEndFrameEvent == true )
 			{
@@ -173,13 +173,15 @@ namespace	Menge
 			return false;
 		}
 
-		m_currentFrame = 0;
-		m_timing = 0.0f;
+		//m_currentFrame = 0;
+
+		this->setTiming( 0.f );
+		//m_frameTiming = 0.0f;
 		
-		if( this->updateCurrentImageResource_() == false )
-		{
-			return false;
-		}
+		//if( this->updateCurrentImageResource_() == false )
+		//{
+		//	return false;
+		//}
 
 		return true;
 	}
@@ -211,13 +213,14 @@ namespace	Menge
 			return false;
 		}
 		
-		m_currentFrame = 0; 
-		m_timing = 0.f;
+		this->setTiming( 0.f );
+		//m_currentFrame = 0; 
+		//m_timing = 0.f;
 	
-		if( this->updateCurrentImageResource_() == false )
-		{
-			return false;
-		}
+		//if( this->updateCurrentImageResource_() == false )
+		//{
+		//	return false;
+		//}
 
 		return true;
 	}
@@ -243,13 +246,14 @@ namespace	Menge
 			return;
 		}
 
-		m_currentFrame = 0;
-		m_timing = 0.f;
+		this->setTiming( 0.f );
+		//m_currentFrame = 0;
+		//m_timing = 0.f;
 
-		if( this->updateCurrentImageResource_() == false )
-		{
-			return;
-		}
+		//if( this->updateCurrentImageResource_() == false )
+		//{
+		//	return;
+		//}
 
 		if( m_onEndAnimationEvent == true )
 		{
@@ -268,19 +272,45 @@ namespace	Menge
 			return;
 		}
 
-		m_timing = 0.f;
-		//m_currentFrame = m_resourceAnimation->getLastFrameIndex();
-		m_currentFrame = 0;
+		this->setTiming( 0.f );
+		//m_timing = 0.f;
+		////m_currentFrame = m_resourceAnimation->getLastFrameIndex();
+		//m_currentFrame = 0;
 
-		if( this->updateCurrentImageResource_() == false )
-		{
-			return;
-		}
+		//if( this->updateCurrentImageResource_() == false )
+		//{
+		//	return;
+		//}
 
 		if( m_onEndAnimationEvent == true )
 		{
 			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t Animation::getFrame_( float _timing, float & _delthaTiming ) const
+	{
+		size_t count = m_resourceAnimation->getSequenceCount();
+
+		size_t frame = 0;
+
+		for( ; frame != count; ++frame )
+		{
+			float delay = m_resourceAnimation->getSequenceDelay( frame );
+
+			_timing -= delay;
+
+			if( _timing <= 0 )
+			{
+				_delthaTiming = -_timing;
+
+				break;
+			}
+		}
+
+		_timing = -_timing;
+
+		return frame;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::updateCurrentImageResource_()
@@ -378,7 +408,7 @@ namespace	Menge
 		this->updateCurrentImageResource_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setTiming( float _timing )
+	void Animation::_setTiming( float _timing )
 	{
 		if( this->isActivate() == false )
 		{
@@ -389,14 +419,25 @@ namespace	Menge
 			return;
 		}
 				
-		m_timing = _timing;
+		m_currentFrame = this->getFrame_( _timing, m_frameTiming );
 
 		this->updateCurrentImageResource_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Animation::getTiming() const
+	float Animation::_getTiming() const
 	{
-		return m_timing;
+		float timing = 0.f;
+
+		for( size_t frame = 0; frame != m_currentFrame; ++frame )
+		{
+			float delay = m_resourceAnimation->getSequenceDelay( frame );
+
+			timing += delay;
+		}
+
+		timing += m_frameTiming;
+
+		return timing; 
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

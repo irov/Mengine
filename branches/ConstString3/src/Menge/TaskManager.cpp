@@ -129,7 +129,7 @@ namespace Menge
 
 		if( isTaskOnProgress( _task ) == false )
 		{
-			MENGE_LOG_ERROR( "TaskManager: Requested task  not exist " );
+			MENGE_LOG_ERROR( "TaskManager.joinTask: Requested task  not exist " );
 			return;
 		}
 
@@ -160,7 +160,7 @@ namespace Menge
 
 		if( isTaskOnProgress( _task ) == false )
 		{
-			MENGE_LOG_ERROR( "TaskManager: Requested task  not exist " );
+			MENGE_LOG_ERROR( "TaskManager.cancelTask: Requested task  not exist " );
 			return;
 		}
 

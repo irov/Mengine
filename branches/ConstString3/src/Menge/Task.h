@@ -33,6 +33,7 @@ namespace Menge
 		bool main() override;
 		void cancel();
 		void update();
+
 	public:
 		bool onMain();
 	
@@ -42,6 +43,7 @@ namespace Menge
 		void onComplete();
 		void onUpdate();
 		void onInterrupt();
+
 	protected:
 		virtual bool _onMain();
 
@@ -51,13 +53,15 @@ namespace Menge
 		virtual void _onCancel();
 		virtual void _onUpdate();
 		virtual void _onInterrupt();
+
 	public:
 		void addListener( TaskListener * _listener );
 
 	protected:
-		bool m_complete;
-		bool m_interrupt;
 		typedef std::vector<TaskListener *> TVectorTaskListener;
 		TVectorTaskListener m_listeners;
+
+		bool m_complete;
+		bool m_interrupt;
 	};
 }

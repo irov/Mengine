@@ -412,7 +412,7 @@ namespace	Menge
 	{
 		if( this->isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation: '%s' setTiming not activate"
+			MENGE_LOG_ERROR( "Animation._setTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -426,6 +426,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	float Animation::_getTiming() const
 	{
+		if( this->isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation._getTiming: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return 0.f;
+		}
+
 		float timing = 0.f;
 
 		for( size_t frame = 0; frame != m_currentFrame; ++frame )

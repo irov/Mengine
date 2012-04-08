@@ -3334,7 +3334,7 @@ namespace Menge
 					.def( "getWorkAreaDuration", &Movie::getWorkAreaDuration )
 					;
 
-				pybind::proxy_< Video, pybind::bases< Node , Animatable > >("Video", false)
+				pybind::proxy_<Video, pybind::bases<Node , Animatable> >("Video", false)
 					.def("pause",&Video::pause )
 					.def( "setVideoResource", &Video::setVideoResource )
 					;

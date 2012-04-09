@@ -17,8 +17,8 @@
 #	include <iomanip>
 
 //for debug 
-#	include "Menge/RenderEngine.h"
-#	include "Menge/Texture.h"
+//#	include "Menge/RenderEngine.h"
+//#	include "Menge/Texture.h"
 
 static  LRESULT CALLBACK s_wndProc(HWND hWnd, unsigned int Msg, WPARAM wParam, LPARAM lParam)
 {
@@ -49,7 +49,7 @@ namespace Menge
 		return rc;
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////
-	HWND RenderParticles::createWindow_( HINSTANCE hinstance, const Menge::String & _name, const Menge::String _className, const Resolution & _resolution )
+	HWND RenderParticles::createWindow_( HINSTANCE hinstance, const Menge::WString & _name, const Menge::WString _className, const Resolution & _resolution )
 	{
 		ATOM result = WindowsLayer::registerClass( s_wndProc, 0, 0, hinstance, 0
 			, (HBRUSH)GetStockObject(BLACK_BRUSH)
@@ -131,26 +131,25 @@ namespace Menge
 		BOOL result = SHGetPathFromIDListW( itemIDList, buffer );
 		CoTaskMemFree( itemIDList );
 
-		Menge::String logFilename;
-		WindowsLayer::wstrToUtf8( Menge::WString( buffer ), logFilename );
-		logFilename += "\\AEAstralaxIOPlugin";
+		Menge::WString logFilename = buffer;
+		logFilename += L"\\AEAstralaxIOPlugin";
 		WindowsLayer::createDirectory( logFilename );
-		logFilename += "\\log";		
+		logFilename += L"\\log";		
 				
-		std::stringstream dateStream;
+		std::wstringstream dateStream;
 		std::time_t ctTime; 
 		std::time(&ctTime);
 		std::tm* sTime = std::localtime( &ctTime );
-		dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
-			(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
-			<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
-			<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
-			<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
+		dateStream << 1900 + sTime->tm_year << L"_" << std::setw(2) << std::setfill(L'0') <<
+			(sTime->tm_mon+1) << L"_" << std::setw(2) << std::setfill(L'0') << sTime->tm_mday << L"_"
+			<< std::setw(2) << std::setfill(L'0') << sTime->tm_hour << L"_" 
+			<< std::setw(2) << std::setfill(L'0') << sTime->tm_min << L"_"
+			<< std::setw(2) << std::setfill(L'0') << sTime->tm_sec;
 
-		String dateString = dateStream.str();
-		logFilename += "_";
+		WString dateString = dateStream.str();
+		logFilename += L"_";
 		logFilename += dateString;
-		logFilename += ".txt";
+		logFilename += L".txt";
 				
 		if( _file->open(logFilename) == false )
 		{
@@ -177,16 +176,16 @@ namespace Menge
 		
 		//////////////////////////////////////////////////////////
 
-		String applicationPath;
+		WString applicationPath;
 		WindowsLayer::getCurrentDirectory( applicationPath );
 
-		applicationPath += "\\";
+		applicationPath += L"\\";
 
 		ServiceProviderInterface * serviceProvider = m_application->getServiceProvider();
 		FileServiceInterface * fileService = serviceProvider->getServiceT<FileServiceInterface>("FileService");
 		
 		// mount root		
-		if( fileService->mountFileSystem( ConstString(""), "", ConstString("dir"), false ) == false )
+		if( fileService->mountFileSystem( ConstString(""), L"", ConstString("dir"), false ) == false )
 		{
 			return false;
 		}
@@ -210,7 +209,7 @@ namespace Menge
 		
 		m_renderService = serviceProvider->getServiceT<RenderServiceInterface>("RenderService");
 
-		m_renderhWnd = this->createWindow_(m_hInstance, "RenderWindow","RenderWindowClass", m_resolution );
+		m_renderhWnd = this->createWindow_(m_hInstance, L"RenderWindow",L"RenderWindowClass", m_resolution );
 
 		m_renderService->setVSync(true);
 		
@@ -236,8 +235,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////
 		
 		ConstString name("RenderTarget");
-		m_renderImage = m_renderService->createTexture( name, m_resolution.getWidth(), m_resolution.getHeight(), PF_A8R8G8B8 );
-		m_renderTargetImage = m_renderService->createRenderTargetTexture( m_renderTargetName, m_resolution.getWidth(), m_resolution.getHeight(), PF_A8R8G8B8 );
+		m_renderImage = m_renderService->createTexture( m_resolution.getWidth(), m_resolution.getHeight(), PF_A8R8G8B8 );
+		m_renderTargetImage = m_renderService->createRenderTargetTexture( m_resolution.getWidth(), m_resolution.getHeight(), PF_A8R8G8B8 );
 		
 		m_renderService->setRenderTargetTexture( m_renderTargetImage ,true);
 		m_renderService->setSeparateAlphaBlendMode();
@@ -296,7 +295,7 @@ namespace Menge
 	void RenderParticles::getRenderData( RenderParticlesFrame * _frame )
 	{
 		m_renderService->screenshot( m_renderImage, mt::vec4f( 0, 0, _frame->width, _frame->height ) );
-		RenderEngine::get()->saveImage( m_renderImage,ConstString(""),String("d:\\temp.png"));
+		//RenderEngine::get()->saveImage( m_renderImage,ConstString(""),String("d:\\temp.png"));
 		int pitch;
 		Rect rect( 0, 0, _frame->width, _frame->height );
 		unsigned char * source = m_renderImage->lockRect( &pitch, rect, true );
@@ -328,7 +327,7 @@ namespace Menge
 				}*/
 				
 				//reverse pixels in directx buffer	
-				dest[index + 0] = a;
+				dest[index + 0] = 255;
 				dest[index + 1] = r;
 				dest[index + 2] = g;
 				dest[index + 3] = b;

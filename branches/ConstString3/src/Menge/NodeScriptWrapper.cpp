@@ -23,6 +23,7 @@
 #	include "EventManager.h"
 
 #	include "ResourceManager.h"
+#	include "ResourceMovie.h"
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
 #	include "ResourceHotspotImage.h"
@@ -2209,6 +2210,64 @@ namespace Menge
 			return result;
 		}
 		
+		static PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
+		{
+			ResourceMovie* resource = ResourceManager::get()
+				->getResourceT<ResourceMovie>( _resourceName );
+			
+			PyObject * py_dict_result = pybind::dict_new();
+					
+			if( resource == NULL )
+			{
+				return NULL;
+			}
+			
+			const TVectorMovieLayers2D layers2D = resource->getLayers2D();
+			
+			for( TVectorMovieLayers2D::const_iterator
+				it = layers2D.begin(),
+				it_end = layers2D.end();
+			it != it_end;
+			++it )
+			{
+				const MovieLayer2D & layer = *it;
+				if( layer.source != Consts::get()->c_MovieSlot )
+				{
+					continue;
+				}
+
+				float oneFrameTime = (layer.out - layer.in) / layer.frames.size();
+				
+				PyObject * py_list_frames = pybind::list_new(0);
+				size_t i = 0;
+
+				for( TVectorFrames::const_iterator
+					it_frame = layer.frames.begin(),
+					it_frame_end = layer.frames.end();
+				it_frame != it_frame_end;
+				++it_frame )
+				{
+					PyObject * py_dict_frame = pybind::dict_new();
+
+					PyObject * py_pos = pybind::ptr((*it_frame).position);
+					pybind::dict_set(py_dict_frame,"position", py_pos);
+					
+					float frameTime = layer.in + i * oneFrameTime;
+					PyObject * py_time = pybind::ptr(frameTime);
+					pybind::dict_set(py_dict_frame,"time", py_time);
+
+					pybind::list_appenditem( py_list_frames, py_dict_frame );
+					i++;
+				}
+
+				pybind::dict_set(py_dict_result,layer.name.c_str(), py_list_frames);
+
+			}
+
+			return py_dict_result;
+		}
+
+
 		static PyObject * s_visitResourceEmitterContainer( const ConstString & _resourceName )
 		{
 			class ResourceEmitterContainerVisitor:
@@ -3335,6 +3394,7 @@ namespace Menge
 					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )
 					.def( "getWorkAreaDuration", &Movie::getWorkAreaDuration )
+					.def( "getMovieSlot", &Movie::getMovieSlot )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node , Animatable> >("Video", false)
@@ -3522,6 +3582,9 @@ namespace Menge
 			pybind::def_function( "setRenderCamera", &ScriptMethod::s_setRenderCamera );
 			pybind::def_function( "createParticlesResource", &ScriptMethod::s_createParticlesResource );
 			pybind::def_function( "visitResourceEmitterContainer", &ScriptMethod::s_visitResourceEmitterContainer );
+
+			pybind::def_function( "getNullObjectsFromResourceVideo", &ScriptMethod::s_getNullObjectsFromResourceVideo );
+			
 		}
 	}
 }

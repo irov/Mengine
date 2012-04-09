@@ -47,16 +47,16 @@ namespace Menge
 		m_scriptWrapper = new RenderParticlesScriptWrapper();
 		RenderParticlesScriptWrapper::keep(m_scriptWrapper);
 		
-		String modulePath;
-		String line;
-		String curDir;
+		WString modulePath;
+		WString line;
+		WString curDir;
 
 		WindowsLayer::getModuleFileName(NULL,line);
 		//WindowsLayer::getCommandLine(line);
-		size_t pos = line.find_last_of("\\");
+		size_t pos = line.find_last_of(L"\\");
 		curDir = line.substr(0,pos);
 
-		modulePath = curDir + String("\\Plug-ins\\");
+		modulePath = curDir + WString(L"\\Plug-ins\\");
 		//modulePath = "c:\\Adobe\\Adobe After Effects CS4\\Support Files\\Plug-ins\\";
 		
 		ScriptServiceInterface * scriptService = m_render->getScriptService();

@@ -459,6 +459,29 @@ namespace Menge
 		m_nodies[_layer2D.index] = _node;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::addMovieSlot_( const ConstString & _slotName, Node * _node )
+	{
+		m_slots.insert(std::make_pair( _slotName, _node ));
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Movie::getMovieSlot( const ConstString & _name )
+	{
+		TMapMovieSlot::iterator it_index = m_slots.find( _name );
+
+		if( it_index == m_slots.end() )
+		{
+			MENGE_LOG_ERROR("Movie::getMovieSlot  name %s:%s not found slot"
+				, _name.c_str()
+				, m_name.c_str()
+				);
+
+			return NULL;
+		}
+
+		Node * slot = it_index->second;
+		return slot;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event )
 	{
 		ResourceInternalObject * resourceInternalObject = ResourceManager::get()
@@ -528,7 +551,19 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer2D & layer = *it;
-
+			
+			if ( layer.source == Consts::get()->c_MovieSlot )
+			{
+				Node * layer_slot = NodeManager::get()
+					->createNodeT<Node>( layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
+				layer_slot->enable();
+				layer_slot->localHide(true);
+				this->addMovieNode_( layer, layer_slot );
+				this->addMovieSlot_( layer.name, layer_slot );
+				
+				continue;
+			}
+			
 			const ConstString & resourceType = ResourceManager::get()
 				->getResourceType( layer.source );
 

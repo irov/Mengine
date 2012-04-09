@@ -70,7 +70,6 @@ namespace Menge
 		ConstString c_RigidBody2D;
 		ConstString c_WorldPhysObject;
 		ConstString c_NullTexture;
-
 		ConstString c_BlendSprite;
 		ConstString c_SolidSprite;
 		ConstString c_OnlyColor;
@@ -82,6 +81,8 @@ namespace Menge
 		ConstString c_ParticleEmitter;
 
 		ConstString c_LayerCamera2D;
+
+		ConstString c_MovieSlot;
 	};
 }
 

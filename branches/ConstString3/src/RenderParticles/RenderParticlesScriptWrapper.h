@@ -12,7 +12,7 @@ namespace Menge
 	{
 	public:
 		RenderParticlesScriptWrapper();
-		bool initialise( ScriptServiceInterface * _service, const String & _modulePath );
+		bool initialise( ScriptServiceInterface * _service, const WString & _modulePath );
 		void callFunction( const char * _functionName, const char * _params, ... );
 		void addListener( RenderParticlesListener * _listener );
 		void removeListener( RenderParticlesListener * _listener );

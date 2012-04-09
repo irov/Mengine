@@ -43,6 +43,7 @@ namespace Menge
 		float _getTiming() const override;
 
 	public:
+		Node * getMovieSlot( const ConstString & _name );
 		float getWorkAreaDuration() const;
 
 	protected:
@@ -79,6 +80,7 @@ namespace Menge
 		
 	protected:
 		void addMovieNode_(const MovieLayer2D & _layer2D, Node * _node );
+		void addMovieSlot_(const ConstString & _slotName, Node * _node );
 
 	protected:
 		ConstString m_resourceMovieName;
@@ -90,6 +92,9 @@ namespace Menge
 
 		typedef std::map<size_t, Sprite *> TMapFlexSprite;
 		TMapFlexSprite m_flexSprites;
+
+		typedef std::map<ConstString, Node *> TMapMovieSlot;
+		TMapMovieSlot m_slots;
 
 		float m_timing;
 

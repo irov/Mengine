@@ -39,17 +39,17 @@ namespace Menge
 	{
 	}	
 	////////////////////////////////////////////////////////////
-	bool RenderParticlesScriptWrapper::initialise( ScriptServiceInterface * _service, const String & _modulePath )
+	bool RenderParticlesScriptWrapper::initialise( ScriptServiceInterface * _service, const WString & _modulePath )
 	{
 		m_scriptEngine = _service;
 		if( m_scriptEngine == 0 )
 		{
 			return false;
 		}
-				
+		
 		wrap_();
 
-		TVectorString paths;
+		TVectorWString paths;
 		
 		paths.push_back( _modulePath );
 
@@ -71,7 +71,7 @@ namespace Menge
 	void RenderParticlesScriptWrapper::callFunction( const char * _functionName, const char * _params, ... )
 	{
 		PyObject * fun = m_scriptEngine->getModuleFunction( m_scriptModule, _functionName );
-		
+
 		va_list valist;
 		va_start(valist, _params);
 		m_scriptEngine->callFunction(fun, _params, valist);

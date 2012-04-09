@@ -57,6 +57,7 @@ namespace Menge
 		, c_Accumulator("Accumulator")
 		, c_ParticleEmitter("ParticleEmitter")
 		, c_LayerCamera2D("LayerCamera2D")
+		, c_MovieSlot("MovieSlot")
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

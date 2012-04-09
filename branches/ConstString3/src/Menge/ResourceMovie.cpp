@@ -362,6 +362,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
+			if( it->source ==  Consts::get()->c_MovieSlot )
+			{
+				it->internal = false;
+				it->animatable = false;
+				it->movie = false;
+				continue;
+			}
+			
 			const ConstString & resourceType = ResourceManager::get()
 				->getResourceType( it->source );
 

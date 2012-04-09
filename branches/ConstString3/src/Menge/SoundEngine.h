@@ -15,7 +15,7 @@ namespace Menge
 	class SoundEmitter;
 	class ResourceSound;
 	class SoundDecoder;
-	class TaskSoundBufferUpdate;
+	class ThreadTaskSoundBufferUpdate;
 	class FileInputStreamInterface;
 
 	class SoundSulkCallback
@@ -41,7 +41,7 @@ namespace Menge
 	{
 		SoundSourceInterface* soundSourceInterface;
 		SoundNodeListenerInterface* listener;
-		TaskSoundBufferUpdate* taskSoundBufferUpdate;
+		ThreadTaskSoundBufferUpdate* taskSoundBufferUpdate;
 
 		float timing;
 		float volume;

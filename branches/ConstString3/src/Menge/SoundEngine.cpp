@@ -3,8 +3,8 @@
 #	include "LogEngine.h"
 #	include "Interface/SoundCodecInterface.h"
 
-#	include "TaskManager.h"
-#	include "TaskSoundBufferUpdate.h"
+#	include "ThreadTaskManager.h"
+#	include "ThreadTaskSoundBufferUpdate.h"
 
 #	include "FileEngine.h"
 #	include "CodecEngine.h"
@@ -80,7 +80,7 @@ namespace Menge
 					{
 						it->second.taskSoundBufferUpdate->stop();
 
-						TaskManager::get()
+						ThreadTaskManager::get()
 							->joinTask( it->second.taskSoundBufferUpdate );
 					}
 
@@ -90,7 +90,7 @@ namespace Menge
 				{
 					if( it->second.taskSoundBufferUpdate != NULL )
 					{
-						TaskManager::get()
+						ThreadTaskManager::get()
 							->joinTask( it->second.taskSoundBufferUpdate );
 					}
 				}
@@ -110,9 +110,9 @@ namespace Menge
 
 					if( it->second.music == true && it->second.taskSoundBufferUpdate == NULL )
 					{
-						it->second.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &(it->second) );
+						it->second.taskSoundBufferUpdate = new ThreadTaskSoundBufferUpdate( &(it->second) );
 
-						TaskManager::get()
+						ThreadTaskManager::get()
 							->addTask( it->second.taskSoundBufferUpdate );
 					}
 				}
@@ -265,7 +265,7 @@ namespace Menge
 			{
 				it_find->second.taskSoundBufferUpdate->stop();
 				
-				TaskManager::get()
+				ThreadTaskManager::get()
 					->joinTask( it_find->second.taskSoundBufferUpdate );
 
 				it_find->second.taskSoundBufferUpdate = NULL;
@@ -359,8 +359,8 @@ namespace Menge
 				source.state = Playing;
 				if( source.music == true )
 				{
-					source.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &source );
-					TaskManager::get()
+					source.taskSoundBufferUpdate = new ThreadTaskSoundBufferUpdate( &source );
+					ThreadTaskManager::get()
 						->addTask( source.taskSoundBufferUpdate );
 				}
 				break;
@@ -434,8 +434,8 @@ namespace Menge
 				if( source.music == true &&
 					source.taskSoundBufferUpdate != NULL )
 				{
-					source.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &source );
-					TaskManager::get()
+					source.taskSoundBufferUpdate = new ThreadTaskSoundBufferUpdate( &source );
+					ThreadTaskManager::get()
 						->addTask( source.taskSoundBufferUpdate );
 				}
 				if( source.listener != NULL )

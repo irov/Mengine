@@ -6,21 +6,21 @@
 
 namespace Menge 
 {
-	class Task;
+	class ThreadTask;
 
-	class TaskListener
+	class ThreadTaskListener
 	{
 	public:
-		virtual void onTaskRun( Task * _task ) = 0;
-		virtual void onTaskComplete( Task * _task ) = 0;
+		virtual void onTaskRun( ThreadTask * _task ) = 0;
+		virtual void onTaskComplete( ThreadTask * _task ) = 0;
 	};
 
-	class Task
+	class ThreadTask
 		: public ThreadListener
 	{
 	public:
-		Task();
-		virtual ~Task();
+		ThreadTask();
+		virtual ~ThreadTask();
 	
 	public:
 		virtual void destroy();
@@ -55,10 +55,10 @@ namespace Menge
 		virtual void _onInterrupt();
 
 	public:
-		void addListener( TaskListener * _listener );
+		void addListener( ThreadTaskListener * _listener );
 
 	protected:
-		typedef std::vector<TaskListener *> TVectorTaskListener;
+		typedef std::vector<ThreadTaskListener *> TVectorTaskListener;
 		TVectorTaskListener m_listeners;
 
 		bool m_complete;

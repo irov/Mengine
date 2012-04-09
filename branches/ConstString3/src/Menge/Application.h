@@ -36,7 +36,7 @@ namespace Menge
 	class PhysicEngine;
 	class LoaderEngine;
 	class ThreadEngine;
-	class TaskManager;
+	class ThreadTaskManager;
 	class ArrowManager;
 	class AccountManager;
 	class SceneManager;
@@ -298,7 +298,7 @@ namespace Menge
 		PhysicEngine2D * m_physicEngine2D;
 		LoaderEngine *	m_loaderEngine;
 		ThreadEngine* m_threadEngine;
-		TaskManager* m_taskManager;
+		ThreadTaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;
 		//ParamManager * m_paramManager;
 		AlphaChannelManager* m_alphaChannelManager;

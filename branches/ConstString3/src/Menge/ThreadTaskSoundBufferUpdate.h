@@ -8,18 +8,18 @@
 
 #	pragma once
 
-#	include "Task.h"
+#	include "ThreadTask.h"
 
 namespace Menge
 {
 	struct SoundSourceDesc;
 
-	class TaskSoundBufferUpdate
-		: public Task
+	class ThreadTaskSoundBufferUpdate
+		: public ThreadTask
 	{
 	public:
-		TaskSoundBufferUpdate( SoundSourceDesc* _source );
-		~TaskSoundBufferUpdate();
+		ThreadTaskSoundBufferUpdate( SoundSourceDesc* _source );
+		~ThreadTaskSoundBufferUpdate();
 
 	public:
 		void stop();

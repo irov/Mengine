@@ -89,10 +89,11 @@
 
 #	include "ResourceVisitor.h"
 
-#	include "TaskManager.h"
-#	include "TaskDeferredLoading.h"
-#	include "TaskLoadResourceImage.h"
-#	include "TaskLoadImageResources.h"
+#	include "ThreadTaskManager.h"
+#	include "ThreadTaskDeferredLoading.h"
+#	include "ThreadTaskLoadResourceImage.h"
+#	include "ThreadTaskLoadImageResources.h"
+
 #	include "Core/Polygon.h"
 
 #	include "Utils/Math/angle.h"
@@ -101,7 +102,9 @@
 #	include "Utils/Math/mat4.h"
 #	include "Utils/Math/quat.h"
 #	include "Utils/Math/clamp.h"
+
 #	include "Utils/Core/Rect.h"
+
 #	include "Join.h"
 
 #	include <sstream>
@@ -770,7 +773,7 @@ namespace Menge
 		//		->addTask( task );
 		//}
 
-		static Task * s_loadImageResources( const ConstString& _category, PyObject* _resourceFiles, PyObject* _progressCallback )
+		static ThreadTask * s_loadImageResources( const ConstString& _category, PyObject* _resourceFiles, PyObject* _progressCallback )
 		{
 			TVectorConstString resourceFiles;
 
@@ -802,35 +805,35 @@ namespace Menge
 				return NULL;
 			}
 
-			TaskLoadImageResources* task = 
-				new TaskLoadImageResources( _category, resourceFiles, _progressCallback );
+			ThreadTaskLoadImageResources* task = 
+				new ThreadTaskLoadImageResources( _category, resourceFiles, _progressCallback );
 
-			TaskManager::get()
+			ThreadTaskManager::get()
 				->addTask( task );
 			
 			return task;
 		}
 
-		static Task * s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
+		static ThreadTask * s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
 		{
-			TaskLoadResourceImage * task = 
-				new TaskLoadResourceImage( _category, _resourceName, _progressCallback );
+			ThreadTaskLoadResourceImage * task = 
+				new ThreadTaskLoadResourceImage( _category, _resourceName, _progressCallback );
 
-			TaskManager::get()
+			ThreadTaskManager::get()
 				->addTask( task );
 			
 			return task;
 		}
 
-		static void s_cancelTask( Task * _task )
+		static void s_cancelTask( ThreadTask * _task )
 		{
-			TaskManager::get()
+			ThreadTaskManager::get()
 				->cancelTask( _task );
 		}
 
-		static void s_joinTask( Task * _task )
+		static void s_joinTask( ThreadTask * _task )
 		{
-			TaskManager::get()
+			ThreadTaskManager::get()
 				->joinTask( _task );
 		}
 
@@ -2993,7 +2996,7 @@ namespace Menge
 			//.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
 			;
 
-		pybind::interface_<Task>("Task")
+		pybind::interface_<ThreadTask>("Task")
 			;
 		
 		pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)

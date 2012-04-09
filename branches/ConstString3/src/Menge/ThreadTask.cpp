@@ -1,24 +1,24 @@
-#	include "Task.h"
+#	include "ThreadTask.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Task::Task()
+	ThreadTask::ThreadTask()
 		: m_complete(false)
 		, m_interrupt(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Task::~Task()
+	ThreadTask::~ThreadTask()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::destroy()
+	void ThreadTask::destroy()
 	{
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Task::main()
+	bool ThreadTask::main()
 	{
 		if( m_interrupt == true )
 		{
@@ -36,17 +36,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Task::isComplete() const
+	bool ThreadTask::isComplete() const
 	{
 		return m_complete;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Task::isInterrupt() const
+	bool ThreadTask::isInterrupt() const
 	{
 		return m_interrupt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Task::onMain()
+	bool ThreadTask::onMain()
 	{
 		bool state = this->_onMain();
         if( state == false )
@@ -57,12 +57,12 @@ namespace Menge
 		return state;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Task::_onMain()
+	bool ThreadTask::_onMain()
 	{
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Task::onRun()
+	bool ThreadTask::onRun()
 	{
 		for( TVectorTaskListener::iterator
 			it = m_listeners.begin(),
@@ -70,7 +70,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TaskListener * listener = *it;
+			ThreadTaskListener * listener = *it;
 
 			listener->onTaskRun( this );
 		}
@@ -79,12 +79,12 @@ namespace Menge
         return state;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Task::_onRun()
+	bool ThreadTask::_onRun()
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::onComplete()
+	void ThreadTask::onComplete()
 	{
 		for( TVectorTaskListener::iterator
 			it = m_listeners.begin(),
@@ -92,7 +92,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TaskListener * listener = *it;
+			ThreadTaskListener * listener = *it;
 
 			listener->onTaskComplete( this );
 		}
@@ -100,49 +100,49 @@ namespace Menge
 		this->_onComplete();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::_onComplete()
+	void ThreadTask::_onComplete()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::cancel()
+	void ThreadTask::cancel()
 	{
 		m_interrupt = true;
 		this->onCancel();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::onCancel()
+	void ThreadTask::onCancel()
 	{
 		this->_onCancel();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::_onCancel()
+	void ThreadTask::_onCancel()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::update()
+	void ThreadTask::update()
 	{
 		this->onUpdate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::onUpdate()
+	void ThreadTask::onUpdate()
 	{
 		this->_onUpdate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::_onUpdate()
+	void ThreadTask::_onUpdate()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::onInterrupt()
+	void ThreadTask::onInterrupt()
 	{
 		this->_onInterrupt();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::_onInterrupt()
+	void ThreadTask::_onInterrupt()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Task::addListener( TaskListener * _listener )
+	void ThreadTask::addListener( ThreadTaskListener * _listener )
 	{
 		m_listeners.push_back( _listener );
 	}

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Task.h"
+#	include "ThreadTask.h"
 
 #	include "Core/String.h"
 
@@ -13,12 +13,12 @@ namespace Menge
 	class ImageDecoderInterface;
 	class FileInputStreamInterface;
 
-	class TaskLoadImageResources
-		: public Task
+	class ThreadTaskLoadImageResources
+		: public ThreadTask
 	{
 	public:
-		TaskLoadImageResources( const ConstString & _category, TVectorConstString _resources, PyObject* _progressCallback );
-		~TaskLoadImageResources();
+		ThreadTaskLoadImageResources( const ConstString & _category, TVectorConstString _resources, PyObject* _progressCallback );
+		~ThreadTaskLoadImageResources();
 
 	protected:
 		bool _onRun() override;

@@ -1,5 +1,5 @@
 
-#	include "TaskLoadImageResources.h"
+#	include "ThreadTaskLoadImageResources.h"
 #	include "ResourceManager.h"
 #	include "ScriptEngine.h"
 #	include "ResourceImageDefault.h"
@@ -17,7 +17,7 @@
 namespace Menge
 {	
 	//////////////////////////////////////////////////////////////////////////
-	TaskLoadImageResources::TaskLoadImageResources( const ConstString & _category, TVectorConstString _resourceNames, PyObject* _progressCallback )
+	ThreadTaskLoadImageResources::ThreadTaskLoadImageResources( const ConstString & _category, TVectorConstString _resourceNames, PyObject* _progressCallback )
 		: m_category(_category)
 		, m_resourceNames(_resourceNames)
 		, m_callbackComplete(_progressCallback)
@@ -25,12 +25,12 @@ namespace Menge
 		pybind::incref( m_callbackComplete );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TaskLoadImageResources::~TaskLoadImageResources()
+	ThreadTaskLoadImageResources::~ThreadTaskLoadImageResources()
 	{
 		pybind::decref( m_callbackComplete );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TaskLoadImageResources::_onRun()
+	bool ThreadTaskLoadImageResources::_onRun()
 	{
 		
 		for( TVectorConstString::const_iterator 
@@ -86,7 +86,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TaskLoadImageResources::_onMain()
+	bool ThreadTaskLoadImageResources::_onMain()
 	{
 		for( TTextureJobVector::iterator 
 			it = m_textureJobs.begin(), 
@@ -160,7 +160,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadImageResources::_onComplete()
+	void ThreadTaskLoadImageResources::_onComplete()
 	{		
 		for( TVectorResourceImages::iterator 
 			it = m_resources.begin(), 
@@ -180,7 +180,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadImageResources::_onCancel()
+	void ThreadTaskLoadImageResources::_onCancel()
 	{
 		for( TVectorResourceImages::iterator 
 			it = m_resources.begin(), 
@@ -196,7 +196,7 @@ namespace Menge
 		pybind::call( m_callbackComplete, "(O)", pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadImageResources::_onInterrupt()
+	void ThreadTaskLoadImageResources::_onInterrupt()
 	{
 		for( TTextureJobVector::iterator 
 			it = m_textureJobs.begin(), 

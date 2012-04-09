@@ -683,23 +683,23 @@ Manager\\\\Event
 
 
 ADD_FILTER(
-Manager\\\\Task
-	TaskManager.h
-	TaskManager.cpp
-	Task.h
-	Task.cpp
-	TaskLoadResourceImage.h
-	TaskLoadResourceImage.cpp
-    TaskLoadImageResources.h
-    TaskLoadImageResources.cpp
-	TaskDeferredLoading.h
-	TaskDeferredLoading.cpp
-	TaskSoundBufferUpdate.h
-	TaskSoundBufferUpdate.cpp
+Manager\\\\ThreadTask
+	ThreadTaskManager.h
+	ThreadTaskManager.cpp
+	ThreadTask.h
+	ThreadTask.cpp
+	ThreadTaskLoadResourceImage.h
+	ThreadTaskLoadResourceImage.cpp
+    ThreadTaskLoadImageResources.h
+    ThreadTaskLoadImageResources.cpp
+	ThreadTaskDeferredLoading.h
+	ThreadTaskDeferredLoading.cpp
+	ThreadTaskSoundBufferUpdate.h
+	ThreadTaskSoundBufferUpdate.cpp
 	#TaskLoadPak.h
 	#TaskLoadPak.cpp
-	TaskPacket.h
-	TaskPacket.cpp
+	ThreadTaskPacket.h
+	ThreadTaskPacket.cpp
 )
 
 ADD_FILTER(

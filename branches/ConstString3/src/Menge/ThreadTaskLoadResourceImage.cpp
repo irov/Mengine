@@ -1,5 +1,5 @@
 
-#	include "TaskLoadResourceImage.h"
+#	include "ThreadTaskLoadResourceImage.h"
 #	include "ResourceManager.h"
 #	include "ScriptEngine.h"
 #	include "ResourceImageDefault.h"
@@ -17,7 +17,7 @@
 namespace Menge
 {	
 	//////////////////////////////////////////////////////////////////////////
-	TaskLoadResourceImage::TaskLoadResourceImage( const ConstString & _category, const ConstString& _resourceFile, PyObject* _progressCallback )
+	ThreadTaskLoadResourceImage::ThreadTaskLoadResourceImage( const ConstString & _category, const ConstString& _resourceFile, PyObject* _progressCallback )
 		: m_category(_category)
 		, m_resourceName(_resourceFile)
 		, m_callbackComplete(_progressCallback)
@@ -25,12 +25,12 @@ namespace Menge
 		pybind::incref( m_callbackComplete );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TaskLoadResourceImage::~TaskLoadResourceImage()
+	ThreadTaskLoadResourceImage::~ThreadTaskLoadResourceImage()
 	{
 		pybind::decref( m_callbackComplete );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TaskLoadResourceImage::_onRun()
+	bool ThreadTaskLoadResourceImage::_onRun()
 	{
 		m_resource = dynamic_cast<ResourceImage*>( ResourceManager::get()->getResourceReference(m_resourceName) );
 
@@ -67,7 +67,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TaskLoadResourceImage::_onMain()
+	bool ThreadTaskLoadResourceImage::_onMain()
 	{
 		for( TVectorTextureJob::iterator 
 			it = m_textureJobs.begin(), 
@@ -134,7 +134,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadResourceImage::_onComplete()
+	void ThreadTaskLoadResourceImage::_onComplete()
 	{		
 		ResourceManager::get()->unlockResource( m_resourceName );
 		//size_t count2 = m_resource->countReference(); 
@@ -161,12 +161,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadResourceImage::_onInterrupt()
+	void ThreadTaskLoadResourceImage::_onInterrupt()
 	{
 		pybind::call( m_callbackComplete, "(O)", pybind::get_bool(false) );
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	void TaskLoadResourceImage::_onCancel()
+	void ThreadTaskLoadResourceImage::_onCancel()
 	{
 		ResourceManager::get()->unlockResource( m_resourceName );
 	}

@@ -30,8 +30,8 @@
 #	include <iomanip>
 #	include "TextManager.h"
 
-#	include "TaskLoadPak.h"
-#	include "TaskManager.h"
+#	include "ThreadTaskLoadPak.h"
+#	include "ThreadTaskManager.h"
 #	include "ResourceImage.h"
 #	include "ResourceManager.h"
 #	include "ResourceCursorICO.h"

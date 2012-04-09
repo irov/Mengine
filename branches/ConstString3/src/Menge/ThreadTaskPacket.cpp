@@ -1,33 +1,33 @@
-#	include "TaskPacket.h"
+#	include "ThreadTaskPacket.h"
 
 #	include <algorithm>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TaskPacket::TaskPacket( TaskPacketListener * _listener )
+	ThreadTaskPacket::ThreadTaskPacket( ThreadTaskPacketListener * _listener )
 		: m_listener(_listener)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskPacket::addTask( Task * _task )
+	void ThreadTaskPacket::addTask( ThreadTask * _task )
 	{
 		_task->addListener( this );
 
 		m_tasks.push_back( _task );	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorTask & TaskPacket::getTasks() const
+	const TVectorTask & ThreadTaskPacket::getTasks() const
 	{
 		return m_tasks;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskPacket::onTaskRun( Task * _task )
+	void ThreadTaskPacket::onTaskRun( ThreadTask * _task )
 	{
 		//ToDo
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskPacket::onTaskComplete( Task * _task )
+	void ThreadTaskPacket::onTaskComplete( ThreadTask * _task )
 	{
 		TVectorTask::iterator it_found = std::find( m_tasks.begin(), m_tasks.end(), _task );
 		m_tasks.erase( it_found );

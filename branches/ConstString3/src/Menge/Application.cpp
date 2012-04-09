@@ -33,7 +33,7 @@
 #	include "TextField.h"
 
 #	include "ThreadEngine.h"
-#	include "TaskManager.h"
+#	include "ThreadTaskManager.h"
 
 #	include "CodecEngine.h"
 
@@ -511,10 +511,10 @@ namespace Menge
 
 		ThreadSystemInterface * threadSystem = threadEngine->getInterface();
 			
-		m_taskManager = new TaskManager( threadSystem, m_countThreads );
+		m_taskManager = new ThreadTaskManager( threadSystem, m_countThreads );
 		m_taskManager->initialize();
 		
-		TaskManager::keep(m_taskManager);
+		ThreadTaskManager::keep(m_taskManager);
 
 		return true;
 	}

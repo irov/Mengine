@@ -133,7 +133,9 @@ namespace Menge
 			return 0.f;
 		}
 
-		return m_resourceMovie->getWorkAreaDuration();
+		float duration = m_resourceMovie->getWorkAreaDuration();
+
+		return duration; 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play()

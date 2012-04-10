@@ -1192,8 +1192,7 @@ namespace Menge
 					{
 						Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-						animatable->setSpeedFactor(m_speedFactor);
-						animatable->setTiming(m_timing - layerIn);
+						animatable->setSpeedFactor( m_speedFactor );
 						animatable->play();
 					}
 				}

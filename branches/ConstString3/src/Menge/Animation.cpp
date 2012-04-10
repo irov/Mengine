@@ -68,12 +68,13 @@ namespace	Menge
 
 		size_t frameSize = m_resourceAnimation->getSequenceCount();
 
-		m_frameTiming += _timing * m_speedFactor;
+		float speedFactor = this->getSpeedFactor();
+		m_frameTiming += _timing * speedFactor;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 		
-		float speedFactor = this->getSpeedFactor();
-		delay *= speedFactor;
+//		float speedFactor = this->getSpeedFactor();
+//		delay *= speedFactor;
 
 		while( m_frameTiming >= delay )
 		{
@@ -108,8 +109,8 @@ namespace	Menge
 
 			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 
-			float speedFactor = this->getSpeedFactor();
-			delay *= speedFactor;
+//			float speedFactor = this->getSpeedFactor();
+//			delay *= speedFactor;
 		}
 
 		this->updateCurrentImageResource_();
@@ -309,16 +310,16 @@ namespace	Menge
 
 		for( ; frame != count; ++frame )
 		{
-			float delay = m_resourceAnimation->getSequenceDelay( frame );
-
-			_timing -= delay;
-
 			if( _timing <= 0.f )
 			{
 				_delthaTiming = -_timing;
 
 				break;
 			}
+
+			float delay = m_resourceAnimation->getSequenceDelay( frame );
+
+			_timing -= delay;
 		}
 		
 		return frame;

@@ -30,6 +30,8 @@
 #	include <sstream>
 #	include <iomanip>
 
+#	include <mhook.h>
+
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif
@@ -531,10 +533,24 @@ namespace Menge
 				, logFilename.c_str()
 				);
 		}
-	}
+	}	
+	//	BOOL
+	//	WINAPI
+	//	TerminateProcess1(
+	//	__in HANDLE hProcess,
+	//	__in UINT uExitCode
+	//	)
+	//{
+	//	printf("!!!!!!!!!!!!!!!!!");
+
+	//	return FALSE;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
 	{
+		//Mhook_SetHook( (PVOID*)&TerminateProcess, &TerminateProcess1 );
+
+
 		while( m_running )
 		{
 			bool rendered = false;
@@ -894,6 +910,10 @@ namespace Menge
 
 		switch( uMsg )
 		{
+		//case WM_QUERYENDSESSION:
+		//	{
+		//		printf("WM_QUERYENDSESSION");
+		//	}break;
 		case WM_ACTIVATE:
 			{
 				bool active = (LOWORD(wParam) != WA_INACTIVE) && (HIWORD(wParam) == 0);

@@ -6,7 +6,11 @@
 #	include <boost/geometry/geometry.hpp> 
 #	include <boost/geometry/core/tag.hpp> 
 #	include <boost/geometry/geometries/polygon.hpp>
+#	include <boost/geometry/geometries/box.hpp>
+
 #	include <boost/geometry/strategies/agnostic/point_in_poly_winding.hpp>
+
+#	include "Pool.h"
 
 namespace boost 
 {
@@ -58,7 +62,33 @@ namespace boost
 namespace Menge
 {
 	typedef std::vector<mt::vec2f> TVectorPoints;
+	
+	template<typename T>
+	struct my_allocator : public TemplatePoolAllocator<T, 512, 4096>
+	{
+	public:
+		template <typename U>
+		struct rebind
+		{ //
+			typedef my_allocator<U> other;
+		};
+
+		my_allocator()
+		{
+		}
+				
+		template <typename U>
+		my_allocator(const my_allocator<U> &)
+		{ 
+		}
+	};
+
+
+	//typedef boost::geometry::model::polygon<mt::vec2f, true, true, std::vector, std::vector, my_allocator, my_allocator> Polygon;
 	typedef boost::geometry::model::polygon<mt::vec2f> Polygon;
+	typedef boost::geometry::model::box<mt::vec2f> Box;
+	
+
 
 	bool triangulate_polygon( const Polygon & _polygon, TVectorPoints & _result );
 

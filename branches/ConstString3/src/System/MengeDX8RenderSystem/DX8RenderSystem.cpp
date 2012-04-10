@@ -1490,7 +1490,7 @@ namespace Menge
 			//}
 			//else
 			{
-				hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 1.0f, 0 );
+				hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 );
 				//DWORD color = D3DCOLOR_ARGB(0, 0, 0, 0);
 				//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 0.0f, 0 );
 				

@@ -291,6 +291,19 @@ namespace	Menge
 	size_t Animation::getFrame_( float _timing, float & _delthaTiming ) const
 	{
 		size_t count = m_resourceAnimation->getSequenceCount();
+		float duration = m_resourceAnimation->getSequenceDuration();
+
+		if( _timing >= duration )
+		{
+			_timing -= floorf( _timing / duration ) * duration;
+
+			if( _timing == 0.f )
+			{
+				_delthaTiming = 0.f;
+
+				return 0;
+			}
+		}
 
 		size_t frame = 0;
 
@@ -300,16 +313,14 @@ namespace	Menge
 
 			_timing -= delay;
 
-			if( _timing <= 0 )
+			if( _timing <= 0.f )
 			{
 				_delthaTiming = -_timing;
 
 				break;
 			}
 		}
-
-		_timing = -_timing;
-
+		
 		return frame;
 	}
 	//////////////////////////////////////////////////////////////////////////

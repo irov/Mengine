@@ -15,6 +15,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceAnimation );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation::ResourceAnimation()
+		: m_duration(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,6 +49,8 @@ namespace Menge
 			return false;
 		}
 
+		m_duration = 0.f;
+
 		for( TVectorAnimationSequence::iterator
 			it = m_sequence.begin(),
 			it_end = m_sequence.end();
@@ -70,6 +73,8 @@ namespace Menge
 			}
 
 			sequence.resource = resource;
+
+			m_duration += sequence.delay;
 		}
 
 		return true;
@@ -130,4 +135,8 @@ namespace Menge
 		return m_sequence[_sequence].resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float ResourceAnimation::getSequenceDuration() const
+	{
+		return m_duration;
+	}
 }

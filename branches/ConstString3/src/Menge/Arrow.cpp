@@ -56,9 +56,12 @@ namespace	Menge
 		size_t num_points = boost::geometry::num_points(m_polygon);
 		if( num_points == 0 )
 		{
-			boost::geometry::append( m_polygon, mt::vec2f(0.f,0.f) );
-		}
+			Polygon polygon;
+			boost::geometry::append( polygon, mt::vec2f(0.f,0.f) );
 
+			this->setPolygon( polygon );			
+		}		
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -107,6 +110,8 @@ namespace	Menge
 	void Arrow::setPolygon( const Polygon & _polygon )
 	{
 		m_polygon = _polygon;
+
+		boost::geometry::envelope( m_polygon, m_bbox );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Polygon & Arrow::getPolygon() const

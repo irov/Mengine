@@ -32,10 +32,12 @@ namespace Menge
 
 	public:
 		size_t getSequenceCount() const;
-		float getSequenceDelay( size_t _sequence ) const;
+		float getSequenceDelay( size_t _sequence ) const;		
 		const ConstString& getSequenceResourceName( size_t _sequence ) const;
 		ResourceImage *  getSequenceResource( size_t _sequence ) const;
+
 		size_t getLastFrameIndex() const;
+		float getSequenceDuration() const;
 
 	public:
 		void setSequences( const TVectorAnimationSequence & _sequence );
@@ -47,8 +49,11 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
+
 	private:		
 		TVectorAnimationSequence m_sequence;
+
+		float m_duration;
 	};
 }
 

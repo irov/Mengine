@@ -79,7 +79,10 @@ namespace Menge
 
 		Resolution m_contentResolution;
 		Resolution m_currentResolution;
+		
 		Polygon m_polygon;
+		Box m_bbox;
+
 		bool m_hided;
 	};
 }

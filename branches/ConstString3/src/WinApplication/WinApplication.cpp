@@ -30,6 +30,8 @@
 #	include <sstream>
 #	include <iomanip>
 
+//#	include <mhook.h>
+
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif

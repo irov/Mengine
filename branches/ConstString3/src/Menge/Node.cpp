@@ -86,7 +86,7 @@ namespace Menge
 
 		if( this->isCompile() == false )
 		{
-			if( compile() == false )
+			if( this->compile() == false )
 			{
 				//MENGE_LOG_INFO( "Error: activation of Node '%s' is failed, because compilation is failed\n"
 				//	, m_name.c_str() 
@@ -96,7 +96,7 @@ namespace Menge
 			}
 		}
 
-		if( m_active )
+		if( m_active == true )
 		{
 			return true;
 		}

@@ -8,6 +8,8 @@
 #	include "LogEngine.h"
 #	include "Core/String.h"
 
+#	include "Application.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -81,11 +83,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceGlyph::Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width )
 	{
-		const char* glyph = _glyph.c_str();
-		uint32 uiGlyph = *((unsigned int*)(glyph));
-		uint32 clearBits[4] = { 0x000000FF, 0x0000FFFF, 0x00FFFFFF, 0xFFFFFFFF };
-		size_t len = strlen( glyph );
-		uiGlyph &= clearBits[len-1];
+		PlatformInterface * platform = Application::get()
+			->getPlatform();
+
+		WString unicode = platform->utf8ToUnicode( _glyph );
+
+		unsigned int glyphId = (unsigned int)unicode[0];
 
 		int a, b, c, d, ox = 0, oy = 0;
 		int err = std::sscanf( _rect.c_str(), "%d %d %d %d", &a, &b, &c, &d );
@@ -119,22 +122,15 @@ namespace Menge
 
 		float ratio = _width / m_initSize;
 
-		TMapGlyph::iterator it = m_glyphs.find( uiGlyph );
+		Glyph gl;
 
-		if( it == m_glyphs.end() )
-		{
-			Glyph gl;
+		gl.uv = uv;
+		gl.offset = offset;
+		gl.ratio = ratio;
+		gl.size = size;
 
-			it = m_glyphs.insert( 
-				std::make_pair( uiGlyph, gl ) 
-				).first;
-		}
-
-		it->second.uv = uv;
-		it->second.offset = offset;
-		it->second.ratio = ratio;
-		it->second.size = size;
-
-		return it->second;
+		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( glyphId, gl ) ).first;
+		
+		return it_insert->second;
 	}
 }

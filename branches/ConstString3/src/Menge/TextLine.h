@@ -13,7 +13,7 @@ namespace Menge
 	
 	struct CharData
 	{
-		uint32 code;
+		unsigned int code;
 		mt::vec2f renderVertex[4];
 		mt::vec4f uv;
 		mt::vec2f offset;

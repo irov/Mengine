@@ -114,7 +114,31 @@ namespace Menge
 
 		m_timing = _timing;
 
-		this->update( 0.f );
+//		this->update( 0.f );
+
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			Node * node = it_found->second;
+
+
+			if( layer.animatable == true )
+			{
+				Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+				animatable->setTiming( m_timing );
+
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Movie::_getTiming() const
@@ -270,7 +294,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setFirstFrame()
+	void Movie::_setFirstFrame()
 	{
 		if( this->isActivate() == false )
 		{
@@ -292,6 +316,14 @@ namespace Menge
 			const MovieLayer2D & layer = *it;
 
 			Node * node = m_nodies[layer.index];
+
+			if( layer.animatable == true )
+			{
+				Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+				animatable->setFirstFrame();
+
+			}
 
 			MovieFrame2D frame;
 			if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
@@ -356,7 +388,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setLastFrame()
+	void Movie::_setLastFrame()
 	{
 		if( this->isActivate() == false )
 		{
@@ -380,6 +412,14 @@ namespace Menge
 			const MovieLayer2D & layer = *it;
 
 			Node * node = m_nodies[layer.index];
+
+			if( layer.animatable == true )
+			{
+				Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+				animatable->setLastFrame();
+
+			}
 
 			MovieFrame2D frame;
 			if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )

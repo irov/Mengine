@@ -419,6 +419,21 @@ namespace	Menge
 
 		this->updateCurrentImageResource_();
 	}
+
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setFirstFrame()
+	{
+		this->setCurrentFrame(0);
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setLastFrame()
+	{
+		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+		this->setCurrentFrame(sequenceCount-1);
+
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setTiming( float _timing )
 	{

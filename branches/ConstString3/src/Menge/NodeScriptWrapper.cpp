@@ -2980,6 +2980,8 @@ namespace Menge
 			.def( "getPlayId", &Animatable::getPlayId )
 			.def( "setSpeedFactor", &Animatable::setSpeedFactor )
 			.def( "getSpeedFactor", &Animatable::getSpeedFactor )
+			.def( "setFirstFrame", &Animatable::setFirstFrame )
+			.def( "setLastFrame", &Animatable::setLastFrame )
 			.def( "setTiming", &Animatable::setTiming )
 			.def( "getTiming", &Animatable::getTiming )
 			.def( "setLoop", &Animatable::setLoop )
@@ -3388,8 +3390,6 @@ namespace Menge
 				//	;
 
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
-					.def( "setFirstFrame", &Movie::setFirstFrame )
-					.def( "setLastFrame", &Movie::setLastFrame )
 					.def( "setReverse", &Movie::setReverse )
 					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )

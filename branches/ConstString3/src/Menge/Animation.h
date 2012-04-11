@@ -30,6 +30,9 @@ namespace Menge
 		void _setTiming( float _timming ) override;
 		float _getTiming() const override;
 
+		void _setFirstFrame() override;
+		void _setLastFrame() override;
+
 	protected:
 		bool _play() override;
 		bool _restart( size_t _enumerator ) override;

@@ -72,7 +72,7 @@ namespace Menge
 
 		if( m_container == 0 )
 		{
-			MENGE_LOG_ERROR( "Image can't create container file '%s'"
+			MENGE_LOG_ERROR( "Image can't create container file '%S'"
 				, m_filename.c_str() 
 				);
 

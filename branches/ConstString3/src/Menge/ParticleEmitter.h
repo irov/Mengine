@@ -130,7 +130,9 @@ namespace Menge
 
 		typedef std::vector<Batch> TVectorBatchs;
 		TVectorBatchs m_batchs;
+
 		mt::vec2f m_positionOffset;
+		mt::vec2f m_positionEffect;
 
 		Viewport* m_checkViewport;
 	};

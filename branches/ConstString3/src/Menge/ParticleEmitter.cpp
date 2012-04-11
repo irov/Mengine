@@ -629,10 +629,9 @@ namespace	Menge
 			{
 				m_cacheEmitterRelative = true;
 				
-				mt::vec2f pos;
-				m_interface->getPosition( pos );
+				m_interface->getPosition( m_positionEffect );
 				
-				mt::vec2f relativeSize = getRelativeSize();
+				mt::vec2f relativeSize = this->getRelativeSize();
 				if( relativeSize.x == 0 || relativeSize.y == 0 )
 				{	
 					Scene * scene = this->getScene();
@@ -640,9 +639,12 @@ namespace	Menge
 					relativeSize = mainLayer->getSize();
 				}
 				
+				const mt::vec2f& scene_pos = this->getWorldPosition();
+
+
 				mt::vec2f new_pos;
-				new_pos.x = pos.x + relativeSize.x * 0.5f;
-				new_pos.y = pos.y + relativeSize.y * 0.5f;
+				new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;
+				new_pos.y = m_positionEffect.y + scene_pos.y + relativeSize.y * 0.5f;
 
 				m_interface->setPosition( new_pos );
 			}
@@ -714,6 +716,24 @@ namespace	Menge
 			const mt::vec2f& dir = this->getWorldDirection();
 			float angle = mt::signed_angle( dir );
 			m_interface->setAngle( angle );
+		}
+		else
+		{
+			mt::vec2f relativeSize = this->getRelativeSize();
+			if( relativeSize.x == 0 || relativeSize.y == 0 )
+			{	
+				Scene * scene = this->getScene();
+				Layer * mainLayer = scene->getMainLayer();
+				relativeSize = mainLayer->getSize();
+			}
+
+			const mt::vec2f& scene_pos = this->getWorldPosition();
+			
+			mt::vec2f new_pos;
+			new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;
+			new_pos.y = m_positionEffect.y + scene_pos.y + relativeSize.y * 0.5f;
+
+			m_interface->setPosition( new_pos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

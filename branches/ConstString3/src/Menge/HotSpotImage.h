@@ -29,7 +29,7 @@ namespace Menge
 		float getAlphaTest() const;
 
 	public:
-		ResourceHotspotImage * getResourseHotspotImage();
+		ResourceHotspotImage * getResourseHotspotImage() const;
 
 	public:
 		void setImageResource( const ConstString& _resourceName );

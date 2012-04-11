@@ -115,18 +115,21 @@ namespace Menge
 
 		const Polygon::ring_type & ring = _screenPoly.outer();
 
-		mt::vec2f point;
-		mt::mul_v2_m3( point, ring[0], _screenTransform );
+		if( ring.size() == 1 )
+		{
+			mt::vec2f point;
+			mt::mul_v2_m3( point, ring[0], _screenTransform );
 
-		mt::mat3f invWM;
-		mt::inv_m3( invWM, _transform );
-		mt::vec2f pointIn;
-		mt::mul_v2_m3( pointIn, point, invWM );
-	
-		return m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
+			mt::mat3f invWM;
+			mt::inv_m3( invWM, _transform );
+			mt::vec2f pointIn;
+			mt::mul_v2_m3( pointIn, point, invWM );
+
+			return m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceHotspotImage * HotSpotImage::getResourseHotspotImage()
+	ResourceHotspotImage * HotSpotImage::getResourseHotspotImage() const
 	{
 		return m_resourceHotspotImage;
 	}

@@ -31,37 +31,64 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			delete [] it->second.buffer;
+			AlphaBuffer & buffer = it->second;
+
+			this->destroyAlphaBuffer_( buffer );
 		}
 
 		m_bufferMap.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char* AlphaChannelManager::createAlphaBuffer( const ConstString& _name, size_t _width, size_t _height )
+	static size_t clp2( size_t x )
 	{
-		TBufferMap::iterator it_find = m_bufferMap.find( _name );
-		
-		if( it_find != m_bufferMap.end() )
-		{
-			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::createAlphaBuffer) buffer with name '%s' already exists"
-				, _name.c_str() 
-				);
+		x = x - 1;
+		x = x | (x >> 1);
+		x = x | (x >> 2);
+		x = x | (x >> 4);
+		x = x | (x >> 8);
+		x = x | (x >> 16);
 
-			return NULL;
-		}
-
-		AlphaBuffer ab;
-		ab.buffer = new unsigned char[_width*_height];
-		ab.width = _width;
-		ab.height = _height;
-		ab.ref_count = 1;
-
-		m_bufferMap.insert( std::make_pair( _name, ab ) );
-
-		return ab.buffer;
+		return x + 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char* AlphaChannelManager::getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, size_t & _width, size_t & _height )
+	AlphaChannelManager::AlphaBuffer & AlphaChannelManager::createAlphaBuffer_( const ConstString& _name, size_t _width, size_t _height )
+	{
+		size_t mipmap_width = clp2( _width );
+		size_t mipmap_height = clp2( _height );
+
+		AlphaBuffer ab;
+		ab.width = mipmap_width;
+		ab.height = mipmap_height;
+		ab.ref_count = 1;
+		
+		while( mipmap_width || mipmap_height )
+		{
+			unsigned char * buff = new unsigned char[mipmap_width * mipmap_height];
+						
+			ab.mipmap.push_back( buff );
+
+			mipmap_width >>= 1;
+			mipmap_height >>= 1;
+		}
+
+		TBufferMap::iterator it_insert = m_bufferMap.insert( std::make_pair( _name, ab ) ).first;
+
+		return it_insert->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AlphaChannelManager::destroyAlphaBuffer_( AlphaChannelManager::AlphaBuffer & _buffer ) const
+	{
+		for( AlphaBuffer::TMipMapBuffers::iterator
+			it = _buffer.mipmap.begin(),
+			it_end = _buffer.mipmap.end();
+		it != it_end;
+		++it )
+		{
+			delete [] *it;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned char* AlphaChannelManager::getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, size_t _level, size_t & _width, size_t & _height )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		
@@ -80,8 +107,13 @@ namespace Menge
 
 		_width = ab.width;
 		_height = ab.height;
+
+		if( _level >= ab.mipmap.size() )
+		{
+			return 0;
+		}
 		
-		return ab.buffer;
+		return &ab.mipmap[_level][0];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage )
@@ -116,28 +148,15 @@ namespace Menge
 			return false;
 		}
 
-		const ImageCodecDataInfo* dataInfo = decoder->getCodecDataInfo();
-
-		unsigned char * alphaMap = AlphaChannelManager::get()
-			->createAlphaBuffer( _name, width, height );
-
-		if( alphaMap == NULL )
-		{
-			MENGE_LOG_ERROR( "Error: (ResourceHotspotImage::_compile) failed to create alpha buffer '%s'"
-				, alphaBufferName.c_str()
-				);
-
-			decoder->destroy();
-
-			stream->close();
-
-			return false;
-		}
+		AlphaBuffer & alphaBuffer = AlphaChannelManager::get()
+			->createAlphaBuffer_( _name, width, height );
 
 		ImageCodecOptions options;
 		options.flags = DF_READ_ALPHA_ONLY;
 
 		decoder->setOptions( &options );
+
+		unsigned char * alphaMap = &alphaBuffer.mipmap[0][0];
 
 		decoder->decode( alphaMap, width * height );
 
@@ -164,7 +183,7 @@ namespace Menge
 
 		if( it_find->second.ref_count == 0 )
 		{
-			delete [] it_find->second.buffer;
+			this->destroyAlphaBuffer_( it_find->second );
 
 			m_bufferMap.erase( it_find );
 		}

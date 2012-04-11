@@ -82,7 +82,7 @@ namespace Menge
 		size_t alphaWidth = 0;
 		size_t alphaHeight = 0;
 		m_alphaMap = AlphaChannelManager::get()
-			->getAlphaBuffer( m_resourceImageName, m_resourceImage, alphaWidth, alphaHeight );
+			->getAlphaBuffer( m_resourceImageName, m_resourceImage, 0, alphaWidth, alphaHeight );
 		
 		if( m_alphaMap == NULL )
 		{
@@ -94,6 +94,9 @@ namespace Menge
 
 		size_t offsetX = (size_t)uv.x * m_resourceImageWidth;
 		size_t offsetY = (size_t)uv.y * m_resourceImageHeight;
+
+		m_width = (size_t)uv.z * m_resourceImageWidth - offsetX;
+		m_height = (size_t)uv.w * m_resourceImageHeight - offsetY;
 
 		m_alphaMap += offsetY * m_resourceImageWidth + offsetX;
 
@@ -146,6 +149,20 @@ namespace Menge
 		{
 			return true;
 		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceHotspotImage::testPolygon( const Polygon & _polygon, float _minAlpha ) const
+	{
+		for( size_t i = 0; i != m_width; ++i )
+		{
+			for( size_t j = 0; j != m_height; ++j )
+			{
+
+			}
+		}
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -592,7 +592,7 @@ namespace	Menge
 		size_t alphaHeight = 0;
 
 		unsigned char * alphaMap = AlphaChannelManager::get()
-			->getAlphaBuffer( m_emitterImageName, resourceImage, alphaWidth, alphaHeight );
+			->getAlphaBuffer( m_emitterImageName, resourceImage, 0, alphaWidth, alphaHeight );
 
 		if (m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 ) == false)
 		{

@@ -111,12 +111,17 @@ namespace	Menge
 	{
 		m_polygon = _polygon;
 
-		boost::geometry::envelope( m_polygon, m_bbox );
+		boost::geometry::envelope( m_polygon, m_polygonBoundingBox );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Polygon & Arrow::getPolygon() const
 	{
 		return m_polygon;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Box & Arrow::getPolygonBoundingBox() const
+	{
+		return m_polygonBoundingBox;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onAppMouseLeave()

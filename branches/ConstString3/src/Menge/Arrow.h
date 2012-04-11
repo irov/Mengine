@@ -39,6 +39,8 @@ namespace Menge
 		void setPolygon( const Polygon & _polygon );
 		const Polygon & getPolygon() const;
 
+		const Box & getPolygonBoundingBox() const;
+
 		void setContentResolution( const Resolution & _resolution );
 		void setCurrentResolution( const Resolution & _resolution );
 
@@ -81,7 +83,7 @@ namespace Menge
 		Resolution m_currentResolution;
 		
 		Polygon m_polygon;
-		Box m_bbox;
+		Box m_polygonBoundingBox;
 
 		bool m_hided;
 	};

@@ -9,6 +9,8 @@
 #	pragma once
 
 #	include "ResourceReference.h"
+
+#	include "Core/Polygon.h"
 #	include "Math/vec2.h"
 
 namespace Menge
@@ -32,7 +34,10 @@ namespace Menge
 
 	public:
 		void setImageResource( const ConstString& _resourceName );
+
 		bool testPoint( const mt::vec2f& _point, float _minAlpha ) const;
+		bool testPolygon( const Polygon & _polygon, float _minAlpha ) const;
+
 		const mt::vec2f& getSize() const;
 
 	private:
@@ -42,7 +47,11 @@ namespace Menge
 		unsigned char* m_alphaMap;
 		size_t m_resourceImageWidth;
 		size_t m_resourceImageHeight;
+
 		mt::vec2f m_offset;
 		mt::vec2f m_size;
+
+		size_t m_width;
+		size_t m_height;
 	};
 }	// namespace Menge

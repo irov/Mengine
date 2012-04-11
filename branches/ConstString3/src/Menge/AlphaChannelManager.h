@@ -24,9 +24,8 @@ namespace Menge
 		AlphaChannelManager();
 		~AlphaChannelManager();
 	
-	public:
-		unsigned char* createAlphaBuffer( const ConstString& _name, size_t _width, size_t _height );
-		unsigned char* getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage,  size_t & _width, size_t & _height );	// increases ref counter
+	public:		
+		unsigned char* getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, size_t _level, size_t & _width, size_t & _height );	// increases ref counter
 		void releaseAlphaBuffer( const ConstString& _name );			// decrease ref counter
 
 	protected:
@@ -35,7 +34,9 @@ namespace Menge
 	protected:
 		struct AlphaBuffer
 		{
-			unsigned char* buffer;
+			typedef std::vector<unsigned char*> TMipMapBuffers;
+			TMipMapBuffers mipmap;
+
 			size_t width;
 			size_t height;
 
@@ -44,5 +45,9 @@ namespace Menge
 
 		typedef std::map<ConstString, AlphaBuffer> TBufferMap;
 		TBufferMap m_bufferMap;
+
+	private:
+		AlphaBuffer & createAlphaBuffer_( const ConstString& _name, size_t _width, size_t _height );
+		void destroyAlphaBuffer_( AlphaBuffer & _buffer ) const;
 	};
 }	// namespace Menge

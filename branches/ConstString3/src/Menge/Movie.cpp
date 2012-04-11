@@ -639,18 +639,18 @@ namespace Menge
 				Animation * layer_animation = NodeManager::get()
 					->createNodeT<Animation>( layer.name, Consts::get()->c_Animation, Consts::get()->c_Image );
 
-				ResourceAnimation * resourceAnimation = ResourceManager::get()
-					->getResourceT<ResourceAnimation>( layer.source );
+				//ResourceAnimation * resourceAnimation = ResourceManager::get()
+				//	->getResourceT<ResourceAnimation>( layer.source );
 
-				if( resourceAnimation == NULL )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' can't get resourceAnimation '%s'"
-						, m_name.c_str()
-						, layer.source.c_str()
-						);
+				//if( resourceAnimation == NULL )
+				//{
+				//	MENGE_LOG_ERROR("Movie: '%s' can't get resourceAnimation '%s'"
+				//		, m_name.c_str()
+				//		, layer.source.c_str()
+				//		);
 
-					return false;
-				}
+				//	return false;
+				//}
 
 				layer_animation->setAnimationResource( layer.source );
 

@@ -127,6 +127,8 @@ namespace Menge
 
 			return m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
 		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHotspotImage * HotSpotImage::getResourseHotspotImage() const

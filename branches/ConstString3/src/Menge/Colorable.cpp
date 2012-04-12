@@ -30,6 +30,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setPersonalColor( const ColourValue& _color )
 	{
+		if( m_colorPersonal == _color )
+		{
+			return;
+		}
+
 		m_colorPersonal = _color;
 
 		this->invalidateColor();
@@ -37,6 +42,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setPersonalAlpha( float _alpha )
 	{
+		if( fabsf(m_colorPersonal.getA() - _alpha) < 0.00001f )
+		{
+			return;
+		}
+
 		m_colorPersonal.setA( _alpha );
 
 		this->invalidateColor();
@@ -44,6 +54,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColor( const ColourValue& _color )
 	{
+		if( m_colorLocal == _color )
+		{
+			return;
+		}
+
 		m_colorLocal = _color;
 
 		this->invalidateColor();
@@ -51,6 +66,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalAlpha( float _alpha )
 	{
+		if( fabsf(m_colorLocal.getA() - _alpha) < 0.00001f )
+		{
+			return;
+		}
+
 		m_colorLocal.setA( _alpha );
 
 		this->invalidateColor();

@@ -90,7 +90,8 @@ namespace	mt
 
 	MATH_INLINE void mul_v2_m3(vec2f& _out, const vec2f& _v, const mat3f& _m)
 	{
-		mul_v2_m3_r( _out, _v, _m );
+		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
+		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;
 
 		_out.x += _m.v2.x;
 		_out.y += _m.v2.y;

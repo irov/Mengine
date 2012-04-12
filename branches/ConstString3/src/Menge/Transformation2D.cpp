@@ -34,19 +34,24 @@ namespace Menge
 	{
 		//Empty
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setLocalMatrix( const mt::mat3f & _matrix )
-	{
-		m_position.x = _matrix.v2.x;
-		m_position.y = _matrix.v2.y;
+	////////////////////////////////////////////////////////////////////////////
+	//void Transformation2D::setLocalMatrix( const mt::mat3f & _matrix )
+	//{
+	//	m_position.x = _matrix.v2.x;
+	//	m_position.y = _matrix.v2.y;
 
-		m_localMatrix = _matrix;
-		
-		invalidateWorldMatrix();
-	}
+	//	m_localMatrix = _matrix;
+	//	
+	//	invalidateWorldMatrix();
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setLocalPosition( const mt::vec2f & _position )
 	{
+		if( mt::cmp_v2_v2( m_position, _position ) == true )
+		{
+			return;
+		}
+
 		m_position = _position;
 
 		invalidateWorldMatrix();
@@ -54,6 +59,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setLocalDirection( const mt::vec2f & _direction )
 	{
+		if( mt::cmp_v2_v2( m_direction, _direction ) == true )
+		{
+			return;
+		}
+
 		m_direction = _direction;
 		m_angle = mt::signed_angle( _direction );
 
@@ -62,7 +72,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setAngle( float _angle )
 	{
-		m_angle = mt::angle_norm(_angle);
+		float norm_angle = mt::angle_norm(_angle);
+
+		if( fabsf(m_angle - norm_angle) < 0.00001f )
+		{
+			return;
+		}
+
+		m_angle = norm_angle;
 
 		mt::direction( m_direction, m_angle );
 
@@ -88,9 +105,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::translate( const mt::vec2f & _delta )
 	{
-		m_position += _delta;
-
-		invalidateWorldMatrix();
+		mt::vec2f new_pos = m_position + _delta;
+		
+		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Transformation2D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
@@ -106,9 +123,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::loader( BinParser * _parser )
 	{
+		mt::mat3f depricated_localMatrix;
+
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Value, &Transformation2D::setLocalMatrix );
+			BIN_CASE_ATTRIBUTE( Protocol::Transformation_Value, depricated_localMatrix ); //depricated
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Position, &Transformation2D::setLocalPosition );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Direction, &Transformation2D::setLocalDirection );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Rotate, &Transformation2D::setAngle );
@@ -147,6 +166,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setOrigin( const mt::vec2f& _origin )
 	{
+		if( mt::cmp_v2_v2( m_origin, _origin ) == true )
+		{
+			return;
+		}
+		
 		m_origin = _origin;
 
 		this->invalidateWorldMatrix();
@@ -154,6 +178,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setCoordinate( const mt::vec2f& _coordinate )
 	{
+		if( mt::cmp_v2_v2( m_coordinate, _coordinate ) == true )
+		{
+			return;
+		}
+
 		m_coordinate = _coordinate;
 
 		this->invalidateWorldMatrix();
@@ -161,6 +190,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setScale( const mt::vec2f& _scale )
 	{
+		if( mt::cmp_v2_v2( m_scale, _scale ) == true )
+		{
+			return;
+		}
+
 		m_scale = _scale;
 		
 		this->invalidateWorldMatrix();

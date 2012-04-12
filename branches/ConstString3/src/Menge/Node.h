@@ -167,7 +167,7 @@ namespace Menge
 
 	protected:
 		void _invalidateWorldMatrix() override;
-		void _invalidateBoundingBox() override;
+		//void _invalidateBoundingBox() override;
 		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
@@ -225,7 +225,9 @@ namespace Menge
 		bool m_freeze;
 
 	protected:
-		void updateBoundingBox() override;
+		void getBoundingBox( mt::box2f & _boundingBox );
+
+	protected:
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	protected:

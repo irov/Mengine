@@ -365,7 +365,7 @@ namespace	Menge
 
 		bool firstPoint = true;
 
-		Node::_updateBoundingBox( m_boundingBox );
+		Node::_updateBoundingBox( m_localBoundingBox );
 
 		ColourValue color;
 		this->calcTotalColor(color);

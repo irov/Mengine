@@ -214,6 +214,11 @@ namespace Menge
 		};
 
 		std::for_each( m_taskThread.begin(), m_taskThread.end(), FTaskThreadUpdate() );*/
+
+		if( m_taskThread.empty() == true )
+		{
+			return;
+		}
 		
 		TVectorThreadTask::iterator it_remove = 
 			std::partition( m_taskThread.begin(), m_taskThread.end(), FThreadTaskComplete());

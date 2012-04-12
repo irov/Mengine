@@ -56,7 +56,7 @@ namespace Menge
 		void _deactivate() override;
 		void _update( float _timing ) override;
 
-		void _invalidateBoundingBox() override;
+		//void _invalidateBoundingBox() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setEventListener( PyObject * _listener ) override;
 

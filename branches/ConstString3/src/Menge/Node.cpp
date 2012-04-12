@@ -744,7 +744,7 @@ namespace Menge
 			//{
 			//	m_cameraRevision = cameraRevision;
 
-			if( this->checkVisibility( viewPort ) == true )
+			//if( this->checkVisibility( viewPort ) == true )
 			{
 				if( this->isLocalHide() == false && this->isFullBlend() == false )
 				{
@@ -936,23 +936,27 @@ namespace Menge
 
 		return screen_pos;
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//void Node::_invalidateBoundingBox()
+	//{
+	//	invalidateVisibility();
+
+	//	if( m_parent )
+	//	{
+	//		m_parent->invalidateBoundingBox();
+	//	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_invalidateBoundingBox()
+	void Node::getBoundingBox( mt::box2f & _boundingBox )
 	{
-		invalidateVisibility();
+		const mt::box2f & _localBoundingBox = this->getLocalBoundingBox();
+		
+		_boundingBox = _localBoundingBox;
+		//BoundingBox::updateBoundingBox();
+		//m_invalidateBoundingBox = false;
 
-		if( m_parent )
-		{
-			m_parent->invalidateBoundingBox();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::updateBoundingBox()
-	{
-		m_invalidateBoundingBox = false;
-
-		_updateBoundingBox( m_boundingBox );
-
+		//this->_updateBoundingBox( m_boundingBox );
+			
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -966,9 +970,15 @@ namespace Menge
 				continue;
 			}
 
-			const mt::box2f & childrenBoundingBox = node->getBoundingBox();
+			if( node->isEnable() == false )
+			{
+				continue;
+			}
 
-			mt::merge_box( m_boundingBox, childrenBoundingBox );
+			mt::box2f childrenBoundingBox;
+			node->getBoundingBox( childrenBoundingBox );
+
+			mt::merge_box( _boundingBox, childrenBoundingBox );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1034,7 +1044,8 @@ namespace Menge
 	{
 		if( _debugMask & MENGE_DEBUG_NODES )
 		{
-			const mt::box2f& bbox = this->getBoundingBox();
+			mt::box2f bbox;
+			this->getBoundingBox( bbox );
 			
 			m_debugBox[0].pos[0] = bbox.minimum.x;
 			m_debugBox[0].pos[1] = bbox.minimum.y;

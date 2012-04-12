@@ -6,14 +6,14 @@ namespace Menge
 	BoundingBox::BoundingBox()
 		: m_invalidateBoundingBox(true)
 	{
-		mt::reset( m_boundingBox, 0.f, 0.f );
+		mt::reset( m_localBoundingBox, 0.f, 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BoundingBox::updateBoundingBox()
 	{
 		m_invalidateBoundingBox = false;
 
-		_updateBoundingBox( m_boundingBox );
+		this->_updateBoundingBox( m_localBoundingBox );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BoundingBox::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -25,7 +25,7 @@ namespace Menge
 	{
 		m_invalidateBoundingBox = true;
 
-		_invalidateBoundingBox();
+		//this->_invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BoundingBox::_invalidateBoundingBox()

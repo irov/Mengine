@@ -16,7 +16,7 @@ namespace Menge
 		inline const mt::mat3f & getRelationMatrix() const;
 		
 	public:
-		void setLocalMatrix( const mt::mat3f & _matrix );
+		//void setLocalMatrix( const mt::mat3f & _matrix );
 		inline const mt::mat3f & getLocalMatrix();
 
 		void setLocalPosition( const mt::vec2f & _position );

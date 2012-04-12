@@ -114,15 +114,15 @@ namespace	Menge
 
 		invalidateBoundingBox();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_invalidateBoundingBox()
-	{
-		Node::_invalidateBoundingBox();
-
-#	ifndef MENGE_MASTER_RELEASE
-		VectorVertices::invalidateVertices();
-#	endif
-	}
+//	//////////////////////////////////////////////////////////////////////////
+//	void HotSpot::_invalidateBoundingBox()
+//	{
+//		Node::_invalidateBoundingBox();
+//
+//#	ifndef MENGE_MASTER_RELEASE
+//		VectorVertices::invalidateVertices();
+//#	endif
+//	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( const mt::vec2f& _point, Arrow * _arrow )
 	{
@@ -237,7 +237,9 @@ namespace	Menge
 
 		//const mt::vec2f & direction = this->getWorldDirection();
 		//const mt::vec2f & position = this->getScreenPosition();
-		const mt::box2f& myBBox = this->getBoundingBox();
+
+		mt::box2f myBBox;
+		this->getBoundingBox( myBBox );
 
 		if( m_layer != 0 )
 		{
@@ -348,6 +350,8 @@ namespace	Menge
 		{
 			return;
 		}
+
+		VectorVertices::invalidateVertices();
 
 		VectorVertices::TVectorVertex2D & vertices = this->getVertices();
 

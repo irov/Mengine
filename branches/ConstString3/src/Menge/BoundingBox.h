@@ -10,7 +10,7 @@ namespace Menge
 		BoundingBox();
 
 	public:
-		inline const mt::box2f & getBoundingBox();
+		inline const mt::box2f & getLocalBoundingBox();
 		inline bool isInvalidateBoundingBox() const;
 	
 	protected:
@@ -18,11 +18,13 @@ namespace Menge
 		virtual void _invalidateBoundingBox();
 
 	protected:
-		virtual void updateBoundingBox();
+		void updateBoundingBox();
+
+	protected:
 		virtual void _updateBoundingBox( mt::box2f & _boundingBox );
 
 	protected:
-		mt::box2f m_boundingBox;
+		mt::box2f m_localBoundingBox;
 		bool m_invalidateBoundingBox;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -31,14 +33,13 @@ namespace Menge
 		return m_invalidateBoundingBox;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::box2f & BoundingBox::getBoundingBox()
+	inline const mt::box2f & BoundingBox::getLocalBoundingBox()
 	{
 		if( m_invalidateBoundingBox == true )
 		{
-			updateBoundingBox();
+			this->updateBoundingBox();
 		}
 
-		return m_boundingBox;
+		return m_localBoundingBox;
 	}
-
 }

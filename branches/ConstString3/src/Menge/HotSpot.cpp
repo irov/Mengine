@@ -12,6 +12,8 @@
 #	include "Scene.h"
 #	include "Layer2D.h"
 
+#	include "Arrow.h"
+
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
@@ -152,24 +154,6 @@ namespace	Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_METHOD_END( Protocol::Polygon, this, &HotSpot::loaderPolygon_, &HotSpot::endPolygon_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::loaderPolygon_( BinParser * _parser )
-	{
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Point_Value, &HotSpot::addPoint_ )
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::endPolygon_()
@@ -339,6 +323,40 @@ namespace	Menge
 
 			intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
 		}
+
+		return intersect;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::testArrow( const mt::mat3f& _transform, Arrow * _arrow, const mt::mat3f& _screenTransform )
+	{
+		float radius = _arrow->getRadius();
+
+		if( radius < 0.0001f )
+		{
+			const Polygon & screenPoly = _arrow->getPolygon();
+
+			bool result = this->testPolygon( _transform, screenPoly, _screenTransform );
+
+			return result;
+		}
+		
+		bool result = this->testRadius( _transform, radius, _screenTransform );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::testRadius( const mt::mat3f& _transform, float _radius, const mt::mat3f& _screenTransform )
+	{
+		m_polygonWM.clear();
+		polygon_wm( m_polygonWM, m_polygon, _transform );
+
+		mt::vec2f wmp;
+		mt::mul_v2_m3( wmp, mt::vec2f(0.f, 0.f), _screenTransform );
+
+		m_polygonScreen.clear();
+		boost::geometry::append(m_polygonScreen, wmp);
+
+		bool intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
 
 		return intersect;
 	}

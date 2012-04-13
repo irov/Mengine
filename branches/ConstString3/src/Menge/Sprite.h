@@ -65,9 +65,6 @@ namespace Menge
 		void setFlexible( bool _value );
 		bool getFlexible() const;
 
-	public:
-		void loader( BinParser * _parser ) override;
-
 	protected:
 		bool _compile() override;
 		void _release() override;

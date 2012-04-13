@@ -11,8 +11,6 @@
 
 #	include "Consts.h"
 
-#	include "BinParser.h"
-
 #	include "LogEngine.h"
 #	include "Core/String.h"
 
@@ -144,29 +142,6 @@ namespace Menge
 		{
 			m_resourceFont->decrementReference();
 			m_resourceFont = 0;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Font_Name, m_resourceFontName );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::TextKey_Value, &TextField::setTextByKey );
-			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
-
-			bool centerAlign;
-			bool rightAlign;
-			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, centerAlign ); //deprecated
-			BIN_CASE_ATTRIBUTE( Protocol::RightAlign_Value, rightAlign ); //deprecated
-
-			BIN_CASE_ATTRIBUTE( Protocol::OutlineColor_Value, m_outlineColor );
-			BIN_CASE_ATTRIBUTE( Protocol::Outline_Value, m_outline );
-			BIN_CASE_ATTRIBUTE( Protocol::MaxWidth_Value, m_maxWidth );
-			BIN_CASE_ATTRIBUTE( Protocol::CharOffset_Value, m_charOffset );
-			BIN_CASE_ATTRIBUTE( Protocol::LineOffset_Value, m_lineOffset );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

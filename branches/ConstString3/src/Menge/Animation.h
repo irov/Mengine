@@ -39,9 +39,6 @@ namespace Menge
 		void _stop( size_t _enumerator ) override;
 		void _end( size_t _enumerator ) override;
 
-	public:
-		void loader( BinParser * _parser ) override;
-
 	protected:
 		void _update( float _timing ) override;
 

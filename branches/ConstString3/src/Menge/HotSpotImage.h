@@ -1,11 +1,3 @@
-/*
- *	HotSpotImage.h
- *
- *	Created by _Berserk_ on 3.3.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "HotSpot.h"
@@ -23,6 +15,7 @@ namespace Menge
 
 	public:
 		bool testPolygon( const mt::mat3f& _transform, const Polygon& _screenPoly, const mt::mat3f& _screenTransform ) override;
+		bool testRadius( const mt::mat3f& _transform, float _radius, const mt::mat3f& _screenTransform ) override;
 
 	public:
 		void setAlphaTest( float _value );
@@ -34,12 +27,6 @@ namespace Menge
 	public:
 		void setImageResource( const ConstString& _resourceName );
 		const ConstString & getImageResource() const;
-
-		//void setFrame( size_t _frame );
-		//size_t getFrame() const;
-
-	public:
-		void loader( BinParser *_parser ) override;
 		
 	protected:
 		bool _compile() override;

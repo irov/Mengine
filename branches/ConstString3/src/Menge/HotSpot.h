@@ -34,6 +34,10 @@ namespace Menge
 		bool _pickerActive() const override;
 
 	public:
+		virtual bool testArrow( const mt::mat3f& _transform, Arrow * _arrow, const mt::mat3f& _screenTransform );
+
+	public:
+		virtual bool testRadius( const mt::mat3f& _transform, float _radius, const mt::mat3f& _screenTransform );
 		virtual bool testPolygon( const mt::mat3f& _transform, const Polygon& _screenPoly, const mt::mat3f& _screenTransform );
 		virtual bool testPoint( const mt::vec2f & _p );
 
@@ -44,11 +48,7 @@ namespace Menge
 	public:
 		void clearPoints();
 
-	protected:
-		void loader( BinParser *_parser ) override;
-
 	private:
-		void loaderPolygon_( BinParser *_parser );
 		void endPolygon_();
 
 	protected:

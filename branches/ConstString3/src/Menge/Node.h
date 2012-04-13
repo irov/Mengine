@@ -2,7 +2,6 @@
 
 #	include "Factorable.h"
 
-#	include "Loadable.h"
 #	include "Identity.h"
 #	include "Scriptable.h"
 #	include "Eventable.h"
@@ -10,7 +9,7 @@
 #	include "GlobalHandleAdapter.h"
 #	include "Renderable.h"
 #	include "BoundingBox.h"
-#	include "Transformation2D.h"
+#	include "Transformation3D.h"
 #	include "Colorable.h"
 #	include "Affectorable.h"
 
@@ -51,10 +50,9 @@ namespace Menge
 		, public GlobalHandleAdapter
 		, public Renderable
 		, public BoundingBox
-		, public Transformation2D
+		, public Transformation3D
 		, public Colorable
 		, public Affectorable
-		, virtual public Loadable
 		, virtual public Scriptable
 		, virtual public Eventable
 	{
@@ -197,13 +195,7 @@ namespace Menge
 	protected:
 		virtual void _update( float _timing );
 		virtual void _postUpdate( float _timing );
-
-	public:
-		void loader( BinParser * _parser ) override;
-
-	protected:
-		void _loaded() override;
-
+		
 	protected:
 		PyObject * _embedded() override;
 		void _embedding( PyObject * _embed ) override;

@@ -29,7 +29,6 @@ namespace Menge
 		virtual void calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const override;
 
 	protected:
-		void loader( BinParser * _parser ) override;
 		void render( Camera2D * _camera ) override;
 
 	protected:

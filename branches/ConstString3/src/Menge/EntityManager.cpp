@@ -3,10 +3,7 @@
 
 #	include <memory>
 
-#	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
-
-#	include "BinParser.h"
 
 #	include "Consts.h"
 #	include "LogEngine.h"
@@ -49,38 +46,6 @@ namespace Menge
 		_desc = it_found->second;
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class EntityLoadable
-			: public Loadable
-		{
-		public:
-			EntityLoadable( Entity * _entity )
-				: m_entity(_entity)
-			{
-
-			}
-
-		protected:
-			void loader( BinParser * _parser ) override
-			{
-				BIN_SWITCH_ID( _parser )
-				{
-					BIN_CASE_NODE_PARSE( Protocol::Entity, m_entity );
-				}
-			}
-
-		protected:
-			void _loaded() override
-			{
-				m_entity->loaded();
-			}
-
-		protected:
-			Entity * m_entity;
-		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * EntityManager::createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag )

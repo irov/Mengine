@@ -1,6 +1,5 @@
 #	include "Layer.h"
 
-#	include "BinParser.h"
 #	include "RenderEngine.h"
 
 #	include "Scene.h"
@@ -62,17 +61,6 @@ namespace Menge
 		Node::setLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::loader( BinParser * _parser )
-	{
-		Node::loader( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Main_Value, &Layer::setMain );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Size_Value, &Layer::setSize );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
 		mt::box2f convertBox = _screenspaceBox;
@@ -105,8 +93,6 @@ namespace Menge
 			);
 
 		return is_intersect;*/
-		const Polygon & screenPoly = _arrow->getPolygon();
-
 		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
 
 		mt::vec2f cp = _layerspaceHotspot->getCameraPosition(_camera2D);
@@ -125,10 +111,16 @@ namespace Menge
 		click_wm.v2.y = _point.y;
 		//mt::mul_m3_m3( click_wm, awm, acm );
 		
-		return _layerspaceHotspot->testPolygon( lwm, screenPoly, click_wm );
+		//const Polygon & screenPoly = _arrow->getPolygon();
+
+		//bool result = _layerspaceHotspot->testPolygon( lwm, screenPoly, click_wm );
+
+		bool result = _layerspaceHotspot->testArrow( lwm, _arrow, click_wm );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testPoint( Camera2D * _camera2D, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const
+	bool Layer::testPoint( Camera2D * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getCameraPosition(_camera2D);

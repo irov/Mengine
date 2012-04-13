@@ -553,7 +553,7 @@ namespace Menge
 		NODE_FACTORY( Sprite );
 		NODE_FACTORY( TextField );
 		//NODE_FACTORY( TileMap );
-		NODE_FACTORY( Track );
+		//NODE_FACTORY( Track );
 		NODE_FACTORY( Movie );
 		//NODE_FACTORY( Model );
 		NODE_FACTORY( Video );

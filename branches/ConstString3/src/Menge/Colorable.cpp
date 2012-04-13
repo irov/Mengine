@@ -1,7 +1,5 @@
 #	include "Colorable.h"
 
-#	include "BinParser.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -17,15 +15,6 @@ namespace Menge
 	void Colorable::setFullBlend( bool _value )
 	{
 		m_fullBlend = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Colorable::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Color_Value, &Colorable::setLocalColor );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Alpha_Value, &Colorable::setLocalAlpha );//BinNew
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setPersonalColor( const ColourValue& _color )

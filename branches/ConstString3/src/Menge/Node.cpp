@@ -13,8 +13,6 @@
 #	include "ScriptEngine.h"
 #	include "LogEngine.h"
 
-#	include "BinParser.h"
-
 #	include "Player.h"
 #	include "Camera2D.h"
 
@@ -543,75 +541,6 @@ namespace Menge
 		this->_postUpdate( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::loader( BinParser * _parser )
-	{
-		Transformation2D::loader( _parser );
-		Renderable::loader( _parser );
-		Colorable::loader( _parser );
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_NODE( Protocol::Node )
-			{
-				ConstString name;
-				ConstString type;
-				ConstString tag;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Node_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::Node_Type, type );
-					BIN_CASE_ATTRIBUTE( Protocol::Node_Tag, tag );
-				}
-
-				Node * node = NodeManager::get()
-					->createNode( name, type, tag );
-
-				if(node == 0)
-				{
-					BIN_SKIP();
-				}
-
-				this->addChildren( node );
-
-				BIN_PARSE_METHOD_END( node, &Node::loader, &Node::loaded );
-			}
-
-			BIN_CASE_NODE( Protocol::Entity )
-			{
-				ConstString name;
-				ConstString prototype;
-				ConstString tag;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Entity_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::Entity_Prototype, prototype );
-					BIN_CASE_ATTRIBUTE( Protocol::Entity_Tag, tag );
-				}
-
-				Entity * en = EntityManager::get()
-					->createEntity( name, prototype, tag );
-
-				if( en == 0 )
-				{
-					BIN_SKIP();
-				}
-
-				this->addChildren( en );
-
-				BIN_PARSE_METHOD_END( en, &Entity::loader, &Entity::loaded );
-			}
-
-			BIN_CASE_ATTRIBUTE_METHOD_IF( Protocol::Enable_Value, &Node::enable, &Node::disable );			
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_loaded()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
 	{
 		GlobalHandleAdapter::activateGlobalHandle();
@@ -820,17 +749,17 @@ namespace Menge
 	{
 		if( m_parent == 0 )
 		{
-			return Transformation2D::getLocalMatrix();
+			return Transformation3D::getLocalMatrix();
 		}
 
-		if( Transformation2D::isInvalidateWorldMatrix() == false )
+		if( Transformation3D::isInvalidateWorldMatrix() == false )
 		{
-			return Transformation2D::getRelationMatrix();
+			return Transformation3D::getRelationMatrix();
 		}
 
 		const mt::mat3f & wm = m_parent->getWorldMatrix();
 
-		const mt::mat3f & update_wm = Transformation2D::updateWorldMatrix( wm );
+		const mt::mat3f & update_wm = Transformation3D::updateWorldMatrix( wm );
 
 		return update_wm;
 	}

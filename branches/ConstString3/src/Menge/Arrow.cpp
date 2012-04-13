@@ -21,10 +21,12 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
-		: m_offsetClick(0.f,0.f)
+		: m_offsetClick(0.f, 0.f)
 		, m_invalidateClickMatrix(true)
 		, m_hided(false)
-	{}
+		, m_radius(0.f)
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
 	{
@@ -91,17 +93,6 @@ namespace	Menge
 		this->setLocalPosition( _position );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::loader( BinParser * _parser )
-	{
-		Node::loader( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ClickOffset_Value, m_offsetClick );
-			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::Polygon_Point, &Arrow::addPoint_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addPoint_( const mt::vec2f & _v )
 	{
 		boost::geometry::append( m_polygon, _v );
@@ -110,8 +101,6 @@ namespace	Menge
 	void Arrow::setPolygon( const Polygon & _polygon )
 	{
 		m_polygon = _polygon;
-
-		boost::geometry::envelope( m_polygon, m_polygonBoundingBox );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Polygon & Arrow::getPolygon() const
@@ -119,9 +108,14 @@ namespace	Menge
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Box & Arrow::getPolygonBoundingBox() const
+	void Arrow::setRadius( float _radius )
 	{
-		return m_polygonBoundingBox;
+		m_radius = _radius;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Arrow::getRadius() const
+	{
+		return m_radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onAppMouseLeave()

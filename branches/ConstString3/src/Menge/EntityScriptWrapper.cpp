@@ -124,7 +124,7 @@ namespace Menge
 		classWrapping();
 
 		pybind::proxy_<Entity, pybind::bases<Node> >("Entity", false)
-			//.def()
+			.def( "getPrototype", &Entity::getPrototype )
 			;
 
 		pybind::proxy_<Arrow, pybind::bases<Entity> >("Arrow", false)
@@ -132,6 +132,8 @@ namespace Menge
 			.def( "getOffsetClick", &Arrow::getOffsetClick )
 			.def( "setPolygon", &Arrow::setPolygon )
 			.def( "getPolygon", &Arrow::getPolygon )
+			.def( "setRadius", &Arrow::setRadius )
+			.def( "getRadius", &Arrow::getRadius )
 			;
 
 		pybind::proxy_<Scene, pybind::bases<Entity> >("Scene", false)

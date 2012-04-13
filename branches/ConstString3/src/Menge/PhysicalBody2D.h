@@ -6,9 +6,6 @@
 
 namespace Menge
 {
-
-	
-
 	class PhysicalBody2D
 		: public Node
 		, public PhysicBody2DListener
@@ -87,11 +84,6 @@ namespace Menge
 	protected:
 		void onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
 		void onUpdate() override;
-		
-	protected:
-		void loader( BinParser * _parser ) override;
-
-	
 		
 	protected:
 #	ifndef MENGE_MASTER_RELEASE

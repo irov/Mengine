@@ -16,6 +16,7 @@
 namespace Menge
 {
 	class ResourceImage;
+	class AlphaChannel;
 
 	class ResourceHotspotImage
 		: public ResourceReference
@@ -35,23 +36,25 @@ namespace Menge
 	public:
 		void setImageResource( const ConstString& _resourceName );
 
+	public:
 		bool testPoint( const mt::vec2f& _point, float _minAlpha ) const;
-		bool testPolygon( const Polygon & _polygon, float _minAlpha ) const;
+		bool testRadius( const mt::vec2f& _point, float _radius, float _minAlpha ) const;
 
+	public:
 		const mt::vec2f& getSize() const;
 
 	private:
 		ConstString m_resourceImageName;
 		ResourceImage * m_resourceImage;
 
-		unsigned char* m_alphaMap;
-		size_t m_resourceImageWidth;
-		size_t m_resourceImageHeight;
+		AlphaChannel * m_alphaChannel;
+
+		size_t m_bufferOffset;
 
 		mt::vec2f m_offset;
 		mt::vec2f m_size;
 
-		size_t m_width;
-		size_t m_height;
+		//size_t m_width;
+		//size_t m_height;
 	};
 }	// namespace Menge

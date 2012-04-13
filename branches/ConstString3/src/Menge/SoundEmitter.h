@@ -8,9 +8,9 @@
 
 namespace Menge
 {
-	class	ResourceSound;
+	class ResourceSound;
 
-	class	SoundEmitter
+	class SoundEmitter
 		: public Node
 		, public Animatable
 		, public SoundNodeListenerInterface
@@ -36,9 +36,6 @@ namespace Menge
 
 		void listenSoundNodePaused();
 		void listenSoundNodeStopped();
-
-	public:
-		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;

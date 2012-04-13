@@ -7,6 +7,7 @@
 #	include "Math/vec2.h"
 #	include "Math/angle.h"
 #	include "Math/box2.h"
+
 #	include "Application.h"
 
 namespace Menge
@@ -46,12 +47,6 @@ namespace Menge
 		PhysicalBody2D * other = static_cast<PhysicalBody2D*>( _otherObj->getUserData() );
 		this->callEvent( EVENT_COLLIDE, "(OOffff)", this->getEmbed(), other->getEmbed(), _worldX, _worldY, _normalX, _normalY );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::loader( BinParser * _parser )
-	{
-		Node::loader( _parser );
-	}
-	
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicalBody2D::_update( float _timing )
 	{

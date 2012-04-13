@@ -39,9 +39,6 @@ namespace Menge
 		void setSoundResource( const ConstString& _resource );
 		const ConstString & getSoundResource() const;
 
-	public:
-		void loader( BinParser * _parser ) override;
-
 	protected:
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;

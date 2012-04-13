@@ -41,15 +41,12 @@ namespace Menge
 		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
 
 		virtual bool testArrow( Camera2D * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point, Arrow * _arrow ) const;
-		virtual bool testPoint( Camera2D * _camera2D, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const;
+		virtual bool testPoint( Camera2D * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const;
 
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
 		virtual void calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const;
-
-	protected:
-		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool m_main;

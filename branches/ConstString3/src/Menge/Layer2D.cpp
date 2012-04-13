@@ -1,7 +1,5 @@
 #	include "Layer2D.h"
 
-#	include "BinParser.h"
-
 #	include "Scene.h"
 
 #	include "Camera2D.h"
@@ -42,18 +40,6 @@ namespace	Menge
 	const mt::vec2f & Layer2D::getParallaxFactor() const
 	{
 		return m_factorParallax;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::loader( BinParser * _parser )
-	{
-		Layer::loader(_parser);
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Parallax_Factor, &Layer2D::setParallaxFactor );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::RenderArea_Value, &Layer2D::setRenderViewport ); //depricated
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::RenderViewport_Value, &Layer2D::setRenderViewport );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_activate()

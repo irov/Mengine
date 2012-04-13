@@ -2,7 +2,7 @@
 #	include "Window.h"
 
 #	include "ResourceManager.h"
-#	include "BinParser.h"
+
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "RenderMaterial.h"
@@ -26,18 +26,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Window::~Window()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Window::loader( BinParser * _parser )
-	{
-		Node::loader( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::WindowResource_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::ClientSize_Value, &Window::setClientSize );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::ClientSizeInTiles_Value, &Window::setClientSizeInTiles );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Window::_compile()

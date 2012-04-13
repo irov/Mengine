@@ -1,7 +1,5 @@
 #	include "ParticleEmitter.h" 
 
-#	include "BinParser.h"
-
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "EventManager.h"
@@ -23,7 +21,9 @@
 #	include "ResourceImageDefault.h"
 
 #	include "ResourceManager.h"
+
 #	include "AlphaChannelManager.h"
+#	include "AlphaChannel.h"
 
 #	include "Sprite.h"
 #	include "Consts.h"
@@ -76,26 +76,6 @@ namespace	Menge
 		Node::_deactivate();
 
 		this->stop();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::loader( BinParser * _parser )
-	{
-		Node::loader( _parser );
-
-		bool depricated_autoPlay;
-		bool depricated_loop;
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
-			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, depricated_autoPlay ); //depricated
-			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
-			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, depricated_loop ); //depricated
-			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
-			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
-			BIN_CASE_ATTRIBUTE( Protocol::PositionOffset_Value, m_positionOffset );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_compile()
@@ -591,10 +571,12 @@ namespace	Menge
 		size_t alphaWidth = 0;
 		size_t alphaHeight = 0;
 
-		unsigned char * alphaMap = AlphaChannelManager::get()
-			->getAlphaBuffer( m_emitterImageName, resourceImage, 0, alphaWidth, alphaHeight );
+		AlphaChannel * alphaMap = AlphaChannelManager::get()
+			->getAlphaChannel( m_emitterImageName, resourceImage );
 
-		if (m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 ) == false)
+		 unsigned char * alphaBuffer = alphaMap->getAlphaBuffer( 0, alphaWidth, alphaHeight );
+
+		if (m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false)
 		{
 			MENGE_LOG_ERROR("ParticleEmitter '%s'::setEmitterImage changeEmitterImage Error image %s"
 			, m_name.c_str()

@@ -2,8 +2,6 @@
 
 #	include "Layer2D.h"
 
-#	include "BinParser.h"
-
 #	include "RenderEngine.h"
 
 #	include "ResourceImage.h"
@@ -54,18 +52,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
-			BIN_CASE_ATTRIBUTE( Protocol::PercentVisibility_Value, m_percent );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()

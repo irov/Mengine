@@ -73,9 +73,6 @@ namespace Menge
 		float getRightBorder() const;
 		const ConstString& getEmitterName() const;
 
-	public:
-		void loader( BinParser * _parser ) override;
-
 	protected:
 		void _setEventListener( PyObject * _listener );
 

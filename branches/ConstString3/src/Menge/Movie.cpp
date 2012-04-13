@@ -19,8 +19,6 @@
 
 #	include "Consts.h"
 
-#	include "BinParser.h"
-
 #	include "pybind/system.hpp"
 #	include "pybind/extract.hpp"
 
@@ -481,18 +479,6 @@ namespace Menge
 			{
 				sprite->localHide(false);
 			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-
-		bool depricated_autoplay;
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Movie_Name, &Movie::setResourceMovie );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, depricated_autoplay ); //depricated
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -2901,25 +2901,25 @@ namespace Menge
 			.def( "getUniqueId", &Identity::getUniqueId )
 			;
 
-		pybind::interface_<Transformation2D>("Transformation2D")
-			.def( "setLocalPosition", &Transformation2D::setLocalPosition )
-			.def( "getLocalPosition", &Transformation2D::getLocalPosition )
-			.def( "getLocalDirection", &Transformation2D::getLocalDirection )
-			.def( "setLocalDirection", &Transformation2D::setLocalDirection )
-			.def( "setCoordinate", &Transformation2D::setCoordinate )			
-			.def( "getCoordinate", &Transformation2D::getCoordinate )
-			.def( "setOrigin", &Transformation2D::setOrigin )
-			.def( "getOrigin", &Transformation2D::getOrigin )
-			.def( "setScale", &Transformation2D::setScale )
-			.def( "getScale", &Transformation2D::getScale )
-			.def( "setAngle", &Transformation2D::setAngle )
-			.def( "getAngle", &Transformation2D::getAngle )
+		pybind::interface_<Transformation3D>("Transformation3D")
+			.def( "setLocalPosition", &Transformation3D::setLocalPosition )
+			.def( "getLocalPosition", &Transformation3D::getLocalPosition )
+			.def( "getLocalDirection", &Transformation3D::getLocalDirection )
+			.def( "setLocalDirection", &Transformation3D::setLocalDirection )
+			.def( "setCoordinate", &Transformation3D::setCoordinate )			
+			.def( "getCoordinate", &Transformation3D::getCoordinate )
+			.def( "setOrigin", &Transformation3D::setOrigin )
+			.def( "getOrigin", &Transformation3D::getOrigin )
+			.def( "setScale", &Transformation3D::setScale )
+			.def( "getScale", &Transformation3D::getScale )
+			.def( "setAngle", &Transformation3D::setAngle )
+			.def( "getAngle", &Transformation3D::getAngle )
 
-			.def( "translate", &Transformation2D::translate )
+			.def( "translate", &Transformation3D::translate )
 
-			.def( "resetTransformation", &Transformation2D::resetTransformation )
+			.def( "resetTransformation", &Transformation3D::resetTransformation )
 
-			.def( "setRotate", &Transformation2D::setAngle ) //depricated
+			.def( "setRotate", &Transformation3D::setAngle ) //depricated
 			;
 
 		//pybind::class_<FFCamera3D>("FFCamera3D")
@@ -2997,7 +2997,7 @@ namespace Menge
 			.def( "addAffector", &Affectorable::addAffector )
 			;
 
-		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation2D, Colorable, Resource, Renderable, GlobalHandleAdapter, Affectorable> >("Node", false)
+		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, Colorable, Resource, Renderable, GlobalHandleAdapter, Affectorable> >("Node", false)
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )

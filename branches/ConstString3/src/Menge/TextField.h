@@ -110,9 +110,6 @@ namespace Menge
 		void setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number );
 
 	protected:
-		void loader( BinParser * _parser ) override;
-
-	protected:
 		void _render( Camera2D * _camera ) override;
 
 	private:

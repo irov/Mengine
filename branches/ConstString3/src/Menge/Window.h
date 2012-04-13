@@ -23,9 +23,6 @@ namespace Menge
 		const mt::vec2f& getTileSize( int _tile ) const;
 
 	protected:
-		void loader( BinParser * _parser ) override;
-
-	protected:
 		bool _compile() override;
 		void _release() override;
 		void _render( Camera2D * _camera ) override;

@@ -81,13 +81,13 @@ add_definitions(-DPYBIND_PYTHON_3)
 add_definitions(-DPy_BUILD_CORE)
 
 
-TARGET_LINK_LIBRARIES( MengeXlsExportPlugin
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     debug ${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/Debug/${MENGINE_LIB_PREFIX}pybind32_static
     debug ${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/Debug/${MENGINE_LIB_PREFIX}python32_static
     debug ${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/Debug/${MENGINE_LIB_PREFIX}zlib_static
     )
     
-TARGET_LINK_LIBRARIES( MengeXlsExportPlugin
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     optimized ${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/RelWithDebInfo/${MENGINE_LIB_PREFIX}pybind32_static
     optimized ${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/RelWithDebInfo/${MENGINE_LIB_PREFIX}python32_static
     optimized ${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/RelWithDebInfo/${MENGINE_LIB_PREFIX}zlib_static

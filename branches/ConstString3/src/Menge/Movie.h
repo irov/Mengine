@@ -53,9 +53,6 @@ namespace Menge
 		void _end( size_t _enumerator ) override;
 
 	protected:
-		void loader( BinParser * _parser );
-
-	protected:
 		bool _compile() override;
 		void _release() override;
 

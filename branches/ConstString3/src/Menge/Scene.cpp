@@ -1,7 +1,7 @@
 #	include "Scene.h"
 
 #	include "ScriptEngine.h"
-#	include "BinParser.h"
+
 #	include "PhysicEngine2D.h"
 #	include "RenderEngine.h"
 
@@ -93,17 +93,6 @@ namespace Menge
 	Layer * Scene::getMainLayer()
 	{
 		return m_mainLayer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-		
-		BIN_SWITCH_ID( _parser )
-		{			
-			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Name, m_renderTargetName );
-			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Size, m_renderTargetSize );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Node * _node )

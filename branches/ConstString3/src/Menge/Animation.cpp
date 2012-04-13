@@ -6,8 +6,6 @@
 
 #	include "ResourceImage.h"
 
-#	include "BinParser.h"
-
 #	include "LogEngine.h"
 
 #	include "Math/rand.h"
@@ -29,17 +27,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Animation::~Animation()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::loader( BinParser * _parser )
-	{
-		Sprite::loader(_parser);
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_currentFrame );
-			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const ConstString& _resource )

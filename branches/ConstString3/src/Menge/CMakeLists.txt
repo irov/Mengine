@@ -273,9 +273,9 @@ Kernel\\\\Node\\\\Renderable
 )
 
 ADD_FILTER(
-Kernel\\\\Node\\\\Transformation2D
-	Transformation2D.cpp
-	Transformation2D.h
+Kernel\\\\Node\\\\Transformation3D
+	Transformation3D.cpp
+	Transformation3D.h
 )
 
 ADD_FILTER(
@@ -654,6 +654,8 @@ ADD_FILTER(
 Manager\\\\AlphaChannel
 	AlphaChannelManager.cpp
 	AlphaChannelManager.h	
+	AlphaChannel.cpp
+	AlphaChannel.h	
 )
 
 ADD_FILTER(

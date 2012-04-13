@@ -38,9 +38,6 @@ namespace Menge
 		Scene * getScene() override;
 				
 	public:
-		void loader( BinParser * _parser ) override;
-
-	public:
 		void setCamera2D( Camera2D * _camera2D );
 
 	public:

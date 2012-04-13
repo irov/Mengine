@@ -7,7 +7,6 @@
 #	include "SoundEmitter.h"
 #	include "NodeManager.h"
 
-#	include "BinParser.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
@@ -26,19 +25,6 @@ namespace	Menge
 		, m_material( NULL )
 	{
 		m_textures[0] = NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Video::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceVideo_Name, m_resourceVideoName );
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceSound_Name, m_resourceSoundName );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_loop );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_setEventListener( PyObject * _listener )

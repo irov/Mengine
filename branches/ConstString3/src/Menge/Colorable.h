@@ -1,13 +1,10 @@
 #	pragma once
 
-#	include "Loadable.h"
-
 #	include "Core/ColourValue.h"
 
 namespace Menge
 {
 	class Colorable
-		: virtual public Loadable
 	{
 	public:
 		Colorable();
@@ -28,9 +25,6 @@ namespace Menge
 
 		void setLocalAlpha( float _alpha );
 		inline float getLocalAlpha() const;
-
-	public:
-		void loader( BinParser * _parser ) override;
 
 	protected:
 		inline const ColourValue & getRelationColor() const;

@@ -177,4 +177,134 @@ namespace Menge
 			boost::geometry::append( _out, v );
 		}
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//Vector vectorSub(const Vector& a, const Vector& b)
+	//{    
+	//	Vector c(a.x-b.x, a.y-b.y);    
+	//	return c;
+	//}
+	//
+	//float vectorDot(const Vector& a, const Vector& b)
+	//{    
+	//	float  d = a.x*b.x + a.y*b.y;    
+	//	return d;
+	//}
+	//
+	//float vectorLength(const Vector& a)
+	//{    
+	//	float length_squared = a.x*a.x + a.y*a.y;    
+	//	return sqrt(length_squared);
+	//}
+	//
+	//Vector vectorPerp(const Vector& a)
+	//{    
+	//	Vector p(-a.y, a.x);    
+	//	return p;
+	//}
+	
+	// project polygon along an axis, and find it's dimensions.
+	void polygonInterval(const mt::vec2f & axis, const mt::vec2f * a, int anum, float& min, float& max)
+	{    
+		min = max = mt::dot_v2_v2(a[0], axis);    
+
+		for(int i = 1; i < anum; i ++)    
+		{        
+			float d = mt::dot_v2_v2(a[i], axis);
+			        
+			if(d < min) 
+				min = d;        
+			else if (d > max) 
+				max = d;    
+		}
+	}
+	
+	// project slphere along an axis, and find it's dimensions.
+	void sphereInterval(const mt::vec2f& axis, const mt::vec2f& c, float r, float& min, float& max)
+	{    
+		float length = mt::length_v2(axis);    
+		float cn = mt::dot_v2_v2(axis, c);    
+
+		min = cn - (r * length);    
+		max = cn + (r * length);
+	}
+	
+	bool collidePolygonPolygonAxis(const mt::vec2f & axis, const mt::vec2f * a, int anum, const mt::vec2f * b, int bnum)
+	{    
+		float mina, maxa;    
+		float minb, maxb;    
+
+		polygonInterval(axis, a, anum, mina, maxa);    
+		polygonInterval(axis, b, bnum, minb, maxb);       
+		
+		return (mina <= maxb && minb <= maxa);
+	}
+	
+	bool collidePolygonPolygon(const mt::vec2f * a, int anum, const mt::vec2f * b, int bnum)
+	{    
+		for(int i = 0, j=anum-1; i < anum; j=i, i++)
+		{
+			mt::vec2f edge;
+			mt::sub_v2_v2(edge, a[i], a[j]);
+
+			mt::vec2f axis;
+			mt::perp_v2(axis, edge);
+			
+			// perpendicular to edge             
+			if(!collidePolygonPolygonAxis(axis, a, anum, b, bnum))
+				return false;    
+		} 
+		
+		for(int i = 0, j=bnum-1; i < bnum; j=i, i++)    
+		{
+			mt::vec2f edge;
+			mt::sub_v2_v2(edge, b[i], b[j]);
+
+			mt::vec2f axis;
+			mt::perp_v2(axis, edge);
+			
+			// perpendicular to edge             
+			if(!collidePolygonPolygonAxis(axis, a, anum, b, bnum))             
+				return false;    
+		} 
+		
+		return true;
+	}
+	
+	bool collidePolygonSphereAxis(const mt::vec2f & axis, const mt::vec2f * a, int anum, const mt::vec2f & c, float r)
+	{ 
+		float mina, maxa;
+		float minb, maxb;
+
+		polygonInterval(axis, a, anum, mina, maxa);
+		sphereInterval(axis, c, r, minb, maxb);
+		
+		return (mina <= maxb && minb <= maxa);
+	}
+	
+	bool collidePolygonSphere(const mt::vec2f * a, int anum, const mt::vec2f & c, float r)
+	{    
+		for(int i = 0, j=anum-1; i < anum; j=i, i++)    
+		{        
+			mt::vec2f edge;
+			mt::sub_v2_v2(edge, a[i], a[j]);        
+
+			mt::vec2f axis;
+			mt::perp_v2(axis, edge); 
+			
+			// perpendicular to edge             
+			if(!collidePolygonSphereAxis(axis, a, anum, c, r))
+				return false;    
+		}    
+		
+		for(int i = 0; i < anum; i++)    
+		{        
+			mt::vec2f axis;
+			mt::sub_v2_v2(axis, c, a[i]); 
+
+			if(!collidePolygonSphereAxis(axis, a, anum, c, r))
+				return false;    
+		}    
+		
+		return true;
+	}
 }

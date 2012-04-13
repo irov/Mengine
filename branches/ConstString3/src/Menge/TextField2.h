@@ -58,9 +58,6 @@ namespace Menge
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
 
-	public:
-		void loader( BinParser * _parser ) override;		
-
 	protected:
 		bool _compile() override;
 		void _release() override;

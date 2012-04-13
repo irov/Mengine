@@ -1,16 +1,13 @@
 #	pragma once
 
-#	include "Loadable.h"
-
 #	include "math/mat3.h"
 
 namespace Menge
 {
-	class Transformation2D
-		: virtual public Loadable
+	class Transformation3D
 	{
 	public:
-		Transformation2D();
+		Transformation3D();
 
 	public:
 		inline const mt::mat3f & getRelationMatrix() const;
@@ -46,9 +43,6 @@ namespace Menge
 		void translate( const mt::vec2f & _delta );
 
 	public:
-		void loader( BinParser * _parser ) override;
-
-	public:
 		void invalidateWorldMatrix();
 		inline bool isInvalidateWorldMatrix() const;
 
@@ -78,47 +72,47 @@ namespace Menge
 		mt::mat3f m_worldMatrix;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec2f & Transformation2D::getLocalPosition()const
+	inline const mt::vec2f & Transformation3D::getLocalPosition()const
 	{
 		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec2f & Transformation2D::getLocalDirection()const
+	inline const mt::vec2f & Transformation3D::getLocalDirection()const
 	{
 		return m_direction;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec2f& Transformation2D::getOrigin() const
+	inline const mt::vec2f& Transformation3D::getOrigin() const
 	{
 		return m_origin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec2f& Transformation2D::getCoordinate() const
+	inline const mt::vec2f& Transformation3D::getCoordinate() const
 	{
 		return m_coordinate;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec2f& Transformation2D::getScale() const
+	inline const mt::vec2f& Transformation3D::getScale() const
 	{
 		return m_scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Transformation2D::getAngle() const
+	inline float Transformation3D::getAngle() const
 	{
 		return m_angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat3f & Transformation2D::getRelationMatrix() const
+	inline const mt::mat3f & Transformation3D::getRelationMatrix() const
 	{
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Transformation2D::isInvalidateWorldMatrix()const
+	inline bool Transformation3D::isInvalidateWorldMatrix()const
 	{
 		return m_invalidateWorldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat3f & Transformation2D::getLocalMatrix()
+	inline const mt::mat3f & Transformation3D::getLocalMatrix()
 	{
 		if( m_invalidateLocalMatrix == true )
 		{

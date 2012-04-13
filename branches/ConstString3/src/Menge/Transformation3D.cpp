@@ -1,13 +1,11 @@
-#	include "Transformation2D.h"
-
-#	include "BinParser.h"
+#	include "Transformation3D.h"
 
 #	include "Math/angle.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Transformation2D::Transformation2D()
+	Transformation3D::Transformation3D()
 		: m_invalidateWorldMatrix(true)
 		, m_invalidateLocalMatrix(true)
 		, m_origin(0.f, 0.f)
@@ -22,7 +20,7 @@ namespace Menge
 		mt::ident_m3( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::invalidateWorldMatrix()
+	void Transformation3D::invalidateWorldMatrix()
 	{
 		m_invalidateLocalMatrix = true;
 		m_invalidateWorldMatrix = true;
@@ -30,12 +28,12 @@ namespace Menge
 		this->_invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::_invalidateWorldMatrix()
+	void Transformation3D::_invalidateWorldMatrix()
 	{
 		//Empty
 	}
 	////////////////////////////////////////////////////////////////////////////
-	//void Transformation2D::setLocalMatrix( const mt::mat3f & _matrix )
+	//void Transformation3D::setLocalMatrix( const mt::mat3f & _matrix )
 	//{
 	//	m_position.x = _matrix.v2.x;
 	//	m_position.y = _matrix.v2.y;
@@ -45,7 +43,7 @@ namespace Menge
 	//	invalidateWorldMatrix();
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setLocalPosition( const mt::vec2f & _position )
+	void Transformation3D::setLocalPosition( const mt::vec2f & _position )
 	{
 		if( mt::cmp_v2_v2( m_position, _position ) == true )
 		{
@@ -57,7 +55,7 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setLocalDirection( const mt::vec2f & _direction )
+	void Transformation3D::setLocalDirection( const mt::vec2f & _direction )
 	{
 		if( mt::cmp_v2_v2( m_direction, _direction ) == true )
 		{
@@ -70,7 +68,7 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setAngle( float _angle )
+	void Transformation3D::setAngle( float _angle )
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
@@ -86,12 +84,12 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Transformation2D::isScaled() const
+	bool Transformation3D::isScaled() const
 	{
 		return m_scaled;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::resetTransformation()
+	void Transformation3D::resetTransformation()
 	{
 		m_origin = mt::vec2f(0.f, 0.f);
 		m_coordinate = mt::vec2f(0.f, 0.f);
@@ -103,14 +101,14 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::translate( const mt::vec2f & _delta )
+	void Transformation3D::translate( const mt::vec2f & _delta )
 	{
 		mt::vec2f new_pos = m_position + _delta;
 		
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f & Transformation2D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
+	const mt::mat3f & Transformation3D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
 	{
 		m_invalidateWorldMatrix = false;
 
@@ -121,27 +119,7 @@ namespace Menge
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::loader( BinParser * _parser )
-	{
-		mt::mat3f depricated_localMatrix;
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Transformation_Value, depricated_localMatrix ); //depricated
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Position, &Transformation2D::setLocalPosition );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Direction, &Transformation2D::setLocalDirection );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Rotate, &Transformation2D::setAngle );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Angle, &Transformation2D::setAngle );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Origin, &Transformation2D::setOrigin );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Scale, &Transformation2D::setScale );
-			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_FixedRotation, &Transformation2D::setFixedRotation );
-
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scale_Value, &Transformation2D::setScale ); //depricated
-			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::FixedRotation_Value, &Transformation2D::setFixedRotation ); //depricated
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::updateLocalMatrix_()
+	void Transformation3D::updateLocalMatrix_()
 	{
 		m_invalidateLocalMatrix = false;
 
@@ -164,7 +142,7 @@ namespace Menge
 		m_localMatrix.v2.y += m_position.y + m_coordinate.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setOrigin( const mt::vec2f& _origin )
+	void Transformation3D::setOrigin( const mt::vec2f& _origin )
 	{
 		if( mt::cmp_v2_v2( m_origin, _origin ) == true )
 		{
@@ -176,7 +154,7 @@ namespace Menge
 		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setCoordinate( const mt::vec2f& _coordinate )
+	void Transformation3D::setCoordinate( const mt::vec2f& _coordinate )
 	{
 		if( mt::cmp_v2_v2( m_coordinate, _coordinate ) == true )
 		{
@@ -188,7 +166,7 @@ namespace Menge
 		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setScale( const mt::vec2f& _scale )
+	void Transformation3D::setScale( const mt::vec2f& _scale )
 	{
 		if( mt::cmp_v2_v2( m_scale, _scale ) == true )
 		{

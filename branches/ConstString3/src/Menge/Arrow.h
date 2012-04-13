@@ -39,7 +39,8 @@ namespace Menge
 		void setPolygon( const Polygon & _polygon );
 		const Polygon & getPolygon() const;
 
-		const Box & getPolygonBoundingBox() const;
+		void setRadius( float _radius );
+		float getRadius() const;
 
 		void setContentResolution( const Resolution & _resolution );
 		void setCurrentResolution( const Resolution & _resolution );
@@ -53,9 +54,6 @@ namespace Menge
 	public:
 		void updateClickMatrix_();
 		void invalidateClickMatrix_();
-
-	public:
-		void loader( BinParser * _parser ) override;
 
 	protected:
 		void addPoint_( const mt::vec2f & _v );
@@ -83,7 +81,8 @@ namespace Menge
 		Resolution m_currentResolution;
 		
 		Polygon m_polygon;
-		Box m_polygonBoundingBox;
+
+		float m_radius;
 
 		bool m_hided;
 	};

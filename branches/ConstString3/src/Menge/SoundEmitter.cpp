@@ -1,7 +1,5 @@
 #	include "SoundEmitter.h"
 
-#	include "BinParser.h"
-
 #	include "ResourceSound.h"
 
 #	include "ResourceManager.h"
@@ -41,18 +39,6 @@ namespace Menge
 	void SoundEmitter::_deactivate()
 	{
 		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
-			BIN_CASE_ATTRIBUTE( Protocol::HeadMode_Value, m_isHeadMode );
-			BIN_CASE_ATTRIBUTE( Protocol::Loop_Value, m_loop );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_compile()

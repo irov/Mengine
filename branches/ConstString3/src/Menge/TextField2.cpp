@@ -10,7 +10,6 @@
 
 #include "ResourceFont.h"
 #include "ResourceManager.h"
-#include "BinParser.h"
 
 namespace Menge
 {
@@ -108,23 +107,6 @@ namespace Menge
 	float TextField2::getLineOffset() const
 	{
 		return m_lineOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField2::loader( BinParser * _parser )
-	{
-		Node::loader(_parser);
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Font_Name, &TextField2::setFont );
-			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Value, &TextField2::setTextByKey );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::FieldSize_Value, &TextField2::setFieldSize  );
-			BIN_CASE_ATTRIBUTE_METHODT( Protocol::VerticalAlign_Value, &TextField2::setVerticalAlign, EVerticalAlign );
-			BIN_CASE_ATTRIBUTE_METHODT( Protocol::HorizontalAlign_Value, &TextField2::setHorizontalAlign, EHorizontalAlign );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::CharOffset_Value, &TextField2::setCharOffset );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::LineOffset_Value, &TextField2::setLineOffset );
-		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField2::_render( Camera2D * _camera )

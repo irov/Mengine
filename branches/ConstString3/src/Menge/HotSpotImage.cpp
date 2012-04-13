@@ -14,7 +14,6 @@
 #	include "LogEngine.h"
 
 #	include "RenderEngine.h"
-#	include "BinParser.h"
 
 #	include "Core/String.h"
 #	include "Consts.h"
@@ -31,17 +30,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::~HotSpotImage()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::loader( BinParser *_parser )
-	{
-		HotSpot::loader( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::AlphaTest_Value, m_alphaTest );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::_compile()
@@ -125,10 +113,32 @@ namespace Menge
 			mt::vec2f pointIn;
 			mt::mul_v2_m3( pointIn, point, invWM );
 
-			return m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
-		}
+			bool result = m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
 
+			return result;
+		}
+		
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpotImage::testRadius( const mt::mat3f& _transform, float _radius, const mt::mat3f& _screenTransform )
+	{
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+		
+		mt::vec2f point;
+		mt::mul_v2_m3( point, mt::vec2f(0.f, 0.f), _screenTransform );
+
+		mt::mat3f invWM;
+		mt::inv_m3( invWM, _transform );
+		mt::vec2f pointIn;
+		mt::mul_v2_m3( pointIn, point, invWM );
+
+		bool result = m_resourceHotspotImage->testRadius( pointIn, _radius, m_alphaTest );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHotspotImage * HotSpotImage::getResourseHotspotImage() const

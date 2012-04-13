@@ -11,6 +11,9 @@ namespace Menge
 		void setPrototype( const ConstString & _prototype );
 		const ConstString & getPrototype() const;
 
+	public:
+		void loaded();
+
 	protected:
 		bool _activate() override;
 		void _afterActivate() override;
@@ -18,16 +21,11 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+
 		void _destroy() override;
 
 	protected:
 		void _embedding( PyObject * _embed ) override;
-
-	public:
-		void loader( BinParser * _parser ) override;
-
-	protected:
-		void _loaded() override;
 
 	protected:
 		ConstString m_prototype;

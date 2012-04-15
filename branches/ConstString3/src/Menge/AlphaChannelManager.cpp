@@ -56,7 +56,7 @@ namespace Menge
 				return 0;
 			}
 	
-			it_find = m_bufferMap.find( _name );
+			it_find = m_bufferMap.insert( std::make_pair(_name, alphaChannel) ).first;
 		}
 
 		return it_find->second;

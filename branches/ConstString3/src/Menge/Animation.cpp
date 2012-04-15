@@ -163,7 +163,7 @@ namespace	Menge
 
 		//m_currentFrame = 0;
 
-		this->setTiming( 0.f );
+		//this->setTiming( 0.f );
 		//m_frameTiming = 0.0f;
 		
 		//if( this->updateCurrentImageResource_() == false )

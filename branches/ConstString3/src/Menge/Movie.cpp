@@ -112,7 +112,7 @@ namespace Menge
 
 		m_timing = _timing;
 
-//		this->update( 0.f );
+		this->update( 0.f );
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -134,6 +134,11 @@ namespace Menge
 				Animatable * animatable = dynamic_cast<Animatable *>(node);
 
 				animatable->setTiming( m_timing );
+
+//				if( Animatable->isActivate() == true )
+//				{
+//					animatable->setTiming( m_timing );
+//				}
 
 			}
 		}
@@ -494,6 +499,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * Movie::getMovieSlot( const ConstString & _name )
 	{
+		if( this->isCompile() == false )
+		{
+			MENGE_LOG_ERROR("Movie %s invalid getMovieSlot: not compile"
+				, m_name.c_str()
+				);
+
+			return NULL;
+		}
+
 		TMapMovieSlot::iterator it_index = m_slots.find( _name );
 
 		if( it_index == m_slots.end() )
@@ -507,6 +521,7 @@ namespace Menge
 		}
 
 		Node * slot = it_index->second;
+
 		return slot;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1037,6 +1052,8 @@ namespace Menge
 			node->destroy();
 		}
 
+		m_nodies.clear();
+
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
 
 		for( TVectorMovieLayers3D::const_iterator 
@@ -1075,7 +1092,9 @@ namespace Menge
 			sprite->destroy();
 		}
 
-		m_nodies.clear();
+		m_flexSprites.clear();
+
+		m_slots.clear();
 
 		if( m_resourceMovie != 0 )
 		{

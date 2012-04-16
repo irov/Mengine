@@ -325,7 +325,6 @@ namespace Menge
 				Animatable * animatable = dynamic_cast<Animatable *>(node);
 
 				animatable->setFirstFrame();
-
 			}
 
 			MovieFrame2D frame;
@@ -421,7 +420,6 @@ namespace Menge
 				Animatable * animatable = dynamic_cast<Animatable *>(node);
 
 				animatable->setLastFrame();
-
 			}
 
 			MovieFrame2D frame;
@@ -511,11 +509,40 @@ namespace Menge
 		TMapMovieSlot::iterator it_index = m_slots.find( _name );
 
 		if( it_index == m_slots.end() )
-		{
-			MENGE_LOG_ERROR("Movie::getMovieSlot  name %s:%s not found slot"
-				, _name.c_str()
-				, m_name.c_str()
-				);
+		{	
+			const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+			for( TVectorMovieLayers2D::const_iterator
+				it = layers2D.begin(),
+				it_end = layers2D.end();
+			it != it_end;
+			++it )
+			{
+				const MovieLayer2D & layer = *it;
+
+				if( layer.movie == false )
+				{
+					continue;
+				}
+
+				Node * node = m_nodies[layer.index];
+
+				Movie * movie = static_cast<Movie *>(node);
+
+				Node * slot = movie->getMovieSlot( _name );
+
+				if( slot == NULL )
+				{
+					continue;
+				}
+
+				return slot;
+			}
+
+//			MENGE_LOG_ERROR("Movie::getMovieSlot: %s not found slot %s"
+//				, _name.c_str()
+//				, m_name.c_str()
+//				);
 
 			return NULL;
 		}

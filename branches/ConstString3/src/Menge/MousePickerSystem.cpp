@@ -244,9 +244,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->execReg_();
-		this->updatePicked_( _point );
-		this->updateDead_();
+		//this->execReg_();
+		//this->updatePicked_( _point );
+		//this->updateDead_();
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),

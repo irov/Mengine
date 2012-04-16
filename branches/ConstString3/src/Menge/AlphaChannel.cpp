@@ -17,7 +17,7 @@ namespace Menge
 		size_t mipmap_width = m_width;
 		size_t mipmap_height = m_height;
 
-		while( mipmap_width || mipmap_height )
+		while( mipmap_width && mipmap_height )
 		{
 			unsigned char * buff = new unsigned char[mipmap_width * mipmap_height];
 
@@ -93,9 +93,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned char * AlphaChannel::getAlphaBuffer( size_t _level, size_t & _width, size_t & _height )
 	{
-		if( _level >= m_mipmap.size() )
+		size_t max_level = m_mipmap.size() - 1;
+
+		if( _level > max_level )
 		{
-			return 0;
+			_width = m_width >> max_level;
+			_height = m_height >> max_level;
+
+			return &m_mipmap.back()[0];
 		}
 
 		++m_refcount;

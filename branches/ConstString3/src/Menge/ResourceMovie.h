@@ -63,7 +63,7 @@ namespace Menge
 		mt::vec3f anchorPoint;
 		mt::vec3f position;
 		mt::vec3f rotation;
-		mt::vec2f scale;		
+		mt::vec2f scale;
 		float opacity;
 	};
 

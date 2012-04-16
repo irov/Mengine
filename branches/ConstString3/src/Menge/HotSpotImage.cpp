@@ -68,12 +68,14 @@ namespace Menge
 
 		const mt::vec2f& bSize = m_resourceHotspotImage->getSize();
 
-		m_polygon.clear();
+		Polygon polygon;
 
-		boost::geometry::append(m_polygon, mt::vec2f(0.f, 0.f) );
-		boost::geometry::append(m_polygon, mt::vec2f(bSize.x, 0.f) );
-		boost::geometry::append(m_polygon, mt::vec2f(bSize.x, bSize.y) );
-		boost::geometry::append(m_polygon, mt::vec2f(0.f, bSize.y) );
+		boost::geometry::append(polygon, mt::vec2f(0.f, 0.f) );
+		boost::geometry::append(polygon, mt::vec2f(bSize.x, 0.f) );
+		boost::geometry::append(polygon, mt::vec2f(bSize.x, bSize.y) );
+		boost::geometry::append(polygon, mt::vec2f(0.f, bSize.y) );
+
+		this->setPolygon( polygon );
 
 		return true;
 	}

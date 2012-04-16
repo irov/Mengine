@@ -297,16 +297,16 @@ namespace	Menge
 
 		for( ; frame != count; ++frame )
 		{
+			float delay = m_resourceAnimation->getSequenceDelay( frame );
+
+			_timing -= delay;
+
 			if( _timing <= 0.f )
 			{
 				_delthaTiming = -_timing;
 
 				break;
 			}
-
-			float delay = m_resourceAnimation->getSequenceDelay( frame );
-
-			_timing -= delay;
 		}
 		
 		return frame;

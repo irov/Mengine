@@ -320,11 +320,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::updateCurrentImageResource_()
 	{
-		printf("Animation %s %d\n"
-			, m_name.c_str()
-			, m_currentFrame
-			);
-
 		if( m_resource != NULL )
 		{
 			m_resource->decrementReference();

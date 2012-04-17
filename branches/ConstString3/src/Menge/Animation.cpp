@@ -412,7 +412,6 @@ namespace	Menge
 
 		this->updateCurrentImageResource_();
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setFirstFrame()
 	{
@@ -428,6 +427,11 @@ namespace	Menge
 		size_t lastFrame = sequenceCount - 1;
 
 		this->setCurrentFrame( lastFrame );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setReverse( bool _value )
+	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setTiming( float _timing )

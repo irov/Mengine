@@ -163,10 +163,35 @@ namespace Menge
 
 		float fi = _point.x - m_offset.x;
 		float fj = _point.y - m_offset.y;
-
-		if( fi < 0.f || fj < 0.f )
+		
+		if( fi < -_radius || fj < -_radius )
 		{
 			return false;
+		}
+
+		if( fi > m_size.x + _radius || fj > m_size.y + _radius )
+		{
+			return false;
+		}
+
+		if( fi < 0.f )
+		{
+			fi = 0.f;
+		}
+
+		if( fj < 0.f )
+		{
+			fj = 0.f;
+		}
+
+		if( fi > m_size.x )
+		{
+			fi = m_size.x;
+		}
+
+		if( fj > m_size.y )
+		{
+			fj = m_size.y;
 		}
 
 		size_t i = (size_t)fi;
@@ -180,11 +205,16 @@ namespace Menge
 
 		unsigned char * alphaBuffer = m_alphaChannel->getAlphaBuffer( level, alphaWidth, alphaHeight );
 
-		if( i >= alphaWidth || j >= alphaHeight )
+		if( i == alphaWidth )
 		{
-			return false;
+			--i;
 		}
 
+		if( j == alphaHeight )
+		{
+			--j;
+		}
+		
 		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
 		size_t index = j * alphaWidth + i;
 				

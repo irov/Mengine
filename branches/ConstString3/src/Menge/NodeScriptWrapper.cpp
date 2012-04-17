@@ -2986,6 +2986,8 @@ namespace Menge
 			.def( "getTiming", &Animatable::getTiming )
 			.def( "setLoop", &Animatable::setLoop )
 			.def( "getLoop", &Animatable::getLoop )
+			.def( "setReverse", &Animatable::setReverse )
+			.def( "getReverse", &Animatable::getReverse )
 			;
 
 		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
@@ -3390,8 +3392,6 @@ namespace Menge
 				//	;
 
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
-					.def( "setReverse", &Movie::setReverse )
-					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )
 					.def( "getWorkAreaDuration", &Movie::getWorkAreaDuration )
 					.def( "getMovieSlot", &Movie::getMovieSlot )

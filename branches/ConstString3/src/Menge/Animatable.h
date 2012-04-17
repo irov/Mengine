@@ -22,12 +22,17 @@ namespace Menge
 		void setTiming( float _timing );
 		float getTiming() const;
 
+		void setReverse( bool _value);
+		bool getReverse() const;
+
 	public:
 		virtual void _setTiming( float _timing );
 		virtual float _getTiming() const;
 
 		virtual void _setFirstFrame();
 		virtual void _setLastFrame();
+
+		virtual void _setReverse( bool _value );
 
 	public:
 		size_t play();
@@ -56,5 +61,6 @@ namespace Menge
 		bool m_play;
 
 		bool m_loop;
+		bool m_reverse;
 	};
 }

@@ -32,8 +32,7 @@ namespace Menge
 		float getFrameDelay( size_t  _frame ) const;
 
 	public:
-		void setReverse( bool _value);
-		bool getReverse() const;
+		void _setReverse( bool _value) override;
 
 	protected:
 		void _setTiming( float _timing ) override;
@@ -96,6 +95,5 @@ namespace Menge
 		float m_timing;
 
 		bool m_parentMovie;
-		bool m_reverse;
 	};
 }

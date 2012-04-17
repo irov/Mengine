@@ -234,7 +234,7 @@ namespace	Menge
 			return;
 		}
 
-		this->setTiming( 0.f );
+		//this->setTiming( 0.f );
 		//m_currentFrame = 0;
 		//m_timing = 0.f;
 
@@ -260,7 +260,7 @@ namespace	Menge
 			return;
 		}
 
-		this->setTiming( 0.f );
+		//this->setTiming( 0.f );
 		//m_timing = 0.f;
 		////m_currentFrame = m_resourceAnimation->getLastFrameIndex();
 		//m_currentFrame = 0;
@@ -278,7 +278,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animation::getFrame_( float _timing, float & _delthaTiming ) const
 	{
-		size_t count = m_resourceAnimation->getSequenceCount();
+		if( _timing <= 0.f )
+		{
+			_delthaTiming = _timing;
+
+			return 0;
+		}
+				
 		float duration = m_resourceAnimation->getSequenceDuration();
 
 		if( _timing >= duration )
@@ -293,9 +299,9 @@ namespace	Menge
 			}
 		}
 
-		size_t frame = 0;
-
-		for( ; frame != count; ++frame )
+		size_t count = m_resourceAnimation->getSequenceCount();
+				 
+		for( size_t frame = 0; frame != count; ++frame )
 		{
 			float delay = m_resourceAnimation->getSequenceDelay( frame );
 
@@ -303,17 +309,22 @@ namespace	Menge
 
 			if( _timing <= 0.f )
 			{
-				_delthaTiming = -_timing;
+				_delthaTiming = _timing + delay;
 
-				break;
+				return frame;
 			}
 		}
 		
-		return frame;
+		return count - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::updateCurrentImageResource_()
 	{
+		printf("Animation %s %d\n"
+			, m_name.c_str()
+			, m_currentFrame
+			);
+
 		if( m_resource != NULL )
 		{
 			m_resource->decrementReference();
@@ -410,17 +421,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setFirstFrame()
 	{
-		this->setCurrentFrame(0);
-	}
+		size_t firstFrame = 0;
 
+		this->setCurrentFrame( firstFrame );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setLastFrame()
 	{
 		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
-		this->setCurrentFrame(sequenceCount-1);
 
+		size_t lastFrame = sequenceCount - 1;
+
+		this->setCurrentFrame( lastFrame );
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setTiming( float _timing )
 	{

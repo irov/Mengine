@@ -49,6 +49,8 @@ namespace Menge
 		void setDefaultAccount( const WString & _accountID );
 		const WString & getDefaultAccount() const;
 
+		bool hasDefaultAccount() const;
+
 		bool selectDefaultAccount();
 
 	public:

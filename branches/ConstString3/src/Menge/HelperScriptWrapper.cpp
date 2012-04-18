@@ -481,6 +481,12 @@ namespace Menge
 				->getDefaultAccount();
 		}
 
+		static bool s_hasDefaultAccount()
+		{
+			return AccountManager::get()
+				->hasDefaultAccount();
+		}
+
 		static bool s_selectDefaultAccount()
 		{
 			return AccountManager::get()
@@ -1083,6 +1089,7 @@ namespace Menge
 
 		pybind::def_function( "setDefaultAccount", &ScriptHelper::s_setDefaultAccount );
 		pybind::def_function( "getDefaultAccount", &ScriptHelper::s_getDefaultAccount );
+		pybind::def_function( "hasDefaultAccount", &ScriptHelper::s_hasDefaultAccount );		
 		pybind::def_function( "selectDefaultAccount", &ScriptHelper::s_selectDefaultAccount );		
 
 		pybind::def_function( "writeBinaryFile", &ScriptHelper::s_writeBinaryFile );

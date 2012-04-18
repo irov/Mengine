@@ -95,7 +95,7 @@ namespace Menge
 		//m_width = (size_t)uv.z * imageWidth - offsetX;
 		//m_height = (size_t)uv.w * imageHeight - offsetY;
 
-		m_bufferOffset = offsetY * imageWidth + offsetX;
+		m_bufferOffset = offsetX + offsetY * imageWidth;
 
 		return true;
 	}
@@ -216,7 +216,7 @@ namespace Menge
 		}
 		
 		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
-		size_t index = j * alphaWidth + i;
+		size_t index = i + j * alphaWidth;
 				
 		unsigned char alpha = alphaBuffer[index];
 

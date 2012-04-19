@@ -11,9 +11,9 @@ namespace Menge
 		return descr;
 	}
 	////////////////////////////////////////////////////////////////////
-	ParticlesAtlas * EmitterDescriptionManager::createAtlas(  const String & _file, const String & _path )
+	ParticlesAtlas * EmitterDescriptionManager::createAtlas(  const String & _file/*, const String & _path*/ )
 	{
-		ParticlesAtlas * atlas = new ParticlesAtlas(  _file, _path );
+		ParticlesAtlas * atlas = new ParticlesAtlas(  _file/*, _path*/ );
 		m_atlasses.push_back(atlas);
 		return atlas;
 	}

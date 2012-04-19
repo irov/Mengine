@@ -121,6 +121,54 @@ namespace Menge
 		_viewport.end.x = _viewport.begin.x + areaWidth;
 		_viewport.end.y = _viewport.begin.y + areaHeight;
 	}
+	/////////////////////////////////////////////////////////////////////////////////////////
+	String RenderParticles::ansiToUtf8( const String& _ansi )
+	{
+		String utf8;
+		WindowsLayer::ansiToUtf8( _ansi, utf8 );
+
+		return utf8;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String RenderParticles::utf8ToAnsi( const String& _utf8 )
+	{
+		String ansi;
+		WindowsLayer::utf8ToAnsi( _utf8, ansi );
+
+		return ansi;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderParticles::utf8Count( const String& _utf8 )
+	{
+		size_t size;
+		WindowsLayer::utf8Count( _utf8, size );
+
+		return size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	WString RenderParticles::utf8ToUnicode( const String& _utf8 )
+	{
+		WString unicode;
+		WindowsLayer::utf8ToUnicode( _utf8, unicode );
+
+		return unicode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String RenderParticles::unicodeToAnsi( const WString& _unicode )
+	{
+		String ansi;
+		WindowsLayer::unicodeToAnsi( _unicode, ansi );
+		return ansi;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	WString RenderParticles::ansiToUnicode( const String& _utf8 )
+	{
+		WString unicode;
+		WindowsLayer::ansiToUnicode( _utf8, unicode );
+
+		return unicode;
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 	bool RenderParticles::initLogger_( FileOutputStreamInterface * _file )
 	{
@@ -317,27 +365,12 @@ namespace Menge
 				size_t r = source[index + 2];
 				size_t g = source[index + 1];
 				size_t b = source[index + 0];
-				/*if( a != 0 && a < 10 )
-				{
-					a += 10;
-				}*/
-				/*if( a == 0 	&& ( r != 0 || g != 0 || b != 0  ) )
-				{
-					a = 0xffffff;
-				}*/
 				
 				//reverse pixels in directx buffer	
-				dest[index + 0] = 255;
+				dest[index + 0] = a;
 				dest[index + 1] = r;
 				dest[index + 2] = g;
 				dest[index + 3] = b;
-				
-				/*
-				dest[index + 0] = source[index + 3];
-				dest[index + 1] = source[index + 2];
-				dest[index + 2] = source[index + 1];
-				dest[index + 3] = source[index + 0];
-				*/
 			}
 			dest += _frame->pitch;
 			source += pitch;

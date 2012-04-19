@@ -106,16 +106,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////
 	void RenderParticlesSuites::loadAstralaxFile( const String& _path )
 	{
-		m_scriptWrapper->callFunction( "loadAstralaxFile", "(s)", _path.c_str() );
+		WString path;
+		WindowsLayer::utf8ToUnicode(_path,path);
+		m_scriptWrapper->callFunction( "loadAstralaxFile", "(u)", path.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////
 	void RenderParticlesSuites::loadEmitterFromFile( const String& _path, const String & _emitterName, bool _isCached )
 	{
-		char name[255] = {'\0'};
-		char path[255] = {'\0'};
-		strcpy(name, _emitterName.c_str());
-		strcpy(path, _path.c_str());
-		m_scriptWrapper->callFunction( "loadEmitterFromFile", "(ssb)", path, name, _isCached );
+		WString path;
+		WString emitterName;
+		
+		WindowsLayer::utf8ToUnicode(_path,path);
+		WindowsLayer::utf8ToUnicode(_emitterName,emitterName);
+		
+		m_scriptWrapper->callFunction( "loadEmitterFromFile", "(uub)"
+			, path.c_str()
+			, emitterName.c_str()
+			, _isCached 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////
 	void RenderParticlesSuites::loop()

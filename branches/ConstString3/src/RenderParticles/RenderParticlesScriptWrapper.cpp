@@ -14,10 +14,10 @@ namespace Menge
 		return descr;
 	}
 
-	ParticlesAtlas * s_createParticlesAtlas( const String& _file, const String& _path )
+	ParticlesAtlas * s_createParticlesAtlas( const String& _file/*, const String& _path*/ )
 	{
 		ParticlesAtlas * atlas =  
-			EmitterDescriptionManager::get()->createAtlas( _file, _path );
+			EmitterDescriptionManager::get()->createAtlas( _file/*, _path*/ );
 
 		return atlas;
 	}
@@ -96,7 +96,7 @@ namespace Menge
 			.def( "getRelative", &EmitterDescription::getRelative )
 			;
 		pybind::class_<ParticlesAtlas>("ParticlesAtlas")
-			.def( pybind::init<const String &,const String &>() )
+			.def( pybind::init<const String &/*,const String &*/>() )
 			;
 
 		pybind::def_function( "notifyLoadEmitter", &s_notifyLoadEmitter );

@@ -16,7 +16,7 @@ namespace Menge
 	public:
 		EmitterDescription * createEmitterDescription();
 		void destroy();
-		ParticlesAtlas * createAtlas( const String & _file, const String & _path );
+		ParticlesAtlas * createAtlas( const String & _file/*, const String & _path*/ );
 	protected:
 		TVectorEmitterDescription m_emitters;
 		TVectorParticlesAtlas m_atlasses;

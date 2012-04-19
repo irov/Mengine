@@ -26,12 +26,12 @@ namespace Menge
 	struct ParticlesAtlas
 	{
 		ParticlesAtlas(){}
-		ParticlesAtlas( const String & _file, const String & _path )
+		ParticlesAtlas( const String & _file/*, const String & _path */)
 			: file(_file)
-			, path(_path)
+			/*, path(_path)*/
 		{}
 		String file;
-		String path;
+		//String path;
 	};
 
 	class RenderParticlesListener

@@ -114,7 +114,10 @@ namespace Menge
 		~ResourceMovie();
 
 	public:
+		float getFrameDuration() const;
 		float getWorkAreaDuration() const;
+
+		size_t getFrameCount() const;
 
 	public:
 		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
@@ -124,7 +127,7 @@ namespace Menge
 		const TVectorMovieLayers3D & getLayers3D() const;
 
 	public:
-		bool getFrame2D( const MovieLayer2D & _layer, float _timing, MovieFrame2D & _frame ) const;
+		bool getFrame2D( const MovieLayer2D & _layer, size_t _index, MovieFrame2D & _frame ) const;
 		
 		bool getFrame2DFirst( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
 		bool getFrame2DLast( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
@@ -152,8 +155,10 @@ namespace Menge
 	protected:
 		ConstString m_pathMOV;
 
-		float m_duration;
+		float m_frameDuration;
 		float m_workAreaDuration;
+
+		size_t m_frameCount;
 
 		float m_width;
 		float m_height;

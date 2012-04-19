@@ -19,7 +19,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceMovie );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie::ResourceMovie()
-		: m_duration(0.f)
+		: m_frameDuration(0.f)
 		, m_width(0.f)
 		, m_height(0.f)
 	{
@@ -29,9 +29,19 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float ResourceMovie::getFrameDuration() const
+	{
+		return m_frameDuration;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float ResourceMovie::getWorkAreaDuration() const
 	{
-		return m_workAreaDuration * 1000.f;
+		return m_workAreaDuration;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceMovie::getFrameCount() const
+	{
+		return m_frameCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorMovieLayers2D & ResourceMovie::getLayers2D() const
@@ -66,35 +76,43 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame2D( const MovieLayer2D & _layer, float _timing, MovieFrame2D & _frame ) const
+	bool ResourceMovie::getFrame2D( const MovieLayer2D & _layer, size_t _index, MovieFrame2D & _frame ) const
 	{
-		if( _timing < _layer.in )
-		{
-			return false;
-		}
+		//if( _timing < _layer.in )
+		//{
+		//	return false;
+		//}
 
-		if( _timing >= _layer.out )
-		{
-			return false;
-		}
+		//if( _timing >= _layer.out )
+		//{
+		//	return false;
+		//}
 
-		float relation_time = _timing - _layer.in;
+		const MovieFrame2D & frame = _layer.frames[_index];
 
-		size_t index = size_t(relation_time / m_duration);
+		_frame.anchorPoint = frame.anchorPoint;
+		_frame.position = frame.position;
+		_frame.scale = frame.scale;
+		_frame.angle = frame.angle;
+		_frame.opacity = frame.opacity;
 
-		const MovieFrame2D & frame_1 = _layer.frames[index+0];
-		const MovieFrame2D & frame_2 = _layer.frames[index+1];
+		//float relation_time = _timing - _layer.in;
 
-		float time_1 = (index + 0) * m_duration;
-		float time_2 = (index + 1) * m_duration;
+		//size_t index = size_t(relation_time / m_frameDuration);
 
-		float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
+		//const MovieFrame2D & frame_1 = _layer.frames[index+0];
+		//const MovieFrame2D & frame_2 = _layer.frames[index+1];
 
-		Helper::s_linerp_v2( _frame.anchorPoint, frame_1.anchorPoint, frame_2.anchorPoint, timeScale );
-		Helper::s_linerp_v2( _frame.position, frame_1.position, frame_2.position, timeScale );
-		Helper::s_linerp_v2( _frame.scale, frame_1.scale, frame_2.scale, timeScale );
-		Helper::s_linerp( _frame.angle, frame_1.angle, frame_2.angle, timeScale );
-		Helper::s_linerp( _frame.opacity, frame_1.opacity, frame_2.opacity, timeScale );
+		//float time_1 = (index + 0) * m_frameDuration;
+		//float time_2 = (index + 1) * m_frameDuration;
+
+		//float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
+
+		//Helper::s_linerp_v2( _frame.anchorPoint, frame_1.anchorPoint, frame_2.anchorPoint, timeScale );
+		//Helper::s_linerp_v2( _frame.position, frame_1.position, frame_2.position, timeScale );
+		//Helper::s_linerp_v2( _frame.scale, frame_1.scale, frame_2.scale, timeScale );
+		//Helper::s_linerp( _frame.angle, frame_1.angle, frame_2.angle, timeScale );
+		//Helper::s_linerp( _frame.opacity, frame_1.opacity, frame_2.opacity, timeScale );
 
 		return true;
 	}
@@ -119,6 +137,7 @@ namespace Menge
 		}
 
 		_frame = _layer.frames.back();
+		//_frame = _layer.frames[_layer.frames.size() - 2];
 
 		return true;
 	}
@@ -137,13 +156,13 @@ namespace Menge
 
 		float relation_time = _timing - _layer.in;
 
-		size_t index = size_t(relation_time / m_duration);
+		size_t index = size_t(relation_time / m_frameDuration);
 
 		const MovieFrame3D & frame_1 = _layer.frames[index+0];
 		const MovieFrame3D & frame_2 = _layer.frames[index+1];
 
-		float time_1 = (index + 0) * m_duration;
-		float time_2 = (index + 1) * m_duration;
+		float time_1 = (index + 0) * m_frameDuration;
+		float time_2 = (index + 1) * m_frameDuration;
 
 		float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
 
@@ -215,7 +234,8 @@ namespace Menge
 
 		BIN_SWITCH_ID(_parser)
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
+			//BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
+			BIN_CASE_ATTRIBUTE( Protocol::FrameDuration_Value, m_frameDuration );
 			BIN_CASE_ATTRIBUTE( Protocol::WorkAreaDuration_Value, m_workAreaDuration );
 
 			BIN_CASE_ATTRIBUTE( Protocol::Width_Value, m_width );
@@ -240,6 +260,8 @@ namespace Menge
 				{
 					ml.in = 0.0f;
 				}
+
+				//ml.out -= m_frameDuration;
 
 				BIN_PARSE_METHOD_ARG1( this, &ResourceMovie::loaderMovieLayer2D_, ml );
 			}
@@ -501,6 +523,8 @@ namespace Menge
 				return false;
 			}
 		}
+
+		m_frameCount = (size_t)((m_workAreaDuration / m_frameDuration) + 0.5f);
 
 		return true;
 	}

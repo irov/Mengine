@@ -53,7 +53,7 @@ namespace	Menge
 			return; 
 		}
 
-		size_t frameSize = m_resourceAnimation->getSequenceCount();
+		size_t frameCount = m_resourceAnimation->getSequenceCount();
 
 		float speedFactor = this->getSpeedFactor();
 		m_frameTiming += _timing * speedFactor;
@@ -62,6 +62,8 @@ namespace	Menge
 		
 //		float speedFactor = this->getSpeedFactor();
 //		delay *= speedFactor;
+
+		size_t lastFrame = m_currentFrame;
 
 		while( m_frameTiming >= delay )
 		{
@@ -74,14 +76,14 @@ namespace	Menge
 
 			if( m_onEndFrameTick == true )
 			{
-				this->callEvent( EVENT_FRAME_TICK, "(OII)", this->getEmbed(), m_currentFrame, frameSize );
+				this->callEvent( EVENT_FRAME_TICK, "(OII)", this->getEmbed(), m_currentFrame, frameCount );
 			}
 			else
 			{
 				++m_currentFrame;
 			}
 
-			if( m_currentFrame == frameSize )
+			if( m_currentFrame == frameCount )
 			{
 				if( this->getLoop() == true )
 				{
@@ -100,8 +102,18 @@ namespace	Menge
 //			delay *= speedFactor;
 		}
 
-		this->updateCurrentImageResource_();
+		if( lastFrame != m_currentFrame )
+		{
+			//printf("Animation %s %d [%.2f, %.2f]\n"
+			//	, m_name.c_str()
+			//	, m_currentFrame
+			//	, this->getLocalPosition().x
+			//	, this->getLocalPosition().y
+			//	);
 
+			this->updateCurrentFrame_( lastFrame );
+		}
+		
 		Sprite::_update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -124,7 +136,7 @@ namespace	Menge
 			return false;
 		}
 
-		if( this->updateCurrentImageResource_() == false )
+		if( this->updateCurrentFrame_( 0 ) == false )
 		{
 			return false;
 		}
@@ -318,7 +330,7 @@ namespace	Menge
 		return count - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animation::updateCurrentImageResource_()
+	bool Animation::updateCurrentFrame_( size_t _lastFrame )
 	{
 		if( m_resource != NULL )
 		{
@@ -410,7 +422,7 @@ namespace	Menge
 
 		m_currentFrame = _frame;
 
-		this->updateCurrentImageResource_();
+		this->updateCurrentFrame_( m_currentFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setFirstFrame()
@@ -447,7 +459,7 @@ namespace	Menge
 				
 		m_currentFrame = this->getFrame_( _timing, m_frameTiming );
 
-		this->updateCurrentImageResource_();
+		this->updateCurrentFrame_( m_currentFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Animation::_getTiming() const

@@ -73,7 +73,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_resourceMovie(NULL)
-		, m_timing(0.f)
+		//, m_timing(0.f)
+		, m_frameTiming(0.f)
+		, m_currentFrame(0)
 		, m_parentMovie(false)
 	{
 	}
@@ -109,7 +111,14 @@ namespace Menge
 			return;
 		}
 
-		m_timing = _timing;
+		float frameDuration = m_resourceMovie->getFrameDuration();
+
+		m_currentFrame = (size_t)floorf(_timing / frameDuration);
+		m_frameTiming = _timing - m_currentFrame * frameDuration;
+
+		this->updateCurrentFrame_( 0 );
+
+		//m_timing = _timing;
 
 //		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 //
@@ -140,12 +149,26 @@ namespace Menge
 //			}
 //		}
 
-		this->update( 0.f );
+		//this->update( 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Movie::_getTiming() const
 	{
-		return m_timing;
+		if( this->isCompile() == false )
+		{
+			MENGE_LOG_ERROR( "Movie.getTiming: '%s' not compile"
+				, m_name.c_str()
+				);
+
+			return 0.f;
+		}
+
+
+		float frameDuration = m_resourceMovie->getFrameDuration();
+
+		float timing = m_currentFrame * frameDuration + m_frameTiming;
+
+		return timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Movie::getWorkAreaDuration() const
@@ -166,7 +189,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play()
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
@@ -175,13 +198,16 @@ namespace Menge
 		{
 			float out = this->getWorkAreaDuration();
 
-			m_timing = out;
+			m_frameTiming = 0.f;
+			m_currentFrame = 0;
 
 			this->setLastFrame();
 		}
 		else
 		{
-			m_timing = 0.f;
+			m_frameTiming = 0.f;
+			m_currentFrame = 0;
+
 			this->setFirstFrame();
 		}
 
@@ -595,7 +621,7 @@ namespace Menge
 			return false;
 		}
 
-		m_timing = 0.f;
+		//m_timing = 0.f;
 
 		m_resourceMovie = ResourceManager::get()
 			->getResourceT<ResourceMovie>( m_resourceMovieName );
@@ -1198,20 +1224,53 @@ namespace Menge
 		//	printf("Movie %s update %f:%f\n", m_name.c_str(), m_timing, _timing);
 		//}
 
-		float lastTiming = m_timing;
+		//float lastTiming = m_timing;
 
 		float realTiming = _timing * m_speedFactor;
 
-		if( m_reverse == true )
+		m_frameTiming += realTiming;
+
+		float frameDuration = m_resourceMovie->getFrameDuration();
+
+		if( frameDuration == 0.f )
 		{
-			m_timing -= realTiming;
-		}
-		else
-		{
-			m_timing += realTiming;
+			return;
 		}
 
-		float out = this->getWorkAreaDuration();
+		size_t lastFrame = m_currentFrame;
+
+		size_t frameCount = m_resourceMovie->getFrameCount();
+
+		while( m_frameTiming >= frameDuration )
+		{
+			m_frameTiming -= frameDuration;
+
+			++m_currentFrame;
+
+			if( m_currentFrame == frameCount )
+			{
+				if( this->getLoop() == true )
+				{
+					m_currentFrame = 0;
+				}
+				else
+				{
+					this->end();
+					return;
+				}
+			}	
+		}
+
+		if( lastFrame != m_currentFrame )
+		{
+			this->updateCurrentFrame_(lastFrame);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateCurrentFrame_( size_t _lastFrame )
+	{
+		float frameDuration = m_resourceMovie->getFrameDuration();
+		float out = m_resourceMovie->getWorkAreaDuration();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -1225,17 +1284,19 @@ namespace Menge
 
 			float layerIn = layer.in;
 			float layerOut = layer.out;
-
+			
 			if( layerOut > out )
 			{
 				layerOut = out;
 			}
 
-			//if (m_reverse)
-			//{
-			//	layerIn = layer.out;
-			//	layerOut = layer.in;
-			//}
+			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
+			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
+
+			if( indexOut < _lastFrame || indexIn > m_currentFrame )
+			{
+				continue;
+			}
 
 			TMapNode::iterator it_found = m_nodies.find( layer.index );
 
@@ -1255,8 +1316,8 @@ namespace Menge
 			//Node * node = m_nodies[layer.index];
 
 			if( layer.internal == false )
-			{
-				if( layerIn <= m_timing && m_timing <= layerOut )
+			{			
+				if( indexIn <= m_currentFrame && m_currentFrame <= indexOut )
 				{
 					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
 					node->localHide(false);
@@ -1270,23 +1331,18 @@ namespace Menge
 							animatable->setSpeedFactor( m_speedFactor );							
 
 							animatable->play();
-							animatable->setTiming( lastTiming - layerIn );
+							//animatable->setTiming( lastTiming - layerIn );
 							//animatable->update(realTiming);
 						}
 					}
 				}
-			}
-
-			if( layerOut < lastTiming || layerIn > lastTiming )
-			{
-				continue;
 			}
 			
 			MovieFrame2D frame;
 
 			if( m_reverse == false )
 			{
-				if( layerOut >= lastTiming && layerOut <= m_timing )
+				if( indexOut >= _lastFrame && indexOut <= m_currentFrame )
 				{
 					if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 					{
@@ -1317,7 +1373,7 @@ namespace Menge
 				}
 				else
 				{
-					if( m_resourceMovie->getFrame2D( layer, m_timing, frame ) == false )
+					if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
 					{
 						continue;
 					}
@@ -1325,7 +1381,7 @@ namespace Menge
 			}
 			else
 			{
-				if( layerIn <= lastTiming && layerIn >= m_timing )
+				if( indexIn <= _lastFrame && indexIn >= m_currentFrame )
 				{
 					if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
 					{
@@ -1357,7 +1413,7 @@ namespace Menge
 				}
 				else
 				{
-					if( m_resourceMovie->getFrame2D( layer, m_timing, frame ) == false )
+					if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
 					{
 						continue;
 					}
@@ -1438,43 +1494,43 @@ namespace Menge
 		//	Helper::s_applyFrame3D( sprite, frame );
 		//}
 
-		if( m_reverse == false )
-		{
-			if( out >= lastTiming && out <= m_timing )
-			{
-				if( this->getLoop() == true )
-				{
-					//m_timing = m_timing - out;
-					m_timing = 0.f;
+		//if( m_reverse == false )
+		//{
+		//	if( out >= lastTiming && out <= m_timing )
+		//	{
+		//		if( this->getLoop() == true )
+		//		{
+		//			//m_timing = m_timing - out;
+		//			m_timing = 0.f;
 
-					this->setFirstFrame();
+		//			this->setFirstFrame();
 
-					this->_update( 0.f );
-				}
-				else
-				{
-					this->end();
-				}
-			}
-		}
-		else
-		{
-			if( lastTiming >= 0.f && m_timing <= 0.f )
-			{
-				if( this->getLoop() == true )
-				{
-					m_timing = out + m_timing;
+		//			this->_update( 0.f );
+		//		}
+		//		else
+		//		{
+		//			this->end();
+		//		}
+		//	}
+		//}
+		//else
+		//{
+		//	if( lastTiming >= 0.f && m_timing <= 0.f )
+		//	{
+		//		if( this->getLoop() == true )
+		//		{
+		//			m_timing = out + m_timing;
 
-					this->setLastFrame();
+		//			this->setLastFrame();
 
-					this->_update( 0.f );
-				}
-				else
-				{
-					this->end();
-				}
-			}		
-		}
+		//			this->_update( 0.f );
+		//		}
+		//		else
+		//		{
+		//			this->end();
+		//		}
+		//	}		
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setReverse( bool _value )

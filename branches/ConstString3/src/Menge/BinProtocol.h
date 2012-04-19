@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1333560622;
+		static const int version = 1334828043;
 		struct AccountID
 		{
 			static const int id = 125;
@@ -648,6 +648,15 @@ namespace Menge
 			static const int id = 496;
 			typedef mt::vec4f Type;
 		};
+		struct FrameDuration
+		{
+			static const int id = 614;
+		};
+		struct FrameDuration_Value
+		{
+			static const int id = 615;
+			typedef float Type;
+		};
 		struct Frequency
 		{
 			static const int id = 166;
@@ -826,16 +835,16 @@ namespace Menge
 		};
 		struct Internal
 		{
-			static const int id = 618;
+			static const int id = 620;
 		};
 		struct Internal_Group
 		{
-			static const int id = 619;
+			static const int id = 621;
 			typedef Menge::ConstString Type;
 		};
 		struct Internal_Name
 		{
-			static const int id = 617;
+			static const int id = 619;
 			typedef Menge::ConstString Type;
 		};
 		struct IsBullet
@@ -2217,11 +2226,11 @@ namespace Menge
 		};
 		struct WorkAreaDuration
 		{
-			static const int id = 614;
+			static const int id = 616;
 		};
 		struct WorkAreaDuration_Value
 		{
-			static const int id = 615;
+			static const int id = 617;
 			typedef float Type;
 		};
 	}

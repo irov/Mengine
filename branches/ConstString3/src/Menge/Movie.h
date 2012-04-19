@@ -79,6 +79,9 @@ namespace Menge
 		void addMovieSlot_(const ConstString & _slotName, Node * _node );
 
 	protected:
+		void updateCurrentFrame_( size_t _lastFrame );
+
+	protected:
 		ConstString m_resourceMovieName;
 		
 		ResourceMovie * m_resourceMovie;
@@ -92,7 +95,8 @@ namespace Menge
 		typedef std::map<ConstString, Node *> TMapMovieSlot;
 		TMapMovieSlot m_slots;
 
-		float m_timing;
+		float m_frameTiming;
+		size_t m_currentFrame;
 
 		bool m_parentMovie;
 	};

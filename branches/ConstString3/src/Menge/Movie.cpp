@@ -1226,16 +1226,16 @@ namespace Menge
 
 		//float lastTiming = m_timing;
 
-		float realTiming = _timing * m_speedFactor;
-
-		m_frameTiming += realTiming;
-
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
 		if( frameDuration == 0.f )
 		{
 			return;
 		}
+
+		float realTiming = _timing * m_speedFactor;
+
+		m_frameTiming += realTiming;
 
 		size_t lastFrame = m_currentFrame;
 

@@ -83,6 +83,7 @@ namespace Menge
 		ConstString c_LayerCamera2D;
 
 		ConstString c_MovieSlot;
+		ConstString c_MovieNullObject;
 	};
 }
 

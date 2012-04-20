@@ -659,6 +659,16 @@ namespace Menge
 				continue;
 			}
 			
+			if ( layer.source == Consts::get()->c_MovieNullObject )
+			{
+				Node * layer_slot = NodeManager::get()
+					->createNodeT<Node>( layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
+				layer_slot->enable();
+				layer_slot->localHide(true);
+				this->addMovieNode_( layer, layer_slot );
+				continue;
+			}
+
 			const ConstString & resourceType = ResourceManager::get()
 				->getResourceType( layer.source );
 

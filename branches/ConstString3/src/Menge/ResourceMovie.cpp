@@ -392,6 +392,14 @@ namespace Menge
 				continue;
 			}
 			
+			if( it->source ==  Consts::get()->c_MovieNullObject )
+			{
+				it->internal = false;
+				it->animatable = false;
+				it->movie = false;
+				continue;
+			}
+
 			const ConstString & resourceType = ResourceManager::get()
 				->getResourceType( it->source );
 

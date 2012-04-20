@@ -2291,7 +2291,7 @@ namespace Menge
 
 			if( resource == NULL )
 			{
-				return NULL;
+				return pybind::ret_none();
 			}
 
 			PyObject * py_dict_result = pybind::dict_new();
@@ -2970,7 +2970,7 @@ namespace Menge
 			.def( "setPersonalColor", &Colorable::setPersonalColor )
 			.def( "getPersonalColor", &Colorable::getPersonalColor )
 			.def( "setPersonalAlpha", &Colorable::setPersonalAlpha )
-			.def( "getPersonalAlpha", &Colorable::getPersonalAlpha )
+			.def( "getPersonalAlpha", &Colorable::getPersonalAlpha )			
 			;
 
 		pybind::interface_<Animatable>("Animatable")
@@ -2986,8 +2986,6 @@ namespace Menge
 			.def( "getTiming", &Animatable::getTiming )
 			.def( "setLoop", &Animatable::setLoop )
 			.def( "getLoop", &Animatable::getLoop )
-			.def( "setReverse", &Animatable::setReverse )
-			.def( "getReverse", &Animatable::getReverse )
 			;
 
 		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
@@ -3392,6 +3390,8 @@ namespace Menge
 				//	;
 
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
+					.def( "setReverse", &Movie::setReverse )
+					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )
 					.def( "getWorkAreaDuration", &Movie::getWorkAreaDuration )
 					.def( "getMovieSlot", &Movie::getMovieSlot )

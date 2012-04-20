@@ -292,7 +292,7 @@ namespace Menge
 			mt.alphaBlendEnable = true;
 			mt.alphaTestEnable = false;
 			mt.depthBufferWriteEnable = false;
-
+			
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE;
 
@@ -649,7 +649,7 @@ namespace Menge
 
 		_image->unlock();
 
-		imageEncoder->release();
+		//imageEncoder->release();
 
 		if( bytesWritten == 0 )
 		{
@@ -2255,6 +2255,11 @@ namespace Menge
 		RenderTexture* texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
 
 		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setSeparateAlphaBlendMode()
+	{
+		m_interface->setSeparateAlphaBlendMode();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

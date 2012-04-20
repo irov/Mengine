@@ -107,7 +107,8 @@ namespace Menge
 		
 		void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
-		
+		void setSeparateAlphaBlendMode() override;
+
 		//RenderTextureInterface * getTexture( const ConstString & _name ) const;
 		//bool validTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
 

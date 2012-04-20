@@ -151,7 +151,7 @@ namespace Menge
 		void onWindowClose() override;
 
 		void setVSync( bool _vSync ) override;
-
+		void setSeparateAlphaBlendMode() override;
 	private:
 		// Log
 		ServiceProviderInterface * m_serviceProvider;

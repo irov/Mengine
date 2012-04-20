@@ -151,8 +151,8 @@ namespace Menge
 		bool supportTextureFormat( PixelFormat _format ) override;
 
 		//new
-		LightInterface * createLight( const String & _name ) override;
-		void releaseLight( LightInterface * _light ) override;
+		//LightInterface * createLight( const String & _name ) override;
+		//void releaseLight( LightInterface * _light ) override;
 
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;

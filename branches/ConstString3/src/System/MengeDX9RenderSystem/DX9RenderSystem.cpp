@@ -739,7 +739,7 @@ namespace Menge
 
 		if( !renderTarget || FAILED(hr) )
 		{
-			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetRenderTarget" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetRenderTarget %i",hr );
 			return;
 		}
 
@@ -750,7 +750,7 @@ namespace Menge
 
 		if( FAILED(hr) )
 		{
-			LOGGER_ERROR(m_logService)( "D3D Error: failed to CreateOffscreenPlainSurface" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to CreateOffscreenPlainSurface %i",hr );
 			renderTarget->Release();
 			//offscreenSurface->Release();
 			return;
@@ -760,7 +760,7 @@ namespace Menge
 
 		if(! SUCCEEDED(hr))
 		{
-			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetRenderTargetData" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetRenderTargetData %i",hr );
 			renderTarget->Release();
 			offscreenSurface->Release();
 			return;
@@ -775,7 +775,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetSurfaceLevel" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetSurfaceLevel %i",hr );
 			renderTarget->Release();
 			offscreenSurface->Release();
 			return;
@@ -800,7 +800,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logService)( "D3D Error: failed to loadSurfaceFromSurface_" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to loadSurfaceFromSurface_ %i",hr );
 		}
 				
 		renderTarget->Release();
@@ -983,6 +983,28 @@ namespace Menge
 				return false;
 			}
 		}
+
+		//m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP);
+		//m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP);
+		//m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+
+		//m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		//m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		//m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+
+		//m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);		
+		////m_pD3DDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+		//m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+		//m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
+//		m_pD3DDevice->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, TRUE);
+//		m_pD3DDevice->SetRenderState(D3DRS_BLENDOPALPHA, D3DBLENDOP_ADD);
+//		m_pD3DDevice->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ONE);
+//		m_pD3DDevice->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_INVSRCALPHA);
 
 		hr = m_pD3DDevice->BeginScene();
 		
@@ -1189,7 +1211,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LightInterface * DX9RenderSystem::createLight( const String & _name )
+	/*LightInterface * DX9RenderSystem::createLight( const String & _name )
 	{
 		return NULL;
 	}
@@ -1197,7 +1219,7 @@ namespace Menge
 	void DX9RenderSystem::releaseLight( LightInterface * _light )
 	{
 		// empty
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::onWindowMovedOrResized()
 	{
@@ -1970,6 +1992,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setSrcBlendFactor( EBlendFactor _src )
 	{
+		//!COMMENT return;
 		DWORD factor = s_toD3DBlend( _src );
 
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, factor );
@@ -1981,6 +2004,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setDstBlendFactor( EBlendFactor _dst )
 	{
+		//!COMMENT return;
 		DWORD factor = s_toD3DBlend( _dst );
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, factor );
 		if( FAILED( hr ) )
@@ -2038,6 +2062,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureFactor( uint32 _color )
 	{
+		//!COMMENT return;
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, _color );
 		if( FAILED( hr ) )
 		{
@@ -2162,6 +2187,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setAlphaTestEnable( bool _alphaTest )
 	{
+		//!COMMENT  return;
 		DWORD alphaTest = _alphaTest ? TRUE : FALSE;
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, alphaTest );
 		if( FAILED( hr ) )
@@ -2174,6 +2200,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
 	{
+		//!COMMENT return;
 		DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, alphaBlend );
 		if( FAILED( hr ) )
@@ -2186,6 +2213,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha )
 	{
+		//!COMMENT return;
 		D3DCMPFUNC func = s_toD3DCmpFunc( _alphaFunc );
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, func );
 		if( FAILED( hr ) )
@@ -2219,6 +2247,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
+		//return;
 		HRESULT hr;
 		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
 		DWORD arg1 = s_toD3DTextureArg( _arg1 );
@@ -2252,6 +2281,7 @@ namespace Menge
 	void DX9RenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp
 													,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
+		//return;
 		HRESULT hr;
 		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
 		DWORD arg1 = s_toD3DTextureArg( _arg1 );
@@ -2277,6 +2307,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{
+		//return;
 		/*D3DTEXTURESTAGESTATETYPE textureFilterType = s_toD3DTextureFilterType( _filterType );
 		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
 
@@ -2526,33 +2557,36 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setSeparateAlphaBlendMode()
-	{
-		/*
-		m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+	{		
+		//m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+		//m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+		//m_pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
-		m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP);
-		m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP);
-		m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+		//m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSU,D3DTADDRESS_CLAMP);
+		//m_pD3DDevice->SetSamplerState(0,D3DSAMP_ADDRESSV,D3DTADDRESS_CLAMP);
+		//m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-		m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+		//m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		//m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		//m_pD3DDevice->SetTextureStageState (0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
 
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+
+		//m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);		
+
+		//m_pD3DDevice->SetRenderState(D3DRS_BLENDOP,D3DBLENDOP_ADD);
+
+		//m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+		//m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ONE );
 		
-		m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);		
-		m_pD3DDevice->SetRenderState(D3DRS_BLENDOP,D3DBLENDOP_ADD);
-		m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND,D3DBLEND_SRCALPHA );
-		m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-		*/
 		m_pD3DDevice->SetRenderState(D3DRS_SEPARATEALPHABLENDENABLE, TRUE);
 		m_pD3DDevice->SetRenderState(D3DRS_BLENDOPALPHA, D3DBLENDOP_ADD);
-		m_pD3DDevice->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ONE);
-		m_pD3DDevice->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_ONE);
+		m_pD3DDevice->SetRenderState(D3DRS_SRCBLENDALPHA, D3DBLEND_ZERO);
+		m_pD3DDevice->SetRenderState(D3DRS_DESTBLENDALPHA, D3DBLEND_INVSRCALPHA);
+		m_pD3DDevice->SetRenderState( D3DRS_DESTBLENDALPHA, D3DBLEND_ONE ); 
+		m_pD3DDevice->SetRenderState( D3DRS_SRCBLENDALPHA, D3DBLEND_INVDESTALPHA );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

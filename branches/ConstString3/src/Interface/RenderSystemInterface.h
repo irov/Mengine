@@ -418,6 +418,9 @@ namespace Menge
 
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual void clear( uint32 _color ) = 0;
+
+		virtual void setSeparateAlphaBlendMode() = 0;
+
 	};
 
 	class RenderServiceInterface
@@ -436,7 +439,7 @@ namespace Menge
 		virtual void releaseTexture( const RenderTextureInterface* _texture ) = 0;
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual bool getVSync() const = 0;
-
+		virtual void setSeparateAlphaBlendMode() = 0;
 	public:
 		virtual RenderTextureInterface* createTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
 		virtual RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;

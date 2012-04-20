@@ -1265,6 +1265,10 @@ namespace Menge
 				}
 				else
 				{
+					m_currentFrame = frameCount;
+
+					this->updateCurrentFrame_(lastFrame);
+
 					this->end();
 					return;
 				}
@@ -1279,6 +1283,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCurrentFrame_( size_t _lastFrame )
 	{
+		//printf("Movie %s %d:%d"
+		//	, m_name.c_str()
+		//	, m_currentFrame
+		//	, _lastFrame
+		//	);
+
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		float out = m_resourceMovie->getWorkAreaDuration();
 
@@ -1341,7 +1351,9 @@ namespace Menge
 							animatable->setSpeedFactor( m_speedFactor );							
 
 							animatable->play();
-							//animatable->setTiming( lastTiming - layerIn );
+
+							float timing = (m_currentFrame - indexIn) * frameDuration;
+							animatable->setTiming( timing );
 							//animatable->update(realTiming);
 						}
 					}

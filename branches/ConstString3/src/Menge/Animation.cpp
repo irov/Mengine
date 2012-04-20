@@ -91,6 +91,9 @@ namespace	Menge
 				}
 				else
 				{
+					m_currentFrame = frameCount - 1;
+					this->updateCurrentFrame_( lastFrame );
+
 					this->end();
 					return;
 				}

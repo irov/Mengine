@@ -59,6 +59,7 @@ namespace Menge
 	void VideoCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
 		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
+		m_stringize = _provider->getServiceT<StringizeServiceInterface>( "StringizeService" );
 
 		if( m_codecService == 0 )
 		{
@@ -66,8 +67,8 @@ namespace Menge
 		}
 
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
-
-		ConstString c_ffmpegVideo("ffmpegVideo");
+		
+		ConstString c_ffmpegVideo =  m_stringize->stringize("ffmpegVideo");
 
 		VideoCodecDecoderSystem * ffmpegDecoder = new Detail::VideoDecoderSystem<VideoDecoderFFMPEG>(c_ffmpegVideo, logService);
 		m_decoders.push_back( ffmpegDecoder );

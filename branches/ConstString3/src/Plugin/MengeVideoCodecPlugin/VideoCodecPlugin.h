@@ -2,6 +2,7 @@
 
 #	include "Interface/PluginInterface.h"
 #	include "Interface/CodecInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 namespace Menge
 {
@@ -21,6 +22,7 @@ namespace Menge
 	protected:
 		ConstString m_name;
 		CodecServiceInterface * m_service;
+
 	};
 
 
@@ -38,6 +40,6 @@ namespace Menge
 		typedef std::vector<VideoCodecDecoderSystem * > TVectorVideoDecoders;
 		TVectorVideoDecoders m_decoders;
 		CodecServiceInterface * m_codecService;
-		
+		StringizeServiceInterface * m_stringize;
 	};
 }

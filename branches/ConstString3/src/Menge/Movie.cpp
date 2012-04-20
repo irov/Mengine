@@ -1277,18 +1277,20 @@ namespace Menge
 
 		if( lastFrame != m_currentFrame )
 		{
+			//printf("Movie %s %d:%d [%.2f, %.2f]\n"
+			//	, m_name.c_str()
+			//	, m_currentFrame
+			//	, lastFrame
+			//	, _timing
+			//	, this->getTiming()
+			//	);
+
 			this->updateCurrentFrame_(lastFrame);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCurrentFrame_( size_t _lastFrame )
 	{
-		//printf("Movie %s %d:%d"
-		//	, m_name.c_str()
-		//	, m_currentFrame
-		//	, _lastFrame
-		//	);
-
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		float out = m_resourceMovie->getWorkAreaDuration();
 
@@ -1352,7 +1354,7 @@ namespace Menge
 
 							animatable->play();
 
-							float timing = (m_currentFrame - indexIn) * frameDuration;
+							float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
 							animatable->setTiming( timing );
 							//animatable->update(realTiming);
 						}

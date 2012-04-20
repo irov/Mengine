@@ -107,11 +107,12 @@ namespace	Menge
 
 		if( lastFrame != m_currentFrame )
 		{
-			//printf("Animation %s %d [%.2f, %.2f]\n"
+			//printf("Animation %s %d:%d [%.2f, %.2f]\n"
 			//	, m_name.c_str()
 			//	, m_currentFrame
-			//	, this->getLocalPosition().x
-			//	, this->getLocalPosition().y
+			//	, lastFrame
+			//	, _timing
+			//	, this->getTiming()
 			//	);
 
 			this->updateCurrentFrame_( lastFrame );

@@ -91,11 +91,7 @@ namespace	Menge
 				}
 				else
 				{
-					m_currentFrame = frameCount - 1;
-					this->updateCurrentFrame_( lastFrame );
-
-					this->end();
-					return;
+					break;
 				}
 			}	
 
@@ -103,6 +99,11 @@ namespace	Menge
 
 //			float speedFactor = this->getSpeedFactor();
 //			delay *= speedFactor;
+		}
+
+		if( m_currentFrame == frameCount )
+		{
+			m_currentFrame = frameCount - 1;
 		}
 
 		if( lastFrame != m_currentFrame )
@@ -119,6 +120,11 @@ namespace	Menge
 		}
 		
 		Sprite::_update( _timing );
+
+		if( m_currentFrame == frameCount )
+		{
+			this->end();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()

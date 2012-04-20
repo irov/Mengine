@@ -532,7 +532,7 @@ namespace Menge
 			}
 		}
 
-		m_frameCount = (size_t)((m_workAreaDuration / m_frameDuration) + 0.5f);
+		m_frameCount = (size_t)((m_workAreaDuration / m_frameDuration) + 0.5f) - 1;
 
 		return true;
 	}

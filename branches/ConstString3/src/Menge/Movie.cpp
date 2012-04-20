@@ -1259,21 +1259,24 @@ namespace Menge
 
 			if( m_currentFrame == frameCount )
 			{
+				if( this->getLoop() == false )
+				{
+					break;
+				}
+			}
+			else if ( m_currentFrame == frameCount + 1 )
+			{
 				if( this->getLoop() == true )
 				{
 					m_currentFrame = 0;
 				}
-				else
-				{
-					m_currentFrame = frameCount;
-
-					this->updateCurrentFrame_(lastFrame);
-
-					this->end();
-					return;
-				}
 			}	
 		}
+
+		//if( m_currentFrame == frameCount + 1 )
+		//{
+		//	m_currentFrame = frameCount;
+		//}
 
 		if( lastFrame != m_currentFrame )
 		{
@@ -1287,12 +1290,20 @@ namespace Menge
 
 			this->updateCurrentFrame_(lastFrame);
 		}
+
+		if( m_currentFrame == frameCount )
+		{
+			if( this->getLoop() == false )
+			{
+				this->end();
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCurrentFrame_( size_t _lastFrame )
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
-		float out = m_resourceMovie->getWorkAreaDuration();
+		size_t frameCount = m_resourceMovie->getFrameCount();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -1307,13 +1318,18 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 			
-			if( layerOut > out )
-			{
-				layerOut = out;
-			}
+			//if( layerOut > out )
+			//{
+			//	layerOut = out;
+			//}
 
 			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
 			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
+
+			//if( indexOut > frameCount )
+			//{
+			//	indexOut = frameCount;
+			//}
 
 			if( indexOut < _lastFrame || indexIn > m_currentFrame )
 			{
@@ -1335,11 +1351,34 @@ namespace Menge
 
 			Node * node = it_found->second;
 
+			if( frameCount > _lastFrame && frameCount <= m_currentFrame )
+			{
+				if( layer.internal == false )
+				{
+					//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
+					//{
+					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+					//node->localHide(true);
+
+					if( layer.animatable == true )
+					{
+						Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+						if( animatable->isPlay() == true )
+						{
+							animatable->stop();
+						}
+					}
+				}
+
+				continue;
+			}
+
 			//Node * node = m_nodies[layer.index];
 
 			if( layer.internal == false )
 			{			
-				if( indexIn <= m_currentFrame && m_currentFrame <= indexOut )
+				if( indexIn <= m_currentFrame && _lastFrame < indexOut )
 				{
 					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
 					node->localHide(false);
@@ -1361,22 +1400,27 @@ namespace Menge
 					}
 				}
 			}
-			
+
 			MovieFrame2D frame;
 
 			if( m_reverse == false )
 			{
+				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+				{
+					continue;
+				}
+
 				if( indexOut >= _lastFrame && indexOut <= m_currentFrame )
 				{
-					if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
-					{
-						MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
-							, m_name.c_str()
-							, layer.name.c_str()
-							);
+					//if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+					//{
+					//	MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+					//		, m_name.c_str()
+					//		, layer.name.c_str()
+					//		);
 
-						continue;
-					}
+					//	continue;
+					//}
 
 					if( layer.internal == false )
 					{
@@ -1392,13 +1436,6 @@ namespace Menge
 							animatable->stop();
 						}
 
-						continue;
-					}
-				}
-				else
-				{
-					if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
-					{
 						continue;
 					}
 				}

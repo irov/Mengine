@@ -113,8 +113,16 @@ namespace Menge
 
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		m_currentFrame = (size_t)floorf(_timing / frameDuration);
-		m_frameTiming = _timing - m_currentFrame * frameDuration;
+		if( _timing > 0.f )
+		{
+			m_currentFrame = (size_t)floorf(_timing / frameDuration);
+			m_frameTiming = _timing - m_currentFrame * frameDuration;
+		}
+		else
+		{
+			m_currentFrame = 0;
+			m_frameTiming = _timing;
+		}
 
 		this->updateCurrentFrame_( 0 );
 
@@ -1288,7 +1296,7 @@ namespace Menge
 			//	, this->getTiming()
 			//	);
 
-			this->updateCurrentFrame_(lastFrame);
+			this->updateCurrentFrame_( lastFrame );
 		}
 
 		if( m_currentFrame == frameCount )
@@ -1366,7 +1374,15 @@ namespace Menge
 
 						if( animatable->isPlay() == true )
 						{
+							//printf("Movie %s stop[end] animatable %s\n"
+							//	, m_name.c_str()
+							//	, node->getName().c_str()
+							//	);
+
 							animatable->stop();
+
+							float timing = (indexOut - indexIn) * frameDuration;
+							animatable->setTiming( timing );
 						}
 					}
 				}
@@ -1391,10 +1407,23 @@ namespace Menge
 						{
 							animatable->setSpeedFactor( m_speedFactor );							
 
+							//printf("Movie %s play animatable %s\n"
+							//	, m_name.c_str()
+							//	, node->getName().c_str()
+							//	);
+
 							animatable->play();
 
-							float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-							animatable->setTiming( timing );
+							if( _lastFrame >= indexIn )
+							{
+								float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
+								animatable->setTiming( timing );
+							}
+							else
+							{
+								float timing = (indexIn - _lastFrame) * frameDuration + m_frameTiming;
+								animatable->setTiming( -timing );
+							}
 							//animatable->update(realTiming);
 						}
 					}
@@ -1405,22 +1434,17 @@ namespace Menge
 
 			if( m_reverse == false )
 			{
-				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
-				{
-					continue;
-				}
-
 				if( indexOut >= _lastFrame && indexOut <= m_currentFrame )
 				{
-					//if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
-					//{
-					//	MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
-					//		, m_name.c_str()
-					//		, layer.name.c_str()
-					//		);
+					if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+					{
+						MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+							, m_name.c_str()
+							, layer.name.c_str()
+							);
 
-					//	continue;
-					//}
+						continue;
+					}
 
 					if( layer.internal == false )
 					{
@@ -1433,9 +1457,24 @@ namespace Menge
 						{
 							Animatable * animatable = dynamic_cast<Animatable *>(node);
 
+							printf("Movie %s stop[layer] animatable %s\n"
+								, m_name.c_str()
+								, node->getName().c_str()
+								);
+
 							animatable->stop();
+
+							float timing = (indexOut - indexIn) * frameDuration;
+							animatable->setTiming( timing );
 						}
 
+						continue;
+					}
+				}
+				else
+				{
+					if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+					{
 						continue;
 					}
 				}
@@ -1466,6 +1505,9 @@ namespace Menge
 							Animatable * animatable = dynamic_cast<Animatable *>(node);
 
 							animatable->stop();
+
+							//float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
+							//animatable->setTiming( timing );
 						}
 						//node->disable();
 						continue;

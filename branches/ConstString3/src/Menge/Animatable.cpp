@@ -93,6 +93,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animatable::play()
 	{
+		//printf("Animatable play\n");
+
 		if( m_play == true )
 		{
 			if( this->_restart( m_enumerator ) == false )
@@ -122,6 +124,8 @@ namespace Menge
 			return false;
 		}
 
+		//printf("Animatable stop\n");
+
 		m_play = false;
 
 		this->_stop( m_enumerator );
@@ -135,6 +139,8 @@ namespace Menge
 		{
 			return;
 		}
+
+		//printf("Animatable end\n");
 
 		m_play = false;
 

@@ -83,15 +83,18 @@ namespace	Menge
 				++m_currentFrame;
 			}
 
-			if( m_currentFrame == frameCount )
+			if( m_currentFrame == frameCount - 1 )
+			{
+				if( this->getLoop() == false )
+				{
+					break;
+				}
+			}
+			else if( m_currentFrame == frameCount )
 			{
 				if( this->getLoop() == true )
 				{
 					m_currentFrame = 0;
-				}
-				else
-				{
-					break;
 				}
 			}	
 
@@ -101,10 +104,10 @@ namespace	Menge
 //			delay *= speedFactor;
 		}
 
-		if( m_currentFrame == frameCount )
-		{
-			m_currentFrame = frameCount - 1;
-		}
+		//if( m_currentFrame == frameCount )
+		//{
+		//	m_currentFrame = frameCount - 1;
+		//}
 
 		if( lastFrame != m_currentFrame )
 		{
@@ -119,11 +122,14 @@ namespace	Menge
 			this->updateCurrentFrame_( lastFrame );
 		}
 		
-		Sprite::_update( _timing );
+		//Sprite::_update( _timing );
 
-		if( m_currentFrame == frameCount )
+		if( m_currentFrame == frameCount - 1 )
 		{
-			this->end();
+			if( this->getLoop() == false )
+			{
+				this->end();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -350,6 +356,11 @@ namespace	Menge
 		m_resourceName =  m_resourceAnimation->getSequenceResourceName( m_currentFrame );
 		m_resource =  m_resourceAnimation->getSequenceResource( m_currentFrame );
 		m_resource->incrementReference();
+
+		//printf("Animation %s frame %d\n"
+		//	, m_name.c_str()
+		//	, m_currentFrame
+		//	);
 
 		//MENGE_LOG_ERROR( "Animation: '%s'  name  resourceName %s ", m_name.c_str(), m_resourceName.c_str()	);
 		

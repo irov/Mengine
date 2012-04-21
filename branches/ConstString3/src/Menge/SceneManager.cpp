@@ -77,29 +77,36 @@ namespace Menge
 	{
 		TMapDescriptionScenes::iterator it_find = m_descriptions.find( _name );
 
-		if( it_find == m_descriptions.end() )
-		{
-			MENGE_LOG_ERROR( "SceneManager Error: Scene '%s' declaration not found"
-				, _name.c_str() 
-				);
-
-			return 0;
-		}
-
-		const ResourceDesc & desc = it_find->second;
-
 		Scene * scene = 0;
 
-		if( desc.script == true )
-		{
-			scene = ScriptEngine::get()
-				->createEntityT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene, _name, desc.pak, desc.path );
-		}
-		else
+		if( it_find == m_descriptions.end() )
 		{
 			scene = NodeManager::get()
 				->createNodeT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene );
 		}
+		else
+		{
+			const ResourceDesc & desc = it_find->second;
+
+			scene = ScriptEngine::get()
+				->createEntityT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene, _name, desc.pak, desc.path );
+		}
+
+		//const ResourceDesc & desc = it_find->second;
+
+		//Scene * scene = NodeManager::get()
+		//	->createNodeT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene );
+
+		//if( desc.script == true )
+		//{
+		//	scene = ScriptEngine::get()
+		//		->createEntityT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene, _name, desc.pak, desc.path );
+		//}
+		//else
+		//{
+		//	scene = NodeManager::get()
+		//		->createNodeT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene );
+		//}
 
 		if( scene == 0 )
 		{

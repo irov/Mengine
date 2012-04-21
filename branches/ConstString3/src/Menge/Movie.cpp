@@ -316,12 +316,12 @@ namespace Menge
 			//}
 			//else
 			//{
-			//	Helper::s_applyFrame2D( _node, _frame );				
+			//	Helper::s_applyFrame2D( _node, _frame );
 			//}
 
 			if( _layer.movie == false )
 			{
-				Helper::s_applyFrame2D( _node, _frame );			
+				Helper::s_applyFrame2D( _node, _frame );
 			}
 			else
 			{
@@ -1457,10 +1457,10 @@ namespace Menge
 						{
 							Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-							printf("Movie %s stop[layer] animatable %s\n"
-								, m_name.c_str()
-								, node->getName().c_str()
-								);
+							//printf("Movie %s stop[layer] animatable %s\n"
+							//	, m_name.c_str()
+							//	, node->getName().c_str()
+							//	);
 
 							animatable->stop();
 

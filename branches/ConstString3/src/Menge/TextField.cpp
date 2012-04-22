@@ -608,8 +608,11 @@ namespace Menge
 
 		size_t size = textEntry.text.size() + 16;
 		wchar_t * buff = new wchar_t[size];
-		if( swprintf( buff, size, m_format.c_str(), textEntry.text.c_str(), _number ) == 0 )
+
+		if( swprintf( buff, m_format.c_str(), textEntry.text.c_str(), _number ) == 0 )
 		{
+			delete [] buff;
+
 			return;
 		}
 		

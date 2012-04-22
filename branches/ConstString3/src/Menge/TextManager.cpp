@@ -39,7 +39,7 @@ namespace Menge
 		if( LoaderEngine::get()
 			->load( _desc.pak, xml_path, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Problems parsing Text pack %s:%s"
+			MENGE_LOG_ERROR( "Problems parsing Text pack %s:%S"
 				, _desc.pak.c_str() 
 				, xml_path.c_str()
 				);

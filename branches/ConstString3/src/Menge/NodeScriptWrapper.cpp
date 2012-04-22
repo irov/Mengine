@@ -2471,43 +2471,88 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
 
+	struct FPyStringLess
+		: public std::binary_function<PyObject *, PyObject *, bool>
+	{
+		bool operator()(PyObject* _Left, PyObject* _Right) const
+		{	// apply operator< to operands
+			size_t size;
+			const char * left_char = pybind::string_to_char(_Left, size);
+			const char * right_char = pybind::string_to_char(_Right, size);
+
+			int cmp = strcmp( left_char, right_char );
+
+			return cmp < 0;
+		}
+	};
+	
 	static struct extract_ConstString_type
 		: public pybind::type_cast_result<ConstString>
 	{
+	public:
+		~extract_ConstString_type()
+		{
+			for( TConstStringPyObjectWrap::iterator
+				it = m_wrap.begin(),
+				it_end = m_wrap.end();
+			it != it_end;
+			++it )
+			{
+				pybind::decref( it->second );
+			}
+		}
+
+	public:
 		bool apply( PyObject * _obj, ConstString & _value ) override
 		{
 			if( pybind::string_check( _obj ) == true )
 			{
-				size_t ch_size;
+				TConstStringPyObjectCast::iterator it_found = m_cast.find(_obj);
 
-				const char * ch_buff = pybind::string_to_char( _obj, ch_size );
-
-				if( ch_size == 0 )
+				if( it_found == m_cast.end() )
 				{
-					_value = Consts::get()->c_builtin_empty;
-					
-					return true;
+					size_t size;
+					const char * value_char = pybind::string_to_char(_obj, size);
+
+					ConstString cstr(value_char, size);
+
+					m_wrap.insert( std::make_pair(cstr, _obj) );
+
+					pybind::incref( _obj );
+
+					it_found = m_cast.insert( std::make_pair(_obj, value_char) ).first;
 				}
 
-				_value = Consts::get()->cache( ch_buff, ch_size );
+				_value = it_found->second;
+
+				//size_t ch_size;
+
+				//const char * ch_buff = pybind::string_to_char( _obj, ch_size );
+
+				//if( ch_size == 0 )
+				//{
+				//	_value = Consts::get()->c_builtin_empty;
+				//	
+				//	return true;
+				//}								
 				//_value = ConstString( ch_buff, ch_size );
 			}
-			else if( pybind::unicode_check( _obj ) )
-			{
-				size_t ch_size;
+			//else if( pybind::unicode_check( _obj ) )
+			//{
+			//	size_t ch_size;
 
-				const char * ch_buff = pybind::unicode_to_utf8( _obj, ch_size );
+			//	const char * ch_buff = pybind::unicode_to_utf8( _obj, ch_size );
 
-				if( ch_size == 0 )
-				{
-					_value = Consts::get()->c_builtin_empty;
+			//	if( ch_size == 0 )
+			//	{
+			//		_value = Consts::get()->c_builtin_empty;
 
-					return true;
-				}
-				
-				_value = Consts::get()->cache( ch_buff, ch_size );
-				//_value = ConstString( ch_buff, ch_size );
-			}
+			//		return true;
+			//	}
+			//	
+			//	_value = Consts::get()->cache( ch_buff, ch_size );
+			//	//_value = ConstString( ch_buff, ch_size );
+			//}
 			else
 			{
 				return false;
@@ -2518,8 +2563,32 @@ namespace Menge
         
 		PyObject * wrap( pybind::type_cast_result<ConstString>::TCastRef _value ) override
 		{
-			return pybind::string_from_char( _value.c_str(), _value.size() );
+			TConstStringPyObjectWrap::iterator it_found = m_wrap.find( _value );
+
+			if( it_found == m_wrap.end() )
+			{
+				PyObject * py_value = pybind::string_from_char( _value.c_str(), _value.size() );
+
+				pybind::incref( py_value );
+
+				m_cast.insert( std::make_pair(py_value, _value) );
+
+				it_found = m_wrap.insert( std::make_pair(_value, py_value) ).first;
+			}
+
+			pybind::incref( it_found->second );
+
+			return it_found->second;
+			//return pybind::string_from_char( _value.c_str(), _value.size() );
 		}
+
+
+	protected:
+		typedef std::map<PyObject *, ConstString, FPyStringLess> TConstStringPyObjectCast;
+		TConstStringPyObjectCast m_cast;
+
+		typedef std::map<ConstString, PyObject *> TConstStringPyObjectWrap;
+		TConstStringPyObjectWrap m_wrap;
 	}s_extract_ConstString_type;
 
 	static struct extract_TVectorString_type

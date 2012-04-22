@@ -795,8 +795,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::removePredefinedResources_()
 	{
-		ResourceManager::get()
-			->directResourceRelease( Consts::get()->c_WhitePixel );
+		//ResourceManager::get()
+		//	->directResourceRelease( Consts::get()->c_WhitePixel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFullscreen( const Resolution & _resolution, bool _fullscreen )

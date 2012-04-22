@@ -16,14 +16,6 @@ namespace Menge
 		Consts();
 
 	public:
-		const ConstString & cache( const char * _str, size_t _size );
-
-	public:
-		typedef std::map<String, ConstString> TMapConstString;
-		TMapConstString m_cache;
-
-		String m_companator;
-
 		ConstString c_builtin_empty;
 
 		ConstString c_dir;

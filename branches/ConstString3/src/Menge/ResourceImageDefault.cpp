@@ -234,7 +234,7 @@ namespace Menge
 		ImageDesc desc;
 		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 		desc.offset = mt::vec2f(0.f,0.f);
-		desc.maxSize = mt::vec2f(-1.f,-1.f);
+		desc.maxSize = _size;
 		desc.size = _size;
 		//desc.isAlpha = false; //
 		desc.isAlpha = true; //

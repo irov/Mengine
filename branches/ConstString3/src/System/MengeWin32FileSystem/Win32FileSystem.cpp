@@ -97,12 +97,12 @@ namespace Menge
 		static WString path_correct;
 		path_correct = _path;
 
-		WString::size_type pos = path_correct.find(L"/");
+		WString::size_type pos = path_correct.find(L'/');
 		while( pos != WString::npos )
 		{
 			path_correct[pos] = MENGE_FOLDER_DELIM;
 
-			pos = path_correct.find(L"/");
+			pos = path_correct.find(L'/');
 		}
 
 		SHFILEOPSTRUCT fs;
@@ -117,27 +117,29 @@ namespace Menge
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
+		
 		int err = ::SHFileOperation( &fs );
+		
 		if( err != 0 )
 		{
-			/*TCHAR szBuf[80]; 
-			LPVOID lpMsgBuf;
-			DWORD dw = GetLastError(); 
+			//TCHAR szBuf[80]; 
+			//LPVOID lpMsgBuf;
+			//DWORD dw = GetLastError(); 
 
-			FormatMessage(
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-				FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				dw,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-				(LPTSTR) &lpMsgBuf,
-				0, NULL );
+			//FormatMessage(
+			//	FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			//	FORMAT_MESSAGE_FROM_SYSTEM,
+			//	NULL,
+			//	dw,
+			//	MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			//	(LPTSTR) &lpMsgBuf,
+			//	0, NULL );
 
-			//sprintf_s(szBuf, "failed with error %d: %s", dw, lpMsgBuf); 
+			//swprintf_s(szBuf, L"failed with error %d: %s", dw, lpMsgBuf);
 
-			//MessageBox(NULL, szBuf, "Error", MB_OK); 
+			//MessageBox(NULL, szBuf, L"Error", MB_OK); 
 
-			LocalFree(lpMsgBuf);*/
+			//LocalFree(lpMsgBuf);
 			return false;
 		}
 		return true;
@@ -171,12 +173,12 @@ namespace Menge
 
 		path_correct = _filename;
 
-		WString::size_type pos = path_correct.find(L"/");
+		WString::size_type pos = path_correct.find(L'/');
 
 		while( pos != String::npos )
 		{
 			path_correct[pos] = MENGE_FOLDER_DELIM;
-			pos = path_correct.find(L"/");
+			pos = path_correct.find(L'/');
 		}
 
 		SHFILEOPSTRUCT fs;

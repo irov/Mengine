@@ -24,14 +24,14 @@ ADD_SUBDIRECTORY( pybind )
 #ADD_SUBDIRECTORY( Python )
 #ADD_SUBDIRECTORY( Python_2_6)
 
-if(WIN32)
+if(MSVC)
     ADD_SUBDIRECTORY( Python_3_2 )
     ADD_SUBDIRECTORY( pybind32 )
-endif(WIN32)
+    ADD_SUBDIRECTORY( pugixml )
+endif(MSVC)
 
 if(WIN32)
-    #ADD_SUBDIRECTORY( tinyxml )
-    ADD_SUBDIRECTORY( pugixml )
+    #ADD_SUBDIRECTORY( tinyxml )    
     ADD_SUBDIRECTORY( Python_2_7 )
 endif(WIN32)
 

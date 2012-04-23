@@ -24,7 +24,7 @@ namespace Menge
 		FileOutputStreamInterface* openOutputStream( const WString& _filename ) override;
 		void closeOutputStream( FileOutputStreamInterface* _stream ) override;
 
-		bool existFile( const WString& _filename  ) override;
+		bool existFile( const WString& _filename  ) const override;
 		bool deleteFile( const WString& _filename ) override;
 
 		bool createFolder( const WString& _path ) override;

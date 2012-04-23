@@ -26,7 +26,7 @@ namespace Menge
 	class FileSystemInterface
 	{
 	public:
-		virtual bool existFile( const WString& _filename ) = 0;
+		virtual bool existFile( const WString& _filename ) const = 0;
 		
 		virtual FileInputStreamInterface* openInputStream( const WString& _filename ) = 0;
 		virtual void closeInputStream( FileInputStreamInterface* _stream ) = 0;

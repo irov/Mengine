@@ -67,7 +67,7 @@ namespace Menge
 		delete inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::existFile( const WString& _filename )
+	bool Win32FileSystem::existFile( const WString& _filename ) const
 	{
 		if( _filename.empty() == true )	// current dir
 		{
@@ -97,12 +97,12 @@ namespace Menge
 		static WString path_correct;
 		path_correct = _path;
 
-		WString::size_type pos = path_correct.find(L'/');
+		WString::size_type pos = path_correct.find( L'/' );
 		while( pos != WString::npos )
 		{
 			path_correct[pos] = MENGE_FOLDER_DELIM;
 
-			pos = path_correct.find(L'/');
+			pos = path_correct.find( L'/', pos );
 		}
 
 		SHFILEOPSTRUCT fs;

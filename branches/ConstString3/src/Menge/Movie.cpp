@@ -1475,12 +1475,57 @@ namespace Menge
 
 			Node * node = it_found->second;
 
-			if( m_currentFrame > frameCount )
+			MovieFrame2D frame;
+
+			if( m_currentFrame >= indexOut && m_currentFrame < indexIn )
 			{
+				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					continue;
+				}
+
 				if( layer.internal == false )
 				{
 					//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
 					//{
+					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+					node->localHide(true);
+
+					if( layer.animatable == true )
+					{
+						Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+						//printf("Movie %s stop[layer] animatable %s\n"
+						//	, m_name.c_str()
+						//	, node->getName().c_str()
+						//	);
+
+						if( animatable->isPlay() == true )
+						{
+							animatable->stop();
+
+							float timing = (indexOut - indexIn) * frameDuration;
+							animatable->setTiming( timing );
+						}
+					}
+
+					continue;
+				}
+			}
+			else if( m_currentFrame >= frameCount && m_currentFrame <= indexOut )
+			{
+				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+				{
+					continue;
+				}
+
+				if( layer.internal == false )
+				{
 					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
 					//node->localHide(true);
 
@@ -1497,21 +1542,23 @@ namespace Menge
 
 							animatable->stop();
 
-							float timing = (indexOut - indexIn) * frameDuration;
+							float timing = (m_currentFrame - indexIn) * frameDuration;
 							animatable->setTiming( timing );
 						}
 					}
+
+					continue;
+				}
+			}
+			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
+			{
+				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+				{
+					continue;
 				}
 
-				continue;
-			}
-
-			//Node * node = m_nodies[layer.index];
-
-			if( layer.internal == false )
-			{			
-				if( m_currentFrame >= indexIn  && m_currentFrame < indexOut )
-				{
+				if( layer.internal == false )
+				{			
 					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
 					node->localHide(false);
 
@@ -1544,103 +1591,101 @@ namespace Menge
 						}
 					}
 				}
-			}
+			}			
 
-			MovieFrame2D frame;
+			//if( m_reverse == false )
+			//{
+			//	if( m_currentFrame >= indexOut && m_currentFrame < indexIn )
+			//	{
+			//		if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+			//		{
+			//			MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+			//				, m_name.c_str()
+			//				, layer.name.c_str()
+			//				);
 
-			if( m_reverse == false )
-			{
-				if( m_currentFrame >= indexOut && m_currentFrame < indexIn )
-				{
-					if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
-					{
-						MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
-							, m_name.c_str()
-							, layer.name.c_str()
-							);
+			//			continue;
+			//		}
 
-						continue;
-					}
+			//		if( layer.internal == false )
+			//		{
+			//			//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
+			//			//{
+			//			//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+			//			node->localHide(true);
 
-					if( layer.internal == false )
-					{
-						//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
-						//{
-						//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-						node->localHide(true);
+			//			if( layer.animatable == true )
+			//			{
+			//				Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-						if( layer.animatable == true )
-						{
-							Animatable * animatable = dynamic_cast<Animatable *>(node);
+			//				//printf("Movie %s stop[layer] animatable %s\n"
+			//				//	, m_name.c_str()
+			//				//	, node->getName().c_str()
+			//				//	);
 
-							//printf("Movie %s stop[layer] animatable %s\n"
-							//	, m_name.c_str()
-							//	, node->getName().c_str()
-							//	);
+			//				if( animatable->isPlay() == true )
+			//				{
+			//					animatable->stop();
 
-							if( animatable->isPlay() == true )
-							{
-								animatable->stop();
+			//					float timing = (indexOut - indexIn) * frameDuration;
+			//					animatable->setTiming( timing );
+			//				}
+			//			}
 
-								float timing = (indexOut - indexIn) * frameDuration;
-								animatable->setTiming( timing );
-							}
-						}
+			//			continue;
+			//		}
+			//	}
+			//	else
+			//	{
+			//		if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+			//		{
+			//			continue;
+			//		}
+			//	}
+			//}
+			//else
+			//{
+			//	if( indexIn <= _lastFrame && indexIn >= m_currentFrame )
+			//	{
+			//		if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
+			//		{
+			//			MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
+			//				, m_name.c_str()
+			//				, layer.name.c_str()
+			//				);
 
-						continue;
-					}
-				}
-				else
-				{
-					if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
-					{
-						continue;
-					}
-				}
-			}
-			else
-			{
-				if( indexIn <= _lastFrame && indexIn >= m_currentFrame )
-				{
-					if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
-					{
-						MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
-							, m_name.c_str()
-							, layer.name.c_str()
-							);
+			//			continue;
+			//		}
 
-						continue;
-					}
+			//		if( layer.internal == false )
+			//		{
+			//			//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
+			//			//{
+			//			//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+			//			node->localHide(true);
 
-					if( layer.internal == false )
-					{
-						//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
-						//{
-						//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-						node->localHide(true);
+			//			if( layer.animatable == true )
+			//			{
+			//				Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-						if( layer.animatable == true )
-						{
-							Animatable * animatable = dynamic_cast<Animatable *>(node);
+			//				animatable->stop();
 
-							animatable->stop();
-
-							//float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-							//animatable->setTiming( timing );
-						}
-						//node->disable();
-						continue;
-						//}
-					}
-				}
-				else
-				{
-					if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
-					{
-						continue;
-					}
-				}
-			}
+			//				//float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
+			//				//animatable->setTiming( timing );
+			//			}
+			//			//node->disable();
+			//			continue;
+			//			//}
+			//		}
+			//	}
+			//	else
+			//	{
+			//		if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+			//		{
+			//			continue;
+			//		}
+			//	}
+			//}
 
 			this->updateFrame2D_( layer, node, frame );
 		}

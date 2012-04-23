@@ -31,12 +31,10 @@ namespace Menge
 
 	public:
 		void loader( BinParser * _parser ) override;
-
 		void loaderKerning_( BinParser * _parser, Glyph & _glyph );
-
+		void loaderGlyph_( BinParser * _parser );
 	protected:
 		Glyph & addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width );
-
 	protected:
 		float m_initSize;
 

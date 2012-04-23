@@ -7,11 +7,30 @@
 
 #	include "LogEngine.h"
 #	include "Core/String.h"
-
+#	include "Loadable.h"
 #	include "Application.h"
+#	include "LoaderEngine.h"
+
 
 namespace Menge
 {
+	class LoadableResourceGlyph
+		: public Loadable
+	{
+	public:
+		LoadableResourceGlyph( ResourceGlyph * _resource )
+			: m_resource(_resource)
+		{
+		}
+
+	protected:
+		void loader( BinParser * _parser ) override
+		{
+			m_resource->loaderGlyph_(_parser);
+		}
+	protected:
+		ResourceGlyph * m_resource;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceGlyph );
 	//////////////////////////////////////////////////////////////////////////
@@ -39,9 +58,52 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceGlyph::loader( BinParser * _parser )
 	{
+		const ConstString & category = this->getCategory();
+		WString glyphPath;
+		LoadableResourceGlyph loadable(this);
+		bool exist = false;
+	
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_NODE(  Protocol::GlyphPath )
+			{
+				
+				BIN_CASE_ATTRIBUTE( Protocol::GlyphPath_Path, glyphPath );
+		
+				if ( LoaderEngine::get()
+					->load( category, glyphPath, &loadable, exist ) == false )
+				{
+					if( exist == false )
+					{
+						MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath '%s:%S' not found"
+							, m_name.c_str()
+							, glyphPath.c_str()
+							);
+					}
+					else
+					{
+						MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath invalid parse '%s:%S' "
+							, m_name.c_str()
+							, glyphPath.c_str()
+							);
+					}
+				}			
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceGlyph::loaderGlyph_( BinParser * _parser )
+	{
+		ConstString family;
+		size_t size;
+		ConstString style;
+
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Font_height, m_initSize );
+			BIN_CASE_ATTRIBUTE( Protocol::Font_family, family );
+			BIN_CASE_ATTRIBUTE( Protocol::Font_size, size );
+			BIN_CASE_ATTRIBUTE( Protocol::Font_style, style );
 
 			BIN_CASE_NODE( Protocol::Char )
 			{

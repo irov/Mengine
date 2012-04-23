@@ -79,7 +79,7 @@ namespace Menge
 		void addMovieSlot_(const ConstString & _slotName, Node * _node );
 
 	protected:
-		void updateCurrentFrame_( size_t _lastFrame );
+		void updateCurrentFrame_( size_t _lastFrame, bool _force );
 
 	protected:
 		ConstString m_resourceMovieName;

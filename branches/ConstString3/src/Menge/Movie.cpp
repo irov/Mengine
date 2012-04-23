@@ -124,7 +124,13 @@ namespace Menge
 			m_frameTiming = _timing;
 		}
 
-		this->updateCurrentFrame_( 0 );
+		//printf("Movie._setTiming %s %d [%.2f]\n"
+		//	, m_name.c_str()
+		//	, m_currentFrame
+		//	, _timing
+		//	);
+
+		this->updateCurrentFrame_( m_currentFrame, true );
 
 		//m_timing = _timing;
 
@@ -204,22 +210,24 @@ namespace Menge
 
 		if( m_reverse == true )
 		{
-			float out = this->getWorkAreaDuration();
+			//float out = this->getWorkAreaDuration();
 
-			m_frameTiming = 0.f;
-			m_currentFrame = 0;
+			//m_frameTiming = 0.f;
+			//m_currentFrame = 0;
 
-			this->setLastFrame();
+			//this->setLastFrame();
 		}
 		else
 		{
 			m_frameTiming = 0.f;
 			m_currentFrame = 0;
 
-			this->setFirstFrame();
+			//this->setFirstFrame();
 		}
 
 		this->updateParent_();
+
+		this->updateCurrentFrame_( m_currentFrame, true );
 
 		return true;
 	}
@@ -237,6 +245,58 @@ namespace Menge
 	void Movie::_stop( size_t _enumerator )
 	{
 		//m_timing = 0.f;
+		
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			if( layer.internal == true )
+			{
+				continue;
+			}
+
+			if( layer.animatable == false )
+			{
+				continue;
+			}
+
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_found->second;
+
+			Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+			if( animatable->isPlay() == true )
+			{
+				//printf("Movie %s stop[end] animatable %s\n"
+				//	, m_name.c_str()
+				//	, node->getName().c_str()
+				//	);
+
+				animatable->stop();
+
+
+				//float timing = (indexOut - indexIn) * frameDuration;
+				//animatable->setLastFrame( timing );
+			}
+		}
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
@@ -244,6 +304,57 @@ namespace Menge
 	void Movie::_end( size_t _enumerator )
 	{
 		//m_timing = 0.f;
+
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			if( layer.internal == true )
+			{
+				continue;
+			}
+
+			if( layer.animatable == false )
+			{
+				continue;
+			}
+
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_found->second;
+
+			Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+			if( animatable->isPlay() == true )
+			{
+				//printf("Movie %s stop[end] animatable %s\n"
+				//	, m_name.c_str()
+				//	, node->getName().c_str()
+				//	);
+
+				animatable->stop();
+
+				//float timing = (indexOut - indexIn) * frameDuration;
+				//animatable->setTiming( timing );
+			}
+		}
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
@@ -1237,6 +1348,12 @@ namespace Menge
 			return;
 		}
 
+		//printf("Movie._update %s %f:%f\n"
+		//	, m_name.c_str()
+		//	, _timing
+		//	, this->getTiming()
+		//	);
+
 		//if( m_parentMovie == false )
 		//{
 		//	printf("Movie %s update %f:%f\n", m_name.c_str(), m_timing, _timing);
@@ -1288,15 +1405,7 @@ namespace Menge
 
 		if( lastFrame != m_currentFrame )
 		{
-			//printf("Movie %s %d:%d [%.2f, %.2f]\n"
-			//	, m_name.c_str()
-			//	, m_currentFrame
-			//	, lastFrame
-			//	, _timing
-			//	, this->getTiming()
-			//	);
-
-			this->updateCurrentFrame_( lastFrame );
+			this->updateCurrentFrame_( lastFrame, false );
 		}
 
 		if( m_currentFrame == frameCount )
@@ -1308,8 +1417,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateCurrentFrame_( size_t _lastFrame )
+	void Movie::updateCurrentFrame_( size_t _lastFrame, bool _force )
 	{
+		//printf("Movie.updateCurrentFrame_ %s %d-%d [%.2f]\n"
+		//	, m_name.c_str()
+		//	, _lastFrame
+		//	, m_currentFrame			
+		//	, this->getTiming()
+		//	);
+
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		size_t frameCount = m_resourceMovie->getFrameCount();
 
@@ -1359,7 +1475,7 @@ namespace Menge
 
 			Node * node = it_found->second;
 
-			if( frameCount > _lastFrame && frameCount <= m_currentFrame )
+			if( m_currentFrame > frameCount )
 			{
 				if( layer.internal == false )
 				{
@@ -1394,7 +1510,7 @@ namespace Menge
 
 			if( layer.internal == false )
 			{			
-				if( indexIn <= m_currentFrame && _lastFrame < indexOut )
+				if( m_currentFrame >= indexIn  && m_currentFrame < indexOut )
 				{
 					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
 					node->localHide(false);
@@ -1403,7 +1519,7 @@ namespace Menge
 					{
 						Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-						if( animatable->isPlay() == false )
+						if( animatable->isPlay() == false || _force == true )
 						{
 							animatable->setSpeedFactor( m_speedFactor );							
 
@@ -1434,7 +1550,7 @@ namespace Menge
 
 			if( m_reverse == false )
 			{
-				if( indexOut >= _lastFrame && indexOut <= m_currentFrame )
+				if( m_currentFrame >= indexOut && m_currentFrame < indexIn )
 				{
 					if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 					{
@@ -1462,10 +1578,13 @@ namespace Menge
 							//	, node->getName().c_str()
 							//	);
 
-							animatable->stop();
+							if( animatable->isPlay() == true )
+							{
+								animatable->stop();
 
-							float timing = (indexOut - indexIn) * frameDuration;
-							animatable->setTiming( timing );
+								float timing = (indexOut - indexIn) * frameDuration;
+								animatable->setTiming( timing );
+							}
 						}
 
 						continue;

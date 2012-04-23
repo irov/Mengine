@@ -66,7 +66,7 @@ namespace Menge
 		WString xlsxExportPath = currentPath + L"\\XlsxExport\\";
 		
 		Py_SetPath( xlsxExportPath.c_str() );
-				
+
 		pybind::initialize( false, false );
 
 		WString stdPath = currentPath + L"\\XlsxExport\\";

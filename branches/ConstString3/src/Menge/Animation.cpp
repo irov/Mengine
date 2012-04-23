@@ -53,6 +53,12 @@ namespace	Menge
 			return; 
 		}
 
+		//printf("Animation._update %s %f:%f\n"
+		//	, m_name.c_str()
+		//	, _timing
+		//	, this->getTiming()
+		//	);
+
 		size_t frameCount = m_resourceAnimation->getSequenceCount();
 
 		float speedFactor = this->getSpeedFactor();
@@ -111,14 +117,6 @@ namespace	Menge
 
 		if( lastFrame != m_currentFrame )
 		{
-			//printf("Animation %s %d:%d [%.2f, %.2f]\n"
-			//	, m_name.c_str()
-			//	, m_currentFrame
-			//	, lastFrame
-			//	, _timing
-			//	, this->getTiming()
-			//	);
-
 			this->updateCurrentFrame_( lastFrame );
 		}
 		
@@ -131,6 +129,17 @@ namespace	Menge
 				this->end();
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_render( Camera2D * _camera )
+	{
+		//printf("Animation::_render %s %d %f\n"
+		//	, m_name.c_str()
+		//	, m_currentFrame
+		//	, this->getTiming()
+		//	);
+
+		Sprite::_render( _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()
@@ -152,10 +161,10 @@ namespace	Menge
 			return false;
 		}
 
-		if( this->updateCurrentFrame_( 0 ) == false )
-		{
-			return false;
-		}
+		//if( this->updateCurrentFrame_( 0 ) == false )
+		//{
+		//	return false;
+		//}
 			
 		if( Sprite::_activate() == false )
 		{
@@ -348,6 +357,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::updateCurrentFrame_( size_t _lastFrame )
 	{
+		//printf("Animation %s %d-%d [%.2f]\n"
+		//	, m_name.c_str()
+		//	, _lastFrame
+		//	, m_currentFrame			
+		//	, this->getTiming()
+		//	);
+
 		if( m_resource != NULL )
 		{
 			m_resource->decrementReference();
@@ -442,6 +458,12 @@ namespace	Menge
 		}
 
 		m_currentFrame = _frame;
+		m_frameTiming = 0.f;
+
+		//printf("Animation.setCurrentFrame %s %d\n"
+		//	, m_name.c_str()
+		//	, _frame
+		//	);
 
 		this->updateCurrentFrame_( m_currentFrame );
 	}
@@ -449,6 +471,10 @@ namespace	Menge
 	void Animation::_setFirstFrame()
 	{
 		size_t firstFrame = 0;
+
+		//printf("Animation._setFirstFrame %d\n"
+		//	, firstFrame
+		//	);
 
 		this->setCurrentFrame( firstFrame );
 	}
@@ -458,6 +484,10 @@ namespace	Menge
 		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
 		size_t lastFrame = sequenceCount - 1;
+
+		//printf("Animation._setLastFrame %d\n"
+		//	, lastFrame
+		//	);
 
 		this->setCurrentFrame( lastFrame );
 	}
@@ -479,6 +509,11 @@ namespace	Menge
 		}
 				
 		m_currentFrame = this->getFrame_( _timing, m_frameTiming );
+
+		//printf("Animation._setTiming %s %f\n"
+		//	, m_name.c_str()
+		//	, _timing
+		//	);
 
 		this->updateCurrentFrame_( m_currentFrame );
 	}

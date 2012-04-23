@@ -246,57 +246,57 @@ namespace Menge
 	{
 		//m_timing = 0.f;
 		
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		//const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer2D & layer = *it;
+		//for( TVectorMovieLayers2D::const_iterator
+		//	it = layers2D.begin(),
+		//	it_end = layers2D.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	const MovieLayer2D & layer = *it;
 
-			if( layer.internal == true )
-			{
-				continue;
-			}
+		//	if( layer.internal == true )
+		//	{
+		//		continue;
+		//	}
 
-			if( layer.animatable == false )
-			{
-				continue;
-			}
+		//	if( layer.animatable == false )
+		//	{
+		//		continue;
+		//	}
 
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
+		//	TMapNode::iterator it_found = m_nodies.find( layer.index );
 
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
+		//	if( it_found == m_nodies.end() )
+		//	{
+		//		MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
+		//			, m_name.c_str()
+		//			, layer.name.c_str()
+		//			, layer.index
+		//			);
 
-				continue;
-			}
+		//		continue;
+		//	}
 
-			Node * node = it_found->second;
+		//	Node * node = it_found->second;
 
-			Animatable * animatable = dynamic_cast<Animatable *>(node);
+		//	Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-			if( animatable->isPlay() == true )
-			{
-				//printf("Movie %s stop[end] animatable %s\n"
-				//	, m_name.c_str()
-				//	, node->getName().c_str()
-				//	);
+		//	if( animatable->isPlay() == true )
+		//	{
+		//		//printf("Movie %s stop[end] animatable %s\n"
+		//		//	, m_name.c_str()
+		//		//	, node->getName().c_str()
+		//		//	);
 
-				animatable->stop();
+		//		animatable->stop();
 
 
-				//float timing = (indexOut - indexIn) * frameDuration;
-				//animatable->setLastFrame( timing );
-			}
-		}
+		//		//float timing = (indexOut - indexIn) * frameDuration;
+		//		//animatable->setLastFrame( timing );
+		//	}
+		//}
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
@@ -305,56 +305,56 @@ namespace Menge
 	{
 		//m_timing = 0.f;
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		//const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer2D & layer = *it;
+		//for( TVectorMovieLayers2D::const_iterator
+		//	it = layers2D.begin(),
+		//	it_end = layers2D.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	const MovieLayer2D & layer = *it;
 
-			if( layer.internal == true )
-			{
-				continue;
-			}
+		//	if( layer.internal == true )
+		//	{
+		//		continue;
+		//	}
 
-			if( layer.animatable == false )
-			{
-				continue;
-			}
+		//	if( layer.animatable == false )
+		//	{
+		//		continue;
+		//	}
 
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
+		//	TMapNode::iterator it_found = m_nodies.find( layer.index );
 
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
+		//	if( it_found == m_nodies.end() )
+		//	{
+		//		MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
+		//			, m_name.c_str()
+		//			, layer.name.c_str()
+		//			, layer.index
+		//			);
 
-				continue;
-			}
+		//		continue;
+		//	}
 
-			Node * node = it_found->second;
+		//	Node * node = it_found->second;
 
-			Animatable * animatable = dynamic_cast<Animatable *>(node);
+		//	Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-			if( animatable->isPlay() == true )
-			{
-				//printf("Movie %s stop[end] animatable %s\n"
-				//	, m_name.c_str()
-				//	, node->getName().c_str()
-				//	);
+		//	if( animatable->isPlay() == true )
+		//	{
+		//		//printf("Movie %s stop[end] animatable %s\n"
+		//		//	, m_name.c_str()
+		//		//	, node->getName().c_str()
+		//		//	);
 
-				animatable->stop();
+		//		animatable->stop();
 
-				//float timing = (indexOut - indexIn) * frameDuration;
-				//animatable->setTiming( timing );
-			}
-		}
+		//		//float timing = (indexOut - indexIn) * frameDuration;
+		//		//animatable->setTiming( timing );
+		//	}
+		//}
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
@@ -1348,9 +1348,10 @@ namespace Menge
 			return;
 		}
 
-		//printf("Movie._update %s %f:%f\n"
+		//printf("Movie._update %s %f:%f:%f\n"
 		//	, m_name.c_str()
 		//	, _timing
+		//	, m_frameTiming
 		//	, this->getTiming()
 		//	);
 
@@ -1519,7 +1520,7 @@ namespace Menge
 			}
 			else if( m_currentFrame >= frameCount && m_currentFrame <= indexOut )
 			{
-				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+				if( m_resourceMovie->getFrame2D( layer, frameCount - indexIn, frame ) == false )
 				{
 					continue;
 				}
@@ -1542,7 +1543,7 @@ namespace Menge
 
 							animatable->stop();
 
-							float timing = (m_currentFrame - indexIn) * frameDuration;
+							float timing = (frameCount - indexIn) * frameDuration;
 							animatable->setTiming( timing );
 						}
 					}
@@ -1577,14 +1578,34 @@ namespace Menge
 
 							animatable->play();
 
-							if( _lastFrame >= indexIn )
+							if( _lastFrame <= m_currentFrame )
 							{
-								float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
-								animatable->setTiming( timing );
+								if( _lastFrame >= indexIn )
+								{
+									float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
+									animatable->setTiming( timing );
+								}
+								else
+								{
+									float timing = (indexIn - _lastFrame) * frameDuration + m_frameTiming;
+									animatable->setTiming( -timing );
+								}
 							}
 							else
 							{
-								float timing = (indexIn - _lastFrame) * frameDuration + m_frameTiming;
+								size_t frame = (indexOut - 1) - _lastFrame + m_currentFrame;
+								float timing = frame * frameDuration + m_frameTiming;
+
+								//printf("------ %d %d %d %f %f == %d %f\n"
+								//	, indexOut
+								//	, _lastFrame
+								//	, m_currentFrame
+								//	, frameDuration
+								//	, m_frameTiming
+								//	, frame
+								//	, timing
+								//	);
+
 								animatable->setTiming( -timing );
 							}
 							//animatable->update(realTiming);

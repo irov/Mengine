@@ -1477,7 +1477,7 @@ namespace Menge
 
 			MovieFrame2D frame;
 
-			if( m_currentFrame >= indexOut && m_currentFrame < indexIn )
+			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
 			{
 				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 				{

@@ -13,6 +13,11 @@
 #	include "pybind/system.hpp"
 #	include "Consts.h"
 
+#	include "Interface/VideoCodecInterface.h"
+
+#	include "FileEngine.h"
+#	include "CodecEngine.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -23,6 +28,9 @@ namespace	Menge
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
 		, m_material( NULL )
+		, m_frameSize(0.0f, 0.0f)
+		, m_videoDecoder(NULL)
+		, m_videoFile(NULL)
 	{
 		m_textures[0] = NULL;
 	}
@@ -78,11 +86,12 @@ namespace	Menge
 		}
 
 		m_timing += _timing;
-		m_needUpdate = m_resourceVideo->sync( _timing );
+		m_needUpdate = this->_sync( _timing );
 		
-		if( m_resourceVideo->eof() == true )
+		if( m_videoDecoder->eof() == true )
 		{
-			stop();
+			this->_rewind();
+			//stop();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,14 +129,20 @@ namespace	Menge
 			return false;
 		}
 
-		
 		m_materialGroup = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(BlendSprite) );
 				
-
-		const mt::vec2f & size = m_resourceVideo->getFrameSize();
-		
 		Menge::PixelFormat colorMode;
+
+		if ( this->_compileDecoder() == false )
+		{
+			MENGE_LOG_ERROR( "Warning: Video can`t create video decoder '%s'"
+				, m_resourceVideoName.c_str() 
+				);	
+
+			return false;
+		}
+
 		if ( m_resourceVideo->isAlpha() == 1 )
 		{
 			colorMode = Menge::PF_A8R8G8B8;
@@ -138,7 +153,7 @@ namespace	Menge
 		}
 
 		m_textures[0] = RenderEngine::get()
-			->createTexture( size.x, size.y, colorMode );
+			->createTexture( m_frameSize.x, m_frameSize.y, colorMode );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
 
@@ -162,7 +177,62 @@ namespace	Menge
 
 		invalidateVertices();
 		invalidateBoundingBox();
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Video::_compileDecoder()
+	{
+		const ConstString & category = m_resourceVideo->getCategory();
 
+		const WString filePath = m_resourceVideo->getFilePath();
+		
+		m_videoFile = FileEngine::get()
+			->openInputFile( category, filePath );
+
+		if( m_videoFile == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceVideo: can't open video file '%S'"
+				, filePath.c_str()
+				);
+
+			return false;
+		}
+
+		const ConstString & codecType = m_resourceVideo->getCodecType();
+
+		m_videoDecoder = CodecEngine::get()
+			->createDecoderT<VideoDecoderInterface>( codecType, m_videoFile );
+
+		if( m_videoDecoder == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%S'"
+				, filePath.c_str()
+				);
+
+			m_videoFile->close();
+			return false;
+		}
+		
+		bool alpha = m_resourceVideo->isAlpha();
+		VideoCodecOptions videoCodecOptions;
+		
+		if( alpha == true )
+		{
+			videoCodecOptions.pixelFormat = Menge::PF_A8R8G8B8;
+		}
+		else
+		{
+			videoCodecOptions.pixelFormat = Menge::PF_R8G8B8;
+		}
+		
+		CodecOptions* codecOptions = dynamic_cast<CodecOptions*>(&videoCodecOptions);
+
+		m_videoDecoder->setOptions(  codecOptions );
+
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+		m_frameSize.x = dataInfo->frame_width;
+		m_frameSize.y = dataInfo->frame_height;
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -170,7 +240,19 @@ namespace	Menge
 	{
 		RenderEngine::get()
 			->releaseTexture( m_textures[0] );
+		
+		if( m_videoDecoder != NULL )
+		{
+			m_videoDecoder->destroy();
+			m_videoDecoder = NULL;
+		}
 
+		if( m_videoFile != NULL )
+		{
+			m_videoFile->close();
+			m_videoFile = NULL;
+		}
+		
 		if( m_resourceVideo != 0 )
 		{
 			m_resourceVideo->decrementReference();
@@ -180,21 +262,23 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )
 	{
-		m_resourceVideo->rewind( );
+		this->_rewind( );
 		m_timing = 0.0f;
 		
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
 			m_soundEmitter->stop();
 		}
-		_release();
-		_compile();
+		
+		//_release();
+		//_compile();
+
 		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( size_t _enumerator )
 	{
-		m_resourceVideo->rewind( );
+		this->_rewind( );
 		m_timing = 0.0f;
 		
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
@@ -220,7 +304,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_play = true;
+		//m_play = true;
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
 			m_soundEmitter->play();
@@ -240,10 +324,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_render( Camera2D * _camera )
 	{
-		if( m_play == false)
+		/*if( m_play == false)
 		{
 			return;
-		}
+		}*/
 
 		Node::_render( _camera );
 		if( m_needUpdate )
@@ -251,7 +335,7 @@ namespace	Menge
 			int pitch = 0;
 			//Texture* renderImage = m_material->textureStage[0].texture;
 			unsigned char* lockRect = m_textures[0]->lock( &pitch, false );
-			m_resourceVideo->getRGBData( lockRect, pitch );
+			m_videoDecoder->decode( lockRect, pitch );
 			m_textures[0]->unlock();
 			m_needUpdate = false;
 		}
@@ -274,13 +358,12 @@ namespace	Menge
 		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
 		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
 		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-		const mt::vec2f & size = m_resourceVideo->getFrameSize();
-
+		
 		mt::vec2f transformX;
 		mt::vec2f transformY;
 
-		mt::mul_v2_m3_r( transformX, mt::vec2f( size.x, 0.0f ), wm );
-		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, size.y ), wm );
+		mt::mul_v2_m3_r( transformX, mt::vec2f( m_frameSize.x, 0.0f ), wm );
+		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_frameSize.y ), wm );
 
 		mt::vec2f vertices[4];
 
@@ -342,4 +425,20 @@ namespace	Menge
 
 		invalidateVertices();
 	}
+	////////////////////////////////////////////////////////////////////
+	bool Video::_sync( float _timing )
+	{
+		if( m_videoDecoder->sync( _timing ) < 0 )	// if we are not up to date read frame
+		{
+			return true;
+		}
+
+		return false;
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_rewind()
+	{
+		m_videoDecoder->seek(0.0f);
+	}
+	////////////////////////////////////////////////////////////////////
 }

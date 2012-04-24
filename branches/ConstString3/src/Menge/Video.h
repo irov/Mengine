@@ -11,7 +11,10 @@ namespace Menge
 	class SoundEmitter;
 	class SoundSourceInterface;
 	class RenderTextureInterface;
-
+	
+	class FileInputStreamInterface;
+	class VideoDecoderInterface;
+	
 	struct RenderMaterialGroup;
 
 	/*! xml - файл имеет следующую структуру:
@@ -42,10 +45,9 @@ namespace Menge
 	protected:
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;
-
+		
 		bool _activate() override;
 		void _deactivate() override;
-
 		bool _compile() override;
 		void _release() override;
 		void _setEventListener( PyObject * _listener ) override;
@@ -53,7 +55,10 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
 		
-		//Animatable abstracts
+		bool _sync( float _timing );
+		void _rewind();
+		bool _compileDecoder();
+        
 		virtual bool _play();
 		virtual bool _restart( size_t _enumerator );
 		virtual void _stop( size_t _enumerator );
@@ -72,6 +77,10 @@ namespace Menge
 
 		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;	
+
+		FileInputStreamInterface * m_videoFile;
+		VideoDecoderInterface * m_videoDecoder;
+		mt::vec2f m_frameSize;
 
 		bool m_autoStart;
 		bool m_loop;

@@ -653,6 +653,11 @@ namespace Menge
 		{
 			return pybind::ptr( Utils::AToW( _string ) );
 		}
+		
+		static PyObject* s_ansi( const WString& _string )
+		{
+			return pybind::ptr( Utils::WToA( _string ) );
+		}
 
 		static WString s_getTextByKey( const ConstString& _key )
 		{
@@ -1099,6 +1104,7 @@ namespace Menge
 		pybind::def_function( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 
 		pybind::def_function( "unicode", &ScriptHelper::s_unicode );
+		pybind::def_function( "ansi", &ScriptHelper::s_ansi );
 
 		pybind::def_function( "getTextByKey", &ScriptHelper::s_getTextByKey );
 		pybind::def_function( "getTextCharCountByKey", &ScriptHelper::s_getTextCharCountByKey );

@@ -6,9 +6,6 @@
 
 namespace Menge
 {
-	class FileInputStreamInterface;
-	class VideoDecoderInterface;
-
 	class ResourceVideo
 		: public ResourceReference
 	{
@@ -22,16 +19,10 @@ namespace Menge
 
 	public:
 		const WString & getFilePath() const;
-
+		const ConstString& getCodecType() const;
 	public:
-		bool sync( float _timing );
-		void getRGBData( unsigned char* _buffer, int _pitch );
 		const mt::vec2f& getFrameSize() const;
-		bool eof();
-		void seek( float _timing );
 		bool isAlpha() const;
-		void rewind();
-
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -40,10 +31,5 @@ namespace Menge
 		WString m_filePath;
 		bool m_alpha;
 		ConstString m_codecType;
-		FileInputStreamInterface * m_videoFile;
-		VideoDecoderInterface * m_videoDecoder;
-
-		std::streamsize m_bufferSize;
-		mt::vec2f m_frameSize;
 	};
 }

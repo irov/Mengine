@@ -125,8 +125,22 @@ namespace Menge
 		{
 			return mt::zero_v2;
 		}
-
+		
 		return glyph->offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceFont::getKerning( unsigned int _charPrev,unsigned int _charCur ) const
+	{
+		const ResourceGlyph::Glyph * glyphPrev = m_glyph->getGlyph( _charPrev );
+		ResourceGlyph::TMapKerning::const_iterator findKerning = glyphPrev->kerning.find(_charCur);
+		
+		if( findKerning == glyphPrev->kerning.end() )
+		{
+			return 0.0f;
+		}
+
+		float kerning = findKerning->second;
+		return kerning;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& ResourceFont::getSize( unsigned int _id ) const
@@ -262,5 +276,5 @@ namespace Menge
 			m_glyph = 0;
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
+   //////////////////////////////////////////////////////////////////////////
 }

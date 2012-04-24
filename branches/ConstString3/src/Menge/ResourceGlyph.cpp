@@ -127,6 +127,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceGlyph::loaderKerning_( BinParser * _parser, Glyph & _glyph )
 	{
+		PlatformInterface * platform = Application::get()
+			->getPlatform();
+
+		WString unicode;
+
+		unsigned int glyphId;
+			
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_NODE( Protocol::Kerning )
@@ -139,6 +146,10 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::Kerning_advance, advance );
 					BIN_CASE_ATTRIBUTE( Protocol::Kerning_id, id );
 				}
+				
+				unicode = platform->utf8ToUnicode( id );
+				glyphId = (unsigned int)unicode[0];
+				_glyph.kerning.insert( std::make_pair( glyphId, advance ) );
 			}
 		}
 	}

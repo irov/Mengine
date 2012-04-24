@@ -12,14 +12,17 @@ namespace Menge
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceGlyph )
-
+		
+		
 	public:
+		typedef std::map<unsigned int, float> TMapKerning;
 		struct Glyph
 		{
 			mt::vec4f uv;
 			mt::vec2f offset;
 			float ratio;
 			mt::vec2f size;
+			TMapKerning kerning;
 		};
 
 	public:

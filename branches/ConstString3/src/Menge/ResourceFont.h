@@ -50,6 +50,7 @@ namespace Menge
 		float getCharRatio( unsigned int _id ) const;
 
 		const mt::vec2f & getOffset( unsigned int _char ) const;
+		float  getKerning( unsigned int _charPrev, unsigned int _charCur ) const;
 		const mt::vec2f & getSize( unsigned int _char ) const;
 
 		const RenderTextureInterface * getImage() const;

@@ -64,7 +64,9 @@ namespace Menge
 
 		void setFlexible( bool _value );
 		bool getFlexible() const;
-
+		
+		void setBlendAdd( bool _value );
+		bool getBlendAdd() const;
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -93,6 +95,8 @@ namespace Menge
 		bool m_flipX;
 		bool m_flipY;
 
+		bool m_blendAdd;
+		
 		bool m_flexible;
 
 		mt::vec4f m_percent;

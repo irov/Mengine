@@ -811,6 +811,11 @@ namespace Menge
 					return false;
 				}
 
+				if( layer.blendingMode == Consts::get()->c_BlendingModeAdd )
+				{
+					layer_sprite->setBlendAdd(true);
+				}
+
 				layer_sprite->enable();
 				layer_sprite->localHide(true);
 
@@ -847,6 +852,11 @@ namespace Menge
 						);
 
 					return false;
+				}
+
+				if( layer.blendingMode == Consts::get()->c_BlendingModeAdd )
+				{
+					layer_animation->setBlendAdd(true);
 				}
 
 				layer_animation->enable();
@@ -1020,6 +1030,11 @@ namespace Menge
 						);
 
 					return false;
+				}
+				
+				if( layer.blendingMode == Consts::get()->c_BlendingModeAdd )
+				{
+					layer_sprite->setBlendAdd(true);
 				}
 
 				layer_sprite->enable();

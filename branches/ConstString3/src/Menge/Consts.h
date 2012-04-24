@@ -76,6 +76,9 @@ namespace Menge
 
 		ConstString c_MovieSlot;
 		ConstString c_MovieNullObject;
+
+		ConstString c_BlendingModeAdd;
+		ConstString c_BlendingModeNormal;
 	};
 }
 

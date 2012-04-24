@@ -42,6 +42,7 @@ namespace	Menge
 		, m_texturesNum(0)
 		, m_flexible(false)  
 		, m_textureMatrixOffset(0.0f, 0.0f)
+		, m_blendAdd(false)
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -358,7 +359,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial_()
 	{
-		if( m_disableTextureColor == true )
+		if ( m_blendAdd == true )
+		{
+			m_texturesNum = 1;
+
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(ParticleIntensive) );
+		}
+		else if( m_disableTextureColor == true )
 		{
 			m_texturesNum = 1;
 
@@ -514,4 +522,21 @@ namespace	Menge
 	{
 		return m_flexible;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setBlendAdd( bool _value )
+	{
+		if ( m_blendAdd == _value )
+		{
+			return;
+		}
+
+		m_blendAdd = _value;
+		updateMaterial_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::getBlendAdd() const
+	{
+		return m_blendAdd;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

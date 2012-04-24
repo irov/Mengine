@@ -33,6 +33,8 @@ namespace Menge
 		float in;
 		float out;
 
+		ConstString blendingMode;
+		
 		ConstString source;
 		bool internal;
 		bool animatable;

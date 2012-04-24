@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1335179918;
+		static const int version = 1335281366;
 		struct AccountID
 		{
 			static const int id = 125;
@@ -393,11 +393,11 @@ namespace Menge
 		};
 		struct DefaultVolume
 		{
-			static const int id = 618;
+			static const int id = 622;
 		};
 		struct DefaultVolume_Value
 		{
-			static const int id = 619;
+			static const int id = 623;
 			typedef float Type;
 		};
 		struct Density
@@ -420,11 +420,11 @@ namespace Menge
 		};
 		struct Duration
 		{
-			static const int id = 620;
+			static const int id = 624;
 		};
 		struct Duration_Value
 		{
-			static const int id = 621;
+			static const int id = 625;
 			typedef float Type;
 		};
 		struct Edge
@@ -665,11 +665,11 @@ namespace Menge
 		};
 		struct FrameDuration
 		{
-			static const int id = 622;
+			static const int id = 626;
 		};
 		struct FrameDuration_Value
 		{
-			static const int id = 623;
+			static const int id = 627;
 			typedef float Type;
 		};
 		struct Frequency
@@ -859,16 +859,16 @@ namespace Menge
 		};
 		struct Internal
 		{
-			static const int id = 628;
+			static const int id = 632;
 		};
 		struct Internal_Group
 		{
-			static const int id = 629;
+			static const int id = 633;
 			typedef Menge::ConstString Type;
 		};
 		struct Internal_Name
 		{
-			static const int id = 627;
+			static const int id = 631;
 			typedef Menge::ConstString Type;
 		};
 		struct IsBullet
@@ -914,70 +914,70 @@ namespace Menge
 		};
 		struct KeyFrame2D
 		{
-			static const int id = 578;
+			static const int id = 580;
 		};
 		struct KeyFrame2D_AnchorPoint
-		{
-			static const int id = 569;
-			typedef mt::vec2f Type;
-		};
-		struct KeyFrame2D_Index
-		{
-			static const int id = 579;
-			typedef size_t Type;
-		};
-		struct KeyFrame2D_Opacity
-		{
-			static const int id = 577;
-			typedef float Type;
-		};
-		struct KeyFrame2D_Position
 		{
 			static const int id = 571;
 			typedef mt::vec2f Type;
 		};
-		struct KeyFrame2D_Rotation
+		struct KeyFrame2D_Index
 		{
-			static const int id = 575;
+			static const int id = 581;
+			typedef size_t Type;
+		};
+		struct KeyFrame2D_Opacity
+		{
+			static const int id = 579;
 			typedef float Type;
 		};
-		struct KeyFrame2D_Scale
+		struct KeyFrame2D_Position
 		{
 			static const int id = 573;
 			typedef mt::vec2f Type;
 		};
+		struct KeyFrame2D_Rotation
+		{
+			static const int id = 577;
+			typedef float Type;
+		};
+		struct KeyFrame2D_Scale
+		{
+			static const int id = 575;
+			typedef mt::vec2f Type;
+		};
 		struct KeyFrame3D
 		{
-			static const int id = 616;
+			static const int id = 620;
 		};
 		struct KeyFrame3D_AnchorPoint
 		{
-			static const int id = 607;
+			static const int id = 611;
 			typedef mt::vec3f Type;
 		};
 		struct KeyFrame3D_Index
 		{
-			static const int id = 617;
+			static const int id = 621;
 			typedef size_t Type;
 		};
 		struct KeyFrame3D_Opacity
 		{
-			static const int id = 615;
+			static const int id = 619;
 			typedef float Type;
 		};
 		struct KeyFrame3D_Position
 		{
-			static const int id = 609;
+			static const int id = 613;
 			typedef mt::vec3f Type;
 		};
 		struct KeyFrame3D_Rotation
 		{
-			static const int id = 613;
+			static const int id = 617;
 			typedef mt::vec3f Type;
 		};
 		struct KeyFrame3D_Scale
 		{
-			static const int id = 611;
+			static const int id = 615;
 			typedef mt::vec2f Type;
 		};
 		struct LanguagePack
@@ -1139,7 +1139,12 @@ namespace Menge
 		};
 		struct MovieLayer2D
 		{
-			static const int id = 566;
+			static const int id = 568;
+		};
+		struct MovieLayer2D_BlendingMode
+		{
+			static const int id = 569;
+			typedef Menge::ConstString Type;
 		};
 		struct MovieLayer2D_In
 		{
@@ -1178,71 +1183,76 @@ namespace Menge
 		};
 		struct MovieLayer3D
 		{
-			static const int id = 604;
+			static const int id = 608;
+		};
+		struct MovieLayer3D_BlendingMode
+		{
+			static const int id = 609;
+			typedef Menge::ConstString Type;
 		};
 		struct MovieLayer3D_CameraAspect
 		{
-			static const int id = 601;
+			static const int id = 603;
 			typedef float Type;
 		};
 		struct MovieLayer3D_CameraFOV
 		{
-			static const int id = 599;
+			static const int id = 601;
 			typedef float Type;
 		};
 		struct MovieLayer3D_CameraInterest
 		{
-			static const int id = 597;
+			static const int id = 599;
 			typedef mt::vec3f Type;
 		};
 		struct MovieLayer3D_CameraPosition
 		{
-			static const int id = 595;
+			static const int id = 597;
 			typedef mt::vec3f Type;
 		};
 		struct MovieLayer3D_Height
 		{
-			static const int id = 605;
+			static const int id = 607;
 			typedef float Type;
 		};
 		struct MovieLayer3D_In
 		{
-			static const int id = 591;
+			static const int id = 593;
 			typedef float Type;
 		};
 		struct MovieLayer3D_Index
 		{
-			static const int id = 587;
+			static const int id = 589;
 			typedef size_t Type;
 		};
 		struct MovieLayer3D_Internal
 		{
-			static const int id = 589;
+			static const int id = 591;
 			typedef bool Type;
 		};
 		struct MovieLayer3D_Name
 		{
-			static const int id = 581;
+			static const int id = 583;
 			typedef Menge::ConstString Type;
 		};
 		struct MovieLayer3D_Out
 		{
-			static const int id = 593;
+			static const int id = 595;
 			typedef float Type;
 		};
 		struct MovieLayer3D_Parent
 		{
-			static const int id = 583;
+			static const int id = 585;
 			typedef size_t Type;
 		};
 		struct MovieLayer3D_Source
 		{
-			static const int id = 585;
+			static const int id = 587;
 			typedef Menge::ConstString Type;
 		};
 		struct MovieLayer3D_Width
 		{
-			static const int id = 603;
+			static const int id = 605;
 			typedef float Type;
 		};
 		struct Node
@@ -2250,11 +2260,11 @@ namespace Menge
 		};
 		struct WorkAreaDuration
 		{
-			static const int id = 624;
+			static const int id = 628;
 		};
 		struct WorkAreaDuration_Value
 		{
-			static const int id = 625;
+			static const int id = 629;
 			typedef float Type;
 		};
 	}

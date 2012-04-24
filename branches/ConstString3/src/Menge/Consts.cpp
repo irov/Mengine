@@ -59,6 +59,8 @@ namespace Menge
 		, c_LayerCamera2D("LayerCamera2D")
 		, c_MovieSlot("MovieSlot")
 		, c_MovieNullObject("MovieNullObject")
+		, c_BlendingModeAdd("BlendingModeAdd")
+		, c_BlendingModeNormal("BlendingModeNormal")
 	{
 	}
 }

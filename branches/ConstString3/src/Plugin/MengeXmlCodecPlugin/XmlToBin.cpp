@@ -448,6 +448,9 @@ bool XmlToBin::writeBinary( const wchar_t * _source, const wchar_t * _bin )
 
 	pugi::xml_node root = doc.document_element();
 
+	bool root_empty = root.empty();
+	s_writeStream( fs, root_empty );
+
 	if( root.empty() == true )
 	{
 		return true;

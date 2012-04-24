@@ -196,6 +196,14 @@ namespace Menge
 			return false;
 		}
 
+		bool empty;
+		m_reader.read( empty );
+
+		if( empty == true )
+		{
+			return true;
+		}
+
 		//int version;
 		//m_reader.read( version );
 

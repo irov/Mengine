@@ -187,7 +187,7 @@ namespace Menge
 
 			pybind::decref( py_path );
 
-			MENGE_LOG_INFO( "ScriptEngine: updateModulePath '%s'"
+			MENGE_LOG_INFO( "ScriptEngine: updateModulePath '%S'"
 				, path.c_str() );
 		}
 

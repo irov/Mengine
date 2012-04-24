@@ -339,7 +339,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::loadConfig( const WString& _configFile )
 	{
-		MENGE_LOG_INFO( "load config %s ..."
+		MENGE_LOG_INFO( "load config %S ..."
 			, _configFile.c_str()
 			);
 

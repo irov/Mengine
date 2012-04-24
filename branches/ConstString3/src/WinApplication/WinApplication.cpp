@@ -129,6 +129,7 @@ namespace Menge
 		, m_winTimer(NULL)
 		, m_isDoubleClick(false)
 		, m_cursor(NULL)
+		, m_enableDebug(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -150,14 +151,7 @@ namespace Menge
 	{	
 		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
-		m_enableDebug = false;
-
-#	ifndef _DEBUG
-		bool docsAndSettings = true;
-#	else
-		bool docsAndSettings = false;
-#	endif
-
+//
 		//::timeBeginPeriod( 1 );
 
 		//::MessageBoxA( NULL, "Starting debug", "Menge", MB_OK );
@@ -175,18 +169,26 @@ namespace Menge
 		//	m_userPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
 		//}
 
-		m_userPath = L"Antoinette";
+		//TODO - вынести это из компил€ции
+		WString appName = L"Antoinette";
 
-		if( m_userPath.empty() == false )
-		{
-			docsAndSettings = true;
-		}
+		//if( m_userPath.empty() == false )
+		//{
+		//	docsAndSettings = true;
+		//}
+
+		bool docsAndSettings = true;
 
 		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
 		{
 			docsAndSettings = false;
-			m_enableDebug = true;
 		}
+
+		#	ifdef _DEBUG
+				m_enableDebug = true;
+		#	else
+				m_enableDebug = false;
+		#	endif
 
 		if( m_enableDebug == false )
 		{
@@ -196,7 +198,8 @@ namespace Menge
 		if( docsAndSettings == false || m_windowsType == WindowsLayer::EWT_98 )
 		{
 			WindowsLayer::getCurrentDirectory( m_userPath );
-			m_userPath += L"\\User";
+			m_userPath += MENGE_FOLDER_DELIM;
+			m_userPath += L"User";
 			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
@@ -213,7 +216,7 @@ namespace Menge
 			//WindowsLayer::unicodeToUtf8( Menge::WString( buffer ), userSysPath );
 			m_userPath = buffer;
 			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += m_userPath;
+			m_userPath += appName;
 
 			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );

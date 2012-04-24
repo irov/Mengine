@@ -175,7 +175,8 @@ namespace Menge
 
 		if( m_image == NULL )
 		{
-			MENGE_LOG_ERROR( "Error while loading font image '%s'"
+			MENGE_LOG_ERROR( "ResourceFont::_compile '%s' invalid loading font image '%S'"
+				, this->getName().c_str()
 				, m_imageFile.c_str() 
 				);
 
@@ -194,7 +195,7 @@ namespace Menge
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG_ERROR( "Font '%s' can't loaded image '%s'"
+				MENGE_LOG_ERROR( "ResourceFont::_compile '%s' can't loaded outline image file '%S'"
 					, this->getName().c_str()
 					, m_outlineImageFile.c_str() 
 					);
@@ -205,7 +206,8 @@ namespace Menge
 
 		if( m_glyphResource.empty() == true )
 		{
-			MENGE_LOG_ERROR("Font '%s' can't setup resource glyph"
+			MENGE_LOG_ERROR("ResourceFont::_compile '%s' can't setup resource glyph"
+				, this->getName().c_str()
 				);
 
 			return false;
@@ -216,7 +218,7 @@ namespace Menge
 
 		if( m_glyph == 0 )
 		{
-			MENGE_LOG_ERROR("Font '%s' can't get resource glyph '%s'"
+			MENGE_LOG_ERROR("ResourceFont::_compile '%s' can't get resource glyph '%s'"
 				, this->getName().c_str()
 				, m_glyphResource.c_str()
 				);
@@ -226,7 +228,7 @@ namespace Menge
 
 		if( m_glyph->compile() == false )
 		{
-			MENGE_LOG_ERROR("Font '%s' can't compile glyph '%s'"
+			MENGE_LOG_ERROR("ResourceFont::_compile '%s' can't compile glyph '%s'"
 				, this->getName().c_str()
 				, m_glyphResource.c_str()
 				);

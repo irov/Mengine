@@ -140,6 +140,7 @@ namespace	Menge
 		}
 
 		m_interface->setListener( this );
+		m_interface->setEmitterTranslateWithParticle( true );
 
 		//// reset editor position
 		//if( m_emitterRelative == false )
@@ -507,6 +508,7 @@ namespace	Menge
 		{
 			return;
 		}
+
 		m_interface->seek(_pos);
 		//m_interface->setLeftBorder( _pos );
 		//m_interface->restart();
@@ -516,7 +518,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterTranslateWithParticle( bool _with )
 	{
-		if( m_interface == 0 )
+		if( this->isCompile() == false )
 		{
 			return;
 		}

@@ -118,6 +118,8 @@
 #	include "ResourceCursorICO.h"
 #	include "ResourceInternalObject.h"
 
+#	include "ConfigFile/ConfigFile.h"
+
 //extern "C"
 //{
 //	#	include <iniparser/src/iniparser.h>
@@ -337,7 +339,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadConfig( const WString& _configFile )
+	bool Application::loadConfig( const WString& _configFile, const WString& _iniFile )
 	{
 		MENGE_LOG_INFO( "load config %S ..."
 			, _configFile.c_str()
@@ -355,6 +357,39 @@ namespace Menge
 			//showMessageBox( "'Application' file missing or corrupt", "Critical Error", 0 );
 
 			return false;
+		}
+
+		if( FileEngine::get()
+			->existFile( Consts::get()->c_builtin_empty, _iniFile ) == true )
+		{
+			FileInputStreamInterface * file = FileEngine::get()
+				->openInputFile( Consts::get()->c_builtin_empty, _iniFile );
+
+			if( file == NULL )
+			{
+				MENGE_LOG_ERROR("Application::loadConfig: invalid open iniFile %S"
+					, _iniFile.c_str()
+					);
+
+				return false;
+			}
+
+			ConfigFile cfg;
+
+			if( cfg.load( file ) == false )
+			{
+				return false;
+			}
+
+			WString locale_default_setting;
+			if( cfg.getSetting( L"LOCALE", L"Default", locale_default_setting ) == true )
+			{
+				String locale_default = m_platform->unicodeToAnsi(locale_default_setting);
+				
+
+				ConstString locale_default_const(locale_default);
+				this->setLanguagePack( locale_default_const );
+			}			
 		}
 				
 		//if( m_baseDir.empty() )	// current dir

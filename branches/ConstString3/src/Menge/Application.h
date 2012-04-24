@@ -70,7 +70,7 @@ namespace Menge
 
 	public:
 		bool initialize( PlatformInterface* _platform, const String & _platformName, const String& _args ) override;
-		bool loadConfig( const WString& _configFile ) override;
+		bool loadConfig( const WString& _configFile, const WString& _iniFile ) override;
 
 		void setBaseDir( const WString & _dir ) override;
 		const WString & getBaseDir() const override;

@@ -11,8 +11,6 @@ namespace Menge
 	{
 		const String& emptyString();
 		const WString& emptyWString();
-		const ConstString& emptyConstString();
-
 		
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims = "\t\n ", unsigned int _maxSplits = 0 );
 		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims = L"\t\n ", unsigned int _maxSplits = 0 );
@@ -25,8 +23,5 @@ namespace Menge
 
 		WString toWString( int x );
 		WString toWString( unsigned int _x );
-
-		String WToA( const WString & _value );
-		WString AToW( const String & _value );
 	}
 };

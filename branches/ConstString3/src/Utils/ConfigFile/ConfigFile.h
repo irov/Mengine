@@ -13,7 +13,6 @@ namespace Menge
 	{
 	public:
 		ConfigFile();
-		virtual ~ConfigFile();
 
 	public:
 		bool load( FileInputStreamInterface* _file );

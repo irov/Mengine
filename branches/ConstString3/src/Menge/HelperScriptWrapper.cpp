@@ -651,12 +651,22 @@ namespace Menge
 
 		static PyObject* s_unicode( const String& _string )
 		{
-			return pybind::ptr( Utils::AToW( _string ) );
+			PlatformInterface * platform = Application::get()
+				->getPlatform();
+
+			WString unicode = platform->ansiToUnicode( _string );
+
+			return pybind::ptr( unicode );
 		}
 		
 		static PyObject* s_ansi( const WString& _string )
 		{
-			return pybind::ptr( Utils::WToA( _string ) );
+			PlatformInterface * platform = Application::get()
+				->getPlatform();
+
+			String ansi = platform->unicodeToAnsi( _string );
+
+			return pybind::ptr( ansi );
 		}
 
 		static WString s_getTextByKey( const ConstString& _key )

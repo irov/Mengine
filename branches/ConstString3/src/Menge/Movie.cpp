@@ -959,7 +959,6 @@ namespace Menge
 
 				layer_particles->setResource( layer.source );
 
-				layer_particles->setLoop( true );				
 				//layer_movie->disable();
 
 				//layer_particles->setEmitterRelative(true);
@@ -973,6 +972,9 @@ namespace Menge
 
 					return false;
 				}
+
+				layer_particles->setLoop( true );
+				layer_particles->setEmitterTranslateWithParticle( true );
 
 				layer_particles->enable();
 				layer_particles->localHide(true);

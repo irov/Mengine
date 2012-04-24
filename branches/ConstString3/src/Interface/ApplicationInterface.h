@@ -84,7 +84,7 @@ namespace Menge
 	{
 	public:
 		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args ) = 0;
-		virtual bool loadConfig( const WString& _configFile ) = 0;
+		virtual bool loadConfig( const WString& _configFile, const WString& _iniFile ) = 0;
 
 		virtual void setBaseDir( const WString& _baseDir ) = 0;
 		virtual const WString& getBaseDir() const = 0;

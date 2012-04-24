@@ -318,7 +318,8 @@ namespace Menge
 			);
 
 		WString config_file = L"application";
-		if( m_application->loadConfig( config_file ) == false )
+		WString settings_file = L"settings.ini";
+		if( m_application->loadConfig( config_file, settings_file ) == false )
 		{
 			return false;
 		}

@@ -24,12 +24,6 @@ namespace Menge
 			return empty;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		const ConstString& emptyConstString()
-		{
-			static ConstString empty;
-			return empty;
-		}
-		//////////////////////////////////////////////////////////////////////////
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
 		{
 			// Pre-allocate some space for performance
@@ -168,34 +162,6 @@ namespace Menge
 			WStringstream str;
 			str << _x;
 			return str.str();
-		}
-		//////////////////////////////////////////////////////////////////////////
-		String WToA( const WString& _value )
-		{
-			//return Holder<Application>::get()->WToA( _stringw );
-			//size_t converted = 0;
-			size_t size = _value.size() + 1;
-			char * stra = new char[size];
-			//wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
-			wcstombs( stra, _value.c_str(), size );
-			String out( stra );
-			delete[] stra;
-
-			return out;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		WString AToW( const String& _value )
-		{
-			setlocale( LC_CTYPE, "" );
-			//return Holder<Application>::get()->AToW( _String );
-			//size_t converted = 0;
-			size_t size = _value.size() + 1;
-			wchar_t * strw = new wchar_t[size];
-			//mbstowcs_s( &converted, strw, size, _String.c_str(), _TRUNCATE );
-			mbstowcs( strw, _value.c_str(), size );
-			WString out( strw );
-			delete[] strw;
-			return out;
 		}
 	}
 }

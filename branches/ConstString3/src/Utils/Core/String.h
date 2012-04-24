@@ -18,10 +18,10 @@ namespace Menge
 		void join( const String& _delim, const TVectorString& _stringArray, String & _outString );
 		void trim( String& str, bool left = true, bool right = true );
 
-		String toString( int x );
+		String toString( int _x );
 		String toString( unsigned int _x );
 
-		WString toWString( int x );
+		WString toWString( int _x );
 		WString toWString( unsigned int _x );
 	}
 };

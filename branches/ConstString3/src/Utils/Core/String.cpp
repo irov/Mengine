@@ -72,17 +72,21 @@ namespace Menge
 			unsigned int numSplits = 0;
 
 			// Use STL methods 
-			size_t start, pos;
-			start = 0;
+			size_t start = 0;
+			size_t pos = 0;
+
 			do 
 			{
 				pos = _str.find_first_of(_delims, start);
+
 				/*if (pos == start)
 				{
 				// Do nothing
 				start = pos + 1;
 				}
-				else */if (pos == String::npos || (_maxSplits && numSplits == _maxSplits))
+				else */
+				
+				if (pos == String::npos || (_maxSplits && numSplits == _maxSplits))
 				{
 					// Copy the rest of the string
 					_outStrings.push_back( _str.substr(start) );
@@ -94,11 +98,13 @@ namespace Menge
 					_outStrings.push_back( _str.substr(start, pos - start) );
 					start = pos + 1;
 				}
+
 				// parse up to next real data
 				if( _trimDelims == true )
 				{
 					start = _str.find_first_not_of(_delims, start);
 				}
+
 				++numSplits;
 
 			} while (pos != String::npos);
@@ -111,9 +117,13 @@ namespace Menge
 				_outString.clear();
 				return;
 			}
+
 			TVectorString::const_iterator it = _stringArray.begin();
+
 			_outString = *it;
+
 			++it;
+
 			for( TVectorString::const_iterator it_end = _stringArray.end();
 				it != it_end;
 				++it )
@@ -136,10 +146,10 @@ namespace Menge
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		String toString( int x )
+		String toString( int _x )
 		{
 			Stringstream str;
-			str << x;
+			str << _x;
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -150,10 +160,10 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		WString toWString( int x )
+		WString toWString( int _x )
 		{
 			WStringstream str;
-			str << x;
+			str << _x;
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////

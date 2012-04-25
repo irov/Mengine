@@ -44,7 +44,7 @@ namespace Menge
 			charData.offset = _resource->getOffset( charData.code );
 			charData.size = _resource->getSize( charData.code ) * m_height / _resource->getInitSize();
 			
-			if( it != _text.begin() )
+			if( m_charsData.empty() == false )
 			{
 				CharData& prevChar = m_charsData.back();
 				float kerning = _resource->getKerning( prevChar.code, charData.code );

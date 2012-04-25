@@ -317,15 +317,16 @@ namespace Menge
 			, platformName.c_str() 
 			);
 
+		ConstString c_languagePack(languagePack);
+		m_application->setLanguagePack( c_languagePack );
+
 		WString config_file = L"application";
 		WString settings_file = L"settings.ini";
 		if( m_application->loadConfig( config_file, settings_file ) == false )
 		{
 			return false;
 		}
-		
-		ConstString c_languagePack(languagePack);
-		m_application->setLanguagePack( c_languagePack );
+
 		
 		WString baseDir = m_applicationPath;
 		baseDir += MENGE_DEFAULT_BASE_DIR;

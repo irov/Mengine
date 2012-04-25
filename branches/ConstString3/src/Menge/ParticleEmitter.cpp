@@ -140,7 +140,7 @@ namespace	Menge
 		}
 
 		m_interface->setListener( this );
-		m_interface->setEmitterTranslateWithParticle( true );
+		//m_interface->setEmitterTranslateWithParticle( true );
 
 		//// reset editor position
 		//if( m_emitterRelative == false )
@@ -751,21 +751,21 @@ namespace	Menge
 		return m_emitterName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::box2f ParticleEmitter::getEmitterBoundingBox(  )
+	mt::box2f ParticleEmitter::getEmitterBoundingBox() const
 	{
 		mt::box2f _box;
 		m_interface->getBoundingBox(_box);
 		return _box;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f ParticleEmitter::getEmitterPosition()
+	mt::vec2f ParticleEmitter::getEmitterPosition() const
 	{
 		mt::vec2f pos;
 		m_interface->getPosition(pos);
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& ParticleEmitter::getRelativeSize()
+	const mt::vec2f& ParticleEmitter::getRelativeSize() const
 	{
 		EmitterContainerInterface * container = m_resource->getContainer();
 		const EmitterContainerMetaData & meta = container->getMetaData();

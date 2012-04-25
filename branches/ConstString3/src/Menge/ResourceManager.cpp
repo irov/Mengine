@@ -301,6 +301,10 @@ namespace Menge
 
 		if( resource->incrementReference() == 0 )
 		{
+			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is not compile!"
+				, _name.c_str() 
+				);
+
 			return 0;
 		}
 

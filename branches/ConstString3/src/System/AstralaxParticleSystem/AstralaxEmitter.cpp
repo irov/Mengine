@@ -223,7 +223,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter::isIntensive() const
 	{
-		return Magic_IsIntensive();
+		bool intensive = Magic_IsIntensive();
+
+		return intensive;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )

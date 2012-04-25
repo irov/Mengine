@@ -56,9 +56,9 @@ namespace Menge
 		const mt::vec2f& getPositionOffset() const;
 		
 		//for astralax plugin
-		const mt::vec2f& getRelativeSize();
-		mt::vec2f getEmitterPosition();
-		mt::box2f getEmitterBoundingBox();
+		const mt::vec2f& getRelativeSize() const;
+		mt::vec2f getEmitterPosition() const;
+		mt::box2f getEmitterBoundingBox() const;
 		
 		void setEmitterImage( const ConstString & _emitterImageName );
 

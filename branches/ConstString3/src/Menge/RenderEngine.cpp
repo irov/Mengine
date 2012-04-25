@@ -185,11 +185,12 @@ namespace Menge
 			RenderMaterial mt;
 
 			mt.alphaBlendEnable = true;
-			mt.alphaTestEnable = false;
+			mt.alphaTestEnable = true;
 			mt.depthBufferWriteEnable = false;
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_MODULATE;
 
@@ -205,6 +206,7 @@ namespace Menge
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_MODULATE;
 
@@ -220,6 +222,7 @@ namespace Menge
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_SELECTARG1;
 
@@ -264,6 +267,7 @@ namespace Menge
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_SELECTARG2;
 

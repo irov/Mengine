@@ -18,7 +18,8 @@ namespace Menge
 	void TextLine::initialize( const ResourceFont * _resource, const WString& _text )
 	{
 		m_charsData.reserve( _text.length() );
-		float totalKerning = 0;
+		float totalKerning = 0.0f;
+		
 		for( WString::const_iterator
 			it = _text.begin(), 
 			it_end = _text.end();
@@ -36,13 +37,10 @@ namespace Menge
 			{
 				CharData& prevChar = m_charsData.back();
 				float kerning = _resource->getKerning( prevChar.code, charData.code );
-				if( kerning != 0.0f )
-				{
-					totalKerning += kerning;
-					charData.offset.x += totalKerning;
-				}
+				totalKerning += kerning;
 			}
-						
+
+			charData.offset.x += totalKerning;		
 			m_charsData.push_back( charData );
 
 			float height = m_height;

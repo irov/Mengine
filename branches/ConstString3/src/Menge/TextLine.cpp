@@ -46,8 +46,10 @@ namespace Menge
 			
 			if( m_charsData.empty() == false )
 			{
-				CharData& prevChar = m_charsData.back();
+				const CharData & prevChar = m_charsData.back();
+
 				float kerning = _resource->getKerning( prevChar.code, charData.code );
+
 				totalKerning += kerning;
 			}
 

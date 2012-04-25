@@ -26,8 +26,19 @@ namespace Menge
 		it != it_end; 
 		++it )
 		{	
+			unsigned int code = (unsigned int)(*it);
+
+			if ( _resource->hasGlyph( code ) == false )
+			{
+				MENGE_LOG_ERROR( "TextLine invalid glyph %i"
+					, code
+					);
+
+				continue;
+			}
+			
 			CharData charData;
-			charData.code = (unsigned int)(*it);
+			charData.code = code;
 			charData.uv = _resource->getUV( charData.code );
 			charData.ratio = _resource->getCharRatio( charData.code );
 			charData.offset = _resource->getOffset( charData.code );

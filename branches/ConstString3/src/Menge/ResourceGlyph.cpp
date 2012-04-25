@@ -45,10 +45,26 @@ namespace Menge
 
 		if( it_found == m_glyphs.end() )
 		{
+			MENGE_LOG_ERROR( "ResourceGlyph: Glyph code '%s:%i' not found"
+				, m_name.c_str()
+				, _id
+				);
+
 			return 0;
 		}
 
 		return &it_found->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceGlyph::hasGlyph( unsigned int _id ) const
+	{
+		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
+		if( it_found == m_glyphs.end() )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceGlyph::getInitSize() const

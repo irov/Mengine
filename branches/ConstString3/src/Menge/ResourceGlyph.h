@@ -30,6 +30,7 @@ namespace Menge
 
 	public:
 		const Glyph * getGlyph( unsigned int _id ) const;
+		bool hasGlyph( unsigned int _id ) const;
 		float getInitSize() const;
 
 	public:

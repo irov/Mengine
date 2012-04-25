@@ -41,12 +41,14 @@ namespace Menge
 		\return uv - координаты глифа
 		*/
 		mt::vec4f getUV( unsigned int _id ) const;
-
+		
 		//! Возвращает отношение ширины к высоте глифа.
 		/*!
 		\param _id индекс глифа
 		\return коэффициент пропорциональности глифа
 		*/
+
+		bool hasGlyph( unsigned int _id ) const;
 		float getCharRatio( unsigned int _id ) const;
 
 		const mt::vec2f & getOffset( unsigned int _char ) const;

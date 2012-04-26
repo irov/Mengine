@@ -27,13 +27,12 @@ namespace Menge
 		{
 			m_factor[i] = Magic_GetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER );
 		}
-
-		// set randomize
+		
 		Magic_SetRandomMode( m_id, false );
-
+		
 		// set interpolation
 		Magic_SetInterpolationMode( m_id, true );
-				
+
 		m_leftBorder = Magic_GetInterval1( m_id );
 		m_rightBorder = Magic_GetInterval2( m_id );
 		
@@ -371,6 +370,17 @@ namespace Menge
 			}
 		}
 		restart();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::setRandomMode( bool _randomMode )
+	{
+		Magic_SetRandomMode( m_id, _randomMode );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter::getRandomMode()
+	{
+		bool mode = Magic_IsRandomMode( m_id );
+		return mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

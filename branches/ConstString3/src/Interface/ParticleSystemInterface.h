@@ -74,6 +74,9 @@ namespace Menge
 		virtual void getPosition( mt::vec2f & _pos ) = 0;
 		virtual void setPosition( const mt::vec2f & _pos ) = 0;
 		virtual void setAngle( float _radians ) = 0;
+
+		virtual void setRandomMode( bool _randomMode ) = 0;
+		virtual bool getRandomMode( ) = 0;
 	};
 	
 	struct EmitterContainerMetaData

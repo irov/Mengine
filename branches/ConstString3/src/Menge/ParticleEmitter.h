@@ -72,7 +72,9 @@ namespace Menge
 		float getLeftBorder() const;
 		float getRightBorder() const;
 		const ConstString& getEmitterName() const;
-
+		
+		void setRandomMode( bool _randomMode );
+		bool getRandomMode( ) const;
 	protected:
 		void _setEventListener( PyObject * _listener );
 

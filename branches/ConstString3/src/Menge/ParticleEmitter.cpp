@@ -369,7 +369,8 @@ namespace	Menge
 		}
 
 		m_vertices.resize( s_particles.size() * 4 );
-
+		const mt::mat3f& worldMatrix = this->getWorldMatrix();
+		
 		for( TVectorParticleMeshes::const_iterator
 			it = s_meshes.begin(),
 			it_end = s_meshes.end();
@@ -405,6 +406,11 @@ namespace	Menge
 
 				Vertex2D * vertice = &m_vertices[it * 4];
 
+				//mt::vec2f worldVertice;
+				//mt::mul_v2_m3(worldVertice,p.v[0],worldMatrix);
+								
+				//vertice[0].pos[0] = worldVertice.x;
+				//vertice[0].pos[1] = worldVertice.y;
 				vertice[0].pos[0] = p.v[0].x;
 				vertice[0].pos[1] = p.v[0].y;
 				vertice[0].pos[2] = 0.f;
@@ -412,13 +418,20 @@ namespace	Menge
 
 				vertice[0].color = argb;
 
+				//mt::mul_v2_m3(worldVertice,p.v[1],worldMatrix);
+
+				//vertice[1].pos[0] = worldVertice.x;
+				//vertice[1].pos[1] = worldVertice.y;
 				vertice[1].pos[0] = p.v[1].x;
 				vertice[1].pos[1] = p.v[1].y;
 				vertice[1].pos[2] = 0.f;
 				vertice[1].pos[3] = 1.f;
-
 				vertice[1].color = argb;
 
+				//mt::mul_v2_m3(worldVertice,p.v[2],worldMatrix);
+				
+				//vertice[2].pos[0] = worldVertice.x;
+				//vertice[2].pos[1] = worldVertice.y;
 				vertice[2].pos[0] = p.v[2].x;
 				vertice[2].pos[1] = p.v[2].y;
 				vertice[2].pos[2] = 0.f;
@@ -426,6 +439,10 @@ namespace	Menge
 
 				vertice[2].color = argb;
 
+				//mt::mul_v2_m3(worldVertice,p.v[3],worldMatrix);
+
+				//vertice[3].pos[0] = worldVertice.x;
+				//vertice[3].pos[1] = worldVertice.y;
 				vertice[3].pos[0] = p.v[3].x;
 				vertice[3].pos[1] = p.v[3].y;
 				vertice[3].pos[2] = 0.f;
@@ -622,14 +639,12 @@ namespace	Menge
 					Layer * mainLayer = scene->getMainLayer();
 					relativeSize = mainLayer->getSize();
 				}
-				
+
 				const mt::vec2f& scene_pos = this->getWorldPosition();
-
-
 				mt::vec2f new_pos;
 				new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;
 				new_pos.y = m_positionEffect.y + scene_pos.y + relativeSize.y * 0.5f;
-
+				//printf(" (%f %f) (%f %f) (%f %f) %s \n", world_pos.x,world_pos.y, new_pos.x,new_pos.y,scene_pos.x, scene_pos.y ,m_name.c_str() );
 				m_interface->setPosition( new_pos );
 			}
 		}
@@ -716,7 +731,7 @@ namespace	Menge
 			mt::vec2f new_pos;
 			new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;
 			new_pos.y = m_positionEffect.y + scene_pos.y + relativeSize.y * 0.5f;
-
+			//printf(" (%f %f) (%f %f) (%f %f) %s \n",  new_pos.x,new_pos.y, m_positionEffect.x,m_positionEffect.y,scene_pos.x, scene_pos.y ,m_name.c_str() );
 			m_interface->setPosition( new_pos );
 		}
 	}
@@ -770,6 +785,16 @@ namespace	Menge
 		EmitterContainerInterface * container = m_resource->getContainer();
 		const EmitterContainerMetaData & meta = container->getMetaData();
 		return meta.size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setRandomMode( bool _randomMode )
+	{
+		m_interface->setRandomMode( _randomMode );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::getRandomMode() const
+	{
+		return m_interface->getRandomMode();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

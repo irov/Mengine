@@ -3261,6 +3261,8 @@ namespace Menge
 					.def( "getEmitterBoundingBox", &ParticleEmitter::getEmitterBoundingBox )
 					.def( "getEmitterPosition", &ParticleEmitter::getEmitterPosition )
 					.def( "getRelativeSize", &ParticleEmitter::getRelativeSize )
+					.def( "setRandomMode", &ParticleEmitter::setRandomMode )
+					.def( "getRandomMode", &ParticleEmitter::getRandomMode )
 					;
 
 				pybind::proxy_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)

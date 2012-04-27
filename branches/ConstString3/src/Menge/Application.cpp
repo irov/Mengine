@@ -38,6 +38,7 @@
 #	include "CodecEngine.h"
 
 #	include "ConverterEngine.h"
+#	include "MovieKeyFrameManager.h"
 
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
@@ -295,6 +296,7 @@ namespace Menge
 		exinit.add( &Application::initializeScriptEngine_);
 		exinit.add( &Application::initializeCodecEngine_);
 		exinit.add( &Application::initializeConverterEngine_);
+		exinit.add( &Application::initializeMovieKeyFrameManager_);
 		exinit.add( &Application::initializeResourceManager_);
 		exinit.add( &Application::initializeArrowManager_);
 		exinit.add( &Application::initializeSceneManager_);
@@ -662,6 +664,15 @@ namespace Menge
 
 		m_serviceProvider->registryService( "ConverterService", m_converterEngine );
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeMovieKeyFrameManager_()
+	{
+		MENGE_LOG_INFO( "Inititalizing MovieKeyFrameManager..." );
+		
+		m_movieKeyFrameManager = new MovieKeyFrameManager();
+		MovieKeyFrameManager::keep( m_movieKeyFrameManager );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1466,7 +1477,8 @@ namespace Menge
 
 		m_serviceProvider->unregistryService( "ConverterService" );
 		delete m_converterEngine;
-
+		delete m_movieKeyFrameManager;
+		
 		m_serviceProvider->unregistryService( "CodecService" );
 		delete m_codecEngine;
 

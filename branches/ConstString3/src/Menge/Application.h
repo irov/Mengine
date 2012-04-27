@@ -43,6 +43,7 @@ namespace Menge
 	class EntityManager;
 	class ParamManager;
 	class ConverterEngine;
+	class MovieKeyFrameManager;
 
 	class FileOutputStreamInterface;
 	class Game;
@@ -137,7 +138,7 @@ namespace Menge
 		bool initializeAlphaChannelManager_();
 		bool initializeTextManager_();
 		bool initializeConverterEngine_();
-
+		bool initializeMovieKeyFrameManager_();
 	public:
 		void finalize() override;
 		void destroy() override;
@@ -309,6 +310,7 @@ namespace Menge
 		SceneManager * m_sceneManager;
 		EntityManager * m_entityManager;
 		ConverterEngine * m_converterEngine;
+		MovieKeyFrameManager * m_movieKeyFrameManager;
 
 		StringizeService * m_stringizeService;
 

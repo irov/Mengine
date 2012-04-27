@@ -638,6 +638,12 @@ Manager\\\\Resource
 )
 
 ADD_FILTER(
+Manager\\\\MovieKeyFrame
+	MovieKeyFrameManager.cpp
+	MovieKeyFrameManager.h
+)
+
+ADD_FILTER(
 Manager\\\\Param
 	ParamManager.cpp
 	ParamManager.h

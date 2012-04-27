@@ -129,9 +129,12 @@ namespace Menge
 		return glyph->offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getKerning( unsigned int _charPrev,unsigned int _charCur ) const
+	float ResourceFont::getKerning( unsigned int _charPrev, unsigned int _charCur ) const
 	{
 		const ResourceGlyph::Glyph * glyphPrev = m_glyph->getGlyph( _charPrev );
+
+
+
 		ResourceGlyph::TMapKerning::const_iterator findKerning = glyphPrev->kerning.find(_charCur);
 		
 		if( findKerning == glyphPrev->kerning.end() )
@@ -140,6 +143,7 @@ namespace Menge
 		}
 
 		float kerning = findKerning->second;
+
 		return kerning;
 	}
 	//////////////////////////////////////////////////////////////////////////

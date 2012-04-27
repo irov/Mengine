@@ -36,7 +36,7 @@ namespace Menge
 		m_leftBorder = Magic_GetInterval1( m_id );
 		m_rightBorder = Magic_GetInterval2( m_id );
 		
-		this->calculateTempScale_();
+		//this->calculateTempScale_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitter::~AstralaxEmitter()

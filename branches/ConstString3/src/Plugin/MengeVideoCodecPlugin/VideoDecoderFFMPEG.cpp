@@ -285,7 +285,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::readFrame_( )
 	{	
-		size_t pos = m_stream->tell();
+		//size_t pos = m_stream->tell();
 		
 		if( m_isValid != true )
 		{
@@ -308,7 +308,8 @@ namespace Menge
 		
 		if ( av_read_frame(m_formatContext, &packet) < 0 )
 		{
-			m_eof = true;
+			//m_eof = true;
+			//this->seek(0.0f);
 			av_free_packet(&packet);
 			//printf(" can not read frame ");
 			return false;
@@ -418,7 +419,11 @@ namespace Menge
 		}
 		while( countFrames > 0 )
 		{
-			readFrame_();
+			if(readFrame_() == false)
+			{
+				m_timing -= frame *  m_frameTiming;
+				return -1;
+			}
 			countFrames--;
 		}
 		m_timing -= frame *  m_frameTiming;

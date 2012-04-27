@@ -7,12 +7,16 @@
 
 namespace Menge
 {
+	//FILE * Pf;
+	
 	//custom avcodec IO callback Read
 	int ReadIOWrapper(void * _opaque, uint8_t *_bufer, int bufferSize)
 	{
 		InputStreamInterface * stream = (InputStreamInterface *) _opaque;
 		int res = stream->read( _bufer , bufferSize );
 		return res;
+		//int res = fread( _bufer ,1 ,bufferSize, Pf );
+		//return res;
 	}
 	
 	//custom avcodec IO callback Seek
@@ -29,7 +33,7 @@ namespace Menge
 
 		InputStreamInterface * stream = (InputStreamInterface *) _opaque;
 		stream->seek( _offset );
-
+		//fseek(Pf, _offset , SEEK_SET);
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -103,7 +107,8 @@ namespace Menge
 		ByteIOContext * m_byteIOContext = new ByteIOContext();
 		m_bufferIO = new uint8_t[ m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE ];
 		memset( m_bufferIO,0, m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE );
-		
+		//Pf = fopen( "d:\\Projects\\Leprogirl\\Resources\\Movies\\Inventory\\svechka.flv","rb");
+
 		//set custom input output functions
 		init_put_byte( m_byteIOContext //context
 						, m_bufferIO //IO buffer
@@ -154,7 +159,7 @@ namespace Menge
 				break;
 			}
 		}	
-
+		
 		if(m_videoStreamId == -1)
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: Didn't find a video stream ");
@@ -280,17 +285,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::readFrame_( )
 	{	
+		size_t pos = m_stream->tell();
+		
 		if( m_isValid != true )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
 			//error
 			return false;
 		}
-		/* Issue for timestamps
+		//Issue for timestamps
 		m_formatContext->flags|= AVFMT_NOFILE|AVFMT_FLAG_IGNIDX;
 		//m_inputFormat->flags |=AVFMT_NOFILE|AVFMT_FLAG_IGNIDX; 
 		m_formatContext->flags&=~AVFMT_FLAG_GENPTS; 
-		*/
+		
 		int isGotPicture;
 		struct SwsContext * imgConvertContext = NULL;
 		AVPacket packet;
@@ -341,11 +348,11 @@ namespace Menge
 
 		int ret = sws_scale(imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
 			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize);
+
 		sws_freeContext(imgConvertContext);
 		av_free_packet(&packet);
 		//av_destruct_packet(&packet);
-		return true;
-			
+		return true;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
@@ -420,7 +427,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::seek( float _timing )
 	{
-		return false;
+		//m_stream->seek( SEEK_SET ); 
+		av_seek_frame( m_formatContext, m_videoStreamId, _timing, 0 );
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::eof()
@@ -454,7 +463,6 @@ namespace Menge
 			LOGGER_ERROR(m_logService)("pixel format %i is not supported" , m_options.pixelFormat);
 			break;
 		}
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

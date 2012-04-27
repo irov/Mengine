@@ -56,6 +56,7 @@ namespace Menge
 		, m_eof(true)
 		, m_timing(0)
 		, m_frameTiming(0)
+		, m_pts(0.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -308,10 +309,16 @@ namespace Menge
 		
 		if ( av_read_frame(m_formatContext, &packet) < 0 )
 		{
-			//m_eof = true;
-			//this->seek(0.0f);AV_NOPTS_VALUE
-			float timing = m_frameTiming + packet.dts;
-			this->seek( timing );
+			if(this->eof() != true)
+			{
+				m_pts += m_frameTiming * 2;
+				this->seek( m_pts );
+			}
+			else
+			{
+				m_pts = 0;
+			}
+
 			av_free_packet(&packet);
 			//printf(" can not read frame ");
 			return false;
@@ -352,15 +359,10 @@ namespace Menge
 		int ret = sws_scale(imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
 			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize);
 
+		m_pts = packet.pts;
+
 		sws_freeContext(imgConvertContext);
 		av_free_packet(&packet);
-		//av_destruct_packet(&packet);
-		/*int64_t stamp;
-		if( m_inputFormat->read_timestamp( m_formatContext, m_videoStreamId, &stamp, m_formatContext->duration ) == AV_NOPTS_VALUE )
-		{
-			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG:: can`t read timestamp");
-		}*/
-		
 		return true;	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -441,6 +443,12 @@ namespace Menge
 	bool VideoDecoderFFMPEG::seek( float _timing )
 	{
 		//m_stream->seek( SEEK_SET ); 
+		/*
+		static double t = 10 ;//time in seconds
+		int64_t timestamp = t * AV_TIME_BASE; //destination time
+		av_seek_frame( pFormatContext , -1 ,  timestamp + pFormatContext->start_time ,AVSEEK_FLAG_BACKWARD );
+		*/
+
 		if (av_seek_frame( m_formatContext, m_videoStreamId, _timing, 0 ) < 0 )
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing);

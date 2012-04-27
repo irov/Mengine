@@ -71,6 +71,7 @@ void _invalidate() ;
 		bool m_eof;
 		float m_timing;
 		
+		float m_pts;
 		
 	private:
 		void clear_();

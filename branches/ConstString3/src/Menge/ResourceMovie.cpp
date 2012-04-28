@@ -144,48 +144,48 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getFrame3D( const MovieLayer3D & _layer, float _timing, MovieFrame3D & _frame ) const
 	{
-		if( _timing < _layer.in )
-		{
-			return false;
-		}
+		//if( _timing < _layer.in )
+		//{
+		//	return false;
+		//}
 
-		if( _timing >= _layer.out )
-		{
-			return false;
-		}
+		//if( _timing >= _layer.out )
+		//{
+		//	return false;
+		//}
 
-		float relation_time = _timing - _layer.in;
+		//float relation_time = _timing - _layer.in;
 
-		size_t index = size_t(relation_time / m_frameDuration);
+		//size_t index = size_t(relation_time / m_frameDuration);
 
-		const MovieFrame3D & frame_1 = _layer.frames[index+0];
-		const MovieFrame3D & frame_2 = _layer.frames[index+1];
+		//const MovieFrame3D & frame_1 = _layer.frames[index+0];
+		//const MovieFrame3D & frame_2 = _layer.frames[index+1];
 
-		float time_1 = (index + 0) * m_frameDuration;
-		float time_2 = (index + 1) * m_frameDuration;
+		//float time_1 = (index + 0) * m_frameDuration;
+		//float time_2 = (index + 1) * m_frameDuration;
 
-		float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
+		//float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
 
-		Helper::s_linerp_f4( _frame.vertices[0].pos, frame_1.vertices[0].pos, frame_2.vertices[0].pos, timeScale );
-		Helper::s_linerp_f4( _frame.vertices[1].pos, frame_1.vertices[1].pos, frame_2.vertices[1].pos, timeScale );
-		Helper::s_linerp_f4( _frame.vertices[2].pos, frame_1.vertices[2].pos, frame_2.vertices[2].pos, timeScale );
-		Helper::s_linerp_f4( _frame.vertices[3].pos, frame_1.vertices[3].pos, frame_2.vertices[3].pos, timeScale );
+		//Helper::s_linerp_f4( _frame.vertices[0].pos, frame_1.vertices[0].pos, frame_2.vertices[0].pos, timeScale );
+		//Helper::s_linerp_f4( _frame.vertices[1].pos, frame_1.vertices[1].pos, frame_2.vertices[1].pos, timeScale );
+		//Helper::s_linerp_f4( _frame.vertices[2].pos, frame_1.vertices[2].pos, frame_2.vertices[2].pos, timeScale );
+		//Helper::s_linerp_f4( _frame.vertices[3].pos, frame_1.vertices[3].pos, frame_2.vertices[3].pos, timeScale );
 
-		_frame.vertices[0].color = frame_1.vertices[0].color;
-		_frame.vertices[0].uv[0] = frame_1.vertices[0].uv[0];
-		_frame.vertices[0].uv[1] = frame_1.vertices[0].uv[1];
+		//_frame.vertices[0].color = frame_1.vertices[0].color;
+		//_frame.vertices[0].uv[0] = frame_1.vertices[0].uv[0];
+		//_frame.vertices[0].uv[1] = frame_1.vertices[0].uv[1];
 
-		_frame.vertices[1].color = frame_1.vertices[1].color;
-		_frame.vertices[1].uv[0] = frame_1.vertices[1].uv[0];
-		_frame.vertices[1].uv[1] = frame_1.vertices[1].uv[1];
+		//_frame.vertices[1].color = frame_1.vertices[1].color;
+		//_frame.vertices[1].uv[0] = frame_1.vertices[1].uv[0];
+		//_frame.vertices[1].uv[1] = frame_1.vertices[1].uv[1];
 
-		_frame.vertices[2].color = frame_1.vertices[2].color;
-		_frame.vertices[2].uv[0] = frame_1.vertices[2].uv[0];
-		_frame.vertices[2].uv[1] = frame_1.vertices[2].uv[1];
+		//_frame.vertices[2].color = frame_1.vertices[2].color;
+		//_frame.vertices[2].uv[0] = frame_1.vertices[2].uv[0];
+		//_frame.vertices[2].uv[1] = frame_1.vertices[2].uv[1];
 
-		_frame.vertices[3].color = frame_1.vertices[3].color;
-		_frame.vertices[3].uv[0] = frame_1.vertices[3].uv[0];
-		_frame.vertices[3].uv[1] = frame_1.vertices[3].uv[1];
+		//_frame.vertices[3].color = frame_1.vertices[3].color;
+		//_frame.vertices[3].uv[0] = frame_1.vertices[3].uv[0];
+		//_frame.vertices[3].uv[1] = frame_1.vertices[3].uv[1];
 
 		return true;
 	}
@@ -309,7 +309,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml )
 	{
-
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_NODE( Protocol::KeyFrame2D )
@@ -329,15 +328,23 @@ namespace Menge
 
 				size_t count = 1;
 
+				mt::vec2f anchorPoint2d = frame.anchorPoint.to_vec2f();
+				mt::vec2f position2d = frame.position.to_vec2f();
+				mt::vec2f scale2d = frame.scale.to_vec2f();
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, frame.anchorPoint );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Position, frame.position );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, frame.scale );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, anchorPoint2d );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Position, position2d );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, scale2d );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Rotation, frame.angle );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Index, count );
 				}
+
+				frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
+				frame.position = mt::vec3f(position2d, 0.f);
+				frame.scale = mt::vec3f(scale2d, 1.f);
 
 
 				for( size_t i = 0; i != count; ++i )
@@ -541,131 +548,131 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::convertSourceToFrame3D_( MovieFrame3D & _frame, const MovieLayerSource3D & _layer, const MovieFrameSource3D & _source )
 	{
-		mt::vec3f axis_x(1.f,0.f,0.f);
-		mt::vec3f axis_y(0.f,1.f,0.f);
+		//mt::vec3f axis_x(1.f,0.f,0.f);
+		//mt::vec3f axis_y(0.f,1.f,0.f);
 
-		mt::vec3f point0 = axis_x * _layer.width * 0.f + axis_y * _layer.height * 0.f;
-		mt::vec3f point1 = axis_x * _layer.width * 1.f + axis_y * _layer.height * 0.f;
-		mt::vec3f point2 = axis_x * _layer.width * 1.f + axis_y * _layer.height * 1.f;
-		mt::vec3f point3 = axis_x * _layer.width * 0.f + axis_y * _layer.height * 1.f;
+		//mt::vec3f point0 = axis_x * _layer.width * 0.f + axis_y * _layer.height * 0.f;
+		//mt::vec3f point1 = axis_x * _layer.width * 1.f + axis_y * _layer.height * 0.f;
+		//mt::vec3f point2 = axis_x * _layer.width * 1.f + axis_y * _layer.height * 1.f;
+		//mt::vec3f point3 = axis_x * _layer.width * 0.f + axis_y * _layer.height * 1.f;
 
-		mt::mat4f anchor_m4;
-		mt::make_translation_m4( anchor_m4, -_source.anchorPoint.x, -_source.anchorPoint.y, -_source.anchorPoint.z );
+		//mt::mat4f anchor_m4;
+		//mt::make_translation_m4( anchor_m4, -_source.anchorPoint.x, -_source.anchorPoint.y, -_source.anchorPoint.z );
 
-		mt::mat4f rotate_m4;
-		mt::make_rotate_m4( rotate_m4, -_source.rotation.z, -_source.rotation.y, -_source.rotation.x );
+		//mt::mat4f rotate_m4;
+		//mt::make_rotate_m4( rotate_m4, -_source.rotation.z, -_source.rotation.y, -_source.rotation.x );
 
-		mt::mat4f scale_m4;
-		mt::make_scale_m4( scale_m4, _source.scale.x, _source.scale.y, 1.f );
+		//mt::mat4f scale_m4;
+		//mt::make_scale_m4( scale_m4, _source.scale.x, _source.scale.y, 1.f );
 
-		mt::mat4f translation_m4;
-		mt::make_translation_m4( translation_m4, _source.position.x, _source.position.y, _source.position.z );
+		//mt::mat4f translation_m4;
+		//mt::make_translation_m4( translation_m4, _source.position.x, _source.position.y, _source.position.z );
 
-		mt::vec3f p00;
-		mt::mul_v3_m4( p00, point0, anchor_m4 );
-		mt::vec3f p01;
-		mt::mul_v3_m4( p01, p00, scale_m4 );
-		mt::vec3f p02;
-		mt::mul_v3_m4( p02, p01, rotate_m4 );
-		mt::vec3f p05;
-		mt::mul_v3_m4( p05, p02, translation_m4 );
+		//mt::vec3f p00;
+		//mt::mul_v3_m4( p00, point0, anchor_m4 );
+		//mt::vec3f p01;
+		//mt::mul_v3_m4( p01, p00, scale_m4 );
+		//mt::vec3f p02;
+		//mt::mul_v3_m4( p02, p01, rotate_m4 );
+		//mt::vec3f p05;
+		//mt::mul_v3_m4( p05, p02, translation_m4 );
 
-		mt::vec3f p0;
-		float w0 = mt::mul_v3_m4_proj( p0, p05, _layer.vp );
+		//mt::vec3f p0;
+		//float w0 = mt::mul_v3_m4_proj( p0, p05, _layer.vp );
 
-		p0.x = ( 1.0f + p0.x ) * m_width * 0.5f; 
-		p0.y = ( 1.0f + p0.y ) * m_height * 0.5f;
+		//p0.x = ( 1.0f + p0.x ) * m_width * 0.5f; 
+		//p0.y = ( 1.0f + p0.y ) * m_height * 0.5f;
 
-		mt::vec3f p10;
-		mt::mul_v3_m4( p10, point1, anchor_m4 );
-		mt::vec3f p11;
-		mt::mul_v3_m4( p11, p10, scale_m4 );
-		mt::vec3f p12;
-		mt::mul_v3_m4( p12, p11, rotate_m4 );
-		mt::vec3f p15;
-		mt::mul_v3_m4( p15, p12, translation_m4 );
+		//mt::vec3f p10;
+		//mt::mul_v3_m4( p10, point1, anchor_m4 );
+		//mt::vec3f p11;
+		//mt::mul_v3_m4( p11, p10, scale_m4 );
+		//mt::vec3f p12;
+		//mt::mul_v3_m4( p12, p11, rotate_m4 );
+		//mt::vec3f p15;
+		//mt::mul_v3_m4( p15, p12, translation_m4 );
 
-		mt::vec3f p1;
-		float w1 = mt::mul_v3_m4_proj( p1, p15, _layer.vp );
+		//mt::vec3f p1;
+		//float w1 = mt::mul_v3_m4_proj( p1, p15, _layer.vp );
 
-		p1.x = ( 1.0f + p1.x ) * m_width * 0.5f; 
-		p1.y = ( 1.0f + p1.y ) * m_height * 0.5f;
+		//p1.x = ( 1.0f + p1.x ) * m_width * 0.5f; 
+		//p1.y = ( 1.0f + p1.y ) * m_height * 0.5f;
 
-		mt::vec3f p20;
-		mt::mul_v3_m4( p20, point2, anchor_m4 );
-		mt::vec3f p21;
-		mt::mul_v3_m4( p21, p20, scale_m4 );
-		mt::vec3f p22;
-		mt::mul_v3_m4( p22, p21, rotate_m4 );
-		mt::vec3f p25;
-		mt::mul_v3_m4( p25, p22, translation_m4 );
+		//mt::vec3f p20;
+		//mt::mul_v3_m4( p20, point2, anchor_m4 );
+		//mt::vec3f p21;
+		//mt::mul_v3_m4( p21, p20, scale_m4 );
+		//mt::vec3f p22;
+		//mt::mul_v3_m4( p22, p21, rotate_m4 );
+		//mt::vec3f p25;
+		//mt::mul_v3_m4( p25, p22, translation_m4 );
 
-		mt::vec3f p2;
-		float w2 = mt::mul_v3_m4_proj( p2, p25, _layer.vp );
+		//mt::vec3f p2;
+		//float w2 = mt::mul_v3_m4_proj( p2, p25, _layer.vp );
 
-		p2.x = ( 1.0f + p2.x ) * m_width * 0.5f; 
-		p2.y = ( 1.0f + p2.y ) * m_height * 0.5f;
+		//p2.x = ( 1.0f + p2.x ) * m_width * 0.5f; 
+		//p2.y = ( 1.0f + p2.y ) * m_height * 0.5f;
 
-		mt::vec3f p30;
-		mt::mul_v3_m4( p30, point3, anchor_m4 );
-		mt::vec3f p31;
-		mt::mul_v3_m4( p31, p30, scale_m4 );
-		mt::vec3f p32;
-		mt::mul_v3_m4( p32, p31, rotate_m4 );
-		mt::vec3f p35;
-		mt::mul_v3_m4( p35, p32, translation_m4 );
+		//mt::vec3f p30;
+		//mt::mul_v3_m4( p30, point3, anchor_m4 );
+		//mt::vec3f p31;
+		//mt::mul_v3_m4( p31, p30, scale_m4 );
+		//mt::vec3f p32;
+		//mt::mul_v3_m4( p32, p31, rotate_m4 );
+		//mt::vec3f p35;
+		//mt::mul_v3_m4( p35, p32, translation_m4 );
 
-		mt::vec3f p3;
-		float w3 = mt::mul_v3_m4_proj( p3, p35, _layer.vp );
+		//mt::vec3f p3;
+		//float w3 = mt::mul_v3_m4_proj( p3, p35, _layer.vp );
 
-		p3.x = ( 1.0f + p3.x ) * m_width * 0.5f; 
-		p3.y = ( 1.0f + p3.y ) * m_height * 0.5f;
+		//p3.x = ( 1.0f + p3.x ) * m_width * 0.5f; 
+		//p3.y = ( 1.0f + p3.y ) * m_height * 0.5f;
 
-		ColourValue colour(1.f, 1.f, 1.f, _source.opacity);
-		uint32 color = colour.getAsRGBA();
+		//ColourValue colour(1.f, 1.f, 1.f, _source.opacity);
+		//uint32 color = colour.getAsRGBA();
 
-		_frame.vertices[0].pos[0] = p0.x;
-		_frame.vertices[0].pos[1] = p0.y;
-		_frame.vertices[0].pos[2] = 0.f;
-		_frame.vertices[0].pos[3] = w0;
+		//_frame.vertices[0].pos[0] = p0.x;
+		//_frame.vertices[0].pos[1] = p0.y;
+		//_frame.vertices[0].pos[2] = 0.f;
+		//_frame.vertices[0].pos[3] = w0;
 
-		_frame.vertices[0].uv[0] = 0.f;
-		_frame.vertices[0].uv[1] = 0.f;
+		//_frame.vertices[0].uv[0] = 0.f;
+		//_frame.vertices[0].uv[1] = 0.f;
 
-		_frame.vertices[0].color = color;
-
-
-		_frame.vertices[1].pos[0] = p1.x;
-		_frame.vertices[1].pos[1] = p1.y;
-		_frame.vertices[1].pos[2] = 0.f;
-		_frame.vertices[1].pos[3] = w1;
-
-		_frame.vertices[1].uv[0] = 1.f;
-		_frame.vertices[1].uv[1] = 0.f;
-
-		_frame.vertices[1].color = color;
+		//_frame.vertices[0].color = color;
 
 
-		_frame.vertices[2].pos[0] = p2.x;
-		_frame.vertices[2].pos[1] = p2.y;
-		_frame.vertices[2].pos[2] = 0.f;
-		_frame.vertices[2].pos[3] = w2;
+		//_frame.vertices[1].pos[0] = p1.x;
+		//_frame.vertices[1].pos[1] = p1.y;
+		//_frame.vertices[1].pos[2] = 0.f;
+		//_frame.vertices[1].pos[3] = w1;
 
-		_frame.vertices[2].uv[0] = 1.f;
-		_frame.vertices[2].uv[1] = 1.f;
+		//_frame.vertices[1].uv[0] = 1.f;
+		//_frame.vertices[1].uv[1] = 0.f;
 
-		_frame.vertices[2].color = color;
+		//_frame.vertices[1].color = color;
 
 
-		_frame.vertices[3].pos[0] = p3.x;
-		_frame.vertices[3].pos[1] = p3.y;
-		_frame.vertices[3].pos[2] = 0.f;
-		_frame.vertices[3].pos[3] = w3;
+		//_frame.vertices[2].pos[0] = p2.x;
+		//_frame.vertices[2].pos[1] = p2.y;
+		//_frame.vertices[2].pos[2] = 0.f;
+		//_frame.vertices[2].pos[3] = w2;
 
-		_frame.vertices[3].uv[0] = 0.f;
-		_frame.vertices[3].uv[1] = 1.f;
+		//_frame.vertices[2].uv[0] = 1.f;
+		//_frame.vertices[2].uv[1] = 1.f;
 
-		_frame.vertices[3].color = color;
+		//_frame.vertices[2].color = color;
+
+
+		//_frame.vertices[3].pos[0] = p3.x;
+		//_frame.vertices[3].pos[1] = p3.y;
+		//_frame.vertices[3].pos[2] = 0.f;
+		//_frame.vertices[3].pos[3] = w3;
+
+		//_frame.vertices[3].uv[0] = 0.f;
+		//_frame.vertices[3].uv[1] = 1.f;
+
+		//_frame.vertices[3].color = color;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::_release()

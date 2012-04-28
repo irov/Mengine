@@ -312,20 +312,20 @@ namespace	Menge
 
 			visOffset += offset;
 
-			const mt::mat3f & wm = this->getWorldMatrix();
+			const mt::mat4f & wm = this->getWorldMatrix();
 
 			//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
 			//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
 			//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
 			//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-			mt::vec2f transformX;
-			mt::vec2f transformY;
+			mt::vec3f transformX;
+			mt::vec3f transformY;
 
-			mt::vec2f vertices[4];
+			mt::vec3f vertices[4];
 
-			mt::mul_v2_m3( vertices[0], visOffset, wm );
-			mt::mul_v2_m3_r( transformX, mt::vec2f(size.x, 0.f), wm );
-			mt::mul_v2_m3_r( transformY, mt::vec2f(0.f, size.y), wm );
+			mt::mul_v3_m4( vertices[0], mt::vec3f(visOffset.x, visOffset.y, 0.f), wm );
+			mt::mul_v3_m4_r( transformX, mt::vec3f(size.x, 0.f, 0.f), wm );
+			mt::mul_v3_m4_r( transformY, mt::vec3f(0.f, size.y, 0.f), wm );
 
 			vertices[1] = vertices[0] + transformX;
 			vertices[2] = vertices[1] + transformY;
@@ -333,10 +333,14 @@ namespace	Menge
 
 			for( int i = 0; i < 4; i++ )
 			{
-				_vertcies[i].pos[0] = vertices[i].x;
-				_vertcies[i].pos[1] = vertices[i].y;
-				_vertcies[i].pos[2] = 0.f;
-				_vertcies[i].pos[3] = 1.f;
+				Vertex2D & render_vertex = _vertcies[i];
+				const mt::vec3f & cache_vertex = vertices[i];
+
+				render_vertex.pos[0] = cache_vertex.x;
+				render_vertex.pos[1] = cache_vertex.y;
+				render_vertex.pos[2] = cache_vertex.z;
+				//render_vertex.pos[3] = 1.f;
+				//_vertcies[i].pos[3] = 1.f;
 			}
 		}
 
@@ -411,10 +415,8 @@ namespace	Menge
 		
 		const Vertex2D * vertices = this->getVertices();
 
-		bool scaled = this->isScaled();
-	
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, scaled, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()

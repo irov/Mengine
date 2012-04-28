@@ -167,7 +167,7 @@ namespace Menge
 
 		mt::vec2f offset = mt::zero_v2;
 
-		const mt::mat3f & wm = this->getWorldMatrix();
+		const mt::mat4f & wm = this->getWorldMatrix();
 
 		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
@@ -215,16 +215,19 @@ namespace Menge
 		
 		if( textVertices.empty() == false )
 		{
-			bool scaled = this->isScaled();
-
 			RenderEngine::get()
-				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, scaled, LPT_QUAD );
+				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( Camera2D * _camera )
 	{
 		TVectorVertex2D & outlineVertices = this->getOutlineVertices();
+
+		if( outlineVertices.empty() == true )
+		{
+			return;
+		}
 
 		int countOfVertices;
 
@@ -239,13 +242,8 @@ namespace Menge
 
 		const RenderTextureInterface* outlineTexture = m_resourceFont->getOutlineImage();
 
-		if( outlineVertices.empty() == false )
-		{
-			bool scaled = this->isScaled();
-
-			RenderEngine::get()
-				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, scaled, LPT_QUAD );
-		}
+		RenderEngine::get()
+			->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const
@@ -451,7 +449,7 @@ namespace Menge
 
 		mt::vec2f offset = mt::zero_v2;
 
-		const mt::mat3f & wm = this->getWorldMatrix();
+		const mt::mat4f & wm = this->getWorldMatrix();
 
 		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),

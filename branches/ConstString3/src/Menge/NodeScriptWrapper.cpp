@@ -180,10 +180,10 @@ namespace Menge
 			{
 				mt::vec2f pc = s_getLocalPolygonCenter( _hs );
 
-				const mt::mat3f & wm = _hs->getWorldMatrix();
+				const mt::mat4f & wm = _hs->getWorldMatrix();
 
 				mt::vec2f world_pc;
-				mt::mul_v2_m3(world_pc, pc, wm);
+				mt::mul_v2_m4(world_pc, pc, wm);
 
 				return world_pc;
 			}
@@ -192,7 +192,7 @@ namespace Menge
 			{
 				const Polygon & polygon = _hs->getPolygon();
 
-				const mt::mat3f & wm = _hs->getWorldMatrix();
+				const mt::mat4f & wm = _hs->getWorldMatrix();
 
 				Polygon pwm;
 				polygon_wm(pwm, polygon, wm);
@@ -201,7 +201,7 @@ namespace Menge
 			}
 		}
 
-		static Polygon s_polygon_wm( const Polygon & _polygon, const mt::mat3f & _wm )
+		static Polygon s_polygon_wm( const Polygon & _polygon, const mt::mat4f & _wm )
 		{
 			Polygon polygon;
 			polygon_wm(polygon, _polygon, _wm);
@@ -212,10 +212,10 @@ namespace Menge
 		static bool s_testHotspot( HotSpot * _left, HotSpot * _right )
 		{
 			const Polygon & left_poligon = _left->getPolygon();
-			const mt::mat3f & left_wm = _left->getWorldMatrix();
+			const mt::mat4f & left_wm = _left->getWorldMatrix();
 
 			const Polygon & right_poligon = _right->getPolygon();
-			const mt::mat3f & right_wm = _right->getWorldMatrix();
+			const mt::mat4f & right_wm = _right->getWorldMatrix();
 			
 			Polygon left_polygon_wm;
 
@@ -1135,95 +1135,95 @@ namespace Menge
 			return pyret;
 		}
 
-		static PhysicJoint2DInterface* s_createDistanceJoint( PhysicalBody2D* _body1, PhysicalBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
-		{
-			return PhysicEngine2D::get()->createDistanceJoint( _body1->getInterface(), _body2->getInterface(), _offset1, _offset2, _collideBodies );
-		}
+		//static PhysicJoint2DInterface* s_createDistanceJoint( PhysicalBody2D* _body1, PhysicalBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
+		//{
+		//	return PhysicEngine2D::get()->createDistanceJoint( _body1->getInterface(), _body2->getInterface(), _offset1, _offset2, _collideBodies );
+		//}
 
-		static PhysicJoint2DInterface* s_createHingeJoint( PhysicalBody2D* _body1, PhysicalBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
-		{
-			return PhysicEngine2D::get()->createHingeJoint( _body1->getInterface(), _body2->getInterface(), _offset1, _limits, _collideBodies );
-		}
+		//static PhysicJoint2DInterface* s_createHingeJoint( PhysicalBody2D* _body1, PhysicalBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
+		//{
+		//	return PhysicEngine2D::get()->createHingeJoint( _body1->getInterface(), _body2->getInterface(), _offset1, _limits, _collideBodies );
+		//}
 
-		static PhysicJoint2DInterface * s_createPrismaticJoint(
-			PhysicalBody2D* _body1
-			, PhysicalBody2D* _body2
-			, const mt::vec2f& _unitsWorldAxis
-			, bool _collideConnected
-			, bool _enableLimit
-			, const mt::vec2f& _translation
-			, bool _enableMotor
-			, float _maxMotorForce
-			, float _motorSpeed)
-		{
-			return PhysicEngine2D::get()->createPrismaticJoint( _body1->getInterface(), _body2->getInterface(), _unitsWorldAxis, _collideConnected, _enableLimit, _translation,  _enableMotor, _maxMotorForce, _motorSpeed );
-		}
+		//static PhysicJoint2DInterface * s_createPrismaticJoint(
+		//	PhysicalBody2D* _body1
+		//	, PhysicalBody2D* _body2
+		//	, const mt::vec2f& _unitsWorldAxis
+		//	, bool _collideConnected
+		//	, bool _enableLimit
+		//	, const mt::vec2f& _translation
+		//	, bool _enableMotor
+		//	, float _maxMotorForce
+		//	, float _motorSpeed)
+		//{
+		//	return PhysicEngine2D::get()->createPrismaticJoint( _body1->getInterface(), _body2->getInterface(), _unitsWorldAxis, _collideConnected, _enableLimit, _translation,  _enableMotor, _maxMotorForce, _motorSpeed );
+		//}
 
-		static PhysicJoint2DInterface * s_createPulleyJoint(
-			PhysicalBody2D* _body1
-			, PhysicalBody2D* _body2
-			, const mt::vec2f& _offsetBody1
-			, const mt::vec2f& _offsetBody2
-			, const mt::vec2f& _offsetGroundBody1
-			, const mt::vec2f& _offsetGroundBody2
-			, float _ratio
-			, bool _collideConnected)
-		{
-			return PhysicEngine2D::get()->createPulleyJoint(  _body1->getInterface(), _body2->getInterface(), _offsetBody1, _offsetBody2, _offsetGroundBody1, _offsetGroundBody2, _ratio, _collideConnected );
-		}
+		//static PhysicJoint2DInterface * s_createPulleyJoint(
+		//	PhysicalBody2D* _body1
+		//	, PhysicalBody2D* _body2
+		//	, const mt::vec2f& _offsetBody1
+		//	, const mt::vec2f& _offsetBody2
+		//	, const mt::vec2f& _offsetGroundBody1
+		//	, const mt::vec2f& _offsetGroundBody2
+		//	, float _ratio
+		//	, bool _collideConnected)
+		//{
+		//	return PhysicEngine2D::get()->createPulleyJoint(  _body1->getInterface(), _body2->getInterface(), _offsetBody1, _offsetBody2, _offsetGroundBody1, _offsetGroundBody2, _ratio, _collideConnected );
+		//}
 
-		PhysicJoint2DInterface * s_createGearJoint(
-			PhysicalBody2D * _body1
-			, PhysicalBody2D * _body2
-			, Menge::PhysicJoint2DInterface * _joint1
-			, Menge::PhysicJoint2DInterface * _joint2
-			, float _ratio
-			, bool _collideConnected)
-		{
-			return PhysicEngine2D::get()->createGearJoint(  _body1->getInterface(), _body2->getInterface(), _joint1, _joint2, _ratio, _collideConnected );
-		}	
+		//PhysicJoint2DInterface * s_createGearJoint(
+		//	PhysicalBody2D * _body1
+		//	, PhysicalBody2D * _body2
+		//	, Menge::PhysicJoint2DInterface * _joint1
+		//	, Menge::PhysicJoint2DInterface * _joint2
+		//	, float _ratio
+		//	, bool _collideConnected)
+		//{
+		//	return PhysicEngine2D::get()->createGearJoint(  _body1->getInterface(), _body2->getInterface(), _joint1, _joint2, _ratio, _collideConnected );
+		//}	
 
-		static PhysicJoint2DInterface * s_createRopeJoint( 
-			PhysicalBody2D * _body1
-			, PhysicalBody2D * _body2
-			, const mt::vec2f & _localAnchor1
-			, const mt::vec2f & _localAnchor2
-			, float _maxlength
-			, bool _collideConnected )
-		{
-			return PhysicEngine2D::get()->createRopeJoint( _body1->getInterface(), _body2->getInterface(), _localAnchor1, _localAnchor2, _maxlength ,_collideConnected );
-		}
+		//static PhysicJoint2DInterface * s_createRopeJoint( 
+		//	PhysicalBody2D * _body1
+		//	, PhysicalBody2D * _body2
+		//	, const mt::vec2f & _localAnchor1
+		//	, const mt::vec2f & _localAnchor2
+		//	, float _maxlength
+		//	, bool _collideConnected )
+		//{
+		//	return PhysicEngine2D::get()->createRopeJoint( _body1->getInterface(), _body2->getInterface(), _localAnchor1, _localAnchor2, _maxlength ,_collideConnected );
+		//}
 
-		static PhysicJoint2DInterface * s_createWheelJoint( 
-			PhysicalBody2D * _body1
-			, PhysicalBody2D * _body2
-			, const mt::vec2f & _localAnchor1
-			, const mt::vec2f & _localAnchor2
-			, const mt::vec2f & _localAxis1
-			, float _frequencyHz
-			, float _dampingRatio
-			, bool _collideConnected
-			, float _maxMotorTorque
-			, float _motorSpeed )
-		{
-			return PhysicEngine2D::get()->createWheelJoint(  _body1->getInterface(), _body2->getInterface(), _localAnchor1, _localAnchor2, _localAxis1
-				, _frequencyHz, _dampingRatio, _collideConnected, _maxMotorTorque, _motorSpeed );
-		}
+		//static PhysicJoint2DInterface * s_createWheelJoint( 
+		//	PhysicalBody2D * _body1
+		//	, PhysicalBody2D * _body2
+		//	, const mt::vec2f & _localAnchor1
+		//	, const mt::vec2f & _localAnchor2
+		//	, const mt::vec2f & _localAxis1
+		//	, float _frequencyHz
+		//	, float _dampingRatio
+		//	, bool _collideConnected
+		//	, float _maxMotorTorque
+		//	, float _motorSpeed )
+		//{
+		//	return PhysicEngine2D::get()->createWheelJoint(  _body1->getInterface(), _body2->getInterface(), _localAnchor1, _localAnchor2, _localAxis1
+		//		, _frequencyHz, _dampingRatio, _collideConnected, _maxMotorTorque, _motorSpeed );
+		//}
 
-		static PhysicJoint2DInterface* s_createMouseJoint( PhysicalBody2D* _body, int _x, int _y )
-		{
-			return PhysicEngine2D::get()->createMouseJoint( _body->getInterface(), _x, _y );
-		}
+		//static PhysicJoint2DInterface* s_createMouseJoint( PhysicalBody2D* _body, int _x, int _y )
+		//{
+		//	return PhysicEngine2D::get()->createMouseJoint( _body->getInterface(), _x, _y );
+		//}
 
-		static void s_destroyJoint( PhysicJoint2DInterface* _joint )
-		{
-			return PhysicEngine2D::get()->destroyJoint( _joint );
-		}
+		//static void s_destroyJoint( PhysicJoint2DInterface* _joint )
+		//{
+		//	return PhysicEngine2D::get()->destroyJoint( _joint );
+		//}
 
-		static void s_physicsMouseMove( const mt::vec2f _delta )
-		{
-			PhysicEngine2D::get()->onMouseMove( _delta );
-		}
+		//static void s_physicsMouseMove( const mt::vec2f _delta )
+		//{
+		//	PhysicEngine2D::get()->onMouseMove( _delta );
+		//}
 
 		static const String & s_getPlatformName()
 		{
@@ -1305,10 +1305,10 @@ namespace Menge
 			{
 				mt::vec2f imageCenter = s_getLocalImageCenter( _sprite );
 
-				const mt::mat3f & wm = _sprite->getWorldMatrix();
+				const mt::mat4f & wm = _sprite->getWorldMatrix();
 
 				mt::vec2f imageCenter_wm;
-				mt::mul_v2_m3( imageCenter_wm, imageCenter, wm );
+				mt::mul_v2_m4( imageCenter_wm, imageCenter, wm );
 
 				return imageCenter_wm;
 			}
@@ -1333,10 +1333,10 @@ namespace Menge
 			static void moveStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_POSITION );
-				_node->setLinearSpeed( mt::zero_v2 );
+				_node->setLinearSpeed( mt::zero_v3 );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static size_t velocityTo( Node * _node, float _speed, const mt::vec2f& _dir, PyObject* _cb )
+			static size_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1348,10 +1348,10 @@ namespace Menge
 				Affector * affector = 
 					NodeAffectorCreator::newNodeAffectorAccumulateLinear(
 					_cb, ETA_POSITION, _node, &Node::setLocalPosition
-					, _node->getLocalPosition(), _dir, _speed, &mt::length_v2
+					, _node->getLocalPosition(), _dir, _speed, &mt::length_v3
 					);
 
-				mt::vec2f linearSpeed = _dir * _speed;
+				mt::vec3f linearSpeed = _dir * _speed;
 				_node->setLinearSpeed( linearSpeed );
 
 				size_t id = _node->addAffector( affector );
@@ -1359,7 +1359,7 @@ namespace Menge
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static size_t moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static size_t moveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1372,12 +1372,12 @@ namespace Menge
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
 					_cb, ETA_POSITION, _node, &Node::setLocalPosition
 					, _node->getLocalPosition(), _point, _time
-					, &mt::length_v2 
+					, &mt::length_v3 
 					);
 
 				float invTime = 1.0f / _time;
-				const mt::vec2f & pos = _node->getLocalPosition();
-				mt::vec2f linearSpeed = ( _point - pos ) * invTime;
+				const mt::vec3f & pos = _node->getLocalPosition();
+				mt::vec3f linearSpeed = ( _point - pos ) * invTime;
 
 				_node->setLinearSpeed( linearSpeed );
 				
@@ -1386,14 +1386,14 @@ namespace Menge
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static size_t accMoveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static size_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
 					return 0;
 				}
 
-				mt::vec2f linearSpeed = _node->getLinearSpeed();
+				mt::vec3f linearSpeed = _node->getLinearSpeed();
 
 				moveStop( _node );
 
@@ -1401,7 +1401,7 @@ namespace Menge
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
 					_cb, ETA_POSITION, _node, &Node::setLocalPosition
 					, _node->getLocalPosition(), _point, linearSpeed, _time
-					, &mt::length_v2
+					, &mt::length_v3
 					);
 				
 				size_t id = _node->addAffector( affector );
@@ -1411,8 +1411,8 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static size_t bezier2To( Node * _node
 				, float _time
-				, const mt::vec2f& _point1
-				, const mt::vec2f& _point2
+				, const mt::vec3f& _point1
+				, const mt::vec3f& _point2
 				, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
@@ -1426,7 +1426,7 @@ namespace Menge
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadraticBezier(
 					_cb, ETA_POSITION, _node, &Node::setLocalPosition
 					, _node->getLocalPosition(), _point1, _point2, _time
-					, &mt::length_v2
+					, &mt::length_v3
 					);
 
 				size_t id = _node->addAffector( affector );
@@ -1436,9 +1436,9 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static size_t bezier3To( Node * _node
 									    , float _time
-									    , const mt::vec2f& _point1
-									    , const mt::vec2f& _point2
-									    , const mt::vec2f& _point3
+									    , const mt::vec3f& _point1
+									    , const mt::vec3f& _point2
+									    , const mt::vec3f& _point3
 									    , PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
@@ -1452,7 +1452,7 @@ namespace Menge
 					NodeAffectorCreator::newNodeAffectorInterpolateCubicBezier(
 					_cb, ETA_POSITION, _node, &Node::setLocalPosition
 					, _node->getLocalPosition(), _point1, _point2, _point3, _time
-					, &mt::length_v2
+					, &mt::length_v3
 					);
 
 				size_t id = _node->addAffector( affector );
@@ -1475,7 +1475,7 @@ namespace Menge
 
 				angleStop( _node );
 
-				float angle = _node->getAngle();
+				float angle = _node->getRotateZ();
 
 				float correct_angle_from = angle;
 				float correct_angle_to = _angle;
@@ -1483,7 +1483,7 @@ namespace Menge
 
 				Affector* affector =
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-					_cb, ETA_ANGLE, _node, &Node::setAngle
+					_cb, ETA_ANGLE, _node, &Node::setRotateZ
 					, correct_angle_from, correct_angle_to, _time
 					, &fabsf 
 					);				
@@ -1508,7 +1508,7 @@ namespace Menge
 
 				angleStop( _node );
 
-				float angle = _node->getAngle();
+				float angle = _node->getRotateZ();
 
 				float correct_angle_from = angle;
 				float correct_angle_to = _angle;
@@ -1516,7 +1516,7 @@ namespace Menge
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-					_cb, ETA_ANGLE, _node, &Node::setAngle
+					_cb, ETA_ANGLE, _node, &Node::setRotateZ
 					, correct_angle_from, correct_angle_to, angularSpeed, _time
 					, &fabsf
 					);				
@@ -1531,7 +1531,7 @@ namespace Menge
 				_node->stopAffectors( ETA_SCALE );
 			}	
 			//////////////////////////////////////////////////////////////////////////
-			static size_t scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
+			static size_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1544,10 +1544,11 @@ namespace Menge
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
 					_cb, ETA_SCALE, _node, &Node::setScale
 					, _node->getScale(), _scale, _time
-					, &mt::length_v2
+					, &mt::length_v3
 					);
 
 				size_t id = _node->addAffector( affector );
+
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
@@ -1637,6 +1638,16 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
 
+		float vec3_sequence( mt::vec3f * _vec, size_t _index )
+		{
+			if( _index > 3 )
+			{
+				pybind::throw_exception();
+			}
+
+			return _vec->operator [] (_index);
+		}
+
 		float vec4_sequence( mt::vec4f * _vec, size_t _index )
 		{
 			if( _index > 4 )
@@ -1657,7 +1668,18 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool vec2f_convert( PyObject * _obj, void * _place )
 		{
-			if( pybind::tuple_check( _obj ) == true )
+			if( pybind::instance_of<mt::vec3f>( _obj ) == true )
+			{
+				mt::vec3f v3 = pybind::extract<mt::vec3f>(_obj);
+
+				mt::vec2f * impl = (mt::vec2f *)_place;
+
+				impl->x = v3.x;
+				impl->y = v3.y;
+
+				return true;
+			}
+			else if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 2 )
 				{
@@ -1688,6 +1710,78 @@ namespace Menge
 
 				impl->x = pybind::extract<float>(i0);
 				impl->y = pybind::extract<float>(i1);
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool vec3f_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::instance_of<mt::vec2f>( _obj ) == true )
+			{
+				mt::vec2f v2 = pybind::extract<mt::vec2f>(_obj);
+
+				mt::vec3f * impl = (mt::vec3f *)_place;
+
+				impl->x = v2.x;
+				impl->y = v2.y;
+				impl->z = 0.f;
+
+				return true;
+			}
+			else if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) < 2 || pybind::tuple_size( _obj ) > 3 )
+				{
+					return false;
+				}
+
+				mt::vec3f * impl = (mt::vec3f *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+
+				impl->x = pybind::extract<float>(i0);
+				impl->y = pybind::extract<float>(i1);
+
+				if( pybind::tuple_size( _obj ) == 3 )
+				{
+					PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+					impl->z = pybind::extract<float>(i2);
+				}
+				else
+				{
+					impl->z = 0.f;
+				}
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) < 2 || pybind::tuple_size( _obj ) > 3 )
+				{
+					return false;
+				}
+
+				mt::vec4f * impl = (mt::vec4f *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+
+				impl->x = pybind::extract<float>(i0);
+				impl->y = pybind::extract<float>(i1);
+
+				if( pybind::tuple_size( _obj ) == 3 )
+				{
+					PyObject * i2 = pybind::list_getitem( _obj, 2 );
+					impl->z = pybind::extract<float>(i2);
+				}
+				else
+				{
+					impl->z = 0.f;
+				}
 
 				return true;
 			}
@@ -2458,7 +2552,7 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
 		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		//SCRIPT_CLASS_WRAPPING( RigidBody2D );
-		SCRIPT_CLASS_WRAPPING( PhysicalBody2D );
+		//SCRIPT_CLASS_WRAPPING( PhysicalBody2D );
 		//SCRIPT_CLASS_WRAPPING( CapsuleController );
 		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
 		//SCRIPT_CLASS_WRAPPING( Camera3D );
@@ -2853,6 +2947,8 @@ namespace Menge
 
 		pybind::struct_<mt::vec3f>("vec3f")
 			.def( pybind::init<float,float,float>() )
+			.def_convert( &ScriptMethod::vec3f_convert )
+			.def_static_sequence( &ScriptMethod::vec3_sequence )
 			.def_member( "x", &mt::vec3f::x )
 			.def_member( "y", &mt::vec3f::y )
 			.def_member( "z", &mt::vec3f::z )
@@ -2973,22 +3069,28 @@ namespace Menge
 		pybind::interface_<Transformation3D>("Transformation3D")
 			.def( "setLocalPosition", &Transformation3D::setLocalPosition )
 			.def( "getLocalPosition", &Transformation3D::getLocalPosition )
-			.def( "getLocalDirection", &Transformation3D::getLocalDirection )
-			.def( "setLocalDirection", &Transformation3D::setLocalDirection )
+			//.def( "getLocalDirection", &Transformation3D::getLocalDirection )
+			//.def( "setLocalDirection", &Transformation3D::setLocalDirection )
 			.def( "setCoordinate", &Transformation3D::setCoordinate )			
 			.def( "getCoordinate", &Transformation3D::getCoordinate )
 			.def( "setOrigin", &Transformation3D::setOrigin )
 			.def( "getOrigin", &Transformation3D::getOrigin )
 			.def( "setScale", &Transformation3D::setScale )
 			.def( "getScale", &Transformation3D::getScale )
-			.def( "setAngle", &Transformation3D::setAngle )
-			.def( "getAngle", &Transformation3D::getAngle )
+			.def( "setRotateX", &Transformation3D::setRotateX )
+			.def( "getRotateX", &Transformation3D::getRotateX )
+			.def( "setRotateY", &Transformation3D::setRotateY )
+			.def( "getRotateY", &Transformation3D::getRotateY )
+			.def( "setRotateZ", &Transformation3D::setRotateZ )
+			.def( "getRotateZ", &Transformation3D::getRotateZ )
+			.def( "setAngle", &Transformation3D::setRotateZ )
+			.def( "getAngle", &Transformation3D::getRotateZ )
 
 			.def( "translate", &Transformation3D::translate )
 
 			.def( "resetTransformation", &Transformation3D::resetTransformation )
 
-			.def( "setRotate", &Transformation3D::setAngle ) //depricated
+			//.def( "setRotate", &Transformation3D::setAngle ) //depricated
 			;
 
 		//pybind::class_<FFCamera3D>("FFCamera3D")
@@ -3095,7 +3197,7 @@ namespace Menge
 			//.def( "getListener", &Node::getListener )
 
 			.def( "getWorldPosition", &Node::getWorldPosition )
-			.def( "getWorldDirection", &Node::getWorldDirection )
+			//.def( "getWorldDirection", &Node::getWorldDirection )
 			.def( "getCameraPosition", &Node::getCameraPosition )
 
 			.def( "setWorldPosition", &Node::setWorldPosition )
@@ -3132,10 +3234,8 @@ namespace Menge
 		pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
 			.def( "setViewport", &Camera2D::setViewport )
 			.def( "getViewport", &Camera2D::getViewport )
-			.def( "setRenderport", &Camera2D::setRenderport )
-			.def( "getRenderport", &Camera2D::getRenderport )
-			.def( "setParallax", &Camera2D::setParallax )
-			.def( "getParallax", &Camera2D::getParallax )
+			//.def( "setRenderport", &Camera2D::setRenderport )
+			//.def( "getRenderport", &Camera2D::getRenderport )
 			.def( "setTargetNode", &Camera2D::setTargetNode )
 			.def( "setRenderTarget", &Camera2D::setRenderTarget )
 			.def( "setTargetOffset", &Camera2D::setTargetOffset )
@@ -3420,42 +3520,42 @@ namespace Menge
 				//	.def( "enableStabilization", &RigidBody2D::enableStabilization )
 				//	;
 				
-				pybind::proxy_<PhysicalBody2D, pybind::bases<Node> >("PhysicalBody2D", false)
-					.def( "applyForce", &PhysicalBody2D::applyForce )
-					.def( "applyImpulse", &PhysicalBody2D::applyImpulse )
-					.def( "applyConstantForce", &PhysicalBody2D::applyConstantForce )
-					.def( "removeConstantForce", &PhysicalBody2D::removeConstantForce )
-					.def( "setDirectionForce", &PhysicalBody2D::setDirectionForce )
-					.def( "wakeUp", &PhysicalBody2D::wakeUp )
-					.def( "getMass", &PhysicalBody2D::getMass )
-					.def( "getLinearVelocity", &PhysicalBody2D::getLinearVelocity )
-					.def( "setLinearVelocity", &PhysicalBody2D::setLinearVelocity )
-					.def( "unsetLinearVelocity", &PhysicalBody2D::unsetLinearVelocity )
-					.def( "enableStabilization", &PhysicalBody2D::enableStabilization )
-					.def( "setOrientation", &PhysicalBody2D::setOrientation )
-					.def( "addShapeBox", &PhysicalBody2D::addShapeBox )
-					.def( "addShapeCircle", &PhysicalBody2D::addShapeCircle )
-					.def( "addShapeConvex", &PhysicalBody2D::addShapeConvex )
-					.def( "createBody", &PhysicalBody2D::createBody )
-					.def( "setFilterData", &PhysicalBody2D::setFilterData )
-					.def( "setCollisionMask", &PhysicalBody2D::setCollisionMask )
-					.def( "setCategoryBits", &PhysicalBody2D::setCategoryBits )
-					.def( "setGroupIndex", &PhysicalBody2D::setGroupIndex )
-					.def( "setLinearDumping", &PhysicalBody2D::setLinearDumping )
-					.def( "setAngularDumping", &PhysicalBody2D::setAngularDumping )
-					.def( "setAllowSleep", &PhysicalBody2D::setAllowSleep )
-					.def( "setIsBullet", &PhysicalBody2D::setIsBullet )
-					.def( "setFixedRotation", &PhysicalBody2D::setFixedRotation )
-					.def( "getCollisionMask", &PhysicalBody2D::getCollisionMask )
-					.def( "getCategoryBits", &PhysicalBody2D::getCategoryBits )
-					.def( "getGroupIndex", &PhysicalBody2D::getGroupIndex )
-					.def( "getLinearDumping", &PhysicalBody2D::getLinearDumping )
-					.def( "getAngularDumping", &PhysicalBody2D::getAngularDumping )
-					.def( "getAllowSleep", &PhysicalBody2D::getAllowSleep )
-					.def( "getIsBullet", &PhysicalBody2D::getIsBullet )
-					.def( "getFixedRotation", &PhysicalBody2D::getFixedRotation )
-					.def( "getIsSensor", &PhysicalBody2D::getIsSensor )
-					;
+				//pybind::proxy_<PhysicalBody2D, pybind::bases<Node> >("PhysicalBody2D", false)
+				//	.def( "applyForce", &PhysicalBody2D::applyForce )
+				//	.def( "applyImpulse", &PhysicalBody2D::applyImpulse )
+				//	.def( "applyConstantForce", &PhysicalBody2D::applyConstantForce )
+				//	.def( "removeConstantForce", &PhysicalBody2D::removeConstantForce )
+				//	.def( "setDirectionForce", &PhysicalBody2D::setDirectionForce )
+				//	.def( "wakeUp", &PhysicalBody2D::wakeUp )
+				//	.def( "getMass", &PhysicalBody2D::getMass )
+				//	.def( "getLinearVelocity", &PhysicalBody2D::getLinearVelocity )
+				//	.def( "setLinearVelocity", &PhysicalBody2D::setLinearVelocity )
+				//	.def( "unsetLinearVelocity", &PhysicalBody2D::unsetLinearVelocity )
+				//	.def( "enableStabilization", &PhysicalBody2D::enableStabilization )
+				//	.def( "setOrientation", &PhysicalBody2D::setOrientation )
+				//	.def( "addShapeBox", &PhysicalBody2D::addShapeBox )
+				//	.def( "addShapeCircle", &PhysicalBody2D::addShapeCircle )
+				//	.def( "addShapeConvex", &PhysicalBody2D::addShapeConvex )
+				//	.def( "createBody", &PhysicalBody2D::createBody )
+				//	.def( "setFilterData", &PhysicalBody2D::setFilterData )
+				//	.def( "setCollisionMask", &PhysicalBody2D::setCollisionMask )
+				//	.def( "setCategoryBits", &PhysicalBody2D::setCategoryBits )
+				//	.def( "setGroupIndex", &PhysicalBody2D::setGroupIndex )
+				//	.def( "setLinearDumping", &PhysicalBody2D::setLinearDumping )
+				//	.def( "setAngularDumping", &PhysicalBody2D::setAngularDumping )
+				//	.def( "setAllowSleep", &PhysicalBody2D::setAllowSleep )
+				//	.def( "setIsBullet", &PhysicalBody2D::setIsBullet )
+				//	.def( "setFixedRotation", &PhysicalBody2D::setFixedRotation )
+				//	.def( "getCollisionMask", &PhysicalBody2D::getCollisionMask )
+				//	.def( "getCategoryBits", &PhysicalBody2D::getCategoryBits )
+				//	.def( "getGroupIndex", &PhysicalBody2D::getGroupIndex )
+				//	.def( "getLinearDumping", &PhysicalBody2D::getLinearDumping )
+				//	.def( "getAngularDumping", &PhysicalBody2D::getAngularDumping )
+				//	.def( "getAllowSleep", &PhysicalBody2D::getAllowSleep )
+				//	.def( "getIsBullet", &PhysicalBody2D::getIsBullet )
+				//	.def( "getFixedRotation", &PhysicalBody2D::getFixedRotation )
+				//	.def( "getIsSensor", &PhysicalBody2D::getIsSensor )
+				//	;
 				
 				//pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 				//	;
@@ -3629,17 +3729,17 @@ namespace Menge
 
 			pybind::def_function( "validResource", &ScriptMethod::s_validResource );
 
-			pybind::def_function( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
-			pybind::def_function( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
-			pybind::def_function( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
-			
-			pybind::def_function( "createGearJoint", &ScriptMethod::s_createGearJoint );
-			pybind::def_function( "createPrismaticJoint", &ScriptMethod::s_createPrismaticJoint );
-			pybind::def_function( "createPulleyJoint", &ScriptMethod::s_createPulleyJoint );
-			pybind::def_function( "createRopeJoint", &ScriptMethod::s_createRopeJoint );
-			pybind::def_function( "createWheelJoint", &ScriptMethod::s_createWheelJoint );
-			pybind::def_function( "destroyJoint", &ScriptMethod::s_destroyJoint );
-			pybind::def_function( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
+			//pybind::def_function( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
+			//pybind::def_function( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
+			//pybind::def_function( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
+			//
+			//pybind::def_function( "createGearJoint", &ScriptMethod::s_createGearJoint );
+			//pybind::def_function( "createPrismaticJoint", &ScriptMethod::s_createPrismaticJoint );
+			//pybind::def_function( "createPulleyJoint", &ScriptMethod::s_createPulleyJoint );
+			//pybind::def_function( "createRopeJoint", &ScriptMethod::s_createRopeJoint );
+			//pybind::def_function( "createWheelJoint", &ScriptMethod::s_createWheelJoint );
+			//pybind::def_function( "destroyJoint", &ScriptMethod::s_destroyJoint );
+			//pybind::def_function( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
 
 			pybind::def_function( "getPlatformName", &ScriptMethod::s_getPlatformName );
 			pybind::def_function( "getTimingFactor", &ScriptMethod::s_getTimingFactor );

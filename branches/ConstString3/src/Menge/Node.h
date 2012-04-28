@@ -90,15 +90,8 @@ namespace Menge
 		virtual void visitChildren( Visitor * _visitor );
 
 	public:
-		const mt::mat3f & getWorldMatrix();
-
-		const mt::vec2f & getWorldPosition();
-		const mt::vec2f & getWorldDirection();
-
 		mt::vec2f getCameraPosition( Camera2D * _camera2D );
-
-		void setWorldPosition( const mt::vec2f & _pos );
-
+		
 	public:
 		const ColourValue & getWorldColor() const;
 		void calcTotalColor( ColourValue & _color ) const;
@@ -163,9 +156,19 @@ namespace Menge
 		virtual void _deactivate();
 		virtual void _afterDeactivate();
 
+	public:
+		const mt::mat4f & getWorldMatrix();
+
+		const mt::vec3f & getWorldPosition();
+		//const mt::vec3f & getWorldDirection();
+
+		void setWorldPosition( const mt::vec3f & _pos );
+
 	protected:
 		void _invalidateWorldMatrix() override;
 		//void _invalidateBoundingBox() override;
+
+	protected:
 		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
@@ -259,17 +262,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isRenderable() const
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
 			return false;
 		}
 
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
 
-		if( isHide() == true )
+		if( this->isHide() == true )
 		{
 			return false;
 		}

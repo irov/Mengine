@@ -4,7 +4,7 @@
 
 #	include "Core/IntrusiveList.h"
 
-#	include "Math/vec2.h"
+#	include "Math/vec3.h"
 
 namespace Menge
 {
@@ -27,8 +27,8 @@ namespace Menge
 		void setAngularSpeed( float _angular );
 		float getAngularSpeed() const;
 
-		void setLinearSpeed( const mt::vec2f & _linearSpeed );
-		const mt::vec2f & getLinearSpeed() const;
+		void setLinearSpeed( const mt::vec3f & _linearSpeed );
+		const mt::vec3f & getLinearSpeed() const;
 
 	public:
 		void update( float _timing );
@@ -39,7 +39,7 @@ namespace Menge
 		TVectorAffector m_affectorsToAdd;
 
 		float m_angularSpeed;
-		mt::vec2f m_linearSpeed;
+		mt::vec3f m_linearSpeed;
 
 		size_t m_enumerator;
 	};

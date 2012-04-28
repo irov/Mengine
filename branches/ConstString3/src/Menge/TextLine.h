@@ -14,7 +14,7 @@ namespace Menge
 	struct CharData
 	{
 		unsigned int code;
-		mt::vec2f renderVertex[4];
+		mt::vec3f renderVertex[4];
 		mt::vec4f uv;
 		mt::vec2f offset;
 		mt::vec2f size;
@@ -34,20 +34,20 @@ namespace Menge
 	public:
 		void prepareRenderObject(
 			mt::vec2f & offset
-			, const mt::mat3f & _wm
+			, const mt::mat4f & _wm
 			, unsigned int _argb
 			, bool _pixelsnap
 			, TVectorVertex2D & _renderObject );
 
 		void invalidateRenderLine();
-		void updateBoundingBox( mt::vec2f& _offset, const mt::mat3f & _wm, mt::box2f& _boundingBox );
+		void updateBoundingBox( mt::vec2f& _offset, const mt::mat4f & _wm, mt::box2f& _boundingBox );
 
 		float getLength() const;
 		float getWidth() const;
 		int getCharsDataSize() const;
 
 	private:
-		void updateRenderLine_( mt::vec2f& _offset, const mt::mat3f & _wm );
+		void updateRenderLine_( mt::vec2f& _offset, const mt::mat4f & _wm );
 
 	private:
 		float m_charOffset;

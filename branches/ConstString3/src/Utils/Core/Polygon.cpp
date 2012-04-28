@@ -160,7 +160,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat3f & _wm )
+	void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm )
 	{
 		size_t n = boost::geometry::num_points(_polygon);
 
@@ -173,7 +173,7 @@ namespace Menge
 		++it )
 		{
 			mt::vec2f v;
-			mt::mul_v2_m3(v, *it, _wm);
+			mt::mul_v2_m4(v, *it, _wm);
 			boost::geometry::append( _out, v );
 		}
 	}

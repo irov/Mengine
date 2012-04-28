@@ -93,22 +93,23 @@ namespace Menge
 			);
 
 		return is_intersect;*/
-		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
+		mt::mat4f lwm = _layerspaceHotspot->getWorldMatrix();
 
 		mt::vec2f cp = _layerspaceHotspot->getCameraPosition(_camera2D);
 
-		lwm.v2.x = cp.x;
-		lwm.v2.y = cp.y;
+		lwm.v3.x = cp.x;
+		lwm.v3.y = cp.y;
 
 		//const mt::mat3f & awm = _arrow->getWorldMatrix();
 		//const mt::mat3f & acm = _arrow->getClickMatrix();
 
-		mt::mat3f click_wm;
-		mt::ident_m3(click_wm);
+		mt::mat4f click_wm;
+		mt::ident_m4(click_wm);
 
 			//= awm;
-		click_wm.v2.x = _point.x;
-		click_wm.v2.y = _point.y;
+		click_wm.v3.x = _point.x;
+		click_wm.v3.y = _point.y;
+		click_wm.v3.z = 0.f;
 		//mt::mul_m3_m3( click_wm, awm, acm );
 		
 		//const Polygon & screenPoly = _arrow->getPolygon();
@@ -122,29 +123,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testPoint( Camera2D * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const
 	{
-		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
-		const mt::vec2f & posA = _layerspaceHotspot->getCameraPosition(_camera2D);
+		//const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+		//const mt::vec2f & posA = _layerspaceHotspot->getCameraPosition(_camera2D);
 
-		const Polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+		//const Polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
 
-		mt::mat3f worldMatrixA;
-		mt::set_m3_from_axes( worldMatrixA, mt::vec3f(dirA,1), mt::vec3f(mt::perp(dirA),1), mt::vec3f(posA,1) );
+		//mt::mat3f worldMatrixA;
+		//mt::set_m3_from_axes( worldMatrixA, mt::vec3f(dirA,1), mt::vec3f(mt::perp(dirA),1), mt::vec3f(posA,1) );
 
-		Polygon layerspacePolygon_wm;
-		polygon_wm( layerspacePolygon_wm, layerspacePolygon, worldMatrixA );
+		//Polygon layerspacePolygon_wm;
+		//polygon_wm( layerspacePolygon_wm, layerspacePolygon, worldMatrixA );
 
-		Polygon polygon_point;
-		boost::geometry::append(polygon_point, _point);
+		//Polygon polygon_point;
+		//boost::geometry::append(polygon_point, _point);
 
-		bool is_intersect = boost::geometry::intersects(layerspacePolygon_wm, polygon_point);
+		//bool is_intersect = boost::geometry::intersects(layerspacePolygon_wm, polygon_point);
 
-		return is_intersect;
+		//return is_intersect;
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const
 	{
-		const mt::vec2f & wp = _node->getWorldPosition();
-		_screen = wp - _viewport.begin; //maybe need add??
+		const mt::vec3f & wp = _node->getWorldPosition();
+		_screen = wp.to_vec2f() - _viewport.begin; //maybe need add??
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )

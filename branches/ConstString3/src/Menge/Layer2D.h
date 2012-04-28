@@ -37,9 +37,17 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
+		void _invalidateWorldMatrix() override;
+
+	protected:
 		mt::vec2f m_factorParallax;
 
-		Viewport m_renderViewport;
+		Viewport m_viewport;
+		
+		Viewport m_viewportWM;
+		mt::mat4f m_viewMatrix;
+		mt::mat4f m_projectionMatrix;
+
 		bool m_hasViewport;
 	};
 }

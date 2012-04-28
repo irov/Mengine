@@ -362,7 +362,7 @@ namespace Menge
 		camera->setRenderTarget( Consts::get()->c_Window );
 
 		Viewport vp(0.f, 0.f, crx, cry);
-		camera->setRenderport( vp );
+		camera->setViewport( vp );
 
 		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
 		//camera->setLocalPosition(vp_pos);
@@ -590,14 +590,14 @@ namespace Menge
 			}
 		}
 		
-		if( PhysicEngine2D::get()->isWorldCreate() )
-		{
-			const mt::vec2f & arrowPos = 
-				m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
+		//if( PhysicEngine2D::get()->isWorldCreate() )
+		//{
+		//	const mt::vec2f & arrowPos = 
+		//		m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 
-			PhysicEngine2D::get()
-				->onMouseMove( arrowPos );
-		}
+		//	PhysicEngine2D::get()
+		//		->onMouseMove( arrowPos );
+		//}
 
 		if( m_renderCamera2D )
 		{
@@ -829,7 +829,8 @@ namespace Menge
 	{
 		if( m_renderCamera2D )
 		{
-			m_renderCamera2D->setLocalPosition( _pos );
+			mt::vec3f v3_pos(_pos, 0.f);
+			m_renderCamera2D->setLocalPosition( v3_pos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -875,14 +876,17 @@ namespace Menge
 
 		renderEngine->setCamera( m_renderCamera2D );
 
-		const Viewport & renderport = m_renderCamera2D->getRenderport();
-		const mt::mat3f & wm = m_renderCamera2D->getWorldMatrix();
+		const Viewport & vp = m_renderCamera2D->getViewport();
+		const mt::mat4f & wm = m_renderCamera2D->getWorldMatrix();
 
-		mt::mat3f inv_wm;
+		//mt::mat4f inv_wm;
 
-		mt::inv_m3(inv_wm, wm);
+		//mt::inv_m4(inv_wm, wm);
 
-		renderEngine->newRenderPass( renderport, inv_wm );
+		const mt::mat4f & camera_vm = m_renderCamera2D->getViewMatrix();
+		const mt::mat4f & camera_pm = m_renderCamera2D->getProjectionMatrix();
+
+		renderEngine->newRenderPass( vp, camera_vm, camera_pm );
 
 		if( m_scene != NULL )
 		{
@@ -894,10 +898,13 @@ namespace Menge
 		renderEngine->beginLayer2D();
 		renderEngine->setRenderTarget( Consts::get()->c_Window );
 
-		mt::mat3f arrow_wm;
-		mt::ident_m3(arrow_wm);
+		//mt::mat4f arrow_wm;
+		//mt::ident_m4(arrow_wm);
 
-		renderEngine->newRenderPass( renderport, arrow_wm );
+		const mt::mat4f & arrow_vm = m_renderCamera2D->getViewMatrix();
+		const mt::mat4f & arrow_pm = m_renderCamera2D->getProjectionMatrix();
+
+		renderEngine->newRenderPass( vp, arrow_vm, arrow_pm );
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{

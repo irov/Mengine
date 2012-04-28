@@ -24,11 +24,11 @@ namespace Menge
 		void setViewport( const Viewport & _viewport );
 		inline const Viewport & getViewport();
 
-		void setRenderport( const Viewport & _renderport );
-		inline const Viewport & getRenderport() const;
-
 		void setParallax( const mt::vec2f& _parallax );
 		const mt::vec2f& getParallax() const;
+
+		const mt::mat4f & Camera2D::getProjectionMatrix();
+		const mt::mat4f & Camera2D::getViewMatrix();
 
 	public:
 		void setTargetNode( Node * _target );
@@ -44,23 +44,23 @@ namespace Menge
 		void _update( float _timing ) override; 
 
 	protected:
-		void invalidateViewport();
+		void invalidateMatrix_();
 
 	protected:
-		void updateViewport_();
+		void updateMatrix_();
 
 	protected:
 		Node * m_target;
 		Node * m_offsetProvider;
 
-		Viewport m_viewport;
-		bool m_invalidateViewport;
+		Viewport m_viewport;		
 
-		Viewport m_renderport;
-
-		mt::vec2f m_parallax;
+		mt::mat4f m_viewMatrix;
+		mt::mat4f m_projectionMatrix;
 
 		size_t m_cameraRevision;
+
+		bool m_invalidateMatrix;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline size_t Camera2D::getCameraRevision() const
@@ -70,22 +70,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline const Viewport & Camera2D::getViewport()
 	{
-		if( m_invalidateViewport == true )
-		{
-			updateViewport_();
-		}
-
 		return m_viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const Viewport & Camera2D::getRenderport() const
+	inline void Camera2D::invalidateMatrix_()
 	{
-		return m_renderport;
+		m_invalidateMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline void Camera2D::invalidateViewport()
+	inline const mt::mat4f & Camera2D::getProjectionMatrix()
 	{
-		m_invalidateViewport = true;
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_projectionMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera2D::getViewMatrix()
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_viewMatrix;
 	}
 
 }

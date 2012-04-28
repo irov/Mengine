@@ -244,10 +244,10 @@ namespace	Menge
 				return false;
 			}
 
-			const mt::mat3f& wm = getWorldMatrix();
+			const mt::mat4f & wm = getWorldMatrix();
 			
 			mt::vec2f wmp;
-			mt::mul_v2_m3( wmp, _p, wm );
+			mt::mul_v2_m4( wmp, _p, wm );
 
 			Polygon point_polygon;
 			boost::geometry::append(point_polygon, wmp);
@@ -274,9 +274,12 @@ namespace	Menge
 
 		const Polygon::ring_type & ring = m_polygon.outer();
 
-		const mt::mat3f & wm = this->getWorldMatrix();
+		const mt::mat4f & wm = this->getWorldMatrix();
 
-		mt::reset( _boundingBox, ring[0] * wm );
+		mt::vec2f wmp;
+		mt::mul_v2_m4( wmp, ring[0], wm );
+
+		mt::reset( _boundingBox, wmp );
 
 		for( size_t
 			it = 1,
@@ -284,7 +287,10 @@ namespace	Menge
 		it != it_end; 
 		++it )
 		{
-			mt::add_internal_point( _boundingBox, ring[it] * wm );
+			mt::vec2f wmp;
+			mt::mul_v2_m4( wmp, ring[it], wm );
+
+			mt::add_internal_point( _boundingBox, wmp );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -295,7 +301,7 @@ namespace	Menge
 		MousePickerAdapter::updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPolygon( const mt::mat3f& _transform, const Polygon & _screenPoly, const mt::mat3f& _screenTransform )
+	bool HotSpot::testPolygon( const mt::mat4f& _transform, const Polygon & _screenPoly, const mt::mat4f& _screenTransform )
 	{
 		bool intersect = false;
 
@@ -309,7 +315,7 @@ namespace	Menge
 			const Polygon::ring_type & ring = _screenPoly.outer();
 
 			mt::vec2f wmp;
-			mt::mul_v2_m3( wmp, ring[0], _screenTransform );
+			mt::mul_v2_m4( wmp, ring[0], _screenTransform );
 
 			m_polygonScreen.clear();
 			boost::geometry::append(m_polygonScreen, wmp);
@@ -327,7 +333,7 @@ namespace	Menge
 		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testArrow( const mt::mat3f& _transform, Arrow * _arrow, const mt::mat3f& _screenTransform )
+	bool HotSpot::testArrow( const mt::mat4f& _transform, Arrow * _arrow, const mt::mat4f& _screenTransform )
 	{
 		float radius = _arrow->getRadius();
 
@@ -345,13 +351,13 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testRadius( const mt::mat3f& _transform, float _radius, const mt::mat3f& _screenTransform )
+	bool HotSpot::testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform )
 	{
 		m_polygonWM.clear();
 		polygon_wm( m_polygonWM, m_polygon, _transform );
 
 		mt::vec2f wmp;
-		mt::mul_v2_m3( wmp, mt::vec2f(0.f, 0.f), _screenTransform );
+		mt::mul_v2_m4( wmp, mt::vec2f(0.f, 0.f), _screenTransform );
 
 		m_polygonScreen.clear();
 		boost::geometry::append(m_polygonScreen, wmp);
@@ -379,7 +385,7 @@ namespace	Menge
 		}
 
 		RenderEngine::get()
-			->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(vertices[0]), vertices.size(), false, LPT_LINE );
+			->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )
@@ -393,19 +399,19 @@ namespace	Menge
 
 		_vertices.resize( numpoints + 1 );
 
-		const mt::mat3f & worldMat = this->getWorldMatrix();
+		const mt::mat4f & worldMat = this->getWorldMatrix();
 
 		const Polygon::ring_type & ring = m_polygon.outer();
 
 		for( size_t i = 0; i < numpoints; ++i )
 		{
 			mt::vec2f trP;
-			mt::mul_v2_m3( trP, ring[i], worldMat );
+			mt::mul_v2_m4( trP, ring[i], worldMat );
 
 			_vertices[i].pos[0] = trP.x;
 			_vertices[i].pos[1] = trP.y;
 			_vertices[i].pos[2] = 0.f;
-			_vertices[i].pos[3] = 1.f;
+			//_vertices[i].pos[3] = 1.f;
 
 			_vertices[i].color = m_debugColor;
 		}

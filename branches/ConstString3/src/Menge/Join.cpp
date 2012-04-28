@@ -14,8 +14,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Join::initialize()
 	{
-		m_leftPosition = m_left->getLocalPosition();
-		m_rightPosition = m_right->getLocalPosition();
+		m_leftPosition = m_left->getLocalPosition().to_vec2f();
+		m_rightPosition = m_right->getLocalPosition().to_vec2f();
 
 		mt::vec2f offset = m_rightPosition - m_leftPosition;
 
@@ -24,7 +24,8 @@ namespace Menge
 		if( offset_sqr > 0.25f )
 		{
 			mt::vec2f rightPosition = m_leftPosition + m_offset;
-			m_right->setLocalPosition( rightPosition );
+			mt::vec3f v3( rightPosition.x, rightPosition.y, 0.f );
+			m_right->setLocalPosition( v3 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,8 +46,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Join::update()
 	{
-		const mt::vec2f & pos_left = m_left->getLocalPosition();
-		const mt::vec2f & pos_right = m_right->getLocalPosition();
+		const mt::vec2f & pos_left = m_left->getLocalPosition().to_vec2f();
+		const mt::vec2f & pos_right = m_right->getLocalPosition().to_vec2f();
 
 		mt::vec2f offset = pos_right - pos_left;
 
@@ -67,8 +68,11 @@ namespace Menge
 			m_leftPosition = center - m_offset * 0.5f;
 			m_rightPosition = center + m_offset * 0.5f;
 
-			m_left->setLocalPosition( m_leftPosition );
-			m_right->setLocalPosition( m_rightPosition );
+			mt::vec3f v3_leftPosition( m_leftPosition.x, m_leftPosition.y, 0.f );
+			m_left->setLocalPosition( v3_leftPosition );
+
+			mt::vec3f v3_rightPosition( m_rightPosition.x, m_rightPosition.y, 0.f );
+			m_right->setLocalPosition( v3_rightPosition );
 
 			return true;
 		}
@@ -77,7 +81,8 @@ namespace Menge
 			m_leftPosition = pos_left;
 			m_rightPosition = pos_left + m_offset;
 
-			m_right->setLocalPosition( m_rightPosition );
+			mt::vec3f v3_rightPosition( m_rightPosition.x, m_rightPosition.y, 0.f );
+			m_right->setLocalPosition( v3_rightPosition );
 
 			return true;
 		}
@@ -86,7 +91,8 @@ namespace Menge
 			m_rightPosition = pos_right;
 			m_leftPosition = pos_right - m_offset;
 
-			m_left->setLocalPosition( m_leftPosition );
+			mt::vec3f v3_leftPosition( m_leftPosition.x, m_leftPosition.y, 0.f );
+			m_left->setLocalPosition( v3_leftPosition );
 
 			return true;
 		}

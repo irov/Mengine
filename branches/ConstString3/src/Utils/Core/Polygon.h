@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Math/vec2.h"
-#	include "Math/mat3.h"
+#	include "Math/mat4.h"
 
 #	include <boost/geometry/geometry.hpp> 
 #	include <boost/geometry/core/tag.hpp> 
@@ -92,5 +92,5 @@ namespace Menge
 
 	bool triangulate_polygon( const Polygon & _polygon, TVectorPoints & _result );
 
-	void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat3f & _wm );
+	void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm );
 }

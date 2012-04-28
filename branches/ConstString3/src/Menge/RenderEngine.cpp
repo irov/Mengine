@@ -62,8 +62,10 @@ namespace Menge
 	{
 		TVectorRenderObject renderObjects;
 
-		Viewport renderport;
-		mt::mat3f wm;
+		Viewport viewport;
+		mt::mat4f viewMatrix;
+		mt::mat4f projectionMatrix;
+		//mt::mat4f wm;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
@@ -330,7 +332,7 @@ namespace Menge
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
-		m_viewport = _viewport;
+		//m_viewport = _viewport;
 
 		m_fullscreen = _fullscreen;
 		
@@ -382,7 +384,7 @@ namespace Menge
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
-		m_viewport = _viewport;
+		//m_viewport = _viewport;
 		
 		m_fullscreen = _fullscreen;
 	
@@ -1072,30 +1074,6 @@ namespace Menge
 		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::applyRenderViewport( const Viewport & _viewport )
-	{
-		//printf("_viewport %f:%f - %f:%f\n", _viewport.begin.x, _viewport.begin.y, _viewport.end.x, _viewport.end.y);
-
-		//mt::vec2f scale = m_renderTargetResolution.getScale(m_contentResolution);
-
-		//float vpcx = _viewport.begin.x + _viewport.getWidth() * 0.5f;
-		//float vpcy = _viewport.begin.y + _viewport.getHeight() * 0.5f;
-
-		float wscale = _viewport.getWidth();
-		float hscale = _viewport.getHeight();
-
-		Viewport rv;
-		//rv.begin.x = m_renderOffset.x + _viewport.begin.x * m_renderScale.x + 0.5;
-		//rv.begin.y = m_renderOffset.y + _viewport.begin.y * m_renderScale.y + 0.5;
-		rv.begin.x = m_renderOffset.x + _viewport.begin.x * m_renderScale.x;
-		rv.begin.y = m_renderOffset.y + _viewport.begin.y * m_renderScale.y;
-
-		rv.end.x = m_renderOffset.x + _viewport.end.x * m_renderScale.x;
-		rv.end.y = m_renderOffset.y + _viewport.end.y * m_renderScale.y;
-
-		m_interface->setRenderViewport( rv );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const ConstString& _target, bool _clear )
 	{
 		m_currentRenderTarget = _target;
@@ -1106,25 +1084,29 @@ namespace Menge
 		return m_currentRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::newRenderPass( const Viewport & _viewport, const mt::mat3f & _wm )
+	void RenderEngine::newRenderPass( const Viewport & _viewport, const mt::mat4f & _viewMatrix, const mt::mat4f & _projMatrix )
 	{
 		RenderPass * pass = this->createRenderPass_();
 
-		pass->renderport = _viewport;
-		pass->wm = _wm;
+		pass->viewport = _viewport;
+		pass->viewMatrix = _viewMatrix;
+		pass->projectionMatrix = _projMatrix;
+		//pass->wm = _wm;
 
 		this->setRenderPass(pass);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::getCurrentRenderPass( Viewport & _viewport, mt::mat3f & _wm ) const
+	bool RenderEngine::getCurrentRenderPass( Viewport & _viewport, mt::mat4f & _viewMatrix, mt::mat4f & _projMatrix ) const
 	{
 		if( m_currentPass == 0 )
 		{
 			return false;
 		}
 
-		_viewport = m_currentPass->renderport;
-		_wm = m_currentPass->wm;
+		_viewport = m_currentPass->viewport;
+		_viewMatrix = m_currentPass->viewMatrix;
+		_projMatrix = m_currentPass->projectionMatrix;
+		//_wm = m_currentPass->wm;
 
 		return true;
 	}
@@ -1134,7 +1116,7 @@ namespace Menge
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderPass_( RenderObject* _renderObject )
+	void RenderEngine::renderPass_( const RenderObject* _renderObject )
 	{
 		if( m_currentTextureStages > _renderObject->textureStages )
 		{
@@ -1320,18 +1302,18 @@ namespace Menge
 		
 		mt::mat4f viewTransform;
 		mt::mat4f projTransform;
-		//mt::mat4f worldTransform;
+		mt::mat4f worldTransform;
 
 		mt::ident_m4( viewTransform );
 		mt::ident_m4( projTransform );
-		//mt::ident_m4( worldTransform );
+		mt::ident_m4( worldTransform );
 
 		m_interface->setVertexBuffer( m_currentVBHandle );
 		m_interface->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
 		m_interface->setVertexDeclaration( sizeof(Vertex2D), Vertex2D_declaration );
 		m_interface->setProjectionMatrix( projTransform );
 		m_interface->setModelViewMatrix( viewTransform );
-		//m_interface->setWorldMatrix( worldTransform );
+		m_interface->setWorldMatrix( worldTransform );
 		m_interface->setCullMode( CM_CULL_NONE );
 		m_interface->setFillMode( FM_SOLID );
 		m_interface->setDepthBufferTestEnable( false );
@@ -1382,21 +1364,48 @@ namespace Menge
 		//m_currentBlendDst = BF_ZERO;
 		m_interface->setDstBlendFactor( m_currentBlendDst );
 
-		float viewport_width = m_viewport.getWidth();
-		float viewport_height = m_viewport.getHeight();
+		//float viewport_width = m_viewport.getWidth();
+		//float viewport_height = m_viewport.getHeight();
 
-		float width_scale = viewport_width / float(m_contentResolution.getWidth());
-		float height_scale = viewport_height / float(m_contentResolution.getHeight());
+		//float width_scale = viewport_width / float(m_contentResolution.getWidth());
+		//float height_scale = viewport_height / float(m_contentResolution.getHeight());
 
-		m_renderScale.x = width_scale;
-		m_renderScale.y = height_scale;
+		//m_renderScale.x = width_scale;
+		//m_renderScale.y = height_scale;
 
-		m_renderOffset = m_viewport.begin;
+		//m_renderOffset = m_viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
+	void RenderEngine::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float l, float r, float b, float t, float zn, float zf )
 	{
-		m_interface->makeProjection2D( l, r, t, b, zn, zf, &(_out.v0[0]) );
+		m_interface->makeProjectionOrthogonal( _projectionMatrix, l, r, t, b, zn, zf );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::makeProjectionOrthogonalFromViewport( mt::mat4f& _projectionMatrix, const Viewport & _viewport )
+	{
+		mt::vec2f size;
+		_viewport.getSize( size );
+
+		this->makeProjectionOrthogonal( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, 0.0f, 1.0f );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport )
+	{
+		mt::mat4f wm;
+		mt::ident_m4( wm );
+
+		//mt::vec2f size;
+		//_viewport.getSize( size );
+
+		//float scale_width = (size.x / float(m_contentResolution.getWidth()));
+		//float scale_height = (size.y / float(m_contentResolution.getHeight()));
+
+		//wm.v0.x = 1.f / scale_width;
+		//wm.v1.y = 1.f / scale_height;
+		//wm.v3.x = _viewport.begin.x;
+		//wm.v3.y = _viewport.begin.y;
+
+		mt::inv_m4( _viewMatrix, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setCamera( Camera * _camera )
@@ -1476,17 +1485,19 @@ namespace Menge
 				m_renderTargetResolution = m_windowResolution;
 			}
 
-			this->applyRenderViewport( renderPass->renderport );
+			m_interface->setRenderViewport( renderPass->viewport );
+			m_interface->setModelViewMatrix( renderPass->viewMatrix );
+			m_interface->setProjectionMatrix( renderPass->projectionMatrix );
 
-			TVectorRenderObject & renderObjects = renderPass->renderObjects;
+			const TVectorRenderObject & renderObjects = renderPass->renderObjects;
 
-			for( TVectorRenderObject::iterator 
+			for( TVectorRenderObject::const_iterator 
 				it = renderObjects.begin(), 
 				it_end = renderObjects.end();
 			it != it_end; 
 			++it )
 			{
-				RenderObject* renderObject = &(*it);
+				const RenderObject* renderObject = &(*it);
 
 				if( renderObject->dipIndiciesNum == 0 
 					|| renderObject->dipVerticesNum == 0 )
@@ -1499,11 +1510,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//FIXME: _vertices меняеться внутри рендера, поэтому нельзя рендерить несколько нод в разных местах :(
-	//FIXED! уже можно!
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject2D( const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
-										const Vertex2D* _vertices, size_t _verticesNum, bool _scale,
+										const Vertex2D* _vertices, size_t _verticesNum,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
 		if( m_currentPass == 0 )
@@ -1869,7 +1877,7 @@ namespace Menge
 		float texelOffsetX = m_interface->getTexelOffsetX();
 		float texelOffsetY = m_interface->getTexelOffsetY();
 
-		const mt::mat3f & pass_wm = _pass->wm;
+		//const mt::mat4f & pass_wm = _pass->wm;
 
 		for( TVectorRenderObject::iterator
 			it = renderObjects.begin(), 
@@ -1922,35 +1930,36 @@ namespace Menge
 			Vertex2D * offsetVertexBuffer = _vertexBuffer + _offset;
 			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum, offsetVertexBuffer );
 
-			for( Vertex2D
-				* it = offsetVertexBuffer,
-				* it_end = offsetVertexBuffer + ro->verticesNum;
-			it != it_end;
-			++it )
-			{
-				mt::vec2f * v = (mt::vec2f *)&it->pos;
+			//for( Vertex2D
+			//	* it = offsetVertexBuffer,
+			//	* it_end = offsetVertexBuffer + ro->verticesNum;
+			//it != it_end;
+			//++it )
+			//{
+			//	mt::vec2f * v = (mt::vec2f *)&it->pos;
 
-				mt::vec2f nv;
-				mt::mul_v2_m3( nv, *v, pass_wm );
+			//	//mt::vec2f nv;
+			//	mt::mul_v2_m4( nv, *v, pass_wm );
 
-				nv.x *= m_renderScale.x;
-				nv.y *= m_renderScale.y;
+			//	nv.x *= m_renderScale.x;
+			//	nv.y *= m_renderScale.y;
 
-				nv.x += m_renderOffset.x;
-				nv.y += m_renderOffset.y;
+			//	nv.x += m_renderOffset.x;
+			//	nv.y += m_renderOffset.y;
 
-				nv.x += texelOffsetX;
-				nv.y += texelOffsetY;
+			//	nv.x += texelOffsetX;
+			//	nv.y += texelOffsetY;
 
-				it->pos[0] = nv.x;
-				it->pos[1] = nv.y;
-			}
+			//	it->pos[0] = nv.x;
+			//	it->pos[1] = nv.y;
+			//}
 
 			m_vbPos += ro->verticesNum;
 			_offset += ro->verticesNum;
 
 			//m_logicPrimitiveCount[type] += 1;
 		}
+
 		return _offset;
 	}
 	//////////////////////////////////////////////////////////////////////////

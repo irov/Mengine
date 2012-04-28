@@ -1088,7 +1088,7 @@ namespace Menge
 	void DX8RenderSystem::endScene()
 	{
 		// sync GPU with CPU
-		syncCPU_();
+		//syncCPU_();
 		
 		HRESULT hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )
@@ -1163,22 +1163,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setRenderViewport( const Viewport & _renderViewport )
 	{
+		D3DVIEWPORT8 VP;
+
+		VP.X = (int)::floorf( _renderViewport.begin.x + 0.5f );
+		VP.Y = (int)::floorf( _renderViewport.begin.y + 0.5f );
+
 		float width = _renderViewport.getWidth();
 		float height = _renderViewport.getHeight();
 
-		int x = (int)::floorf( _renderViewport.begin.x + 0.5f );
-		int y = (int)::floorf( _renderViewport.begin.y + 0.5f );
+		VP.Width = (int)::floorf( width + 0.5f );
+		VP.Height = (int)::floorf( height + 0.5f );
 
-		int w = (int)::floorf( width + 0.5f );
-		int h = (int)::floorf( height + 0.5f );
+		VP.MinZ = 0.0f;
+		VP.MaxZ = 1.0f;
 
-		//int x = (int)_renderViewport.begin.x;
-		//int y = (int)_renderViewport.begin.y;
-
-		//int w = (int)width;
-		//int h = (int)height;
-
-		setViewport_( x, y, w, h );
+		HRESULT hr = m_pD3DDevice->SetViewport(&VP);
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR(m_logService)( "DX8RenderSystem::setRenderViewport: failed viewport [%d %d] [%d %d]"
+				, VP.X
+				, VP.Y
+				, VP.Width
+				, VP.Height
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
@@ -1564,6 +1572,17 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setWorldMatrix( const mt::mat4f & _view )
+	{
+		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_WORLD, (D3DMATRIX*)_view.buff() );
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setWorldMatrix (hr:%p)"
+				, hr 
+				);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect )
 	{
 		D3DLOCKED_RECT dstLockedRect;
@@ -1723,30 +1742,6 @@ namespace Menge
 		pSrcSurface->UnlockRect();
 		pDestSurface->UnlockRect();
 		return S_OK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setViewport_( int _x, int _y, int _w, int _h )
-	{
-		D3DVIEWPORT8 vp;
-
-		vp.X=_x;
-		vp.Y=_y;
-		vp.Width=_w;
-		vp.Height=_h;
-
-		vp.MinZ=0.0f;
-		vp.MaxZ=1.0f;
-
-		HRESULT hr = m_pD3DDevice->SetViewport(&vp);
-		if( FAILED( hr ) )
-		{
-			LOGGER_ERROR(m_logService)( "Error: D3D8 failed to SetViewport [%d %d %d %d]"
-				, _x
-				, _y
-				, _w
-				, _h
-				);
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::restore_()
@@ -2524,14 +2519,17 @@ namespace Menge
 		restore_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::makeProjection2D( float _left, float _right,
-		float _top, float _bottom, 
-		float _near, float _far,  
-		float* _outMatrix )
+	void DX8RenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix
+		, float _left, float _right
+		, float _top, float _bottom
+		, float _near, float _far )
 	{
 		float inv_lr = 1.0f / ( _left - _right );
 		float inv_bt = 1.0f / ( _top - _bottom );
 		float inv_znzf = 1.0f / ( _near - _far );
+
+		float * _outMatrix = _projectionMatrix.buff();
+
 		_outMatrix[0] = -2.0f * inv_lr;
 		_outMatrix[1] = 0.0f;
 		_outMatrix[2] = 0.0f;

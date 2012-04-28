@@ -43,9 +43,9 @@ namespace Menge
 
 	struct MovieFrame2D
 	{
-		mt::vec2f anchorPoint;
-		mt::vec2f position;
-		mt::vec2f scale;
+		mt::vec3f anchorPoint;
+		mt::vec3f position;
+		mt::vec3f scale;
 		float angle;
 		float opacity;
 	};

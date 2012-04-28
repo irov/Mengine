@@ -319,10 +319,9 @@ namespace Menge
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 
 		virtual void getResolutions( TVectorResolutions & _resolutions ) = 0;
-		virtual void makeProjection2D( float _left, float _right,
+		virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float _left, float _right,
 										float _top, float _bottom, 
-										float _near, float _far,
-										float* _outMatrix ) = 0;
+										float _near, float _far ) = 0;
 
 		virtual float getTexelOffsetX() const = 0;
 		virtual float getTexelOffsetY() const = 0;
@@ -332,6 +331,8 @@ namespace Menge
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
+		virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
+
 		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
 
 		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize ) = 0;

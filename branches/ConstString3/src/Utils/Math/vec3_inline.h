@@ -125,6 +125,11 @@ namespace mt
 		return c.length();
 	}
 
+	MATH_INLINE float length_v3(const vec3f& _a)
+	{
+		return _a.length();
+	}
+
 	MATH_INLINE bool cmp_v3_v3(const vec3f& _a, const vec3f& _b, float eps)
 	{
 		return	(fabsf(_a.x - _b.x) < eps) && (fabsf(_a.y - _b.y) < eps) && (fabsf(_a.z - _b.z) < eps);

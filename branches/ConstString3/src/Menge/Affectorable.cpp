@@ -6,7 +6,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Affectorable::Affectorable()
 		: m_angularSpeed(0.f)
-		, m_linearSpeed(0.f,0.f)
+		, m_linearSpeed(0.f, 0.f, 0.f)
 		, m_enumerator(0)
 	{
 	}
@@ -135,12 +135,12 @@ namespace Menge
 		return m_angularSpeed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::setLinearSpeed( const mt::vec2f & _linearSpeed )
+	void Affectorable::setLinearSpeed( const mt::vec3f & _linearSpeed )
 	{
 		m_linearSpeed = _linearSpeed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Affectorable::getLinearSpeed() const
+	const mt::vec3f & Affectorable::getLinearSpeed() const
 	{
 		return m_linearSpeed;
 	}

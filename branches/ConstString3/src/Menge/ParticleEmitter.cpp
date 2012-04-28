@@ -222,7 +222,7 @@ namespace	Menge
 			const Batch & batch = *it;
 
 			RenderEngine::get()->
-				renderObject2D( batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, true, LPT_QUAD );
+				renderObject2D( batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -368,8 +368,10 @@ namespace	Menge
 			return;
 		}
 
+		
 		m_vertices.resize( s_particles.size() * 4 );
-		const mt::mat3f& worldMatrix = this->getWorldMatrix();
+
+		const mt::mat4f& worldMatrix = this->getWorldMatrix();
 		
 		for( TVectorParticleMeshes::const_iterator
 			it = s_meshes.begin(),
@@ -414,7 +416,7 @@ namespace	Menge
 				vertice[0].pos[0] = p.v[0].x;
 				vertice[0].pos[1] = p.v[0].y;
 				vertice[0].pos[2] = 0.f;
-				vertice[0].pos[3] = 1.f;
+				//vertice[0].pos[3] = 1.f;
 
 				vertice[0].color = argb;
 
@@ -425,7 +427,7 @@ namespace	Menge
 				vertice[1].pos[0] = p.v[1].x;
 				vertice[1].pos[1] = p.v[1].y;
 				vertice[1].pos[2] = 0.f;
-				vertice[1].pos[3] = 1.f;
+				//vertice[1].pos[3] = 1.f;
 				vertice[1].color = argb;
 
 				//mt::mul_v2_m3(worldVertice,p.v[2],worldMatrix);
@@ -435,7 +437,7 @@ namespace	Menge
 				vertice[2].pos[0] = p.v[2].x;
 				vertice[2].pos[1] = p.v[2].y;
 				vertice[2].pos[2] = 0.f;
-				vertice[2].pos[3] = 1.f;
+				//vertice[2].pos[3] = 1.f;
 
 				vertice[2].color = argb;
 
@@ -446,7 +448,7 @@ namespace	Menge
 				vertice[3].pos[0] = p.v[3].x;
 				vertice[3].pos[1] = p.v[3].y;
 				vertice[3].pos[2] = 0.f;
-				vertice[3].pos[3] = 1.f;
+				//vertice[3].pos[3] = 1.f;
 
 				vertice[3].color = argb;
 
@@ -640,7 +642,8 @@ namespace	Menge
 					relativeSize = mainLayer->getSize();
 				}
 
-				const mt::vec2f& scene_pos = this->getWorldPosition();
+				const mt::vec3f& scene_pos = this->getWorldPosition();
+				
 				mt::vec2f new_pos;
 				new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;
 				new_pos.y = m_positionEffect.y + scene_pos.y + relativeSize.y * 0.5f;
@@ -706,15 +709,15 @@ namespace	Menge
 
 		if( m_emitterRelative == true )
 		{
-			const mt::vec2f& pos = this->getWorldPosition();
-			mt::vec2f realPos = pos;
+			const mt::vec3f& pos = this->getWorldPosition();
+			mt::vec2f realPos = pos.to_vec2f();
 			realPos.x += m_positionOffset.x;
 			realPos.y += m_positionOffset.y;
 			m_interface->setPosition( realPos );
 
-			const mt::vec2f& dir = this->getWorldDirection();
-			float angle = mt::signed_angle( dir );
-			m_interface->setAngle( angle );
+			//const mt::vec2f& dir = this->getWorldDirection();
+			//float angle = mt::signed_angle( dir );
+			//m_interface->setAngle( angle );
 		}
 		else
 		{
@@ -726,7 +729,7 @@ namespace	Menge
 				relativeSize = mainLayer->getSize();
 			}
 
-			const mt::vec2f& scene_pos = this->getWorldPosition();
+			const mt::vec3f& scene_pos = this->getWorldPosition();
 			
 			mt::vec2f new_pos;
 			new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;

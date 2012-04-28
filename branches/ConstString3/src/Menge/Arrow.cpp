@@ -90,7 +90,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onCursorPositionChange( const mt::vec2f & _position )
 	{
-		this->setLocalPosition( _position );
+		mt::vec3f v3(_position.x, _position.y, 0.f);
+		this->setLocalPosition( v3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addPoint_( const mt::vec2f & _v )

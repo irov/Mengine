@@ -8,16 +8,17 @@ namespace Menge
 	Transformation3D::Transformation3D()
 		: m_invalidateWorldMatrix(true)
 		, m_invalidateLocalMatrix(true)
-		, m_origin(0.f, 0.f)
-		, m_coordinate(0.f, 0.f)
-		, m_position(0.f, 0.f)
-		, m_scale(1.f, 1.f)
-		, m_direction(1.f, 0.f)
-		, m_angle(0.f)
-		, m_scaled(true)
+		, m_origin(0.f, 0.f, 0.f)
+		, m_coordinate(0.f, 0.f, 0.f)
+		, m_position(0.f, 0.f, 0.f)
+		, m_scale(1.f, 1.f, 1.f)
+		//, m_direction(1.f, 0.f)
+		, m_rotateX(0.f)
+		, m_rotateY(0.f)
+		, m_rotateZ(0.f)
 	{
-		mt::ident_m3( m_localMatrix );
-		mt::ident_m3( m_worldMatrix );
+		mt::ident_m4( m_localMatrix );
+		mt::ident_m4( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::invalidateWorldMatrix()
@@ -43,78 +44,101 @@ namespace Menge
 	//	invalidateWorldMatrix();
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setLocalPosition( const mt::vec2f & _position )
+	void Transformation3D::setLocalPosition( const mt::vec3f & _position )
 	{
-		if( mt::cmp_v2_v2( m_position, _position ) == true )
+		if( mt::cmp_v3_v3( m_position, _position ) == true )
 		{
 			return;
 		}
 
 		m_position = _position;
 
-		invalidateWorldMatrix();
+		this->invalidateWorldMatrix();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setLocalDirection( const mt::vec2f & _direction )
-	{
-		if( mt::cmp_v2_v2( m_direction, _direction ) == true )
-		{
-			return;
-		}
+	////////////////////////////////////////////////////////////////////////////
+	//void Transformation3D::setLocalDirection( const mt::vec3f & _direction )
+	//{
+	//	if( mt::cmp_v3_v3( m_direction, _direction ) == true )
+	//	{
+	//		return;
+	//	}
 
-		m_direction = _direction;
-		m_angle = mt::signed_angle( _direction );
+	//	m_direction = _direction;
+	//	m_angle = mt::signed_angle( _direction );
 
-		invalidateWorldMatrix();
-	}
+	//	this->invalidateWorldMatrix();
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setAngle( float _angle )
+	void Transformation3D::setRotateX( float _angle )
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
-		if( fabsf(m_angle - norm_angle) < 0.00001f )
+		if( fabsf(m_rotateX - norm_angle) < 0.00001f )
 		{
 			return;
 		}
 
-		m_angle = norm_angle;
+		m_rotateX = norm_angle;
 
-		mt::direction( m_direction, m_angle );
-
-		invalidateWorldMatrix();
+		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Transformation3D::isScaled() const
+	void Transformation3D::setRotateY( float _angle )
 	{
-		return m_scaled;
+		float norm_angle = mt::angle_norm(_angle);
+
+		if( fabsf(m_rotateY - norm_angle) < 0.00001f )
+		{
+			return;
+		}
+
+		m_rotateY = norm_angle;
+
+		this->invalidateWorldMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setRotateZ( float _angle )
+	{
+		float norm_angle = mt::angle_norm(_angle);
+
+		if( fabsf(m_rotateZ - norm_angle) < 0.00001f )
+		{
+			return;
+		}
+
+		m_rotateZ = norm_angle;
+
+		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::resetTransformation()
 	{
-		m_origin = mt::vec2f(0.f, 0.f);
-		m_coordinate = mt::vec2f(0.f, 0.f);
-		m_position = mt::vec2f(0.f, 0.f);
-		m_scale = mt::vec2f(1.f, 1.f);
-		m_direction = mt::vec2f(1.f, 0.f);
-		m_angle = 0.f;
+		m_origin = mt::vec3f(0.f, 0.f, 0.f);
+		m_coordinate = mt::vec3f(0.f, 0.f, 0.f);
+		m_position = mt::vec3f(0.f, 0.f, 0.f);
+		m_scale = mt::vec3f(1.f, 1.f, 1.f);
 
-		invalidateWorldMatrix();
+		m_rotateX = 0.f;
+		m_rotateY = 0.f;
+		m_rotateZ = 0.f;
+
+		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::translate( const mt::vec2f & _delta )
+	void Transformation3D::translate( const mt::vec3f & _delta )
 	{
-		mt::vec2f new_pos = m_position + _delta;
+		mt::vec3f new_pos = m_position + _delta;
 		
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f & Transformation3D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
+	const mt::mat4f & Transformation3D::updateWorldMatrix( const mt::mat4f & _parentMatrix )
 	{
 		m_invalidateWorldMatrix = false;
 
-		const mt::mat3f& localMatrix = this->getLocalMatrix();
+		const mt::mat4f & localMatrix = this->getLocalMatrix();
 
-		mt::mul_m3_m3( m_worldMatrix, localMatrix, _parentMatrix );
+		mt::mul_m4_m4( m_worldMatrix, localMatrix, _parentMatrix );
 
 		return m_worldMatrix;
 	}
@@ -123,28 +147,32 @@ namespace Menge
 	{
 		m_invalidateLocalMatrix = false;
 
-		mt::mat3f mat_scale;
-		mt::ident_m3( mat_scale );
-		mat_scale.v2.x = -(m_origin.x + m_coordinate.x) * m_scale.x;
-		mat_scale.v2.y = -(m_origin.y + m_coordinate.y) * m_scale.y;
+		mt::mat4f mat_scale;
+		mt::ident_m4( mat_scale );
+		mat_scale.v3.x = -(m_origin.x + m_coordinate.x) * m_scale.x;
+		mat_scale.v3.y = -(m_origin.y + m_coordinate.y) * m_scale.y;
+		mat_scale.v3.z = -(m_origin.z + m_coordinate.z) * m_scale.z;
 		mat_scale.v0.x = m_scale.x;
 		mat_scale.v1.y = m_scale.y;
+		mat_scale.v2.z = m_scale.z;
 
-		mt::mat3f mat_rot;
-		mt::ident_m3( mat_rot );
-		mat_rot.v0.x = m_direction.x;
-		mat_rot.v0.y = m_direction.y;
-		mat_rot.v1.x = -m_direction.y;
-		mat_rot.v1.y = m_direction.x;
+		mt::mat4f mat_rot;
+		mt::make_rotate_m4( mat_rot, m_rotateX, m_rotateY, m_rotateZ );
+		//mat_rot.v0.x = m_direction.x;
+		//mat_rot.v0.y = m_direction.y;
+		//mat_rot.v1.x = -m_direction.y;
+		//mat_rot.v1.y = m_direction.x;
 
-		mt::mul_m3_m3( m_localMatrix, mat_scale, mat_rot );
-		m_localMatrix.v2.x += m_position.x + m_coordinate.x;
-		m_localMatrix.v2.y += m_position.y + m_coordinate.y;
+		mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
+
+		m_localMatrix.v3.x += m_position.x + m_coordinate.x;
+		m_localMatrix.v3.y += m_position.y + m_coordinate.y;
+		m_localMatrix.v3.z += m_position.z + m_coordinate.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setOrigin( const mt::vec2f& _origin )
+	void Transformation3D::setOrigin( const mt::vec3f& _origin )
 	{
-		if( mt::cmp_v2_v2( m_origin, _origin ) == true )
+		if( mt::cmp_v3_v3( m_origin, _origin ) == true )
 		{
 			return;
 		}
@@ -154,9 +182,9 @@ namespace Menge
 		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setCoordinate( const mt::vec2f& _coordinate )
+	void Transformation3D::setCoordinate( const mt::vec3f& _coordinate )
 	{
-		if( mt::cmp_v2_v2( m_coordinate, _coordinate ) == true )
+		if( mt::cmp_v3_v3( m_coordinate, _coordinate ) == true )
 		{
 			return;
 		}
@@ -166,9 +194,14 @@ namespace Menge
 		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setScale( const mt::vec2f& _scale )
+	void Transformation3D::setScale( const mt::vec3f& _scale )
 	{
-		if( mt::cmp_v2_v2( m_scale, _scale ) == true )
+		if( mt::cmp_v3_v3( m_scale, _scale ) == true )
+		{
+			return;
+		}
+
+		if( m_scale.z == 0.f )
 		{
 			return;
 		}

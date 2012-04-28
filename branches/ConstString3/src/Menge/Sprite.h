@@ -47,12 +47,14 @@ namespace Menge
 		const ConstString& getImageResource() const;
 
 		const mt::vec2f & getImageSize();
+		
+		void setCenterAlign( bool _centerAlign );
 		bool getCenterAlign() const;
 
-		void setCenterAlign( bool _centerAlign );
 		void setFlipX( bool _flipX );
-		void setFlipY( bool _flipY );
 		bool getFlipX() const;
+
+		void setFlipY( bool _flipY );		
 		bool getFlipY() const;
 
 		void setPercentVisibility( const mt::vec4f& _percent );
@@ -67,6 +69,7 @@ namespace Menge
 		
 		void setBlendAdd( bool _value );
 		bool getBlendAdd() const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;

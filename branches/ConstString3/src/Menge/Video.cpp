@@ -344,30 +344,28 @@ namespace	Menge
 
 		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
-		bool scaled = this->isScaled();
-
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, scaled, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
 	{
-		const mt::mat3f & wm = getWorldMatrix();
+		const mt::mat4f & wm = this->getWorldMatrix();
 
 		//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
 		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
 		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
 		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
 		
-		mt::vec2f transformX;
-		mt::vec2f transformY;
+		mt::vec3f transformX;
+		mt::vec3f transformY;
 
-		mt::mul_v2_m3_r( transformX, mt::vec2f( m_frameSize.x, 0.0f ), wm );
-		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_frameSize.y ), wm );
+		mt::mul_v3_m4_r( transformX, mt::vec3f( m_frameSize.x, 0.f, 0.f ), wm );
+		mt::mul_v3_m4_r( transformY, mt::vec3f( 0.f, m_frameSize.y, 0.f ), wm );
 
-		mt::vec2f vertices[4];
+		mt::vec3f vertices[4];
 
-		vertices[0] = wm.v2.to_vec2f();
+		vertices[0] = wm.v3.to_vec3f();
 		vertices[1] = vertices[0] + transformX;
 		vertices[2] = vertices[1] + transformY;
 		vertices[3] = vertices[0] + transformY;
@@ -376,17 +374,17 @@ namespace	Menge
 		{
 			_vertices[i].pos[0] = vertices[i].x;
 			_vertices[i].pos[1] = vertices[i].y;
-			_vertices[i].pos[2] = 0.f;
-			_vertices[i].pos[3] = 1.f;
+			_vertices[i].pos[2] = vertices[i].z;
+			//_vertices[i].pos[3] = 1.f;
 		}
 
 		_vertices[0].uv[0] = 0.0f;
 		_vertices[0].uv[1] = 0.0f;
-		_vertices[1].uv[1] = 0.0f;
-		_vertices[3].uv[0] = 0.0f;
 		_vertices[1].uv[0] = 1.0f;
+		_vertices[1].uv[1] = 0.0f;
 		_vertices[2].uv[0] = 1.0f;
 		_vertices[2].uv[1] = 1.0f;
+		_vertices[3].uv[0] = 0.0f;
 		_vertices[3].uv[1] = 1.0f;
 
 		ColourValue color;
@@ -406,7 +404,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		const Vertex2D * vertcies = getVertices();
+		const Vertex2D * vertcies = this->getVertices();
 
 		mt::vec2f v( vertcies[0].pos[0], vertcies[0].pos[1] );
 		mt::reset( _boundingBox, v );

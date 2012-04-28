@@ -73,7 +73,7 @@ namespace Menge
 
 	public:
 		void renderObject2D( const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
-			const Vertex2D * _vertices, size_t _verticesNum, bool _scale,
+			const Vertex2D * _vertices, size_t _verticesNum, 
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
 	public:
@@ -130,8 +130,6 @@ namespace Menge
 		void beginLayer3D();
 		void endLayer3D();
 
-		void applyRenderViewport( const Viewport & _renderViewport );
-
 		void onDeviceRestored();
 
 		void onWindowActive( bool _active );
@@ -140,8 +138,8 @@ namespace Menge
 		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const ConstString & getRenderTarget() const;
 
-		void newRenderPass( const Viewport & _renderViewport, const mt::mat3f & _wm );
-		bool getCurrentRenderPass( Viewport & _viewport, mt::mat3f & _wm ) const;
+		void newRenderPass( const Viewport & _viewport, const mt::mat4f & _viewMatrix, const mt::mat4f & _projMatrix );
+		bool getCurrentRenderPass( Viewport & _viewport, mt::mat4f & _viewMatrix, mt::mat4f & _projMatrix ) const;
 
 		bool isWindowCreated() const;
 
@@ -151,7 +149,10 @@ namespace Menge
 		void setRenderPass( RenderPass * _pass );
 		RenderPass * getRenderPass() const;
 		
-		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
+		void makeProjectionOrthogonal( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
+
+		void makeProjectionOrthogonalFromViewport( mt::mat4f& _projectionMatrix, const Viewport & _viewport );
+		void makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport );
 
 		const DebugInfo& getDebugInfo() const;
 		void resetFrameCount();
@@ -168,7 +169,7 @@ namespace Menge
 	private:
 		void destroyTexture_( const RenderTextureInterface * _texture );
 
-		void renderPass_( RenderObject* _renderObject );
+		void renderPass_( const RenderObject* _renderObject );
 		void disableTextureStage_( size_t _stage );
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
@@ -248,7 +249,7 @@ namespace Menge
 		typedef std::map<WString, RenderTextureInterface*> TMapTextures;
 		TMapTextures m_textures;
 
-		RenderTexture* m_nullTexture;	// white pixel
+		RenderTexture* m_nullTexture;	// dummy white pixel
 
 		DebugInfo m_debugInfo;	// debug info
 
@@ -265,10 +266,10 @@ namespace Menge
 
 		size_t m_vbPos;
 
-		mt::vec2f m_renderScale;
-		mt::vec2f m_renderOffset;
+		//mt::vec2f m_renderScale;
+		//mt::vec2f m_renderOffset;
 
-		Viewport m_viewport;
+		//Viewport m_viewport;
 
 		uint32 m_currentVertexDeclaration;
 

@@ -33,7 +33,7 @@ namespace Menge
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
-			_node->setAngle( _frame.angle );
+			_node->setRotateX( _frame.angle );
 			_node->setPersonalAlpha( _frame.opacity );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ namespace Menge
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
-			_node->setAngle( _frame.angle );
+			_node->setRotateX( _frame.angle );
 			_node->setLocalAlpha( _frame.opacity );
 		}
 		////////////////////////////////////////////////////////////////////////////
@@ -371,10 +371,10 @@ namespace Menge
 
 			if( _layer.parent == 0 )
 			{
-				const mt::mat3f & wm = this->getWorldMatrix();
+				const mt::mat4f & wm = this->getWorldMatrix();
 
-				mt::vec2f wm_pos;
-				mt::mul_v2_m3(wm_pos, _frame.position, wm);
+				mt::vec3f wm_pos;
+				mt::mul_v3_m4(wm_pos, _frame.position, wm);
 				PyObject * py_position = pybind::ptr(wm_pos);
 
 				PyObject * py_node = pybind::ptr(_node);

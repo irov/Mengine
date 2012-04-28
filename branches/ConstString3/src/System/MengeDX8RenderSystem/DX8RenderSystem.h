@@ -61,10 +61,11 @@ namespace Menge
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
 		void getResolutions( TVectorResolutions & _resolutions ) override;
-		void makeProjection2D( float _left, float _right,
-			float _top, float _bottom, 
-			float _near, float _far,
-			float* _outMatrix ) override;
+
+		void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix
+			, float _left, float _right
+			, float _top, float _bottom
+			, float _near, float _far ) override;
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
@@ -77,6 +78,7 @@ namespace Menge
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
+		void setWorldMatrix( const mt::mat4f & _view ) override;
 
 		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
@@ -92,18 +94,26 @@ namespace Menge
 
 		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
 
-		void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
-			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) override;
+		void drawIndexedPrimitive( EPrimitiveType _type
+			, size_t _baseVertexIndex
+			, size_t _minIndex
+			, size_t _verticesNum
+			, size_t _startIndex
+			, size_t _indexCount ) override;
 
 		void setTexture( size_t _stage, RenderImageInterface* _texture ) override;
 		void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32 _color ) override;
+
 		void setSrcBlendFactor( EBlendFactor _src ) override;
 		void setDstBlendFactor( EBlendFactor _dst ) override;
+
 		void setCullMode( ECullMode _mode ) override;
+
 		void setDepthBufferTestEnable( bool _depthTest ) override;
 		void setDepthBufferWriteEnable( bool _depthWrite ) override;
 		void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) override;
+
 		void setFillMode( EFillMode _mode ) override;
 		void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
 		void setShadeType( EShadeType _sType ) override;
@@ -111,14 +121,13 @@ namespace Menge
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) override;
 		void setLightingEnable( bool _light ) override;
+
 		void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
 		void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
-
-
-
+		
 		// create empty render image
 		RenderImageInterface * createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
 		
@@ -187,7 +196,6 @@ namespace Menge
 		bool m_supportR8G8B8;
 
 		bool initLost_();
-		void setViewport_( int _x, int _y, int _w, int _h );
 		
 		void release_();
 		bool restore_();

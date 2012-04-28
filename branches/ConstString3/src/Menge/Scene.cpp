@@ -135,7 +135,8 @@ namespace Menge
 		Camera2D * renderCamera = _camera;
 
 		Viewport old_rp;
-		mt::mat3f old_wm;
+		mt::mat4f old_vm;
+		mt::mat4f old_pm;
 
 		if( m_camera2D )
 		{
@@ -143,20 +144,18 @@ namespace Menge
 
 			//renderCamera = m_camera2D;
 			RenderEngine::get()
-				->getCurrentRenderPass( old_rp, old_wm );
+				->getCurrentRenderPass( old_rp, old_vm, old_pm );
 
-			const Viewport & camera_renderport = m_camera2D->getRenderport();
-			const mt::mat3f & camera_wm = m_camera2D->getWorldMatrix();
+			const Viewport & camera_vp = m_camera2D->getViewport();
+			const mt::mat4f & camera_vm= m_camera2D->getViewMatrix();
+			const mt::mat4f & camera_pm= m_camera2D->getProjectionMatrix();
 
 			//Viewport new_vp;
 			//mt::mul_v2_m3( new_vp.begin, camera_viewport.begin, wm );
 			//mt::mul_v2_m3( new_vp.end, camera_viewport.end, wm );
 
-			mt::mat3f inv_wm;
-			mt::inv_m3( inv_wm, camera_wm);
-
 			RenderEngine::get()
-				->newRenderPass( camera_renderport, inv_wm );
+				->newRenderPass( camera_vp, camera_vm, camera_pm );
 		}
 
 		this->_render( renderCamera );
@@ -181,7 +180,7 @@ namespace Menge
 		if( m_camera2D )
 		{
 			RenderEngine::get()
-				->newRenderPass( old_rp, old_wm );
+				->newRenderPass( old_rp, old_vm, old_pm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

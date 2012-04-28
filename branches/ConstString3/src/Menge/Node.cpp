@@ -745,7 +745,7 @@ namespace Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f & Node::getWorldMatrix()
+	const mt::mat4f & Node::getWorldMatrix()
 	{
 		if( m_parent == 0 )
 		{
@@ -757,32 +757,32 @@ namespace Menge
 			return Transformation3D::getRelationMatrix();
 		}
 
-		const mt::mat3f & wm = m_parent->getWorldMatrix();
+		const mt::mat4f & wm = m_parent->getWorldMatrix();
 
-		const mt::mat3f & update_wm = Transformation3D::updateWorldMatrix( wm );
+		const mt::mat4f & update_wm = Transformation3D::updateWorldMatrix( wm );
 
 		return update_wm;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Node::getWorldPosition()
+	const mt::vec3f & Node::getWorldPosition()
 	{
-		const mt::mat3f &wm = this->getWorldMatrix();
+		const mt::mat4f &wm = this->getWorldMatrix();
 
-		return wm.v2.to_vec2f();
+		return wm.v3.to_vec3f();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Node::getWorldDirection()
-	{
-		const mt::mat3f &wm = this->getWorldMatrix();
+	////////////////////////////////////////////////////////////////////////////
+	//const mt::vec2f & Node::getWorldDirection()
+	//{
+	//	const mt::mat3f &wm = this->getWorldMatrix();
 
-		return wm.v0.to_vec2f();
-	}
+	//	return wm.v0.to_vec2f();
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setWorldPosition( const mt::vec2f & _pos )
+	void Node::setWorldPosition( const mt::vec3f & _pos )
 	{
-		const mt::vec2f & wp = this->getWorldPosition();
+		const mt::vec3f & wp = this->getWorldPosition();
 
-		mt::vec2f wp_offset = _pos - wp;
+		mt::vec3f wp_offset = _pos - wp;
 
 		this->translate( wp_offset );
 	}
@@ -853,8 +853,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Node::getCameraPosition( Camera2D * _camera2D )
 	{
-		const mt::vec2f & pos = this->getWorldPosition();
-		mt::vec2f screen_pos = pos;
+		const mt::vec3f & pos = this->getWorldPosition();
+		mt::vec2f screen_pos = pos.to_vec2f();
 		
 		if( m_layer )
 		{
@@ -913,9 +913,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		const mt::vec2f & wp = this->getWorldPosition();
+		const mt::vec3f & wp = this->getWorldPosition();
 
-		mt::reset( _boundingBox, wp );
+		const mt::vec2f & v2 = wp.to_vec2f();
+		mt::reset( _boundingBox, v2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
@@ -979,30 +980,30 @@ namespace Menge
 			m_debugBox[0].pos[0] = bbox.minimum.x;
 			m_debugBox[0].pos[1] = bbox.minimum.y;
 			m_debugBox[0].pos[2] = 0.f;
-			m_debugBox[0].pos[3] = 1.f;
+			//m_debugBox[0].pos[3] = 1.f;
 
 			m_debugBox[1].pos[0] = bbox.maximum.x;
 			m_debugBox[1].pos[1] = bbox.minimum.y;
 			m_debugBox[1].pos[2] = 0.f;
-			m_debugBox[1].pos[3] = 1.f;
+			//m_debugBox[1].pos[3] = 1.f;
 
 			m_debugBox[2].pos[0] = bbox.maximum.x;
 			m_debugBox[2].pos[1] = bbox.maximum.y;
 			m_debugBox[2].pos[2] = 0.f;
-			m_debugBox[2].pos[3] = 1.f;
+			//m_debugBox[2].pos[3] = 1.f;
 
 			m_debugBox[3].pos[0] = bbox.minimum.x;
 			m_debugBox[3].pos[1] = bbox.maximum.y;
 			m_debugBox[3].pos[2] = 0.f;
-			m_debugBox[3].pos[3] = 1.f;
+			//m_debugBox[3].pos[3] = 1.f;
 
 			m_debugBox[4].pos[0] = bbox.minimum.x;
 			m_debugBox[4].pos[1] = bbox.minimum.y;
 			m_debugBox[4].pos[2] = 0.f;
-			m_debugBox[4].pos[3] = 1.f;
+			//m_debugBox[4].pos[3] = 1.f;
 
 			RenderEngine::get()
-				->renderObject2D( m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, false, LPT_LINE );
+				->renderObject2D( m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, LPT_LINE );
 		}
 	}
 #	endif

@@ -91,7 +91,7 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPolygon( const mt::mat3f& _transform, const Polygon& _screenPoly, const mt::mat3f& _screenTransform )
+	bool HotSpotImage::testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform )
 	{
 		if( this->isActivate() == false )
 		{
@@ -105,25 +105,28 @@ namespace Menge
 
 		const Polygon::ring_type & ring = _screenPoly.outer();
 
-		if( ring.size() == 1 )
+		if( ring.size() != 1 )
 		{
-			mt::vec2f point;
-			mt::mul_v2_m3( point, ring[0], _screenTransform );
-
-			mt::mat3f invWM;
-			mt::inv_m3( invWM, _transform );
-			mt::vec2f pointIn;
-			mt::mul_v2_m3( pointIn, point, invWM );
-
-			bool result = m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
-
-			return result;
+			return false;
 		}
-		
-		return false;
+
+		const mt::vec2f & ring_point = ring[0];
+
+		mt::vec2f point;
+		mt::mul_v2_m4( point, ring_point, _screenTransform );
+
+		mt::mat4f invWM;
+		mt::inv_m4( invWM, _transform );
+
+		mt::vec2f pointIn;
+		mt::mul_v2_m4( pointIn, point, invWM );
+
+		bool result = m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testRadius( const mt::mat3f& _transform, float _radius, const mt::mat3f& _screenTransform )
+	bool HotSpotImage::testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform )
 	{
 		if( this->isActivate() == false )
 		{
@@ -131,12 +134,13 @@ namespace Menge
 		}
 		
 		mt::vec2f point;
-		mt::mul_v2_m3( point, mt::vec2f(0.f, 0.f), _screenTransform );
+		mt::mul_v2_m4( point, mt::vec2f(0.f, 0.f), _screenTransform );
 
-		mt::mat3f invWM;
-		mt::inv_m3( invWM, _transform );
+		mt::mat4f invWM;
+		mt::inv_m4( invWM, _transform );
+
 		mt::vec2f pointIn;
-		mt::mul_v2_m3( pointIn, point, invWM );
+		mt::mul_v2_m4( pointIn, point, invWM );
 
 		bool result = m_resourceHotspotImage->testRadius( pointIn, _radius, m_alphaTest );
 

@@ -585,7 +585,7 @@ namespace Menge
 		//NODE_FACTORY( TilePolygon );
 		NODE_FACTORY( Point );
 		//NODE_FACTORY( RigidBody2D );
-		NODE_FACTORY( PhysicalBody2D );
+		//NODE_FACTORY( PhysicalBody2D );
 		NODE_FACTORY( SoundEmitter );
 		NODE_FACTORY( Sprite );
 		NODE_FACTORY( TextField );

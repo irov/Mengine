@@ -53,11 +53,12 @@ namespace Menge
 		return end.y - begin.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Viewport::getSize() const
+	void Viewport::getSize( mt::vec2f & _size ) const
 	{
 		float w = this->getWidth();
 		float h = this->getHeight();
 
-		return mt::vec2f(w, h);
+		_size.x = w;
+		_size.y = h;
 	}
 }

@@ -53,7 +53,7 @@ namespace Menge
 				totalKerning += kerning;
 			}
 
-			charData.offset.x += totalKerning;		
+			charData.offset.x += totalKerning;
 			m_charsData.push_back( charData );
 
 			float height = m_height;
@@ -80,7 +80,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset
-		, const mt::mat3f & _wm
+		, const mt::mat4f & _wm
 		, unsigned int _argb
 		, bool _pixelsnap		
 		, TVectorVertex2D& _renderObject )
@@ -107,21 +107,24 @@ namespace Menge
 			for( int i = 0; i != 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
+				Vertex2D & renderVertex = _renderObject[renderObjectNum + i];
+				const mt::vec3f & charVertex = it_char->renderVertex[i];
+				
+
 				if( _pixelsnap )
 				{
-					_renderObject[renderObjectNum + i].pos[0] = floorf(it_char->renderVertex[i].x + 0.5f);
-					_renderObject[renderObjectNum + i].pos[1] = floorf(it_char->renderVertex[i].y + 0.5f);
+					renderVertex.pos[0] = floorf(charVertex.x + 0.5f);
+					renderVertex.pos[1] = floorf(charVertex.y + 0.5f);
 				}
 				else
 				{
-					_renderObject[renderObjectNum + i].pos[0] = it_char->renderVertex[i].x;
-					_renderObject[renderObjectNum + i].pos[1] = it_char->renderVertex[i].y;
+					renderVertex.pos[0] = charVertex.x;
+					renderVertex.pos[1] = charVertex.y;
 				}
 
-				_renderObject[renderObjectNum + i].pos[2] = 0.f;
-				_renderObject[renderObjectNum + i].pos[3] = 1.f;
+				renderVertex.pos[2] = charVertex.z;
 
-				_renderObject[renderObjectNum + i].color = _argb;
+				renderVertex.color = _argb;
 			}
 
 			_renderObject[renderObjectNum + 0].uv[0] = it_char->uv.x;
@@ -141,7 +144,7 @@ namespace Menge
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateBoundingBox( mt::vec2f& _offset, const mt::mat3f & _wm, mt::box2f& _boundingBox )
+	void TextLine::updateBoundingBox( mt::vec2f& _offset, const mt::mat4f & _wm, mt::box2f& _boundingBox )
 	{
 		if( m_charsData.empty() ) return;
 		
@@ -150,12 +153,13 @@ namespace Menge
 			updateRenderLine_( _offset, _wm );
 		}
 
-		mt::vec2f vb = m_charsData.front().renderVertex[0];
-		mt::vec2f ve = m_charsData.back().renderVertex[2];
-		mt::merge_box( _boundingBox, mt::box2f( vb, ve ) );
+		mt::vec3f vb = m_charsData.front().renderVertex[0];
+		mt::vec3f ve = m_charsData.back().renderVertex[2];
+
+		mt::merge_box( _boundingBox, mt::box2f( vb.to_vec2f(), ve.to_vec2f() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateRenderLine_( mt::vec2f& _offset, const mt::mat3f & _wm )
+	void TextLine::updateRenderLine_( mt::vec2f& _offset, const mt::mat4f & _wm )
 	{
 		for( TCharsData::iterator
 			it_char = m_charsData.begin(), 
@@ -168,10 +172,11 @@ namespace Menge
 			mt::vec2f size = it_char->size;
 
 			mt::vec2f offset = _offset + it_char->offset;
-			mt::mul_v2_m3( it_char->renderVertex[0], offset, _wm );
-			mt::mul_v2_m3( it_char->renderVertex[1], offset + mt::vec2f( size.x, 0.0f ), _wm );
-			mt::mul_v2_m3( it_char->renderVertex[2], offset + size, _wm );
-			mt::mul_v2_m3( it_char->renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), _wm );
+			mt::vec3f v3_offset(offset.x, offset.y, 0.f);
+			mt::mul_v3_m4( it_char->renderVertex[0], v3_offset, _wm );
+			mt::mul_v3_m4( it_char->renderVertex[1], v3_offset + mt::vec3f( size.x, 0.0f, 0.f ), _wm );
+			mt::mul_v3_m4( it_char->renderVertex[2], v3_offset + mt::vec3f( size.x, size.y, 0.f ), _wm );
+			mt::mul_v3_m4( it_char->renderVertex[3], v3_offset + mt::vec3f( 0.0f, size.y, 0.f ), _wm );
 
 			// round coords
 			//for( int i = 0; i != 4; ++i )

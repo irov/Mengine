@@ -134,5 +134,7 @@ namespace Menge
 		mt::vec2f m_positionEffect;
 
 		Viewport* m_checkViewport;
+
+		bool m_emitterTranslateWithParticle;
 	};
 }

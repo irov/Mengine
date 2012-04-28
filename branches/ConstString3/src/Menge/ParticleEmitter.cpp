@@ -43,7 +43,8 @@ namespace	Menge
 		, m_cacheEmitterRelative(false)
 		, m_centerAlign(false)
 		, m_checkViewport(NULL)
-		, m_positionOffset(0.0f,0.0f)
+		, m_positionOffset(0.f, 0.f)
+		, m_emitterTranslateWithParticle(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -141,6 +142,8 @@ namespace	Menge
 
 		m_interface->setListener( this );
 		//m_interface->setEmitterTranslateWithParticle( true );
+
+		m_interface->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 
 		//// reset editor position
 		//if( m_emitterRelative == false )
@@ -537,6 +540,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterTranslateWithParticle( bool _with )
 	{
+		m_emitterTranslateWithParticle = _with;
+		
 		if( this->isCompile() == false )
 		{
 			return;
@@ -635,20 +640,29 @@ namespace	Menge
 				m_interface->getPosition( m_positionEffect );
 				
 				mt::vec2f relativeSize = this->getRelativeSize();
+				mt::vec3f scale(1.f, 1.f, 1.f);
+
 				if( relativeSize.x == 0 || relativeSize.y == 0 )
 				{	
 					Scene * scene = this->getScene();
 					Layer * mainLayer = scene->getMainLayer();
 					relativeSize = mainLayer->getSize();
+					scale = mainLayer->getScale();
 				}
 
-				const mt::vec3f& scene_pos = this->getWorldPosition();
-				
-				mt::vec2f new_pos;
-				new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;
-				new_pos.y = m_positionEffect.y + scene_pos.y + relativeSize.y * 0.5f;
-				//printf(" (%f %f) (%f %f) (%f %f) %s \n", world_pos.x,world_pos.y, new_pos.x,new_pos.y,scene_pos.x, scene_pos.y ,m_name.c_str() );
-				m_interface->setPosition( new_pos );
+				const mt::mat4f & wm = this->getWorldMatrix();
+
+				mt::vec2f new_pos = relativeSize * 0.5f + m_positionEffect;
+
+				mt::vec2f wm_pos;
+				mt::mul_v2_m4( wm_pos, new_pos, wm );
+
+				//new_pos.x = scene_pos.x + (m_positionEffect.x * scale.x) + relativeSize.x * 0.5f;
+				//new_pos.y = scene_pos.y + (m_positionEffect.y * scale.y) + relativeSize.y * 0.5f;
+
+				//printf(" (%f %f) (%f %f) (%f %f) %s \n",  new_pos.x,new_pos.y, m_positionEffect.x,m_positionEffect.y,scene_pos.x, scene_pos.y ,m_name.c_str() );
+
+				m_interface->setPosition( wm_pos );
 			}
 		}
 		else
@@ -722,20 +736,29 @@ namespace	Menge
 		else
 		{
 			mt::vec2f relativeSize = this->getRelativeSize();
+			mt::vec3f scale(1.f, 1.f, 1.f);
+
 			if( relativeSize.x == 0 || relativeSize.y == 0 )
 			{	
 				Scene * scene = this->getScene();
 				Layer * mainLayer = scene->getMainLayer();
 				relativeSize = mainLayer->getSize();
+				scale = mainLayer->getScale();
 			}
 
-			const mt::vec3f& scene_pos = this->getWorldPosition();
+			const mt::mat4f & wm = this->getWorldMatrix();
 			
-			mt::vec2f new_pos;
-			new_pos.x = m_positionEffect.x + scene_pos.x + relativeSize.x * 0.5f;
-			new_pos.y = m_positionEffect.y + scene_pos.y + relativeSize.y * 0.5f;
+			mt::vec2f new_pos = relativeSize * 0.5f + m_positionEffect;
+
+			mt::vec2f wm_pos;
+			mt::mul_v2_m4( wm_pos, new_pos, wm );
+
+			//new_pos.x = scene_pos.x + (m_positionEffect.x * scale.x) + relativeSize.x * 0.5f;
+			//new_pos.y = scene_pos.y + (m_positionEffect.y * scale.y) + relativeSize.y * 0.5f;
+
 			//printf(" (%f %f) (%f %f) (%f %f) %s \n",  new_pos.x,new_pos.y, m_positionEffect.x,m_positionEffect.y,scene_pos.x, scene_pos.y ,m_name.c_str() );
-			m_interface->setPosition( new_pos );
+
+			m_interface->setPosition( wm_pos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

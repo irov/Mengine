@@ -33,7 +33,7 @@ namespace Menge
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
-			_node->setRotateX( _frame.angle );
+			_node->setRotateX( -_frame.angle );
 			_node->setPersonalAlpha( _frame.opacity );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ namespace Menge
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
-			_node->setRotateX( _frame.angle );
+			_node->setRotateX( -_frame.angle );
 			_node->setLocalAlpha( _frame.opacity );
 		}
 		////////////////////////////////////////////////////////////////////////////
@@ -489,49 +489,6 @@ namespace Menge
 				node->localHide(false);
 			}
 		}
-
-		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
-
-		for( TVectorMovieLayers3D::const_iterator
-			it = layers3D.begin(),
-			it_end = layers3D.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer3D & layer = *it;
-
-			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
-
-			if( it_index == m_flexSprites.end() )
-			{
-				MENGE_LOG_ERROR("Movie::setFirstFrame layer3D index %s:%d not found flex sprite"
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Sprite * sprite = it_index->second;
-
-			MovieFrame3D frame;
-			if( m_resourceMovie->getFrame3DFirst( layer, frame ) == false )
-			{
-				MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					);
-
-				return;
-			}
-
-			Helper::s_applyFrame3D( sprite, frame );
-
-			if( fabsf(layer.in) <= 0.001f )
-			{
-				sprite->localHide(false);
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setLastFrame()
@@ -582,49 +539,6 @@ namespace Menge
 			if( fabsf(layer.out - out) <= 0.001f )
 			{
 				node->localHide(false);
-			}
-		}
-
-		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
-
-		for( TVectorMovieLayers3D::const_iterator
-			it = layers3D.begin(),
-			it_end = layers3D.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer3D & layer = *it;
-
-			MovieFrame3D frame;
-			if( m_resourceMovie->getFrame3DLast( layer, frame ) == false )
-			{
-				MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					);
-
-				return;
-			}
-
-			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
-
-			if( it_index == m_flexSprites.end() )
-			{
-				MENGE_LOG_ERROR("Movie::setLastFrame layer3D index %s:%d not found flex sprite"
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Sprite * sprite = it_index->second;
-
-			Helper::s_applyFrame3D( sprite, frame );
-
-			if( fabsf(layer.out - out) <= 0.001f )
-			{
-				sprite->localHide(false);
 			}
 		}
 	}
@@ -1142,57 +1056,6 @@ namespace Menge
 				node_parent->addChildren( node );
 			}
 		}
-
-		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
-
-		for( TVectorMovieLayers3D::const_iterator 
-			it = layers3D.begin(),
-			it_end = layers3D.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer3D & layer = *it;
-
-			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
-
-			if( it_index == m_flexSprites.end() )
-			{
-				MENGE_LOG_ERROR("Movie::updateParent_ layer3D index %s:%d not found flex sprite"
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_index->second;
-
-			if( layer.parent == 0 )
-			{
-				if( layer.internal == false )
-				{
-					this->addChildren( node );
-				}
-			}
-			else
-			{
-				TMapFlexSprite::iterator it_found = m_flexSprites.find( layer.parent );
-
-				if( it_found == m_flexSprites.end() )
-				{
-					MENGE_LOG_ERROR("Movie::updateParent_ layer3D parent %s:%d not found flex sprite"
-						, layer.name.c_str()
-						, layer.parent
-						);
-
-					continue;
-				}
-
-				Node * node_parent = it_found->second;
-
-				node_parent->addChildren( node );
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
@@ -1236,46 +1099,6 @@ namespace Menge
 		}
 
 		m_nodies.clear();
-
-		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
-
-		for( TVectorMovieLayers3D::const_iterator 
-			it = layers3D.begin(),
-			it_end = layers3D.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer3D & layer = *it;
-
-			if( layer.internal == true )
-			{
-				continue;
-			}
-
-			if( layer.parent != 0 )
-			{
-				continue;
-			}
-
-			TMapFlexSprite::const_iterator it_node = m_flexSprites.find( layer.index );
-
-			if( it_node == m_flexSprites.end() )
-			{
-				MENGE_LOG_ERROR("Movie._release: '%s' not found layer3D '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Sprite * sprite = it_node->second;
-
-			sprite->destroy();
-		}
-
-		m_flexSprites.clear();
 
 		m_slots.clear();
 
@@ -1385,14 +1208,14 @@ namespace Menge
 
 			++m_currentFrame;
 
-			if( m_currentFrame == frameCount )
+			if( m_currentFrame == frameCount - 1 )
 			{
 				if( this->getLoop() == false )
 				{
 					break;
 				}
 			}
-			else if ( m_currentFrame == frameCount + 1 )
+			else if ( m_currentFrame == frameCount )
 			{
 				if( this->getLoop() == true )
 				{
@@ -1616,211 +1439,8 @@ namespace Menge
 				}
 			}			
 
-			//if( m_reverse == false )
-			//{
-			//	if( m_currentFrame >= indexOut && m_currentFrame < indexIn )
-			//	{
-			//		if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
-			//		{
-			//			MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
-			//				, m_name.c_str()
-			//				, layer.name.c_str()
-			//				);
-
-			//			continue;
-			//		}
-
-			//		if( layer.internal == false )
-			//		{
-			//			//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
-			//			//{
-			//			//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-			//			node->localHide(true);
-
-			//			if( layer.animatable == true )
-			//			{
-			//				Animatable * animatable = dynamic_cast<Animatable *>(node);
-
-			//				//printf("Movie %s stop[layer] animatable %s\n"
-			//				//	, m_name.c_str()
-			//				//	, node->getName().c_str()
-			//				//	);
-
-			//				if( animatable->isPlay() == true )
-			//				{
-			//					animatable->stop();
-
-			//					float timing = (indexOut - indexIn) * frameDuration;
-			//					animatable->setTiming( timing );
-			//				}
-			//			}
-
-			//			continue;
-			//		}
-			//	}
-			//	else
-			//	{
-			//		if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
-			//		{
-			//			continue;
-			//		}
-			//	}
-			//}
-			//else
-			//{
-			//	if( indexIn <= _lastFrame && indexIn >= m_currentFrame )
-			//	{
-			//		if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
-			//		{
-			//			MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
-			//				, m_name.c_str()
-			//				, layer.name.c_str()
-			//				);
-
-			//			continue;
-			//		}
-
-			//		if( layer.internal == false )
-			//		{
-			//			//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
-			//			//{
-			//			//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-			//			node->localHide(true);
-
-			//			if( layer.animatable == true )
-			//			{
-			//				Animatable * animatable = dynamic_cast<Animatable *>(node);
-
-			//				animatable->stop();
-
-			//				//float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-			//				//animatable->setTiming( timing );
-			//			}
-			//			//node->disable();
-			//			continue;
-			//			//}
-			//		}
-			//	}
-			//	else
-			//	{
-			//		if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
-			//		{
-			//			continue;
-			//		}
-			//	}
-			//}
-
 			this->updateFrame2D_( layer, node, frame );
 		}
-
-		//const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
-
-		//for( TVectorMovieLayers3D::const_iterator
-		//	it = layers3D.begin(),
-		//	it_end = layers3D.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	const MovieLayer3D & layer = *it;
-
-		//	float layerIn = layer.in;
-		//	float layerOut = layer.out;
-
-		//	TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
-
-		//	if( it_index == m_flexSprites.end() )
-		//	{
-		//		MENGE_LOG_ERROR("Movie::update layer3D index %s:%d not found flex sprite"
-		//			, layer.name.c_str()
-		//			, layer.index
-		//			);
-
-		//		continue;
-		//	}
-
-		//	Sprite * sprite = it_index->second;
-
-		//	if( layer.internal == false )
-		//	{
-		//		if( layerIn >= lastTiming && layerIn <= m_timing )
-		//		{
-		//			sprite->localHide( false );
-		//		}
-		//	}
-
-		//	if( layer.out < lastTiming )
-		//	{
-		//		continue;
-		//	}
-
-		//	MovieFrame3D frame;
-		//	if( layerOut >= lastTiming && layerOut <= m_timing )
-		//	{
-		//		if( m_resourceMovie->getFrame3DLast( layer, frame ) == false )
-		//		{
-		//			MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
-		//				, m_name.c_str()
-		//				, layer.name.c_str()
-		//				);
-
-		//			continue;
-		//		}
-
-		//		if( layer.internal == false )
-		//		{
-		//			sprite->localHide( true );
-
-		//			continue;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		if( m_resourceMovie->getFrame3D( layer, m_timing, frame ) == false )
-		//		{
-		//			continue;
-		//		}
-		//	}
-
-		//	Helper::s_applyFrame3D( sprite, frame );
-		//}
-
-		//if( m_reverse == false )
-		//{
-		//	if( out >= lastTiming && out <= m_timing )
-		//	{
-		//		if( this->getLoop() == true )
-		//		{
-		//			//m_timing = m_timing - out;
-		//			m_timing = 0.f;
-
-		//			this->setFirstFrame();
-
-		//			this->_update( 0.f );
-		//		}
-		//		else
-		//		{
-		//			this->end();
-		//		}
-		//	}
-		//}
-		//else
-		//{
-		//	if( lastTiming >= 0.f && m_timing <= 0.f )
-		//	{
-		//		if( this->getLoop() == true )
-		//		{
-		//			m_timing = out + m_timing;
-
-		//			this->setLastFrame();
-
-		//			this->_update( 0.f );
-		//		}
-		//		else
-		//		{
-		//			this->end();
-		//		}
-		//	}		
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setReverse( bool _value )

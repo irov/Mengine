@@ -149,7 +149,7 @@ namespace Menge
 		void beginLayer3D() override;
 		void endLayer3D() override;
 
-		void setRenderViewport( const Viewport & _viewport ) override;
+		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;

@@ -137,7 +137,7 @@ namespace Menge
 		mt::vec2f scale_point;
 		mt::vec2f offset_point = _point - m_inputOffset;
 		//mt::vec2f offset_point = _point;
-		mt::scale_v2_v2( scale_point, offset_point, m_inputScale );
+		mt::mul_v2_v2( scale_point, offset_point, m_inputScale );
 
 		_local = scale_point;
 	}

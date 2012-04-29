@@ -70,9 +70,12 @@ namespace Menge
 		virtual bool changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
 		virtual bool changeEmitterModel( float * _points, int _count ) = 0;
 	public:
-		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
-		virtual void getPosition( mt::vec2f & _pos ) = 0;
+		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;		
 		virtual void setPosition( const mt::vec2f & _pos ) = 0;
+		virtual void getPosition( mt::vec2f & _pos ) = 0;
+
+		virtual void setScale( float _scale ) = 0;
+
 		virtual void setAngle( float _radians ) = 0;
 
 		virtual void setRandomMode( bool _randomMode ) = 0;

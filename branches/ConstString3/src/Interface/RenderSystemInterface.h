@@ -403,7 +403,7 @@ namespace Menge
 		virtual	void	beginLayer3D() = 0;
 		virtual	void	endLayer3D() = 0;
 
-		virtual void	setRenderViewport( const Viewport & _viewport ) = 0;
+		virtual void	setViewport( const Viewport & _viewport ) = 0;
 
 		virtual void	changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;

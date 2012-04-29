@@ -92,6 +92,8 @@ namespace Menge
 		, m_supportA8(false)
 		, m_camera(0)
 		, m_dipCount(0)
+		, m_renderScale(0.f, 0.f)
+		, m_renderOffset(0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -332,7 +334,7 @@ namespace Menge
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
-		//m_viewport = _viewport;
+		m_viewport = _viewport;
 
 		m_fullscreen = _fullscreen;
 		
@@ -384,7 +386,7 @@ namespace Menge
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
-		//m_viewport = _viewport;
+		m_viewport = _viewport;
 		
 		m_fullscreen = _fullscreen;
 	
@@ -1364,16 +1366,16 @@ namespace Menge
 		//m_currentBlendDst = BF_ZERO;
 		m_interface->setDstBlendFactor( m_currentBlendDst );
 
-		//float viewport_width = m_viewport.getWidth();
-		//float viewport_height = m_viewport.getHeight();
+		float viewport_width = m_viewport.getWidth();
+		float viewport_height = m_viewport.getHeight();
 
-		//float width_scale = viewport_width / float(m_contentResolution.getWidth());
-		//float height_scale = viewport_height / float(m_contentResolution.getHeight());
+		float width_scale = viewport_width / float(m_contentResolution.getWidth());
+		float height_scale = viewport_height / float(m_contentResolution.getHeight());
 
-		//m_renderScale.x = width_scale;
-		//m_renderScale.y = height_scale;
+		m_renderScale.x = width_scale;
+		m_renderScale.y = height_scale;
 
-		//m_renderOffset = m_viewport.begin;
+		m_renderOffset = m_viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float l, float r, float b, float t, float zn, float zf )
@@ -1485,7 +1487,12 @@ namespace Menge
 				m_renderTargetResolution = m_windowResolution;
 			}
 
-			m_interface->setRenderViewport( renderPass->viewport );
+			Viewport renderViewport;
+
+			renderViewport.begin = m_renderOffset + renderPass->viewport.begin * m_renderScale;
+			renderViewport.end = m_renderOffset + renderPass->viewport.end * m_renderScale;
+
+			m_interface->setViewport( renderViewport );
 			m_interface->setModelViewMatrix( renderPass->viewMatrix );
 			m_interface->setProjectionMatrix( renderPass->projectionMatrix );
 

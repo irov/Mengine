@@ -62,6 +62,8 @@ namespace Menge
 		void setPosition( const mt::vec2f & _pos ) override;
 		void getPosition( mt::vec2f & _pos ) override;
 
+		void setScale( float _scale ) override;
+
 		void setAngle( float _radians ) override;
 
 	public:

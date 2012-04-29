@@ -128,8 +128,8 @@ namespace mt
 	/*	Scale by Scalar	 */
 	MATH_INLINE void scale_m2_s(mat2f& _out, const mat2f& _rhs, float _val)
 	{
-		scale_v2_f(_out.v0,_rhs.v0,_val);
-		scale_v2_f(_out.v1,_rhs.v1,_val);
+		mul_v2_f(_out.v0,_rhs.v0,_val);
+		mul_v2_f(_out.v1,_rhs.v1,_val);
 	}
 
 	MATH_INLINE mat2f operator*(const mat2f& _rhs, float _val)
@@ -141,8 +141,8 @@ namespace mt
 
 	MATH_INLINE void scale_m2_s(mat2f& _out, float _val)
 	{
-		scale_v2_f(_out.v0,_out.v0,_val);
-		scale_v2_f(_out.v1,_out.v1,_val);
+		mul_v2_f(_out.v0,_out.v0,_val);
+		mul_v2_f(_out.v1,_out.v1,_val);
 	}
 
 	/*	Transpose Matrix  */

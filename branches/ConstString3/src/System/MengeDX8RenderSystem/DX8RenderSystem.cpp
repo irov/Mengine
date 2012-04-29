@@ -1161,7 +1161,7 @@ namespace Menge
 		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setRenderViewport( const Viewport & _renderViewport )
+	void DX8RenderSystem::setViewport( const Viewport & _renderViewport )
 	{
 		D3DVIEWPORT8 VP;
 

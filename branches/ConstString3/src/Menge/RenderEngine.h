@@ -266,10 +266,10 @@ namespace Menge
 
 		size_t m_vbPos;
 
-		//mt::vec2f m_renderScale;
-		//mt::vec2f m_renderOffset;
+		mt::vec2f m_renderScale;
+		mt::vec2f m_renderOffset;
 
-		//Viewport m_viewport;
+		Viewport m_viewport;
 
 		uint32 m_currentVertexDeclaration;
 

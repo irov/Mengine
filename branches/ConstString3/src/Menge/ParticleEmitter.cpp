@@ -640,14 +640,12 @@ namespace	Menge
 				m_interface->getPosition( m_positionEffect );
 				
 				mt::vec2f relativeSize = this->getRelativeSize();
-				mt::vec3f scale(1.f, 1.f, 1.f);
 
 				if( relativeSize.x == 0 || relativeSize.y == 0 )
 				{	
 					Scene * scene = this->getScene();
 					Layer * mainLayer = scene->getMainLayer();
 					relativeSize = mainLayer->getSize();
-					scale = mainLayer->getScale();
 				}
 
 				const mt::mat4f & wm = this->getWorldMatrix();
@@ -736,14 +734,13 @@ namespace	Menge
 		else
 		{
 			mt::vec2f relativeSize = this->getRelativeSize();
-			mt::vec3f scale(1.f, 1.f, 1.f);
 
 			if( relativeSize.x == 0 || relativeSize.y == 0 )
 			{	
 				Scene * scene = this->getScene();
 				Layer * mainLayer = scene->getMainLayer();
 				relativeSize = mainLayer->getSize();
-				scale = mainLayer->getScale();
+				//scale = mainLayer->getScale();
 			}
 
 			const mt::mat4f & wm = this->getWorldMatrix();

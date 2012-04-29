@@ -254,14 +254,6 @@ namespace Menge
 		m_listener = _listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::getPosition( mt::vec2f & _pos )
-	{
-		MAGIC_POSITION pos;
-		Magic_GetEmitterPosition( m_id, &pos );
-		_pos.x = pos.x;
-		_pos.y = pos.y;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setPosition( const mt::vec2f & _pos )
 	{
 		//bool mode = Magic_GetEmitterPositionMode( m_id );
@@ -274,6 +266,7 @@ namespace Menge
 		MAGIC_POSITION pos;
 		pos.x = _pos.x;
 		pos.y = _pos.y;
+
 		Magic_SetEmitterPosition( m_id, &pos );
 
 		//if( mode == false )
@@ -281,6 +274,20 @@ namespace Menge
 		//	// возвращаем на место старый режим перемещения
 		//	Magic_SetEmitterPositionMode( m_id, 0 );
 		//}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::getPosition( mt::vec2f & _pos )
+	{
+		MAGIC_POSITION pos;
+		Magic_GetEmitterPosition( m_id, &pos );
+
+		_pos.x = pos.x;
+		_pos.y = pos.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::setScale( float _scale )
+	{
+		Magic_SetScale( m_id, _scale );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::restart()

@@ -18,6 +18,8 @@
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "boost/format.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -43,9 +45,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WString AccountManager::createAccount()
 	{
-		wchar_t buff_accountID[256];
-		swprintf( buff_accountID, L"Player_%d", m_playerEnumerator );
-		WString accountID(buff_accountID);
+		WString accountID = (boost::wformat(L"Player_%d") % m_playerEnumerator).str();
 
 		this->createAccount_( accountID );
 		

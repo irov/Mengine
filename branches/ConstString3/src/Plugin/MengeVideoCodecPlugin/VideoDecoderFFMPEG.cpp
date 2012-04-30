@@ -248,7 +248,7 @@ namespace Menge
 		
 		if ( this->eof() == true )
 		{
-			m_stream->seek( SEEK_SET ); 
+			seek(0.0f);
 		}
 		
 		m_cacheBuffer = new size_t[ m_codecContext->height * m_codecContext->width * 4 ];
@@ -334,7 +334,7 @@ namespace Menge
 		
 		if ( av_read_frame(m_formatContext, &packet) < 0 )
 		{
-			if(this->eof() != true)
+			/*if(this->eof() != true)
 			{
 				m_pts += m_frameTiming * 2;
 				this->seek( m_pts );
@@ -343,7 +343,7 @@ namespace Menge
 			{
 				m_pts = 0;
 			}
-
+			*/
 			av_free_packet(&packet);
 			//printf(" can not read frame ");
 			return false;
@@ -481,7 +481,7 @@ namespace Menge
 		av_seek_frame( pFormatContext , -1 ,  timestamp + pFormatContext->start_time ,AVSEEK_FLAG_BACKWARD );
 		*/
 
-		if (av_seek_frame( m_formatContext, m_videoStreamId, _timing, AVSEEK_FLAG_ANY ) < 0 )
+		if (av_seek_frame( m_formatContext, m_videoStreamId, _timing, 0 ) < 0 )
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing  );
 			return false;

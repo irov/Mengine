@@ -39,11 +39,12 @@ namespace Menge
 		
 		bool eof() override;
 		int sync( float _timing ) override;
+		float getTiming()  const override;
 		bool seek( float _timing ) override;
 		bool isValid() const;
 		const VideoCodecDataInfo* getCodecDataInfo() const;
 		void setOptions( CodecOptions * ) ;
-	
+		bool readNextFrame( ) override;
 	protected:
 void _invalidate() ;
 	protected:
@@ -51,6 +52,8 @@ void _invalidate() ;
 		AVFormatContext * m_formatContext;
 		AVCodecContext * m_codecContext;
 		AVCodec * m_codec;
+		
+		size_t * m_cacheBuffer;
 		
 		AVFrame * m_Frame; 
 		AVFrame * m_FrameRGBA;
@@ -75,6 +78,6 @@ void _invalidate() ;
 		
 	private:
 		void clear_();
-		bool readFrame_( );
+		
 	};
 }	// namespace Menge

@@ -86,11 +86,7 @@ namespace Menge
 			{
 				MovieFrameSource frame;				
 
-				mt::vec2f anchorPoint;
-				mt::vec2f position;
-				mt::vec2f scale;
 				float angle;
-				float opacity;
 
 				if( _framePak->isLayerEmpty( _layerIndex ) == false)
 				{
@@ -101,42 +97,33 @@ namespace Menge
 					frame.rotation = old_frame.rotation;
 					frame.opacity = old_frame.opacity;
 					frame.anchorPoint = old_frame.anchorPoint;
-
-					anchorPoint.x = frame.anchorPoint.x;
-					anchorPoint.y = frame.anchorPoint.y;
-					position.x = frame.position.x;
-					position.y = frame.position.y;
-					scale.x = frame.scale.x;
-					scale.y = frame.scale.y;
 					angle = frame.rotation.z;
-					opacity = frame.opacity;
 				}
 
 				size_t count = 1;
 				
+				mt::vec2f anchorPoint2d = frame.anchorPoint.to_vec2f();
+				mt::vec2f position2d = frame.position.to_vec2f();
+				mt::vec2f scale2d = frame.scale.to_vec2f();
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, anchorPoint );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Position, position );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, scale );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, anchorPoint2d );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Position, position2d );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, scale2d );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Rotation, angle );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, opacity );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Index, count );
 				}
+
+				frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
+				frame.position = mt::vec3f(position2d, 0.f);
+				frame.scale = mt::vec3f(scale2d, 1.f);
 				
-				frame.anchorPoint.x = anchorPoint.x;
-				frame.anchorPoint.y = anchorPoint.y;
-				frame.anchorPoint.z = 0;
-				frame.position.x = position.x;
-				frame.position.y = position.y;
-				frame.position.z = 0;
-				frame.scale.x = scale.x;
-				frame.scale.y = scale.y;
 				frame.rotation.x = 0;
 				frame.rotation.y = 0;
 				frame.rotation.z = angle;
-				frame.opacity = opacity;
-
+				
 				for( size_t i = 0; i != count; ++i )
 				{
 					_framePak->setLayerFrame( _layerIndex, frame );
@@ -152,16 +139,17 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::KeyFrame3D )
 			{
 				MovieFrameSource frame;
-
+				mt::vec2f scale;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_AnchorPoint, frame.anchorPoint );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Position, frame.position );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Rotation, frame.rotation );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, frame.scale );					
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, scale );					
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Opacity, frame.opacity );
 				}
 
+				frame.scale = mt::vec3f(scale,1);
 				_framePak->setLayerFrame( _layerIndex, frame );
 			}
 		}

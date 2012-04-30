@@ -42,6 +42,13 @@ namespace Menge
 		void setSoundResource( const ConstString& _resource );
 		const ConstString & getSoundResource() const;
 
+
+		virtual void _setTiming( float _timing ) override;
+		virtual float _getTiming() const override;
+
+		virtual void _setFirstFrame() override;
+		virtual void _setLastFrame() override;
+
 	protected:
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;
@@ -58,7 +65,8 @@ namespace Menge
 		bool _sync( float _timing );
 		void _rewind();
 		bool _compileDecoder();
-        
+        void _fillVideoBuffer();
+
 		virtual bool _play();
 		virtual bool _restart( size_t _enumerator );
 		virtual void _stop( size_t _enumerator );

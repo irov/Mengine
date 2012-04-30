@@ -60,10 +60,12 @@ namespace Menge
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 
 		void getResolutions( TVectorResolutions & _resolutions ) override;
-		void makeProjection2D( float _left, float _right,
-			float _top, float _bottom, 
-			float _near, float _far,
-			float* _outMatrix ) override;
+		void setWorldMatrix( const mt::mat4f & _view ) override;
+
+		void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix
+			, float _left, float _right
+			, float _top, float _bottom
+			, float _near, float _far ) override;
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
@@ -143,7 +145,7 @@ namespace Menge
 		void	beginLayer3D() override;
 		void	endLayer3D() override;
 
-		void	setRenderViewport( const Viewport & _viewport ) override;
+		void	setViewport( const Viewport & _viewport ) override;
 
 		void	changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 		void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;

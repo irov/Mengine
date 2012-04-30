@@ -16,7 +16,7 @@ namespace Menge
 		mt::vec3f anchorPoint;
 		mt::vec3f position;
 		mt::vec3f rotation;
-		mt::vec2f scale;
+		mt::vec3f scale;
 		float opacity;
 	};
 	
@@ -40,28 +40,28 @@ namespace Menge
 
 		const MovieFrameSource & getLastLayerFrame( size_t _layerIndex )
 		{
-			return m_layers[_layerIndex].frames.back();
+			return m_layers[_layerIndex - 1].frames.back();
 		}
 
 		bool isLayerEmpty( size_t _layerIndex )
 		{
-			bool isEmpty = m_layers[_layerIndex].frames.empty();
+			bool isEmpty = m_layers[_layerIndex - 1].frames.empty();
 			return isEmpty;
 		}
 
 		void setLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame )
 		{
-			m_layers[_layerIndex].frames.push_back( _frame );
+			m_layers[_layerIndex - 1].frames.push_back( _frame );
 		}
 
 		const MovieFrameSource & getLayerFrame( size_t _layerIndex, size_t _frameIndex )
 		{
-			return m_layers[_layerIndex].frames[_frameIndex];
+			return m_layers[_layerIndex - 1].frames[_frameIndex];
 		}
 
 		size_t getLayerCountFrames( size_t _layerIndex )
 		{
-			return m_layers[_layerIndex].frames.size();
+			return m_layers[_layerIndex - 1].frames.size();
 		}
 
 		TVectorMovieFrameLayer m_layers;

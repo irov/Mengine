@@ -3,7 +3,10 @@
 #	include "Utils/Core/File.h"
 
 //#include <windows.h>
-//#define RGB(r, g ,b)  ((DWORD) (((BYTE) (r) | ((WORD) (g) << 8)) | (((DWORD) (BYTE) (b)) << 16)))
+//#define MYRGB(r, g ,b)  ((int) (((int) (r) | ((int) (g) << 8)) | (((int) (int) (b)) << 16)))
+/*#define COLOR_ARGB(a,r,g,b) \
+	((int)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
+*/
 
 namespace Menge
 {
@@ -228,7 +231,6 @@ namespace Menge
 		AVPacket packet;
 		
 		//we must read frame because  m_codecContext->width,  m_codecContext->height can change 
-
 		av_init_packet(&packet);
 		av_read_frame(m_formatContext, &packet);
 		avcodec_decode_video2( m_codecContext ,m_Frame, &isGotPicture, &packet );
@@ -248,6 +250,9 @@ namespace Menge
 		{
 			m_stream->seek( SEEK_SET ); 
 		}
+		
+		m_cacheBuffer = new size_t[ m_codecContext->height * m_codecContext->width * 4 ];
+
 		//m_stream->seek( SEEK_SET ); 
 		m_frameTiming = 1000.f / m_frameRate;
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
@@ -269,22 +274,42 @@ namespace Menge
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid RGBA Frame ");
 			return 0;
 		}
+		
+
 		// Convert the image into RGBA and copy to the surface.
 		avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
 			m_codecContext->width, m_codecContext->height);
+		
+		//memcpy(_buffer,m_cacheBuffer,_bufferSize * m_codecContext->height);
+		/*unsigned char * source = m_cacheBuffer;
+		unsigned char * dest = _buffer;
+		size_t index;
+		for(size_t y = 0; y < m_codecContext->height; y++)
+		{
+			for(size_t x = 0; x < m_codecContext->width; x++)
+			{
+				index = x*4;
+				dest[index + 0] = source[index + 0];
+				dest[index + 1] = source[index + 1];
+				dest[index + 2] = source[index + 2];
+				dest[index + 3] = source[index + 3];
+			}
+			dest += _bufferSize;
+			source += m_codecContext->width * 4;
+		}*/
 		
 		/*avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
 			m_dataInfo.frame_width, m_dataInfo.frame_height);
 		
 		size_t decoded = m_dataInfo.frame_width * m_dataInfo.frame_height;
 			*/
-		
+
+
 		size_t decoded = _bufferSize * m_codecContext->height;
-		
 		return decoded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::readFrame_( )
+	bool VideoDecoderFFMPEG::readNextFrame( )
 	{	
 		//size_t pos = m_stream->tell();
 				
@@ -358,11 +383,20 @@ namespace Menge
 
 		int ret = sws_scale(imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
 			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize);
-
+		
+		/*FILE * fp = fopen("d:/read.raw","w+");
+		fwrite( m_FrameRGBA->data ,1 ,m_codecContext->height * m_codecContext->width, fp  );
+		fclose(fp);*/
 		m_pts = packet.pts;
 
 		sws_freeContext(imgConvertContext);
 		av_free_packet(&packet);
+
+		//memset(m_cacheBuffer,0,m_codecContext->width* m_codecContext->height * 4);
+		/*
+		avpicture_fill((AVPicture*) m_FrameRGBA, (uint8_t*) m_cacheBuffer, (::PixelFormat) m_outputPixelFormat ,
+			m_codecContext->width, m_codecContext->height);
+		*/
 		return true;	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -427,15 +461,13 @@ namespace Menge
 		{
 			ret = 1;
 		}
+		
 		while( countFrames > 0 )
 		{
-			if(readFrame_() == false)
-			{
-				m_timing -= frame *  m_frameTiming;
-				return -1;
-			}
+			readNextFrame();
 			countFrames--;
 		}
+
 		m_timing -= frame *  m_frameTiming;
 		return ret;		
 	}
@@ -449,10 +481,13 @@ namespace Menge
 		av_seek_frame( pFormatContext , -1 ,  timestamp + pFormatContext->start_time ,AVSEEK_FLAG_BACKWARD );
 		*/
 
-		if (av_seek_frame( m_formatContext, m_videoStreamId, _timing, 0 ) < 0 )
+		if (av_seek_frame( m_formatContext, m_videoStreamId, _timing, AVSEEK_FLAG_ANY ) < 0 )
 		{
-			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing);
+			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing  );
+			return false;
 		}
+		m_pts = _timing;
+		//readFrame_();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -487,6 +522,11 @@ namespace Menge
 			LOGGER_ERROR(m_logService)("pixel format %i is not supported" , m_options.pixelFormat);
 			break;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float VideoDecoderFFMPEG::getTiming() const
+	{
+		return m_pts;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

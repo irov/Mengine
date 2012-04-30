@@ -84,15 +84,15 @@ namespace	Menge
 		{
 			return; 
 		}
-
-		m_timing += _timing;
-		m_needUpdate = this->_sync( _timing );
 		
 		if( m_videoDecoder->eof() == true )
 		{
 			this->_rewind();
 			//stop();
 		}
+
+		m_timing += _timing;
+		m_needUpdate = this->_sync( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
@@ -107,6 +107,10 @@ namespace	Menge
 			this->play();
 		}
 
+		m_videoDecoder->readNextFrame();
+		this->_fillVideoBuffer();
+		m_videoDecoder->seek(0.0f);
+		//m_videoFile->seek(SEEK_SET);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -328,15 +332,11 @@ namespace	Menge
 		{
 			return;
 		}*/
-
 		Node::_render( _camera );
+
 		if( m_needUpdate )
 		{
-			int pitch = 0;
-			//Texture* renderImage = m_material->textureStage[0].texture;
-			unsigned char* lockRect = m_textures[0]->lock( &pitch, false );
-			m_videoDecoder->decode( lockRect, pitch );
-			m_textures[0]->unlock();
+			this->_fillVideoBuffer();
 			m_needUpdate = false;
 		}
 
@@ -436,7 +436,39 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_rewind()
 	{
+		m_resourceVideo;
+		float pos = this->getTiming();
 		m_videoDecoder->seek(0.0f);
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_setTiming( float _timing )
+	{
+		//m_videoDecoder->seek(_timing);
+	}
+	////////////////////////////////////////////////////////////////////
+	float Video::_getTiming() const
+	{
+		float timing = m_videoDecoder->getTiming();
+		return timing;
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_setFirstFrame()
+	{
+		//m_videoDecoder->seek(0.0f);
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_setLastFrame()
+	{
+		//empty
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_fillVideoBuffer()
+	{
+		int pitch = 0;
+		//Texture* renderImage = m_material->textureStage[0].texture;
+		unsigned char* lockRect = m_textures[0]->lock( &pitch, false );
+		m_videoDecoder->decode( lockRect, pitch );
+		m_textures[0]->unlock();
 	}
 	////////////////////////////////////////////////////////////////////
 }

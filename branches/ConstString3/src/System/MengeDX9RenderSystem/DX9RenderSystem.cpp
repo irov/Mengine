@@ -1097,7 +1097,7 @@ namespace Menge
 		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setRenderViewport( const Viewport & _viewport )
+	void DX9RenderSystem::setViewport( const Viewport & _viewport )
 	{
 		float width = _viewport.getWidth();
 		float height = _viewport.getHeight();
@@ -2340,29 +2340,6 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::makeProjection2D( float _left, float _right, float _top, float _bottom, float _near, float _far, float* _outMatrix )
-	{
-		float inv_lr = 1.0f / ( _left - _right );
-		float inv_bt = 1.0f / ( _top - _bottom );
-		float inv_znzf = 1.0f / ( _near - _far );
-		_outMatrix[0] = -2.0f * inv_lr;
-		_outMatrix[1] = 0.0f;
-		_outMatrix[2] = 0.0f;
-		_outMatrix[3] = 0.0f;
-		_outMatrix[4] = 0.0f;
-		_outMatrix[5] = -2.0f * inv_bt;
-		_outMatrix[6] = 0.0f;
-		_outMatrix[7] = 0.0f;
-		_outMatrix[8] = 0.0f;
-		_outMatrix[9] = 0.0f;
-		_outMatrix[10] = -1.0f * inv_znzf;
-		_outMatrix[11] = 0.0f;
-		_outMatrix[12] = ( _left + _right ) * inv_lr - 0.5f * _outMatrix[0];
-		_outMatrix[13] = ( _top + _bottom ) * inv_bt - 0.5f * _outMatrix[5];
-		_outMatrix[14] = _near * inv_znzf;
-		_outMatrix[15] = 1.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::restore_()
 	{
 		HRESULT hr;
@@ -2588,5 +2565,37 @@ namespace Menge
 		m_pD3DDevice->SetRenderState( D3DRS_DESTBLENDALPHA, D3DBLEND_ONE ); 
 		m_pD3DDevice->SetRenderState( D3DRS_SRCBLENDALPHA, D3DBLEND_INVDESTALPHA );
 	}
+
+	void DX9RenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix , float _left, float _right , float _top, float _bottom , float _near, float _far )
+	{
+		float inv_lr = 1.0f / ( _left - _right );
+		float inv_bt = 1.0f / ( _top - _bottom );
+		float inv_znzf = 1.0f / ( _near - _far );
+
+		float * _outMatrix = _projectionMatrix.buff();
+
+		_outMatrix[0] = -2.0f * inv_lr;
+		_outMatrix[1] = 0.0f;
+		_outMatrix[2] = 0.0f;
+		_outMatrix[3] = 0.0f;
+		_outMatrix[4] = 0.0f;
+		_outMatrix[5] = -2.0f * inv_bt;
+		_outMatrix[6] = 0.0f;
+		_outMatrix[7] = 0.0f;
+		_outMatrix[8] = 0.0f;
+		_outMatrix[9] = 0.0f;
+		_outMatrix[10] = -1.0f * inv_znzf;
+		_outMatrix[11] = 0.0f;
+		_outMatrix[12] = ( _left + _right ) * inv_lr - 0.5f * _outMatrix[0];
+		_outMatrix[13] = ( _top + _bottom ) * inv_bt - 0.5f * _outMatrix[5];
+		_outMatrix[14] = _near * inv_znzf;
+		_outMatrix[15] = 1.0f;
+	}
+
+	void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _view )
+	{
+
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

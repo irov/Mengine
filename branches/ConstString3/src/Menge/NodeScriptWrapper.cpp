@@ -2939,8 +2939,8 @@ namespace Menge
 			//.def( boost::python::self /= float() )
 			;
 	
-		pybind::interface_<PhysicJoint2DInterface>("Joint2D")
-			;
+		//pybind::interface_<PhysicJoint2DInterface>("Joint2D")
+		//	;
 
 //		pybind::proxy_<Task>("Task")
 //			;

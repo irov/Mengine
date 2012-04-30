@@ -85,14 +85,14 @@ namespace	Menge
 			return; 
 		}
 		
+		m_timing += _timing;
+		m_needUpdate = this->_sync( _timing );
+		
 		if( m_videoDecoder->eof() == true )
 		{
 			this->_rewind();
 			//stop();
 		}
-
-		m_timing += _timing;
-		m_needUpdate = this->_sync( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
@@ -110,7 +110,6 @@ namespace	Menge
 		m_videoDecoder->readNextFrame();
 		this->_fillVideoBuffer();
 		m_videoDecoder->seek(0.0f);
-		//m_videoFile->seek(SEEK_SET);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

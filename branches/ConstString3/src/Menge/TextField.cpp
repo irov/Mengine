@@ -16,6 +16,9 @@
 
 #	include "math/box2.h"
 
+#	include "boost/format.hpp"
+
+
 #	include <algorithm>
 
 #	include <stdio.h>
@@ -604,19 +607,21 @@ namespace Menge
 			setLineOffset( textEntry.lineOffset );
 		}
 
-		size_t size = textEntry.text.size() + 16;
-		wchar_t * buff = new wchar_t[size];
+		//size_t size = textEntry.text.size() + 16;
+		//wchar_t * buff = new wchar_t[size];
 
-		if( swprintf( buff, m_format.c_str(), textEntry.text.c_str(), _number ) == 0 )
-		{
-			delete [] buff;
+		//if( swprintf( buff, m_format.c_str(), textEntry.text.c_str(), _number ) == 0 )
+		//{
+		//	delete [] buff;
 
-			return;
-		}
+		//	return;
+		//}
+
+		WString format_text = (boost::wformat(m_format) % textEntry.text % _number).str();
 		
-		WString format_text(buff);
+		//WString format_text(buff);
 
-		delete [] buff;
+		//delete [] buff;
 
 		this->setText( format_text );
 	}

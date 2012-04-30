@@ -78,7 +78,7 @@ namespace Menge
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
-		void setWorldMatrix( const mt::mat4f & _view ) override;
+		void setWorldMatrix( const mt::mat4f & _world ) override;
 
 		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
@@ -144,6 +144,7 @@ namespace Menge
 		void swapBuffers() override;
 		void clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color = 0
 								, float _depth = 1.0f, uint16 _stencil = 0 ) override;
+
 		void beginLayer2D() override;
 		void endLayer2D() override;
 		void beginLayer3D() override;

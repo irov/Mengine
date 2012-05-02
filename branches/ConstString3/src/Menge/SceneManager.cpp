@@ -24,9 +24,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneManager::registerScene( const ConstString & _name, const ResourceDesc & _desc )
+	void SceneManager::registerScene( const ResourceDesc & _desc )
 	{
-		m_descriptions.insert( std::make_pair(_name, _desc) );
+		m_descriptions.insert( std::make_pair(_desc.name, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SceneManager::hasScene( const ConstString & _name )

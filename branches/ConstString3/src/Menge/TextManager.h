@@ -30,7 +30,7 @@ namespace Menge
 		~TextManager();
 
 	public:
-		bool loadResource( const ConstString & _name, const ResourceDesc & _desc );
+		bool loadResource( const ResourceDesc & _desc );
 
 		const TextEntry & getTextEntry( const ConstString& _key ) const;
 

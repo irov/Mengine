@@ -57,6 +57,8 @@ namespace Menge
 
 	class PluginInterface;
 
+	class UnicodeInterface;
+
 	class Consts;
 	class RenderTextureInterface;
 
@@ -289,6 +291,8 @@ namespace Menge
 		float m_maxTiming;
 		
 		ServiceProvider * m_serviceProvider;
+
+		UnicodeInterface * m_unicodeInterface;
 
 		LogEngine * m_logEngine;
 		FileEngine * m_fileEngine;

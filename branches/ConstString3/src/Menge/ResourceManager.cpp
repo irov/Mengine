@@ -4,12 +4,15 @@
 #	include "ResourceReference.h"
 
 #	include "LoaderEngine.h"
+#	include "ServiceProvider.h"
 #	include "BinParser.h"
 
 #	include "LogEngine.h"
 
 #	include "Application.h"
+
 #	include "Interface/ApplicationInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
 #	include "ResourceVisitor.h"
 
@@ -94,19 +97,20 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const ConstString & _name, const ResourceDesc & _desc )
+	bool ResourceManager::loadResource( const ResourceDesc & _desc )
 	{
 		WString xml_path = _desc.path;
 		xml_path += MENGE_FOLDER_DELIM;
 
-		PlatformInterface * platform = Application::get()
-			->getPlatform();
+		UnicodeInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeInterface>("Unicode");
 
-		const String & resource_name = _name.to_str();
+		const String & resource_name = _desc.name.to_str();
 			
-		xml_path += platform->ansiToUnicode( resource_name );
+		bool succeessful;
+		xml_path += unicodeService->utf8ToUnicode( resource_name, succeessful );
 
-		LoadableResourceManager loadable(this, _desc.pak, _name);
+		LoadableResourceManager loadable(this, _desc.pak, _desc.name);
 
 		bool exist = false;
 		if( LoaderEngine::get()
@@ -115,14 +119,14 @@ namespace Menge
 			if( exist == false )
 			{
 				MENGE_LOG_ERROR( "ResourceManager: resource '%s:%S' not found"
-					, _name.c_str()
+					, _desc.name.c_str()
 					, xml_path.c_str()
 					);
 			}
 			else
 			{
 				MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s:%S'"
-					, _name.c_str()
+					, _desc.name.c_str()
 					, xml_path.c_str()
 					);
 			}

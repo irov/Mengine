@@ -20,18 +20,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EntityManager::addPrototype( const ConstString & _type, const ResourceDesc & _desc )
+	void EntityManager::registerPrototype( const ResourceDesc & _desc )
 	{
-		TMapDescriptionEntities::iterator it_found = m_descriptions.find(_type);
+		TMapDescriptionEntities::iterator it_found = m_descriptions.find( _desc.name );
 
 		if( it_found != m_descriptions.end() )
 		{
 			MENGE_LOG_WARNING("EntityManager addPrototype: already exist entity type %s (override)"
-				, _type.c_str()
+				, _desc.name.c_str()
 				);
 		}
 
-		m_descriptions.insert( std::make_pair(_type, _desc) );
+		m_descriptions.insert( std::make_pair(_desc.name, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool EntityManager::getPrototypeDesc( const ConstString & _type, ResourceDesc & _desc )

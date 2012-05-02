@@ -16,6 +16,7 @@ namespace Menge
 
 	struct ResourceDesc
 	{
+		ConstString name;
 		ConstString pak;
 		WString path;
 		bool script;
@@ -43,7 +44,7 @@ namespace Menge
 		~ResourceManager();
 
 	public:
-		bool loadResource( const ConstString& _name, const ResourceDesc & _desc );
+		bool loadResource( const ResourceDesc & _desc );
 		
 	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type );

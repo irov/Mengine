@@ -52,15 +52,6 @@ namespace Menge
 		virtual void showKeyboard() = 0;
 		virtual void hideKeyboard() = 0;
 
-		virtual String ansiToUtf8( const String& _ansi ) = 0;
-		virtual String utf8ToAnsi( const String& _utf8 ) = 0;
-		virtual size_t utf8Count( const String& _utf8 ) = 0;
-
-		virtual String unicodeToAnsi( const WString& _unicode ) = 0;
-		virtual WString ansiToUnicode( const String& _utf8 ) = 0;
-
-		virtual WString utf8ToUnicode( const String & _utf8 ) = 0;
-
 		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) = 0;
 		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) = 0;
 

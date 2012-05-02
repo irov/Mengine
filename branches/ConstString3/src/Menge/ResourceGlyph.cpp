@@ -8,8 +8,10 @@
 #	include "LogEngine.h"
 #	include "Core/String.h"
 #	include "Loadable.h"
-#	include "Application.h"
 #	include "LoaderEngine.h"
+
+#	include "ServiceProvider.h"
+#	include "Interface/UnicodeInterface.h"
 
 
 namespace Menge
@@ -143,8 +145,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceGlyph::loaderKerning_( BinParser * _parser, Glyph & _glyph )
 	{
-		PlatformInterface * platform = Application::get()
-			->getPlatform();
+		UnicodeInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeInterface>("Unicode");
 
 		WString unicode;
 
@@ -163,7 +165,9 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::Kerning_id, id );
 				}
 				
-				unicode = platform->utf8ToUnicode( id );
+				bool w_id_successful;
+				unicode = unicodeService->utf8ToUnicode( id, w_id_successful );
+
 				glyphId = (unsigned int)unicode[0];
 				_glyph.kerning.insert( std::make_pair( glyphId, advance ) );
 			}
@@ -172,10 +176,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceGlyph::Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width )
 	{
-		PlatformInterface * platform = Application::get()
-			->getPlatform();
+		UnicodeInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeInterface>("Unicode");
 
-		WString unicode = platform->utf8ToUnicode( _glyph );
+		bool w_glyph_successful;
+		WString unicode = unicodeService->utf8ToUnicode( _glyph, w_glyph_successful );
 
 		unsigned int glyphId = (unsigned int)unicode[0];
 

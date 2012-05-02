@@ -21,7 +21,7 @@ namespace Menge
 		~SceneManager();
 
 	public:
-		void registerScene( const ConstString & _name, const ResourceDesc & _desc );
+		void registerScene( const ResourceDesc & _desc );
 		bool hasScene( const ConstString & _name );
 
 	public:		

@@ -9,6 +9,9 @@
 
 #	include "Utils/Core/String.h"
 
+#	include "ServiceProvider.h"
+#	include "Interface/UnicodeInterface.h"
+
 //#	include "Utils.h"
 
 namespace Menge
@@ -22,17 +25,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::loadResource( const ConstString & _name, const ResourceDesc & _desc )
+	bool TextManager::loadResource( const ResourceDesc & _desc )
 	{
 		WString xml_path = _desc.path;
 		xml_path += MENGE_FOLDER_DELIM;
 
-		PlatformInterface * platform = Application::get()
-			->getPlatform();
+		UnicodeInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeInterface>("Unicode");
 
-		const String & resource_name = _name.to_str();
+		const String & resource_name = _desc.name.to_str();
 
-		xml_path += platform->ansiToUnicode(resource_name);
+		bool w_resource_name_successful;
+		xml_path += unicodeService->utf8ToUnicode( resource_name, w_resource_name_successful );
 
 		bool exist = false;
 
@@ -40,7 +44,7 @@ namespace Menge
 			->load( _desc.pak, xml_path, this, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "Problems parsing Text pack %s:%S"
-				, _desc.pak.c_str() 
+				, _desc.name.c_str()
 				, xml_path.c_str()
 				);
 

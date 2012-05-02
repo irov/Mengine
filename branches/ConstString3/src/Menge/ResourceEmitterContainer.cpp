@@ -9,9 +9,9 @@
 #	include "ParticleEngine.h"
 #	include "LogEngine.h"
 
-#	include "Application.h"
+#	include "ServiceProvider.h"
 
-#	include "Interface/ApplicationInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
 #	include "Consts.h"
 
@@ -79,8 +79,11 @@ namespace Menge
 			return false;
 		}
 		
-		const EmitterContainerInterface::TVectorAtlas & atlas = m_container->getAtlas();
+		UnicodeInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeInterface>("Unicode");
 
+		const EmitterContainerInterface::TVectorAtlas & atlas = m_container->getAtlas();
+		
 		for( EmitterContainerInterface::TVectorAtlas::const_iterator
 			it = atlas.begin(),
 			it_end = atlas.end();
@@ -94,10 +97,8 @@ namespace Menge
 			if( ResourceManager::get()
 				->hasResource( name ) == false )
 			{
-				PlatformInterface * platform = Application::get()
-					->getPlatform();
-
-				WString filename = platform->utf8ToUnicode( it->file );				
+				bool w_filename_successful;
+				WString filename = unicodeService->utf8ToUnicode( it->file, w_filename_successful );
 				WString filepath = m_folder + MENGE_FOLDER_DELIM + filename;
 
 				this->createResource_( name, filepath );

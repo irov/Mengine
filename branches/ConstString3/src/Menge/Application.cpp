@@ -121,6 +121,8 @@
 
 #	include "ConfigFile/ConfigFile.h"
 
+#	include "Interface/UnicodeInterface.h"
+
 //extern "C"
 //{
 //	#	include <iniparser/src/iniparser.h>
@@ -273,6 +275,8 @@ namespace Menge
 
 		m_serviceProvider = new ServiceProvider;
 
+		ServiceProvider::keep( m_serviceProvider );
+
 		m_serviceProvider->registryService( "ApplicationService", this );
 
 		m_platform->notifyServiceProviderReady( m_serviceProvider );
@@ -280,6 +284,10 @@ namespace Menge
 		m_stringizeService = new StringizeService;
 
 		m_serviceProvider->registryService("StringizeService", m_stringizeService);
+
+		initInterfaceSystem( &m_unicodeInterface );
+
+		m_serviceProvider->registryService("Unicode", m_unicodeInterface);
 
 		ExecuteInitialize exinit( this );
 		
@@ -386,9 +394,9 @@ namespace Menge
 			WString locale_default_setting;
 			if( cfg.getSetting( L"LOCALE", L"Default", locale_default_setting ) == true )
 			{
-				String locale_default = m_platform->unicodeToAnsi(locale_default_setting);
+				bool u_locale_default_setting_successful;
+				String locale_default = m_unicodeInterface->unicodeToUtf8( locale_default_setting, u_locale_default_setting_successful );
 				
-
 				ConstString locale_default_const(locale_default);
 				this->setLanguagePack( locale_default_const );
 			}			
@@ -1706,21 +1714,6 @@ namespace Menge
 	void Application::setDesktopResolution( const Resolution& _resolution )
 	{
 		m_desktopResolution = _resolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::ansiToUtf8( const String& _ansi, String & _utf8 )
-	{
-		_utf8 = m_platform->ansiToUtf8( _ansi );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::utf8ToAnsi( const String& _utf8, String & _ansi )
-	{
-		_ansi = m_platform->utf8ToAnsi( _utf8 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::utf8Count( const String& _utf8, size_t & _size )
-	{
-		_size = m_platform->utf8Count( _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getHasWindowPanel() const

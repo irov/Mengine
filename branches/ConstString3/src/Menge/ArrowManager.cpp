@@ -23,9 +23,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ArrowManager::registerArrow( const ConstString & _name, const ResourceDesc & _desc )
+	void ArrowManager::registerArrow( const ResourceDesc & _desc )
 	{
-		m_descriptions.insert( std::make_pair(_name, _desc) );
+		m_descriptions.insert( std::make_pair(_desc.name, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * ArrowManager::createArrow( const ConstString & _name, const ConstString & _prototype )

@@ -649,25 +649,25 @@ namespace Menge
 				->setParticlesEnabled( _enable );
 		}
 
-		static PyObject* s_unicode( const String& _string )
-		{
-			PlatformInterface * platform = Application::get()
-				->getPlatform();
+		//static PyObject* s_unicode( const String& _string )
+		//{
+		//	PlatformInterface * platform = Application::get()
+		//		->getPlatform();
 
-			WString unicode = platform->ansiToUnicode( _string );
+		//	WString unicode = platform->ansiToUnicode( _string );
 
-			return pybind::ptr( unicode );
-		}
-		
-		static PyObject* s_ansi( const WString& _string )
-		{
-			PlatformInterface * platform = Application::get()
-				->getPlatform();
+		//	return pybind::ptr( unicode );
+		//}
+		//
+		//static PyObject* s_ansi( const WString& _string )
+		//{
+		//	PlatformInterface * platform = Application::get()
+		//		->getPlatform();
+		//		
+		//	String ansi = platform->unicodeToAnsi( _string );
 
-			String ansi = platform->unicodeToAnsi( _string );
-
-			return pybind::ptr( ansi );
-		}
+		//	return pybind::ptr( ansi );
+		//}
 
 		static WString s_getTextByKey( const ConstString& _key )
 		{
@@ -1113,8 +1113,8 @@ namespace Menge
 
 		pybind::def_function( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 
-		pybind::def_function( "unicode", &ScriptHelper::s_unicode );
-		pybind::def_function( "ansi", &ScriptHelper::s_ansi );
+		//pybind::def_function( "unicode", &ScriptHelper::s_unicode );
+		//pybind::def_function( "ansi", &ScriptHelper::s_ansi );
 
 		pybind::def_function( "getTextByKey", &ScriptHelper::s_getTextByKey );
 		pybind::def_function( "getTextCharCountByKey", &ScriptHelper::s_getTextCharCountByKey );

@@ -12,10 +12,9 @@ namespace Menge
 		*_plugin = new Menge::CURLHTTPSystem();
 		return true;
 	}
-	  
-
     //////////////////////////////////////////////////////////////////////////
-	CURLHTTPSystem::CURLHTTPSystem() : m_logService(NULL)
+	CURLHTTPSystem::CURLHTTPSystem() 
+		: m_logService(NULL)
 	{
 		curl_global_init(CURL_GLOBAL_ALL);
 	}

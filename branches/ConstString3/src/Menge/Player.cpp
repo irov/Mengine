@@ -33,6 +33,9 @@
 #	include "SceneManager.h"
 #	include "EventManager.h"
 
+#	include "ServiceProvider.h"
+#	include "Interface/UnicodeInterface.h"
+
 #	include "Math/mat3.h"
 
 #	include <sstream>
@@ -939,10 +942,11 @@ namespace Menge
 
 			const std::string & str = ss.str();
 
-			PlatformInterface * platform = Application::get()
-				->getPlatform();
+			UnicodeInterface * unicodeService = ServiceProvider::get()
+				->getServiceT<UnicodeInterface>("Unicode");
 
-			WString unicode = platform->ansiToUnicode( str );
+			bool w_unicode_successful;
+			WString unicode = unicodeService->utf8ToUnicode( str, w_unicode_successful );
 
 			m_debugText->setText( unicode );
 			m_debugText->render( m_renderCamera2D );

@@ -102,55 +102,55 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::apply()
 	{
-		for( TMapSceneDesc::iterator
+		for( TSceneDescs::iterator
 			it = m_scenesDesc.begin(),
 			it_end = m_scenesDesc.end();
 		it != it_end;
 		++it )
 		{
 			SceneManager::get()
-				->registerScene( it->first, it->second );
+				->registerScene( *it );
 		}
 
 
-		for( TMapArrowDesc::iterator
+		for( TArrowDescs::iterator
 			it = m_arrowsDesc.begin(),
 			it_end = m_arrowsDesc.end();
 		it != it_end;
 		++it )
 		{
 			ArrowManager::get()
-				->registerArrow( it->first, it->second );
+				->registerArrow( *it );
 		}
 
-		for( TMapPrototypeDesc::iterator
+		for( TPrototypeDescs::iterator
 			it = m_prototypesDesc.begin(),
 			it_end = m_prototypesDesc.end();
 		it != it_end;
 		++it )
 		{
 			EntityManager::get()
-				->addPrototype( it->first, it->second );
+				->registerPrototype( *it );
 		}
 
-		for( TMapResourceDesc::iterator
+		for( TResourceDescs::iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
 		it != it_end;
 		++it )
 		{
 			ResourceManager::get()
-				->loadResource( it->first, it->second );
+				->loadResource( *it );
 		}
 
-		for( TMapTextDesc::iterator
+		for( TTextDescs::iterator
 			it = m_textsDesc.begin(),
 			it_end = m_textsDesc.end();
 		it != it_end;
 		++it )
 		{
 			TextManager::get()
-				->loadResource( it->first, it->second );
+				->loadResource( *it );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -302,11 +302,12 @@ namespace Menge
 	void ResourcePak::addScene_( const ConstString & _name, const WString & _path, bool _script )
 	{
 		ResourceDesc desc;
+		desc.name = _name;
 		desc.pak = m_desc.name;
 		desc.path = _path;
 		desc.script = _script;
 
-		m_scenesDesc.insert( std::make_pair(_name, desc) );
+		m_scenesDesc.push_back( desc );
 
 		//SceneManager::get()
 		//	->registerScene( _name, desc );
@@ -315,10 +316,11 @@ namespace Menge
 	void ResourcePak::addArrow_( const ConstString & _name, const WString & _path )
 	{
 		ResourceDesc desc;
+		desc.name = _name;
 		desc.pak = m_desc.name;
 		desc.path = _path;
 
-		m_arrowsDesc.insert( std::make_pair(_name, desc) );
+		m_arrowsDesc.push_back( desc );
 
 		//ArrowManager::get()
 		//	->registerArrow( _name, desc );
@@ -327,10 +329,11 @@ namespace Menge
 	void ResourcePak::addEntity_( const ConstString & _name, const WString & _path )
 	{
 		ResourceDesc desc;
+		desc.name = _name;
 		desc.pak = m_desc.name;
 		desc.path = _path;
 
-		m_prototypesDesc.insert( std::make_pair(_name, desc) );
+		m_prototypesDesc.push_back( desc );
 		//EntityManager::get()
 		//	->addPrototype( _name, desc );
 	}
@@ -338,22 +341,11 @@ namespace Menge
 	void ResourcePak::addResource_( const ConstString & _name, const WString & _path )
 	{
 		ResourceDesc desc;
+		desc.name = _name;
 		desc.pak = m_desc.name;
 		desc.path = _path;
 
-		TMapResourceDesc::const_iterator it_found = m_resourcesDesc.find( _name );
-
-		if( it_found != m_resourcesDesc.end() )
-		{
-			MENGE_LOG_ERROR( "ResourcePak Dublicate resource file '%s %s'"
-				, _path.c_str()
-				, _name.c_str()
-				);
-
-			return;
-		}
-
-		m_resourcesDesc.insert( std::make_pair(_name, desc) );
+		m_resourcesDesc.push_back( desc );
 
 		//ResourceManager::get()
 		//	->loadResource( m_desc.name, _name, path );
@@ -362,11 +354,11 @@ namespace Menge
 	void ResourcePak::addText_( const ConstString & _name, const WString & _path, const WString & _file )
 	{
 		ResourceDesc desc;
-
+		desc.name = _name;
 		desc.pak = m_desc.name;
 		desc.path = _path;
 
-		m_textsDesc.insert( std::make_pair(_name, desc) );
+		m_textsDesc.push_back( desc );
 
 		//TextManager::get()
 		//	->addResourceFile( _name, m_desc.name, filename );

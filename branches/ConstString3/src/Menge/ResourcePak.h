@@ -76,20 +76,20 @@ namespace Menge
 		void addText_( const ConstString & _name, const WString & _path, const WString & _file );
 		
 	protected:
-		typedef std::map<ConstString, ResourceDesc> TMapSceneDesc;
-		TMapSceneDesc m_scenesDesc;
+		typedef std::vector<ResourceDesc> TSceneDescs;
+		TSceneDescs m_scenesDesc;
 
-		typedef std::map<ConstString, ResourceDesc> TMapArrowDesc;
-		TMapArrowDesc m_arrowsDesc;
+		typedef std::vector<ResourceDesc> TArrowDescs;
+		TArrowDescs m_arrowsDesc;
 		
-		typedef std::map<ConstString, ResourceDesc> TMapPrototypeDesc;
-		TMapPrototypeDesc m_prototypesDesc;
+		typedef std::vector<ResourceDesc> TPrototypeDescs;
+		TPrototypeDescs m_prototypesDesc;
 
-		typedef std::map<ConstString, ResourceDesc> TMapResourceDesc;
-		TMapResourceDesc m_resourcesDesc;
+		typedef std::vector<ResourceDesc> TResourceDescs;
+		TResourceDescs m_resourcesDesc;
 
-		typedef std::map<ConstString, ResourceDesc> TMapTextDesc;
-		TMapTextDesc m_textsDesc;
+		typedef std::vector<ResourceDesc> TTextDescs;
+		TTextDescs m_textsDesc;
 		
 		ResourcePakDesc m_desc;
 		WString m_baseDir;

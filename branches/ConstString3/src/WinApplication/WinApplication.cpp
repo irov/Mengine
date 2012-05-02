@@ -1256,53 +1256,6 @@ namespace Menge
 		WindowsLayer::messageBox( m_hWnd, _message, _caption, MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String WinApplication::ansiToUtf8( const String& _ansi )
-	{
-		String utf8;
-		WindowsLayer::ansiToUtf8( _ansi, utf8 );
-
-		return utf8;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	String WinApplication::utf8ToAnsi( const String& _utf8 )
-	{
-		String ansi;
-		WindowsLayer::utf8ToAnsi( _utf8, ansi );
-
-		return ansi;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t WinApplication::utf8Count( const String& _utf8 )
-	{
-		size_t size;
-		WindowsLayer::utf8Count( _utf8, size );
-
-		return size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	WString WinApplication::utf8ToUnicode( const String& _utf8 )
-	{
-		WString unicode;
-		WindowsLayer::utf8ToUnicode( _utf8, unicode );
-
-		return unicode;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	String WinApplication::unicodeToAnsi( const WString& _unicode )
-	{
-		String ansi;
-		WindowsLayer::unicodeToAnsi( _unicode, ansi );
-		return ansi;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	WString WinApplication::ansiToUnicode( const String& _utf8 )
-	{
-		WString unicode;
-		WindowsLayer::ansiToUnicode( _utf8, unicode );
-
-		return unicode;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showKeyboard()
 	{
 		//Empty - for iPad

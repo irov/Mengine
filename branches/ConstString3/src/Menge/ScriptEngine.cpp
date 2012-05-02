@@ -11,6 +11,9 @@
 
 #	include "Application.h"
 
+#	include "ServiceProvider.h"
+#	include "Interface/UnicodeInterface.h"
+
 #	include "Consts.h"
 
 #	include <iostream>
@@ -290,18 +293,21 @@ namespace Menge
 			return it_find->second;
 		}
 
-		PlatformInterface * platform = Application::get()
-			->getPlatform();
+		UnicodeInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeInterface>("Unicode");
+				
+		//xml_path += 
 
-		String path = platform->unicodeToAnsi(_path);
+		bool u_path_successful;
+		String u_path = unicodeService->unicodeToUtf8( _path, u_path_successful );
 
-		String py_path = Helper::to_str(_pak);
-		py_path += ".";
-		py_path += path;
-		py_path += ".";
-		py_path += Helper::to_str(_prototype);
-		py_path += ".";
-		py_path += Helper::to_str(_prototype);
+		String py_path = _pak.to_str();
+		py_path += L'.';
+		py_path += u_path;
+		py_path += L'.';
+		py_path += _prototype.to_str();
+		py_path += L'.';
+		py_path += _prototype.to_str();
 
 		PyObject * py_module = 0;
 

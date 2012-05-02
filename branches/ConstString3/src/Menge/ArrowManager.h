@@ -21,8 +21,10 @@ namespace Menge
 		~ArrowManager();
 
 	public:
-		void registerArrow( const ConstString & _name, const ResourceDesc & _desc );
+		void registerArrow( const ResourceDesc & _desc );
 
+
+	public:
 		Arrow * createArrow( const ConstString & _name, const ConstString & _prototype );
 
 	protected:

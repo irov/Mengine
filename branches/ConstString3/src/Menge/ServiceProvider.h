@@ -2,6 +2,8 @@
 
 #	include "Interface/PluginInterface.h"
 
+#	include "Core/Holder.h"
+
 #	include <vector>
 #	include <map>
 
@@ -9,6 +11,7 @@ namespace Menge
 {
 	class ServiceProvider
 		: public ServiceProviderInterface
+		, public Holder<ServiceProvider>
 	{
 	public:
 		void registryService( const String & _name, ServiceInterface * _service ) override;

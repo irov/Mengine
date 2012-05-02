@@ -23,8 +23,9 @@ namespace Menge
 		~EntityManager();
 
 	public:
-		void addPrototype( const ConstString & _type, const ResourceDesc & _desc );
+		void registerPrototype( const ResourceDesc & _desc );
 		
+	public:
 		bool getPrototypeDesc( const ConstString & _type, ResourceDesc & _desc );
 
 	public:

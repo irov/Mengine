@@ -123,6 +123,7 @@ namespace Menge
 		bool initializeThreadEngine_();
 		bool initializeFileEngine_();
 		bool initializeLogEngine_();
+		bool initializeUnicodeEngine_();
 		bool initializeParticleEngine_();
 		bool initializePhysicEngine2D_();
 		bool initializeRenderEngine_();

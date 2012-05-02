@@ -107,8 +107,17 @@ namespace Menge
 
 		const String & resource_name = _desc.name.to_str();
 			
-		bool succeessful;
-		xml_path += unicodeService->utf8ToUnicode( resource_name, succeessful );
+		bool resource_name_succeessful;
+		xml_path += unicodeService->utf8ToUnicode( resource_name, resource_name_succeessful );
+
+		if( resource_name_succeessful == false )
+		{
+			MENGE_LOG_ERROR("ResourceManager::loadResource %s not convert to unicode"
+				, resource_name.c_str()
+				);
+
+			return false;
+		}
 
 		LoadableResourceManager loadable(this, _desc.pak, _desc.name);
 

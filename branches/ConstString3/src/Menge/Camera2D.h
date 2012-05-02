@@ -22,13 +22,13 @@ namespace Menge
 		
 	public:
 		void setViewport( const Viewport & _viewport );
-		inline const Viewport & getViewport();
+		inline const Viewport & getViewport() const;
 
 		void setParallax( const mt::vec2f& _parallax );
 		const mt::vec2f& getParallax() const;
 
-		const mt::mat4f & Camera2D::getProjectionMatrix();
-		const mt::mat4f & Camera2D::getViewMatrix();
+		const mt::mat4f & getProjectionMatrix();
+		const mt::mat4f & getViewMatrix();
 
 	public:
 		void setTargetNode( Node * _target );
@@ -68,7 +68,7 @@ namespace Menge
 		return m_cameraRevision;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const Viewport & Camera2D::getViewport()
+	inline const Viewport & Camera2D::getViewport() const
 	{
 		return m_viewport;
 	}
@@ -97,5 +97,4 @@ namespace Menge
 
 		return m_viewMatrix;
 	}
-
 }

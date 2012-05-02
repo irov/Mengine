@@ -197,6 +197,7 @@ namespace Menge
 		, m_alphaChannelManager(NULL)
 		, m_codecEngine(NULL)
 		, m_textManager(NULL)
+		, m_unicodeInterface(NULL)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -285,14 +286,11 @@ namespace Menge
 
 		m_serviceProvider->registryService("StringizeService", m_stringizeService);
 
-		initInterfaceSystem( &m_unicodeInterface );
-
-		m_serviceProvider->registryService("Unicode", m_unicodeInterface);
-
 		ExecuteInitialize exinit( this );
 		
 		exinit.add( &Application::initializeLogEngine_);
-		exinit.add( &Application::initializeFileEngine_);						
+		exinit.add( &Application::initializeUnicodeEngine_);
+		exinit.add( &Application::initializeFileEngine_);
 		exinit.add( &Application::initializeThreadEngine_);
 		exinit.add( &Application::initializeParticleEngine_);
 		exinit.add( &Application::initializePhysicEngine2D_);
@@ -464,6 +462,17 @@ namespace Menge
 		LogEngine::keep( m_logEngine );
 
 		m_serviceProvider->registryService( "LogService", m_logEngine );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeUnicodeEngine_()
+	{
+		initInterfaceSystem( &m_unicodeInterface );
+
+		m_serviceProvider->registryService("Unicode", m_unicodeInterface);
+
+		m_unicodeInterface->initialize( m_logEngine );
 
 		return true;
 	}

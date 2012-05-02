@@ -25,8 +25,8 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
- debug icu_static.lib
- optimized icu_static.lib
+ debug ${MENGINE_LIB_PREFIX}icu_static${MENGINE_LIB_SUFFIXD}
+ optimized ${MENGINE_LIB_PREFIX}icu_static${MENGINE_LIB_SUFFIXD}
 )
 
 SET( APPLICATION_LIBS

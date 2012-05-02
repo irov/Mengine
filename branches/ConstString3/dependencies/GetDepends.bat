@@ -34,6 +34,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/3.2.2/Python-3.2.2.tgz
 
+%toolsdir%\wget\wget.exe --no-clobber http://download.icu-project.org/files/icu4c/49.1.1/icu4c-49_1_1-src.zip
+
 
 if EXIST boost rmdir /s /q boost
 7za x -y boost_1_49_0.zip
@@ -103,6 +105,8 @@ if EXIST pugixml rmdir /s /q pugixml
 if EXIST simpleini rmdir /s /q simpleini
 7za x -y simpleini-4.15.zip
 
+if EXIST icu rmdir /s /q simpleini icu
+7za x -y icu4c-49_1_1-src.zip
 
 :: if EXIST OpenAL rmdir /s /q OpenAL
 :: 7za x -y openal-soft-1.13.tar.bz2

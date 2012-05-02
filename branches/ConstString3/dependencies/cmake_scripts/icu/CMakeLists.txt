@@ -17,7 +17,7 @@ ${SOURCE_DIR}/source/common/udataswp.c
 ${SOURCE_DIR}/source/common/utf_impl.c
 )
 
-add_definitions(-DU_STATIC_IMPLEMENTATION)
+add_definitions(-DU_STATIC_IMPLEMENTATION -DU_SIZEOF_WCHAR_T)
 
 include_directories( ${SOURCE_DIR}/source/common )
 

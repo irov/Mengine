@@ -15,6 +15,7 @@ ${SOURCE_DIR}/source/common/cstring.c
 ${SOURCE_DIR}/source/common/uinvchar.c
 ${SOURCE_DIR}/source/common/udataswp.c
 ${SOURCE_DIR}/source/common/utf_impl.c
+${SOURCE_DIR}/source/common/utypes.c
 )
 
 add_definitions(-DU_STATIC_IMPLEMENTATION -DU_SIZEOF_WCHAR_T=2)

@@ -190,7 +190,7 @@ namespace Menge
 			bool utf_path_successful;
 			String utf_path = unicodeInterface->unicodeToUtf8( path, utf_path_successful );
 
-			PyObject * py_path = pybind::unicode_from_utf8( utf_path.c_str(), utf_path.size() );
+			PyObject * py_path = pybind::string_from_char( utf_path.c_str(), utf_path.size() );
 
 			pybind::list_appenditem( path_packet, py_path );
 

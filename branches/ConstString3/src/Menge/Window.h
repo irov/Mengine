@@ -21,7 +21,7 @@ namespace Menge
 		const mt::vec2f getClientSize() const;
 		mt::vec2f getWindowSize() const;
 		const mt::vec2f& getTileSize( int _tile ) const;
-
+		void setResourceWindow( const ConstString & _resource );
 	protected:
 		bool _compile() override;
 		void _release() override;

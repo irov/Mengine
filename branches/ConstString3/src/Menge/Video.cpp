@@ -90,8 +90,15 @@ namespace	Menge
 		
 		if( m_videoDecoder->eof() == true )
 		{
-			this->_rewind();
-			//stop();
+			m_needUpdate = true;
+			if( this->getLoop() == true )
+			{
+				this->_rewind();
+			}
+			else
+			{
+				stop();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -442,7 +449,7 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
 	{
-		//m_videoDecoder->seek(_timing);
+		m_videoDecoder->seek(_timing);
 	}
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
@@ -453,7 +460,7 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setFirstFrame()
 	{
-		//m_videoDecoder->seek(0.0f);
+		m_videoDecoder->seek(0.0f);
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_setLastFrame()
@@ -468,6 +475,11 @@ namespace	Menge
 		unsigned char* lockRect = m_textures[0]->lock( &pitch, false );
 		m_videoDecoder->decode( lockRect, pitch );
 		m_textures[0]->unlock();
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_interrupt( size_t _enumerator )
+	{
+
 	}
 	////////////////////////////////////////////////////////////////////
 }

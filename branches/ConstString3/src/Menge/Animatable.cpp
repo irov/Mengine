@@ -133,6 +133,20 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Animatable::interrupt()
+	{
+		if( m_play == false )
+		{
+			return false;
+		}
+
+		m_play = false;
+
+		this->_interrupt( m_enumerator );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Animatable::end()
 	{
 		if( m_play == false )
@@ -161,5 +175,4 @@ namespace Menge
 	{
 		//Empty
 	}
-	
 }

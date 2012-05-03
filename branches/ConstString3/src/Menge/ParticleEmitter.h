@@ -35,6 +35,7 @@ namespace Menge
 		bool _restart( size_t _enumerator ) override;
 		void _stop( size_t _enumerator ) override;
 		void _end( size_t _enumerator ) override;
+		void _interrupt( size_t _enumerator ) override;
 
 	public:
 		void pause();
@@ -42,8 +43,6 @@ namespace Menge
 
 		void setLoop( bool _value );
 		bool getLoop() const;
-
-		void interrupt();
 				
 		void setLeftBorder( float _leftBorder );
 		void playFromPosition( float _pos );

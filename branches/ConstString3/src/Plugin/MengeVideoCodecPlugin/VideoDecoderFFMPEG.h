@@ -71,9 +71,8 @@ void _invalidate() ;
 		int m_frameRate;
 		float m_frameTiming;
 		bool m_isValid;
-		bool m_eof;
 		float m_timing;
-		
+
 		float m_pts;
 		
 	private:

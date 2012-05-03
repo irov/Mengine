@@ -56,7 +56,6 @@ namespace Menge
 		, m_videoStreamId(-1)
 		, m_frameRate(-1)
 		, m_isValid(false)
-		, m_eof(true)
 		, m_timing(0)
 		, m_frameTiming(0)
 		, m_pts(0.0f)
@@ -223,18 +222,15 @@ namespace Menge
 		 	m_codecContext->time_base.den=1000;
 		}
 		//setting the VideoCodecDataInfo structure
-		
-		m_eof = false;
 		//init VideoCodec info
-		
 		int isGotPicture;
 		AVPacket packet;
 		
-		//we must read frame because  m_codecContext->width,  m_codecContext->height can change 
-		av_init_packet(&packet);
-		av_read_frame(m_formatContext, &packet);
-		avcodec_decode_video2( m_codecContext ,m_Frame, &isGotPicture, &packet );
-		av_free_packet(&packet);
+		////we must read frame because  m_codecContext->width,  m_codecContext->height can change 
+		//av_init_packet(&packet);
+		//av_read_frame(m_formatContext, &packet);
+		//avcodec_decode_video2( m_codecContext ,m_Frame, &isGotPicture, &packet );
+		//av_free_packet(&packet);
 
 		m_dataInfo.frame_height = m_codecContext->height;
 		m_dataInfo.frame_width = m_codecContext->width;
@@ -256,7 +252,7 @@ namespace Menge
 		//m_stream->seek( SEEK_SET ); 
 		m_frameTiming = 1000.f / m_frameRate;
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
-		m_dataInfo.time_total_secs  = (float)( len * m_frameRate / AV_TIME_BASE );
+		m_dataInfo.duration  = (float)( len * m_frameRate / AV_TIME_BASE );
 		m_isValid = true;
 		return true;
 	}
@@ -278,7 +274,7 @@ namespace Menge
 
 		// Convert the image into RGBA and copy to the surface.
 		avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
-			m_codecContext->width, m_codecContext->height);
+			m_dataInfo.frame_width, m_dataInfo.frame_height);
 		
 		//memcpy(_buffer,m_cacheBuffer,_bufferSize * m_codecContext->height);
 		/*unsigned char * source = m_cacheBuffer;
@@ -319,11 +315,13 @@ namespace Menge
 			//error
 			return false;
 		}
+		/*
 		//Issue for timestamps
 		m_formatContext->flags|= AVFMT_NOFILE|AVFMT_FLAG_IGNIDX;
 		//m_inputFormat->flags |=AVFMT_NOFILE|AVFMT_FLAG_IGNIDX; 
 		m_formatContext->flags&=~AVFMT_FLAG_GENPTS; 
-		
+		*/
+
 		int isGotPicture;
 		struct SwsContext * imgConvertContext = NULL;
 		AVPacket packet;
@@ -403,7 +401,6 @@ namespace Menge
 	void VideoDecoderFFMPEG::clear_()
 	{
 		m_isValid = false;
-		m_eof = true;
 		// Free the packet that was allocated by av_read_frame
 		if (m_Frame != NULL)
 		{
@@ -449,11 +446,15 @@ namespace Menge
 	int VideoDecoderFFMPEG::sync( float _timing )
 	{
 		m_timing += _timing;
+		//m_dataInfo;
+		//m_formatContext;
+		//m_pts;
 		//printf("  timing %f.2  \n",_timing);
 		int countFrames = int(m_timing / m_frameTiming);
+		
 		int frame = countFrames;
 		int ret;
-		if( frame != 0 )
+		if( frame != -1 )
 		{
 			ret =-1;
 		}
@@ -480,21 +481,20 @@ namespace Menge
 		int64_t timestamp = t * AV_TIME_BASE; //destination time
 		av_seek_frame( pFormatContext , -1 ,  timestamp + pFormatContext->start_time ,AVSEEK_FLAG_BACKWARD );
 		*/
-
-		if (av_seek_frame( m_formatContext, m_videoStreamId, _timing, 0 ) < 0 )
+		float time = ( AV_TIME_BASE * (_timing / 1000) ) + m_formatContext->start_time;
+		//time = _timing / 1000;
+		if (av_seek_frame( m_formatContext, -1, time, 0 ) < 0 )
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing  );
 			return false;
 		}
 		m_pts = _timing;
-		//readFrame_();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::eof()
 	{
-		if( Utils::eof( m_stream ) == true 
-			|| m_eof == true)
+		if( Utils::eof( m_stream ) == true )
 		{
 			return true;
 		}

@@ -3157,6 +3157,7 @@ namespace Menge
 			.def( "getTiming", &Animatable::getTiming )
 			.def( "setLoop", &Animatable::setLoop )
 			.def( "getLoop", &Animatable::getLoop )
+			.def( "interrupt", &ParticleEmitter::interrupt )
 			;
 
 		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
@@ -3344,7 +3345,7 @@ namespace Menge
 					.def( "restart", &ParticleEmitter::restart )
 					.def( "setLoop", &ParticleEmitter::setLoop )
 					.def( "getLoop", &ParticleEmitter::getLoop )
-					.def( "interrupt", &ParticleEmitter::interrupt )
+					//.def( "interrupt", &ParticleEmitter::interrupt )
 					.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
 					.def( "setResource", &ParticleEmitter::setResource )
 					.def( "setEmitter", &ParticleEmitter::setEmitter )
@@ -3586,6 +3587,7 @@ namespace Menge
 					.def( "getClientSize", &Window::getClientSize )
 					.def( "getWindowSize", &Window::getWindowSize )
 					.def( "getTileSize", &Window::getTileSize )
+					.def( "setResourceWindow", &Window::setResourceWindow )
 					;
 
 				//pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)

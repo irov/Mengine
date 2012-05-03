@@ -116,6 +116,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
 	{
+		
 		const mt::mat4f& wm = this->getWorldMatrix();
 
 		mt::vec2f transform1X, transform5X, transformClX;
@@ -200,10 +201,12 @@ namespace Menge
 			_vertices[i*4 + 0].pos[1] = quads[i].a.y;
 			_vertices[i*4 + 0].pos[2] = 0.f;
 			//_vertices[i*4 + 0].pos[3] = 1.f;
-
+			
+			//printf( "%f,%f\n",_vertices[i*4 + 0].pos[0],_vertices[i*4 + 0].pos[1],_vertices[i*4 + 0].pos[1] );
 			_vertices[i*4 + 0].uv[0] = 0.0f;
 			_vertices[i*4 + 0].uv[1] = 0.0f;
-
+			//printf( "%f,%f\n",_vertices[i*4 + 0].uv[0],_vertices[i*4 + 0].uv[1] );
+			
 			_vertices[i*4 + 1].pos[0] = quads[i].b.x;
 			_vertices[i*4 + 1].pos[1] = quads[i].b.y;
 			_vertices[i*4 + 1].pos[2] = 0.f;
@@ -211,6 +214,7 @@ namespace Menge
 
 			_vertices[i*4 + 1].uv[0] = uvs[i].x;
 			_vertices[i*4 + 1].uv[1] = 0.0f;
+			//printf( "%f,%f\n",_vertices[i*4 + 1].uv[0],_vertices[i*4 + 1].uv[1] );
 
 			_vertices[i*4 + 2].pos[0] = quads[i].c.x;
 			_vertices[i*4 + 2].pos[1] = quads[i].c.y;
@@ -219,6 +223,7 @@ namespace Menge
 
 			_vertices[i*4 + 2].uv[0] = uvs[i].x;
 			_vertices[i*4 + 2].uv[1] = uvs[i].y;
+			//printf( "%f,%f\n",_vertices[i*4 + 2].uv[0],_vertices[i*4 + 2].uv[1] );
 
 			_vertices[i*4 + 3].pos[0] = quads[i].d.x;
 			_vertices[i*4 + 3].pos[1] = quads[i].d.y;
@@ -227,6 +232,8 @@ namespace Menge
 
 			_vertices[i*4 + 3].uv[0] = 0.0f;
 			_vertices[i*4 + 3].uv[1] = uvs[i].y;
+			//printf( "%f,%f\n",_vertices[i*4 + 3].uv[0],_vertices[i*4 + 3].uv[1] );
+			//printf("%s\n","------------------------------------");
 		}
 
 		ColourValue color;
@@ -259,7 +266,6 @@ namespace Menge
 	void Window::_invalidateColor()
 	{
 		Node::_invalidateColor();
-
 		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -327,6 +333,18 @@ namespace Menge
 
 		setClientSize( mt::vec2f( static_cast<int>( _tiles.x ) * m_initialSizes[0].x,
 									static_cast<int>( _tiles.y ) * m_initialSizes[0].y ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Window::setResourceWindow( const ConstString & _resourceName )
+	{
+		if( m_resourceName == _resourceName )
+		{
+			return;
+		}
+
+		m_resourceName = _resourceName;
+		_release();
+		_compile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

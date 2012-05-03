@@ -304,7 +304,7 @@ namespace	Menge
 		return m_interface->getLoop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::interrupt()
+	void ParticleEmitter::_interrupt( size_t _enumerator )
 	{
 		if( this->isCompile() == false )
 		{
@@ -312,6 +312,7 @@ namespace	Menge
 		}
 
 		m_interface->interrupt();
+		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLeftBorder( float _leftBorder )

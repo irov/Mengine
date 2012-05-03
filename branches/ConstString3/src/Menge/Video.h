@@ -71,7 +71,8 @@ namespace Menge
 		virtual bool _restart( size_t _enumerator );
 		virtual void _stop( size_t _enumerator );
 		virtual void _end( size_t _enumerator );
-	
+		virtual void _interrupt( size_t _enumerator );
+
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 	protected:
@@ -91,7 +92,6 @@ namespace Menge
 		mt::vec2f m_frameSize;
 
 		bool m_autoStart;
-		bool m_loop;
 		float m_timing;
 		bool m_needUpdate;
 	};

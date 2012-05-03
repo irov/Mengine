@@ -40,7 +40,7 @@ namespace Menge
 		bool _restart( size_t _enumerator ) override;
 		void _stop( size_t _enumerator ) override;
 		void _end( size_t _enumerator ) override;
-
+		void _interrupt( size_t _enumerator ) override;
 	protected:
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;

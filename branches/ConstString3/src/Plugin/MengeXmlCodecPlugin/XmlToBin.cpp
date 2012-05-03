@@ -383,19 +383,20 @@ namespace
 
 	static bool s_writeStringW( std::ofstream & _stream, const char * _str )
 	{
-		int size = ::MultiByteToWideChar( CP_UTF8, 0, _str, -1, 0, 0 );
+		//int size = ::MultiByteToWideChar( CP_UTF8, 0, _str, -1, 0, 0 );
+		size_t size = strlen(_str);
 		
 		s_writeStream( _stream, size );
-
+		s_writeStream( _stream, _str, size );
 		//static WString s_buffer;
 		
-		wchar_t * buffer = new wchar_t[size];
-		::MultiByteToWideChar( CP_UTF8, 0, _str, -1, buffer, size );
+		//wchar_t * buffer = new wchar_t[size];
+		//::MultiByteToWideChar( CP_UTF8, 0, _str, -1, buffer, size );
 
-		//size_t size = wcslen(_str);
-		s_writeStream( _stream, buffer, size );
+		////size_t size = wcslen(_str);
+		//s_writeStream( _stream, buffer, size );
 
-		delete [] buffer;
+		//delete [] buffer;
 
 		return true;
 	}

@@ -3,6 +3,9 @@
 
 #	include "LogEngine.h"
 
+#	include "ServiceProvider.h"
+#	include "Interface/UnicodeInterface.h"
+
 namespace Menge
 {
 	namespace
@@ -26,13 +29,13 @@ namespace Menge
 			return;
 		}
 
-		char * str = new char[size];
+		_value.resize( size );
 
-		Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
-		ar.readBuffer( buff, size );
+		//Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
+		ar.readBuffer( &_value[0], size );
 
-		_value.assign(str, size);
-		delete [] str;
+		//_value.assign(str, size);
+		//delete [] str;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, WString & _value )
@@ -45,14 +48,22 @@ namespace Menge
 			return;
 		}
 
-		wchar_t * str = new wchar_t[size];
+		String utf8_value;
+		utf8_value.resize( size );
 
-		Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
-		ar.readBuffer( buff, size * sizeof(wchar_t) );
+		//Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
+		ar.readBuffer( &utf8_value[0], size );
 
-		_value.assign(str, size - 1);
+		UnicodeInterface * unicodeInterface = ServiceProvider::get()
+			->getServiceT<UnicodeInterface>("Unicode");
 
-		delete [] str;
+		//String utf8_value;
+		//utf8_value.assign(str, size - 1);
+
+		//delete [] str;
+
+		bool utf8_value_successful;
+		_value = unicodeInterface->utf8ToUnicode(utf8_value, utf8_value_successful);
 	}
 #	ifdef MENGE_CONST_STRING
 	//////////////////////////////////////////////////////////////////////////

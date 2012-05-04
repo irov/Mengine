@@ -20,6 +20,8 @@ extern "C"
 	#	include "libavutil/mathematics.h"
 }
 
+
+
 namespace Menge
 {
 	class LogServiceInterface;
@@ -34,9 +36,8 @@ namespace Menge
 	public:
 		bool initialize() override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
-		
-	public:
-		
+	
+	public:	
 		bool eof() override;
 		int sync( float _timing ) override;
 		float getTiming()  const override;
@@ -44,9 +45,11 @@ namespace Menge
 		bool isValid() const;
 		const VideoCodecDataInfo* getCodecDataInfo() const;
 		void setOptions( CodecOptions * ) ;
-		bool readNextFrame( ) override;
+		EVideoDecoderReadState readNextFrame( ) override;
+	
 	protected:
-void _invalidate() ;
+		void _invalidate() ;
+	
 	protected:
 		LogServiceInterface * m_logService;
 		AVFormatContext * m_formatContext;
@@ -73,10 +76,10 @@ void _invalidate() ;
 		bool m_isValid;
 		float m_timing;
 
+		bool m_eof;
 		float m_pts;
 		
 	private:
 		void clear_();
-		
 	};
 }	// namespace Menge

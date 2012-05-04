@@ -1,7 +1,7 @@
 #	include "Utils/Logger/Logger.h"
 #	include "VideoDecoderFFMPEG.h"
 #	include "Utils/Core/File.h"
-
+#	include <limits.h>
 //#include <windows.h>
 //#define MYRGB(r, g ,b)  ((int) (((int) (r) | ((int) (g) << 8)) | (((int) (int) (b)) << 16)))
 /*#define COLOR_ARGB(a,r,g,b) \
@@ -59,6 +59,7 @@ namespace Menge
 		, m_timing(0)
 		, m_frameTiming(0)
 		, m_pts(0.0f)
+		, m_eof(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -122,7 +123,7 @@ namespace Menge
 						, NULL //write callback
 						, SeekIOWrapper //seek callback
 						);
-
+		
 		probeData.filename = "";
 		probeData.buf= (unsigned char *) filebuffer; 
 		probeData.buf_size = m_probeSize;
@@ -305,15 +306,15 @@ namespace Menge
 		return decoded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::readNextFrame( )
+	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( )
 	{	
 		//size_t pos = m_stream->tell();
-				
+
 		if( m_isValid != true )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
 			//error
-			return false;
+			return VDRS_FAILURE;
 		}
 		/*
 		//Issue for timestamps
@@ -329,22 +330,12 @@ namespace Menge
 		av_init_packet(&packet);
 		//av_dup_packet(&packet);
 		int i=0;
-		
-		if ( av_read_frame(m_formatContext, &packet) < 0 )
+
+		if ( av_read_frame( m_formatContext, &packet ) < 0 )
 		{
-			/*if(this->eof() != true)
-			{
-				m_pts += m_frameTiming * 2;
-				this->seek( m_pts );
-			}
-			else
-			{
-				m_pts = 0;
-			}
-			*/
 			av_free_packet(&packet);
 			//printf(" can not read frame ");
-			return false;
+			return VDRS_END_STREAM;
 		}
 
 		// Is this a packet from the video stream?
@@ -352,7 +343,7 @@ namespace Menge
 		{
 			av_free_packet(&packet);
 			//printf(" packet is not video ");
-			return false;
+			return VDRS_SKIP;
 		}
 
 		// Decode video frame
@@ -362,9 +353,9 @@ namespace Menge
 		if( isGotPicture <= 0 ) {
 			av_free_packet(&packet);
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: we don`t get a picture ");
-			return false;
+			return VDRS_FAILURE;
 		}
-			
+	
 		// Convert the image from its native format to RGBA using 
 		imgConvertContext = sws_getContext( m_codecContext->width, m_codecContext->height, 
 			m_codecContext->pix_fmt, 
@@ -376,9 +367,9 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
 			av_free_packet(&packet);
-			return false;
+			return VDRS_FAILURE;
 		}
-
+	
 		int ret = sws_scale(imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
 			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize);
 		
@@ -386,7 +377,8 @@ namespace Menge
 		fwrite( m_FrameRGBA->data ,1 ,m_codecContext->height * m_codecContext->width, fp  );
 		fclose(fp);*/
 		m_pts = packet.pts;
-
+		
+		//printf("!!PTS %f \n",m_pts);
 		sws_freeContext(imgConvertContext);
 		av_free_packet(&packet);
 
@@ -395,7 +387,7 @@ namespace Menge
 		avpicture_fill((AVPicture*) m_FrameRGBA, (uint8_t*) m_cacheBuffer, (::PixelFormat) m_outputPixelFormat ,
 			m_codecContext->width, m_codecContext->height);
 		*/
-		return true;	
+		return VDRS_SUCCESS;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
@@ -451,9 +443,10 @@ namespace Menge
 		//m_pts;
 		//printf("  timing %f.2  \n",_timing);
 		int countFrames = int(m_timing / m_frameTiming);
-		
+		//printf (" countFrames  %i\n",countFrames);
 		int frame = countFrames;
 		int ret;
+		
 		if( frame != -1 )
 		{
 			ret =-1;
@@ -463,12 +456,29 @@ namespace Menge
 			ret = 1;
 		}
 		
+		m_eof = false;
+
 		while( countFrames > 0 )
 		{
-			readNextFrame();
+			EVideoDecoderReadState state = readNextFrame();
+			
+			if( state == VDRS_END_STREAM )
+			{
+				m_eof = true;
+				break;	
+			}
+			else if( state == VDRS_FAILURE )
+			{
+				break;	
+			}
+			else if( state == VDRS_SKIP )
+			{
+				continue;	
+			}
+
 			countFrames--;
 		}
-
+		
 		m_timing -= frame *  m_frameTiming;
 		return ret;		
 	}
@@ -480,25 +490,53 @@ namespace Menge
 		static double t = 10 ;//time in seconds
 		int64_t timestamp = t * AV_TIME_BASE; //destination time
 		av_seek_frame( pFormatContext , -1 ,  timestamp + pFormatContext->start_time ,AVSEEK_FLAG_BACKWARD );
-		*/
 		float time = ( AV_TIME_BASE * (_timing / 1000) ) + m_formatContext->start_time;
-		//time = _timing / 1000;
-		if (av_seek_frame( m_formatContext, -1, time, 0 ) < 0 )
+		*/
+		//printf("%f\n",_timing);
+
+		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
+        int seekStreamIndex = (m_videoStreamId != -1)? m_videoStreamId : defaultStreamIndex;
+		AVRational av_q;
+		av_q.num = 1; 
+		av_q.den = AV_TIME_BASE; 
+		__int64 seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base);
+        __int64 seekStreamDuration = m_formatContext->streams[seekStreamIndex]->duration;
+
+        int flags = AVSEEK_FLAG_BACKWARD;
+        if (seekTime > 0 && seekTime < seekStreamDuration)
+            flags |= AVSEEK_FLAG_ANY; // H.264 I frames don't always register as "key frames" in FFmpeg
+
+        int ret = av_seek_frame(m_formatContext, seekStreamIndex, seekTime, flags);
+        if (ret < 0)
+		{
+            ret = av_seek_frame(m_formatContext, seekStreamIndex, seekTime, AVSEEK_FLAG_ANY);
+		}
+		if(ret < 0)
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing  );
 			return false;
 		}
+		avcodec_flush_buffers( m_codecContext );
+		////time = _timing / 1000;
+		////if (av_seek_frame( m_formatContext, m_videoStreamId, frame, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_ANY ) < 0 )
+		//if( avformat_seek_file( m_formatContext, m_videoStreamId, 0, frame, frame, AVSEEK_FLAG_FRAME ) < 0 )
+		//{
+		//	LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing  );
+		//	return false;
+		//}
+		////
 		m_pts = _timing;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::eof()
 	{
-		if( Utils::eof( m_stream ) == true )
+		return m_eof;
+		/*if( Utils::eof( m_stream ) == true )
 		{
 			return true;
 		}
-		return false;
+		return false;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::setOptions( CodecOptions * _options )

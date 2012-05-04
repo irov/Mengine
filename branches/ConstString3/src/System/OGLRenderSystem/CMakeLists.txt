@@ -22,27 +22,17 @@ src
 	OGLWin32WindowContext.h
     OGLWin32WindowContext.cpp
 )
-elseif( APPLE )
-ADD_FILTER(
-src
-	OGLRenderSystem.cpp
-	OGLRenderSystem.h
-	OGLTexture.h
-	OGLTexture.cpp
-
-	OGLMacOSXWindowContext.h
-    OGLMacOSXWindowContext.cpp
-)
-else( WIN32 )
-ADD_FILTER(
-src
-	OGLRenderSystem.cpp
-	OGLRenderSystem.h
-	OGLTexture.h
-	OGLTexture.cpp
-)
 endif( WIN32 )
 
+if( APPLE )
+ADD_FILTER(
+src
+	OGLRenderSystem.cpp
+	OGLRenderSystem.h
+	OGLTexture.h
+	OGLTexture.cpp
+)
+endif( APPLE )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

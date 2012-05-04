@@ -11,7 +11,45 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 
-bool initInterfaceSystem( Menge::FileSystemInterface * * _ptrFileSystem )
+#include "CoreFoundation/CoreFoundation.h"
+#import <UIKit/UIKit.h>
+
+class Utf8
+{
+public:
+    Utf8(const wchar_t* wsz): m_utf8(NULL)
+    {
+        // OS X uses 32-bit wchar
+        const int bytes = wcslen(wsz) * sizeof(wchar_t);
+
+        CFStringRef str = CFStringCreateWithBytesNoCopy(NULL, 
+                                                        (const UInt8*)wsz, bytes, 
+                                                        kCFStringEncodingUTF32LE, false, 
+                                                        kCFAllocatorNull
+                                                        );
+        
+        const int bytesUtf8 = CFStringGetMaximumSizeOfFileSystemRepresentation(str);
+        m_utf8 = new char[bytesUtf8];
+        CFStringGetFileSystemRepresentation(str, m_utf8, bytesUtf8);
+        CFRelease(str);
+    }   
+    
+    ~Utf8() 
+    { 
+        if( m_utf8 )
+        {
+            delete[] m_utf8;
+        }
+    }
+    
+public:
+    const char* c_str() const { return m_utf8; }
+    
+private:
+    char* m_utf8;
+};
+
+bool initInterfaceSystem( Menge::FileSystemInterface ** _ptrFileSystem )
 {
 	try
 	{
@@ -39,9 +77,11 @@ iOSFileInput::iOSFileInput( void ) :
 {
 }
 	
-bool iOSFileInput::open( const String & _filename )
+bool iOSFileInput::open( const WString & _filename )
 {
-	stream = fopen( _filename.c_str(), "rb" );
+    const Utf8 utf8 = _filename.c_str();
+    
+	stream = fopen( utf8.c_str(), "rb" );
 
 	return stream;
 }
@@ -85,9 +125,11 @@ iOSFileOutput::iOSFileOutput( void ) :
 {
 }
 
-bool iOSFileOutput::open( const String & _filename )
+bool iOSFileOutput::open( const WString & _filename )
 {
-	stream = fopen( _filename.c_str(), "wb" );
+    const Utf8 utf8 = _filename.c_str();
+    
+	stream = fopen( utf8.c_str(), "wb" );
     
 	return stream;
 }
@@ -138,7 +180,7 @@ const char * const iOSFileSystem::GetDocDir( void ) const
 	return docDirectory;
 }*/
 
-bool iOSFileSystem::existFile( const String & _filename )
+bool iOSFileSystem::existFile( const WString & _filename ) const
 {  
 	/*char temp[ 1024 ];
 	
@@ -148,10 +190,15 @@ bool iOSFileSystem::existFile( const String & _filename )
 	
 	sprintf( temp, "%s/%s", resDirectory, _filename.c_str() );
 	return access( temp, F_OK ) != -1;*/
-	return access( _filename.c_str(), F_OK ) != -1;
+    
+    const Utf8 utf8 = _filename.c_str();
+   
+	int result = access( utf8.c_str(), F_OK );
+
+    return result != -1;
 }
 
-FileInputStreamInterface * iOSFileSystem::openInputStream( const String & _filename )
+FileInputStreamInterface * iOSFileSystem::openInputStream( const WString & _filename )
 {
 	iOSFileInput * f = new iOSFileInput();
         
@@ -176,7 +223,7 @@ void iOSFileSystem::closeInputStream( FileInputStreamInterface* _stream )
 	delete f;
 }
 
-FileOutputStreamInterface * iOSFileSystem::openOutputStream( const String & _filename )
+FileOutputStreamInterface * iOSFileSystem::openOutputStream( const WString & _filename )
 {
 	iOSFileOutput * f = new iOSFileOutput();
 	f->open( _filename );
@@ -192,12 +239,13 @@ void iOSFileSystem::closeOutputStream( FileOutputStreamInterface * _stream )
 	delete f;
 }
 
-void * iOSFileSystem::openMappedFile( const String & _filename, int * _size )
+void * iOSFileSystem::openMappedFile( const WString & _filename, int * _size )
 {
 	if( !existFile( _filename ) )
 		return 0;
 	
-	FILE * stream = fopen( _filename.c_str(), "w+b" );
+    const Utf8 utf8 = _filename.c_str();
+	FILE * stream = fopen( utf8.c_str(), "w+b" );
 	if( !stream )
 		return 0;
 	
@@ -229,28 +277,33 @@ void iOSFileSystem::closeMappedFile( void * _file )
 	fclose( stream );
 }
 
-bool iOSFileSystem::deleteFile( const String & _filename )
+bool iOSFileSystem::deleteFile( const WString & _filename )
 {
 	/*char temp[ 1024 ];
 	sprintf( temp, "%s/%s", docDirectory, _filename.c_str() );
 	return remove( temp );*/
-	return !remove( _filename.c_str() );
+    const Utf8 utf8 = _filename.c_str();
+	return !remove( utf8.c_str() );
 }
 
-bool iOSFileSystem::createFolder( const String & _path )
+bool iOSFileSystem::createFolder( const WString & _path )
 {
 	/*char temp[ 1024 ];
 	sprintf( temp, "%s/%s", docDirectory, _path.c_str() );
 	return !mkdir( temp, 0777 );*/
-	return !mkdir( _path.c_str(), 0777 );
+    
+    const Utf8 utf8 = _path.c_str();
+	return !mkdir( utf8.c_str(), 0777 );
 }
 
-bool iOSFileSystem::deleteFolder( const String & _path )
+bool iOSFileSystem::deleteFolder( const WString & _path )
 {
 	/*char temp[ 1024 ];
 	sprintf( temp, "%s/%s", docDirectory, _path.c_str() );
 	return !rmdir( temp );*/
-	return !rmdir( _path.c_str() );
+    
+    const Utf8 utf8 = _path.c_str();
+	return !rmdir( utf8.c_str() );
 }
 
 }

@@ -428,7 +428,7 @@ namespace Menge
 		if( LoaderEngine::get()
 			->load( _gamePackName, _gameDescription, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Game::loadDescription failed to load GamePak %s:%s"
+			MENGE_LOG_ERROR( "Game::loadDescription failed to load GamePak %s:%S"
 				, _gamePackName.c_str() 
 				, _gameDescription.c_str()
 				);

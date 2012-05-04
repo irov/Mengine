@@ -63,8 +63,8 @@ class iOSApplication
     
     LogServiceInterface * m_logService;
     
-    String m_userPath;
-    String m_applicationPath;
+    WString m_userPath;
+    WString m_applicationPath;
     
 public:
     iOSApplication( void );
@@ -84,36 +84,35 @@ public:
     ApplicationInterface * getApplication() const;
 	
 public:
-	virtual void stop( void );
-	virtual const Resolution & getDesktopResolution( void ) const;
-	virtual void minimizeWindow( void );
-	virtual void setHandleMouse( bool _handle );
-	virtual void setCursorPosition( int _x, int _y );
-	virtual void showMessageBox( const String & _message, const String & _header, unsigned int _style );
-	
-	virtual TimerInterface * getTimer( void ) const;
-	
-	virtual void showKeyboard( void );
-	virtual void hideKeyboard( void );
-	
-	virtual void ansiToUtf8( const String & _ansi, String & _utf8 );
-	virtual void utf8ToAnsi( const String & _utf8, String & _ansi );
-    void utf8Count( const String& _utf8, std::size_t & _size );
+    const WString & getCurrentPath() const;
     
-	virtual DynamicLibraryInterface * loadDynamicLibrary( const String & _filename );
-	virtual void unloadDynamicLibrary( DynamicLibraryInterface * _lib );
+public:
+	void stop( void );
+	const Resolution & getDesktopResolution( void ) const;
+	void minimizeWindow( void );
+	void setHandleMouse( bool _handle );
+	void setCursorPosition( int _x, int _y );
+	void showMessageBox( const WString & _message, const WString & _header, unsigned int _style );
 	
-	virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen );
-	virtual void notifyVsyncChanged( bool _vsync );
-	virtual void notifyCursorModeChanged( bool _mode );
-	virtual void notifyCursorIconSetup( const String & _filename );
+	TimerInterface * getTimer( void ) const;
 	
-	virtual void notifyCursorClipping( const Viewport & _viewport );
-	virtual void notifyCursorUnClipping( void );
+	void showKeyboard( void );
+	void hideKeyboard( void );
+	   
+	DynamicLibraryInterface * loadDynamicLibrary( const String & _filename );
+	void unloadDynamicLibrary( DynamicLibraryInterface * _lib );
+	
+	void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen );
+	void notifyVsyncChanged( bool _vsync );
+	void notifyCursorModeChanged( bool _mode );
+	void notifyCursorIconSetup( const WString & _filename );
+	
+	void notifyCursorClipping( const Viewport & _viewport );
+	void notifyCursorUnClipping( void );
     
-    virtual void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider );
+    void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider );
     
-	virtual void setAsScreensaver( bool _set );
+	void setAsScreensaver( bool _set );
     
 public:
     void setupLogService();

@@ -89,7 +89,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			WString path = scriptPakPath + L'\\' + *it;
+			WString path = scriptPakPath + MENGE_FOLDER_DELIM + *it;
 			//Utils::collapsePath( scriptPakPath + "\\" + *it, path );
 			listModulePath.push_back( path );
 		}

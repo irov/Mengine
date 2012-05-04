@@ -15,6 +15,7 @@
 #include <AudioToolbox/AudioToolbox.h>
 
 #include "Interface/FileSystemInterface.h"
+#include "Interface/UnicodeInterface.h"
 
 extern EAGLView * pEAGLView;
 
@@ -117,37 +118,20 @@ iOSApplication::~iOSApplication( void )
 	releaseInterfaceSystem( application );
     application = NULL;
 }
+    
+const WString & iOSApplication::getCurrentPath() const
+    {
+        static WString empty;
+        return empty;
+        
+    }
 	
 const bool iOSApplication::Init( void )
 {
 		
     AudioSessionInitialize(NULL, NULL, NULL, NULL);
     
-    
-    char resDirectory[ 1024 ];
-    
-	[ [ [ NSBundle mainBundle] resourcePath ] getCString : resDirectory
-											   maxLength : sizeof( resDirectory ) - 1
-												encoding : NSASCIIStringEncoding ];    
-    
-    m_applicationPath = resDirectory + String("/");
-    
-    NSLog( @"m_applicationPath %s"
-          , m_applicationPath.c_str() 
-          );      
-    
-    char docDirectory[ 1024 ];
-    
-	[ [ NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES ) objectAtIndex : 0 ]
-     getCString : docDirectory
-     maxLength : sizeof( docDirectory ) - 1
-     encoding : NSASCIIStringEncoding ];   
-    
-    m_userPath = docDirectory + String("/");
-    
-    NSLog( @"m_userPath %s"
-          , m_userPath.c_str() 
-          );  
+    NSLog(@"wchar_t %d", sizeof(wchar_t));
     
     m_loggerConsole = new iOSFileLogger();
     
@@ -173,19 +157,26 @@ const bool iOSApplication::Init( void )
             
         return false;
     }    
-	
+    
+    ServiceProviderInterface * serviceProvider = application->getServiceProvider();
+    
+    
+    UnicodeInterface * unicodeInterface = serviceProvider->getServiceT<UnicodeInterface>("Unicode");
+        	
 	application->setDesktopResolution( resolution );
 	application->setMaxClientAreaSize( resolution.getWidth(), resolution.getHeight() );
 	
-    ServiceProviderInterface * serviceProvider = application->getServiceProvider();
-    
-    String configFile = "application";
-    application->loadConfig( configFile );
-    
     ConstString c_languagePack("rus");
     application->setLanguagePack( c_languagePack );
     
-    String baseDir = m_applicationPath + "data/";
+    WString config_file = L"application";
+    WString settings_file = L"settings.ini";
+    if( application->loadConfig( config_file, settings_file ) == false )
+    {
+            return false;
+    }
+    
+    WString baseDir = m_applicationPath + L"data/";
     
     application->setBaseDir(baseDir);
     
@@ -335,10 +326,10 @@ void iOSApplication::setCursorPosition( int _x, int _y )
 {
 }
 
-void iOSApplication::showMessageBox( const String & _message, const String & _header, unsigned int _style )
+void iOSApplication::showMessageBox( const WString & _message, const WString & _header, unsigned int _style )
 {
-	NSString * title = [ [ NSString alloc ] initWithFormat : @"%s", _header.c_str() ];
-	NSString * message = [ [ NSString alloc ] initWithFormat : @"%s", _message.c_str() ];
+	NSString * title = [ [ NSString alloc ] initWithFormat : @"%S", _header.c_str() ];
+	NSString * message = [ [ NSString alloc ] initWithFormat : @"%S", _message.c_str() ];
 	
 	UIAlertView * alert = [ [ UIAlertView alloc ] initWithTitle : title message : message delegate : nil cancelButtonTitle : @"OK" otherButtonTitles : nil ];
 	[ alert show ];
@@ -363,115 +354,6 @@ void iOSApplication::hideKeyboard( void )
 	[ pEAGLView hideKeyboard ];
 }
 
-void iOSApplication::ansiToUtf8( const String & _ansi, String & _utf8 )
-{
-    _utf8 = _ansi;    
-//	NSString * ansi = [ [ NSString alloc ] initWithCString : _ansi.c_str() encoding : NSWindowsCP1251StringEncoding ];
-//	_utf8 = [ ansi cStringUsingEncoding : NSUTF8StringEncoding ];
-//	[ ansi release ];
-}
-
-void iOSApplication::utf8ToAnsi( const String & _utf8, String & _ansi )
-{
-    _ansi = _utf8;
-//	NSString * utf8 = [ [ NSString alloc ] initWithCString : _ansi.c_str() encoding : NSUTF8StringEncoding ];
-//	_ansi = [ utf8 cStringUsingEncoding : NSWindowsCP1251StringEncoding ];	
-//	[ utf8 release ];
-}
-    
-void iOSApplication::utf8Count( const String& _utf8, std::size_t & _size )
-{
-        
-}
-	
-/*String iOSApplication::ansiToUtf8( const String& _ansi )
-{
-	OSStatus err = noErr;
-	TECObjectRef tec = 0;
-	ByteCount bytesConsumed = 0;
-	ByteCount bytesProduced = 0;
-	
-	TextEncoding inputEncoding	= CreateTextEncoding( CFStringGetSystemEncoding(),
-													 kTextEncodingDefaultVariant,
-													 kTextEncodingDefaultFormat);
-	
-	TextEncoding outputEncoding = CreateTextEncoding( kTextEncodingUnicodeDefault,
-													 kTextEncodingDefaultVariant,
-													 kUnicodeUTF8Format);
-	
-	err = TECCreateConverter( &tec, inputEncoding, outputEncoding );
-	
-	std::size_t bufLen = _ansi.length() * 4;
-	String out;
-	char* buffer = new char[bufLen];
-	if (err == noErr)
-	{
-		err = TECConvertText(tec,
-							 (ConstTextPtr) _ansi.c_str(),
-							 _ansi.length(),				// inputBufferLength
-							 &bytesConsumed,				// actualInputLength
-							 (TextPtr) buffer,			// outputBuffer
-							 bufLen,					// outputBufferLength
-							 &bytesProduced);			// actualOutputLength
-		
-		out.assign( buffer, bytesProduced );
-		
-		TECFlushText( tec, (TextPtr) buffer, bufLen, &bytesProduced );
-		
-		if( bytesProduced > 0 )
-		{
-			out += String( buffer, bytesProduced );
-		}
-		TECDisposeConverter(tec);
-	}
-	delete[] buffer;
-	return out;
-}
-//////////////////////////////////////////////////////////////////////////
-String iOSApplication::utf8ToAnsi( const String& _utf8 )
-{
-	OSStatus err = noErr;
-	TECObjectRef tec = 0;
-	ByteCount bytesConsumed = 0;
-	ByteCount bytesProduced = 0;
-	
-	TextEncoding outputEncoding	= CreateTextEncoding( CFStringGetSystemEncoding(),
-													 kTextEncodingDefaultVariant,
-													 kTextEncodingDefaultFormat);
-	
-	TextEncoding inputEncoding = CreateTextEncoding( kTextEncodingUnicodeDefault,
-													kTextEncodingDefaultVariant,
-													kUnicodeUTF8Format);
-	
-	err = TECCreateConverter( &tec, inputEncoding, outputEncoding );
-	
-	std::size_t bufLen = _utf8.length();
-	String out;
-	char* buffer = new char[bufLen];
-	if (err == noErr)
-	{
-		err = TECConvertText(tec,
-							 (ConstTextPtr) _utf8.c_str(),
-							 _utf8.length(),				// inputBufferLength
-							 &bytesConsumed,				// actualInputLength
-							 (TextPtr) buffer,			// outputBuffer
-							 bufLen,					// outputBufferLength
-							 &bytesProduced);			// actualOutputLength
-		
-		out.assign( buffer, bytesProduced );
-		
-		TECFlushText( tec, (TextPtr) buffer, bufLen, &bytesProduced );
-		if( bytesProduced > 0 )
-		{
-			out += String( buffer, bytesProduced );
-		}
-		TECDisposeConverter(tec);
-	}
-	
-	delete[] buffer;
-	return out;
-}*/
-
 DynamicLibraryInterface * iOSApplication::loadDynamicLibrary( const String & _filename )
 {
 	return 0;
@@ -493,7 +375,7 @@ void iOSApplication::notifyCursorModeChanged( bool _mode )
 {
 }
 
-void iOSApplication::notifyCursorIconSetup( const String & _filename )
+void iOSApplication::notifyCursorIconSetup( const WString & _filename )
 {
 }
 
@@ -572,36 +454,121 @@ void iOSApplication::notifyCursorUnClipping( void )
         {
             m_logService->registerLogger( m_loggerConsole );
         }
-        
+        m_logService->setVerboseLevel( LM_INFO );
 # ifndef MENGE_MASTER_RELEASE
         m_logService->setVerboseLevel( LM_LOG );
 # endif
     }
+    ////
+    class Utf8
+    {
+    public:
+        Utf8(const wchar_t* wsz): m_utf8(NULL)
+        {
+            // OS X uses 32-bit wchar
+            const int bytes = wcslen(wsz) * sizeof(wchar_t);
+            
+            CFStringRef str = CFStringCreateWithBytesNoCopy(NULL, 
+                                                            (const UInt8*)wsz, bytes, 
+                                                            kCFStringEncodingUTF32LE, false, 
+                                                            kCFAllocatorNull
+                                                            );
+            
+            const int bytesUtf8 = CFStringGetMaximumSizeOfFileSystemRepresentation(str);
+            m_utf8 = new char[bytesUtf8];
+            CFStringGetFileSystemRepresentation(str, m_utf8, bytesUtf8);
+            CFRelease(str);
+        }   
+        
+        ~Utf8() 
+        { 
+            if( m_utf8 )
+            {
+                delete[] m_utf8;
+            }
+        }
+        
+    public:
+        const char* c_str() const { return m_utf8; }
+        
+    private:
+        char* m_utf8;
+    };
     //////////////////////////////////////////////////////////////////////////
     void iOSApplication::setupFileService()
     {
-        FileServiceInterface * fileService = m_serviceProvider->getServiceT<FileServiceInterface>("FileService");
+        UnicodeInterface * unicodeInterface = m_serviceProvider->getServiceT<UnicodeInterface>("Unicode");
         
-        NSLog( @"iOSApplication::setupFileService m_applicationPath %s"
+        char resDirectory[ 1024 ];
+        
+        [ [ [ NSBundle mainBundle] resourcePath ] getCString : resDirectory
+                                                   maxLength : sizeof( resDirectory ) - 1
+                                                    encoding : NSUTF8StringEncoding ];    
+        
+        String str_resDirectory(resDirectory);
+        
+        size_t size_str_resDirectory = str_resDirectory.size();
+        
+        bool wstr_resDirectory_successful;
+        WString wstr_resDirectory = unicodeInterface->utf8ToUnicode(str_resDirectory, wstr_resDirectory_successful);
+        
+        
+        size_t size_wstr_resDirectory = wstr_resDirectory.size();
+        
+        m_applicationPath = wstr_resDirectory + MENGE_FOLDER_DELIM;
+        
+        const Utf8 utf8_applicationPath(m_applicationPath.c_str());
+        
+        NSLog( @"iOSApplication::setupFileService m_applicationPath '%ls'"
               , m_applicationPath.c_str()
               );
+        
+        printf("iOSApplication::setupFileService m_applicationPath %ls"
+               , m_applicationPath.c_str()
+               );
+        
+        LOGGER_ERROR(m_logService)( "iOSApplication::setupFileService m_applicationPath %ls"
+                                   , m_applicationPath.c_str()
+                                   ); 
+        
+        NSLog( @"iOSApplication::setupFileService m_applicationPath '%s'"
+              , utf8_applicationPath.c_str()
+              );
+
+        FileServiceInterface * fileService = m_serviceProvider->getServiceT<FileServiceInterface>("FileService");
         
         // mount root  
         if( fileService->mountFileSystem( ConstString(""), m_applicationPath, ConstString("dir"), false ) == false )
         {
-            LOGGER_ERROR(m_logService)( "iOSApplication: failed to mount application directory %s"
+            LOGGER_ERROR(m_logService)( "iOSApplication: failed to mount application directory %S"
                                        , m_applicationPath.c_str()
                                        ); 
         }
         
-        NSLog( @"iOSApplication::setupFileService m_userPath %s"
-              , m_userPath.c_str()
+        char docDirectory[ 1024 ];
+        
+        [ [ NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES ) objectAtIndex : 0 ]
+         getCString : docDirectory
+         maxLength : sizeof( docDirectory ) - 1
+         encoding : NSUTF8StringEncoding ];
+        
+        String str_docDirectory(resDirectory);
+        
+        bool wstr_docDirectory_successful;
+        WString wstr_docDirectory = unicodeInterface->utf8ToUnicode(str_docDirectory, wstr_docDirectory_successful);
+        
+        m_userPath = wstr_docDirectory + MENGE_FOLDER_DELIM;
+        
+        const Utf8 utf8_userPath(m_userPath.c_str());
+        
+        NSLog( @"iOSApplication::setupFileService m_userPath '%s'"
+              , utf8_userPath.c_str()
               );
         
         // mount user directory
         if( fileService->mountFileSystem( ConstString("user"), m_userPath, ConstString("dir"), true ) == false )
         {
-            LOGGER_ERROR(m_logService)( "iOSApplication: failed to mount user directory %s"
+            LOGGER_ERROR(m_logService)( "iOSApplication: failed to mount user directory %S"
                                        , m_userPath.c_str()
                                        );
         }

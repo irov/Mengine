@@ -39,10 +39,9 @@ namespace Menge
 
 		void getResolutions( TVectorResolutions & _resolutions ) override;
 
-		void makeProjection2D( float _left, float _right,
-			float _top, float _bottom, 
-			float _near, float _far,
-			float* _outMatrix ) override;
+		void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float _left, float _right,
+                                              float _top, float _bottom, 
+                                              float _near, float _far ) override;
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
@@ -51,6 +50,7 @@ namespace Menge
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _view ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
+        void setWorldMatrix( const mt::mat4f & _view ) override;
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
@@ -119,15 +119,12 @@ namespace Menge
 		void beginLayer3D() override;
 		void endLayer3D() override;
 
-		void setRenderViewport( const Viewport & _viewport ) override;
+		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
 
 		bool supportTextureFormat( PixelFormat _format ) override;
-
-		LightInterface * createLight( const String & _name ) override;
-		void releaseLight( LightInterface * _light ) override;
 
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
@@ -138,6 +135,8 @@ namespace Menge
 			GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data );
         
         void clear( uint32 _color ) override;
+        
+        void setSeparateAlphaBlendMode() override;
 
 	private:
         ServiceProviderInterface* m_serviceProvider;

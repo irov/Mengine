@@ -17,33 +17,35 @@ namespace Menge
 	
 class iOSFileInput : public FileInputStreamInterface
 {
-	FILE *							stream;
+	FILE * stream;
+    
 public:
-									iOSFileInput( void );
+	iOSFileInput( void );
 	
-	virtual bool					open( const String& _filename );
-	virtual void					close( void );
+	bool open( const WString& _filename );
+	void close( void );
 	
-	virtual bool					time( time_t & _time ) const;
+	bool time( time_t & _time ) const;
 	
-	virtual int						read( void * _buf, int _count );
-	virtual void					seek( int _pos );
-	virtual int						tell( void ) const;
-	virtual int						size( void ) const;
+	int read( void * _buf, int _count );
+	void seek( int _pos );
+	int	tell( void ) const;
+    int size( void ) const;
 };
 	
 class iOSFileOutput : public FileOutputStreamInterface
 {
-	FILE *							stream;
+	FILE * stream;
+    
 public:
-									iOSFileOutput( void );
+    iOSFileOutput( void );
 	
-	virtual bool					open( const String& _filename );
-	virtual void					close( void );
-	virtual int						tell( void );
+	bool open( const WString& _filename );
+	void close( void );
+	int	tell( void );
 	
-	virtual void					write( const void* _data, int _count );
-	virtual void					flush( void );
+	void write( const void* _data, int _count );
+	void flush( void );
 };
 
 class iOSFileSystem : public FileSystemInterface
@@ -51,28 +53,29 @@ class iOSFileSystem : public FileSystemInterface
 	/*char							resDirectory[ 1024 ];
 	char							docDirectory[ 1024 ];*/
 	
-	std::map< void *, FILE * >		mappedFiles;
+	std::map< void *, FILE * > mappedFiles;
+    
 public:
-									iOSFileSystem( void );
-	virtual							~iOSFileSystem( void );
+	iOSFileSystem( void );
+	~iOSFileSystem( void );
 
 	/*const char * const				GetResDir( void ) const;
 	const char * const				GetDocDir( void ) const;*/
 	
-	virtual bool					existFile( const String& _filename );
+	bool existFile( const WString& _filename ) const override;
 	
-	virtual FileInputStreamInterface *	openInputStream( const String& _filename );
-	virtual void					closeInputStream( FileInputStreamInterface* _stream );
+	FileInputStreamInterface *	openInputStream( const WString& _filename ) override;
+	void closeInputStream( FileInputStreamInterface* _stream ) override;
 	
-	virtual FileOutputStreamInterface *	openOutputStream( const String& _filename );
-	virtual void					closeOutputStream( FileOutputStreamInterface* _stream );
+	FileOutputStreamInterface *	openOutputStream( const WString& _filename ) override;
+	void closeOutputStream( FileOutputStreamInterface* _stream ) override;
 	
-	virtual void *					openMappedFile( const String& _filename, int* _size );
-	virtual void					closeMappedFile( void* _file );
+	void * openMappedFile( const WString& _filename, int* _size ) override;
+	void closeMappedFile( void* _file ) override;
 	
-	virtual bool					deleteFile( const String& _filename );
-	virtual bool					createFolder( const String& _path );
-	virtual bool					deleteFolder( const String& _path );
+	bool deleteFile( const WString& _filename ) override;
+	bool createFolder( const WString& _path ) override;
+	bool deleteFolder( const WString& _path ) override;
 };
 	
 }

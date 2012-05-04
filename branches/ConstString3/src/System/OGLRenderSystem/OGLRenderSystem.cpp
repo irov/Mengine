@@ -501,21 +501,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
 	{
-		/*GLfloat mat[16];
+		GLfloat mat[16];
 		s_toGLMatrix( mat, ( float * )&_projection );
 
 		glMatrixMode( GL_PROJECTION );
 
 		glLoadMatrixf( mat );
-
-		glMatrixMode( GL_MODELVIEW );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setModelViewMatrix( const mt::mat4f & _view )
 	{
-		/*GLfloat mat[16];
+		GLfloat mat[16];
 		s_toGLMatrix( mat, ( float * )&_view );
-		glLoadMatrixf( mat );*/
+        
+        glMatrixMode( GL_MODELVIEW );
+        
+		glLoadMatrixf( mat );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureMatrix( size_t _stage, const float* _texture )
@@ -539,8 +540,12 @@ namespace Menge
 		{
 			glLoadIdentity();
 		}*/
-		glMatrixMode( GL_MODELVIEW );
 	}
+    ///
+    void OGLRenderSystem::setWorldMatrix( const mt::mat4f & _world )
+    {
+        //!!!!!!!!!!!!!!
+    }
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle OGLRenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize )
 	{
@@ -857,6 +862,11 @@ namespace Menge
 		glCullFace( face );
 		enable ? glEnable( GL_CULL_FACE ) : glDisable( GL_CULL_FACE );
 	}
+    ////
+    void OGLRenderSystem::setSeparateAlphaBlendMode()
+    {
+    
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setDepthBufferTestEnable( bool _depthTest )
 	{
@@ -1298,7 +1308,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setRenderViewport( const Viewport & _viewport )
+	void OGLRenderSystem::setViewport( const Viewport & _viewport )
 	{
 		//float dx = static_cast<float>( m_winContextWidth ) / m_winWidth;
 		//float dy = static_cast<float>( m_winContextHeight ) / m_winHeight;
@@ -1375,17 +1385,6 @@ namespace Menge
 	{
 		return s_toGLInternalFormat( _format );
 	}
-
-	//////////////////////////////////////////////////////////////////////////
-	LightInterface * OGLRenderSystem::createLight( const String & _name )
-	{
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::releaseLight( LightInterface * _light )
-	{
-		//
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::onWindowMovedOrResized()
 	{
@@ -1422,14 +1421,16 @@ namespace Menge
         return NULL;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::makeProjection2D( float _left, float _right, 
-											float _top, float _bottom, 
-											float _near, float _far,  
-											float* _outMatrix )
+    void OGLRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float _left, float _right,
+                                          float _top, float _bottom, 
+                                          float _near, float _far )
 	{
 		float tx = 1.0f / ( _right - _left );
 		float ty = 1.0f / ( _top - _bottom );
 		float tz = 1.0f / ( _far - _near );
+        
+        float * _outMatrix = _projectionMatrix.buff();
+        
 		_outMatrix[0] = 2.0f * tx;
 		_outMatrix[1] = 0.0f;
 		_outMatrix[2] = 0.0f;

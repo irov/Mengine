@@ -1186,7 +1186,7 @@ namespace Menge
 		//}
 
 		//float lastTiming = m_timing;
-		
+
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
 		if( frameDuration == 0.f )
@@ -1245,16 +1245,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCurrentFrame_( size_t _lastFrame, bool _force )
 	{
-		/*if( m_name == ConstString("Movie_Doska2") )
-		{
-			printf("Movie.updateCurrentFrame_ %s %d-%d [%.2f]\n"
-				, m_name.c_str()
-				, _lastFrame
-				, m_currentFrame			
-				, this->getTiming()
-				);
-		}*/
-		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		size_t frameCount = m_resourceMovie->getFrameCount();
 

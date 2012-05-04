@@ -18,7 +18,7 @@ ${SOURCE_DIR}/source/common/utf_impl.c
 ${SOURCE_DIR}/source/common/utypes.c
 )
 
-add_definitions(-DU_STATIC_IMPLEMENTATION -DU_SIZEOF_WCHAR_T=2)
+add_definitions(-DU_STATIC_IMPLEMENTATION)
 
 include_directories( ${SOURCE_DIR}/source/common )
 

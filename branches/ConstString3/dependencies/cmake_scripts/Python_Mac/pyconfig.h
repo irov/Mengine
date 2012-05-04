@@ -950,7 +950,7 @@
 #define Py_ENABLE_SHARED 1
 
 /* Define as the size of the unicode type. */
-#define Py_UNICODE_SIZE 2
+#define Py_UNICODE_SIZE 4
 
 /* Define if you want to have a Unicode type. */
 #define Py_USING_UNICODE 1

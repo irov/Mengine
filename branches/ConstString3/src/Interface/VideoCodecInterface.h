@@ -4,7 +4,15 @@
 #	include "Interface/RenderSystemInterface.h"
 
 namespace Menge
-{
+{	
+	enum EVideoDecoderReadState
+	{
+		VDRS_FAILURE = 0,
+		VDRS_SUCCESS = 1,
+		VDRS_SKIP = 2,
+		VDRS_END_STREAM = 3
+	};
+
 	struct VideoCodecDataInfo
 		: public CodecDataInfo
 	{
@@ -12,6 +20,7 @@ namespace Menge
 		size_t frame_height;
 		float duration;
 	};
+	
 
 	struct VideoCodecOptions
 		: public CodecOptions
@@ -30,7 +39,7 @@ namespace Menge
 		virtual bool seek( float _timing ) = 0;
 		virtual bool eof() = 0;
 		virtual float getTiming() const = 0;
-		virtual bool readNextFrame() = 0;
+		virtual EVideoDecoderReadState readNextFrame() = 0;
 		
 	};
 }	// namespace Menge

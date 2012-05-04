@@ -29,6 +29,7 @@ namespace Menge
 		virtual void _setTiming( float _timing );
 		virtual float _getTiming() const;
 
+		virtual void _setSpeedFactor( float _factor );
 		virtual void _setFirstFrame();
 		virtual void _setLastFrame();
 
@@ -55,7 +56,6 @@ namespace Menge
 
 	protected:
 		float m_speedFactor;
-
 		size_t m_enumerator;
 
 		bool m_play;

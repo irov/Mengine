@@ -41,14 +41,16 @@ namespace Menge
 
 		virtual void showKeyboard(){ }
 		virtual void hideKeyboard(){ }
-
-		virtual String ansiToUtf8( const String& _ansi ) override;
-		virtual String utf8ToAnsi( const String& _utf8 ) override;
-		virtual size_t utf8Count( const String& _utf8 ) override;
-		virtual String unicodeToAnsi( const WString& _unicode ) override;
-		virtual WString ansiToUnicode( const String& _utf8 ) override;
-		virtual WString utf8ToUnicode( const String & _utf8 ) override;
-
+		
+		//deprecated
+		virtual String ansiToUtf8( const String& _ansi ) ;
+		virtual String utf8ToAnsi( const String& _utf8 ) ;
+		virtual size_t utf8Count( const String& _utf8 ) ;
+		virtual String unicodeToAnsi( const WString& _unicode ) ;
+		virtual WString ansiToUnicode( const String& _utf8 ) ;
+		virtual WString utf8ToUnicode( const String & _utf8 ) ;
+		//end deprecated
+		
 		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ){ return NULL; }
 		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ){ }
 

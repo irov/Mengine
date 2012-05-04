@@ -92,7 +92,6 @@ namespace Menge
 		mt::vec2f m_frameSize;
 
 		bool m_autoStart;
-		float m_timing;
 		bool m_needUpdate;
 	};
 }

@@ -25,6 +25,7 @@ namespace Menge
 	void Animatable::setSpeedFactor( float _factor )
 	{
 		m_speedFactor = _factor;
+		this->_setSpeedFactor( _factor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Animatable::getSpeedFactor() const
@@ -175,4 +176,10 @@ namespace Menge
 	{
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::_setSpeedFactor( float _factor )
+	{
+		//Empty
+	}
+
 }

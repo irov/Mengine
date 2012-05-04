@@ -1186,7 +1186,7 @@ namespace Menge
 		//}
 
 		//float lastTiming = m_timing;
-
+		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
 		if( frameDuration == 0.f )
@@ -1223,7 +1223,7 @@ namespace Menge
 				}
 			}	
 		}
-
+		
 		//if( m_currentFrame == frameCount + 1 )
 		//{
 		//	m_currentFrame = frameCount;
@@ -1245,13 +1245,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCurrentFrame_( size_t _lastFrame, bool _force )
 	{
-		//printf("Movie.updateCurrentFrame_ %s %d-%d [%.2f]\n"
-		//	, m_name.c_str()
-		//	, _lastFrame
-		//	, m_currentFrame			
-		//	, this->getTiming()
-		//	);
-
+		/*if( m_name == ConstString("Movie_Doska2") )
+		{
+			printf("Movie.updateCurrentFrame_ %s %d-%d [%.2f]\n"
+				, m_name.c_str()
+				, _lastFrame
+				, m_currentFrame			
+				, this->getTiming()
+				);
+		}*/
+		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		size_t frameCount = m_resourceMovie->getFrameCount();
 
@@ -1443,6 +1446,51 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::_setSpeedFactor( float _factor )
+	{
+		if( this->isCompile() == false )
+		{
+			MENGE_LOG_ERROR( "Warning: Movie::_setSpeedFactor not compile '%s'"
+				, m_name.c_str() 
+				);	
+			
+			return;
+		}
+		
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+			if( layer.animatable == false )
+			{
+				continue;
+			}
+						
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie.update: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+			
+			Node * node = it_found->second;
+			
+			Animatable * animatable = dynamic_cast<Animatable *>(node);
+			animatable->setSpeedFactor( _factor );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setReverse( bool _value )
 	{
 		
@@ -1452,4 +1500,5 @@ namespace Menge
 	{
 
 	}
+
 }

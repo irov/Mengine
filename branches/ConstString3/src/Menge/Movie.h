@@ -41,6 +41,7 @@ namespace Menge
 		void _setFirstFrame() override;
 		void _setLastFrame() override;
 
+		void _setSpeedFactor( float _factor ) override;
 	public:
 		Node * getMovieSlot( const ConstString & _name );
 		float getWorkAreaDuration() const;
@@ -54,7 +55,7 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-
+		
 	protected:
 		bool _activate() override;
 

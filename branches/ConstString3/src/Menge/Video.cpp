@@ -26,7 +26,6 @@ namespace	Menge
 		, m_soundEmitter( NULL )
 		, m_autoStart(false)
 		, m_needUpdate( false )
-		, m_timing( 0.0f )
 		, m_material( NULL )
 		, m_frameSize(0.0f, 0.0f)
 		, m_videoDecoder(NULL)
@@ -78,25 +77,28 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _timing )
 	{
-		Node::_update( _timing );
+		float speedFactor = this->getSpeedFactor();
+		
+		float timing = speedFactor * _timing;
 
-		if( m_play == false )
+		Node::_update( timing );
+
+		if( isPlay() == false )
 		{
 			return; 
 		}
-		
-		m_timing += _timing;
-		m_needUpdate = this->_sync( _timing );
+
+		m_needUpdate = this->_sync( timing );
 		
 		if( m_videoDecoder->eof() == true )
-		{
-			m_needUpdate = true;
+		{	
 			if( this->getLoop() == true )
 			{
 				this->_rewind();
 			}
 			else
 			{
+				m_needUpdate = false;
 				stop();
 			}
 		}
@@ -108,12 +110,7 @@ namespace	Menge
 		{
 			return false;
 		}
-
-		if( m_autoStart )
-		{
-			this->play();
-		}
-
+		
 		m_videoDecoder->readNextFrame();
 		this->_fillVideoBuffer();
 		m_videoDecoder->seek(0.0f);
@@ -273,13 +270,12 @@ namespace	Menge
 	void Video::_stop( size_t _enumerator )
 	{
 		this->_rewind( );
-		m_timing = 0.0f;
 		
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
 			m_soundEmitter->stop();
 		}
-		
+
 		//_release();
 		//_compile();
 
@@ -289,7 +285,6 @@ namespace	Menge
 	void Video::_end( size_t _enumerator )
 	{
 		this->_rewind( );
-		m_timing = 0.0f;
 		
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
@@ -334,10 +329,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_render( Camera2D * _camera )
 	{
-		/*if( m_play == false)
-		{
-			return;
-		}*/
 		Node::_render( _camera );
 
 		if( m_needUpdate )
@@ -442,8 +433,6 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_rewind()
 	{
-		m_resourceVideo;
-		float pos = this->getTiming();
 		m_videoDecoder->seek(0.0f);
 	}
 	////////////////////////////////////////////////////////////////////
@@ -479,7 +468,7 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_interrupt( size_t _enumerator )
 	{
-
+		//empty
 	}
 	////////////////////////////////////////////////////////////////////
 }

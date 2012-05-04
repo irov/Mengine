@@ -6,11 +6,18 @@
 
 #	include <map>
 
-#include "TargetConditionals.h"
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+#if WIN32
+#	include <Windows.h>
+#	include <GLee.h>
+#	include <GL/GLu.h>
+
+#	include "OGLWindowContext.h"
+#elif TARGET_OS_MAC && !TARGET_OS_IPHONE
+#	include "TargetConditionals.h"
 #   include <OpenGL/gl.h>
 #else
+#	include "TargetConditionals.h"
 #	include <OpenGLES/ES1/gl.h>
 #	include <OpenGLES/ES1/glext.h>
 #endif
@@ -20,7 +27,7 @@ namespace Menge
     class ServiceProviderInterface;
     class LogServiceInterface;
     
-	//class OGLWindowContext;
+	class OGLWindowContext;
 	class OGLTexture;
 
 	class OGLRenderSystem 
@@ -141,7 +148,9 @@ namespace Menge
 	private:
         ServiceProviderInterface* m_serviceProvider;
 		LogServiceInterface* m_logService;
-		//OGLWindowContext* m_windowContext;
+		
+		OGLWindowContext* m_windowContext;
+
 		String m_ext;
 
 		bool m_supportNPOT;

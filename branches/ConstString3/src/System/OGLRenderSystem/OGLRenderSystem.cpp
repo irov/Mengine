@@ -264,7 +264,7 @@ namespace Menge
 												bool _fullscreen, WindowHandle _winHandle, 
 												bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
-#if 0
+#if WIN32
 		createWindowContext( &m_windowContext );
 		if( m_windowContext == NULL )
 		{
@@ -637,6 +637,7 @@ namespace Menge
 	{
 		GLuint bufId = 0;
 		glGenBuffers( 1, &bufId );
+
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		MemoryRange memRange;
 		memRange.size = _indiciesNum * sizeof( uint16 );
@@ -1178,11 +1179,15 @@ namespace Menge
 			{
 				glDepthMask( GL_TRUE );
 			}
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+
+#	if WIN32
+			glClearDepth( _depth );
+#	elif TARGET_OS_MAC && !TARGET_OS_IPHONE
             glClearDepth( _depth );
-#else
+#	else
 			glClearDepthf( _depth );
-#endif
+#	endif
+
 		}
 		if( ( _frameBufferTypes & FBT_STENCIL ) != 0 )
 		{
@@ -1270,11 +1275,15 @@ namespace Menge
 			glViewport( 0, 0, 768, 1024 );
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+
+#	if WIN32
+			glOrtho( 0, 768, 0, 1024, -9999., 9999. );
+#	elif TARGET_OS_MAC && !TARGET_OS_IPHONE
             glOrtho( 0, 768, 0, 1024, -9999., 9999. );
-#else
+#	else
 			glOrthof( 0, 768, 0, 1024, -9999., 9999. );
-#endif
+#	endif
+
 			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();
 
@@ -1317,8 +1326,10 @@ namespace Menge
 
 
 		//glViewport( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-        glViewport( _viewport.begin.x, _viewport.begin.y, w, h );		
+#if WIN32
+		glViewport( _viewport.begin.x, _viewport.begin.y, w, h );
+#elif TARGET_OS_MAC && !TARGET_OS_IPHONE
+		glViewport( _viewport.begin.x, _viewport.begin.y, w, h );
 #else
         glViewport( 768 - (_viewport.begin.y + h), 1024 - (_viewport.begin.x + w), h, w );
 #endif
@@ -1326,18 +1337,23 @@ namespace Menge
 
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity();
-		//glOrthof( _viewport.begin.x, _viewport.begin.x + w, _viewport.begin.y, _viewport.begin.y + h, -9999., 9999. );
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+		//glOrthof( _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, -9999., 9999. );
+
+#	if WIN32
+		//glScalef( 1.f, -1.f, 1.f );
+		glOrtho( _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, -9999., 9999. );
+#	elif TARGET_OS_MAC && !TARGET_OS_IPHONE
         glScalef( 1.f, -1.f, 1.f );
 		glOrtho( _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, -9999., 9999. );
-#else
+#	else
         glScalef( 1.f, -1.f, 1.f );
         glOrthof( _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, -9999., 9999. );
         //glOrthof( 0.f, h, 0.f, w, -9999., 9999. );
 		glRotatef( 90.f, 0.f, 0.f, 1.f );
         
 		glTranslatef( 0.f, -768, 0.f );
-#endif
+#	endif
+		
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();
 	}

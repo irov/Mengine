@@ -275,8 +275,6 @@ namespace Menge
 		m_applicationPath += MENGE_FOLDER_DELIM;
 		m_userPath += MENGE_FOLDER_DELIM;
 
-		String platformName = "WIN";
-
 		if( initInterfaceSystem( &m_application ) == false )
 		{
 			return false;
@@ -303,6 +301,8 @@ namespace Menge
 		size_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
 		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
 		m_application->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
+
+		String platformName = "WIN";
 
 		if( m_application->initialize( this, platformName, m_commandLine ) == false )
 		{

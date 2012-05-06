@@ -43,5 +43,5 @@
 #	define MENGE_DEBUG_TILEPOLYGON	0x10
 
 
-#	define MENGE_DEFAULT_BASE_DIR "data/"
-#	define MENGE_FOLDER_DELIM "/"
+#	define MENGE_DEFAULT_BASE_DIR L"data/"
+#	define MENGE_FOLDER_DELIM L'/'

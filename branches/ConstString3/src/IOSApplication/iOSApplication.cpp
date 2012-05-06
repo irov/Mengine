@@ -552,7 +552,7 @@ void iOSApplication::notifyCursorUnClipping( void )
          maxLength : sizeof( docDirectory ) - 1
          encoding : NSUTF8StringEncoding ];
         
-        String str_docDirectory(resDirectory);
+        String str_docDirectory(docDirectory);
         
         bool wstr_docDirectory_successful;
         WString wstr_docDirectory = unicodeInterface->utf8ToUnicode(str_docDirectory, wstr_docDirectory_successful);

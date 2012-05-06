@@ -501,6 +501,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
 	{
+        return;
 		GLfloat mat[16];
 		s_toGLMatrix( mat, ( float * )&_projection );
 
@@ -511,6 +512,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setModelViewMatrix( const mt::mat4f & _view )
 	{
+        return;
 		GLfloat mat[16];
 		s_toGLMatrix( mat, ( float * )&_view );
         
@@ -1133,13 +1135,13 @@ namespace Menge
 		glClientActiveTexture( GL_TEXTURE1 );
 		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );*/
 
-		glVertexPointer( 4, GL_FLOAT, 28,  0 );
-		glColorPointer( colorSize, GL_UNSIGNED_BYTE, 28,  reinterpret_cast<const GLvoid *>( 16 ) );
+		glVertexPointer( 3, GL_FLOAT, 24,  0 );
+		glColorPointer( colorSize, GL_UNSIGNED_BYTE, 24,  reinterpret_cast<const GLvoid *>( 12 ) );
 
 		glClientActiveTexture( GL_TEXTURE0 );
-		glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
+		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );
 		glClientActiveTexture( GL_TEXTURE1 );
-		glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
+		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );
 
 		return true;
 	}

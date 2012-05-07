@@ -69,11 +69,11 @@ namespace Menge
 		void updateFrame2D_( const MovieLayer2D & layer, Node * _node, const MovieFrame2D & _frame );
 
 	private:
-		void updateParent_();
-		void playAnimation_();
+		void updateParent_();		
+		void stopAnimation_();
 
 	private:
-		Scriptable * findInternalObject_( const ConstString & _resource, EEventName _event );
+		Scriptable * findInternalObject_( const ConstString & _resource, EEventName _event ) const;
 		
 	protected:
 		void addMovieNode_(const MovieLayer2D & _layer2D, Node * _node );
@@ -89,10 +89,7 @@ namespace Menge
 
 		typedef std::map<size_t, Node *> TMapNode;
 		TMapNode m_nodies;
-
-		typedef std::map<size_t, Sprite *> TMapFlexSprite;
-		TMapFlexSprite m_flexSprites;
-
+		
 		typedef std::map<ConstString, Node *> TMapMovieSlot;
 		TMapMovieSlot m_slots;
 

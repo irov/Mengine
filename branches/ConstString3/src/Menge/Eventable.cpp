@@ -96,7 +96,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEventFromDict_( const char * _method, PyObject * _dict )
+	PyObject * Eventable::getEventFromDict_( const char * _method, PyObject * _dict ) const
 	{
 		if( _dict == 0 )
 		{
@@ -144,7 +144,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::callEvent( EEventName _event, const char * _format, ... )
+	void Eventable::callEvent( EEventName _event, const char * _format, ... ) const
 	{
 		PyObject * pyobj = this->getEvent( _event );
 
@@ -172,7 +172,7 @@ namespace Menge
 		va_end( valist ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::callEventDeferred( EEventName _event, const char * _format, ... )
+	void Eventable::callEventDeferred( EEventName _event, const char * _format, ... ) const
 	{
 		PyObject * pyobj = this->getEvent( _event );
 
@@ -223,7 +223,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( bool & _result, EEventName _event, const char * _format, ... )
+	bool Eventable::askEvent( bool & _result, EEventName _event, const char * _format, ... ) const
 	{
 		PyObject * pyobj = this->getEvent( _event );
 
@@ -244,7 +244,7 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... )
+	bool Eventable::askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... ) const
 	{
 		PyObject * pyobj = this->getEvent( _event );
 
@@ -263,7 +263,7 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( size_t & _result, EEventName _event, const char * _format, ... )
+	bool Eventable::askEvent( size_t & _result, EEventName _event, const char * _format, ... ) const
 	{
 		PyObject * pyobj = this->getEvent( _event );
 

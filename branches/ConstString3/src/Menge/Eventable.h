@@ -25,17 +25,20 @@ namespace Menge
 		PyObject * getEvent( EEventName _event ) const;
 		bool hasEvent( EEventName _event ) const;
 
-		void callEvent( EEventName _event, const char * _format, ... );
-		void callEventDeferred( EEventName _event, const char * _format, ... );
+	public:
+		void callEvent( EEventName _event, const char * _format, ... ) const;
+		void callEventDeferred( EEventName _event, const char * _format, ... ) const;
 
-		bool askEvent( bool & _result, EEventName _event, const char * _format, ... );
-		bool askEvent( size_t & _result, EEventName _event, const char * _format, ... );
-		bool askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... );
+	public:
+		bool askEvent( bool & _result, EEventName _event, const char * _format, ... ) const;
+		bool askEvent( size_t & _result, EEventName _event, const char * _format, ... ) const;
+		bool askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... ) const;
 
+	public:
 		void removeAllEvent();
 
 	protected:
-		PyObject * getEventFromDict_( const char * _method, PyObject * _dict );
+		PyObject * getEventFromDict_( const char * _method, PyObject * _dict ) const;
 		void removeEvent_( EEventName _event );
 
 	private:

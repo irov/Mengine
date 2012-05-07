@@ -45,35 +45,10 @@ namespace Menge
 			_node->setRotateX( -_frame.angle );
 			_node->setLocalAlpha( _frame.opacity );
 		}
-		////////////////////////////////////////////////////////////////////////////
-		//static void s_applyRelationFrame2D( Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm  )
-		//{
-		//	mt::vec2f wm_anchorPoint;
-		//	mt::mul_v2_m3(wm_anchorPoint, _frame.anchorPoint, _wm);
-		//	_node->setOrigin( wm_anchorPoint );
-
-		//	mt::vec2f wm_pos;
-		//	mt::mul_v2_m3(wm_pos, _frame.position, _wm);
-		//	_node->setLocalPosition( wm_pos );
-
-		//	mt::vec2f wm_scale;
-		//	wm_scale, _frame.scale, _wm);
-		//	_node->setScale( wm_scale );
-
-		//	float wm_angle;
-		//	_node->setAngle( _frame.angle );
-		//	_node->setPersonalAlpha( _frame.opacity );
-		//}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame3D( Sprite * _sprite, const MovieFrame3D & _frame )
-		{
-			_sprite->setVertices( _frame.vertices );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_resourceMovie(NULL)
-		//, m_timing(0.f)
 		, m_frameTiming(0.f)
 		, m_currentFrame(0)
 		, m_parentMovie(false)
@@ -131,39 +106,6 @@ namespace Menge
 		//	);
 
 		this->updateCurrentFrame_( m_currentFrame, true );
-
-		//m_timing = _timing;
-
-//		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
-//
-//		for( TVectorMovieLayers2D::const_iterator
-//			it = layers2D.begin(),
-//			it_end = layers2D.end();
-//		it != it_end;
-//		++it )
-//		{
-//			const MovieLayer2D & layer = *it;
-//
-//			TMapNode::iterator it_found = m_nodies.find( layer.index );
-//
-//			Node * node = it_found->second;
-//
-//
-//			if( layer.animatable == true )
-//			{
-//				Animatable * animatable = dynamic_cast<Animatable *>(node);
-//
-//				animatable->setTiming( m_timing );
-//
-////				if( Animatable->isActivate() == true )
-////				{
-////					animatable->setTiming( m_timing );
-////				}
-//
-//			}
-//		}
-
-		//this->update( 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Movie::_getTiming() const
@@ -225,7 +167,7 @@ namespace Menge
 			//this->setFirstFrame();
 		}
 
-		this->updateParent_();
+		//this->updateParent_();
 
 		this->updateCurrentFrame_( m_currentFrame, true );
 
@@ -244,117 +186,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_stop( size_t _enumerator )
 	{
-		//m_timing = 0.f;
-		
-		//const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
-
-		//for( TVectorMovieLayers2D::const_iterator
-		//	it = layers2D.begin(),
-		//	it_end = layers2D.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	const MovieLayer2D & layer = *it;
-
-		//	if( layer.internal == true )
-		//	{
-		//		continue;
-		//	}
-
-		//	if( layer.animatable == false )
-		//	{
-		//		continue;
-		//	}
-
-		//	TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-		//	if( it_found == m_nodies.end() )
-		//	{
-		//		MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
-		//			, m_name.c_str()
-		//			, layer.name.c_str()
-		//			, layer.index
-		//			);
-
-		//		continue;
-		//	}
-
-		//	Node * node = it_found->second;
-
-		//	Animatable * animatable = dynamic_cast<Animatable *>(node);
-
-		//	if( animatable->isPlay() == true )
-		//	{
-		//		//printf("Movie %s stop[end] animatable %s\n"
-		//		//	, m_name.c_str()
-		//		//	, node->getName().c_str()
-		//		//	);
-
-		//		animatable->stop();
-
-
-		//		//float timing = (indexOut - indexIn) * frameDuration;
-		//		//animatable->setLastFrame( timing );
-		//	}
-		//}
+		this->stopAnimation_();
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( size_t _enumerator )
 	{
-		//m_timing = 0.f;
-
-		//const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
-
-		//for( TVectorMovieLayers2D::const_iterator
-		//	it = layers2D.begin(),
-		//	it_end = layers2D.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	const MovieLayer2D & layer = *it;
-
-		//	if( layer.internal == true )
-		//	{
-		//		continue;
-		//	}
-
-		//	if( layer.animatable == false )
-		//	{
-		//		continue;
-		//	}
-
-		//	TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-		//	if( it_found == m_nodies.end() )
-		//	{
-		//		MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
-		//			, m_name.c_str()
-		//			, layer.name.c_str()
-		//			, layer.index
-		//			);
-
-		//		continue;
-		//	}
-
-		//	Node * node = it_found->second;
-
-		//	Animatable * animatable = dynamic_cast<Animatable *>(node);
-
-		//	if( animatable->isPlay() == true )
-		//	{
-		//		//printf("Movie %s stop[end] animatable %s\n"
-		//		//	, m_name.c_str()
-		//		//	, node->getName().c_str()
-		//		//	);
-
-		//		animatable->stop();
-
-		//		//float timing = (indexOut - indexIn) * frameDuration;
-		//		//animatable->setTiming( timing );
-		//	}
-		//}
+		this->stopAnimation_();
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
@@ -421,15 +260,6 @@ namespace Menge
 		}
 		else
 		{
-			//if( _layer.parent == 0 )
-			//{
-			//	Helper::s_applyRelationFrame2D( _node, _frame, _wm );
-			//}
-			//else
-			//{
-			//	Helper::s_applyFrame2D( _node, _frame );
-			//}
-
 			if( _layer.movie == false )
 			{
 				Helper::s_applyFrame2D( _node, _frame );
@@ -610,7 +440,7 @@ namespace Menge
 		return slot;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event )
+	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event ) const
 	{
 		ResourceInternalObject * resourceInternalObject = ResourceManager::get()
 			->getResourceT<ResourceInternalObject>( _resource );
@@ -907,92 +737,6 @@ namespace Menge
 			}
 		}
 
-		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
-
-		for( TVectorMovieLayers3D::const_iterator
-			it = layers3D.begin(),
-			it_end = layers3D.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer3D & layer = *it;
-
-			if( layer.internal == false )
-			{
-				Sprite * layer_sprite = NodeManager::get()
-					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
-
-				layer_sprite->setImageResource( layer.source );
-
-				//layer_sprite->disable();
-
-				if( layer_sprite->compile() == false )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
-					return false;
-				}
-
-				layer_sprite->enable();
-				layer_sprite->localHide( true );
-
-				layer_sprite->setFlexible( true );
-
-				m_flexSprites[layer.index] = layer_sprite;
-				//Sprite * layer_sprite = NodeManager::get()
-				//	->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
-
-				//String movieImageResource = "MovieLayerImage";
-				//movieImageResource += Helper::to_str(layer.source);
-
-				//ConstString c_movieImageResource(movieImageResource);
-
-				//layer_sprite->setImageResource( c_movieImageResource );
-
-				//layer_sprite->disable();
-
-				//if( layer_sprite->compile() == false )
-				//{
-				//	MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
-				//		, m_name.c_str()
-				//		, layer.name.c_str()
-				//		);
-
-				//	return false;
-				//}
-
-				//m_nodies[layer.index] = layer_sprite;
-			}
-			else
-			{
-				Scriptable * scriptable = this->findInternalObject_( layer.source, EVENT_MOVIE_FIND_INTERNAL_SPRITE );
-
-				if( scriptable == NULL )
-				{
-					return false;
-				}
-
-				Sprite * layer_sprite = dynamic_cast<Sprite*>(scriptable);
-
-				if( layer_sprite == 0 )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' internal node '%s' not type 'Sprite'"
-						, m_name.c_str()
-						, layer.source.c_str()
-						);
-
-					return false;
-				}
-
-				layer_sprite->setFlexible( true );
-
-				m_flexSprites[layer.index] = layer_sprite;
-			}
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1054,6 +798,63 @@ namespace Menge
 				Node * node_parent = it_parent->second;
 
 				node_parent->addChildren( node );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::stopAnimation_()
+	{
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			if( layer.internal == true )
+			{
+				continue;
+			}
+
+			if( layer.animatable == false )
+			{
+				continue;
+			}
+
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_found->second;
+
+			Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+			if( animatable->isPlay() == true )
+			{
+				//printf("Movie %s stop[end] animatable %s\n"
+				//	, m_name.c_str()
+				//	, node->getName().c_str()
+				//	);
+
+				animatable->stop();
+
+				float movie_timing = this->getTiming();
+
+				float animatable_timing = movie_timing - layer.in;
+
+				animatable->setTiming( animatable_timing );
 			}
 		}
 	}
@@ -1238,6 +1039,8 @@ namespace Menge
 		{
 			if( this->getLoop() == false )
 			{
+				m_frameTiming = 0.f;
+
 				this->end();
 			}
 		}
@@ -1336,39 +1139,6 @@ namespace Menge
 					continue;
 				}
 			}
-			else if( m_currentFrame >= frameCount && m_currentFrame <= indexOut )
-			{
-				if( m_resourceMovie->getFrame2D( layer, frameCount - indexIn, frame ) == false )
-				{
-					continue;
-				}
-
-				if( layer.internal == false )
-				{
-					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-					//node->localHide(true);
-
-					if( layer.animatable == true )
-					{
-						Animatable * animatable = dynamic_cast<Animatable *>(node);
-
-						if( animatable->isPlay() == true )
-						{
-							//printf("Movie %s stop[end] animatable %s\n"
-							//	, m_name.c_str()
-							//	, node->getName().c_str()
-							//	);
-
-							animatable->stop();
-
-							float timing = (frameCount - indexIn) * frameDuration;
-							animatable->setTiming( timing );
-						}
-					}
-
-					continue;
-				}
-			}
 			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{
 				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
@@ -1387,7 +1157,7 @@ namespace Menge
 
 						if( animatable->isPlay() == false || _force == true )
 						{
-							animatable->setSpeedFactor( m_speedFactor );							
+							//animatable->setSpeedFactor( m_speedFactor );							
 
 							//printf("Movie %s play animatable %s\n"
 							//	, m_name.c_str()

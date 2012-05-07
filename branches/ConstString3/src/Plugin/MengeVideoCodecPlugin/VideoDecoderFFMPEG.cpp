@@ -54,12 +54,9 @@ namespace Menge
 		, m_bufferIO(NULL)
 		, m_probeSize(4096)
 		, m_videoStreamId(-1)
-		, m_frameRate(-1)
-		, m_isValid(false)
-		, m_timing(0)
-		, m_frameTiming(0)
+		//, m_timing(0)
 		, m_pts(0.0f)
-		, m_eof(false)
+		, m_isCompile(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,15 +70,10 @@ namespace Menge
 		return &m_dataInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::isValid() const
-	{
-		return m_isValid;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::initialize()
 	{
 		//initialize ffmpeg avcodec
-		if( m_isValid == true )
+		if( m_isCompile == true )
 		{
 			return true;
 		}
@@ -233,11 +225,11 @@ namespace Menge
 		//avcodec_decode_video2( m_codecContext ,m_Frame, &isGotPicture, &packet );
 		//av_free_packet(&packet);
 
-		m_dataInfo.frame_height = m_codecContext->height;
-		m_dataInfo.frame_width = m_codecContext->width;
+		m_dataInfo.frameHeight = m_codecContext->height;
+		m_dataInfo.frameWidth = m_codecContext->width;
+		m_dataInfo.fps = (int) av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
 		
-		m_frameRate = (int) av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
-		if( m_frameRate == 0 )
+		if( m_dataInfo.fps == 0 )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: invalid Frame rate ");
 			return false; 
@@ -250,17 +242,16 @@ namespace Menge
 		
 		m_cacheBuffer = new size_t[ m_codecContext->height * m_codecContext->width * 4 ];
 
-		//m_stream->seek( SEEK_SET ); 
-		m_frameTiming = 1000.f / m_frameRate;
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
-		m_dataInfo.duration  = (float)( len * m_frameRate / AV_TIME_BASE );
-		m_isValid = true;
+		m_dataInfo.duration  = (float)( len * m_dataInfo.fps / AV_TIME_BASE );
+		m_dataInfo.frameTiming = 1000.f / m_dataInfo.fps;
+		m_isCompile = true;
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////// 
 	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		if( m_isValid != true )
+		if( m_isCompile != true )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
 			return 0;
@@ -272,10 +263,9 @@ namespace Menge
 			return 0;
 		}
 		
-
 		// Convert the image into RGBA and copy to the surface.
 		avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
-			m_dataInfo.frame_width, m_dataInfo.frame_height);
+			m_dataInfo.frameWidth, m_dataInfo.frameHeight);
 		
 		//memcpy(_buffer,m_cacheBuffer,_bufferSize * m_codecContext->height);
 		/*unsigned char * source = m_cacheBuffer;
@@ -295,13 +285,12 @@ namespace Menge
 			source += m_codecContext->width * 4;
 		}*/
 		
-		/*avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
+		/*
+		avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
 			m_dataInfo.frame_width, m_dataInfo.frame_height);
 		
 		size_t decoded = m_dataInfo.frame_width * m_dataInfo.frame_height;
-			*/
-
-
+		*/
 		size_t decoded = _bufferSize * m_codecContext->height;
 		return decoded;
 	}
@@ -310,7 +299,7 @@ namespace Menge
 	{	
 		//size_t pos = m_stream->tell();
 
-		if( m_isValid != true )
+		if( m_isCompile != true )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
 			//error
@@ -392,7 +381,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
 	{
-		m_isValid = false;
+		m_isCompile = false;
 		// Free the packet that was allocated by av_read_frame
 		if (m_Frame != NULL)
 		{
@@ -434,54 +423,54 @@ namespace Menge
 			m_bufferIO = NULL;
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	int VideoDecoderFFMPEG::sync( float _timing )
-	{
-		m_timing += _timing;
-		//m_dataInfo;
-		//m_formatContext;
-		//m_pts;
-		//printf("  timing %f.2  \n",_timing);
-		int countFrames = int(m_timing / m_frameTiming);
-		//printf (" countFrames  %i\n",countFrames);
-		int frame = countFrames;
-		int ret;
-		
-		if( frame != -1 )
-		{
-			ret =-1;
-		}
-		else
-		{
-			ret = 1;
-		}
-		
-		m_eof = false;
+	////////////////////////////////////////////////////////////////////////////
+	//int VideoDecoderFFMPEG::sync( float _timing )
+	//{
+	//	m_timing += _timing;
+	//	//m_dataInfo;
+	//	//m_formatContext;
+	//	//m_pts;
+	//	//printf("  timing %f.2  \n",_timing);
+	//	int countFrames = int(m_timing / m_frameTiming);
+	//	//printf (" countFrames  %i\n",countFrames);
+	//	int frame = countFrames;
+	//	int ret;
+	//	
+	//	if( frame != -1 )
+	//	{
+	//		ret =-1;
+	//	}
+	//	else
+	//	{
+	//		ret = 1;
+	//	}
+	//	
+	//	m_eof = false;
 
-		while( countFrames > 0 )
-		{
-			EVideoDecoderReadState state = readNextFrame();
-			
-			if( state == VDRS_END_STREAM )
-			{
-				m_eof = true;
-				break;	
-			}
-			else if( state == VDRS_FAILURE )
-			{
-				break;	
-			}
-			else if( state == VDRS_SKIP )
-			{
-				continue;	
-			}
+	//	while( countFrames > 0 )
+	//	{
+	//		EVideoDecoderReadState state = readNextFrame();
+	//		
+	//		if( state == VDRS_END_STREAM )
+	//		{
+	//			m_eof = true;
+	//			break;	
+	//		}
+	//		else if( state == VDRS_FAILURE )
+	//		{
+	//			break;	
+	//		}
+	//		else if( state == VDRS_SKIP )
+	//		{
+	//			continue;	
+	//		}
 
-			countFrames--;
-		}
-		
-		m_timing -= frame *  m_frameTiming;
-		return ret;		
-	}
+	//		countFrames--;
+	//	}
+	//	
+	//	m_timing -= frame *  m_frameTiming;
+	//	return ret;		
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::seek( float _timing )
 	{
@@ -504,7 +493,9 @@ namespace Menge
 
         int flags = AVSEEK_FLAG_BACKWARD;
         if (seekTime > 0 && seekTime < seekStreamDuration)
+		{
             flags |= AVSEEK_FLAG_ANY; // H.264 I frames don't always register as "key frames" in FFmpeg
+		}
 
         int ret = av_seek_frame(m_formatContext, seekStreamIndex, seekTime, flags);
         if (ret < 0)
@@ -531,12 +522,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::eof()
 	{
-		return m_eof;
-		/*if( Utils::eof( m_stream ) == true )
+		if( Utils::eof( m_stream ) == true )
 		{
 			return true;
 		}
-		return false;*/
+		
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::setOptions( CodecOptions * _options )

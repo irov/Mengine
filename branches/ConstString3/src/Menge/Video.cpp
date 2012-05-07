@@ -30,6 +30,7 @@ namespace	Menge
 		, m_frameSize(0.0f, 0.0f)
 		, m_videoDecoder(NULL)
 		, m_videoFile(NULL)
+		, m_timing(0.0f)
 	{
 		m_textures[0] = NULL;
 	}
@@ -80,28 +81,17 @@ namespace	Menge
 		float speedFactor = this->getSpeedFactor();
 		
 		float timing = speedFactor * _timing;
-
+		
 		Node::_update( timing );
-
+		//localHide(false);
+		//printf("%f %s\n",_timing,m_name.c_str());
 		if( isPlay() == false )
 		{
-			return; 
+			return;
 		}
 
+		//printf("%f %s\n",_timing,m_name.c_str());
 		m_needUpdate = this->_sync( timing );
-		
-		if( m_videoDecoder->eof() == true )
-		{	
-			if( this->getLoop() == true )
-			{
-				this->_rewind();
-			}
-			else
-			{
-				m_needUpdate = false;
-				stop();
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
@@ -110,16 +100,27 @@ namespace	Menge
 		{
 			return false;
 		}
+		//printf("%s  onActivate \n",m_name.c_str());	
+		while ( true )
+		{
+			EVideoDecoderReadState  state  = m_videoDecoder->readNextFrame();
+			if( state == VDRS_SKIP )
+			{
+				continue;
+			}
 		
-		m_videoDecoder->readNextFrame();
+			break;
+		}
+
 		this->_fillVideoBuffer();
-		m_videoDecoder->seek(0.0f);
+		//m_videoDecoder->seek(0.0f);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_deactivate()
 	{
 		Node::_deactivate();
+		this->_rewind();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
@@ -237,8 +238,8 @@ namespace	Menge
 		m_videoDecoder->setOptions(  codecOptions );
 
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-		m_frameSize.x = dataInfo->frame_width;
-		m_frameSize.y = dataInfo->frame_height;
+		m_frameSize.x = dataInfo->frameWidth;
+		m_frameSize.y = dataInfo->frameHeight;
 		
 		return true;
 	}
@@ -269,13 +270,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )
 	{
-		this->_rewind( );
-		
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
 			m_soundEmitter->stop();
 		}
 
+		m_needUpdate = false;
+		this->_rewind( );
 		//_release();
 		//_compile();
 
@@ -309,7 +310,6 @@ namespace	Menge
 			return false;
 		}
 
-		//m_play = true;
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
 			m_soundEmitter->play();
@@ -423,12 +423,58 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	bool Video::_sync( float _timing )
 	{
-		if( m_videoDecoder->sync( _timing ) < 0 )	// if we are not up to date read frame
+		m_timing += _timing;
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+		
+		int countFrames = int(m_timing / dataInfo->frameTiming);
+		bool needUpdate = false; 
+		int frame = countFrames;
+
+		if( frame != -1 )
 		{
-			return true;
+			needUpdate = true;
+		}
+				
+		while( countFrames > 0 )
+		{
+			EVideoDecoderReadState state = m_videoDecoder->readNextFrame();
+
+			if( state == VDRS_END_STREAM )
+			{	
+				this->onEndStream_();
+				break;	
+			}
+			else if( state == VDRS_FAILURE )
+			{
+				MENGE_LOG_ERROR( "Video: '%s' error reading frame"
+					, getName().c_str()
+					);
+
+				break;	
+			}
+			else if( state == VDRS_SKIP )
+			{
+				continue;	
+			}
+
+			countFrames--;
 		}
 
-		return false;
+		m_timing -= frame *  dataInfo->frameTiming;	
+		return needUpdate;
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::onEndStream_()
+	{
+		if( this->getLoop() == true )
+		{
+			this->_rewind();
+		}
+		else
+		{
+			m_needUpdate = false;
+			stop();
+		}
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_rewind()
@@ -454,7 +500,6 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setLastFrame()
 	{
-		//empty
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_fillVideoBuffer()

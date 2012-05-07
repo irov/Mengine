@@ -41,14 +41,12 @@ namespace Menge
 
 		void setSoundResource( const ConstString& _resource );
 		const ConstString & getSoundResource() const;
-
-
+		
 		virtual void _setTiming( float _timing ) override;
 		virtual float _getTiming() const override;
 
 		virtual void _setFirstFrame() override;
 		virtual void _setLastFrame() override;
-
 	protected:
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;
@@ -75,6 +73,7 @@ namespace Menge
 
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
+		void onEndStream_();
 	protected:
 		ResourceVideo* m_resourceVideo;
 
@@ -90,6 +89,8 @@ namespace Menge
 		FileInputStreamInterface * m_videoFile;
 		VideoDecoderInterface * m_videoDecoder;
 		mt::vec2f m_frameSize;
+		float m_timing;
+
 
 		bool m_autoStart;
 		bool m_needUpdate;

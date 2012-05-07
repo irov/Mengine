@@ -39,14 +39,14 @@ namespace Menge
 	
 	public:	
 		bool eof() override;
-		int sync( float _timing ) override;
+		//int sync( float _timing ) override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;
 		bool isValid() const;
-		const VideoCodecDataInfo* getCodecDataInfo() const;
 		void setOptions( CodecOptions * ) ;
+		
 		EVideoDecoderReadState readNextFrame( ) override;
-	
+		const VideoCodecDataInfo* getCodecDataInfo() const;
 	protected:
 		void _invalidate() ;
 	
@@ -71,12 +71,8 @@ namespace Menge
 		int m_probeSize;
 		int m_videoStreamId;
 		
-		int m_frameRate;
-		float m_frameTiming;
-		bool m_isValid;
-		float m_timing;
-
-		bool m_eof;
+		//float m_timing;
+		bool m_isCompile;
 		float m_pts;
 		
 	private:

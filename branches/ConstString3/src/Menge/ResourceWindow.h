@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "ResourceReference.h"
-
+#	include "ResourceImage.h"
 #	define MAX_WINDOW_ELEMENTS 9
 		// 0 - Background
 		// 1 - LeftTop
@@ -19,9 +19,10 @@ namespace Menge
 
 	struct WindowImageDesc
 	{
-		WString path;
-		ConstString codec;
+		ConstString resourceName;
 		RenderTextureInterface * texture;
+		ResourceImage * resource;
+		mt::vec2f offset;
 	};
 
 	class ResourceWindow

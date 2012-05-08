@@ -13,6 +13,8 @@
 
 namespace Menge
 {
+	class MovieFramePack;
+	
 	struct MovieLayer
 	{
 		MovieLayer()
@@ -34,7 +36,9 @@ namespace Menge
 		float out;
 
 		ConstString blendingMode;
-		
+		ConstString keyFramesName;
+		WString keyFramesPath;
+
 		ConstString source;
 		bool internal;
 		bool animatable;
@@ -143,8 +147,8 @@ namespace Menge
 
 	protected:
 		void loader( BinParser * _parser ) override;
-		void loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml );
-		void loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml, const MovieLayerSource3D & _layer );
+		//void loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml );
+		//void loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml, const MovieLayerSource3D & _layer );
 		
 	protected:
 		bool _compile() override;
@@ -157,8 +161,11 @@ namespace Menge
 	protected:
 		ConstString m_pathMOV;
 
+		WString m_keyFramePackPath;
 		float m_frameDuration;
 		float m_workAreaDuration;
+		
+		MovieFramePack * m_framePack;
 
 		size_t m_frameCount;
 

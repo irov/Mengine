@@ -29,9 +29,7 @@ namespace Menge
 			MovieKeyFrameManager * m_manager;
 			MovieFramePack * m_pack;
 		};
-
 	}
-
 	////////////////////////////////////////////////////////////////////////////////////////////
 	MovieKeyFrameManager::MovieKeyFrameManager()
 	{

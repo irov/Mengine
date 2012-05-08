@@ -11,28 +11,45 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////
 	const MovieFrameSource & MovieFramePack::getLastLayerFrame( size_t _layerIndex ) const
 	{
-		return m_layers[_layerIndex - 1].frames.back();
+		const MovieFrameLayer & frameLayer = m_layers[_layerIndex - 1];
+		const TVectorMovieFrameSource & frameSource = frameLayer.frames;
+		const MovieFrameSource & frame = frameSource.back();
+		
+		return frame;
 	}
 	///////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::isLayerEmpty( size_t _layerIndex ) const
 	{
-		bool isEmpty = m_layers[_layerIndex - 1].frames.empty();
+		const MovieFrameLayer & frameLayer = m_layers[_layerIndex - 1];
+		const TVectorMovieFrameSource & frameSource = frameLayer.frames;
+		bool isEmpty = frameSource.empty();
+		
 		return isEmpty;
 	}
 	///////////////////////////////////////////////////////////////////////
 	void MovieFramePack::setLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame )
 	{
-		m_layers[_layerIndex - 1].frames.push_back( _frame );
+		MovieFrameLayer & frameLayer = m_layers[_layerIndex - 1];
+		TVectorMovieFrameSource & frameSource = frameLayer.frames;
+		frameSource.push_back( _frame );
 	}
 	///////////////////////////////////////////////////////////////////////
 	const MovieFrameSource & MovieFramePack::getLayerFrame( size_t _layerIndex, size_t _frameIndex ) const
 	{
-		return m_layers[_layerIndex - 1].frames[_frameIndex];
+		const MovieFrameLayer & frameLayer = m_layers[_layerIndex - 1];
+		const TVectorMovieFrameSource & frameSource = frameLayer.frames;
+		const MovieFrameSource & frame =  frameSource[_frameIndex];
+		
+		return frame;
 	}
 	///////////////////////////////////////////////////////////////////////
 	size_t MovieFramePack::getLayerCountFrames( size_t _layerIndex ) const
 	{
-		return m_layers[_layerIndex - 1].frames.size();
+		const MovieFrameLayer & frameLayer = m_layers[_layerIndex - 1];
+		const TVectorMovieFrameSource & frameSource = frameLayer.frames;
+		size_t size = frameSource.size();
+
+		return size;
 	}
 	///////////////////////////////////////////////////////////////////////
 }

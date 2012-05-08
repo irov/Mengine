@@ -9,9 +9,7 @@
 namespace Menge
 {
 	class BinParser;
-	
-	typedef std::vector<MovieFramePack *> TVectorMovieFramePack;
-	
+		
 	class MovieKeyFrameManager
 		: public Holder<MovieKeyFrameManager>
 	{
@@ -27,7 +25,5 @@ namespace Menge
 		MovieFramePack * createMovieFramePak_( const ConstString & _pak, const WString & _path );
 		void loaderKeyFrames2D_( BinParser * _parser, size_t _layerIndex, MovieFramePack * _framePak );
 		void loaderKeyFrames3D_( BinParser * _parser, size_t _layerIndex, MovieFramePack * _framePak );
-		TVectorMovieFramePack m_framePacks;
-		size_t m_curLayer;
 	};
 }

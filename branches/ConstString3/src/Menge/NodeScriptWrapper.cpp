@@ -2333,17 +2333,17 @@ namespace Menge
 					{
 						PyObject * py_dict_frame = pybind::dict_new();
 
-						PyObject * py_pos = pybind::ptr((*it_frame).position);
+						PyObject * py_pos = pybind::ptr( (*it_frame).position );
 						pybind::dict_set(py_dict_frame,"position", py_pos);
+						pybind::decref( py_pos );
 
 						float frameTime = _layer.in + i * m_frameDuration;
-						PyObject * py_time = pybind::ptr(frameTime);
+
+						PyObject * py_time = pybind::ptr( frameTime );
 						pybind::dict_set(py_dict_frame,"time", py_time);
+						pybind::decref( py_time );
 
 						pybind::list_appenditem( py_list_frames, py_dict_frame );
-
-						pybind::decref( py_pos );
-						pybind::decref( py_time );
 						pybind::decref( py_dict_frame );
 						i++;
 					}

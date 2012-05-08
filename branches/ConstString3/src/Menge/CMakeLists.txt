@@ -641,6 +641,8 @@ ADD_FILTER(
 Manager\\\\MovieKeyFrame
 	MovieKeyFrameManager.cpp
 	MovieKeyFrameManager.h
+    MovieFramePack.h
+    MovieFramePack.cpp
 )
 
 ADD_FILTER(

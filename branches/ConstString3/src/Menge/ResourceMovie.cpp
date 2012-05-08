@@ -91,6 +91,11 @@ namespace Menge
 		//	return false;
 		//}
 
+		if( m_framePack->isLayerEmpty( _layer.index ) == true )
+		{
+			return false;
+		}
+
 		const MovieFrameSource & frame =  m_framePack->getLayerFrame( _layer.index, _index );
 
 		_frame.anchorPoint = frame.anchorPoint;

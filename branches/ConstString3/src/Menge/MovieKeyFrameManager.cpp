@@ -4,28 +4,42 @@
 #	include "Loadable.h"
 #	include "LoaderEngine.h"
 
+
 namespace Menge
 {
-	class LoadableMovieKeyFrameManager
-		: public Loadable
+	namespace 
 	{
-	public:
-		LoadableMovieKeyFrameManager( MovieKeyFrameManager * _manager, MovieFramePack * _pak )
-			: m_manager(_manager)
-			, m_pack(_pak)
+		class LoadableMovieKeyFrameManager
+			: public Loadable
 		{
-		}
+		public:
+			LoadableMovieKeyFrameManager( MovieKeyFrameManager * _manager, MovieFramePack * _pak )
+				: m_manager(_manager)
+				, m_pack(_pak)
+			{
+			}
 
-	protected:
-		void loader( BinParser * _parser ) override
-		{
-			m_manager->loaderMovieFramePak( _parser, m_pack );
-		}
-	protected:
-		MovieKeyFrameManager * m_manager;
-		MovieFramePack * m_pack;
-	};
-	
+		protected:
+			void loader( BinParser * _parser ) override
+			{
+				m_manager->loaderMovieFramePak( _parser, m_pack );
+			}
+
+		protected:
+			MovieKeyFrameManager * m_manager;
+			MovieFramePack * m_pack;
+		};
+
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	MovieKeyFrameManager::MovieKeyFrameManager()
+	{
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////
+	MovieKeyFrameManager::~MovieKeyFrameManager()
+	{
+	}
 	////////////////////////////////////////////////////////////////////////////////////////////
 	void MovieKeyFrameManager::loaderMovieFramePak( BinParser * _parser, MovieFramePack * _framePak )
 	{
@@ -216,6 +230,5 @@ namespace Menge
 		//m_framePacks.erase(_framePak);
 		delete _framePak;
 	}
-
 
 }

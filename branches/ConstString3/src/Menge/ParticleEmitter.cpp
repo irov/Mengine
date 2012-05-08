@@ -345,8 +345,9 @@ namespace	Menge
 		m_interface->update( _timing );
 
 		size_t partCount = 0;
-		size_t maxParticleCount = ParticleEngine::get()
-			->renderParticlesCount(0);
+
+		size_t maxParticleCount = 2000;
+		size_t maxMeshCount = 100;
 
 		bool firstPoint = true;
 
@@ -359,31 +360,32 @@ namespace	Menge
 		ARGB color_argb = color.getAsARGB();
 
 		static TVectorParticleVerices s_particles(maxParticleCount);
-		static TVectorParticleMeshes s_meshes(20);
-		s_particles.clear();
-		s_meshes.clear();
+		static TVectorParticleMeshes s_meshes(maxMeshCount);
+		//s_particles.clear();
+		//s_meshes.clear();
 
 		m_vertices.clear();
 		m_batchs.clear();
 
+		EmitterRenderFlush flush;
+
 		if( ParticleEngine::get()
-			->flushEmitter( m_interface, s_meshes, s_particles, maxParticleCount ) == false )
+			->flushEmitter( m_interface, s_meshes, s_particles, maxParticleCount, flush ) == false )
 		{
 			return;
 		}
-
 		
-		m_vertices.resize( s_particles.size() * 4 );
+		m_vertices.resize( flush.particleCount * 4 );
 
 		const mt::mat4f& worldMatrix = this->getWorldMatrix();
 		
-		for( TVectorParticleMeshes::const_iterator
-			it = s_meshes.begin(),
-			it_end = s_meshes.end();
+		for( TVectorParticleMeshes::size_type
+			it = 0,
+			it_end = flush.meshCount;
 		it != it_end;
 		++it )
 		{
-			const ParticleMesh & mesh = *it;
+			const ParticleMesh & mesh = s_meshes[it];
 
 			for( TVectorParticleVerices::size_type
 				it = mesh.begin,

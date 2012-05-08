@@ -154,7 +154,7 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem::flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit )
+	bool AstralaxParticleSystem::flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, size_t _particlesLimit, EmitterRenderFlush & _flush )
 	{
 		if( _emitter == 0 )
 		{
@@ -175,19 +175,29 @@ namespace Menge
 			return false;
 		}
 
+		_flush.particleCount = 0;
+		_flush.meshCount = 0;
+
 		while( rendering.count )
 		{
-			TVectorParticleVerices::size_type offset = _particles.size();
-
 			ParticleMesh mesh;
-			mesh.begin = offset;
+			mesh.begin = _flush.particleCount;
 			mesh.size = rendering.count;
 			mesh.texture = rendering.texture_id;
 			mesh.intense = rendering.intense;
 
-			_meshes.push_back( mesh );
+			if( _particlesLimit <= _flush.particleCount )
+			{
+				return false;
+			}
+			
+			_meshes[_flush.meshCount] = mesh;
+					
 
-			this->fillParticles_( _particles, offset, rendering.count );
+			this->fillParticles_( _particles, _flush.particleCount, rendering.count );
+
+			_flush.particleCount += rendering.count;
+			++_flush.meshCount;
 
 			Magic_CreateNextRenderedParticlesList(&rendering);
 		}
@@ -197,7 +207,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleSystem::fillParticles_( TVectorParticleVerices & _particles, TVectorParticleVerices::size_type _offset, int _count )
 	{
-		_particles.resize(_offset + _count);
+		//_particles.resize(_offset + _count);
 
 		MAGIC_PARTICLE_VERTEXES vertexes;
 		for( int i = 0; i != _count; ++i )

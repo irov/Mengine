@@ -82,9 +82,9 @@ namespace Menge
 	//	return m_interface->releaseEmitter( _emitter );
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit )
+	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, size_t _particlesLimit, EmitterRenderFlush & _flush )
 	{
-		return m_interface->flushParticles( _emitter, _meshes, _particles, _particlesLimit );
+		return m_interface->flushParticles( _emitter, _meshes, _particles, _particlesLimit, _flush );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )

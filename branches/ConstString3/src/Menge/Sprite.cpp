@@ -40,9 +40,9 @@ namespace	Menge
 		, m_material(NULL)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
-		, m_flexible(false)  
 		, m_textureMatrixOffset(0.0f, 0.0f)
 		, m_blendAdd(false)
+		, m_solid(false)
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -197,7 +197,7 @@ namespace	Menge
 			m_textures[0] = m_resource->getTexture();
 		}
 
-		if( _invalidateVertices & ESVI_POSITION && m_flexible == false )
+		if( _invalidateVertices & ESVI_POSITION )
 		{
 			mt::vec2f size = m_resource->getSize();
 			const mt::vec2f& maxSize = m_resource->getMaxSize();
@@ -353,6 +353,14 @@ namespace	Menge
 
 			ApplyColor2D applyColor( argb );
 			std::for_each( _vertcies, _vertcies + 4, applyColor );
+			
+			bool solid = (( argb & 0xFF000000 ) == 0xFF000000 );
+
+			if( m_solid != solid )
+			{
+				m_solid = solid;
+				_invalidateVertices |= ESVI_MATERIAL;
+			}
 		}
 
 		if( _invalidateVertices & ESVI_MATERIAL )
@@ -381,14 +389,7 @@ namespace	Menge
 		{
 			m_texturesNum = 1;
 
-			ColourValue color;
-			this->calcTotalColor(color);
-
-			uint32 argb = color.getAsARGB();
-
-			bool solid = (( argb & 0xFF000000 ) == 0xFF000000 );
-
-			if( m_resource->isAlpha() == true || solid == false )
+			if( m_resource->isAlpha() == true || m_solid == false )
 			{
 				m_materialGroup = RenderEngine::get()
 					->getMaterialGroup( CONST_STRING(BlendSprite) );
@@ -441,7 +442,7 @@ namespace	Menge
 	{
 		Node::_invalidateColor();
 
-		invalidateVertices( ESVI_COLOR | ESVI_MATERIAL );
+		invalidateVertices( ESVI_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Sprite::getImageSize()
@@ -499,7 +500,7 @@ namespace	Menge
 	{
 		m_percent = _percent;
 
-		invalidateVertices();
+		invalidateVertices( ESVI_POSITION );
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -515,16 +516,6 @@ namespace	Menge
 		invalidateVertices( ESVI_POSITION );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setFlexible( bool _value )
-	{
-		m_flexible = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::getFlexible() const
-	{
-		return m_flexible;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setBlendAdd( bool _value )
 	{
 		if ( m_blendAdd == _value )
@@ -533,10 +524,11 @@ namespace	Menge
 		}
 
 		m_blendAdd = _value;
-		updateMaterial_();
+
+		invalidateVertices( ESVI_MATERIAL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::getBlendAdd() const
+	bool Sprite::isBlendAdd() const
 	{
 		return m_blendAdd;
 	}

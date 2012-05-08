@@ -31,6 +31,11 @@ namespace Menge
 		size_t getFrameCount() const;
 		float getFrameDelay( size_t  _frame ) const;
 
+		float getWorkAreaDuration() const;
+
+	public:
+		Node * getMovieSlot( const ConstString & _name );
+
 	public:
 		void _setReverse( bool _value) override;
 
@@ -42,9 +47,6 @@ namespace Menge
 		void _setLastFrame() override;
 
 		void _setSpeedFactor( float _factor ) override;
-	public:
-		Node * getMovieSlot( const ConstString & _name );
-		float getWorkAreaDuration() const;
 
 	protected:
 		bool _play() override;
@@ -52,6 +54,7 @@ namespace Menge
 		void _stop( size_t _enumerator ) override;
 		void _end( size_t _enumerator ) override;
 		void _interrupt( size_t _enumerator ) override;
+
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -81,6 +84,7 @@ namespace Menge
 
 	protected:
 		void updateCurrentFrame_( size_t _lastFrame, bool _force );
+		void updateTiming_();
 
 	protected:
 		ConstString m_resourceMovieName;

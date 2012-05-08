@@ -39,7 +39,7 @@ namespace Menge
 		size_t textureStages;
 		const RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
 
-		mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
+		const mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
 
 		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;

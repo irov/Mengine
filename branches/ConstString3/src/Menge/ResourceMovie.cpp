@@ -387,6 +387,11 @@ namespace Menge
 			return false;
 		}
 
+		if( m_frameDuration == 0.f )
+		{
+			return false;
+		}
+
 		for( TVectorMovieLayers2D::iterator
 			it = m_layers2D.begin(),
 			it_end = m_layers2D.end();
@@ -541,7 +546,7 @@ namespace Menge
 			}
 		}
 
-		m_frameCount = (size_t)((m_workAreaDuration / m_frameDuration) + 0.5f);
+		m_frameCount = (size_t)((m_workAreaDuration / m_frameDuration) + 0.5f) - 1;
 
 		return true;
 	}

@@ -63,12 +63,9 @@ namespace Menge
 		void disableTextureColor( bool _disable );
 
 		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
-
-		void setFlexible( bool _value );
-		bool getFlexible() const;
-		
+	
 		void setBlendAdd( bool _value );
-		bool getBlendAdd() const;
+		bool isBlendAdd() const;
 
 	protected:
 		bool _compile() override;
@@ -100,7 +97,7 @@ namespace Menge
 
 		bool m_blendAdd;
 		
-		bool m_flexible;
+		bool m_solid;
 
 		mt::vec4f m_percent;
 

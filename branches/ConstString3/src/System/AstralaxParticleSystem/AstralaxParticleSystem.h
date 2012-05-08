@@ -22,7 +22,7 @@ namespace Menge
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) override;
 
 	public:	
-		bool flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit ) override;
+		bool flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, size_t _particlesLimit, EmitterRenderFlush & _flush ) override;
 
 	protected:
 		void fillParticles_( TVectorParticleVerices & _particles, TVectorParticleVerices::size_type _offset, int _count );

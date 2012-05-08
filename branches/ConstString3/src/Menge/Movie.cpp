@@ -105,7 +105,7 @@ namespace Menge
 		//	, _timing
 		//	);
 
-		this->updateCurrentFrame_( m_currentFrame, true );
+		this->updateTiming_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Movie::_getTiming() const
@@ -332,7 +332,7 @@ namespace Menge
 			return;
 		}
 
-		float out = this->getWorkAreaDuration();
+		float out = m_resourceMovie->getWorkAreaDuration();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -394,50 +394,50 @@ namespace Menge
 			return NULL;
 		}
 
-		TMapMovieSlot::iterator it_index = m_slots.find( _name );
+		TMapMovieSlot::iterator it_found = m_slots.find( _name );
 
-		if( it_index == m_slots.end() )
+		if( it_found != m_slots.end() )
 		{	
-			const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+			Node * slot = it_found->second;
 
-			for( TVectorMovieLayers2D::const_iterator
-				it = layers2D.begin(),
-				it_end = layers2D.end();
-			it != it_end;
-			++it )
-			{
-				const MovieLayer2D & layer = *it;
-
-				if( layer.movie == false )
-				{
-					continue;
-				}
-
-				Node * node = m_nodies[layer.index];
-
-				Movie * movie = static_cast<Movie *>(node);
-
-				Node * slot = movie->getMovieSlot( _name );
-
-				if( slot == NULL )
-				{
-					continue;
-				}
-
-				return slot;
-			}
-
-//			MENGE_LOG_ERROR("Movie::getMovieSlot: %s not found slot %s"
-//				, _name.c_str()
-//				, m_name.c_str()
-//				);
-
-			return NULL;
+			return slot;
 		}
 
-		Node * slot = it_index->second;
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
-		return slot;
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			if( layer.movie == false )
+			{
+				continue;
+			}
+
+			Node * node = m_nodies[layer.index];
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			Node * slot = movie->getMovieSlot( _name );
+
+			if( slot == NULL )
+			{
+				continue;
+			}
+
+			return slot;
+		}
+
+		MENGE_LOG_ERROR("Movie::getMovieSlot: %s not found slot %s"
+			, _name.c_str()
+			, m_name.c_str()
+			);
+
+		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event ) const
@@ -498,7 +498,7 @@ namespace Menge
 			return false;
 		}
 
-		float out = this->getWorkAreaDuration();
+		float out = m_resourceMovie->getWorkAreaDuration();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -988,12 +988,13 @@ namespace Menge
 
 		//float lastTiming = m_timing;
 
+		//if( m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_Cover" 
+		//	&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover" )
+		//{
+		//	return;
+		//}
+		
 		float frameDuration = m_resourceMovie->getFrameDuration();
-
-		if( frameDuration == 0.f )
-		{
-			return;
-		}
 
 		float realTiming = _timing * m_speedFactor;
 
@@ -1009,14 +1010,14 @@ namespace Menge
 
 			++m_currentFrame;
 
-			if( m_currentFrame == frameCount - 1 )
+			if( m_currentFrame == frameCount )
 			{
 				if( this->getLoop() == false )
 				{
 					break;
 				}
 			}
-			else if ( m_currentFrame == frameCount )
+			else if ( m_currentFrame == frameCount + 1 )
 			{
 				if( this->getLoop() == true )
 				{
@@ -1049,7 +1050,7 @@ namespace Menge
 	void Movie::updateCurrentFrame_( size_t _lastFrame, bool _force )
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
-		size_t frameCount = m_resourceMovie->getFrameCount();
+		//size_t frameCount = m_resourceMovie->getFrameCount();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
@@ -1086,7 +1087,7 @@ namespace Menge
 
 			if( it_found == m_nodies.end() )
 			{
-				MENGE_LOG_ERROR("Movie.update: '%s' not found layer '%s' '%d'"
+				MENGE_LOG_ERROR("Movie.updateCurrentFrame_: '%s' not found layer '%s' '%d'"
 					, m_name.c_str()
 					, layer.name.c_str()
 					, layer.index
@@ -1103,7 +1104,7 @@ namespace Menge
 			{
 				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+					MENGE_LOG_ERROR("Movie.updateCurrentFrame_: '%s' frame last incorect '%s'"
 						, m_name.c_str()
 						, layer.name.c_str()
 						);
@@ -1127,7 +1128,7 @@ namespace Menge
 						//	, node->getName().c_str()
 						//	);
 
-						if( animatable->isPlay() == true )
+						if( animatable->isPlay() == true && this->isPlay() == true )
 						{
 							animatable->stop();
 
@@ -1198,6 +1199,110 @@ namespace Menge
 							}
 							//animatable->update(realTiming);
 						}
+					}
+				}
+			}			
+
+			this->updateFrame2D_( layer, node, frame );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateTiming_()
+	{
+		float frameDuration = m_resourceMovie->getFrameDuration();
+		//size_t frameCount = m_resourceMovie->getFrameCount();
+
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			float layerIn = layer.in;
+			float layerOut = layer.out;
+
+			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
+			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
+			
+			if( indexOut < m_currentFrame || indexIn > m_currentFrame )
+			{
+				continue;
+			}
+
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie.updateTiming_: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_found->second;
+
+			MovieFrame2D frame;
+
+			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
+			{
+				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					continue;
+				}
+
+				if( layer.internal == false )
+				{
+					//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
+					//{
+					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+					node->localHide(true);
+
+					if( layer.animatable == true )
+					{
+						Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+						//printf("Movie %s stop[layer] animatable %s\n"
+						//	, m_name.c_str()
+						//	, node->getName().c_str()
+						//	);
+
+						float timing = (indexOut - indexIn) * frameDuration;
+						animatable->setTiming( timing );
+					}
+
+					continue;
+				}
+			}
+			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
+			{
+				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+				{
+					continue;
+				}
+
+				if( layer.internal == false )
+				{			
+					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
+					node->localHide(false);
+
+					if( layer.animatable == true )
+					{
+						Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+						float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
+						animatable->setTiming( timing );
 					}
 				}
 			}			

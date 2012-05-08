@@ -113,6 +113,12 @@ namespace Menge
 		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
 	};
 
+	struct EmitterRenderFlush
+	{
+		TVectorParticleMeshes::size_type meshCount;
+		TVectorParticleVerices::size_type particleCount;
+	};
+
 	class ParticleSystemInterface
 	{
 	public:
@@ -120,7 +126,7 @@ namespace Menge
 		virtual void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) = 0;
 		
 	public:
-		virtual bool flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit ) = 0;
+		virtual bool flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, size_t _particlesLimit, EmitterRenderFlush & _flush ) = 0;
 	};
 }
 

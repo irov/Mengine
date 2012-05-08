@@ -23,27 +23,18 @@ namespace Menge
 
 	typedef std::vector<MovieFrameLayer> TVectorMovieFrameLayer;
 	
-
 	class MovieFramePack
 	{
 	public:
 		void initialise( size_t _size );
-
 		const MovieFrameSource & getLastLayerFrame( size_t _layerIndex ) const;
-
 		bool isLayerEmpty( size_t _layerIndex ) const;
-
 		void setLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame );
-
 		const MovieFrameSource & getLayerFrame( size_t _layerIndex, size_t _frameIndex ) const;
-
 		size_t getLayerCountFrames( size_t _layerIndex ) const;
-
-		TVectorMovieFrameLayer m_layers;
+	
 	protected:
 		size_t m_size;
-
+		TVectorMovieFrameLayer m_layers;
 	};
-
-
 }

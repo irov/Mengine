@@ -1148,7 +1148,7 @@ namespace Menge
 				}
 
 				if( layer.internal == false )
-				{			
+				{
 					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
 					node->localHide(false);
 
@@ -1201,7 +1201,7 @@ namespace Menge
 						}
 					}
 				}
-			}			
+			}
 
 			this->updateFrame2D_( layer, node, frame );
 		}
@@ -1365,5 +1365,4 @@ namespace Menge
 	{
 
 	}
-
 }

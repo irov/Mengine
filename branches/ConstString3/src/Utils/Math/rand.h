@@ -8,7 +8,7 @@
 
 namespace mt
 {
-	MATH_INLINE float randf( float _max )
+	MATH_FUNCTION_INLINE float randf( float _max )
 	{
 		float rnf = static_cast<float>( std::rand() ) / ( static_cast<float>(RAND_MAX) + 1.0f);
 		float rf = _max * rnf;
@@ -16,7 +16,7 @@ namespace mt
 	}
 
 	/* Равномерное распределение с a != b */
-	MATH_INLINE float range_randf( float _a, float _b )
+	MATH_FUNCTION_INLINE float range_randf( float _a, float _b )
 	{
 		if( _a > _b )
 		{
@@ -29,14 +29,14 @@ namespace mt
 		return _a + rf;
 	}
 
-	MATH_INLINE int rand( int _max )
+	MATH_FUNCTION_INLINE int rand( int _max )
 	{
 		float rf = randf( static_cast<float>(_max) );
 		int ri = static_cast<int>( rf );
 		return ri;
 	}
 
-	MATH_INLINE int range_rand( int _a, int _b )
+	MATH_FUNCTION_INLINE int range_rand( int _a, int _b )
 	{
 		if( _a > _b )
 		{

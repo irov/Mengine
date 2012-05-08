@@ -52,40 +52,47 @@ namespace Menge
 				}
 
 				_framePak->initialise( maxIndex );
-
-				BIN_CASE_NODE( Protocol::KeyFrames2D )
-				{			
-					size_t layerIndex = 0;
-					BIN_FOR_EACH_ATTRIBUTES()
-					{
-						BIN_CASE_ATTRIBUTE( Protocol::KeyFrames2D_LayerIndex, layerIndex );
-					}
-
-					if( layerIndex == 0 )
-					{
-						MENGE_LOG_ERROR( "MovieKeyFrameManager: loaderMovieFramePak KeyFrames2D layer not determined  " );
-						BIN_SKIP();
-					}
-
-					BIN_PARSE_METHOD_CARG2( this, &MovieKeyFrameManager::loaderKeyFrames2D_, layerIndex, _framePak );
-				}
-
-				BIN_CASE_NODE( Protocol::KeyFrames3D )
+				BIN_PARSE_METHOD_CARG1( this, &MovieKeyFrameManager::loaderKeyFramesPack_, _framePak );
+			}
+		}
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////
+	void MovieKeyFrameManager::loaderKeyFramesPack_( BinParser * _parser, MovieFramePack * _framePak )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_NODE( Protocol::KeyFrames2D )
+			{			
+				size_t layerIndex = 0;
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					size_t layerIndex = 0;
-					BIN_FOR_EACH_ATTRIBUTES()
-					{
-						BIN_CASE_ATTRIBUTE( Protocol::KeyFrames3D_LayerIndex, layerIndex );
-					}
-
-					if( layerIndex == 0 )
-					{
-						MENGE_LOG_ERROR( "MovieKeyFrameManager: loaderMovieFramePak KeyFrames2D layer not determined  " );
-						BIN_SKIP();
-					}
-
-					BIN_PARSE_METHOD_CARG2( this, &MovieKeyFrameManager::loaderKeyFrames3D_, layerIndex, _framePak );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrames2D_LayerIndex, layerIndex );
 				}
+
+				if( layerIndex == 0 )
+				{
+					MENGE_LOG_ERROR( "MovieKeyFrameManager: loaderMovieFramePak KeyFrames2D layer not determined  " );
+					BIN_SKIP();
+				}
+
+				BIN_PARSE_METHOD_CARG2( this, &MovieKeyFrameManager::loaderKeyFrames2D_, layerIndex, _framePak );
+			}
+			
+			BIN_CASE_NODE( Protocol::KeyFrames3D )
+			{
+				size_t layerIndex = 0;
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrames3D_LayerIndex, layerIndex );
+				}
+
+				if( layerIndex == 0 )
+				{
+					MENGE_LOG_ERROR( "MovieKeyFrameManager: loaderMovieFramePak KeyFrames2D layer not determined  " );
+					BIN_SKIP();
+				}
+
+				BIN_PARSE_METHOD_CARG2( this, &MovieKeyFrameManager::loaderKeyFrames3D_, layerIndex, _framePak );
 			}
 		}
 	}
@@ -217,16 +224,9 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////
 	void MovieKeyFrameManager::releaseMovieFramePak( MovieFramePack * _framePak )
 	{
-		//TVectorMovieFramePack::iterator it = m_framePacks.find(_framePak);
-		//if( it == m_framePacks.end() )
-		//{
-		//	MENGE_LOG_ERROR( "MovieKeyFrameManager: releaseMovieFramePak  not exist framePack"
-		//		); 
-		//	return;
-		//}
-
-		//m_framePacks.erase(_framePak);
 		delete _framePak;
 	}
+
+	
 
 }

@@ -21,7 +21,6 @@ namespace Menge
 		void releaseMovieFramePak( MovieFramePack * _framePak );
 		void loaderMovieFramePak( BinParser * _parser, MovieFramePack * _framePak );
 
-
 	protected:
 		MovieFramePack * createMovieFramePak_( const ConstString & _pak, const WString & _path );
 		void loaderKeyFramesPack_( BinParser * _parser, MovieFramePack * _framePak );

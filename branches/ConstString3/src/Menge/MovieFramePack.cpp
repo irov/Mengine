@@ -52,4 +52,12 @@ namespace Menge
 		return size;
 	}
 	///////////////////////////////////////////////////////////////////////
+	const TVectorMovieFrameSource & MovieFramePack::getLayerFrames( size_t _layerIndex )
+	{
+		const MovieFrameLayer & frameLayer = m_layers[_layerIndex - 1];
+		const TVectorMovieFrameSource & frameSource = frameLayer.frames;
+
+		return frameSource;
+	}
+	///////////////////////////////////////////////////////////////////////
 }

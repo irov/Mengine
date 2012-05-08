@@ -10,6 +10,7 @@
 
 #	include <vector>
 #	include <map>
+#	include "MovieFramePack.h"
 
 namespace Menge
 {
@@ -110,6 +111,12 @@ namespace Menge
 		ConstString group;
 	};
 
+	class ResourceMovieVisitor
+	{
+	public:
+		virtual void visitLayer2D( const MovieLayer2D & _layer, const TVectorMovieFrameSource & _frames ) = 0;
+	};
+
 	class ResourceMovie
 		: public ResourceReference
 	{
@@ -144,6 +151,9 @@ namespace Menge
 
 		bool getFrame3DFirst( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const;
 		bool getFrame3DLast( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const;
+
+	public:
+		void visitResourceMovie( ResourceMovieVisitor * _visitor );
 
 	protected:
 		void loader( BinParser * _parser ) override;

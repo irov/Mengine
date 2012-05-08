@@ -13,6 +13,7 @@
 
 #	include "Math/mat4.h"
 
+#	include "MovieFramePack.h"
 #	include "MovieKeyFrameManager.h"
 
 namespace Menge
@@ -755,4 +756,26 @@ namespace Menge
 
 		ResourceReference::_release();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceMovie::visitResourceMovie( ResourceMovieVisitor * _visitor )
+	{
+		if( isCompile() == false )
+		{
+			MENGE_LOG_ERROR("ResourceMovie::visitResourceMovie not compile"
+				, m_name.c_str()
+				);
+		}
+
+		for( TVectorMovieLayers2D::iterator
+			it = m_layers2D.begin(),
+			it_end = m_layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D& layer = *it;
+			const TVectorMovieFrameSource & frames = m_framePack->getLayerFrames( layer.index );
+			_visitor->visitLayer2D( layer, frames );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

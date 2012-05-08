@@ -2305,7 +2305,60 @@ namespace Menge
 		}
 		
 		static PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
-		{
+		{			
+			class ResourceMovieVisitorNullLayers
+				: public ResourceMovieVisitor
+			{
+			public:
+				ResourceMovieVisitorNullLayers( PyObject * _dictResult, float _frameDuration )
+					: m_dictResult(_dictResult)
+					, m_frameDuration( _frameDuration )
+				{}
+
+				void visitLayer2D( const MovieLayer2D & _layer, const TVectorMovieFrameSource & _frames )
+				{
+					if( _layer.source != Consts::get()->c_MovieSlot )
+					{
+						return;
+					}
+					
+					PyObject * py_list_frames = pybind::list_new(0);
+					size_t i = 0;
+
+					for( TVectorMovieFrameSource::const_iterator
+						it_frame = _frames.begin(),
+						it_frame_end = _frames.end();
+					it_frame != it_frame_end;
+					++it_frame )
+					{
+						PyObject * py_dict_frame = pybind::dict_new();
+
+						PyObject * py_pos = pybind::ptr((*it_frame).position);
+						pybind::dict_set(py_dict_frame,"position", py_pos);
+
+						float frameTime = _layer.in + i * m_frameDuration;
+						PyObject * py_time = pybind::ptr(frameTime);
+						pybind::dict_set(py_dict_frame,"time", py_time);
+
+						pybind::list_appenditem( py_list_frames, py_dict_frame );
+
+						pybind::decref( py_pos );
+						pybind::decref( py_time );
+						pybind::decref( py_dict_frame );
+						i++;
+					}
+
+					pybind::dict_set(m_dictResult,_layer.name.c_str(), py_list_frames);
+					pybind::decref( py_list_frames );
+				}
+
+			protected:
+				PyObject * m_dictResult;
+				float m_frameDuration;
+			};
+			
+			////////////////////////////////////////////////////////////////////////
+
 			ResourceMovie* resource = ResourceManager::get()
 				->getResourceT<ResourceMovie>( _resourceName );
 			
@@ -2315,49 +2368,11 @@ namespace Menge
 			{
 				return NULL;
 			}
+
+			float frameTime = resource->getFrameDuration();
+			ResourceMovieVisitorNullLayers visitor( py_dict_result, frameTime );
 			
-			const TVectorMovieLayers2D layers2D = resource->getLayers2D();
-			
-			for( TVectorMovieLayers2D::const_iterator
-				it = layers2D.begin(),
-				it_end = layers2D.end();
-			it != it_end;
-			++it )
-			{
-				const MovieLayer2D & layer = *it;
-				if( layer.source != Consts::get()->c_MovieSlot )
-				{
-					continue;
-				}
-
-				float oneFrameTime = (layer.out - layer.in) / layer.frames.size();
-				
-				PyObject * py_list_frames = pybind::list_new(0);
-				size_t i = 0;
-
-				for( TVectorFrames::const_iterator
-					it_frame = layer.frames.begin(),
-					it_frame_end = layer.frames.end();
-				it_frame != it_frame_end;
-				++it_frame )
-				{
-					PyObject * py_dict_frame = pybind::dict_new();
-
-					PyObject * py_pos = pybind::ptr((*it_frame).position);
-					pybind::dict_set(py_dict_frame,"position", py_pos);
-					
-					float frameTime = layer.in + i * oneFrameTime;
-					PyObject * py_time = pybind::ptr(frameTime);
-					pybind::dict_set(py_dict_frame,"time", py_time);
-
-					pybind::list_appenditem( py_list_frames, py_dict_frame );
-					i++;
-				}
-
-				pybind::dict_set(py_dict_result,layer.name.c_str(), py_list_frames);
-
-			}
-
+			resource->visitResourceMovie( &visitor );
 			return py_dict_result;
 		}
 

@@ -32,6 +32,7 @@ namespace Menge
 		void setLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame );
 		const MovieFrameSource & getLayerFrame( size_t _layerIndex, size_t _frameIndex ) const;
 		size_t getLayerCountFrames( size_t _layerIndex ) const;
+		const TVectorMovieFrameSource & getLayerFrames( size_t _layerIndex );
 	
 	protected:
 		size_t m_size;

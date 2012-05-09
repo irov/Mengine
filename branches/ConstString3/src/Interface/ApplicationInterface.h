@@ -52,7 +52,7 @@ namespace Menge
 		virtual void showKeyboard() = 0;
 		virtual void hideKeyboard() = 0;
 
-		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) = 0;
+		virtual DynamicLibraryInterface* loadDynamicLibrary( const WString& _filename ) = 0;
 		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) = 0;
 
 		virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
@@ -161,7 +161,11 @@ namespace Menge
     public:
         virtual void load() = 0;
         virtual void unload() = 0;
-		virtual const String& getName() const = 0;
+
+	public:
+		virtual const WString& getName() const = 0;
+
+	public:
         virtual TDynamicLibraryFunction getSymbol( const String& _name ) const = 0;
     };
 }

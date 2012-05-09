@@ -25,7 +25,7 @@
 #	include "LogEngine.h"
 
 #	include "LoaderEngine.h"
-#	include "BinParser.h"
+//#	include "BinParser.h"
 
 #	include "NodeManager.h"
 
@@ -334,7 +334,7 @@ namespace Menge
 			MENGE_LOG_INFO( "load Xml Codec..." );
 
 			TMapParam param;
-			this->loadPlugin("MengeXmlCodecPlugin.dll", param);
+			this->loadPlugin(L"MengeXmlCodecPlugin.dll", param);
 		}
 #	endif
 
@@ -353,51 +353,104 @@ namespace Menge
 			, _configFile.c_str()
 			);
 
-		bool exist = false;
-		if( m_loaderEngine
-			->load( Consts::get()->c_builtin_empty, _configFile, this, exist ) == false )
-		{
-			MENGE_LOG_ERROR( "Application::loadConfig parse '%S' failed '%d'"
-				, _configFile.c_str() 
-                , exist
-				);
+		//bool exist = false;
+		//if( m_loaderEngine
+		//	->load( Consts::get()->c_builtin_empty, _configFile, this, exist ) == false )
+		//{
+		//	MENGE_LOG_ERROR( "Application::loadConfig parse '%S' failed '%d'"
+		//		, _configFile.c_str() 
+  //              , exist
+		//		);
 
-			//showMessageBox( "'Application' file missing or corrupt", "Critical Error", 0 );
+		//	//showMessageBox( "'Application' file missing or corrupt", "Critical Error", 0 );
+
+		//	return false;
+		//}
+
+		if( FileEngine::get()
+			->existFile( Consts::get()->c_builtin_empty, _iniFile ) == false )
+		{
+			MENGE_LOG_ERROR("Application::loadConfig: invalid open iniFile %S"
+				, _iniFile.c_str()
+				);
 
 			return false;
 		}
 
-		if( FileEngine::get()
-			->existFile( Consts::get()->c_builtin_empty, _iniFile ) == true )
+		FileInputStreamInterface * file = FileEngine::get()
+			->openInputFile( Consts::get()->c_builtin_empty, _iniFile );
+
+		if( file == NULL )
 		{
-			FileInputStreamInterface * file = FileEngine::get()
-				->openInputFile( Consts::get()->c_builtin_empty, _iniFile );
+			MENGE_LOG_ERROR("Application::loadConfig: not found ini file %S"
+				, _iniFile.c_str()
+				);
 
-			if( file == NULL )
-			{
-				MENGE_LOG_ERROR("Application::loadConfig: invalid open iniFile %S"
-					, _iniFile.c_str()
-					);
+			return false;
+		}
 
-				return false;
-			}
+		ConfigFile cfg;
 
-			ConfigFile cfg;
+		if( cfg.load( file ) == false )
+		{
+			return false;
+		}
 
-			if( cfg.load( file ) == false )
-			{
-				return false;
-			}
+		WString locale_default_setting;
+		if( cfg.getSetting( L"LOCALE", L"Default", locale_default_setting ) == true )
+		{
+			bool u_locale_default_setting_successful;
+			String locale_default = m_unicodeInterface->unicodeToUtf8( locale_default_setting, u_locale_default_setting_successful );
 
-			WString locale_default_setting;
-			if( cfg.getSetting( L"LOCALE", L"Default", locale_default_setting ) == true )
-			{
-				bool u_locale_default_setting_successful;
-				String locale_default = m_unicodeInterface->unicodeToUtf8( locale_default_setting, u_locale_default_setting_successful );
-				
-				ConstString locale_default_const(locale_default);
-				this->setLanguagePack( locale_default_const );
-			}			
+			ConstString locale_default_const(locale_default);
+			this->setLanguagePack( locale_default_const );
+		}
+
+		WString gamepack_name_setting;
+		if( cfg.getSetting( L"GamePack", L"Name", gamepack_name_setting ) == true )
+		{
+			bool u_gamepack_name_setting_successful;
+			String gamepack_name = m_unicodeInterface->unicodeToUtf8( gamepack_name_setting, u_gamepack_name_setting_successful );
+
+			m_gamePackName = ConstString(gamepack_name);
+		}
+
+		WString gamepack_path_setting;
+		if( cfg.getSetting( L"GamePack", L"Path", gamepack_path_setting ) == true )
+		{				
+			m_gamePackPath = gamepack_path_setting;
+		}
+
+		WString gamepack_description_setting;
+		if( cfg.getSetting( L"GamePack", L"Description", gamepack_description_setting ) == true )
+		{				
+			m_gameDescription = gamepack_description_setting;
+		}
+
+		m_gamePackType = Consts::get()->c_dir;
+		
+		WString gamepack_type_setting;
+		if( cfg.getSetting( L"GamePack", L"Type", gamepack_type_setting ) == true )
+		{			
+			bool u_gamepack_type_setting_successful;
+			String gamepack_type = m_unicodeInterface->unicodeToUtf8( gamepack_type_setting, u_gamepack_type_setting_successful );
+
+			m_gamePackType = ConstString(gamepack_type);
+		}
+
+		TVectorWString plugins;
+		cfg.getSettings( L"Plugins", L"Name", plugins );
+
+		for( TVectorWString::iterator
+			it = plugins.begin(),
+			it_end = plugins.end();
+		it != it_end;
+		++it )
+		{
+			const WString & pluginName = *it;
+
+			TMapParam param;
+			this->loadPlugin( pluginName, param );
 		}
 				
 		//if( m_baseDir.empty() )	// current dir
@@ -861,7 +914,7 @@ namespace Menge
 
 		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, m_gamePackType, false ) == false )
 		{
-			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak '%s' [%S]"
+			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak '%S' [%S]"
 				, m_gamePackPath.c_str() 
 				, fullGamePackPath.c_str()
 				);
@@ -1006,50 +1059,50 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_METHOD( Protocol::Application, this, &Application::loaderApplication_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::loaderApplication_( BinParser * _parser )
-	{
-		m_gamePackType = Consts::get()->c_dir;
+	////////////////////////////////////////////////////////////////////////////
+	//void Application::loader( BinParser * _parser )
+	//{
+	//	BIN_SWITCH_ID( _parser )
+	//	{
+	//		BIN_CASE_NODE_PARSE_METHOD( Protocol::Application, this, &Application::loaderApplication_ );
+	//	}
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//void Application::loaderApplication_( BinParser * _parser )
+	//{
+	//	m_gamePackType = Consts::get()->c_dir;
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::BaseDir_Value, m_baseDir );
+	//	BIN_SWITCH_ID( _parser )
+	//	{
+	//		BIN_CASE_ATTRIBUTE( Protocol::BaseDir_Value, m_baseDir );
 
-			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
-			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
-			//BIN_CASE_ATTRIBUTE( Protocol::GamePack_Type, m_gamePackType );
-			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameDescription );
-			BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
-			BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
-			
-			//Load Plugins
-			BIN_CASE_NODE( Protocol::Plugin )
-			{
-				Menge::String pluginName;
+	//		BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
+	//		BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
+	//		//BIN_CASE_ATTRIBUTE( Protocol::GamePack_Type, m_gamePackType );
+	//		BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameDescription );
+	//		BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
+	//		BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
+	//		
+	//		//Load Plugins
+	//		BIN_CASE_NODE( Protocol::Plugin )
+	//		{
+	//			Menge::String pluginName;
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Plugin_Name, pluginName );
-				}
-				
-				TMapParam param;
-				this->loadPlugin( pluginName, param );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::_loaded()
-	{
-		//Empty
-	}
+	//			BIN_FOR_EACH_ATTRIBUTES()
+	//			{
+	//				BIN_CASE_ATTRIBUTE( Protocol::Plugin_Name, pluginName );
+	//			}
+	//			
+	//			TMapParam param;
+	//			this->loadPlugin( pluginName, param );
+	//		}
+	//	}
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//void Application::_loaded()
+	//{
+	//	//Empty
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
@@ -1745,7 +1798,7 @@ namespace Menge
 		return m_debugCRT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadPlugin( const String& _pluginName, const TMapParam & _params )
+	bool Application::loadPlugin( const WString& _pluginName, const TMapParam & _params )
 	{
 		TDynamicLibraries::iterator it_found = m_dynamicLibraries.find( _pluginName );
 		

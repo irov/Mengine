@@ -53,7 +53,7 @@ namespace Menge
 		void showKeyboard() override;
 		void hideKeyboard() override;
 
-		DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) override;
+		DynamicLibraryInterface* loadDynamicLibrary( const WString& _filename ) override;
 		void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) override;
 
 		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;

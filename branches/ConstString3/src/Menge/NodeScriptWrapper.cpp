@@ -232,7 +232,7 @@ namespace Menge
 			//return _left->testPolygon( left_wm, right_poligon, right_wm );
 		}
 
-		static bool s_loadPlugin( const String & _pluginName, const TMapParam & _param )
+		static bool s_loadPlugin( const WString & _pluginName, const TMapParam & _param )
 		{
 			bool result = Application::get()
 				->loadPlugin( _pluginName, _param );

@@ -10,17 +10,21 @@ namespace Menge
 		: public DynamicLibraryInterface
 	{
 	public:
-		DynamicLibrary( const String& _name );
+		DynamicLibrary( const WString& _name );
 		~DynamicLibrary();
 
 	public:
 		void load() override;
         void unload() override;
-		const String& getName() const override;
+
+	public:
+		const WString& getName() const override;
+
+	public:
         TDynamicLibraryFunction getSymbol( const String& _name ) const override;
 
 	private:
-		String m_name;
+		WString m_name;
 		HINSTANCE m_hInstance;
 	};
 };

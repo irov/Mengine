@@ -19,6 +19,7 @@ namespace Menge
 	class FileOutputStreamInterface;
 	struct RenderParticlesFrame;
 	class RenderTextureInterface;
+
 	class RenderParticles:
 		public PlatformInterface
 	{
@@ -51,7 +52,7 @@ namespace Menge
 		virtual WString utf8ToUnicode( const String & _utf8 ) ;
 		//end deprecated
 		
-		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ){ return NULL; }
+		virtual DynamicLibraryInterface* loadDynamicLibrary( const WString& _filename ){ return NULL; }
 		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ){ }
 
 		virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ){ }
@@ -74,7 +75,9 @@ namespace Menge
 		void getRenderData( RenderParticlesFrame * _frame );
 		void translateMessage();
 		void log( const String& _message );
+
 		ScriptServiceInterface * getScriptService();
+
 	protected:
 		bool initLogger_( FileOutputStreamInterface * _file );
 		RECT getWindowsRect_( const Resolution & _resolution );

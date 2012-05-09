@@ -2,7 +2,7 @@
 
 #	include "MengeExport.h"
 
-#	include "Loadable.h"
+//#	include "Loadable.h"
 
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
@@ -65,7 +65,7 @@ namespace Menge
 	class Application 
 		: public Holder<Application>
 		, public ApplicationInterface
-		, public Loadable
+		//, public Loadable
 	{
 	public:
 		Application();
@@ -155,14 +155,14 @@ namespace Menge
 
 		const WString & getPathGameFile() const;
 		
-	public:
-		void loader( BinParser * _parser ) override;
-		
-	protected:
-		void _loaded() override;
+	//public:
+	//	void loader( BinParser * _parser ) override;
+	//	
+	//protected:
+	//	void _loaded() override;
 
-	protected:
-		void loaderApplication_( BinParser * _parser );
+	//protected:
+	//	void loaderApplication_( BinParser * _parser );
 
 	public:
 		const Resolution & getCurrentResolution() const;
@@ -241,7 +241,7 @@ namespace Menge
 		void hideKeyboard();
 
 	public:
-		bool loadPlugin( const String& _pluginName, const TMapParam & _params );
+		bool loadPlugin( const WString& _pluginName, const TMapParam & _params );
 
 	protected:		
 		void unloadPlugins_();
@@ -257,7 +257,7 @@ namespace Menge
 
 		Consts * m_consts;
 
-		typedef std::map<String, DynamicLibraryInterface*> TDynamicLibraries;
+		typedef std::map<WString, DynamicLibraryInterface*> TDynamicLibraries;
 		TDynamicLibraries m_dynamicLibraries;
 
 		Game * m_game;

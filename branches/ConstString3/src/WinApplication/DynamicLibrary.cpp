@@ -6,10 +6,12 @@
 
 namespace Menge
 {
-	DynamicLibrary::DynamicLibrary( const String& _name )
+	//////////////////////////////////////////////////////////////////////////
+	DynamicLibrary::DynamicLibrary( const WString& _name )
 		: m_name(_name)
 		, m_hInstance(NULL)
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	DynamicLibrary::~DynamicLibrary()
 	{
@@ -17,9 +19,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DynamicLibrary::load()
 	{
-		WString strW = StringConversion::utf8ToWChar( m_name );
-
-		m_hInstance = LoadLibraryW( strW.c_str() );
+		m_hInstance = LoadLibrary( m_name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void DynamicLibrary::unload()
@@ -27,14 +27,16 @@ namespace Menge
 		FreeLibrary( m_hInstance );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& DynamicLibrary::getName() const
+	const WString& DynamicLibrary::getName() const
 	{
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
     TDynamicLibraryFunction DynamicLibrary::getSymbol( const String& strName ) const
 	{
-		return (TDynamicLibraryFunction)(GetProcAddress( m_hInstance, strName.c_str() ));
+		FARPROC proc = GetProcAddress( m_hInstance, strName.c_str() );
+
+		return (TDynamicLibraryFunction)proc;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

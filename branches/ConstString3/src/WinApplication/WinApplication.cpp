@@ -1266,7 +1266,7 @@ namespace Menge
 		//Empty - for iPad
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DynamicLibraryInterface * WinApplication::loadDynamicLibrary( const String& _filename )
+	DynamicLibraryInterface * WinApplication::loadDynamicLibrary( const WString& _filename )
 	{
 		DynamicLibrary * dynLib = new DynamicLibrary( _filename );
 		dynLib->load();

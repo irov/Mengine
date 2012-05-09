@@ -167,7 +167,7 @@ namespace Menge
 
 		//this->updateParent_();
 
-		this->updateCurrentFrame_( m_currentFrame, true );
+		//this->updateCurrentFrame_( m_currentFrame, true );
 
 		return true;
 	}

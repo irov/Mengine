@@ -30,14 +30,15 @@ namespace Menge
 
 		size_t getFrameCount() const;
 		float getFrameDelay( size_t  _frame ) const;
-
-		float getWorkAreaDuration() const;
-
+		
 	public:
 		Node * getMovieSlot( const ConstString & _name );
 
-	public:
+	protected:
 		void _setReverse( bool _reverse ) override;
+
+	protected:
+		void updateReverse_( bool _reverse );
 
 	protected:
 		void _setTiming( float _timing ) override;

@@ -174,6 +174,13 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Animation::_deactivate()
+	{
+		this->stop();
+
+		Sprite::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_compile()
 	{
 		if( m_resourceAnimationName.empty() == true )
@@ -262,7 +269,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( size_t _enumerator )
 	{
-		if( this->isActivate() == false )
+		if( this->isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
 				, getName().c_str()
@@ -288,7 +295,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_end( size_t _enumerator )
 	{
-		if( this->isActivate() == false )
+		if( this->isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' end not activate"
 				, getName().c_str()

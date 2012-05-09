@@ -2301,6 +2301,25 @@ namespace Menge
 
 			return result;
 		}
+
+		static float s_getMovieDuration( const ConstString & _resourceName )
+		{
+			ResourceMovie * resourceMovie = ResourceManager::get()
+				->getResourceT<ResourceMovie>( _resourceName );
+
+			if( resourceMovie == NULL )
+			{
+				MENGE_LOG_ERROR("Mengine.getMovieDuration invalid movie resource '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0.f;
+			}
+
+			float duration = resourceMovie->getWorkAreaDuration();
+
+			return duration;
+		}
 		
 		static PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
 		{			
@@ -3577,8 +3596,7 @@ namespace Menge
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
 					.def( "setReverse", &Movie::setReverse )
 					.def( "getReverse", &Movie::getReverse )
-					.def( "setResourceMovie", &Movie::setResourceMovie )
-					.def( "getWorkAreaDuration", &Movie::getWorkAreaDuration )
+					.def( "setResourceMovie", &Movie::setResourceMovie )					
 					.def( "getMovieSlot", &Movie::getMovieSlot )
 					;
 
@@ -3770,7 +3788,8 @@ namespace Menge
 			pybind::def_function( "visitResourceEmitterContainer", &ScriptMethod::s_visitResourceEmitterContainer );
 
 			pybind::def_function( "getNullObjectsFromResourceVideo", &ScriptMethod::s_getNullObjectsFromResourceVideo );
-			
+
+			pybind::def_function( "getMovieDuration", &ScriptMethod::s_getMovieDuration );		
 		}
 	}
 }

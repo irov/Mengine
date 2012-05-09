@@ -46,6 +46,7 @@ namespace Menge
 		void _render( Camera2D * _camera ) override;
 
 		bool _activate() override;
+		void _deactivate() override;
 
 		bool _compile() override;
 		void _release() override;

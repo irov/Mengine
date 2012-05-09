@@ -127,22 +127,6 @@ namespace Menge
 		return timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Movie::getWorkAreaDuration() const
-	{
-		if( this->isCompile() == false )
-		{
-			MENGE_LOG_ERROR("Movie.getWorkAreaDuration %s not compile"
-				, m_name.c_str()
-				);
-
-			return 0.f;
-		}
-
-		float duration = m_resourceMovie->getWorkAreaDuration();
-
-		return duration; 
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play()
 	{
 		if( this->isActivate() == false )
@@ -735,6 +719,9 @@ namespace Menge
 			}
 		}
 
+		bool reverse = this->getReverse();
+		this->updateReverse_( reverse );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -802,6 +789,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stopAnimation_()
 	{
+		if( this->isCompile() == false )
+		{
+			MENGE_LOG_ERROR("Movie::stopAnimation_ %s is not compile"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -1389,13 +1385,14 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: Movie::_setSpeedFactor not compile '%s'"
-				, m_name.c_str() 
-				);	
-
 			return;
 		}
 
+		this->updateReverse_( _reverse );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateReverse_( bool _reverse )
+	{
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator

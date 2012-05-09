@@ -950,6 +950,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::_deactivate()
+	{
+		this->stop();
+
+		Node::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setEventListener( PyObject * _embed )
 	{
 		Node::_setEventListener(_embed);

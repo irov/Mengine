@@ -62,6 +62,7 @@ namespace Menge
 		
 	protected:
 		bool _activate() override;
+		void _deactivate() override;
 
 	protected:
 		void _update( float _timing ) override;

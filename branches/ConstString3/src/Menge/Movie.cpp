@@ -1009,14 +1009,7 @@ namespace Menge
 			if( m_reverse == true )
 			{
 				--m_currentFrame;
-			}
-			else
-			{
-				++m_currentFrame;
-			}
-			
-			if( m_reverse == true )
-			{
+
 				if( m_currentFrame == 0 )
 				{
 					if( this->getLoop() == false )
@@ -1027,6 +1020,8 @@ namespace Menge
 			}
 			else
 			{
+				++m_currentFrame;
+
 				if( m_currentFrame == frameCount )
 				{
 					if( this->getLoop() == false )

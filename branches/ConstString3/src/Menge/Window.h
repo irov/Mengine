@@ -22,6 +22,7 @@ namespace Menge
 		mt::vec2f getWindowSize() const;
 		const mt::vec2f& getTileSize( int _tile ) const;
 		void setResourceWindow( const ConstString & _resource );
+		bool hasBackground();
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -32,7 +33,6 @@ namespace Menge
 
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
-
 	protected:
 		ConstString m_resourceName;
 		ResourceWindow* m_resource;
@@ -40,6 +40,8 @@ namespace Menge
 		mt::vec2f m_clientSize;
 
 		mt::vec2f m_initialSizes[MAX_WINDOW_ELEMENTS];
+		
+		bool m_hasBackGround;
 		
 		const RenderMaterial * m_material[MAX_WINDOW_ELEMENTS];
 		const RenderTextureInterface * m_textures[MAX_WINDOW_ELEMENTS];

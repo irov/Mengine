@@ -3,24 +3,24 @@
 #	include "ResourceReference.h"
 #	include "ResourceImage.h"
 #	define MAX_WINDOW_ELEMENTS 9
-		// 0 - Background
-		// 1 - LeftTop
-		// 2 - Top
-		// 3 - RightTop
-		// 4 - Right
-		// 5 - RightBottom
-		// 6 - Bottom
-		// 7 - LeftBottom
-		// 8 - Left
+
+#	define ResourceWindow_Background 0
+#	define ResourceWindow_LeftTop 1
+#	define ResourceWindow_Top 2
+#	define ResourceWindow_RightTop 3
+#	define ResourceWindow_Right 4
+#	define ResourceWindow_RightBottom 5
+#	define ResourceWindow_Bottom 6
+#	define ResourceWindow_LeftBottom 7
+#	define ResourceWindow_Left 8
 
 namespace Menge
 {
 	class RenderTextureInterface;
 
-	struct WindowImageDesc
+	struct WindowElement
 	{
 		ConstString resourceName;
-		RenderTextureInterface * texture;
 		ResourceImage * resource;
 		mt::vec2f offset;
 	};
@@ -37,12 +37,13 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 		RenderTextureInterface* getImage( int _type );
+		const mt::vec2f &  getOffset( int _type );
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 	protected:
-		WindowImageDesc m_images[MAX_WINDOW_ELEMENTS];
+		WindowElement m_images[MAX_WINDOW_ELEMENTS];
 	};
 }	// namespace Menge

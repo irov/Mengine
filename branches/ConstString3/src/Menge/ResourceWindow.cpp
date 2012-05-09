@@ -17,7 +17,7 @@ namespace Menge
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			m_images[i].texture = NULL;
+			m_images[i].resource = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -31,44 +31,47 @@ namespace Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::WindowBackground_ResourceImageName, m_images[0].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowBackground_ResourceImageName, m_images[ResourceWindow_Background].resourceName );
 			
-			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftTop_ResourceImageName, m_images[1].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftTop_Offset, m_images[1].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftTop_ResourceImageName, m_images[ResourceWindow_LeftTop].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftTop_Offset, m_images[ResourceWindow_LeftTop].offset );
 			
-			BIN_CASE_ATTRIBUTE( Protocol::WindowTop_ResourceImageName, m_images[2].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowTop_Offset, m_images[2].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowTop_ResourceImageName, m_images[ResourceWindow_Top].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowTop_Offset, m_images[ResourceWindow_Top].offset );
 
-			BIN_CASE_ATTRIBUTE( Protocol::WindowRightTop_ResourceImageName, m_images[3].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowRightTop_Offset, m_images[3].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowRightTop_ResourceImageName, m_images[ResourceWindow_RightTop].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowRightTop_Offset, m_images[ResourceWindow_RightTop].offset );
 
-			BIN_CASE_ATTRIBUTE( Protocol::WindowRight_ResourceImageName, m_images[4].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowRight_Offset, m_images[4].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowRight_ResourceImageName, m_images[ResourceWindow_Right].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowRight_Offset, m_images[ResourceWindow_Right].offset );
 
-			BIN_CASE_ATTRIBUTE( Protocol::WindowRightBottom_ResourceImageName, m_images[5].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowRightBottom_Offset, m_images[5].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowRightBottom_ResourceImageName, m_images[ResourceWindow_RightBottom].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowRightBottom_Offset, m_images[ResourceWindow_RightBottom].offset );
 
-			BIN_CASE_ATTRIBUTE( Protocol::WindowBottom_ResourceImageName, m_images[6].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowBottom_Offset, m_images[6].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowBottom_ResourceImageName, m_images[ResourceWindow_Bottom].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowBottom_Offset, m_images[ResourceWindow_Bottom].offset );
 
-			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftBottom_ResourceImageName, m_images[7].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftBottom_Offset, m_images[7].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftBottom_ResourceImageName, m_images[ResourceWindow_LeftBottom].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowLeftBottom_Offset, m_images[ResourceWindow_LeftBottom].offset );
 
-			BIN_CASE_ATTRIBUTE( Protocol::WindowLeft_ResourceImageName, m_images[8].resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::WindowLeft_Offset, m_images[8].offset );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowLeft_ResourceImageName, m_images[ResourceWindow_Left].resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowLeft_Offset, m_images[ResourceWindow_Left].offset );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceWindow::_compile()
 	{
-		
+
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
 			m_images[i].resource = NULL;
 
 			if( m_images[i].resourceName.empty() == true )
 			{
-				continue;
+				if( i == ResourceWindow_Background )
+				{
+					continue;
+				}
 			}
 
 			ResourceImage * resource  = ResourceManager::get()
@@ -103,12 +106,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface* ResourceWindow::getImage( int _type )
 	{
-		if( m_images[_type].resource == NULL )
+		ResourceImage * resource = m_images[_type].resource;
+		if( resource == NULL )
 		{
 			return NULL;
 		}
-		RenderTextureInterface* texture = m_images[_type].resource->getTexture();
+			
+		RenderTextureInterface* texture = resource->getTexture();
 		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & ResourceWindow::getOffset( int _type )
+	{
+		return m_images[_type].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

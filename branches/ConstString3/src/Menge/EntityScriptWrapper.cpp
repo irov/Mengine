@@ -41,8 +41,6 @@ namespace Menge
 				return 0;
 			}
 
-			entity->loaded();
-
 			Game::get()
 				->addHomeless( entity );
 

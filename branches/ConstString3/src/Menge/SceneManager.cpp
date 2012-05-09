@@ -3,7 +3,6 @@
 
 #	include <memory>
 
-#	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "NodeManager.h"
@@ -39,38 +38,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class SceneLoadable
-			: public Loadable
-		{
-		public:
-			SceneLoadable( Scene * _scene )
-				: m_scene(_scene)
-			{
-
-			}
-
-		protected:
-			void loader( BinParser * _parser ) override
-			{
-				BIN_SWITCH_ID( _parser )
-				{
-					BIN_CASE_NODE_PARSE( Protocol::Scene, m_scene );
-				}
-			}
-
-		protected:
-			void _loaded() override
-			{
-				m_scene->loaded();
-			}
-
-		protected:
-			Scene * m_scene;
-		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * SceneManager::createScene( const ConstString & _name )

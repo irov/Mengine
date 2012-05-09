@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Loadable.h"
-
 #	include "Core/Viewport.h"
 
 namespace Menge
@@ -9,7 +7,6 @@ namespace Menge
 	class Camera2D;
 
 	class Renderable
-		: virtual public Loadable
 	{
 	public:
 		Renderable();
@@ -31,9 +28,6 @@ namespace Menge
 
 	protected:
 		virtual void _hide( bool _value );
-
-	public:
-		void loader( BinParser * _xml ) override;
 
 	public:
 		bool checkVisibility( const Viewport& _viewport );

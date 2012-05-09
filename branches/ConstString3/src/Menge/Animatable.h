@@ -51,6 +51,7 @@ namespace Menge
 		virtual void _stop( size_t _enumerator ) = 0;
 		virtual void _end( size_t _enumerator ) = 0;
 		virtual void _interrupt( size_t _enumerator ) = 0;
+
 	protected:
 		virtual void _setLoop( bool _value );
 

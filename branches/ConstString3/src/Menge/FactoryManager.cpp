@@ -1,6 +1,7 @@
 #	include "FactoryManager.h"
 
 #	include "Factory.h"
+#	include "Factorable.h"
 
 #	include "LogEngine.h"
 
@@ -63,6 +64,17 @@ namespace Menge
 
 		Factorable * object = 
 			it_found->second->createObject( _type );
+
+		if( object == NULL )
+		{
+			MENGE_LOG_INFO("FactoryManager: invalid create object factory '%s'"
+				, _type.c_str() 
+				);
+
+			return NULL;
+		}
+
+		object->create();
 
 		return object;
 	}

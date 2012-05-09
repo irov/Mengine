@@ -267,6 +267,12 @@ Kernel\\\\Node\\\\Animatable
 )
 
 ADD_FILTER(
+Kernel\\\\Node\\\\Updatable
+	Updatable.cpp
+	Updatable.h
+)
+
+ADD_FILTER(
 Kernel\\\\Node\\\\Renderable
 	Renderable.cpp
 	Renderable.h

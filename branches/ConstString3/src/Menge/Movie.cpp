@@ -152,10 +152,8 @@ namespace Menge
 
 		if( m_reverse == true )
 		{
-			//float out = this->getWorkAreaDuration();
-
-			//m_frameTiming = 0.f;
-			//m_currentFrame = 0;
+			m_frameTiming = 0.f;
+			m_currentFrame = m_resourceMovie->getFrameCount();
 
 			//this->setLastFrame();
 		}
@@ -988,11 +986,11 @@ namespace Menge
 
 		//float lastTiming = m_timing;
 
-		//if( m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_Cover" 
-		//	&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover" )
-		//{
-		//	return;
-		//}
+		if( m_resourceMovieName.to_str() != "Movie105_Cemetery_DoorCryptMG_Transporter" 
+			&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover" )
+		{
+			return;
+		}
 		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -1008,22 +1006,42 @@ namespace Menge
 		{
 			m_frameTiming -= frameDuration;
 
-			++m_currentFrame;
-
-			if( m_currentFrame == frameCount )
+			if( m_reverse == true )
 			{
-				if( this->getLoop() == false )
+				--m_currentFrame;
+			}
+			else
+			{
+				++m_currentFrame;
+			}
+			
+			if( m_reverse == true )
+			{
+				if( m_currentFrame == 0 )
 				{
-					break;
+					if( this->getLoop() == false )
+					{
+						break;
+					}
 				}
 			}
-			else if ( m_currentFrame == frameCount + 1 )
+			else
 			{
-				if( this->getLoop() == true )
+				if( m_currentFrame == frameCount )
 				{
-					m_currentFrame = 0;
+					if( this->getLoop() == false )
+					{
+						break;
+					}
 				}
-			}	
+				else if ( m_currentFrame == frameCount + 1 )
+				{
+					if( this->getLoop() == true )
+					{
+						m_currentFrame = 0;
+					}
+				}	
+			}
 		}
 		
 		//if( m_currentFrame == frameCount + 1 )
@@ -1036,13 +1054,28 @@ namespace Menge
 			this->updateCurrentFrame_( lastFrame, false );
 		}
 
-		if( m_currentFrame == frameCount )
+		if( m_reverse == true )
 		{
-			if( this->getLoop() == false )
+			if( m_currentFrame == 0 )
 			{
-				m_frameTiming = 0.f;
+				if( this->getLoop() == false )
+				{
+					m_frameTiming = 0.f;
 
-				this->end();
+					this->end();
+				}
+			}
+		}
+		else
+		{
+			if( m_currentFrame == frameCount )
+			{
+				if( this->getLoop() == false )
+				{
+					m_frameTiming = 0.f;
+
+					this->end();
+				}
 			}
 		}
 	}
@@ -1331,6 +1364,7 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer2D & layer = *it;
+
 			if( layer.animatable == false )
 			{
 				continue;
@@ -1356,9 +1390,50 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_setReverse( bool _value )
+	void Movie::_setReverse( bool _reverse )
 	{
-		
+		if( this->isCompile() == false )
+		{
+			MENGE_LOG_ERROR( "Warning: Movie::_setSpeedFactor not compile '%s'"
+				, m_name.c_str() 
+				);	
+
+			return;
+		}
+
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			if( layer.animatable == false )
+			{
+				continue;
+			}
+
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie.update: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_found->second;
+
+			Animatable * animatable = dynamic_cast<Animatable *>(node);
+			animatable->setReverse( _reverse );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_interrupt( size_t _enumerator )

@@ -37,7 +37,7 @@ namespace Menge
 		Node * getMovieSlot( const ConstString & _name );
 
 	public:
-		void _setReverse( bool _value) override;
+		void _setReverse( bool _reverse ) override;
 
 	protected:
 		void _setTiming( float _timing ) override;

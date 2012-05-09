@@ -656,9 +656,7 @@ namespace Menge
 			{
 				return NULL;
 			}
-
-			node->loaded();
-
+			
 			if( Game::get() != 0 )
 			{
 				Game::get()
@@ -2334,13 +2332,13 @@ namespace Menge
 						PyObject * py_dict_frame = pybind::dict_new();
 
 						PyObject * py_pos = pybind::ptr( (*it_frame).position );
-						pybind::dict_set(py_dict_frame,"position", py_pos);
+						pybind::dict_set( py_dict_frame, "position", py_pos );
 						pybind::decref( py_pos );
 
 						float frameTime = _layer.in + i * m_frameDuration;
 
 						PyObject * py_time = pybind::ptr( frameTime );
-						pybind::dict_set(py_dict_frame,"time", py_time);
+						pybind::dict_set( py_dict_frame, "time", py_time );
 						pybind::decref( py_time );
 
 						pybind::list_appenditem( py_list_frames, py_dict_frame );
@@ -2348,7 +2346,7 @@ namespace Menge
 						i++;
 					}
 
-					pybind::dict_set(m_dictResult,_layer.name.c_str(), py_list_frames);
+					pybind::dict_set( m_dictResult, _layer.name.c_str(), py_list_frames );
 					pybind::decref( py_list_frames );
 				}
 

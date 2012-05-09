@@ -15,9 +15,11 @@ namespace Menge
 		inline Factory * getFactory() const;
 
 	public:
+		void create();
 		void destroy();
 
 	protected:
+		virtual void _create();
 		virtual void _destroy();
 
 	protected:

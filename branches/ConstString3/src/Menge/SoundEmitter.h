@@ -25,9 +25,11 @@ namespace Menge
 		void _stop( size_t _enumerator ) override;
 		void _end( size_t _enumerator ) override;
 		void _interrupt( size_t _enumerator ) override;
+
 	public:
 		void setVolume( float _volume );
-		float getVolume();
+		float getVolume() const;
+
 		void updateVolume();
 
 		float getLengthMs() const;

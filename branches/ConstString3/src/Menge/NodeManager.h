@@ -29,27 +29,5 @@ namespace Menge
 		{
 			return static_cast<T*>(this->createNode( _name, _type, _tag ));
 		}
-
-		////Node * createNodeFromXml( const ConstString& _pakName, const String& _filename );
-		//Node * createNodeFromBinary( const ConstString& _name, const ConstString& _tag, const ConstString & _binResource );
-
-		//template<class T>
-		//T * createNodeFromBinaryT( const ConstString& _name, const ConstString& _tag, const ConstString& _file)
-		//{
-		//	Node * node = this->createNodeFromBinary( _name, _tag, _file );
-
-		//	if( dynamic_cast<T*>(node) == NULL )
-		//	{
-		//		return NULL;
-		//	}
-
-		//	T * t = static_cast<T*>(node); 
-
-		//	return t;
-		//}
-		
-	protected:
-		typedef std::map<ConstString, NodeFactory *> TMapGenerator;
-		TMapGenerator m_generator;
 	};
 }

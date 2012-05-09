@@ -3,7 +3,6 @@
 
 #	include <memory>
 
-#	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "BinParser.h"
@@ -35,38 +34,6 @@ namespace Menge
 		return arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class ArrowLoadable
-			: public Loadable
-		{
-		public:
-			ArrowLoadable( Arrow * _arrow )
-				: m_arrow(_arrow)
-			{
-
-			}
-
-		protected:
-			void loader( BinParser * _parser ) override
-			{
-				BIN_SWITCH_ID( _parser )
-				{
-					BIN_CASE_NODE_PARSE( Protocol::Arrow, m_arrow );
-				}
-			}
-
-		protected:
-			void _loaded() override
-			{
-				m_arrow->loaded();
-			}
-
-		protected:
-			Arrow * m_arrow;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Arrow * ArrowManager::createArrow_( const ConstString & _name, const ConstString & _prototype )
 	{
 		TMapDescriptionArrows::iterator it_find = m_descriptions.find( _name );
@@ -95,8 +62,6 @@ namespace Menge
 
 			return 0;
 		}
-
-		arrow->loaded();
 
 		return arrow;
 	}

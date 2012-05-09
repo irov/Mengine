@@ -39,7 +39,7 @@ namespace Menge
 				return NULL;
 			}
 
-			T * t = static_cast<T*>(factorable);
+			T * t = static_cast<T*>(factorable);			
 
 			return t;
 		}

@@ -209,7 +209,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEmitter::getVolume()
+	float SoundEmitter::getVolume() const
 	{
 		if( m_sourceID == 0 )
 		{

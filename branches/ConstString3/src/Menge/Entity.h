@@ -11,17 +11,14 @@ namespace Menge
 		void setPrototype( const ConstString & _prototype );
 		const ConstString & getPrototype() const;
 
-	public:
-		void loaded();
-
 	protected:
 		bool _activate() override;
 		void _afterActivate() override;
 		void _afterDeactivate() override;
 		bool _compile() override;
 		void _release() override;
-
-
+		
+		void _create() override;
 		void _destroy() override;
 
 	protected:

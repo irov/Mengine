@@ -7,6 +7,7 @@
 #	include "Eventable.h"
 #	include "Resource.h"
 #	include "GlobalHandleAdapter.h"
+#	include "Updatable.h"
 #	include "Renderable.h"
 #	include "BoundingBox.h"
 #	include "Transformation3D.h"
@@ -48,6 +49,7 @@ namespace Menge
 		, public Identity
 		, public Resource
 		, public GlobalHandleAdapter
+		, public Updatable
 		, public Renderable
 		, public BoundingBox
 		, public Transformation3D
@@ -193,11 +195,10 @@ namespace Menge
 		virtual void _freeze( bool _value );
 
 	public:
-		virtual void update( float _timing );
+		void update( float _timing ) override;
 
 	protected:
-		virtual void _update( float _timing );
-		virtual void _postUpdate( float _timing );
+		void _update( float _timing ) override;
 		
 	protected:
 		PyObject * _embedded() override;

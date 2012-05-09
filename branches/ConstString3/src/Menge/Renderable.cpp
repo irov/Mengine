@@ -1,7 +1,5 @@
 #	include "Renderable.h"
 
-#	include "BinParser.h"
-
 #	include "Camera2D.h"
 
 #	include "Player.h"
@@ -57,13 +55,5 @@ namespace Menge
 		m_invalidateVisibility = false;
 
 		return m_visibility;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Hide_Value, &Renderable::hide );
-		}
 	}
 }

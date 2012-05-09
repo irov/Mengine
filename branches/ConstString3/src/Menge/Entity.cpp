@@ -61,20 +61,21 @@ namespace Menge
 	{
 		Node::_embedding( _embed );
 
-		Eventable::registerEvent( EVENT_LOADER, ("onLoader"), _embed );
+		Eventable::registerEvent( EVENT_CREATE, ("onCreate"), _embed );
+		Eventable::registerEvent( EVENT_DESTROY, ("onDestroy"), _embed );
 		
 		Eventable::registerEvent( EVENT_PREPARATION, ("onPreparation"), _embed );
 		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _embed );
 		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _embed );
 		Eventable::registerEvent( EVENT_COMPILE, ("onCompile"), _embed );
-		Eventable::registerEvent( EVENT_RELEASE, ("onRelease"), _embed );
-
-		Eventable::registerEvent( EVENT_DESTROY, ("onDestroy"), _embed );
+		Eventable::registerEvent( EVENT_RELEASE, ("onRelease"), _embed );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::loaded()
+	void Entity::_create()
 	{
-		this->callEvent( EVENT_LOADER, "()" );
+		Node::_create();
+
+		this->callEvent( EVENT_CREATE, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_destroy()

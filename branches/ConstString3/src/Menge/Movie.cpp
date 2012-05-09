@@ -986,11 +986,11 @@ namespace Menge
 
 		//float lastTiming = m_timing;
 
-		if( m_resourceMovieName.to_str() != "Movie105_Cemetery_DoorCryptMG_Transporter" 
-			&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover" )
-		{
-			return;
-		}
+		//if( m_resourceMovieName.to_str() != "Movie105_Cemetery_DoorCryptMG_Transporter" 
+		//	&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover" )
+		//{
+		//	return;
+		//}
 		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 

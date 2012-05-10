@@ -312,6 +312,7 @@ namespace	Menge
 		}
 
 		m_interface->interrupt();
+
 		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////

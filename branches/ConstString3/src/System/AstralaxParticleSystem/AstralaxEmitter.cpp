@@ -127,7 +127,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::play()
 	{
-		if ( m_start == false ) 
+		//if ( m_start == false ) 
 		{ 
 			Magic_Restart( m_id );
 			if( Magic_IsInterval1( m_id ) == true )

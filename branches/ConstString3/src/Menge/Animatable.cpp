@@ -141,7 +141,7 @@ namespace Menge
 			return false;
 		}
 
-		m_play = false;
+		//m_play = false;
 
 		this->_interrupt( m_enumerator );
 

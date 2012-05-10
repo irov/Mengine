@@ -180,7 +180,7 @@ namespace Menge
 
 		while( rendering.count )
 		{
-			ParticleMesh mesh;
+			ParticleMesh & mesh = _meshes[_flush.meshCount];
 			mesh.begin = _flush.particleCount;
 			mesh.size = rendering.count;
 			mesh.texture = rendering.texture_id;
@@ -191,9 +191,6 @@ namespace Menge
 				return false;
 			}
 			
-			_meshes[_flush.meshCount] = mesh;
-					
-
 			this->fillParticles_( _particles, _flush.particleCount, rendering.count );
 
 			_flush.particleCount += rendering.count;

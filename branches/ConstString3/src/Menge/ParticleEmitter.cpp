@@ -345,10 +345,7 @@ namespace	Menge
 		m_interface->update( _timing );
 
 		size_t partCount = 0;
-
-		size_t maxParticleCount = 2000;
-		size_t maxMeshCount = 100;
-
+		
 		bool firstPoint = true;
 
 		Node::_updateBoundingBox( m_localBoundingBox );
@@ -359,8 +356,11 @@ namespace	Menge
 
 		ARGB color_argb = color.getAsARGB();
 
-		static TVectorParticleVerices s_particles(maxParticleCount);
-		static TVectorParticleMeshes s_meshes(maxMeshCount);
+		size_t maxParticleCount = 2000;
+		size_t maxMeshCount = 100;
+
+		TVectorParticleVerices s_particles(maxParticleCount);
+		TVectorParticleMeshes s_meshes(maxMeshCount);
 		//s_particles.clear();
 		//s_meshes.clear();
 

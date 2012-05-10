@@ -72,7 +72,7 @@ namespace Menge
 
 		it->second.first = _value;
 
-		if( pybind::is_none(it->second.second) == false )
+		if( pybind::is_none( it->second.second ) == false )
 		{
 			pybind::call( it->second.second, "(u)", _value.c_str() );
 		}		

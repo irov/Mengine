@@ -87,6 +87,7 @@ namespace Menge
 	protected:
 		void updateCurrentFrame_( size_t _lastFrame, bool _force );
 		void updateTiming_();
+		void updateClipLastFrame_();
 
 	protected:
 		ConstString m_resourceMovieName;

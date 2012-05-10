@@ -989,11 +989,12 @@ namespace Menge
 
 		//float lastTiming = m_timing;
 
-		//if( m_resourceMovieName.to_str() != "Movie105_Cemetery_DoorCryptMG_Transporter" 
-		//	&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover" )
-		//{
-		//	return;
-		//}
+		if( m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_Env_Water" 
+			//&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover"
+			)
+		{
+			return;
+		}
 		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -1036,6 +1037,8 @@ namespace Menge
 				{
 					if( this->getLoop() == true )
 					{
+						this->updateClipLastFrame_();
+
 						m_currentFrame = 0;
 					}
 				}	
@@ -1109,9 +1112,19 @@ namespace Menge
 			//	indexOut = frameCount;
 			//}
 
-			if( indexOut < _lastFrame || indexIn > m_currentFrame )
+			if( m_currentFrame > _lastFrame )
 			{
-				continue;
+				if( indexOut < _lastFrame || indexIn > m_currentFrame )
+				{
+					continue;
+				}
+			}
+			else
+			{
+				if( indexIn > m_currentFrame )
+				{
+					continue;
+				}
 			}
 
 			TMapNode::iterator it_found = m_nodies.find( layer.index );
@@ -1339,6 +1352,59 @@ namespace Menge
 			}			
 
 			this->updateFrame2D_( layer, node, frame );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateClipLastFrame_()
+	{
+		float frameDuration = m_resourceMovie->getFrameDuration();
+		//size_t frameCount = m_resourceMovie->getFrameCount();
+
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			float layerIn = layer.in;
+			float layerOut = layer.out;
+
+			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
+			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
+
+			if( indexOut < m_currentFrame )
+			{
+				continue;
+			}
+
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie.updateTiming_: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_found->second;
+
+			MovieFrame2D frame;
+
+			if( m_currentFrame > indexIn )
+			{
+				if( layer.internal == false )
+				{
+					node->localHide(true);
+				}
+			}	
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

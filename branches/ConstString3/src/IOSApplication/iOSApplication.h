@@ -99,7 +99,7 @@ public:
 	void showKeyboard( void );
 	void hideKeyboard( void );
 	   
-	DynamicLibraryInterface * loadDynamicLibrary( const String & _filename );
+	DynamicLibraryInterface * loadDynamicLibrary( const WString & _filename );
 	void unloadDynamicLibrary( DynamicLibraryInterface * _lib );
 	
 	void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen );

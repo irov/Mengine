@@ -354,7 +354,7 @@ void iOSApplication::hideKeyboard( void )
 	[ pEAGLView hideKeyboard ];
 }
 
-DynamicLibraryInterface * iOSApplication::loadDynamicLibrary( const String & _filename )
+DynamicLibraryInterface * iOSApplication::loadDynamicLibrary( const WString & _filename )
 {
 	return 0;
 }
@@ -454,7 +454,7 @@ void iOSApplication::notifyCursorUnClipping( void )
         {
             m_logService->registerLogger( m_loggerConsole );
         }
-        m_logService->setVerboseLevel( LM_INFO );
+        //m_logService->setVerboseLevel( LM_INFO );
 # ifndef MENGE_MASTER_RELEASE
         m_logService->setVerboseLevel( LM_LOG );
 # endif

@@ -410,7 +410,7 @@ namespace	Menge
 		m_material = m_materialGroup->getMaterial( textureU, textureV );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( Camera2D * _camera )
+	void Sprite::_render( RenderCameraInterface * _camera )
 	{
 		Node::_render( _camera );
 		

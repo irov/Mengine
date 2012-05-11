@@ -61,7 +61,7 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-		void _render( Camera2D * _camera ) override;
+		void _render( RenderCameraInterface * _camera ) override;
 
 	private:
 		void updateVertices_();

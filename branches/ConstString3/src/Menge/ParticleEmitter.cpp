@@ -200,7 +200,7 @@ namespace	Menge
 		//m_images.clear();				
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_render( Camera2D * _camera )
+	void ParticleEmitter::_render( RenderCameraInterface * _camera )
 	{
 		Node::_render( _camera );
 

@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Interface/RenderSystemInterface.h"
+
 #	include "Core/Viewport.h"
 
 namespace Menge
@@ -12,11 +14,11 @@ namespace Menge
 		Renderable();
 
 	public:
-		virtual void render( Camera2D * _camera ) = 0;
+		virtual void render( RenderCameraInterface * _camera ) = 0;
 
 	public:
-		virtual void _render( Camera2D * _camera );
-		virtual void _debugRender( Camera2D* _camera, unsigned int _debugMask );
+		virtual void _render( RenderCameraInterface * _camera );
+		virtual void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask );
 
 	public:
 		virtual void hide( bool _value );

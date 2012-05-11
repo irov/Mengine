@@ -95,7 +95,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_render( Camera2D * _camera )
+	void Window::_render( RenderCameraInterface * _camera )
 	{
 		Node::_render( _camera );
 

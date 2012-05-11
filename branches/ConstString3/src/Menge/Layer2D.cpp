@@ -29,6 +29,7 @@ namespace	Menge
 		: m_factorParallax(1.f, 1.f)
 		, m_viewport(0.f, 0.f, 0.f, 0.f)
 		, m_hasViewport(false)
+		, m_cameraViewport(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,31 +53,29 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::_deactivate()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::render( Camera2D * _camera )
+	void Layer2D::render( RenderCameraInterface * _camera )
 	{
 		RenderEngine::get()
 			->beginLayer2D();
 
 		if( m_hasViewport == true )
 		{
-			Viewport old_vp;
-			mt::mat4f old_vm;
-			mt::mat4f old_pm;
+			const RenderCameraInterface * oldCamera;
 			
 			RenderEngine::get()
-				->getCurrentRenderPass( old_vp, old_vm, old_pm );
+				->getCurrentRenderPass( oldCamera );
+
+			const ConstString & renderTarget = oldCamera->getRenderTarget();
+
+			m_cameraViewport->setRenderTarget( renderTarget );
 
 			RenderEngine::get()
-				->newRenderPass( m_viewportWM, m_viewMatrix, m_projectionMatrix );
+				->newRenderPass( m_cameraViewport );
 
 			this->renderChild( _camera );
 
 			RenderEngine::get()
-				->newRenderPass( old_vp, old_vm, old_pm );
+				->newRenderPass( oldCamera );
 		}
 		else
 		{
@@ -130,35 +129,26 @@ namespace	Menge
 		
 		m_hasViewport = true;
 
-		this->invalidateWorldMatrix();
+		ConstString c_layerCamera("layerCamera");
+
+		m_cameraViewport = NodeManager::get()
+			->createNodeT<Camera2D>( c_layerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+
+		m_cameraViewport->setViewport( _viewport );
+		
+		this->addChildren( m_cameraViewport );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::removeRenderViewport()
 	{
-		m_hasViewport = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Layer2D::getRenderViewport() const
-	{
-		return m_viewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
-
-		if( m_hasViewport == true )
-		{			
-			const mt::mat4f & wm = this->getWorldMatrix();
-
-			mt::mul_v2_m4( m_viewportWM.begin, m_viewport.begin, wm );
-			mt::mul_v2_m4( m_viewportWM.end, m_viewport.end, wm );
-			
-			RenderEngine::get()
-				->makeViewMatrixFromViewport(m_viewMatrix, m_viewportWM);
-
-			RenderEngine::get()
-				->makeProjectionOrthogonalFromViewport(m_projectionMatrix, m_viewportWM);
+		if( m_hasViewport == false )
+		{
+			return;
 		}
+
+		m_hasViewport = false;
+		
+		m_cameraViewport->destroy();
+		m_cameraViewport = 0;
 	}
 }

@@ -327,7 +327,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_render( Camera2D * _camera )
+	void Video::_render( RenderCameraInterface * _camera )
 	{
 		Node::_render( _camera );
 

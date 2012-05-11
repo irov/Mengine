@@ -647,11 +647,11 @@ namespace Menge
 		this->activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( Camera2D * _camera )
+	void Node::render( RenderCameraInterface * _camera )
 	{
 		if( this->isRenderable() == true )
 		{
-			const Viewport& viewPort = _camera->getViewport();
+			//const Viewport& viewPort = _camera->getViewport();
 
 			//size_t cameraRevision = _camera->getCameraRevision();
 
@@ -693,7 +693,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild( Camera2D * _camera )
+	void Node::renderChild( RenderCameraInterface * _camera )
 	{
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -738,7 +738,7 @@ namespace Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Node::getWorldMatrix()
+	const mt::mat4f & Node::getWorldMatrix() const
 	{
 		if( m_parent == 0 )
 		{
@@ -845,7 +845,7 @@ namespace Menge
 		return m_layer->getScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Node::getCameraPosition( Camera2D * _camera2D )
+	mt::vec2f Node::getCameraPosition( RenderCameraInterface * _camera2D )
 	{
 		const mt::vec3f & pos = this->getWorldPosition();
 		mt::vec2f screen_pos = pos.to_vec2f();
@@ -964,7 +964,7 @@ namespace Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( Camera2D* _camera, unsigned int _debugMask )
+	void Node::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		if( _debugMask & MENGE_DEBUG_NODES )
 		{

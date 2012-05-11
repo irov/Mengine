@@ -138,12 +138,10 @@ namespace Menge
 		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const ConstString & getRenderTarget() const;
 
-		void newRenderPass( const Viewport & _viewport, const mt::mat4f & _viewMatrix, const mt::mat4f & _projMatrix );
-		bool getCurrentRenderPass( Viewport & _viewport, mt::mat4f & _viewMatrix, mt::mat4f & _projMatrix ) const;
+		void newRenderPass( const RenderCameraInterface * _camera );
+		bool getCurrentRenderPass( const RenderCameraInterface *& _camera ) const;
 
 		bool isWindowCreated() const;
-
-		void setCamera( Camera * _camera );
 
 		RenderPass * createRenderPass_();
 		void setRenderPass( RenderPass * _pass );
@@ -235,8 +233,6 @@ namespace Menge
 		//const mt::mat4f* m_uvMask[MENGE_MAX_TEXTURE_STAGES];
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
-
-		Camera * m_camera;
 
 		typedef PoolVector<RenderPass> TPoolRenderPass;
 		TPoolRenderPass m_poolRenderPass;

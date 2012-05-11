@@ -73,16 +73,16 @@ namespace Menge
 		Layer * m_layer;
 
 	public:
-		void render( Camera2D * _camera ) override;	
+		void render( RenderCameraInterface * _camera ) override;	
 		inline bool isRenderable() const;
 
 	protected:
 #	ifndef MENGE_MASTER_RELEASE
-		void _debugRender( Camera2D* _camera, unsigned int _debugMask ) override;
+		void _debugRender( RenderCameraInterface* _camera, unsigned int _debugMask ) override;
 #	endif
 
 	protected:
-		void renderChild( Camera2D * _camera );
+		void renderChild( RenderCameraInterface * _camera );
 
 	protected:
 		bool isEnableGlobalHandle() const override;
@@ -92,7 +92,7 @@ namespace Menge
 		virtual void visitChildren( Visitor * _visitor );
 
 	public:
-		mt::vec2f getCameraPosition( Camera2D * _camera2D );
+		mt::vec2f getCameraPosition( RenderCameraInterface * _camera2D );
 		
 	public:
 		const ColourValue & getWorldColor() const;
@@ -159,7 +159,7 @@ namespace Menge
 		virtual void _afterDeactivate();
 
 	public:
-		const mt::mat4f & getWorldMatrix();
+		const mt::mat4f & getWorldMatrix() const;
 
 		const mt::vec3f & getWorldPosition();
 		//const mt::vec3f & getWorldDirection();

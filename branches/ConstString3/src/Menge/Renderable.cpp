@@ -16,12 +16,12 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_render( Camera2D * _camera )
+	void Renderable::_render( RenderCameraInterface * _camera )
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_debugRender( Camera2D* _camera, unsigned int _debugMask )
+	void Renderable::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		//Empty
 	}

@@ -13,11 +13,11 @@ namespace Menge
 		Point();
 
 	public:
-		bool testHotSpot( Camera2D * _camera, HotSpot * _hotspot );
+		bool testHotSpot( RenderCameraInterface * _camera, HotSpot * _hotspot );
 
 #	ifndef MENGE_MASTER_RELEASE
 	protected:
-		void _debugRender( Camera2D * _camera, unsigned int _debugMask ) override;
+		void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 #	endif
 	};
 }

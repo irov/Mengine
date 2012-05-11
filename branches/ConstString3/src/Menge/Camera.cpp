@@ -19,4 +19,9 @@ namespace Menge
 	{
 		m_renderTarget = _renderTarget;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Camera::getRenderTarget() const
+	{
+		return m_renderTarget;
+	}
 }	// namespace Menge

@@ -49,7 +49,7 @@ namespace Menge
 		virtual void _setLastFrame() override;
 	protected:
 		void _update( float _timing ) override;
-		void _render( Camera2D * _camera ) override;
+		void _render( RenderCameraInterface * _camera ) override;
 		
 		bool _activate() override;
 		void _deactivate() override;

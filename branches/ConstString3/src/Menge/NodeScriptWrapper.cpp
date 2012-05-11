@@ -609,12 +609,6 @@ namespace Menge
 				->getRenderCamera2D()->getViewport().begin;
 		}
 
-		static void s_setRenderCamera( Camera2D * _camera )
-		{	
-			RenderEngine::get()
-				->setCamera( _camera );
-		}
-
 		static void setCamera2DDirection( float x, float y )
 		{
 			assert(!"NOT IMPLEMENTED");
@@ -3263,15 +3257,16 @@ namespace Menge
 
 		pybind::interface_<ThreadTask>("Task")
 			;
+
+		pybind::interface_<RenderCameraInterface>("RenderCameraInterface")
+			.def( "getViewport", &RenderCameraInterface::getViewport )
+			;
 		
-		pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
-			.def( "setViewport", &Camera2D::setViewport )
-			.def( "getViewport", &Camera2D::getViewport )
+		pybind::proxy_<Camera2D, pybind::bases<Node, RenderCameraInterface> >("Camera2D", false)
+			.def( "setViewport", &Camera2D::setViewport )			
 			//.def( "setRenderport", &Camera2D::setRenderport )
 			//.def( "getRenderport", &Camera2D::getRenderport )
-			.def( "setTargetNode", &Camera2D::setTargetNode )
 			.def( "setRenderTarget", &Camera2D::setRenderTarget )
-			.def( "setTargetOffset", &Camera2D::setTargetOffset )
 			;		
 
 		//pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
@@ -3466,7 +3461,6 @@ namespace Menge
 					.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
 					.def( "setRenderViewport", &Layer2D::setRenderViewport )
 					.def( "removeRenderViewport", &Layer2D::removeRenderViewport )
-					.def( "getRenderViewport", &Layer2D::getRenderViewport )
 					.def( "cameraToLocal", &Layer2D::cameraToLocal )
 					;
 				pybind::proxy_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false);
@@ -3604,13 +3598,7 @@ namespace Menge
 					.def("pause",&Video::pause )
 					.def( "setVideoResource", &Video::setVideoResource )
 					;
-
-				pybind::proxy_< Scene, pybind::bases< Node > >("Scene", false)
-					.def( "setCamera2D", &Scene::setCamera2D )
-					.def( "renderSelf", &Scene::renderSelf )
-					.def( "setMainLayer", &Scene::setMainLayer )
-					;
-
+				
 				pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
 					.def( "setClientSize", &Window::setClientSize )
 					.def( "setClientSizeClip", &Window::setClientSizeClip )
@@ -3783,7 +3771,6 @@ namespace Menge
 			pybind::def_function( "joinTask", &ScriptMethod::s_joinTask );
 			
 			//For Astralax
-			pybind::def_function( "setRenderCamera", &ScriptMethod::s_setRenderCamera );
 			pybind::def_function( "createParticlesResource", &ScriptMethod::s_createParticlesResource );
 			pybind::def_function( "visitResourceEmitterContainer", &ScriptMethod::s_visitResourceEmitterContainer );
 

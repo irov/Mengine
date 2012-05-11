@@ -988,7 +988,14 @@ namespace Menge
 		//}
 
 		//float lastTiming = m_timing;
-			
+
+		//if( m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_Env_Water" 
+		//	//&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover"
+		//	)
+		//{
+		//	return;
+		//}
+		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
 		float realTiming = _timing * m_speedFactor;
@@ -1395,7 +1402,7 @@ namespace Menge
 			{
 				if( layer.internal == false )
 				{
-					node->localHide(true);
+					node->localHide( true );
 				}
 			}	
 		}

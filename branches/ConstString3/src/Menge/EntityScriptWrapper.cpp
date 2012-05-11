@@ -137,12 +137,11 @@ namespace Menge
 		pybind::proxy_<Scene, pybind::bases<Entity> >("Scene", false)
 			.def( "isSubScene", &Scene::isSubScene )
 			.def( "getParentScene", &Scene::getParentScene )
-			.def( "setRenderTarget", &Scene::setRenderTarget )
-			.def( "renderSelf", &Scene::renderSelf )
+			//.def( "setRenderTarget", &Scene::setRenderTarget )
+			//.def( "renderSelf", &Scene::renderSelf )
 			//.def( "blockInput", &Scene::blockInput )
 			//.def( "getBlockInput", &Scene::getBlockInput )
 			.def( "getMainLayer", &Scene::getMainLayer )
-			.def( "setCamera2D", &Scene::setCamera2D )
 			.def( "setMainLayer", &Scene::setMainLayer )
 			;
 

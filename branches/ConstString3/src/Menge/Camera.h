@@ -8,29 +8,27 @@
 
 #	pragma once
 
-#	include "Config/Typedef.h"
-#	include "Math/mat4.h"
-#	include "Core/Viewport.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #	include "Core/ConstString.h"
+
+#	include "Config/Typedef.h"
 
 namespace Menge
 {
 	class Camera
+		: public RenderCameraInterface
 	{
 	public:
 		Camera();
 
 	public:
 		void setRenderTarget( const ConstString& _renderTarget );
-		inline const ConstString& getRenderTarget() const;
+
+	public:
+		const ConstString& getRenderTarget() const override;
 
 	private:
 		ConstString m_renderTarget;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString& Camera::getRenderTarget() const
-	{
-		return m_renderTarget;
-	}
 }	// namespace Menge

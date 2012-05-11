@@ -132,7 +132,7 @@ namespace Menge
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Transformation3D::updateWorldMatrix( const mt::mat4f & _parentMatrix )
+	const mt::mat4f & Transformation3D::updateWorldMatrix( const mt::mat4f & _parentMatrix ) const
 	{
 		m_invalidateWorldMatrix = false;
 
@@ -143,7 +143,7 @@ namespace Menge
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::updateLocalMatrix_()
+	void Transformation3D::updateLocalMatrix_() const
 	{
 		m_invalidateLocalMatrix = false;
 

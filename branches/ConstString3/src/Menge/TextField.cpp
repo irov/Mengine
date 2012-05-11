@@ -193,7 +193,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( Camera2D * _camera )
+	void TextField::_render( RenderCameraInterface * _camera )
 	{
 		Node::_render( _camera );
 		
@@ -223,7 +223,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderOutline_( Camera2D * _camera )
+	void TextField::renderOutline_( RenderCameraInterface * _camera )
 	{
 		TVectorVertex2D & outlineVertices = this->getOutlineVertices();
 

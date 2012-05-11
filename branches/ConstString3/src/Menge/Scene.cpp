@@ -28,13 +28,6 @@ namespace Menge
 		: m_mainLayer(0)
 		, m_parentScene(0)
 		, m_offsetPosition(0.f,0.f)
-		//, m_gravity2D(0.f, 0.f)
-		//, m_physWorldBox2D(0.f, 0.f, 0.f, 0.f)
-		//, m_physWorld2D(false)
-		, m_renderTargetName(Consts::get()->c_Window)
-		, m_renderTargetSize(0.f, 0.f)
-		, m_camera2D(NULL)
-		//, m_physicCanSleep(true)
 	{
 		//const Resolution& res = Game::get()
 		//	->getContentResolution();
@@ -119,76 +112,6 @@ namespace Menge
 		Eventable::registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size )
-	{
-		m_renderTargetName = _cameraName;
-		m_renderTargetSize = _size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::render( Camera2D * _camera )
-	{
-		if( isRenderable() == false )
-		{
-			return;
-		}
-
-		Camera2D * renderCamera = _camera;
-
-		Viewport old_rp;
-		mt::mat4f old_vm;
-		mt::mat4f old_pm;
-
-		if( m_camera2D )
-		{
-			renderCamera = m_camera2D;
-
-			//renderCamera = m_camera2D;
-			RenderEngine::get()
-				->getCurrentRenderPass( old_rp, old_vm, old_pm );
-
-			const Viewport & camera_vp = m_camera2D->getViewport();
-			const mt::mat4f & camera_vm= m_camera2D->getViewMatrix();
-			const mt::mat4f & camera_pm= m_camera2D->getProjectionMatrix();
-
-			//Viewport new_vp;
-			//mt::mul_v2_m3( new_vp.begin, camera_viewport.begin, wm );
-			//mt::mul_v2_m3( new_vp.end, camera_viewport.end, wm );
-
-			RenderEngine::get()
-				->newRenderPass( camera_vp, camera_vm, camera_pm );
-		}
-
-		this->_render( renderCamera );
-
-		for( TListChild::iterator
-			it = m_child.begin(),
-			it_end = m_child.end();
-		it != it_end;
-		++it)
-		{
-			if( (*it)->isRenderable() == false ) 
-			{
-				continue;
-			}
-
-			RenderEngine::get()
-				->setRenderTarget( m_renderTargetName );
-
-			(*it)->render( renderCamera );
-		}
-
-		if( m_camera2D )
-		{
-			RenderEngine::get()
-				->newRenderPass( old_rp, old_vm, old_pm );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::renderSelf( Camera2D * _camera )
-	{
-		render( _camera );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseLeave()
 	{
 		bool handle = false;
@@ -241,18 +164,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setCamera2D( Camera2D * _camera2D )
-	{
-		m_camera2D = _camera2D;
-
-		this->addChildren( _camera2D );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString& Scene::getRenderTarget() const
-	{
-		return m_renderTargetName;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::onFocus( bool _focus )
 	{
 		bool handle = false;
@@ -279,7 +190,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_render( Camera2D * _camera )
+	void Scene::_render( RenderCameraInterface * _camera )
 	{
 		// nothing
 	}

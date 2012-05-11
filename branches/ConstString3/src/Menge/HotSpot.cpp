@@ -368,7 +368,7 @@ namespace	Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_debugRender( Camera2D * _camera, unsigned int _debugMask )
+	void HotSpot::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) <= 0 )
 		{

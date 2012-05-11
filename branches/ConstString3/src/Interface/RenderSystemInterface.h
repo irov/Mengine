@@ -300,7 +300,17 @@ namespace Menge
 		virtual bool loadImageData( ImageDecoderInterface* _imageDecoder ) = 0;
 		virtual bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) = 0;				
 	};
+	//////////////////////////////////////////////////////////////////////////
+	class RenderCameraInterface
+	{
+	public:
+		virtual const mt::mat4f & getProjectionMatrix() const = 0;
+		virtual const mt::mat4f & getViewMatrix() const = 0;
+		virtual const Viewport & getViewport() const = 0;
 
+	public:
+		virtual const ConstString & getRenderTarget() const = 0;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemListener
 	{

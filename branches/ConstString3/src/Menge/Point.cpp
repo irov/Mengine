@@ -15,7 +15,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Point::testHotSpot( Camera2D * _camera2D, HotSpot * _hotspot )
+	bool Point::testHotSpot( RenderCameraInterface * _camera2D, HotSpot * _hotspot )
 	{
 		const mt::vec2f& pos = this->getCameraPosition( _camera2D );
 
@@ -24,7 +24,7 @@ namespace	Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_debugRender( Camera2D * _camera, unsigned int _debugMask )
+	void Point::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{

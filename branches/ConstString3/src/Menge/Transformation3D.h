@@ -14,7 +14,7 @@ namespace Menge
 		
 	public:
 		//void setLocalMatrix( const mt::mat3f & _matrix );
-		inline const mt::mat4f & getLocalMatrix();
+		inline const mt::mat4f & getLocalMatrix() const;
 
 		void setLocalPosition( const mt::vec3f & _position );
 		inline const mt::vec3f & getLocalPosition() const;
@@ -51,17 +51,15 @@ namespace Menge
 		inline bool isInvalidateWorldMatrix() const;
 
 	protected:
-		const mt::mat4f & updateWorldMatrix( const mt::mat4f & _parentMatrix );
+		const mt::mat4f & updateWorldMatrix( const mt::mat4f & _parentMatrix ) const;
 
 	protected:
 		virtual void _invalidateWorldMatrix();
 
 	protected:
-		void updateLocalMatrix_();
+		void updateLocalMatrix_() const;
 
 	protected:
-		mt::mat4f m_localMatrix;
-
 		mt::vec3f m_origin;
 		mt::vec3f m_coordinate;
 		mt::vec3f m_position;
@@ -72,9 +70,10 @@ namespace Menge
 		float m_rotateY;
 		float m_rotateZ;
 				
-		bool m_invalidateWorldMatrix;
-		bool m_invalidateLocalMatrix;
-		mt::mat4f m_worldMatrix;
+		mutable bool m_invalidateWorldMatrix;
+		mutable bool m_invalidateLocalMatrix;
+		mutable mt::mat4f m_localMatrix;
+		mutable mt::mat4f m_worldMatrix;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::vec3f & Transformation3D::getLocalPosition()const
@@ -127,7 +126,7 @@ namespace Menge
 		return m_invalidateWorldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat4f & Transformation3D::getLocalMatrix()
+	inline const mt::mat4f & Transformation3D::getLocalMatrix() const
 	{
 		if( m_invalidateLocalMatrix == true )
 		{

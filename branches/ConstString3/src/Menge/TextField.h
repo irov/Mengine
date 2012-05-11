@@ -110,10 +110,10 @@ namespace Menge
 		void setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number );
 
 	protected:
-		void _render( Camera2D * _camera ) override;
+		void _render( RenderCameraInterface * _camera ) override;
 
 	private:
-		void renderOutline_( Camera2D * _camera );
+		void renderOutline_( RenderCameraInterface * _camera );
 
 	protected:	
 		bool _activate() override;

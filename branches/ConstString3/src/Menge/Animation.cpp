@@ -131,7 +131,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_render( Camera2D * _camera )
+	void Animation::_render( RenderCameraInterface * _camera )
 	{
 		//printf("Animation::_render %s %d %f\n"
 		//	, m_name.c_str()

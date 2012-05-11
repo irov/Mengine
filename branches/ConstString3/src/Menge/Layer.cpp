@@ -72,7 +72,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testArrow( Camera2D * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point, Arrow * _arrow ) const
+	bool Layer::testArrow( RenderCameraInterface * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point, Arrow * _arrow ) const
 	{
 		/*const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
@@ -121,7 +121,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testPoint( Camera2D * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const
+	bool Layer::testPoint( RenderCameraInterface * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const
 	{
 		//const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		//const mt::vec2f & posA = _layerspaceHotspot->getCameraPosition(_camera2D);

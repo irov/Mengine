@@ -55,16 +55,17 @@ namespace Menge
 		IBHandle ibHandle;
 		size_t baseVertexIndex;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef std::vector<RenderObject> TVectorRenderObject;
-
+	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass
 	{
 		TVectorRenderObject renderObjects;
 
-		Viewport viewport;
-		mt::mat4f viewMatrix;
-		mt::mat4f projectionMatrix;
+		const RenderCameraInterface * camera;
+		//Viewport viewport;
+		//mt::mat4f viewMatrix;
+		//mt::mat4f projectionMatrix;
 		//mt::mat4f wm;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -90,7 +91,6 @@ namespace Menge
 		, m_textureFiltering(true)
 		, m_idEnumerator(0)
 		, m_supportA8(false)
-		, m_camera(0)
 		, m_dipCount(0)
 		, m_renderScale(0.f, 0.f)
 		, m_renderOffset(0.f, 0.f)
@@ -1086,29 +1086,23 @@ namespace Menge
 		return m_currentRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::newRenderPass( const Viewport & _viewport, const mt::mat4f & _viewMatrix, const mt::mat4f & _projMatrix )
+	void RenderEngine::newRenderPass( const RenderCameraInterface * _camera )
 	{
 		RenderPass * pass = this->createRenderPass_();
 
-		pass->viewport = _viewport;
-		pass->viewMatrix = _viewMatrix;
-		pass->projectionMatrix = _projMatrix;
-		//pass->wm = _wm;
+		pass->camera = _camera;
 
 		this->setRenderPass(pass);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::getCurrentRenderPass( Viewport & _viewport, mt::mat4f & _viewMatrix, mt::mat4f & _projMatrix ) const
+	bool RenderEngine::getCurrentRenderPass( const RenderCameraInterface *& _camera  ) const
 	{
 		if( m_currentPass == 0 )
 		{
 			return false;
 		}
 
-		_viewport = m_currentPass->viewport;
-		_viewMatrix = m_currentPass->viewMatrix;
-		_projMatrix = m_currentPass->projectionMatrix;
-		//_wm = m_currentPass->wm;
+		_camera = m_currentPass->camera;
 
 		return true;
 	}
@@ -1410,11 +1404,6 @@ namespace Menge
 		mt::inv_m4( _viewMatrix, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setCamera( Camera * _camera )
-	{
-		m_camera = _camera;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	RenderPass * RenderEngine::createRenderPass_()
 	{
 		RenderPass* pass = m_poolRenderPass.get();
@@ -1460,11 +1449,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render_()
 	{
-		if( m_camera == 0 )
-		{
-			return;
-		}
-
 		if( m_passes.empty() == true )	// nothing to render
 		{
 			return;
@@ -1478,23 +1462,32 @@ namespace Menge
 		{
 			RenderPass * renderPass = *rit;
 
-			const ConstString& renderTarget = m_camera->getRenderTarget();
+			const RenderCameraInterface * camera = renderPass->camera;
+
+			const ConstString& renderTarget = camera->getRenderTarget();
 			
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
 				m_interface->setRenderTarget( NULL, true );
+
 				m_renderTargetResolution = m_windowResolution;
 			}
 
 			Viewport renderViewport;
 
-			renderViewport.begin = m_renderOffset + renderPass->viewport.begin * m_renderScale;
-			renderViewport.end = m_renderOffset + renderPass->viewport.end * m_renderScale;
+			const Viewport & viewport = camera->getViewport();
 
+			renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
+			renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
+			
 			m_interface->setViewport( renderViewport );
-			m_interface->setModelViewMatrix( renderPass->viewMatrix );
-			m_interface->setProjectionMatrix( renderPass->projectionMatrix );
+
+			const mt::mat4f & viewMatrix = camera->getViewMatrix();
+			m_interface->setModelViewMatrix( viewMatrix );
+
+			const mt::mat4f & projectionMatrix = camera->getProjectionMatrix();
+			m_interface->setProjectionMatrix( projectionMatrix );
 
 			const TVectorRenderObject & renderObjects = renderPass->renderObjects;
 

@@ -6,8 +6,6 @@
 
 namespace Menge
 {
-	class Camera2D;
-
 	class Renderable
 	{
 	public:

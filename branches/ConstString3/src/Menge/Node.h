@@ -92,7 +92,7 @@ namespace Menge
 		virtual void visitChildren( Visitor * _visitor );
 
 	public:
-		mt::vec2f getCameraPosition( RenderCameraInterface * _camera2D );
+		mt::vec2f getCameraPosition( RenderCameraInterface * _camera );
 		
 	public:
 		const ColourValue & getWorldColor() const;

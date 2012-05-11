@@ -845,14 +845,14 @@ namespace Menge
 		return m_layer->getScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Node::getCameraPosition( RenderCameraInterface * _camera2D )
+	mt::vec2f Node::getCameraPosition( RenderCameraInterface * _camera )
 	{
 		const mt::vec3f & pos = this->getWorldPosition();
 		mt::vec2f screen_pos = pos.to_vec2f();
 		
 		if( m_layer )
 		{
-			const Viewport & viewport = _camera2D->getViewport();
+			const Viewport & viewport = _camera->getViewport();
 
 			m_layer->calcScreenPosition( screen_pos, viewport, this );
 		}

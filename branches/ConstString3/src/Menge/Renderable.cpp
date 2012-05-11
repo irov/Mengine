@@ -1,7 +1,5 @@
 #	include "Renderable.h"
 
-#	include "Camera2D.h"
-
 #	include "Player.h"
 
 namespace Menge

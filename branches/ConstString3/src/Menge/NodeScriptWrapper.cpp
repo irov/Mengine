@@ -2334,21 +2334,22 @@ namespace Menge
 					}
 					
 					PyObject * py_list_frames = pybind::list_new(0);
-					size_t i = 0;
 
-					for( TVectorMovieFrameSource::const_iterator
-						it_frame = _frames.begin(),
-						it_frame_end = _frames.end();
+					for( TVectorMovieFrameSource::size_type
+						it_frame = 0,
+						it_frame_end = _frames.size();
 					it_frame != it_frame_end;
 					++it_frame )
 					{
+						const MovieFrameSource & frame_source = _frames[it_frame];
+
 						PyObject * py_dict_frame = pybind::dict_new();
 
-						PyObject * py_pos = pybind::ptr( (*it_frame).position );
+						PyObject * py_pos = pybind::ptr( frame_source.position );
 						pybind::dict_set( py_dict_frame, "position", py_pos );
 						pybind::decref( py_pos );
 
-						float frameTime = _layer.in + i * m_frameDuration;
+						float frameTime = _layer.in + it_frame * m_frameDuration;
 
 						PyObject * py_time = pybind::ptr( frameTime );
 						pybind::dict_set( py_dict_frame, "time", py_time );
@@ -2356,7 +2357,6 @@ namespace Menge
 
 						pybind::list_appenditem( py_list_frames, py_dict_frame );
 						pybind::decref( py_dict_frame );
-						i++;
 					}
 
 					pybind::dict_set( m_dictResult, _layer.name.c_str(), py_list_frames );
@@ -2372,18 +2372,19 @@ namespace Menge
 
 			ResourceMovie* resource = ResourceManager::get()
 				->getResourceT<ResourceMovie>( _resourceName );
-			
-			PyObject * py_dict_result = pybind::dict_new();
-					
+											
 			if( resource == NULL )
 			{
 				return pybind::ret_none();
 			}
 
+			PyObject * py_dict_result = pybind::dict_new();
+
 			float frameTime = resource->getFrameDuration();
 			ResourceMovieVisitorNullLayers visitor( py_dict_result, frameTime );
 			
 			resource->visitResourceMovie( &visitor );
+
 			return py_dict_result;
 		}
 
@@ -2398,10 +2399,12 @@ namespace Menge
 				{
 					catchedNames.push_back( _emitterName );
 				}
+
 				void visitAtlas( const EmitterContainerInterface::EmitterAtlas & _atlas )
 				{
 					cathedAtlas.push_back( _atlas );
 				}
+
 				EmitterContainerInterface::TVectorAtlas cathedAtlas;
 				TVectorString catchedNames;
 			};
@@ -2422,7 +2425,8 @@ namespace Menge
 			ResourceEmitterContainerVisitor visitor;
 			EmitterContainerInterface * container = resource->getContainer();
 			container->visitContainer( &visitor );
-			for( TVectorString::iterator
+
+			for( TVectorString::const_iterator
 				it = visitor.catchedNames.begin(),
 				it_end = visitor.catchedNames.end();
 			it != it_end;
@@ -2433,17 +2437,17 @@ namespace Menge
 				pybind::decref( py_node );
 			}
 
-			for( EmitterContainerInterface::TVectorAtlas::iterator
+			for( EmitterContainerInterface::TVectorAtlas::const_iterator
 				it = visitor.cathedAtlas.begin(),
 				it_end = visitor.cathedAtlas.end();
 			it != it_end;
 			++it )
 			{
 				PyObject * py_dict = pybind::dict_new();
-				PyObject * py_node_file = pybind::ptr((*it).file);
+				PyObject * py_node_file = pybind::ptr( (*it).file );
 				//PyObject * py_node_path = pybind::ptr((*it).path);
 				
-				pybind::dict_set(py_dict,"file",py_node_file);
+				pybind::dict_set( py_dict, "file", py_node_file );
 				//pybind::dict_set(py_dict,"path",py_node_path);
 				
 				pybind::decref( py_node_file );
@@ -2451,8 +2455,8 @@ namespace Menge
 				pybind::list_appenditem( py_list_atlas, py_dict );
 			}
 
-			pybind::dict_set(py_dict_result,"Emitters",py_list_names);
-			pybind::dict_set(py_dict_result,"Atlasses",py_list_atlas);
+			pybind::dict_set( py_dict_result, "Emitters", py_list_names );
+			pybind::dict_set( py_dict_result, "Atlasses", py_list_atlas );
 
 			return py_dict_result;
 		}

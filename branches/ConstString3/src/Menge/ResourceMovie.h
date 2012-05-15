@@ -131,6 +131,7 @@ namespace Menge
 		float getWorkAreaDuration() const;
 
 		size_t getFrameCount() const;
+		size_t getMaxLayerIndex() const;
 
 	public:
 		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
@@ -184,6 +185,8 @@ namespace Menge
 
 		TVectorMovieLayers2D m_layers2D;
 		TVectorMovieLayers3D m_layers3D;
+
+		size_t m_maxLayerIndex;
 
 		typedef std::map<ConstString, MovieInternal> TMapInternals;
 		TMapInternals m_internals;

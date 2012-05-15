@@ -320,7 +320,7 @@ namespace Menge
 		//av_dup_packet(&packet);
 		int i=0;
 
-		if ( av_read_frame( m_formatContext, &packet ) < 0 )
+		if( av_read_frame( m_formatContext, &packet ) < 0 )
 		{
 			av_free_packet(&packet);
 			//printf(" can not read frame ");
@@ -336,7 +336,7 @@ namespace Menge
 		}
 
 		// Decode video frame
-		avcodec_decode_video2( m_codecContext ,m_Frame, &isGotPicture, &packet );
+		avcodec_decode_video2( m_codecContext, m_Frame, &isGotPicture, &packet );
 
 		// Did we get a video frame?
 		if( isGotPicture <= 0 ) {

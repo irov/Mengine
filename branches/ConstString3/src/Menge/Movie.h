@@ -94,8 +94,8 @@ namespace Menge
 		
 		ResourceMovie * m_resourceMovie;
 
-		typedef std::map<size_t, Node *> TMapNode;
-		TMapNode m_nodies;
+		typedef std::vector<Node *> TVectorNodies;
+		TVectorNodies m_nodies;
 		
 		typedef std::map<ConstString, Node *> TMapMovieSlot;
 		TMapMovieSlot m_slots;

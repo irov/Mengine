@@ -480,6 +480,10 @@ namespace Menge
 			return false;
 		}
 
+		size_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
+
+		m_nodies.resize( maxLayerIndex + 1 );
+
 		float out = m_resourceMovie->getWorkAreaDuration();
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
@@ -741,21 +745,8 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer2D & layer = *it;
-
-			TMapNode::const_iterator it_node = m_nodies.find( layer.index );
-
-			if( it_node == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie.updateParent_: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_node->second;
+			
+			Node * node = m_nodies[layer.index];
 
 			if( layer.parent == 0 )
 			{
@@ -766,21 +757,7 @@ namespace Menge
 			}
 			else
 			{
-				TMapNode::iterator it_parent = m_nodies.find( layer.parent );
-
-				if( it_parent == m_nodies.end() )
-				{
-					MENGE_LOG_ERROR("Movie.updateParent_: '%s' not found layer '%s' '%d' parent '%d'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						, layer.index
-						, layer.parent
-						);
-
-					continue;
-				}
-
-				Node * node_parent = it_parent->second;
+				Node * node_parent = m_nodies[layer.parent];
 
 				node_parent->addChildren( node );
 			}
@@ -817,21 +794,8 @@ namespace Menge
 			{
 				continue;
 			}
-
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie._stop: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_found->second;
+			
+			Node * node = m_nodies[layer.index];
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 
@@ -874,21 +838,8 @@ namespace Menge
 			{
 				continue;
 			}
-
-			TMapNode::const_iterator it_node = m_nodies.find( layer.index );
-
-			if( it_node == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie._release: '%s' not found layer2D '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_node->second;
+			
+			Node * node = m_nodies[layer.index];
 
 			node->destroy();
 		}
@@ -1126,21 +1077,8 @@ namespace Menge
 					continue;
 				}
 			}
-
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie.updateCurrentFrame_: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_found->second;
+			
+			Node * node = m_nodies[layer.index];
 
 			MovieFrame2D frame;
 
@@ -1272,20 +1210,7 @@ namespace Menge
 			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
 			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
 		
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie.updateTiming_: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_found->second;
+			Node * node = m_nodies[layer.index];
 
 			MovieFrame2D frame;
 						
@@ -1376,20 +1301,7 @@ namespace Menge
 				continue;
 			}
 
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie.updateTiming_: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_found->second;
+			Node * node = m_nodies[layer.index];
 
 			MovieFrame2D frame;
 
@@ -1428,21 +1340,8 @@ namespace Menge
 			{
 				continue;
 			}
-						
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie.update: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
 			
-			Node * node = it_found->second;
+			Node * node = m_nodies[layer.index];
 			
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setSpeedFactor( _factor );
@@ -1475,21 +1374,8 @@ namespace Menge
 			{
 				continue;
 			}
-
-			TMapNode::iterator it_found = m_nodies.find( layer.index );
-
-			if( it_found == m_nodies.end() )
-			{
-				MENGE_LOG_ERROR("Movie.update: '%s' not found layer '%s' '%d'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					, layer.index
-					);
-
-				continue;
-			}
-
-			Node * node = it_found->second;
+			
+			Node * node = m_nodies[layer.index];
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setReverse( _reverse );

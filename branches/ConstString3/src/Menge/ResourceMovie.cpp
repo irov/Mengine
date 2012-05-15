@@ -26,6 +26,7 @@ namespace Menge
 		, m_width(0.f)
 		, m_height(0.f)
 		, m_framePack(NULL)
+		, m_maxLayerIndex(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -46,6 +47,11 @@ namespace Menge
 	size_t ResourceMovie::getFrameCount() const
 	{
 		return m_frameCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceMovie::getMaxLayerIndex() const
+	{
+		return m_maxLayerIndex;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorMovieLayers2D & ResourceMovie::getLayers2D() const
@@ -464,11 +470,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
+			m_maxLayerIndex = std::max( m_maxLayerIndex, it->index );
+
 			if( it->source ==  Consts::get()->c_MovieSlot )
 			{
 				it->internal = false;
 				it->animatable = false;
 				it->movie = false;
+
 				continue;
 			}
 			
@@ -477,6 +486,7 @@ namespace Menge
 				it->internal = false;
 				it->animatable = false;
 				it->movie = false;
+
 				continue;
 			}
 
@@ -540,7 +550,7 @@ namespace Menge
 					);
 
 				return false;
-			}
+			}			
 		}
 
 		for( TVectorMovieLayers3D::iterator

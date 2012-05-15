@@ -442,6 +442,7 @@ namespace	Menge
 			if( state == VDRS_END_STREAM )
 			{	
 				this->onEndStream_();
+
 				break;	
 			}
 			else if( state == VDRS_FAILURE )
@@ -473,7 +474,8 @@ namespace	Menge
 		else
 		{
 			m_needUpdate = false;
-			stop();
+
+			this->stop();
 		}
 	}
 	////////////////////////////////////////////////////////////////////

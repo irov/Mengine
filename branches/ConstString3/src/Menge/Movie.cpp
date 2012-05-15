@@ -87,10 +87,10 @@ namespace Menge
 		}
 
 		float frameDuration = m_resourceMovie->getFrameDuration();
-
+		
 		if( _timing > 0.f )
 		{
-			m_currentFrame = (size_t)floorf(_timing / frameDuration);
+			m_currentFrame = (size_t)floorf( (_timing / frameDuration) );
 			m_frameTiming = _timing - m_currentFrame * frameDuration;
 		}
 		else
@@ -1271,12 +1271,7 @@ namespace Menge
 
 			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
 			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
-			
-			if( indexOut < m_currentFrame || indexIn > m_currentFrame )
-			{
-				continue;
-			}
-
+		
 			TMapNode::iterator it_found = m_nodies.find( layer.index );
 
 			if( it_found == m_nodies.end() )
@@ -1293,7 +1288,7 @@ namespace Menge
 			Node * node = it_found->second;
 
 			MovieFrame2D frame;
-
+						
 			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
 			{
 				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )

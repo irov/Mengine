@@ -2377,7 +2377,7 @@ namespace Menge
 					
 			if( resource == NULL )
 			{
-				return NULL;
+				return pybind::ret_none();
 			}
 
 			float frameTime = resource->getFrameDuration();

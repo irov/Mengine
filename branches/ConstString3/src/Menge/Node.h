@@ -105,7 +105,7 @@ namespace Menge
 		void setParent_( Node * _node );
 
 	public:
-		inline Node * getParent();
+		inline Node * getParent() const;
 		inline bool hasParent() const;
 
 		bool addChildren( Node * _node );
@@ -251,7 +251,7 @@ namespace Menge
 		return m_enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline Node * Node::getParent()
+	inline Node * Node::getParent() const
 	{
 		return m_parent;
 	}

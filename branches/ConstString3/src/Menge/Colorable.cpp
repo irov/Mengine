@@ -7,16 +7,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Colorable::Colorable()
 		: m_invalidateColor(false)
-		, m_fullBlend(false)
+		, m_localTransparent(false)
+		, m_personalTransparent(false)
 		, m_colorPersonal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorLocal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorWorld(1.0f, 1.0f, 1.0f, 1.0f)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Colorable::setFullBlend( bool _value )
-	{
-		m_fullBlend = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setPersonalColor( const ColourValue& _color )
@@ -80,6 +76,9 @@ namespace Menge
 	void Colorable::invalidateColor()
 	{
 		m_invalidateColor = true;
+
+		m_localTransparent = m_colorLocal.getA() < 0.0001f;
+		m_personalTransparent = m_colorPersonal.getA() < 0.0001f;
 
 		this->_invalidateColor();
 	}

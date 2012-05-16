@@ -10,10 +10,6 @@ namespace Menge
 		Colorable();
 
 	public:
-		void setFullBlend( bool _value );
-		inline bool isFullBlend() const;
-
-	public:
 		void setPersonalColor( const ColourValue& _color );
 		inline const ColourValue & getPersonalColor() const;
 
@@ -25,6 +21,10 @@ namespace Menge
 
 		void setLocalAlpha( float _alpha );
 		inline float getLocalAlpha() const;
+
+	public:
+		inline bool isLocalTransparent() const;
+		inline bool isPersonalTransparent() const;
 
 	protected:
 		inline const ColourValue & getRelationColor() const;
@@ -47,12 +47,18 @@ namespace Menge
 		mutable ColourValue m_colorWorld;
 		mutable bool m_invalidateColor;
 
-		bool m_fullBlend;
+		bool m_localTransparent;
+		bool m_personalTransparent;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Colorable::isFullBlend() const
+	inline bool Colorable::isLocalTransparent() const
 	{
-		return m_fullBlend;
+		return m_localTransparent;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Colorable::isPersonalTransparent() const
+	{
+		return m_personalTransparent;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Colorable::getRelationColor() const

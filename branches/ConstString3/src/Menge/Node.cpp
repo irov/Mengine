@@ -668,7 +668,7 @@ namespace Menge
 
 			//if( this->checkVisibility( viewPort ) == true )
 			{
-				if( this->isLocalHide() == false && this->isFullBlend() == false )
+				if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 				{
 					_render( _camera );
 				}
@@ -915,12 +915,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
 	{
-		ColourValue colour;
-		this->calcTotalColor(colour);
+		//ColourValue colour;
+		//this->calcTotalColor(colour);
 
-		bool fullBlend = (colour.getA() < 0.001f);
+		//bool fullBlend = (colour.getA() < 0.001f);
 
-		this->setFullBlend( fullBlend );
+		//this->setFullBlend( fullBlend );
 
 		for( TListChild::iterator 
 			it = m_child.begin(), 

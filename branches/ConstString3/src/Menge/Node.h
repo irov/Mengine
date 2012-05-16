@@ -278,6 +278,11 @@ namespace Menge
 			return false;
 		}
 
+		if( this->isLocalTransparent() == true )
+		{
+			return false;
+		}
+
 		return true;
 	}
 }

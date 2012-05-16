@@ -53,7 +53,7 @@ namespace Menge
 
 		explicit ColourValue( ARGB _argb )
 		{
-			setAsARGB( _argb );
+			this->setAsARGB( _argb );
 		}
 
 		ColourValue( const ColourValue& _copy )

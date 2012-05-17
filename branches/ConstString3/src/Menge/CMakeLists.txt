@@ -556,7 +556,8 @@ Resource\\\\Image
 	ResourceImageInAtlas.h
 	ResourceImageCombineRGBAndAlpha.cpp
 	ResourceImageCombineRGBAndAlpha.h
-	
+	ResourceImageSolid.h
+    ResourceImageSolid.cpp
 	#ResourceImageCell.cpp
 	#ResourceImageCell.h
 	#ResourceImageDynamic.cpp

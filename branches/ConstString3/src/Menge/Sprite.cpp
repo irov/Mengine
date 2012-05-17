@@ -43,6 +43,8 @@ namespace	Menge
 		, m_textureMatrixOffset(0.0f, 0.0f)
 		, m_blendAdd(false)
 		, m_solid(false)
+		, m_isCustomSize(false)
+		, m_spriteSize( 0.0f, 0.0f )
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -184,11 +186,6 @@ namespace	Menge
 			return;
 		}
 
-		if(strcmp(m_resourceName.c_str(),"MovieImage_GardenAccess_1.png") == 0)
-		{
-			int x =1;
-		}
-
 		bool wrapX = m_resource->getWrapX();
 		bool wrapY = m_resource->getWrapY();
 
@@ -199,8 +196,20 @@ namespace	Menge
 
 		if( _invalidateVertices & ESVI_POSITION )
 		{
-			mt::vec2f size = m_resource->getSize();
-			const mt::vec2f& maxSize = m_resource->getMaxSize();
+			mt::vec2f size;
+			mt::vec2f maxSize;
+
+			if( m_isCustomSize == false )
+			{
+				size = m_resource->getSize();
+				maxSize = m_resource->getMaxSize();
+			}
+			else
+			{
+				size = m_spriteSize;
+				maxSize = m_spriteSize;
+			}
+			
 			mt::vec2f offset = m_resource->getOffset();
 
 			mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
@@ -532,5 +541,12 @@ namespace	Menge
 	{
 		return m_blendAdd;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setSpriteSize( const mt::vec2f& _size )
+	{
+		m_spriteSize = _size;
+		m_isCustomSize = true;
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -499,6 +499,12 @@ namespace Menge
 				it->animatable = false;
 				it->movie = false;
 			}
+			else if( resourceType == Consts::get()->c_ResourceImageSolid )
+			{
+				it->internal = false;
+				it->animatable = false;
+				it->movie = false;
+			}
 			else if( resourceType == Consts::get()->c_ResourceImageInAtlas )
 			{
 				it->internal = false;

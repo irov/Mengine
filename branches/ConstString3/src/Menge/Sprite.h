@@ -67,6 +67,7 @@ namespace Menge
 		void setBlendAdd( bool _value );
 		bool isBlendAdd() const;
 
+		void setSpriteSize( const mt::vec2f& _size );
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -90,6 +91,9 @@ namespace Menge
 	protected:
 		ResourceImage * m_resource;
 		ConstString m_resourceName;	
+
+		mt::vec2f m_spriteSize;
+		bool m_isCustomSize;
 
 		bool m_centerAlign;
 		bool m_flipX;

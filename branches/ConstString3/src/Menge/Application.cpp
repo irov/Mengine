@@ -92,7 +92,7 @@
 #	include "ResourceFont.h"
 #	include "ResourceGlyph.h"
 #	include "ResourceTilePolygon.h"
-
+#	include "ResourceImageSolid.h"
 //#	include "ResourceImageAtlas.h"
 //#	include "ResourceImageCell.h"
 //#	include "ResourceImageDynamic.h"
@@ -796,6 +796,7 @@ namespace Menge
 
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageInAtlas );
+		RESOURCE_FACTORY( ResourceImageSolid );
 		RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceMovie );
 		RESOURCE_FACTORY( ResourceVideo );

@@ -40,6 +40,7 @@ namespace Menge
 		ConstString c_WhitePixel;
 		ConstString c_ResourceSound;
 		ConstString c_ResourceImageInAtlas;
+		ConstString c_ResourceImageSolid;
 		ConstString c_ResourceImageDefault;
 		ConstString c_ResourceImageDynamic;
 		ConstString c_ResourceHotspotImage;

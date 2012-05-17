@@ -6,6 +6,7 @@
 #	include "ResourceImageDefault.h"
 #	include "ResourceInternalObject.h"
 #	include "ResourceAnimation.h"
+#	include "ResourceImageSolid.h"
 
 #	include "Sprite.h"
 #	include "Animation.h"
@@ -546,6 +547,50 @@ namespace Menge
 
 				this->addMovieNode_( layer, layer_sprite );
 			}
+			else if( resourceType == Consts::get()->c_ResourceImageSolid )
+			{
+				Sprite * layer_sprite = NodeManager::get()
+					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
+				
+				ResourceImageSolid * resource =  ResourceManager::get()
+					->getResourceT<ResourceImageSolid>( layer.source );
+				
+				if( resource == NULL )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s' imageSolid resource = NULL"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					return false;
+				}
+
+				const mt::vec2f& size = resource->getSize();
+				const ColourValue& color = resource->getColor();
+				float a = color.getA();
+				float r = color.getR();
+				float g = color.getG();
+				float b = color.getB();
+							
+				layer_sprite->setImageResource( Consts::get()->c_WhitePixel );
+				layer_sprite->setLocalColor( color );
+				layer_sprite->setSpriteSize( size );
+
+				if( layer_sprite->compile() == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					return false;
+				}
+
+				layer_sprite->enable();
+				layer_sprite->localHide(true);
+
+				this->addMovieNode_( layer, layer_sprite );
+			}
 			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
 				Animation * layer_animation = NodeManager::get()
@@ -669,7 +714,7 @@ namespace Menge
 
 				if( layer_sound->compile() == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
+					MENGE_LOG_ERROR("Movie: '%s' can't compile sound '%s'"
 						, m_name.c_str()
 						, layer.name.c_str()
 						);

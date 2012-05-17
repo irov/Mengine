@@ -106,7 +106,6 @@ namespace Menge
 		ConstString( const ConstString & _cstr );
 
 	public:
-		//explicit ConstString( char * _str );
 		explicit ConstString( const char * _str );
 		explicit ConstString( const char * _str, size_t _size );
 		explicit ConstString( const std::string & _str );

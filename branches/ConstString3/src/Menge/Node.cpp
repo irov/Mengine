@@ -38,6 +38,7 @@ namespace Menge
 		, m_parent(0)
 		, m_layer(0)
 		, m_cameraRevision(0)
+		, m_childBlock(0)
 #	ifndef MENGE_MASTER_RELEASE
 		, m_debugMaterial(NULL)
 #	endif
@@ -65,6 +66,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visitChildren( Visitor * _visitor )
 	{
+		++m_childBlock;
+		
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -73,6 +76,8 @@ namespace Menge
 		{
 			(*it)->visit( _visitor );
 		}
+
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()
@@ -106,6 +111,7 @@ namespace Menge
 
 		m_active = true;
 
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();	
@@ -118,6 +124,7 @@ namespace Menge
 			//	return false;
 			//}
 		}
+		--m_childBlock;
 	
 		this->_afterActivate();
 
@@ -147,6 +154,7 @@ namespace Menge
 
 		this->_deactivate();		
 
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -154,7 +162,8 @@ namespace Menge
 		++it)
 		{
 			(*it)->deactivate();
-		}	
+		}
+		--m_childBlock;
 
 		m_active = false;
 
@@ -208,6 +217,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroyAllChild()
 	{
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -220,10 +230,12 @@ namespace Menge
 			node->destroy();
 			it = it_next;
 		}
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeAllChild()
 	{
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -233,6 +245,7 @@ namespace Menge
 			(*it)->setParent_( 0 );
 			(*it)->setLayer( 0 );
 		}
+		--m_childBlock;
 
 		m_child.clear();
 	}
@@ -249,16 +262,52 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
 	{
-		return this->addChildren_( _node, m_child.end() );
+		if( _node == 0 )
+		{
+			MENGE_LOG_ERROR( "Node::addChildren '%s' invalid add NULL node"
+				, this->getName().c_str()
+				);
+
+			return false;
+		}
+
+		return this->addChildren_( m_child.end(), _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildrenFront( Node* _node )
+	bool Node::addChildrenFront( Node * _node )
 	{
-		return this->addChildren_( _node, m_child.begin() );
+		if( _node == 0 )
+		{
+			MENGE_LOG_ERROR( "Node::addChildrenFront '%s' invalid add NULL node"
+				, this->getName().c_str()
+				);
+
+			return false;
+		}
+
+		return this->addChildren_( m_child.begin(), _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildrenAfter( Node* _node, Node * _after )
 	{
+		if( _node == 0 )
+		{
+			MENGE_LOG_ERROR( "Node::addChildrenAfter '%s' invalid add NULL node (node)"
+				, this->getName().c_str()
+				);
+
+			return false;
+		}
+
+		if( _after == 0 )
+		{
+			MENGE_LOG_ERROR( "Node::addChildrenAfter '%s' invalid add NULL node (after)"
+				, this->getName().c_str()
+				);
+
+			return false;
+		}
+
 		TListChild::iterator it_found = 
 			intrusive_find( m_child.begin(), m_child.end(), _after );
 
@@ -267,10 +316,10 @@ namespace Menge
 			return false;
 		}
 
-		return this->addChildren_( _node, it_found );
+		return this->addChildren_( it_found, _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildren_( Node * _node, TListChild::iterator _insert )
+	bool Node::addChildren_( TListChild::iterator _insert, Node * _node )
 	{
 		/*if( this->isChildren( _node, false ) )
 		{
@@ -285,8 +334,8 @@ namespace Menge
 
 		if( parent == this )
 		{
-			m_child.erase( _node );
-			m_child.insert( _insert, _node );
+			this->eraseChildren_( _node );
+			this->insertChildren_( _insert, _node );			
 		}
 		else
 		{
@@ -295,7 +344,7 @@ namespace Menge
 				parent->removeChildren( _node );
 			}
 
-			m_child.insert( _insert, _node );
+			this->insertChildren_( _insert, _node );
 
 			_node->setParent_( this );
 			_node->setLayer( m_layer );
@@ -319,6 +368,26 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::insertChildren_( TListChild::iterator _insert, Node * _node )
+	{
+		if( m_childBlock != 0 )
+		{
+			return;
+		}
+
+		m_child.insert( _insert, _node );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::eraseChildren_( TListChild::iterator _it )
+	{
+		if( m_childBlock != 0 )
+		{
+			return;
+		}
+
+		m_child.erase( _it );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const TListChild & Node::getChild() const
 	{
 		return m_child;
@@ -336,7 +405,7 @@ namespace Menge
 			(*it_find)->setParent_( 0 );
 			(*it_find)->setLayer( 0 );
 
-			m_child.erase( it_find );
+			this->eraseChildren_( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -457,14 +526,14 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::emptyChild() const
-	{
-		return m_child.empty();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Node::_hasChildren( const ConstString & _name, bool _recursive ) const
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::emptyChild() const
+	{
+		return m_child.empty();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_changeParent( Node * _oldParent, Node * _newParent )
@@ -496,6 +565,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_freeze( bool _value )
 	{
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -509,6 +579,7 @@ namespace Menge
 				(*it)->_freeze( _value );
 			}
 		}
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )
@@ -529,6 +600,7 @@ namespace Menge
 		
 		//size_t childCount = m_child.size();
 
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -537,6 +609,7 @@ namespace Menge
 		{
 			it->update( _timing );
 		}
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
@@ -620,6 +693,7 @@ namespace Menge
 	{
 		deactivate();
 
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -628,6 +702,7 @@ namespace Menge
 		{
 			(*it)->release();
 		}
+		--m_childBlock;
 
 		Resource::release();
 	}
@@ -695,6 +770,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild( RenderCameraInterface * _camera )
 	{
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -703,6 +779,7 @@ namespace Menge
 		{
 			(*it)->render( _camera );
 		}
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_checkVisibility( const Viewport & _viewport )
@@ -726,6 +803,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateWorldMatrix()
 	{
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -734,6 +812,7 @@ namespace Menge
 		{
 			(*it)->invalidateWorldMatrix();
 		}
+		--m_childBlock;
 
 		invalidateBoundingBox();
 	}
@@ -757,7 +836,7 @@ namespace Menge
 		return update_wm;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Node::getWorldPosition()
+	const mt::vec3f & Node::getWorldPosition() const
 	{
 		const mt::mat4f &wm = this->getWorldMatrix();
 
@@ -820,6 +899,7 @@ namespace Menge
 	{
 		m_layer = _layer;
 
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -828,6 +908,7 @@ namespace Menge
 		{
 			(*it)->setLayer( _layer );
 		}
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Node::getLayer() const
@@ -880,6 +961,7 @@ namespace Menge
 
 		//this->_updateBoundingBox( m_boundingBox );
 			
+		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -903,6 +985,7 @@ namespace Menge
 
 			mt::merge_box( _boundingBox, childrenBoundingBox );
 		}
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_updateBoundingBox( mt::box2f& _boundingBox )
@@ -922,6 +1005,7 @@ namespace Menge
 
 		//this->setFullBlend( fullBlend );
 
+		++m_childBlock;
 		for( TListChild::iterator 
 			it = m_child.begin(), 
 			it_end = m_child.end();
@@ -930,6 +1014,7 @@ namespace Menge
 		{
 			(*it)->invalidateColor();
 		}
+		--m_childBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Node::getWorldColor() const

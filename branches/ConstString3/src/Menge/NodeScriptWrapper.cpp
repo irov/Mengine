@@ -2110,8 +2110,9 @@ namespace Menge
 				}
 
 				PyObject * py_embedding = it->getEmbed();
-				//pybind::incref( py_embedding );
+
 				pybind::list_appenditem( py_filter, py_embedding );
+
 			}
 
 			return py_filter;			
@@ -2532,11 +2533,11 @@ namespace Menge
 			++it )
 			{
 				Node * children = *it;
-				PyObject * py_children = pybind::ptr(children);
+				PyObject * py_children = pybind::ptr( children);
 
-				pybind::call(_cb, "(O)", py_children);
+				pybind::call( _cb, "(O)", py_children );
 
-				pybind::decref(py_children);
+				pybind::decref( py_children );
 			}
 		}
 

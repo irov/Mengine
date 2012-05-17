@@ -122,7 +122,7 @@ namespace Menge
 	{
 		if( m_onSoundPauseEvent == true )
 		{
-			this->callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbed() );
+			this->callEventDeferred( EVENT_SOUND_PAUSE, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

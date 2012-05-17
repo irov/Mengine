@@ -93,7 +93,6 @@ namespace Menge
 		}
 
 	public:
-
 		class const_iterator
 		{
 		public:
@@ -344,49 +343,49 @@ namespace Menge
 	public:
 		T * front()
 		{
-			return *begin();
+			return *this->begin();
 		}
 
 		T * back()
 		{
-			return *end();
+			return *this->end();
 		}
 
 
 	public:
 		void push_front( IntrusiveLinked * _node )
-		{	// insert element at beginning
-			insert_( begin(), _node );
+		{	
+			this->insert_( this->begin(), _node );
 		}
 
 		void pop_front()
-		{	// erase element at beginning
-			erase( begin() );
+		{	
+			this->erase( this->begin() );
 		}
 
 		void push_back( IntrusiveLinked * _node )
-		{	// insert element at end
-			insert_( end(), _node );
+		{	
+			this->insert_( this->end(), _node );
 		}
 
 		void pop_back()
-		{	// erase element at end
-			erase( --end() );
+		{	
+			this->erase( --this->end() );
 		}
 
 		void splice( iterator _from, iterator _where )
 		{
-			erase( _from );
-			insert( --_where, *_from );
+			this->erase( _from );
+			this->insert( --_where, *_from );
 		}
 
 		void clear()
 		{
-			iterator it = begin();
-			iterator it_end = end();
+			iterator it = this->begin();
+			iterator it_end = this->end();
 			while( it != it_end )
 			{
-				it = erase( it );
+				it = this->erase( it );
 			}
 		}
 
@@ -403,13 +402,14 @@ namespace Menge
 		}
 
 		iterator insert( iterator _where, IntrusiveLinked * _node )
-		{	// insert _Val at _Where
-			insert_( _where, _node );
+		{	
+			this->insert_( _where, _node );
+
 			return (--_where);
 		}
 
 		void insert( iterator _where, iterator _begin, iterator _end )
-		{	// insert _Val at _Where
+		{	
 			if( _begin == _end )
 			{
 				return;
@@ -425,11 +425,11 @@ namespace Menge
 		}
 
 		iterator erase( iterator _where )
-		{	// erase element at _Where
+		{	
 			iterator it = _where++;
 
-			if ( it != end() )
-			{	// not list head, safe to erase
+			if( it != this->end() )
+			{	
 				TLinked * node = it.get();
 				node->unlink();
 			}
@@ -442,17 +442,17 @@ namespace Menge
 		{
 			iterator it_found = find_if( _pred );
 
-			if( it_found == end() )
+			if( it_found == this->end() )
 			{
-				return end();
+				return this->end();
 			}
 
-			return erase( it_found );			
+			return this->erase( it_found );			
 		}
 
 	protected:
 		void insert_( iterator _where, IntrusiveLinked * _node )
-		{	// insert _Val at _Where
+		{	
 			_where->link_before( _node );
 		}
 

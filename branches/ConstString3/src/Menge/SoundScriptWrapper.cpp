@@ -265,7 +265,7 @@ namespace	Menge
 				->getMusicVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicStop( )
+		static void musicStop()
 		{
 			Amplifier::get()->stop();
 		}

@@ -135,11 +135,17 @@ namespace Menge
 
 	protected:
 		TListChild m_child;
+		mutable int m_childBlock;
+		//TListChild m_childToAdd;
+		//TListChild m_childToRemove;
 
 		Node * m_parent;
 
 	private:
-		bool addChildren_( Node * _node, TListChild::iterator _insert );
+		bool addChildren_( TListChild::iterator _insert, Node * _node );
+
+		void insertChildren_( TListChild::iterator _insert, Node * _node );
+		void eraseChildren_( TListChild::iterator _it );
 
 	protected:
 		void _destroy() override;
@@ -161,7 +167,7 @@ namespace Menge
 	public:
 		const mt::mat4f & getWorldMatrix() const;
 
-		const mt::vec3f & getWorldPosition();
+		const mt::vec3f & getWorldPosition() const;
 		//const mt::vec3f & getWorldDirection();
 
 		void setWorldPosition( const mt::vec3f & _pos );

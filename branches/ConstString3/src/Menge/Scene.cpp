@@ -123,6 +123,7 @@ namespace Menge
 
 		if( handle == false )
 		{
+			++m_childBlock;
 			for( TListChild::iterator 
 				it = m_child.begin(), 
 				it_end = m_child.end();
@@ -130,11 +131,13 @@ namespace Menge
 			++it )
 			{
 				Scene * subScene = dynamic_cast<Scene*>( *it );
+
 				if( subScene != 0 )
 				{
 					subScene->onAppMouseLeave();
 				}
 			}
+			--m_childBlock;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -149,6 +152,7 @@ namespace Menge
 
 		if( handle == false )
 		{
+			++m_childBlock;
 			for( TListChild::iterator 
 				it = m_child.begin(), 
 				it_end = m_child.end();
@@ -156,11 +160,13 @@ namespace Menge
 			++it )
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
+
 				if( subScene != 0 )
 				{
 					subScene->onAppMouseEnter();
 				}
 			}
+			--m_childBlock;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -175,6 +181,7 @@ namespace Menge
 
 		if( handle == false )
 		{
+			++m_childBlock;
 			for( TListChild::iterator 
 				it = m_child.begin(), 
 				it_end = m_child.end();
@@ -182,11 +189,13 @@ namespace Menge
 			++it )
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
+
 				if( subScene != 0 )
 				{
 					subScene->onFocus( _focus );
 				}
 			}
+			--m_childBlock;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

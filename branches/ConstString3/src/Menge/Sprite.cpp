@@ -214,7 +214,7 @@ namespace	Menge
 
 			mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
 				m_percent.z * maxSize.x, m_percent.w * maxSize.y );
-
+				
 			percentPx.x -= offset.x;
 			percentPx.y -= offset.y;
 			percentPx.z -= (maxSize.x - offset.x - size.x);

@@ -497,6 +497,9 @@ namespace Menge
 
 		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
 
+		registerEvent( EVENT_CURSOR_MODE, "onCursorMode", _embed );
+		
+
 		registerEvent( EVENT_CLOSE, "onCloseWindow", _embed, &m_personalityHasOnClose );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -939,6 +942,8 @@ namespace Menge
 		{
 			m_player->setCursorMode( _mode );
 		}
+
+		this->callEvent( EVENT_CURSOR_MODE, "(O)", pybind::get_bool(_mode) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString& Game::getScreensaverName() const

@@ -159,7 +159,8 @@ namespace	Menge
 			return;
 		}
 
-		Node* mainCursor = this->findChildren( Consts::get()->c_Default, false );
+		ConstString c_CursorNode("CursorNode");
+		Node* mainCursor = this->findChildren( c_CursorNode, false );
 
 		if( mainCursor == NULL )
 		{

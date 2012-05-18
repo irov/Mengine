@@ -138,6 +138,7 @@ namespace	Menge
 		static unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
 		{
 			unsigned int sourceID = s_createSoundSource(_resourceName, _loop, _cb);
+
 			if( sourceID == 0 )
 			{
 				MENGE_LOG_ERROR( "soundPlay: can't get resource '%s'"

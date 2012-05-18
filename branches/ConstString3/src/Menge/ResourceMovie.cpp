@@ -290,6 +290,7 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::Width_Value, m_width );
 			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
 			BIN_CASE_ATTRIBUTE( Protocol::KeyFramesPackPath_Path, m_keyFramePackPath );
+
 			BIN_CASE_NODE( Protocol::MovieLayer2D )
 			{
 				m_layers2D.push_back( MovieLayer2D() );
@@ -321,7 +322,10 @@ namespace Menge
 				m_layers3D.push_back( MovieLayer3D() );
 				MovieLayer3D & ml = m_layers3D.back();
 
-				MovieLayerSource3D layer;
+				mt::vec3f cameraPosition;
+				mt::vec3f cameraInterest;
+				float cameraFOV;
+				float cameraAspect;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -334,22 +338,19 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Out, ml.out );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_BlendingMode, ml.blendingMode );
 
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraPosition, layer.cameraPosition );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraInterest, layer.cameraInterest );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraFOV, layer.cameraFOV );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraAspect, layer.cameraAspect );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraPosition, cameraPosition );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraInterest, cameraInterest );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraFOV, cameraFOV );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraAspect, cameraAspect );
 
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Width, layer.width );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Height, layer.height );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Width, ml.camera.width );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Height, ml.camera.height );
 				}
 
-				mt::mat4f view;
-				mt::make_lookat_m4( view, layer.cameraPosition, layer.cameraInterest );
+				mt::make_lookat_m4( ml.camera.view, cameraPosition, cameraInterest );
+				mt::make_projection_m4( ml.camera.projection, cameraFOV, cameraAspect, 1.f, 10000.f );
 
-				mt::mat4f projection;
-				mt::make_projection_m4( projection, layer.cameraFOV, layer.cameraAspect, 1.f, 10000.f );
-
-				mt::mul_m4_m4( layer.vp, view, projection );
+				mt::mul_m4_m4( ml.camera.vp, ml.camera.view, ml.camera.projection );
 
 				//BIN_PARSE_METHOD_ARG2( this, &ResourceMovie::loaderMovieLayer3D_, ml, layer );
 			}
@@ -633,8 +634,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie::convertSourceToFrame3D_( MovieFrame3D & _frame, const MovieLayerSource3D & _layer, const MovieFrameSource3D & _source )
-	{
+	//void ResourceMovie::convertSourceToFrame3D_( MovieFrame3D & _frame, const MovieLayerSource3D & _layer, const MovieFrameSource3D & _source )
+	//{
 		//mt::vec3f axis_x(1.f,0.f,0.f);
 		//mt::vec3f axis_y(0.f,1.f,0.f);
 
@@ -760,7 +761,7 @@ namespace Menge
 		//_frame.vertices[3].uv[1] = 1.f;
 
 		//_frame.vertices[3].color = color;
-	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::_release()
 	{

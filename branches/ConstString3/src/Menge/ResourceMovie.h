@@ -74,16 +74,13 @@ namespace Menge
 		float opacity;
 	};
 
-	struct MovieLayerSource3D
+	struct MovieLayerCamera3D
 	{
-		mt::vec3f cameraPosition;
-		mt::vec3f cameraInterest;
-		float cameraFOV;
-		float cameraAspect;
-
 		float width;
 		float height;
 
+		mt::mat4f view;
+		mt::mat4f projection;
 		mt::mat4f vp;
 	};
 
@@ -97,6 +94,8 @@ namespace Menge
 	{
 		typedef std::vector<MovieFrame3D> TVectorFrames;
 		TVectorFrames frames;
+
+		MovieLayerCamera3D camera;
 	};
 
 	typedef std::vector<MovieLayer3D> TVectorMovieLayers3D;
@@ -167,7 +166,7 @@ namespace Menge
 
 	protected:
 		void compileModel_( MovieLayer3D & _layer );
-		void convertSourceToFrame3D_( MovieFrame3D & _frame, const MovieLayerSource3D & _layer, const MovieFrameSource3D & _source );
+		//void convertSourceToFrame3D_( MovieFrame3D & _frame, const MovieLayerSource3D & _layer, const MovieFrameSource3D & _source );
 
 	protected:
 		ConstString m_pathMOV;

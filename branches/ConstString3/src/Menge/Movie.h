@@ -79,7 +79,20 @@ namespace Menge
 
 	private:
 		Scriptable * findInternalObject_( const ConstString & _resource, EEventName _event ) const;
-		
+
+	protected:
+		bool createMovieSlot_( const MovieLayer2D & _layer );
+		bool createMovieNullObject_( const MovieLayer2D & _layer );
+		bool createMovieImage_( const MovieLayer2D & _layer );
+		bool createMovieImageSolid_( const MovieLayer2D & _layer );
+		bool createMovieAnimation_( const MovieLayer2D & _layer );
+		bool createMovieMovie_( const MovieLayer2D & _layer );
+		bool createMovieInternalObject_( const MovieLayer2D & _layer );
+		bool createMovieVideo_( const MovieLayer2D & _layer );
+		bool createMovieSound_( const MovieLayer2D & _layer );
+		bool createMovieEmitterContainer_( const MovieLayer2D & _layer );
+
+
 	protected:
 		void addMovieNode_(const MovieLayer2D & _layer2D, Node * _node );
 		void addMovieSlot_(const ConstString & _slotName, Node * _node );

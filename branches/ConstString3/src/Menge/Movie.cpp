@@ -460,6 +460,288 @@ namespace Menge
 		return scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSlot_( const MovieLayer2D & _layer )
+	{
+		Node * layer_slot = NodeManager::get()
+			->createNodeT<Node>( _layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
+
+		layer_slot->enable();
+		layer_slot->localHide(true);
+
+		this->addMovieNode_( _layer, layer_slot );
+		this->addMovieSlot_( _layer.name, layer_slot );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieNullObject_( const MovieLayer2D & _layer )
+	{
+		Node * layer_slot = NodeManager::get()
+			->createNodeT<Node>( _layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
+
+		layer_slot->enable();
+		layer_slot->localHide(true);
+
+		this->addMovieNode_( _layer, layer_slot );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieImage_( const MovieLayer2D & _layer )
+	{
+		Sprite * layer_sprite = NodeManager::get()
+			->createNodeT<Sprite>( _layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
+
+		layer_sprite->setImageResource( _layer.source );
+
+		//layer_sprite->disable();
+
+		if( layer_sprite->compile() == false )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			layer_sprite->destroy();
+
+			return false;
+		}
+
+		layer_sprite->enable();
+		layer_sprite->localHide(true);
+
+		this->addMovieNode_( _layer, layer_sprite );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieImageSolid_( const MovieLayer2D & _layer )
+	{
+		ResourceImageSolid * resource =  ResourceManager::get()
+			->getResourceT<ResourceImageSolid>( _layer.source );
+
+		if( resource == NULL )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s' imageSolid resource = NULL"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			return false;
+		}
+
+		Sprite * layer_sprite = NodeManager::get()
+			->createNodeT<Sprite>( _layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
+
+		layer_sprite->setImageResource( Consts::get()->c_WhitePixel );
+
+		const ColourValue& color = resource->getColor();
+		layer_sprite->setLocalColor( color );
+
+		const mt::vec2f& size = resource->getSize();
+		layer_sprite->setSpriteSize( size );
+
+		if( layer_sprite->compile() == false )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			layer_sprite->destroy();
+
+			return false;
+		}
+
+		layer_sprite->enable();
+		layer_sprite->localHide(true);
+
+		this->addMovieNode_( _layer, layer_sprite );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieAnimation_( const MovieLayer2D & _layer )
+	{
+		Animation * layer_animation = NodeManager::get()
+			->createNodeT<Animation>( _layer.name, Consts::get()->c_Animation, Consts::get()->c_Image );
+
+		layer_animation->setAnimationResource( _layer.source );
+
+		layer_animation->setLoop( true );				
+		//layer_animation->disable();
+
+		if( layer_animation->compile() == false )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile animation '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			layer_animation->destroy();
+
+			return false;
+		}
+
+		layer_animation->enable();
+		layer_animation->localHide( true );
+
+		this->addMovieNode_( _layer, layer_animation );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieMovie_( const MovieLayer2D & _layer )
+	{
+		Movie * layer_movie = NodeManager::get()
+			->createNodeT<Movie>( _layer.name, Consts::get()->c_Movie, Consts::get()->c_Image );
+
+		layer_movie->setResourceMovie( _layer.source );				
+		layer_movie->setLoop( true );				
+		//layer_movie->disable();
+
+		if( layer_movie->compile() == false )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile movie '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			layer_movie->destroy();
+
+			return false;
+		}
+
+		layer_movie->enable();
+		layer_movie->localHide( true );
+		layer_movie->setParentMovie( true );
+
+		this->addMovieNode_( _layer, layer_movie );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieInternalObject_( const MovieLayer2D & _layer )
+	{
+		Scriptable * scriptable = this->findInternalObject_( _layer.source, EVENT_MOVIE_FIND_INTERNAL_NODE );
+
+		if( scriptable == NULL )
+		{
+			return false;
+		}				
+
+		Node * layer_node = dynamic_cast<Node*>(scriptable);
+
+		if( layer_node == 0 )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' internal node '%s' not type 'Node'"
+				, m_name.c_str()
+				, _layer.source.c_str()
+				);
+
+			return false;
+		}
+
+		this->addMovieNode_( _layer, layer_node );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieVideo_( const MovieLayer2D & _layer )
+	{
+		Video * layer_video = NodeManager::get()
+			->createNodeT<Video>( _layer.name, Consts::get()->c_Video, Consts::get()->c_Image );
+
+		layer_video->setVideoResource( _layer.source );
+
+		layer_video->setLoop( true );				
+		//layer_movie->disable();
+
+		if( layer_video->compile() == false )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			layer_video->destroy();
+
+			return false;
+		}
+
+		layer_video->enable();
+		layer_video->localHide(true);
+
+		this->addMovieNode_( _layer, layer_video );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSound_( const MovieLayer2D & _layer )
+	{
+		SoundEmitter * layer_sound = NodeManager::get()
+			->createNodeT<SoundEmitter>( _layer.name, Consts::get()->c_SoundEmitter, Consts::get()->c_Sound );
+
+		layer_sound->setSoundResource( _layer.source );
+
+		layer_sound->setLoop( true );				
+		//layer_movie->disable();
+
+		if( layer_sound->compile() == false )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile sound '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			layer_sound->destroy();
+
+			return false;
+		}
+
+		layer_sound->enable();
+		layer_sound->localHide( true );
+
+		this->addMovieNode_( _layer, layer_sound );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieEmitterContainer_( const MovieLayer2D & _layer )
+	{
+		ParticleEmitter * layer_particles = NodeManager::get()
+			->createNodeT<ParticleEmitter>( _layer.name, Consts::get()->c_ParticleEmitter, Consts::get()->c_Image );
+
+		layer_particles->setResource( _layer.source );
+
+		//layer_movie->disable();
+
+		//layer_particles->setEmitterRelative(true);
+
+		if( layer_particles->compile() == false )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't compile ParticleEmitter '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+
+			layer_particles->destroy();
+
+			return false;
+		}
+
+		layer_particles->setLoop( true );
+		layer_particles->setEmitterTranslateWithParticle( true );
+
+		layer_particles->enable();
+		layer_particles->localHide( true );
+
+		this->addMovieNode_( _layer, layer_particles );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_compile()
 	{
 		if( Node::_compile() == false )
@@ -499,23 +781,20 @@ namespace Menge
 			
 			if ( layer.source == Consts::get()->c_MovieSlot )
 			{
-				Node * layer_slot = NodeManager::get()
-					->createNodeT<Node>( layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
-				layer_slot->enable();
-				layer_slot->localHide(true);
-				this->addMovieNode_( layer, layer_slot );
-				this->addMovieSlot_( layer.name, layer_slot );
+				if( this->createMovieSlot_( layer ) == false )
+				{
+					return false;
+				}
 				
 				continue;
 			}
-			
-			if ( layer.source == Consts::get()->c_MovieNullObject )
+			else if ( layer.source == Consts::get()->c_MovieNullObject )
 			{
-				Node * layer_slot = NodeManager::get()
-					->createNodeT<Node>( layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
-				layer_slot->enable();
-				layer_slot->localHide(true);
-				this->addMovieNode_( layer, layer_slot );
+				if( this->createMovieNullObject_( layer ) == false )
+				{
+					return false;
+				}
+
 				continue;
 			}
 
@@ -525,236 +804,59 @@ namespace Menge
 			if( resourceType == Consts::get()->c_ResourceImageDefault
 				|| resourceType == Consts::get()->c_ResourceImageInAtlas )
 			{
-				Sprite * layer_sprite = NodeManager::get()
-					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
-
-				layer_sprite->setImageResource( layer.source );
-
-				//layer_sprite->disable();
-
-				if( layer_sprite->compile() == false )
+				if( this->createMovieImage_( layer ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
 					return false;
 				}
-
-				layer_sprite->enable();
-				layer_sprite->localHide(true);
-
-				this->addMovieNode_( layer, layer_sprite );
 			}
 			else if( resourceType == Consts::get()->c_ResourceImageSolid )
 			{
-				Sprite * layer_sprite = NodeManager::get()
-					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
-				
-				ResourceImageSolid * resource =  ResourceManager::get()
-					->getResourceT<ResourceImageSolid>( layer.source );
-				
-				if( resource == NULL )
+				if( this->createMovieImageSolid_( layer ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s' imageSolid resource = NULL"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
 					return false;
 				}
-
-				const mt::vec2f& size = resource->getSize();
-				const ColourValue& color = resource->getColor();
-				float a = color.getA();
-				float r = color.getR();
-				float g = color.getG();
-				float b = color.getB();
-							
-				layer_sprite->setImageResource( Consts::get()->c_WhitePixel );
-				layer_sprite->setLocalColor( color );
-				layer_sprite->setSpriteSize( size );
-
-				if( layer_sprite->compile() == false )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
-					return false;
-				}
-
-				layer_sprite->enable();
-				layer_sprite->localHide(true);
-
-				this->addMovieNode_( layer, layer_sprite );
 			}
 			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
-				Animation * layer_animation = NodeManager::get()
-					->createNodeT<Animation>( layer.name, Consts::get()->c_Animation, Consts::get()->c_Image );
-
-				//ResourceAnimation * resourceAnimation = ResourceManager::get()
-				//	->getResourceT<ResourceAnimation>( layer.source );
-
-				//if( resourceAnimation == NULL )
-				//{
-				//	MENGE_LOG_ERROR("Movie: '%s' can't get resourceAnimation '%s'"
-				//		, m_name.c_str()
-				//		, layer.source.c_str()
-				//		);
-
-				//	return false;
-				//}
-
-				layer_animation->setAnimationResource( layer.source );
-
-				layer_animation->setLoop( true );				
-				//layer_animation->disable();
-
-				if( layer_animation->compile() == false )
+				if( this->createMovieAnimation_( layer ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile animation '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
 					return false;
 				}
-
-				layer_animation->enable();
-				layer_animation->localHide(true);
-
-				this->addMovieNode_( layer, layer_animation );
 			}
 			else if( resourceType == Consts::get()->c_ResourceMovie )
 			{
-				Movie * layer_movie = NodeManager::get()
-					->createNodeT<Movie>( layer.name, Consts::get()->c_Movie, Consts::get()->c_Image );
-
-				layer_movie->setResourceMovie( layer.source );				
-				layer_movie->setLoop( true );				
-				//layer_movie->disable();
-
-				if( layer_movie->compile() == false )
+				if( this->createMovieMovie_( layer ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile movie '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
 					return false;
 				}
-
-				layer_movie->enable();
-				layer_movie->localHide(true);
-				layer_movie->setParentMovie(true);
-
-				this->addMovieNode_( layer, layer_movie );
 			}
 			else if( resourceType == Consts::get()->c_ResourceInternalObject )
 			{				
-				Scriptable * scriptable = this->findInternalObject_( layer.source, EVENT_MOVIE_FIND_INTERNAL_NODE );
-
-				if( scriptable == NULL )
+				if( this->createMovieInternalObject_( layer ) == false )
 				{
-					return false;
-				}				
-
-				Node * layer_node = dynamic_cast<Node*>(scriptable);
-
-				if( layer_node == 0 )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' internal node '%s' not type 'Node'"
-						, m_name.c_str()
-						, layer.source.c_str()
-						);
-
 					return false;
 				}
-
-				this->addMovieNode_( layer, layer_node );
 			}
 			else if( resourceType == Consts::get()->c_ResourceVideo )
 			{
-				Video * layer_video = NodeManager::get()
-					->createNodeT<Video>( layer.name, Consts::get()->c_Video, Consts::get()->c_Image );
-
-				layer_video->setVideoResource( layer.source );
-
-				layer_video->setLoop( true );				
-				//layer_movie->disable();
-
-				if( layer_video->compile() == false )
+				if( this->createMovieVideo_( layer ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
 					return false;
 				}
-
-				layer_video->enable();
-				layer_video->localHide(true);
-
-				this->addMovieNode_( layer, layer_video );
 			}
 			else if( resourceType == Consts::get()->c_ResourceSound )
 			{
-				SoundEmitter * layer_sound = NodeManager::get()
-					->createNodeT<SoundEmitter>( layer.name, Consts::get()->c_SoundEmitter, Consts::get()->c_Sound );
-
-				layer_sound->setSoundResource(layer.source );
-
-				layer_sound->setLoop( true );				
-				//layer_movie->disable();
-
-				if( layer_sound->compile() == false )
+				if( this->createMovieSound_( layer ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile sound '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
 					return false;
 				}
-
-				layer_sound->enable();
-				layer_sound->localHide(true);
-
-				this->addMovieNode_( layer, layer_sound );
 			}
 			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
 			{
-				ParticleEmitter * layer_particles = NodeManager::get()
-					->createNodeT<ParticleEmitter>( layer.name, Consts::get()->c_ParticleEmitter, Consts::get()->c_Image );
-
-				layer_particles->setResource( layer.source );
-
-				//layer_movie->disable();
-
-				//layer_particles->setEmitterRelative(true);
-
-				if( layer_particles->compile() == false )
+				if( this->createMovieEmitterContainer_( layer ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
 					return false;
 				}
-
-				layer_particles->setLoop( true );
-				layer_particles->setEmitterTranslateWithParticle( true );
-
-				layer_particles->enable();
-				layer_particles->localHide(true);
-
-				this->addMovieNode_( layer, layer_particles );
 			}
 			else
 			{

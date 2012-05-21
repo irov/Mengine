@@ -236,8 +236,6 @@ namespace Menge
 		{
 			seek(0.0f);
 		}
-		
-		m_cacheBuffer = new size_t[ m_codecContext->height * m_codecContext->width * 4 ];
 
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
 		m_dataInfo.duration  = (float)( len * m_dataInfo.fps / AV_TIME_BASE );
@@ -259,35 +257,31 @@ namespace Menge
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid RGBA Frame ");
 			return 0;
 		}
-		
+
+		struct SwsContext * imgConvertContext = NULL;
+		// Convert the image from its native format to RGBA using 
+		imgConvertContext = sws_getCachedContext(NULL, m_codecContext->width, m_codecContext->height, 
+			m_codecContext->pix_fmt, 
+			m_codecContext->width, m_codecContext->height 
+			, (::PixelFormat) m_outputPixelFormat , SWS_BICUBIC,
+			NULL, NULL, NULL );
+
+		if(imgConvertContext == NULL)
+		{
+			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
+			//av_free_packet(&packet);
+			return 0;
+		}
+
+		int ret = sws_scale(imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
+			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize);
+
+		sws_freeContext(imgConvertContext);
+
 		// Convert the image into RGBA and copy to the surface.
 		avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight);
 		
-		//memcpy(_buffer,m_cacheBuffer,_bufferSize * m_codecContext->height);
-		/*unsigned char * source = m_cacheBuffer;
-		unsigned char * dest = _buffer;
-		size_t index;
-		for(size_t y = 0; y < m_codecContext->height; y++)
-		{
-			for(size_t x = 0; x < m_codecContext->width; x++)
-			{
-				index = x*4;
-				dest[index + 0] = source[index + 0];
-				dest[index + 1] = source[index + 1];
-				dest[index + 2] = source[index + 2];
-				dest[index + 3] = source[index + 3];
-			}
-			dest += _bufferSize;
-			source += m_codecContext->width * 4;
-		}*/
-		
-		/*
-		avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
-			m_dataInfo.frame_width, m_dataInfo.frame_height);
-		
-		size_t decoded = m_dataInfo.frame_width * m_dataInfo.frame_height;
-		*/
 		size_t decoded = _bufferSize * m_codecContext->height;
 		return decoded;
 	}
@@ -310,12 +304,9 @@ namespace Menge
 		*/
 
 		int isGotPicture;
-		struct SwsContext * imgConvertContext = NULL;
 		AVPacket packet;
-		
 		av_init_packet(&packet);
 		//av_dup_packet(&packet);
-		int i=0;
 
 		if( av_read_frame( m_formatContext, &packet ) < 0 )
 		{
@@ -342,48 +333,10 @@ namespace Menge
 			return VDRS_FAILURE;
 		}
 		
-		// Convert the image from its native format to RGBA using 
-		imgConvertContext = sws_getContext( m_codecContext->width, m_codecContext->height, 
-			m_codecContext->pix_fmt, 
-			m_codecContext->width, m_codecContext->height 
-			, (::PixelFormat) m_outputPixelFormat , SWS_BICUBIC,
-			NULL, NULL, NULL );
-/*		
-		struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat,
-			int dstW, int dstH, enum PixelFormat dstFormat,
-			int flags, SwsFilter *srcFilter,
-			SwsFilter *dstFilter, const double *param);
-
-		struct SwsContext *sws_getCachedContext(struct SwsContext *context,
-			int srcW, int srcH, enum PixelFormat srcFormat,
-			int dstW, int dstH, enum PixelFormat dstFormat,
-			int flags, SwsFilter *srcFilter,
-			SwsFilter *dstFilter, const double *param);
-*/
-		if(imgConvertContext == NULL)
-		{
-			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
-			av_free_packet(&packet);
-			return VDRS_FAILURE;
-		}
-		
-		int ret = sws_scale(imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
-			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize);
-		
-		/*FILE * fp = fopen("d:/read.raw","w+");
-		fwrite( m_FrameRGBA->data ,1 ,m_codecContext->height * m_codecContext->width, fp  );
-		fclose(fp);*/
 		m_pts = packet.pts;
-		
 		//printf("!!PTS %f \n",m_pts);
-		sws_freeContext(imgConvertContext);
+		
 		av_free_packet(&packet);
-
-		//memset(m_cacheBuffer,0,m_codecContext->width* m_codecContext->height * 4);
-		/*
-		avpicture_fill((AVPicture*) m_FrameRGBA, (uint8_t*) m_cacheBuffer, (::PixelFormat) m_outputPixelFormat ,
-			m_codecContext->width, m_codecContext->height);
-		*/
 		return VDRS_SUCCESS;	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -416,7 +369,6 @@ namespace Menge
 			avformat_close_input(&m_formatContext);
 			m_formatContext = NULL;
 		}
-		//url_close_buf (bio_ctx);
 		
 		if (m_IOContext != NULL)
 		{

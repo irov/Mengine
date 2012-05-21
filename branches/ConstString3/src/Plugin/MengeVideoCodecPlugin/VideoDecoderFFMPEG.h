@@ -58,8 +58,6 @@ namespace Menge
 		AVCodecContext * m_codecContext;
 		AVCodec * m_codec;
 		
-		size_t * m_cacheBuffer;
-		
 		AVFrame * m_Frame; 
 		AVFrame * m_FrameRGBA;
 		AVIOContext * m_IOContext;

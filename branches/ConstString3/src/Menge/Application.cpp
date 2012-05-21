@@ -138,6 +138,7 @@
 #	include "Config/Config.h"
 
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
+extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ApplicationInterface** _interface )
@@ -322,6 +323,19 @@ namespace Menge
 
 			PluginInterface * plugin;
 			initPluginMengeImageCodec( &plugin );
+
+			TMapParam param;
+			plugin->initialize( m_serviceProvider, param );
+
+			m_plugins.push_back( plugin );
+		}
+
+		//extern initPlugin initPluginMengeVideoCodec;
+		{
+			MENGE_LOG_INFO( "load Video Codec..." );
+
+			PluginInterface * plugin;
+			initPluginMengeVideoCodec( &plugin );
 
 			TMapParam param;
 			plugin->initialize( m_serviceProvider, param );

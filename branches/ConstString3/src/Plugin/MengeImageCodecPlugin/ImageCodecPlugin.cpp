@@ -23,6 +23,11 @@ bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin )
 	*_plugin = new Menge::ImageCodecPlugin();
 	return true;
 }
+////////////////////////////////////////////////////////////////////////////
+//__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+//{
+//	return initPluginMengeImageCodec( _plugin );
+//}
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

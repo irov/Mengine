@@ -1,32 +1,26 @@
 #	include "VideoCodecPlugin.h"
+#	include "VideoCodecDecoderSystem.h"
+
 #	include "VideoDecoderFFMPEG.h"
+
 #	include "Utils/Core/File.h"
+
 #	include "Interface/LogSystemInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
-__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin )
 {
 	*_plugin = new Menge::VideoCodecPlugin();
 	return true;
 }
+////////////////////////////////////////////////////////////////////////////
+//__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+//{
+//	return initPluginMengeVideoCodec( _plugin );
+//}
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	VideoCodecDecoderSystem::VideoCodecDecoderSystem( const ConstString & _name )
-		: m_name(_name)
-		, m_service(0)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & VideoCodecDecoderSystem::getName() const
-	{
-		return m_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecDecoderSystem::setService( CodecServiceInterface * _service )
-	{
-		m_service = _service;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace Detail
 	{
@@ -53,6 +47,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VideoCodecPlugin::VideoCodecPlugin()
+		: m_codecService(0)
+		, m_stringize(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,6 +93,7 @@ namespace Menge
 
 			delete (*it);
 		}
+
 		delete this;
 	}
 }

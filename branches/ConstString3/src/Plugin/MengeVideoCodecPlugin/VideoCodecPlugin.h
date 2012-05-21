@@ -6,25 +6,7 @@
 
 namespace Menge
 {
-	
-	class VideoCodecDecoderSystem
-		: public DecoderSystemInterface
-	{
-	public:
-		VideoCodecDecoderSystem( const ConstString & _name );
-
-	public:
-		const ConstString & getName() const;
-
-	protected:
-		void setService( CodecServiceInterface * _service ) override;
-
-	protected:
-		ConstString m_name;
-		CodecServiceInterface * m_service;
-
-	};
-
+	class VideoCodecDecoderSystem;
 
 	class VideoCodecPlugin
 		: public PluginInterface
@@ -37,9 +19,11 @@ namespace Menge
 		void finalize() override;
 
 	protected:
-		typedef std::vector<VideoCodecDecoderSystem * > TVectorVideoDecoders;
+		typedef std::vector<VideoCodecDecoderSystem *> TVectorVideoDecoders;
 		TVectorVideoDecoders m_decoders;
+
 		CodecServiceInterface * m_codecService;
 		StringizeServiceInterface * m_stringize;
 	};
 }
+

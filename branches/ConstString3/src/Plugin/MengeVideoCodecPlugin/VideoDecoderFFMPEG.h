@@ -10,6 +10,7 @@
 #define INT64_C(c) (c ## LL) 
 #define UINT64_C(c) (c ## ULL) 
 #endif
+
 #	include "VideoDecoder.h"
 
 extern "C"
@@ -19,8 +20,6 @@ extern "C"
 	#	include "libavcodec/avcodec.h"
 	#	include "libavutil/mathematics.h"
 }
-
-
 
 namespace Menge
 {
@@ -42,11 +41,14 @@ namespace Menge
 		//int sync( float _timing ) override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;
+
+	public:
 		bool isValid() const;
-		void setOptions( CodecOptions * ) ;
+		void setOptions( CodecOptions * _options );
 		
 		EVideoDecoderReadState readNextFrame( ) override;
 		const VideoCodecDataInfo* getCodecDataInfo() const;
+
 	protected:
 		void _invalidate() ;
 	

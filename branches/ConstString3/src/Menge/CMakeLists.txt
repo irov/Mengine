@@ -827,20 +827,14 @@ if( WIN32 )
 	INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/python/PC )
 endif( WIN32 )
 
-if( WIN32 )
-	include_directories( ${THIRDPARTY_DIR}/python/PC )
-
-endif( WIN32 )
-
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories( ${Mengine_SOURCE_DIR}/Menge )
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/expat/lib )
-
 if(APPLE)
 	include_directories( ${MENGINE_REPOSITORY}/dependencies/Python )
 endif(APPLE)
+
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES

@@ -1981,7 +1981,12 @@ namespace Menge
 
 		if( m_game != NULL )
 		{
-			m_game->setCursorMode( _mode );
+			m_game->setCursorMode( m_cursorMode );
+		}
+
+		if( m_cursorMode == true && m_cursorFileName.empty() == false )
+		{
+			m_platform->notifyCursorIconSetup( m_cursorFileName );
 		}
 
 		m_invalidateCursorMode = true;
@@ -1994,6 +1999,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setCursorIcon(const WString& _fileName)
 	{
+		m_cursorFileName = _fileName;
+
+		if( m_cursorMode == false )
+		{
+			return;
+		}
+
 		m_platform->notifyCursorIconSetup(_fileName);
 	}
 	//////////////////////////////////////////////////////////////////////////

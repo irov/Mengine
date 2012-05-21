@@ -91,9 +91,7 @@ namespace Menge
 		void onAppMouseEnter( const mt::vec2f & _point );
 
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
-
-		void setCursorMode( bool _mode );
-
+		
 	public:
 		Join * addJoin( Node * _left, Node * _right, const mt::vec2f & _offset );
 		void removeJoin( Join * _join );

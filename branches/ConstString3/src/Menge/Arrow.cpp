@@ -50,11 +50,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()
 	{
-		bool cursorMode = 
-			Application::get()->getCursorMode();
-
-		setCursorMode( cursorMode );
-
 		size_t num_points = boost::geometry::num_points(m_polygon);
 		if( num_points == 0 )
 		{
@@ -150,31 +145,6 @@ namespace	Menge
 		m_currentResolution = _resolution;
 
 		this->invalidateClickMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setCursorMode( bool _mode )
-	{
-		if( m_child.empty() )
-		{
-			return;
-		}
-
-		ConstString c_CursorNode("CursorNode");
-		Node* mainCursor = this->findChildren( c_CursorNode, false );
-
-		if( mainCursor == NULL )
-		{
-			return;
-		}
-		
-		if( _mode )
-		{
-			mainCursor->disable();
-		}
-		else
-		{
-			mainCursor->enable();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Arrow::getClickMatrix()

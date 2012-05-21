@@ -1418,6 +1418,7 @@ namespace Menge
 
 		WCHAR wide[3];
 		int res = ::ToUnicodeEx( _vkc, _vk, keyState, wide, 3, 0, layout );
+
 		if( res == -1 )
 		{
 			m_deadKey = wide[0];
@@ -1426,6 +1427,7 @@ namespace Menge
 		{
 			return wide[0];
 		}
+
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////

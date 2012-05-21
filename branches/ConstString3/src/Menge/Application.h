@@ -324,6 +324,8 @@ namespace Menge
 		WString m_applicationPath;
 		WString m_baseDir;
 		
+		WString m_cursorFileName;
+		
 		ConstString m_gamePackName;
 		WString m_gamePackPath;
 		ConstString m_gamePackType;

@@ -938,11 +938,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
 	{
-		if( m_player != NULL )
-		{
-			m_player->setCursorMode( _mode );
-		}
-
 		this->callEvent( EVENT_CURSOR_MODE, "(O)", pybind::get_bool(_mode) );
 	}
 	//////////////////////////////////////////////////////////////////////////

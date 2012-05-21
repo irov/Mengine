@@ -170,7 +170,7 @@ namespace Menge
 		//}
 
 		//TODO - вынести это из компил€ции
-		WString appName = L"Antoinette";
+		WString appName = L"TheCursedIsland";
 
 		//if( m_userPath.empty() == false )
 		//{

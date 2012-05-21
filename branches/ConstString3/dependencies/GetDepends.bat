@@ -17,8 +17,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.2.1.zip
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.2/Python-2.7.2.tgz
-%toolsdir%\wget\wget.exe --no-clobber http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-git-b55dd10-win32-dev.7z
 
+%toolsdir%\wget\wget.exe --no-clobber http://ffmpeg.zeranoe.com/builds/win32/shared/ffmpeg-20120519-git-31dfe20-win32-shared.7z
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.zip
 
@@ -105,7 +105,7 @@ if EXIST pugixml rmdir /s /q pugixml
 if EXIST simpleini rmdir /s /q simpleini
 7za x -y simpleini-4.15.zip
 
-if EXIST icu rmdir /s /q simpleini icu
+if EXIST icu rmdir /s /q icu
 7za x -y icu4c-49_1_1-src.zip
 
 :: if EXIST OpenAL rmdir /s /q OpenAL

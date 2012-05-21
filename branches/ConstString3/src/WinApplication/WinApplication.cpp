@@ -1407,14 +1407,14 @@ namespace Menge
 		{
 			return 0;
 		}
-
+		
 		BYTE keyState[256];
-		HKL  layout = ::GetKeyboardLayout(0);
 		if( ::GetKeyboardState( keyState ) == 0 )
 		{
 			return 0;
 		}
 
+		HKL layout = ::GetKeyboardLayout(0);
 
 		WCHAR wide[3];
 		int res = ::ToUnicodeEx( _vkc, _vk, keyState, wide, 3, 0, layout );

@@ -969,6 +969,8 @@ namespace Menge
 
 		m_game->applyConfigPaks();
 
+		m_game->setCursorMode( m_cursorMode );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

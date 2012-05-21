@@ -62,8 +62,8 @@ namespace Menge
 		
 		AVFrame * m_Frame; 
 		AVFrame * m_FrameRGBA;
-		
-		ByteIOContext * m_byteIOContext;
+		AVIOContext * m_IOContext;
+				
 		AVInputFormat * m_inputFormat;
 		
 		VideoCodecDataInfo m_dataInfo;

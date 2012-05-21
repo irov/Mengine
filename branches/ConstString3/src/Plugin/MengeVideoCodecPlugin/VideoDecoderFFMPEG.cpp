@@ -48,7 +48,7 @@ namespace Menge
 		, m_codec(NULL)
 		, m_Frame(NULL)
 		, m_FrameRGBA(NULL)
-		, m_byteIOContext(NULL)
+		, m_IOContext(NULL)
 		, m_inputFormat(NULL)
 		, m_outputPixelFormat(PIX_FMT_RGBA)
 		, m_bufferIO(NULL)
@@ -81,9 +81,6 @@ namespace Menge
 		//input output interface
 		avformat_network_init();
 		
-		//register codecs
-		avcodec_init();
-		
 		// Register all formats and codecs
 		av_register_all();
 		
@@ -98,24 +95,22 @@ namespace Menge
 		//read portion of data
 		m_stream->read( filebuffer, m_probeSize );
 		m_stream->seek( SEEK_SET );
-					
 		AVProbeData probeData; 
-		ByteIOContext * m_byteIOContext = new ByteIOContext();
 		m_bufferIO = new uint8_t[ m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE ];
-		memset( m_bufferIO,0, m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE );
-		//Pf = fopen( "d:\\Projects\\Leprogirl\\Resources\\Movies\\Inventory\\svechka.flv","rb");
+		memset( m_bufferIO, 0, m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE );
 
-		//set custom input output functions
-		init_put_byte( m_byteIOContext //context
-						, m_bufferIO //IO buffer
-						, m_probeSize //size of IO buffer
-						, 0 //write flag set to 0
-						, m_stream //IO source - it will be send as opaque argument to IO callbacks
-						, ReadIOWrapper //read callback 
-						, NULL //write callback
-						, SeekIOWrapper //seek callback
-						);
+		m_IOContext = avio_alloc_context(
+			 m_bufferIO //IO buffer
+			, m_probeSize //size of IO buffer
+			, 0 //write flag set to 0
+			, m_stream //IO source - it will be send as opaque argument to IO callbacks
+			, ReadIOWrapper //read callback 
+			, NULL //write callback
+			, SeekIOWrapper //seek callback
+			);
 		
+		//m_IOContext.is_streamed = 0;
+
 		probeData.filename = "";
 		probeData.buf= (unsigned char *) filebuffer; 
 		probeData.buf_size = m_probeSize;
@@ -130,15 +125,18 @@ namespace Menge
 		}
 
 		delete [] filebuffer;
-		//url_open_buf(&bio_ctx, filebuffer, lSize, URL_RDONLY);
-				
-		if ((av_open_input_stream(&m_formatContext, m_byteIOContext, "", m_inputFormat, NULL)) < 0)
+		
+		m_formatContext = avformat_alloc_context();
+		
+		m_formatContext->pb = m_IOContext;
+		if( (avformat_open_input(&m_formatContext,"",m_inputFormat,NULL) ) < 0)
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG:: Couldn't open stream " );
 			return false;
 		}
 		
-		if(av_find_stream_info( m_formatContext ) < 0 )
+		
+		if( avformat_find_stream_info(m_formatContext, NULL) < 0 )
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG:: Couldn't find stream information " );
 			return false; 
@@ -173,7 +171,7 @@ namespace Menge
 		}
 			
 		// Open codec
-		if(avcodec_open(m_codecContext, m_codec)<0)
+		if(avcodec_open2(m_codecContext, m_codec,NULL)<0)
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: Could not open codec! ");
 			return false; //
@@ -216,9 +214,8 @@ namespace Menge
 		}
 		//setting the VideoCodecDataInfo structure
 		//init VideoCodec info
-		int isGotPicture;
-		AVPacket packet;
-		
+		//int isGotPicture;
+		//AVPacket packet;
 		////we must read frame because  m_codecContext->width,  m_codecContext->height can change 
 		//av_init_packet(&packet);
 		//av_read_frame(m_formatContext, &packet);
@@ -228,7 +225,7 @@ namespace Menge
 		m_dataInfo.frameHeight = m_codecContext->height;
 		m_dataInfo.frameWidth = m_codecContext->width;
 		m_dataInfo.fps = (int) av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
-		
+
 		if( m_dataInfo.fps == 0 )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: invalid Frame rate ");
@@ -344,21 +341,32 @@ namespace Menge
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: we don`t get a picture ");
 			return VDRS_FAILURE;
 		}
-	
+		
 		// Convert the image from its native format to RGBA using 
 		imgConvertContext = sws_getContext( m_codecContext->width, m_codecContext->height, 
 			m_codecContext->pix_fmt, 
 			m_codecContext->width, m_codecContext->height 
 			, (::PixelFormat) m_outputPixelFormat , SWS_BICUBIC,
 			NULL, NULL, NULL );
-		
+/*		
+		struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat,
+			int dstW, int dstH, enum PixelFormat dstFormat,
+			int flags, SwsFilter *srcFilter,
+			SwsFilter *dstFilter, const double *param);
+
+		struct SwsContext *sws_getCachedContext(struct SwsContext *context,
+			int srcW, int srcH, enum PixelFormat srcFormat,
+			int dstW, int dstH, enum PixelFormat dstFormat,
+			int flags, SwsFilter *srcFilter,
+			SwsFilter *dstFilter, const double *param);
+*/
 		if(imgConvertContext == NULL)
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
 			av_free_packet(&packet);
 			return VDRS_FAILURE;
 		}
-	
+		
 		int ret = sws_scale(imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
 			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize);
 		
@@ -405,16 +413,15 @@ namespace Menge
 		// Close the video file
 		if (m_formatContext != NULL)
 		{
-			av_close_input_stream (m_formatContext);
+			avformat_close_input(&m_formatContext);
 			m_formatContext = NULL;
 		}
 		//url_close_buf (bio_ctx);
 		
-		if (m_byteIOContext != NULL)
+		if (m_IOContext != NULL)
 		{
-			url_close_buf (m_byteIOContext);
-			delete m_byteIOContext;
-			m_byteIOContext = NULL;
+			av_free(m_IOContext); 
+			m_IOContext = NULL;
 		}
 		
 		if (m_bufferIO != NULL)

@@ -141,9 +141,17 @@ namespace Menge
 		bool getVSync() const;
 		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
 		const Resolution& getMaxClientAreaSize() const;
+
+		void setWorkAreaSize( size_t _maxWidth, size_t _maxHeight );
+		const Resolution& getWorkAreaSize() const;
+
 		int getAlreadyRunningPolicy() const;
 		bool getAllowFullscreenSwitchShortcut() const;
 		
+		bool getAllowAutoFullscreen() const;
+		void setAllowAutoFullscreen( bool _mode );
+		float getMaxWindowHeight();
+
 		void updateNotification();
 		void setVSync( bool _vsync );
 		void setCursorMode( bool _mode );
@@ -177,6 +185,7 @@ namespace Menge
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
 		Resolution m_maxClientAreaSize;
+		Resolution m_workAreaSize;
 
 		String m_scriptInitParams;
 
@@ -233,6 +242,7 @@ namespace Menge
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 
+		bool m_allowAutoFullscreen;
 		bool m_vsync;
 		bool m_invalidateVsync;
 		bool m_cursorMode;

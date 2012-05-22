@@ -566,6 +566,16 @@ namespace Menge
 			return Application::hostage()->getFullscreenMode();
 		}
 
+		static bool s_getAllowAutoFullscreen()
+		{
+			return Application::hostage()->getAllowAutoFullscreen();
+		}
+
+		static float s_getMaxWindowHeight()
+		{
+			return Application::hostage()->getMaxWindowHeight();
+		}
+		
 		static void addResourceListener( PyObject* _listener )
 		{
 			ResourceManager::hostage()->addListener( _listener );
@@ -1340,6 +1350,9 @@ namespace Menge
 			pybind::def( "isExistConfiguration", &ScriptMethod::isExistConfiguration );
 			pybind::def( "existFile", &ScriptMethod::existFile );
 			pybind::def( "executeProgram", &ScriptMethod::executeProgram );
+			pybind::def( "getAllowAutoFullscreen", &ScriptMethod::s_getAllowAutoFullscreen );
+			pybind::def( "getMaxWindowHeight", &ScriptMethod::s_getMaxWindowHeight );
+			
 		}
 	}
 }

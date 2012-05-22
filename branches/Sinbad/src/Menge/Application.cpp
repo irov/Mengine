@@ -102,6 +102,7 @@ namespace Menge
 		, m_invalidateCursorMode( false )
 		, m_fullscreen(false)
 		, m_maxWindowHeight(800)
+		, m_allowAutoFullscreen(true)
 	{
 		m_logEngine = new LogEngine();
 		if( m_logEngine->initialize() == false )
@@ -281,7 +282,7 @@ namespace Menge
 
 		loadGame( _loadPersonality );
 
-		const Resolution & resolution = getDesktopResolution();
+		const Resolution & resolution = getWorkAreaSize();
 		float height = resolution.getHeight();
 		
 		if( height < m_maxWindowHeight )
@@ -1209,6 +1210,32 @@ namespace Menge
 	{
 		 bool result = m_interface->executeProgram( _programPath );
 		 return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setAllowAutoFullscreen( bool _mode )
+	{
+		m_allowAutoFullscreen = _mode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getAllowAutoFullscreen() const
+	{
+		return m_allowAutoFullscreen;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Application::getMaxWindowHeight()
+	{
+		return m_maxWindowHeight;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setWorkAreaSize( size_t _maxWidth, size_t _maxHeight )
+	{
+		m_workAreaSize.setWidth(_maxWidth);
+		m_workAreaSize.setHeight(_maxHeight);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Resolution& Application::getWorkAreaSize() const
+	{
+		return m_workAreaSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

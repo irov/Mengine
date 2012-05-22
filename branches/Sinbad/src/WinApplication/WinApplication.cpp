@@ -331,6 +331,10 @@ namespace Menge
 		size_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
 		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
 		m_application->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
+		
+		size_t workAreaWidth = workArea.right - workArea.left;
+		size_t workAreaHeight = workArea.bottom - workArea.top;
+		m_application->setWorkAreaSize(workAreaWidth,workAreaHeight);
 
 		LOG( "Initializing Mengine..." );
 		LOG( "UserPath " + uUserPath );
@@ -385,9 +389,11 @@ namespace Menge
 			}
 		}
 
+		m_application->setAllowAutoFullscreen(false);
+
 		m_fpsMonitor = new FPSMonitor();
 		m_fpsMonitor->initialize();
-
+			
 		LOG( "Creating Render Window..." );
 		bool fullscreen = m_application->getFullscreenMode();
 

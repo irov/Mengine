@@ -135,6 +135,9 @@ namespace Menge
 
 	protected:
 		TListChild m_child;
+
+		typedef std::list<TListChild::iterator> TChildEraser;
+		TChildEraser m_childEraser;
 		mutable int m_childBlock;
 		//TListChild m_childToAdd;
 		//TListChild m_childToRemove;
@@ -146,6 +149,9 @@ namespace Menge
 
 		void insertChildren_( TListChild::iterator _insert, Node * _node );
 		void eraseChildren_( TListChild::iterator _it );
+
+	protected:
+		void checkChildEraser_();
 
 	protected:
 		void _destroy() override;

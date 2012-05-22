@@ -78,6 +78,8 @@ namespace Menge
 		}
 
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()
@@ -125,6 +127,8 @@ namespace Menge
 			//}
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	
 		this->_afterActivate();
 
@@ -164,6 +168,8 @@ namespace Menge
 			(*it)->deactivate();
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 
 		m_active = false;
 
@@ -231,6 +237,8 @@ namespace Menge
 			it = it_next;
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeAllChild()
@@ -246,6 +254,8 @@ namespace Menge
 			(*it)->setLayer( 0 );
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 
 		m_child.clear();
 	}
@@ -372,6 +382,10 @@ namespace Menge
 	{
 		if( m_childBlock != 0 )
 		{
+			MENGE_LOG_ERROR("Node::insertChildren_ m_childBlock != 0 (%d)"
+				, m_childBlock
+				);
+
 			return;
 		}
 
@@ -382,10 +396,28 @@ namespace Menge
 	{
 		if( m_childBlock != 0 )
 		{
-			return;
+			m_childEraser.push_back( _it );
+		}
+		else
+		{
+			m_child.erase( _it );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::checkChildEraser_()
+	{
+		for( TChildEraser::iterator
+			it = m_childEraser.begin(),
+			it_end = m_childEraser.end();
+		it != it_end;
+		++it )
+		{
+			TListChild::iterator it_child = *it;
+
+			m_child.erase( it_child );
 		}
 
-		m_child.erase( _it );
+		m_childEraser.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TListChild & Node::getChild() const
@@ -580,6 +612,8 @@ namespace Menge
 			}
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )
@@ -610,6 +644,8 @@ namespace Menge
 			it->update( _timing );
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
@@ -704,6 +740,8 @@ namespace Menge
 		}
 		--m_childBlock;
 
+		this->checkChildEraser_();
+
 		Resource::release();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -780,6 +818,8 @@ namespace Menge
 			(*it)->render( _camera );
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_checkVisibility( const Viewport & _viewport )
@@ -813,6 +853,8 @@ namespace Menge
 			(*it)->invalidateWorldMatrix();
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 
 		invalidateBoundingBox();
 	}
@@ -909,6 +951,8 @@ namespace Menge
 			(*it)->setLayer( _layer );
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Node::getLayer() const
@@ -986,6 +1030,8 @@ namespace Menge
 			mt::merge_box( _boundingBox, childrenBoundingBox );
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_updateBoundingBox( mt::box2f& _boundingBox )
@@ -1015,6 +1061,8 @@ namespace Menge
 			(*it)->invalidateColor();
 		}
 		--m_childBlock;
+
+		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Node::getWorldColor() const

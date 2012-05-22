@@ -38,16 +38,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-		bool result = false;
-
-		result = Node::_compile();
-
-		if( result )
+		if( Node::_compile() == false )
 		{
-			this->callEvent( EVENT_COMPILE, "()" );
+			return false;
 		}
 
-		return result;
+		this->callEvent( EVENT_COMPILE, "()" );
+		
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()

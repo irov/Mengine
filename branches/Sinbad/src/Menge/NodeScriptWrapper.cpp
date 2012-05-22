@@ -576,6 +576,15 @@ namespace Menge
 			return Application::hostage()->getMaxWindowHeight();
 		}
 		
+		static  mt::vec2f s_getWorkAreaSize()
+		{
+			const Resolution& workAreaSize = Application::hostage()->getWorkAreaSize();
+			mt::vec2f res;
+			res.x = workAreaSize.getWidth();
+			res.y = workAreaSize.getHeight();
+			return res;
+		}
+
 		static void addResourceListener( PyObject* _listener )
 		{
 			ResourceManager::hostage()->addListener( _listener );
@@ -1352,7 +1361,7 @@ namespace Menge
 			pybind::def( "executeProgram", &ScriptMethod::executeProgram );
 			pybind::def( "getAllowAutoFullscreen", &ScriptMethod::s_getAllowAutoFullscreen );
 			pybind::def( "getMaxWindowHeight", &ScriptMethod::s_getMaxWindowHeight );
-			
+			pybind::def( "getWorkAreaSize", &ScriptMethod::s_getWorkAreaSize );
 		}
 	}
 }

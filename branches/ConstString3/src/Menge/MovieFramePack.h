@@ -30,14 +30,23 @@ namespace Menge
 	class MovieFramePack
 	{
 	public:
-		void initialise( size_t _size );
-		const MovieFrameSource & getLastLayerFrame( size_t _layerIndex ) const;
-		bool isLayerEmpty( size_t _layerIndex ) const;
-		void setLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame );
-		const MovieFrameSource & getLayerFrame( size_t _layerIndex, size_t _frameIndex ) const;
+		MovieFramePack( size_t _size );
+
+	public:
+		bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const;
+		bool getLayerFrameLast( size_t _layerIndex, MovieFrameSource & _frame ) const;
+
 		size_t getLayerCountFrames( size_t _layerIndex ) const;
+
+	public:
+		bool isLayerEmpty( size_t _layerIndex ) const;
+
+	public:
 		const TVectorMovieFrameSource & getLayerFrames( size_t _layerIndex );
-	
+
+	public:
+		void addLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame );
+			
 	protected:
 		size_t m_size;
 		TVectorMovieFrameLayer m_layers;

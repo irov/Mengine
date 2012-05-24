@@ -646,8 +646,10 @@ Manager\\\\Resource
 
 ADD_FILTER(
 Manager\\\\MovieKeyFrame
-	MovieKeyFrameManager.cpp
 	MovieKeyFrameManager.h
+	MovieKeyFrameManager.cpp	
+	LoaderMovieKeyFrame.h
+	LoaderMovieKeyFrame.cpp
     MovieFramePack.h
     MovieFramePack.cpp
 )

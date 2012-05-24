@@ -96,24 +96,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const
 	{
-		if( m_framePack->isLayerEmpty( _layer.index ) == true )
+		if( m_framePack->getLayerFrame( _layer.index, _index, _frame ) == false )
 		{
 			return false;
 		}
-
-		_frame =  m_framePack->getLayerFrame( _layer.index, _index );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getFrameFirst( const MovieLayer & _layer, MovieFrameSource & _frame ) const
 	{
-		if( m_framePack->isLayerEmpty( _layer.index ) == true )
+		if( this->getFrame( _layer, 0, _frame ) == false )
 		{
 			return false;
 		}
-
-		this->getFrame( _layer , 0, _frame );
 
 		return true;
 	}

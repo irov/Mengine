@@ -2591,11 +2591,30 @@ namespace Menge
 		_outMatrix[14] = _near * inv_znzf;
 		_outMatrix[15] = 1.0f;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _view )
 	{
 
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
+	{
+		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
+		mt::mat4f scale;
+		mt::make_scale_m4( scale, 1.0f, -1.0f, 1.0f );
 
+		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
+		mt::mat4f translation;
+		mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
+
+		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
+		mt::mat4f transform;
+		mt::mul_m4_m4( transform, scale, translation );
+
+		mt::mat4f fov;
+		mt::make_projection_fov_m4( fov, _fov, _aspect, _zn, _zf );
+
+		mt::mul_m4_m4( _projectionMatrix, transform, fov );
+	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -62,6 +62,8 @@ namespace Menge
 		void getResolutions( TVectorResolutions & _resolutions ) override;
 		void setWorldMatrix( const mt::mat4f & _view ) override;
 
+		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
+
 		void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix
 			, float _left, float _right
 			, float _top, float _bottom

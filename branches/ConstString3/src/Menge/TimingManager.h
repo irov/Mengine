@@ -30,6 +30,7 @@ namespace Menge
 			float delay;
 
 			size_t id;
+
 			bool remove;
 			bool dead;
 			bool freeze;
@@ -46,6 +47,7 @@ namespace Menge
 
 		void freeze( size_t _id, bool _freeze );
 		void freezeAll( bool _freeze );
+
 		bool isFreeze( size_t _id ) const;
 
 	public:

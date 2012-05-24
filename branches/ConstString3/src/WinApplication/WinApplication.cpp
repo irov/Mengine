@@ -1269,7 +1269,13 @@ namespace Menge
 	DynamicLibraryInterface * WinApplication::loadDynamicLibrary( const WString& _filename )
 	{
 		DynamicLibrary * dynLib = new DynamicLibrary( _filename );
-		dynLib->load();
+
+		if( dynLib->load() == false )
+		{
+			delete dynLib;
+
+			return NULL;
+		}
 
 		return dynLib;
 	}

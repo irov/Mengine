@@ -331,17 +331,17 @@ namespace Menge
 		}
 
 		//extern initPlugin initPluginMengeVideoCodec;
-		{
-			MENGE_LOG_INFO( "load Video Codec..." );
+		//{
+		//	MENGE_LOG_INFO( "load Video Codec..." );
 
-			PluginInterface * plugin;
-			initPluginMengeVideoCodec( &plugin );
+		//	PluginInterface * plugin;
+		//	initPluginMengeVideoCodec( &plugin );
 
-			TMapParam param;
-			plugin->initialize( m_serviceProvider, param );
+		//	TMapParam param;
+		//	plugin->initialize( m_serviceProvider, param );
 
-			m_plugins.push_back( plugin );
-		}
+		//	m_plugins.push_back( plugin );
+		//}
 
 #	ifndef MENGE_MASTER_RELEASE
 		{
@@ -1821,10 +1821,18 @@ namespace Menge
 		
 		if( it_found == m_dynamicLibraries.end() )
 		{
+			MENGE_LOG_INFO( "Application::loadPlugin %S"
+				, _pluginName.c_str() 
+				);
+
 			DynamicLibraryInterface * lib = m_platform->loadDynamicLibrary( _pluginName );
 
 			if( lib == NULL )
 			{
+				MENGE_LOG_ERROR( "Can not load %S plugin [invalid load]"
+					, _pluginName.c_str() 
+					);
+
 				return false;
 			}
 
@@ -1838,7 +1846,10 @@ namespace Menge
 
 		if( function == NULL )
 		{
-			MENGE_LOG_WARNING( "Can not load %s plugin ",_pluginName.c_str() );
+			MENGE_LOG_ERROR( "Can not load %S plugin [dllCreatePlugin]"
+				, _pluginName.c_str() 
+				);
+
 			return false;
 		}
 
@@ -1847,6 +1858,10 @@ namespace Menge
 		PluginInterface * plugin;
 		if( create( &plugin ) == false )
 		{
+			MENGE_LOG_ERROR( "Can not load %S plugin [invalid create]"
+				, _pluginName.c_str() 
+				);
+
 			return false;
 		}
 

@@ -14,7 +14,7 @@ namespace Menge
 		~DynamicLibrary();
 
 	public:
-		void load() override;
+		bool load() override;
         void unload() override;
 
 	public:

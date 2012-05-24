@@ -17,9 +17,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DynamicLibrary::load()
+	bool DynamicLibrary::load()
 	{
 		m_hInstance = LoadLibrary( m_name.c_str() );
+
+		if( m_hInstance == NULL )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
     void DynamicLibrary::unload()

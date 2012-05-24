@@ -51,8 +51,8 @@ namespace Menge
 		}
 
 		bool isStarted() const	
-		{ 
-			return m_started; 
+		{
+			return m_started;
 		}
 
 		const T & getValue() const
@@ -141,7 +141,6 @@ namespace Menge
 			return true;
 		}
 
-
 		bool update( float _timing, T * _out )
 		{
 			if( ValueInterpolator<T>::m_started == false )
@@ -169,8 +168,7 @@ namespace Menge
 			
 			return false;
 		}
-
-
+		
 	protected:
 		float m_invTime;
 	};
@@ -214,6 +212,7 @@ namespace Menge
 				*_out = ValueInterpolator<T>::m_value2;
 				return true;
 			}
+
 			if( ( ValueInterpolator<T>::m_timing + _timing ) > ValueInterpolator<T>::m_time )
 			{
 				ValueInterpolator<T>::m_time = 0.f;
@@ -234,6 +233,7 @@ namespace Menge
 
 			return false;
 		}
+
 	protected:
 		T m_v0;
 		T m_a;
@@ -275,6 +275,7 @@ namespace Menge
 				*_out = ValueInterpolator<T>::m_value2;
 				return true;
 			}
+
 			if( ( ValueInterpolator<T>::m_timing + _timing ) > ValueInterpolator<T>::m_time )
 			{
 				ValueInterpolator<T>::m_time = 0.f;
@@ -298,6 +299,7 @@ namespace Menge
 
 			return false;
 		}
+
 	protected:
 		T m_v0;
 	};
@@ -339,6 +341,7 @@ namespace Menge
 				*_out = ValueInterpolator<T>::m_value2;
 				return true;
 			}
+
 			if( ( ValueInterpolator<T>::m_timing + _timing ) > ValueInterpolator<T>::m_time )
 			{
 				ValueInterpolator<T>::m_time = 0.f;
@@ -363,6 +366,7 @@ namespace Menge
 
 			return false;
 		}
+
 	protected:
 		T m_v0;
 		T m_v1;

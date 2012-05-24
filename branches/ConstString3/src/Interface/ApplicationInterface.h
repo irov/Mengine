@@ -159,7 +159,7 @@ namespace Menge
 	class DynamicLibraryInterface
     {
     public:
-        virtual void load() = 0;
+        virtual bool load() = 0;
         virtual void unload() = 0;
 
 	public:

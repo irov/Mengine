@@ -2,6 +2,8 @@
 
 #	include "Loadable.h"
 
+#	include <memory.h>
+
 namespace Menge
 {
 	class MovieFramePack;

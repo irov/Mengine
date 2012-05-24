@@ -7,17 +7,20 @@
 
 #	include "Interface/LogSystemInterface.h"
 
-//////////////////////////////////////////////////////////////////////////
-bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin )
+extern "C" // only required if using g++
 {
-	*_plugin = new Menge::VideoCodecPlugin();
-	return true;
+	//////////////////////////////////////////////////////////////////////////
+	bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin )
+	{
+		*_plugin = new Menge::VideoCodecPlugin();
+		return true;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+	{
+		return initPluginMengeVideoCodec( _plugin );
+	}
 }
-////////////////////////////////////////////////////////////////////////////
-//__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-//{
-//	return initPluginMengeVideoCodec( _plugin );
-//}
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

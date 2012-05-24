@@ -32,7 +32,7 @@ namespace Menge
 		
 	public:
 		Node * getMovieSlot( const ConstString & _name );
-
+		bool hasMovieSlot( const ConstString & _name );
 	protected:
 		void _setReverse( bool _reverse ) override;
 

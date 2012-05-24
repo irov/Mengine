@@ -447,8 +447,10 @@ namespace	Menge
 			}
 			else if( state == VDRS_FAILURE )
 			{
-				MENGE_LOG_ERROR( "Video: '%s' error reading frame"
+				MENGE_LOG_ERROR( "Video: '%s' error reading frame timing %4.2f total timing %4.2f"
 					, getName().c_str()
+					, _timing
+					, m_timing
 					);
 
 				break;	

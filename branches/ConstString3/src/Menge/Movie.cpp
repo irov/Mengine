@@ -434,6 +434,56 @@ namespace Menge
 		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Movie::hasMovieSlot( const ConstString & _name )
+	{
+		if( this->isCompile() == false )
+		{
+			MENGE_LOG_ERROR("Movie %s invalid hasMovieSlot: not compile"
+				, m_name.c_str()
+				);
+
+			return NULL;
+		}
+
+		TMapMovieSlot::iterator it_found = m_slots.find( _name );
+
+		if( it_found != m_slots.end() )
+		{	
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.movie == false )
+			{
+				continue;
+			}
+
+			Node * node = m_nodies[layer.index];
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			Node * slot = movie->getMovieSlot( _name );
+
+			if( slot == NULL )
+			{
+				continue;
+			}
+
+			return true;
+		}
+				
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event ) const
 	{
 		ResourceInternalObject * resourceInternalObject = ResourceManager::get()

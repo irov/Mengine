@@ -17,14 +17,11 @@ namespace Menge
 		MovieKeyFrameManager();
 		~MovieKeyFrameManager();
 
+	public:
 		MovieFramePack * getMovieFramePak( const ConstString & _pak, const WString & _path );
 		void releaseMovieFramePak( MovieFramePack * _framePak );
-		void loaderMovieFramePak( BinParser * _parser, MovieFramePack * _framePak );
 
 	protected:
 		MovieFramePack * createMovieFramePak_( const ConstString & _pak, const WString & _path );
-		void loaderKeyFramesPack_( BinParser * _parser, MovieFramePack * _framePak );
-		void loaderKeyFrames2D_( BinParser * _parser, size_t _layerIndex, MovieFramePack * _framePak );
-		void loaderKeyFrames3D_( BinParser * _parser, size_t _layerIndex, MovieFramePack * _framePak );
 	};
 }

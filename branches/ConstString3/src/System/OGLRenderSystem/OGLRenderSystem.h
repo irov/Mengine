@@ -52,6 +52,7 @@ namespace Menge
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
+
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
 
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;

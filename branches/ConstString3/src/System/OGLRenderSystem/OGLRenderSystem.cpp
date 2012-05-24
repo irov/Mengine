@@ -1467,4 +1467,8 @@ namespace Menge
 		_outMatrix[15] = 1.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void OGLRenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
+	{
+		//ToDo
+	}
 }	// namespace Menge

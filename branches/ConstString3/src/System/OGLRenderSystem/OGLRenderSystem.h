@@ -50,6 +50,8 @@ namespace Menge
                                               float _top, float _bottom, 
                                               float _near, float _far ) override;
 
+		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
+
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
 

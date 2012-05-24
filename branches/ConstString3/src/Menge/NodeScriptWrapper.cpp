@@ -3598,6 +3598,7 @@ namespace Menge
 					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )					
 					.def( "getMovieSlot", &Movie::getMovieSlot )
+					.def( "hasMovieSlot", &Movie::hasMovieSlot )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node , Animatable> >("Video", false)

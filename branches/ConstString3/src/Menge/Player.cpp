@@ -890,7 +890,7 @@ namespace Menge
 
 		m_renderCamera2D->setRenderTarget( Consts::get()->c_Window );
 
-		renderEngine->newRenderPass( m_renderCamera2D );
+		//renderEngine->newRenderPass( m_renderCamera2D );
 
 		if( m_scene != NULL )
 		{
@@ -907,7 +907,7 @@ namespace Menge
 		//const mt::mat4f & arrow_vm = m_renderCamera2D->getViewMatrix();
 		//const mt::mat4f & arrow_pm = m_renderCamera2D->getProjectionMatrix();
 
-		renderEngine->newRenderPass( m_renderCamera2D );
+		//renderEngine->newRenderPass( m_renderCamera2D );
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{

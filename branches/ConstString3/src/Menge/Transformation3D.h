@@ -64,27 +64,21 @@ namespace Menge
 		mt::vec3f m_coordinate;
 		mt::vec3f m_position;
 		mt::vec3f m_scale;
-		mt::vec3f m_direction;
 
 		float m_rotateX;
 		float m_rotateY;
 		float m_rotateZ;
-				
-		mutable bool m_invalidateWorldMatrix;
-		mutable bool m_invalidateLocalMatrix;
+
 		mutable mt::mat4f m_localMatrix;
 		mutable mt::mat4f m_worldMatrix;
+		mutable bool m_invalidateWorldMatrix;
+		mutable bool m_invalidateLocalMatrix;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::vec3f & Transformation3D::getLocalPosition()const
 	{
 		return m_position;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//inline const mt::vec3f & Transformation3D::getLocalDirection()const
-	//{
-	//	return m_direction;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::vec3f& Transformation3D::getOrigin() const
 	{

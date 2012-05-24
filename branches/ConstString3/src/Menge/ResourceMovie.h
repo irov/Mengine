@@ -44,61 +44,27 @@ namespace Menge
 		bool internal;
 		bool animatable;
 		bool movie;
+		bool threeD;
 	};
 
-	struct MovieFrame2D
-	{
-		mt::vec3f anchorPoint;
-		mt::vec3f position;
-		mt::vec3f scale;
-		float angle;
-		float opacity;
-	};
-
-	typedef std::vector<MovieFrame2D> TVectorFrames;
-
-	struct MovieLayer2D
-		: public MovieLayer
-	{
-		TVectorFrames frames;
-	};
-
-	typedef std::vector<MovieLayer2D> TVectorMovieLayers2D;
-
-	struct MovieFrameSource3D
-	{
-		mt::vec3f anchorPoint;
-		mt::vec3f position;
-		mt::vec3f rotation;
-		mt::vec2f scale;
-		float opacity;
-	};
+	typedef std::vector<MovieLayer> TVectorMovieLayers;
 
 	struct MovieLayerCamera3D
 	{
 		float width;
 		float height;
 
-		mt::mat4f view;
-		mt::mat4f projection;
-		mt::mat4f vp;
-	};
-
-	struct MovieFrame3D
-	{
-		Vertex2D vertices[4];
+		mt::vec3f cameraPosition;
+		mt::vec3f cameraInterest;
+		float cameraFOV;
+		float cameraAspect;
 	};
 
 	struct MovieLayer3D
 		: public MovieLayer
 	{
-		typedef std::vector<MovieFrame3D> TVectorFrames;
-		TVectorFrames frames;
-
 		MovieLayerCamera3D camera;
 	};
-
-	typedef std::vector<MovieLayer3D> TVectorMovieLayers3D;
 
 	struct MovieFootage
 	{
@@ -113,7 +79,7 @@ namespace Menge
 	class ResourceMovieVisitor
 	{
 	public:
-		virtual void visitLayer2D( const MovieLayer2D & _layer, const TVectorMovieFrameSource & _frames ) = 0;
+		virtual void visitLayer( const MovieLayer & _layer, const TVectorMovieFrameSource & _frames ) = 0;
 	};
 
 	class ResourceMovie
@@ -127,7 +93,7 @@ namespace Menge
 
 	public:
 		float getFrameDuration() const;
-		float getWorkAreaDuration() const;
+		float getDuration() const;
 
 		size_t getFrameCount() const;
 		size_t getMaxLayerIndex() const;
@@ -136,21 +102,17 @@ namespace Menge
 		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
 
 	public:
-		const TVectorMovieLayers2D & getLayers2D() const;
-		const TVectorMovieLayers3D & getLayers3D() const;
+		const TVectorMovieLayers & getLayers() const;
+		const MovieLayerCamera3D & getCamera3D() const;
 
 	public:
-		bool getFrame2D( const MovieLayer2D & _layer, size_t _index, MovieFrame2D & _frame ) const;
+		bool hasCamera3D() const;
+
+	public:
+		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
 		
-		bool getFrame2DFirst( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
-		bool getFrame2DLast( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
-
-	public:
-
-		bool getFrame3D( const MovieLayer3D & _layer, float _timing, MovieFrame3D & _frame ) const;
-
-		bool getFrame3DFirst( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const;
-		bool getFrame3DLast( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const;
+		bool getFrameFirst( const MovieLayer & _layer, MovieFrameSource & _frame ) const;
+		bool getFrameLast( const MovieLayer & _layer, MovieFrameSource & _frame ) const;
 
 	public:
 		void visitResourceMovie( ResourceMovieVisitor * _visitor );
@@ -165,7 +127,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		void compileModel_( MovieLayer3D & _layer );
+		//void compileModel_( MovieLayer3D & _layer );
 		//void convertSourceToFrame3D_( MovieFrame3D & _frame, const MovieLayerSource3D & _layer, const MovieFrameSource3D & _source );
 
 	protected:
@@ -173,7 +135,7 @@ namespace Menge
 
 		WString m_keyFramePackPath;
 		float m_frameDuration;
-		float m_workAreaDuration;
+		float m_duration;
 		
 		MovieFramePack * m_framePack;
 
@@ -182,8 +144,10 @@ namespace Menge
 		float m_width;
 		float m_height;
 
-		TVectorMovieLayers2D m_layers2D;
-		TVectorMovieLayers3D m_layers3D;
+		TVectorMovieLayers m_layers;
+
+		bool m_hasCamera3D;
+		MovieLayerCamera3D m_camera3D;
 
 		size_t m_maxLayerIndex;
 

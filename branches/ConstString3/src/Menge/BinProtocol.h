@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1336473195;
+		static const int version = 1337708677;
 		struct AccountID
 		{
 			static const int id = 125;
@@ -950,7 +950,7 @@ namespace Menge
 		struct KeyFrame3D_Scale
 		{
 			static const int id = 621;
-			typedef mt::vec2f Type;
+			typedef mt::vec3f Type;
 		};
 		struct KeyFrames2D
 		{
@@ -1103,6 +1103,40 @@ namespace Menge
 			static const int id = 551;
 			typedef Menge::ConstString Type;
 		};
+		struct MovieCamera3D
+		{
+			static const int id = 612;
+		};
+		struct MovieCamera3D_CameraAspect
+		{
+			static const int id = 609;
+			typedef float Type;
+		};
+		struct MovieCamera3D_CameraFOV
+		{
+			static const int id = 607;
+			typedef float Type;
+		};
+		struct MovieCamera3D_CameraInterest
+		{
+			static const int id = 605;
+			typedef mt::vec3f Type;
+		};
+		struct MovieCamera3D_CameraPosition
+		{
+			static const int id = 603;
+			typedef mt::vec3f Type;
+		};
+		struct MovieCamera3D_Height
+		{
+			static const int id = 613;
+			typedef float Type;
+		};
+		struct MovieCamera3D_Width
+		{
+			static const int id = 611;
+			typedef float Type;
+		};
 		struct MovieLayer2D
 		{
 			static const int id = 566;
@@ -1149,37 +1183,12 @@ namespace Menge
 		};
 		struct MovieLayer3D
 		{
-			static const int id = 612;
+			static const int id = 600;
 		};
 		struct MovieLayer3D_BlendingMode
 		{
-			static const int id = 613;
-			typedef Menge::ConstString Type;
-		};
-		struct MovieLayer3D_CameraAspect
-		{
-			static const int id = 607;
-			typedef float Type;
-		};
-		struct MovieLayer3D_CameraFOV
-		{
-			static const int id = 605;
-			typedef float Type;
-		};
-		struct MovieLayer3D_CameraInterest
-		{
-			static const int id = 603;
-			typedef mt::vec3f Type;
-		};
-		struct MovieLayer3D_CameraPosition
-		{
 			static const int id = 601;
-			typedef mt::vec3f Type;
-		};
-		struct MovieLayer3D_Height
-		{
-			static const int id = 611;
-			typedef float Type;
+			typedef Menge::ConstString Type;
 		};
 		struct MovieLayer3D_In
 		{
@@ -1215,11 +1224,6 @@ namespace Menge
 		{
 			static const int id = 591;
 			typedef Menge::ConstString Type;
-		};
-		struct MovieLayer3D_Width
-		{
-			static const int id = 609;
-			typedef float Type;
 		};
 		struct Node
 		{

@@ -23,10 +23,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie::ResourceMovie()
 		: m_frameDuration(0.f)
+		, m_duration(0.f)
 		, m_width(0.f)
 		, m_height(0.f)
 		, m_framePack(NULL)
 		, m_maxLayerIndex(0)
+		, m_hasCamera3D(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,9 +41,9 @@ namespace Menge
 		return m_frameDuration;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceMovie::getWorkAreaDuration() const
+	float ResourceMovie::getDuration() const
 	{
-		return m_workAreaDuration;
+		return m_duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceMovie::getFrameCount() const
@@ -54,29 +56,35 @@ namespace Menge
 		return m_maxLayerIndex;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorMovieLayers2D & ResourceMovie::getLayers2D() const
+	const TVectorMovieLayers & ResourceMovie::getLayers() const
 	{
-		return m_layers2D;
+		return m_layers;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorMovieLayers3D & ResourceMovie::getLayers3D() const
+	bool ResourceMovie::hasCamera3D() const
 	{
-		return m_layers3D;
+		return m_hasCamera3D;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const MovieLayerCamera3D & ResourceMovie::getCamera3D() const
+	{
+		return m_camera3D;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
+		//////////////////////////////////////////////////////////////////////////
 		static void s_linerp( float & _out, float _in1, float _in2, float _scale )
 		{
 			_out = _in1 + ( _in2 - _in1 ) * _scale; 
 		}
-
+		//////////////////////////////////////////////////////////////////////////
 		static void s_linerp_v2( mt::vec2f & _out, const mt::vec2f & _in1, const mt::vec2f & _in2, float _scale )
 		{
 			s_linerp(_out.x, _in1.x, _in2.x, _scale);
 			s_linerp(_out.y, _in1.y, _in2.y, _scale);
 		}
-
+		//////////////////////////////////////////////////////////////////////////
 		static void s_linerp_f4( float * _out, const float * _frame1, const float * _frame2, float _scale )
 		{
 			s_linerp(_out[0], _frame1[0], _frame2[0], _scale);
@@ -86,97 +94,31 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame2D( const MovieLayer2D & _layer, size_t _index, MovieFrame2D & _frame ) const
-	{
-		//if( _timing < _layer.in )
-		//{
-		//	return false;
-		//}
-
-		//if( _timing >= _layer.out )
-		//{
-		//	return false;
-		//}
-
-		if( m_framePack->isLayerEmpty( _layer.index ) == true )
-		{
-			return false;
-		}
-
-		const MovieFrameSource & frame =  m_framePack->getLayerFrame( _layer.index, _index );
-
-		_frame.anchorPoint = frame.anchorPoint;
-		_frame.position = frame.position;
-		_frame.scale = frame.scale;
-		_frame.angle = frame.rotation.z;
-		_frame.opacity = frame.opacity;
-
-		/*const MovieFrame2D & frame = _layer.frames[_index];
-
-		_frame.anchorPoint = frame.anchorPoint;
-		_frame.position = frame.position;
-		_frame.scale = frame.scale;
-		_frame.angle = frame.angle;
-		_frame.opacity = frame.opacity;*/
-
-		//float relation_time = _timing - _layer.in;
-
-		//size_t index = size_t(relation_time / m_frameDuration);
-
-		//const MovieFrame2D & frame_1 = _layer.frames[index+0];
-		//const MovieFrame2D & frame_2 = _layer.frames[index+1];
-
-		//float time_1 = (index + 0) * m_frameDuration;
-		//float time_2 = (index + 1) * m_frameDuration;
-
-		//float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
-
-		//Helper::s_linerp_v2( _frame.anchorPoint, frame_1.anchorPoint, frame_2.anchorPoint, timeScale );
-		//Helper::s_linerp_v2( _frame.position, frame_1.position, frame_2.position, timeScale );
-		//Helper::s_linerp_v2( _frame.scale, frame_1.scale, frame_2.scale, timeScale );
-		//Helper::s_linerp( _frame.angle, frame_1.angle, frame_2.angle, timeScale );
-		//Helper::s_linerp( _frame.opacity, frame_1.opacity, frame_2.opacity, timeScale );
-
-		return true;
-	}
-	////////////////////////////////////////////////////////////////////////////
-	//bool ResourceMovie::getFrame2DFirst( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const
-	//{
-	//	if( _layer.frames.empty() == true )
-	//	{
-	//		return false;
-	//	}
-
-	//	_frame = _layer.frames.front();
-
-	//	return true;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//bool ResourceMovie::getFrame2DLast( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const
-	//{
-	//	if( _layer.frames.empty() == true )
-	//	{
-	//		return false;
-	//	}
-
-	//	_frame = _layer.frames.back();
-	//	//_frame = _layer.frames[_layer.frames.size() - 2];
-
-	//	return true;
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame2DFirst( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const
+	bool ResourceMovie::getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const
 	{
 		if( m_framePack->isLayerEmpty( _layer.index ) == true )
 		{
 			return false;
 		}
 
-		this->getFrame2D( _layer , 0, _frame );
+		_frame =  m_framePack->getLayerFrame( _layer.index, _index );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame2DLast( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const
+	bool ResourceMovie::getFrameFirst( const MovieLayer & _layer, MovieFrameSource & _frame ) const
+	{
+		if( m_framePack->isLayerEmpty( _layer.index ) == true )
+		{
+			return false;
+		}
+
+		this->getFrame( _layer , 0, _frame );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::getFrameLast( const MovieLayer & _layer, MovieFrameSource & _frame ) const
 	{
 		if( m_framePack->isLayerEmpty( _layer.index ) == true )
 		{
@@ -185,82 +127,9 @@ namespace Menge
 
 		size_t indexLast = m_framePack->getLayerCountFrames(_layer.index ) - 1;
 
-		bool isGet = this->getFrame2D( _layer , indexLast, _frame );
-		return isGet;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame3D( const MovieLayer3D & _layer, float _timing, MovieFrame3D & _frame ) const
-	{
-		//if( _timing < _layer.in )
-		//{
-		//	return false;
-		//}
+		bool result = this->getFrame( _layer , indexLast, _frame );
 
-		//if( _timing >= _layer.out )
-		//{
-		//	return false;
-		//}
-
-		//float relation_time = _timing - _layer.in;
-
-		//size_t index = size_t(relation_time / m_frameDuration);
-
-		//const MovieFrame3D & frame_1 = _layer.frames[index+0];
-		//const MovieFrame3D & frame_2 = _layer.frames[index+1];
-
-		//float time_1 = (index + 0) * m_frameDuration;
-		//float time_2 = (index + 1) * m_frameDuration;
-
-		//float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
-
-		//Helper::s_linerp_f4( _frame.vertices[0].pos, frame_1.vertices[0].pos, frame_2.vertices[0].pos, timeScale );
-		//Helper::s_linerp_f4( _frame.vertices[1].pos, frame_1.vertices[1].pos, frame_2.vertices[1].pos, timeScale );
-		//Helper::s_linerp_f4( _frame.vertices[2].pos, frame_1.vertices[2].pos, frame_2.vertices[2].pos, timeScale );
-		//Helper::s_linerp_f4( _frame.vertices[3].pos, frame_1.vertices[3].pos, frame_2.vertices[3].pos, timeScale );
-
-		//_frame.vertices[0].color = frame_1.vertices[0].color;
-		//_frame.vertices[0].uv[0] = frame_1.vertices[0].uv[0];
-		//_frame.vertices[0].uv[1] = frame_1.vertices[0].uv[1];
-
-		//_frame.vertices[1].color = frame_1.vertices[1].color;
-		//_frame.vertices[1].uv[0] = frame_1.vertices[1].uv[0];
-		//_frame.vertices[1].uv[1] = frame_1.vertices[1].uv[1];
-
-		//_frame.vertices[2].color = frame_1.vertices[2].color;
-		//_frame.vertices[2].uv[0] = frame_1.vertices[2].uv[0];
-		//_frame.vertices[2].uv[1] = frame_1.vertices[2].uv[1];
-
-		//_frame.vertices[3].color = frame_1.vertices[3].color;
-		//_frame.vertices[3].uv[0] = frame_1.vertices[3].uv[0];
-		//_frame.vertices[3].uv[1] = frame_1.vertices[3].uv[1];
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame3DFirst( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const
-	{
-		/*if( _layer.frames.empty() == true )
-		{
-			return false;
-		}
-
-		_frame = _layer.frames.front();
-
-		return true;*/
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame3DLast( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const
-	{
-		/*if( _layer.frames.empty() == true )
-		{
-			return false;
-		}
-
-		_frame = _layer.frames.back();
-
-		return true;*/
-		return false;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const
@@ -285,7 +154,7 @@ namespace Menge
 		{
 			//BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
 			BIN_CASE_ATTRIBUTE( Protocol::FrameDuration_Value, m_frameDuration );
-			BIN_CASE_ATTRIBUTE( Protocol::WorkAreaDuration_Value, m_workAreaDuration );
+			BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
 
 			BIN_CASE_ATTRIBUTE( Protocol::Width_Value, m_width );
 			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
@@ -293,8 +162,10 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::MovieLayer2D )
 			{
-				m_layers2D.push_back( MovieLayer2D() );
-				MovieLayer2D & ml = m_layers2D.back();
+				m_layers.push_back( MovieLayer() );
+				MovieLayer & ml = m_layers.back();
+
+				ml.threeD = false;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -319,13 +190,12 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::MovieLayer3D )
 			{
-				m_layers3D.push_back( MovieLayer3D() );
-				MovieLayer3D & ml = m_layers3D.back();
+				m_layers.push_back( MovieLayer() );
+				MovieLayer & ml = m_layers.back();
 
-				mt::vec3f cameraPosition;
-				mt::vec3f cameraInterest;
-				float cameraFOV;
-				float cameraAspect;
+				ml.threeD = true;
+
+				MovieLayerCamera3D camera;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -337,98 +207,41 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_In, ml.in );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Out, ml.out );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_BlendingMode, ml.blendingMode );
+				}
+				
+				//mt::make_lookat_m4( camera.view, cameraPosition, cameraInterest );
+				//mt::make_projection_m4( camera.projection, cameraFOV, cameraAspect, 1.f, 10000.f );
 
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraPosition, cameraPosition );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraInterest, cameraInterest );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraFOV, cameraFOV );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraAspect, cameraAspect );
+				//mt::mul_m4_m4( camera.vp, camera.view, camera.projection );
 
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Width, ml.camera.width );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Height, ml.camera.height );
+				//BIN_PARSE_METHOD_ARG2( this, &ResourceMovie::loaderMovieLayer3D_, ml, layer );
+			}
+
+			BIN_CASE_NODE( Protocol::MovieCamera3D )
+			{
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraPosition, m_camera3D.cameraPosition );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraInterest, m_camera3D.cameraInterest );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraFOV, m_camera3D.cameraFOV );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraAspect, m_camera3D.cameraAspect );
+
+					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_Width, m_camera3D.width );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_Height, m_camera3D.height );
 				}
 
-				mt::make_lookat_m4( ml.camera.view, cameraPosition, cameraInterest );
-				mt::make_projection_m4( ml.camera.projection, cameraFOV, cameraAspect, 1.f, 10000.f );
+				m_hasCamera3D = true;
 
-				mt::mul_m4_m4( ml.camera.vp, ml.camera.view, ml.camera.projection );
+				//mt::make_lookat_m4( camera.view, cameraPosition, cameraInterest );
+				//mt::make_projection_m4( camera.projection, cameraFOV, cameraAspect, 1.f, 10000.f );
 
+				//mt::mul_m4_m4( camera.vp, camera.view, camera.projection );
+
+				//m_layerCameras.insert( std::make_pair(ml.index, camera) );
 				//BIN_PARSE_METHOD_ARG2( this, &ResourceMovie::loaderMovieLayer3D_, ml, layer );
 			}
 		}
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void ResourceMovie::loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml )
-	//{
-	//	BIN_SWITCH_ID(_parser)
-	//	{
-	//		BIN_CASE_NODE( Protocol::KeyFrame2D )
-	//		{
-	//			MovieFrame2D frame;				
-
-	//			if( _ml.frames.empty() == false )
-	//			{
-	//				const MovieFrame2D & old_frame = _ml.frames.back();
-
-	//				frame.scale = old_frame.scale;
-	//				frame.position = old_frame.position;
-	//				frame.angle = old_frame.angle;
-	//				frame.opacity = old_frame.opacity;
-	//				frame.anchorPoint = old_frame.anchorPoint;
-	//			}
-
-	//			size_t count = 1;
-
-	//			mt::vec2f anchorPoint2d = frame.anchorPoint.to_vec2f();
-	//			mt::vec2f position2d = frame.position.to_vec2f();
-	//			mt::vec2f scale2d = frame.scale.to_vec2f();
-
-	//			BIN_FOR_EACH_ATTRIBUTES()
-	//			{
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, anchorPoint2d );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Position, position2d );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, scale2d );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Rotation, frame.angle );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Index, count );
-	//			}
-
-	//			frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
-	//			frame.position = mt::vec3f(position2d, 0.f);
-	//			frame.scale = mt::vec3f(scale2d, 1.f);
-
-
-	//			for( size_t i = 0; i != count; ++i )
-	//			{
-	//				_ml.frames.push_back(frame);
-	//			}
-	//		}
-	//	}
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//void ResourceMovie::loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml, const MovieLayerSource3D & _layer )
-	//{
-	//	BIN_SWITCH_ID(_parser)
-	//	{
-	//		BIN_CASE_NODE( Protocol::KeyFrame3D )
-	//		{
-	//			MovieFrameSource3D source;
-
-	//			BIN_FOR_EACH_ATTRIBUTES()
-	//			{
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_AnchorPoint, source.anchorPoint );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Position, source.position );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Rotation, source.rotation );
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, source.scale );					
-	//				BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Opacity, source.opacity );
-	//			}
-
-	//			MovieFrame3D frame;
-
-	//			this->convertSourceToFrame3D_( frame, _layer, source );
-	//			_ml.frames.push_back( frame );
-	//		}
-	//	}
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_compile()
 	{
@@ -465,9 +278,9 @@ namespace Menge
 			return false;
 		}
 
-		for( TVectorMovieLayers2D::iterator
-			it = m_layers2D.begin(),
-			it_end = m_layers2D.end();
+		for( TVectorMovieLayers::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
 		it != it_end;
 		++it )
 		{
@@ -559,77 +372,8 @@ namespace Menge
 				return false;
 			}			
 		}
-
-		for( TVectorMovieLayers3D::iterator
-			it = m_layers3D.begin(),
-			it_end = m_layers3D.end();
-		it != it_end;
-		++it )
-		{
-			const ConstString & resourceType = ResourceManager::get()
-				->getResourceType( it->source );
-
-			if( resourceType == Consts::get()->c_ResourceImageDefault )
-			{
-				it->internal = false;
-				it->animatable = false;
-				it->movie = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceImageInAtlas )
-			{
-				it->internal = false;
-				it->animatable = false;
-				it->movie = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceAnimation )
-			{
-				it->internal = false;
-				it->animatable = true;
-				it->movie = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceVideo )
-			{
-				it->internal = false;
-				it->animatable = true;
-				it->movie = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceSound )
-			{
-				it->internal = false;
-				it->animatable = true;
-				it->movie = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
-			{
-				it->internal = false;
-				it->animatable = true;
-				it->movie = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceMovie )
-			{
-				it->internal = false;
-				it->animatable = true;
-				it->movie = true;
-			}
-			else if( resourceType == Consts::get()->c_ResourceInternalObject )
-			{
-				it->internal = true;
-				it->animatable = false;
-				it->movie = false;
-			}
-			else
-			{
-				MENGE_LOG_ERROR("ResourceMovie: '%s' can't setup layer3d '%s' type '%s'"
-					, this->getName().c_str()
-					, it->source.c_str()
-					, resourceType.c_str()
-					);
-
-				return false;
-			}
-		}
-
-		m_frameCount = (size_t)((m_workAreaDuration / m_frameDuration) + 0.5f) - 1;
+		
+		m_frameCount = (size_t)((m_duration / m_frameDuration) + 0.5f) - 1;
 
 		return true;
 	}
@@ -783,15 +527,17 @@ namespace Menge
 				);
 		}
 
-		for( TVectorMovieLayers2D::iterator
-			it = m_layers2D.begin(),
-			it_end = m_layers2D.end();
+		for( TVectorMovieLayers::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D& layer = *it;
+			const MovieLayer & layer = *it;
+
 			const TVectorMovieFrameSource & frames = m_framePack->getLayerFrames( layer.index );
-			_visitor->visitLayer2D( layer, frames );
+
+			_visitor->visitLayer( layer, frames );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

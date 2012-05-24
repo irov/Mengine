@@ -426,12 +426,13 @@ namespace	Menge
 		const Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, LPT_QUAD );
+			->renderObject2D( _camera, m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
+
 		invalidateVertices( ESVI_POSITION );
 	}
 	//////////////////////////////////////////////////////////////////////////

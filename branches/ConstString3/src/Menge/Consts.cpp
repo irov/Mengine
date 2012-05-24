@@ -42,6 +42,7 @@ namespace Menge
 		, c_Sprite("Sprite")
 		, c_Animation("Animation")
 		, c_Camera2D("Camera2D")
+		, c_Camera3D("Camera3D")
 		, c_TextField("TextField")
 		, c_ConsoleFont("ConsoleFont")
 		, c_SoundEmitter("SoundEmitter")

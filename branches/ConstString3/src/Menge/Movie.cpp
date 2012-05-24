@@ -8,6 +8,8 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceImageSolid.h"
 
+#	include "Camera3D.h"
+
 #	include "Sprite.h"
 #	include "Animation.h"
 #	include "Video.h"
@@ -29,21 +31,29 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame2D( Node * _node, const MovieFrame2D & _frame )
+		static void s_applyFrame( Node * _node, const MovieFrameSource & _frame )
 		{	
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
-			_node->setRotateX( -_frame.angle );
+
+			_node->setRotateX( _frame.rotation.x );
+			_node->setRotateY( _frame.rotation.y );
+			_node->setRotateZ( _frame.rotation.z );
+
 			_node->setPersonalAlpha( _frame.opacity );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame2DMovie( Node * _node, const MovieFrame2D & _frame )
+		static void s_applyFrameMovie( Node * _node, const MovieFrameSource & _frame )
 		{
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
-			_node->setRotateX( -_frame.angle );
+
+			_node->setRotateX( _frame.rotation.x );
+			_node->setRotateY( _frame.rotation.y );
+			_node->setRotateZ( _frame.rotation.z );
+
 			_node->setLocalAlpha( _frame.opacity );
 		}
 	}
@@ -53,6 +63,7 @@ namespace Menge
 		, m_frameTiming(0.f)
 		, m_currentFrame(0)
 		, m_parentMovie(false)
+		, m_renderCamera3D(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -181,7 +192,7 @@ namespace Menge
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateFrame2D_( const MovieLayer2D & _layer, Node * _node, const MovieFrame2D & _frame )
+	void Movie::updateFrame2D_( const MovieLayer & _layer, Node * _node, const MovieFrameSource & _frame )
 	{
 		if( _layer.internal == true )
 		{
@@ -210,7 +221,7 @@ namespace Menge
 
 				PyObject * py_scale = pybind::ptr(_frame.scale);
 
-				PyObject * py_angle = pybind::ptr(_frame.angle);
+				PyObject * py_angle = pybind::ptr(_frame.rotation);
 				PyObject * py_opacity = pybind::ptr(_frame.opacity);
 
 				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
@@ -228,7 +239,7 @@ namespace Menge
 				PyObject * py_anchorPoint = pybind::ptr(_frame.anchorPoint);
 				PyObject * py_position = pybind::ptr(_frame.position);
 				PyObject * py_scale = pybind::ptr(_frame.scale);
-				PyObject * py_angle = pybind::ptr(_frame.angle);
+				PyObject * py_angle = pybind::ptr(_frame.rotation);
 				PyObject * py_opacity = pybind::ptr(_frame.opacity);
 
 				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
@@ -245,11 +256,11 @@ namespace Menge
 		{
 			if( _layer.movie == false )
 			{
-				Helper::s_applyFrame2D( _node, _frame );
+				Helper::s_applyFrame( _node, _frame );
 			}
 			else
 			{
-				Helper::s_applyFrame2DMovie( _node, _frame );
+				Helper::s_applyFrameMovie( _node, _frame );
 			}
 		}
 	}
@@ -265,15 +276,15 @@ namespace Menge
 			return;
 		}
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			Node * node = m_nodies[layer.index];
 
@@ -284,8 +295,8 @@ namespace Menge
 				animatable->setFirstFrame();
 			}
 
-			MovieFrame2D frame;
-			if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
+			MovieFrameSource frame;
+			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
 			{
 				MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
 					, m_name.c_str()
@@ -315,17 +326,17 @@ namespace Menge
 			return;
 		}
 
-		float out = m_resourceMovie->getWorkAreaDuration();
+		float out = m_resourceMovie->getDuration();
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			Node * node = m_nodies[layer.index];
 
@@ -336,8 +347,8 @@ namespace Menge
 				animatable->setLastFrame();
 			}
 
-			MovieFrame2D frame;
-			if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+			MovieFrameSource frame;
+			if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 			{
 				MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
 					, m_name.c_str()
@@ -356,7 +367,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::addMovieNode_(const MovieLayer2D & _layer2D, Node * _node )
+	void Movie::addMovieNode_(const MovieLayer & _layer2D, Node * _node )
 	{		
 		m_nodies[_layer2D.index] = _node;
 	}
@@ -386,15 +397,15 @@ namespace Menge
 			return slot;
 		}
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			if( layer.movie == false )
 			{
@@ -460,7 +471,7 @@ namespace Menge
 		return scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieSlot_( const MovieLayer2D & _layer )
+	bool Movie::createMovieSlot_( const MovieLayer & _layer )
 	{
 		Node * layer_slot = NodeManager::get()
 			->createNodeT<Node>( _layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
@@ -474,7 +485,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieNullObject_( const MovieLayer2D & _layer )
+	bool Movie::createMovieNullObject_( const MovieLayer & _layer )
 	{
 		Node * layer_slot = NodeManager::get()
 			->createNodeT<Node>( _layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
@@ -487,7 +498,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieImage_( const MovieLayer2D & _layer )
+	bool Movie::createMovieImage_( const MovieLayer & _layer )
 	{
 		Sprite * layer_sprite = NodeManager::get()
 			->createNodeT<Sprite>( _layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
@@ -516,7 +527,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieImageSolid_( const MovieLayer2D & _layer )
+	bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
 	{
 		ResourceImageSolid * resource =  ResourceManager::get()
 			->getResourceT<ResourceImageSolid>( _layer.source );
@@ -562,7 +573,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieAnimation_( const MovieLayer2D & _layer )
+	bool Movie::createMovieAnimation_( const MovieLayer & _layer )
 	{
 		Animation * layer_animation = NodeManager::get()
 			->createNodeT<Animation>( _layer.name, Consts::get()->c_Animation, Consts::get()->c_Image );
@@ -592,7 +603,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieMovie_( const MovieLayer2D & _layer )
+	bool Movie::createMovieMovie_( const MovieLayer & _layer )
 	{
 		Movie * layer_movie = NodeManager::get()
 			->createNodeT<Movie>( _layer.name, Consts::get()->c_Movie, Consts::get()->c_Image );
@@ -622,7 +633,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieInternalObject_( const MovieLayer2D & _layer )
+	bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
 	{
 		Scriptable * scriptable = this->findInternalObject_( _layer.source, EVENT_MOVIE_FIND_INTERNAL_NODE );
 
@@ -648,7 +659,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieVideo_( const MovieLayer2D & _layer )
+	bool Movie::createMovieVideo_( const MovieLayer & _layer )
 	{
 		Video * layer_video = NodeManager::get()
 			->createNodeT<Video>( _layer.name, Consts::get()->c_Video, Consts::get()->c_Image );
@@ -678,7 +689,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieSound_( const MovieLayer2D & _layer )
+	bool Movie::createMovieSound_( const MovieLayer & _layer )
 	{
 		SoundEmitter * layer_sound = NodeManager::get()
 			->createNodeT<SoundEmitter>( _layer.name, Consts::get()->c_SoundEmitter, Consts::get()->c_Sound );
@@ -708,7 +719,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieEmitterContainer_( const MovieLayer2D & _layer )
+	bool Movie::createMovieEmitterContainer_( const MovieLayer & _layer )
 	{
 		ParticleEmitter * layer_particles = NodeManager::get()
 			->createNodeT<ParticleEmitter>( _layer.name, Consts::get()->c_ParticleEmitter, Consts::get()->c_Image );
@@ -767,17 +778,19 @@ namespace Menge
 
 		m_nodies.resize( maxLayerIndex + 1 );
 
-		float out = m_resourceMovie->getWorkAreaDuration();
+		float out = m_resourceMovie->getDuration();
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		this->createCamera3D_();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 			
 			if ( layer.source == Consts::get()->c_MovieSlot )
 			{
@@ -869,7 +882,7 @@ namespace Menge
 				return false;
 			}
 		}
-
+			
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
@@ -883,15 +896,15 @@ namespace Menge
 		//	return;
 		//}
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator 
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator 
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 			
 			Node * node = m_nodies[layer.index];
 
@@ -908,6 +921,11 @@ namespace Menge
 
 				node_parent->addChildren( node );
 			}
+
+			if( layer.threeD == true )
+			{
+				node->setRenderCamera( m_renderCamera3D );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -922,15 +940,15 @@ namespace Menge
 			return;
 		}
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			if( layer.internal == true )
 			{
@@ -966,15 +984,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
 	{	
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator 
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator 
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			if( layer.internal == true )
 			{
@@ -1009,15 +1027,15 @@ namespace Menge
 			return false;
 		}
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			if( layer.internal == true )
 			{
@@ -1087,12 +1105,15 @@ namespace Menge
 
 		//float lastTiming = m_timing;
 
-		//if( m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_Env_Water" 
-		//	//&& m_resourceMovieName.to_str() != "Movie101_Fork_BoatZOOM_cover"
+		//if( m_resourceMovieName.to_str() != "Movie205_Corridor_Env" 
+		//	&& m_resourceMovieName.to_str() != "Movie205_Corridor_Sledi"
 		//	)
 		//{
 		//	return;
 		//}
+
+		//Movie205_Corridor_Env
+			//Movie205_Corridor_Sledi
 		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -1184,15 +1205,15 @@ namespace Menge
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		//size_t frameCount = m_resourceMovie->getFrameCount();
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			float layerIn = layer.in;
 			float layerOut = layer.out;
@@ -1227,11 +1248,11 @@ namespace Menge
 			
 			Node * node = m_nodies[layer.index];
 
-			MovieFrame2D frame;
+			MovieFrameSource frame;
 
 			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
 			{
-				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 				{
 					MENGE_LOG_ERROR("Movie.updateCurrentFrame_: '%s' frame last incorect '%s'"
 						, m_name.c_str()
@@ -1271,7 +1292,7 @@ namespace Menge
 			}
 			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{
-				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+				if( m_resourceMovie->getFrame( layer, m_currentFrame - indexIn, frame ) == false )
 				{
 					continue;
 				}
@@ -1341,15 +1362,15 @@ namespace Menge
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		//size_t frameCount = m_resourceMovie->getFrameCount();
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			float layerIn = layer.in;
 			float layerOut = layer.out;
@@ -1359,11 +1380,11 @@ namespace Menge
 		
 			Node * node = m_nodies[layer.index];
 
-			MovieFrame2D frame;
+			MovieFrameSource frame;
 						
 			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
 			{
-				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
+				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 				{
 					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
 						, m_name.c_str()
@@ -1398,7 +1419,7 @@ namespace Menge
 			}
 			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{
-				if( m_resourceMovie->getFrame2D( layer, m_currentFrame - indexIn, frame ) == false )
+				if( m_resourceMovie->getFrame( layer, m_currentFrame - indexIn, frame ) == false )
 				{
 					continue;
 				}
@@ -1427,15 +1448,15 @@ namespace Menge
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		//size_t frameCount = m_resourceMovie->getFrameCount();
 
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			float layerIn = layer.in;
 			float layerOut = layer.out;
@@ -1450,7 +1471,7 @@ namespace Menge
 
 			Node * node = m_nodies[layer.index];
 
-			MovieFrame2D frame;
+			MovieFrameSource frame;
 
 			if( m_currentFrame > indexIn )
 			{
@@ -1460,6 +1481,37 @@ namespace Menge
 				}
 			}	
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::createCamera3D_()
+	{
+		if( m_resourceMovie->hasCamera3D() == false )
+		{
+			return;
+		}
+
+		ConstString c_layerCamera("movieCamera");
+
+		m_renderCamera3D = NodeManager::get()
+			->createNodeT<Camera3D>( c_layerCamera, Consts::get()->c_Camera3D, Consts::get()->c_builtin_empty );
+
+		const MovieLayerCamera3D & camera3D = m_resourceMovie->getCamera3D();
+
+		m_renderCamera3D->setLocalPosition( camera3D.cameraPosition );
+		m_renderCamera3D->setCameraInterest( camera3D.cameraInterest );
+		m_renderCamera3D->setCameraFOV( camera3D.cameraFOV );
+		m_renderCamera3D->setCameraAspect( camera3D.cameraAspect );
+
+		Viewport vp;
+		vp.begin.x = 0.f;
+		vp.begin.y = 0.f;
+
+		vp.end.x = 1280;
+		vp.end.y = 800;
+
+		m_renderCamera3D->setViewport( vp );
+
+		this->addChildren( m_renderCamera3D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setSpeedFactor( float _factor )
@@ -1473,15 +1525,15 @@ namespace Menge
 			return;
 		}
 		
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			if( layer.animatable == false )
 			{
@@ -1507,15 +1559,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateReverse_( bool _reverse )
 	{
-		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers2D::const_iterator
-			it = layers2D.begin(),
-			it_end = layers2D.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayer2D & layer = *it;
+			const MovieLayer & layer = *it;
 
 			if( layer.animatable == false )
 			{

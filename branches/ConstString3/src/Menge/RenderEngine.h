@@ -72,7 +72,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen );
 
 	public:
-		void renderObject2D( const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+		void renderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 			const Vertex2D * _vertices, size_t _verticesNum, 
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
@@ -138,18 +138,10 @@ namespace Menge
 		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const ConstString & getRenderTarget() const;
 
-		void newRenderPass( const RenderCameraInterface * _camera );
-		bool getCurrentRenderPass( const RenderCameraInterface *& _camera ) const;
-
 		bool isWindowCreated() const;
-
-		RenderPass * createRenderPass_();
-		void setRenderPass( RenderPass * _pass );
-		RenderPass * getRenderPass() const;
 		
-		void makeProjectionOrthogonal( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
-
-		void makeProjectionOrthogonalFromViewport( mt::mat4f& _projectionMatrix, const Viewport & _viewport );
+		void makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport );
+		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf );
 		void makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport );
 
 		const DebugInfo& getDebugInfo() const;
@@ -165,6 +157,7 @@ namespace Menge
 		bool supportA8() const;
 
 	private:
+		RenderPass * createRenderPass_();
 		void destroyTexture_( const RenderTextureInterface * _texture );
 
 		void renderPass_( const RenderObject* _renderObject );
@@ -241,6 +234,7 @@ namespace Menge
 		TVectorRenderPass m_passes;
 
 		RenderPass* m_currentPass;
+		const RenderCameraInterface * m_currentRenderCamera;
 
 		typedef std::map<WString, RenderTextureInterface*> TMapTextures;
 		TMapTextures m_textures;

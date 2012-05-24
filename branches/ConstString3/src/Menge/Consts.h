@@ -57,6 +57,7 @@ namespace Menge
 		ConstString c_Sprite;
 		ConstString c_Animation;
 		ConstString c_Camera2D;
+		ConstString c_Camera3D;
 		ConstString c_TextField;
 		ConstString c_ConsoleFont;		
 		ConstString c_SoundEmitter;

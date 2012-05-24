@@ -16,10 +16,6 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera2D::~Camera2D()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
@@ -46,10 +42,10 @@ namespace	Menge
 		mt::mul_v2_m4( m_viewportWM.end, m_viewport.end, wm );
 
 		RenderEngine::get()
-			->makeViewMatrixFromViewport( m_viewMatrix, m_viewportWM );
+			->makeViewMatrixFromViewport( m_viewMatrixWM, m_viewportWM );
 
 		RenderEngine::get()
-			->makeProjectionOrthogonalFromViewport( m_projectionMatrix, m_viewportWM );
+			->makeProjectionOrthogonal( m_projectionMatrixWM, m_viewportWM );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & Camera2D::getViewport() const
@@ -69,7 +65,7 @@ namespace	Menge
 			this->updateMatrix_();
 		}
 
-		return m_projectionMatrix;
+		return m_projectionMatrixWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Camera2D::getViewMatrix() const
@@ -79,6 +75,6 @@ namespace	Menge
 			this->updateMatrix_();
 		}
 
-		return m_viewMatrix;
+		return m_viewMatrixWM;
 	}
 }

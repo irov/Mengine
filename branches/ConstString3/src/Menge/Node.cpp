@@ -39,6 +39,7 @@ namespace Menge
 		, m_layer(0)
 		, m_cameraRevision(0)
 		, m_childBlock(0)
+		, m_renderCamera(0)
 #	ifndef MENGE_MASTER_RELEASE
 		, m_debugMaterial(NULL)
 #	endif
@@ -484,7 +485,7 @@ namespace Menge
 			return *it_found;
 		}
 
-		if( _recursion )
+		if( _recursion == true )
 		{
 			for( TListChild::const_iterator 
 				it = m_child.begin(), 
@@ -535,7 +536,7 @@ namespace Menge
 			return true;
 		}
 
-		if( _recursive )
+		if( _recursive == true )
 		{		
 			for( TListChild::const_iterator 
 				it = m_child.begin(), 
@@ -762,48 +763,60 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::render( RenderCameraInterface * _camera )
 	{
-		if( this->isRenderable() == true )
+		if( this->isRenderable() == false )
 		{
-			//const Viewport& viewPort = _camera->getViewport();
-
-			//size_t cameraRevision = _camera->getCameraRevision();
-
-			//if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
-			//{
-			//	if( getVisibility() == false )
-			//	{
-			//		return;
-			//	}
-			//}
-			//else
-			//{
-			//	m_cameraRevision = cameraRevision;
-
-			//if( this->checkVisibility( viewPort ) == true )
-			{
-				if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
-				{
-					_render( _camera );
-				}
-
-				renderChild( _camera );
-			}
-			//}
+			return;
 		}
 
+		RenderCameraInterface * renderCamera = _camera;
+
+		if( m_renderCamera != NULL )
+		{
+			renderCamera = m_renderCamera;
+		}
+
+		//const Viewport& viewPort = _camera->getViewport();
+
+		//size_t cameraRevision = _camera->getCameraRevision();
+
+		//if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
+		//{
+		//	if( getVisibility() == false )
+		//	{
+		//		return;
+		//	}
+		//}
+		//else
+		//{
+		//	m_cameraRevision = cameraRevision;
+
+		//if( this->checkVisibility( viewPort ) == true )
+		{
+			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+			{
+				_render( renderCamera );
+			}
+
+			renderChild( renderCamera );
+		}
+		//}
 
 #	ifndef	MENGE_MASTER_RELEASE
+		unsigned int debugMask = Application::get()
+			->getDebugMask();
 
-		if( this->isActivate() == true )
-		{
-			unsigned int debugMask = Application::get()
-				->getDebugMask();
-
-			_debugRender( _camera, debugMask );
-		}
-
+		this->_debugRender( _camera, debugMask );
 #	endif	// MENGE_MASTER_RELEASE
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::setRenderCamera( RenderCameraInterface * _camera )
+	{
+		m_renderCamera = _camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderCameraInterface * Node::getRenderCamera() const
+	{
+		return m_renderCamera;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild( RenderCameraInterface * _camera )
@@ -1130,7 +1143,7 @@ namespace Menge
 			//m_debugBox[4].pos[3] = 1.f;
 
 			RenderEngine::get()
-				->renderObject2D( m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, LPT_LINE );
+				->renderObject2D( _camera, m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, LPT_LINE );
 		}
 	}
 #	endif

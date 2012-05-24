@@ -686,7 +686,7 @@ namespace Menge
 		//NODE_FACTORY( LayerScene );
 		//NODE_FACTORY( RenderMesh );
 		NODE_FACTORY( Camera2D );
-		//NODE_FACTORY( Camera3D );
+		NODE_FACTORY( Camera3D );
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( Window );
 		NODE_FACTORY( HotSpotImage );

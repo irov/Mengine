@@ -2524,33 +2524,51 @@ namespace Menge
 		, float _top, float _bottom
 		, float _near, float _far )
 	{
-		float inv_lr = 1.0f / ( _left - _right );
-		float inv_bt = 1.0f / ( _top - _bottom );
-		float inv_znzf = 1.0f / ( _near - _far );
+		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
+		mt::mat4f scale;
+		mt::make_scale_m4( scale, 1.0f, -1.0f, 1.0f );
+		
+		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
+		mt::mat4f translation;
+		mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
 
-		float * _outMatrix = _projectionMatrix.buff();
+		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
+		mt::mat4f transform;
+		mt::mul_m4_m4( transform, scale, translation );
 
-		_outMatrix[0] = -2.0f * inv_lr;
-		_outMatrix[1] = 0.0f;
-		_outMatrix[2] = 0.0f;
-		_outMatrix[3] = 0.0f;
-		_outMatrix[4] = 0.0f;
-		_outMatrix[5] = -2.0f * inv_bt;
-		_outMatrix[6] = 0.0f;
-		_outMatrix[7] = 0.0f;
-		_outMatrix[8] = 0.0f;
-		_outMatrix[9] = 0.0f;
-		_outMatrix[10] = -1.0f * inv_znzf;
-		_outMatrix[11] = 0.0f;
-		_outMatrix[12] = ( _left + _right ) * inv_lr - 0.5f * _outMatrix[0];
-		_outMatrix[13] = ( _top + _bottom ) * inv_bt - 0.5f * _outMatrix[5];
-		_outMatrix[14] = _near * inv_znzf;
-		_outMatrix[15] = 1.0f;
+		//D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
+		mt::mat4f ortho;
+		mt::make_projection_ortho_lh_m4(ortho, _left, _right, -_top, -_bottom, _near, _far );
+				
+		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
+		mt::mul_m4_m4( _projectionMatrix, transform, ortho );
+					
+		//D3DXMatrixOrthoOffCenterLH()
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
+	{
+		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
+		mt::mat4f scale;
+		mt::make_scale_m4( scale, 1.0f, -1.0f, 1.0f );
+
+		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
+		mt::mat4f translation;
+		mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
+
+		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
+		mt::mat4f transform;
+		mt::mul_m4_m4( transform, scale, translation );
+
+		mt::mat4f fov;
+		mt::make_projection_fov_m4( fov, _fov, _aspect, _zn, _zf );
+
+		mt::mul_m4_m4( _projectionMatrix, transform, fov );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::clear( uint32 _color )
 	{
-		clear_(_color);
+		this->clear_(_color);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setSeparateAlphaBlendMode()

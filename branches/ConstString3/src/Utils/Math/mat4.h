@@ -93,7 +93,8 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void rotate_axis_m4(mat4f &out, const vec3f &u, float degrees);
 
-	MATH_FUNCTION_INLINE void make_projection_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf );
+	MATH_FUNCTION_INLINE void make_projection_fov_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf );
+	MATH_FUNCTION_INLINE void make_projection_ortho_lh_m4( mat4f & _out , float _left, float _right, float _top, float _bottom, float _near, float _far );
 
 	MATH_FUNCTION_INLINE void make_rotate_m4(mat4f & _out, float _x, float _y, float _z);
 
@@ -104,7 +105,7 @@ namespace mt
 	MATH_FUNCTION_INLINE void make_scale_m4( mat4f & _out, float _x, float _y, float _z );
 	MATH_FUNCTION_INLINE void make_translation_m4( mat4f & _out, float _x, float _y, float _z );
 
-	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at );
+	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at, const vec3f & _up );
 
 	MATH_FUNCTION_INLINE void project_m4( vec3f & _out, const vec3f & _vertex, float _width, float _height, const mat4f & _projection, const mat4f & _view, const mat4f & _world );
 }

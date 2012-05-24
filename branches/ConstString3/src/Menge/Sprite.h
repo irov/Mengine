@@ -21,18 +21,7 @@ namespace Menge
 	
 	struct RenderMaterial;
 	struct RenderMaterialGroup;
-
-	//! Sprite - —прайт. ¬ качестве ресурса принимает ResourceImage, поэтому может содержать (в зависимости от типа ресурса, например ResourceImageDefault или ResourceImageSet) N изображений. Ёто необходимо дл€ того, что бы под одно описание анимации можно было подгон€ть различные изображени€ и наоборот. ѕоэтому Animation наследуетс€ от Sprite и через Sprite::getImageIndex получает текущий индекс изображени€.
-
-	/*! xml - файл имеет следующую структуру:
-	*	<Node Name = "им€_ноды" Type = "Sprite">
-	*		<ImageMap Name = "им€_ресурса" />
-	*		<ImageIndex Value = "индекс_картинки" />
-	*		<CenterAlign Value = "1/0" />
-	*		<Scale Value = "value" />
-	*	</Node>
-	*/
-
+	
 	class Sprite
 		: public Node
 		, public QuadVertices
@@ -42,7 +31,6 @@ namespace Menge
 		~Sprite();
 
 	public:
-
 		void setImageResource( const ConstString& _name );
 		const ConstString& getImageResource() const;
 

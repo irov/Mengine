@@ -225,7 +225,7 @@ namespace	Menge
 			const Batch & batch = *it;
 
 			RenderEngine::get()->
-				renderObject2D( batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, LPT_QUAD );
+				renderObject2D( _camera, batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

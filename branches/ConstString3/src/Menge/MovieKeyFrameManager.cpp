@@ -139,9 +139,9 @@ namespace Menge
 				frame.position = mt::vec3f(position2d, 0.f);
 				frame.scale = mt::vec3f(scale2d, 1.f);
 				
-				frame.rotation.x = 0;
-				frame.rotation.y = 0;
-				frame.rotation.z = angle;
+				frame.rotation.x = -angle;
+				frame.rotation.y = 0.f;
+				frame.rotation.z = 0.f;
 				
 				for( size_t i = 0; i != count; ++i )
 				{
@@ -158,17 +158,15 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::KeyFrame3D )
 			{
 				MovieFrameSource frame;
-				mt::vec2f scale;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_AnchorPoint, frame.anchorPoint );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Position, frame.position );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Rotation, frame.rotation );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, scale );					
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, frame.scale );					
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Opacity, frame.opacity );
 				}
 
-				frame.scale = mt::vec3f(scale,1);
 				_framePak->setLayerFrame( _layerIndex, frame );
 			}
 		}

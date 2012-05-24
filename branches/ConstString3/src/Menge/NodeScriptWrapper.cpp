@@ -2311,7 +2311,7 @@ namespace Menge
 				return 0.f;
 			}
 
-			float duration = resourceMovie->getWorkAreaDuration();
+			float duration = resourceMovie->getDuration();
 
 			return duration;
 		}
@@ -2327,7 +2327,8 @@ namespace Menge
 					, m_frameDuration( _frameDuration )
 				{}
 
-				void visitLayer2D( const MovieLayer2D & _layer, const TVectorMovieFrameSource & _frames )
+			protected:
+				void visitLayer( const MovieLayer & _layer, const TVectorMovieFrameSource & _frames ) override
 				{
 					if( _layer.source != Consts::get()->c_MovieSlot )
 					{

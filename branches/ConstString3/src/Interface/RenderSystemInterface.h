@@ -333,6 +333,8 @@ namespace Menge
 										float _top, float _bottom, 
 										float _near, float _far ) = 0;
 
+		virtual void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) = 0;
+
 		virtual float getTexelOffsetX() const = 0;
 		virtual float getTexelOffsetY() const = 0;
 		// Render frame into _image

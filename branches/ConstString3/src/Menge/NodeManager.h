@@ -27,7 +27,9 @@ namespace Menge
 		template<class T>
 		T * createNodeT( const ConstString& _name, const ConstString& _type, const ConstString& _tag )
 		{
-			return static_cast<T*>(this->createNode( _name, _type, _tag ));
+			Node * node = this->createNode( _name, _type, _tag );
+
+			return static_cast<T*>(node);
 		}
 	};
 }

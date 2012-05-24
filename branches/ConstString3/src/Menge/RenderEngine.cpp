@@ -81,6 +81,7 @@ namespace Menge
 		, m_currentBaseVertexIndex(0)
 		, m_currentTextureStages(0)
 		, m_currentPass(NULL)
+		, m_currentRenderCamera(NULL)
 		, m_nullTexture(NULL)
 		, m_currentVertexDeclaration(0)
 		, m_maxPrimitiveVertices2D(0)
@@ -1015,8 +1016,8 @@ namespace Menge
 
 		//Holder<Application>::get()
 		//	->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
-		refillIndexBuffer2D_();
-		restoreRenderSystemStates_();
+		this->refillIndexBuffer2D_();
+		this->restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*void RenderEngine::onWindowActive( bool _active )
@@ -1049,10 +1050,12 @@ namespace Menge
 		m_passes.clear();
 
 		m_currentPass = NULL;
+		m_currentRenderCamera = NULL;
 
 		m_currentRenderTarget = Consts::get()->c_Window;
 		m_renderTargetResolution = m_windowResolution;
 		m_dipCount = 0;
+
 		if( m_interface->beginScene() == false )
 		{
 			return false;
@@ -1065,14 +1068,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
-		flushRender_();
+		this->flushRender_();
+
 		m_interface->endScene();
+
 		m_debugInfo.dips = m_dipCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
 	{
 		m_interface->swapBuffers();
+
 		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1086,27 +1092,6 @@ namespace Menge
 		return m_currentRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::newRenderPass( const RenderCameraInterface * _camera )
-	{
-		RenderPass * pass = this->createRenderPass_();
-
-		pass->camera = _camera;
-
-		this->setRenderPass(pass);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::getCurrentRenderPass( const RenderCameraInterface *& _camera  ) const
-	{
-		if( m_currentPass == 0 )
-		{
-			return false;
-		}
-
-		_camera = m_currentPass->camera;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::isWindowCreated() const
 	{
 		return m_windowCreated;
@@ -1114,11 +1099,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPass_( const RenderObject* _renderObject )
 	{
+		if( _renderObject->dipIndiciesNum == 0 
+			|| _renderObject->dipVerticesNum == 0 )
+		{
+			return;
+		}
+
 		if( m_currentTextureStages > _renderObject->textureStages )
 		{
 			for( size_t stageId = _renderObject->textureStages; stageId != m_currentTextureStages; ++stageId )
 			{
-				disableTextureStage_( stageId );
+				this->disableTextureStage_( stageId );
 			}
 		}
 
@@ -1372,17 +1363,14 @@ namespace Menge
 		m_renderOffset = m_viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float l, float r, float b, float t, float zn, float zf )
+	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport )
 	{
-		m_interface->makeProjectionOrthogonal( _projectionMatrix, l, r, t, b, zn, zf );
+		m_interface->makeProjectionOrthogonal( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, 0.0f, 1.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::makeProjectionOrthogonalFromViewport( mt::mat4f& _projectionMatrix, const Viewport & _viewport )
+	void RenderEngine::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
 	{
-		mt::vec2f size;
-		_viewport.getSize( size );
-
-		this->makeProjectionOrthogonal( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, 0.0f, 1.0f );
+		m_interface->makeProjectionPerspective( _projectionMatrix, _fov, _aspect, zn, zf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport )
@@ -1413,16 +1401,6 @@ namespace Menge
 		m_passes.push_back( pass );
 
 		return pass;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderPass( RenderPass * _pass )
-	{
-		m_currentPass = _pass;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderPass * RenderEngine::getRenderPass() const
-	{
-		return m_currentPass;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderEngine::DebugInfo& RenderEngine::getDebugInfo() const
@@ -1499,41 +1477,35 @@ namespace Menge
 			{
 				const RenderObject* renderObject = &(*it);
 
-				if( renderObject->dipIndiciesNum == 0 
-					|| renderObject->dipVerticesNum == 0 )
-				{
-					continue;
-				}
-
 				this->renderPass_( renderObject );
 			}			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+	void RenderEngine::renderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
-		if( m_currentPass == 0 )
+		if( _camera == NULL )
 		{
+			MENGE_LOG_ERROR("RenderEngine::renderObject2D camera == NULL"
+				);
+
 			return;
 		}
 
 		RenderObject renderObject;
 		RenderObject* ro = &renderObject;
 
+		if( _material == NULL )
+		{
+			MENGE_LOG_ERROR("RenderEngine::renderObject2D _material == NULL"
+				);
+
+			return;
+		}
+
 		ro->material = _material;
-		//if( this->isResolutionAppropriate() == false )
-		//{
-		//	ro->material = _material->getFilterMaterial();
-		//}
-		//else if( _scale == false )
-		//{			
-		//}
-		//else
-		//{
-		//	ro->material = _material->getFilterMaterial();
-		//}
 
 		ro->textureStages = _texturesNum;
 
@@ -1586,6 +1558,15 @@ namespace Menge
 			break;
 		default:
 			ro->primitiveType = PT_TRIANGLELIST;
+		}
+
+		if( m_currentRenderCamera != _camera )
+		{
+			m_currentRenderCamera = _camera;
+
+			m_currentPass = this->createRenderPass_();
+			
+			m_currentPass->camera = m_currentRenderCamera;					
 		}
 
 		m_currentPass->renderObjects.push_back( renderObject );
@@ -1843,7 +1824,7 @@ namespace Menge
 			default:
 				{
 					size_t vertexStride = m_primitiveVertexStride[renderObject->logicPrimitiveType];
-					size_t align = ( vertexStride - ( verticesNum % vertexStride ) ) % vertexStride;
+					size_t align = (vertexStride - (verticesNum % vertexStride)) % vertexStride;
 					verticesNum += align + renderObject->verticesNum;
 
 					bool batch = s_checkForBatch( batchedRO, renderObject );
@@ -1930,29 +1911,12 @@ namespace Menge
 			Vertex2D * offsetVertexBuffer = _vertexBuffer + _offset;
 			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum, offsetVertexBuffer );
 
-			//for( Vertex2D
-			//	* it = offsetVertexBuffer,
-			//	* it_end = offsetVertexBuffer + ro->verticesNum;
-			//it != it_end;
-			//++it )
-			//{
-			//	mt::vec2f * v = (mt::vec2f *)&it->pos;
-
-			//	//mt::vec2f nv;
-			//	mt::mul_v2_m4( nv, *v, pass_wm );
-
-			//	nv.x *= m_renderScale.x;
-			//	nv.y *= m_renderScale.y;
-
-			//	nv.x += m_renderOffset.x;
-			//	nv.y += m_renderOffset.y;
-
-			//	nv.x += texelOffsetX;
-			//	nv.y += texelOffsetY;
-
-			//	it->pos[0] = nv.x;
-			//	it->pos[1] = nv.y;
-			//}
+			//printf("%f %f %f %S\n"
+			//	, ro->vertexData[0].pos[0]
+			//	, ro->vertexData[0].pos[1]
+			//	, ro->vertexData[0].pos[2]
+			//	, ro->textures[0]->getFileName().c_str()
+			//	);
 
 			m_vbPos += ro->verticesNum;
 			_offset += ro->verticesNum;

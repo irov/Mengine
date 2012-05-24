@@ -422,7 +422,34 @@ namespace mt
 		out = out * m;
 	}
 
-	MATH_FUNCTION_INLINE void make_projection_m4( mat4f & out , float fovy, float aspect, float zn, float zf )
+	MATH_FUNCTION_INLINE void make_projection_ortho_lh_m4( mat4f & _out , float _left, float _right, float _top, float _bottom, float _near, float _far )
+	{
+		// 2/(r-l)      0            0           0
+		_out.v0.x = 2.f / (_right - _left);
+		_out.v0.y = 0.f;
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
+
+		//0            2/(t-b)      0           0
+		_out.v1.x = 0.f;
+		_out.v1.y = 2.f / (_top - _bottom);
+		_out.v1.z = 0.f;
+		_out.v1.w = 0.f;
+
+		//0            0            1/(zf-zn)   0
+		_out.v2.x = 0.f;
+		_out.v2.y = 0.f;
+		_out.v2.z = 1.f / (_far - _near);
+		_out.v2.w = 0.f;
+
+		//(l+r)/(l-r)  (t+b)/(b-t)  zn/(zn-zf)  1
+		_out.v3.x = (_left + _right) / (_left - _right);
+		_out.v3.y = (_top + _bottom) / (_bottom - _top);
+		_out.v3.z = _near / (_near - _far);
+		_out.v3.w = 1.f;
+	}
+
+	MATH_FUNCTION_INLINE void make_projection_fov_m4( mat4f & out , float fovy, float aspect, float zn, float zf )
 	{
 		float yscale = 1.f / tanf( fovy * 0.5f );
 		float xscale = yscale / aspect;
@@ -440,14 +467,13 @@ namespace mt
 		out.v2.x = 0.f;
 		out.v2.y = 0.f;	
 		out.v2.z = zf / (zf - zn);
-		out.v2.w = -zn * zf / (zf - zn);
+		out.v2.w = 1.f;
 
 		out.v3.x = 0.f;	
 		out.v3.y = 0.f;	
-		out.v3.z = 1;
+		out.v3.z = -zn * zf / (zf - zn);
 		out.v3.w = 0.f;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void make_perspective_projection_m4( mat4f & _out, float _fov, float _aspect, float zn, float zf )
 	{
@@ -676,10 +702,8 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 
-	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at )
+	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at, const vec3f & _up )
 	{
-		vec3f up(0.f,1.f,0.f);
-
 		//zaxis = normal(At - Eye)
 		vec3f look;
 		sub_v3_v3( look, _at, _eye );
@@ -689,7 +713,7 @@ namespace mt
 
 		//xaxis = normal(cross(Up, zaxis))
 		vec3f xaxis;
-		cross_v3_v3_norm( xaxis, up, zaxis );
+		cross_v3_v3_norm( xaxis, _up, zaxis );
 
 		//yaxis = cross(zaxis, xaxis)
 		vec3f yaxis;

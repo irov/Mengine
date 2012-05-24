@@ -76,10 +76,17 @@ namespace Menge
 		void render( RenderCameraInterface * _camera ) override;	
 		inline bool isRenderable() const;
 
-	protected:
+	public:
+		void setRenderCamera( RenderCameraInterface * _camera );
+		RenderCameraInterface * getRenderCamera() const;
+			
 #	ifndef MENGE_MASTER_RELEASE
+	protected:
 		void _debugRender( RenderCameraInterface* _camera, unsigned int _debugMask ) override;
 #	endif
+
+	protected:
+		RenderCameraInterface * m_renderCamera;
 
 	protected:
 		void renderChild( RenderCameraInterface * _camera );

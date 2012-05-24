@@ -19,7 +19,6 @@ namespace Menge
 	{
 	public:
 		Camera2D();
-		~Camera2D();
 		
 	public:
 		void setViewport( const Viewport & _viewport );
@@ -44,11 +43,11 @@ namespace Menge
 	protected:
 		size_t m_cameraRevision;
 
-		Viewport m_viewport;	
+		Viewport m_viewport;
 
 		mutable Viewport m_viewportWM;
-		mutable mt::mat4f m_viewMatrix;
-		mutable mt::mat4f m_projectionMatrix;
+		mutable mt::mat4f m_viewMatrixWM;
+		mutable mt::mat4f m_projectionMatrixWM;
 
 		mutable bool m_invalidateMatrix;
 	};

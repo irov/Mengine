@@ -45,45 +45,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_activate()
 	{
+		Node::_activate();
+
 		if( m_scene == 0 )
 		{
 			return false;
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::render( RenderCameraInterface * _camera )
-	{
-		RenderEngine::get()
-			->beginLayer2D();
-
-		if( m_hasViewport == true )
-		{
-			const RenderCameraInterface * oldCamera;
-			
-			RenderEngine::get()
-				->getCurrentRenderPass( oldCamera );
-
-			const ConstString & renderTarget = oldCamera->getRenderTarget();
-
-			m_cameraViewport->setRenderTarget( renderTarget );
-
-			RenderEngine::get()
-				->newRenderPass( m_cameraViewport );
-
-			this->renderChild( _camera );
-
-			RenderEngine::get()
-				->newRenderPass( oldCamera );
-		}
-		else
-		{
-			this->renderChild( _camera );
-		}
-
-		RenderEngine::get()
-			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::_addChildren( Node * _node )
@@ -137,6 +106,8 @@ namespace	Menge
 		m_cameraViewport->setViewport( _viewport );
 		
 		this->addChildren( m_cameraViewport );
+
+		this->setRenderCamera( m_cameraViewport );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::removeRenderViewport()
@@ -150,5 +121,7 @@ namespace	Menge
 		
 		m_cameraViewport->destroy();
 		m_cameraViewport = 0;
+
+		this->setRenderCamera( NULL );
 	}
 }

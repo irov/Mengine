@@ -342,7 +342,7 @@ namespace	Menge
 		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD );
+			->renderObject2D( _camera, m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )

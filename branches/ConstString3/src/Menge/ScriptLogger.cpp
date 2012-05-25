@@ -25,7 +25,7 @@ namespace Menge
 		if( pybind::string_check( arg ) == true )
 		{
 			String msg;
-			pybind::extract(arg, msg);
+			pybind::extract_value( arg, msg );
 
 			this->write( msg );
 

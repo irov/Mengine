@@ -28,16 +28,19 @@ namespace Menge
 		template<class T>
 		static T * extractNodeT( PyObject * _obj )
 		{
-			T * node = pybind::extract_nt<T *>( _obj );
-
-			if( node == 0 )
+			try
 			{
-				return 0;
+				T * node = pybind::extract<T *>( _obj );
+
+				node->setEmbed( _obj );
+
+				return node;
 			}
-
-			node->setEmbed( _obj );
-
-			return node;
+			catch( const pybind::pybind_exception & )
+			{
+			}
+				
+			return NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

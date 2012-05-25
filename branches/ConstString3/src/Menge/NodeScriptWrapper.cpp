@@ -2733,7 +2733,7 @@ namespace Menge
 					PyObject * py_string = pybind::list_getitem( _obj, it );
 
 					String key;
-					pybind::extract(py_string, key);
+					pybind::extract_value( py_string, key );
 
 					_value.push_back( key );
 
@@ -2785,7 +2785,7 @@ namespace Menge
 					PyObject * py_string = pybind::list_getitem( _obj, it );
 
 					WString key;
-					pybind::extract(py_string, key);
+					pybind::extract_value( py_string, key );
 
 					_value.push_back( key );
 
@@ -2895,8 +2895,8 @@ namespace Menge
 
 				String key;
 				String value;
-				pybind::extract(py_key, key);
-				pybind::extract(py_value, value );
+				pybind::extract_value( py_key, key );
+				pybind::extract_value( py_value, value );
 
 				_param.insert( std::make_pair( key, value ) );
 			}

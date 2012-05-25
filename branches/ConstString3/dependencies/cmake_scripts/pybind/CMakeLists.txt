@@ -26,8 +26,8 @@ ${SOURCE_DIR}/src/method_type.cpp
 ${SOURCE_DIR}/src/mutex.cpp
 ${SOURCE_DIR}/src/system.cpp
 ${SOURCE_DIR}/src/type_cast.cpp
-${SOURCE_DIR}/src/type_cast_default.cpp
 ${SOURCE_DIR}/src/wrap_base.cpp
+${SOURCE_DIR}/src/extract.cpp
 )
 
 if(NOT MSVC)

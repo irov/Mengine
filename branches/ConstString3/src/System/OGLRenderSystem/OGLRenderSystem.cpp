@@ -1454,7 +1454,7 @@ namespace Menge
 		_outMatrix[2] = 0.0f;
 		_outMatrix[3] = 0.0f;
 		_outMatrix[4] = 0.0f;
-		_outMatrix[5] = -2.0f * ty;
+		_outMatrix[5] = 2.0f * ty;
 		_outMatrix[6] = 0.0f;
 		_outMatrix[7] = 0.0f;
 		_outMatrix[8] = 0.0f;
@@ -1462,7 +1462,7 @@ namespace Menge
 		_outMatrix[10] = 2.0f * tz;
 		_outMatrix[11] = 0.0f;
 		_outMatrix[12] = -(_right + _left) * tx;
-		_outMatrix[13] = (_top + _bottom) * ty;
+		_outMatrix[13] = -(_top + _bottom) * ty;
 		_outMatrix[14] = -(_far + _near) * tz;
 		_outMatrix[15] = 1.0f;
 	}

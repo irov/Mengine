@@ -1444,7 +1444,7 @@ namespace Menge
                                           float _near, float _far )
 	{
 		float tx = 1.0f / ( _right - _left );
-		float ty = 1.0f / ( _top - _bottom );
+		float ty = 1.0f / ( _bottom - _top );
 		float tz = 1.0f / ( _far - _near );
         
         float * _outMatrix = _projectionMatrix.buff();
@@ -1462,7 +1462,7 @@ namespace Menge
 		_outMatrix[10] = 2.0f * tz;
 		_outMatrix[11] = 0.0f;
 		_outMatrix[12] = -(_right + _left) * tx;
-		_outMatrix[13] = -(_top + _bottom) * ty;
+		_outMatrix[13] = -(_bottom + _top) * ty;
 		_outMatrix[14] = -(_far + _near) * tz;
 		_outMatrix[15] = 1.0f;
 	}

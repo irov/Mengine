@@ -58,11 +58,11 @@ namespace Menge
 
 		m_embed = _embed;
 
-		PyObject * py_dict = pybind::dict_from(_embed);
+		//PyObject * py_dict = pybind::dict_from( _embed );
 
-		this->_embedding( py_dict );
+		this->_embedding( _embed );
 
-		pybind::decref( py_dict );
+		//pybind::decref( py_dict );
 
 		pybind::incref( m_embed );
 	}
@@ -71,7 +71,7 @@ namespace Menge
 	{
 		if( m_embed == 0 )
 		{
-			PyObject * embed = _embedded();
+			PyObject * embed = this->_embedded();
 
 			if( embed == 0 )
 			{

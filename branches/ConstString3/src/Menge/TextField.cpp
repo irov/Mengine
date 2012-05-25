@@ -43,6 +43,7 @@ namespace Menge
 		, m_materialText(NULL)
 		, m_materialOutline(NULL)
 		, m_invalidateVertices(true)
+		, m_invalidateTextLines(true)
 		, m_number(0)
 	{
 	}
@@ -129,10 +130,7 @@ namespace Menge
 		m_materialText = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
 		m_materialOutline = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
-		if( m_text.empty() == false )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 
 		return true;
 	}
@@ -148,17 +146,32 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const TListTextLine & TextField::getTextLines() const
+	{
+		if( this->isInvalidateTextLines() == true )
+		{
+			this->updateTextLines_();
+		}
+
+		return m_lines;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		
-		for( TListTextLine::iterator 
-			it_line = m_lines.begin(),
-			it_line_end = m_lines.end(); 
-		it_line != it_line_end; 
-		++it_line )
+
+		if( this->isCompile() == true )
 		{
-			it_line->invalidateRenderLine();
+			const TListTextLine & lines = this->getTextLines();
+		
+			for( TListTextLine::const_iterator
+				it_line = lines.begin(),
+				it_line_end = lines.end(); 
+			it_line != it_line_end; 
+			++it_line )
+			{
+				it_line->invalidateRenderLine();
+			}
 		}
 
 		this->invalidateVertices();
@@ -171,16 +184,20 @@ namespace Menge
 		mt::vec2f offset = mt::zero_v2;
 
 		const mt::mat4f & wm = this->getWorldMatrix();
+		
+		const TListTextLine & lines = this->getTextLines();
 
-		for( TListTextLine::iterator 
-			it_line = m_lines.begin(),
-			it_line_end = m_lines.end(); 
+		for( TListTextLine::const_iterator 
+			it_line = lines.begin(),
+			it_line_end = lines.end(); 
 		it_line != it_line_end; 
 		++it_line )
 		{
 			mt::vec2f alignOffset;
 
-			this->updateAlignOffset_( *it_line, alignOffset );
+			const TextLine & line = *it_line;
+
+			this->updateAlignOffset_( line, alignOffset );
 			
 			offset.x = alignOffset.x;
 			offset.y += alignOffset.y;
@@ -251,6 +268,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const
 	{
+		if( this->isInvalidateTextLines() == true )
+		{
+			this->updateTextLines_();
+		}
+
 		return m_charCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -278,10 +300,12 @@ namespace Menge
 	{
 		m_maxWidth = _len;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateVertices();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::getMaxLen() const
+	{
+		return m_maxWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue& TextField::getOutlineColor() const
@@ -298,10 +322,7 @@ namespace Menge
 
 		m_text = _text;
 		
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getHeight() const
@@ -313,10 +334,7 @@ namespace Menge
 	{
 		m_height = _height;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString& TextField::getText() const
@@ -324,25 +342,29 @@ namespace Menge
 		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& TextField::getLength()
+	const mt::vec2f& TextField::getLength() const
 	{
-		//const mt::box2f& bb = getBoundingBox();
-		//static mt::vec2f len;
-		//len = bb.maximum - bb.minimum;
-		//return len;
-		this->compile();
+		if( this->isInvalidateTextLines() == true )
+		{
+			this->updateTextLines_();
+		}
 
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::createFormattedMessage_( const WString& _text )
+	void TextField::updateTextLines_() const
 	{
+		m_invalidateTextLines = false;
+
 		m_lines.clear();
 		m_charCount = 0;
+
+		float maxlen = 0.0f;
+
 		TVectorWString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
-		Utils::wsplit( lines, _text, false, L"\n" );
+		Utils::wsplit( lines, m_text, false, L"\n" );
 
 		for(TVectorWString::iterator 
 			it = lines.begin(),
@@ -351,29 +373,31 @@ namespace Menge
 		++it)
 		{
 			TextLine textLine(m_height, m_charOffset);
-			
+
 			textLine.initialize( m_resourceFont, *it );
 
-			if( textLine.getLength() > m_maxWidth )
+			float textLength = textLine.getLength();
+
+			if( textLength > m_maxWidth )
 			{
 				TVectorWString words;
 				Utils::wsplit( words, *it, false, L" " );
-			
+
 				WString newLine = words.front();
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
 					TextLine tl(m_height, m_charOffset);
-					
+
 					WString tl_string( newLine + WString(L" ") + words.front() );
 					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
 						TextLine line(m_height, m_charOffset);
-							
+
 						line.initialize( m_resourceFont, newLine );
-						
+
 						m_lines.push_back( line );
 
 						newLine.clear();
@@ -397,8 +421,6 @@ namespace Menge
 				m_lines.push_back( textLine );
 			}
 		}
-
-		float maxlen = 0.0f;
 
 		for(TListTextLine::iterator 
 			it = m_lines.begin(),
@@ -450,30 +472,32 @@ namespace Menge
 	{
 		Node::_updateBoundingBox( _boundingBox );
 
-		mt::vec2f offset = mt::zero_v2;
+		//mt::vec2f offset = mt::zero_v2;
 
-		const mt::mat4f & wm = this->getWorldMatrix();
+		//const mt::mat4f & wm = this->getWorldMatrix();
 
-		for( TListTextLine::iterator 
-			it_line = m_lines.begin(),
-			it_line_end = m_lines.end(); 
-		it_line != it_line_end; 
-		++it_line )
-		{
-			mt::vec2f alignOffset;
+		//const TListTextLine & lines = this->getTextLines();
 
-			this->updateAlignOffset_( *it_line, alignOffset );
+		//for( TListTextLine::const_iterator 
+		//	it_line = lines.begin(),
+		//	it_line_end = lines.end(); 
+		//it_line != it_line_end; 
+		//++it_line )
+		//{
+		//	mt::vec2f alignOffset;
 
-			offset.x = alignOffset.x;
-			offset.y += alignOffset.y;
+		//	this->updateAlignOffset_( *it_line, alignOffset );
 
-			it_line->updateBoundingBox( offset, wm, _boundingBox );
+		//	offset.x = alignOffset.x;
+		//	offset.y += alignOffset.y;
 
-			offset.y += m_lineOffset;
-		}		
+		//	it_line->updateBoundingBox( offset, wm, _boundingBox );
+
+		//	offset.y += m_lineOffset;
+		//}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateAlignOffset_( TextLine & _line, mt::vec2f & _offset )
+	void TextField::updateAlignOffset_( const TextLine & _line, mt::vec2f & _offset )
 	{
 		switch( m_horizontAlign )
 		{
@@ -519,10 +543,7 @@ namespace Menge
 	{
 		m_charOffset = _offset;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getMaxCharCount() const
@@ -551,12 +572,12 @@ namespace Menge
 
 		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
 		{
-			setResourceFont( textEntry.font );
+			this->setResourceFont( textEntry.font );
 		}
 
 		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
 		{
-			setCharOffset( textEntry.charOffset );
+			this->setCharOffset( textEntry.charOffset );
 		}
 
 		if( textEntry.lineOffset == 0.0f )
@@ -566,10 +587,10 @@ namespace Menge
 
 		if( textEntry.lineOffset != m_lineOffset )
 		{
-			setLineOffset( textEntry.lineOffset );
+			this->setLineOffset( textEntry.lineOffset );
 		}
 
-		setText( textEntry.text );
+		this->setText( textEntry.text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number )
@@ -589,12 +610,12 @@ namespace Menge
 
 		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
 		{
-			setResourceFont( textEntry.font );
+			this->setResourceFont( textEntry.font );
 		}
 
 		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
 		{
-			setCharOffset( textEntry.charOffset );
+			this->setCharOffset( textEntry.charOffset );
 		}
 
 		if( textEntry.lineOffset == 0.0f )
@@ -604,24 +625,10 @@ namespace Menge
 
 		if( textEntry.lineOffset != m_lineOffset )
 		{
-			setLineOffset( textEntry.lineOffset );
+			this->setLineOffset( textEntry.lineOffset );
 		}
 
-		//size_t size = textEntry.text.size() + 16;
-		//wchar_t * buff = new wchar_t[size];
-
-		//if( swprintf( buff, m_format.c_str(), textEntry.text.c_str(), _number ) == 0 )
-		//{
-		//	delete [] buff;
-
-		//	return;
-		//}
-
 		WString format_text = (boost::wformat(m_format) % textEntry.text % _number).str();
-		
-		//WString format_text(buff);
-
-		//delete [] buff;
 
 		this->setText( format_text );
 	}
@@ -635,10 +642,7 @@ namespace Menge
 	{
 		m_verticalAlign = ETFVA_NONE;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setPixelsnap( bool _pixelsnap )
@@ -660,10 +664,7 @@ namespace Menge
 	{
 		m_verticalAlign = ETFVA_CENTER;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isVerticalCenterAlign() const
@@ -675,10 +676,7 @@ namespace Menge
 	{
 		m_horizontAlign = ETFHA_NONE;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isNoneAlign() const
@@ -690,10 +688,7 @@ namespace Menge
 	{
 		m_horizontAlign = ETFHA_CENTER;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isCenterAlign() const
@@ -705,10 +700,7 @@ namespace Menge
 	{
 		m_horizontAlign = ETFHA_RIGHT;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isRightAlign() const
@@ -720,10 +712,7 @@ namespace Menge
 	{
 		m_horizontAlign = ETFHA_LEFT;
 
-		if( this->isCompile() == true )
-		{
-			this->createFormattedMessage_( m_text );
-		}
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isLeftAlign() const
@@ -731,9 +720,16 @@ namespace Menge
 		return m_horizontAlign == ETFHA_LEFT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::invalidateVertices()
+	void TextField::invalidateVertices() const
 	{
 		m_invalidateVertices = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::invalidateTextLines() const
+	{
+		m_invalidateTextLines = true;
+
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateVertices()
@@ -752,9 +748,9 @@ namespace Menge
 
 		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
 		{
-			updateVertexData_( m_outlineColor, m_vertexDataOutline );
+			this->updateVertexData_( m_outlineColor, m_vertexDataOutline );
 		}
 
-		updateVertexData_( color, m_vertexDataText );
+		this->updateVertexData_( color, m_vertexDataText );
 	}
 }

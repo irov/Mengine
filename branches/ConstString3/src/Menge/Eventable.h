@@ -38,7 +38,7 @@ namespace Menge
 		void removeAllEvent();
 
 	protected:
-		PyObject * getEventFromDict_( const char * _method, PyObject * _dict ) const;
+		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
 		void removeEvent_( EEventName _event );
 
 	private:

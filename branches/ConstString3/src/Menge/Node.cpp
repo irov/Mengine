@@ -407,6 +407,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::checkChildEraser_()
 	{
+		if( m_childEraser.empty() == true )
+		{
+			return;
+		}
+
 		for( TChildEraser::iterator
 			it = m_childEraser.begin(),
 			it_end = m_childEraser.end();

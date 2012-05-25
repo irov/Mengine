@@ -37,9 +37,9 @@ namespace Menge
 			, const mt::mat4f & _wm
 			, unsigned int _argb
 			, bool _pixelsnap
-			, TVectorVertex2D & _renderObject );
+			, TVectorVertex2D & _renderObject ) const;
 
-		void invalidateRenderLine();
+		void invalidateRenderLine() const;
 		void updateBoundingBox( mt::vec2f& _offset, const mt::mat4f & _wm, mt::box2f& _boundingBox );
 
 		float getLength() const;
@@ -47,17 +47,16 @@ namespace Menge
 		int getCharsDataSize() const;
 
 	private:
-		void updateRenderLine_( mt::vec2f& _offset, const mt::mat4f & _wm );
+		void updateRenderLine_( mt::vec2f& _offset, const mt::mat4f & _wm ) const;
 
 	private:
-		float m_charOffset;
-		float m_height;
-				
-		float m_offset;
+		float m_height;	
 		float m_length;
-		
-		TCharsData m_charsData;
 
-		bool m_invalidateRenderLine;
+		mutable float m_charOffset;
+		mutable float m_offset;
+		
+		mutable TCharsData m_charsData;
+		mutable bool m_invalidateRenderLine;
 	};
 };

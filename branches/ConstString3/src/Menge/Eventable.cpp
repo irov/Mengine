@@ -44,7 +44,7 @@ namespace Menge
 			}
 		}
 
-		PyObject * ev = getEventFromDict_( _method, _module );
+		PyObject * ev = this->getEvent_( _method, _module );
 
 		if( ev == 0 )
 		{
@@ -96,24 +96,33 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEventFromDict_( const char * _method, PyObject * _dict ) const
+	PyObject * Eventable::getEvent_( const char * _method, PyObject * _dict ) const
 	{
 		if( _dict == 0 )
 		{
 			return 0;
 		}
 
-		if( pybind::dict_check(_dict) == false )
+		if( pybind::dict_check( _dict ) == true )
 		{
-			return 0;
-		}
+			if( pybind::dict_contains( _dict, _method ) == false )
+			{
+				return 0;
+			}
+
+			PyObject * py_event = pybind::dict_get( _dict, _method );
 		
-		if( pybind::dict_contains( _dict, _method ) == false )
+			pybind::incref( py_event );
+
+			return py_event;
+		}
+
+		if( pybind::has_attr( _dict, _method ) == false )
 		{
 			return 0;
 		}
 
-		PyObject * py_event = pybind::dict_get( _dict, _method );
+		PyObject * py_event = pybind::get_attr( _dict, _method );
 		
 		pybind::incref( py_event );
 

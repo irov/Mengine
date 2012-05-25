@@ -48,6 +48,8 @@ namespace Menge
 		ETFVA_CENTER = 1,
 	};
 
+	typedef std::list<TextLine> TListTextLine;
+
 	class TextField
 		: public Node
 	{
@@ -57,17 +59,24 @@ namespace Menge
 
 	public:
 		void setMaxLen( float _len );
+		float getMaxLen() const;
+
 		void setText( const WString& _text );
+		const WString& getText() const;
+
+		void setTextByKey( const ConstString& _key );
+		const ConstString & getTextKey() const;
+
+		void setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number );
+
 		void setHeight( float _height );
 		float getHeight() const;
-		const WString& getText() const;
+
 		void setOutlineColor( const ColourValue& _color );
 		const ColourValue& getOutlineColor() const;
 
 		void enableOutline( bool _value );
 		bool isOutline() const;
-
-		const mt::vec2f& getLength();
 
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
@@ -95,19 +104,16 @@ namespace Menge
 		
 		int getMaxCharCount() const;
 		void setMaxCharCount( int _maxCharCount );
-		
-		int getCharCount() const;
 
-		float getCharOffset() const;
 		void setCharOffset( float _offset );
-
-		void setTextByKey( const ConstString& _key );
-		const ConstString & getTextKey() const;
+		float getCharOffset() const;
 
 		void setPixelsnap( bool _pixelsnap );
 		bool getPixelsnap() const;
 
-		void setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number );
+	public:
+		const mt::vec2f& getLength() const;
+		int getCharCount() const;
 
 	protected:
 		void _render( RenderCameraInterface * _camera ) override;
@@ -126,14 +132,24 @@ namespace Menge
 		void _invalidateColor() override;
 
 	private:
-		void updateAlignOffset_( TextLine & _line, mt::vec2f & _offset );
+		void updateAlignOffset_( const TextLine & _line, mt::vec2f & _offset );
 
 	private:
 		void updateVertices();
-		void invalidateVertices();
+		void invalidateVertices() const;
 
 		inline TVectorVertex2D & getOutlineVertices();
 		inline TVectorVertex2D & getTextVertices();
+
+		void updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData );
+
+	private:
+		const TListTextLine & getTextLines() const;
+
+		void invalidateTextLines() const;
+		inline bool isInvalidateTextLines() const;
+		
+		void updateTextLines_() const;
 
 	private:
 		ResourceFont * m_resourceFont;
@@ -148,34 +164,31 @@ namespace Menge
 
 		float m_height;		
 		
-		mt::vec2f m_length;
-
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;
 
 		float m_maxWidth;
 		float m_charOffset;
 		int m_maxCharCount;
-		int m_charCount;
+
+		mutable int m_charCount;
+		mutable mt::vec2f m_length;
 
 		bool m_outline;
 		bool m_pixelsnap;
 
 		float m_lineOffset;
-
-		typedef std::list<TextLine> TListTextLine;
-		TListTextLine m_lines;
-
-		void updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData );
-		void createFormattedMessage_( const WString& _text );
-		void splitLine(const std::string& str);
+				
+		mutable TListTextLine m_lines;
 
 		const RenderMaterial * m_materialText;
 		const RenderMaterial * m_materialOutline;
 
 		TVectorVertex2D m_vertexDataText;
 		TVectorVertex2D m_vertexDataOutline;
-		bool m_invalidateVertices;
+
+		mutable bool m_invalidateVertices;
+		mutable bool m_invalidateTextLines;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline TVectorVertex2D & TextField::getOutlineVertices()
@@ -196,5 +209,10 @@ namespace Menge
 		}
 
 		return m_vertexDataText;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool TextField::isInvalidateTextLines() const
+	{
+		return m_invalidateTextLines;
 	}
 }

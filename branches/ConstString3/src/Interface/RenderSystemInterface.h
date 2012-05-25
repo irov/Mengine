@@ -329,6 +329,7 @@ namespace Menge
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 
 		virtual void getResolutions( TVectorResolutions & _resolutions ) = 0;
+
 		virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float _left, float _right,
 										float _top, float _bottom, 
 										float _near, float _far ) = 0;

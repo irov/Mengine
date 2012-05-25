@@ -21,7 +21,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::invalidateBoundingBox()
+	void BoundingBox::invalidateBoundingBox() const
 	{
 		m_invalidateBoundingBox = true;
 

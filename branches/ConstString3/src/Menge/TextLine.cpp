@@ -17,7 +17,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::initialize( const ResourceFont * _resource, const WString& _text )
 	{
-		m_charsData.reserve( _text.length() );
+		WString::size_type text_size = _text.length();
+		m_charsData.reserve( text_size );
+
 		float totalKerning = 0.0f;
 		
 		for( WString::const_iterator
@@ -74,7 +76,7 @@ namespace Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::invalidateRenderLine()
+	void TextLine::invalidateRenderLine() const
 	{
 		m_invalidateRenderLine = true;
 	}
@@ -83,7 +85,7 @@ namespace Menge
 		, const mt::mat4f & _wm
 		, unsigned int _argb
 		, bool _pixelsnap		
-		, TVectorVertex2D& _renderObject )
+		, TVectorVertex2D& _renderObject ) const
 	{
 		if( m_invalidateRenderLine == true )
 		{
@@ -159,7 +161,7 @@ namespace Menge
 		mt::merge_box( _boundingBox, mt::box2f( vb.to_vec2f(), ve.to_vec2f() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateRenderLine_( mt::vec2f& _offset, const mt::mat4f & _wm )
+	void TextLine::updateRenderLine_( mt::vec2f& _offset, const mt::mat4f & _wm ) const
 	{
 		for( TCharsData::iterator
 			it_char = m_charsData.begin(), 

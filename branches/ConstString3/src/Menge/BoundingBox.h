@@ -14,7 +14,7 @@ namespace Menge
 		inline bool isInvalidateBoundingBox() const;
 	
 	protected:
-		void invalidateBoundingBox();
+		void invalidateBoundingBox() const;
 		virtual void _invalidateBoundingBox();
 
 	protected:
@@ -25,7 +25,7 @@ namespace Menge
 
 	protected:
 		mt::box2f m_localBoundingBox;
-		bool m_invalidateBoundingBox;
+		mutable bool m_invalidateBoundingBox;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool BoundingBox::isInvalidateBoundingBox() const

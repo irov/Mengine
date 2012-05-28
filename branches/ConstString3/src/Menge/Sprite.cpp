@@ -181,7 +181,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices )
 	{
-		if( m_resource == 0 ) 
+		if( m_resource == 0 )
 		{
 			return;
 		}
@@ -417,6 +417,13 @@ namespace	Menge
 		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
 
 		m_material = m_materialGroup->getMaterial( textureU, textureV );
+
+		if( m_material == NULL )
+		{
+			MENGE_LOG_ERROR("Sprite::updateMaterial_ %s m_material is NULL"
+				, this->getName().c_str()
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( RenderCameraInterface * _camera )

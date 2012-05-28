@@ -79,6 +79,9 @@ namespace Menge
 	public:
 		void setRenderCamera( RenderCameraInterface * _camera );
 		RenderCameraInterface * getRenderCamera() const;
+
+	protected:
+		void _hide( bool _value ) override;
 			
 #	ifndef MENGE_MASTER_RELEASE
 	protected:
@@ -218,6 +221,9 @@ namespace Menge
 
 	protected:
 		void _update( float _timing ) override;
+
+	protected:
+		void updateChild_( float _timing );
 		
 	protected:
 		PyObject * _embedded() override;
@@ -238,6 +244,12 @@ namespace Menge
 		bool m_enable;
 
 		bool m_freeze;
+
+	protected:
+		bool m_rendering;
+
+	protected:
+		void updateRendering_();
 
 	protected:
 		void getBoundingBox( mt::box2f & _boundingBox );
@@ -282,26 +294,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isRenderable() const
 	{
-		if( this->isCompile() == false )
-		{
-			return false;
-		}
-
-		if( this->isActivate() == false )
-		{
-			return false;
-		}
-
-		if( this->isHide() == true )
-		{
-			return false;
-		}
-
-		if( this->isLocalTransparent() == true )
-		{
-			return false;
-		}
-
-		return true;
+		return m_rendering;
 	}
 }

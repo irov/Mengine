@@ -13,6 +13,7 @@ namespace Menge
 	class RenderTextureInterface;
 	class DataStreamInterface;
 	class ResourceGlyph;
+	class Glyph;
 
 	//! ResourceFont - ресурс-файл, который содержит изображение, список uv - координат и коэффициентов пропорциональности. 
 
@@ -28,37 +29,17 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceFont )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourceFont();
 
 	public:
-		//! Возвращает uv - координаты глифа.
-		/*!
-		\param _id индекс глифа
-		\return uv - координаты глифа
-		*/
-		mt::vec4f getUV( unsigned int _id ) const;
-		
-		//! Возвращает отношение ширины к высоте глифа.
-		/*!
-		\param _id индекс глифа
-		\return коэффициент пропорциональности глифа
-		*/
+		const ResourceGlyph * getResourceGlyph() const;
 
+	public:
 		bool hasGlyph( unsigned int _id ) const;
-		float getCharRatio( unsigned int _id ) const;
-
-		const mt::vec2f & getOffset( unsigned int _char ) const;
-		float getKerning( unsigned int _charPrev, unsigned int _charCur ) const;
-		const mt::vec2f & getSize( unsigned int _char ) const;
+		const Glyph * getGlyph( unsigned int _id ) const;
 
 		const RenderTextureInterface * getImage() const;
 		const RenderTextureInterface * getOutlineImage() const;
-
-		float getInitSize() const;
 
 		const WString & getImagePath() const;
 		const WString & getOutlineImagePath() const;
@@ -77,8 +58,8 @@ namespace Menge
 		void setOutlineImagePath_( const WString & _path );
 
 	private:
-		ConstString m_glyphResource;
-		ResourceGlyph * m_glyph;
+		ConstString m_resourceGlyphName;
+		ResourceGlyph * m_resourceGlyph;
 		
 		WString m_imageFile;
 		ConstString m_imageCodec;
@@ -89,7 +70,6 @@ namespace Menge
 		ConstString m_outlineImageCodec;
 
 		float m_whsRatio;
-		float m_initSize;
 		float m_textureRatio;
 
 		RenderTextureInterface* m_image;

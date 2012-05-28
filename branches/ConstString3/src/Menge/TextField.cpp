@@ -7,6 +7,8 @@
 #	include "TextManager.h"
 
 #	include "ResourceFont.h"
+#	include "ResourceGlyph.h"
+
 #	include "RenderMaterial.h"
 
 #	include "Consts.h"
@@ -28,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_resourceFont(0)
-		, m_length(0.f,0.f)
+		, m_length(0.f, 0.f)
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
 		, m_height(0.f)
 		, m_horizontAlign(ETFHA_NONE)
@@ -116,7 +118,9 @@ namespace Menge
 	
 		if( m_height == 0.0f )
 		{
-			m_height = m_resourceFont->getInitSize();
+			const ResourceGlyph * resourceGlyph = m_resourceFont->getResourceGlyph();
+
+			m_height = resourceGlyph->getInitSize();
 		}
 
 		if( m_lineOffset == 0.f )
@@ -575,12 +579,12 @@ namespace Menge
 			this->setResourceFont( textEntry.font );
 		}
 
-		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
+		if( textEntry.charOffset != 0.f && textEntry.charOffset != m_charOffset )
 		{
 			this->setCharOffset( textEntry.charOffset );
 		}
 
-		if( textEntry.lineOffset == 0.0f )
+		if( textEntry.lineOffset == 0.f )
 		{
 			textEntry.lineOffset = m_height;
 		}
@@ -613,12 +617,12 @@ namespace Menge
 			this->setResourceFont( textEntry.font );
 		}
 
-		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
+		if( textEntry.charOffset != 0.f && textEntry.charOffset != m_charOffset )
 		{
 			this->setCharOffset( textEntry.charOffset );
 		}
 
-		if( textEntry.lineOffset == 0.0f )
+		if( textEntry.lineOffset == 0.f )
 		{
 			textEntry.lineOffset = m_height;
 		}
@@ -628,7 +632,7 @@ namespace Menge
 			this->setLineOffset( textEntry.lineOffset );
 		}
 
-		WString format_text = (boost::wformat(m_format) % textEntry.text % _number).str();
+		WString format_text = (boost::wformat(m_format) % textEntry.text % m_number).str();
 
 		this->setText( format_text );
 	}

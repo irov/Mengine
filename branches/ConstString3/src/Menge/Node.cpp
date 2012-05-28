@@ -35,6 +35,7 @@ namespace Menge
 		: m_active(false)
 		, m_enable(true)
 		, m_freeze(false)
+		, m_rendering(false)
 		, m_parent(0)
 		, m_layer(0)
 		, m_cameraRevision(0)
@@ -140,6 +141,8 @@ namespace Menge
 		//		);
 		//}
 
+		this->updateRendering_();
+
 		return m_active;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -174,7 +177,9 @@ namespace Menge
 
 		m_active = false;
 
-		this->_afterDeactivate();				
+		this->_afterDeactivate();
+
+		this->updateRendering_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::enable()
@@ -634,12 +639,17 @@ namespace Menge
 			return;
 		}
 
-		_update( _timing );
+		this->_update( _timing );
 
 		Affectorable::update( _timing );
 		
-		//size_t childCount = m_child.size();
+		this->updateChild_( _timing );
 
+		this->checkChildEraser_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::updateChild_( float _timing )
+	{
 		++m_childBlock;
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -647,11 +657,11 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			it->update( _timing );
+			Node * children = *it;
+			
+			children->update( _timing );
 		}
 		--m_childBlock;
-
-		this->checkChildEraser_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
@@ -663,6 +673,16 @@ namespace Menge
 			->getMaterialGroup( CONST_STRING(Debug) );
 
 		m_debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );
+
+		if( m_debugMaterial == NULL )
+		{
+			MENGE_LOG_ERROR("Node::_activate %s m_debugMaterial %s not found"
+				, this->getName().c_str()
+				, CONST_STRING(Debug).c_str()
+				);
+
+			return false;
+		}
 
 		ApplyColor2D applyColor( 0xFF00FF00 );
 
@@ -719,6 +739,8 @@ namespace Menge
 
 		bool result = Resource::compile();
 
+		this->updateRendering_();
+
 		if( result == false )
 		{
 			/*MENGE_LOG_INFO( MENGE_TEXT("Error: compiled Node '%s' is failed\n")
@@ -728,7 +750,7 @@ namespace Menge
 			return false;
 		}
 
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::release()
@@ -749,6 +771,8 @@ namespace Menge
 		this->checkChildEraser_();
 
 		Resource::release();
+
+		this->updateRendering_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_recompile()
@@ -799,10 +823,10 @@ namespace Menge
 		{
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				_render( renderCamera );
+				this->_render( renderCamera );
 			}
 
-			renderChild( renderCamera );
+			this->renderChild( renderCamera );
 		}
 		//}
 
@@ -822,6 +846,11 @@ namespace Menge
 	RenderCameraInterface * Node::getRenderCamera() const
 	{
 		return m_renderCamera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_hide( bool _value )
+	{
+		this->updateRendering_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild( RenderCameraInterface * _camera )
@@ -1081,6 +1110,7 @@ namespace Menge
 		--m_childBlock;
 
 		this->checkChildEraser_();
+		this->updateRendering_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Node::getWorldColor() const
@@ -1112,6 +1142,35 @@ namespace Menge
 	void Node::visitResource( VisitorResource * _visitor )
 	{
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::updateRendering_()
+	{
+		if( this->isCompile() == false )
+		{
+			m_rendering = false;
+		}
+		else if( this->isActivate() == false )
+		{
+			m_rendering = false;
+		}
+		else if( this->isHide() == true )
+		{
+			m_rendering = false;
+		}
+		else if( this->isLocalTransparent() == true )
+		{
+			m_rendering = false;
+		}
+		else
+		{
+			if( m_debugMaterial == NULL )
+			{
+				return;
+			}
+
+			m_rendering = true;
+		}
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
@@ -1152,5 +1211,4 @@ namespace Menge
 		}
 	}
 #	endif
-	//////////////////////////////////////////////////////////////////////////
 }

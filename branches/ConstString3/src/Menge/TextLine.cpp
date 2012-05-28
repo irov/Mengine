@@ -1,6 +1,12 @@
 #	include "TextLine.h"
 
 #	include "ResourceFont.h"
+#	include "ResourceGlyph.h"
+
+#	include "Glyph.h"
+
+#	include "Interface/RenderSystemInterface.h"
+
 #	include "LogEngine.h"
 
 namespace Menge
@@ -38,19 +44,44 @@ namespace Menge
 
 				continue;
 			}
-			
+
+			const Glyph * glyph = _resource->getGlyph( code );
+
+			const RenderTextureInterface * image = _resource->getImage();
+					
 			CharData charData;
 			charData.code = code;
-			charData.uv = _resource->getUV( charData.code );
-			charData.ratio = _resource->getCharRatio( charData.code );
-			charData.offset = _resource->getOffset( charData.code );
-			charData.size = _resource->getSize( charData.code ) * m_height / _resource->getInitSize();
+			
+			charData.uv = glyph->getUV();
+
+			mt::vec2f imageInvSize;
+			imageInvSize.x = 1.f / (float)image->getWidth();
+			imageInvSize.y = 1.f / (float)image->getHeight();
+
+			charData.uv.x *= imageInvSize.x;
+			charData.uv.y *= imageInvSize.y;
+			charData.uv.z *= imageInvSize.x;
+			charData.uv.w *= imageInvSize.y;
+
+			charData.ratio = glyph->getRatio();
+			charData.offset = glyph->getOffset();
+			
+			charData.size = glyph->getSize();
+			
+			charData.size *= m_height;
+
+			const ResourceGlyph * resourceGlyph = _resource->getResourceGlyph();
+
+			float initSize = resourceGlyph->getInitSize();
+			charData.size /= initSize;
 			
 			if( m_charsData.empty() == false )
 			{
 				const CharData & prevChar = m_charsData.back();
 
-				float kerning = _resource->getKerning( prevChar.code, charData.code );
+				const Glyph * prevGlyph = _resource->getGlyph( prevChar.code );
+
+				float kerning = prevGlyph->getKerning( charData.code );
 
 				totalKerning += kerning;
 			}

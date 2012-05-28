@@ -21,6 +21,9 @@ namespace Menge
 		bool recompile();
 
 	protected:
+		void setCompile( bool _value );
+
+	protected:
 		virtual bool _compile();
 		virtual void _release();
 		virtual void _recompile();

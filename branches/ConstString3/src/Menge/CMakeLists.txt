@@ -542,6 +542,8 @@ Resource\\\\Font
 	ResourceFont.h
 	ResourceGlyph.cpp
 	ResourceGlyph.h	
+	Glyph.cpp
+	Glyph.h	
 )
 
 ADD_FILTER(

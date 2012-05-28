@@ -16,23 +16,27 @@
 
 namespace Menge
 {
-	class LoadableResourceGlyph
-		: public Loadable
+	namespace
 	{
-	public:
-		LoadableResourceGlyph( ResourceGlyph * _resource )
-			: m_resource(_resource)
+		class LoadableResourceGlyph
+			: public Loadable
 		{
-		}
+		public:
+			LoadableResourceGlyph( ResourceGlyph * _resource )
+				: m_resource(_resource)
+			{
+			}
 
-	protected:
-		void loader( BinParser * _parser ) override
-		{
-			m_resource->loaderGlyph_(_parser);
-		}
-	protected:
-		ResourceGlyph * m_resource;
-	};
+		protected:
+			void loader( BinParser * _parser ) override
+			{
+				m_resource->loaderGlyph_(_parser);
+			}
+
+		protected:
+			ResourceGlyph * m_resource;
+		};
+	}
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceGlyph );
 	//////////////////////////////////////////////////////////////////////////
@@ -41,7 +45,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ResourceGlyph::Glyph * ResourceGlyph::getGlyph( unsigned int _id ) const
+	const Glyph * ResourceGlyph::getGlyph( unsigned int _id ) const
 	{
 		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
 
@@ -75,19 +79,22 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceGlyph::loader( BinParser * _parser )
-	{
-		const ConstString & category = this->getCategory();
-		WString glyphPath;
-		LoadableResourceGlyph loadable(this);
-		bool exist = false;
-	
+	{				
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_NODE(  Protocol::GlyphPath )
-			{
-				
-				BIN_CASE_ATTRIBUTE( Protocol::GlyphPath_Path, glyphPath );
+			{				
+				WString glyphPath;
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::GlyphPath_Path, glyphPath );
+				}
 		
+				const ConstString & category = this->getCategory();
+
+				LoadableResourceGlyph loadable(this);
+				
+				bool exist = false;
 				if ( LoaderEngine::get()
 					->load( category, glyphPath, &loadable, exist ) == false )
 				{
@@ -169,12 +176,14 @@ namespace Menge
 				unicode = unicodeService->utf8ToUnicode( id, w_id_successful );
 
 				glyphId = (unsigned int)unicode[0];
-				_glyph.kerning.insert( std::make_pair( glyphId, advance ) );
+
+				_glyph.addKerning( glyphId, advance );
+				//_glyph.kerning.insert( std::make_pair( glyphId, advance ) );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceGlyph::Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width )
+	Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width )
 	{
 		UnicodeInterface * unicodeService = ServiceProvider::get()
 			->getServiceT<UnicodeInterface>("Unicode");
@@ -216,12 +225,7 @@ namespace Menge
 
 		float ratio = _width / m_initSize;
 
-		Glyph gl;
-
-		gl.uv = uv;
-		gl.offset = offset;
-		gl.ratio = ratio;
-		gl.size = size;
+		Glyph gl(uv, offset, ratio, size);
 
 		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( glyphId, gl ) ).first;
 		

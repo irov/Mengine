@@ -25,8 +25,13 @@ namespace Menge
 		, m_outline(NULL)
 		, m_whsRatio(3.0f)
 		, m_textureRatio(1.0f)
-		, m_glyph(NULL)
+		, m_resourceGlyph(NULL)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ResourceGlyph * ResourceFont::getResourceGlyph() const
+	{
+		return m_resourceGlyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderTextureInterface * ResourceFont::getImage() const
@@ -37,14 +42,6 @@ namespace Menge
 	const RenderTextureInterface * ResourceFont::getOutlineImage() const
 	{
 		return m_outline;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getInitSize() const
-	{
-		if ( !m_glyph )
-			return 0.0f;
-
-		return m_glyph->getInitSize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setImagePath_( const WString& _path )
@@ -71,103 +68,28 @@ namespace Menge
 		return m_outlineImageFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec4f ResourceFont::getUV( unsigned int _id ) const
-	{
-		if( this->isCompile() == false )
-		{
-			return mt::zero_v4;
-		}
-
-		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
-
-		if( glyph == 0 )
-		{
-			return mt::zero_v4;
-		}
-
-		mt::vec4f uv = glyph->uv;
-
-		uv.x *= m_imageInvSize.x;
-		uv.y *= m_imageInvSize.y;
-		uv.z *= m_imageInvSize.x;
-		uv.w *= m_imageInvSize.y;
-
-		return uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getCharRatio( unsigned int _id ) const
-	{
-		if( this->isCompile() == false )
-		{
-			return m_whsRatio;
-		}
-
-		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
-
-		if( glyph == 0 )
-		{
-			return m_whsRatio;
-		}
-
-		return glyph->ratio;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceFont::getOffset( unsigned int _id ) const
-	{
-		if( this->isCompile() == false )
-		{
-			return mt::zero_v2;
-		}
-
-		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
-
-		if( glyph == 0 )
-		{
-			return mt::zero_v2;
-		}
-		
-		return glyph->offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getKerning( unsigned int _charPrev, unsigned int _charCur ) const
-	{
-		const ResourceGlyph::Glyph * glyphPrev = m_glyph->getGlyph( _charPrev );
-
-
-
-		ResourceGlyph::TMapKerning::const_iterator findKerning = glyphPrev->kerning.find(_charCur);
-		
-		if( findKerning == glyphPrev->kerning.end() )
-		{
-			return 0.0f;
-		}
-
-		float kerning = findKerning->second;
-
-		return kerning;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::hasGlyph( unsigned int _id ) const
 	{
-		bool isExist = m_glyph->hasGlyph( _id );
+		if( this->isCompile() == false )
+		{
+			return false;
+		}
+
+		bool isExist = m_resourceGlyph->hasGlyph( _id );
+
 		return isExist;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& ResourceFont::getSize( unsigned int _id ) const
+	const Glyph * ResourceFont::getGlyph( unsigned int _id ) const
 	{
 		if( this->isCompile() == false )
 		{
-			return mt::zero_v2;
+			return NULL;
 		}
 
-		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
+		const Glyph * glyph = m_resourceGlyph->getGlyph( _id );
 
-		if( glyph == 0 )
-		{
-			return mt::zero_v2;
-		}
-
-		return glyph->size;
+		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & ResourceFont::getColor() const
@@ -182,7 +104,7 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceGlyph_Name, m_glyphResource );
+			BIN_CASE_ATTRIBUTE( Protocol::ResourceGlyph_Name, m_resourceGlyphName );
 			BIN_CASE_ATTRIBUTE( Protocol::Color_Value, m_color );
 			
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Image_Path, &ResourceFont::setImagePath_ );
@@ -209,9 +131,6 @@ namespace Menge
 
 		m_textureRatio = static_cast<float>( m_image->getWidth() ) / m_image->getHeight();
 
-		m_imageInvSize.x = 1.0f / m_image->getWidth();
-		m_imageInvSize.y = 1.0f / m_image->getHeight();
-
 		if( m_outlineImageFile.empty() == false )
 		{
 			m_outline = RenderEngine::get()
@@ -228,7 +147,7 @@ namespace Menge
 			}
 		}
 
-		if( m_glyphResource.empty() == true )
+		if( m_resourceGlyphName.empty() == true )
 		{
 			MENGE_LOG_ERROR("ResourceFont::_compile '%s' can't setup resource glyph"
 				, this->getName().c_str()
@@ -237,30 +156,22 @@ namespace Menge
 			return false;
 		}
 	
-		m_glyph = ResourceManager::get()
-			->getResourceT<ResourceGlyph>( m_glyphResource );
+		m_resourceGlyph = ResourceManager::get()
+			->getResourceT<ResourceGlyph>( m_resourceGlyphName );
 
-		if( m_glyph == 0 )
+		if( m_resourceGlyph == 0 )
 		{
 			MENGE_LOG_ERROR("ResourceFont::_compile '%s' can't get resource glyph '%s'"
 				, this->getName().c_str()
-				, m_glyphResource.c_str()
+				, m_resourceGlyphName.c_str()
 				);
 
 			return false;
 		}
 
-		if( m_glyph->compile() == false )
-		{
-			MENGE_LOG_ERROR("ResourceFont::_compile '%s' can't compile glyph '%s'"
-				, this->getName().c_str()
-				, m_glyphResource.c_str()
-				);
-
-			return false;
-		}
+		const Glyph * glyph = m_resourceGlyph->getGlyph('A');
 	
-		m_whsRatio = getCharRatio('A');
+		m_whsRatio = glyph->getRatio();
 
 		return true;
 	}
@@ -280,10 +191,10 @@ namespace Menge
 			m_outline = 0;
 		}
 
-		if( m_glyph )
+		if( m_resourceGlyph )
 		{			
-			m_glyph->decrementReference();
-			m_glyph = 0;
+			m_resourceGlyph->decrementReference();
+			m_resourceGlyph = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

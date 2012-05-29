@@ -510,7 +510,15 @@ namespace	Menge
 	{
 		int pitch = 0;
 		//Texture* renderImage = m_material->textureStage[0].texture;
-		unsigned char* lockRect = m_textures[0]->lock( &pitch, false );
+
+		Rect rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = (size_t)m_frameSize.x;
+		rect.bottom = (size_t)m_frameSize.y;
+
+		unsigned char* lockRect = m_textures[0]->lock( &pitch, rect, false );
+
 		m_videoDecoder->decode( lockRect, pitch );
 		m_textures[0]->unlock();
 	}

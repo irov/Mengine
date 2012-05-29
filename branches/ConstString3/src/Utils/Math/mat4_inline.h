@@ -111,8 +111,8 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void mul_v2_m4_r(vec2f& _out, const vec2f& _v,const mat4f& _m)
 	{
-		_out.x = _m.v0[0] * _v.x + _m.v1[0] * _v.y;
-		_out.y = _m.v0[1] * _v.x + _m.v1[1] * _v.y;
+		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
+		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE vec3f operator*(const vec3f& v, const mat4f& m)
@@ -152,36 +152,35 @@ namespace mt
 		return out;
 	}
 
-	MATH_FUNCTION_INLINE void mul_m4_m4_i( vec4f & _out, const vec4f & _a, const mat4f& _b )
+	MATH_FUNCTION_INLINE void mul_v4_m4_i( vec4f & _out, const vec4f & _a, const mat4f& _b )
 	{	
-		_out.x = _a.x * _b.v0[0] + _a.y * _b.v1[0] + _a.z * _b.v2[0] + _a.w * _b.v3[0];
-		_out.y = _a.x * _b.v0[1] + _a.y * _b.v1[1] + _a.z * _b.v2[1] + _a.w * _b.v3[1];
-		_out.z = _a.x * _b.v0[2] + _a.y * _b.v1[2] + _a.z * _b.v2[2] + _a.w * _b.v3[2];
-		_out.w = _a.x * _b.v0[3] + _a.y * _b.v1[3] + _a.z * _b.v2[3] + _a.w * _b.v3[3];
+		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _a.z * _b.v2.x + _a.w * _b.v3.x;
+		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y + _a.z * _b.v2.y + _a.w * _b.v3.y;
+		_out.z = _a.x * _b.v0.z + _a.y * _b.v1.z + _a.z * _b.v2.z + _a.w * _b.v3.z;
+		_out.w = _a.x * _b.v0.w + _a.y * _b.v1.w + _a.z * _b.v2.w + _a.w * _b.v3.w;
 	}
-
-	/*	Matrix/Matrix Mult  */
+		
 	MATH_FUNCTION_INLINE void mul_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b)
 	{
-		mul_m4_m4_i( _out.v0, _a.v0, _b );
-		mul_m4_m4_i( _out.v1, _a.v1, _b );
-		mul_m4_m4_i( _out.v2, _a.v2, _b );
-		mul_m4_m4_i( _out.v3, _a.v3, _b );
+		mul_v4_m4_i( _out.v0, _a.v0, _b );
+		mul_v4_m4_i( _out.v1, _a.v1, _b );
+		mul_v4_m4_i( _out.v2, _a.v2, _b );
+		mul_v4_m4_i( _out.v3, _a.v3, _b );
 	}
 
-	MATH_FUNCTION_INLINE void mul_m4_m3_i(vec4f & _out, const vec4f & _a, const mat3f& _b)
+	MATH_FUNCTION_INLINE void mul_v4_m3_i(vec4f & _out, const vec4f & _a, const mat3f& _b)
 	{
-		_out.x = _a.x * _b.v0[0] + _a.y * _b.v1[0]+ _a.z * _b.v2[0];
-		_out.y = _a.x * _b.v0[1] + _a.y * _b.v1[1]+ _a.z * _b.v2[1];
-		_out.z = _a.x * _b.v0[2] + _a.y * _b.v1[2]+ _a.z * _b.v2[2];
+		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x+ _a.z * _b.v2.x;
+		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y+ _a.z * _b.v2.y;
+		_out.z = _a.x * _b.v0.z + _a.y * _b.v1.z+ _a.z * _b.v2.z;
 		_out.w = _a.w;
 	}
-	/*	Matrix/Matrix Mult  */
+		
 	MATH_FUNCTION_INLINE void mul_m4_m3(mat4f& _out, const mat4f& _a, const mat3f& _b)
 	{
-		mul_m4_m3_i( _out.v0, _a.v0, _b );
-		mul_m4_m3_i( _out.v1, _a.v1, _b );
-		mul_m4_m3_i( _out.v2, _a.v2, _b );
+		mul_v4_m3_i( _out.v0, _a.v0, _b );
+		mul_v4_m3_i( _out.v1, _a.v1, _b );
+		mul_v4_m3_i( _out.v2, _a.v2, _b );
 
 		_out.v3 = _a.v3;
 	}

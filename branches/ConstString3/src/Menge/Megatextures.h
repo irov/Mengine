@@ -17,16 +17,13 @@ namespace Menge
 		Megatextures( size_t _width, size_t _height, PixelFormat _format );
 
 	public:
-		RenderTextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height );
-
-	protected:
-		size_t allocateBlock( size_t _width, size_t _height, size_t & _x, size_t & _y, bool & _rotate );
+		RenderTextureInterface* createTexture( size_t _width, size_t _height );
 
 	protected:
 		size_t m_width;
 		size_t m_height;
 
-		PixelFormat m_format;
+		PixelFormat m_pixelFormat;
 
 		struct Atlas
 		{
@@ -34,15 +31,18 @@ namespace Menge
 			RenderTextureInterface * texture;
 		};
 
-		typedef std::vector<Atlas> TAtlases;
+		typedef std::list<Atlas> TAtlases;
 		TAtlases m_atlases;
 
 		struct Piece
 		{
-			RenderTexture * texture;
+			RenderTextureInterface * texture;
 
 			size_t id;
-			size_t attlasId;
+
+			TAtlases::iterator atlas;
+			TPacketBlocks::iterator block;
+
 			bool dead;
 		};
 
@@ -50,5 +50,9 @@ namespace Menge
 		TMapPieces m_pieces;
 
 		size_t m_enumerator;
+
+	private:
+		TAtlases::iterator allocateBlock_( size_t _width, size_t _height, size_t & _x, size_t & _y, bool & _rotate );
+		TAtlases::iterator newAtlas_();
 	};
 }

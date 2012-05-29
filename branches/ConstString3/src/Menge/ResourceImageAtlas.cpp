@@ -55,7 +55,7 @@ namespace Menge
 		return m_texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageAtlas::_getRectForUV( Rect& _destRect, const mt::vec4f & _uv )
+	void ResourceImageAtlas::getRectForUV_( Rect& _destRect, const mt::vec4f & _uv )
 	{
 		//float uvX = uv.z - uv.x;
 		//float uvY = uv.w - uv.y;
@@ -68,13 +68,13 @@ namespace Menge
 	bool ResourceImageAtlas::loadFrame( ImageDecoderInterface * _imageDecoder, ResourceImage::ImageFrame & _frame )
 	{
 		Rect rect;
+		this->getRectForUV_( rect, _frame.uv );
+		size_t width = rect.getWidth();
+		size_t height = rect.getHeight();
+
 		int pitch;
+		unsigned char* buffer = m_texture->lock( &pitch, rect, false );
 
-		_getRectForUV( rect, _frame.uv );
-		int width = rect.getWidth();
-		int height = rect.getHeight();
-
-		unsigned char* buffer = m_texture->lockRect( &pitch, rect, false );
 		if( buffer == NULL )
 		{
 			return false;

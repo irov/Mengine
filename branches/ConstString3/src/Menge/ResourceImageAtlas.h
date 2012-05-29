@@ -22,12 +22,15 @@ namespace Menge
 		RenderTextureInterface* getTexture() const;
 		void loader( BinParser * _parser ) override;
 
-	protected:
-		void _getRectForUV( Rect& _destRect, const mt::vec4f & _uv );
+	protected:		
 		bool _compile() override;
 		void _release() override;
 
-		Menge::PixelFormat m_pixelFormat;
+	protected:
+		void getRectForUV_( Rect& _destRect, const mt::vec4f & _uv );
+
+	protected:
+		PixelFormat m_pixelFormat;
 		mt::vec2f m_size;
 		RenderTextureInterface * m_texture;
 	};

@@ -888,8 +888,6 @@ namespace Menge
 		//const mt::mat4f & camera_pm = m_renderCamera2D->getProjectionMatrix();
 
 
-		m_renderCamera2D->setRenderTarget( Consts::get()->c_Window );
-
 		//renderEngine->newRenderPass( m_renderCamera2D );
 
 		if( m_scene != NULL )

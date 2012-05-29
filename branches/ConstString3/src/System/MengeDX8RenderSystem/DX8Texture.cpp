@@ -14,8 +14,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX8Texture::DX8Texture( IDirect3DTexture8* _d3dInterface )
-		: m_d3dInterface( _d3dInterface )
+	DX8Texture::DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _width, size_t _height )
+		: m_d3dInterface(_d3dInterface)
+		, m_width(_width)
+		, m_height(_height)
 	{
 		D3DSURFACE_DESC desc;
 		_d3dInterface->GetLevelDesc( 0, &desc );
@@ -27,40 +29,11 @@ namespace Menge
 	{
 
 	}
-	//////////////////////////////////////////////////////////////////////////
-	unsigned char* DX8Texture::lock( int* _pitch, bool _readOnly /*= true */ )
-	{
-	//	int flags;
-	//	if(_readOnly)
-	//	{
-	//		flags=D3DLOCK_READONLY;
-	//	}
-	//	else 
-	//	{
-	//		flags=0;
-	//	}
-
-	//	D3DLOCKED_RECT TRect;
-	//	
-	//	
-	//	HRESULT hr = m_d3dInterface->LockRect(0, &TRect, NULL, flags);
-	//	if(FAILED( hr ))
-	//	{
-	//		//_PostError( "Can't lock texture" );
-	//		return 0;
-	//	}
-
-	//	*_pitch = TRect.Pitch;
-	//	return (unsigned char *)TRect.pBits;
-		Rect rect(0,0,m_hwWidth,m_hwHeight);
-		unsigned char* buffer = this->lockRect(_pitch, rect, _readOnly);
-		return buffer;
-	}
 	///////////////////////////////////////////////////////////////////////////
-	unsigned char* DX8Texture::lockRect( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ )
+	unsigned char * DX8Texture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
 	{
 		int flags;
-		if(_readOnly)
+		if( _readOnly )
 		{
 			flags=D3DLOCK_READONLY;
 		}
@@ -92,17 +65,17 @@ namespace Menge
 		m_d3dInterface->UnlockRect(0);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IDirect3DTexture8* DX8Texture::getInterface()
+	IDirect3DTexture8 * DX8Texture::getInterface() const
 	{
 		return m_d3dInterface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t DX8Texture::getWidth() const
+	size_t DX8Texture::getHWWidth() const
 	{
 		return m_hwWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t DX8Texture::getHeight() const
+	size_t DX8Texture::getHWHeight() const
 	{
 		return m_hwHeight;
 	}

@@ -19,9 +19,9 @@ namespace Menge
 		void trim( String& str, bool left = true, bool right = true );
 
 		String toString( int _x );
-		String toString( unsigned int _x );
+		String toString( size_t _x );
 
 		WString toWString( int _x );
-		WString toWString( unsigned int _x );
+		WString toWString( size_t _x );
 	}
 };

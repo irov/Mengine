@@ -85,7 +85,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::getSettingUInt( const WString& _section, const WString& _key, unsigned int & _value ) const
+	bool ConfigFile::getSettingUInt( const WString& _section, const WString& _key, size_t & _value ) const
 	{
 		WString setting;
 		if( this->getSetting( _section, _key, setting ) == false )

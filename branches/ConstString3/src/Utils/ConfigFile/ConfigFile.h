@@ -3,7 +3,7 @@
 #	include "SimpleIni.h"
 
 #	include "Core/String.h"
-
+#	include "stdio.h"
 namespace Menge
 {
 	class FileInputStreamInterface;
@@ -23,7 +23,7 @@ namespace Menge
 		bool getSettings( const WString& _section, const WString& _key, TVectorWString & _values ) const;
 
 	public:
-		bool getSettingUInt( const WString& _section, const WString& _key, unsigned int & _value ) const;
+		bool getSettingUInt( const WString& _section, const WString& _key, size_t & _value ) const;
 		
 	public:
 		bool setSetting( const WString& _section, const WString& _key, const WString & _value );

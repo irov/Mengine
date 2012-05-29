@@ -143,9 +143,37 @@ namespace Menge
 				return false;
 			}
 
-			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
+			Rect rect;
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = dataInfo->width;
+			rect.bottom = dataInfo->height;
 
-			job.texture->loadImageData( job.textureBuffer, job.textureBufferPitch, job.decoder );
+			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), rect, false );
+
+			ImageCodecOptions options;
+
+			PixelFormat hwPixelFormat = job.texture->getHWPixelFormat();
+
+			if( dataInfo->format == PF_R8G8B8
+				&& hwPixelFormat == PF_X8R8G8B8 )
+			{
+				options.flags |= DF_COUNT_ALPHA;
+			}
+
+			size_t width = job.texture->getWidth();
+
+			if( job.textureBufferPitch != dataInfo->width )
+			{
+				options.pitch = job.textureBufferPitch;
+
+				options.flags |= DF_CUSTOM_PITCH;
+			}
+
+			job.decoder->setOptions( &options );
+
+			RenderEngine::get()
+				->loadBufferImageData( job.textureBuffer, job.textureBufferPitch, hwPixelFormat, job.decoder );
 
 			job.decoder->destroy();
 			job.decoder = NULL;

@@ -29,7 +29,7 @@ namespace Menge
 			// Pre-allocate some space for performance
 			_outStrings.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
 
-			unsigned int numSplits = 0;
+			size_t numSplits = 0;
 
 			// Use STL methods 
 			size_t start, pos;
@@ -69,7 +69,7 @@ namespace Menge
 			// Pre-allocate some space for performance
 			_outStrings.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
 
-			unsigned int numSplits = 0;
+			size_t numSplits = 0;
 
 			// Use STL methods 
 			size_t start = 0;
@@ -153,7 +153,7 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		String toString( unsigned int _x )
+		String toString( size_t _x )
 		{
 			Stringstream str;
 			str << _x;
@@ -167,7 +167,7 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		WString toWString( unsigned int _x )
+		WString toWString( size_t _x )
 		{
 			WStringstream str;
 			str << _x;

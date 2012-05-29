@@ -15,8 +15,6 @@
 
 namespace Menge
 {
-	class ImageDecoderInterface;
-
 	class RenderTexture
 		: public RenderTextureInterface
 	{
@@ -44,23 +42,21 @@ namespace Menge
 		void setFileName( const WString & _filename ) override;
 		const WString & getFileName() const override;
 		
+		const Rect & getRect() const override;
 		const mt::vec4f & getUV() const override;
 
 		size_t getWidth() const override;
 		size_t getHeight() const override;
+
 		PixelFormat getPixelFormat() const override;
 		
-		unsigned char* lock( int* _pitch, bool _readOnly = true ) const override;
-		unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
+		unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
 
 		void unlock() const override;
 
 		size_t getHWWidth() const override;
 		size_t getHWHeight() const override;
 		PixelFormat getHWPixelFormat() const override;
-
-		bool loadImageData( ImageDecoderInterface* _imageDecoder ) override;
-		bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) override;
 
 	protected:
 		mutable size_t m_ref;
@@ -77,6 +73,7 @@ namespace Menge
 		size_t m_hwHeight;		// hardware height
 		PixelFormat m_hwPixelFormat;	// hardware pixel format
 
+		Rect m_rect;
 		mt::vec4f m_uv;
 
 		size_t m_id;

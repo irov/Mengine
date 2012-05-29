@@ -57,9 +57,14 @@ namespace mt
 	MATH_FUNCTION_INLINE void mul_v2_m4_r(vec2f& _out, const vec2f& _v,const mat4f& _m);
 	
 	MATH_FUNCTION_INLINE void mul_m4_v4(vec4f& _out, const mat4f& _m,const vec4f& _v);
-	MATH_FUNCTION_INLINE void mul_v4_m4(vec4f& _out, const vec4f& _v, const mat4f& _m);
+	MATH_FUNCTION_INLINE void mul_v4_m4(vec4f& _out, const vec4f& _v, const mat4f& _m);	
+	MATH_FUNCTION_INLINE void mul_v4_m4_i( vec4f & _out, const vec4f & _a, const mat4f& _b );
+
 	MATH_FUNCTION_INLINE void mul_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
+	
+	MATH_FUNCTION_INLINE void mul_v4_m3_i(vec4f & _out, const vec4f & _a, const mat3f& _b);
 	MATH_FUNCTION_INLINE void mul_m4_m3(mat4f& _out, const mat4f& _a, const mat3f& _b);
+
 	MATH_FUNCTION_INLINE void add_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
 	MATH_FUNCTION_INLINE void sub_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
 

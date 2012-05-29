@@ -266,7 +266,7 @@ namespace Menge
 	void ResourceImageInAtlas::_release()
 	{
 		ResourceManager::get()
-			->directResourceRelease(m_resourceAtlasName);
+			->directResourceRelease( m_resourceAtlasName );
 	}
 	/////////////////////////////////////////////////////////////////////////
 }

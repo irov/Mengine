@@ -18,6 +18,8 @@
 #	include "Camera.h"
 
 #	include "RenderTexture.h"
+#	include "RenderSubTexture.h"
+
 #	include "Vertex.h"
 
 #	include "Core/PixelFormat.h"
@@ -358,15 +360,30 @@ namespace Menge
 		// Выноси такое в отдельные функции, читать невозможно
 		//////////////////////////////////////////////////////////////////////////
 		
-		RenderTextureInterface * texture  = this->createTexture( 2, 2, PF_R8G8B8 );
+		size_t null_width = 2;
+		size_t null_height = 2;
+
+		RenderTextureInterface * texture  = this->createTexture( null_width, null_height, PF_R8G8B8 );
 		
 		m_nullTexture = dynamic_cast<RenderTexture*>(texture);
 		
 		if( m_nullTexture )
 		{
+			Rect rect;
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = null_width;
+			rect.bottom = null_height;
+
 			int pitch = 0;
-			unsigned char* textureData = m_nullTexture->lock( &pitch, false );
-			std::fill( textureData, textureData + pitch * 2, 0xFF );
+			unsigned char* textureData = m_nullTexture->lock( &pitch, rect, false );
+
+			for( size_t it = 0; it != null_height; ++it )
+			{
+				unsigned char null_color = 0xFF;
+				std::fill( textureData, textureData + pitch * it + null_width, null_color );
+			}
+			
 			m_nullTexture->unlock();
 		}
 
@@ -526,9 +543,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderMaterialGroup * RenderEngine::getMaterialGroup( const ConstString & _name )
+	const RenderMaterialGroup * RenderEngine::getMaterialGroup( const ConstString & _name ) const
 	{
-		TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
+		TMapMaterialGroup::const_iterator it_found = m_mapMaterialGroup.find( _name );
 
 		if( it_found == m_mapMaterialGroup.end() )
 		{
@@ -591,7 +608,25 @@ namespace Menge
 
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
-		RenderTexture * texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
+		size_t id = ++m_idEnumerator;
+
+		RenderTexture * texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, id );
+
+		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderTextureInterface * RenderEngine::createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener )
+	{
+		MENGE_LOG_INFO( "Creating sub texture [%d %d - %d %d]"
+			, _rect.left
+			, _rect.top
+			, _rect.right
+			, _rect.bottom
+			);
+
+		size_t id = ++m_idEnumerator;
+
+		RenderSubTexture * texture = new RenderSubTexture( _texture, _rect, id, _listener );
 
 		return texture;
 	}
@@ -633,7 +668,14 @@ namespace Menge
 		dataInfo.flags = 0;
 		dataInfo.size = 0;	// we don't need this
 		int pitch = 0;
-		unsigned char* buffer = _image->lock( &pitch );
+
+		Rect rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = dataInfo.width;
+		rect.bottom = dataInfo.height;
+		
+		unsigned char * buffer = _image->lock( &pitch, rect, true );
 
 		/*unsigned char* lockBuffer = new unsigned char[ imgData.height * pitch ];
 
@@ -760,7 +802,8 @@ namespace Menge
 			return NULL;
 		}
 
-		texture->loadImageData( imageDecoder );
+		const Rect & rect = texture->getRect();
+		this->loadTextureRectImageData( texture, rect, imageDecoder );
 
 		imageDecoder->destroy();
 
@@ -893,10 +936,14 @@ namespace Menge
 			
 			streamAlpha->close();
 			streamRGB->close();
+
 			return NULL;
 		}
 
-		texture->loadImageData( imageCombiner );
+		const Rect & rect = texture->getRect();
+		this->loadTextureRectImageData( texture, rect, imageCombiner );
+
+		//texture->loadImageData( imageCombiner );
 		
 		imageDecoderRGB->destroy();
 		imageDecoderAlpha->destroy();
@@ -912,13 +959,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseTexture( const RenderTextureInterface* _texture )
 	{
-		const RenderTexture* texture = 
-			static_cast<const RenderTexture*>( _texture );
-
-		if( texture == NULL )
+		if( _texture == NULL )
 		{
 			return;
 		}
+
+		const RenderTexture* texture = 
+			static_cast<const RenderTexture*>( _texture );
 
 		if( texture->decRef() > 0 )
 		{
@@ -948,6 +995,107 @@ namespace Menge
 		m_interface->releaseImage( image );
 
 		delete _texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface* _imageDecoder )
+	{
+		int pitch = 0;
+		unsigned char * textureBuffer = _texture->lock( &pitch, _rect, false );
+
+		if( textureBuffer == NULL )
+		{
+			MENGE_LOG_ERROR("RenderEngine::loadTextureImageData Invalid lock");
+
+			return false;
+		}
+
+		ImageCodecOptions options;
+
+		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
+
+		PixelFormat hwPixelFormat = _texture->getHWPixelFormat();
+
+		if( dataInfo->format == PF_R8G8B8
+			&& hwPixelFormat == PF_X8R8G8B8 )
+		{
+			options.flags |= DF_COUNT_ALPHA;
+		}
+
+		size_t width = _texture->getWidth();
+
+		if( pitch != width )
+		{
+			options.pitch = pitch;
+
+			options.flags |= DF_CUSTOM_PITCH;
+		}
+
+		_imageDecoder->setOptions( &options );
+		
+		bool result = this->loadBufferImageData( textureBuffer, pitch, hwPixelFormat, _imageDecoder );
+
+		_texture->unlock();
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::loadBufferImageData( unsigned char* _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, ImageDecoderInterface * _imageDecoder )
+	{
+		const ImageCodecDataInfo * data = _imageDecoder->getCodecDataInfo();
+
+		unsigned int bufferSize = _texturePitch * data->height;
+		unsigned int b = _imageDecoder->decode( _textureBuffer, bufferSize );
+
+		this->sweezleAlpha_( _textureBuffer, _texturePitch, _hwPixelFormat, data );
+		//this->imageQuality_( _textureBuffer, _texturePitch );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::sweezleAlpha_( unsigned char* _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, const ImageCodecDataInfo * _dataInfo )
+	{
+		// need to sweezle alpha
+		if( _dataInfo->format == PF_A8
+			&& _hwPixelFormat == PF_A8R8G8B8 )
+		{
+			for( size_t h = _dataInfo->height - 1; h != -1; --h )
+			{
+				size_t hp = h * _texturePitch;
+
+				for( size_t w = _dataInfo->width - 1; w != -1; --w )
+				{
+					_textureBuffer[hp+w*4+3] = _textureBuffer[hp+w];
+				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::imageQuality_( unsigned char * _textureBuffer, size_t _texturePitch )
+	{
+		// copy pixels on the edge for better image quality
+		//if( m_hwWidth > m_width )
+		//{
+		//	unsigned char* image_data = _textureBuffer;
+		//	unsigned int pixel_size = _texturePitch / m_hwWidth;
+
+		//	for( size_t i = 0; i != m_height; ++i )
+		//	{
+		//		std::copy( image_data + (m_width - 1) * pixel_size, 
+		//			image_data + m_width * pixel_size,
+		//			image_data + m_width * pixel_size );
+
+		//		image_data += _texturePitch;
+		//	}
+		//}
+
+		//if( m_hwHeight > m_height )
+		//{
+		//	unsigned char* image_data = _textureBuffer;
+		//	unsigned int pixel_size = _texturePitch / m_hwWidth;
+		//	std::copy( image_data + (m_height - 1) * _texturePitch,
+		//		image_data + m_height * _texturePitch,
+		//		image_data + m_height * _texturePitch );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Resolution RenderEngine::getBestDisplayResolution( const Resolution & _resolution, float _aspect )

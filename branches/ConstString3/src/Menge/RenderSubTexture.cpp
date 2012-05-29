@@ -15,200 +15,58 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RenderSubTexture::RenderSubTexture( RenderImageInterface* _interface
-						, const ConstString & _name
-						, size_t _width
-						, size_t _height
-						, PixelFormat _format
-						, size_t _hwWidth
-						, size_t _hwHeight
-						, PixelFormat _hwPixelFormat
-						, int _id )
-		: m_iTexture(_interface)
-		, m_name(_name)
-		, m_width(_width)
-		, m_height(_height)
-		, m_pixelFormat(_format)
-		, m_hwWidth(_hwWidth)
-		, m_hwHeight(_hwHeight)
-		, m_hwPixelFormat(_hwPixelFormat)
-		, m_ref(1)
-		, m_uv(0.f, 0.f, 1.f, 1.f)
+	RenderSubTexture::RenderSubTexture( RenderTextureInterface * _texture
+						, const Rect & _rect
+						, size_t _id
+						, RenderTextureInterfaceListener * _listener )
+		: m_texture(_texture)
+		, m_rect(_rect)
+		, m_listener(_listener)
 		, m_id(_id)
-	{
-		//if( _width != _hwWidth 
-		//	|| _height != _hwHeight )
-		//{
-		//	m_uvMask = new mt::mat4f();
-		//	mt::ident_m4( *m_uvMask );
-		//	m_uvMask->v0.x = static_cast<float>( _width ) / _hwWidth;
-		//	m_uvMask->v1.y = static_cast<float>( _height ) / _hwHeight;
-		//}
+	{		
+		size_t texture_width = m_texture->getWidth();
+		size_t texture_height = m_texture->getHeight();
+
+		m_uv.x = float(m_rect.left) / float(texture_width);
+		m_uv.y = float(m_rect.top) / float(texture_height);
+		m_uv.z = float(m_rect.right) / float(texture_width);
+		m_uv.w = float(m_rect.bottom) / float(texture_height);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderSubTexture::~RenderSubTexture()
 	{
-		//if( m_uvMask != NULL )
-		//{
-		//	delete m_uvMask;
-		//	m_uvMask = NULL;
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderSubTexture::getInterface() const
 	{
-		return m_iTexture;
+		return m_texture->getInterface();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderSubTexture::setName( const ConstString & _name )
+	size_t RenderSubTexture::getId() const
 	{
-		m_name = _name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & RenderSubTexture::getName() const
-	{
-		return m_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderSubTexture::getWidth() const
-	{
-		return m_width;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderSubTexture::getHeight() const
-	{
-		return m_height;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PixelFormat RenderSubTexture::getPixelFormat() const
-	{
-		return m_pixelFormat;
+		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderSubTexture::addRef() const
 	{
-		return ++m_ref;
+		++m_ref;
+
+		return m_ref;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderSubTexture::decRef() const
 	{
-		return --m_ref;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	unsigned char* RenderSubTexture::lock( int* _pitch, bool _readOnly /*= true */ ) const
-	{
-		return m_iTexture->lock( _pitch, _readOnly );
-	}
-    /////////////////////////////////////////////////////////////////////////////
-	unsigned char* RenderSubTexture::lockRect( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
-	{
-		return m_iTexture->lockRect( _pitch, _rect, _readOnly );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderSubTexture::unlock() const
-	{
-		m_iTexture->unlock();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderSubTexture::getHWWidth() const
-	{
-		return m_hwWidth;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderSubTexture::getHWHeight() const
-	{
-		return m_hwHeight;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Menge::PixelFormat RenderSubTexture::getHWPixelFormat() const
-	{
-		return m_hwPixelFormat;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderSubTexture::loadImageData( ImageDecoderInterface* _imageDecoder )
-	{
-		int pitch = 0;
-		unsigned char* textureBuffer = lock( &pitch, false );
-
-		if( textureBuffer == NULL )
+		if( --m_ref == 0 )
 		{
-			MENGE_LOG_ERROR("Texture::loadImageData: Invalid lock");
-
-			return false;
+			m_listener->onRenderTextureRelease();
 		}
 
-
-		bool result = loadImageData( textureBuffer, pitch, _imageDecoder );
-		unlock();
-
-		return result;
+		return m_ref;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderSubTexture::loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder )
+	const Rect & RenderSubTexture::getRect() const
 	{
-		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
-
-		ImageCodecOptions options;
-
-		if( dataInfo->format == PF_R8G8B8
-			&& m_hwPixelFormat == PF_X8R8G8B8 )
-		{
-			options.flags |= DF_COUNT_ALPHA;
-		}
-
-		if( _texturePitch != m_width )
-		{
-			options.pitch = _texturePitch;
-
-			options.flags |= DF_CUSTOM_PITCH;
-		}		
-
-		_imageDecoder->setOptions( &options );
-
-		unsigned int bufferSize = _texturePitch * m_height;
-		unsigned int b = _imageDecoder->decode( _textureBuffer, bufferSize );
-		if( dataInfo->format == PF_A8
-			&& m_hwPixelFormat == PF_A8R8G8B8 )		// need to sweezle alpha
-		{
-			for( size_t h = dataInfo->height-1; h != -1; --h )
-			{
-				int hp = h*_texturePitch;
-				for( size_t w = dataInfo->width-1; w != -1; --w )
-				{
-					_textureBuffer[hp+w*4+3] = _textureBuffer[hp+w];
-				}
-			}
-		}
-		/*if( b == 0 )
-		{
-		assert( 0 );
-		}*/
-
-		// copy pixels on the edge for better image quality
-		if( m_hwWidth > m_width )
-		{
-			unsigned char* image_data = _textureBuffer;
-			unsigned int pixel_size = _texturePitch / m_hwWidth;
-
-			for( size_t i = 0; i != m_height; ++i )
-			{
-				std::copy( image_data + (m_width - 1) * pixel_size, 
-					image_data + m_width * pixel_size,
-					image_data + m_width * pixel_size );
-				image_data += _texturePitch;
-			}
-		}
-
-		if( m_hwHeight > m_height )
-		{
-			unsigned char* image_data = _textureBuffer;
-			unsigned int pixel_size = _texturePitch / m_hwWidth;
-			std::copy( image_data + (m_height - 1) * _texturePitch,
-				image_data + m_height * _texturePitch,
-				image_data + m_height * _texturePitch );
-		}
-
-		return true;
+		return m_rect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & RenderSubTexture::getUV() const
@@ -216,9 +74,60 @@ namespace Menge
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int RenderSubTexture::getID() const
+	void RenderSubTexture::setFileName( const WString & _filename )
 	{
-		return m_id;
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const WString & RenderSubTexture::getFileName() const
+	{
+		return m_dummy;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderSubTexture::getWidth() const
+	{
+		return m_rect.getWidth();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderSubTexture::getHeight() const
+	{
+		return m_rect.getHeight();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PixelFormat RenderSubTexture::getPixelFormat() const
+	{
+		return m_texture->getPixelFormat();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned char * RenderSubTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly ) const
+	{
+		Rect rect;
+
+		rect.left = m_rect.left + _rect.left;
+		rect.top = m_rect.top + _rect.top;
+		rect.right = m_rect.left + _rect.right;
+		rect.bottom = m_rect.top + _rect.bottom;
+
+		return m_texture->lock( _pitch, rect, _readOnly );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderSubTexture::unlock() const
+	{
+		m_texture->unlock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderSubTexture::getHWWidth() const
+	{
+		return m_texture->getHWWidth();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderSubTexture::getHWHeight() const
+	{
+		return m_texture->getHWHeight();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PixelFormat RenderSubTexture::getHWPixelFormat() const
+	{
+		return m_texture->getHWPixelFormat();
+	}
 }	// namespace Menge

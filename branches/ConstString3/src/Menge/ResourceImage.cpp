@@ -67,7 +67,7 @@ namespace Menge
 			return false;
 		}
 
-		bool res = prepareImageFrame_( _frame, texture );
+		bool res = this->prepareImageFrame_( _frame, texture );
 
 		return res;
 	}

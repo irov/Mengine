@@ -86,8 +86,8 @@ namespace Menge
 			double timing = Magic_GetUpdateTime( _emitter );
 
 			double curTime = Magic_GetInterval1( _emitter );
-			unsigned int height = 0;
-			unsigned int width = 0;
+			size_t height = 0;
+			size_t width = 0;
 
 			Magic_Restart( _emitter );
 			Magic_EmitterToInterval1( _emitter, 1 ,NULL );

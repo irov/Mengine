@@ -12,8 +12,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX8RenderTexture::DX8RenderTexture( IDirect3DTexture8* _d3dInterface, IDirect3DSurface8* _depthInterface )
-		: DX8Texture(_d3dInterface)
+	DX8RenderTexture::DX8RenderTexture( IDirect3DTexture8* _d3dInterface, size_t _width, size_t _height, IDirect3DSurface8* _depthInterface )
+		: DX8Texture(_d3dInterface, _width, _height)
 		, m_depthInterface(_depthInterface)
 		, m_dirty(true)
 	{
@@ -21,7 +21,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderTexture::~DX8RenderTexture()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderTexture::isDirty() const

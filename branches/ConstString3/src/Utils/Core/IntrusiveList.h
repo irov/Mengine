@@ -169,10 +169,10 @@ namespace Menge
 			: public const_iterator
 		{
 		public:
-			iterator()
-				: const_iterator::m_node()
-			{
-			}
+			//iterator()
+			//	: const_iterator::m_node(NULL)
+			//{
+			//}
 
 			iterator( TLinked * _node )
 				: const_iterator(_node)

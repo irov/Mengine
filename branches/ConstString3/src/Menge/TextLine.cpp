@@ -38,7 +38,8 @@ namespace Menge
 
 			if ( _resource->hasGlyph( code ) == false )
 			{
-				MENGE_LOG_ERROR( "TextLine invalid glyph %i"
+				MENGE_LOG_ERROR( "TextLine for resource %s invalid glyph %i"
+					, _resource->getName().c_str()
 					, code
 					);
 

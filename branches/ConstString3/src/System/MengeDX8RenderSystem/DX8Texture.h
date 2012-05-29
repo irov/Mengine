@@ -18,18 +18,18 @@ namespace Menge
 		: public RenderImageInterface
 	{
 	public:
-		DX8Texture( IDirect3DTexture8* _d3dInterface );
-		virtual ~DX8Texture();
+		DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _width, size_t _height );
+		~DX8Texture();
 
 	public:
-		IDirect3DTexture8* getInterface();
-
-		size_t getWidth() const;
-		size_t getHeight() const;
+		IDirect3DTexture8 * getInterface() const;
 
 	public:
-		unsigned char* lock( int* _pitch, bool _readOnly = true ) override;
-        unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
+		size_t getHWWidth() const;
+		size_t getHWHeight() const;
+
+	public:
+        unsigned char * lock( int* _pitch, const Rect& _rect, bool _readOnly ) override;
 		void unlock() override;
         		
 	public:
@@ -37,6 +37,10 @@ namespace Menge
 
 	protected:
 		IDirect3DTexture8* m_d3dInterface;
+
+		size_t m_width;
+		size_t m_height;
+
 		size_t m_hwWidth;
 		size_t m_hwHeight;
 	};

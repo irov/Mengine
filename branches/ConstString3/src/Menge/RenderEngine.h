@@ -27,6 +27,8 @@ namespace Menge
 	class RenderTexture;
 	struct Vertex2D;
 
+	struct ImageCodecDataInfo;
+
 	enum ELogicPrimitiveType
 	{
 		LPT_QUAD = 0,
@@ -92,25 +94,33 @@ namespace Menge
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
 		bool createMaterialGroup( const ConstString & _name, const RenderMaterial & _material );
-		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name );
+		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const;
 		void removeMaterialGroup( const ConstString & _name );
 
 		bool hasTexture( const WString & _filename );
-
+		
 		RenderTextureInterface * createTexture( size_t _width, size_t _height, PixelFormat _format ) override;
-		void releaseTexture( const RenderTextureInterface* _texture ) override;
-
-		void cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture );
-		
-		//Astralax
+		RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) override;
 		RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) override;
-		
+		void releaseTexture( const RenderTextureInterface* _texture ) override;
+				
 		void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
 		void setSeparateAlphaBlendMode() override;
 
 		//RenderTextureInterface * getTexture( const ConstString & _name ) const;
 		//bool validTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
+
+	public:
+		bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface * _imageDecoder ) override;
+		bool loadBufferImageData( unsigned char * _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, ImageDecoderInterface * _imageDecoder ) override;
+
+	protected:
+		void sweezleAlpha_( unsigned char * _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, const ImageCodecDataInfo * _dataInfo );
+		void imageQuality_( unsigned char * _textureBuffer, size_t _texturePitch );
+
+	public:
+		void cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture );
 
 		RenderTextureInterface* loadTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
 		RenderTextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const WString & _fileNameRGB, const WString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );

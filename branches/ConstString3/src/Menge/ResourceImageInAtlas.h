@@ -49,6 +49,7 @@ namespace Menge
         		
 	protected:
 		ResourceImage::ImageFrame m_imageFrame;
+
 	private:
 		struct ImageDesc
 		{

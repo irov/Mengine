@@ -124,9 +124,41 @@ namespace Menge
 			RenderEngine::get()
 				->cacheFileTexture( job.filename, job.texture );
 
-			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
 
-			job.texture->loadImageData( job.textureBuffer, job.textureBufferPitch, job.decoder );
+			Rect rect;
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = dataInfo->width;
+			rect.bottom = dataInfo->height;
+
+			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), rect, false );
+
+			//job.texture->loadImageData( job.textureBuffer, job.textureBufferPitch, job.decoder );
+
+			ImageCodecOptions options;
+
+			PixelFormat hwPixelFormat = job.texture->getHWPixelFormat();
+
+			if( dataInfo->format == PF_R8G8B8
+				&& hwPixelFormat == PF_X8R8G8B8 )
+			{
+				options.flags |= DF_COUNT_ALPHA;
+			}
+
+			size_t width = job.texture->getWidth();
+
+			if( job.textureBufferPitch != dataInfo->width )
+			{
+				options.pitch = job.textureBufferPitch;
+
+				options.flags |= DF_CUSTOM_PITCH;
+			}
+
+			job.decoder->setOptions( &options );
+
+			RenderEngine::get()
+				->loadBufferImageData( job.textureBuffer, job.textureBufferPitch, hwPixelFormat, job.decoder );
+
 			job.decoder->destroy();
 			job.file->close();
 			job.texture->unlock();

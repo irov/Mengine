@@ -346,7 +346,7 @@ namespace Menge
 		//RenderEngine::get()->saveImage( m_renderImage,ConstString(""),String("d:\\temp.png"));
 		int pitch;
 		Rect rect( 0, 0, _frame->width, _frame->height );
-		unsigned char * source = m_renderImage->lockRect( &pitch, rect, true );
+		unsigned char * source = m_renderImage->lock( &pitch, rect, true );
 				
 		/*
 		FILE * fp = fopen("d://test.raw","w+");

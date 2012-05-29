@@ -958,7 +958,7 @@ namespace Menge
 			return NULL;
 		}
 
-		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface );
+		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface, _width, _height );
 
 		D3DSURFACE_DESC texDesc;
 		dxTextureInterface->GetLevelDesc( 0, &texDesc );
@@ -1021,7 +1021,7 @@ namespace Menge
 			return NULL;
 		}
 
-		DX8RenderTexture* dxTexture = new DX8RenderTexture( dxTextureInterface, dxSurfaceInterface );
+		DX8RenderTexture* dxTexture = new DX8RenderTexture( dxTextureInterface, tex_width, tex_height, dxSurfaceInterface );
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////

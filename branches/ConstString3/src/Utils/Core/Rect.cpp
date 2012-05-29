@@ -11,7 +11,7 @@ namespace Menge
 	{
 	}
 	/////////////////////////////////////////////////////////////////////////////////
-	Rect::Rect( int _left, int _top, int _right, int _bottom )
+	Rect::Rect( size_t _left, size_t _top, size_t _right, size_t _bottom )
 		: left(_left)
 		, top(_top)
 		, right(_right)

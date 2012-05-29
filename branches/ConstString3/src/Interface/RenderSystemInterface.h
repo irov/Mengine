@@ -263,11 +263,16 @@ namespace Menge
 	class RenderImageInterface
 	{
 	public:	
-		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) = 0;
-        virtual unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
+        virtual unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
 	};
 
+	class RenderTextureInterfaceListener
+	{
+	public:
+		virtual void onRenderTextureRelease() = 0;
+	};
+	
 	class ImageDecoderInterface;
 
 	class RenderTextureInterface
@@ -280,6 +285,7 @@ namespace Menge
 		virtual size_t addRef() const = 0;
 		virtual size_t decRef() const = 0;
 
+		virtual const Rect & getRect() const = 0;
 		virtual const mt::vec4f & getUV() const = 0;
 
 		virtual void setFileName( const WString & _filename ) = 0;
@@ -287,18 +293,15 @@ namespace Menge
 
 		virtual size_t getWidth() const = 0;
 		virtual size_t getHeight() const = 0;
+
 		virtual PixelFormat getPixelFormat() const = 0;
 
-		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) const = 0;
-		virtual unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) const = 0;
+		virtual unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) const = 0;
 		virtual void unlock() const = 0;
 
 		virtual size_t getHWWidth() const = 0;
 		virtual size_t getHWHeight() const = 0;
-		virtual PixelFormat getHWPixelFormat() const = 0;
-
-		virtual bool loadImageData( ImageDecoderInterface* _imageDecoder ) = 0;
-		virtual bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) = 0;				
+		virtual PixelFormat getHWPixelFormat() const = 0;				
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
@@ -449,15 +452,22 @@ namespace Menge
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
-		virtual void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect ) = 0;
-		virtual void releaseTexture( const RenderTextureInterface* _texture ) = 0;
+		virtual void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect ) = 0;		
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual bool getVSync() const = 0;
 		virtual void setSeparateAlphaBlendMode() = 0;
-	public:
-		virtual RenderTextureInterface* createTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
-		virtual RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
 
+	public:
+		virtual RenderTextureInterface * createTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) = 0;
+		virtual RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual void releaseTexture( const RenderTextureInterface* _texture ) = 0;
+
+	public:
+		virtual bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface * _imageDecoder ) = 0;
+		virtual bool loadBufferImageData( unsigned char* _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, ImageDecoderInterface * _imageDecoder ) = 0;
+
+	public:
 		virtual void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) = 0;
 	};
 }

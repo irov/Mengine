@@ -1444,7 +1444,7 @@ namespace Menge
 
 			const ConstString& renderTarget = camera->getRenderTarget();
 			
-			if( renderTarget != m_currentRenderTarget )
+			if( renderTarget != m_currentRenderTarget && renderTarget.empty() == false )
 			{
 				m_currentRenderTarget = renderTarget;
 				m_interface->setRenderTarget( NULL, true );

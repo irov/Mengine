@@ -543,7 +543,7 @@ namespace Menge
 			glLoadIdentity();
 		}*/
 	}
-    ///
+    //////////////////////////////////////////////////////////////////////////
     void OGLRenderSystem::setWorldMatrix( const mt::mat4f & _world )
     {
         //!!!!!!!!!!!!!!
@@ -801,7 +801,7 @@ namespace Menge
 				glScalef( 1.0f, -1.0f, 1.0f );
 				glTranslatef( 0.0f, -1.0f, 0.0f );
 			}
-			glMatrixMode( GL_MODELVIEW );
+			//glMatrixMode( GL_MODELVIEW );
 
 		}
 		else
@@ -1333,7 +1333,10 @@ namespace Menge
 #elif TARGET_OS_MAC && !TARGET_OS_IPHONE
 		glViewport( _viewport.begin.x, _viewport.begin.y, w, h );
 #else
-        glViewport( 768 - (_viewport.begin.y + h), 1024 - (_viewport.begin.x + w), h, w );
+        float bx = 768.f - (_viewport.begin.y + h);
+        float by = 1024.f - (_viewport.begin.x + w);
+        
+        glViewport( bx, by, h, w );
 #endif
 		//glScissor( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
 
@@ -1343,17 +1346,17 @@ namespace Menge
 
 #	if WIN32
 		//glScalef( 1.f, -1.f, 1.f );
-		glOrtho( _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, -9999., 9999. );
+		glOrtho( _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, -9999.f, 9999.f );
 #	elif TARGET_OS_MAC && !TARGET_OS_IPHONE
         glScalef( 1.f, -1.f, 1.f );
-		glOrtho( _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, -9999., 9999. );
+		glOrtho( _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, -9999.f, 9999.f );
 #	else
         glScalef( 1.f, -1.f, 1.f );
-        glOrthof( _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, -9999., 9999. );
-        //glOrthof( 0.f, h, 0.f, w, -9999., 9999. );
+		
+        glOrthof( _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, -9999.f, 9999.f );
+
 		glRotatef( 90.f, 0.f, 0.f, 1.f );
-        
-		glTranslatef( 0.f, -768, 0.f );
+		glTranslatef( 0.f, -768.f, 0.f );
 #	endif
 		
 		glMatrixMode( GL_MODELVIEW );

@@ -58,4 +58,5 @@ TARGET_LINK_LIBRARIES( IOSApplication ${EXTRA_LIBS})
             
 set_property( TARGET IOSApplication PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Mengine-Info.plist)
 
+
 MESSAGE( ${CMAKE_CURRENT_SOURCE_DIR}/Mengine-Info.plist )

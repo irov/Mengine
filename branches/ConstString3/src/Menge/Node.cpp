@@ -1164,11 +1164,6 @@ namespace Menge
 		}
 		else
 		{
-			if( m_debugMaterial == NULL )
-			{
-				return;
-			}
-
 			m_rendering = true;
 		}
 	}

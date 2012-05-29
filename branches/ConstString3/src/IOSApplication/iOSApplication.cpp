@@ -17,6 +17,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
 
+
 extern EAGLView * pEAGLView;
 
 namespace Menge

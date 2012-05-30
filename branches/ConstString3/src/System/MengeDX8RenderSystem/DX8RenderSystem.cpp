@@ -1025,19 +1025,6 @@ namespace Menge
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::releaseImage( RenderImageInterface * _image )
-	{
-		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
-		if( dxTexture == NULL )
-		{
-			return;
-		}
-
-		dxTexture->release();
-		
-		delete dxTexture;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::beginScene()
 	{
 		D3DDISPLAYMODE Mode;
@@ -1058,7 +1045,7 @@ namespace Menge
 				}
 
 				d3dppW.BackBufferFormat = Mode.Format;
-				if(s_format_id_(Mode.Format) < 4) 
+				if( s_format_id_(Mode.Format) < 4 ) 
 				{
 					m_screenBits = 16;
 				}

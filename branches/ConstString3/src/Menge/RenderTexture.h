@@ -19,7 +19,7 @@ namespace Menge
 		: public RenderTextureInterface
 	{
 	public:
-		RenderTexture( RenderImageInterface* _interface
+		RenderTexture( RenderImageInterface* _image
 				, size_t _width
 				, size_t _height
 				, PixelFormat _format
@@ -32,7 +32,8 @@ namespace Menge
 		~RenderTexture();
 		
 	public:
-		RenderImageInterface* getInterface() const override;
+		RenderImageInterface* getImage() const override;
+		void destroyImage() override;
 
 		size_t getId() const override;
 
@@ -43,6 +44,8 @@ namespace Menge
 		const WString & getFileName() const override;
 		
 		const Rect & getRect() const override;
+		const Rect & getHWRect() const override;
+
 		const mt::vec4f & getUV() const override;
 
 		size_t getWidth() const override;
@@ -58,10 +61,12 @@ namespace Menge
 		size_t getHWHeight() const override;
 		PixelFormat getHWPixelFormat() const override;
 
+		size_t getMemoryUse() const override;
+
 	protected:
 		mutable size_t m_ref;
 
-		RenderImageInterface* m_iTexture;
+		RenderImageInterface* m_image;
 		
 		WString m_filename;
 		

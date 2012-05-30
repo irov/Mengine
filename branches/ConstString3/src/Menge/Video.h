@@ -80,7 +80,7 @@ namespace Menge
 		ConstString m_resourceVideoName;
 		ConstString m_resourceSoundName;
 
-		const RenderTextureInterface * m_textures[1];
+		RenderTextureInterface * m_textures[1];
 		SoundEmitter* m_soundEmitter;
 
 		const RenderMaterialGroup * m_materialGroup;

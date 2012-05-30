@@ -8,12 +8,14 @@
 
 #	include "RenderTexture.h"
 
+#	include "Core/PixelFormat.h"
+
 #	include "LogEngine.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RenderTexture::RenderTexture( RenderImageInterface* _interface
+	RenderTexture::RenderTexture( RenderImageInterface* _image
 						, size_t _width
 						, size_t _height
 						, PixelFormat _format
@@ -21,7 +23,7 @@ namespace Menge
 						, size_t _hwHeight
 						, PixelFormat _hwPixelFormat
 						, size_t _id )
-		: m_iTexture(_interface)
+		: m_image(_image)
 		, m_width(_width)
 		, m_height(_height)
 		, m_pixelFormat(_format)
@@ -42,9 +44,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* RenderTexture::getInterface() const
+	RenderImageInterface* RenderTexture::getImage() const
 	{
-		return m_iTexture;
+		return m_image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderTexture::destroyImage()
+	{
+		m_image->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getId() const
@@ -77,6 +84,18 @@ namespace Menge
 		return m_pixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	size_t RenderTexture::getMemoryUse() const
+	{
+		size_t HWWidth = this->getHWWidth();
+		size_t HWHeight = this->getHWHeight();
+
+		PixelFormat HWFormat = this->getHWPixelFormat();
+
+		size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, HWFormat );
+
+		return memroy_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::addRef() const
 	{
 		return ++m_ref;
@@ -89,12 +108,12 @@ namespace Menge
     /////////////////////////////////////////////////////////////////////////////
 	unsigned char* RenderTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
 	{
-		return m_iTexture->lock( _pitch, _rect, _readOnly );
+		return m_image->lock( _pitch, _rect, _readOnly );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTexture::unlock() const
 	{
-		m_iTexture->unlock();
+		m_image->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getHWWidth() const
@@ -113,6 +132,11 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getRect() const
+	{
+		return m_rect;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Rect & RenderTexture::getHWRect() const
 	{
 		return m_rect;
 	}

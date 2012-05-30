@@ -12,12 +12,16 @@
 namespace Menge
 {
 	class Megatextures
+		: public RenderTextureInterfaceListener
 	{
 	public:
 		Megatextures( size_t _width, size_t _height, PixelFormat _format );
 
 	public:
 		RenderTextureInterface* createTexture( size_t _width, size_t _height );
+
+	protected:
+		void onRenderTextureRelease( const RenderTextureInterface * _texture ) override;
 
 	protected:
 		size_t m_width;
@@ -46,7 +50,7 @@ namespace Menge
 			bool dead;
 		};
 
-		typedef std::map<ConstString, Piece> TMapPieces; 
+		typedef std::map<const RenderTextureInterface *, Piece> TMapPieces; 
 		TMapPieces m_pieces;
 
 		size_t m_enumerator;

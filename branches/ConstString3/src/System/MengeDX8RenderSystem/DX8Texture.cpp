@@ -65,6 +65,13 @@ namespace Menge
 		m_d3dInterface->UnlockRect(0);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DX8Texture::destroy()
+	{
+		this->release();
+
+		delete this;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	IDirect3DTexture8 * DX8Texture::getInterface() const
 	{
 		return m_d3dInterface;

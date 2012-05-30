@@ -20,6 +20,8 @@
 #	include "RenderTexture.h"
 #	include "RenderSubTexture.h"
 
+#	include "Megatextures.h"
+
 #	include "Vertex.h"
 
 #	include "Core/PixelFormat.h"
@@ -97,6 +99,7 @@ namespace Menge
 		, m_dipCount(0)
 		, m_renderScale(0.f, 0.f)
 		, m_renderOffset(0.f, 0.f)
+		, m_megatextures(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -329,6 +332,9 @@ namespace Menge
 			this->createMaterialGroup( CONST_STRING(ParticleBlend), mt );
 		}
 
+
+		m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -367,7 +373,7 @@ namespace Menge
 		
 		m_nullTexture = dynamic_cast<RenderTexture*>(texture);
 		
-		if( m_nullTexture )
+		if( m_nullTexture != NULL )
 		{
 			Rect rect;
 			rect.left = 0;
@@ -418,11 +424,11 @@ namespace Menge
 		restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::screenshot( RenderTextureInterface* _image, const mt::vec4f & _rect )
+	void RenderEngine::screenshot( RenderTextureInterface* _texture, const mt::vec4f & _rect )
 	{
-		RenderImageInterface* iInterface = _image->getInterface();
+		RenderImageInterface* image = _texture->getImage();
 
-		m_interface->screenshot( iInterface, _rect.buff() );
+		m_interface->screenshot( image, _rect.buff() );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()
@@ -814,6 +820,81 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	RenderTextureInterface* RenderEngine::loadMegatexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec )
+	{
+		TMapTextures::iterator it_find = m_textures.find( _filename );
+
+		if( it_find != m_textures.end() )
+		{
+			it_find->second->addRef();
+
+			return it_find->second;
+		}
+
+		FileInputStreamInterface * stream = FileEngine::get()
+			->openInputFile( _pakName, _filename );
+
+		if( stream == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::loadTexture: Image file '%S' was not found"
+				, _filename.c_str() 
+				);
+
+			return NULL;
+		}
+
+		ImageDecoderInterface * imageDecoder = CodecEngine::get()
+			->createDecoderT<ImageDecoderInterface>( _codec, stream );
+
+		if( imageDecoder == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::loadTexture: Image decoder for file '%S' was not found"
+				, _filename.c_str() 
+				);
+
+			stream->close();
+
+			return NULL;
+		}
+
+		const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
+
+		if( dataInfo->format == PF_UNKNOWN )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::loadTexture: Image file '%S' Invalid format [PF_UNKNOWN]"
+				, _filename.c_str()
+				);
+
+			imageDecoder->destroy();
+
+			stream->close();
+
+			return NULL;
+		}
+
+		RenderTextureInterface * texture = m_megatextures->createTexture( dataInfo->width, dataInfo->height );
+
+		if( texture == NULL )
+		{
+			imageDecoder->destroy();
+
+			stream->close();
+
+			return NULL;
+		}
+
+		const Rect & rect = texture->getRect();
+		this->loadTextureRectImageData( texture, rect, imageDecoder );
+
+		imageDecoder->destroy();
+
+		stream->close();
+
+		this->cacheFileTexture( _filename, texture );
+
+		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const WString & _fileNameRGB, const WString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
 	{		
 		//WString textureName = _fileNameAlpha;
@@ -957,44 +1038,33 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseTexture( const RenderTextureInterface* _texture )
+	void RenderEngine::releaseTexture( RenderTextureInterface* _texture )
 	{
 		if( _texture == NULL )
 		{
 			return;
 		}
 
-		const RenderTexture* texture = 
-			static_cast<const RenderTexture*>( _texture );
-
-		if( texture->decRef() > 0 )
+		if( _texture->decRef() > 0 )
 		{
 			return;
 		}
 
-		const WString & filename = texture->getFileName();
+		const WString & filename = _texture->getFileName();
 		
 		m_textures.erase( filename );
 
-		this->destroyTexture_( texture );
+		this->destroyTexture_( _texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::destroyTexture_( const RenderTextureInterface * _texture )
+	void RenderEngine::destroyTexture_( RenderTextureInterface * _texture )
 	{
-		RenderImageInterface* image = _texture->getInterface();
+		size_t memroy_size = _texture->getMemoryUse();
 
-		size_t HWWidth = _texture->getHWWidth();
-		size_t HWHeight = _texture->getHWHeight();
-
-		PixelFormat HWFormat = _texture->getHWPixelFormat();
-
-		size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, HWFormat );
 		m_debugInfo.textureMemory -= memroy_size;
 		--m_debugInfo.textureCount;
-
-		m_interface->releaseImage( image );
-
-		delete _texture;
+		
+		_texture->destroyImage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface* _imageDecoder )
@@ -1277,9 +1347,9 @@ namespace Menge
 			if( texture->getId() != m_currentTexturesID[stageId] || m_currentTexturesID[stageId] != 0 )
 			{
 				m_currentTexturesID[stageId] = texture->getId();
-				RenderImageInterface* t = texture->getInterface();
+				RenderImageInterface * image = texture->getImage();
 
-				m_interface->setTexture( stageId, t );
+				m_interface->setTexture( stageId, image );
 			}
 
 			if( m_currentMaterial != material )
@@ -2341,9 +2411,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTargetTexture( RenderTextureInterface * _texture, bool _clear )
 	{
-		RenderImageInterface * _image = _texture->getInterface();
-		m_interface->setRenderTarget( _image, _clear );
-		restoreRenderSystemStates_();
+		RenderImageInterface * image = _texture->getImage();
+		
+		m_interface->setRenderTarget( image, _clear );
+
+		this->restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface * RenderEngine::createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format )

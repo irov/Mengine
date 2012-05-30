@@ -28,11 +28,15 @@ namespace Menge
 		_frame.size.x = width;
 		_frame.size.y = height;
 
-		float hwWidth = (float)texture->getHWWidth();
-		float hwHeight = (float)texture->getHWHeight();
+		const Rect & hwRect = texture->getHWRect();
+		
+		size_t hwWidth = texture->getHWWidth();
+		size_t hwHeight = texture->getHWHeight();
 
-		_frame.pow_scale.x = width / hwWidth;
-		_frame.pow_scale.y = height / hwHeight;
+		_frame.uv_scale.x = float(hwRect.left) / float(hwWidth);
+		_frame.uv_scale.y = float(hwRect.top) / float(hwHeight);
+		_frame.uv_scale.z = float(hwRect.right) / float(hwWidth);
+		_frame.uv_scale.w = float(hwRect.bottom) / float(hwHeight);
 
 		_frame.texture = texture;
 
@@ -54,28 +58,34 @@ namespace Menge
 	{
 		//printf( "loadImageFrame %s\n", _fileName.c_str() );
 
+		//RenderTextureInterface* texture = RenderEngine::get()
+		//	->loadMegatexture( _pakName, _fileName, _codec );
+
 		RenderTextureInterface* texture = RenderEngine::get()
 			->loadTexture( _pakName, _fileName, _codec );
 
 		if( texture == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: resource '%s' can't load image file '%S'"
-				, getName().c_str()
-				, _fileName.c_str() 
+				, this->getName().c_str()
+				, _fileName.c_str()
 				);
 
 			return false;
 		}
 
-		bool res = this->prepareImageFrame_( _frame, texture );
+		if( this->prepareImageFrame_( _frame, texture ) == false )
+		{
+			return false;
+		}
 
-		return res;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::loadImageFrameCombineRGBAndAlpha_( ImageFrame & _frame, const ConstString& _pakName,  const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB , const ConstString & _codecAlpha  ) const
 	{
 		RenderTextureInterface* texture = RenderEngine::get()
-			->loadTextureCombineRGBAndAlpha( _pakName, _fileNameRGB, _fileNameAlpha , _codecRGB ,_codecAlpha );
+			->loadTextureCombineRGBAndAlpha( _pakName, _fileNameRGB, _fileNameAlpha, _codecRGB, _codecAlpha );
 
 		if( texture == 0 )
 		{

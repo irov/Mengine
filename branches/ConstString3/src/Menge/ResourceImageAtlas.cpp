@@ -45,7 +45,7 @@ namespace Menge
 	void ResourceImageAtlas::_release()
 	{
 		RenderEngine::get()
-			->releaseTexture(m_texture);
+			->releaseTexture( m_texture );
 
 		m_texture = NULL;
 	}
@@ -104,7 +104,7 @@ namespace Menge
 		_frame.size.y = height;
 		_frame.maxSize = _frame.size;
 		_frame.uv_image = _frame.uv;
-		_frame.pow_scale = mt::vec2f( 1.0f, 1.0f );
+		_frame.uv_scale = mt::vec4f(0.f, 0.f, 1.0f, 1.0f);
 		_frame.isAlpha = true;
 
 		return true;

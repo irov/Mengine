@@ -129,7 +129,10 @@ namespace Menge
 			return false;
 		}
 
-		m_textureRatio = static_cast<float>( m_image->getWidth() ) / m_image->getHeight();
+		size_t width = m_image->getWidth();
+		size_t height = m_image->getHeight();
+
+		m_textureRatio = float(width) / float(height);
 
 		if( m_outlineImageFile.empty() == false )
 		{

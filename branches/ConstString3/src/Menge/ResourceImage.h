@@ -27,7 +27,9 @@ namespace Menge
 			mt::vec2f offset;
 			mt::vec4f uv_image;
 			mt::vec4f uv;
-			mt::vec2f pow_scale;		
+			mt::vec4f uv_scale;
+			//mt::vec2f pow_offset;
+			//mt::vec2f pow_scale;			
 
 			bool isAlpha;
 			bool wrapX;

@@ -20,10 +20,16 @@ namespace Menge
 						, size_t _id
 						, RenderTextureInterfaceListener * _listener )
 		: m_texture(_texture)
-		, m_rect(_rect)
+		, m_hwRect(_rect)
 		, m_listener(_listener)
 		, m_id(_id)
+		, m_ref(1)
 	{		
+		m_rect.left = 0;
+		m_rect.top = 0;
+		m_rect.right = m_hwRect.getWidth();
+		m_rect.bottom = m_hwRect.getHeight();
+
 		size_t texture_width = m_texture->getWidth();
 		size_t texture_height = m_texture->getHeight();
 
@@ -31,15 +37,28 @@ namespace Menge
 		m_uv.y = float(m_rect.top) / float(texture_height);
 		m_uv.z = float(m_rect.right) / float(texture_width);
 		m_uv.w = float(m_rect.bottom) / float(texture_height);
+
+		//m_rectWM.left = 0;
+		//m_rectWM.top = 0;
+		//m_rectWM.right = m_rect.getWidth();
+		//m_rectWM.bottom = m_rect.getHeight();
+
+		m_texture->addRef();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderSubTexture::~RenderSubTexture()
 	{
+		m_texture->decRef();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* RenderSubTexture::getInterface() const
+	RenderImageInterface* RenderSubTexture::getImage() const
 	{
-		return m_texture->getInterface();
+		return m_texture->getImage();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderSubTexture::destroyImage()
+	{
+		m_texture = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderSubTexture::getId() const
@@ -58,7 +77,10 @@ namespace Menge
 	{
 		if( --m_ref == 0 )
 		{
-			m_listener->onRenderTextureRelease();
+			if( m_listener != NULL )
+			{
+				m_listener->onRenderTextureRelease( this );
+			}
 		}
 
 		return m_ref;
@@ -69,6 +91,11 @@ namespace Menge
 		return m_rect;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const Rect & RenderSubTexture::getHWRect() const
+	{
+		return m_hwRect;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & RenderSubTexture::getUV() const
 	{
 		return m_uv;
@@ -76,12 +103,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderSubTexture::setFileName( const WString & _filename )
 	{
-		
+		m_fileName = _filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & RenderSubTexture::getFileName() const
 	{
-		return m_dummy;
+		return m_fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderSubTexture::getWidth() const
@@ -99,14 +126,19 @@ namespace Menge
 		return m_texture->getPixelFormat();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	size_t RenderSubTexture::getMemoryUse() const
+	{
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	unsigned char * RenderSubTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly ) const
 	{
 		Rect rect;
 
-		rect.left = m_rect.left + _rect.left;
-		rect.top = m_rect.top + _rect.top;
-		rect.right = m_rect.left + _rect.right;
-		rect.bottom = m_rect.top + _rect.bottom;
+		rect.left = m_hwRect.left + _rect.left;
+		rect.top = m_hwRect.top + _rect.top;
+		rect.right = m_hwRect.left + _rect.right;
+		rect.bottom = m_hwRect.top + _rect.bottom;
 
 		return m_texture->lock( _pitch, rect, _readOnly );
 	}

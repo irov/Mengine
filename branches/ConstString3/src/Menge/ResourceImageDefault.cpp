@@ -190,14 +190,14 @@ namespace Menge
 			}
 		}		
 
-		frame.uv = m_imageDesc.uv;
+		//frame.uv = m_imageDesc.uv;
 		frame.uv_image = m_imageDesc.uv;
 
 		frame.maxSize = m_imageDesc.maxSize;
 		frame.offset =  m_imageDesc.offset;
 
-		float ku = frame.uv.z - frame.uv.x;
-		float kv = frame.uv.w - frame.uv.y;
+		float ku = m_imageDesc.uv.z - m_imageDesc.uv.x;
+		float kv = m_imageDesc.uv.w - m_imageDesc.uv.y;
 		frame.size.x *= ku;
 		frame.size.y *= kv;
 
@@ -205,10 +205,10 @@ namespace Menge
 		//frame.size.y = ::floorf( frame.size.y + 0.5f );
 		//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
 
-		frame.uv.x *= frame.pow_scale.x;
-		frame.uv.y *= frame.pow_scale.y;
-		frame.uv.z *= frame.pow_scale.x;
-		frame.uv.w *= frame.pow_scale.y;
+		frame.uv.x = frame.uv_scale.x + (frame.uv_scale.z - frame.uv_scale.x) * m_imageDesc.uv.x;
+		frame.uv.y = frame.uv_scale.y + (frame.uv_scale.w - frame.uv_scale.y) * m_imageDesc.uv.y;
+		frame.uv.z = frame.uv_scale.x + (frame.uv_scale.z - frame.uv_scale.x) * m_imageDesc.uv.z;
+		frame.uv.w = frame.uv_scale.y + (frame.uv_scale.w - frame.uv_scale.y) * m_imageDesc.uv.w;
 
 		if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
 		{

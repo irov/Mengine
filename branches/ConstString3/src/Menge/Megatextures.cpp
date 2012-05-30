@@ -28,6 +28,7 @@ namespace Menge
 		
 		Megatextures::Piece piece;
 
+		piece.dead = false;
 		piece.atlas = it_atlas;
 
 		size_t new_id = ++m_enumerator;
@@ -47,14 +48,37 @@ namespace Menge
 		rect.right = x + _width;
 		rect.bottom = y + _height;
 
+		if( rect.right > m_width || rect.bottom > m_height )
+		{
+			return NULL;
+		}
+
 		piece.texture = RenderEngine::get()
-			->createSubTexture( atlasTexture, rect, NULL ); //TODO
-
-		piece.dead = false;
-
-		//m_pieces.insert( std::make_pair(_name, piece) );
+			->createSubTexture( atlasTexture, rect, this ); //TODO
+		
+		m_pieces.insert( std::make_pair(piece.texture, piece) );
 				
 		return piece.texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Megatextures::onRenderTextureRelease( const RenderTextureInterface * _texture )
+	{
+		TMapPieces::iterator it_found = m_pieces.find( _texture );
+
+		if( it_found == m_pieces.end() )
+		{			
+			return;
+		}
+
+		Piece & piece = it_found->second;
+
+		Atlas & atlas = *(piece.atlas);
+
+		atlas.allocator->removeBlock( piece.block );
+
+		piece.dead = true;
+
+		m_pieces.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Megatextures::TAtlases::iterator Megatextures::allocateBlock_( size_t _width, size_t _height, size_t & _x, size_t & _y, bool & _rotate )

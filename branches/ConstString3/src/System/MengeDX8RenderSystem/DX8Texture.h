@@ -19,10 +19,10 @@ namespace Menge
 	{
 	public:
 		DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _width, size_t _height );
-		~DX8Texture();
+		virtual ~DX8Texture();
 
 	public:
-		IDirect3DTexture8 * getInterface() const;
+		IDirect3DTexture8 * getInterface() const;		
 
 	public:
 		size_t getHWWidth() const;
@@ -31,6 +31,9 @@ namespace Menge
 	public:
         unsigned char * lock( int* _pitch, const Rect& _rect, bool _readOnly ) override;
 		void unlock() override;
+
+	public:
+		void destroy() override;
         		
 	public:
 		virtual void release();

@@ -30,7 +30,8 @@ namespace Menge
 		~RenderSubTexture();
 		
 	public:
-		RenderImageInterface* getInterface() const override;
+		RenderImageInterface* getImage() const override;
+		void destroyImage() override;
 
 		size_t getId() const override;
 
@@ -38,6 +39,8 @@ namespace Menge
 		size_t decRef() const override;
 
 		const Rect & getRect() const override;
+		const Rect & getHWRect() const override;
+
 		const mt::vec4f & getUV() const override;
 
 		void setFileName( const WString & _filename ) override;
@@ -47,6 +50,8 @@ namespace Menge
 		size_t getHeight() const override;
 
 		PixelFormat getPixelFormat() const override;
+		
+		size_t getMemoryUse() const override;
 
 		unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
 		void unlock() const override;
@@ -58,13 +63,14 @@ namespace Menge
 	protected:
 		RenderTextureInterface * m_texture;
 		Rect m_rect;
+		Rect m_hwRect;
 
 		RenderTextureInterfaceListener * m_listener;
 
 		mutable size_t m_ref;
 		mt::vec4f m_uv;
 
-		WString m_dummy;
+		WString m_fileName;
 
 		size_t m_id;
 	};

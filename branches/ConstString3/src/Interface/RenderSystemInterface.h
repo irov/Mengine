@@ -265,12 +265,17 @@ namespace Menge
 	public:	
         virtual unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
+
+	public:
+		virtual void destroy() = 0;
 	};
+
+	class RenderTextureInterface;
 
 	class RenderTextureInterfaceListener
 	{
 	public:
-		virtual void onRenderTextureRelease() = 0;
+		virtual void onRenderTextureRelease( const RenderTextureInterface * _texture ) = 0;
 	};
 	
 	class ImageDecoderInterface;
@@ -278,7 +283,8 @@ namespace Menge
 	class RenderTextureInterface
 	{
 	public:
-		virtual RenderImageInterface* getInterface() const = 0;
+		virtual RenderImageInterface* getImage() const = 0;
+		virtual void destroyImage() = 0;
 		
 		virtual size_t getId() const = 0;
 
@@ -286,6 +292,8 @@ namespace Menge
 		virtual size_t decRef() const = 0;
 
 		virtual const Rect & getRect() const = 0;
+		virtual const Rect & getHWRect() const = 0;
+
 		virtual const mt::vec4f & getUV() const = 0;
 
 		virtual void setFileName( const WString & _filename ) = 0;
@@ -302,6 +310,8 @@ namespace Menge
 		virtual size_t getHWWidth() const = 0;
 		virtual size_t getHWHeight() const = 0;
 		virtual PixelFormat getHWPixelFormat() const = 0;				
+
+		virtual size_t getMemoryUse() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
@@ -401,8 +411,6 @@ namespace Menge
 		// returns Texture interface handle or NULL if fails
 		virtual RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) = 0;
 
-		// удаления изображения
-		virtual void releaseImage( RenderImageInterface * _image ) = 0;
 		//
 		// отрисовка изображения
 
@@ -461,7 +469,7 @@ namespace Menge
 		virtual RenderTextureInterface * createTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
 		virtual RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) = 0;
 		virtual RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) = 0;
-		virtual void releaseTexture( const RenderTextureInterface* _texture ) = 0;
+		virtual void releaseTexture( RenderTextureInterface* _texture ) = 0;
 
 	public:
 		virtual bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface * _imageDecoder ) = 0;

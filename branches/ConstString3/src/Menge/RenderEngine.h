@@ -25,6 +25,9 @@ namespace Menge
 	//struct Material;
 	class Camera;
 	class RenderTexture;
+
+	class Megatextures;
+
 	struct Vertex2D;
 
 	struct ImageCodecDataInfo;
@@ -102,7 +105,7 @@ namespace Menge
 		RenderTextureInterface * createTexture( size_t _width, size_t _height, PixelFormat _format ) override;
 		RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) override;
 		RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) override;
-		void releaseTexture( const RenderTextureInterface* _texture ) override;
+		void releaseTexture( RenderTextureInterface* _texture ) override;
 				
 		void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
@@ -123,6 +126,7 @@ namespace Menge
 		void cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture );
 
 		RenderTextureInterface* loadTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
+		RenderTextureInterface* loadMegatexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
 		RenderTextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const WString & _fileNameRGB, const WString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
 				
 		bool saveImage( RenderTextureInterface* _image, const ConstString& _fileSystemName, const WString & _filename );
@@ -168,7 +172,7 @@ namespace Menge
 
 	private:
 		RenderPass * createRenderPass_();
-		void destroyTexture_( const RenderTextureInterface * _texture );
+		void destroyTexture_( RenderTextureInterface * _texture );
 
 		void renderPass_( const RenderObject* _renderObject );
 		void disableTextureStage_( size_t _stage );
@@ -190,6 +194,8 @@ namespace Menge
 		
 	private:
 		RenderSystemInterface * m_interface;
+
+		Megatextures * m_megatextures;
 
 		size_t m_maxQuadCount;
 

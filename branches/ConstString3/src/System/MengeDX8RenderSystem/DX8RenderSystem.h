@@ -136,9 +136,6 @@ namespace Menge
 		
 		// create render target image
 		RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height,  size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
-		// удаления изображения
-		void releaseImage( RenderImageInterface * _image ) override;
-		//
 		// отрисовка изображения
 
 		bool beginScene() override;

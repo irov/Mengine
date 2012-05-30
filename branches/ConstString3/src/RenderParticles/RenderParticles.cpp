@@ -288,6 +288,7 @@ namespace Menge
 		
 		m_renderService->setRenderTargetTexture( m_renderTargetImage ,true);
 		m_renderService->setSeparateAlphaBlendMode();
+
 		return true;	
 	}
 	//////////////////////////////////////////////////////////////////////////////

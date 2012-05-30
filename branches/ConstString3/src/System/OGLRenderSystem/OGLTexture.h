@@ -14,7 +14,6 @@
 
 namespace Menge
 {
-
 	class OGLTexture 
 		: public RenderImageInterface
 	{
@@ -23,9 +22,11 @@ namespace Menge
 		~OGLTexture();
 
 	public:
-		unsigned char* lock( int* _pitch, bool _readOnly /* = true  */ ) override;
-        unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
+        unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
 		void unlock() override;
+
+	public:
+		void destroy() override;
 
 	public:
 		GLuint uid;
@@ -33,6 +34,7 @@ namespace Menge
 		GLint internalFormat;
 		GLsizei width;
 		GLsizei height;
+		GLsizei numColors;
 		GLint border;
 		GLenum format;
 		GLenum type;

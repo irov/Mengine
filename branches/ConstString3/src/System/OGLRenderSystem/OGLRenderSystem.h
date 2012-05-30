@@ -115,7 +115,7 @@ namespace Menge
         
         RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
         
-		void releaseImage( RenderImageInterface * _image ) override;
+		void checkActiveTexture( GLuint uid );
 
 		bool beginScene() override;
 		void endScene() override;
@@ -141,9 +141,6 @@ namespace Menge
 
 		void setVSync( bool _vSync ) override;
 
-		void unlockTexture( GLuint _uid, GLint _internalFormat,
-			GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data );
-        
         void clear( uint32 _color ) override;
         
         void setSeparateAlphaBlendMode() override;

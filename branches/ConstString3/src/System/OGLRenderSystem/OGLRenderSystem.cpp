@@ -1059,6 +1059,7 @@ namespace Menge
 		texture->m_isRenderTarget = false;
 		texture->width = _width;
 		texture->height = _height;
+		texture->numColors = numColors;
 		texture->level = 0;
 		texture->border = 0;
 		texture->internalFormat = s_toGLInternalFormat( _format );
@@ -1068,7 +1069,7 @@ namespace Menge
 		texture->wrapT = GL_CLAMP_TO_EDGE;
 		texture->minFilter = GL_LINEAR;
 		texture->magFilter = GL_LINEAR;
-		texture->m_lock = new unsigned char[_width*_height*numColors];
+		
 		texture->pitch = _width * numColors;
 		texture->requestedWidth = requestedWidth;
 		texture->requestedHeight = requestedHeight;
@@ -1100,19 +1101,12 @@ namespace Menge
 		return image;
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::releaseImage( RenderImageInterface * _image )
+	void OGLRenderSystem::checkActiveTexture( GLuint uid );
 	{
-		OGLTexture* texture = static_cast<OGLTexture*>( _image );
-		if( m_activeTexture == texture->uid )
+		if( m_activeTexture == uid )
 		{
 			m_activeTexture = 0;
 		}
-		if( texture != NULL )
-		{
-			delete[] texture->m_lock;
-		}
-		glDeleteTextures( 1, &texture->uid );
-		delete texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OGLRenderSystem::beginScene()
@@ -1420,16 +1414,6 @@ namespace Menge
 	void OGLRenderSystem::setVSync( bool _vSync )
 	{
 		//m_windowContext->setVSync( _vSync );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::unlockTexture( GLuint _uid, GLint _internalFormat,
-		GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data )
-	{
-		glBindTexture( GL_TEXTURE_2D, _uid );
-
-		glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, _width, _height, 0, _format, _type, _data );
-
-		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 	}
     //////////////////////////////////////////////////////////////////////////
     void OGLRenderSystem::clear( uint32 _color )

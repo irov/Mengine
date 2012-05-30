@@ -78,6 +78,6 @@ namespace Menge
 
 		Account * m_currentAccount;
 
-		unsigned int m_playerEnumerator;
+		size_t m_playerEnumerator;
 	};
 }

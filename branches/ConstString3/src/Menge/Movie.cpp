@@ -965,6 +965,16 @@ namespace Menge
 			{
 				Node * node_parent = m_nodies[layer.parent];
 
+				if( node_parent == NULL )
+				{
+					MENGE_LOG_ERROR("Movie::updateParent_ %s invalid parent node %d"
+						, this->getName().c_str()
+						, layer.parent
+						);
+
+					continue;
+				}
+
 				node_parent->addChildren( node );
 			}
 

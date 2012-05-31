@@ -1101,7 +1101,7 @@ namespace Menge
 		return image;
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::checkActiveTexture( GLuint uid );
+	void OGLRenderSystem::checkActiveTexture( GLuint uid )
 	{
 		if( m_activeTexture == uid )
 		{

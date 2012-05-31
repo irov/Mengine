@@ -22,7 +22,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    unsigned char* OGLTexture::lockRect( int* _pitch, const Rect& _rect, bool _readOnly )
+    unsigned char* OGLTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
     {
 		m_lock = new unsigned char[width*height*numColors];
 		*_pitch = static_cast<int>(pitch);
@@ -36,7 +36,7 @@ namespace Menge
 
 		glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, m_lock );
 
-		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
+		glBindTexture( GL_TEXTURE_2D, uid );
 
 		delete [] m_lock;
 		m_lock = NULL;

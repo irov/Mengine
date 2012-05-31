@@ -128,9 +128,6 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
 		RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
-
-		// удаления изображения
-		void releaseImage( RenderImageInterface * _image ) override;
 		//
 		// отрисовка изображения
 

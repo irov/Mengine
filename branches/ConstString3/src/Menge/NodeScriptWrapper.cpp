@@ -3004,7 +3004,7 @@ namespace Menge
 			;
 
 		pybind::struct_<Rect>("Rect")
-			.def( pybind::init<int,int,int,int>() )
+			.def( pybind::init<size_t,size_t,size_t,size_t>() )
 			.def_convert( &ScriptMethod::Rect_convert )
 			.def_member( "left", &Rect::left )
 			.def_member( "top",  &Rect::top ) 
@@ -3605,7 +3605,7 @@ namespace Menge
 					.def("pause",&Video::pause )
 					.def( "setVideoResource", &Video::setVideoResource )
 					;
-				
+
 				pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
 					.def( "setClientSize", &Window::setClientSize )
 					.def( "setClientSizeClip", &Window::setClientSizeClip )
@@ -3624,7 +3624,7 @@ namespace Menge
 
 			pybind::def_function( "setCurrentScene", &ScriptMethod::setCurrentScene );
 			pybind::def_function( "getCurrentScene", &ScriptMethod::getCurrentScene );
-
+			 
 			
 			pybind::def_function( "hasScene", &ScriptMethod::s_hasScene );
 			pybind::def_function( "createScene", &ScriptMethod::s_createScene );

@@ -936,18 +936,6 @@ namespace Menge
 		return dxRenderTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::releaseImage( RenderImageInterface * _image )
-	{
-		DX9Texture* dxTexture = static_cast<DX9Texture*>( _image );
-		if( dxTexture == NULL )
-		{
-			return;
-		}
-		
-		dxTexture->release();
-		delete dxTexture;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::beginScene()
 	{
 		D3DDISPLAYMODE Mode;

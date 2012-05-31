@@ -28,9 +28,12 @@ namespace Menge
 
 		virtual void release();
 	public:
-		unsigned char* lock( int* _pitch, bool _readOnly = true ) override;
-		unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
+	public:
+		unsigned char * lock( int* _pitch, const Rect& _rect, bool _readOnly ) override;
 		void unlock() override;
+
+	public:
+		void destroy() override;
 
 	protected:
 		IDirect3DTexture9* m_d3dInterface;

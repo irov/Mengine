@@ -367,14 +367,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::addMovieNode_(const MovieLayer & _layer2D, Node * _node )
+	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node )
 	{		
-		m_nodies[_layer2D.index] = _node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::addMovieSlot_( const ConstString & _slotName, Node * _node )
-	{
-		m_slots.insert(std::make_pair( _slotName, _node ));
+		m_nodies[_layer.index] = _node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Movie::getMovieSlot( const ConstString & _name )
@@ -529,9 +524,10 @@ namespace Menge
 		layer_slot->enable();
 		layer_slot->localHide(true);
 
-		this->addMovieNode_( _layer, layer_slot );
-		this->addMovieSlot_( _layer.name, layer_slot );
+		m_slots.insert( std::make_pair(_layer.name, layer_slot) );
 
+		this->addMovieNode_( _layer, layer_slot );
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1155,13 +1151,6 @@ namespace Menge
 
 		//float lastTiming = m_timing;
 
-		//if( m_resourceMovieName.to_str() != "Movie205_Corridor_Env" 
-		//	&& m_resourceMovieName.to_str() != "Movie205_Corridor_Sledi"
-		//	)
-		//{
-		//	return;
-		//}
-
 		//Movie205_Corridor_Env
 			//Movie205_Corridor_Sledi
 		
@@ -1336,8 +1325,6 @@ namespace Menge
 							animatable->setTiming( timing );
 						}
 					}
-
-					continue;
 				}
 			}
 			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
@@ -1463,8 +1450,6 @@ namespace Menge
 						float timing = (indexOut - indexIn) * frameDuration;
 						animatable->setTiming( timing );
 					}
-
-					continue;
 				}
 			}
 			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )

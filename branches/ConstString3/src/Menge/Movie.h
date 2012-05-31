@@ -93,8 +93,7 @@ namespace Menge
 
 
 	protected:
-		void addMovieNode_(const MovieLayer & _layer2D, Node * _node );
-		void addMovieSlot_(const ConstString & _slotName, Node * _node );
+		void addMovieNode_( const MovieLayer & _layer, Node * _node );
 
 	protected:
 		void updateCurrentFrame_( size_t _lastFrame, bool _force );

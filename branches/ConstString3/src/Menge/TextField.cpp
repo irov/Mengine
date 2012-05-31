@@ -226,7 +226,7 @@ namespace Menge
 		TVectorVertex2D & textVertices = this->getTextVertices();
 		const RenderTextureInterface * fontTexture = m_resourceFont->getImage();
 
-		int countOfVertices;
+		size_t countOfVertices;
 		
 		if( m_maxCharCount == -1 )
 		{
@@ -253,7 +253,7 @@ namespace Menge
 			return;
 		}
 
-		int countOfVertices;
+		size_t countOfVertices;
 
 		if( m_maxCharCount == -1 )
 		{

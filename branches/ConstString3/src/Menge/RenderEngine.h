@@ -77,7 +77,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen );
 
 	public:
-		void renderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+		void renderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, size_t _texturesNum,
 			const Vertex2D * _vertices, size_t _verticesNum, 
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
@@ -103,6 +103,7 @@ namespace Menge
 		bool hasTexture( const WString & _filename );
 		
 		RenderTextureInterface * createTexture( size_t _width, size_t _height, PixelFormat _format ) override;
+		RenderTextureInterface * createMegatexture( size_t _width, size_t _height, PixelFormat _format );
 		RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) override;
 		RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, PixelFormat _format ) override;
 		void releaseTexture( RenderTextureInterface* _texture ) override;
@@ -184,7 +185,9 @@ namespace Menge
 		size_t makeBatch_( size_t _offset );
 		bool makeBatches_( bool & _overflow );
 		size_t batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos );
+		bool batchRenderObject_( RenderObject * _renderObject, RenderObject * _batchedObject, size_t & _verticesNum ) const;
 		size_t insertRenderObjects_( RenderPass * _pass, Vertex2D * _vertexBuffer, size_t _offset );
+		size_t insertRenderObject_( RenderObject * _renderObject, Vertex2D * _vertexBuffer, size_t _offset ) const;
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
@@ -280,6 +283,7 @@ namespace Menge
 		uint32 m_currentVertexDeclaration;
 
 		size_t m_dipCount;
+		
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;
@@ -288,5 +292,8 @@ namespace Menge
 		bool m_supportA8;
 
 		int m_idEnumerator;
+
+		RenderObject * m_batchedRenderObject;
+		size_t m_vertexBufferPos;
 	};
 }

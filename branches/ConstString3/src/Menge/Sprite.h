@@ -97,7 +97,7 @@ namespace Menge
 		const RenderMaterial * m_material;
 
 		bool m_disableTextureColor;
-		int m_texturesNum;
+		size_t m_texturesNum;
 		mt::vec2f m_textureMatrixOffset;
 
 		const RenderTextureInterface * m_textures[2];

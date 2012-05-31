@@ -18,6 +18,9 @@ namespace Menge
 		Megatextures( size_t _width, size_t _height, PixelFormat _format );
 
 	public:
+		PixelFormat getPixelFormat() const;
+
+	public:
 		RenderTextureInterface* createTexture( size_t _width, size_t _height );
 
 	protected:

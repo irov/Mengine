@@ -12,7 +12,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* Megatextures::createTexture( size_t _width, size_t _height )
+	PixelFormat Megatextures::getPixelFormat() const
+	{
+		return m_pixelFormat;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderTextureInterface * Megatextures::createTexture( size_t _width, size_t _height )
 	{
 		size_t x;
 		size_t y;

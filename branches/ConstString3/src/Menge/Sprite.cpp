@@ -35,7 +35,7 @@ namespace	Menge
 		, m_centerAlign(false)
 		, m_flipX(false)
 		, m_flipY(false)
-		, m_percent(0.0f, 0.0f, 0.0f, 0.0f)
+		, m_percentVisibility(0.0f, 0.0f, 0.0f, 0.0f)
 		, m_materialGroup(NULL)
 		, m_material(NULL)
 		, m_disableTextureColor(false)
@@ -212,8 +212,8 @@ namespace	Menge
 			
 			mt::vec2f offset = m_resource->getOffset();
 
-			mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
-				m_percent.z * maxSize.x, m_percent.w * maxSize.y );
+			mt::vec4f percentPx( m_percentVisibility.x * maxSize.x, m_percentVisibility.y * maxSize.y,
+				m_percentVisibility.z * maxSize.x, m_percentVisibility.w * maxSize.y );
 				
 			percentPx.x -= offset.x;
 			percentPx.y -= offset.y;
@@ -515,15 +515,15 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibility( const mt::vec4f& _percent )
 	{
-		m_percent = _percent;
+		m_percentVisibility = _percent;
 
-		invalidateVertices( ESVI_POSITION );
+		invalidateVertices( ESVI_FULL );
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Sprite::getPercentVisibility() const
 	{
-		return m_percent;
+		return m_percentVisibility;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setTextureMatrixOffset( const mt::vec2f& _offset )

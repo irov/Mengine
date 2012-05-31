@@ -91,7 +91,7 @@ namespace Menge
 		
 		bool m_solid;
 
-		mt::vec4f m_percent;
+		mt::vec4f m_percentVisibility;
 
 		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;

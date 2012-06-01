@@ -1475,7 +1475,7 @@ namespace Menge
 
 				Affector* affector =
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-					_cb, ETA_ANGLE, _node, &Node::setRotateZ
+					_cb, ETA_ANGLE, _node, &Node::setRotateX
 					, correct_angle_from, correct_angle_to, _time
 					, &fabsf 
 					);				
@@ -1508,7 +1508,7 @@ namespace Menge
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-					_cb, ETA_ANGLE, _node, &Node::setRotateZ
+					_cb, ETA_ANGLE, _node, &Node::setRotateX
 					, correct_angle_from, correct_angle_to, angularSpeed, _time
 					, &fabsf
 					);				
@@ -3115,8 +3115,8 @@ namespace Menge
 			.def( "getRotateY", &Transformation3D::getRotateY )
 			.def( "setRotateZ", &Transformation3D::setRotateZ )
 			.def( "getRotateZ", &Transformation3D::getRotateZ )
-			.def( "setAngle", &Transformation3D::setRotateZ )
-			.def( "getAngle", &Transformation3D::getRotateZ )
+			.def( "setAngle", &Transformation3D::setRotateX )
+			.def( "getAngle", &Transformation3D::getRotateX )
 
 			.def( "translate", &Transformation3D::translate )
 

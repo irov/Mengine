@@ -155,7 +155,7 @@ namespace Menge
 		mat_scale.v0.x = m_scale.x;
 		mat_scale.v1.y = m_scale.y;
 		mat_scale.v2.z = m_scale.z;
-
+		
 		mt::mat4f mat_rot;
 		mt::make_rotate_m4( mat_rot, m_rotateX, m_rotateY, m_rotateZ );
 		//mat_rot.v0.x = m_direction.x;

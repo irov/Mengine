@@ -1501,7 +1501,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport )
 	{
-		m_interface->makeProjectionOrthogonal( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, 0.0f, 1.0f );
+		m_interface->makeProjectionOrthogonal( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, -1000.0f, 1000.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )

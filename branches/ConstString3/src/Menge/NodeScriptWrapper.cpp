@@ -81,10 +81,6 @@
 
 #	include "Affector.h"
 
-//#	include "Layer3D.h"
-
-//#	include "FFCamera.h"
-#	include "SceneNode3D.h"
 #	include "Camera3D.h"
 #	include "RenderMesh.h"
 

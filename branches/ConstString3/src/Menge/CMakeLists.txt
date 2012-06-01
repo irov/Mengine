@@ -143,6 +143,7 @@ Engine\\\\Render
 ADD_FILTER(
 Engine\\\\Script
 	ScriptClassWrapper.h
+	ScriptClassInterface.h
 	ScriptEngine.cpp
 	ScriptEngine.h
 	ScriptLogger.h

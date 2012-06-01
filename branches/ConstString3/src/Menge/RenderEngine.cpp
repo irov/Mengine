@@ -36,42 +36,6 @@
 
 namespace Menge
 {
-	struct RenderObject
-	{
-		const RenderMaterial * material;
-
-		size_t textureStages;
-		const RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
-
-		const mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
-
-		ELogicPrimitiveType logicPrimitiveType;
-		EPrimitiveType primitiveType;
-
-		const Vertex2D * vertexData;
-		size_t verticesNum;
-		size_t minIndex;
-		size_t startIndex;
-
-		size_t dipIndiciesNum;
-		size_t dipVerticesNum;
-
-		IBHandle ibHandle;
-		size_t baseVertexIndex;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<RenderObject> TVectorRenderObject;
-	//////////////////////////////////////////////////////////////////////////
-	struct RenderPass
-	{
-		TVectorRenderObject renderObjects;
-
-		const RenderCameraInterface * camera;
-		//Viewport viewport;
-		//mt::mat4f viewMatrix;
-		//mt::mat4f projectionMatrix;
-		//mt::mat4f wm;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
 		: m_interface(NULL)
@@ -84,7 +48,6 @@ namespace Menge
 		, m_currentIBHandle(0)
 		, m_currentBaseVertexIndex(0)
 		, m_currentTextureStages(0)
-		, m_currentPass(NULL)
 		, m_currentRenderCamera(NULL)
 		, m_nullTexture(NULL)
 		, m_currentVertexDeclaration(0)
@@ -106,14 +69,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
 	{
-		//for( TVectorRenderPass::iterator
-		//	it = m_passes.begin(),
-		//	it_end = m_passes.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	m_poolRenderPass.release( *it );
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize( size_t _maxQuadCount )
@@ -1227,19 +1182,10 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()
-	{	
-		for( TVectorRenderPass::iterator 
-			it = m_passes.begin(), 
-			it_end = m_passes.end();
-		it != it_end;
-		++it )
-		{
-			this->releaseRenderPass_( *it );
-		}
-		
-		m_passes.clear();
+	{		
+		m_renderPasses.clear();
+		m_renderObjects.clear();
 
-		m_currentPass = NULL;
 		m_currentRenderCamera = NULL;
 
 		m_currentRenderTarget = Consts::get()->c_Window;
@@ -1582,17 +1528,6 @@ namespace Menge
 		mt::inv_m4( _viewMatrix, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderPass * RenderEngine::createRenderPass_()
-	{
-		RenderPass* pass = m_poolRenderPass.get();
-		
-		pass->renderObjects.clear();
-
-		m_passes.push_back( pass );
-
-		return pass;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const RenderEngine::DebugInfo& RenderEngine::getDebugInfo() const
 	{
 		return m_debugInfo;
@@ -1617,20 +1552,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render_()
 	{
-		if( m_passes.empty() == true )	// nothing to render
+		if( m_renderPasses.empty() == true )	// nothing to render
 		{
 			return;
 		}
 
 		for( TVectorRenderPass::iterator 
-			rit = m_passes.begin(), 
-			rit_end = m_passes.end();
+			rit = m_renderPasses.begin(), 
+			rit_end = m_renderPasses.end();
 		rit != rit_end;
 		++rit )
 		{
-			RenderPass * renderPass = *rit;
+			RenderPass & renderPass = *rit;
 
-			const RenderCameraInterface * camera = renderPass->camera;
+			const RenderCameraInterface * camera = renderPass.camera;
 
 			const ConstString& renderTarget = camera->getRenderTarget();
 			
@@ -1657,15 +1592,17 @@ namespace Menge
 			const mt::mat4f & projectionMatrix = camera->getProjectionMatrix();
 			m_interface->setProjectionMatrix( projectionMatrix );
 
-			const TVectorRenderObject & renderObjects = renderPass->renderObjects;
+			const TVectorRenderObject & renderObjects = m_renderObjects;
 
-			for( TVectorRenderObject::const_iterator 
-				it = renderObjects.begin(), 
-				it_end = renderObjects.end();
-			it != it_end; 
-			++it )
+			TVectorRenderObject::iterator it_begin = m_renderObjects.begin();
+			std::advance( it_begin, renderPass.beginRenderObject );
+
+			TVectorRenderObject::iterator it_end = m_renderObjects.begin();
+			std::advance( it_end, renderPass.beginRenderObject + renderPass.countRenderObject );
+
+			for( ;it_begin != it_end; ++it_begin )
 			{
-				const RenderObject* renderObject = &(*it);
+				const RenderObject* renderObject = &(*it_begin);
 
 				this->renderPass_( renderObject );
 			}			
@@ -1696,9 +1633,12 @@ namespace Menge
 		{
 			m_currentRenderCamera = _camera;
 
-			m_currentPass = this->createRenderPass_();
+			RenderPass pass;
+			pass.beginRenderObject = m_renderObjects.size();
+			pass.countRenderObject = 0;
+			pass.camera = m_currentRenderCamera;
 
-			m_currentPass->camera = m_currentRenderCamera;			
+			m_renderPasses.push_back( pass );
 		}
 
 		RenderObject renderObject;
@@ -1753,27 +1693,10 @@ namespace Menge
 			ro->primitiveType = PT_TRIANGLELIST;
 		}
 
-		m_currentPass->renderObjects.push_back( *ro );
-		//if( m_currentPass->renderObjects.empty() == true )
-		//{
-		//	if( this->batchRenderObject_( ro, NULL, m_vertexBufferPos ) == false )
-		//	{
-		//		m_currentPass->renderObjects.push_back( *ro );
-		//		//*m_batchedRenderObject = *ro;
-		//	}
-		//}
-		//else
-		//{
-		//	RenderObject * batchedRenderObject = &m_currentPass->renderObjects.back();
+		m_renderObjects.push_back( *ro );
 
-		//	if( this->batchRenderObject_( ro, batchedRenderObject, m_vertexBufferPos ) == false )
-		//	{
-		//		m_currentPass->renderObjects.push_back( *ro );
-		//		//*m_batchedRenderObject = *ro;
-		//	}
-		//}
-
-		//m_currentPass->renderObjects.push_back( *ro );
+		RenderPass & pass = m_renderPasses.back();
+		++pass.countRenderObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, size_t _count )
@@ -1885,12 +1808,12 @@ namespace Menge
 		size_t vbPos = _offset;
 
 		for( TVectorRenderPass::iterator 
-			it = m_passes.begin(), 
-			it_end = m_passes.end();
+			it = m_renderPasses.begin(), 
+			it_end = m_renderPasses.end();
 		it != it_end;
 		++it )
 		{
-			RenderPass * pass = (*it);
+			RenderPass * pass = &(*it);
 
 			vbPos += batchRenderObjects_( pass, vbPos );
 		}
@@ -1945,15 +1868,15 @@ namespace Menge
 
 		size_t offset = 0;
 		
-		Vertex2D * vertexBuffer = (Vertex2D *)vData;
+		Vertex2D * vertexBuffer = static_cast<Vertex2D *>(vData);
 
 		for( TVectorRenderPass::iterator 
-			it = m_passes.begin(), 
-			it_end = m_passes.end();
+			it = m_renderPasses.begin(), 
+			it_end = m_renderPasses.end();
 			it != it_end;
 			++it )
 		{
-			RenderPass * pass = (*it);
+			RenderPass * pass = &(*it);
 			
 			offset = this->insertRenderObjects_( pass, vertexBuffer, offset );
 		}
@@ -2002,20 +1925,20 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos )
+	size_t RenderEngine::batchRenderObjects_( RenderPass * _renderPass, size_t _startVertexPos )
 	{
 		RenderObject* batchedRO = NULL;
 		size_t verticesNum = _startVertexPos;
 
-		TVectorRenderObject & renderObjects = _pass->renderObjects;
+		TVectorRenderObject::iterator it_begin = m_renderObjects.begin();
+		std::advance( it_begin, _renderPass->beginRenderObject );
 
-		for( TVectorRenderObject::iterator 
-			it = renderObjects.begin(), 
-			it_end = renderObjects.end();
-		it != it_end;
-		++it )
+		TVectorRenderObject::iterator it_end = m_renderObjects.begin();
+		std::advance( it_end, _renderPass->beginRenderObject + _renderPass->countRenderObject );
+
+		for( ; it_begin != it_end; ++it_begin )
 		{
-			RenderObject * renderObject = &(*it);
+			RenderObject * renderObject = &(*it_begin);
 
 			if( this->batchRenderObject_( renderObject, batchedRO, verticesNum ) == false )
 			{
@@ -2050,17 +1973,17 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::insertRenderObjects_( RenderPass * _pass, Vertex2D * _vertexBuffer, size_t _offset )
+	size_t RenderEngine::insertRenderObjects_( RenderPass * _renderPass, Vertex2D * _vertexBuffer, size_t _offset )
 	{
-		TVectorRenderObject & renderObjects = _pass->renderObjects;
+		TVectorRenderObject::iterator it_begin = m_renderObjects.begin();
+		std::advance( it_begin, _renderPass->beginRenderObject );
 
-		for( TVectorRenderObject::iterator
-			it = renderObjects.begin(), 
-			it_end = renderObjects.end();
-		it != it_end;
-		++it )
+		TVectorRenderObject::iterator it_end = m_renderObjects.begin();
+		std::advance( it_end, _renderPass->beginRenderObject + _renderPass->countRenderObject );
+
+		for( ; it_begin != it_end; ++it_begin )
 		{
-			RenderObject* ro = &(*it);
+			RenderObject * ro = &(*it_begin);
 
 			_offset = this->insertRenderObject_( ro, _vertexBuffer, _offset );			
 		}
@@ -2151,13 +2074,6 @@ namespace Menge
 			m_currentVertexDeclaration = Vertex3D_declaration;
 			m_interface->setVertexDeclaration( sizeof(Vertex3D), m_currentVertexDeclaration );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderPass_( RenderPass* _pass )
-	{
-		_pass->renderObjects.clear();
-
-		m_poolRenderPass.release( _pass );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderEngine::refillIndexBuffer2D_()
@@ -2308,7 +2224,8 @@ namespace Menge
 
 		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
 
-		m_poolRenderPass.initialize(25);
+		m_renderObjects.reserve(1000);
+		m_renderPasses.reserve(100);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::enableTextureFiltering( bool _enable )

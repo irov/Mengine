@@ -46,9 +46,42 @@ namespace Menge
 		LPT_FORCE_DWORD = 0x7FFFFFFF
 	};
 
-	struct RenderObject;
-	struct RenderPass;
+	struct RenderObject
+	{
+		const RenderMaterial * material;
 
+		size_t textureStages;
+		const RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
+
+		const mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
+
+		ELogicPrimitiveType logicPrimitiveType;
+		EPrimitiveType primitiveType;
+
+		const Vertex2D * vertexData;
+		size_t verticesNum;
+		size_t minIndex;
+		size_t startIndex;
+
+		size_t dipIndiciesNum;
+		size_t dipVerticesNum;
+
+		IBHandle ibHandle;
+		size_t baseVertexIndex;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef std::vector<RenderObject> TVectorRenderObject;
+	//////////////////////////////////////////////////////////////////////////
+	struct RenderPass
+	{
+		TVectorRenderObject::size_type beginRenderObject;
+		TVectorRenderObject::size_type countRenderObject;
+
+		const RenderCameraInterface * camera;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef std::vector<RenderPass> TVectorRenderPass;
+	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine
 		: public Holder<RenderEngine>
 		, public RenderSystemListener
@@ -188,7 +221,7 @@ namespace Menge
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
-		void releaseRenderPass_( RenderPass* _renderCamera );
+
 		size_t refillIndexBuffer2D_();
 		bool recreate2DBuffers_( size_t _maxIndexCount );		
 		
@@ -243,13 +276,6 @@ namespace Menge
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
 
-		typedef PoolVector<RenderPass> TPoolRenderPass;
-		TPoolRenderPass m_poolRenderPass;
-
-		typedef std::vector<RenderPass*> TVectorRenderPass;
-		TVectorRenderPass m_passes;
-
-		RenderPass* m_currentPass;
 		const RenderCameraInterface * m_currentRenderCamera;
 
 		typedef std::map<WString, RenderTextureInterface*> TMapTextures;
@@ -290,7 +316,7 @@ namespace Menge
 
 		int m_idEnumerator;
 
-		//size_t m_vertexBufferPos;
-		//Vertex2D * m_vertexBuffer;
+		TVectorRenderObject m_renderObjects;
+		TVectorRenderPass m_renderPasses;
 	};
 }

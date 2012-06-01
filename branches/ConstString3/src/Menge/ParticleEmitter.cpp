@@ -45,6 +45,8 @@ namespace	Menge
 		, m_checkViewport(NULL)
 		, m_positionOffset(0.f, 0.f)
 		, m_emitterTranslateWithParticle(true)
+		, m_vertices(NULL)
+		, m_verticesCount(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -196,6 +198,10 @@ namespace	Menge
 			m_resource->decrementReference();
 			m_resource = NULL;
 		}
+
+		delete [] m_vertices;
+		m_vertices = NULL;
+		m_verticesCount = 0;
 
 		//m_images.clear();				
 	}
@@ -367,7 +373,8 @@ namespace	Menge
 		//s_particles.clear();
 		//s_meshes.clear();
 
-		m_vertices.clear();
+		//m_vertices.clear();		
+
 		m_batchs.clear();
 
 		EmitterRenderFlush flush;
@@ -377,8 +384,14 @@ namespace	Menge
 		{
 			return;
 		}
-		
-		m_vertices.resize( flush.particleCount * 4 );
+
+		if( m_verticesCount < flush.particleCount * 4 )
+		{			
+			m_verticesCount = flush.particleCount * 4;
+
+			delete [] m_vertices;
+			m_vertices = new Vertex2D [m_verticesCount];
+		}
 
 		const mt::mat4f& worldMatrix = this->getWorldMatrix();
 		

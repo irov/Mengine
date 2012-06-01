@@ -143,7 +143,6 @@ Engine\\\\Render
 ADD_FILTER(
 Engine\\\\Script
 	ScriptClassWrapper.h
-	ScriptClassInterface.h
 	ScriptEngine.cpp
 	ScriptEngine.h
 	ScriptLogger.h
@@ -737,7 +736,6 @@ Manager\\\\Node
 
 ADD_FILTER(
 Manager\\\\Scene
-
 	SceneManager.cpp	
 	SceneManager.h
 )
@@ -771,12 +769,8 @@ Manager\\\\Factory
 
 ADD_FILTER(
 Scene
-	Allocator3D.cpp
-	Allocator3D.h
 	Scene.cpp
 	Scene.h
-	SceneNode3D.cpp
-	SceneNode3D.h
 )
 
 ADD_FILTER(

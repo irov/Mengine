@@ -1553,7 +1553,12 @@ namespace Menge
 		delete m_particleEngine;
 		
 		m_serviceProvider->unregistryService( "RenderService" );
-		delete m_renderEngine;
+		
+		if( m_renderEngine != NULL )
+		{
+			m_renderEngine->finalize();
+			delete m_renderEngine;
+		}
 		
 		delete m_inputEngine;
 		delete m_soundEngine;

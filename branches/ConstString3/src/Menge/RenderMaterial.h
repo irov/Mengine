@@ -50,6 +50,7 @@ namespace Menge
 			, depthBufferWriteEnable(false)
 			, alphaTestEnable(false)
 			, alphaBlendEnable(false)
+			, filterMaterial(NULL)
 		{
 		}
 

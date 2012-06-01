@@ -69,6 +69,7 @@ namespace Menge
 
 	public:
 		bool initialize( size_t _maxQuadCount );
+		void finalize();
 
 	public:
 		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
@@ -140,10 +141,6 @@ namespace Menge
 		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;
-		void beginLayer2D();
-		void endLayer2D();
-		void beginLayer3D();
-		void endLayer3D();
 
 		void onDeviceRestored();
 
@@ -273,7 +270,7 @@ namespace Menge
 		uint16 m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
 		uint16 m_primitiveCount[LPT_PRIMITIVE_COUNT];
 
-		size_t m_vbPos;
+		mutable size_t m_vbPos;
 
 		mt::vec2f m_renderScale;
 		mt::vec2f m_renderOffset;
@@ -293,7 +290,7 @@ namespace Menge
 
 		int m_idEnumerator;
 
-		RenderObject * m_batchedRenderObject;
-		size_t m_vertexBufferPos;
+		//size_t m_vertexBufferPos;
+		//Vertex2D * m_vertexBuffer;
 	};
 }

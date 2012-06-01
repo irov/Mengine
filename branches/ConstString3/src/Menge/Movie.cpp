@@ -954,6 +954,11 @@ namespace Menge
 			
 			Node * node = m_nodies[layer.index];
 
+			if( layer.threeD == true )
+			{
+				node->setRenderCamera( m_renderCamera3D );
+			}
+
 			if( layer.parent == 0 )
 			{
 				if( layer.internal == false )
@@ -976,11 +981,6 @@ namespace Menge
 				}
 
 				node_parent->addChildren( node );
-			}
-
-			if( layer.threeD == true )
-			{
-				node->setRenderCamera( m_renderCamera3D );
 			}
 		}
 	}

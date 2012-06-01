@@ -100,8 +100,7 @@ namespace Menge
 		, m_renderScale(0.f, 0.f)
 		, m_renderOffset(0.f, 0.f)
 		, m_megatextures(NULL)
-		, m_batchedRenderObject(0)
-		, m_vertexBufferPos(0)
+		, m_vbPos(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -115,61 +114,6 @@ namespace Menge
 		//{
 		//	m_poolRenderPass.release( *it );
 		//}
-
-		for( TMapTextures::iterator 
-			it = m_textures.begin(), 
-			it_end = m_textures.end();
-		it != it_end;
-		++it )
-		{
-			this->destroyTexture_( it->second );
-		}
-
-		m_textures.clear();
-
-		for( TMapMaterialGroup::iterator
-			it = m_mapMaterialGroup.begin(),
-			it_end = m_mapMaterialGroup.end();
-		it != it_end;
-		++it )
-		{
-			delete it->second;
-		}
-
-		m_mapMaterialGroup.clear();
-
-		if( m_interface != NULL )
-		{
-			m_interface->releaseVertexBuffer( m_vbHandle2D );
-			m_interface->releaseIndexBuffer( m_vbHandle2D );
-
-			for( TVectorVertexBuffer::iterator
-				it = m_vertexBuffer.begin(),
-				it_end = m_vertexBuffer.end();
-			it != it_end;
-			++it )
-			{
-				VBHandle handle = *it;
-				m_interface->releaseVertexBuffer( handle );
-			}
-
-			m_vertexBuffer.clear();
-
-			for( TVectorIndexBuffer::iterator
-				it = m_indexBuffer.begin(),
-				it_end = m_indexBuffer.end();
-			it != it_end;
-			++it )
-			{
-				IBHandle handle = *it;
-				m_interface->releaseIndexBuffer( handle );
-			}
-
-			m_indexBuffer.clear();
-
-			releaseInterfaceSystem( m_interface );
-			m_interface = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize( size_t _maxQuadCount )
@@ -337,9 +281,67 @@ namespace Menge
 
 		m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
-		m_batchedRenderObject = new RenderObject();
-
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::finalize()
+	{
+		for( TMapTextures::iterator 
+			it = m_textures.begin(), 
+			it_end = m_textures.end();
+		it != it_end;
+		++it )
+		{
+			this->destroyTexture_( it->second );
+		}
+
+		m_textures.clear();
+
+		for( TMapMaterialGroup::iterator
+			it = m_mapMaterialGroup.begin(),
+			it_end = m_mapMaterialGroup.end();
+		it != it_end;
+		++it )
+		{
+			delete it->second;
+		}
+
+		m_mapMaterialGroup.clear();
+
+		if( m_interface != NULL )
+		{
+			m_interface->releaseVertexBuffer( m_vbHandle2D );
+			m_interface->releaseIndexBuffer( m_vbHandle2D );
+
+			for( TVectorVertexBuffer::iterator
+				it = m_vertexBuffer.begin(),
+				it_end = m_vertexBuffer.end();
+			it != it_end;
+			++it )
+			{
+				VBHandle handle = *it;
+				m_interface->releaseVertexBuffer( handle );
+			}
+
+			m_vertexBuffer.clear();
+
+			for( TVectorIndexBuffer::iterator
+				it = m_indexBuffer.begin(),
+				it_end = m_indexBuffer.end();
+			it != it_end;
+			++it )
+			{
+				IBHandle handle = *it;
+				m_interface->releaseIndexBuffer( handle );
+			}
+
+			m_indexBuffer.clear();
+
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
+
+		delete m_megatextures;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen,
@@ -402,8 +404,8 @@ namespace Menge
 			return false;
 		}
 
-		restoreRenderSystemStates_();
-		prepare2D_();
+		this->restoreRenderSystemStates_();
+		this->prepare2D_();
 
 		m_supportA8 = m_interface->supportTextureFormat( PF_A8 );
 
@@ -434,59 +436,6 @@ namespace Menge
 
 		m_interface->screenshot( image, _rect.buff() );
 	}
-	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::beginLayer2D()
-	{
-		//if( m_layer3D == true )
-		//{
-		//	prepare3D_();
-		//	m_interface->clearFrameBuffer( FBT_DEPTH );
-		//	m_layer3D = false;
-		//	flushRender_();
-		m_interface->beginLayer2D();
-		//}
-	}
-	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::endLayer2D()
-	{
-		m_interface->endLayer2D();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::beginLayer3D()
-	{
-		/*if( m_layer3D == false )
-		{
-			prepare2D_();
-			m_interface->clearFrameBuffer( FBT_DEPTH );
-			m_layer3D = true;
-			flushRender_();
-			m_interface->beginLayer3D();
-		}*/
-	}
-	//////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
-	//{
-	//	RenderObject* ro = getTempRenderObject_();
-	//	ro->setProjTransform = true;
-	//	ro->projTransform = _projection;
-	//	renderObject( ro );
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::setViewMatrix( const mt::mat4f& _view )
-	//{
-	//	RenderObject* ro = getTempRenderObject_();
-	//	ro->setViewTransform = true;
-	//	ro->viewTransform = _view;
-	//	renderObject( ro );
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::setWorldMatrix( const mt::mat4f& _world )
-	//{
-	//	RenderObject* ro = getTempRenderObject_();
-	//	ro->setWorldTransform = true;
-	//	ro->worldTransform = _world;
-	//	renderObject( ro );
-	//}	
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createMaterialGroup( const ConstString & _name, const RenderMaterial & _material )
 	{
@@ -1293,8 +1242,6 @@ namespace Menge
 		m_currentPass = NULL;
 		m_currentRenderCamera = NULL;
 
-		m_vertexBufferPos = 0;
-
 		m_currentRenderTarget = Consts::get()->c_Window;
 		m_renderTargetResolution = m_windowResolution;
 		m_dipCount = 0;
@@ -1305,7 +1252,7 @@ namespace Menge
 		}
 		//m_interface->clearFrameBuffer( FBT_COLOR );
 		//m_interface->setRenderViewport( m_currentRenderViewport );
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1763,17 +1710,8 @@ namespace Menge
 
 		ro->logicPrimitiveType = _type;
 
-		switch( _type )
-		{
-		case LPT_MESH:
-			ro->dipIndiciesNum = _indicesNum;
-			ro->ibHandle = _ibHandle;
-			break;
-		default:
-			ro->dipIndiciesNum = m_primitiveIndexStride[_type] * _verticesNum / m_primitiveVertexStride[_type];
-			ro->ibHandle = m_ibHandle2D;
-			break;
-		}
+		ro->dipIndiciesNum = m_primitiveIndexStride[_type] * _verticesNum / m_primitiveVertexStride[_type];
+		ro->ibHandle = m_ibHandle2D;
 	
 		ro->vertexData = _vertices;
 		ro->verticesNum = _verticesNum;
@@ -1811,20 +1749,29 @@ namespace Menge
 		//case LPT_RECTANGLE:
 			ro->primitiveType = PT_LINESTRIP;
 			break;
-		case LPT_MESH:
-			ro->primitiveType = PT_TRIANGLESTRIP;
-			break;
 		default:
 			ro->primitiveType = PT_TRIANGLELIST;
 		}
 
-		if( m_currentPass->renderObjects.empty() == true
-			|| this->batchRenderObject_( ro, m_batchedRenderObject, m_vertexBufferPos ) == false )
-		{
-			m_currentPass->renderObjects.push_back( *ro );
+		m_currentPass->renderObjects.push_back( *ro );
+		//if( m_currentPass->renderObjects.empty() == true )
+		//{
+		//	if( this->batchRenderObject_( ro, NULL, m_vertexBufferPos ) == false )
+		//	{
+		//		m_currentPass->renderObjects.push_back( *ro );
+		//		//*m_batchedRenderObject = *ro;
+		//	}
+		//}
+		//else
+		//{
+		//	RenderObject * batchedRenderObject = &m_currentPass->renderObjects.back();
 
-			*m_batchedRenderObject = *ro;
-		}
+		//	if( this->batchRenderObject_( ro, batchedRenderObject, m_vertexBufferPos ) == false )
+		//	{
+		//		m_currentPass->renderObjects.push_back( *ro );
+		//		//*m_batchedRenderObject = *ro;
+		//	}
+		//}
 
 		//m_currentPass->renderObjects.push_back( *ro );
 	}
@@ -1955,39 +1902,39 @@ namespace Menge
 	{		
 		//m_vbPos = 0;
 
-		//size_t vbPos = m_vbPos;
-		//m_vertexBufferPos = this->makeBatch_( 0 );
+		size_t vbPos = m_vbPos;
+		vbPos = this->makeBatch_( vbPos );
 
-		//size_t vertexDataSize = vbPos - m_vbPos;
+		size_t vertexDataSize = vbPos - m_vbPos;
 
-		if( m_vertexBufferPos == 0 )	// nothing to render
+		if( vertexDataSize == 0 )	// nothing to render
 		{
 			return true;
 		}
 
-		if( m_vertexBufferPos > m_maxPrimitiveVertices2D )
+		if( vertexDataSize > m_maxPrimitiveVertices2D )
 		{
 			_overflow = true;
 			return true;
 		}
 
-		//if( vertexDataSize > m_maxPrimitiveVertices2D - m_vbPos )
-		//{
-		//	m_vbPos = 0;
-		//	
-		//	vbPos = this->makeBatch_( 0 );
+		if( vertexDataSize > m_maxPrimitiveVertices2D - m_vbPos )
+		{
+			m_vbPos = 0;
 
-		//	vertexDataSize = vbPos;
-		//}
+			vbPos = this->makeBatch_( 0 );
 
-		//uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
-		
-		uint32 lockFlags = LOCK_DISCARD;
+			vertexDataSize = vbPos;
+		}
+
+		uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
+
 		void * vData = m_interface->lockVertexBuffer( 
 			m_vbHandle2D,
-			0 * sizeof(Vertex2D),
-			m_vertexBufferPos * sizeof(Vertex2D), 
-			lockFlags );
+			m_vbPos * sizeof(Vertex2D),
+			vertexDataSize * sizeof(Vertex2D), 
+			lockFlags 
+			);
 
 		if( vData == NULL )
 		{
@@ -2052,11 +1999,6 @@ namespace Menge
 			return false;
 		}
 
-		if( _next->logicPrimitiveType == LPT_MESH )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2086,22 +2028,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::batchRenderObject_( RenderObject * _renderObject, RenderObject * _batchedObject, size_t & _verticesNum ) const
 	{
-		switch( _renderObject->logicPrimitiveType )
-		{
-		case LPT_MESH:
-			{
-				_renderObject->dipVerticesNum = _renderObject->verticesNum;
-				_renderObject->baseVertexIndex = _verticesNum;
-
-				_verticesNum += _renderObject->verticesNum;
-
-				return false;
-			}break;
-		default:
-			{
-			}break;
-		}
-
 		size_t vertexStride = m_primitiveVertexStride[_renderObject->logicPrimitiveType];
 		size_t align = (vertexStride - (_verticesNum % vertexStride)) % vertexStride;
 		_verticesNum += align + _renderObject->verticesNum;
@@ -2110,10 +2036,10 @@ namespace Menge
 		{
 			_batchedObject->dipIndiciesNum += _renderObject->dipIndiciesNum;
 			_batchedObject->dipVerticesNum += _renderObject->verticesNum;
-			//_renderObject->dipVerticesNum = 0;
-			//_renderObject->dipIndiciesNum = 0;
+			_renderObject->dipVerticesNum = 0;
+			_renderObject->dipIndiciesNum = 0;
 
-			//_renderObject->baseVertexIndex = 0;
+			_renderObject->baseVertexIndex = 0;
 
 			return true;
 		}
@@ -2146,50 +2072,32 @@ namespace Menge
 	{
 		ELogicPrimitiveType type = _renderObject->logicPrimitiveType;
 
-		switch(type)
+		size_t indexStart = m_primitiveIndexStart[type];
+		size_t indexStride = m_primitiveIndexStride[type];
+		size_t vertexStride = m_primitiveVertexStride[type];
+
+		size_t align = ( vertexStride - ( m_vbPos % vertexStride ) ) % vertexStride;
+
+		_offset += align;
+		m_vbPos += align;
+
+		if( m_vbPos + _renderObject->verticesNum > m_maxPrimitiveVertices2D )
 		{
-		case LPT_MESH:
-			{
-				if( _offset + _renderObject->verticesNum > m_maxPrimitiveVertices2D )
-				{
-					MENGE_LOG_ERROR("Warning: vertex buffer overflow");
-					_renderObject->verticesNum = m_maxPrimitiveVertices2D - _offset;
-					//return;
-				}
-
-				_renderObject->startIndex = 0;
-				_renderObject->minIndex = 0;
-			}break;
-		default:
-			{
-				size_t indexStart = m_primitiveIndexStart[type];
-				size_t indexStride = m_primitiveIndexStride[type];
-				size_t vertexStride = m_primitiveVertexStride[type];
-
-				size_t align = ( vertexStride - ( _offset % vertexStride ) ) % vertexStride;
-
-				_offset += align;
-				//m_vbPos += align;
-
-				if( _offset + _renderObject->verticesNum > m_maxPrimitiveVertices2D )
-				{
-					MENGE_LOG_ERROR("Warning: vertex buffer overflow");
-					_renderObject->verticesNum = m_maxPrimitiveVertices2D - _offset;
-					//return;
-				}
-
-				_renderObject->startIndex  = indexStart + _offset / vertexStride * indexStride;
-				_renderObject->minIndex = (_renderObject->startIndex - indexStart) / indexStride * vertexStride;
-
-				assert( _renderObject->startIndex + _renderObject->dipIndiciesNum <= m_maxIndexCount );
-			}break;
+			MENGE_LOG_ERROR("Warning: vertex buffer overflow");
+			_renderObject->verticesNum = m_maxPrimitiveVertices2D - m_vbPos;
+			//return;
 		}
+
+		_renderObject->startIndex  = indexStart + m_vbPos / vertexStride * indexStride;
+		_renderObject->minIndex = (_renderObject->startIndex - indexStart) / indexStride * vertexStride;
+
+		assert( _renderObject->startIndex + _renderObject->dipIndiciesNum <= m_maxIndexCount );
 
 		//Vertex2D * vertexBuffer = _vertexBuffer + _offset * sizeof(Vertex2D)
 		Vertex2D * offsetVertexBuffer = _vertexBuffer + _offset;
 		std::copy( _renderObject->vertexData, _renderObject->vertexData + _renderObject->verticesNum, offsetVertexBuffer );
 
-		//m_vbPos += ro->verticesNum;
+		m_vbPos += _renderObject->verticesNum;
 		_offset += _renderObject->verticesNum;
 
 		//m_logicPrimitiveCount[type] += 1;

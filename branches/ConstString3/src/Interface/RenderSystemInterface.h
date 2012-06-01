@@ -422,15 +422,11 @@ namespace Menge
 											, uint32 _color = 0
 											, float _depth = 1.0f
 											, uint16 _stencil = 0 ) = 0;
-		virtual	void	beginLayer2D() = 0;
-		virtual	void	endLayer2D() = 0;
-		virtual	void	beginLayer3D() = 0;
-		virtual	void	endLayer3D() = 0;
 
-		virtual void	setViewport( const Viewport & _viewport ) = 0;
+		virtual void setViewport( const Viewport & _viewport ) = 0;
 
-		virtual void	changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
-		virtual void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;
+		virtual void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
+		virtual void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;
 
 		virtual bool supportTextureFormat( PixelFormat _format ) = 0;
 
@@ -445,7 +441,6 @@ namespace Menge
 		virtual void clear( uint32 _color ) = 0;
 
 		virtual void setSeparateAlphaBlendMode() = 0;
-
 	};
 
 	class RenderServiceInterface

@@ -897,8 +897,6 @@ namespace Menge
 
 		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
-		renderEngine->beginLayer2D();
-
 		//mt::mat4f arrow_wm;
 		//mt::ident_m4(arrow_wm);
 
@@ -950,8 +948,6 @@ namespace Menge
 			m_debugText->render( m_renderCamera2D );
 		}
 #	endif
-
-		renderEngine->endLayer2D();
 		//m_renderCamera2D->setLocalPosition( pos );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -144,11 +144,6 @@ namespace Menge
 		void clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color = 0
 								, float _depth = 1.0f, uint16 _stencil = 0 ) override;
 
-		void beginLayer2D() override;
-		void endLayer2D() override;
-		void beginLayer3D() override;
-		void endLayer3D() override;
-
 		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;

@@ -33,10 +33,10 @@ namespace Menge
 		size_t texture_width = m_texture->getWidth();
 		size_t texture_height = m_texture->getHeight();
 
-		m_uv.x = float(m_rect.left) / float(texture_width);
-		m_uv.y = float(m_rect.top) / float(texture_height);
-		m_uv.z = float(m_rect.right) / float(texture_width);
-		m_uv.w = float(m_rect.bottom) / float(texture_height);
+		m_uv.x = float(m_hwRect.left) / float(texture_width);
+		m_uv.y = float(m_hwRect.top) / float(texture_height);
+		m_uv.z = float(m_hwRect.right) / float(texture_width);
+		m_uv.w = float(m_hwRect.bottom) / float(texture_height);
 
 		//m_rectWM.left = 0;
 		//m_rectWM.top = 0;

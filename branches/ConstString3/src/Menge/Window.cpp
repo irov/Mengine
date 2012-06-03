@@ -103,18 +103,18 @@ namespace Menge
 
 		const Vertex2D * vertices = this->getVertices();
 
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_LeftTop], &m_textures[ResourceWindow_LeftTop], NULL, 1, &vertices[1*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_RightTop], &m_textures[ResourceWindow_RightTop], NULL, 1, &vertices[3*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_RightBottom], &m_textures[ResourceWindow_RightBottom], NULL, 1, &vertices[5*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_LeftBottom], &m_textures[ResourceWindow_LeftBottom], NULL, 1, &vertices[7*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_Top], &m_textures[ResourceWindow_Top], NULL, 1, &vertices[2*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_Bottom], &m_textures[ResourceWindow_Bottom], NULL, 1, &vertices[6*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_Right], &m_textures[ResourceWindow_Right], NULL, 1, &vertices[4*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( _camera, m_material[ResourceWindow_Left], &m_textures[ResourceWindow_Left], NULL, 1, &vertices[8*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_LeftTop], &m_textures[ResourceWindow_LeftTop], NULL, 1, &vertices[1*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_RightTop], &m_textures[ResourceWindow_RightTop], NULL, 1, &vertices[3*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_RightBottom], &m_textures[ResourceWindow_RightBottom], NULL, 1, &vertices[5*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_LeftBottom], &m_textures[ResourceWindow_LeftBottom], NULL, 1, &vertices[7*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_Top], &m_textures[ResourceWindow_Top], NULL, 1, &vertices[2*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_Bottom], &m_textures[ResourceWindow_Bottom], NULL, 1, &vertices[6*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_Right], &m_textures[ResourceWindow_Right], NULL, 1, &vertices[4*4], 4, LPT_QUAD );
+		renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_Left], &m_textures[ResourceWindow_Left], NULL, 1, &vertices[8*4], 4, LPT_QUAD );
 		
 		if( this->hasBackground() == true )
 		{
-			renderEngine->renderObject2D( _camera, m_material[ResourceWindow_Background], &m_textures[ResourceWindow_Background], NULL, 1, &vertices[0*4], 4, LPT_QUAD );
+			renderEngine->addRenderObject2D( _camera, m_material[ResourceWindow_Background], &m_textures[ResourceWindow_Background], NULL, 1, &vertices[0*4], 4, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

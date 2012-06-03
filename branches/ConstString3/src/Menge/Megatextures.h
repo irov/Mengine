@@ -19,6 +19,7 @@ namespace Menge
 
 	public:
 		PixelFormat getPixelFormat() const;
+		size_t getMegatextureCount() const;
 
 	public:
 		RenderTextureInterface* createTexture( size_t _width, size_t _height );

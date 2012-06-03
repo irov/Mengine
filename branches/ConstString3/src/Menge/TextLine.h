@@ -35,8 +35,9 @@ namespace Menge
 		void prepareRenderObject(
 			mt::vec2f & offset
 			, const mt::mat4f & _wm
+			, const mt::vec4f & _uv
 			, unsigned int _argb
-			, bool _pixelsnap
+			, bool _pixelsnap			
 			, TVectorVertex2D & _renderObject ) const;
 
 		void invalidateRenderLine() const;

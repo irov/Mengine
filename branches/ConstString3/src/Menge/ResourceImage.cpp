@@ -56,11 +56,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const WString& _fileName, const ConstString& _codec ) const
 	{
-		//RenderTextureInterface* texture = RenderEngine::get()
-		//	->loadMegatexture( _pakName, _fileName, _codec );
-
 		RenderTextureInterface* texture = RenderEngine::get()
 			->loadTexture( _pakName, _fileName, _codec );
+
+		//RenderTextureInterface* texture = RenderEngine::get()
+		//	->loadMegatexture( _pakName, _fileName, _codec );
 
 		if( texture == 0 )
 		{

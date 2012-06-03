@@ -930,7 +930,7 @@ namespace Menge
 
 		IDirect3DTexture8* dxTextureInterface = NULL;
 		//_format = Menge::PF_X8R8G8B8;
-		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
+		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0,
 			_format, D3DPOOL_MANAGED, &dxTextureInterface );
 
 		if( hr == D3DERR_INVALIDCALL )
@@ -946,6 +946,76 @@ namespace Menge
 			}
 		}
 		
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR(m_logService)( "DX8RenderSystem: can't create texture %dx%d %d (hr:%p)"
+				, _width
+				, _height
+				, _format
+				, hr 
+				);
+
+			return NULL;
+		}
+
+		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface, _width, _height );
+
+		D3DSURFACE_DESC texDesc;
+		dxTextureInterface->GetLevelDesc( 0, &texDesc );
+
+		_realWidth = texDesc.Width;
+		_realHeight = texDesc.Height;
+
+		LOGGER_INFO(m_logService)( "Texture created %dx%d %d"
+			, texDesc.Width
+			, texDesc.Height
+			, texDesc.Format 
+			);
+
+		return dxTexture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderImageInterface * DX8RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format )
+	{
+		//if( m_supportR8G8B8 == false )
+		//{
+		if( _format == Menge::PF_R8G8B8 )
+		{
+			_format = Menge::PF_X8R8G8B8;
+		}
+		//}
+
+		size_t tex_width = _width;
+		size_t tex_height = _height;
+
+		bool npot = supportNPOT_();
+		if( npot == false )	// we're all gonna die
+		{
+			if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+			{
+				tex_width = s_firstPOW2From( _width );
+				tex_height = s_firstPOW2From( _height );
+			}
+		}
+
+		IDirect3DTexture8* dxTextureInterface = NULL;
+		//_format = Menge::PF_X8R8G8B8;
+		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0,
+			_format, D3DPOOL_MANAGED, &dxTextureInterface );
+
+		if( hr == D3DERR_INVALIDCALL )
+		{
+			if( _format == Menge::PF_A8 )	// try to fallback
+			{
+				_format = Menge::PF_A8R8G8B8;
+
+				//D3DFORMAT dx_new_format = s_toD3DFormat( _format );
+
+				hr = d3dCreateTexture_( tex_width, tex_height, 1, D3DUSAGE_DYNAMIC, 
+					_format, D3DPOOL_DEFAULT, &dxTextureInterface );
+			}
+		}
+
 		if( FAILED( hr ) )
 		{
 			LOGGER_ERROR(m_logService)( "DX8RenderSystem: can't create texture %dx%d %d (hr:%p)"
@@ -1438,7 +1508,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HRESULT DX8RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
+	HRESULT DX8RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
 	{
 		D3DFORMAT dx_format = s_toD3DFormat( Format );
 

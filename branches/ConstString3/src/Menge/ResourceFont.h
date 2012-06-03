@@ -38,8 +38,8 @@ namespace Menge
 		bool hasGlyph( unsigned int _id ) const;
 		const Glyph * getGlyph( unsigned int _id ) const;
 
-		const RenderTextureInterface * getImage() const;
-		const RenderTextureInterface * getOutlineImage() const;
+		const RenderTextureInterface * getTexture() const;
+		const RenderTextureInterface * getTextureImage() const;
 
 		const WString & getImagePath() const;
 		const WString & getOutlineImagePath() const;
@@ -72,7 +72,7 @@ namespace Menge
 		float m_whsRatio;
 		float m_textureRatio;
 
-		RenderTextureInterface* m_image;
+		RenderTextureInterface* m_texture;
 		RenderTextureInterface* m_outline;
 		mt::vec2f m_imageInvSize;
 

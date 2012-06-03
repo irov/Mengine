@@ -59,11 +59,11 @@ namespace Menge
 		, m_textureFiltering(true)
 		, m_idEnumerator(0)
 		, m_supportA8(false)
-		, m_dipCount(0)
 		, m_renderScale(0.f, 0.f)
 		, m_renderOffset(0.f, 0.f)
 		, m_megatextures(NULL)
 		, m_vbPos(0)
+		, m_currentRenderPass(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -319,9 +319,11 @@ namespace Menge
 			return false;
 		}
 
+		m_debugInfo.dips = 0;
 		m_debugInfo.textureMemory = 0;
 		m_debugInfo.textureCount = 0;
 		m_debugInfo.frameCount = 0;
+		m_debugInfo.megatextures = 0;
 
 		//////////////////////////////////////////////////////////////////////////
 		// Выноси такое в отдельные функции, читать невозможно
@@ -505,6 +507,42 @@ namespace Menge
 
 		RenderImageInterface * image = m_interface->createImage( _width, _height, hwWidth, hwHeight, hwFormat );
 				
+		if( image == NULL )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::createTexture_ couldn't create image %dx%d"
+				, _width
+				, _height
+				);
+
+			return NULL;
+		}
+
+		size_t id = ++m_idEnumerator;
+
+		RenderTextureInterface * texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, id );
+
+		size_t memroy_size = texture->getMemoryUse();
+
+		m_debugInfo.textureMemory += memroy_size;
+		++m_debugInfo.textureCount;
+
+		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderTextureInterface * RenderEngine::createDynamicTexture( size_t _width, size_t _height, PixelFormat _format )
+	{
+		MENGE_LOG_INFO( "Creating dynamic texture %dx%d %d"
+			, _width
+			, _height
+			, _format 
+			);
+
+		size_t hwWidth;
+		size_t hwHeight;
+		PixelFormat hwFormat = _format;
+
+		RenderImageInterface * image = m_interface->createDynamicImage( _width, _height, hwWidth, hwHeight, hwFormat );
+
 		if( image == NULL )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::createTexture_ couldn't create image %dx%d"
@@ -800,6 +838,8 @@ namespace Menge
 		}
 
 		RenderTextureInterface * texture = this->createMegatexture( dataInfo->width, dataInfo->height, dataInfo->format );
+
+		m_debugInfo.megatextures = m_megatextures->getMegatextureCount();
 
 		if( texture == NULL )
 		{
@@ -1190,8 +1230,7 @@ namespace Menge
 
 		m_currentRenderTarget = Consts::get()->c_Window;
 		m_renderTargetResolution = m_windowResolution;
-		m_dipCount = 0;
-
+		
 		if( m_interface->beginScene() == false )
 		{
 			return false;
@@ -1207,15 +1246,13 @@ namespace Menge
 		this->flushRender_();
 
 		m_interface->endScene();
-
-		m_debugInfo.dips = m_dipCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
 	{
 		m_interface->swapBuffers();
 
-		m_debugInfo.frameCount += 1;
+		m_debugInfo.frameCount += 1;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const ConstString& _target, bool _clear )
@@ -1233,7 +1270,7 @@ namespace Menge
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderPass_( const RenderObject* _renderObject )
+	void RenderEngine::renderObject_( const RenderObject* _renderObject )
 	{
 		if( _renderObject->dipIndiciesNum == 0 
 			|| _renderObject->dipVerticesNum == 0 )
@@ -1377,7 +1414,7 @@ namespace Menge
 
 		m_currentMaterial = material;
 
-		++m_dipCount;
+		++m_debugInfo.dips;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::disableTextureStage_( size_t _stage )
@@ -1550,66 +1587,74 @@ namespace Menge
 		m_debugInfo.frameCount = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::render_()
+	void RenderEngine::renderPasses_()
 	{
 		if( m_renderPasses.empty() == true )	// nothing to render
 		{
 			return;
 		}
 
-		for( TVectorRenderPass::iterator 
+		for( TVectorRenderPass::const_iterator 
 			rit = m_renderPasses.begin(), 
 			rit_end = m_renderPasses.end();
 		rit != rit_end;
 		++rit )
 		{
-			RenderPass & renderPass = *rit;
+			const RenderPass & renderPass = *rit;
 
-			const RenderCameraInterface * camera = renderPass.camera;
-
-			const ConstString& renderTarget = camera->getRenderTarget();
-			
-			if( renderTarget != m_currentRenderTarget && renderTarget.empty() == false )
-			{
-				m_currentRenderTarget = renderTarget;
-				m_interface->setRenderTarget( NULL, true );
-
-				m_renderTargetResolution = m_windowResolution;
-			}
-
-			Viewport renderViewport;
-
-			const Viewport & viewport = camera->getViewport();
-
-			renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
-			renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
-			
-			m_interface->setViewport( renderViewport );
-
-			const mt::mat4f & viewMatrix = camera->getViewMatrix();
-			m_interface->setModelViewMatrix( viewMatrix );
-
-			const mt::mat4f & projectionMatrix = camera->getProjectionMatrix();
-			m_interface->setProjectionMatrix( projectionMatrix );
-
-			const TVectorRenderObject & renderObjects = m_renderObjects;
-
-			TVectorRenderObject::iterator it_begin = m_renderObjects.begin();
-			std::advance( it_begin, renderPass.beginRenderObject );
-
-			TVectorRenderObject::iterator it_end = m_renderObjects.begin();
-			std::advance( it_end, renderPass.beginRenderObject + renderPass.countRenderObject );
-
-			for( ;it_begin != it_end; ++it_begin )
-			{
-				const RenderObject* renderObject = &(*it_begin);
-
-				this->renderPass_( renderObject );
-			}			
+			this->renderPass_( renderPass );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, size_t _texturesNum,
+	void RenderEngine::renderPass_( const RenderPass & _renderPass )
+	{
+		const RenderCameraInterface * camera = _renderPass.camera;
+
+		const ConstString& renderTarget = camera->getRenderTarget();
+
+		if( renderTarget != m_currentRenderTarget && renderTarget.empty() == false )
+		{
+			m_currentRenderTarget = renderTarget;
+			m_interface->setRenderTarget( NULL, true );
+
+			m_renderTargetResolution = m_windowResolution;
+		}
+
+		Viewport renderViewport;
+
+		const Viewport & viewport = camera->getViewport();
+
+		renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
+		renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
+
+		m_interface->setViewport( renderViewport );
+
+		const mt::mat4f & viewMatrix = camera->getViewMatrix();
+		m_interface->setModelViewMatrix( viewMatrix );
+
+		const mt::mat4f & projectionMatrix = camera->getProjectionMatrix();
+		m_interface->setProjectionMatrix( projectionMatrix );
+
+		this->renderObjects_( _renderPass );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderObjects_( const RenderPass & _renderPass )
+	{
+		TVectorRenderObject::const_iterator it_begin = m_renderObjects.begin();
+		std::advance( it_begin, _renderPass.beginRenderObject );
+
+		TVectorRenderObject::const_iterator it_end = m_renderObjects.begin();
+		std::advance( it_end, _renderPass.beginRenderObject + _renderPass.countRenderObject );
+
+		for( ;it_begin != it_end; ++it_begin )
+		{
+			const RenderObject* renderObject = &(*it_begin);
+
+			this->renderObject_( renderObject );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, size_t _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
@@ -1639,6 +1684,7 @@ namespace Menge
 			pass.camera = m_currentRenderCamera;
 
 			m_renderPasses.push_back( pass );
+			m_currentRenderPass = &m_renderPasses.back();
 		}
 
 		RenderObject renderObject;
@@ -1695,8 +1741,7 @@ namespace Menge
 
 		m_renderObjects.push_back( *ro );
 
-		RenderPass & pass = m_renderPasses.back();
-		++pass.countRenderObject;
+		++m_currentRenderPass->countRenderObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, size_t _count )
@@ -1959,6 +2004,7 @@ namespace Menge
 		{
 			_batchedObject->dipIndiciesNum += _renderObject->dipIndiciesNum;
 			_batchedObject->dipVerticesNum += _renderObject->verticesNum;
+			_renderObject->material = 0;
 			_renderObject->dipVerticesNum = 0;
 			_renderObject->dipIndiciesNum = 0;
 
@@ -2049,7 +2095,9 @@ namespace Menge
 			return;
 		}
 
-		this->render_();
+		m_debugInfo.dips = 0;
+
+		this->renderPasses_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::prepare2D_()

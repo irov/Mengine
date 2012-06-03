@@ -927,6 +927,7 @@ namespace Menge
 			ss << "DIP: " << redi.dips << "\n";
 			ss << "Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << "\n";
 			ss << "Texture Count: " << redi.textureCount << "\n";
+			ss << "Megatexture Count: " << redi.megatextures << "\n";
 			ss << "Particles: " << particlesCount << "\n";
 			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
 			ss << "PickerTrapCount:" << MousePickerSystem::get()->getPickerTrapCount() << "\n";

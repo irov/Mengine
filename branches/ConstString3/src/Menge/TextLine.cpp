@@ -48,7 +48,7 @@ namespace Menge
 
 			const Glyph * glyph = _resource->getGlyph( code );
 
-			const RenderTextureInterface * image = _resource->getImage();
+			const RenderTextureInterface * image = _resource->getTexture();
 					
 			CharData charData;
 			charData.code = code;
@@ -115,6 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset
 		, const mt::mat4f & _wm
+		, const mt::vec4f & _uv
 		, unsigned int _argb
 		, bool _pixelsnap		
 		, TVectorVertex2D& _renderObject ) const
@@ -161,14 +162,22 @@ namespace Menge
 				renderVertex.color = _argb;
 			}
 
-			_renderObject[renderObjectNum + 0].uv[0] = it_char->uv.x;
-			_renderObject[renderObjectNum + 0].uv[1] = it_char->uv.y;
-			_renderObject[renderObjectNum + 1].uv[0] = it_char->uv.z;
-			_renderObject[renderObjectNum + 1].uv[1] = it_char->uv.y;
-			_renderObject[renderObjectNum + 2].uv[0] = it_char->uv.z;
-			_renderObject[renderObjectNum + 2].uv[1] = it_char->uv.w;
-			_renderObject[renderObjectNum + 3].uv[0] = it_char->uv.x;
-			_renderObject[renderObjectNum + 3].uv[1] = it_char->uv.w;
+			const mt::vec4f & char_uv = it_char->uv;
+
+			mt::vec4f total_uv;
+			total_uv.x = _uv.x + (_uv.z - _uv.x) * char_uv.x;
+			total_uv.y = _uv.y + (_uv.w - _uv.y) * char_uv.y;
+			total_uv.z = _uv.x + (_uv.z - _uv.x) * char_uv.z;
+			total_uv.w = _uv.y + (_uv.w - _uv.y) * char_uv.w;
+
+			_renderObject[renderObjectNum + 0].uv[0] = total_uv.x;
+			_renderObject[renderObjectNum + 0].uv[1] = total_uv.y;
+			_renderObject[renderObjectNum + 1].uv[0] = total_uv.z;
+			_renderObject[renderObjectNum + 1].uv[1] = total_uv.y;
+			_renderObject[renderObjectNum + 2].uv[0] = total_uv.z;
+			_renderObject[renderObjectNum + 2].uv[1] = total_uv.w;
+			_renderObject[renderObjectNum + 3].uv[0] = total_uv.x;
+			_renderObject[renderObjectNum + 3].uv[1] = total_uv.w;
 
 			renderObjectNum += 4;
 		}

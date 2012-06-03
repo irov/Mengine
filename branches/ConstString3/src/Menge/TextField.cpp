@@ -191,6 +191,10 @@ namespace Menge
 		
 		const TListTextLine & lines = this->getTextLines();
 
+		const RenderTextureInterface * texture = m_resourceFont->getTexture();
+
+		const mt::vec4f & uv = texture->getUV();
+
 		for( TListTextLine::const_iterator 
 			it_line = lines.begin(),
 			it_line_end = lines.end(); 
@@ -208,7 +212,7 @@ namespace Menge
 
 			ARGB argb = _color.getAsARGB();
 
-			it_line->prepareRenderObject( offset, wm, argb, m_pixelsnap, _vertexData );
+			it_line->prepareRenderObject( offset, wm, uv, argb, m_pixelsnap, _vertexData );
 
 			offset.y += m_lineOffset;
 		}
@@ -218,13 +222,13 @@ namespace Menge
 	{
 		Node::_render( _camera );
 		
-		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
+		if( m_outline && m_resourceFont->getTextureImage() != NULL )
 		{
 			this->renderOutline_( _camera );
 		}
 
 		TVectorVertex2D & textVertices = this->getTextVertices();
-		const RenderTextureInterface * fontTexture = m_resourceFont->getImage();
+		const RenderTextureInterface * fontTexture = m_resourceFont->getTexture();
 
 		size_t countOfVertices;
 		
@@ -240,7 +244,7 @@ namespace Menge
 		if( textVertices.empty() == false )
 		{
 			RenderEngine::get()
-				->renderObject2D( _camera, m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
+				->addRenderObject2D( _camera, m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -264,10 +268,10 @@ namespace Menge
 			countOfVertices = m_maxCharCount * 4;
 		}
 
-		const RenderTextureInterface* outlineTexture = m_resourceFont->getOutlineImage();
+		const RenderTextureInterface* outlineTexture = m_resourceFont->getTextureImage();
 
 		RenderEngine::get()
-			->renderObject2D( _camera, m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
+			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const
@@ -750,7 +754,7 @@ namespace Menge
 
 		m_outlineColor.setA( color.getA() );
 
-		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
+		if( m_outline && m_resourceFont->getTextureImage() != NULL )
 		{
 			this->updateVertexData_( m_outlineColor, m_vertexDataOutline );
 		}

@@ -132,6 +132,7 @@ namespace Menge
 		
 		// create empty render image
 		RenderImageInterface * createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
+		RenderImageInterface * createDynamicImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
 		
 		
 		// create render target image

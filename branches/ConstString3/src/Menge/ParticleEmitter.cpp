@@ -218,9 +218,10 @@ namespace	Menge
 			return;
 		}
 
-		size_t partCount = 0;
 		size_t maxParticleCount = ParticleEngine::get()
 			->getMaxParticlesCount();
+
+		this->updateParticleVertex_();
 
 		for( TVectorBatchs::const_iterator
 			it = m_batchs.begin(),
@@ -231,7 +232,7 @@ namespace	Menge
 			const Batch & batch = *it;
 
 			RenderEngine::get()->
-				renderObject2D( _camera, batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, LPT_QUAD );
+				addRenderObject2D( _camera, batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -350,13 +351,12 @@ namespace	Menge
 		}
 
 		m_interface->update( _timing );
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::updateParticleVertex_()
+	{
 		size_t partCount = 0;
-
-
-
-		bool firstPoint = true;
-
+				
 		Node::_updateBoundingBox( m_localBoundingBox );
 
 		ColourValue color;
@@ -402,6 +402,13 @@ namespace	Menge
 		++it )
 		{
 			const ParticleMesh & mesh = s_meshes[it];
+
+			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
+			const ResourceImage::ImageFrame & frame = image->getImageFrame();
+
+			RenderTextureInterface* texture = frame.texture;
+
+			const mt::vec4f & mesh_uv = texture->getUV();
 
 			for( TVectorParticleVerices::size_type
 				it = mesh.begin,
@@ -473,23 +480,29 @@ namespace	Menge
 				//vertice[3].pos[3] = 1.f;
 
 				vertice[3].color = argb;
+				
+				mt::vec2f uv[4];
 
-				vertice[0].uv[0] = p.uv[0].x;
-				vertice[0].uv[1] = p.uv[0].y;
-				vertice[1].uv[0] = p.uv[1].x;
-				vertice[1].uv[1] = p.uv[1].y;
-				vertice[2].uv[0] = p.uv[2].x;
-				vertice[2].uv[1] = p.uv[2].y;
-				vertice[3].uv[0] = p.uv[3].x;
-				vertice[3].uv[1] = p.uv[3].y;
+				uv[0].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[0].x;
+				uv[0].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[0].y;
+				uv[1].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[1].x;
+				uv[1].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[1].y;
+				uv[2].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[2].x;
+				uv[2].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[2].y;
+				uv[3].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[3].x;
+				uv[3].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[3].y;
+
+				vertice[0].uv[0] = uv[0].x;
+				vertice[0].uv[1] = uv[0].y;
+				vertice[1].uv[0] = uv[1].x;
+				vertice[1].uv[1] = uv[1].y;
+				vertice[2].uv[0] = uv[2].x;
+				vertice[2].uv[1] = uv[2].y;
+				vertice[3].uv[0] = uv[3].x;
+				vertice[3].uv[1] = uv[3].y;
 			}
 
-			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
-			const ResourceImage::ImageFrame & frame = image->getImageFrame();
-
-			RenderTextureInterface* texture = frame.texture;
-
-			//++partCount;
+			++partCount;
 
 			Batch batch;
 			batch.begin = mesh.begin * 4;
@@ -501,7 +514,7 @@ namespace	Menge
 		}
 
 		ParticleEngine::get()
-			->renderParticlesCount(partCount);
+			->renderParticlesCount( partCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::onParticleEmitterStopped()

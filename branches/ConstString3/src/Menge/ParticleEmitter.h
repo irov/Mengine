@@ -95,6 +95,8 @@ namespace Menge
 
 		void updateRelative_();
 
+		void updateParticleVertex_();
+
 	protected:
 		ResourceEmitterContainer * m_resource;
 		ConstString m_resourcename;

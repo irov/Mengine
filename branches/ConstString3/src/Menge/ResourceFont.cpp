@@ -21,7 +21,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceFont );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont()
-		: m_image(NULL)
+		: m_texture(NULL)
 		, m_outline(NULL)
 		, m_whsRatio(3.0f)
 		, m_textureRatio(1.0f)
@@ -34,12 +34,12 @@ namespace Menge
 		return m_resourceGlyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterface * ResourceFont::getImage() const
+	const RenderTextureInterface * ResourceFont::getTexture() const
 	{
-		return m_image;
+		return m_texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterface * ResourceFont::getOutlineImage() const
+	const RenderTextureInterface * ResourceFont::getTextureImage() const
 	{
 		return m_outline;
 	}
@@ -116,10 +116,13 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		m_image = RenderEngine::get()
+		m_texture = RenderEngine::get()
 					->loadTexture( category, m_imageFile, m_imageCodec );
 
-		if( m_image == NULL )
+		//m_texture = RenderEngine::get()
+		//	->loadMegatexture( category, m_imageFile, m_imageCodec );
+
+		if( m_texture == NULL )
 		{
 			MENGE_LOG_ERROR( "ResourceFont::_compile '%s' invalid loading font image '%S'"
 				, this->getName().c_str()
@@ -129,8 +132,8 @@ namespace Menge
 			return false;
 		}
 
-		size_t width = m_image->getWidth();
-		size_t height = m_image->getHeight();
+		size_t width = m_texture->getWidth();
+		size_t height = m_texture->getHeight();
 
 		m_textureRatio = float(width) / float(height);
 
@@ -182,9 +185,9 @@ namespace Menge
 	void ResourceFont::_release()
 	{
 		RenderEngine::get()
-			->releaseTexture( m_image );
+			->releaseTexture( m_texture );
 
-		m_image = NULL;
+		m_texture = NULL;
 
 		if( m_outline )
 		{

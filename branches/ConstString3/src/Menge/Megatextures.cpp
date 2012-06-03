@@ -17,6 +17,11 @@ namespace Menge
 		return m_pixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	size_t Megatextures::getMegatextureCount() const
+	{
+		return m_atlases.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface * Megatextures::createTexture( size_t _width, size_t _height )
 	{
 		size_t x;

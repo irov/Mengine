@@ -53,7 +53,8 @@ namespace Menge
 	class TextManager;
 	class NodeManager;
 	class FileLogger;
-	
+
+	class Watchdog;
 
 	class PluginInterface;
 
@@ -318,6 +319,8 @@ namespace Menge
 		MovieKeyFrameManager * m_movieKeyFrameManager;
 
 		StringizeService * m_stringizeService;
+
+		Watchdog * m_watchdog;
 
 		void parseArguments_( const String& _arguments );
 

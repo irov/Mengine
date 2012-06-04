@@ -86,6 +86,12 @@ Service\\\\Stringize
 )
 
 ADD_FILTER(
+Service\\\\Watchdog
+	Watchdog.cpp
+	Watchdog.h
+)
+
+ADD_FILTER(
 Engine\\\\Log
 	LogEngine.cpp
 	LogEngine.h

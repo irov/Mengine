@@ -48,6 +48,8 @@
 #	include "EntityManager.h"
 #	include "ParamManager.h"
 
+#	include "Watchdog.h"
+
 #	include "Player.h"
 #	include "Scene.h"
 
@@ -287,6 +289,10 @@ namespace Menge
 
 		m_serviceProvider->registryService("StringizeService", m_stringizeService);
 
+		m_watchdog = new Watchdog;
+		
+		Watchdog::keep( m_watchdog );
+		
 		ExecuteInitialize exinit( this );
 		
 		exinit.add( &Application::initializeLogEngine_);
@@ -1586,6 +1592,8 @@ namespace Menge
 
 		m_serviceProvider->unregistryService( "StringizeService" );
 		delete m_stringizeService;
+
+		delete m_watchdog;
 
 		delete m_serviceProvider;
 		delete m_consts;

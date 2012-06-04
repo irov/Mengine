@@ -23,6 +23,8 @@
 #	include "Player.h"
 #	include "TimingManager.h"
 
+#	include "Watchdog.h"
+
 #	include "Consts.h"
 
 #	include <ctime>
@@ -232,6 +234,14 @@ namespace Menge
 #	endif
 
 			return py_list;
+		}
+
+		static float s_watchdog( const String & _tag )
+		{
+			float watch = Watchdog::get()
+				->watch( _tag );
+
+			return watch;
 		}
 
 		static bool s_isPointInsidePolygon( const mt::vec2f & _point, const Polygon & _polygon )
@@ -1142,5 +1152,7 @@ namespace Menge
 		pybind::def_function( "is_wrap", &pybind::is_wrap );
 
 		pybind::def_function( "objects", &ScriptHelper::s_objects );
+		
+		pybind::def_function( "watchdog", &ScriptHelper::s_watchdog );
 	}
 }

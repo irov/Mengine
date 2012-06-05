@@ -1066,7 +1066,7 @@ namespace Menge
 
 		pybind::def_function( "direction", &ScriptHelper::mt_direction );
 		pybind::def_function( "angle_norm", &mt::angle_norm );
-		
+		pybind::def_function( "angle_delta_deg", &mt::angle_delta_deg );
 
 		pybind::def_function( "length_v2_v2", &mt::length_v2_v2 );
 		pybind::def_function( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
@@ -1076,7 +1076,8 @@ namespace Menge
 		pybind::def_function( "angle_length", &mt::angle_length );
 		pybind::def_function( "perp", &mt::perp );
 		pybind::def_function( "perp_left", &mt::perp_left );
-
+		
+		
 		pybind::def_function( "angle_correct_interpolate_from_to", &ScriptHelper::s_angle_correct_interpolate_from_to );
 
 		pybind::def_function( "projectionPointToLine", &ScriptHelper::projectionPointToLine );

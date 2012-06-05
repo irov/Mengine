@@ -178,6 +178,11 @@ namespace Menge
 		_flush.particleCount = 0;
 		_flush.meshCount = 0;
 
+		if(  _particlesLimit <= rendering.count )
+		{
+			return false;
+		}
+
 		while( rendering.count )
 		{
 			ParticleMesh & mesh = _meshes[_flush.meshCount];

@@ -72,6 +72,7 @@
 #	include "TileMap.h"
 #	include "Track.h"
 #	include "Movie.h"
+#	include "MovieInternalObject.h"
 #	include "Model.h"
 #	include "Video.h"
 #	include "Layer2D.h"
@@ -682,6 +683,7 @@ namespace Menge
 		//NODE_FACTORY( TileMap );
 		//NODE_FACTORY( Track );
 		NODE_FACTORY( Movie );
+		NODE_FACTORY( MovieInternalObject );
 		//NODE_FACTORY( Model );
 		NODE_FACTORY( Video );
 		NODE_FACTORY( Layer2D );

@@ -272,6 +272,25 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::askEvent( PyObject *& _result, EEventName _event, const char * _format, ... ) const
+	{
+		PyObject * pyobj = this->getEvent( _event );
+
+		if( pyobj == 0 )
+		{
+			return true;
+		}
+
+		va_list valist;
+		va_start(valist, _format);
+
+		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
+
+		va_end( valist );
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( size_t & _result, EEventName _event, const char * _format, ... ) const
 	{
 		PyObject * pyobj = this->getEvent( _event );

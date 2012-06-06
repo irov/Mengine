@@ -23,7 +23,6 @@ namespace Menge
 			, parent(0)
 			, in(0.f)
 			, out(0.f)
-			, internal(false)
 			, animatable(false)
 		{
 		}
@@ -41,7 +40,6 @@ namespace Menge
 		WString keyFramesPath;
 
 		ConstString source;
-		bool internal;
 		bool animatable;
 		bool movie;
 		bool threeD;

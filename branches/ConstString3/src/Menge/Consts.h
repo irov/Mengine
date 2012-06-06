@@ -34,6 +34,7 @@ namespace Menge
 		ConstString c_Window;
 		ConstString c_Image;
 		ConstString c_Video;
+		ConstString c_MovieInternalObject;
 		ConstString c_Sound;
 		ConstString c_Movie;
 		ConstString c_user;

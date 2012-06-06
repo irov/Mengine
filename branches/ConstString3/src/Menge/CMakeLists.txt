@@ -414,7 +414,9 @@ Object2D\\\\Sprite
 ADD_FILTER(
 Object2D\\\\Movie
 	Movie.cpp
-	Movie.h
+	Movie.h	
+	MovieInternalObject.cpp
+	MovieInternalObject.h
 )
 
 ADD_FILTER(

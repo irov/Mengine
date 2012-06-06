@@ -33,6 +33,7 @@ namespace Menge
 		bool askEvent( bool & _result, EEventName _event, const char * _format, ... ) const;
 		bool askEvent( size_t & _result, EEventName _event, const char * _format, ... ) const;
 		bool askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... ) const;
+		bool askEvent( PyObject *& _result, EEventName _event, const char * _format, ... ) const;
 
 	public:
 		void removeAllEvent();

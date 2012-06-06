@@ -70,14 +70,15 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		void updateFrame2D_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );
+		void updateFrameNode_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );
 
 	private:
-		void updateParent_();		
+		void updateParent_();
+		void updateCamera_();
 		void stopAnimation_();
 
 	private:
-		Scriptable * findInternalObject_( const ConstString & _resource, EEventName _event ) const;
+		PyObject * findInternalObject_( const ConstString & _resource ) const;
 
 	protected:
 		bool createMovieSlot_( const MovieLayer & _layer );

@@ -12,10 +12,7 @@ namespace Menge
 		, m_coordinate(0.f, 0.f, 0.f)
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
-		//, m_direction(1.f, 0.f)
-		, m_rotateX(0.f)
-		, m_rotateY(0.f)
-		, m_rotateZ(0.f)
+		, m_rotation(0.f, 0.f, 0.f)
 	{
 		mt::ident_m4( m_localMatrix );
 		mt::ident_m4( m_worldMatrix );
@@ -73,12 +70,12 @@ namespace Menge
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
-		if( fabsf(m_rotateX - norm_angle) < 0.00001f )
+		if( fabsf(m_rotation.x - norm_angle) < 0.00001f )
 		{
 			return;
 		}
 
-		m_rotateX = norm_angle;
+		m_rotation.x = norm_angle;
 
 		this->invalidateWorldMatrix();
 	}
@@ -87,12 +84,12 @@ namespace Menge
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
-		if( fabsf(m_rotateY - norm_angle) < 0.00001f )
+		if( fabsf(m_rotation.y - norm_angle) < 0.00001f )
 		{
 			return;
 		}
 
-		m_rotateY = norm_angle;
+		m_rotation.y = norm_angle;
 
 		this->invalidateWorldMatrix();
 	}
@@ -101,12 +98,32 @@ namespace Menge
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
-		if( fabsf(m_rotateZ - norm_angle) < 0.00001f )
+		if( fabsf(m_rotation.z - norm_angle) < 0.00001f )
 		{
 			return;
 		}
 
-		m_rotateZ = norm_angle;
+		m_rotation.z = norm_angle;
+
+		this->invalidateWorldMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setRotation( const mt::vec3f & _rotate )
+	{
+		m_rotation = _rotate;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & Transformation3D::getRotation() const
+	{
+		return m_rotation;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _rotate )
+	{
+		m_position = _position;
+		m_origin = _origin;
+		m_scale = _scale;
+		m_rotation = _rotate;
 
 		this->invalidateWorldMatrix();
 	}
@@ -117,10 +134,7 @@ namespace Menge
 		m_coordinate = mt::vec3f(0.f, 0.f, 0.f);
 		m_position = mt::vec3f(0.f, 0.f, 0.f);
 		m_scale = mt::vec3f(1.f, 1.f, 1.f);
-
-		m_rotateX = 0.f;
-		m_rotateY = 0.f;
-		m_rotateZ = 0.f;
+		m_rotation = mt::vec3f(0.f, 0.f, 0.f);
 
 		this->invalidateWorldMatrix();
 	}
@@ -157,7 +171,7 @@ namespace Menge
 		mat_scale.v2.z = m_scale.z;
 		
 		mt::mat4f mat_rot;
-		mt::make_rotate_m4( mat_rot, m_rotateX, m_rotateY, m_rotateZ );
+		mt::make_rotate_m4( mat_rot, m_rotation.x, m_rotation.y, m_rotation.z );
 		//mat_rot.v0.x = m_direction.x;
 		//mat_rot.v0.y = m_direction.y;
 		//mat_rot.v1.x = -m_direction.y;

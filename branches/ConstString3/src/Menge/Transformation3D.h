@@ -16,6 +16,7 @@ namespace Menge
 		//void setLocalMatrix( const mt::mat3f & _matrix );
 		inline const mt::mat4f & getLocalMatrix() const;
 
+	public:
 		void setLocalPosition( const mt::vec3f & _position );
 		inline const mt::vec3f & getLocalPosition() const;
 
@@ -28,9 +29,6 @@ namespace Menge
 		void setScale( const mt::vec3f& _scale );
 		inline const mt::vec3f& getScale() const;
 
-		void setCoordinate( const mt::vec3f& _coordinate );
-		inline const mt::vec3f& getCoordinate() const;
-
 		void setRotateX( float _angle );
 		inline float getRotateX() const;
 
@@ -40,7 +38,15 @@ namespace Menge
 		void setRotateZ( float _angle );
 		inline float getRotateZ() const;
 
+		void setRotation( const mt::vec3f & _rotation );
+		const mt::vec3f & getRotation() const;
+
 	public:
+		void setCoordinate( const mt::vec3f& _coordinate );
+		inline const mt::vec3f& getCoordinate() const;
+
+	public:
+		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec3f& _rotate );
 		void resetTransformation();
 		
 	public:
@@ -65,9 +71,7 @@ namespace Menge
 		mt::vec3f m_position;
 		mt::vec3f m_scale;
 
-		float m_rotateX;
-		float m_rotateY;
-		float m_rotateZ;
+		mt::vec3f m_rotation;
 
 		mutable mt::mat4f m_localMatrix;
 		mutable mt::mat4f m_worldMatrix;
@@ -97,17 +101,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline float Transformation3D::getRotateX() const
 	{
-		return m_rotateX;
+		return m_rotation.x;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float Transformation3D::getRotateY() const
 	{
-		return m_rotateY;
+		return m_rotation.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float Transformation3D::getRotateZ() const
 	{
-		return m_rotateZ;
+		return m_rotation.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Transformation3D::getRelationMatrix() const

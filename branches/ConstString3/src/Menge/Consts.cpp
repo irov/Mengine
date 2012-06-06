@@ -19,6 +19,7 @@ namespace Menge
 		, c_Window("Window")
 		, c_Image("Image")
 		, c_Video("Video")
+		, c_MovieInternalObject("MovieInternalObject")
 		, c_Sound("Sound")
 		, c_Movie("Movie")
 		, c_user("user")

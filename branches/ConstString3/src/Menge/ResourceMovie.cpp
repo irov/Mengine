@@ -193,13 +193,15 @@ namespace Menge
 
 				MovieLayerCamera3D camera;
 
+				bool depricated_internal;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Name, ml.name );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Parent, ml.parent );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Source, ml.source);
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Index, ml.index );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Internal, ml.internal );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Internal, depricated_internal ); //depricated
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_In, ml.in );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Out, ml.out );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_BlendingMode, ml.blendingMode );
@@ -284,7 +286,6 @@ namespace Menge
 
 			if( it->source ==  Consts::get()->c_MovieSlot )
 			{
-				it->internal = false;
 				it->animatable = false;
 				it->movie = false;
 
@@ -293,7 +294,6 @@ namespace Menge
 			
 			if( it->source ==  Consts::get()->c_MovieNullObject )
 			{
-				it->internal = false;
 				it->animatable = false;
 				it->movie = false;
 
@@ -305,55 +305,46 @@ namespace Menge
 
 			if( resourceType == Consts::get()->c_ResourceImageDefault )
 			{
-				it->internal = false;
 				it->animatable = false;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceImageSolid )
 			{
-				it->internal = false;
 				it->animatable = false;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceImageInAtlas )
 			{
-				it->internal = false;
 				it->animatable = false;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
-				it->internal = false;
 				it->animatable = true;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceVideo )
 			{
-				it->internal = false;
 				it->animatable = true;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceSound )
 			{
-				it->internal = false;
 				it->animatable = true;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
 			{
-				it->internal = false;
 				it->animatable = true;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceMovie )
 			{
-				it->internal = false;
 				it->animatable = true;
 				it->movie = true;
 			}
 			else if( resourceType == Consts::get()->c_ResourceInternalObject )
 			{
-				it->internal = true;
 				it->animatable = false;
 				it->movie = false;
 			}

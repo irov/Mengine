@@ -35,6 +35,7 @@
 
 #	include "Amplifier.h"
 #	include "Sprite.h"
+#	include "MovieInternalObject.h"
 #	include "Animation.h"
 #	include "HotSpot.h"
 #	include "Light2D.h"
@@ -2572,6 +2573,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( SoundEmitter );
 		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
 		SCRIPT_CLASS_WRAPPING( Movie );
+		SCRIPT_CLASS_WRAPPING( MovieInternalObject );
 		SCRIPT_CLASS_WRAPPING( Point );
 		//SCRIPT_CLASS_WRAPPING( TilePolygon );
 		SCRIPT_CLASS_WRAPPING( Video );
@@ -3596,6 +3598,9 @@ namespace Menge
 					.def( "getMovieSlot", &Movie::getMovieSlot )
 					.def( "hasMovieSlot", &Movie::hasMovieSlot )
 					;
+
+				pybind::proxy_<MovieInternalObject, pybind::bases<Node> >("MovieInternalObject", false)
+					;				
 
 				pybind::proxy_<Video, pybind::bases<Node , Animatable> >("Video", false)
 					.def("pause",&Video::pause )

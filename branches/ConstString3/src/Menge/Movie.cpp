@@ -14,6 +14,7 @@
 #	include "Animation.h"
 #	include "Video.h"
 #	include "ParticleEmitter.h"
+#	include "MovieInternalObject.h"
 
 #	include "SoundEmitter.h"
 #	include "NodeManager.h"
@@ -27,36 +28,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame( Node * _node, const MovieFrameSource & _frame )
-		{	
-			_node->setOrigin( _frame.anchorPoint );
-			_node->setLocalPosition( _frame.position );
-			_node->setScale( _frame.scale );
-
-			_node->setRotateX( _frame.rotation.x );
-			_node->setRotateY( _frame.rotation.y );
-			_node->setRotateZ( _frame.rotation.z );
-
-			_node->setPersonalAlpha( _frame.opacity );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrameMovie( Node * _node, const MovieFrameSource & _frame )
-		{
-			_node->setOrigin( _frame.anchorPoint );
-			_node->setLocalPosition( _frame.position );
-			_node->setScale( _frame.scale );
-
-			_node->setRotateX( _frame.rotation.x );
-			_node->setRotateY( _frame.rotation.y );
-			_node->setRotateZ( _frame.rotation.z );
-
-			_node->setLocalAlpha( _frame.opacity );
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_resourceMovie(NULL)
@@ -192,76 +163,22 @@ namespace Menge
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateFrame2D_( const MovieLayer & _layer, Node * _node, const MovieFrameSource & _frame )
+	void Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, const MovieFrameSource & _frame )
 	{
-		if( _layer.internal == true )
+		_node->setTransformation( 
+			_frame.position, 
+			_frame.anchorPoint, 
+			_frame.scale, 
+			_frame.rotation 
+			);
+			
+		if( _layer.movie == false )
 		{
-			//_node->setOrigin( _frame.anchorPoint );
-			//_node->setLocalPosition( _frame.position );
-			//_node->setScale( _frame.scale );
-			//_node->setAngle( _frame.angle );
-			//_node->setLocalAlpha( _frame.opacity );
-
-			if( _layer.parent == 0 )
-			{
-				const mt::mat4f & wm = this->getWorldMatrix();
-
-				mt::vec3f wm_pos;
-				mt::mul_v3_m4(wm_pos, _frame.position, wm);
-				PyObject * py_position = pybind::ptr(wm_pos);
-
-				PyObject * py_node = pybind::ptr(_node);
-				PyObject * py_anchorPoint = pybind::ptr(_frame.anchorPoint);
-
-				//const mt::vec2f & movie_scale = this->getScale();
-
-				//mt::vec2f wm_scale;
-				//wm_scale.x = movie_scale.x * _frame.scale.x;
-				//wm_scale.y = movie_scale.y * _frame.scale.y;
-
-				PyObject * py_scale = pybind::ptr(_frame.scale);
-
-				PyObject * py_angle = pybind::ptr(_frame.rotation);
-				PyObject * py_opacity = pybind::ptr(_frame.opacity);
-
-				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
-
-				pybind::decref(py_node);
-				pybind::decref(py_anchorPoint);
-				pybind::decref(py_position);
-				pybind::decref(py_scale);
-				pybind::decref(py_angle);
-				pybind::decref(py_opacity);
-			}
-			else
-			{
-				PyObject * py_node = pybind::ptr(_node);
-				PyObject * py_anchorPoint = pybind::ptr(_frame.anchorPoint);
-				PyObject * py_position = pybind::ptr(_frame.position);
-				PyObject * py_scale = pybind::ptr(_frame.scale);
-				PyObject * py_angle = pybind::ptr(_frame.rotation);
-				PyObject * py_opacity = pybind::ptr(_frame.opacity);
-
-				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
-
-				pybind::decref(py_node);
-				pybind::decref(py_anchorPoint);
-				pybind::decref(py_position);
-				pybind::decref(py_scale);
-				pybind::decref(py_angle);
-				pybind::decref(py_opacity);
-			}
+			_node->setPersonalAlpha( _frame.opacity );
 		}
 		else
 		{
-			if( _layer.movie == false )
-			{
-				Helper::s_applyFrame( _node, _frame );
-			}
-			else
-			{
-				Helper::s_applyFrameMovie( _node, _frame );
-			}
+			_node->setLocalAlpha( _frame.opacity );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -306,7 +223,7 @@ namespace Menge
 				return;
 			}
 
-			this->updateFrame2D_( layer, node, frame );
+			this->updateFrameNode_( layer, node, frame );
 
 			if( fabsf(layer.in) <= 0.001f )
 			{
@@ -358,7 +275,7 @@ namespace Menge
 				return;
 			}
 
-			this->updateFrame2D_( layer, node, frame );
+			this->updateFrameNode_( layer, node, frame );
 
 			if( fabsf(layer.out - out) <= 0.001f )
 			{
@@ -479,7 +396,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event ) const
+	PyObject * Movie::findInternalObject_( const ConstString & _resource ) const
 	{
 		ResourceInternalObject * resourceInternalObject = ResourceManager::get()
 			->getResourceT<ResourceInternalObject>( _resource );
@@ -494,26 +411,26 @@ namespace Menge
 			return NULL;
 		}
 
-		const ConstString & internalName = resourceInternalObject->getInternalName();
 		const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
+		const ConstString & internalName = resourceInternalObject->getInternalName();		
+		
+		PyObject * py_object = 0;
+		this->askEvent( py_object, EVENT_MOVIE_GET_INTERNAL, "(ss)", internalGroup.c_str(), internalName.c_str() );
 
 		resourceInternalObject->decrementReference();
 
-		Scriptable * scriptable = 0;
-		this->askEvent( scriptable, _event, "(ss)", internalName.c_str(), internalGroup.c_str() );
-
-		if( scriptable == NULL )
+		if( py_object == NULL )
 		{
-			MENGE_LOG_ERROR("Movie: '%s' can't find internal node '%s:%s'"
+			MENGE_LOG_ERROR("Movie: '%s' can't find internal object '%s:%s'"
 				, m_name.c_str()
-				, internalName.c_str()
 				, internalGroup.c_str()
+				, internalName.c_str()				
 				);
 
 			return NULL;
 		}
 
-		return scriptable;
+		return py_object;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
@@ -681,26 +598,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
 	{
-		Scriptable * scriptable = this->findInternalObject_( _layer.source, EVENT_MOVIE_FIND_INTERNAL_NODE );
+		MovieInternalObject * movie_internal = NodeManager::get()
+			->createNodeT<MovieInternalObject>( _layer.name, Consts::get()->c_MovieInternalObject, Consts::get()->c_Image );
 
-		if( scriptable == NULL )
+		movie_internal->setMovie( this );
+
+		PyObject * py_object = this->findInternalObject_( _layer.source );
+
+		movie_internal->setInternalObject( py_object );
+
+		if( movie_internal->compile() == false )
 		{
-			return false;
-		}				
-
-		Node * layer_node = dynamic_cast<Node*>(scriptable);
-
-		if( layer_node == 0 )
-		{
-			MENGE_LOG_ERROR("Movie: '%s' internal node '%s' not type 'Node'"
+			MENGE_LOG_ERROR("Movie: '%s' can't compile InternalObject '%s'"
 				, m_name.c_str()
-				, _layer.source.c_str()
+				, _layer.name.c_str()
 				);
+
+			movie_internal->destroy();
 
 			return false;
 		}
+		//m_objects[_layer.index] = py_object;
 
-		this->addMovieNode_( _layer, layer_node );
+		movie_internal->enable();
+		movie_internal->localHide(true);
+
+		this->addMovieNode_( _layer, movie_internal );
 
 		return true;
 	}
@@ -935,13 +858,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateParent_()
+	void Movie::updateCamera_()
 	{
-		//if( this->isActivate() == false )
-		//{
-		//	return;
-		//}
-
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( TVectorMovieLayers::const_iterator 
@@ -958,13 +876,26 @@ namespace Menge
 			{
 				node->setRenderCamera( m_renderCamera3D );
 			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateParent_()
+	{
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator 
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			Node * node = m_nodies[layer.index];
 
 			if( layer.parent == 0 )
 			{
-				if( layer.internal == false )
-				{
-					this->addChildren( node );
-				}
+				this->addChildren( node );
 			}
 			else
 			{
@@ -1006,11 +937,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.internal == true )
-			{
-				continue;
-			}
-
 			if( layer.animatable == false )
 			{
 				continue;
@@ -1050,11 +976,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.internal == true )
-			{
-				continue;
-			}
-
 			if( layer.parent != 0 )
 			{
 				continue;
@@ -1083,41 +1004,8 @@ namespace Menge
 			return false;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.internal == true )
-			{
-				ResourceInternalObject * resourceInternalObject = ResourceManager::get()
-					->getResourceT<ResourceInternalObject>( layer.source );
-
-				if( resourceInternalObject == NULL )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' can't find internal resource '%s'"
-						, m_name.c_str()
-						, layer.source.c_str()
-						);
-
-					return NULL;
-				}
-
-				const ConstString & internalName = resourceInternalObject->getInternalName();
-				const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
-
-				resourceInternalObject->decrementReference();
-
-				this->callEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, "(ss)", internalName.c_str(), internalGroup.c_str() );
-			}
-		}
-
 		this->updateParent_();
+		this->updateCamera_();
 		
 		return true;
 	}
@@ -1133,10 +1021,12 @@ namespace Menge
 	{
 		Node::_setEventListener(_embed);
 
-		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_NODE, ("onMovieFindInternalNode"), _embed );
-		Eventable::registerEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, ("onMoviePrepareInternalNode"), _embed );		
-		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_SPRITE, ("onMovieFindInternalSprite"), _embed );
-		Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, ("onMovieApplyInternalSprite"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_TRANSFORMATION, ("onMovieApplyInternalTransformation"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_OPACITY, ("onMovieApplyInternalOpacity"), _embed );
+
 		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1311,29 +1201,26 @@ namespace Menge
 					continue;
 				}
 
-				if( layer.internal == false )
+				//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
+				//{
+				//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+				node->localHide(true);
+
+				if( layer.animatable == true )
 				{
-					//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
-					//{
-					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-					node->localHide(true);
+					Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-					if( layer.animatable == true )
+					//printf("Movie %s stop[layer] animatable %s\n"
+					//	, m_name.c_str()
+					//	, node->getName().c_str()
+					//	);
+
+					if( animatable->isPlay() == true && this->isPlay() == true )
 					{
-						Animatable * animatable = dynamic_cast<Animatable *>(node);
+						animatable->stop();
 
-						//printf("Movie %s stop[layer] animatable %s\n"
-						//	, m_name.c_str()
-						//	, node->getName().c_str()
-						//	);
-
-						if( animatable->isPlay() == true && this->isPlay() == true )
-						{
-							animatable->stop();
-
-							float timing = (indexOut - indexIn) * frameDuration;
-							animatable->setTiming( timing );
-						}
+						float timing = (indexOut - indexIn) * frameDuration;
+						animatable->setTiming( timing );
 					}
 				}
 			}
@@ -1344,63 +1231,60 @@ namespace Menge
 					continue;
 				}
 
-				if( layer.internal == false )
-				{
 					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
-					node->localHide(false);
+				node->localHide(false);
 
-					if( layer.animatable == true )
+				if( layer.animatable == true )
+				{
+					Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+					if( animatable->isPlay() == false || _force == true )
 					{
-						Animatable * animatable = dynamic_cast<Animatable *>(node);
+						//animatable->setSpeedFactor( m_speedFactor );							
 
-						if( animatable->isPlay() == false || _force == true )
+						//printf("Movie %s play animatable %s\n"
+						//	, m_name.c_str()
+						//	, node->getName().c_str()
+						//	);
+
+						animatable->play();
+
+						if( _lastFrame <= m_currentFrame )
 						{
-							//animatable->setSpeedFactor( m_speedFactor );							
-
-							//printf("Movie %s play animatable %s\n"
-							//	, m_name.c_str()
-							//	, node->getName().c_str()
-							//	);
-
-							animatable->play();
-
-							if( _lastFrame <= m_currentFrame )
+							if( _lastFrame >= indexIn )
 							{
-								if( _lastFrame >= indexIn )
-								{
-									float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
-									animatable->setTiming( timing );
-								}
-								else
-								{
-									float timing = (indexIn - _lastFrame) * frameDuration + m_frameTiming;
-									animatable->setTiming( -timing );
-								}
+								float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
+								animatable->setTiming( timing );
 							}
 							else
 							{
-								size_t frame = (indexOut - 1) - _lastFrame + m_currentFrame;
-								float timing = frame * frameDuration + m_frameTiming;
-
-								//printf("------ %d %d %d %f %f == %d %f\n"
-								//	, indexOut
-								//	, _lastFrame
-								//	, m_currentFrame
-								//	, frameDuration
-								//	, m_frameTiming
-								//	, frame
-								//	, timing
-								//	);
-
+								float timing = (indexIn - _lastFrame) * frameDuration + m_frameTiming;
 								animatable->setTiming( -timing );
 							}
-							//animatable->update(realTiming);
 						}
+						else
+						{
+							size_t frame = (indexOut - 1) - _lastFrame + m_currentFrame;
+							float timing = frame * frameDuration + m_frameTiming;
+
+							//printf("------ %d %d %d %f %f == %d %f\n"
+							//	, indexOut
+							//	, _lastFrame
+							//	, m_currentFrame
+							//	, frameDuration
+							//	, m_frameTiming
+							//	, frame
+							//	, timing
+							//	);
+
+							animatable->setTiming( -timing );
+						}
+						//animatable->update(realTiming);
 					}
 				}
 			}
 
-			this->updateFrame2D_( layer, node, frame );
+			this->updateFrameNode_( layer, node, frame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1441,25 +1325,22 @@ namespace Menge
 					continue;
 				}
 
-				if( layer.internal == false )
+				//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
+				//{
+				//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+				node->localHide(true);
+
+				if( layer.animatable == true )
 				{
-					//if( layerIn > 0.001f || fabsf(layerOut - out) > 0.001f )
-					//{
-					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-					node->localHide(true);
+					Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-					if( layer.animatable == true )
-					{
-						Animatable * animatable = dynamic_cast<Animatable *>(node);
+					//printf("Movie %s stop[layer] animatable %s\n"
+					//	, m_name.c_str()
+					//	, node->getName().c_str()
+					//	);
 
-						//printf("Movie %s stop[layer] animatable %s\n"
-						//	, m_name.c_str()
-						//	, node->getName().c_str()
-						//	);
-
-						float timing = (indexOut - indexIn) * frameDuration;
-						animatable->setTiming( timing );
-					}
+					float timing = (indexOut - indexIn) * frameDuration;
+					animatable->setTiming( timing );
 				}
 			}
 			else if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
@@ -1469,22 +1350,19 @@ namespace Menge
 					continue;
 				}
 
-				if( layer.internal == false )
-				{			
-					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
-					node->localHide(false);
+				//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
+				node->localHide(false);
 
-					if( layer.animatable == true )
-					{
-						Animatable * animatable = dynamic_cast<Animatable *>(node);
+				if( layer.animatable == true )
+				{
+					Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-						float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-						animatable->setTiming( timing );
-					}
+					float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
+					animatable->setTiming( timing );
 				}
 			}			
 
-			this->updateFrame2D_( layer, node, frame );
+			this->updateFrameNode_( layer, node, frame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1520,10 +1398,7 @@ namespace Menge
 
 			if( m_currentFrame > indexIn )
 			{
-				if( layer.internal == false )
-				{
-					node->localHide( true );
-				}
+				node->localHide( true );
 			}	
 		}
 	}

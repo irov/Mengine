@@ -11,6 +11,7 @@ namespace Menge
 	{
 	public:
 		MovieInternalObject();
+		~MovieInternalObject();
 
 	public:
 		void setMovie( Movie * _movie );
@@ -28,8 +29,8 @@ namespace Menge
 		
 
 	protected:
-		void _invalidateWorldMatrix() override;
-		void _invalidateColor() override;
+		//void _invalidateWorldMatrix() override;
+		//void _invalidateColor() override;
 
 	protected:
 		Movie * m_movie;

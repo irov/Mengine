@@ -983,7 +983,7 @@ namespace Menge
 			
 			Node * node = m_nodies[layer.index];
 
-			node->destroy();
+			//node->destroy();
 		}
 
 		m_nodies.clear();
@@ -1024,8 +1024,8 @@ namespace Menge
 		Eventable::registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _embed );
 		Eventable::registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _embed );
 		Eventable::registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _embed );
-		Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_TRANSFORMATION, ("onMovieApplyInternalTransformation"), _embed );
-		Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_OPACITY, ("onMovieApplyInternalOpacity"), _embed );
+		//Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_TRANSFORMATION, ("onMovieApplyInternalTransformation"), _embed );
+		//Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_OPACITY, ("onMovieApplyInternalOpacity"), _embed );
 
 		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}

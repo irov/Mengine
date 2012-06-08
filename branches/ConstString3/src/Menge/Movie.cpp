@@ -983,7 +983,7 @@ namespace Menge
 			
 			Node * node = m_nodies[layer.index];
 
-			//node->destroy();
+			node->destroy();
 		}
 
 		m_nodies.clear();

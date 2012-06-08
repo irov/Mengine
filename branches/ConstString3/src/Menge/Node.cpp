@@ -122,11 +122,9 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->activate();
-			//if( (*it)->activate() == false )
-			//{
-			//	return false;
-			//}
+			Node * children = (*it);
+
+			children->activate();
 		}
 		--m_childBlock;
 

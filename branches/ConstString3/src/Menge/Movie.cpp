@@ -453,7 +453,7 @@ namespace Menge
 		Node * layer_slot = NodeManager::get()
 			->createNodeT<Node>( _layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
 
-		layer_slot->enable();
+		//layer_slot->enable();
 		layer_slot->localHide(true);
 
 		this->addMovieNode_( _layer, layer_slot );
@@ -482,7 +482,7 @@ namespace Menge
 			return false;
 		}
 
-		layer_sprite->enable();
+		//layer_sprite->enable();
 		layer_sprite->localHide(true);
 
 		this->addMovieNode_( _layer, layer_sprite );
@@ -528,7 +528,7 @@ namespace Menge
 			return false;
 		}
 
-		layer_sprite->enable();
+		//layer_sprite->enable();
 		layer_sprite->localHide(true);
 
 		this->addMovieNode_( _layer, layer_sprite );
@@ -558,7 +558,7 @@ namespace Menge
 			return false;
 		}
 
-		layer_animation->enable();
+		//layer_animation->enable();
 		layer_animation->localHide( true );
 
 		this->addMovieNode_( _layer, layer_animation );
@@ -587,7 +587,7 @@ namespace Menge
 			return false;
 		}
 
-		layer_movie->enable();
+		//layer_movie->enable();
 		layer_movie->localHide( true );
 		layer_movie->setParentMovie( true );
 
@@ -620,7 +620,7 @@ namespace Menge
 		}
 		//m_objects[_layer.index] = py_object;
 
-		movie_internal->enable();
+		//movie_internal->enable();
 		movie_internal->localHide(true);
 
 		this->addMovieNode_( _layer, movie_internal );
@@ -650,7 +650,7 @@ namespace Menge
 			return false;
 		}
 
-		layer_video->enable();
+		//layer_video->enable();
 		layer_video->localHide(true);
 
 		this->addMovieNode_( _layer, layer_video );
@@ -680,7 +680,7 @@ namespace Menge
 			return false;
 		}
 
-		layer_sound->enable();
+		//layer_sound->enable();
 		layer_sound->localHide( true );
 
 		this->addMovieNode_( _layer, layer_sound );
@@ -714,7 +714,7 @@ namespace Menge
 		layer_particles->setLoop( true );
 		layer_particles->setEmitterTranslateWithParticle( true );
 
-		layer_particles->enable();
+		//layer_particles->enable();
 		layer_particles->localHide( true );
 
 		this->addMovieNode_( _layer, layer_particles );

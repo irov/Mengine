@@ -73,7 +73,9 @@ namespace mt
 
 	MATH_METHOD_INLINE float vec2f::length() const
 	{
-		return sqrtf(sqrlength());
+		float sql = sqrlength();
+
+		return sqrtf(sql);
 	}
 
 	MATH_METHOD_INLINE float * vec2f::buff()

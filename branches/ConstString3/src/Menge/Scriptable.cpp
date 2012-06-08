@@ -60,7 +60,7 @@ namespace Menge
 
 		//PyObject * py_dict = pybind::dict_from( _embed );
 
-		this->_embedding( _embed );
+		this->_embedding( m_embed );
 
 		//pybind::decref( py_dict );
 

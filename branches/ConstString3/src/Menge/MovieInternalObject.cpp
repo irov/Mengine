@@ -48,12 +48,12 @@ namespace Menge
 			return false;
 		}
 
-		PyObject * py_obj = this->getEmbed();
+		if( m_internalObject != NULL )
+		{
+			PyObject * py_obj = this->getEmbed();
 		
-		m_movie->callEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, "(OO)", py_obj, m_internalObject );
-
-		//pybind::incref( py_obj );
-		////pybind::decref( py_obj );
+			m_movie->callEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, "(OO)", py_obj, m_internalObject );
+		}
 
 		return true;
 	}
@@ -61,14 +61,13 @@ namespace Menge
 	void MovieInternalObject::_deactivate()
 	{
 		Node::_deactivate();
+				
+		if( m_internalObject != NULL )
+		{
+			PyObject * py_obj = this->getEmbed();
 
-		PyObject * py_obj = this->getEmbed();
-		//
-		//pybind::incref( py_obj );
-
-		m_movie->callEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, "(OO)", py_obj, m_internalObject );
-
-		//pybind::decref( py_obj );
+			m_movie->callEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, "(OO)", py_obj, m_internalObject );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_destroy()
@@ -76,6 +75,7 @@ namespace Menge
 		Node::_destroy();
 
 		pybind::decref( m_internalObject );
+		m_internalObject = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////		
 	//void MovieInternalObject::_invalidateWorldMatrix()

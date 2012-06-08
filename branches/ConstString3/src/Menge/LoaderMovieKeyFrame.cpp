@@ -81,20 +81,23 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::KeyFrame2D )
 			{
-				MovieFrameSource frame;				
+				size_t count = 1;
 
 				float angle;
 
+				mt::vec2f anchorPoint2d;
+				mt::vec2f position2d;
+				mt::vec2f scale2d;
+
+				MovieFrameSource frame;
 				if( m_pack->getLayerFrameLast( _layerIndex, frame ) == true )
 				{
-					angle = frame.rotation.z;
-				}
+					angle = -frame.rotation.x;
 
-				size_t count = 1;
-
-				mt::vec2f anchorPoint2d = frame.anchorPoint.to_vec2f();
-				mt::vec2f position2d = frame.position.to_vec2f();
-				mt::vec2f scale2d = frame.scale.to_vec2f();
+					anchorPoint2d = frame.anchorPoint.to_vec2f();
+					position2d = frame.position.to_vec2f();
+					scale2d = frame.scale.to_vec2f();
+				}				
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{

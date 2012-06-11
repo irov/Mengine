@@ -25,9 +25,9 @@ ADD_SUBDIRECTORY( pybind )
 #ADD_SUBDIRECTORY( Python )
 #ADD_SUBDIRECTORY( Python_2_6)
 
-if(WIN32)
-    ADD_SUBDIRECTORY( GLee )
-endif(WIN32)
+#if(WIN32)
+#    ADD_SUBDIRECTORY( GLee )
+#endif(WIN32)
 
 if(MSVC)
     ADD_SUBDIRECTORY( Python_3_2 )

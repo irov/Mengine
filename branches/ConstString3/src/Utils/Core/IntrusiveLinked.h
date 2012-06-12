@@ -2,6 +2,9 @@
 
 namespace Menge
 {
+	class IntrusiveLinkedSlug{};
+	class IntrusiveLinkedEnd{};
+
 	class IntrusiveLinked
 	{
 		typedef IntrusiveLinked TPtr;
@@ -10,6 +13,21 @@ namespace Menge
 		IntrusiveLinked()
 			: m_right(0)
 			, m_left(0)
+			, m_slug(0)
+		{
+		}
+
+		IntrusiveLinked( const IntrusiveLinkedSlug & )
+			: m_right(0)
+			, m_left(0)
+			, m_slug(1)
+		{
+		}
+
+		IntrusiveLinked( const IntrusiveLinkedEnd & )
+			: m_right(0)
+			, m_left(0)
+			, m_slug(2)
 		{
 		}
 
@@ -19,17 +37,22 @@ namespace Menge
 		}
 
 	public:
+		bool slug() const
+		{
+			return m_slug == 1;
+		}
+
 		bool unique() const
 		{
 			return !m_right && !m_left;
 		}
 
-		TPtr * left()
+		TPtr * left() const
 		{
 			return m_left;
 		}
 
-		TPtr * right()
+		TPtr * right() const
 		{
 			return m_right;
 		}
@@ -225,5 +248,6 @@ namespace Menge
 	public:
 		mutable TPtr * m_right;
 		mutable TPtr * m_left;
+		const int m_slug;
 	};
 }

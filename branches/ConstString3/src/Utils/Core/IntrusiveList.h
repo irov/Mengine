@@ -79,6 +79,7 @@ namespace Menge
 
 	public:
 		IntrusiveList()
+			: m_head(IntrusiveLinkedEnd())
 		{
 			m_head.m_right = &m_head;
 			m_head.m_left = &m_head;
@@ -92,40 +93,93 @@ namespace Menge
 			m_head.m_left = 0;
 		}
 
-	public:
-		class const_iterator
+	protected:
+		template<class It>
+		class base_iterator
 		{
 		public:
-			const_iterator( TLinked * _node )
+			base_iterator( TLinked * _node )
 				: m_node(_node)
 			{
-			}
-
-			const_iterator( const TLinked * _node )
-				: m_node( const_cast<TLinked *>(_node) )
-			{
+				while( m_node->slug() == true )
+				{
+					m_node = m_node->right();
+				}
 			}
 
 		public:
-			T * operator -> () const
-			{
-				return static_cast<T*>(m_node);
-			}
-
-			T * operator * () const
+			inline T * operator -> () const
 			{
 				return static_cast<T *>(m_node);
 			}
 
-			const TLinked * get() const
+			inline T * operator * () const
+			{
+				return static_cast<T *>(m_node);
+			}
+
+			inline TLinked * get() const
 			{
 				return m_node;
 			}
 
 		public:
+			bool operator == ( It _it ) const
+			{
+				return m_node == _it.m_node;
+			}
+
+			bool operator != ( It _it ) const
+			{
+				return !this->operator == ( _it );
+			}
+
+		protected:
+			inline void shuffle_next()
+			{
+				do
+				{
+					m_node = m_node->right();
+				}
+				while( m_node->slug() == true );
+			}
+
+			inline void shuffle_prev()
+			{
+				do
+				{
+					m_node = m_node->left();
+				}
+				while( m_node->slug() == true );			
+			}
+
+
+		protected:
+			TLinked * m_node;
+		};
+
+	public:
+		class const_iterator
+			: public base_iterator<const_iterator>
+		{
+		public:
+			const_iterator( TLinked * _node )
+				: base_iterator(_node)
+			{
+			}
+
+		public:
+			const_iterator & operator = ( const const_iterator & _it )
+			{
+				m_node = _it.m_node;
+
+				return *this;
+			}
+
+		public:
 			const_iterator & operator ++ ()
 			{
-				m_node = m_node->m_right;
+				this->shuffle_next();
 
 				return *this;
 			}
@@ -139,7 +193,7 @@ namespace Menge
 
 			const_iterator & operator -- ()
 			{
-				m_node = m_node->m_left;
+				this->shuffle_prev();
 
 				return *this;
 			}
@@ -150,57 +204,28 @@ namespace Menge
 				--*this;
 				return tmp;
 			}
-
-			bool operator == ( const_iterator _it ) const
-			{
-				return m_node == _it.m_node;
-			}
-
-			bool operator != ( const_iterator _it ) const
-			{
-				return !this->operator == ( _it ); 
-			}
-
-		protected:
-			TLinked * m_node;
 		};
 
 		class iterator
-			: public const_iterator
+			: public base_iterator<iterator>
 		{
 		public:
 			iterator( TLinked * _node )
-				: const_iterator(_node)
+				: base_iterator(_node)
 			{
-			}
-
-		public:
-			T * operator -> ()
-			{
-				return static_cast<T*>(const_iterator::m_node);
-			}
-
-			T * operator * ()
-			{
-				return static_cast<T*>(const_iterator::m_node);
-			}
-
-			TLinked * get()
-			{
-				return const_iterator::m_node;
 			}
 
 		public:
 			iterator & operator = ( const iterator & _it )
 			{
-				const_iterator::m_node = _it.m_node;
+				m_node = _it.m_node;
 
 				return *this;
 			}
 
 			iterator & operator ++ ()
 			{
-				const_iterator::m_node = const_iterator::m_node->m_right;
+				this->shuffle_next();
 
 				return *this;
 			}
@@ -214,7 +239,7 @@ namespace Menge
 
 			iterator & operator -- ()
 			{
-				const_iterator::m_node = const_iterator::m_node->m_left;
+				this->shuffle_prev();
 
 				return *this;
 			}
@@ -225,46 +250,21 @@ namespace Menge
 				--*this;
 				return tmp;
 			}
-
-			bool operator == ( iterator _it )
-			{
-				return const_iterator::m_node == _it.m_node; 
-			}
-
-			bool operator != ( iterator _it )
-			{
-				return !this->operator == ( _it ); 
-			}
 		};
 
 		class reverse_iterator
+			: public base_iterator<reverse_iterator>
 		{
 		public:
 			reverse_iterator( TLinked * _node )
-				: m_node(_node)
+				: base_iterator(_node)
 			{
-			}
-
-			reverse_iterator( const reverse_iterator & _it )
-				: m_node(_it.m_node)
-			{
-			}
-
-		public:
-			T * operator -> () const
-			{
-				return static_cast<T*>(m_node);
-			}
-
-			T * operator * () const
-			{
-				return static_cast<T *>(m_node);
 			}
 
 		public:
 			reverse_iterator & operator ++ ()
 			{
-				m_node = m_node->m_left;
+				this->shuffle_prev();
 
 				return *this;
 			}
@@ -278,7 +278,7 @@ namespace Menge
 
 			reverse_iterator & operator -- () const
 			{
-				m_node = m_node->m_right;
+				this->shuffle_next();
 
 				return *this;
 			}
@@ -289,19 +289,6 @@ namespace Menge
 				++*this;
 				return tmp;
 			}
-
-			bool operator == ( reverse_iterator _it ) const
-			{
-				return m_node == _it.m_node;
-			}
-
-			bool operator != ( reverse_iterator _it ) const
-			{
-				return !(*this == _it ); 
-			}
-
-		protected:
-			TLinked * m_node;
 		};
 
 	public:
@@ -336,16 +323,15 @@ namespace Menge
 		}
 
 	public:
-		T * front()
+		T * front() const
 		{
 			return *this->begin();
 		}
 
-		T * back()
+		T * back() const
 		{
 			return *this->end();
 		}
-
 
 	public:
 		void push_front( IntrusiveLinked * _node )

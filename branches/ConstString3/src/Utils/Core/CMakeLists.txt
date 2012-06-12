@@ -32,6 +32,7 @@ src
 	IntrusivePtr.h
 	IntrusiveLinked.h
 	IntrusiveList.h
+	IntrusiveSlug.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

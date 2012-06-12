@@ -19,6 +19,7 @@
 
 #	include "Core/Viewport.h"
 #	include "Core/IntrusiveList.h"
+#	include "Core/IntrusiveSlug.h"
 
 namespace Menge
 {	
@@ -42,6 +43,7 @@ namespace Menge
 	class Node;
 
 	typedef IntrusiveList<Node> TListChild;
+	typedef IntrusiveSlug<Node> TSlugChild;
 
 	class Node
 		: public IntrusiveLinked
@@ -144,24 +146,15 @@ namespace Menge
 		virtual void _removeChildren( Node * _node );
 
 	protected:
-		TListChild m_child;
-
-		typedef std::list<TListChild::iterator> TChildEraser;
-		TChildEraser m_childEraser;
-		mutable int m_childBlock;
-		//TListChild m_childToAdd;
-		//TListChild m_childToRemove;
-
 		Node * m_parent;
+
+		TListChild m_child;		
 
 	private:
 		bool addChildren_( TListChild::iterator _insert, Node * _node );
 
 		void insertChildren_( TListChild::iterator _insert, Node * _node );
 		void eraseChildren_( TListChild::iterator _it );
-
-	protected:
-		void checkChildEraser_();
 
 	protected:
 		void _destroy() override;

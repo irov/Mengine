@@ -33,6 +33,9 @@ namespace Menge
 		//void _invalidateColor() override;
 
 	protected:
+		void _localHide( bool _hide ) override;
+
+	protected:
 		Movie * m_movie;
 		PyObject * m_internalObject;
 	};

@@ -27,6 +27,7 @@ namespace Menge
 		inline bool isLocalHide() const;
 
 	protected:
+		virtual void _localHide( bool _value );
 		virtual void _hide( bool _value );
 
 	public:

@@ -77,6 +77,16 @@ namespace Menge
 		pybind::decref( m_internalObject );
 		m_internalObject = NULL;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void MovieInternalObject::_localHide( bool _hide )
+	{
+		if( m_internalObject != NULL )
+		{
+			PyObject * py_obj = this->getEmbed();
+
+			m_movie->callEvent( EVENT_MOVIE_HIDE_INTERNAL, "(OOO)", py_obj, m_internalObject, pybind::get_bool(_hide) );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////		
 	//void MovieInternalObject::_invalidateWorldMatrix()
 	//{

@@ -24,7 +24,7 @@ namespace Menge
 		m_movie = _movie;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Movie * MovieInternalObject::getMovie()
+	Movie * MovieInternalObject::getMovie() const
 	{
 		return m_movie;
 	}

@@ -15,7 +15,7 @@ namespace Menge
 
 	public:
 		void setMovie( Movie * _movie );
-		Movie * getMovie();
+		Movie * getMovie() const;
 
 		void setInternalObject( PyObject * _internalObject );
 		PyObject * getInternalObject() const;
@@ -27,7 +27,6 @@ namespace Menge
 	protected:
 		void _destroy() override;
 		
-
 	protected:
 		//void _invalidateWorldMatrix() override;
 		//void _invalidateColor() override;

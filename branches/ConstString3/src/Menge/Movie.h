@@ -31,8 +31,9 @@ namespace Menge
 		float getFrameDelay( size_t  _frame ) const;
 		
 	public:
-		Node * getMovieSlot( const ConstString & _name );
-		bool hasMovieSlot( const ConstString & _name );
+		Node * getMovieSlot( const ConstString & _name ) const;
+		bool hasMovieSlot( const ConstString & _name ) const;
+
 	protected:
 		void _setReverse( bool _reverse ) override;
 

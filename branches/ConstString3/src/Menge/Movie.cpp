@@ -289,7 +289,7 @@ namespace Menge
 		m_nodies[_layer.index] = _node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Movie::getMovieSlot( const ConstString & _name )
+	Node * Movie::getMovieSlot( const ConstString & _name ) const
 	{
 		if( this->isCompile() == false )
 		{
@@ -300,7 +300,7 @@ namespace Menge
 			return NULL;
 		}
 
-		TMapMovieSlot::iterator it_found = m_slots.find( _name );
+		TMapMovieSlot::const_iterator it_found = m_slots.find( _name );
 
 		if( it_found != m_slots.end() )
 		{	
@@ -346,7 +346,7 @@ namespace Menge
 		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::hasMovieSlot( const ConstString & _name )
+	bool Movie::hasMovieSlot( const ConstString & _name ) const
 	{
 		if( this->isCompile() == false )
 		{
@@ -357,7 +357,7 @@ namespace Menge
 			return NULL;
 		}
 
-		TMapMovieSlot::iterator it_found = m_slots.find( _name );
+		TMapMovieSlot::const_iterator it_found = m_slots.find( _name );
 
 		if( it_found != m_slots.end() )
 		{	

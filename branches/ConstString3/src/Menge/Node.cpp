@@ -68,11 +68,6 @@ namespace Menge
 	void Node::visitChildren( Visitor * _visitor )
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			(*it)->visit( _visitor );
 		}
@@ -110,11 +105,6 @@ namespace Menge
 		m_active = true;
 
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();	
-		//it != it_end;
-		//++it)
 		{
 			Node * children = (*it);
 
@@ -152,11 +142,6 @@ namespace Menge
 		this->_deactivate();		
 
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			(*it)->deactivate();
 		}
@@ -216,10 +201,6 @@ namespace Menge
 	void Node::destroyAllChild()
 	{
 		for( TSlugChild it(m_child); it.end() == false; )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;)
 		{
 			Node * node = (*it);
 			node->setParent_(0);
@@ -236,11 +217,6 @@ namespace Menge
 	void Node::removeAllChild()
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it )
 		{
 			(*it)->setParent_( 0 );
 			(*it)->setLayer( 0 );
@@ -555,11 +531,6 @@ namespace Menge
 	void Node::_freeze( bool _value )
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			Node * node = *it;
 
@@ -592,11 +563,6 @@ namespace Menge
 	void Node::updateChild_( float _timing )
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			Node * children = *it;
 			
@@ -698,11 +664,6 @@ namespace Menge
 		deactivate();
 
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			(*it)->release();
 		}
@@ -793,11 +754,6 @@ namespace Menge
 	void Node::renderChild( RenderCameraInterface * _camera )
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			(*it)->render( _camera );
 		}
@@ -825,11 +781,6 @@ namespace Menge
 	void Node::_invalidateWorldMatrix()
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			(*it)->invalidateWorldMatrix();
 		}
@@ -920,11 +871,6 @@ namespace Menge
 		m_layer = _layer;
 
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
 		{
 			(*it)->setLayer( _layer );
 		}
@@ -981,11 +927,6 @@ namespace Menge
 		//this->_updateBoundingBox( m_boundingBox );
 			
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it )
 		{
 			Node * node = *it;
 			
@@ -1024,11 +965,6 @@ namespace Menge
 		//this->setFullBlend( fullBlend );
 
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-		//for( TListChild::iterator 
-		//	it = m_child.begin(), 
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it )
 		{
 			(*it)->invalidateColor();
 		}

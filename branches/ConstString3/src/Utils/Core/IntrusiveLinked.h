@@ -2,8 +2,12 @@
 
 namespace Menge
 {
-	class IntrusiveLinkedSlug{};
-	class IntrusiveLinkedEnd{};
+	enum EIntrusiveLinkedTag
+	{
+		EILT_ELEMENT,
+		EILT_END,
+		EILT_SLUG
+	};
 
 	class IntrusiveLinked
 	{
@@ -13,21 +17,14 @@ namespace Menge
 		IntrusiveLinked()
 			: m_right(0)
 			, m_left(0)
-			, m_slug(0)
+			, m_tag(EILT_ELEMENT)
 		{
 		}
 
-		IntrusiveLinked( const IntrusiveLinkedSlug & )
+		IntrusiveLinked( EIntrusiveLinkedTag _tag )
 			: m_right(0)
 			, m_left(0)
-			, m_slug(1)
-		{
-		}
-
-		IntrusiveLinked( const IntrusiveLinkedEnd & )
-			: m_right(0)
-			, m_left(0)
-			, m_slug(2)
+			, m_tag(_tag)
 		{
 		}
 
@@ -37,9 +34,9 @@ namespace Menge
 		}
 
 	public:
-		bool slug() const
+		bool isTag( EIntrusiveLinkedTag _tag ) const
 		{
-			return m_slug == 1;
+			return m_tag == _tag;
 		}
 
 		bool unique() const
@@ -248,6 +245,6 @@ namespace Menge
 	public:
 		mutable TPtr * m_right;
 		mutable TPtr * m_left;
-		const int m_slug;
+		const int m_tag;
 	};
 }

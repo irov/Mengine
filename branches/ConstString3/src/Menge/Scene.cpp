@@ -124,11 +124,6 @@ namespace Menge
 		if( handle == false )
 		{
 			for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-			//for( TListChild::iterator 
-			//	it = m_child.begin(), 
-			//	it_end = m_child.end();
-			//it != it_end;
-			//++it )
 			{
 				Scene * subScene = dynamic_cast<Scene*>( *it );
 
@@ -152,11 +147,6 @@ namespace Menge
 		if( handle == false )
 		{
 			for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-			//for( TListChild::iterator 
-			//	it = m_child.begin(), 
-			//	it_end = m_child.end();
-			//it != it_end;
-			//++it )
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
 
@@ -180,11 +170,6 @@ namespace Menge
 		if( handle == false )
 		{
 			for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
-			//for( TListChild::iterator 
-			//	it = m_child.begin(), 
-			//	it_end = m_child.end();
-			//it != it_end;
-			//++it )
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
 

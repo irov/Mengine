@@ -10,7 +10,7 @@ namespace Menge
 	{
 	public:
 		IntrusiveSlug( IntrusiveList<T> & _list )
-			: IntrusiveLinked(IntrusiveLinkedSlug())
+			: IntrusiveLinked(EILT_SLUG)
 			, m_end(*_list.end())
 			, m_eof(_list.empty())
 		{
@@ -23,17 +23,11 @@ namespace Menge
 		{
 			IntrusiveLinked * pos = this->right();
 
-			while( pos->slug() == true )
-			{
-				pos = pos->right();
-			}
+			pos = this->adapt_( pos );
 
 			pos = pos->right();
 
-			while( pos->slug() == true )
-			{
-				pos = pos->right();
-			}
+			pos = this->adapt_( pos );
 
 			if( pos == m_end )
 			{
@@ -64,13 +58,21 @@ namespace Menge
 		{
 			IntrusiveLinked * pos = this->right();
 
-			while( pos->slug() == true )
-			{
-				pos = pos->right();
-			}
+			pos = adapt_( pos );
 
 			return pos;
 		}
+
+		IntrusiveLinked * adapt_( IntrusiveLinked * _pos ) const
+		{
+			while( _pos->isTag( EILT_SLUG ) == true )
+			{
+				_pos = _pos->right();
+			}
+
+			return _pos;
+		}
+
 
 	protected:
 		IntrusiveLinked * m_end;

@@ -23,6 +23,7 @@ namespace Menge
 			, parent(0)
 			, in(0.f)
 			, out(0.f)
+			, startInterval(0.f)
 			, animatable(false)
 		{
 		}

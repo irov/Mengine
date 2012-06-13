@@ -171,6 +171,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Index, ml.index );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_In, ml.in );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Out, ml.out );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_StartInterval, ml.startInterval );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_BlendingMode, ml.blendingMode );
 				}
 
@@ -204,6 +205,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Internal, depricated_internal ); //depricated
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_In, ml.in );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Out, ml.out );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_StartInterval, ml.startInterval );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_BlendingMode, ml.blendingMode );
 				}
 				

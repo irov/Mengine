@@ -34,6 +34,7 @@ namespace Menge
 
 		float in;
 		float out;
+		float startInterval;
 
 		ConstString blendingMode;
 		ConstString keyFramesName;

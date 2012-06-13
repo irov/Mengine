@@ -879,6 +879,30 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateStartInterval_()
+	{
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator 
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.animatable == false )
+			{
+				continue;
+			}
+
+			Node * node = m_nodies[layer.index];
+
+			Animatable * animatable = dynamic_cast<Animatable *>(node);
+			animatable->setStartInterval( layer.startInterval );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateParent_()
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
@@ -1006,7 +1030,8 @@ namespace Menge
 
 		this->updateParent_();
 		this->updateCamera_();
-		
+		this->updateStartInterval_();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

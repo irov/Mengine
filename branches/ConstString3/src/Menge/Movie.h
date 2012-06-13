@@ -75,6 +75,7 @@ namespace Menge
 
 	private:
 		void updateParent_();
+		void updateStartInterval_();
 		void updateCamera_();
 		void stopAnimation_();
 

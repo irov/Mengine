@@ -16,6 +16,9 @@ namespace Menge
 		void setSpeedFactor( float _factor );
 		float getSpeedFactor() const;
 
+		void setStartInterval( float _startInterval );
+		float getStartInterval( ) const;
+		
 		void setLastFrame();
 		void setFirstFrame();
 
@@ -57,6 +60,8 @@ namespace Menge
 
 	protected:
 		float m_speedFactor;
+		float m_startInterval;
+
 		size_t m_enumerator;
 
 		bool m_play;

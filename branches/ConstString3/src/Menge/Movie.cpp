@@ -153,14 +153,14 @@ namespace Menge
 	{
 		this->stopAnimation_();
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+		this->callEvent( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( size_t _enumerator )
 	{
 		this->stopAnimation_();
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+		this->callEvent( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, const MovieFrameSource & _frame )
@@ -453,7 +453,6 @@ namespace Menge
 		Node * layer_slot = NodeManager::get()
 			->createNodeT<Node>( _layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
 
-		//layer_slot->enable();
 		layer_slot->localHide(true);
 
 		this->addMovieNode_( _layer, layer_slot );
@@ -468,8 +467,6 @@ namespace Menge
 
 		layer_sprite->setImageResource( _layer.source );
 
-		//layer_sprite->disable();
-
 		if( layer_sprite->compile() == false )
 		{
 			MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
@@ -482,7 +479,6 @@ namespace Menge
 			return false;
 		}
 
-		//layer_sprite->enable();
 		layer_sprite->localHide(true);
 
 		this->addMovieNode_( _layer, layer_sprite );
@@ -528,7 +524,6 @@ namespace Menge
 			return false;
 		}
 
-		//layer_sprite->enable();
 		layer_sprite->localHide(true);
 
 		this->addMovieNode_( _layer, layer_sprite );
@@ -544,7 +539,6 @@ namespace Menge
 		layer_animation->setAnimationResource( _layer.source );
 
 		layer_animation->setLoop( true );				
-		//layer_animation->disable();
 
 		if( layer_animation->compile() == false )
 		{
@@ -558,7 +552,6 @@ namespace Menge
 			return false;
 		}
 
-		//layer_animation->enable();
 		layer_animation->localHide( true );
 
 		this->addMovieNode_( _layer, layer_animation );
@@ -573,7 +566,6 @@ namespace Menge
 
 		layer_movie->setResourceMovie( _layer.source );				
 		layer_movie->setLoop( true );				
-		//layer_movie->disable();
 
 		if( layer_movie->compile() == false )
 		{
@@ -587,7 +579,6 @@ namespace Menge
 			return false;
 		}
 
-		//layer_movie->enable();
 		layer_movie->localHide( true );
 		layer_movie->setParentMovie( true );
 
@@ -618,9 +609,7 @@ namespace Menge
 
 			return false;
 		}
-		//m_objects[_layer.index] = py_object;
 
-		//movie_internal->enable();
 		movie_internal->localHide(true);
 
 		this->addMovieNode_( _layer, movie_internal );
@@ -636,7 +625,6 @@ namespace Menge
 		layer_video->setVideoResource( _layer.source );
 
 		layer_video->setLoop( true );				
-		//layer_movie->disable();
 
 		if( layer_video->compile() == false )
 		{
@@ -650,7 +638,6 @@ namespace Menge
 			return false;
 		}
 
-		//layer_video->enable();
 		layer_video->localHide(true);
 
 		this->addMovieNode_( _layer, layer_video );
@@ -666,7 +653,6 @@ namespace Menge
 		layer_sound->setSoundResource( _layer.source );
 
 		layer_sound->setLoop( true );				
-		//layer_movie->disable();
 
 		if( layer_sound->compile() == false )
 		{
@@ -680,7 +666,6 @@ namespace Menge
 			return false;
 		}
 
-		//layer_sound->enable();
 		layer_sound->localHide( true );
 
 		this->addMovieNode_( _layer, layer_sound );
@@ -694,10 +679,6 @@ namespace Menge
 			->createNodeT<ParticleEmitter>( _layer.name, Consts::get()->c_ParticleEmitter, Consts::get()->c_Image );
 
 		layer_particles->setResource( _layer.source );
-
-		//layer_movie->disable();
-
-		//layer_particles->setEmitterRelative(true);
 
 		if( layer_particles->compile() == false )
 		{
@@ -714,7 +695,6 @@ namespace Menge
 		layer_particles->setLoop( true );
 		layer_particles->setEmitterTranslateWithParticle( true );
 
-		//layer_particles->enable();
 		layer_particles->localHide( true );
 
 		this->addMovieNode_( _layer, layer_particles );
@@ -728,8 +708,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		//m_timing = 0.f;
 
 		m_resourceMovie = ResourceManager::get()
 			->getResourceT<ResourceMovie>( m_resourceMovieName );

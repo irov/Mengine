@@ -22,11 +22,11 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Video::Video()
-		: m_resourceVideo( NULL )
-		, m_soundEmitter( NULL )
+		: m_resourceVideo(NULL)
+		, m_soundEmitter(NULL)
 		, m_autoStart(false)
-		, m_needUpdate( false )
-		, m_material( NULL )
+		, m_needUpdate(false)
+		, m_material(NULL)
 		, m_frameSize(0.0f, 0.0f)
 		, m_videoDecoder(NULL)
 		, m_videoFile(NULL)
@@ -283,7 +283,7 @@ namespace	Menge
 		//_release();
 		//_compile();
 
-		this->callEventDeferred( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
+		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( size_t _enumerator )
@@ -295,7 +295,7 @@ namespace	Menge
 			m_soundEmitter->stop();
 		}
 
-		this->callEventDeferred( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
+		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::pause()

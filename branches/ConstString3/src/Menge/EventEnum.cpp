@@ -11,6 +11,7 @@ namespace Menge
 		"onFrameEnd",
 		"onFrameTick",
 		"EVENT_PARTICLE_EMITTER_END",
+		"EVENT_PARTICLE_EMITTER_RESTART",
 		"onMoveEnd",
 		"onMoveStop",
 		"onRotateEnd",

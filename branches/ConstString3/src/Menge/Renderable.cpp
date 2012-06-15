@@ -39,6 +39,7 @@ namespace Menge
 	void Renderable::localHide( bool _value )
 	{
 		m_localHide = _value;
+		this->_localHide( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Renderable::_localHide( bool _value )

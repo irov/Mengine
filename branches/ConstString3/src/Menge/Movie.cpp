@@ -211,7 +211,7 @@ namespace Menge
 
 				animatable->setFirstFrame();
 			}
-
+			
 			MovieFrameSource frame;
 			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
 			{
@@ -230,6 +230,8 @@ namespace Menge
 				node->localHide(false);
 			}
 		}
+
+		this->updateTiming_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setLastFrame()
@@ -1353,7 +1355,7 @@ namespace Menge
 				{
 					continue;
 				}
-
+	
 				//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
 				node->localHide(false);
 

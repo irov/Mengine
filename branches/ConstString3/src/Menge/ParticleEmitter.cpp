@@ -282,9 +282,9 @@ namespace	Menge
 			return;
 		}
 
-		this->callEvent(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
-
 		m_interface->stop();
+
+		this->callEvent(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_end( size_t _enumerator )

@@ -97,14 +97,14 @@ namespace Menge
 		{
 		public:
 			const_iterator( TLinked * _node )
-				: base_iterator(_node)
+				: base_iterator<const_iterator>(_node)
 			{
 			}
 
 		public:
 			const_iterator & operator = ( const const_iterator & _it )
 			{
-				m_node = _it.m_node;
+				this->m_node = _it.m_node;
 
 				return *this;
 			}
@@ -144,14 +144,14 @@ namespace Menge
 		{
 		public:
 			iterator( TLinked * _node )
-				: base_iterator(_node)
+				: base_iterator<iterator>(_node)
 			{
 			}
 
 		public:
 			iterator & operator = ( const iterator & _it )
 			{
-				m_node = _it.m_node;
+				this->m_node = _it.m_node;
 
 				return *this;
 			}
@@ -190,7 +190,7 @@ namespace Menge
 		{
 		public:
 			reverse_iterator( TLinked * _node )
-				: base_iterator(_node)
+				: base_iterator<reverse_iterator>(_node)
 			{
 			}
 

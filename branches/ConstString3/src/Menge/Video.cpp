@@ -85,6 +85,7 @@ namespace	Menge
 		Node::_update( timing );
 		//localHide(false);
 		//printf("%f %s\n",_timing,m_name.c_str());
+
 		if( isPlay() == false )
 		{
 			return;
@@ -125,6 +126,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
+
 		m_resourceVideo = ResourceManager::get()
 			->getResourceT<ResourceVideo>( m_resourceVideoName );
 
@@ -280,8 +282,6 @@ namespace	Menge
 
 		m_needUpdate = false;
 		this->_rewind( );
-		//_release();
-		//_compile();
 
 		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
@@ -489,7 +489,8 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
 	{
-		m_videoDecoder->seek(_timing);
+		this->_rewind();
+		m_needUpdate = this->_sync(_timing);
 	}
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
@@ -500,17 +501,18 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setFirstFrame()
 	{
-		m_videoDecoder->seek(0.0f);
+		m_videoDecoder->seek( 0.0f );
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_setLastFrame()
 	{
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
+		this->_setTiming( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_fillVideoBuffer()
 	{
 		int pitch = 0;
-		//Texture* renderImage = m_material->textureStage[0].texture;
 
 		Rect rect;
 		rect.left = 0;

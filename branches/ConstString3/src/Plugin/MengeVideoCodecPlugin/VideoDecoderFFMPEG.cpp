@@ -238,8 +238,9 @@ namespace Menge
 		}
 
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
-		m_dataInfo.duration  = (float)( len * m_dataInfo.fps / AV_TIME_BASE );
+		//m_dataInfo.duration  = (float)( len * (m_dataInfo.fps / AV_TIME_BASE) ) ;
 		m_dataInfo.frameTiming = 1000.f / m_dataInfo.fps;
+		m_dataInfo.duration = (len / AV_TIME_BASE) * 1000.0f;
 		m_isCompile = true;
 		return true;
 	}

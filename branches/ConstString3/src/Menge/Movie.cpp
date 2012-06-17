@@ -152,7 +152,6 @@ namespace Menge
 	void Movie::_stop( size_t _enumerator )
 	{
 		this->stopAnimation_();
-
 		this->callEvent( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -284,6 +283,7 @@ namespace Menge
 				node->localHide(false);
 			}
 		}
+		//this->updateTiming_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node )
@@ -1007,7 +1007,6 @@ namespace Menge
 		{
 			return false;
 		}
-
 		this->updateParent_();
 		this->updateCamera_();
 		this->updateStartInterval_();
@@ -1175,7 +1174,7 @@ namespace Menge
 			//{
 			//	indexOut = frameCount;
 			//}
-
+			
 			if( m_currentFrame > _lastFrame )
 			{
 				if( indexOut < _lastFrame || indexIn > m_currentFrame )
@@ -1191,9 +1190,7 @@ namespace Menge
 				}
 			}
 			
-			Node * node = m_nodies[layer.index];
-
-			MovieFrameSource frame;
+			Node * node = m_nodies[layer.index];			MovieFrameSource frame;
 
 			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
 			{
@@ -1319,7 +1316,7 @@ namespace Menge
 
 			MovieFrameSource frame;
 						
-			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
+			if( m_currentFrame >= indexOut )
 			{
 				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 				{
@@ -1344,6 +1341,28 @@ namespace Menge
 					//	, m_name.c_str()
 					//	, node->getName().c_str()
 					//	);
+
+					float timing = (indexOut - indexIn) * frameDuration;
+					animatable->setTiming( timing );
+				}
+			}
+			else if( m_currentFrame < indexIn )
+			{
+				if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' frame first incorrect '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					continue;
+				}
+
+				node->localHide(true);
+
+				if( layer.animatable == true )
+				{
+					Animatable * animatable = dynamic_cast<Animatable *>(node);
 
 					float timing = (indexOut - indexIn) * frameDuration;
 					animatable->setTiming( timing );

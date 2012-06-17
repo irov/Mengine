@@ -180,6 +180,10 @@ namespace Menge
 					ml.in = 0.0f;
 				}
 
+				if( ml.out > m_duration )
+				{
+					ml.out = m_duration;
+				}
 				//ml.out -= m_frameDuration;
 
 				//BIN_PARSE_METHOD_ARG1( this, &ResourceMovie::loaderMovieLayer2D_, ml );
@@ -209,6 +213,16 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_BlendingMode, ml.blendingMode );
 				}
 				
+				if( ml.in < 0.0f )
+				{
+					ml.in = 0.0f;
+				}
+
+				if( ml.out > m_duration )
+				{
+					ml.out = m_duration;
+				}
+
 				//mt::make_lookat_m4( camera.view, cameraPosition, cameraInterest );
 				//mt::make_projection_m4( camera.projection, cameraFOV, cameraAspect, 1.f, 10000.f );
 

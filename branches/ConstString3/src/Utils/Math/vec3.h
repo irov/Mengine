@@ -58,33 +58,33 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void ident_v3( vec3f& _a );
 
-	MATH_FUNCTION_INLINE float length_v3_v3(const vec3f& _a, const vec3f& _b);
-	MATH_FUNCTION_INLINE float length_v3(const vec3f& _a);
+	MATH_FUNCTION_INLINE float length_v3_v3( const vec3f& _a, const vec3f& _b );
+	MATH_FUNCTION_INLINE float length_v3( const vec3f& _a );
 
-	MATH_FUNCTION_INLINE bool cmp_v3_v3(const vec3f& _a, const vec3f& _b, float eps = 0.00001f);
+	MATH_FUNCTION_INLINE bool cmp_v3_v3( const vec3f& _a, const vec3f& _b, float eps = 0.00001f );
 
-	MATH_FUNCTION_INLINE void add_v3_v3(vec3f& _out,const vec3f& _a, const vec3f& _b);
-	MATH_FUNCTION_INLINE void sub_v3_v3(vec3f& _out,const vec3f& _a, const vec3f& _b);
-	MATH_FUNCTION_INLINE void scale_v3_v3(vec3f& _out, const vec3f& _a, float _val);
-	MATH_FUNCTION_INLINE void neg_v3(vec3f& _out);
+	MATH_FUNCTION_INLINE void add_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
+	MATH_FUNCTION_INLINE void sub_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
+	MATH_FUNCTION_INLINE void scale_v3_v3( vec3f& _out, const vec3f& _a, float _val );
+	MATH_FUNCTION_INLINE void neg_v3( vec3f& _out );
 
-	MATH_FUNCTION_INLINE float dot_v3_v3(const vec3f &a, const vec3f &b);
-	MATH_FUNCTION_INLINE float dot_v3_v3_clamp(const vec3f &a, const vec3f &b);
+	MATH_FUNCTION_INLINE float dot_v3_v3( const vec3f &a, const vec3f &b );
+	MATH_FUNCTION_INLINE float dot_v3_v3_clamp( const vec3f &a, const vec3f &b );
 
-	MATH_FUNCTION_INLINE void reflect_v3_v3(vec3f& _out, const vec3f& _a, const vec3f& _b);
-	MATH_FUNCTION_INLINE vec3f reflect_v3_v3(const vec3f& _a, const vec3f& _b);
+	MATH_FUNCTION_INLINE void reflect_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
+	MATH_FUNCTION_INLINE vec3f reflect_v3_v3( const vec3f& _a, const vec3f& _b );
 
-	MATH_FUNCTION_INLINE void cross_v3_v3(vec3f& _out, const vec3f& _a, const vec3f& _b);
-	MATH_FUNCTION_INLINE vec3f cross_v3_v3(const vec3f& _a, const vec3f& _b);
+	MATH_FUNCTION_INLINE void cross_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
+	MATH_FUNCTION_INLINE vec3f cross_v3_v3( const vec3f& _a, const vec3f& _b );
 
-	MATH_FUNCTION_INLINE void cross_v3_v3_norm(vec3f& _out, const vec3f& _a, const vec3f& _b);
+	MATH_FUNCTION_INLINE void cross_v3_v3_norm( vec3f& _out, const vec3f& _a, const vec3f& _b );
 
-	MATH_FUNCTION_INLINE void norm_v3(vec3f& _out, const vec3f& _rhs);
-	MATH_FUNCTION_INLINE vec3f norm_v3(const vec3f& _rhs);
-	MATH_FUNCTION_INLINE void norm_safe_v3(vec3f& out, const vec3f& _rhs, float err = 1e-06);
-	MATH_FUNCTION_INLINE vec3f norm_safe_v3(const vec3f& _rhs);
+	MATH_FUNCTION_INLINE void norm_v3( vec3f& _out, const vec3f& _rhs );
+	MATH_FUNCTION_INLINE vec3f norm_v3( const vec3f& _rhs );
+	MATH_FUNCTION_INLINE void norm_safe_v3( vec3f& out, const vec3f& _rhs, float err = 1e-06 );
+	MATH_FUNCTION_INLINE vec3f norm_safe_v3( const vec3f& _rhs );
 
-	MATH_FUNCTION_INLINE float get_axis_angle(const vec3f& dir, int axis);
+	MATH_FUNCTION_INLINE float get_axis_angle( const vec3f& dir, int axis );
 };
 
 #	if MATH_FORCE_INLINE == 1

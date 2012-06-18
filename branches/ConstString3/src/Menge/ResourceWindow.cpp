@@ -61,7 +61,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceWindow::_compile()
 	{
-
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
 			m_images[i].resource = NULL;
@@ -89,6 +88,7 @@ namespace Menge
 
 			m_images[i].resource = resource;
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

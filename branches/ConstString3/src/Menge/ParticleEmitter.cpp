@@ -64,8 +64,14 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_activate()
 	{
-		//bool enabled = Application::get()->getParticlesEnabled();
-		if( /*!enabled ||*/ Node::_activate() == false )
+		bool enabled = Application::get()->getParticlesEnabled();
+		
+		if( enabled == true )
+		{
+			return false;
+		}
+		
+		if( Node::_activate() == false )
 		{
 			return false;
 		}

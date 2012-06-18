@@ -23,7 +23,7 @@ namespace Menge
 		const Glyph * getGlyph( unsigned int _id ) const;
 	
 	public:
-		float getInitSize() const;
+		float getHeight() const;
 		
 	public:
 		void loader( BinParser * _parser ) override;
@@ -34,7 +34,7 @@ namespace Menge
 		Glyph & addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width );
 
 	protected:
-		float m_initSize;
+		float m_height;
 
 		typedef std::map<unsigned int, Glyph> TMapGlyph;
 		TMapGlyph m_glyphs;

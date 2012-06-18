@@ -41,7 +41,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceGlyph );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceGlyph::ResourceGlyph()
-		: m_initSize(0.f)
+		: m_height(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,9 +73,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceGlyph::getInitSize() const
+	float ResourceGlyph::getHeight() const
 	{
-		return m_initSize;
+		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceGlyph::loader( BinParser * _parser )
@@ -125,7 +125,7 @@ namespace Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::Font_height, m_initSize );
+			BIN_CASE_ATTRIBUTE( Protocol::Font_height, m_height );
 			BIN_CASE_ATTRIBUTE( Protocol::Font_family, family );
 			BIN_CASE_ATTRIBUTE( Protocol::Font_size, size );
 			BIN_CASE_ATTRIBUTE( Protocol::Font_style, style );
@@ -223,7 +223,7 @@ namespace Menge
 		mt::vec2f offset( (float)ox, (float)oy );
 		mt::vec2f size( (float)c, (float)d );
 
-		float ratio = _width / m_initSize;
+		float ratio = _width / m_height;
 
 		Glyph gl(uv, offset, ratio, size);
 

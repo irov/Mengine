@@ -120,7 +120,7 @@ namespace Menge
 		{
 			const ResourceGlyph * resourceGlyph = m_resourceFont->getResourceGlyph();
 
-			m_height = resourceGlyph->getInitSize();
+			m_height = resourceGlyph->getHeight();
 		}
 
 		if( m_lineOffset == 0.f )
@@ -465,7 +465,7 @@ namespace Menge
 		}
 		
 		m_resourceFontName = _resName;
-		
+		m_lineOffset = 0.0f;
 		m_height = 0.0f;	// reset height
 
 		recompile();
@@ -590,9 +590,9 @@ namespace Menge
 
 		if( textEntry.lineOffset == 0.f )
 		{
-			textEntry.lineOffset = m_height;
+			textEntry.lineOffset = m_lineOffset;
 		}
-
+		
 		if( textEntry.lineOffset != m_lineOffset )
 		{
 			this->setLineOffset( textEntry.lineOffset );
@@ -628,7 +628,7 @@ namespace Menge
 
 		if( textEntry.lineOffset == 0.f )
 		{
-			textEntry.lineOffset = m_height;
+			textEntry.lineOffset = m_lineOffset;
 		}
 
 		if( textEntry.lineOffset != m_lineOffset )

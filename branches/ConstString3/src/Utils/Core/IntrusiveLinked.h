@@ -34,27 +34,27 @@ namespace Menge
 		}
 
 	public:
-		bool isTag( EIntrusiveLinkedTag _tag ) const
+		inline bool isTag( EIntrusiveLinkedTag _tag ) const
 		{
 			return m_tag == _tag;
 		}
 
-		bool unique() const
+		inline bool unique() const
 		{
 			return !m_right && !m_left;
 		}
 
-		TPtr * left() const
+		inline TPtr * left() const
 		{
 			return m_left;
 		}
 
-		TPtr * right() const
+		inline TPtr * right() const
 		{
 			return m_right;
 		}
 
-		void link_after( TPtr * _other )
+		inline void link_after( TPtr * _other )
 		{
 			_other->m_right = m_right;
 			_other->m_left = (this);
@@ -67,7 +67,7 @@ namespace Menge
 			m_right = _other;
 		}
 
-		void link_before( TPtr * _other )
+		inline void link_before( TPtr * _other )
 		{
 			_other->m_left = m_left;
 			_other->m_right = (this);
@@ -81,7 +81,7 @@ namespace Menge
 		}
 
 
-		void unlink()
+		inline void unlink()
 		{
 			if( m_right )
 			{
@@ -97,7 +97,7 @@ namespace Menge
 			m_right = 0;
 		}
 
-		TPtr * leftcast() const
+		inline TPtr * leftcast() const
 		{
 			TPtr * it = m_left;
 
@@ -109,7 +109,7 @@ namespace Menge
 			return it;
 		}
 
-		TPtr * rightcast() const
+		inline TPtr * rightcast() const
 		{
 			TPtr * it = m_right;
 

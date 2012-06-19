@@ -64,13 +64,6 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_activate()
 	{
-		bool enabled = Application::get()->getParticlesEnabled();
-		
-		if( enabled == true )
-		{
-			return false;
-		}
-		
 		if( Node::_activate() == false )
 		{
 			return false;
@@ -220,7 +213,12 @@ namespace	Menge
 		bool enabled = Application::get()
 			->getParticlesEnabled();
 
-		if( enabled == false || this->isPlay() == false)
+		if( enabled == false )
+		{
+			return;
+		}
+
+		if( this->isPlay() == false)
 		{
 			return;
 		}

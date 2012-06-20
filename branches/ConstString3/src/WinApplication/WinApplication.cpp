@@ -222,9 +222,8 @@ namespace Menge
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
-
 		String scriptInit;
-		Helper::s_getOption( " -s:",m_commandLine, &scriptInit );
+		Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
 		
 		String languagePack;
 		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
@@ -469,11 +468,37 @@ namespace Menge
 			m_logService->registerLogger( m_loggerConsole );
 		}
 
-#	ifndef MENGE_MASTER_RELEASE
-		m_logService->setVerboseLevel( LM_LOG );
-#	endif
+		EMessageLevel m_logLevel;
 
-		if( m_commandLine.find( " -verbose " ) != String::npos )
+#	ifndef MENGE_MASTER_RELEASE
+		m_logLevel = LM_LOG;
+#	else
+		m_logLevel = LM_ERROR;
+#	endif
+		
+		String logLevel;
+		Helper::s_getOption( " -log:", m_commandLine, &logLevel );
+
+		if( logLevel == "0" )
+		{
+			m_logLevel = LM_INFO;
+		}
+		else if ( logLevel == "1" )
+		{
+			m_logLevel = LM_LOG;
+		}
+		else if ( logLevel == "2" )
+		{
+			m_logLevel = LM_WARNING;
+		}
+		else if ( logLevel == "3" )
+		{
+			m_logLevel = LM_ERROR;
+		}
+
+		m_logService->setVerboseLevel( m_logLevel );
+
+		if( Helper::s_hasOption( " -verbose ", m_commandLine ) == true )
 		{
 			m_logService->setVerboseLevel( LM_MAX );
 

@@ -1254,7 +1254,7 @@ namespace Menge
 
 						if( _lastFrame <= m_currentFrame )
 						{
-							if( _lastFrame >= indexIn )
+							if( _lastFrame > indexIn )
 							{
 								float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
 								animatable->setTiming( timing );
@@ -1267,20 +1267,20 @@ namespace Menge
 						}
 						else
 						{
-							size_t frame = (indexOut - 1) - _lastFrame + m_currentFrame;
-							float timing = frame * frameDuration + m_frameTiming;
+							if( indexOut - 1 > _lastFrame )
+							{
+								size_t frame = (indexOut - 1) - _lastFrame + m_currentFrame;
+								float timing = frame * frameDuration + m_frameTiming;
 
-							//printf("------ %d %d %d %f %f == %d %f\n"
-							//	, indexOut
-							//	, _lastFrame
-							//	, m_currentFrame
-							//	, frameDuration
-							//	, m_frameTiming
-							//	, frame
-							//	, timing
-							//	);
+								animatable->setTiming( -timing );
+							}
+							else
+							{
+								size_t frame = m_currentFrame - indexIn;
+								float timing = frame * frameDuration + m_frameTiming;
 
-							animatable->setTiming( -timing );
+								animatable->setTiming( -timing );
+							}
 						}
 						//animatable->update(realTiming);
 					}

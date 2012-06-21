@@ -74,7 +74,9 @@ namespace Menge
 		void updateFrameNode_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );
 
 	private:
-		void updateParent_();
+		void setupParent_();
+		void removeParent_();
+
 		void updateStartInterval_();
 		void updateCamera_();
 		void stopAnimation_();

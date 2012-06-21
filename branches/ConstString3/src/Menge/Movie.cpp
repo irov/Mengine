@@ -885,7 +885,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateParent_()
+	void Movie::setupParent_()
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -918,6 +918,31 @@ namespace Menge
 				}
 
 				node->setRelationTransformation( node_parent );	
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::removeParent_()
+	{
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator 
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			Node * node = m_nodies[layer.index];
+
+			if( layer.parent == 0 )
+			{
+				//this->addChildren( node );
+			}
+			else
+			{
+				node->setRelationTransformation( 0 );	
 			}
 		}
 	}
@@ -1009,7 +1034,7 @@ namespace Menge
 		{
 			return false;
 		}
-		this->updateParent_();
+		this->setupParent_();
 		this->updateCamera_();
 		this->updateStartInterval_();
 
@@ -1019,6 +1044,8 @@ namespace Menge
 	void Movie::_deactivate()
 	{
 		this->stop();
+
+		this->removeParent_();
 
 		Node::_deactivate();
 	}

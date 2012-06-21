@@ -10,6 +10,17 @@ namespace Menge
 		Transformation3D();
 
 	public:
+		void setRelationTransformation( Transformation3D * _relationTransformation );
+		Transformation3D * getRelationTransformation() const;
+
+	public:
+		const mt::mat4f & getWorldMatrix() const;
+		const mt::vec3f & getWorldPosition() const;
+
+	public:
+		void setWorldPosition( const mt::vec3f & _pos );
+
+	public:
 		inline const mt::mat4f & getRelationMatrix() const;
 		
 	public:
@@ -72,6 +83,8 @@ namespace Menge
 		mt::vec3f m_scale;
 
 		mt::vec3f m_rotation;
+
+		Transformation3D * m_relationTransformation;
 
 		mutable mt::mat4f m_localMatrix;
 		mutable mt::mat4f m_worldMatrix;

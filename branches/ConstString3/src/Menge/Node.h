@@ -174,12 +174,7 @@ namespace Menge
 		virtual void _afterDeactivate();
 
 	public:
-		const mt::mat4f & getWorldMatrix() const;
-
-		const mt::vec3f & getWorldPosition() const;
-		//const mt::vec3f & getWorldDirection();
-
-		void setWorldPosition( const mt::vec3f & _pos );
+		
 
 	protected:
 		void _invalidateWorldMatrix() override;

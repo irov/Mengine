@@ -195,6 +195,8 @@ namespace Menge
 		Node * oldparent = m_parent;
 		m_parent = _parent;
 
+		this->setRelationTransformation( _parent );
+
 		this->_changeParent( oldparent, _parent );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -338,7 +340,7 @@ namespace Menge
 
 		this->_addChildren( _node );
 
-		this->invalidateBoundingBox();
+		//this->invalidateBoundingBox();
 
 		return true;
 	}
@@ -785,49 +787,7 @@ namespace Menge
 			(*it)->invalidateWorldMatrix();
 		}
 
-		invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Node::getWorldMatrix() const
-	{
-		if( m_parent == 0 )
-		{
-			return Transformation3D::getLocalMatrix();
-		}
-
-		if( Transformation3D::isInvalidateWorldMatrix() == false )
-		{
-			return Transformation3D::getRelationMatrix();
-		}
-
-		const mt::mat4f & wm = m_parent->getWorldMatrix();
-
-		const mt::mat4f & update_wm = Transformation3D::updateWorldMatrix( wm );
-
-		return update_wm;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Node::getWorldPosition() const
-	{
-		const mt::mat4f &wm = this->getWorldMatrix();
-
-		return wm.v3.to_vec3f();
-	}
-	////////////////////////////////////////////////////////////////////////////
-	//const mt::vec2f & Node::getWorldDirection()
-	//{
-	//	const mt::mat3f &wm = this->getWorldMatrix();
-
-	//	return wm.v0.to_vec2f();
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::setWorldPosition( const mt::vec3f & _pos )
-	{
-		const mt::vec3f & wp = this->getWorldPosition();
-
-		mt::vec3f wp_offset = _pos - wp;
-
-		this->translate( wp_offset );
+		//invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Node::setEventListener( PyObject * _args, PyObject * _kwds )

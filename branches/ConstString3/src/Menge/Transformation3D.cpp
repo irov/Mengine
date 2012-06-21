@@ -13,9 +13,20 @@ namespace Menge
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
 		, m_rotation(0.f, 0.f, 0.f)
+		, m_relationTransformation(nullptr)
 	{
 		mt::ident_m4( m_localMatrix );
 		mt::ident_m4( m_worldMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setRelationTransformation( Transformation3D * _relationTransformation )
+	{
+		m_relationTransformation = _relationTransformation;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Transformation3D * Transformation3D::getRelationTransformation() const
+	{
+		return m_relationTransformation;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::invalidateWorldMatrix()
@@ -182,6 +193,41 @@ namespace Menge
 		m_localMatrix.v3.x += m_position.x + m_coordinate.x;
 		m_localMatrix.v3.y += m_position.y + m_coordinate.y;
 		m_localMatrix.v3.z += m_position.z + m_coordinate.z;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat4f & Transformation3D::getWorldMatrix() const
+	{
+		if( m_relationTransformation == nullptr )
+		{
+			return this->getLocalMatrix();
+		}
+
+		if( this->isInvalidateWorldMatrix() == false )
+		{
+			return this->getRelationMatrix();
+		}
+
+		const mt::mat4f & wm = m_relationTransformation->getWorldMatrix();
+
+		const mt::mat4f & update_wm = this->updateWorldMatrix( wm );
+
+		return update_wm;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & Transformation3D::getWorldPosition() const
+	{
+		const mt::mat4f &wm = this->getWorldMatrix();
+
+		return wm.v3.to_vec3f();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setWorldPosition( const mt::vec3f & _pos )
+	{
+		const mt::vec3f & wp = this->getWorldPosition();
+
+		mt::vec3f wp_offset = _pos - wp;
+
+		this->translate( wp_offset );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setOrigin( const mt::vec3f& _origin )

@@ -13,7 +13,7 @@ namespace Menge
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
 		, m_rotation(0.f, 0.f, 0.f)
-		, m_relationTransformation(nullptr)
+		, m_relationTransformation(0)
 	{
 		mt::ident_m4( m_localMatrix );
 		mt::ident_m4( m_worldMatrix );
@@ -197,7 +197,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Transformation3D::getWorldMatrix() const
 	{
-		if( m_relationTransformation == nullptr )
+		if( m_relationTransformation == 0 )
 		{
 			return this->getLocalMatrix();
 		}

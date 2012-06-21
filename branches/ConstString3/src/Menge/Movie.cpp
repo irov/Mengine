@@ -289,6 +289,8 @@ namespace Menge
 	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node )
 	{		
 		m_nodies[_layer.index] = _node;
+
+		this->addChildren( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Movie::getMovieSlot( const ConstString & _name ) const
@@ -899,7 +901,7 @@ namespace Menge
 
 			if( layer.parent == 0 )
 			{
-				this->addChildren( node );
+				//this->addChildren( node );
 			}
 			else
 			{
@@ -915,7 +917,7 @@ namespace Menge
 					continue;
 				}
 
-				node_parent->addChildren( node );
+				node->setRelationTransformation( node_parent );	
 			}
 		}
 	}

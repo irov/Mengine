@@ -164,11 +164,10 @@ namespace Menge
 
 		RenderTextureInterface* loadTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
 		RenderTextureInterface* loadMegatexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
-		RenderTextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const WString & _fileNameRGB, const WString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
-				
+						
 		bool saveImage( RenderTextureInterface* _image, const ConstString& _fileSystemName, const WString & _filename );
 		
-		
+		RenderTextureInterface* getTexture( const WString& _filename );
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
 		//void	setWorldMatrix( const mt::mat4f& _world );

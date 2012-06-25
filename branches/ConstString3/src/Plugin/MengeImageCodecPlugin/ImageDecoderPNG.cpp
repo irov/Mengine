@@ -127,6 +127,58 @@ namespace Menge
 				delete[] buff;
 			}
 		}
+		else if( m_options.flags & DF_WRITE_ALPHA_ONLY )
+		{
+			size_t checkSize = m_options.pitch * m_dataInfo.height;
+			if( _bufferSize != checkSize )
+			{
+				LOGGER_ERROR(m_logService)( "ImageDecoderPNG::decode  Error:  DF_WRITE_ALPHA_ONLY bad buffer size %i pitch %i height %i need size = %i"
+					, _bufferSize
+					, m_options.pitch
+					, m_dataInfo.height 
+					, checkSize
+					);
+
+				return 0;
+			}
+						
+			if( m_dataInfo.channels == 1 )
+			{
+				unsigned char* buff = new unsigned char[m_row_bytes];
+				unsigned char * bufferCursor = _buffer;
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( m_png_ptr, buff, NULL );
+
+					for( size_t j = 0; j != m_row_bytes; ++j )
+					{
+						bufferCursor[j*4+3] = buff[j];
+					}
+
+					bufferCursor += m_options.pitch;
+				}
+
+				delete[] buff;
+			}
+			else
+			{
+				unsigned char* buff = new unsigned char[m_row_bytes];
+				unsigned char * bufferCursor = _buffer;
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( m_png_ptr, buff, NULL );
+
+					for( size_t j = 0; j != m_row_bytes; ++j )
+					{
+						bufferCursor[j*4+3] = buff[j*4+3];
+					}
+
+					bufferCursor += m_options.pitch;
+				}
+
+				delete[] buff;
+			}
+		}
 		else if( m_dataInfo.channels == 1 )
 		{
 			if( m_supportA8 == false )

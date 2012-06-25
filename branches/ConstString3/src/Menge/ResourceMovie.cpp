@@ -324,6 +324,11 @@ namespace Menge
 				it->animatable = false;
 				it->movie = false;
 			}
+			else if( resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha )
+			{
+				it->animatable = false;
+				it->movie = false;
+			}
 			else if( resourceType == Consts::get()->c_ResourceImageSolid )
 			{
 				it->animatable = false;

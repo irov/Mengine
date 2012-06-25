@@ -1,4 +1,5 @@
 #	include "ResourceImageAtlas.h"
+#	include "ResourceImageInAtlas.h"
 #	include "ResourceImplement.h"
 #	include "BinParser.h"
 #	include "Utils/Core/Rect.h"
@@ -65,9 +66,10 @@ namespace Menge
 		_destRect.bottom = _uv.w * m_size.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageAtlas::loadFrame( ImageDecoderInterface * _imageDecoder, ResourceImage::ImageFrame & _frame )
+	bool ResourceImageAtlas::setImageInAtlas( ResourceImageInAtlas * _resource, ResourceImage::ImageFrame & _frame )
 	{
 		Rect rect;
+
 		this->getRectForUV_( rect, _frame.uv );
 		size_t width = rect.getWidth();
 		size_t height = rect.getHeight();
@@ -80,22 +82,11 @@ namespace Menge
 			return false;
 		}
 
-		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
-
-		ImageCodecOptions options;
-
-		options.flags |= DF_COUNT_ALPHA;
-
-		if( pitch != width )
+		if ( _resource->loadFrameData( buffer, pitch ) == false )
 		{
-			options.pitch = pitch;
-			options.flags |= DF_CUSTOM_PITCH;
-		}		
-
-		_imageDecoder->setOptions( &options );
-
-		unsigned int bufferSize = pitch * height;
-		_imageDecoder->decode( buffer, bufferSize );
+			m_texture->unlock();
+			return false;
+		}
 
 		m_texture->unlock();
 

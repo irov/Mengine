@@ -80,27 +80,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::loadImageFrameCombineRGBAndAlpha_( ImageFrame & _frame, const ConstString& _pakName,  const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB , const ConstString & _codecAlpha  ) const
-	{
-		RenderTextureInterface* texture = RenderEngine::get()
-			->loadTextureCombineRGBAndAlpha( _pakName, _fileNameRGB, _fileNameAlpha, _codecRGB, _codecAlpha );
-
-		if( texture == 0 )
-		{
-			MENGE_LOG_ERROR( "ResourceImage::loadImageFrameCombineRGBAndAlpha_: resource '%s' can't load image file  with alpha data '%S' and rgb data %S "
-				, getName().c_str()
-				, _fileNameAlpha.c_str() 
-				, _fileNameRGB.c_str() 
-				);
-
-			return false;
-		}
-
-		bool res = prepareImageFrame_( _frame, texture );
-
-		return res;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceImage::s_getImageCodec( const WString & _filename )
 	{
 		WString codecExt;
@@ -166,7 +145,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderInterface * ResourceImage::createDecoder_(  FileInputStreamInterface * _file, const ConstString& _codec )
+	ImageDecoderInterface * ResourceImage::createDecoder_(  FileInputStreamInterface * _file, const ConstString& _codec ) const
 	{
 		ImageDecoderInterface * imageDecoder = CodecEngine::get()
 			->createDecoderT<ImageDecoderInterface>( _codec, _file );

@@ -97,12 +97,12 @@ namespace Menge
 				desc.isAlpha = true; //
 				desc.wrapX = false;
 				desc.wrapY = false;
-				desc.isCombined = false;
 
 				WString fileName;
 				WString fileNameAlpha;
 				WString fileNameRGB;
 
+				bool isCombined;
 				String format;
 				int from = -1;
 				int to = -1;
@@ -114,7 +114,7 @@ namespace Menge
 
 					BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
 					BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
-					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, desc.isCombined );
+					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, isCombined );
 
 					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
 					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
@@ -129,28 +129,6 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
 					BIN_CASE_ATTRIBUTE( Protocol::File_WrapX, desc.wrapX );
 					BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
-				}
-
-				if( desc.isCombined == true )
-				{
-					desc.codecType = s_getImageCodec( fileNameAlpha );
-					desc.codecTypeAlpha = s_getImageCodec( fileNameAlpha );
-					desc.codecTypeRGB = s_getImageCodec( fileNameRGB );
-					desc.fileNameAlpha = fileNameAlpha;
-					desc.fileNameRGB = fileNameRGB;
-				}
-
-				if( fileName.empty() )
-				{				
-					if( ! fileNameRGB.empty() )
-					{
-						fileName = fileNameRGB;
-					}
-
-					if( ! fileNameAlpha.empty() )
-					{
-						fileName = fileNameAlpha;
-					}
 				}
 
 				if( desc.codecType.empty() )
@@ -174,22 +152,12 @@ namespace Menge
 		{
 			m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
 		}
-
-		if( m_imageDesc.isCombined == false )
+			
+		if( this->loadImageFrame_( frame, category, m_imageDesc.fileName, m_imageDesc.codecType ) == false )
 		{
-			if( this->loadImageFrame_( frame, category, m_imageDesc.fileName, m_imageDesc.codecType ) == false )
-			{
-				return false;
-			}
+			return false;
 		}
-		else 
-		{
-			if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, m_imageDesc.fileNameRGB, m_imageDesc.fileNameAlpha, m_imageDesc.codecTypeRGB, m_imageDesc.codecTypeAlpha ) == false )
-			{
-				return false;
-			}
-		}		
-
+		
 		//frame.uv = m_imageDesc.uv;
 		frame.uv_image = m_imageDesc.uv;
 
@@ -241,7 +209,6 @@ namespace Menge
 		desc.wrapX = false;
 		desc.wrapY = false;
 		desc.fileName = _imagePath;
-		desc.isCombined = false;
 		desc.codecType = s_getImageCodec(_imagePath);
 
 		m_imageDesc = desc;

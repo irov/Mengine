@@ -8,6 +8,7 @@
 namespace Menge
 {
 	class ImageDecoderInterface;
+	class ResourceImageInAtlas;
 
 	class ResourceImageAtlas
 		: public ResourceReference
@@ -18,7 +19,7 @@ namespace Menge
 		ResourceImageAtlas();
 
 	public:
-		bool loadFrame( ImageDecoderInterface * _decoder, ResourceImage::ImageFrame & _frame );
+		bool setImageInAtlas( ResourceImageInAtlas * _resource, ResourceImage::ImageFrame & _frame );
 		RenderTextureInterface* getTexture() const;
 		void loader( BinParser * _parser ) override;
 

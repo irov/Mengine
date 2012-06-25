@@ -8,7 +8,7 @@
 #	include "FileEngine.h"
 #	include "CodecEngine.h"
 #	include "LogEngine.h"
-
+#	include "RenderEngine.h"
 #	include "BinParser.h"
 
 namespace Menge
@@ -20,148 +20,76 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageInAtlas::getMaxSize() const
-	{
-		return m_imageFrame.maxSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageInAtlas::getSize() const
-	{
-		return m_imageFrame.size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageInAtlas::getOffset() const
-	{
-		return m_imageFrame.offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageInAtlas::getUV() const
-	{
-		return m_imageFrame.uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageInAtlas::getUVImage() const
-	{
-		return m_imageFrame.uv_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface* ResourceImageInAtlas::getTexture() const
 	{
 		return m_resourceAtlas->getTexture();
 		//return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageInAtlas::isAlpha() const
-	{
-		return m_imageFrame.isAlpha;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const WString & ResourceImageInAtlas::getFileName() const
-	{
-		return m_imageDesc.fileName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageInAtlas::getCodecType() const
-	{
-		return m_imageDesc.codecType;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageInAtlas::getWrapX() const 
-	{
-		return m_imageFrame.wrapX;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageInAtlas::getWrapY() const 
-	{
-		return m_imageFrame.wrapY;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageInAtlas::isValid() const
-	{
-		const ConstString & category = this->getCategory();
-
-		bool exist = FileEngine::get()
-			->existFile( category, m_imageDesc.fileName );
-
-		if( exist == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageInAtlas::loader( BinParser * _parser )
 	{
 		ResourceImage::loader( _parser );
-		ImageDesc desc;
-		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-		desc.offset = mt::vec2f(0.f,0.f);
-		desc.maxSize = mt::vec2f(-1.f,-1.f);
-		desc.size = mt::vec2f(-1.f,-1.f);
-		desc.isAlpha = true; //
-		desc.wrapX = false;
-		desc.wrapY = false;
-		desc.isCombined = false;
-		
-		WString fileName;
-		WString fileNameAlpha;
-		WString fileNameRGB;
 		
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::ResourceAtlas_Name, m_resourceAtlasName );
+			
 			BIN_CASE_NODE( Protocol::File )
 			{
+				ImageDesc desc;
+				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+				desc.offset = mt::vec2f(0.f,0.f);
+				desc.maxSize = mt::vec2f(-1.f,-1.f);
+				desc.size = mt::vec2f(-1.f,-1.f);
+				desc.isAlpha = true; //
+				desc.wrapX = false;
+				desc.wrapY = false;
+
+				WString fileNameAlpha;
+				WString fileNameRGB;
+				WString fileName;
+
+				String format;
+				int from = -1;
+				int to = -1;
+				int step = 1;
+				bool isCombined;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
+
 					BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
 					BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
-					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, desc.isCombined );
+					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, isCombined );
+
 					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
 					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
 					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
+
+
+					BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
+					BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
 					BIN_CASE_ATTRIBUTE( Protocol::File_WrapX, desc.wrapX );
 					BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
 				}
-			}
 
-			
-			
-			if( desc.isCombined == true )
-			{
-				desc.codecType = s_getImageCodec( fileNameAlpha );
-				desc.codecTypeAlpha = s_getImageCodec( fileNameAlpha );
-				desc.codecTypeRGB = s_getImageCodec( fileNameRGB );
 				desc.fileNameAlpha = fileNameAlpha;
 				desc.fileNameRGB = fileNameRGB;
-			}
 
-			if( fileName.empty() )
-			{				
-				if( ! fileNameRGB.empty() )
+				if( desc.fileNameAlpha.empty() == false )
 				{
-					fileName = fileNameRGB;
+					desc.codecTypeAlpha = s_getImageCodec( desc.fileNameAlpha );
 				}
+				
+				desc.codecTypeRGB = s_getImageCodec( desc.fileNameRGB );
 
-				if( ! fileNameAlpha.empty() )
-				{
-					fileName = fileNameAlpha;
-				}
+				m_imageDesc = desc;
 			}
-
-			if( desc.codecType.empty() )
-			{
-				desc.codecType = s_getImageCodec( fileName );
-			}
-
-			desc.fileName = fileName;
-			
-			m_imageDesc = desc;	
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -203,70 +131,166 @@ namespace Menge
 		m_imageFrame.wrapY = m_imageDesc.wrapY;
 		
 		const ConstString & category = this->getCategory();
+		
+		bool result = m_resourceAtlas->setImageInAtlas( this, m_imageFrame );
 
-		if( m_imageDesc.codecType.empty() == true )
+		if( result == false )
 		{
-			m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
-		}
+			MENGE_LOG_ERROR("Texture::ResourceImageInAtlas: Invalid fill atlas texture"
+				);
 
-		if( m_imageDesc.isCombined == false )
-		{
-			FileInputStreamInterface * stream = FileEngine::get()
-				->openInputFile( category, m_imageDesc.fileName );
-			
-			if( stream == NULL )
-			{
-				MENGE_LOG_ERROR( "ResourceImageInAtlas:: Image file '%S' was not found"
-					, m_imageDesc.fileName.c_str() 
-					);
-				
-				return false;
-			}
-			
-			ImageDecoderInterface * decoder = this->createDecoder_( stream, m_imageDesc.codecType );
-
-			if( decoder == NULL )
-			{
-				MENGE_LOG_ERROR("ResourceImageInAtlas:: Can`t create Decoder for file %S codec %s"
-					, m_imageDesc.fileName.c_str()
-					, m_imageDesc.codecType.c_str()
-					);
-
-				stream->close();
-
-				return false;
-			}
-			
-			bool result = m_resourceAtlas->loadFrame( decoder, m_imageFrame );
-			
-			decoder->destroy();
-			stream->close();
-
-			if( result == false )
-			{
-				MENGE_LOG_ERROR("Texture::ResourceImageInAtlas: Invalid fill atlas texture"
-					);
-
-				return false;
-			}
-		}
-		else 
-		{
-			/*if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, m_imageDesc.fileNameRGB, m_imageDesc.fileNameAlpha, m_imageDesc.codecTypeRGB, m_imageDesc.codecTypeAlpha ) == false )
-			{
-				return false;
-			}*/
-			MENGE_LOG_ERROR("WE NOT SUPPORT RGB ALPHA NOW");
 			return false;
-		}		
+		}
 		
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
+	bool ResourceImageInAtlas::loadFrameData( unsigned char * _buffer, int _pitch )
+	{
+		if( m_imageDesc.fileNameRGB.empty() == true )
+		{
+			return false;
+		}
+
+		if( m_imageDesc.fileNameAlpha.empty() == true )
+		{
+			if ( this->loadFrameDataRGB_( _buffer, _pitch )  == false )
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if( this->loadFrameDataRGBAlpha_( _buffer, _pitch ) == false )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	/////////////////////////////////////////////////////////////////////////
+	bool ResourceImageInAtlas::loadFrameDataRGBAlpha_( unsigned char * _buffer, int _pitch )
+	{
+		const ConstString & category = this->getCategory();
+
+		////////////////////////////////////// init RGB Decoder
+		FileInputStreamInterface * streamRGB = FileEngine::get()
+			->openInputFile( category, m_imageDesc.fileNameRGB );
+
+		if( streamRGB == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
+				, m_imageDesc.fileNameRGB.c_str() 
+				);
+
+			return false;
+		}
+
+		ImageDecoderInterface * imageDecoderRGB = this->createDecoder_( streamRGB, m_imageDesc.codecTypeRGB );
+
+		if( imageDecoderRGB == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+				, m_imageDesc.fileNameRGB.c_str() 
+				);
+
+			streamRGB->close();
+
+			return false;
+		}
+
+		///Load Alpha data
+		FileInputStreamInterface * streamAlpha = FileEngine::get()
+			->openInputFile( category, m_imageDesc.fileNameAlpha );
+
+		if( streamAlpha == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
+				, m_imageDesc.fileNameAlpha.c_str() 
+				);
+
+			streamRGB->close();
+			imageDecoderRGB->destroy();
+
+			return false;
+		}
+
+		///Get Alpha Decoder
+		ImageDecoderInterface * imageDecoderAlpha = this->createDecoder_( streamAlpha, m_imageDesc.codecTypeAlpha );
+
+		if( imageDecoderAlpha == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+				, m_imageDesc.fileNameAlpha.c_str() 
+				);
+
+			streamRGB->close();
+			imageDecoderRGB->destroy();
+			streamAlpha->close();
+
+			return false;
+		}
+
+		this->loadRGBAndAlphaData_( _buffer, _pitch, imageDecoderRGB, imageDecoderAlpha );
+
+		imageDecoderRGB->destroy();
+		streamRGB->close();
+
+		imageDecoderAlpha->destroy();
+		streamAlpha->close();
+
+		return true;
+	}
+	/////////////////////////////////////////////////////////////////////////
+	bool ResourceImageInAtlas::loadFrameDataRGB_( unsigned char * _buffer, int _pitch )
+	{
+		const ConstString & category = this->getCategory();
+
+		////////////////////////////////////// init RGB Decoder
+		FileInputStreamInterface * streamRGB = FileEngine::get()
+			->openInputFile( category, m_imageDesc.fileNameRGB );
+
+		if( streamRGB == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
+				, m_imageDesc.fileNameRGB.c_str() 
+				);
+
+			return false;
+		}
+
+		ImageDecoderInterface * imageDecoderRGB = this->createDecoder_( streamRGB, m_imageDesc.codecTypeRGB );
+
+		if( imageDecoderRGB == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+				, m_imageDesc.fileNameRGB.c_str() 
+				);
+
+			streamRGB->close();
+
+			return false;
+		}
+
+		ImageCodecOptions optionsRGB;
+		optionsRGB.flags = DF_CUSTOM_PITCH;
+		optionsRGB.pitch = _pitch;
+		imageDecoderRGB->setOptions( &optionsRGB );
+
+		RenderEngine::get()
+			->loadBufferImageData( _buffer, _pitch, PF_X8R8G8B8, imageDecoderRGB );
+
+		imageDecoderRGB->destroy();
+		streamRGB->close();
+		
+		return true;
+	}
+	/////////////////////////////////////////////////////////////////////////
 	void ResourceImageInAtlas::_release()
 	{
 		ResourceManager::get()
 			->directResourceRelease( m_resourceAtlasName );
 	}
-	/////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -32,8 +32,6 @@
 #	include <map>
 #	include <ctime>
 
-#	include  "../Plugin/MengeImageCodecPlugin/ImageDecoderCombinerRGBAndAlpha.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -710,6 +708,20 @@ namespace Menge
 		m_textures.insert( std::make_pair( _filename, _texture ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	RenderTextureInterface* RenderEngine::getTexture( const WString& _filename )
+	{
+		TMapTextures::iterator it_find = m_textures.find( _filename );
+
+		if( it_find != m_textures.end() )
+		{
+			it_find->second->addRef();
+
+			return it_find->second;
+		}
+
+		return NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface* RenderEngine::loadTexture( const ConstString& _pakName, const WString & _filename, const ConstString& _codec )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
@@ -862,149 +874,6 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const WString & _fileNameRGB, const WString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
-	{		
-		//WString textureName = _fileNameAlpha;
-
-		TMapTextures::iterator it_find = m_textures.find( _fileNameRGB );
-
-		if( it_find != m_textures.end() )
-		{
-			it_find->second->addRef();
-			return it_find->second;
-		}
-
-		////////////////////////////////////// init RGB Decoder
-		///Load RGB data
-		FileInputStreamInterface * streamRGB = FileEngine::get()
-			->openInputFile( _pakName, _fileNameRGB );
-
-		if( streamRGB == 0 )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
-				, _fileNameRGB.c_str() 
-				);
-
-			return NULL;
-		}
-
-		///Get RGB Decoder
-		ImageDecoderInterface * imageDecoderRGB = CodecEngine::get()
-			->createDecoderT<ImageDecoderInterface>( _codecRGB, streamRGB );
-
-		if( imageDecoderRGB == 0 )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
-				, _fileNameRGB.c_str() 
-				);
-
-			streamRGB->close();
-
-			return NULL;
-		}
-		
-		/// RgbInfo 
-		const ImageCodecDataInfo* dataInfoRGB = imageDecoderRGB->getCodecDataInfo();
-
-		if( dataInfoRGB->format == PF_UNKNOWN )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::Error: Invalid image format '%s'"
-				, _fileNameRGB.c_str() 
-				);
-
-			imageDecoderRGB->destroy();
-
-			streamRGB->close();
-
-			return NULL;
-		}
-		
-		////////////////////////////////////// init Alpha Decoder
-		///Load Alpha data
-		FileInputStreamInterface * streamAlpha = FileEngine::get()
-			->openInputFile( _pakName, _fileNameAlpha );
-
-		if( streamAlpha == 0 )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
-				, _fileNameAlpha.c_str() 
-				);
-
-			return NULL;
-		}
-
-		///Get Alpha Decoder
-		ImageDecoderInterface * imageDecoderAlpha = CodecEngine::get()
-			->createDecoderT<ImageDecoderInterface>( _codecAlpha, streamAlpha );
-
-		if( imageDecoderAlpha == 0 )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
-				, _fileNameAlpha.c_str() 
-				);
-
-			streamAlpha->close();
-
-			return NULL;
-		}
-		
-		///Alpha Info
-		const ImageCodecDataInfo* dataInfoAlpha = imageDecoderAlpha->getCodecDataInfo();
-
-		if( dataInfoAlpha->format == PF_UNKNOWN )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::Error: Invalid image format '%s'"
-				, _fileNameAlpha.c_str() 
-				);
-
-			imageDecoderAlpha->destroy();
-
-			streamAlpha->close();
-
-			return NULL;
-		}
-			
-		LogServiceInterface * logService = LogEngine::get();
-		
-		ImageDecoderCombinerRGBAndAlpha *  imageCombiner = new  ImageDecoderCombinerRGBAndAlpha( imageDecoderRGB, imageDecoderAlpha, logService );
-		/*
-		///Get Combiner Decoder
-		ImageDecoderInterface * imageCombiner = CodecEngine::get()
-			->createDecoderCombinerT<ImageDecoderInterface>( "combinedImage", imageDecoderRGB, imageDecoderAlpha );
-		*/
-		const ImageCodecDataInfo* dataInfo = imageCombiner->getCodecDataInfo();
-
-		RenderTextureInterface * texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->format );
-
-		if( texture == NULL )
-		{			
-			imageDecoderRGB->destroy();
-			imageDecoderAlpha->destroy();
-			imageCombiner->destroy();
-			
-			streamAlpha->close();
-			streamRGB->close();
-
-			return NULL;
-		}
-
-		const Rect & rect = texture->getRect();
-		this->loadTextureRectImageData( texture, rect, imageCombiner );
-
-		//texture->loadImageData( imageCombiner );
-		
-		imageDecoderRGB->destroy();
-		imageDecoderAlpha->destroy();
-		imageCombiner->destroy();
-		
-		streamAlpha->close();
-		streamRGB->close();
-
-		this->cacheFileTexture( _fileNameRGB, texture );
-
-		return texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseTexture( RenderTextureInterface* _texture )
 	{
 		if( _texture == NULL )
@@ -1083,7 +952,7 @@ namespace Menge
 		unsigned int bufferSize = _texturePitch * data->height;
 		unsigned int b = _imageDecoder->decode( _textureBuffer, bufferSize );
 
-		this->sweezleAlpha_( _textureBuffer, _texturePitch, _hwPixelFormat, data );
+		//this->sweezleAlpha_( _textureBuffer, _texturePitch, _hwPixelFormat, data );
 		//this->imageQuality_( _textureBuffer, _texturePitch );
 
 		return true;

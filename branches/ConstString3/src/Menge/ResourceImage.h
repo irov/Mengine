@@ -56,13 +56,13 @@ namespace Menge
 
 	protected:
 		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const WString& _filename, const ConstString& _codec ) const;
-		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
+		
 		//bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
 		bool prepareImageFrame_( ImageFrame & _frame, RenderTextureInterface * texture ) const;
 
 	protected:
-		ImageDecoderInterface * createDecoder_( FileInputStreamInterface * _stream,  const ConstString& _codec );
+		ImageDecoderInterface * createDecoder_( FileInputStreamInterface * _stream,  const ConstString& _codec ) const;
 
 	public:
 		static const ConstString & s_getImageCodec( const WString & _filename );

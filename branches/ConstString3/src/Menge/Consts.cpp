@@ -28,6 +28,7 @@ namespace Menge
 		, c_ResourceImageInAtlas("ResourceImageInAtlas")
 		, c_ResourceImageSolid("ResourceImageSolid")
 		, c_ResourceImageDefault("ResourceImageDefault")
+		, c_ResourceImageCombineRGBAndAlpha("ResourceImageCombineRGBAndAlpha")
 		, c_ResourceImageDynamic("ResourceImageDynamic")
 		, c_ResourceHotspotImage("ResourceHotspotImage")
 		, c_ResourceImage("ResourceImage")

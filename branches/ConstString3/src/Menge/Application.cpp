@@ -104,6 +104,7 @@
 #	include "ResourceImageDefault.h"
 #	include "ResourceImageInAtlas.h"
 #	include "ResourceImageAtlas.h"
+#	include "ResourceImageCombineRGBAndAlpha.h"
 //#	include "ResourceBinary.h"
 #	include "ResourceMovie.h"
 #	include "ResourceVideo.h"
@@ -817,6 +818,7 @@ namespace Menge
 		//RESOURCE_FACTORY( ResourceMesh );
 
 		RESOURCE_FACTORY( ResourceImageDefault );
+		RESOURCE_FACTORY( ResourceImageCombineRGBAndAlpha );
 		RESOURCE_FACTORY( ResourceImageInAtlas );
 		RESOURCE_FACTORY( ResourceImageSolid );
 		RESOURCE_FACTORY( ResourceImageAtlas );

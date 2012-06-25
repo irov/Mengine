@@ -55,19 +55,12 @@ namespace Menge
 			WString fileName;
 			ConstString codecType;
 
-			WString fileNameAlpha;
-			ConstString codecTypeAlpha;
-
-			WString fileNameRGB;			
-			ConstString codecTypeRGB;
-
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;
 			mt::vec2f size;
 
 			bool isAlpha;
-			bool isCombined;
 			bool wrapX;
 			bool wrapY;
 		};

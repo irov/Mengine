@@ -121,12 +121,11 @@ namespace	Menge
 	void Video::_deactivate()
 	{
 		Node::_deactivate();
-		this->_rewind();
+		//this->_rewind();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
-
 		m_resourceVideo = ResourceManager::get()
 			->getResourceT<ResourceVideo>( m_resourceVideoName );
 
@@ -281,15 +280,12 @@ namespace	Menge
 		}
 
 		m_needUpdate = false;
-		this->_rewind( );
 
 		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( size_t _enumerator )
 	{
-		this->_rewind( );
-		
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
 			m_soundEmitter->stop();
@@ -472,7 +468,7 @@ namespace	Menge
 	{
 		if( this->getLoop() == true )
 		{
-			this->_rewind();
+			this->setTiming( 0.f );
 		}
 		else
 		{
@@ -482,15 +478,20 @@ namespace	Menge
 		}
 	}
 	////////////////////////////////////////////////////////////////////
-	void Video::_rewind()
-	{
-		m_videoDecoder->seek(0.0f);
-	}
-	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
 	{
-		this->_rewind();
-		m_needUpdate = this->_sync(_timing);
+		float seek_timing = _timing;
+
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
+
+		if( seek_timing > 0.f )
+		{		
+			seek_timing -= dataInfo->frameTiming;
+		}
+
+		m_videoDecoder->seek( seek_timing );
+
+		m_needUpdate = this->_sync( dataInfo->frameTiming );
 	}
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
@@ -501,13 +502,14 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setFirstFrame()
 	{
-		m_videoDecoder->seek( 0.0f );
+		this->setTiming( 0.f );
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_setLastFrame()
 	{
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
-		this->_setTiming( dataInfo->duration );
+
+		this->setTiming( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_fillVideoBuffer()

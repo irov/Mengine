@@ -22,6 +22,8 @@ namespace Menge
 	void Transformation3D::setRelationTransformation( Transformation3D * _relationTransformation )
 	{
 		m_relationTransformation = _relationTransformation;
+
+		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Transformation3D * Transformation3D::getRelationTransformation() const
@@ -157,17 +159,6 @@ namespace Menge
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Transformation3D::updateWorldMatrix( const mt::mat4f & _parentMatrix ) const
-	{
-		m_invalidateWorldMatrix = false;
-
-		const mt::mat4f & localMatrix = this->getLocalMatrix();
-
-		mt::mul_m4_m4( m_worldMatrix, localMatrix, _parentMatrix );
-
-		return m_worldMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateLocalMatrix_() const
 	{
 		m_invalidateLocalMatrix = false;
@@ -195,23 +186,22 @@ namespace Menge
 		m_localMatrix.v3.z += m_position.z + m_coordinate.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Transformation3D::getWorldMatrix() const
+	void Transformation3D::updateWorldMatrix_() const
 	{
+		m_invalidateWorldMatrix = false;
+
+		const mt::mat4f & localMatrix = this->getLocalMatrix();
+
 		if( m_relationTransformation == 0 )
 		{
-			return this->getLocalMatrix();
+			m_worldMatrix = localMatrix;
 		}
-
-		if( this->isInvalidateWorldMatrix() == false )
+		else
 		{
-			return this->getRelationMatrix();
+			const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
+
+			mt::mul_m4_m4( m_worldMatrix, localMatrix, relationMatrix );
 		}
-
-		const mt::mat4f & wm = m_relationTransformation->getWorldMatrix();
-
-		const mt::mat4f & update_wm = this->updateWorldMatrix( wm );
-
-		return update_wm;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Transformation3D::getWorldPosition() const

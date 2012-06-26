@@ -47,17 +47,18 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node::~Node()
-	{
-		this->unwrap();
+	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
 	{
 		this->release();
+		
+		this->destroyAllChild();
 
 		this->removeFromParent();
 
-		this->destroyAllChild();
+		this->unwrap();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
@@ -139,7 +140,7 @@ namespace Menge
 
 		m_cameraRevision = 0;
 
-		this->_deactivate();		
+		this->_deactivate();
 
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
 		{
@@ -147,6 +148,11 @@ namespace Menge
 		}
 
 		m_active = false;
+
+		if( this->isCompile() == true )
+		{
+			this->release();
+		}
 
 		this->_afterDeactivate();
 
@@ -629,22 +635,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::compile()
 	{
-		//bool done = true;
-
-		//for( TListChild::iterator
-		//	it = m_child.begin(),
-		//	it_end = m_child.end();
-		//it != it_end;
-		//++it)
-		//{
-		//	(*it)->compile();
-		//}
-
-		//if( done == false )
-		//{
-		//	return false;
-		//}
-
 		bool result = Resource::compile();
 
 		this->updateRendering_();
@@ -663,7 +653,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::release()
 	{
-		deactivate();
+		if( this->isActivate() == true )
+		{
+			this->deactivate();
+		}
 
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
 		{

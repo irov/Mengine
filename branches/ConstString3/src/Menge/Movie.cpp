@@ -152,6 +152,7 @@ namespace Menge
 	void Movie::_stop( size_t _enumerator )
 	{
 		this->stopAnimation_();
+
 		this->callEvent( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -442,7 +443,7 @@ namespace Menge
 		Node * layer_slot = NodeManager::get()
 			->createNodeT<Node>( _layer.name, Consts::get()->c_Node, Consts::get()->c_Node );
 
-		layer_slot->enable();
+		//layer_slot->enable();
 		layer_slot->localHide(true);
 
 		m_slots.insert( std::make_pair(_layer.name, layer_slot) );
@@ -766,8 +767,7 @@ namespace Menge
 				->getResourceType( layer.source );
 
 			if( resourceType == Consts::get()->c_ResourceImageDefault
-				|| resourceType == Consts::get()->c_ResourceImageInAtlas
-				|| resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha )
+				|| resourceType == Consts::get()->c_ResourceImageInAtlas )
 			{
 				if( this->createMovieImage_( layer ) == false )
 				{
@@ -837,6 +837,8 @@ namespace Menge
 			
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
+
+		this->setupParent_();
 
 		return true;
 	}
@@ -940,11 +942,12 @@ namespace Menge
 			if( layer.parent == 0 )
 			{
 				//this->addChildren( node );
+
+				continue;
 			}
-			else
-			{
-				node->setRelationTransformation( 0 );	
-			}
+
+			Node * parent = node->getParent();
+			node->setRelationTransformation( parent );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -998,6 +1001,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
 	{	
+		this->removeParent_();
+
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( TVectorMovieLayers::const_iterator 
@@ -1008,10 +1013,10 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.parent != 0 )
-			{
-				continue;
-			}
+			//if( layer.parent != 0 )
+			//{
+			//	continue;
+			//}
 			
 			Node * node = m_nodies[layer.index];
 
@@ -1035,7 +1040,7 @@ namespace Menge
 		{
 			return false;
 		}
-		this->setupParent_();
+		
 		this->updateCamera_();
 		this->updateStartInterval_();
 
@@ -1045,9 +1050,7 @@ namespace Menge
 	void Movie::_deactivate()
 	{
 		this->stop();
-
-		this->removeParent_();
-
+		
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////

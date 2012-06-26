@@ -14,15 +14,12 @@ namespace Menge
 		Transformation3D * getRelationTransformation() const;
 
 	public:
-		const mt::mat4f & getWorldMatrix() const;
+		inline const mt::mat4f & getWorldMatrix() const;
 		const mt::vec3f & getWorldPosition() const;
 
 	public:
 		void setWorldPosition( const mt::vec3f & _pos );
 
-	public:
-		inline const mt::mat4f & getRelationMatrix() const;
-		
 	public:
 		//void setLocalMatrix( const mt::mat3f & _matrix );
 		inline const mt::mat4f & getLocalMatrix() const;
@@ -68,13 +65,11 @@ namespace Menge
 		inline bool isInvalidateWorldMatrix() const;
 
 	protected:
-		const mt::mat4f & updateWorldMatrix( const mt::mat4f & _parentMatrix ) const;
-
-	protected:
 		virtual void _invalidateWorldMatrix();
 
 	protected:
 		void updateLocalMatrix_() const;
+		void updateWorldMatrix_() const;
 
 	protected:
 		mt::vec3f m_origin;
@@ -127,11 +122,6 @@ namespace Menge
 		return m_rotation.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat4f & Transformation3D::getRelationMatrix() const
-	{
-		return m_worldMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	inline bool Transformation3D::isInvalidateWorldMatrix()const
 	{
 		return m_invalidateWorldMatrix;
@@ -145,5 +135,15 @@ namespace Menge
 		}		
 
 		return m_localMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat4f & Transformation3D::getWorldMatrix() const
+	{
+		if( m_invalidateWorldMatrix == true )
+		{
+			this->updateWorldMatrix_();
+		}
+
+		return m_worldMatrix;
 	}
 }

@@ -451,6 +451,7 @@ namespace Menge
 		}
 
 		m_resourceName = _resourceName;
+
 		_release();
 		_compile();
 	}

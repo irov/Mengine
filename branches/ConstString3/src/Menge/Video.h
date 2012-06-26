@@ -61,7 +61,6 @@ namespace Menge
 		void _invalidateColor() override;
 		
 		bool _sync( float _timing );
-		void _rewind();
 		bool _compileDecoder();
         void _fillVideoBuffer();
 

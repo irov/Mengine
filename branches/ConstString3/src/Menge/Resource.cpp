@@ -10,7 +10,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Resource::compile()
 	{
-		if( m_compile )
+		if( m_compile == true )
 		{
 			return true;
 		}

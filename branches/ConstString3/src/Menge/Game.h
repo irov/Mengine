@@ -39,7 +39,7 @@ namespace Menge
 		, public Loadable
 	{
 	public:
-		Game( const WString & _baseDir, const String & _platformName );
+		Game( const WString & _baseDir, bool _developmentMode, const String & _platformName );
 		~Game();
 
 	public:
@@ -139,6 +139,8 @@ namespace Menge
 		Resolution m_resolution;
 
 		bool m_fixedContentResolution;
+
+		bool m_developmentMode;
 
 		ConstString m_defaultArrowName;
 		ConstString m_defaultArrowPrototype;

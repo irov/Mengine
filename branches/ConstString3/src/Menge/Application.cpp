@@ -213,6 +213,7 @@ namespace Menge
 		, m_inputMouseButtonEventBlock(false)
 		, m_countThreads(2)
 		, m_mouseEnter(false)
+		, m_developmentMode(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -918,7 +919,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::loadGame()
 	{
-		m_game = new Game( m_baseDir, m_platformName );
+		m_game = new Game(m_baseDir, m_developmentMode, m_platformName);
 
 		Game::keep( m_game );
 
@@ -1133,18 +1134,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
-		String::size_type idx = _arguments.find( "-sound" );
-		if( idx != String::npos )
+		String::size_type idx_sound = _arguments.find( "-sound" );
+		if( idx_sound != String::npos )
 		{
 			m_sound = false;
 		}
 
-		idx = _arguments.find( "-particles" );
-		if( idx != String::npos )
+		String::size_type idx_particles = _arguments.find( "-particles" );
+		if( idx_particles != String::npos )
 		{
 			m_particles = false;
 		}
 
+		String::size_type idx_dev = _arguments.find( "-dev" );
+		if( idx_dev != String::npos )
+		{
+			m_developmentMode = true;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )

@@ -222,8 +222,7 @@ namespace Menge
 		bool isDebugCRT() const;
 
 		void setCursorPosition( const mt::vec2f & _point );
-
-		
+				
 		const Resolution& getMaxClientAreaSize() const;		
 		
 		void updateNotification();
@@ -349,5 +348,6 @@ namespace Menge
 		bool m_mouseEnter;
 
 		bool m_inputMouseButtonEventBlock;
+		bool m_developmentMode;
 	};
 }

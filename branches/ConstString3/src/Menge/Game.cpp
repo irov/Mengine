@@ -58,9 +58,10 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Game::Game( const WString & _baseDir, const String & _platformName )
+	Game::Game( const WString & _baseDir, bool _developmentMode, const String & _platformName )
 		: m_baseDir(_baseDir)
 		, m_platformName(_platformName)
+		, m_developmentMode(_developmentMode)
 		, m_fixedContentResolution(false)
 		, m_fullScreen(true)
 		, m_textureFiltering(true)
@@ -458,9 +459,9 @@ namespace Menge
 #	else
 		bool is_debug = false;
 #	endif
-
+		
 		bool result = true;
-		if( this->askEvent( result, EVENT_PREPARATION, "(O)", pybind::get_bool(is_debug) ) == false )
+		if( this->askEvent( result, EVENT_PREPARATION, "(OO)", pybind::get_bool(is_debug), pybind::get_bool(m_developmentMode) ) == false )
 		{
 			return false;
 		}

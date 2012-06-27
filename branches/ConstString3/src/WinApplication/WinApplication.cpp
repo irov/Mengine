@@ -177,9 +177,17 @@ namespace Menge
 		//	docsAndSettings = true;
 		//}
 
-		bool docsAndSettings = true;
+		bool developmentMode = false;
+		
 
 		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
+		{
+			developmentMode = true;
+		}
+
+		bool docsAndSettings = true;
+
+		if( developmentMode == true )
 		{
 			docsAndSettings = false;
 		}

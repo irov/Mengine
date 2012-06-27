@@ -22,7 +22,7 @@ namespace	Menge
 		bool result = _hotspot->testPoint( pos );
 		return result;
 	}
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
@@ -42,7 +42,7 @@ namespace	Menge
 			//renderEngine->renderLine( 0xFF00FFFF, pos4, pos3 );
 		}
 	}
-#	endif
+//#	endif
 	//////////////////////////////////////////////////////////////////////////
 
 }

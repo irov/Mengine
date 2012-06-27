@@ -17,9 +17,9 @@ namespace Menge
 	class HotSpot
 		: public Node
 		, public MousePickerAdapter
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		, public VectorVertices
-#	endif
+//#	endif
 	{
 	public:
 		HotSpot();
@@ -68,7 +68,7 @@ namespace Menge
 		Polygon m_polygonWM;
 		Polygon m_polygonScreen;
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	protected:
 		void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 		void _invalidateWorldMatrix() override;
@@ -78,6 +78,6 @@ namespace Menge
 
 	protected:
 		uint32 m_debugColor;
-#	endif
+//#	endif
 	};
 }

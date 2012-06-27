@@ -144,13 +144,13 @@ namespace Menge
 
 		size_t m_fps;
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	public:
 		void toggleDebugText();
 
 	protected:
 		bool m_showDebugText;
 		TextField* m_debugText;
-#	endif
+//#	endif
 	};
 }

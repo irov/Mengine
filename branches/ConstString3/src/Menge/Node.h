@@ -85,10 +85,10 @@ namespace Menge
 	protected:
 		void _hide( bool _value ) override;
 			
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	protected:
 		void _debugRender( RenderCameraInterface* _camera, unsigned int _debugMask ) override;
-#	endif
+//#	endif
 
 	protected:
 		RenderCameraInterface * m_renderCamera;
@@ -248,11 +248,11 @@ namespace Menge
 	protected:
 		size_t m_cameraRevision;
 
-#ifndef MENGE_MASTER_RELEASE
+//#ifndef MENGE_MASTER_RELEASE
 	protected:
 		const RenderMaterial* m_debugMaterial;
 		Vertex2D m_debugBox[5];
-#endif
+//#endif
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isActivate() const

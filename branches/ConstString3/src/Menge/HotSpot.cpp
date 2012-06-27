@@ -26,9 +26,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
 		: MousePickerAdapter(true)
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		, m_debugColor(0x80FFFFFF)
-#	endif
+//#	endif
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -81,11 +81,12 @@ namespace	Menge
 	{
 		MousePickerAdapter::onMouseLeave();
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		m_debugColor &= 0xFF000000;
 		m_debugColor |= 0x00FFFFFF;
+
 		VectorVertices::invalidateVertices();
-#	endif
+//#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::onMouseEnter()
@@ -182,7 +183,7 @@ namespace	Menge
 
 		this->callEvent( EVENT_ACTIVATE, "()" );
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		if( m_enable )
 		{
 			m_debugColor = 0xA0FFFFFF;
@@ -193,7 +194,7 @@ namespace	Menge
 		}
 
 		VectorVertices::invalidateVertices();
-#	endif
+//#	endif
 
 		return true;
 	}
@@ -204,10 +205,10 @@ namespace	Menge
 
 		this->callEvent( EVENT_DEACTIVATE, "()" );
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0x00000000;
 		VectorVertices::invalidateVertices();
-#	endif
+//#	endif
 		
 		Node::_deactivate();
 	}
@@ -366,7 +367,7 @@ namespace	Menge
 
 		return intersect;
 	}
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
@@ -429,5 +430,5 @@ namespace	Menge
 		VectorVertices::invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
-#	endif
+//#	endif
 }

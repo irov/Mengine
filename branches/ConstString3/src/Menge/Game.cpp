@@ -461,7 +461,7 @@ namespace Menge
 #	endif
 		
 		bool result = true;
-		if( this->askEvent( result, EVENT_PREPARATION, "(OO)", pybind::get_bool(is_debug), pybind::get_bool(m_developmentMode) ) == false )
+		if( this->askEvent( result, EVENT_PREPARATION, "(O)", pybind::get_bool(is_debug) ) == false )
 		{
 			return false;
 		}
@@ -559,14 +559,8 @@ namespace Menge
 			return false;
 		}
 
-#	ifndef MENGE_MASTER_RELEASE
-		bool isMasterRelease = false;
-#	else
-		bool isMasterRelease = true;
-#	endif	
-				
 		bool result = false;
-		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMasterRelease) ) == false )
+		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(m_developmentMode) ) == false )
 		{
 			return true;
 		}

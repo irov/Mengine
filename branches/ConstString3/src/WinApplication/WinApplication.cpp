@@ -36,16 +36,6 @@
 #	define snprintf _snprintf
 #endif
 
-#	ifndef MENGE_MASTER_RELEASE
-#		define LOG( message )\
-	m_application->logMessage( message + String("\n"), LM_INFO );
-#	else
-#		define LOG( message )
-#	endif
-
-#	define LOG_ERROR( message )\
-	m_application->logMessage( message + String("\n"), LM_ERROR );
- 
 namespace Menge
 {
 	static wchar_t s_logFileName[] = L"\\Game.log";

@@ -1160,7 +1160,7 @@ namespace Menge
 			m_console->proccessInput( _key, _char, _isDown );
 		}
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		if( _key == KC_F6 && _isDown )
 		{
 			if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
@@ -1246,7 +1246,7 @@ namespace Menge
 				->toggleDebugText();
 		}
 
-#	endif
+//#	endif
 
 		return m_game->handleKeyEvent( _point, _key, _char, _isDown );
 	}

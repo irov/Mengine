@@ -57,10 +57,10 @@ namespace Menge
 		, m_changeSceneCb(NULL)
 		, m_removeSceneCb(NULL)
 		, m_fps(0)
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		, m_showDebugText(false)
 		, m_debugText(NULL)
-#	endif
+//#	endif
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -455,7 +455,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::initializeRenderResources()
 	{
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		ConstString c_debugText("debugText");
 
 		m_debugText = NodeManager::get()->
@@ -463,7 +463,7 @@ namespace Menge
 
 		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
 		m_debugText->enable();
-#	endif
+//#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::finalizeRenderResources()
@@ -910,7 +910,7 @@ namespace Menge
 			m_arrow->render( m_renderCamera2D );
 		}
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		if( m_showDebugText == true )
 		{
 			const RenderEngine::DebugInfo& redi = 
@@ -948,7 +948,7 @@ namespace Menge
 			m_debugText->setText( unicode );
 			m_debugText->render( m_renderCamera2D );
 		}
-#	endif
+//#	endif
 		//m_renderCamera2D->setLocalPosition( pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1012,12 +1012,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void Player::toggleDebugText()
 	{
 		m_showDebugText = !m_showDebugText;
 	}
 	//////////////////////////////////////////////////////////////////////////
-#	endif
+//#	endif
 }

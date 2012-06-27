@@ -64,7 +64,7 @@ namespace Menge
 
 		if( texture == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: resource '%s' can't load image file '%S'"
+			MENGE_LOG_ERROR( "ResourceImage::loadImageFrame_: '%s' can't load image file '%S'"
 				, this->getName().c_str()
 				, _fileName.c_str()
 				);

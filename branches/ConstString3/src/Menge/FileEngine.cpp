@@ -94,7 +94,7 @@ namespace Menge
 
 		if( fs == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'"
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%S'"
 				, _path.c_str() 
 				);
 
@@ -106,7 +106,7 @@ namespace Menge
 
 		if( fs->initialize( _path, this, _create ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'"
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%S'"
 				, _path.c_str() 
 				);
 
@@ -158,9 +158,8 @@ namespace Menge
 		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_WARNING("FileEngine::getFileSystemPath not found '%s' '%S'"
+			MENGE_LOG_WARNING("FileEngine::getFileSystemPath not found '%s'"
 				, _fileSystemName.c_str()
-				, _fileSystemPath.c_str()
 				);
 
 			return false;

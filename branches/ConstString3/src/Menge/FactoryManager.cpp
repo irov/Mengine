@@ -26,7 +26,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::registerFactory( const ConstString & _type, Factory * _factory )
 	{
-		MENGE_LOG_INFO("FactoryManager: register factory '%s'"
+		MENGE_LOG_INFO("FactoryManager::registerFactory: register factory '%s'"
 			, _type.c_str() 
 			);
 
@@ -35,7 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::unregisterFactory( const ConstString & _type )
 	{
-		MENGE_LOG_INFO("FactoryManager: unregister factory '%s'"
+		MENGE_LOG_INFO("FactoryManager::unregisterFactory: unregister factory '%s'"
 			, _type.c_str() 
 			);
 
@@ -55,7 +55,7 @@ namespace Menge
 
 		if( it_found == m_factories.end() )
 		{
-			MENGE_LOG_INFO("FactoryManager: not registry factory '%s'"
+			MENGE_LOG_INFO("FactoryManager::createObject: not registry factory '%s'"
 				, _type.c_str() 
 				);
 
@@ -67,7 +67,7 @@ namespace Menge
 
 		if( object == NULL )
 		{
-			MENGE_LOG_INFO("FactoryManager: invalid create object factory '%s'"
+			MENGE_LOG_INFO("FactoryManager::createObject: invalid create object factory '%s'"
 				, _type.c_str() 
 				);
 

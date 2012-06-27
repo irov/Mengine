@@ -208,7 +208,8 @@ namespace Menge
 	PyObject * ScriptEngine::initModule( const char * _name )
 	{
 		MENGE_LOG_INFO( "init module '%s'"
-			, _name );
+			, _name 
+			);
 
 		try
 		{
@@ -337,7 +338,7 @@ namespace Menge
 		{
 			pybind::check_error();
 
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s' - path '%s'"
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s' - path '%S'"
 				, _prototype.c_str()
 				, _category.c_str()
 				, _path.c_str()
@@ -352,7 +353,7 @@ namespace Menge
 		{	
 			pybind::check_error();
 
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import prototype '%s':'%s' - path '%s'"
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import prototype '%s':'%s' - path '%S'"
 				, _prototype.c_str()
 				, _category.c_str()
 				, _path.c_str()

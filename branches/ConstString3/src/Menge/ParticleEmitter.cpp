@@ -93,7 +93,7 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter '%s' can't open resource file '%s'"
+			MENGE_LOG_ERROR( "ParticleEmitter::_compile '%s' can't open resource file '%s'"
 				, m_name.c_str()
 				, m_resourcename.c_str() 
 				);
@@ -105,7 +105,8 @@ namespace	Menge
 
 		if( container == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't open container file '%s'"
+			MENGE_LOG_ERROR( "ParticleEmitter::_compile '%s' can't open container file '%s'"
+				, m_name.c_str()
 				, m_resourcename.c_str() 
 				);
 
@@ -710,7 +711,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false ) 
 		{
-			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon invalid not compile '%s'"
+			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon '%s' invalid not compile"
 				, m_name.c_str()
 				);
 
@@ -720,7 +721,7 @@ namespace	Menge
 		TVectorPoints points;
 		if( triangulate_polygon( _polygon, points ) == false )
 		{
-			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon wrong polygon %s"
+			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
 				, m_name.c_str()
 				);
 
@@ -736,7 +737,7 @@ namespace	Menge
 
 		if( m_interface->changeEmitterModel( points.front().buff(), points.size() / 3 ) == false)
 		{
-			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon changeEmitterModel Error polygon %s"
+			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
 				, m_name.c_str()
 				);
 

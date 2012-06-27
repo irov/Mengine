@@ -84,7 +84,7 @@ namespace Menge
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 		if( it_find != m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Warning: Account with ID '%s' already exist. Account not created"
+			MENGE_LOG_ERROR( "AccountManager::createAccount_: Account with ID '%S' already exist. Account not created"
 				, _accountID.c_str() 
 				);
 
@@ -130,7 +130,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Can't delete account '%s'. There is no account with such ID"
+			MENGE_LOG_ERROR( "AccountManager::deleteAccount Can't delete account '%S'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 
@@ -156,7 +156,7 @@ namespace Menge
 
 		m_accounts.erase( it_find );
 
-		saveAccountsInfo();
+		this->saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::selectAccount( const WString& _accountID )
@@ -165,7 +165,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Can't select account '%S'. There is no account with such ID"
+			MENGE_LOG_ERROR( "AccountManager::selectAccount Can't select account '%S'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 			

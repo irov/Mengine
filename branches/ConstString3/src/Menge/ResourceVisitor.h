@@ -15,7 +15,7 @@ namespace Menge
 	class ResourceFont;
 	class ResourcePlaylist;
 	class ResourceWindow;
-	class ResourceTilePolygon;
+	//class ResourceTilePolygon;
 	class ResourceVideo;
 	class ResourceSound;
 	class ResourceMeshMS3D;
@@ -35,7 +35,7 @@ namespace Menge
 			virtual void visit(ResourceWindow* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 			virtual void visit(ResourceVideo* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 			virtual void visit(ResourceMeshMS3D* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
-			virtual void visit(ResourceTilePolygon* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
+			//virtual void visit(ResourceTilePolygon* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 			virtual void visit(ResourceImageDefault* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 			virtual void visit(ResourceImageSet* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 			virtual void visit(ResourceImageCell* _resource) { this->visit( (ResourceReference*)( _resource ) ); };

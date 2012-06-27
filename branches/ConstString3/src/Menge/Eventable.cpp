@@ -170,9 +170,12 @@ namespace Menge
 
 		if( pybind::is_none( py ) == false )
 		{ 
+			const char * envString = eventToString( _event );
+			const char * objRepr = pybind::object_repr( py );
+
 			MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
-				, eventToString( _event )
-				, pybind::object_repr( py )
+				, envString
+				, objRepr
 				);
 		}
 
@@ -216,10 +219,14 @@ namespace Menge
 
 		if( pybind::is_none( py ) == true )
 		{ 
+			const char * envString = eventToString( _event );
+			const char * typeName = typeid(T).name();
+			const char * objRepr = pybind::object_repr( py );
+
 			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"
-				, eventToString( _event )
-				, typeid(T).name()
-				, pybind::object_repr( _obj )
+				, envString
+				, typeName
+				, objRepr
 				);
 
 			return false;

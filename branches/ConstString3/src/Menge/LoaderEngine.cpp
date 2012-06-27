@@ -344,7 +344,7 @@ namespace Menge
 
 		if( decoder == NULL )
 		{
-			MENGE_LOG_ERROR("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%s"
+			MENGE_LOG_ERROR("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%S"
 				, _pak.c_str()
 				, _pathXml.c_str()
 				);

@@ -77,7 +77,7 @@ namespace Menge
 
 		if( scene == 0 )
 		{
-			MENGE_LOG_ERROR( "SceneManager Can't create scene '%s'"
+			MENGE_LOG_ERROR( "SceneManager::createScene Can't create scene '%s'"
 				, _name.c_str() 
 				);
 

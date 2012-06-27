@@ -271,7 +271,7 @@ namespace Menge
 
 		if( m_keyFramePackPath.empty() == true )
 		{
-			MENGE_LOG_ERROR("ResourceMovie: '%s' don`t have Key Frames Pack Path"
+			MENGE_LOG_ERROR("ResourceMovie::_compile: '%s' don`t have Key Frames Pack Path"
 				, this->getName().c_str()
 				);
 
@@ -285,8 +285,9 @@ namespace Menge
 
 		if ( m_framePack == NULL )
 		{
-			MENGE_LOG_ERROR("ResourceMovie: '%s' can` t get frame pack"
+			MENGE_LOG_ERROR("ResourceMovie::_compile: '%s' can` t get frame pack '%S'"
 				, this->getName().c_str()
+				, m_keyFramePackPath.c_str()
 				);
 
 			return false;

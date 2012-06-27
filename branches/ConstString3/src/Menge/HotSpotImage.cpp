@@ -59,7 +59,8 @@ namespace Menge
 
 		if( m_resourceHotspotImage == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: HotSpotImage can't get resource '%s'"
+			MENGE_LOG_ERROR( "HotSpotImage::_compile: '%s' can't get resource '%s'"
+				, this->getName().c_str()
 				, resourceHotspotImageName.c_str()
 				);
 

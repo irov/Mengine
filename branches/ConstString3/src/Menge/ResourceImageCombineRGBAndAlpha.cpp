@@ -224,7 +224,8 @@ namespace Menge
 
 		if( streamRGB == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with RGB data '%S' was not found"
+				, this->getName().c_str()
 				, _fileNameRGB.c_str() 
 				);
 
@@ -235,7 +236,8 @@ namespace Menge
 
 		if( imageDecoderRGB == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image decoder for file '%s' was not found"
+				, this->getName().c_str()
 				, _fileNameRGB.c_str() 
 				);
 
@@ -250,7 +252,8 @@ namespace Menge
 
 		if( streamAlpha == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with alpha channel data '%s' was not found"
+				, this->getName().c_str()
 				, _fileNameAlpha.c_str() 
 				);
 
@@ -283,7 +286,8 @@ namespace Menge
 
 		if( texture == NULL )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: can`t create texture %s width %i height %i "
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t create texture %s width %i height %i "
+				, this->getName().c_str()
 				, _fileNameAlpha.c_str() 
 				, dataInfoRGB->width
 				, dataInfoRGB->height
@@ -309,7 +313,8 @@ namespace Menge
 		
 		if( buffer == NULL )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: can`t lock buffer "
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t lock buffer '%s'"
+				, this->getName().c_str()
 				, _fileNameAlpha.c_str() 
 				);
 

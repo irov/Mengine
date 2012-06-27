@@ -92,8 +92,8 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_INFO( "resource sound [%s] can't load sound '%s'\n"
-				, getName().c_str() 
+			MENGE_LOG_INFO( "ResourceSound::_compile: '%s' can't load sound '%S'"
+				, this->getName().c_str() 
 				, m_path.c_str()
 				);
 
@@ -111,10 +111,11 @@ namespace Menge
 			->createConverterT<ConverterInterface>(m_converter);
 		if ( converter == NULL )
 		{
-			MENGE_LOG_INFO( "resource sound [%s] can't create converter '%s'\n"
+			MENGE_LOG_INFO( "ResourceSound::convert: '%s' can't create converter '%s'"
 				, getName().c_str() 
 				, m_converter.c_str()
 				);
+
 			return false;
 		}
 
@@ -129,8 +130,8 @@ namespace Menge
 		
 		if ( converter->convert() == false )
 		{
-			MENGE_LOG_INFO( "ResourceSound::convert resource sound [%s] can't  convert '%s'\n"
-				, getName().c_str() 
+			MENGE_LOG_INFO( "ResourceSound::convert '%s' can't  convert '%s'\n"
+				, this->getName().c_str() 
 				, m_converter.c_str()
 				);
 

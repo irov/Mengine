@@ -94,7 +94,7 @@ namespace Menge
 		if( SoundEngine::get()
 			->setSourceVolume( m_sourceID, musicVolume ) == false )
 		{
-			MENGE_LOG_ERROR("Amplifier::playTrack invalid set source volume %s"
+			MENGE_LOG_ERROR("Amplifier::playTrack invalid set source volume %S"
 				, desc->path.c_str()
 				);
 		}
@@ -286,7 +286,7 @@ namespace Menge
 
 		if( m_buffer == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Amplifier can't load sample '%s'"
+			MENGE_LOG_ERROR( "Warning: Amplifier can't load sample '%S'"
 				, _file.c_str() 
 				);
 
@@ -298,7 +298,7 @@ namespace Menge
 
 		if( m_sourceID == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Amplifier '%s' can't create sound source"
+			MENGE_LOG_ERROR( "Warning: Amplifier '%S' can't create sound source"
 				, _file.c_str()
 				);
 

@@ -46,7 +46,6 @@
 #	include "AccountManager.h"
 #	include "SceneManager.h"
 #	include "EntityManager.h"
-#	include "ParamManager.h"
 
 #	include "Watchdog.h"
 
@@ -84,7 +83,6 @@
 #	include "Layer3D.h"
 #	include "Window.h"
 #	include "HotSpotImage.h"
-#	include "Mesh_40_30.h"
 #	include "Layer2DTexture.h"
 #	include "PhysicalBody2D.h"
 #	include "Layer2DPhysic.h"
@@ -94,7 +92,7 @@
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceFont.h"
 #	include "ResourceGlyph.h"
-#	include "ResourceTilePolygon.h"
+//#	include "ResourceTilePolygon.h"
 #	include "ResourceImageSolid.h"
 //#	include "ResourceImageAtlas.h"
 //#	include "ResourceImageCell.h"
@@ -809,7 +807,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
 		//RESOURCE_FACTORY( ResourceBinary );
-		RESOURCE_FACTORY( ResourceTilePolygon );
+		//RESOURCE_FACTORY( ResourceTilePolygon );
 		
 		//RESOURCE_FACTORY( ResourceSequence );
 		//RESOURCE_FACTORY( ResourceImageAtlas );

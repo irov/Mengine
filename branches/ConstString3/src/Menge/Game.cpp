@@ -21,7 +21,6 @@
 #	include "AccountManager.h"
 #	include "ArrowManager.h"
 #	include "SceneManager.h"
-#	include "ParamManager.h"
 
 #	include "BinParser.h"
 
@@ -678,11 +677,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addHomeless( Node * _homeless )
 	{
-		if( _homeless->getParent() != 0 )
+		if( _homeless->hasParent() == true )
 		{
+			Node * parent = _homeless->getParent();
+
 			MENGE_LOG_ERROR( "Error: addHomeless '%s' have parent '%s'"
 				, _homeless->getName().c_str()
-				, _homeless->getParent()->getName().c_str()
+				, parent->getName().c_str()
 				);
 
 			return;
@@ -870,7 +871,7 @@ namespace Menge
 				}
 				else
 				{
-					MENGE_LOG_WARNING("Game::loadConfigPaks %s not set locale pak"
+					MENGE_LOG_WARNING("Game::loadConfigPaks '%S' not set locale pak"
 						, m_title.c_str()
 						);
 				}

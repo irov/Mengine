@@ -3,7 +3,6 @@
 #	include "ScriptEngine.h"
 #	include "TextManager.h"
 #	include "ResourceManager.h"
-#	include "ParamManager.h"
 
 #	include "SceneManager.h"
 #	include "ArrowManager.h"

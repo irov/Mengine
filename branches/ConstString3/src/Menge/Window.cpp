@@ -40,7 +40,8 @@ namespace Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( "Window: Error while compiling resources. Resource '%s' does not exist" 
+			MENGE_LOG_ERROR( "Window::_compile %s Error while compiling resources. Resource '%s' does not exist" 
+				, this->getName().c_str()
 				, m_resourceName.c_str() 
 				);
 

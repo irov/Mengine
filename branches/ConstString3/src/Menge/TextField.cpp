@@ -98,7 +98,7 @@ namespace Menge
 
 		if( m_resourceFont == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: font '%s' can't find resource '%s'"
+			MENGE_LOG_ERROR( "TextField::_compile '%s' can't find resource '%s'"
 				, getName().c_str()
 				, m_resourceFontName.c_str() 
 				);
@@ -108,7 +108,7 @@ namespace Menge
 
 		if( m_resourceFont->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: font '%s' can't compile resource '%s'"
+			MENGE_LOG_ERROR( "TextField::_compile '%s' can't compile resource '%s'"
 				, getName().c_str()
 				, m_resourceFontName.c_str() 
 				);

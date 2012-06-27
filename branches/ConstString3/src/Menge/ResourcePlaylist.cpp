@@ -57,7 +57,8 @@ namespace Menge
 				if( FileEngine::get()
 					->existFile( category, desc.path ) == false )
 				{
-					MENGE_LOG_ERROR( "ResourcePlaylist: sound '%s' not exist"
+					MENGE_LOG_ERROR( "ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
+						, this->getName().c_str()
 						, desc.path.c_str() 
 						);
 

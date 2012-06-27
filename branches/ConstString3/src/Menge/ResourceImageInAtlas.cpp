@@ -97,7 +97,7 @@ namespace Menge
 	{	
 		if( m_resourceAtlasName.empty() == true )
 		{
-			MENGE_LOG_ERROR( "ResourceImageInAtlas: '%s' ImageAtlas resource empty"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::_compile: '%s' ImageAtlas resource empty"
 				, m_name.c_str() 
 				);
 
@@ -109,7 +109,7 @@ namespace Menge
 		
 		if( m_resourceAtlas == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceImageInAtlas: '%s' ImageAtlas resource not found '%s'"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::_compile: '%s' ImageAtlas resource not found '%s'"
 				, m_name.c_str()
 				, m_resourceAtlasName.c_str() 
 				);
@@ -136,7 +136,8 @@ namespace Menge
 
 		if( result == false )
 		{
-			MENGE_LOG_ERROR("Texture::ResourceImageInAtlas: Invalid fill atlas texture"
+			MENGE_LOG_ERROR("ResourceImageInAtlas::_compile: '%s' Invalid fill atlas texture"
+				, this->getName().c_str()
 				);
 
 			return false;
@@ -180,7 +181,8 @@ namespace Menge
 
 		if( streamRGB == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::loadFrameDataRGBAlpha_: '%s' Image file with RGB data '%S' was not found"
+				, this->getName().c_str()
 				, m_imageDesc.fileNameRGB.c_str() 
 				);
 
@@ -191,7 +193,8 @@ namespace Menge
 
 		if( imageDecoderRGB == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::loadFrameDataRGBAlpha_: '%s' Image decoder for file '%s' was not found"
+				, this->getName().c_str()
 				, m_imageDesc.fileNameRGB.c_str() 
 				);
 
@@ -206,7 +209,8 @@ namespace Menge
 
 		if( streamAlpha == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::loadFrameDataRGBAlpha_: '%s' Image file with alpha channel data '%s' was not found"
+				, this->getName().c_str()
 				, m_imageDesc.fileNameAlpha.c_str() 
 				);
 
@@ -221,7 +225,8 @@ namespace Menge
 
 		if( imageDecoderAlpha == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::loadFrameDataRGBAlpha_: '%s' Image decoder for file '%s' was not found"
+				, this->getName().c_str()
 				, m_imageDesc.fileNameAlpha.c_str() 
 				);
 
@@ -253,7 +258,8 @@ namespace Menge
 
 		if( streamRGB == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::loadFrameDataRGB_: %s Image file with RGB data '%S' was not found"
+				, this->getName().c_str()
 				, m_imageDesc.fileNameRGB.c_str() 
 				);
 
@@ -264,7 +270,8 @@ namespace Menge
 
 		if( imageDecoderRGB == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageInAtlas::loadFrameDataRGB_: '%s' Image decoder for file '%s' was not found"
+				, this->getName().c_str()
 				, m_imageDesc.fileNameRGB.c_str() 
 				);
 

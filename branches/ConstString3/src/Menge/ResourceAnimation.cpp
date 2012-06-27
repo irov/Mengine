@@ -42,8 +42,8 @@ namespace Menge
 	{
 		if( m_sequence.empty() )
 		{
-			MENGE_LOG_ERROR( "Animation: sequence count is empty '%s'"
-				, getName().c_str()
+			MENGE_LOG_ERROR( "ResourceAnimation::_compile: '%s' sequence count is empty"
+				, this->getName().c_str()
 				);
 
 			return false;
@@ -64,8 +64,8 @@ namespace Menge
 
 			if( resource == 0 )
 			{
-				MENGE_LOG_ERROR( "ResourceAnimation: '%s' Image resource not found resource '%s'"
-					, m_name.c_str()
+				MENGE_LOG_ERROR( "ResourceAnimation::_compile: '%s' Image resource not found resource '%s'"
+					, this->getName().c_str()
 					, sequence.resourceName.c_str() 
 					);
 

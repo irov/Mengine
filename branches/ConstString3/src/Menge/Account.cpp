@@ -63,7 +63,7 @@ namespace Menge
 		
 		if( it == m_settings.end() )
 		{
-			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't change"
+			MENGE_LOG_ERROR( "Account::changeSetting setting '%S' does not exist. Can't change"
 				, _setting.c_str()
 				);
 
@@ -107,7 +107,7 @@ namespace Menge
 
 		if( config.load( file ) == false )
 		{
-			MENGE_LOG_ERROR( "Parsing Account settings failed '%s'"
+			MENGE_LOG_ERROR( "Parsing Account settings failed '%S'"
 				, fileName.c_str() 
 				);
 

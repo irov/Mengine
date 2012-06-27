@@ -131,7 +131,8 @@ namespace	Menge
 
 		if( m_resourceVideo == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Video Resource not found '%s'"
+			MENGE_LOG_ERROR( "Video::_compile '%s' resource not found '%s'"
+				, this->getName().c_str()
 				, m_resourceVideoName.c_str() 
 				);	
 
@@ -147,7 +148,8 @@ namespace	Menge
 
 		if ( this->_compileDecoder() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: Video can`t create video decoder '%s'"
+			MENGE_LOG_ERROR( "Video::_compile %s can`t create video decoder '%s'"
+				, this->getName().c_str()
 				, m_resourceVideoName.c_str() 
 				);	
 
@@ -178,7 +180,8 @@ namespace	Menge
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
 			if( m_soundEmitter->compile() == false )
 			{
-				MENGE_LOG_ERROR( "Warning: video failed to compile sound resource '%s'"
+				MENGE_LOG_ERROR( "Video::_compile '%s' failed to compile sound resource '%s'"
+					, this->getName().c_str()
 					, m_resourceSoundName.c_str() 
 					);
 
@@ -203,7 +206,8 @@ namespace	Menge
 
 		if( m_videoFile == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceVideo: can't open video file '%S'"
+			MENGE_LOG_ERROR( "Video::_compileDecoder '%s' can't open video file '%S'"
+				, this->getName().c_str()
 				, filePath.c_str()
 				);
 
@@ -217,11 +221,13 @@ namespace	Menge
 
 		if( m_videoDecoder == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%S'"
+			MENGE_LOG_ERROR( "Video::_compileDecoder '%s' can't create video decoder for file '%S'"
+				, this->getName().c_str()
 				, filePath.c_str()
 				);
 
 			m_videoFile->close();
+
 			return false;
 		}
 		
@@ -303,9 +309,10 @@ namespace	Menge
 	{
 		if( isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Video: '%s' play not activate"
-				, getName().c_str()
+			MENGE_LOG_ERROR( "Video::_play: '%s' play not activate"
+				, this->getName().c_str()
 				);
+
 			return false;
 		}
 
@@ -444,8 +451,8 @@ namespace	Menge
 			}
 			else if( state == VDRS_FAILURE )
 			{
-				MENGE_LOG_ERROR( "Video: '%s' error reading frame timing %4.2f total timing %4.2f"
-					, getName().c_str()
+				MENGE_LOG_ERROR( "Video::_sync: '%s' error reading frame timing %4.2f total timing %4.2f"
+					, this->getName().c_str()
 					, _timing
 					, m_timing
 					);

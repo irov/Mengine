@@ -607,7 +607,8 @@ namespace Menge
 
 		if( stream == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create file '%s'"
+			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create file '%s' '%S'"
+				, _fileSystemName.c_str()
 				, _filename.c_str() 
 				);
 
@@ -619,7 +620,7 @@ namespace Menge
 
 		if( imageEncoder == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename '%s'"
+			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename '%S'"
 				, _filename.c_str() 
 				);
 

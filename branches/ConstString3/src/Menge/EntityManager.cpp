@@ -26,7 +26,7 @@ namespace Menge
 
 		if( it_found != m_descriptions.end() )
 		{
-			MENGE_LOG_WARNING("EntityManager addPrototype: already exist entity type %s (override)"
+			MENGE_LOG_WARNING("EntityManager::registerPrototype: already exist entity type %s (override)"
 				, _desc.name.c_str()
 				);
 		}
@@ -54,7 +54,7 @@ namespace Menge
 
 		if( it_find == m_descriptions.end() )
 		{
-			MENGE_LOG_ERROR( "EntityManager: Entity '%s''%s' declaration not found"
+			MENGE_LOG_ERROR( "EntityManager::createEntity: Entity '%s''%s' declaration not found"
 				, _name.c_str()
 				, _prototype.c_str() 
 				);
@@ -70,7 +70,7 @@ namespace Menge
 
 		if( entity == 0 )
 		{
-			MENGE_LOG_ERROR( "EntityManager: Can't create entity '%s''%s'"
+			MENGE_LOG_ERROR( "EntityManager::createEntity: Can't create entity '%s''%s'"
 				, _name.c_str()
 				, _prototype.c_str() 
 				); 

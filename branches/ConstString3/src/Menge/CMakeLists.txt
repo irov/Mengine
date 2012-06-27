@@ -65,8 +65,6 @@ ADD_FILTER(
 	FileSystem.h
 	FileSystemDirectory.h
 	FileSystemDirectory.cpp
-	FileSystemMemoryMapped.h
-	FileSystemMemoryMapped.cpp
 	FileSystemZip.h
 	FileSystemZip.cpp
     FileBufferProvider.h
@@ -472,12 +470,6 @@ Object2D\\\\HotSpotImage
 )
 
 ADD_FILTER(
-Object2D\\\\Mesh_40_30
-	Mesh_40_30.cpp
-	Mesh_40_30.h
-)
-
-ADD_FILTER(
 Object3D
 	RenderMesh.cpp
 	RenderMesh.h
@@ -512,12 +504,6 @@ ADD_FILTER(
 Resource\\\\InternalObject
 	ResourceInternalObject.cpp
 	ResourceInternalObject.h
-)
-
-ADD_FILTER(
-Resource\\\\Sequence
-	ResourceSequence.cpp
-	ResourceSequence.h
 )
 
 ADD_FILTER(
@@ -664,11 +650,6 @@ Manager\\\\MovieKeyFrame
     MovieFramePack.cpp
 )
 
-ADD_FILTER(
-Manager\\\\Param
-	ParamManager.cpp
-	ParamManager.h
-)
 
 ADD_FILTER(
 Manager\\\\Entity

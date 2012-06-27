@@ -80,9 +80,12 @@ namespace Menge
 
 			if( pybind::is_none( py ) == false )
 			{ 
+				const char * envString = eventToString( it->event );
+				const char * objRepr = pybind::object_repr( py );
+
 				MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
-					, eventToString( it->event )
-					, pybind::object_repr( py )
+					, envString
+					, objRepr
 					);
 			}
 

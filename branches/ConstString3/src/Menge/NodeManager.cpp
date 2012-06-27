@@ -27,7 +27,7 @@ namespace Menge
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( "Invalid Node Type '%s' [Name '%s' Tag '%s']"
+			MENGE_LOG_ERROR( "NodeManager::createNode: Invalid Node Type '%s' [Name '%s' Tag '%s']"
 				, _type.c_str() 
 				, _name.c_str()
 				, _tag.c_str()

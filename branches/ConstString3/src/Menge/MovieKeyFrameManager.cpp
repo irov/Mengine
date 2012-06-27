@@ -24,7 +24,7 @@ namespace Menge
 		 
 		if( framePak == NULL )
 		{
-			MENGE_LOG_ERROR( "MovieKeyFrameManager: can`t load file category %s path %S"
+			MENGE_LOG_ERROR( "MovieKeyFrameManager: can`t load file category '%s' path '%S'"
 				, _pak.c_str()
 				, _path.c_str()
 				);

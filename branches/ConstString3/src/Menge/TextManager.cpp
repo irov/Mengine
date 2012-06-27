@@ -43,7 +43,7 @@ namespace Menge
 		if( LoaderEngine::get()
 			->load( _desc.pak, xml_path, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Problems parsing Text pack %s:%S"
+			MENGE_LOG_ERROR( "TextManager::loadResource Problems parsing Text pack %s:%S"
 				, _desc.name.c_str()
 				, xml_path.c_str()
 				);
@@ -164,7 +164,7 @@ namespace Menge
 		
 		if( it_find == m_textMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - '%s'"
+			MENGE_LOG_ERROR( "TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
 				);
 

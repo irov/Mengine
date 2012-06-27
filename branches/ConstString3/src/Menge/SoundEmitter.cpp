@@ -54,8 +54,8 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Error: sound emitter '%s' can't get resource '%s'"
-				, getName().c_str()
+			MENGE_LOG_ERROR( "SoundEmitter::_compile: '%s' can't get resource '%s'"
+				, this->getName().c_str()
 				, m_resourcename.c_str()
 				);
 
@@ -64,12 +64,10 @@ namespace Menge
 
 		SoundBufferInterface * soundBuffer = m_resource->getSoundBuffer();
 
+		bool streamable = m_resource->isStreamable();
+
 		m_sourceID = SoundEngine::get()
-			->createSoundSource( 
-			m_isHeadMode
-			, soundBuffer
-			, m_resource->isStreamable()
-			);
+			->createSoundSource( m_isHeadMode, soundBuffer, streamable );
 
 		if( m_sourceID == 0 )
 		{

@@ -559,8 +559,10 @@ namespace Menge
 			return false;
 		}
 
+		bool isMaster = !m_developmentMode;
+
 		bool result = false;
-		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(m_developmentMode) ) == false )
+		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) ) == false )
 		{
 			return true;
 		}

@@ -171,7 +171,7 @@ namespace Menge
 			_frame.scale, 
 			_frame.rotation 
 			);
-			
+		
 		if( _layer.movie == false )
 		{
 			_node->setPersonalAlpha( _frame.opacity );
@@ -767,7 +767,8 @@ namespace Menge
 				->getResourceType( layer.source );
 
 			if( resourceType == Consts::get()->c_ResourceImageDefault
-				|| resourceType == Consts::get()->c_ResourceImageInAtlas )
+				|| resourceType == Consts::get()->c_ResourceImageInAtlas
+				|| resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha)
 			{
 				if( this->createMovieImage_( layer ) == false )
 				{

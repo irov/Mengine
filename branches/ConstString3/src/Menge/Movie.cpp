@@ -767,8 +767,9 @@ namespace Menge
 				->getResourceType( layer.source );
 
 			if( resourceType == Consts::get()->c_ResourceImageDefault
-				|| resourceType == Consts::get()->c_ResourceImageInAtlas
-				|| resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha)
+				|| resourceType == Consts::get()->c_ResourceImageInAtlasDefault
+				|| resourceType == Consts::get()->c_ResourceImageInAtlasCombineRGBAndAlpha
+				|| resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha )
 			{
 				if( this->createMovieImage_( layer ) == false )
 				{

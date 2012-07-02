@@ -30,11 +30,12 @@ namespace Menge
 		RenderTextureInterface * getTexture() const override;
 		const WString & getFileName() const override;
 		const ConstString & getCodecType() const override;
+		bool loadBuffer( unsigned char * _buffer, int _pitch ) override;
 
 	protected:
 		bool isValid() const override;
-		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		
+		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		RenderTextureInterface * createTextureRGBAndAlpha_( const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		void loadRGBAndAlphaData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderRGB,  ImageDecoderInterface * _imageDecoderAlpha ) const;
 	protected:

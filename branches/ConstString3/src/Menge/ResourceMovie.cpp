@@ -335,7 +335,12 @@ namespace Menge
 				it->animatable = false;
 				it->movie = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceImageInAtlas )
+			else if( resourceType == Consts::get()->c_ResourceImageInAtlasCombineRGBAndAlpha )
+			{
+				it->animatable = false;
+				it->movie = false;
+			}
+			else if( resourceType == Consts::get()->c_ResourceImageInAtlasDefault )
 			{
 				it->animatable = false;
 				it->movie = false;

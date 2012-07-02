@@ -380,4 +380,77 @@ namespace Menge
 		return m_imageFrame.wrapY;
 	}
 	/////////////////////////////////////////////////////////////////////////
+	bool ResourceImageCombineRGBAndAlpha::loadBuffer( unsigned char * _buffer, int _pitch )
+	{
+		const ConstString & category = this->getCategory();
+
+		////////////////////////////////////// init RGB Decoder
+		FileInputStreamInterface * streamRGB = FileEngine::get()
+			->openInputFile( category, m_imageDesc.fileNameRGB );
+
+		if( streamRGB == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
+				, m_imageDesc.fileNameRGB.c_str() 
+				);
+
+			return false;
+		}
+
+		ImageDecoderInterface * imageDecoderRGB = this->createDecoder_( streamRGB, m_imageDesc.codecTypeRGB );
+
+		if( imageDecoderRGB == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+				, m_imageDesc.fileNameRGB.c_str() 
+				);
+
+			streamRGB->close();
+
+			return false;
+		}
+
+		///Load Alpha data
+		FileInputStreamInterface * streamAlpha = FileEngine::get()
+			->openInputFile( category, m_imageDesc.fileNameAlpha );
+
+		if( streamAlpha == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
+				, m_imageDesc.fileNameAlpha.c_str() 
+				);
+
+			streamRGB->close();
+			imageDecoderRGB->destroy();
+
+			return false;
+		}
+
+		///Get Alpha Decoder
+		ImageDecoderInterface * imageDecoderAlpha = this->createDecoder_( streamAlpha, m_imageDesc.codecTypeAlpha );
+
+		if( imageDecoderAlpha == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+				, m_imageDesc.fileNameAlpha.c_str() 
+				);
+
+			streamRGB->close();
+			imageDecoderRGB->destroy();
+			streamAlpha->close();
+
+			return false;
+		}
+
+		this->loadRGBAndAlphaData_( _buffer, _pitch, imageDecoderRGB, imageDecoderAlpha );
+
+		imageDecoderRGB->destroy();
+		streamRGB->close();
+
+		imageDecoderAlpha->destroy();
+		streamAlpha->close();
+
+		return true;
+	}
+	/////////////////////////////////////////////////////////////////////////
 }

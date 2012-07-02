@@ -1,5 +1,4 @@
 #	include "ResourceImageAtlas.h"
-#	include "ResourceImageInAtlas.h"
 #	include "ResourceImplement.h"
 #	include "BinParser.h"
 #	include "Utils/Core/Rect.h"
@@ -66,7 +65,7 @@ namespace Menge
 		_destRect.bottom = _uv.w * m_size.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageAtlas::setImageInAtlas( ResourceImageInAtlas * _resource, ResourceImage::ImageFrame & _frame )
+	bool ResourceImageAtlas::setImageInAtlas( ResourceImage * _resource, ResourceImage::ImageFrame & _frame )
 	{
 		Rect rect;
 
@@ -82,7 +81,7 @@ namespace Menge
 			return false;
 		}
 
-		if ( _resource->loadFrameData( buffer, pitch ) == false )
+		if ( _resource->loadBuffer( buffer, pitch ) == false )
 		{
 			m_texture->unlock();
 			return false;

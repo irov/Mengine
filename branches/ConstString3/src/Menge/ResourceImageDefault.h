@@ -33,7 +33,7 @@ namespace Menge
 
 		const WString & getFileName() const override;
 		const ConstString & getCodecType() const override;
-
+		bool loadBuffer( unsigned char * _buffer, int _pitch ) override;
 	public:
 		inline const ResourceImage::ImageFrame & getImageFrame() const;
 

@@ -548,8 +548,10 @@ Resource\\\\Image
 	ResourceImageDefault.h
 	ResourceImageAtlas.cpp
 	ResourceImageAtlas.h
-	ResourceImageInAtlas.cpp
-	ResourceImageInAtlas.h
+	ResourceImageInAtlasCombineRGBAndAlpha.cpp
+	ResourceImageInAtlasCombineRGBAndAlpha.h
+	ResourceImageInAtlasDefault.cpp
+	ResourceImageInAtlasDefault.h
 	ResourceImageCombineRGBAndAlpha.cpp
 	ResourceImageCombineRGBAndAlpha.h
 	ResourceImageSolid.h

@@ -94,13 +94,14 @@
 #	include "ResourceGlyph.h"
 //#	include "ResourceTilePolygon.h"
 #	include "ResourceImageSolid.h"
-//#	include "ResourceImageAtlas.h"
+
 //#	include "ResourceImageCell.h"
 //#	include "ResourceImageDynamic.h"
 //#	include "ResourceImageSet.h"
 
 #	include "ResourceImageDefault.h"
-#	include "ResourceImageInAtlas.h"
+#	include "ResourceImageInAtlasCombineRGBAndAlpha.h"
+#	include "ResourceImageInAtlasDefault.h"
 #	include "ResourceImageAtlas.h"
 #	include "ResourceImageCombineRGBAndAlpha.h"
 //#	include "ResourceBinary.h"
@@ -816,7 +817,8 @@ namespace Menge
 
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageCombineRGBAndAlpha );
-		RESOURCE_FACTORY( ResourceImageInAtlas );
+		RESOURCE_FACTORY( ResourceImageInAtlasCombineRGBAndAlpha );
+		RESOURCE_FACTORY( ResourceImageInAtlasDefault );
 		RESOURCE_FACTORY( ResourceImageSolid );
 		RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceMovie );

@@ -47,7 +47,7 @@ namespace Menge
 		virtual RenderTextureInterface* getTexture() const = 0;
 		virtual const WString & getFileName() const = 0;
 		virtual const ConstString & getCodecType() const = 0;
-
+		virtual bool loadBuffer( unsigned char * _buffer, int _pitch ) = 0;
 		virtual bool getWrapX() const;
 		virtual bool getWrapY() const;
 		//virtual size_t getCount() const;

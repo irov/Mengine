@@ -9,8 +9,9 @@
 #	include "BinParser.h"
 #	include "Core/ConstString.h"
 #	include "Utils/Core/String.h"
-
+#	include "RenderEngine.h"
 #	include "Consts.h"
+#	include "Interface/ImageCodecInterface.h"
 
 namespace Menge
 {
@@ -222,6 +223,50 @@ namespace Menge
 	bool ResourceImageDefault::getWrapY() const 
 	{
 		return m_imageFrame.wrapY;
+	}
+	/////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDefault::loadBuffer( unsigned char * _buffer, int _pitch )
+	{
+		const ConstString & category = this->getCategory();
+
+		////////////////////////////////////// init RGB Decoder
+		FileInputStreamInterface * stream = FileEngine::get()
+			->openInputFile( category, m_imageDesc.fileName );
+
+		if( stream == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
+				, m_imageDesc.fileName.c_str() 
+				);
+
+			return false;
+		}
+
+		ImageDecoderInterface * imageDecoder = this->createDecoder_( stream, m_imageDesc.codecType );
+
+		if( imageDecoder == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+				, m_imageDesc.fileName.c_str() 
+				);
+
+			stream->close();
+
+			return false;
+		}
+
+		ImageCodecOptions options;
+		options.flags = DF_CUSTOM_PITCH;
+		options.pitch = _pitch;
+		imageDecoder->setOptions( &options );
+
+		RenderEngine::get()
+			->loadBufferImageData( _buffer, _pitch, PF_A8R8G8B8, imageDecoder );
+
+		imageDecoder->destroy();
+		stream->close();
+
+		return true;
 	}
 	/////////////////////////////////////////////////////////////////////////
 }

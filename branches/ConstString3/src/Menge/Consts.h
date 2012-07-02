@@ -40,7 +40,8 @@ namespace Menge
 		ConstString c_user;
 		ConstString c_WhitePixel;
 		ConstString c_ResourceSound;
-		ConstString c_ResourceImageInAtlas;
+		ConstString c_ResourceImageInAtlasDefault;
+		ConstString c_ResourceImageInAtlasCombineRGBAndAlpha;
 		ConstString c_ResourceImageSolid;
 		ConstString c_ResourceImageDefault;
 		ConstString c_ResourceImageCombineRGBAndAlpha;

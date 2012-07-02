@@ -55,7 +55,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
+	void VideoCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 		m_stringize = _provider->getServiceT<StringizeServiceInterface>( "StringizeService" );

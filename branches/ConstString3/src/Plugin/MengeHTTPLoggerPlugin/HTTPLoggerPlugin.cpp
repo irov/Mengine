@@ -16,7 +16,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HTTPLoggerPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
+	void HTTPLoggerPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_loggerService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 

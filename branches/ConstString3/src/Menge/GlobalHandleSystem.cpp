@@ -29,7 +29,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool GlobalHandleSystem::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -41,7 +41,7 @@ namespace Menge
 			it != it_end;
 			++it)
 			{
-				if( handle = (*it)->handleGlobalMouseButtonEvent( _point, _button, _isDown ) )
+				if( handle = (*it)->handleGlobalMouseButtonEvent( _touchId, _point, _button, _isDown ) )
 				{
 					break;
 				}
@@ -51,7 +51,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool GlobalHandleSystem::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		for( TSetGlobalMouseHandler::iterator
 			it = m_globalMouseHandler.begin(),
@@ -59,13 +59,13 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->handleGlobalMouseButtonEventBegin( _point, _button, _isDown );
+			(*it)->handleGlobalMouseButtonEventBegin( _touchId, _point, _button, _isDown );
 		}
 
 		return false;	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool GlobalHandleSystem::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		for( TSetGlobalMouseHandler::iterator
 			it = m_globalMouseHandler.begin(),
@@ -73,13 +73,13 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->handleGlobalMouseButtonEventEnd( _point, _button, _isDown );
+			(*it)->handleGlobalMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 		}
 
 		return false;	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
+	bool GlobalHandleSystem::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		bool handle = false;
 
@@ -91,7 +91,7 @@ namespace Menge
 			it != it_end;
 			++it)
 			{
-				if( handle = (*it)->handleGlobalMouseMove( _point, _x, _y, _whell ) )
+				if( handle = (*it)->handleGlobalMouseMove( _touchId, _point, _x, _y, _whell ) )
 				{
 					break;
 				}

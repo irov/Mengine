@@ -34,7 +34,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XlsExportPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
+	void XlsExportPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
@@ -43,14 +43,9 @@ namespace Menge
 			return;
 		}
 		
-		TMapParam::const_iterator it_found = _params.find("ProjectName");
+		ApplicationInterface * appService = _provider->getServiceT<ApplicationInterface>( "ApplicationService" );
 
-		if( it_found == _params.end() )
-		{
-			return;
-		}
-
-		const String & projectName = it_found->second;
+		const ConstString & projectName = appService->getProjectName();
 
 		ApplicationInterface * applicationService = _provider->getServiceT<ApplicationInterface>( "ApplicationService" );
 		
@@ -93,7 +88,7 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XlsExportPlugin::proccess( const String & _projectName )
+	bool XlsExportPlugin::proccess( const ConstString & _projectName )
 	{
 		bool exist = false;
 		PyObject * py_xlsxExporter = pybind::module_import( "xlsxExporter", exist );
@@ -104,7 +99,7 @@ namespace Menge
 		}
 
 		pybind::call_method( py_xlsxExporter, "export", "(s)"
-			, _projectName.c_str() 
+			, _projectName.c_str()
 			);
 
 		return true;

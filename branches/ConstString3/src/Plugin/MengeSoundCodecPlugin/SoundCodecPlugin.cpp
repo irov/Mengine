@@ -63,7 +63,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
+	void SoundCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_converterService = _provider->getServiceT<ConverterServiceInterface>( "ConverterService" );
 

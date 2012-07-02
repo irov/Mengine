@@ -8,12 +8,10 @@
 
 namespace Menge
 {
-	typedef std::map<std::string, std::string> TMapParam;
-
 	class PluginInterface
 	{
 	public:
-		virtual void initialize( ServiceProviderInterface * _provider, const TMapParam & _params ) = 0;
+		virtual void initialize( ServiceProviderInterface * _provider ) = 0;
 		virtual void finalize() = 0;
 	};
 

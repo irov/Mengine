@@ -179,7 +179,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->execReg_();
 		this->updatePicked_(_point);
@@ -202,7 +202,7 @@ namespace Menge
 			{
 				MousePickerTrap * trap = state->trap;
 
-				if( trap->handleMouseButtonEvent( _point, _button, _isDown ) == true )
+				if( trap->handleMouseButtonEvent( _touchId, _point, _button, _isDown ) == true )
 				{
 					return true;
 				}
@@ -212,7 +212,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->execReg_();
 		this->updatePicked_(_point);
@@ -235,14 +235,14 @@ namespace Menge
 			{
 				MousePickerTrap * trap = state->trap;
 
-				trap->handleMouseButtonEventBegin( _point, _button, _isDown );
+				trap->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
 			}
 		}
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		//this->execReg_();
 		//this->updatePicked_( _point );
@@ -265,14 +265,14 @@ namespace Menge
 			{
 				MousePickerTrap * trap = state->trap;
 
-				trap->handleMouseButtonEventEnd( _point, _button, _isDown );
+				trap->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 			}
 		}
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
+	bool MousePickerSystem::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		this->execReg_();
 		this->updatePicked_(_point);
@@ -295,7 +295,7 @@ namespace Menge
 			{
 				MousePickerTrap * trap = state->trap;
 
-				if( trap->handleMouseMove( _point, _x, _y, _whell ) == true )
+				if( trap->handleMouseMove( _touchId, _point, _x, _y, _whell ) == true )
 				{
 					return true;
 				}

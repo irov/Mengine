@@ -26,12 +26,16 @@ namespace Menge
 
 		if( it_found != m_descriptions.end() )
 		{
-			MENGE_LOG_WARNING("EntityManager::registerPrototype: already exist entity type %s (override)"
+			MENGE_LOG_INFO("EntityManager::registerPrototype: already exist entity type %s (override)"
 				, _desc.name.c_str()
 				);
-		}
 
-		m_descriptions.insert( std::make_pair(_desc.name, _desc) );
+			m_descriptions[_desc.name] = _desc;
+		}
+		else
+		{
+			m_descriptions.insert( std::make_pair(_desc.name, _desc) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool EntityManager::getPrototypeDesc( const ConstString & _type, ResourceDesc & _desc )

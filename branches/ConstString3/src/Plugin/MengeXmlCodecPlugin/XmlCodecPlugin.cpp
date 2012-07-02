@@ -51,7 +51,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XmlCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
+	void XmlCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_provider = _provider;
 

@@ -180,9 +180,9 @@ namespace Menge
 		void onAppMouseEnter( const mt::vec2f & _point ) override;
 		void onAppMouseLeave() override;		
 
-		bool onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown ) override;
-		bool onMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;
+		bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;		
 		
 		void onPaint() override;
 
@@ -212,6 +212,7 @@ namespace Menge
 		void utf8Count( const String& _utf8, size_t & _size );
 
 		const WString & getProjectTitle() const;
+		const ConstString & getProjectName() const;
 		
 		static const char* getVersionInfo();
 
@@ -229,9 +230,9 @@ namespace Menge
 		bool getCursorMode() const;
 		void setCursorIcon(const WString& _fileName);
 
-		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
-		void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
-		void pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z );
+		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		void pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;
+		void pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z ) override;
 
 		void setAsScreensaver( bool _set );
 
@@ -239,7 +240,7 @@ namespace Menge
 		void hideKeyboard();
 
 	public:
-		bool loadPlugin( const WString& _pluginName, const TMapParam & _params );
+		bool loadPlugin( const WString& _pluginName );
 
 	protected:		
 		void unloadPlugins_();

@@ -244,10 +244,10 @@ namespace Menge
 	{
 	public:
 		virtual bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
-		virtual bool handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
-		virtual bool handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;		
-		virtual bool handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
-		virtual bool handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
+		virtual bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
 	};
 
 	class InputSystemInterface

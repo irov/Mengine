@@ -331,8 +331,7 @@ namespace Menge
 			PluginInterface * plugin;
 			initPluginMengeImageCodec( &plugin );
 
-			TMapParam param;
-			plugin->initialize( m_serviceProvider, param );
+			plugin->initialize( m_serviceProvider );
 
 			m_plugins.push_back( plugin );
 		}
@@ -470,8 +469,7 @@ namespace Menge
 		{
 			const WString & pluginName = *it;
 
-			TMapParam param;
-			this->loadPlugin( pluginName, param );
+			this->loadPlugin( pluginName );
 		}
 				
 		//if( m_baseDir.empty() )	// current dir
@@ -1241,21 +1239,21 @@ namespace Menge
 		return m_game->handleKeyEvent( _point, _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown )
+	bool Application::onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		if( m_inputMouseButtonEventBlock == true )
 		{
 			return false;
 		}
 
-		m_game->handleMouseButtonEventBegin( _point, _button, _isDown );
-		bool result = m_game->handleMouseButtonEvent( _point, _button, _isDown );
-		m_game->handleMouseButtonEventEnd( _point, _button, _isDown );
+		m_game->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+		bool result = m_game->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
+		m_game->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseMove( const mt::vec2f & _point, float _dx, float _dy, int _whell )
+	bool Application::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _dx, float _dy, int _whell )
 	{
 		if( m_inputEngine->validCursorPosition( _point ) == false )
 		{
@@ -1269,7 +1267,7 @@ namespace Menge
 			this->onAppMouseEnter( _point );
 		}
 
-		return m_game->handleMouseMove( _point, _dx, _dy, _whell );
+		return m_game->handleMouseMove( _touchId, _point, _dx, _dy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onAppMouseLeave()
@@ -1803,6 +1801,11 @@ namespace Menge
 		return m_game->getTitle();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Application::getProjectName() const
+	{
+		return m_game->getProjectName();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::setDesktopResolution( const Resolution& _resolution )
 	{
 		m_desktopResolution = _resolution;
@@ -1828,7 +1831,7 @@ namespace Menge
 		return m_debugCRT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadPlugin( const WString& _pluginName, const TMapParam & _params )
+	bool Application::loadPlugin( const WString& _pluginName )
 	{
 		TDynamicLibraries::iterator it_found = m_dynamicLibraries.find( _pluginName );
 		
@@ -1878,7 +1881,7 @@ namespace Menge
 			return false;
 		}
 
-		plugin->initialize( m_serviceProvider, _params );
+		plugin->initialize( m_serviceProvider );
 		
 		m_plugins.push_back( plugin );
 
@@ -2045,19 +2048,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown )
+	void Application::pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		if( m_inputEngine != NULL )
 		{
-			m_inputEngine->pushMouseButtonEvent( _point, _button, _isDown );
+			m_inputEngine->pushMouseButtonEvent( _touchId, _point, _button, _isDown );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z )
+	void Application::pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z )
 	{
 		if( m_inputEngine != NULL )
 		{
-			m_inputEngine->pushMouseMoveEvent( _point, _x, _y, _z );
+			m_inputEngine->pushMouseMoveEvent( _touchId, _point, _x, _y, _z );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

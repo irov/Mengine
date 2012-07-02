@@ -32,7 +32,7 @@ namespace Menge
 		HTTPLoggerPlugin();
 
 	protected:
-		void initialize( ServiceProviderInterface * _provider, const TMapParam & _params ) override;
+		void initialize( ServiceProviderInterface * _provider ) override;
 		void finalize() override;
 
 	protected:

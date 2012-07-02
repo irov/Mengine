@@ -47,8 +47,8 @@ namespace Menge
 		bool getMouseBounded() const;
 
 		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
-		void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
-		void pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z );
+		void pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown );
+		void pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z );
 
 		void addCursorPositionProvider( CursorPositionProvider * _provider );
 		void removeCursorPositionProvider( CursorPositionProvider * _provider );
@@ -72,6 +72,7 @@ namespace Menge
 
 		struct MouseButtonParams
 		{
+			unsigned int touchId;
 			mt::vec2f point;
 
 			unsigned int button;
@@ -80,6 +81,7 @@ namespace Menge
 
 		struct MouseMoveParams
 		{
+			unsigned int touchId;
 			mt::vec2f point;
 
 			int x;

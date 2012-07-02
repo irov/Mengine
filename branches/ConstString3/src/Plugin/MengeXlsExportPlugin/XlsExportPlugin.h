@@ -14,10 +14,10 @@ namespace Menge
 		XlsExportPlugin();
 
 	protected:
-		void initialize( ServiceProviderInterface * _provider, const TMapParam & _params ) override;
+		void initialize( ServiceProviderInterface * _provider ) override;
 		void finalize() override;
 
 	protected:
-		bool proccess( const String & _projectName );
+		bool proccess( const ConstString & _projectName );
 	};
 }

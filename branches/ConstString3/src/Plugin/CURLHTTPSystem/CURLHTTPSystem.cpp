@@ -24,7 +24,7 @@ namespace Menge
 		 curl_global_cleanup();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CURLHTTPSystem::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
+	void CURLHTTPSystem::initialize( ServiceProviderInterface * _provider )
 	{		
 		m_provider = _provider;
 

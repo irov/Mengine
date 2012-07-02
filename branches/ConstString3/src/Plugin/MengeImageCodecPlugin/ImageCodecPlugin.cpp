@@ -135,7 +135,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
+	void ImageCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 

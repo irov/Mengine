@@ -178,17 +178,17 @@ namespace Menge
 		m_keyEventParams.push_back( keyEventParams );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown )
+	void InputEngine::pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		m_events.push_back( ET_MOUSEBUTTON );
-		MouseButtonParams mouseButtonParams = { _point, _button, _isDown };
+		MouseButtonParams mouseButtonParams = { _touchId, _point, _button, _isDown };
 		m_mouseButtonEventParams.push_back( mouseButtonParams );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z )
+	void InputEngine::pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z )
 	{
 		m_events.push_back( ET_MOUSEMOVE );
-		MouseMoveParams mouseMoveParams = { _point, _x, _y, _z };
+		MouseMoveParams mouseMoveParams = { _touchId, _point, _x, _y, _z };
 		m_mouseMoveEventParams.push_back( mouseMoveParams );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ namespace Menge
 		this->applyCursorPosition_( _mouseButtonParams.point, point );
 
 		Application::get()
-			->onMouseButtonEvent( point, _mouseButtonParams.button, _mouseButtonParams.isDown );
+			->onMouseButtonEvent( _mouseButtonParams.touchId, point, _mouseButtonParams.button, _mouseButtonParams.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent( const MouseMoveParams& _mouseMoveParams )
@@ -224,7 +224,7 @@ namespace Menge
 		this->applyCursorPosition_( _mouseMoveParams.point, point );
 
 		Application::get()
-			->onMouseMove( point, static_cast<float>( _mouseMoveParams.x), static_cast<float>( _mouseMoveParams.y), _mouseMoveParams.z );
+			->onMouseMove( _mouseMoveParams.touchId, point, static_cast<float>( _mouseMoveParams.x), static_cast<float>( _mouseMoveParams.y), _mouseMoveParams.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

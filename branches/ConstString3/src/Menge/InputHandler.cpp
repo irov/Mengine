@@ -8,22 +8,22 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputHandler::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool InputHandler::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputHandler::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool InputHandler::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		return false;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	bool InputHandler::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool InputHandler::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputHandler::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
+	bool InputHandler::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		return false;
 	}

@@ -34,9 +34,5 @@ namespace Menge
 	protected:
 		typedef std::map<ConstString, ResourceDesc> TMapDescriptionEntities;
 		TMapDescriptionEntities m_descriptions;
-
-	//private:
-		//bool setupEntityDesk_( Entity * _entity, const PrototypeDesc & _desc );
-		//bool loadEntityData_( const ConstString & _type, const PrototypeDesc & _desc, TBlobject & _data );
 	};
 }

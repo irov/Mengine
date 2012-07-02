@@ -227,10 +227,10 @@ namespace Menge
 			//return _left->testPolygon( left_wm, right_poligon, right_wm );
 		}
 
-		static bool s_loadPlugin( const WString & _pluginName, const TMapParam & _param )
+		static bool s_loadPlugin( const WString & _pluginName )
 		{
 			bool result = Application::get()
-				->loadPlugin( _pluginName, _param );
+				->loadPlugin( _pluginName );
 
 			return result;
 		}
@@ -2842,59 +2842,59 @@ namespace Menge
 	//	}
 	//}s_extract_TVectorParams_type;
 
-	static struct extract_TMapParam_type
-		: public pybind::type_cast_result<TMapParam>
-	{
-		bool apply( PyObject * _obj, TMapParam & _param ) override
-		{
-			if( pybind::dict_check( _obj ) == false )
-			{
-				return false;
-			}
+	//static struct extract_TMapParam_type
+	//	: public pybind::type_cast_result<TMapParam>
+	//{
+	//	bool apply( PyObject * _obj, TMapParam & _param ) override
+	//	{
+	//		if( pybind::dict_check( _obj ) == false )
+	//		{
+	//			return false;
+	//		}
 
-			PyObject * py_items = pybind::dict_items( _obj );
-			size_t size = pybind::list_size( py_items );
+	//		PyObject * py_items = pybind::dict_items( _obj );
+	//		size_t size = pybind::list_size( py_items );
 
-			for( size_t it = 0; it != size; ++it )
-			{
-				PyObject * py_tuple = pybind::list_getitem( py_items, it );
+	//		for( size_t it = 0; it != size; ++it )
+	//		{
+	//			PyObject * py_tuple = pybind::list_getitem( py_items, it );
 
-				PyObject * py_key = pybind::tuple_getitem( py_tuple, 0 );
-				PyObject * py_value = pybind::tuple_getitem( py_tuple, 1 );
+	//			PyObject * py_key = pybind::tuple_getitem( py_tuple, 0 );
+	//			PyObject * py_value = pybind::tuple_getitem( py_tuple, 1 );
 
-				String key;
-				String value;
-				pybind::extract_value( py_key, key );
-				pybind::extract_value( py_value, value );
+	//			String key;
+	//			String value;
+	//			pybind::extract_value( py_key, key );
+	//			pybind::extract_value( py_value, value );
 
-				_param.insert( std::make_pair( key, value ) );
-			}
+	//			_param.insert( std::make_pair( key, value ) );
+	//		}
 
-			pybind::decref( py_items );
+	//		pybind::decref( py_items );
 
-			return true;
-		}
+	//		return true;
+	//	}
 
-		PyObject * wrap( pybind::type_cast_result<TMapParam>::TCastRef _value ) override
-		{
-			PyObject * py_param = pybind::dict_new();
+	//	PyObject * wrap( pybind::type_cast_result<TMapParam>::TCastRef _value ) override
+	//	{
+	//		PyObject * py_param = pybind::dict_new();
 
-			for( TMapParam::const_iterator
-				it = _value.begin(),
-				it_end = _value.end();
-			it != it_end;
-			++it )
-			{
-				PyObject * py_value = pybind::ptr( it->second );
+	//		for( TMapParam::const_iterator
+	//			it = _value.begin(),
+	//			it_end = _value.end();
+	//		it != it_end;
+	//		++it )
+	//		{
+	//			PyObject * py_value = pybind::ptr( it->second );
 
-				pybind::dict_set( py_param, it->first.c_str(), py_value );
+	//			pybind::dict_set( py_param, it->first.c_str(), py_value );
 
-				pybind::decref( py_value );
-			}
+	//			pybind::decref( py_value );
+	//		}
 
-			return py_param;
-		}
-	}s_extract_TMapParam_type;
+	//		return py_param;
+	//	}
+	//}s_extract_TMapParam_type;
 
 
 	void ScriptWrapper::finalize()

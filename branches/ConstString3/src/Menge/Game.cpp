@@ -201,7 +201,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool Game::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -212,7 +212,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = m_player->handleMouseButtonEvent( _point, _button, _isDown );
+			handle = m_player->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
 		}
 
 		if( !handle )
@@ -248,7 +248,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool Game::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -259,13 +259,13 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = m_player->handleMouseButtonEventBegin( _point, _button, _isDown );
+			handle = m_player->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
 		}	
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool Game::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -276,7 +276,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = m_player->handleMouseButtonEventEnd( _point, _button, _isDown );
+			handle = m_player->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 		}	
 
 		return handle;
@@ -329,7 +329,7 @@ namespace Menge
 		return s_removeHandler( m_handlersMouseButton, _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
+	bool Game::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		bool handle = false;
 
@@ -340,7 +340,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = m_player->handleMouseMove( _point, _x, _y, _whell );
+			handle = m_player->handleMouseMove( _touchId, _point, _x, _y, _whell );
 		}
 
 		if( !handle )
@@ -700,6 +700,11 @@ namespace Menge
 		const TextEntry & entry = textMgr->getTextEntry(key);
 
 		return entry.text;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Game::getProjectName() const
+	{
+		return m_projectName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::isContentResolutionFixed() const

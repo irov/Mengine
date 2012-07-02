@@ -1117,7 +1117,7 @@ namespace Menge
 					break;
 				}
 								
-				m_application->pushMouseMoveEvent( point, dx, dy, 0 );
+				m_application->pushMouseMoveEvent( 0, point, dx, dy, 0 );
 
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -1130,7 +1130,7 @@ namespace Menge
 				this->getCursorPosition(point);
 				m_application->setCursorPosition( point );
 
-				m_application->pushMouseMoveEvent( point, 0, 0, zDelta / WHEEL_DELTA );				
+				m_application->pushMouseMoveEvent( 0, point, 0, 0, zDelta / WHEEL_DELTA );				
 			}break;
 		case WM_RBUTTONDBLCLK:
 		case WM_LBUTTONDBLCLK:
@@ -1146,7 +1146,7 @@ namespace Menge
 				this->getCursorPosition(point);
 				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( point, 0, true );				
+				m_application->pushMouseButtonEvent( 0, point, 0, true );				
 			}
 			break;
 		case WM_LBUTTONUP:
@@ -1157,7 +1157,7 @@ namespace Menge
 					this->getCursorPosition(point);
 					m_application->setCursorPosition( point );
 
-					m_application->pushMouseButtonEvent( point, 0, false );					
+					m_application->pushMouseButtonEvent( 0, point, 0, false );					
 				}
 
 				m_isDoubleClick = false;
@@ -1168,7 +1168,7 @@ namespace Menge
 				this->getCursorPosition(point);
 				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( point, 1, true );				
+				m_application->pushMouseButtonEvent( 0, point, 1, true );				
 			}break;
 		case WM_RBUTTONUP:
 			{
@@ -1178,7 +1178,7 @@ namespace Menge
 					this->getCursorPosition(point);
 					m_application->setCursorPosition( point );
 
-					m_application->pushMouseButtonEvent( point, 1, false );					
+					m_application->pushMouseButtonEvent( 0, point, 1, false );					
 				}
 
 				m_isDoubleClick = false;
@@ -1189,7 +1189,7 @@ namespace Menge
 				this->getCursorPosition(point);
 				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( point, 2, true );				
+				m_application->pushMouseButtonEvent( 0, point, 2, true );				
 			}break;
 		case WM_MBUTTONUP:
 			{
@@ -1197,7 +1197,7 @@ namespace Menge
 				this->getCursorPosition(point);
 				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( point, 2, false );				
+				m_application->pushMouseButtonEvent( 0, point, 2, false );				
 			}break;
 		case WM_KEYDOWN:
 			{

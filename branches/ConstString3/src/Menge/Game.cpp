@@ -566,26 +566,6 @@ namespace Menge
 			return true;
 		}
 
-		//const TMapParams & params = ParamManager::get()
-		//	->getParams();
-
-		//for( TMapParams::const_iterator
-		//	it = params.begin(),
-		//	it_end = params.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	const TVectorParams & param = it->second;
-
-		//	PyObject * py_param = pybind::ptr( param );
-
-		//	bool result = false;
-		//	if( this->askEvent( result, EVENT_PARAMS, "(sO)", it->first.c_str(), py_param ) == false )
-		//	{
-		//		return true;
-		//	}
-		//}
-
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

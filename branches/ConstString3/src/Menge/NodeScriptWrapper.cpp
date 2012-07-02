@@ -13,7 +13,6 @@
 
 #	include "ScriptEngine.h"
 #	include "ScheduleManager.h"
-#	include "ParamManager.h"
 
 #	include "TextManager.h"
 #	include "ArrowManager.h"
@@ -65,7 +64,6 @@
 
 #	include "Window.h"
 #	include "HotSpotImage.h"
-#	include "Mesh_40_30.h"
 
 #	include "Entity.h"
 
@@ -236,32 +234,6 @@ namespace Menge
 
 			return result;
 		}
-
-		//static bool s_loadText( const ConstString & _name )
-		//{
-		//	bool result = TextManager::get()
-		//		->loadResourceFile( _name );
-
-		//	return result;
-		//}
-
-		//static PyObject * s_getParam( const ConstString & _name )
-		//{
-		//	TVectorParams params;
-		//	if( ParamManager::get()
-		//		->getParam( _name, params ) == false )
-		//	{
-		//		MENGE_LOG_ERROR("Menge.getParam: %s not found"
-		//			, _name.c_str()
-		//			);
-
-		//		return pybind::ret_none();
-		//	}
-
-		//	PyObject * py_param = pybind::ptr( params );
-
-		//	return py_param;
-		//}
 
 		static void s_blockInput( bool _value )
 		{
@@ -2590,7 +2562,6 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Window );
 		
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
-		//SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 		SCRIPT_CLASS_WRAPPING( Camera2D );
 		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
@@ -3617,10 +3588,6 @@ namespace Menge
 					.def( "setResourceWindow", &Window::setResourceWindow )
 					;
 
-				//pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
-				//	.def( "setAmplitude", &Mesh_40_30::setAmplitude )
-				//	.def( "setFrequency", &Mesh_40_30::setFrequency )
-				//	;
 			}		
 
 			pybind::def_function( "setCurrentScene", &ScriptMethod::setCurrentScene );

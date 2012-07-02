@@ -35,7 +35,7 @@ namespace Menge
 		, c_ResourceAnimation("ResourceAnimation")
 		, c_ResourceInternalObject("ResourceInternalObject")
 		, c_ResourceMovie("ResourceMovie")
-		, c_ResourceSequence("ResourceSequence")
+		//, c_ResourceSequence("ResourceSequence")
 		, c_ResourceVideo("ResourceVideo")
 		, c_ResourceEmitterContainer("ResourceEmitterContainer")
 		, c_CreateImage("CreateImage")

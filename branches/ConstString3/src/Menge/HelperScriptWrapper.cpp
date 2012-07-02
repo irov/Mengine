@@ -18,7 +18,7 @@
 #	include "EntityManager.h"
 
 #	include "ResourceAnimation.h"
-#	include "ResourceSequence.h"
+//#	include "ResourceSequence.h"
 
 #	include "Player.h"
 #	include "TimingManager.h"
@@ -800,53 +800,53 @@ namespace Menge
 				->setAsScreensaver( _set );
 		}
 
-		static bool s_createAnimationSequence( const ConstString & _name, PyObject * _sequence )
-		{
-			if( ResourceManager::get()->hasResource( _name ) == true )
-			{
-				return true;
-			}
+		//static bool s_createAnimationSequence( const ConstString & _name, PyObject * _sequence )
+		//{
+		//	if( ResourceManager::get()->hasResource( _name ) == true )
+		//	{
+		//		return true;
+		//	}
 
-			if( pybind::list_check(_sequence) == false )
-			{
-				return false;
-			}
+		//	if( pybind::list_check(_sequence) == false )
+		//	{
+		//		return false;
+		//	}
 
-			size_t sequnce_size = pybind::list_size(_sequence);
+		//	size_t sequnce_size = pybind::list_size(_sequence);
 
-			TVectorAnimationSequence sequence;
+		//	TVectorAnimationSequence sequence;
 
-			for( size_t it = 0; it != sequnce_size; ++it )
-			{
-				PyObject * py_element = pybind::list_getitem( _sequence, it );
+		//	for( size_t it = 0; it != sequnce_size; ++it )
+		//	{
+		//		PyObject * py_element = pybind::list_getitem( _sequence, it );
 
-				if( pybind::tuple_check(py_element) == false )
-				{
-					continue;
-				}
+		//		if( pybind::tuple_check(py_element) == false )
+		//		{
+		//			continue;
+		//		}
 
-				PyObject * py_delay = pybind::tuple_getitem( py_element, 0 );
-				PyObject * py_resourceName = pybind::tuple_getitem( py_element, 1 );
+		//		PyObject * py_delay = pybind::tuple_getitem( py_element, 0 );
+		//		PyObject * py_resourceName = pybind::tuple_getitem( py_element, 1 );
 
-				AnimationSequence seq;
-				seq.delay = pybind::extract<float>(py_delay);
-				seq.resourceName = pybind::extract<ConstString>(py_resourceName);
+		//		AnimationSequence seq;
+		//		seq.delay = pybind::extract<float>(py_delay);
+		//		seq.resourceName = pybind::extract<ConstString>(py_resourceName);
 
-				sequence.push_back(seq);
-			}
+		//		sequence.push_back(seq);
+		//	}
 
-			ResourceAnimation * resource = ResourceManager::get()
-				->createResourceT<ResourceAnimation>(Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, _name, Consts::get()->c_ResourceSequence);
+		//	ResourceAnimation * resource = ResourceManager::get()
+		//		->createResourceT<ResourceAnimation>(Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, _name, Consts::get()->c_ResourceSequence);
 
-			if( resource == NULL )
-			{
-				return false;
-			}
+		//	if( resource == NULL )
+		//	{
+		//		return false;
+		//	}
 
-			resource->setSequences( sequence );
+		//	resource->setSequences( sequence );
 
-			return true;
-		}
+		//	return true;
+		//}
 
 		static PyObject * s_importEntity( const String & _type )
 		{
@@ -1142,7 +1142,7 @@ namespace Menge
 
 		pybind::def_function( "importEntity", &ScriptHelper::s_importEntity );
 
-		pybind::def_function( "createAnimationSequence", &ScriptHelper::s_createAnimationSequence );
+		//pybind::def_function( "createAnimationSequence", &ScriptHelper::s_createAnimationSequence );
 
 		pybind::def_function( "intersectsBoxes", &ScriptHelper::s_intersectsBoxes );
 

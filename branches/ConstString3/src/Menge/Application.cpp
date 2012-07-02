@@ -317,7 +317,6 @@ namespace Menge
 		exinit.add( &Application::initializeEntityManager_);		
 		exinit.add( &Application::initializeAlphaChannelManager_);
 		exinit.add( &Application::initializeTextManager_);
-		exinit.add( &Application::initializeParamManager_);
 
 		if( exinit.run() == false )
 		{
@@ -698,7 +697,6 @@ namespace Menge
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( Window );
 		NODE_FACTORY( HotSpotImage );
-		//NODE_FACTORY( Mesh_40_30 );
 #	undef NODE_FACTORY
 
 		return true;
@@ -839,17 +837,6 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceInternalObject );
 
 #	undef RESOURCE_FACTORY
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeParamManager_()
-	{
-		MENGE_LOG_INFO( "initialize Param Manager..." );
-
-		//m_paramManager = new ParamManager();
-
-		//ParamManager::keep( m_paramManager );
 
 		return true;
 	}

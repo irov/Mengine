@@ -41,7 +41,6 @@ namespace Menge
 	class AccountManager;
 	class SceneManager;
 	class EntityManager;
-	class ParamManager;
 	class ConverterEngine;
 	class MovieKeyFrameManager;
 
@@ -135,7 +134,6 @@ namespace Menge
 		bool initializeScriptEngine_();
 		bool initializeCodecEngine_();
 		bool initializeResourceManager_();
-		bool initializeParamManager_();
 		bool initializeArrowManager_();
 		bool initializeSceneManager_();
 		bool initializeEntityManager_();
@@ -306,7 +304,6 @@ namespace Menge
 		ThreadEngine* m_threadEngine;
 		ThreadTaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;
-		//ParamManager * m_paramManager;
 		AlphaChannelManager* m_alphaChannelManager;
 		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;

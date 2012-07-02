@@ -80,6 +80,8 @@ namespace Menge
 
 		//ScriptModuleDeclaration::init( py_menge );
 
+		ScriptWrapper::initialize();
+
 		ScriptWrapper::nodeWrap();
 		ScriptWrapper::helperWrap();
 		ScriptWrapper::soundWrap();

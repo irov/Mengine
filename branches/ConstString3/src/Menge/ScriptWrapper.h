@@ -12,6 +12,7 @@ namespace Menge
 		static void soundWrap();
 
 	public:
+		static void initialize();
 		static void finalize();
 	};
 }

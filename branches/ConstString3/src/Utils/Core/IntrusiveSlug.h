@@ -12,10 +12,8 @@ namespace Menge
 		IntrusiveSlug( IntrusiveList<T> & _list )
 			: IntrusiveLinked(EILT_SLUG)
 			, m_end(*_list.end())
-			, m_eof(_list.empty())
 		{
-			typename IntrusiveList<T>::iterator it_begin = _list.begin();
-			it_begin->link_before( this );
+			_list.push_front( this );
 		}
 
 	public:
@@ -29,18 +27,15 @@ namespace Menge
 
 			pos = this->adapt_( pos );
 
-			if( pos == m_end )
-			{
-				m_eof = true;
-			}
-
 			this->unlink();
 			pos->link_before( this );
 		}
 
 		bool end() const
 		{
-			return m_eof;
+			IntrusiveLinked * pos = this->current();
+
+			return pos == m_end;
 		}
 
 		inline T * operator -> () const
@@ -72,10 +67,8 @@ namespace Menge
 
 			return _pos;
 		}
-
-
+		
 	protected:
-		IntrusiveLinked * m_end;
-		bool m_eof;
+		const IntrusiveLinked * m_end;
 	};
 }

@@ -21,7 +21,7 @@ namespace Menge
 
 	class Arrow
 		: public Entity
-		, public CursorPositionProvider
+		, public InputMousePositionProvider
 	{
 	public:
 		Arrow();
@@ -67,7 +67,7 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		void onCursorPositionChange( const mt::vec2f & _position ) override;
+		void onMousePositionChange( const mt::vec2f & _position ) override;
 
 	protected:
 		mt::vec2f m_offsetClick;

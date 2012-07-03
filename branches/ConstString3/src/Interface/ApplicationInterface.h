@@ -18,6 +18,8 @@ namespace Menge
 	public:
 		virtual void reset() = 0;
 		virtual float getDeltaTime() const = 0;
+
+	public:
 		virtual unsigned long getMilliseconds() = 0;
 		virtual unsigned long getMicroseconds() = 0;
 		virtual unsigned long getMillisecondsCPU() = 0;
@@ -108,11 +110,6 @@ namespace Menge
 		virtual void onAppMouseEnter( const mt::vec2f & _point ) = 0;
 		virtual void onAppMouseLeave() = 0;
 
-		virtual bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
-
-		virtual bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) = 0;
-		virtual bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
-		
 		virtual void onPaint() = 0;
 
 	public:
@@ -146,13 +143,6 @@ namespace Menge
 		virtual void destroy() = 0;
 
 	public:
-		virtual void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
-		virtual void pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) = 0;
-		virtual void pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z ) = 0;
-
-	public:
-		virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
-
 		virtual const WString& getScreensaverName() const = 0;
 	};
 	

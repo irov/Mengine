@@ -11,13 +11,16 @@
 namespace Menge
 {
 	class SystemDLL;
-	class LogServiceInterface;
 	class LoggerConsole;
 	class Application;
 	class FPSMonitor;
 	class AlreadyRunningMonitor;
 
 	class FileLogger;
+	
+	class LogServiceInterface;
+	class FileServiceInterface;
+	class InputServiceInterface;
 
 	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
@@ -70,11 +73,15 @@ namespace Menge
 		void setAsScreensaver( bool _set );
 
 	public:
-		void setupLogService();
-		void setupFileService();
+		void setupLogService( LogServiceInterface * _service );
+		void setupFileService( FileServiceInterface * _service );
+		void setupInputService( InputServiceInterface * _service );
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+
+	protected:
+		void wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 	protected:
 		DWORD getWindowStyle( bool _fullsreen );
@@ -120,6 +127,8 @@ namespace Menge
 		HINSTANCE m_hInstance;
 
 		ServiceProviderInterface * m_serviceProvider;
+
+		InputServiceInterface * m_inputService;
 
 		LogServiceInterface * m_logService;
 		FileLogger * m_fileLog;

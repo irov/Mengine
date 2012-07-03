@@ -141,6 +141,8 @@ namespace Menge
 		bool initializeTextManager_();
 		bool initializeConverterEngine_();
 		bool initializeMovieKeyFrameManager_();
+		bool initializeInputEngine_();
+
 	public:
 		void finalize() override;
 		void destroy() override;
@@ -180,9 +182,9 @@ namespace Menge
 		void onAppMouseEnter( const mt::vec2f & _point ) override;
 		void onAppMouseLeave() override;		
 
-		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;
-		bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;		
+		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
+		bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown );
+		bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell );		
 		
 		void onPaint() override;
 
@@ -219,9 +221,7 @@ namespace Menge
 		void enableDebug( bool _enable );
 
 		bool isDebugCRT() const;
-
-		void setCursorPosition( const mt::vec2f & _point );
-				
+		
 		const Resolution& getMaxClientAreaSize() const;		
 		
 		void updateNotification();
@@ -229,10 +229,6 @@ namespace Menge
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
 		void setCursorIcon(const WString& _fileName);
-
-		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
-		void pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;
-		void pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z ) override;
 
 		void setAsScreensaver( bool _set );
 
@@ -245,7 +241,7 @@ namespace Menge
 	protected:		
 		void unloadPlugins_();
 
-		void calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution );
+		void calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport );
 
 	protected:
 		PlatformInterface * m_platform;

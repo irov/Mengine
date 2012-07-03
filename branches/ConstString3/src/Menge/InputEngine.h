@@ -11,54 +11,50 @@
 
 namespace Menge
 {
-	class CursorPositionProvider
-	{
-	public:
-		virtual void onCursorPositionChange( const mt::vec2f & _position ) = 0;
-	};
-
 	class InputEngine
 		: public Holder<InputEngine>
+		, public InputServiceInterface
 	{
 	public:
 		InputEngine();
 		~InputEngine();
 
+	public:
 		bool initialize();
 		void update();
 
 	public:
-		void setDimentions( const Resolution & _contentResolution, const Viewport & _viewport );
+		void setDimentions( const Resolution & _contentResolution, const Viewport & _viewport ) override;
+		
+	public:
+		bool isKeyDown( KeyCode _keyCode ) override;
+		bool isModifierDown( KeyModifier _modifier ) override;
+		
+		bool isAnyMouseButtonDown() const override;
+		bool isMouseButtonDown( int _button ) const override;
+
+		const mt::vec2f & getCursorPosition() const override;
+		bool validCursorPosition( const mt::vec2f & _point ) const override;
+
+		void addMousePositionProvider( InputMousePositionProvider * _provider ) override;
+		void removeMousePositionProvider( InputMousePositionProvider * _provider ) override;
 
 	public:
-		bool isKeyDown( KeyCode _keyCode );
-		bool isModifierDown( KeyModifier _modifier );
-		
-		bool isAnyMouseButtonDown() const;
-		bool isMouseButtonDown( int _button ) const;
+		void onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
 
-		void setCursorPosition( const mt::vec2f & _point );
-		const mt::vec2f & getCursorPosition() const;
-		bool validCursorPosition( const mt::vec2f & _point ) const;
+	public:
+		void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;
+		void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 
-		bool isFocus() const;
-
-		void setMouseBounded( bool _bounded );
-		bool getMouseBounded() const;
-
-		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
-		void pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown );
-		void pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z );
-
-		void addCursorPositionProvider( CursorPositionProvider * _provider );
-		void removeCursorPositionProvider( CursorPositionProvider * _provider );
+		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
 
 	private:
 		enum EventType
 		{
 			ET_KEY = 0,
 			ET_MOUSEBUTTON,
-			ET_MOUSEMOVE
+			ET_MOUSEMOVE,
+			ET_MOUSEPOSITION
 		};
 
 		struct KeyEventParams
@@ -84,34 +80,44 @@ namespace Menge
 			unsigned int touchId;
 			mt::vec2f point;
 
-			int x;
-			int y;
-			int z;
+			float x;
+			float y;
+			int whell;
+		};
+
+		struct MousePositionParams
+		{
+			unsigned int touchId;
+			mt::vec2f point;
 		};
 
 		typedef std::vector<EventType> TVectorEventType;
 		typedef std::vector<KeyEventParams> TVectorKeyEventParams;
 		typedef std::vector<MouseButtonParams> TVectorMouseButtonParams;
 		typedef std::vector<MouseMoveParams> TVectorMouseMoveParams;
+		typedef std::vector<MousePositionParams> TVectorMousePositionParams;
 
 		void keyEvent( const KeyEventParams& _keyEventParams );
 		void mouseButtonEvent( const MouseButtonParams& _mouseButtonParams );
 		void mouseMoveEvent( const MouseMoveParams& _mouseMoveParams );
+		void mousePositionEvent( const MousePositionParams& _mouseMoveParams );
 
 	protected:		
-		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local ) const;
+		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local );
 
 	private:
 		mt::vec2f m_cursorPosition;
 		mt::vec2f m_dimentions;
 
-		typedef std::vector<CursorPositionProvider*> TVectorCursorPositionProviders;
-		TVectorCursorPositionProviders m_cursorPositionProviders;
+		typedef std::vector<InputMousePositionProvider*> TVectorMousePositionProviders;
+		TVectorMousePositionProviders m_mousePositionProviders;
 		
 		TVectorEventType m_events;
 		TVectorKeyEventParams m_keyEventParams;
 		TVectorMouseButtonParams m_mouseButtonEventParams;
 		TVectorMouseMoveParams m_mouseMoveEventParams;
+		TVectorMousePositionParams m_mousePositionEventParams;
+
 		unsigned char m_keyBuffer[256];
 		bool m_mouseBuffer[3];
 

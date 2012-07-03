@@ -297,27 +297,28 @@ namespace Menge
 		
 		ExecuteInitialize exinit( this );
 		
-		exinit.add( &Application::initializeLogEngine_);
-		exinit.add( &Application::initializeUnicodeEngine_);
-		exinit.add( &Application::initializeFileEngine_);
-		exinit.add( &Application::initializeThreadEngine_);
-		exinit.add( &Application::initializeParticleEngine_);
-		exinit.add( &Application::initializePhysicEngine2D_);
-		exinit.add( &Application::initializeRenderEngine_);
-		exinit.add( &Application::initializeSoundEngine_);
-		exinit.add( &Application::initializeTaskManager_);
-		exinit.add( &Application::initializeNodeManager_);
-		exinit.add( &Application::initializeLoaderEngine_);
-		exinit.add( &Application::initializeScriptEngine_);
-		exinit.add( &Application::initializeCodecEngine_);
-		exinit.add( &Application::initializeConverterEngine_);
-		exinit.add( &Application::initializeMovieKeyFrameManager_);
-		exinit.add( &Application::initializeResourceManager_);
-		exinit.add( &Application::initializeArrowManager_);
-		exinit.add( &Application::initializeSceneManager_);
-		exinit.add( &Application::initializeEntityManager_);		
-		exinit.add( &Application::initializeAlphaChannelManager_);
-		exinit.add( &Application::initializeTextManager_);
+		exinit.add( &Application::initializeLogEngine_ );
+		exinit.add( &Application::initializeUnicodeEngine_ );
+		exinit.add( &Application::initializeFileEngine_ );
+		exinit.add( &Application::initializeThreadEngine_ );
+		exinit.add( &Application::initializeParticleEngine_ );
+		exinit.add( &Application::initializePhysicEngine2D_ );
+		exinit.add( &Application::initializeRenderEngine_ );
+		exinit.add( &Application::initializeSoundEngine_ );
+		exinit.add( &Application::initializeTaskManager_ );
+		exinit.add( &Application::initializeNodeManager_ );
+		exinit.add( &Application::initializeLoaderEngine_ );
+		exinit.add( &Application::initializeScriptEngine_ );
+		exinit.add( &Application::initializeCodecEngine_ );
+		exinit.add( &Application::initializeConverterEngine_ );
+		exinit.add( &Application::initializeMovieKeyFrameManager_ );
+		exinit.add( &Application::initializeResourceManager_ );
+		exinit.add( &Application::initializeArrowManager_ );
+		exinit.add( &Application::initializeSceneManager_ );
+		exinit.add( &Application::initializeEntityManager_ );		
+		exinit.add( &Application::initializeAlphaChannelManager_ );
+		exinit.add( &Application::initializeTextManager_ );
+		exinit.add( &Application::initializeInputEngine_ );
 
 		if( exinit.run() == false )
 		{
@@ -762,6 +763,26 @@ namespace Menge
 		
 		m_movieKeyFrameManager = new MovieKeyFrameManager();
 		MovieKeyFrameManager::keep( m_movieKeyFrameManager );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeInputEngine_()
+	{
+		MENGE_LOG_INFO( "Initializing Input Engine..." );
+		m_inputEngine = new InputEngine();
+
+		InputEngine::keep( m_inputEngine );
+
+		bool result = m_inputEngine->initialize();
+		if( result == false )
+		{
+			MENGE_LOG_ERROR( "Input Engine initialization failed!" );
+			return false;
+		}
+		
+		m_serviceProvider->registryService("InputService", m_inputEngine );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1003,7 +1024,7 @@ namespace Menge
 			);
 
 		Viewport renderViewport;
-		this->calcRenderViewport_( renderViewport, m_currentResolution );
+		this->calcRenderViewport_( m_currentResolution, renderViewport );
 
 		MENGE_LOG_INFO( "Application::createRenderWindow Render Viewport %f %f - %f %f"
 			, renderViewport.begin.x
@@ -1011,6 +1032,8 @@ namespace Menge
 			, renderViewport.getWidth()
 			, renderViewport.getHeight()
 			);
+
+		m_inputEngine->setDimentions( contentResolution, renderViewport );
 
 		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, renderViewport, bits, m_fullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
@@ -1036,21 +1059,6 @@ namespace Menge
 		//m_renderEngine->setRenderViewport( renderViewport );
 
 		m_renderEngine->enableTextureFiltering( textureFiltering );
-
-		MENGE_LOG_INFO( "Initializing Input Engine..." );
-		m_inputEngine = new InputEngine();
-
-		InputEngine::keep( m_inputEngine );
-
-		bool result = m_inputEngine->initialize();
-		if( result == false )
-		{
-			MENGE_LOG_ERROR( "Input Engine initialization failed!" );
-			return false;
-		}
-
-		m_inputEngine->setDimentions( contentResolution, renderViewport );
-			
 			
 		return true;
 	}
@@ -1623,7 +1631,7 @@ namespace Menge
 		return m_mouseBounded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution )
+	void Application::calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport )
 	{
 		float rw = float( _resolution.getWidth());
 		float rh = float( _resolution.getHeight());
@@ -1706,7 +1714,7 @@ namespace Menge
 			);
 
 		Viewport renderViewport;
-		this->calcRenderViewport_( renderViewport, m_currentResolution );
+		this->calcRenderViewport_( m_currentResolution, renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
 
 		MENGE_LOG_INFO( "Application::createRenderWindow Render Viewport %f %f - %f %f"
@@ -1729,10 +1737,10 @@ namespace Menge
 		const Resolution & contentResolution = 
 			m_game->getContentResolution();
 
-		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, renderViewport, _fullscreen );
-
 		m_inputEngine->setDimentions( contentResolution, renderViewport );
 
+		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, renderViewport, _fullscreen );
+		
 		m_game->onFullscreen( m_currentResolution, m_fullscreen );
 
 		if( !m_mouseBounded && m_renderEngine->isWindowCreated() )
@@ -1931,14 +1939,6 @@ namespace Menge
         m_dynamicLibraries.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setCursorPosition( const mt::vec2f & _point )
-	{
-		if( m_inputEngine )
-		{
-			m_inputEngine->setCursorPosition( _point );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::setLanguagePack( const ConstString& _packName )
 	{
 		m_languagePackOverride = _packName;
@@ -2038,30 +2038,6 @@ namespace Menge
 		}
 
 		m_platform->notifyCursorIconSetup(_fileName);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		if( m_inputEngine != NULL )
-		{
-			m_inputEngine->pushKeyEvent( _point, _key, _char, _isDown );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
-	{
-		if( m_inputEngine != NULL )
-		{
-			m_inputEngine->pushMouseButtonEvent( _touchId, _point, _button, _isDown );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z )
-	{
-		if( m_inputEngine != NULL )
-		{
-			m_inputEngine->pushMouseMoveEvent( _touchId, _point, _x, _y, _z );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setAsScreensaver( bool _set )

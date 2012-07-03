@@ -70,7 +70,7 @@ namespace	Menge
 		}
 
 		InputEngine::get()
-			->addCursorPositionProvider(this);
+			->addMousePositionProvider(this);
 
 		return true;
 	}
@@ -78,12 +78,12 @@ namespace	Menge
 	void Arrow::_deactivate()
 	{	
 		InputEngine::get()
-			->removeCursorPositionProvider(this);
+			->removeMousePositionProvider(this);
 
 		Entity::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onCursorPositionChange( const mt::vec2f & _position )
+	void Arrow::onMousePositionChange( const mt::vec2f & _position )
 	{
 		mt::vec3f v3(_position.x, _position.y, 0.f);
 		this->setLocalPosition( v3 );

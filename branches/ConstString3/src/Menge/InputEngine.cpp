@@ -50,6 +50,7 @@ namespace Menge
 		TVectorKeyEventParams::iterator it_keyParams = m_keyEventParams.begin();
 		TVectorMouseButtonParams::iterator it_mouseButtonParams = m_mouseButtonEventParams.begin();
 		TVectorMouseMoveParams::iterator it_mouseMoveParams = m_mouseMoveEventParams.begin();
+		TVectorMousePositionParams::iterator it_mousePositionParams = m_mousePositionEventParams.begin();
 
 		for( TVectorEventType::iterator 
 			it = m_events.begin(), 
@@ -60,21 +61,27 @@ namespace Menge
 			EventType& eventType = (*it);
 			if( eventType == ET_KEY )
 			{
-				const KeyEventParams& keyParams = (*it_keyParams);
-				this->keyEvent( keyParams );
+				const KeyEventParams& params = (*it_keyParams);
+				this->keyEvent( params );
 				++it_keyParams;
 			}
 			else if( eventType == ET_MOUSEBUTTON )
 			{
-				const MouseButtonParams& mouseButtonParams = (*it_mouseButtonParams);
-				this->mouseButtonEvent( mouseButtonParams );
+				const MouseButtonParams& params = (*it_mouseButtonParams);
+				this->mouseButtonEvent( params );
 				++it_mouseButtonParams;
 			}
 			else if( eventType == ET_MOUSEMOVE )
 			{
-				const MouseMoveParams& mouseMoveParams = (*it_mouseMoveParams);
-				this->mouseMoveEvent( mouseMoveParams );
+				const MouseMoveParams& params = (*it_mouseMoveParams);
+				this->mouseMoveEvent( params );
 				++it_mouseMoveParams;
+			}
+			else if( eventType == ET_MOUSEPOSITION )
+			{
+				const MousePositionParams & params = (*it_mousePositionParams);
+				this->mousePositionEvent( params );
+				++it_mousePositionParams;
 			}
 		}
 
@@ -132,28 +139,25 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local ) const
+	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
 	{
 		mt::vec2f scale_point;
 		mt::vec2f offset_point = _point - m_inputOffset;
 		//mt::vec2f offset_point = _point;
 		mt::mul_v2_v2( scale_point, offset_point, m_inputScale );
 
-		_local = scale_point;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setCursorPosition( const mt::vec2f & _point )
-	{
-		this->applyCursorPosition_( _point, m_cursorPosition );
+		m_cursorPosition = scale_point;
 
-		for( TVectorCursorPositionProviders::iterator
-			it = m_cursorPositionProviders.begin(),
-			it_end = m_cursorPositionProviders.end();
+		for( TVectorMousePositionProviders::iterator
+			it = m_mousePositionProviders.begin(),
+			it_end = m_mousePositionProviders.end();
 		it != it_end;
 		++it )
 		{
-			(*it)->onCursorPositionChange( m_cursorPosition );
+			(*it)->onMousePositionChange( m_cursorPosition );
 		}
+
+		_local = m_cursorPosition;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & InputEngine::getCursorPosition() const
@@ -161,70 +165,82 @@ namespace Menge
 		return m_cursorPosition;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::addCursorPositionProvider( CursorPositionProvider * _provider )
+	void InputEngine::addMousePositionProvider( InputMousePositionProvider * _provider )
 	{
-		m_cursorPositionProviders.push_back( _provider );
+		m_mousePositionProviders.push_back( _provider );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::removeCursorPositionProvider( CursorPositionProvider * _provider )
+	void InputEngine::removeMousePositionProvider( InputMousePositionProvider * _provider )
 	{
-		std::remove( m_cursorPositionProviders.begin(), m_cursorPositionProviders.end(), _provider ); 
+		std::remove( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), _provider ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	void InputEngine::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		m_events.push_back( ET_KEY );
-		KeyEventParams keyEventParams = { _point, _key, _char, _isDown };
-		m_keyEventParams.push_back( keyEventParams );
+		KeyEventParams params = { _point, _key, _char, _isDown };
+		m_keyEventParams.push_back( params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
+	void InputEngine::onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		m_events.push_back( ET_MOUSEBUTTON );
-		MouseButtonParams mouseButtonParams = { _touchId, _point, _button, _isDown };
-		m_mouseButtonEventParams.push_back( mouseButtonParams );
+		MouseButtonParams params = { _touchId, _point, _button, _isDown };
+		m_mouseButtonEventParams.push_back( params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushMouseMoveEvent( unsigned int _touchId, const mt::vec2f & _point, int _x, int _y, int _z )
+	void InputEngine::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		m_events.push_back( ET_MOUSEMOVE );
-		MouseMoveParams mouseMoveParams = { _touchId, _point, _x, _y, _z };
-		m_mouseMoveEventParams.push_back( mouseMoveParams );
+		MouseMoveParams params = { _touchId, _point, _x, _y, _whell };
+		m_mouseMoveEventParams.push_back( params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::keyEvent( const KeyEventParams& _keyEventParams )
+	void InputEngine::onMousePosition( unsigned int _touchId, const mt::vec2f & _point )
 	{
-		unsigned char state = _keyEventParams.isDown ? 1 : 0;
-		if( m_keyBuffer[_keyEventParams.key] != state )
+		m_events.push_back( ET_MOUSEPOSITION );
+		MousePositionParams params = { _touchId, _point };
+		m_mousePositionEventParams.push_back( params );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::keyEvent( const KeyEventParams& _params )
+	{
+		unsigned char state = _params.isDown ? 1 : 0;
+		if( m_keyBuffer[_params.key] != state )
 		{
-			m_keyBuffer[_keyEventParams.key] = state;
+			m_keyBuffer[_params.key] = state;
 
 			mt::vec2f point;
-			this->applyCursorPosition_( _keyEventParams.point, point );
+			this->applyCursorPosition_( _params.point, point );
 
 			Application::get()
-				->onKeyEvent( point, _keyEventParams.key, _keyEventParams.character, _keyEventParams.isDown );
+				->onKeyEvent( point, _params.key, _params.character, _params.isDown );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseButtonEvent( const MouseButtonParams& _mouseButtonParams )
+	void InputEngine::mouseButtonEvent( const MouseButtonParams& _params )
 	{
-		m_mouseBuffer[ _mouseButtonParams.button ] = _mouseButtonParams.isDown;
+		m_mouseBuffer[ _params.button ] = _params.isDown;
 
 		mt::vec2f point;
-		this->applyCursorPosition_( _mouseButtonParams.point, point );
+		this->applyCursorPosition_( _params.point, point );
 
 		Application::get()
-			->onMouseButtonEvent( _mouseButtonParams.touchId, point, _mouseButtonParams.button, _mouseButtonParams.isDown );
+			->onMouseButtonEvent( _params.touchId, point, _params.button, _params.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseMoveEvent( const MouseMoveParams& _mouseMoveParams )
+	void InputEngine::mouseMoveEvent( const MouseMoveParams& _params )
 	{
 		mt::vec2f point;
-		this->applyCursorPosition_( _mouseMoveParams.point, point );
+		this->applyCursorPosition_( _params.point, point );
 
 		Application::get()
-			->onMouseMove( _mouseMoveParams.touchId, point, static_cast<float>( _mouseMoveParams.x), static_cast<float>( _mouseMoveParams.y), _mouseMoveParams.z );
+			->onMouseMove( _params.touchId, point, _params.x, _params.y, _params.whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::mousePositionEvent( const MousePositionParams& _params )
+	{
+		mt::vec2f point;
+		this->applyCursorPosition_( _params.point, point );
+	}
 }

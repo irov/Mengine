@@ -5,6 +5,7 @@
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/InputSystemInterface.h"
 
 #	include <cstdio>
 #	include <clocale>
@@ -120,6 +121,7 @@ namespace Menge
 		, m_isDoubleClick(false)
 		, m_cursor(NULL)
 		, m_enableDebug(false)
+		, m_inputService(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -457,9 +459,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setupLogService()
+	void WinApplication::setupLogService( LogServiceInterface * _service )
 	{
-		m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
+		m_logService = _service;
 
 		if( m_loggerConsole != NULL )
 		{
@@ -504,9 +506,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setupFileService()
+	void WinApplication::setupFileService( FileServiceInterface * _service )
 	{
-		FileServiceInterface * fileService = m_serviceProvider->getServiceT<FileServiceInterface>("FileService");
+		FileServiceInterface * fileService = _service;
 
 		// mount root		
 		if( fileService->mountFileSystem( ConstString(""), m_applicationPath, ConstString("dir"), false ) == false )
@@ -561,24 +563,15 @@ namespace Menge
 				, logFilename.c_str()
 				);
 		}
-	}	
-	//	BOOL
-	//	WINAPI
-	//	TerminateProcess1(
-	//	__in HANDLE hProcess,
-	//	__in UINT uExitCode
-	//	)
-	//{
-	//	printf("!!!!!!!!!!!!!!!!!");
-
-	//	return FALSE;
-	//}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::setupInputService( InputServiceInterface * _service )
+	{
+		m_inputService = _service;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
 	{
-		//Mhook_SetHook( (PVOID*)&TerminateProcess, &TerminateProcess1 );
-
-
 		while( m_running )
 		{
 			bool rendered = false;
@@ -909,7 +902,8 @@ namespace Menge
 
 		mt::vec2f point;
 		this->getCursorPosition(point);
-		m_application->setCursorPosition( point );
+
+		m_inputService->onMousePosition( 0, point );
 
 		m_application->onFocus( m_active, point );
 
@@ -1022,9 +1016,8 @@ namespace Menge
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
-				m_application->pushKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );
+				m_inputService->onKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );
 			}break;
 		case WM_SYSKEYUP:
 			{
@@ -1035,8 +1028,7 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->setCursorPosition( point );
-				m_application->pushKeyEvent( point, vkc, 0, false );
+				m_inputService->onKeyEvent( point, vkc, 0, false );
 			}break;
 		case WM_SYSCOMMAND:
 			if( (wParam & 0xFFF0) == SC_CLOSE )
@@ -1076,6 +1068,26 @@ namespace Menge
 				}
 				return FALSE;
 			}break;
+		case WM_DESTROY: 
+
+			// Post the WM_QUIT message to 
+			// quit the application terminate. 
+
+			PostQuitMessage(0); 
+			return 0;
+		}
+
+		this->wndProcInput( hWnd, uMsg, wParam, lParam );
+
+		LRESULT result = WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+	{
+		switch( uMsg )
+		{
 		case WM_NCMOUSEMOVE:
 		case WM_MOUSELEAVE:
 			{
@@ -1085,7 +1097,7 @@ namespace Menge
 
 					mt::vec2f point;
 					this->getCursorPosition(point);
-					m_application->setCursorPosition( point );
+					m_inputService->onMousePosition( 0, point );
 
 					m_application->onAppMouseLeave();
 				}
@@ -1095,7 +1107,6 @@ namespace Menge
 			{
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
 				if( m_cursorInArea == false )
 				{
@@ -1116,8 +1127,8 @@ namespace Menge
 				{
 					break;
 				}
-								
-				m_application->pushMouseMoveEvent( 0, point, dx, dy, 0 );
+
+				m_inputService->onMouseMove( 0, point, dx, dy, 0 );
 
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -1125,12 +1136,11 @@ namespace Menge
 		case WM_MOUSEWHEEL:
 			{
 				int zDelta = static_cast<short>( HIWORD(wParam) );
-				
-				mt::vec2f point;
-				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
-				m_application->pushMouseMoveEvent( 0, point, 0, 0, zDelta / WHEEL_DELTA );				
+				mt::vec2f point;
+				this->getCursorPosition(point);				
+
+				m_inputService->onMouseMove( 0, point, 0, 0, zDelta / WHEEL_DELTA );				
 			}break;
 		case WM_RBUTTONDBLCLK:
 		case WM_LBUTTONDBLCLK:
@@ -1144,9 +1154,8 @@ namespace Menge
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( 0, point, 0, true );				
+				m_inputService->onMouseButtonEvent( 0, point, 0, true );				
 			}
 			break;
 		case WM_LBUTTONUP:
@@ -1155,9 +1164,8 @@ namespace Menge
 				{
 					mt::vec2f point;
 					this->getCursorPosition(point);
-					m_application->setCursorPosition( point );
 
-					m_application->pushMouseButtonEvent( 0, point, 0, false );					
+					m_inputService->onMouseButtonEvent( 0, point, 0, false );					
 				}
 
 				m_isDoubleClick = false;
@@ -1166,9 +1174,8 @@ namespace Menge
 			{
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( 0, point, 1, true );				
+				m_inputService->onMouseButtonEvent( 0, point, 1, true );				
 			}break;
 		case WM_RBUTTONUP:
 			{
@@ -1176,9 +1183,8 @@ namespace Menge
 				{
 					mt::vec2f point;
 					this->getCursorPosition(point);
-					m_application->setCursorPosition( point );
 
-					m_application->pushMouseButtonEvent( 0, point, 1, false );					
+					m_inputService->onMouseButtonEvent( 0, point, 1, false );
 				}
 
 				m_isDoubleClick = false;
@@ -1187,17 +1193,15 @@ namespace Menge
 			{
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( 0, point, 2, true );				
+				m_inputService->onMouseButtonEvent( 0, point, 2, true );				
 			}break;
 		case WM_MBUTTONUP:
 			{
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
-				m_application->pushMouseButtonEvent( 0, point, 2, false );				
+				m_inputService->onMouseButtonEvent( 0, point, 2, false );				
 			}break;
 		case WM_KEYDOWN:
 			{
@@ -1207,9 +1211,8 @@ namespace Menge
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
-
-				m_application->pushKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );				
+				
+				m_inputService->onKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );				
 			}break;
 		case WM_KEYUP:
 			{
@@ -1219,22 +1222,10 @@ namespace Menge
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->setCursorPosition( point );
 
-				m_application->pushKeyEvent( point, vkc, 0, false );				
+				m_inputService->onKeyEvent( point, vkc, 0, false );				
 			}break;
-		case WM_DESTROY: 
-
-			// Post the WM_QUIT message to 
-			// quit the application terminate. 
-
-			PostQuitMessage(0); 
-			return 0;
 		}
-
-		LRESULT result = WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & WinApplication::getDesktopResolution() const
@@ -1368,7 +1359,7 @@ namespace Menge
 		protected:
 			void onRegistryService( ServiceProviderInterface * _serviceProvide, ServiceInterface * _service ) override
 			{
-				m_application->setupFileService();		
+				m_application->setupFileService( static_cast<FileServiceInterface *>(_service) );		
 			}
 
 		protected:
@@ -1387,7 +1378,26 @@ namespace Menge
 		protected:
 			void onRegistryService( ServiceProviderInterface * _serviceProvide, ServiceInterface * _service ) override
 			{
-				m_application->setupLogService();		
+				m_application->setupLogService( static_cast<LogServiceInterface*>(_service) );		
+			}
+
+		protected:
+			WinApplication * m_application;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		class WinApplicationInputService
+			: public ServiceListenerInterface
+		{
+		public:
+			WinApplicationInputService( WinApplication * _application )
+				: m_application(_application)
+			{
+			}
+
+		protected:
+			void onRegistryService( ServiceProviderInterface * _serviceProvide, ServiceInterface * _service ) override
+			{
+				m_application->setupInputService( static_cast<InputServiceInterface*>(_service) );		
 			}
 
 		protected:
@@ -1401,6 +1411,7 @@ namespace Menge
 
 		m_serviceProvider->addServiceListener( "LogService", new WinApplicationLogService(this) );
 		m_serviceProvider->addServiceListener( "FileService", new WinApplicationFileService(this) );
+		m_serviceProvider->addServiceListener( "InputService", new WinApplicationInputService(this) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorIconSetup( const WString& _fileName )

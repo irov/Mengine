@@ -2,7 +2,12 @@
 
 #	include "Config/Typedef.h"
 
-#	include <Math/vec2.h>
+#	include "Math/vec2.h"
+
+#	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
+
+#	include "Interface/ServiceInterface.h"
 
 namespace Menge
 {
@@ -244,34 +249,45 @@ namespace Menge
 	{
 	public:
 		virtual bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+
+	public:
 		virtual bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
 	};
 
-	class InputSystemInterface
+	class InputMousePositionProvider
 	{
 	public:
-		virtual bool initialize( WindowHandle _winHandle ) = 0;
-		virtual bool captureMouse( float _x, float _y, float _maxX, float _maxY ) = 0;
-		virtual void releaseMouse() = 0;
-		virtual void update() = 0;
-		virtual void destroy() = 0;
+		virtual void onMousePositionChange( const mt::vec2f & _position ) = 0;
+	};
 
-		virtual void regHandle( InputSystemHandler * _handle ) = 0;
+	class InputServiceInterface
+		: public ServiceInterface
+	{
+	public:
+		virtual void setDimentions( const Resolution & _contentResolution, const Viewport & _viewport ) = 0;
 
-		virtual bool isKeyDown( int _key ) = 0;
-		virtual bool isModifierDown( int _modifier ) = 0;
+	public:
+		virtual bool isKeyDown( KeyCode _keyCode ) = 0;
+		virtual bool isModifierDown( KeyModifier _modifier ) = 0;
 
-		virtual float getMouseX() const = 0;
-		virtual float getMouseY() const = 0;
-		virtual int getMouseWhell() const = 0;
+		virtual bool isAnyMouseButtonDown() const = 0;
+		virtual bool isMouseButtonDown( int _button ) const = 0;
 
-		virtual bool isAnyButtonDown() const = 0;
-		virtual bool isButtonDown( int _button ) const = 0;
+		virtual const mt::vec2f & getCursorPosition() const = 0;
+		virtual bool validCursorPosition( const mt::vec2f & _point ) const = 0;
+
+		virtual void addMousePositionProvider( InputMousePositionProvider * _provider ) = 0;
+		virtual void removeMousePositionProvider( InputMousePositionProvider * _provider ) = 0;
+
+	public:
+		virtual void onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+
+	public:
+		virtual void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) = 0;
+		virtual void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
+		virtual void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;
 	};
 }
-
-bool initInterfaceSystem(Menge::InputSystemInterface **);
-void releaseInterfaceSystem(Menge::InputSystemInterface *);

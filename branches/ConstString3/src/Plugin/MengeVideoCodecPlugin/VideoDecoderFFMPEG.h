@@ -41,7 +41,7 @@ namespace Menge
 		//int sync( float _timing ) override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;
-
+		bool seekToFrame( int _frame );
 	public:
 		bool isValid() const;
 		void setOptions( CodecOptions * _options );

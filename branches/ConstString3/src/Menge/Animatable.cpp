@@ -36,9 +36,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setTiming( float _timing )
 	{		
-		float timing = 0;
-		timing = _timing + m_startInterval;
-	
+		float timing = _timing + m_startInterval;
 		this->_setTiming( timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

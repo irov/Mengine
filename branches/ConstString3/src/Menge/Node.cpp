@@ -257,7 +257,7 @@ namespace Menge
 
 		m_parent->removeChildren( this );
 
-		this->disable();
+		//this->disable();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )

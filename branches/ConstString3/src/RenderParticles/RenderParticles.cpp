@@ -215,17 +215,21 @@ namespace Menge
 	{
 		initInterfaceSystem(&m_application);
 		
-		Menge::String platformName = "WIN";
+		WString applicationPath;
+		WindowsLayer::getCurrentDirectory( applicationPath );
 
-		if( m_application->initialize( this, platformName, "" ) == false )
+		Menge::String platformName = "WIN";
+		WString baseDir = applicationPath;
+		baseDir += MENGE_DEFAULT_BASE_DIR;
+
+		WString settings_file = L"settings.ini";
+
+		if( m_application->initialize( this, platformName, "",  baseDir, settings_file ) == false )
 		{
 			return false;
 		}
 		
 		//////////////////////////////////////////////////////////
-
-		WString applicationPath;
-		WindowsLayer::getCurrentDirectory( applicationPath );
 
 		applicationPath += L"\\";
 

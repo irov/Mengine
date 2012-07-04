@@ -287,7 +287,7 @@ namespace	Menge
 
 		m_needUpdate = false;
 
-		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
+		EVENTABLE_CALL(this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( size_t _enumerator )
@@ -297,7 +297,7 @@ namespace	Menge
 			m_soundEmitter->stop();
 		}
 
-		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
+		EVENTABLE_CALL(this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::pause()

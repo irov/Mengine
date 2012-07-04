@@ -77,12 +77,12 @@ namespace	Menge
 
 			if( m_onEndFrameEvent == true )
 			{
-				this->callEvent( EVENT_FRAME_END, "(OI)", this->getEmbed(), m_currentFrame );
+				EVENTABLE_CALL(this, EVENT_FRAME_END)( "(OI)", this->getEmbed(), m_currentFrame );
 			}
 
 			if( m_onEndFrameTick == true )
 			{
-				this->callEvent( EVENT_FRAME_TICK, "(OII)", this->getEmbed(), m_currentFrame, frameCount );
+				EVENTABLE_CALL(this, EVENT_FRAME_TICK)( "(OII)", this->getEmbed(), m_currentFrame, frameCount );
 			}
 			else
 			{
@@ -289,7 +289,7 @@ namespace	Menge
 
 		if( m_onEndAnimationEvent == true )
 		{
-			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+			EVENTABLE_CALL(this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -316,7 +316,7 @@ namespace	Menge
 
 		if( m_onEndAnimationEvent == true )
 		{
-			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+			EVENTABLE_CALL(this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

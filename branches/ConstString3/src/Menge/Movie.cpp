@@ -153,14 +153,14 @@ namespace Menge
 	{
 		this->stopAnimation_();
 
-		this->callEvent( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+		EVENTABLE_CALL(this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( size_t _enumerator )
 	{
 		this->stopAnimation_();
 
-		this->callEvent( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+		EVENTABLE_CALL(this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, const MovieFrameSource & _frame )
@@ -420,7 +420,9 @@ namespace Menge
 		const ConstString & internalName = resourceInternalObject->getInternalName();		
 		
 		PyObject * py_object = 0;
-		this->askEvent( py_object, EVENT_MOVIE_GET_INTERNAL, "(ss)", internalGroup.c_str(), internalName.c_str() );
+		//this->askEvent( py_object, EVENT_MOVIE_GET_INTERNAL, "(ss)", internalGroup.c_str(), internalName.c_str() );
+
+		EVENTABLE_ASK(this, EVENT_MOVIE_GET_INTERNAL)( py_object, (PyObject*)0, "(ss)", internalGroup.c_str(), internalName.c_str() );
 
 		resourceInternalObject->decrementReference();
 

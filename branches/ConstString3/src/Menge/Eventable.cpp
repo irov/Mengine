@@ -155,9 +155,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::callEvent( EEventName _event, const char * _format, ... ) const
 	{
-		PyObject * pyobj = this->getEvent( _event );
+		PyObject * pyevent = this->getEvent( _event );
 
-		if( pyobj == 0 )
+		if( pyevent == 0 )
 		{
 			return;
 		}
@@ -165,8 +165,20 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
+		this->callPyEventVaList( _event, pyevent, _format, valist );
+
+		va_end( valist ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Eventable::callPyEventVaList( EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const
+	{
 		PyObject * py = ScriptEngine::get()
-			->askFunction( pyobj, _format, valist );
+			->askFunction( _pyevent, _format, _va );
+
+		if( py == 0 )
+		{
+			return;
+		}
 
 		if( pybind::is_none( py ) == false )
 		{ 
@@ -180,8 +192,6 @@ namespace Menge
 		}
 
 		pybind::decref( py );
-
-		va_end( valist ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::callEventDeferred( EEventName _event, const char * _format, ... ) const
@@ -207,43 +217,45 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
-	static bool s_askEventT( T & _result, PyObject * _obj, EEventName _event, const char * _format, va_list _valist )
+	static bool s_askPyEventVaList( T & _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _valist )
 	{
-		PyObject * py = ScriptEngine::get()
-			->askFunction( _obj, _format, _valist );
+		PyObject * pyresult = ScriptEngine::get()
+			->askFunction( _pyevent, _format, _valist );
 
-		if( py == 0 )
+		if( pyresult == 0 )
 		{
 			return false;
 		}
 
-		if( pybind::is_none( py ) == true )
+		if( pybind::is_none( pyresult ) == true )
 		{ 
 			const char * envString = eventToString( _event );
 			const char * typeName = typeid(T).name();
-			const char * objRepr = pybind::object_repr( py );
+			const char * objRepr = pybind::object_repr( pyresult );
 
-			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"
+			MENGE_LOG_ERROR( "Eventable: '%s' must have return [%s] value '%s'"
 				, envString
 				, typeName
 				, objRepr
 				);
 
+			pybind::decref( pyresult );
+
 			return false;
 		}
 
-		_result = pybind::extract<T>( py );
+		_result = pybind::extract<T>( pyresult );
 
-		pybind::decref( py );
+		pybind::decref( pyresult );
 
-		return true;
+		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( bool & _result, EEventName _event, const char * _format, ... ) const
 	{
-		PyObject * pyobj = this->getEvent( _event );
+		PyObject * pyevent = this->getEvent( _event );
 
-		if( pyobj == 0 )
+		if( pyevent == 0 )
 		{
 			return true;
 		}
@@ -251,9 +263,9 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		pybind::incref( pyobj );
-		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
-		pybind::decref( pyobj );
+		pybind::incref( pyevent );
+		bool successful = s_askPyEventVaList( _result, _event, pyevent, _format, valist );
+		pybind::decref( pyevent );
 
 		va_end( valist );
 
@@ -262,9 +274,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... ) const
 	{
-		PyObject * pyobj = this->getEvent( _event );
+		PyObject * pyevent = this->getEvent( _event );
 
-		if( pyobj == 0 )
+		if( pyevent == 0 )
 		{
 			return true;
 		}
@@ -272,7 +284,9 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
+		pybind::incref( pyevent );
+		bool successful = s_askPyEventVaList( _result, _event, pyevent, _format, valist );
+		pybind::decref( pyevent );
 
 		va_end( valist );
 
@@ -281,9 +295,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( PyObject *& _result, EEventName _event, const char * _format, ... ) const
 	{
-		PyObject * pyobj = this->getEvent( _event );
+		PyObject * pyevent = this->getEvent( _event );
 
-		if( pyobj == 0 )
+		if( pyevent == 0 )
 		{
 			return true;
 		}
@@ -291,7 +305,9 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
+		pybind::incref( pyevent );
+		bool successful = s_askPyEventVaList( _result, _event, pyevent, _format, valist );
+		pybind::decref( pyevent );
 
 		va_end( valist );
 
@@ -300,9 +316,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( size_t & _result, EEventName _event, const char * _format, ... ) const
 	{
-		PyObject * pyobj = this->getEvent( _event );
+		PyObject * pyevent = this->getEvent( _event );
 
-		if( pyobj == 0 )
+		if( pyevent == 0 )
 		{
 			return true;
 		}
@@ -310,9 +326,129 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
+		pybind::incref( pyevent );
+		bool successful = s_askPyEventVaList( _result, _event, pyevent, _format, valist );
+		pybind::decref( pyevent );
 
 		va_end( valist );
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::askPyEventVaList( bool & _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const
+	{
+		if( s_askPyEventVaList( _result, _event, _pyevent, _format, _va ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::askPyEventVaList( size_t & _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const
+	{
+		if( s_askPyEventVaList( _result, _event, _pyevent, _format, _va ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::askPyEventVaList( Scriptable *& _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const
+	{
+		if( s_askPyEventVaList( _result, _event, _pyevent, _format, _va ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::askPyEventVaList( PyObject *& _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const
+	{
+		if( s_askPyEventVaList( _result, _event, _pyevent, _format, _va ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void EventableCallOperator::operator () ( const char * _format, ... )
+	{
+		va_list valist;
+		va_start(valist, _format);
+
+		m_self->callPyEventVaList( m_event, m_pyevent, _format, valist );
+
+		va_end( valist );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EventableAskOperator::operator () ( bool & _value, bool _default, const char * _format, ... ) const
+	{
+		va_list valist;
+		va_start(valist, _format);
+
+		bool successful = m_self->askPyEventVaList( _value, m_event, m_pyevent, _format, valist );
+
+		va_end( valist );
+
+		if( successful == false )
+		{
+			_value = _default;
+		}
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EventableAskOperator::operator () ( size_t & _value, size_t _default, const char * _format, ... ) const
+	{
+		va_list valist;
+		va_start(valist, _format);
+
+		bool successful = m_self->askPyEventVaList( _value, m_event, m_pyevent, _format, valist );
+
+		va_end( valist );
+
+		if( successful == false )
+		{
+			_value = _default;
+		}
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EventableAskOperator::operator () ( Scriptable *& _value, Scriptable * _default, const char * _format, ... ) const
+	{
+		va_list valist;
+		va_start(valist, _format);
+
+		bool successful = m_self->askPyEventVaList( _value, m_event, m_pyevent, _format, valist );
+
+		va_end( valist );
+
+		if( successful == false )
+		{
+			_value = _default;
+		}
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EventableAskOperator::operator () ( PyObject *& _value, PyObject * _default, const char * _format, ... ) const
+	{
+		va_list valist;
+		va_start(valist, _format);
+
+		bool successful = m_self->askPyEventVaList( _value, m_event, m_pyevent, _format, valist );
+
+		va_end( valist );
+
+		if( successful == false )
+		{
+			_value = _default;
+		}
 
 		return successful;
 	}

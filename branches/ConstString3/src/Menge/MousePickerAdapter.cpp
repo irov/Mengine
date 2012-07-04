@@ -59,7 +59,7 @@ namespace Menge
 	{
 		if( m_onLeaveEvent )
 		{
-			this->callEvent( EVENT_MOUSE_LEAVE, "(O)", this->getEmbed() );
+			EVENTABLE_CALL(this, EVENT_MOUSE_LEAVE)( "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,10 +71,12 @@ namespace Menge
 		{
 			if( m_onEnterEvent )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 			{
-				if( this->askEvent( handle, EVENT_MOUSE_ENTER, "(O)", this->getEmbed() ) == false )
-				{
-					handle = m_defaultHandle;
-				}
+				//if( this->askEvent( handle, EVENT_MOUSE_ENTER, "(O)", this->getEmbed() ) == false )
+				//{
+				//	handle = m_defaultHandle;
+				//}
+
+				EVENTABLE_ASK(this, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(O)", this->getEmbed() );
 			}
 			else
 			{
@@ -91,10 +93,12 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) ) == false )
-			{
-				handle = m_defaultHandle;
-			}
+			//if( this->askEvent( handle, EVENT_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) ) == false )
+			//{
+			//	handle = m_defaultHandle;
+			//}
+
+			EVENTABLE_ASK(this, EVENT_KEY)( handle, m_defaultHandle, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -106,10 +110,12 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIO)", this->getEmbed(), _button, pybind::get_bool(_isDown) ) == false )
-			{
-				handle = m_defaultHandle;
-			}
+			//if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) ) == false )
+			//{
+			//	handle = m_defaultHandle;
+			//}
+
+			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -117,14 +123,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	bool MousePickerAdapter::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(OIO)", this->getEmbed(), _button, pybind::get_bool(_isDown) );
+		EVENTABLE_CALL(this, EVENT_MOUSE_BUTTON_BEGIN)( "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerAdapter::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->callEvent( EVENT_MOUSE_BUTTON_END, "(OIO)", this->getEmbed(), _button, pybind::get_bool(_isDown) );
+		EVENTABLE_CALL(this, EVENT_MOUSE_BUTTON_END)( "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 
 		return false;
 	}
@@ -135,10 +141,12 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbed(), _x, _y, _whell ) == false )
-			{
-				handle = m_defaultHandle;
-			}
+			//if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell ) == false )
+			//{
+			//	handle = m_defaultHandle;
+			//}
+
+			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell );
 		}
 
 		return handle;

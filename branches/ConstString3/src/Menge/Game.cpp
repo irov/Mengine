@@ -160,7 +160,8 @@ namespace Menge
 		if( !handle )
 		{
 			//PyObject * pychar = PyBuffer_FromMemory( &_char, sizeof(_char) );
-			askEvent( handle, EVENT_KEY, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
+			//askEvent( handle, EVENT_KEY, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(this, EVENT_KEY)( handle, false, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -177,7 +178,8 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON, "(IO)", _button, pybind::get_bool(_isDown) );
+			//askEvent( handle, EVENT_MOUSE_BUTTON, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -224,7 +226,8 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::get_bool(_isDown) );
+			//askEvent( handle, EVENT_MOUSE_BUTTON_BEGIN, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON_BEGIN)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -241,7 +244,8 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::get_bool(_isDown) );
+			//askEvent( handle, EVENT_MOUSE_BUTTON_END, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON_END)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -305,7 +309,8 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
+			//askEvent( handle, EVENT_MOUSE_MOVE, "(Iffi)", _touchId, _x, _y, _whell );
+			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, false, "(Iffi)", _touchId, _x, _y, _whell );
 		}
 
 		if( !handle )
@@ -348,7 +353,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onAppMouseLeave()
 	{		
-		this->callEvent( EVENT_APP_MOUSE_LEAVE, "()" );
+		EVENTABLE_CALL(this, EVENT_APP_MOUSE_LEAVE)( "()" );
 
 		m_player->onAppMouseLeave();
 	}
@@ -356,7 +361,7 @@ namespace Menge
 	void Game::onAppMouseEnter( const mt::vec2f & _point )
 	{
 		PyObject * py_point = pybind::ptr(_point);
-		this->callEvent( EVENT_APP_MOUSE_ENTER, "(O)", py_point );
+		EVENTABLE_CALL(this, EVENT_APP_MOUSE_ENTER)( "(O)", py_point );
 		pybind::decref(py_point);
 
 		m_player->onAppMouseEnter( _point );
@@ -424,6 +429,7 @@ namespace Menge
 		cfg.getSetting( L"Window", L"Size", m_resolution );
 		cfg.getSetting( L"Window", L"Bits", m_bits );
 		cfg.getSetting( L"Window", L"Fullscreen", m_fullScreen );
+		cfg.getSetting( L"Window", L"VSync", m_vsync );
 		cfg.getSetting( L"Window", L"Icon", m_iconPath );
 
 
@@ -453,10 +459,12 @@ namespace Menge
 #	endif
 		
 		bool result = true;
-		if( this->askEvent( result, EVENT_PREPARATION, "(O)", pybind::get_bool(is_debug) ) == false )
-		{
-			return false;
-		}
+		//if( this->askEvent( result, EVENT_PREPARATION, "(O)", pybind::get_bool(is_debug) ) == false )
+		//{
+		//	return false;
+		//}
+
+		EVENTABLE_ASK(this, EVENT_PREPARATION)( result, false, "(O)", pybind::get_bool(is_debug) );
 
 		return result;
 	}
@@ -510,7 +518,7 @@ namespace Menge
 		protected:
 			void onCreateAccount( const WString & _accountID ) override
 			{
-				m_game->callEvent( EVENT_CREATE_ACCOUNT, "(u)", _accountID.c_str() );
+				EVENTABLE_CALL(m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
 			}
 
 		protected:
@@ -554,17 +562,19 @@ namespace Menge
 		bool isMaster = !m_developmentMode;
 
 		bool result = false;
-		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) ) == false )
-		{
-			return true;
-		}
+		//if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) ) == false )
+		//{
+		//	return true;
+		//}
+
+		EVENTABLE_ASK(this, EVENT_INITIALIZE)( result, true, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalize()
 	{
-		this->callEvent( EVENT_FINALIZE, "()" );
+		EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
 
 		if( m_defaultArrow )
 		{
@@ -628,7 +638,7 @@ namespace Menge
 
 		m_paks.clear();
 
-		this->callEvent( EVENT_DESTROY, "()" );
+		EVENTABLE_CALL(this, EVENT_DESTROY)( "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()
@@ -750,7 +760,7 @@ namespace Menge
 			m_player->onFocus( _focus );
 		}				
 
-		this->callEvent( EVENT_FOCUS, "(O)", pybind::get_bool(_focus) );
+		EVENTABLE_CALL(this, EVENT_FOCUS)( "(O)", pybind::get_bool(_focus) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::getHasWindowPanel() const
@@ -782,7 +792,7 @@ namespace Menge
 	{
 		m_player->onFullscreen( _resolution, _fullscreen );
 
-		this->callEvent( EVENT_FULLSCREEN, "(O)", pybind::get_bool(_fullscreen) );
+		EVENTABLE_CALL(this, EVENT_FULLSCREEN)( "(O)", pybind::get_bool(_fullscreen) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()
@@ -791,7 +801,8 @@ namespace Menge
 
 		if( m_personalityHasOnClose == true )
 		{
-			askEvent( needQuit, EVENT_CLOSE, "()" );
+			//askEvent( needQuit, EVENT_CLOSE, "()" );
+			EVENTABLE_ASK(this, EVENT_CLOSE)( needQuit, true, "()" );
 		}
 
 		return needQuit;
@@ -929,7 +940,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
 	{
-		this->callEvent( EVENT_CURSOR_MODE, "(O)", pybind::get_bool(_mode) );
+		EVENTABLE_CALL(this, EVENT_CURSOR_MODE)( "(O)", pybind::get_bool(_mode) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString& Game::getScreensaverName() const
@@ -945,7 +956,7 @@ namespace Menge
 	void Game::setTimingFactor( float _timingFactor )
 	{
 		m_timingFactor = _timingFactor;
-		this->callEvent( EVENT_ON_TIMING_FACTOR, "(f)", _timingFactor );
+		EVENTABLE_CALL(this, EVENT_ON_TIMING_FACTOR)( "(f)", _timingFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

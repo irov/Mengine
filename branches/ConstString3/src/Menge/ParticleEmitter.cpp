@@ -263,7 +263,7 @@ namespace	Menge
 			return false;
 		}
 
-		this->callEvent(EVENT_PARTICLE_EMITTER_RESTART, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+		EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_RESTART)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 
 		m_interface->restart();
 
@@ -289,12 +289,12 @@ namespace	Menge
 
 		m_interface->stop();
 
-		this->callEvent(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
+		EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_end( size_t _enumerator )
 	{
-		this->callEvent( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+		EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLoop( bool _value )

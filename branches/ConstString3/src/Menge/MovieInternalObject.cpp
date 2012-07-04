@@ -52,7 +52,7 @@ namespace Menge
 		{
 			PyObject * py_obj = this->getEmbed();
 		
-			m_movie->callEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, "(OO)", py_obj, m_internalObject );
+			EVENTABLE_CALL(m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL)( "(OO)", py_obj, m_internalObject );
 		}
 
 		return true;
@@ -66,7 +66,7 @@ namespace Menge
 		{
 			PyObject * py_obj = this->getEmbed();
 
-			m_movie->callEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, "(OO)", py_obj, m_internalObject );
+			EVENTABLE_CALL(m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( "(OO)", py_obj, m_internalObject );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -84,7 +84,7 @@ namespace Menge
 		{
 			PyObject * py_obj = this->getEmbed();
 
-			m_movie->callEvent( EVENT_MOVIE_HIDE_INTERNAL, "(OOO)", py_obj, m_internalObject, pybind::get_bool(_hide) );
+			EVENTABLE_CALL(m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OOO)", py_obj, m_internalObject, pybind::get_bool(_hide) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////		

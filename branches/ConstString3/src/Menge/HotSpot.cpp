@@ -181,7 +181,7 @@ namespace	Menge
 
 		MousePickerAdapter::activatePicker();
 
-		this->callEvent( EVENT_ACTIVATE, "()" );
+		EVENTABLE_CALL(this, EVENT_ACTIVATE)( "()" );
 
 //#	ifndef MENGE_MASTER_RELEASE
 		if( m_enable )
@@ -203,7 +203,7 @@ namespace	Menge
 	{
 		MousePickerAdapter::deactivatePicker();
 
-		this->callEvent( EVENT_DEACTIVATE, "()" );
+		EVENTABLE_CALL(this, EVENT_DEACTIVATE)( "()" );
 
 //#	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0x00000000;

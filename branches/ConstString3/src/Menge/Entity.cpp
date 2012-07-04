@@ -17,7 +17,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-		this->callEvent( EVENT_PREPARATION, "()" );
+		//this->callEvent( EVENT_PREPARATION, "()" );
+		EVENTABLE_CALL(this, EVENT_PREPARATION)("()");
 
 		return Node::_activate();
 	}
@@ -26,14 +27,16 @@ namespace Menge
 	{
 		Node::_afterActivate();
 
-		this->callEvent( EVENT_ACTIVATE, "()" );
+		//this->callEvent( EVENT_ACTIVATE, "()" );
+		EVENTABLE_CALL(this, EVENT_ACTIVATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterDeactivate()
 	{
 		Node::_afterDeactivate();
 
-		this->callEvent( EVENT_DEACTIVATE, "()" );
+		//this->callEvent( EVENT_DEACTIVATE, "()" );
+		EVENTABLE_CALL(this, EVENT_DEACTIVATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
@@ -43,7 +46,8 @@ namespace Menge
 			return false;
 		}
 
-		this->callEvent( EVENT_COMPILE, "()" );
+		//this->callEvent( EVENT_COMPILE, "()" );
+		EVENTABLE_CALL(this, EVENT_COMPILE)("()");
 		
 		return true;
 	}
@@ -52,7 +56,8 @@ namespace Menge
 	{
 		Node::_release();
 
-		this->callEvent( EVENT_RELEASE, "()" );
+		//this->callEvent( EVENT_RELEASE, "()" );
+		EVENTABLE_CALL(this, EVENT_RELEASE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_embedding( PyObject * _embed )
@@ -73,12 +78,14 @@ namespace Menge
 	{
 		Node::_create();
 
-		this->callEvent( EVENT_CREATE, "()" );
+		//this->callEvent( EVENT_CREATE, "()" );
+		EVENTABLE_CALL(this, EVENT_CREATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_destroy()
 	{
-		this->callEvent( EVENT_DESTROY, "()" );
+		//this->callEvent( EVENT_DESTROY, "()" );
+		EVENTABLE_CALL(this, EVENT_DESTROY)("()");
 
 		Node::_destroy();
 	}

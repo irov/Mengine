@@ -108,7 +108,9 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
+			//this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::ret_bool(_isDown) );
+
+			EVENTABLE_ASK(this, EVENT_GLOBAL_MOUSE_BUTTON)( handle, false, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::ret_bool(_isDown) );
 		}
 
 		return handle;
@@ -120,7 +122,9 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, "(OIO)", this->getEmbed(), _button, pybind::get_bool(_isDown) );
+			//this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+
+			EVENTABLE_ASK(this, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN)( handle, false, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -132,7 +136,9 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_END, "(OIO)", this->getEmbed(), _button, pybind::get_bool(_isDown) );
+			//this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_END, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+
+			EVENTABLE_ASK(this, EVENT_GLOBAL_MOUSE_BUTTON_END)( handle, false, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -144,7 +150,9 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_MOVE, "(Offi)", this->getEmbed(), _x, _y, _whell );
+			//this->askEvent( handle, EVENT_GLOBAL_MOUSE_MOVE, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell );
+
+			EVENTABLE_ASK(this, EVENT_GLOBAL_MOUSE_MOVE)( handle, false, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell );
 		}
 
 		return handle;
@@ -156,7 +164,9 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
+			//this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
+
+			EVENTABLE_ASK(this, EVENT_GLOBAL_KEY)(handle, false, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		return handle;

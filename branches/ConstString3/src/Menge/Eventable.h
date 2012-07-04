@@ -51,6 +51,10 @@ namespace Menge
 		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
 		void removeEvent_( EEventName _event );
 
+	protected:
+		virtual void _beginEvent( EEventName _event ) const;
+		virtual void _endEvent( EEventName _event ) const;
+
 	private:
 		typedef std::map<EEventName, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;

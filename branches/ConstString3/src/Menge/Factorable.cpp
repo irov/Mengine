@@ -30,19 +30,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Factorable::destroy()
 	{
-		this->_destroy();
-
-		if( m_factory )
+		if( this->_destroy() == false )
 		{
-			m_factory->destroyObject( this );
+			this->_deferredDestroy();
 		}
 		else
 		{
-			delete this;
+			if( m_factory )
+			{
+				m_factory->destroyObject( this );
+			}
+			else
+			{
+				delete this;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Factorable::_destroy()
+	bool Factorable::_destroy()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Factorable::_deferredDestroy()
 	{
 		//Empty
 	}

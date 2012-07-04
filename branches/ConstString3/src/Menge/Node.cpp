@@ -27,6 +27,7 @@
 #	include "ResourceImage.h"
 
 #	include "Application.h"
+#	include "Game.h"
 
 namespace Menge
 {
@@ -40,6 +41,7 @@ namespace Menge
 		, m_layer(0)
 		, m_cameraRevision(0)
 		, m_renderCamera(0)
+		, m_inUpdate(false)
 #	ifndef MENGE_MASTER_RELEASE
 		, m_debugMaterial(NULL)
 #	endif
@@ -50,8 +52,13 @@ namespace Menge
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_destroy()
+	bool Node::_destroy()
 	{
+		if( m_inUpdate == true )
+		{
+			return false;
+		}
+
 		this->release();
 		
 		this->destroyAllChild();
@@ -59,7 +66,15 @@ namespace Menge
 		this->removeFromParent();
 
 		this->unwrap();
-	}	
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_deferredDestroy()
+	{
+		Game::get()
+			->addHomeless( this );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
 	{
@@ -561,11 +576,15 @@ namespace Menge
 			return;
 		}
 
+		m_inUpdate = true;
+
 		this->_update( _timing );
 
 		Affectorable::update( _timing );
 		
 		this->updateChild_( _timing );
+
+		m_inUpdate = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::updateChild_( float _timing )

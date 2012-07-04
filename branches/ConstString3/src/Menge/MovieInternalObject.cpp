@@ -70,12 +70,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieInternalObject::_destroy()
-	{
-		Node::_destroy();
-
+	bool MovieInternalObject::_destroy()
+	{		
 		pybind::decref( m_internalObject );
 		m_internalObject = NULL;
+
+		bool result = Node::_destroy();
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )

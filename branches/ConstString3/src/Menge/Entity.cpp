@@ -82,11 +82,13 @@ namespace Menge
 		EVENTABLE_CALL(this, EVENT_CREATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::_destroy()
+	bool Entity::_destroy()
 	{
 		//this->callEvent( EVENT_DESTROY, "()" );
 		EVENTABLE_CALL(this, EVENT_DESTROY)("()");
 
-		Node::_destroy();
+		bool result = Node::_destroy();
+
+		return result;
 	}
 }

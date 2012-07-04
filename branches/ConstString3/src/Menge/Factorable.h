@@ -20,7 +20,10 @@ namespace Menge
 
 	protected:
 		virtual void _create();
-		virtual void _destroy();
+		virtual bool _destroy();
+
+	protected:
+		virtual void _deferredDestroy();
 
 	protected:
 		Factory * m_factory;

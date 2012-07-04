@@ -19,7 +19,7 @@ namespace Menge
 		void _release() override;
 		
 		void _create() override;
-		void _destroy() override;
+		bool _destroy() override;
 
 	protected:
 		void _embedding( PyObject * _embed ) override;

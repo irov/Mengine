@@ -25,7 +25,7 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		void _destroy() override;
+		bool _destroy() override;
 		
 	protected:
 		//void _invalidateWorldMatrix() override;

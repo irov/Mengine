@@ -157,7 +157,8 @@ namespace Menge
 		void eraseChildren_( TListChild::iterator _it );
 
 	protected:
-		void _destroy() override;
+		bool _destroy() override;
+		void _deferredDestroy() override;
 	
 	private:
 		bool activate();
@@ -247,6 +248,16 @@ namespace Menge
 
 	protected:
 		size_t m_cameraRevision;
+
+	//protected:
+	//	void _beginEvent( EEventName _event ) const override;
+	//	void _endEvent( EEventName _event ) const override;
+
+	//protected:
+	//	mutable EEventName m_inEvent;
+
+	protected:
+		bool m_inUpdate;
 
 //#ifndef MENGE_MASTER_RELEASE
 	protected:

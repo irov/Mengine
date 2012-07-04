@@ -1563,8 +1563,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_interrupt( size_t _enumerator )
+	bool Movie::_interrupt( size_t _enumerator )
 	{
-
+		return false;
 	}
 }

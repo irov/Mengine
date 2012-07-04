@@ -145,9 +145,9 @@ namespace Menge
 
 		//m_play = false;
 
-		this->_interrupt( m_enumerator );
+		bool result = this->_interrupt( m_enumerator );
 
-		return true;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::end()

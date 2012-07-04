@@ -252,8 +252,9 @@ namespace Menge
 		Eventable::registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener, &m_onSoundStopEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_interrupt( size_t _enumerator )
+	bool SoundEmitter::_interrupt( size_t _enumerator )
 	{
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

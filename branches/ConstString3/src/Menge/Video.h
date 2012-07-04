@@ -64,15 +64,17 @@ namespace Menge
 		bool _compileDecoder();
         void _fillVideoBuffer();
 
-		virtual bool _play();
-		virtual bool _restart( size_t _enumerator );
-		virtual void _stop( size_t _enumerator );
-		virtual void _end( size_t _enumerator );
-		virtual void _interrupt( size_t _enumerator );
+	protected:
+		bool _play() override;
+		bool _restart( size_t _enumerator ) override;
+		void _stop( size_t _enumerator ) override;
+		void _end( size_t _enumerator ) override;
+		bool _interrupt( size_t _enumerator ) override;
 
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 		void onEndStream_();
+
 	protected:
 		ResourceVideo* m_resourceVideo;
 

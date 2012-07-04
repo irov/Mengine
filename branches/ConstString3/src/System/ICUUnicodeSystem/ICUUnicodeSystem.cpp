@@ -5,7 +5,7 @@
 #	include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( Menge::UnicodeInterface **_system )
+bool initInterfaceSystem( Menge::UnicodeServiceInterface **_system )
 {
 	try
 	{
@@ -19,7 +19,7 @@ bool initInterfaceSystem( Menge::UnicodeInterface **_system )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( Menge::UnicodeInterface *_system )
+void releaseInterfaceSystem( Menge::UnicodeServiceInterface *_system )
 {
 	delete static_cast<Menge::ICUUnicodeService*>( _system );
 }

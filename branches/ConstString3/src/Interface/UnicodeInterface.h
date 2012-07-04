@@ -8,7 +8,7 @@ namespace Menge
 {
 	class LogServiceInterface;
 
-	class UnicodeInterface
+	class UnicodeServiceInterface
 		: public ServiceInterface
 	{
 	public:
@@ -20,5 +20,5 @@ namespace Menge
 	};
 }
 
-bool initInterfaceSystem( Menge::UnicodeInterface **_system );
-void releaseInterfaceSystem( Menge::UnicodeInterface *_system );
+bool initInterfaceSystem( Menge::UnicodeServiceInterface **_system );
+void releaseInterfaceSystem( Menge::UnicodeServiceInterface *_system );

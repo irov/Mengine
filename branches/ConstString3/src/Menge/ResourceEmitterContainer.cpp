@@ -79,8 +79,8 @@ namespace Menge
 			return false;
 		}
 		
-		UnicodeInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeInterface>("Unicode");
+		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
 		const EmitterContainerInterface::TVectorAtlas & atlas = m_container->getAtlas();
 		

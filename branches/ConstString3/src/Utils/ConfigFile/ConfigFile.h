@@ -3,7 +3,9 @@
 #	include "SimpleIni.h"
 
 #	include "Core/String.h"
+
 #	include "stdio.h"
+
 namespace Menge
 {
 	class FileInputStreamInterface;

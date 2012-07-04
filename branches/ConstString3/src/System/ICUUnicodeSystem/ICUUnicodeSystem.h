@@ -6,7 +6,7 @@
 namespace Menge
 {
 	class ICUUnicodeService
-		: public UnicodeInterface
+		: public UnicodeServiceInterface
 	{
 	public:
 		ICUUnicodeService();

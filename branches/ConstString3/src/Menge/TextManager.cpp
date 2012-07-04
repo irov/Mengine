@@ -30,8 +30,8 @@ namespace Menge
 		WString xml_path = _desc.path;
 		xml_path += MENGE_FOLDER_DELIM;
 
-		UnicodeInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeInterface>("Unicode");
+		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
 		const String & resource_name = _desc.name.to_str();
 

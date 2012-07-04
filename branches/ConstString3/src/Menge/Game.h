@@ -58,7 +58,7 @@ namespace Menge
 
 		bool loadPersonality();
 		
-		void loadConfigPaks();
+		bool loadConfigPaks();
 		void applyConfigPaks();
 		void setLanguagePack( const ConstString& _packName );
 		const WString& getScreensaverName() const;
@@ -138,6 +138,9 @@ namespace Menge
 		WString m_title;
 		bool m_localizedTitle;
 
+		ConstString m_gamePackName;
+		WString m_resourcePakFile;
+
 		Resolution m_contentResolution;
 		Resolution m_resolution;
 
@@ -152,7 +155,7 @@ namespace Menge
 		WString m_screensaverName;
 
 		Arrow * m_defaultArrow;
-
+		
 		ConstString m_currentPakName;
 		String m_currentResourcePath;
 
@@ -166,7 +169,7 @@ namespace Menge
 		float m_timingFactor;
 
 		WString m_baseDir;
-		String m_iconPath;
+		WString m_iconPath;
 
 		typedef std::vector<ResourcePak *> TVectorResourcePak;
 		TVectorResourcePak m_paks;

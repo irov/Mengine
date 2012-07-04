@@ -57,7 +57,7 @@ namespace Menge
 
 	class PluginInterface;
 
-	class UnicodeInterface;
+	class UnicodeServiceInterface;
 
 	class Consts;
 	class RenderTextureInterface;
@@ -72,8 +72,8 @@ namespace Menge
 		~Application();
 
 	public:
-		bool initialize( PlatformInterface* _platform, const String & _platformName, const String& _args ) override;
-		bool loadConfig( const WString& _configFile, const WString& _iniFile ) override;
+		bool initialize( PlatformInterface* _platform, const String & _platformName, const String& _args, const WString & _baseDir, const WString & _settingFile ) override;
+		bool loadConfig( const WString& _iniFile ) override;
 
 		void setBaseDir( const WString & _dir ) override;
 		const WString & getBaseDir() const override;
@@ -91,11 +91,15 @@ namespace Menge
 		bool getHasWindowPanel() const override;
 
 	public:
-		void setLanguagePack( const ConstString& _packName ) override;
+		void setLanguagePackOverride( const ConstString& _packName ) override;
+
+	public:		
+		bool createGame() override;
+		bool loadGameResource() override;
+		bool initializeGame( const String & _scriptInitParams ) override;
 
 	public:
-		bool initGame( const String & _scriptInitParams ) override;
-		bool loadGame() override;
+		bool loadPlugins() override;
 		bool loadPersonality() override;
 
 	public:
@@ -288,7 +292,7 @@ namespace Menge
 		
 		ServiceProvider * m_serviceProvider;
 
-		UnicodeInterface * m_unicodeInterface;
+		UnicodeServiceInterface * m_unicodeService;
 
 		LogEngine * m_logEngine;
 		FileEngine * m_fileEngine;
@@ -326,6 +330,8 @@ namespace Menge
 		WString m_gamePackPath;
 		ConstString m_gamePackType;
 		ConstString m_languagePackOverride;
+
+		TVectorWString m_initPlugins;
 
 		String m_platformName;
 		

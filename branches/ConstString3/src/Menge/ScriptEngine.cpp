@@ -300,8 +300,8 @@ namespace Menge
 			return it_find->second;
 		}
 
-		UnicodeInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeInterface>("Unicode");
+		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 				
 		//xml_path += 
 

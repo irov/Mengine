@@ -2,6 +2,8 @@
 
 #	include "Config/Config.h"
 
+#	include "Core/String.h"
+
 #	include "WinApplication.h"
 
 //////////////////////////////////////////////////////////////////////////

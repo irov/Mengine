@@ -939,8 +939,8 @@ namespace Menge
 
 			const std::string & str = ss.str();
 
-			UnicodeInterface * unicodeService = ServiceProvider::get()
-				->getServiceT<UnicodeInterface>("Unicode");
+			UnicodeServiceInterface * unicodeService = ServiceProvider::get()
+				->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
 			bool w_unicode_successful;
 			WString unicode = unicodeService->utf8ToUnicode( str, w_unicode_successful );

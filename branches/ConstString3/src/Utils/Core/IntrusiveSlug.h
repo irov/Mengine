@@ -53,7 +53,7 @@ namespace Menge
 		{
 			IntrusiveLinked * pos = this->right();
 
-			pos = adapt_( pos );
+			pos = this->adapt_( pos );
 
 			return pos;
 		}

@@ -54,8 +54,8 @@ namespace Menge
 		//Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
 		ar.readBuffer( &utf8_value[0], size );
 
-		UnicodeInterface * unicodeInterface = ServiceProvider::get()
-			->getServiceT<UnicodeInterface>("Unicode");
+		UnicodeServiceInterface * unicodeInterface = ServiceProvider::get()
+			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
 		//String utf8_value;
 		//utf8_value.assign(str, size - 1);

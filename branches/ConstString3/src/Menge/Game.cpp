@@ -23,6 +23,7 @@
 #	include "SceneManager.h"
 
 #	include "BinParser.h"
+#	include "ConfigLoader.h"
 
 #	include "Consts.h"
 
@@ -88,33 +89,6 @@ namespace Menge
 	{        
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::Project_Name, m_projectName );
-			BIN_CASE_ATTRIBUTE( Protocol::Title_Value, m_title );
-			BIN_CASE_ATTRIBUTE( Protocol::Title_Localized, m_localizedTitle );
-
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceResolution_Value, m_contentResolution ); //depricated
-			BIN_CASE_ATTRIBUTE( Protocol::ContentResolution_Value, m_contentResolution );
-			BIN_CASE_ATTRIBUTE( Protocol::FixedContentResolution_Value, m_fixedContentResolution );
-			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personalityModule );
-			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Name, m_defaultArrowName );
-			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Prototype, m_defaultArrowPrototype );
-			BIN_CASE_ATTRIBUTE( Protocol::Screensaver_Name, m_screensaverName );
-
-			BIN_CASE_ATTRIBUTE( Protocol::Icon_Path, m_iconPath );
-			
-			BIN_CASE_NODE( Protocol::Window )
-			{
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Window_Size, m_resolution );
-					BIN_CASE_ATTRIBUTE( Protocol::Window_Bits, m_bits );
-					BIN_CASE_ATTRIBUTE( Protocol::Window_Fullscreen, m_fullScreen );
-					BIN_CASE_ATTRIBUTE( Protocol::Window_HasPanel, m_hasWindowPanel );
-					BIN_CASE_ATTRIBUTE( Protocol::Window_VSync, m_vsync );
-					BIN_CASE_ATTRIBUTE( Protocol::Window_TextureFiltering, m_textureFiltering );
-				}
-			}
-
 			BIN_CASE_NODE( Protocol::ResourcePack )
 			{
 				ResourcePakDesc pak_desc;
@@ -129,9 +103,6 @@ namespace Menge
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak_desc.filename );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak_desc.preload );
                 }
-
-                
-                //BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Type, desc.type );
                
                 ResourcePak * pak = new ResourcePak( pak_desc, m_baseDir );
 
@@ -150,7 +121,6 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak_desc.path );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Locale, pak_desc.locale );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Platform, pak_desc.platform );
-					//BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak.type );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak_desc.filename );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak_desc.preload );
 				}
@@ -423,18 +393,41 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadDescription( const ConstString & _gamePackName, const WString & _gameDescription )
 	{
-		bool exist = false;
+		m_gamePackName = _gamePackName;
 
-		if( LoaderEngine::get()
-			->load( _gamePackName, _gameDescription, this, exist ) == false )
+		ServiceProviderInterface * serviceProvider = Application::get()
+			->getServiceProvider();
+
+		ConfigLoader cfg(serviceProvider);
+
+		if( cfg.loadFile( m_gamePackName, _gameDescription ) == false )
 		{
-			MENGE_LOG_ERROR( "Game::loadDescription failed to load GamePak %s:%S"
-				, _gamePackName.c_str() 
+			MENGE_LOG_ERROR("Game::loadDescription invalid configure game %s:%S"
+				, _gamePackName.c_str()
 				, _gameDescription.c_str()
 				);
 
 			return false;
 		}
+		
+		cfg.getSetting( L"Project", L"Name", m_projectName );
+		
+		cfg.getSetting( L"Game", L"Title", m_title );
+		cfg.getSetting( L"Game", L"Localized", m_localizedTitle );
+		cfg.getSetting( L"Game", L"ContentResolution", m_contentResolution );
+		cfg.getSetting( L"Game", L"FixedContentResolution", m_fixedContentResolution );
+		cfg.getSetting( L"Game", L"PersonalityModule", m_personalityModule );
+
+		cfg.getSetting( L"DefaultArrow", L"Name", m_defaultArrowName );
+		cfg.getSetting( L"DefaultArrow", L"Prototype", m_defaultArrowPrototype );
+
+		cfg.getSetting( L"Window", L"Size", m_resolution );
+		cfg.getSetting( L"Window", L"Bits", m_bits );
+		cfg.getSetting( L"Window", L"Fullscreen", m_fullScreen );
+		cfg.getSetting( L"Window", L"Icon", m_iconPath );
+
+
+		cfg.getSetting( L"ResourcePack", L"File", m_resourcePakFile );
 
 		return true;
 	}
@@ -837,8 +830,21 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::loadConfigPaks()
+	bool Game::loadConfigPaks()
 	{
+		bool exist = false;
+
+		if( LoaderEngine::get()
+			->load( m_gamePackName, m_resourcePakFile, this, exist ) == false )
+		{
+			MENGE_LOG_ERROR( "Game::loadConfigPaks failed to load GamePak %s:%S"
+				, m_gamePackName.c_str() 
+				, m_resourcePakFile.c_str()
+				);
+
+			return false;
+		}
+
 		m_paks.insert( m_paks.begin(), m_resourcePaks.begin(), m_resourcePaks.end() );
 
 		if( this->loadLocalePaksByName_( m_languagePak, m_platformName ) == false )			
@@ -893,6 +899,8 @@ namespace Menge
 
 			pak->load();
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::applyConfigPaks()

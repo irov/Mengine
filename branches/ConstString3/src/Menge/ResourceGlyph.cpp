@@ -152,8 +152,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceGlyph::loaderKerning_( BinParser * _parser, Glyph & _glyph )
 	{
-		UnicodeInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeInterface>("Unicode");
+		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
 		WString unicode;
 
@@ -185,8 +185,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width )
 	{
-		UnicodeInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeInterface>("Unicode");
+		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
+			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
 		bool w_glyph_successful;
 		WString unicode = unicodeService->utf8ToUnicode( _glyph, w_glyph_successful );

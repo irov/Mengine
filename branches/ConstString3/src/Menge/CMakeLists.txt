@@ -207,6 +207,11 @@ Consts
 	Consts.cpp
 )
 
+ADD_FILTER(
+ConfigLoader
+	ConfigLoader.h
+	ConfigLoader.cpp
+)
 
 ADD_FILTER(
 Kernel\\\\Eventable

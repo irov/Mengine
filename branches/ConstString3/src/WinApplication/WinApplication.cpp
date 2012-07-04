@@ -303,45 +303,26 @@ namespace Menge
 
 		String platformName = "WIN";
 
-		if( m_application->initialize( this, platformName, m_commandLine ) == false )
+		ConstString c_languagePack(languagePack);
+		m_application->setLanguagePackOverride( c_languagePack );
+
+		WString baseDir = m_applicationPath;
+		baseDir += MENGE_DEFAULT_BASE_DIR;
+
+		WString settings_file = L"settings.ini";
+
+		if( m_application->initialize( this, platformName, m_commandLine, baseDir, settings_file ) == false )
 		{
 			LOGGER_ERROR(m_logService)( "Application initialize failed" 
 				);
 
 			return false;
 		}
-
-		
+				
 		LOGGER_INFO(m_logService)( "Application Initialize... %s"
 			, platformName.c_str() 
 			);
-
-		ConstString c_languagePack(languagePack);
-		m_application->setLanguagePack( c_languagePack );
-
-		WString config_file = L"application";
-		WString settings_file = L"settings.ini";
-		if( m_application->loadConfig( config_file, settings_file ) == false )
-		{
-			return false;
-		}
-
 		
-		WString baseDir = m_applicationPath;
-		baseDir += MENGE_DEFAULT_BASE_DIR;
-
-		m_application->setBaseDir( baseDir );
-
-		if( m_application->loadGame() == false )
-		{
-			return false;
-		}
-
-		if( m_application->loadPersonality() == false )
-		{
-			return false;
-		}
-
 		const WString & title = m_application->getProjectTitle();
 
 		bool screenSaverMode = this->isSaverRunning();
@@ -439,7 +420,7 @@ namespace Menge
 
 		LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
-		if( m_application->initGame( scriptInit ) == false )
+		if( m_application->initializeGame( scriptInit ) == false )
 		{
 			return false;
 		}

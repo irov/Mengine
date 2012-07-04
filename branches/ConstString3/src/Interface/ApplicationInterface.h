@@ -76,8 +76,8 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args ) = 0;
-		virtual bool loadConfig( const WString& _configFile, const WString& _iniFile ) = 0;
+		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args, const WString & _baseDir, const WString & _settingFile ) = 0;
+		virtual bool loadConfig( const WString& _iniFile ) = 0;
 
 		virtual void setBaseDir( const WString& _baseDir ) = 0;
 		virtual const WString& getBaseDir() const = 0;
@@ -95,7 +95,7 @@ namespace Menge
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
 
 	public:
-		virtual void setLanguagePack( const ConstString & _packName ) = 0;
+		virtual void setLanguagePackOverride( const ConstString & _packName ) = 0;
 
 	public:
 		virtual bool onRender() = 0;
@@ -112,9 +112,12 @@ namespace Menge
 
 		virtual void onPaint() = 0;
 
-	public:
-		virtual bool initGame( const String & _scriptInitParams ) = 0;
-		virtual bool loadGame() = 0;
+	public:		
+		virtual bool createGame() = 0;
+		virtual bool loadGameResource() = 0;
+		virtual bool initializeGame( const String & _scriptInitParams ) = 0;
+
+		virtual bool loadPlugins() = 0;
 		virtual bool loadPersonality() = 0;
 
 	public:

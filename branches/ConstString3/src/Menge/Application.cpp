@@ -140,6 +140,8 @@
 
 #	include "Config/Config.h"
 
+#	include "ConfigLoader.h"
+
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 
@@ -201,7 +203,7 @@ namespace Menge
 		, m_alphaChannelManager(NULL)
 		, m_codecEngine(NULL)
 		, m_textManager(NULL)
-		, m_unicodeInterface(NULL)
+		, m_unicodeService(NULL)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -269,13 +271,13 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool Application::initialize( PlatformInterface* _platform, const String & _platformName, const String& _args )
+	bool Application::initialize( PlatformInterface* _platform, const String & _platformName, const String& _args, const WString & _baseDir, const WString & _settingFile )
 	{
 		m_platform = _platform;
 		m_platformName = _platformName;
 
 		this->parseArguments_( _args );
-
+		
 		m_consts = new Consts;
 		Consts::keep(m_consts);
 
@@ -365,31 +367,45 @@ namespace Menge
 		//	m_console->inititalize( m_logSystem );
 		//}
 
+		this->setBaseDir( _baseDir );
+
+		if( this->loadConfig( _settingFile ) == false )
+		{
+			return false;
+		}
+
+		if( this->createGame() == false )
+		{
+			return false;
+		}
+
+		if( this->loadPlugins() == false )
+		{
+			return false;
+		}
+
+		if( this->loadGameResource() == false )
+		{
+			return false; 
+		}
+
+		if( this->loadPersonality() == false )
+		{
+			return false;
+		}
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadConfig( const WString& _configFile, const WString& _iniFile )
+	bool Application::loadConfig( const WString& _iniFile )
 	{
 		MENGE_LOG_INFO( "load config %S ..."
-			, _configFile.c_str()
+			, _iniFile.c_str()
 			);
 
-		//bool exist = false;
-		//if( m_loaderEngine
-		//	->load( Consts::get()->c_builtin_empty, _configFile, this, exist ) == false )
-		//{
-		//	MENGE_LOG_ERROR( "Application::loadConfig parse '%S' failed '%d'"
-		//		, _configFile.c_str() 
-  //              , exist
-		//		);
+		ConfigLoader cfg(m_serviceProvider);
 
-		//	//showMessageBox( "'Application' file missing or corrupt", "Critical Error", 0 );
-
-		//	return false;
-		//}
-
-		if( FileEngine::get()
-			->existFile( Consts::get()->c_builtin_empty, _iniFile ) == false )
+		if( cfg.loadFile( Consts::get()->c_builtin_empty, _iniFile ) == false )
 		{
 			MENGE_LOG_ERROR("Application::loadConfig: invalid open iniFile %S"
 				, _iniFile.c_str()
@@ -397,88 +413,45 @@ namespace Menge
 
 			return false;
 		}
-
-		FileInputStreamInterface * file = FileEngine::get()
-			->openInputFile( Consts::get()->c_builtin_empty, _iniFile );
-
-		if( file == NULL )
-		{
-			MENGE_LOG_ERROR("Application::loadConfig: not found ini file %S"
-				, _iniFile.c_str()
-				);
-
-			return false;
-		}
-
-		ConfigFile cfg;
-
-		if( cfg.load( file ) == false )
-		{
-			return false;
-		}
-
-		WString locale_default_setting;
-		if( cfg.getSetting( L"LOCALE", L"Default", locale_default_setting ) == true )
-		{
-			bool u_locale_default_setting_successful;
-			String locale_default = m_unicodeInterface->unicodeToUtf8( locale_default_setting, u_locale_default_setting_successful );
-
-			ConstString locale_default_const(locale_default);
-			this->setLanguagePack( locale_default_const );
-		}
-
-		WString gamepack_name_setting;
-		if( cfg.getSetting( L"GamePack", L"Name", gamepack_name_setting ) == true )
-		{
-			bool u_gamepack_name_setting_successful;
-			String gamepack_name = m_unicodeInterface->unicodeToUtf8( gamepack_name_setting, u_gamepack_name_setting_successful );
-
-			m_gamePackName = ConstString(gamepack_name);
-		}
-
-		WString gamepack_path_setting;
-		if( cfg.getSetting( L"GamePack", L"Path", gamepack_path_setting ) == true )
-		{				
-			m_gamePackPath = gamepack_path_setting;
-		}
-
-		WString gamepack_description_setting;
-		if( cfg.getSetting( L"GamePack", L"Description", gamepack_description_setting ) == true )
-		{				
-			m_gameDescription = gamepack_description_setting;
-		}
-
-		m_gamePackType = Consts::get()->c_dir;
 		
-		WString gamepack_type_setting;
-		if( cfg.getSetting( L"GamePack", L"Type", gamepack_type_setting ) == true )
-		{			
-			bool u_gamepack_type_setting_successful;
-			String gamepack_type = m_unicodeInterface->unicodeToUtf8( gamepack_type_setting, u_gamepack_type_setting_successful );
-
-			m_gamePackType = ConstString(gamepack_type);
-		}
-
-		TVectorWString plugins;
-		cfg.getSettings( L"Plugins", L"Name", plugins );
-
-		for( TVectorWString::iterator
-			it = plugins.begin(),
-			it_end = plugins.end();
-		it != it_end;
-		++it )
+		ConstString languagePack;
+		if( cfg.getSetting( L"LOCALE", L"Default", languagePack ) == true )
 		{
-			const WString & pluginName = *it;
-
-			this->loadPlugin( pluginName );
+			this->setLanguagePackOverride( languagePack );
 		}
-				
+
+		cfg.getSetting( L"GamePack", L"Name", m_gamePackName );
+		cfg.getSetting( L"GamePack", L"Path", m_gamePackPath );
+		cfg.getSetting( L"GamePack", L"Description", m_gameDescription );
+		cfg.getSetting( L"GamePack", L"Type", m_gamePackType, Consts::get()->c_dir );
+
+		cfg.getSettings( L"Plugins", L"Name", m_initPlugins );
+							
 		//if( m_baseDir.empty() )	// current dir
 		//{
 		//	m_baseDir = MENGE_DEFAULT_BASE_DIR;
 		//}
 
 		//this->setBaseDir( m_baseDir );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::loadPlugins()
+	{
+		for( TVectorWString::iterator
+			it = m_initPlugins.begin(),
+			it_end = m_initPlugins.end();
+		it != it_end;
+		++it )
+		{
+			const WString & pluginName = *it;
+
+			if( this->loadPlugin( pluginName ) == false )
+			{
+				return false;
+			}
+		}
 
 		return true;
 	}
@@ -541,11 +514,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeUnicodeEngine_()
 	{
-		initInterfaceSystem( &m_unicodeInterface );
+		initInterfaceSystem( &m_unicodeService );
 
-		m_serviceProvider->registryService("Unicode", m_unicodeInterface);
+		m_serviceProvider->registryService("UnicodeService", m_unicodeService);
 
-		m_unicodeInterface->initialize( m_logEngine );
+		m_unicodeService->initialize( m_logEngine );
 
 		return true;
 	}
@@ -909,13 +882,10 @@ namespace Menge
 			, m_baseDir.c_str()
 			);
 
-		if( m_scriptEngine )
-		{
-			TVectorWString paths;
-			paths.push_back( m_baseDir );
+		TVectorWString paths;
+		paths.push_back( m_baseDir );
 
-			m_scriptEngine->addModulePath( paths );
-		}
+		m_scriptEngine->addModulePath( paths );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString& Application::getBaseDir() const
@@ -923,7 +893,7 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadGame()
+	bool Application::createGame()
 	{
 		m_game = new Game(m_baseDir, m_developmentMode, m_platformName);
 
@@ -954,7 +924,7 @@ namespace Menge
 			return false;
 		}
         
-        MENGE_LOG_INFO( "Application:loadGame load game pak '%s' desc '%S'"
+        MENGE_LOG_INFO( "Application:loadGame load game description '%s' desc '%S'"
                        , m_gamePackName.c_str() 
                        , m_gameDescription.c_str()
                        );
@@ -971,7 +941,12 @@ namespace Menge
 			return false;
 		}
 
-		MENGE_LOG_INFO( "Application:loadGame load game pak successful"
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::loadGameResource()
+	{
+		MENGE_LOG_INFO( "Application:loadGameResource load game resource"
 			);
 
 		if( m_languagePackOverride.empty() == false )
@@ -979,7 +954,11 @@ namespace Menge
 			m_game->setLanguagePack( m_languagePackOverride );
 		}
 
-		m_game->loadConfigPaks();
+		if( m_game->loadConfigPaks() == false )
+		{
+			return false;
+		}
+
 		//m_game->registerResources( m_baseDir );
 		
 		m_fullscreen = m_game->getFullscreen();
@@ -1063,7 +1042,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initGame( const String & _scriptInitParams )
+	bool Application::initializeGame( const String & _scriptInitParams )
 	{
 		if( m_game->initialize( _scriptInitParams ) == false )
 		{
@@ -1939,7 +1918,7 @@ namespace Menge
         m_dynamicLibraries.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setLanguagePack( const ConstString& _packName )
+	void Application::setLanguagePackOverride( const ConstString& _packName )
 	{
 		m_languagePackOverride = _packName;
 	}

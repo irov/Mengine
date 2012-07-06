@@ -469,13 +469,16 @@ namespace Menge
 		}
 		*/
 		//avcodec_flush_buffers( m_codecContext );
-
-
+		
 		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
 		int seekStreamIndex = ( m_videoStreamId != -1 ) ? m_videoStreamId : defaultStreamIndex;
-		
-		int seekTime = av_rescale( _timing, m_formatContext->streams[seekStreamIndex]->time_base.den, m_formatContext->streams[seekStreamIndex]->time_base.num );
-		int frame = seekTime / m_dataInfo.frameTiming;
+				
+		//AVRational av_q;
+		//av_q.num = 1; 
+		//av_q.den = AV_TIME_BASE; 
+		//__int64 seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base) * 1000.0f;
+
+		int frame = _timing / m_dataInfo.frameTiming;
 		if( this->seekToFrame( frame ) == false )
 		{
 			return false;
@@ -532,7 +535,7 @@ namespace Menge
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

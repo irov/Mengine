@@ -487,9 +487,19 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
 	{
-		float seek_timing = _timing;
+		float seek_timing;
 		
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
+		
+		if( _timing < 0 )
+		{
+			float curTiming = m_videoDecoder->getTiming();
+			seek_timing = curTiming - _timing;
+		}
+		else
+		{
+			seek_timing = _timing;
+		}
 
 		if( seek_timing > 0.f )
 		{		
@@ -499,7 +509,7 @@ namespace	Menge
 		m_videoDecoder->seek( seek_timing );
 
 		m_needUpdate = this->_sync( dataInfo->frameTiming );
-
+		
 		//m_videoDecoder->seek( 0.0f );
 		//m_needUpdate = this->_sync( _timing );
 	}
@@ -518,7 +528,7 @@ namespace	Menge
 	void Video::_setLastFrame()
 	{
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
-		this->setTiming( dataInfo->duration );
+		this->_setTiming( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_fillVideoBuffer()

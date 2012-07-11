@@ -113,7 +113,7 @@ namespace Menge
 		return box;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::getBoundingBox( mt::box2f& _box )
+	void AstralaxEmitter::getBoundingBox( mt::box2f& _box ) const
 	{
 		mt::box2f box = s_getEmitterBBox(m_id);
 		_box = box;
@@ -384,7 +384,7 @@ namespace Menge
 		Magic_SetRandomMode( m_id, _randomMode );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::getRandomMode()
+	bool AstralaxEmitter::getRandomMode() const
 	{
 		bool mode = Magic_IsRandomMode( m_id );
 		return mode;

@@ -267,7 +267,14 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual void setDimentions( const Resolution & _contentResolution, const Viewport & _viewport ) = 0;
+		virtual bool initialize( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual void finalize() = 0;
+
+	public:
+		virtual void update() = 0;
+
+	public:
+		virtual void setDimentions( const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport ) = 0;
 
 	public:
 		virtual bool isKeyDown( KeyCode _keyCode ) = 0;

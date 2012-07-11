@@ -57,7 +57,7 @@ namespace Menge
 		virtual void interrupt() = 0;
 
 	public:
-		virtual void getBoundingBox( mt::box2f& _box ) = 0;
+		virtual void getBoundingBox( mt::box2f& _box ) const = 0;
 		virtual void setLeftBorder( float _leftBorder ) = 0;
 		
 		virtual float getLeftBorder() = 0;
@@ -79,7 +79,7 @@ namespace Menge
 		virtual void setAngle( float _radians ) = 0;
 
 		virtual void setRandomMode( bool _randomMode ) = 0;
-		virtual bool getRandomMode( ) = 0;
+		virtual bool getRandomMode() const = 0;
 	};
 	
 	struct EmitterContainerMetaData

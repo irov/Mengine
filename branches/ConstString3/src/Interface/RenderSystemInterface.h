@@ -347,6 +347,11 @@ namespace Menge
 										float _top, float _bottom, 
 										float _near, float _far ) = 0;
 
+		virtual void makeProjectionFrustum( mt::mat4f & _projectionMatrix
+			, float _left, float _right
+			, float _top, float _bottom
+			, float _near, float _far ) = 0;
+
 		virtual void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) = 0;
 
 		virtual float getTexelOffsetX() const = 0;
@@ -448,8 +453,10 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
+		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, int _bits, bool _fullscreen, 
 			WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) = 0;
+
+		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, bool _fullscreen ) = 0;
 
 	public:
 		virtual void clear( uint32 _color ) = 0;

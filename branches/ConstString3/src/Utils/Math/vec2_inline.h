@@ -23,18 +23,21 @@ namespace mt
     {
         x = _rhs.x;	
         y = _rhs.y;	
+
         return *this;
     }
 
 	MATH_METHOD_INLINE const float vec2f::operator[](int i) const
 	{
 		assert(i < 2);
+
 		return (&x)[i];
 	}
 
 	MATH_METHOD_INLINE float& vec2f::operator[](int i)
 	{
 		assert(i < 2);
+
 		return (&x)[i];
 	}
 
@@ -42,6 +45,7 @@ namespace mt
 	{
 		x += _rhs.x;
 		y += _rhs.y;
+
 		return *this;
 	}
 
@@ -49,6 +53,7 @@ namespace mt
 	{
 		x -= _rhs.x;
 		y -= _rhs.y;
+
 		return *this;
 	}
 
@@ -56,6 +61,7 @@ namespace mt
 	{
 		assert(_rhs != 0.0f);
 		operator *= (1.f/_rhs); 
+
 		return *this;
 	}
 
@@ -63,6 +69,15 @@ namespace mt
 	{
 		x *= _rhs;
 		y *= _rhs;
+
+		return *this;
+	}
+
+	MATH_METHOD_INLINE vec2f& vec2f::operator*=(const vec2f & _rhs)
+	{
+		x *= _rhs.x;
+		y *= _rhs.y;
+
 		return *this;
 	}
 

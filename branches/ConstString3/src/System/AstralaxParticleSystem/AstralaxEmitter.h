@@ -39,14 +39,14 @@ namespace Menge
 		float getDuration() override;
 		
 		void setRandomMode( bool _randomMode ) override;
-		bool getRandomMode( ) override;
+		bool getRandomMode() const override;
 
 	public:
 		void interrupt() override;
 
 	public:
 		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
-		void getBoundingBox( mt::box2f& _box ) override;
+		void getBoundingBox( mt::box2f& _box ) const override;
 		//void getBoundingBox( Rect & _rect )  const override;
 		void setEmitterTranslateWithParticle( bool _value ) override;
 		bool isIntensive() const override;

@@ -274,9 +274,12 @@ namespace Menge
 		Viewport renderViewport;
 		this->calcRenderViewport_( renderViewport, m_resolution );
 
-		bool isCreatedRenderWindow = m_renderService->createRenderWindow( m_resolution, m_contentResolution
-			, renderViewport, bits, false,
-			m_renderhWnd, FSAAType, FSAAQuality );
+		Viewport lowContentViewport;
+
+		bool isCreatedRenderWindow = m_renderService->createRenderWindow( m_resolution, m_contentResolution, lowContentViewport
+			, renderViewport, bits, false
+			, m_renderhWnd, FSAAType, FSAAQuality 
+			);
 
 		if( isCreatedRenderWindow == false )
 		{

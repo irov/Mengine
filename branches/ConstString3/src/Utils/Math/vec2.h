@@ -37,10 +37,12 @@ namespace mt
 			v[K] = _value;
 		}
 
-		MATH_METHOD_INLINE vec2f& operator+=(const vec2f&	_rhs);
-		MATH_METHOD_INLINE vec2f& operator-=(const vec2f&	_rhs);
+		MATH_METHOD_INLINE vec2f& operator+=(const vec2f & _rhs);
+		MATH_METHOD_INLINE vec2f& operator-=(const vec2f &	_rhs);
 		MATH_METHOD_INLINE vec2f& operator/=(const float _rhs);
 		MATH_METHOD_INLINE vec2f& operator*=(const float _rhs);
+
+		MATH_METHOD_INLINE vec2f& operator*=(const vec2f & _rhs);
 
 		MATH_METHOD_INLINE float sqrlength() const;
 		MATH_METHOD_INLINE float length() const;

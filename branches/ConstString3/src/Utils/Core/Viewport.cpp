@@ -61,4 +61,10 @@ namespace Menge
 		_size.x = w;
 		_size.y = h;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Viewport::centerize( const mt::vec2f & _center )
+	{
+		begin -= _center;
+		end -= _center;
+	}
 }

@@ -421,7 +421,7 @@ namespace mt
 		out = out * m;
 	}
 
-	MATH_FUNCTION_INLINE void make_projection_ortho_lh_m4( mat4f & _out , float _left, float _right, float _top, float _bottom, float _near, float _far )
+	MATH_FUNCTION_INLINE void make_projection_ortho_lh_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
 	{
 		// 2/(r-l)      0            0           0
 		_out.v0.x = 2.f / (_right - _left);
@@ -448,30 +448,86 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 
-	MATH_FUNCTION_INLINE void make_projection_fov_m4( mat4f & out , float fovy, float aspect, float zn, float zf )
+	MATH_FUNCTION_INLINE void make_projection_frustum_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
+	{
+		//2*zn/(r-l)   0            0              0
+		//0            2*zn/(t-b)   0              0
+		//(l+r)/(l-r)  (t+b)/(b-t)  zf/(zf-zn)     1
+		//0            0            zn*zf/(zn-zf)  0
+
+		_out.v0.x = 2.f * _near / (_right - _left);
+		_out.v0.y = 0.f;
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = 2.f * _near / (_top - _bottom);
+		_out.v1.z = 0.f;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = (_left + _right) / (_left - _right);
+		_out.v2.y = (_top + _bottom) / (_bottom - _top);
+		//_out.v2.x = 0.f;
+		//_out.v2.y = 0.f;
+		_out.v2.z = (_far) / (_far - _near);
+		_out.v2.w = 1.f;
+
+		_out.v3.x = 0.f;
+		_out.v3.y = 0.f;
+		_out.v3.z = (_near * _far) / (_near - _far);
+		_out.v3.w = 0.f;
+	}
+
+	MATH_FUNCTION_INLINE void make_projection_fov_m4( mat4f & _out, float fovy, float aspect, float zn, float zf )
 	{
 		float yscale = 1.f / tanf( fovy * 0.5f );
 		float xscale = yscale / aspect;
 
-		out.v0.x = xscale;	
-		out.v0.y = 0.f;	
-		out.v0.z = 0.f;
-		out.v0.w = 0.f;
+		_out.v0.x = xscale;	
+		_out.v0.y = 0.f;	
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
 
-		out.v1.x = 0.f;
-		out.v1.y = yscale;
-		out.v1.z = 0.f;					
-		out.v1.w = 0.f;
+		_out.v1.x = 0.f;
+		_out.v1.y = yscale;
+		_out.v1.z = 0.f;					
+		_out.v1.w = 0.f;
 
-		out.v2.x = 0.f;
-		out.v2.y = 0.f;	
-		out.v2.z = zf / (zf - zn);
-		out.v2.w = 1.f;
+		_out.v2.x = 0.f;
+		_out.v2.y = 0.f;	
+		_out.v2.z = zf / (zf - zn);
+		_out.v2.w = 1.f;
 
-		out.v3.x = 0.f;	
-		out.v3.y = 0.f;	
-		out.v3.z = -zn * zf / (zf - zn);
-		out.v3.w = 0.f;
+		_out.v3.x = 0.f;	
+		_out.v3.y = 0.f;	
+		_out.v3.z = -zn * zf / (zf - zn);
+		_out.v3.w = 0.f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE void make_projection_fov2_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf )
+	{
+		float yscale = 1.f / tanf( _fov * 0.5f );
+		float xscale = yscale / _aspect;
+
+		_out.v0.x = xscale;	
+		_out.v0.y = 0.f;	
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = yscale;
+		_out.v1.z = 0.f;					
+		_out.v1.w = 0.f;
+
+		_out.v2.x = 0.f;
+		_out.v2.y = 0.f;	
+		_out.v2.z = - (_zf + _zn) / (_zf - _zn);
+		_out.v2.w = -1.f;
+
+		_out.v3.x = 0.f;	
+		_out.v3.y = 0.f;	
+		_out.v3.z = - 2.f * _zn * _zf / (_zf - _zn);
+		_out.v3.w = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void make_perspective_projection_m4( mat4f & _out, float _fov, float _aspect, float zn, float zf )

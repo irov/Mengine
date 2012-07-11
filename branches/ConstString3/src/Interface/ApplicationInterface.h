@@ -86,8 +86,9 @@ namespace Menge
 		virtual PlatformInterface * getPlatform() const = 0;
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
-	public:
+	public:		
 		virtual void setDesktopResolution( const Resolution & _resolution ) = 0;
+
 		virtual void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight ) = 0;
 
 	public:
@@ -132,7 +133,13 @@ namespace Menge
 		virtual bool getFullscreenMode() const = 0;
 
 	public:
-		virtual const Resolution& getResolution() const = 0;
+		virtual void calcWindowResolution( Resolution & _windowResolution ) const = 0;
+
+		virtual const Resolution & getDesktopResolution() const = 0;
+		virtual const Resolution & getCurrentResolution() const = 0;
+		
+		virtual const Resolution & getContentResolution() const = 0;
+		virtual const Viewport & getLowContentViewport() const = 0;
 
 	public:
 		virtual bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle ) = 0;

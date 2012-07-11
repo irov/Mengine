@@ -403,8 +403,10 @@ namespace Menge
 
 		bool fullscreen = m_application->getFullscreenMode();
 
-		const Resolution & resolution = m_application->getResolution();
-		WindowHandle wh = this->createWindow( title, resolution, fullscreen );
+		Resolution windowResolution;
+		m_application->calcWindowResolution( windowResolution );
+
+		WindowHandle wh = this->createWindow( title, windowResolution, fullscreen );
 
 		if( fullscreen == true )
 		{

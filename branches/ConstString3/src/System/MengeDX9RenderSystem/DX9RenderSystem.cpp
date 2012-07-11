@@ -2654,6 +2654,28 @@ namespace Menge
 
 		return dxTexture;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix , float _left, float _right , float _top, float _bottom , float _near, float _far )
+	{
+		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
+		mt::mat4f scale;
+		mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
+
+		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
+		mt::mat4f translation;
+		mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
+
+		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
+		mt::mat4f transform;
+		mt::mul_m4_m4( transform, scale, translation );
+
+		//D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
+		mt::mat4f frustum;
+		mt::make_projection_frustum_m4(frustum, _left, _right, _top, _bottom, _near, _far );
+
+		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
+		mt::mul_m4_m4( _projectionMatrix, transform, frustum );
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

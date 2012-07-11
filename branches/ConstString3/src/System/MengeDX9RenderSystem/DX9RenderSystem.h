@@ -69,6 +69,11 @@ namespace Menge
 			, float _top, float _bottom
 			, float _near, float _far ) override;
 
+		void makeProjectionFrustum( mt::mat4f & _projectionMatrix
+			, float _left, float _right
+			, float _top, float _bottom
+			, float _near, float _far ) override;
+
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
 		// Render frame into _image

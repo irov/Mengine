@@ -41,6 +41,10 @@ namespace Menge
 			return;
 		}
 
+		Observer * observer = *it_observer;
+
+		delete observer;
+
 		observers.erase( it_observer );
 	}
 	//////////////////////////////////////////////////////////////////////////

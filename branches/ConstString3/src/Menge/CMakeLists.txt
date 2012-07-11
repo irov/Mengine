@@ -87,7 +87,6 @@ ADD_FILTER(
 Service\\\\Notification
 	NotificationService.cpp
 	NotificationService.h
-    NotificationEvent.h
 )
 
 

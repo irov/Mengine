@@ -4,6 +4,7 @@
 
 #	include "Core/ConstString.h"
 #	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
 
 #	include "Config/Typedef.h"
 
@@ -34,6 +35,7 @@ namespace Menge
 		bool getSetting( const WString & _section, const WString & _key, int & _value ) const;
 
 		bool getSetting( const WString & _section, const WString & _key, Resolution & _value ) const;
+		bool getSetting( const WString & _section, const WString & _key, Viewport & _value ) const;
 		
 
 	public:

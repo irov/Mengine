@@ -1,5 +1,7 @@
 #	include "ScriptWrapper.h"
 
+#	include <xxbind/xxbind.hpp>
+
 #	include "Amplifier.h"
 
 #	include "SoundEmitter.h"
@@ -14,8 +16,6 @@
 #	include "SoundEngine.h"
 #	include "Consts.h"
 
-#	include "pybind/pybind.hpp"
-
 namespace	Menge
 {
 	namespace ScriptSoundHelper
@@ -25,17 +25,15 @@ namespace	Menge
 			: public SoundNodeListenerInterface
 		{
 		public:
-			MySoundNodeListenerInterface( ResourceSound * _resource, unsigned int _sourceID, PyObject * _cb )
+			MySoundNodeListenerInterface( ResourceSound * _resource, unsigned int _sourceID, const xxbind::object & _cb )
 				: m_resource(_resource)
-				, m_sourceID(_sourceID)
+				, m_sourceID(_sourceID)				
 				, m_cb(_cb)
 			{
-				pybind::incref(m_cb);
 			}
 
 			~MySoundNodeListenerInterface()
 			{
-				pybind::decref(m_cb);
 			}
 
 		protected:
@@ -46,9 +44,9 @@ namespace	Menge
 
 			void listenSoundNodeStopped() override
 			{				
-				if( m_cb != NULL && pybind::is_none( m_cb ) == false )
+				if( m_cb.is_none() == false )
 				{
-					pybind::call( m_cb, "(i)", m_sourceID );
+					m_cb.call( "(i)", m_sourceID );
 				}
 
 				SoundEngine::get()
@@ -65,8 +63,8 @@ namespace	Menge
 
 		protected:
 			unsigned int m_sourceID;			
-			ResourceSound * m_resource;
-			PyObject * m_cb;
+			ResourceSound * m_resource;			
+			xxbind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		static bool s_hasSound( const ConstString & _resourceName )
@@ -80,7 +78,7 @@ namespace	Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static unsigned int s_createSoundSource( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		static unsigned int s_createSoundSource( const ConstString & _resourceName, bool _loop, const xxbind::object & _cb )
 		{
 			ResourceSound * resource = ResourceManager::get()
 				->getResourceT<ResourceSound>( _resourceName );
@@ -126,7 +124,7 @@ namespace	Menge
 			}
 
 			SoundNodeListenerInterface * snlistener = 
-				new MySoundNodeListenerInterface( resource, sourceID, _cb );
+				new MySoundNodeListenerInterface(resource, sourceID, _cb);
 
 			SoundEngine::get()
 				->setSourceListener( sourceID, snlistener );
@@ -134,9 +132,9 @@ namespace	Menge
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		static unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, const xxbind::object & _cb )
 		{
-			unsigned int sourceID = s_createSoundSource(_resourceName, _loop, _cb);
+			unsigned int sourceID = s_createSoundSource( _resourceName, _loop, _cb );
 
 			if( sourceID == 0 )
 			{
@@ -153,9 +151,9 @@ namespace	Menge
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static unsigned int s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, PyObject * _cb )
+		static unsigned int s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const xxbind::object & _cb )
 		{
-			unsigned int sourceID = s_createSoundSource(_resourceName, _loop, _cb);
+			unsigned int sourceID = s_createSoundSource( _resourceName, _loop, _cb );
 			if( sourceID == 0 )
 			{
 				MENGE_LOG_ERROR( "soundPlayFromPosition: can't get resource '%s'"
@@ -321,36 +319,36 @@ namespace	Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
-	void ScriptWrapper::soundWrap()
+	void soundWrap( xxbind::facade_script * _facade, xxbind::module * _module )
 	{
-		pybind::def_function( "hasSound", &ScriptSoundHelper::s_hasSound );
-		pybind::def_function( "soundPlay", &ScriptSoundHelper::s_soundPlay );
-		pybind::def_function( "soundPlayFromPosition", &ScriptSoundHelper::s_soundPlayFromPosition );
-		pybind::def_function( "soundStop", &ScriptSoundHelper::s_soundStop );
-		pybind::def_function( "soundSourceSetVolume", &ScriptSoundHelper::s_soundSourceSetVolume );
-		pybind::def_function( "soundSourceGetVolume", &ScriptSoundHelper::s_soundSourceGetVolume );
-		pybind::def_function( "soundSetVolume", &ScriptSoundHelper::s_soundSetVolume );
-		pybind::def_function( "soundGetVolume", &ScriptSoundHelper::s_soundGetVolume );
-		pybind::def_function( "soundGetPosition", &ScriptSoundHelper::s_soundGetPosMs );
-		pybind::def_function( "soundSetPosition", &ScriptSoundHelper::s_soundSetPosMs );
-		pybind::def_function( "soundMute", &ScriptSoundHelper::s_soundMute );
-		pybind::def_function( "isMute", &ScriptSoundHelper::s_isMute );
+		xxbind::def_function( _facade, _module, "hasSound", &ScriptSoundHelper::s_hasSound );
+		xxbind::def_function( _facade, _module, "soundPlay", &ScriptSoundHelper::s_soundPlay );
+		xxbind::def_function( _facade, _module, "soundPlayFromPosition", &ScriptSoundHelper::s_soundPlayFromPosition );
+		xxbind::def_function( _facade, _module, "soundStop", &ScriptSoundHelper::s_soundStop );
+		xxbind::def_function( _facade, _module, "soundSourceSetVolume", &ScriptSoundHelper::s_soundSourceSetVolume );
+		xxbind::def_function( _facade, _module, "soundSourceGetVolume", &ScriptSoundHelper::s_soundSourceGetVolume );
+		xxbind::def_function( _facade, _module, "soundSetVolume", &ScriptSoundHelper::s_soundSetVolume );
+		xxbind::def_function( _facade, _module, "soundGetVolume", &ScriptSoundHelper::s_soundGetVolume );
+		xxbind::def_function( _facade, _module, "soundGetPosition", &ScriptSoundHelper::s_soundGetPosMs );
+		xxbind::def_function( _facade, _module, "soundSetPosition", &ScriptSoundHelper::s_soundSetPosMs );
+		xxbind::def_function( _facade, _module, "soundMute", &ScriptSoundHelper::s_soundMute );
+		xxbind::def_function( _facade, _module, "isMute", &ScriptSoundHelper::s_isMute );
 		
 
-		pybind::def_function( "commonSetVolume", &ScriptSoundHelper::s_commonSetVolume );
-		pybind::def_function( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
+		xxbind::def_function( _facade, _module, "commonSetVolume", &ScriptSoundHelper::s_commonSetVolume );
+		xxbind::def_function( _facade, _module, "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
 
-		pybind::def_function( "musicPlayList", &ScriptSoundHelper::musicPlayList );
-		pybind::def_function( "musicPlayTrack", &ScriptSoundHelper::musicPlayTrack );
-		pybind::def_function( "musicGetNumTracks", &ScriptSoundHelper::musicGetNumTracks );
-		pybind::def_function( "musicSetVolume", &ScriptSoundHelper::musicSetVolume );
-		pybind::def_function( "musicGetVolume", &ScriptSoundHelper::musicGetVolume );
-		pybind::def_function( "musicStop", &ScriptSoundHelper::musicStop );
-		pybind::def_function( "musicShuffle", &ScriptSoundHelper::musicShuffle );
-		pybind::def_function( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
-		pybind::def_function( "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
-		pybind::def_function( "musicVolumeToCb", &ScriptSoundHelper::s_musicVolumeToCb );
-		pybind::def_function( "musicGetPosMs", &ScriptSoundHelper::s_musicGetPosMs );
-		pybind::def_function( "musicSetPosMs", &ScriptSoundHelper::s_musicSetPosMs );
+		xxbind::def_function( _facade, _module, "musicPlayList", &ScriptSoundHelper::musicPlayList );
+		xxbind::def_function( _facade, _module, "musicPlayTrack", &ScriptSoundHelper::musicPlayTrack );
+		xxbind::def_function( _facade, _module, "musicGetNumTracks", &ScriptSoundHelper::musicGetNumTracks );
+		xxbind::def_function( _facade, _module, "musicSetVolume", &ScriptSoundHelper::musicSetVolume );
+		xxbind::def_function( _facade, _module, "musicGetVolume", &ScriptSoundHelper::musicGetVolume );
+		xxbind::def_function( _facade, _module, "musicStop", &ScriptSoundHelper::musicStop );
+		xxbind::def_function( _facade, _module, "musicShuffle", &ScriptSoundHelper::musicShuffle );
+		xxbind::def_function( _facade, _module, "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
+		xxbind::def_function( _facade, _module, "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
+		xxbind::def_function( _facade, _module, "musicVolumeToCb", &ScriptSoundHelper::s_musicVolumeToCb );
+		xxbind::def_function( _facade, _module, "musicGetPosMs", &ScriptSoundHelper::s_musicGetPosMs );
+		xxbind::def_function( _facade, _module, "musicSetPosMs", &ScriptSoundHelper::s_musicSetPosMs );
 	}
 }

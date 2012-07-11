@@ -110,6 +110,9 @@
 #	include <boost/geometry/geometries/polygon.hpp>
 #	include <boost/geometry/algorithms/intersects.hpp>
 
+#	include <xxbind/xxbind.hpp>
+#	include <pybind/pyfacade_script.hpp>
+
 namespace Menge
 {
 	namespace ScriptMethod
@@ -1556,6 +1559,435 @@ namespace Menge
 			}
 		};
 
+		//////////////////////////////////////////////////////////////////////////
+		std::string vec2f_repr( xxbind::facade_script * _facade, xxbind::facade_object * _obj, mt::vec2f * _v )
+		{
+			std::stringstream ss;
+			ss << "<vec2f: " << _v->x << ", " << _v->y << ">";
+			return ss.str();
+		}
+
+		float vec2_sequence( mt::vec2f * _vec, size_t _index )
+		{
+			if( _index > 2 )
+			{
+				pybind::throw_exception();
+			}
+
+			return _vec->operator [] (_index);
+		}
+
+		float vec3_sequence( mt::vec3f * _vec, size_t _index )
+		{
+			if( _index > 3 )
+			{
+				pybind::throw_exception();
+			}
+
+			return _vec->operator [] (_index);
+		}
+
+		float vec4_sequence( mt::vec4f * _vec, size_t _index )
+		{
+			if( _index > 4 )
+			{
+				pybind::throw_exception();
+			}
+
+			return _vec->operator [] (_index);
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		std::string color_repr( PyObject * _obj, ColourValue * _v )
+		{
+			std::stringstream ss;
+			ss << "<color: " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
+			return ss.str();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool vec2f_convert( xxbind::facade_script * _facade, xxbind::facade_object * _obj, void * _place )
+		{
+			if( xxbind::instance_of<mt::vec3f>( _facade, _obj ) == true )
+			{
+				mt::vec3f v3 = xxbind::extract<mt::vec3f>(_facade, _obj);
+
+				mt::vec2f * impl = (mt::vec2f *)_place;
+
+				impl->x = v3.x;
+				impl->y = v3.y;
+
+				return true;
+			}			
+			else if( _facade->tuple_check( _obj ) == true )
+			{
+				if( _facade->tuple_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				mt::vec2f * impl = (mt::vec2f *)_place;
+
+				xxbind::facade_object * i0 = _facade->tuple_getitem( _obj, 0 );
+				xxbind::facade_object * i1 = _facade->tuple_getitem( _obj, 1 );
+
+				impl->x = xxbind::extract<float>(_facade, i0);
+				impl->y = xxbind::extract<float>(_facade, i1);
+
+				return true;
+			}
+			else if( _facade->list_check( _obj ) == true )
+			{
+				if( _facade->list_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				mt::vec2f * impl = (mt::vec2f *)_place;
+
+				xxbind::facade_object * i0 = _facade->list_getitem( _obj, 0 );
+				xxbind::facade_object * i1 = _facade->list_getitem( _obj, 1 );
+
+				impl->x = xxbind::extract<float>(_facade, i0);
+				impl->y = xxbind::extract<float>(_facade, i1);
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool vec3f_convert( xxbind::facade_script * _facade, xxbind::facade_object * _obj, void * _place )
+		{
+			if( xxbind::instance_of<mt::vec2f>( _facade, _obj ) == true )
+			{
+				mt::vec2f v2 = xxbind::extract<mt::vec2f>( _facade, _obj );
+
+				mt::vec3f * impl = (mt::vec3f *)_place;
+
+				impl->x = v2.x;
+				impl->y = v2.y;
+				impl->z = 0.f;
+
+				return true;
+			}
+			else if( _facade->tuple_check( _obj ) == true )
+			{
+				if( _facade->tuple_size( _obj ) < 2 || _facade->tuple_size( _obj ) > 3 )
+				{
+					return false;
+				}
+
+				mt::vec3f * impl = (mt::vec3f *)_place;
+
+				xxbind::facade_object * i0 = _facade->tuple_getitem( _obj, 0 );
+				xxbind::facade_object * i1 = _facade->tuple_getitem( _obj, 1 );
+
+				impl->x = xxbind::extract<float>(_facade, i0);
+				impl->y = xxbind::extract<float>(_facade, i1);
+
+				if( _facade->tuple_size( _obj ) == 3 )
+				{
+					xxbind::facade_object * i2 = _facade->tuple_getitem( _obj, 2 );
+
+					impl->z = xxbind::extract<float>(_facade, i2);
+				}
+				else
+				{
+					impl->z = 0.f;
+				}
+
+				return true;
+			}
+			else if( _facade->list_check( _obj ) == true )
+			{
+				if( _facade->tuple_size( _obj ) < 2 || _facade->tuple_size( _obj ) > 3 )
+				{
+					return false;
+				}
+
+				mt::vec4f * impl = (mt::vec4f *)_place;
+
+				xxbind::facade_object * i0 = _facade->list_getitem( _obj, 0 );
+				xxbind::facade_object * i1 = _facade->list_getitem( _obj, 1 );
+
+				impl->x = xxbind::extract<float>(_facade, i0);
+				impl->y = xxbind::extract<float>(_facade, i1);
+
+				if( _facade->tuple_size( _obj ) == 3 )
+				{
+					xxbind::facade_object * i2 = _facade->list_getitem( _obj, 2 );
+
+					impl->z = xxbind::extract<float>(_facade, i2);
+				}
+				else
+				{
+					impl->z = 0.f;
+				}
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool vec4f_convert( xxbind::facade_script * _facade, xxbind::facade_object * _obj, void * _place )
+		{
+			if( _facade->tuple_check( _obj ) == true )
+			{
+				if( _facade->tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
+				
+				mt::vec4f * impl = (mt::vec4f *)_place;
+
+				xxbind::facade_object * i0 = _facade->tuple_getitem( _obj, 0 );
+				xxbind::facade_object * i1 = _facade->tuple_getitem( _obj, 1 );
+				xxbind::facade_object * i2 = _facade->tuple_getitem( _obj, 2 );
+				xxbind::facade_object * i3 = _facade->tuple_getitem( _obj, 3 );
+
+				impl->x = xxbind::extract<float>(_facade, i0);
+				impl->y = xxbind::extract<float>(_facade, i1);
+				impl->z = xxbind::extract<float>(_facade, i2);
+				impl->w = xxbind::extract<float>(_facade, i3);
+
+				return true;
+			}
+			else if( _facade->list_check( _obj ) == true )
+			{
+				if( _facade->list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				mt::vec4f * impl = (mt::vec4f *)_place;
+
+				xxbind::facade_object * i0 = _facade->list_getitem( _obj, 0 );
+				xxbind::facade_object * i1 = _facade->list_getitem( _obj, 1 );
+				xxbind::facade_object * i2 = _facade->list_getitem( _obj, 2 );
+				xxbind::facade_object * i3 = _facade->list_getitem( _obj, 3 );
+
+				impl->x = xxbind::extract<float>(_facade, i0);
+				impl->y = xxbind::extract<float>(_facade, i1);
+				impl->z = xxbind::extract<float>(_facade, i2);
+				impl->w = xxbind::extract<float>(_facade, i3);
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static bool Polygon_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::list_check( _obj ) == false )
+			{
+				return false;
+			}
+
+			Polygon * polygon = (Polygon*)_place;
+
+			size_t size = pybind::list_size( _obj );
+
+			for( size_t i = 0; i != size; ++i )
+			{
+				PyObject * py_point = pybind::list_getitem(_obj, i);
+
+				mt::vec2f point = pybind::extract<mt::vec2f>(py_point);
+
+				boost::geometry::append(*polygon, point);
+			}
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static bool color_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				ColourValue * impl = (ColourValue *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+				impl->r = pybind::extract<float>(i0);
+				impl->g = pybind::extract<float>(i1);
+				impl->b = pybind::extract<float>(i2);
+				impl->a = pybind::extract<float>(i3);
+				
+				impl->invalidate();
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				ColourValue * impl = (ColourValue *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+				PyObject * i2 = pybind::list_getitem( _obj, 2 );
+				PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+				impl->r = pybind::extract<float>(i0);
+				impl->g = pybind::extract<float>(i1);
+				impl->b = pybind::extract<float>(i2);
+				impl->a = pybind::extract<float>(i3);
+
+				return true;
+			}
+
+			return false;
+		}
+
+		static bool resolution_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				Resolution * impl = (Resolution *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+
+				size_t width = pybind::extract<size_t>(i0);
+				size_t height = pybind::extract<size_t>(i1);
+
+				impl->setWidth( width );
+				impl->setHeight( height );
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				Resolution * impl = (Resolution *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+
+				size_t width = pybind::extract<size_t>(i0);
+				size_t height = pybind::extract<size_t>(i1);
+
+				impl->setWidth( width );
+				impl->setHeight( height );
+
+				return true;
+			}
+
+			return false;
+		}
+
+		static bool Viewport_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				Viewport * impl = (Viewport *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+
+				mt::vec2f begin = pybind::extract<mt::vec2f>(i0);
+				mt::vec2f end = pybind::extract<mt::vec2f>(i1);
+
+				impl->initialize( begin, end );
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				Viewport * impl = (Viewport *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+
+				mt::vec2f begin = pybind::extract<mt::vec2f>(i0);
+				mt::vec2f end = pybind::extract<mt::vec2f>(i1);
+
+				impl->initialize( begin, end );
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool Rect_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				Rect * impl = (Rect *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+				impl->left = pybind::extract<int>(i0);
+				impl->top = pybind::extract<int>(i1);
+				impl->right = pybind::extract<int>(i2);
+				impl->bottom = pybind::extract<int>(i3);
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				Rect * impl = (Rect *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+				PyObject * i2 = pybind::list_getitem( _obj, 2 );
+				PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+				impl->left = pybind::extract<int>(i0);
+				impl->top = pybind::extract<int>(i1);
+				impl->right = pybind::extract<int>(i2);
+				impl->bottom = pybind::extract<int>(i3);
+
+				return true;
+			}
+
+			return false;
+		}
 		static PyObject * s_filterTag( Node * _node, const ConstString & _tag )
 		{
 
@@ -2029,43 +2461,6 @@ namespace Menge
 		}
 	}
 
-	static void classWrapping()
-	{
-		SCRIPT_CLASS_WRAPPING( Node );
-		SCRIPT_CLASS_WRAPPING( Layer );
-		SCRIPT_CLASS_WRAPPING( Layer2D );
-		SCRIPT_CLASS_WRAPPING( Layer2DPhysic );
-		SCRIPT_CLASS_WRAPPING( HotSpot );
-		//SCRIPT_CLASS_WRAPPING( Light2D );
-		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
-		SCRIPT_CLASS_WRAPPING( Sprite );
-		SCRIPT_CLASS_WRAPPING( Animation );
-		SCRIPT_CLASS_WRAPPING( Arrow );
-		SCRIPT_CLASS_WRAPPING( TextField );
-		SCRIPT_CLASS_WRAPPING( SoundEmitter );
-		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
-		SCRIPT_CLASS_WRAPPING( Movie );
-		SCRIPT_CLASS_WRAPPING( MovieInternalObject );
-		SCRIPT_CLASS_WRAPPING( Point );
-		//SCRIPT_CLASS_WRAPPING( TilePolygon );
-		SCRIPT_CLASS_WRAPPING( Video );
-		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
-		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
-		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
-		//SCRIPT_CLASS_WRAPPING( Layer3D );
-		//SCRIPT_CLASS_WRAPPING( RigidBody2D );
-		//SCRIPT_CLASS_WRAPPING( PhysicalBody2D );
-		//SCRIPT_CLASS_WRAPPING( CapsuleController );
-		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
-		//SCRIPT_CLASS_WRAPPING( Camera3D );
-		//SCRIPT_CLASS_WRAPPING( RenderMesh );
-		SCRIPT_CLASS_WRAPPING( Window );
-		
-		SCRIPT_CLASS_WRAPPING( HotSpotImage );
-		SCRIPT_CLASS_WRAPPING( Camera2D );
-		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
-	}
-
 	struct FPyStringLess
 		: public std::binary_function<PyObject *, PyObject *, bool>
 	{
@@ -2290,9 +2685,44 @@ namespace Menge
 		}
 	};
 
-	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
+	static void classWrapping()
+	{
+		SCRIPT_CLASS_WRAPPING( Node );
+		SCRIPT_CLASS_WRAPPING( Layer );
+		SCRIPT_CLASS_WRAPPING( Layer2D );
+		SCRIPT_CLASS_WRAPPING( Layer2DPhysic );
+		SCRIPT_CLASS_WRAPPING( HotSpot );
+		//SCRIPT_CLASS_WRAPPING( Light2D );
+		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
+		SCRIPT_CLASS_WRAPPING( Sprite );
+		SCRIPT_CLASS_WRAPPING( Animation );
+		SCRIPT_CLASS_WRAPPING( Arrow );
+		SCRIPT_CLASS_WRAPPING( TextField );
+		SCRIPT_CLASS_WRAPPING( SoundEmitter );
+		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
+		SCRIPT_CLASS_WRAPPING( Movie );
+		SCRIPT_CLASS_WRAPPING( MovieInternalObject );
+		SCRIPT_CLASS_WRAPPING( Point );
+		//SCRIPT_CLASS_WRAPPING( TilePolygon );
+		SCRIPT_CLASS_WRAPPING( Video );
+		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
+		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
+		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
+		//SCRIPT_CLASS_WRAPPING( Layer3D );
+		//SCRIPT_CLASS_WRAPPING( RigidBody2D );
+		//SCRIPT_CLASS_WRAPPING( PhysicalBody2D );
+		//SCRIPT_CLASS_WRAPPING( CapsuleController );
+		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
+		//SCRIPT_CLASS_WRAPPING( Camera3D );
+		//SCRIPT_CLASS_WRAPPING( RenderMesh );
+		SCRIPT_CLASS_WRAPPING( Window );
 
-	void ScriptWrapper::nodeWrap()
+		SCRIPT_CLASS_WRAPPING( HotSpotImage );
+		SCRIPT_CLASS_WRAPPING( Camera2D );
+		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
+	}
+
+	void ScriptWrapper::nodeWrap( xxbind::facade_script * _facade, xxbind::module * _module )
 	{
 		pybind::registration_type_cast<ConstString>( new extract_ConstString_type ); 
 		pybind::registration_type_cast<TVectorString>( new extract_TVectorString_type );
@@ -2300,20 +2730,20 @@ namespace Menge
 
 		classWrapping();
 		
-		pybind::interface_<Join>("Join")
+		xxbind::interface_<Join>(_facade, _module, "Join")
 			.def("getLeft", &Join::getLeft)
 			.def("getRight", &Join::getRight)
 			.def("getOffset", &Join::getOffset)
 			;
 
-		pybind::interface_<Affector>("Affector", true)
+		xxbind::interface_<Affector>(_facade, _module, "Affector")
 			.def( "stop", &Affector::stop )
 			;
 
-		pybind::interface_<Scriptable>("Scriptable")
+		xxbind::interface_<Scriptable>(_facade, _module, "Scriptable")
 			;
 
-		pybind::interface_<Identity>("Identity")
+		xxbind::interface_<Identity>(_facade, _module, "Identity")
 			.def( "setName", &Identity::setName )
 			.def( "getName", &Identity::getName )
 			.def( "getType", &Identity::getType )
@@ -2322,7 +2752,7 @@ namespace Menge
 			.def( "getUniqueId", &Identity::getUniqueId )
 			;
 
-		pybind::interface_<Transformation3D>("Transformation3D")
+		xxbind::interface_<Transformation3D>(_facade, _module, "Transformation3D")
 			.def( "setLocalPosition", &Transformation3D::setLocalPosition )
 			.def( "getLocalPosition", &Transformation3D::getLocalPosition )
 			//.def( "getLocalDirection", &Transformation3D::getLocalDirection )
@@ -2349,47 +2779,31 @@ namespace Menge
 			//.def( "setRotate", &Transformation3D::setAngle ) //depricated
 			;
 
-		//pybind::class_<FFCamera3D>("FFCamera3D")
-		//	.def( pybind::init<>() )
-		//	.def( "update", &FFCamera3D::update )
-		//	.def( "activate", &FFCamera3D::activate )
-		//	.def( "forward", &FFCamera3D::forward )
-		//	.def( "left", &FFCamera3D::left )
-		//	.def( "setActor", &FFCamera3D::setActor )
-		//	.def( "yaw", &FFCamera3D::yaw )
-		//	.def( "pitch", &FFCamera3D::pitch )
-		//	.def( "zoom", &FFCamera3D::zoom )
-		//	;
-
-		//pybind::interface_<NodeRenderable>("NodeRenderable", false)
-		//	.def( "hide", &NodeRenderable::hide )
-		//	;
-
-		pybind::interface_<Resource>("Resource")
+		xxbind::interface_<Resource>(_facade, _module, "Resource")
 			.def( "compile", &Resource::compile )
 			.def( "release", &Resource::release )
 			.def( "isCompile", &Resource::isCompile )
 			;
 
-		pybind::interface_<Reference>("Reference")
+		xxbind::interface_<Reference>(_facade, _module, "Reference")
 			.def( "incrementReference", &Reference::incrementReference )
 			.def( "decrementReference", &Reference::decrementReference )
 			.def( "countReference", &Reference::countReference )
 			;
 
-		pybind::interface_<ResourceReference, pybind::bases<Resource, Identity, Reference> >("ResourceReference")
+		xxbind::interface_<ResourceReference, xxbind::bases<Resource, Identity, Reference> >(_facade, _module, "ResourceReference")
 			.def( "getCategory", &ResourceReference::getCategory )
 			.def( "getGroup", &ResourceReference::getGroup )
 			;
 
-		pybind::interface_<Renderable>("Renderable")
+		xxbind::interface_<Renderable>(_facade, _module, "Renderable")
 			.def( "hide", &Renderable::hide )
 			.def( "isHide", &Renderable::isHide )
 			.def( "localHide", &Renderable::localHide )
 			.def( "isLocalHide", &Renderable::isLocalHide )
 			;
 
-		pybind::interface_<Colorable>("Colorable")
+		xxbind::interface_<Colorable>(_facade, _module, "Colorable")
 			.def( "setLocalColor", &Colorable::setLocalColor )
 			.def( "getLocalColor", &Colorable::getLocalColor )
 			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
@@ -2400,7 +2814,7 @@ namespace Menge
 			.def( "getPersonalAlpha", &Colorable::getPersonalAlpha )			
 			;
 
-		pybind::interface_<Animatable>("Animatable")
+		xxbind::interface_<Animatable>(_facade, _module, "Animatable")
 			.def( "play", &Animatable::play )
 			.def( "stop", &Animatable::stop )
 			.def( "isPlay", &Animatable::isPlay )
@@ -2416,16 +2830,16 @@ namespace Menge
 			.def( "interrupt", &ParticleEmitter::interrupt )
 			;
 
-		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
+		xxbind::interface_<GlobalHandleAdapter>(_facade, _module, "GlobalHandleAdapter")
 			.def( "enableGlobalMouseEvent", &GlobalHandleAdapter::enableGlobalMouseEvent )
 			.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
 			;
 
-		pybind::interface_<Affectorable>("Affectorable")
+		xxbind::interface_<Affectorable>(_facade, _module, "Affectorable")
 			.def( "addAffector", &Affectorable::addAffector )
 			;
 
-		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, Colorable, Resource, Renderable, GlobalHandleAdapter, Affectorable> >("Node", false)
+		xxbind::interface_<Node, xxbind::bases<Scriptable, Identity, Transformation3D, Colorable, Resource, Renderable, GlobalHandleAdapter, Affectorable> >(_facade, _module, "Node")
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
@@ -2485,118 +2899,23 @@ namespace Menge
 			//.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
 			;
 
-		pybind::interface_<ThreadTask>("Task")
+		xxbind::interface_<ThreadTask>(_facade, _module, "Task")
 			;
 
-		pybind::interface_<RenderCameraInterface>("RenderCameraInterface")
+		xxbind::interface_<RenderCameraInterface>(_facade, _module, "RenderCameraInterface")
 			.def( "getViewport", &RenderCameraInterface::getViewport )
 			;
 		
-		pybind::proxy_<Camera2D, pybind::bases<Node, RenderCameraInterface> >("Camera2D", false)
+		xxbind::proxy_<Camera2D, xxbind::bases<Node, RenderCameraInterface> >(_facade, _module, "Camera2D")
 			.def( "setViewport", &Camera2D::setViewport )			
 			//.def( "setRenderport", &Camera2D::setRenderport )
 			//.def( "getRenderport", &Camera2D::getRenderport )
 			.def( "setRenderTarget", &Camera2D::setRenderTarget )
 			;		
 
-		//pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
-		//	.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
-		//	.def( "getWorldPosition", &SceneNode3D::getWorldPosition )
-		//	.def( "getLocalOrient", &SceneNode3D::getLocalOrient )
-		//	.def( "getPosition", &SceneNode3D::getLocalPosition )
-		//	.def( "setPosition", &SceneNode3D::setLocalPosition )
-		//	.def( "setOrient", &SceneNode3D::setLocalOrient )
-		//	.def( "setScale", &SceneNode3D::setScale )
-		//	.def( "yaw", &SceneNode3D::yaw )
-		//	.def( "pitch", &SceneNode3D::pitch )
-		//	.def( "roll", &SceneNode3D::roll )
-		//	.def( "setFixedYawAxis", &SceneNode3D::setFixedYawAxis )
-		//	.def( "translate", &SceneNode3D::translate )
-		//	.def( "addChild", &SceneNode3D::addChild )
-		//	.def( "setYawSpeed", &SceneNode3D::setYawSpeed )
-		//	.def( "setYawLimits", &SceneNode3D::setYawLimits )
-		//	.def( "getYaw", &SceneNode3D::getYaw )
-		//	.def( "getPitch", &SceneNode3D::getPitch )
-		//	.def( "setListener", &SceneNode3D::setListener )
-		
-		//	//.def( "getCamera", &SceneNode3D::getCamera )
-		//	;
-
 		{
-
-			//pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
-			//	.def( "applyForce", &RigidBody3D::applyForce )
-			//	.def( "applyImpulse", &RigidBody3D::applyImpulse )
-			//	.def( "applyAngularImpulse", &RigidBody3D::applyAngularImpulse )
-			//	.def( "applyTorque", &RigidBody3D::applyTorque )
-			//	.def( "setLinearVelocity", &RigidBody3D::setLinearVelocity )
-			//	.def( "setAngularVelocity", &RigidBody3D::setAngularVelocity )
-			//	.def( "setActive", &RigidBody3D::setActive )
-			//	;
-
-			//pybind::proxy_<CapsuleController, pybind::bases<Node>>("CapsuleController", false)
-			//	.def( "move", &CapsuleController::move )
-			//	.def( "setPosition", &CapsuleController::setPosition )
-			//	.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
-			//	;
-
-			//pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-			//	.def( "setPosition", &Camera3D::setPosition )
-			//	.def( "lookAt", &Camera3D::lookAt )
-			//	//	.def( "yaw", &Camera3D::yaw )
-			//	//	.def( "pitch", &Camera3D::pitch )
-			//	//	.def( "roll", &Camera3D::roll )
-			//	.def( "getDirection", &Camera3D::getDirection )
-			//	;
-
-			//pybind::proxy_<DiscreteEntity, pybind::bases<SceneNode3D>>("DiscreteEntity", false)
-			//	.def( "createRenderToTexture", &DiscreteEntity::createRenderToTexture )
-			//	.def( "playAnimation", &DiscreteEntity::playAnimation )
-			//	.def( "setMaterial", &DiscreteEntity::setMaterial )
-			//	//.def( "playAnimation", &DiscreteEntity::playAnimation )
-			//	;
-
-			//pybind::interface_<Allocator3D>("Allocator3D", false)
-			//	.def( "scale", &Allocator3D::scale )
-			//	;
-
-			//pybind::proxy_<SceneNode3D, pybind::bases<Node, Allocator3D> >("SceneNode3D", false)
-			//	.def( "yaw", &SceneNode3D::yaw )
-			//	.def( "pitch", &SceneNode3D::pitch )
-			//	.def( "getYaw", &SceneNode3D::getYaw )
-			//	.def( "getPitch", &SceneNode3D::getPitch )
-			//	.def( "yawTime", &SceneNode3D::yawTime )
-			//	.def( "pitchTime", &SceneNode3D::pitchTime )
-			//	.def( "setListener", &SceneNode3D::setListener )
-			//	;
-
-			//pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
-			//	//.def( "addCamera", &Layer3D::addCamera )
-			//	//.def( "getCamera", &Layer3D::getCamera )	
-			//	.def( "addController", &Layer3D::addController )
-			//	.def( "getController", &Layer3D::getController )		
-			//	//.def( "getNode", &Layer3D::getNode )
-			//	;
-
 			{
-
-				//pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D> >("RenderMesh", false)
-				//	//.def( "createRenderTarget", &RenderMesh::createRenderTarget )
-				//	//.def( "setMaterial", &RenderMesh::setMaterial )
-				//	;
-
-				//pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-				//	//	.def( "setPosition", &Camera3D::setPosition )
-				//	.def( "lookAt", &Camera3D::lookAt )
-				//	.def( "yaw", &Camera3D::yaw )
-				//	.def( "pitch", &Camera3D::pitch )
-				//	//.def( "roll", &Camera3D::roll )
-				//	//	.def( "getDirection", &Camera3D::getDirection )
-				//	;
-			}
-
-			{
-				pybind::proxy_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
+				xxbind::proxy_<ParticleEmitter, xxbind::bases<Node, Animatable> >(_facade, _module, "ParticleEmitter")
 					.def( "playFromPosition", &ParticleEmitter::playFromPosition )
 					.def( "pause", &ParticleEmitter::pause )
 					.def( "restart", &ParticleEmitter::restart )
@@ -2623,7 +2942,7 @@ namespace Menge
 					.def( "getRandomMode", &ParticleEmitter::getRandomMode )
 					;
 
-				pybind::proxy_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
+				xxbind::proxy_<SoundEmitter, xxbind::bases<Node, Animatable> >(_facade, _module, "SoundEmitter")
 					.def( "setVolume", &SoundEmitter::setVolume )
 					.def( "getVolume", &SoundEmitter::getVolume )
 					.def( "setLoop", &SoundEmitter::setLoop )
@@ -2631,7 +2950,7 @@ namespace Menge
 					.def( "setSoundResource", &SoundEmitter::setSoundResource )
 					;
 
-				pybind::proxy_<TextField, pybind::bases<Node> >("TextField", false)
+				xxbind::proxy_<TextField, xxbind::bases<Node> >(_facade, _module, "TextField")
 					.def( "setText", &TextField::setText )
 					.def( "getText", &TextField::getText )
 					.def( "setHeight", &TextField::setHeight )
@@ -2675,25 +2994,26 @@ namespace Menge
 					.def( "getCharCount", &TextField::getCharCount )
 					;
 				
-				pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
+				xxbind::proxy_<Point, xxbind::bases<Node> >(_facade, _module, "Point")
 					.def( "testHotSpot", &Point::testHotSpot )
 					;
 
-				pybind::proxy_<Layer, pybind::bases<Node> >("Layer", false)
+				xxbind::proxy_<Layer, xxbind::bases<Node> >(_facade, _module, "Layer")
 					.def( "setMain", &Layer::setMain )
 					.def( "isMain", &Layer::isMain )
 					.def( "setSize", &Layer::setSize )
 					.def( "getSize", &Layer::getSize )
 					;
 
-				pybind::proxy_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
+				xxbind::proxy_<Layer2D, xxbind::bases<Layer> >(_facade, _module, "Layer2D")
 					.def( "setParallaxFactor", &Layer2D::setParallaxFactor )
 					.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
 					.def( "setRenderViewport", &Layer2D::setRenderViewport )
 					.def( "removeRenderViewport", &Layer2D::removeRenderViewport )
 					.def( "cameraToLocal", &Layer2D::cameraToLocal )
 					;
-				pybind::proxy_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false);
+
+				xxbind::proxy_<Layer2DPhysic, xxbind::bases<Layer2D> >(_facade, _module, "Layer2DPhysic");
 				//pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
 				//	.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
 				//	.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
@@ -2701,14 +3021,14 @@ namespace Menge
 				//	.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
 				//	;
 
-				pybind::interface_<MousePickerTrap>("MousePickerTrap", false)
+				xxbind::interface_<MousePickerTrap>(_facade, _module, "MousePickerTrap")
 					.def( "pick", &MousePickerTrap::pick )
 					;
 
-				pybind::interface_<MousePickerAdapter, pybind::bases<MousePickerTrap> >("MousePickerAdapter", false)
+				xxbind::interface_<MousePickerAdapter, xxbind::bases<MousePickerTrap> >(_facade, _module, "MousePickerAdapter")
 					;
 
-				pybind::proxy_<HotSpot, pybind::bases<Node, MousePickerAdapter> >("HotSpot", false)
+				xxbind::proxy_<HotSpot, xxbind::bases<Node, MousePickerAdapter> >(_facade, _module, "HotSpot")
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
 					.def( "getPolygon", &HotSpot::getPolygon )
@@ -2718,7 +3038,7 @@ namespace Menge
 					.def_static( "getWorldPolygon", &ScriptMethod::HotSpotAdapter::s_getWorldPolygon )
 					;
 
-				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
+				xxbind::proxy_<HotSpotImage, xxbind::bases<HotSpot> >(_facade, _module, "HotSpotImage")
 					.def( "setImageResource", &HotSpotImage::setImageResource )
 					.def( "getImageResource", &HotSpotImage::getImageResource )
 					//.def( "setFrame", &HotSpotImage::setFrame )
@@ -2727,7 +3047,7 @@ namespace Menge
 					.def( "getAlphaTest", &HotSpotImage::getAlphaTest )
 					;
 				
-				pybind::proxy_<Sprite, pybind::bases<Node> >("Sprite", false)
+				xxbind::proxy_<Sprite, xxbind::bases<Node> >(_facade, _module, "Sprite")
 					//.def( "setImageIndex", &Sprite::setImageIndex )
 					//.def( "getImageIndex", &Sprite::getImageIndex )
 					//.def( "getImageCount", &Sprite::getImageCount )
@@ -2752,7 +3072,7 @@ namespace Menge
 					.def( "setTextureMatrixOffset", &Sprite::setTextureMatrixOffset )
 					;
 				{
-					pybind::proxy_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
+					xxbind::proxy_<Animation, xxbind::bases<Sprite, Animatable> >(_facade, _module, "Animation")
 						.def( "setAnimationResource", &Animation::setAnimationResource )
 						.def( "getAnimationResource", &Animation::getAnimationResource )
 						.def( "getFrameCount", &Animation::getFrameCount )
@@ -2762,62 +3082,7 @@ namespace Menge
 						;
 				}
 
-				//pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
-				//	.def( "applyForce", &RigidBody2D::applyForce )
-				//	.def( "applyImpulse", &RigidBody2D::applyImpulse )
-				//	.def( "applyConstantForce", &RigidBody2D::applyConstantForce )
-				//	.def( "removeConstantForce", &RigidBody2D::removeConstantForce )
-				//	.def( "setDirectionForce", &RigidBody2D::setDirectionForce )
-				//	.def( "wakeUp", &RigidBody2D::wakeUp )
-				//	.def( "getMass", &RigidBody2D::getMass )
-				//	.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
-				//	.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
-				//	.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
-				//	.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
-				//	.def( "enableStabilization", &RigidBody2D::enableStabilization )
-				//	;
-				
-				//pybind::proxy_<PhysicalBody2D, pybind::bases<Node> >("PhysicalBody2D", false)
-				//	.def( "applyForce", &PhysicalBody2D::applyForce )
-				//	.def( "applyImpulse", &PhysicalBody2D::applyImpulse )
-				//	.def( "applyConstantForce", &PhysicalBody2D::applyConstantForce )
-				//	.def( "removeConstantForce", &PhysicalBody2D::removeConstantForce )
-				//	.def( "setDirectionForce", &PhysicalBody2D::setDirectionForce )
-				//	.def( "wakeUp", &PhysicalBody2D::wakeUp )
-				//	.def( "getMass", &PhysicalBody2D::getMass )
-				//	.def( "getLinearVelocity", &PhysicalBody2D::getLinearVelocity )
-				//	.def( "setLinearVelocity", &PhysicalBody2D::setLinearVelocity )
-				//	.def( "unsetLinearVelocity", &PhysicalBody2D::unsetLinearVelocity )
-				//	.def( "enableStabilization", &PhysicalBody2D::enableStabilization )
-				//	.def( "setOrientation", &PhysicalBody2D::setOrientation )
-				//	.def( "addShapeBox", &PhysicalBody2D::addShapeBox )
-				//	.def( "addShapeCircle", &PhysicalBody2D::addShapeCircle )
-				//	.def( "addShapeConvex", &PhysicalBody2D::addShapeConvex )
-				//	.def( "createBody", &PhysicalBody2D::createBody )
-				//	.def( "setFilterData", &PhysicalBody2D::setFilterData )
-				//	.def( "setCollisionMask", &PhysicalBody2D::setCollisionMask )
-				//	.def( "setCategoryBits", &PhysicalBody2D::setCategoryBits )
-				//	.def( "setGroupIndex", &PhysicalBody2D::setGroupIndex )
-				//	.def( "setLinearDumping", &PhysicalBody2D::setLinearDumping )
-				//	.def( "setAngularDumping", &PhysicalBody2D::setAngularDumping )
-				//	.def( "setAllowSleep", &PhysicalBody2D::setAllowSleep )
-				//	.def( "setIsBullet", &PhysicalBody2D::setIsBullet )
-				//	.def( "setFixedRotation", &PhysicalBody2D::setFixedRotation )
-				//	.def( "getCollisionMask", &PhysicalBody2D::getCollisionMask )
-				//	.def( "getCategoryBits", &PhysicalBody2D::getCategoryBits )
-				//	.def( "getGroupIndex", &PhysicalBody2D::getGroupIndex )
-				//	.def( "getLinearDumping", &PhysicalBody2D::getLinearDumping )
-				//	.def( "getAngularDumping", &PhysicalBody2D::getAngularDumping )
-				//	.def( "getAllowSleep", &PhysicalBody2D::getAllowSleep )
-				//	.def( "getIsBullet", &PhysicalBody2D::getIsBullet )
-				//	.def( "getFixedRotation", &PhysicalBody2D::getFixedRotation )
-				//	.def( "getIsSensor", &PhysicalBody2D::getIsSensor )
-				//	;
-				
-				//pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
-				//	;
-
-				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
+				xxbind::proxy_<Movie, xxbind::bases<Node, Animatable> >(_facade, _module, "Movie")
 					.def( "setReverse", &Movie::setReverse )
 					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )					
@@ -2825,15 +3090,15 @@ namespace Menge
 					.def( "hasMovieSlot", &Movie::hasMovieSlot )
 					;
 
-				pybind::proxy_<MovieInternalObject, pybind::bases<Node> >("MovieInternalObject", false)
+				xxbind::proxy_<MovieInternalObject, xxbind::bases<Node> >(_facade, _module, "MovieInternalObject")
 					;				
 
-				pybind::proxy_<Video, pybind::bases<Node , Animatable> >("Video", false)
+				xxbind::proxy_<Video, xxbind::bases<Node , Animatable> >(_facade, _module, "Video")
 					.def("pause",&Video::pause )
 					.def( "setVideoResource", &Video::setVideoResource )
 					;
 
-				pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
+				xxbind::proxy_<Window, xxbind::bases<Node> >(_facade, _module, "Window")
 					.def( "setClientSize", &Window::setClientSize )
 					.def( "setClientSizeClip", &Window::setClientSizeClip )
 					.def( "setClientSizeInTiles", &Window::setClientSizeInTiles )

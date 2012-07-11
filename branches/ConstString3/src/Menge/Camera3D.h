@@ -8,12 +8,18 @@
 
 namespace Menge
 {
+	class Observer;
+
 	class Camera3D
 		: public Camera
 		, public Node		
 	{
 	public:
 		Camera3D();
+
+	protected:
+		bool _activate() override;
+		void _deactivate() override;
 
 	public:
 		void setViewport( const Viewport & _viewport );
@@ -36,6 +42,9 @@ namespace Menge
 
 	protected:
 		void updateMatrix_() const;
+
+	protected:
+		void notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution );
 		
 	protected:
 		Viewport m_viewport;
@@ -44,10 +53,12 @@ namespace Menge
 		float m_cameraFOV;
 		float m_cameraAspect;
 
+		Observer * m_notifyChangeWindowResolution;
+
 		mutable Viewport m_viewportWM;
 		mutable mt::mat4f m_viewMatrixWM;
 		mutable mt::mat4f m_projectionMatrixWM;
-
+		
 		mutable bool m_invalidateMatrix;
 	};
 	//////////////////////////////////////////////////////////////////////////

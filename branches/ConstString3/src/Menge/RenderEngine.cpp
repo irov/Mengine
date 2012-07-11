@@ -57,8 +57,8 @@ namespace Menge
 		, m_textureFiltering(true)
 		, m_idEnumerator(0)
 		, m_supportA8(false)
-		, m_renderScale(0.f, 0.f)
-		, m_renderOffset(0.f, 0.f)
+		//, m_renderScale(0.f, 0.f)
+		//, m_renderOffset(0.f, 0.f)
 		, m_megatextures(NULL)
 		, m_vbPos(0)
 		, m_currentRenderPass(NULL)
@@ -230,8 +230,7 @@ namespace Menge
 
 			this->createMaterialGroup( CONST_STRING(ParticleBlend), mt );
 		}
-
-
+		
 		m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
 		return true;
@@ -239,6 +238,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::finalize()
 	{
+		if( m_nullTexture != NULL )
+		{
+			this->releaseTexture( m_nullTexture );
+		}
+
 		for( TMapTextures::iterator 
 			it = m_textures.begin(), 
 			it_end = m_textures.end();
@@ -297,11 +301,12 @@ namespace Menge
 		delete m_megatextures;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen,
+	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, int _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
+		m_lowContentViewport = _lowContentViewport;
 		m_viewport = _viewport;
 
 		m_fullscreen = _fullscreen;
@@ -323,37 +328,6 @@ namespace Menge
 		m_debugInfo.frameCount = 0;
 		m_debugInfo.megatextures = 0;
 
-		//////////////////////////////////////////////////////////////////////////
-		// Выноси такое в отдельные функции, читать невозможно
-		//////////////////////////////////////////////////////////////////////////
-		
-		size_t null_width = 2;
-		size_t null_height = 2;
-
-		RenderTextureInterface * texture  = this->createTexture( null_width, null_height, PF_R8G8B8 );
-		
-		m_nullTexture = dynamic_cast<RenderTexture*>(texture);
-		
-		if( m_nullTexture != NULL )
-		{
-			Rect rect;
-			rect.left = 0;
-			rect.top = 0;
-			rect.right = null_width;
-			rect.bottom = null_height;
-
-			int pitch = 0;
-			unsigned char* textureData = m_nullTexture->lock( &pitch, rect, false );
-
-			for( size_t it = 0; it != null_height; ++it )
-			{
-				unsigned char null_color = 0xFF;
-				std::fill( textureData, textureData + pitch * it + null_width, null_color );
-			}
-			
-			m_nullTexture->unlock();
-		}
-
 		if( this->recreate2DBuffers_( m_maxIndexCount ) == false )
 		{
 			return false;
@@ -366,11 +340,42 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::createWhitePixelTexture_()
+	{
+		size_t null_width = 2;
+		size_t null_height = 2;
+
+		m_nullTexture = this->createTexture( null_width, null_height, PF_R8G8B8 );
+
+		if( m_nullTexture == NULL )
+		{
+			return;
+		}
+		
+		Rect rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = null_width;
+		rect.bottom = null_height;
+
+		int pitch = 0;
+		unsigned char* textureData = m_nullTexture->lock( &pitch, rect, false );
+
+		for( size_t it = 0; it != null_height; ++it )
+		{
+			unsigned char null_color = 0xFF;
+			std::fill( textureData, textureData + pitch * it + null_width, null_color );
+		}
+
+		m_nullTexture->unlock();
+	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen )
+	void RenderEngine::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, bool _fullscreen )
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
+		m_lowContentViewport = _lowContentViewport;
 		m_viewport = _viewport;
 		
 		m_fullscreen = _fullscreen;
@@ -1394,16 +1399,16 @@ namespace Menge
 		//m_currentBlendDst = BF_ZERO;
 		m_interface->setDstBlendFactor( m_currentBlendDst );
 
-		float viewport_width = m_viewport.getWidth();
-		float viewport_height = m_viewport.getHeight();
+		//float viewport_width = m_viewport.getWidth();
+		//float viewport_height = m_viewport.getHeight();
 
-		float width_scale = viewport_width / float(m_contentResolution.getWidth());
-		float height_scale = viewport_height / float(m_contentResolution.getHeight());
+		//float width_scale = viewport_width / float(m_contentResolution.getWidth());
+		//float height_scale = viewport_height / float(m_contentResolution.getHeight());
 
-		m_renderScale.x = width_scale;
-		m_renderScale.y = height_scale;
+		//m_renderScale.x = width_scale;
+		//m_renderScale.y = height_scale;
 
-		m_renderOffset = m_viewport.begin;
+		//m_renderOffset = m_viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport )
@@ -1414,6 +1419,11 @@ namespace Menge
 	void RenderEngine::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
 	{
 		m_interface->makeProjectionPerspective( _projectionMatrix, _fov, _aspect, zn, zf );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf )
+	{
+		m_interface->makeProjectionFrustum( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, zn, zf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport )
@@ -1490,14 +1500,14 @@ namespace Menge
 			m_renderTargetResolution = m_windowResolution;
 		}
 
-		Viewport renderViewport;
+		//Viewport renderViewport;
 
 		const Viewport & viewport = camera->getViewport();
 
-		renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
-		renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
+		//renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
+		//renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
 
-		m_interface->setViewport( renderViewport );
+		m_interface->setViewport( viewport );
 
 		const mt::mat4f & viewMatrix = camera->getViewMatrix();
 		m_interface->setModelViewMatrix( viewMatrix );

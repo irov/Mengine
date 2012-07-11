@@ -106,10 +106,14 @@ namespace Menge
 		void finalize();
 
 	public:
-		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
-									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality );
+		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, int _bits, bool _fullscreen, 
+									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) override;
 
-		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen );
+	protected:
+		void createWhitePixelTexture_();
+
+	public:
+		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
 		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, size_t _texturesNum,
@@ -188,6 +192,7 @@ namespace Menge
 		
 		void makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport );
 		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf );
+		void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf );
 		void makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport );
 
 		const DebugInfo& getDebugInfo() const;
@@ -246,6 +251,7 @@ namespace Menge
 		Resolution m_renderTargetResolution;
 
 		Resolution m_contentResolution;
+		Viewport m_lowContentViewport;
 		
 		ConstString m_currentRenderTarget;
 
@@ -286,7 +292,7 @@ namespace Menge
 		typedef std::map<WString, RenderTextureInterface*> TMapTextures;
 		TMapTextures m_textures;
 
-		RenderTexture* m_nullTexture;	// dummy white pixel
+		RenderTextureInterface * m_nullTexture;	// dummy white pixel
 
 		DebugInfo m_debugInfo;	// debug info
 
@@ -303,8 +309,8 @@ namespace Menge
 
 		mutable size_t m_vbPos;
 
-		mt::vec2f m_renderScale;
-		mt::vec2f m_renderOffset;
+		//mt::vec2f m_renderScale;
+		//mt::vec2f m_renderOffset;
 
 		Viewport m_viewport;
 

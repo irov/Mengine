@@ -157,6 +157,33 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, Viewport & _value ) const
+	{
+		WString wvalue;
+		bool result = this->getSetting( _section, _key, wvalue );
+
+		if( result == false )
+		{
+			return false;
+		}
+
+		int left;
+		int top;
+		int right;
+		int bottom;
+		if( swscanf( wvalue.c_str(), L"%d;%d;%d;%d", &left, &top, &right, &bottom ) != 4 )
+		{
+			return false;
+		}
+
+		_value.begin.x = float(left);
+		_value.begin.y = float(top);
+		_value.end.x = float(right);
+		_value.end.y = float(bottom);
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ConfigLoader::getSettings( const WString & _section, const WString & _key, TVectorWString & _values ) const
 	{
 		bool result = m_config.getSettings( _section, _key, _values );

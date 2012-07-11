@@ -4,6 +4,7 @@
 #	include "InputHandler.h"
 
 #	include "ServiceProvider.h"
+
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
@@ -14,6 +15,7 @@
 #	include "PhysicEngine2D.h"
 
 #	include "StringizeService.h"
+#	include "NotificationService.h"
 
 #	include "MousePickerSystem.h"
 #	include "LightSystem.h"
@@ -299,6 +301,7 @@ namespace Menge
 		
 		ExecuteInitialize exinit( this );
 		
+		exinit.add( &Application::initializeNotificationService_ );
 		exinit.add( &Application::initializeLogEngine_ );
 		exinit.add( &Application::initializeUnicodeEngine_ );
 		exinit.add( &Application::initializeFileEngine_ );
@@ -464,6 +467,15 @@ namespace Menge
 	ServiceProviderInterface * Application::getServiceProvider() const
 	{
 		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeNotificationService_()
+	{
+		m_notificationService = new NotificationService;
+
+		NotificationService::keep(m_notificationService);
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeThreadEngine_()
@@ -747,7 +759,7 @@ namespace Menge
 
 		InputEngine::keep( m_inputEngine );
 
-		bool result = m_inputEngine->initialize();
+		bool result = m_inputEngine->initialize( m_serviceProvider );
 		if( result == false )
 		{
 			MENGE_LOG_ERROR( "Input Engine initialization failed!" );
@@ -985,16 +997,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle )
 	{
-		m_currentResolution = ( m_fullscreen == true )
-			? this->getDesktopResolution() 
-			: m_game->getResolution();
+		if( m_fullscreen == true )
+		{
+			m_currentResolution = this->getDesktopResolution();
+		}
+		else
+		{
+			this->calcWindowResolution( m_currentResolution );
+		}
 
+		bool vsync = m_game->getVSync();
+		m_renderEngine->setVSync( vsync );
+		
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
 		bool textureFiltering = m_game->getTextureFiltering();
 
 		const Resolution & contentResolution = m_game->getContentResolution();
+		const Viewport & lowContentViewport = m_game->getLowContentViewport();
 
 		MENGE_LOG_INFO( "Application::createRenderWindow %d Current Resolution %d %d"
 			, m_fullscreen
@@ -1012,9 +1033,7 @@ namespace Menge
 			, renderViewport.getHeight()
 			);
 
-		m_inputEngine->setDimentions( contentResolution, renderViewport );
-
-		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, renderViewport, bits, m_fullscreen,
+		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, lowContentViewport, renderViewport, bits, m_fullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
 
 		if( m_createRenderWindow == false )
@@ -1038,6 +1057,9 @@ namespace Menge
 		//m_renderEngine->setRenderViewport( renderViewport );
 
 		m_renderEngine->enableTextureFiltering( textureFiltering );
+
+		NotificationService::get()
+			->notify( "CHANGE_WINDOW_RESOLUTION", m_fullscreen, m_currentResolution );
 			
 		return true;
 	}
@@ -1055,54 +1077,8 @@ namespace Menge
 
 		m_game->initializeRenderResources();
 
-		//m_game->tick( 0.0f );
-
 		return true;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Application::loader( BinParser * _parser )
-	//{
-	//	BIN_SWITCH_ID( _parser )
-	//	{
-	//		BIN_CASE_NODE_PARSE_METHOD( Protocol::Application, this, &Application::loaderApplication_ );
-	//	}
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//void Application::loaderApplication_( BinParser * _parser )
-	//{
-	//	m_gamePackType = Consts::get()->c_dir;
-
-	//	BIN_SWITCH_ID( _parser )
-	//	{
-	//		BIN_CASE_ATTRIBUTE( Protocol::BaseDir_Value, m_baseDir );
-
-	//		BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
-	//		BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
-	//		//BIN_CASE_ATTRIBUTE( Protocol::GamePack_Type, m_gamePackType );
-	//		BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameDescription );
-	//		BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
-	//		BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
-	//		
-	//		//Load Plugins
-	//		BIN_CASE_NODE( Protocol::Plugin )
-	//		{
-	//			Menge::String pluginName;
-
-	//			BIN_FOR_EACH_ATTRIBUTES()
-	//			{
-	//				BIN_CASE_ATTRIBUTE( Protocol::Plugin_Name, pluginName );
-	//			}
-	//			
-	//			TMapParam param;
-	//			this->loadPlugin( pluginName, param );
-	//		}
-	//	}
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//void Application::_loaded()
-	//{
-	//	//Empty
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
@@ -1584,6 +1560,30 @@ namespace Menge
 		delete m_consts;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::calcWindowResolution( Resolution & _windowResolution ) const
+	{
+		const Resolution& dres = this->getMaxClientAreaSize();
+
+		const Resolution & windowResolution = m_game->getWindowResolution();
+
+		float aspect = windowResolution.getAspectRatio();
+
+		size_t resHeight = windowResolution.getHeight();
+		size_t dresHeight = dres.getHeight();
+
+		if( resHeight > dresHeight )
+		{
+			size_t new_witdh = static_cast<size_t>( float(resHeight) * aspect );
+
+			_windowResolution.setWidth( new_witdh );			
+			_windowResolution.setHeight( dresHeight );
+		}
+		else
+		{
+			_windowResolution = windowResolution;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getCurrentResolution() const
 	{
 		return m_currentResolution;
@@ -1680,9 +1680,17 @@ namespace Menge
 
 		m_fullscreen = _fullscreen;
 
-		m_currentResolution = ( m_fullscreen == true )
-			? this->getDesktopResolution() 
-			: m_game->getResolution();
+		if( m_fullscreen == true )
+		{
+			m_currentResolution = this->getDesktopResolution();
+		}
+		else
+		{
+			this->calcWindowResolution( m_currentResolution );
+		}
+
+		bool vsync = m_game->getVSync();
+		m_renderEngine->setVSync( vsync );
 
 		m_platform->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
@@ -1716,9 +1724,10 @@ namespace Menge
 		const Resolution & contentResolution = 
 			m_game->getContentResolution();
 
-		m_inputEngine->setDimentions( contentResolution, renderViewport );
-
-		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, renderViewport, _fullscreen );
+		const Viewport & lowContentViewport = 
+			m_game->getLowContentViewport();
+		
+		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, lowContentViewport, renderViewport, _fullscreen );
 		
 		m_game->onFullscreen( m_currentResolution, m_fullscreen );
 
@@ -1735,6 +1744,9 @@ namespace Menge
 			
 			//m_game->onAppMouseEnter();	
 		}
+
+		NotificationService::get()
+			->notify( "CHANGE_WINDOW_RESOLUTION", _fullscreen, m_currentResolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::screenshot( RenderTextureInterface* _renderTargetImage, const mt::vec4f & _rect )
@@ -1758,6 +1770,16 @@ namespace Menge
 	const Resolution & Application::getDesktopResolution() const
 	{
 		return m_desktopResolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Resolution & Application::getContentResolution() const
+	{
+		return m_game->getContentResolution();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Viewport & Application::getLowContentViewport() const
+	{
+		return m_game->getLowContentViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Application::getDebugMask() const
@@ -1806,11 +1828,6 @@ namespace Menge
 	const char* Application::getVersionInfo()
 	{
 		return s_versionInfo;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Resolution & Application::getResolution() const
-	{
-		return m_game->getResolution();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::isDebugCRT() const

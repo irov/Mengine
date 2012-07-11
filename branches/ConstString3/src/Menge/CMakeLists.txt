@@ -84,6 +84,14 @@ Service\\\\Stringize
 )
 
 ADD_FILTER(
+Service\\\\Notification
+	NotificationService.cpp
+	NotificationService.h
+    NotificationEvent.h
+)
+
+
+ADD_FILTER(
 Service\\\\Watchdog
 	Watchdog.cpp
 	Watchdog.h
@@ -798,12 +806,23 @@ Scene\\\\Layer3D
 
 ADD_FILTER(
 ScriptWrapper
-	EntityScriptWrapper.cpp
+    ScriptWrapper.h
+    EntityScriptWrapper.cpp
 	HelperScriptWrapper.cpp
-	NodeScriptWrapper.cpp
-	ScriptWrapper.h
-	SoundScriptWrapper.cpp
+    NodeScriptWrapper.cpp	
+    MathScriptWrapper.cpp
+    SoundScriptWrapper.cpp
 )
+
+ADD_FILTER(
+ScriptWrapper2
+    EntityScriptWrapper2.cpp
+    HelperScriptWrapper2.cpp
+    NodeScriptWrapper2.cpp	
+    MathScriptWrapper2.cpp
+	SoundScriptWrapper2.cpp
+)
+
 
 ADD_FILTER(
 Utils
@@ -813,6 +832,7 @@ Utils
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include
+                     ${THIRDPARTY_DIR}/xxbind/
 					 ${THIRDPARTY_DIR}/python/include
                      ${THIRDPARTY_DIR}/boost
                      ${THIRDPARTY_DIR}/simpleini
@@ -854,6 +874,14 @@ debug ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIX}
 )
 
+IF(MSVC)
+    SET( APPLICATION_LIBS
+     ${APPLICATION_LIBS}
+    debug ${MENGINE_LIB_PREFIX}xxbind_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}xxbind_static${MENGINE_LIB_SUFFIX}
+    )
+ENDIF(MSVC)
+    
     SET( APPLICATION_LIBS
      ${APPLICATION_LIBS}
     debug ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIXD}

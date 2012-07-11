@@ -23,6 +23,7 @@ namespace Menge
 	class ServiceProvider;
 
 	class StringizeService;
+	class NotificationService;
 
 	class LogEngine;
 	class ScriptEngine;
@@ -110,7 +111,6 @@ namespace Menge
 		bool getFullscreenMode() const override;
 
 	public:
-		const Resolution& getResolution() const override;
 		bool getVSync() const override;
 
 	public:
@@ -124,6 +124,7 @@ namespace Menge
 		const String & getPlatformName() const;
 
 	protected:
+		bool initializeNotificationService_();
 		bool initializeThreadEngine_();
 		bool initializeFileEngine_();
 		bool initializeLogEngine_();
@@ -170,8 +171,13 @@ namespace Menge
 	//	void loaderApplication_( BinParser * _parser );
 
 	public:
-		const Resolution & getCurrentResolution() const;
-		const Resolution & getDesktopResolution() const;
+		void calcWindowResolution( Resolution & _windowResolution ) const override;
+
+		const Resolution & getCurrentResolution() const override;
+		const Resolution & getDesktopResolution() const override;
+
+		const Resolution & getContentResolution() const override;
+		const Viewport & getLowContentViewport() const override;
 
 	public:
 		bool onRender() override;
@@ -294,6 +300,7 @@ namespace Menge
 
 		UnicodeServiceInterface * m_unicodeService;
 
+		NotificationService * m_notificationService;
 		LogEngine * m_logEngine;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;

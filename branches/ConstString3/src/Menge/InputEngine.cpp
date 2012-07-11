@@ -1,14 +1,17 @@
 #	include "InputEngine.h"
 #	include "Application.h"
 
+#	include "NotificationService.h"
+
 //# define WHEEL_DELTA 120
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine()
-		: m_cursorPosition(0.f, 0.f)
-		, m_inputScale(0.f, 0.f)
+		: m_serviceProvider(0)
+		, m_cursorPosition(0.f, 0.f)
+		, m_inputScale(1.f, 1.f)
 		, m_inputOffset(0.f, 0.f)
 	{
 	}
@@ -17,25 +20,17 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setDimentions( const Resolution & _contentResolution, const Viewport & _viewport )
+	void InputEngine::setDimentions( const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport )
 	{
-		float viewport_width = _viewport.getWidth();
-		float viewport_height = _viewport.getHeight();
-
-		m_dimentions.x = float(_contentResolution.getWidth());
-		m_dimentions.y = float(_contentResolution.getHeight());
-
-		float width_scale = viewport_width / m_dimentions.x;
-		float height_scale = viewport_height / m_dimentions.y;
-
-		m_inputOffset = _viewport.begin;
-
-		m_inputScale.x = 1.f / width_scale;
-		m_inputScale.y = 1.f / height_scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::initialize()
+	bool InputEngine::initialize( ServiceProviderInterface * _serviceProvider )
 	{
+		m_serviceProvider = _serviceProvider;
+
+		m_notifyChangeWindowResolution = NotificationService::get()
+			->addObserverMethod( "CHANGE_WINDOW_RESOLUTION", this, &InputEngine::notifyChangeWindowResolution );
+
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), 0x00 );
 
 		m_mouseBuffer[0] = false;
@@ -43,6 +38,14 @@ namespace Menge
 		m_mouseBuffer[2] = false;
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::finalize()
+	{
+		NotificationService::get()
+			->removeObserver( "CHANGE_WINDOW_RESOLUTION", m_notifyChangeWindowResolution );
+
+		m_notifyChangeWindowResolution = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()
@@ -142,7 +145,7 @@ namespace Menge
 	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
 	{
 		mt::vec2f scale_point;
-		mt::vec2f offset_point = _point - m_inputOffset;
+		mt::vec2f offset_point = _point + m_inputOffset;
 		//mt::vec2f offset_point = _point;
 		mt::mul_v2_v2( scale_point, offset_point, m_inputScale );
 
@@ -242,5 +245,42 @@ namespace Menge
 	{
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::notifyChangeWindowResolution(  bool _fullscreen, Resolution _resolution )
+	{
+		ApplicationInterface * applicationService = m_serviceProvider->getServiceT<ApplicationInterface>("ApplicationService");
+		
+		const Resolution & currentResolution = applicationService->getCurrentResolution();
+		const Resolution & contentResolution = applicationService->getContentResolution();
+		const Viewport & lowContentViewport = applicationService->getLowContentViewport();
+
+		size_t currentResolutionWidth = currentResolution.getWidth();
+		size_t currentResolutionHeight = currentResolution.getHeight();
+
+		size_t contentResolutionWidth = contentResolution.getWidth();
+		size_t contentResolutionHeight = contentResolution.getHeight();
+
+		if( currentResolutionWidth < contentResolutionWidth ||
+			currentResolutionHeight < contentResolutionHeight )
+		{
+			m_dimentions.x = lowContentViewport.getWidth();
+			m_dimentions.y = lowContentViewport.getHeight();
+
+			m_inputOffset = lowContentViewport.begin;
+		}
+		else
+		{
+			m_dimentions.x = float(contentResolutionWidth);
+			m_dimentions.y = float(contentResolutionHeight);
+
+			m_inputOffset = mt::vec2f(0.f, 0.f);
+		}
+		
+		float width_scale = float(currentResolutionWidth) / m_dimentions.x;
+		float height_scale = float(currentResolutionHeight) / m_dimentions.y;
+		
+		m_inputScale.x = 1.f / width_scale;
+		m_inputScale.y = 1.f / height_scale;
 	}
 }

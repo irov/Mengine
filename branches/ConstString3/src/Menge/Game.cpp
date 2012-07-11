@@ -132,27 +132,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::_loaded()
-	{
-		RenderEngine::get()
-			->setVSync( m_vsync );
-
-		const Resolution& dres = Application::get()
-			->getMaxClientAreaSize();
-
-		float aspect = m_resolution.getAspectRatio();
-
-		size_t resHeight = m_resolution.getHeight();
-		size_t dresHeight = dres.getHeight();
-
-		if( resHeight > dresHeight )
-		{
-			size_t new_witdh = static_cast<size_t>( float(resHeight) * aspect );
-			m_resolution.setWidth( new_witdh );			
-			m_resolution.setHeight( dresHeight );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
@@ -420,13 +399,14 @@ namespace Menge
 		cfg.getSetting( L"Game", L"Title", m_title );
 		cfg.getSetting( L"Game", L"Localized", m_localizedTitle );
 		cfg.getSetting( L"Game", L"ContentResolution", m_contentResolution );
+		cfg.getSetting( L"Game", L"LowContentViewport", m_lowContentViewport );
 		cfg.getSetting( L"Game", L"FixedContentResolution", m_fixedContentResolution );
 		cfg.getSetting( L"Game", L"PersonalityModule", m_personalityModule );
 
 		cfg.getSetting( L"DefaultArrow", L"Name", m_defaultArrowName );
 		cfg.getSetting( L"DefaultArrow", L"Prototype", m_defaultArrowPrototype );
 
-		cfg.getSetting( L"Window", L"Size", m_resolution );
+		cfg.getSetting( L"Window", L"Size", m_windowResolution );
 		cfg.getSetting( L"Window", L"Bits", m_bits );
 		cfg.getSetting( L"Window", L"Fullscreen", m_fullScreen );
 		cfg.getSetting( L"Window", L"VSync", m_vsync );
@@ -715,9 +695,14 @@ namespace Menge
 		return m_fixedContentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Resolution & Game::getResolution() const
+	const Viewport & Game::getLowContentViewport() const
 	{
-		return m_resolution;
+		return m_lowContentViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Resolution & Game::getWindowResolution() const
+	{
+		return m_windowResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Game::getBits() const
@@ -728,6 +713,11 @@ namespace Menge
 	bool Game::getFullscreen() const
 	{
 		return m_fullScreen;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::getVSync() const
+	{
+		return m_vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::getTextureFiltering() const

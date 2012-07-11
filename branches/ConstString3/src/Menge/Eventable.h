@@ -2,6 +2,7 @@
 
 #	include <map>
 #	include <string>
+#	include <stdarg.h>
 
 #	include "Config/Typedef.h"
 #	include "Core/ConstString.h"
@@ -30,7 +31,7 @@ namespace Menge
 		void callEventDeferred( EEventName _event, const char * _format, ... ) const;
 
 	public:
-		void callPyEventVaList( EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const;
+		void callPyEventVaList( EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
 
 	public:
 		bool askEvent( bool & _result, EEventName _event, const char * _format, ... ) const;
@@ -39,10 +40,10 @@ namespace Menge
 		bool askEvent( PyObject *& _result, EEventName _event, const char * _format, ... ) const;
 
 	public:
-		bool askPyEventVaList( bool & _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const;
-		bool askPyEventVaList( size_t & _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const;
-		bool askPyEventVaList( Scriptable *& _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const;
-		bool askPyEventVaList( PyObject *& _result, EEventName _event, PyObject * _pyevent, const char * _format, const va_list & _va ) const;
+		bool askPyEventVaList( bool & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
+		bool askPyEventVaList( size_t & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
+		bool askPyEventVaList( Scriptable *& _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
+		bool askPyEventVaList( PyObject *& _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
 
 	public:
 		void removeAllEvent();

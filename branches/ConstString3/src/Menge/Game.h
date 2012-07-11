@@ -71,9 +71,6 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	protected:
-		void _loaded() override;
-
-	protected:
 		PyObject * _embedded() override;
 		void _embedding( PyObject * _embed ) override;
 
@@ -104,15 +101,18 @@ namespace Menge
 		bool removeMouseButtonHandler( PyObject * _cb );
 
 	public:
-		const Resolution & getResolution() const;
+		const Resolution & getWindowResolution() const;
 		const Resolution & getContentResolution() const;
 		bool isContentResolutionFixed() const;
+
+		const Viewport & getLowContentViewport() const;
 		
 		const WString & getTitle() const;
 		const ConstString & getProjectName() const; 
 
 		int getBits() const;
 		bool getFullscreen() const;
+		bool getVSync() const;
 		bool getTextureFiltering() const;
 		int getFSAAType() const;
 		int getFSAAQuality() const;
@@ -142,7 +142,9 @@ namespace Menge
 		WString m_resourcePakFile;
 
 		Resolution m_contentResolution;
-		Resolution m_resolution;
+		Viewport m_lowContentViewport;
+
+		Resolution m_windowResolution;
 
 		bool m_fixedContentResolution;
 

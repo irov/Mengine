@@ -11,6 +11,8 @@
 
 namespace Menge
 {
+	class Observer;
+
 	class InputEngine
 		: public Holder<InputEngine>
 		, public InputServiceInterface
@@ -20,11 +22,14 @@ namespace Menge
 		~InputEngine();
 
 	public:
-		bool initialize();
-		void update();
+		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
+		void finalize() override;
 
 	public:
-		void setDimentions( const Resolution & _contentResolution, const Viewport & _viewport ) override;
+		void update() override;
+
+	public:
+		void setDimentions( const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport ) override;
 		
 	public:
 		bool isKeyDown( KeyCode _keyCode ) override;
@@ -48,7 +53,14 @@ namespace Menge
 
 		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
 
+	protected:
+		void notifyChangeWindowResolution(  bool _fullscreen, Resolution _resolution );
+
 	private:
+		ServiceProviderInterface * m_serviceProvider;
+
+		Observer * m_notifyChangeWindowResolution;
+
 		enum EventType
 		{
 			ET_KEY = 0,

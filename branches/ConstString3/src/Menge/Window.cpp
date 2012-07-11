@@ -376,21 +376,25 @@ namespace Menge
 		}
 
 		mt::vec2f clSize = _clientSize;
+
 		if( m_initialSizes[ResourceWindow_Background].x > 0.001f )
 		{
 			clSize.x = ::ceilf( clSize.x / m_initialSizes[ResourceWindow_Background].x ) * m_initialSizes[ResourceWindow_Background].x;	
 		}
+
 		if( m_initialSizes[ResourceWindow_Background].y > 0.001f )
 		{
 			clSize.y = ::ceilf( clSize.y / m_initialSizes[ResourceWindow_Background].y ) * m_initialSizes[ResourceWindow_Background].y;
 		}
-		setClientSize( clSize );
+		
+		this->setClientSize( clSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSize( const mt::vec2f& _clientSize )
 	{
 		m_clientSize = _clientSize;
-		invalidateVertices();
+
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f Window::getClientSize() const

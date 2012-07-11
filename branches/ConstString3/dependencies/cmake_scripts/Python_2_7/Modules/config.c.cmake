@@ -23,7 +23,8 @@ extern "C" {
 
 @PY_STATIC_MODULES_INIT_FUNCTIONS@
 /* -- ADDMODULE MARKER 1 -- */
-
+extern void initzipimport(void);
+extern void initzlib(void); 
 extern void PyMarshal_Init(void);
 extern void initimp(void);
 extern void initgc(void);
@@ -46,7 +47,8 @@ struct _inittab _PyImport_Inittab[] = {
 
 	/* This lives in Python/Python-ast.c */
 	{"_ast", init_ast},
-
+    {"zipimport", initzipimport},
+    {"zlib", initzlib}, 
 	/* These entries are here for sys.builtin_module_names */
 	{"__main__", NULL},
 	{"__builtin__", NULL},

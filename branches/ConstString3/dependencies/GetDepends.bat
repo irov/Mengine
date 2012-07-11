@@ -122,6 +122,7 @@ move svn-win32-1.6.6 svn
 :: svn\bin\svn export --force http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0 vorbis
 :: svn\bin\svn export --force http://svn.xiph.org/tags/theora/theora-1.0beta3 theora
 svn\bin\svn checkout https://pybind.svn.sourceforge.net/svnroot/pybind pybind
+svn\bin\svn checkout https://svn.code.sf.net/p/xxbind/code/trunk xxbind
 svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator
 ::svn\bin\svn export --force -r2465 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
 

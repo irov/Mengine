@@ -12,7 +12,7 @@
 //#	include "FileStream.h"
 #	include "Win32InputStream.h"
 #	include "Win32OutputStream.h"
-
+#	include "Win32MappedInputStream.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::FileSystemInterface **_system )
@@ -61,6 +61,15 @@ namespace Menge
 	void Win32FileSystem::closeInputStream( FileInputStreamInterface* _stream )
 	{
 		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
+
+		inputStream->close();
+
+		delete inputStream;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Win32FileSystem::closeMappedInputStream( FileInputStreamInterface * _fd )
+	{
+		Win32MappedInputStream* inputStream = static_cast<Win32MappedInputStream*>( _fd );
 
 		inputStream->close();
 
@@ -203,4 +212,18 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MappedFileInputStreamInterface * Win32FileSystem::openMappedInputStream( const WString& _filename )
+	{
+		Win32MappedInputStream* inputStream = new Win32MappedInputStream();
+
+		if( inputStream->open( _filename ) == false )
+		{				
+			this->closeMappedInputStream( inputStream );
+			inputStream = NULL;
+		}
+
+		return inputStream;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -11,6 +11,8 @@ src
 	Win32FileSystem.h
 	Win32InputStream.h
 	Win32InputStream.cpp
+	Win32MappedInputStream.h
+	Win32MappedInputStream.cpp
 )
 add_definitions(-DUNICODE)
 

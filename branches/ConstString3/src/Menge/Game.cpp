@@ -97,7 +97,8 @@ namespace Menge
                 
                 BIN_FOR_EACH_ATTRIBUTES()
                 {
-                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak_desc.name );
+                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Type, pak_desc.type );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak_desc.name );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak_desc.path );
 					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Locale, pak_desc.locale );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak_desc.filename );
@@ -118,6 +119,7 @@ namespace Menge
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak_desc.name );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak_desc.type );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak_desc.path );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Locale, pak_desc.locale );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Platform, pak_desc.platform );

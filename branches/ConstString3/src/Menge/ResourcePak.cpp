@@ -11,6 +11,7 @@
 #	include "LoaderEngine.h"
 #	include "BinParser.h"
 
+#	include "Consts.h"
 #	include "LogEngine.h"
 #	include "Utils/Core/File.h"
 
@@ -50,9 +51,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{
+		
 		WString fullPakPath = m_baseDir;
 		fullPakPath += m_desc.path;
-		fullPakPath += MENGE_FOLDER_DELIM;
+		
+		if(  m_desc.type == Consts::get()->c_zip )
+		{
+			fullPakPath += L".zip";
+		}
+		else
+		{
+			fullPakPath += MENGE_FOLDER_DELIM;
+		}
+		
 
 		if( FileEngine::get()
 			->mountFileSystem( m_desc.name, fullPakPath, m_desc.type, false ) == false )
@@ -81,7 +92,12 @@ namespace Menge
 		TVectorWString listModulePath;
 
 		WString scriptPakPath = m_baseDir + m_desc.path;
-
+		
+		if(  m_desc.type == Consts::get()->c_zip )
+		{
+			scriptPakPath += L".zip";
+		}
+		
 		for( TVectorWString::iterator
 			it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end();

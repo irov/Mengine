@@ -14,6 +14,13 @@ namespace Menge
 		virtual void close() = 0;		
 	};
 
+	class MappedFileInputStreamInterface
+		: public FileInputStreamInterface
+	{
+	public:
+		virtual void * getMemory( ) const = 0;
+	};
+	
 	class FileOutputStreamInterface
 		: public OutputStreamInterface
 	{
@@ -28,6 +35,9 @@ namespace Menge
 	public:
 		virtual bool existFile( const WString& _filename ) const = 0;
 		
+		virtual MappedFileInputStreamInterface* openMappedInputStream( const WString& _filename ) = 0;
+		virtual void closeMappedInputStream( FileInputStreamInterface* _stream ) = 0;
+
 		virtual FileInputStreamInterface* openInputStream( const WString& _filename ) = 0;
 		virtual void closeInputStream( FileInputStreamInterface* _stream ) = 0;
 		

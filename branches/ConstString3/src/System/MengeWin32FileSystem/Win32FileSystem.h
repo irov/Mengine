@@ -20,9 +20,12 @@ namespace Menge
 	public:
 		FileInputStreamInterface* openInputStream( const WString& _filename ) override;
 		void closeInputStream( FileInputStreamInterface * _fd ) override;
-
+		
 		FileOutputStreamInterface* openOutputStream( const WString& _filename ) override;
 		void closeOutputStream( FileOutputStreamInterface* _stream ) override;
+
+		MappedFileInputStreamInterface * openMappedInputStream( const WString& _filename ) override;
+		void closeMappedInputStream( FileInputStreamInterface * _fd ) override;
 
 		bool existFile( const WString& _filename  ) const override;
 		bool deleteFile( const WString& _filename ) override;

@@ -13,51 +13,30 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ArrowManager::ArrowManager()
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ArrowManager::~ArrowManager()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ArrowManager::registerArrow( const ResourceDesc & _desc )
-	{
-		m_descriptions.insert( std::make_pair(_desc.name, _desc) );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Arrow * ArrowManager::createArrow( const ConstString & _name, const ConstString & _prototype )
 	{
-		Arrow * arrow = this->createArrow_( _name, _prototype );
+		PyObject * py_prototype = this->getPrototype( _prototype );
 
-		return arrow;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Arrow * ArrowManager::createArrow_( const ConstString & _name, const ConstString & _prototype )
-	{
-		TMapDescriptionArrows::iterator it_find = m_descriptions.find( _name );
-
-		if( it_find == m_descriptions.end() )
+		if( py_prototype == 0 )
 		{
-			MENGE_LOG_ERROR( "Error: Arrow '%s' declaration not found"
+			MENGE_LOG_ERROR( "ArrowManager.createArrow: arrow '%s' prototype '%s' not found"
 				, _name.c_str() 
+				, _prototype.c_str()
 				);
 
 			return 0;
 		}
 
-		const ResourceDesc & desc = it_find->second;
-
 		const ConstString & type = Consts::get()->c_Arrow;
 
 		Arrow * arrow = ScriptEngine::get()
-			->createEntityT<Arrow>( _name, type, type, _prototype, desc.pak, desc.path );
+			->createEntityT<Arrow>( _name, type, type, py_prototype );
 
 		if( arrow == 0 )
 		{
-			MENGE_LOG_ERROR( "Can't create arrow '%s'"
+			MENGE_LOG_ERROR( "ArrowManager.createArrow: can't create arrow '%s' from prototype '%s'"
 				, _name.c_str() 
+				, _prototype.c_str()
 				); 
 
 			return 0;

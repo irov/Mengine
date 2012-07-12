@@ -27,6 +27,9 @@ namespace Menge
 		void unregisterFactory( const ConstString & _type );
 
 	public:
+		bool hasFactory( const ConstString & _type ) const;
+
+	public:
 		Factorable * createObject( const ConstString & _type );
 
 		template<class T>

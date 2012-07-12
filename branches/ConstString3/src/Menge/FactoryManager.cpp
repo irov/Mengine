@@ -49,6 +49,18 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool FactoryManager::hasFactory( const ConstString & _type ) const
+	{
+		TMapFactory::const_iterator it_found = m_factories.find( _type );
+
+		if( it_found == m_factories.end() )
+		{
+			return false;
+		}		
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Factorable * FactoryManager::createObject( const ConstString & _type )
 	{
 		TMapFactory::iterator it_found = m_factories.find( _type );

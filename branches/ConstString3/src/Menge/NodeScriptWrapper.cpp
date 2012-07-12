@@ -2,6 +2,7 @@
 #	include "ScriptWrapper.h"
 
 #	include "InputEngine.h"
+#	include "EntityManager.h"
 #	include "NodeManager.h"
 #	include "FileEngine.h"
 #	include "Scene.h"
@@ -462,14 +463,6 @@ namespace Menge
 				->getCurrentScene();
 
 			return scene;
-		}
-
-		static bool s_hasScene( const ConstString & _name )
-		{
-			bool result = SceneManager::get()
-				->hasScene( _name );
-
-			return result;
 		}
 
 		static Scene * s_createScene( const ConstString & _name )
@@ -1784,7 +1777,31 @@ namespace Menge
 
 			return duration;
 		}
+
+		static bool s_addEntityPrototype( const ConstString & _prototype, PyObject * _module )
+		{
+			bool result = EntityManager::get()
+				->addPrototype( _prototype, _module );
+
+			return result;
+		}
 		
+		static bool s_addScenePrototype( const ConstString & _prototype, PyObject * _module )
+		{
+			bool result = SceneManager::get()
+				->addPrototype( _prototype, _module );
+
+			return result;
+		}
+
+		static bool s_addArrowPrototype( const ConstString & _prototype, PyObject * _module )
+		{
+			bool result = ArrowManager::get()
+				->addPrototype( _prototype, _module );
+
+			return result;
+		}
+
 		static PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
 		{			
 			class ResourceMovieVisitorNullLayers
@@ -2848,8 +2865,6 @@ namespace Menge
 			pybind::def_function( "setCurrentScene", &ScriptMethod::setCurrentScene );
 			pybind::def_function( "getCurrentScene", &ScriptMethod::getCurrentScene );
 			 
-			
-			pybind::def_function( "hasScene", &ScriptMethod::s_hasScene );
 			pybind::def_function( "createScene", &ScriptMethod::s_createScene );
 
 			pybind::def_function( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
@@ -3006,7 +3021,11 @@ namespace Menge
 
 			pybind::def_function( "getNullObjectsFromResourceVideo", &ScriptMethod::s_getNullObjectsFromResourceVideo );
 
-			pybind::def_function( "getMovieDuration", &ScriptMethod::s_getMovieDuration );		
+			pybind::def_function( "getMovieDuration", &ScriptMethod::s_getMovieDuration );
+
+			pybind::def_function( "addEntityPrototype", &ScriptMethod::s_addEntityPrototype );
+			pybind::def_function( "addScenePrototype", &ScriptMethod::s_addScenePrototype );
+			pybind::def_function( "addArrowPrototype", &ScriptMethod::s_addArrowPrototype );
 		}
 	}
 }

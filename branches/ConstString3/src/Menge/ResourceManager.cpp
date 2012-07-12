@@ -119,11 +119,11 @@ namespace Menge
 			return false;
 		}
 
-		LoadableResourceManager loadable(this, _desc.pak, _desc.name);
+		LoadableResourceManager loadable(this, _desc.pakName, _desc.name);
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( _desc.pak, xml_path, &loadable, exist ) == false )
+			->load( _desc.pakName, xml_path, &loadable, exist ) == false )
 		{
 			if( exist == false )
 			{

@@ -50,20 +50,18 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
-	{
-		
+	{		
 		WString fullPakPath = m_baseDir;
 		fullPakPath += m_desc.path;
 		
 		if(  m_desc.type == Consts::get()->c_zip )
 		{
-			fullPakPath += L".zip";
+			//fullPakPath += L".zip";
 		}
 		else
 		{
 			fullPakPath += MENGE_FOLDER_DELIM;
-		}
-		
+		}		
 
 		if( FileEngine::get()
 			->mountFileSystem( m_desc.name, fullPakPath, m_desc.type, false ) == false )
@@ -93,10 +91,10 @@ namespace Menge
 
 		WString scriptPakPath = m_baseDir + m_desc.path;
 		
-		if(  m_desc.type == Consts::get()->c_zip )
-		{
-			scriptPakPath += L".zip";
-		}
+		//if(  m_desc.type == Consts::get()->c_zip )
+		//{
+			//scriptPakPath += L".zip";
+		//}
 		
 		for( TVectorWString::iterator
 			it = m_pathScripts.begin(),
@@ -117,37 +115,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::apply()
 	{
-		for( TSceneDescs::iterator
-			it = m_scenesDesc.begin(),
-			it_end = m_scenesDesc.end();
-		it != it_end;
-		++it )
-		{
-			SceneManager::get()
-				->registerScene( *it );
-		}
-
-
-		for( TArrowDescs::iterator
-			it = m_arrowsDesc.begin(),
-			it_end = m_arrowsDesc.end();
-		it != it_end;
-		++it )
-		{
-			ArrowManager::get()
-				->registerArrow( *it );
-		}
-
-		for( TPrototypeDescs::iterator
-			it = m_prototypesDesc.begin(),
-			it_end = m_prototypesDesc.end();
-		it != it_end;
-		++it )
-		{
-			EntityManager::get()
-				->registerPrototype( *it );
-		}
-
 		for( TResourceDescs::iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
@@ -181,42 +148,6 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE( Protocol::Scenes )
-			{
-				WString path;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Scenes_Path, path );
-				}
-
-				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderScenes_, path );
-			}
-
-			BIN_CASE_NODE( Protocol::Arrows )
-			{
-				WString path;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Arrows_Path, path );
-				}
-
-				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderArrows_, path );
-			}
-
-			BIN_CASE_NODE( Protocol::Entities )
-			{
-				WString path;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Entities_Path, path );
-				}
-
-				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderEntities_, path );
-			}
-
 			BIN_CASE_NODE( Protocol::Resources )
 			{
 				WString path;
@@ -248,43 +179,7 @@ namespace Menge
 	void ResourcePak::_loaded()
 	{
 		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderScenes_( BinParser * _parser, const WString & _path )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Scene )
-			{
-				ConstString name;
-				bool script = false;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Scene_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::Scene_Script, script );
-				}
-
-				this->addScene_( name, _path, script );
-			}			
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderArrows_( BinParser * _parser, const WString & _path )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Arrow_Name, &ResourcePak::addArrow_, _path );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderEntities_( BinParser * _parser, const WString & _path )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Entity_Name, &ResourcePak::addEntity_, _path );
-		}
-	}
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::loaderResources_( BinParser * _parser, const WString & _path )
 	{
@@ -314,50 +209,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScene_( const ConstString & _name, const WString & _path, bool _script )
-	{
-		ResourceDesc desc;
-		desc.name = _name;
-		desc.pak = m_desc.name;
-		desc.path = _path;
-		desc.script = _script;
-
-		m_scenesDesc.push_back( desc );
-
-		//SceneManager::get()
-		//	->registerScene( _name, desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addArrow_( const ConstString & _name, const WString & _path )
-	{
-		ResourceDesc desc;
-		desc.name = _name;
-		desc.pak = m_desc.name;
-		desc.path = _path;
-
-		m_arrowsDesc.push_back( desc );
-
-		//ArrowManager::get()
-		//	->registerArrow( _name, desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addEntity_( const ConstString & _name, const WString & _path )
-	{
-		ResourceDesc desc;
-		desc.name = _name;
-		desc.pak = m_desc.name;
-		desc.path = _path;
-
-		m_prototypesDesc.push_back( desc );
-		//EntityManager::get()
-		//	->addPrototype( _name, desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const ConstString & _name, const WString & _path )
 	{
 		ResourceDesc desc;
 		desc.name = _name;
-		desc.pak = m_desc.name;
+		desc.pakName = m_desc.name;
+		desc.pakPath = m_desc.path;
+		desc.pakType = m_desc.type;
 		desc.path = _path;
 
 		m_resourcesDesc.push_back( desc );
@@ -370,7 +228,9 @@ namespace Menge
 	{
 		ResourceDesc desc;
 		desc.name = _name;
-		desc.pak = m_desc.name;
+		desc.pakName = m_desc.name;
+		desc.pakPath = m_desc.path;
+		desc.pakType = m_desc.type;
 		desc.path = _path;
 
 		m_textsDesc.push_back( desc );

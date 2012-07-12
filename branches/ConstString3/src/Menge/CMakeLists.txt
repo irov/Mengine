@@ -733,6 +733,12 @@ Engine\\\\Thread
 )
 
 ADD_FILTER(
+Manager\\\\Prototype
+	PrototypeManager.cpp
+	PrototypeManager.h
+)
+
+ADD_FILTER(
 Manager\\\\Node
 	NodeManager.cpp
 	NodeManager.h

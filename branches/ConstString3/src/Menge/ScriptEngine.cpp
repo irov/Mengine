@@ -19,6 +19,8 @@
 #	include <iostream>
 #	include <stdarg.h>
 
+#	include <pybind/../config/python.hpp>
+
 
 namespace Menge
 {
@@ -97,10 +99,6 @@ namespace Menge
 
 		PyObject * pyErrorLogger = m_errorLogger->embedding();
 		pybind::setStdErrorHandle( pyErrorLogger );
-
-		m_prototypies[Consts::get()->c_Arrow];
-		m_prototypies[Consts::get()->c_Entity];
-		m_prototypies[Consts::get()->c_Scene];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::finalize()
@@ -110,24 +108,6 @@ namespace Menge
 			pybind::decref( m_internalObjectFinder );
 			m_internalObjectFinder = NULL;
 		}
-
-		for( TMapCategoryPrototypies::iterator
-			it_category = m_prototypies.begin(),
-			it_category_end = m_prototypies.end();
-		it_category != it_category_end;
-		++it_category )
-		{
-			for( TMapModules::iterator
-				it = it_category->second.begin(),
-				it_end = it_category->second.end();
-			it != it_end;
-			++it )
-			{
-				pybind::decref( it->second );
-			}
-		}
-
-		m_prototypies.clear();
 
 		for( TMapModules::iterator
 			it = m_modules.begin(),
@@ -274,179 +254,59 @@ namespace Menge
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const WString & _path, bool & _exist )
-	{
-		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
-
-		if( it_find_category == m_prototypies.end() )
-		{
-			MENGE_LOG_WARNING( "ScriptEngine: import prototype '%s':'%s' - invalid category"
-				, _prototype.c_str()
-				, _category.c_str()
-				);
-
-			return 0;				 
-		}
-
-		TMapModules::iterator it_find = it_find_category->second.find( _prototype );
-
-		if( it_find != it_find_category->second.end() )
-		{
-			_exist = (it_find->second != 0);
-
-			return it_find->second;
-		}
-
-		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeServiceInterface>("UnicodeService");
-				
-		//xml_path += 
-
-		bool u_path_successful;
-		String u_path = unicodeService->unicodeToUtf8( _path, u_path_successful );
-
-		String py_path = _pak.to_str();
-		py_path += L'.';
-		py_path += u_path;
-		py_path += L'.';
-		py_path += _prototype.to_str();
-		py_path += L'.';
-		py_path += _prototype.to_str();
-
-		PyObject * py_module = 0;
-
-		try
-		{
-			py_module = pybind::module_import( py_path.c_str(), _exist );
-		}
-		catch( ... )
-		{
-			ScriptEngine::handleException();
-
-			return 0;
-		}
-
-		if( _exist == false )
-		{
-			it_find_category->second.insert( std::make_pair( _prototype, (PyObject*)0 ) );
-
-			return 0;
-		}
-
-		if( py_module == 0 )
-		{
-			pybind::check_error();
-
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s' - path '%S'"
-				, _prototype.c_str()
-				, _category.c_str()
-				, _path.c_str()
-				);
-
-			return 0;
-		}
-
-		PyObject* py_proptotype = pybind::get_attr( py_module, _prototype.c_str() );
-
-		if( py_proptotype == 0 )
-		{	
-			pybind::check_error();
-
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import prototype '%s':'%s' - path '%S'"
-				, _prototype.c_str()
-				, _category.c_str()
-				, _path.c_str()
-				);
-
-			return 0;
-		}
-
-		pybind::type_initialize( py_proptotype );
-		pybind::decref( py_module );
-
-		it_find_category->second.insert( std::make_pair( _prototype, py_proptotype ) );
-
-		MENGE_LOG_INFO( "ScriptEngine: import prototype '%s':'%s'"
-			, _prototype.c_str()
-			, _category.c_str()
-			);
-
-		return py_proptotype;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setCurrentModule( PyObject * _module )
 	{
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const WString & _path )
+	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, PyObject * _prototype )
 	{
-		bool exist = false;
-
-		PyObject * module = this->importPrototype( _prototype, _type, _pak, _path, exist );
-
-		Entity * entity = 0;
-
-		if( exist == false )
+		if( _prototype == 0 )
 		{
-			entity = NodeManager::get()
-				->createNodeT<Entity>( _name, _type, _tag );
-		}
-		else
-		{
-			if( module == 0 )
-			{
-				MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s' '%s' (invalid module)"
-					, _prototype.c_str()
-					, _type.c_str()
-					);
-
-				return 0;
-			}
-
-			PyObject * py_entity = pybind::ask( module, "()" );
-
-			if( py_entity == 0 )
-			{
-				MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (invalid cast)"
-					, _prototype.c_str()
-					, _type.c_str()
-					);
-
-				return 0;
-			}
-
-			entity = Helper::extractNodeT<Entity>( py_entity );
-
-			if( entity != 0 )
-			{
-				entity->setName( _name );
-				entity->setType( _type );
-				entity->setTag( _tag );
-
-				entity->create();
-
-				//pybind::set_attr( py_entity, "Menge_name", pybind::ptr(_name) );
-				//pybind::set_attr( py_entity, "Menge_type", pybind::ptr(_type) );
-				//pybind::set_attr( py_entity, "Menge_tag", pybind::ptr(_tag) );
-			}			
-
-			//pybind::decref( py_entity );
-			pybind::decref( py_entity );
-		}
-
-		if( entity == 0 )
-		{
-			MENGE_LOG_ERROR( "ScriptEngine: Can't create node '%s.%s' (invalid cast)"
-				, _prototype.c_str()
+			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't create object '%s:%s' (_prototype == 0)"
+				, _name.c_str()
 				, _type.c_str()
 				);
 
 			return 0;
 		}
 
-		entity->setPrototype( _prototype );
+		PyObject * py_entity = pybind::ask( _prototype, "()" );
 
+		if( py_entity == 0 )
+		{
+			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't create object '%s.%s' (invalid create)"
+				, _name.c_str()
+				, _type.c_str()
+				);
+
+			return 0;
+		}
+
+		Entity * entity = Helper::extractNodeT<Entity>( py_entity );
+
+		pybind::decref( py_entity );
+
+		if( entity == 0 )
+		{
+			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't extract entity '%s.%s' (invalid cast)"
+				, _name.c_str()
+				, _type.c_str()
+				);
+
+			return 0;
+		}
+
+		entity->setName( _name );
+		entity->setType( _type );
+		entity->setTag( _tag );
+
+		entity->create();
+
+		//pybind::set_attr( py_entity, "Menge_name", pybind::ptr(_name) );
+		//pybind::set_attr( py_entity, "Menge_type", pybind::ptr(_type) );
+		//pybind::set_attr( py_entity, "Menge_tag", pybind::ptr(_tag) );
+	
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////

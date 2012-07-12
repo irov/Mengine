@@ -21,7 +21,9 @@ namespace Menge
 
 		size_t size = _file->size();
 
-		char * buff = new char[size];
+		char * buff = new char[size + 1];
+		buff[size] = 0;
+
 		_file->read( buff, size );
 
 		SI_Error err = m_ini.LoadData( buff, size );

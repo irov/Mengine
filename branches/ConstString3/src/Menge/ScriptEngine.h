@@ -5,6 +5,7 @@
 #	include "ScriptClassInterface.h"
 
 #	include "FileEngine.h"
+#	include "ResourceManager.h"
 
 #	include "Core/Holder.h"
 
@@ -38,7 +39,9 @@ namespace Menge
 		PyObject * initModule( const char * _name );
 
 		PyObject * importModule( const ConstString& _name ) override;
-		PyObject * importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _pak, const WString & _path, bool & _exist );
+
+		//PyObject * importPrototypeModule( const ResourceDesc & _resource ) override;
+		PyObject * importPrototype( const ConstString& _name, bool & _exist );
 
 		void setCurrentModule( PyObject * _module ) override;
 		
@@ -53,12 +56,12 @@ namespace Menge
 		void updateModulePath_();
 
 	public:
-		Entity * createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const WString & _path );
+		Entity * createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, PyObject * _prototype );
 
 		template<class T>
-		T * createEntityT( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const WString & _path )
+		T * createEntityT( const ConstString & _name, const ConstString& _type, const ConstString& _tag, PyObject * _prototype )
 		{
-			Entity * entity = this->createEntity( _name, _type, _tag, _prototype, _pak, _path );
+			Entity * entity = this->createEntity( _name, _type, _tag, _prototype );
 
 			if( dynamic_cast<T*>(entity) == NULL )
 			{

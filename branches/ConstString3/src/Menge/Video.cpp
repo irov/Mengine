@@ -494,7 +494,7 @@ namespace	Menge
 		if( _timing < 0 )
 		{
 			float curTiming = m_videoDecoder->getTiming();
-			seek_timing = curTiming - _timing;
+			seek_timing = curTiming + _timing;
 		}
 		else
 		{

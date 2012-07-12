@@ -25,17 +25,27 @@ namespace Menge
 	//custom avcodec IO callback Seek
 	int64_t SeekIOWrapper(void *_opaque, int64_t _offset, int _whence)
 	{
-		if(_whence == AVSEEK_SIZE)
+		InputStreamInterface * stream = (InputStreamInterface *) _opaque;
+		
+		if( _whence == AVSEEK_SIZE )
 		{
-			return -1;
+			int64_t size = stream->size();
+			return size;
 		}
+		
+		int offset;
+		
 		if( _offset < 0 )
 		{
-			return -1;
+			int pos = stream->tell();
+			offset = pos + _offset;
 		}
-
-		InputStreamInterface * stream = (InputStreamInterface *) _opaque;
-		stream->seek( _offset );
+		else
+		{
+			offset = _offset;
+		}
+		
+		stream->seek( offset );
 		//fseek(Pf, _offset , SEEK_SET);
 		return 0;
 	}
@@ -469,22 +479,30 @@ namespace Menge
 		}
 		*/
 		//avcodec_flush_buffers( m_codecContext );
-		
+		if( _timing < 0 )
+		{
+			//printf( "VideoDecoderFFMPEG::seek  not supported timing %4.2f\n",_timing );
+			return false;
+		}
+
+		//printf("SEEK TO %4.2f\n",_timing);
 		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
 		int seekStreamIndex = ( m_videoStreamId != -1 ) ? m_videoStreamId : defaultStreamIndex;
-				
-		//AVRational av_q;
-		//av_q.num = 1; 
-		//av_q.den = AV_TIME_BASE; 
-		//__int64 seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base) * 1000.0f;
-
-		int frame = _timing / m_dataInfo.frameTiming;
-		if( this->seekToFrame( frame ) == false )
+		
+		AVRational av_q;
+		av_q.num = 1; 
+		av_q.den = AV_TIME_BASE; 
+		int64_t seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base);
+	
+		// seconds * TIMEBASE!!!!!
+		//int64_t ts = (int64_t) ( (_timing / 1000.0f) * AV_TIME_BASE );
+		int64_t ts = seekTime * AV_TIME_BASE;
+		
+		if( this->_seek( ts ) == false )
 		{
 			return false;
 		}
-		
-		m_pts = _timing;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -526,16 +544,23 @@ namespace Menge
 		return m_pts;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::seekToFrame( int _frame )
+	bool VideoDecoderFFMPEG::_seek( int64_t _timing )
 	{
+		//printf("TIMING _ %i\n",_timing);
+		
 		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
 		int seekStreamIndex = ( m_videoStreamId != -1 ) ? m_videoStreamId : defaultStreamIndex;
+		int64_t minTime = _timing - m_dataInfo.frameTiming;
+		int64_t maxTime = _timing + m_dataInfo.frameTiming;
+		int64_t needTime = _timing;
 
-		if( av_seek_frame( m_formatContext, seekStreamIndex, _frame, AVSEEK_FLAG_FRAME ) < 0 )
+		//if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )
+		if( avformat_seek_file( m_formatContext, defaultStreamIndex, minTime, needTime, maxTime, AVSEEK_FLAG_ANY | AVSEEK_FLAG_FRAME ) < 0 )
 		{
 			return false;
 		}
 
+		avcodec_flush_buffers( m_codecContext );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

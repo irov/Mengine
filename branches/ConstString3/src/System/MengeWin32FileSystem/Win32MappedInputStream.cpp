@@ -7,7 +7,8 @@ namespace Menge
 	Win32MappedInputStream::Win32MappedInputStream()
 		: m_hFile( INVALID_HANDLE_VALUE )
 		, m_hMapping( INVALID_HANDLE_VALUE )
-		, m_size( 0 )
+		, m_size(0)
+		, m_memory(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -35,7 +36,7 @@ namespace Menge
 
 		if( m_size == INVALID_FILE_SIZE )
 		{
-			CloseHandle( m_hFile );
+			::CloseHandle( m_hFile );
 			return false;
 		}
 
@@ -43,7 +44,16 @@ namespace Menge
 
 		if( m_hMapping == NULL )
 		{
-			CloseHandle( m_hFile );
+			::CloseHandle( m_hFile );
+			return false;
+		}
+
+		m_memory = MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, m_size );
+
+		if( m_memory == NULL )
+		{
+			::CloseHandle( m_hMapping );
+			::CloseHandle( m_hFile );
 			return false;
 		}
 
@@ -52,15 +62,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32MappedInputStream::close()
 	{
-		if( m_hFile != INVALID_HANDLE_VALUE )
-		{
-			::CloseHandle( m_hFile );
-			m_hFile = INVALID_HANDLE_VALUE;
-		}
 		if( m_hMapping != INVALID_HANDLE_VALUE )
 		{
 			::CloseHandle( m_hMapping );
 			m_hMapping = INVALID_HANDLE_VALUE;
+		}
+
+		if( m_hFile != INVALID_HANDLE_VALUE )
+		{
+			::CloseHandle( m_hFile );
+			m_hFile = INVALID_HANDLE_VALUE;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,8 +180,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void * Win32MappedInputStream::getMemory() const 
 	{
-		void* pMem = MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, m_size );
-		return pMem;
+		return m_memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

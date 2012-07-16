@@ -887,8 +887,7 @@ namespace Menge
 		{
 			mt::vec2f out;
 			bool done = m_interpolator.update( _timing, &out );
-
-
+			
 			PyObject * py_out = pybind::ptr(out);
 
 			EventManager::get()

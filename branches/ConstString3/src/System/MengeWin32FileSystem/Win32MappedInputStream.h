@@ -37,5 +37,7 @@ namespace Menge
 		HANDLE m_hFile;
 		HANDLE m_hMapping;
 		DWORD m_size;
+
+		void * m_memory;
 	};
 }	// namespace Menge

@@ -383,11 +383,7 @@ namespace Menge
 		m_invalidateARGB = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	inline BGRA ColourValue::getAsBGRA() const
-#else
 	inline ARGB ColourValue::getAsARGB() const
-#endif
 	{
 		if( m_invalidateARGB == true )
 		{

@@ -107,6 +107,11 @@ namespace Menge
 			ResourceImageDefault * image = ResourceManager::get()
 				->getResourceT<ResourceImageDefault>( name );
 
+			if( image == NULL )
+			{
+				return false;
+			}
+
 			m_atlasImages.push_back( image );
 		}
 

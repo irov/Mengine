@@ -12,11 +12,7 @@ namespace Menge
 	const ColourValue ColourValue::Blue = ColourValue(0.0,0.0,1.0,1.f);
 
 	//////////////////////////////////////////////////////////////////////////
-#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	ABGR ColourValue::getAsABGR() const
-#else
 	RGBA ColourValue::getAsRGBA() const
-#endif
 	{
 		uint8 val8;
 		uint32 val32 = 0;

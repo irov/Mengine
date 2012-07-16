@@ -28,8 +28,11 @@ namespace Menge
 	bool TextManager::loadResource( const ResourceDesc & _desc )
 	{
 		WString xml_path = _desc.path;
-		xml_path += MENGE_FOLDER_DELIM;
-
+		if( xml_path.length() != 0 )
+		{
+			xml_path += MENGE_FOLDER_RESOURCE_DELIM;
+		}
+		
 		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
 			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 

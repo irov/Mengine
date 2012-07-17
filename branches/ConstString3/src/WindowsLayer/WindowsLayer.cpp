@@ -235,12 +235,38 @@ namespace WindowsLayer
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HANDLE createFile( const Menge::WString& _filename, DWORD _desiredAccess,
+	static Menge::WString GetNameFromPath( Menge::WString sPath ) 
+	{
+		int pos1 = sPath.find_last_of(L"\\");
+		
+		int pos2 = sPath.find_last_of(L"/");
+
+		int pos = max(pos1, pos2);
+
+		return sPath.substr(++pos, sPath.length());
+	}
+	//////////////////////////////////////////////////////////////////////////
+	HANDLE createFile( const Menge::WString& _filepath, DWORD _desiredAccess,
 		DWORD _sharedMode, DWORD _creationDisposition )
 	{
-		HANDLE handle = ::CreateFile( _filename.c_str(), _desiredAccess, _sharedMode, NULL,
+		HANDLE handle = ::CreateFile( _filepath.c_str(), _desiredAccess, _sharedMode, NULL,
 			_creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
 
+#ifdef _DEBUG
+		WIN32_FIND_DATA wfd;
+		HANDLE hFind = ::FindFirstFile(_filepath.c_str(), &wfd);
+
+		Menge::WString filename = GetNameFromPath(_filepath);
+
+		if( filename != wfd.cFileName )
+		{
+			printf("File invalid name lowercase|upcase %S (%S)\n"
+				, _filepath.c_str()
+				, wfd.cFileName
+				);
+		}
+#endif
+		
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -36,6 +36,7 @@ namespace Menge
 	bool RenderParticlesSuites::initialise( HINSTANCE _hinstance, size_t _windowWidth, size_t _windowHeight )
 	{
 		m_render = new RenderParticles( _hinstance, _windowWidth, _windowHeight );
+
 		if( m_render->initialise() == false )
 		{
 			return false;

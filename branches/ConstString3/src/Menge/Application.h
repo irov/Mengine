@@ -56,6 +56,8 @@ namespace Menge
 
 	class Watchdog;
 
+	class ResourceCursorICO;
+
 	class PluginInterface;
 
 	class UnicodeServiceInterface;
@@ -238,7 +240,7 @@ namespace Menge
 		void setVSync( bool _vsync );
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
-		void setCursorIcon(const WString& _fileName);
+		void setCursorIcon( const ConstString & _resourceName );
 
 		void setAsScreensaver( bool _set );
 
@@ -331,7 +333,7 @@ namespace Menge
 		WString m_applicationPath;
 		WString m_baseDir;
 		
-		WString m_cursorFileName;
+		ResourceCursorICO * m_cursorResource;
 		
 		ConstString m_gamePackName;
 		WString m_gamePackPath;

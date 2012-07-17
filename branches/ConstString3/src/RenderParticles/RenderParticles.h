@@ -58,7 +58,7 @@ namespace Menge
 		virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ){ }
 		virtual void notifyVsyncChanged( bool _vsync ) { }
 		virtual void notifyCursorModeChanged( bool _mode ){ }
-		virtual void notifyCursorIconSetup( const WString & _filename ){ }
+		virtual void notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size ){ }
 
 		virtual void notifyCursorClipping( const Viewport & _viewport ){ }
 		virtual void notifyCursorUnClipping(){ }

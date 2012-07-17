@@ -62,7 +62,7 @@ namespace Menge
 		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
 		void notifyCursorModeChanged( bool _mode ) override;
-		void notifyCursorIconSetup( const WString& _fileName ) override;
+		void notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size ) override;
 
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
@@ -105,8 +105,8 @@ namespace Menge
 		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;
 		HCURSOR m_cursor;
-
-		typedef std::map<WString, HCURSOR> TMapCursors;
+		
+		typedef std::map<ConstString, HCURSOR> TMapCursors;
 		TMapCursors m_cursors;
 		
 		WString m_name;

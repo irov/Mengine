@@ -1397,14 +1397,33 @@ namespace Menge
 		m_serviceProvider->addServiceListener( "InputService", new WinApplicationInputService(this) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorIconSetup( const WString& _fileName )
+	void WinApplication::notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size )
 	{
-		TMapCursors::iterator it_found = m_cursors.find( _fileName );
+		TMapCursors::iterator it_found = m_cursors.find( _name );
 
 		if( it_found == m_cursors.end() )
 		{
-			HCURSOR cursor = LoadCursorFromFile( _fileName.c_str() );
+			WString icoFile;
 
+			icoFile += m_userPath;
+			icoFile += L"IconCache";
+			icoFile += MENGE_FOLDER_DELIM;
+
+			WindowsLayer::createDirectory( icoFile );
+
+			WString nameW;
+			WindowsLayer::ansiToUnicode( _name.to_str(), nameW );
+
+			icoFile += nameW;
+			icoFile += L".cur";
+
+			FILE * file = _wfopen( icoFile.c_str(), L"wb" );
+			fwrite( _buffer, _size, 1, file );
+			fclose( file );
+									
+			//HCURSOR cursor = LoadCursorFromFile( _fileName.c_str() );
+			HCURSOR cursor = LoadCursorFromFile( icoFile.c_str() );
+			
 			DWORD errCode = GetLastError();
 
 			if( errCode != 0 )
@@ -1416,7 +1435,7 @@ namespace Menge
 				return;
 			}
 			
-			it_found = m_cursors.insert( std::make_pair( _fileName, cursor ) ).first;
+			it_found = m_cursors.insert( std::make_pair( _name, cursor ) ).first;
 		}
 		
 		m_cursor = it_found->second;

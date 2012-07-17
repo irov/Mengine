@@ -176,7 +176,7 @@ namespace Menge
 			sourceInterface->setVolume( m_commonVolume * m_soundVolume );
 		}
 
-		if( m_muted == true )
+		if( this->isMute() == true )
 		{
 			sourceInterface->setVolume( 0.0f );
 		}
@@ -637,7 +637,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( m_muted == true )
+			if( this->isMute() == true )
 			{
 				it->second.soundSourceInterface->setVolume( 0.0f );
 			}
@@ -669,7 +669,8 @@ namespace Menge
 		}
 
 		it_find->second.volume = _volume;
-		if( m_muted == false )
+
+		if( this->isMute() == false )
 		{
 			it_find->second.soundSourceInterface->setVolume( m_commonVolume * m_soundVolume * _volume );
 		}

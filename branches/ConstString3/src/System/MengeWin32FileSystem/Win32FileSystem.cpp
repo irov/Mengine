@@ -51,8 +51,9 @@ namespace Menge
 
 		if( inputStream->open( _filename ) == false )
 		{				
-			this->closeInputStream( inputStream );
-			inputStream = NULL;
+			delete inputStream;
+
+			return 0;
 		}
 
 		return inputStream;
@@ -83,8 +84,7 @@ namespace Menge
 			return true;
 		}
 
-		if( _filename.empty() == false 
-			&& _filename[_filename.size()-1] == L':' )	// root dir
+		if( _filename[_filename.size()-1] == L':' )	// root dir
 		{
 			return true;	// let it be
 		}
@@ -157,6 +157,7 @@ namespace Menge
 	FileOutputStreamInterface* Win32FileSystem::openOutputStream( const WString& _filename )
 	{
 		Win32OutputStream* outStream = new Win32OutputStream();
+
 		if( outStream->open( _filename ) == false )
 		{
 			delete outStream;
@@ -168,12 +169,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FileSystem::closeOutputStream( FileOutputStreamInterface* _stream )
 	{
-		Win32OutputStream* outStream = static_cast<Win32OutputStream*>( _stream );
-		if( outStream != NULL )
+		if( _stream == NULL )
 		{
-			outStream->close();
-			delete outStream;
+			return;
 		}
+
+		Win32OutputStream* outStream = static_cast<Win32OutputStream*>(_stream);
+		
+		outStream->close();
+
+		delete outStream;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::deleteFile( const WString& _filename )

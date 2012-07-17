@@ -789,7 +789,7 @@ namespace Menge
 			}
 
 			Application::get()
-				->setCursorIcon( path );
+				->setCursorIcon( _resourceName );
 
 			return true;
 		}

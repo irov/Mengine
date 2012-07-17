@@ -181,8 +181,7 @@ namespace mt
 		mul_v4_m3_i( _out.v0, _a.v0, _b );
 		mul_v4_m3_i( _out.v1, _a.v1, _b );
 		mul_v4_m3_i( _out.v2, _a.v2, _b );
-
-		_out.v3 = _a.v3;
+		mul_v4_m3_i( _out.v3, _a.v3, _b );
 	}
 
 	MATH_FUNCTION_INLINE mat4f operator* (const mat4f& _a, const mat4f& _b)

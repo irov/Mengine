@@ -217,6 +217,7 @@ namespace Menge
 		, m_countThreads(2)
 		, m_mouseEnter(false)
 		, m_developmentMode(false)
+		, m_cursorResource(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2011,9 +2012,13 @@ namespace Menge
 			m_game->setCursorMode( m_cursorMode );
 		}
 
-		if( m_cursorMode == true && m_cursorFileName.empty() == false )
+		if( m_cursorMode == true && m_cursorResource != NULL )
 		{
-			m_platform->notifyCursorIconSetup( m_cursorFileName );
+			const ConstString & cursorName = m_cursorResource->getName();
+
+			size_t cursorBufferSize;
+			void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
+			m_platform->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
 		}
 
 		m_invalidateCursorMode = true;
@@ -2024,16 +2029,32 @@ namespace Menge
 		return m_cursorMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setCursorIcon(const WString& _fileName)
+	void Application::setCursorIcon( const ConstString & _resourceName )
 	{
-		m_cursorFileName = _fileName;
+		if( m_cursorResource != NULL )
+		{
+			m_cursorResource->release();
+		}
+
+		m_cursorResource = ResourceManager::get()
+			->getResourceT<ResourceCursorICO>(_resourceName);
+
+		if( m_cursorResource == NULL )
+		{
+			return;
+		}
 
 		if( m_cursorMode == false )
 		{
 			return;
 		}
 
-		m_platform->notifyCursorIconSetup(_fileName);
+		const ConstString & cursorName = m_cursorResource->getName();
+
+		size_t cursorBufferSize;
+		void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
+
+		m_platform->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setAsScreensaver( bool _set )

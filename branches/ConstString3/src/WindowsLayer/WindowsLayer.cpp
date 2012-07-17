@@ -260,7 +260,7 @@ namespace WindowsLayer
 
 		if( filename != wfd.cFileName )
 		{
-			printf("File invalid name lowercase|upcase %S (%S)\n"
+			printf("File invalid name lowercase|upcase:\npath - %S\ncurrent file name - %S\n\n"
 				, _filepath.c_str()
 				, wfd.cFileName
 				);

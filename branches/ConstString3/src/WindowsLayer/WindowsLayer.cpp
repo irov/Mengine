@@ -241,7 +241,7 @@ namespace WindowsLayer
 		
 		int pos2 = sPath.find_last_of(L"/");
 
-		int pos = max(pos1, pos2);
+		int pos = (std::max)(pos1, pos2);
 
 		return sPath.substr(++pos, sPath.length());
 	}

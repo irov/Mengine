@@ -17,21 +17,6 @@ namespace Menge
 	{
 	};
 
-	template<class C, class M>
-	class ObserverMethod
-	{
-	public:
-		ObserverMethod( C * _self, M _method )
-			: m_self(_self)
-			, m_method(_method)
-		{
-		}
-
-	protected:
-		C * m_self;
-		M m_method;
-	};
-
 	class Observer0
 		: public Observer
 	{
@@ -42,11 +27,11 @@ namespace Menge
 	template<class C, class M>
 	class ObserverMethod0
 		: public Observer0
-		, public ObserverMethod<C,M>
 	{
 	public:
 		ObserverMethod0( C * _self, M _method )
-			: ObserverMethod<C,M>(_self, _method)
+			: m_self(_self)
+			, m_method(_method)
 		{
 		}
 
@@ -55,6 +40,10 @@ namespace Menge
 		{
 			(m_self->*m_method)();
 		}
+
+	protected:
+		C * m_self;
+		M m_method;
 	};
 
 	template<class C>
@@ -79,11 +68,11 @@ namespace Menge
 	template<class C, class M, class P0>
 	class ObserverMethod1
 		: public Observer1<P0>
-		, public ObserverMethod<C,M>
 	{
 	public:
 		ObserverMethod1( C * _self, M _method )
-			: ObserverMethod<C,M>(_self, _method)
+			: m_self(_self)
+			, m_method(_method)
 		{
 		}
 
@@ -92,6 +81,10 @@ namespace Menge
 		{
 			(m_self->*m_method)( _p0 );
 		}
+
+	protected:
+		C * m_self;
+		M m_method;
 	};
 	
 	template<class C, class P0>
@@ -116,11 +109,11 @@ namespace Menge
 	template<class C, class M, class P0, class P1>
 	class ObserverMethod2
 		: public Observer2<P0, P1>
-		, public ObserverMethod<C,M>
 	{
 	public:
 		ObserverMethod2( C * _self, M _method )
-			: ObserverMethod<C,M>(_self, _method)
+			: m_self(_self)
+			, m_method(_method)
 		{
 		}
 
@@ -129,6 +122,10 @@ namespace Menge
 		{
 			(m_self->*m_method)( _p0, _p1 );
 		}
+
+	protected:
+		C * m_self;
+		M m_method;
 	};
 
 	template<class C, class P0, class P1>
@@ -172,7 +169,7 @@ namespace Menge
 		: public VisitorObserver
 	{
 	public:
-		VisitorObserverCall1( P0 _po )
+		VisitorObserverCall1( P0 _p0 )
 			: m_p0(_p0)
 		{
 		}

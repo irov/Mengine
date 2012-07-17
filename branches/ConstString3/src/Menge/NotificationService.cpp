@@ -77,7 +77,7 @@ namespace Menge
 	void NotificationService::invalidObserver_( const String & _id )
 	{
 		MENGE_LOG_ERROR("NotificationService: invalid observer %d"
-			, _id
+			, _id.c_str()
 			);
 	}
 }

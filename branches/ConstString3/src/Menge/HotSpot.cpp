@@ -42,7 +42,7 @@ namespace	Menge
 
 		this->endPolygon_();
 
-		invalidateBoundingBox();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Polygon & HotSpot::getPolygon() const

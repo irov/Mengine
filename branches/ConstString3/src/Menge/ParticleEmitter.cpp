@@ -251,7 +251,8 @@ namespace	Menge
 
 		m_interface->play();
 
-		ParticleEmitter::_update( m_startPosition );
+		//TODO!???
+		ParticleEmitter::_update( 0.f, m_startPosition );
 
 		return true;
 	}
@@ -341,9 +342,9 @@ namespace	Menge
 		return m_interface->setLeftBorder( _leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_update( float _timing )
+	void ParticleEmitter::_update( float _current, float _timing )
 	{
-		Node::_update( _timing );
+		Node::_update( _current, _timing );
 
 		if( this->isPlay() == false )
 		{

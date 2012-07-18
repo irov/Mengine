@@ -54,7 +54,7 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 
 		//void _invalidateBoundingBox() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;

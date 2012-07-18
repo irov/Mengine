@@ -295,9 +295,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_update( float _timing )
+	void HotSpot::_update( float _current, float _timing )
 	{
-		Node::_update( _timing );
+		Node::_update( _current, _timing );
 
 		MousePickerAdapter::updatePicker();
 	}

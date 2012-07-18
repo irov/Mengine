@@ -83,7 +83,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 		void _render( RenderCameraInterface * _camera ) override;
 
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;

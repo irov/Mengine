@@ -1072,7 +1072,7 @@ namespace Menge
 		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_update( float _timing )
+	void Movie::_update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
 		{
@@ -1221,7 +1221,7 @@ namespace Menge
 			}
 			else
 			{
-				if( indexIn > m_currentFrame )
+				if( indexIn > m_currentFrame || _lastFrame > indexOut )
 				{
 					continue;
 				}
@@ -1287,7 +1287,9 @@ namespace Menge
 						//	, node->getName().c_str()
 						//	);
 
-						animatable->play();
+						float playTime = this->getPlayTime();
+
+						animatable->play( playTime + layerIn );
 
 						if( _lastFrame <= m_currentFrame )
 						{

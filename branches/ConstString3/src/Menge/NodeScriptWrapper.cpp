@@ -546,6 +546,16 @@ namespace Menge
 				->getRenderCamera2D()->getViewport().begin;
 		}
 
+		static size_t s_Animatable_play( Animatable * _animatable )
+		{
+			float time = Player::get()
+				->getTime();
+
+			size_t id = _animatable->play( time );
+
+			return id;
+		}
+
 		static void setCamera2DDirection( float x, float y )
 		{
 			assert(!"NOT IMPLEMENTED");
@@ -2418,7 +2428,7 @@ namespace Menge
 			;
 
 		pybind::interface_<Animatable>("Animatable")
-			.def( "play", &Animatable::play )
+			.def_static( "play", &ScriptMethod::s_Animatable_play )
 			.def( "stop", &Animatable::stop )
 			.def( "isPlay", &Animatable::isPlay )
 			.def( "getPlayId", &Animatable::getPlayId )

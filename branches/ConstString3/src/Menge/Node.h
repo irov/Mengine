@@ -206,13 +206,13 @@ namespace Menge
 		virtual void _freeze( bool _value );
 
 	public:
-		void update( float _timing ) override;
+		void update( float _current, float _timing ) override;
 
 	protected:
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 
 	protected:
-		void updateChild_( float _timing );
+		void updateChild_( float _current, float _timing );
 		
 	protected:
 		PyObject * _embedded() override;

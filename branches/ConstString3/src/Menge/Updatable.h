@@ -5,9 +5,9 @@ namespace Menge
 	class Updatable
 	{
 	public:
-		virtual void update( float _timing );
+		virtual void update( float _current, float _timing );
 
 	protected:
-		virtual void _update( float _timing ) = 0;
+		virtual void _update( float _current, float _timing ) = 0;
 	};
 }

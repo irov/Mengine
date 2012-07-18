@@ -31,7 +31,7 @@ namespace Menge
 		const mt::vec3f & getLinearSpeed() const;
 
 	public:
-		void update( float _timing );
+		void update( float _current, float _timing );
 
 	protected:
 		typedef IntrusiveList<Affector> TVectorAffector;

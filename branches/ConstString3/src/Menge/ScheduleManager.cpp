@@ -116,7 +116,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::update( float _timing )
+	void ScheduleManager::update( float _current, float _timing )
 	{
 		if( m_schedules.empty() == true )
 		{

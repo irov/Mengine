@@ -38,7 +38,7 @@ namespace Menge
 		float time( size_t _id ) const;
 
 	public:
-		void update( float _timing );
+		void update( float _current, float _timing );
 
 	private:
 		void callEvent_( const ScheduleEvent & _event, bool _isEnd );

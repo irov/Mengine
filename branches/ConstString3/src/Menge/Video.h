@@ -47,8 +47,9 @@ namespace Menge
 
 		virtual void _setFirstFrame() override;
 		virtual void _setLastFrame() override;
+
 	protected:
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 		void _render( RenderCameraInterface * _camera ) override;
 		
 		bool _activate() override;

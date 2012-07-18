@@ -43,7 +43,7 @@ namespace Menge
 		bool _interrupt( size_t _enumerator ) override;
 
 	protected:
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 		void _render( RenderCameraInterface * _camera ) override;
 
 		bool _activate() override;

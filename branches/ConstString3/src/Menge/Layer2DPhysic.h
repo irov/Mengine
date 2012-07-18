@@ -15,7 +15,7 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 		void _removeChildren( Node * _node ) override;
 	};
 }

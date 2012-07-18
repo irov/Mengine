@@ -566,7 +566,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::update( float _timing )
+	void Node::update( float _current, float _timing )
 	{
 		if( this->isActivate() == false )
 		{
@@ -580,22 +580,22 @@ namespace Menge
 
 		m_inUpdate = true;
 
-		this->_update( _timing );
+		this->_update( _current, _timing );
 
-		Affectorable::update( _timing );
+		Affectorable::update( _current, _timing );
 		
-		this->updateChild_( _timing );
+		this->updateChild_( _current, _timing );
 
 		m_inUpdate = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::updateChild_( float _timing )
+	void Node::updateChild_( float _current, float _timing )
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
 		{
 			Node * children = *it;
 			
-			children->update( _timing );
+			children->update( _current, _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -649,7 +649,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_update( float _timing )
+	void Node::_update( float _current, float _timing )
 	{
 		//Empty
 	}

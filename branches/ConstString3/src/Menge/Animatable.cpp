@@ -5,11 +5,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Animatable::Animatable()
 		: m_enumerator(0)
+		, m_playTime(0.f)
+		, m_speedFactor(1.f)
+		, m_startInterval(0.0f)
 		, m_play(false)
 		, m_loop(false)
-		, m_speedFactor(1.f)
 		, m_reverse(false)
-		, m_startInterval(0.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -94,9 +95,10 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Animatable::play()
+	size_t Animatable::play( float _time )
 	{
 		//printf("Animatable play\n");
+		m_playTime = _time;
 
 		if( m_play == true )
 		{
@@ -129,6 +131,7 @@ namespace Menge
 
 		//printf("Animatable stop\n");
 
+		m_playTime = 0.f;
 		m_play = false;
 
 		this->_stop( m_enumerator );
@@ -172,6 +175,11 @@ namespace Menge
 	size_t Animatable::getPlayId() const
 	{
 		return m_enumerator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Animatable::getPlayTime() const
+	{
+		return m_playTime;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setLoop( bool _value )

@@ -39,7 +39,7 @@ namespace Menge
 		virtual void _setReverse( bool _value );
 
 	public:
-		size_t play();
+		size_t play( float _time );
 		bool stop();
 		bool interrupt();
 		void end();
@@ -47,6 +47,8 @@ namespace Menge
 	public:
 		bool isPlay() const;
 		size_t getPlayId() const;
+
+		float getPlayTime() const;
 
 	protected:
 		virtual bool _play() = 0;
@@ -59,11 +61,13 @@ namespace Menge
 		virtual void _setLoop( bool _value );
 
 	protected:
+		size_t m_enumerator;
+		
+		float m_playTime;
+
 		float m_speedFactor;
 		float m_startInterval;
-
-		size_t m_enumerator;
-
+		
 		bool m_play;
 
 		bool m_loop;

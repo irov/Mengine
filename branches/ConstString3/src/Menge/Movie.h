@@ -65,7 +65,7 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 
 	protected:
 		void _setEventListener( PyObject * _embed ) override;

@@ -172,7 +172,7 @@ namespace Menge
 		return event->freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::update( float _timing )
+	void TimingManager::update( float _current, float _timing )
 	{
 		if( m_events.empty() == true )
 		{

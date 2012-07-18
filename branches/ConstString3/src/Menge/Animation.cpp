@@ -46,7 +46,7 @@ namespace	Menge
 		return m_resourceAnimationName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_update( float _timing )
+	void Animation::_update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
 		{

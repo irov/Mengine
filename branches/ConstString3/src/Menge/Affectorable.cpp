@@ -94,7 +94,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::update( float _timing )
+	void Affectorable::update( float _current, float _timing )
 	{
 		if( m_affectorsToAdd.empty() == false )
 		{

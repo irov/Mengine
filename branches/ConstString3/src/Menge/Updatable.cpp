@@ -2,8 +2,8 @@
 
 namespace Menge
 {
-	void Updatable::update( float _timing )
+	void Updatable::update( float _current, float _timing )
 	{
-		this->_update( _timing );
+		this->_update( _current, _timing );
 	}
 }

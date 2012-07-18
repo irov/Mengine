@@ -56,7 +56,8 @@ namespace Menge
 		, m_arrowHided(false)
 		, m_changeSceneCb(NULL)
 		, m_removeSceneCb(NULL)
-		, m_fps(0)
+		, m_time(0.f)
+		, m_fps(0)	
 //#	ifndef MENGE_MASTER_RELEASE
 		, m_showDebugText(false)
 		, m_debugText(NULL)
@@ -593,6 +594,10 @@ namespace Menge
 			}
 		}
 		
+		float gameTime = m_time;
+
+		m_time += _timing;
+
 		//if( PhysicEngine2D::get()->isWorldCreate() )
 		//{
 		//	const mt::vec2f & arrowPos = 
@@ -604,47 +609,47 @@ namespace Menge
 
 		if( m_renderCamera2D )
 		{
-			m_renderCamera2D->update( _timing );
+			m_renderCamera2D->update( gameTime, _timing );
 		}
 
 		if( m_arrow )
 		{
-			m_arrow->update( _timing );
-		}
-
-		if( m_mousePickerSystem )
-		{
-			m_mousePickerSystem->update();
+			m_arrow->update( gameTime, _timing );
 		}
 
 		if( m_scene )
 		{
-			m_scene->update( _timing );
+			m_scene->update( gameTime, _timing );
 		}
 
 		this->updateJoins_();
 
 		if( m_scheduleManager )
 		{
-			m_scheduleManager->update( _timing );
+			m_scheduleManager->update( gameTime, _timing );
 		}
 
 		if( m_scheduleGlobalManager )
 		{
-			m_scheduleGlobalManager->update( _timing );
+			m_scheduleGlobalManager->update( gameTime, _timing );
 		}
 
-		m_timingManager->update( _timing );
+		m_timingManager->update( gameTime, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
 	{
+		this->updateChangeScene_();
+
 		if( m_mousePickerSystem )
 		{
 			m_mousePickerSystem->beginTrap();
 		}		
 
-		this->updateChangeScene_();
+		if( m_mousePickerSystem )
+		{
+			m_mousePickerSystem->update();
+		}
 
 		if( m_globalHandleSystem )
 		{
@@ -654,7 +659,7 @@ namespace Menge
 		if( m_eventManager )
 		{
 			m_eventManager->update();
-		}			
+		}
 
 		return true;
 	}
@@ -835,6 +840,11 @@ namespace Menge
 			mt::vec3f v3_pos(_pos, 0.f);
 			m_renderCamera2D->setLocalPosition( v3_pos );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Player::getTime() const
+	{
+		return m_time;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorPlayerFactoryManager

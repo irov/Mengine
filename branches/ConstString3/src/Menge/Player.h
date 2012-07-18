@@ -76,10 +76,16 @@ namespace Menge
 		void tick( float _timing );
 		bool update();
 
-		void render( unsigned int _debugMask );
+	public:
+		float getTime() const;
 
+	public:
+		void render( unsigned int _debugMask );
+		
+	public:
 		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
 
+	public:
 		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
@@ -142,6 +148,8 @@ namespace Menge
 		
 		PyObject* m_changeSceneCb;
 		PyObject* m_removeSceneCb;
+
+		float m_time;
 
 		size_t m_fps;
 

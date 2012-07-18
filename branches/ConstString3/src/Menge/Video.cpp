@@ -76,13 +76,13 @@ namespace	Menge
 		return m_resourceSoundName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_update( float _timing )
+	void Video::_update( float _current, float _timing )
 	{
 		float speedFactor = this->getSpeedFactor();
 		
 		float timing = speedFactor * _timing;
 		
-		Node::_update( timing );
+		Node::_update( _current, timing );
 		//localHide(false);
 		//printf("%f %s\n",_timing,m_name.c_str());
 
@@ -318,8 +318,10 @@ namespace	Menge
 
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
-			m_soundEmitter->play();
+			float playTime = this->getPlayTime();
+			m_soundEmitter->play( playTime );
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

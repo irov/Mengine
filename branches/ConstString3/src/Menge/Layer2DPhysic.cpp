@@ -37,11 +37,11 @@ namespace Menge
 		_node->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DPhysic::_update( float _timing )
+	void Layer2DPhysic::_update( float _current, float _timing )
 	{
 		// update physics first
 		PhysicEngine2D::get()->update( _timing );
-		Node::_update( _timing );
+		Node::_update( _current, _timing );
 	}
 	////////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

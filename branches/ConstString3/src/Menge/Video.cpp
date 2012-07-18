@@ -502,18 +502,50 @@ namespace	Menge
 		{
 			seek_timing = _timing;
 		}
-
-		if( seek_timing > 0.f )
+		
+		if( seek_timing >= dataInfo->frameTiming )
 		{		
 			seek_timing -= dataInfo->frameTiming;
 		}
+		else if( seek_timing < 0 )
+		{
+			MENGE_LOG_ERROR( "Video::_setTiming: %s can`t seek to negative timing %4.2f"
+				, this->getName().c_str()
+				, _timing
+				);
 
+			return;
+		}
+		
 		m_videoDecoder->seek( seek_timing );
 
 		m_needUpdate = this->_sync( dataInfo->frameTiming );
 		
-		//m_videoDecoder->seek( 0.0f );
-		//m_needUpdate = this->_sync( _timing );
+		float curTiming = m_videoDecoder->getTiming();
+		float delta = _timing - curTiming;
+				
+		if( delta > dataInfo->frameTiming )
+		{
+			MENGE_LOG_ERROR( "Video::_setTiming: %s distance between keyframes is to large while seeking to %4.2f"
+				, this->getName().c_str()
+				, _timing
+				);
+
+			//m_needUpdate = this->_sync( delta );
+		}
+		else if( delta < 0.f )
+		{
+			MENGE_LOG_ERROR( "Video::_setTiming: %s we need to force seeking  may be keyframes not existed in video %4.2f"
+				, this->getName().c_str()
+				, _timing
+				);
+		}
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_seekForce( float _timing )
+	{
+		m_videoDecoder->seek( 0.0f );
+		m_needUpdate = this->_sync( _timing );
 	}
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const

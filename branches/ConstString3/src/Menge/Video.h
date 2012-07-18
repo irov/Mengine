@@ -17,13 +17,6 @@ namespace Menge
 	
 	struct RenderMaterialGroup;
 
-	/*! xml - файл имеет следующую структуру:
-	*	<Node Name = "имя_ноды" Type = "Video">
-	*		<ImageMap Name = "имя_ресурса_видео"/>
-	*		<AutoStart Value = "1/0"/>
-	*	</Node>
-	*/
-
 	class Video
 		: public Node
 		, public QuadVertices
@@ -75,6 +68,8 @@ namespace Menge
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 		void onEndStream_();
+
+		void _seekForce( float _timing );
 
 	protected:
 		ResourceVideo* m_resourceVideo;

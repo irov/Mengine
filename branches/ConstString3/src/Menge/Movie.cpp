@@ -1403,7 +1403,7 @@ namespace Menge
 				{
 					Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-					float timing = (indexOut - indexIn) * frameDuration;
+					float timing = 0.0f;
 					animatable->setTiming( timing );
 				}
 			}

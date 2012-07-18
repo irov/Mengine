@@ -2,6 +2,7 @@
 #	include "VideoDecoderFFMPEG.h"
 #	include "Utils/Core/File.h"
 #	include <limits.h>
+#	include <math.h>
 //#include <windows.h>
 //#define MYRGB(r, g ,b)  ((int) (((int) (r) | ((int) (g) << 8)) | (((int) (int) (b)) << 16)))
 /*#define COLOR_ARGB(a,r,g,b) \
@@ -492,12 +493,13 @@ namespace Menge
 		AVRational av_q;
 		av_q.num = 1; 
 		av_q.den = AV_TIME_BASE; 
-		int64_t seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base);
-	
-		// seconds * TIMEBASE!!!!!
-		//int64_t ts = (int64_t) ( (_timing / 1000.0f) * AV_TIME_BASE );
-		int64_t ts = seekTime * AV_TIME_BASE;
+		//int64_t seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base);
+		//int64_t ts = seekTime * AV_TIME_BASE;
 		
+		// seconds * TIMEBASE!!!!!
+		int64_t ts = (int64_t) ceil( (_timing / 1000.0f) * AV_TIME_BASE );
+		
+		//printf("SetTiming, need %4.2f real %i\n",_timing,ts);
 		if( this->_seek( ts ) == false )
 		{
 			return false;
@@ -555,7 +557,7 @@ namespace Menge
 		int64_t needTime = _timing;
 
 		//if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )
-		if( avformat_seek_file( m_formatContext, defaultStreamIndex, minTime, needTime, maxTime, AVSEEK_FLAG_ANY | AVSEEK_FLAG_FRAME ) < 0 )
+		if( avformat_seek_file( m_formatContext, defaultStreamIndex, minTime, needTime, maxTime, AVSEEK_FLAG_ANY  ) < 0 )
 		{
 			return false;
 		}

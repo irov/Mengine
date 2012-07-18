@@ -114,14 +114,12 @@ namespace	Menge
 		}
 
 		this->_fillVideoBuffer();
-		//m_videoDecoder->seek(0.0f);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_deactivate()
 	{
 		Node::_deactivate();
-		//this->_rewind();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
@@ -526,18 +524,22 @@ namespace	Menge
 				
 		if( delta > dataInfo->frameTiming )
 		{
-			MENGE_LOG_ERROR( "Video::_setTiming: %s distance between keyframes is to large while seeking to %4.2f"
+			MENGE_LOG_ERROR( "Video::_setTiming: %s distance between keyframes is to large while seeking to %4.2f delta - %4.2f current - %4.2f"
 				, this->getName().c_str()
 				, _timing
+				, delta
+				, curTiming
 				);
 
 			//m_needUpdate = this->_sync( delta );
 		}
 		else if( delta < 0.f )
 		{
-			MENGE_LOG_ERROR( "Video::_setTiming: %s we need to force seeking  may be keyframes not existed in video %4.2f"
+			MENGE_LOG_ERROR( "Video::_setTiming: %s we need to force seeking  may be keyframes not existed in video %4.2f delta - %4.2f current - %4.2f"
 				, this->getName().c_str()
 				, _timing
+				, delta
+				, curTiming
 				);
 		}
 	}

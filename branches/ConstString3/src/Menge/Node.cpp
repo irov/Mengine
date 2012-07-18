@@ -143,7 +143,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
-		if( isEnable() == false )
+		if( this->isEnable() == false )
 		{
 			return;
 		}
@@ -164,10 +164,10 @@ namespace Menge
 
 		m_active = false;
 
-		if( this->isCompile() == true )
-		{
-			this->release();
-		}
+		//if( this->isCompile() == true )
+		//{
+		//	this->release();
+		//}
 
 		this->_afterDeactivate();
 

@@ -31,6 +31,8 @@ extern void initgc(void);
 extern void init_ast(void);
 extern void initunicodedata(void);
 //extern void initnt(void);
+extern void initcPickle(void);
+extern void initcStringIO(void);
 
 struct _inittab _PyImport_Inittab[] = {
 @PY_STATIC_MODULES_INITTAB@
@@ -58,6 +60,9 @@ struct _inittab _PyImport_Inittab[] = {
 	/* This lives in gcmodule.c */
 	{"gc", initgc},
     //{"unicodedata", initunicodedata},
+    
+    {"cPickle", initcPickle},
+    {"cStringIO", initcStringIO},
     
 	/* Sentinel */
 	{0, 0}

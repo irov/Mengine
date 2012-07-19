@@ -184,11 +184,11 @@ namespace Menge
 			docsAndSettings = false;
 		}
 
-		#	ifdef _DEBUG
-				m_enableDebug = true;
-		#	else
-				m_enableDebug = false;
-		#	endif
+#	ifdef _DEBUG
+		m_enableDebug = true;
+#	else
+		m_enableDebug = false;
+#	endif
 
 		if( m_enableDebug == false )
 		{

@@ -301,13 +301,13 @@ namespace Menge
 		delete m_megatextures;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, int _bits, bool _fullscreen,
+	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport, int _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
 		m_lowContentViewport = _lowContentViewport;
-		m_viewport = _viewport;
+		m_renderViewport = _renderViewport;
 
 		m_fullscreen = _fullscreen;
 		
@@ -371,12 +371,12 @@ namespace Menge
 		m_nullTexture->unlock();
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, bool _fullscreen )
+	void RenderEngine::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport, bool _fullscreen )
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
 		m_lowContentViewport = _lowContentViewport;
-		m_viewport = _viewport;
+		m_renderViewport = _renderViewport;
 		
 		m_fullscreen = _fullscreen;
 	
@@ -1499,15 +1499,34 @@ namespace Menge
 
 			m_renderTargetResolution = m_windowResolution;
 		}
-
-		//Viewport renderViewport;
-
+		
 		const Viewport & viewport = camera->getViewport();
 
+		float windowWidth = (float)m_windowResolution.getWidth();
+		float windowHeight = (float)m_windowResolution.getHeight();
+
+		Viewport renderViewport;
+
+		renderViewport.begin.x = viewport.begin.x / windowWidth;
+		renderViewport.begin.y = viewport.begin.y / windowHeight;
+		renderViewport.end.x = viewport.end.x / windowWidth;
+		renderViewport.end.y = viewport.end.y / windowHeight;
+
+		float renderWidth = m_renderViewport.getWidth();
+		float renderHeight = m_renderViewport.getHeight();
+
+		renderViewport.begin.x *= renderWidth;
+		renderViewport.begin.y *= renderHeight;
+		renderViewport.end.x *= renderWidth;
+		renderViewport.end.y *= renderHeight;
+
+		renderViewport.begin += m_renderViewport.begin;
+		renderViewport.end += m_renderViewport.begin;
+		
 		//renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
 		//renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
-
-		m_interface->setViewport( viewport );
+		
+		m_interface->setViewport( renderViewport );
 
 		const mt::mat4f & viewMatrix = camera->getViewMatrix();
 		m_interface->setModelViewMatrix( viewMatrix );
@@ -2264,4 +2283,8 @@ namespace Menge
 		m_interface->setSeparateAlphaBlendMode();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const Viewport & RenderEngine::getRenderViewport() const
+	{
+		return m_renderViewport;
+	}
 }

@@ -178,6 +178,8 @@ namespace Menge
 		const Resolution & getCurrentResolution() const override;
 		const Resolution & getDesktopResolution() const override;
 
+		const Viewport & getRenderViewport() const override;
+
 		const Resolution & getContentResolution() const override;
 		const Viewport & getLowContentViewport() const override;
 
@@ -273,6 +275,9 @@ namespace Menge
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
+
+		Viewport m_renderViewport;
+
 		Resolution m_maxClientAreaSize;
 
 		Viewport m_gameViewport;

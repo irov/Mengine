@@ -143,11 +143,9 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
-	{
-		mt::vec2f scale_point;
+	{		
 		mt::vec2f offset_point = _point + m_inputOffset;
-		//mt::vec2f offset_point = _point;
-		mt::mul_v2_v2( scale_point, offset_point, m_inputScale );
+		mt::vec2f scale_point = offset_point * m_inputScale;
 
 		m_cursorPosition = scale_point;
 
@@ -254,6 +252,7 @@ namespace Menge
 		const Resolution & currentResolution = applicationService->getCurrentResolution();
 		const Resolution & contentResolution = applicationService->getContentResolution();
 		const Viewport & lowContentViewport = applicationService->getLowContentViewport();
+		const Viewport & renderViewport = applicationService->getRenderViewport();
 
 		size_t currentResolutionWidth = currentResolution.getWidth();
 		size_t currentResolutionHeight = currentResolution.getHeight();
@@ -261,26 +260,37 @@ namespace Menge
 		size_t contentResolutionWidth = contentResolution.getWidth();
 		size_t contentResolutionHeight = contentResolution.getHeight();
 
+		m_dimentions.x = float(contentResolutionWidth);
+		m_dimentions.y = float(contentResolutionHeight);
+		
 		if( currentResolutionWidth < contentResolutionWidth ||
 			currentResolutionHeight < contentResolutionHeight )
 		{
-			m_dimentions.x = lowContentViewport.getWidth();
-			m_dimentions.y = lowContentViewport.getHeight();
+			float lowContentViewportWidth = lowContentViewport.getWidth();
+			float lowContentViewportHeight = lowContentViewport.getHeight();
 
 			m_inputOffset = lowContentViewport.begin;
+
+			float width_scale = float(currentResolutionWidth) / lowContentViewportWidth;
+			float height_scale = float(currentResolutionHeight) / lowContentViewportHeight;
+
+			m_inputScale.x = 1.f / width_scale;
+			m_inputScale.y = 1.f / height_scale;
 		}
 		else
 		{
-			m_dimentions.x = float(contentResolutionWidth);
-			m_dimentions.y = float(contentResolutionHeight);
+			m_inputOffset = - renderViewport.begin;
 
-			m_inputOffset = mt::vec2f(0.f, 0.f);
+			float renderViewportWidth = renderViewport.getWidth();
+			float renderViewportHeight = renderViewport.getHeight();
+
+			float width_scale = renderViewportWidth / contentResolutionWidth;
+			float height_scale = renderViewportHeight / contentResolutionHeight;
+
+			m_inputScale.x = 1.f / width_scale;
+			m_inputScale.y = 1.f / height_scale;
 		}
 		
-		float width_scale = float(currentResolutionWidth) / m_dimentions.x;
-		float height_scale = float(currentResolutionHeight) / m_dimentions.y;
-		
-		m_inputScale.x = 1.f / width_scale;
-		m_inputScale.y = 1.f / height_scale;
+
 	}
 }

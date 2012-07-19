@@ -69,7 +69,7 @@ namespace	Menge
 		size_t contentResolutionHeight = contentResolution.getHeight();
 		
 		const mt::mat4f & wm = this->getWorldMatrix();
-				
+		
 		mt::mul_v2_m4( m_viewportWM.begin, m_viewport.begin, wm );
 		mt::mul_v2_m4( m_viewportWM.end, m_viewport.end, wm );
 		

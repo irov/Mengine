@@ -233,7 +233,9 @@ namespace Menge
 		void prepare3D_();
 
 		size_t refillIndexBuffer2D_();
-		bool recreate2DBuffers_( size_t _maxIndexCount );		
+		bool recreate2DBuffers_( size_t _maxIndexCount );
+
+		const Viewport & getRenderViewport() const;
 		
 	private:
 		RenderSystemInterface * m_interface;
@@ -312,7 +314,7 @@ namespace Menge
 		//mt::vec2f m_renderScale;
 		//mt::vec2f m_renderOffset;
 
-		Viewport m_viewport;
+		Viewport m_renderViewport;
 
 		uint32 m_currentVertexDeclaration;
 	

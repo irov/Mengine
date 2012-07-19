@@ -78,7 +78,8 @@ namespace Menge
 		
 		while( true )
 		{
-			update();
+			this->update();
+
 			if( m_performers.empty() == true )
 			{
 				break;

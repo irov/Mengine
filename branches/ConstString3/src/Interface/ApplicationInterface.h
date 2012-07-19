@@ -137,6 +137,7 @@ namespace Menge
 
 		virtual const Resolution & getDesktopResolution() const = 0;
 		virtual const Resolution & getCurrentResolution() const = 0;
+		virtual const Viewport & getRenderViewport() const = 0;
 		
 		virtual const Resolution & getContentResolution() const = 0;
 		virtual const Viewport & getLowContentViewport() const = 0;

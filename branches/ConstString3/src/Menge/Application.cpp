@@ -1024,17 +1024,16 @@ namespace Menge
 			, m_currentResolution.getHeight()
 			);
 
-		Viewport renderViewport;
-		this->calcRenderViewport_( m_currentResolution, renderViewport );
+		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 
 		MENGE_LOG_INFO( "Application::createRenderWindow Render Viewport %f %f - %f %f"
-			, renderViewport.begin.x
-			, renderViewport.begin.y
-			, renderViewport.getWidth()
-			, renderViewport.getHeight()
+			, m_renderViewport.begin.x
+			, m_renderViewport.begin.y
+			, m_renderViewport.getWidth()
+			, m_renderViewport.getHeight()
 			);
 
-		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, lowContentViewport, renderViewport, bits, m_fullscreen,
+		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, lowContentViewport, m_renderViewport, bits, m_fullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
 
 		if( m_createRenderWindow == false )
@@ -1048,7 +1047,7 @@ namespace Menge
 		
 		if( m_fullscreen == true )
 		{
-			m_platform->notifyCursorClipping( renderViewport );
+			m_platform->notifyCursorClipping( m_renderViewport );
 		}
 		else
 		{
@@ -1083,8 +1082,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
-		String::size_type idx_sound = _arguments.find( "-sound" );
-		if( idx_sound != String::npos )
+		String::size_type idx_mute = _arguments.find( "-mute" );
+		if( idx_mute != String::npos )
 		{
 			m_sound = false;
 		}
@@ -1613,8 +1612,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport )
 	{
-		float rw = float( _resolution.getWidth());
-		float rh = float( _resolution.getHeight());
+		float rw = float(_resolution.getWidth());
+		float rh = float(_resolution.getHeight());
 
 		bool resolutionFixed = Game::get()
 			->isContentResolutionFixed();
@@ -1701,20 +1700,19 @@ namespace Menge
 			, m_currentResolution.getHeight()
 			);
 
-		Viewport renderViewport;
-		this->calcRenderViewport_( m_currentResolution, renderViewport );
+		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
 
 		MENGE_LOG_INFO( "Application::createRenderWindow Render Viewport %f %f - %f %f"
-			, renderViewport.begin.x
-			, renderViewport.begin.y
-			, renderViewport.getWidth()
-			, renderViewport.getHeight()
+			, m_renderViewport.begin.x
+			, m_renderViewport.begin.y
+			, m_renderViewport.getWidth()
+			, m_renderViewport.getHeight()
 			);
 
 		if( m_fullscreen == true )
 		{
-			m_platform->notifyCursorClipping( renderViewport );
+			m_platform->notifyCursorClipping( m_renderViewport );
 		}
 		else
 		{
@@ -1728,7 +1726,7 @@ namespace Menge
 		const Viewport & lowContentViewport = 
 			m_game->getLowContentViewport();
 		
-		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, lowContentViewport, renderViewport, _fullscreen );
+		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, lowContentViewport, m_renderViewport, _fullscreen );
 		
 		m_game->onFullscreen( m_currentResolution, m_fullscreen );
 
@@ -1771,6 +1769,11 @@ namespace Menge
 	const Resolution & Application::getDesktopResolution() const
 	{
 		return m_desktopResolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Viewport & Application::getRenderViewport() const
+	{
+		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getContentResolution() const

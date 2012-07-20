@@ -35,7 +35,7 @@ namespace Menge
 
 	public:
 		inline bool isTag( EIntrusiveLinkedTag _tag ) const
-		{
+		{ 
 			return m_tag == _tag;
 		}
 

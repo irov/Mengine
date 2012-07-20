@@ -163,6 +163,8 @@ namespace Menge
 			return;
 		}
 
+		bool restart = Magic_Update( m_id, 0.f );
+		Magic_SetLoopMode( m_id, 0 );
 		Magic_SetInterrupt( m_id, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -192,6 +194,9 @@ namespace Menge
 		m_total_rate += _timing;
 
 		double rate = Magic_GetUpdateTime( m_id );
+
+		bool interupt = Magic_IsInterrupt( m_id );
+		int loop = Magic_GetLoopMode( m_id );
 
 		while( m_total_rate >= rate )
 		{

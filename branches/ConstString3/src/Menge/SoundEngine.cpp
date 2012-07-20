@@ -341,7 +341,6 @@ namespace Menge
 		++it )
 		{
 			SoundSourceDesc& source = it->second;
-			ESoundSourceState state = source.state;
 			switch( source.state )
 			{
 			case Stopped:

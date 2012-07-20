@@ -1221,13 +1221,15 @@ namespace Menge
 			}
 			else
 			{
-				if( indexIn > m_currentFrame || _lastFrame > indexOut )
+				if( indexIn > m_currentFrame /*|| _lastFrame > indexOut*/ )
 				{
 					continue;
 				}
 			}
 			
-			Node * node = m_nodies[layer.index];			MovieFrameSource frame;
+			Node * node = m_nodies[layer.index];			
+			
+			MovieFrameSource frame;
 
 			if( m_currentFrame >= indexOut || m_currentFrame < indexIn )
 			{

@@ -12,6 +12,7 @@
 #	include <cmath>
 
 #	include "ScriptEngine.h"
+#	include "Consts.h"
 
 namespace Menge
 {
@@ -70,6 +71,14 @@ namespace Menge
 		m_currentPlayList = it->second;
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::resetPlayList()
+	{	
+		m_currentPlayList = NULL;
+
+		m_currentPlaylistName = 
+			Consts::get()->c_builtin_empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::playTrack( const ConstString& _playlistResource, int _index, bool _looped )

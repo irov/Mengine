@@ -241,6 +241,12 @@ namespace	Menge
 				->playAllTracks( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		static void resetPlayList( )
+		{
+			Amplifier::get()
+				->resetPlayList();
+		}
+		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayTrack( const ConstString & _list, int _index, bool _isLooped )
 		{
 			Amplifier::get()
@@ -341,6 +347,7 @@ namespace	Menge
 		pybind::def_function( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
 
 		pybind::def_function( "musicPlayList", &ScriptSoundHelper::musicPlayList );
+		pybind::def_function( "resetPlayList", &ScriptSoundHelper::resetPlayList );
 		pybind::def_function( "musicPlayTrack", &ScriptSoundHelper::musicPlayTrack );
 		pybind::def_function( "musicGetNumTracks", &ScriptSoundHelper::musicGetNumTracks );
 		pybind::def_function( "musicSetVolume", &ScriptSoundHelper::musicSetVolume );

@@ -33,7 +33,7 @@ namespace	Menge
 
 	public:
 		void playAllTracks( const ConstString& _playlistResource );
-
+		void resetPlayList( );
 		void shuffle( const ConstString& _playlist );
 
 		void play();

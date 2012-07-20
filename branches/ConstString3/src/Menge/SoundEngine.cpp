@@ -274,7 +274,7 @@ namespace Menge
 			it_find->second.soundSourceInterface->stop();
 			m_interface->releaseSoundNode( it_find->second.soundSourceInterface );
 		}
-
+		
 		m_soundSourceMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -341,6 +341,7 @@ namespace Menge
 		++it )
 		{
 			SoundSourceDesc& source = it->second;
+			ESoundSourceState state = source.state;
 			switch( source.state )
 			{
 			case Stopped:

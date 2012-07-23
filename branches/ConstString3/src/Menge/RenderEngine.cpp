@@ -1767,7 +1767,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::makeBatches_( bool & _overflow )
 	{		
-		//m_vbPos = 0;
+		m_vbPos = 0;
 
 		size_t vbPos = m_vbPos;
 		vbPos = this->makeBatch_( vbPos );

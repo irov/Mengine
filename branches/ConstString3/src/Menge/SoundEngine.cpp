@@ -13,6 +13,23 @@
 
 #	include "Consts.h"
 
+bool initializeSoundService( Menge::SoundServiceInterface ** _service )
+{
+	if( _service == NULL )
+	{
+		return false;
+	}
+
+	*_service = new Menge::SoundEngine;
+
+	return true;
+}
+
+void finalizeSoundService( Menge::SoundServiceInterface * _service )
+{
+	delete _service;
+}
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

@@ -87,7 +87,7 @@ namespace Menge
 				->findCodecType( codecExt );
 		}
 
-		m_interface = SoundEngine::get()
+		m_interface = Holder<SoundServiceInterface>::get()
 			->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
 
 		if( m_interface == 0 )
@@ -150,7 +150,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
 	{
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->releaseSoundBuffer( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////

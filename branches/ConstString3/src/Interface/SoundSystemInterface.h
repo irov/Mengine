@@ -87,6 +87,14 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
+		virtual bool initialize() = 0;
+		virtual void update( float _timing ) = 0;
+
+	public:
+		virtual void onTurnStream( bool _turn ) = 0;
+		virtual void onTurnSound( bool _turn ) = 0;
+
+	public:
 		virtual unsigned int createSoundSource(
 			bool _isHeadMode, 
 			SoundBufferInterface * _sample,
@@ -95,6 +103,7 @@ namespace Menge
 		virtual SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const WString & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
 		virtual SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem ) = 0;
 
+	public:
 		virtual void setSoundVolume( float _volume ) = 0;
 		virtual float getSoundVolume() const = 0;
 
@@ -104,10 +113,35 @@ namespace Menge
 		virtual void setMusicVolume( float _volume ) = 0;
 		virtual float getMusicVolume() const = 0;
 
+		virtual bool setSourceVolume( unsigned int _emitter, float _volume ) = 0;
+		virtual float getSourceVolume( unsigned int _emitter ) = 0;
+
 		virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
 		virtual void releaseSoundSource( unsigned int _sourceID ) = 0;
 
 		virtual bool validSoundSource( unsigned int _sourceID ) const = 0;
+
+	public:
+		virtual void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener ) = 0;
+
+	public:
+		virtual void play( unsigned int _emitter ) = 0;
+		virtual void pause( unsigned int _emitter ) = 0;
+		virtual void stop( unsigned int _emitter ) = 0;
+
+	public:
+		virtual void setLoop( unsigned int _emitter, bool _looped ) = 0;
+		virtual bool getLoop( unsigned int _emitter ) = 0;
+
+	public:
+		virtual float getLengthMs( unsigned int _emitter ) const = 0;
+		
+		virtual void setPosMs( unsigned int _emitter, float _pos ) = 0;
+		virtual float getPosMs( unsigned int _emitter ) const = 0;
+		
+
+		virtual void mute( bool _mute ) = 0;
+		virtual bool isMute() const = 0;
 	};
 }
 

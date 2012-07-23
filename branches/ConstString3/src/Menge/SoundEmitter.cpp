@@ -66,7 +66,7 @@ namespace Menge
 
 		bool streamable = m_resource->isStreamable();
 
-		m_sourceID = SoundEngine::get()
+		m_sourceID = Holder<SoundServiceInterface>::get()
 			->createSoundSource( m_isHeadMode, soundBuffer, streamable );
 
 		if( m_sourceID == 0 )
@@ -78,10 +78,10 @@ namespace Menge
 			return false;
 		}
 
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->setSourceListener( m_sourceID, this );
 
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->setLoop( m_sourceID, m_loop );
 
 		float volume = m_resource->getDefaultVolume();
@@ -92,7 +92,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
 	{ 
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->releaseSoundSource( m_sourceID );
 
 		m_sourceID = 0;
@@ -145,7 +145,7 @@ namespace Menge
 			return false;
 		}
 
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->play( m_sourceID );
 
 		return true;
@@ -173,7 +173,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->stop( m_sourceID );
 		}
 
@@ -184,7 +184,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->stop( m_sourceID );
 		}
 
@@ -198,7 +198,7 @@ namespace Menge
 			return;
 		}
 		
-		if( SoundEngine::get()
+		if( Holder<SoundServiceInterface>::get()
 			->setSourceVolume( m_sourceID, _volume ) == false )
 		{
 			MENGE_LOG_ERROR("SoundEmitter::setVolume invalid sourceID %s"
@@ -214,7 +214,7 @@ namespace Menge
 			return 0.f;
 		}
 
-		float volume = SoundEngine::get()
+		float volume = Holder<SoundServiceInterface>::get()
 			->getSourceVolume( m_sourceID );		
 
 		return volume;
@@ -227,7 +227,7 @@ namespace Menge
 			return;
 		}
 		
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->setLoop( m_sourceID, m_loop );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -238,7 +238,7 @@ namespace Menge
 			return 0.f;
 		}
 
-		float lengthMs = SoundEngine::get()
+		float lengthMs = Holder<SoundServiceInterface>::get()
 			->getLengthMs( m_sourceID );
 	
 		return lengthMs;

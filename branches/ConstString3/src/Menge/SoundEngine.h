@@ -1,20 +1,15 @@
 #	pragma once
 
 #	include "Core/ConstString.h"
-#	include "Core/Holder.h"
 #	include	"math/vec3.h"
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include	<set>
-//#	include	<string>
+#	include <vector>
 #	include <map>
 
 namespace Menge
 {
-	class SoundEmitter;
-	class ResourceSound;
-	class SoundDecoder;
 	class ThreadTaskSoundBufferUpdate;
 	class FileInputStreamInterface;
 
@@ -53,19 +48,21 @@ namespace Menge
 	};
 
 	class SoundEngine
-		: public Holder<SoundEngine>
-		, public SoundServiceInterface
+		: public SoundServiceInterface
 	{
 	public:
 		SoundEngine();
 		~SoundEngine();
 	
     public:
-		bool initialize();
+		bool initialize() override;
+
+	public:
+		void update( float _timing ) override;
         
     public:
-		void onTurnStream( bool _turn );
-        void onTurnSound( bool _turn );
+		void onTurnStream( bool _turn ) override;
+        void onTurnSound( bool _turn ) override;
 
     public:
 		void setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top );
@@ -87,6 +84,9 @@ namespace Menge
 		void setMusicVolume( float _volume ) override;
 		float getMusicVolume() const override;
 
+		bool setSourceVolume( unsigned int _emitter, float _volume ) override;
+		float getSourceVolume( unsigned int _emitter ) override;
+
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
 		void releaseSoundSource( unsigned int _sourceID ) override;
 
@@ -98,26 +98,27 @@ namespace Menge
 		void setSulkCallback( SoundSulkCallback * _sulkcallback );
 
 		void setEnoughBlow( float _enoughBlow );
-
-		void update( float _timing );
-
-		void play( unsigned int _emitter );
-		void pause( unsigned int _emitter );
-		void stop( unsigned int _emitter );
-		void setLoop( unsigned int _emitter, bool _looped );
-		bool getLoop( unsigned int _emitter );
-
-		bool setSourceVolume( unsigned int _emitter, float _volume );
-		float getSourceVolume( unsigned int _emitter );
-
-		void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener );
-		float getLengthMs( unsigned int _emitter ) const;
 		
-		void setPosMs( unsigned int _emitter, float _pos );
-		float getPosMs( unsigned int _emitter ) const;
+	public:
+		void play( unsigned int _emitter ) override;
+		void pause( unsigned int _emitter ) override;
+		void stop( unsigned int _emitter ) override;
 
-		void mute( bool _mute );
-		bool isMute() const;
+	public:
+		void setLoop( unsigned int _emitter, bool _looped ) override;
+		bool getLoop( unsigned int _emitter ) override;
+
+	public:
+		void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener ) override;
+		
+	public:
+		float getLengthMs( unsigned int _emitter ) const override;
+		
+		void setPosMs( unsigned int _emitter, float _pos ) override;
+		float getPosMs( unsigned int _emitter ) const override;
+
+		void mute( bool _mute ) override;
+		bool isMute() const override;
 
 	protected:
 		SoundSystemInterface * m_interface;

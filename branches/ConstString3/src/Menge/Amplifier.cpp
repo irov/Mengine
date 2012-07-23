@@ -97,10 +97,10 @@ namespace Menge
 
 		this->prepareSound_( category, desc->path, desc->codec );
 
-		float musicVolume = 
-			SoundEngine::get()->getMusicVolume();
+		float musicVolume = Holder<SoundServiceInterface>::get()
+			->getMusicVolume();
 
-		if( SoundEngine::get()
+		if( Holder<SoundServiceInterface>::get()
 			->setSourceVolume( m_sourceID, musicVolume ) == false )
 		{
 			MENGE_LOG_ERROR("Amplifier::playTrack invalid set source volume %S"
@@ -108,7 +108,7 @@ namespace Menge
 				);
 		}
 
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->play( m_sourceID );
 		
 		m_playing = true;
@@ -180,7 +180,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::play_()
 	{
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->play( m_sourceID );
 
 		m_playing = true;
@@ -202,7 +202,7 @@ namespace Menge
 
 		if( m_sourceID != 0 )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->stop( m_sourceID );
 
 			release_();
@@ -218,7 +218,7 @@ namespace Menge
 
 		m_playing = false;
 
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -290,7 +290,7 @@ namespace Menge
 		this->stop();
 		//_release();
 
-		m_buffer = SoundEngine::get()
+		m_buffer = Holder<SoundServiceInterface>::get()
 			->createSoundBufferFromFile( _pakName, _file, _codec, true );
 
 		if( m_buffer == 0 )
@@ -302,7 +302,7 @@ namespace Menge
 			return;			
 		}
 
-		m_sourceID = SoundEngine::get()
+		m_sourceID = Holder<SoundServiceInterface>::get()
 			->createSoundSource( false, m_buffer, true );
 
 		if( m_sourceID == 0 )
@@ -314,16 +314,16 @@ namespace Menge
 			return;
 		}
 		
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->setSourceListener( m_sourceID, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::release_()
 	{
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->releaseSoundSource( m_sourceID );
 
-		SoundEngine::get()
+		Holder<SoundServiceInterface>::get()
 			->releaseSoundBuffer( m_buffer );
 
 		m_sourceID = 0;
@@ -351,7 +351,7 @@ namespace Menge
 		{
 			finish = m_volumeTo.update( _timing, &value );
 
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setMusicVolume( value );
 		}
 
@@ -371,7 +371,7 @@ namespace Menge
 		//m_volumeOverride = m_volume;
 		m_volToCb = NULL;
 
-		float volume = SoundEngine::get()
+		float volume = Holder<SoundServiceInterface>::get()
 			->getMusicVolume();
 
 		m_volumeTo.start( volume, _volume, _time, ::fabsf );
@@ -384,7 +384,7 @@ namespace Menge
 			return 0.0f;
 		}
 
-		float pos = SoundEngine::get()
+		float pos = Holder<SoundServiceInterface>::get()
 			->getPosMs( m_sourceID );
 		
 		return pos;
@@ -394,7 +394,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setPosMs( m_sourceID, _posMs );
 		}
 	}
@@ -404,7 +404,7 @@ namespace Menge
 		m_volToCb = _cb;
 		pybind::incref( m_volToCb );
 
-		float volume = SoundEngine::get()
+		float volume = Holder<SoundServiceInterface>::get()
 			->getMusicVolume();
 
 		m_volumeTo.start( volume, _value, _time, ::fabsf );

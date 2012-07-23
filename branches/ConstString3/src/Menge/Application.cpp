@@ -7,7 +7,8 @@
 
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
-#	include "SoundEngine.h"
+
+#	include "Interface/SoundSystemInterface.h"
 
 #	include "ParticleEngine.h"
 #	include "ScriptEngine.h"
@@ -147,6 +148,9 @@
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 
+extern bool initializeSoundService( Menge::SoundServiceInterface ** _service );
+extern void finalizeSoundService( Menge::SoundServiceInterface * _service );
+
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ApplicationInterface** _interface )
 {
@@ -186,7 +190,7 @@ namespace Menge
 		, m_logEngine(0)
 		, m_fileEngine(0)
 		, m_renderEngine(0)
-		, m_soundEngine(0)
+		, m_soundService(0)
 		, m_particleEngine(0)
 		, m_inputEngine(0)
 		, m_physicEngine2D(0)
@@ -590,11 +594,17 @@ namespace Menge
 	bool Application::initializeSoundEngine_()
 	{
 		MENGE_LOG_INFO( "Initializing Sound System..." );
-		m_soundEngine = new SoundEngine();
 
-		SoundEngine::keep( m_soundEngine );
+		if( initializeSoundService( &m_soundService ) == false )
+		{
+			MENGE_LOG_ERROR("Application::initializeSoundEngine_ Failed to create SoundEngine");
 
-		if( m_soundEngine->initialize() == false )
+			return false;
+		}
+
+		Holder<SoundServiceInterface>::keep( m_soundService );
+
+		if( m_soundService->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Error: (Application::initialize) Failed to initialize SoundEngine");
 			m_sound = false;
@@ -602,11 +612,11 @@ namespace Menge
 
 		if( m_sound == false )
 		{
-			m_soundEngine->mute( true );
+			m_soundService->mute( true );
 		}
 
 
-		m_serviceProvider->registryService( "SoundService", m_soundEngine );
+		m_serviceProvider->registryService( "SoundService", m_soundService );
 
 		//m_platform->notifySoundInitialize();
 
@@ -1379,7 +1389,10 @@ namespace Menge
 
 		m_game->tick( timing );
 
-		m_soundEngine->update( _timing );
+		if( m_soundService != 0 )
+		{
+			m_soundService->update( _timing );
+		}
 
 
 		//if( m_physicEngine )
@@ -1444,9 +1457,9 @@ namespace Menge
     {
 		if( _turn == false )
 		{
-			if( m_soundEngine )
+			if( m_soundService )
 			{
-				m_soundEngine->onTurnStream( _turn );
+				m_soundService->onTurnStream( _turn );
 			}
 
 			if( m_game )
@@ -1454,16 +1467,16 @@ namespace Menge
 				m_game->onTurnSound( _turn );
 			}
 
-			if( m_soundEngine )
+			if( m_soundService )
 			{
-				m_soundEngine->onTurnSound( _turn );
+				m_soundService->onTurnSound( _turn );
 			}
 		}
 		else
 		{
-			if( m_soundEngine )
+			if( m_soundService )
 			{
-				m_soundEngine->onTurnSound( _turn );
+				m_soundService->onTurnSound( _turn );
 			}
 
 			if( m_game )
@@ -1528,7 +1541,9 @@ namespace Menge
 		}
 		
 		delete m_inputEngine;
-		delete m_soundEngine;
+		
+		finalizeSoundService( m_soundService );
+		//delete m_soundService;
 
 		delete m_taskManager;
 

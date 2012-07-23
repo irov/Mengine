@@ -31,7 +31,7 @@ namespace Menge
 	class FileEngine;
 	class InputEngine;
 	class RenderEngine;
-	class SoundEngine;
+	class SoundServiceInterface;
 	class ParticleEngine;
 	class PhysicEngine2D;
 	class PhysicEngine;
@@ -312,7 +312,7 @@ namespace Menge
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
 		RenderEngine * m_renderEngine;
-		SoundEngine * m_soundEngine;
+		SoundServiceInterface * m_soundService;
 		ParticleEngine * m_particleEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		LoaderEngine *	m_loaderEngine;

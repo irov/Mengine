@@ -51,7 +51,7 @@ namespace	Menge
 					pybind::call( m_cb, "(i)", m_sourceID );
 				}
 
-				SoundEngine::get()
+				Holder<SoundServiceInterface>::get()
 					->releaseSoundSource( m_sourceID );
 
 				if( m_resource != 0 )
@@ -94,7 +94,7 @@ namespace	Menge
 
 			bool streamable = resource->isStreamable();
 
-			unsigned int sourceID = SoundEngine::get()
+			unsigned int sourceID = Holder<SoundServiceInterface>::get()
 				->createSoundSource( 
 				true
 				, soundBuffer
@@ -112,12 +112,12 @@ namespace	Menge
 				return 0;
 			}
 
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setLoop( sourceID, _loop );
 
 			float volume = resource->getDefaultVolume();
 
-			if( SoundEngine::get()
+			if( Holder<SoundServiceInterface>::get()
 				->setSourceVolume( sourceID, volume ) == false )
 			{
 				MENGE_LOG_ERROR("ScriptWrapper::createSoundSource invalid  %s"
@@ -128,7 +128,7 @@ namespace	Menge
 			SoundNodeListenerInterface * snlistener = 
 				new MySoundNodeListenerInterface( resource, sourceID, _cb );
 
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setSourceListener( sourceID, snlistener );
 			
 			return sourceID;
@@ -147,7 +147,7 @@ namespace	Menge
 				return 0;
 			}
 
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->play( sourceID );
 
 			return sourceID;
@@ -165,10 +165,10 @@ namespace	Menge
 				return 0;
 			}
 
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setPosMs( sourceID, _position );
 			
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->play( sourceID );
 
 			return sourceID;
@@ -176,7 +176,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static float s_soundGetPosMs( unsigned int _sourceID )
 		{
-			float pos =	SoundEngine::get()
+			float pos =	Holder<SoundServiceInterface>::get()
 				->getPosMs(_sourceID);
 
 			return pos;
@@ -184,19 +184,19 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundSetPosMs( unsigned int _sourceID, float _pos )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setPosMs( _sourceID, _pos );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundStop( unsigned int _sourceID )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->stop( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundSourceSetVolume( unsigned int _sourceID, float _volume )
 		{
-			if( SoundEngine::get()
+			if( Holder<SoundServiceInterface>::get()
 				->setSourceVolume( _sourceID, _volume ) == false )
 			{
 				MENGE_LOG_ERROR("SoundScriptWrapper::s_soundSourceSetVolume invalid source volume %d"
@@ -207,31 +207,31 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static float s_soundSourceGetVolume( unsigned int _sourceID )
 		{
-			return SoundEngine::get()
+			return Holder<SoundServiceInterface>::get()
 				->getSourceVolume( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundSetVolume( float _volume )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setSoundVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float s_soundGetVolume()
 		{
-			return SoundEngine::get()
+			return Holder<SoundServiceInterface>::get()
 				->getSoundVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_commonSetVolume( float _volume )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setCommonVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float commonGetVolume()
 		{
-			return SoundEngine::get()
+			return Holder<SoundServiceInterface>::get()
 				->getCommonVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -261,13 +261,13 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void musicSetVolume( float _volume )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->setMusicVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float musicGetVolume()
 		{
-			return SoundEngine::get()
+			return Holder<SoundServiceInterface>::get()
 				->getMusicVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -314,14 +314,16 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundMute( bool _mute )
 		{
-			SoundEngine::get()
+			Holder<SoundServiceInterface>::get()
 				->mute( _mute );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool s_isMute()
 		{
-			return SoundEngine::get()
+			bool mute = Holder<SoundServiceInterface>::get()
 				->isMute();
+
+			return mute;
 		}
 	};
 

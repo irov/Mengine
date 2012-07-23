@@ -940,25 +940,29 @@ namespace Menge
 				Application::get()->setMouseBounded( _bounded );
 			}
 		}
+
 		static bool s_getMouseBounded()
 		{
 			return Application::get()->getMouseBounded();
 		}
-		static bool setBlow( bool _active )
-		{
-			return SoundEngine::get()
-				->setBlow( _active );
-		}
-		static float getBlow()
-		{
-			return SoundEngine::get()
-				->getBlow();
-		}
-		static void setEnoughBlow( float _enoughBlow )
-		{
-			SoundEngine::get()
-				->setEnoughBlow( _enoughBlow );
-		}
+
+		//static bool setBlow( bool _active )
+		//{
+		//	return Holder<SoundServiceInterface>::get()
+		//		->setBlow( _active );
+		//}
+
+		//static float getBlow()
+		//{
+		//	return Holder<SoundServiceInterface>::get()
+		//		->getBlow();
+		//}
+
+		//static void setEnoughBlow( float _enoughBlow )
+		//{
+		//	Holder<SoundServiceInterface>::get()
+		//		->setEnoughBlow( _enoughBlow );
+		//}
 
 		class PySoundSulkCallback
 			: public SoundSulkCallback
@@ -984,11 +988,11 @@ namespace Menge
 			PyObject * m_callback;
 		};
 
-		static void setBlowCallback( PyObject * _sulkcallback )
-		{
-			SoundEngine::get()
-				->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
-		}
+		//static void setBlowCallback( PyObject * _sulkcallback )
+		//{
+		//	Holder<SoundServiceInterface>::get()
+		//		->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
+		//}
 
 		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
 		{
@@ -2944,10 +2948,10 @@ namespace Menge
 			pybind::def_function( "getContentResolution", &ScriptMethod::s_getContentResolution );
 			pybind::def_function( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
 
-			pybind::def_function( "setBlow", &ScriptMethod::setBlow );
-			pybind::def_function( "getBlow", &ScriptMethod::getBlow );
-			pybind::def_function( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
-			pybind::def_function( "setBlowCallback", &ScriptMethod::setBlowCallback );
+			//pybind::def_function( "setBlow", &ScriptMethod::setBlow );
+			//pybind::def_function( "getBlow", &ScriptMethod::getBlow );
+			//pybind::def_function( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
+			//pybind::def_function( "setBlowCallback", &ScriptMethod::setBlowCallback );
 
 			pybind::def_function( "isKeyDown", &ScriptMethod::s_isKeyDown );
 			pybind::def_function( "isMouseButtonDown", &ScriptMethod::s_isMouseButtonDown );

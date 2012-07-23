@@ -10,6 +10,8 @@
 #	include "SoundEngine.h"
 #	include "ThreadEngine.h"
 
+#	include "Interface/SoundSystemInterface.h"
+
 #	include "LogEngine.h"
 
 #	include <sstream>

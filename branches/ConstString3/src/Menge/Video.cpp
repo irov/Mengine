@@ -8,7 +8,7 @@
 #	include "NodeManager.h"
 
 #	include "RenderEngine.h"
-#	include "SoundEngine.h"
+//#	include "SoundEngine.h"
 #	include "LogEngine.h"
 #	include "pybind/system.hpp"
 #	include "Consts.h"

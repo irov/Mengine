@@ -2,7 +2,7 @@
 
 #	include "Playlist.h"
 
-#	include "SoundEngine.h"
+//#	include "SoundEngine.h"
 
 #	include "ResourcePlaylist.h"
 

@@ -4,9 +4,11 @@
 
 #	include "FileEngine.h"
 #	include "LogEngine.h"
-#	include "SoundEngine.h"
+//#	include "SoundEngine.h"
 #	include "CodecEngine.h"
 #	include "ConverterEngine.h"
+
+#	include "Interface/SoundSystemInterface.h"
 
 #	include "BinParser.h"
 

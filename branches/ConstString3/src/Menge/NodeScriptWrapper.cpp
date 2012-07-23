@@ -70,7 +70,7 @@
 
 //#	include "DiscreteEntity.h"
 
-#	include "SoundEngine.h"
+//#	include "SoundEngine.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
@@ -964,29 +964,29 @@ namespace Menge
 		//		->setEnoughBlow( _enoughBlow );
 		//}
 
-		class PySoundSulkCallback
-			: public SoundSulkCallback
-		{
-		public:
-			PySoundSulkCallback( PyObject * _callback )
-				: m_callback(_callback)
-			{
-				pybind::incref( m_callback );
-			}
+		//class PySoundSulkCallback
+		//	: public SoundSulkCallback
+		//{
+		//public:
+		//	PySoundSulkCallback( PyObject * _callback )
+		//		: m_callback(_callback)
+		//	{
+		//		pybind::incref( m_callback );
+		//	}
 
-			~PySoundSulkCallback()
-			{
-				pybind::decref( m_callback );
-			}
+		//	~PySoundSulkCallback()
+		//	{
+		//		pybind::decref( m_callback );
+		//	}
 
-			void blow( float _blow ) override
-			{
-				pybind::call( m_callback, "(f)", _blow );
-			}
+		//	void blow( float _blow ) override
+		//	{
+		//		pybind::call( m_callback, "(f)", _blow );
+		//	}
 
-		protected:
-			PyObject * m_callback;
-		};
+		//protected:
+		//	PyObject * m_callback;
+		//};
 
 		//static void setBlowCallback( PyObject * _sulkcallback )
 		//{

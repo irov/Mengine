@@ -250,8 +250,8 @@ namespace Menge
 
 		if( entry.isLocked == true )
 		{
-			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is alredy LOCK!"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ResourceManager getResource: resource '%s' is alredy LOCK!"
+				, _name.c_str()
 				);
 
 			return false;
@@ -275,8 +275,8 @@ namespace Menge
 
 		if( entry.isLocked == false )
 		{
-			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is alredy UNLOCK!"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ResourceManager getResource: resource '%s' is alredy UNLOCK!"
+				, _name.c_str()
 				);
 
 			return false;
@@ -293,8 +293,8 @@ namespace Menge
 
 		if( it_find == m_resources.end() )
 		{
-			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' does not exist"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ResourceManager::getResource: resource '%s' does not exist"
+				, _name.c_str()
 				);
 
 			return 0;
@@ -303,8 +303,8 @@ namespace Menge
 		const ResourceEntry & entry = it_find->second;
 		if( entry.isLocked == true )
 		{
-			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is LOCK!"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ResourceManager::getResource: resource '%s' is LOCK!"
+				, _name.c_str()
 				);
 
 			return 0;
@@ -314,8 +314,8 @@ namespace Menge
 
 		if( resource->incrementReference() == 0 )
 		{
-			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is not compile!"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ResourceManager::getResource: resource '%s' is not compile!"
+				, _name.c_str()
 				);
 
 			return 0;
@@ -330,8 +330,8 @@ namespace Menge
 
 		if( it_find == m_resources.end() )
 		{
-			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' does not exist"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ResourceManager::getResourceReference: resource '%s' does not exist"
+				, _name.c_str()
 				);
 
 			return 0;

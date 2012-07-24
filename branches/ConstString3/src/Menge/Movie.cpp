@@ -203,7 +203,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			if( layer.animatable == true )
 			{
@@ -257,7 +257,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			if( layer.animatable == true )
 			{
@@ -292,6 +292,16 @@ namespace Menge
 		m_nodies[_layer.index] = _node;
 
 		this->addChildren( _node );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Movie::getMovieNode_( const MovieLayer & _layer ) const
+	{
+		return m_nodies[_layer.index];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Movie::getMovieParent_( const MovieLayer & _layer ) const
+	{
+		return m_nodies[_layer.parent];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Movie::getMovieSlot( const ConstString & _name ) const
@@ -329,7 +339,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			Movie * movie = static_cast<Movie *>(node);
 
@@ -384,7 +394,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			Movie * movie = static_cast<Movie *>(node);
 
@@ -721,7 +731,8 @@ namespace Menge
 
 		if( m_resourceMovie == 0 )
 		{
-			MENGE_LOG_ERROR("Movie can't setup resource '%s'"
+			MENGE_LOG_ERROR("Movie::_compile: '%s' can't setup resource '%s'"
+				, this->getName().c_str()
 				, m_resourceMovieName.c_str()
 				);
 
@@ -859,7 +870,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 			
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			if( layer.threeD == true )
 			{
@@ -885,7 +896,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setStartInterval( layer.startInterval );
@@ -904,7 +915,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			if( layer.parent == 0 )
 			{
@@ -912,7 +923,7 @@ namespace Menge
 			}
 			else
 			{
-				Node * node_parent = m_nodies[layer.parent];
+				Node * node_parent = this->getMovieParent_( layer );
 
 				if( node_parent == NULL )
 				{
@@ -941,7 +952,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			if( layer.parent == 0 )
 			{
@@ -981,7 +992,7 @@ namespace Menge
 				continue;
 			}
 			
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 
@@ -1022,7 +1033,7 @@ namespace Menge
 			//	continue;
 			//}
 			
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			node->destroy();
 		}
@@ -1030,6 +1041,8 @@ namespace Menge
 		m_nodies.clear();
 
 		m_slots.clear();
+
+		this->destroyCamera3D_();
 
 		if( m_resourceMovie != 0 )
 		{
@@ -1077,6 +1090,12 @@ namespace Menge
 		if( this->isPlay() == false )
 		{
 			return;
+		}
+
+		if( m_playTime > _current )
+		{
+			float deltha = m_playTime - _current;
+			_timing -= deltha;
 		}
 
 		//printf("Movie._update %s %f:%f:%f\n"
@@ -1227,7 +1246,7 @@ namespace Menge
 				}
 			}
 			
-			Node * node = m_nodies[layer.index];			
+			Node * node = this->getMovieNode_( layer );			
 			
 			MovieFrameSource frame;
 
@@ -1293,36 +1312,36 @@ namespace Menge
 
 						animatable->play( playTime + layerIn );
 
-						if( _lastFrame <= m_currentFrame )
-						{
-							if( _lastFrame > indexIn )
-							{
-								float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
-								animatable->setTiming( timing );
-							}
-							else
-							{
-								float timing = (indexIn - _lastFrame) * frameDuration + m_frameTiming;
-								animatable->setTiming( -timing );
-							}
-						}
-						else
-						{
-							if( indexOut - 1 > _lastFrame )
-							{
-								size_t frame = (indexOut - 1) - _lastFrame + m_currentFrame;
-								float timing = frame * frameDuration + m_frameTiming;
+						//if( _lastFrame <= m_currentFrame )
+						//{
+						//	if( _lastFrame > indexIn )
+						//	{
+						//		float timing = (_lastFrame - indexIn) * frameDuration + m_frameTiming;
+						//		animatable->setTiming( timing );
+						//	}
+						//	else
+						//	{
+						//		float timing = (indexIn - _lastFrame) * frameDuration + m_frameTiming;
+						//		animatable->setTiming( -timing );
+						//	}
+						//}
+						//else
+						//{
+						//	if( indexOut - 1 > _lastFrame )
+						//	{
+						//		size_t frame = (indexOut - 1) - _lastFrame + m_currentFrame;
+						//		float timing = frame * frameDuration + m_frameTiming;
 
-								animatable->setTiming( -timing );
-							}
-							else
-							{
-								size_t frame = m_currentFrame - indexIn;
-								float timing = frame * frameDuration + m_frameTiming;
+						//		animatable->setTiming( -timing );
+						//	}
+						//	else
+						//	{
+						//		size_t frame = m_currentFrame - indexIn;
+						//		float timing = frame * frameDuration + m_frameTiming;
 
-								animatable->setTiming( -timing );
-							}
-						}
+						//		animatable->setTiming( -timing );
+						//	}
+						//}
 						//animatable->update(realTiming);
 					}
 				}
@@ -1353,7 +1372,7 @@ namespace Menge
 			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
 			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
 		
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			MovieFrameSource frame;
 						
@@ -1458,7 +1477,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			MovieFrameSource frame;
 
@@ -1500,6 +1519,16 @@ namespace Menge
 		this->addChildren( m_renderCamera3D );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::destroyCamera3D_()
+	{
+		if( m_renderCamera3D == NULL )
+		{
+			return;
+		}
+
+		m_renderCamera3D->destroy();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setSpeedFactor( float _factor )
 	{
 		if( this->isCompile() == false )
@@ -1526,7 +1555,7 @@ namespace Menge
 				continue;
 			}
 			
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 			
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setSpeedFactor( _factor );
@@ -1560,7 +1589,7 @@ namespace Menge
 				continue;
 			}
 			
-			Node * node = m_nodies[layer.index];
+			Node * node = this->getMovieNode_( layer );
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setReverse( _reverse );

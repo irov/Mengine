@@ -53,6 +53,12 @@ namespace	Menge
 			return; 
 		}
 
+		if( m_playTime > _current )
+		{
+			float deltha = m_playTime - _current;
+			_timing -= deltha;
+		}
+
 		//printf("Animation._update %s %f:%f\n"
 		//	, m_name.c_str()
 		//	, _timing

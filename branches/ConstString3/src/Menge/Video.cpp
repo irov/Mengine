@@ -78,6 +78,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _current, float _timing )
 	{
+		if( this->isPlay() == false )
+		{
+			return;
+		}
+
+		if( m_playTime > _current )
+		{
+			float deltha = m_playTime - _current;
+			_timing -= deltha;
+		}
+
 		float speedFactor = this->getSpeedFactor();
 		
 		float timing = speedFactor * _timing;
@@ -85,11 +96,6 @@ namespace	Menge
 		Node::_update( _current, timing );
 		//localHide(false);
 		//printf("%f %s\n",_timing,m_name.c_str());
-
-		if( isPlay() == false )
-		{
-			return;
-		}
 
 		//printf("%f %s\n",_timing,m_name.c_str());
 		m_needUpdate = this->_sync( timing );

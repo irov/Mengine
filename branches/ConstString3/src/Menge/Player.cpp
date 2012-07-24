@@ -595,9 +595,7 @@ namespace Menge
 		}
 		
 		float gameTime = m_time;
-
-		m_time += _timing;
-
+		
 		//if( PhysicEngine2D::get()->isWorldCreate() )
 		//{
 		//	const mt::vec2f & arrowPos = 
@@ -635,6 +633,8 @@ namespace Menge
 		}
 
 		m_timingManager->update( gameTime, _timing );
+
+		m_time += _timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()

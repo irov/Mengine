@@ -99,12 +99,16 @@ namespace Menge
 
 	protected:
 		void addMovieNode_( const MovieLayer & _layer, Node * _node );
+		Node * getMovieNode_( const MovieLayer & _layer ) const;
+		Node * getMovieParent_( const MovieLayer & _layer ) const;
 
 	protected:
 		void updateCurrentFrame_( size_t _lastFrame, bool _force );
 		void updateTiming_();
 		void updateClipLastFrame_();
+		
 		void createCamera3D_();
+		void destroyCamera3D_();
 
 	protected:
 		ConstString m_resourceMovieName;

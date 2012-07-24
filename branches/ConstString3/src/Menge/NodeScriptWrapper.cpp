@@ -33,7 +33,6 @@
 #	include "Application.h"
 #	include "MousePickerSystem.h"
 
-#	include "Amplifier.h"
 #	include "Sprite.h"
 #	include "MovieInternalObject.h"
 #	include "Animation.h"

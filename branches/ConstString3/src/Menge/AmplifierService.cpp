@@ -1,4 +1,4 @@
-#	include "Amplifier.h"
+#	include "AmplifierService.h"
 
 #	include "Playlist.h"
 
@@ -14,22 +14,38 @@
 #	include "ScriptEngine.h"
 #	include "Consts.h"
 
+bool initializeAmplifierService( Menge::AmplifierServiceInterface ** _service )
+{
+	if( _service == NULL )
+	{
+		return false;
+	}
+
+	*_service = new Menge::AmplifierService;
+
+	return true;
+}
+
+void finalizeAmplifierService( Menge::AmplifierServiceInterface * _service )
+{
+	delete _service;
+}
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Amplifier::Amplifier()
+	AmplifierService::AmplifierService()
 		: m_sourceID(0)
 		, m_buffer(NULL)
 		, m_currentPlayList(0)
 		, m_volume(1.0f)
 		, m_volumeOverride(1.0f)
 		, m_playing(false)
-		, m_volToCb(NULL)
 		, m_currentSoundPosition(0.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Amplifier::~Amplifier()
+	AmplifierService::~AmplifierService()
 	{
 		//_release();
 		this->stop();
@@ -44,7 +60,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )
+	bool AmplifierService::loadPlayList_( const ConstString& _playlistResource )
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
@@ -73,7 +89,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::resetPlayList()
+	void AmplifierService::resetPlayList()
 	{	
 		m_currentPlayList = NULL;
 
@@ -81,7 +97,7 @@ namespace Menge
 			Consts::get()->c_builtin_empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::playTrack( const ConstString& _playlistResource, int _index, bool _looped )
+	void AmplifierService::playTrack( const ConstString& _playlistResource, int _index, bool _looped )
 	{
 		if( loadPlayList_( _playlistResource ) == false )
 		{
@@ -103,7 +119,7 @@ namespace Menge
 		if( Holder<SoundServiceInterface>::get()
 			->setSourceVolume( m_sourceID, musicVolume ) == false )
 		{
-			MENGE_LOG_ERROR("Amplifier::playTrack invalid set source volume %S"
+			MENGE_LOG_ERROR("AmplifierService::playTrack invalid set source volume %S"
 				, desc->path.c_str()
 				);
 		}
@@ -114,7 +130,7 @@ namespace Menge
 		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Amplifier::getNumTracks() const
+	size_t AmplifierService::getNumTracks() const
 	{
 		if(m_currentPlayList == NULL)
 		{
@@ -124,11 +140,11 @@ namespace Menge
 		return m_currentPlayList->numTracks();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::playAllTracks( const ConstString& _playlistResource )
+	void AmplifierService::playAllTracks( const ConstString& _playlistResource )
 	{
 		if( this->loadPlayList_(_playlistResource) == false )
 		{
-			MENGE_LOG_ERROR( "Amplifier: no found playlist with name '%s'"
+			MENGE_LOG_ERROR( "AmplifierService: no found playlist with name '%s'"
 				, _playlistResource.c_str()
 				);
 
@@ -140,7 +156,7 @@ namespace Menge
 		this->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::play()
+	void AmplifierService::play()
 	{
 		
 		//Holder<SoundEngine>::get()
@@ -153,7 +169,7 @@ namespace Menge
 		this->play_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::preparePlay_()
+	bool AmplifierService::preparePlay_()
 	{
 		if( m_currentPlayList == NULL )
 		{
@@ -178,7 +194,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::play_()
+	void AmplifierService::play_()
 	{
 		Holder<SoundServiceInterface>::get()
 			->play( m_sourceID );
@@ -186,7 +202,7 @@ namespace Menge
 		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::shuffle( const ConstString & _playlist )
+	void AmplifierService::shuffle( const ConstString & _playlist )
 	{
 		if( loadPlayList_( _playlist ) == false )
 		{
@@ -196,7 +212,7 @@ namespace Menge
 		m_currentPlayList->shuffle();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::stop()
+	void AmplifierService::stop()
 	{
 		m_playing = false;
 
@@ -209,7 +225,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::pause()
+	void AmplifierService::pause()
 	{
 		if( m_sourceID == 0 )
 		{
@@ -222,7 +238,7 @@ namespace Menge
 			->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onTurnSound( bool _turn )
+	void AmplifierService::onTurnSound( bool _turn )
 	{
 		if( _turn == false )
 		{
@@ -244,7 +260,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::resume()
+	void AmplifierService::resume()
 	{
 		if( m_sourceID == 0 )
 		{
@@ -254,7 +270,7 @@ namespace Menge
 		this->play_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::listenSoundNodeStopped()
+	void AmplifierService::listenSoundNodeStopped()
 	{
 		if( m_playing == false )
 		{
@@ -281,11 +297,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::listenSoundNodePaused()
+	void AmplifierService::listenSoundNodePaused()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::prepareSound_( const ConstString& _pakName, const WString& _file, const ConstString& _codec )
+	void AmplifierService::prepareSound_( const ConstString& _pakName, const WString& _file, const ConstString& _codec )
 	{
 		this->stop();
 		//_release();
@@ -295,7 +311,7 @@ namespace Menge
 
 		if( m_buffer == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Amplifier can't load sample '%S'"
+			MENGE_LOG_ERROR( "Warning: AmplifierService can't load sample '%S'"
 				, _file.c_str() 
 				);
 
@@ -307,7 +323,7 @@ namespace Menge
 
 		if( m_sourceID == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Amplifier '%S' can't create sound source"
+			MENGE_LOG_ERROR( "Warning: AmplifierService '%S' can't create sound source"
 				, _file.c_str()
 				);
 
@@ -318,7 +334,7 @@ namespace Menge
 			->setSourceListener( m_sourceID, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::release_()
+	void AmplifierService::release_()
 	{
 		Holder<SoundServiceInterface>::get()
 			->releaseSoundSource( m_sourceID );
@@ -330,54 +346,19 @@ namespace Menge
 		m_buffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& Amplifier::getPlaying() const
+	const ConstString& AmplifierService::getPlayTrack() const
 	{
 		return m_currentPlaylistName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::update( float _timing )
-	{
-		/*if( m_volumeTo.isStarted() )
-		{
-			float volume;
-			bool end = m_volumeTo.update( _timing, &volume );
-			SoundEngine::get()
-				->setMusicVolume( volume );
-		}*/
-		float value;
-		bool finish = false;
-
-		if( m_volumeTo.isStarted() == true )
-		{
-			finish = m_volumeTo.update( _timing, &value );
-
-			Holder<SoundServiceInterface>::get()
-				->setMusicVolume( value );
-		}
-
-		if( finish == true )
-		{
-			if( m_volToCb != NULL && pybind::is_none(m_volToCb) == false )
-			{
-				PyObject* cb = m_volToCb;
-				pybind::call( cb, "()" );
-				pybind::decref( cb );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::volumeTo( float _time, float _volume )
+	void AmplifierService::setVolume( float _volume )
 	{
 		//m_volumeOverride = m_volume;
-		m_volToCb = NULL;
-
-		float volume = Holder<SoundServiceInterface>::get()
-			->getMusicVolume();
-
-		m_volumeTo.start( volume, _volume, _time, ::fabsf );
+		Holder<SoundServiceInterface>::get()
+			->setMusicVolume( _volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getPosMs() const
+	float AmplifierService::getPosMs() const
 	{
 		if( m_sourceID == 0 )
 		{
@@ -390,24 +371,13 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::setPosMs( float _posMs )
+	void AmplifierService::setPosMs( float _posMs )
 	{
 		if( m_sourceID != 0 )
 		{
 			Holder<SoundServiceInterface>::get()
 				->setPosMs( m_sourceID, _posMs );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::volumeToCb( float _time, float _value, PyObject* _cb )
-	{
-		m_volToCb = _cb;
-		pybind::incref( m_volToCb );
-
-		float volume = Holder<SoundServiceInterface>::get()
-			->getMusicVolume();
-
-		m_volumeTo.start( volume, _value, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -3,15 +3,11 @@
 #	include "Core/ConstString.h"
 
 #	include "Config/Typedef.h"
-#	include "Core/Holder.h"
 
 #	include "Interface/SoundSystemInterface.h"
-
-#	include "ValueInterpolator.h"
+#	include "Interface/AmplifierServiceInterface.h"
 
 #	include <map>
-
-#	include "pybind/types.hpp"
 
 namespace	Menge
 {
@@ -23,17 +19,17 @@ namespace	Menge
 	*
 	*/
 
-	class Amplifier
-		: public Holder<Amplifier> 
+	class AmplifierService
+		: public AmplifierServiceInterface
 		, public SoundNodeListenerInterface	
 	{
 	public:
-		Amplifier();
-		~Amplifier();
+		AmplifierService();
+		~AmplifierService();
 
 	public:
 		void playAllTracks( const ConstString& _playlistResource );
-		void resetPlayList( );
+		void resetPlayList();
 		void shuffle( const ConstString& _playlist );
 
 		void play();
@@ -41,14 +37,12 @@ namespace	Menge
 		void pause();
 		void resume();
 		
-		const ConstString& getPlaying() const;
+		const ConstString& getPlayTrack() const;
 				
-		void volumeTo( float _time, float _value );
-		void volumeToCb( float _time, float _value, PyObject* _cb );
+		void setVolume( float _value );
 
 		size_t getNumTracks() const;
 
-		void update( float _timing );
 		void onTurnSound( bool _turn );
 
 		void playTrack( const ConstString& _playlistResource, int _index, bool _looped );
@@ -70,9 +64,6 @@ namespace	Menge
 
 		unsigned int m_sourceID;
 		SoundBufferInterface * m_buffer;
-
-		ValueInterpolatorLinear<float> m_volumeTo;
-		PyObject* m_volToCb;
 
 		bool m_playing;
 		bool m_needRefocus;

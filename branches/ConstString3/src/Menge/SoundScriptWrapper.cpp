@@ -1,6 +1,6 @@
 #	include "ScriptWrapper.h"
 
-#	include "Amplifier.h"
+#	include "Interface/AmplifierServiceInterface.h"
 
 #	include "SoundEmitter.h"
 
@@ -237,25 +237,25 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayList( const ConstString & _list )
 		{
-			Amplifier::get()
+			Holder<AmplifierServiceInterface>::get()
 				->playAllTracks( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void resetPlayList( )
 		{
-			Amplifier::get()
+			Holder<AmplifierServiceInterface>::get()
 				->resetPlayList();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayTrack( const ConstString & _list, int _index, bool _isLooped )
 		{
-			Amplifier::get()
+			Holder<AmplifierServiceInterface>::get()
 				->playTrack( _list, _index, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static size_t musicGetNumTracks()
 		{
-			return Amplifier::get()
+			return Holder<AmplifierServiceInterface>::get()
 				->getNumTracks();
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -273,42 +273,37 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void musicStop()
 		{
-			Amplifier::get()->stop();
+			Holder<AmplifierServiceInterface>::get()
+				->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicShuffle( const ConstString & _list )
 		{
-			Amplifier::get()
+			Holder<AmplifierServiceInterface>::get()
 				->shuffle( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static const ConstString & s_musicGetPlaying()
 		{
-			return Amplifier::get()
-				->getPlaying();
+			return Holder<AmplifierServiceInterface>::get()
+				->getPlayTrack();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_musicVolumeTo( float _time, float _volume )
+		static void s_musicSetVolume( float _volume )
 		{
-			Amplifier::get()
-				->volumeTo( _time, _volume );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_musicVolumeToCb( float _time, float _volume, PyObject* _cb )
-		{
-			Amplifier::get()
-				->volumeToCb( _time, _volume, _cb );
+			Holder<AmplifierServiceInterface>::get()
+				->setVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float s_musicGetPosMs()
 		{
-			return Amplifier::get()
+			return Holder<AmplifierServiceInterface>::get()
 				->getPosMs();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicSetPosMs( float _posMs )
 		{
-			Amplifier::get()
+			Holder<AmplifierServiceInterface>::get()
 				->setPosMs( _posMs );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -357,8 +352,7 @@ namespace	Menge
 		pybind::def_function( "musicStop", &ScriptSoundHelper::musicStop );
 		pybind::def_function( "musicShuffle", &ScriptSoundHelper::musicShuffle );
 		pybind::def_function( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
-		pybind::def_function( "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
-		pybind::def_function( "musicVolumeToCb", &ScriptSoundHelper::s_musicVolumeToCb );
+		pybind::def_function( "musicSetVolume", &ScriptSoundHelper::s_musicSetVolume );
 		pybind::def_function( "musicGetPosMs", &ScriptSoundHelper::s_musicGetPosMs );
 		pybind::def_function( "musicSetPosMs", &ScriptSoundHelper::s_musicSetPosMs );
 	}

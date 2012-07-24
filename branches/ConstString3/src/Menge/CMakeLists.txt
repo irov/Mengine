@@ -20,13 +20,15 @@ Interface
 	../Interface/RenderSystemInterface.h
 	../Interface/SoundSystemInterface.h
 	../Interface/ThreadSystemInterface.h
+    ../Interface/NotificationServiceInterace.h
+    ../Interface/AmplifierServiceInterface.h
 )
 
 
 ADD_FILTER(
 Amplifier
-	Amplifier.cpp
-	Amplifier.h
+	AmplifierService.cpp
+	AmplifierService.h
 	Playlist.cpp
 	Playlist.h
 )

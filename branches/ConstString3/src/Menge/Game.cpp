@@ -3,8 +3,9 @@
 #	include "Scene.h"
 #	include "Player.h"
 #	include "Arrow.h"
-#	include "Amplifier.h"
 #	include "ResourcePak.h"
+
+#	include "Interface/AmplifierServiceInterface.h"
 
 #	include "LightSystem.h"
 //#	include "ResourceImageDynamic.h"
@@ -34,6 +35,9 @@
 
 #	include "Core/String.h"
 #	include "Core/File.h"
+
+extern bool initializeAmplifierService( Menge::AmplifierServiceInterface ** _service );
+extern void finalizeAmplifierService( Menge::AmplifierServiceInterface * _service );
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -72,7 +76,7 @@ namespace Menge
 		, m_localizedTitle(false)
 		, m_personalityHasOnClose(false)
 		, m_player(NULL)
-		, m_amplifier(NULL)
+		, m_amplifierService(NULL)
 		, m_accountLister(0)
 		, m_accountManager(0)
 		, m_homeless(0)
@@ -365,7 +369,7 @@ namespace Menge
 				
 		float timing = _timing * m_timingFactor;
 		
-		m_amplifier->update( timing );
+		//m_amplifierService->update( timing );
 
 		m_player->tick( timing );
 	}
@@ -514,10 +518,9 @@ namespace Menge
 
 		Player::keep( m_player );
 
-		m_amplifier = new Amplifier;
+		initializeAmplifierService(&m_amplifierService);		
 
-		Amplifier::keep( m_amplifier );
-		//m_lightSystem = new LightSystem();//?
+		Holder<AmplifierServiceInterface>::keep( m_amplifierService );
 
 		m_homeless = NodeManager::get()
 			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node, Consts::get()->c_builtin_empty );
@@ -570,10 +573,10 @@ namespace Menge
 			m_homeless = NULL;
 		}
 
-		if( m_amplifier )
+		if( m_amplifierService )
 		{
-			delete m_amplifier;
-			m_amplifier = NULL;
+			finalizeAmplifierService( m_amplifierService );
+			m_amplifierService = NULL;
 		}		
 
 		if( m_player )
@@ -739,9 +742,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onTurnSound( bool _turn )
 	{
-		if( m_amplifier )
+		if( m_amplifierService )
 		{
-			m_amplifier->onTurnSound( _turn );
+			m_amplifierService->onTurnSound( _turn );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

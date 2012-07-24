@@ -28,7 +28,7 @@ namespace Menge
 	class Scene;
 	class Arrow;
 
-	class Amplifier;
+	class AmplifierServiceInterface;
 	class LightSystem;
 
 	class Game
@@ -128,7 +128,7 @@ namespace Menge
 		Node * m_homeless;
 
 		Player* m_player;
-		Amplifier* m_amplifier;
+		AmplifierServiceInterface * m_amplifierService;
 
 		AccountManagerListener * m_accountLister; 
 		AccountManager * m_accountManager;

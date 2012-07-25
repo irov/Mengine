@@ -67,4 +67,17 @@ namespace Menge
 		begin -= _center;
 		end -= _center;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::empty() const
+	{
+		float width = this->getWidth();
+		float height = this->getHeight();
+
+		if( width > 0.f && height > 0.f )
+		{
+			return false;
+		}
+
+		return true;
+	}
 }

@@ -73,8 +73,8 @@ namespace	Menge
 		mt::mul_v2_m4( m_viewportWM.begin, m_viewport.begin, wm );
 		mt::mul_v2_m4( m_viewportWM.end, m_viewport.end, wm );
 		
-		if( currentResolutionWidth < contentResolutionWidth ||
-			currentResolutionHeight < contentResolutionHeight )
+		if( lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
+			currentResolutionHeight < contentResolutionHeight ) )
 		{
 			m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - lowContentViewport.begin.x, 0.f );
 			m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - lowContentViewport.begin.y, 0.f );
@@ -108,8 +108,8 @@ namespace	Menge
 		mt::mul_v2_m4( projectViewport.begin, m_viewport.begin, wm );
 		mt::mul_v2_m4( projectViewport.end, m_viewport.end, wm );
 		
-		if( currentResolutionWidth < contentResolutionWidth ||
-			currentResolutionHeight < contentResolutionHeight )
+		if( lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
+			currentResolutionHeight < contentResolutionHeight ) )
 		{
 			if( projectViewport.begin.x < lowContentViewport.begin.x )
 			{

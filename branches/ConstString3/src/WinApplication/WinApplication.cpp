@@ -122,6 +122,7 @@ namespace Menge
 		, m_cursor(NULL)
 		, m_enableDebug(false)
 		, m_inputService(0)
+		, m_developmentMode(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,17 +170,14 @@ namespace Menge
 		//	docsAndSettings = true;
 		//}
 
-		bool developmentMode = false;
-		
-
 		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
 		{
-			developmentMode = true;
+			m_developmentMode = true;
 		}
 
 		bool docsAndSettings = true;
 
-		if( developmentMode == true )
+		if( m_developmentMode == true )
 		{
 			docsAndSettings = false;
 		}
@@ -453,11 +451,14 @@ namespace Menge
 
 		EMessageLevel m_logLevel;
 
-#	ifndef MENGE_MASTER_RELEASE
-		m_logLevel = LM_LOG;
-#	else
-		m_logLevel = LM_ERROR;
-#	endif
+		if( m_developmentMode == true )
+		{
+			m_logLevel = LM_LOG;
+		}
+		else
+		{
+			m_logLevel = LM_ERROR;
+		}
 		
 		String logLevel;
 		Helper::s_getOption( " -log:", m_commandLine, &logLevel );

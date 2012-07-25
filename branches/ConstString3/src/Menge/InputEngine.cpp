@@ -263,8 +263,8 @@ namespace Menge
 		m_dimentions.x = float(contentResolutionWidth);
 		m_dimentions.y = float(contentResolutionHeight);
 		
-		if( currentResolutionWidth < contentResolutionWidth ||
-			currentResolutionHeight < contentResolutionHeight )
+		if( lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
+			currentResolutionHeight < contentResolutionHeight ) )
 		{
 			float lowContentViewportWidth = lowContentViewport.getWidth();
 			float lowContentViewportHeight = lowContentViewport.getHeight();

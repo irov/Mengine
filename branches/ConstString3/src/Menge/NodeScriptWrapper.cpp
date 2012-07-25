@@ -1807,6 +1807,14 @@ namespace Menge
 			return result;
 		}
 
+		static const Viewport & s_getLowContentViewport()
+		{
+			const Viewport & viewport = Application::get()
+				->getLowContentViewport();
+
+			return viewport;
+		}
+
 		static bool s_addArrowPrototype( const ConstString & _prototype, PyObject * _module )
 		{
 			bool result = ArrowManager::get()
@@ -3039,6 +3047,8 @@ namespace Menge
 			pybind::def_function( "addEntityPrototype", &ScriptMethod::s_addEntityPrototype );
 			pybind::def_function( "addScenePrototype", &ScriptMethod::s_addScenePrototype );
 			pybind::def_function( "addArrowPrototype", &ScriptMethod::s_addArrowPrototype );
+
+			pybind::def_function( "getLowContentViewport", &ScriptMethod::s_getLowContentViewport );			
 		}
 	}
 }

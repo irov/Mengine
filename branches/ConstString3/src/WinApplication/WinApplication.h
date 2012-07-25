@@ -151,5 +151,6 @@ namespace Menge
 		bool m_isDoubleClick;
 
 		bool m_enableDebug;
+		bool m_developmentMode;
 	};
 }	// namespace Menge

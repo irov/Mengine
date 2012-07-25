@@ -557,15 +557,20 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::finalize()
+	void Game::destroyArrow()
 	{
-		EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
-
 		if( m_defaultArrow )
 		{
 			m_defaultArrow->destroy();
 			m_defaultArrow = NULL;
-		}		
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::finalize()
+	{
+		EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
+
+		this->destroyArrow();
 		
 		if( m_homeless )
 		{

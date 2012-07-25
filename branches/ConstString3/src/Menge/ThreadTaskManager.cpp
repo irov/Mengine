@@ -127,13 +127,13 @@ namespace Menge
 			return;
 		}
 
-		if( isTaskOnProgress( _task ) == false )
+		if( this->isTaskOnProgress( _task ) == false )
 		{
 			MENGE_LOG_ERROR( "ThreadTaskManager.joinTask: Requested task  not exist " );
 			return;
 		}
 
-		joinTask_(_task);
+		this->joinTask_(_task);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskManager::joinTask_( ThreadTask * _task )

@@ -1815,6 +1815,12 @@ namespace Menge
 			return viewport;
 		}
 
+		static void s_destroyArrow()
+		{
+			Game::get()
+				->destroyArrow();
+		}
+
 		static bool s_addArrowPrototype( const ConstString & _prototype, PyObject * _module )
 		{
 			bool result = ArrowManager::get()
@@ -3049,6 +3055,8 @@ namespace Menge
 			pybind::def_function( "addArrowPrototype", &ScriptMethod::s_addArrowPrototype );
 
 			pybind::def_function( "getLowContentViewport", &ScriptMethod::s_getLowContentViewport );			
+
+			pybind::def_function( "destroyArrow", &ScriptMethod::s_destroyArrow );
 		}
 	}
 }

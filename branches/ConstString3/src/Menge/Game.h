@@ -122,7 +122,10 @@ namespace Menge
 		void addHomeless( Node * _homeless );
 		void clearHomeless();
 		float getTimingFactor() const;
-		void setTimingFactor( float _timingFactor );  
+		void setTimingFactor( float _timingFactor ); 
+
+	public:
+		void destroyArrow();
 
 	private:
 		Node * m_homeless;

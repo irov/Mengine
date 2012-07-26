@@ -54,6 +54,8 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
 		
+		void _invalidateUV();
+
 		bool _sync( float _timing );
 		bool _compileDecoder();
         void _fillVideoBuffer();
@@ -79,15 +81,16 @@ namespace Menge
 
 		RenderTextureInterface * m_textures[1];
 		SoundEmitter* m_soundEmitter;
-
+		
 		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;	
 
 		FileInputStreamInterface * m_videoFile;
 		VideoDecoderInterface * m_videoDecoder;
 		mt::vec2f m_frameSize;
-		float m_timing;
+		mt::vec4f m_uv;
 
+		float m_timing;
 
 		bool m_autoStart;
 		bool m_needUpdate;

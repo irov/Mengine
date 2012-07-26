@@ -188,18 +188,6 @@ namespace Menge
 			return false; //
 		}
 		
-		if( m_Frame != NULL )
-		{
-			av_free(m_Frame);
-			m_Frame = NULL;
-		}
-
-		if( m_FrameRGBA != NULL )
-		{
-			av_free(m_FrameRGBA);
-			m_FrameRGBA = NULL;
-		}
-
 		// Allocate video frame
 		m_Frame = avcodec_alloc_frame();
 		if( m_Frame == NULL )
@@ -223,11 +211,12 @@ namespace Menge
 		{
 		 	m_codecContext->time_base.den = 1000;
 		}
-		//setting the VideoCodecDataInfo structure
-		//init VideoCodec info
+		
+		////we must read frame because  m_codecContext->width,  m_codecContext->height can change 
+		////init VideoCodec info
 		//int isGotPicture;
 		//AVPacket packet;
-		////we must read frame because  m_codecContext->width,  m_codecContext->height can change 
+
 		//av_init_packet(&packet);
 		//av_read_frame(m_formatContext, &packet);
 		//avcodec_decode_video2( m_codecContext ,m_Frame, &isGotPicture, &packet );
@@ -252,11 +241,12 @@ namespace Menge
 		//m_dataInfo.duration  = (float)( len * (m_dataInfo.fps / AV_TIME_BASE) ) ;
 		m_dataInfo.frameTiming = 1000.f / m_dataInfo.fps;
 		m_dataInfo.duration = (len / AV_TIME_BASE) * 1000.0f;
+		
 		m_isCompile = true;
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////// 
-	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _pitch )
 	{
 		if( m_isCompile != true )
 		{
@@ -269,8 +259,9 @@ namespace Menge
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid RGBA Frame ");
 			return 0;
 		}
-
+		
 		struct SwsContext * imgConvertContext = NULL;
+
 		// Convert the image from its native format to RGBA using 
 		imgConvertContext = sws_getCachedContext(NULL, m_codecContext->width, m_codecContext->height, 
 			m_codecContext->pix_fmt, 
@@ -281,20 +272,21 @@ namespace Menge
 		if( imgConvertContext == NULL )
 		{
 			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
-			//av_free_packet(&packet);
 			return 0;
 		}
+		
+		m_FrameRGBA->linesize[0] = _pitch;
 
 		int ret = sws_scale( imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
 			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize );
 
 		sws_freeContext( imgConvertContext );
-
-		// Convert the image into RGBA and copy to the surface.
+		
 		avpicture_fill( (AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
 		
-		size_t decoded = _bufferSize * m_codecContext->height;
+		size_t decoded = _pitch * m_codecContext->height;
+		
 		return decoded;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -394,54 +386,6 @@ namespace Menge
 			m_bufferIO = NULL;
 		}
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//int VideoDecoderFFMPEG::sync( float _timing )
-	//{
-	//	m_timing += _timing;
-	//	//m_dataInfo;
-	//	//m_formatContext;
-	//	//m_pts;
-	//	//printf("  timing %f.2  \n",_timing);
-	//	int countFrames = int(m_timing / m_frameTiming);
-	//	//printf (" countFrames  %i\n",countFrames);
-	//	int frame = countFrames;
-	//	int ret;
-	//	
-	//	if( frame != -1 )
-	//	{
-	//		ret =-1;
-	//	}
-	//	else
-	//	{
-	//		ret = 1;
-	//	}
-	//	
-	//	m_eof = false;
-
-	//	while( countFrames > 0 )
-	//	{
-	//		EVideoDecoderReadState state = readNextFrame();
-	//		
-	//		if( state == VDRS_END_STREAM )
-	//		{
-	//			m_eof = true;
-	//			break;	
-	//		}
-	//		else if( state == VDRS_FAILURE )
-	//		{
-	//			break;	
-	//		}
-	//		else if( state == VDRS_SKIP )
-	//		{
-	//			continue;	
-	//		}
-
-	//		countFrames--;
-	//	}
-	//	
-	//	m_timing -= frame *  m_frameTiming;
-	//	return ret;		
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::seek( float _timing )
 	{

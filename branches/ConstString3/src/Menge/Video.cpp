@@ -28,6 +28,7 @@ namespace	Menge
 		, m_needUpdate(false)
 		, m_material(NULL)
 		, m_frameSize(0.0f, 0.0f)
+		, m_uv(0.0f, 0.0f, 1.0f, 1.0f)
 		, m_videoDecoder(NULL)
 		, m_videoFile(NULL)
 		, m_timing(0.0f)
@@ -90,9 +91,9 @@ namespace	Menge
 		}
 
 		float speedFactor = this->getSpeedFactor();
-		
+
 		float timing = speedFactor * _timing;
-		
+
 		Node::_update( _current, timing );
 		//localHide(false);
 		//printf("%f %s\n",_timing,m_name.c_str());
@@ -115,7 +116,7 @@ namespace	Menge
 			{
 				continue;
 			}
-		
+
 			break;
 		}
 
@@ -147,7 +148,7 @@ namespace	Menge
 			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
-				
+
 		Menge::PixelFormat colorMode;
 
 		if ( this->_compileDecoder() == false )
@@ -193,6 +194,7 @@ namespace	Menge
 			}
 		}
 
+		this->_invalidateUV();
 		this->invalidateVertices();
 		this->invalidateBoundingBox();
 
@@ -204,7 +206,7 @@ namespace	Menge
 		const ConstString & category = m_resourceVideo->getCategory();
 
 		const WString filePath = m_resourceVideo->getFilePath();
-		
+
 		m_videoFile = FileEngine::get()
 			->openInputFile( category, filePath );
 
@@ -234,10 +236,10 @@ namespace	Menge
 
 			return false;
 		}
-		
+
 		bool alpha = m_resourceVideo->isAlpha();
 		VideoCodecOptions videoCodecOptions;
-		
+
 		if( alpha == true )
 		{
 			videoCodecOptions.pixelFormat = Menge::PF_A8R8G8B8;
@@ -246,7 +248,7 @@ namespace	Menge
 		{
 			videoCodecOptions.pixelFormat = Menge::PF_R8G8B8;
 		}
-		
+
 		CodecOptions* codecOptions = dynamic_cast<CodecOptions*>(&videoCodecOptions);
 
 		m_videoDecoder->setOptions(  codecOptions );
@@ -254,7 +256,7 @@ namespace	Menge
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 		m_frameSize.x = dataInfo->frameWidth;
 		m_frameSize.y = dataInfo->frameHeight;
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -262,7 +264,7 @@ namespace	Menge
 	{
 		RenderEngine::get()
 			->releaseTexture( m_textures[0] );
-		
+
 		if( m_videoDecoder != NULL )
 		{
 			m_videoDecoder->destroy();
@@ -274,7 +276,7 @@ namespace	Menge
 			m_videoFile->close();
 			m_videoFile = NULL;
 		}
-		
+
 		if( m_resourceVideo != 0 )
 		{
 			m_resourceVideo->decrementReference();
@@ -350,7 +352,7 @@ namespace	Menge
 		}
 
 		const Vertex2D * vertices = this->getVertices();
-		
+
 		RenderEngine::get()
 			->addRenderObject2D( _camera, m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD );
 	}
@@ -363,7 +365,7 @@ namespace	Menge
 		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
 		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
 		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-		
+
 		mt::vec3f transformX;
 		mt::vec3f transformY;
 
@@ -385,14 +387,14 @@ namespace	Menge
 			//_vertices[i].pos[3] = 1.f;
 		}
 
-		_vertices[0].uv[0] = 0.0f;
-		_vertices[0].uv[1] = 0.0f;
-		_vertices[1].uv[0] = 1.0f;
-		_vertices[1].uv[1] = 0.0f;
-		_vertices[2].uv[0] = 1.0f;
-		_vertices[2].uv[1] = 1.0f;
-		_vertices[3].uv[0] = 0.0f;
-		_vertices[3].uv[1] = 1.0f;
+		_vertices[0].uv[0] = m_uv.x;
+		_vertices[0].uv[1] = m_uv.y;
+		_vertices[1].uv[0] = m_uv.z;
+		_vertices[1].uv[1] = m_uv.y;
+		_vertices[2].uv[0] = m_uv.z;
+		_vertices[2].uv[1] = m_uv.w;
+		_vertices[3].uv[0] = m_uv.x;
+		_vertices[3].uv[1] = m_uv.w;
 
 		ColourValue color;
 		this->calcTotalColor(color);
@@ -444,7 +446,7 @@ namespace	Menge
 		{
 			needUpdate = true;
 		}
-				
+
 		while( countFrames > 0 )
 		{
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame();
@@ -494,9 +496,9 @@ namespace	Menge
 	void Video::_setTiming( float _timing )
 	{
 		float seek_timing;
-		
+
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
-		
+
 		if( _timing < 0 )
 		{
 			float curTiming = m_videoDecoder->getTiming();
@@ -506,7 +508,7 @@ namespace	Menge
 		{
 			seek_timing = _timing;
 		}
-		
+
 		if( seek_timing >= dataInfo->frameTiming )
 		{		
 			seek_timing -= dataInfo->frameTiming;
@@ -520,11 +522,11 @@ namespace	Menge
 
 			return;
 		}
-		
+
 		m_videoDecoder->seek( seek_timing );
 
 		m_needUpdate = this->_sync( dataInfo->frameTiming );
-		
+
 		//float curTiming = m_videoDecoder->getTiming();
 		//float delta = _timing - curTiming;
 		//		
@@ -593,6 +595,29 @@ namespace	Menge
 	bool Video::_interrupt( size_t _enumerator )
 	{
 		return false;
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::_invalidateUV()
+	{
+		RenderTextureInterface * texture = m_textures[0];
+
+		float width = (float)texture->getWidth();
+		float height = (float)texture->getHeight();
+
+		const Rect & hwRect = texture->getHWRect();
+
+		size_t hwWidth = texture->getHWWidth();
+		size_t hwHeight = texture->getHWHeight();
+
+		float scaleLeft = float(hwRect.left) / float(hwWidth);
+		float scaleTop = float(hwRect.top) / float(hwHeight);
+		float scaleRight = float(hwRect.right) / float(hwWidth);
+		float scaleBottom = float(hwRect.bottom) / float(hwHeight);
+
+		m_uv.x = scaleLeft;
+		m_uv.y = scaleTop;
+		m_uv.z = scaleLeft + (scaleRight - scaleLeft);
+		m_uv.w = scaleTop + (scaleBottom - scaleTop);
 	}
 	////////////////////////////////////////////////////////////////////
 }

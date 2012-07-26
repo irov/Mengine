@@ -95,6 +95,12 @@ namespace Menge
 
 		m_currentPlaylistName = 
 			Consts::get()->c_builtin_empty;
+
+		if( m_sourceID != 0 )
+		{
+			Holder<SoundServiceInterface>::get()
+				->stop( m_sourceID );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::playTrack( const ConstString& _playlistResource, int _index, bool _looped )

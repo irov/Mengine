@@ -56,6 +56,7 @@ namespace Menge
 	
     public:
 		bool initialize() override;
+		void finalize() override;
 
 	public:
 		void update( float _timing ) override;
@@ -125,7 +126,6 @@ namespace Menge
 		SoundSulkCallback * m_sulkcallback;
 
 	private:
-
 		float m_soundVolume;
 		float m_commonVolume;
 		float m_musicVolume;
@@ -153,6 +153,9 @@ namespace Menge
 
 		unsigned int m_enumerator;
 
+	private:
+		void playSounds_();
+		void stopSounds_();
 		void updateVolume_();
 	};
 };

@@ -1500,14 +1500,19 @@ namespace Menge
 			m_game->finalize();
 		}
 
-		if( m_scriptEngine )
+		if( m_soundService )
 		{
-			m_scriptEngine->finalize();
+			m_soundService->finalize();
 		}
 
 		if( m_taskManager )
 		{
 			m_taskManager->finalize();
+		}
+
+		if( m_scriptEngine )
+		{
+			m_scriptEngine->finalize();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1543,7 +1548,6 @@ namespace Menge
 		delete m_inputEngine;
 		
 		finalizeSoundService( m_soundService );
-		//delete m_soundService;
 
 		delete m_taskManager;
 
@@ -1941,7 +1945,7 @@ namespace Menge
 		++it )
 		{
 			TDynamicLibraryFunction function =
-				it->second->getSymbol("dllFinializePlugin");
+				it->second->getSymbol("dllFinalizePlugin");
 			
 			if( function != NULL )
 			{

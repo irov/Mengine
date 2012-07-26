@@ -567,7 +567,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalize()
-	{
+	{	
+		if( m_player )
+		{
+			m_player->finalize();
+			delete m_player;
+		}
+
 		EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
 
 		this->destroyArrow();
@@ -580,15 +586,12 @@ namespace Menge
 
 		if( m_amplifierService )
 		{
+			m_amplifierService->resetPlayList();
+
 			finalizeAmplifierService( m_amplifierService );
 			m_amplifierService = NULL;
 		}		
 
-		if( m_player )
-		{
-			m_player->finalize();
-			delete m_player;
-		}
 		//delete m_lightSystem;
 
 		if( m_accountManager != NULL )
@@ -627,7 +630,7 @@ namespace Menge
 		m_languagePaks.clear();
 
 		m_paks.clear();
-
+				
 		EVENTABLE_CALL(this, EVENT_DESTROY)( "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////

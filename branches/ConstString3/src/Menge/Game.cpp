@@ -568,13 +568,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalize()
 	{	
+		EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
+
 		if( m_player )
 		{
 			m_player->finalize();
 			delete m_player;
+			m_player = NULL;
 		}
-
-		EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
 
 		this->destroyArrow();
 		

@@ -252,7 +252,11 @@ namespace	Menge
 		m_interface->play();
 
 		//TODO!???
-		ParticleEmitter::_update( 0.f, m_startPosition );
+		if( m_startPosition > 0.f )
+		{
+			m_interface->update( m_startPosition );
+		}
+		//ParticleEmitter::_update( 0.f, m_startPosition );
 
 		return true;
 	}
@@ -344,8 +348,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_update( float _current, float _timing )
 	{
-		Node::_update( _current, _timing );
-
 		if( this->isPlay() == false )
 		{
 			return;
@@ -357,6 +359,12 @@ namespace	Menge
 		if( enabled == false )
 		{
 			return;
+		}
+
+		if( m_playTime > _current )
+		{
+			float deltha = m_playTime - _current;
+			_timing -= deltha;
 		}
 
 		m_interface->update( _timing );
@@ -599,7 +607,7 @@ namespace	Menge
 
 		if( oldRelative != m_emitterRelative )
 		{
-			updateRelative_();
+			this->updateRelative_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

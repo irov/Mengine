@@ -59,7 +59,7 @@ namespace Menge
 	bool ThreadTaskManager::isTaskOnProgress( ThreadTask * _task ) const
 	{
 		for( TVectorThreadTask::const_iterator 
-			it =  m_taskThread.begin(),
+			it = m_taskThread.begin(),
 			it_end = m_taskThread.end();
 		it != it_end;
 		++it )

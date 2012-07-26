@@ -66,24 +66,24 @@ namespace Menge
 		Magic_SetCurrentFolder(_file, _path );
 		
 		MAGIC_FIND_DATA find;
-		const char* magicName=Magic_FindFirst(_file, &find, MAGIC_FOLDER | MAGIC_EMITTER);
+		const char* magicName = Magic_FindFirst(_file, &find, MAGIC_FOLDER | MAGIC_EMITTER);
 		
 		while( magicName )
 		{
 			//if animated folder or emitter
 			if ( find.animate == 1 )
 			{
-				loadEmitter( magicName, _file, _container );
+				this->loadEmitter( magicName, _file, _container );
 			}
 			//if folder
 			else
 			{
-				if( _container->isMetaData(magicName) == true )
+				if( _container->isMetaData( magicName ) == true )
 				{	
 					_container->setMetaData( magicName );
 				}
 				
-				loadEmittersFolder( magicName, _file, _container );
+				this->loadEmittersFolder( magicName, _file, _container );
 			}
 		
 			magicName = Magic_FindNext( _file, &find );

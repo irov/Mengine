@@ -105,7 +105,7 @@ namespace Menge
 
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		float timing = m_currentFrame * frameDuration + m_frameTiming;
+		float timing = m_currentFrame * frameDuration + m_frameTiming - m_startInterval;
 
 		return timing;
 	}
@@ -122,19 +122,16 @@ namespace Menge
 			m_frameTiming = 0.f;
 			m_currentFrame = m_resourceMovie->getFrameCount();
 
-			//this->setLastFrame();
+			//TODO!!!!!!! this->setTiming( 0.f );??????
 		}
 		else
 		{
 			m_frameTiming = 0.f;
 			m_currentFrame = 0;
 
-			//this->setFirstFrame();
+			this->setTiming( 0.f );
 		}
-
-		//this->updateParent_();
-
-		//this->updateCurrentFrame_( m_currentFrame, true );
+				
 
 		return true;
 	}
@@ -555,7 +552,8 @@ namespace Menge
 
 		layer_animation->setAnimationResource( _layer.source );
 
-		layer_animation->setLoop( true );				
+		layer_animation->setLoop( true );
+		layer_animation->setStartInterval( _layer.startInterval );
 
 		if( layer_animation->compile() == false )
 		{
@@ -582,7 +580,8 @@ namespace Menge
 			->createNodeT<Movie>( _layer.name, Consts::get()->c_Movie, Consts::get()->c_Image );
 
 		layer_movie->setResourceMovie( _layer.source );				
-		layer_movie->setLoop( true );				
+		layer_movie->setLoop( true );
+		layer_movie->setStartInterval( _layer.startInterval );
 
 		if( layer_movie->compile() == false )
 		{
@@ -640,8 +639,8 @@ namespace Menge
 			->createNodeT<Video>( _layer.name, Consts::get()->c_Video, Consts::get()->c_Image );
 
 		layer_video->setVideoResource( _layer.source );
-
 		layer_video->setLoop( true );				
+		layer_video->setStartInterval( _layer.startInterval );
 
 		if( layer_video->compile() == false )
 		{
@@ -668,8 +667,8 @@ namespace Menge
 			->createNodeT<SoundEmitter>( _layer.name, Consts::get()->c_SoundEmitter, Consts::get()->c_Sound );
 
 		layer_sound->setSoundResource( _layer.source );
-
 		layer_sound->setLoop( true );				
+		layer_sound->setStartInterval( _layer.startInterval );
 
 		if( layer_sound->compile() == false )
 		{
@@ -881,26 +880,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateStartInterval_()
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		//const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorMovieLayers::const_iterator 
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
+		//for( TVectorMovieLayers::const_iterator 
+		//	it = layers.begin(),
+		//	it_end = layers.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	const MovieLayer & layer = *it;
 
-			if( layer.animatable == false )
-			{
-				continue;
-			}
+		//	if( layer.animatable == false )
+		//	{
+		//		continue;
+		//	}
 
-			Node * node = this->getMovieNode_( layer );
+		//	Node * node = this->getMovieNode_( layer );
 
-			Animatable * animatable = dynamic_cast<Animatable *>(node);
-			animatable->setStartInterval( layer.startInterval );
-		}
+		//	Animatable * animatable = dynamic_cast<Animatable *>(node);
+		//	animatable->setStartInterval( layer.startInterval );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setupParent_()
@@ -1402,7 +1401,7 @@ namespace Menge
 					//	, node->getName().c_str()
 					//	);
 
-					float timing = (indexOut - indexIn) * frameDuration;
+					float timing = (indexOut - indexIn) * frameDuration - m_startInterval;
 					animatable->setTiming( timing );
 				}
 			}
@@ -1424,7 +1423,7 @@ namespace Menge
 				{
 					Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-					float timing = 0.0f;
+					float timing = - layer.startInterval;
 					animatable->setTiming( timing );
 				}
 			}
@@ -1442,7 +1441,7 @@ namespace Menge
 				{
 					Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-					float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
+					float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming - layer.startInterval;
 					animatable->setTiming( timing );
 				}
 			}			

@@ -177,6 +177,16 @@ namespace Menge
 
 		const Glyph * glyph = m_resourceGlyph->getGlyph('A');
 	
+		if( glyph == 0 )
+		{
+			MENGE_LOG_ERROR("ResourceFont::_compile: '%s' can't get from glyph '%s' - 'A'"
+				, this->getName().c_str()
+				, m_resourceGlyphName.c_str()
+				);
+
+			return false;
+		}
+
 		m_whsRatio = glyph->getRatio();
 
 		return true;

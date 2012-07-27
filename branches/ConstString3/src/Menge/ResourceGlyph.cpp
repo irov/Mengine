@@ -133,7 +133,7 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::Char )
 			{
 				float width = 0;
-				String glyph;
+				wchar_t glyph;
 				
 				Int4 rect;
 				Int2 offset;
@@ -189,16 +189,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const Int4 & _rect, const Int2 & _offset, float _width )
+	Glyph & ResourceGlyph::addGlyph_( wchar_t _glyph, const Int4 & _rect, const Int2 & _offset, float _width )
 	{
-		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeServiceInterface>("UnicodeService");
-
-		bool w_glyph_successful;
-		WString unicode = unicodeService->utf8ToUnicode( _glyph, w_glyph_successful );
-
-		unsigned int glyphId = (unsigned int)unicode[0];
-
 		mt::vec4f uv( (float)_rect.v0, (float)_rect.v1, (float)(_rect.v0 + _rect.v2), (float)(_rect.v1 + _rect.v3) );
 		mt::vec2f offset( (float)_offset.v0, (float)_offset.v1 );
 		mt::vec2f size( (float)_rect.v2, (float)_rect.v3 );
@@ -207,7 +199,7 @@ namespace Menge
 
 		Glyph gl(uv, offset, ratio, size);
 
-		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( glyphId, gl ) ).first;
+		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( _glyph, gl ) ).first;
 		
 		return it_insert->second;
 	}

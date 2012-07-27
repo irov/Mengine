@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1343382706;
+		static const int version = 1343387864;
 		struct AccountID
 		{
 			static const int id = 129;
@@ -234,7 +234,7 @@ namespace Menge
 		struct Char_code
 		{
 			static const int id = 302;
-			typedef Menge::String Type;
+			typedef wchar_t Type;
 		};
 		struct Char_offset
 		{

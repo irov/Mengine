@@ -157,9 +157,9 @@ namespace
 	}
 
 	template<class T>
-	static void s_writeStream( std::ofstream & _stream, T * _t, size_t i )
+	static void s_writeStreamCount( std::ofstream & _stream, T * _t, size_t _count )
 	{
-		_stream.write( (const char *)_t, sizeof(*_t)*i );
+		_stream.write( (const char *)_t, sizeof(*_t) * _count );
 	}
 
 	static bool s_writeBool( std::ofstream & _stream, const char * _str )
@@ -190,6 +190,32 @@ namespace
 		return true;
 	}
 
+	static bool s_writeInt2_space( std::ofstream & _stream, const char * _str )
+	{
+		int value[2];
+		if( sscanf_s( _str, "%d %d", &value[0], &value[1] ) != 2)
+		{
+			return false;
+		}
+
+		s_writeStreamCount( _stream, value, 2 );
+
+		return true;
+	}
+
+	static bool s_writeInt4_space( std::ofstream & _stream, const char * _str )
+	{
+		int value[4];
+		if( sscanf_s( _str, "%d %d %d %d", &value[0], &value[1], &value[2], &value[3] ) != 4)
+		{
+			return false;
+		}
+
+		s_writeStreamCount( _stream, value, 4 );
+
+		return true;
+	}
+
 	static bool s_writeSizet( std::ofstream & _stream, const char * _str )
 	{
 		size_t value;
@@ -211,7 +237,7 @@ namespace
 			return false;
 		}
 
-		s_writeStream( _stream, value, 2 );
+		s_writeStreamCount( _stream, value, 2 );
 
 		return true;
 	}
@@ -252,7 +278,7 @@ namespace
 			return false;
 		}
 
-		s_writeStream( _stream, value, 2 );
+		s_writeStreamCount( _stream, value, 2 );
 
 		return true;
 	}
@@ -265,7 +291,7 @@ namespace
 			return false;
 		}
 
-		s_writeStream( _stream, value, 3 );
+		s_writeStreamCount( _stream, value, 3 );
 
 		return true;
 	}
@@ -350,7 +376,7 @@ namespace
 			return false;
 		}
 
-		s_writeStream( _stream, value, 4 );
+		s_writeStreamCount( _stream, value, 4 );
 
 		return true;
 	}
@@ -367,7 +393,7 @@ namespace
 			return false;
 		}
 
-		s_writeStream( _stream, value, 6 );
+		s_writeStreamCount( _stream, value, 6 );
 
 		return true;
 	}
@@ -376,7 +402,7 @@ namespace
 	{
 		size_t size = strlen(_str);
 		s_writeStream( _stream, size );
-		s_writeStream( _stream, _str, size );
+		s_writeStreamCount( _stream, _str, size );
 
 		return true;
 	}
@@ -387,7 +413,7 @@ namespace
 		size_t size = strlen(_str);
 		
 		s_writeStream( _stream, size );
-		s_writeStream( _stream, _str, size );
+		s_writeStreamCount( _stream, _str, size );
 		//static WString s_buffer;
 		
 		//wchar_t * buffer = new wchar_t[size];
@@ -410,6 +436,8 @@ bool XmlToBin::writeBinary( const wchar_t * _source, const wchar_t * _bin )
 	m_serialization["bool"] = &s_writeBool;
 	m_serialization["unsigned short"] = &s_writeUnsignedShort;
 	m_serialization["int"] = &s_writeInt;
+	m_serialization["Menge::Int2"] = &s_writeInt2_space;
+	m_serialization["Menge::Int4"] = &s_writeInt4_space;
 	m_serialization["float"] = &s_writeFloat;
 	m_serialization["size_t"] = &s_writeSizet;	
 	m_serialization["Menge::Resolution"] = &s_writeSizet2;

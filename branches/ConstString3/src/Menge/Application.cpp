@@ -905,10 +905,10 @@ namespace Menge
 			, m_baseDir.c_str()
 			);
 
-		TVectorWString paths;
-		paths.push_back( m_baseDir );
+		//TVectorWString paths;
+		//paths.push_back( m_baseDir );
 
-		m_scriptEngine->addModulePath( paths );
+		//m_scriptEngine->addModulePath( paths );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString& Application::getBaseDir() const

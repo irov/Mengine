@@ -132,8 +132,14 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::Char )
 			{
-				String glyph, rect, offset;
 				float width = 0;
+				String glyph;
+				
+				Int4 rect;
+				Int2 offset;
+
+				offset.v0 = 0;
+				offset.v1 = 0;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -183,7 +189,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width )
+	Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const Int4 & _rect, const Int2 & _offset, float _width )
 	{
 		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
 			->getServiceT<UnicodeServiceInterface>("UnicodeService");
@@ -193,35 +199,9 @@ namespace Menge
 
 		unsigned int glyphId = (unsigned int)unicode[0];
 
-		int a, b, c, d, ox = 0, oy = 0;
-		int err = std::sscanf( _rect.c_str(), "%d %d %d %d", &a, &b, &c, &d );
-
-		if( err != 4 )
-		{
-			MENGE_LOG_ERROR( "Error parsing params: '%s'"
-				, _rect.c_str() 
-				);
-
-			//return;
-		}
-
-		if( _offset.empty() == false )
-		{
-			err = sscanf( _offset.c_str(), "%d %d", &ox, &oy );
-
-			if( err != 2 )
-			{
-				MENGE_LOG_ERROR( "Error parsing params: '%s'"
-					, _offset.c_str() 
-					);
-
-				//return;
-			}
-		}
-
-		mt::vec4f uv( (float)a, (float)b, (float)(a+c), (float)(b+d) );
-		mt::vec2f offset( (float)ox, (float)oy );
-		mt::vec2f size( (float)c, (float)d );
+		mt::vec4f uv( (float)_rect.v0, (float)_rect.v1, (float)(_rect.v0 + _rect.v2), (float)(_rect.v1 + _rect.v3) );
+		mt::vec2f offset( (float)_offset.v0, (float)_offset.v1 );
+		mt::vec2f size( (float)_rect.v2, (float)_rect.v3 );
 
 		float ratio = _width / m_height;
 

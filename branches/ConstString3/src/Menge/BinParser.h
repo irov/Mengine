@@ -46,6 +46,10 @@ namespace Menge
 	void operator >> ( ArchiveRead & ar, mt::vec3f & _value );
 	void operator >> ( ArchiveRead & ar, mt::vec4f & _value );
 	void operator >> ( ArchiveRead & ar, mt::mat3f & _value );
+
+	void operator >> ( ArchiveRead & ar, Int2 & _value );
+	void operator >> ( ArchiveRead & ar, Int4 & _value );
+
 	void operator >> ( ArchiveRead & ar, TVectorIndices & _value );
 
 	class BinParser

@@ -137,6 +137,20 @@ namespace Menge
 		ar.readPOD( _value.w );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( ArchiveRead & ar, Int2 & _value )
+	{
+		ar.readPOD( _value.v0 );
+		ar.readPOD( _value.v1 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( ArchiveRead & ar, Int4 & _value )
+	{
+		ar.readPOD( _value.v0 );
+		ar.readPOD( _value.v1 );
+		ar.readPOD( _value.v2 );
+		ar.readPOD( _value.v3 );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, mt::mat3f & _value )
 	{
 		ar >> _value.v0.x;
@@ -273,7 +287,7 @@ namespace Menge
 
 		size_t debugAttributeCheck = m_attributeCount;
 
-		notifyElement_();
+		this->notifyElement_();
 
 		if( debugAttributeCheck != m_attributeCount && m_attributeCount != 0 )
 		{
@@ -285,7 +299,7 @@ namespace Menge
 
 		for( int i = 0; i != m_attributeCount; ++i )
 		{
-			readAttribute_();
+			this->readAttribute_();
 		}
 
 		size_t subNode;
@@ -318,7 +332,7 @@ namespace Menge
         
 		m_debugNeedReadValue = true;
 
-		notifyElement_();
+		this->notifyElement_();
 
 		if( m_debugNeedReadValue == true )
 		{

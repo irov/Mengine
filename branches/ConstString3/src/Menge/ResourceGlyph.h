@@ -19,8 +19,8 @@ namespace Menge
 		ResourceGlyph();
 		
 	public:
-		bool hasGlyph( unsigned int _id ) const;
-		const Glyph * getGlyph( unsigned int _id ) const;
+		bool hasGlyph( wchar_t _id ) const;
+		const Glyph * getGlyph( wchar_t _id ) const;
 	
 	public:
 		float getHeight() const;

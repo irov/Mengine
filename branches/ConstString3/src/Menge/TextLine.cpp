@@ -34,7 +34,7 @@ namespace Menge
 		it != it_end; 
 		++it )
 		{	
-			unsigned int code = (unsigned int)(*it);
+			WString::value_type code = (*it);
 
 			if ( _resource->hasGlyph( code ) == false )
 			{

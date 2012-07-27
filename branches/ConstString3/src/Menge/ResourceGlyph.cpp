@@ -45,7 +45,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Glyph * ResourceGlyph::getGlyph( unsigned int _id ) const
+	const Glyph * ResourceGlyph::getGlyph( wchar_t _id ) const
 	{
 		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
 
@@ -62,7 +62,7 @@ namespace Menge
 		return &it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceGlyph::hasGlyph( unsigned int _id ) const
+	bool ResourceGlyph::hasGlyph( wchar_t _id ) const
 	{
 		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
 		if( it_found == m_glyphs.end() )

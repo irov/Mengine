@@ -41,6 +41,9 @@ namespace Menge
 		virtual void _setFirstFrame() override;
 		virtual void _setLastFrame() override;
 
+		void setBlendAdd( bool _blendAdd );
+		bool isBlendAdd( );
+
 	protected:
 		void _update( float _current, float _timing ) override;
 		void _render( RenderCameraInterface * _camera ) override;
@@ -54,7 +57,8 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
 		
-		void _invalidateUV();
+		void updateUV_();
+		void updateMaterial_();
 
 		bool _sync( float _timing );
 		bool _compileDecoder();
@@ -92,6 +96,7 @@ namespace Menge
 
 		float m_timing;
 
+		bool m_blendAdd;
 		bool m_autoStart;
 		bool m_needUpdate;
 	};

@@ -32,6 +32,7 @@ namespace	Menge
 		, m_videoDecoder(NULL)
 		, m_videoFile(NULL)
 		, m_timing(0.0f)
+		, m_blendAdd(false)
 	{
 		m_textures[0] = NULL;
 	}
@@ -144,10 +145,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_materialGroup = RenderEngine::get()
-			->getMaterialGroup( CONST_STRING(BlendSprite) );
-
-		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		this->updateMaterial_();
 
 		Menge::PixelFormat colorMode;
 
@@ -194,7 +192,7 @@ namespace	Menge
 			}
 		}
 
-		this->_invalidateUV();
+		this->updateUV_();
 		this->invalidateVertices();
 		this->invalidateBoundingBox();
 
@@ -527,29 +525,31 @@ namespace	Menge
 
 		m_needUpdate = this->_sync( dataInfo->frameTiming );
 
-		//float curTiming = m_videoDecoder->getTiming();
-		//float delta = _timing - curTiming;
-		//		
-		//if( delta > dataInfo->frameTiming )
-		//{
-		//	MENGE_LOG_ERROR( "Video::_setTiming: %s distance between keyframes is to large while seeking to %4.2f delta - %4.2f current - %4.2f"
-		//		, this->getName().c_str()
-		//		, _timing
-		//		, delta
-		//		, curTiming
-		//		);
+		float curTiming = m_videoDecoder->getTiming();
+		float delta = _timing - curTiming;
+				
+		if( delta > dataInfo->frameTiming )
+		{
+			/*MENGE_LOG_ERROR( "Video::_setTiming: %s distance between keyframes is to large while seeking to %4.2f delta - %4.2f current - %4.2f"
+				, this->getName().c_str()
+				, _timing
+				, delta
+				, curTiming
+				);*/
 
-		//	//m_needUpdate = this->_sync( delta );
-		//}
-		//else if( delta < 0.f )
-		//{
-		//	MENGE_LOG_ERROR( "Video::_setTiming: %s we need to force seeking  may be keyframes not existed in video %4.2f delta - %4.2f current - %4.2f"
-		//		, this->getName().c_str()
-		//		, _timing
-		//		, delta
-		//		, curTiming
-		//		);
-		//}
+			//m_needUpdate = this->_sync( delta );
+		}
+		else if( delta < 0.f )
+		{
+			/*MENGE_LOG_ERROR( "Video::_setTiming: %s we need to force seeking  may be keyframes not existed in video %4.2f delta - %4.2f current - %4.2f"
+				, this->getName().c_str()
+				, _timing
+				, delta
+				, curTiming
+				);*/
+
+			//this->_seekForce( _timing );
+		}
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_seekForce( float _timing )
@@ -597,7 +597,7 @@ namespace	Menge
 		return false;
 	}
 	////////////////////////////////////////////////////////////////////
-	void Video::_invalidateUV()
+	void Video::updateUV_()
 	{
 		RenderTextureInterface * texture = m_textures[0];
 
@@ -615,6 +615,39 @@ namespace	Menge
 		m_uv.y = scaleTop;
 		m_uv.z = scaleLeft + (scaleRight - scaleLeft);
 		m_uv.w = scaleTop + (scaleBottom - scaleTop);
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::updateMaterial_()
+	{
+		if ( this->isBlendAdd() == true )
+		{
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(ParticleIntensive) );
+		}
+		else
+		{
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(BlendSprite) );
+		}
+
+		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
+	}
+	////////////////////////////////////////////////////////////////////
+	void Video::setBlendAdd( bool _blendAdd )
+	{
+		if ( m_blendAdd == _blendAdd )
+		{
+			return;
+		}
+
+		m_blendAdd = _blendAdd;
+
+		this->updateMaterial_();
+	}
+	////////////////////////////////////////////////////////////////////
+	bool Video::isBlendAdd()
+	{
+		return m_blendAdd;
 	}
 	////////////////////////////////////////////////////////////////////
 }

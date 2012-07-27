@@ -492,6 +492,20 @@ namespace Menge
 			return false;
 		}
 
+		if( _layer.blendingMode == Consts::get()
+			->c_BlendingModeAdd )
+		{
+			layer_sprite->setBlendAdd( true );
+		}
+		else if( _layer.blendingMode != Consts::get()
+			->c_BlendingModeNormal )
+		{
+			MENGE_LOG_ERROR("Movie: '%s'  sprite  blending mode not supported '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+		}
+
 		layer_sprite->localHide(true);
 
 		this->addMovieNode_( _layer, layer_sprite );
@@ -651,6 +665,20 @@ namespace Menge
 			layer_video->destroy();
 
 			return false;
+		}
+		
+		if( _layer.blendingMode == Consts::get()
+			->c_BlendingModeAdd )
+		{
+			layer_video->setBlendAdd( true );
+		}
+		else if( _layer.blendingMode != Consts::get()
+			->c_BlendingModeNormal )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' video blending mode not supported '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
 		}
 
 		layer_video->localHide(true);

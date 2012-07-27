@@ -48,6 +48,8 @@ namespace Menge
 		{
 			return false;
 		}
+		
+		file->close();
 
 		return true;
 	}

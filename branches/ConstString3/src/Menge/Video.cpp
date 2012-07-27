@@ -601,9 +601,6 @@ namespace	Menge
 	{
 		RenderTextureInterface * texture = m_textures[0];
 
-		float width = (float)texture->getWidth();
-		float height = (float)texture->getHeight();
-
 		const Rect & hwRect = texture->getHWRect();
 
 		size_t hwWidth = texture->getHWWidth();

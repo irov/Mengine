@@ -426,6 +426,25 @@ namespace
 
 		return true;
 	}
+
+	static bool s_write_wchar_t( std::ofstream & _stream, const char * _str )
+	{
+		wchar_t wch;
+		::MultiByteToWideChar( CP_UTF8, 0, _str, -1, &wch, 1 );
+
+		s_writeStream( _stream, wch );
+		//static WString s_buffer;
+
+		//wchar_t * buffer = new wchar_t[size];
+		//::MultiByteToWideChar( CP_UTF8, 0, _str, -1, buffer, size );
+
+		////size_t size = wcslen(_str);
+		//s_writeStream( _stream, buffer, size );
+
+		//delete [] buffer;
+
+		return true;
+	}
 };
 //////////////////////////////////////////////////////////////////////////
 bool XmlToBin::writeBinary( const wchar_t * _source, const wchar_t * _bin )
@@ -439,7 +458,8 @@ bool XmlToBin::writeBinary( const wchar_t * _source, const wchar_t * _bin )
 	m_serialization["Menge::Int2"] = &s_writeInt2_space;
 	m_serialization["Menge::Int4"] = &s_writeInt4_space;
 	m_serialization["float"] = &s_writeFloat;
-	m_serialization["size_t"] = &s_writeSizet;	
+	m_serialization["size_t"] = &s_writeSizet;
+	m_serialization["wchar_t"] = &s_write_wchar_t;
 	m_serialization["Menge::Resolution"] = &s_writeSizet2;
 	m_serialization["Menge::ColourValue"] = &s_writeFloat4;
 	m_serialization["Menge::Viewport"] = &s_writeFloat4;

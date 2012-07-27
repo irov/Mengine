@@ -1829,6 +1829,41 @@ namespace Menge
 			return result;
 		}
 
+		static bool s_hasGameParam( const WString & _paramName )
+		{
+			if(	Game::get()
+				->hasGameParam( _paramName ) == false )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		static PyObject * s_getGameParam( const WString & _paramName )
+		{
+			if(	Game::get()
+				->hasGameParam( _paramName ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			const WString & val = Game::get()
+				->getGameParam( _paramName );
+			
+			return pybind::ptr(val);
+		}
+		
+		static bool s_openUrlInDefaultBrowser( const WString & _url )
+		{
+			PlatformInterface * platform = Application::get()
+				->getPlatform();
+			
+			bool val = platform->openUrlInDefaultBrowser( _url );
+
+			return val;
+		}
+
 		static PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
 		{			
 			class ResourceMovieVisitorNullLayers
@@ -3057,6 +3092,10 @@ namespace Menge
 			pybind::def_function( "getLowContentViewport", &ScriptMethod::s_getLowContentViewport );			
 
 			pybind::def_function( "destroyArrow", &ScriptMethod::s_destroyArrow );
+			pybind::def_function( "getGameParam", &ScriptMethod::s_getGameParam );
+			pybind::def_function( "hasGameParam", &ScriptMethod::s_hasGameParam );
+			pybind::def_function( "openUrlInDefaultBrowser", &ScriptMethod::s_openUrlInDefaultBrowser );
+			
 		}
 	}
 }

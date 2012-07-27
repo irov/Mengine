@@ -68,7 +68,8 @@ namespace Menge
 		void notifyCursorUnClipping() override;
 
 		void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider ) override;
-
+		bool openUrlInDefaultBrowser( const WString & _url ) override;
+		
 		static bool isSaverRunning();
 		void setAsScreensaver( bool _set );
 

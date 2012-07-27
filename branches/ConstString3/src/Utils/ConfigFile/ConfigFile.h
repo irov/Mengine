@@ -23,7 +23,7 @@ namespace Menge
 	public:
 		bool getSetting( const WString& _section, const WString& _key, WString & _value ) const;
 		bool getSettings( const WString& _section, const WString& _key, TVectorWString & _values ) const;
-
+		bool getAllSettings( const WString& _section, TMapWString & _values );
 	public:
 		bool getSettingUInt( const WString& _section, const WString& _key, size_t & _value ) const;
 		

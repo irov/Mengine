@@ -65,7 +65,8 @@ namespace Menge
 		virtual void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider ) {}
 		virtual void notifySoundInitialize(){ }
 		virtual void setAsScreensaver( bool _set ) { }
-		
+		bool openUrlInDefaultBrowser( const WString & _url ) override;
+
 		bool initialise();
 		void loop();
 		void finalize();

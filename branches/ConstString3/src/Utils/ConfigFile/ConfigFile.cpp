@@ -110,4 +110,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ConfigFile::getAllSettings( const WString& _section, TMapWString & _values )
+	{
+		CSimpleIniW::TNamesDepend values;
+		if( m_ini.GetAllKeys( _section.c_str(), values ) == false )
+		{
+			return false;
+		}
+
+		for( CSimpleIniW::TNamesDepend::const_iterator 
+			it = values.begin(),
+			it_end = values.end();
+		it != it_end;
+		++it )
+		{
+			WString val;
+			this->getSetting( _section, it->pItem, val );
+			
+			_values.insert(  std::make_pair( it->pItem, val ) );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

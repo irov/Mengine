@@ -1530,4 +1530,16 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::openUrlInDefaultBrowser( const WString & _url )
+	{
+		HINSTANCE result = ShellExecute( 0,L"open", _url.c_str() ,NULL,NULL,SW_NORMAL);
+		int status = reinterpret_cast<int>(result);
+		if(status > 32)
+		{
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

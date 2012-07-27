@@ -192,4 +192,12 @@ namespace Menge
 
 		return result;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ConfigLoader::getAllSettings( const WString& _section, TMapWString & _values )
+	{
+		bool result = m_config.getAllSettings( _section, _values );
+
+		return result;
+	}
+
 }

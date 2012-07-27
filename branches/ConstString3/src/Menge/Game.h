@@ -109,6 +109,8 @@ namespace Menge
 		
 		const WString & getTitle() const;
 		const ConstString & getProjectName() const; 
+		const WString & getGameParam( const WString & _paramName );
+		bool hasGameParam( const WString & _paramName ) const;
 
 		int getBits() const;
 		bool getFullscreen() const;
@@ -190,6 +192,7 @@ namespace Menge
 		typedef std::vector<PyObject *> TVectorHandlers;
 		TVectorHandlers m_handlersMouseMove;
 		TVectorHandlers m_handlersMouseButton;
+		TMapWString m_gameParams;
 
 	protected:
 		void initPredefinedResources_();

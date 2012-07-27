@@ -421,6 +421,7 @@ namespace Menge
 
 		cfg.getSetting( L"ResourcePack", L"File", m_resourcePakFile );
 
+		cfg.getAllSettings( L"Params", m_gameParams );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -961,6 +962,23 @@ namespace Menge
 	{
 		m_timingFactor = _timingFactor;
 		EVENTABLE_CALL(this, EVENT_ON_TIMING_FACTOR)( "(f)", _timingFactor );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const WString & Game::getGameParam( const WString & _paramName )
+	{
+		TMapWString::iterator it_find = m_gameParams.find( _paramName );
+		return it_find->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::hasGameParam( const WString & _paramName ) const
+	{
+		TMapWString::const_iterator it_find = m_gameParams.find( _paramName );
+		if( it_find == m_gameParams.end() )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

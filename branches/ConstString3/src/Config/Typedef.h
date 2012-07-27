@@ -8,6 +8,7 @@
 
 #	include <string>
 #	include <vector>
+#	include <map>
 #	include <list>
 #	include <iostream>
 #	include <cstring>
@@ -106,6 +107,7 @@ namespace Menge
 	typedef std::vector<char> TBlobject;
 	typedef std::vector<String> TVectorString;
 	typedef std::vector<WString> TVectorWString;
+	typedef std::map<WString,WString> TMapWString;
 }
 
 //class DataStreamInterface;

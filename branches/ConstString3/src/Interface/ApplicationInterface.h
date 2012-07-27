@@ -70,6 +70,9 @@ namespace Menge
 		virtual void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider ) = 0;
 
 		virtual void setAsScreensaver( bool _set ) = 0;
+
+	public:
+		virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;
 	};
 
 	class ApplicationInterface
@@ -155,6 +158,7 @@ namespace Menge
 
 	public:
 		virtual const WString& getScreensaverName() const = 0;
+
 	};
 	
 	typedef void* (*TDynamicLibraryFunction)(ApplicationInterface * _interface);

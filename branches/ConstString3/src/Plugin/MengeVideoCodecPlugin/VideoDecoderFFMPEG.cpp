@@ -95,6 +95,7 @@ namespace Menge
 		// Register all formats and codecs
 		av_register_all();
 		
+
 		//check the input format
 		if( m_probeSize > m_stream->size() )
 		{

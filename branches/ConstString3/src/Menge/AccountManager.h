@@ -15,8 +15,9 @@ namespace Menge
 	{
 	public:
 		virtual void onCreateAccount( const WString & _accountID ) = 0;
+		virtual void onSelectAccount( const WString & _accountID ) = 0;
 	};
-
+	
 	typedef std::map<WString, Account *> TMapAccounts;
 
 	class AccountManager

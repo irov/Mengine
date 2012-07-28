@@ -484,6 +484,7 @@ namespace Menge
 		registerEvent( EVENT_FOCUS, "onFocus", _embed );
 
 		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
+		registerEvent( EVENT_CELECT_ACCOUNT, "onSelectAccount", _embed );
 
 		registerEvent( EVENT_CURSOR_MODE, "onCursorMode", _embed );
 		
@@ -506,6 +507,12 @@ namespace Menge
 			void onCreateAccount( const WString & _accountID ) override
 			{
 				EVENTABLE_CALL(m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
+			}
+
+		protected:
+			void onSelectAccount( const WString & _accountID ) override
+			{
+				EVENTABLE_CALL(m_game, EVENT_CELECT_ACCOUNT)( "(u)", _accountID.c_str() );
 			}
 
 		protected:

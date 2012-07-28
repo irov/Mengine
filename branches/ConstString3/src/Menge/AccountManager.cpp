@@ -178,6 +178,8 @@ namespace Menge
 
 		saveAccountsInfo();
 
+		m_listener->onSelectAccount( _accountID );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -239,7 +241,7 @@ namespace Menge
 		}
 
 		this->selectAccount( m_defaultAccountID );
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

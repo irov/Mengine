@@ -219,7 +219,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( RenderCameraInterface * _camera )
-	{
+	{	
 		Node::_render( _camera );
 		
 		if( m_outline && m_resourceFont->getTextureImage() != NULL )

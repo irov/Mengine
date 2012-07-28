@@ -19,8 +19,8 @@ namespace Menge
 		void setStartInterval( float _startInterval );
 		float getStartInterval( ) const;
 		
-		void setLastFrame();
 		void setFirstFrame();
+		void setLastFrame();		
 
 		void setTiming( float _timing );
 		float getTiming() const;

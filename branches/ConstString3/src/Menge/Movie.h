@@ -77,7 +77,6 @@ namespace Menge
 		void setupParent_();
 		void removeParent_();
 
-		void updateStartInterval_();
 		void updateCamera_();
 		void stopAnimation_();
 

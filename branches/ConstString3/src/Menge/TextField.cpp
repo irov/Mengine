@@ -61,7 +61,7 @@ namespace Menge
 			return false;
 		}
 
-		setText( m_text );
+		this->invalidateTextLines();
 
 		return true;
 	}

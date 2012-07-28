@@ -27,11 +27,11 @@ namespace	Menge
 		, m_autoStart(false)
 		, m_needUpdate(false)
 		, m_material(NULL)
-		, m_frameSize(0.0f, 0.0f)
-		, m_uv(0.0f, 0.0f, 1.0f, 1.0f)
+		, m_frameSize(0.f, 0.f)
+		, m_uv(0.f, 0.f, 1.f, 1.f)
 		, m_videoDecoder(NULL)
 		, m_videoFile(NULL)
-		, m_timing(0.0f)
+		, m_timing(0.f)
 		, m_blendAdd(false)
 	{
 		m_textures[0] = NULL;
@@ -95,7 +95,7 @@ namespace	Menge
 
 		float timing = speedFactor * _timing;
 
-		Node::_update( _current, timing );
+		//Node::_update( _current, timing );
 		//localHide(false);
 		//printf("%f %s\n",_timing,m_name.c_str());
 
@@ -178,9 +178,11 @@ namespace	Menge
 			ConstString c_VideoSound("VideoSound");
 			m_soundEmitter = NodeManager::get()
 				->createNodeT<SoundEmitter>( c_VideoSound, Consts::get()->c_SoundEmitter, Consts::get()->c_builtin_empty );
-
-			addChildren( m_soundEmitter );
+			
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
+
+			this->addChildren( m_soundEmitter );
+
 			if( m_soundEmitter->compile() == false )
 			{
 				MENGE_LOG_ERROR( "Video::_compile '%s' failed to compile sound resource '%s'"
@@ -249,7 +251,7 @@ namespace	Menge
 
 		CodecOptions* codecOptions = dynamic_cast<CodecOptions*>(&videoCodecOptions);
 
-		m_videoDecoder->setOptions(  codecOptions );
+		m_videoDecoder->setOptions( codecOptions );
 
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 		m_frameSize.x = dataInfo->frameWidth;
@@ -406,7 +408,7 @@ namespace	Menge
 	{
 		Node::_invalidateWorldMatrix();
 
-		invalidateVertices();
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -428,7 +430,7 @@ namespace	Menge
 	{
 		Node::_invalidateColor();
 
-		invalidateVertices();
+		this->invalidateVertices();
 	}
 	////////////////////////////////////////////////////////////////////
 	bool Video::_sync( float _timing )
@@ -437,23 +439,30 @@ namespace	Menge
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		int countFrames = int(m_timing / dataInfo->frameTiming);
-		bool needUpdate = false; 
-		int frame = countFrames;
-
-		if( frame != -1 )
+		
+		if( countFrames == 0 )
 		{
-			needUpdate = true;
+			return false;
 		}
 
+		m_timing -= countFrames * dataInfo->frameTiming;
+		
 		while( countFrames > 0 )
 		{
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame();
 
 			if( state == VDRS_END_STREAM )
 			{	
-				this->onEndStream_();
+				if( this->getLoop() == true )
+				{
+					m_videoDecoder->seek( m_startInterval );
+				}
+				else				
+				{
+					m_needUpdate = false;
 
-				break;	
+					this->stop();
+				}
 			}
 			else if( state == VDRS_FAILURE )
 			{
@@ -473,22 +482,13 @@ namespace	Menge
 			countFrames--;
 		}
 
-		m_timing -= frame *  dataInfo->frameTiming;	
-		return needUpdate;
-	}
-	////////////////////////////////////////////////////////////////////
-	void Video::onEndStream_()
-	{
-		if( this->getLoop() == true )
-		{
-			m_videoDecoder->seek(0.0f);
-		}
-		else
-		{
-			m_needUpdate = false;
-
-			this->stop();
-		}
+//		printf("Video %s timing %f:%f\n"
+//			, m_name.c_str()
+//			, m_videoDecoder->getTiming()
+//			, dataInfo->duration
+//			);
+		
+		return true;
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
@@ -523,6 +523,12 @@ namespace	Menge
 
 		m_videoDecoder->seek( seek_timing );
 
+//		printf("Video %s seek %f => %f\n"
+//			, m_name.c_str()
+//			, seek_timing
+//			, m_videoDecoder->getTiming()
+//			);
+
 		m_needUpdate = this->_sync( dataInfo->frameTiming );
 
 		float curTiming = m_videoDecoder->getTiming();
@@ -554,6 +560,11 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_seekForce( float _timing )
 	{
+//		printf("Video %s _seekForce %f\n"
+//			, m_name.c_str()
+//			, _timing
+//			);
+
 		m_videoDecoder->seek( 0.0f );
 		m_needUpdate = this->_sync( _timing );
 	}

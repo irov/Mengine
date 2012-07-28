@@ -73,8 +73,6 @@ namespace Menge
 
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
-		void onEndStream_();
-
 		void _seekForce( float _timing );
 
 	protected:

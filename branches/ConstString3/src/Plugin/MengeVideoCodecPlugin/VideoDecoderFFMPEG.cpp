@@ -342,6 +342,7 @@ namespace Menge
 		//printf("!!PTS %f \n",m_pts);
 		
 		av_free_packet(&packet);
+
 		return VDRS_SUCCESS;	
 	}
 	//////////////////////////////////////////////////////////////////////////

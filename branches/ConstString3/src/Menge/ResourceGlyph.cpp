@@ -133,7 +133,7 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::Char )
 			{
 				float width = 0;
-				wchar_t glyph;
+				wchar_t glyph = 0;
 				
 				Int4 rect;
 				Int2 offset;

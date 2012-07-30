@@ -35,14 +35,27 @@ namespace Menge
 		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 
 	protected:
-		typedef std::list<GlobalMouseHandler *> TSetGlobalMouseHandler;
+		struct GlobalMouseDesc
+		{
+			GlobalMouseHandler * handler;
+			bool dead;
+		};
+		
+		typedef std::list<GlobalMouseDesc> TSetGlobalMouseHandler;
 		TSetGlobalMouseHandler m_globalMouseHandler;
 		TSetGlobalMouseHandler m_addGlobalMouseHandler;
-		TSetGlobalMouseHandler m_delGlobalMouseHandler;
 
-		typedef std::list<GlobalKeyHandler *> TSetGlobalKeyHandler;
+		struct GlobalKeyDesc
+		{
+			GlobalKeyHandler * handler;
+			bool dead;
+		};
+
+		typedef std::list<GlobalKeyDesc> TSetGlobalKeyHandler;
 		TSetGlobalKeyHandler m_globalKeyHandler;
 		TSetGlobalKeyHandler m_addGlobalKeyHandler;
-		TSetGlobalKeyHandler m_delGlobalKeyHandler;
+
+		static TSetGlobalMouseHandler::iterator s_findGlobalMouse( TSetGlobalMouseHandler & _set, GlobalMouseHandler * _handler );
+		static TSetGlobalKeyHandler::iterator s_findGlobalKey( TSetGlobalKeyHandler & _set, GlobalKeyHandler * _handler );
 	};
 }

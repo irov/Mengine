@@ -19,7 +19,14 @@ namespace Menge
 			it != it_end;
 			++it)
 			{
-				if( handle = (*it)->handleGlobalKeyEvent( _point, _key, _char, _isDown ) )
+				GlobalKeyDesc & desc = *it;
+
+				if( desc.dead == true )
+				{
+					continue;
+				}
+
+				if( handle = desc.handler->handleGlobalKeyEvent( _point, _key, _char, _isDown ) )
 				{
 					break;
 				}
@@ -41,7 +48,14 @@ namespace Menge
 			it != it_end;
 			++it)
 			{
-				if( handle = (*it)->handleGlobalMouseButtonEvent( _touchId, _point, _button, _isDown ) )
+				GlobalMouseDesc & desc = *it;
+
+				if( desc.dead == true )
+				{
+					continue;
+				}
+
+				if( handle = desc.handler->handleGlobalMouseButtonEvent( _touchId, _point, _button, _isDown ) )
 				{
 					break;
 				}
@@ -59,7 +73,14 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->handleGlobalMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+			GlobalMouseDesc & desc = *it;
+
+			if( desc.dead == true )
+			{
+				continue;
+			}
+
+			desc.handler->handleGlobalMouseButtonEventBegin( _touchId, _point, _button, _isDown );
 		}
 
 		return false;	
@@ -73,7 +94,14 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->handleGlobalMouseButtonEventEnd( _touchId, _point, _button, _isDown );
+			GlobalMouseDesc & desc = *it;
+
+			if( desc.dead == true )
+			{
+				continue;
+			}
+
+			desc.handler->handleGlobalMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 		}
 
 		return false;	
@@ -91,7 +119,14 @@ namespace Menge
 			it != it_end;
 			++it)
 			{
-				if( handle = (*it)->handleGlobalMouseMove( _touchId, _point, _x, _y, _whell ) )
+				GlobalMouseDesc & desc = *it;
+
+				if( desc.dead == true )
+				{
+					continue;
+				}
+
+				if( handle = desc.handler->handleGlobalMouseMove( _touchId, _point, _x, _y, _whell ) )
 				{
 					break;
 				}
@@ -103,92 +138,148 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::regGlobalMouseEventable( GlobalMouseHandler * _handler )
 	{
-		m_addGlobalMouseHandler.push_back( _handler );
+		GlobalMouseDesc desc;
+		desc.handler = _handler;
+		desc.dead = false;
+
+		m_addGlobalMouseHandler.push_back( desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	GlobalHandleSystem::TSetGlobalMouseHandler::iterator GlobalHandleSystem::s_findGlobalMouse( TSetGlobalMouseHandler & _set, GlobalMouseHandler * _handler )
+	{
+		for( TSetGlobalMouseHandler::iterator
+			it = _set.begin(),
+			it_end = _set.end();
+		it != it_end;
+		++it )
+		{
+			const GlobalMouseDesc & desc = *it;
+
+			if( desc.handler == _handler )
+			{
+				return it;
+			}
+		}
+
+		return _set.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::unregGlobalMouseEventable( GlobalMouseHandler * _handler )
 	{
-		TSetGlobalMouseHandler::iterator it_find = std::find( m_addGlobalMouseHandler.begin(), m_addGlobalMouseHandler.end(), _handler );
+		TSetGlobalMouseHandler::iterator it_find = GlobalHandleSystem::s_findGlobalMouse( m_addGlobalMouseHandler, _handler );
 		if( it_find != m_addGlobalMouseHandler.end() )
 		{
 			m_addGlobalMouseHandler.erase( it_find );
+			return;
 		}
-		else
+		
+		TSetGlobalMouseHandler::iterator it_dead = GlobalHandleSystem::s_findGlobalMouse( m_globalMouseHandler, _handler );
+
+		if( it_dead == m_globalMouseHandler.end() )
 		{
-			m_delGlobalMouseHandler.push_back( _handler );
+			return;
 		}
+		
+		it_dead->dead = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::regGlobalKeyEventable( GlobalKeyHandler * _handler )
 	{
-		m_addGlobalKeyHandler.push_back( _handler );
+		GlobalKeyDesc desc;
+		desc.handler = _handler;
+		desc.dead = false;
+
+		m_addGlobalKeyHandler.push_back( desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	GlobalHandleSystem::TSetGlobalKeyHandler::iterator GlobalHandleSystem::s_findGlobalKey( TSetGlobalKeyHandler & _set, GlobalKeyHandler * _handler )
+	{
+		for( TSetGlobalKeyHandler::iterator
+			it = _set.begin(),
+			it_end = _set.end();
+		it != it_end;
+		++it )
+		{
+			const GlobalKeyDesc & desc = *it;
+
+			if( desc.handler == _handler )
+			{
+				return it;
+			}
+		}
+
+		return _set.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::unregGlobalKeyEventable( GlobalKeyHandler * _handler )
 	{
-		TSetGlobalKeyHandler::iterator it_find = std::find( m_addGlobalKeyHandler.begin(), m_addGlobalKeyHandler.end(), _handler );
+		TSetGlobalKeyHandler::iterator it_find = GlobalHandleSystem::s_findGlobalKey( m_addGlobalKeyHandler, _handler );
+
 		if( it_find != m_addGlobalKeyHandler.end() )
 		{
 			m_addGlobalKeyHandler.erase( it_find );
+			return;
 		}
-		else
+
+		TSetGlobalKeyHandler::iterator it_dead = GlobalHandleSystem::s_findGlobalKey( m_globalKeyHandler, _handler );
+
+		if( it_dead == m_globalKeyHandler.end() )
 		{
-			m_delGlobalKeyHandler.push_back( _handler );
+			return;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	namespace Helper
-	{
-		template<class C>
-		class RemoveHandler
-		{
-		public:
-			RemoveHandler( const C & _list )
-				: m_list(_list)
-			{
-			}
 
-		public:
-			bool operator () ( typename C::value_type _handler )
-			{
-				typename C::const_iterator it_find = std::find( m_list.begin(), m_list.end(), _handler );
-				return it_find != m_list.end();
-			}
-
-		protected:
-			const C & m_list;
-		};
-
-		template<class C>
-		void removeHandler( C & _left, const C & _right )
-		{
-			_left.remove_if( RemoveHandler<C>(_right) );
-		}
+		it_dead->dead = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::update()
 	{
+		for( TSetGlobalMouseHandler::iterator
+			it = m_globalMouseHandler.begin(),
+			it_end = m_globalMouseHandler.end();
+		it != it_end; )
+		{
+			const GlobalMouseDesc & desc = *it;
+
+			if( desc.dead == true )
+			{
+				m_globalMouseHandler.erase( it++ );
+			}
+			else
+			{
+				++it;
+			}
+		}
+
 		m_globalMouseHandler.insert( m_globalMouseHandler.end(), m_addGlobalMouseHandler.begin(), m_addGlobalMouseHandler.end() );
-		Helper::removeHandler( m_globalMouseHandler, m_delGlobalMouseHandler );
-
 		m_addGlobalMouseHandler.clear();
-		m_delGlobalMouseHandler.clear();
 
+		for( TSetGlobalKeyHandler::iterator
+			it = m_globalKeyHandler.begin(),
+			it_end = m_globalKeyHandler.end();
+		it != it_end; )
+		{
+			const GlobalKeyDesc & desc = *it;
+
+			if( desc.dead == true )
+			{
+				m_globalKeyHandler.erase( it++ );
+			}
+			else
+			{
+				++it;
+			}
+		}
+		
 		m_globalKeyHandler.insert( m_globalKeyHandler.end(), m_addGlobalKeyHandler.begin(), m_addGlobalKeyHandler.end() );
-		Helper::removeHandler( m_globalKeyHandler, m_delGlobalKeyHandler );
-	
 		m_addGlobalKeyHandler.clear();
-		m_delGlobalKeyHandler.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::clear()
 	{
 		m_globalMouseHandler.clear();
 		m_addGlobalMouseHandler.clear();
-		m_delGlobalMouseHandler.clear();
 
 		m_globalKeyHandler.clear();
 		m_addGlobalKeyHandler.clear();
-		m_delGlobalKeyHandler.clear();
 	}
 }

@@ -41,6 +41,7 @@ namespace Menge
 	public:
 		bool getSettings( const WString & _section, const WString & _key, TVectorWString & _values ) const;
 		bool getAllSettings( const WString& _section, TMapWString & _values );
+
 	protected:
 		UnicodeServiceInterface * m_unicodeService;
 		StringizeServiceInterface * m_stringizeService;

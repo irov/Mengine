@@ -19,7 +19,7 @@ namespace Menge
 
 	class FileEngine;
 
-	class FileSystem
+	class FileGroup
 		: public Factorable
 	{
 	public:
@@ -32,7 +32,6 @@ namespace Menge
 		virtual bool openInputFile( const WString& _filename, FileInputStreamInterface* _file ) = 0;
 		virtual void closeInputFile( FileInputStreamInterface* _file ) = 0;
 		
-
 	public:
 		virtual FileBufferProvider * getBufferProvider() const = 0;
 

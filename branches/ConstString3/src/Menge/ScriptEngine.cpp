@@ -204,7 +204,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importModule( const ConstString& _name )
+	PyObject * ScriptEngine::importModule( const ConstString & _name )
 	{
 		TMapModules::iterator it_find = m_modules.find( _name );
 

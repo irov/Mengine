@@ -65,15 +65,8 @@ namespace Menge
 	Game::Game( const WString & _baseDir, bool _developmentMode, const String & _platformName )
 		: m_baseDir(_baseDir)
 		, m_platformName(_platformName)
-		, m_developmentMode(_developmentMode)
-		, m_fixedContentResolution(false)
-		, m_fullScreen(true)
-		, m_textureFiltering(true)
-		, m_FSAAType(0)
-		, m_FSAAQuality(0)
+		, m_developmentMode(_developmentMode)		
 		, m_hasWindowPanel(true)
-		, m_vsync(false)
-		, m_localizedTitle(false)
 		, m_personalityHasOnClose(false)
 		, m_player(NULL)
 		, m_amplifierService(NULL)
@@ -381,54 +374,10 @@ namespace Menge
 		return m_player->isChangedScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadDescription( const ConstString & _gamePackName, const WString & _gameDescription )
-	{
-		m_gamePackName = _gamePackName;
-
-		ServiceProviderInterface * serviceProvider = Application::get()
-			->getServiceProvider();
-
-		ConfigLoader cfg(serviceProvider);
-
-		if( cfg.loadFile( m_gamePackName, _gameDescription ) == false )
-		{
-			MENGE_LOG_ERROR("Game::loadDescription invalid configure game %s:%S"
-				, _gamePackName.c_str()
-				, _gameDescription.c_str()
-				);
-
-			return false;
-		}
-		
-		cfg.getSetting( L"Project", L"Name", m_projectName );
-		
-		cfg.getSetting( L"Game", L"Title", m_title );
-		cfg.getSetting( L"Game", L"Localized", m_localizedTitle );
-		cfg.getSetting( L"Game", L"ContentResolution", m_contentResolution );
-		cfg.getSetting( L"Game", L"LowContentViewport", m_lowContentViewport );
-		cfg.getSetting( L"Game", L"FixedContentResolution", m_fixedContentResolution );
-		cfg.getSetting( L"Game", L"PersonalityModule", m_personalityModule );
-
-		cfg.getSetting( L"DefaultArrow", L"Name", m_defaultArrowName );
-		cfg.getSetting( L"DefaultArrow", L"Prototype", m_defaultArrowPrototype );
-
-		cfg.getSetting( L"Window", L"Size", m_windowResolution );
-		cfg.getSetting( L"Window", L"Bits", m_bits );
-		cfg.getSetting( L"Window", L"Fullscreen", m_fullScreen );
-		cfg.getSetting( L"Window", L"VSync", m_vsync );
-		cfg.getSetting( L"Window", L"Icon", m_iconPath );
-
-
-		cfg.getSetting( L"ResourcePack", L"File", m_resourcePakFile );
-
-		cfg.getAllSettings( L"Params", m_gameParams );
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadPersonality()
+	bool Game::loadPersonality( const ConstString & _module )
 	{
 		PyObject * personality = ScriptEngine::get()
-			->importModule( m_personalityModule );
+			->importModule( _module );
 
 		if( personality == 0 )
 		{
@@ -520,8 +469,10 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const String& _scriptInitParams )
+	bool Game::initialize( const String& _scriptInitParams, const TMapWString & _params )
 	{
+		m_params = _params;
+
 		m_player = new Player;
 
 		Player::keep( m_player );
@@ -541,13 +492,19 @@ namespace Menge
 
 		m_accountManager->loadAccountsInfo();
 		
+		ConstString defaultArrowName("Default");
+		ConstString defaultArrowPrototype("Default");
+
 		m_defaultArrow = ArrowManager::get()
-			->createArrow( m_defaultArrowName, m_defaultArrowPrototype );
+			->createArrow( defaultArrowName, defaultArrowPrototype );
+
+		const Resolution & contentResolution = Application::get()
+			->getContentResolution();
 
 		const Resolution & currentResolution = Application::get()
 			->getCurrentResolution();
 
-		if( m_player->initialize( m_defaultArrow, m_contentResolution, currentResolution ) == false )
+		if( m_player->initialize( m_defaultArrow, contentResolution, currentResolution ) == false )
 		{
 			return false;
 		}
@@ -682,81 +639,6 @@ namespace Menge
 		m_homeless->destroyAllChild();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Resolution & Game::getContentResolution() const
-	{
-		return m_contentResolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const WString & Game::getTitle() const
-	{
-		if( m_localizedTitle == false )
-		{
-			return m_title;
-		}
-
-		TextManager * textMgr = TextManager::get();
-
-		if( textMgr == 0 )
-		{
-			return m_title;
-		}
-
-		ConstString key("APPLICATION_TITLE");
-		const TextEntry & entry = textMgr->getTextEntry(key);
-
-		return entry.text;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Game::getProjectName() const
-	{
-		return m_projectName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::isContentResolutionFixed() const
-	{
-		return m_fixedContentResolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Game::getLowContentViewport() const
-	{
-		return m_lowContentViewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Resolution & Game::getWindowResolution() const
-	{
-		return m_windowResolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int Game::getBits() const
-	{
-		return m_bits;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::getFullscreen() const
-	{
-		return m_fullScreen;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::getVSync() const
-	{
-		return m_vsync;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::getTextureFiltering() const
-	{
-		return m_textureFiltering;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int Game::getFSAAType() const
-	{
-		return m_FSAAType;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int Game::getFSAAQuality() const
-	{
-		return m_FSAAQuality;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Game::onTurnSound( bool _turn )
 	{
 		if( m_amplifierService )
@@ -853,16 +735,15 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadConfigPaks()
+	bool Game::loadConfigPaks( const WString & _resourcePackPath )
 	{
 		bool exist = false;
 
 		if( LoaderEngine::get()
-			->load( m_gamePackName, m_resourcePakFile, this, exist ) == false )
+			->load( ConstString::none, _resourcePackPath, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Game::loadConfigPaks failed to load GamePak %s:%S"
-				, m_gamePackName.c_str() 
-				, m_resourcePakFile.c_str()
+			MENGE_LOG_ERROR( "Game::loadConfigPaks failed to load GamePak %S"
+				, _resourcePackPath.c_str()
 				);
 
 			return false;
@@ -885,8 +766,7 @@ namespace Menge
 				}
 				else
 				{
-					MENGE_LOG_WARNING("Game::loadConfigPaks '%S' not set locale pak"
-						, m_title.c_str()
+					MENGE_LOG_WARNING("Game::loadConfigPaks not set locale pak"						
 						);
 				}
 			}
@@ -920,7 +800,10 @@ namespace Menge
 				continue;
 			}
 
-			pak->load();
+			if( pak->load() == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -971,16 +854,16 @@ namespace Menge
 		EVENTABLE_CALL(this, EVENT_ON_TIMING_FACTOR)( "(f)", _timingFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Game::getGameParam( const WString & _paramName )
+	const WString & Game::getParam( const WString & _paramName )
 	{
-		TMapWString::iterator it_find = m_gameParams.find( _paramName );
+		TMapWString::iterator it_find = m_params.find( _paramName );
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::hasGameParam( const WString & _paramName ) const
+	bool Game::hasParam( const WString & _paramName ) const
 	{
-		TMapWString::const_iterator it_find = m_gameParams.find( _paramName );
-		if( it_find == m_gameParams.end() )
+		TMapWString::const_iterator it_find = m_params.find( _paramName );
+		if( it_find == m_params.end() )
 		{
 			return false;
 		}

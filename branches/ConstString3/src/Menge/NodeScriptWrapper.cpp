@@ -404,7 +404,7 @@ namespace Menge
 
 		static float getMouseX()
 		{
-			const Resolution& contRes = Game::get()->getContentResolution();
+			const Resolution& contRes = Application::get()->getContentResolution();
 			float mx = Player::get()->getArrow()->getLocalPosition().x;
 			mx = mt::clamp( 0.0f, mx, static_cast<float>( contRes.getWidth() ) );
 			return mx;
@@ -412,7 +412,7 @@ namespace Menge
 
 		static float getMouseY()
 		{
-			const Resolution& contRes = Game::get()->getContentResolution();
+			const Resolution& contRes = Application::get()->getContentResolution();
 			float my = Player::get()->getArrow()->getLocalPosition().y;
 			my = mt::clamp( 0.0f, my, static_cast<float>( contRes.getHeight() ) );
 			return my;
@@ -506,7 +506,7 @@ namespace Menge
 
 		static const Resolution & s_getContentResolution()
 		{
-			return Game::get()
+			return Application::get()
 				->getContentResolution();
 		}
 
@@ -1832,7 +1832,7 @@ namespace Menge
 		static bool s_hasGameParam( const WString & _paramName )
 		{
 			if(	Game::get()
-				->hasGameParam( _paramName ) == false )
+				->hasParam( _paramName ) == false )
 			{
 				return false;
 			}
@@ -1843,13 +1843,13 @@ namespace Menge
 		static PyObject * s_getGameParam( const WString & _paramName )
 		{
 			if(	Game::get()
-				->hasGameParam( _paramName ) == false )
+				->hasParam( _paramName ) == false )
 			{
 				return pybind::ret_none();
 			}
 
 			const WString & val = Game::get()
-				->getGameParam( _paramName );
+				->getParam( _paramName );
 			
 			return pybind::ptr(val);
 		}

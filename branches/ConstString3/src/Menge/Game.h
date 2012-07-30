@@ -48,17 +48,15 @@ namespace Menge
 		bool render( unsigned int _debugMask = 0 );
 
 	public:
-		bool initialize( const String& _scriptInitParams );
+		bool initialize( const String& _scriptInitParams, const TMapWString & _params );
 		void finalize();
 
 		void initializeRenderResources();
 		void finalizeRenderResources();
 
-		bool loadDescription( const ConstString & _gamePackName, const WString & _gameDescription );
-
-		bool loadPersonality();
+		bool loadPersonality( const ConstString & _module );
 		
-		bool loadConfigPaks();
+		bool loadConfigPaks(  const WString & _resourcePackPath );
 		void applyConfigPaks();
 		void setLanguagePack( const ConstString& _packName );
 		const WString& getScreensaverName() const;
@@ -101,23 +99,9 @@ namespace Menge
 		bool removeMouseButtonHandler( PyObject * _cb );
 
 	public:
-		const Resolution & getWindowResolution() const;
-		const Resolution & getContentResolution() const;
-		bool isContentResolutionFixed() const;
+		const WString & getParam( const WString & _paramName );
+		bool hasParam( const WString & _paramName ) const;
 
-		const Viewport & getLowContentViewport() const;
-		
-		const WString & getTitle() const;
-		const ConstString & getProjectName() const; 
-		const WString & getGameParam( const WString & _paramName );
-		bool hasGameParam( const WString & _paramName ) const;
-
-		int getBits() const;
-		bool getFullscreen() const;
-		bool getVSync() const;
-		bool getTextureFiltering() const;
-		int getFSAAType() const;
-		int getFSAAQuality() const;
 		bool getHasWindowPanel() const;
 
 	public:
@@ -137,27 +121,8 @@ namespace Menge
 
 		AccountManagerListener * m_accountLister; 
 		AccountManager * m_accountManager;
-		
-		//LightSystem* m_lightSystem;
-
-		WString m_title;
-		bool m_localizedTitle;
-
-		ConstString m_gamePackName;
-		WString m_resourcePakFile;
-
-		Resolution m_contentResolution;
-		Viewport m_lowContentViewport;
-
-		Resolution m_windowResolution;
-
-		bool m_fixedContentResolution;
 
 		bool m_developmentMode;
-
-		ConstString m_defaultArrowName;
-		ConstString m_defaultArrowPrototype;
-		ConstString m_personalityModule;
 
 		WString m_screensaverName;
 
@@ -166,12 +131,6 @@ namespace Menge
 		ConstString m_currentPakName;
 		String m_currentResourcePath;
 
-		int m_bits;
-		bool m_fullScreen;
-		bool m_vsync;
-		bool m_textureFiltering;
-		int	m_FSAAType;
-		int m_FSAAQuality;
 		bool m_hasWindowPanel;
 		float m_timingFactor;
 
@@ -185,14 +144,13 @@ namespace Menge
 
 		ConstString m_languagePak;
 		String m_platformName;
-
-		ConstString m_projectName;
+				
 		bool m_personalityHasOnClose;
 
 		typedef std::vector<PyObject *> TVectorHandlers;
 		TVectorHandlers m_handlersMouseMove;
 		TVectorHandlers m_handlersMouseButton;
-		TMapWString m_gameParams;
+		TMapWString m_params;
 
 	protected:
 		void initPredefinedResources_();

@@ -4,6 +4,7 @@
 #	include "Logger/Logger.h"
 
 #	include "Interface/ApplicationInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
 #	include <Windows.h>
 #	include "Python.h"
@@ -42,13 +43,11 @@ namespace Menge
 		{
 			return;
 		}
-		
-		ApplicationInterface * appService = _provider->getServiceT<ApplicationInterface>( "ApplicationService" );
-
-		const ConstString & projectName = appService->getProjectName();
 
 		ApplicationInterface * applicationService = _provider->getServiceT<ApplicationInterface>( "ApplicationService" );
-		
+
+		const String & projectCodename = applicationService->getProjectCodename();
+	
 		PlatformInterface * platform = applicationService->getPlatform();
 
 		Py_IgnoreEnvironmentFlag = 1;
@@ -78,7 +77,7 @@ namespace Menge
 
 		pybind::decref( py_syspath );		
 
-		this->proccess( projectName );
+		this->proccess( projectCodename );
 
 		pybind::finalize();
 	}
@@ -88,7 +87,7 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XlsExportPlugin::proccess( const ConstString & _projectName )
+	bool XlsExportPlugin::proccess( const String & _projectName )
 	{
 		bool exist = false;
 		PyObject * py_xlsxExporter = pybind::module_import( "xlsxExporter", exist );

@@ -18,7 +18,7 @@ namespace Menge
 		~Win32FileSystem();
 
 	public:
-		FileInputStreamInterface* openInputStream( const WString& _filename ) override;
+		FileInputStreamInterface* createInputStream() override;
 		void closeInputStream( FileInputStreamInterface * _fd ) override;
 		
 		FileOutputStreamInterface* openOutputStream( const WString& _filename ) override;

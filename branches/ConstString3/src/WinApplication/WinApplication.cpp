@@ -23,6 +23,8 @@
 
 #	include "resource.h"
 
+#	include "SimpleIni.h"
+
 #	include "Core/File.h"
 
 #	include <ctime>
@@ -140,6 +142,165 @@ namespace Menge
 		m_desktopResolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, WString & _value )
+	{
+		const wchar_t * w_value = _ini.GetValue( _section, _key );
+
+		if( w_value == NULL )
+		{
+			return false;
+		}
+
+		_value.assign( w_value );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, String & _value )
+	{
+		const wchar_t * w_value = _ini.GetValue( _section, _key );
+
+		if( w_value == NULL )
+		{
+			return false;
+		}
+
+		WindowsLayer::unicodeToAnsi( w_value, _value );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, Resolution & _value )
+	{
+		const wchar_t * w_value = _ini.GetValue( _section, _key );
+
+		if( w_value == NULL )
+		{
+			return false;
+		}
+
+		int width;
+		int height;
+		if( swscanf( w_value, L"%d;%d", &width, &height ) != 2 )
+		{
+			return false;
+		}
+
+		_value.setWidth( width );
+		_value.setHeight( height );
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, Viewport & _value )
+	{
+		const wchar_t * w_value = _ini.GetValue( _section, _key );
+
+		if( w_value == NULL )
+		{
+			return false;
+		}
+
+		float left;
+		float top;
+		float right;
+		float bottom;
+		if( swscanf( w_value, L"%f;%f;%f;%f", &left, &top, &right, &bottom ) != 4 )
+		{
+			return false;
+		}
+
+		_value.begin.x = left;
+		_value.begin.y = top;
+		_value.end.x = right;
+		_value.end.y = bottom;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, bool & _value )
+	{
+		const wchar_t * w_value = _ini.GetValue( _section, _key );
+
+		if( w_value == NULL )
+		{
+			return false;
+		}
+
+		int tmp_value;
+		if( swscanf( w_value, L"%d", &tmp_value ) != 1 )
+		{
+			return false;
+		}
+
+		_value = tmp_value != 0;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, size_t & _value )
+	{
+		const wchar_t * w_value = _ini.GetValue( _section, _key );
+
+		if( w_value == NULL )
+		{
+			return false;
+		}
+
+		size_t tmp_value;
+		if( swscanf( w_value, L"%u", &tmp_value ) != 1 )
+		{
+			return false;
+		}
+
+		_value = tmp_value;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_getIniValues( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, TVectorWString & _values )
+	{
+		CSimpleIniCaseW::TNamesDepend values;
+		if( _ini.GetAllValues( _section, _key, values ) == false )
+		{
+			return false;
+		}
+
+		for( CSimpleIniCaseW::TNamesDepend::const_iterator 
+			it = values.begin(),
+			it_end = values.end();
+		it != it_end;
+		++it )
+		{
+			_values.push_back( it->pItem );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool s_getIniAllSettings( const CSimpleIniCaseW & _ini, const wchar_t * _section, TMapWString & _values )
+	{
+		CSimpleIniCaseW::TNamesDepend values;
+		if( _ini.GetAllKeys( _section, values ) == false )
+		{
+			return false;
+		}
+
+		for( CSimpleIniCaseW::TNamesDepend::const_iterator 
+			it = values.begin(),
+			it_end = values.end();
+		it != it_end;
+		++it )
+		{
+			WString val;
+			s_getIniValue( _ini, _section, it->pItem, val );
+
+			_values.insert( std::make_pair( it->pItem, val ) );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{	
 		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
@@ -152,36 +313,6 @@ namespace Menge
 
 		m_windowsType = WindowsLayer::getWindowsType();
 
-		//String m_userPath("Antoinette");
-
-		//HRSRC hResouce = ::FindResource( NULL, MAKEINTRESOURCE( 101 ), MAKEINTRESOURCE(10) );	//NULL, 101, RT_RCDATA
-		//if( hResouce != NULL )
-		//{
-		//	DWORD resSize = ::SizeofResource( NULL, hResouce );
-		//	HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
-		//	m_userPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
-		//}
-
-		//TODO - вынести это из компил€ции
-		WString appName = L"TheCursedIsland";
-
-		//if( m_userPath.empty() == false )
-		//{
-		//	docsAndSettings = true;
-		//}
-
-		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
-		{
-			m_developmentMode = true;
-		}
-
-		bool docsAndSettings = true;
-
-		if( m_developmentMode == true )
-		{
-			docsAndSettings = false;
-		}
-
 #	ifdef _DEBUG
 		m_enableDebug = true;
 #	else
@@ -193,31 +324,140 @@ namespace Menge
 			WindowsLayer::setModuleCurrentDirectory();
 		}
 
-		if( docsAndSettings == false || m_windowsType == WindowsLayer::EWT_98 )
-		{
-			WindowsLayer::getCurrentDirectory( m_userPath );
-			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += L"User";
-			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
-			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
-		}
-		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
-		{
-			wchar_t buffer[MAX_PATH];
-			LPITEMIDLIST itemIDList;
-			HRESULT hr = SHGetSpecialFolderLocation( NULL,
-				CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
-			BOOL result = SHGetPathFromIDListW( itemIDList, buffer );
-			CoTaskMemFree( itemIDList );
-			
-			//Menge::String userSysPath;
-			//WindowsLayer::unicodeToUtf8( Menge::WString( buffer ), userSysPath );
-			m_userPath = buffer;
-			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += appName;
+		//String m_userPath("Antoinette");
 
-			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
-			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
+		//HRSRC hResouce = ::FindResource( NULL, MAKEINTRESOURCE( 101 ), MAKEINTRESOURCE(10) );	//NULL, 101, RT_RCDATA
+		//if( hResouce != NULL )
+		//{
+		//	DWORD resSize = ::SizeofResource( NULL, hResouce );
+		//	HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
+		//	m_userPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
+		//}
+
+		//TODO - вынести это из компил€ции
+		WindowsLayer::getCurrentDirectory( m_currentPath );
+		m_currentPath += MENGE_FOLDER_DELIM;
+
+		WString application_settings_path;
+		application_settings_path += m_currentPath;
+		application_settings_path += L"application.ini";
+
+		printf( "load application config %S ..."
+			, application_settings_path.c_str()
+			);
+
+		CSimpleIniCaseW ini_settings(false, true, true);
+		SI_Error ini_error = ini_settings.LoadFile( application_settings_path.c_str() );
+
+		if( ini_error != 0 )
+		{
+			::MessageBox( NULL
+				, application_settings_path.c_str()
+				, L"Invalid load application setting"
+				, MB_OK
+				);
+
+			return false;
+		}
+		
+		const wchar_t * w_game_path = ini_settings.GetValue( L"Game", L"Path" );
+
+		if( w_game_path == 0 )
+		{
+			::MessageBox( NULL
+				, application_settings_path.c_str()
+				, L"Not found Game Path"
+				, MB_OK
+				);
+
+			return false;
+		}
+
+		const wchar_t * w_resource_path = ini_settings.GetValue( L"Resource", L"Path" );
+
+		if( w_resource_path == 0 )
+		{
+			::MessageBox( NULL
+				, application_settings_path.c_str()
+				, L"Not found Game Path"
+				, MB_OK
+				);
+
+			return false;
+		}
+		
+		CSimpleIniCaseW game_settings(false, true, true);
+
+		WString game_settings_path;
+
+		game_settings_path += m_currentPath;
+		game_settings_path += w_game_path;
+
+		SI_Error game_error = game_settings.LoadFile( game_settings_path.c_str() );
+
+		if( game_error != 0 )
+		{
+			::MessageBox( NULL
+				, game_settings_path.c_str()
+				, L"Invalid load game setting"
+				, MB_OK
+				);
+
+			return false;
+		}
+
+		ApplicationSettings appSettings;
+		
+		s_getIniValue( game_settings, L"Project", L"Name", appSettings.projectName );
+		s_getIniValue( game_settings, L"Project", L"Codename", appSettings.projectCodename );
+		s_getIniValue( game_settings, L"Game", L"ContentResolution", appSettings.contentResolution );
+		s_getIniValue( game_settings, L"Game", L"LowContentViewport", appSettings.lowContentViewport );
+		s_getIniValue( game_settings, L"Game", L"FixedContentResolution", appSettings.fixedContentResolution );
+		s_getIniValue( game_settings, L"Game", L"PersonalityModule", appSettings.personalityModule );
+		s_getIniValue( game_settings, L"Window", L"Size", appSettings.windowResolution );
+		s_getIniValue( game_settings, L"Window", L"Bits", appSettings.bits );
+		s_getIniValue( game_settings, L"Window", L"Fullscreen", appSettings.fullscreen );
+		s_getIniValue( game_settings, L"Window", L"VSync", appSettings.vsync );		
+
+		s_getIniValues( game_settings, L"Plugins", L"Name", appSettings.plugins );
+
+		appSettings.platformName = "WIN";
+		
+		WString baseDir;
+		baseDir += m_currentPath;
+		baseDir += L"..";
+		baseDir += MENGE_FOLDER_DELIM;
+		
+		appSettings.baseDir = baseDir;
+
+		//WString resourcePacksPath;
+		//resourcePacksPath += m_currentPath;
+		//resourcePacksPath += MENGE_FOLDER_DELIM;
+		//resourcePacksPath += w_resource_path;
+
+		appSettings.resourcePacksPath = w_resource_path;
+		
+		//ConstString languagePack;
+		//if( cfg.getSetting( L"LOCALE", L"Default", languagePack ) == true )
+		//{
+		//	this->setLanguagePackOverride( languagePack );
+		//}
+
+		//cfg.getSetting( L"GamePack", L"Name", m_gamePackName );
+		//cfg.getSetting( L"GamePack", L"Path", m_gamePackPath );
+		//cfg.getSetting( L"GamePack", L"Description", m_gameDescription );
+		//cfg.getSetting( L"GamePack", L"Type", m_gamePackType, Consts::get()->c_dir );
+
+		//cfg.getSettings( L"Plugins", L"Name", m_initPlugins );
+
+		//if( m_userPath.empty() == false )
+		//{
+		//	docsAndSettings = true;
+		//}
+
+		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
+		{
+			m_developmentMode = true;
 		}
 
 		String scriptInit;
@@ -261,16 +501,7 @@ namespace Menge
 			}
 		}
 
-		wchar_t buffer[MAX_PATH];
-		::GetCurrentDirectoryW( MAX_PATH, buffer );
-
-		m_currentPath.assign(buffer);
-
 		//WindowsLayer::getCurrentDirectory( m_applicationPath );
-		m_applicationPath = m_currentPath;
-		
-		m_applicationPath += MENGE_FOLDER_DELIM;
-		m_userPath += MENGE_FOLDER_DELIM;
 
 		if( initInterfaceSystem( &m_application ) == false )
 		{
@@ -304,12 +535,12 @@ namespace Menge
 		ConstString c_languagePack(languagePack);
 		m_application->setLanguagePackOverride( c_languagePack );
 
-		WString baseDir = m_applicationPath;
-		baseDir += MENGE_DEFAULT_BASE_DIR;
+		//WString baseDir = m_applicationPath;
+		//baseDir += MENGE_DEFAULT_BASE_DIR;
+		
+		//WString settings_file = L"application.ini";
 
-		WString settings_file = L"settings.ini";
-
-		if( m_application->initialize( this, platformName, m_commandLine, baseDir, settings_file ) == false )
+		if( m_application->initialize( this, m_commandLine, appSettings ) == false )
 		{
 			LOGGER_ERROR(m_logService)( "Application initialize failed" 
 				);
@@ -420,7 +651,7 @@ namespace Menge
 
 		LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
-		if( m_application->initializeGame( scriptInit ) == false )
+		if( m_application->initializeGame( scriptInit, appSettings.params ) == false )
 		{
 			return false;
 		}
@@ -495,11 +726,43 @@ namespace Menge
 		FileServiceInterface * fileService = _service;
 
 		// mount root		
-		if( fileService->mountFileSystem( ConstString(""), m_applicationPath, ConstString("dir"), false ) == false )
+		if( fileService->mountFileSystem( ConstString::none, m_currentPath, ConstString("dir"), false ) == false )
 		{
 			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount application directory %s"
-				, m_applicationPath.c_str()
-				);					
+				, m_currentPath.c_str()
+				);
+		}
+
+		m_userPath.clear();
+
+		if( m_developmentMode == true )
+		{			
+			m_userPath += m_currentPath;
+			m_userPath += L"User";
+			m_userPath += MENGE_FOLDER_DELIM;
+
+			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
+			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
+		}
+		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
+		{
+			wchar_t buffer[MAX_PATH];
+			LPITEMIDLIST itemIDList;
+			HRESULT hr = SHGetSpecialFolderLocation( NULL,
+				CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
+			BOOL result = SHGetPathFromIDListW( itemIDList, buffer );
+			CoTaskMemFree( itemIDList );
+
+			const WString & projectName = m_application->getProjectName();
+			//Menge::String userSysPath;
+			//WindowsLayer::unicodeToUtf8( Menge::WString( buffer ), userSysPath );
+			m_userPath = buffer;
+			m_userPath += MENGE_FOLDER_DELIM;
+			m_userPath += projectName;
+			m_userPath += MENGE_FOLDER_DELIM;
+
+			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
+			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
 		// mount user directory
@@ -803,7 +1066,8 @@ namespace Menge
 		{
 			dwStyle |= WS_CLIPCHILDREN | WS_BORDER | WS_CAPTION | WS_VISIBLE;
 
-			bool hasWindowPanel = m_application->getHasWindowPanel();
+			bool hasWindowPanel = true;
+			//m_application->getHasWindowPanel();
 
 			if( hasWindowPanel == true )
 			{
@@ -1407,6 +1671,7 @@ namespace Menge
 			WString icoFile;
 
 			icoFile += m_userPath;
+			icoFile += MENGE_FOLDER_DELIM;
 			icoFile += L"IconCache";
 			icoFile += MENGE_FOLDER_DELIM;
 

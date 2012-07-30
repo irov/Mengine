@@ -18,6 +18,6 @@ namespace Menge
 		void finalize() override;
 
 	protected:
-		bool proccess( const ConstString & _projectName );
+		bool proccess( const String & _projectName );
 	};
 }

@@ -224,7 +224,7 @@ namespace Menge
 
 		WString settings_file = L"settings.ini";
 
-		if( m_application->initialize( this, platformName, "",  baseDir, settings_file ) == false )
+		//if( m_application->initialize( this, platformName, "",  baseDir, settings_file ) == false )
 		{
 			return false;
 		}

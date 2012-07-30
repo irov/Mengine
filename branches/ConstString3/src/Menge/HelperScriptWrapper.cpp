@@ -608,33 +608,22 @@ namespace Menge
 				return data;
 			}
 
-			FileInputStreamInterface * file = FileEngine::get()
-				->createInputFile( Consts::get()->c_user );
-
-			if( file == 0 )
-			{
-				MENGE_LOG_ERROR( "loadBinaryFile: invalid create input file '%S'"
-					, _filename.c_str()
-					);
-
-				return data;
-			}
-
 			const WString & folder = currentAccount->getName();
 
 			WString fullpath = folder + MENGE_FOLDER_DELIM + _filename;
 			
-			if( file->open( fullpath ) == false )
+			FileInputStreamInterface * file = FileEngine::get()
+				->openInputFile( Consts::get()->c_user, fullpath );
+
+			if( file == 0 )
 			{
 				MENGE_LOG_ERROR( "loadBinaryFile: invalid open input file '%S'"
-					, _filename.c_str()
+					, fullpath.c_str()
 					);
-				
-				file->close();
 
 				return data;
 			}
-
+			
 			int size = file->size();
 			
 			if( size < 0 )

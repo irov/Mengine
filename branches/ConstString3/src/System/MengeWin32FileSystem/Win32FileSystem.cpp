@@ -44,17 +44,9 @@ namespace Menge
 	Win32FileSystem::~Win32FileSystem()
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface* Win32FileSystem::openInputStream( const WString& _filename )
+	FileInputStreamInterface* Win32FileSystem::createInputStream()
 	{
 		Win32InputStream* inputStream = new Win32InputStream();
-
-		if( inputStream->open( _filename ) == false )
-		{				
-			delete inputStream;
-
-			return 0;
-		}
 
 		return inputStream;
 	}

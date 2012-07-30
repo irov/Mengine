@@ -32,17 +32,10 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		FileInputStreamInterface * fileStream = FileEngine::get()
-			->createInputFile( category );
+			->openInputFile( category, m_path );
 
 		if( fileStream == 0 )
 		{
-			return false;
-		}
-
-		if( fileStream->open( m_path ) == false )
-		{
-			fileStream->close();
-
 			return false;
 		}
 

@@ -90,7 +90,7 @@ namespace Menge
 			return false;
 		}
 
-		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( _type );
+		FileGroup * fs = FactoryManager::createObjectT<FileGroup>( _type );
 
 		if( fs == NULL )
 		{
@@ -178,9 +178,27 @@ namespace Menge
 			return false;
 		}
 		
-		FileSystem * fileSystem = it_find->second;
+		FileGroup * fileSystem = it_find->second;
 
 		return fileSystem->existFile( _filename );		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileGroup * FileEngine::getFileSystem( const ConstString& _fileSystemName ) const
+	{
+		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
+
+		if( it_find == m_fileSystemMap.end() )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::createInputFile) FileSystem '%s' not mount"
+				, _fileSystemName.c_str()
+				);
+
+			return NULL;
+		}
+
+		FileGroup * fileSystem = it_find->second;
+
+		return fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* FileEngine::createInputFile( const ConstString& _fileSystemName )
@@ -195,7 +213,7 @@ namespace Menge
 			return NULL;
 		}
 
-		FileSystem * fileSystem = it_find->second;
+		FileGroup * fileSystem = it_find->second;
 		FileInputStreamInterface* file = fileSystem->createInputFile();
 
 		return file;
@@ -203,7 +221,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* FileEngine::openInputFile( const ConstString& _fileSystemName, const WString& _filename )
 	{
-		FileInputStreamInterface * file = this->createInputFile( _fileSystemName );
+		FileGroup * group = this->getFileSystem( _fileSystemName );
+
+		if( group == NULL )
+		{
+			return NULL;
+		}
+
+		FileInputStreamInterface * file = group->createInputFile();
 
 		if( file == 0 )
 		{
@@ -214,7 +239,7 @@ namespace Menge
 			return 0;
 		}
 
-		if( file->open( _filename ) == false )
+		if( group->openInputFile( _filename, file ) == false )
 		{
 			file->close();
 
@@ -274,7 +299,7 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createDirectoryPathFileSystem_( FileSystem * _fs, const WString& _path ) const
+	bool FileEngine::createDirectoryPathFileSystem_( FileGroup * _fs, const WString& _path ) const
 	{
 		WString dir_path = _path;
 
@@ -317,7 +342,7 @@ namespace Menge
 			return false;
 		}
 
-		FileSystem * fs = it_find->second;
+		FileGroup * fs = it_find->second;
 
 		if( this->createDirectoryPathFileSystem_( fs, _path ) == false )
 		{

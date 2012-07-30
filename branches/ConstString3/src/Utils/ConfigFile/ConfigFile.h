@@ -24,6 +24,7 @@ namespace Menge
 		bool getSetting( const WString& _section, const WString& _key, WString & _value ) const;
 		bool getSettings( const WString& _section, const WString& _key, TVectorWString & _values ) const;
 		bool getAllSettings( const WString& _section, TMapWString & _values );
+
 	public:
 		bool getSettingUInt( const WString& _section, const WString& _key, size_t & _value ) const;
 		
@@ -31,7 +32,7 @@ namespace Menge
 		bool setSetting( const WString& _section, const WString& _key, const WString & _value );
 
 	protected:
-		CSimpleIniW m_ini;
+		CSimpleIniCaseW m_ini;
 	};
 
 }	// namespace Menge

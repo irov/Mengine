@@ -14,7 +14,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileInput::FileInput()
-		: m_fileSystem( NULL )
+		: m_fileSystem(NULL)
 		, m_opened( false )
 	{
 
@@ -24,12 +24,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileInput::setFileSystem( FileSystem * _fileSystem )
+	void FileInput::setFileSystem( FileGroup * _fileSystem )
 	{
 		m_fileSystem = _fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystem * FileInput::getFileSystem() const
+	FileGroup * FileInput::getFileSystem() const
 	{
 		return m_fileSystem;
 	}

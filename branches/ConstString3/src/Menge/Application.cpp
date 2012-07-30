@@ -222,6 +222,13 @@ namespace Menge
 		, m_mouseEnter(false)
 		, m_developmentMode(false)
 		, m_cursorResource(NULL)
+		, m_fixedContentResolution(false)
+		, m_vsync(false)
+		, m_fullScreen(true)
+		, m_bits(0)
+		, m_FSAAType(0)
+		, m_FSAAQuality(0)
+		, m_textureFiltering(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -278,11 +285,23 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool Application::initialize( PlatformInterface* _platform, const String & _platformName, const String& _args, const WString & _baseDir, const WString & _settingFile )
+	bool Application::initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting )
 	{
 		m_platform = _platform;
-		m_platformName = _platformName;
+		
+		m_platformName = _setting.platformName;
+		m_projectName = _setting.projectName;
+		m_projectCodename = _setting.projectCodename;
 
+		m_contentResolution = _setting.contentResolution;
+		m_lowContentViewport = _setting.lowContentViewport;
+		m_fixedContentResolution = _setting.fixedContentResolution;
+		
+		m_windowResolution = _setting.windowResolution;
+		m_bits = _setting.bits;
+		m_fullscreen = _setting.fullscreen;
+		m_vsync = _setting.vsync;
+		
 		this->parseArguments_( _args );
 		
 		m_consts = new Consts;
@@ -334,6 +353,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+		this->setBaseDir( _setting.baseDir );
 		
 		//extern initPlugin initPluginMengeImageCodec;
 		{
@@ -346,58 +367,17 @@ namespace Menge
 
 			m_plugins.push_back( plugin );
 		}
-
-		//extern initPlugin initPluginMengeVideoCodec;
-		//{
-		//	MENGE_LOG_INFO( "load Video Codec..." );
-
-		//	PluginInterface * plugin;
-		//	initPluginMengeVideoCodec( &plugin );
-
-		//	TMapParam param;
-		//	plugin->initialize( m_serviceProvider, param );
-
-		//	m_plugins.push_back( plugin );
-		//}
-
-//#	ifndef MENGE_MASTER_RELEASE
-//		{
-//			MENGE_LOG_INFO( "load Xml Codec..." );
-//
-//			TMapParam param;
-//			this->loadPlugin(L"MengeXmlCodecPlugin.dll", param);
-//		}
-//#	endif
-
-
-		//if( m_console != NULL )
-		//{
-		//	m_console->inititalize( m_logSystem );
-		//}
-
-		this->setBaseDir( _baseDir );
-
-		if( this->loadConfig( _settingFile ) == false )
+		
+		if( this->loadPlugins( _setting.plugins ) == false )
 		{
 			return false;
 		}
 
-		if( this->createGame() == false )
-		{
-			return false;
-		}
+		bool w_personalityModule_successful;
+		String personalityModule = m_unicodeService->unicodeToUtf8( _setting.personalityModule, w_personalityModule_successful );
+		ConstString c_personalityModule(personalityModule);
 
-		if( this->loadPlugins() == false )
-		{
-			return false;
-		}
-
-		if( this->loadGameResource() == false )
-		{
-			return false; 
-		}
-
-		if( this->loadPersonality() == false )
+		if( this->createGame( c_personalityModule, _setting.resourcePacksPath ) == false )
 		{
 			return false;
 		}
@@ -405,51 +385,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadConfig( const WString& _iniFile )
+	bool Application::loadPlugins( const TVectorWString & _plugins )
 	{
-		MENGE_LOG_INFO( "load config %S ..."
-			, _iniFile.c_str()
-			);
-
-		ConfigLoader cfg(m_serviceProvider);
-
-		if( cfg.loadFile( Consts::get()->c_builtin_empty, _iniFile ) == false )
-		{
-			MENGE_LOG_ERROR("Application::loadConfig: invalid open iniFile %S"
-				, _iniFile.c_str()
-				);
-
-			return false;
-		}
-		
-		ConstString languagePack;
-		if( cfg.getSetting( L"LOCALE", L"Default", languagePack ) == true )
-		{
-			this->setLanguagePackOverride( languagePack );
-		}
-
-		cfg.getSetting( L"GamePack", L"Name", m_gamePackName );
-		cfg.getSetting( L"GamePack", L"Path", m_gamePackPath );
-		cfg.getSetting( L"GamePack", L"Description", m_gameDescription );
-		cfg.getSetting( L"GamePack", L"Type", m_gamePackType, Consts::get()->c_dir );
-
-		cfg.getSettings( L"Plugins", L"Name", m_initPlugins );
-							
-		//if( m_baseDir.empty() )	// current dir
-		//{
-		//	m_baseDir = MENGE_DEFAULT_BASE_DIR;
-		//}
-
-		//this->setBaseDir( m_baseDir );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadPlugins()
-	{
-		for( TVectorWString::iterator
-			it = m_initPlugins.begin(),
-			it_end = m_initPlugins.end();
+		for( TVectorWString::const_iterator
+			it = _plugins.begin(),
+			it_end = _plugins.end();
 		it != it_end;
 		++it )
 		{
@@ -486,7 +426,7 @@ namespace Menge
 	bool Application::initializeThreadEngine_()
 	{
 		MENGE_LOG_INFO( "Initializing Thread System..." );
-		m_threadEngine = new ThreadEngine();
+		m_threadEngine = new ThreadEngine;
 
 		ThreadEngine::keep(m_threadEngine);
 
@@ -503,7 +443,7 @@ namespace Menge
 	bool Application::initializeFileEngine_()
 	{
 		MENGE_LOG_INFO( "Inititalizing File System..." );
-		m_fileEngine = new FileEngine();
+		m_fileEngine = new FileEngine;
 		
 		FileEngine::keep( m_fileEngine );
 
@@ -520,7 +460,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeLogEngine_()
 	{
-		m_logEngine = new LogEngine();
+		m_logEngine = new LogEngine;
 
 		LogEngine::keep( m_logEngine );
 
@@ -544,7 +484,7 @@ namespace Menge
 	{
 #	if	MENGE_PARTICLES	== (1)
 		MENGE_LOG_INFO( "Initializing Particle System..." );
-		m_particleEngine = new ParticleEngine();
+		m_particleEngine = new ParticleEngine;
 
 		ParticleEngine::keep( m_particleEngine );
 
@@ -561,7 +501,7 @@ namespace Menge
 	bool Application::initializePhysicEngine2D_()
 	{
 		MENGE_LOG_INFO( "Inititalizing Physics2D System..." );
-		m_physicEngine2D = new PhysicEngine2D();
+		m_physicEngine2D = new PhysicEngine2D;
 
 		PhysicEngine2D::keep( m_physicEngine2D );
 
@@ -577,7 +517,7 @@ namespace Menge
 	bool Application::initializeRenderEngine_()
 	{
 		MENGE_LOG_INFO( "Initializing Render System..." );
-		m_renderEngine = new RenderEngine();
+		m_renderEngine = new RenderEngine;
 
 		RenderEngine::keep( m_renderEngine );
 
@@ -634,7 +574,7 @@ namespace Menge
 
 		ThreadSystemInterface * threadSystem = threadEngine->getInterface();
 			
-		m_taskManager = new ThreadTaskManager( threadSystem, m_countThreads );
+		m_taskManager = new ThreadTaskManager(threadSystem, m_countThreads);
 		m_taskManager->initialize();
 		
 		ThreadTaskManager::keep(m_taskManager);
@@ -644,7 +584,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
 	{		
-		m_nodeManager = new NodeManager();
+		m_nodeManager = new NodeManager;
 
 		NodeManager::keep(m_nodeManager);
 
@@ -916,60 +856,13 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame()
+	bool Application::createGame( const ConstString & _module, const WString & _resourcePackPath )
 	{
 		m_game = new Game(m_baseDir, m_developmentMode, m_platformName);
 
 		Game::keep( m_game );
 
-		MENGE_LOG_INFO( "Application::loadGame mount game pak '%s'"
-			, m_gamePackName.c_str() 
-			);
-
-		//m_game->setBaseDir( m_baseDir );
-
-		//m_fileEngine->loadPak( m_gamePack );
-		WString fullGamePackPath = m_baseDir;
-
-		if( m_gamePackPath.empty() == false )
-		{
-			fullGamePackPath += m_gamePackPath;
-			fullGamePackPath += MENGE_FOLDER_DELIM;
-		}
-
-		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, m_gamePackType, false ) == false )
-		{
-			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak '%S' [%S]"
-				, m_gamePackPath.c_str() 
-				, fullGamePackPath.c_str()
-				);
-
-			return false;
-		}
-        
-        MENGE_LOG_INFO( "Application:loadGame load game description '%s' desc '%S'"
-                       , m_gamePackName.c_str() 
-                       , m_gameDescription.c_str()
-                       );
-
-		if( m_game->loadDescription( m_gamePackName, m_gameDescription ) == false )
-		{
-			MENGE_LOG_ERROR( "Application:loadGame invalid load game file '%s' '%S'"
-				, m_gamePackName.c_str()
-				, m_gameDescription.c_str()
-				);
-
-			//showMessageBox( "'Application' files missing or corrupt", "Critical Error", 0 );
-
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadGameResource()
-	{
-		MENGE_LOG_INFO( "Application:loadGameResource load game resource"
+		MENGE_LOG_INFO( "Application:createGame load game resource"
 			);
 
 		if( m_languagePackOverride.empty() == false )
@@ -977,32 +870,22 @@ namespace Menge
 			m_game->setLanguagePack( m_languagePackOverride );
 		}
 
-		if( m_game->loadConfigPaks() == false )
+		if( m_game->loadConfigPaks( _resourcePackPath ) == false )
 		{
 			return false;
 		}
 
 		//m_game->registerResources( m_baseDir );
-		
-		m_fullscreen = m_game->getFullscreen();
 
 		m_game->applyConfigPaks();
 
 		m_game->setCursorMode( m_cursorMode );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadPersonality()
-	{
-		MENGE_LOG_INFO( "Application:loadGame load personality"
-			);
-            
-		if( m_game->loadPersonality() == false )
+		if( m_game->loadPersonality( _module ) == false )
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1017,16 +900,7 @@ namespace Menge
 			this->calcWindowResolution( m_currentResolution );
 		}
 
-		bool vsync = m_game->getVSync();
-		m_renderEngine->setVSync( vsync );
-		
-		int bits = m_game->getBits();
-		int FSAAType = m_game->getFSAAType();
-		int FSAAQuality = m_game->getFSAAQuality();
-		bool textureFiltering = m_game->getTextureFiltering();
-
-		const Resolution & contentResolution = m_game->getContentResolution();
-		const Viewport & lowContentViewport = m_game->getLowContentViewport();
+		m_renderEngine->setVSync( m_vsync );
 
 		MENGE_LOG_INFO( "Application::createRenderWindow %d Current Resolution %d %d"
 			, m_fullscreen
@@ -1043,8 +917,8 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
-		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, lowContentViewport, m_renderViewport, bits, m_fullscreen,
-														_renderWindowHandle, FSAAType, FSAAQuality );
+		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, m_contentResolution, m_lowContentViewport, m_renderViewport, m_bits, m_fullscreen,
+														_renderWindowHandle, m_FSAAType, m_FSAAQuality );
 
 		if( m_createRenderWindow == false )
 		{
@@ -1066,7 +940,7 @@ namespace Menge
 
 		//m_renderEngine->setRenderViewport( renderViewport );
 
-		m_renderEngine->enableTextureFiltering( textureFiltering );
+		m_renderEngine->enableTextureFiltering( m_textureFiltering );
 
 		NotificationService::get()
 			->notify( "CHANGE_WINDOW_RESOLUTION", m_fullscreen, m_currentResolution );
@@ -1074,9 +948,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGame( const String & _scriptInitParams )
+	bool Application::initializeGame( const String & _scriptInitParams, const TMapWString & _params )
 	{
-		if( m_game->initialize( _scriptInitParams ) == false )
+		if( m_game->initialize( _scriptInitParams, _params ) == false )
 		{
 			MENGE_LOG_ERROR("Application::initGame invalid initialize %s"
 				, _scriptInitParams.c_str()
@@ -1581,13 +1455,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const
 	{
-		const Resolution& dres = this->getMaxClientAreaSize();
+		const Resolution & dres = this->getMaxClientAreaSize();
 
-		const Resolution & windowResolution = m_game->getWindowResolution();
+		float aspect = m_windowResolution.getAspectRatio();
 
-		float aspect = windowResolution.getAspectRatio();
-
-		size_t resHeight = windowResolution.getHeight();
+		size_t resHeight = m_windowResolution.getHeight();
 		size_t dresHeight = dres.getHeight();
 
 		if( resHeight > dresHeight )
@@ -1599,7 +1471,7 @@ namespace Menge
 		}
 		else
 		{
-			_windowResolution = windowResolution;
+			_windowResolution = m_windowResolution;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1634,18 +1506,12 @@ namespace Menge
 		float rw = float(_resolution.getWidth());
 		float rh = float(_resolution.getHeight());
 
-		bool resolutionFixed = Game::get()
-			->isContentResolutionFixed();
-
-		if( resolutionFixed == true )
+		if( m_fixedContentResolution == true )
 		{
-			const Resolution & contentResolution = Game::get()
-				->getContentResolution();
-
-			if( _resolution == contentResolution )
+			if( _resolution == m_contentResolution )
 			{
-				_viewport.begin.x = 0.0f;
-				_viewport.begin.y = 0.0f;
+				_viewport.begin.x = 0.f;
+				_viewport.begin.y = 0.f;
 				_viewport.end.x = rw;
 				_viewport.end.y = rh;
 			}
@@ -1654,18 +1520,18 @@ namespace Menge
 				float one_div_width = 1.f / rw;
 				float one_div_height = 1.f / rh;
 
-				float crx = float( contentResolution.getWidth() );
-				float cry = float( contentResolution.getHeight() );
+				float crx = float( m_contentResolution.getWidth() );
+				float cry = float( m_contentResolution.getHeight() );
 
 				float contentAspect = crx / cry;
 				float aspect = rw * one_div_height;
 
-				float dw = 1.0f;
+				float dw = 1.f;
 				float dh = rw / contentAspect * one_div_height;
 
-				if( dh > 1.0f )
+				if( dh > 1.f )
 				{
-					dh = 1.0f;
+					dh = 1.f;
 					dw = rh * contentAspect * one_div_width;
 				}
 
@@ -1682,8 +1548,8 @@ namespace Menge
 		}
 		else
 		{
-			_viewport.begin.x = 0;
-			_viewport.begin.y = 0;
+			_viewport.begin.x = 0.f;
+			_viewport.begin.y = 0.f;
 
 			_viewport.end.x = rw;
 			_viewport.end.y = rh;
@@ -1708,8 +1574,7 @@ namespace Menge
 			this->calcWindowResolution( m_currentResolution );
 		}
 
-		bool vsync = m_game->getVSync();
-		m_renderEngine->setVSync( vsync );
+		m_renderEngine->setVSync( m_vsync );
 
 		m_platform->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
@@ -1738,14 +1603,8 @@ namespace Menge
 			//m_interface->notifyCursorUnClipping();
 			this->setMouseBounded( m_mouseBounded );
 		}
-
-		const Resolution & contentResolution = 
-			m_game->getContentResolution();
-
-		const Viewport & lowContentViewport = 
-			m_game->getLowContentViewport();
-		
-		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, lowContentViewport, m_renderViewport, _fullscreen );
+	
+		m_renderEngine->changeWindowMode( m_currentResolution, m_contentResolution, m_lowContentViewport, m_renderViewport, m_fullscreen );
 		
 		m_game->onFullscreen( m_currentResolution, m_fullscreen );
 
@@ -1769,13 +1628,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::screenshot( RenderTextureInterface* _renderTargetImage, const mt::vec4f & _rect )
 	{
-		const Resolution & contentResolution = m_game->getContentResolution();
+		mt::vec4f res; 
 
-		mt::vec4f res = _rect;
-		res.x *= static_cast<float>( m_currentResolution.getWidth() ) / contentResolution.getWidth();
-		res.y *= static_cast<float>( m_currentResolution.getHeight() ) / contentResolution.getHeight();
-		res.z *= static_cast<float>( m_currentResolution.getWidth() ) / contentResolution.getWidth();
-		res.w *= static_cast<float>( m_currentResolution.getHeight() ) / contentResolution.getHeight();
+		res = _rect;
+
+		res.x *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
+		res.y *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
+		res.z *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
+		res.w *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
 		
 		m_renderEngine->screenshot( _renderTargetImage, _rect );
 	}
@@ -1793,16 +1653,6 @@ namespace Menge
 	const Viewport & Application::getRenderViewport() const
 	{
 		return m_renderViewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Resolution & Application::getContentResolution() const
-	{
-		return m_game->getContentResolution();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Application::getLowContentViewport() const
-	{
-		return m_game->getLowContentViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Application::getDebugMask() const
@@ -1830,22 +1680,58 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Application::getProjectTitle() const
 	{
-		return m_game->getTitle();
+		if( m_textManager == NULL )
+		{
+			MENGE_LOG_ERROR("Application::getProjectTitle not initialize textManager"
+				);
+
+			return Utils::emptyWString();
+		}
+
+		ConstString key("APPLICATION_TITLE");
+		if( m_textManager->existText( key ) == false )
+		{
+			return Utils::emptyWString();
+		}
+		
+		const TextEntry & entry = m_textManager->getTextEntry( key );
+
+		return entry.text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Application::getProjectName() const
+	const WString & Application::getProjectName() const
 	{
-		return m_game->getProjectName();
+		return m_projectName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & Application::getProjectCodename() const
+	{
+		return m_projectCodename;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Resolution & Application::getContentResolution() const
+	{
+		return m_contentResolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::isContentResolutionFixed() const
+	{
+		return m_fixedContentResolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Viewport & Application::getLowContentViewport() const
+	{
+		return m_lowContentViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Resolution & Application::getWindowResolution() const
+	{
+		return m_windowResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setDesktopResolution( const Resolution& _resolution )
 	{
 		m_desktopResolution = _resolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::getHasWindowPanel() const
-	{
-		return m_game->getHasWindowPanel();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const char* Application::getVersionInfo()

@@ -521,13 +521,18 @@ namespace	Menge
 			return;
 		}
 
-		m_videoDecoder->seek( seek_timing );
+		//float current_timing = m_videoDecoder->getTiming();
 
-//		printf("Video %s seek %f => %f\n"
-//			, m_name.c_str()
-//			, seek_timing
-//			, m_videoDecoder->getTiming()
-//			);
+		m_videoDecoder->seek( seek_timing );
+		//m_videoDecoder->readNextFrame();
+
+
+		//printf("Video %s seek %f + %f => %f\n"
+		//	, m_name.c_str()
+		//	, current_timing
+		//	, seek_timing
+		//	, m_videoDecoder->getTiming()
+		//	);
 
 		m_needUpdate = this->_sync( dataInfo->frameTiming );
 

@@ -41,7 +41,7 @@ namespace Menge
 		//int sync( float _timing ) override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;
-		bool _seek( int64_t _ts );
+
 	public:
 		bool isValid() const;
 		void setOptions( CodecOptions * _options );
@@ -50,7 +50,10 @@ namespace Menge
 		const VideoCodecDataInfo* getCodecDataInfo() const;
 
 	protected:
-		void _invalidate() ;
+		void _invalidate();
+
+	protected:
+		bool seekFrame_( int64_t _frame );
 	
 	protected:
 		LogServiceInterface * m_logService;

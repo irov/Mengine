@@ -69,13 +69,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::getSettings( const WString& _section, const WString& _key, TVectorWString & _values ) const
 	{
-		CSimpleIniW::TNamesDepend values;
+		CSimpleIniCaseW::TNamesDepend values;
 		if( m_ini.GetAllValues( _section.c_str(), _key.c_str(), values ) == false )
 		{
 			return false;
 		}
 
-		for( CSimpleIniW::TNamesDepend::const_iterator 
+		for( CSimpleIniCaseW::TNamesDepend::const_iterator 
 			it = values.begin(),
 			it_end = values.end();
 		it != it_end;
@@ -112,13 +112,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::getAllSettings( const WString& _section, TMapWString & _values )
 	{
-		CSimpleIniW::TNamesDepend values;
+		CSimpleIniCaseW::TNamesDepend values;
 		if( m_ini.GetAllKeys( _section.c_str(), values ) == false )
 		{
 			return false;
 		}
 
-		for( CSimpleIniW::TNamesDepend::const_iterator 
+		for( CSimpleIniCaseW::TNamesDepend::const_iterator 
 			it = values.begin(),
 			it_end = values.end();
 		it != it_end;

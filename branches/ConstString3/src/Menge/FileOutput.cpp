@@ -24,12 +24,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileOutput::setFileSystem( FileSystem* _fileSystem )
+	void FileOutput::setFileSystem( FileGroup* _fileSystem )
 	{
 		m_fileSystem = _fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystem* FileOutput::getFileSystem()
+	FileGroup* FileOutput::getFileSystem()
 	{
 		return m_fileSystem;
 	}

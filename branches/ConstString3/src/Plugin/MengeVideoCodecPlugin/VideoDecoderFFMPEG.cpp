@@ -446,7 +446,7 @@ namespace Menge
 		int64_t ts = (int64_t) ceil( (_timing / 1000.0f) * AV_TIME_BASE );
 		
 		//printf("SetTiming, need %4.2f real %i\n",_timing,ts);
-		if( this->_seek( ts ) == false )
+		if( this->seekFrame_( ts ) == false )
 		{
 			return false;
 		}
@@ -492,15 +492,15 @@ namespace Menge
 		return m_pts;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::_seek( int64_t _timing )
+	bool VideoDecoderFFMPEG::seekFrame_( int64_t _frame )
 	{
 		//printf("TIMING _ %i\n",_timing);
 		
 		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
 		int seekStreamIndex = ( m_videoStreamId != -1 ) ? m_videoStreamId : defaultStreamIndex;
-		int64_t minTime = _timing - m_dataInfo.frameTiming;
-		int64_t maxTime = _timing + m_dataInfo.frameTiming;
-		int64_t needTime = _timing;
+		int64_t minTime = _frame - m_dataInfo.frameTiming;
+		int64_t maxTime = _frame + m_dataInfo.frameTiming;
+		int64_t needTime = _frame;
 
 		//if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )
 		if( avformat_seek_file( m_formatContext, defaultStreamIndex, minTime, needTime, maxTime, AVSEEK_FLAG_ANY  ) < 0 )

@@ -116,7 +116,6 @@ namespace Menge
 		
 		WString m_currentPath;
 
-		WString m_applicationPath;
 		WString m_userPath;
 
 		Resolution m_windowResolution;

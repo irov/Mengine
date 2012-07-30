@@ -75,14 +75,41 @@ namespace Menge
 		virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;
 	};
 
+	struct ApplicationSettings
+	{
+		WString baseDir;
+
+		String platformName;
+
+		WString projectName;
+		String projectCodename;
+
+		Resolution contentResolution;
+		Viewport lowContentViewport;
+
+		bool fixedContentResolution;
+
+		WString personalityModule;
+
+		Resolution windowResolution;
+
+		size_t bits;
+		bool fullscreen;
+		bool vsync;
+
+		WString resourcePacksPath;
+
+		TMapWString params;
+
+		TVectorWString plugins;
+	};
+
 	class ApplicationInterface
 		: public ServiceInterface
 	{
 	public:
-		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args, const WString & _baseDir, const WString & _settingFile ) = 0;
-		virtual bool loadConfig( const WString& _iniFile ) = 0;
+		virtual bool initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting ) = 0;
 
-		virtual void setBaseDir( const WString& _baseDir ) = 0;
 		virtual const WString& getBaseDir() const = 0;
 		
 	public:
@@ -95,7 +122,6 @@ namespace Menge
 		virtual void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight ) = 0;
 
 	public:
-		virtual bool getHasWindowPanel() const = 0;
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
 
 	public:
@@ -117,16 +143,13 @@ namespace Menge
 		virtual void onPaint() = 0;
 
 	public:		
-		virtual bool createGame() = 0;
-		virtual bool loadGameResource() = 0;
-		virtual bool initializeGame( const String & _scriptInitParams ) = 0;
-
-		virtual bool loadPlugins() = 0;
-		virtual bool loadPersonality() = 0;
+		virtual bool createGame( const ConstString & _module, const WString & _resourcePackPath ) = 0;
+		virtual bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) = 0;
 
 	public:
 		virtual const WString & getProjectTitle() const = 0;
-		virtual const ConstString & getProjectName() const = 0;
+		virtual const WString & getProjectName() const = 0;
+		virtual const String & getProjectCodename() const = 0;
 
 	public:
 		virtual int getAlreadyRunningPolicy() const = 0;

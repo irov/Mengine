@@ -103,32 +103,32 @@ namespace Menge
 	FileInputStreamInterface* FileSystemDirectory::createInputFile()
 	{
 		//BufferedFileInput* bufferedFi = m_fileInputPool.get();
-		BufferedFileInput* bufferedFi = new BufferedFileInput;
+		FileInputStreamInterface * inputStream = m_interface->createInputStream();
 				
-		bufferedFi->setFileSystem( this );
+		//bufferedFi->setFileSystem( this );
 
-		return bufferedFi;
+		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::openInputFile( const WString& _filename, FileInputStreamInterface* _file )
 	{
-		this->makeFullname_( _filename, m_fullnameCache );
-
-		FileInputStreamInterface* fi = m_interface->openInputStream( m_fullnameCache );
-
-		if( fi == NULL )
+		if( _file == NULL )
 		{
-			MENGE_LOG_ERROR( "FileSystemDirectory::openInputFile failed to open input stream '%S'"
-				, m_fullnameCache.c_str() 
+			MENGE_LOG_ERROR( "FileSystemDirectory::openInputFile failed _file == NULL"
 				);
 
 			return false;
 		}
 
-		BufferedFileInput* bufferedFi = 
-			static_cast<BufferedFileInput*>( _file );
+		this->makeFullname_( _filename, m_fullnameCache );
 
-		bufferedFi->loadStream( fi );
+		_file->open( m_fullnameCache );
+		//FileInputStreamInterface* fi = m_interface->openInputStream( m_fullnameCache );
+
+		//BufferedFileInput* bufferedFi = 
+			//static_cast<BufferedFileInput*>( _file );
+
+		//bufferedFi->loadStream( fi );
 
 		return true;
 	}
@@ -140,17 +140,15 @@ namespace Menge
 			return;
 		}
 
-		BufferedFileInput* bufferedFi = 
-			static_cast<BufferedFileInput*>(_inputFile);
+		//BufferedFileInput* bufferedFi = 
+			//static_cast<BufferedFileInput*>(_inputFile);
 
-		FileInputStreamInterface* fi = bufferedFi->unloadStream();
+		//FileInputStreamInterface* fi = bufferedFi->unloadStream();
 
-		if( fi != NULL )
-		{
-			m_interface->closeInputStream( fi );
-		}
+		
+		m_interface->closeInputStream( _inputFile );
 
-		delete bufferedFi;
+		//delete bufferedFi;
 		//m_fileInputPool.release( bufferedFi );
 	}
 	//////////////////////////////////////////////////////////////////////////

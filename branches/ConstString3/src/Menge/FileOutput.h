@@ -12,7 +12,7 @@
 
 namespace Menge
 {
-	class FileSystem;
+	class FileGroup;
 
 	class FileOutput
 		: public FileOutputStreamInterface
@@ -21,14 +21,14 @@ namespace Menge
 		FileOutput();
 		virtual ~FileOutput();
 
-		void setFileSystem( FileSystem* _fileSystem );
-		FileSystem* getFileSystem();
+		void setFileSystem( FileGroup* _fileSystem );
+		FileGroup* getFileSystem();
 
 		bool open( const WString& _filename ) override;
 		void close();
 
 	protected:
-		FileSystem* m_fileSystem;
+		FileGroup* m_fileSystem;
 		bool m_opened;
 	};
 }	// namespace Menge

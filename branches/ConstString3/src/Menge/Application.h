@@ -75,10 +75,9 @@ namespace Menge
 		~Application();
 
 	public:
-		bool initialize( PlatformInterface* _platform, const String & _platformName, const String& _args, const WString & _baseDir, const WString & _settingFile ) override;
-		bool loadConfig( const WString& _iniFile ) override;
-
-		void setBaseDir( const WString & _dir ) override;
+		bool initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting ) override;
+		
+	public:
 		const WString & getBaseDir() const override;
 
 	public:
@@ -91,19 +90,13 @@ namespace Menge
 
 	public:
 		bool getAllowFullscreenSwitchShortcut() const override;
-		bool getHasWindowPanel() const override;
 
 	public:
 		void setLanguagePackOverride( const ConstString& _packName ) override;
 
 	public:		
-		bool createGame() override;
-		bool loadGameResource() override;
-		bool initializeGame( const String & _scriptInitParams ) override;
-
-	public:
-		bool loadPlugins() override;
-		bool loadPersonality() override;
+		bool createGame( const ConstString & _module, const WString & _resourcePackPath ) override;
+		bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) override;
 
 	public:
 		int getAlreadyRunningPolicy() const override;
@@ -117,6 +110,9 @@ namespace Menge
 
 	public:
 		bool isFocus() const override;
+
+	public:
+		bool loadPlugins( const TVectorWString & _plugins );
 
 	public:
 		//bool initialize( const String& _applicationFile, const String& _args );
@@ -155,6 +151,8 @@ namespace Menge
 		void destroy() override;
 
 	public:
+		void setBaseDir( const WString & _dir );
+
 		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle ) override;
 
 		void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect );
@@ -223,13 +221,15 @@ namespace Menge
 
 		void showMessageBox( const WString& _message, const WString& _header, unsigned int _style );
 
-		void ansiToUtf8( const String& _ansi, String & _utf8 );
-		void utf8ToAnsi( const String& _utf8, String & _ansi );
-		void utf8Count( const String& _utf8, size_t & _size );
-
 		const WString & getProjectTitle() const;
-		const ConstString & getProjectName() const;
-		
+		const WString & getProjectName() const;
+		const String & getProjectCodename() const;
+
+	public:
+		const Resolution & getWindowResolution() const;
+		bool isContentResolutionFixed() const;
+
+	public:
 		static const char* getVersionInfo();
 
 		void enableDebug( bool _enable );
@@ -291,6 +291,18 @@ namespace Menge
 		bool m_fullscreen;
 		Resolution m_renderResolution;
 
+		Resolution m_windowResolution;
+		int m_bits;
+		bool m_textureFiltering;
+		int	m_FSAAType;
+		int m_FSAAQuality;
+
+		Resolution m_contentResolution;
+		Viewport m_lowContentViewport;
+
+		bool m_fixedContentResolution;
+
+
 		bool m_createRenderWindow;
 
 		unsigned int m_debugMask;
@@ -335,19 +347,15 @@ namespace Menge
 
 		void parseArguments_( const String& _arguments );
 
-		WString m_applicationPath;
 		WString m_baseDir;
 		
 		ResourceCursorICO * m_cursorResource;
 		
-		ConstString m_gamePackName;
-		WString m_gamePackPath;
-		ConstString m_gamePackType;
 		ConstString m_languagePackOverride;
 
-		TVectorWString m_initPlugins;
-
 		String m_platformName;
+		WString m_projectName;
+		String m_projectCodename;
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;
@@ -355,6 +363,7 @@ namespace Menge
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 
+		bool m_fullScreen;
 		bool m_vsync;
 		bool m_invalidateVsync;
 		bool m_cursorMode;

@@ -12,7 +12,7 @@
 
 namespace Menge
 {
-	class FileSystem;
+	class FileGroup;
 
 	class SimpleFileOutput
 		: public FileOutput

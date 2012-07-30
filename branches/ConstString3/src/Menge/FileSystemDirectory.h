@@ -14,11 +14,10 @@
 namespace Menge
 {
 	class FileSystemInterface;
-	class BufferedFileInput;
 	class SimpleFileOutput;
 
 	class FileSystemDirectory
-		: public FileSystem
+		: public FileGroup
 	{
 	public:
 		FileSystemDirectory();

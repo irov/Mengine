@@ -74,10 +74,10 @@ namespace Menge
 		const Resolution & currentResolution = Application::get()
 			->getCurrentResolution();
 
-		const Resolution & contentResolution = Game::get()
-			->getContentResolution();			
+		const Resolution & contentResolution = Application::get()
+			->getContentResolution();
 
-		const Viewport & lowContentViewport = Game::get()
+		const Viewport & lowContentViewport = Application::get()
 			->getLowContentViewport();
 
 		size_t currentResolutionWidth = currentResolution.getWidth();

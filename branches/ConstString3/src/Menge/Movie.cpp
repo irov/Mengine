@@ -1072,30 +1072,26 @@ namespace Menge
 				}
 			}
 			else
-			{
-				++m_currentFrame;
-
-				if( m_currentFrame == frameCount )
+			{				
+				if ( m_currentFrame == frameCount )
 				{
 					if( this->getLoop() == false )
 					{
 						break;
 					}
-				}
-				else if ( m_currentFrame == frameCount + 1 )
-				{
-					if( this->getLoop() == true )
-					{
-						this->updateClipLastFrame_();
+						
+					this->updateClipLastFrame_();
 
-						float startInterval = this->getStartInterval();
+					float startInterval = this->getStartInterval();
 
-						float frameDuration = m_resourceMovie->getFrameDuration();
+					float frameDuration = m_resourceMovie->getFrameDuration();
 												
-						m_currentFrame = size_t(startInterval / frameDuration);
+					m_currentFrame = size_t(startInterval / frameDuration);
 						//m_frameTiming = 0.f;
-					}
+					continue;
 				}	
+
+				++m_currentFrame;
 			}
 		}
 		

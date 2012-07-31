@@ -46,7 +46,7 @@ namespace Menge
 		bool isValid() const;
 		void setOptions( CodecOptions * _options );
 		
-		EVideoDecoderReadState readNextFrame( ) override;
+		EVideoDecoderReadState readNextFrame( float & _pts ) override;
 		const VideoCodecDataInfo* getCodecDataInfo() const;
 
 	protected:

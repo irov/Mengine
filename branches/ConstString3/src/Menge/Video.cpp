@@ -446,6 +446,7 @@ namespace	Menge
 				if( this->getLoop() == true )
 				{
 					m_videoDecoder->seek( m_startInterval );
+					continue;
 				}
 				else				
 				{

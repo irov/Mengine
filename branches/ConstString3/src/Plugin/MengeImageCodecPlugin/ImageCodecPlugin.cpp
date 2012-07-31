@@ -7,7 +7,7 @@
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderMNE.h"
 #	include "ImageDecoderDDS.h"
-#   include "ImageDecoderCombinerRGBAndAlpha.h"
+//#   include "ImageDecoderCombinerRGBAndAlpha.h"
 //#	include "VideoDecoderFFMPEG.h"
 
 //#	include "VideoDecoderOGGTheora.h"

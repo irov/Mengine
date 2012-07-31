@@ -64,6 +64,8 @@ namespace Menge
 		AVFrame * m_Frame; 
 		AVFrame * m_FrameRGBA;
 		AVIOContext * m_IOContext;
+
+		SwsContext * m_imgConvertContext;
 				
 		AVInputFormat * m_inputFormat;
 		
@@ -75,7 +77,6 @@ namespace Menge
 		int m_videoStreamId;
 		
 		//float m_timing;
-		bool m_isCompile;
 		float m_pts;
 		
 	private:

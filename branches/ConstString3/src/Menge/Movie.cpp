@@ -129,7 +129,7 @@ namespace Menge
 			m_frameTiming = 0.f;
 			m_currentFrame = 0;
 			
-			this->setTiming( 0.f );
+			//this->setTiming( 0.f );
 		}				
 
 		return true;
@@ -931,11 +931,11 @@ namespace Menge
 
 				animatable->stop();
 
-				float movie_timing = this->getTiming();
+				//float movie_timing = this->getTiming();
 
-				float animatable_timing = movie_timing - layer.in;
+				//float animatable_timing = movie_timing - layer.in;
 
-				animatable->setTiming( animatable_timing );
+				//animatable->setTiming( animatable_timing );
 			}
 		}
 	}

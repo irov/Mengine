@@ -1,8 +1,6 @@
 #	include "VideoCodecPlugin.h"
 #	include "VideoCodecDecoderSystem.h"
 
-#	include "VideoDecoderFFMPEG.h"
-
 #	include "Utils/Core/File.h"
 
 #	include "Interface/LogSystemInterface.h"
@@ -25,30 +23,6 @@ extern "C" // only required if using g++
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	namespace Detail
-	{
-		template<class T>
-		class VideoDecoderSystem
-			: public VideoCodecDecoderSystem
-		{
-		public:
-			VideoDecoderSystem( const ConstString & _name, LogServiceInterface * _logSystem )
-				: VideoCodecDecoderSystem(_name)
-				, m_logSystem(_logSystem)
-			{
-			}
-
-		protected:
-			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
-			{				
-				return new T(m_service, _stream, m_logSystem);
-			}
-
-		protected:
-			LogServiceInterface * m_logSystem;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	VideoCodecPlugin::VideoCodecPlugin()
 		: m_codecService(0)
 		, m_stringize(0)
@@ -69,7 +43,10 @@ namespace Menge
 		
 		ConstString c_ffmpegVideo =  m_stringize->stringize("ffmpegVideo");
 
-		VideoCodecDecoderSystem * ffmpegDecoder = new Detail::VideoDecoderSystem<VideoDecoderFFMPEG>(c_ffmpegVideo, logService);
+		VideoCodecDecoderSystem * ffmpegDecoder = new VideoCodecDecoderSystem(c_ffmpegVideo, logService);
+
+		ffmpegDecoder->initialize();
+
 		m_decoders.push_back( ffmpegDecoder );
 		
 		for( TVectorVideoDecoders::iterator
@@ -79,6 +56,7 @@ namespace Menge
 		++it )
 		{			
 			const ConstString & name = (*it)->getName();
+
 			m_codecService->registerDecoder( name, (*it) );
 		}
 	}

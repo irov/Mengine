@@ -67,7 +67,6 @@ namespace Menge
 		, m_videoStreamId(-1)
 		//, m_timing(0)
 		, m_pts(0.0f)
-		, m_isCompile(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -83,26 +82,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::initialize()
 	{
-		//initialize ffmpeg avcodec
-		if( m_isCompile == true )
-		{
-			return true;
-		}
-		
-		//input output interface
-		avformat_network_init();
-		
-		// Register all formats and codecs
-		av_register_all();
-		
-
 		//check the input format
 		if( m_probeSize > m_stream->size() )
 		{
 			m_probeSize = m_stream->size();
 		}
 
-		uint8_t* filebuffer = new uint8_t[ m_probeSize ];
+		uint8_t * filebuffer = new uint8_t[ m_probeSize ];
 		
 		//read portion of data
 		m_stream->read( filebuffer, m_probeSize );
@@ -235,7 +221,7 @@ namespace Menge
 		
 		if ( this->eof() == true )
 		{
-			seek(0.0f);
+			seek( 0.f );
 		}
 
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
@@ -243,71 +229,34 @@ namespace Menge
 		m_dataInfo.frameTiming = 1000.f / m_dataInfo.fps;
 		m_dataInfo.duration = (len / AV_TIME_BASE) * 1000.0f;
 		
-		m_isCompile = true;
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////// 
 	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _pitch )
 	{
-		if( m_isCompile != true )
-		{
-			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
-			return 0;
-		}
-		
 		if( m_FrameRGBA == NULL )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid RGBA Frame ");
 			return 0;
 		}
 		
-		struct SwsContext * imgConvertContext = NULL;
-
 		// Convert the image from its native format to RGBA using 
-		imgConvertContext = sws_getCachedContext(NULL, m_codecContext->width, m_codecContext->height, 
-			m_codecContext->pix_fmt, 
-			m_codecContext->width, m_codecContext->height 
-			, (::PixelFormat) m_outputPixelFormat , SWS_BICUBIC,
-			NULL, NULL, NULL );
 
-		if( imgConvertContext == NULL )
-		{
-			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
-			return 0;
-		}
-		
 		m_FrameRGBA->linesize[0] = _pitch;
 
-		int ret = sws_scale( imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
-			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize );
-
-		sws_freeContext( imgConvertContext );
-		
-		avpicture_fill( (AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat,
+		int fill_error = avpicture_fill( (AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
+
+		int ret = sws_scale( m_imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
+			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize );
 		
 		size_t decoded = _pitch * m_codecContext->height;
 		
 		return decoded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( )
+	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame()
 	{	
-		//size_t pos = m_stream->tell();
-
-		if( m_isCompile != true )
-		{
-			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
-			//error
-			return VDRS_FAILURE;
-		}
-		/*
-		//Issue for timestamps
-		m_formatContext->flags|= AVFMT_NOFILE|AVFMT_FLAG_IGNIDX;
-		//m_inputFormat->flags |=AVFMT_NOFILE|AVFMT_FLAG_IGNIDX; 
-		m_formatContext->flags&=~AVFMT_FLAG_GENPTS; 
-		*/
-
 		int isGotPicture;
 		AVPacket packet;
 		av_init_packet(&packet);
@@ -348,7 +297,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
 	{
-		m_isCompile = false;
 		// Free the packet that was allocated by av_read_frame
 		if (m_Frame != NULL)
 		{
@@ -387,52 +335,16 @@ namespace Menge
 			delete [] m_bufferIO;
 			m_bufferIO = NULL;
 		}
+
+		if( m_imgConvertContext != NULL )
+		{
+			sws_freeContext( m_imgConvertContext );
+			m_imgConvertContext = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::seek( float _timing )
 	{
-		/*
-		static double t = 10 ;//time in seconds
-		int64_t timestamp = t * AV_TIME_BASE; //destination time
-		av_seek_frame( pFormatContext , -1 ,  timestamp + pFormatContext->start_time ,AVSEEK_FLAG_BACKWARD );
-		float time = ( AV_TIME_BASE * (_timing / 1000) ) + m_formatContext->start_time;
-		*/
-
-		
-		/*
-		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
-        int seekStreamIndex = (m_videoStreamId != -1)? m_videoStreamId : defaultStreamIndex;
-		AVRational av_q;
-		av_q.num = 1; 
-		av_q.den = AV_TIME_BASE; 
-		__int64 seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base);
-        __int64 seekStreamDuration = m_formatContext->streams[seekStreamIndex]->duration;
-
-        int flags = AVSEEK_FLAG_BACKWARD;
-        if (seekTime > 0 && seekTime < seekStreamDuration)
-		{
-            flags |= AVSEEK_FLAG_ANY; // H.264 I frames don't always register as "key frames" in FFmpeg
-		}
-
-        int ret = av_seek_frame(m_formatContext, seekStreamIndex, seekTime, flags);
-        if (ret < 0)
-		{
-            ret = av_seek_frame(m_formatContext, seekStreamIndex, seekTime, AVSEEK_FLAG_ANY);
-		}
-		if(ret < 0)
-		{
-			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot seek to timing %f", _timing  );
-			return false;
-		}
-		*/
-		//avcodec_flush_buffers( m_codecContext );
-		if( _timing < 0 )
-		{
-			//printf( "VideoDecoderFFMPEG::seek  not supported timing %4.2f\n",_timing );
-			return false;
-		}
-
-		//printf("SEEK TO %4.2f\n",_timing);
 		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
 		int seekStreamIndex = ( m_videoStreamId != -1 ) ? m_videoStreamId : defaultStreamIndex;
 		
@@ -484,6 +396,17 @@ namespace Menge
 		default:
 			LOGGER_ERROR(m_logService)("pixel format %i is not supported" , m_options.pixelFormat);
 			break;
+		}
+
+		m_imgConvertContext = sws_getCachedContext(NULL, m_codecContext->width, m_codecContext->height, 
+			m_codecContext->pix_fmt, 
+			m_codecContext->width, m_codecContext->height 
+			, (::PixelFormat) m_outputPixelFormat , SWS_BICUBIC,
+			NULL, NULL, NULL );
+
+		if( m_imgConvertContext == NULL )
+		{
+			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

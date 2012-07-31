@@ -749,7 +749,7 @@ namespace Menge
 				);
 
 			return NULL;
-		}
+		}	
 
 		ImageDecoderInterface * imageDecoder = CodecEngine::get()
 			->createDecoderT<ImageDecoderInterface>( _codec, stream );

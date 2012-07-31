@@ -35,11 +35,11 @@ namespace Menge
 		void setSoundResource( const ConstString& _resource );
 		const ConstString & getSoundResource() const;
 		
-		virtual void _setTiming( float _timing ) override;
-		virtual float _getTiming() const override;
+		void _setTiming( float _timing ) override;
+		float _getTiming() const override;
 
-		virtual void _setFirstFrame() override;
-		virtual void _setLastFrame() override;
+		void _setFirstFrame() override;
+		void _setLastFrame() override;
 
 		void setBlendAdd( bool _blendAdd );
 		bool isBlendAdd( );
@@ -60,9 +60,9 @@ namespace Menge
 		void updateUV_();
 		void updateMaterial_();
 
-		bool _sync( float _timing );
+		bool sync_( float _timing );
 		bool _compileDecoder();
-        void _fillVideoBuffer();
+        bool _fillVideoBuffer();
 
 	protected:
 		bool _play() override;

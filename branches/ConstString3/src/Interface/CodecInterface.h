@@ -94,7 +94,7 @@ namespace Menge
 		template<class T>
 		T * createDecoderT( const ConstString& _type, InputStreamInterface * _stream )
 		{
-			return dynamic_cast<T*>( createDecoder( _type, _stream ) );
+			return dynamic_cast<T*>( this->createDecoder( _type, _stream ) );
 		}
 			
 		virtual DecoderInterface * createDecoder( const ConstString & _type, InputStreamInterface * _stream ) = 0; 

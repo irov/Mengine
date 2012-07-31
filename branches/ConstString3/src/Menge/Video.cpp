@@ -100,7 +100,7 @@ namespace	Menge
 		//printf("%f %s\n",_timing,m_name.c_str());
 
 		//printf("%f %s\n",_timing,m_name.c_str());
-		m_needUpdate = this->_sync( timing );
+		m_needUpdate = this->sync_( timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
@@ -109,19 +109,8 @@ namespace	Menge
 		{
 			return false;
 		}
-		//printf("%s  onActivate \n",m_name.c_str());	
-		while ( true )
-		{
-			EVideoDecoderReadState  state  = m_videoDecoder->readNextFrame();
-			if( state == VDRS_SKIP )
-			{
-				continue;
-			}
+		//printf("%s  onActivate \n",m_name.c_str());
 
-			break;
-		}
-
-		this->_fillVideoBuffer();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -433,9 +422,10 @@ namespace	Menge
 		this->invalidateVertices();
 	}
 	////////////////////////////////////////////////////////////////////
-	bool Video::_sync( float _timing )
+	bool Video::sync_( float _timing )
 	{
 		m_timing += _timing;
+
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		int countFrames = int(m_timing / dataInfo->frameTiming);
@@ -481,7 +471,7 @@ namespace	Menge
 
 			countFrames--;
 		}
-
+		
 //		printf("Video %s timing %f:%f\n"
 //			, m_name.c_str()
 //			, m_videoDecoder->getTiming()
@@ -493,85 +483,57 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
 	{
-		float seek_timing;
+		//float current_timing = m_videoDecoder->getTiming();
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
-		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
-
-		if( _timing < 0 )
-		{
-			float curTiming = m_videoDecoder->getTiming();
-			seek_timing = curTiming + _timing;
-		}
-		else
-		{
-			seek_timing = _timing;
-		}
+		float seek_timing = _timing;
 
 		if( seek_timing >= dataInfo->frameTiming )
 		{		
 			seek_timing -= dataInfo->frameTiming;
 		}
-		else if( seek_timing < 0 )
-		{
-			MENGE_LOG_ERROR( "Video::_setTiming: %s can`t seek to negative timing %4.2f"
-				, this->getName().c_str()
-				, _timing
-				);
-
-			return;
-		}
-
-		//float current_timing = m_videoDecoder->getTiming();
-
+		
 		m_videoDecoder->seek( seek_timing );
 		//m_videoDecoder->readNextFrame();
 
 
-		//printf("Video %s seek %f + %f => %f\n"
-		//	, m_name.c_str()
-		//	, current_timing
-		//	, seek_timing
-		//	, m_videoDecoder->getTiming()
-		//	);
+		m_timing = 0.f;
+		
+		m_needUpdate = this->sync_( dataInfo->frameTiming );
+		//m_needUpdate = true;
 
-		m_needUpdate = this->_sync( dataInfo->frameTiming );
 
-		float curTiming = m_videoDecoder->getTiming();
-		float delta = _timing - curTiming;
+		//float curTiming = m_videoDecoder->getTiming();
+		//float delta = _timing - curTiming;
 				
-		if( delta > dataInfo->frameTiming )
-		{
-			/*MENGE_LOG_ERROR( "Video::_setTiming: %s distance between keyframes is to large while seeking to %4.2f delta - %4.2f current - %4.2f"
-				, this->getName().c_str()
-				, _timing
-				, delta
-				, curTiming
-				);*/
+		//if( delta > dataInfo->frameTiming )
+		//{
+		//	/*MENGE_LOG_ERROR( "Video::_setTiming: %s distance between keyframes is to large while seeking to %4.2f delta - %4.2f current - %4.2f"
+		//		, this->getName().c_str()
+		//		, _timing
+		//		, delta
+		//		, curTiming
+		//		);*/
 
-			//m_needUpdate = this->_sync( delta );
-		}
-		else if( delta < 0.f )
-		{
-			/*MENGE_LOG_ERROR( "Video::_setTiming: %s we need to force seeking  may be keyframes not existed in video %4.2f delta - %4.2f current - %4.2f"
-				, this->getName().c_str()
-				, _timing
-				, delta
-				, curTiming
-				);*/
+		//	//m_needUpdate = this->_sync( delta );
+		//}
+		//else if( delta < 0.f )
+		//{
+		//	/*MENGE_LOG_ERROR( "Video::_setTiming: %s we need to force seeking  may be keyframes not existed in video %4.2f delta - %4.2f current - %4.2f"
+		//		, this->getName().c_str()
+		//		, _timing
+		//		, delta
+		//		, curTiming
+		//		);*/
 
-			//this->_seekForce( _timing );
-		}
+		//	//this->_seekForce( _timing );
+		//}
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_seekForce( float _timing )
 	{
-//		printf("Video %s _seekForce %f\n"
-//			, m_name.c_str()
-//			, _timing
-//			);
-
 		m_videoDecoder->seek( 0.0f );
-		m_needUpdate = this->_sync( _timing );
+		m_needUpdate = this->sync_( _timing );
 	}
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
@@ -591,7 +553,7 @@ namespace	Menge
 		this->_setTiming( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////
-	void Video::_fillVideoBuffer()
+	bool Video::_fillVideoBuffer()
 	{
 		int pitch = 0;
 
@@ -606,6 +568,8 @@ namespace	Menge
 		m_videoDecoder->decode( lockRect, pitch );
 
 		m_textures[0]->unlock();
+
+		return true;
 	}
 	////////////////////////////////////////////////////////////////////
 	bool Video::_interrupt( size_t _enumerator )

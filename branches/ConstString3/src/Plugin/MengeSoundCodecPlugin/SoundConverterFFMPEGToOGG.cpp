@@ -89,7 +89,7 @@ namespace Menge
 			{
 				if( convert_( inputFileFullPath, outputFileFullPath ) == false)
 				{
-					LOGGER_ERROR(m_logService)( "SoundDecoderConverterFFMPEGToOGG: Can't convert  sound file '%s'"
+					LOGGER_ERROR(m_logService)( "SoundDecoderConverterFFMPEGToOGG: Can't convert  sound file '%S'"
 						, inputFileFullPath.c_str()
 						);
 							
@@ -107,7 +107,7 @@ namespace Menge
 	{
 		WString buffer = L"ffmpeg.exe -loglevel error -y -i \""  + _input + L"\" -strict experimental   -acodec vorbis -aq 100 \""+ _output + L"\"";
 		
-		LOGGER_INFO(m_logService)( "SoundDecoderConverterFFMPEGToOGG:: conferting file  '%s' to '%s' "
+		LOGGER_INFO(m_logService)( "SoundDecoderConverterFFMPEGToOGG:: conferting file  '%S' to '%S'"
 			, _input.c_str()
 			, _output.c_str() 
 			);
@@ -120,6 +120,10 @@ namespace Menge
 		}
 		else
 		{
+			LOGGER_ERROR(m_logService)( "SoundConverterFFMPEGToOGG::convert_: %S"
+				, buffer.c_str()
+				);
+
 			return false;
 		}
 	}

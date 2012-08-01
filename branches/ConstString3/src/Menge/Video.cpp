@@ -439,10 +439,9 @@ namespace	Menge
 		
 		while( countFrames > 0 )
 		{
-			float pts;
-			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );
+			EVideoDecoderReadState state = m_videoDecoder->readNextFrame();
 
-			if( pts >= dataInfo->duration || state == VDRS_END_STREAM )
+			if( state == VDRS_END_STREAM )
 			{	
 				if( this->getLoop() == true )
 				{
@@ -451,6 +450,8 @@ namespace	Menge
 				}
 				else				
 				{
+					m_needUpdate = false;
+
 					this->stop();
 				}
 			}

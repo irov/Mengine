@@ -10,20 +10,17 @@
 
 // support Windows 98 and later
 #ifndef WINVER
-#define WINVER 0x0410
+#define WINVER 0x0500
 #endif
 
-#ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.
-#define _WIN32_WINDOWS 0x0410 // WIN98
-#endif
+//#ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.
+//#define _WIN32_WINDOWS 0x0410 // WIN98
+//#endif
 
 #include <Windows.h>
+#include <WinUser.h>
 
 #include "Config/Typedef.h"
-
-#ifndef WHEEL_DELTA
-#define WHEEL_DELTA                     120
-#endif
 
 namespace WindowsLayer
 {

@@ -757,9 +757,18 @@ namespace Menge
 				return false;
 			}
 
-			ResourceCursorICO * resource = ResourceManager::get()
-				->getResourceT<ResourceCursorICO>(_resourceName);
+			ResourceCursor * resource = ResourceManager::get()
+				->getResourceT<ResourceCursor>(_resourceName);
 
+			if( resource == NULL )
+			{
+				MENGE_LOG_ERROR( "s_setCursorIcon: can't find resource cursor %s"
+					, _resourceName.c_str()
+					);
+
+				return false;
+			}
+			
 			const ConstString & resourceCategory = resource->getCategory();
 			const WString & resourcePath = resource->getPath();
 
@@ -769,7 +778,7 @@ namespace Menge
 			if( FileEngine::get()
 				->getFullPath( resourceCategory, resourcePath, path ) == false )
 			{
-				MENGE_LOG_ERROR( "Error: can't set cursor icon getFullPath '%s' '%S'"
+				MENGE_LOG_ERROR( "s_setCursorIcon: can't set cursor icon getFullPath '%s' '%S'"
 					, resourceCategory.c_str()
 					, resourcePath.c_str()
 					);

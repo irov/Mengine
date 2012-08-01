@@ -14,7 +14,7 @@ namespace Menge
 		: public EmitterInterface
 	{
 	public:
-		AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const std::string & _name );
+		AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const String & _name );
 		~AstralaxEmitter();
 
 	public:
@@ -72,16 +72,21 @@ namespace Menge
 	private:
 		void calculateTempScale_();
 		
+	protected:
 		AstralaxEmitterContainer * m_container;
 
-		HM_EMITTER	m_id;
-		std::string m_name;
-		double		m_tempScale;
-		double		m_leftBorder;
-		double		m_rightBorder;
-		double		m_total_rate;
+		HM_EMITTER m_id;
+		String m_name;
+		double m_tempScale;
+		double m_leftBorder;
+		double m_rightBorder;
+		
+		double m_total_rate;
+		
+		float m_time;
+
 		ParticleEmitterListenerInterface* m_listener;
-		float		m_angle;
+		float m_angle;
 		//float m_posX, m_posY; 
 
 		float m_factor[20];

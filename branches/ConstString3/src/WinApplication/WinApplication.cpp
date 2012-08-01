@@ -668,6 +668,11 @@ namespace Menge
 			m_fpsMonitor->setFrameTime( s_activeFrameTime );
 		}
 
+		m_cursors[L"IDC_ARROW"] = LoadCursor( NULL, IDC_ARROW );
+		m_cursors[L"IDC_UPARROW"] = LoadCursor( NULL, IDC_UPARROW );
+		m_cursors[L"IDC_HAND"] = LoadCursor( NULL, IDC_HAND );
+		m_cursors[L"IDC_HELP"] = LoadCursor( NULL, IDC_HELP );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1662,8 +1667,12 @@ namespace Menge
 		m_serviceProvider->addServiceListener( "InputService", new WinApplicationInputService(this) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size )
+	void WinApplication::notifyCursorIconSetup( const WString & _name, void * _buffer, size_t _size )
 	{
+		printf("Cursor %S\n"
+			, _name.c_str()
+			);
+
 		TMapCursors::iterator it_found = m_cursors.find( _name );
 
 		if( it_found == m_cursors.end() )
@@ -1677,10 +1686,7 @@ namespace Menge
 
 			WindowsLayer::createDirectory( icoFile );
 
-			WString nameW;
-			WindowsLayer::ansiToUnicode( _name.to_str(), nameW );
-
-			icoFile += nameW;
+			icoFile += _name;
 			icoFile += L".cur";
 
 			FILE * file = _wfopen( icoFile.c_str(), L"wb" );

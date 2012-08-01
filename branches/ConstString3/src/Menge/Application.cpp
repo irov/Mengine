@@ -123,6 +123,7 @@
 #	include "ResourceWindow.h"
 #	include "ResourceHotspotImage.h"
 #	include "ResourceCursorICO.h"
+#	include "ResourceCursorSystem.h"
 #	include "ResourceInternalObject.h"
 
 #	include "ConfigFile/ConfigFile.h"
@@ -790,6 +791,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
 		RESOURCE_FACTORY( ResourceCursorICO );
+		RESOURCE_FACTORY( ResourceCursorSystem );
 
 		RESOURCE_FACTORY( ResourceInternalObject );
 
@@ -1922,7 +1924,7 @@ namespace Menge
 
 		if( m_cursorMode == true && m_cursorResource != NULL )
 		{
-			const ConstString & cursorName = m_cursorResource->getName();
+			const WString & cursorName = m_cursorResource->getPath();
 
 			size_t cursorBufferSize;
 			void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
@@ -1945,7 +1947,7 @@ namespace Menge
 		}
 
 		m_cursorResource = ResourceManager::get()
-			->getResourceT<ResourceCursorICO>(_resourceName);
+			->getResourceT<ResourceCursor>(_resourceName);
 
 		if( m_cursorResource == NULL )
 		{
@@ -1957,7 +1959,7 @@ namespace Menge
 			return;
 		}
 
-		const ConstString & cursorName = m_cursorResource->getName();
+		const WString & cursorName = m_cursorResource->getPath();
 
 		size_t cursorBufferSize;
 		void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );

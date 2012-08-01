@@ -533,9 +533,12 @@ Resource\\\\Binary
 )
 
 ADD_FILTER(
-Resource\\\\CursorICO
+Resource\\\\Cursor
+	ResourceCursor.h
 	ResourceCursorICO.cpp
 	ResourceCursorICO.h
+    ResourceCursorSystem.cpp
+    ResourceCursorSystem.h
 )
 
 ADD_FILTER(

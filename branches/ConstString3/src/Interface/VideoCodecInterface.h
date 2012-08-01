@@ -41,7 +41,7 @@ namespace Menge
 		virtual bool seek( float _timing ) = 0;
 		virtual bool eof() = 0;
 		virtual float getTiming() const = 0;
-		virtual EVideoDecoderReadState readNextFrame( float & _pts ) = 0;
+		virtual EVideoDecoderReadState readNextFrame() = 0;
 		
 	};
 }	// namespace Menge

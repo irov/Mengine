@@ -56,7 +56,7 @@ namespace Menge
 
 	class Watchdog;
 
-	class ResourceCursorICO;
+	class ResourceCursor;
 
 	class PluginInterface;
 
@@ -349,7 +349,7 @@ namespace Menge
 
 		WString m_baseDir;
 		
-		ResourceCursorICO * m_cursorResource;
+		ResourceCursor * m_cursorResource;
 		
 		ConstString m_languagePackOverride;
 

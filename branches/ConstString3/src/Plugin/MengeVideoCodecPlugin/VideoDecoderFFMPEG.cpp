@@ -255,7 +255,7 @@ namespace Menge
 		return decoded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( float & _pts )
+	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame()
 	{	
 		int isGotPicture;
 		AVPacket packet;
@@ -288,7 +288,6 @@ namespace Menge
 		}
 		
 		m_pts = packet.pts;
-		_pts = packet.pts;
 		//printf("!!PTS %f \n",m_pts);
 		
 		av_free_packet(&packet);

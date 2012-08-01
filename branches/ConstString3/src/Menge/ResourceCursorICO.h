@@ -1,10 +1,11 @@
 #	pragma once
-#	include "ResourceReference.h"
+
+#	include "ResourceCursor.h"
 
 namespace Menge
 {
 	class ResourceCursorICO
-		: public ResourceReference
+		: public ResourceCursor
 	{
 		RESOURCE_DECLARE( ResourceCursorICO )
 
@@ -12,8 +13,8 @@ namespace Menge
 		ResourceCursorICO();
 
 	public:
-		const WString& getPath() const;
-		void * getBuffer( size_t & _size ) const;
+		const WString& getPath() const override;
+		void * getBuffer( size_t & _size ) const override;
 
 	public:
 		bool _compile() override;

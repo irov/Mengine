@@ -6,18 +6,19 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AstralaxEmitter::AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const std::string & _name )
+	AstralaxEmitter::AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const String & _name )
 		: m_id(_id)
 		, m_container(_container)
 		, m_name(_name)
-		, m_start( false )
-		, m_leftBorder( 0.0f )
-		, m_rightBorder( 0.0f )
-		, m_total_rate( 0.0f )
-		, m_looped( false )
-		, m_listener( NULL )
-		, m_angle( 0.0f )
-		, m_tempScale( 1 )
+		, m_start(false)
+		, m_leftBorder(0.f)
+		, m_rightBorder(0.f)
+		, m_total_rate(0.f)
+		, m_looped(false)
+		, m_listener(NULL)
+		, m_angle(0.f)
+		, m_tempScale(1)
+		, m_time(0.f)
 		//, m_posX( 0.0f )
 		//, m_posY( 0.0f )
 	{
@@ -192,6 +193,7 @@ namespace Menge
 		}
 
 		m_total_rate += _timing;
+		m_time += _timing;
 
 		double rate = Magic_GetUpdateTime( m_id );
 

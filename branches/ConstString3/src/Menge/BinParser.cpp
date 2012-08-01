@@ -307,11 +307,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BinParser::setDebugReadValue()
-	{
-		m_debugNeedReadValue = false;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	void BinParser::readAttribute_()
 	{
 		m_reader.read( m_elementId );
@@ -328,18 +323,6 @@ namespace Menge
 
 			throw ExceptionBinParserError();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BinParser::notifyElement_()
-	{       
-		BinParserListener * listener = m_vectorListeners.back();
-		listener->onElement( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BinParser::notifyEndElement_()
-	{
-		BinParserListener * listener = m_vectorListeners.back();
-		listener->onEndElement();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BinParserListenerLoadable::BinParserListenerLoadable( Loadable * _self )

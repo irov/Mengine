@@ -170,14 +170,14 @@ namespace Menge
 		inline size_t getAttributeCount() const;
 
 	protected:
-		void setDebugReadValue();
+		inline void setDebugReadValue();
 
 	protected:
 		void readNode_();
 		void readAttribute_();
 		
-		void notifyElement_();
-		void notifyEndElement_();
+		inline void notifyElement_();
+		inline void notifyEndElement_();
 
 	protected:
 		void clear_();
@@ -202,6 +202,23 @@ namespace Menge
 	inline size_t BinParser::getAttributeCount() const
 	{
 		return m_attributeCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void BinParser::setDebugReadValue()
+	{
+		m_debugNeedReadValue = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void BinParser::notifyElement_()
+	{       
+		BinParserListener * listener = m_vectorListeners.back();
+		listener->onElement( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void BinParser::notifyEndElement_()
+	{
+		BinParserListener * listener = m_vectorListeners.back();
+		listener->onEndElement();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M>

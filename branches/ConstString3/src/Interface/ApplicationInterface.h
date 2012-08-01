@@ -119,7 +119,7 @@ namespace Menge
 	public:		
 		virtual void setDesktopResolution( const Resolution & _resolution ) = 0;
 
-		virtual void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight ) = 0;
+		virtual void setMaxClientResolution( const Resolution & _resolution ) = 0;
 
 	public:
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;

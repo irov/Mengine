@@ -1867,7 +1867,7 @@ namespace Menge
 		static PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
 		{			
 			class ResourceMovieVisitorNullLayers
-				: public ResourceMovieVisitor
+				: public VisitorResourceMovie
 			{
 			public:
 				ResourceMovieVisitorNullLayers( PyObject * _dictResult, float _frameDuration )
@@ -1876,7 +1876,7 @@ namespace Menge
 				{}
 
 			protected:
-				void visitLayer( const MovieLayer & _layer, const TVectorMovieFrameSource & _frames ) override
+				void visitLayer( const MovieLayer & _layer, const MovieLayerFrame & _frames ) override
 				{
 					if( _layer.source != Consts::get()->c_MovieSlot )
 					{
@@ -1885,28 +1885,55 @@ namespace Menge
 					
 					PyObject * py_list_frames = pybind::list_new(0);
 
-					for( TVectorMovieFrameSource::size_type
-						it_frame = 0,
-						it_frame_end = _frames.size();
-					it_frame != it_frame_end;
-					++it_frame )
+					if( _frames.immutable == false )
 					{
-						const MovieFrameSource & frame_source = _frames[it_frame];
+						for( TVectorMovieFrameSource::size_type
+							it_frame = 0,
+							it_frame_end = _frames.frames.size();
+						it_frame != it_frame_end;
+						++it_frame )
+						{
+							const MovieFrameSource & frame_source = _frames.frames[it_frame];
 
-						PyObject * py_dict_frame = pybind::dict_new();
+							PyObject * py_dict_frame = pybind::dict_new();
 
-						PyObject * py_pos = pybind::ptr( frame_source.position );
-						pybind::dict_set( py_dict_frame, "position", py_pos );
-						pybind::decref( py_pos );
+							PyObject * py_pos = pybind::ptr( frame_source.position );
+							pybind::dict_set( py_dict_frame, "position", py_pos );
+							pybind::decref( py_pos );
 
-						float frameTime = _layer.in + it_frame * m_frameDuration;
+							float frameTime = _layer.in + it_frame * m_frameDuration;
 
-						PyObject * py_time = pybind::ptr( frameTime );
-						pybind::dict_set( py_dict_frame, "time", py_time );
-						pybind::decref( py_time );
+							PyObject * py_time = pybind::ptr( frameTime );
+							pybind::dict_set( py_dict_frame, "time", py_time );
+							pybind::decref( py_time );
 
-						pybind::list_appenditem( py_list_frames, py_dict_frame );
-						pybind::decref( py_dict_frame );
+							pybind::list_appenditem( py_list_frames, py_dict_frame );
+							pybind::decref( py_dict_frame );
+						}
+					}
+					else
+					{
+						for( size_t
+							it_frame = 0,
+							it_frame_end = _frames.count;
+						it_frame != it_frame_end;
+						++it_frame )
+						{
+							PyObject * py_dict_frame = pybind::dict_new();
+
+							PyObject * py_pos = pybind::ptr( _frames.source.position );
+							pybind::dict_set( py_dict_frame, "position", py_pos );
+							pybind::decref( py_pos );
+
+							float frameTime = _layer.in + it_frame * m_frameDuration;
+
+							PyObject * py_time = pybind::ptr( frameTime );
+							pybind::dict_set( py_dict_frame, "time", py_time );
+							pybind::decref( py_time );
+
+							pybind::list_appenditem( py_list_frames, py_dict_frame );
+							pybind::decref( py_dict_frame );
+						}
 					}
 
 					pybind::dict_set( m_dictResult, _layer.name.c_str(), py_list_frames );

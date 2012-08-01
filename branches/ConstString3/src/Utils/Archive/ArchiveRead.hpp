@@ -18,26 +18,35 @@ namespace Menge
 
 	public:
 		template<class T>
-		void read( T & _t )
+		inline void read( T & _t )
 		{
 			*this >> _t;
 		}
 
 		template<class T>
-		void readPOD( T & _t )
+		inline void readPOD( T & _t )
 		{
 			Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(&_t);
 			this->readBuffer( buff, sizeof(T) );
 		}
 
-		void readBuffer( Archive::value_type * _begin, size_t _size );
+		inline void readBuffer( Archive::value_type * _begin, size_t _size )
+		{
+			Archive::const_iterator it_begin = m_seek;
+			std::advance( m_seek, _size );
+			std::copy( it_begin, m_seek, _begin );
+		}
 
 		const Archive::value_type * selectBuffer( size_t _size );
 
 	public:
 		void seek( size_t _pos );
 		size_t length( size_t _pos ) const;
-		bool eof() const;
+		
+		inline bool eof() const
+		{
+			return m_seek == m_end;
+		}
 
 	protected:
 		Archive::const_iterator m_begin;

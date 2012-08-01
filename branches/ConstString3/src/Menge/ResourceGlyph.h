@@ -31,7 +31,7 @@ namespace Menge
 		void loaderGlyph_( BinParser * _parser );
 
 	protected:
-		Glyph & addGlyph_( wchar_t _glyph, const Int4 & _rect, const Int2 & _offset, float _width );
+		Glyph & addGlyph_( wchar_t _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width );
 
 	protected:
 		float m_height;

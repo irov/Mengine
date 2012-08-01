@@ -42,9 +42,14 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::KeyFrames2D )
 			{			
 				size_t layerIndex = 0;
+				size_t count = -1;
+				bool immutable = false;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrames2D_LayerIndex, layerIndex );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrames2D_Count, count );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrames2D_Immutable, immutable );
 				}
 
 				if( layerIndex == 0 )
@@ -52,6 +57,8 @@ namespace Menge
 					MENGE_LOG_ERROR( "MovieKeyFrameManager: loaderMovieFramePak KeyFrames2D layer not determined  " );
 					BIN_SKIP();
 				}
+
+				m_pack->initializeLayer( layerIndex, count, immutable );
 
 				BIN_PARSE_METHOD_CARG1( this, &LoaderMovieKeyFrame::loaderKeyFrames2D_, layerIndex );
 			}
@@ -97,7 +104,7 @@ namespace Menge
 					anchorPoint2d = frame.anchorPoint.to_vec2f();
 					position2d = frame.position.to_vec2f();
 					scale2d = frame.scale.to_vec2f();
-				}				
+				}
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -117,7 +124,14 @@ namespace Menge
 				frame.rotation.y = 0.f;
 				frame.rotation.z = 0.f;
 
-				for( size_t i = 0; i != count; ++i )
+				if( m_pack->isLayerImmutable( _layerIndex ) == false )
+				{
+					for( size_t i = 0; i != count; ++i )
+					{
+						m_pack->addLayerFrame( _layerIndex, frame );
+					}
+				}
+				else
 				{
 					m_pack->addLayerFrame( _layerIndex, frame );
 				}

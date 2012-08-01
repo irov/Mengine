@@ -86,7 +86,7 @@ namespace Menge
 
 	public:
 		void setDesktopResolution( const Resolution& _resolution ) override;
-		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight ) override;
+		void setMaxClientResolution( const Resolution & _resolution ) override;
 
 	public:
 		bool getAllowFullscreenSwitchShortcut() const override;
@@ -278,7 +278,7 @@ namespace Menge
 
 		Viewport m_renderViewport;
 
-		Resolution m_maxClientAreaSize;
+		Resolution m_maxClientResolution;
 
 		Viewport m_gameViewport;
 

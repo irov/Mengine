@@ -25,20 +25,6 @@ namespace Menge
 	typedef std::wstring WString;
 	typedef std::string String;
 
-	struct Int2
-	{
-		int v0;
-		int v1;
-	};
-
-	struct Int4
-	{
-		int v0;
-		int v1;
-		int v2;
-		int v3;
-	};
-
 	typedef std::wstringstream WStringstream;
 	typedef std::stringstream Stringstream;
 

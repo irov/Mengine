@@ -17,13 +17,6 @@ namespace Menge
 		m_seek = m_begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ArchiveRead::readBuffer( Archive::value_type * _begin, size_t _size )
-	{
-		Archive::const_iterator it_begin = m_seek;
-		std::advance( m_seek, _size );
-		std::copy( it_begin, m_seek, _begin );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const Archive::value_type * ArchiveRead::selectBuffer( size_t _size )
 	{
 		const Archive::value_type * buff = &*m_seek;
@@ -41,10 +34,5 @@ namespace Menge
 		size_t reading = std::distance( m_begin, m_seek );
 		size_t length = _pos - reading;
 		return length;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ArchiveRead::eof() const
-	{
-		return m_seek == m_end;
 	}
 }

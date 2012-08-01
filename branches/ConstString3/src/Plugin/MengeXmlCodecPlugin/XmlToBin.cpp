@@ -190,32 +190,6 @@ namespace
 		return true;
 	}
 
-	static bool s_writeInt2_space( std::ofstream & _stream, const char * _str )
-	{
-		int value[2];
-		if( sscanf_s( _str, "%d %d", &value[0], &value[1] ) != 2)
-		{
-			return false;
-		}
-
-		s_writeStreamCount( _stream, value, 2 );
-
-		return true;
-	}
-
-	static bool s_writeInt4_space( std::ofstream & _stream, const char * _str )
-	{
-		int value[4];
-		if( sscanf_s( _str, "%d %d %d %d", &value[0], &value[1], &value[2], &value[3] ) != 4)
-		{
-			return false;
-		}
-
-		s_writeStreamCount( _stream, value, 4 );
-
-		return true;
-	}
-
 	static bool s_writeSizet( std::ofstream & _stream, const char * _str )
 	{
 		size_t value;
@@ -275,7 +249,10 @@ namespace
 		float value[2];
 		if( sscanf_s( _str, "%f;%f", &value[0], &value[1] ) != 2 )
 		{
-			return false;
+			if( sscanf_s( _str, "%f %f", &value[0], &value[1] ) != 2 )
+			{
+				return false;
+			}
 		}
 
 		s_writeStreamCount( _stream, value, 2 );
@@ -373,7 +350,10 @@ namespace
 		float value[4];
 		if( sscanf_s( _str, "%f;%f;%f;%f", &value[0], &value[1], &value[2], &value[3] ) != 4)
 		{
-			return false;
+			if( sscanf_s( _str, "%f %f %f %f", &value[0], &value[1], &value[2], &value[3] ) != 4)
+			{
+				return false;
+			}
 		}
 
 		s_writeStreamCount( _stream, value, 4 );
@@ -455,8 +435,6 @@ bool XmlToBin::writeBinary( const wchar_t * _source, const wchar_t * _bin )
 	m_serialization["bool"] = &s_writeBool;
 	m_serialization["unsigned short"] = &s_writeUnsignedShort;
 	m_serialization["int"] = &s_writeInt;
-	m_serialization["Menge::Int2"] = &s_writeInt2_space;
-	m_serialization["Menge::Int4"] = &s_writeInt4_space;
 	m_serialization["float"] = &s_writeFloat;
 	m_serialization["size_t"] = &s_writeSizet;
 	m_serialization["wchar_t"] = &s_write_wchar_t;

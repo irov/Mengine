@@ -76,10 +76,10 @@ namespace Menge
 		ConstString group;
 	};
 
-	class ResourceMovieVisitor
+	class VisitorResourceMovie
 	{
 	public:
-		virtual void visitLayer( const MovieLayer & _layer, const TVectorMovieFrameSource & _frames ) = 0;
+		virtual void visitLayer( const MovieLayer & _layer, const MovieLayerFrame & _frames ) = 0;
 	};
 
 	class ResourceMovie
@@ -115,7 +115,7 @@ namespace Menge
 		bool getFrameLast( const MovieLayer & _layer, MovieFrameSource & _frame ) const;
 
 	public:
-		void visitResourceMovie( ResourceMovieVisitor * _visitor );
+		void visitResourceMovie( VisitorResourceMovie * _visitor );
 
 	protected:
 		void loader( BinParser * _parser ) override;

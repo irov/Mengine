@@ -1861,15 +1861,14 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight )
+	void Application::setMaxClientResolution( const Resolution & _resolution )
 	{
-		m_maxClientAreaSize.setWidth( _maxWidth );
-		m_maxClientAreaSize.setHeight( _maxHeight );
+		m_maxClientResolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution& Application::getMaxClientAreaSize() const
 	{
-		return m_maxClientAreaSize;
+		return m_maxClientResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Application::getAlreadyRunningPolicy() const

@@ -135,11 +135,8 @@ namespace Menge
 				float width = 0;
 				wchar_t glyph = 0;
 				
-				Int4 rect;
-				Int2 offset;
-
-				offset.v0 = 0;
-				offset.v1 = 0;
+				mt::vec4f rect;
+				mt::vec2f offset(0.f, 0.f);
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -160,44 +157,33 @@ namespace Menge
 	{
 		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
 			->getServiceT<UnicodeServiceInterface>("UnicodeService");
-
-		WString unicode;
-
-		unsigned int glyphId;
-			
+	
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_NODE( Protocol::Kerning )
 			{
 				float advance;
-				String id;
+				wchar_t glyphId;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Kerning_advance, advance );
-					BIN_CASE_ATTRIBUTE( Protocol::Kerning_id, id );
+					BIN_CASE_ATTRIBUTE( Protocol::Kerning_id, glyphId );
 				}
 				
-				bool w_id_successful;
-				unicode = unicodeService->utf8ToUnicode( id, w_id_successful );
-
-				glyphId = (unsigned int)unicode[0];
-
 				_glyph.addKerning( glyphId, advance );
-				//_glyph.kerning.insert( std::make_pair( glyphId, advance ) );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Glyph & ResourceGlyph::addGlyph_( wchar_t _glyph, const Int4 & _rect, const Int2 & _offset, float _width )
+	Glyph & ResourceGlyph::addGlyph_( wchar_t _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width )
 	{
-		mt::vec4f uv( (float)_rect.v0, (float)_rect.v1, (float)(_rect.v0 + _rect.v2), (float)(_rect.v1 + _rect.v3) );
-		mt::vec2f offset( (float)_offset.v0, (float)_offset.v1 );
-		mt::vec2f size( (float)_rect.v2, (float)_rect.v3 );
+		mt::vec4f uv(_rect.x, _rect.y, _rect.x + _rect.z, _rect.y + _rect.w);
+		mt::vec2f size(_rect.z, _rect.w);
 
 		float ratio = _width / m_height;
 
-		Glyph gl(uv, offset, ratio, size);
+		Glyph gl(uv, _offset, ratio, size);
 
 		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( _glyph, gl ) ).first;
 		

@@ -528,7 +528,9 @@ namespace Menge
 		::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
 		size_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
 		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
-		m_application->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
+
+		Resolution maxClientResolution(maxClientWidth, maxClientHeight);
+		m_application->setMaxClientResolution( maxClientResolution );
 
 		String platformName = "WIN";
 

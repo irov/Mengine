@@ -137,20 +137,6 @@ namespace Menge
 		ar.readPOD( _value.w );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( ArchiveRead & ar, Int2 & _value )
-	{
-		ar.readPOD( _value.v0 );
-		ar.readPOD( _value.v1 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( ArchiveRead & ar, Int4 & _value )
-	{
-		ar.readPOD( _value.v0 );
-		ar.readPOD( _value.v1 );
-		ar.readPOD( _value.v2 );
-		ar.readPOD( _value.v3 );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, mt::mat3f & _value )
 	{
 		ar >> _value.v0.x;

@@ -403,7 +403,7 @@ namespace Menge
 		ResourceReference::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie::visitResourceMovie( ResourceMovieVisitor * _visitor )
+	void ResourceMovie::visitResourceMovie( VisitorResourceMovie * _visitor )
 	{
 		if( isCompile() == false )
 		{
@@ -420,7 +420,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			const TVectorMovieFrameSource & frames = m_framePack->getLayerFrames( layer.index );
+			const MovieLayerFrame & frames = m_framePack->getLayer( layer.index );
 
 			_visitor->visitLayer( layer, frames );
 		}

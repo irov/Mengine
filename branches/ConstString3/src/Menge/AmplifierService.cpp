@@ -28,7 +28,7 @@ bool initializeAmplifierService( Menge::AmplifierServiceInterface ** _service )
 
 void finalizeAmplifierService( Menge::AmplifierServiceInterface * _service )
 {
-	delete _service;
+	delete static_cast<Menge::AmplifierService*>(_service);
 }
 
 namespace Menge
@@ -38,10 +38,10 @@ namespace Menge
 		: m_sourceID(0)
 		, m_buffer(NULL)
 		, m_currentPlayList(0)
-		, m_volume(1.0f)
-		, m_volumeOverride(1.0f)
+		, m_volume(1.f)
+		, m_volumeOverride(1.f)
 		, m_playing(false)
-		, m_currentSoundPosition(0.0f)
+		, m_currentSoundPosition(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

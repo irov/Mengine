@@ -15,6 +15,11 @@ namespace Menge
 
 		frameLayer.count = _count;
 		frameLayer.immutable = _immutable;
+
+		if( frameLayer.immutable == false && _count != -1 )
+		{
+			frameLayer.frames.reserve( _count );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const MovieLayerFrame & MovieFramePack::getLayer( size_t _layerIndex ) const
@@ -58,9 +63,14 @@ namespace Menge
 	{
 		if( this->isLayerImmutable( _layerIndex ) == false )
 		{
-			size_t count = this->getLayerCountFrames( _layerIndex );
+			const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
 
-			size_t lastIndex = count - 1;
+			if( frameLayer.frames.empty() == true )
+			{
+				return false;
+			}
+
+			size_t lastIndex = frameLayer.frames.size() - 1;
 
 			if( this->getLayerFrame( _layerIndex, lastIndex, _frame ) == false )
 			{
@@ -84,10 +94,15 @@ namespace Menge
 
 		if( frameLayer.count == -1 )
 		{
-			return frameLayer.frames.empty();
+			if( frameLayer.immutable == true )
+			{
+				return false;
+			}
+
+			return frameLayer.frames.empty() == true;
 		}
 
-		return frameLayer.count != 0;
+		return frameLayer.count == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::isLayerImmutable( size_t _layerIndex ) const
@@ -120,18 +135,6 @@ namespace Menge
 		}
 		
 		return true;
-	}
-	///////////////////////////////////////////////////////////////////////
-	size_t MovieFramePack::getLayerCountFrames( size_t _layerIndex ) const
-	{
-		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-
-		if( frameLayer.count == -1 )
-		{
-			return frameLayer.frames.size();
-		}
-
-		return frameLayer.count;
 	}
 	///////////////////////////////////////////////////////////////////////
 }

@@ -133,7 +133,7 @@ namespace Menge
 				}
 				else
 				{
-					m_pack->addLayerFrame( _layerIndex, frame );
+					m_pack->setLayerImmutableFrame( _layerIndex, frame );
 				}
 			}
 		}

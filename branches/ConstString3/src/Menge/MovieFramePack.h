@@ -46,8 +46,6 @@ namespace Menge
 		bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const;
 		bool getLayerFrameLast( size_t _layerIndex, MovieFrameSource & _frame ) const;
 
-		size_t getLayerCountFrames( size_t _layerIndex ) const;
-
 		bool getLayerImmutableFrame( size_t _layerIndex, MovieFrameSource & _frame ) const;
 
 	public:

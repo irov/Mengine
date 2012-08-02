@@ -121,11 +121,12 @@ namespace Menge
 			return false;
 		}
 
-		size_t indexLast = m_framePack->getLayerCountFrames(_layer.index ) - 1;
+		if( m_framePack->getLayerFrameLast( _layer.index, _frame ) == false )
+		{
+			return false;
+		}
 
-		bool result = this->getFrame( _layer , indexLast, _frame );
-
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const

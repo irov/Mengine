@@ -18,43 +18,49 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePak::ResourcePak( const ResourcePakDesc & _desc, const WString & _baseDir )
-		: m_desc(_desc)
+	ResourcePak::ResourcePak( const ConstString & _name, const ConstString & _type, const ConstString & _locale, const String & _platform, const WString & _filename, const WString & _path, bool _preload, const WString & _baseDir )
+		: m_name(_name)
+		, m_type(_type)
+		, m_locale(_locale)
+		, m_platform(_platform)
+		, m_filename(_filename)
+		, m_path(_path)
+		, m_preload(_preload)
 		, m_baseDir(_baseDir)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::preload() const
 	{
-		return m_desc.preload;
+		return m_preload;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourcePak::getName() const
 	{
-		return m_desc.name;
+		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourcePak::getLocale() const
 	{
-		return m_desc.locale;
+		return m_locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & ResourcePak::getPlatfrom() const
 	{
-		return m_desc.platform;
+		return m_platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & ResourcePak::getPath() const
 	{
-		return m_desc.path;
+		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{		
 		WString fullPakPath = m_baseDir;
-		fullPakPath += m_desc.path;
+		fullPakPath += m_path;
 		
-		if(  m_desc.type == Consts::get()->c_zip )
+		if(  m_type == Consts::get()->c_zip )
 		{
 			//fullPakPath += L".zip";
 		}
@@ -64,10 +70,10 @@ namespace Menge
 		}		
 
 		if( FileEngine::get()
-			->mountFileSystem( m_desc.name, fullPakPath, m_desc.type, false ) == false )
+			->mountFileSystem( m_name, fullPakPath, m_type, false ) == false )
 		{
 			MENGE_LOG_ERROR( "ResourcePak::load failed to mount pak '%S': '%S'"
-				, m_desc.name.c_str()
+				, m_name.c_str()
 				, fullPakPath.c_str()
 				);
 
@@ -76,12 +82,12 @@ namespace Menge
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( m_desc.name, m_desc.filename, this, exist ) == false )
+			->load( m_name, m_filename, this, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "ResourcePak::load Invalid resource file '%S %s' '%S'"
-				, m_desc.path.c_str()
-				, m_desc.name.c_str()
-				, m_desc.filename.c_str()
+				, m_path.c_str()
+				, m_name.c_str()
+				, m_filename.c_str()
 				);
 
 			return false;
@@ -89,7 +95,7 @@ namespace Menge
 
 		TVectorWString listModulePath;
 
-		WString scriptPakPath = m_baseDir + m_desc.path;
+		WString scriptPakPath = m_baseDir + m_path;
 		
 		//if(  m_desc.type == Consts::get()->c_zip )
 		//{
@@ -213,9 +219,9 @@ namespace Menge
 	{
 		ResourceDesc desc;
 		desc.name = _name;
-		desc.pakName = m_desc.name;
-		desc.pakPath = m_desc.path;
-		desc.pakType = m_desc.type;
+		desc.pakName = m_name;
+		desc.pakPath = m_path;
+		desc.pakType = m_type;
 		desc.path = _path;
 
 		m_resourcesDesc.push_back( desc );
@@ -228,9 +234,9 @@ namespace Menge
 	{
 		ResourceDesc desc;
 		desc.name = _name;
-		desc.pakName = m_desc.name;
-		desc.pakPath = m_desc.path;
-		desc.pakType = m_desc.type;
+		desc.pakName = m_name;
+		desc.pakPath = m_path;
+		desc.pakType = m_type;
 		desc.path = _path;
 
 		m_textsDesc.push_back( desc );

@@ -5,7 +5,8 @@
 #	include "InputHandler.h"
 #	include "Scriptable.h"
 #	include "Eventable.h"
-#	include "Loadable.h"
+
+#	include "Interface/ApplicationInterface.h"
 
 #	include "Account.h"
 
@@ -36,7 +37,6 @@ namespace Menge
 		, public InputHandler
 		, public Eventable
 		, public Scriptable
-		, public Loadable
 	{
 	public:
 		Game( const WString & _baseDir, bool _developmentMode, const String & _platformName );
@@ -56,7 +56,7 @@ namespace Menge
 
 		bool loadPersonality( const ConstString & _module );
 		
-		bool loadConfigPaks(  const WString & _resourcePackPath );
+		bool loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack );
 		void applyConfigPaks();
 		void setLanguagePack( const ConstString& _packName );
 		const WString& getScreensaverName() const;
@@ -64,10 +64,6 @@ namespace Menge
 	protected:
 		bool loadLocalePaksByName_( const ConstString & _locale, const String & _platform );
 			
-	public:
-		//bool loader( const String& _iniFile );
-		void loader( BinParser * _parser ) override;
-
 	protected:
 		PyObject * _embedded() override;
 		void _embedding( PyObject * _embed ) override;

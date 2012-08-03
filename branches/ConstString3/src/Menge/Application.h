@@ -75,7 +75,7 @@ namespace Menge
 		~Application();
 
 	public:
-		bool initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting ) override;
+		bool initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
 		
 	public:
 		const WString & getBaseDir() const override;
@@ -95,7 +95,7 @@ namespace Menge
 		void setLanguagePackOverride( const ConstString& _packName ) override;
 
 	public:		
-		bool createGame( const ConstString & _module, const WString & _resourcePackPath ) override;
+		bool createGame( const ConstString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
 		bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) override;
 
 	public:

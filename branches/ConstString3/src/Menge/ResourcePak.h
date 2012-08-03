@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "Loadable.h"
-
 #	include "ResourceManager.h"
+
+#	include "Loadable.h"
 
 #	include "Core/String.h"
 
@@ -15,25 +15,11 @@ namespace Menge
 	class Entity;
 	class Resource;
 
-	struct ResourcePakDesc
-	{
-		ConstString name;
-		ConstString type;
-		ConstString locale;
-				
-		String platform;		
-		WString filename;
-
-		WString path;
-
-		bool preload;
-	};
-
 	class ResourcePak
 		: public Loadable
 	{
 	public:
-		ResourcePak( const ResourcePakDesc & _desc, const WString & _baseDir );
+		ResourcePak( const ConstString & _name, const ConstString & _type, const ConstString & _locale, const String & _platform, const WString & _filename, const WString & _path, bool _preload, const WString & _baseDir );
 
 	public:
 		bool preload() const;
@@ -76,7 +62,17 @@ namespace Menge
 		typedef std::vector<ResourceDesc> TTextDescs;
 		TTextDescs m_textsDesc;
 		
-		ResourcePakDesc m_desc;
+		ConstString m_name;
+		ConstString m_type;
+		ConstString m_locale;
+
+		String m_platform;		
+		WString m_filename;
+
+		WString m_path;
+
+		bool m_preload;
+
 		WString m_baseDir;
 
 		TVectorWString m_pathScripts;

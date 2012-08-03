@@ -435,8 +435,84 @@ namespace Menge
 		//resourcePacksPath += MENGE_FOLDER_DELIM;
 		//resourcePacksPath += w_resource_path;
 
-		appSettings.resourcePacksPath = w_resource_path;
+		CSimpleIniCaseW resources_settings(false, true, true);
+
+		WString resources_settings_path;
+
+		resources_settings_path += m_currentPath;
+		resources_settings_path += w_resource_path;
+
+		SI_Error resources_error = resources_settings.LoadFile( resources_settings_path.c_str() );
 		
+		if( resources_error != 0 )
+		{
+			::MessageBox( NULL
+				, resources_settings_path.c_str()
+				, L"Invalid load resources setting"
+				, MB_OK
+				);
+
+			return false;
+		}
+
+		TVectorWString resourcePacksSettings;
+		s_getIniValues( resources_settings, L"GAME_RESOURCES", L"ResourcePack", resourcePacksSettings );
+
+		TVectorResourcePackDesc resourcePacks;
+
+		for( TVectorWString::iterator
+			it = resourcePacksSettings.begin(),
+			it_end = resourcePacksSettings.end();
+		it != it_end;
+		++it )
+		{
+			const WString & resourcePack = *it;
+
+			ResourcePackDesc pack;
+
+			pack.preload = true;
+			pack.type = "dir";
+			
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Type", pack.type );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Name", pack.name );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Path", pack.path );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Locale", pack.locale );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Platform", pack.platform );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.filename );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"PreLoad", pack.preload );						
+
+			resourcePacks.push_back( pack );
+		}
+
+		TVectorWString languagePackSettings;
+		s_getIniValues( resources_settings, L"GAME_RESOURCES", L"LanguagePack", languagePackSettings );
+
+		TVectorResourcePackDesc languagePacks;
+
+		for( TVectorWString::iterator
+			it = languagePackSettings.begin(),
+			it_end = languagePackSettings.end();
+		it != it_end;
+		++it )
+		{
+			const WString & resourcePack = *it;
+
+			ResourcePackDesc pack;
+
+			pack.preload = true;
+			pack.type = "dir";			
+
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Type", pack.type );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Name", pack.name );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Path", pack.path );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Locale", pack.locale );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Platform", pack.platform );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.filename );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"PreLoad", pack.preload );	
+
+			languagePacks.push_back( pack );
+		}
+
 		//ConstString languagePack;
 		//if( cfg.getSetting( L"LOCALE", L"Default", languagePack ) == true )
 		//{
@@ -542,7 +618,7 @@ namespace Menge
 		
 		//WString settings_file = L"application.ini";
 
-		if( m_application->initialize( this, m_commandLine, appSettings ) == false )
+		if( m_application->initialize( this, m_commandLine, appSettings, resourcePacks, languagePacks ) == false )
 		{
 			LOGGER_ERROR(m_logService)( "Application initialize failed" 
 				);

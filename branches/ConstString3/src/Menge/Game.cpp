@@ -82,55 +82,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::loader( BinParser * _parser )
-	{        
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::ResourcePack )
-			{
-				ResourcePakDesc pak_desc;
-				pak_desc.preload = true;
-				pak_desc.type = Consts::get()->c_dir;
-                
-                BIN_FOR_EACH_ATTRIBUTES()
-                {
-                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Type, pak_desc.type );
-					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak_desc.name );
-                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak_desc.path );
-					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Locale, pak_desc.locale );
-                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak_desc.filename );
-                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak_desc.preload );
-                }
-               
-                ResourcePak * pak = new ResourcePak( pak_desc, m_baseDir );
-
-				m_resourcePaks.push_back( pak );
-			}
-
-			BIN_CASE_NODE( Protocol::LanguagePack )
-			{
-				ResourcePakDesc pak_desc;
-				pak_desc.preload = true;
-				pak_desc.type = Consts::get()->c_dir;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak_desc.name );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak_desc.type );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak_desc.path );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Locale, pak_desc.locale );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Platform, pak_desc.platform );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak_desc.filename );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak_desc.preload );
-				}
-
-				ResourcePak * pak = new ResourcePak(pak_desc, m_baseDir);
-
-				m_languagePaks.push_back( pak );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
@@ -735,19 +686,43 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadConfigPaks( const WString & _resourcePackPath )
+	bool Game::loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
 	{
-		bool exist = false;
-
-		if( LoaderEngine::get()
-			->load( ConstString::none, _resourcePackPath, this, exist ) == false )
+		for( TVectorResourcePackDesc::const_iterator
+			it = _resourcePack.begin(),
+			it_end = _resourcePack.end();
+		it != it_end;
+		++it )
 		{
-			MENGE_LOG_ERROR( "Game::loadConfigPaks failed to load GamePak %S"
-				, _resourcePackPath.c_str()
-				);
+			const ResourcePackDesc & desc = *it;
 
-			return false;
+			ConstString c_name(desc.name);
+			ConstString c_type(desc.type);
+			ConstString c_locale(desc.locale);
+			
+			ResourcePak * pack = new ResourcePak( c_name, c_type, c_locale, desc.platform, desc.filename, desc.path, desc.preload, m_baseDir ); 
+
+			m_resourcePaks.push_back( pack );
 		}
+
+		for( TVectorResourcePackDesc::const_iterator
+			it = _languagePack.begin(),
+			it_end = _languagePack.end();
+		it != it_end;
+		++it )
+		{
+			const ResourcePackDesc & desc = *it;
+
+			ConstString c_name(desc.name);
+			ConstString c_type(desc.type);
+			ConstString c_locale(desc.locale);
+
+			ResourcePak * pack = new ResourcePak( c_name, c_type, c_locale, desc.platform, desc.filename, desc.path, desc.preload, m_baseDir ); 
+
+			m_languagePaks.push_back( pack );
+		}
+		//m_resourcePaks = _resourcePack;
+		//m_languagePaks = _languagePack;
 
 		m_paks.insert( m_paks.begin(), m_resourcePaks.begin(), m_resourcePaks.end() );
 

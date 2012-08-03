@@ -286,7 +286,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool Application::initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting )
+	bool Application::initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
 	{
 		m_platform = _platform;
 		
@@ -378,7 +378,7 @@ namespace Menge
 		String personalityModule = m_unicodeService->unicodeToUtf8( _setting.personalityModule, w_personalityModule_successful );
 		ConstString c_personalityModule(personalityModule);
 
-		if( this->createGame( c_personalityModule, _setting.resourcePacksPath ) == false )
+		if( this->createGame( c_personalityModule, _resourcePack, _languagePack ) == false )
 		{
 			return false;
 		}
@@ -858,7 +858,7 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame( const ConstString & _module, const WString & _resourcePackPath )
+	bool Application::createGame( const ConstString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
 	{
 		m_game = new Game(m_baseDir, m_developmentMode, m_platformName);
 
@@ -872,7 +872,7 @@ namespace Menge
 			m_game->setLanguagePack( m_languagePackOverride );
 		}
 
-		if( m_game->loadConfigPaks( _resourcePackPath ) == false )
+		if( m_game->loadConfigPaks( _resourcePack, _languagePack ) == false )
 		{
 			return false;
 		}

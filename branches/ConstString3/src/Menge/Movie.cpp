@@ -129,7 +129,7 @@ namespace Menge
 			m_frameTiming = 0.f;
 			m_currentFrame = 0;
 			
-			//this->setTiming( 0.f );
+			this->setTiming( 0.f );
 		}				
 
 		return true;

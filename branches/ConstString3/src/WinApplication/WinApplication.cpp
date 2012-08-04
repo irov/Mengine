@@ -1747,10 +1747,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorIconSetup( const WString & _name, void * _buffer, size_t _size )
 	{
-		printf("Cursor %S\n"
-			, _name.c_str()
-			);
-
 		TMapCursors::iterator it_found = m_cursors.find( _name );
 
 		if( it_found == m_cursors.end() )

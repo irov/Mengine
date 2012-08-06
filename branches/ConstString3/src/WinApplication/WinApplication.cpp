@@ -1768,7 +1768,7 @@ namespace Menge
 			if( file == 0 )
 			{
 				LOGGER_ERROR(m_logService)("WinApplication::notifyCursorIconSetup can't create cursor cach file %S"
-					, icoFile.c_str(); 
+					, icoFile.c_str()
 					);
 
 				return;

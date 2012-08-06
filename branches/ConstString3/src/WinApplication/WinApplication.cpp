@@ -1764,6 +1764,16 @@ namespace Menge
 			icoFile += L".cur";
 
 			FILE * file = _wfopen( icoFile.c_str(), L"wb" );
+
+			if( file == 0 )
+			{
+				LOGGER_ERROR(m_logService)("WinApplication::notifyCursorIconSetup can't create cursor cach file %S"
+					, icoFile.c_str(); 
+					);
+
+				return;
+			}
+
 			fwrite( _buffer, _size, 1, file );
 			fclose( file );
 									

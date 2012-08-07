@@ -29,12 +29,13 @@ namespace Menge
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceWindow )
+
 	public:
 		ResourceWindow();
 		~ResourceWindow();
 		
 	public:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 		RenderTextureInterface* getImage( int _type );
 		const mt::vec2f &  getOffset( int _type );

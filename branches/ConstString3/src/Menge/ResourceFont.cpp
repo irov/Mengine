@@ -4,7 +4,7 @@
 #	include "ResourceImage.h"
 #	include "ResourceGlyph.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 
 #	include "ResourceManager.h"
 #	include "FileEngine.h"
@@ -97,19 +97,28 @@ namespace Menge
 		return m_color;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::loader( BinParser * _parser )
+	void ResourceFont::loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _parser );
+        const Metacode::Meta_DataBlock::Meta_ResourceFont * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceFont *>(_meta);
 
-		BIN_SWITCH_ID( _parser )
-		{
-			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceGlyph_Name, m_resourceGlyphName );
-			BIN_CASE_ATTRIBUTE( Protocol::Color_Value, m_color );
-			
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Image_Path, &ResourceFont::setImagePath_ );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::OutlineImage_Path, &ResourceFont::setOutlineImagePath_ );
-		}
+        metadata->swap_ResourceGlyph_Name( m_resourceGlyphName );
+        metadata->swap_Image_Path( m_imageFile );
+        
+        if( metadata->swap_Image_Codec( m_imageCodec ) == false )
+        {
+            m_imageCodec = ResourceImage::s_getImageCodec( m_imageFile );
+        }
+
+        if( metadata->swap_OutlineImage_Path( m_outlineImageFile ) == true )
+        {
+            if( metadata->swap_OutlineImage_Codec( m_outlineImageCodec ) == false )
+            {
+                m_outlineImageCodec = ResourceImage::s_getImageCodec( m_outlineImageFile );
+            }
+        }
+
+        metadata->get_Color_Value( m_color );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::_compile()

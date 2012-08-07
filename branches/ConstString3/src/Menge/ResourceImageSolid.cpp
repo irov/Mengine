@@ -2,7 +2,7 @@
 #	include "ResourceImageSolid.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
-#	include "BinParser.h"
+#	include "Metacode.h"
 
 namespace Menge
 {
@@ -73,49 +73,30 @@ namespace Menge
 		return m_color;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageSolid::loader( BinParser * _parser )
+	void ResourceImageSolid::loader( const Metabuf::Metadata * _meta )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Size_Value, m_imageFrame.size );
-			BIN_CASE_ATTRIBUTE( Protocol::Color_Value, m_color );
-		}
+        const Metacode::Meta_DataBlock::Meta_ResourceImageSolid * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSolid *>(_meta);
+
+
+        m_imageFrame.size = metadata->get_Size_Value();
+        m_color = metadata->get_Color_Value();
+
+        m_imageFrame.maxSize = m_imageFrame.size;
+        m_imageFrame.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+        m_imageFrame.isAlpha = false;
+        m_imageFrame.wrapX = true;
+        m_imageFrame.wrapY = true;
+        m_imageFrame.texture = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSolid::_compile()
 	{
-		m_imageFrame.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-		m_imageFrame.offset = mt::vec2f(0.f,0.f);
-		m_imageFrame.maxSize = m_imageFrame.size;
-		m_imageFrame.isAlpha = false; //
-		m_imageFrame.wrapX = true;
-		m_imageFrame.wrapY = true;
-		m_imageFrame.texture = NULL;
-
-		/*const mt::vec2f& size = m_imageFrame.size;
-		m_imageFrame.texture = RenderEngine::get()
-			->createTexture( size.x, size.y, PF_X8R8G8B8 );
-
-		if( m_imageFrame.texture == NULL )
-		{
-			MENGE_LOG_ERROR("Texture::ResourceImageSolid: Invalid create texture");
-			return false;
-		}*/
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageSolid::_release()
 	{
-		/*if( m_imageFrame.texture == NULL )
-		{
-			return;
-		}
-
-		RenderEngine::get()
-			->releaseTexture(m_imageFrame.texture);
-
-		m_imageFrame.texture = NULL;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSolid::isValid() const 
@@ -125,7 +106,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSolid::loadBuffer( unsigned char * _buffer, int _pitch )
 	{
-		//not supported
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////

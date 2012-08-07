@@ -38,8 +38,8 @@ namespace Menge
 	public:
 		virtual bool isValid() const;
 
-	protected:
-		void loader( BinParser * _parser ) override;
+	public:
+		void loader( const Metabuf::Metadata * _parser ) override;
 		
 	protected:
 		void _loaded() override;

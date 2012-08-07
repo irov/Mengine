@@ -17,13 +17,11 @@
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "ParticleEngine.h"
-#	include "LoaderEngine.h"
 
 #	include "AccountManager.h"
 #	include "ArrowManager.h"
 #	include "SceneManager.h"
 
-#	include "BinParser.h"
 #	include "ConfigLoader.h"
 
 #	include "Consts.h"
@@ -700,7 +698,7 @@ namespace Menge
 			ConstString c_type(desc.type);
 			ConstString c_locale(desc.locale);
 			
-			ResourcePak * pack = new ResourcePak( c_name, c_type, c_locale, desc.platform, desc.filename, desc.path, desc.preload, m_baseDir ); 
+			ResourcePak * pack = new ResourcePak(c_name, c_type, c_locale, desc.platform, desc.description, desc.path, desc.preload, m_baseDir); 
 
 			m_resourcePaks.push_back( pack );
 		}
@@ -717,7 +715,7 @@ namespace Menge
 			ConstString c_type(desc.type);
 			ConstString c_locale(desc.locale);
 
-			ResourcePak * pack = new ResourcePak( c_name, c_type, c_locale, desc.platform, desc.filename, desc.path, desc.preload, m_baseDir ); 
+			ResourcePak * pack = new ResourcePak(c_name, c_type, c_locale, desc.platform, desc.description, desc.path, desc.preload, m_baseDir); 
 
 			m_languagePaks.push_back( pack );
 		}

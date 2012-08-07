@@ -9,7 +9,7 @@
 #	include "EntityManager.h"
 
 #	include "LoaderEngine.h"
-#	include "BinParser.h"
+#	include "Metacode.h"
 
 #	include "Consts.h"
 #	include "LogEngine.h"
@@ -80,9 +80,11 @@ namespace Menge
 			return false;
 		}
 
+		Metacode::Meta_Pak pak;
+
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( m_name, m_filename, this, exist ) == false )
+			->load( m_name, m_filename, &pak, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "ResourcePak::load Invalid resource file '%S %s' '%S'"
 				, m_path.c_str()
@@ -91,6 +93,67 @@ namespace Menge
 				);
 
 			return false;
+		}
+
+		const Metacode::Meta_Pak::TVectorMeta_Scripts & includes_scripts = pak.get_IncludesScripts();
+
+		for( Metacode::Meta_Pak::TVectorMeta_Scripts::const_iterator
+			it = includes_scripts.begin(),
+			it_end = includes_scripts.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_Pak::Meta_Scripts & scripts = *it;
+
+			scripts.method_Path( this, &ResourcePak::addScriptPath_ );
+		}
+
+		const Metacode::Meta_Pak::TVectorMeta_Resources & includes_resources = pak.get_IncludesResources();
+
+		for( Metacode::Meta_Pak::TVectorMeta_Resources::const_iterator
+			it = includes_resources.begin(),
+			it_end = includes_resources.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_Pak::Meta_Resources & meta_resources = *it;
+
+			const Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource & includes_resource = meta_resources.get_IncludesResource();
+
+			for( Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource::const_iterator
+				it = includes_resource.begin(),
+				it_end = includes_resource.end();
+			it != it_end;
+			++it )
+			{
+				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it;
+
+				meta_resource.method_Path( this, &ResourcePak::addResource_ );
+			}
+		}
+
+		const Metacode::Meta_Pak::TVectorMeta_Texts & includes_tests = pak.get_IncludesTexts();
+
+		for( Metacode::Meta_Pak::TVectorMeta_Texts::const_iterator
+			it = includes_tests.begin(),
+			it_end = includes_tests.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_Pak::Meta_Texts & meta_texts = *it;
+
+			const Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text & includes_text = meta_texts.get_IncludesText();
+
+			for( Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text::const_iterator
+				it = includes_text.begin(),
+				it_end = includes_text.end();
+			it != it_end;
+			++it )
+			{
+				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it;
+
+                meta_text.method_Path( this, &ResourcePak::addText_ );
+			}
 		}
 
 		TVectorWString listModulePath;
@@ -142,83 +205,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_METHOD( Protocol::Pak, this, &ResourcePak::loaderPak_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderPak_( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Resources )
-			{
-				WString path;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Resources_Path, path );
-				}
-
-				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderResources_, path );
-			}
-
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scripts_Path, &ResourcePak::addScriptPath_ );
-
-			BIN_CASE_NODE( Protocol::Texts )
-			{
-				WString path;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Texts_Path, path );
-				}
-
-				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderTexts_, path );
-			}			
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::_loaded()
-	{
-		//Empty
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderResources_( BinParser * _parser, const WString & _path )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Resource_Name, &ResourcePak::addResource_, _path );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderTexts_( BinParser * _parser, const WString & _path )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Text )
-			{
-				ConstString Name;
-				WString File;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Text_Name, Name);
-					BIN_CASE_ATTRIBUTE( Protocol::Text_File, File);
-				}
-				
-				this->addText_( Name, _path, File );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addResource_( const ConstString & _name, const WString & _path )
+	void ResourcePak::addResource_( const WString & _path )
 	{
 		ResourceDesc desc;
-		desc.name = _name;
 		desc.pakName = m_name;
 		desc.pakPath = m_path;
 		desc.pakType = m_type;
@@ -230,10 +219,9 @@ namespace Menge
 		//	->loadResource( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addText_( const ConstString & _name, const WString & _path, const WString & _file )
+	void ResourcePak::addText_( const WString & _path )
 	{
 		ResourceDesc desc;
-		desc.name = _name;
 		desc.pakName = m_name;
 		desc.pakPath = m_path;
 		desc.pakType = m_type;

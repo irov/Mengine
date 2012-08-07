@@ -5,7 +5,7 @@
 
 #	include "ResourceImageDefault.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 #	include "Consts.h"
 
 #	include "Utils/Core/Stream.h"
@@ -143,119 +143,112 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie::loader( BinParser * _parser )
+	void ResourceMovie::loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader(_parser);
+        const Metacode::Meta_DataBlock::Meta_ResourceMovie * metadata
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
 
-		BIN_SWITCH_ID(_parser)
-		{
-			//BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
-			BIN_CASE_ATTRIBUTE( Protocol::FrameDuration_Value, m_frameDuration );
-			BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
+        metadata->get_Duration_Value( m_duration );
+        metadata->get_FrameDuration_Value( m_frameDuration );
+        metadata->get_Width_Value( m_width );
+        metadata->get_Height_Value( m_height );
+        
+        metadata->swap_KeyFramesPackPath_Path( m_keyFramePackPath );
+		
+        const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D & includes_layer2d = metadata->get_IncludesMovieLayer2D();
 
-			BIN_CASE_ATTRIBUTE( Protocol::Width_Value, m_width );
-			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
-			BIN_CASE_ATTRIBUTE( Protocol::KeyFramesPackPath_Path, m_keyFramePackPath );
+        for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D::const_iterator
+            it = includes_layer2d.begin(),
+            it_end = includes_layer2d.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d = *it;
 
-			BIN_CASE_NODE( Protocol::MovieLayer2D )
-			{
-				m_layers.push_back( MovieLayer() );
-				MovieLayer & ml = m_layers.back();
+            m_layers.push_back( MovieLayer() );
+            MovieLayer & ml = m_layers.back();
 
-				ml.threeD = false;
+            ml.threeD = false;
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Name, ml.name );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Parent, ml.parent );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Source, ml.source);
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Index, ml.index );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_In, ml.in );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Out, ml.out );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_StartInterval, ml.startInterval );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_BlendingMode, ml.blendingMode );
-				}
+            meta_layer2d.swap_Name( ml.name );
+            meta_layer2d.swap_Source( ml.source );
+            meta_layer2d.swap_BlendingMode( ml.blendingMode );
 
-				if( ml.in < 0.0f )
-				{
-					ml.in = 0.0f;
-				}
+            ml.parent = meta_layer2d.get_Parent();
+            ml.index = meta_layer2d.get_Index();
+            ml.in = meta_layer2d.get_In();
+            ml.out = meta_layer2d.get_Out();
+            ml.startInterval = meta_layer2d.get_StartInterval();
 
-				if( ml.out > m_duration )
-				{
-					ml.out = m_duration;
-				}
-				//ml.out -= m_frameDuration;
+            if( ml.in < 0.f )
+            {
+                ml.in = 0.f;
+            }
 
-				//BIN_PARSE_METHOD_ARG1( this, &ResourceMovie::loaderMovieLayer2D_, ml );
-			}
+            if( ml.out > m_duration )
+            {
+                ml.out = m_duration;
+            }
+        }
 
-			BIN_CASE_NODE( Protocol::MovieLayer3D )
-			{
-				m_layers.push_back( MovieLayer() );
-				MovieLayer & ml = m_layers.back();
+        const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer3D & includes_layer3d = metadata->get_IncludesMovieLayer3D();
 
-				ml.threeD = true;
+        for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer3D::const_iterator
+            it = includes_layer3d.begin(),
+            it_end = includes_layer3d.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & meta_layer3d = *it;
 
-				MovieLayerCamera3D camera;
+            m_layers.push_back( MovieLayer() );
+            MovieLayer & ml = m_layers.back();
 
-				bool depricated_internal;
+            ml.threeD = true;
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Name, ml.name );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Parent, ml.parent );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Source, ml.source);
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Index, ml.index );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Internal, depricated_internal ); //depricated
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_In, ml.in );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Out, ml.out );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_StartInterval, ml.startInterval );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_BlendingMode, ml.blendingMode );
-				}
+            MovieLayerCamera3D camera;
+
+            meta_layer3d.swap_Name( ml.name );
+            meta_layer3d.swap_Source( ml.source );
+            meta_layer3d.swap_BlendingMode( ml.blendingMode );
+
+            ml.parent = meta_layer3d.get_Parent();
+            ml.index = meta_layer3d.get_Index();
+            ml.in = meta_layer3d.get_In();
+            ml.out = meta_layer3d.get_Out();
+            ml.startInterval = meta_layer3d.get_StartInterval();
 				
-				if( ml.in < 0.0f )
-				{
-					ml.in = 0.0f;
-				}
+            if( ml.in < 0.f )
+            {
+                ml.in = 0.f;
+            }
 
-				if( ml.out > m_duration )
-				{
-					ml.out = m_duration;
-				}
+            if( ml.out > m_duration )
+            {
+                ml.out = m_duration;
+            }
+        }
 
-				//mt::make_lookat_m4( camera.view, cameraPosition, cameraInterest );
-				//mt::make_projection_m4( camera.projection, cameraFOV, cameraAspect, 1.f, 10000.f );
 
-				//mt::mul_m4_m4( camera.vp, camera.view, camera.projection );
+        const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieCamera3D & includes_camera3d = metadata->get_IncludesMovieCamera3D();
 
-				//BIN_PARSE_METHOD_ARG2( this, &ResourceMovie::loaderMovieLayer3D_, ml, layer );
-			}
+        for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieCamera3D::const_iterator
+            it = includes_camera3d.begin(),
+            it_end = includes_camera3d.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & meta_camera3d = *it;
 
-			BIN_CASE_NODE( Protocol::MovieCamera3D )
-			{
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraPosition, m_camera3D.cameraPosition );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraInterest, m_camera3D.cameraInterest );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraFOV, m_camera3D.cameraFOV );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_CameraAspect, m_camera3D.cameraAspect );
+            m_camera3D.cameraPosition = meta_camera3d.get_CameraPosition();
+            m_camera3D.cameraInterest = meta_camera3d.get_CameraInterest();
+            m_camera3D.cameraFOV = meta_camera3d.get_CameraFOV();
+            m_camera3D.cameraAspect = meta_camera3d.get_CameraAspect();
+            m_camera3D.width = meta_camera3d.get_Width();
+            m_camera3D.height = meta_camera3d.get_Height();
 
-					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_Width, m_camera3D.width );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieCamera3D_Height, m_camera3D.height );
-				}
-
-				m_hasCamera3D = true;
-
-				//mt::make_lookat_m4( camera.view, cameraPosition, cameraInterest );
-				//mt::make_projection_m4( camera.projection, cameraFOV, cameraAspect, 1.f, 10000.f );
-
-				//mt::mul_m4_m4( camera.vp, camera.view, camera.projection );
-
-				//m_layerCameras.insert( std::make_pair(ml.index, camera) );
-				//BIN_PARSE_METHOD_ARG2( this, &ResourceMovie::loaderMovieLayer3D_, ml, layer );
-			}
-		}
+            m_hasCamera3D = true;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_compile()

@@ -94,7 +94,7 @@ namespace Menge
 
 		if( fs == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%S'"
+			MENGE_LOG_ERROR( "FileEngine::mountFileSystem can't find FileSystem for object '%S'"
 				, _path.c_str() 
 				);
 
@@ -106,7 +106,7 @@ namespace Menge
 
 		if( fs->initialize( _path, this, _create ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%S'"
+			MENGE_LOG_ERROR( "FileEngine::mountFileSystem can't initialize FileSystem for object '%S'"
 				, _path.c_str() 
 				);
 

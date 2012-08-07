@@ -6,8 +6,6 @@
 #	include "ResourceManager.h"
 #	include "ResourceBinary.h"
 
-#	include "BinParser.h"
-
 #	include "LogEngine.h"
 
 #	include "Node.h"

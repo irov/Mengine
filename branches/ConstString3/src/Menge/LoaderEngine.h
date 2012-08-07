@@ -3,25 +3,23 @@
 #	include "Core/Holder.h"
 #	include "Core/ConstString.h"
 
+#	include "Utils/Archive/Archive.hpp"
+
 #	include "Config/Typedef.h"
 
-#	include "Utils/Archive/ArchiveRead.hpp"
+#	include "metabuf/Metabuf.hpp"
 
 #	include <map>
 
+namespace Metabuf
+{
+	class Metadata;
+}
+
 namespace Menge
 {
-	class Loadable;
-
+	
 	class FileInputStreamInterface;
-
-	struct BlobjectCache
-	{
-		ConstString pak;
-		WString path;
-
-		TBlobject blob;
-	};
 
 	class LoaderEngine
 		: public Holder<LoaderEngine>
@@ -30,11 +28,10 @@ namespace Menge
 		LoaderEngine();
 
 	public:
-		bool cache( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist );
-		bool load( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist );
+		bool load( const ConstString & _pak, const WString & _path, Metabuf::Metadata * _metadata, bool & _exist );
 
 	public:
-		bool loadBinary( const Archive & _blob, Loadable * _loadable );
+		bool loadBinary( const Archive & _blob, Metabuf::Metadata * _metadata );
 
 	public:
 		bool import( const ConstString & _pak, const WString & _path, Archive & _archive, bool & _exist );
@@ -50,12 +47,5 @@ namespace Menge
 	protected:
 		Archive m_bufferArchive[4];
 		size_t m_bufferLevel;
-
-		//typedef std::map<String, TBlobject> TMapBlobject;
-		//typedef std::map<ConstString, TMapBlobject> TPakBlobjectCache;
-		//TPakBlobjectCache m_cache;
-
-		typedef std::list<BlobjectCache> TBlobjectCache;
-		TBlobjectCache m_cache;
 	};
 }

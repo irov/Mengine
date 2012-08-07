@@ -1,7 +1,7 @@
 #	include "ResourceInternalObject.h"
 #	include "ResourceImplement.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 
 #	include "ScriptEngine.h"
 
@@ -32,13 +32,13 @@ namespace Menge
 		return m_internalGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceInternalObject::loader( BinParser * _parser )
+	void ResourceInternalObject::loader( const Metabuf::Metadata * _meta )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Internal_Name, m_internalName );
-			BIN_CASE_ATTRIBUTE( Protocol::Internal_Group, m_internalGroup );
-		}
+        const Metacode::Meta_DataBlock::Meta_ResourceInternalObject * metadata
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceInternalObject *>(_meta);
+
+        metadata->swap_Internal_Name( m_internalName );
+        metadata->swap_Internal_Group( m_internalGroup );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceInternalObject::_compile()

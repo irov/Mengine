@@ -1,5 +1,10 @@
 #	pragma once
 
+namespace Metabuf
+{
+    class Metadata;
+}
+
 namespace Menge
 {
 	class BinParser;
@@ -7,7 +12,7 @@ namespace Menge
 	class Loadable
 	{
 	public:
-		virtual void loader( BinParser * _parser ) = 0;
+		virtual void loader( const Metabuf::Metadata * _parser ) = 0;
 		
 	public:
 		void loaded();

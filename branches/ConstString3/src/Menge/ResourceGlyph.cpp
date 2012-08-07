@@ -3,7 +3,7 @@
 
 #	include <cstdio>
 
-#	include "BinParser.h"
+#   include "Metacode.h"
 
 #	include "LogEngine.h"
 #	include "Core/String.h"
@@ -16,27 +16,6 @@
 
 namespace Menge
 {
-	namespace
-	{
-		class LoadableResourceGlyph
-			: public Loadable
-		{
-		public:
-			LoadableResourceGlyph( ResourceGlyph * _resource )
-				: m_resource(_resource)
-			{
-			}
-
-		protected:
-			void loader( BinParser * _parser ) override
-			{
-				m_resource->loaderGlyph_(_parser);
-			}
-
-		protected:
-			ResourceGlyph * m_resource;
-		};
-	}
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceGlyph );
 	//////////////////////////////////////////////////////////////////////////
@@ -78,102 +57,73 @@ namespace Menge
 		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceGlyph::loader( BinParser * _parser )
+	void ResourceGlyph::loader( const Metabuf::Metadata * _meta )
 	{				
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE(  Protocol::GlyphPath )
-			{				
-				WString glyphPath;
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::GlyphPath_Path, glyphPath );
-				}
-		
-				const ConstString & category = this->getCategory();
+        const Metacode::Meta_DataBlock::Meta_ResourceGlyph * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceGlyph *>(_meta);
 
-				LoadableResourceGlyph loadable(this);
-				
-				bool exist = false;
-				if ( LoaderEngine::get()
-					->load( category, glyphPath, &loadable, exist ) == false )
-				{
-					if( exist == false )
-					{
-						MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath '%s:%S' not found"
-							, m_name.c_str()
-							, glyphPath.c_str()
-							);
-					}
-					else
-					{
-						MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath invalid parse '%s:%S' "
-							, m_name.c_str()
-							, glyphPath.c_str()
-							);
-					}
-				}			
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceGlyph::loaderGlyph_( BinParser * _parser )
-	{
-		ConstString family;
-		size_t size;
-		ConstString style;
+        const WString & glyphPath = metadata->get_GlyphPath_Path();
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Font_height, m_height );
-			BIN_CASE_ATTRIBUTE( Protocol::Font_family, family );
-			BIN_CASE_ATTRIBUTE( Protocol::Font_size, size );
-			BIN_CASE_ATTRIBUTE( Protocol::Font_style, style );
+        const ConstString & category = this->getCategory();
 
-			BIN_CASE_NODE( Protocol::Char )
-			{
-				float width = 0;
-				wchar_t glyph = 0;
-				
-				mt::vec4f rect;
-				mt::vec2f offset(0.f, 0.f);
+        Metacode::Meta_Font meta_font;
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Char_width, width );
-					BIN_CASE_ATTRIBUTE( Protocol::Char_code, glyph );
-					BIN_CASE_ATTRIBUTE( Protocol::Char_rect, rect );
-					BIN_CASE_ATTRIBUTE( Protocol::Char_offset, offset );
-				}
+        bool exist = false;
+        if ( LoaderEngine::get()
+            ->load( category, glyphPath, &meta_font, exist ) == false )
+        {
+            if( exist == false )
+            {
+                MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath '%s:%S' not found"
+                    , m_name.c_str()
+                    , glyphPath.c_str()
+                    );
+            }
+            else
+            {
+                MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath invalid parse '%s:%S' "
+                    , m_name.c_str()
+                    , glyphPath.c_str()
+                    );
+            }
+        }
 
-				Glyph & gl = this->addGlyph_( glyph, rect, offset, width );
+        m_height = meta_font.get_height();
 
-				BIN_PARSE_METHOD_ARG1( this, &ResourceGlyph::loaderKerning_, gl );
-			}
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceGlyph::loaderKerning_( BinParser * _parser, Glyph & _glyph )
-	{
-		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeServiceInterface>("UnicodeService");
-	
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Kerning )
-			{
-				float advance;
-				wchar_t glyphId;
+        const Metacode::Meta_Font::TVectorMeta_Char & includes_char = meta_font.get_IncludesChar();
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Kerning_advance, advance );
-					BIN_CASE_ATTRIBUTE( Protocol::Kerning_id, glyphId );
-				}
-				
-				_glyph.addKerning( glyphId, advance );
-			}
-		}
+        for( Metacode::Meta_Font::TVectorMeta_Char::const_iterator
+            it = includes_char.begin(),
+            it_end = includes_char.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_Font::Meta_Char & meta_char = *it;
+
+            float width = meta_char.get_width();
+            wchar_t code = meta_char.get_code();
+
+            const mt::vec4f & rect = meta_char.get_rect();
+            const mt::vec2f & offset = meta_char.get_offset();
+
+            Glyph & glyph = this->addGlyph_( code, rect, offset, width );
+
+            const Metacode::Meta_Font::Meta_Char::TVectorMeta_Kerning & includes_kerning = meta_char.get_IncludesKerning();
+
+            for( Metacode::Meta_Font::Meta_Char::TVectorMeta_Kerning::const_iterator
+                it = includes_kerning.begin(),
+                it_end = includes_kerning.end();
+            it != it_end;
+            ++it )
+            {
+                const Metacode::Meta_Font::Meta_Char::Meta_Kerning & meta_kerning = *it;
+
+                wchar_t id = meta_kerning.get_id();
+                float advance = meta_kerning.get_advance();                
+
+                glyph.addKerning( id, advance );
+            }
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Glyph & ResourceGlyph::addGlyph_( wchar_t _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width )

@@ -10,7 +10,7 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 
 #	include "Utils/Core/File.h"
 
@@ -42,19 +42,17 @@ namespace Menge
 		m_converter = _converter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::loader( BinParser * _parser )
+	void ResourceSound::loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _parser );
+        const Metacode::Meta_DataBlock::Meta_ResourceSound * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceSound *>(_meta);
 
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Path, &ResourceSound::setPath );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Codec, &ResourceSound::setCodec );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Converter, &ResourceSound::setConverter );
+        metadata->swap_File_Path( m_path );
+        metadata->swap_File_Codec( m_codec );
+        metadata->swap_File_Converter( m_converter );
 
-			BIN_CASE_ATTRIBUTE( Protocol::DefaultVolume_Value, m_defaultVolume);
-			BIN_CASE_ATTRIBUTE( Protocol::IsStreamable_Value, m_isStreamable);
-		}
+        metadata->get_DefaultVolume_Value( m_defaultVolume );
+        metadata->get_IsStreamable_Value( m_isStreamable );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::isStreamable() const

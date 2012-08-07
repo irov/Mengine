@@ -11,8 +11,6 @@
 #	include "Game.h"
 #	include "Player.h"
 
-#	include "BinParser.h"
-
 #	include "NodeManager.h"
 
 #	include "Consts.h"

@@ -26,7 +26,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::loader( BinParser * _parser )
+	void ResourceReference::loader( const Metabuf::Metadata * _parser )
 	{
 		//Empty
 	}

@@ -20,7 +20,9 @@ namespace Menge
 	public:
 		bool setImageInAtlas( ResourceImage * _resource, ResourceImage::ImageFrame & _frame );
 		RenderTextureInterface* getTexture() const;
-		void loader( BinParser * _parser ) override;
+
+    protected:
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:		
 		bool _compile() override;

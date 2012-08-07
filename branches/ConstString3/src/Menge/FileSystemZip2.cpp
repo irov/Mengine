@@ -6,7 +6,7 @@
  *
  */
 
-#	include "FileSystemZip.h"
+#	include "FileSystemZip2.h"
 
 #	include "FileEngine.h"
 #	include "LogEngine.h"
@@ -80,14 +80,14 @@ namespace Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	FileSystemZip::FileSystemZip()
+	FileSystemZip2::FileSystemZip2()
 		: m_fileEngine(NULL)
 		, m_zipFile(NULL)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystemZip::~FileSystemZip()
+	FileSystemZip2::~FileSystemZip2()
 	{
 		if ( m_interface == NULL )
 		{
@@ -102,7 +102,7 @@ namespace Menge
 		//m_interface->closeMappedInputStream( m_zipFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::initialize( const WString& _path, FileEngine * _fileEngine, bool _create )
+	bool FileSystemZip2::initialize( const WString& _path, FileEngine * _fileEngine, bool _create )
 	{
 		m_fileEngine = _fileEngine;
 
@@ -206,12 +206,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & FileSystemZip::getPath() const
+	const WString & FileSystemZip2::getPath() const
 	{
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::existFile( const WString& _filename )
+	bool FileSystemZip2::existFile( const WString& _filename )
 	{
 		WString fileNameU = _filename;
 		// TODO: replace with fast remaping using array
@@ -226,14 +226,14 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface* FileSystemZip::createInputFile()
+	FileInputStreamInterface* FileSystemZip2::createInputFile()
 	{
 		ZipFileInput * zipFile = new ZipFileInput;
 		zipFile->setFileSystem( this );
 		return zipFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::openInputFile( const WString& _filename, FileInputStreamInterface* _file )
+	bool FileSystemZip2::openInputFile( const WString& _filename, FileInputStreamInterface* _file )
 	{
 		if( _file == 0 )
 		{
@@ -261,14 +261,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemZip::closeInputFile( FileInputStreamInterface* _file )
+	void FileSystemZip2::closeInputFile( FileInputStreamInterface* _file )
 	{
 		//MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 		//m_fileInputPool.release( memFile );
 		//delete memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileBufferProvider * FileSystemZip::getBufferProvider() const
+	FileBufferProvider * FileSystemZip2::getBufferProvider() const
 	{
 		//TODO
 		return 0;

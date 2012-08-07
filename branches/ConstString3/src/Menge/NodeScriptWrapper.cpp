@@ -2037,33 +2037,7 @@ namespace Menge
 
 			return py_dict_result;
 		}
-
-		static bool s_createParticlesResource( const ConstString & _resourceName, const ConstString& _pakName,  const WString & _fileName
-			, const WString & _folderName, const ConstString& _emitterName  )
-		{
-				ResourceEmitterContainer* resource = ResourceManager::get()
-					->getResourceT<ResourceEmitterContainer>( _resourceName );
-
-				if( resource == NULL )
-				{
-					resource = ResourceManager::get()
-						->createResourceT<ResourceEmitterContainer>( _pakName, Consts::get()->c_builtin_empty, _resourceName, Consts::get()->c_ResourceEmitterContainer );
-					
-					if( resource == NULL )
-					{
-						return false;
-					}
-				}
-
-				resource->setEmitterName(_emitterName);
-				resource->setFilePath(_fileName);
-				resource->setFolderPath(_folderName);
-				resource->compile();
-				return true;
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		
+		//////////////////////////////////////////////////////////////////////////		
 		class ResourceVisitorGetAlreadyCompiled
 			: public ResourceVisitor
 		{
@@ -2206,58 +2180,10 @@ namespace Menge
 	public:
 		bool apply( PyObject * _obj, ConstString & _value ) override
 		{
-			if( pybind::string_check( _obj ) == true )
-			{
-				TConstStringPyObjectCast::iterator it_found = m_cast.find(_obj);
-
-				if( it_found == m_cast.end() )
-				{
-					size_t size;
-					const char * value_char = pybind::string_to_char(_obj, size);
-
-					ConstString cstr(value_char, size);
-
-					m_wrap.insert( std::make_pair(cstr, _obj) );
-
-					pybind::incref( _obj );
-
-					it_found = m_cast.insert( std::make_pair(_obj, value_char) ).first;
-				}
-
-				_value = it_found->second;
-
-				//size_t ch_size;
-
-				//const char * ch_buff = pybind::string_to_char( _obj, ch_size );
-
-				//if( ch_size == 0 )
-				//{
-				//	_value = Consts::get()->c_builtin_empty;
-				//	
-				//	return true;
-				//}								
-				//_value = ConstString( ch_buff, ch_size );
-			}
-			//else if( pybind::unicode_check( _obj ) )
-			//{
-			//	size_t ch_size;
-
-			//	const char * ch_buff = pybind::unicode_to_utf8( _obj, ch_size );
-
-			//	if( ch_size == 0 )
-			//	{
-			//		_value = Consts::get()->c_builtin_empty;
-
-			//		return true;
-			//	}
-			//	
-			//	_value = Consts::get()->cache( ch_buff, ch_size );
-			//	//_value = ConstString( ch_buff, ch_size );
-			//}
-			else
-			{
-				return false;
-			}
+            size_t size;
+            const char * value_char = pybind::string_to_char(_obj, size);
+            
+            _value = ConstString(value_char, size);
 
 			return true;
 		}
@@ -3105,7 +3031,6 @@ namespace Menge
 			pybind::def_function( "joinTask", &ScriptMethod::s_joinTask );
 			
 			//For Astralax
-			pybind::def_function( "createParticlesResource", &ScriptMethod::s_createParticlesResource );
 			pybind::def_function( "visitResourceEmitterContainer", &ScriptMethod::s_visitResourceEmitterContainer );
 
 			pybind::def_function( "getNullObjectsFromResourceVideo", &ScriptMethod::s_getNullObjectsFromResourceVideo );

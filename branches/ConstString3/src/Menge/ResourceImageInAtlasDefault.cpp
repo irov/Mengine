@@ -9,7 +9,6 @@
 #	include "CodecEngine.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
-#	include "BinParser.h"
 
 namespace Menge
 {
@@ -26,68 +25,68 @@ namespace Menge
 		//return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageInAtlasDefault::loader( BinParser * _parser )
+	void ResourceImageInAtlasDefault::loader( const Metabuf::Metadata * _parser )
 	{
-		ResourceImage::loader( _parser );
+		//ResourceImage::loader( _parser );
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceAtlas_Name, m_resourceAtlasName );
+		//BIN_SWITCH_ID( _parser )
+		//{
+		//	BIN_CASE_ATTRIBUTE( Protocol::ResourceAtlas_Name, m_resourceAtlasName );
 
-			BIN_CASE_NODE( Protocol::File )
-			{
-				ImageDesc desc;
-				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-				desc.offset = mt::vec2f(0.f,0.f);
-				desc.maxSize = mt::vec2f(-1.f,-1.f);
-				desc.size = mt::vec2f(-1.f,-1.f);
-				desc.isAlpha = true; //
-				desc.wrapX = false;
-				desc.wrapY = false;
+		//	BIN_CASE_NODE( Protocol::File )
+		//	{
+		//		ImageDesc desc;
+		//		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+		//		desc.offset = mt::vec2f(0.f,0.f);
+		//		desc.maxSize = mt::vec2f(-1.f,-1.f);
+		//		desc.size = mt::vec2f(-1.f,-1.f);
+		//		desc.isAlpha = true; //
+		//		desc.wrapX = false;
+		//		desc.wrapY = false;
 
-				WString fileNameAlpha;
-				WString fileNameRGB;
-				WString fileName;
+		//		WString fileNameAlpha;
+		//		WString fileNameRGB;
+		//		WString fileName;
 
-				String format;
-				int from = -1;
-				int to = -1;
-				int step = 1;
-				bool isCombined;
+		//		String format;
+		//		int from = -1;
+		//		int to = -1;
+		//		int step = 1;
+		//		bool isCombined;
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
+		//		BIN_FOR_EACH_ATTRIBUTES()
+		//		{
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
 
-					BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
-					BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
-					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, isCombined );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, isCombined );
 
-					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
-					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
-					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
 
 
-					BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
-					BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
-					BIN_CASE_ATTRIBUTE( Protocol::File_WrapX, desc.wrapX );
-					BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
-				}
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_WrapX, desc.wrapX );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
+		//		}
 
-				desc.fileName = fileName;
+		//		desc.fileName = fileName;
 
-				if( desc.codecType.empty() == true )
-				{
-					desc.codecType = s_getImageCodec( desc.fileName );
-				}
+		//		if( desc.codecType.empty() == true )
+		//		{
+		//			desc.codecType = s_getImageCodec( desc.fileName );
+		//		}
 
-				m_imageDesc = desc;
-			}
-		}
+		//		m_imageDesc = desc;
+		//	}
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageInAtlasDefault::_compile()

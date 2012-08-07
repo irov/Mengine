@@ -18,12 +18,12 @@ namespace Menge
 	class FileSystemInterface;
 	class MappedFileInputStreamInterface;
 
-	class FileSystemZip
+	class FileSystemZip2
 		: public FileGroup
 	{
 	public:
-		FileSystemZip();
-		~FileSystemZip();
+		FileSystemZip2();
+		~FileSystemZip2();
 
 	public:
 		bool initialize( const WString& _path, FileEngine * _fileEngine, bool _create ) override;

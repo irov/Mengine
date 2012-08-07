@@ -14,6 +14,7 @@ namespace Menge
 		{
 			return false;
 		}
+
 		mt::vec2f gravity( 0.0, -10.0f  );
 
 		mt::vec2f lowerBound( m_position.x , m_position.y );

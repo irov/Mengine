@@ -1,6 +1,5 @@
 #	include "ResourceImageAtlas.h"
 #	include "ResourceImplement.h"
-#	include "BinParser.h"
 #	include "Utils/Core/Rect.h"
 #	include "RenderEngine.h"
 #	include "LogEngine.h"
@@ -18,14 +17,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageAtlas::loader( BinParser * _parser )
+	void ResourceImageAtlas::loader( const Metabuf::Metadata * _parser )
 	{
-		ResourceReference::loader( _parser );
+		//ResourceReference::loader( _parser );
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Size_Value, m_size );
-		}
+		//BIN_SWITCH_ID( _parser )
+		//{
+		//	BIN_CASE_ATTRIBUTE( Protocol::Size_Value, m_size );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageAtlas::_compile()

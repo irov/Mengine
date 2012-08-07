@@ -5,8 +5,6 @@
 
 #	include "Consts.h"
 
-#	include "BinParser.h"
-
 #	include "LogEngine.h"
 
 #	include "Core/String.h"

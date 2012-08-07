@@ -17,7 +17,7 @@ namespace Menge
 		void * getBuffer( size_t & _size ) const override;
 
 	protected:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		WString m_path;	

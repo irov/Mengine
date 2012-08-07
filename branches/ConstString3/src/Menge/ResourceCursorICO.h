@@ -21,7 +21,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		WString m_path;

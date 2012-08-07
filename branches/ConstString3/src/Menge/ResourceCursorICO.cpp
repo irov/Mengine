@@ -3,7 +3,7 @@
 
 #	include "FileEngine.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 #	include "LoaderEngine.h"
 
 #	include "LogEngine.h"
@@ -19,12 +19,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceCursorICO::loader( BinParser * _parser )
+	void ResourceCursorICO::loader( const Metabuf::Metadata * _meta )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_path );
-		}
+        const Metacode::Meta_DataBlock::Meta_ResourceCursorICO * metadata
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceCursorICO *>(_meta);
+
+        metadata->swap_File_Path( m_path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceCursorICO::_compile()

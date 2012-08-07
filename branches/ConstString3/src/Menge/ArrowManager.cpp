@@ -5,8 +5,6 @@
 
 #	include "ScriptEngine.h"
 
-#	include "BinParser.h"
-
 #	include "Consts.h"
 #	include "LogEngine.h"
 

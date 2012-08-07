@@ -33,18 +33,6 @@ namespace Menge
 		void setFolderPath( const WString& _path );
 		const WString& getFolderPath() const;
 		
-		void setEmitterName( const ConstString& _name );
-		const ConstString& getEmitterName() const;
-
-		void setEmitterStartPosition( float _startPosition );
-		float getEmitterStartPosition () const;
-
-		void setEmitterPositionOffset( const mt::vec2f& _offset );
-		const mt::vec2f& getEmitterPositionOffset() const;
-
-		void setEmitterRelative( bool _relative );
-		bool getEmitterRelative() const;
-
 	public:
 		EmitterContainerInterface * getContainer() const;
 
@@ -52,7 +40,7 @@ namespace Menge
 		ResourceImageDefault* getAtlasImage( size_t _atlasId );
 
 	public:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 	
 	protected:
 		bool _compile() override;
@@ -65,12 +53,6 @@ namespace Menge
 		WString m_filename;
 		WString m_folder;
 		
-		//added for setup particle emitter at movie export 
-		ConstString m_emitterName;
-		float m_emitterStartPosition;
-		mt::vec2f m_emitterPositionOffset;
-		bool m_emitterRelative;
-
 		EmitterContainerInterface * m_container;
 
 		typedef std::vector<ResourceImageDefault *> TVectorAtlasImages;

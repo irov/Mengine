@@ -475,12 +475,12 @@ namespace Menge
 			pack.preload = true;
 			pack.type = "dir";
 			
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Type", pack.type );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Name", pack.name );
+            s_getIniValue( resources_settings, resourcePack.c_str(), L"Name", pack.name );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Type", pack.type );            
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"Path", pack.path );
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"Locale", pack.locale );
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"Platform", pack.platform );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.filename );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.description );
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"PreLoad", pack.preload );						
 
 			resourcePacks.push_back( pack );
@@ -509,7 +509,7 @@ namespace Menge
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"Path", pack.path );
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"Locale", pack.locale );
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"Platform", pack.platform );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.filename );
+			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.description );
 			s_getIniValue( resources_settings, resourcePack.c_str(), L"PreLoad", pack.preload );	
 
 			languagePacks.push_back( pack );

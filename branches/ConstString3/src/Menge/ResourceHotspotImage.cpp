@@ -8,8 +8,6 @@
 
 #	include "ResourceHotspotImage.h"
 
-#	include "BinParser.h"
-
 #	include "ResourceImplement.h"
 #	include "ResourceImage.h"
 
@@ -38,15 +36,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHotspotImage::loader( BinParser * _parser )
+	void ResourceHotspotImage::loader( const Metabuf::Metadata * _parser )
 	{
-		ResourceReference::loader( _parser );
+        //const Metacode::Meta_DataBlock::Meta_Resource * metadata
+        //    = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceEmitterContainer *>(_meta);
 
-		BIN_SWITCH_ID( _parser )
-		{
-			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			BIN_CASE_ATTRIBUTE( Protocol::ImageResource_Name, m_resourceImageName );
-		}
+		//ResourceReference::loader( _parser );
+
+		//BIN_SWITCH_ID( _parser )
+		//{
+		//	//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
+		//	BIN_CASE_ATTRIBUTE( Protocol::ImageResource_Name, m_resourceImageName );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHotspotImage::_compile()

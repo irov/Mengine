@@ -9,7 +9,6 @@
 #	include "CodecEngine.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
-#	include "BinParser.h"
 
 namespace Menge
 {
@@ -26,71 +25,71 @@ namespace Menge
 		//return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageInAtlasCombineRGBAndAlpha::loader( BinParser * _parser )
+	void ResourceImageInAtlasCombineRGBAndAlpha::loader( const Metabuf::Metadata * _parser )
 	{
-		ResourceImage::loader( _parser );
-		
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceAtlas_Name, m_resourceAtlasName );
-			
-			BIN_CASE_NODE( Protocol::File )
-			{
-				ImageDesc desc;
-				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-				desc.offset = mt::vec2f(0.f,0.f);
-				desc.maxSize = mt::vec2f(-1.f,-1.f);
-				desc.size = mt::vec2f(-1.f,-1.f);
-				desc.isAlpha = true; //
-				desc.wrapX = false;
-				desc.wrapY = false;
+		//ResourceImage::loader( _parser );
+		//
+		//BIN_SWITCH_ID( _parser )
+		//{
+		//	BIN_CASE_ATTRIBUTE( Protocol::ResourceAtlas_Name, m_resourceAtlasName );
+		//	
+		//	BIN_CASE_NODE( Protocol::File )
+		//	{
+		//		ImageDesc desc;
+		//		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+		//		desc.offset = mt::vec2f(0.f,0.f);
+		//		desc.maxSize = mt::vec2f(-1.f,-1.f);
+		//		desc.size = mt::vec2f(-1.f,-1.f);
+		//		desc.isAlpha = true; //
+		//		desc.wrapX = false;
+		//		desc.wrapY = false;
 
-				WString fileNameAlpha;
-				WString fileNameRGB;
-				WString fileName;
+		//		WString fileNameAlpha;
+		//		WString fileNameRGB;
+		//		WString fileName;
 
-				String format;
-				int from = -1;
-				int to = -1;
-				int step = 1;
-				bool isCombined;
+		//		String format;
+		//		int from = -1;
+		//		int to = -1;
+		//		int step = 1;
+		//		bool isCombined;
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
+		//		BIN_FOR_EACH_ATTRIBUTES()
+		//		{
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
 
-					BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
-					BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
-					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, isCombined );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, isCombined );
 
-					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
-					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
-					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
 
 
-					BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
-					BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
-					BIN_CASE_ATTRIBUTE( Protocol::File_WrapX, desc.wrapX );
-					BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
-				}
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_WrapX, desc.wrapX );
+		//			BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
+		//		}
 
-				desc.fileNameAlpha = fileNameAlpha;
-				desc.fileNameRGB = fileNameRGB;
+		//		desc.fileNameAlpha = fileNameAlpha;
+		//		desc.fileNameRGB = fileNameRGB;
 
-				if( desc.fileNameAlpha.empty() == false )
-				{
-					desc.codecTypeAlpha = s_getImageCodec( desc.fileNameAlpha );
-				}
-				
-				desc.codecTypeRGB = s_getImageCodec( desc.fileNameRGB );
+		//		if( desc.fileNameAlpha.empty() == false )
+		//		{
+		//			desc.codecTypeAlpha = s_getImageCodec( desc.fileNameAlpha );
+		//		}
+		//		
+		//		desc.codecTypeRGB = s_getImageCodec( desc.fileNameRGB );
 
-				m_imageDesc = desc;
-			}
-		}
+		//		m_imageDesc = desc;
+		//	}
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageInAtlasCombineRGBAndAlpha::_compile()
@@ -118,7 +117,6 @@ namespace Menge
 		}
 				
 		m_imageFrame.uv = m_imageDesc.uv;
-
 		m_imageFrame.maxSize = m_imageDesc.maxSize;
 		m_imageFrame.offset =  m_imageDesc.offset;
 

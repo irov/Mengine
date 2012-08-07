@@ -4,7 +4,7 @@
 #	include "FileEngine.h"
 #	include "CodecEngine.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 
 #	include "LogEngine.h"
 
@@ -22,61 +22,65 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loader( BinParser * _parser )
+	void ResourcePlaylist::loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _parser );
+        const Metacode::Meta_DataBlock::Meta_ResourcePlaylist * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourcePlaylist *>(_meta);
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Loop_Value, m_loop );
-			BIN_CASE_ATTRIBUTE( Protocol::Shuffle_Value, m_shuffle );
+        metadata->get_Loop_Value( m_loop );
+        metadata->get_Shuffle_Value( m_shuffle );
 
-			BIN_CASE_NODE_PARSE_METHOD( Protocol::Tracks, this, &ResourcePlaylist::loaderTrack_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loaderTrack_( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Track )
-			{
-				TrackDesc desc;
+        const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::TVectorMeta_Tracks & includes_tracks = metadata->get_IncludesTracks();
 
-				desc.volume = 1.f;
+        for( Metacode::Meta_DataBlock::Meta_ResourcePlaylist::TVectorMeta_Tracks::const_iterator
+            it = includes_tracks.begin(),
+            it_end = includes_tracks.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks & meta_tracks = *it;
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Track_File, desc.path );
-					BIN_CASE_ATTRIBUTE( Protocol::Track_Codec, desc.codec );
-					BIN_CASE_ATTRIBUTE( Protocol::Track_Volume, desc.volume );
-				}
+            const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::TVectorMeta_Track & includes_track = meta_tracks.get_IncludesTrack();
 
-				const ConstString & category = this->getCategory();
+            for( Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::TVectorMeta_Track::const_iterator
+                it = includes_track.begin(),
+                it_end = includes_track.end();
+            it != it_end;
+            ++it )
+            {
+                const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & meta_track = *it;
 
-				if( FileEngine::get()
-					->existFile( category, desc.path ) == false )
-				{
-					MENGE_LOG_ERROR( "ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
-						, this->getName().c_str()
-						, desc.path.c_str() 
-						);
+                TrackDesc desc;
 
-					BIN_SKIP();
-				}
+                desc.volume = 1.f;
 
-				if( desc.codec.empty() == true )
-				{
-					WString codecExt;
-					Utils::getFileExt( codecExt, desc.path );
+                meta_track.swap_File( desc.path );
+                
+                const ConstString & category = this->getCategory();
 
-					desc.codec = CodecEngine::get()
-						->findCodecType( codecExt );
-				}
+                if( FileEngine::get()
+                    ->existFile( category, desc.path ) == false )
+                {
+                    MENGE_LOG_ERROR( "ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
+                        , this->getName().c_str()
+                        , desc.path.c_str() 
+                        );
 
-				m_tracks.push_back( desc );
-			}
-		}
+                    continue;
+                }
+
+                if( meta_track.swap_Codec( desc.codec ) == false )
+                {
+                    WString codecExt;
+                    Utils::getFileExt( codecExt, desc.path );
+
+                    desc.codec = CodecEngine::get()
+                        ->findCodecType( codecExt );
+                }
+
+                m_tracks.push_back( desc );
+            }
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TrackDesc * ResourcePlaylist::getTrack( unsigned int _track ) const

@@ -15,14 +15,16 @@ namespace Menge
 		~ResourceVideo();
 
 	public:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	public:
 		const WString & getFilePath() const;
 		const ConstString& getCodecType() const;
+
 	public:
 		const mt::vec2f& getFrameSize() const;
 		bool isAlpha() const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;

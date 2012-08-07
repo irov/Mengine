@@ -39,7 +39,7 @@ namespace Menge
 		RenderTextureInterface * createTextureRGBAndAlpha_( const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		void loadRGBAndAlphaData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderRGB,  ImageDecoderInterface * _imageDecoderAlpha ) const;
 	protected:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		bool _compile() override;

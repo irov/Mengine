@@ -32,11 +32,12 @@ namespace Menge
 		const ConstString & getCodecType() const override;
 		const ColourValue & getColor() const;
 		bool loadBuffer( unsigned char * _buffer, int _pitch ) override;
+
 	protected:
 		bool isValid() const override;
 
 	protected:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		bool _compile() override;

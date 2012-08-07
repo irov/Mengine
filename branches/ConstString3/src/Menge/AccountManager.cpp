@@ -12,9 +12,6 @@
 
 #	include "Consts.h"
 
-#	include "BinParser.h"
-
-#	include "LoaderEngine.h"
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
 

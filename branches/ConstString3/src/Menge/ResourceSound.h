@@ -35,7 +35,7 @@ namespace Menge
 		float getDefaultVolume() const;
 
 	public:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	public:
 		SoundBufferInterface * getSoundBuffer() const;

@@ -6,7 +6,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 #	include "LogEngine.h"
 
 namespace Menge
@@ -19,23 +19,28 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::loader( BinParser * _parser )
+	void ResourceAnimation::loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _parser );
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Sequence )
-			{
-				AnimationSequence sq;
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Sequence_ResourceImageName, sq.resourceName );
-					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Delay, sq.delay );
-				}
+        const Metacode::Meta_DataBlock::Meta_ResourceAnimation * metadata
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceAnimation *>(_meta);
 
-				m_sequence.push_back( sq );
-			}
-		}
+        const Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence & includes_sequence = metadata->get_IncludesSequence();
+
+        for( Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence::const_iterator
+            it = includes_sequence.begin(),
+            it_end = includes_sequence.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & meta_sequence = *it;
+
+            AnimationSequence sq;
+
+            meta_sequence.swap_ResourceImageName( sq.resourceName );
+            sq.delay = meta_sequence.get_Delay();
+
+            m_sequence.push_back( sq );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimation::_compile()

@@ -3,7 +3,12 @@
 #	include <Windows.h>
 
 #	include "Utils/Logger/Logger.h"
+
 #	include "XmlToBin.h"
+
+#	include "xml2metabuf/Xml2Metabuf.hpp"
+#	include "xml2metabuf/Xml2Metacode.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -35,76 +40,123 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		writeHeader( m_options.pathProtocol.c_str(), L"BinProtocol.h" );
+		Metabuf::XmlProtocol xml_protocol;
 
-		char error[256];		
-		if( writeBinary( m_options.pathProtocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), error ) == false )
+		FILE * file_protocol = _wfopen( m_options.pathProtocol.c_str(), L"rb" );
+
+        if( file_protocol == NULL )
+        {
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error open protocol %S"
+                , m_options.pathProtocol.c_str()
+                );
+
+            return 0;
+        }
+
+		long size;
+
+		fseek(file_protocol, 0, SEEK_END);
+		size = ftell(file_protocol);
+		fseek(file_protocol, 0, SEEK_SET);
+
+		std::vector<char> buf(size);
+
+		fread( &buf[0], 1, size, file_protocol );
+
+		fclose( file_protocol );
+
+		if( xml_protocol.readProtocol( &buf[0], size ) == false )
+        {
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error read protocol %S"
+                , m_options.pathProtocol.c_str()
+                );
+
+            return 0;
+        }
+
+		Metabuf::Xml2Metacode xml_metacode(&xml_protocol);
+
+		std::string header;
+		std::string source;
+		xml_metacode.generate( header, source );
+
+		FILE * file_metacode_hpp = _wfopen( L"Metacode.h", L"wb" );
+        
+        if( file_metacode_hpp == NULL )
+        {
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error open Metacode.h"                
+                );
+
+            return 0;
+        }
+
+		fwrite( header.c_str(), header.size(), 1, file_metacode_hpp );
+		fclose( file_metacode_hpp );
+
+		FILE * file_metacode_cpp = _wfopen( L"Metacode.cpp", L"wb" );
+
+        if( file_metacode_cpp == NULL )
+        {
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error open Metacode.cpp"                
+                );
+
+            return 0;
+        }
+        
+		fwrite( source.c_str(), source.size(), 1, file_metacode_cpp );
+		fclose( file_metacode_cpp );
+		
+		FILE * file_test = _wfopen( m_options.pathXml.c_str(), L"rb" );
+
+        if( file_test == NULL )
+        {
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error open xml %S"
+                , m_options.pathXml.c_str()
+                );
+
+            return 0;
+        }
+
+		long size_test;
+
+		fseek(file_test, 0, SEEK_END);
+		size_test = ftell(file_test);
+		fseek(file_test, 0, SEEK_SET);
+
+        std::vector<char> buf_test(size_test);
+
+		fread( &buf_test[0], 1, size_test, file_test );
+
+		fclose( file_test );
+
+		size_t write_size;
+
+		std::vector<char> write_buff(size_test * 2);
+
+		Metabuf::Xml2Metabuf xml_metabuf(&write_buff[0], size_test * 2, &xml_protocol);
+
+        LOGGER_INFO(m_logService)( "Xml2BinDecoder::decode:\nxml %S\nbin %S"
+            , m_options.pathXml.c_str()
+            , m_options.pathBin.c_str()
+            );
+
+		xml_metabuf.initialize();
+		if( xml_metabuf.convert( &buf_test[0], size_test, write_size ) == false )
 		{
-			LOGGER_ERROR(m_logService)( "Error: can't parse sample '%S' '%S' '%S' '%d'"
-				, m_options.pathProtocol.c_str()
-				, m_options.pathXml.c_str()
-				, m_options.pathBin.c_str()
-				//, m_options.version
-				);
-
-			LOGGER_ERROR(m_logService)( "'%s'"
-				, error
-				);
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error\n%s"
+                , xml_metabuf.getError().c_str()
+                );
 
 			return 0;
 		}
+
+		FILE * file_test_bin = _wfopen( m_options.pathBin.c_str(), L"wb" );
+
+		fwrite( &write_buff[0], write_size, 1, file_test_bin );
+		fclose( file_test_bin );
 		
 		return 1;
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
-	//{
-	//	const char * xml2bin = "xml2bin.dll";
-
-	//	HINSTANCE hMyDll = ::LoadLibraryA(xml2bin);
-
-	//	if( hMyDll == NULL )
-	//	{
-	//		LOGGER_ERROR(m_logSystem)( "Error: can't load dll '%s'"
-	//			, xml2bin
-	//			);
-
-	//		return 0;
-	//	}
-
-	//	typedef bool (*PFN_Header)( const char *, const char *);
-	//	PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
-	//	p_Header( m_options.protocol.c_str(), "BinProtocol.h" );
-
-	//	typedef bool (*PFN_Binary)( const char *, const char *, const char *, int, char *);
-	//	PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
-
-	//	//if( p_Header( m_options.protocol.c_str(), "BinProtocol.h" ) == false )
-	//	//{
-
-	//	//}
-
-	//	char error[256];
-	//	if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
-	//	{
-	//		LOGGER_ERROR(m_logSystem)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
-	//			, m_options.protocol.c_str()
-	//			, m_options.pathXml.c_str()
-	//			, m_options.pathBin.c_str()
-	//			, m_options.version
-	//			);
-
-	//		LOGGER_ERROR(m_logSystem)( "'%s'"
-	//			, error
-	//			);
-
-	//		return 0;
-	//	}
-
-	//	::FreeLibrary( hMyDll );
-
-	//	return 1;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Xml2BinDecoder::destroy()
 	{

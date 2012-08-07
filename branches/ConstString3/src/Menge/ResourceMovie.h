@@ -118,7 +118,7 @@ namespace Menge
 		void visitResourceMovie( VisitorResourceMovie * _visitor );
 
 	protected:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 		//void loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml );
 		//void loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml, const MovieLayerSource3D & _layer );
 		

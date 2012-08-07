@@ -1,7 +1,7 @@
 #	include "LoaderEngine.h"
-#	include "Loadable.h"
 
-#	include "BinParser.h"
+#	include "metabuf/Metabuf.hpp"
+
 #	include "FileEngine.h"
 
 #	include "CodecEngine.h"
@@ -14,126 +14,17 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class LoadableListener
-			: public BinParserListener
-		{
-		public:
-			LoadableListener( Loadable * _loadable )
-				: m_loadable(_loadable)
-			{
-			}
-
-		protected:
-			void onElement( BinParser * _parser ) override
-			{
-				m_loadable->loader( _parser );
-			}
-
-			void onEndElement() override
-			{
-				m_loadable->loaded();
-			}
-
-		protected:
-			Loadable * m_loadable;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	LoaderEngine::LoaderEngine()
 		: m_bufferLevel(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
+	bool LoaderEngine::load( const ConstString & _pak, const WString & _path, Metabuf::Metadata * _metadata, bool & _exist )
 	{
-		class FFindBlobject
-		{
-		public:
-			FFindBlobject( const ConstString & _pak, const WString & _path )
-				: m_pak(_pak)
-				, m_path(_path)
-			{
-
-			}
-
-		public:
-			bool operator() ( const BlobjectCache & _cache )
-			{
-				if( _cache.pak != m_pak )
-				{
-					return false;
-				}
-
-				if( _cache.path != m_path )
-				{
-					return false;
-				}
-
-				return true;
-			}
-
-		protected:
-			const ConstString & m_pak;
-			const WString & m_path;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::cache( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist )
-	{
-		TBlobjectCache::iterator it_found = std::find_if( m_cache.begin(), m_cache.end(), FFindBlobject(_pak, _path) ); 
-
-		if( it_found == m_cache.end() )
-		{
-			BlobjectCache cache;
-			cache.pak = _pak;
-			cache.path = _path;			
-
-			if( this->import( cache.pak, cache.path, cache.blob, _exist ) == false )
-			{
-				if( _exist == true )
-				{
-					return false;
-				}
-			}
-
-			it_found = m_cache.insert( m_cache.begin(), cache );
-
-			if( m_cache.size() > 10 )
-			{
-				m_cache.pop_back();
-			}
-		}
-
-		const BlobjectCache & cache = *it_found;
-
-		if( cache.blob.empty() == true )
-		{
-			_exist = false;
-
-			_loadable->loaded();
-
-			return true;
-		}
-
-		_exist = true;
-
-		if( LoaderEngine::get()
-			->loadBinary( cache.blob, _loadable ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::load( const ConstString & _pak, const WString & _path, Loadable * _loadable, bool & _exist )
-	{
-        MENGE_LOG_INFO( "LoaderEngine::load pak '%s' path '%S'"
-                       , _pak.c_str()
-                       , _path.c_str()
-                       );
+        MENGE_LOG_INFO( "LoaderEngine::load pak '%s:%S'"
+            , _pak.c_str()
+            , _path.c_str()
+            );
         
 		Archive & buffer = m_bufferArchive[m_bufferLevel];
 
@@ -147,7 +38,7 @@ namespace Menge
 		}
 
         
-		if( this->loadBinary( buffer, _loadable ) == false )
+		if( this->loadBinary( buffer, _metadata ) == false )
 		{
 			--m_bufferLevel;
 			return false;
@@ -157,16 +48,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::loadBinary( const Archive & _blob, Loadable * _loadable )
+	bool LoaderEngine::loadBinary( const Archive & _blob, Metabuf::Metadata * _metadata )
 	{
-		BinParser parser( _blob.begin(), _blob.end() );
+        if( _blob.empty() == true )
+        {
+            return true;
+        }
 
-		LoadableListener listener(_loadable);
-		if( parser.run( &listener ) == false )
-		{
-			return false;
-		}
+		size_t read_size;
+		if( _metadata->parse( &_blob[0], _blob.size(), read_size ) == false )
+        {
+            MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid parse"
+                );
 
+            return false;
+        }
+
+        if( read_size != _blob.size() )
+        {
+            return false;
+        }
+        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -220,20 +122,14 @@ namespace Menge
 		if( size == 0 )
 		{
 			_archive.clear();
-			return false;
+			return true;
 		}
-
 
 		_archive.resize( size );
 
 		int reading = _bin->read( &_archive.front(), size );
 
 		if( reading != size )
-		{
-			return false;
-		}
-
-		if( _archive[0] != 42 )
 		{
 			return false;
 		}
@@ -250,14 +146,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const WString & _path, FileInputStreamInterface ** _file, bool & _exist )
 	{
-		WString path_xml = _path + L".xml";
-		WString path_bin = _path + L".bin";
+		WString path_xml = _path;
+
+        WString::size_type size = path_xml.size();
+        path_xml[size-3] = L'x';
+        path_xml[size-2] = L'm';
+        path_xml[size-1] = L'l';
 
 		if( FileEngine::get()
 			->existFile( _pak, path_xml ) == false )
 		{
 			if( FileEngine::get()
-				->existFile( _pak, path_bin ) == false )
+				->existFile( _pak, _path ) == false )
 			{
 				_exist = false;
 
@@ -265,7 +165,7 @@ namespace Menge
 			}
 
 			FileInputStreamInterface * file_bin = FileEngine::get()
-				->openInputFile( _pak, path_bin );
+				->openInputFile( _pak, _path );
 
 			if( file_bin == 0 )
 			{
@@ -280,9 +180,9 @@ namespace Menge
 		_exist = true;
 
 		if( FileEngine::get()
-			->existFile( _pak, path_bin ) == false )
+			->existFile( _pak, _path ) == false )
 		{
-			if( this->makeBin_( _pak, path_xml, path_bin ) == false )
+			if( this->makeBin_( _pak, path_xml, _path ) == false )
 			{
 				*_file = 0;
 
@@ -291,7 +191,7 @@ namespace Menge
 		}
 
 		FileInputStreamInterface * file_bin = FileEngine::get()
-			->openInputFile( _pak, path_bin );
+			->openInputFile( _pak, _path );
 
 		if( file_bin == 0 )
 		{
@@ -321,7 +221,7 @@ namespace Menge
 			//Rebild bin file from xml
 			file_bin->close();
 
-			if( this->makeBin_( _pak, path_xml, path_bin ) == false )
+			if( this->makeBin_( _pak, path_xml, _path ) == false )
 			{
 				*_file = 0;
 
@@ -329,7 +229,7 @@ namespace Menge
 			}
 
 			file_bin = FileEngine::get()
-				->openInputFile( _pak, path_bin );
+				->openInputFile( _pak, _path );
 		}
 
 		*_file = file_bin;
@@ -365,8 +265,8 @@ namespace Menge
 		}
 		else
 		{
-			options.pathXml = path + MENGE_FOLDER_DELIM + _pathXml;
-			options.pathBin = path + MENGE_FOLDER_DELIM + _pathBin;
+			options.pathXml = path + _pathXml;
+			options.pathBin = path + _pathBin;
 		}
 
 		//options.version = Menge::Protocol::version;
@@ -395,10 +295,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const WString & _path, FileInputStreamInterface ** _file, bool & _exist )
 	{
-		WString path_bin = _path + L".bin";
+		WString _path = _path + L".bin";
         
 		if( FileEngine::get()
-			->existFile( _pak, path_bin ) == false )
+			->existFile( _pak, _path ) == false )
 		{
 			_exist = false;
 
@@ -406,7 +306,7 @@ namespace Menge
 		}
 
 		FileInputStreamInterface * file_bin = FileEngine::get()
-			->openInputFile( _pak, path_bin );
+			->openInputFile( _pak, _path );
 
 		if( file_bin == 0 )
 		{

@@ -29,6 +29,6 @@ namespace Menge
 	protected:
 		XmlCodecOptions m_options;
 		InputStreamInterface * m_stream;
-		LogServiceInterface * m_logService;
+		LogServiceInterface * m_logService;				
 	};
 }

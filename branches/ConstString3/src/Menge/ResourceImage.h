@@ -52,7 +52,7 @@ namespace Menge
 		virtual bool getWrapY() const;
 		//virtual size_t getCount() const;
 	public:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const WString& _filename, const ConstString& _codec ) const;

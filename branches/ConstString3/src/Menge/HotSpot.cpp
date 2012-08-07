@@ -1,7 +1,5 @@
 #	include "HotSpot.h"
 
-#	include "BinParser.h"
-
 #	include "MousePickerSystem.h"
 
 #	include "RenderEngine.h"

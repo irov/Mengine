@@ -8,19 +8,6 @@
 
 namespace Menge
 {
-	//! ResourcePlaylist - xml - файл, который хранит список имен треков и признак зациклинности. Имя трека это имя файла.
-
-    /*! xml - файл имеет следующую структуру:
-	*
-	* <Tracks>
-	*	<Loop Value = "1/0"/>
-	*	<Track File = "имя_файла0"/>
-	*  ...
-	*	<Track File = "имя_файлаN"/>
-	* </Tracks>
-	*	
-	*/
-
 	struct TrackDesc
 	{
 		WString path;
@@ -46,8 +33,7 @@ namespace Menge
 		bool getShuffle() const;
 
 	public:
-		void loader( BinParser * _parser ) override;
-		void loaderTrack_( BinParser * _parser );
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	private:
 		bool m_loop;

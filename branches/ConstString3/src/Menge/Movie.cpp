@@ -462,7 +462,7 @@ namespace Menge
 		const ColourValue& color = resource->getColor();
 		layer_sprite->setLocalColor( color );
 
-		const mt::vec2f& size = resource->getSize();
+		const mt::vec2f& size = resource->getMaxSize();
 		layer_sprite->setSpriteSize( size );
 
 		if( layer_sprite->compile() == false )

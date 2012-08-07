@@ -1,7 +1,7 @@
 #	include "TextManager.h"
 
 #	include "LoaderEngine.h"
-#	include "BinParser.h"
+#   include "Metacode.h"
 
 #	include "LogEngine.h"
 
@@ -27,121 +27,56 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadResource( const ResourceDesc & _desc )
 	{
-		WString xml_path = _desc.path;
-		if( xml_path.length() != 0 )
-		{
-			xml_path += MENGE_FOLDER_RESOURCE_DELIM;
-		}
-		
-		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeServiceInterface>("UnicodeService");
-
-		const String & resource_name = _desc.name.to_str();
-
-		bool w_resource_name_successful;
-		xml_path += unicodeService->utf8ToUnicode( resource_name, w_resource_name_successful );
-
 		bool exist = false;
 
-		if( LoaderEngine::get()
-			->load( _desc.pakName, xml_path, this, exist ) == false )
-		{
-			MENGE_LOG_ERROR( "TextManager::loadResource Problems parsing Text pack %s:%S"
-				, _desc.name.c_str()
-				, xml_path.c_str()
-				);
+        Metacode::Meta_Texts meta_texts;
+        
+        if( LoaderEngine::get()
+        	->load( _desc.pakName, _desc.path, &meta_texts, exist ) == false )
+        {
+        	MENGE_LOG_ERROR( "TextManager::loadResource Problems parsing Text pack %s:%S"
+        		, _desc.name.c_str()
+        		, _desc.path.c_str()
+        		);
 
-			return false;
-		}
+        	return false;
+        }
+
+        const Metacode::Meta_Texts::TVectorMeta_Text & includes_text = meta_texts.get_IncludesText();
+
+        for( Metacode::Meta_Texts::TVectorMeta_Text::const_iterator
+            it = includes_text.begin(),
+            it_end = includes_text.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_Texts::Meta_Text & meta_text = *it;
+
+            TextEntry textEntry;
+                        
+            const ConstString & key = meta_text.get_Key();
+
+            meta_text.swap_Value( textEntry.text );
+
+            if( meta_text.get_Font( textEntry.font ) == false )
+            {
+                textEntry.font = m_currentFont;
+            }
+
+            if( meta_text.get_CharOffset( textEntry.charOffset ) == false )
+            {
+                textEntry.charOffset = 0.f;
+            }
+
+            if( meta_text.get_CharOffset( textEntry.lineOffset ) == false )
+            {
+                textEntry.lineOffset = 0.f;
+            }
+            
+            this->addTextEntry( key, textEntry );
+        }
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	//const String& TextManager::getText( const String& _key ) const
-	//{
-	//	TStringMap::const_iterator it_find = m_textMap.find( _key );
-	//	if( it_find == m_textMap.end() )
-	//	{
-	//		MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - '%s'"
-	//			, _key.c_str() );
-	//		return Utils::emptyString();
-	//	}
-	//	return it_find->second;
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	void TextManager::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Texts )
-			{
-				m_currentFont.clear();
-				m_currentCharOffset = -100.0f;
-				m_currentLineOffset = -100.0f;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Texts_Font, m_currentFont );
-					BIN_CASE_ATTRIBUTE( Protocol::Texts_CharOffset, m_currentCharOffset );
-					BIN_CASE_ATTRIBUTE( Protocol::Texts_LineOffset, m_currentLineOffset );
-				}
-
-				BIN_PARSE_METHOD( this, &TextManager::loaderTexts_ );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextManager::_loaded()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextManager::loaderTexts_( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Text )
-			{
-				TextEntry textEntry;
-				textEntry.lineOffset = 0.0f;
-				textEntry.charOffset = 0.0f;
-				ConstString key;
-				
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Text_Key, key );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_Value, textEntry.text );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_CharOffset, textEntry.charOffset );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_LineOffset, textEntry.lineOffset );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_Font, textEntry.font );
-				}
-
-				if( key.empty() == true )
-				{
-					continue;
-				}
-
-				if( m_currentFont.empty() == false )
-				{
-					textEntry.font = m_currentFont;
-				}
-				if( m_currentCharOffset > -100.0f )
-				{
-					textEntry.charOffset = m_currentCharOffset;
-				}
-				if( m_currentLineOffset > -100.0f )
-				{
-					textEntry.lineOffset = m_currentLineOffset;
-				}
-
-				String trim_key = key.to_str();
-				Utils::trim( trim_key );
-				
-				ConstString c_trim_key(trim_key);
-
-				this->addTextEntry( c_trim_key, textEntry );
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )

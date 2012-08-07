@@ -104,14 +104,14 @@ namespace Menge
 
 	struct ResourcePackDesc
 	{
-		String name;
+        String name;
 		String type;
+
 		String locale;
+		String platform;
 
-		String platform;		
-		WString filename;
-
-		WString path;
+        WString path;
+		WString description;		
 
 		bool preload;
 	};

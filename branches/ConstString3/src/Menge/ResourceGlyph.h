@@ -26,7 +26,7 @@ namespace Menge
 		float getHeight() const;
 		
 	public:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 		void loaderKerning_( BinParser * _parser, Glyph & _glyph );
 		void loaderGlyph_( BinParser * _parser );
 

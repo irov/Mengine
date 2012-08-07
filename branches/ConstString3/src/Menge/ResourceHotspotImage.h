@@ -27,7 +27,7 @@ namespace Menge
 		ResourceHotspotImage();
 
 	public:
-		void loader( BinParser * _parser ) override;
+		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		bool _compile() override;

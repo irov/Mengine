@@ -4,8 +4,9 @@
 #	include "ResourceReference.h"
 
 #	include "LoaderEngine.h"
+#	include "Metacode.h"
+
 #	include "ServiceProvider.h"
-#	include "BinParser.h"
 
 #	include "LogEngine.h"
 
@@ -39,109 +40,50 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class LoadableResourceManager
-			: public Loadable
-		{
-		public:
-			LoadableResourceManager( ResourceManager * _resourceMgr, const ConstString & _category, const ConstString & _group )
-				: m_resourceMgr(_resourceMgr)
-				, m_category(_category)
-				, m_group(_group)
-			{
-			}
-
-		protected:
-			void loader( BinParser * _parser ) override
-			{
-				BIN_SWITCH_ID( _parser )
-				{
-					BIN_CASE_NODE_PARSE_METHOD( Protocol::DataBlock, this, &LoadableResourceManager::loaderResource_ );
-				}
-			}
-
-		private:
-			void loaderResource_( BinParser * _parser )
-			{
-				BIN_SWITCH_ID( _parser )
-				{
-					BIN_CASE_NODE( Protocol::Resource )
-					{
-						ConstString name;
-						ConstString type;
-
-						BIN_FOR_EACH_ATTRIBUTES()
-						{
-							BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, name );
-							BIN_CASE_ATTRIBUTE( Protocol::Resource_Type, type );
-						}
-
-						ResourceReference * resource = 
-							m_resourceMgr->createResource( m_category, m_group, name, type );
-
-						if( resource == 0 )
-						{
-							BIN_SKIP();
-						}
-
-						BIN_PARSE( resource );
-					}
-				}
-			}
-
-		protected:
-			ResourceManager * m_resourceMgr;
-			ConstString m_category;
-			ConstString m_group;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const ResourceDesc & _desc )
 	{
-		WString xml_path = _desc.path;
-		xml_path += MENGE_FOLDER_RESOURCE_DELIM;
-
-		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
-			->getServiceT<UnicodeServiceInterface>("UnicodeService");
-
-		const String & resource_name = _desc.name.to_str();
-			
-		bool resource_name_succeessful;
-		xml_path += unicodeService->utf8ToUnicode( resource_name, resource_name_succeessful );
-
-		if( resource_name_succeessful == false )
-		{
-			MENGE_LOG_ERROR("ResourceManager::loadResource %s not convert to unicode"
-				, resource_name.c_str()
-				);
-
-			return false;
-		}
-
-		LoadableResourceManager loadable(this, _desc.pakName, _desc.name);
+		Metacode::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( _desc.pakName, xml_path, &loadable, exist ) == false )
+			->load( _desc.pakName, _desc.path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
 				MENGE_LOG_ERROR( "ResourceManager: resource '%s:%S' not found"
-					, _desc.name.c_str()
-					, xml_path.c_str()
+					, _desc.pakName.c_str()
+					, _desc.path.c_str()
 					);
 			}
 			else
 			{
 				MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s:%S'"
-					, _desc.name.c_str()
-					, xml_path.c_str()
+                    , _desc.pakName.c_str()
+                    , _desc.path.c_str()
 					);
 			}
 
 			return false;
 		}
+
+        const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
+
+        for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
+            it = includes_resource.begin(),
+            it_end = includes_resource.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_Resource * meta_resource = *it;
+
+            const ConstString & name = meta_resource->get_Name();
+            const ConstString & type = meta_resource->get_Type();
+
+            ResourceReference * resource = 
+                this->createResource( _desc.pakName, _desc.name, name, type );
+
+            resource->loader( meta_resource );
+        }
 
 		return true;
 	}

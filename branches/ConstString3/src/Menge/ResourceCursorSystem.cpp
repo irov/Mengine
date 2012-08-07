@@ -1,7 +1,7 @@
 #	include "ResourceCursorSystem.h"
 #	include "ResourceImplement.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 #	include "LoaderEngine.h"
 
 #	include "LogEngine.h"
@@ -15,12 +15,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceCursorSystem::loader( BinParser * _parser )
+	void ResourceCursorSystem::loader( const Metabuf::Metadata * _meta )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_path );
-		}
+        const Metacode::Meta_DataBlock::Meta_ResourceCursorSystem * metadata
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceCursorSystem *>(_meta);
+
+        metadata->swap_File_Path( m_path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & ResourceCursorSystem::getPath() const

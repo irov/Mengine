@@ -4,14 +4,16 @@
 
 #	include "FileEngine.h"
 
-#	include <cstdio>
+#   include "LogEngine.h"
+#   include "Metacode.h"
 
-#	include "BinParser.h"
 #	include "Core/ConstString.h"
 #	include "Utils/Core/String.h"
 #	include "RenderEngine.h"
 #	include "Consts.h"
 #	include "Interface/ImageCodecInterface.h"
+
+#	include <cstdio>
 
 namespace Menge
 {
@@ -82,66 +84,32 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::loader( BinParser * _parser )
+	void ResourceImageDefault::loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceImage::loader( _parser );
+        const Metacode::Meta_DataBlock::Meta_ResourceImageDefault * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::File )
-			{
-				ImageDesc desc;
-				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-				desc.offset = mt::vec2f(0.f,0.f);
-				desc.maxSize = mt::vec2f(-1.f,-1.f);
-				desc.size = mt::vec2f(-1.f,-1.f);
-				desc.isAlpha = true; //
-				desc.wrapX = false;
-				desc.wrapY = false;
+        m_imageDesc.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
+        m_imageDesc.maxSize = mt::vec2f(-1.f, -1.f);
+        m_imageDesc.offset = mt::vec2f(0.f, 0.f);
+        m_imageDesc.size = mt::vec2f(-1.f, -1.f);
+        m_imageDesc.isAlpha = true;
+        m_imageDesc.wrapX = false;
+        m_imageDesc.wrapY = false;
+        
+        metadata->swap_File_Path( m_imageDesc.fileName );
+        
+        if( metadata->swap_File_Codec( m_imageDesc.codecType ) == false )
+        {
+            m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
+        }
 
-				WString fileName;
-				WString fileNameAlpha;
-				WString fileNameRGB;
-
-				bool isCombined;
-				String format;
-				int from = -1;
-				int to = -1;
-				int step = 1;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
-
-					BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
-					BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
-					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, isCombined );
-
-					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
-					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
-					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
-
-
-					BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
-					BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
-					BIN_CASE_ATTRIBUTE( Protocol::File_WrapX, desc.wrapX );
-					BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
-				}
-
-				if( desc.codecType.empty() )
-				{
-					desc.codecType = s_getImageCodec( fileName );
-				}
-
-				desc.fileName = fileName;
-				m_imageDesc = desc;
-			}
-		}
-	}
+        metadata->get_File_MaxSize( m_imageDesc.maxSize );
+        metadata->get_File_UV( m_imageDesc.uv );
+        metadata->get_File_Alpha( m_imageDesc.isAlpha );
+        metadata->get_File_WrapX( m_imageDesc.wrapX );
+        metadata->get_File_WrapY( m_imageDesc.wrapY );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{	

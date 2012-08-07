@@ -69,6 +69,8 @@ ADD_FILTER(
 	FileSystemDirectory.cpp
 	FileSystemZip.h
 	FileSystemZip.cpp
+	FileSystemZip2.h
+	FileSystemZip2.cpp
     FileBufferProvider.h
     FileBufferProvider.cpp
 	SimpleFileOutput.h
@@ -346,11 +348,12 @@ Kernel\\\\Loadable
 )
 
 ADD_FILTER(
-Kernel\\\\BinParser
-	BinParser.cpp
-	BinParser.h
-	BinProtocol.h
+Kernel\\\\Metacode
+	Metacode.cpp
+	Metacode.h
+    Metatype.h
 )
+
 
 
 SOURCE_GROUP( Object2D )
@@ -359,12 +362,6 @@ ADD_FILTER(
 Object2D\\\\Animation
 	Animation.cpp
 	Animation.h
-)
-
-ADD_FILTER(
-Object2D\\\\Model
-	Model.cpp
-	Model.h
 )
 
 ADD_FILTER(
@@ -383,32 +380,6 @@ ADD_FILTER(
 Object2D\\\\Point
 	Point.cpp
 	Point.h
-)
-
-ADD_FILTER(
-Object2D\\\\PhysicalBody2D
-	PhysicalBody2D.cpp
-	PhysicalBody2D.h
-)
-
-ADD_FILTER(
-Object2D\\\\RigidBody2D
-	RigidBody2D.cpp
-	RigidBody2D.h
-)
-
-ADD_FILTER(
-Object2D\\\\Shadows
-	Light2D.cpp
-	Light2D.h
-	ShadowCaster2D.cpp
-	ShadowCaster2D.h
-)
-
-ADD_FILTER(
-Object2D\\\\Shadows\\\\LightSystem
-	LightSystem.cpp
-	LightSystem.h
 )
 
 ADD_FILTER(
@@ -440,32 +411,6 @@ Object2D\\\\TextField
 )
 
 ADD_FILTER(
-Object2D\\\\TextField2
-	TextField2.cpp
-	TextField2.h
-)
-
-ADD_FILTER(
-Object2D\\\\TileMap
-	TileMap.cpp
-	TileMap.h
-)
-
-ADD_FILTER(
-Object2D\\\\TilePolygon
-	TilePolygon.cpp
-	TilePolygon.h
-)
-
-ADD_FILTER(
-Object2D\\\\Track
-	Track.cpp
-	Track.h
-	TrackChain.cpp
-	TrackChain.h
-)
-
-ADD_FILTER(
 Object2D\\\\Video
 	Video.cpp
 	Video.h
@@ -481,12 +426,6 @@ ADD_FILTER(
 Object2D\\\\HotSpotImage
 	HotSpotImage.cpp
 	HotSpotImage.h
-)
-
-ADD_FILTER(
-Object3D
-	RenderMesh.cpp
-	RenderMesh.h
 )
 
 ADD_FILTER(
@@ -524,12 +463,6 @@ ADD_FILTER(
 Resource\\\\Animation
 	ResourceAnimation.cpp
 	ResourceAnimation.h
-)
-
-ADD_FILTER(
-Resource\\\\Binary
-	ResourceBinary.cpp
-	ResourceBinary.h
 )
 
 ADD_FILTER(
@@ -582,32 +515,6 @@ Resource\\\\Image
 )
 
 ADD_FILTER(
-Resource\\\\Material
-	ResourceMaterial.cpp
-	ResourceMaterial.h
-)
-
-ADD_FILTER(
-Resource\\\\Model
-	ResourceModel.cpp
-	ResourceModel.h
-)
-
-ADD_FILTER(
-Resource\\\\Mesh
-	ResourceMesh.cpp
-	ResourceMesh.h
-	ResourceMeshMD3.cpp
-	ResourceMeshMD3.h
-	ResourceMeshMS3D.cpp
-	ResourceMeshMS3D.h
-	ResourceMeshNoise.cpp
-	ResourceMeshNoise.h
-	ResourceSkeleton.cpp
-	ResourceSkeleton.h
-)
-
-ADD_FILTER(
 Resource\\\\Playlist
 	ResourcePlaylist.cpp
 	ResourcePlaylist.h
@@ -618,21 +525,6 @@ ADD_FILTER(
 Resource\\\\Sound
 	ResourceSound.cpp
 	ResourceSound.h
-)
-
-ADD_FILTER(
-Resource\\\\TileMap
-	ResourceTileMap.cpp
-	ResourceTileMap.h
-	ResourceTileSet.cpp
-	ResourceTileSet.h
-)
-
-
-ADD_FILTER(
-Resource\\\\TilePolygon
-	ResourceTilePolygon.cpp
-	ResourceTilePolygon.h
 )
 
 ADD_FILTER(
@@ -663,8 +555,6 @@ ADD_FILTER(
 Manager\\\\MovieKeyFrame
 	MovieKeyFrameManager.h
 	MovieKeyFrameManager.cpp	
-	LoaderMovieKeyFrame.h
-	LoaderMovieKeyFrame.cpp
     MovieFramePack.h
     MovieFramePack.cpp
 )
@@ -800,18 +690,6 @@ Scene\\\\Layer2D
 	Layer2D.h
 	Layer2DPhysic.cpp
 	Layer2DPhysic.h
-	Layer2DAccumulator.cpp
-	Layer2DAccumulator.h
-	Layer2DLoop.cpp
-	Layer2DLoop.h
-	Layer2DTexture.cpp
-	Layer2DTexture.h
-)
-
-ADD_FILTER(
-Scene\\\\Layer3D
-	Layer3D.cpp
-	Layer3D.h
 )
 
 ADD_FILTER(
@@ -846,6 +724,7 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 					 ${THIRDPARTY_DIR}/python/include
                      ${THIRDPARTY_DIR}/boost
                      ${THIRDPARTY_DIR}/simpleini
+                     ${THIRDPARTY_DIR}/metabuf
 )
 
 if( WIN32 )
@@ -902,6 +781,12 @@ SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
 debug ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
+)
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+debug ${MENGINE_LIB_PREFIX}metabuf_static${MENGINE_LIB_SUFFIXD}
+optimized ${MENGINE_LIB_PREFIX}metabuf_static${MENGINE_LIB_SUFFIX}
 )
 
 SET( APPLICATION_LIBS

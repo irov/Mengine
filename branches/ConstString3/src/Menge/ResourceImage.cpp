@@ -1,5 +1,4 @@
 #	include "ResourceImage.h"
-#	include "BinParser.h"
 
 #	include "RenderEngine.h"
 #	include "LogEngine.h"
@@ -97,14 +96,14 @@ namespace Menge
 			->releaseTexture( _frame.texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImage::loader( BinParser * _parser )
+	void ResourceImage::loader( const Metabuf::Metadata * _parser )
 	{
-		ResourceReference::loader( _parser );
+		//ResourceReference::loader( _parser );
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Filter_Value, m_filter );
-		}
+		//BIN_SWITCH_ID( _parser )
+		//{
+		//	BIN_CASE_ATTRIBUTE( Protocol::Filter_Value, m_filter );
+		//}
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//bool ResourceImage::createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const

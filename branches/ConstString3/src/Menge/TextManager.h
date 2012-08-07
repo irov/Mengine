@@ -23,7 +23,6 @@ namespace Menge
 
 	class TextManager
 		: public Holder<TextManager>
-		, public Loadable
 	{
 	public:
 		TextManager();
@@ -40,16 +39,7 @@ namespace Menge
 		void setDefaultResourceFontName( const ConstString & _fontName );
 		const ConstString & getDefaultResourceFontName() const;
 
-	protected:
-		void loader( BinParser * _parser ) override;
-		
-	protected:
-		void _loaded() override;
-
-	protected:
-		void loaderTexts_( BinParser * _parser );
-
-	protected:
+    protected:
 		typedef std::map<ConstString, TextEntry> TMapTextEntry;
 		TMapTextEntry m_textMap;
 

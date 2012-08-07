@@ -88,6 +88,12 @@ namespace	Menge
 			return false;
 		}
 
+        ////// it`s not very pretty
+        if( m_emitterName.empty() == true )
+        {
+            return false;
+        }
+
 		m_resource = ResourceManager::get()
 			->getResourceT<ResourceEmitterContainer>( m_resourcename );
 
@@ -111,23 +117,6 @@ namespace	Menge
 				);
 
 			return false;
-		}
-
-		////// it`s not very pretty
-		if( m_emitterName.empty() == true )
-		{
-			m_emitterName = m_resource->getEmitterName();
-			m_emitterRelative = m_resource->getEmitterRelative();
-		}
-				
-		if( m_startPosition == 0.f  )
-		{
-			m_startPosition = m_resource->getEmitterStartPosition();	
-		}
-		
-		if( m_positionOffset.x == 0 && m_positionOffset.y == 0 )
-		{
-			m_positionOffset =  m_resource->getEmitterPositionOffset();	
 		}
 
 		m_interface = container->createEmitter( m_emitterName.to_str() );

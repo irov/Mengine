@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "BinParser.h"
+#	include "Metacode.h"
 
 #	include "Consts.h"
 #	include "LogEngine.h"
@@ -21,16 +21,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceVideo::loader( BinParser * _parser )
+	void ResourceVideo::loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _parser );
+        const Metacode::Meta_DataBlock::Meta_ResourceVideo * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceVideo *>(_meta);
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_filePath );
-			BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, m_alpha );
-			BIN_CASE_ATTRIBUTE( Protocol::File_Codec, m_codecType );
-		}
+        metadata->swap_File_Path( m_filePath );
+        metadata->swap_File_Codec( m_codecType );
+
+        metadata->get_File_Alpha( m_alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_compile()

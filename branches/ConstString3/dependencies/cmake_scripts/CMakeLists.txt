@@ -33,11 +33,13 @@ endif(MSVC)
 #    ADD_SUBDIRECTORY( GLee )
 #endif(WIN32)
 
+ADD_SUBDIRECTORY( metabuf )
+
 if(MSVC)
     ADD_SUBDIRECTORY( Python_3_2 )
     ADD_SUBDIRECTORY( pybind32 )
     ADD_SUBDIRECTORY( pugixml )
-    ADD_SUBDIRECTORY( metabuf )
+
 endif(MSVC)
 
 if(WIN32)

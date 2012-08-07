@@ -419,6 +419,8 @@ namespace Menge
 		s_getIniValue( game_settings, L"Window", L"Fullscreen", appSettings.fullscreen );
 		s_getIniValue( game_settings, L"Window", L"VSync", appSettings.vsync );		
 
+		s_getIniAllSettings( game_settings, L"Params", appSettings.params );
+
 		s_getIniValues( game_settings, L"Plugins", L"Name", appSettings.plugins );
 
 		appSettings.platformName = "WIN";

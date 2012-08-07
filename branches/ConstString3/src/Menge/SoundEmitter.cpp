@@ -257,4 +257,20 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_setTiming( float _timing )
+	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+
+		Holder<SoundServiceInterface>::get()
+			->setPosMs( m_sourceID, _timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

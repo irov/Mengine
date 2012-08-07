@@ -1756,14 +1756,19 @@ namespace Menge
 			WString icoFile;
 
 			icoFile += m_userPath;
-			icoFile += MENGE_FOLDER_DELIM;
+	//		icoFile += MENGE_FOLDER_DELIM;
 			icoFile += L"IconCache";
 			icoFile += MENGE_FOLDER_DELIM;
-
-			WindowsLayer::createDirectory( icoFile );
-
 			icoFile += _name;
-			icoFile += L".cur";
+
+			WString::size_type pos1 = icoFile.find_last_of( L'/' );
+			WString::size_type pos2 = icoFile.find_last_of( L'\\' );
+
+			WString::size_type pos = (std::max)(pos1, pos2);
+
+			WString icoDir = icoFile.substr( 0, pos );
+
+			WindowsLayer::createDirectory( icoDir );
 
 			FILE * file = _wfopen( icoFile.c_str(), L"wb" );
 

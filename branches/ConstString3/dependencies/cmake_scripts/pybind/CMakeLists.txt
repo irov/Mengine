@@ -5,11 +5,6 @@ project(pybind)
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind )
 
-
-if (NOT MSVC)
-    ADD_DEFINITIONS(-D"override = /* */")
-endif(NOT MSVC)  
-
 # OUR SOURCES
 set( pybind_sources
 ${SOURCE_DIR}/src/class_core.cpp

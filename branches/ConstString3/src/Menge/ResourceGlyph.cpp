@@ -74,15 +74,17 @@ namespace Menge
         {
             if( exist == false )
             {
-                MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath '%s:%S' not found"
+                MENGE_LOG_ERROR( "ResourceGlyph: Glyph '%s' not found '%s:%S'"
                     , m_name.c_str()
+                    , category.c_str()
                     , glyphPath.c_str()
                     );
             }
             else
             {
-                MENGE_LOG_ERROR( "ResourceGlyph: GlyphPath invalid parse '%s:%S' "
+                MENGE_LOG_ERROR( "ResourceGlyph: Glyph '%s' invalid parse '%s:%S' "
                     , m_name.c_str()
+                    , category.c_str()
                     , glyphPath.c_str()
                     );
             }

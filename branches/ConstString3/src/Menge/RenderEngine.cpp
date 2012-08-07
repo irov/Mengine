@@ -666,9 +666,11 @@ namespace Menge
 
 		//lockBuffer -= mPitch * imgData.height;
 
-		ImageCodecOptions options;
-		options.flags |= DF_CUSTOM_PITCH;
-		options.flags |= (pitch << 16);
+		ImageCodecOptions options;		
+
+		options.pitch = pitch;
+        options.flags |= DF_CUSTOM_PITCH;
+
 		imageEncoder->setOptions( &options );
 
 		unsigned int bytesWritten = imageEncoder->encode( buffer, &dataInfo );
@@ -935,12 +937,8 @@ namespace Menge
 
 		size_t width = _texture->getWidth();
 
-		if( pitch != width )
-		{
-			options.pitch = pitch;
-
-			options.flags |= DF_CUSTOM_PITCH;
-		}
+		options.pitch = pitch;
+		options.flags |= DF_CUSTOM_PITCH;
 
 		_imageDecoder->setOptions( &options );
 		

@@ -59,8 +59,12 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 				
 		//get RGB data
 		ImageCodecOptions optionsRGB;
-		optionsRGB.flags = DF_COUNT_ALPHA | DF_CUSTOM_PITCH;
-		optionsRGB.pitch = m_options.pitch;
+
+		optionsRGB.flags |= DF_COUNT_ALPHA; 
+        
+        optionsRGB.pitch = m_options.pitch;
+        optionsRGB.flags |= DF_CUSTOM_PITCH;
+
 		m_decoderRGB->setOptions( &optionsRGB );
 
 		if( m_decoderRGB->decode( _buffer, _bufferSize ) == 0 )
@@ -69,13 +73,16 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 		}
 		
 		const ImageCodecDataInfo* alphaDataInfo = m_decoderAlpha->getCodecDataInfo();
-		ImageCodecOptions optionsAlpha;
-		optionsAlpha.flags = DF_READ_ALPHA_ONLY | DF_CUSTOM_PITCH;
-		optionsAlpha.pitch = alphaDataInfo->width;
-		m_decoderAlpha->setOptions( &optionsAlpha );
 
+		ImageCodecOptions optionsAlpha;
 		
-		
+        optionsAlpha.flags |= DF_READ_ALPHA_ONLY;
+        
+		optionsAlpha.pitch = alphaDataInfo->width;
+        optionsAlpha.flags |= DF_CUSTOM_PITCH;
+
+		m_decoderAlpha->setOptions( &optionsAlpha );
+        
 		// alpha must 1 channel 8 bit depth
 		if(	alphaDataInfo == NULL 
 			|| m_dataInfo.width != alphaDataInfo->width 

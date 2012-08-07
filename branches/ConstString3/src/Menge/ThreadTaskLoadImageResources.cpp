@@ -163,12 +163,8 @@ namespace Menge
 
 			size_t width = job.texture->getWidth();
 
-			if( job.textureBufferPitch != dataInfo->width )
-			{
-				options.pitch = job.textureBufferPitch;
-
-				options.flags |= DF_CUSTOM_PITCH;
-			}
+			options.pitch = job.textureBufferPitch;
+			options.flags |= DF_CUSTOM_PITCH;
 
 			job.decoder->setOptions( &options );
 

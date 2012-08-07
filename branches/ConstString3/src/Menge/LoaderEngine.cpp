@@ -295,8 +295,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const WString & _path, FileInputStreamInterface ** _file, bool & _exist )
 	{
-		WString _path = _path + L".bin";
-        
 		if( FileEngine::get()
 			->existFile( _pak, _path ) == false )
 		{

@@ -103,7 +103,7 @@ namespace Menge
 			}
 			else
 			{
-				if( _bufferSize * 4 != m_options.pitch * m_dataInfo.height )
+				if( _bufferSize != m_options.pitch * m_dataInfo.height )
 				{
 					LOGGER_ERROR(m_logService)( "ImageDecoderPNG::decode Error: DF_READ_ALPHA_ONLY bad buffer size" );
 					return 0;
@@ -121,7 +121,7 @@ namespace Menge
 						_buffer[j] = buff[j*4+3];
 					}
 
-					_buffer += m_options.pitch / 4;
+					_buffer += m_options.pitch;
 				}
 
 				delete[] buff;

@@ -64,10 +64,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AlphaChannel * AlphaChannelManager::makeAlphaChannel_( const ConstString& _name, ResourceImage * _resourceImage )
 	{
-        const mt::vec2f & size = _resourceImage->getMaxSize();
+        const mt::vec2f & size = _resourceImage->getSize();
 
-		size_t width = (size_t)size.x;
-		size_t height = (size_t)size.y;
+		size_t width = (size_t)(size.x + 0.5f);
+		size_t height = (size_t)(size.y + 0.5f);
 
 		const WString & alphaBufferName = _resourceImage->getFileName();
 		const ConstString & alphaBufferCodec = _resourceImage->getCodecType();
@@ -94,7 +94,11 @@ namespace Menge
 		}
 		
 		ImageCodecOptions options;
-		options.flags = DF_READ_ALPHA_ONLY;
+		options.flags |= DF_READ_ALPHA_ONLY;
+
+        options.pitch = width;
+        options.flags |= DF_CUSTOM_PITCH;
+
 
 		decoder->setOptions( &options );
 

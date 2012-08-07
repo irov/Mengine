@@ -349,8 +349,11 @@ namespace Menge
 	{
 		//RGB
 		ImageCodecOptions optionsRGB;
-		optionsRGB.flags = DF_COUNT_ALPHA | DF_CUSTOM_PITCH;
+
+		optionsRGB.flags |= DF_COUNT_ALPHA;
+        optionsRGB.flags |= DF_CUSTOM_PITCH;
 		optionsRGB.pitch = _pitch;
+
 		_imageDecoderRGB->setOptions( &optionsRGB );
 		
 		RenderEngine::get()
@@ -360,8 +363,11 @@ namespace Menge
 		const ImageCodecDataInfo* dataInfoAlpha = _imageDecoderAlpha->getCodecDataInfo();
 
 		ImageCodecOptions optionsAlpha;
-		optionsAlpha.flags = DF_WRITE_ALPHA_ONLY | DF_CUSTOM_PITCH;
+
+		optionsAlpha.flags |= DF_WRITE_ALPHA_ONLY;
+        optionsAlpha.flags |= DF_CUSTOM_PITCH;
 		optionsAlpha.pitch = _pitch;
+
 		_imageDecoderAlpha->setOptions( &optionsAlpha );
 		
 		RenderEngine::get()

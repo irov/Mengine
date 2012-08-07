@@ -223,9 +223,11 @@ namespace Menge
 			return false;
 		}
 
-		ImageCodecOptions options;
-		options.flags = DF_CUSTOM_PITCH;
+		ImageCodecOptions options;		
+
 		options.pitch = _pitch;
+        options.flags |= DF_CUSTOM_PITCH;
+
 		imageDecoder->setOptions( &options );
 
 		RenderEngine::get()

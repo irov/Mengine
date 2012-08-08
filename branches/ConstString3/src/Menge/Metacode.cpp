@@ -1983,6 +1983,7 @@ namespace Metacode
         case 2:
             {
                 this->read( _buff, _size, _read, this->Value );
+               this->Value_successful = true;
                 return true;
                 break;
             }

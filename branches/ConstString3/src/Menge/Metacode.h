@@ -4006,6 +4006,7 @@ namespace Metacode
                 , CharOffset_successful(false)
                 , Font_successful(false)
                 , LineOffset_successful(false)
+                , Value_successful(false)
             {
             }
         public:
@@ -4130,19 +4131,38 @@ namespace Metacode
                 (_self->*_method)( this->LineOffset );
             }
             
-            const Menge::WString & get_Value() const
+            bool get_Value( Menge::WString & _value ) const
             {
-                return this->Value;
+                if( Value_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Value;
+            
+                return true;
             }
             
-            void swap_Value( Menge::WString & _value ) const
+            bool swap_Value( Menge::WString & _value ) const
             {
+                if( Value_successful == false )
+                {
+                    return false;
+                }
+            
                 std::swap( _value, this->Value);
+            
+                return true;
             }
             
             template<class C, class M>
             void method_Value( C * _self, M _method ) const
             {
+                if( Value_successful == false )
+                {
+                    return;
+                }
+            
                 (_self->*_method)( this->Value );
             }
             
@@ -4161,6 +4181,7 @@ namespace Metacode
             mutable Menge::ConstString Key;
             bool LineOffset_successful;
             mutable float LineOffset;
+            bool Value_successful;
             mutable Menge::WString Value;
         };
         

@@ -1753,11 +1753,16 @@ namespace Menge
 
 		if( it_found == m_cursors.end() )
 		{
-			WString icoFile;
+			WString icoDir;
 
-			icoFile += m_userPath;
-	//		icoFile += MENGE_FOLDER_DELIM;
-			icoFile += L"IconCache";
+			icoDir += m_userPath;
+			icoDir += L"IconCache";
+
+            WindowsLayer::createDirectory( icoDir );
+
+            WString icoFile;
+
+            icoFile += icoDir;
 			icoFile += MENGE_FOLDER_DELIM;
 			icoFile += _name;
 
@@ -1766,9 +1771,9 @@ namespace Menge
 
 			WString::size_type pos = (std::max)(pos1, pos2);
 
-			WString icoDir = icoFile.substr( 0, pos );
+			WString icoDir2 = icoFile.substr( 0, pos );
 
-			WindowsLayer::createDirectory( icoDir );
+			WindowsLayer::createDirectory( icoDir2 );
 
 			FILE * file = _wfopen( icoFile.c_str(), L"wb" );
 

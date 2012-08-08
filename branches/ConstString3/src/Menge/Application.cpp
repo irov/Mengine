@@ -893,6 +893,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle )
 	{
+        if( m_lowContentViewport.empty() == false )
+        {
+            if( m_maxClientResolution.getWidth() < m_lowContentViewport.getWidth() ||
+                m_maxClientResolution.getHeight() < m_lowContentViewport.getHeight() )
+            {
+                m_fullscreen = true;
+            }
+        }
+        else
+        {
+            if( m_maxClientResolution.getWidth() < m_contentResolution.getWidth() ||
+                m_maxClientResolution.getHeight() < m_contentResolution.getHeight() )
+            {
+                m_fullscreen = true;
+            }
+        }
+
 		if( m_fullscreen == true )
 		{
 			m_currentResolution = this->getDesktopResolution();
@@ -1560,6 +1577,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
+        if( m_lowContentViewport.empty() == false )
+        {
+            if( m_maxClientResolution.getWidth() < m_lowContentViewport.getWidth() ||
+                m_maxClientResolution.getHeight() < m_lowContentViewport.getHeight() )
+            {
+                _fullscreen = true;
+            }
+        }
+        else
+        {
+            if( m_maxClientResolution.getWidth() < m_contentResolution.getWidth() ||
+                m_maxClientResolution.getHeight() < m_contentResolution.getHeight() )
+            {
+                _fullscreen = true;
+            }
+        }
+
 		if( m_fullscreen == _fullscreen )
 		{
 			return;

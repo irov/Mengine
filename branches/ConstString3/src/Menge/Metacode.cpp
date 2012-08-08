@@ -37,6 +37,11 @@ namespace Metacode
                 return new Meta_ResourceGlyph();
                 break;
             }
+        case 16:
+            {
+                return new Meta_ResourceImageCombineRGBAndAlpha();
+                break;
+            }
         case 2:
             {
                 return new Meta_ResourceImageDefault();
@@ -426,6 +431,112 @@ namespace Metacode
     }
     
     //////////////////////////////////////////////////////////////////////////
+    Metabuf::Metadata * Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::generateMetadata( size_t _id )
+    {
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 7:
+            {
+                this->read( _buff, _size, _read, this->File_Alpha );
+                this->File_Alpha_successful = true;
+                return true;
+                break;
+            }
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->File_CodecAlpha );
+                this->File_CodecAlpha_successful = true;
+                return true;
+                break;
+            }
+        case 6:
+            {
+                this->read( _buff, _size, _read, this->File_CodecRGB );
+                this->File_CodecRGB_successful = true;
+                return true;
+                break;
+            }
+        case 8:
+            {
+                this->read( _buff, _size, _read, this->File_MaxSize );
+                this->File_MaxSize_successful = true;
+                return true;
+                break;
+            }
+        case 11:
+            {
+                this->read( _buff, _size, _read, this->File_Offset );
+                this->File_Offset_successful = true;
+                return true;
+                break;
+            }
+        case 3:
+            {
+                this->read( _buff, _size, _read, this->File_PathAlpha );
+                this->File_PathAlpha_successful = true;
+                return true;
+                break;
+            }
+        case 5:
+            {
+                this->read( _buff, _size, _read, this->File_PathRGB );
+                this->File_PathRGB_successful = true;
+                return true;
+                break;
+            }
+        case 9:
+            {
+                this->read( _buff, _size, _read, this->File_Size );
+                this->File_Size_successful = true;
+                return true;
+                break;
+            }
+        case 10:
+            {
+                this->read( _buff, _size, _read, this->File_UV );
+                this->File_UV_successful = true;
+                return true;
+                break;
+            }
+        case 12:
+            {
+                this->read( _buff, _size, _read, this->File_WrapX );
+                this->File_WrapX_successful = true;
+                return true;
+                break;
+            }
+        case 13:
+            {
+                this->read( _buff, _size, _read, this->File_WrapY );
+                this->File_WrapY_successful = true;
+                return true;
+                break;
+            }
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes, size_t _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes, _generators ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
     Metabuf::Metadata * Meta_DataBlock::Meta_ResourceImageDefault::generateMetadata( size_t _id )
     {
         return 0;
@@ -440,7 +551,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->File_Alpha );
                 this->File_Alpha_successful = true;
@@ -469,19 +580,26 @@ namespace Metacode
             }
         case 6:
             {
+                this->read( _buff, _size, _read, this->File_Size );
+                this->File_Size_successful = true;
+                return true;
+                break;
+            }
+        case 7:
+            {
                 this->read( _buff, _size, _read, this->File_UV );
                 this->File_UV_successful = true;
                 return true;
                 break;
             }
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->File_WrapX );
                 this->File_WrapX_successful = true;
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->File_WrapY );
                 this->File_WrapY_successful = true;

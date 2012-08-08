@@ -106,6 +106,7 @@ namespace Menge
 
         metadata->get_File_MaxSize( m_imageDesc.maxSize );
         metadata->get_File_UV( m_imageDesc.uv );
+        //metadata->get_File_Size( m_imageDesc.size );
         metadata->get_File_Alpha( m_imageDesc.isAlpha );
         metadata->get_File_WrapX( m_imageDesc.wrapX );
         metadata->get_File_WrapY( m_imageDesc.wrapY );

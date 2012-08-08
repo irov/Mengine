@@ -525,6 +525,443 @@ namespace Metacode
             mutable Menge::WString GlyphPath_Path;
         };
         
+        class Meta_ResourceImageCombineRGBAndAlpha
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceImageCombineRGBAndAlpha()
+                : Meta_Resource()
+                , File_Alpha_successful(false)
+                , File_CodecAlpha_successful(false)
+                , File_CodecRGB_successful(false)
+                , File_MaxSize_successful(false)
+                , File_Offset_successful(false)
+                , File_PathAlpha_successful(false)
+                , File_PathRGB_successful(false)
+                , File_Size_successful(false)
+                , File_UV_successful(false)
+                , File_WrapX_successful(false)
+                , File_WrapY_successful(false)
+            {
+            }
+        public:
+            bool get_File_Alpha( bool & _value ) const
+            {
+                if( File_Alpha_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Alpha;
+            
+                return true;
+            }
+            
+            bool swap_File_Alpha( bool & _value ) const
+            {
+                if( File_Alpha_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Alpha);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Alpha( C * _self, M _method )
+            {
+                if( File_Alpha_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Alpha );
+            }
+            
+            bool get_File_CodecAlpha( Menge::ConstString & _value ) const
+            {
+                if( File_CodecAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_CodecAlpha;
+            
+                return true;
+            }
+            
+            bool swap_File_CodecAlpha( Menge::ConstString & _value ) const
+            {
+                if( File_CodecAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_CodecAlpha);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_CodecAlpha( C * _self, M _method )
+            {
+                if( File_CodecAlpha_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_CodecAlpha );
+            }
+            
+            bool get_File_CodecRGB( Menge::ConstString & _value ) const
+            {
+                if( File_CodecRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_CodecRGB;
+            
+                return true;
+            }
+            
+            bool swap_File_CodecRGB( Menge::ConstString & _value ) const
+            {
+                if( File_CodecRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_CodecRGB);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_CodecRGB( C * _self, M _method )
+            {
+                if( File_CodecRGB_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_CodecRGB );
+            }
+            
+            bool get_File_MaxSize( mt::vec2f & _value ) const
+            {
+                if( File_MaxSize_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_MaxSize;
+            
+                return true;
+            }
+            
+            bool swap_File_MaxSize( mt::vec2f & _value ) const
+            {
+                if( File_MaxSize_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_MaxSize);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_MaxSize( C * _self, M _method )
+            {
+                if( File_MaxSize_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_MaxSize );
+            }
+            
+            bool get_File_Offset( mt::vec2f & _value ) const
+            {
+                if( File_Offset_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Offset;
+            
+                return true;
+            }
+            
+            bool swap_File_Offset( mt::vec2f & _value ) const
+            {
+                if( File_Offset_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Offset);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Offset( C * _self, M _method )
+            {
+                if( File_Offset_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Offset );
+            }
+            
+            bool get_File_PathAlpha( Menge::WString & _value ) const
+            {
+                if( File_PathAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_PathAlpha;
+            
+                return true;
+            }
+            
+            bool swap_File_PathAlpha( Menge::WString & _value ) const
+            {
+                if( File_PathAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_PathAlpha);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_PathAlpha( C * _self, M _method )
+            {
+                if( File_PathAlpha_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_PathAlpha );
+            }
+            
+            bool get_File_PathRGB( Menge::WString & _value ) const
+            {
+                if( File_PathRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_PathRGB;
+            
+                return true;
+            }
+            
+            bool swap_File_PathRGB( Menge::WString & _value ) const
+            {
+                if( File_PathRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_PathRGB);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_PathRGB( C * _self, M _method )
+            {
+                if( File_PathRGB_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_PathRGB );
+            }
+            
+            bool get_File_Size( mt::vec2f & _value ) const
+            {
+                if( File_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Size;
+            
+                return true;
+            }
+            
+            bool swap_File_Size( mt::vec2f & _value ) const
+            {
+                if( File_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Size);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Size( C * _self, M _method )
+            {
+                if( File_Size_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Size );
+            }
+            
+            bool get_File_UV( mt::vec4f & _value ) const
+            {
+                if( File_UV_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_UV;
+            
+                return true;
+            }
+            
+            bool swap_File_UV( mt::vec4f & _value ) const
+            {
+                if( File_UV_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_UV);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_UV( C * _self, M _method )
+            {
+                if( File_UV_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_UV );
+            }
+            
+            bool get_File_WrapX( bool & _value ) const
+            {
+                if( File_WrapX_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_WrapX;
+            
+                return true;
+            }
+            
+            bool swap_File_WrapX( bool & _value ) const
+            {
+                if( File_WrapX_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_WrapX);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_WrapX( C * _self, M _method )
+            {
+                if( File_WrapX_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_WrapX );
+            }
+            
+            bool get_File_WrapY( bool & _value ) const
+            {
+                if( File_WrapY_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_WrapY;
+            
+                return true;
+            }
+            
+            bool swap_File_WrapY( bool & _value ) const
+            {
+                if( File_WrapY_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_WrapY);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_WrapY( C * _self, M _method )
+            {
+                if( File_WrapY_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_WrapY );
+            }
+            
+        protected:
+            bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
+            bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes, size_t _generators ) override;
+        public:
+            Metadata * generateMetadata( size_t _id ) override;
+            
+        protected:
+        protected:
+            bool File_Alpha_successful;
+            mutable bool File_Alpha;
+            bool File_CodecAlpha_successful;
+            mutable Menge::ConstString File_CodecAlpha;
+            bool File_CodecRGB_successful;
+            mutable Menge::ConstString File_CodecRGB;
+            bool File_MaxSize_successful;
+            mutable mt::vec2f File_MaxSize;
+            bool File_Offset_successful;
+            mutable mt::vec2f File_Offset;
+            bool File_PathAlpha_successful;
+            mutable Menge::WString File_PathAlpha;
+            bool File_PathRGB_successful;
+            mutable Menge::WString File_PathRGB;
+            bool File_Size_successful;
+            mutable mt::vec2f File_Size;
+            bool File_UV_successful;
+            mutable mt::vec4f File_UV;
+            bool File_WrapX_successful;
+            mutable bool File_WrapX;
+            bool File_WrapY_successful;
+            mutable bool File_WrapY;
+        };
+        
         class Meta_ResourceImageDefault
             : public Meta_Resource
         { 
@@ -534,6 +971,7 @@ namespace Metacode
                 , File_Alpha_successful(false)
                 , File_Codec_successful(false)
                 , File_MaxSize_successful(false)
+                , File_Size_successful(false)
                 , File_UV_successful(false)
                 , File_WrapX_successful(false)
                 , File_WrapY_successful(false)
@@ -661,6 +1099,41 @@ namespace Metacode
                 (_self->*_method)( this->File_Path );
             }
             
+            bool get_File_Size( mt::vec2f & _value ) const
+            {
+                if( File_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Size;
+            
+                return true;
+            }
+            
+            bool swap_File_Size( mt::vec2f & _value ) const
+            {
+                if( File_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Size);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Size( C * _self, M _method )
+            {
+                if( File_Size_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Size );
+            }
+            
             bool get_File_UV( mt::vec4f & _value ) const
             {
                 if( File_UV_successful == false )
@@ -781,6 +1254,8 @@ namespace Metacode
             bool File_MaxSize_successful;
             mutable mt::vec2f File_MaxSize;
             mutable Menge::WString File_Path;
+            bool File_Size_successful;
+            mutable mt::vec2f File_Size;
             bool File_UV_successful;
             mutable mt::vec4f File_UV;
             bool File_WrapX_successful;

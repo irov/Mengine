@@ -425,12 +425,7 @@ namespace Menge
 
 		appSettings.platformName = "WIN";
 		
-		WString baseDir;
-		baseDir += m_currentPath;
-		baseDir += L"..";
-		baseDir += MENGE_FOLDER_DELIM;
-		
-		appSettings.baseDir = baseDir;
+		appSettings.baseDir = m_currentPath;
 
 		//WString resourcePacksPath;
 		//resourcePacksPath += m_currentPath;

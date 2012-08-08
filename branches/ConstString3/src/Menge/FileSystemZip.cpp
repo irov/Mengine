@@ -66,7 +66,7 @@ namespace Menge
 			
 			return false;
 		}
-		
+
 		uint32 signature = 0;
 		uint16 versionNeeded = 0;
 		uint16 generalPurposeFlag = 0;
@@ -109,33 +109,36 @@ namespace Menge
 			Utils::skip( m_zipFile, extraFieldLen );
 			String fileNameA( fileNameBuffer, fileNameLen );
 
-			if( compressedSize > 0 )	// if not folder
+			//if( compressedSize == 0 ) // if folder
+			//{
+			//	continue;
+			//}
+						
+			if( compressionMethod != 0 )
 			{
-				if( compressionMethod != 0 )
-				{
-					MENGE_LOG_ERROR( "Warning: (FileSystemZip::initialize) compressed file '%s'"
-						, fileNameA.c_str() 
-						);
+				MENGE_LOG_ERROR( "Warning: (FileSystemZip::initialize) compressed file '%s'"
+					, fileNameA.c_str() 
+					);
 
-					continue;
-				}
-
-				FileInfo fi = { m_zipFile->tell(), compressedSize, uncompressedSize, compressionMethod };
-				
-				bool success;
-				WString fileNameU = unicodeService->utf8ToUnicode( fileNameA, success );
-				if( success == false )
-				{
-					MENGE_LOG_ERROR( "ERROR: (FileSystemZip::initialize) can`t create unicode name  '%s'"
-						, fileNameA.c_str() 
-						);
-
-					continue;
-				}
-
-				m_files.insert( std::make_pair( fileNameU, fi ) );
+				continue;
 			}
 
+			FileInfo fi = { m_zipFile->tell(), compressedSize, uncompressedSize, compressionMethod };
+
+			bool success;
+			WString fileNameU = unicodeService->utf8ToUnicode( fileNameA, success );
+
+			if( success == false )
+			{
+				MENGE_LOG_ERROR( "ERROR: (FileSystemZip::initialize) can`t create unicode name  '%s'"
+					, fileNameA.c_str() 
+					);
+
+				continue;
+			}
+
+			m_files.insert( std::make_pair( fileNameU, fi ) );
+			
 			Utils::skip( m_zipFile, compressedSize );
 		}
 

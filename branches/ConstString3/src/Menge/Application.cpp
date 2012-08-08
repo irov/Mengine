@@ -371,7 +371,7 @@ namespace Menge
 		
 		if( this->loadPlugins( _setting.plugins ) == false )
 		{
-			return false;
+			MENGE_LOG_ERROR("error: (Application::initialize) Failed to loadPlugins ");
 		}
 
 		bool w_personalityModule_successful;

@@ -20,6 +20,23 @@
 
 namespace Menge
 {
+    struct ZipHeader
+    {
+        uint16 versionNeeded;
+        uint16 generalPurposeFlag;
+        uint16 compressionMethod;
+        uint16 lastModTime;
+        uint16 lastModDate;
+        uint32 crc32;
+        uint32 compressedSize;
+        uint32 uncompressedSize;
+        //uint64 compressedSize64;
+        //uint64 uncompressedSize64;
+        uint16 fileNameLen;
+        uint16 extraFieldLen;
+        char fileNameBuffer[MAX_FILENAME];
+    };
+
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemZip::FileSystemZip()
 		: m_fileEngine(NULL)
@@ -68,19 +85,8 @@ namespace Menge
 		}
 
 		uint32 signature = 0;
-		uint16 versionNeeded = 0;
-		uint16 generalPurposeFlag = 0;
-		uint16 compressionMethod = 0;
-		uint16 lastModTime = 0;
-		uint16 lastModDate = 0;
-		uint32 crc32 = 0;
-		uint32 compressedSize = 0;
-		uint32 uncompressedSize = 0;
-		uint64 compressedSize64 = 0;
-		uint64 uncompressedSize64 = 0;
-		uint16 fileNameLen = 0;
-		uint16 extraFieldLen = 0;
-		char fileNameBuffer[MAX_FILENAME];
+
+        ZipHeader header;
 
 		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
 			->getServiceT<UnicodeServiceInterface>("UnicodeService");
@@ -94,27 +100,17 @@ namespace Menge
 				break;
 			}
 
-			m_zipFile->read( &versionNeeded, sizeof( versionNeeded ) );
-			m_zipFile->read( &generalPurposeFlag, sizeof( generalPurposeFlag ) );
-			m_zipFile->read( &compressionMethod, sizeof( compressionMethod ) );
-			m_zipFile->read( &lastModTime, sizeof( lastModTime ) );
-			m_zipFile->read( &lastModDate, sizeof( lastModDate ) );
-			m_zipFile->read( &crc32, sizeof( crc32 ) );
-			m_zipFile->read( &compressedSize, sizeof( compressedSize ) );
-			m_zipFile->read( &uncompressedSize, sizeof( uncompressedSize ) );
-			m_zipFile->read( &fileNameLen, sizeof( fileNameLen ) );
-			m_zipFile->read( &extraFieldLen, sizeof( extraFieldLen ) );
-			m_zipFile->read( &fileNameBuffer, fileNameLen );
+			m_zipFile->read( &header, sizeof(header) );
 
-			Utils::skip( m_zipFile, extraFieldLen );
-			String fileNameA( fileNameBuffer, fileNameLen );
+			Utils::skip( m_zipFile, header.extraFieldLen );
+			String fileNameA( header.fileNameBuffer, header.fileNameLen );
 
 			//if( compressedSize == 0 ) // if folder
 			//{
 			//	continue;
 			//}
 						
-			if( compressionMethod != 0 )
+			if( header.compressionMethod != 0 )
 			{
 				MENGE_LOG_ERROR( "Warning: (FileSystemZip::initialize) compressed file '%s'"
 					, fileNameA.c_str() 
@@ -123,7 +119,7 @@ namespace Menge
 				continue;
 			}
 
-			FileInfo fi = { m_zipFile->tell(), compressedSize, uncompressedSize, compressionMethod };
+			FileInfo fi = { m_zipFile->tell(), header.compressedSize, header.uncompressedSize, header.compressionMethod };
 
 			bool success;
 			WString fileNameU = unicodeService->utf8ToUnicode( fileNameA, success );
@@ -139,7 +135,7 @@ namespace Menge
 
 			m_files.insert( std::make_pair( fileNameU, fi ) );
 			
-			Utils::skip( m_zipFile, compressedSize );
+			Utils::skip( m_zipFile, header.compressedSize );
 		}
 
 		return true;
@@ -193,9 +189,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemZip::closeInputFile( FileInputStreamInterface* _file )
 	{
-		//MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
+		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 		//m_fileInputPool.release( memFile );
-		//delete memFile;
+		delete memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileBufferProvider * FileSystemZip::getBufferProvider() const

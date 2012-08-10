@@ -131,6 +131,8 @@ namespace Menge
 		bool m_mouseBuffer[3];
 
 		mt::vec2f m_inputScale;
-		mt::vec2f m_inputOffset;		
+        mt::vec2f m_inputOffset;
+
+        Viewport m_inputViewport;		
 	};
 }

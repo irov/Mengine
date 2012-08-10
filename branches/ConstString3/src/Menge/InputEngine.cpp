@@ -12,7 +12,8 @@ namespace Menge
 		: m_serviceProvider(0)
 		, m_cursorPosition(0.f, 0.f)
 		, m_inputScale(1.f, 1.f)
-		, m_inputOffset(0.f, 0.f)
+        , m_inputOffset(0.f, 0.f)
+        , m_inputViewport(0.f, 0.f, 0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -88,6 +89,7 @@ namespace Menge
 		m_keyEventParams.clear();
 		m_mouseButtonEventParams.clear();
 		m_mouseMoveEventParams.clear();
+        m_mousePositionEventParams.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isKeyDown( KeyCode _keyCode )
@@ -139,12 +141,24 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
-	{		
-		//mt::vec2f offset_point = _point + m_inputOffset;
-		mt::vec2f scale_point = _point * m_inputScale;
-        scale_point += m_inputOffset;
+	{		       
+        m_cursorPosition.x = m_inputOffset.x + (_point.x - m_inputViewport.begin.x) * m_inputScale.x;
+        m_cursorPosition.y = m_inputOffset.y + (_point.y - m_inputViewport.begin.y) * m_inputScale.y;
 
-		m_cursorPosition = scale_point;
+        //mt::vec2f offset_point = _point + m_inputOffset;
+		//mt::vec2f scale_point = offset_point * m_inputScale;
+        //scale_point += m_inputOffset;
+
+		//m_cursorPosition = scale_point;
+
+        //printf("c %f %f r %f %f s %f %f\n"
+        //    , _point.x
+        //    , _point.y
+        //    , m_cursorPosition.x
+        //    , m_cursorPosition.y
+        //    , m_inputScale.x
+        //    , m_inputScale.y
+        //    );
 
 		for( TVectorMousePositionProviders::iterator
 			it = m_mousePositionProviders.begin(),
@@ -305,18 +319,25 @@ namespace Menge
 
             //m_inputOffset -= renderViewport.begin;
 
-            m_inputOffset = lowContentViewport.begin - renderViewport.begin;
+            //m_inputOffset = lowContentViewport.begin - renderViewport.begin;
+            m_inputViewport.begin = renderViewport.begin;
+            m_inputViewport.end = renderViewport.end;
+
+            m_inputOffset = lowContentViewport.begin;
 
             float width_scale = renderViewportWidth / float(lowContentViewportWidth);
-            float height_scale = renderViewportHeight / float(lowContentViewportWidth);
+            float height_scale = renderViewportHeight / float(lowContentViewportHeight);
 
             m_inputScale.x = 1.f / width_scale;
             m_inputScale.y = 1.f / height_scale;
 		}
 		else
 		{
-            m_inputOffset = - renderViewport.begin;
+            m_inputViewport.begin = renderViewport.begin;
+            m_inputViewport.end = renderViewport.end;
 
+            m_inputOffset = mt::vec2f(0.f, 0.f);
+            
             float renderViewportWidth = renderViewport.getWidth();
             float renderViewportHeight = renderViewport.getHeight();
 

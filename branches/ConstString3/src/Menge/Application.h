@@ -94,7 +94,7 @@ namespace Menge
 	public:
 		void setLanguagePackOverride( const ConstString& _packName ) override;
 
-	public:		
+	public:
 		bool createGame( const ConstString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
 		bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) override;
 

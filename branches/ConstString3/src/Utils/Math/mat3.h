@@ -44,6 +44,7 @@ namespace mt
 	MATH_FUNCTION_INLINE bool cmp_m3_m3(const mat3f& _a, const mat3f& _b);
 	
 	MATH_FUNCTION_INLINE void mul_m3_v3(vec3f& _out, const mat3f& _m, const vec3f& _v);
+    MATH_FUNCTION_INLINE void mul_m3_v2(vec2f& _out, const mat3f& _m, const vec2f& _v);
 	MATH_FUNCTION_INLINE void mul_v3_m3(vec3f& _out, const vec3f& _v, const mat3f& _m);
 	MATH_FUNCTION_INLINE void mul_v2_m3(vec2f& _out, const vec2f& _v, const mat3f& _m);
 	MATH_FUNCTION_INLINE void mul_v2_m3_r(vec2f& _out, const vec2f& _v, const mat3f& _m);

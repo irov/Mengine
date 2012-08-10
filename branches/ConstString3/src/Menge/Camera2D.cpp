@@ -62,12 +62,18 @@ namespace	Menge
 		const Viewport & lowContentViewport = Application::get()
 			->getLowContentViewport();
 
+        const Viewport & renderViewport = Application::get()
+            ->getRenderViewport();
+
 		size_t currentResolutionWidth = currentResolution.getWidth();
 		size_t currentResolutionHeight = currentResolution.getHeight();
 
 		size_t contentResolutionWidth = contentResolution.getWidth();
 		size_t contentResolutionHeight = contentResolution.getHeight();
 		
+        float renderWidth = renderViewport.getWidth();
+        float renderHeight = renderViewport.getHeight();
+
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
 		mt::mul_v2_m4( m_viewportWM.begin, m_viewport.begin, wm );
@@ -131,22 +137,32 @@ namespace	Menge
 				projectViewport.end.y = lowContentViewport.end.y;
 			}
 
-			float lowContentViewportWidth = lowContentViewport.getWidth();
-			float lowContentViewportHeight = lowContentViewport.getHeight();
+            //float lowContentViewportWidth = lowContentViewport.getWidth();
+            //float lowContentViewportHeight = lowContentViewport.getHeight();
 
-			float scale_x = float(currentResolutionWidth) / lowContentViewportWidth;
-			float scale_y = float(currentResolutionHeight) / lowContentViewportHeight;
+            //float scale_x = float(currentResolutionWidth) / lowContentViewportWidth;
+            //float scale_y = float(currentResolutionHeight) / lowContentViewportHeight;
 
-			projectViewport.begin *= mt::vec2f(scale_x, scale_y);
-			projectViewport.end *= mt::vec2f(scale_x, scale_y);
+            //projectViewport.begin *= mt::vec2f(scale_x, scale_y);
+            //projectViewport.end *= mt::vec2f(scale_x, scale_y);
 		}
+        else
+        {
+            //float scale_x = float(currentResolutionWidth) / renderWidth;
+            //float scale_y = float(currentResolutionHeight) / renderHeight;
 
-		Viewport projectViewport2;
+            //projectViewport.begin += renderViewport.begin;
 
-		projectViewport2.begin.x = - projectViewport.getWidth() * 0.5f;
-		projectViewport2.begin.y = - projectViewport.getHeight() * 0.5f;
-		projectViewport2.end.x = projectViewport.getWidth() * 0.5f;
-		projectViewport2.end.y = projectViewport.getHeight() * 0.5f;
+            //projectViewport.begin *= mt::vec2f(scale_x, scale_y);
+            //projectViewport.end *= mt::vec2f(scale_x, scale_y);
+        }
+
+		//Viewport projectViewport2;
+
+		//projectViewport2.begin.x = - projectViewport.getWidth() * 0.5f;
+		//projectViewport2.begin.y = - projectViewport.getHeight() * 0.5f;
+		//projectViewport2.end.x = projectViewport.getWidth() * 0.5f;
+		//projectViewport2.end.y = projectViewport.getHeight() * 0.5f;
 
 		RenderEngine::get()
 			->makeProjectionOrthogonal( m_projectionMatrixWM, projectViewport );

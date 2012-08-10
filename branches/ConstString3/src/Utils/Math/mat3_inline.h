@@ -66,6 +66,12 @@ namespace	mt
 		_out.z = dot_v3_v3(_m.v2,_v);
 	}
 
+    MATH_FUNCTION_INLINE void mul_m3_v2(vec2f& _out, const mat3f& _m, const vec2f& _v)
+    {
+        _out.x = dot_v3_v2(_m.v0, _v);
+        _out.y = dot_v3_v2(_m.v1, _v);
+    }
+
 	MATH_FUNCTION_INLINE vec3f operator*(const mat3f& m, const vec3f& v)
 	{
 		vec3f out;

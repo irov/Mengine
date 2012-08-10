@@ -29,9 +29,6 @@ namespace Menge
 		void update() override;
 
 	public:
-		void setDimentions( const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport ) override;
-		
-	public:
 		bool isKeyDown( KeyCode _keyCode ) override;
 		bool isModifierDown( KeyModifier _modifier ) override;
 		

@@ -272,10 +272,7 @@ namespace Menge
 
 	public:
 		virtual void update() = 0;
-
-	public:
-		virtual void setDimentions( const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport ) = 0;
-
+        
 	public:
 		virtual bool isKeyDown( KeyCode _keyCode ) = 0;
 		virtual bool isModifierDown( KeyModifier _modifier ) = 0;

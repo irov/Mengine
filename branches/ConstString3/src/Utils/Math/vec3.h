@@ -71,6 +71,8 @@ namespace mt
 	MATH_FUNCTION_INLINE float dot_v3_v3( const vec3f &a, const vec3f &b );
 	MATH_FUNCTION_INLINE float dot_v3_v3_clamp( const vec3f &a, const vec3f &b );
 
+    MATH_FUNCTION_INLINE float dot_v3_v2( const vec3f &a, const vec2f &b );
+
 	MATH_FUNCTION_INLINE void reflect_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
 	MATH_FUNCTION_INLINE vec3f reflect_v3_v3( const vec3f& _a, const vec3f& _b );
 

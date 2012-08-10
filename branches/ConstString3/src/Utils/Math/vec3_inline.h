@@ -222,6 +222,11 @@ namespace mt
 		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}
 
+    MATH_FUNCTION_INLINE float dot_v3_v2( const vec3f &a, const vec2f &b )
+    {
+        return a.x * b.x + a.y * b.y;
+    }
+
 	MATH_FUNCTION_INLINE float dot_v3_v3_clamp(const vec3f &a, const vec3f &b)
 	{
 		float dot = a.x * b.x + a.y * b.y + a.z * b.z;

@@ -122,7 +122,10 @@ namespace Menge
 
 		this->makeFullname_( _filename, m_fullnameCache );
 
-		_file->open( m_fullnameCache );
+		if( _file->open( m_fullnameCache ) == false )
+        {
+            return false;
+        }
 		//FileInputStreamInterface* fi = m_interface->openInputStream( m_fullnameCache );
 
 		//BufferedFileInput* bufferedFi = 

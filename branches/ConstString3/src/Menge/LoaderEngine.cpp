@@ -55,7 +55,7 @@ namespace Menge
             return true;
         }
 
-		size_t read_size;
+		size_t read_size = 0;
 		if( _metadata->parse( &_blob[0], _blob.size(), read_size ) == false )
         {
             MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid parse"

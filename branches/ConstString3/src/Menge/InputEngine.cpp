@@ -20,10 +20,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setDimentions( const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
@@ -144,8 +140,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
 	{		
-		mt::vec2f offset_point = _point + m_inputOffset;
-		mt::vec2f scale_point = offset_point * m_inputScale;
+		//mt::vec2f offset_point = _point + m_inputOffset;
+		mt::vec2f scale_point = _point * m_inputScale;
+        scale_point += m_inputOffset;
 
 		m_cursorPosition = scale_point;
 
@@ -259,38 +256,75 @@ namespace Menge
 
 		size_t contentResolutionWidth = contentResolution.getWidth();
 		size_t contentResolutionHeight = contentResolution.getHeight();
+        
+        float renderViewportWidth = renderViewport.getWidth();
+        float renderViewportHeight = renderViewport.getHeight();
 
 		m_dimentions.x = float(contentResolutionWidth);
 		m_dimentions.y = float(contentResolutionHeight);
 		
+        float lowContentViewportWidth = lowContentViewport.getWidth();
+        float lowContentViewportHeight = lowContentViewport.getHeight();
+
 		if( lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
 			currentResolutionHeight < contentResolutionHeight ) )
 		{
-			float lowContentViewportWidth = lowContentViewport.getWidth();
-			float lowContentViewportHeight = lowContentViewport.getHeight();
+			//float lowContentViewportWidth = lowContentViewport.getWidth();
+			//float lowContentViewportHeight = lowContentViewport.getHeight();
 
-			m_inputOffset = lowContentViewport.begin;
+			//m_inputOffset = lowContentViewport.begin + renderViewport.begin;
 
-			float width_scale = float(currentResolutionWidth) / lowContentViewportWidth;
-			float height_scale = float(currentResolutionHeight) / lowContentViewportHeight;
+			////float width_scale = renderViewportWidth * float(contentResolutionWidth) / lowContentViewportWidth;
+			////float height_scale = renderViewportHeight * float(contentResolutionHeight) / lowContentViewportHeight;
+   //         float width_scale = renderViewportWidth / lowContentViewportWidth;
+   //         float height_scale = renderViewportHeight / lowContentViewportHeight;
 
-			m_inputScale.x = 1.f / width_scale;
-			m_inputScale.y = 1.f / height_scale;
+			//m_inputScale.x = 1.f / width_scale;
+			//m_inputScale.y = 1.f / height_scale;
+
+            //float lowContentViewportWidth = lowContentViewport.getWidth();
+            //float lowContentViewportHeight = lowContentViewport.getHeight();
+            //           
+
+            //float width_scale = float(currentResolutionWidth) / lowContentViewportWidth;
+            //float height_scale = float(currentResolutionHeight) / lowContentViewportHeight;
+
+            //m_inputScale.x = 1.f / width_scale;
+            //m_inputScale.y = 1.f / height_scale;
+
+            //m_inputOffset = lowContentViewport.begin;
+            //
+            //float width_scale2 = renderViewportWidth / float(contentResolutionWidth);
+            //float height_scale2 = renderViewportHeight / float(contentResolutionHeight);
+
+            //m_inputScale.x /= width_scale2;
+            //m_inputScale.y /= height_scale2;
+
+            //m_inputOffset.x /= width_scale2;
+            //m_inputOffset.y /= height_scale2;
+
+            //m_inputOffset -= renderViewport.begin;
+
+            m_inputOffset = lowContentViewport.begin - renderViewport.begin;
+
+            float width_scale = renderViewportWidth / float(lowContentViewportWidth);
+            float height_scale = renderViewportHeight / float(lowContentViewportWidth);
+
+            m_inputScale.x = 1.f / width_scale;
+            m_inputScale.y = 1.f / height_scale;
 		}
 		else
 		{
-			m_inputOffset = - renderViewport.begin;
+            m_inputOffset = - renderViewport.begin;
 
-			float renderViewportWidth = renderViewport.getWidth();
-			float renderViewportHeight = renderViewport.getHeight();
+            float renderViewportWidth = renderViewport.getWidth();
+            float renderViewportHeight = renderViewport.getHeight();
 
-			float width_scale = renderViewportWidth / contentResolutionWidth;
-			float height_scale = renderViewportHeight / contentResolutionHeight;
+            float width_scale = renderViewportWidth / contentResolutionWidth;
+            float height_scale = renderViewportHeight / contentResolutionHeight;
 
-			m_inputScale.x = 1.f / width_scale;
-			m_inputScale.y = 1.f / height_scale;
+            m_inputScale.x = 1.f / width_scale;
+            m_inputScale.y = 1.f / height_scale;
 		}
-		
-
 	}
 }

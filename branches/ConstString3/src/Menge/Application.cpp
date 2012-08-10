@@ -1527,7 +1527,29 @@ namespace Menge
 
 		if( m_fixedContentResolution == true )
 		{
-			if( _resolution == m_contentResolution )
+            size_t currentResolutionWidth = m_currentResolution.getWidth();
+            size_t currentResolutionHeight = m_currentResolution.getHeight();
+
+            size_t contentResolutionWidth = m_contentResolution.getWidth();
+            size_t contentResolutionHeight = m_contentResolution.getHeight();
+
+            Resolution contentResolution;
+
+            if( m_lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
+                currentResolutionHeight < contentResolutionHeight ) )
+            {
+                float width = m_lowContentViewport.getWidth();
+                float height = m_lowContentViewport.getHeight();
+
+                contentResolution.setWidth( width );
+                contentResolution.setHeight( height );
+            }
+            else
+            {
+                contentResolution = m_contentResolution;
+            }
+
+			if( _resolution == contentResolution )
 			{
 				_viewport.begin.x = 0.f;
 				_viewport.begin.y = 0.f;
@@ -1539,10 +1561,8 @@ namespace Menge
 				float one_div_width = 1.f / rw;
 				float one_div_height = 1.f / rh;
 
-				float crx = float( m_contentResolution.getWidth() );
-				float cry = float( m_contentResolution.getHeight() );
+				float contentAspect = contentResolution.getAspectRatio();
 
-				float contentAspect = crx / cry;
 				float aspect = rw * one_div_height;
 
 				float dw = 1.f;

@@ -1386,7 +1386,6 @@ namespace Menge
 			//	m_soundEngine->onTurnStream( _turn );
 			//}
 		}
-
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()

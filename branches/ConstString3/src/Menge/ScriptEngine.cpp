@@ -90,6 +90,7 @@ namespace Menge
 		ScriptWrapper::entityWrap();
 
 		LogServiceInterface * logService = LogEngine::get();
+
 		m_loger = new ScriptLogger(logService);
 
 		PyObject * pyLogger = m_loger->embedding();

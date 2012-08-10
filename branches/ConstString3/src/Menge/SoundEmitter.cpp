@@ -275,7 +275,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_localHide( bool _value )
 	{
-		if( isActivate() == false )
+		/*if( isActivate() == false )
 		{
 			return;
 		}
@@ -294,7 +294,7 @@ namespace Menge
 		{
 			Holder<SoundServiceInterface>::get()
 				->play( m_sourceID );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

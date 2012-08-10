@@ -1377,6 +1377,10 @@ namespace Menge
 				m_game->onTurnSound( _turn );
 			}
 
+			if( m_soundService )
+			{
+				m_soundService->onTurnStream( _turn );
+			}
 			//if( m_soundEngine )
 			//{
 			//	m_soundEngine->onTurnStream( _turn );

@@ -20,23 +20,21 @@
 
 namespace Menge
 {
-    struct ZipHeader
-    {
-        uint16 versionNeeded;
-        uint16 generalPurposeFlag;
-        uint16 compressionMethod;
-        uint16 lastModTime;
-        uint16 lastModDate;
-        uint32 crc32;
-        uint32 compressedSize;
-        uint32 uncompressedSize;
-        //uint64 compressedSize64;
-        //uint64 uncompressedSize64;
-        uint16 fileNameLen;
-        uint16 extraFieldLen;
-        char fileNameBuffer[MAX_FILENAME];
-    };
-
+	struct ZipHeader
+	{
+		uint16 versionNeeded;
+		uint16 generalPurposeFlag;
+		uint16 compressionMethod;
+		uint16 lastModTime;
+		uint16 lastModDate;
+		uint32 crc32;
+		uint32 compressedSize;
+		uint32 uncompressedSize;
+		//uint64 compressedSize64;
+		//uint64 uncompressedSize64;
+		uint16 fileNameLen;
+		uint16 extraFieldLen;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemZip::FileSystemZip()
 		: m_fileEngine(NULL)
@@ -91,6 +89,8 @@ namespace Menge
 		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
 			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
+		char fileNameBuffer[MAX_FILENAME];
+
 		while( Utils::eof( m_zipFile ) == false )
 		{
 			m_zipFile->read( &signature, sizeof( signature ) );
@@ -100,10 +100,23 @@ namespace Menge
 				break;
 			}
 
-			m_zipFile->read( &header, sizeof(header) );
+			//m_zipFile->read( &header, sizeof( header) );
 
+			m_zipFile->read( &header.versionNeeded, sizeof( header.versionNeeded ) );
+			m_zipFile->read( &header.generalPurposeFlag, sizeof( header.generalPurposeFlag ) );
+			m_zipFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
+			m_zipFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
+			m_zipFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
+			m_zipFile->read( &header.crc32, sizeof( header.crc32 ) );
+			m_zipFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
+			m_zipFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
+			m_zipFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
+			m_zipFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
+			
+			m_zipFile->read( &fileNameBuffer, header.fileNameLen );
+			
 			Utils::skip( m_zipFile, header.extraFieldLen );
-			String fileNameA( header.fileNameBuffer, header.fileNameLen );
+			String fileNameA( fileNameBuffer, header.fileNameLen );
 
 			//if( compressedSize == 0 ) // if folder
 			//{

@@ -39,7 +39,8 @@ namespace Menge
 
 		void listenSoundNodePaused();
 		void listenSoundNodeStopped();
-
+		
+		void _localHide( bool _value ) override;
 	protected:
 		bool _activate() override;
 		void _deactivate() override;

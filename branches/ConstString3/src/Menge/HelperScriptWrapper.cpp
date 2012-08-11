@@ -57,6 +57,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	class ScriptHelper
 	{
+    public:
+        static bool s_is_class( PyObject * _obj )
+        {
+            return pybind::detail::is_class( _obj );
+        }
+
 	public:
 		static int mt_rand( int a )
 		{	
@@ -1127,5 +1133,7 @@ namespace Menge
 		pybind::def_function( "objects", &ScriptHelper::s_objects );
 		
 		pybind::def_function( "watchdog", &ScriptHelper::s_watchdog );
+
+        pybind::def_function( "is_class", &ScriptHelper::s_is_class );
 	}
 }

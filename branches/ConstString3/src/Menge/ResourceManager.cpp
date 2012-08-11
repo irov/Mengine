@@ -229,9 +229,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResource( const ConstString& _name )
+	ResourceReference * ResourceManager::getResource( const ConstString& _name ) const
 	{
-		TMapResource::iterator it_find = m_resources.find( _name );
+		TMapResource::const_iterator it_find = m_resources.find( _name );
 
 		if( it_find == m_resources.end() )
 		{
@@ -266,9 +266,9 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResourceReference( const ConstString& _name )
+	ResourceReference * ResourceManager::getResourceReference( const ConstString& _name ) const
 	{
-		TMapResource::iterator it_find = m_resources.find( _name );
+		TMapResource::const_iterator it_find = m_resources.find( _name );
 
 		if( it_find == m_resources.end() )
 		{
@@ -280,12 +280,14 @@ namespace Menge
 		}
 
 		const ResourceEntry & entry = it_find->second;
-		if( entry.isLocked == true )
+		
+        if( entry.isLocked == true )
 		{
 			return 0;
 		}
 		
 		ResourceReference * resource = entry.resource;
+
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -66,11 +66,11 @@ namespace Menge
 
 		bool validResource( const ConstString& _name ) const;
 
-		ResourceReference * getResource( const ConstString& _name );
-		ResourceReference * getResourceReference( const ConstString& _name );
+		ResourceReference * getResource( const ConstString& _name ) const;
+		ResourceReference * getResourceReference( const ConstString& _name ) const;
 
 		template<class T>
-		T * getResourceT( const ConstString& _name )
+		T * getResourceT( const ConstString& _name ) const
 		{
 			ResourceReference * resource = this->getResource( _name );
 

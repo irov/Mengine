@@ -15,11 +15,13 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 	Menge::WinApplication winApplication( hInstance, lpCmdLine );
 	
-	if( winApplication.initialize() == true )
+	if( winApplication.initialize() == false )
 	{
-		winApplication.loop();
-	}
+        return 0;
+    }
 	
+    winApplication.loop();
+
 	winApplication.finalize();
 
 	return 0;

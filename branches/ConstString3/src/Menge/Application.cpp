@@ -921,10 +921,10 @@ namespace Menge
 
 		m_renderEngine->setVSync( m_vsync );
 
-		MENGE_LOG_WARNING( "Application::createRenderWindow %d Current Resolution %d %d"
-			, m_fullscreen
+		MENGE_LOG_WARNING( "Application::createRenderWindow Current Resolution %d %d %s"			
 			, m_currentResolution.getWidth()
 			, m_currentResolution.getHeight()
+            , m_fullscreen ? "Fullscreen" : "Window"
 			);
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
@@ -961,6 +961,8 @@ namespace Menge
 
 		m_renderEngine->enableTextureFiltering( m_textureFiltering );
 
+        m_game->initializeRenderResources();
+
 		NotificationService::get()
 			->notify( "CHANGE_WINDOW_RESOLUTION", m_fullscreen, m_currentResolution );
 			
@@ -977,9 +979,7 @@ namespace Menge
 
 			return false;
 		}
-
-		m_game->initializeRenderResources();
-
+        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

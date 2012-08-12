@@ -703,33 +703,37 @@ namespace Menge
 			}
 		}
 
-		LOGGER_INFO(m_logService)( "Creating Render Window..." );
+        LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
-		bool fullscreen = m_application->getFullscreenMode();
+        if( m_application->initializeGame( scriptInit, appSettings.params ) == false )
+        {
+            return false;
+        }
 
-		Resolution windowResolution;
-		m_application->calcWindowResolution( windowResolution );
+        LOGGER_INFO(m_logService)( "Creating Render Window..." );
 
-		WindowHandle wh = this->createWindow( title, windowResolution, fullscreen );
+        bool fullscreen = m_application->getFullscreenMode();
 
-		if( fullscreen == true )
-		{
-			this->notifyWindowModeChanged( m_desktopResolution, true );
-		}
+        Resolution windowResolution;
+        m_application->calcWindowResolution( windowResolution );
 
-		this->setActive( true );
+        WindowHandle wh = this->createWindow( title, windowResolution, fullscreen );
+
+        this->setActive( true );
+
+        if( fullscreen == true )
+        {
+            this->notifyWindowModeChanged( m_desktopResolution, true );
+        }
+
+        LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
 		if( m_application->createRenderWindow( wh, wh ) == false )
 		{
 			return false;
 		}
 
-		LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
-		if( m_application->initializeGame( scriptInit, appSettings.params ) == false )
-		{
-			return false;
-		}
 		//m_application->setCursorMode( m_cursorMode );
 
 		m_vsync = m_application->getVSync();

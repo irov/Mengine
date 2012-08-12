@@ -95,21 +95,6 @@ namespace Menge
 		m_currentAccount = newAccount;
 
 		m_listener->onCreateAccount( _accountID );
-		//if( ScriptEngine::get()
-		//	->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) == false )
-		//{
-		//	//PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
-		//	ScriptEngine::get()
-		//		->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
-
-		//	//String accountNameAnsi = Holder<Application>::get()->utf8ToAnsi( _accountName );
-		//	//Holder<ScriptEngine>::get()
-		//	//	->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );
-		//}
-		//else
-		//{
-		//	MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
-		//}
 
 		const WString & folder = newAccount->getName();
 

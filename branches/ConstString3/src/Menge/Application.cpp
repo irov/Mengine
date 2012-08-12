@@ -921,7 +921,7 @@ namespace Menge
 
 		m_renderEngine->setVSync( m_vsync );
 
-		MENGE_LOG_INFO( "Application::createRenderWindow %d Current Resolution %d %d"
+		MENGE_LOG_WARNING( "Application::createRenderWindow %d Current Resolution %d %d"
 			, m_fullscreen
 			, m_currentResolution.getWidth()
 			, m_currentResolution.getHeight()
@@ -1633,15 +1633,15 @@ namespace Menge
 			this->calcWindowResolution( m_currentResolution );
 		}
 
+        MENGE_LOG_WARNING( "Application::setFullscreenMode %d Current Resolution %d %d"
+            , _fullscreen
+            , m_currentResolution.getWidth()
+            , m_currentResolution.getHeight()
+            );
+        
 		m_renderEngine->setVSync( m_vsync );
 
 		m_platform->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
-		
-		MENGE_LOG_INFO( "Application::setFullscreenMode %d Current Resolution %d %d"
-			, _fullscreen
-			, m_currentResolution.getWidth()
-			, m_currentResolution.getHeight()
-			);
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );

@@ -103,11 +103,11 @@ namespace WindowsLayer
 		int size = ::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, 0, 0 );
 
 		//static WString s_buffer;
-		_wstr.resize(size - 1);
-		//wchar_t * buffer = new wchar_t[size];
-		::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, &_wstr[0], size - 1 );
-		//_wstr.assign( buffer );
-		//delete [] buffer;
+		//_wstr.resize(size - 1);
+		wchar_t * buffer = new wchar_t[size];
+		::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, buffer, size );
+		_wstr.assign( buffer );
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void unicodeToUtf8( const Menge::WString& _wstr, Menge::String & _utf8 )
@@ -121,11 +121,11 @@ namespace WindowsLayer
 		const wchar_t* cwstr = _wstr.c_str();
 		int size = ::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, 0, 0, 0, 0 );
 
-		_utf8.resize(size - 1);
-		//char * buffer = new char[size];
-		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, &_utf8[0], size - 1, NULL, NULL );
-		//_utf8.assign( buffer );
-		//delete [] buffer;
+		//_utf8.resize(size - 1);
+		char * buffer = new char[size];
+		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, buffer, size, NULL, NULL );
+		_utf8.assign( buffer );
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ansiToUnicode( const Menge::String& _ansi, Menge::WString & _wstr )
@@ -139,11 +139,11 @@ namespace WindowsLayer
 		const char* cansi = _ansi.c_str();
 		int size = ::MultiByteToWideChar( CP_ACP, 0, cansi, -1, 0, 0 );
 
-		_wstr.resize(size - 1);
-		//wchar_t * buffer = new wchar_t[size];
-		::MultiByteToWideChar( CP_ACP, 0, cansi, -1, &_wstr[0], size - 1 );
-		//_wstr.assign( buffer );
-		//delete [] buffer;
+		//_wstr.resize(size - 1);
+		wchar_t * buffer = new wchar_t[size];
+		::MultiByteToWideChar( CP_ACP, 0, cansi, -1, buffer, size );
+		_wstr.assign( buffer );
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void unicodeToAnsi( const Menge::WString& _wstr, Menge::String & _ansi )
@@ -156,12 +156,11 @@ namespace WindowsLayer
 
 		const wchar_t* cwstr = _wstr.c_str();
 		int size = ::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, 0, 0, 0, 0 );
-		
-		_ansi.resize( size - 1 );
-		//char * buffer = new char[size];
-		::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, &_ansi[0], size - 1, NULL, NULL );
-		//_ansi.assign( buffer );
-		//delete [] buffer;
+				
+		char * buffer = new char[size];
+		::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, buffer, size, NULL, NULL );
+		_ansi.assign( buffer );
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void utf8ToAnsi( const Menge::String& _utf8, Menge::String & _ansi )

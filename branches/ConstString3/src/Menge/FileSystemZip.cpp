@@ -15,6 +15,11 @@
 #	include "Core/String.h"
 #	include "ServiceProvider.h"
 #	include "Interface/UnicodeInterface.h"
+
+#   include "metabuf/ArchiveReader.hpp"
+
+#   include <stdio.h>
+
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define MAX_FILENAME 1024
 
@@ -83,9 +88,7 @@ namespace Menge
 		}
 
 		uint32 signature = 0;
-
-        ZipHeader header;
-
+        
 		UnicodeServiceInterface * unicodeService = ServiceProvider::get()
 			->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
@@ -99,19 +102,49 @@ namespace Menge
 			{
 				break;
 			}
+            			
+            ZipHeader header;
 
-			//m_zipFile->read( &header, sizeof( header) );
+            //const size_t headerSize = sizeof(header.versionNeeded)
+            //    +sizeof(header.generalPurposeFlag)
+            //    +sizeof(header.compressionMethod)
+            //    +sizeof(header.lastModTime)
+            //    +sizeof(header.lastModDate)
+            //    +sizeof(header.crc32)
+            //    +sizeof(header.compressedSize)
+            //    +sizeof(header.uncompressedSize)
+            //    +sizeof(header.fileNameLen)
+            //    +sizeof(header.extraFieldLen);
 
-			m_zipFile->read( &header.versionNeeded, sizeof( header.versionNeeded ) );
-			m_zipFile->read( &header.generalPurposeFlag, sizeof( header.generalPurposeFlag ) );
-			m_zipFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
-			m_zipFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
-			m_zipFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
-			m_zipFile->read( &header.crc32, sizeof( header.crc32 ) );
-			m_zipFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
-			m_zipFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
-			m_zipFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
-			m_zipFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
+            //char headerData[headerSize];
+
+            //m_zipFile->read( headerData, headerSize );
+
+            //size_t size_read;
+            //Metabuf::ArchiveReader ar( headerData, headerSize, size_read );
+
+            //ar >> header.versionNeeded;
+            //ar >> header.generalPurposeFlag;
+            //ar >> header.compressionMethod;
+            //ar >> header.lastModTime;
+            //ar >> header.lastModDate;
+            //ar >> header.crc32;
+            //ar >> header.compressedSize;
+            //ar >> header.uncompressedSize;
+            //ar >> header.fileNameLen;
+            //ar >> header.extraFieldLen;
+
+            
+            m_zipFile->read( &header.versionNeeded, sizeof( header.versionNeeded ) );
+            m_zipFile->read( &header.generalPurposeFlag, sizeof( header.generalPurposeFlag ) );
+            m_zipFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
+            m_zipFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
+            m_zipFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
+            m_zipFile->read( &header.crc32, sizeof( header.crc32 ) );
+            m_zipFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
+            m_zipFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
+            m_zipFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
+            m_zipFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
 			
 			m_zipFile->read( &fileNameBuffer, header.fileNameLen );
 			

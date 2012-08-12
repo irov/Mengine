@@ -243,7 +243,7 @@ namespace Menge
 		SoundBufferInterface* sample = 
 			m_interface->createSoundBuffer( desc.codec, _isStream );
 
-		if( _isStream  == true )
+		if( _isStream == true )
 		{
 			m_bufferStreams.insert( std::make_pair( sample, desc ) );
 		}

@@ -91,14 +91,17 @@ file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 #endif(WIN32)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
-configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
-file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
-configure_file(Modules/wininit.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c COPYONLY)
 
+file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
+configure_file(Configure/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
+
+configure_file(Configure/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 if( WIN32 )
-	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+    configure_file(Configure/config.c ${SOURCE_DIR}/PC/config.c @ONLY)
+	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 else( WIN32 )
-	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/pyconfig.h ${SOURCE_DIR}/NOPC/pyconfig.h)
+    configure_file(Configure/config.c ${SOURCE_DIR}/NOPC/config.c @ONLY)
+	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/NOPC/pyconfig.h COPYONLY)
 endif( WIN32 )
 
 #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
@@ -214,7 +217,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${DYNLOAD_SRC}
                 )
 
-set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
+set(MODULE_SRCS ${SOURCE_DIR}/PC/config.c
                 #${SOURCE_DIR}/Modules/getpath.c 
                 ${SOURCE_DIR}/Modules/main.c 
                 ${SOURCE_DIR}/Modules/gcmodule.c

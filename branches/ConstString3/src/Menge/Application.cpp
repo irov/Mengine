@@ -1284,7 +1284,7 @@ namespace Menge
 
 		if( m_soundService != 0 )
 		{
-			m_soundService->update( _timing );
+			m_soundService->update( timing );
 		}
 
 

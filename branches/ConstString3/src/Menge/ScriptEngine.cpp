@@ -21,6 +21,10 @@
 
 #	include <pybind/../config/python.hpp>
 
+extern "C" {
+    extern struct filedescr * _PyImport_Filetab;
+}
+
 
 namespace Menge
 {
@@ -70,13 +74,26 @@ namespace Menge
 		pybind::initialize(false, false);
 #	endif
 
+#   ifdef MENGE_MASTER_RELEASE
+        filedescr & fd_cmp =_PyImport_Filetab[0];
+
+        fd_cmp.suffix = ".pyo";
+        fd_cmp.mode = "rb";
+        fd_cmp.type = PY_COMPILED;
+
+        filedescr & fd_end =_PyImport_Filetab[1];
+
+        fd_end.suffix = 0;
+        fd_end.mode = 0;
+#   endif
+       
 
 #	ifdef _DEBUG
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );
 		_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
 		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
 #	endif
-		m_moduleMenge = initModule( "Menge" );
+		m_moduleMenge = this->initModule( "Menge" );
 
 		pybind::set_currentmodule( m_moduleMenge );
 
@@ -202,7 +219,6 @@ namespace Menge
 		}
 
 		return 0;
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const ConstString & _name )

@@ -99,6 +99,9 @@ namespace Menge
 
 			return false;			
 		}
+
+        ////Ops! i did this again ^^
+        //this->incrementReference();
         
 		return true;
 	}

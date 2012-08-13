@@ -318,13 +318,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderJPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0) )
+		if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
-			LOGGER_ERROR(m_logService)( "ImageDecoderJPEG::decode error, invalid buffer pitch or size" );
+			memset( _buffer, 255, _bufferSize );
+
+			return _bufferSize;
+		}
+				
+		if( m_bufferRowStride < m_rowStride )
+		{
+			LOGGER_ERROR(m_logService)( "ImageDecoderJPEG::decode error, invalid buffer pitch setted %i - native %i", m_bufferRowStride, m_rowStride );
 
 			return 0;
 		}
+		
+		if( _bufferSize % m_bufferRowStride != 0 )
+		{
+			LOGGER_ERROR(m_logService)( "ImageDecoderJPEG::decode error, invalid buffer relation pitch to size  bufferSize %i - pitch %i", _bufferSize, m_bufferRowStride );
 
+			return 0;
+		}
+		
 		int read = 0;
 		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 1" );
 		//unsigned char* bufferCursor = _buffer;
@@ -333,13 +347,13 @@ namespace Menge
 			jpeg_read_scanlines( m_jpegObject, &_buffer, 1 );
 			read++;
 			
-			if( (m_options.flags & DF_COUNT_ALPHA) == 0 )	// place data as there is alpha
-			{
-				// place a little magic here =)
-				//size_t bufferDataWidth = m_dataInfo.width * 4;
+			//if( (m_options.flags & DF_COUNT_ALPHA) == 0 )	// place data as there is alpha
+			//{
+			//	// place a little magic here =)
+			//	//size_t bufferDataWidth = m_dataInfo.width * 4;
 
-                printf("!!!!!!!!!!!!!");
-			}
+			// printf("!!!!!!!!!!!!!");
+			//}
 
             for( size_t i = 0; i < m_bufferRowStride; i += 4 )
             {

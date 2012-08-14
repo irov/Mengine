@@ -60,15 +60,15 @@ namespace Menge
 			delete m_sulk;
 			m_sulk = NULL;
 		}
-
+        
 		//alDeleteSources( m_sourcePool.size(), &(m_sourcePool[0]) );
 		//m_sourcePool.clear();
 
 		//alDeleteBuffers( m_bufferPool.size(), &(m_bufferPool[0]) );
 		//m_bufferPool.clear();
-
+        
 		alcMakeContextCurrent( NULL );
-
+        
 		if( m_context )
 		{
 			alcDestroyContext( m_context );
@@ -77,7 +77,7 @@ namespace Menge
 
 		if( m_device )
 		{
-			alcCloseDevice( m_device );
+			//ALCboolean cd = alcCloseDevice( m_device );
 			m_device = NULL;
 		}
 

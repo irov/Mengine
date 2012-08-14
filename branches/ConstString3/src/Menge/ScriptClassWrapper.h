@@ -5,33 +5,42 @@
 
 namespace Menge
 {
-	template<class T>
+    template<class T>
+    struct ScriptClassExtract
+        : public pybind::interface_<T>::extract_type_ptr
+    {
+        PyObject * wrap( T * _node ) override
+        {
+            if( _node == 0 )
+            {
+                return pybind::ret_none();
+            }
+
+            PyObject * pyObj = _node->getEmbed();
+            pybind::incref(pyObj);
+
+            return pyObj;
+        }
+    };
+
+    template<class T>
 	class ScriptClassWrapper
 		: public ScriptClassInterface
 	{
 	protected:
-		struct ClassExtract
-			: public pybind::interface_<T>::extract_type_ptr
-		{
-			PyObject * wrap( T * _node ) override
-			{
-				if( _node == 0 )
-				{
-					return pybind::ret_none();
-				}
-
-				PyObject * pyObj = _node->getEmbed();
-				pybind::incref(pyObj);
-
-				return pyObj;
-			}
-		};
 
 	public:
 		ScriptClassWrapper()
 		{
-			pybind::registration_type_cast<T>( new ClassExtract );
+            m_extract = new ScriptClassExtract<T>();
+
+			pybind::registration_type_cast<T>( m_extract );
 		}
+
+        ~ScriptClassWrapper()
+        {
+            delete m_extract;
+        }
 
 	protected:
 		PyObject * wrap( Node * _node ) override
@@ -51,6 +60,9 @@ namespace Menge
 		{
 			delete this;
 		}
+
+    protected:
+        ScriptClassExtract<T> * m_extract;
 	};
 }
 

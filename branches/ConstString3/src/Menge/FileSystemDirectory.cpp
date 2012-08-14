@@ -13,7 +13,7 @@
 #	include "BufferedFileInput.h"
 #	include "FileEngine.h"
 #	include "LogEngine.h"
-#	include "SimpleFileOutput.h"
+//#	include "SimpleFileOutput.h"
 
 #	include "Core/String.h"
 #	include "Core/File.h"
@@ -26,14 +26,12 @@ namespace Menge
 	FileSystemDirectory::FileSystemDirectory()
 		: m_interface(NULL)
 		, m_fileEngine(NULL)
-		, m_fileBufferProvider(NULL)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemDirectory::~FileSystemDirectory()
 	{
-		delete m_fileBufferProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::initialize( const WString& _path, FileEngine * _fileEngine, bool _create )
@@ -78,8 +76,6 @@ namespace Menge
 			}
 		}
 
-		m_fileBufferProvider = new FileBufferProvider();
-		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,11 +89,6 @@ namespace Menge
 		this->makeFullname_( _filename, m_fullnameCache );
 
 		return m_interface->existFile( m_fullnameCache );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FileBufferProvider * FileSystemDirectory::getBufferProvider() const
-	{
-		return m_fileBufferProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* FileSystemDirectory::createInputFile()
@@ -126,12 +117,6 @@ namespace Menge
         {
             return false;
         }
-		//FileInputStreamInterface* fi = m_interface->openInputStream( m_fullnameCache );
-
-		//BufferedFileInput* bufferedFi = 
-			//static_cast<BufferedFileInput*>( _file );
-
-		//bufferedFi->loadStream( fi );
 
 		return true;
 	}
@@ -157,33 +142,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileOutputStreamInterface* FileSystemDirectory::createOutputFile()
 	{
-		//SimpleFileOutput* fileOutput = m_fileOutputPool.get();
-		SimpleFileOutput* fileOutput = new SimpleFileOutput;
+        FileOutputStreamInterface * outputStream = m_interface->createOutputStream();
 
-		fileOutput->setFileSystem( this );
-
-		return fileOutput;
+		return outputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////	
 	bool FileSystemDirectory::openOutputFile( const WString& _filename, FileOutputStreamInterface* _file )
 	{
-		this->makeFullname_( _filename, m_fullnameCache );
-		
-		FileOutputStreamInterface* fo = m_interface->openOutputStream( m_fullnameCache );
-		if( fo == NULL )
-		{
-			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%S'"
-				, m_fullnameCache.c_str() 
-				);
+        if( _file == NULL )
+        {
+            MENGE_LOG_ERROR( "FileSystemDirectory::openOutputFile failed _file == NULL"
+                );
 
-			return false;
-		}
+            return false;
+        }
 
-		SimpleFileOutput* fileOutput = 
-			static_cast<SimpleFileOutput*>( _file );
+        this->makeFullname_( _filename, m_fullnameCache );
 
-		fileOutput->loadStream( fo );
-
+        if( _file->open( m_fullnameCache ) == false )
+        {
+            return false;
+        }
+        		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -194,14 +174,7 @@ namespace Menge
 			return;
 		}
 
-		SimpleFileOutput* fileOutput = 
-			static_cast<SimpleFileOutput*>( _outputFile );
-
-		FileOutputStreamInterface* fo = fileOutput->unloadStream();
-		m_interface->closeOutputStream( fo );
-
-		//m_fileOutputPool.release( fileOutput );
-		delete fileOutput;
+		m_interface->closeOutputStream( _outputFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::createDirectory( const WString& _path )
@@ -211,18 +184,28 @@ namespace Menge
 		return m_interface->createFolder( m_fullnameCache );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeDirectory( const WString& _path )
+	bool FileSystemDirectory::removeDirectory( const WString& _path )
 	{
 		makeFullname_( _path, m_fullnameCache );
 
-		m_interface->deleteFolder( m_fullnameCache );
+		if( m_interface->deleteFolder( m_fullnameCache ) == false )
+        {
+            return false;
+        }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeFile( const WString& _filename )
+	bool FileSystemDirectory::removeFile( const WString& _filename )
 	{
 		makeFullname_( _filename, m_fullnameCache );
 
-		m_interface->deleteFile( m_fullnameCache );
+		if( m_interface->deleteFile( m_fullnameCache ) == false )
+        {
+            return false;
+        }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::makeFullname_( const WString& _path, WString& _fullname )

@@ -284,8 +284,9 @@ namespace Menge
 	{
 	public:
 		virtual RenderImageInterface* getImage() const = 0;
-		virtual void destroyImage() = 0;
-		
+
+		virtual void destroy() = 0;
+        		
 		virtual size_t getId() const = 0;
 
 		virtual size_t addRef() const = 0;

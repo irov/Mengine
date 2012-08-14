@@ -21,7 +21,7 @@ namespace Menge
 		FileInputStreamInterface* createInputStream() override;
 		void closeInputStream( FileInputStreamInterface * _fd ) override;
 		
-		FileOutputStreamInterface* openOutputStream( const WString& _filename ) override;
+		FileOutputStreamInterface* createOutputStream() override;
 		void closeOutputStream( FileOutputStreamInterface* _stream ) override;
 
 		MappedFileInputStreamInterface * openMappedInputStream( const WString& _filename ) override;

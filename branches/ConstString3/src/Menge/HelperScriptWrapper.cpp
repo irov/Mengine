@@ -574,22 +574,15 @@ namespace Menge
 				return false;
 			}
 
+            const WString & folder = currentAccount->getName();
+
+            WString fullpath = folder + MENGE_FOLDER_DELIM + _filename;
+
 			FileOutputStreamInterface * file = FileEngine::get()
-				->createOutputFile( Consts::get()->c_user );
+				->openOutputFile( Consts::get()->c_user, fullpath );
 
 			if( file == 0 )
 			{
-				return false;
-			}
-
-			const WString & folder = currentAccount->getName();
-
-			WString fullpath = folder + MENGE_FOLDER_DELIM + _filename;
-
-			if( file->open( fullpath ) == false )
-			{
-				file->close();
-
 				return false;
 			}
 

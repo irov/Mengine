@@ -49,9 +49,12 @@ namespace Menge
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderTexture::destroyImage()
+	void RenderTexture::destroy()
 	{
 		m_image->destroy();
+        m_image = NULL;
+
+        delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getId() const

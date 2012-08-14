@@ -248,14 +248,14 @@ namespace Menge
 
 		//////////////////////////////////////////////////////////
 		
-		FileOutputStreamInterface * logFile = fileService->createOutputFile( ConstString("") );
+		//FileOutputStreamInterface * logFile = fileService->createOutputFile( ConstString("") );
 		
 		m_logService = serviceProvider->getServiceT<LogServiceInterface>("LogService");
 		
-		if( this->initLogger_( logFile ) == false )
-		{
-			return false;
-		}
+		//if( this->initLogger_( logFile ) == false )
+		//{
+			//return false;
+		//}
 		
 		//////////////////////////////////////////////////////////
 		

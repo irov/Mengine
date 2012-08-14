@@ -4,5 +4,5 @@
 
 #	define RESOURCE_DECLARE(C)\
 	public:\
-	void accept( ResourceVisitor * _visitor ) override;\
+    void accept( Menge::ResourceVisitor * _visitor ) override;\
 	private:

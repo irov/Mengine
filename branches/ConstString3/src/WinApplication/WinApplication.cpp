@@ -966,7 +966,7 @@ namespace Menge
 			delete m_fpsMonitor;
 			m_fpsMonitor = 0;
 		}
-
+        
 		if( m_application != NULL )
 		{
 			m_application->finalize();
@@ -995,13 +995,7 @@ namespace Menge
 			{
 				m_logService->unregisterLogger( m_loggerConsole );
 			}
-
-			//releaseInterfaceSystem( m_logService );
-			m_loggerConsole = NULL;
-		}
-
-		if( m_loggerConsole != NULL )
-		{
+			
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
 		}

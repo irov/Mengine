@@ -55,9 +55,7 @@ namespace Menge
 	{
 		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
 
-		inputStream->close();
-
-		delete inputStream;
+		inputStream->close();		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FileSystem::closeMappedInputStream( FileInputStreamInterface * _fd )
@@ -65,9 +63,7 @@ namespace Menge
 		Win32MappedInputStream* inputStream = static_cast<Win32MappedInputStream*>( _fd );
 
 		inputStream->close();
-
-		delete inputStream;
-	}
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::existFile( const WString& _filename ) const
 	{
@@ -146,31 +142,18 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputStreamInterface* Win32FileSystem::openOutputStream( const WString& _filename )
+	FileOutputStreamInterface* Win32FileSystem::createOutputStream()
 	{
 		Win32OutputStream* outStream = new Win32OutputStream();
-
-		if( outStream->open( _filename ) == false )
-		{
-			delete outStream;
-			return NULL;
-		}
 
 		return outStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FileSystem::closeOutputStream( FileOutputStreamInterface* _stream )
 	{
-		if( _stream == NULL )
-		{
-			return;
-		}
-
 		Win32OutputStream* outStream = static_cast<Win32OutputStream*>(_stream);
 		
 		outStream->close();
-
-		delete outStream;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::deleteFile( const WString& _filename )

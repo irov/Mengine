@@ -267,10 +267,4 @@ namespace Menge
 		//m_fileInputPool.release( memFile );
 		//delete memFile;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	FileBufferProvider * FileSystemZip2::getBufferProvider() const
-	{
-		//TODO
-		return 0;
-	}
 }	// namespace Menge

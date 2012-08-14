@@ -14,6 +14,7 @@ namespace Menge
 
 	template<class M>
 	class GeneratorObserverMethod
+        : public Observer
 	{
 	};
 

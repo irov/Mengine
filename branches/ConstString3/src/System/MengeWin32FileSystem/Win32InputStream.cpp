@@ -55,6 +55,8 @@ namespace Menge
 			::CloseHandle( m_hFile );
 			m_hFile = INVALID_HANDLE_VALUE;
 		}
+
+        delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Win32InputStream::read( void* _buf, int _count )

@@ -41,7 +41,7 @@ namespace Menge
 		virtual FileInputStreamInterface* createInputStream() = 0;
 		virtual void closeInputStream( FileInputStreamInterface* _stream ) = 0;
 		
-		virtual FileOutputStreamInterface* openOutputStream( const WString& _filename ) = 0;
+        virtual FileOutputStreamInterface* createOutputStream() = 0;
 		virtual void closeOutputStream( FileOutputStreamInterface* _stream ) = 0;
 		
 		virtual bool deleteFile( const WString& _filename ) = 0;
@@ -63,10 +63,10 @@ namespace Menge
 	public:
 		virtual bool existFile( const ConstString& _fileSystemName, const WString& _filename ) const = 0;
 
-		virtual FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) = 0;
+		//virtual FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) = 0;
 		virtual FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const WString& _filename ) = 0;
 
-		virtual FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName ) = 0;
+		//virtual FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName ) = 0;
 		virtual FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const WString& _filename ) = 0;
 	};
 

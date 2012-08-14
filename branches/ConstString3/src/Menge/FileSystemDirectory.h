@@ -14,10 +14,9 @@
 namespace Menge
 {
 	class FileSystemInterface;
-	class SimpleFileOutput;
 
 	class FileSystemDirectory
-		: public FileGroup
+		: public FileGroupInterface
 	{
 	public:
 		FileSystemDirectory();
@@ -29,20 +28,21 @@ namespace Menge
 
 	public:
 		bool existFile( const WString& _filename ) override;
+
+    public:
 		FileInputStreamInterface* createInputFile() override;
 		bool openInputFile( const WString& _filename, FileInputStreamInterface* _file ) override;
 		void closeInputFile( FileInputStreamInterface* _inputFile ) override;
 		
-		FileOutputStreamInterface* createOutputFile() override;
-
+    public:
+		FileOutputStreamInterface* createOutputFile() override;        
 		bool openOutputFile( const WString& _filename, FileOutputStreamInterface* _file ) override;
 		void closeOutputFile( FileOutputStreamInterface* _outputFile ) override;
-		bool createDirectory( const WString& _path ) override;
-		void removeDirectory( const WString& _path ) override;
-		void removeFile( const WString& _filename ) override;
 
-	public:
-		FileBufferProvider * getBufferProvider() const override;
+    public:
+		bool createDirectory( const WString& _path ) override;
+		bool removeDirectory( const WString& _path ) override;
+		bool removeFile( const WString& _filename ) override;
 
 	private:
 		void makeFullname_( const WString& _filename, WString& _fullname );
@@ -54,13 +54,5 @@ namespace Menge
 
 		FileSystemInterface* m_interface;
 		FileEngine * m_fileEngine;
-
-		//typedef Pool<BufferedFileInput, PoolPlacementPolicyErase> TFileInputPool;
-		//TFileInputPool m_fileInputPool;
-
-		//typedef Pool<SimpleFileOutput, PoolPlacementPolicyErase> TFileOutputPool;
-		//TFileOutputPool m_fileOutputPool;
-
-		FileBufferProvider * m_fileBufferProvider;
 	};
 }	// namespace Menge

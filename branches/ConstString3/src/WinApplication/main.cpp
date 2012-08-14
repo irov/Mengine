@@ -21,9 +21,9 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
 	
     winApplication.loop();
-
+    
 	winApplication.finalize();
-
+    
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////

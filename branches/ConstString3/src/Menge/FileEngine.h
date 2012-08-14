@@ -12,12 +12,11 @@
 
 #	include "FileSystemMemoryMapped.h"
 #	include "FileInput.h"
-#	include "FileOutput.h"
 #	include "Core/Pool.h"
 
 namespace Menge
 {
-	class FileGroup;
+	class FileGroupInterface;
 
 	class FileEngine
 		: public Holder<FileEngine>
@@ -40,14 +39,14 @@ namespace Menge
 
 		bool existFile( const ConstString& _fileSystemName, const WString& _filename ) const override;
 		
-		FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) override;
+		//FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) override;
 		FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const WString& _filename ) override;
 
-		FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName ) override;
+		//FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName ) override;
 		FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const WString& _filename ) override;
 
 	public:
-		FileGroup * getFileSystem( const ConstString& _fileSystemName ) const;
+		FileGroupInterface * getFileSystem( const ConstString& _fileSystemName ) const;
 
 	public:
 		bool createDirectory( const ConstString& _fileSystemName, const WString& _path );
@@ -57,10 +56,10 @@ namespace Menge
 		FileSystemInterface* getFileSystemInterface() const;
 
 	private:
-		bool createDirectoryPathFileSystem_( FileGroup * _fs, const WString& _path ) const;
+		bool createDirectoryPathFileSystem_( FileGroupInterface * _fs, const WString& _path ) const;
 
 	private:
-		typedef std::map<ConstString, FileGroup*> TFileSystemMap;
+		typedef std::map<ConstString, FileGroupInterface*> TFileSystemMap;
 		TFileSystemMap m_fileSystemMap;
 
 		FileSystemInterface * m_interface;

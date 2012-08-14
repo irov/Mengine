@@ -33,7 +33,8 @@ namespace Menge
 		
 	public:
 		RenderImageInterface* getImage() const override;
-		void destroyImage() override;
+
+		void destroy() override;
 
 		size_t getId() const override;
 

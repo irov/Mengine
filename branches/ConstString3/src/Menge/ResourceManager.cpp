@@ -308,9 +308,9 @@ namespace Menge
 		return type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor )
+	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor ) const
 	{
-		for( TMapResource::iterator
+		for( TMapResource::const_iterator
 			it = m_resources.begin(),
 			it_end = m_resources.end();
 		it != it_end;

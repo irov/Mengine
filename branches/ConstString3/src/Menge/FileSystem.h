@@ -19,7 +19,7 @@ namespace Menge
 
 	class FileEngine;
 
-	class FileGroup
+	class FileGroupInterface
 		: public Factorable
 	{
 	public:
@@ -28,19 +28,20 @@ namespace Menge
 
 	public:
 		virtual bool existFile( const WString& _filename ) = 0;
+
+    public:
 		virtual FileInputStreamInterface* createInputFile() = 0;
 		virtual bool openInputFile( const WString& _filename, FileInputStreamInterface* _file ) = 0;
 		virtual void closeInputFile( FileInputStreamInterface* _file ) = 0;
 		
 	public:
-		virtual FileBufferProvider * getBufferProvider() const = 0;
-
-	public:
-		virtual FileOutputStreamInterface* createOutputFile() { return 0; }
-		virtual bool openOutputFile( const WString& _filename, FileOutputStreamInterface* _file ) { return false; }
-		virtual void closeOutputFile( FileOutputStreamInterface* _outStream ) { }
-		virtual bool createDirectory( const WString& _path ) { return false; }
-		virtual void removeDirectory( const WString& _path ) { }
-		virtual void removeFile( const WString& _filename ) { }
+		virtual FileOutputStreamInterface* createOutputFile() = 0;
+		virtual bool openOutputFile( const WString& _filename, FileOutputStreamInterface* _file ) = 0;
+		virtual void closeOutputFile( FileOutputStreamInterface* _outStream ) = 0;
+		
+    public:
+        virtual bool createDirectory( const WString& _path ) = 0;
+		virtual bool removeDirectory( const WString& _path ) = 0;
+		virtual bool removeFile( const WString& _filename ) = 0;
 	};
 }	// namespace Menge

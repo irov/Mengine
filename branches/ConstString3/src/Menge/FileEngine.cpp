@@ -9,8 +9,7 @@
 #	include "FactoryDefault.h"
 #	include "FileSystemDirectory.h"
 #	include "FileSystemZip.h"
-#	include "FileInput.h"
-#	include "FileOutput.h"
+//#	include "FileInput.h"
 
 #	include "Core/String.h"
 #	include "Core/File.h"
@@ -90,7 +89,7 @@ namespace Menge
 			return false;
 		}
 
-		FileGroup * fs = FactoryManager::createObjectT<FileGroup>( _type );
+		FileGroupInterface * fs = FactoryManager::createObjectT<FileGroupInterface>( _type );
 
 		if( fs == NULL )
 		{
@@ -178,12 +177,12 @@ namespace Menge
 			return false;
 		}
 		
-		FileGroup * fileSystem = it_find->second;
+		FileGroupInterface * fileSystem = it_find->second;
 
 		return fileSystem->existFile( _filename );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileGroup * FileEngine::getFileSystem( const ConstString& _fileSystemName ) const
+	FileGroupInterface * FileEngine::getFileSystem( const ConstString& _fileSystemName ) const
 	{
 		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 
@@ -196,32 +195,32 @@ namespace Menge
 			return NULL;
 		}
 
-		FileGroup * fileSystem = it_find->second;
+		FileGroupInterface * fileSystem = it_find->second;
 
 		return fileSystem;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface* FileEngine::createInputFile( const ConstString& _fileSystemName )
-	{
-		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
-		if( it_find == m_fileSystemMap.end() )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::createInputFile) FileSystem '%s' not mount"
-				, _fileSystemName.c_str()
-				);
+	////////////////////////////////////////////////////////////////////////////
+	//FileInputStreamInterface* FileEngine::createInputFile( const ConstString& _fileSystemName )
+	//{
+	//	TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+	//	if( it_find == m_fileSystemMap.end() )
+	//	{
+	//		MENGE_LOG_ERROR( "Error: (FileEngine::createInputFile) FileSystem '%s' not mount"
+	//			, _fileSystemName.c_str()
+	//			);
 
-			return NULL;
-		}
+	//		return NULL;
+	//	}
 
-		FileGroup * fileSystem = it_find->second;
-		FileInputStreamInterface* file = fileSystem->createInputFile();
+	//	FileGroupInterface * fileSystem = it_find->second;
+	//	FileInputStreamInterface* file = fileSystem->createInputFile();
 
-		return file;
-	}
+	//	return file;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* FileEngine::openInputFile( const ConstString& _fileSystemName, const WString& _filename )
 	{
-		FileGroup * group = this->getFileSystem( _fileSystemName );
+		FileGroupInterface * group = this->getFileSystem( _fileSystemName );
 
 		if( group == NULL )
 		{
@@ -253,27 +252,34 @@ namespace Menge
 
 		return file;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	FileOutputStreamInterface * FileEngine::createOutputFile( const ConstString& _fileSystemName )
-	{
-		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
-		if( it_find == m_fileSystemMap.end() )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::createInputFile) FileSystem '%s' not mount"
-				, _fileSystemName.c_str()
-				);
+	////////////////////////////////////////////////////////////////////////////
+	//FileOutputStreamInterface * FileEngine::createOutputFile( const ConstString& _fileSystemName )
+	//{
+	//	TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+	//	if( it_find == m_fileSystemMap.end() )
+	//	{
+	//		MENGE_LOG_ERROR( "Error: (FileEngine::createInputFile) FileSystem '%s' not mount"
+	//			, _fileSystemName.c_str()
+	//			);
 
-			return NULL;
-		}
+	//		return NULL;
+	//	}
 
-		FileOutputStreamInterface * file = it_find->second->createOutputFile();
+	//	FileOutputStreamInterface * file = it_find->second->createOutputFile();
 
-		return file;
-	}
+	//	return file;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	FileOutputStreamInterface* FileEngine::openOutputFile( const ConstString & _fileSystemName, const WString& _filename )
 	{
-		FileOutputStreamInterface * file = this->createOutputFile( _fileSystemName );
+        FileGroupInterface * group = this->getFileSystem( _fileSystemName );
+
+        if( group == NULL )
+        {
+            return NULL;
+        }
+
+        FileOutputStreamInterface * file = group->createOutputFile();
 
 		if( file == 0 )
 		{
@@ -284,7 +290,7 @@ namespace Menge
 			return 0;
 		}
 
-		if( file->open( _filename ) == false )
+		if( group->openOutputFile( _filename, file ) == false )
 		{
 			file->close();
 
@@ -293,13 +299,13 @@ namespace Menge
 				, _filename.c_str()
 				);
 			
-			file = NULL;
+			return 0;
 		}
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createDirectoryPathFileSystem_( FileGroup * _fs, const WString& _path ) const
+	bool FileEngine::createDirectoryPathFileSystem_( FileGroupInterface * _fs, const WString& _path ) const
 	{
 		WString dir_path = _path;
 
@@ -342,7 +348,7 @@ namespace Menge
 			return false;
 		}
 
-		FileGroup * fs = it_find->second;
+		FileGroupInterface * fs = it_find->second;
 
 		if( this->createDirectoryPathFileSystem_( fs, _path ) == false )
 		{

@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderSubTexture::~RenderSubTexture()
 	{
-		m_texture->decRef();
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderSubTexture::getImage() const
@@ -56,9 +56,13 @@ namespace Menge
 		return m_texture->getImage();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderSubTexture::destroyImage()
+	void RenderSubTexture::destroy()
 	{
+        m_texture->decRef();
+
 		m_texture = NULL;
+
+        delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderSubTexture::getId() const

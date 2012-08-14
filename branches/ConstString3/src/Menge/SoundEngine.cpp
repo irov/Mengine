@@ -27,7 +27,7 @@ bool initializeSoundService( Menge::SoundServiceInterface ** _service )
 
 void finalizeSoundService( Menge::SoundServiceInterface * _service )
 {
-	delete _service;
+    delete static_cast<Menge::SoundEngine*>(_service);
 }
 
 namespace Menge
@@ -77,7 +77,7 @@ namespace Menge
 	void SoundEngine::finalize()
 	{
 		this->stopSounds_();
-
+        
 		if( m_interface != NULL )
 		{
 			releaseInterfaceSystem( m_interface );

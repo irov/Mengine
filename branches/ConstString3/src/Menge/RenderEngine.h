@@ -4,7 +4,6 @@
 
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
-#	include "Core/Polygon.h"
 #	include "Core/Holder.h"
 #	include "Core/ConstString.h"
 #	include "Core/Pool.h"

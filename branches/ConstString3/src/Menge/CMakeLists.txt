@@ -60,10 +60,7 @@ ADD_FILTER(
 	FileEngine.cpp
 	FileEngine.h
 	MemoryFileInput.h
-	MemoryFileInput.cpp
-	MengeStdioWrapper.cpp
-	BufferedFileInput.h
-	BufferedFileInput.cpp
+	MemoryFileInput.cpp	
 	FileSystem.h
 	FileSystemDirectory.h
 	FileSystemDirectory.cpp
@@ -71,12 +68,6 @@ ADD_FILTER(
 	FileSystemZip.cpp
 	FileSystemZip2.h
 	FileSystemZip2.cpp
-    FileBufferProvider.h
-    FileBufferProvider.cpp
-	SimpleFileOutput.h
-	SimpleFileOutput.cpp
-	FileOutput.h
-	FileOutput.cpp
 	FileInput.h
 	FileInput.cpp
 )

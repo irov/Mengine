@@ -58,7 +58,7 @@ namespace Menge
 		TextureJob job;
 		job.name = name;
 		job.filename = filename;
-		job.file = FileEngine::get()->createInputFile(m_category);
+		//job.file = FileEngine::get()->createInputFile(m_category);
 			
 		m_textureJobs.push_back(job);
 		

@@ -2165,19 +2165,6 @@ namespace Menge
 		: public pybind::type_cast_result<ConstString>
 	{
 	public:
-		~extract_ConstString_type()
-		{
-			for( TConstStringPyObjectWrap::iterator
-				it = m_wrap.begin(),
-				it_end = m_wrap.end();
-			it != it_end;
-			++it )
-			{
-				pybind::decref( it->second );
-			}
-		}
-
-	public:
 		bool apply( PyObject * _obj, ConstString & _value ) override
 		{
             size_t size;
@@ -2190,33 +2177,12 @@ namespace Menge
         
 		PyObject * wrap( pybind::type_cast_result<ConstString>::TCastRef _value ) override
 		{
-			TConstStringPyObjectWrap::iterator it_found = m_wrap.find( _value );
+			PyObject * py_value = pybind::string_from_char( _value.c_str(), _value.size() );
 
-			if( it_found == m_wrap.end() )
-			{
-				PyObject * py_value = pybind::string_from_char( _value.c_str(), _value.size() );
-
-				pybind::incref( py_value );
-
-				m_cast.insert( std::make_pair(py_value, _value) );
-
-				it_found = m_wrap.insert( std::make_pair(_value, py_value) ).first;
-			}
-
-			pybind::incref( it_found->second );
-
-			return it_found->second;
+			return py_value;
 			//return pybind::string_from_char( _value.c_str(), _value.size() );
 		}
-
-
-	protected:
-		typedef std::map<PyObject *, ConstString, FPyStringLess> TConstStringPyObjectCast;
-		TConstStringPyObjectCast m_cast;
-
-		typedef std::map<ConstString, PyObject *> TConstStringPyObjectWrap;
-		TConstStringPyObjectWrap m_wrap;
-	};
+    };
 
 	struct extract_TVectorString_type
 		: public pybind::type_cast_result<TVectorString>

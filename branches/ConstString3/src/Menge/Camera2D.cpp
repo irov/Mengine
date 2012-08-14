@@ -78,33 +78,46 @@ namespace	Menge
 		
 		mt::mul_v2_m4( m_viewportWM.begin, m_viewport.begin, wm );
 		mt::mul_v2_m4( m_viewportWM.end, m_viewport.end, wm );
-		
-		if( lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
-			currentResolutionHeight < contentResolutionHeight ) )
-		{
-			m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - lowContentViewport.begin.x, 0.f );
-			m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - lowContentViewport.begin.y, 0.f );
 
-			float lowContentViewportWidth = lowContentViewport.getWidth();
-			m_viewportWM.end.x = std::min( m_viewportWM.end.x - lowContentViewport.begin.x, lowContentViewportWidth );
+        float r_aspect = currentResolution.getAspectRatio();
+        float c_aspect = contentResolution.getAspectRatio();
 
-			float lowContentViewportHeight = lowContentViewport.getHeight();
-			m_viewportWM.end.y = std::min( m_viewportWM.end.y - lowContentViewport.begin.y, lowContentViewportHeight );
+        if( c_aspect > r_aspect )
+        {
+            if( lowContentViewport.empty() == false )
+            {
+                m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - lowContentViewport.begin.x, 0.f );
+                m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - lowContentViewport.begin.y, 0.f );
 
-			float scale_x = float(currentResolutionWidth) / lowContentViewportWidth;
-			float scale_y = float(currentResolutionHeight) / lowContentViewportHeight;
+                float lowContentViewportWidth = lowContentViewport.getWidth();
+                m_viewportWM.end.x = std::min( m_viewportWM.end.x - lowContentViewport.begin.x, lowContentViewportWidth );
 
-			m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
-			m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
-		}
-		else
-		{
-			float scale_x = float(currentResolutionWidth) / contentResolutionWidth;
-			float scale_y = float(currentResolutionHeight) / contentResolutionHeight;
+                float lowContentViewportHeight = lowContentViewport.getHeight();
+                m_viewportWM.end.y = std::min( m_viewportWM.end.y - lowContentViewport.begin.y, lowContentViewportHeight );
 
-			m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
-			m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
-		}
+                float scale_x = float(currentResolutionWidth) / lowContentViewportWidth;
+                float scale_y = float(currentResolutionHeight) / lowContentViewportHeight;
+
+                m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
+                m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
+            }
+            else
+            {
+                float scale_x = float(currentResolutionWidth) / contentResolutionWidth;
+                float scale_y = float(currentResolutionHeight) / contentResolutionHeight;
+
+                m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
+                m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
+            }
+        }
+        else
+        {
+            float scale_x = float(currentResolutionWidth) / contentResolutionWidth;
+            float scale_y = float(currentResolutionHeight) / contentResolutionHeight;
+
+            m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
+            m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
+        }
 
 		RenderEngine::get()
 			->makeViewMatrixFromViewport( m_viewMatrixWM, m_viewportWM );
@@ -114,55 +127,31 @@ namespace	Menge
 		mt::mul_v2_m4( projectViewport.begin, m_viewport.begin, wm );
 		mt::mul_v2_m4( projectViewport.end, m_viewport.end, wm );
 		
-		if( lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
-			currentResolutionHeight < contentResolutionHeight ) )
-		{
-			if( projectViewport.begin.x < lowContentViewport.begin.x )
-			{
-				projectViewport.begin.x = lowContentViewport.begin.x;
-			}
-
-			if( projectViewport.begin.y < lowContentViewport.begin.y )
-			{
-				projectViewport.begin.y = lowContentViewport.begin.y;
-			}
-
-			if( projectViewport.end.x > lowContentViewport.end.x )
-			{
-				projectViewport.end.x = lowContentViewport.end.x;
-			}
-
-			if( projectViewport.end.y > lowContentViewport.end.y )
-			{
-				projectViewport.end.y = lowContentViewport.end.y;
-			}
-
-            //float lowContentViewportWidth = lowContentViewport.getWidth();
-            //float lowContentViewportHeight = lowContentViewport.getHeight();
-
-            //float scale_x = float(currentResolutionWidth) / lowContentViewportWidth;
-            //float scale_y = float(currentResolutionHeight) / lowContentViewportHeight;
-
-            //projectViewport.begin *= mt::vec2f(scale_x, scale_y);
-            //projectViewport.end *= mt::vec2f(scale_x, scale_y);
-		}
-        else
+        if( c_aspect > r_aspect )
         {
-            //float scale_x = float(currentResolutionWidth) / renderWidth;
-            //float scale_y = float(currentResolutionHeight) / renderHeight;
+            if( lowContentViewport.empty() == false )
+            {
+                if( projectViewport.begin.x < lowContentViewport.begin.x )
+                {
+                    projectViewport.begin.x = lowContentViewport.begin.x;
+                }
 
-            //projectViewport.begin += renderViewport.begin;
+                if( projectViewport.begin.y < lowContentViewport.begin.y )
+                {
+                    projectViewport.begin.y = lowContentViewport.begin.y;
+                }
 
-            //projectViewport.begin *= mt::vec2f(scale_x, scale_y);
-            //projectViewport.end *= mt::vec2f(scale_x, scale_y);
+                if( projectViewport.end.x > lowContentViewport.end.x )
+                {
+                    projectViewport.end.x = lowContentViewport.end.x;
+                }
+
+                if( projectViewport.end.y > lowContentViewport.end.y )
+                {
+                    projectViewport.end.y = lowContentViewport.end.y;
+                }
+            }
         }
-
-		//Viewport projectViewport2;
-
-		//projectViewport2.begin.x = - projectViewport.getWidth() * 0.5f;
-		//projectViewport2.begin.y = - projectViewport.getHeight() * 0.5f;
-		//projectViewport2.end.x = projectViewport.getWidth() * 0.5f;
-		//projectViewport2.end.y = projectViewport.getHeight() * 0.5f;
 
 		RenderEngine::get()
 			->makeProjectionOrthogonal( m_projectionMatrixWM, projectViewport );

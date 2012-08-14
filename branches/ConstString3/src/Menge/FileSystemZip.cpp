@@ -239,10 +239,36 @@ namespace Menge
 		//m_fileInputPool.release( memFile );
 		delete memFile;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	FileBufferProvider * FileSystemZip::getBufferProvider() const
-	{
-		//TODO
-		return 0;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    FileOutputStreamInterface* FileSystemZip::createOutputFile()
+    {
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileSystemZip::openOutputFile( const WString& _filename, FileOutputStreamInterface* _file )
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileSystemZip::closeOutputFile( FileOutputStreamInterface* _outStream )
+    {
+        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileSystemZip::createDirectory( const WString& _path )
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileSystemZip::removeDirectory( const WString& _path )
+    {
+        return false;
+    }     
+    //////////////////////////////////////////////////////////////////////////
+    bool FileSystemZip::removeFile( const WString& _filename )
+    {
+        return false;
+    }
+
+
 }	// namespace Menge

@@ -19,7 +19,7 @@ namespace Menge
 	class MappedFileInputStreamInterface;
 
 	class FileSystemZip
-		: public FileGroup
+		: public FileGroupInterface
 	{
 	public:
 		FileSystemZip();
@@ -31,9 +31,21 @@ namespace Menge
 
 	public:
 		bool existFile( const WString& _filename ) override;
+
+    public:
 		FileInputStreamInterface * createInputFile() override;
 		bool openInputFile( const WString& _filename, FileInputStreamInterface* _file ) override;
 		void closeInputFile( FileInputStreamInterface* _file ) override;
+
+    public:
+        FileOutputStreamInterface* createOutputFile() override;
+        bool openOutputFile( const WString& _filename, FileOutputStreamInterface* _file ) override;
+        void closeOutputFile( FileOutputStreamInterface* _outStream ) override;
+
+    public:
+        bool createDirectory( const WString& _path ) override;
+        bool removeDirectory( const WString& _path ) override;
+        bool removeFile( const WString& _filename ) override;
 
 	public:
 		FileBufferProvider * getBufferProvider() const;

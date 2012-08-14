@@ -211,6 +211,7 @@ namespace Menge
 		, m_codecEngine(NULL)
 		, m_textManager(NULL)
 		, m_unicodeService(NULL)
+        , m_notificationService(NULL)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -1395,17 +1396,17 @@ namespace Menge
 			m_game->finalizeRenderResources();
 			m_game->finalize();
 		}
-
+        
 		if( m_soundService )
 		{
 			m_soundService->finalize();
 		}
-
+        
 		if( m_taskManager )
 		{
 			m_taskManager->finalize();
 		}
-
+        
 		if( m_scriptEngine )
 		{
 			m_scriptEngine->finalize();
@@ -1441,10 +1442,13 @@ namespace Menge
 			delete m_renderEngine;
 		}
 		
-		delete m_inputEngine;
+        if( m_inputEngine != NULL )
+        {
+            m_inputEngine->finalize();
+		    delete m_inputEngine;
+        }
 		
 		finalizeSoundService( m_soundService );
-
 		delete m_taskManager;
 
 		delete m_threadEngine;
@@ -1466,11 +1470,16 @@ namespace Menge
 		m_serviceProvider->unregistryService( "LogService" );
 		delete m_logEngine;
 
+        delete m_notificationService;
+
+        releaseInterfaceSystem( m_unicodeService );
+        m_unicodeService = NULL;
+
 		m_serviceProvider->unregistryService( "StringizeService" );
 		delete m_stringizeService;
 
 		delete m_watchdog;
-
+        
 		delete m_serviceProvider;
 		delete m_consts;
 	}
@@ -1525,68 +1534,63 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport )
 	{
-		float rw = float(_resolution.getWidth());
+        float rw = float(_resolution.getWidth());
 		float rh = float(_resolution.getHeight());
 
+        float r_aspect = _resolution.getAspectRatio();
+        
 		if( m_fixedContentResolution == true )
 		{
-            size_t currentResolutionWidth = m_currentResolution.getWidth();
-            size_t currentResolutionHeight = m_currentResolution.getHeight();
-
             size_t contentResolutionWidth = m_contentResolution.getWidth();
             size_t contentResolutionHeight = m_contentResolution.getHeight();
+            
+            float c_aspect = m_contentResolution.getAspectRatio();
 
             Resolution contentResolution;
 
-            if( m_lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
-                currentResolutionHeight < contentResolutionHeight ) )
+            if( c_aspect > r_aspect )
             {
-                float width = m_lowContentViewport.getWidth();
-                float height = m_lowContentViewport.getHeight();
+                if( m_lowContentViewport.empty() == false )
+                {
+                    float width = m_lowContentViewport.getWidth();
+                    float height = m_lowContentViewport.getHeight();
 
-                contentResolution.setWidth( width );
-                contentResolution.setHeight( height );
+                    contentResolution.setWidth( width );
+                    contentResolution.setHeight( height );
+                }
+                else
+                {
+                    contentResolution = m_contentResolution;
+                }
             }
             else
             {
                 contentResolution = m_contentResolution;
             }
 
-			if( _resolution == contentResolution )
-			{
-				_viewport.begin.x = 0.f;
-				_viewport.begin.y = 0.f;
-				_viewport.end.x = rw;
-				_viewport.end.y = rh;
-			}
-			else
-			{
-				float one_div_width = 1.f / rw;
-				float one_div_height = 1.f / rh;
+            float one_div_width = 1.f / rw;
+            float one_div_height = 1.f / rh;
 
-				float contentAspect = contentResolution.getAspectRatio();
+            float contentAspect = contentResolution.getAspectRatio();
 
-				float aspect = rw * one_div_height;
+            float aspect = rw * one_div_height;
 
-				float dw = 1.f;
-				float dh = rw / contentAspect * one_div_height;
+            float dw = 1.f;
+            float dh = rw / contentAspect * one_div_height;
 
-				if( dh > 1.f )
-				{
-					dh = 1.f;
-					dw = rh * contentAspect * one_div_width;
-				}
+            if( dh > 1.f )
+            {
+                dh = 1.f;
+                dw = rh * contentAspect * one_div_width;
+            }
 
-				float areaWidth = dw * rw;
-				float areaHeight = dh * rh;
+            float areaWidth = dw * rw;
+            float areaHeight = dh * rh;
 
-				_viewport.begin.x = ( rw - areaWidth ) * 0.5f;
-				_viewport.begin.y = ( rh - areaHeight ) * 0.5f;
-				_viewport.end.x = _viewport.begin.x + areaWidth;
-				_viewport.end.y = _viewport.begin.y + areaHeight;
-			}
-
-			return;
+            _viewport.begin.x = ( rw - areaWidth ) * 0.5f;
+            _viewport.begin.y = ( rh - areaHeight ) * 0.5f;
+            _viewport.end.x = _viewport.begin.x + areaWidth;
+            _viewport.end.y = _viewport.begin.y + areaHeight;
 		}
 		else
 		{

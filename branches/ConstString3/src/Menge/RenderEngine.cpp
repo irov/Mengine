@@ -687,27 +687,6 @@ namespace Menge
 
 		return true;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//bool RenderEngine::validTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec )
-	//{
-	//	bool exist = FileEngine::get()
-	//		->existFile( _pakName, _filename );
-
-	//	return exist;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//RenderTextureInterface * RenderEngine::getTexture( const ConstString & _name ) const
-	//{
-	//	TMapTextures::const_iterator it_find = m_textures.find( _name );
-	//	
-	//	if( it_find == m_textures.end() )
-	//	{
-	//		return NULL;
-	//	}
-
-	//	it_find->second->addRef();
-	//	return it_find->second;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture )
 	{
@@ -908,7 +887,7 @@ namespace Menge
 		m_debugInfo.textureMemory -= memroy_size;
 		--m_debugInfo.textureCount;
 		
-		_texture->destroyImage();
+		_texture->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface* _imageDecoder )

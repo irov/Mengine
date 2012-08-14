@@ -19,7 +19,7 @@ namespace Menge
 	class MappedFileInputStreamInterface;
 
 	class FileSystemZip2
-		: public FileGroup
+		: public FileGroupInterface
 	{
 	public:
 		FileSystemZip2();

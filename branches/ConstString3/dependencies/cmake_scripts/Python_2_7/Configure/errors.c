@@ -545,12 +545,13 @@ PyErr_Format(PyObject *exception, const char *format, ...)
     va_start(vargs);
 #endif
 
-#ifndef _DEBUG
-    Py_INCREF(Py_None);
-    string = Py_None;
-#else
+#ifdef _DEBUG
     string = PyString_FromFormatV(format, vargs);
+#else
+    Py_INCREF(Py_None);
+    string = Py_None;   
 #endif
+
     PyErr_SetObject(exception, string);
     Py_XDECREF(string);
     va_end(vargs);

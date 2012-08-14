@@ -34,8 +34,7 @@ namespace Menge
 		
 		if( pybind::unicode_check( arg ) == true )
 		{
-			size_t size;
-			const char * utf8 = pybind::unicode_to_utf8( arg, size );
+			const char * utf8 = pybind::unicode_to_utf8( arg );
 
 			this->write( utf8 );
 

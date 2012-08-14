@@ -249,13 +249,6 @@ namespace Menge
 	protected:
 		size_t m_cameraRevision;
 
-	//protected:
-	//	void _beginEvent( EEventName _event ) const override;
-	//	void _endEvent( EEventName _event ) const override;
-
-	//protected:
-	//	mutable EEventName m_inEvent;
-
 	protected:
 		bool m_inUpdate;
 

@@ -2151,9 +2151,8 @@ namespace Menge
 	{
 		bool operator()(PyObject* _Left, PyObject* _Right) const
 		{	// apply operator< to operands
-			size_t size;
-			const char * left_char = pybind::string_to_char(_Left, size);
-			const char * right_char = pybind::string_to_char(_Right, size);
+			const char * left_char = pybind::string_to_char(_Left);
+			const char * right_char = pybind::string_to_char(_Right);
 
 			int cmp = strcmp( left_char, right_char );
 
@@ -2167,17 +2166,16 @@ namespace Menge
 	public:
 		bool apply( PyObject * _obj, ConstString & _value ) override
 		{
-            size_t size;
-            const char * value_char = pybind::string_to_char(_obj, size);
+            const char * value_char = pybind::string_to_char( _obj );
             
-            _value = ConstString(value_char, size);
+            _value = ConstString(value_char);
 
 			return true;
 		}
         
 		PyObject * wrap( pybind::type_cast_result<ConstString>::TCastRef _value ) override
 		{
-			PyObject * py_value = pybind::string_from_char( _value.c_str(), _value.size() );
+			PyObject * py_value = pybind::string_from_char_size( _value.c_str(), _value.size() );
 
 			return py_value;
 			//return pybind::string_from_char( _value.c_str(), _value.size() );

@@ -67,7 +67,7 @@ namespace Menge
 
 		PyObject * py_syspath = pybind::list_new(0);
 
-		PyObject * py_stdPath = pybind::unicode_from_wchar(stdPath.c_str(), stdPath.size());
+		PyObject * py_stdPath = pybind::unicode_from_wchar_size(stdPath.c_str(), stdPath.size());
 
 		pybind::list_appenditem( py_syspath, py_stdPath );
 

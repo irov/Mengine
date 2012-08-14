@@ -184,7 +184,7 @@ namespace Menge
 		{
 			const WString & path = *it;
 
-			PyObject * py_path = pybind::unicode_from_wchar( path.c_str(), path.size() );
+			PyObject * py_path = pybind::unicode_from_wchar_size( path.c_str(), path.size() );
 
 			pybind::list_appenditem( path_packet, py_path );
 

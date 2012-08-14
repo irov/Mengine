@@ -32,15 +32,8 @@ namespace Menge
 	public:
 		ScriptClassWrapper()
 		{
-            m_extract = new ScriptClassExtract<T>();
-
-			pybind::registration_type_cast<T>( m_extract );
+			pybind::registration_type_cast<T>( new ScriptClassExtract<T> );
 		}
-
-        ~ScriptClassWrapper()
-        {
-            delete m_extract;
-        }
 
 	protected:
 		PyObject * wrap( Node * _node ) override
@@ -60,9 +53,6 @@ namespace Menge
 		{
 			delete this;
 		}
-
-    protected:
-        ScriptClassExtract<T> * m_extract;
 	};
 }
 

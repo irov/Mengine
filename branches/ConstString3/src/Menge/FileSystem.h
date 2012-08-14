@@ -15,7 +15,6 @@ namespace Menge
 {
 	class FileInputStreamInterface;
 	class FileOutputStreamInterface;
-	class FileBufferProvider;
 
 	class FileEngine;
 

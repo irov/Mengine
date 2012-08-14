@@ -10,7 +10,6 @@
 
 #	include "FactoryManager.h"
 
-#	include "FileSystemMemoryMapped.h"
 #	include "FileInput.h"
 #	include "Core/Pool.h"
 

@@ -42,8 +42,6 @@ namespace Menge
 			const ConstString & resourceName = *(it);
 			ResourceImage * resource = dynamic_cast<ResourceImage*>( ResourceManager::get()->getResourceReference(resourceName) );
 			
-			printf("_________________Thread work %s \n", resourceName.c_str());
-			
 			if( resource == 0 )
 			{
 				MENGE_LOG_ERROR( "TaskLoadImageResources:  Resource Image '%s' was not found"

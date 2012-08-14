@@ -47,9 +47,6 @@ namespace Menge
         bool removeDirectory( const WString& _path ) override;
         bool removeFile( const WString& _filename ) override;
 
-	public:
-		FileBufferProvider * getBufferProvider() const;
-
 	private:
 		WString m_path;
 		FileEngine * m_fileEngine;

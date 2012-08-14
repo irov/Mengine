@@ -8,12 +8,8 @@
 
 #	include "FileSystemDirectory.h"
 
-#	include "FileBufferProvider.h"
-
-#	include "BufferedFileInput.h"
 #	include "FileEngine.h"
 #	include "LogEngine.h"
-//#	include "SimpleFileOutput.h"
 
 #	include "Core/String.h"
 #	include "Core/File.h"

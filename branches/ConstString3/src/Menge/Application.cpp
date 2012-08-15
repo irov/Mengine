@@ -287,7 +287,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool Application::initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
+	bool Application::initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting )
 	{
 		m_platform = _platform;
 		
@@ -373,15 +373,6 @@ namespace Menge
 		if( this->loadPlugins( _setting.plugins ) == false )
 		{
 			MENGE_LOG_ERROR("error: (Application::initialize) Failed to loadPlugins ");
-		}
-
-		bool w_personalityModule_successful;
-		String personalityModule = m_unicodeService->unicodeToUtf8( _setting.personalityModule, w_personalityModule_successful );
-		ConstString c_personalityModule(personalityModule);
-
-		if( this->createGame( c_personalityModule, _resourcePack, _languagePack ) == false )
-		{
-			return false;
 		}
 		
 		return true;
@@ -859,7 +850,7 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame( const ConstString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
+	bool Application::createGame( const WString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
 	{
 		m_game = new Game(m_baseDir, m_developmentMode, m_platformName);
 
@@ -884,7 +875,11 @@ namespace Menge
 
 		m_game->setCursorMode( m_cursorMode );
 
-		if( m_game->loadPersonality( _module ) == false )
+        bool w_personalityModule_successful;
+        String personalityModule = m_unicodeService->unicodeToUtf8( _module, w_personalityModule_successful );
+        ConstString c_personalityModule(personalityModule);
+
+		if( m_game->loadPersonality( c_personalityModule ) == false )
 		{
 			return false;
 		}

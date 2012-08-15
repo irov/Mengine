@@ -615,13 +615,21 @@ namespace Menge
 		
 		//WString settings_file = L"application.ini";
 
-		if( m_application->initialize( this, m_commandLine, appSettings, resourcePacks, languagePacks ) == false )
+		if( m_application->initialize( this, m_commandLine, appSettings ) == false )
 		{
 			LOGGER_ERROR(m_logService)( "Application initialize failed" 
 				);
 
 			return false;
 		}
+
+        if( m_application->createGame( appSettings.personalityModule, resourcePacks, languagePacks ) == false )
+        {
+            LOGGER_ERROR(m_logService)( "Application create game failed"
+                );
+
+            return false;
+        }
 				
 		LOGGER_INFO(m_logService)( "Application Initialize... %s"
 			, platformName.c_str() 

@@ -122,7 +122,7 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual bool initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _localPack ) = 0;
+		virtual bool initialize( PlatformInterface* _platform, const String& _args, const ApplicationSettings & _setting ) = 0;
 
 		virtual const WString& getBaseDir() const = 0;
 		
@@ -157,7 +157,7 @@ namespace Menge
 		virtual void onPaint() = 0;
 
 	public:		
-		virtual bool createGame( const ConstString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
+		virtual bool createGame( const WString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
 		virtual bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) = 0;
 
 	public:

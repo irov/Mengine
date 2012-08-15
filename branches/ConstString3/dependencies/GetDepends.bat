@@ -31,6 +31,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
+%toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.14.tar.bz2
+
 
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/3.2.2/Python-3.2.2.tgz
 
@@ -108,10 +110,10 @@ if EXIST simpleini rmdir /s /q simpleini
 if EXIST icu rmdir /s /q icu
 7za x -y icu4c-49_1_1-src.zip
 
-:: if EXIST OpenAL rmdir /s /q OpenAL
-:: 7za x -y openal-soft-1.13.tar.bz2
-:: 7za x -y openal-soft-1.13.tar
-:: move openal-soft-1.13 OpenAL
+if EXIST OpenAL rmdir /s /q openalsoft
+7za x -y openal-soft-1.14.tar.bz2
+7za x -y openal-soft-1.14.tar
+move openal-soft-1.14 openalsoft
 
 
 if EXIST svn rmdir /s /q svn

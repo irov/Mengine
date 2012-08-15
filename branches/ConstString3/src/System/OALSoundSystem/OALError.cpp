@@ -19,9 +19,10 @@ namespace Menge
 
 		LogServiceInterface * logService = _soundSystem->getLogService();
 
-		LOGGER_ERROR(logService)( "OAL Error: (%s %d) %s"
+		LOGGER_ERROR(logService)( "OAL Error: (%s %d) %d:%s"
 			, _file
 			, _line
+            , error
 			, message
 			);	
 	}

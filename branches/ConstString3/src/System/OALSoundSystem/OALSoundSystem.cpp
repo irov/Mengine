@@ -106,49 +106,63 @@ namespace Menge
 				
 		// open default device
 		
-		m_device = alcOpenDevice("Generic Software");
-		OAL_CHECK_ERROR();
-				
+		m_device = alcOpenDevice( NULL );
+			
 		if( m_device == NULL )
 		{
 			LOGGER_ERROR(m_logService)( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
 
-			//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
+			const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
+
+            printf("ALC_DEVICE_SPECIFIER [%s]\n"
+                , str                
+                );
+
 			// Открываем программное устройство
 			//m_device = alcOpenDevice("Generic Software");
-			m_device = alcOpenDevice( NULL );
-			OAL_CHECK_ERROR();
+			m_device = alcOpenDevice( "Generic Software" );
 
 			if( m_device == NULL )
 			{
 				LOGGER_ERROR(m_logService)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
-			}
 
-			// open hardware device
-			m_device = alcOpenDevice( "Generic Hardware" );	
-			OAL_CHECK_ERROR();
+    			// open hardware device
+	    		m_device = alcOpenDevice( "Generic Hardware" );	
 
-			if( m_device == NULL )
-			{
-				LOGGER_ERROR(m_logService)( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
+    			if( m_device == NULL )
+	    		{
+		    		LOGGER_ERROR(m_logService)( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
 
-				return false;
-			}			
+				    return false;
+			    }			
+            }
 		}
 
 		m_context = alcCreateContext( m_device, NULL );
-		OAL_CHECK_ERROR();
 
 		if( m_context == NULL )
 		{
-			LOGGER_ERROR(m_logService)( "OALSoundSystem: Failed to create context" );
+            LOGGER_ERROR(m_logService)( "OALSoundSystem: Failed to create context" );
+
 			alcCloseDevice( m_device );
 			m_device = NULL;
+
 			return false;
 		}
 
-		alcMakeContextCurrent( m_context );
-		OAL_CHECK_ERROR();
+		if( alcMakeContextCurrent( m_context ) == ALC_FALSE )
+        {
+            LOGGER_ERROR(m_logService)( "OALSoundSystem: Failed to make context current" );
+
+            alcDestroyContext( m_context );
+            m_context = NULL;
+
+            alcCloseDevice( m_device );
+            m_device = NULL;
+
+            return false;
+        }
+        		
 
 		LOGGER_INFO(m_logService)( "OpenAL driver properties" );
 

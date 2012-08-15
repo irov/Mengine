@@ -12,7 +12,7 @@
 #ifdef __APPLE__
 #   include <OpenAL/al.h>
 #else
-#	include <al.h>
+#	include <AL/al.h>
 #endif
 
 namespace Menge

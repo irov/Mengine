@@ -37,10 +37,10 @@ namespace Menge
 
 		void setSoundResource( const ConstString& _name );
 
+    protected:
 		void listenSoundNodePaused();
 		void listenSoundNodeStopped();
 		
-		//void _localHide( bool _value ) override;
 	protected:
 		bool _activate() override;
 		void _deactivate() override;

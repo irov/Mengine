@@ -19,9 +19,8 @@ src
 	OALError.h	
 )
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/OpenAL/include )
-
-ADD_DEFINITIONS( -DAL_STATIC_LIB )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openalsoft/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openalsoft/OpenAL32/include )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
@@ -38,10 +37,8 @@ SET( APPLICATION_DEPENDENCIES
 IF(WIN32)
     SET( APPLICATION_LIBS
      ${APPLICATION_LIBS}
-     debug ${THIRDPARTY_DIR}/OpenAL/libs/Win32/OpenAL32.lib
-     optimized ${THIRDPARTY_DIR}/OpenAL/libs/Win32/OpenAL32.lib
-    # debug ${MENGINE_LIB_PREFIX}openal_static${MENGINE_LIB_SUFFIXD}
-    # optimized ${MENGINE_LIB_PREFIX}openal_static${MENGINE_LIB_SUFFIX}
+     debug OpenAL32.lib
+     optimized OpenAL32.lib
     )
 
 	SET( APPLICATION_LIBS

@@ -135,7 +135,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_play()
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
@@ -272,29 +272,5 @@ namespace Menge
 		Holder<SoundServiceInterface>::get()
 			->setPosMs( m_sourceID, _timing );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	//void SoundEmitter::_localHide( bool _value )
-	//{
-	//	if( isActivate() == false )
-	//	{
-	//	return;
-	//	}
-
-	//	if( m_sourceID == 0 )
-	//	{
-	//	return;
-	//	}
-
-	//	if ( _value == true )
-	//	{
-	//	Holder<SoundServiceInterface>::get()
-	//	->stop( m_sourceID );
-	//	}
-	//	else
-	//	{
-	//	Holder<SoundServiceInterface>::get()
-	//	->play( m_sourceID );
-	//	}
-	//}
 	//////////////////////////////////////////////////////////////////////////
 }

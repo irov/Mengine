@@ -62,6 +62,7 @@ namespace Menge
 	{
 	public:
 		virtual bool initialize( ServiceProviderInterface* _serviceProvider ) = 0;
+        virtual void finalize() = 0;
 
 		virtual void onTurnSound( bool _turn ) = 0;
 
@@ -73,14 +74,6 @@ namespace Menge
 
 		virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
 		virtual void releaseSoundNode( SoundSourceInterface * _sn ) = 0;
-
-		virtual bool setBlow( bool _active ) = 0;
-		virtual float getBlow() = 0;
-
-		virtual void setEnoughBlow( float _enoughBlow ) = 0;
-		virtual void setBlowCallback( SoundSulkCallbackInterface * _callback ) = 0;
-
-		virtual void update( float _timing ) = 0;
 	};
 
 	class SoundServiceInterface

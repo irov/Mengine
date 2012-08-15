@@ -410,6 +410,7 @@ namespace Menge
 		
 		s_getIniValue( game_settings, L"Project", L"Name", appSettings.projectName );
 		s_getIniValue( game_settings, L"Project", L"Codename", appSettings.projectCodename );
+        s_getIniValue( game_settings, L"Locale", L"Default", appSettings.defaultLocale );
 		s_getIniValue( game_settings, L"Game", L"ContentResolution", appSettings.contentResolution );
 		s_getIniValue( game_settings, L"Game", L"LowContentViewport", appSettings.lowContentViewport );
 		s_getIniValue( game_settings, L"Game", L"FixedContentResolution", appSettings.fixedContentResolution );
@@ -539,6 +540,11 @@ namespace Menge
 		String languagePack;
 		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
 
+        if( languagePack.empty() == true )
+        {
+            languagePack = appSettings.defaultLocale;
+        }
+
 		if( languagePack.empty() == true )
 		{
 			wchar_t localeBuff[64];
@@ -607,9 +613,6 @@ namespace Menge
 
 		String platformName = "WIN";
 
-		ConstString c_languagePack(languagePack);
-		m_application->setLanguagePackOverride( c_languagePack );
-
 		//WString baseDir = m_applicationPath;
 		//baseDir += MENGE_DEFAULT_BASE_DIR;
 		
@@ -623,7 +626,9 @@ namespace Menge
 			return false;
 		}
 
-        if( m_application->createGame( appSettings.personalityModule, resourcePacks, languagePacks ) == false )
+        ConstString c_languagePack(languagePack);
+        
+        if( m_application->createGame( appSettings.personalityModule, c_languagePack, resourcePacks, languagePacks ) == false )
         {
             LOGGER_ERROR(m_logService)( "Application create game failed"
                 );

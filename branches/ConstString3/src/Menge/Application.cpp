@@ -850,7 +850,7 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame( const WString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
+	bool Application::createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePacks, const TVectorResourcePackDesc & _languagePacks )
 	{
 		m_game = new Game(m_baseDir, m_developmentMode, m_platformName);
 
@@ -859,12 +859,9 @@ namespace Menge
 		MENGE_LOG_INFO( "Application:createGame load game resource"
 			);
 
-		if( m_languagePackOverride.empty() == false )
-		{
-			m_game->setLanguagePack( m_languagePackOverride );
-		}
+		m_game->setLanguagePack( _language );
 
-		if( m_game->loadConfigPaks( _resourcePack, _languagePack ) == false )
+		if( m_game->loadConfigPaks( _resourcePacks, _languagePacks ) == false )
 		{
 			return false;
 		}
@@ -1900,11 +1897,6 @@ namespace Menge
 		}
 
         m_dynamicLibraries.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setLanguagePackOverride( const ConstString& _packName )
-	{
-		m_languagePackOverride = _packName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getVSync() const

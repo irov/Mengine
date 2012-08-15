@@ -11,8 +11,6 @@ src
 	OALSoundBufferStream.h
 	OALSoundSource.cpp
 	OALSoundSource.h
-	SulkSystem.cpp
-	SulkSystem.h
 	OALSoundSystem.cpp
 	OALSoundSystem.h
 	OALError.cpp

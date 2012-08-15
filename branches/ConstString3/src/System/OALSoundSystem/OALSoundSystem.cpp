@@ -1,8 +1,6 @@
-
 #	include "OALSoundSystem.h"
 #	include "Interface/LogSystemInterface.h"
 #	include "Config/Config.h"
-#	include "SulkSystem.h"
 
 #	include "OALError.h"
 #	include "OALSoundBufferBase.h"
@@ -46,52 +44,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
 		: m_logService(NULL)
-		, m_initialized(false)
 		, m_context(NULL)
 		, m_device(NULL)
-		, m_sulk(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::~OALSoundSystem()
-	{
-		if( m_sulk != NULL )
-		{
-			delete m_sulk;
-			m_sulk = NULL;
-		}
-        
-		//alDeleteSources( m_sourcePool.size(), &(m_sourcePool[0]) );
-		//m_sourcePool.clear();
+	{     
 
-		//alDeleteBuffers( m_bufferPool.size(), &(m_bufferPool[0]) );
-		//m_bufferPool.clear();
-        
-		alcMakeContextCurrent( NULL );
-        
-		if( m_context )
-		{
-			alcDestroyContext( m_context );
-			m_context = NULL;
-		}
-
-		if( m_device )
-		{
-			//ALCboolean cd = alcCloseDevice( m_device );
-			m_device = NULL;
-		}
-
-		m_initialized = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundSystem::initialize( ServiceProviderInterface * _serviceProvider )
 	{
-		if( m_initialized == true )
-		{
-			LOGGER_ERROR(m_logService)( "OALSoundSystem: system have been already initialized" );
-			return false;
-		}
-		
 		m_serviceProvider = _serviceProvider;
 
 		m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
@@ -189,24 +153,25 @@ namespace Menge
 		alListenerfv( AL_VELOCITY, lvelocity );
 		alListenerfv( AL_ORIENTATION, lorient );
 
-		//ALuint sourcePool[MAX_SOUND_SOURCES];
-		//alGenSources( MAX_SOUND_SOURCES, sourcePool );
-		//OAL_CHECK_ERROR();
-
-		//m_sourcePool.assign( sourcePool, sourcePool + MAX_SOUND_SOURCES );
-
-		//ALuint bufferPool[MAX_SOUND_BUFFERS];
-		//alGenBuffers( MAX_SOUND_BUFFERS, bufferPool );
-		//OAL_CHECK_ERROR();
-
-		//m_bufferPool.assign( bufferPool, bufferPool + MAX_SOUND_BUFFERS );
-		
-		m_sulk = new SulkSystem();
-
-		m_initialized = true;
-
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSystem::finalize()
+    {
+        alcMakeContextCurrent( NULL );
+
+        if( m_context )
+        {
+            alcDestroyContext( m_context );
+            m_context = NULL;
+        }
+
+        if( m_device )
+        {
+            //alcCloseDevice( m_device );
+            m_device = NULL;
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::onTurnSound( bool _turn )
 	{
@@ -235,11 +200,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::setListenerOrient( const float* _position, const float* _front, const float* _top )
 	{
-		if( m_initialized == false )
-		{
-			return;
-		}
-
 		float orient[] = { _front[0], _front[1], _front[2], _top[0], _top[1], _top[2] };
 		alListenerfv( AL_POSITION, _position );
 		OAL_CHECK_ERROR();
@@ -264,21 +224,15 @@ namespace Menge
 	SoundBufferInterface* OALSoundSystem::createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream )
 	{
 		OALSoundBufferBase* buffer = NULL;
-		if( m_initialized == false )
-		{
-			buffer = new OALSoundBufferBase();
-		}
-		else
-		{
-			if( _isStream == false )
-			{
-				buffer = new OALSoundBuffer( this );
-			}
-			else
-			{
-				buffer = new OALSoundBufferStream( this );
-			}
-		}
+
+        if( _isStream == false )
+        {
+            buffer = new OALSoundBuffer( this );
+        }
+        else
+        {
+            buffer = new OALSoundBufferStream( this );
+        }
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
@@ -312,50 +266,6 @@ namespace Menge
 
 		//m_soundSources.release(soundSource);
 		delete soundSource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSystem::setBlow( bool _active )
-	{
-		if( m_sulk )
-		{
-			return m_sulk->activate( _active );
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float OALSoundSystem::getBlow()
-	{
-		if( m_sulk )
-		{
-			return m_sulk->getBlow();
-		}
-
-		return 0.f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::setEnoughBlow( float _enoughBlow )
-	{
-		if( m_sulk )
-		{
-			m_sulk->setEnoughBlow( _enoughBlow );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
-	{
-		if( m_sulk )
-		{
-			m_sulk->setCallback( _callback );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::update( float _timing )
-	{
-		if( m_sulk )
-		{
-			m_sulk->update();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::genSourceId()

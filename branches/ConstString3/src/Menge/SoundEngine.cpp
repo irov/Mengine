@@ -39,7 +39,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine()
 		: m_interface( NULL )
-		, m_sulkcallback(0)
 		, m_soundVolume(1.0f)
 		, m_commonVolume(1.0f)
 		, m_musicVolume(1.0f)
@@ -80,6 +79,8 @@ namespace Menge
         
 		if( m_interface != NULL )
 		{
+            m_interface->finalize();
+
 			releaseInterfaceSystem( m_interface );
 			m_interface = NULL;
 		}
@@ -347,21 +348,6 @@ namespace Menge
 		return m_commonVolume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setBlow( bool _active )
-	{
-		return m_interface->setBlow( _active );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getBlow()
-	{
-		return m_interface->getBlow();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setEnoughBlow( float _enoughBlow )
-	{
-		m_interface->setEnoughBlow( _enoughBlow );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
 		//if( m_turn == false )
@@ -504,15 +490,6 @@ namespace Menge
 		}
 	
 		m_pauseListeners.clear();
-
-		m_interface->update( _timing );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSulkCallback( SoundSulkCallback * _sulkcallback )
-	{
-		delete m_sulkcallback;
-		m_sulkcallback = _sulkcallback;
-		m_interface->setBlowCallback( m_sulkcallback );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::mute( bool _mute )

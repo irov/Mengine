@@ -84,6 +84,8 @@ namespace Menge
 		WString projectName;
 		String projectCodename;
 
+        String defaultLocale;
+
 		Resolution contentResolution;
 		Viewport lowContentViewport;
 
@@ -139,9 +141,6 @@ namespace Menge
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
 
 	public:
-		virtual void setLanguagePackOverride( const ConstString & _packName ) = 0;
-
-	public:
 		virtual bool onRender() = 0;
 		virtual void onFlush() = 0;
 		virtual bool onUpdate() = 0;
@@ -157,7 +156,7 @@ namespace Menge
 		virtual void onPaint() = 0;
 
 	public:		
-		virtual bool createGame( const WString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
+		virtual bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
 		virtual bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) = 0;
 
 	public:

@@ -108,7 +108,7 @@ namespace Menge
 
 		if( resource == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceManager createResource: don't register resource type '%s'"
+			MENGE_LOG_ERROR( "ResourceManager createResource: not registered resource type '%s'"
 				, _type.c_str() 
 				);
 

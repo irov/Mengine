@@ -13,8 +13,6 @@
 #	include <AL/alc.h>
 #endif
 
-class SulkSystem;
-
 namespace Menge
 {
 	class OALSoundSource;
@@ -31,6 +29,7 @@ namespace Menge
 
 	public:	// interfaces
 		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
+        void finalize() override;
 		
 	public:
 		void onTurnSound( bool _turn ) override;
@@ -48,14 +47,6 @@ namespace Menge
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
 		void releaseSoundNode( SoundSourceInterface * _sn ) override;
 
-		bool setBlow( bool _active ) override;
-		float getBlow() override;
-
-		void setEnoughBlow( float _enoughBlow ) override;
-		void setBlowCallback( SoundSulkCallbackInterface * _callback ) override;
-
-		void update( float _timing ) override;
-
 	public:
 		ALuint genSourceId();
 		void releaseSourceId( ALuint _sourceId );
@@ -70,20 +61,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		LogServiceInterface * m_logService;
 
-		bool m_initialized;
-
-		typedef std::vector<ALuint> TVectorSourceId;
-		TVectorSourceId m_sourcePool;
-
-		typedef std::vector<ALuint> TVectorBufferId;
-		TVectorBufferId m_bufferPool;
-
 		ALCcontext* m_context;
 		ALCdevice* m_device;
-
-		SulkSystem * m_sulk;
-
-		//typedef Pool<OALSoundSource> TPoolSoundSource;
-		//TPoolSoundSource m_soundSources;
 	};
 }	// namespace Menge

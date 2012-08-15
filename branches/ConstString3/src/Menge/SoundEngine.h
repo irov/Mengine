@@ -123,7 +123,6 @@ namespace Menge
 
 	protected:
 		SoundSystemInterface * m_interface;
-		SoundSulkCallback * m_sulkcallback;
 
 	private:
 		float m_soundVolume;

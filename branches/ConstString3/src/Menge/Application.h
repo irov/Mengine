@@ -90,12 +90,9 @@ namespace Menge
 
 	public:
 		bool getAllowFullscreenSwitchShortcut() const override;
-
+        	
 	public:
-		void setLanguagePackOverride( const ConstString& _packName ) override;
-
-	public:
-		bool createGame( const WString & _module, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
+		bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
 		bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) override;
 
 	public:
@@ -351,8 +348,6 @@ namespace Menge
 		
 		ResourceCursor * m_cursorResource;
 		
-		ConstString m_languagePackOverride;
-
 		String m_platformName;
 		WString m_projectName;
 		String m_projectCodename;

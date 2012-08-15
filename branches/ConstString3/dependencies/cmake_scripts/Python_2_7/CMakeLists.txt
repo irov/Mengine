@@ -91,7 +91,6 @@ file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 #endif(WIN32)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
-
 file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
 configure_file(Configure/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 
@@ -235,7 +234,7 @@ if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
 else( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} 
-	${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c
+	${SOURCE_DIR}/Modules/wininit.c
 	${SOURCE_DIR}/PC/getpathp.c	)
 endif( NOT WIN32 )
 

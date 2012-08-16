@@ -136,12 +136,12 @@ namespace Menge
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
 		// create empty render image
-		RenderImageInterface * createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
-		RenderImageInterface * createDynamicImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
+		RenderImageInterface * createImage( size_t _width, size_t _height, PixelFormat _format ) override;
+		RenderImageInterface * createDynamicImage( size_t _width, size_t _height, PixelFormat _format ) override;
 		
 		
 		// create render target image
-		RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height,  size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
+		RenderImageInterface * createRenderTargetImage( size_t _width, size_t _height, PixelFormat _format ) override;
 		// отрисовка изображения
 
 		bool beginScene() override;

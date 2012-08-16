@@ -304,6 +304,13 @@ namespace Menge
 		}
 
 		this->loadRGBAndAlphaData_( buffer, pitch, imageDecoderRGB, imageDecoderAlpha );
+
+        RenderEngine::get()
+            ->sweezleAlpha( texture, buffer, pitch );
+
+        RenderEngine::get()
+            ->imageQuality( texture, buffer, pitch );
+        
 		texture->unlock();
 		
 		imageDecoderRGB->destroy();

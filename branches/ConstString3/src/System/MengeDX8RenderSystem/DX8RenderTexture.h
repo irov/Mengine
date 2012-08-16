@@ -18,7 +18,7 @@ namespace Menge
 		: public DX8Texture
 	{
 	public:
-		DX8RenderTexture( IDirect3DTexture8* _d3dInterface, size_t _width, size_t _height, IDirect3DSurface8* _depthInterface );
+		DX8RenderTexture( IDirect3DTexture8* _d3dInterface, size_t _hwWidth, size_t _hwHeight, PixelFormat _hwPixelFormat, IDirect3DSurface8* _depthInterface );
 		~DX8RenderTexture();
 
 	public:

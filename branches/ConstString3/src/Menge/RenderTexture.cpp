@@ -19,17 +19,11 @@ namespace Menge
 						, size_t _width
 						, size_t _height
 						, PixelFormat _format
-						, size_t _hwWidth
-						, size_t _hwHeight
-						, PixelFormat _hwPixelFormat
 						, size_t _id )
 		: m_image(_image)
 		, m_width(_width)
 		, m_height(_height)
 		, m_pixelFormat(_format)
-		, m_hwWidth(_hwWidth)
-		, m_hwHeight(_hwHeight)
-		, m_hwPixelFormat(_hwPixelFormat)
 		, m_ref(1)
 		, m_uv(0.f, 0.f, 1.f, 1.f)
 		, m_id(_id)
@@ -38,6 +32,11 @@ namespace Menge
 		m_rect.top = 0;
 		m_rect.right = m_width;
 		m_rect.bottom = m_height;
+
+        m_hwRect.left = 0;
+        m_hwRect.top = 0;
+        m_hwRect.right = m_image->getHWWidth();
+        m_hwRect.bottom = m_image->getHWHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::~RenderTexture()
@@ -121,17 +120,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getHWWidth() const
 	{
-		return m_hwWidth;
+		return m_image->getHWWidth();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getHWHeight() const
 	{
-		return m_hwHeight;
+		return m_image->getHWHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Menge::PixelFormat RenderTexture::getHWPixelFormat() const
 	{
-		return m_hwPixelFormat;
+		return m_image->getHWPixelFormat();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getRect() const
@@ -141,7 +140,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getHWRect() const
 	{
-		return m_rect;
+		return m_hwRect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & RenderTexture::getUV() const

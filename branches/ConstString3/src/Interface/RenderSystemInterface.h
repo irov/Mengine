@@ -262,6 +262,12 @@ namespace Menge
 
 	class RenderImageInterface
 	{
+    public:
+        virtual size_t getHWWidth() const = 0;
+        virtual size_t getHWHeight() const = 0;
+
+        virtual PixelFormat getHWPixelFormat() const = 0;
+
 	public:	
         virtual unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
@@ -410,13 +416,13 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterface * createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) = 0;
-		virtual RenderImageInterface * createDynamicImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) = 0;
+		virtual RenderImageInterface * createImage( size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual RenderImageInterface * createDynamicImage( size_t _width, size_t _height, PixelFormat _format ) = 0;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) = 0;
+		virtual RenderImageInterface * createRenderTargetImage( size_t _width, size_t _height, PixelFormat _format ) = 0;
 
 		//
 		// отрисовка изображения

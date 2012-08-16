@@ -582,15 +582,15 @@ namespace	Menge
 	{
 		RenderTextureInterface * texture = m_textures[0];
 
-		const Rect & hwRect = texture->getHWRect();
+		const Rect & rect = texture->getRect();
 
 		size_t hwWidth = texture->getHWWidth();
 		size_t hwHeight = texture->getHWHeight();
 
-		float scaleLeft = float(hwRect.left) / float(hwWidth);
-		float scaleTop = float(hwRect.top) / float(hwHeight);
-		float scaleRight = float(hwRect.right) / float(hwWidth);
-		float scaleBottom = float(hwRect.bottom) / float(hwHeight);
+		float scaleLeft = float(rect.left) / float(hwWidth);
+		float scaleTop = float(rect.top) / float(hwHeight);
+		float scaleRight = float(rect.right) / float(hwWidth);
+		float scaleBottom = float(rect.bottom) / float(hwHeight);
 
 		m_uv.x = scaleLeft;
 		m_uv.y = scaleTop;

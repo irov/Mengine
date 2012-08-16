@@ -158,9 +158,9 @@ namespace Menge
 		bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface * _imageDecoder ) override;
 		bool loadBufferImageData( unsigned char * _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, ImageDecoderInterface * _imageDecoder ) override;
 
-	protected:
-		void sweezleAlpha_( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo );
-		void imageQuality_( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo );
+	public:
+		void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch );
+		void imageQuality( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch );
 
 	public:
 		void cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture );

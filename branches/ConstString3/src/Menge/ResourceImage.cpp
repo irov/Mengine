@@ -27,15 +27,17 @@ namespace Menge
 		_frame.size.x = width;
 		_frame.size.y = height;
 
-		const Rect & hwRect = texture->getHWRect();
+		const Rect & rect = texture->getRect();
 		
-		size_t hwWidth = texture->getHWWidth();
-		size_t hwHeight = texture->getHWHeight();
+        size_t hwWidth = texture->getHWWidth();
+        size_t hwHeight = texture->getHWHeight();
 
-		_frame.uv_scale.x = float(hwRect.left) / float(hwWidth);
-		_frame.uv_scale.y = float(hwRect.top) / float(hwHeight);
-		_frame.uv_scale.z = float(hwRect.right) / float(hwWidth);
-		_frame.uv_scale.w = float(hwRect.bottom) / float(hwHeight);
+        _frame.uv_scale.x = float(rect.left) / float(hwWidth);
+        _frame.uv_scale.y = float(rect.top) / float(hwHeight);
+        _frame.uv_scale.z = float(rect.right) / float(hwWidth);
+        _frame.uv_scale.w = float(rect.bottom) / float(hwHeight);
+
+        //_frame.uv_scale = mt::vec4f(0.f, 0.f, 1.f, 1.f);
 
 		_frame.texture = texture;
 

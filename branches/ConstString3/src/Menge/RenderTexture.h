@@ -23,9 +23,6 @@ namespace Menge
 				, size_t _width
 				, size_t _height
 				, PixelFormat _format
-				, size_t _hwWidth
-				, size_t _hwHeight
-				, PixelFormat _hwPixelFormat
 				, size_t _id 
 				);
 
@@ -60,7 +57,8 @@ namespace Menge
 
 		size_t getHWWidth() const override;
 		size_t getHWHeight() const override;
-		PixelFormat getHWPixelFormat() const override;
+		
+        PixelFormat getHWPixelFormat() const override;
 
 		size_t getMemoryUse() const override;
 
@@ -75,11 +73,8 @@ namespace Menge
 		size_t m_height;
 		PixelFormat m_pixelFormat;
 		
-		size_t m_hwWidth;		// hardware width
-		size_t m_hwHeight;		// hardware height
-		PixelFormat m_hwPixelFormat;	// hardware pixel format
-
 		Rect m_rect;
+        Rect m_hwRect;
 		mt::vec4f m_uv;
 
 		size_t m_id;

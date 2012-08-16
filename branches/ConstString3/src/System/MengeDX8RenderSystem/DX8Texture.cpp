@@ -14,15 +14,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX8Texture::DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _width, size_t _height )
+	DX8Texture::DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, PixelFormat _hwPixelFormat )
 		: m_d3dInterface(_d3dInterface)
-		, m_width(_width)
-		, m_height(_height)
+        , m_hwWidth(_hwWidth)
+        , m_hwHeight(_hwHeight)
+        , m_hwPixelFormat(_hwPixelFormat)
 	{
-		D3DSURFACE_DESC desc;
-		_d3dInterface->GetLevelDesc( 0, &desc );
-		m_hwWidth = desc.Width;
-		m_hwHeight = desc.Height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8Texture::~DX8Texture()
@@ -85,6 +82,11 @@ namespace Menge
 	{
 		return m_hwHeight;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    PixelFormat DX8Texture::getHWPixelFormat() const
+    {
+        return m_hwPixelFormat;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void DX8Texture::release()
 	{

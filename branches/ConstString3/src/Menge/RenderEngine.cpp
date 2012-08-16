@@ -504,12 +504,8 @@ namespace Menge
 			, _format 
 			);
 
-		size_t hwWidth;
-		size_t hwHeight;
-		PixelFormat hwFormat = _format;
-
-		RenderImageInterface * image = m_interface->createImage( _width, _height, hwWidth, hwHeight, hwFormat );
-				
+		RenderImageInterface * image = m_interface->createImage( _width, _height, _format );
+       
 		if( image == NULL )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::createTexture_ couldn't create image %dx%d"
@@ -522,7 +518,7 @@ namespace Menge
 
 		size_t id = ++m_idEnumerator;
 
-		RenderTextureInterface * texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, id );
+		RenderTextureInterface * texture = new RenderTexture( image, _width, _height, _format, id );
 
 		size_t memroy_size = texture->getMemoryUse();
 
@@ -540,11 +536,7 @@ namespace Menge
 			, _format 
 			);
 
-		size_t hwWidth;
-		size_t hwHeight;
-		PixelFormat hwFormat = _format;
-
-		RenderImageInterface * image = m_interface->createDynamicImage( _width, _height, hwWidth, hwHeight, hwFormat );
+		RenderImageInterface * image = m_interface->createDynamicImage( _width, _height, _format );
 
 		if( image == NULL )
 		{
@@ -558,7 +550,7 @@ namespace Menge
 
 		size_t id = ++m_idEnumerator;
 
-		RenderTextureInterface * texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, id );
+		RenderTextureInterface * texture = new RenderTexture( image, _width, _height, _format, id );
 
 		size_t memroy_size = texture->getMemoryUse();
 
@@ -772,7 +764,7 @@ namespace Menge
 			return NULL;
 		}
 
-		const Rect & rect = texture->getRect();
+		const Rect & rect = texture->getHWRect();
 		this->loadTextureRectImageData( texture, rect, imageDecoder );
 
 		imageDecoder->destroy();
@@ -921,9 +913,8 @@ namespace Menge
 		
 		bool result = this->loadBufferImageData( textureBuffer, pitch, hwPixelFormat, _imageDecoder );
 
-        this->sweezleAlpha_( _texture, textureBuffer, pitch, dataInfo );
-        this->imageQuality_( _texture, textureBuffer, pitch, dataInfo );
-
+        this->sweezleAlpha( _texture, textureBuffer, pitch );
+        this->imageQuality( _texture, textureBuffer, pitch );
 
 		_texture->unlock();
 
@@ -940,16 +931,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::sweezleAlpha_( RenderTextureInterface * _texture, unsigned char* _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo )
+	void RenderEngine::sweezleAlpha( RenderTextureInterface * _texture, unsigned char* _textureBuffer, size_t _texturePitch )
 	{   
+        PixelFormat pixelFormat = _texture->getPixelFormat();
         PixelFormat hwPixelFormat = _texture->getHWPixelFormat();
 
 		// need to sweezle alpha
-		if( _dataInfo->format == PF_A8
+		if( pixelFormat == PF_A8
 			&& hwPixelFormat == PF_A8R8G8B8 )
-		{
-            size_t height = _dataInfo->height;
-            size_t width = _dataInfo->width;
+		{            
+            size_t width = _texture->getWidth();
+            size_t height = _texture->getHeight();
 
 			for( size_t h = height - 1; h != -1; --h )
 			{
@@ -963,25 +955,39 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::imageQuality_( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo )
+	void RenderEngine::imageQuality( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch )
 	{
+        size_t width = _texture->getWidth();
+        size_t height = _texture->getHeight();
+
         size_t hwWidth = _texture->getHWWidth();
         size_t hwHeight = _texture->getHWHeight();
 
-        size_t width = _texture->getWidth();
-        size_t height = _texture->getHeight();
 
 		// copy pixels on the edge for better image quality
         if( hwWidth > width )
         {
+            MENGE_LOG_INFO("imageQuality_ width %d - %d"
+                , width
+                , hwWidth
+                );
+
             unsigned char* image_data = _textureBuffer;
             unsigned int pixel_size = _texturePitch / hwWidth;
 
-            for( size_t i = 0; i != height; ++i )
+            for( size_t j = 0; j != height; ++j )
             {
-                std::copy( image_data + (width - 1) * pixel_size, 
+                //for( size_t i = width; i != hwWidth; ++i )
+                //{
+                //    std::copy( image_data + (i - 1) * pixel_size,
+                //        image_data + i * pixel_size,
+                //        image_data + i * pixel_size );
+                //}
+
+                std::copy( image_data + (width - 1) * pixel_size,
                     image_data + width * pixel_size,
                     image_data + width * pixel_size );
+
 
                 image_data += _texturePitch;
             }
@@ -989,8 +995,21 @@ namespace Menge
 
         if( hwHeight > height )
         {
+            MENGE_LOG_INFO("imageQuality_ height %d - %d"
+                , height
+                , hwHeight
+                );
+
             unsigned char* image_data = _textureBuffer;
             unsigned int pixel_size = _texturePitch / hwWidth;
+
+            //for( size_t j = height; j != hwHeight; ++j )
+            //{
+            //    std::copy( image_data + (j - 1) * _texturePitch,
+            //        image_data + j * _texturePitch,
+            //        image_data + j * _texturePitch );
+            //}
+
             std::copy( image_data + (height - 1) * _texturePitch,
                 image_data + height * _texturePitch,
                 image_data + height * _texturePitch );
@@ -2237,12 +2256,8 @@ namespace Menge
 			, _format 
 			);
 
-		size_t hwWidth;
-		size_t hwHeight;
-		PixelFormat hwFormat = _format;
-
 		RenderImageInterface* image = NULL;
-		image = m_interface->createRenderTargetImage( _width, _height, hwWidth, hwHeight, hwFormat );
+		image = m_interface->createRenderTargetImage( _width, _height, _format );
 
 		if( image == NULL )
 		{
@@ -2254,13 +2269,14 @@ namespace Menge
 			return NULL;
 		}
 
-		size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, hwFormat );
-		m_debugInfo.textureMemory += memroy_size;
-		++m_debugInfo.textureCount;
-
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
-		RenderTexture* texture = new RenderTexture( image, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
+		RenderTexture* texture = new RenderTexture( image, _width, _height, _format, ++m_idEnumerator );
+
+        size_t memroy_size = texture->getMemoryUse();
+
+        m_debugInfo.textureMemory += memroy_size;
+        ++m_debugInfo.textureCount;
 
 		return texture;
 	}

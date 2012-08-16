@@ -26,7 +26,7 @@ namespace Menge
 		, m_whsRatio(3.0f)
 		, m_textureRatio(1.0f)
 		, m_resourceGlyph(NULL)
-		, m_textureUV(0, 0, 1, 1)
+		, m_textureUV(0, 0, 1.f, 1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

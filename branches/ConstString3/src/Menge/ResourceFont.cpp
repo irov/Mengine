@@ -26,6 +26,7 @@ namespace Menge
 		, m_whsRatio(3.0f)
 		, m_textureRatio(1.0f)
 		, m_resourceGlyph(NULL)
+		, m_textureUV(0, 0, 1, 1)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -78,6 +79,11 @@ namespace Menge
 		bool isExist = m_resourceGlyph->hasGlyph( _id );
 
 		return isExist;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f& ResourceFont::getTextureUV() const
+	{
+		return m_textureUV;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Glyph * ResourceFont::getGlyph( wchar_t _id ) const
@@ -144,6 +150,8 @@ namespace Menge
 		size_t width = m_texture->getWidth();
 		size_t height = m_texture->getHeight();
 
+		this->updateTextureUV_();
+
 		m_textureRatio = float(width) / float(height);
 
 		if( m_outlineImageFile.empty() == false )
@@ -199,6 +207,23 @@ namespace Menge
 		m_whsRatio = glyph->getRatio();
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceFont::updateTextureUV_()
+	{
+		size_t width = m_texture->getWidth();
+		size_t height = m_texture->getHeight();
+
+		size_t hwHeight = m_texture->getHWHeight();
+		size_t hwWidth = m_texture->getHWWidth();
+
+		float scaleRight = float(width) / float(hwWidth);
+		float scaleBottom = float(height) / float(hwHeight);
+
+		m_textureUV.x = 0;
+		m_textureUV.y = 0;
+		m_textureUV.z = scaleRight;
+		m_textureUV.w = scaleBottom;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()

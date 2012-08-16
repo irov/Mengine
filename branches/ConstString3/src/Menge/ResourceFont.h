@@ -40,6 +40,7 @@ namespace Menge
 
 		const RenderTextureInterface * getTexture() const;
 		const RenderTextureInterface * getTextureImage() const;
+		const mt::vec4f&  getTextureUV() const;
 
 		const WString & getImagePath() const;
 		const WString & getOutlineImagePath() const;
@@ -56,6 +57,7 @@ namespace Menge
 	private:
 		void setImagePath_( const WString & _path );
 		void setOutlineImagePath_( const WString & _path );
+		void updateTextureUV_();
 
 	private:
 		ConstString m_resourceGlyphName;
@@ -71,6 +73,8 @@ namespace Menge
 
 		float m_whsRatio;
 		float m_textureRatio;
+
+		mt::vec4f m_textureUV;
 
 		RenderTextureInterface* m_texture;
 		RenderTextureInterface* m_outline;

@@ -193,7 +193,9 @@ namespace Menge
 
 		const RenderTextureInterface * texture = m_resourceFont->getTexture();
 
-		const mt::vec4f & uv = texture->getUV();
+		//const mt::vec4f & uv = texture->getUV();
+
+		const mt::vec4f & uv = m_resourceFont->getTextureUV();
 
 		for( TListTextLine::const_iterator 
 			it_line = lines.begin(),

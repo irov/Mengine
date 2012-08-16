@@ -43,7 +43,7 @@ namespace Menge
 	protected:
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
-
+				
 		void _setFirstFrame() override;
 		void _setLastFrame() override;
 
@@ -71,7 +71,7 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		void updateFrameNode_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );
+		void updateFrameNode_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );	
 
 	private:
 		void setupParent_();
@@ -105,7 +105,8 @@ namespace Menge
 		void updateCurrentFrame_( size_t _lastFrame, bool _force );
 		void updateTiming_();
 		void updateClipLastFrame_();
-		
+		void updateStartInterval_();
+
 		void createCamera3D_();
 		void destroyCamera3D_();
 

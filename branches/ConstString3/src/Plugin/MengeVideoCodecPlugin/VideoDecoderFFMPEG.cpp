@@ -270,7 +270,7 @@ namespace Menge
 		}
 
 		// Is this a packet from the video stream?
-		if(packet.stream_index != m_videoStreamId )
+		if( packet.stream_index != m_videoStreamId )
 		{
 			av_free_packet(&packet);
 			//printf(" packet is not video ");
@@ -348,17 +348,17 @@ namespace Menge
 		int defaultStreamIndex = av_find_default_stream_index(m_formatContext);
 		int seekStreamIndex = ( m_videoStreamId != -1 ) ? m_videoStreamId : defaultStreamIndex;
 		
-		AVRational av_q;
+		/*AVRational av_q;
 		av_q.num = 1; 
 		av_q.den = AV_TIME_BASE; 
-		//int64_t seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base);
+		int64_t seekTime = av_rescale_q(_timing, av_q, m_formatContext->streams[seekStreamIndex]->time_base);*/
 		//int64_t ts = seekTime * AV_TIME_BASE;
 		
 		// seconds * TIMEBASE!!!!!
-		int64_t ts = (int64_t) ceil( (_timing / 1000.0f) * AV_TIME_BASE );
+		//int64_t ts = (int64_t) ceil( (_timing / 1000.0f) * AV_TIME_BASE );
 		
-		//printf("SetTiming, need %4.2f real %i\n",_timing,ts);
-		if( this->seekFrame_( ts ) == false )
+		//printf("SetTiming, need %4.2f real %i seekTime %4.2f\n", _timing, ts, seekTime);
+		if( this->seekFrame_( _timing ) == false )
 		{
 			return false;
 		}

@@ -129,7 +129,8 @@ namespace Menge
 			m_frameTiming = 0.f;
 			m_currentFrame = 0;
 			
-			this->setTiming( 0.f );
+			//this->setTiming( 0.f );
+			this->updateStartInterval_();
 		}				
 
 		return true;
@@ -940,6 +941,31 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateStartInterval_()
+	{
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.animatable == false )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			Animatable * animatable = dynamic_cast<Animatable *>(node);
+			
+			animatable->setTiming( 0.0f );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
 	{	
 		this->removeParent_();
@@ -1088,6 +1114,7 @@ namespace Menge
 						size_t deltha = m_currentFrame - frameCount;
 
 						m_currentFrame = deltha + size_t(startInterval / frameDuration);
+						this->updateStartInterval_();
 						//m_frameTiming = 0.f;
 					}
 					else
@@ -1246,7 +1273,7 @@ namespace Menge
 
 						float playTime = this->getPlayTime();
 
-						animatable->setTiming( 0.f );
+						//animatable->setTiming( 0.f );
 						animatable->play( playTime + layerIn );
 
 						//if( _lastFrame <= m_currentFrame )

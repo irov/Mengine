@@ -241,11 +241,11 @@ namespace Menge
 		}
 		
 		// Convert the image from its native format to RGBA using 
-
-		m_FrameRGBA->linesize[0] = _pitch;
-
+        
 		int fill_error = avpicture_fill( (AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
+
+        m_FrameRGBA->linesize[0] = _pitch;
 
 		int ret = sws_scale( m_imgConvertContext, m_Frame->data, m_Frame->linesize, 0, 
 			m_codecContext->height, m_FrameRGBA->data, m_FrameRGBA->linesize );

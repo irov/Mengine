@@ -626,7 +626,7 @@ namespace	Menge
 		this->updateMaterial_();
 	}
 	////////////////////////////////////////////////////////////////////
-	bool Video::isBlendAdd()
+	bool Video::isBlendAdd() const
 	{
 		return m_blendAdd;
 	}

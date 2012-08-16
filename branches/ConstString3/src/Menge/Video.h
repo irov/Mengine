@@ -42,7 +42,7 @@ namespace Menge
 		void _setLastFrame() override;
 
 		void setBlendAdd( bool _blendAdd );
-		bool isBlendAdd( );
+		bool isBlendAdd() const;
 
 	protected:
 		void _update( float _current, float _timing ) override;

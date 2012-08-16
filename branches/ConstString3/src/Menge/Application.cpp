@@ -204,7 +204,6 @@ namespace Menge
 		, m_scriptEngine(NULL)
 		, m_threadEngine(NULL)
 		, m_taskManager(NULL)
-		, m_alreadyRunningPolicy(0)
 		, m_allowFullscreenSwitchShortcut(true)
 		, m_resourceManager(NULL)
 		, m_alphaChannelManager(NULL)
@@ -368,11 +367,6 @@ namespace Menge
 			plugin->initialize( m_serviceProvider );
 
 			m_plugins.push_back( plugin );
-		}
-		
-		if( this->loadPlugins( _setting.plugins ) == false )
-		{
-			MENGE_LOG_ERROR("error: (Application::initialize) Failed to loadPlugins ");
 		}
 		
 		return true;
@@ -1813,7 +1807,7 @@ namespace Menge
 
 			if( lib == NULL )
 			{
-				MENGE_LOG_ERROR( "Can not load %S plugin [invalid load]"
+				MENGE_LOG_ERROR( "Application::loadPlugin can't load %S plugin [invalid load]"
 					, _pluginName.c_str() 
 					);
 
@@ -1830,7 +1824,7 @@ namespace Menge
 
 		if( function == NULL )
 		{
-			MENGE_LOG_ERROR( "Can not load %S plugin [dllCreatePlugin]"
+			MENGE_LOG_ERROR( "Application::loadPlugin can't load %S plugin [dllCreatePlugin]"
 				, _pluginName.c_str() 
 				);
 
@@ -1842,7 +1836,7 @@ namespace Menge
 		PluginInterface * plugin;
 		if( create( &plugin ) == false )
 		{
-			MENGE_LOG_ERROR( "Can not load %S plugin [invalid create]"
+			MENGE_LOG_ERROR( "Application::loadPlugin can't load %S plugin [invalid create]"
 				, _pluginName.c_str() 
 				);
 
@@ -1917,11 +1911,6 @@ namespace Menge
 	const Resolution& Application::getMaxClientAreaSize() const
 	{
 		return m_maxClientResolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int Application::getAlreadyRunningPolicy() const
-	{
-		return m_alreadyRunningPolicy;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getAllowFullscreenSwitchShortcut() const

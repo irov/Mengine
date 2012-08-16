@@ -156,16 +156,14 @@ namespace Menge
 		virtual void onPaint() = 0;
 
 	public:		
+        virtual bool loadPlugins( const TVectorWString & _plugins ) = 0;
 		virtual bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
 		virtual bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) = 0;
-
+        
 	public:
 		virtual const WString & getProjectTitle() const = 0;
 		virtual const WString & getProjectName() const = 0;
 		virtual const String & getProjectCodename() const = 0;
-
-	public:
-		virtual int getAlreadyRunningPolicy() const = 0;
 
 	public:
 		virtual void setFullscreenMode( bool _fullscreen ) = 0;

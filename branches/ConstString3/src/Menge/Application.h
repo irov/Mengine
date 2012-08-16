@@ -96,9 +96,6 @@ namespace Menge
 		bool initializeGame( const String & _scriptInitParams, const TMapWString & _params ) override;
 
 	public:
-		int getAlreadyRunningPolicy() const override;
-
-	public:
 		void setFullscreenMode( bool _fullscreen ) override;
 		bool getFullscreenMode() const override;
 
@@ -109,7 +106,7 @@ namespace Menge
 		bool isFocus() const override;
 
 	public:
-		bool loadPlugins( const TVectorWString & _plugins );
+		bool loadPlugins( const TVectorWString & _plugins ) override;
 
 	public:
 		//bool initialize( const String& _applicationFile, const String& _args );
@@ -355,7 +352,6 @@ namespace Menge
 		typedef std::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;
 
-		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 
 		bool m_fullScreen;

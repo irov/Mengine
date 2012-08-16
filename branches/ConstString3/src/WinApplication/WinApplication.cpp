@@ -407,6 +407,8 @@ namespace Menge
 		}
 
 		ApplicationSettings appSettings;
+
+        bool alreadyRunning = false;
 		
 		s_getIniValue( game_settings, L"Project", L"Name", appSettings.projectName );
 		s_getIniValue( game_settings, L"Project", L"Codename", appSettings.projectCodename );
@@ -415,6 +417,7 @@ namespace Menge
 		s_getIniValue( game_settings, L"Game", L"LowContentViewport", appSettings.lowContentViewport );
 		s_getIniValue( game_settings, L"Game", L"FixedContentResolution", appSettings.fixedContentResolution );
 		s_getIniValue( game_settings, L"Game", L"PersonalityModule", appSettings.personalityModule );
+        s_getIniValue( game_settings, L"Game", L"AlreadyRunning", alreadyRunning );
 		s_getIniValue( game_settings, L"Window", L"Size", appSettings.windowResolution );
 		s_getIniValue( game_settings, L"Window", L"Bits", appSettings.bits );
 		s_getIniValue( game_settings, L"Window", L"Fullscreen", appSettings.fullscreen );
@@ -562,6 +565,16 @@ namespace Menge
 			m_maxfps = true;
 		}
 
+
+        if( alreadyRunning == true )
+        {	
+            m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
+            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, appSettings.projectName ) == false )
+            {
+                return false;
+            }
+        }
+
 		m_winTimer = new WinTimer();
 
 		// seed randomizer
@@ -617,7 +630,7 @@ namespace Menge
 		//baseDir += MENGE_DEFAULT_BASE_DIR;
 		
 		//WString settings_file = L"application.ini";
-
+        
 		if( m_application->initialize( this, m_commandLine, appSettings ) == false )
 		{
 			LOGGER_ERROR(m_logService)( "Application initialize failed" 
@@ -625,6 +638,13 @@ namespace Menge
 
 			return false;
 		}
+
+        if( m_application->loadPlugins( appSettings.plugins ) == false )
+        {
+            MENGE_LOG_ERROR("Application Failed to loadPlugins");
+
+            return false;
+        }
 
         ConstString c_languagePack(languagePack);
         
@@ -702,19 +722,6 @@ namespace Menge
 		LOGGER_INFO(m_logService)( "SVN Revision: %s"
 			, versionInfo
 			);
-
-		int policy = m_application->getAlreadyRunningPolicy();
-
-		if( m_windowsType != WindowsLayer::EWT_98 && policy != EARP_NONE )
-		{	
-			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
-			if( m_alreadyRunningMonitor->run( policy, m_windowClassName, title ) == false )
-			{
-				LOGGER_ERROR(m_logService)( "Application already running" );
-
-				return false;
-			}
-		}
 
         LOGGER_INFO(m_logService)( "Initializing Game data..." );
 

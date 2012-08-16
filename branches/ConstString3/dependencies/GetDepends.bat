@@ -27,9 +27,6 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 :: %toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/project/tinyxml/tinyxml/2.6.2/tinyxml_2_6_2.zip
 %toolsdir%\wget\wget.exe --no-clobber http://pugixml.googlecode.com/files/pugixml-1.0.zip
 
-%toolsdir%\wget\wget.exe --no-clobber http://code.jellycan.com/files/simpleini-4.15.zip
-
-
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.14.tar.bz2
 
@@ -104,9 +101,6 @@ if EXIST tinyxml rmdir /s /q tinyxml
 if EXIST pugixml rmdir /s /q pugixml
 7za x -y -opugixml pugixml-1.0.zip
 
-if EXIST simpleini rmdir /s /q simpleini
-7za x -y simpleini-4.15.zip
-
 if EXIST icu rmdir /s /q icu
 7za x -y icu4c-49_1_1-src.zip
 
@@ -127,6 +121,7 @@ svn\bin\svn checkout https://pybind.svn.sourceforge.net/svnroot/pybind pybind
 svn\bin\svn checkout https://svn.code.sf.net/p/metabuf/code/trunk metabuf
 svn\bin\svn checkout https://svn.code.sf.net/p/xxbind/code/trunk xxbind
 svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator
+svn\bin\svn checkout http://simpleini.googlecode.com/svn/trunk simpleini
 ::svn\bin\svn export --force -r2465 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
 
 goto end

@@ -159,8 +159,8 @@ namespace Menge
 		bool loadBufferImageData( unsigned char * _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, ImageDecoderInterface * _imageDecoder ) override;
 
 	protected:
-		void sweezleAlpha_( unsigned char * _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, const ImageCodecDataInfo * _dataInfo );
-		void imageQuality_( unsigned char * _textureBuffer, size_t _texturePitch );
+		void sweezleAlpha_( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo );
+		void imageQuality_( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo );
 
 	public:
 		void cacheFileTexture( const WString& _filename, RenderTextureInterface* _texture );

@@ -914,14 +914,16 @@ namespace Menge
 			options.flags |= DF_COUNT_ALPHA;
 		}
 
-		size_t width = _texture->getWidth();
-
 		options.pitch = pitch;
 		options.flags |= DF_CUSTOM_PITCH;
 
 		_imageDecoder->setOptions( &options );
 		
 		bool result = this->loadBufferImageData( textureBuffer, pitch, hwPixelFormat, _imageDecoder );
+
+        this->sweezleAlpha_( _texture, textureBuffer, pitch, dataInfo );
+        this->imageQuality_( _texture, textureBuffer, pitch, dataInfo );
+
 
 		_texture->unlock();
 
@@ -935,56 +937,64 @@ namespace Menge
 		unsigned int bufferSize = _texturePitch * data->height;
 		unsigned int b = _imageDecoder->decode( _textureBuffer, bufferSize );
 
-		//this->sweezleAlpha_( _textureBuffer, _texturePitch, _hwPixelFormat, data );
-		//this->imageQuality_( _textureBuffer, _texturePitch );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::sweezleAlpha_( unsigned char* _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, const ImageCodecDataInfo * _dataInfo )
-	{
+	void RenderEngine::sweezleAlpha_( RenderTextureInterface * _texture, unsigned char* _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo )
+	{   
+        PixelFormat hwPixelFormat = _texture->getHWPixelFormat();
+
 		// need to sweezle alpha
 		if( _dataInfo->format == PF_A8
-			&& _hwPixelFormat == PF_A8R8G8B8 )
+			&& hwPixelFormat == PF_A8R8G8B8 )
 		{
-			for( size_t h = _dataInfo->height - 1; h != -1; --h )
+            size_t height = _dataInfo->height;
+            size_t width = _dataInfo->width;
+
+			for( size_t h = height - 1; h != -1; --h )
 			{
 				size_t hp = h * _texturePitch;
 
-				for( size_t w = _dataInfo->width - 1; w != -1; --w )
+				for( size_t w = width - 1; w != -1; --w )
 				{
-					_textureBuffer[hp+w*4+3] = _textureBuffer[hp+w];
+					_textureBuffer[hp + w*4 + 3] = _textureBuffer[hp + w];
 				}
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::imageQuality_( unsigned char * _textureBuffer, size_t _texturePitch )
+	void RenderEngine::imageQuality_( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch, const ImageCodecDataInfo * _dataInfo )
 	{
+        size_t hwWidth = _texture->getHWWidth();
+        size_t hwHeight = _texture->getHWHeight();
+
+        size_t width = _texture->getWidth();
+        size_t height = _texture->getHeight();
+
 		// copy pixels on the edge for better image quality
-		//if( m_hwWidth > m_width )
-		//{
-		//	unsigned char* image_data = _textureBuffer;
-		//	unsigned int pixel_size = _texturePitch / m_hwWidth;
+        if( hwWidth > width )
+        {
+            unsigned char* image_data = _textureBuffer;
+            unsigned int pixel_size = _texturePitch / hwWidth;
 
-		//	for( size_t i = 0; i != m_height; ++i )
-		//	{
-		//		std::copy( image_data + (m_width - 1) * pixel_size, 
-		//			image_data + m_width * pixel_size,
-		//			image_data + m_width * pixel_size );
+            for( size_t i = 0; i != height; ++i )
+            {
+                std::copy( image_data + (width - 1) * pixel_size, 
+                    image_data + width * pixel_size,
+                    image_data + width * pixel_size );
 
-		//		image_data += _texturePitch;
-		//	}
-		//}
+                image_data += _texturePitch;
+            }
+        }
 
-		//if( m_hwHeight > m_height )
-		//{
-		//	unsigned char* image_data = _textureBuffer;
-		//	unsigned int pixel_size = _texturePitch / m_hwWidth;
-		//	std::copy( image_data + (m_height - 1) * _texturePitch,
-		//		image_data + m_height * _texturePitch,
-		//		image_data + m_height * _texturePitch );
-		//}
+        if( hwHeight > height )
+        {
+            unsigned char* image_data = _textureBuffer;
+            unsigned int pixel_size = _texturePitch / hwWidth;
+            std::copy( image_data + (height - 1) * _texturePitch,
+                image_data + height * _texturePitch,
+                image_data + height * _texturePitch );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Resolution RenderEngine::getBestDisplayResolution( const Resolution & _resolution, float _aspect )

@@ -280,46 +280,11 @@ namespace Menge
         float lowContentViewportWidth = lowContentViewport.getWidth();
         float lowContentViewportHeight = lowContentViewport.getHeight();
 
-		if( lowContentViewport.empty() == false && ( currentResolutionWidth < contentResolutionWidth ||
-			currentResolutionHeight < contentResolutionHeight ) )
-		{
-			//float lowContentViewportWidth = lowContentViewport.getWidth();
-			//float lowContentViewportHeight = lowContentViewport.getHeight();
+        float r_aspect = currentResolution.getAspectRatio();
+        float c_aspect = contentResolution.getAspectRatio();
 
-			//m_inputOffset = lowContentViewport.begin + renderViewport.begin;
-
-			////float width_scale = renderViewportWidth * float(contentResolutionWidth) / lowContentViewportWidth;
-			////float height_scale = renderViewportHeight * float(contentResolutionHeight) / lowContentViewportHeight;
-   //         float width_scale = renderViewportWidth / lowContentViewportWidth;
-   //         float height_scale = renderViewportHeight / lowContentViewportHeight;
-
-			//m_inputScale.x = 1.f / width_scale;
-			//m_inputScale.y = 1.f / height_scale;
-
-            //float lowContentViewportWidth = lowContentViewport.getWidth();
-            //float lowContentViewportHeight = lowContentViewport.getHeight();
-            //           
-
-            //float width_scale = float(currentResolutionWidth) / lowContentViewportWidth;
-            //float height_scale = float(currentResolutionHeight) / lowContentViewportHeight;
-
-            //m_inputScale.x = 1.f / width_scale;
-            //m_inputScale.y = 1.f / height_scale;
-
-            //m_inputOffset = lowContentViewport.begin;
-            //
-            //float width_scale2 = renderViewportWidth / float(contentResolutionWidth);
-            //float height_scale2 = renderViewportHeight / float(contentResolutionHeight);
-
-            //m_inputScale.x /= width_scale2;
-            //m_inputScale.y /= height_scale2;
-
-            //m_inputOffset.x /= width_scale2;
-            //m_inputOffset.y /= height_scale2;
-
-            //m_inputOffset -= renderViewport.begin;
-
-            //m_inputOffset = lowContentViewport.begin - renderViewport.begin;
+        if( c_aspect > r_aspect && lowContentViewport.empty() == false )
+        {
             m_inputViewport.begin = renderViewport.begin;
             m_inputViewport.end = renderViewport.end;
 
@@ -330,14 +295,14 @@ namespace Menge
 
             m_inputScale.x = 1.f / width_scale;
             m_inputScale.y = 1.f / height_scale;
-		}
-		else
-		{
+        }
+        else
+        {
             m_inputViewport.begin = renderViewport.begin;
             m_inputViewport.end = renderViewport.end;
 
             m_inputOffset = mt::vec2f(0.f, 0.f);
-            
+
             float renderViewportWidth = renderViewport.getWidth();
             float renderViewportHeight = renderViewport.getHeight();
 
@@ -346,6 +311,6 @@ namespace Menge
 
             m_inputScale.x = 1.f / width_scale;
             m_inputScale.y = 1.f / height_scale;
-		}
+        }
 	}
 }

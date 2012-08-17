@@ -84,8 +84,6 @@ namespace Menge
 		WString projectName;
 		String projectCodename;
 
-        String defaultLocale;
-
 		Resolution contentResolution;
 		Viewport lowContentViewport;
 
@@ -97,11 +95,7 @@ namespace Menge
 
 		size_t bits;
 		bool fullscreen;
-		bool vsync;
-
-		TMapWString params;
-
-		TVectorWString plugins;
+		bool vsync;		
 	};
 
 	struct ResourcePackDesc

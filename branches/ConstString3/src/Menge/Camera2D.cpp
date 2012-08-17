@@ -82,33 +82,22 @@ namespace	Menge
         float r_aspect = currentResolution.getAspectRatio();
         float c_aspect = contentResolution.getAspectRatio();
 
-        if( c_aspect > r_aspect )
+        if( c_aspect > r_aspect && lowContentViewport.empty() == false )
         {
-            if( lowContentViewport.empty() == false )
-            {
-                m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - lowContentViewport.begin.x, 0.f );
-                m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - lowContentViewport.begin.y, 0.f );
+            m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - lowContentViewport.begin.x, 0.f );
+            m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - lowContentViewport.begin.y, 0.f );
 
-                float lowContentViewportWidth = lowContentViewport.getWidth();
-                m_viewportWM.end.x = std::min( m_viewportWM.end.x - lowContentViewport.begin.x, lowContentViewportWidth );
+            float lowContentViewportWidth = lowContentViewport.getWidth();
+            m_viewportWM.end.x = std::min( m_viewportWM.end.x - lowContentViewport.begin.x, lowContentViewportWidth );
 
-                float lowContentViewportHeight = lowContentViewport.getHeight();
-                m_viewportWM.end.y = std::min( m_viewportWM.end.y - lowContentViewport.begin.y, lowContentViewportHeight );
+            float lowContentViewportHeight = lowContentViewport.getHeight();
+            m_viewportWM.end.y = std::min( m_viewportWM.end.y - lowContentViewport.begin.y, lowContentViewportHeight );
 
-                float scale_x = float(currentResolutionWidth) / lowContentViewportWidth;
-                float scale_y = float(currentResolutionHeight) / lowContentViewportHeight;
+            float scale_x = float(currentResolutionWidth) / lowContentViewportWidth;
+            float scale_y = float(currentResolutionHeight) / lowContentViewportHeight;
 
-                m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
-                m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
-            }
-            else
-            {
-                float scale_x = float(currentResolutionWidth) / contentResolutionWidth;
-                float scale_y = float(currentResolutionHeight) / contentResolutionHeight;
-
-                m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
-                m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
-            }
+            m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
+            m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
         }
         else
         {

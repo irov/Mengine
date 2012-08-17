@@ -1534,20 +1534,13 @@ namespace Menge
 
             Resolution contentResolution;
 
-            if( c_aspect > r_aspect )
+            if( c_aspect > r_aspect && m_lowContentViewport.empty() == false )
             {
-                if( m_lowContentViewport.empty() == false )
-                {
-                    float width = m_lowContentViewport.getWidth();
-                    float height = m_lowContentViewport.getHeight();
+                float width = m_lowContentViewport.getWidth();
+                float height = m_lowContentViewport.getHeight();
 
-                    contentResolution.setWidth( width );
-                    contentResolution.setHeight( height );
-                }
-                else
-                {
-                    contentResolution = m_contentResolution;
-                }
+                contentResolution.setWidth( width );
+                contentResolution.setHeight( height );
             }
             else
             {

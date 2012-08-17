@@ -409,10 +409,11 @@ namespace Menge
 		ApplicationSettings appSettings;
 
         bool alreadyRunning = false;
+        String defaultLocale;
 		
 		s_getIniValue( game_settings, L"Project", L"Name", appSettings.projectName );
 		s_getIniValue( game_settings, L"Project", L"Codename", appSettings.projectCodename );
-        s_getIniValue( game_settings, L"Locale", L"Default", appSettings.defaultLocale );
+        s_getIniValue( game_settings, L"Locale", L"Default", defaultLocale );
 		s_getIniValue( game_settings, L"Game", L"ContentResolution", appSettings.contentResolution );
 		s_getIniValue( game_settings, L"Game", L"LowContentViewport", appSettings.lowContentViewport );
 		s_getIniValue( game_settings, L"Game", L"FixedContentResolution", appSettings.fixedContentResolution );
@@ -423,9 +424,11 @@ namespace Menge
 		s_getIniValue( game_settings, L"Window", L"Fullscreen", appSettings.fullscreen );
 		s_getIniValue( game_settings, L"Window", L"VSync", appSettings.vsync );		
 
-		s_getIniAllSettings( game_settings, L"Params", appSettings.params );
+        TMapWString appParams;
+		s_getIniAllSettings( game_settings, L"Params", appParams );
 
-		s_getIniValues( game_settings, L"Plugins", L"Name", appSettings.plugins );
+        TVectorWString plugins;
+		s_getIniValues( game_settings, L"Plugins", L"Name", plugins );
 
 		appSettings.platformName = "WIN";
 		
@@ -545,7 +548,7 @@ namespace Menge
 
         if( languagePack.empty() == true )
         {
-            languagePack = appSettings.defaultLocale;
+            languagePack = defaultLocale;
         }
 
 		if( languagePack.empty() == true )
@@ -639,7 +642,7 @@ namespace Menge
 			return false;
 		}
 
-        if( m_application->loadPlugins( appSettings.plugins ) == false )
+        if( m_application->loadPlugins( plugins ) == false )
         {
             MENGE_LOG_ERROR("Application Failed to loadPlugins");
 
@@ -725,7 +728,7 @@ namespace Menge
 
         LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
-        if( m_application->initializeGame( scriptInit, appSettings.params ) == false )
+        if( m_application->initializeGame( scriptInit, appParams ) == false )
         {
             return false;
         }

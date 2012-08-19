@@ -211,9 +211,9 @@ namespace Menge
 
 		m_dataInfo.frameHeight = m_codecContext->height;
 		m_dataInfo.frameWidth = m_codecContext->width;
-		m_dataInfo.fps = (int) av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
+		m_dataInfo.fps = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
 
-		if( m_dataInfo.fps == 0 )
+		if( int(m_dataInfo.fps) == 0 )
 		{
 			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: invalid Frame rate ");
 			return false; 

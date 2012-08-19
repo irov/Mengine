@@ -21,6 +21,7 @@ namespace Menge
 		MovieLayer()
 			: index(-1)
 			, parent(0)
+            , playCount(1)
 			, in(0.f)
 			, out(0.f)
 			, startInterval(0.f)
@@ -32,6 +33,8 @@ namespace Menge
 
 		size_t index;
 		size_t parent;
+
+        size_t playCount;
 
 		float in;
 		float out;
@@ -111,9 +114,6 @@ namespace Menge
 	public:
 		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
 		
-		bool getFrameFirst( const MovieLayer & _layer, MovieFrameSource & _frame ) const;
-		bool getFrameLast( const MovieLayer & _layer, MovieFrameSource & _frame ) const;
-
 	public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );
 

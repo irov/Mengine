@@ -32,6 +32,7 @@ namespace	Menge
 		, m_videoDecoder(NULL)
 		, m_videoFile(NULL)
 		, m_timing(0.f)
+        , m_playIterator(0)
 		, m_blendAdd(false)
 	{
 		m_textures[0] = NULL;
@@ -317,6 +318,8 @@ namespace	Menge
 			m_soundEmitter->play( playTime );
 		}
 
+        m_playIterator = this->getPlayCount();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -450,9 +453,19 @@ namespace	Menge
 				}
 				else				
 				{
-					m_needUpdate = false;
+                    if( --m_playIterator == 0 )
+                    {
+                        m_needUpdate = false;
 
-					this->stop();
+                        this->stop();
+
+                        break;
+                    }
+                    else
+                    {
+                        m_videoDecoder->seek( m_startInterval );
+                        continue;
+                    }	
 				}
 			}
 			else if( state == VDRS_FAILURE )

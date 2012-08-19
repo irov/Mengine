@@ -28,6 +28,9 @@ namespace Menge
 		void setReverse( bool _value);
 		bool getReverse() const;
 
+        void setPlayCount( size_t _count );
+        size_t getPlayCount() const;
+
 	public:
 		virtual void _setTiming( float _timing );
 		virtual float _getTiming() const;
@@ -67,6 +70,8 @@ namespace Menge
 
 		float m_speedFactor;
 		float m_startInterval;
+
+        size_t m_playCount;
 		
 		bool m_play;
 

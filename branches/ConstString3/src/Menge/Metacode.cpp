@@ -1160,6 +1160,13 @@ namespace Metacode
                 return true;
                 break;
             }
+        case 9:
+            {
+                this->read( _buff, _size, _read, this->PlayCount );
+                this->PlayCount_successful = true;
+                return true;
+                break;
+            }
         case 3:
             {
                 this->read( _buff, _size, _read, this->Source );

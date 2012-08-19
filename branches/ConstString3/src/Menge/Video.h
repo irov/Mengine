@@ -93,6 +93,7 @@ namespace Menge
 		mt::vec4f m_uv;
 
 		float m_timing;
+        size_t m_playIterator;
 
 		bool m_blendAdd;
 		bool m_autoStart;

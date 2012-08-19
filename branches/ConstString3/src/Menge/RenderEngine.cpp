@@ -527,6 +527,46 @@ namespace Menge
 
 		return texture;
 	}
+    ////////////////////////////////////////////////////////////////////////////
+    //RenderTextureInterface * RenderEngine::createPoolTexture( size_t _width, size_t _height, PixelFormat _format )
+    //{
+    //    MENGE_LOG_INFO( "Creating pool texture %dx%d %d"
+    //        , _width
+    //        , _height
+    //        , _format 
+    //        );
+
+    //    PoolTextureKey key;
+
+    //    key.width = _width;
+    //    key.height = _height;
+    //    key.format = _format;
+
+    //    TMapPoolTextures::iterator it_found = m_poolTextures.find( key );
+
+    //    if( it_found == m_poolTextures.end() )
+    //    {
+    //        RenderTextureInterface * texture = this->createTexture( _width, _height, _format );
+
+    //        return texture;
+    //    }
+
+    //    TVectorTextures & textures = it_found->second;
+    //        
+    //    if( textures.empty() == true )
+    //    {
+    //        RenderTextureInterface * texture = this->createTexture( _width, _height, _format );
+
+    //        return texture;
+    //    }
+
+    //    RenderTextureInterface * texture = textures.back();
+    //    textures.pop_back();
+
+    //    return texture;
+
+    //    return 0;
+    //}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface * RenderEngine::createDynamicTexture( size_t _width, size_t _height, PixelFormat _format )
 	{

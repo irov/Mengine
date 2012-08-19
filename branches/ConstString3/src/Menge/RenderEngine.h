@@ -141,6 +141,8 @@ namespace Menge
 		bool hasTexture( const WString & _filename );
 		
 		RenderTextureInterface * createTexture( size_t _width, size_t _height, PixelFormat _format ) override;
+        //RenderTextureInterface * createPoolTexture( size_t _width, size_t _height, PixelFormat _format );
+
 		RenderTextureInterface * createDynamicTexture( size_t _width, size_t _height, PixelFormat _format );
 		RenderTextureInterface * createMegatexture( size_t _width, size_t _height, PixelFormat _format );
 		RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) override;
@@ -330,5 +332,55 @@ namespace Menge
 		TVectorRenderPass m_renderPasses;
 
 		RenderPass * m_currentRenderPass;
+
+        //struct PoolTextureKey
+        //{
+        //    size_t width;
+        //    size_t height;
+        //    PixelFormat format;
+        //};
+        //        
+        //struct PoolTextureKeyLess
+        //    : public std::binary_function<PoolTextureKey, PoolTextureKey, bool>
+        //{
+        //    bool operator() (const PoolTextureKey & _Left, const PoolTextureKey & _Right) const
+        //    {	// apply operator< to operands
+        //        if( _Left.width < _Right.height )
+        //        {
+        //            return true;
+        //        }
+
+        //        if( _Left.width > _Right.width )
+        //        {
+        //            return false;
+        //        }
+
+        //        if( _Left.height < _Right.height )
+        //        {
+        //            return true;
+        //        }
+
+        //        if( _Left.height > _Right.height )
+        //        {
+        //            return false;
+        //        }
+
+        //        if( _Left.format < _Right.format )
+        //        {
+        //            return true;
+        //        }
+
+        //        if( _Left.format > _Right.format )
+        //        {
+        //            return false;
+        //        }
+
+        //        return false;
+        //    }
+        //};
+
+        //typedef std::vector<RenderTextureInterface *> TVectorTextures;
+        //typedef std::map<PoolTextureKey, TVectorTextures, PoolTextureKeyLess> TMapPoolTextures;
+        //TMapPoolTextures m_poolTextures;
 	};
 }

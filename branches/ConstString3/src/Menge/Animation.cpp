@@ -19,6 +19,7 @@ namespace	Menge
 		: m_resourceAnimation(0)
 		, m_frameTiming(0.f)
 		, m_currentFrame(0)
+        , m_playIterator(0)
 		, m_onEndFrameTick(false)
 		, m_onEndFrameEvent(false)
 		, m_onEndAnimationEvent(false)
@@ -95,31 +96,52 @@ namespace	Menge
 				++m_currentFrame;
 			}
 
-			if( m_currentFrame == frameCount - 1 )
-			{
-				if( this->getLoop() == false )
-				{
-					break;
-				}
-			}
-			else if( m_currentFrame == frameCount )
+			if( m_currentFrame >= frameCount )
 			{
 				if( this->getLoop() == true )
 				{
-					m_currentFrame = 0;
+                    size_t nextFrame = m_currentFrame - frameCount;
+
+                    m_currentFrame = frameCount - 1;
+                    this->updateCurrentFrame_( lastFrame );                    
+
+                    this->setTiming( 0.f );
+
+                    lastFrame = 0;
+                    m_currentFrame = nextFrame;                    
+                }
+                else
+                {
+                    if( --m_playIterator == 0 )
+                    {
+                        m_currentFrame = frameCount - 1;
+                        this->updateCurrentFrame_( lastFrame );
+
+                        m_frameTiming = 0.f;
+                        
+                        lastFrame = m_currentFrame;
+
+                        this->end();
+
+                        break;
+                    }
+                    else
+                    {
+                        size_t nextFrame = m_currentFrame - frameCount;
+
+                        m_currentFrame = frameCount - 1;
+                        this->updateCurrentFrame_( lastFrame );
+                        
+                        this->setTiming( 0.f );
+
+                        lastFrame = 0;
+                        m_currentFrame = nextFrame; 
+                    }					
 				}
-			}	
+			}
 
 			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-
-//			float speedFactor = this->getSpeedFactor();
-//			delay *= speedFactor;
 		}
-
-		//if( m_currentFrame == frameCount )
-		//{
-		//	m_currentFrame = frameCount - 1;
-		//}
 
 		if( lastFrame != m_currentFrame )
 		{
@@ -128,13 +150,15 @@ namespace	Menge
 		
 		//Sprite::_update( _timing );
 
-		if( m_currentFrame == frameCount - 1 )
-		{
-			if( this->getLoop() == false )
-			{
-				this->end();
-			}
-		}
+		//if( m_currentFrame == frameCount - 1 )
+		//{
+		//	if( this->getLoop() == false )
+		//	{
+  //              m_frameTiming = 0.f;
+
+		//		this->end();
+		//	}
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_render( RenderCameraInterface * _camera )
@@ -250,8 +274,11 @@ namespace	Menge
 
 			return false;
 		}
-		
-		this->setTiming( 0.f );
+		        
+        m_playIterator = this->getPlayCount();
+
+		this->updateCurrentFrame_( 0 );
+        
 		//m_currentFrame = 0; 
 		//m_timing = 0.f;
 	

@@ -104,31 +104,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrameFirst( const MovieLayer & _layer, MovieFrameSource & _frame ) const
-	{
-		if( this->getFrame( _layer, 0, _frame ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrameLast( const MovieLayer & _layer, MovieFrameSource & _frame ) const
-	{
-		if( m_framePack->isLayerEmpty( _layer.index ) == true )
-		{
-			return false;
-		}
-
-		if( m_framePack->getLayerFrameLast( _layer.index, _frame ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const
 	{
 		TMapInternals::const_iterator it_found = m_internals.find(_source);
@@ -179,6 +154,8 @@ namespace Menge
             ml.in = meta_layer2d.get_In();
             ml.out = meta_layer2d.get_Out();
             ml.startInterval = meta_layer2d.get_StartInterval();
+            
+            meta_layer2d.get_PlayCount( ml.playCount );
 
             if( ml.in < 0.f )
             {

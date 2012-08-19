@@ -64,6 +64,8 @@ namespace Menge
 
 		float m_frameTiming;
 
+        size_t m_playIterator;
+
 		size_t m_currentFrame;
 		
 		bool m_onEndFrameEvent;

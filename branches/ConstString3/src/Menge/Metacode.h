@@ -1706,6 +1706,7 @@ namespace Metacode
             public:
                 Meta_MovieLayer2D()
                     : Metabuf::Metadata()
+                    , PlayCount_successful(false)
                 {
                 }
             public:
@@ -1805,6 +1806,41 @@ namespace Metacode
                     (_self->*_method)( this->Parent );
                 }
                 
+                bool get_PlayCount( size_t & _value ) const
+                {
+                    if( PlayCount_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->PlayCount;
+                
+                    return true;
+                }
+                
+                bool swap_PlayCount( size_t & _value ) const
+                {
+                    if( PlayCount_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->PlayCount);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_PlayCount( C * _self, M _method ) const
+                {
+                    if( PlayCount_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->PlayCount );
+                }
+                
                 const Menge::ConstString & get_Source() const
                 {
                     return this->Source;
@@ -1851,6 +1887,8 @@ namespace Metacode
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 mutable size_t Parent;
+                bool PlayCount_successful;
+                mutable size_t PlayCount;
                 mutable Menge::ConstString Source;
                 mutable float StartInterval;
             };

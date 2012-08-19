@@ -8,6 +8,7 @@ namespace Menge
 		, m_playTime(0.f)
 		, m_speedFactor(1.f)
 		, m_startInterval(0.0f)
+        , m_playCount(1)
 		, m_play(false)
 		, m_loop(false)
 		, m_reverse(false)
@@ -90,6 +91,16 @@ namespace Menge
 	{
 		return m_reverse;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Animatable::setPlayCount( size_t _count )
+    {
+        m_playCount = _count;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Animatable::getPlayCount() const
+    {
+        return m_playCount;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setReverse( bool _value )
 	{

@@ -102,7 +102,7 @@ namespace Menge
 		Node * getMovieParent_( const MovieLayer & _layer ) const;
 
 	protected:
-		void updateCurrentFrame_( size_t _lastFrame, bool _force );
+		void updateCurrentFrame_( size_t _lastFrame );
 		void updateTiming_();
 		void updateClipLastFrame_();
 		void updateStartInterval_();
@@ -124,6 +124,7 @@ namespace Menge
 		TMapMovieSlot m_slots;
 
 		float m_frameTiming;
+        size_t m_playIterator;
 		size_t m_currentFrame;
 
 		bool m_parentMovie;

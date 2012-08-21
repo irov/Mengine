@@ -15,7 +15,7 @@ namespace Metacode
         {
         case 1:
             {
-                includes_Meta_FileResourceStore.reserve( _count );
+                includes_Meta_FileStore.reserve( _count );
                 return true;
                 break;
             }
@@ -35,10 +35,10 @@ namespace Metacode
         {
         case 1:
             {
-                Meta_DataBlock::Meta_FileResourceStore metadata;
+                Meta_DataBlock::Meta_FileStore metadata;
                 metadata.parse( _buff, _size, _read );
     
-                includes_Meta_FileResourceStore.push_back(metadata);
+                includes_Meta_FileStore.push_back(metadata);
                 return true;
                 break;
             }
@@ -191,65 +191,13 @@ namespace Metacode
     }
     
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
-    {
-        return false;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::_preparationIncludes( size_t _includes, size_t _count )
-    {
-        switch( _includes )
-        {
-        case 1:
-            {
-                includes_Meta_Files.reserve( _count );
-                return true;
-                break;
-            }
-        }
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::_parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes )
-    {
-        switch( _includes )
-        {
-        case 1:
-            {
-                Meta_DataBlock::Meta_FileResourceStore::Meta_Files metadata;
-                metadata.parse( _buff, _size, _read );
-    
-                includes_Meta_Files.push_back(metadata);
-                return true;
-                break;
-            }
-        }
-        return false;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
-    {
-        return false;
-    }
-    
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::Meta_Files::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
+    bool Meta_DataBlock::Meta_FileStore::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
     {
         switch( _id )
         {
-        case 2:
-            {
-                this->read( _buff, _size, _read, this->File_ID );
-                this->File_ID_successful = true;
-                return true;
-                break;
-            }
         case 1:
             {
-                this->read( _buff, _size, _read, this->File_Path );
-                this->File_Path_successful = true;
+                this->read( _buff, _size, _read, this->Count );
                 return true;
                 break;
             }
@@ -258,18 +206,85 @@ namespace Metacode
     }
     
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::Meta_Files::_preparationIncludes( size_t _includes, size_t _count )
+    bool Meta_DataBlock::Meta_FileStore::_preparationIncludes( size_t _includes, size_t _count )
     {
+        switch( _includes )
+        {
+        case 2:
+            {
+                includes_Meta_File.reserve( _count );
+                return true;
+                break;
+            }
+        }
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::Meta_Files::_parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes )
+    bool Meta_DataBlock::Meta_FileStore::_parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes )
+    {
+        switch( _includes )
+        {
+        case 2:
+            {
+                Meta_DataBlock::Meta_FileStore::Meta_File metadata;
+                metadata.parse( _buff, _size, _read );
+    
+                includes_Meta_File.push_back(metadata);
+                return true;
+                break;
+            }
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_FileStore::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
     {
         return false;
     }
     
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_FileResourceStore::Meta_Files::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
+    bool Meta_DataBlock::Meta_FileStore::Meta_File::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
+    {
+        switch( _id )
+        {
+        case 3:
+            {
+                this->read( _buff, _size, _read, this->ID );
+                this->ID_successful = true;
+                return true;
+                break;
+            }
+        case 1:
+            {
+                this->read( _buff, _size, _read, this->Index );
+                return true;
+                break;
+            }
+        case 2:
+            {
+                this->read( _buff, _size, _read, this->Path );
+                this->Path_successful = true;
+                return true;
+                break;
+            }
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_FileStore::Meta_File::_preparationIncludes( size_t _includes, size_t _count )
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_FileStore::Meta_File::_parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes )
+    {
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_FileStore::Meta_File::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
     {
         return false;
     }

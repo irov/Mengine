@@ -35,100 +35,132 @@ namespace Metacode
         bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes ) override;
         bool _parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators ) override;
     public:
-        class Meta_FileResourceStore
+        class Meta_FileStore
             : public Metabuf::Metadata
         { 
         public:
-            Meta_FileResourceStore()
+            Meta_FileStore()
                 : Metabuf::Metadata()
             {
             }
         public:
+            const size_t & get_Count() const
+            {
+                return this->Count;
+            }
+            
+            void swap_Count( size_t & _value ) const
+            {
+                std::swap( _value, this->Count);
+            }
+            
+            template<class C, class M>
+            void method_Count( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Count );
+            }
+            
         protected:
             bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
             bool _preparationIncludes( size_t _includes, size_t _count ) override;
             bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes ) override;
             bool _parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators ) override;
         public:
-            class Meta_Files
+            class Meta_File
                 : public Metabuf::Metadata
             { 
             public:
-                Meta_Files()
+                Meta_File()
                     : Metabuf::Metadata()
-                    , File_ID_successful(false)
-                    , File_Path_successful(false)
+                    , ID_successful(false)
+                    , Path_successful(false)
                 {
                 }
             public:
-                bool get_File_ID( size_t & _value ) const
+                bool get_ID( size_t & _value ) const
                 {
-                    if( File_ID_successful == false )
+                    if( ID_successful == false )
                     {
                         return false;
                     }
                 
-                    _value = this->File_ID;
+                    _value = this->ID;
                 
                     return true;
                 }
                 
-                bool swap_File_ID( size_t & _value ) const
+                bool swap_ID( size_t & _value ) const
                 {
-                    if( File_ID_successful == false )
+                    if( ID_successful == false )
                     {
                         return false;
                     }
                 
-                    std::swap(_value, this->File_ID);
-                
-                    return true;
-                }
-                
-                template<class C, class M>
-                void method_File_ID( C * _self, M _method )
-                {
-                    if( File_ID_successful == false )
-                    {
-                        return;
-                    }
-                
-                    (_self->*_method)( this->File_ID );
-                }
-                
-                bool get_File_Path( Menge::WString & _value ) const
-                {
-                    if( File_Path_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    _value = this->File_Path;
-                
-                    return true;
-                }
-                
-                bool swap_File_Path( Menge::WString & _value ) const
-                {
-                    if( File_Path_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    std::swap(_value, this->File_Path);
+                    std::swap( _value, this->ID);
                 
                     return true;
                 }
                 
                 template<class C, class M>
-                void method_File_Path( C * _self, M _method )
+                void method_ID( C * _self, M _method ) const
                 {
-                    if( File_Path_successful == false )
+                    if( ID_successful == false )
                     {
                         return;
                     }
                 
-                    (_self->*_method)( this->File_Path );
+                    (_self->*_method)( this->ID );
+                }
+                
+                const size_t & get_Index() const
+                {
+                    return this->Index;
+                }
+                
+                void swap_Index( size_t & _value ) const
+                {
+                    std::swap( _value, this->Index);
+                }
+                
+                template<class C, class M>
+                void method_Index( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->Index );
+                }
+                
+                bool get_Path( Menge::WString & _value ) const
+                {
+                    if( Path_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Path;
+                
+                    return true;
+                }
+                
+                bool swap_Path( Menge::WString & _value ) const
+                {
+                    if( Path_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Path);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Path( C * _self, M _method ) const
+                {
+                    if( Path_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Path );
                 }
                 
             protected:
@@ -139,24 +171,26 @@ namespace Metacode
             public:
             protected:
             protected:
-                bool File_ID_successful;
-                mutable size_t File_ID;
-                bool File_Path_successful;
-                mutable Menge::WString File_Path;
+                bool ID_successful;
+                mutable size_t ID;
+                mutable size_t Index;
+                bool Path_successful;
+                mutable Menge::WString Path;
             };
             
         protected:
         protected:
+            mutable size_t Count;
         public:
-            typedef std::vector<Meta_Files> TVectorMeta_Files;
+            typedef std::vector<Meta_File> TVectorMeta_File;
         
-            const TVectorMeta_Files & get_IncludesFiles() const
+            const TVectorMeta_File & get_IncludesFile() const
             {
-                return this->includes_Meta_Files;
+                return this->includes_Meta_File;
             }
         
         protected:
-            TVectorMeta_Files includes_Meta_Files;
+            TVectorMeta_File includes_Meta_File;
         };
         
         class Meta_Resource
@@ -3056,15 +3090,15 @@ namespace Metacode
     protected:
     protected:
     public:
-        typedef std::vector<Meta_FileResourceStore> TVectorMeta_FileResourceStore;
+        typedef std::vector<Meta_FileStore> TVectorMeta_FileStore;
     
-        const TVectorMeta_FileResourceStore & get_IncludesFileResourceStore() const
+        const TVectorMeta_FileStore & get_IncludesFileStore() const
         {
-            return this->includes_Meta_FileResourceStore;
+            return this->includes_Meta_FileStore;
         }
     
     protected:
-        TVectorMeta_FileResourceStore includes_Meta_FileResourceStore;
+        TVectorMeta_FileStore includes_Meta_FileStore;
     public:
         typedef std::vector<Meta_Resource *> TVectorMeta_Resource;
     

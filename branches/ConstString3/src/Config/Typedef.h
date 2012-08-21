@@ -28,6 +28,12 @@ namespace Menge
 	typedef std::wstringstream WStringstream;
 	typedef std::stringstream Stringstream;
 
+#   ifndef MENGE_MASTER_RELEASE
+    typedef WString FileID;
+#   else
+    typedef WString FileID; //size_t TODO
+#   endif
+    
 
 //#ifdef MENGE_UNICODE
 //	typedef TCharW TChar;

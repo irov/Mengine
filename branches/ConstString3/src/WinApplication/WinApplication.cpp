@@ -409,6 +409,12 @@ namespace Menge
 		ApplicationSettings appSettings;
 
         bool alreadyRunning = false;
+
+        appSettings.fixedContentResolution = true;
+        appSettings.windowModeCheck = false;
+        appSettings.fullscreen = true;
+        appSettings.vsync = true;
+
         String defaultLocale;
 		
 		s_getIniValue( game_settings, L"Project", L"Name", appSettings.projectName );
@@ -419,6 +425,7 @@ namespace Menge
 		s_getIniValue( game_settings, L"Game", L"FixedContentResolution", appSettings.fixedContentResolution );
 		s_getIniValue( game_settings, L"Game", L"PersonalityModule", appSettings.personalityModule );
         s_getIniValue( game_settings, L"Game", L"AlreadyRunning", alreadyRunning );
+        s_getIniValue( game_settings, L"Game", L"WindowModeCheck", appSettings.windowModeCheck );
 		s_getIniValue( game_settings, L"Window", L"Size", appSettings.windowResolution );
 		s_getIniValue( game_settings, L"Window", L"Bits", appSettings.bits );
 		s_getIniValue( game_settings, L"Window", L"Fullscreen", appSettings.fullscreen );

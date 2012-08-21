@@ -96,6 +96,8 @@ namespace Menge
 		size_t bits;
 		bool fullscreen;
 		bool vsync;		
+
+        bool windowModeCheck;
 	};
 
 	struct ResourcePackDesc

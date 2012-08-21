@@ -363,5 +363,7 @@ namespace Menge
 
 		bool m_inputMouseButtonEventBlock;
 		bool m_developmentMode;
+
+        bool m_windowModeCheck;
 	};
 }

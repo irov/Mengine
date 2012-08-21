@@ -230,6 +230,7 @@ namespace Menge
 		, m_FSAAType(0)
 		, m_FSAAQuality(0)
 		, m_textureFiltering(true)
+        , m_windowModeCheck(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -302,6 +303,8 @@ namespace Menge
 		m_bits = _setting.bits;
 		m_fullscreen = _setting.fullscreen;
 		m_vsync = _setting.vsync;
+
+        m_windowModeCheck = _setting.windowModeCheck;
 		
 		this->parseArguments_( _args );
 		
@@ -880,20 +883,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle )
 	{
-        if( m_lowContentViewport.empty() == false )
+        if( m_windowModeCheck == true )
         {
-            if( m_maxClientResolution.getWidth() < m_lowContentViewport.getWidth() ||
-                m_maxClientResolution.getHeight() < m_lowContentViewport.getHeight() )
+            if( m_lowContentViewport.empty() == false )
             {
-                m_fullscreen = true;
+                if( m_maxClientResolution.getWidth() < m_lowContentViewport.getWidth() ||
+                    m_maxClientResolution.getHeight() < m_lowContentViewport.getHeight() )
+                {
+                    m_fullscreen = true;
+                }
             }
-        }
-        else
-        {
-            if( m_maxClientResolution.getWidth() < m_contentResolution.getWidth() ||
-                m_maxClientResolution.getHeight() < m_contentResolution.getHeight() )
+            else
             {
-                m_fullscreen = true;
+                if( m_maxClientResolution.getWidth() < m_contentResolution.getWidth() ||
+                    m_maxClientResolution.getHeight() < m_contentResolution.getHeight() )
+                {
+                    m_fullscreen = true;
+                }
             }
         }
 
@@ -1583,20 +1589,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
-        if( m_lowContentViewport.empty() == false )
+        if( m_windowModeCheck == true )
         {
-            if( m_maxClientResolution.getWidth() < m_lowContentViewport.getWidth() ||
-                m_maxClientResolution.getHeight() < m_lowContentViewport.getHeight() )
+            if( m_lowContentViewport.empty() == false )
             {
-                _fullscreen = true;
+                if( m_maxClientResolution.getWidth() < m_lowContentViewport.getWidth() ||
+                    m_maxClientResolution.getHeight() < m_lowContentViewport.getHeight() )
+                {
+                    _fullscreen = true;
+                }
             }
-        }
-        else
-        {
-            if( m_maxClientResolution.getWidth() < m_contentResolution.getWidth() ||
-                m_maxClientResolution.getHeight() < m_contentResolution.getHeight() )
+            else
             {
-                _fullscreen = true;
+                if( m_maxClientResolution.getWidth() < m_contentResolution.getWidth() ||
+                    m_maxClientResolution.getHeight() < m_contentResolution.getHeight() )
+                {
+                    _fullscreen = true;
+                }
             }
         }
 

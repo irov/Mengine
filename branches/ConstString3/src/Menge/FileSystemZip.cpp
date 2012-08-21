@@ -195,12 +195,16 @@ namespace Menge
 	bool FileSystemZip::existFile( const WString& _filename )
 	{
 		TMapFileInfo::iterator it_find = m_files.find( _filename );
-		if( it_find != m_files.end() )
+		if( it_find == m_files.end() )
 		{
-			return true;
+            MENGE_LOG_INFO("FileSystemZip::existFile file %S not exist"
+                , _filename.c_str()
+                );
+
+			return false;
 		}
 		
-		return false;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* FileSystemZip::createInputFile()

@@ -8,8 +8,6 @@
 
 namespace Menge
 {
-	class BinParser;
-		
 	class MovieKeyFrameManager
 		: public Holder<MovieKeyFrameManager>
 	{

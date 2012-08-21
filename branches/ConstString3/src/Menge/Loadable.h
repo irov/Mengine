@@ -7,8 +7,6 @@ namespace Metabuf
 
 namespace Menge
 {
-	class BinParser;
-
 	class Loadable
 	{
 	public:

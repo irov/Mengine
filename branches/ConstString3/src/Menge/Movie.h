@@ -67,6 +67,13 @@ namespace Menge
 	protected:
 		void _update( float _current, float _timing ) override;
 
+    protected:
+        void updateForward_();
+        void updateBackward_();
+        
+        void updateForwardFrame_( size_t _beginFrame, size_t _endFrame );
+        void updateBackwardFrame_( size_t _beginFrame, size_t _endFrame );
+
 	protected:
 		void _setEventListener( PyObject * _embed ) override;
 
@@ -101,8 +108,7 @@ namespace Menge
 		Node * getMovieNode_( const MovieLayer & _layer ) const;
 		Node * getMovieParent_( const MovieLayer & _layer ) const;
 
-	protected:
-		void updateCurrentFrame_( size_t _lastFrame );
+	protected:		
 		void updateTiming_();
 		void updateClipLastFrame_();
 		void updateStartInterval_();

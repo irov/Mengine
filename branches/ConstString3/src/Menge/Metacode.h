@@ -35,6 +35,130 @@ namespace Metacode
         bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes ) override;
         bool _parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators ) override;
     public:
+        class Meta_FileResourceStore
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_FileResourceStore()
+                : Metabuf::Metadata()
+            {
+            }
+        public:
+        protected:
+            bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
+            bool _preparationIncludes( size_t _includes, size_t _count ) override;
+            bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes ) override;
+            bool _parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators ) override;
+        public:
+            class Meta_Files
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_Files()
+                    : Metabuf::Metadata()
+                    , File_ID_successful(false)
+                    , File_Path_successful(false)
+                {
+                }
+            public:
+                bool get_File_ID( size_t & _value ) const
+                {
+                    if( File_ID_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->File_ID;
+                
+                    return true;
+                }
+                
+                bool swap_File_ID( size_t & _value ) const
+                {
+                    if( File_ID_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->File_ID);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_File_ID( C * _self, M _method )
+                {
+                    if( File_ID_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->File_ID );
+                }
+                
+                bool get_File_Path( Menge::WString & _value ) const
+                {
+                    if( File_Path_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->File_Path;
+                
+                    return true;
+                }
+                
+                bool swap_File_Path( Menge::WString & _value ) const
+                {
+                    if( File_Path_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->File_Path);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_File_Path( C * _self, M _method )
+                {
+                    if( File_Path_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->File_Path );
+                }
+                
+            protected:
+                bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
+                bool _preparationIncludes( size_t _includes, size_t _count ) override;
+                bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes ) override;
+                bool _parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators ) override;
+            public:
+            protected:
+            protected:
+                bool File_ID_successful;
+                mutable size_t File_ID;
+                bool File_Path_successful;
+                mutable Menge::WString File_Path;
+            };
+            
+        protected:
+        protected:
+        public:
+            typedef std::vector<Meta_Files> TVectorMeta_Files;
+        
+            const TVectorMeta_Files & get_IncludesFiles() const
+            {
+                return this->includes_Meta_Files;
+            }
+        
+        protected:
+            TVectorMeta_Files includes_Meta_Files;
+        };
+        
         class Meta_Resource
             : public Metabuf::Metadata
         { 
@@ -2931,6 +3055,16 @@ namespace Metacode
         
     protected:
     protected:
+    public:
+        typedef std::vector<Meta_FileResourceStore> TVectorMeta_FileResourceStore;
+    
+        const TVectorMeta_FileResourceStore & get_IncludesFileResourceStore() const
+        {
+            return this->includes_Meta_FileResourceStore;
+        }
+    
+    protected:
+        TVectorMeta_FileResourceStore includes_Meta_FileResourceStore;
     public:
         typedef std::vector<Meta_Resource *> TVectorMeta_Resource;
     

@@ -70,24 +70,10 @@ namespace Menge
 			return;
 		}
 	
-		if( _timing > 0.f )
-		{
-			float frameDuration = m_resourceMovie->getFrameDuration();
+		float frameDuration = m_resourceMovie->getFrameDuration();
 
-			m_currentFrame = (size_t)floorf( (_timing / frameDuration) );
-			m_frameTiming = _timing - m_currentFrame * frameDuration;
-		}
-		else
-		{
-			m_currentFrame = 0;
-			m_frameTiming = _timing;
-		}
-
-		//printf("Movie._setTiming %s %d [%.2f]\n"
-		//	, m_name.c_str()
-		//	, m_currentFrame
-		//	, _timing
-		//	);
+		m_currentFrame = (size_t)floorf( (_timing / frameDuration) );
+		m_frameTiming = _timing - m_currentFrame * frameDuration;
 
 		this->updateTiming_();
 	}
@@ -126,24 +112,17 @@ namespace Menge
         //    return false;
         //}
 
+        m_frameTiming = 0.f;
+
 		if( m_reverse == true )
 		{
-			m_frameTiming = 0.f;
-			m_currentFrame = m_resourceMovie->getFrameCount();
+			size_t frameCount = m_resourceMovie->getFrameCount();
 
-			//TODO!!!!!!! this->setTiming( 0.f );??????
+            this->updateForwardFrame_( frameCount, m_currentFrame );
 		}
 		else
 		{
-			//m_frameTiming = 0.f;
-			//m_currentFrame = 0;
-			
-            //this->setTiming( 0.f );
-			//this->updateTiming_();
-            //this->updateStartInterval_();
-            //this->updateCurrentFrame_( m_currentFrame, false );
-            
-            this->updateCurrentFrame_( 0 );            
+            this->updateForwardFrame_( 0, m_currentFrame );            
 		}
 
         m_playIterator = this->getPlayCount();
@@ -820,7 +799,7 @@ namespace Menge
 				return false;
 			}
 		}
-			
+
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
@@ -933,7 +912,7 @@ namespace Menge
 
 			return;
 		}
-
+        
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( TVectorMovieLayers::const_iterator
@@ -1039,11 +1018,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		//if( m_resourceMovieName != "MovieOpen_Journal_Env_Activate" && m_resourceMovieName != "MovieOpen_Journal_Env_Llight_loop" && m_parentMovie == false )
-		//{
-		//	return false;
-		//}
 		
 		this->updateCamera_();
 
@@ -1084,133 +1058,134 @@ namespace Menge
 			_timing -= deltha;
 		}
 
-		//printf("Movie._update %s %f:%f:%f\n"
-		//	, m_name.c_str()
-		//	, _timing
-		//	, m_frameTiming
-		//	, this->getTiming()
-		//	);
-
-		//if( m_parentMovie == false )
-		//{
-		//	printf("Movie %s update %f:%f\n", m_name.c_str(), m_timing, _timing);
-		//}
-
-		//float lastTiming = m_timing;
-
-		//Movie205_Corridor_Env
-			//Movie205_Corridor_Sledi
-		
-		float frameDuration = m_resourceMovie->getFrameDuration();
+        float frameDuration = m_resourceMovie->getFrameDuration();
 
 		float realTiming = _timing * m_speedFactor;
 
 		m_frameTiming += realTiming;
 
-		size_t lastFrame = m_currentFrame;
-
 		size_t frameCount = m_resourceMovie->getFrameCount();
 
-		while( m_frameTiming >= frameDuration )
-		{
-			m_frameTiming -= frameDuration;
 
-			if( m_reverse == true )
-			{
-				--m_currentFrame;
-
-				if( m_currentFrame == 0 )
-				{
-					if( this->getLoop() == false )
-					{
-						break;
-					}
-				}
-			}
-			else
-			{
-				++m_currentFrame;
-
-				if ( m_currentFrame >= frameCount )
-				{
-					if( this->getLoop() == true )
-					{
-                        size_t nextFrame = m_currentFrame - frameCount;
-
-                        m_currentFrame = frameCount;
-                        this->updateCurrentFrame_( lastFrame );
-                        
-                        this->setTiming( 0.f );
-                        
-                        lastFrame = 0;
-						m_currentFrame = nextFrame;
-					}
-					else
-					{
-                        if( --m_playIterator == 0 )
-                        {
-                            m_currentFrame = frameCount;
-                            this->updateCurrentFrame_( lastFrame );
-
-                            m_frameTiming = 0.f;
-
-                            lastFrame = m_currentFrame;
-
-                            this->end();
-
-                            break;
-                        }
-                        else
-                        {
-                            size_t nextFrame = m_currentFrame - frameCount;
-
-                            m_currentFrame = frameCount;
-                            this->updateCurrentFrame_( lastFrame );
-
-                            this->setTiming( 0.f );
-
-                            lastFrame = 0;
-                            m_currentFrame = nextFrame;
-                        }	
-
-						break;
-					}
-				}	
-			}
-		}
-
-		if( lastFrame != m_currentFrame )
-		{
-			this->updateCurrentFrame_( lastFrame );
-		}
-
-		if( m_reverse == true )
-		{
-			if( m_currentFrame == 0 )
-			{
-				if( this->getLoop() == false )
-				{
-					m_frameTiming = 0.f;
-
-					this->end();
-				}
-			}
-		}
-		else
-		{
-			if( m_currentFrame == frameCount )
-			{
-				if( this->getLoop() == false )
-				{
-					m_frameTiming = 0.f;
-
-					this->end();
-				}
-			}
-		}
+        if( m_reverse == true )
+        {
+            this->updateBackward_();
+        }
+        else
+        {
+            this->updateForward_();
+        }
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Movie::updateForward_()
+    {
+        float frameDuration = m_resourceMovie->getFrameDuration();        
+        size_t frameCount = m_resourceMovie->getFrameCount();
+
+        size_t lastFrame = m_currentFrame;
+
+        bool needUpdate = false;
+
+        if( m_currentFrame != frameCount )
+        {
+            while( m_frameTiming >= frameDuration )
+            {
+                m_frameTiming -= frameDuration;
+
+                ++m_currentFrame;
+
+                needUpdate = true;
+
+                if ( m_currentFrame == frameCount )
+                {
+                    this->updateForwardFrame_( lastFrame, frameCount );
+
+                    needUpdate = false;
+
+                    if( this->getLoop() == false && --m_playIterator == 0 )
+                    {
+                        lastFrame = frameCount;
+                        m_currentFrame = frameCount;
+
+                        this->end();                            
+
+                        break;
+                    }
+                    else
+                    {
+                        this->setTiming( 0.f );
+
+                        lastFrame = m_currentFrame;
+                    }
+                }	
+            }
+        }
+        else
+        {
+            this->end();
+        }
+
+        if( needUpdate == true )
+        {
+            this->updateForwardFrame_( lastFrame, m_currentFrame );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie::updateBackward_()
+    {
+        float frameDuration = m_resourceMovie->getFrameDuration();
+        float duration = m_resourceMovie->getDuration();
+        size_t frameCount = m_resourceMovie->getFrameCount();
+
+        size_t lastFrame = m_currentFrame;
+        
+        if( m_currentFrame != 0 )
+        {
+            while( m_frameTiming >= frameDuration )
+            {
+                m_frameTiming -= frameDuration;
+                
+                --m_currentFrame;
+
+                if( m_currentFrame == 0 )
+                {
+                    this->updateBackwardFrame_( lastFrame, 0 );
+
+                    if( this->getLoop() == false && --m_playIterator == 0 )
+                    {           
+                        lastFrame = 0;
+                        m_currentFrame = 0;
+
+                        this->end();
+
+                        break;
+                    }
+                    else
+                    {                      
+                        this->setTiming( duration );
+
+                        lastFrame = m_currentFrame;
+                    }
+                }
+            }
+        }
+
+        this->updateBackwardFrame_( lastFrame, m_currentFrame );
+
+        if( m_currentFrame == 0 )
+        {
+            if( this->getLoop() == true )
+            {
+                //Nothing
+            }
+            else
+            {
+                this->end();
+            }
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateCurrentFrame_( size_t _lastFrame )
+	void Movie::updateForwardFrame_( size_t _beginFrame, size_t _endFrame )
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		//size_t frameCount = m_resourceMovie->getFrameCount();
@@ -1233,20 +1208,20 @@ namespace Menge
 			//	layerOut = out;
 			//}
 
-			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
-			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
+			size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
+			size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
 
-            if( indexOut < _lastFrame || indexIn > m_currentFrame )
+            if( indexIn > _endFrame || indexOut < _beginFrame )
             {
                 continue;
             }
-			
+
 			Node * node = this->getMovieNode_( layer );			
 			
-			if( _lastFrame <= indexIn && m_currentFrame >= indexIn && m_currentFrame < indexOut )
+			if( _beginFrame <= indexIn && _endFrame >= indexIn && _endFrame < indexOut )
 			{
                 MovieFrameSource frame;
-                if( m_resourceMovie->getFrame( layer, m_currentFrame - indexIn, frame ) == false )
+                if( m_resourceMovie->getFrame( layer, _endFrame - indexIn, frame ) == false )
                 {
                     continue;
                 }
@@ -1264,7 +1239,7 @@ namespace Menge
                         animatable->stop();
                     }
                         
-                    size_t frame = m_currentFrame - indexIn;
+                    size_t frame = _endFrame - indexIn;
                     float timing = frame * frameDuration;
 
                     animatable->setTiming( timing );
@@ -1273,7 +1248,7 @@ namespace Menge
                     animatable->play( playTime );                                       
 				}
 			}
-			else if( m_currentFrame >= indexOut && _lastFrame >= indexIn && _lastFrame < indexOut )
+			else if( _endFrame >= indexOut && _beginFrame >= indexIn && _beginFrame < indexOut )
 			{
                 //printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
 				node->localHide(true);
@@ -1291,10 +1266,10 @@ namespace Menge
 					}
 				}
 			}
-            else if( _lastFrame > indexIn && m_currentFrame >= indexIn && m_currentFrame < indexOut )
+            else if( _beginFrame > indexIn && _endFrame >= indexIn && _endFrame < indexOut )
             {
                 MovieFrameSource frame;
-                if( m_resourceMovie->getFrame( layer, m_currentFrame - indexIn, frame ) == false )
+                if( m_resourceMovie->getFrame( layer, _endFrame - indexIn, frame ) == false )
                 {
                     continue;
                 }
@@ -1303,6 +1278,94 @@ namespace Menge
             }			
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Movie::updateBackwardFrame_( size_t _beginFrame, size_t _endFrame )
+    {
+        float frameDuration = m_resourceMovie->getFrameDuration();
+
+        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+        for( TVectorMovieLayers::const_iterator
+            it = layers.begin(),
+            it_end = layers.end();
+        it != it_end;
+        ++it )
+        {
+            const MovieLayer & layer = *it;
+
+            float layerIn = layer.in;
+            float layerOut = layer.out;
+
+            size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
+            size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
+
+            if( indexIn > _beginFrame || indexOut < _endFrame )
+            {
+                continue;
+            }
+            
+            Node * node = this->getMovieNode_( layer );			
+
+            if( _beginFrame >= indexOut && _endFrame <= indexOut && _endFrame > indexIn )
+            {
+                MovieFrameSource frame;
+                if( m_resourceMovie->getFrame( layer, _endFrame - indexIn, frame ) == false )
+                {
+                    continue;
+                }
+
+                this->updateFrameNode_( layer, node, frame );
+
+                node->localHide(false);
+
+                if( layer.animatable == true )
+                {
+                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+                    if( animatable->isPlay() == true )
+                    {
+                        animatable->stop();
+                    }
+
+                    size_t frame = _endFrame - indexIn;
+                    float timing = frame * frameDuration;
+
+                    animatable->setTiming( timing );
+
+                    float playTime = this->getPlayTime();
+                    animatable->play( playTime );                                       
+                }
+            }
+            else if( _endFrame <= indexIn && _beginFrame <= indexOut && _beginFrame > indexIn )
+            {
+                //printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
+                node->localHide(true);
+
+                if( layer.animatable == true )
+                {
+                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+                    if( animatable->isPlay() == true )
+                    {
+                        animatable->stop();
+
+                        float timing = (indexOut - indexIn) * frameDuration;
+                        animatable->setTiming( timing );
+                    }
+                }
+            }
+            else if( _beginFrame < indexOut && _endFrame <= indexOut && _endFrame > indexIn )
+            {
+                MovieFrameSource frame;
+                if( m_resourceMovie->getFrame( layer, _endFrame - indexIn, frame ) == false )
+                {
+                    continue;
+                }
+
+                this->updateFrameNode_( layer, node, frame );
+            }			
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateTiming_()
 	{
@@ -1322,8 +1385,8 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
-			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
+			size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
+			size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
 		
 			Node * node = this->getMovieNode_( layer );
 
@@ -1377,8 +1440,8 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			size_t indexIn = floorf((layerIn / frameDuration) + 0.5f);
-			size_t indexOut = floorf((layerOut / frameDuration) + 0.5f);
+			size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
+			size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
 
 			if( indexOut < m_currentFrame )
 			{

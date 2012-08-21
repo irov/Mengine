@@ -56,7 +56,7 @@ namespace Menge
 
 	protected:
 		size_t getFrame_( float _timing, float & _delthaTiming ) const;
-		bool updateCurrentFrame_( size_t _lastFrame );
+		bool updateCurrentFrame_();
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;

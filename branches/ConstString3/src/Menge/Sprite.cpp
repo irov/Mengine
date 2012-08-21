@@ -130,8 +130,6 @@ namespace	Menge
 
 		m_materialGroup = NULL;
 		m_material = NULL;
-
-		m_resource = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setFlipX( bool _flipX )

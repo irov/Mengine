@@ -3,6 +3,9 @@ set( MY_LIB_NAME Core )
 
 ADD_FILTER(
 src
+    CRC32.h
+    CRC32.cpp
+    
     Polygon.h
     Polygon.cpp    
     

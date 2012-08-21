@@ -43,6 +43,7 @@
 
 #	include "Utils/Core/File.h"
 #	include "Utils/Core/String.h"
+#   include "Utils/Core/CRC32.h"
 
 #	include "Math/angle.h"
 
@@ -51,6 +52,8 @@
 #	include "TimingManager.h"
 
 #	include "boost/geometry/geometries/box.hpp"
+
+
 
 namespace Menge
 {
@@ -568,7 +571,8 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "Error writeBinaryFile: currentAccount is none"
+				MENGE_LOG_ERROR( "writeBinaryFile: invalid write file %S (currentAccount is none)"
+                    , _filename.c_str()
 					);
 
 				return false;
@@ -583,28 +587,35 @@ namespace Menge
 
 			if( file == 0 )
 			{
+                MENGE_LOG_ERROR( "writeBinaryFile: invalid write file %S (not create)"
+                    , _filename.c_str()
+                    );
+
 				return false;
 			}
 
+            size_t value_crc32 = make_crc32( _data.c_str(), _data.size() );
+            
+            file->write( &value_crc32, sizeof(value_crc32) );
 			file->write( _data.c_str(), _data.size() );
+
 			file->close();
 
 			return true;
 		}
 
-		static String s_loadBinaryFile( const WString & _filename )
+		static PyObject * s_loadBinaryFile( const WString & _filename )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
-			String data;
-
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "loadBinaryFile: currentAccount is none"
+				MENGE_LOG_ERROR( "loadBinaryFile: invalid load file %S (currentAccount is none)"
+                    , _filename.c_str()
 					);
 
-				return data;
+				return pybind::ret_none();
 			}
 
 			const WString & folder = currentAccount->getName();
@@ -616,28 +627,56 @@ namespace Menge
 
 			if( file == 0 )
 			{
-				MENGE_LOG_ERROR( "loadBinaryFile: invalid open input file '%S'"
+				MENGE_LOG_ERROR( "loadBinaryFile: invalid load file '%S' (file not found)"
 					, fullpath.c_str()
 					);
 
-				return data;
+				return pybind::ret_none();
 			}
 			
 			int size = file->size();
 			
-			if( size < 0 )
+			if( size == 0 )
 			{
 				file->close();
 
-				return data;
+                MENGE_LOG_ERROR( "loadBinaryFile: invalid load file '%S' (zero size)"
+                    , fullpath.c_str()
+                    );
+
+				return pybind::ret_none();
 			}
 
-			data.resize(size);
-			file->read( &data[0], size );
-			
-			file->close();
+            size_t load_crc32 = 0;
 
-			return data;
+            size_t data_size = size - sizeof(load_crc32);
+
+            char * data = new char[data_size + 1];
+            data[data_size] = 0;
+
+            file->read( &load_crc32, sizeof(load_crc32) );
+			file->read( data, data_size );
+			            
+            file->close();
+
+            size_t check_crc32 = make_crc32( data, data_size );
+
+            if( load_crc32 != check_crc32 )
+            {
+                MENGE_LOG_ERROR( "loadBinaryFile: invalid load file '%S' (crc32 incorect)"
+                    , fullpath.c_str()
+                    );
+
+                delete data;
+
+                return pybind::ret_none();
+            }			
+
+            PyObject * py_data = pybind::string_from_char_size( data, data_size );
+
+            delete [] data;
+
+			return py_data;
 		}
 
 

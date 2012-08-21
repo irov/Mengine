@@ -120,7 +120,11 @@ namespace Menge
                 meta_frame2d.get_Rotation( angle );
                 meta_frame2d.get_Opacity( frame.opacity );
                 meta_frame2d.get_Count( count );
-				meta_frame2d.get_Volume( volume );
+				
+				if( meta_frame2d.get_Volume( volume ) == false )
+				{
+					volume = 1.f;
+				}
 
                 frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
                 frame.position = mt::vec3f(position2d, 0.f);

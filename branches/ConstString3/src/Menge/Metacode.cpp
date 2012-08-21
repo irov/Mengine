@@ -2135,7 +2135,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->Count );
                 this->Count_successful = true;
@@ -2167,6 +2167,13 @@ namespace Metacode
             {
                 this->read( _buff, _size, _read, this->Scale );
                 this->Scale_successful = true;
+                return true;
+                break;
+            }
+        case 6:
+            {
+                this->read( _buff, _size, _read, this->Volume );
+                this->Volume_successful = true;
                 return true;
                 break;
             }
@@ -2281,6 +2288,13 @@ namespace Metacode
             {
                 this->read( _buff, _size, _read, this->Scale );
                 this->Scale_successful = true;
+                return true;
+                break;
+            }
+        case 6:
+            {
+                this->read( _buff, _size, _read, this->Volume );
+                this->Volume_successful = true;
                 return true;
                 break;
             }

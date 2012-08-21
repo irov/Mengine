@@ -191,13 +191,13 @@ namespace Menge
 		EVENTABLE_CALL(this, EVENT_SOUND_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setVolume( float _volume )
+	void SoundEmitter::_setVolume( float _volume )
 	{
 		if( m_sourceID == 0 )
 		{
 			return;
 		}
-		
+
 		if( Holder<SoundServiceInterface>::get()
 			->setSourceVolume( m_sourceID, _volume ) == false )
 		{
@@ -207,7 +207,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEmitter::getVolume() const
+	float SoundEmitter::_getVolume() const 
 	{
 		if( m_sourceID == 0 )
 		{

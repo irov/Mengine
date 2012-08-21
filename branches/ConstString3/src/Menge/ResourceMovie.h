@@ -26,6 +26,7 @@ namespace Menge
 			, out(0.f)
 			, startInterval(0.f)
 			, animatable(false)
+			, audio(false)
 		{
 		}
 
@@ -46,8 +47,11 @@ namespace Menge
 
 		ConstString source;
 		bool animatable;
+		
 		bool movie;
 		bool threeD;
+
+		bool audio;
 	};
 
 	typedef std::vector<MovieLayer> TVectorMovieLayers;

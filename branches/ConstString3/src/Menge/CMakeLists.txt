@@ -278,6 +278,12 @@ Kernel\\\\Node\\\\Animatable
 )
 
 ADD_FILTER(
+Kernel\\\\Node\\\\Sounding
+	Sounding.cpp
+	Sounding.h
+)
+
+ADD_FILTER(
 Kernel\\\\Node\\\\Updatable
 	Updatable.cpp
 	Updatable.h

@@ -276,6 +276,7 @@ namespace Menge
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 
 				continue;
 			}
@@ -284,6 +285,7 @@ namespace Menge
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 
 				continue;
 			}
@@ -295,56 +297,67 @@ namespace Menge
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha )
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceImageSolid )
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceImageInAtlasCombineRGBAndAlpha )
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceImageInAtlasDefault )
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
 				it->animatable = true;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceVideo )
 			{
 				it->animatable = true;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceSound )
 			{
 				it->animatable = true;
+				it->audio = true;
 				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
 			{
 				it->animatable = true;
 				it->movie = false;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceMovie )
 			{
 				it->animatable = true;
 				it->movie = true;
+				it->audio = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceInternalObject )
 			{
 				it->animatable = false;
 				it->movie = false;
+				it->audio = false;
 			}
 			else
 			{

@@ -3419,6 +3419,7 @@ namespace Metacode
                     , Position_successful(false)
                     , Rotation_successful(false)
                     , Scale_successful(false)
+                    , Volume_successful(false)
                 {
                 }
             public:
@@ -3632,6 +3633,41 @@ namespace Metacode
                     (_self->*_method)( this->Scale );
                 }
                 
+                bool get_Volume( float & _value ) const
+                {
+                    if( Volume_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Volume;
+                
+                    return true;
+                }
+                
+                bool swap_Volume( float & _value ) const
+                {
+                    if( Volume_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Volume);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Volume( C * _self, M _method ) const
+                {
+                    if( Volume_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Volume );
+                }
+                
             protected:
                 bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
                 bool _preparationIncludes( size_t _includes, size_t _count ) override;
@@ -3652,6 +3688,8 @@ namespace Metacode
                 mutable float Rotation;
                 bool Scale_successful;
                 mutable mt::vec2f Scale;
+                bool Volume_successful;
+                mutable float Volume;
             };
             
         protected:
@@ -3715,6 +3753,7 @@ namespace Metacode
                     , Position_successful(false)
                     , Rotation_successful(false)
                     , Scale_successful(false)
+                    , Volume_successful(false)
                 {
                 }
             public:
@@ -3893,6 +3932,41 @@ namespace Metacode
                     (_self->*_method)( this->Scale );
                 }
                 
+                bool get_Volume( float & _value ) const
+                {
+                    if( Volume_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Volume;
+                
+                    return true;
+                }
+                
+                bool swap_Volume( float & _value ) const
+                {
+                    if( Volume_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Volume);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Volume( C * _self, M _method ) const
+                {
+                    if( Volume_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Volume );
+                }
+                
             protected:
                 bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
                 bool _preparationIncludes( size_t _includes, size_t _count ) override;
@@ -3911,6 +3985,8 @@ namespace Metacode
                 mutable mt::vec3f Rotation;
                 bool Scale_successful;
                 mutable mt::vec3f Scale;
+                bool Volume_successful;
+                mutable float Volume;
             };
             
         protected:

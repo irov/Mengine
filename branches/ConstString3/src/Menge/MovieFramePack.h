@@ -16,6 +16,7 @@ namespace Menge
 		mt::vec3f rotation;
 		mt::vec3f scale;
 		float opacity;
+		float volume;
 	};
 	
 	typedef std::vector<MovieFrameSource> TVectorMovieFrameSource;

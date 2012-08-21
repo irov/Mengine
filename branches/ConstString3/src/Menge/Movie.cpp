@@ -16,6 +16,8 @@
 #	include "ParticleEmitter.h"
 #	include "MovieInternalObject.h"
 
+#	include "Sounding.h"
+
 #	include "SoundEmitter.h"
 #	include "NodeManager.h"
 
@@ -111,7 +113,6 @@ namespace Menge
         //{
         //    return false;
         //}
-
         m_frameTiming = 0.f;
 
 		if( m_reverse == true )
@@ -170,6 +171,12 @@ namespace Menge
 		else
 		{
 			_node->setLocalAlpha( _frame.opacity );
+		}
+
+		if( _layer.audio == true )
+		{
+			Sounding * sounding = dynamic_cast<Sounding *>( _node );
+			sounding->setVolume( _frame.volume );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

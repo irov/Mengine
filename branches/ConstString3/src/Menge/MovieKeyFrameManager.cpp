@@ -101,6 +101,9 @@ namespace Menge
                 mt::vec2f scale2d;
 
                 MovieFrameSource frame;
+				
+				float volume = 1.f;
+
                 if( pack->getLayerFrameLast( layerIndex, frame ) == true )
                 {
                     angle = -frame.rotation.x;
@@ -108,6 +111,7 @@ namespace Menge
                     anchorPoint2d = frame.anchorPoint.to_vec2f();
                     position2d = frame.position.to_vec2f();
                     scale2d = frame.scale.to_vec2f();
+					volume = frame.volume;
                 }
 
                 meta_frame2d.get_AnchorPoint( anchorPoint2d );
@@ -116,10 +120,13 @@ namespace Menge
                 meta_frame2d.get_Rotation( angle );
                 meta_frame2d.get_Opacity( frame.opacity );
                 meta_frame2d.get_Count( count );
+				meta_frame2d.get_Volume( volume );
 
                 frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
                 frame.position = mt::vec3f(position2d, 0.f);
                 frame.scale = mt::vec3f(scale2d, 1.f);
+
+				frame.volume = volume;
 
                 frame.rotation.x = -angle;
                 frame.rotation.y = 0.f;
@@ -170,6 +177,9 @@ namespace Menge
                 meta_frame3d.get_Rotation( frame.rotation );
                 meta_frame3d.get_Scale( frame.scale );
                 meta_frame3d.get_Opacity( frame.opacity );
+				
+				frame.volume = 1.f;
+				meta_frame3d.get_Volume( frame.volume );
 
                 pack->addLayerFrame( layerIndex, frame );
             }

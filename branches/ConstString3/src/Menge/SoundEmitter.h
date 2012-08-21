@@ -4,6 +4,8 @@
 
 #	include "Animatable.h"
 
+#	include "Sounding.h"
+
 #	include "Interface/SoundSystemInterface.h"
 
 namespace Menge
@@ -14,6 +16,7 @@ namespace Menge
 		: public Node
 		, public Animatable
 		, public SoundNodeListenerInterface
+		, public Sounding
 	{
 	public:
 		SoundEmitter();
@@ -27,10 +30,10 @@ namespace Menge
 		bool _interrupt( size_t _enumerator ) override;
 		void _setTiming( float _timing ) override;
 
+		void _setVolume( float _volume ) override;
+		float _getVolume() const override;
+	
 	public:
-		void setVolume( float _volume );
-		float getVolume() const;
-
 		void updateVolume();
 
 		float getLengthMs() const;

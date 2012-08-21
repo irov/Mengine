@@ -33,6 +33,8 @@
 #	include "Application.h"
 #	include "MousePickerSystem.h"
 
+#	include "Sounding.h"
+
 #	include "Sprite.h"
 #	include "MovieInternalObject.h"
 #	include "Animation.h"
@@ -2412,6 +2414,11 @@ namespace Menge
 			.def( "interrupt", &ParticleEmitter::interrupt )
 			;
 
+		pybind::interface_<Sounding>("Sounding")
+			.def( "setVolume", &Sounding::setVolume )
+			.def( "getVolume", &Sounding::getVolume )
+			;
+
 		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
 			.def( "enableGlobalMouseEvent", &GlobalHandleAdapter::enableGlobalMouseEvent )
 			.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
@@ -2619,9 +2626,7 @@ namespace Menge
 					.def( "getRandomMode", &ParticleEmitter::getRandomMode )
 					;
 
-				pybind::proxy_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
-					.def( "setVolume", &SoundEmitter::setVolume )
-					.def( "getVolume", &SoundEmitter::getVolume )
+				pybind::proxy_<SoundEmitter, pybind::bases<Node, Animatable, Sounding> >("SoundEmitter", false)
 					.def( "setLoop", &SoundEmitter::setLoop )
 					.def( "isLooping", &SoundEmitter::getLoop )
 					.def( "setSoundResource", &SoundEmitter::setSoundResource )

@@ -2,7 +2,7 @@
 
 namespace Menge
 {
-	class Sounding
+	class Soundable
 	{
 	public:
 		void setVolume( float _volume );

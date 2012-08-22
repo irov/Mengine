@@ -1,25 +1,25 @@
-#	include "Sounding.h"
+#	include "Soundable.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void Sounding::setVolume( float _volume )
+	void Soundable::setVolume( float _volume )
 	{
 		this->_setVolume( _volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Sounding::getVolume() const
+	float Soundable::getVolume() const
 	{
 		float volume = this->_getVolume();
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sounding::_setVolume( float _volume )
+	void Soundable::_setVolume( float _volume )
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Sounding::_getVolume() const
+	float Soundable::_getVolume() const
 	{
 		return 0.f;
 	}

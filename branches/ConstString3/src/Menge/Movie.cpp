@@ -16,7 +16,7 @@
 #	include "ParticleEmitter.h"
 #	include "MovieInternalObject.h"
 
-#	include "Sounding.h"
+#	include "Soundable.h"
 
 #	include "SoundEmitter.h"
 #	include "NodeManager.h"
@@ -175,7 +175,7 @@ namespace Menge
 
 		if( _layer.audio == true )
 		{
-			Sounding * sounding = dynamic_cast<Sounding *>( _node );
+			Soundable * sounding = dynamic_cast<Soundable *>( _node );
 			sounding->setVolume( _frame.volume );
 		}
 	}

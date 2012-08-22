@@ -278,9 +278,9 @@ Kernel\\\\Node\\\\Animatable
 )
 
 ADD_FILTER(
-Kernel\\\\Node\\\\Sounding
-	Sounding.cpp
-	Sounding.h
+Kernel\\\\Node\\\\Soundable
+	Soundable.cpp
+	Soundable.h
 )
 
 ADD_FILTER(

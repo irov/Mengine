@@ -4,7 +4,7 @@
 
 #	include "Animatable.h"
 
-#	include "Sounding.h"
+#	include "Soundable.h"
 
 #	include "Interface/SoundSystemInterface.h"
 
@@ -16,7 +16,7 @@ namespace Menge
 		: public Node
 		, public Animatable
 		, public SoundNodeListenerInterface
-		, public Sounding
+		, public Soundable
 	{
 	public:
 		SoundEmitter();

@@ -66,6 +66,9 @@ namespace Menge
 			return false;
 		}
 
+        ConstString groupName;
+        datablock.swap_Name( groupName );
+
         const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
 
         for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
@@ -80,7 +83,7 @@ namespace Menge
             const ConstString & type = meta_resource->get_Type();
 
             ResourceReference * resource = 
-                this->createResource( _desc.pakName, _desc.name, name, type );
+                this->createResource( _desc.pakName, groupName, name, type );
 
             resource->loader( meta_resource );
         }

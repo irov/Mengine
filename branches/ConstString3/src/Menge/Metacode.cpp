@@ -5,6 +5,15 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
     {
+        switch( _id )
+        {
+        case 1:
+            {
+                this->read( _buff, _size, _read, this->Name );
+                return true;
+                break;
+            }
+        }
         return false;
     }
     
@@ -13,13 +22,13 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 includes_Meta_FileStore.reserve( _count );
                 return true;
                 break;
             }
-        case 2:
+        case 3:
             {
                 includes_Meta_Resource.reserve( _count );
                 return true;
@@ -33,7 +42,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 1:
+        case 2:
             {
                 Meta_DataBlock::Meta_FileStore metadata;
                 metadata.parse( _buff, _size, _read );
@@ -51,7 +60,7 @@ namespace Metacode
     {
         switch( _generators )
         {
-        case 14:
+        case 15:
             {
                 Meta_DataBlock::Meta_ResourceAnimation * metadata = new Meta_DataBlock::Meta_ResourceAnimation ();
                 metadata->parse( _buff, _size, _read );
@@ -60,7 +69,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 8:
+        case 9:
             {
                 Meta_DataBlock::Meta_ResourceCursorICO * metadata = new Meta_DataBlock::Meta_ResourceCursorICO ();
                 metadata->parse( _buff, _size, _read );
@@ -69,7 +78,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 7:
+        case 8:
             {
                 Meta_DataBlock::Meta_ResourceCursorSystem * metadata = new Meta_DataBlock::Meta_ResourceCursorSystem ();
                 metadata->parse( _buff, _size, _read );
@@ -78,7 +87,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 4:
+        case 5:
             {
                 Meta_DataBlock::Meta_ResourceEmitterContainer * metadata = new Meta_DataBlock::Meta_ResourceEmitterContainer ();
                 metadata->parse( _buff, _size, _read );
@@ -87,7 +96,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 5:
+        case 6:
             {
                 Meta_DataBlock::Meta_ResourceFont * metadata = new Meta_DataBlock::Meta_ResourceFont ();
                 metadata->parse( _buff, _size, _read );
@@ -96,7 +105,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 6:
+        case 7:
             {
                 Meta_DataBlock::Meta_ResourceGlyph * metadata = new Meta_DataBlock::Meta_ResourceGlyph ();
                 metadata->parse( _buff, _size, _read );
@@ -105,7 +114,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 17:
+        case 18:
             {
                 Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha ();
                 metadata->parse( _buff, _size, _read );
@@ -114,7 +123,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 3:
+        case 4:
             {
                 Meta_DataBlock::Meta_ResourceImageDefault * metadata = new Meta_DataBlock::Meta_ResourceImageDefault ();
                 metadata->parse( _buff, _size, _read );
@@ -123,7 +132,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 15:
+        case 16:
             {
                 Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
                 metadata->parse( _buff, _size, _read );
@@ -132,7 +141,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 16:
+        case 17:
             {
                 Meta_DataBlock::Meta_ResourceInternalObject * metadata = new Meta_DataBlock::Meta_ResourceInternalObject ();
                 metadata->parse( _buff, _size, _read );
@@ -141,7 +150,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 12:
+        case 13:
             {
                 Meta_DataBlock::Meta_ResourceMovie * metadata = new Meta_DataBlock::Meta_ResourceMovie ();
                 metadata->parse( _buff, _size, _read );
@@ -150,7 +159,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 10:
+        case 11:
             {
                 Meta_DataBlock::Meta_ResourcePlaylist * metadata = new Meta_DataBlock::Meta_ResourcePlaylist ();
                 metadata->parse( _buff, _size, _read );
@@ -159,7 +168,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 Meta_DataBlock::Meta_ResourceSound * metadata = new Meta_DataBlock::Meta_ResourceSound ();
                 metadata->parse( _buff, _size, _read );
@@ -168,7 +177,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 13:
+        case 14:
             {
                 Meta_DataBlock::Meta_ResourceVideo * metadata = new Meta_DataBlock::Meta_ResourceVideo ();
                 metadata->parse( _buff, _size, _read );
@@ -177,7 +186,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 11:
+        case 12:
             {
                 Meta_DataBlock::Meta_ResourceWindow * metadata = new Meta_DataBlock::Meta_ResourceWindow ();
                 metadata->parse( _buff, _size, _read );

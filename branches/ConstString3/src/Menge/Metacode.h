@@ -29,6 +29,22 @@ namespace Metacode
             }
         }
     public:
+        const Menge::ConstString & get_Name() const
+        {
+            return this->Name;
+        }
+        
+        void swap_Name( Menge::ConstString & _value ) const
+        {
+            std::swap( _value, this->Name);
+        }
+        
+        template<class C, class M>
+        void method_Name( C * _self, M _method ) const
+        {
+            (_self->*_method)( this->Name );
+        }
+        
     protected:
         bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
         bool _preparationIncludes( size_t _includes, size_t _count ) override;
@@ -3123,6 +3139,7 @@ namespace Metacode
         
     protected:
     protected:
+        mutable Menge::ConstString Name;
     public:
         typedef std::vector<Meta_FileStore> TVectorMeta_FileStore;
     

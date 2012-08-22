@@ -16,7 +16,6 @@ namespace Menge
 
 	struct ResourceDesc
 	{
-		ConstString name;
 		ConstString pakName;
 		ConstString pakType;
 

@@ -34,8 +34,7 @@ namespace Menge
         if( LoaderEngine::get()
         	->load( _desc.pakName, _desc.path, &meta_texts, exist ) == false )
         {
-        	MENGE_LOG_ERROR( "TextManager::loadResource Problems parsing Text pack %s:%S"
-        		, _desc.name.c_str()
+        	MENGE_LOG_ERROR( "TextManager::loadResource Problems parsing Text pack %S"
         		, _desc.path.c_str()
         		);
 

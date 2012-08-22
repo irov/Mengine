@@ -71,6 +71,13 @@ namespace Menge
 
 			return;
 		}
+
+        //const ConstString & group = m_resourceMovie->getGroup();
+
+        //if( group != "Hint" )
+        //{
+        //    return;
+        //}
 	
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -113,7 +120,15 @@ namespace Menge
         //{
         //    return false;
         //}
-        m_frameTiming = 0.f;
+        
+        //m_frameTiming = 0.f;
+
+        //const ConstString & group = m_resourceMovie->getGroup();
+
+        //if( group != "Hint" )
+        //{
+        //    return false;
+        //}
 
 		if( m_reverse == true )
 		{

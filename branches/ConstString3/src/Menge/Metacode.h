@@ -2031,6 +2031,22 @@ namespace Metacode
                     (_self->*_method)( this->StartInterval );
                 }
                 
+                const Menge::ConstString & get_Type() const
+                {
+                    return this->Type;
+                }
+                
+                void swap_Type( Menge::ConstString & _value ) const
+                {
+                    std::swap( _value, this->Type);
+                }
+                
+                template<class C, class M>
+                void method_Type( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->Type );
+                }
+                
             protected:
                 bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
                 bool _preparationIncludes( size_t _includes, size_t _count ) override;
@@ -2049,6 +2065,7 @@ namespace Metacode
                 mutable size_t PlayCount;
                 mutable Menge::ConstString Source;
                 mutable float StartInterval;
+                mutable Menge::ConstString Type;
             };
             
             class Meta_MovieLayer3D
@@ -2188,6 +2205,22 @@ namespace Metacode
                     (_self->*_method)( this->StartInterval );
                 }
                 
+                const Menge::ConstString & get_Type() const
+                {
+                    return this->Type;
+                }
+                
+                void swap_Type( Menge::ConstString & _value ) const
+                {
+                    std::swap( _value, this->Type);
+                }
+                
+                template<class C, class M>
+                void method_Type( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->Type );
+                }
+                
             protected:
                 bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
                 bool _preparationIncludes( size_t _includes, size_t _count ) override;
@@ -2204,6 +2237,7 @@ namespace Metacode
                 mutable size_t Parent;
                 mutable Menge::ConstString Source;
                 mutable float StartInterval;
+                mutable Menge::ConstString Type;
             };
             
         protected:

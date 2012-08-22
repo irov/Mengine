@@ -46,6 +46,9 @@ namespace Menge
 		WString keyFramesPath;
 
 		ConstString source;
+
+		ConstString layerType;
+
 		bool animatable;
 		
 		bool movie;

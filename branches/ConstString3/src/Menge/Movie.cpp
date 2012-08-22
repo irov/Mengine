@@ -714,81 +714,70 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 			
-			if ( layer.source == Consts::get()->c_MovieSlot )
+			if ( layer.layerType == Consts::get()->c_MovieSlot )
 			{
 				if( this->createMovieSlot_( layer ) == false )
 				{
 					return false;
 				}
-				
-				continue;
 			}
-			else if ( layer.source == Consts::get()->c_MovieNullObject )
+			else if ( layer.layerType == Consts::get()->c_MovieNullObject )
 			{
 				if( this->createMovieNullObject_( layer ) == false )
 				{
 					return false;
 				}
-
-				continue;
 			}
-
-			const ConstString & resourceType = ResourceManager::get()
-				->getResourceType( layer.source );
-
-			if( resourceType == Consts::get()->c_ResourceImageDefault
-				|| resourceType == Consts::get()->c_ResourceImageInAtlasDefault
-				|| resourceType == Consts::get()->c_ResourceImageInAtlasCombineRGBAndAlpha
-				|| resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha )
+			else if( layer.layerType == Consts::get()->c_Image )
 			{
 				if( this->createMovieImage_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( resourceType == Consts::get()->c_ResourceImageSolid )
+			else if( layer.layerType == Consts::get()->c_SolidSprite )
 			{
 				if( this->createMovieImageSolid_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( resourceType == Consts::get()->c_ResourceAnimation )
+			else if( layer.layerType == Consts::get()->c_Animation )
 			{
 				if( this->createMovieAnimation_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( resourceType == Consts::get()->c_ResourceMovie )
+			else if( layer.layerType == Consts::get()->c_Movie )
 			{
 				if( this->createMovieMovie_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( resourceType == Consts::get()->c_ResourceInternalObject )
+			else if( layer.layerType == Consts::get()->c_MovieInternalObject )
 			{				
 				if( this->createMovieInternalObject_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( resourceType == Consts::get()->c_ResourceVideo )
+			else if( layer.layerType == Consts::get()->c_Video )
 			{
 				if( this->createMovieVideo_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( resourceType == Consts::get()->c_ResourceSound )
+			else if( layer.layerType == Consts::get()->c_Sound )
 			{
 				if( this->createMovieSound_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
+			else if( layer.layerType == Consts::get()->c_ParticleEmitter )
 			{
 				if( this->createMovieEmitterContainer_( layer ) == false )
 				{
@@ -800,7 +789,7 @@ namespace Menge
 				MENGE_LOG_ERROR("Movie: '%s' can't create layer_node '%s' type '%s'"
 					, m_name.c_str()
 					, layer.source.c_str()
-					, resourceType.c_str()
+					, layer.layerType.c_str()
 					);
 
 				return false;

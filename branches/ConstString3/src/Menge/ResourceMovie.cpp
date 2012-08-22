@@ -148,6 +148,7 @@ namespace Menge
             meta_layer2d.swap_Name( ml.name );
             meta_layer2d.swap_Source( ml.source );
             meta_layer2d.swap_BlendingMode( ml.blendingMode );
+			meta_layer2d.swap_Type( ml.layerType );
 
             ml.parent = meta_layer2d.get_Parent();
             ml.index = meta_layer2d.get_Index();
@@ -188,6 +189,7 @@ namespace Menge
             meta_layer3d.swap_Name( ml.name );
             meta_layer3d.swap_Source( ml.source );
             meta_layer3d.swap_BlendingMode( ml.blendingMode );
+			meta_layer3d.swap_Type( ml.layerType );
 
             ml.parent = meta_layer3d.get_Parent();
             ml.index = meta_layer3d.get_Index();
@@ -271,8 +273,8 @@ namespace Menge
 		++it )
 		{
 			m_maxLayerIndex = std::max( m_maxLayerIndex, it->index );
-
-			if( it->source ==  Consts::get()->c_MovieSlot )
+															
+			if( it->layerType ==  Consts::get()->c_MovieSlot )
 			{
 				it->animatable = false;
 				it->movie = false;
@@ -280,80 +282,55 @@ namespace Menge
 
 				continue;
 			}
-			
-			if( it->source ==  Consts::get()->c_MovieNullObject )
-			{
-				it->animatable = false;
-				it->movie = false;
-				it->audio = false;
-
-				continue;
-			}
-
-			const ConstString & resourceType = ResourceManager::get()
-				->getResourceType( it->source );
-
-			if( resourceType == Consts::get()->c_ResourceImageDefault )
+			else if( it->layerType ==  Consts::get()->c_MovieNullObject )
 			{
 				it->animatable = false;
 				it->movie = false;
 				it->audio = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceImageCombineRGBAndAlpha )
+			else if( it->layerType ==  Consts::get()->c_Image )
 			{
 				it->animatable = false;
 				it->movie = false;
 				it->audio = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceImageSolid )
+			else if( it->layerType ==  Consts::get()->c_SolidSprite )
 			{
 				it->animatable = false;
 				it->movie = false;
 				it->audio = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceImageInAtlasCombineRGBAndAlpha )
-			{
-				it->animatable = false;
-				it->movie = false;
-				it->audio = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceImageInAtlasDefault )
-			{
-				it->animatable = false;
-				it->movie = false;
-				it->audio = false;
-			}
-			else if( resourceType == Consts::get()->c_ResourceAnimation )
+			else if( it->layerType ==  Consts::get()->c_Animation )
 			{
 				it->animatable = true;
 				it->movie = false;
 				it->audio = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceVideo )
+			else if( it->layerType ==  Consts::get()->c_Video )
 			{
 				it->animatable = true;
 				it->movie = false;
 				it->audio = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceSound )
+			else if( it->layerType == Consts::get()->c_Sound )
 			{
 				it->animatable = true;
 				it->audio = true;
 				it->movie = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
+			else if( it->layerType == Consts::get()->c_ParticleEmitter )
 			{
 				it->animatable = true;
 				it->movie = false;
 				it->audio = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceMovie )
+			else if( it->layerType == Consts::get()->c_Movie )
 			{
 				it->animatable = true;
 				it->movie = true;
 				it->audio = false;
 			}
-			else if( resourceType == Consts::get()->c_ResourceInternalObject )
+			else if( it->layerType == Consts::get()->c_MovieInternalObject )
 			{
 				it->animatable = false;
 				it->movie = false;
@@ -364,7 +341,7 @@ namespace Menge
 				MENGE_LOG_ERROR("ResourceMovie: '%s' can't setup layer2d '%s' type '%s'"
 					, this->getName().c_str()
 					, it->source.c_str()
-					, resourceType.c_str()
+					, it->layerType.c_str()
 					);
 
 				return false;

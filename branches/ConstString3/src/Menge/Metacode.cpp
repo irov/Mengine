@@ -1241,19 +1241,19 @@ namespace Metacode
     {
         switch( _id )
         {
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->BlendingMode );
                 return true;
                 break;
             }
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->In );
                 return true;
                 break;
             }
-        case 4:
+        case 5:
             {
                 this->read( _buff, _size, _read, this->Index );
                 return true;
@@ -1265,7 +1265,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->Out );
                 return true;
@@ -1277,7 +1277,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->PlayCount );
                 this->PlayCount_successful = true;
@@ -1290,9 +1290,15 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->StartInterval );
+                return true;
+                break;
+            }
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->Type );
                 return true;
                 break;
             }
@@ -1322,19 +1328,19 @@ namespace Metacode
     {
         switch( _id )
         {
-        case 8:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->BlendingMode );
                 return true;
                 break;
             }
-        case 5:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->In );
                 return true;
                 break;
             }
-        case 4:
+        case 5:
             {
                 this->read( _buff, _size, _read, this->Index );
                 return true;
@@ -1346,7 +1352,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 6:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->Out );
                 return true;
@@ -1364,9 +1370,15 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 7:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->StartInterval );
+                return true;
+                break;
+            }
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->Type );
                 return true;
                 break;
             }

@@ -444,11 +444,23 @@ namespace Menge
 
         if( m_projectName.empty() == true )
         {
+            ::MessageBox( NULL
+                , game_settings_path.c_str()
+                , L"Invalid get project name from game setting"
+                , MB_OK
+                );
+
             return false;
         }
 
         if( m_companyName.empty() == true )
         {
+            ::MessageBox( NULL
+                , game_settings_path.c_str()
+                , L"Invalid get company name from game setting"
+                , MB_OK
+                );
+
             return false;
         }
 

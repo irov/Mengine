@@ -6,9 +6,10 @@
  *
  */
 
-#include "WindowsLayer.h"
+#   include "WindowsLayer.h"
 
-#include <cassert>
+#   include <cassert>
+#   include <shlobj.h>
 
 namespace WindowsLayer
 {
@@ -217,9 +218,12 @@ namespace WindowsLayer
 	//////////////////////////////////////////////////////////////////////////
 	bool createDirectory( const Menge::WString& _path )
 	{
-		BOOL result = ::CreateDirectory( _path.c_str(), NULL );
+		if( ::SHCreateDirectoryEx( NULL, _path.c_str(), NULL ) == ERROR_SUCCESS )
+        {
+            return true;
+        }
 		
-		return result == TRUE;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool fileExists( const Menge::WString& _path )

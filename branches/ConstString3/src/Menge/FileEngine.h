@@ -55,9 +55,6 @@ namespace Menge
 		FileSystemInterface* getFileSystemInterface() const;
 
 	private:
-		bool createDirectoryPathFileSystem_( FileGroupInterface * _fs, const WString& _path ) const;
-
-	private:
 		typedef std::map<ConstString, FileGroupInterface*> TFileSystemMap;
 		TFileSystemMap m_fileSystemMap;
 

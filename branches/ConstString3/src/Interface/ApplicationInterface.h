@@ -79,9 +79,7 @@ namespace Menge
 	{
 		WString baseDir;
 
-		String platformName;
-
-		WString projectName;
+		String platformName;        		
 		String projectCodename;
 
 		Resolution contentResolution;
@@ -158,7 +156,6 @@ namespace Menge
         
 	public:
 		virtual const WString & getProjectTitle() const = 0;
-		virtual const WString & getProjectName() const = 0;
 		virtual const String & getProjectCodename() const = 0;
 
 	public:

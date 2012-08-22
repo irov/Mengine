@@ -417,7 +417,8 @@ namespace Menge
 
         String defaultLocale;
 		
-		s_getIniValue( game_settings, L"Project", L"Name", appSettings.projectName );
+		s_getIniValue( game_settings, L"Project", L"Name", m_projectName );
+        s_getIniValue( game_settings, L"Project", L"Company", m_companyName );
 		s_getIniValue( game_settings, L"Project", L"Codename", appSettings.projectCodename );
         s_getIniValue( game_settings, L"Locale", L"Default", defaultLocale );
 		s_getIniValue( game_settings, L"Game", L"ContentResolution", appSettings.contentResolution );
@@ -440,6 +441,16 @@ namespace Menge
 		appSettings.platformName = "WIN";
 		
 		appSettings.baseDir = m_currentPath;
+
+        if( m_projectName.empty() == true )
+        {
+            return false;
+        }
+
+        if( m_companyName.empty() == true )
+        {
+            return false;
+        }
 
 		//WString resourcePacksPath;
 		//resourcePacksPath += m_currentPath;
@@ -579,7 +590,7 @@ namespace Menge
         if( alreadyRunning == true )
         {	
             m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
-            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, appSettings.projectName ) == false )
+            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, m_projectName ) == false )
             {
                 return false;
             }
@@ -842,15 +853,20 @@ namespace Menge
 		// mount root		
 		if( fileService->mountFileSystem( ConstString::none, m_currentPath, ConstString("dir"), false ) == false )
 		{
-			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount application directory %s"
+			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount application directory %S"
 				, m_currentPath.c_str()
 				);
 		}
-
-		m_userPath.clear();
+        
+		m_tempPath.clear();
+        m_userPath.clear();
 
 		if( m_developmentMode == true )
 		{			
+            m_tempPath += m_currentPath;
+            m_tempPath += L"Temp";
+            m_tempPath += MENGE_FOLDER_DELIM;
+
 			m_userPath += m_currentPath;
 			m_userPath += L"User";
 			m_userPath += MENGE_FOLDER_DELIM;
@@ -860,29 +876,46 @@ namespace Menge
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
+            wchar_t lpTempPathBuffer[MAX_PATH];
+            DWORD dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer);
+                        
+            m_tempPath.assign(lpTempPathBuffer, dwRetVal);
+
+            m_tempPath += m_companyName;
+            m_tempPath += MENGE_FOLDER_DELIM;
+            m_tempPath += m_projectName;
+            m_tempPath += MENGE_FOLDER_DELIM;
+
 			wchar_t buffer[MAX_PATH];
 			LPITEMIDLIST itemIDList;
 			HRESULT hr = SHGetSpecialFolderLocation( NULL,
-				CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
+				CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
 			BOOL result = SHGetPathFromIDListW( itemIDList, buffer );
 			CoTaskMemFree( itemIDList );
-
-			const WString & projectName = m_application->getProjectName();
-			//Menge::String userSysPath;
-			//WindowsLayer::unicodeToUtf8( Menge::WString( buffer ), userSysPath );
+            
 			m_userPath = buffer;
 			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += projectName;
+            m_userPath += m_companyName;
+            m_userPath += MENGE_FOLDER_DELIM;
+			m_userPath += m_projectName;
 			m_userPath += MENGE_FOLDER_DELIM;
 
 			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
+        // mount user directory
+        if( fileService->mountFileSystem( ConstString("temp"), m_tempPath, ConstString("dir"), true ) == false )
+        {
+            LOGGER_ERROR(m_logService)( "WinApplication: failed to mount user directory %S"
+                , m_tempPath.c_str()
+                );
+        }
+
 		// mount user directory
 		if( fileService->mountFileSystem( ConstString("user"), m_userPath, ConstString("dir"), true ) == false )
 		{
-			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount user directory %s"
+			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount user directory %S"
 				, m_userPath.c_str()
 				);
 		}
@@ -920,7 +953,7 @@ namespace Menge
 		{
 			m_logService->registerLogger( m_fileLog );
 
-			LOGGER_INFO(m_logService)("WinApplication: Starting log to %s"
+			LOGGER_INFO(m_logService)("WinApplication: Starting log to %S"
 				, logFilename.c_str()
 				);
 		}
@@ -1778,7 +1811,7 @@ namespace Menge
 		{
 			WString icoDir;
 
-			icoDir += m_userPath;
+			icoDir += m_tempPath;
 			icoDir += L"IconCache";
 
             WindowsLayer::createDirectory( icoDir );

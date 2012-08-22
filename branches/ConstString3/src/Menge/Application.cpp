@@ -292,7 +292,6 @@ namespace Menge
 		m_platform = _platform;
 		
 		m_platformName = _setting.platformName;
-		m_projectName = _setting.projectName;
 		m_projectCodename = _setting.projectCodename;
 
 		m_contentResolution = _setting.contentResolution;
@@ -1748,11 +1747,6 @@ namespace Menge
 		const TextEntry & entry = m_textManager->getTextEntry( key );
 
 		return entry.text;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const WString & Application::getProjectName() const
-	{
-		return m_projectName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & Application::getProjectCodename() const

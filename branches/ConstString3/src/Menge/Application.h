@@ -215,9 +215,8 @@ namespace Menge
 
 		void showMessageBox( const WString& _message, const WString& _header, unsigned int _style );
 
-		const WString & getProjectTitle() const;
-		const WString & getProjectName() const;
-		const String & getProjectCodename() const;
+		const WString & getProjectTitle() const override;
+		const String & getProjectCodename() const override;
 
 	public:
 		const Resolution & getWindowResolution() const;
@@ -346,7 +345,6 @@ namespace Menge
 		ResourceCursor * m_cursorResource;
 		
 		String m_platformName;
-		WString m_projectName;
 		String m_projectCodename;
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;

@@ -115,8 +115,11 @@ namespace Menge
 		WString m_windowClassName;
 		
 		WString m_currentPath;
+        WString m_userPath;
+        WString m_tempPath;
 
-		WString m_userPath;
+        WString m_projectName;
+        WString m_companyName;
 
 		Resolution m_windowResolution;
 		Resolution m_desktopResolution;

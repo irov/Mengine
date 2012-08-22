@@ -50,6 +50,7 @@ namespace Menge
 	bool FileEngine::initialize()
 	{
 		FactoryManager::registerFactory( Consts::get()->c_dir, new FactoryDefault<FileSystemDirectory>() );
+        FactoryManager::registerFactory( Consts::get()->c_dir, new FactoryDefault<FileSystemDirectory>() );
 		//FactoryManager::registerFactory( Consts::get()->c_pak, new FactoryDefault<FileSystemZip>() );
 		FactoryManager::registerFactory( Consts::get()->c_zip, new FactoryDefault<FileSystemZip>() );
 		//FactoryManager::registerFactory( Consts::get()->c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
@@ -305,37 +306,6 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createDirectoryPathFileSystem_( FileGroupInterface * _fs, const WString& _path ) const
-	{
-		WString dir_path = _path;
-
-		WString::size_type idx = 0;
-		idx = dir_path.find( L'\\', idx );
-		if( idx == String::npos )
-		{
-			idx = dir_path.find( L'/', idx );
-		}
-		while( idx != String::npos )
-		{
-			WString subDir = dir_path.substr( 0, idx );
-
-			if( _fs->existFile( subDir ) == false &&
-				_fs->createDirectory( subDir ) == false )
-			{
-				return false;
-			}
-
-			//idx = dir_path.find( MENGE_FOLDER_DELIM, idx+1 );
-			idx = dir_path.find( L'\\', idx + 1 );
-			if( idx == String::npos )
-			{
-				idx = dir_path.find( L'/', idx + 1 );
-			}
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const WString& _path )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
@@ -349,11 +319,6 @@ namespace Menge
 		}
 
 		FileGroupInterface * fs = it_find->second;
-
-		if( this->createDirectoryPathFileSystem_( fs, _path ) == false )
-		{
-			return false;
-		}
 
 		if( fs->createDirectory( _path ) == false )
 		{

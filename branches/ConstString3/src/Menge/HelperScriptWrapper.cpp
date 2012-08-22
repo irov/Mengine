@@ -564,14 +564,15 @@ namespace Menge
 			return name;
 		}
 
-		static bool s_writeBinaryFile( const WString & _filename, const String & _data )
+		static bool s_writeBinaryFile( const ConstString & _group, const WString & _filename, const String & _data )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "writeBinaryFile: invalid write file %S (currentAccount is none)"
+				MENGE_LOG_ERROR( "writeBinaryFile: invalid write file %s:%S (currentAccount is none)"
+                    , _group.c_str()
                     , _filename.c_str()
 					);
 
@@ -583,11 +584,12 @@ namespace Menge
             WString fullpath = folder + MENGE_FOLDER_DELIM + _filename;
 
 			FileOutputStreamInterface * file = FileEngine::get()
-				->openOutputFile( Consts::get()->c_user, fullpath );
+				->openOutputFile( _group, fullpath );
 
 			if( file == 0 )
 			{
-                MENGE_LOG_ERROR( "writeBinaryFile: invalid write file %S (not create)"
+                MENGE_LOG_ERROR( "writeBinaryFile: invalid write file %s:%S (not create)"
+                    , _group.c_str()
                     , _filename.c_str()
                     );
 
@@ -604,14 +606,33 @@ namespace Menge
 			return true;
 		}
 
-		static PyObject * s_loadBinaryFile( const WString & _filename )
+        static bool s_writeTempBinaryFile( const WString & _filename, const String & _data )
+        {
+            static ConstString c_temp("temp");
+
+            bool result = s_writeBinaryFile( c_temp, _filename, _data );
+
+            return result;
+        }
+
+        static bool s_writeUserBinaryFile( const WString & _filename, const String & _data )
+        {
+            static ConstString c_user("user");
+
+            bool result = s_writeBinaryFile( c_user, _filename, _data );
+
+            return result;
+        }
+
+		static PyObject * s_loadBinaryFile( const ConstString & _group, const WString & _filename )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "loadBinaryFile: invalid load file %S (currentAccount is none)"
+				MENGE_LOG_ERROR( "loadBinaryFile: invalid load file %s:%S (currentAccount is none)"
+                    , _group.c_str()
                     , _filename.c_str()
 					);
 
@@ -623,11 +644,12 @@ namespace Menge
 			WString fullpath = folder + MENGE_FOLDER_DELIM + _filename;
 			
 			FileInputStreamInterface * file = FileEngine::get()
-				->openInputFile( Consts::get()->c_user, fullpath );
+				->openInputFile( _group, fullpath );
 
 			if( file == 0 )
 			{
-				MENGE_LOG_ERROR( "loadBinaryFile: invalid load file '%S' (file not found)"
+				MENGE_LOG_ERROR( "loadBinaryFile: invalid load file %s:%S (file not found)"
+                    , _group.c_str()
 					, fullpath.c_str()
 					);
 
@@ -640,7 +662,8 @@ namespace Menge
 			{
 				file->close();
 
-                MENGE_LOG_ERROR( "loadBinaryFile: invalid load file '%S' (zero size)"
+                MENGE_LOG_ERROR( "loadBinaryFile: invalid load file %s:%S (zero size)"
+                    , _group.c_str()
                     , fullpath.c_str()
                     );
 
@@ -663,7 +686,8 @@ namespace Menge
 
             if( load_crc32 != check_crc32 )
             {
-                MENGE_LOG_ERROR( "loadBinaryFile: invalid load file '%S' (crc32 incorect)"
+                MENGE_LOG_ERROR( "loadBinaryFile: invalid load file %s:%S (crc32 incorect)"
+                    , _group.c_str()
                     , fullpath.c_str()
                     );
 
@@ -679,6 +703,23 @@ namespace Menge
 			return py_data;
 		}
 
+        static PyObject * s_loadTempBinaryFile( const WString & _filename )
+        {
+            static ConstString c_temp("temp");
+
+            PyObject * py_data = s_loadBinaryFile( c_temp, _filename );
+
+            return py_data;
+        }
+
+        static PyObject * s_loadUserBinaryFile( const WString & _filename )
+        {
+            static ConstString c_user("user");
+
+            PyObject * py_data = s_loadBinaryFile( c_user, _filename );
+
+            return py_data;
+        }
 
 		static void s_setParticlesEnabled( bool _enable )
 		{
@@ -1128,8 +1169,10 @@ namespace Menge
 		pybind::def_function( "hasDefaultAccount", &ScriptHelper::s_hasDefaultAccount );		
 		pybind::def_function( "selectDefaultAccount", &ScriptHelper::s_selectDefaultAccount );		
 
-		pybind::def_function( "writeBinaryFile", &ScriptHelper::s_writeBinaryFile );
-		pybind::def_function( "loadBinaryFile", &ScriptHelper::s_loadBinaryFile );
+		pybind::def_function( "writeTempBinaryFile", &ScriptHelper::s_writeTempBinaryFile );
+        pybind::def_function( "writeUserBinaryFile", &ScriptHelper::s_writeUserBinaryFile );
+		pybind::def_function( "loadTempBinaryFile", &ScriptHelper::s_loadTempBinaryFile );
+        pybind::def_function( "loadUserBinaryFile", &ScriptHelper::s_loadUserBinaryFile );
 
 
 		pybind::def_function( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );

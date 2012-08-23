@@ -598,6 +598,10 @@ namespace Menge
 			m_maxfps = true;
 		}
 
+        if( m_maxfps == true )
+        {
+            appSettings.vsync = false;
+        }
 
         if( alreadyRunning == true )
         {	
@@ -1008,7 +1012,7 @@ namespace Menge
 
 			if( m_vsync == false )
 			{
-				if( m_fpsMonitor )
+				if( m_maxfps == false )
 				{
 					m_fpsMonitor->monitor();
 				}

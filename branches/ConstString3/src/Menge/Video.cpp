@@ -450,7 +450,6 @@ namespace	Menge
                 else
 				{
                     m_videoDecoder->seek( m_startInterval );
-                    continue;
 				}
 			}
 			else if( state == VDRS_FAILURE )

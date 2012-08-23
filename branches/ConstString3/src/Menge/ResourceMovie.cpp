@@ -160,6 +160,7 @@ namespace Menge
 
             if( ml.in < 0.f )
             {
+                ml.startInterval += -ml.in;
                 ml.in = 0.f;
             }
 
@@ -199,6 +200,7 @@ namespace Menge
 				
             if( ml.in < 0.f )
             {
+                ml.startInterval += -ml.in;
                 ml.in = 0.f;
             }
 

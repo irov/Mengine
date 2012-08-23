@@ -125,7 +125,7 @@ namespace Menge
 
         //const ConstString & group = m_resourceMovie->getGroup();
 
-        //if( group != "Hint" )
+        //if( group != "Inventory" )
         //{
         //    return false;
         //}
@@ -1127,6 +1127,8 @@ namespace Menge
                         this->setTiming( 0.f );
 
                         lastFrame = m_currentFrame;
+
+                        needUpdate = true;
                     }
                 }	
             }

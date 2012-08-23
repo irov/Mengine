@@ -1823,7 +1823,7 @@ namespace Menge
 		{
 			WString icoDir;
 
-			icoDir += m_tempPath;
+			icoDir += m_userPath;
 			icoDir += L"IconCache";
 
             WindowsLayer::createDirectory( icoDir );

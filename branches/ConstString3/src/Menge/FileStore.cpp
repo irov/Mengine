@@ -29,9 +29,9 @@ namespace Menge
             FileID & fileId = m_fileIDs[index];
 
 #   ifndef MENGE_MASTER_RELEASE
-            meta_file.get_Path( fileId );
+            //meta_file.get_Path( fileId );
 #   else
-            meta_file.get_ID( fileId );
+            //meta_file.get_ID( fileId );
 #   endif
         }
     }

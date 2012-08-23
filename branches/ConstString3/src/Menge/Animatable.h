@@ -17,7 +17,7 @@ namespace Menge
 		float getSpeedFactor() const;
 
 		void setStartInterval( float _startInterval );
-		float getStartInterval( ) const;
+		float getStartInterval() const;
 		
 		void setFirstFrame();
 		void setLastFrame();		

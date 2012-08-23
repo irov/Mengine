@@ -50,7 +50,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setLastFrame()
 	{		
-		this->_setLastFrame();
+        if( this->getReverse() == false )
+        {
+            this->_setLastFrame();            
+        }
+        else
+        {
+            this->_setFirstFrame();
+        }		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setLastFrame()
@@ -60,7 +67,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setFirstFrame()
 	{		
-		this->_setFirstFrame();
+        if( this->getReverse() == false )
+        {
+		    this->_setFirstFrame();
+        }
+        else
+        {
+            this->_setLastFrame();
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setFirstFrame()

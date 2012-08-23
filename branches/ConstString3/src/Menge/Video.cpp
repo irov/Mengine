@@ -337,12 +337,12 @@ namespace	Menge
 	{
 		Node::_render( _camera );
 
-		if( m_needUpdate )
+		if( m_needUpdate == true )
 		{
 			this->_fillVideoBuffer();
 			m_needUpdate = false;
 		}
-
+        
 		const Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
@@ -449,7 +449,8 @@ namespace	Menge
                 }
                 else
 				{
-                    m_videoDecoder->seek( m_startInterval );                    
+                    m_videoDecoder->seek( m_startInterval );
+                    continue;
 				}
 			}
 			else if( state == VDRS_FAILURE )

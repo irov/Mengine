@@ -113,8 +113,8 @@ namespace Menge
 			return false;
 		}
 
-        //if( m_resourceMovieName != "Movie103_Courtyard_EnvVeronika_run" 
-        //    && m_resourceMovieName != "Movie103_Courtyard_veronika_01"
+        //if( m_resourceMovieName != "MovieInventory_Env" 
+        //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
         //    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
         //    )
         //{

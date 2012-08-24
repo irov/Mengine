@@ -1482,16 +1482,26 @@ namespace Menge
 		float aspect = m_windowResolution.getAspectRatio();
 
 		size_t resHeight = m_windowResolution.getHeight();
+        size_t resWidth = m_windowResolution.getWidth();
+
 		size_t dresHeight = dres.getHeight();
+        size_t dresWidth = dres.getWidth();
 
 		if( resHeight > dresHeight )
 		{
-			size_t new_witdh = static_cast<size_t>( float(resHeight) * aspect );
+			size_t new_witdh = static_cast<size_t>( float(resHeight) * aspect + 0.5f );
 
 			_windowResolution.setWidth( new_witdh );			
 			_windowResolution.setHeight( dresHeight );
 		}
-		else
+		else if( resWidth > dresWidth )
+        {
+            size_t new_height = static_cast<size_t>( float(resWidth) / aspect + 0.5f );
+
+            _windowResolution.setWidth( dresWidth );
+            _windowResolution.setHeight( new_height );
+        }
+        else
 		{
 			_windowResolution = m_windowResolution;
 		}

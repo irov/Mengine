@@ -46,28 +46,10 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		ResourceImage::ImageFrame m_imageFrame;
+        WString m_fileNameAlpha;
+        ConstString m_codecTypeAlpha;
 
-		struct ImageDesc
-		{
-			ConstString codecType;
-
-			WString fileNameAlpha;
-			ConstString codecTypeAlpha;
-
-			WString fileNameRGB;			
-			ConstString codecTypeRGB;
-
-			mt::vec4f uv;
-			mt::vec2f offset;
-			mt::vec2f maxSize;
-			mt::vec2f size;
-
-			bool isAlpha;
-			bool wrapX;
-			bool wrapY;
-		};
-
-		ImageDesc m_imageDesc;
+        WString m_fileNameRGB;			
+        ConstString m_codecTypeRGB;
 	};
 }

@@ -472,6 +472,42 @@ namespace Metacode
             mutable Menge::WString Folder_Path;
         };
         
+        class Meta_ResourceExternal
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceExternal()
+                : Meta_Resource()
+            {
+            }
+        public:
+            const Menge::ConstString & get_External_Name() const
+            {
+                return this->External_Name;
+            }
+            
+            void swap_External_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->External_Name);
+            }
+            
+            template<class C, class M>
+            void method_External_Name( C * _self, M _method )
+            {
+                (_self->*_method)( this->External_Name );
+            }
+            
+        protected:
+            bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
+            bool _preparationIncludes( size_t _includes, size_t _count ) override;
+            bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes ) override;
+            bool _parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString External_Name;
+        };
+        
         class Meta_ResourceFont
             : public Meta_Resource
         { 

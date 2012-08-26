@@ -44,7 +44,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		ImageFrame m_imageFrame;
 		ColourValue m_color;
 		ConstString m_codecType; //empty
 		WString m_fileName; //empty

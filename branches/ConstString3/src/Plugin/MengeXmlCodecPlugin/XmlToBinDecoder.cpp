@@ -67,8 +67,9 @@ namespace Menge
 
 		if( xml_protocol.readProtocol( &buf[0], size ) == false )
         {
-            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error read protocol %S"
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error read protocol %S\n%s"
                 , m_options.pathProtocol.c_str()
+                , xml_protocol.getError().c_str()
                 );
 
             return 0;

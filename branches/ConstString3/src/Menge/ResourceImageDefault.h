@@ -34,8 +34,6 @@ namespace Menge
 		const WString & getFileName() const override;
 		const ConstString & getCodecType() const override;
 		bool loadBuffer( unsigned char * _buffer, int _pitch ) override;
-	public:
-		inline const ResourceImage::ImageFrame & getImageFrame() const;
 
 	protected:
 		bool isValid() const override;
@@ -48,28 +46,7 @@ namespace Menge
 		void _release() override;
         		
 	protected:
-		ResourceImage::ImageFrame m_imageFrame;
-	
-		struct ImageDesc
-		{
-			WString fileName;
-			ConstString codecType;
-
-			mt::vec4f uv;
-			mt::vec2f offset;
-			mt::vec2f maxSize;
-			mt::vec2f size;
-
-			bool isAlpha;
-			bool wrapX;
-			bool wrapY;
-		};
-
-		ImageDesc m_imageDesc;
+        WString m_fileName;
+        ConstString m_codecType;                
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const ResourceImage::ImageFrame & ResourceImageDefault::getImageFrame() const
-	{
-		return m_imageFrame;
-	}
 }

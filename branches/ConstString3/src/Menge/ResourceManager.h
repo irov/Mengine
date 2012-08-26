@@ -66,7 +66,7 @@ namespace Menge
 		bool validResource( const ConstString& _name ) const;
 
 		ResourceReference * getResource( const ConstString& _name ) const;
-		ResourceReference * getResourceReference( const ConstString& _name ) const;
+		ResourceReference * getResourceReference( const ConstString& _name ) const; //not compile resource
 
 		template<class T>
 		T * getResourceT( const ConstString& _name ) const
@@ -99,6 +99,12 @@ namespace Menge
 	protected:
 		typedef std::map<ConstString, ResourceEntry> TMapResource;
 		TMapResource m_resources;
+
+        typedef std::vector<ResourceReference *> TVectorResource;
+        typedef std::map<ConstString, TVectorResource> TMapGroupCacheResource;
+        typedef std::map<ConstString, TMapGroupCacheResource> TMapCategoryCacheResource;
+
+        TMapCategoryCacheResource m_cacheResource;
 
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;

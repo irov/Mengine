@@ -57,7 +57,7 @@ namespace Menge
 		bool loadPersonality( const ConstString & _module );
 		
 		bool loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack );
-		void applyConfigPaks();
+		bool applyConfigPaks();
 		void setLanguagePack( const ConstString& _packName );
 		const WString& getScreensaverName() const;
 

@@ -61,12 +61,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const WString & ResourceImageDefault::getFileName() const
 	{
-		return m_imageDesc.fileName;
+		return m_fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceImageDefault::getCodecType() const
 	{
-		return m_imageDesc.codecType;
+		return m_codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::isValid() const
@@ -74,7 +74,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		bool exist = FileEngine::get()
-			->existFile( category, m_imageDesc.fileName );
+			->existFile( category, m_fileName );
 				
 		if( exist == false )
 		{
@@ -89,76 +89,39 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageDefault * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
 
-        m_imageDesc.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_imageDesc.maxSize = mt::vec2f(-1.f, -1.f);
-        m_imageDesc.offset = mt::vec2f(0.f, 0.f);
-        m_imageDesc.size = mt::vec2f(-1.f, -1.f);
-        m_imageDesc.isAlpha = true;
-        m_imageDesc.wrapX = false;
-        m_imageDesc.wrapY = false;
+        m_imageFrame.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
+        m_imageFrame.maxSize = mt::vec2f(-1.f, -1.f);
+        m_imageFrame.offset = mt::vec2f(0.f, 0.f);
+        m_imageFrame.size = mt::vec2f(-1.f, -1.f);
+        m_imageFrame.isAlpha = true;
+        m_imageFrame.wrapX = false;
+        m_imageFrame.wrapY = false;
         
-        metadata->swap_File_Path( m_imageDesc.fileName );
-        
-        if( metadata->swap_File_Codec( m_imageDesc.codecType ) == false )
-        {
-            m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
-        }
+        metadata->swap_File_Path( m_fileName );        
+        metadata->swap_File_Codec( m_codecType );        
 
-        metadata->get_File_MaxSize( m_imageDesc.maxSize );
-        metadata->get_File_UV( m_imageDesc.uv );
+        metadata->get_File_MaxSize( m_imageFrame.maxSize );
+        metadata->get_File_UV( m_imageFrame.uv );
         //metadata->get_File_Size( m_imageDesc.size );
-        metadata->get_File_Alpha( m_imageDesc.isAlpha );
-        metadata->get_File_WrapX( m_imageDesc.wrapX );
-        metadata->get_File_WrapY( m_imageDesc.wrapY );
+        metadata->get_File_Alpha( m_imageFrame.isAlpha );
+        metadata->get_File_WrapX( m_imageFrame.wrapX );
+        metadata->get_File_WrapY( m_imageFrame.wrapY );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{	
-		ImageFrame frame;
-
 		const ConstString & category = this->getCategory();
 
-		if( m_imageDesc.codecType.empty() == true )
+		if( m_codecType.empty() == true )
 		{
-			m_imageDesc.codecType = s_getImageCodec( m_imageDesc.fileName );
+			m_codecType = s_getImageCodec( m_fileName );
 		}
 			
-		if( this->loadImageFrame_( frame, category, m_imageDesc.fileName, m_imageDesc.codecType ) == false )
+		if( this->loadImageFrame_( m_imageFrame, category, m_fileName, m_codecType ) == false )
 		{
 			return false;
 		}
 		
-		//frame.uv = m_imageDesc.uv;
-		frame.uv_image = m_imageDesc.uv;
-
-		frame.maxSize = m_imageDesc.maxSize;
-		frame.offset =  m_imageDesc.offset;
-
-		float ku = m_imageDesc.uv.z - m_imageDesc.uv.x;
-		float kv = m_imageDesc.uv.w - m_imageDesc.uv.y;
-		frame.size.x *= ku;
-		frame.size.y *= kv;
-
-		//frame.size.x = ::floorf( frame.size.x + 0.5f );
-		//frame.size.y = ::floorf( frame.size.y + 0.5f );
-		//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
-
-		frame.uv.x = frame.uv_scale.x + (frame.uv_scale.z - frame.uv_scale.x) * m_imageDesc.uv.x;
-		frame.uv.y = frame.uv_scale.y + (frame.uv_scale.w - frame.uv_scale.y) * m_imageDesc.uv.y;
-		frame.uv.z = frame.uv_scale.x + (frame.uv_scale.z - frame.uv_scale.x) * m_imageDesc.uv.z;
-		frame.uv.w = frame.uv_scale.y + (frame.uv_scale.w - frame.uv_scale.y) * m_imageDesc.uv.w;
-
-		if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
-		{
-			frame.maxSize = frame.size;
-		}
-
-		frame.isAlpha = m_imageDesc.isAlpha;
-		frame.wrapX = m_imageDesc.wrapX;
-		frame.wrapY = m_imageDesc.wrapY;
-
-		m_imageFrame = frame;
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,19 +132,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::addImagePath( const WString& _imagePath, const mt::vec2f & _size )
 	{
-		ImageDesc desc;
-		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-		desc.offset = mt::vec2f(0.f,0.f);
-		desc.maxSize = _size;
-		desc.size = _size;
-		//desc.isAlpha = false; //
-		desc.isAlpha = true; //
-		desc.wrapX = false;
-		desc.wrapY = false;
-		desc.fileName = _imagePath;
-		desc.codecType = s_getImageCodec(_imagePath);
+        m_fileName = _imagePath;
+        m_codecType = s_getImageCodec(_imagePath);
 
-		m_imageDesc = desc;
+        m_imageFrame.texture = NULL;
+        m_imageFrame.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+		m_imageFrame.offset = mt::vec2f(0.f,0.f);
+		m_imageFrame.maxSize = _size;
+		m_imageFrame.size = _size;
+		//desc.isAlpha = false; //
+		m_imageFrame.isAlpha = true; //
+		m_imageFrame.wrapX = false;
+		m_imageFrame.wrapY = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::getWrapX() const 
@@ -200,23 +162,23 @@ namespace Menge
 
 		////////////////////////////////////// init RGB Decoder
 		FileInputStreamInterface * stream = FileEngine::get()
-			->openInputFile( category, m_imageDesc.fileName );
+			->openInputFile( category, m_fileName );
 
 		if( stream == 0 )
 		{
 			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
-				, m_imageDesc.fileName.c_str() 
+				, m_fileName.c_str() 
 				);
 
 			return false;
 		}
 
-		ImageDecoderInterface * imageDecoder = this->createDecoder_( stream, m_imageDesc.codecType );
+		ImageDecoderInterface * imageDecoder = this->createDecoder_( stream, m_codecType );
 
 		if( imageDecoder == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
-				, m_imageDesc.fileName.c_str() 
+				, m_fileName.c_str() 
 				);
 
 			stream->close();

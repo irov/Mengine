@@ -9,7 +9,24 @@ namespace Menge
 	class RenderTextureInterface;
 	class FileInputStreamInterface;
 	class ImageDecoderInterface;
+    
+    struct ImageFrame
+    {
+        RenderTextureInterface* texture;
 
+        mt::vec2f maxSize;
+        mt::vec2f size;
+        mt::vec2f offset;
+        mt::vec4f uv_image;
+        mt::vec4f uv;
+        mt::vec4f uv_scale;
+        //mt::vec2f pow_offset;
+        //mt::vec2f pow_scale;			
+
+        bool isAlpha;
+        bool wrapX;
+        bool wrapY;
+    };
 
 	class ResourceImage
 		: public ResourceReference
@@ -17,25 +34,10 @@ namespace Menge
 	public:
 		ResourceImage();
 
-	public:
-		struct ImageFrame
-		{
-			RenderTextureInterface* texture;
+    public:
+        inline const ImageFrame & getImageFrame() const;
 
-			mt::vec2f maxSize;
-			mt::vec2f size;
-			mt::vec2f offset;
-			mt::vec4f uv_image;
-			mt::vec4f uv;
-			mt::vec4f uv_scale;
-			//mt::vec2f pow_offset;
-			//mt::vec2f pow_scale;			
-
-			bool isAlpha;
-			bool wrapX;
-			bool wrapY;
-		};
-
+	public:        
 		virtual const mt::vec2f & getMaxSize() const = 0;
 		virtual const mt::vec2f & getSize() const = 0;
 		virtual const mt::vec2f & getOffset() const = 0;
@@ -69,5 +71,12 @@ namespace Menge
 		
 	protected:
 		size_t m_filter;
+
+        ImageFrame m_imageFrame;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline const ImageFrame & ResourceImage::getImageFrame() const
+    {
+        return m_imageFrame;
+    }
 }

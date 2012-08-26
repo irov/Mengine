@@ -480,6 +480,13 @@ Resource\\\\EmitterContainer
 )
 
 ADD_FILTER(
+Resource\\\\External
+	ResourceExternal.cpp
+	ResourceExternal.h
+)
+
+
+ADD_FILTER(
 Resource\\\\Font
 	ResourceFont.cpp
 	ResourceFont.h
@@ -495,12 +502,14 @@ Resource\\\\Image
 	ResourceImage.h
 	ResourceImageDefault.cpp
 	ResourceImageDefault.h
-	ResourceImageAtlas.cpp
-	ResourceImageAtlas.h
-	ResourceImageInAtlasCombineRGBAndAlpha.cpp
-	ResourceImageInAtlasCombineRGBAndAlpha.h
-	ResourceImageInAtlasDefault.cpp
-	ResourceImageInAtlasDefault.h
+	#ResourceImageAtlas.cpp
+	#ResourceImageAtlas.h
+	ResourceImageSubstract.cpp
+	ResourceImageSubstract.h
+	#ResourceImageInAtlasCombineRGBAndAlpha.cpp
+	#ResourceImageInAtlasCombineRGBAndAlpha.h
+	#ResourceImageInAtlasDefault.cpp
+	#ResourceImageInAtlasDefault.h
 	ResourceImageCombineRGBAndAlpha.cpp
 	ResourceImageCombineRGBAndAlpha.h
 	ResourceImageSolid.h

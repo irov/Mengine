@@ -52,6 +52,23 @@ namespace Menge
 			_frame.isAlpha = true;
 		}
 
+        _frame.uv_image = _frame.uv;
+
+        float ku = _frame.uv.z - _frame.uv.x;
+        float kv = _frame.uv.w - _frame.uv.y;
+        _frame.size.x *= ku;
+        _frame.size.y *= kv;
+
+        _frame.uv.x = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.x;
+        _frame.uv.y = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.y;
+        _frame.uv.z = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.z;
+        _frame.uv.w = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.w;
+
+        if( _frame.maxSize.x < 0.f || _frame.maxSize.y < 0.f )
+        {
+            _frame.maxSize = _frame.size;
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

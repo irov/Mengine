@@ -410,7 +410,7 @@ namespace	Menge
 			const ParticleMesh & mesh = s_meshes[it];
 
 			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
-			const ResourceImage::ImageFrame & frame = image->getImageFrame();
+			const ImageFrame & frame = image->getImageFrame();
 
 			RenderTextureInterface* texture = frame.texture;
 

@@ -50,14 +50,14 @@ namespace Menge
 		{
 			if( exist == false )
 			{
-				MENGE_LOG_ERROR( "ResourceManager: resource '%s:%S' not found"
+				MENGE_LOG_ERROR( "ResourceManager::loadResource: resource '%s:%S' not found"
 					, _desc.pakName.c_str()
 					, _desc.path.c_str()
 					);
 			}
 			else
 			{
-				MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s:%S'"
+				MENGE_LOG_ERROR( "ResourceManager::loadResource: Invalid parse resource '%s:%S'"
                     , _desc.pakName.c_str()
                     , _desc.path.c_str()
 					);
@@ -84,6 +84,18 @@ namespace Menge
 
             ResourceReference * resource = 
                 this->createResource( _desc.pakName, groupName, name, type );
+
+            if( resource == NULL )
+            {
+                MENGE_LOG_ERROR("ResourceManager::loadResource: invalid create resource %s:%s name %s type %s"
+                    , _desc.pakName.c_str()
+                    , groupName.c_str()
+                    , name.c_str()
+                    , type.c_str()
+                    );
+
+                return false;
+            }
 
             resource->loader( meta_resource );
         }
@@ -128,6 +140,9 @@ namespace Menge
 		entry.isLocked = false;
 
 		m_resources.insert( it_find, std::make_pair( _name, entry ) );
+
+        TVectorResource & resources = m_cacheResource[_category][_group];
+        resources.push_back( resource );
 
 		return resource;
 	}
@@ -313,28 +328,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor ) const
 	{
-		for( TMapResource::const_iterator
-			it = m_resources.begin(),
-			it_end = m_resources.end();
+        TMapCategoryCacheResource::const_iterator it_category_found = m_cacheResource.find( _category );
+
+        if( it_category_found == m_cacheResource.end() )
+        {
+            return;
+        }
+
+        const TMapGroupCacheResource & cacheGroup = it_category_found->second;
+
+        TMapGroupCacheResource::const_iterator it_group_found = cacheGroup.find( _groupName );
+
+        if( it_group_found == cacheGroup.end() )
+        {
+            return;
+        }
+
+        const TVectorResource & resources = it_group_found->second;
+
+		for( TVectorResource::const_iterator
+			it = resources.begin(),
+			it_end = resources.end();
 		it != it_end;
 		++it )
 		{
-			const ResourceEntry & entry = it->second;
+			ResourceReference * resource = *it;
 
-			const ConstString & category = entry.resource->getCategory();
-			const ConstString & group = entry.resource->getGroup();
-
-			if( category != _category )
-			{
-				continue;
-			}
-
-			if( group != _groupName )
-			{
-				continue;
-			}
-
-			_visitor->visit( entry.resource );
+			_visitor->visit( resource );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

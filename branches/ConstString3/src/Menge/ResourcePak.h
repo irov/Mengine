@@ -29,7 +29,7 @@ namespace Menge
 
 	public:
 		bool load();
-		void apply();
+		bool apply();
 
 	protected:
 		void addModulePath_( const String & _path );

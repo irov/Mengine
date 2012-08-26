@@ -182,7 +182,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::apply()
+	bool ResourcePak::apply()
 	{
 		for( TResourceDescs::iterator
 			it = m_resourcesDesc.begin(),
@@ -190,8 +190,11 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceManager::get()
-				->loadResource( *it );
+			if( ResourceManager::get()
+				->loadResource( *it ) == false )
+            {
+                return false;
+            }
 		}
 
 		for( TTextDescs::iterator
@@ -200,9 +203,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TextManager::get()
-				->loadResource( *it );
+			if( TextManager::get()
+				->loadResource( *it ) == false )
+            {
+                return false;
+            }
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const WString & _path )

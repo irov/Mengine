@@ -782,7 +782,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::applyConfigPaks()
+	bool Game::applyConfigPaks()
 	{
 		for( TVectorResourcePak::iterator 
 			it = m_paks.begin(), 
@@ -797,8 +797,13 @@ namespace Menge
 				continue;
 			}
 
-			pak->apply();
+			if( pak->apply() == false )
+            {
+                return false;
+            }
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setLanguagePack( const ConstString& _packName )

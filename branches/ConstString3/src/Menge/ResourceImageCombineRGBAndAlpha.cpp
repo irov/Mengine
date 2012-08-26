@@ -63,12 +63,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const WString & ResourceImageCombineRGBAndAlpha::getFileName() const
 	{
-		return m_imageDesc.fileNameAlpha;
+		return m_fileNameAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceImageCombineRGBAndAlpha::getCodecType() const
 	{
-		return m_imageDesc.codecTypeAlpha;
+		return m_codecTypeAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCombineRGBAndAlpha::isValid() const
@@ -76,13 +76,13 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 		
 		if( FileEngine::get()
-			->existFile( category, m_imageDesc.fileNameRGB ) == false )
+			->existFile( category, m_fileNameRGB ) == false )
 		{
 			return false;
 		}
 
 		if( FileEngine::get()
-			->existFile( category, m_imageDesc.fileNameAlpha ) == false )
+			->existFile( category, m_fileNameAlpha ) == false )
 		{
 			return false;
 		}
@@ -95,77 +95,46 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha *>(_meta);
 
-        m_imageDesc.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_imageDesc.maxSize = mt::vec2f(-1.f, -1.f);
-        m_imageDesc.offset = mt::vec2f(0.f, 0.f);
-        m_imageDesc.size = mt::vec2f(-1.f, -1.f);
-        m_imageDesc.isAlpha = true;
-        m_imageDesc.wrapX = false;
-        m_imageDesc.wrapY = false;
+        m_imageFrame.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
+        m_imageFrame.maxSize = mt::vec2f(-1.f, -1.f);
+        m_imageFrame.offset = mt::vec2f(0.f, 0.f);
+        m_imageFrame.size = mt::vec2f(-1.f, -1.f);
+        m_imageFrame.isAlpha = true;
+        m_imageFrame.wrapX = false;
+        m_imageFrame.wrapY = false;
 
-        metadata->swap_File_PathAlpha( m_imageDesc.fileNameAlpha );
+        metadata->swap_File_PathAlpha( m_fileNameAlpha );
+        metadata->swap_File_CodecAlpha( m_codecTypeAlpha );
 
-        if( metadata->swap_File_CodecAlpha( m_imageDesc.codecTypeAlpha ) == false )
-        {
-            m_imageDesc.codecTypeAlpha = s_getImageCodec( m_imageDesc.fileNameAlpha );
-        }
+        metadata->swap_File_PathRGB( m_fileNameRGB );
+        metadata->swap_File_CodecRGB( m_codecTypeRGB );
 
-        metadata->swap_File_PathRGB( m_imageDesc.fileNameRGB );
-
-        if( metadata->swap_File_CodecRGB( m_imageDesc.codecTypeRGB ) == false )
-        {
-            m_imageDesc.codecTypeRGB = s_getImageCodec( m_imageDesc.fileNameRGB );
-        }
-
-        metadata->get_File_MaxSize( m_imageDesc.maxSize );
-        metadata->get_File_UV( m_imageDesc.uv );
-        metadata->get_File_Size( m_imageDesc.size );
-        metadata->get_File_Alpha( m_imageDesc.isAlpha );
-        metadata->get_File_WrapX( m_imageDesc.wrapX );
-        metadata->get_File_WrapY( m_imageDesc.wrapY );
+        metadata->get_File_MaxSize( m_imageFrame.maxSize );
+        metadata->get_File_UV( m_imageFrame.uv );
+        metadata->get_File_Size( m_imageFrame.size );
+        metadata->get_File_Alpha( m_imageFrame.isAlpha );
+        metadata->get_File_WrapX( m_imageFrame.wrapX );
+        metadata->get_File_WrapY( m_imageFrame.wrapY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCombineRGBAndAlpha::_compile()
-	{	
-		ImageFrame frame;
+	{			
+        if( m_codecTypeAlpha.empty() == true )
+        {
+            m_codecTypeAlpha = s_getImageCodec( m_fileNameAlpha );
+        }
+
+        if( m_codecTypeRGB.empty() == true )
+        {
+            m_codecTypeRGB = s_getImageCodec( m_fileNameRGB );
+        }
 
 		const ConstString & category = this->getCategory();
 			
-		if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, m_imageDesc.fileNameRGB, m_imageDesc.fileNameAlpha, m_imageDesc.codecTypeRGB, m_imageDesc.codecTypeAlpha ) == false )
+		if( this->loadImageFrameCombineRGBAndAlpha_( m_imageFrame, category, m_fileNameRGB, m_fileNameAlpha, m_codecTypeRGB, m_codecTypeAlpha ) == false )
 		{
 			return false;
 		}
-		
-		//frame.uv = m_imageDesc.uv;
-		frame.uv_image = m_imageDesc.uv;
-
-		frame.maxSize = m_imageDesc.maxSize;
-		frame.offset =  m_imageDesc.offset;
-
-		float ku = m_imageDesc.uv.z - m_imageDesc.uv.x;
-		float kv = m_imageDesc.uv.w - m_imageDesc.uv.y;
-		frame.size.x *= ku;
-		frame.size.y *= kv;
-
-		//frame.size.x = ::floorf( frame.size.x + 0.5f );
-		//frame.size.y = ::floorf( frame.size.y + 0.5f );
-		//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
-
-		frame.uv.x = frame.uv_scale.x + (frame.uv_scale.z - frame.uv_scale.x) * m_imageDesc.uv.x;
-		frame.uv.y = frame.uv_scale.y + (frame.uv_scale.w - frame.uv_scale.y) * m_imageDesc.uv.y;
-		frame.uv.z = frame.uv_scale.x + (frame.uv_scale.z - frame.uv_scale.x) * m_imageDesc.uv.z;
-		frame.uv.w = frame.uv_scale.y + (frame.uv_scale.w - frame.uv_scale.y) * m_imageDesc.uv.w;
-
-		if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
-		{
-			frame.maxSize = frame.size;
-		}
-
-		frame.isAlpha = m_imageDesc.isAlpha;
-		frame.wrapX = m_imageDesc.wrapX;
-		frame.wrapY = m_imageDesc.wrapY;
-
-		m_imageFrame = frame;
 
 		return true;
 	}
@@ -375,23 +344,23 @@ namespace Menge
 
 		////////////////////////////////////// init RGB Decoder
 		FileInputStreamInterface * streamRGB = FileEngine::get()
-			->openInputFile( category, m_imageDesc.fileNameRGB );
+			->openInputFile( category, m_fileNameRGB );
 
 		if( streamRGB == 0 )
 		{
 			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
-				, m_imageDesc.fileNameRGB.c_str() 
+				, m_fileNameRGB.c_str() 
 				);
 
 			return false;
 		}
 
-		ImageDecoderInterface * imageDecoderRGB = this->createDecoder_( streamRGB, m_imageDesc.codecTypeRGB );
+		ImageDecoderInterface * imageDecoderRGB = this->createDecoder_( streamRGB, m_codecTypeRGB );
 
 		if( imageDecoderRGB == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
-				, m_imageDesc.fileNameRGB.c_str() 
+				, m_fileNameRGB.c_str() 
 				);
 
 			streamRGB->close();
@@ -401,12 +370,12 @@ namespace Menge
 
 		///Load Alpha data
 		FileInputStreamInterface * streamAlpha = FileEngine::get()
-			->openInputFile( category, m_imageDesc.fileNameAlpha );
+			->openInputFile( category, m_fileNameAlpha );
 
 		if( streamAlpha == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
-				, m_imageDesc.fileNameAlpha.c_str() 
+				, m_fileNameAlpha.c_str() 
 				);
 
 			streamRGB->close();
@@ -416,12 +385,12 @@ namespace Menge
 		}
 
 		///Get Alpha Decoder
-		ImageDecoderInterface * imageDecoderAlpha = this->createDecoder_( streamAlpha, m_imageDesc.codecTypeAlpha );
+		ImageDecoderInterface * imageDecoderAlpha = this->createDecoder_( streamAlpha, m_codecTypeAlpha );
 
 		if( imageDecoderAlpha == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
-				, m_imageDesc.fileNameAlpha.c_str() 
+				, m_fileNameAlpha.c_str() 
 				);
 
 			streamRGB->close();

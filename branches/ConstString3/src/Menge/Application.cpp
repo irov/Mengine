@@ -103,9 +103,9 @@
 //#	include "ResourceImageSet.h"
 
 #	include "ResourceImageDefault.h"
-#	include "ResourceImageInAtlasCombineRGBAndAlpha.h"
-#	include "ResourceImageInAtlasDefault.h"
-#	include "ResourceImageAtlas.h"
+//#	include "ResourceImageInAtlasCombineRGBAndAlpha.h"
+//#	include "ResourceImageInAtlasDefault.h"
+//#	include "ResourceImageAtlas.h"
 #	include "ResourceImageCombineRGBAndAlpha.h"
 //#	include "ResourceBinary.h"
 #	include "ResourceMovie.h"
@@ -125,6 +125,7 @@
 #	include "ResourceCursorICO.h"
 #	include "ResourceCursorSystem.h"
 #	include "ResourceInternalObject.h"
+#   include "ResourceExternal.h"
 
 #	include "ConfigFile/ConfigFile.h"
 
@@ -761,10 +762,10 @@ namespace Menge
 
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageCombineRGBAndAlpha );
-		RESOURCE_FACTORY( ResourceImageInAtlasCombineRGBAndAlpha );
-		RESOURCE_FACTORY( ResourceImageInAtlasDefault );
+		//RESOURCE_FACTORY( ResourceImageInAtlasCombineRGBAndAlpha );
+		//RESOURCE_FACTORY( ResourceImageInAtlasDefault );
 		RESOURCE_FACTORY( ResourceImageSolid );
-		RESOURCE_FACTORY( ResourceImageAtlas );
+		//RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceMovie );
 		RESOURCE_FACTORY( ResourceVideo );
 		RESOURCE_FACTORY( ResourcePlaylist );
@@ -782,6 +783,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceCursorSystem );
 
 		RESOURCE_FACTORY( ResourceInternalObject );
+        RESOURCE_FACTORY( ResourceExternal );
 
 #	undef RESOURCE_FACTORY
 
@@ -864,7 +866,10 @@ namespace Menge
 
 		//m_game->registerResources( m_baseDir );
 
-		m_game->applyConfigPaks();
+		if( m_game->applyConfigPaks() == false )
+        {
+            return false;
+        }
 
 		m_game->setCursorMode( m_cursorMode );
 

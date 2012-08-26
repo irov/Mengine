@@ -442,8 +442,6 @@ Resource
 	ResourceReference.cpp
 	ResourceReference.h
 	ResourceVisitor.h
-    FileStore.cpp
-    FileStore.h
 )
 
 ADD_FILTER(

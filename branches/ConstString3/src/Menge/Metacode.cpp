@@ -96,7 +96,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 19:
+        case 20:
             {
                 Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                 metadata->parse( _buff, _size, _read );
@@ -144,6 +144,15 @@ namespace Metacode
         case 16:
             {
                 Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
+                metadata->parse( _buff, _size, _read );
+    
+                includes_Meta_Resource.push_back(metadata);
+                return true;
+                break;
+            }
+        case 19:
+            {
+                Meta_DataBlock::Meta_ResourceImageSubstract * metadata = new Meta_DataBlock::Meta_ResourceImageSubstract ();
                 metadata->parse( _buff, _size, _read );
     
                 includes_Meta_Resource.push_back(metadata);
@@ -1046,6 +1055,61 @@ namespace Metacode
     
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageSolid::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->File_UV );
+                return true;
+                break;
+            }
+        case 3:
+            {
+                this->read( _buff, _size, _read, this->Image_Name );
+                return true;
+                break;
+            }
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_preparationIncludes( size_t _includes, size_t _count )
+    {
+        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {

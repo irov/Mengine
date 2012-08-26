@@ -1541,6 +1541,59 @@ namespace Metacode
             mutable mt::vec2f Size_Value;
         };
         
+        class Meta_ResourceImageSubstract
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceImageSubstract()
+                : Meta_Resource()
+            {
+            }
+        public:
+            const mt::vec4f & get_File_UV() const
+            {
+                return this->File_UV;
+            }
+            
+            void swap_File_UV( mt::vec4f & _value ) const
+            {
+                std::swap(_value, this->File_UV);
+            }
+            
+            template<class C, class M>
+            void method_File_UV( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_UV );
+            }
+            
+            const Menge::ConstString & get_Image_Name() const
+            {
+                return this->Image_Name;
+            }
+            
+            void swap_Image_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Image_Name);
+            }
+            
+            template<class C, class M>
+            void method_Image_Name( C * _self, M _method )
+            {
+                (_self->*_method)( this->Image_Name );
+            }
+            
+        protected:
+            bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
+            bool _preparationIncludes( size_t _includes, size_t _count ) override;
+            bool _parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes ) override;
+            bool _parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable mt::vec4f File_UV;
+            mutable Menge::ConstString Image_Name;
+        };
+        
         class Meta_ResourceInternalObject
             : public Meta_Resource
         { 

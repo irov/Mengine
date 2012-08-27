@@ -100,6 +100,7 @@
 #	include "Utils/Math/clamp.h"
 
 #	include "Utils/Core/Rect.h"
+#	include "Utils/Core/String.h"
 
 #	include "Join.h"
 
@@ -712,57 +713,57 @@ namespace Menge
 		//		->addTask( task );
 		//}
 
-		static ThreadTask * s_loadImageResources( const ConstString& _category, PyObject* _resourceFiles, PyObject* _progressCallback )
-		{
-			TVectorConstString resourceFiles;
+		//static ThreadTask * s_loadImageResources( const ConstString& _category, PyObject* _resourceFiles, PyObject* _progressCallback )
+		//{
+		//	TVectorConstString resourceFiles;
 
-			if( pybind::string_check( _resourceFiles ) == true )
-			{
-				ConstString resourceFile = pybind::extract<ConstString>( _resourceFiles );
-				resourceFiles.push_back( resourceFile );
-			}
-			else if( pybind::list_check( _resourceFiles ) == true )
-			{
-				std::size_t listSize = pybind::list_size( _resourceFiles );
-				for( std::size_t i = 0; i != listSize; ++i )
-				{
-					PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
-					if( pybind::string_check( listItem ) == false )
-					{
-						MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" );
-						return NULL;
-					}
-					ConstString resourceFile = pybind::extract<ConstString>( listItem );
-					resourceFiles.push_back( resourceFile );
-				}
-			}
-			else
-			{
-				MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" 
-					);
+		//	if( pybind::string_check( _resourceFiles ) == true )
+		//	{
+		//		ConstString resourceFile = pybind::extract<ConstString>( _resourceFiles );
+		//		resourceFiles.push_back( resourceFile );
+		//	}
+		//	else if( pybind::list_check( _resourceFiles ) == true )
+		//	{
+		//		std::size_t listSize = pybind::list_size( _resourceFiles );
+		//		for( std::size_t i = 0; i != listSize; ++i )
+		//		{
+		//			PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
+		//			if( pybind::string_check( listItem ) == false )
+		//			{
+		//				MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" );
+		//				return NULL;
+		//			}
+		//			ConstString resourceFile = pybind::extract<ConstString>( listItem );
+		//			resourceFiles.push_back( resourceFile );
+		//		}
+		//	}
+		//	else
+		//	{
+		//		MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" 
+		//			);
 
-				return NULL;
-			}
+		//		return NULL;
+		//	}
 
-			ThreadTaskLoadImageResources* task = 
-				new ThreadTaskLoadImageResources( _category, resourceFiles, _progressCallback );
+		//	ThreadTaskLoadImageResources* task = 
+		//		new ThreadTaskLoadImageResources( _category, resourceFiles, _progressCallback );
 
-			ThreadTaskManager::get()
-				->addTask( task );
-			
-			return task;
-		}
+		//	ThreadTaskManager::get()
+		//		->addTask( task );
+		//	
+		//	return task;
+		//}
 
-		static ThreadTask * s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
-		{
-			ThreadTaskLoadResourceImage * task = 
-				new ThreadTaskLoadResourceImage( _category, _resourceName, _progressCallback );
+		//static ThreadTask * s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
+		//{
+		//	ThreadTaskLoadResourceImage * task = 
+		//		new ThreadTaskLoadResourceImage( _category, _resourceName, _progressCallback );
 
-			ThreadTaskManager::get()
-				->addTask( task );
-			
-			return task;
-		}
+		//	ThreadTaskManager::get()
+		//		->addTask( task );
+		//	
+		//	return task;
+		//}
 
 		static void s_cancelTask( ThreadTask * _task )
 		{
@@ -2893,8 +2894,8 @@ namespace Menge
 			//pybind::def_function( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
 			//pybind::def_function( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
 			pybind::def_function( "getResourceReference", &ScriptMethod::s_getResourceReference );
-			pybind::def_function( "loadResourceImage", &ScriptMethod::s_loadResourceImage );
-			pybind::def_function( "loadImageResources", &ScriptMethod::s_loadImageResources );
+			//pybind::def_function( "loadResourceImage", &ScriptMethod::s_loadResourceImage );
+			//pybind::def_function( "loadImageResources", &ScriptMethod::s_loadImageResources );
 
 			pybind::def_function( "quitApplication", &ScriptMethod::quitApplication );
 			//pybind::def_function( "createShot", &ScriptMethod::createShot );

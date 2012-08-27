@@ -8,18 +8,18 @@
 namespace Menge
 {	
 	class ResourceImageSubstract
-		: public ResourceImageDefault
+		: public ResourceImage
 	{
 		RESOURCE_DECLARE( ResourceImageSubstract )
 
 	public:
 		ResourceImageSubstract();
 
-	public:
-		RenderTextureInterface * getTexture() const override;
-
 	protected:
 		void loader( const Metabuf::Metadata * _parser ) override;
+
+    protected:
+        bool loadBufferAlpha( unsigned char * _buffer, int _pitch ) override;
 
 	protected:
 		bool _compile() override;

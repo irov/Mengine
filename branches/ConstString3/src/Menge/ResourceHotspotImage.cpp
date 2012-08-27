@@ -30,7 +30,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHotspotImage::ResourceHotspotImage()
 		: m_alphaChannel(NULL)
-		, m_offset(0.f, 0.f)
 		, m_size(0.f, 0.f)
 		, m_bufferOffset(0)
 	{
@@ -70,7 +69,6 @@ namespace Menge
 			return false;
 		}
 
-		m_offset = m_resourceImage->getOffset();
 		m_size = m_resourceImage->getMaxSize();
 		const mt::vec4f& uv = m_resourceImage->getUVImage();
 		const mt::vec2f& size = m_resourceImage->getSize();
@@ -125,8 +123,8 @@ namespace Menge
 	{
 		//float fi = ::floorf( _point.x - m_offset.x + 0.5f );
 		//float fj = ::floorf( _point.y - m_offset.y + 0.5f );
-		float fi = _point.x - m_offset.x;
-		float fj = _point.y - m_offset.y;
+		float fi = _point.x;
+		float fj = _point.y;
 
 		if( fi < 0.f || fj < 0.f )
 		{
@@ -163,8 +161,8 @@ namespace Menge
 	{
 		size_t level = (size_t)(logf( _radius ) / logf( 2.f ));
 
-		float fi = _point.x - m_offset.x;
-		float fj = _point.y - m_offset.y;
+		float fi = _point.x;
+		float fj = _point.y;
 		
 		if( fi < -_radius || fj < -_radius )
 		{

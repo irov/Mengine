@@ -951,22 +951,24 @@ namespace Menge
 
 		_imageDecoder->setOptions( &options );
 		
-		bool result = this->loadBufferImageData( textureBuffer, pitch, hwPixelFormat, _imageDecoder );
+		//bool result = this->loadBufferImageData( textureBuffer, pitch, hwPixelFormat, _imageDecoder );
+
+        const ImageCodecDataInfo * data = _imageDecoder->getCodecDataInfo();
+
+        unsigned int bufferSize = pitch * data->height;
+        if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
+        {
+            MENGE_LOG_ERROR("RenderEngine::loadTextureImageData Invalid decode");
+
+            _texture->unlock();
+
+            return false;
+        }
 
         this->sweezleAlpha( _texture, textureBuffer, pitch );
         this->imageQuality( _texture, textureBuffer, pitch );
 
 		_texture->unlock();
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::loadBufferImageData( unsigned char* _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, ImageDecoderInterface * _imageDecoder )
-	{
-		const ImageCodecDataInfo * data = _imageDecoder->getCodecDataInfo();
-
-		unsigned int bufferSize = _texturePitch * data->height;
-		unsigned int b = _imageDecoder->decode( _textureBuffer, bufferSize );
 
 		return true;
 	}

@@ -16,22 +16,12 @@ namespace Menge
 		ResourceImageSolid();
 
 	public:
-		const mt::vec2f & getMaxSize() const override;
-		const mt::vec2f & getSize() const override;
-		const mt::vec2f & getOffset() const override;
-		const mt::vec4f & getUV() const override;
-		const mt::vec4f & getUVImage() const override;
-
-		bool isAlpha() const override;
-		bool getWrapX() const override;
-		bool getWrapY() const override;
-
-		RenderTextureInterface * getTexture() const override;
-		
-		const WString & getFileName() const override;
-		const ConstString & getCodecType() const override;
+		const WString & getFileName() const;
+		const ConstString & getCodecType() const;
 		const ColourValue & getColor() const;
-		bool loadBuffer( unsigned char * _buffer, int _pitch ) override;
+
+    protected:
+		bool loadBufferAlpha( unsigned char * _buffer, int _pitch ) override;
 
 	protected:
 		bool isValid() const override;

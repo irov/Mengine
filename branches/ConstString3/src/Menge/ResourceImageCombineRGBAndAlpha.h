@@ -17,27 +17,23 @@ namespace Menge
 		ResourceImageCombineRGBAndAlpha();
 
 	public:
-		const mt::vec2f & getMaxSize() const override;
-		const mt::vec2f & getSize() const override;
-		const mt::vec2f & getOffset() const override;
-		const mt::vec4f & getUV() const override;
-		const mt::vec4f & getUVImage() const override;
+        const WString & getFileRGBName() const;
+        const ConstString & getCodecRGBType() const;
 
-		bool isAlpha() const override;
-		bool getWrapX() const override;
-		bool getWrapY() const override;
+		const WString & getFileAlphaName() const;
+		const ConstString & getCodecAlphaType() const;
 
-		RenderTextureInterface * getTexture() const override;
-		const WString & getFileName() const override;
-		const ConstString & getCodecType() const override;
-		bool loadBuffer( unsigned char * _buffer, int _pitch ) override;
+    protected:
+		bool loadBufferAlpha( unsigned char * _buffer, int _pitch ) override;
 
 	protected:
 		bool isValid() const override;
 		
 		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		RenderTextureInterface * createTextureRGBAndAlpha_( const ConstString& _pakName, const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
-		void loadRGBAndAlphaData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderRGB,  ImageDecoderInterface * _imageDecoderAlpha ) const;
+        void loadRGBData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderRGB ) const;
+		void loadAlphaData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderAlpha ) const;
+
 	protected:
 		void loader( const Metabuf::Metadata * _parser ) override;
 

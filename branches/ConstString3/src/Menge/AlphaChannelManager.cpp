@@ -69,49 +69,12 @@ namespace Menge
 		size_t width = (size_t)(size.x + 0.5f);
 		size_t height = (size_t)(size.y + 0.5f);
 
-		const WString & alphaBufferName = _resourceImage->getFileName();
-		const ConstString & alphaBufferCodec = _resourceImage->getCodecType();
-		bool isAlpha = _resourceImage->isAlpha();
-
-		const ConstString& category = _resourceImage->getCategory();
-
-		FileInputStreamInterface * stream = FileEngine::get()
-			->openInputFile( category, alphaBufferName );
-
-		ImageDecoderInterface * decoder = CodecEngine::get()
-			->createDecoderT<ImageDecoderInterface>( alphaBufferCodec, stream );
-
-		if( decoder == NULL )
-		{
-			MENGE_LOG_ERROR( "AlphaChannelManager::makeAlphaBuffer_ %s create image decoder for file '%S'"
-				, _name.c_str()
-				, alphaBufferName.c_str() 
-				);
-
-			stream->close();
-
-			return false;
-		}
-		
-		ImageCodecOptions options;
-		options.flags |= DF_READ_ALPHA_ONLY;
-
-        options.pitch = width;
-        options.flags |= DF_CUSTOM_PITCH;
-
-
-		decoder->setOptions( &options );
-
 		AlphaChannel * alphaChannel = new AlphaChannel(width, height);
 		unsigned char * alphaMap = alphaChannel->createAlphaBuffer();
 
-		decoder->decode( alphaMap, width * height );
-
+        _resourceImage->loadBufferAlpha( alphaMap, width );
+		
 		alphaChannel->makeMipMapLevel();
-
-		decoder->destroy();
-
-		stream->close();
 
 		return alphaChannel;
 	}

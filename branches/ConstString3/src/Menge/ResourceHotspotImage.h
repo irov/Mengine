@@ -51,7 +51,6 @@ namespace Menge
 
 		size_t m_bufferOffset;
 
-		mt::vec2f m_offset;
 		mt::vec2f m_size;
 
 		//size_t m_width;

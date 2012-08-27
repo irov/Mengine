@@ -24,41 +24,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getMaxSize() const
-	{
-		return m_imageFrame.maxSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getSize() const
-	{
-		return m_imageFrame.size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getOffset() const
-	{
-		return m_imageFrame.offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUV() const
-	{
-		return m_imageFrame.uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUVImage() const
-	{
-		return m_imageFrame.uv_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* ResourceImageDefault::getTexture() const
-	{
-		return m_imageFrame.texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::isAlpha() const
-	{
-		return m_imageFrame.isAlpha;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const WString & ResourceImageDefault::getFileName() const
 	{
 		return m_fileName;
@@ -91,7 +56,6 @@ namespace Menge
 
         m_imageFrame.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
         m_imageFrame.maxSize = mt::vec2f(-1.f, -1.f);
-        m_imageFrame.offset = mt::vec2f(0.f, 0.f);
         m_imageFrame.size = mt::vec2f(-1.f, -1.f);
         m_imageFrame.isAlpha = true;
         m_imageFrame.wrapX = false;
@@ -137,7 +101,6 @@ namespace Menge
 
         m_imageFrame.texture = NULL;
         m_imageFrame.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-		m_imageFrame.offset = mt::vec2f(0.f,0.f);
 		m_imageFrame.maxSize = _size;
 		m_imageFrame.size = _size;
 		//desc.isAlpha = false; //
@@ -145,22 +108,11 @@ namespace Menge
 		m_imageFrame.wrapX = false;
 		m_imageFrame.wrapY = false;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::getWrapX() const 
-	{
-		return m_imageFrame.wrapX;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::getWrapY() const 
-	{
-		return m_imageFrame.wrapY;
-	}
 	/////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::loadBuffer( unsigned char * _buffer, int _pitch )
+	bool ResourceImageDefault::loadBufferAlpha( unsigned char * _buffer, int _pitch )
 	{
 		const ConstString & category = this->getCategory();
 
-		////////////////////////////////////// init RGB Decoder
 		FileInputStreamInterface * stream = FileEngine::get()
 			->openInputFile( category, m_fileName );
 
@@ -186,17 +138,21 @@ namespace Menge
 			return false;
 		}
 
-		ImageCodecOptions options;		
+        ImageCodecOptions options;
+        options.flags |= DF_READ_ALPHA_ONLY;
 
-		options.pitch = _pitch;
+        options.pitch = _pitch;
         options.flags |= DF_CUSTOM_PITCH;
 
 		imageDecoder->setOptions( &options );
+        
+        const ImageCodecDataInfo * data = imageDecoder->getCodecDataInfo();
 
-		RenderEngine::get()
-			->loadBufferImageData( _buffer, _pitch, PF_A8R8G8B8, imageDecoder );
+        unsigned int bufferSize = _pitch * data->height;
+        imageDecoder->decode( _buffer, bufferSize );
 
 		imageDecoder->destroy();
+
 		stream->close();
 
 		return true;

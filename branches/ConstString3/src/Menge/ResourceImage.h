@@ -16,12 +16,9 @@ namespace Menge
 
         mt::vec2f maxSize;
         mt::vec2f size;
-        mt::vec2f offset;
         mt::vec4f uv_image;
         mt::vec4f uv;
         mt::vec4f uv_scale;
-        //mt::vec2f pow_offset;
-        //mt::vec2f pow_scale;			
 
         bool isAlpha;
         bool wrapX;
@@ -38,23 +35,19 @@ namespace Menge
         inline const ImageFrame & getImageFrame() const;
 
 	public:        
-		virtual const mt::vec2f & getMaxSize() const = 0;
-		virtual const mt::vec2f & getSize() const = 0;
-		virtual const mt::vec2f & getOffset() const = 0;
-		virtual const mt::vec4f & getUV() const = 0;
-		virtual const mt::vec4f & getUVImage() const = 0;
+		inline const mt::vec2f & getMaxSize() const;
+		inline const mt::vec2f & getSize() const;
+		inline const mt::vec4f & getUV() const;
+		inline const mt::vec4f & getUVImage() const;
 
-		virtual bool isAlpha() const = 0;
+		inline bool isAlpha() const;
+        inline bool getWrapX() const;
+        inline bool getWrapY() const;
+        
+		inline RenderTextureInterface* getTexture() const;
 
-		virtual RenderTextureInterface* getTexture() const = 0;
-		virtual const WString & getFileName() const = 0;
-		virtual const ConstString & getCodecType() const = 0;
-		virtual bool loadBuffer( unsigned char * _buffer, int _pitch ) = 0;
-		virtual bool getWrapX() const;
-		virtual bool getWrapY() const;
-		//virtual size_t getCount() const;
-	public:
-		void loader( const Metabuf::Metadata * _parser ) override;
+    public:
+        virtual bool loadBufferAlpha( unsigned char * _buffer, int _pitch ) = 0; //FixMe
 
 	protected:
 		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const WString& _filename, const ConstString& _codec ) const;
@@ -70,13 +63,51 @@ namespace Menge
 		static const ConstString & s_getImageCodec( const WString & _filename );
 		
 	protected:
-		size_t m_filter;
-
         ImageFrame m_imageFrame;
 	};
     //////////////////////////////////////////////////////////////////////////
     inline const ImageFrame & ResourceImage::getImageFrame() const
     {
         return m_imageFrame;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::vec2f & ResourceImage::getMaxSize() const
+    {
+        return m_imageFrame.maxSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::vec2f & ResourceImage::getSize() const
+    {
+        return m_imageFrame.size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::vec4f & ResourceImage::getUV() const
+    {
+        return m_imageFrame.uv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::vec4f & ResourceImage::getUVImage() const
+    {
+        return m_imageFrame.uv_image;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool ResourceImage::isAlpha() const
+    {
+        return m_imageFrame.isAlpha;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline RenderTextureInterface* ResourceImage::getTexture() const
+    {
+        return m_imageFrame.texture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool ResourceImage::getWrapX() const
+    {
+        return m_imageFrame.wrapX;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool ResourceImage::getWrapY() const
+    {
+        return m_imageFrame.wrapY;
     }
 }

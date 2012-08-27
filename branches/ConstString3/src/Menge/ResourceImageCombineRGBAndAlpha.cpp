@@ -25,48 +25,23 @@ namespace Menge
 	ResourceImageCombineRGBAndAlpha::ResourceImageCombineRGBAndAlpha()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const WString & ResourceImageCombineRGBAndAlpha::getFileRGBName() const
+    {
+        return m_fileNameRGB;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceImageCombineRGBAndAlpha::getCodecRGBType() const
+    {
+        return m_codecTypeRGB;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCombineRGBAndAlpha::getMaxSize() const
-	{
-		return m_imageFrame.maxSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCombineRGBAndAlpha::getSize() const
-	{
-		return m_imageFrame.size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCombineRGBAndAlpha::getOffset() const
-	{
-		return m_imageFrame.offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCombineRGBAndAlpha::getUV() const
-	{
-		return m_imageFrame.uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCombineRGBAndAlpha::getUVImage() const
-	{
-		return m_imageFrame.uv_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* ResourceImageCombineRGBAndAlpha::getTexture() const
-	{
-		return m_imageFrame.texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCombineRGBAndAlpha::isAlpha() const
-	{
-		return m_imageFrame.isAlpha;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const WString & ResourceImageCombineRGBAndAlpha::getFileName() const
+	const WString & ResourceImageCombineRGBAndAlpha::getFileAlphaName() const
 	{
 		return m_fileNameAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageCombineRGBAndAlpha::getCodecType() const
+	const ConstString & ResourceImageCombineRGBAndAlpha::getCodecAlphaType() const
 	{
 		return m_codecTypeAlpha;
 	}
@@ -97,7 +72,6 @@ namespace Menge
 
         m_imageFrame.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
         m_imageFrame.maxSize = mt::vec2f(-1.f, -1.f);
-        m_imageFrame.offset = mt::vec2f(0.f, 0.f);
         m_imageFrame.size = mt::vec2f(-1.f, -1.f);
         m_imageFrame.isAlpha = true;
         m_imageFrame.wrapX = false;
@@ -272,7 +246,8 @@ namespace Menge
 			return NULL;
 		}
 
-		this->loadRGBAndAlphaData_( buffer, pitch, imageDecoderRGB, imageDecoderAlpha );
+		this->loadRGBData_( buffer, pitch, imageDecoderRGB );
+        this->loadAlphaData_( buffer, pitch, imageDecoderAlpha );
 
         RenderEngine::get()
             ->sweezleAlpha( texture, buffer, pitch );
@@ -294,7 +269,7 @@ namespace Menge
 		return texture;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	void ResourceImageCombineRGBAndAlpha::loadRGBAndAlphaData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderRGB, ImageDecoderInterface * _imageDecoderAlpha ) const
+	void ResourceImageCombineRGBAndAlpha::loadRGBData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderRGB ) const
 	{
 		//RGB
 		ImageCodecOptions optionsRGB;
@@ -305,68 +280,39 @@ namespace Menge
 
 		_imageDecoderRGB->setOptions( &optionsRGB );
 		
-		RenderEngine::get()
-			->loadBufferImageData( _buffer, _pitch, PF_X8R8G8B8, _imageDecoderRGB );
-		
-		//Alpha
-		const ImageCodecDataInfo* dataInfoAlpha = _imageDecoderAlpha->getCodecDataInfo();
+        const ImageCodecDataInfo * data = _imageDecoderRGB->getCodecDataInfo();
 
-		ImageCodecOptions optionsAlpha;
-
-		optionsAlpha.flags |= DF_WRITE_ALPHA_ONLY;
-        optionsAlpha.flags |= DF_CUSTOM_PITCH;
-		optionsAlpha.pitch = _pitch;
-
-		_imageDecoderAlpha->setOptions( &optionsAlpha );
-		
-		RenderEngine::get()
-			->loadBufferImageData( _buffer, _pitch, PF_A8R8G8B8, _imageDecoderAlpha );
+        unsigned int bufferSize = _pitch * data->height;
+        unsigned int b = _imageDecoderRGB->decode( _buffer, bufferSize );
 	}
+    /////////////////////////////////////////////////////////////////////////
+    void ResourceImageCombineRGBAndAlpha::loadAlphaData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderAlpha ) const
+    {
+        //Alpha
+        const ImageCodecDataInfo* dataInfoAlpha = _imageDecoderAlpha->getCodecDataInfo();
+
+        ImageCodecOptions optionsAlpha;
+
+        optionsAlpha.flags |= DF_WRITE_ALPHA_ONLY;
+        optionsAlpha.flags |= DF_CUSTOM_PITCH;
+        optionsAlpha.pitch = _pitch;
+
+        _imageDecoderAlpha->setOptions( &optionsAlpha );
+
+        const ImageCodecDataInfo * data = _imageDecoderAlpha->getCodecDataInfo();
+
+        unsigned int bufferSize = _pitch * data->height;
+        unsigned int b = _imageDecoderAlpha->decode( _buffer, bufferSize );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageCombineRGBAndAlpha::_release()
 	{
 		this->releaseImageFrame_( m_imageFrame );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCombineRGBAndAlpha::getWrapX() const 
-	{
-		return m_imageFrame.wrapX;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCombineRGBAndAlpha::getWrapY() const 
-	{
-		return m_imageFrame.wrapY;
-	}
 	/////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCombineRGBAndAlpha::loadBuffer( unsigned char * _buffer, int _pitch )
+	bool ResourceImageCombineRGBAndAlpha::loadBufferAlpha( unsigned char * _buffer, int _pitch )
 	{
 		const ConstString & category = this->getCategory();
-
-		////////////////////////////////////// init RGB Decoder
-		FileInputStreamInterface * streamRGB = FileEngine::get()
-			->openInputFile( category, m_fileNameRGB );
-
-		if( streamRGB == 0 )
-		{
-			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadTextureCombineRGBAndAlpha: Image file with RGB data '%S' was not found"
-				, m_fileNameRGB.c_str() 
-				);
-
-			return false;
-		}
-
-		ImageDecoderInterface * imageDecoderRGB = this->createDecoder_( streamRGB, m_codecTypeRGB );
-
-		if( imageDecoderRGB == 0 )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
-				, m_fileNameRGB.c_str() 
-				);
-
-			streamRGB->close();
-
-			return false;
-		}
 
 		///Load Alpha data
 		FileInputStreamInterface * streamAlpha = FileEngine::get()
@@ -377,9 +323,6 @@ namespace Menge
 			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
 				, m_fileNameAlpha.c_str() 
 				);
-
-			streamRGB->close();
-			imageDecoderRGB->destroy();
 
 			return false;
 		}
@@ -393,17 +336,12 @@ namespace Menge
 				, m_fileNameAlpha.c_str() 
 				);
 
-			streamRGB->close();
-			imageDecoderRGB->destroy();
 			streamAlpha->close();
 
 			return false;
 		}
 
-		this->loadRGBAndAlphaData_( _buffer, _pitch, imageDecoderRGB, imageDecoderAlpha );
-
-		imageDecoderRGB->destroy();
-		streamRGB->close();
+		this->loadAlphaData_( _buffer, _pitch, imageDecoderAlpha );
 
 		imageDecoderAlpha->destroy();
 		streamAlpha->close();

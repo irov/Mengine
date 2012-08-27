@@ -483,7 +483,6 @@ namespace Menge
 
 	public:
 		virtual bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface * _imageDecoder ) = 0;
-		virtual bool loadBufferImageData( unsigned char* _textureBuffer, size_t _texturePitch, PixelFormat _hwPixelFormat, ImageDecoderInterface * _imageDecoder ) = 0;
 
 	public:
 		virtual void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) = 0;

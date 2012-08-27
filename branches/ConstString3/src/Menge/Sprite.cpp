@@ -208,15 +208,11 @@ namespace	Menge
 				maxSize = m_spriteSize;
 			}
 			
-			mt::vec2f offset = m_resource->getOffset();
-
 			mt::vec4f percentPx( m_percentVisibility.x * maxSize.x, m_percentVisibility.y * maxSize.y,
 				m_percentVisibility.z * maxSize.x, m_percentVisibility.w * maxSize.y );
 				
-			percentPx.x -= offset.x;
-			percentPx.y -= offset.y;
-			percentPx.z -= (maxSize.x - offset.x - size.x);
-			percentPx.w -= (maxSize.y - offset.y - size.y);
+			percentPx.z -= (maxSize.x - size.x);
+			percentPx.w -= (maxSize.y - size.y);
 
 			if( wrapX == false && wrapY == false )
 			{
@@ -306,18 +302,6 @@ namespace	Menge
 
 				visOffset += alignOffset;
 			}
-
-			if( m_flipX )
-			{
-				offset.x = maxSize.x - ( size.x + offset.x );
-			}
-
-			if( m_flipY )
-			{
-				offset.y = maxSize.y - ( size.y + offset.y );
-			}
-
-			visOffset += offset;
 
 			const mt::mat4f & wm = this->getWorldMatrix();
 

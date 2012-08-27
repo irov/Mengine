@@ -13,51 +13,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSolid::getMaxSize() const
-	{
-		return m_imageFrame.maxSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSolid::getSize() const
-	{
-		return m_imageFrame.size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSolid::getOffset() const
-	{
-		return m_imageFrame.offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageSolid::getUV() const
-	{
-		return m_imageFrame.uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageSolid::getUVImage() const
-	{
-		return m_imageFrame.uv_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* ResourceImageSolid::getTexture() const
-	{
-		return m_imageFrame.texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageSolid::isAlpha() const
-	{
-		return m_imageFrame.isAlpha;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageSolid::getWrapX() const 
-	{
-		return m_imageFrame.wrapX;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageSolid::getWrapY() const 
-	{
-		return m_imageFrame.wrapY;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const WString & ResourceImageSolid::getFileName() const 
 	{
 		return m_fileName;
@@ -77,8 +32,7 @@ namespace Menge
 	{
         const Metacode::Meta_DataBlock::Meta_ResourceImageSolid * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSolid *>(_meta);
-
-
+        
         m_imageFrame.size = metadata->get_Size_Value();
         m_color = metadata->get_Color_Value();
 
@@ -104,9 +58,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageSolid::loadBuffer( unsigned char * _buffer, int _pitch )
-	{
-		return false;
+	bool ResourceImageSolid::loadBufferAlpha( unsigned char * _buffer, int _pitch )
+	{        
+        size_t width = m_imageFrame.size.x;
+        size_t height = m_imageFrame.size.y;
+
+        if( _pitch < width )
+        {
+            return false;
+        }
+
+        for( size_t j = 0; j != height; ++j )        
+        {
+            for( size_t i = 0; i != width; ++i )    
+            {
+                _buffer[i] = 255;
+            }
+
+            _buffer += _pitch;
+        }
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -34,6 +34,9 @@ namespace Menge
 		void setImageResource( const ConstString& _name );
 		const ConstString& getImageResource() const;
 
+        void setImageSecondResource( const ConstString& _name );
+        const ConstString& getImageSecondResource() const;
+
 		const mt::vec2f & getImageSize();
 		
 		void setCenterAlign( bool _centerAlign );
@@ -78,7 +81,10 @@ namespace Menge
 
 	protected:
 		ResourceImage * m_resource;
-		ConstString m_resourceName;	
+		ResourceImage * m_resourceSecond;
+
+		ConstString m_resourceName;
+        ConstString m_resourceSecondName;
 
 		mt::vec2f m_spriteSize;
 		bool m_isCustomSize;
@@ -101,6 +107,5 @@ namespace Menge
 		mt::vec2f m_textureMatrixOffset;
 
 		const RenderTextureInterface * m_textures[2];
-		mt::mat4f * m_textureMatrix[2];
 	};
 }

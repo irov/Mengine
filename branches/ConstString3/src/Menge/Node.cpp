@@ -1035,7 +1035,7 @@ namespace Menge
 			//m_debugBox[4].pos[3] = 1.f;
 
 			RenderEngine::get()
-				->addRenderObject2D( _camera, m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, LPT_LINE );
+				->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, m_debugBox, 5, LPT_LINE );
 		}
 	}
 //#	endif

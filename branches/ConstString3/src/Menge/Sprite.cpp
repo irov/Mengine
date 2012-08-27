@@ -32,6 +32,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 		: m_resource(0)
+		, m_resourceSecond(0)
 		, m_centerAlign(false)
 		, m_flipX(false)
 		, m_flipY(false)
@@ -48,9 +49,6 @@ namespace	Menge
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
-
-		m_textureMatrix[0] = NULL;
-		m_textureMatrix[1] = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -87,6 +85,16 @@ namespace	Menge
 			return true;
 		}
 
+		if( m_resourceSecond )
+		{
+			if( m_resourceSecond->compile() == false )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		if( m_resourceName.empty() )
 		{
 			MENGE_LOG_ERROR( "Sprite: '%s' Image resource empty"
@@ -109,6 +117,22 @@ namespace	Menge
 			return false;
 		}
 
+        if( m_resourceSecondName.empty() == false )
+        {
+            m_resourceSecond = ResourceManager::get()
+	    		->getResourceT<ResourceImage>( m_resourceSecondName );
+
+            if( m_resourceSecond == 0 )
+            {
+                MENGE_LOG_ERROR( "Sprite: '%s' Image resource not found secondary resource '%s'"
+                    , m_name.c_str()
+                    , m_resourceSecondName.c_str() 
+                    );
+
+                return false;
+            }
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -121,13 +145,13 @@ namespace	Menge
 			m_resource->decrementReference();
 			m_resource = 0;
 		}
-
-		for( int i = 0; i != 2; ++i )
+		
+		if( m_resourceSecond != 0 )
 		{
-			delete m_textureMatrix[i];
-			m_textureMatrix[i] = NULL;
+			m_resourceSecond->decrementReference();
+			m_resourceSecond = 0;
 		}
-
+		
 		m_materialGroup = NULL;
 		m_material = NULL;
 	}
@@ -172,10 +196,29 @@ namespace	Menge
 		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& Sprite::getImageResource() const
+	const ConstString & Sprite::getImageResource() const
 	{
 		return m_resourceName;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Sprite::setImageSecondResource( const ConstString & _name )
+    {
+        if( m_resourceSecondName == _name )
+        {
+            return;
+        }
+
+        m_resourceSecondName = _name;
+        this->recompile();
+
+        this->invalidateVertices();
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Sprite::getImageSecondResource() const
+    {
+        return m_resourceSecondName;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices )
 	{
@@ -190,6 +233,11 @@ namespace	Menge
 		if( _invalidateVertices & ESVI_TEXTURE )
 		{
 			m_textures[0] = m_resource->getTexture();
+
+            if( m_resourceSecond != NULL )
+            {
+			    m_textures[1] = m_resourceSecond->getTexture();
+            }
 		}
 
 		if( _invalidateVertices & ESVI_POSITION )
@@ -261,34 +309,69 @@ namespace	Menge
 
 			if( _invalidateVertices == ESVI_FULL )
 			{
-				mt::vec4f uv = m_resource->getUV();
-
-				float uvX = uv.z - uv.x;
-				float uvY = uv.w - uv.y;
-
-				uv.x += percent.x * uvX;
-				uv.y += percent.y * uvY;
-				uv.z -= percent.z * uvX;
-				uv.w -= percent.w * uvY;
-
-				if( m_flipX == true )
 				{
-					std::swap( uv.x, uv.z );
+					mt::vec4f uv = m_resource->getUV();
+
+					float uvX = uv.z - uv.x;
+					float uvY = uv.w - uv.y;
+
+					uv.x += percent.x * uvX;
+					uv.y += percent.y * uvY;
+					uv.z -= percent.z * uvX;
+					uv.w -= percent.w * uvY;
+
+					if( m_flipX == true )
+					{
+						std::swap( uv.x, uv.z );
+					}
+
+					if( m_flipY == true )
+					{
+						std::swap( uv.y, uv.w );
+					}
+
+					_vertcies[0].uv[0] = uv.x;
+					_vertcies[0].uv[1] = uv.y;
+					_vertcies[1].uv[0] = uv.z;
+					_vertcies[1].uv[1] = uv.y;
+					_vertcies[2].uv[0] = uv.z;
+					_vertcies[2].uv[1] = uv.w;
+					_vertcies[3].uv[0] = uv.x;
+					_vertcies[3].uv[1] = uv.w;
 				}
 
-				if( m_flipY == true )
+				// Alpha
+                if( m_resourceSecond != NULL )
 				{
-					std::swap( uv.y, uv.w );
-				}
+					mt::vec4f uv = m_resourceSecond->getUV();
 
-				_vertcies[0].uv[0] = uv.x;
-				_vertcies[0].uv[1] = uv.y;
-				_vertcies[1].uv[0] = uv.z;
-				_vertcies[1].uv[1] = uv.y;
-				_vertcies[2].uv[0] = uv.z;
-				_vertcies[2].uv[1] = uv.w;
-				_vertcies[3].uv[0] = uv.x;
-				_vertcies[3].uv[1] = uv.w;
+					float uvX = uv.z - uv.x;
+					float uvY = uv.w - uv.y;
+
+					uv.x += percent.x * uvX;
+					uv.y += percent.y * uvY;
+					uv.z -= percent.z * uvX;
+					uv.w -= percent.w * uvY;
+
+					if( m_flipX == true )
+					{
+						std::swap( uv.x, uv.z );
+					}
+
+					if( m_flipY == true )
+					{
+						std::swap( uv.y, uv.w );
+					}
+
+					_vertcies[0].uv2[0] = uv.x;
+					_vertcies[0].uv2[1] = uv.y;
+					_vertcies[1].uv2[0] = uv.z;
+					_vertcies[1].uv2[1] = uv.y;
+					_vertcies[2].uv2[0] = uv.z;
+					_vertcies[2].uv2[1] = uv.w;
+					_vertcies[3].uv2[0] = uv.x;
+					_vertcies[3].uv2[1] = uv.w;
+				}
 			}
 
 			mt::vec2f visOffset( size.x * percent.x, size.y * percent.y );
@@ -302,6 +385,20 @@ namespace	Menge
 
 				visOffset += alignOffset;
 			}
+
+            mt::vec2f offset(0.f, 0.f);
+
+			if( m_flipX )
+			{
+				offset.x = maxSize.x - size.x;
+			}
+
+			if( m_flipY )
+			{
+				offset.y = maxSize.y - size.y;
+			}
+
+			visOffset += offset;
 
 			const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -362,7 +459,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial_()
 	{
-		if ( m_blendAdd == true )
+		if( m_resourceSecond )
+		{
+			m_texturesNum = 2;
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
+		}
+		else if ( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
 
@@ -415,7 +518,7 @@ namespace	Menge
 		const Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
-			->addRenderObject2D( _camera, m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, LPT_QUAD );
+			->addRenderObject2D( _camera, m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()

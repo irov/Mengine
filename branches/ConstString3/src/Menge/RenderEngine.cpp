@@ -1601,7 +1601,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, size_t _texturesNum,
+	void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, size_t _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
@@ -1660,16 +1660,7 @@ namespace Menge
 			else
 			{
 				ro->textures[i] = _textures[i];
-			}
-			
-			if( _matrixUV == NULL )
-			{
-				ro->matrixUV[i] = NULL;
-			}
-			else
-			{
-				ro->matrixUV[i] = _matrixUV[i];
-			}			 
+			}		 
 		}
 
 		switch( _type )

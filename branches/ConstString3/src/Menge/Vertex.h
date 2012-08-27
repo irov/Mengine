@@ -25,9 +25,10 @@ namespace Menge
 		float pos[3];
 		uint32 color;
 		float uv[2];
+        float uv2[2];
 	};
 
-	static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1;
+    static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1 | VDECL_TEX2;
 
 	struct Vertex3D
 	{

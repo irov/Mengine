@@ -346,7 +346,7 @@ namespace	Menge
 		const Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
-			->addRenderObject2D( _camera, m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD );
+			->addRenderObject2D( _camera, m_material, m_textures, 1, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )

@@ -246,7 +246,7 @@ namespace Menge
 		if( textVertices.empty() == false )
 		{
 			RenderEngine::get()
-				->addRenderObject2D( _camera, m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
+				->addRenderObject2D( _camera, m_materialText, &fontTexture, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -273,7 +273,7 @@ namespace Menge
 		const RenderTextureInterface* outlineTexture = m_resourceFont->getTextureImage();
 
 		RenderEngine::get()
-			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
+			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const

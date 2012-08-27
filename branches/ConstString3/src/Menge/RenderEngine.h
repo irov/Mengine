@@ -52,8 +52,6 @@ namespace Menge
 		size_t textureStages;
 		const RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
 
-		const mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
-
 		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;
 
@@ -115,7 +113,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, mt::mat4f * const * _matrixUV, size_t _texturesNum,
+		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, size_t _texturesNum,
 			const Vertex2D * _vertices, size_t _verticesNum, 
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 

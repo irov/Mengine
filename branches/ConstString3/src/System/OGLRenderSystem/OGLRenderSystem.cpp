@@ -1363,7 +1363,7 @@ namespace Menge
 		{
 			GLuint uid = m_activeRenderTarget->getUId();
 			glBindTexture( GL_TEXTURE_2D, uid );
-			
+
 			size_t hwWidth = m_activeRenderTarget->getHWWidth();
 			size_t hwHeight = m_activeRenderTarget->getHWHeight();
 			size_t requestedWidth = m_activeRenderTarget->getRequestedWidth();

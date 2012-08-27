@@ -956,15 +956,15 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
-            {
-                this->read( _buff, _size, _read, this->File_UV );
-                return true;
-                break;
-            }
         case 3:
             {
                 this->read( _buff, _size, _read, this->Image_Name );
+                return true;
+                break;
+            }
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->Image_UV );
                 return true;
                 break;
             }

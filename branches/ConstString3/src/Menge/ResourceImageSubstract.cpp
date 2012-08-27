@@ -29,7 +29,7 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
         metadata->swap_Image_Name( m_resourceImageName );
-        m_uv = metadata->get_File_UV();
+        m_uv = metadata->get_Image_UV();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_compile()

@@ -1392,22 +1392,6 @@ namespace Metacode
             {
             }
         public:
-            const mt::vec4f & get_File_UV() const
-            {
-                return this->File_UV;
-            }
-            
-            void swap_File_UV( mt::vec4f & _value ) const
-            {
-                std::swap(_value, this->File_UV);
-            }
-            
-            template<class C, class M>
-            void method_File_UV( C * _self, M _method )
-            {
-                (_self->*_method)( this->File_UV );
-            }
-            
             const Menge::ConstString & get_Image_Name() const
             {
                 return this->Image_Name;
@@ -1424,6 +1408,22 @@ namespace Metacode
                 (_self->*_method)( this->Image_Name );
             }
             
+            const mt::vec4f & get_Image_UV() const
+            {
+                return this->Image_UV;
+            }
+            
+            void swap_Image_UV( mt::vec4f & _value ) const
+            {
+                std::swap(_value, this->Image_UV);
+            }
+            
+            template<class C, class M>
+            void method_Image_UV( C * _self, M _method )
+            {
+                (_self->*_method)( this->Image_UV );
+            }
+            
         protected:
             bool _parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id ) override;
             bool _preparationIncludes( size_t _includes, size_t _count ) override;
@@ -1432,8 +1432,8 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable mt::vec4f File_UV;
             mutable Menge::ConstString Image_Name;
+            mutable mt::vec4f Image_UV;
         };
         
         class Meta_ResourceInternalObject

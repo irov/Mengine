@@ -771,32 +771,32 @@ namespace Menge
 		OGLTexture* texture = static_cast<OGLTexture*>( _texture );
 		if( texture != NULL )
 		{
-			m_activeTexture = texture->uid;
+			m_activeTexture = texture->getUId();
 			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 			TextureStage& tStage = m_textureStage[_stage];
-			if( texture->wrapS != tStage.wrapS )
+			if( texture->getWrapS() != tStage.wrapS )
 			{
-				texture->wrapS = tStage.wrapS;
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrapS );
+				texture->setWrapS( tStage.wrapS );
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tStage.wrapS );
 			}
-			if( texture->wrapT != tStage.wrapT )
+			if( texture->getWrapT() != tStage.wrapT )
 			{
-				texture->wrapT = tStage.wrapT;
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrapT );
+				texture->setWrapT( tStage.wrapT );
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tStage.wrapT );
 			}
-			if( texture->minFilter != tStage.minFilter )
+			if( texture->getMinFilter() != tStage.minFilter )
 			{
-				texture->minFilter = tStage.minFilter;
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture->minFilter );
+				texture->setMinFilter( tStage.minFilter );
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, tStage.minFilter );
 			}
-			if( texture->magFilter != tStage.magFilter )
+			if( texture->getMagFilter() != tStage.magFilter )
 			{
-				texture->magFilter = tStage.magFilter;
-				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->magFilter );
+				texture->setMagFilter( tStage.magFilter );
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, tStage.magFilter );
 			}
 			glMatrixMode( GL_TEXTURE );
 			glLoadIdentity();
-			if( texture->m_isRenderTarget == true )
+			if( texture->isRenderTarget() == true )
 			{
 				glScalef( 1.0f, -1.0f, 1.0f );
 				glTranslatef( 0.0f, -1.0f, 0.0f );
@@ -1023,7 +1023,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* OGLRenderSystem::createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format )
+	RenderImageInterface* OGLRenderSystem::createImage( std::size_t _width, std::size_t _height, PixelFormat _format )
 	{
 		if( _format == Menge::PF_R8G8B8 )
 		{
@@ -1033,19 +1033,19 @@ namespace Menge
 		GLsizei requestedWidth = _width;
 		GLsizei requestedHeight = _height;
 
+		GLsizei hwWidth = _width;
+		GLsizei hwHeight = _height;
+
 		if( ( _width & ( _width - 1 ) ) != 0
 			|| ( _height & ( _height - 1 ) ) != 0 )
 		{
 			bool npot = false;//m_supportNPOT;//();
 			if( npot == false )	// we're all gonna die
 			{
-				_width = s_firstPO2From( _width );
-				_height = s_firstPO2From( _height );
+				hwWidth = s_firstPO2From( _width );
+				hwHeight = s_firstPO2From( _height );
 			}
 		}
-
-		_realWidth = _width;
-		_realHeight = _height;
 
 		int numColors = 4;
 		if( _format == PF_A8 )
@@ -1055,35 +1055,38 @@ namespace Menge
 
 		GLuint tuid = 0;
 		glGenTextures( 1, &tuid );
-		OGLTexture* texture = new OGLTexture( tuid, this );
-		texture->m_isRenderTarget = false;
-		texture->width = _width;
-		texture->height = _height;
-		texture->numColors = numColors;
-		texture->level = 0;
-		texture->border = 0;
-		texture->internalFormat = s_toGLInternalFormat( _format );
-		texture->format = s_toGLColorFormat( _format );
-		texture->type = s_getGLColorDataType( _format );
-		texture->wrapS = GL_CLAMP_TO_EDGE;
-		texture->wrapT = GL_CLAMP_TO_EDGE;
-		texture->minFilter = GL_LINEAR;
-		texture->magFilter = GL_LINEAR;
-		
-		texture->pitch = _width * numColors;
-		texture->requestedWidth = requestedWidth;
-		texture->requestedHeight = requestedHeight;
+
+		GLint internalFormat = s_toGLInternalFormat( _format );
+		GLint textureFormat = s_toGLColorFormat( _format );
+		GLint textureType = s_getGLColorDataType( _format );
+		GLint texturePitch = hwWidth * numColors;
+		bool isRenderTarget = false;
+		GLint level = 0;
+		GLint border = 0;
+
+		OGLTexture* texture = new OGLTexture( tuid, this, hwWidth, hwHeight, requestedWidth, requestedHeight,
+			texturePitch, _format, internalFormat, textureFormat, textureType, false );
+
+		GLenum wrapS = GL_CLAMP_TO_EDGE;
+		GLenum wrapT = GL_CLAMP_TO_EDGE;
+		GLenum minFilter = GL_LINEAR;
+		GLenum magFilter = GL_LINEAR;
+				
+		texture->setMagFilter( magFilter );
+		texture->setMinFilter( minFilter );
+		texture->setWrapS( wrapS );
+		texture->setWrapT( wrapT );
 
 		glBindTexture( GL_TEXTURE_2D, tuid );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrapS );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrapT );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->minFilter );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture->magFilter );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, minFilter );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, magFilter );
 		//glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
 		glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
-		glTexImage2D( GL_TEXTURE_2D, texture->level, texture->internalFormat,
-						texture->width, texture->height, texture->border, texture->format,
-						texture->type, NULL );
+		
+		glTexImage2D( GL_TEXTURE_2D, level, internalFormat,	hwWidth, hwHeight, border, textureFormat, textureType, NULL );
+
 		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 
 		return texture;
@@ -1199,119 +1202,105 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::beginLayer2D()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::endLayer2D()
-	{
-		return;
-		glDisable( GL_TEXTURE_2D );
-
-		uint16 * ind = lockIndexBuffer( 1 );
-		ind[ 0 ] = 0;
-		ind[ 1 ] = 1;
-		ind[ 2 ] = 3;
-		ind[ 3 ] = 1;
-		ind[ 4 ] = 2;
-		ind[ 5 ] = 3;
-		unlockIndexBuffer( 1 );
-
-		struct Vertex2D
-		{
-			float pos[4];
-			uint32 color;
-			float uv[2];
-		};
-
-		Vertex2D * v = ( Vertex2D * )lockVertexBuffer( 2, 0, sizeof( Vertex2D ) * 4, 0 );
-		if( v )
-		{
-			v[ 0 ].pos[ 0 ] = 0;
-			v[ 0 ].pos[ 1 ] = 0;
-			v[ 0 ].pos[ 2 ] = 0;
-			v[ 0 ].pos[ 3 ] = 1;
-
-			v[ 0 ].color = 0xFF0000FF;
-
-			v[ 1 ].pos[ 0 ] = 768;
-			v[ 1 ].pos[ 1 ] = 0;
-			v[ 1 ].pos[ 2 ] = 0;
-			v[ 1 ].pos[ 3 ] = 1;
-
-			v[ 1 ].color = 0xFF00FF00;
-
-			v[ 2 ].pos[ 0 ] = 768;
-			v[ 2 ].pos[ 1 ] = 1024;
-			v[ 2 ].pos[ 2 ] = 0;
-			v[ 2 ].pos[ 3 ] = 1;
-
-			v[ 2 ].color = 0xFFFF0000;
-
-			v[ 3 ].pos[ 0 ] = 0;
-			v[ 3 ].pos[ 1 ] = 1024;
-			v[ 3 ].pos[ 2 ] = 0;
-			v[ 3 ].pos[ 3 ] = 1;
-
-			v[ 3 ].color = 0xFFFFFFFF;
-
-			unlockVertexBuffer( 2 );
-
-			setIndexBuffer( 1, 0 );
-			setVertexBuffer( 2 );
-			
-			glVertexPointer( 4, GL_FLOAT, 28,  0 );
-			glColorPointer( 4, GL_UNSIGNED_BYTE, 28,  reinterpret_cast<const GLvoid *>( 16 ) );
-			
-			glClientActiveTexture( GL_TEXTURE0 );
-			glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
-			glClientActiveTexture( GL_TEXTURE1 );
-			glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
-			
-			glViewport( 0, 0, 768, 1024 );
-			glMatrixMode( GL_PROJECTION );
-			glLoadIdentity();
-
-#	if WIN32
-			glOrtho( 0, 768, 0, 1024, -9999., 9999. );
-#	elif TARGET_OS_MAC && !TARGET_OS_IPHONE
-            glOrtho( 0, 768, 0, 1024, -9999., 9999. );
-#	else
-			glOrthof( 0, 768, 0, 1024, -9999., 9999. );
-#	endif
-
-			glMatrixMode( GL_MODELVIEW );
-			glLoadIdentity();
-
-			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
-		}
-
-		/*glDisable( GL_TEXTURE_2D );
-
-		glBegin( GL_TRIANGLE_FAN );
-		glColor3f( 1, 0, 0 );
-		glVertex2f( 0, 0 );
-
-		glColor3f( 0, 1, 0 );
-		glVertex2f( 100, 0 );
-
-		glColor3f( 0, 0, 1 );
-		glVertex2f( 100, 100 );
-
-		glColor3f( 1, 1, 1 );
-		glVertex2f( 0, 100 );
-		glEnd();*/
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::beginLayer3D()
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::endLayer3D()
-	{
-
-	}
+//	void OGLRenderSystem::endLayer2D()
+//	{
+//		return;
+//		glDisable( GL_TEXTURE_2D );
+//
+//		uint16 * ind = lockIndexBuffer( 1 );
+//		ind[ 0 ] = 0;
+//		ind[ 1 ] = 1;
+//		ind[ 2 ] = 3;
+//		ind[ 3 ] = 1;
+//		ind[ 4 ] = 2;
+//		ind[ 5 ] = 3;
+//		unlockIndexBuffer( 1 );
+//
+//		struct Vertex2D
+//		{
+//			float pos[4];
+//			uint32 color;
+//			float uv[2];
+//		};
+//
+//		Vertex2D * v = ( Vertex2D * )lockVertexBuffer( 2, 0, sizeof( Vertex2D ) * 4, 0 );
+//		if( v )
+//		{
+//			v[ 0 ].pos[ 0 ] = 0;
+//			v[ 0 ].pos[ 1 ] = 0;
+//			v[ 0 ].pos[ 2 ] = 0;
+//			v[ 0 ].pos[ 3 ] = 1;
+//
+//			v[ 0 ].color = 0xFF0000FF;
+//
+//			v[ 1 ].pos[ 0 ] = 768;
+//			v[ 1 ].pos[ 1 ] = 0;
+//			v[ 1 ].pos[ 2 ] = 0;
+//			v[ 1 ].pos[ 3 ] = 1;
+//
+//			v[ 1 ].color = 0xFF00FF00;
+//
+//			v[ 2 ].pos[ 0 ] = 768;
+//			v[ 2 ].pos[ 1 ] = 1024;
+//			v[ 2 ].pos[ 2 ] = 0;
+//			v[ 2 ].pos[ 3 ] = 1;
+//
+//			v[ 2 ].color = 0xFFFF0000;
+//
+//			v[ 3 ].pos[ 0 ] = 0;
+//			v[ 3 ].pos[ 1 ] = 1024;
+//			v[ 3 ].pos[ 2 ] = 0;
+//			v[ 3 ].pos[ 3 ] = 1;
+//
+//			v[ 3 ].color = 0xFFFFFFFF;
+//
+//			unlockVertexBuffer( 2 );
+//
+//			setIndexBuffer( 1, 0 );
+//			setVertexBuffer( 2 );
+//			
+//			glVertexPointer( 4, GL_FLOAT, 28,  0 );
+//			glColorPointer( 4, GL_UNSIGNED_BYTE, 28,  reinterpret_cast<const GLvoid *>( 16 ) );
+//			
+//			glClientActiveTexture( GL_TEXTURE0 );
+//			glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
+//			glClientActiveTexture( GL_TEXTURE1 );
+//			glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
+//			
+//			glViewport( 0, 0, 768, 1024 );
+//			glMatrixMode( GL_PROJECTION );
+//			glLoadIdentity();
+//
+//#	if WIN32
+//			glOrtho( 0, 768, 0, 1024, -9999., 9999. );
+//#	elif TARGET_OS_MAC && !TARGET_OS_IPHONE
+//            glOrtho( 0, 768, 0, 1024, -9999., 9999. );
+//#	else
+//			glOrthof( 0, 768, 0, 1024, -9999., 9999. );
+//#	endif
+//
+//			glMatrixMode( GL_MODELVIEW );
+//			glLoadIdentity();
+//
+//			glDrawElements( GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, 0 );
+//		}
+//
+//		/*glDisable( GL_TEXTURE_2D );
+//
+//		glBegin( GL_TRIANGLE_FAN );
+//		glColor3f( 1, 0, 0 );
+//		glVertex2f( 0, 0 );
+//
+//		glColor3f( 0, 1, 0 );
+//		glVertex2f( 100, 0 );
+//
+//		glColor3f( 0, 0, 1 );
+//		glVertex2f( 100, 100 );
+//
+//		glColor3f( 1, 1, 1 );
+//		glVertex2f( 0, 100 );
+//		glEnd();*/
+//	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setViewport( const Viewport & _viewport )
 	{
@@ -1375,9 +1364,21 @@ namespace Menge
 		OGLTexture* oglTexture = static_cast<OGLTexture*>( _renderTarget );
 		if( m_activeRenderTarget != 0 )
 		{
-			glBindTexture( GL_TEXTURE_2D, m_activeRenderTarget->uid );
-			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, m_winContextHeight-m_winHeight + m_activeRenderTarget->requestedHeight - m_activeRenderTarget->height, 
-				m_activeRenderTarget->width, m_activeRenderTarget->height, 0 );
+			GLuint uid = m_activeRenderTarget->getUId();
+			glBindTexture( GL_TEXTURE_2D, uid );
+			
+			size_t hwWidth = m_activeRenderTarget->getHWWidth();
+			size_t hwHeight = m_activeRenderTarget->getHWHeight();
+			size_t requestedWidth = m_activeRenderTarget->getRequestedWidth();
+			size_t requestedHeight = m_activeRenderTarget->getRequestedHeight();
+
+			GLint x = 0;
+			GLint y = m_winContextHeight - m_winHeight + requestedHeight - hwHeight;
+
+			PixelFormat hwFormat = m_activeRenderTarget->getHWPixelFormat();
+			GLint internalFormat = s_toGLInternalFormat(hwFormat);
+
+			glCopyTexImage2D( GL_TEXTURE_2D, 0, internalFormat, x, y,	hwWidth, hwHeight, 0 );
 			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 		}
 
@@ -1385,8 +1386,8 @@ namespace Menge
 
 		if( m_activeRenderTarget != NULL )
 		{
-			m_winWidth = m_activeRenderTarget->requestedWidth;
-			m_winHeight = m_activeRenderTarget->requestedHeight;
+			m_winWidth = m_activeRenderTarget->getRequestedWidth();
+			m_winHeight = m_activeRenderTarget->getRequestedHeight();
 		}
 		else
 		{
@@ -1421,10 +1422,15 @@ namespace Menge
     
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterface * OGLRenderSystem::createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format )
+    RenderImageInterface * OGLRenderSystem::createRenderTargetImage( size_t _width, size_t _height, PixelFormat _format )
     {
         return NULL;
     }
+	//////////////////////////////////////////////////////////////////////////
+	RenderImageInterface * OGLRenderSystem::createDynamicImage( size_t _width, size_t _height, PixelFormat _format )
+	{
+		return NULL;
+	}
 	//////////////////////////////////////////////////////////////////////////
     void OGLRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, float _left, float _right,
                                           float _top, float _bottom, 
@@ -1455,6 +1461,11 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
+	{
+		//ToDo
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OGLRenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix , float _left, float _right , float _top, float _bottom , float _near, float _far )
 	{
 		//ToDo
 	}

@@ -105,7 +105,7 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		RenderImageInterface * createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format ) override;
+		RenderImageInterface * createImage( std::size_t _width, std::size_t _height, PixelFormat _format ) override;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
@@ -113,8 +113,10 @@ namespace Menge
 		// RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
 		// удаления изображения
         
-        RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
-        
+        RenderImageInterface * createRenderTargetImage( size_t _width, size_t _height, PixelFormat _format ) override;
+
+		RenderImageInterface * createDynamicImage( size_t _width, size_t _height, PixelFormat _format ) override;
+
 		void checkActiveTexture( GLuint uid );
 
 		bool beginScene() override;
@@ -124,10 +126,6 @@ namespace Menge
 			, uint32 _color = 0
 			, float _depth = 1.0f
 			, uint16 _stencil = 0 ) override;
-		void beginLayer2D() override;
-		void endLayer2D() override;
-		void beginLayer3D() override;
-		void endLayer3D() override;
 
 		void setViewport( const Viewport & _viewport ) override;
 
@@ -144,6 +142,11 @@ namespace Menge
         void clear( uint32 _color ) override;
         
         void setSeparateAlphaBlendMode() override;
+
+		void makeProjectionFrustum( mt::mat4f & _projectionMatrix
+			, float _left, float _right
+			, float _top, float _bottom
+			, float _near, float _far ) override;
 
 	private:
         ServiceProviderInterface* m_serviceProvider;

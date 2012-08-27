@@ -1030,9 +1030,6 @@ namespace Menge
 			_format = Menge::PF_X8R8G8B8;
 		}
 
-		GLsizei requestedWidth = _width;
-		GLsizei requestedHeight = _height;
-
 		GLsizei hwWidth = _width;
 		GLsizei hwHeight = _height;
 
@@ -1064,7 +1061,7 @@ namespace Menge
 		GLint level = 0;
 		GLint border = 0;
 
-		OGLTexture* texture = new OGLTexture( tuid, this, hwWidth, hwHeight, requestedWidth, requestedHeight,
+		OGLTexture* texture = new OGLTexture( tuid, this, hwWidth, hwHeight, _width, _height,
 			texturePitch, _format, internalFormat, textureFormat, textureType, false );
 
 		GLenum wrapS = GL_CLAMP_TO_EDGE;

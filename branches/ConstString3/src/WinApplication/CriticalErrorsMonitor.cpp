@@ -1,5 +1,8 @@
 #	include "CriticalErrorsMonitor.h"
 
+#   include <Windows.h>
+#   include "DbgHelp.h"
+
 #	include <cstdio>
 
 #	include "WindowsLayer/WindowsLayer.h"
@@ -11,8 +14,8 @@
 namespace Menge
 {
 	static const char * s_versionInfo = NULL;
-	static const wchar_t * s_userPath = NULL;
-	static const wchar_t * s_logFileName = NULL;
+	static WString s_logPath;
+    static WString s_dumpPath;
 	//////////////////////////////////////////////////////////////////////////
 	static void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )
 	{
@@ -68,17 +71,79 @@ namespace Menge
 
 		CurrentlyInTheStackDump = 0;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_writeCrashDump( EXCEPTION_POINTERS * pExceptionPointers )
+    {
+        HANDLE hFile = CreateFile( s_dumpPath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+
+        if( hFile == INVALID_HANDLE_VALUE ) 
+        {
+            MessageBox(NULL, s_dumpPath.c_str(), L"Invalid create dump file", MB_OK );
+
+            return false;
+        }
+        
+        HMODULE dbghelp_dll = ::LoadLibrary(L"dbghelp.dll");
+
+        if( dbghelp_dll == NULL )
+        {
+            MessageBox(NULL, L"dbghelp.dll", L"Invalid load dll", MB_OK );
+
+            ::CloseHandle( hFile );
+
+            return false;
+        }
+
+        typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(
+            HANDLE hprocess, DWORD pid, HANDLE hfile, MINIDUMP_TYPE dumptype,
+            CONST PMINIDUMP_EXCEPTION_INFORMATION exceptionparam,
+            CONST PMINIDUMP_USER_STREAM_INFORMATION userstreamparam,
+            CONST PMINIDUMP_CALLBACK_INFORMATION callbackparam
+            );
+
+        MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress(dbghelp_dll, "MiniDumpWriteDump");
+
+        if( MiniDumpWriteDump == NULL )
+        {
+            MessageBox(NULL, L"MiniDumpWriteDump", L"Invalid get process address", MB_OK );
+
+            FreeLibrary( dbghelp_dll );
+            ::CloseHandle( hFile );
+
+            return false;
+        }
+
+        MINIDUMP_EXCEPTION_INFORMATION exinfo;
+
+        exinfo.ThreadId = ::GetCurrentThreadId();
+        exinfo.ExceptionPointers = pExceptionPointers;
+        exinfo.ClientPointers = FALSE;
+
+        HANDLE hProcess = GetCurrentProcess();
+        DWORD dwProcessId = GetCurrentProcessId();
+                
+        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, MiniDumpNormal, &exinfo, NULL, NULL );
+
+        FreeLibrary( dbghelp_dll );
+        ::CloseHandle( hFile );
+
+        if( successful == FALSE )
+        {
+            MessageBox(NULL, L"MiniDumpWriteDump", L"Invalid write dump", MB_OK );
+
+            return false;
+        }
+
+        return true;
+    }
+
 	//////////////////////////////////////////////////////////////////////////
 	static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 	{
 		EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
 		CONTEXT* pContext = pExceptionPointers->ContextRecord;
 
-		wchar_t fullFileName[MAX_PATH];
-		wcsncpy( fullFileName, s_userPath, MAX_PATH );
-		wcsncpy( fullFileName, s_logFileName, MAX_PATH );
-
-		HANDLE hFile = WindowsLayer::createFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
+		HANDLE hFile = WindowsLayer::createFile( s_logPath.c_str(), GENERIC_READ|GENERIC_WRITE, 
 			FILE_SHARE_WRITE|FILE_SHARE_READ, OPEN_ALWAYS );
 
 		if( hFile != INVALID_HANDLE_VALUE )
@@ -128,6 +193,7 @@ namespace Menge
 				snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
 				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 			}
+
 			s_logStackFrames( hFile, pRecord->ExceptionAddress, (char*)pContext->Ebp );
 			/*switch (pRecord->ExceptionCode) 
 			{
@@ -139,14 +205,19 @@ namespace Menge
 
 			::CloseHandle( hFile );
 		}
+
+        MessageBox(NULL, s_dumpPath.c_str(), L"write dump file", MB_OK );
+
+        s_writeCrashDump( pExceptionPointers );
+
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::run( const char * _versionInfo, const wchar_t * _userPath, const wchar_t * _logFileName )
+	void CriticalErrorsMonitor::run( const char * _versionInfo, const WString & _logPath, const WString & _dumpPath )
 	{
 		s_versionInfo = _versionInfo;
-		s_userPath = _userPath;
-		s_logFileName = _logFileName;
+		s_logPath = _logPath;
+        s_dumpPath = _dumpPath;
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );

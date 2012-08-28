@@ -704,14 +704,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 8:
-            {
-                this->read( _buff, _size, _read, this->File_MaxSize );
-                this->File_MaxSize_successful = true;
-                return true;
-                break;
-            }
-        case 11:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->File_Offset );
                 this->File_Offset_successful = true;
@@ -732,28 +725,21 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 9:
-            {
-                this->read( _buff, _size, _read, this->File_Size );
-                this->File_Size_successful = true;
-                return true;
-                break;
-            }
-        case 10:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->File_UV );
                 this->File_UV_successful = true;
                 return true;
                 break;
             }
-        case 12:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->File_WrapX );
                 this->File_WrapX_successful = true;
                 return true;
                 break;
             }
-        case 13:
+        case 11:
             {
                 this->read( _buff, _size, _read, this->File_WrapY );
                 this->File_WrapY_successful = true;
@@ -803,7 +789,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 8:
+        case 6:
             {
                 this->read( _buff, _size, _read, this->File_Alpha );
                 this->File_Alpha_successful = true;
@@ -817,41 +803,27 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 5:
-            {
-                this->read( _buff, _size, _read, this->File_MaxSize );
-                this->File_MaxSize_successful = true;
-                return true;
-                break;
-            }
         case 3:
             {
                 this->read( _buff, _size, _read, this->File_Path );
                 return true;
                 break;
             }
-        case 6:
-            {
-                this->read( _buff, _size, _read, this->File_Size );
-                this->File_Size_successful = true;
-                return true;
-                break;
-            }
-        case 7:
+        case 5:
             {
                 this->read( _buff, _size, _read, this->File_UV );
                 this->File_UV_successful = true;
                 return true;
                 break;
             }
-        case 9:
+        case 7:
             {
                 this->read( _buff, _size, _read, this->File_WrapX );
                 this->File_WrapX_successful = true;
                 return true;
                 break;
             }
-        case 10:
+        case 8:
             {
                 this->read( _buff, _size, _read, this->File_WrapY );
                 this->File_WrapY_successful = true;

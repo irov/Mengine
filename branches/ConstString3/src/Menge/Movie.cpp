@@ -1152,6 +1152,8 @@ namespace Menge
 
         size_t lastFrame = m_currentFrame;
         
+        bool needUpdate = false;
+
         if( m_currentFrame != 0 )
         {
             while( m_frameTiming >= frameDuration )
@@ -1160,9 +1162,13 @@ namespace Menge
                 
                 --m_currentFrame;
 
+                needUpdate = true;
+
                 if( m_currentFrame == 0 )
                 {
                     this->updateBackwardFrame_( lastFrame, 0 );
+
+                    needUpdate = false;
 
                     if( this->getLoop() == false && --m_playIterator == 0 )
                     {           
@@ -1178,23 +1184,20 @@ namespace Menge
                         this->setTiming( duration );
 
                         lastFrame = m_currentFrame;
+
+                        needUpdate = true;
                     }
                 }
             }
         }
-
-        this->updateBackwardFrame_( lastFrame, m_currentFrame );
-
-        if( m_currentFrame == 0 )
+        else
         {
-            if( this->getLoop() == true )
-            {
-                //Nothing
-            }
-            else
-            {
-                this->end();
-            }
+            this->end();
+        }
+
+        if( needUpdate == true )
+        {
+            this->updateBackwardFrame_( lastFrame, m_currentFrame );
         }
     }
 	//////////////////////////////////////////////////////////////////////////

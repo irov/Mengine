@@ -1,10 +1,12 @@
 #	pragma once
 
+#   include "Config/Typedef.h"
+
 namespace Menge
 {
 	class CriticalErrorsMonitor
 	{
 	public:
-		static void run( const char * _versionInfo, const wchar_t * _userPath, const wchar_t * _logFileName );
+		static void run( const char * _versionInfo, const WString & _logPath, const WString & _dumpPath );
 	};
 }

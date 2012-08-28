@@ -110,8 +110,6 @@ namespace Menge
 		typedef std::map<WString, HCURSOR> TMapCursors;
 		TMapCursors m_cursors;
 		
-		WString m_name;
-
 		WString m_windowClassName;
 		
 		WString m_currentPath;

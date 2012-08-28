@@ -310,7 +310,7 @@ namespace	Menge
 			if( _invalidateVertices == ESVI_FULL )
 			{
 				{
-					mt::vec4f uv = m_resource->getUV();
+					mt::vec4f uv = m_resource->getUVImage();
 
 					float uvX = uv.z - uv.x;
 					float uvY = uv.w - uv.y;
@@ -343,7 +343,7 @@ namespace	Menge
 				// Alpha
                 if( m_resourceSecond != NULL )
 				{
-					mt::vec4f uv = m_resourceSecond->getUV();
+					mt::vec4f uv = m_resourceSecond->getUVImage();
 
 					float uvX = uv.z - uv.x;
 					float uvY = uv.w - uv.y;
@@ -495,6 +495,8 @@ namespace	Menge
 			}
 		}
 
+        //m_resource = 0;
+
 		bool wrapX = m_resource->getWrapX();
 		bool wrapY = m_resource->getWrapY();
 
@@ -560,7 +562,7 @@ namespace	Menge
 		}
 
 		const mt::vec2f & size = 
-			m_resource->getMaxSize();
+			m_resource->getSize();
 
 		return size;
 	}

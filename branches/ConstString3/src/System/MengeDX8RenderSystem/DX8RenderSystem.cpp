@@ -1228,10 +1228,10 @@ namespace Menge
 		m_screenResolution = _resolution;
 		//nScreenBPP = _bpp;
 
-		if( restore_() == false )
+		if( this->restore_() == false )
 		{
 			LOGGER_ERROR(m_logService)( "Error: Graphics change mode failed\n" );
-		}
+		}        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
@@ -1842,8 +1842,10 @@ namespace Menge
 			return false;
 		}
 
+        this->clear_( 0 );
+
 		//if(procGfxRestoreFunc) return procGfxRestoreFunc();
-		onRestoreDevice_();
+		this->onRestoreDevice_();
 
 		return true;
 	}
@@ -1993,34 +1995,6 @@ namespace Menge
 	void DX8RenderSystem::onRestoreDevice_()
 	{
 		// restoring render targets
-		/*for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
-		it != it_end;
-		it++ )
-		{
-		if( it->second.texture != 0 )
-		{
-		HTEXTURE htex = m_hge->Target_GetTexture( it->second.handle );
-		it->second.texture->restore( htex );
-		}
-		}*/
-
-		//for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
-		//{
-		//	m_addressU[i] = D3DTADDRESS_WRAP;
-		//	m_addressV[i] = D3DTADDRESS_WRAP;
-		//	m_textureColorArg1[i] = D3DTA_TEXTURE;
-		//	m_textureColorArg2[i] = D3DTA_CURRENT;
-		//	m_textureAlphaArg1[i] = D3DTA_TEXTURE;
-		//	m_textureAlphaArg2[i] = D3DTA_CURRENT;
-		//}
-		//m_textureColorOp[0] = D3DTOP_MODULATE;
-		//m_textureAlphaOp[0] = D3DTOP_SELECTARG1;
-		//for( size_t i = 1; i < D3DDP_MAXTEXCOORD; ++i )
-		//{
-		//	m_textureColorOp[i] = D3DTOP_DISABLE;
-		//	m_textureAlphaOp[i] = D3DTOP_DISABLE;
-		//}
-
 		if( m_listener != NULL )
 		{
 			m_listener->onDeviceRestored();

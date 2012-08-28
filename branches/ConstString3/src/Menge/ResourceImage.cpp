@@ -28,13 +28,16 @@ namespace Menge
 
 		const Rect & rect = texture->getRect();
 		
-        size_t hwWidth = texture->getHWWidth();
-        size_t hwHeight = texture->getHWHeight();
+        size_t hwWidth = (float)texture->getHWWidth();
+        size_t hwHeight = (float)texture->getHWHeight();
 
-        _frame.uv_scale.x = float(rect.left) / float(hwWidth);
-        _frame.uv_scale.y = float(rect.top) / float(hwHeight);
-        _frame.uv_scale.z = float(rect.right) / float(hwWidth);
-        _frame.uv_scale.w = float(rect.bottom) / float(hwHeight);
+        _frame.maxSize.x = hwWidth;
+        _frame.maxSize.y = hwHeight;
+
+        _frame.uv_scale.x = float(rect.left) / hwWidth;
+        _frame.uv_scale.y = float(rect.top) / hwHeight;
+        _frame.uv_scale.z = float(rect.right) / hwWidth;
+        _frame.uv_scale.w = float(rect.bottom) / hwHeight;
 
         //_frame.uv_scale = mt::vec4f(0.f, 0.f, 1.f, 1.f);
 
@@ -51,22 +54,20 @@ namespace Menge
 			_frame.isAlpha = true;
 		}
 
-        _frame.uv_image = _frame.uv;
-
         float ku = _frame.uv.z - _frame.uv.x;
         float kv = _frame.uv.w - _frame.uv.y;
         _frame.size.x *= ku;
         _frame.size.y *= kv;
 
-        _frame.uv.x = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.x;
-        _frame.uv.y = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.y;
-        _frame.uv.z = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.z;
-        _frame.uv.w = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.w;
+        _frame.uv_image.x = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.x;
+        _frame.uv_image.y = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.y;
+        _frame.uv_image.z = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.z;
+        _frame.uv_image.w = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.w;
 
-        if( _frame.maxSize.x < 0.f || _frame.maxSize.y < 0.f )
-        {
-            _frame.maxSize = _frame.size;
-        }
+        //if( _frame.maxSize.x <= 0.f || _frame.maxSize.y <= 0.f )
+        //{
+        //    _frame.maxSize = _frame.size;
+        //}
 
 		return true;
 	}

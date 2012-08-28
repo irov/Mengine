@@ -41,9 +41,6 @@
 
 namespace Menge
 {
-	static wchar_t s_logFileName[] = L"\\Game.log";
-	static wchar_t s_userPath[MAX_PATH] = L"";
-
 	//////////////////////////////////////////////////////////////////////////
 	static const unsigned long s_activeFrameTime = 1000.f/60.f;
 	static const unsigned long s_inactiveFrameTime = 100;
@@ -100,7 +97,6 @@ namespace Menge
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running(true)
 		, m_active(false)
-		, m_name(L"Mengine")
 		, m_windowClassName(L"MengeWnd")
 		, m_hWnd(0)
 		, m_cursorInArea(false)
@@ -303,9 +299,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{	
-		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
-
-//
 		//::timeBeginPeriod( 1 );
 
 		//::MessageBoxA( NULL, "Starting debug", "Menge", MB_OK );
@@ -603,15 +596,6 @@ namespace Menge
             appSettings.vsync = false;
         }
 
-        if( alreadyRunning == true )
-        {	
-            m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
-            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, m_projectName ) == false )
-            {
-                return false;
-            }
-        }
-
 		m_winTimer = new WinTimer();
 
 		// seed randomizer
@@ -697,7 +681,16 @@ namespace Menge
 			, platformName.c_str() 
 			);
 		
-		const WString & title = m_application->getProjectTitle();
+		const WString & projectTitle = m_application->getProjectTitle();
+
+        if( alreadyRunning == true )
+        {	
+            m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
+            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, projectTitle ) == false )
+            {
+                return false;
+            }
+        }
 
 		bool screenSaverMode = this->isSaverRunning();
 
@@ -712,7 +705,7 @@ namespace Menge
 			}
 			else if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
 			{
-				if( WindowsLayer::messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", title, MB_YESNO ) == IDNO )
+				if( WindowsLayer::messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", projectTitle, MB_YESNO ) == IDNO )
 				{
 					return false;
 				}
@@ -774,7 +767,7 @@ namespace Menge
         Resolution windowResolution;
         m_application->calcWindowResolution( windowResolution );
 
-        WindowHandle wh = this->createWindow( title, windowResolution, fullscreen );
+        WindowHandle wh = this->createWindow( projectTitle, windowResolution, fullscreen );
 
         this->setActive( true );
 
@@ -886,9 +879,6 @@ namespace Menge
 			m_userPath += m_currentPath;
 			m_userPath += L"User";
 			m_userPath += MENGE_FOLDER_DELIM;
-
-			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
-			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
@@ -915,9 +905,6 @@ namespace Menge
             m_userPath += MENGE_FOLDER_DELIM;
 			m_userPath += m_projectName;
 			m_userPath += MENGE_FOLDER_DELIM;
-
-			wcsncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
-			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
         // mount user directory
@@ -936,31 +923,28 @@ namespace Menge
 				);
 		}
 
-		String logFilename = "Game";
+        
+        std::wstringstream dateStream;
+        std::time_t ctTime; 
+        std::time(&ctTime);
+        std::tm* sTime = std::localtime( &ctTime );
 
-		if( m_enableDebug == true )
-		{
-			std::stringstream dateStream;
-			std::time_t ctTime; 
-			std::time(&ctTime);
-			std::tm* sTime = std::localtime( &ctTime );
-			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
-				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
-				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
+        dateStream << 1900 + sTime->tm_year 
+            << L"_" << std::setw(2) << std::setfill(L'0') << (sTime->tm_mon+1) 
+            << L"_" << std::setw(2) << std::setfill(L'0') << sTime->tm_mday 
+            << L"_" << std::setw(2) << std::setfill(L'0') << sTime->tm_hour 
+            << L"_" << std::setw(2) << std::setfill(L'0') << sTime->tm_min 
+            << L"_"	<< std::setw(2) << std::setfill(L'0') << sTime->tm_sec;
 
-			String dateString = dateStream.str();
-			logFilename += "_";
-			logFilename += dateString;
-		}
-
-		logFilename += ".log";
-
-		WString logFilenameW;
-		WindowsLayer::ansiToUnicode( logFilename, logFilenameW );
-
-		FileOutputStreamInterface* fileLogInterface = fileService->openOutputFile( ConstString("user"), logFilenameW );
+        WString date = dateStream.str();
+                
+        WString logFilename;
+        logFilename += L"Game";
+        logFilename += L"_";
+        logFilename += date;
+		logFilename += L".log";
+        
+		FileOutputStreamInterface* fileLogInterface = fileService->openOutputFile( ConstString("user"), logFilename );
 
 		m_fileLog = new FileLogger();
 		m_fileLog->setFileInterface( fileLogInterface );
@@ -973,6 +957,20 @@ namespace Menge
 				, logFilename.c_str()
 				);
 		}
+
+        const char * version_info = Application::getVersionInfo();
+        WString logPath;
+        logPath += m_userPath;
+        logPath += logFilename;
+
+        WString dumpPath;
+        dumpPath += m_userPath;
+        dumpPath += L"Dump";
+        dumpPath += L"_";
+        dumpPath += date;
+        dumpPath += L".dmp";
+
+        CriticalErrorsMonitor::run( version_info, logPath, dumpPath );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setupInputService( InputServiceInterface * _service )
@@ -1137,12 +1135,10 @@ namespace Menge
 		return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( const Menge::WString & _name, const Resolution & _resolution, bool _fullscreen )
+	WindowHandle WinApplication::createWindow( const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen )
 	{
 		m_windowResolution = _resolution;
-
-		m_name = _name;
-
+        
 		// Register the window class		
 		ATOM result = WindowsLayer::registerClass( s_wndProc, 0, 0, m_hInstance, IDI_MENGE
 					, (HBRUSH)GetStockObject(BLACK_BRUSH)
@@ -1159,7 +1155,7 @@ namespace Menge
 		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
 
 		DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
-		m_hWnd = WindowsLayer::createWindowEx( exStyle, m_windowClassName, m_name, dwStyle
+		m_hWnd = WindowsLayer::createWindowEx( exStyle, m_windowClassName, _projectTitle, dwStyle
 				, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
 				, NULL, NULL, m_hInstance, (LPVOID)this );
 

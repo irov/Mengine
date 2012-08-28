@@ -600,11 +600,9 @@ namespace Metacode
                 , File_Alpha_successful(false)
                 , File_CodecAlpha_successful(false)
                 , File_CodecRGB_successful(false)
-                , File_MaxSize_successful(false)
                 , File_Offset_successful(false)
                 , File_PathAlpha_successful(false)
                 , File_PathRGB_successful(false)
-                , File_Size_successful(false)
                 , File_UV_successful(false)
                 , File_WrapX_successful(false)
                 , File_WrapY_successful(false)
@@ -716,41 +714,6 @@ namespace Metacode
                 (_self->*_method)( this->File_CodecRGB );
             }
             
-            bool get_File_MaxSize( mt::vec2f & _value ) const
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_MaxSize;
-            
-                return true;
-            }
-            
-            bool swap_File_MaxSize( mt::vec2f & _value ) const
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_MaxSize);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_File_MaxSize( C * _self, M _method )
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->File_MaxSize );
-            }
-            
             bool get_File_Offset( mt::vec2f & _value ) const
             {
                 if( File_Offset_successful == false )
@@ -854,41 +817,6 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_PathRGB );
-            }
-            
-            bool get_File_Size( mt::vec2f & _value ) const
-            {
-                if( File_Size_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_Size;
-            
-                return true;
-            }
-            
-            bool swap_File_Size( mt::vec2f & _value ) const
-            {
-                if( File_Size_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_Size);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_File_Size( C * _self, M _method )
-            {
-                if( File_Size_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->File_Size );
             }
             
             bool get_File_UV( mt::vec4f & _value ) const
@@ -1010,16 +938,12 @@ namespace Metacode
             mutable Menge::ConstString File_CodecAlpha;
             bool File_CodecRGB_successful;
             mutable Menge::ConstString File_CodecRGB;
-            bool File_MaxSize_successful;
-            mutable mt::vec2f File_MaxSize;
             bool File_Offset_successful;
             mutable mt::vec2f File_Offset;
             bool File_PathAlpha_successful;
             mutable Menge::WString File_PathAlpha;
             bool File_PathRGB_successful;
             mutable Menge::WString File_PathRGB;
-            bool File_Size_successful;
-            mutable mt::vec2f File_Size;
             bool File_UV_successful;
             mutable mt::vec4f File_UV;
             bool File_WrapX_successful;
@@ -1036,8 +960,6 @@ namespace Metacode
                 : Meta_Resource()
                 , File_Alpha_successful(false)
                 , File_Codec_successful(false)
-                , File_MaxSize_successful(false)
-                , File_Size_successful(false)
                 , File_UV_successful(false)
                 , File_WrapX_successful(false)
                 , File_WrapY_successful(false)
@@ -1114,41 +1036,6 @@ namespace Metacode
                 (_self->*_method)( this->File_Codec );
             }
             
-            bool get_File_MaxSize( mt::vec2f & _value ) const
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_MaxSize;
-            
-                return true;
-            }
-            
-            bool swap_File_MaxSize( mt::vec2f & _value ) const
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_MaxSize);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_File_MaxSize( C * _self, M _method )
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->File_MaxSize );
-            }
-            
             const Menge::WString & get_File_Path() const
             {
                 return this->File_Path;
@@ -1163,41 +1050,6 @@ namespace Metacode
             void method_File_Path( C * _self, M _method )
             {
                 (_self->*_method)( this->File_Path );
-            }
-            
-            bool get_File_Size( mt::vec2f & _value ) const
-            {
-                if( File_Size_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_Size;
-            
-                return true;
-            }
-            
-            bool swap_File_Size( mt::vec2f & _value ) const
-            {
-                if( File_Size_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_Size);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_File_Size( C * _self, M _method )
-            {
-                if( File_Size_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->File_Size );
             }
             
             bool get_File_UV( mt::vec4f & _value ) const
@@ -1317,11 +1169,7 @@ namespace Metacode
             mutable bool File_Alpha;
             bool File_Codec_successful;
             mutable Menge::ConstString File_Codec;
-            bool File_MaxSize_successful;
-            mutable mt::vec2f File_MaxSize;
             mutable Menge::WString File_Path;
-            bool File_Size_successful;
-            mutable mt::vec2f File_Size;
             bool File_UV_successful;
             mutable mt::vec4f File_UV;
             bool File_WrapX_successful;

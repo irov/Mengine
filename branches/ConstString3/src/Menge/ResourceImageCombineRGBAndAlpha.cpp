@@ -83,9 +83,9 @@ namespace Menge
         metadata->swap_File_PathRGB( m_fileNameRGB );
         metadata->swap_File_CodecRGB( m_codecTypeRGB );
 
-        metadata->get_File_MaxSize( m_imageFrame.maxSize );
+        //metadata->get_File_MaxSize( m_imageFrame.maxSize );
         metadata->get_File_UV( m_imageFrame.uv );
-        metadata->get_File_Size( m_imageFrame.size );
+        //metadata->get_File_Size( m_imageFrame.size );
         metadata->get_File_Alpha( m_imageFrame.isAlpha );
         metadata->get_File_WrapX( m_imageFrame.wrapX );
         metadata->get_File_WrapY( m_imageFrame.wrapY );

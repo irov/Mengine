@@ -64,7 +64,7 @@ namespace Menge
         metadata->swap_File_Path( m_fileName );        
         metadata->swap_File_Codec( m_codecType );        
 
-        metadata->get_File_MaxSize( m_imageFrame.maxSize );
+        //metadata->get_File_MaxSize( m_imageFrame.maxSize );
         metadata->get_File_UV( m_imageFrame.uv );
         //metadata->get_File_Size( m_imageDesc.size );
         metadata->get_File_Alpha( m_imageFrame.isAlpha );

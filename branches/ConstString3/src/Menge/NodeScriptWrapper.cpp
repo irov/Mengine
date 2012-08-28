@@ -85,6 +85,7 @@
 
 #	include "ResourceVisitor.h"
 
+#   include "ThreadTask.h"
 #	include "ThreadTaskManager.h"
 #	include "ThreadTaskDeferredLoading.h"
 #	include "ThreadTaskLoadResourceImage.h"

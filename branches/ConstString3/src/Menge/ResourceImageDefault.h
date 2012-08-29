@@ -24,7 +24,7 @@ namespace Menge
 		bool loadBufferAlpha( unsigned char * _buffer, int _pitch ) override;
 
     public:
-        void addImagePath( const WString& _imagePath, const mt::vec2f & _size );
+        void setImagePath( const WString& _imagePath );
 
 	protected:
 		bool isValid() const override;

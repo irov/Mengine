@@ -59,7 +59,7 @@ namespace Menge
 		, m_supportA8(false)
 		//, m_renderScale(0.f, 0.f)
 		//, m_renderOffset(0.f, 0.f)
-		, m_megatextures(NULL)
+		//, m_megatextures(NULL)
 		, m_vbPos(0)
 		, m_currentRenderPass(NULL)
 	{
@@ -231,7 +231,7 @@ namespace Menge
 			this->createMaterialGroup( CONST_STRING(ParticleBlend), mt );
 		}
 		
-		m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
+		//m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
 		return true;
 	}
@@ -298,7 +298,7 @@ namespace Menge
 			m_interface = NULL;
 		}
 
-		delete m_megatextures;
+		//delete m_megatextures;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _lowContentViewport, const Viewport & _renderViewport, int _bits, bool _fullscreen,
@@ -326,7 +326,7 @@ namespace Menge
 		m_debugInfo.textureMemory = 0;
 		m_debugInfo.textureCount = 0;
 		m_debugInfo.frameCount = 0;
-		m_debugInfo.megatextures = 0;
+		//m_debugInfo.megatextures = 0;
 
 		if( this->recreate2DBuffers_( m_maxIndexCount ) == false )
 		{
@@ -602,23 +602,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface * RenderEngine::createMegatexture( size_t _width, size_t _height, PixelFormat _format )
 	{
-		PixelFormat format = m_megatextures->getPixelFormat();
+		//PixelFormat format = m_megatextures->getPixelFormat();
 
-		if( _format != format )
-		{
-			RenderTextureInterface * texture = this->createTexture( _width, _height, _format );
+		//if( _format != format )
+		//{
+		//	RenderTextureInterface * texture = this->createTexture( _width, _height, _format );
 
-			return texture;
-		}
+		//	return texture;
+		//}
 
-		RenderTextureInterface * texture = m_megatextures->createTexture( _width, _height );
+		//RenderTextureInterface * texture = m_megatextures->createTexture( _width, _height );
 
-		size_t memroy_size = texture->getMemoryUse();
+		//size_t memroy_size = texture->getMemoryUse();
 
-		m_debugInfo.textureMemory += memroy_size;
-		++m_debugInfo.textureCount;
+		//m_debugInfo.textureMemory += memroy_size;
+		//++m_debugInfo.textureCount;
 
-		return texture;
+		//return texture;
+
+        return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface * RenderEngine::createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener )
@@ -870,7 +872,7 @@ namespace Menge
 
 		RenderTextureInterface * texture = this->createMegatexture( dataInfo->width, dataInfo->height, dataInfo->format );
 
-		m_debugInfo.megatextures = m_megatextures->getMegatextureCount();
+		//m_debugInfo.megatextures = m_megatextures->getMegatextureCount();
 
 		if( texture == NULL )
 		{

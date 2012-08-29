@@ -122,7 +122,7 @@ namespace Menge
 		ResourceImageDefault * image = ResourceManager::get()
 			->createResourceT<ResourceImageDefault>( category, group, _fullname, Consts::get()->c_ResourceImageDefault );
 
-		image->addImagePath( _path, mt::vec2f(-1.f,-1.f) );
+		image->setImagePath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::_release()

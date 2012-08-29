@@ -94,17 +94,14 @@ namespace Menge
 		this->releaseImageFrame_( m_imageFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addImagePath( const WString& _imagePath, const mt::vec2f & _size )
+	void ResourceImageDefault::setImagePath( const WString& _imagePath )
 	{
         m_fileName = _imagePath;
         m_codecType = s_getImageCodec(_imagePath);
 
         m_imageFrame.texture = NULL;
         m_imageFrame.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-		m_imageFrame.maxSize = _size;
-		m_imageFrame.size = _size;
-		//desc.isAlpha = false; //
-		m_imageFrame.isAlpha = true; //
+		m_imageFrame.isAlpha = true;
 		m_imageFrame.wrapX = false;
 		m_imageFrame.wrapY = false;
 	}

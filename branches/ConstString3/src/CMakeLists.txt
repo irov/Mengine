@@ -10,7 +10,7 @@ ADD_SUBDIRECTORY( System )
 
 
 if( MSVC )
-    ADD_SUBDIRECTORY( RenderParticles )
+#    ADD_SUBDIRECTORY( RenderParticles )
 endif( MSVC )
 
 SET( APPLICATION_DEPENDENCIES

@@ -91,7 +91,7 @@ namespace Menge
 			size_t dips;
 			size_t textureMemory;
 			size_t textureCount;
-			size_t megatextures;
+			//size_t megatextures;
 		};
 
 	public:
@@ -238,7 +238,7 @@ namespace Menge
 	private:
 		RenderSystemInterface * m_interface;
 
-		Megatextures * m_megatextures;
+		//Megatextures * m_megatextures;
 
 		size_t m_maxQuadCount;
 

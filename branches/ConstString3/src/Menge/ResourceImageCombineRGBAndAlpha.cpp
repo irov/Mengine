@@ -341,7 +341,20 @@ namespace Menge
 			return false;
 		}
 
-		this->loadAlphaData_( _buffer, _pitch, imageDecoderAlpha );
+        const ImageCodecDataInfo* dataInfoAlpha = imageDecoderAlpha->getCodecDataInfo();
+
+        ImageCodecOptions optionsAlpha;
+
+        optionsAlpha.flags |= DF_READ_ALPHA_ONLY;
+        optionsAlpha.flags |= DF_CUSTOM_PITCH;
+        optionsAlpha.pitch = _pitch;
+
+        imageDecoderAlpha->setOptions( &optionsAlpha );
+
+        const ImageCodecDataInfo * data = imageDecoderAlpha->getCodecDataInfo();
+
+        unsigned int bufferSize = _pitch * data->height;
+        unsigned int b = imageDecoderAlpha->decode( _buffer, bufferSize );
 
 		imageDecoderAlpha->destroy();
 		streamAlpha->close();

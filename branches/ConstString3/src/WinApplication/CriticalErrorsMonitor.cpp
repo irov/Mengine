@@ -78,8 +78,6 @@ namespace Menge
 
         if( hFile == INVALID_HANDLE_VALUE ) 
         {
-            MessageBox(NULL, s_dumpPath.c_str(), L"Invalid create dump file", MB_OK );
-
             return false;
         }
         
@@ -87,8 +85,6 @@ namespace Menge
 
         if( dbghelp_dll == NULL )
         {
-            MessageBox(NULL, L"dbghelp.dll", L"Invalid load dll", MB_OK );
-
             ::CloseHandle( hFile );
 
             return false;
@@ -105,8 +101,6 @@ namespace Menge
 
         if( MiniDumpWriteDump == NULL )
         {
-            MessageBox(NULL, L"MiniDumpWriteDump", L"Invalid get process address", MB_OK );
-
             FreeLibrary( dbghelp_dll );
             ::CloseHandle( hFile );
 
@@ -129,8 +123,6 @@ namespace Menge
 
         if( successful == FALSE )
         {
-            MessageBox(NULL, L"MiniDumpWriteDump", L"Invalid write dump", MB_OK );
-
             return false;
         }
 
@@ -140,76 +132,74 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 	{
-		EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
-		CONTEXT* pContext = pExceptionPointers->ContextRecord;
+		//EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
+		//CONTEXT* pContext = pExceptionPointers->ContextRecord;
 
-		HANDLE hFile = WindowsLayer::createFile( s_logPath.c_str(), GENERIC_READ|GENERIC_WRITE, 
-			FILE_SHARE_WRITE|FILE_SHARE_READ, OPEN_ALWAYS );
+		//HANDLE hFile = WindowsLayer::createFile( s_logPath.c_str(), GENERIC_READ|GENERIC_WRITE, 
+		//	FILE_SHARE_WRITE|FILE_SHARE_READ, OPEN_ALWAYS );
 
-		if( hFile != INVALID_HANDLE_VALUE )
-		{
-			DWORD wr;
-			SYSTEMTIME tm;
-			GetLocalTime(&tm);
+		//if( hFile != INVALID_HANDLE_VALUE )
+		//{
+		//	DWORD wr;
+		//	SYSTEMTIME tm;
+		//	GetLocalTime(&tm);
 
-			OSVERSIONINFOA os_ver;
-			os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-			GetVersionExA(&os_ver);
+		//	OSVERSIONINFOA os_ver;
+		//	os_ver.dwOSVersionInfoSize = sizeof(os_ver);
+		//	GetVersionExA(&os_ver);
 
-			char wBuffer[4096];
-			::SetFilePointer( hFile, 0, 0, FILE_END );
+		//	char wBuffer[4096];
+		//	::SetFilePointer( hFile, 0, 0, FILE_END );
 
-			strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld\n", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			snprintf( wBuffer, 4096, "Source SVN Revision: %s", s_versionInfo );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			strcpy( wBuffer, "\nCrash Info:\n" );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Address: %p\n\n", pRecord->ExceptionAddress );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
-			{
-				snprintf( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			}
-			if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
-			{
-				snprintf( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			}
+		//	strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		//	snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		//	snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld\n", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		//	snprintf( wBuffer, 4096, "Source SVN Revision: %s", s_versionInfo );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		//	strcpy( wBuffer, "\nCrash Info:\n" );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//	snprintf( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//	snprintf( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//	snprintf( wBuffer, 4096, "Address: %p\n\n", pRecord->ExceptionAddress );
+		//	::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//	if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
+		//	{
+		//		snprintf( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
+		//		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//		snprintf( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
+		//		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//		snprintf( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
+		//		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//	}
+		//	if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
+		//	{
+		//		snprintf( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
+		//		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//		snprintf( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
+		//		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//		snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
+		//		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		//	}
 
-			s_logStackFrames( hFile, pRecord->ExceptionAddress, (char*)pContext->Ebp );
-			/*switch (pRecord->ExceptionCode) 
-			{
-			case EXCEPTION_ACCESS_VIOLATION:
-			case EXCEPTION_IN_PAGE_ERROR:
-			case EXCEPTION_INT_DIVIDE_BY_ZERO:
-			case EXCEPTION_STACK_OVERFLOW:
-			}*/
+		//	s_logStackFrames( hFile, pRecord->ExceptionAddress, (char*)pContext->Ebp );
+		//	/*switch (pRecord->ExceptionCode) 
+		//	{
+		//	case EXCEPTION_ACCESS_VIOLATION:
+		//	case EXCEPTION_IN_PAGE_ERROR:
+		//	case EXCEPTION_INT_DIVIDE_BY_ZERO:
+		//	case EXCEPTION_STACK_OVERFLOW:
+		//	}*/
 
-			::CloseHandle( hFile );
-		}
-
-        MessageBox(NULL, s_dumpPath.c_str(), L"write dump file", MB_OK );
-
+		//	::CloseHandle( hFile );
+		//}
+        
         s_writeCrashDump( pExceptionPointers );
-
+                
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -24,6 +24,7 @@ namespace Menge
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool SoundConverterFFMPEGToOGG::convert()
+
 	{
 		if( m_options.inputFileName.empty() == true  || m_options.pakName.empty() == true )
 		{
@@ -112,13 +113,7 @@ namespace Menge
 			, _output.c_str() 
 			);
 
-		int result = _wsystem( buffer.c_str() );
-		
-		if( result == 0 )
-		{
-			return true;
-		}
-		else
+		if( _wsystem( buffer.c_str() ) != 0 )
 		{
 			LOGGER_ERROR(m_logService)( "SoundConverterFFMPEGToOGG::convert_: %S"
 				, buffer.c_str()
@@ -126,5 +121,7 @@ namespace Menge
 
 			return false;
 		}
+
+        return true;
 	}
 }

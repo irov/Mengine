@@ -64,7 +64,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AlphaChannel * AlphaChannelManager::makeAlphaChannel_( const ConstString& _name, ResourceImage * _resourceImage )
 	{
-        const mt::vec2f & size = _resourceImage->getSize();
+        const mt::vec2f & size = _resourceImage->getMaxSize();
 
 		size_t width = (size_t)(size.x + 0.5f);
 		size_t height = (size_t)(size.y + 0.5f);

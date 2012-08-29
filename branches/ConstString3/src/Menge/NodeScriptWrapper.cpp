@@ -918,7 +918,7 @@ namespace Menge
 					->createResourceT<ResourceImageDefault>( _pakName, Consts::get()->c_builtin_empty, _resourceName, Consts::get()->c_ResourceImageDefault );
 			}
 
-			resImage->addImagePath( _filename, mt::vec2f(-1.f,-1.f) );
+			resImage->setImagePath( _filename );
 		}
 
 		//static bool createFolder( const String& _path )

@@ -1,4 +1,5 @@
 #	pragma once
+
 #	include "Interface/StringizeInterface.h"
 #	include "SoundConverter.h"
 
@@ -17,6 +18,7 @@ namespace Menge
 	public:
 		bool initialize() override;
 		bool convert() override;
+
 	protected:
 		StringizeServiceInterface * m_stringizeService;
 

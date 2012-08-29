@@ -51,18 +51,18 @@ MESSAGE( ${magic_lib_path} )
 
 SET( APPLICATION_LIB_PATHS
  ${APPLICATION_LIB_PATHS}
- ${magic_lib_path}
-)
-
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
  PARENT_SCOPE
 )
 
-if( WIN32 )
+if( MINGW )
 	SET( APPLICATION_LIBS
 	${APPLICATION_LIBS}
-	magic${MENGINE_LIB_POSTFIX}
+	${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic.a
+	)
+elseif( WIN32 )
+	SET( APPLICATION_LIBS
+	${APPLICATION_LIBS}
+	${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic.lib
 	)
 elseif( APPLE )
     IF(${MENGINE_TARGET} STREQUAL "IPAD")
@@ -78,7 +78,7 @@ elseif( APPLE )
         ${magic_lib_path}/libimagic_simulator.a
         )    
     ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
-endif( WIN32 )
+endif( MINGW )
 
 
 SET( APPLICATION_LIBS

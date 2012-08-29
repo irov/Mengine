@@ -256,9 +256,16 @@ namespace Menge
 		PF_SHORT_GR = 34,
 		// 48-bit pixel format, 16 bits for red, green and blue
 		PF_SHORT_RGB = 37,
-		// Number of pixel formats currently defined
-		PF_COUNT = 38
-	};
+        
+        // ETC1 pixel format, 4 bits for red, green and blue
+        PF_ETC1 = 38,
+        // PVRTC pixel format, 4 bits for red, green and blue
+        PF_PVRTC = 39,
+
+        // Number of pixel formats currently defined
+        PF_COUNT = 40
+    };
+
 
 	class RenderImageInterface
 	{

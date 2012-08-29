@@ -17,6 +17,39 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_unicodeToUtf( const CSimpleIniCaseW & _ini, const WString & _source, String & _value )
+	{
+		CSimpleIniCaseW::Converter converter = _ini.GetConverter();
+		
+		converter.ConvertToStore( _source.c_str() );
+		_value = converter.Data();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static SI_Error s_loadIniFile( CSimpleIniCaseW & _ini, const WString & _path )
+	{
+		String pathA;
+		s_unicodeToUtf( _ini, _path, pathA );
+
+		FILE * fp = fopen( pathA.c_str(), "rb" );
+		fseek (fp , 0 , SEEK_END);
+		int size = ftell (fp);
+		rewind (fp);
+
+		char * buffer = new char[size + 1];
+		buffer[size] = 0;
+
+		fread ( buffer, 1, size, fp );
+
+		SI_Error iniError = _ini.LoadData( buffer );
+		
+		fclose(fp);
+		delete [] buffer;
+
+		return iniError;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, String & _value )
 	{
 		const wchar_t * w_value = _ini.GetValue( _section, _key );
@@ -189,12 +222,13 @@ namespace Menge
 			, applicationSettingsPath.c_str()
 			);
 
-	
-		SI_Error iniError = m_applicationIni.LoadFile( applicationSettingsPath.c_str() );
+		//SI_Error iniError = m_applicationIni.LoadFile( applicationSettingsPath.c_str() );
 
+		SI_Error iniError = s_loadIniFile( m_applicationIni, applicationSettingsPath.c_str() );
+		
 		if( iniError != 0 )
 		{
-			swprintf_s(m_error, L"Invalid load application settings %S", applicationSettingsPath.c_str() );
+			swprintf(m_error, L"Invalid load application settings %S", applicationSettingsPath.c_str() );
 			return false;
 		}
 
@@ -242,7 +276,9 @@ namespace Menge
 	/////////////////////////////////////////////////////
 	bool StartupConfigLoader::loadGame_( const WString& _path )
 	{
-		SI_Error game_error = m_gameIni.LoadFile( _path.c_str() );
+		//SI_Error game_error = m_gameIni.LoadFile( _path.c_str() );
+
+		SI_Error game_error = s_loadIniFile( m_gameIni, _path.c_str() );
 
 		if( game_error != 0 )
 		{
@@ -282,7 +318,9 @@ namespace Menge
 	/////////////////////////////////////////////////////
 	bool StartupConfigLoader::loadResourcePacks_( const WString & _path )
 	{
-		SI_Error error = m_resourcePackIni.LoadFile( _path.c_str() );
+		//SI_Error error = m_resourcePackIni.LoadFile( _path.c_str() );
+
+		SI_Error error = s_loadIniFile( m_resourcePackIni, _path.c_str() );
 
 		if( error != 0 )
 		{

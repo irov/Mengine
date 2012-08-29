@@ -7,13 +7,15 @@ src
     StartupConfigLoader.cpp
 )
 
+add_definitions(-D_UNICODE)
+add_definitions(-DSI_CONVERT_GENERIC)
+
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/simpleini
 ) 
-
 
 SET( MENGE_DEPENDENCIES
  ${MENGE_DEPENDENCIES}

@@ -1,5 +1,3 @@
-#	pragma once
-
 #	include "StartupConfigLoader.h"
 
 namespace Menge

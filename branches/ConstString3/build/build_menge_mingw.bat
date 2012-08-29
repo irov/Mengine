@@ -6,6 +6,5 @@
 mingw32-make.exe
 @popd
 
-::"..\dependencies\cmake\bin\cmake.exe" -DCMAKE_CONFIGURATION_TYPES:STRING="Debug;Release" -G"Visual Studio 8 2005" -DMENGINE_LIB_DIR:STRING="build_msvc8" ../src
 @if NOT "%1"=="/NOPAUSE" pause
 @echo on

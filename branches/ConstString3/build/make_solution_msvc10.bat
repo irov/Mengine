@@ -1,7 +1,0 @@
-@echo off
-
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Win32" "..\vs10_solution" "Visual Studio 10" "" "-DCMAKE_CONFIGURATION_TYPES:STRING='Debug;RelWithDebInfo'" "-DMENGINE_LIB_DIR:STRING='build_msvc10'"
-
-::"..\dependencies\cmake\bin\cmake.exe" -DCMAKE_CONFIGURATION_TYPES:STRING="Debug;Release" -G"Visual Studio 10" -DMENGINE_LIB_DIR:STRING="build_msvc8" ../src
-@pause
-@echo on

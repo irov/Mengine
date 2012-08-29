@@ -6,17 +6,19 @@
 nmake
 @popd
 
+Starting dependencies build release with debug info configuration...
+@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc10" "NMake Makefiles" RelWithDebInfo
+@pushd ..\dependencies\build_msvc10\RelWithDebInfo
+nmake
+@popd
+
 @echo Starting dependencies build release configuration...
 @echo @call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\dependencies" "..\dependencies\build_msvc10" "NMake Makefiles" Release
 @echo @pushd ..\dependencies\build_msvc10\Release
 @echo nmake
 @echo @popd
 
-@echo Starting dependencies build release with debug info configuration...
-@echo @call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\dependencies" "..\dependencies\build_msvc10" "NMake Makefiles" RelWithDebInfo
-@echo @pushd ..\dependencies\build_msvc10\RelWithDebInfo
-@echo nmake
-@echo @popd
+
 
 @echo Done
 @pause

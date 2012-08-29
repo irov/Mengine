@@ -35,6 +35,8 @@
 
 //#	include <mhook.h>
 
+#	include "StartupConfigLoader/StartupConfigLoader.h"
+
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif
@@ -138,165 +140,6 @@ namespace Menge
 		m_desktopResolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, WString & _value )
-	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
-
-		if( w_value == NULL )
-		{
-			return false;
-		}
-
-		_value.assign( w_value );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, String & _value )
-	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
-
-		if( w_value == NULL )
-		{
-			return false;
-		}
-
-		WindowsLayer::unicodeToAnsi( w_value, _value );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, Resolution & _value )
-	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
-
-		if( w_value == NULL )
-		{
-			return false;
-		}
-
-		int width;
-		int height;
-		if( swscanf( w_value, L"%d;%d", &width, &height ) != 2 )
-		{
-			return false;
-		}
-
-		_value.setWidth( width );
-		_value.setHeight( height );
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, Viewport & _value )
-	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
-
-		if( w_value == NULL )
-		{
-			return false;
-		}
-
-		float left;
-		float top;
-		float right;
-		float bottom;
-		if( swscanf( w_value, L"%f;%f;%f;%f", &left, &top, &right, &bottom ) != 4 )
-		{
-			return false;
-		}
-
-		_value.begin.x = left;
-		_value.begin.y = top;
-		_value.end.x = right;
-		_value.end.y = bottom;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, bool & _value )
-	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
-
-		if( w_value == NULL )
-		{
-			return false;
-		}
-
-		int tmp_value;
-		if( swscanf( w_value, L"%d", &tmp_value ) != 1 )
-		{
-			return false;
-		}
-
-		_value = tmp_value != 0;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, size_t & _value )
-	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
-
-		if( w_value == NULL )
-		{
-			return false;
-		}
-
-		size_t tmp_value;
-		if( swscanf( w_value, L"%u", &tmp_value ) != 1 )
-		{
-			return false;
-		}
-
-		_value = tmp_value;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValues( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, TVectorWString & _values )
-	{
-		CSimpleIniCaseW::TNamesDepend values;
-		if( _ini.GetAllValues( _section, _key, values ) == false )
-		{
-			return false;
-		}
-
-		for( CSimpleIniCaseW::TNamesDepend::const_iterator 
-			it = values.begin(),
-			it_end = values.end();
-		it != it_end;
-		++it )
-		{
-			_values.push_back( it->pItem );
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool s_getIniAllSettings( const CSimpleIniCaseW & _ini, const wchar_t * _section, TMapWString & _values )
-	{
-		CSimpleIniCaseW::TNamesDepend values;
-		if( _ini.GetAllKeys( _section, values ) == false )
-		{
-			return false;
-		}
-
-		for( CSimpleIniCaseW::TNamesDepend::const_iterator 
-			it = values.begin(),
-			it_end = values.end();
-		it != it_end;
-		++it )
-		{
-			WString val;
-			s_getIniValue( _ini, _section, it->pItem, val );
-
-			_values.insert( std::make_pair( it->pItem, val ) );
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{	
 		//::timeBeginPeriod( 1 );
@@ -327,218 +170,56 @@ namespace Menge
 		//	m_userPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
 		//}
 
-		//TODO - вынести это из компил€ции
+		StartupConfigLoader loader;
+
 		WindowsLayer::getCurrentDirectory( m_currentPath );
 		m_currentPath += MENGE_FOLDER_DELIM;
 
-		WString application_settings_path;
-		application_settings_path += m_currentPath;
-		application_settings_path += L"application.ini";
-
-		printf( "load application config %S ..."
-			, application_settings_path.c_str()
-			);
-
-		CSimpleIniCaseW ini_settings(false, true, true);
-		SI_Error ini_error = ini_settings.LoadFile( application_settings_path.c_str() );
-
-		if( ini_error != 0 )
+		if( loader.load( m_currentPath, L"application.ini" ) == false )
 		{
+			const wchar_t* error = loader.getLastError();
+
 			::MessageBox( NULL
-				, application_settings_path.c_str()
-				, L"Invalid load application setting"
+				, error
+				, L"Config Loading Error"
 				, MB_OK
 				);
-
-			return false;
-		}
-		
-		const wchar_t * w_game_path = ini_settings.GetValue( L"Game", L"Path" );
-
-		if( w_game_path == 0 )
-		{
-			::MessageBox( NULL
-				, application_settings_path.c_str()
-				, L"Not found Game Path"
-				, MB_OK
-				);
-
-			return false;
 		}
 
-		const wchar_t * w_resource_path = ini_settings.GetValue( L"Resource", L"Path" );
+		const StartupSettings & settings = loader.getSettings();
 
-		if( w_resource_path == 0 )
-		{
-			::MessageBox( NULL
-				, application_settings_path.c_str()
-				, L"Not found Game Path"
-				, MB_OK
-				);
+		ApplicationSettings appSettings = settings.applicationSettings;
 
-			return false;
-		}
-		
-		CSimpleIniCaseW game_settings(false, true, true);
+		m_projectName = settings.projectName;
 
-		WString game_settings_path;
-
-		game_settings_path += m_currentPath;
-		game_settings_path += w_game_path;
-
-		SI_Error game_error = game_settings.LoadFile( game_settings_path.c_str() );
-
-		if( game_error != 0 )
-		{
-			::MessageBox( NULL
-				, game_settings_path.c_str()
-				, L"Invalid load game setting"
-				, MB_OK
-				);
-
-			return false;
-		}
-
-		ApplicationSettings appSettings;
-
-        bool alreadyRunning = false;
-
-        appSettings.fixedContentResolution = true;
-        appSettings.windowModeCheck = false;
-        appSettings.fullscreen = true;
-        appSettings.vsync = true;
-
-        String defaultLocale;
-		
-		s_getIniValue( game_settings, L"Project", L"Name", m_projectName );
-        s_getIniValue( game_settings, L"Project", L"Company", m_companyName );
-		s_getIniValue( game_settings, L"Project", L"Codename", appSettings.projectCodename );
-        s_getIniValue( game_settings, L"Locale", L"Default", defaultLocale );
-		s_getIniValue( game_settings, L"Game", L"ContentResolution", appSettings.contentResolution );
-		s_getIniValue( game_settings, L"Game", L"LowContentViewport", appSettings.lowContentViewport );
-		s_getIniValue( game_settings, L"Game", L"FixedContentResolution", appSettings.fixedContentResolution );
-		s_getIniValue( game_settings, L"Game", L"PersonalityModule", appSettings.personalityModule );
-        s_getIniValue( game_settings, L"Game", L"AlreadyRunning", alreadyRunning );
-        s_getIniValue( game_settings, L"Game", L"WindowModeCheck", appSettings.windowModeCheck );
-		s_getIniValue( game_settings, L"Window", L"Size", appSettings.windowResolution );
-		s_getIniValue( game_settings, L"Window", L"Bits", appSettings.bits );
-		s_getIniValue( game_settings, L"Window", L"Fullscreen", appSettings.fullscreen );
-		s_getIniValue( game_settings, L"Window", L"VSync", appSettings.vsync );		
-
-        TMapWString appParams;
-		s_getIniAllSettings( game_settings, L"Params", appParams );
-
-        TVectorWString plugins;
-		s_getIniValues( game_settings, L"Plugins", L"Name", plugins );
+		m_companyName = settings.companyName;
 
 		appSettings.platformName = "WIN";
-		
+
 		appSettings.baseDir = m_currentPath;
 
-        if( m_projectName.empty() == true )
-        {
-            ::MessageBox( NULL
-                , game_settings_path.c_str()
-                , L"Invalid get project name from game setting"
-                , MB_OK
-                );
-
-            return false;
-        }
-
-        if( m_companyName.empty() == true )
-        {
-            ::MessageBox( NULL
-                , game_settings_path.c_str()
-                , L"Invalid get company name from game setting"
-                , MB_OK
-                );
-
-            return false;
-        }
-
-		//WString resourcePacksPath;
-		//resourcePacksPath += m_currentPath;
-		//resourcePacksPath += MENGE_FOLDER_DELIM;
-		//resourcePacksPath += w_resource_path;
-
-		CSimpleIniCaseW resources_settings(false, true, true);
-
-		WString resources_settings_path;
-
-		resources_settings_path += m_currentPath;
-		resources_settings_path += w_resource_path;
-
-		SI_Error resources_error = resources_settings.LoadFile( resources_settings_path.c_str() );
-		
-		if( resources_error != 0 )
+		if( m_projectName.empty() == true )
 		{
 			::MessageBox( NULL
-				, resources_settings_path.c_str()
-				, L"Invalid load resources setting"
+				, L"Invalid get project name from game setting"
+				, L"Config Loading Error"
 				, MB_OK
 				);
 
 			return false;
 		}
 
-		TVectorWString resourcePacksSettings;
-		s_getIniValues( resources_settings, L"GAME_RESOURCES", L"ResourcePack", resourcePacksSettings );
-
-		TVectorResourcePackDesc resourcePacks;
-
-		for( TVectorWString::iterator
-			it = resourcePacksSettings.begin(),
-			it_end = resourcePacksSettings.end();
-		it != it_end;
-		++it )
+		if( m_companyName.empty() == true )
 		{
-			const WString & resourcePack = *it;
+			::MessageBox( NULL
+				, L"Invalid get company name from game setting"
+				, L"Config Loading Error"
+				, MB_OK
+				);
 
-			ResourcePackDesc pack;
-
-			pack.preload = true;
-			pack.type = "dir";
-			
-            s_getIniValue( resources_settings, resourcePack.c_str(), L"Name", pack.name );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Type", pack.type );            
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Path", pack.path );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Locale", pack.locale );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Platform", pack.platform );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.description );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"PreLoad", pack.preload );						
-
-			resourcePacks.push_back( pack );
+			return false;
 		}
 
-		TVectorWString languagePackSettings;
-		s_getIniValues( resources_settings, L"GAME_RESOURCES", L"LanguagePack", languagePackSettings );
-
-		TVectorResourcePackDesc languagePacks;
-
-		for( TVectorWString::iterator
-			it = languagePackSettings.begin(),
-			it_end = languagePackSettings.end();
-		it != it_end;
-		++it )
-		{
-			const WString & resourcePack = *it;
-
-			ResourcePackDesc pack;
-
-			pack.preload = true;
-			pack.type = "dir";			
-
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Type", pack.type );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Name", pack.name );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Path", pack.path );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Locale", pack.locale );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Platform", pack.platform );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"Description", pack.description );
-			s_getIniValue( resources_settings, resourcePack.c_str(), L"PreLoad", pack.preload );	
-
-			languagePacks.push_back( pack );
-		}
 
 		//ConstString languagePack;
 		//if( cfg.getSetting( L"LOCALE", L"Default", languagePack ) == true )
@@ -571,7 +252,7 @@ namespace Menge
 
         if( languagePack.empty() == true )
         {
-            languagePack = defaultLocale;
+            languagePack = settings.defaultLocale;
         }
 
 		if( languagePack.empty() == true )
@@ -660,7 +341,7 @@ namespace Menge
 			return false;
 		}
 
-        if( m_application->loadPlugins( plugins ) == false )
+        if( m_application->loadPlugins( settings.plugins ) == false )
         {
             MENGE_LOG_ERROR("Application Failed to loadPlugins");
 
@@ -669,7 +350,7 @@ namespace Menge
 
         ConstString c_languagePack(languagePack);
         
-        if( m_application->createGame( appSettings.personalityModule, c_languagePack, resourcePacks, languagePacks ) == false )
+        if( m_application->createGame( appSettings.personalityModule, c_languagePack, settings.resourcePacks, settings.languagePacks ) == false )
         {
             LOGGER_ERROR(m_logService)( "Application create game failed"
                 );
@@ -683,7 +364,7 @@ namespace Menge
 		
 		const WString & projectTitle = m_application->getProjectTitle();
 
-        if( alreadyRunning == true )
+        if( settings.alreadyRunning == true )
         {	
             m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
             if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, projectTitle ) == false )
@@ -755,7 +436,7 @@ namespace Menge
 
         LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
-        if( m_application->initializeGame( scriptInit, appParams ) == false )
+        if( m_application->initializeGame( scriptInit, settings.appParams ) == false )
         {
             return false;
         }

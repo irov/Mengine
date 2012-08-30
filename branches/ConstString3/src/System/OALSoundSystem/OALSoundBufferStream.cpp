@@ -110,9 +110,7 @@ namespace Menge
             return false;
         }
 
-        int block_size = dataInfo->block_size;
-
-		m_dataBuffer = new unsigned char[block_size];
+		m_dataBuffer = new unsigned char[m_bufferSize];
 
 		return true;
 	}
@@ -129,6 +127,7 @@ namespace Menge
 			alSourceStop( m_sourceId );
 			OAL_CHECK_ERROR();
 			//alSourceRewind( _source );
+            return;
 		}
 				
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
@@ -145,6 +144,7 @@ namespace Menge
 			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId );
 			OAL_CHECK_ERROR();
+            return;
 		}
 
 		bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
@@ -155,6 +155,7 @@ namespace Menge
 			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId2 );
 			OAL_CHECK_ERROR();
+            return;
 		}
 
 		alSourcePlay( m_sourceId );

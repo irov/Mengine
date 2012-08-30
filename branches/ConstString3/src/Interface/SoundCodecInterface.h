@@ -12,7 +12,6 @@ namespace Menge
 		int frequency;
 		int channels;
 		float time_total_secs;
-        int block_size;
 	};
 
 	struct SoundCodecOptions

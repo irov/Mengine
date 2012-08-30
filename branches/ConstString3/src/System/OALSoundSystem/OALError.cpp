@@ -6,13 +6,13 @@
 
 namespace Menge
 {
-	void s_OALErrorCheck( OALSoundSystem * _soundSystem, const char * _file, int _line )
+	bool s_OALErrorCheck( OALSoundSystem * _soundSystem, const char * _file, int _line )
 	{
 		ALenum error = alGetError();
 
 		if( error == AL_NO_ERROR )
 		{
-			return;
+			return false;
 		}
 
 		const char * message = alGetString( error );
@@ -25,5 +25,7 @@ namespace Menge
             , error
 			, message
 			);	
+
+        return true;
 	}
 }

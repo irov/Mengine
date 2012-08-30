@@ -118,6 +118,7 @@ namespace Menge
 		m_dataInfo.frequency = vorbisInfo->rate;
 		m_dataInfo.time_total_secs = (float)ov_time_total( &m_oggVorbisFile, -1 );
 		//MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 4" );
+        m_dataInfo.block_size = ov_pcm_total(&m_oggVorbisFile, -1) * 4;
 
 		return true;
 	}

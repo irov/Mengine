@@ -110,7 +110,9 @@ namespace Menge
             return false;
         }
 
-		m_dataBuffer = new unsigned char[m_bufferSize];
+        int block_size = dataInfo->block_size;
+
+		m_dataBuffer = new unsigned char[block_size];
 
 		return true;
 	}

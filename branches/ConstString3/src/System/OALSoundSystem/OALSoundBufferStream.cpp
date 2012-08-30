@@ -105,6 +105,10 @@ namespace Menge
 			m_bufferSize -= (m_bufferSize % 12);
 			m_isStereo = true;
 		}
+        else
+        {
+            return false;
+        }
 
 		m_dataBuffer = new unsigned char[m_bufferSize];
 

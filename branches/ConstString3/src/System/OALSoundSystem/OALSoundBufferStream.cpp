@@ -126,8 +126,7 @@ namespace Menge
 		{
 			alSourceStop( m_sourceId );
 			OAL_CHECK_ERROR();
-			//alSourceRewind( _source );
-            return;
+			//alSourceRewind( _source );            
 		}
 				
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
@@ -143,8 +142,7 @@ namespace Menge
 			alBufferData( m_alBufferId, m_format, m_dataBuffer, m_bufferSize, m_frequency );
 			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId );
-			OAL_CHECK_ERROR();
-            return;
+			OAL_CHECK_ERROR();            
 		}
 
 		bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
@@ -154,8 +152,7 @@ namespace Menge
 			alBufferData( m_alBufferId2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
 			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId2 );
-			OAL_CHECK_ERROR();
-            return;
+			OAL_CHECK_ERROR();            
 		}
 
 		alSourcePlay( m_sourceId );

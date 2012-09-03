@@ -16,21 +16,20 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HTTPLoggerPlugin::initialize( ServiceProviderInterface * _provider )
+	bool HTTPLoggerPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_loggerService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
 		if( m_loggerService == 0 )
 		{
-			return;
+			return false;
 		}
 		
 		HTTPServiceInterface * httpService = _provider->getServiceT<HTTPServiceInterface>( "HTTPService" );
 
 		if( httpService == 0 )
 		{
-			m_loggerService = 0;
-			return;
+			return false;
 		}
 
 		HTTPSystemInterface * httpSystem = httpService->getInterface();		
@@ -46,6 +45,8 @@ namespace Menge
 		{
 			m_loggerService->registerLogger( *(it) );
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HTTPLoggerPlugin::finalize()

@@ -167,10 +167,10 @@ namespace Menge
 
 			FileInfo fi = { m_zipFile->tell(), header.compressedSize, header.uncompressedSize, header.compressionMethod };
 
-			bool success;
-			WString fileNameU = unicodeService->utf8ToUnicode( fileNameA, success );
+			
+			WString fileNameU;
 
-			if( success == false )
+            if( Helper::Utf8ToUnicode( unicodeService, fileNameA, fileNameU ) == false )
 			{
 				MENGE_LOG_ERROR( "ERROR: (FileSystemZip::initialize) can`t create unicode name  '%s'"
 					, fileNameA.c_str() 

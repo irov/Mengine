@@ -952,8 +952,8 @@ namespace Menge
 			UnicodeServiceInterface * unicodeService = ServiceProvider::get()
 				->getServiceT<UnicodeServiceInterface>("UnicodeService");
 
-			bool w_unicode_successful;
-			WString unicode = unicodeService->utf8ToUnicode( str, w_unicode_successful );
+			WString unicode;
+            Helper::Utf8ToUnicode( unicodeService, str, unicode );
 
 			m_debugText->setText( unicode );
 			m_debugText->render( m_renderCamera2D );

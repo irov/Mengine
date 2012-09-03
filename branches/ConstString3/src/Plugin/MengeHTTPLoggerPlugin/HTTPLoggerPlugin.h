@@ -32,13 +32,12 @@ namespace Menge
 		HTTPLoggerPlugin();
 
 	protected:
-		void initialize( ServiceProviderInterface * _provider ) override;
+		bool initialize( ServiceProviderInterface * _provider ) override;
 		void finalize() override;
 
 	protected:
 		typedef std::vector<HTTPLogger * > TVectorHTTPLoggers;
 		TVectorHTTPLoggers m_loggers;
-		LogServiceInterface * m_loggerService;
-		
+		LogServiceInterface * m_loggerService;		
 	};
 }

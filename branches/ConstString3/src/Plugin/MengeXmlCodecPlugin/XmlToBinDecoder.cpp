@@ -1,6 +1,6 @@
 #	include "XmlToBinDecoder.h"
 
-#	include <Windows.h>
+//#	include <Windows.h>
 
 #	include "Utils/Logger/Logger.h"
 
@@ -11,10 +11,63 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
+    {
+        UnicodeServiceInterface * unicodeService = (UnicodeServiceInterface *)_user;
+        
+        size_t value_size = strlen( _value );
+
+        size_t unicode_size;
+        if( unicodeService->utf8ToUnicodeSize( _value, value_size, &unicode_size ) == false )
+        {
+            return false;
+        }
+
+        _metabuf->write( unicode_size );
+
+        WString::value_type * buffer = new WString::value_type[unicode_size];
+
+        size_t write_unicode_size;
+        if( unicodeService->utf8ToUnicode( _value, value_size, buffer, unicode_size, &write_unicode_size ) == false )
+        {
+            return false;
+        }
+
+        if( unicode_size != write_unicode_size )
+        {
+            return false;
+        }
+
+        _metabuf->writeCount( buffer, unicode_size );
+
+        delete [] buffer;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_write_wchar_t( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
+    {
+        UnicodeServiceInterface * unicodeService = (UnicodeServiceInterface *)_user;
+
+        size_t value_size = strlen( _value );
+
+        WString::value_type wc[1];
+
+        if( unicodeService->utf8ToUnicode( _value, value_size, wc, 1, 0 ) == false )
+        {
+            return false;
+        }
+
+        _metabuf->writeCount( wc, 1 );
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	Xml2BinDecoder::Xml2BinDecoder( InputStreamInterface * _stream, LogServiceInterface * _logService )
+	Xml2BinDecoder::Xml2BinDecoder( InputStreamInterface * _stream, LogServiceInterface * _logService, UnicodeServiceInterface * _unicodeService )
 		: m_stream(_stream)
 		, m_logService(_logService)
+        , m_unicodeService(_unicodeService)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -135,6 +188,9 @@ namespace Menge
 		std::vector<char> write_buff(size_test * 2);
 
 		Metabuf::Xml2Metabuf xml_metabuf(&write_buff[0], size_test * 2, &xml_protocol);
+
+        xml_metabuf.addSerializator( "wstring", &s_write_wstring, (void*)m_unicodeService );
+        xml_metabuf.addSerializator( "wchar_t", &s_write_wchar_t, (void*)m_unicodeService );
 
         LOGGER_INFO(m_logService)( "Xml2BinDecoder::decode:\nxml %S\nbin %S"
             , m_options.pathXml.c_str()

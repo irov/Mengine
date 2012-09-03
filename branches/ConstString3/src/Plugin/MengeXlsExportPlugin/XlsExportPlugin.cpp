@@ -35,18 +35,28 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XlsExportPlugin::initialize( ServiceProviderInterface * _provider )
+	bool XlsExportPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
 		if( logService == 0 )
 		{
-			return;
+			return false;
 		}
 
 		ApplicationInterface * applicationService = _provider->getServiceT<ApplicationInterface>( "ApplicationService" );
 
+        if( applicationService == 0 )
+        {
+            return false;
+        }
+
 		const String & projectCodename = applicationService->getProjectCodename();
+
+        if( projectCodename.empty() == true )
+        {
+            return false;
+        }
 	
 		PlatformInterface * platform = applicationService->getPlatform();
 
@@ -80,6 +90,8 @@ namespace Menge
 		this->proccess( projectCodename );
 
 		pybind::finalize();
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::finalize()

@@ -23,15 +23,16 @@ namespace Menge
 			: public DecoderSystemInterface
 		{
 		public:
-			Xml2BinSystem( LogServiceInterface * _logService )
+			Xml2BinSystem( LogServiceInterface * _logService, UnicodeServiceInterface * _unicodeService )
 				: m_logService(_logService)
+                , m_unicodeService(_unicodeService)
 			{
 			}
 
 		protected:
 			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
 			{
-				return new Xml2BinDecoder(_stream, m_logService);
+				return new Xml2BinDecoder(_stream, m_logService, m_unicodeService);
 			}
 
 			void setService( CodecServiceInterface * _service ) override
@@ -41,6 +42,7 @@ namespace Menge
 
 		protected:
 			LogServiceInterface * m_logService;
+            UnicodeServiceInterface * m_unicodeService;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -51,7 +53,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XmlCodecPlugin::initialize( ServiceProviderInterface * _provider )
+	bool XmlCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_provider = _provider;
 
@@ -59,17 +61,24 @@ namespace Menge
 
 		if( codecService == 0 )
 		{
-			return;
+			return false;
 		}
 
 		LogServiceInterface * logService = m_provider->getServiceT<LogServiceInterface>( "LogService" );
 
 		if( logService == 0 )
 		{
-			return;
+			return false;
 		}
+
+        UnicodeServiceInterface * unicodeService = m_provider->getServiceT<UnicodeServiceInterface>( "UnicodeService" );
+
+        if( unicodeService == 0 )
+        {
+            return false;
+        }
 		
-		m_xml2bin = new Detail::Xml2BinSystem(logService);
+		m_xml2bin = new Detail::Xml2BinSystem(logService, unicodeService);
 
 		m_codecs = codecService;
 
@@ -78,6 +87,8 @@ namespace Menge
 		const ConstString & c_xml2bin = stringizeService->stringize("xml2bin");
 
 		m_codecs->registerDecoder( c_xml2bin, m_xml2bin );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::finalize()

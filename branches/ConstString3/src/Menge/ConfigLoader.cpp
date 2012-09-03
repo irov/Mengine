@@ -70,8 +70,8 @@ namespace Menge
 			return false;
 		}
 
-		bool u_locale_default_setting_successful;
-		String locale_default = m_unicodeService->unicodeToUtf8( wstring_value, u_locale_default_setting_successful );
+		String locale_default;
+        Helper::UnicodeToUtf8( m_unicodeService, wstring_value, locale_default );
 				
 		_value = m_stringizeService->stringize( locale_default );
 

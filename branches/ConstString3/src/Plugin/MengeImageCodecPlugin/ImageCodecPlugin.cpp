@@ -109,13 +109,13 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPlugin::initialize( ServiceProviderInterface * _provider )
+	bool ImageCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 
 		if( m_codecService == 0 )
 		{
-			return;
+			return false;
 		}
 
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
@@ -158,6 +158,8 @@ namespace Menge
 			const ConstString & name = (*it)->getName();
 			m_codecService->registerEncoder( name, (*it) );
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageCodecPlugin::finalize()

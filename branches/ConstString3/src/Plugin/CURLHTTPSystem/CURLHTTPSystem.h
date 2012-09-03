@@ -24,7 +24,7 @@ namespace Menge
 		virtual ~CURLHTTPSystem();
 	
 	public:
-		void initialize( ServiceProviderInterface * _provider ) override;
+		bool initialize( ServiceProviderInterface * _provider ) override;
 		void finalize() override;
 
 	public:

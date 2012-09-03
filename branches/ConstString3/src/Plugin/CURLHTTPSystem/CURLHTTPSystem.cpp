@@ -24,13 +24,20 @@ namespace Menge
 		 curl_global_cleanup();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CURLHTTPSystem::initialize( ServiceProviderInterface * _provider )
+	bool CURLHTTPSystem::initialize( ServiceProviderInterface * _provider )
 	{		
 		m_provider = _provider;
 
 		m_logService = m_provider->getServiceT<LogServiceInterface>( "LogService" );
 
-		m_provider->registryService( "HTTP", this );		
+        if( m_logService == 0 )
+        {
+            return false;
+        }
+
+		m_provider->registryService( "HTTP", this );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CURLHTTPSystem::finalize()

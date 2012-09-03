@@ -31,13 +31,12 @@ namespace Menge
 		SoundCodecPlugin();
 
 	protected:
-		void initialize( ServiceProviderInterface * _provider ) override;
+		bool initialize( ServiceProviderInterface * _provider ) override;
 		void finalize() override;
 
 	protected:
-		typedef std::vector<SoundConverterSystem * > TVectorSoundConverters;
+		typedef std::vector<SoundConverterSystem *> TVectorSoundConverters;
 		TVectorSoundConverters m_converters;
-		ConverterServiceInterface * m_converterService;
-		
+		ConverterServiceInterface * m_converterService;		
 	};
 }

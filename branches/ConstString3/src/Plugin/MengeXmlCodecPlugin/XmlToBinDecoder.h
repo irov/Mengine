@@ -2,6 +2,7 @@
 
 #	include "Interface/XmlCodecInterface.h"
 #	include "Interface/LogSystemInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
 namespace Menge
 {
@@ -11,7 +12,7 @@ namespace Menge
 		: public XmlDecoderInterface
 	{
 	public:
-		Xml2BinDecoder( InputStreamInterface * _stream, LogServiceInterface * _logger );
+		Xml2BinDecoder( InputStreamInterface * _stream, LogServiceInterface * _logService, UnicodeServiceInterface * _unicodeService );
 	
 	public:
 		void setOptions( CodecOptions * _options ) override;
@@ -29,7 +30,9 @@ namespace Menge
 	protected:
 		XmlCodecOptions m_options;
 		InputStreamInterface * m_stream;
-		LogServiceInterface * m_logService;				
+
+		LogServiceInterface * m_logService;		
+        UnicodeServiceInterface * m_unicodeService;
 	};
 }
 

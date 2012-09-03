@@ -873,8 +873,12 @@ namespace Menge
 
 		m_game->setCursorMode( m_cursorMode );
 
-        bool w_personalityModule_successful;
-        String personalityModule = m_unicodeService->unicodeToUtf8( _module, w_personalityModule_successful );
+        String personalityModule;
+        if( Helper::UnicodeToUtf8( m_unicodeService, _module, personalityModule ) == false )
+        {
+            return false;
+        }
+        
         ConstString c_personalityModule(personalityModule);
 
 		if( m_game->loadPersonality( c_personalityModule ) == false )
@@ -1830,10 +1834,10 @@ namespace Menge
 
         DynamicLibraryInterface * lib = it_found->second;
 
-		TDynamicLibraryFunction function =
+		TDynamicLibraryFunction function_dllCreatePlugin =
 			lib->getSymbol("dllCreatePlugin");
 
-		if( function == NULL )
+		if( function_dllCreatePlugin == NULL )
 		{
 			MENGE_LOG_ERROR( "Application::loadPlugin can't load %S plugin [dllCreatePlugin]"
 				, _pluginName.c_str() 
@@ -1842,10 +1846,10 @@ namespace Menge
 			return false;
 		}
 
-		TPluginCreate create = (TPluginCreate)function;
+		TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
 
 		PluginInterface * plugin;
-		if( create( &plugin ) == false )
+		if( dllCreatePlugin( &plugin ) == false )
 		{
 			MENGE_LOG_ERROR( "Application::loadPlugin can't load %S plugin [invalid create]"
 				, _pluginName.c_str() 
@@ -1854,7 +1858,10 @@ namespace Menge
 			return false;
 		}
 
-		plugin->initialize( m_serviceProvider );
+		if( plugin->initialize( m_serviceProvider ) == false )
+        {
+            return false;
+        }
 		
 		m_plugins.push_back( plugin );
 

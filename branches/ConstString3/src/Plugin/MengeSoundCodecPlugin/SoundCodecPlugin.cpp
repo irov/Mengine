@@ -63,13 +63,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecPlugin::initialize( ServiceProviderInterface * _provider )
+	bool SoundCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_converterService = _provider->getServiceT<ConverterServiceInterface>( "ConverterService" );
 
 		if( m_converterService == 0 )
 		{
-			return;
+			return false;
 		}
 
 		FileServiceInterface * fileService = _provider->getServiceT<FileServiceInterface>( "FileService" );
@@ -89,6 +89,8 @@ namespace Menge
 			const ConstString & name = (*it)->getName();
 			m_converterService->registerConverter( name, (*it) );
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundCodecPlugin::finalize()

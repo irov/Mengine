@@ -45,7 +45,7 @@ namespace Menge
 		: public PluginInterface
 	{
 	protected:
-		void initialize( ServiceProviderInterface * _provider ) override;
+		bool initialize( ServiceProviderInterface * _provider ) override;
 		void finalize() override;
 
 	protected:

@@ -87,9 +87,13 @@ namespace Menge
 
 			if( ResourceManager::get()
 				->hasResource( name ) == false )
-			{
-				bool w_filename_successful;
-				WString filename = unicodeService->utf8ToUnicode( it->file, w_filename_successful );
+			{				
+				WString filename;
+                if( Helper::Utf8ToUnicode( unicodeService, it->file, filename ) == false )
+                {
+                    return false;
+                }
+
 				WString filepath = m_folder + MENGE_FOLDER_RESOURCE_DELIM + filename;
 
 				this->createResource_( name, filepath );

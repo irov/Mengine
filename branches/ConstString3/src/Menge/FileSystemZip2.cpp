@@ -182,20 +182,18 @@ namespace Menge
 
 				FileInfo fi = { m_zipFile->tell(), compressedSize, uncompressedSize, compressionMethod };
 				
-				bool success;
-				WString fileNameU = unicodeService->utf8ToUnicode( fileNameA, success );
-				
+                WString fileNameU;
+                if( Helper::Utf8ToUnicode( unicodeService, fileNameA, fileNameU ) == false )
+                {
+                    MENGE_LOG_ERROR( "ERROR: (FileSystemZip::initialize) can`t create unicode name  '%s'"
+                        , fileNameA.c_str() 
+                        );
+
+                    continue;
+                }
+
 				// TODO: replace with fast remaping using array
 				std::transform(fileNameU.begin(), fileNameU.end(), fileNameU.begin(), ::tolower);
-
-				if( success == false )
-				{
-					MENGE_LOG_ERROR( "ERROR: (FileSystemZip::initialize) can`t create unicode name  '%s'"
-						, fileNameA.c_str() 
-						);
-
-					continue;
-				}
 
 				m_files.insert( std::make_pair( fileNameU, fi ) );
 			}

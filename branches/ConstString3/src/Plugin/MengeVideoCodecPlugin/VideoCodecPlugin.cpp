@@ -29,14 +29,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecPlugin::initialize( ServiceProviderInterface * _provider )
+	bool VideoCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 		m_stringize = _provider->getServiceT<StringizeServiceInterface>( "StringizeService" );
 
 		if( m_codecService == 0 )
 		{
-			return;
+			return false;
 		}
 
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
@@ -59,6 +59,8 @@ namespace Menge
 
 			m_codecService->registerDecoder( name, (*it) );
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VideoCodecPlugin::finalize()

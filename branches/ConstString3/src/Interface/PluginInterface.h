@@ -11,7 +11,7 @@ namespace Menge
 	class PluginInterface
 	{
 	public:
-		virtual void initialize( ServiceProviderInterface * _provider ) = 0;
+		virtual bool initialize( ServiceProviderInterface * _provider ) = 0;
 		virtual void finalize() = 0;
 	};
 

@@ -33,6 +33,12 @@ namespace Menge
 		s_unicodeToUtf( _ini, _path, pathA );
 
 		FILE * fp = fopen( pathA.c_str(), "rb" );
+		
+		if( fp == 0 )
+		{
+		  return SI_FILE;
+		}
+		
 		fseek (fp , 0 , SEEK_END);
 		int size = ftell (fp);
 		rewind (fp);
@@ -201,9 +207,9 @@ namespace Menge
 	StartupConfigLoader::StartupConfigLoader()
 		: m_applicationIni(false, true, true)
 		, m_gameIni(false, true, true)
-		, m_resourcePackIni(false, true, true)	
+		, m_resourcePackIni(false, true, true)
+		, m_error(L"")
 	{
-		memset(m_error,0,255);
 	}
 	/////////////////////////////////////////////////////
 	StartupConfigLoader::~StartupConfigLoader()
@@ -228,7 +234,7 @@ namespace Menge
 		
 		if( iniError != 0 )
 		{
-			swprintf(m_error, L"Invalid load application settings %S", applicationSettingsPath.c_str() );
+			m_error = WString( L"Invalid load application settings" ) + applicationSettingsPath;
 			return false;
 		}
 
@@ -236,7 +242,7 @@ namespace Menge
 
 		if( w_game_path == 0 )
 		{
-			swprintf(m_error, L"Not found Game Path %S", applicationSettingsPath.c_str() );
+			m_error = WString( L"Not found Game Path" ) + applicationSettingsPath;
 			return false;
 		}
 
@@ -244,7 +250,7 @@ namespace Menge
 
 		if( w_resource_path == 0 )
 		{
-			swprintf(m_error, L"Not found Resources Path %S", applicationSettingsPath.c_str() );
+			m_error = WString( L"Not found Resources Path " ) + applicationSettingsPath;
 			return false;
 		}
 
@@ -255,10 +261,9 @@ namespace Menge
 
 		if( this->loadGame_( gameIniPath ) == false )
 		{
-			swprintf(m_error, L"Invalid load game setting %S", gameIniPath.c_str() );
+			m_error = WString( L"Invalid load game setting" ) + gameIniPath;
 			return false;
 		}
-
 
 		WString resourcesIniPath;
 
@@ -267,7 +272,7 @@ namespace Menge
 
 		if( this->loadResourcePacks_( resourcesIniPath ) == false )
 		{
-			swprintf(m_error, L"Invalid load resourcesPack setting %S", resourcesIniPath.c_str() );
+			m_error = WString( L"Invalid load resourcesPack setting" ) + resourcesIniPath;
 			return false;
 		}
 
@@ -284,7 +289,6 @@ namespace Menge
 		{
 			return false;
 		}
-
 
 		m_settings.alreadyRunning = false;
 
@@ -319,7 +323,6 @@ namespace Menge
 	bool StartupConfigLoader::loadResourcePacks_( const WString & _path )
 	{
 		//SI_Error error = m_resourcePackIni.LoadFile( _path.c_str() );
-
 		SI_Error error = s_loadIniFile( m_resourcePackIni, _path.c_str() );
 
 		if( error != 0 )
@@ -390,7 +393,7 @@ namespace Menge
 	/////////////////////////////////////////////////////
 	const wchar_t * StartupConfigLoader::getLastError()
 	{
-		return m_error;
+		return m_error.c_str();
 	}
 	/////////////////////////////////////////////////////
 	const StartupSettings& StartupConfigLoader::getSettings()

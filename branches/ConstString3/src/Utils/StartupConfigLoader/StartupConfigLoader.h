@@ -48,6 +48,6 @@ namespace Menge
 		CSimpleIniCaseW m_gameIni;
 		CSimpleIniCaseW m_resourcePackIni;
 		StartupSettings m_settings;
-		wchar_t m_error[255];
+		WString m_error;
 	};
 }

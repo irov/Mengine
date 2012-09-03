@@ -67,7 +67,8 @@ namespace Menge
 
 		const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
 		m_frequency = dataInfo->frequency;
-		m_channels = dataInfo->channels;
+		//m_channels = dataInfo->channels;
+        m_channels = 2;
 		m_time_total = dataInfo->time_total_secs;
 
 		if (m_channels == 1)

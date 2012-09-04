@@ -34,9 +34,9 @@ namespace Menge
                 return false;
             }
                         
-            String::value_type * buffer = new String::value_type[utf8Size + 1];
+            String::value_type * buffer = new String::value_type[utf8Size];
             
-            if( _unicodeService->unicodeToUtf8( _unicode.c_str(), _unicode.size(), buffer, utf8Size + 1, 0 ) == false )
+            if( _unicodeService->unicodeToUtf8( _unicode.c_str(), _unicode.size(), buffer, utf8Size, 0 ) == false )
             {
                 delete [] buffer;
             }
@@ -57,9 +57,9 @@ namespace Menge
                 return false;
             }
 
-            WString::value_type * buffer = new WString::value_type[unicodeSize + 1];
+            WString::value_type * buffer = new WString::value_type[unicodeSize];
 
-            if( _unicodeService->utf8ToUnicode( _utf8.c_str(), _utf8.size(), buffer, unicodeSize + 1, 0 ) == false )
+            if( _unicodeService->utf8ToUnicode( _utf8.c_str(), _utf8.size(), buffer, unicodeSize, 0 ) == false )
             {
                 delete [] buffer;
             }

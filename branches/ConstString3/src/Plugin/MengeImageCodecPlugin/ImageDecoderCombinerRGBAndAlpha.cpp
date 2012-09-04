@@ -143,11 +143,6 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 		this->_invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface * ImageDecoderCombinerRGBAndAlpha::getStream( ) const
-	{
-		return m_decoderAlpha->getStream();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderCombinerRGBAndAlpha::destroy( ) 
 	{
 		delete this; 

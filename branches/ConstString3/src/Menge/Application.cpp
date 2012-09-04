@@ -1897,12 +1897,12 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TDynamicLibraryFunction function =
+			TDynamicLibraryFunction function_dllFinalizePlugin =
 				it->second->getSymbol("dllFinalizePlugin");
 			
-			if( function != NULL )
+			if( function_dllFinalizePlugin != NULL )
 			{
-				function( this );
+				function_dllFinalizePlugin( this );
 			}					
 
 			m_platform->unloadDynamicLibrary( it->second );			

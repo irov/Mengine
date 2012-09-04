@@ -17,9 +17,11 @@ namespace Menge
 
 	protected:
 		virtual void _invalidate();
-		virtual InputStreamInterface * getStream() const;
+
 	protected:
-		virtual void destroy();
+		void destroy() override;
+
+    protected:
 		CodecServiceInterface * m_service;
 		InputStreamInterface * m_stream;
 		VideoCodecOptions m_options;

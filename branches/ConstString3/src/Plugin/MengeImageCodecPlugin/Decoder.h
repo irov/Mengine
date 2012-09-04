@@ -11,8 +11,7 @@ namespace Menge
 		Decoder( CodecServiceInterface * _service, InputStreamInterface * _stream );
 		virtual ~Decoder();
 
-	public:
-		InputStreamInterface * getStream() const override;
+	public:		
 		void destroy() override;
 
 	protected:

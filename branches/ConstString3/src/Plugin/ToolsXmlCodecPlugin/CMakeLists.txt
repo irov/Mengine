@@ -1,9 +1,7 @@
-set( MY_LIB_NAME MengeXmlCodecPlugin )
+set( MY_LIB_NAME ToolsXmlCodecPlugin )
 
 ADD_FILTER(
 src
-	XmlCodecPlugin.h
-	XmlCodecPlugin.cpp
 	XmlToBinDecoder.h
 	XmlToBinDecoder.cpp
     XmlCodecPlugin.def
@@ -14,11 +12,7 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
                      ${THIRDPARTY_DIR}/metabuf
 )
  
-#ADD_DEPENDENCIES( ${MY_LIB_NAME} LoggerLib )
-				 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED  ${SRC_FILES} )
-
-#SET_TARGET_PROPERTIES( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS "/def:XmlCodecPlugin.def" )
 
 SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
 

@@ -32,7 +32,7 @@ namespace Menge
 		protected:
 			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
 			{
-				return new Xml2BinDecoder(_stream, m_logService, m_unicodeService);
+				return new Xml2BinDecoder(m_logService, m_unicodeService);
 			}
 
 			void setService( CodecServiceInterface * _service ) override

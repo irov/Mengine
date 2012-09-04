@@ -12,14 +12,13 @@ namespace Menge
 		: public XmlDecoderInterface
 	{
 	public:
-		Xml2BinDecoder( InputStreamInterface * _stream, LogServiceInterface * _logService, UnicodeServiceInterface * _unicodeService );
+		Xml2BinDecoder( LogServiceInterface * _logService, UnicodeServiceInterface * _unicodeService );
 	
 	public:
 		void setOptions( CodecOptions * _options ) override;
 
 	public:
 		const XmlCodecDataInfo * getCodecDataInfo() const override;
-		InputStreamInterface * getStream() const override;
 
 	public:
 		bool initialize() override;
@@ -28,12 +27,9 @@ namespace Menge
 		void destroy() override;
 
 	protected:
-		XmlCodecOptions m_options;
-		InputStreamInterface * m_stream;
+		XmlCodecOptions m_options;		
 
 		LogServiceInterface * m_logService;		
         UnicodeServiceInterface * m_unicodeService;
 	};
 }
-
-extern "C" bool writeBinary( const wchar_t * _protocol, const wchar_t * _source, const wchar_t * _bin, char * _error );

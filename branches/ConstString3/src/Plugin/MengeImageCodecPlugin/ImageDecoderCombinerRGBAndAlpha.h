@@ -22,7 +22,6 @@ namespace Menge
 		void setOptions( CodecOptions * _options );
 
 	public:
-		virtual InputStreamInterface * getStream() const;
 		virtual void destroy();
 	
 	protected:

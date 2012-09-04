@@ -34,9 +34,4 @@ namespace Menge
 	{
 		delete this;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface * VideoDecoder::getStream() const
-	{
-		return m_stream;	
-	}
 }

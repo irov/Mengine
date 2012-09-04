@@ -36,8 +36,7 @@ namespace Menge
 		virtual void setOptions( CodecOptions * _options ) = 0;
 
 	public:
-		virtual const CodecDataInfo* getCodecDataInfo() const = 0;
-		virtual InputStreamInterface * getStream() const = 0;
+		virtual const CodecDataInfo* getCodecDataInfo() const = 0;		
 
 	public:
 		virtual bool initialize() = 0;

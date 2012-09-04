@@ -11,6 +11,8 @@ if(WIN32)
         ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
         ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
         ADD_SUBDIRECTORY( MengeXlsExportPlugin )
+        
+        ADD_SUBDIRECTORY( ToolsXmlCodecPlugin )
     endif(MSVC)    
 endif(WIN32)
 

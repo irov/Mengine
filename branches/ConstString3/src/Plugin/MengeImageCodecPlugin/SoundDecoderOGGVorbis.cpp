@@ -69,14 +69,10 @@ namespace Menge
 	{
 		unsigned long bytesDone = 0;
         
-        const unsigned long fixed_buffer_size = 32768; // 32 KB buffers
-
 		while( true )
 		{            
-            unsigned long buffer_size = (std::min)( fixed_buffer_size, _bufferSize - bytesDone );
-            
             int current_section;
-            long decodeSize = ov_read( &m_oggVorbisFile, (char *)_buffer + bytesDone, fixed_buffer_size, 0, 2, 1, &current_section );
+            long decodeSize = ov_read( &m_oggVorbisFile, (char *)_buffer + bytesDone, fixed_sound_buffer_size, 0, 2, 1, &current_section );
 
             if( decodeSize == 0 )
             {

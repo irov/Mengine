@@ -6,6 +6,8 @@
 #	include "Utils/Core/ConstString.h"
 namespace Menge
 {
+    const unsigned long fixed_sound_buffer_size = 32768; // 32 KB buffers
+
 	struct SoundCodecDataInfo
 		: public CodecDataInfo
 	{

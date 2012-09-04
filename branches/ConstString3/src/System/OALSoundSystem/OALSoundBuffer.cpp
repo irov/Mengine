@@ -52,7 +52,7 @@ namespace Menge
 		m_time_total = dataInfo->time_total_secs;
 		size_t size = dataInfo->size;
 
-		unsigned char* buffer = new unsigned char[ size * 2 ];
+		unsigned char* buffer = new unsigned char[ size + fixed_sound_buffer_size ];
 		unsigned int decode_size = _soundDecoder->decode( buffer, size );
 
 		if( m_channels == 1 )

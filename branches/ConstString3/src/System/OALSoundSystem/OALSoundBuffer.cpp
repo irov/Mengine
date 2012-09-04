@@ -52,8 +52,8 @@ namespace Menge
 		m_time_total = dataInfo->time_total_secs;
 		size_t size = dataInfo->size;
 
-		unsigned char* buffer = new unsigned char[ size ];
-		_soundDecoder->decode( buffer, size );
+		unsigned char* buffer = new unsigned char[ size * 2 ];
+		unsigned int decode_size = _soundDecoder->decode( buffer, size );
 
 		if( m_channels == 1 )
 		{
@@ -66,7 +66,7 @@ namespace Menge
 			m_isStereo = true;
 		}
 
-		alBufferData( m_alBufferId, m_format, buffer, size, m_frequency );
+		alBufferData( m_alBufferId, m_format, buffer, decode_size, m_frequency );
 		OAL_CHECK_ERROR();
 
 		delete[] buffer;		

@@ -57,7 +57,7 @@ namespace Menge
 		}
 
 		m_alBufferId2 = m_soundSystem->genBufferId();
-		if( ALenum error = alGetError() != AL_NO_ERROR )
+		if( m_alBufferId2 == 0 )
 		{
 			// TODO: report in case of error
 			return false;
@@ -78,6 +78,7 @@ namespace Menge
 			m_bufferSize = m_frequency >> 1;
 			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
 			m_bufferSize -= (m_bufferSize % 2);
+            m_isStereo = false;
 		}
 		else if (m_channels == 2)
 		{
@@ -111,7 +112,7 @@ namespace Menge
             return false;
         }
 
-		m_dataBuffer = new unsigned char[m_bufferSize];
+		m_dataBuffer = new unsigned char[m_bufferSize * 2];
 
 		return true;
 	}
@@ -140,7 +141,7 @@ namespace Menge
 			
 		if ( bytesWritten )
 		{
-			alBufferData( m_alBufferId, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+			alBufferData( m_alBufferId, m_format, m_dataBuffer, bytesWritten, m_frequency );
 			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId );
 			OAL_CHECK_ERROR();            
@@ -150,7 +151,7 @@ namespace Menge
 
 		if ( bytesWritten )
 		{
-			alBufferData( m_alBufferId2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+			alBufferData( m_alBufferId2, m_format, m_dataBuffer, bytesWritten, m_frequency );
 			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId2 );
 			OAL_CHECK_ERROR();            
@@ -254,7 +255,7 @@ namespace Menge
 			if( bytesWritten )
 			{
 				// ¬ключаем буфер обратно в очередь
-				alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+				alBufferData( buffer, m_format, m_dataBuffer, bytesWritten, m_frequency );
 				alSourceQueueBuffers( m_sourceId, 1, &buffer );
 			}
 		}

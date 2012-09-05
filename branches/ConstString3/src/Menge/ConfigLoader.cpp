@@ -54,6 +54,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_unicodeToUtf( const CSimpleIniCaseW & _ini, const WString & _source, String & _value )
+	{
+		CSimpleIniCaseW::Converter converter = _ini.GetConverter();
+
+		converter.ConvertToStore( _source.c_str() );
+		_value = converter.Data();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, WString & _value ) const
 	{
 		bool result = m_config.getSetting( _section, _key, _value );
@@ -125,8 +135,15 @@ namespace Menge
 			return false;
 		}
 
+		String avalue;
+		if( Helper::UnicodeToUtf8( m_unicodeService, wvalue, avalue ) == false )
+		{
+			return false;
+		} 
+
 		int tmp_value;
-		if( swscanf( wvalue.c_str(), L"%d", &tmp_value ) != 1 )
+		
+		if( sscanf( avalue.c_str(), "%d", &tmp_value ) != 1 )
 		{
 			return false;
 		}
@@ -148,7 +165,14 @@ namespace Menge
 
 		int width;
 		int height;
-		if( swscanf( wvalue.c_str(), L"%d;%d", &width, &height ) != 2 )
+
+		String avalue;
+		if( Helper::UnicodeToUtf8( m_unicodeService, wvalue, avalue ) == false )
+		{
+			return false;
+		} 
+
+		if( sscanf( avalue.c_str(), "%d;%d", &width, &height ) != 2 )
 		{
 			return false;
 		}
@@ -173,7 +197,14 @@ namespace Menge
 		int top;
 		int right;
 		int bottom;
-		if( swscanf( wvalue.c_str(), L"%d;%d;%d;%d", &left, &top, &right, &bottom ) != 4 )
+
+		String avalue;
+		if( Helper::UnicodeToUtf8( m_unicodeService, wvalue, avalue ) == false )
+		{
+			return false;
+		} 
+
+		if( sscanf( avalue.c_str(), "%d;%d;%d;%d", &left, &top, &right, &bottom ) != 4 )
 		{
 			return false;
 		}

@@ -15,17 +15,17 @@ static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
         return false;
     }
 
-    _metabuf->write( size - 1 );
+    _metabuf->write( 1 );
 
-    wchar_t * buffer = new wchar_t[size + 1];
-    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, buffer, size );
+    wchar_t * buffer = new wchar_t[1];
+    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, buffer, 1 );
 
     if( wc != size )
     {
         return false;
     }
 
-    _metabuf->writeCount( buffer, size - 1 );
+    _metabuf->writeCount( buffer, 1 );
 
     delete [] buffer;
 

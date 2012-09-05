@@ -15,17 +15,19 @@ static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
         return false;
     }
 
-    _metabuf->write( 1 );
+    _metabuf->write( size );
 
-    Menge::WChar buffer[1];
-    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, buffer, 1 );
+    Menge::WChar * buffer = new Menge::WChar[size];
+    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, buffer, size );
 
     if( wc != size )
     {
         return false;
     }
 
-    _metabuf->writeCount( buffer, 1 );
+    _metabuf->writeCount( buffer, size );
+
+    delete [] buffer;
 
     return true;
 }

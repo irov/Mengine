@@ -15,7 +15,7 @@ static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
         return false;
     }
 
-    _metabuf->write( size );
+    _metabuf->write( size - 1 );
 
     Menge::WChar * buffer = new Menge::WChar[size];
     int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, buffer, size );
@@ -25,7 +25,7 @@ static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
         return false;
     }
 
-    _metabuf->writeCount( buffer, size );
+    _metabuf->writeCount( buffer, size - 1 );
 
     delete [] buffer;
 

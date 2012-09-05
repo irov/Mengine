@@ -2161,6 +2161,28 @@ namespace Menge
 			return cmp < 0;
 		}
 	};
+
+    struct extract_WString_type
+        : public pybind::type_cast_result<WString>
+    {
+    public:
+        bool apply( PyObject * _obj, WString & _value ) override
+        {
+            const WChar * value_char = pybind::unicode_to_wchar( _obj );
+
+            _value.assign( value_char );
+
+            return true;
+        }
+
+        PyObject * wrap( pybind::type_cast_result<WString>::TCastRef _value ) override
+        {
+            PyObject * py_value = pybind::unicode_from_wchar_size( _value.c_str(), _value.size() );
+
+            return py_value;
+            //return pybind::string_from_char( _value.c_str(), _value.size() );
+        }
+    };
 	
 	struct extract_ConstString_type
 		: public pybind::type_cast_result<ConstString>
@@ -2292,7 +2314,8 @@ namespace Menge
 
 	void ScriptWrapper::nodeWrap()
 	{
-		pybind::registration_type_cast<ConstString>( new extract_ConstString_type ); 
+        pybind::registration_type_cast<WString>( new extract_WString_type );
+		pybind::registration_type_cast<ConstString>( new extract_ConstString_type );
 		pybind::registration_type_cast<TVectorString>( new extract_TVectorString_type );
 		pybind::registration_type_cast<TVectorWString>( new extract_TVectorWString_type );
 

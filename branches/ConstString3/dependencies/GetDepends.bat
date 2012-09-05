@@ -33,7 +33,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/3.2.2/Python-3.2.2.tgz
 
-%toolsdir%\wget\wget.exe --no-clobber http://download.icu-project.org/files/icu4c/49.1.1/icu4c-49_1_1-src.zip
+%toolsdir%\wget\wget.exe --no-clobber http://download.icu-project.org/files/icu4c/49.1.2/icu4c-49_1_2-src.zip
 
 
 if EXIST boost rmdir /s /q boost
@@ -102,7 +102,7 @@ if EXIST pugixml rmdir /s /q pugixml
 7za x -y -opugixml pugixml-1.0.zip
 
 if EXIST icu rmdir /s /q icu
-7za x -y icu4c-49_1_1-src.zip
+7za x -y icu4c-49_1_2-src.zip
 
 if EXIST OpenAL rmdir /s /q openalsoft
 7za x -y openal-soft-1.14.tar.bz2

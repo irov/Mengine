@@ -48,9 +48,9 @@ namespace Menge
 
         size_t value_size = strlen( _value );
 
-        WString::value_type wc[1];
+        WString::value_type wc[2];
 
-        if( unicodeService->utf8ToUnicode( _value, value_size, wc, 1, 0 ) == false )
+        if( unicodeService->utf8ToUnicode( _value, value_size, wc, 2, 0 ) == false )
         {
             return false;
         }

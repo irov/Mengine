@@ -36,15 +36,15 @@ static bool s_write_wchar_t( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
 {
     int size = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, 0, 0 );
 
-    if( size == 0 )
+    if( size != 2 )
     {
         return false;
     }
 
-    Menge::WChar wch[1];
-    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, wch, 1 );
+    Menge::WChar wch[2];
+    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, wch, 2 );
 
-    if( wc != 1 )
+    if( wc != 2 )
     {
         return false;
     }

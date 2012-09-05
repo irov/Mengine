@@ -1656,7 +1656,7 @@ namespace Menge
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
 
-		MENGE_LOG_INFO( "Application::createRenderWindow Render Viewport %f %f - %f %f"
+		MENGE_LOG_INFO( "Application::setFullscreenMode Render Viewport %f %f - %f %f"
 			, m_renderViewport.begin.x
 			, m_renderViewport.begin.y
 			, m_renderViewport.getWidth()

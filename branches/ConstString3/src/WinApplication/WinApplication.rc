@@ -76,7 +76,7 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "CompanyName", "Menge-games"
+            VALUE "CompanyName", "Mengine"
             VALUE "FileDescription", "Mengine Executable"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "WinApplication"

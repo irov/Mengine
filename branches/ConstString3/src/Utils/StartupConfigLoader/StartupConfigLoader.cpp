@@ -81,10 +81,14 @@ namespace Menge
 		{
 			return false;
 		}
+		
+		WString valW(w_value);
+		String valA;
+		s_unicodeToUtf( _ini, valW, valA );
 
 		int width;
 		int height;
-		if( swscanf( w_value, L"%d;%d", &width, &height ) != 2 )
+		if( sscanf( valA.c_str(), "%d;%d", &width, &height ) != 2 )
 		{
 			return false;
 		}
@@ -108,7 +112,12 @@ namespace Menge
 		float top;
 		float right;
 		float bottom;
-		if( swscanf( w_value, L"%f;%f;%f;%f", &left, &top, &right, &bottom ) != 4 )
+
+		WString valW(w_value);
+		String valA;
+		s_unicodeToUtf( _ini, valW, valA );
+
+		if( sscanf( valA.c_str(), "%f;%f;%f;%f", &left, &top, &right, &bottom ) != 4 )
 		{
 			return false;
 		}
@@ -131,7 +140,12 @@ namespace Menge
 		}
 
 		int tmp_value;
-		if( swscanf( w_value, L"%d", &tmp_value ) != 1 )
+
+		WString valW(w_value);
+		String valA;
+		s_unicodeToUtf( _ini, valW, valA );
+
+		if( sscanf( valA.c_str(), "%d", &tmp_value ) != 1 )
 		{
 			return false;
 		}
@@ -150,8 +164,12 @@ namespace Menge
 			return false;
 		}
 
+		WString valW(w_value);
+		String valA;
+		s_unicodeToUtf( _ini, valW, valA );
+
 		size_t tmp_value;
-		if( swscanf( w_value, L"%u", &tmp_value ) != 1 )
+		if( sscanf( valA.c_str(), "%u", &tmp_value ) != 1 )
 		{
 			return false;
 		}

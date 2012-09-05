@@ -3,9 +3,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, WString & _value )
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, WString & _value )
 	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
+		const WChar * w_value = _ini.GetValue( _section, _key );
 
 		if( w_value == NULL )
 		{
@@ -56,9 +56,9 @@ namespace Menge
 		return iniError;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, String & _value )
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, String & _value )
 	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
+		const WChar * w_value = _ini.GetValue( _section, _key );
 
 		if( w_value == NULL )
 		{
@@ -73,9 +73,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, Resolution & _value )
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, Resolution & _value )
 	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
+		const WChar * w_value = _ini.GetValue( _section, _key );
 
 		if( w_value == NULL )
 		{
@@ -95,9 +95,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, Viewport & _value )
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, Viewport & _value )
 	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
+		const WChar * w_value = _ini.GetValue( _section, _key );
 
 		if( w_value == NULL )
 		{
@@ -121,9 +121,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, bool & _value )
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, bool & _value )
 	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
+		const WChar * w_value = _ini.GetValue( _section, _key );
 
 		if( w_value == NULL )
 		{
@@ -141,9 +141,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, size_t & _value )
+	static bool s_getIniValue( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, size_t & _value )
 	{
-		const wchar_t * w_value = _ini.GetValue( _section, _key );
+		const WChar * w_value = _ini.GetValue( _section, _key );
 
 		if( w_value == NULL )
 		{
@@ -161,7 +161,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_getIniValues( const CSimpleIniCaseW & _ini, const wchar_t * _section, const wchar_t * _key, TVectorWString & _values )
+	static bool s_getIniValues( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, TVectorWString & _values )
 	{
 		CSimpleIniCaseW::TNamesDepend values;
 		if( _ini.GetAllValues( _section, _key, values ) == false )
@@ -181,7 +181,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool s_getIniAllSettings( const CSimpleIniCaseW & _ini, const wchar_t * _section, TMapWString & _values )
+	bool s_getIniAllSettings( const CSimpleIniCaseW & _ini, const WChar * _section, TMapWString & _values )
 	{
 		CSimpleIniCaseW::TNamesDepend values;
 		if( _ini.GetAllKeys( _section, values ) == false )
@@ -238,7 +238,7 @@ namespace Menge
 			return false;
 		}
 
-		const wchar_t * w_game_path = m_applicationIni.GetValue( L"Game", L"Path" );
+		const WChar * w_game_path = m_applicationIni.GetValue( L"Game", L"Path" );
 
 		if( w_game_path == 0 )
 		{
@@ -246,7 +246,7 @@ namespace Menge
 			return false;
 		}
 
-		const wchar_t * w_resource_path = m_applicationIni.GetValue( L"Resource", L"Path" );
+		const WChar * w_resource_path = m_applicationIni.GetValue( L"Resource", L"Path" );
 
 		if( w_resource_path == 0 )
 		{
@@ -391,7 +391,7 @@ namespace Menge
 		return true;
 	}
 	/////////////////////////////////////////////////////
-	const wchar_t * StartupConfigLoader::getLastError()
+	const WChar * StartupConfigLoader::getLastError()
 	{
 		return m_error.c_str();
 	}

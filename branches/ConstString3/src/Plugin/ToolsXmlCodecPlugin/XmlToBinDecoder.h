@@ -1,3 +1,5 @@
 #	pragma once
 
-extern "C" bool writeBinary( const wchar_t * _protocol, const wchar_t * _source, const wchar_t * _bin, char * _error );
+#   include "Config/Typedef.h"
+
+extern "C" bool writeBinary( const Menge::WChar * _protocol, const Menge::WChar * _source, const Menge::WChar * _bin, char * _error );

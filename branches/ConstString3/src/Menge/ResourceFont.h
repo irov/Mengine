@@ -35,8 +35,8 @@ namespace Menge
 		const ResourceGlyph * getResourceGlyph() const;
 
 	public:
-		bool hasGlyph( wchar_t _id ) const;
-		const Glyph * getGlyph( wchar_t _id ) const;
+		bool hasGlyph( WChar _id ) const;
+		const Glyph * getGlyph( WChar _id ) const;
 
 		const RenderTextureInterface * getTexture() const;
 		const RenderTextureInterface * getTextureImage() const;

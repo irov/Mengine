@@ -8,7 +8,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void wstrToUtf8( const Menge::WString& _wstr, Menge::String & _utf8 )
 	{
-		const wchar_t* cwstr = _wstr.c_str();
+		const WChar* cwstr = _wstr.c_str();
 		int size = ::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, 0, 0, 0, 0 );
 		char * buffer = new char[size];
 		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, buffer, size, NULL, NULL );

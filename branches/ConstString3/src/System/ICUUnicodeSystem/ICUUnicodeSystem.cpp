@@ -36,7 +36,7 @@ namespace Menge
 		m_logService = _logService;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ICUUnicodeService::unicodeToUtf8Size( const wchar_t * _unicode, size_t _unicodeSize, size_t * _utfSize )
+    bool ICUUnicodeService::unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, size_t * _utfSize )
     {
         int32_t utf8_len;
 
@@ -58,7 +58,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ICUUnicodeService::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
+    bool ICUUnicodeService::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
         UErrorCode err_code_conv = U_ZERO_ERROR;
 
@@ -105,7 +105,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ICUUnicodeService::utf8ToUnicode( const char * _utf8, size_t _utf8Size, wchar_t * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
+	bool ICUUnicodeService::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
 	{
 		UErrorCode err_code_conv = U_ZERO_ERROR;
 

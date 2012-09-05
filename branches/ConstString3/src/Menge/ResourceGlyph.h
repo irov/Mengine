@@ -19,8 +19,8 @@ namespace Menge
 		ResourceGlyph();
 		
 	public:
-		bool hasGlyph( wchar_t _id ) const;
-		const Glyph * getGlyph( wchar_t _id ) const;
+		bool hasGlyph( WChar _id ) const;
+		const Glyph * getGlyph( WChar _id ) const;
 	
 	public:
 		float getHeight() const;
@@ -29,12 +29,12 @@ namespace Menge
 		void loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
-		Glyph & addGlyph_( wchar_t _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width );
+		Glyph & addGlyph_( WChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width );
 
 	protected:
 		float m_height;
 
-		typedef std::map<wchar_t, Glyph> TMapGlyph;
+		typedef std::map<WChar, Glyph> TMapGlyph;
 		TMapGlyph m_glyphs;
 	};
 }

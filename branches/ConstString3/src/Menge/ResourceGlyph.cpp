@@ -24,7 +24,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Glyph * ResourceGlyph::getGlyph( wchar_t _id ) const
+	const Glyph * ResourceGlyph::getGlyph( WChar _id ) const
 	{
 		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
 
@@ -41,7 +41,7 @@ namespace Menge
 		return &it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceGlyph::hasGlyph( wchar_t _id ) const
+	bool ResourceGlyph::hasGlyph( WChar _id ) const
 	{
 		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
 		if( it_found == m_glyphs.end() )
@@ -103,7 +103,7 @@ namespace Menge
             const Metacode::Meta_Font::Meta_Char & meta_char = *it;
 
             float width = meta_char.get_width();
-            wchar_t code = meta_char.get_code();
+            WChar code = meta_char.get_code();
 
             const mt::vec4f & rect = meta_char.get_rect();
             const mt::vec2f & offset = meta_char.get_offset();
@@ -120,7 +120,7 @@ namespace Menge
             {
                 const Metacode::Meta_Font::Meta_Char::Meta_Kerning & meta_kerning = *it;
 
-                wchar_t id = meta_kerning.get_id();
+                WChar id = meta_kerning.get_id();
                 float advance = meta_kerning.get_advance();                
 
                 glyph.addKerning( id, advance );
@@ -128,7 +128,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Glyph & ResourceGlyph::addGlyph_( wchar_t _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width )
+	Glyph & ResourceGlyph::addGlyph_( WChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width )
 	{
 		mt::vec4f uv(_rect.x, _rect.y, _rect.x + _rect.z, _rect.y + _rect.w);
 		mt::vec2f size(_rect.z, _rect.w);

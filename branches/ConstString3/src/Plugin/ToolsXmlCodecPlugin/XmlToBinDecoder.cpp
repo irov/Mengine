@@ -17,7 +17,7 @@ static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
 
     _metabuf->write( 1 );
 
-    wchar_t * buffer = new wchar_t[1];
+    Menge::WChar buffer[1];
     int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, buffer, 1 );
 
     if( wc != size )
@@ -26,8 +26,6 @@ static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
     }
 
     _metabuf->writeCount( buffer, 1 );
-
-    delete [] buffer;
 
     return true;
 }
@@ -41,10 +39,10 @@ static bool s_write_wchar_t( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
         return false;
     }
 
-    wchar_t wch[2];
-    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, wch, size );
+    Menge::WChar wch[1];
+    int wc = ::MultiByteToWideChar( CP_UTF8, 0, _value, -1, wch, 1 );
 
-    if( wc != size )
+    if( wc != 1 )
     {
         return false;
     }
@@ -54,7 +52,7 @@ static bool s_write_wchar_t( Metabuf::Xml2Metabuf * _metabuf, const char * _valu
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
-extern "C" bool writeBinary( const wchar_t * _protocol, const wchar_t * _source, const wchar_t * _bin, char * _error )
+extern "C" bool writeBinary( const Menge::WChar * _protocol, const Menge::WChar * _source, const Menge::WChar * _bin, char * _error )
 {
     Metabuf::XmlProtocol xml_protocol;
 
@@ -109,7 +107,7 @@ extern "C" bool writeBinary( const wchar_t * _protocol, const wchar_t * _source,
     size_test = ftell(file_test);
     fseek(file_test, 0, SEEK_SET);
 
-    std::vector<char> buf_test(size_test);
+    Menge::TBlobject buf_test(size_test);
 
     fread( &buf_test[0], 1, size_test, file_test );
 
@@ -117,7 +115,7 @@ extern "C" bool writeBinary( const wchar_t * _protocol, const wchar_t * _source,
 
     size_t write_size;
 
-    std::vector<char> write_buff(size_test * 2);
+    Menge::TBlobject write_buff(size_test * 2);
 
     Metabuf::Xml2Metabuf xml_metabuf(&write_buff[0], size_test * 2, &xml_protocol);
 

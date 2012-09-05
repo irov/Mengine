@@ -69,7 +69,7 @@ namespace Menge
 		return m_outlineImageFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceFont::hasGlyph( wchar_t _id ) const
+	bool ResourceFont::hasGlyph( WChar _id ) const
 	{
 		if( this->isCompile() == false )
 		{
@@ -86,7 +86,7 @@ namespace Menge
 		return m_textureUV;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Glyph * ResourceFont::getGlyph( wchar_t _id ) const
+	const Glyph * ResourceFont::getGlyph( WChar _id ) const
 	{
 		if( this->isCompile() == false )
 		{

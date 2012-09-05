@@ -147,7 +147,7 @@ namespace Menge
 		bool m_maxfps;
 		bool m_allowMaximize;
 		bool m_cursorMode;
-		wchar_t m_deadKey;
+		WChar m_deadKey;
 
 		bool m_isDoubleClick;
 

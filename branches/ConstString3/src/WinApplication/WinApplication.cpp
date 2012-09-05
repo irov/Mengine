@@ -177,7 +177,7 @@ namespace Menge
 
 		if( loader.load( m_currentPath, L"application.ini" ) == false )
 		{
-			const wchar_t* error = loader.getLastError();
+			const WChar* error = loader.getLastError();
 
 			::MessageBox( NULL
 				, error
@@ -257,7 +257,7 @@ namespace Menge
 
 		if( languagePack.empty() == true )
 		{
-			wchar_t localeBuff[64];
+			WChar localeBuff[64];
 			int localeBuffSize = ::GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuff, 64 );
 			WString languagePackW = std::wstring(localeBuff, localeBuffSize);
 
@@ -563,7 +563,7 @@ namespace Menge
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
-            wchar_t lpTempPathBuffer[MAX_PATH];
+            WChar lpTempPathBuffer[MAX_PATH];
             DWORD dwRetVal = GetTempPath(MAX_PATH, lpTempPathBuffer);
                         
             m_tempPath.assign(lpTempPathBuffer, dwRetVal);
@@ -573,7 +573,7 @@ namespace Menge
             m_tempPath += m_projectName;
             m_tempPath += MENGE_FOLDER_DELIM;
 
-			wchar_t buffer[MAX_PATH];
+			WChar buffer[MAX_PATH];
 			LPITEMIDLIST itemIDList;
 			HRESULT hr = SHGetSpecialFolderLocation( NULL,
 				CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
@@ -673,7 +673,8 @@ namespace Menge
 			while( WindowsLayer::peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 			{
 				::TranslateMessage( &msg );
-				::WindowsLayer::dispatchMessage( &msg );
+				
+                WindowsLayer::dispatchMessage( &msg );
 			}
 
 			float frameTime = m_winTimer->getDeltaTime();

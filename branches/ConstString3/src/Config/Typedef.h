@@ -19,8 +19,8 @@
 
 namespace Menge
 {
-	typedef wchar_t TCharW;
-	typedef char TCharA;
+	typedef wchar_t WChar;
+	typedef char Char;
 
 	typedef std::wstring WString;
 	typedef std::string String;

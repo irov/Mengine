@@ -41,12 +41,12 @@ namespace Menge
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Glyph::addKerning( wchar_t _char, float _kerning )
+	void Glyph::addKerning( WChar _char, float _kerning )
 	{		
 		m_kernings.insert( std::make_pair( _char, _kerning ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Glyph::getKerning( wchar_t _char ) const
+	float Glyph::getKerning( WChar _char ) const
 	{
 		TMapKerning::const_iterator it_found = m_kernings.find( _char );
 

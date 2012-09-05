@@ -36,7 +36,7 @@ namespace Menge
 	public:
 		bool load( const WString& _folder, const WString& _fileName );
 
-		const wchar_t * getLastError();
+		const WChar * getLastError();
 
 		const StartupSettings& getSettings();
 

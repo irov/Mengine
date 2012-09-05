@@ -1,5 +1,5 @@
 #	include "LoggerConsole.h"
-#	include "StringConversion.h"
+#   include "WindowsLayer/WindowsLayer.h"
 
 #	include <io.h>
 #	include <cstdio>
@@ -117,7 +117,7 @@ namespace Menge
 		String ansi;
 		String utf8(_data, _count);
 
-		StringConversion::utf8ToAnsi( utf8, ansi );
+		WindowsLayer::utf8ToAnsi( utf8, ansi );
 		
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 		::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo);

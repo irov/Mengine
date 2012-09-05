@@ -55,7 +55,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::getSetting( const WString& _section, const WString& _key, WString & _value ) const
 	{
-		const wchar_t * inivalue = m_ini.GetValue( _section.c_str(), _key.c_str() );
+		const WChar * inivalue = m_ini.GetValue( _section.c_str(), _key.c_str() );
 
 		if( inivalue == NULL )
 		{

@@ -20,8 +20,8 @@ namespace Menge
 		const mt::vec2f & getSize() const;
 
 	public:
-		void addKerning( wchar_t _char, float _kerning );
-		float getKerning( wchar_t _char ) const;
+		void addKerning( WChar _char, float _kerning );
+		float getKerning( WChar _char ) const;
 
 	protected:
 		mt::vec4f m_uv;
@@ -29,7 +29,7 @@ namespace Menge
 		float m_ratio;
 		mt::vec2f m_size;
 
-		typedef std::map<wchar_t, float> TMapKerning;
+		typedef std::map<WChar, float> TMapKerning;
 		TMapKerning m_kernings;
 	};
 }

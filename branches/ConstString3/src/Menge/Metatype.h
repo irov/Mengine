@@ -54,7 +54,7 @@ namespace Metabuf
 		_value.resize( size );
 
 		//Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
-		ar.readBuffer( (char *)&_value[0], size * sizeof(wchar_t) );
+        ar.readBuffer( (char *)&_value[0], size * sizeof(Menge::WString::value_type) );
 	}
     //////////////////////////////////////////////////////////////////////////
     inline void operator >> ( ArchiveReader & ar, Menge::ColourValue & _value )

@@ -33,15 +33,16 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageSolid * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSolid *>(_meta);
         
-        m_imageFrame.size = metadata->get_Size_Value();
+        m_size = metadata->get_Size_Value();
         m_color = metadata->get_Color_Value();
 
-        m_imageFrame.maxSize = m_imageFrame.size;
-        m_imageFrame.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-        m_imageFrame.isAlpha = false;
-        m_imageFrame.wrapX = true;
-        m_imageFrame.wrapY = true;
-        m_imageFrame.texture = NULL;
+        m_maxSize = m_size;
+        m_uv = mt::vec4f(0.f,0.f,1.f,1.f);
+        m_isAlpha = false;
+        m_wrapX = true;
+        m_wrapY = true;
+
+        m_texture = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSolid::_compile()
@@ -60,8 +61,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSolid::loadBufferAlpha( unsigned char * _buffer, int _pitch )
 	{        
-        size_t width = m_imageFrame.size.x;
-        size_t height = m_imageFrame.size.y;
+        size_t width = m_size.x;
+        size_t height = m_size.y;
 
         if( _pitch < width )
         {

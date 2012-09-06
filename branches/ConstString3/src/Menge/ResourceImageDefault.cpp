@@ -54,22 +54,20 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageDefault * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
 
-        m_imageFrame.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_imageFrame.maxSize = mt::vec2f(-1.f, -1.f);
-        m_imageFrame.size = mt::vec2f(-1.f, -1.f);
-        m_imageFrame.isAlpha = true;
-        m_imageFrame.wrapX = false;
-        m_imageFrame.wrapY = false;
+        m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
+        m_maxSize = mt::vec2f(-1.f, -1.f);
+        m_size = mt::vec2f(-1.f, -1.f);
+        m_isAlpha = true;
+        m_wrapX = false;
+        m_wrapY = false;
         
         metadata->swap_File_Path( m_fileName );        
         metadata->swap_File_Codec( m_codecType );        
 
-        //metadata->get_File_MaxSize( m_imageFrame.maxSize );
-        metadata->get_File_UV( m_imageFrame.uv );
-        //metadata->get_File_Size( m_imageDesc.size );
-        metadata->get_File_Alpha( m_imageFrame.isAlpha );
-        metadata->get_File_WrapX( m_imageFrame.wrapX );
-        metadata->get_File_WrapY( m_imageFrame.wrapY );
+        metadata->get_File_UV( m_uv );
+        metadata->get_File_Alpha( m_isAlpha );
+        metadata->get_File_WrapX( m_wrapX );
+        metadata->get_File_WrapY( m_wrapY );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
@@ -81,7 +79,7 @@ namespace Menge
 			m_codecType = s_getImageCodec( m_fileName );
 		}
 			
-		if( this->loadImageFrame_( m_imageFrame, category, m_fileName, m_codecType ) == false )
+		if( this->loadImageFrame_( category, m_fileName, m_codecType ) == false )
 		{
 			return false;
 		}
@@ -91,7 +89,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::_release()
 	{
-		this->releaseImageFrame_( m_imageFrame );
+        if( m_texture != NULL )
+        {
+            RenderEngine::get()
+                ->releaseTexture( m_texture );
+
+            m_texture = NULL;
+        }
+
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::setImagePath( const WString& _imagePath )
@@ -99,11 +105,11 @@ namespace Menge
         m_fileName = _imagePath;
         m_codecType = s_getImageCodec(_imagePath);
 
-        m_imageFrame.texture = NULL;
-        m_imageFrame.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-		m_imageFrame.isAlpha = true;
-		m_imageFrame.wrapX = false;
-		m_imageFrame.wrapY = false;
+        m_texture = NULL;
+        m_uv = mt::vec4f(0.f,0.f,1.f,1.f);
+		m_isAlpha = true;
+		m_wrapX = false;
+		m_wrapY = false;
 	}
 	/////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::loadBufferAlpha( unsigned char * _buffer, int _pitch )

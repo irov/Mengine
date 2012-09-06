@@ -70,12 +70,12 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha *>(_meta);
 
-        m_imageFrame.uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_imageFrame.maxSize = mt::vec2f(-1.f, -1.f);
-        m_imageFrame.size = mt::vec2f(-1.f, -1.f);
-        m_imageFrame.isAlpha = true;
-        m_imageFrame.wrapX = false;
-        m_imageFrame.wrapY = false;
+        m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
+        m_maxSize = mt::vec2f(-1.f, -1.f);
+        m_size = mt::vec2f(-1.f, -1.f);
+        m_isAlpha = true;
+        m_wrapX = false;
+        m_wrapY = false;
 
         metadata->swap_File_PathAlpha( m_fileNameAlpha );
         metadata->swap_File_CodecAlpha( m_codecTypeAlpha );
@@ -83,12 +83,10 @@ namespace Menge
         metadata->swap_File_PathRGB( m_fileNameRGB );
         metadata->swap_File_CodecRGB( m_codecTypeRGB );
 
-        //metadata->get_File_MaxSize( m_imageFrame.maxSize );
-        metadata->get_File_UV( m_imageFrame.uv );
-        //metadata->get_File_Size( m_imageFrame.size );
-        metadata->get_File_Alpha( m_imageFrame.isAlpha );
-        metadata->get_File_WrapX( m_imageFrame.wrapX );
-        metadata->get_File_WrapY( m_imageFrame.wrapY );
+        metadata->get_File_UV( m_uv );
+        metadata->get_File_Alpha( m_isAlpha );
+        metadata->get_File_WrapX( m_wrapX );
+        metadata->get_File_WrapY( m_wrapY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCombineRGBAndAlpha::_compile()
@@ -105,7 +103,7 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 			
-		if( this->loadImageFrameCombineRGBAndAlpha_( m_imageFrame, category, m_fileNameRGB, m_fileNameAlpha, m_codecTypeRGB, m_codecTypeAlpha ) == false )
+		if( this->loadImageFrameCombineRGBAndAlpha_( category, m_fileNameRGB, m_fileNameAlpha, m_codecTypeRGB, m_codecTypeAlpha ) == false )
 		{
 			return false;
 		}
@@ -113,7 +111,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCombineRGBAndAlpha::loadImageFrameCombineRGBAndAlpha_( ImageFrame & _frame, const ConstString& _pakName,  const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB , const ConstString & _codecAlpha  ) const
+	bool ResourceImageCombineRGBAndAlpha::loadImageFrameCombineRGBAndAlpha_( const ConstString& _pakName,  const WString& _fileNameRGB, const WString& _fileNameAlpha, const ConstString & _codecRGB , const ConstString & _codecAlpha  )
 	{
 		RenderTextureInterface * texture = this->createTextureRGBAndAlpha_( _pakName, _fileNameRGB, _fileNameAlpha, _codecRGB, _codecAlpha );
 		if( texture == NULL )
@@ -121,7 +119,7 @@ namespace Menge
 			return false;
 		}		
 						
-		bool res = this->prepareImageFrame_( _frame, texture );
+		bool res = this->prepareImageFrame_( texture );
 
 		return res;
 	}
@@ -304,11 +302,6 @@ namespace Menge
         unsigned int bufferSize = _pitch * data->height;
         unsigned int b = _imageDecoderAlpha->decode( _buffer, bufferSize );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageCombineRGBAndAlpha::_release()
-	{
-		this->releaseImageFrame_( m_imageFrame );
-	}
 	/////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCombineRGBAndAlpha::loadBufferAlpha( unsigned char * _buffer, int _pitch )
 	{

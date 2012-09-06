@@ -2766,6 +2766,7 @@ namespace Menge
 					//.def( "getImageCount", &Sprite::getImageCount )
 					.def( "setImageResource", &Sprite::setImageResource )
 					.def( "getImageResource", &Sprite::getImageResource )
+                    
 					.def( "getImageSize", &Sprite::getImageSize )
 					.def_static( "getLocalImageCenter", &ScriptMethod::SpriteAdapter::s_getLocalImageCenter )
 					.def_static( "getWorldImageCenter", &ScriptMethod::SpriteAdapter::s_getWorldImageCenter )

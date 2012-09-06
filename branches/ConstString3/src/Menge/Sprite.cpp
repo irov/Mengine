@@ -32,7 +32,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 		: m_resource(0)
-		, m_resourceSecond(0)
 		, m_centerAlign(false)
 		, m_flipX(false)
 		, m_flipY(false)
@@ -85,16 +84,6 @@ namespace	Menge
 			return true;
 		}
 
-		if( m_resourceSecond )
-		{
-			if( m_resourceSecond->compile() == false )
-			{
-				return false;
-			}
-
-			return true;
-		}
-
 		if( m_resourceName.empty() )
 		{
 			MENGE_LOG_ERROR( "Sprite: '%s' Image resource empty"
@@ -117,22 +106,6 @@ namespace	Menge
 			return false;
 		}
 
-        if( m_resourceSecondName.empty() == false )
-        {
-            m_resourceSecond = ResourceManager::get()
-	    		->getResourceT<ResourceImage>( m_resourceSecondName );
-
-            if( m_resourceSecond == 0 )
-            {
-                MENGE_LOG_ERROR( "Sprite: '%s' Image resource not found secondary resource '%s'"
-                    , m_name.c_str()
-                    , m_resourceSecondName.c_str() 
-                    );
-
-                return false;
-            }
-        }
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -144,12 +117,6 @@ namespace	Menge
 		{
 			m_resource->decrementReference();
 			m_resource = 0;
-		}
-		
-		if( m_resourceSecond != 0 )
-		{
-			m_resourceSecond->decrementReference();
-			m_resourceSecond = 0;
 		}
 		
 		m_materialGroup = NULL;
@@ -200,25 +167,6 @@ namespace	Menge
 	{
 		return m_resourceName;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Sprite::setImageSecondResource( const ConstString & _name )
-    {
-        if( m_resourceSecondName == _name )
-        {
-            return;
-        }
-
-        m_resourceSecondName = _name;
-        this->recompile();
-
-        this->invalidateVertices();
-        this->invalidateBoundingBox();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & Sprite::getImageSecondResource() const
-    {
-        return m_resourceSecondName;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices )
 	{
@@ -233,11 +181,7 @@ namespace	Menge
 		if( _invalidateVertices & ESVI_TEXTURE )
 		{
 			m_textures[0] = m_resource->getTexture();
-
-            if( m_resourceSecond != NULL )
-            {
-			    m_textures[1] = m_resourceSecond->getTexture();
-            }
+            m_textures[1] = m_resource->getTextureAlpha();
 		}
 
 		if( _invalidateVertices & ESVI_POSITION )
@@ -309,6 +253,7 @@ namespace	Menge
 
 			if( _invalidateVertices == ESVI_FULL )
 			{
+                // RGB(A)
 				{
 					mt::vec4f uv = m_resource->getUVImage();
 
@@ -341,9 +286,9 @@ namespace	Menge
 				}
 
 				// Alpha
-                if( m_resourceSecond != NULL )
+                if( m_textures[1] != NULL )
 				{
-					mt::vec4f uv = m_resourceSecond->getUVImage();
+					mt::vec4f uv = m_resource->getUVAlpha();
 
 					float uvX = uv.z - uv.x;
 					float uvY = uv.w - uv.y;
@@ -459,13 +404,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial_()
 	{
-		if( m_resourceSecond )
-		{
-			m_texturesNum = 2;
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
-		}
-		else if ( m_blendAdd == true )
+		if ( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
 

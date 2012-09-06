@@ -15,64 +15,68 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ResourceImage()
+        : m_texture(0)
+        , m_textureAlpha(0)
+        , m_maxSize(0.f, 0.f)
+        , m_size(0.f, 0.f)
+        , m_uv_image(0.f, 0.f, 0.f, 0.f)
+        , m_uv(0.f, 0.f, 0.f, 0.f)
+        , m_uv_scale(0.f, 0.f, 0.f, 0.f)
+        , m_uv_alpha(0.f, 0.f, 0.f, 0.f)
+        , m_isAlpha(false)
+        , m_wrapX(false)
+        , m_wrapY(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::prepareImageFrame_( ImageFrame & _frame, RenderTextureInterface* texture ) const
+	bool ResourceImage::prepareImageFrame_( RenderTextureInterface* texture )
 	{
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
 
-		_frame.size.x = width;
-		_frame.size.y = height;
+		m_size.x = width;
+		m_size.y = height;
 
 		const Rect & rect = texture->getRect();
 		
         size_t hwWidth = (float)texture->getHWWidth();
         size_t hwHeight = (float)texture->getHWHeight();
 
-        _frame.maxSize.x = hwWidth;
-        _frame.maxSize.y = hwHeight;
+        m_maxSize.x = hwWidth;
+        m_maxSize.y = hwHeight;
 
-        _frame.uv_scale.x = float(rect.left) / hwWidth;
-        _frame.uv_scale.y = float(rect.top) / hwHeight;
-        _frame.uv_scale.z = float(rect.right) / hwWidth;
-        _frame.uv_scale.w = float(rect.bottom) / hwHeight;
+        m_uv_scale.x = float(rect.left) / hwWidth;
+        m_uv_scale.y = float(rect.top) / hwHeight;
+        m_uv_scale.z = float(rect.right) / hwWidth;
+        m_uv_scale.w = float(rect.bottom) / hwHeight;
 
-        //_frame.uv_scale = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-
-		_frame.texture = texture;
+		m_texture = texture;
 
 		PixelFormat pixelFrormat = texture->getPixelFormat();
 
 		if( pixelFrormat == PF_R8G8B8 )
 		{
-			_frame.isAlpha = false;
+			m_isAlpha = false;
 		}
 		else
 		{
-			_frame.isAlpha = true;
+			m_isAlpha = true;
 		}
 
-        float ku = _frame.uv.z - _frame.uv.x;
-        float kv = _frame.uv.w - _frame.uv.y;
-        _frame.size.x *= ku;
-        _frame.size.y *= kv;
+        float ku = m_uv.z - m_uv.x;
+        float kv = m_uv.w - m_uv.y;
+        m_size.x *= ku;
+        m_size.y *= kv;
 
-        _frame.uv_image.x = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.x;
-        _frame.uv_image.y = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.y;
-        _frame.uv_image.z = _frame.uv_scale.x + (_frame.uv_scale.z - _frame.uv_scale.x) * _frame.uv.z;
-        _frame.uv_image.w = _frame.uv_scale.y + (_frame.uv_scale.w - _frame.uv_scale.y) * _frame.uv.w;
-
-        //if( _frame.maxSize.x <= 0.f || _frame.maxSize.y <= 0.f )
-        //{
-        //    _frame.maxSize = _frame.size;
-        //}
+        m_uv_image.x = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.x;
+        m_uv_image.y = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.y;
+        m_uv_image.z = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.z;
+        m_uv_image.w = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.w;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const WString& _fileName, const ConstString& _codec ) const
+	bool ResourceImage::loadImageFrame_( const ConstString& _pakName, const WString& _fileName, const ConstString& _codec )
 	{
 		RenderTextureInterface* texture = RenderEngine::get()
 			->loadTexture( _pakName, _fileName, _codec );
@@ -90,7 +94,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->prepareImageFrame_( _frame, texture ) == false )
+		if( this->prepareImageFrame_( texture ) == false )
 		{
 			return false;
 		}
@@ -107,12 +111,6 @@ namespace Menge
 			->findCodecType( codecExt );
 
 		return codecType;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImage::releaseImageFrame_(const ImageFrame & _frame) const
-	{
-		RenderEngine::get()
-			->releaseTexture( _frame.texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderInterface * ResourceImage::createDecoder_(  FileInputStreamInterface * _file, const ConstString& _codec ) const

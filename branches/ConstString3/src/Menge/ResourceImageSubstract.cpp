@@ -19,7 +19,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstract::ResourceImageSubstract()
         : m_resourceImage(NULL)
-        , m_uv(0.f, 0.f, 1.f, 1.f)
+        , m_uv_substract(0.f, 0.f, 1.f, 1.f)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
         metadata->swap_Image_Name( m_resourceImageName );
-        m_uv = metadata->get_Image_UV();
+        m_uv_substract = metadata->get_Image_UV();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_compile()
@@ -47,27 +47,37 @@ namespace Menge
             return false;
         }
         
-        const ImageFrame & imageFrame = m_resourceImage->getImageFrame();
+        bool wrapX = m_resourceImage->getWrapX();
 
-        m_imageFrame.texture = imageFrame.texture;
-
-        mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);
-
-        m_imageFrame.maxSize = imageFrame.maxSize * uv_size;
-        m_imageFrame.size = imageFrame.maxSize * uv_size;
-        m_imageFrame.uv_image = m_uv;
-        m_imageFrame.uv = m_uv;
-        m_imageFrame.uv_scale = imageFrame.uv_scale;
-
-        m_imageFrame.isAlpha = imageFrame.isAlpha;
-        m_imageFrame.wrapX = false;
-        m_imageFrame.wrapY = false;
-
-        if( imageFrame.wrapX == true || imageFrame.wrapY == true )
+        if( wrapX == true )
         {
             return false;
         }
 
+        bool wrapY = m_resourceImage->getWrapY();
+
+        if( wrapY == true )
+        {
+            return false;
+        }
+
+        m_texture = m_resourceImage->getTexture();
+
+        mt::vec2f uv_size(m_uv_substract.z - m_uv_substract.x, m_uv_substract.w - m_uv_substract.y);
+
+        const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
+
+        m_maxSize = maxSize * uv_size;
+        m_size = maxSize * uv_size;
+        m_uv_image = m_uv_substract;
+        m_uv = m_uv_substract;
+
+        m_uv_scale = m_resourceImage->getUVScale();
+        m_isAlpha = m_resourceImage->isAlpha();
+
+        m_wrapX = false;
+        m_wrapY = false;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

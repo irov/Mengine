@@ -2170,6 +2170,11 @@ namespace Menge
         {
             const WChar * value_char = pybind::unicode_to_wchar( _obj );
 
+			if( value_char == 0 )
+			{
+				return false;
+			}
+
             _value.assign( value_char );
 
             return true;

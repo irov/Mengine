@@ -18,7 +18,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.2/Python-2.7.2.tgz
 
-%toolsdir%\wget\wget.exe --no-clobber http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-20120720-git-85761ef-win32-dev.7z                                      
+%toolsdir%\wget\wget.exe --no-clobber http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-20120903-git-5d55830-win32-dev.7z                                      
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.3.zip
 
@@ -81,8 +81,8 @@ if EXIST Python32 rmdir /s /q Python32
 move Python-3.2.2 Python32
 
 if EXIST ffmpeg rmdir /s /q ffmpeg
-7za x -y ffmpeg-20120720-git-85761ef-win32-dev.7z
-move ffmpeg-20120720-git-85761ef-win32-dev ffmpeg
+7za x -y ffmpeg-20120903-git-5d55830-win32-dev.7z
+move ffmpeg-20120903-git-5d55830-win32-dev ffmpeg
 
 if EXIST ogg rmdir /s /q ogg
 7za x -y libogg-1.3.0.zip

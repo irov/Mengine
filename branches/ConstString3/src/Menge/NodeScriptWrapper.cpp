@@ -2168,14 +2168,21 @@ namespace Menge
     public:
         bool apply( PyObject * _obj, WString & _value ) override
         {
-            const WChar * value_char = pybind::unicode_to_wchar( _obj );
+            if( pybind::unicode_check( _obj ) == true )
+            {
+                const WChar * value_char = pybind::unicode_to_wchar( _obj );
 
-			if( value_char == 0 )
-			{
-				return false;
-			}
+			    if( value_char == 0 )
+	    		{
+    				return false;
+		    	}
 
-            _value.assign( value_char );
+                _value.assign( value_char );
+            }
+            else
+            {
+                return false;
+            }
 
             return true;
         }

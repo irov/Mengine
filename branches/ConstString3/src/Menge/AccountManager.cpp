@@ -342,7 +342,10 @@ namespace Menge
 
 		//Utils::stringWriteU( file, L"AccountCount = " + Utils::toString( ( unsigned int )m_accounts.size() ) + "\n" );
 
-		config.setSetting( L"SETTINGS", L"AccountEnumerator", Utils::toWString( m_playerEnumerator ) );
+        WString AccountEnumerator;
+        Utils::unsignedToWString( m_playerEnumerator, AccountEnumerator );
+
+		config.setSetting( L"SETTINGS", L"AccountEnumerator", AccountEnumerator );
 		//Utils::stringWriteU( file, L"AccountEnumerator = " + Utils::toWString( m_playerEnumerator ) + L"\n" );
 		
 		//Utils::stringWriteU( file, L"[ACCOUNTS]\n" );

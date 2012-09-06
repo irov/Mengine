@@ -146,32 +146,238 @@ namespace Menge
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		String toString( int _x )
+		bool intToString( int _value, String & _str )
 		{
-			Stringstream str;
-			str << _x;
-			return str.str();
+			Stringstream ss;
+			ss << _value;
+
+			_str = ss.str();
+
+            return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		String toString( size_t _x )
+		bool unsignedToString( size_t _value, String & _str )
 		{
-			Stringstream str;
-			str << _x;
-			return str.str();
+			Stringstream ss;
+			ss << _value;
+
+			_str = ss.str();
+
+            return true;
+		}
+        //////////////////////////////////////////////////////////////////////////
+        bool floatToString( float _value, String & _str )
+        {
+            Stringstream ss;
+            ss << _value;
+
+            _str = ss.str();
+
+            return true;
+        }
+		//////////////////////////////////////////////////////////////////////////
+		bool intToWString( int _value, WString & _str )
+		{
+			WStringstream ss;
+			ss << _value;
+
+            _str = ss.str();
+
+			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		WString toWString( int _x )
+		bool unsignedToWString( size_t _value, WString & _str )
 		{
-			WStringstream str;
-			str << _x;
-			return str.str();
+			WStringstream ss;
+			ss << _value;
+
+            _str = ss.str();
+
+            return true;
 		}
-		//////////////////////////////////////////////////////////////////////////
-		WString toWString( size_t _x )
-		{
-			WStringstream str;
-			str << _x;
-			return str.str();
-		}
+        //////////////////////////////////////////////////////////////////////////
+        bool floatToWString( float _value, WString & _str )
+        {
+            WStringstream ss;
+            ss << _value;
+
+            _str = ss.str();
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringToInt( const String & _str, int & _value )
+        {
+            Stringstream ss;
+            ss << _str;
+
+            if( ss >> _value == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringToUnsigned( const String & _str, size_t & _value )
+        {
+            Stringstream ss;
+            ss << _str;
+            
+            if( ss >> _value == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringToFloat( const String & _str, float & _value )
+        {
+            Stringstream ss;
+            ss << _str;
+
+            if( ss >> _value == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool wstringToInt( const WString & _str, int & _value )
+        {
+            WStringstream ss;
+            ss << _str;
+
+            if( ss >> _value == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool wstringToInt2( const WString & _str, int & _value1, int & _value2, bool _separator )
+        {
+            WStringstream ss;
+            ss << _str;
+
+            if( ss >> _value1 == false )
+            {
+                return false;
+            }
+
+            if( _separator == true )
+            {
+                WChar sep;
+
+                if( ss >> sep == false )
+                {
+                    return false;
+                }
+            }
+
+            if( ss >> _value2 == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool wstringToInt4( const WString & _str, int & _value1, int & _value2, int & _value3, int & _value4, bool _separator )
+        {
+            WStringstream ss;
+            ss << _str;
+
+            if( ss >> _value1 == false )
+            {
+                return false;
+            }
+
+            if( _separator == true )
+            {
+                WChar sep;
+
+                if( ss >> sep == false )
+                {
+                    return false;
+                }
+            }
+
+            if( ss >> _value2 == false )
+            {
+                return false;
+            }
+
+            if( _separator == true )
+            {
+                WChar sep;
+
+                if( ss >> sep == false )
+                {
+                    return false;
+                }
+            }
+
+            if( ss >> _value3 == false )
+            {
+                return false;
+            }
+
+            if( _separator == true )
+            {
+                WChar sep;
+
+                if( ss >> sep == false )
+                {
+                    return false;
+                }
+            }
+
+            if( ss >> _value4 == false )
+            {
+                return false;
+            }
+
+            if( _separator == true )
+            {
+                WChar sep;
+
+                if( ss >> sep == false )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool wstringToUnsigned( const WString & _str, size_t & _value )
+        {
+            WStringstream ss;
+            ss << _str;
+
+            if( ss >> _value == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool wstringToFloat( const WString & _str, float & _value )
+        {
+            WStringstream ss;
+            ss << _str;
+
+            if( ss >> _value == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
 	}
 }

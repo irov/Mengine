@@ -1,6 +1,8 @@
 #	include "AstralaxParticleSystem.h"
 #	include "AstralaxEmitterContainer.h"
 
+#   include "Utils/Core/String.h"
+
 #	include "stdio.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -51,10 +53,10 @@ namespace Menge
 
 		String num = _fullname.substr( st_begin + 1, st_end - st_begin - 1 );
 
-		if( sscanf( num.c_str(), "%d", &count ) != 1 )
-		{
-			return 0;
-		}
+        if( Utils::stringToInt( num, count ) == false )
+        {
+            return 0;
+        }
 
 		_name = _fullname.substr( 0, st_begin );
 

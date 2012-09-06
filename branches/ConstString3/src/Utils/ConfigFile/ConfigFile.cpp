@@ -95,7 +95,7 @@ namespace Menge
 			return false;
 		}
 
-		if( std::swscanf( setting.c_str(), L"%u", &_value ) != 1 )
+        if( Utils::wstringToUnsigned( setting, _value ) == false )
 		{
 			return false;
 		}

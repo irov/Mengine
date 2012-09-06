@@ -368,8 +368,8 @@ namespace Menge
 
 			const WString & setting = currentAccount->getSetting( _setting );
 
-			unsigned int value;
-			if( swscanf( setting.c_str(), L"%u", &value ) != 1 )
+			size_t value;
+			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
 				MENGE_LOG_ERROR( "getSettingUInt: can't scanf from [%S]"
 					, _setting.c_str()
@@ -400,7 +400,7 @@ namespace Menge
 			const WString & setting = currentAccount->getSetting( _setting );
 
 			float value;
-			if( swscanf( setting.c_str(), L"%f", &value ) != 1 )
+			if( Utils::wstringToFloat( setting, value ) == false )
 			{
 				MENGE_LOG_ERROR( "getSettingFloat: can't scanf from [%S]"
 					, _setting.c_str()
@@ -453,8 +453,8 @@ namespace Menge
 
 			PyObject* py_setting = pybind::ptr( setting );
 
-			unsigned int value;
-			if( swscanf( setting.c_str(), L"%u", &value ) != 1 )
+			size_t value;
+			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
 				MENGE_LOG_ERROR( "getSettingUInt: can't scanf from [%S]"
 					, _setting.c_str()

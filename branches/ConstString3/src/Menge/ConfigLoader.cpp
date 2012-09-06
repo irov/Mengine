@@ -3,6 +3,8 @@
 #	include "FileEngine.h"
 #	include "LogEngine.h"
 
+#   include "Utils/Core/String.h"
+
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/StringizeInterface.h"
 
@@ -134,21 +136,11 @@ namespace Menge
 		{
 			return false;
 		}
-
-		String avalue;
-		if( Helper::UnicodeToUtf8( m_unicodeService, wvalue, avalue ) == false )
-		{
-			return false;
-		} 
-
-		int tmp_value;
-		
-		if( sscanf( avalue.c_str(), "%d", &tmp_value ) != 1 )
-		{
-			return false;
-		}
-
-		_value = tmp_value;
+        
+        if( Utils::wstringToInt( wvalue, _value ) == false )
+        {
+            return false;
+        }
 
 		return true;
 	}
@@ -166,16 +158,10 @@ namespace Menge
 		int width;
 		int height;
 
-		String avalue;
-		if( Helper::UnicodeToUtf8( m_unicodeService, wvalue, avalue ) == false )
-		{
-			return false;
-		} 
-
-		if( sscanf( avalue.c_str(), "%d;%d", &width, &height ) != 2 )
-		{
-			return false;
-		}
+        if( Utils::wstringToInt2( wvalue, width, height, true ) == false )
+        {
+            return false;
+        }
 
 		_value.setWidth( width );
 		_value.setHeight( height );
@@ -198,16 +184,10 @@ namespace Menge
 		int right;
 		int bottom;
 
-		String avalue;
-		if( Helper::UnicodeToUtf8( m_unicodeService, wvalue, avalue ) == false )
-		{
-			return false;
-		} 
-
-		if( sscanf( avalue.c_str(), "%d;%d;%d;%d", &left, &top, &right, &bottom ) != 4 )
-		{
-			return false;
-		}
+        if( Utils::wstringToInt4( wvalue, left, top, right, bottom, true ) == false )
+        {
+            return false;
+        }
 
 		_value.begin.x = float(left);
 		_value.begin.y = float(top);

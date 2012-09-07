@@ -95,18 +95,12 @@
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceFont.h"
 #	include "ResourceGlyph.h"
-//#	include "ResourceTilePolygon.h"
+
 #	include "ResourceImageSolid.h"
-
-//#	include "ResourceImageCell.h"
-//#	include "ResourceImageDynamic.h"
-//#	include "ResourceImageSet.h"
-
 #	include "ResourceImageDefault.h"
-//#	include "ResourceImageInAtlasCombineRGBAndAlpha.h"
-//#	include "ResourceImageInAtlasDefault.h"
-//#	include "ResourceImageAtlas.h"
 #	include "ResourceImageCombineRGBAndAlpha.h"
+#	include "ResourceImageMultiplyRGBAndAlpha.h"
+
 //#	include "ResourceBinary.h"
 #	include "ResourceMovie.h"
 #	include "ResourceVideo.h"
@@ -750,33 +744,17 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceAnimation );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
-		//RESOURCE_FACTORY( ResourceBinary );
-		//RESOURCE_FACTORY( ResourceTilePolygon );
 		
-		//RESOURCE_FACTORY( ResourceSequence );
-		//RESOURCE_FACTORY( ResourceImageAtlas );
-		//RESOURCE_FACTORY( ResourceImageCell );
-		//RESOURCE_FACTORY( ResourceImageDynamic );
-		//RESOURCE_FACTORY( ResourceImageSet );
-		//RESOURCE_FACTORY( ResourceMesh );
-
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageCombineRGBAndAlpha );
-		//RESOURCE_FACTORY( ResourceImageInAtlasCombineRGBAndAlpha );
-		//RESOURCE_FACTORY( ResourceImageInAtlasDefault );
+        RESOURCE_FACTORY( ResourceImageMultiplyRGBAndAlpha );
 		RESOURCE_FACTORY( ResourceImageSolid );
-		//RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceMovie );
 		RESOURCE_FACTORY( ResourceVideo );
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
 		RESOURCE_FACTORY( ResourceGlyph );
-		//RESOURCE_FACTORY( ResourceModel );
-		//RESOURCE_FACTORY( ResourceTileMap );
-		//RESOURCE_FACTORY( ResourceTileSet );
-		//RESOURCE_FACTORY( ResourceMeshMS3D );
-		//RESOURCE_FACTORY( ResourceMeshNoise );
-		//RESOURCE_FACTORY( ResourceMaterial );
+
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
 		RESOURCE_FACTORY( ResourceCursorICO );

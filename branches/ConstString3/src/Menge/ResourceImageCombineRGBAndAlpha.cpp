@@ -74,7 +74,7 @@ namespace Menge
         m_maxSize = mt::vec2f(-1.f, -1.f);
         m_size = mt::vec2f(-1.f, -1.f);
         m_isAlpha = true;
-        m_wrapX = false;
+        m_wrapX = false;  
         m_wrapY = false;
 
         metadata->swap_File_PathAlpha( m_fileNameAlpha );
@@ -185,7 +185,7 @@ namespace Menge
 
 		if( imageDecoderAlpha == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: Image decoder for file '%s' was not found"
 				, _fileNameAlpha.c_str() 
 				);
 
@@ -313,7 +313,7 @@ namespace Menge
 
 		if( streamAlpha == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image file with alpha channel data '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadBufferAlpha: Image file with alpha channel data '%s' was not found"
 				, m_fileNameAlpha.c_str() 
 				);
 
@@ -325,7 +325,7 @@ namespace Menge
 
 		if( imageDecoderAlpha == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::Warning: Image decoder for file '%s' was not found"
+			MENGE_LOG_ERROR( "ResourceImageCombineRGBAndAlpha::loadBufferAlpha: Image decoder for file '%s' was not found"
 				, m_fileNameAlpha.c_str() 
 				);
 

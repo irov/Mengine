@@ -154,11 +154,18 @@ namespace Menge
 			return false;
 		}
 
-		m_currentAccount = it_find->second;
-		m_currentAccount->load();
+        Account * account = it_find->second;
+		
+        if( account->load() == false )
+        {
+            return false;
+        }
+
+        m_currentAccount = account;
+
 		m_currentAccount->apply();
 
-		saveAccountsInfo();
+		this->saveAccountsInfo();
 
 		m_listener->onSelectAccount( _accountID );
 
@@ -231,11 +238,20 @@ namespace Menge
 	{
 		Account* account = new Account( _accountID );
 
+        if( account->load() == false )
+        {
+            delete account;
+
+            MENGE_LOG_ERROR("AccountManager::loadAccount_ invalid load account %S"
+                , _accountID.c_str()
+                );
+
+            return 0;
+        }
+
 		m_currentAccount = account;
 
 		m_listener->onCreateAccount( _accountID );
-
-		account->load();
 
 		return account;
 	}
@@ -296,6 +312,11 @@ namespace Menge
 			//config.indexSetting( it, "ACCOUNTS", "Account", accountID );
 
 			Account * account = this->loadAccount_( name );
+
+            if( account == 0 )
+            {
+                continue;
+            }
 
 			m_accounts.insert( std::make_pair( name, account ) );
 		}

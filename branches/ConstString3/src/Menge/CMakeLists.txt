@@ -500,24 +500,14 @@ Resource\\\\Image
 	ResourceImage.h
 	ResourceImageDefault.cpp
 	ResourceImageDefault.h
-	#ResourceImageAtlas.cpp
-	#ResourceImageAtlas.h
 	ResourceImageSubstract.cpp
 	ResourceImageSubstract.h
-	#ResourceImageInAtlasCombineRGBAndAlpha.cpp
-	#ResourceImageInAtlasCombineRGBAndAlpha.h
-	#ResourceImageInAtlasDefault.cpp
-	#ResourceImageInAtlasDefault.h
 	ResourceImageCombineRGBAndAlpha.cpp
 	ResourceImageCombineRGBAndAlpha.h
+	ResourceImageMultiplyRGBAndAlpha.cpp
+	ResourceImageMultiplyRGBAndAlpha.h
 	ResourceImageSolid.h
     ResourceImageSolid.cpp
-	#ResourceImageCell.cpp
-	#ResourceImageCell.h
-	#ResourceImageDynamic.cpp
-	#ResourceImageDynamic.h
-	#ResourceImageSet.cpp
-	#ResourceImageSet.h
 )
 
 ADD_FILTER(

@@ -100,6 +100,16 @@ namespace Menge
 
 		WString fileName = m_name + MENGE_FOLDER_DELIM + L"settings.ini";
 
+        if( FileEngine::get()
+            ->existFile( Consts::get()->c_user, fileName ) == false )
+        {
+            MENGE_LOG_ERROR( "Account settings not found '%S'"
+                , fileName.c_str() 
+                );
+
+            return false;
+        }
+
 		FileInputStreamInterface* file = FileEngine::get()
 			->openInputFile( Consts::get()->c_user, fileName );
 

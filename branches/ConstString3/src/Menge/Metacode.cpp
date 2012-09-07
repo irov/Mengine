@@ -78,7 +78,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 19:
+        case 20:
             {
                 Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                 metadata->parse( _buff, _size, _read );
@@ -123,6 +123,15 @@ namespace Metacode
                 return true;
                 break;
             }
+        case 18:
+            {
+                Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha ();
+                metadata->parse( _buff, _size, _read );
+    
+                includes_Meta_Resource.push_back(metadata);
+                return true;
+                break;
+            }
         case 15:
             {
                 Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
@@ -132,7 +141,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 18:
+        case 19:
             {
                 Meta_DataBlock::Meta_ResourceImageSubstract * metadata = new Meta_DataBlock::Meta_ResourceImageSubstract ();
                 metadata->parse( _buff, _size, _read );
@@ -704,13 +713,6 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 9:
-            {
-                this->read( _buff, _size, _read, this->File_Offset );
-                this->File_Offset_successful = true;
-                return true;
-                break;
-            }
         case 3:
             {
                 this->read( _buff, _size, _read, this->File_PathAlpha );
@@ -732,14 +734,14 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 10:
+        case 9:
             {
                 this->read( _buff, _size, _read, this->File_WrapX );
                 this->File_WrapX_successful = true;
                 return true;
                 break;
             }
-        case 11:
+        case 10:
             {
                 this->read( _buff, _size, _read, this->File_WrapY );
                 this->File_WrapY_successful = true;
@@ -855,6 +857,91 @@ namespace Metacode
     
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageDefault::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseArguments( const char * _buff, size_t _size, size_t & _read, size_t _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 7:
+            {
+                this->read( _buff, _size, _read, this->FileAlpha_Codec );
+                this->FileAlpha_Codec_successful = true;
+                return true;
+                break;
+            }
+        case 6:
+            {
+                this->read( _buff, _size, _read, this->FileAlpha_Path );
+                this->FileAlpha_Path_successful = true;
+                return true;
+                break;
+            }
+        case 8:
+            {
+                this->read( _buff, _size, _read, this->FileAlpha_UV );
+                this->FileAlpha_UV_successful = true;
+                return true;
+                break;
+            }
+        case 4:
+            {
+                this->read( _buff, _size, _read, this->FileRGB_Codec );
+                this->FileRGB_Codec_successful = true;
+                return true;
+                break;
+            }
+        case 3:
+            {
+                this->read( _buff, _size, _read, this->FileRGB_Path );
+                this->FileRGB_Path_successful = true;
+                return true;
+                break;
+            }
+        case 5:
+            {
+                this->read( _buff, _size, _read, this->FileRGB_UV );
+                this->FileRGB_UV_successful = true;
+                return true;
+                break;
+            }
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_preparationIncludes( size_t _includes, size_t _count )
+    {
+        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseIncludes( const char * _buff, size_t _size, size_t & _read, size_t _includes )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseGenerators( const char * _buff, size_t _size, size_t & _read, size_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {

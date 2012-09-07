@@ -1,6 +1,7 @@
 #	include "LoaderEngine.h"
 
 #	include "metabuf/Metabuf.hpp"
+#   include "Metacode.h"
 
 #	include "FileEngine.h"
 
@@ -36,8 +37,7 @@ namespace Menge
 
 			return false;
 		}
-
-        
+                
 		if( this->loadBinary( buffer, _metadata ) == false )
 		{
 			--m_bufferLevel;
@@ -55,7 +55,21 @@ namespace Menge
             return true;
         }
 
-		size_t read_size = 0;
+        size_t read_size = 0;
+
+        size_t readVersion;
+        size_t needVersion;
+
+        if( Metacode::readHeader( &_blob[0], _blob.size(), read_size, readVersion, needVersion ) == false )
+        {
+            MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid version read %d need %d"
+                , readVersion
+                , needVersion
+                );
+
+            return false;
+        }
+		
 		if( _metadata->parse( &_blob[0], _blob.size(), read_size ) == false )
         {
             MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid parse"

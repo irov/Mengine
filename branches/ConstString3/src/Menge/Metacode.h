@@ -9,6 +9,8 @@
 
 namespace Metacode
 {
+    bool readHeader( const char * _buff, size_t _size, size_t & _read, size_t & _readVersion, size_t & _needVersion );
+
     class Meta_DataBlock
         : public Metabuf::Metadata
     { 

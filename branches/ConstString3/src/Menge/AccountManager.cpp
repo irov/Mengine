@@ -302,6 +302,8 @@ namespace Menge
 		TVectorWString values;
 		config.getSettings( L"ACCOUNTS", L"Account", values );
 
+        Account * validAccount = 0;
+
 		for( TVectorWString::const_iterator
 			it = values.begin(), 
 			it_end = values.end();
@@ -318,13 +320,29 @@ namespace Menge
                 continue;
             }
 
+            validAccount = account;
+
 			m_accounts.insert( std::make_pair( name, account ) );
 		}
 
 		if( selectAccountID.empty() == false )
 		{
-			this->selectAccount( selectAccountID );
+			if( this->selectAccount( selectAccountID ) == false )
+            {
+                MENGE_LOG_ERROR( "AccountManager::loadAccounts invalud set select account '%S'"
+                    , selectAccountID.c_str()
+                    );
+            }
 		}
+        
+        Account * currentAccount = getCurrentAccount();
+
+        if( currentAccount == 0 && validAccount != 0 )
+        {
+            const WString & accountID = validAccount->getName();
+
+            this->selectAccount( accountID );
+        }
 		
 		return true;
 	}

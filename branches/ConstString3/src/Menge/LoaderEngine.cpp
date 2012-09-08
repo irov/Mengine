@@ -31,67 +31,27 @@ namespace Menge
 
 		++m_bufferLevel;
 
-		if( this->import( _pak, _path, buffer, _exist ) == false )
+		if( this->import( _pak, _path, buffer, _metadata, _exist ) == false )
 		{
 			--m_bufferLevel;
 
 			return false;
-		}
-                
-		if( this->loadBinary( buffer, _metadata ) == false )
-		{
-			--m_bufferLevel;
-			return false;
-		}
+		}                
 
 		--m_bufferLevel;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::loadBinary( const Archive & _blob, Metabuf::Metadata * _metadata )
-	{
-        if( _blob.empty() == true )
-        {
-            return true;
-        }
-
-        size_t read_size = 0;
-
-        size_t readVersion;
-        size_t needVersion;
-
-        if( Metacode::readHeader( &_blob[0], _blob.size(), read_size, readVersion, needVersion ) == false )
-        {
-            MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid version read %d need %d"
-                , readVersion
-                , needVersion
-                );
-
-            return false;
-        }
-		
-		if( _metadata->parse( &_blob[0], _blob.size(), read_size ) == false )
-        {
-            MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid parse"
-                );
-
-            return false;
-        }
-
-        if( read_size != _blob.size() )
-        {
-            return false;
-        }
-        
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::import( const ConstString & _pak, const WString & _path, Archive & _archive, bool & _exist )
+	bool LoaderEngine::import( const ConstString & _pak, const WString & _path, Archive & _archive, Metabuf::Metadata * _metadata, bool & _exist )
 	{
 		FileInputStreamInterface * file_bin;
 		
 		if( this->openBin_( _pak, _path, &file_bin, _exist ) == false )
 		{
+            MENGE_LOG_ERROR("LoaderEngine::import invlid open bin %S"
+                , _path.c_str()
+                );
+
 			return false;
 		}
 
@@ -100,27 +60,35 @@ namespace Menge
 			return true;
 		}
 
-
 		bool reimport = false;
-		bool done = this->importBin_( file_bin, _archive, reimport );
+		bool done = this->importBin_( file_bin, _archive, _metadata, &reimport );
 
 #	ifndef MENGE_MASTER_RELEASE
 		if( reimport == true )
 		{
 			file_bin->close();
 
-			WString path_xml = _path + L".xml";
-			WString path_bin = _path + L".bin";
+            WString path_xml = _path;
 
-			if( this->makeBin_( _pak, path_xml, path_bin ) == false )
+            WString::size_type size = path_xml.size();
+            path_xml[size-3] = L'x';
+            path_xml[size-2] = L'm';
+            path_xml[size-1] = L'l';
+
+			if( this->makeBin_( _pak, path_xml, _path ) == false )
 			{
+                MENGE_LOG_ERROR("LoaderEngine::import invlid rebild bin %S from xml %S"
+                    , _path.c_str()
+                    , path_xml.c_str()
+                    );
+
 				return false;
 			}
 
 			file_bin = FileEngine::get()
-				->openInputFile( _pak, path_bin );
+				->openInputFile( _pak, _path );
 
-			done = this->importBin_( file_bin, _archive, reimport );
+			done = this->importBin_( file_bin, _archive, _metadata, NULL );
 		}
 #	endif
 
@@ -129,7 +97,7 @@ namespace Menge
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::importBin_( FileInputStreamInterface * _bin, Archive & _archive, bool & _reimport )
+	bool LoaderEngine::importBin_( FileInputStreamInterface * _bin, Archive & _archive, Metabuf::Metadata * _metadata, bool * _reimport )
 	{
 		int size = _bin->size();
 
@@ -148,11 +116,43 @@ namespace Menge
 			return false;
 		}
 
-		//if( *(int*)&_archive[1] != Menge::Protocol::version )
-		//{
-		//	_reimport = true;
-		//	return false;
-		//}
+        size_t read_size = 0;
+
+        size_t readVersion = 0;
+        size_t needVersion = 0;
+
+        TBlobject::value_type * archiveBuff = &_archive[0];
+        size_t archiveSize = _archive.size();
+
+        if( Metacode::readHeader( archiveBuff, archiveSize, read_size, readVersion, needVersion ) == false )
+        {
+            if( _reimport == NULL )
+            {
+                MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid version read %d need %d"
+                    , readVersion
+                    , needVersion
+                    );
+            }
+            else
+            {
+                *_reimport = true;
+            }
+
+            return false;
+        }
+
+        if( _metadata->parse( archiveBuff, archiveSize, read_size ) == false )
+        {
+            MENGE_LOG_ERROR("LoaderEngine::loadBinary invlid parse"
+                );
+
+            return false;
+        }
+
+        if( read_size != archiveSize )
+        {
+            return false;
+        }
 
 		return true;
 	}

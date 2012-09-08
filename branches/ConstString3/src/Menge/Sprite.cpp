@@ -404,6 +404,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial_()
 	{
+        RenderTextureInterface * textureAlpha = m_resource->getTextureAlpha();
+
+        if( textureAlpha != NULL )
+        {
+            m_texturesNum = 2;
+
+            m_materialGroup = RenderEngine::get()
+                ->getMaterialGroup( CONST_STRING(ExternalAlpha) );
+        }
 		if ( m_blendAdd == true )
 		{
 			m_texturesNum = 1;

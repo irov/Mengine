@@ -31,13 +31,10 @@ namespace Menge
 		bool load( const ConstString & _pak, const WString & _path, Metabuf::Metadata * _metadata, bool & _exist );
 
 	public:
-		bool loadBinary( const Archive & _blob, Metabuf::Metadata * _metadata );
-
-	public:
-		bool import( const ConstString & _pak, const WString & _path, Archive & _archive, bool & _exist );
+		bool import( const ConstString & _pak, const WString & _path, Archive & _archive, Metabuf::Metadata * _metadata, bool & _exist );
 
 	private:
-		bool importBin_( FileInputStreamInterface * _bin, Archive & _archive, bool & _reimport );
+		bool importBin_( FileInputStreamInterface * _bin, Archive & _archive, Metabuf::Metadata * _metadata, bool * _reimport );
 		bool openBin_( const ConstString & _pak, const WString & _path, FileInputStreamInterface ** _file, bool & _exist );
 
 #	ifndef MENGE_MASTER_RELEASE

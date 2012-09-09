@@ -398,7 +398,7 @@ namespace	Menge
 
 		if( _invalidateVertices & ESVI_MATERIAL )
 		{
-			updateMaterial_();
+			this->updateMaterial_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@ namespace	Menge
             m_materialGroup = RenderEngine::get()
                 ->getMaterialGroup( CONST_STRING(ExternalAlpha) );
         }
-		if ( m_blendAdd == true )
+		else if ( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
 

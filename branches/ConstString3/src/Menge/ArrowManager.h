@@ -13,6 +13,6 @@ namespace Menge
 		, public Holder<ArrowManager>
 	{
 	public:
-		Arrow * createArrow( const ConstString & _name, const ConstString & _prototype );
+		Arrow * createArrow( const ConstString & _prototype );
 	};
 }

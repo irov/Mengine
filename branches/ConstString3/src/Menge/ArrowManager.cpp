@@ -11,14 +11,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * ArrowManager::createArrow( const ConstString & _name, const ConstString & _prototype )
+	Arrow * ArrowManager::createArrow( const ConstString & _prototype )
 	{
 		PyObject * py_prototype = this->getPrototype( _prototype );
 
 		if( py_prototype == 0 )
 		{
-			MENGE_LOG_ERROR( "ArrowManager.createArrow: arrow '%s' prototype '%s' not found"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ArrowManager.createArrow: arrow prototype '%s' not found"
 				, _prototype.c_str()
 				);
 
@@ -28,12 +27,11 @@ namespace Menge
 		const ConstString & type = Consts::get()->c_Arrow;
 
 		Arrow * arrow = ScriptEngine::get()
-			->createEntityT<Arrow>( _name, type, py_prototype );
+			->createEntityT<Arrow>( type, py_prototype );
 
 		if( arrow == 0 )
 		{
-			MENGE_LOG_ERROR( "ArrowManager.createArrow: can't create arrow '%s' from prototype '%s'"
-				, _name.c_str() 
+			MENGE_LOG_ERROR( "ArrowManager.createArrow: can't create arrow from prototype '%s'"
 				, _prototype.c_str()
 				); 
 

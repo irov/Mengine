@@ -358,10 +358,8 @@ namespace Menge
 		float crx = float( m_contentResolution.getWidth() );
 		float cry = float( m_contentResolution.getHeight() );
 
-		ConstString c_playerCamera("playerCamera");
-
 		Camera2D * camera = NodeManager::get()
-			->createNodeT<Camera2D>( c_playerCamera, Consts::get()->c_Camera2D );
+			->createNodeT<Camera2D>( Consts::get()->c_Camera2D );
 
 		camera->setRenderTarget( Consts::get()->c_Window );
 
@@ -457,10 +455,8 @@ namespace Menge
 	void Player::initializeRenderResources()
 	{
 //#	ifndef MENGE_MASTER_RELEASE
-		ConstString c_debugText("debugText");
-
 		m_debugText = NodeManager::get()->
-			createNodeT<TextField>( c_debugText, Consts::get()->c_TextField );
+			createNodeT<TextField>( Consts::get()->c_TextField );
 
 		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
 		m_debugText->enable();

@@ -26,15 +26,14 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static PyObject * s_createEntity( const ConstString & _name, const ConstString & _prototype )
+		static PyObject * s_createEntity( const ConstString & _prototype )
 		{
 			Entity * entity = EntityManager::get()
-				->createEntity( _name, _prototype );
+				->createEntity( _prototype );
 
 			if( entity == 0 )
 			{
-				MENGE_LOG_ERROR( "Error: can't create Entity '%s''%s'"
-					, _name.c_str() 
+				MENGE_LOG_ERROR( "Error: can't create Entity '%s'"
 					, _prototype.c_str()
 					);
 

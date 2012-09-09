@@ -19,21 +19,19 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node* NodeManager::createNode( const ConstString& _name, const ConstString& _type )
+	Node* NodeManager::createNode( const ConstString& _type )
 	{
 		Node * node = FactoryManager::createObjectT<Node>( _type );
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( "NodeManager::createNode: Invalid Node Type '%s' [Name '%s']"
+			MENGE_LOG_ERROR( "NodeManager::createNode: Invalid Node Type '%s'"
 				, _type.c_str() 
-				, _name.c_str()
 				);
 
 			return 0;
 		}
-
-		node->setName( _name );
+        		
 		node->setType( _type );
 		
 		return node;

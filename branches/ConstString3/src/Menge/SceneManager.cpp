@@ -22,12 +22,12 @@ namespace Menge
 		if( py_prototype == 0 )
 		{
 			scene = NodeManager::get()
-				->createNodeT<Scene>( _name, Consts::get()->c_Scene );
+				->createNodeT<Scene>( Consts::get()->c_Scene );
 		}
 		else
 		{
 			scene = ScriptEngine::get()
-				->createEntityT<Scene>( _name, Consts::get()->c_Scene, py_prototype );
+				->createEntityT<Scene>( Consts::get()->c_Scene, py_prototype );
 		}
 
 		if( scene == 0 )

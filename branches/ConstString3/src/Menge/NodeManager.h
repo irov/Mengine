@@ -22,12 +22,12 @@ namespace Menge
 		NodeManager();
 
 	public:
-		Node * createNode( const ConstString& _name, const ConstString& _type );
+		Node * createNode( const ConstString& _type );
 		
 		template<class T>
-		T * createNodeT( const ConstString& _name, const ConstString& _type )
+		T * createNodeT( const ConstString& _type )
 		{
-			Node * node = this->createNode( _name, _type );
+			Node * node = this->createNode( _type );
 
 			return static_cast<T*>(node);
 		}

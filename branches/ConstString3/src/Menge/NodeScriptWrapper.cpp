@@ -474,22 +474,22 @@ namespace Menge
 			return scene;
 		}
 
-		static void s_setArrow( const ConstString & _name, const ConstString & _prototype )
+		static void s_setArrow( const ConstString & _prototype )
 		{
 			Arrow * arrow = ArrowManager::get()
-				->createArrow( _name, _prototype );
+				->createArrow( _prototype );
 
 			if( arrow == 0 )
 			{
-				MENGE_LOG_ERROR( "Error: can't setup arrow '%s''%s'"
-					, _name.c_str() 
+				MENGE_LOG_ERROR( "Error: can't setup arrow '%s'"
 					, _prototype.c_str()
 					);
 
 				return;
 			}
 
-			Player::get()->setArrow( arrow );
+			Player::get()
+                ->setArrow( arrow );
 		}
 
 		static Arrow * s_getArrow()
@@ -589,10 +589,10 @@ namespace Menge
 			_node->destroy();
 		}
 
-		static Node * createNode( const ConstString & _name, const ConstString & _type )
+		static Node * createNode( const ConstString & _type )
 		{
 			Node * node = NodeManager::get()
-				->createNode( _name, _type );
+				->createNode( _type );
 
 			if( node == NULL )
 			{
@@ -1260,9 +1260,9 @@ namespace Menge
 
 		namespace NodeAdapter
 		{
-			static Node * createChildren( Node * _node, const ConstString & _name, const ConstString & _type )
+			static Node * createChildren( Node * _node, const ConstString & _type )
 			{
-				Node * newNode = ScriptMethod::createNode(_name, _type );
+				Node * newNode = ScriptMethod::createNode(_type );
 
 				if( newNode == NULL )
 				{

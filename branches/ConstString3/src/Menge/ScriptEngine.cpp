@@ -276,12 +276,11 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, PyObject * _prototype )
+	Entity * ScriptEngine::createEntity( const ConstString& _type, PyObject * _prototype )
 	{
 		if( _prototype == 0 )
 		{
-			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't create object '%s:%s' (_prototype == 0)"
-				, _name.c_str()
+			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't create object '%s' (_prototype == 0)"
 				, _type.c_str()
 				);
 
@@ -292,8 +291,7 @@ namespace Menge
 
 		if( py_entity == 0 )
 		{
-			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't create object '%s.%s' (invalid create)"
-				, _name.c_str()
+			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't create object '%s' (invalid create)"
 				, _type.c_str()
 				);
 
@@ -306,15 +304,13 @@ namespace Menge
 
 		if( entity == 0 )
 		{
-			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't extract entity '%s.%s' (invalid cast)"
-				, _name.c_str()
+			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't extract entity '%s' (invalid cast)"
 				, _type.c_str()
 				);
 
 			return 0;
 		}
 
-		entity->setName( _name );
 		entity->setType( _type );
 
 		entity->create();

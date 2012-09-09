@@ -392,7 +392,7 @@ namespace Menge
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
 	{
 		Node * layer_slot = NodeManager::get()
-			->createNodeT<Node>( _layer.name, Consts::get()->c_Node );
+			->createNodeT<Node>( Consts::get()->c_Node );
 
 		//layer_slot->enable();
 		layer_slot->localHide(true);
@@ -407,7 +407,7 @@ namespace Menge
 	bool Movie::createMovieNullObject_( const MovieLayer & _layer )
 	{
 		Node * layer_slot = NodeManager::get()
-			->createNodeT<Node>( _layer.name, Consts::get()->c_Node );
+			->createNodeT<Node>( Consts::get()->c_Node );
 
 		layer_slot->localHide(true);
 
@@ -419,7 +419,7 @@ namespace Menge
 	bool Movie::createMovieImage_( const MovieLayer & _layer )
 	{
 		Sprite * layer_sprite = NodeManager::get()
-			->createNodeT<Sprite>( _layer.name, Consts::get()->c_Sprite );
+			->createNodeT<Sprite>( Consts::get()->c_Sprite );
 
 		layer_sprite->setImageResource( _layer.source );
 
@@ -472,7 +472,7 @@ namespace Menge
 		}
 
 		Sprite * layer_sprite = NodeManager::get()
-			->createNodeT<Sprite>( _layer.name, Consts::get()->c_Sprite );
+			->createNodeT<Sprite>( Consts::get()->c_Sprite );
 
 		layer_sprite->setImageResource( Consts::get()->c_WhitePixel );
 
@@ -504,7 +504,7 @@ namespace Menge
 	bool Movie::createMovieAnimation_( const MovieLayer & _layer )
 	{
 		Animation * layer_animation = NodeManager::get()
-			->createNodeT<Animation>( _layer.name, Consts::get()->c_Animation );
+			->createNodeT<Animation>( Consts::get()->c_Animation );
 
 		layer_animation->setAnimationResource( _layer.source );
 
@@ -534,7 +534,7 @@ namespace Menge
 	bool Movie::createMovieMovie_( const MovieLayer & _layer )
 	{
 		Movie * layer_movie = NodeManager::get()
-			->createNodeT<Movie>( _layer.name, Consts::get()->c_Movie );
+			->createNodeT<Movie>( Consts::get()->c_Movie );
 
 		layer_movie->setResourceMovie( _layer.source );				
 		//layer_movie->setLoop( true );
@@ -564,7 +564,7 @@ namespace Menge
 	bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
 	{
 		MovieInternalObject * movie_internal = NodeManager::get()
-			->createNodeT<MovieInternalObject>( _layer.name, Consts::get()->c_MovieInternalObject );
+			->createNodeT<MovieInternalObject>( Consts::get()->c_MovieInternalObject );
 
 		movie_internal->setMovie( this );
 
@@ -594,7 +594,7 @@ namespace Menge
 	bool Movie::createMovieVideo_( const MovieLayer & _layer )
 	{
 		Video * layer_video = NodeManager::get()
-			->createNodeT<Video>( _layer.name, Consts::get()->c_Video );
+			->createNodeT<Video>( Consts::get()->c_Video );
 
 		layer_video->setVideoResource( _layer.source );
 		//layer_video->setLoop( true );
@@ -637,7 +637,7 @@ namespace Menge
 	bool Movie::createMovieSound_( const MovieLayer & _layer )
 	{
 		SoundEmitter * layer_sound = NodeManager::get()
-			->createNodeT<SoundEmitter>( _layer.name, Consts::get()->c_SoundEmitter );
+			->createNodeT<SoundEmitter>( Consts::get()->c_SoundEmitter );
 
 		layer_sound->setSoundResource( _layer.source );
 		//layer_sound->setLoop( true );
@@ -666,7 +666,7 @@ namespace Menge
 	bool Movie::createMovieEmitterContainer_( const MovieLayer & _layer )
 	{
 		ParticleEmitter * layer_particles = NodeManager::get()
-			->createNodeT<ParticleEmitter>( _layer.name, Consts::get()->c_ParticleEmitter );
+			->createNodeT<ParticleEmitter>( Consts::get()->c_ParticleEmitter );
 
 		layer_particles->setResource( _layer.source );
         layer_particles->setPlayCount( _layer.playCount );
@@ -1480,10 +1480,8 @@ namespace Menge
 			return;
 		}
 
-		ConstString c_layerCamera("movieCamera");
-
 		m_renderCamera3D = NodeManager::get()
-			->createNodeT<Camera3D>( c_layerCamera, Consts::get()->c_Camera3D );
+			->createNodeT<Camera3D>( Consts::get()->c_Camera3D );
 
 		const MovieLayerCamera3D & camera3D = m_resourceMovie->getCamera3D();
 

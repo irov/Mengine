@@ -431,7 +431,9 @@ namespace Menge
 		Holder<AmplifierServiceInterface>::keep( m_amplifierService );
 
 		m_homeless = NodeManager::get()
-			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node );
+			->createNode( Consts::get()->c_Node );
+
+        m_homeless->setName( Consts::get()->c_Homeless );
 
 		m_accountLister = new ApplicationAccountManagerListener(this);
 
@@ -441,11 +443,8 @@ namespace Menge
 
 		m_accountManager->loadAccountsInfo();
 		
-		ConstString defaultArrowName("Default");
-		ConstString defaultArrowPrototype("Default");
-
 		m_defaultArrow = ArrowManager::get()
-			->createArrow( defaultArrowName, defaultArrowPrototype );
+            ->createArrow( Consts::get()->c_Default );
 
 		const Resolution & contentResolution = Application::get()
 			->getContentResolution();

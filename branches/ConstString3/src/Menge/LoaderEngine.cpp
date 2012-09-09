@@ -44,7 +44,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::import( const ConstString & _pak, const WString & _path, Archive & _archive, Metabuf::Metadata * _metadata, bool & _exist )
 	{
-		FileInputStreamInterface * file_bin;
+		FileInputStreamInterface * file_bin = 0;
 		
 		if( this->openBin_( _pak, _path, &file_bin, _exist ) == false )
 		{

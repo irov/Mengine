@@ -107,6 +107,11 @@ namespace Menge
 	{
 		SI_Error err = m_ini.SetValue( _section.c_str(), _key.c_str(), _value.c_str() );
 
+        if( err != 0 )
+        {
+            return false;
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

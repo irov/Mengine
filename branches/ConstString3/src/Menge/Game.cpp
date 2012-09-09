@@ -431,7 +431,7 @@ namespace Menge
 		Holder<AmplifierServiceInterface>::keep( m_amplifierService );
 
 		m_homeless = NodeManager::get()
-			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node, Consts::get()->c_builtin_empty );
+			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node );
 
 		m_accountLister = new ApplicationAccountManagerListener(this);
 

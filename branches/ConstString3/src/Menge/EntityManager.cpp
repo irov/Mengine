@@ -11,16 +11,15 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Entity * EntityManager::createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag )
+	Entity * EntityManager::createEntity( const ConstString & _name, const ConstString & _prototype )
 	{		
 		PyObject * py_prototype = this->getPrototype( _prototype );
 
 		if( py_prototype == 0 )
 		{
-			MENGE_LOG_ERROR( "EntityManager.createEntity: entity '%s' prototype '%s' not found (tag '%s')"
+			MENGE_LOG_ERROR( "EntityManager.createEntity: entity '%s' prototype '%s' not found"
 				, _name.c_str()
 				, _prototype.c_str()
-				, _tag.c_str()
 				);
 
 			return 0;
@@ -29,7 +28,7 @@ namespace Menge
 		const ConstString & type = Consts::get()->c_Entity;
 
 		Entity * entity = ScriptEngine::get()
-			->createEntityT<Entity>( _name, type, _tag, py_prototype );
+			->createEntityT<Entity>( _name, type, py_prototype );
 
 		if( entity == 0 )
 		{

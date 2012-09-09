@@ -28,7 +28,7 @@ namespace Menge
 		const ConstString & type = Consts::get()->c_Arrow;
 
 		Arrow * arrow = ScriptEngine::get()
-			->createEntityT<Arrow>( _name, type, type, py_prototype );
+			->createEntityT<Arrow>( _name, type, py_prototype );
 
 		if( arrow == 0 )
 		{

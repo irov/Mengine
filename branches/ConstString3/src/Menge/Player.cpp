@@ -361,7 +361,7 @@ namespace Menge
 		ConstString c_playerCamera("playerCamera");
 
 		Camera2D * camera = NodeManager::get()
-			->createNodeT<Camera2D>( c_playerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+			->createNodeT<Camera2D>( c_playerCamera, Consts::get()->c_Camera2D );
 
 		camera->setRenderTarget( Consts::get()->c_Window );
 
@@ -460,7 +460,7 @@ namespace Menge
 		ConstString c_debugText("debugText");
 
 		m_debugText = NodeManager::get()->
-			createNodeT<TextField>( c_debugText, Consts::get()->c_TextField, Consts::get()->c_builtin_empty );
+			createNodeT<TextField>( c_debugText, Consts::get()->c_TextField );
 
 		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
 		m_debugText->enable();

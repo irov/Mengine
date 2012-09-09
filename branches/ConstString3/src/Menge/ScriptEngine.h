@@ -56,12 +56,12 @@ namespace Menge
 		void updateModulePath_();
 
 	public:
-		Entity * createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, PyObject * _prototype );
+		Entity * createEntity( const ConstString & _name, const ConstString& _type, PyObject * _prototype );
 
 		template<class T>
-		T * createEntityT( const ConstString & _name, const ConstString& _type, const ConstString& _tag, PyObject * _prototype )
+		T * createEntityT( const ConstString & _name, const ConstString& _type, PyObject * _prototype )
 		{
-			Entity * entity = this->createEntity( _name, _type, _tag, _prototype );
+			Entity * entity = this->createEntity( _name, _type, _prototype );
 
 			if( dynamic_cast<T*>(entity) == NULL )
 			{

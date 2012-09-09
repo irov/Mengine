@@ -16,6 +16,6 @@ namespace Menge
 		, public Holder<EntityManager>
 	{
 	public:
-		Entity * createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag );
+		Entity * createEntity( const ConstString & _name, const ConstString & _prototype );
 	};
 }

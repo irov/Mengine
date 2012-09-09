@@ -26,10 +26,10 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static PyObject * s_createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag )
+		static PyObject * s_createEntity( const ConstString & _name, const ConstString & _prototype )
 		{
 			Entity * entity = EntityManager::get()
-				->createEntity( _name, _prototype, _tag );
+				->createEntity( _name, _prototype );
 
 			if( entity == 0 )
 			{

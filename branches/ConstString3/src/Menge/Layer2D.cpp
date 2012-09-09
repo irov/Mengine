@@ -101,7 +101,7 @@ namespace	Menge
 		ConstString c_layerCamera("layerCamera");
 
 		m_cameraViewport = NodeManager::get()
-			->createNodeT<Camera2D>( c_layerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+			->createNodeT<Camera2D>( c_layerCamera, Consts::get()->c_Camera2D );
 
 		m_cameraViewport->setViewport( _viewport );
 		

@@ -162,7 +162,10 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			config.setSetting(L"SETTINGS", it->first, it->second.first );
+            const WString & key = it->first;
+            const WString & value = it->second.first;
+
+			config.setSetting( L"SETTINGS", key, value );
 			//Utils::stringWriteU( file, it->first + L" = " + it->second.first + L"\n" );
 		}
 

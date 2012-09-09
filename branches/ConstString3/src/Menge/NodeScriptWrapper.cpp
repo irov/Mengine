@@ -589,10 +589,10 @@ namespace Menge
 			_node->destroy();
 		}
 
-		static Node * createNode( const ConstString & _name, const ConstString & _type, const ConstString & _tag )
+		static Node * createNode( const ConstString & _name, const ConstString & _type )
 		{
 			Node * node = NodeManager::get()
-				->createNode( _name, _type, _tag );
+				->createNode( _name, _type );
 
 			if( node == NULL )
 			{
@@ -1260,9 +1260,9 @@ namespace Menge
 
 		namespace NodeAdapter
 		{
-			static Node * createChildren( Node * _node, const ConstString & _name, const ConstString & _type, const ConstString & _tag )
+			static Node * createChildren( Node * _node, const ConstString & _name, const ConstString & _type )
 			{
-				Node * newNode = ScriptMethod::createNode(_name, _type, _tag );
+				Node * newNode = ScriptMethod::createNode(_name, _type );
 
 				if( newNode == NULL )
 				{

@@ -276,7 +276,7 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, PyObject * _prototype )
+	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, PyObject * _prototype )
 	{
 		if( _prototype == 0 )
 		{
@@ -316,7 +316,6 @@ namespace Menge
 
 		entity->setName( _name );
 		entity->setType( _type );
-		entity->setTag( _tag );
 
 		entity->create();
 

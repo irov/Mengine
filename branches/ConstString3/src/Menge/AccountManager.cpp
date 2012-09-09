@@ -72,7 +72,7 @@ namespace Menge
 
 			return;
 		}
-
+        
 		m_currentAccount->changeSetting( _setting, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -238,6 +238,10 @@ namespace Menge
 	{
 		Account* account = new Account( _accountID );
 
+        m_currentAccount = account;
+
+        m_listener->onCreateAccount( _accountID );
+
         if( account->load() == false )
         {
             delete account;
@@ -248,11 +252,7 @@ namespace Menge
 
             return 0;
         }
-
-		m_currentAccount = account;
-
-		m_listener->onCreateAccount( _accountID );
-
+        
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -317,6 +317,10 @@ namespace Menge
 
             if( account == 0 )
             {
+                MENGE_LOG_ERROR( "AccountManager::loadAccountsInfo invalid load account '%S'"
+                    , name.c_str()
+                    );
+
                 continue;
             }
 
@@ -417,7 +421,9 @@ namespace Menge
 			return;
 		}
 	
-		it_find->second->save();
+        Account * account = it_find->second;
+
+		account->save();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::saveAccounts()

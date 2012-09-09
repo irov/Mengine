@@ -167,7 +167,7 @@ namespace	Menge
 		{
 			ConstString c_VideoSound("VideoSound");
 			m_soundEmitter = NodeManager::get()
-				->createNodeT<SoundEmitter>( c_VideoSound, Consts::get()->c_SoundEmitter, Consts::get()->c_builtin_empty );
+				->createNodeT<SoundEmitter>( c_VideoSound, Consts::get()->c_SoundEmitter );
 			
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
 

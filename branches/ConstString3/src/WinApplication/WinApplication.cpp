@@ -452,6 +452,10 @@ namespace Menge
 
         this->setActive( true );
 
+        mt::vec2f point;
+        this->getCursorPosition(point);
+        m_inputService->setCursorPosition( point );
+
         if( fullscreen == true )
         {
             this->notifyWindowModeChanged( m_desktopResolution, true );

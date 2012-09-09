@@ -35,6 +35,7 @@ namespace Menge
 		bool isAnyMouseButtonDown() const override;
 		bool isMouseButtonDown( int _button ) const override;
 
+        void setCursorPosition( const mt::vec2f & _point ) override;
 		const mt::vec2f & getCursorPosition() const override;
 		bool validCursorPosition( const mt::vec2f & _point ) const override;
 

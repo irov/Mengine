@@ -280,6 +280,7 @@ namespace Menge
 		virtual bool isAnyMouseButtonDown() const = 0;
 		virtual bool isMouseButtonDown( int _button ) const = 0;
 
+        virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
 		virtual const mt::vec2f & getCursorPosition() const = 0;
 		virtual bool validCursorPosition( const mt::vec2f & _point ) const = 0;
 

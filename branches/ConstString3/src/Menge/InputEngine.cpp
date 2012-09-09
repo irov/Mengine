@@ -171,6 +171,12 @@ namespace Menge
 
 		_local = m_cursorPosition;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void InputEngine::setCursorPosition( const mt::vec2f & _point )
+    {
+        mt::vec2f point;
+        this->applyCursorPosition_( _point, point );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & InputEngine::getCursorPosition() const
 	{

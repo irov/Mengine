@@ -28,7 +28,5 @@ namespace Menge
     protected:
 		ResourceImage * m_resourceImage;
 		ConstString m_resourceImageName;
-
-        mt::vec4f m_uv_substract;
 	};
 }

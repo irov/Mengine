@@ -19,7 +19,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstract::ResourceImageSubstract()
         : m_resourceImage(NULL)
-        , m_uv_substract(0.f, 0.f, 1.f, 1.f)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -29,7 +28,7 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
         metadata->swap_Image_Name( m_resourceImageName );
-        m_uv_substract = metadata->get_Image_UV();
+        m_uv = metadata->get_Image_UV();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_compile()
@@ -62,17 +61,19 @@ namespace Menge
         }
 
         m_texture = m_resourceImage->getTexture();
+        m_textureAlpha = m_resourceImage->getTextureAlpha();
 
-        mt::vec2f uv_size(m_uv_substract.z - m_uv_substract.x, m_uv_substract.w - m_uv_substract.y);
+        mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);
 
         const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
 
         m_maxSize = maxSize * uv_size;
         m_size = maxSize * uv_size;
-        m_uv_image = m_uv_substract;
-        m_uv = m_uv_substract;
+        m_uv_image = m_uv;
 
         m_uv_scale = m_resourceImage->getUVScale();
+        m_uv_alpha = m_resourceImage->getUVAlpha();
+
         m_isAlpha = m_resourceImage->isAlpha();
 
         m_wrapX = false;

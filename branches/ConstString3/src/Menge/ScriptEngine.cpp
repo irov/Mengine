@@ -95,10 +95,18 @@ namespace Menge
 #	endif
 		m_moduleMenge = this->initModule( "Menge" );
 
+        bool bltin_exist;
+        PyObject * __builtin__ = pybind::module_import("__builtin__", bltin_exist);
+
+        PyObject * dir_bltin = pybind::module_dict(__builtin__);
+
+        pybind::dict_set( dir_bltin, "Menge", m_moduleMenge );
+
 		pybind::set_currentmodule( m_moduleMenge );
 
 		//ScriptModuleDeclaration::init( py_menge );
 
+        ScriptWrapper::constsWrap();
 		ScriptWrapper::mathWrap();
 		ScriptWrapper::nodeWrap();
 		ScriptWrapper::helperWrap();

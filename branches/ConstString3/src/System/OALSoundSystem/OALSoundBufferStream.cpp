@@ -48,11 +48,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::load( SoundDecoderInterface * _soundDecoder )
 	{
+        LogServiceInterface * logService = m_soundSystem->getLogService();
+
 		m_alBufferId = m_soundSystem->genBufferId();
 
 		if( m_alBufferId == 0 )
 		{
 			// TODO: report in case of error
+            LOGGER_ERROR(logService)("OALSoundBufferStream::load invalid gen first buffer ID"
+                );
+
 			return false;
 		}
 
@@ -60,6 +65,9 @@ namespace Menge
 		if( m_alBufferId2 == 0 )
 		{
 			// TODO: report in case of error
+            LOGGER_ERROR(logService)("OALSoundBufferStream::load invalid gen second buffer ID"
+                );
+
 			return false;
 		}
 
@@ -109,6 +117,10 @@ namespace Menge
 		}
         else
         {
+            LOGGER_ERROR(logService)("OALSoundBufferStream::load invalid channels %d"
+                , m_channels
+                );
+
             return false;
         }
 
@@ -124,6 +136,7 @@ namespace Menge
 		ALint state = 0;
 		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR();
+
 		if( state != AL_STOPPED && state != AL_INITIAL )
 		{
 			alSourceStop( m_sourceId );
@@ -133,6 +146,7 @@ namespace Menge
 				
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
+
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
 		OAL_CHECK_ERROR();
 
@@ -143,6 +157,7 @@ namespace Menge
 		{
 			alBufferData( m_alBufferId, m_format, m_dataBuffer, bytesWritten, m_frequency );
 			OAL_CHECK_ERROR();
+
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId );
 			OAL_CHECK_ERROR();            
 		}
@@ -153,6 +168,7 @@ namespace Menge
 		{
 			alBufferData( m_alBufferId2, m_format, m_dataBuffer, bytesWritten, m_frequency );
 			OAL_CHECK_ERROR();
+
 			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId2 );
 			OAL_CHECK_ERROR();            
 		}
@@ -175,13 +191,6 @@ namespace Menge
 	void OALSoundBufferStream::stop( ALenum _source )
 	{
 		this->setUpdating( false );
-		/*if( m_threadID != NULL )
-		{
-			int res = 0;
-			pthread_join( *m_threadID, (void**)&res );
-			delete m_threadID;
-			m_threadID = NULL;
-		}*/
 
 		m_soundSystem->clearSourceId( m_sourceId );
 		
@@ -190,19 +199,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::setUpdating( bool _updating )
 	{
-		/*if( m_boostMutex != NULL )
-		{
-			boost::mutex::scoped_lock scoped_mutex( *m_boostMutex );
-		}*/
 		m_updating = _updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::getUpdating() const
 	{
-		/*if( m_boostMutex != NULL )
-		{
-			boost::mutex::scoped_lock scoped_mutex( *m_boostMutex );
-		}*/
 		return m_updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -224,15 +225,18 @@ namespace Menge
 		ALuint buffer;
 
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
+        OAL_CHECK_ERROR();
 
 		// Получаем количество отработанных буферов
 		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
+        OAL_CHECK_ERROR();
 
 		// Если таковые существуют то
 		while( processed-- > 0 )
 		{
 			// Исключаем их из очереди
 			alSourceUnqueueBuffers( m_sourceId, 1, &buffer );
+            OAL_CHECK_ERROR();
 
 			// Читаем очередную порцию данных
 			bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
@@ -256,15 +260,21 @@ namespace Menge
 			{
 				// Включаем буфер обратно в очередь
 				alBufferData( buffer, m_format, m_dataBuffer, bytesWritten, m_frequency );
+                OAL_CHECK_ERROR();
+
 				alSourceQueueBuffers( m_sourceId, 1, &buffer );
+                OAL_CHECK_ERROR();
 			}
 		}
 
 		int state;
 		alGetSourcei( m_sourceId , AL_SOURCE_STATE, &state );
+        OAL_CHECK_ERROR();
+
 		if( state != AL_PLAYING )
 		{
 			alSourcePlay( m_sourceId );
+            OAL_CHECK_ERROR();
 		}
 
 		//// Check the status of the Source.  If it is not playing, then playback was completed,

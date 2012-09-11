@@ -43,12 +43,12 @@ namespace Menge
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
 
-		float getLengthMs() override;
-		float getPosMs() override;
+		float getLengthMs() const override;
+		float getPosMs() const override;
 		void setPosMs( float _posMs ) override;
 
 		void loadBuffer( SoundBufferInterface* _soundBuffer ) override;
-		SoundBufferInterface* getSoundBuffer() override;
+		SoundBufferInterface* getSoundBuffer() const override;
 
 	public:
 		void setHeadMode( bool _headMode );

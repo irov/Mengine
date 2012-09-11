@@ -9,7 +9,7 @@ namespace Menge
     struct ScriptClassExtract
         : public pybind::interface_<T>::extract_type_ptr
     {
-        PyObject * wrap( T * _node ) override
+        PyObject * wrap( typename pybind::interface_<T>::extract_type_ptr::TCastRef _node ) override
         {
             if( _node == 0 )
             {

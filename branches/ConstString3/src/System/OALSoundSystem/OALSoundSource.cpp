@@ -36,7 +36,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSource::~OALSoundSource()
 	{
-		stop();
+		this->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::initialize( OALSoundSystem* _soundSystem )
@@ -126,6 +126,7 @@ namespace Menge
 		m_position[0] = _x;
 		m_position[1] = _y;
 		m_position[2] = _z;
+
 		if( m_playing == true && m_sourceId != 0 )
 		{
 			alSourcefv( m_sourceId, AL_POSITION, &(m_position[0]) );
@@ -148,7 +149,7 @@ namespace Menge
 		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float OALSoundSource::getLengthMs()
+	float OALSoundSource::getLengthMs() const
 	{
 		if( m_soundBuffer != NULL )
 		{
@@ -158,7 +159,7 @@ namespace Menge
 		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float OALSoundSource::getPosMs()
+	float OALSoundSource::getPosMs() const
 	{
 		if( m_soundBuffer == NULL )
 		{
@@ -186,9 +187,9 @@ namespace Menge
 	{
 		if( m_playing == true )
 		{
-			stop();
+			this->stop();
 			m_timing = _posMs * 0.001f;
-			play();
+			this->play();
 		}
 		else
 		{
@@ -198,7 +199,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::loadBuffer( SoundBufferInterface* _soundBuffer )
 	{
-		unloadBuffer_();
+		this->unloadBuffer_();
 
 		m_soundBuffer = static_cast<OALSoundBufferBase*>( _soundBuffer );
 	}
@@ -228,8 +229,10 @@ namespace Menge
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
 			OAL_CHECK_ERROR();
+
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 0.0f );
 			OAL_CHECK_ERROR();
+
 			alSource3f( _source, AL_DIRECTION, 0.0f, 0.0f, 0.0f );
 			OAL_CHECK_ERROR();
 		} 
@@ -237,23 +240,28 @@ namespace Menge
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
 			OAL_CHECK_ERROR();
+
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.0f );
 			OAL_CHECK_ERROR();
 		}
 
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
 		OAL_CHECK_ERROR();
+
 		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
 		OAL_CHECK_ERROR();
+
 		alSourcef( _source, AL_MIN_GAIN, 0.0f );
 		OAL_CHECK_ERROR();
+
 		alSourcef( _source, AL_MAX_GAIN, 1.0f );
 		OAL_CHECK_ERROR();
+
 		alSourcef( _source, AL_GAIN, m_volume );
 		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* OALSoundSource::getSoundBuffer()
+	SoundBufferInterface* OALSoundSource::getSoundBuffer() const
 	{
 		return m_soundBuffer;
 	}

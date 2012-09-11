@@ -44,12 +44,12 @@ namespace Menge
 		virtual void setLoop( bool _loop ) = 0;
 		virtual bool getLoop() const = 0;
 
-		virtual float getLengthMs() = 0;
-		virtual float getPosMs() = 0;
+		virtual float getLengthMs() const = 0;
+		virtual float getPosMs() const = 0;
 		virtual void setPosMs( float _posMs ) = 0;
 
 		virtual void loadBuffer( SoundBufferInterface* _soundBuffer ) = 0;
-		virtual SoundBufferInterface* getSoundBuffer() = 0;
+		virtual SoundBufferInterface* getSoundBuffer() const = 0;
 	};
 
 	class SoundSulkCallbackInterface

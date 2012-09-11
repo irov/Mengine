@@ -24,6 +24,7 @@ namespace Menge
 		ConstString c_memory;
 		ConstString c_xml2bin;
 
+        ConstString c_Main;
 		ConstString c_Homeless;
 		ConstString c_Node;
 		ConstString c_Game;
@@ -31,6 +32,10 @@ namespace Menge
 		ConstString c_Entity;
 		ConstString c_Arrow;
 		ConstString c_Scene;
+        ConstString c_Layer2D;
+        ConstString c_HotSpot;
+        ConstString c_HotSpotImage;
+        ConstString c_Point;
 		ConstString c_Window;
 		ConstString c_Image;
 		ConstString c_Video;

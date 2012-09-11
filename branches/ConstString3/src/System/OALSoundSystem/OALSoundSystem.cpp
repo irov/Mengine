@@ -272,6 +272,7 @@ namespace Menge
 	{
 		ALuint sourceId = 0;
 		alGenSources( 1, &sourceId );
+        OAL_CHECK_ERROR();
 
 		return sourceId;
 
@@ -289,6 +290,7 @@ namespace Menge
 	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
 	{
 		alDeleteSources( 1, &_sourceId );
+        OAL_CHECK_ERROR();
 
 		//ALint state = 0;
 		//alGetSourcei( _sourceId, AL_SOURCE_STATE, &state );
@@ -307,6 +309,7 @@ namespace Menge
 	{
 		ALuint bufferId = 0;
 		alGenBuffers( 1, &bufferId );
+        OAL_CHECK_ERROR();
 
 		return bufferId;
 
@@ -324,6 +327,7 @@ namespace Menge
 	void OALSoundSystem::releaseBufferId( ALuint _sourceId )
 	{
 		alDeleteBuffers( 1, &_sourceId );
+        OAL_CHECK_ERROR();
 
 		//m_bufferPool.push_back( _sourceId );
 	}
@@ -346,6 +350,7 @@ namespace Menge
 		}
 
 		alSourceStop( _sourceId );
+        OAL_CHECK_ERROR();
 
 		ALint queued_count = 0;
 		// unqueue remaining buffers
@@ -371,5 +376,6 @@ namespace Menge
 
 
 		alSourcei( _sourceId, AL_BUFFER, 0 );
+        OAL_CHECK_ERROR();
 	}
 }	// namespace Menge

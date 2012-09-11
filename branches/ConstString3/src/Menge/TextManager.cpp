@@ -112,13 +112,21 @@ namespace Menge
 			return emptyEntry;
 		}
 
-		return it_find->second;
+        const TextEntry & entry = it_find->second;
+        
+        return entry;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existText( const ConstString& _key ) const
 	{
 		TMapTextEntry::const_iterator it_find = m_textMap.find( _key );
-		return it_find != m_textMap.end();
+
+        if( it_find == m_textMap.end() )
+        {
+            return false;
+        }
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::setDefaultResourceFontName( const ConstString & _fontName )

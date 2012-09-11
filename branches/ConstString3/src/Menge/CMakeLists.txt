@@ -693,6 +693,7 @@ ScriptWrapper
     ScriptWrapper.h
     EntityScriptWrapper.cpp
 	HelperScriptWrapper.cpp
+    ConstsScriptWrapper.cpp
     NodeScriptWrapper.cpp	
     MathScriptWrapper.cpp
     SoundScriptWrapper.cpp

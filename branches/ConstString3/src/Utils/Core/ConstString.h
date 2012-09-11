@@ -1,5 +1,7 @@
 #	pragma once
 
+#   include "Config/Typedef.h"
+
 #	include "IntrusivePtr.h"
 #	include "IntrusiveLinked.h"
 
@@ -16,10 +18,10 @@ namespace Menge
 			: public IntrusiveLinked
 		{
 		public:
-			ConstStringHolder( const std::string & _value );
+			ConstStringHolder( const String & _value );
 
 		public:			
-			inline const std::string & str() const
+			inline const String & str() const
 			{
 				return m_owner->m_value;
 			}
@@ -74,7 +76,7 @@ namespace Menge
 			}
 
 		protected:			
-			std::string m_value;
+			String m_value;
 			size_t m_reference;
 
 			size_t m_hash;
@@ -88,7 +90,7 @@ namespace Menge
 			: public ConstStringHolder
 		{
 		public:
-			ConstStringMemory( const std::string & _value );
+			ConstStringMemory( const String & _value );
 
 		protected:
 			void release_string() override;
@@ -108,10 +110,10 @@ namespace Menge
 	public:
 		explicit ConstString( const char * _str );
 		explicit ConstString( const char * _str, size_t _size );
-		explicit ConstString( const std::string & _str );
+		explicit ConstString( const String & _str );
 
 	public:
-		inline const std::string & to_str() const
+		inline const String & to_str() const
 		{
 			return m_holder->str();
 		} 
@@ -149,12 +151,12 @@ namespace Menge
 			return *this;
 		}
 
-		inline bool operator == ( const std::string & _str ) const
+		inline bool operator == ( const String & _str ) const
 		{
 			return m_holder->str() == _str;
 		}
 
-		inline bool operator != ( const std::string & _str ) const
+		inline bool operator != ( const String & _str ) const
 		{
 			return !this->operator == (_str);
 		}
@@ -166,7 +168,7 @@ namespace Menge
 
 		inline bool operator != ( const char * _str ) const
 		{
-			return !this->operator == (_str);
+			return !this->operator == ( _str );
 		}
 
 		inline bool operator == ( const ConstString & _right ) const
@@ -179,7 +181,7 @@ namespace Menge
 
 		inline bool operator != ( const ConstString & _cstr ) const
 		{
-			return !this->operator == (_cstr);
+			return ! this->operator == ( _cstr );
 		}
 
 		inline friend bool operator < ( const ConstString & _left, const ConstString & _right )
@@ -190,13 +192,40 @@ namespace Menge
 			return result;
 		}
 
+        inline friend bool operator <= ( const ConstString & _left, const ConstString & _right )
+        {
+            Detail::ConstStringHolder * right_holder = _right.m_holder.get();
+            bool result = _left.m_holder->less( right_holder );
+
+            if( result == false )
+            {
+                result = _left.m_holder->equal( right_holder );
+            }
+
+            return result;
+        }
+
+        inline friend bool operator > ( const ConstString & _left, const ConstString & _right )
+        {
+            bool result = ! ( _left <= _right );
+
+            return result;
+        }
+
+        inline friend bool operator >= ( const ConstString & _left, const ConstString & _right )
+        {
+            bool result = ! ( _left < _right );
+
+            return result;
+        }
+
 	public:
 		Detail::ConstStringHolderPtr m_holder;
 	};
 
 	namespace Helper
 	{
-		inline const std::string & to_str( const ConstString & _cs )
+		inline const String & to_str( const ConstString & _cs )
 		{
 			return _cs.to_str();
 		}
@@ -208,11 +237,11 @@ namespace Menge
 	}
 
 #	else
-	typedef std::string ConstString;
+	typedef String ConstString;
 
 	namespace Helper
 	{
-		inline const std::string & to_str( const ConstString & _cs )
+		inline const String & to_str( const ConstString & _cs )
 		{
 			return _cs;
 		}

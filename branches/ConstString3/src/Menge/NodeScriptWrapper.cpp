@@ -2196,27 +2196,28 @@ namespace Menge
         }
     };
 	
-	struct extract_ConstString_type
-		: public pybind::type_cast_result<ConstString>
-	{
-	public:
-		bool apply( PyObject * _obj, ConstString & _value ) override
-		{
-            const char * value_char = pybind::string_to_char( _obj );
-            
-            _value = ConstString(value_char);
+	//struct extract_ConstString_type
+	//	: public pybind::type_cast_result<ConstString>
+	//{
+	//public:
+	//	bool apply( PyObject * _obj, ConstString & _value ) override
+	//	{
+ //           const char * value_char = pybind::string_to_char( _obj );
+ //           
+ //           _value = ConstString(value_char);
 
-			return true;
-		}
-        
-		PyObject * wrap( pybind::type_cast_result<ConstString>::TCastRef _value ) override
-		{
-			PyObject * py_value = pybind::string_from_char_size( _value.c_str(), _value.size() );
+	//		return true;
+	//	}
+ //       
+	//	PyObject * wrap( pybind::type_cast_result<ConstString>::TCastRef _value ) override
+	//	{
+ //           pybind::vo
+	//		PyObject * py_value = pybind::string_from_char_size( _value.c_str(), _value.size() );
 
-			return py_value;
-			//return pybind::string_from_char( _value.c_str(), _value.size() );
-		}
-    };
+	//		return py_value;
+	//		//return pybind::string_from_char( _value.c_str(), _value.size() );
+	//	}
+ //   };
 
 	struct extract_TVectorString_type
 		: public pybind::type_cast_result<TVectorString>
@@ -2322,17 +2323,15 @@ namespace Menge
 		}
 	};
 
-	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
-
 	void ScriptWrapper::nodeWrap()
 	{
         pybind::registration_type_cast<WString>( new extract_WString_type );
-		pybind::registration_type_cast<ConstString>( new extract_ConstString_type );
+		//pybind::registration_type_cast<ConstString>( new extract_ConstString_type );
 		pybind::registration_type_cast<TVectorString>( new extract_TVectorString_type );
 		pybind::registration_type_cast<TVectorWString>( new extract_TVectorWString_type );
 
 		classWrapping();
-		
+        
 		pybind::interface_<Join>("Join")
 			.def("getLeft", &Join::getLeft)
 			.def("getRight", &Join::getRight)
@@ -3049,7 +3048,6 @@ namespace Menge
 			pybind::def_function( "getGameParam", &ScriptMethod::s_getGameParam );
 			pybind::def_function( "hasGameParam", &ScriptMethod::s_hasGameParam );
 			pybind::def_function( "openUrlInDefaultBrowser", &ScriptMethod::s_openUrlInDefaultBrowser );
-			
 		}
 	}
 }

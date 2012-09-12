@@ -25,7 +25,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://curl.haxx.se/download/libcurl-7.19.3-win32-ssl-msvc.zip
 
 :: %toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/project/tinyxml/tinyxml/2.6.2/tinyxml_2_6_2.zip
-%toolsdir%\wget\wget.exe --no-clobber http://pugixml.googlecode.com/files/pugixml-1.0.zip
+%toolsdir%\wget\wget.exe --no-clobber http://pugixml.googlecode.com/files/pugixml-1.2.zip
 
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.14.tar.bz2
@@ -99,7 +99,7 @@ if EXIST tinyxml rmdir /s /q tinyxml
 7za x -y tinyxml_2_6_2.zip
 
 if EXIST pugixml rmdir /s /q pugixml
-7za x -y -opugixml pugixml-1.0.zip
+7za x -y -opugixml pugixml-1.2.zip
 
 if EXIST icu rmdir /s /q icu
 7za x -y icu4c-49_1_2-src.zip

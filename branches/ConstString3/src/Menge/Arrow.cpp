@@ -70,6 +70,16 @@ namespace	Menge
 		InputEngine::get()
 			->addMousePositionProvider(this);
 
+        const mt::vec2f & cursor_pos = InputEngine::get()
+            ->getCursorPosition();
+
+        mt::vec3f pos;
+        pos.x = cursor_pos.x;
+        pos.y = cursor_pos.y;
+        pos.z = 0.f;
+
+        this->setLocalPosition( pos );
+        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

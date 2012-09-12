@@ -190,7 +190,7 @@ namespace Menge
 		xml_metabuf.initialize();
 		if( xml_metabuf.convert( &buf_test[0], size_test, write_size ) == false )
 		{
-            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error %S\n%s"
+            LOGGER_ERROR(m_logService)( "Xml2BinDecoder::decode: error convert %S\n%s"
                 , m_options.pathXml.c_str()
                 , xml_metabuf.getError().c_str()
                 );

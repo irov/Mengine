@@ -28,27 +28,6 @@ extern "C" {
 
 namespace Menge
 {
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		static T * extractNodeT( PyObject * _obj )
-		{
-			try
-			{
-				T * node = pybind::extract<T *>( _obj );
-
-				node->setEmbed( _obj );
-
-				return node;
-			}
-			catch( const pybind::pybind_exception & )
-			{
-			}
-				
-			return NULL;
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
 		: m_moduleMenge(0)
@@ -305,22 +284,20 @@ namespace Menge
 
 			return 0;
 		}
+        
+		Entity * entity = pybind::extract<Entity *>( py_entity );
 
-		Entity * entity = Helper::extractNodeT<Entity>( py_entity );
+        if( entity == 0 )
+        {
+            MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't extract entity '%s' (invalid cast)"
+                , _type.c_str()
+                );
 
-		pybind::decref( py_entity );
+            return 0;
+        }
 
-		if( entity == 0 )
-		{
-			MENGE_LOG_ERROR( "ScriptEngine.createEntity: can't extract entity '%s' (invalid cast)"
-				, _type.c_str()
-				);
-
-			return 0;
-		}
-
+        entity->setEmbed( py_entity );
 		entity->setType( _type );
-
 		entity->create();
 
 		//pybind::set_attr( py_entity, "Menge_name", pybind::ptr(_name) );

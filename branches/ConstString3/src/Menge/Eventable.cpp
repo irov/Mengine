@@ -123,8 +123,6 @@ namespace Menge
 		}
 
 		PyObject * py_event = pybind::get_attr( _dict, _method );
-		
-		//pybind::incref( py_event );
 
 		return py_event;
 	}

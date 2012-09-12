@@ -1711,10 +1711,10 @@ namespace Menge
 			return affector;
 		}
 
-		static void removeAllEvent( Node * _node )
-		{
-			_node->removeAllEvent();
-		}
+        static void removeAllEvent( Node * _node )
+        {
+            _node->removeAllEvent();
+        }
 
 		static void showKeyboard()
 		{

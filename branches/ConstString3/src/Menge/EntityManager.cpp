@@ -37,7 +37,7 @@ namespace Menge
 		}
 
 		entity->setPrototype( _prototype );
-		
+
 		return entity;
 	}
 }

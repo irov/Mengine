@@ -63,10 +63,17 @@ namespace Menge
 		//}
 
 		bool result = initInterfaceSystem( &m_interface );
-		if( ( result == false )|| ( m_interface == NULL ) )
+
+		if( ( result == false ) || ( m_interface == NULL ) )
 		{
 			return false;
 		}
+
+        LogServiceInterface * logService = LogEngine::get();
+        if( m_interface->initialize( logService ) == false )
+        {
+            return false;
+        }
 
 		return true;
 	}

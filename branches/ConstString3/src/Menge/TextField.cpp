@@ -361,8 +361,6 @@ namespace Menge
 				, m_resourceFontName.c_str()
 				);
 
-			pybind::throw_exception();
-
 			return m_length;
 		}
 

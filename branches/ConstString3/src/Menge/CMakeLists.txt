@@ -59,8 +59,6 @@ ADD_FILTER(
 "Engine\\\\File"
 	FileEngine.cpp
 	FileEngine.h
-	MemoryFileInput.h
-	MemoryFileInput.cpp	
 	FileSystem.h
 	FileSystemDirectory.h
 	FileSystemDirectory.cpp
@@ -70,6 +68,8 @@ ADD_FILTER(
 	FileSystemZip2.cpp
 	FileInput.h
 	FileInput.cpp
+	FileInputMemory.h
+	FileInputMemory.cpp	
 )
 
 ADD_FILTER(

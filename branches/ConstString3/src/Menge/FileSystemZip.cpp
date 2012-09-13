@@ -10,7 +10,7 @@
 
 #	include "FileEngine.h"
 #	include "LogEngine.h"
-#	include "MemoryFileInput.h"
+#	include "FileInputMemory.h"
 #	include "Core/File.h"
 #	include "Core/String.h"
 #	include "ServiceProvider.h"
@@ -210,7 +210,7 @@ namespace Menge
 	FileInputStreamInterface* FileSystemZip::createInputFile()
 	{
 		//MemoryFileInput* memFile = m_fileInputPool.get();
-		MemoryFileInput * memFile = new MemoryFileInput;
+		FileInputMemory * memFile = new FileInputMemory;
 		memFile->setFileSystem( this );
 		return memFile;
 	}
@@ -228,7 +228,7 @@ namespace Menge
 			return false;
 		}
 
-		MemoryFileInput* memFile = static_cast<MemoryFileInput*>(_file);
+		FileInputMemory* memFile = static_cast<FileInputMemory*>(_file);
 
 		unsigned char* pMem = static_cast<unsigned char*>(m_zipFile->getMemory());
 
@@ -239,7 +239,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemZip::closeInputFile( FileInputStreamInterface* _file )
 	{
-		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
+		FileInputMemory* memFile = static_cast<FileInputMemory*>( _file );
 		//m_fileInputPool.release( memFile );
 		delete memFile;
 	}

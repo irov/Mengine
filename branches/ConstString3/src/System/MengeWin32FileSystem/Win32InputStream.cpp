@@ -8,12 +8,18 @@
 
 #	include "Win32InputStream.h"
 
+#   include "Utils/Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32InputStream::Win32InputStream()
-		: m_hFile(INVALID_HANDLE_VALUE)
+	Win32InputStream::Win32InputStream( LogServiceInterface * _logService )
+		: m_logService(_logService)
+        , m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
+        , m_carriage(0)
+        , m_capacity(0)
+        , m_reading(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -31,17 +37,24 @@ namespace Menge
 
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
+            LOGGER_ERROR( m_logService )("Win32InputStream::open %S invalid open"
+                , _filename.c_str()
+                );
+
 			return false;
 		}
 
 		m_size = ::GetFileSize( m_hFile, NULL );
+
 		if( m_size == INVALID_FILE_SIZE )
 		{
-			m_size = 0;
-
 			::CloseHandle( m_hFile );
 			m_hFile = INVALID_HANDLE_VALUE;
 
+            LOGGER_ERROR( m_logService )("Win32InputStream::open %S invalid file size"
+                , _filename.c_str()
+                );
+            
 			return false;
 		}
 
@@ -60,20 +73,177 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Win32InputStream::read( void* _buf, int _count )
-	{
-		DWORD bytesRead = 0;
-		BOOL result = ::ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL );
-		return static_cast<int>( bytesRead );
+	{     
+        if( 0 )
+        {
+            DWORD bytesRead = 0;
+            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL ) == FALSE )
+            {
+                DWORD dwError = GetLastError();
+
+                LOGGER_ERROR( m_logService )("Win32InputStream::read %d:%d get error '%d'"
+                    , _count
+                    , m_size
+                    , dwError
+                    );
+
+                return 0;
+            }
+
+            m_carriage = 0;
+            m_capacity = 0;
+
+            m_reading += bytesRead;
+            
+            return bytesRead;
+        }
+
+        if( _count == m_size )
+        {
+            DWORD bytesRead = 0;
+            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL ) == FALSE )
+            {
+                DWORD dwError = GetLastError();
+
+                LOGGER_ERROR( m_logService )("Win32InputStream::read %d:%d get error '%d'"
+                    , _count
+                    , m_size
+                    , dwError
+                    );
+
+                return 0;
+            }
+
+            m_carriage = 0;
+            m_capacity = 0;
+
+            m_reading += bytesRead;
+
+            return bytesRead;
+        }
+        
+        if( _count > FILE_BUFFER_SIZE )
+        {            
+            size_t tail = m_capacity - m_carriage;
+            
+            if( tail != 0 )
+            {
+                memcpy( _buf, m_buff + m_carriage, tail );
+            }
+
+            DWORD bytesRead = 0;
+            if( ::ReadFile( m_hFile, (char *)_buf + tail, static_cast<DWORD>( _count - tail ), &bytesRead, NULL ) == FALSE )
+            {
+                DWORD dwError = GetLastError();
+
+                LOGGER_ERROR( m_logService )("Win32InputStream::read %d:%d get error '%d'"
+                    , _count - tail
+                    , m_size
+                    , dwError
+                    );
+
+                return 0;
+            }
+
+            m_carriage = 0;
+            m_capacity = 0;
+
+            m_reading += bytesRead;
+
+            return bytesRead + tail;
+        }
+        
+        if( m_carriage + _count <= m_capacity )
+        {
+            memcpy( _buf, m_buff + m_carriage, _count );
+
+            m_carriage += _count;
+
+            return _count;
+        }
+
+        size_t tail = m_capacity - m_carriage;
+
+        if( tail != 0 )
+        {
+            memcpy( _buf, m_buff + m_carriage, tail );
+        }
+
+        DWORD bytesRead = 0;
+        if( ::ReadFile( m_hFile, m_buff, static_cast<DWORD>( FILE_BUFFER_SIZE ), &bytesRead, NULL ) == FALSE )
+        {
+            DWORD dwError = GetLastError();
+
+            LOGGER_ERROR( m_logService )("Win32InputStream::read %d:%d get error '%d'"
+                , FILE_BUFFER_SIZE
+                , m_size
+                , dwError
+                );
+
+            return 0;
+        }
+        
+        DWORD readSize = (std::min)( (DWORD)(_count - tail), bytesRead );
+
+        memcpy( (char *)_buf + tail, m_buff, readSize );
+
+        m_carriage = readSize;
+        m_capacity = bytesRead;
+
+        m_reading += bytesRead;
+
+        return readSize + tail;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32InputStream::seek( int _pos )
 	{
-		::SetFilePointer( m_hFile, static_cast<LONG>( _pos ), NULL, FILE_BEGIN );
+        if( _pos >= m_reading - m_capacity && _pos < m_reading )
+        {
+            m_carriage = m_capacity - (m_reading - _pos);
+        }
+        else
+        {
+    		DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>( _pos ), NULL, FILE_BEGIN );
+
+            if( dwPtr == INVALID_SET_FILE_POINTER )
+            {
+                DWORD dwError = GetLastError();
+
+                LOGGER_ERROR( m_logService )("Win32InputStream::seek %d:%d get error '%d'"
+                    , _pos
+                    , m_size
+                    , dwError
+                    );
+
+                return;
+            }
+
+            m_carriage = 0;
+            m_capacity = 0;
+
+            m_reading = dwPtr;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Win32InputStream::tell() const
 	{
-		return ::SetFilePointer( m_hFile, 0, NULL, FILE_CURRENT );
+        size_t current = m_reading - m_capacity + m_carriage;
+
+        return current;
+        //DWORD pos = ::SetFilePointer( m_hFile, 0, NULL, FILE_CURRENT );
+
+        //if( pos == INVALID_SET_FILE_POINTER )
+        //{
+        //    DWORD dwError = GetLastError();
+
+        //    LOGGER_ERROR( m_logService )("Win32InputStream::tell get error '%d'"
+        //        , dwError
+        //        );
+        //}
+
+        //DWORD buffer_pos = pos - m_capacity + m_carriage;
+
+		//return buffer_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Win32InputStream::size() const 
@@ -153,7 +323,13 @@ namespace Menge
 		FILETIME write;
 
 		if( GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
-		{
+        {
+            DWORD dwError = GetLastError();
+
+            LOGGER_ERROR( m_logService )("Win32InputStream::time get error '%d'"
+                , dwError
+                );
+
 			return false;
 		}
 

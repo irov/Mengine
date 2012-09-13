@@ -12,12 +12,12 @@
 
 namespace Menge
 {
-	class MemoryFileInput
+	class FileInputMemory
 		: public FileInput
 	{
 	public:
-		MemoryFileInput();
-		~MemoryFileInput();
+		FileInputMemory();
+		~FileInputMemory();
 
 	public:
 		void setMemory( void* _memPtr, int _size );

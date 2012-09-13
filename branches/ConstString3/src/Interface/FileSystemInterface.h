@@ -1,7 +1,9 @@
 #	pragma once
 
+#	include "Interface/LogSystemInterface.h"
 #	include "Interface/StreamInterface.h"
 #	include "Interface/PluginInterface.h"
+
 #	include "Utils/Core/ConstString.h"
 
 namespace Menge
@@ -32,6 +34,9 @@ namespace Menge
 	
 	class FileSystemInterface
 	{
+    public:
+        virtual bool initialize( LogServiceInterface * _logService ) = 0;
+
 	public:
 		virtual bool existFile( const WString& _filename ) const = 0;
 		

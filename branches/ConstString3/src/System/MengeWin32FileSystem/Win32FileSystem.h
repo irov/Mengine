@@ -17,6 +17,9 @@ namespace Menge
 		Win32FileSystem();
 		~Win32FileSystem();
 
+    public:
+        bool initialize( LogServiceInterface * _logService ) override;
+
 	public:
 		FileInputStreamInterface* createInputStream() override;
 		void closeInputStream( FileInputStreamInterface * _fd ) override;
@@ -34,6 +37,8 @@ namespace Menge
 		bool deleteFolder( const WString& _path ) override;
 
 	private:
+        LogServiceInterface * m_logService;
+
 		struct FileMappingInfo
 		{
 			HANDLE hFile;

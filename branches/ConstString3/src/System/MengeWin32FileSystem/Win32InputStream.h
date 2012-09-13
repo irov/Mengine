@@ -14,11 +14,13 @@
 
 namespace Menge
 {
+    const size_t FILE_BUFFER_SIZE = 8192; //8kb
+
 	class Win32InputStream
 		: public FileInputStreamInterface
 	{
 	public:
-		Win32InputStream();
+		Win32InputStream( LogServiceInterface * _logService );
 		~Win32InputStream();
 
 	public:
@@ -34,7 +36,14 @@ namespace Menge
 		int size() const override;		
 
 	private:
+        LogServiceInterface * m_logService;
+
 		HANDLE m_hFile;
 		DWORD m_size;
+
+        size_t m_carriage;
+        size_t m_capacity;
+        size_t m_reading;
+        char m_buff[FILE_BUFFER_SIZE];
 	};
 }	// namespace Menge

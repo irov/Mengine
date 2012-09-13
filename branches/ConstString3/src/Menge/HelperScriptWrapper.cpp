@@ -237,7 +237,7 @@ namespace Menge
 		{
 			PyObject * py_list = pybind::list_new(0);
 
-#	ifdef _DEBUG
+#	ifdef PYBIND_VISIT_OBJECTS
 			MyObjectVisits mov(py_list);
 			pybind::visit_objects(&mov);
 #	endif

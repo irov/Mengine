@@ -38,15 +38,24 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::Win32FileSystem()
+        : m_logService(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::~Win32FileSystem()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::initialize( LogServiceInterface * _logService )
+    {
+        m_logService = _logService;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* Win32FileSystem::createInputStream()
 	{
-		Win32InputStream* inputStream = new Win32InputStream();
+		Win32InputStream* inputStream = new Win32InputStream(m_logService);
 
 		return inputStream;
 	}

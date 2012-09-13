@@ -14,7 +14,7 @@
 
 namespace Menge
 {
-	class MemoryFileInput;
+	class FileInputMemory;
 	class FileSystemInterface;
 	class MappedFileInputStreamInterface;
 

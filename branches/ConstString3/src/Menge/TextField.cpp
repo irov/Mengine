@@ -20,6 +20,7 @@
 
 #	include "boost/format.hpp"
 
+#	include "pybind/system.hpp"
 
 #	include <algorithm>
 
@@ -354,6 +355,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getLength() const
 	{
+		if (this->isCompile() == false)
+		{
+			MENGE_LOG_ERROR("TextField::getLength '%s' not compile"
+				, m_resourceFontName.c_str()
+				);
+
+			pybind::throw_exception();
+
+			return m_length;
+		}
+
 		if( this->isInvalidateTextLines() == true )
 		{
 			this->updateTextLines_();

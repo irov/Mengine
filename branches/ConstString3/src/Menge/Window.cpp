@@ -320,8 +320,8 @@ namespace Menge
 
 			_vertices[i*4 + 3].uv[0] = 0.f;
 			_vertices[i*4 + 3].uv[1] = uvs[i].y;
-            _vertices[i*4 + 3].uv[0] = 0.f;
-            _vertices[i*4 + 3].uv[1] = 0.f;
+			_vertices[i*4 + 3].uv2[0] = 0.f;
+			_vertices[i*4 + 3].uv2[1] = 0.f;
 		}
 
 		ColourValue color;

@@ -667,12 +667,6 @@ namespace Menge
 	{
 		while( m_running )
 		{
-			bool rendered = false;
-			if( m_application->isFocus() == true )
-			{
-				rendered = m_application->onRender();
-			}
-
 			MSG  msg;
 			while( WindowsLayer::peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 			{
@@ -702,9 +696,12 @@ namespace Menge
 				}
 			}
 
-			if( rendered )
-			{
-				m_application->onFlush();
+            if( m_application->isFocus() == true )
+            {
+                if( m_application->onRender() == true )
+                {
+    				m_application->onFlush();
+                }
 			}
 		}
 	}

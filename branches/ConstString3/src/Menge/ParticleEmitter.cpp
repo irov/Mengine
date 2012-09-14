@@ -474,14 +474,10 @@ namespace	Menge
 
 				vertice[2].color = argb;
 
-				//mt::mul_v2_m3(worldVertice,p.v[3],worldMatrix);
-
-				//vertice[3].pos[0] = worldVertice.x;
-				//vertice[3].pos[1] = worldVertice.y;
 				vertice[3].pos[0] = p.v[3].x;
 				vertice[3].pos[1] = p.v[3].y;
 				vertice[3].pos[2] = 0.f;
-				//vertice[3].pos[3] = 1.f;
+				
 
 				vertice[3].color = argb;
 				
@@ -504,6 +500,15 @@ namespace	Menge
 				vertice[2].uv[1] = uv[2].y;
 				vertice[3].uv[0] = uv[3].x;
 				vertice[3].uv[1] = uv[3].y;
+
+                vertice[0].uv2[0] = 0.f;
+                vertice[0].uv2[1] = 0.f;
+                vertice[1].uv2[0] = 0.f;
+                vertice[1].uv2[1] = 0.f;
+                vertice[2].uv2[0] = 0.f;
+                vertice[2].uv2[1] = 0.f;
+                vertice[3].uv2[0] = 0.f;
+                vertice[3].uv2[1] = 0.f;
 			}
 
 			++partCount;

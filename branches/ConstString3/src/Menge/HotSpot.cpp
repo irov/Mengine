@@ -413,6 +413,12 @@ namespace	Menge
 			//_vertices[i].pos[3] = 1.f;
 
 			_vertices[i].color = m_debugColor;
+
+            _vertices[i].uv[0] = 0.f;
+            _vertices[i].uv[1] = 0.f;
+
+            _vertices[i].uv2[0] = 0.f;
+            _vertices[i].uv2[1] = 0.f;
 		}
 
 		if( _vertices.size() > 1 )

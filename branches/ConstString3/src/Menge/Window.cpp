@@ -284,54 +284,44 @@ namespace Menge
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
 			mt::mul_v2_m4(worldVertice,quads[i].a,worldMatrix);
-			//_vertices[i*4 + 0].pos[0] = quads[i].a.x;
-			//_vertices[i*4 + 0].pos[1] = quads[i].a.y;
 			_vertices[i*4 + 0].pos[0] = worldVertice.x;
 			_vertices[i*4 + 0].pos[1] = worldVertice.y;
 			_vertices[i*4 + 0].pos[2] = 0.f;
-			//_vertices[i*4 + 0].pos[3] = 1.f;
 			
-			//printf( "%f,%f\n",_vertices[i*4 + 0].pos[0],_vertices[i*4 + 0].pos[1],_vertices[i*4 + 0].pos[1] );
-			_vertices[i*4 + 0].uv[0] = 0.0f;
-			_vertices[i*4 + 0].uv[1] = 0.0f;
-			//printf( "%f,%f\n",_vertices[i*4 + 0].uv[0],_vertices[i*4 + 0].uv[1] );
+			_vertices[i*4 + 0].uv[0] = 0.f;
+			_vertices[i*4 + 0].uv[1] = 0.f;
+            _vertices[i*4 + 0].uv2[0] = 0.f;
+            _vertices[i*4 + 0].uv2[1] = 0.f;
 			
 			mt::mul_v2_m4(worldVertice,quads[i].b,worldMatrix);
-			//_vertices[i*4 + 1].pos[0] = quads[i].b.x;
-			//_vertices[i*4 + 1].pos[1] = quads[i].b.y;
 			_vertices[i*4 + 1].pos[0] = worldVertice.x;
 			_vertices[i*4 + 1].pos[1] = worldVertice.y;
 			_vertices[i*4 + 1].pos[2] = 0.f;
-			//_vertices[i*4 + 1].pos[3] = 1.f;
 
 			_vertices[i*4 + 1].uv[0] = uvs[i].x;
-			_vertices[i*4 + 1].uv[1] = 0.0f;
-			//printf( "%f,%f\n",_vertices[i*4 + 1].uv[0],_vertices[i*4 + 1].uv[1] );
+			_vertices[i*4 + 1].uv[1] = 0.f;
+            _vertices[i*4 + 1].uv2[0] = 0.f;
+            _vertices[i*4 + 1].uv2[1] = 0.f;
 
 			mt::mul_v2_m4(worldVertice,quads[i].c,worldMatrix);
-			//_vertices[i*4 + 2].pos[0] = quads[i].c.x;
-			//_vertices[i*4 + 2].pos[1] = quads[i].c.y;
 			_vertices[i*4 + 2].pos[0] = worldVertice.x;
 			_vertices[i*4 + 2].pos[1] = worldVertice.y;
 			_vertices[i*4 + 2].pos[2] = 0.f;
-			//_vertices[i*4 + 2].pos[3] = 1.f;
 
 			_vertices[i*4 + 2].uv[0] = uvs[i].x;
 			_vertices[i*4 + 2].uv[1] = uvs[i].y;
-			//printf( "%f,%f\n",_vertices[i*4 + 2].uv[0],_vertices[i*4 + 2].uv[1] );
+            _vertices[i*4 + 2].uv2[0] = 0.f;
+            _vertices[i*4 + 2].uv2[1] = 0.f;
 			
 			mt::mul_v2_m4(worldVertice,quads[i].d,worldMatrix);
-			//_vertices[i*4 + 3].pos[0] = quads[i].d.x;
-			//_vertices[i*4 + 3].pos[1] = quads[i].d.y;
 			_vertices[i*4 + 3].pos[0] = worldVertice.x;
 			_vertices[i*4 + 3].pos[1] = worldVertice.y;
 			_vertices[i*4 + 3].pos[2] = 0.f;
-			//_vertices[i*4 + 3].pos[3] = 1.f;
 
-			_vertices[i*4 + 3].uv[0] = 0.0f;
+			_vertices[i*4 + 3].uv[0] = 0.f;
 			_vertices[i*4 + 3].uv[1] = uvs[i].y;
-			//printf( "%f,%f\n",_vertices[i*4 + 3].uv[0],_vertices[i*4 + 3].uv[1] );
-			//printf("%s\n","------------------------------------");
+            _vertices[i*4 + 3].uv[0] = 0.f;
+            _vertices[i*4 + 3].uv[1] = 0.f;
 		}
 
 		ColourValue color;
@@ -358,13 +348,13 @@ namespace Menge
 	void Window::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		invalidateVertices();
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_invalidateColor()
 	{
 		Node::_invalidateColor();
-		invalidateVertices();
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSizeClip( const mt::vec2f& _clientSize )
@@ -414,6 +404,7 @@ namespace Menge
 		mt::vec2f windowSize = m_clientSize;
 		windowSize += m_initialSizes[ResourceWindow_LeftTop];
 		windowSize += m_initialSizes[ResourceWindow_RightBottom];
+
 		return windowSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -421,26 +412,33 @@ namespace Menge
 	{
 		if( _tile < 0 || _tile > MAX_WINDOW_ELEMENTS )
 		{
-			MENGE_LOG_ERROR( "Error: 'Window::getTileSize' invalid tile argument '%d'"
+			MENGE_LOG_ERROR( "Window::getTileSize: invalid tile argument '%d'"
 				, _tile 
 				);
 
 			return mt::zero_v2;
 		}
-		return m_initialSizes[_tile];
+
+        const mt::vec2f& size = m_initialSizes[_tile];
+
+		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSizeInTiles( const mt::vec2f& _tiles )
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid call 'Window::getClientSizeInTiles'. Node not compiled." );
+			MENGE_LOG_ERROR( "Window::setClientSizeInTiles: Node not compiled." 
+                );
+
 			return;
 		}
 
 		if( this->hasBackground() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid call 'Window::getClientSizeInTiles'. background not exist" );
+			MENGE_LOG_ERROR( "Window::setClientSizeInTiles: background not exist" 
+                );
+
 			return;
 		}
 
@@ -457,11 +455,10 @@ namespace Menge
 
 		m_resourceName = _resourceName;
 
-		_release();
-		_compile();
+        this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Window::hasBackground()
+	bool Window::hasBackground() const
 	{
 		if( m_textures[ResourceWindow_Background] == NULL )
 		{

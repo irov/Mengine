@@ -387,6 +387,15 @@ namespace	Menge
 		_vertices[3].uv[0] = m_uv.x;
 		_vertices[3].uv[1] = m_uv.w;
 
+        _vertices[0].uv2[0] = 0.f;
+        _vertices[0].uv2[1] = 0.f;
+        _vertices[1].uv2[0] = 0.f;
+        _vertices[1].uv2[1] = 0.f;
+        _vertices[2].uv2[0] = 0.f;
+        _vertices[2].uv2[1] = 0.f;
+        _vertices[3].uv2[0] = 0.f;
+        _vertices[3].uv2[1] = 0.f;
+
 		ColourValue color;
 		this->calcTotalColor(color);
 

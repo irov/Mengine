@@ -160,7 +160,13 @@ namespace Menge
 				renderVertex.pos[2] = charVertex.z;
 
 				renderVertex.color = _argb;
-			}
+
+                renderVertex.uv[0] = 0.f;
+                renderVertex.uv[1] = 0.f;
+
+                renderVertex.uv2[0] = 0.f;
+                renderVertex.uv2[1] = 0.f;
+            }
 
 			const mt::vec4f & char_uv = it_char->uv;
 

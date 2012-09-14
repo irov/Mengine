@@ -317,6 +317,17 @@ namespace	Menge
 					_vertcies[3].uv2[0] = uv.x;
 					_vertcies[3].uv2[1] = uv.w;
 				}
+                else
+                {
+                    _vertcies[0].uv2[0] = 0.f;
+                    _vertcies[0].uv2[1] = 0.f;
+                    _vertcies[1].uv2[0] = 0.f;
+                    _vertcies[1].uv2[1] = 0.f;
+                    _vertcies[2].uv2[0] = 0.f;
+                    _vertcies[2].uv2[1] = 0.f;
+                    _vertcies[3].uv2[0] = 0.f;
+                    _vertcies[3].uv2[1] = 0.f;
+                }
 			}
 
 			mt::vec2f visOffset( size.x * percent.x, size.y * percent.y );
@@ -372,8 +383,6 @@ namespace	Menge
 				render_vertex.pos[0] = cache_vertex.x;
 				render_vertex.pos[1] = cache_vertex.y;
 				render_vertex.pos[2] = cache_vertex.z;
-				//render_vertex.pos[3] = 1.f;
-				//_vertcies[i].pos[3] = 1.f;
 			}
 		}
 

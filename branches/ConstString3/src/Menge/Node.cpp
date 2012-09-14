@@ -771,7 +771,8 @@ namespace Menge
 	{
 		for( TSlugChild it(m_child); it.end() == false; it.next_shuffle() )
 		{
-			(*it)->render( _camera );
+            Node * node = (*it);
+			node->render( _camera );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1011,28 +1012,30 @@ namespace Menge
 			
 			m_debugBox[0].pos[0] = bbox.minimum.x;
 			m_debugBox[0].pos[1] = bbox.minimum.y;
-			m_debugBox[0].pos[2] = 0.f;
-			//m_debugBox[0].pos[3] = 1.f;
 
 			m_debugBox[1].pos[0] = bbox.maximum.x;
 			m_debugBox[1].pos[1] = bbox.minimum.y;
-			m_debugBox[1].pos[2] = 0.f;
-			//m_debugBox[1].pos[3] = 1.f;
+	
 
 			m_debugBox[2].pos[0] = bbox.maximum.x;
 			m_debugBox[2].pos[1] = bbox.maximum.y;
-			m_debugBox[2].pos[2] = 0.f;
-			//m_debugBox[2].pos[3] = 1.f;
 
 			m_debugBox[3].pos[0] = bbox.minimum.x;
 			m_debugBox[3].pos[1] = bbox.maximum.y;
-			m_debugBox[3].pos[2] = 0.f;
-			//m_debugBox[3].pos[3] = 1.f;
+
 
 			m_debugBox[4].pos[0] = bbox.minimum.x;
 			m_debugBox[4].pos[1] = bbox.minimum.y;
-			m_debugBox[4].pos[2] = 0.f;
-			//m_debugBox[4].pos[3] = 1.f;
+
+            for( size_t i = 0; i != 5; ++i )
+            {
+			    m_debugBox[i].pos[2] = 0.f;
+                m_debugBox[i].color = 0xFFFFFFFF;
+                m_debugBox[i].uv[0] = 0.f;
+                m_debugBox[i].uv[1] = 0.f;
+                m_debugBox[i].uv2[0] = 0.f;
+                m_debugBox[i].uv2[1] = 0.f;
+            }
 
 			RenderEngine::get()
 				->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, m_debugBox, 5, LPT_LINE );

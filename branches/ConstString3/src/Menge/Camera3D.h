@@ -11,8 +11,8 @@ namespace Menge
 	class Observer;
 
 	class Camera3D
-		: public Camera
-		, public Node		
+        : public Node
+		, public Camera		
 	{
 	public:
 		Camera3D();

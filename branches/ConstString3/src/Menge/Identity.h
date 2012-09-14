@@ -15,8 +15,8 @@ namespace Menge
 		void setName( const ConstString & _name );
 		inline const ConstString & getName() const;
 
-		void setType( const ConstString & _type );
-		inline const ConstString & getType() const;
+        void setType( const ConstString & _type );
+        inline const ConstString & getType() const;
 
 		void setTag( const ConstString & _tag );
 		inline const ConstString & getTag() const;

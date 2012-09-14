@@ -21,6 +21,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::_activate()
 	{
+        Node::_activate();
+
 		m_notifyChangeWindowResolution = NotificationService::get()
 			->addObserverMethod( "CHANGE_WINDOW_RESOLUTION", this, &Camera2D::notifyChangeWindowResolution );
 
@@ -29,6 +31,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_deactivate()
 	{
+        Node::_deactivate();
+
 		NotificationService::get()
 			->removeObserver( "CHANGE_WINDOW_RESOLUTION", m_notifyChangeWindowResolution );
 	}

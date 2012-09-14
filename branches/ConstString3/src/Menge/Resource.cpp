@@ -17,7 +17,7 @@ namespace Menge
 
 		m_compile = true;
 
-		if( _compile() == false )
+		if( this->_compile() == false )
 		{
 			//Force release
 			//release();
@@ -58,14 +58,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Resource::recompile()
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
 			return true;
 		}
 
-		_release();
+		this->_release();
 
-		if( _compile() == false )
+		if( this->_compile() == false )
 		{		
 			m_compile = false;
 

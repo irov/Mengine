@@ -74,30 +74,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int Win32InputStream::read( void* _buf, int _count )
 	{     
-        if( 0 )
-        {
-            DWORD bytesRead = 0;
-            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL ) == FALSE )
-            {
-                DWORD dwError = GetLastError();
-
-                LOGGER_ERROR( m_logService )("Win32InputStream::read %d:%d get error '%d'"
-                    , _count
-                    , m_size
-                    , dwError
-                    );
-
-                return 0;
-            }
-
-            m_carriage = 0;
-            m_capacity = 0;
-
-            m_reading += bytesRead;
-            
-            return bytesRead;
-        }
-
         if( _count == m_size )
         {
             DWORD bytesRead = 0;

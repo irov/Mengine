@@ -168,7 +168,9 @@ namespace Menge
 
         if( m_device )
         {
-            //alcCloseDevice( m_device );
+#   ifndef _DEBUG
+            alcCloseDevice( m_device );
+#   endif
             m_device = NULL;
         }
     }

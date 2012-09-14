@@ -12,6 +12,7 @@ endif(NOT MSVC)
 
 # OUR SOURCES
 set( pybind32_sources
+${SOURCE_DIR}/src/class_info.cpp
 ${SOURCE_DIR}/src/class_core.cpp
 ${SOURCE_DIR}/src/class_type.cpp
 ${SOURCE_DIR}/src/constructor.cpp

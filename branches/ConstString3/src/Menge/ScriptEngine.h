@@ -44,7 +44,8 @@ namespace Menge
 		PyObject * importPrototype( const ConstString& _name, bool & _exist );
 
 		void setCurrentModule( PyObject * _module ) override;
-		
+        void addGlobalModule( const String & _name, PyObject * _module ) override;
+
 		void addModulePath( const TVectorWString& _listPath ) override;
 
 	public:

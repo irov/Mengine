@@ -66,6 +66,12 @@ namespace Menge
             return pybind::detail::is_class( _obj );
         }
 
+        static void s_addGlobalModule( const String & _name, PyObject * _module )
+        {
+            ScriptEngine::get()
+                ->addGlobalModule( _name, _module );
+        }
+
 	public:
 		static int mt_rand( int a )
 		{	
@@ -1210,5 +1216,7 @@ namespace Menge
 		pybind::def_function( "watchdog", &ScriptHelper::s_watchdog );
 
         pybind::def_function( "is_class", &ScriptHelper::s_is_class );
+        pybind::def_function( "addGlobalModule", &ScriptHelper::s_addGlobalModule );
+
 	}
 }

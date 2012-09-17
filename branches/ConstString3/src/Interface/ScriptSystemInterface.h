@@ -25,6 +25,7 @@ namespace Menge
 		virtual PyObject * importModule( const ConstString& _name ) = 0;
 
 		virtual void setCurrentModule( PyObject * _module ) = 0;
+        virtual void addGlobalModule( const String & _name, PyObject * _module ) = 0;
 
 		virtual PyObject * getModuleFunction( PyObject * _module, const char * _name ) = 0;
 

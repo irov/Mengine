@@ -7,6 +7,12 @@ namespace Menge
 	class Entity
 		: public Node
 	{
+    public:
+        Entity();
+        ~Entity();
+
+        static size_t s_enum;
+
 	public:
 		void setPrototype( const ConstString & _prototype );
 		const ConstString & getPrototype() const;
@@ -20,10 +26,10 @@ namespace Menge
 		
 		void _create() override;
 		bool _destroy() override;
-
+                
 	protected:
 		void _embedding( PyObject * _embed ) override;
-
+        
 	protected:
 		ConstString m_prototype;
 	};

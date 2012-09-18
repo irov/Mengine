@@ -29,17 +29,6 @@ namespace Menge
 		, m_parentScene(0)
 		, m_offsetPosition(0.f,0.f)
 	{
-		//const Resolution& res = Game::get()
-		//	->getContentResolution();
-
-		//ConstString c_SceneCamera("SceneCamera");
-		//m_camera2D = NodeManager::get()
-		//	->createNodeT<Camera2D>( c_SceneCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
-
-		//m_camera2D->setViewportSize( mt::vec2f(res[0], res[1]) );
-
-		//Player::get()->getRenderCamera2D()
-		//	->addChildren( m_camera2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()

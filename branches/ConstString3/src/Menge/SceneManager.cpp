@@ -12,34 +12,56 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    SceneManager::SceneManager()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SceneManager::initialize()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneManager::finalize()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	Scene * SceneManager::createScene( const ConstString & _name )
 	{
-		Scene * scene = 0;
+        TMapScenes::iterator it_found = m_scenes.find( _name );
 
-		PyObject * py_prototype = this->getPrototype( _name );
+        if( it_found == m_scenes.end() )
+        {            
+            Scene * scene = 0;
 
-		if( py_prototype == 0 )
-		{
-			scene = NodeManager::get()
-				->createNodeT<Scene>( Consts::get()->c_Scene );
-		}
-		else
-		{
-			scene = ScriptEngine::get()
-				->createEntityT<Scene>( Consts::get()->c_Scene, py_prototype );
-		}
+            PyObject * py_prototype = this->getPrototype( _name );
 
-		if( scene == 0 )
-		{
-			MENGE_LOG_ERROR( "SceneManager::createScene Can't create scene '%s'"
-				, _name.c_str() 
-				);
+            if( py_prototype == 0 )
+            {
+                scene = NodeManager::get()
+                    ->createNodeT<Scene>( Consts::get()->c_Scene );
+            }
+            else
+            {
+                scene = ScriptEngine::get()
+                    ->createEntityT<Scene>( Consts::get()->c_Scene, py_prototype );
+            }
 
-			return 0;
-		}
+            if( scene == 0 )
+            {
+                MENGE_LOG_ERROR( "SceneManager::createScene Can't create scene '%s'"
+                    , _name.c_str() 
+                    );
 
-		scene->setName( _name );
+                return 0;
+            }
+
+            scene->setName( _name );
+
+            it_found = m_scenes.insert( std::make_pair(_name, scene) ).first;
+        }
+
+        Scene * scene = it_found->second;
 
 		return scene;
 	}

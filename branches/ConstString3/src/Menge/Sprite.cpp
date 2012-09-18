@@ -66,8 +66,8 @@ namespace	Menge
 			return false;
 		}
 
-		invalidateVertices();
-		invalidateBoundingBox();
+		this->invalidateVertices();
+		this->invalidateBoundingBox();
 
 		return true;
 	}
@@ -127,16 +127,16 @@ namespace	Menge
 	{
 		m_flipX = _flipX;
 
-		invalidateVertices();
-		invalidateBoundingBox();
+		this->invalidateVertices();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setFlipY( bool _flipY )
 	{
 		m_flipY = _flipY;
 
-		invalidateVertices();
-		invalidateBoundingBox();
+		this->invalidateVertices();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::getFlipX() const

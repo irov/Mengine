@@ -143,11 +143,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
-		if( this->isEnable() == false )
-		{
-			return;
-		}
-
 		if( m_active == false )
 		{
 			return;

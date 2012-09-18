@@ -15,7 +15,18 @@ namespace Menge
 		: public PrototypeManager
 		, public Holder<SceneManager>
 	{
+    public:
+        SceneManager();
+
+    public:
+        bool initialize();
+        void finalize();
+
 	public:		
 		Scene * createScene( const ConstString & _name );
+
+    protected:
+        typedef std::map<ConstString, Scene *> TMapScenes;
+        TMapScenes m_scenes;
 	};
 }

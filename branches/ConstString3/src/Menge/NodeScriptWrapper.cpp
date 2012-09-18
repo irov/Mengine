@@ -1711,11 +1711,6 @@ namespace Menge
 			return affector;
 		}
 
-        static void removeAllEvent( Node * _node )
-        {
-            _node->removeAllEvent();
-        }
-
 		static void showKeyboard()
 		{
 			Application::get()
@@ -2988,7 +2983,6 @@ namespace Menge
 			pybind::def_function( "polygon_wm", &ScriptMethod::s_polygon_wm);
 
 			pybind::def_function( "createAffector", &ScriptMethod::createAffector );			
-			pybind::def_function( "removeAllEvent", &ScriptMethod::removeAllEvent );
 
 			pybind::def_function( "showKeyboard", &ScriptMethod::showKeyboard );			
 			pybind::def_function( "hideKeyboard", &ScriptMethod::hideKeyboard );

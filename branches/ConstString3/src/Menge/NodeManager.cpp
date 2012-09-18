@@ -31,7 +31,7 @@ namespace Menge
 
 			return 0;
 		}
-        		
+
 		node->setType( _type );
 		
 		return node;

@@ -712,6 +712,14 @@ namespace Menge
 
 		m_sceneManager = new SceneManager();
 
+        if( m_sceneManager->initialize() == false )
+        {
+            delete m_sceneManager;
+            m_sceneManager = NULL;
+
+            return false;
+        }
+
 		SceneManager::keep(m_sceneManager);
 
 		return true;

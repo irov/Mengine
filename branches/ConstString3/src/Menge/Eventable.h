@@ -45,9 +45,6 @@ namespace Menge
 		bool askPyEventVaList( Scriptable *& _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
 		bool askPyEventVaList( PyObject *& _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
 
-	public:
-		void removeAllEvent();
-
 	protected:
 		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
 		void removeEvent_( EEventName _event );

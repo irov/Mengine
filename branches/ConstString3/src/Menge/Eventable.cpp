@@ -15,21 +15,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Eventable::~Eventable()
 	{
-		this->removeAllEvent();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Eventable::removeAllEvent()
-	{
-		for( TMapEvent::iterator
-			it = m_mapEvent.begin(),
-			it_end = m_mapEvent.end();
-		it != it_end;
-		++it)
-		{
-			ScriptEngine::decref( it->second );
-		}
+        for( TMapEvent::iterator
+            it = m_mapEvent.begin(),
+            it_end = m_mapEvent.end();
+        it != it_end;
+        ++it)
+        {
+            ScriptEngine::decref( it->second );
+        }
 
-		m_mapEvent.clear();
+        m_mapEvent.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module, bool * _exist )

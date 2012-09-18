@@ -155,7 +155,7 @@ namespace Menge
 			Game::get()
 				->clearHomeless();
 
-			m_scene->destroy();
+            m_scene->release();
 
 			for( TVectorJoins::iterator
 				it = m_joins.begin(),
@@ -206,7 +206,7 @@ namespace Menge
 
 		if( oldScene && m_destroyOldScene == true && m_destroyAfterSwitch == false )
 		{
-			oldScene->destroy();
+            oldScene->release();
 		}
 
 		Game::get()
@@ -217,7 +217,7 @@ namespace Menge
 
 		if( oldScene && m_destroyOldScene == true && m_destroyAfterSwitch == true )
 		{
-			oldScene->destroy();
+            oldScene->release();
 		}
 
 		for( TVectorJoins::iterator
@@ -262,7 +262,7 @@ namespace Menge
 
 		m_scene->enable();
 
-		if( m_arrow )
+		if( m_arrow != NULL )
 		{
 			m_arrow->enable();
 		}
@@ -929,19 +929,21 @@ namespace Menge
 
 			std::stringstream ss;
 			
-			ss << "FPS: " << m_fps << "\n";
-			ss << "DIP: " << redi.dips << "\n";
-			ss << "Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << "\n";
-			ss << "Texture Count: " << redi.textureCount << "\n";
+			ss << "FPS: " << m_fps << std::endl;
+			ss << "DIP: " << redi.dips << std::endl;
+			ss << "Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << std::endl;
+			ss << "Texture Count: " << redi.textureCount << std::endl;
 			//ss << "Megatexture Count: " << redi.megatextures << "\n";
-			ss << "Particles: " << particlesCount << "\n";
-			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
-			ss << "PickerTrapCount:" << MousePickerSystem::get()->getPickerTrapCount() << "\n";
+			ss << "Particles: " << particlesCount << std::endl;
+			ss << "Debug CRT:" << Application::get()->isDebugCRT() << std::endl;
+			ss << "PickerTrapCount:" << MousePickerSystem::get()->getPickerTrapCount() << std::endl;
 
 			VisitorPlayerFactoryManager pfmv(ss);
 
 			NodeManager::get()
 				->visitFactories( &pfmv );
+
+            ss << "Entities: " << Entity::s_enum << std::endl;
 
 			const std::string & str = ss.str();
 

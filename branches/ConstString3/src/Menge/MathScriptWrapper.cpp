@@ -66,6 +66,13 @@ namespace Menge
 
 			return _vec->operator [] (_index);
 		}
+        //////////////////////////////////////////////////////////////////////////
+        std::string vec3f_repr( PyObject * _obj, mt::vec3f * _v )
+        {
+            std::stringstream ss;
+            ss << "<vec3f: " << _v->x << ", " << _v->y << ", " << _v->z << ">";
+            return ss.str();
+        }
 		//////////////////////////////////////////////////////////////////////////
 		float vec3_sequence( mt::vec3f * _vec, size_t _index )
 		{
@@ -76,6 +83,13 @@ namespace Menge
 
 			return _vec->operator [] (_index);
 		}
+        //////////////////////////////////////////////////////////////////////////
+        std::string vec4f_repr( PyObject * _obj, mt::vec4f * _v )
+        {
+            std::stringstream ss;
+            ss << "<vec4f: " << _v->x << ", " << _v->y << ", " << _v->z << ", " << _v->w << ">";
+            return ss.str();
+        }
 		//////////////////////////////////////////////////////////////////////////
 		float vec4_sequence( mt::vec4f * _vec, size_t _index )
 		{
@@ -552,6 +566,7 @@ namespace Menge
 			.def( pybind::init<float,float,float>() )
 			.def_convert( &ScriptMethod::vec3f_convert )
 			.def_static_sequence( &ScriptMethod::vec3_sequence )
+            .def_repr( &ScriptMethod::vec3f_repr )
 			.def_member( "x", &mt::vec3f::x )
 			.def_member( "y", &mt::vec3f::y )
 			.def_member( "z", &mt::vec3f::z )
@@ -561,6 +576,7 @@ namespace Menge
 			.def( pybind::init<float,float,float,float>() )
 			.def_convert( &ScriptMethod::vec4f_convert )
 			.def_static_sequence( &ScriptMethod::vec4_sequence )
+            .def_repr( &ScriptMethod::vec4f_repr )
 			.def_member( "x", &mt::vec4f::x )
 			.def_member( "y", &mt::vec4f::y )
 			.def_member( "z", &mt::vec4f::z )

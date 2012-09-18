@@ -43,16 +43,6 @@ namespace Menge
 	{
 		//Empty
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Transformation3D::setLocalMatrix( const mt::mat3f & _matrix )
-	//{
-	//	m_position.x = _matrix.v2.x;
-	//	m_position.y = _matrix.v2.y;
-
-	//	m_localMatrix = _matrix;
-	//	
-	//	invalidateWorldMatrix();
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setLocalPosition( const mt::vec3f & _position )
 	{
@@ -65,19 +55,6 @@ namespace Menge
 
 		this->invalidateWorldMatrix();
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Transformation3D::setLocalDirection( const mt::vec3f & _direction )
-	//{
-	//	if( mt::cmp_v3_v3( m_direction, _direction ) == true )
-	//	{
-	//		return;
-	//	}
-
-	//	m_direction = _direction;
-	//	m_angle = mt::signed_angle( _direction );
-
-	//	this->invalidateWorldMatrix();
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotateX( float _angle )
 	{

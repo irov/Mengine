@@ -136,6 +136,15 @@ extern "C" bool writeBinary( const Menge::WChar * _protocol, const Menge::WChar 
 
     FILE * file_test_bin = _wfopen( _bin, L"wb" );
 
+    if( file_test_bin == NULL )
+    {
+        sprintf( _error, "Xml2BinDecoder::decode: error create bin %S"
+            , _bin
+            );
+
+        return false;
+    }
+
     fwrite( &write_buff[0], write_size, 1, file_test_bin );
     fclose( file_test_bin );
 

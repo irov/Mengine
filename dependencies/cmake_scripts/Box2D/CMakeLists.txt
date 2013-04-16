@@ -3,48 +3,149 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(box2d)
 
-set( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../Box2D/Source )
-
-INCLUDE( ../menge_macro.cmake )
-
-MENGE_SET_PROJECT_DEFAULTS( box2d )
+set( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Box2D/Box2D )
 
 # OUR SOURCES
+set(BOX2D_Collision_SRCS
+	${SOURCE_DIR}/Collision/b2BroadPhase.cpp
+	${SOURCE_DIR}/Collision/b2CollideCircle.cpp
+	${SOURCE_DIR}/Collision/b2CollideEdge.cpp
+	${SOURCE_DIR}/Collision/b2CollidePolygon.cpp
+	${SOURCE_DIR}/Collision/b2Collision.cpp
+	${SOURCE_DIR}/Collision/b2Distance.cpp
+	${SOURCE_DIR}/Collision/b2DynamicTree.cpp
+	${SOURCE_DIR}/Collision/b2TimeOfImpact.cpp
+)
+set(BOX2D_Collision_HDRS
+	${SOURCE_DIR}/Collision/b2BroadPhase.h
+	${SOURCE_DIR}/Collision/b2Collision.h
+	${SOURCE_DIR}/Collision/b2Distance.h
+	${SOURCE_DIR}/Collision/b2DynamicTree.h
+	${SOURCE_DIR}/Collision/b2TimeOfImpact.h
+)
+set(BOX2D_Shapes_SRCS
+	${SOURCE_DIR}/Collision/Shapes/b2CircleShape.cpp
+	${SOURCE_DIR}/Collision/Shapes/b2EdgeShape.cpp
+	${SOURCE_DIR}/Collision/Shapes/b2ChainShape.cpp
+	${SOURCE_DIR}/Collision/Shapes/b2PolygonShape.cpp
+)
+set(BOX2D_Shapes_HDRS
+	${SOURCE_DIR}/Collision/Shapes/b2CircleShape.h
+	${SOURCE_DIR}/Collision/Shapes/b2EdgeShape.h
+	${SOURCE_DIR}/Collision/Shapes/b2ChainShape.h
+	${SOURCE_DIR}/Collision/Shapes/b2PolygonShape.h
+	${SOURCE_DIR}/Collision/Shapes/b2Shape.h
+)
+set(BOX2D_Common_SRCS
+	${SOURCE_DIR}/Common/b2BlockAllocator.cpp
+	${SOURCE_DIR}/Common/b2Draw.cpp
+	${SOURCE_DIR}/Common/b2Math.cpp
+	${SOURCE_DIR}/Common/b2Settings.cpp
+	${SOURCE_DIR}/Common/b2StackAllocator.cpp
+	${SOURCE_DIR}/Common/b2Timer.cpp
+)
+set(BOX2D_Common_HDRS
+	${SOURCE_DIR}/Common/b2BlockAllocator.h
+	${SOURCE_DIR}/Common/b2Draw.h
+	${SOURCE_DIR}/Common/b2GrowableStack.h
+	${SOURCE_DIR}/Common/b2Math.h
+	${SOURCE_DIR}/Common/b2Settings.h
+	${SOURCE_DIR}/Common/b2StackAllocator.h
+	${SOURCE_DIR}/Common/b2Timer.h
+)
+set(BOX2D_Dynamics_SRCS
+	${SOURCE_DIR}/Dynamics/b2Body.cpp
+	${SOURCE_DIR}/Dynamics/b2ContactManager.cpp
+	${SOURCE_DIR}/Dynamics/b2Fixture.cpp
+	${SOURCE_DIR}/Dynamics/b2Island.cpp
+	${SOURCE_DIR}/Dynamics/b2World.cpp
+	${SOURCE_DIR}/Dynamics/b2WorldCallbacks.cpp
+)
+set(BOX2D_Dynamics_HDRS
+	${SOURCE_DIR}/Dynamics/b2Body.h
+	${SOURCE_DIR}/Dynamics/b2ContactManager.h
+	${SOURCE_DIR}/Dynamics/b2Fixture.h
+	${SOURCE_DIR}/Dynamics/b2Island.h
+	${SOURCE_DIR}/Dynamics/b2TimeStep.h
+	${SOURCE_DIR}/Dynamics/b2World.h
+	${SOURCE_DIR}/Dynamics/b2WorldCallbacks.h
+)
+set(BOX2D_Contacts_SRCS
+	${SOURCE_DIR}/Dynamics/Contacts/b2CircleContact.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2Contact.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2ContactSolver.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2PolygonAndCircleContact.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2EdgeAndCircleContact.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2EdgeAndPolygonContact.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2ChainAndCircleContact.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2ChainAndPolygonContact.cpp
+	${SOURCE_DIR}/Dynamics/Contacts/b2PolygonContact.cpp
+)
+set(BOX2D_Contacts_HDRS
+	${SOURCE_DIR}/Dynamics/Contacts/b2CircleContact.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2Contact.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2ContactSolver.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2PolygonAndCircleContact.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2EdgeAndCircleContact.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2EdgeAndPolygonContact.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2ChainAndCircleContact.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2ChainAndPolygonContact.h
+	${SOURCE_DIR}/Dynamics/Contacts/b2PolygonContact.h
+)
+set(BOX2D_Joints_SRCS
+	${SOURCE_DIR}/Dynamics/Joints/b2DistanceJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2FrictionJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2GearJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2Joint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2MouseJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2PrismaticJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2PulleyJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2RevoluteJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2RopeJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2WeldJoint.cpp
+	${SOURCE_DIR}/Dynamics/Joints/b2WheelJoint.cpp
+)
+set(BOX2D_Joints_HDRS
+	${SOURCE_DIR}/Dynamics/Joints/b2DistanceJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2FrictionJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2GearJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2Joint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2MouseJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2PrismaticJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2PulleyJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2RevoluteJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2RopeJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2WeldJoint.h
+	${SOURCE_DIR}/Dynamics/Joints/b2WheelJoint.h
+)
+set(BOX2D_Rope_SRCS
+	${SOURCE_DIR}/Rope/b2Rope.cpp
+)
+set(BOX2D_Rope_HDRS
+	${SOURCE_DIR}/Rope/b2Rope.h
+)
+set(BOX2D_General_HDRS
+	${SOURCE_DIR}/Box2D.h
+)
 set( box2d_sources
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/b2Body.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/b2Island.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/b2World.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/b2ContactManager.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2Contact.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2PolyContact.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2CircleContact.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2PolyAndCircleContact.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2ContactSolver.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/b2WorldCallbacks.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2MouseJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2PulleyJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2Joint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2RevoluteJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2PrismaticJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2DistanceJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2GearJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Common/b2StackAllocator.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Common/b2Math.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Common/b2BlockAllocator.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Common/b2Settings.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2Collision.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2Distance.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/Shapes/b2Shape.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/Shapes/b2CircleShape.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/Shapes/b2PolygonShape.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2TimeOfImpact.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2PairManager.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2CollidePoly.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2CollideCircle.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2BroadPhase.cpp
+	${BOX2D_General_HDRS}
+    ${BOX2D_Joints_SRCS}
+    ${BOX2D_Joints_HDRS}
+    ${BOX2D_Contacts_SRCS}
+    ${BOX2D_Contacts_HDRS}
+    ${BOX2D_Dynamics_SRCS}
+    ${BOX2D_Dynamics_HDRS}
+    ${BOX2D_Common_SRCS}
+    ${BOX2D_Common_HDRS}
+    ${BOX2D_Shapes_SRCS}
+    ${BOX2D_Shapes_HDRS}
+    ${BOX2D_Collision_SRCS}
+    ${BOX2D_Collision_HDRS}
+    ${BOX2D_Rope_SRCS}
+    ${BOX2D_Rope_HDRS}
 )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${SOURCE_DIR}/..)
 
-add_library( ${box2d_LIB_NAME} STATIC ${box2d_sources} )
+add_library( ${PROJECT_NAME}_static STATIC ${box2d_sources} )
 

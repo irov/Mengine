@@ -80,10 +80,10 @@ WIN32 is still required for the locale module.
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
 #ifndef PYTHONPATH
-#	define PYTHONPATH ".\\DLLs;.\\lib;.\\lib\\plat-win;.\\lib\\lib-tk"
+#	define PYTHONPATH L".\\DLLs;.\\lib"
 #endif
 #define NT_THREADS
-//#define WITH_THREAD
+#define WITH_THREAD
 #ifndef NETSCAPE_PI
 #define USE_SOCKET
 #endif
@@ -95,16 +95,12 @@ WIN32 is still required for the locale module.
 #endif
 
 #ifdef MS_WINCE
-/* Python uses GetVersion() to distinguish between
- * Windows NT and 9x/ME where OS Unicode support is concerned.
- * Windows CE supports Unicode in the same way as NT so we
- * define the missing GetVersion() accordingly.
- */
-#define GetVersion() (4)
 /* Windows CE does not support environment variables */
 #define getenv(v) (NULL)
 #define environ (NULL)
 #endif
+
+//#define Py_NO_ENABLE_SHARED
 
 /* Compiler specific defines */
 
@@ -164,15 +160,11 @@ WIN32 is still required for the locale module.
 /* set the version macros for the windows headers */
 #ifdef MS_WINX64
 /* 64 bit only runs on XP or greater */
-#define Py_WINVER _WIN32_WINNT_WINXP
+#define Py_WINVER 0x0501 /* _WIN32_WINNT_WINXP */
 #define Py_NTDDI NTDDI_WINXP
 #else
 /* Python 2.6+ requires Windows 2000 or greater */
-#ifdef _WIN32_WINNT_WIN2K
-#define Py_WINVER _WIN32_WINNT_WIN2K
-#else
-#define Py_WINVER 0x0500
-#endif
+#define Py_WINVER 0x0500 /* _WIN32_WINNT_WIN2K */
 #define Py_NTDDI NTDDI_WIN2KSP4
 #endif
 
@@ -328,10 +320,12 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 			/* So MSVC users need not specify the .lib file in
 			their Makefile (other compilers are generally
 			taken care of by distutils.) */
-#			ifdef _DEBUG
-#				pragma comment(lib,"python26_d.lib")
+#			if defined(_DEBUG)
+#				pragma comment(lib,"python32_d.lib")
+#			elif defined(Py_LIMITED_API)
+#				pragma comment(lib,"python3.lib")
 #			else
-#				pragma comment(lib,"python26.lib")
+#				pragma comment(lib,"python32.lib")
 #			endif /* _DEBUG */
 #		endif /* _MSC_VER */
 #	endif /* Py_BUILD_CORE */
@@ -398,6 +392,42 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #endif  /* _MSC_VER > 1200  */
 #endif  /* _MSC_VER */
 
+#endif
+
+/* define signed and unsigned exact-width 32-bit and 64-bit types, used in the
+   implementation of Python long integers. */
+#ifndef PY_UINT32_T
+#if SIZEOF_INT == 4
+#define HAVE_UINT32_T 1
+#define PY_UINT32_T unsigned int
+#elif SIZEOF_LONG == 4
+#define HAVE_UINT32_T 1
+#define PY_UINT32_T unsigned long
+#endif
+#endif
+
+#ifndef PY_UINT64_T
+#if SIZEOF_LONG_LONG == 8
+#define HAVE_UINT64_T 1
+#define PY_UINT64_T unsigned PY_LONG_LONG
+#endif
+#endif
+
+#ifndef PY_INT32_T
+#if SIZEOF_INT == 4
+#define HAVE_INT32_T 1
+#define PY_INT32_T int
+#elif SIZEOF_LONG == 4
+#define HAVE_INT32_T 1
+#define PY_INT32_T long
+#endif
+#endif
+
+#ifndef PY_INT64_T
+#if SIZEOF_LONG_LONG == 8
+#define HAVE_INT64_T 1
+#define PY_INT64_T PY_LONG_LONG
+#endif
 #endif
 
 /* Fairly standard from here! */
@@ -514,7 +544,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #undef SYS_SELECT_WITH_SYS_TIME */
 
 /* Define if you want documentation strings in extension modules */
-//#define WITH_DOC_STRINGS 1
+#define WITH_DOC_STRINGS 1
 
 /* Define if you want to compile in rudimentary thread support */
 /* #undef WITH_THREAD */
@@ -522,16 +552,9 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* Define if you want to use the GNU readline library */
 /* #define WITH_READLINE 1 */
 
-/* Define if you want to have a Unicode type. */
-#define Py_USING_UNICODE
-
 /* Define as the size of the unicode type. */
 /* This is enough for unicodeobject.h to do the "right thing" on Windows. */
 #define Py_UNICODE_SIZE 2
-
-/* Define to indicate that the Python Unicode representation can be passed
-   as-is to Win32 Wide API.  */
-#define Py_WIN_WIDE_FILENAMES
 
 /* Use Python's own small-block memory-allocator. */
 #define WITH_PYMALLOC 1
@@ -540,7 +563,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #define HAVE_CLOCK */
 
 /* Define when any dynamic module loading is enabled */
-//#define HAVE_DYNAMIC_LOADING
+#define HAVE_DYNAMIC_LOADING
 
 /* Define if you have ftime.  */
 #ifndef MS_WINCE
@@ -612,9 +635,19 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* Define if you have waitpid.  */
 /* #undef HAVE_WAITPID */
 
+/* Define to 1 if you have the `wcsftime' function. */
+#if defined(_MSC_VER) && _MSC_VER >= 1310
+#define HAVE_WCSFTIME 1
+#endif
+
 /* Define to 1 if you have the `wcscoll' function. */
 #ifndef MS_WINCE
 #define HAVE_WCSCOLL 1
+#endif
+
+/* Define to 1 if you have the `wcsxfrm' function. */
+#ifndef MS_WINCE
+#define HAVE_WCSXFRM 1
 #endif
 
 /* Define if you have the <dlfcn.h> header file.  */
@@ -692,6 +725,9 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* Define if the compiler provides a wchar.h header file. */
 #define HAVE_WCHAR_H 1
 
+/* The size of `wchar_t', as computed by sizeof. */
+#define SIZEOF_WCHAR_T 2
+
 /* Define if you have the dl library (-ldl).  */
 /* #undef HAVE_LIBDL */
 
@@ -722,5 +758,9 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* WinSock does not use a bitmask in select, and uses
    socket handles greater than FD_SETSIZE */
 #define Py_SOCKET_FD_CAN_BE_GE_FD_SETSIZE
+
+/* Define if C doubles are 64-bit IEEE 754 binary format, stored with the
+   least significant byte first */
+#define DOUBLE_IS_LITTLE_ENDIAN_IEEE754 1
 
 #endif /* !Py_CONFIG_H */

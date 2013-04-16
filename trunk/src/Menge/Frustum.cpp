@@ -6,13 +6,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Frustum::Frustum()
-	: m_fov(3.1415f/4.0f)
-	, m_near(0.01f)
-	, m_far(2500.0f)
-	, m_aspect(4.0f/3.0f)
-	, m_focalLength( 1.0f )
-	, m_frustumOffset( 0.0f, 0.0f )
-	, m_recalcProjection(true)
+		: m_fov(3.1415f/4.0f)
+		, m_near(0.01f)
+		, m_far(2500.0f)
+		, m_aspect(4.0f/3.0f)
+		, m_focalLength( 1.0f )
+		, m_frustumOffset( 0.0f, 0.0f )
+		, m_recalcProjection(true)
 	{
 
 	}
@@ -65,7 +65,7 @@ namespace Menge
 		return m_aspect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Frustum::getProjectionMtx()
+	const mt::mat4f & Frustum::getProjectionMatrix()
 	{
 		recalcProjection();
 

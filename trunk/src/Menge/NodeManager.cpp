@@ -1,150 +1,104 @@
 #	include "NodeManager.h"
 
-#	include "XmlEngine.h"
+#   include "Interface/StringizeInterface.h"
 
-#	include "ScriptEngine.h"
+#   include "Logger/Logger.h"
 
-#	include "Logger/Logger.h"
-#	include "Factory/FactoryIdentity.h"
+#	include "Kernel/Node.h"
 
-#	include "Node.h"
+#	include <memory>
+
+SERVICE_FACTORY(NodeService, Menge::NodeServiceInterface, Menge::NodeManager);
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	NodeManager::NodeManager( FactoryIdentity * _factoryIdentity )
-		: m_factoryIdentity(_factoryIdentity)
+	NodeManager::NodeManager()
+        : m_serviceProvider(NULL)
+        , m_homeless(0)
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void NodeManager::initialize()
+    {
+        m_homeless = new Node();
+
+        m_homeless->setName( Helper::stringizeString(m_serviceProvider, "Homeless") );
+        m_homeless->setType( Helper::stringizeString(m_serviceProvider, "Node") );
+        m_homeless->setServiceProvider( m_serviceProvider );        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeManager::finalize()
+    {
+        if( m_homeless )
+        {
+            m_homeless->destroyAllChild();
+            delete m_homeless;
+            m_homeless = NULL;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+
+        FactoryManager::setServiceProvider( m_serviceProvider );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * NodeManager::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	Node* NodeManager::createNode( const String& _type )
+	Node * NodeManager::createNode( const ConstString& _type )
 	{
 		Node * node = FactoryManager::createObjectT<Node>( _type );
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( "Invalid Node Type '%s'"
+			LOGGER_ERROR(m_serviceProvider)("NodeManager::createNode: Invalid Node Type '%s'"
 				, _type.c_str() 
 				);
 
 			return 0;
 		}
 
-		node->setFactoryIdentity( m_factoryIdentity );
-
 		node->setType( _type );
 
+        node->setServiceProvider( m_serviceProvider );
+		
 		return node;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeManager::loadNode( Node *_node, const String& _pakName, const String& _filename )
-	{
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( _pakName, _filename, _node, &Node::loader ) == false )
-		{
-			return false;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    void NodeManager::addHomeless( Node * _homeless )
+    {
+        if( m_homeless == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "NodeManager::addHomeless: not initialize"
+                );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	class XmlNodeLoaderListener
-		: public XmlElementListener
-	{
-	public:
-		XmlNodeLoaderListener( Node ** _externalNode, NodeManager * _manager )
-			: m_externalNode(_externalNode)
-			, m_manager(_manager)
-		{
-		}
+            return;
+        }
 
-	public:
-		void parseXML( XmlElement * _xml ) override
-		{
-			XML_SWITCH_NODE( _xml )
-			{			
-				XML_CASE_NODE( "Node" )
-				{
-					String name;
-					String type;
-					XML_FOR_EACH_ATTRIBUTES()
-					{
-						XML_CASE_ATTRIBUTE( "Name", name );
-						XML_CASE_ATTRIBUTE( "Type", type );
-					}
+        _homeless->release();
 
-					*m_externalNode = m_manager->createNode( type );
+        if( _homeless->hasParent() == true )
+        {
+            Node * parent = _homeless->getParent();
 
-					if( *m_externalNode == 0 )
-					{
-						MENGE_LOG_ERROR( "Error: can't create node '%s' invalid type '%s'"
-							, name.c_str()
-							, type.c_str()
-							);
+            LOGGER_ERROR(m_serviceProvider)( "NodeManager::addHomeless: '%s' have parent '%s'"
+                , _homeless->getName().c_str()
+                , parent->getName().c_str()
+                );
 
-						XML_CASE_SKIP();
-					}
+            return;
+        }
 
-					(*m_externalNode)->setName( name );
-
-					XML_PARSE_ELEMENT( (*m_externalNode), &Node::loader );
-				}
-			}
-		}
-
-	protected:
-		Node ** m_externalNode;	
-		NodeManager * m_manager;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromXml( const String& _pakName, const String& _filename )
-	{
-		Node * node = 0;
-
-		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node, this );
-
-		if(  Holder<XmlEngine>::hostage()
-			->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid parse external node '%s'"
-				, _filename.c_str() 
-				);
-
-			return 0;
-		}
-
-		if( node == 0 )
-		{
-			MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
-				, _filename.c_str() 
-				);
-		}
-
-		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromXmlData( const String& _xml_data )
-	{
-		Node * node = 0;
-
-		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node,this );
-
-		if(  Holder<XmlEngine>::hostage()
-			->parseXmlString( _xml_data, nodeLoader ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid parse external xml data '%s'"
-				, _xml_data.c_str() 
-				);
-
-			return 0;
-		}
-
-		if( node == 0 )
-		{
-			MENGE_LOG_ERROR( "This xml have invalid external node format" );
-		}
-
-		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
+        m_homeless->addChildren( _homeless );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeManager::clearHomeless()
+    {
+        m_homeless->destroyAllChild();
+    }
 }

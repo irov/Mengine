@@ -1,163 +1,102 @@
-#	include "ResourceImageAtlas.h"
-
-#	include "ResourceImplement.h"
-
-#	include "XmlEngine.h"
-
-//#	include <FreeImage.h>
-
-#	include <sstream>
-
-#	include "Utils/Core/PixelFormat.h"
-
-//#	include "ImageCodec.h"
-
-#	include "RenderEngine.h"
-
-namespace Menge
-{
-	RESOURCE_IMPLEMENT( ResourceImageAtlas )
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImageAtlas::ResourceImageAtlas()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getMaxSize( std::size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].maxSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageAtlas::getCount() const
-	{
-		return m_vectorImageFrames.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceImageAtlas::getFilename( std::size_t _frame ) const
-	{
-		return m_vectorImageDescs[ _frame ].fileName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageAtlas::getFilenameCount() const
-	{
-		//õç
-		return m_vectorImageDescs.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getSize( std::size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getOffset( std::size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageAtlas::getUV( std::size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].uv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageAtlas::getTexture( std::size_t _frame )
-	{
-		return m_vectorImageFrames[ _frame ].texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageAtlas::isAlpha( std::size_t _frame ) const
-	{
-		return m_vectorImageFrames[ _frame ].isAlpha;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageAtlas::loader( XmlElement * _xml )
-	{
-		ResourceImage::loader( _xml );
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "File" )
-			{
-				ImageDesc desc;
-				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-				desc.offset = mt::vec2f(0.f,0.f);
-				desc.maxSize = mt::vec2f(-1.f,-1.f);
-				desc.size = mt::vec2f(-1.f,-1.f);
-				desc.isAlpha = true; //
-
-				String fileName; 
-
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", fileName );
-					XML_CASE_ATTRIBUTE( "UV", desc.uv );
-					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
-					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
-					XML_CASE_ATTRIBUTE( "Size", desc.size );
-					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
-				}
-
-				desc.fileName = fileName;
-
-				m_vectorImageDescs.push_back( desc );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageAtlas::_compile()
-	{	
-		for( TVectorImageDesc::iterator
-			it = m_vectorImageDescs.begin(),
-			it_end = m_vectorImageDescs.end();
-		it != it_end;
-		++it)
-		{
-			const String & category = this->getCategory();
-			ImageFrame frame = loadImageFrame( category, it->fileName );
-
-			
-
-			if( frame.texture == NULL )
-			{
-				return false;
-			}
-
-			frame.uv = it->uv;
-			
-		//	frame.maxSize = frame.size;
-
-			frame.maxSize = it->maxSize;
-			frame.offset =  it->offset;
-
-			frame.size = it->size;
-
-			/*if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
-			{
-				frame.maxSize = frame.size;
-			}
-			else
-			{
-				frame.size = it->size;
-			}*/
-
-			//frame.size = it->size;
-			frame.isAlpha = it->isAlpha;
-
-			m_vectorImageFrames.push_back( frame );
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageAtlas::_release()
-	{
-		for( TVectorImageFrame::iterator
-			it = m_vectorImageFrames.begin(),
-			it_end = m_vectorImageFrames.end();
-		it != it_end;
-		++it)
-		{
-			releaseImageFrame( *it );
-		}
-
-		m_vectorImageFrames.clear();
-	}
-}
+//#	include "ResourceImageAtlas.h"
+//#	include "ResourceImplement.h"
+//#	include "Utils/Core/Rect.h"
+//#	include "RenderEngine.h"
+//#	include "LogEngine.h"
+//#	include "Interface/ImageCodecInterface.h"
+//
+//namespace Menge
+//{
+//	//////////////////////////////////////////////////////////////////////////
+//	RESOURCE_IMPLEMENT( ResourceImageAtlas );
+//	//////////////////////////////////////////////////////////////////////////
+//	ResourceImageAtlas::ResourceImageAtlas()
+//		: m_texture(NULL)
+//		, m_size(0.f,0.f)
+//		, m_pixelFormat(PF_A8R8G8B8)
+//	{
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//	void ResourceImageAtlas::loader( const Metabuf::Metadata * _parser )
+//	{
+//		//ResourceReference::loader( _parser );
+//
+//		//BIN_SWITCH_ID( _parser )
+//		//{
+//		//	BIN_CASE_ATTRIBUTE( Protocol::Size_Value, m_size );
+//		//}
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//	bool ResourceImageAtlas::_compile()
+//	{	
+//		m_texture = RenderEngine::get()
+//			->createTexture( m_size.x, m_size.y, m_pixelFormat );
+//
+//		if( m_texture == NULL )
+//		{
+//			MENGE_LOG_ERROR("Texture::ResourceImageAtlas: Invalid create texture");
+//			return false;
+//		}
+//
+//		return true;
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//	void ResourceImageAtlas::_release()
+//	{
+//		RenderEngine::get()
+//			->releaseTexture( m_texture );
+//
+//		m_texture = NULL;
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//	RenderTextureInterface* ResourceImageAtlas::getTexture() const 
+//	{
+//		return m_texture;
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//	void ResourceImageAtlas::getRectForUV_( Rect& _destRect, const mt::vec4f & _uv )
+//	{
+//		//float uvX = uv.z - uv.x;
+//		//float uvY = uv.w - uv.y;
+//		_destRect.left =  _uv.x * m_size.x;
+//		_destRect.top =  _uv.y * m_size.y;
+//		_destRect.right = _uv.z * m_size.x;
+//		_destRect.bottom = _uv.w * m_size.y;
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//	bool ResourceImageAtlas::setImageInAtlas( ResourceImage * _resource, ResourceImage::ImageFrame & _frame )
+//	{
+//		Rect rect;
+//
+//		this->getRectForUV_( rect, _frame.uv );
+//		size_t width = rect.getWidth();
+//		size_t height = rect.getHeight();
+//
+//		int pitch;
+//		unsigned char* buffer = m_texture->lock( &pitch, rect, false );
+//
+//		if( buffer == NULL )
+//		{
+//			return false;
+//		}
+//
+//		if ( _resource->loadBuffer( buffer, pitch ) == false )
+//		{
+//			m_texture->unlock();
+//			return false;
+//		}
+//
+//		m_texture->unlock();
+//
+//		_frame.texture = m_texture;
+//		_frame.size.x = width;
+//		_frame.size.y = height;
+//		_frame.maxSize = _frame.size;
+//		_frame.uv_image = _frame.uv;
+//		_frame.uv_scale = mt::vec4f(0.f, 0.f, 1.0f, 1.0f);
+//		_frame.isAlpha = true;
+//
+//		return true;
+//	}
+//	//////////////////////////////////////////////////////////////////////////
+//}

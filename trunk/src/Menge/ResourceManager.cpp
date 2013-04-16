@@ -1,31 +1,25 @@
-
 #	include "ResourceManager.h"
 
-#	include "Application.h"
+#	include "Interface/UnicodeInterface.h"
+#	include "Interface/LoaderInterface.h"
 
-#	include "ResourceReference.h"
+#	include "Kernel/Loadable.h"
+#	include "Kernel/ResourceReference.h"
 
-#	include "FileEngine.h"
-#	include "XmlEngine.h"
-
-#	include "Factory/FactoryIdentity.h"
+#	include "Metacode.h"
 
 #	include "Logger/Logger.h"
-#	include "ScriptEngine.h"
 
-#	include <ctime>
-#	include "pybind/include/pybind/pybind.hpp"
-#	include "RenderEngine.h"
-#	include "Game.h"
+#	include "Kernel/ResourceVisitor.h"
 
-#	include "Utils/Core/String.h"
-
-
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( ResourceService, Menge::ResourceServiceInterface, Menge::ResourceManager );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceManager::ResourceManager( FactoryIdentity * _factoryIdentity )
-		: m_factoryIdentity(_factoryIdentity)
+	ResourceManager::ResourceManager()
+        : m_serviceProvider(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -33,535 +27,463 @@ namespace Menge
 	{
 		//_dumpResources();
 
-		for( TMapResource::iterator
-			it = m_mapResource.begin(),
-			it_end = m_mapResource.end();
+		for( TMapResource::const_iterator
+			it = m_resources.begin(),
+			it_end = m_resources.end();
 		it != it_end;
 		++it)
 		{
-			it->second->destroy();
+			const ResourceEntry & entry = it->second;
+			ResourceReference * resource = entry.resource;
+			resource->destroy();
+		}
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+
+        FactoryManager::setServiceProvider( m_serviceProvider );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * ResourceManager::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceManager::registerResourceFactory( const ConstString & _type, Factory * _factory )
+    {
+        this->registerFactory( _type, _factory );
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::loadResource( const ResourceDesc & _desc )
+	{
+		Metacode::Meta_DataBlock datablock;
+
+		bool exist = false;
+		if( LOADER_SERVICE(m_serviceProvider)->load( _desc.pakName, _desc.path, &datablock, exist ) == false )
+		{
+			if( exist == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceManager::loadResource: resource '%s:%s' not found"
+					, _desc.pakName.c_str()
+					, _desc.path.c_str()
+					);
+			}
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceManager::loadResource: Invalid parse resource '%s:%s'"
+                    , _desc.pakName.c_str()
+                    , _desc.path.c_str()
+					);
+			}
+
+			return false;
 		}
 
-		for( TMapResourceManagerListenerScript::iterator
-			it = m_scriptListeners.begin(),
-			it_end = m_scriptListeners.end();
+        ConstString groupName;
+        datablock.swap_Name( groupName );
+
+        const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
+
+        for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
+            it = includes_resource.begin(),
+            it_end = includes_resource.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_Resource * meta_resource = *it;
+
+            const ConstString & name = meta_resource->get_Name();
+            const ConstString & type = meta_resource->get_Type();
+
+            ResourceReference * resource = 
+                this->createResource( _desc.pakName, groupName, name, type );
+
+            if( resource == NULL )
+            {
+                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: invalid create resource %s:%s name %s type %s"
+                    , _desc.pakName.c_str()
+                    , groupName.c_str()
+                    , name.c_str()
+                    , type.c_str()
+                    );
+
+                return false;
+            }
+
+            if( resource->_loader( meta_resource ) == false )
+            {
+                LOGGER_WARNING(m_serviceProvider)("ResourceManager::createResource %s type [%s] invalid load"
+                    , name.c_str()
+                    , type.c_str()
+                    );
+
+                continue;
+            }
+            
+            if( resource->convert() == false )
+            {
+                LOGGER_WARNING(m_serviceProvider)("ResourceManager::createResource %s type [%s] invalid convert"
+                    , name.c_str()
+                    , type.c_str()
+                    );
+
+                continue;
+            }
+
+#       ifdef _DEBUG
+            if( resource->isValid() == false )
+            {
+                LOGGER_WARNING(m_serviceProvider)("ResourceManager::createResource %s type [%s] invalid validation"
+                    , name.c_str()
+                    , type.c_str()
+                    );
+
+                continue;
+            }
+#       endif
+        }
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+	{
+		TMapResource::iterator it_find = m_resources.find( _name );
+
+		if( it_find != m_resources.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: already exist resource name '%s' in group '%s' category '%s' ('%s')"
+				, _name.c_str()
+				, _group.c_str()
+				, _category.c_str()
+                , it_find->second.resource->getCategory().c_str()
+				);
+
+			return 0;
+		}
+
+		ResourceReference * resource = 
+			this->createObjectT<ResourceReference>( _type );
+
+		if( resource == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: not registered resource type '%s'"
+				, _type.c_str() 
+				);
+
+			return 0;
+		}
+
+		resource->setCategory( _category );
+		resource->setGroup( _group );
+		resource->setName( _name );
+		resource->setType( _type );
+
+        resource->setServiceProvider( m_serviceProvider );
+
+		ResourceEntry entry;
+		entry.resource = resource;
+		entry.isLocked = false;
+
+		m_resources.insert( it_find, std::make_pair( _name, entry ) );
+
+        TVectorResource & resources = m_cacheResource[_category][_group];
+        resources.push_back( resource );
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::hasResource( const ConstString& _name ) const
+	{
+		TMapResource::const_iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::validResourceType( const ConstString& _name, const ConstString& _type ) const
+	{
+		TMapResource::const_iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		const ResourceEntry & entry = it_find->second;
+
+		const ConstString & resourceType = entry.resource->getType();
+
+		if( resourceType != _type )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::validResource( const ConstString & _name ) const
+	{
+		TMapResource::const_iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		const ResourceEntry & entry = it_find->second;
+		ResourceReference * resource = entry.resource;
+
+		bool valid = resource->isValid();
+
+		return valid;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::lockResource( const ConstString& _name )
+	{
+		TMapResource::iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		ResourceEntry & entry = it_find->second;
+
+		if( entry.isLocked == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager getResource: resource '%s' is alredy LOCK!"
+				, _name.c_str()
+				);
+
+			return false;
+		}
+
+		entry.isLocked = true;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::unlockResource( const ConstString& _name )
+	{
+		TMapResource::iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		ResourceEntry & entry = it_find->second;
+
+		if( entry.isLocked == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager getResource: resource '%s' is alredy UNLOCK!"
+				, _name.c_str()
+				);
+
+			return false;
+		}
+
+		entry.isLocked = false;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceManager::getResource( const ConstString& _name ) const
+	{
+		TMapResource::const_iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' does not exist"
+				, _name.c_str()
+				);
+
+			return 0;
+		}
+
+		const ResourceEntry & entry = it_find->second;
+		if( entry.isLocked == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' is LOCK!"
+				, _name.c_str()
+				);
+
+			return 0;
+		}
+		
+		ResourceReference * resource = entry.resource;
+
+		if( resource->incrementReference() == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' '%s' is not compile!"
+				, _name.c_str()
+                , resource->getType().c_str()
+				);
+
+			return 0;
+		}
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceManager::getResourceReference( const ConstString& _name ) const
+	{
+		TMapResource::const_iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
+				, _name.c_str()
+				);
+
+			return 0;
+		}
+
+		const ResourceEntry & entry = it_find->second;
+		
+        if( entry.isLocked == true )
+		{
+			return 0;
+		}
+		
+		ResourceReference * resource = entry.resource;
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceManager::getResourceType( const ConstString & _name ) const
+	{
+		TMapResource::const_iterator it_found = m_resources.find( _name );
+
+		if( it_found == m_resources.end() )
+		{
+			return ConstString::none();
+		}
+
+		const ResourceEntry & entry = it_found->second;
+		ResourceReference * resource = entry.resource;
+
+		const ConstString & type = resource->getType();
+
+		return type;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor ) const
+	{
+        TMapCategoryCacheResource::const_iterator it_category_found = m_cacheResource.find( _category );
+
+        if( it_category_found == m_cacheResource.end() )
+        {
+            return;
+        }
+
+        const TMapGroupCacheResource & cacheGroup = it_category_found->second;
+
+        TMapGroupCacheResource::const_iterator it_group_found = cacheGroup.find( _groupName );
+
+        if( it_group_found == cacheGroup.end() )
+        {
+            return;
+        }
+
+        const TVectorResource & resources = it_group_found->second;
+
+		for( TVectorResource::const_iterator
+			it = resources.begin(),
+			it_end = resources.end();
 		it != it_end;
 		++it )
 		{
-			ScriptEngine::decref( it->second );
+			ResourceReference * resource = *it;
+
+			_visitor->visit( resource );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )
+	bool ResourceManager::directResourceCompile( const ConstString& _name )
 	{
-		TResourcePackMap::iterator it_find_pack = m_resourcePackMap.find( _group );
-		if( it_find_pack != m_resourcePackMap.end() )
-		{
-			MENGE_LOG_WARNING( "Warning: Resource group '%s' already exist",
-				_group.c_str()
-				);
+		TMapResource::iterator it_find = m_resources.find( _name );
 
+		if( it_find == m_resources.end() )
+		{
 			return false;
 		}
 
-		m_currentCategory = _category;
-		m_currentGroup = _group;
-		m_currentFile = _file;
+		const ResourceEntry & entry = it_find->second;
+		ResourceReference * ref = entry.resource;
 
-		m_resourcePackMap.insert( std::make_pair( _group, _category ) );
-
-		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
-		if( it_find == m_resourceCountMap.end() )
-		{
-			m_resourceCountMap.insert( std::make_pair( m_currentGroup, 0 ) );
-		}
-
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid parse resource '%s'"
-				, _file.c_str() 
-				);
-
-			return false;
-		}
+		ref->incrementReference();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loaderDataBlock( XmlElement * _xml )
+	void ResourceManager::directResourceRelease( const ConstString& _name )
 	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "DataBlock" )
-			{
-				XML_PARSE_ELEMENT( this, &ResourceManager::loaderResource );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loaderResource( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Resource" )
-			{
-				String name;
-				String type;
+		TMapResource::iterator it_find = m_resources.find( _name );
 
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-					XML_CASE_ATTRIBUTE( "Type", type );
-				}
-
-				ResourceReference * resource = createResource( name, type );
-
-				if( resource == 0 )
-				{
-					MENGE_LOG_ERROR( "Don't register resource type '%s'"
-						, type.c_str() 
-						);
-
-					continue;
-				}
-
-				bool registered = registerResource( resource );
-
-				if( registered == true )
-				{
-					XML_PARSE_ELEMENT( resource, &ResourceReference::loader );
-				}
-			}		
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResource( const String& _name, const String& _type )
-	{
-		ResourceFactoryParam param;
-		param.name = _name;
-		param.category = m_currentCategory;
-		param.group = m_currentGroup;
-		param.file = m_currentFile;
-
-		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
-		if( it_find != m_resourceCountMap.end() )
-		{
-			++it_find->second;
-		}
-
-		ResourceReference * resource = 
-			this->createResourceWithParam( _type, param );
-
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResourceWithParam( const String& _type, const ResourceFactoryParam & _param )
-	{
-		ResourceReference * resource = 
-			this->createObjectT<ResourceReference>( _type );
-
-		if( resource == 0 )
-		{
-			return 0;
-		}
-
-		resource->initialize( _param, m_factoryIdentity );
-
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResourceWithIdentity( const String& _type, const ResourceFactoryIdentity & _param )
-	{
-		ResourceReference * resource = 
-			this->createObjectT<ResourceReference>( _type );
-
-		if( resource == 0 )
-		{
-			return 0;
-		}
-
-		resource->initialize( _param, m_factoryIdentity );
-
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::registerResource( ResourceReference * _resource )
-	{
-		if( _resource == 0 )
-		{
-			return false;
-		}
-
-		const String& name = _resource->getName();
-
-		TMapResource::iterator it_find = m_mapResource.find( name );
-
-		if( it_find == m_mapResource.end() )
-		{
-			m_mapResource.insert( std::make_pair( name, _resource ) );
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Warning: Duplicate resource name '%s' in group '%s' (delete)"
-				, name.c_str()
-				, _resource->getGroup().c_str()
-				);
-
-			_resource->destroy(); //Duplicate entry will be deleted now;
-
-			return false;
-		}
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::unregisterResource( ResourceReference* _resource )
-	{
-		const String& name = _resource->getName();
-
-		TMapResource::iterator it_find = m_mapResource.find( name );
-
-		if( it_find != m_mapResource.end() )
-		{
-			m_mapResource.erase( it_find );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResource( const String& _name )
-	{
-		TMapResource::iterator it_find = m_mapResource.find( _name );
-
-		if( it_find == m_mapResource.end() )
-		{
-			//MENGE_LOG_INFO( "Warning: resource named '%s' does not exist"
-			//	, _name.c_str() );
-			return 0;
-		}
-
-		ResourceReference * resource = it_find->second;
-
-		unsigned int inc = resource->incrementReference();
-
-		if( inc == 0 )
-		{
-			return 0;
-		}
-
-		// resource has been loaded
-		if( inc == 1 && ( !m_listeners.empty() || !m_scriptListeners.empty() ) )
-		{
-			for( TListResourceManagerListener::iterator it = m_listeners.begin();
-				it != m_listeners.end();
-				it++)
-			{
-				(*it)->onResourceLoaded( _name );
-			}
-
-			for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
-				it != m_scriptListeners.end();
-				it++)
-			{
-				String nameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _name );
-				Holder<ScriptEngine>::hostage()
-					->callFunction( it->second, "(s)", nameAnsi.c_str() );
-			}
-
-		}
-
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::releaseResource( ResourceReference * _resource )
-	{
-		if( _resource == 0 )
-		{
-			return false;
-		}
-
-		const String& name = _resource->getName();
-
-		TMapResource::iterator it_find = m_mapResource.find( name );
-
-		if( it_find == m_mapResource.end() )
-		{
-			return false;
-		}
-
-		if( it_find->second == NULL )
-		{
-			return false;
-		}
-
-		//unsigned int ref_debug = _resource->countReference();
-		unsigned int inc = _resource->decrementReference();
-		// resource has been unloaded
-		if( inc == 0 && m_listeners.size() )
-		{
-			for( TListResourceManagerListener::iterator it = m_listeners.begin();
-				it != m_listeners.end();
-				it++)
-			{
-				(*it)->onResourceUnLoaded();
-			}
-
-			/*for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
-			it != m_scriptListeners.end();
-			it++)
-			{
-			PyObject * result = 
-			Holder<ScriptEngine>::hostage()
-			->callFunction( it->second, "()", it->first );
-			}*/
-		}
-
-		//Holder<ProfilerEngine>::hostage()->removeResourceToProfile(name);
-
-		return inc == 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::directResourceCompile( const String& _name )
-	{
-		ResourceReference * resource = getResource( _name );
-		
-		return resource != 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceRelease( const String& _name )
-	{
-		TMapResource::iterator it_find = m_mapResource.find( _name );
-
-		if( it_find == m_mapResource.end() )
+		if( it_find == m_resources.end() )
 		{
 			return;
 		}
 
-		ResourceReference * ref = it_find->second;
+		const ResourceEntry & entry = it_find->second;
+		ResourceReference * ref = entry.resource;
+
 		ref->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::addListener( ResourceManagerListener* _listener )
+	void ResourceManager::dumpResources( const String & _tag )
 	{
-		m_listeners.push_back( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::addListener( PyObject* _listener )
-	{
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( _listener, ("onHandleResourceLoaded") ) == false )
-		{
-			return;
-		}
-
-		PyObject * event = Holder<ScriptEngine>::hostage()
-			->getModuleFunction( _listener, ("onHandleResourceLoaded") );
-
-		if( event == 0 )
-		{
-			return;
-		}
-
-		m_scriptListeners.insert( std::make_pair( _listener, event ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::removeListener( ResourceManagerListener* _listener )
-	{
-		m_listeners.remove( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::removeListener( PyObject* _listener )
-	{
-		m_scriptListeners.erase( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	class XmlResourceLoaderListener
-		: public XmlElementListener
-	{
-	public:
-		XmlResourceLoaderListener( ResourceReference ** _externalResource, ResourceManager* _resourceMgr )
-			: m_externalResource( _externalResource )
-			, m_resourceManager( _resourceMgr )
-		{
-		}
-
-	public:
-		void parseXML( XmlElement * _xml ) override
-		{
-			m_resourceManager->loaderResource( _xml );
-		}
-
-	protected:
-		ResourceReference ** m_externalResource;	
-		ResourceManager* m_resourceManager;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference* ResourceManager::createResourceFromXml( const String& _xml )
-	{
-		ResourceReference* resource = 0;
-
-		XmlResourceLoaderListener * resourceLoader = new XmlResourceLoaderListener( &resource, this );
-
-		if(  Holder<XmlEngine>::hostage()
-			->parseXmlString( _xml, resourceLoader ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid parse external node '%s'"
-				, _xml.c_str() 
-				);
-
-			return 0;
-		}
-
-		if( resource == 0 )
-		{
-			MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
-				, _xml.c_str() 
-				);
-		}
-
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceUnload( const String& _name )
-	{
-		TMapResource::iterator it_find = m_mapResource.find( _name );
-
-		if( it_find == m_mapResource.end() )
-		{
-			return;
-		}
-
-		ResourceReference * ref = it_find->second;
-		while( ref->countReference() )
-		{
-			ref->decrementReference();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileCompile( const String& _resourceFile )
-	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
-			it != it_end;
-			it++ )
-		{
-			std::size_t groupIdentity = it->second->getGroupIdentity();
-			if( groupIdentity == identity )
-			{
-				const String & name = it->second->getName();
-				getResource( name );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileRelease( const String& _resourceFile )
-	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
-			it != it_end;
-			it++ )
-		{
-			std::size_t groupIdentity = it->second->getGroupIdentity();
-			if( groupIdentity == identity )
-			{
-				it->second->decrementReference();
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileUnload( const String& _resourceFile )
-	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
-			it != it_end;
-			it++ )
-		{
-			std::size_t groupIdentity = it->second->getGroupIdentity();
-			if( groupIdentity == identity )
-			{
-				while( it->second->decrementReference() );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::dumpResources( const std::string & _category )
-	{
+#	ifdef _DEBUG
 		FILE* file = fopen( "ResourceDump.log", "a" );
-		fprintf( file, "Dumping resources... ");
-		fprintf( file, _category.c_str() );
-		fprintf( file, "\n" );
-		for( TMapResource::iterator it = m_mapResource.begin()
-			, it_end = m_mapResource.end()
-			; it != it_end
-			; it++ )
-		{
-			if( it->second->countReference() )
-			{
-				fprintf( file, "--> %s : %d\n", it->first.c_str(), it->second->countReference() );
-			}
-		}
-		fclose( file );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( ResourceVisitor * _visitor, const String & _resourceFile )
-	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
 
-		if( identity == -1 )
+		if( file == 0 )
 		{
 			return;
 		}
 
-		for( TMapResource::iterator it = m_mapResource.begin()
-			, it_end = m_mapResource.end()
-			; it != it_end
-			; it++ )
+		fprintf( file, "Dumping resources... ");
+		fprintf( file, "%s", _tag.c_str() );
+		fprintf( file, "\n" );
+
+		for( TMapResource::iterator 
+			it = m_resources.begin()
+			, it_end = m_resources.end();
+		it != it_end;
+		++it )
 		{
-			std::size_t groupIdentity = it->second->getGroupIdentity();
-			if( groupIdentity == identity )
+			const ResourceEntry & entry = it->second;
+			ResourceReference * resource = entry.resource;
+
+			unsigned int count = resource->countReference();
+
+			if( count == 0 )
 			{
-				it->second->accept( _visitor );
+				continue;
 			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceManager::getResourceCount( const String& _resourceFile )
-	{
-		TResourceCountMap::iterator it_find = m_resourceCountMap.find( _resourceFile );
-		if( it_find != m_resourceCountMap.end() )
-		{
-			return it_find->second;
-		}
-		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File '%s' not exist"
-			, _resourceFile.c_str() );
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceManager::getCategoryResource( const String& _group ) const
-	{
-		TResourcePackMap::const_iterator it_find = m_resourcePackMap.find( _group );
-		if( it_find != m_resourcePackMap.end() )
-		{
-			return it_find->second;
+
+			if( resource->isCompile() == false )
+			{
+				continue;
+			}
+
+			unsigned int memoryUse = resource->memoryUse();
+
+			fprintf( file, "--> %s : count - %u memory - %f\n"
+				, it->first.c_str()
+				, count
+				, float(memoryUse)/(1024.f*1024.f)
+				);
 		}
 
-		return Utils::emptyString();
+		fclose( file );
+#	endif
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

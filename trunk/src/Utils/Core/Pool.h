@@ -1,78 +1,94 @@
 #	pragma once
 
-#	include <vector>
+#	include "Core/IntrusiveList.h"
+#	include "Core/IntrusiveSlug.h"
 
 namespace Menge
 {
-	template<class T> 
-	class PoolPlacementPolicyNone
+	template<size_t TSizeType, size_t TChunkSize>
+	class TemplateChunk
+		: public IntrusiveLinked<TemplateChunk<TSizeType,TChunkSize> >
 	{
 	public:
-		static void placement( T * _element )
+		struct Block
 		{
-		}
-	};
-
-	template<class T> 
-	class PoolPlacementPolicyErase
-	{
-	public:
-		static void placement( T * _element )
-		{
-			_element->~T();
-			new (_element) T;
-		}
-	};
-
-	template<class T, template <typename U> class PlacementPolicy = PoolPlacementPolicyErase >
-	class Pool
-	{
-		typedef std::vector<T*> TContainerPool;
-		typedef PlacementPolicy<T> TPlacementPolicy;
+			char buff[TSizeType];
+			Block * next;
+		};
 
 	public:
-		Pool()
+		TemplateChunk( Block ** _free )
 		{
-		}
-
-		~Pool()
-		{
-			for( typename TContainerPool::iterator 
-				it = m_pool.begin(), 
-				it_end = m_pool.end();
-			it != it_end;
+			for( Block * it = buffer_block, 
+				*it_end = buffer_block + TChunkSize; 
+				it != it_end; 
 			++it )
 			{
-				delete (*it);
+				it->next = *_free;
+				*_free = it;
 			}
 		}
 
 	public:
-		T * get()
+		Block buffer_block[TChunkSize];
+	};
+
+	template<size_t TSizeType, size_t TChunkSize>
+	class TemplatePool
+	{
+		typedef TemplateChunk<TSizeType, TChunkSize> TChunk;
+		typedef typename TChunk::Block TBlock;
+
+        typedef IntrusiveList<TChunk> TListChunks;
+        typedef IntrusiveSlug<TChunk> TSlugChunks;
+
+    public:
+        TemplatePool()
+            : m_free(0)
+        {
+        }
+
+        ~TemplatePool()
+        {
+            for( TSlugChunks it(m_chunks); it.eof() == false; it.next_shuffle() )
+            {
+                TChunk * chunk = *it;
+
+                delete chunk;
+            }
+        }
+
+	public:
+		void * alloc()
 		{
-			if( m_pool.empty() == false )
+			if( m_free == 0 )
 			{
-				T * element = m_pool.back();
-				m_pool.pop_back();
-				return element;
+                this->addChunk_();
 			}
 
-			return new T;
+			TBlock * free = m_free;
+			m_free = m_free->next;
+			return free;
 		}
 
-		void release( T * _element )
+		void free( void * _buff )
 		{
-			if( _element == 0 )
-			{
-				return;
-			}
-
-			TPlacementPolicy::placement( _element );
-
-			m_pool.push_back( _element );
+			TBlock * block = reinterpret_cast<TBlock*>(_buff);
+			block->next = m_free;
+			m_free = block;
 		}
 
 	protected:
-		TContainerPool m_pool;
+		void addChunk_()
+		{
+			TChunk * chunk = new TChunk( &m_free );
+
+			m_chunks.push_back( chunk );
+		}
+
+	protected:
+		TListChunks m_chunks;
+
+		TBlock * m_free;
 	};
 }

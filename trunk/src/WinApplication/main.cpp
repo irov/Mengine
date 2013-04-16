@@ -1,15 +1,8 @@
+//#	include <vld.h>
 
 #	include "Config/Config.h"
 
 #	include "WinApplication.h"
-
-/*#	if	MENGE_PARTICLES	== (1)
-#		ifdef _DEBUG
-#			pragma comment( lib, "AstralaxParticleSystem_d.lib" )
-#		else
-#			pragma comment( lib, "AstralaxParticleSystem.lib" )
-#		endif
-#	endif*/
 
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//
@@ -22,13 +15,15 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 	Menge::WinApplication winApplication( hInstance, lpCmdLine );
 	
-	if( winApplication.initialize() == true )
+	if( winApplication.initialize() == false )
 	{
-		winApplication.loop();
-	}
+        return 0;
+    }
 	
-	winApplication.finialize();
-
+    winApplication.loop();
+    
+	winApplication.finalize();
+    
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////

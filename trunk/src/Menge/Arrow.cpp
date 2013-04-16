@@ -1,32 +1,29 @@
 #	include "Arrow.h"
 
-#	include "Application.h"
-
-#	include "RenderEngine.h"
-
-#	include "InputEngine.h"
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/InputSystemInterface.h"
 
 #	include "HotSpot.h"
 
 #	include "Game.h"
 #	include "Player.h"
 
-#	include "XmlEngine.h"
-#	include "BinParser.h"
-
-#	include "NodeManager.h"
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
-		: m_offsetClick(0.f,0.f)
+		: m_offsetClick(0.f, 0.f)
+		, m_invalidateClickMatrix(true)
 		, m_hided(false)
-	{}
+		, m_radius(0.f)
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
 	{
 		m_offsetClick = _offsetClick;
+
+		this->invalidateClickMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Arrow::getOffsetClick() const
@@ -34,126 +31,105 @@ namespace	Menge
 		return m_offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Arrow::getScene() const
+	Scene * Arrow::getScene()
 	{
-		Scene * scene = Player::hostage()->getCurrentScene();
+		Scene * scene = PLAYER_SERVICE(m_serviceProvider)
+			->getCurrentScene();
 
 		return scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_update( float _timing )
-	{
-		Node::_update( _timing );
-
-		const mt::vec2f & mx = 
-			InputEngine::hostage()->getMousePosition();
-
-		float vpdx = 1.0f;
-		float vpdy = 1.0f;
-
-		float dx = 0.0f;
-		float dy = 0.0f;
-
-		Game * game = Game::hostage();
-		RenderEngine * renderEngine = RenderEngine::hostage();
-
-		if( renderEngine != NULL )
-		{
-			const Resolution& contentResolution = game->getContentResolution();
-			const Viewport & viewport = renderEngine->getRenderViewport();
-			vpdx = static_cast<float>( contentResolution[0] ) / ( viewport.end.x - viewport.begin.x );
-			vpdy = static_cast<float>( contentResolution[1] ) / ( viewport.end.y - viewport.begin.y );
-			dx = -viewport.begin.x;
-			dy = -viewport.begin.y;
-		}
-		float fx =  vpdx * (mx.x + dx);
-		float fy =  vpdy * (mx.y + dy);
-
-		this->setLocalPosition( mt::vec2f(fx, fy) );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()
 	{
-		bool cursorMode = 
-			Application::hostage()->getCursorMode();
-
-		setCursorMode( cursorMode );
-
-		if( m_polygon.num_points() == 0 )
+		size_t num_points = boost::geometry::num_points(m_polygon);
+		if( num_points == 0 )
 		{
-			m_polygon.add_point( mt::vec2f(0.f,0.f) );
-		}
+			Polygon polygon;
+			boost::geometry::append( polygon, mt::vec2f(0.f,0.f) );
 
+			this->setPolygon( polygon );			
+		}		
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::loader( XmlElement * _xml )
+	bool Arrow::_activate()
 	{
-		XML_SWITCH_NODE( _xml )
+		if( Entity::_activate() == false )
 		{
-			XML_CASE_NODE( "Arrow" )
-			{
-				XML_PARSE_ELEMENT( this, &Arrow::loaderArrow_ );
-			}
+			return false;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////	
-	void Arrow::loaderArrow_( XmlElement * _xml )
-	{
-		Node::loader( _xml );			
 
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "ClickOffset", "Value", m_offsetClick );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &Arrow::addPoint_ );
-		}
+		INPUT_SERVICE(m_serviceProvider)
+			->addMousePositionProvider(this);
+
+        const mt::vec2f & cursor_pos = INPUT_SERVICE(m_serviceProvider)
+            ->getCursorPosition();
+
+        mt::vec3f pos;
+        pos.x = cursor_pos.x;
+        pos.y = cursor_pos.y;
+        pos.z = 0.f;
+
+        this->setLocalPosition( pos );
+        
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::parser( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Arrow, this, &Arrow::parserArrow_ );
-		}
+	void Arrow::_deactivate()
+	{	
+		INPUT_SERVICE(m_serviceProvider)
+			->removeMousePositionProvider(this);
+
+		Entity::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::parserArrow_( BinParser * _parser )
+	void Arrow::onMousePositionChange( const mt::vec2f & _position )
 	{
-		Node::parser( _parser );
+		mt::vec3f v3(_position.x, _position.y, 0.f);
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ClickOffset_Value, m_offsetClick );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Polygon_Point, &Arrow::addPoint_ );
-		}
+		this->setLocalPosition( v3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addPoint_( const mt::vec2f & _v )
 	{
-		m_polygon.add_point( _v );
+		boost::geometry::append( m_polygon, _v );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setPolygon( const mt::polygon & _polygon )
+	void Arrow::setPolygon( const Polygon & _polygon )
 	{
 		m_polygon = _polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::polygon & Arrow::getPolygon() const
+	void Arrow::removePolygon()
+	{
+		Polygon polygon;
+		boost::geometry::append( polygon, mt::vec2f(0.f,0.f) );
+
+		this->setPolygon( polygon );		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Polygon & Arrow::getPolygon() const
 	{
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMouseMove( float _dx, float _dy )
+	void Arrow::setRadius( float _radius )
 	{
-
+		m_radius = _radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMouseLeave()
+	float Arrow::getRadius() const
+	{
+		return m_radius;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::onAppMouseLeave()
 	{
 		Node::hide( true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMouseEnter()
+	void Arrow::onAppMouseEnter()
 	{
 		if( !m_hided )
 		{
@@ -167,26 +143,132 @@ namespace	Menge
 		m_hided = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Arrow::getScreenPosition()
+	void Arrow::setContentResolution( const Resolution & _resolution )
 	{
-		return getLocalPosition();
+		m_contentResolution = _resolution;
+
+		this->invalidateClickMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setWindow( const Resolution & _window )
+	void Arrow::setCurrentResolution( const Resolution & _resolution )
 	{
-		m_resolution = _window;
+		m_currentResolution = _resolution;
+
+		this->invalidateClickMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setCursorMode( bool _mode )
+	const mt::mat3f & Arrow::getClickMatrix()
 	{
-		if( m_children.empty() == false )
+		if( m_invalidateClickMatrix == true )
 		{
-			Node* mainCursor = this->getChildren( "Default", false );
-			if( mainCursor != NULL )
-			{
-				_mode ? mainCursor->disable() : mainCursor->enable();
-			}
+			this->updateClickMatrix_();
 		}
+
+		return m_clickMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Arrow::getClickPosition()
+	{
+		const mt::mat3f & cm = this->getClickMatrix();
+
+		return cm.v2.to_vec2f();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::updateClickMatrix_()
+	{
+		m_invalidateClickMatrix = false;
+
+		mt::ident_m3( m_clickMatrix );
+		mt::translate_m3( m_clickMatrix, m_clickMatrix, m_offsetClick );
+
+		mt::vec2f resolutionScale = m_contentResolution.getScale( m_currentResolution );
+
+		mt::vec3f scale;
+		scale.x = resolutionScale.x;
+		scale.y = resolutionScale.y;
+		scale.z = 1.f;
+        
+		mt::scale_m3( m_clickMatrix, scale );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::invalidateClickMatrix_()
+	{
+		m_invalidateClickMatrix = true;
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
+    {
+        if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) <= 0 )
+        {
+            return;
+        }
+
+        size_t numpoints = boost::geometry::num_points( m_polygon );
+
+        if( numpoints == 0 )
+        {
+            return;
+        }
+
+        VectorVertices::invalidateVertices();
+
+        VectorVertices::TVectorVertex2D & vertices = this->getVertices();
+
+        if( vertices.empty() )
+        {
+            return;
+        }
+
+        RENDER_SERVICE(m_serviceProvider)
+            ->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )
+    {
+        (void)_invalidate;
+
+        size_t numpoints = boost::geometry::num_points(m_polygon);
+
+        if( numpoints == 0 )
+        {
+            return;
+        }
+
+        _vertices.resize( numpoints + 1 );
+
+        const mt::mat4f & worldMat = this->getWorldMatrix();
+
+        const Polygon::ring_type & ring = m_polygon.outer();
+
+        for( size_t i = 0; i < numpoints; ++i )
+        {
+            mt::vec2f trP;
+            mt::mul_v2_m4( trP, ring[i], worldMat );
+
+            _vertices[i].pos[0] = trP.x;
+            _vertices[i].pos[1] = trP.y;
+            _vertices[i].pos[2] = 0.f;
+            //_vertices[i].pos[3] = 1.f;
+
+            _vertices[i].color = 0x8080FFFF;
+
+            _vertices[i].uv[0] = 0.f;
+            _vertices[i].uv[1] = 0.f;
+
+            _vertices[i].uv2[0] = 0.f;
+            _vertices[i].uv2[1] = 0.f;
+        }
+
+        if( _vertices.size() > 1 )
+        {
+            std::copy( _vertices.begin(), _vertices.begin() + 1, _vertices.end() - 1 );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Arrow::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
+
+        VectorVertices::invalidateVertices();
+    }
 }

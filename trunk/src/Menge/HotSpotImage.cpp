@@ -1,60 +1,27 @@
-/*
- *	HotSpotImage.cpp
- *
- *	Created by _Berserk_ on 3.3.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	include "HotSpotImage.h"
 
-#	include "ResourceManager.h"
-#	include "ResourceHotspotImage.h"
+#	include "Interface/ResourceInterface.h"
+#   include "Interface/StringizeInterface.h"
+
+#   include "ResourceHIT.h"
 
 #	include "Logger/Logger.h"
 
-#	include "XmlEngine.h"
-#	include "BinParser.h"
+#	include "Core/String.h"
+#	include "Consts.h"
 
-#	include "Utils/Core/String.h"
-#	include "RenderEngine.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::HotSpotImage()
-		: m_resourceHotspotImage( NULL )
-		, m_frame( 0 )
-		, m_alphaTest( 0.f )
+		: m_resourceHIT(NULL)
+        , m_alphaTest(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::~HotSpotImage()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::loader( XmlElement *_xml )
-	{
-		HotSpot::loader( _xml );
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_frame );
-			XML_CASE_ATTRIBUTE_NODE( "AlphaTest", "Value", m_alphaTest );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::parser( BinParser * _parser )
-	{
-		HotSpot::parser( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_frame );
-			BIN_CASE_ATTRIBUTE( Protocol::AlphaTest_Value, m_alphaTest );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::_compile()
@@ -64,106 +31,126 @@ namespace Menge
 			return false;
 		}
 
-		if( m_resourceName.empty() == true )
-		{
-			return false;
-		}
+        if( m_resourceHITName.empty() == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't set HIT resource"
+                , this->getName().c_str()
+                );
 
-		String hotspotResourceName = m_resourceName + "_ResourceHotspotImage" + Utils::toString( m_frame );
+            return false;
+        }
 
-		m_resourceHotspotImage = Holder<ResourceManager>::hostage()
-									->getResourceT<ResourceHotspotImage>( hotspotResourceName );
+        m_resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceT<ResourceHIT>( m_resourceHITName );
 
-		if( m_resourceHotspotImage == NULL )	// if there is no such resource, create it
-		{
-			ResourceFactoryParam param;
-			param.category = "ResourceHotspotImage";
-			param.name = hotspotResourceName;
+        if( m_resourceHIT == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't get HIT resource '%s'"
+                , this->getName().c_str()
+                , m_resourceHITName.c_str()
+                );
 
-			m_resourceHotspotImage = Holder<ResourceManager>::hostage()
-				->createResourceWithParamT<ResourceHotspotImage>( "ResourceHotspotImage", param );
+            return false;
+        }
+        
+		float hs_width = (float)m_resourceHIT->getWidth();
+        float hs_height = (float)m_resourceHIT->getHeight();
 
-			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
+		Polygon polygon;
 
-			Holder<ResourceManager>::hostage()
-				->registerResource( m_resourceHotspotImage );
+		boost::geometry::append(polygon, mt::vec2f(0.f, 0.f) );
+		boost::geometry::append(polygon, mt::vec2f(hs_width, 0.f) );
+		boost::geometry::append(polygon, mt::vec2f(hs_width, hs_height) );
+		boost::geometry::append(polygon, mt::vec2f(0.f, hs_height) );
 
-			m_resourceHotspotImage = Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceHotspotImage>( hotspotResourceName );
-
-			if( m_resourceHotspotImage == NULL )
-			{
-				MENGE_LOG_ERROR( "Error: HotSpotImage can't get resource '%s'"
-					, hotspotResourceName.c_str()
-					);
-
-				return false;
-			}
-		}
-
-		const mt::vec2f& bSize = m_resourceHotspotImage->getSize();
-		m_polygon.clear_points();
-		m_polygon.add_point( mt::vec2f::zero_v2 );
-		m_polygon.add_point( mt::vec2f( bSize.x, 0.0f ) );
-		m_polygon.add_point( bSize );
-		m_polygon.add_point( mt::vec2f( 0.0f, bSize.y ) );
+		this->setPolygon( polygon );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_release()
 	{
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resourceHotspotImage );
+		if( m_resourceHIT != 0 )
+		{
+			m_resourceHIT->decrementReference();
+			m_resourceHIT = 0;
+		}
 
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )
+	bool HotSpotImage::testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform )
 	{
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+
 		if( HotSpot::testPolygon( _transform, _screenPoly, _screenTransform ) == false )
 		{
 			return false;
 		}
 
+		const Polygon::ring_type & ring = _screenPoly.outer();
+
+		if( ring.size() != 1 )
+		{
+			return true;
+		}
+
+		const mt::vec2f & ring_point = ring[0];
+
 		mt::vec2f point;
-		mt::mul_v2_m3( point, _screenPoly[0], _screenTransform );
-		mt::mat3f invWM;
-		mt::inv_m3( invWM, _transform );
+		mt::mul_v2_m4( point, ring_point, _screenTransform );
+
+		mt::mat4f invWM;
+		mt::inv_m4( invWM, _transform );
+
 		mt::vec2f pointIn;
-		mt::mul_v2_m3( pointIn, point, invWM );
-	
-		return m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
+		mt::mul_v2_m4( pointIn, point, invWM );
+
+		bool result = m_resourceHIT->testPoint( pointIn, m_alphaTest );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceHotspotImage * HotSpotImage::getResourseHotspotImage()
+	bool HotSpotImage::testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform )
 	{
-		return m_resourceHotspotImage;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setResourceName( const String& _resourceName )
-	{
-		if( m_resourceName == _resourceName )
+		if( this->isActivate() == false )
 		{
-			return;
+			return false;
 		}
 		
-		m_resourceName = _resourceName;
+		mt::vec2f point;
+		mt::mul_v2_m4( point, mt::vec2f(0.f, 0.f), _screenTransform );
 
-		recompile();
+		mt::mat4f invWM;
+		mt::inv_m4( invWM, _transform );
+
+		mt::vec2f pointIn;
+		mt::mul_v2_m4( pointIn, point, invWM );
+
+		bool result = m_resourceHIT->testRadius( pointIn, _radius, m_alphaTest );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setFrame( std::size_t _frame )
+	ResourceHIT * HotSpotImage::getResourseHIT() const
 	{
-		if( m_frame == _frame )
-		{
-			return;
-		}
-		
-		m_frame = _frame;
-
-		recompile();
+		return m_resourceHIT;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpotImage::setResourceHIT( const ConstString& _resourceName )
+    {
+        m_resourceHITName = _resourceName;
+
+        this->recompile();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & HotSpotImage::getResourceHIT() const
+    {
+        return m_resourceHITName;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )
 	{
@@ -174,6 +161,36 @@ namespace Menge
 	{
 		return m_alphaTest;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
+    size_t HotSpotImage::getWidth() const
+    {
+        if( m_resourceHIT == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)("HotSpot::getWidth %s not compiled"
+                , this->getName().c_str()
+                );
+
+            return 0;
+        }
+
+        size_t width = m_resourceHIT->getWidth();
+
+        return width;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t HotSpotImage::getHeight() const
+    {
+        if( m_resourceHIT == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)("HotSpot::getHeight %s not compiled"
+                , this->getName().c_str()
+                );
+
+            return 0;
+        }
+
+        size_t height = m_resourceHIT->getHeight();
+
+        return height;
+    }
 }	// namespace Menge

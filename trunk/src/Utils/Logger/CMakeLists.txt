@@ -1,9 +1,4 @@
-
-set( MY_LIB_NAME Logger )
-
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
+SET( MY_LIB_NAME Logger )
 
 ADD_FILTER(
 src
@@ -13,8 +8,7 @@ src
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
-) 
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils ) 
 
 SET( MENGE_DEPENDENCIES
  ${MENGE_DEPENDENCIES}

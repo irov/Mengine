@@ -10,15 +10,8 @@ namespace Menge
 	class Holder
 	{
 	public:
-
 		Holder()
 		{
-			keep( static_cast<T*>( this ) );
-		}
-
-		virtual ~Holder()
-		{
-			clear();
 		}
 
 		static void keep(T * _hostage)
@@ -26,7 +19,7 @@ namespace Menge
 			m_hostage = _hostage;
 		}
 			
-		static T * hostage()
+		static T * get()
 		{
 			return m_hostage;
 		}

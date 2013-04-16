@@ -1,10 +1,16 @@
 #	include "FactoryManager.h"
-#	include "Factory.h"
 
+#	include "Factory.h"
+#	include "Factorable.h"
+
+#   include "Logger/Logger.h"
+
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FactoryManager::FactoryManager()
+        : m_serviceProvider(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -19,14 +25,27 @@ namespace Menge
 			delete it->second;
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void FactoryManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void FactoryManager::registerFactory( const String & _type, Factory * _factory )
+	void FactoryManager::registerFactory( const ConstString & _type, Factory * _factory )
 	{
+        LOGGER_INFO(m_serviceProvider)("FactoryManager::registerFactory: register factory '%s'"
+            , _type.c_str() 
+            );
+
 		m_factories.insert( std::make_pair(_type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FactoryManager::unregisterFactory( const String & _type )
+	void FactoryManager::unregisterFactory( const ConstString & _type )
 	{
+        LOGGER_INFO(m_serviceProvider)("FactoryManager::unregisterFactory: unregister factory '%s'"
+            , _type.c_str() 
+            );
+
 		TMapFactory::iterator it_found = m_factories.find( _type );
 
 		if( it_found != m_factories.end() )
@@ -37,30 +56,56 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Factorable * FactoryManager::createObject( const String & _type )
+	bool FactoryManager::hasFactory( const ConstString & _type ) const
+	{
+		TMapFactory::const_iterator it_found = m_factories.find( _type );
+
+		if( it_found == m_factories.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Factorable * FactoryManager::createObject( const ConstString & _type )
 	{
 		TMapFactory::iterator it_found = m_factories.find( _type );
 
 		if( it_found == m_factories.end() )
 		{
+            LOGGER_ERROR(m_serviceProvider)("FactoryManager::createObject: not registry factory '%s'"
+                , _type.c_str() 
+                );
+
 			return 0;
 		}
 
-		Factorable * object = 
-			it_found->second->createObject();
+        Factory * factory = it_found->second;
+
+		Factorable * object = factory->createObject();
+
+		if( object == NULL )
+		{
+            LOGGER_ERROR(m_serviceProvider)("FactoryManager::createObject: invalid create object factory '%s'"
+                , _type.c_str() 
+                );
+
+			return NULL;
+		}
 
 		return object;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FactoryManager::destroyObject( const String & _type, Factorable * _object )
+	void FactoryManager::visitFactories( VisitorFactoryManager * _visit )
 	{
-		TMapFactory::iterator it_found = m_factories.find( _type );
-
-		if( it_found == m_factories.end() )
+		for( TMapFactory::iterator
+			it = m_factories.begin(),
+			it_end = m_factories.end();
+		it != it_end;
+		++it )
 		{
-			return;
+			_visit->visit( it->first, it->second );
 		}
-
-		it_found->second->destroyObject( _object );
 	}
 }

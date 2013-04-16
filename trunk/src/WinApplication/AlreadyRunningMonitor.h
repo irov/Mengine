@@ -1,10 +1,13 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "WindowsIncluder.h"
+
+#	include "WindowsLayer/WindowsIncluder.h"
 
 namespace Menge
 {
+	class ServiceProviderInterface;
+
 	// already running policy
 	enum EAlreadyRunningPolicy
 	{
@@ -16,13 +19,15 @@ namespace Menge
 	class AlreadyRunningMonitor
 	{
 	public:
-		AlreadyRunningMonitor();
+		AlreadyRunningMonitor( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool run( int _policy, const String & _title );
+		bool run( int _policy, const WString & _windowClassName, const WString & _title );
 		void stop();
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		HANDLE m_mutex;		
 	};
 }

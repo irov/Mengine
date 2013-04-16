@@ -1,74 +1,91 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "Kernel/Entity.h"
+
+#	include "Interface/InputSystemInterface.h"
+
+#	include "Kernel/VectorVertices.h"
+
 #	include "Core/Resolution.h"
 
 #	include "Math/vec4.h"
-#	include "Math/polygon.h"
+
+#	include "Core/Polygon.h"
 
 namespace Menge
 {
-	class Sprite;
-
-	class HotSpot;
-
-	//! Arrow - курсор. ћожно повесить на курсор HotSpot, и пересечение будет провер€тс€ как хот спот.
-
-    /*! xml - файл имеет следующую структуру:
-	 *	<Node Name = "им€_ноды" Type = "TextField">
-     *      <ClickOffset Value = "значение_смещени€_курсора"/>
-	 *	</Node>
-	*/
-
 	class Arrow
-		: public Node
+		: public Entity
+		, public InputMousePositionProvider
+        , public VectorVertices
 	{
 	public:
 		Arrow();
 
 	public:
-		void hide( bool _value );
+		void hide( bool _value ) override;
 
 	public:
-		Scene * getScene() const override;
+		Scene * getScene() override;
 
 	public:
 		void setOffsetClick( const mt::vec2f & _offsetClick );
 		const mt::vec2f & getOffsetClick() const;
 
-		void setPolygon( const mt::polygon & _polygon );
-		const mt::polygon & getPolygon() const;
+		void setPolygon( const Polygon & _polygon );
+		void removePolygon();
+		const Polygon & getPolygon() const;
 
-		void setWindow( const Resolution & _window );
-		void setCursorMode( bool _mode );
+		void setRadius( float _radius );
+		float getRadius() const;
+
+		void setContentResolution( const Resolution & _resolution );
+		void setCurrentResolution( const Resolution & _resolution );
+		
+	public:
+		const mt::mat3f & getClickMatrix();
+		const mt::vec2f & getClickPosition();
 
 	public:
-		void loader( XmlElement * _xml ) override;
-		void loaderArrow_( XmlElement * _xml );
-
-	public:
-		void parser( BinParser * _parser ) override;
-		void parserArrow_( BinParser * _parser );
+		void updateClickMatrix_();
+		void invalidateClickMatrix_();
 
 	protected:
 		void addPoint_( const mt::vec2f & _v );
 
 	public:
-		void onMouseMove( float _dx, float _dy );
-		void onMouseLeave();
-		void onMouseEnter();
-
-	public:
-		mt::vec2f getScreenPosition() override;
+		void onAppMouseLeave();
+		void onAppMouseEnter();
 
 	protected:
-		void _update( float _timing ) override;
 		bool _compile() override;
+
+		bool _activate() override;
+		void _deactivate() override;
+
+    protected:
+        void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+        void _invalidateWorldMatrix() override;
+
+    private:
+        void _updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate ) override;
+
+	protected:
+		void onMousePositionChange( const mt::vec2f & _position ) override;
 
 	protected:
 		mt::vec2f m_offsetClick;
-		Resolution m_resolution;
-		mt::polygon m_polygon;
+
+		bool m_invalidateClickMatrix;
+		mt::mat3f m_clickMatrix;
+
+		Resolution m_contentResolution;
+		Resolution m_currentResolution;
+		
+		Polygon m_polygon;
+
+		float m_radius;
+
 		bool m_hided;
 	};
 }

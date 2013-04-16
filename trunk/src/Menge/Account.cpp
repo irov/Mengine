@@ -1,247 +1,377 @@
 #	include "Account.h"
-#	include "Logger/Logger.h"
-#	include "pybind/pybind.hpp"
-#	include "FileEngine.h"
-#	include "XmlEngine.h"
-#	include "ConfigFile.h"
+
+#   include "Interface/FileSystemInterface.h"
+#   include "Interface/UnicodeInterface.h"
+#   include "Interface/StringizeInterface.h"
+
+#	include "ConfigFile/ConfigFile.h"
+
+#	include "Consts.h"
+
+#   include "Logger/Logger.h"
 
 #	include "Core/String.h"
 #	include "Core/File.h"
+#	include "Core/CRC32.h"
+
+#	include "pybind/pybind.hpp"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Account::Account( /*const String& _name,*/ const String& _folder )
-		: /*m_name( _name )
-		,*/ m_folder( _folder )
+	Account::Account( ServiceProviderInterface * _serviceProvider, const WString & _name )
+		: m_serviceProvider(_serviceProvider)
+        , m_name(_name)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Account::~Account()
 	{
+		for( TMapSettings::iterator
+			it = m_settings.begin(),
+			it_end = m_settings.end();
+		it != it_end;
+		++it )
+		{
+            Setting & st = it->second;
+
+			pybind::decref( st.cb );
+		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Account::setFolder( const FilePath & _folder )
+    {
+        m_folder = _folder;
+
+        String settingsPath;
+        settingsPath.append( m_folder.c_str(), m_folder.size() ); 
+        settingsPath += MENGE_FOLDER_DELIM;
+        settingsPath += "settings.ini";
+
+        m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
+    }
 	//////////////////////////////////////////////////////////////////////////
-	/*const String& Account::getName() const
+	const WString & Account::getName() const
 	{
 		return m_name;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	const String& Account::getFolder() const
-	{
-		return m_folder;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & Account::getFolder() const
+    {
+        return m_folder;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Account::addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
+	void Account::addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc )
 	{
-		TSettingsMap::iterator it = m_settings.find( _setting );
-		if( it == m_settings.end() )
-		{
-			m_settings[_setting] = std::make_pair( _defaultValue, _applyFunc );
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Warning: Setting '%s' already exist"
-				, _setting.c_str() 
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::changeSetting( const String& _setting, const String& _value )
-	{
-		TSettingsMap::iterator it = m_settings.find( _setting );
+		TMapSettings::iterator it = m_settings.find( _setting );
+		
 		if( it != m_settings.end() )
 		{
-			//PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
-			//PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
-			//pybind::call( it->second.second, "(OO)", uSetting, uValue );
-
-			pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
-			it->second.first = _value;
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't change"
-				, _setting.c_str()
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& Account::getSetting( const String& _setting )
-	{
-		TSettingsMap::iterator it = m_settings.find( _setting );
-		if( it != m_settings.end() )
-		{
-			return it->second.first;
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't get"
-				, _setting.c_str()
-				);
-		}
-
-		return Utils::emptyString();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::addSettingU( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
-	{
-		TSettingsMap::iterator it = m_settingsU.find( _setting );
-		if( it == m_settingsU.end() )
-		{
-			m_settingsU[_setting] = std::make_pair( _defaultValue, _applyFunc );
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Warning: Setting '%s' already exist"
+			LOGGER_ERROR(m_serviceProvider)( "Warning: Setting '%ls' already exist"
 				, _setting.c_str() 
 				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::changeSettingU( const String& _setting, const String& _value )
-	{
-		TSettingsMap::iterator it = m_settingsU.find( _setting );
-		if( it != m_settingsU.end() )
-		{
-			PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
-			PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
-			pybind::call( it->second.second, "(OO)", uSetting, uValue );
 
-			//pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
-			it->second.first = _value;
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't change"
-				, _setting.c_str()
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& Account::getSettingU( const String& _setting )
-	{
-		TSettingsMap::iterator it = m_settingsU.find( _setting );
-		if( it != m_settingsU.end() )
-		{
-			return it->second.first;
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't get"
-				, _setting.c_str()
-				);
-		}
-
-		return Utils::emptyString();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::load()
-	{
-		String fileName = m_folder + "/settings.ini";
-		ConfigFile config;
-		if( config.load( "user", fileName ) == true )
-		{
-			for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
-				it != it_end;
-				it++ )
-				{
-					it->second.first = config.getSetting( it->first.c_str(), "SETTINGS" );
-				}
-			for( TSettingsMap::iterator it = m_settingsU.begin(), it_end = m_settingsU.end();
-				it != it_end;
-				it++ )
-			{
-				it->second.first = config.getSetting( it->first.c_str(), "SETTINGSU" );
-			}
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Parsing Account settings failed '%s'"
-				, fileName.c_str() 
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::save()
-	{
-		FileEngine* fileEngine = FileEngine::hostage();
-		String fileName = m_folder + "/settings.ini";
-		FileOutputInterface* file = fileEngine->openFileOutput( "user", fileName );
-		if( file == 0 )
-		{
-			MENGE_LOG_ERROR( "can't open file for writing. Account '%s' settings not saved"
-				, m_folder.c_str() );
 			return;
 		}
-		Utils::fileWrite( file, "[SETTINGS]\n" );
-		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
-			it != it_end;
-			it++ )
+
+		pybind::incref( _applyFunc );
+
+        Setting st;
+        st.value = _defaultValue;
+        st.cb = _applyFunc;
+        
+		m_settings[_setting] = st;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::changeSetting( const WString& _setting, const WString& _value )
+	{
+		TMapSettings::iterator it = m_settings.find( _setting );
+		
+		if( it == m_settings.end() )
 		{
-			Utils::fileWrite( file, it->first + "\t= " + it->second.first + "\n" );
-		}
-		Utils::fileWrite( file, "[SETTINGSU]\n" );
-		for( TSettingsMap::iterator it = m_settingsU.begin(), it_end = m_settingsU.end();
-			it != it_end;
-			it++ )
-		{
-			Utils::fileWrite( file, it->first + "\t= " + it->second.first + "\n" );
+			LOGGER_ERROR(m_serviceProvider)( "Account::changeSetting setting '%ls' does not exist. Can't change"
+				, _setting.c_str()
+				);
+
+			return;
 		}
 
-		fileEngine->closeFileOutput( file );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::loader( XmlElement* _xml )
-	{
-		XML_SWITCH_NODE( _xml )
+        Setting & st = it->second;
+
+		st.value = _value;
+
+		if( pybind::is_none( st.cb ) == false )
 		{
-			for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
-				it != it_end;
-				it++ )
-			{
-				XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
-			}
-		}
+			pybind::call( st.cb, "(O)"
+                , pybind::ptr(_value)
+                );
+		}		
+
+		this->save();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Account::parser( BinParser * _parser )
+	const WString & Account::getSetting( const WString& _setting ) const
 	{
-		//Empty
+		TMapSettings::const_iterator it = m_settings.find( _setting );
+		
+		if( it == m_settings.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Account::getSetting '%ls' does not exist. Can't get"
+				, _setting.c_str()
+				);
+
+			return Utils::emptyWString();
+		}
+
+        const Setting & st = it->second;
+
+		return st.value;
+	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Account::hasSetting( const WString& _setting ) const
+    {
+        TMapSettings::const_iterator it = m_settings.find( _setting );
+
+        if( it == m_settings.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool Account::load()
+	{
+		ConfigFile config;
+
+        if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, NULL ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::load settings not found '%s'"
+                , m_settingsPath.c_str() 
+                );
+
+            return false;
+        }
+
+		InputStreamInterface* file = 
+            FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
+
+        if( file == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::load can't open file for read. Account '%ls' settings not load '%s'"
+                , m_name.c_str() 
+                , m_settingsPath.c_str()
+                );
+
+            return false;
+        }
+
+		if( config.load( file ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Account::load parsing Account settings failed '%s'"
+				, m_settingsPath.c_str() 
+				);
+
+            file->destroy();
+
+			return false;
+		}
+
+		file->destroy();
+        file = NULL;
+
+		for( TMapSettings::iterator 
+			it = m_settings.begin(), 
+			it_end = m_settings.end();
+		it != it_end;
+		++it )
+		{
+            const WString & key = it->first;
+
+            Setting & st = it->second;
+
+			if( config.getSetting( L"SETTINGS", key, st.value ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "Account::load failed get setting '%ls'"
+                    , key.c_str() 
+                    );
+
+                return false;
+            }
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Account::save()
+	{
+		OutputStreamInterface* file = FILE_SERVICE(m_serviceProvider)
+            ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
+
+		if( file == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Account::save can't open file for writing. Account '%ls' settings not saved %s"
+				, m_name.c_str() 
+                , m_settingsPath.c_str()
+				);
+
+			return false;
+		}
+
+		ConfigFile config;
+				
+		//Utils::stringWriteU( file, L"[SETTINGS]\n" );
+
+		for( TMapSettings::iterator 
+			it = m_settings.begin(), 
+			it_end = m_settings.end();
+		it != it_end;
+		++it )
+		{
+            const WString & key = it->first;
+
+            Setting & st = it->second;
+
+			config.setSetting( L"SETTINGS", key, st.value );
+			//Utils::stringWriteU( file, it->first + L" = " + it->second.first + L"\n" );
+		}
+
+		if( config.save( file ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::save can't save config. Account '%ls' settings not saved %s"
+                , m_name.c_str() 
+                , m_settingsPath.c_str()
+                );
+
+            file->destroy();
+            file = NULL;
+
+            return false;
+        }
+
+		file->destroy();
+        file = NULL;
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::apply()
 	{
-		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
-			it != it_end;
-			it++ )
+		for( TMapSettings::iterator 
+			it = m_settings.begin(), 
+			it_end = m_settings.end();
+		it != it_end;
+		++it )
 		{
-			const char* key = it->first.c_str();
-			const char* value = it->second.first.c_str();
-			pybind::call( it->second.second, "(ss)", key, value );
-			//PyObject* uKey = PyUnicode_DecodeUTF8( it->first.c_str(), it->first.length(), NULL );
-			//PyObject* uValue = PyUnicode_DecodeUTF8( it->second.first.c_str(), it->second.first.length(), NULL );
-			//pybind::call( it->second.second, "(OO)", uKey, uValue );
-			//Py_DECREF(uKey);
-			//Py_DECREF(uValue);
-			//String keyAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->first );
-			//String valueAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->second.first );
-			//pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );
-		}
-		for( TSettingsMap::iterator it = m_settingsU.begin(), it_end = m_settingsU.end();
-			it != it_end;
-			it++ )
-		{
-			//const char* key = it->first.c_str();
-			//const char* value = it->second.first.c_str();
-			PyObject* uKey = PyUnicode_DecodeUTF8( it->first.c_str(), it->first.length(), NULL );
-			PyObject* uValue = PyUnicode_DecodeUTF8( it->second.first.c_str(), it->second.first.length(), NULL );
-			pybind::call( it->second.second, "(OO)", uKey, uValue );
-			Py_DECREF(uKey);
-			Py_DECREF(uValue);
-			//String keyAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->first );
-			//String valueAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->second.first );
-			//pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );
+            Setting & st = it->second;
+           
+			if( pybind::is_none(st.cb) == true )
+			{
+				continue;
+			}
+
+			pybind::call( st.cb, "(O)"
+                , pybind::ptr(st.value)
+                );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+    bool Account::loadBinaryFile( const FilePath & _filename, TBlobject & _data )
+    {
+        String cachepath;
+        cachepath.append( m_folder.c_str(), m_folder.size() );
+        cachepath += MENGE_FOLDER_DELIM;
+        cachepath.append( _filename.c_str(), _filename.size() );
+
+        ConstString fullpath = Helper::stringizeString( m_serviceProvider, cachepath );
+
+        InputStreamInterface * file = 
+            FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath );
+
+        if( file == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (file not found)"
+                , m_name.c_str()
+                , fullpath.c_str()
+                );
+
+            return false;
+        }
+
+        size_t file_size = file->size();
+
+        size_t load_crc32 = 0;
+
+        size_t data_size = file_size - sizeof(load_crc32);
+
+        _data.resize( data_size + 1 );
+        _data[data_size] = 0;
+
+        file->read( &load_crc32, sizeof(load_crc32) );
+        file->read( &_data[0], data_size );
+
+        file->destroy();
+
+        size_t check_crc32 = make_crc32( &_data[0], data_size );
+
+        if( load_crc32 != check_crc32 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls: invalid load file %s (crc32 incorect)"
+                , m_name.c_str()
+                , fullpath.c_str()
+                );
+
+            return false;
+        }		
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Account::writeBinaryFile( const FilePath & _filename, const TBlobject & _data )
+    {
+        String cachepath;
+        cachepath.append( m_folder.c_str(), m_folder.size() );
+        cachepath += MENGE_FOLDER_DELIM;
+        cachepath.append( _filename.c_str(), _filename.size() );
+
+        ConstString fullpath = Helper::stringizeString( m_serviceProvider, cachepath );
+
+        OutputStreamInterface * file = FILE_SERVICE(m_serviceProvider)->openOutputFile( CONST_STRING(m_serviceProvider, user), fullpath );
+
+        if( file == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write file %s (not create)"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        size_t value_crc32 = make_crc32( &_data[0], _data.size() );
+
+        if( file->write( &value_crc32, sizeof(value_crc32) ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write crc32 %s (not create)"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+        
+        if( file->write( &_data[0], _data.size() ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write data %s (not create)"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        file->destroy();
+
+        return true;
+    }
 }

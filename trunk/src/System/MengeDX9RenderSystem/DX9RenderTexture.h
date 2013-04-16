@@ -23,7 +23,7 @@ namespace Menge
 
 		bool isDirty() const;
 		void setDirty( bool _dirty );
-
+		void release() override;
 		IDirect3DSurface9* getDepthInterface();
 
 		void setTexInterface( IDirect3DTexture9* _d3dInterface );

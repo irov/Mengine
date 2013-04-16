@@ -1,375 +1,250 @@
 #	include "ResourceFont.h"
 
-#	include "ResourceImplement.h"
+#	include "Kernel/ResourceImplement.h"
+#	include "ResourceImage.h"
+#	include "ResourceGlyph.h"
 
-#	include "XmlEngine.h"
+#	include "Metacode.h"
 
-#	include "FileEngine.h"
+#	include "Interface/ResourceInterface.h"
+#   include "Interface/RenderSystemInterface.h"
 
 #	include "Logger/Logger.h"
+
 #	include "Core/String.h"
 
-#	include "RenderEngine.h"
-#	include "Texture.h"
-
 #	include <cstdio>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceFont );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont()
-		: m_image(NULL)
+		: m_texture(NULL)
 		, m_outline(NULL)
-		, m_whsRatio(3.0f)
 		, m_textureRatio(1.0f)
-		, m_imageInvSize(0.0f, 0.0f)
+		, m_resourceGlyph(NULL)
+		, m_textureUV(0, 0, 1.f, 1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::loader( XmlElement * _xml )
+	const ResourceGlyph * ResourceFont::getResourceGlyph() const
 	{
-		ResourceReference::loader( _xml );
-
-		XML_SWITCH_NODE( _xml )
-		{
-			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Fontdef", "Path", &ResourceFont::setFontdefPath_ );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Image", "Path", &ResourceFont::setImagePath_ );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "OutlineImage", "Path", &ResourceFont::setOutlineImagePath_ );
-		}
+		return m_resourceGlyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceFont::getImage()
+	const RenderTextureInterface * ResourceFont::getTexture() const
 	{
-		return m_image;
+		return m_texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceFont::getOutlineImage()
+	const RenderTextureInterface * ResourceFont::getTextureImage() const
 	{
 		return m_outline;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceFont::getUV( unsigned int _id ) const
+	void ResourceFont::setImagePath_( const FilePath& _path )
 	{
-		TMapGlyph::const_iterator it = m_glyphs.find( _id );
-		return it != m_glyphs.end() ? it->second.uv : mt::vec4f::zero_v4;
+		m_imageFile = _path;
+
+		m_imageCodec = this->getCodec_( m_imageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setGlyph( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size )
-    {
-		TMapGlyph::iterator it = m_glyphs.find( _id );
+	const FilePath& ResourceFont::getImagePath() const
+	{
+		return m_imageFile;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceFont::setOutlineImagePath_( const FilePath& _path )
+	{
+		m_outlineImageFile = _path;
 
-		if ( it != m_glyphs.end() )
+		m_outlineImageCodec = this->getCodec_( m_outlineImageFile );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const FilePath& ResourceFont::getOutlineImagePath() const
+	{
+		return m_outlineImageFile;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceFont::hasGlyph( WChar _id, const Glyph ** _glyph ) const
+	{
+		if( this->isCompile() == false )
 		{
-			it->second.uv = _uv;
-			it->second.offset = _offset;
-			it->second.ratio = _ratio;
-			it->second.size = _size;
+			return false;
 		}
-		else
+
+		bool isExist = m_resourceGlyph->hasGlyph( _id, _glyph );
+
+		return isExist;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f& ResourceFont::getTextureUV() const
+	{
+		return m_textureUV;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Glyph * ResourceFont::getGlyph( WChar _id ) const
+	{
+		if( this->isCompile() == false )
 		{
-			Glyph gl( _id, _uv, _offset, _ratio, _size );
-		
-			m_glyphs.insert( 
-				std::make_pair( _id, gl ) 
-				);
+			return NULL;
 		}
-    }
+
+		const Glyph * glyph = m_resourceGlyph->getGlyph( _id );
+
+		return glyph;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue & ResourceFont::getColor() const
+	{
+		return m_color;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceFont::_loader( const Metabuf::Metadata * _meta )
+	{
+        const Metacode::Meta_DataBlock::Meta_ResourceFont * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceFont *>(_meta);
+
+        metadata->swap_ResourceGlyph_Name( m_resourceGlyphName );
+        metadata->swap_Image_Path( m_imageFile );
+        
+        if( metadata->swap_Image_Codec( m_imageCodec ) == false )
+        {
+            m_imageCodec = this->getCodec_( m_imageFile );
+        }
+
+        if( metadata->swap_OutlineImage_Path( m_outlineImageFile ) == true )
+        {
+            if( metadata->swap_OutlineImage_Codec( m_outlineImageCodec ) == false )
+            {
+                m_outlineImageCodec = this->getCodec_( m_outlineImageFile );
+            }
+        }
+
+        metadata->get_Color_Value( m_color );
+
+        return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
-		m_image = RenderEngine::hostage()
-					->loadTexture( category, m_imageFile );
+		m_texture = RENDER_SERVICE(m_serviceProvider)
+					->loadTexture( category, m_imageFile, m_imageCodec );
 
-		if( m_image == NULL )
+		//m_texture = RenderEngine::get()
+		//	->loadMegatexture( category, m_imageFile, m_imageCodec );
+
+		if( m_texture == NULL )
 		{
-			MENGE_LOG_ERROR( "Error while loading font image '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "ResourceFont::_compile '%s' invalid loading font image '%s'"
+				, this->getName().c_str()
 				, m_imageFile.c_str() 
 				);
 
 			return false;
 		}
 
-		m_textureRatio = static_cast<float>( m_image->getWidth() ) / m_image->getHeight();
+		size_t width = m_texture->getWidth();
+		size_t height = m_texture->getHeight();
 
-		m_imageInvSize.x = 1.0f / m_image->getWidth();
-		m_imageInvSize.y = 1.0f / m_image->getHeight();
+		this->updateTextureUV_();
+
+		m_textureRatio = float(width) / float(height);
 
 		if( m_outlineImageFile.empty() == false )
 		{
-			m_outline = RenderEngine::hostage()
-				->loadTexture( category, m_outlineImageFile );
+			m_outline = RENDER_SERVICE(m_serviceProvider)
+				->loadTexture( category, m_outlineImageFile, m_outlineImageCodec );
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG_ERROR( "Image can't loaded '%s'"
+				LOGGER_ERROR(m_serviceProvider)( "ResourceFont::_compile '%s' can't loaded outline image file '%s'"
+					, this->getName().c_str()
 					, m_outlineImageFile.c_str() 
 					);
+
+				return false;
 			}
 		}
 
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( category, m_fontdefFile, this, &ResourceFont::loaderFontdef_ ) == false )
+		if( m_resourceGlyphName.empty() == true )
 		{
-			MENGE_LOG_ERROR( "Problems parsing fondef '%s'"
-				, m_fontdefFile.c_str() 
+			LOGGER_ERROR(m_serviceProvider)("ResourceFont::_compile '%s' can't setup resource glyph"
+				, this->getName().c_str()
 				);
 
 			return false;
 		}
-		m_whsRatio = getCharRatio('A');
+	
+		m_resourceGlyph = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceT<ResourceGlyph>( m_resourceGlyphName );
+
+		if( m_resourceGlyph == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceFont::_compile '%s' can't get resource glyph '%s'"
+				, this->getName().c_str()
+				, m_resourceGlyphName.c_str()
+				);
+
+			return false;
+		}
+
+		const Glyph * glyph = m_resourceGlyph->getGlyph(L'A');
+	
+		if( glyph == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceFont::_compile: '%s' can't get from glyph '%s' - 'A'"
+				, this->getName().c_str()
+				, m_resourceGlyphName.c_str()
+				);
+
+			return false;
+		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceFont::updateTextureUV_()
+	{
+		size_t width = m_texture->getWidth();
+		size_t height = m_texture->getHeight();
+
+		size_t hwHeight = m_texture->getHWHeight();
+		size_t hwWidth = m_texture->getHWWidth();
+
+		float scaleRight = float(width) / float(hwWidth);
+		float scaleBottom = float(height) / float(hwHeight);
+
+		m_textureUV.x = 0;
+		m_textureUV.y = 0;
+		m_textureUV.z = scaleRight;
+		m_textureUV.w = scaleBottom;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		Holder<RenderEngine>::hostage()
-			->releaseTexture( m_image );
-		m_image = NULL;
+		RENDER_SERVICE(m_serviceProvider)
+			->releaseTexture( m_texture );
+
+		m_texture = NULL;
 
 		if( m_outline )
 		{
-			Holder<RenderEngine>::hostage()
+			RENDER_SERVICE(m_serviceProvider)
 				->releaseTexture( m_outline );
+
 			m_outline = 0;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getCharRatio( unsigned int _id ) const
-	{
-		TMapGlyph::const_iterator it = m_glyphs.find(_id);
 
-		if( it == m_glyphs.end() )
-		{
-			return m_whsRatio;
+		if( m_resourceGlyph )
+		{			
+			m_resourceGlyph->decrementReference();
+			m_resourceGlyph = 0;
 		}
-
-		return it->second.ratio;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	String ResourceFont::getFontDir( const String& _fontName )
-	{
-		String::size_type index = _fontName.find_last_of( "/" );
-
-		String fontDir = _fontName;
-
-		if( index != std::string::npos )
-		{
-			fontDir = fontDir.substr( 0, index + 1 );
-		}
-
-		return fontDir;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceFont::parseAttribute( const String& name, const String& params )
-	{
-		/*if ( name == "glyph" )
-		{
-			String::size_type pos = params.find( ' ', 1 );
-			const char* glyph = params.substr( 0, pos ).c_str();
-			uint32 uiGlyph = *((unsigned int*)(glyph));
-			uint32 clearBits[4] = { 0x000000FF, 0x0000FFFF, 0x00FFFFFF, 0xFFFFFFFF };
-			std::size_t len = strlen( glyph );
-			uiGlyph &= clearBits[len-1];
-			String params_ = params.substr( pos );
-			float u1, v1, u2, v2;
-
-			int err = std::sscanf( params_.c_str(), "%f %f %f %f", &u1, &v1, &u2, &v2 );
-
-			if (err == 0)
-			{
-				MENGE_LOG_ERROR( "in parsing params: '%s'"
-					, params.c_str() );
-				return false;
-			}
-
-			setGlyph( uiGlyph, u1, v1, u2, v2 );
-		}
-		else if ( name == "source" )
-		{
-			m_fullname = m_fontDir + params;
-
-			m_image = Holder<RenderEngine>::hostage()->loadImage( m_fullname, 1 );
-
-			if( m_image == 0 )
-			{
-				MENGE_LOG_ERROR( "Image can't loaded '%s'"
-					, m_fullname.c_str() );
-				return false;
-			}
-		}
-		else if ( name == "outline" )
-		{
-			m_fullname = m_fontDir + params;
-
-			m_outline = Holder<RenderEngine>::hostage()->loadImage( m_fullname, 1 );
-
-			if( m_outline == 0 )
-			{
-				MENGE_LOG_ERROR( "Image can't loaded '%s'"
-					, m_fullname.c_str() );
-			}
-		}*/
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceFont::parseFontdef( DataStreamInterface * _stream )
-	{
-		/*String line = Utils::getLine( _stream );
-		Utils::skipLine( _stream,  "{" );
-		
-		while( !_stream->eof() )
-        {
-			line = Utils::getLine( _stream );
-
-			if( line.length() == 0 || line.substr( 0, 2 ) == "//" )
-            {
-                continue;
-            }
-
-			String::size_type start = line.find_first_of( "\t\n " );
-			String name = line.substr( 0, start );
-			String value = line.substr( start + 1, line.size() );
-		
-			bool result = parseAttribute( name, value );
-
-			if( result == false )
-			{
-				return false;
-			}
-		}*/
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getInitSize() const
-	{
-		return m_initSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::loaderFontdef_( XmlElement* _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Font" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "height", m_initSize );
-				}
-			}
-			XML_CASE_NODE( "Char" )
-			{
-				String glyph, rect, offset;
-				int width = 0;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "width", width );
-					XML_CASE_ATTRIBUTE( "code", glyph );
-					XML_CASE_ATTRIBUTE( "rect", rect );
-					XML_CASE_ATTRIBUTE( "offset", offset );
-				}
-				addGlyph_( glyph, rect, offset, width );
-			}
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, int _width )
-	{
-		const char* glyph = _glyph.c_str();
-		uint32 uiGlyph = *((unsigned int*)(glyph));
-		uint32 clearBits[4] = { 0x000000FF, 0x0000FFFF, 0x00FFFFFF, 0xFFFFFFFF };
-		std::size_t len = strlen( glyph );
-		uiGlyph &= clearBits[len-1];
-
-		int a, b, c, d, ox = 0, oy = 0;
-		int err = sscanf( _rect.c_str(), "%d %d %d %d", &a, &b, &c, &d );
-
-		if (err == 0)
-		{
-			MENGE_LOG_ERROR( "Error parsing params: '%s'"
-				, _rect.c_str() 
-				);
-		}
-
-		if( _offset.empty() == false )
-		{
-			err = sscanf( _offset.c_str(), "%d %d", &ox, &oy );
-
-			if (err == 0)
-			{
-				MENGE_LOG_ERROR( "Error parsing params: '%s'"
-					, _offset.c_str() 
-					);
-			}
-		}
-
-
-		mt::vec4f uv( a * m_imageInvSize.x, b * m_imageInvSize.y, (a+c)*m_imageInvSize.x, (b+d)*m_imageInvSize.y );
-		mt::vec2f offset( ox, oy );
-		mt::vec2f size( c, d );
-		setGlyph( uiGlyph, uv, offset, _width / m_initSize, size );
-
-		//setGlyph( uiGlyph, a * fontWInv, b * fontHInv, (a + _width - 1) * fontWInv, (b + m_initSize) * fontHInv );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setFontdefPath_( const String& _path )
-	{
-		m_fontdefFile = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setImagePath_( const String& _path )
-	{
-		m_imageFile = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setOutlineImagePath_( const String& _path )
-	{
-		m_outlineImageFile = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceFont::getFontdefPath() const
-	{
-		return m_fontdefFile;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceFont::getImagePath() const
-	{
-		return m_imageFile;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceFont::getOutlineImagePath() const
-	{
-		return m_outlineImageFile;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& ResourceFont::getOffset( unsigned int _char ) const
-	{
-		TMapGlyph::const_iterator it = m_glyphs.find( _char );
-
-		if( it == m_glyphs.end() )
-		{
-			return mt::vec2f::zero_v2;
-		}
-
-		return it->second.offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& ResourceFont::getSize( unsigned int _char ) const
-	{
-		TMapGlyph::const_iterator it = m_glyphs.find( _char );
-
-		if( it == m_glyphs.end() )
-		{
-			return mt::vec2f::zero_v2;
-		}
-
-		return it->second.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

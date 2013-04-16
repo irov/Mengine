@@ -1,11 +1,12 @@
 #	pragma once
 
 #	include "Interface/ThreadSystemInterface.h"
-#	include <pthread.h>
-#	include <map>
 
 namespace Menge
 {
+	class PosixThreadIdentity;
+	class ServiceProviderInterface;
+	class LogServiceInterface;
 
 	class PosixThreadSystem
 		: public ThreadSystemInterface
@@ -14,22 +15,23 @@ namespace Menge
 		PosixThreadSystem();
 		~PosixThreadSystem();
 
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
+
 	public:
-		void createThread( ThreadInterface * _thread ) override;
-		void joinThread( ThreadInterface* _thread ) override;
+		bool initialize() override;
+		void finalize() override;
+
+	public:
+		ThreadIdentity * createThread( ThreadListener * _listener ) override;
+		void joinThread( ThreadIdentity * _thread ) override;
 		void sleep( unsigned int _ms ) override;
-
-	public:
-		MutexInterface* createMutex() override;
-		void releaseMutex( MutexInterface* _mutex ) override;
-
- 	public:
- 		bool removeThread( ThreadInterface* _thread, pthread_t& _tid );
-
+	
 	protected:
-		typedef std::map< ThreadInterface*, pthread_t > TTIDMap;
-		TTIDMap m_tidMap;
-		pthread_mutex_t m_tidMapMutex;
-	};
+		typedef std::vector<PosixThreadIdentity *> TVectorPosixThreadIdentity;
+		TVectorPosixThreadIdentity m_threadIdentities;
 
-}	// namespace Menge
+		ServiceProviderInterface * m_serviceProvider;
+	};
+}

@@ -8,17 +8,25 @@ namespace Menge
 	class FactoryDefault
 		: public Factory
 	{
-	public:
+    public:
+        T * createObjectT()
+        {
+            Factorable * obj = this->createObject();
+
+            return static_cast<T *>(obj);
+        }
+
+    protected:
 		Factorable * _createObject() override
 		{
 			T * t = new T();
+
 			return t;
 		}
 
-	public:
-		void destroyObject( Factorable * _node ) override
+        void _destroyObject( Factorable * _obj ) override
 		{
-			delete _node;
+			delete static_cast<T *>(_obj);
 		}
 	};
 
@@ -26,7 +34,7 @@ namespace Menge
 	{
 		template<class T>
 		Factory * createFactoryDefault()
-		{
+		{ 
 			return new FactoryDefault<T>();
 		}
 	}

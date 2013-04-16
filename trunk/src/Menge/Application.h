@@ -2,220 +2,226 @@
 
 #	include "MengeExport.h"
 
-#	include "Loadable.h"
+//#	include "Loadable.h"
 
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
 #	include "Interface/ApplicationInterface.h"
 
-#	include "Core/Holder.h"
+#	include "Core/ConstString.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Math/vec4.h"
 
+#	include <map>
 
 namespace Menge
 {
-	class ScriptEngine;
-	class LogEngine;
-	class FileEngine;
-	class InputEngine;
-	class RenderEngine;
-	class SoundEngine;
-	class ParticleEngine;
-	class PhysicEngine2D;
-	class PhysicEngine;
-	class XmlEngine;
-	class ThreadManager;
-	class TaskManager;
+	class ServiceProvider;
 
-	class FileOutputInterface;
+    class LoaderServiceInterface;
+    class ResourceServiceInterface;
+    class AlphaChannelServiceInterface;
+    class TextServiceInterface;
+    class NodeServiceInterface;
+    class ArrowServiceInterface;
+    class SceneServiceInterface;
+    class EntityServiceInterface;
+    class MovieKeyFrameServiceInterface;
+    class EventServiceInterface;
+
+    class WatchdogInterface;
+
+	class FileOutputStreamInterface;
 	class Game;
 	class ResourceManager;
-	class AlphaChannelManager;
 	class CodecEngine;
 	class TextManager;
 	class NodeManager;
-	class FactoryIdentity;
 	class FileLogger;
 
-	class Texture;
+	class Watchdog;
 
-	class MENGE_API Application 
-		: public Holder<Application>
-		, public MengeInterface
-		, public Loadable
+	class ResourceCursor;
+
+	class PluginInterface;
+
+	class UnicodeServiceInterface;
+
+	class RenderTextureInterface;
+
+	class Application 
+		: public ApplicationInterface
+		//, public Loadable
 	{
 	public:
-		Application( ApplicationInterface* _interface
-			, Logger * _logger
-			, const String& _userPath );
-
+		Application();
 		~Application();
 
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
+
+    public:
+        bool initialize() override;
+        void finalize() override;
+
+    public:
+        bool setup( const String& _args, const ApplicationSettings & _setting ) override;
+		
 	public:
-		//
-		void exec( const Menge::String & _text ) override;
-		void registerConsole( ConsoleInterface * _console ) override;
-		//
+		const String & getBaseDir() const override;
 
-		LogSystemInterface* initializeLogSystem();
+	public:
+		PlatformInterface * getPlatform() const override;
 
-		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
-		const String& getScreensaverName() const;
+	public:
+		bool getAllowFullscreenSwitchShortcut() const override;
+        	
+	public:
+		bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
+		bool initializeGame( const TMapWString & _params, const String & _scriptInitParams ) override;
+
+	public:
+		void setFullscreenMode( bool _fullscreen ) override;
+		bool getFullscreenMode() const override;
+
+    public:
+        bool isValidWindowMode() const override;
+
+	public:
+		bool getVSync() const override;
+
+	public:
+		bool isFocus() const override;
+
+	public:
+		const String & getPlatformName() const override;
 
 	protected:
-		bool initializeThreadManager_();
-		bool initializeFileEngine_();
-		bool initializeLogEngine_();
-		bool initializeParticleEngine_();
-		bool initializePhysicEngine2D_();
-		bool initializeRenderEngine_();
-		bool initializeSoundEngine_();
-		bool initializeTaskManager_();
 		bool initializeNodeManager_();
-		bool initializeXmlEngine_();
-		bool initializeScriptEngine_();
-		bool initializeCodecEngine_();
-		bool initalizeResourceManager_();
-		bool initializeAlphaChannelManager_();
+		bool initializeLoaderEngine_();
+		bool initializeResourceManager_();
+		bool initializeArrowManager_();
+		bool initializeSceneManager_();
+		bool initializeEntityManager_();
 		bool initializeTextManager_();
+		bool initializeMovieKeyFrameManager_();
+        bool initializeEventManager_();
+
+	public:		
+		void destroy() override;
 
 	public:
-		void finalize();
+		void setBaseDir( const String & _dir );
 
-		void setLoggingLevel( EMessageLevel _level );
-		void logMessage( const String& _message, EMessageLevel _level );
-	
-		void setDesktopResolution( const Resolution& _resolution );
+		bool createRenderWindow( WindowHandle _renderWindowHandle ) override;
 
-		bool initGame( const String& _scriptInitParams );
-		bool loadGame( bool _loadPersonality );
-
-		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle );
-
-		void screenshot( Texture * _renderTargetImage, const mt::vec4f & _rect );
+		void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect );
 
 		void quit();
-
-		const String& getPathGameFile() const;
-
-		void setBaseDir( const String & _dir );
-		const String& getBaseDir() const;
-
-	public:
-		void loader( XmlElement * _xml ) override;
-
-	protected:
-		void loaderApplication_( XmlElement * _xml );
-
-	public:
-		void parser( BinParser * _parser ) override;
-		void parserApplication_( BinParser * _parser );
-
-	public:
-		bool usePhysic() const;
-
-		const Resolution & getCurrentResolution() const;
-		const Resolution & getDesktopResolution() const;
-
-	public:
-		bool onRender();
-		void onFlush();
-		bool onUpdate();
-		void onPostUpdate();
-		void onTick( float _timing );
-		void onFocus( bool _focus );
-		void onClose();
-		void onMouseLeave();
-		void onMouseEnter();
-		bool onMouseButtonEvent( int _button, bool _isDown );
-		bool onMouseMove( float _x, float _y, int _whell );
-		bool onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
-		void onPaint();
-
-		void setParticlesEnabled( bool _enabled );
-		bool getParticlesEnabled() const;
-
-		void setSoundEnabled( bool _enabled );
-		bool getSoundEnabled()	const;
-
-		bool isFocus() const;
-
-		void minimizeWindow();
-
-		void setMouseBounded( bool _bounded );
-		bool getMouseBounded() const;
-
-		unsigned int getDebugMask() const;
-
-		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
-
-		String ansiToUtf8( const String& _ansi );
-		String utf8ToAnsi( const String& _utf8 );
-
-		String getProjectTitle() const;
 		
-		void setFullscreenMode( bool _fullscreen );
-		bool getFullscreenMode() const;
+	public:
+		void calcWindowResolution( Resolution & _windowResolution ) const override;
 
-		bool getHasWindowPanel() const;
-		const Resolution& getResolution() const;
+		const Resolution & getCurrentResolution() const override;
 
+		const Viewport & getRenderViewport() const override;
+
+		const Resolution & getContentResolution() const override;
+		void getGameViewport( float & _aspect, Viewport & _viewport ) const override;
+
+	public:
+		bool onRender() override;
+		void onFlush() override;
+		bool onUpdate() override;
+		void onTick( float _timing ) override;
+		void onFocus( bool _focus, const mt::vec2f & _point ) override;
+		void onClose() override;
+        
+        void onTurnSound( bool _turn ) override;
+
+		void onAppMouseEnter( const mt::vec2f & _point ) override;
+		void onAppMouseLeave() override;		
+
+		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;
+		bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+		
+		void onPaint() override;
+
+	public:
+		void setParticlesEnabled( bool _enabled ) override;
+		bool getParticlesEnabled() const override;
+
+	public:
+		void setInputMouseButtonEventBlock( bool _block ) override;
+		bool getInputMouseButtonEventBlock() const override;
+
+	public:
+		void minimizeWindow() override;
+
+		void setMouseBounded( bool _bounded ) override;
+		bool getMouseBounded() const override;
+
+		unsigned int getDebugMask() const override;
+
+		const WString & getProjectTitle() const override;
+		const String & getProjectCodename() const override;
+
+	public:
+		const Resolution & getWindowResolution() const;
+
+    public:
+        void setFixedContentResolution( bool _fixedContetResolution ) override; 
+		bool getFixedContentResolution() const override;
+
+	public:
 		static const char* getVersionInfo();
 
 		void enableDebug( bool _enable );
-
-		void setMousePosition( int _x, int _y );
-
-		void setLanguagePack( const String& _packName );
-		bool getVSync() const;
-		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
-		const Resolution& getMaxClientAreaSize() const;
-		int getAlreadyRunningPolicy() const;
-		bool getAllowFullscreenSwitchShortcut() const;
-		
+        		
 		void updateNotification();
-		void setVSync( bool _vsync );
-		void setCursorMode( bool _mode );
-		bool getCursorMode() const;
-		void pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
-		void pushMouseButtonEvent( int _button, bool _isDown );
-		void pushMouseMoveEvent( int _x, int _y, int _z );
-		void setAsScreensaver( bool _set );
-		bool getAsScreensaver();
+		void setVSync( bool _vsync ) override;
+		void setCursorMode( bool _mode ) override;
+		bool getCursorMode() const override;
+		void setCursorIcon( const ConstString & _resourceName ) override;
+
+		//void setAsScreensaver( bool _set );
+
+		void showKeyboard() override;
+		void hideKeyboard() override;
+
+    public:
+        bool findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const; 
+
+    public:
+        WatchdogInterface * getWatchdog() const override;
+
+	protected:		
+		void calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport );
+        void invalidateWindow_();
 
 	protected:
-		void loadPlugins_( const String& _pluginsFolder );
-		void loadPlugin_( const String& _pluginName );
-		void unloadPlugins_();
-
-		Viewport calcRenderViewport_( const Resolution & _resolution );
-
-	protected:
-		ApplicationInterface * m_interface;
-		LoggerInterface* m_platformLogger;
-
-		ScriptEngine * m_scriptEngine;
+		PlatformInterface * m_platform;
 
 		ConsoleInterface * m_console;
 
-		typedef std::vector<DynamicLibraryInterface*> TPluginVec;
-		TPluginVec m_plugins;
+		typedef std::map<String, DynamicLibraryInterface*> TDynamicLibraries;
+		TDynamicLibraries m_dynamicLibraries;
 
 		Game * m_game;
 
-		String m_gameInfo;
-		String m_applicationFile;
-
 		Resolution m_currentResolution;
-		Resolution m_desktopResolution;
-		Resolution m_maxClientAreaSize;
 
+		Viewport m_renderViewport;
+
+		Viewport m_gameViewport;
+
+        bool m_soundMute;
 		bool m_particles;
-		bool m_sound;
-		bool m_usePhysic;
 		bool m_mouseBounded;
 		bool m_focus;
 		bool m_update;
@@ -223,50 +229,68 @@ namespace Menge
 		bool m_fullscreen;
 		Resolution m_renderResolution;
 
+		Resolution m_windowResolution;
+		int m_bits;
+		bool m_textureFiltering;
+		int	m_FSAAType;
+		int m_FSAAQuality;
+
+		Resolution m_contentResolution;
+
+        typedef std::map<float, Viewport> TMapAspectRatioViewports;
+        TMapAspectRatioViewports m_aspectRatioViewports;
+
+		bool m_fixedContentResolution;
+
+
 		bool m_createRenderWindow;
 
 		unsigned int m_debugMask;
+		
+		size_t m_countThreads;
 
 		bool m_resetTiming;
 		float m_phycisTiming;
 		float m_maxTiming;
+		
+		ServiceProviderInterface * m_serviceProvider;
 
-		Logger * m_logger;
-		FileEngine * m_fileEngine;
-		InputEngine * m_inputEngine;
-		RenderEngine * m_renderEngine;
-		SoundEngine * m_soundEngine;
-		ParticleEngine * m_particleEngine;
-		PhysicEngine * m_physicEngine;
-		PhysicEngine2D * m_physicEngine2D;
-		XmlEngine *	m_xmlEngine;
-		ThreadManager* m_threadManager;
-		TaskManager* m_taskManager;
-		ResourceManager* m_resourceManager;
-		AlphaChannelManager* m_alphaChannelManager;
-		CodecEngine* m_codecEngine;
-		TextManager* m_textManager;
-		NodeManager* m_nodeManager;
-		FactoryIdentity * m_factoryIdentity;
+		LoaderServiceInterface * m_loaderService;
+		ResourceServiceInterface * m_resourceService;
+		TextServiceInterface* m_textService;
+		NodeServiceInterface * m_nodeService;
+		ArrowServiceInterface * m_arrowService;
+		SceneServiceInterface * m_sceneService;
+		EntityServiceInterface * m_entityService;
+		MovieKeyFrameServiceInterface * m_movieKeyFrameService;		
+        EventServiceInterface * m_eventService;
+
+		WatchdogInterface * m_watchdog;
 
 		void parseArguments_( const String& _arguments );
 
 		String m_baseDir;
-		bool m_enableDebug;
-		String m_userPath;
+		
+		ResourceCursor * m_cursorResource;
+		
+		String m_platformName;
+		String m_projectCodename;
+		
+		typedef std::vector<PluginInterface *> TVectorPlugins;
+		TVectorPlugins m_plugins;
 
-		String m_gamePackName;
-		String m_gamePackPath;
-		String m_languagePackOverride;
-		FileLogger* m_fileLog;
-		
-		
-		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 
+		bool m_fullScreen;
 		bool m_vsync;
 		bool m_invalidateVsync;
 		bool m_cursorMode;
 		bool m_invalidateCursorMode;
+		bool m_mouseEnter;
+
+		bool m_inputMouseButtonEventBlock;
+		bool m_developmentMode;
+
+        bool m_windowModeCheck;
 	};
 }

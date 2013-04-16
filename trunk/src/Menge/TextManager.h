@@ -1,45 +1,45 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
-#	include "Core/Holder.h"
-#	include <map>
+#   include "Interface/TextInterface.h"
 
-class XmlElement;
+#	include "Core/ConstString.h"
+
+#	include "Config/Typedef.h"
+
+#	include <map>
 
 namespace Menge
 {
+    class UnicodeServiceInterface;
+    class LogServiceInterface;
+    class FileServiceInterface;
+
 	class TextManager
-		: public Holder<TextManager>
+        : public TextServiceInterface
 	{
 	public:
 		TextManager();
-		virtual ~TextManager();
+		~TextManager();
 
-	public:
-		struct TextEntry
-		{
-			String text;
-			String font;
-			float charOffset;
-			float lineOffset;
-		};
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
 
-	public:
-		bool loadResourceFile( const String& _fileSystemName, const String& _filename );
-		const TextEntry & getTextEntry( const String& _key ) const;
-		bool existText( const String& _key ) const;
-		void addTextEntry( const String& _key, const TextEntry& _entry );
+    public:
+		const TextEntry & getTextEntry( const ConstString& _key ) const override;
 
-	protected:
-		typedef std::map<String, TextEntry> TStringMap;
-		TStringMap m_textMap;
+		bool existText( const ConstString& _key, const TextEntry ** _entry ) const override;
+		void addTextEntry( const ConstString& _key, const TextEntry& _entry ) override;
 
-		float m_currentCharOffset;
-		String m_currentFont;
-		float m_currentLineOffset;
+		void setDefaultResourceFontName( const ConstString & _fontName ) override;
+		const ConstString & getDefaultResourceFontName() const override;
 
-	private:
-		void loaderResourceFile_( XmlElement* _xml );
-		void loaderTexts_( XmlElement* _xml );
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
+
+		typedef std::map<ConstString, TextEntry> TMapTextEntry;
+		TMapTextEntry m_textMap;
+
+		ConstString m_defaultResourceFontName;
 	};
 }

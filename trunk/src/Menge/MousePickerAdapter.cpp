@@ -1,86 +1,99 @@
 #	include "MousePickerAdapter.h"
 
+#   include "Interface/PlayerInterface.h"
+
 #	include "MousePickerSystem.h"
+
+#	include "pybind/system.hpp"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerAdapter::MousePickerAdapter( bool _defaultHandle )
-		: m_pickerId(0)
+		: m_picker(NULL)
 		, m_defaultHandle(_defaultHandle)
 		, m_onEnterEvent(false)
 		, m_onLeaveEvent(false)
-	{
-		
+	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerAdapter::regEventListener( PyObject * _listener )
+	void MousePickerAdapter::setEventListener( PyObject * _listener )
 	{
 		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
-		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
+		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );		
+		this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
 		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
 
-		m_onLeaveEvent = this->registerEvent( EVENT_LEAVE, ("onLeave"), _listener );
-		m_onEnterEvent = this->registerEvent( EVENT_ENTER, ("onEnter"), _listener );
+		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onLeaveEvent );
+		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onEnterEvent );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerAdapter::setDefaultHandle( bool _handle )
+	{
+		m_defaultHandle = _handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MousePickerAdapter::getDefaultHandle() const
+	{
+		return m_defaultHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()
 	{
-		m_pickerId = 
-			MousePickerSystem::hostage()->regTrap( this );
+        MousePickerSystemInterface * mousePickerSystem = this->getMousePickerSystem();
+        
+		if( mousePickerSystem == NULL )
+		{
+			return;
+		}
+
+		m_picker = mousePickerSystem->regTrap( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::deactivatePicker()
 	{
-		MousePickerSystem::hostage()->unregTrap( m_pickerId );
+        MousePickerSystemInterface * mousePickerSystem = this->getMousePickerSystem();
+			
+        mousePickerSystem->unregTrap( m_picker );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::updatePicker()
 	{
-		if( m_pickerId != 0 )
+		if( m_picker == NULL )
 		{
-			MousePickerSystem::hostage()->updateTrap( m_pickerId );
+			return;
 		}
+        
+		MousePickerSystemInterface * mousePickerSystem = this->getMousePickerSystem();
+			
+        mousePickerSystem->updateTrap( m_picker );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerAdapter::onLeave()
+	void MousePickerAdapter::onMouseLeave()
 	{
 		if( m_onLeaveEvent )
 		{
-			this->callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
+			EVENTABLE_CALL(this, EVENT_MOUSE_LEAVE)( "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::onEnter()
-	{
-		bool handle = false;
-
-		if( m_onEnterEvent )
-		{
-			if( !handle )
-			{
-				if( this->askEvent( handle, EVENT_ENTER, "(O)", this->getEmbedding() ) == false )
-				{
-					handle = m_defaultHandle;
-				}
-			}
-		}
-		else
-		{
-			handle = m_defaultHandle;
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	bool MousePickerAdapter::onMouseEnter()
 	{
 		bool handle = false;
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown ) == false )
+			if( m_onEnterEvent )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+			{
+				//if( this->askEvent( handle, EVENT_MOUSE_ENTER, "(O)", this->getEmbed() ) == false )
+				//{
+				//	handle = m_defaultHandle;
+				//}
+
+				EVENTABLE_ASK(this, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(O)", this->getEmbed() );
+			}
+			else
 			{
 				handle = m_defaultHandle;
 			}
@@ -89,40 +102,88 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	bool MousePickerAdapter::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
+        (void)_point; //TODO
+
 		bool handle = false;
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown ) == false )
-			{
-				handle = m_defaultHandle;
-			}
+			//if( this->askEvent( handle, EVENT_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) ) == false )
+			//{
+			//	handle = m_defaultHandle;
+			//}
+
+			EVENTABLE_ASK(this, EVENT_KEY)( handle, m_defaultHandle, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	bool MousePickerAdapter::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->callEvent( EVENT_MOUSE_BUTTON_END, "(OIb)", this->getEmbedding(), _button, _isDown );
+        (void)_point; //TODO
+
+		bool handle = false;
+
+		if( !handle )
+		{
+			//if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) ) == false )
+			//{
+			//	handle = m_defaultHandle;
+			//}
+
+			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	bool MousePickerAdapter::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	{
+        (void)_point; //TODO
+
+		EVENTABLE_CALL(this, EVENT_MOUSE_BUTTON_BEGIN)( "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleMouseMove( float _x, float _y, int _whell )
+	bool MousePickerAdapter::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
+        (void)_point; //TODO
+
+		EVENTABLE_CALL(this, EVENT_MOUSE_BUTTON_END)( "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MousePickerAdapter::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
+	{
+        (void)_point; //TODO
+
 		bool handle = false;
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell ) == false )
-			{
-				handle = m_defaultHandle;
-			}
+			//if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell ) == false )
+			//{
+			//	handle = m_defaultHandle;
+			//}
+
+			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell );
 		}
 
 		return handle;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    MousePickerSystemInterface * MousePickerAdapter::getMousePickerSystem() const
+    {
+        ServiceProviderInterface * serviceProvider = this->getServiceProvider();
+
+        MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(serviceProvider)
+            ->getMousePickerSystem();
+
+        return mousePickerSystem;
+    }
 }

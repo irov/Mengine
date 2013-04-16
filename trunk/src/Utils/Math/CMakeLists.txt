@@ -27,7 +27,6 @@ convex_poly
 	convexpoly2.cpp
 	convexpoly2.h
 	convexpoly2_inline.h
-	decomposition.cpp
 )
 
 ADD_FILTER(
@@ -40,6 +39,13 @@ line
 	line.cpp
 	line.h
 	line_inline.h
+)
+
+ADD_FILTER(
+triangle
+	triangle.cpp
+	triangle.h
+	triangle_inline.h
 )
 
 ADD_FILTER(
@@ -71,13 +77,6 @@ plane
 )
 
 ADD_FILTER(
-polygon
-	polygon.cpp
-	polygon.h
-	polygon_inline.h
-)
-
-ADD_FILTER(
 quat
 	quat.cpp
 	quat.h
@@ -94,13 +93,6 @@ simplex
 	simplex.cpp
 	simplex.h
 	simplex_inline.h
-)
-
-ADD_FILTER(
-triangulation
-	triangulation.cpp
-	triangulation.h
-	triangulation_inline.h
 )
 
 ADD_FILTER(
@@ -128,10 +120,6 @@ ADD_FILTER(
 config
 	config.h
 )
-
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

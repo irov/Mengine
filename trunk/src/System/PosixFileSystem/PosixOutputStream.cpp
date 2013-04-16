@@ -28,14 +28,23 @@ namespace Menge
 	bool PosixOutputStream::open( const String& _filename )
 	{
 		m_hFile = fopen( _filename.c_str(), "wb" );
-		if( m_hFile == NULL )
+		
+        if( m_hFile == NULL )
 		{
 			return false;
 		}
+
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+	void PosixOutputStream::destroy()
+	{
+		fclose( m_hFile );
+
+        delete this;
+	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixOutputStream::write( const void * _data, std::streamsize _count )
+	void PosixOutputStream::write( const void * _data, int _count )
 	{
 		fwrite( _data, _count, 1, m_hFile );
 	}

@@ -1,15 +1,25 @@
+set( MY_LIB_NAME WindowsLayer )
 
 ADD_FILTER(
 src
-	WindowsLayer.cpp
-	WindowsLayer.h
+    DynamicLibrary.cpp
+    DynamicLibrary.h
+	VistaWindowsLayer.cpp
+	VistaWindowsLayer.h
+    WindowsIncluder.h
 )
 
-ADD_LIBRARY( WindowsLayer ${SRC_FILES} )
+INCLUDE_DIRECTORIES(
+    ${Mengine_SOURCE_DIR} 
+    ) 
+
+add_definitions(-DUNICODE)
+
+ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
- WindowsLayer
+ ${MY_LIB_NAME}
 )
 
 

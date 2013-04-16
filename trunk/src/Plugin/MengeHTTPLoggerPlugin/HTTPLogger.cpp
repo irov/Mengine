@@ -1,0 +1,32 @@
+#	include "HTTPLogger.h"
+
+namespace Menge
+{
+	//////////////////////////////////////////////////////////////////////////
+	HTTPLogger::HTTPLogger( HTTPSystemInterface * _interfaceHTTP )
+		: m_interface(_interfaceHTTP)
+        , m_verboseLevel(LM_INFO)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	HTTPLogger::~HTTPLogger()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HTTPLogger::setVerboseLevel( EMessageLevel _level )
+	{
+		m_verboseLevel = _level; 
+	}
+    //////////////////////////////////////////////////////////////////////////
+    bool HTTPLogger::validVerboseLevel( EMessageLevel _level ) const
+    {
+        if( m_verboseLevel < _level )
+        {
+            return false;
+        }
+
+        return true;
+    }
+	//////////////////////////////////////////////////////////////////////////
+}
+

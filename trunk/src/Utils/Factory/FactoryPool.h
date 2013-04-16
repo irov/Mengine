@@ -5,44 +5,37 @@
 
 namespace Menge
 {
-	template<class T>
+	template<class T, size_t Count>
 	class FactoryPool
 		: public Factory
 	{
 	public:
-		Factorable * _createObject() override
-		{
-			T * t = this->getNode();
-			return t;
-		}
+        T * createObjectT()
+        {
+            Factorable * obj = this->createObject();
 
-	public:
-		void destroyObject( Factorable * _node ) override
+            return static_cast<T *>(obj);
+        }
+
+    protected:
+        Factorable * _createObject() override
+        {
+            void * ptr = m_pool.alloc();
+
+            T * node = new (ptr) T();
+
+            return node;
+        }
+
+		void _destroyObject( Factorable * _node ) override
 		{
-			delete _node;
-			//m_pool.release( static_cast<T*>(_node) );
+            static_cast<T*>(_node)->~T();
+
+            m_pool.free( _node );
 		}
 
 	protected:
-		T * getNode()
-		{
-			return new T;
-			//T * t = m_pool.get();
-
-			//return m_pool.get();
-		}
-
-	protected:
-		typedef Pool<T, PoolPlacementPolicyErase> TNodePool;
+		typedef TemplatePool<sizeof(T), Count> TNodePool;
 		TNodePool m_pool;
 	};
-
-	namespace Helper
-	{
-		template<class T>
-		Factory * createFactoryPool()
-		{
-			return new FactoryPool<T>();
-		}
-	}
 }

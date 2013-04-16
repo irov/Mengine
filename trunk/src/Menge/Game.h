@@ -1,10 +1,11 @@
 #	pragma once
 
-#	include "Core/Holder.h"
-#	include "MengeExport.h"
-#	include "InputHandler.h"
-#	include "Eventable.h"
-#	include "Loadable.h"
+#	include "Kernel/Scriptable.h"
+#	include "Kernel/Eventable.h"
+
+#   include "Interface/GameInterface.h"
+#	include "Interface/ApplicationInterface.h"
+#   include "Interface/InputSystemInterface.h"
 
 #	include "Account.h"
 
@@ -12,246 +13,150 @@
 
 #	include <map>
 
-class BinParser;
-
 namespace Menge
 {
-	class ResourceManager;
-	class TextManager;
+	class AccountServiceListener;
+	class AccountServiceInterface;
+
 	class Player;
+	class ResourcePak;
 
 	class Node;
 	class Scene;
 	class Arrow;
 
-	class Amplifier;
 	class LightSystem;
 
 	class Game
-		: public Holder<Game>
-		, public InputHandler
+		: public GameServiceInterface
+		, public InputSystemHandler
 		, public Eventable
-		, public Loadable
 	{
 	public:
-		Game();
+		Game( const String & _baseDir, bool _developmentMode, const String & _platformName );
 		~Game();
 
+    public:
+        Player * getPlayer() const;
+
 	public:
-		void update();
+		bool update();
 		void tick( float _timing );
-		bool render( unsigned int _debugMask = 0 );
+
+    public:
+		bool render() override;
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool init( const String& _scriptInitParams );
-		bool loadPersonality();
-		void release();
-		void setBaseDir( const String& _baseDir );
-		void loadPak( const String& _pakName, const String& _pakPath, const String& _descFilename );
-		void loadPakFromName( const String& _pakName );
-		void loadConfigPaks();
-		void setLanguagePack( const String& _packName );
-		String getPakPath( const String& _packName );
-		const String& getScreensaverName() const;
+		bool initialize( const TMapWString & _params );
+		void finalize();
 
-	public:
-		Arrow * getArrow( const String& _name );
-		Arrow * getDefaultArrow();
+    public:
+        bool run( const String& _scriptInitParams );
 
-		bool loadArrow( const String& _pakName, const String& _name );
-		void removeArrow( const String& _name );
+    public:
+		void initializeRenderResources();
+		void finalizeRenderResources();
 
-	public:
-		PyObject * getPersonality();
-
-	public:
-		Scene * getScene( const String& _name );
-		bool destroyScene( Scene * _scene );
-		bool destroySceneByName( const String & _sceneName );
-
-	public:
-		//bool loader( const String& _iniFile );
-		void loader( XmlElement* _xml ) override;
+		bool loadPersonality( const ConstString & _module );
 		
-		void loaderScenes_( XmlElement * _xml );
-		void loaderArrows_( XmlElement * _xml );
-		void loaderEntities_( XmlElement * _xml );
-		void loaderResources_( XmlElement * _xml );
+		bool loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack );
+		bool applyConfigPaks();
 
-		void readResourceFile( const String& _fileSystemName, const String& _path, const String& _descFile );
-		void loaderResourceFile( XmlElement * _xml );
-		void loaderResourceFile_( XmlElement * _xml );
-
-	public:
-		void parser( BinParser * _parser ) override;
+		void setLanguagePack( const ConstString& _packName );
+        const ConstString & getLanguagePack() const override;
 
 	protected:
-		void parserWindow_( BinParser * _parser );
-		void parserResourcePack_( BinParser * _parser );
-		void parserLanguagePack_( BinParser * _parser );
-		 
-
+		bool loadLocalePaksByName_( const ConstString & _locale, const String & _platform );
+			
 	public:
-		void loadAccounts();
 		void setCursorMode( bool _mode );
 
 	public:
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
-		void handleMouseLeave();
-		void handleMouseEnter();
+		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;		
+		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+		
+		void onAppMouseLeave();
+		void onAppMouseEnter( const mt::vec2f & _point );
+
 		void onFocus( bool _focus );
-		void onFullscreen( bool _fullscreen );
+		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
+        void onFixedContentResolution( const Resolution & _resolution, bool _fixed );
 		bool onClose();
 
+		void onTurnSound( bool _turn );
+
 	public:
-		const Resolution & getResolution() const;
-		const Resolution & getContentResolution() const;
-		bool isContentResolutionFixed() const;
-		String getTitle() const;
-		int getBits() const;
-		bool getFullscreen() const;
-		const String& getPhysicSystemName() const;
-		bool getTextureFiltering() const;
-		int getFSAAType() const;
-		int getFSAAQuality() const;
+		void addMouseMoveHandler( PyObject * _cb ) override;
+		bool removeMouseMoveHandler( PyObject * _cb ) override;
+
+		void addMouseButtonHandler( PyObject * _cb ) override;
+		bool removeMouseButtonHandler( PyObject * _cb ) override;
+
+	public:
+		const WString & getParam( const WString & _paramName ) override;
+		bool hasParam( const WString & _paramName ) const override;
+
 		bool getHasWindowPanel() const;
 
 	public:
-		String createNewAccount();
-		void deleteAccount( const String& _accountID );
-		void selectAccount( const String& _accountID );
-		void saveAccount( const String& _accountID );
-		void saveAccounts();
-		void saveAccountsInfo();
-		Account * getCurrentAccount();
-		Account * getAccount( const String& _accountID );
-		
-	public:
-		const TVectorString& getResourceFilePaths() const;	// Game/Resource/default.resource
-
-		const TVectorString& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
-		const TVectorString& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
-		const TVectorString& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
-		const TVectorString& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
-		const TVectorString& getResourcesPaths() const;	// Game/Resource, Framework/Resource
-		const TVectorString& getTextsPaths() const;
-
+		float getTimingFactor() const override;
+		void setTimingFactor( float _timingFactor ) override;
 
 	public:
-		void addHomeless( Node * _homeless );
+		void destroyArrow();
 
 	private:
-		Node * m_homeless;
+        ServiceProviderInterface * m_serviceProvider;
 
 		Player* m_player;
-		Amplifier* m_amplifier;
-		LightSystem* m_lightSystem;
 
-		String m_title;
-		bool m_localizedTitle;
+		AccountServiceListener * m_accountLister; 
+		AccountServiceInterface * m_accountService;
 
-		Resolution m_contentResolution;
-		Resolution m_resolution;
-
-		bool m_fixedContentResolution;
-
-		String m_defaultArrowName;
-		String m_personality;
-		
-		String m_screensaverName;
-
-		PyObject * m_pyPersonality;
+		bool m_developmentMode;
+        
 		Arrow * m_defaultArrow;
-
-		typedef std::map<String, Arrow*> TMapArrow;
-		TMapArrow m_mapArrow;
-
-		typedef std::map<String, Scene*> TMapScene;
-		TMapScene m_mapScene;
-
-		typedef std::map<String, std::pair< String, String > > TMapDeclaration;
-		TMapDeclaration m_mapEntitiesDeclaration;
-		TMapDeclaration m_mapArrowsDeclaration;
-		TMapDeclaration m_mapScenesDeclaration;
-		TMapDeclaration m_mapResourceDeclaration;
 		
-		TVectorString m_pathScripts;
-		TVectorString m_pathEntities;
-		TVectorString m_pathScenes;
-		TVectorString m_pathArrows;
-		TVectorString m_pathText;
-
-		TVectorString m_pathResourceFiles;
-
-		TVectorString m_pathResource;
-
-		//TStringVector m_resourcePaths;
-
-		String m_currentPakName;
+		ConstString m_currentPakName;
 		String m_currentResourcePath;
 
-		int m_bits;
-		bool m_fullScreen;
-		bool m_vsync;
-		bool m_textureFiltering;
-		int	m_FSAAType;
-		int m_FSAAQuality;
 		bool m_hasWindowPanel;
-		String m_physicSystemName;		
-
-		//TStringVector m_accountIDs;
-
-		//bool m_loadingAccounts;
-		typedef std::map< String, Account* > TAccountMap;
-
-		TAccountMap m_accounts;
-		String m_defaultAccountID;
-		Account* m_currentAccount;
-
-		//bool loaderAccounts_( const String& _iniFile );
-		void loaderAccounts_( XmlElement* _xml );
-		Account* loadAccount_( const String& _accountID );
-		void createAccount_( const String& _accountID );
+		float m_timingFactor;
 
 		String m_baseDir;
+		FilePath m_iconPath;
 
-		struct ResourcePak
-		{
-			String name;
-			String path;
-			String description;
-			bool preload;
-		};
+		typedef std::vector<ResourcePak *> TVectorResourcePak;
+		TVectorResourcePak m_paks;
+		TVectorResourcePak m_resourcePaks;
+		TVectorResourcePak m_languagePaks;
 
-		typedef std::vector<ResourcePak> TResourcePakVector;
-		TResourcePakVector m_paks;
-		//ResourcePak m_languagePack;
-		TResourcePakVector m_languagePaks;
-		String m_languagePack;
-
+		ConstString m_languagePak;
+		String m_platformName;
+				
 		bool m_personalityHasOnClose;
-		int m_playerNumberCounter;
 
-	private:
+		typedef std::vector<PyObject *> TVectorHandlers;
+		TVectorHandlers m_handlersMouseMove;
+		TVectorHandlers m_handlersMouseButton;
+		TMapWString m_params;
+
+	protected:
 		void initPredefinedResources_();
 		void removePredefinedResources_();
 
-		struct PakFinder
-		{
-			String m_pakName;
+    protected:
+        void setEmbed( PyObject * _embed );
+        PyObject * getEmbed() const;
 
-			PakFinder( const String& _pakName )
-				: m_pakName( _pakName )
-			{
-			}
-
-			bool operator()( const ResourcePak& _pak )
-			{
-				return _pak.name == m_pakName;
-			}
-		};
+    protected:
+        PyObject * m_embed;
 	};	
 }

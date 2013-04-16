@@ -1,0 +1,2 @@
+LIBRARY		"MengeHTTPLoggerPlugin"
+EXPORTS 	dllCreatePlugin 	@1

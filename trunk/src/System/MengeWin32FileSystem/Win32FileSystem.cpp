@@ -1,8 +1,6 @@
-
 #	include "Win32FileSystem.h"
 
 #	include <algorithm>
-#	include <cassert>
 
 //#	define _WIN32_WINNT 0x0501
 #	include <shlobj.h>
@@ -13,267 +11,159 @@
 //#	include "FileStream.h"
 #	include "Win32InputStream.h"
 #	include "Win32OutputStream.h"
+#	include "Win32MappedInputStream.h"
 
+#   include "Logger/Logger.h"
 
-#define  PATH_DELIM '\\'
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( Menge::FileSystemInterface **_system )
-{
-	try
-	{
-		*_system = new Menge::Win32FileSystem();
-	}
-	catch (...)
-	{
-		return false;
-	}
-
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
-{
-	delete static_cast<Menge::Win32FileSystem*>( _system );
-}
+SERVICE_FACTORY( FileSystem, Menge::FileSystemInterface, Menge::Win32FileSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::Win32FileSystem()
+        : m_serviceProvider(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::~Win32FileSystem()
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface* Win32FileSystem::openInputStream( const String& _filename )
+    //////////////////////////////////////////////////////////////////////////
+    void Win32FileSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * Win32FileSystem::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+	FileInputStreamInterface* Win32FileSystem::createInputStream()
 	{
-		String filenameCorrect = _filename;
-		this->correctPath( filenameCorrect );
-
-		Win32InputStream* inputStream = m_inputStreamPool.get();
-
-		if( inputStream->open( filenameCorrect ) == false )
-		{
-			this->closeInputStream( inputStream );
-			
-			return 0;
-		}
+		Win32InputStream* inputStream = new Win32InputStream(m_serviceProvider);
 
 		return inputStream;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    FileOutputStreamInterface* Win32FileSystem::createOutputStream()
+    {
+        Win32OutputStream* outStream = new Win32OutputStream(m_serviceProvider);
+
+        return outStream;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MappedFileInputStreamInterface * Win32FileSystem::createMappedInputStream()
+    {
+        Win32MappedInputStream* inputStream = new Win32MappedInputStream(m_serviceProvider);
+
+        return inputStream;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::closeInputStream( InputStreamInterface* _stream )
+	bool Win32FileSystem::existFile( const FilePath& _filename ) const
 	{
-		if( _stream == 0 )
-		{
-			return;
-		}
+        WString unicode_filename;
+        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFile invlalid convert utf8 to unicode %s"
+                , _filename.c_str()
+                );
 
-		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
-		
-		inputStream->close();
+            return false;
+        }
 
-		m_inputStreamPool.release( inputStream );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::existFile( const String& _filename )
-	{
-		if( _filename.empty() == true )	// current dir
-		{
-			return true;
-		}
+        bool result = WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->fileExists( unicode_filename );
 
-		String full_path = _filename;
-		this->correctPath( full_path );
-
-		if( full_path.empty() == false 
-			&& full_path[full_path.size()-1] == L':' )	// root dir
-		{
-			return true;	// let it be
-		}
-
-		bool found = WindowsLayer::fileExists( full_path );
-		return found;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::createFolder( const String& _path )
-	{
-		String uPath = _path;
-		correctPath( uPath );
-		bool result = WindowsLayer::createDirectory( uPath );
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::deleteFolder( const String& _path )
+	bool Win32FileSystem::createFolder( const FilePath& _path )
 	{
-		String path_correct = _path;
-		String::size_type pos = path_correct.find("/");
-		while( pos != String::npos )
-		{
-			path_correct[pos] = PATH_DELIM;
-			pos = path_correct.find("/");
-		}
-		//StringW path_w = Utils::AToW( _path );
-		StringW path_w;
-		WindowsLayer::utf8ToWstr( path_correct, &path_w );
+        WString unicode_path;
+        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _path.c_str(), _path.size(), unicode_path ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::createFolder invlalid convert utf8 to unicode %s"
+                , _path.c_str()
+                );
 
-		SHFILEOPSTRUCT fs;
-		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
-		fs.hwnd = NULL;
+            return false;
+        }
+        
+        bool result = WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->createDirectory( unicode_path );
 
-		Menge::TCharW path[MAX_PATH];
-		wcscpy( path, path_w.c_str() );
-		path[ path_w.size() + 1 ] = 0;
-		fs.pFrom = path;
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileSystem::deleteFolder( const FilePath& _path )
+	{
+        WString unicode_path;
+        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _path.c_str(), _path.size(), unicode_path ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder invlalid convert utf8 to unicode %s"
+                , _path.c_str()
+                );
 
-		fs.wFunc = FO_DELETE;
-		fs.hwnd = NULL;
-		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
-		int err = ::SHFileOperation( &fs );
+            return false;
+        }
+
+        unicode_path += L" ";
+        unicode_path[unicode_path.size() - 1] = L'\0';
+
+		SHFILEOPSTRUCT fileop;
+		ZeroMemory(&fileop, sizeof(SHFILEOPSTRUCT));
+		fileop.hwnd = NULL;
+        fileop.wFunc = FO_DELETE;
+		fileop.pFrom = unicode_path.c_str();
+        fileop.pTo = NULL;		
+		fileop.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
+        fileop.fAnyOperationsAborted = FALSE;
+        fileop.lpszProgressTitle = NULL;
+        fileop.hNameMappings = NULL;
+		
+		int err = ::SHFileOperation( &fileop );
+		
 		if( err != 0 )
 		{
-			/*TCHAR szBuf[80]; 
-			LPVOID lpMsgBuf;
-			DWORD dw = GetLastError(); 
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder %s error %d"
+                , _path.c_str()
+                , err
+                );
 
-			FormatMessage(
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-				FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL,
-				dw,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-				(LPTSTR) &lpMsgBuf,
-				0, NULL );
-
-			//sprintf_s(szBuf, "failed with error %d: %s", dw, lpMsgBuf); 
-
-			//MessageBox(NULL, szBuf, "Error", MB_OK); 
-
-			LocalFree(lpMsgBuf);*/
 			return false;
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* Win32FileSystem::openOutputStream( const String& _filename )
+	bool Win32FileSystem::deleteFile( const FilePath& _filename )
 	{
-		String filenameCorrect = _filename;
-		this->correctPath( filenameCorrect );
-		
-		Win32OutputStream* outStream = new Win32OutputStream();
-		if( outStream->open( filenameCorrect ) == false )
-		{
-			delete outStream;
-			return NULL;
-		}
-		return outStream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::closeOutputStream( OutputStreamInterface* _stream )
-	{
-		Win32OutputStream* outStream = static_cast<Win32OutputStream*>( _stream );
-		if( outStream != NULL )
-		{
-			outStream->close();
-			delete outStream;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::deleteFile( const String& _filename )
-	{
-		String path_correct = _filename;
-		String::size_type pos = path_correct.find("/");
-		while( pos != String::npos )
-		{
-			path_correct[pos] = PATH_DELIM;
-			pos = path_correct.find("/");
-		}
+        WString unicode_filename;
+        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFile invlalid convert utf8 to unicode %s"
+                , _filename.c_str()
+                );
+
+            return false;
+        }
 
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
 		fs.hwnd = NULL;
-
-		//StringW filename_w = Utils::AToW( _filename );
-		StringW filename_w;
-		WindowsLayer::utf8ToWstr( path_correct, &filename_w );
-
-		const Menge::TCharW* lpszW = filename_w.c_str();
-
-		fs.pFrom = lpszW;
+		fs.pFrom = unicode_filename.c_str();
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
+		
 		if( ::SHFileOperation( &fs ) != 0 )
 		{
 			return false;
 		}
+
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::correctPath( String & _path ) const
-	{
-		std::replace( _path.begin(), _path.end(), '/', PATH_DELIM );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void* Win32FileSystem::openMappedFile( const String& _filename, int* _size )
-	{
-		assert( _size );
-
-		String filenameCorrect = _filename;
-		this->correctPath( filenameCorrect );
-		StringW full_path_w;
-		WindowsLayer::utf8ToWstr( filenameCorrect, &full_path_w );
-
-		DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
-		HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open
-									GENERIC_READ,			// open for reading
-									shareAttrib,			// share for reading, exclusive for mapping
-									NULL,					// default security
-									OPEN_EXISTING,			// existing file only
-									FILE_ATTRIBUTE_NORMAL,	// normal file
-									NULL);					// no attr. template
-
-		if ( hFile == INVALID_HANDLE_VALUE)
-		{
-			return NULL;
-		}
-
-		DWORD fSize = GetFileSize( hFile, NULL );
-
-		if( fSize == INVALID_FILE_SIZE )
-		{
-			CloseHandle( hFile );
-			return NULL;
-		}
-
-		HANDLE hMapping = CreateFileMapping( hFile, NULL, PAGE_READONLY, 0, 0, NULL );
-
-		if( hMapping == NULL )
-		{
-			CloseHandle( hFile );
-			return NULL;
-		}
-
-		void* pMem = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, fSize );
-		*_size = fSize;
-
-		FileMappingInfo fmInfo = { hFile, hMapping };
-		m_fileMappingMap.insert( std::make_pair( pMem, fmInfo ) );
-
-		return pMem;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::closeMappedFile( void* _file )
-	{
-		TFileMappingMap::iterator it_find = m_fileMappingMap.find( _file );
-		if( it_find != m_fileMappingMap.end() )
-		{
-			CloseHandle( it_find->second.hMapping );
-			CloseHandle( it_find->second.hFile );
-			m_fileMappingMap.erase( it_find );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

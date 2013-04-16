@@ -8,8 +8,12 @@ namespace Menge
 	{
 	public:
 		Viewport();
+		Viewport( const Viewport & _viewport );
 		Viewport( const mt::vec2f & _begin, const mt::vec2f & _end );
 		Viewport( float _beginX, float _beginY, float _endX, float _endY );
+
+	public:
+		void initialize( const mt::vec2f & _begin, const mt::vec2f & _end );
 
 	public:
 		inline bool testPoint( const mt::vec2f & _point ) const;
@@ -26,6 +30,12 @@ namespace Menge
 		float getWidth() const;
 		float getHeight() const;
 
+		bool empty() const;
+
+	public:
+		void getSize( mt::vec2f & _size ) const;
+		void centerize( const mt::vec2f & _center );
+		
 	public:
 		mt::vec2f begin;
 		mt::vec2f end;

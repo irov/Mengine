@@ -18,8 +18,8 @@ namespace Menge
 		: public OALSoundBufferBase
 	{
 	public:
-		OALSoundBuffer( OALSoundSystem * _soundSystem );
-		virtual ~OALSoundBuffer();
+		OALSoundBuffer( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
+		~OALSoundBuffer();
 
 	public:
 		bool load( SoundDecoderInterface * _soundDecoder ) override;
@@ -27,15 +27,12 @@ namespace Menge
 		void play( ALenum _source, bool _looped, float _pos ) override;
 		void pause( ALenum _source ) override;
 		void stop( ALenum _source ) override;
-		float getTimePos( ALenum _source ) override;
+		bool getTimePos( ALenum _source, float & _pos ) const override;
 
 	protected:
+        ServiceProviderInterface * m_serviceProvider;
 		OALSoundSystem * m_soundSystem;
 
-		ALuint m_alBufferName;
-
-	private:
-		void cleanup_();
-
+		ALuint m_alBufferId;
 	};
 }	// namespace Menge

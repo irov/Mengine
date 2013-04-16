@@ -1,56 +1,85 @@
 #	pragma once
 
+#	include "ServiceInterface.h"
+
+#	include "Config/Typedef.h"
+
+#	include "Core/ConstString.h"
+#	include "Core/FilePath.h"
+
+#	include <vector>
+
+#	include <stdarg.h>
+
+extern "C" 
+{ 
+	struct _object;
+	typedef _object PyObject;
+}
+
 namespace Menge
-{
-	class ScriptNodeInterface
+{	    
+    class Node;
+    class Entity;
+
+    class ScriptClassInterface
+    {
+    public:
+        virtual PyObject * wrap( Node * _node ) = 0;
+
+    public:
+        virtual void destroy() = 0;
+    };
+
+	class ScriptServiceInterface
+		: public ServiceInterface
 	{
+        SERVICE_DECLARE("ScriptService")
+
+    public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
 	public:
-		virtual bool activate() = 0;
-		virtual void deactivate() = 0;
+        virtual void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) = 0;
+        virtual PyObject * wrap( Node * _node ) = 0;
 
-			.def( "isActivate", &Node::isActivate )
-			.def( "enable", &Node::enable )
-			.def( "disable", &Node::disable )
-			.def( "isEnable", &Node::isEnable )
-			.def( "setUpdatable", &Node::setUpdatable )
-			.def( "isUpdatable", &Node::isUpdatable )
-			.def( "addChildren", &Node::addChildren )
-			.def( "addChildrenFront", &Node::addChildrenFront )
-			.def( "removeChildren", &Node::removeChildren )
-			.def( "getChildren", &Node::getChildren )
-			.def( "isChildren", &Node::isChildren )
-			.def( "updatable", &Node::updatable )
-			.def( "update", &Node::update )
-			.def( "getParent", &Node::getParent )
-			.def( "setListener", &Node::setListener )
-			.def( "getListener", &Node::getListener )
+		virtual void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes ) = 0;
 
-			//.def( "getWorldPosition", &Node::getWorldPosition )
-			//.def( "getWorldDirection", &Node::getWorldDirection )
-			//.def( "setAlpha", &Node::setAlpha )
-			.def( "getScreenPosition", &Node::getScreenPosition )
-			.def( "setLocalColor", &Node::setLocalColor )
-			.def( "setLocalAlpha", &Node::setLocalAlpha )
-			.def( "getWorldColor", &Node::getWorldColor )
-			.def( "getLocalColor", &Node::getLocalColor )
+		virtual PyObject * importModule( const ConstString& _name ) = 0;
 
-			.def( "localColorToCb", &Node::localColorToCb )
-			.def( "localAlphaToCb", &Node::localAlphaToCb )
-			.def( "localColorToStop", &Node::localColorToStop )
+		virtual void setCurrentModule( PyObject * _module ) = 0;
+        virtual void addGlobalModule( const String & _name, PyObject * _module ) = 0;
 
-			.def( "moveToCb", &Node::moveToCb )
-			.def( "moveToStop", &Node::moveToStop )
+		virtual PyObject * getModuleFunction( PyObject * _module, const char * _name ) = 0;
 
-			.def( "angleToCb", &Node::angleToCb )
-			.def( "angleToStop", &Node::angleToStop )
-			.def( "scaleToCb", &Node::scaleToCb )
-			.def( "scaleToStop", &Node::scaleToStop )
+        virtual void callFunctionVA( PyObject * _object, const char * _params, va_list ) = 0;
+        virtual PyObject * askFunctionVA( PyObject * _object, const char * _params, va_list ) = 0;
 
-			.def( "accMoveToCb", &Node::accMoveToCb )
-			.def( "accAngleToCb", &Node::accAngleToCb )
+		virtual void callFunction( PyObject * _object, const char * _params, ... ) = 0;
+        virtual PyObject * askFunction( PyObject * _object, const char * _params, ... ) = 0;
+
+        virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator ) = 0;
+
+        template<class T>
+        T * createEntityT( const ConstString& _type, const ConstString & _prototype, PyObject * _generator )
+        {
+            Entity * entity = this->createEntity( _type, _prototype, _generator );
+
+            if( dynamic_cast<T*>(entity) == NULL )
+            {
+                return NULL;
+            }
+
+            T * t = static_cast<T*>(entity);
+
+            return t;
+        }
+
+    public:
+        virtual ConstString stringize( PyObject * _str, bool & _valid ) = 0;
 	};
-	class ScriptSystem
-	{
 
-	};
+#   define SCRIPT_SERVICE( serviceProvider )\
+    (Menge::getService<Menge::ScriptServiceInterface>(serviceProvider))
 }

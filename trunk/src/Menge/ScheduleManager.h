@@ -1,51 +1,66 @@
 #	pragma once
 
-#	include <vector>
+#   include "Interface/ScheduleManagerInterface.h"
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include "pybind/types.hpp"
+
+#	include <vector>
 
 namespace Menge
 {
+    class ServiceProviderInterface;
+    
 	class ScheduleManager
+        : public ScheduleManagerInterface
 	{
 	public:
 		ScheduleManager();
 		~ScheduleManager();
 
+    public:
+        void initialize( ServiceProviderInterface * _serviceProvider ) override;
+
+    public:
 		struct ScheduleEvent
 		{
-			bool dead;
-			bool updating;
-			bool paused;
-			std::size_t id;
+			ScheduleListener * listener;
+
 			float timing;
-			PyObject * script;
+			size_t id;
+
+			mutable bool dead;
+			mutable bool freeze;
 		};
 
 	public:
-		std::size_t schedule( float _timing, PyObject * _func );
+		size_t schedule( float _timing, ScheduleListener * _func ) override;
 
-		void remove( std::size_t _id );
-		void removeAll();
+    public:
+		void remove( size_t _id ) override;
+		void removeAll() override;
 
-		void freeze( std::size_t _id, bool _freeze );
-		void freezeAll( bool _freeze );
+		void freeze( size_t _id, bool _freeze ) override;
+		void freezeAll( bool _freeze ) override;
+		bool isFreeze( size_t _id ) const override;
+
+		float time( size_t _id ) const override;
 
 	public:
-		void update( float _timing );
-		void setUpdatable( bool _upatable );
+		void update( float _current, float _timing ) override;
 
-	private:
+    protected:
+        void removeEvent_( const ScheduleEvent & _event );
+
+	protected:
+        ServiceProviderInterface * m_serviceProvider;
+
 		typedef std::vector<ScheduleEvent> TListSchedules;
-
-		bool m_updating;
-		bool m_updatable;
-		std::size_t m_schedulesID;
 		TListSchedules m_schedules;
-		TListSchedules m_schedulesToAdd;
+
+		size_t m_enumerator;	
+		bool m_freeze;
+
+    protected:
+        const ScheduleEvent * findEvent_( size_t _id ) const;
 	};
 }

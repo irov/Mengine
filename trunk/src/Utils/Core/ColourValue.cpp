@@ -12,11 +12,7 @@ namespace Menge
 	const ColourValue ColourValue::Blue = ColourValue(0.0,0.0,1.0,1.f);
 
 	//////////////////////////////////////////////////////////////////////////
-#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	ABGR ColourValue::getAsABGR() const
-#else
 	RGBA ColourValue::getAsRGBA() const
-#endif
 	{
 		uint8 val8;
 		uint32 val32 = 0;
@@ -55,7 +51,7 @@ namespace Menge
 
 		// Alpha
 		val8 = static_cast<uint8>(a * 255);
-		m_argb = val8 << 24;
+		m_argb += val8 << 24;
 
 		// Red
 		val8 = static_cast<uint8>(r * 255);
@@ -75,11 +71,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	ARGB ColourValue::getAsARGB() const
-#else
 	BGRA ColourValue::getAsBGRA() const
-#endif
 	{
 		uint8 val8;
 		uint32 val32 = 0;
@@ -107,11 +99,7 @@ namespace Menge
 		return val32;
 	}
 	//////////////////////////////////////////////////////////////////////////
-#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	RGBA ColourValue::getAsRGBA(void) const
-#else
 	ABGR ColourValue::getAsABGR(void) const
-#endif
 	{
 		uint8 val8;
 		uint32 val32 = 0;

@@ -1,16 +1,13 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "Kernel/Node.h"
 
 #	include "MousePickerAdapter.h"
-#	include "GlobalHandleAdapter.h"
-#	include "VectorVertices.h"
+#	include "Kernel/VectorVertices.h"
 
-#	include "VectorVertices.h"
+#	include "Kernel/Node.h"
 
-#	include "Math/polygon.h"
-#	include "Node.h"
-#	include "Vertex.h"
+#	include "Core/Polygon.h"
 
 namespace Menge
 {
@@ -19,61 +16,58 @@ namespace Menge
 	class HotSpot
 		: public Node
 		, public MousePickerAdapter
-		, public GlobalHandleAdapter
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 		, public VectorVertices
-#	endif
+//#	endif
 	{
 	public:
 		HotSpot();
 		~HotSpot();
 
 	public:
-		const mt::polygon & getPolygon() const;
+		void setPolygon( const Polygon & _polygon );
+		const Polygon & getPolygon() const;
+		
+	protected:
+		bool pick( const mt::vec2f& _point, Arrow * _arrow ) override;
+		bool isPickerActive() const override;
+        PyObject * getPickerEmbed() override;
 
 	public:
-		void addPoint( const mt::vec2f & _p );
-		bool testPoint( const mt::vec2f & _p );
+		virtual bool testArrow( const mt::mat4f& _transform, Arrow * _arrow, const mt::mat4f& _screenTransform );
+
+	public:
+		virtual bool testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform );
+		virtual bool testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform );
+		virtual bool testPoint( const mt::vec2f & _p );
+
+	protected:
+		bool onMouseEnter() override;
+		void onMouseLeave() override;
+
+	public:
 		void clearPoints();
-
-	public:
-		bool pickHotspot( HotSpot * _hotspot );
-
-	public:
-		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPolygon, const mt::mat3f& _screenTransform );
-
-	protected:
-		bool pick( Arrow * _arrow ) override;
-		bool _pickerActive() const override;
-
-	protected:
-		bool onEnter() override;
-		void onLeave() override;
-
-	protected:
-		bool isEnableGlobalHandle() const override;
-
-	protected:
-		void loader( XmlElement *_xml ) override;
-		void parser( BinParser *_parser ) override;
 
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		void _update( float _timing ) override;
+		void _update( float _current, float _timing ) override;
 
-		void _enable() override;
-		void _disable() override;
-
+		//void _invalidateBoundingBox() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
-		void _setListener( PyObject * _listener ) override;
+		void _setEventListener( PyObject * _listener ) override;
 
 	protected:
-		mt::polygon m_polygon;
+		void addPoint_( const mt::vec2f & _p );
 
-#	ifndef MENGE_MASTER_RELEASE
 	protected:
-		void _debugRender( Camera2D * _camera, unsigned int _debugMask ) override;
+		Polygon m_polygon;
+		Polygon m_polygonWM;
+		Polygon m_polygonScreen;
+
+//#	ifndef MENGE_MASTER_RELEASE
+	protected:
+		void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 		void _invalidateWorldMatrix() override;
 
 	private:
@@ -81,6 +75,6 @@ namespace Menge
 
 	protected:
 		uint32 m_debugColor;
-#	endif
+//#	endif
 	};
 }

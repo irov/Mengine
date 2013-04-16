@@ -2,7 +2,7 @@
 
 namespace Menge
 {
-	class OALSoundSystem;
+	class ServiceProviderInterface;
 
-	void s_OALErrorCheck( OALSoundSystem * _system, const char * _file, int _line );
+	bool s_OALErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line );
 }

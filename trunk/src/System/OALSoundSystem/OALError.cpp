@@ -1,22 +1,29 @@
 #	include "OALError.h"
 
-#	include "OALSoundSystem.h"
+#   include <AL/al.h>
+
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
-	void s_OALErrorCheck( OALSoundSystem * _system, const char * _file, int _line )
+	bool s_OALErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line )
 	{
 		ALenum error = alGetError();
 
-		if( error != AL_NO_ERROR )
+		if( error == AL_NO_ERROR )
 		{
-			const char * message = alGetString( error );
-
-			_system->log_error( "OAL Error: (%s %d) %s\n"
-				, _file
-				, _line
-				, message
-				);
+			return false;
 		}
+
+		const char * message = alGetString( error );
+
+		LOGGER_ERROR(_serviceProvider)( "OAL Error: (%s %d) %d:%s"
+			, _file
+			, _line
+            , error
+			, message
+			);	
+
+        return true;
 	}
 }

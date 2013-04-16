@@ -1,28 +1,62 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
-//#	include <string>
+#	include "Interface/ScriptSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#   include "pybind/pybind.hpp"
 
 namespace Menge
 {
-	class Node;
+    template<class T>
+    struct ScriptClassExtract
+        : public pybind::interface_<T>::extract_type_ptr
+    {
+        PyObject * wrap( typename pybind::interface_<T>::extract_type_ptr::TCastRef _node ) override
+        {
+            if( _node == 0 )
+            {
+                return pybind::ret_none();
+            }
 
+            PyObject * pyObj = _node->getEmbed();
+            pybind::incref(pyObj);
+
+            return pyObj;
+        }
+    };
+
+    template<class T>
 	class ScriptClassWrapper
+		: public ScriptClassInterface
 	{
-	public:
-		virtual PyObject * wrap( Node * _node ) = 0;
-	};
+	protected:
 
-	class ScriptClassWrapperFactory
-	{
 	public:
-		static void regWrapping( const String& _type, ScriptClassWrapper * _wrapper );
-		static PyObject * wrap( const String& _type, Node * _node );
+		ScriptClassWrapper()
+		{
+			pybind::registration_type_cast<T>( new ScriptClassExtract<T> );
+		}
+
+	protected:
+		PyObject * wrap( Node * _node ) override
+		{
+			T * obj = dynamic_cast<T *>( _node );
+			PyObject * py_embedded =  pybind::class_holder<T>( obj );
+
+			//pybind::set_attr( py_embedded, "Menge_name", pybind::ptr(_node->getName()) );
+			//pybind::set_attr( py_embedded, "Menge_type", pybind::ptr(_node->getType()) );
+			//pybind::set_attr( py_embedded, "Menge_tag", pybind::ptr(_node->getTag()) );
+
+			return py_embedded;
+		}
+
+	protected:
+		void destroy() override
+		{
+			delete this;
+		}
 	};
 }
+
+# define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
+    SCRIPT_SERVICE(serviceProvider)->addWrapping( Helper::stringizeString(serviceProvider, #Class), new ScriptClassWrapper<Class>() )

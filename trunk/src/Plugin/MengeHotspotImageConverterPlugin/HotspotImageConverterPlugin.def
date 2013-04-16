@@ -1,0 +1,2 @@
+LIBRARY		"HotspotImageConverterPlugin"
+EXPORTS 	dllCreatePlugin 	@1

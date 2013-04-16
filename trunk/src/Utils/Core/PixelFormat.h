@@ -6,75 +6,10 @@
 
 #	include <cstddef>
 #	include <string>
-#	include <cassert>
 
 #	include "Interface/RenderSystemInterface.h"
 
 namespace Menge {
-
-	struct Box
-	{
-		std::size_t left, top, right, bottom, front, back;
-		/// Parameterless constructor for setting the members manually
-		Box()
-		{
-		}
-
-		//Define a box from left, top, right and bottom coordinates
-		//This box will have depth one (front=0 and back=1).
-		//@param	l	x value of left edge
-		//@param	t	y value of top edge
-		//@param	r	x value of right edge
-		//@param	b	y value of bottom edge
-		//@note Note that the left, top, and front edges are included 
-		//but the right, bottom and back ones are not.
-		Box( size_t l, size_t t, size_t r, size_t b ):
-		left(l),
-			top(t),   
-			right(r),
-			bottom(b),
-			front(0),
-			back(1)
-		{
-			assert(right >= left && bottom >= top && back >= front);
-		}
-
-		//Define a box from left, top, front, right, bottom and back
-		//coordinates.
-		//@param	l	x value of left edge
-		//@param	t	y value of top edge
-		//@param  ff  z value of front edge
-		//@param	r	x value of right edge
-		//@param	b	y value of bottom edge
-		//@param  bb  z value of back edge
-		//@note Note that the left, top, and front edges are included 
-		//but the right, bottom and back ones are not.
-		Box( std::size_t l, std::size_t t, std::size_t ff, std::size_t r, std::size_t b, std::size_t bb ):
-		left(l),
-			top(t),   
-			right(r),
-			bottom(b),
-			front(ff),
-			back(bb)
-		{
-			assert(right >= left && bottom >= top && back >= front);
-		}
-
-		/// Return true if the other box is a part of this one
-		bool contains( const Box &def ) const
-		{
-			return (def.left >= left && def.top >= top && def.front >= front &&
-				def.right <= right && def.bottom <= bottom && def.back <= back);
-		}
-
-		/// Get the width of this box
-		std::size_t getWidth() const { return right-left; }
-		/// Get the height of this box
-		std::size_t getHeight() const { return bottom-top; }
-		/// Get the depth of this box
-		std::size_t getDepth() const { return back-front; }
-	};
-
 	// The pixel format used for images, textures, and render surfaces
 	/*enum PixelFormat
 	{
@@ -213,101 +148,6 @@ namespace Menge {
 		PCT_COUNT = 4    /// Number of pixel types
 	};
 
-	//A primitive describing a volume (3D), image (2D) or line (1D) of pixels in memory.
-	//In case of a rectangle, depth must be 1. 
-	//Pixels are stored as a succession of "depth" slices, each containing "height" rows of 
-	//"width" pixels.
-	
-	class PixelBox: public Box {
-	public:
-		/// Parameter constructor for setting the members manually
-		PixelBox() {}
-
-		//Constructor providing extents in the form of a Box object. This constructor
-		//assumes the pixel data is laid out consecutively in memory. (this
-		//means row after row, slice after slice, with no space in between)
-		//@param extents	    Extents of the region defined by data
-		//@param pixelFormat	Format of this buffer
-		//@param pixelData	Pointer to the actual data
-		PixelBox( const Box &extents, PixelFormat pixelFormat, void *pixelData = 0 )
-		: Box( extents )
-		, data( pixelData )
-		, format( pixelFormat )
-		{
-			setConsecutive();
-		}
-
-		//Constructor providing width, height and depth. This constructor
-		//assumes the pixel data is laid out consecutively in memory. (this
-		//means row after row, slice after slice, with no space in between)
-		//@param width	    Width of the region
-		//@param height	    Height of the region
-		//@param depth	    Depth of the region
-		//@param pixelFormat	Format of this buffer
-		//@param pixelData    Pointer to the actual data
-		PixelBox( std::size_t width, std::size_t height, std::size_t depth, PixelFormat pixelFormat, void *pixelData = 0 )
-		: Box( 0, 0, 0, width, height, depth )
-		, data( pixelData )
-		, format( pixelFormat )
-		{
-			setConsecutive();
-		}
-
-		/// The data pointer 
-		void *data;
-		/// The pixel format 
-		PixelFormat format;
-		//Number of elements between the leftmost pixel of one row and the left
-		//pixel of the next. This value must always be equal to getWidth() (consecutive) 
-		//for compressed formats.
-		std::size_t rowPitch;
-
-		//Number of elements between the top left pixel of one (depth) slice and 
-		//the top left pixel of the next. This can be a negative value. Must be a multiple of
-		//rowPitch. This value must always be equal to getWidth()*getHeight() (consecutive) 
-		//for compressed formats.
-		std::size_t slicePitch;
-
-		//Set the rowPitch and slicePitch so that the buffer is laid out consecutive 
-		//in memory.
-		void setConsecutive()
-		{
-			rowPitch = getWidth();
-			slicePitch = getWidth()*getHeight();
-		}
-
-		//Get the number of elements between one past the rightmost pixel of 
-		//one row and the leftmost pixel of the next row. (IE this is zero if rows
-		//are consecutive).
-		std::size_t getRowSkip() const { return rowPitch - getWidth(); }
-		
-		//Get the number of elements between one past the right bottom pixel of
-		//one slice and the left top pixel of the next slice. (IE this is zero if slices
-		//are consecutive).
-		std::size_t getSliceSkip() const { return slicePitch - (getHeight() * rowPitch); }
-
-		//Return whether this buffer is laid out consecutive in memory (ie the pitches
-		//are equal to the dimensions)
-		bool isConsecutive() const 
-		{ 
-			return rowPitch == getWidth() && slicePitch == getWidth()*getHeight(); 
-		}
-
-		//Return the size (in bytes) this image would take if it was
-		//laid out consecutive in memory
-		std::size_t getConsecutiveSize() const;
-		
-		//Return a subvolume of this PixelBox.
-		//@param def	Defines the bounds of the subregion to return
-		//@returns	A pixel box describing the region and the data in it
-		//@remarks	This function does not copy any data, it just returns
-		//a PixelBox object with a data pointer pointing somewhere inside 
-		//the data of object.
-		//@throws	Exception(ERR_INVALIDPARAMS) if def is not fully contained
-		PixelBox getSubVolume( const Box &def ) const;
-	};
-
-
 	//////////////////////////////////////////////////////////////////////////
 	// Some utility functions for packing and unpacking pixel data
 	//////////////////////////////////////////////////////////////////////////
@@ -344,7 +184,7 @@ namespace Menge {
 		//In case that the format is non-compressed, this simply returns
 		//width*height*depth*PixelUtil::getNumElemBytes(format). In the compressed
 		//case, this does serious magic.
-		static size_t getMemorySize( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format);
+		static size_t getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format);
 
 		//Returns the property flags for this pixel format
 		//@returns
@@ -378,7 +218,7 @@ namespace Menge {
 		//The format of the area
 		//@remarks For non-compressed formats, this is always true. For DXT formats,
 		//only sizes with a width and height multiple of 4 and depth 1 are allowed.
-		static bool isValidExtent( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format );
+		static bool isValidExtent( size_t _width, size_t _height, size_t _depth, PixelFormat _format );
 
 		//Gives the number of bits (RGBA) for a format. See remarks.          
 		//@remarks      For non-colour formats (dxt, depth) this returns [0,0,0,0].
@@ -406,7 +246,7 @@ namespace Menge {
 
 		//Returns the component count for a certain pixel format. Returns 3(no alpha) or 
 		//4 (has alpha) in case there is no clear component type like with compressed formats.
-		static std::size_t getComponentCount( PixelFormat _fmt );
+		static size_t getComponentCount( PixelFormat _fmt );
 
 		//Gets the format from given name.
 		//@param  name            The string of format name
@@ -483,14 +323,6 @@ namespace Menge {
 		//@param   dst			Pointer to destination region
 		//@param	dstFormat	Pixel format of destination region
 		static void bulkPixelConversion( void* _src, PixelFormat _srcFormat, void* _dest, PixelFormat _dstFormat, unsigned int _count );
-
-		//Convert pixels from one format to another. No dithering or filtering is being done. Converting
-		//from RGB to luminance takes the R channel. 
-		//@param	src			PixelBox containing the source pixels, pitches and format
-		//@param	dst			PixelBox containing the destination pixels, pitches and format
-		//@remarks The source and destination boxes must have the same
-		//dimensions. In case the source and destination format match, a plain copy is done.
-		static void bulkPixelConversion( const PixelBox& _src, const PixelBox& _dst );
 	};
 
 }

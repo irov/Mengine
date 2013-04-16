@@ -679,10 +679,8 @@ namespace MengeProjectBuilder
                 && (iconFile != "" || userDirName != ""))
             {
                 logMessage("Patching resources...\n", Color.Black);
-                patchWin32(binDir, "Game.exe", iconFile, userDirName, GameXmlDoc);
+                patchWin32(binDir, "Game.exe", iconFile, userDirName);
             }
-            System.IO.Directory.SetCurrentDirectory(gamePack);
-            GameXmlDoc.Save(gameFile);
 
             if (m_makePak == true)
             {
@@ -922,11 +920,6 @@ namespace MengeProjectBuilder
                 ex_tool_proc.CancelOutputRead();
                 ex_tool_proc.CancelErrorRead();
 
-                XmlNode nodeToAppend = _resImages.resourceXml.FirstChild;
-                if (nodeToAppend.NodeType == XmlNodeType.XmlDeclaration)
-                {
-                    nodeToAppend = nodeToAppend.NextSibling;
-                }
                 System.IO.StreamReader partTextures = new System.IO.StreamReader("part_textures.txt");
                 string line = partTextures.ReadLine();
                 while (line != null)
@@ -946,7 +939,7 @@ namespace MengeProjectBuilder
                         xmlFilePath.Value = partFolder + "/" + line;
                         xmlFileElement.Attributes.Append(xmlFilePath);
                         xmlResource.AppendChild(xmlFileElement);
-                        nodeToAppend.AppendChild(xmlResource);
+                        _resImages.resourceXml.FirstChild.AppendChild(xmlResource);
                     }
                     line = partTextures.ReadLine();
                }
@@ -1156,7 +1149,7 @@ namespace MengeProjectBuilder
             return true;
         }
 
-        private void patchWin32(string _binDir, string _binaryFile, string _iconFile, string _userDirName, XmlDocument _startupXML )
+        private void patchWin32(string _binDir, string _binaryFile, string _iconFile, string _userDirName)
         {
             string exeFile = System.IO.Path.Combine(_binDir, _binaryFile);
             System.Diagnostics.Process upx_proc = new System.Diagnostics.Process();
@@ -1238,19 +1231,7 @@ namespace MengeProjectBuilder
             if (_userDirName.Length > 0)
             {
                 string newExeName = System.IO.Path.Combine(_binDir, _userDirName + ".exe");
-                string newScrName = System.IO.Path.Combine(_binDir, _userDirName + ".scr");
                 System.IO.File.Move(exeFile, newExeName);
-                XmlNode scrNameNode = _startupXML.SelectSingleNode( "/Game/Screensaver/@Name" );
-                if( scrNameNode != null )
-                {
-                    string scrFile = System.IO.Path.Combine(_binDir, scrNameNode.Value);
-                    if (System.IO.File.Exists(scrFile) == true)
-                    {
-                        System.IO.File.Delete(scrFile);
-                    }
-                    scrNameNode.Value = _userDirName + ".scr";
-                    System.IO.File.Copy(newExeName, newExeName.Substring(0, newExeName.Length - 3) + "scr");
-                }
             }
         }
 

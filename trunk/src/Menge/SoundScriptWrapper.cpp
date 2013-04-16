@@ -1,131 +1,434 @@
 #	include "ScriptWrapper.h"
 
-#	include "ScriptClassWrapperDefine.h"
-#	include "ScriptDeclarationDefine.h"
-
-#	include "Amplifier.h"
+#	include "Interface/AmplifierServiceInterface.h"
+#	include "Interface/ResourceInterface.h"
 
 #	include "SoundEmitter.h"
+#	include "ResourceSound.h"
 
-#	include "Core/Holder.h"
+#	include "Logger/Logger.h"
 
-#	include "SoundEngine.h"
+#	include "Consts.h"
 
 #	include "pybind/pybind.hpp"
 
 namespace	Menge
 {
-	class ScriptSoundHelper
+	class SoundScriptMethod
 	{
-	public:
-		static void soundSetVolume( float _volume )
+    public:
+        SoundScriptMethod( ServiceProviderInterface * _serviceProvider )
+            : m_serviceProvider(_serviceProvider)
+        {
+        }
+
+    public:
+		//////////////////////////////////////////////////////////////////////////
+		class MySoundNodeListenerInterface
+			: public SoundNodeListenerInterface
 		{
-			Holder<SoundEngine>::hostage()->setSoundSourceVolume( _volume );
+		public:
+			MySoundNodeListenerInterface( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, unsigned int _sourceID, SoundBufferInterface * _soundBuffer, PyObject * _cb )
+				: m_serviceProvider(_serviceProvider)
+                , m_resource(_resource)
+				, m_sourceID(_sourceID)
+                , m_soundBuffer(_soundBuffer)
+				, m_cb(_cb)
+			{
+				pybind::incref(m_cb);
+			}
+
+			~MySoundNodeListenerInterface()
+			{
+				pybind::decref(m_cb);
+			}
+
+		protected:
+			void listenSoundNodePaused() override
+			{
+				//Empty
+			}
+
+			void listenSoundNodeStopped() override
+			{				
+				if( m_cb != NULL && pybind::is_none( m_cb ) == false )
+				{
+					pybind::call( m_cb, "(i)", m_sourceID );
+				}
+
+				SOUND_SERVICE(m_serviceProvider)
+					->releaseSoundSource( m_sourceID );
+
+				if( m_resource != 0 )
+				{
+                    m_resource->releaseSoundBuffer( m_soundBuffer );
+
+					m_resource->decrementReference();
+					m_resource = 0;
+				}
+
+				delete this;
+			}
+
+		protected:
+            ServiceProviderInterface * m_serviceProvider;
+            ResourceSound * m_resource;
+			unsigned int m_sourceID;	
+            SoundBufferInterface * m_soundBuffer;
+			PyObject * m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		bool s_hasSound( const ConstString & _resourceName )
+		{
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->validResourceType( _resourceName, CONST_STRING(m_serviceProvider, ResourceSound) ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float soundGetVolume()
+		unsigned int s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, PyObject * _cb )
 		{
-			return Holder<SoundEngine>::hostage()->getSoundSourceVolume();
+			ResourceSound * resource = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceSound>( _resourceName );
+
+			if( resource == 0 )
+			{
+				return 0;
+			}
+
+			SoundBufferInterface * soundBuffer = resource->createSoundBuffer();
+
+            if( soundBuffer == NULL )
+            {
+                return 0;
+            }
+
+			bool streamable = resource->isStreamable();
+
+			unsigned int sourceID = SOUND_SERVICE(m_serviceProvider)
+                ->createSoundSource( true, soundBuffer, _type, streamable );
+
+			if( sourceID == NULL )
+			{
+				if( resource != NULL )
+				{
+                    resource->releaseSoundBuffer( soundBuffer );
+
+					resource->decrementReference();
+					resource = NULL;
+				}				
+
+				return 0;
+			}
+
+			SOUND_SERVICE(m_serviceProvider)
+				->setLoop( sourceID, _loop );
+
+			float volume = resource->getDefaultVolume();
+
+			if( SOUND_SERVICE(m_serviceProvider)
+				->setSourceVolume( sourceID, volume ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid  %s"
+					, _resourceName.c_str()
+					);
+			}
+
+			SoundNodeListenerInterface * snlistener = 
+				new MySoundNodeListenerInterface( m_serviceProvider, resource, sourceID, soundBuffer, _cb );
+
+			SOUND_SERVICE(m_serviceProvider)
+				->setSourceListener( sourceID, snlistener );
+			
+			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void commonSetVolume( float _volume )
+		unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
 		{
-			Holder<SoundEngine>::hostage()->setCommonVolume( _volume );
+			unsigned int sourceID = s_createSoundSource( _resourceName, _loop, EST_SOUND, _cb );
+
+			if( sourceID == 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "soundPlay: can't get resource '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
+
+			SOUND_SERVICE(m_serviceProvider)
+				->play( sourceID );
+              
+			return sourceID;
+		}
+        //////////////////////////////////////////////////////////////////////////
+        unsigned int s_voicePlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+        {
+            unsigned int sourceID = s_createSoundSource( _resourceName, _loop, EST_VOICE, _cb );
+
+            if( sourceID == 0 )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "voicePlay: can't get resource '%s'"
+                    , _resourceName.c_str()
+                    );
+
+                return 0;
+            }
+
+            SOUND_SERVICE(m_serviceProvider)
+                ->play( sourceID );
+
+            return sourceID;
+        }
+		//////////////////////////////////////////////////////////////////////////
+		unsigned int s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, PyObject * _cb )
+		{
+			unsigned int sourceID = s_createSoundSource(_resourceName, _loop, EST_SOUND, _cb);
+
+			if( sourceID == 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "soundPlayFromPosition: can't get resource '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
+
+			SOUND_SERVICE(m_serviceProvider)
+				->setPosMs( sourceID, _position );
+			
+			SOUND_SERVICE(m_serviceProvider)
+				->play( sourceID );
+
+			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float commonGetVolume()
+		float s_soundGetPosMs( unsigned int _sourceID )
 		{
-			return Holder<SoundEngine>::hostage()->getCommonVolume();
+			float pos =	SOUND_SERVICE(m_serviceProvider)
+				->getPosMs(_sourceID);
+
+			return pos;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicPlayList( const String& _list )
+		void s_soundSetPosMs( unsigned int _sourceID, float _pos )
 		{
-			Holder<Amplifier>::hostage()->playAllTracks( _list );
+			SOUND_SERVICE(m_serviceProvider)
+				->setPosMs( _sourceID, _pos );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicPlayTrack( const String& _list, int _index, bool _isLooped )
+		void s_soundStop( unsigned int _sourceID )
 		{
-			Holder<Amplifier>::hostage()->playTrack(_list, _index, _isLooped);
+			SOUND_SERVICE(m_serviceProvider)
+				->stop( _sourceID );
+		}
+        //////////////////////////////////////////////////////////////////////////
+        void s_voiceStop( unsigned int _sourceID )
+        {
+            SOUND_SERVICE(m_serviceProvider)
+                ->stop( _sourceID );
+        }
+		//////////////////////////////////////////////////////////////////////////
+		void s_soundSourceSetVolume( unsigned int _sourceID, float _volume )
+		{
+			if( SOUND_SERVICE(m_serviceProvider)
+				->setSourceVolume( _sourceID, _volume ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("SoundScriptWrapper::s_soundSourceSetVolume invalid source volume %d"
+					, _sourceID
+					);
+			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static std::size_t musicGetNumTracks()
+		float s_soundSourceGetVolume( unsigned int _sourceID )
 		{
-			return Holder<Amplifier>::hostage()->getNumTracks();
+			float volume = SOUND_SERVICE(m_serviceProvider)
+				->getSourceVolume( _sourceID );
+
+            return volume;                 
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicSetVolume( float _volume )
+		void s_soundSetVolume( float _volume )
 		{
-			Holder<SoundEngine>::hostage()->setMusicVolume( _volume );
+			SOUND_SERVICE(m_serviceProvider)
+				->setSoundVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float musicGetVolume()
+		float s_soundGetVolume()
 		{
-			return Holder<SoundEngine>::hostage()->getMusicVolume();
+			float volume = SOUND_SERVICE(m_serviceProvider)
+				->getSoundVolume();
+
+            return volume;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicStop( )
+		void s_commonSetVolume( float _volume )
 		{
-			Holder<Amplifier>::hostage()->stop();
+			SOUND_SERVICE(m_serviceProvider)
+				->setCommonVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicShuffle( const String& _list )
+		float commonGetVolume()
 		{
-			Holder<Amplifier>::hostage()->shuffle( _list );
+			return SOUND_SERVICE(m_serviceProvider)
+				->getCommonVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static const String& s_musicGetPlaying()
+		void musicPlayList( const ConstString & _list )
 		{
-			return Holder<Amplifier>::hostage()->getPlaying();
+			AMPLIFIER_SERVICE(m_serviceProvider)
+				->playAllTracks( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_musicVolumeTo( float _time, float _volume )
+		void resetPlayList( )
 		{
-			Holder<Amplifier>::hostage()->volumeTo( _time, _volume );
+			AMPLIFIER_SERVICE(m_serviceProvider)
+				->resetPlayList();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_musicVolumeToCb( float _time, float _volume, PyObject* _cb )
+		void musicPlayTrack( const ConstString & _list, int _index, bool _isLooped )
 		{
-			Holder<Amplifier>::hostage()->volumeToCb( _time, _volume, _cb );
+			AMPLIFIER_SERVICE(m_serviceProvider)
+				->playTrack( _list, _index, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float s_musicGetPosMs()
+		size_t musicGetNumTracks()
 		{
-			return Holder<Amplifier>::hostage()->getPosMs();
+			return AMPLIFIER_SERVICE(m_serviceProvider)
+				->getNumTracks();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_musicSetPosMs( float _posMs )
+		void musicSetVolume( float _volume )
 		{
-			Holder<Amplifier>::hostage()->setPosMs( _posMs );
+			SOUND_SERVICE(m_serviceProvider)
+				->setMusicVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_soundMute( bool _mute )
+		float musicGetVolume()
 		{
-			Holder<SoundEngine>::hostage()->mute( _mute );
+			return SOUND_SERVICE(m_serviceProvider)
+				->getMusicVolume();
 		}
+        //////////////////////////////////////////////////////////////////////////
+        void voiceSetVolume( float _volume )
+        {
+            SOUND_SERVICE(m_serviceProvider)
+                ->setVoiceVolume( _volume );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float voiceGetVolume()
+        {
+            return SOUND_SERVICE(m_serviceProvider)
+                ->getVoiceVolume();
+        }
+		//////////////////////////////////////////////////////////////////////////
+		void musicStop()
+		{
+			AMPLIFIER_SERVICE(m_serviceProvider)
+				->stop();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void musicShuffle( const ConstString & _list )
+		{
+			AMPLIFIER_SERVICE(m_serviceProvider)
+				->shuffle( _list );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		const ConstString & s_musicGetPlaying()
+		{
+			return AMPLIFIER_SERVICE(m_serviceProvider)
+				->getPlayTrack();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_musicSetVolume( float _volume )
+		{
+			AMPLIFIER_SERVICE(m_serviceProvider)
+				->setVolume( _volume );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		float s_musicGetPosMs()
+		{
+			return AMPLIFIER_SERVICE(m_serviceProvider)
+				->getPosMs();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_musicSetPosMs( float _posMs )
+		{
+			AMPLIFIER_SERVICE(m_serviceProvider)
+				->setPosMs( _posMs );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_soundMute( bool _mute )
+		{
+			SOUND_SERVICE(m_serviceProvider)
+				->mute( _mute );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_isMute()
+		{
+			bool mute = SOUND_SERVICE(m_serviceProvider)
+				->isMute();
+
+			return mute;
+		}
+
+        bool s_isSilent()
+        {
+            bool silent = SOUND_SERVICE(m_serviceProvider)
+                ->isSilent();
+
+            return silent;
+        }
+
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
 	};
 
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
-	void ScriptWrapper::soundWrap()
+	void ScriptWrapper::soundWrap( ServiceProviderInterface * _serviceProvider )
 	{
-		pybind::def( "soundSetVolume", &ScriptSoundHelper::soundSetVolume );
-		pybind::def( "soundGetVolume", &ScriptSoundHelper::soundGetVolume );
-		pybind::def( "soundMute", &ScriptSoundHelper::s_soundMute );
+        SoundScriptMethod * soundScriptMethod = new SoundScriptMethod(_serviceProvider);
 
-		pybind::def( "commonSetVolume", &ScriptSoundHelper::commonSetVolume );
-		pybind::def( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
+		pybind::def_functor( "hasSound", soundScriptMethod, &SoundScriptMethod::s_hasSound );
+        pybind::def_functor( "isMute", soundScriptMethod, &SoundScriptMethod::s_isMute );
+        pybind::def_functor( "isSilent", soundScriptMethod, &SoundScriptMethod::s_isSilent );
+        pybind::def_functor( "soundMute", soundScriptMethod, &SoundScriptMethod::s_soundMute );
 
-		pybind::def( "musicPlayList", &ScriptSoundHelper::musicPlayList );
-		pybind::def( "musicPlayTrack", &ScriptSoundHelper::musicPlayTrack );
-		pybind::def( "musicGetNumTracks", &ScriptSoundHelper::musicGetNumTracks );
-		pybind::def( "musicSetVolume", &ScriptSoundHelper::musicSetVolume );
-		pybind::def( "musicGetVolume", &ScriptSoundHelper::musicGetVolume );
-		pybind::def( "musicStop", &ScriptSoundHelper::musicStop );
-		pybind::def( "musicShuffle", &ScriptSoundHelper::musicShuffle );
-		pybind::def( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
-		pybind::def( "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
-		pybind::def( "musicVolumeToCb", &ScriptSoundHelper::s_musicVolumeToCb );
-		pybind::def( "musicGetPosMs", &ScriptSoundHelper::s_musicGetPosMs );
-		pybind::def( "musicSetPosMs", &ScriptSoundHelper::s_musicSetPosMs );
+        pybind::def_functor( "commonSetVolume", soundScriptMethod, &SoundScriptMethod::s_commonSetVolume );
+        pybind::def_functor( "commonGetVolume", soundScriptMethod, &SoundScriptMethod::commonGetVolume );
+                
+        pybind::def_functor( "soundPlay", soundScriptMethod, &SoundScriptMethod::s_soundPlay );
+		pybind::def_functor( "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::s_soundPlayFromPosition );
+		pybind::def_functor( "soundStop", soundScriptMethod, &SoundScriptMethod::s_soundStop );
+		pybind::def_functor( "soundSourceSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceSetVolume );
+		pybind::def_functor( "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSourceGetVolume );
+		pybind::def_functor( "soundSetVolume", soundScriptMethod, &SoundScriptMethod::s_soundSetVolume );
+		pybind::def_functor( "soundGetVolume", soundScriptMethod, &SoundScriptMethod::s_soundGetVolume );
+		pybind::def_functor( "soundGetPosition", soundScriptMethod, &SoundScriptMethod::s_soundGetPosMs );
+		pybind::def_functor( "soundSetPosition", soundScriptMethod, &SoundScriptMethod::s_soundSetPosMs );
+				
+		pybind::def_functor( "musicPlayList", soundScriptMethod, &SoundScriptMethod::musicPlayList );
+		pybind::def_functor( "resetPlayList", soundScriptMethod, &SoundScriptMethod::resetPlayList );
+		pybind::def_functor( "musicPlayTrack", soundScriptMethod, &SoundScriptMethod::musicPlayTrack );
+		pybind::def_functor( "musicGetNumTracks", soundScriptMethod, &SoundScriptMethod::musicGetNumTracks );
+		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
+		pybind::def_functor( "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
+		pybind::def_functor( "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
+		pybind::def_functor( "musicShuffle", soundScriptMethod, &SoundScriptMethod::musicShuffle );
+		pybind::def_functor( "musicGetPlaying", soundScriptMethod, &SoundScriptMethod::s_musicGetPlaying );
+		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::s_musicSetVolume );
+		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
+		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );
+
+
+        pybind::def_functor( "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );
+        pybind::def_functor( "voiceStop", soundScriptMethod, &SoundScriptMethod::s_voiceStop );
+        pybind::def_functor( "voiceSetVolume", soundScriptMethod, &SoundScriptMethod::voiceSetVolume );
+        pybind::def_functor( "voiceGetVolume", soundScriptMethod, &SoundScriptMethod::voiceGetVolume );
+
 	}
 }

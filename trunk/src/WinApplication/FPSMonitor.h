@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "WindowsIncluder.h"
+#	include "WindowsLayer/WindowsIncluder.h"
 
 namespace Menge
 {
@@ -12,11 +12,11 @@ namespace Menge
 
 	public:
 		void initialize();
-		void finialize();
+		void finalize();
 
 	public:
 		void setActive( bool _active );
-		void setFrameTime( unsigned long _frameTiming );
+		void setFrameTime( float _frameTiming );
 
 	public:
 		void monitor();
@@ -28,7 +28,7 @@ namespace Menge
 		bool m_running;
 		bool m_active;
 
-		unsigned long m_frameTiming;
+		float m_frameTiming;
 
 		DWORD  m_threadId;
 

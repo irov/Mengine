@@ -1,3 +1,4 @@
+set( MY_LIB_NAME WinApplication )
 
 ADD_FILTER(
 LoggerConsole
@@ -11,11 +12,17 @@ LoggerConsole
 #	resource.h
 #	WinApplication.rc
 #)
+
+ADD_FILTER(
+FileLogger
+	FileLogger.h
+	FileLogger.cpp
+)
+
 	
 ADD_FILTER(
 src
-	main.cpp
-	WindowsIncluder.h
+	main.cpp	
 	FPSMonitor.cpp
 	FPSMonitor.h	
 	AlreadyRunningMonitor.h
@@ -24,13 +31,14 @@ src
 	CriticalErrorsMonitor.cpp
 	WinApplication.cpp
 	WinApplication.h
+    WinApplicationInitializer.cpp
+    WinApplicationInitializer.h
 	WinTimer.cpp
 	WinTimer.h
-	DynamicLibrary.h
-	DynamicLibrary.cpp
-	StringConversion.h
-	StringConversion.cpp
 )
+
+add_definitions(-DUNICODE)
+add_definitions(-D_UNICODE)
 
 if(MINGW)
     # resource compilation for mingw
@@ -43,20 +51,20 @@ if(MINGW)
     SET(SRC_FILES ${SRC_FILES} WinApplication.rc)
   endif(MINGW)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
+INCLUDE_DIRECTORIES( 
+    ${Mengine_SOURCE_DIR}/Utils
+    ${THIRDPARTY_DIR}/simpleini
+    )
+    
+    
 #MESSAGE( CMAKE_ARCHIVE_OUTPUT_DIRECTORY = "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}" )
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
 ADD_EXECUTABLE( WinApplication WIN32 ${SRC_FILES} )
 
-SET( LIB_PREFIX )
-if(NOT MSVC)
-	SET( LIB_PREFIX "lib" )
-endif(NOT MSVC)
-
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
-	TARGET_LINK_LIBRARIES( WinApplication debug ${LIB_PREFIX}${dependency}${CMAKE_DEBUG_POSTFIX}${MENGINE_LIB_POSTFIX} )
-	TARGET_LINK_LIBRARIES( WinApplication optimized ${LIB_PREFIX}${dependency}${MENGINE_LIB_POSTFIX} )
+	TARGET_LINK_LIBRARIES( WinApplication debug ${dependency} )
+	TARGET_LINK_LIBRARIES( WinApplication optimized ${dependency} )
 endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 if(NOT MSVC)
@@ -64,6 +72,11 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 TARGET_LINK_LIBRARIES( WinApplication ${APPLICATION_LIBS} comctl32 )
+
+MESSAGE("TEST")
+MESSAGE(${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX})
+
+TARGET_LINK_LIBRARIES( WinApplication ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}simpleini_static${MENGINE_LIB_SUFFIX} )
 
 if(MSVC)
 	set_target_properties( WinApplication PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib" )

@@ -1,11 +1,15 @@
 #	include "ResourcePlaylist.h"
+#	include "Kernel/ResourceImplement.h"
 
-#	include "ResourceImplement.h"
+#	include "Interface/FileSystemInterface.h"
+#	include "Interface/CodecInterface.h"
 
-#	include "XmlEngine.h"
+#	include "Metacode.h"
 
 #	include "Logger/Logger.h"
+
 #	include "Core/String.h"
+#	include "Core/File.h"
 
 namespace Menge
 {
@@ -13,115 +17,81 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourcePlaylist );
 	//////////////////////////////////////////////////////////////////////////
 	ResourcePlaylist::ResourcePlaylist()
-		: m_loop( true )
-		, m_shuffle( false )
+		: m_loop(true)
+		, m_shuffle(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::setFilePath( const String& _path )
+	bool ResourcePlaylist::_loader( const Metabuf::Metadata * _meta )
 	{
-		m_filename = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& ResourcePlaylist::getFilePath() const
-	{
-		return m_filename;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loader( XmlElement * _xml )
-	{
-		ResourceReference::loader( _xml );
+        const Metacode::Meta_DataBlock::Meta_ResourcePlaylist * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourcePlaylist *>(_meta);
 
-		XML_SWITCH_NODE( _xml )
+        metadata->get_Loop_Value( m_loop );
+        metadata->get_Shuffle_Value( m_shuffle );
+
+        const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::TVectorMeta_Tracks & includes_tracks = metadata->get_IncludesTracks();
+
+        for( Metacode::Meta_DataBlock::Meta_ResourcePlaylist::TVectorMeta_Tracks::const_iterator
+            it = includes_tracks.begin(),
+            it_end = includes_tracks.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks & meta_tracks = *it;
+
+            const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::TVectorMeta_Track & includes_track = meta_tracks.get_IncludesTrack();
+
+            for( Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::TVectorMeta_Track::const_iterator
+                it = includes_track.begin(),
+                it_end = includes_track.end();
+            it != it_end;
+            ++it )
+            {
+                const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & meta_track = *it;
+
+                TrackDesc desc;
+
+                desc.volume = 1.f;
+
+                meta_track.swap_File( desc.path );
+                
+                const ConstString & category = this->getCategory();
+
+                if( FILE_SERVICE(m_serviceProvider)
+                    ->existFile( category, desc.path, NULL ) == false )
+                {
+                    LOGGER_ERROR(m_serviceProvider)( "ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
+                        , this->getName().c_str()
+                        , desc.path.c_str() 
+                        );
+
+                    continue;
+                }
+
+                if( meta_track.swap_Codec( desc.codec ) == false )
+                {
+                    desc.codec = this->getCodec_( desc.path );
+                }
+
+                m_tracks.push_back( desc );
+            }
+        }
+
+        return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TrackDesc * ResourcePlaylist::getTrack( unsigned int _track ) const
+	{
+		if( _track >= m_tracks.size() )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourcePlaylist::setFilePath );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loaderTracks_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );
-			XML_CASE_ATTRIBUTE_NODE( "Shuffle", "Value", m_shuffle );
-
-			XML_CASE_NODE( "Tracks" )
-			{
-				XML_PARSE_ELEMENT( this, &ResourcePlaylist::loaderTrack_ );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loaderTrack_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Track" )
-			{
-				String filename;
-				float volume = 1.0f;
-
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "File", filename );
-					XML_CASE_ATTRIBUTE( "Volume", volume );
-				}
-
-				const String & category = this->getCategory();
-
-				if( Holder<FileEngine>::hostage()->existFile( category, filename ) == false )
-				{
-					MENGE_LOG_ERROR( "ResourcePlaylist : '%s' not exist"
-						, filename.c_str() 
-						);
-				}
-				else
-				{
-					m_tracks.push_back( filename );
-					m_volumes.push_back( volume );
-				}
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePlaylist::_compile()
-	{
-		const String & category = this->getCategory();
-
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( category, m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
-		{
-			MENGE_LOG_ERROR( "Warning: resource playlist not found file '%s'"
-				, m_filename.c_str()
-				);
-
-			return false;
+			return 0;
 		}
 
-		return true;
+		return &m_tracks[_track];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourcePlaylist::getTrack( unsigned int _track ) const
-	{
-		if( _track >= m_tracks.size() || _track < 0 )
-		{
-			return Utils::emptyString();
-		}
-
-		return m_tracks[ _track ];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourcePlaylist::getTrackVolume( unsigned int _track ) const
-	{
-		if( _track >= m_volumes.size() || _track < 0 )
-		{
-			return 1.0f;
-		}
-
-		return m_volumes[_track];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorString & ResourcePlaylist::getTracks() const
+	const TVectorTrackDesc & ResourcePlaylist::getTracks() const
 	{
 		return m_tracks;
 	}
@@ -134,10 +104,6 @@ namespace Menge
 	bool ResourcePlaylist::getShuffle() const
 	{
 		return m_shuffle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::_release()
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

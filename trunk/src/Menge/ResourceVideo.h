@@ -1,12 +1,12 @@
 #	pragma once
 
-#	include "ResourceReference.h"
+#	include "Kernel/ResourceReference.h"
 
 #	include "Math/vec2.h"
 
 namespace Menge
 {
-	class VideoDecoderInterface;
+    class VideoDecoderInterface;
 
 	class ResourceVideo
 		: public ResourceReference
@@ -17,24 +17,38 @@ namespace Menge
 		~ResourceVideo();
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		bool _loader( const Metabuf::Metadata * _parser ) override;
+        bool _convert() override;
 
 	public:
-		const String & getFilename() const;
+		const FilePath & getFilePath() const;
+		const ConstString& getCodecType() const;
 
-		bool sync( float _timing );
-		void getRGBData( unsigned char* _buffer, int _pitch );
+    public:
+        VideoDecoderInterface * createVideoDecoder() const;
+
+	public:
 		const mt::vec2f& getFrameSize() const;
-		bool eof();
-		void seek( float _timing );
+		bool isAlpha() const;
+        bool isNoSkeep() const;
+
+    protected:
+        bool _isValid() const override;
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
-		String m_filepath;
-		VideoDecoderInterface * m_videoDecoder;
-		std::streamsize m_bufferSize;
-		mt::vec2f m_frameSize;
+    protected:
+        bool convert_();
+		
+	protected:
+		FilePath m_path;
+        
+        ConstString m_converter;
+		ConstString m_codec;
+
+        bool m_alpha;
+        bool m_noSeek;
 	};
 }

@@ -1,9 +1,6 @@
-
 #	include "LoggerConsole.h"
 
-
-
-#	include "StringConversion.h"
+#   include "Interface/UnicodeInterface.h"
 
 #	include <io.h>
 #	include <cstdio>
@@ -13,17 +10,44 @@ typedef BOOL (WINAPI *PATTACHCONSOLE)(DWORD);
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LoggerConsole::LoggerConsole()
-		: m_createConsole(false)
+	LoggerConsole::LoggerConsole( ServiceProviderInterface * _serviceProvider )
+		: m_serviceProvider(_serviceProvider)
+        , m_createConsole(false)
+		, m_verboseLevel(LM_INFO)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LoggerConsole::~LoggerConsole()
 	{
-		if( m_createConsole == true )
+		if( m_createConsole == false )
 		{
-			FreeConsole();
+			return;
 		}
+
+		//_close( hConHandle[0] );
+		//_close( hConHandle[1] );
+		//_close( hConHandle[2] );
+		
+		fclose( fp[0] );
+		fclose( fp[1] );
+		fclose( fp[2] );
+
+		FreeConsole();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LoggerConsole::setVerboseLevel( EMessageLevel _level )
+	{
+		m_verboseLevel = _level;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LoggerConsole::validVerboseLevel( EMessageLevel _level ) const
+	{
+		if( m_verboseLevel < _level )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::createConsole()
@@ -40,39 +64,43 @@ namespace Menge
 			}
 		}
 
-		int hConHandle;
-		HANDLE lStdHandle;
+		
 		CONSOLE_SCREEN_BUFFER_INFO coninfo;
-		FILE *fp;
+	
 		// try to attach to calling console first
-		m_createConsole = ( pAttachConsole( (DWORD)-1 ) == FALSE );
-		// allocate a console for this app
-		if( m_createConsole == true )
+		if( pAttachConsole( (DWORD)-1 ) == FALSE )
 		{
+			// allocate a console for this app
 			m_createConsole = ( AllocConsole() == TRUE );
+
 			// set the screen buffer to be big enough to let us scroll text
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
 			coninfo.dwSize.Y = 1000;
 			SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
 		}
+		
 		// redirect unbuffered STDOUT to the console
-		lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-		hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
-		fp = _fdopen( hConHandle, "w" );
-		*stdout = *fp;
+		lStdHandle[0] = GetStdHandle(STD_OUTPUT_HANDLE);
+		hConHandle[0] = _open_osfhandle((intptr_t)lStdHandle[0], 0x4000);
+		fp[0] = _fdopen( hConHandle[0], "w" );
+		*stdout = *fp[0];
 		setvbuf( stdout, NULL, _IONBF, 0 );
+
 		// redirect unbuffered STDIN to the console
-		lStdHandle = GetStdHandle(STD_INPUT_HANDLE);
-		hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
-		fp = _fdopen( hConHandle, "r" );
-		*stdin = *fp;
+		lStdHandle[1] = GetStdHandle(STD_INPUT_HANDLE);
+		hConHandle[1] = _open_osfhandle((intptr_t)lStdHandle[1], 0x4000);
+		fp[1] = _fdopen( hConHandle[1], "r" );
+		*stdin = *fp[1];
 		setvbuf( stdin, NULL, _IONBF, 0 );
+		
 		// redirect unbuffered STDERR to the console
-		m_ConsoleHandle = lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
-		hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
-		fp = _fdopen( hConHandle, "w" );
-		*stderr = *fp;
+		lStdHandle[2] = GetStdHandle(STD_ERROR_HANDLE);
+		hConHandle[2] = _open_osfhandle((intptr_t)lStdHandle[2], 0x4000);
+		fp[2] = _fdopen( hConHandle[2], "w" );
+		*stderr = *fp[2];
 		setvbuf( stderr, NULL, _IONBF, 0 );
+		
+		m_ConsoleHandle = lStdHandle[2];
 		//::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
 		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 		// point to console as well
@@ -82,14 +110,15 @@ namespace Menge
 		{
 			FreeLibrary( hKernel32 );
 		}
+
+		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::log( const void* _data, int _count, EMessageLevel _level )
+	void LoggerConsole::log( const char * _data, int _count, EMessageLevel _level )
 	{
-		std::string ansi;
-		
-		StringConversion::utf8ToAnsi( String( static_cast<const char*>(_data), _count ), ansi );
+		//String utf8(_data, _count);
 
+		//WindowsLayer::utf8ToAnsi( utf8, ansi );
 		
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 		::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo);
@@ -112,9 +141,14 @@ namespace Menge
 			break;
 		}
 		::SetConsoleTextAttribute( m_ConsoleHandle, textColor);
+                
+        //static String utf8;
+        //utf8.assign( _data, _count );
 
+        //static WString unicode;
+        //Helper::utf8ToUnicode(m_serviceProvider, utf8, unicode);
 
-		std::cout.write( ansi.c_str(), ansi.size() );
+		std::cout.write( _data, _count );
 
 		//::SetConsoleScreenBufferInfo(m_ConsoleHandle, consoleInfo);
 		::SetConsoleTextAttribute(m_ConsoleHandle, consoleInfo.wAttributes);
@@ -122,5 +156,9 @@ namespace Menge
 		//LPDWORD writtenCharsCount;
 		//::WriteConsoleA( , ansi.c_str(), ansi.length(), &writtenCharsCount, NULL );
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
+	void LoggerConsole::flush()
+	{
+
+	}
 }	// namespace Menge

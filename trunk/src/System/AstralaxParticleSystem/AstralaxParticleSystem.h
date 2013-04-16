@@ -2,33 +2,40 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#pragma warning(push, 0) 
 #	include "magic.h"
+#pragma warning(pop) 
 
 #	include "AstralaxEmitter.h"
 
 #	define ASTRALAX_PARTICLE_MAX_TEXTURES 20
 
-class AstralaxParticleSystem 
-	: public Menge::ParticleSystemInterface
+namespace Menge
 {
-public:
-	AstralaxParticleSystem();
-	~AstralaxParticleSystem();
+	class AstralaxParticleSystem 
+		: public ParticleSystemInterface
+	{
+	public:
+		AstralaxParticleSystem();
+		~AstralaxParticleSystem();
 
-public:
-	Menge::EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) override;
-	void releaseEmitterContainer( Menge::EmitterContainerInterface* _containerInterface ) override;
-	Menge::EmitterInterface * createEmitterFromContainer( const Menge::String & _name, const Menge::EmitterContainerInterface * _container ) override;
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
 
-public:
-	void releaseEmitter( Menge::EmitterInterface * _emitter ) override;
-	bool lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle ) override;
-	int getTextureCount() const override;
-	Menge::String getTextureName( int _index ) const override;
-	int flushParticles( Menge::TVectorRenderParticle & _particles, int _particlesLimit ) override;
-	void unlockEmitter( Menge::EmitterInterface * _emitter ) override;
+	public:
+		EmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) override;
+		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) override;
 
-private:
-	MAGIC_TEXTURE* m_texture[ASTRALAX_PARTICLE_MAX_TEXTURES];
-	int m_textureCount;
-};
+	public:	
+		bool flushParticles( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush ) override;
+
+	protected:
+		void fillParticles_( ParticleVertices * _particles, size_t _offset, int _count );
+		bool loadEmitter( const char * _magicName, HM_FILE _file, AstralaxEmitterContainer * _container );
+		void loadEmittersFolder( const char * _path, HM_FILE _file, AstralaxEmitterContainer * _container );
+
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
+	};
+}

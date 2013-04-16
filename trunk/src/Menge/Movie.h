@@ -138,6 +138,7 @@ namespace Menge
 
 	protected:		
 		void updateTiming_();
+        void updateAnimatablePlay_();
 		void updateClipLastFrame_();
 		void updateStartInterval_();
 

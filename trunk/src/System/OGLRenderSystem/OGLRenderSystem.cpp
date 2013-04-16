@@ -341,10 +341,10 @@ namespace Menge
 			glDisable( GL_TEXTURE_2D );
 
             m_textureStage[i].enabled = false;
-            m_textureStage[i].minFilter = 0;
-            m_textureStage[i].magFilter = 0;
-            m_textureStage[i].wrapS = 0;
-            m_textureStage[i].wrapT = 0;
+            m_textureStage[i].minFilter = GL_NEAREST;
+            m_textureStage[i].magFilter = GL_NEAREST;
+            m_textureStage[i].wrapS = GL_CLAMP_TO_EDGE;
+            m_textureStage[i].wrapT = GL_CLAMP_TO_EDGE;
             m_textureStage[i].mengeMinFilter = Menge::TF_NONE;
             m_textureStage[i].mengeMipFilter = Menge::TF_NONE;
             m_textureStage[i].texture = 0;
@@ -631,10 +631,6 @@ namespace Menge
             TextureStage& tStage = m_textureStage[_stage];
 
             tStage.texture = texture->getUId();
-            tStage.wrapS = texture->getWrapS();
-            tStage.wrapT = texture->getWrapT();
-            tStage.minFilter = texture->getMinFilter();
-            tStage.magFilter = texture->getMagFilter();
         }
         else
         {

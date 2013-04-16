@@ -9,7 +9,7 @@ namespace Menge
 	{
 	public:
 		// Returns the most significant bit set in a value.
-		static FORCEINLINE unsigned int mostSignificantBitSet(unsigned int value)
+		static inline unsigned int mostSignificantBitSet(unsigned int value)
 		{
 			unsigned int result = 0;
 			while (value != 0) {
@@ -21,7 +21,7 @@ namespace Menge
 		//Returns the closest power-of-two number greater or equal to value.
 		//@note 0 and 1 are powers of two, so 
 		//firstPO2From(0)==0 and firstPO2From(1)==1.
-		static FORCEINLINE uint32 firstPO2From(uint32 n)
+		static inline uint32 firstPO2From(uint32 n)
 		{
 			--n;            
 			n |= n >> 16;
@@ -35,14 +35,14 @@ namespace Menge
 		//Determines whether the number is power-of-two or not.
 		//@note 0 and 1 are tread as power of two.
 		template<typename T>
-		static FORCEINLINE bool isPO2(T n)
+		static inline bool isPO2(T n)
 		{
 			return (n & (n-1)) == 0;
 		}
 		//Returns the number of bits a pattern must be shifted right by to
 		//remove right-hand zeroes.
 		template<typename T>
-		static FORCEINLINE unsigned int getBitShift(T mask)
+		static inline unsigned int getBitShift(T mask)
 		{
 			if (mask == 0)
 				return 0;

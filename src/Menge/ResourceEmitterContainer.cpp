@@ -1,15 +1,17 @@
 #	include "ResourceEmitterContainer.h"
+#	include "Kernel/ResourceImplement.h"
 
-#	include "ResourceImplement.h"
-
-#	include "XmlEngine.h"
-
-#	include "Factory/FactoryIdentity.h"
-
-#	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
-#	include "ParticleEngine.h"
+
+#	include "Metacode.h"
+
+#   include "Interface/ResourceInterface.h"
+#   include "Interface/ParticleSystemInterface.h"
+#   include "Interface/StringizeInterface.h"
+
 #	include "Logger/Logger.h"
+
+#	include "Consts.h"
 
 namespace Menge
 {
@@ -17,154 +19,147 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceEmitterContainer );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceEmitterContainer::ResourceEmitterContainer()
-		: m_container( 0 )
+		: m_container(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFilePath( const String& _path )
+	void ResourceEmitterContainer::setFilePath( const FilePath& _path )
 	{
 		m_filename = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFolderPath( const String& _path )
-	{
-		m_folder = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceEmitterContainer::getFilePath() const
+	const FilePath& ResourceEmitterContainer::getFilePath() const
 	{
 		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceEmitterContainer::getFolderPath() const
+	void ResourceEmitterContainer::setFolderPath( const FilePath& _folder )
+	{
+		m_folder = _folder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const FilePath& ResourceEmitterContainer::getFolderPath() const
 	{
 		return m_folder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::loader( XmlElement * _xml )
+	bool ResourceEmitterContainer::_loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _xml );
+        const Metacode::Meta_DataBlock::Meta_ResourceEmitterContainer * metadata
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceEmitterContainer *>(_meta);
 
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceEmitterContainer::setFilePath );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Folder", "Path", &ResourceEmitterContainer::setFolderPath );
-		}
+        metadata->swap_File_Path( m_filename );
+        metadata->swap_Folder_Path( m_folder );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
-		m_container = ParticleEngine::hostage()
+		m_container = PARTICLE_SERVICE(m_serviceProvider)
 			->createEmitterContainerFromFile( category, m_filename );
 
 		if( m_container == 0 )
 		{
-			MENGE_LOG_ERROR( "Image can't create container file '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Image can't create container file '%s'"
 				, m_filename.c_str() 
 				);
 
 			return false;
 		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::_release()
-	{
-		for( TMapImageEmitters::iterator
-			it = m_mapImageEmitters.begin(),
-			it_end = m_mapImageEmitters.end();
+		
+		const EmitterContainerInterface::TVectorAtlas & atlas = m_container->getAtlas();
+		
+		for( EmitterContainerInterface::TVectorAtlas::const_iterator
+			it = atlas.begin(),
+			it_end = atlas.end();
 		it != it_end;
-		++it)
+		++it )
 		{
-			//Holder<RenderEngine>::hostage()
-			//	->releaseTexture( it->second );
-			Holder<ResourceManager>::hostage()
-				->releaseResource( it->second );
-		}
-		m_mapImageEmitters.clear();
+			const FilePath & filepath = it->file;
 
-		if( m_container != 0 )
-		{
-			Holder<ParticleEngine>::hostage()
-				->releaseEmitterContainer( m_container );
-			m_container = 0;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const String& _name )
-	{
-		const String & category = this->getCategory();
+			//String fullname = m_folder + MENGE_FOLDER_DELIM + it->file;
+            static String cache_name;
+            cache_name.assign( m_name.c_str(), m_name.size() );
+            cache_name.append( filepath.c_str(), filepath.size() );
 
-		String fullname = category + "/" + m_folder + _name;
+			ConstString name = Helper::stringizeString( m_serviceProvider, cache_name );
 
-		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->hasResource( name ) == false )
+			{				
+                static String cache_path;
+                cache_path.assign( m_folder.c_str(), m_folder.size() );
+                cache_path += MENGE_FOLDER_RESOURCE_DELIM;
+                cache_path.append( filepath.c_str(), filepath.size() );
 
-		if ( it == m_mapImageEmitters.end() )
-		{
-			ResourceImageDefault* image = ResourceManager::hostage()
-				->getResourceT<ResourceImageDefault>( fullname );
+                FilePath filepath = Helper::stringizeString( m_serviceProvider, cache_path );
 
-			std::size_t nameIdentity = m_factoryIdentity->cacheIdentity( fullname );
-
-			std::size_t categoryIdentity = this->getCategoryIdentity();
-			//std::size_t groupIdentity = this->getGroupIdentity();
-			std::size_t groupIdentity = this->getNameIdentity();
-			std::size_t fileIdentity = this->getFileIdentity();
-
-			if( image == 0 )
-			{
-				ResourceFactoryIdentity params 
-					= { nameIdentity, categoryIdentity, groupIdentity, fileIdentity };
-
-				image = ResourceManager::hostage()
-							->createResourceWithIdentityT<ResourceImageDefault>( "ResourceImageDefault", params );
-
-				image->addImagePath( m_folder + _name );
-
-				ResourceManager::hostage()
-					->registerResource( image );
-				
-				image = ResourceManager::hostage()
-					->getResourceT<ResourceImageDefault>( fullname );
+				this->createResource_( name, filepath );
 			}
+			
+			ResourceImageDefault * image = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceImageDefault>( name );
 
-			m_mapImageEmitters.insert( std::make_pair( fullname, image ) );
-
-			return image;
-		}
-
-		return (*it).second;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceEmitterContainer::releaseRenderImage( ResourceImageDefault * _resourceImage )
-	{
-		if( _resourceImage == 0 )
-		{
-			return false;
-		}
-
-		if( ResourceManager::hostage()
-			->releaseResource( _resourceImage ) == true )
-		{
-			const String & name = _resourceImage->getName();
-
-			TMapImageEmitters::iterator it_found = m_mapImageEmitters.find( name );
-
-			if( it_found == m_mapImageEmitters.end() )
+			if( image == NULL )
 			{
 				return false;
 			}
 
-			m_mapImageEmitters.erase( it_found );
+			m_atlasImages.push_back( image );
+		}
+
+		if( atlas.empty() == true )
+		{
+			return false;
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const EmitterContainerInterface * ResourceEmitterContainer::getContainer() const
+	void ResourceEmitterContainer::createResource_( const ConstString & _fullname, const FilePath & _path )
+	{
+		const ConstString & category = this->getCategory();
+		const ConstString & group = this->getGroup();
+
+		ResourceImageDefault * image = RESOURCE_SERVICE(m_serviceProvider)
+			->createResourceT<ResourceImageDefault>( category, group, _fullname, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
+
+		image->setImagePath( _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::_release()
+	{
+		for( TVectorAtlasImages::iterator
+			it = m_atlasImages.begin(),
+			it_end = m_atlasImages.end();
+		it != it_end;
+		++it)
+		{
+			ResourceImageDefault * resourceImageDefault = (*it);
+
+			resourceImageDefault->decrementReference();
+		}
+
+		m_atlasImages.clear();
+
+		if( m_container != 0 )
+		{
+			PARTICLE_SERVICE(m_serviceProvider)
+				->releaseEmitterContainer( m_container );
+
+			m_container = 0;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImageDefault* ResourceEmitterContainer::getAtlasImage( size_t _atlasId )
+	{
+		return m_atlasImages[_atlasId];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	EmitterContainerInterface * ResourceEmitterContainer::getContainer() const
 	{
 		return m_container;
 	}

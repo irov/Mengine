@@ -1,212 +1,248 @@
 #	include "ScheduleManager.h"
 
-#	include "ScriptEngine.h"
+#   include "Interface/ServiceInterface.h"
+
+#	include "Logger/Logger.h"
 
 #	include <algorithm>
 
 namespace Menge
 {
-	struct FScheduleFind
-	{
-		FScheduleFind( std::size_t _id )
-			: m_id(_id)
-		{
-		}
+    //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        struct FScheduleFind
+        {
+            FScheduleFind( size_t _id )
+                : m_id(_id)
+            {
+            }
 
-		bool operator()( const ScheduleManager::ScheduleEvent & _event ) const
-		{
-			return _event.id == m_id;
-		}
+            bool operator()( const ScheduleManager::ScheduleEvent & _event ) const
+            {
+                return _event.id == m_id;
+            }
 
-		std::size_t m_id;
-	};
-	
-	struct FScheduleDead
-	{
-		bool operator ()( const ScheduleManager::ScheduleEvent & _event ) const
-		{
-			if( _event.dead )
-			{
-				ScriptEngine::decref( _event.script );
-				return true;
-			}
-			
-			return false;
-		}
-	};	
-	
-	struct FScheduleUpdating
-	{
-		void operator ()( ScheduleManager::ScheduleEvent & _event ) const
-		{
-			_event.updating = false;
-		}
-	};
-	
-	//////////////////////////////////////////////////////////////////////////
-	ScheduleManager::ScheduleManager()
-		: m_schedulesID(0)
-		, m_updating(false)
-		, m_updatable(true)
-	{
+            size_t m_id;
+        };
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ScheduleManager::~ScheduleManager()
-	{
-		for( TListSchedules::const_iterator
-			it = m_schedules.begin(),
-			it_end = m_schedules.end();
-		it != it_end;
-		++it )
-		{
-			ScriptEngine::decref( it->script );
-		}
+        struct FScheduleDead
+        {
+            bool operator ()( const ScheduleManager::ScheduleEvent & _event ) const
+            {
+                if( _event.dead )
+                {
+                    _event.listener->destroyScheduleListener();
 
-		for( TListSchedules::const_iterator
-			it = m_schedulesToAdd.begin(),
-			it_end = m_schedulesToAdd.end();
-		it != it_end;
-		++it )
-		{
-			ScriptEngine::decref( it->script );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t ScheduleManager::schedule( float _timing, PyObject * _func )
-	{
-		ScheduleEvent event_;
+                    return true;
+                }
 
-		event_.dead = false;
-		event_.updating = m_updating;
-		event_.timing = _timing;
-		event_.script = _func;
-		event_.id = ++m_schedulesID;
-		event_.paused = !m_updatable;
+                return false;
+            }
+        };	
+    }	
+    //////////////////////////////////////////////////////////////////////////
+    ScheduleManager::ScheduleManager()
+        : m_serviceProvider(NULL)
+        , m_enumerator(0)
+        , m_freeze(false)
+    {
 
-		ScriptEngine::incref( _func );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ScheduleManager::~ScheduleManager()
+    {
+        for( TListSchedules::const_iterator
+            it = m_schedules.begin(),
+            it_end = m_schedules.end();
+        it != it_end;
+        ++it )
+        {
+            ScheduleListener * listener = it->listener;
 
-		//m_schedules.push_back( event_ );
-		m_schedulesToAdd.push_back( event_ );
+            listener->destroyScheduleListener();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::initialize( ServiceProviderInterface * _serviceProvider ) 
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t ScheduleManager::schedule( float _timing, ScheduleListener * _listener )
+    {
+        ScheduleEvent event;
 
-		return event_.id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::remove( std::size_t _id )
-	{
-			
-		TListSchedules::iterator it_find = 
-			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+        event.dead = false;
+        event.timing = _timing * 1000.f;
+        event.listener = _listener;
+        event.id = ++m_enumerator;
+        event.freeze = m_freeze;
 
-		if( it_find != m_schedules.end() )
-		{
-			it_find->dead = true;
-		}
-		else
-		{
-			it_find = std::find_if( m_schedulesToAdd.begin(), m_schedulesToAdd.end(), FScheduleFind(_id) );
+        m_schedules.push_back( event );
 
-			if( it_find != m_schedulesToAdd.end() )
-			{
-				it_find->dead = true;
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::removeAll()
-	{
-		for( TListSchedules::iterator 
-			it = m_schedules.begin(),
-			it_end = m_schedules.end();
-		it != it_end;
-		++it)
-		{
-			it->dead = true;
-		}
+        return event.id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::remove( size_t _id )
+    {
+        const ScheduleEvent * event = this->findEvent_( _id );
 
-		m_schedulesToAdd.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::update( float _timing )
-	{
-		m_updating = true;
+        if( event == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::remove not found shedule '%d'"
+                , _id
+                );
 
-		m_schedules.insert( m_schedules.end(), m_schedulesToAdd.begin(), m_schedulesToAdd.end() );
-		m_schedulesToAdd.clear();
+            return;
+        }
 
-		for( TListSchedules::iterator 
-			it = m_schedules.begin(),
-			it_end = m_schedules.end();
-		it != it_end;
-		++it)
-		{
-			if( it->dead || it->updating || it->paused )
-			{
-				continue;
-			}
-			
-			if( it->timing < _timing )
-			{
-				it->dead = true;
+        this->removeEvent_( *event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::removeAll()
+    {
+        TListSchedules schedules = m_schedules;
 
-				Holder<ScriptEngine>::hostage()
-					->callFunction( it->script, "()" );
-			}
-			else
-			{
-				it->timing -= _timing;
-			}
-		}
+        for( TListSchedules::iterator 
+            it = schedules.begin(),
+            it_end = schedules.end();
+        it != it_end;
+        ++it)
+        {
+            this->removeEvent_( *it );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::removeEvent_( const ScheduleEvent & _event )
+    {
+        if( _event.dead == true )
+        {
+            return;
+        }
 
-		TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
-		m_schedules.erase( it_erase, m_schedules.end() );
+        _event.dead = true;
 
-		std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );
+        _event.listener->onScheduleStop( _event.id );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::update( float _current, float _timing )
+    {
+        (void)_current;
 
-		m_updating = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::setUpdatable( bool _upatable )
-	{
-		m_updatable = _upatable;
+        if( m_schedules.empty() == true )
+        {
+            return;
+        }
 
-		freezeAll( !_upatable );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::freeze( std::size_t _id, bool _freeze )
-	{
-		TListSchedules::iterator it_find = 
-			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+        for( TListSchedules::size_type 
+            it = 0,
+            it_end = m_schedules.size();
+        it != it_end;
+        ++it )
+        {
+            ScheduleEvent & event = m_schedules[it];
 
-		if( it_find != m_schedules.end() )
-		{
-			it_find->paused = _freeze;
-		}
-		else
-		{
-			it_find = std::find_if( m_schedulesToAdd.begin(), m_schedulesToAdd.end(), FScheduleFind(_id) );
+            if( event.dead == true )
+            {
+                continue;
+            }
 
-			if( it_find != m_schedulesToAdd.end() )
-			{
-				it_find->paused = _freeze;
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::freezeAll( bool _freeze )
-	{
-		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
-			it != it_end;
-			it++ )
-		{
-			it->paused = _freeze;
-		}
+            if( event.freeze )
+            {
+                continue;
+            }
 
-		for( TListSchedules::iterator it = m_schedulesToAdd.begin(), it_end = m_schedulesToAdd.end();
-			it != it_end;
-			it++ )
-		{
-			it->paused = _freeze;
-		}	
-	}
+            if( event.timing < _timing )
+            {
+                event.dead = true;
+
+                event.listener->onScheduleComplete( event.id );
+            }
+            else
+            {
+                event.timing -= _timing;
+            }
+        }
+
+        TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
+        m_schedules.erase( it_erase, m_schedules.end() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::freeze( size_t _id, bool _freeze )
+    {
+        const ScheduleEvent * event = this->findEvent_( _id );
+
+        if( event == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::freeze not found shedule '%d'"
+                , _id
+                );
+
+            return;	
+        }
+
+        event->freeze = _freeze;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ScheduleManager::isFreeze( size_t _id ) const
+    {
+        const ScheduleEvent * event = this->findEvent_( _id );
+
+        if( event == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::isFreeze not found shedule '%d'"
+                , _id
+                );
+
+            return false;
+        }
+
+        return event->freeze;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::freezeAll( bool _freeze )
+    {
+        m_freeze = _freeze;
+
+        for( TListSchedules::iterator 
+            it = m_schedules.begin(), 
+            it_end = m_schedules.end();
+        it != it_end;
+        ++it )
+        {
+            it->freeze = _freeze;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ScheduleManager::time( size_t _id ) const
+    {
+        const ScheduleEvent * event = this->findEvent_( _id );
+
+        if( event == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ScheduleManager::time not found shedule '%d'"
+                , _id
+                );
+
+            return 0.f;
+        }
+
+        float adapt_timing = event->timing * 0.001f; //Bullshit
+
+        return adapt_timing;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ScheduleManager::ScheduleEvent * ScheduleManager::findEvent_( size_t _id ) const
+    {
+        TListSchedules::const_iterator it_find = 
+            std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+
+        if( it_find == m_schedules.end() )
+        {
+            return NULL;
+        }
+
+        return &*it_find;
+    }
 }

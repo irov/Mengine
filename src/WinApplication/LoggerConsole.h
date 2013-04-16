@@ -1,7 +1,8 @@
 #	pragma once
 
 #	include "Interface/LogSystemInterface.h"
-#	include "WindowsIncluder.h"
+
+#	include "WindowsLayer/WindowsIncluder.h"
 
 namespace Menge
 {
@@ -9,22 +10,37 @@ namespace Menge
 		: public LoggerInterface
 	{
 	public:
-		LoggerConsole();
+		LoggerConsole( ServiceProviderInterface * _serviceProvider );
 		~LoggerConsole();
 
 	public:
 		void createConsole();
 
 	public:
-		void log( const void* _data, int _count, EMessageLevel _level ) override;
-		
+		void setVerboseLevel( EMessageLevel _level ) override;
+		bool validVerboseLevel( EMessageLevel _level ) const override;
+
+	public:
+		void log( const char * _data, int _count, EMessageLevel _level ) override;
+		void flush() override;
 
 	private:
+        ServiceProviderInterface * m_serviceProvider;
+
+		EMessageLevel m_verboseLevel;
+
 		bool m_createConsole;
-		typedef std::vector<wchar_t> TWCharVector;
-		TWCharVector m_wBuffer;
-		typedef std::vector<char> TACharVector;
-		TACharVector m_aBuffer;
+		
+		typedef std::vector<WChar> TVectorWChar;
+		TVectorWChar m_wBuffer;
+
+		typedef std::vector<Char> TVectorChar;
+		TVectorChar m_aBuffer;
+
 		HANDLE m_ConsoleHandle;
+		
+		FILE *fp[3];
+		HANDLE lStdHandle[3];
+		int hConHandle[3];
 	};
 }	// namespace Menge

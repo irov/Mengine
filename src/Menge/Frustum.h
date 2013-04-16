@@ -26,11 +26,11 @@ namespace Menge
 		float getAspect() const;
 
 	public:
-		const mt::mat4f & getProjectionMtx();
+		const mt::mat4f & getProjectionMatrix();
 
 	public:
 		void recalc( const mt::mat4f & _wm );
-	
+
 	public:
 		void loader( TiXmlElement * _xml );
 

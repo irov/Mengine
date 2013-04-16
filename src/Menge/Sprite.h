@@ -1,128 +1,135 @@
 #	pragma once
 
-#	include "../Interface/RenderSystemInterface.h"
-#	include "Node.h"
-#	include "Core/ColourValue.h"
-#	include "ValueInterpolator.h"
+#	include "Kernel/Node.h"
 
-#	include "FixedVertices.h"
+#	include "Core/ColourValue.h"
+#	include "Core/ValueInterpolator.h"
+
+#	include "../Interface/RenderSystemInterface.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
+#	include "math/mat4.h"
 
 #	include <vector>
 
 namespace Menge
 {
 	class ResourceImage;
-	struct Material;
-	class Texture;
-
-	//! Sprite - —прайт. ¬ качестве ресурса принимает ResourceImage, поэтому может содержать (в зависимости от типа ресурса, например ResourceImageDefault или ResourceImageSet) N изображений. Ёто необходимо дл€ того, что бы под одно описание анимации можно было подгон€ть различные изображени€ и наоборот. ѕоэтому Animation наследуетс€ от Sprite и через Sprite::getImageIndex получает текущий индекс изображени€.
-
-	/*! xml - файл имеет следующую структуру:
-	*	<Node Name = "им€_ноды" Type = "Sprite">
-	*		<ImageMap Name = "им€_ресурса" />
-	*		<ImageIndex Value = "индекс_картинки" />
-	*		<CenterAlign Value = "1/0" />
-	*		<Scale Value = "value" />
-	*	</Node>
-	*/
-
+	
+	struct RenderMaterial;
+	struct RenderMaterialGroup;
+	
 	class Sprite
 		: public Node
-		, public QuadVertices
 	{
 	public:
 		Sprite();
 		~Sprite();
 
 	public:
-		void setImageIndex( std::size_t _index );
-		std::size_t getImageIndex() const;
+		void setImageResourceName( const ConstString& _name );
+		const ConstString& getImageResourceName() const;
 
-		void setImageResource( const String& _name );
-		void setImageAlpha( const String& _name );
+    public:
+        ResourceImage * getImageResource() const;
+        
+    public:
+		void setFlipX( bool _flipX );
+		bool getFlipX() const;
 
-		std::size_t getImageCount();
+		void setFlipY( bool _flipY );		
+		bool getFlipY() const;
 
-		mt::vec2f getImageSize();
-		bool getCenterAlign() const;
-
-		void setCenterAlign( bool _centerAlign );
-
-		const String& getImageResource() const;
-
-		void flip( bool _x );
-
-		void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
-		void setPercentVisibilityVec4f( const mt::vec4f& _percent );
-
+		void setPercentVisibility( const mt::vec4f& _percent );
 		const mt::vec4f& getPercentVisibility() const;
 
 		void disableTextureColor( bool _disable );
 
-		void setBlendSource( EBlendFactor _src );
-		void setBlendDest( EBlendFactor _dst );
-		void setBlendSourceInt( int _src )
-		{
-			setBlendSource( static_cast<EBlendFactor>( _src ) );
-		}
-		void setBlendDestInt( int _dst )
-		{
-			setBlendDest( static_cast<EBlendFactor>( _dst ) );
-		}
-
 		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
-		void setAlphaImageIndex( std::size_t _index );
 
-	public:
-		void loader( XmlElement * _xml ) override;
+        void setTextureUVOffset( const mt::vec2f & _offset );
+        const mt::vec2f & getTextureUVOffset() const;
+
+        void setTextureUVScale( const mt::vec2f & _scale );
+        const mt::vec2f & getTextureUVScale() const;
+	
+		void setBlendAdd( bool _value );
+		bool isBlendAdd() const;
+
+		void setSpriteSize( const mt::vec2f& _size );
 
 	protected:
-		bool _activate() override;
-		void _deactivate() override;
-
 		bool _compile() override;
 		void _release() override;
 
-		void _render( Camera2D * _camera ) override;
+		void _render( RenderCameraInterface * _camera ) override;
 
 		void _invalidateWorldMatrix() override;
-		void _setListener( PyObject * _listener ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
 
+    protected:
+        void invalidateVertices_( unsigned char _invalidate = 0xFF );
+		void updateVertices_();
+
+    protected:
+        void invalidateVerticesWM_();
+        void updateVerticesWM_();
+
+    protected:
+        const Vertex2D * getVerticesWM_();
+        
 	protected:
-		void _updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices ) override;
+		void updateMaterial_();
 
 	protected:
 		bool compileResource_();
-		
 
 	protected:
 		ResourceImage * m_resource;
-		String m_resourceName;	
-		String m_alphaImageName;
-		ResourceImage* m_alphaImage;
 
-		std::size_t m_currentImageIndex;
-		std::size_t m_currentAlphaImageIndex;
+		ConstString m_resourceName;
 
-		bool m_centerAlign;
+        mt::vec2f m_spriteSize;
+		bool m_isCustomSize;
+
 		bool m_flipX;
 		bool m_flipY;
 
-		mt::vec4f m_percent;
+		bool m_blendAdd;
+		
+		bool m_solid;
 
-		EBlendFactor m_blendSrc;
-		EBlendFactor m_blendDst;
+		mt::vec4f m_percentVisibility;
 
-		Material* m_material;
+		const RenderMaterialGroup * m_materialGroup;
+		const RenderMaterial * m_material;
+
 		bool m_disableTextureColor;
-		Texture* m_textures[2];
-		int m_texturesNum;
+		size_t m_texturesNum;
 		mt::vec2f m_textureMatrixOffset;
+
+        mt::vec2f m_textureUVOffset;
+        mt::vec2f m_textureUVScale;
+
+		const RenderTextureInterface * m_textures[2];
+
+        mt::vec3f m_verticesLocal[4];
+        unsigned char m_invalidateVerticesLocal;
+
+        Vertex2D m_verticesWM[4];
+        bool m_invalidateVerticesWM;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline const Vertex2D * Sprite::getVerticesWM_()
+    {
+        if( m_invalidateVerticesWM == true )
+        {
+            this->updateVerticesWM_();
+        }
+
+        return m_verticesWM;
+    }
 }

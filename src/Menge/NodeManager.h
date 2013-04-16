@@ -1,49 +1,44 @@
 #	pragma once
 
+#   include "Interface/NodeInterface.h"
+
 #	include "Config/Typedef.h"
 
-#	include "Core/Holder.h"
+#	include "Core/ConstString.h"
 
 #	include "Factory/FactoryManager.h"
+
 
 namespace Menge
 {
 	class Node;	
 	class NodeFactory;
-	class FactoryIdentity;
 
 	class NodeManager
-		: public Holder<NodeManager>
+        : public NodeServiceInterface
 		, public FactoryManager
 	{
 	public:
-		NodeManager( FactoryIdentity * _factoryIdentity );
+		NodeManager();
+
+    public:
+        void initialize() override;
+        void finalize() override;
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		Node * createNode( const String& _type );
-		
-		template<class T>
-		T * createNodeT( const String& _type )
-		{
-			return dynamic_cast<T*>( createNode( _type ) );
-		}
+		Node * createNode( const ConstString& _type ) override;
 
-		Node * createNodeFromXml( const String& _pakName, const String& _filename );
-		Node * createNodeFromXmlData( const String& _xml_data );
+    public:
+        void addHomeless( Node * _homeless ) override;
+        void clearHomeless() override;
 
-		template<class T>
-		T * createNodeFromXmlT( const String& _pakName, const String& _file )
-		{
-			return dynamic_cast<T*>(createNodeFromXml(_pakName, _file));
-		}
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
 
-	public:
-		bool loadNode(Node *_node, const String& _pakName, const String& _filename );
-
-	protected:
-		typedef std::map<String, NodeFactory *> TMapGenerator;
-		TMapGenerator m_generator;
-
-		FactoryIdentity * m_factoryIdentity;
+        Node * m_homeless;
 	};
 }

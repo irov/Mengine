@@ -5,7 +5,7 @@
 namespace mt
 {
 	template< typename T >
-	MATH_INLINE	T clamp( const T& _leftBound, const T& _value, const T& _rightBound )
+	MATH_FUNCTION_INLINE T clamp( const T& _leftBound, const T& _value, const T& _rightBound )
 	{
 		T clampedValue = _value;
 		if( _value < _leftBound )

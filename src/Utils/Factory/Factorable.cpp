@@ -6,6 +6,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Factorable::Factorable()
 		: m_factory(0)
+        , m_destroy(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -20,20 +21,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Factorable::destroy()
 	{
-		this->_destroy();
+        m_destroy = true;
 
-		if( m_factory )
+		if( this->_destroy() == false )
 		{
-			m_factory->destroyObject( this );
-		}
-		else
-		{
-			delete this;
-		}
+            return;
+        }
+
+        m_factory->destroyObject( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Factorable::_destroy()
+	bool Factorable::_destroy()
 	{
-		//Empty
+		return true;
 	}
 }

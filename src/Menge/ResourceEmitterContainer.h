@@ -1,7 +1,7 @@
 #	pragma once
 
-#	include "ResourceReference.h"
-
+#	include "Kernel/ResourceReference.h"
+#	include "Utils/Core/Polygon.h"
 #	include <map>
 
 namespace Menge
@@ -24,51 +24,38 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceEmitterContainer )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourceEmitterContainer();
 
 	public:
-		void loader( XmlElement * _xml ) override;
-		
+		void setFilePath( const FilePath& _path );
+		const FilePath& getFilePath() const;
 
+		void setFolderPath( const FilePath& _path );
+		const FilePath& getFolderPath() const;
+		
+	public:
+		EmitterContainerInterface * getContainer() const;
 
 	public:
+		ResourceImageDefault* getAtlasImage( size_t _atlasId );
 
-		//! Возвращает контейнер эмиттеров.
-		/*!
-		\return контейнер эмиттеров
-		*/
-		const EmitterContainerInterface * getContainer() const;
-
-		//! Возвращает текстуру по имени.
-		/*!
-		\param _name имя текстуры
-		\return изображение
-		*/
-		ResourceImageDefault* getRenderImage( const String& _name );
-		bool releaseRenderImage( ResourceImageDefault * _resourceImage );
-
-		const String& getFilePath() const;
-		
-		const String& getFolderPath() const;
-
+	public:
+		bool _loader( const Metabuf::Metadata * _parser ) override;
+	
 	protected:
 		bool _compile() override;
 		void _release() override;
 
+	protected:
+		void createResource_( const ConstString & _fullname, const FilePath & _path );
+
 	private:
-		String m_filename;
-		String m_folder;
-
-		void setFilePath( const String& _path );
-		void setFolderPath( const String& _path );
-
+		FilePath m_filename;
+		FilePath m_folder;
+		
 		EmitterContainerInterface * m_container;
 
-		typedef std::map< String, ResourceImageDefault* > TMapImageEmitters;
-		TMapImageEmitters	m_mapImageEmitters;
+		typedef std::vector<ResourceImageDefault *> TVectorAtlasImages;
+		TVectorAtlasImages m_atlasImages;
 	};
 }

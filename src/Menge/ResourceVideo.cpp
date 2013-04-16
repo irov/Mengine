@@ -1,14 +1,16 @@
 #	include "ResourceVideo.h"
 
-#	include "ResourceImplement.h"
+#   include "Interface/FileSystemInterface.h"
+#   include "Interface/CodecInterface.h"
+#   include "Interface/ConverterInterface.h"
+#   include "Interface/VideoCodecInterface.h"
+#   include "Interface/StringizeInterface.h"
 
-#	include "XmlEngine.h"
+#	include "Kernel/ResourceImplement.h"
+
+#	include "Metacode.h"
 
 #	include "Logger/Logger.h"
-
-#	include "Interface/VideoCodecInterface.h"
-
-#	include "CodecEngine.h"
 
 namespace Menge
 {
@@ -16,9 +18,8 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceVideo );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::ResourceVideo()
-		: m_bufferSize( 0 )
-		, m_frameSize( 0.0f, 0.0f )
-		, m_videoDecoder( NULL )
+		: m_alpha(false)
+        , m_noSeek(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -26,97 +27,175 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceVideo::loader( XmlElement * _xml )
+	bool ResourceVideo::_loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _xml );
+        const Metacode::Meta_DataBlock::Meta_ResourceVideo * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceVideo *>(_meta);
 
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filepath );
-		}
+        metadata->swap_File_Path( m_path );
+        metadata->swap_File_Codec( m_codec );
+        metadata->swap_File_Converter( m_converter );        
+
+        metadata->get_File_Alpha( m_alpha );
+        metadata->get_File_NoSeek( m_noSeek );
+
+        return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceVideo::_convert()
+    {
+        if( m_path.empty() == true )
+        {
+            return false;
+        }
+
+        //perform convertation if we need
+        if ( m_converter.empty() == false )
+        {
+            if( this->convert_() == false )
+            {
+                return false;
+            }
+        }
+
+        if( m_codec.empty() == true )
+        {
+            m_codec = this->getCodec_( m_path );
+        }
+
+        if( m_codec.empty() == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::_convert %s you must determine codec for file '%s'"
+                , this->getName().c_str()
+                , m_path.c_str()
+                );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceVideo::_isValid() const
+    {   
+        VideoDecoderInterface * decoder = this->createVideoDecoder();
+
+        if( decoder == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::isValid '%s' can't create decoder '%s'"
+                , this->getName().c_str()
+                , m_path.c_str()
+                );
+
+            return false;
+        }
+
+        decoder->destroy();
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_compile()
 	{
-		if( m_filepath.empty() == true )
-		{
-			return false;
-		}
-
-		const String & category = this->getCategory();
-
-		m_videoDecoder = CodecEngine::hostage()
-			->createDecoderT<VideoDecoderInterface>( category, m_filepath, ECT_VIDEO );
-
-		if( m_videoDecoder == 0 )
-		{
-			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%s'"
-				, m_filepath.c_str()
-				);
-
-			return false;
-		}
-
-		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-		m_frameSize.x = dataInfo->frame_width;
-		m_frameSize.y = dataInfo->frame_height;
-
-		m_bufferSize =  static_cast<std::streamsize>(m_frameSize.x * m_frameSize.y * 4.f);
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceVideo::_release()
 	{
-		if( m_videoDecoder != NULL )
-		{
-			Holder<CodecEngine>::hostage()
-				->releaseDecoder( m_videoDecoder );
+	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceVideo::convert_()
+    {
+        const ConstString & category = this->getCategory();
 
-			m_videoDecoder = NULL;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceVideo::getFilename() const
-	{
-		return m_filepath;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceVideo::sync( float _timing )
-	{
-		if( m_videoDecoder->sync( _timing ) < 0 )	// if we are not up to date read frame
-		{
-			return true;
-		}
+        if( CONVERTER_SERVICE(m_serviceProvider)
+            ->convert( m_converter, category, m_path, m_path ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::convert: '%s' can't convert '%s':'%s'"
+                , this->getName().c_str() 
+                , m_path.c_str()
+                , m_converter.c_str()
+                );
 
-		return false;
+            return false;
+        }
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    VideoDecoderInterface * ResourceVideo::createVideoDecoder() const
+    {        
+        const ConstString & category = this->getCategory();
+
+        InputStreamInterface * videoStream = 
+            FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_path );
+
+        if( videoStream == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't open video file '%s'"
+                , this->getName().c_str()
+                , m_path.c_str()
+                );
+
+            return NULL;
+        }
+
+        VideoDecoderInterface * videoDecoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<VideoDecoderInterface>( m_codec, videoStream );
+
+        if( videoDecoder == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't create video decoder for file '%s'"
+                , this->getName().c_str()
+                , m_path.c_str()
+                );
+
+            videoStream->destroy();
+
+            return NULL;
+        }
+
+        VideoCodecOptions videoCodecOptions;
+
+        if( m_alpha == true )
+        {
+            videoCodecOptions.pixelFormat = Menge::PF_A8R8G8B8;
+        }
+        else
+        {
+            videoCodecOptions.pixelFormat = Menge::PF_R8G8B8;
+        }
+
+        videoCodecOptions.noSeek = m_noSeek;
+
+        if( videoDecoder->setOptions( &videoCodecOptions ) == false )
+        {
+            videoDecoder->destroy();
+
+            return NULL;
+        }
+
+        return videoDecoder;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceVideo::isAlpha() const
+	{
+		return m_alpha;
+	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceVideo::isNoSkeep() const
+    {
+        return m_noSeek;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	const FilePath & ResourceVideo::getFilePath() const
+	{
+		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceVideo::getRGBData( unsigned char* _buffer, int _pitch )
+	const ConstString& ResourceVideo::getCodecType() const
 	{
-		m_videoDecoder->decode( _buffer, _pitch );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& ResourceVideo::getFrameSize() const
-	{
-		return m_frameSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceVideo::eof()
-	{
-		return m_videoDecoder->eof();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceVideo::seek( float _timing )
-	{
-		//m_stream->seek( _timing );
-		if( _timing == 0.0f )
-		{
-			//m_stream->finish();
-			//m_stream->start( m_filestream, 
-			_release();
-			_compile();
-		}
+		return m_codec;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

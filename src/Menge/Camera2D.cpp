@@ -1,234 +1,177 @@
 #	include "Camera2D.h"
 
-#	include "Core/Holder.h"
-
 #	include "Game.h"
-#	include "RenderEngine.h"
+#	include "Application.h"
+
+#	include "Interface/RenderSystemInterface.h"
+
+#	include "NotificationService.h"
+
+#	include "Logger/Logger.h"
 
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
-		: m_target( NULL )
-		, m_targetFollowing( false )
-		, m_boundLeftUpper( 512.0f, 368.0f )
-		, m_boundRightLower( 512.0f, 368.0f )
-		, m_invalidateViewMatrix( true )
-		, m_invalidateViewport( true )
-		, m_parallax( 1.0f, 1.0f )
-		, m_offset( 0.0f, 0.0f )
-		, m_boundsEnabled( false )
-		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
-		, m_viewportSize( 0.0f, 0.0f )
-		, m_cameraRevision(1)
-	{
-		mt::ident_m4( m_viewMatrix );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Camera2D::~Camera2D()
+		: m_invalidateMatrix(true)
+		, m_cameraRevision(1)    	
+		, m_notifyChangeWindowResolution(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::_activate()
 	{
+        Node::_activate();
+
+		m_notifyChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
+			->addObserverMethod( "CHANGE_WINDOW_RESOLUTION", this, &Camera2D::notifyChangeWindowResolution );
+
 		return true;
-	};
+	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::_update( float _timing )
+	void Camera2D::_deactivate()
 	{
-		if( m_targetFollowing && m_target )
-		{
-			mt::vec2f pos = getWorldPosition();
-			mt::vec2f tpos = m_target->getWorldPosition();
-			mt::vec2f dir = tpos - pos;
+        Node::_deactivate();
 
-			float len = dir.length();
-
-			if( len < 0.01f )
-			{
-				return;
-			}
-
-			dir /= len;
-
-			float force = m_followingForce *  len ;
-			float way = force * _timing * 0.001f;
-
-			if( way > len )
-			{
-				pos = tpos;
-			}
-			else
-			{
-				pos += dir * way;
-			}
-
-			if( m_boundsEnabled == true )
-			{
-				if( pos.x < m_boundLeftUpper.x )
-				{
-					pos.x = m_boundLeftUpper.x;
-				}
-				else if( pos.x > m_boundRightLower.x )
-				{
-					pos.x = m_boundRightLower.x;
-				}
-				if( pos.y < m_boundLeftUpper.y )
-				{
-					pos.y = m_boundLeftUpper.y;
-				}
-				else if( pos.y > m_boundRightLower.y )
-				{
-					pos.y = m_boundRightLower.y;
-				}
-			}
-
-			pos.x = ::floorf( pos.x + 0.5f );
-			pos.y = ::floorf( pos.y + 0.5f );
-
-			const mt::vec2f& pp = getWorldPosition() - getLocalPosition();
-
-			setLocalPosition( pos - pp );
-		}
+		NOTIFICATION_SERVICE(m_serviceProvider)
+			->removeObserver( "CHANGE_WINDOW_RESOLUTION", m_notifyChangeWindowResolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_invalidateWorldMatrix()
 	{
+		Node::_invalidateWorldMatrix();
+
 		++m_cameraRevision;
 
-		invalidateViewport();
+		this->invalidateMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::updateViewport()
+	void Camera2D::setViewport( const Viewport & _viewport )
 	{
-		m_invalidateViewport = false;
-		++m_cameraRevision;
+		m_viewport = _viewport;
 
-		const mt::vec2f & pos = getWorldPosition();
+		this->invalidateMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::updateMatrix_() const
+	{
+		m_invalidateMatrix = false;
 
-		//m_viewport.begin = pos;
-		//m_viewport.end = pos + m_viewportSize;
-		m_viewport.begin = pos - m_viewportSize * .5;
-		m_viewport.begin.x = m_viewport.begin.x * m_parallax.x + m_offset.x;
-		m_viewport.begin.y = m_viewport.begin.y * m_parallax.y + m_offset.y;
-		m_viewport.end = m_viewport.begin + m_viewportSize;
-		//m_viewport.end = pos + m_viewportSize * .5;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::invalidateViewport()
-	{
-		m_invalidateViewport = true;
-		invalidateViewMatrix();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setViewportSize( const mt::vec2f & _size )
-	{
-		m_viewportSize = _size;
+		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getCurrentResolution();
 
-		invalidateViewport();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setTarget( Node * _target )
-	{
-		m_target = _target;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::enableTargetFollowing( bool _enable, float _force )
-	{
-		m_targetFollowing = _enable;
-		m_followingForce = _force;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
-	{
-		m_boundsEnabled = true;
-		m_boundLeftUpper = _leftUpper + m_viewportSize * 0.5f;
-		m_boundRightLower = _rightLower - m_viewportSize * 0.5f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::updateViewMatrix()
-	{
-		m_invalidateViewMatrix = false;
-		++m_cameraRevision;
+        //const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+        //    ->getContentResolution();			
 
-		mt::ident_m4( m_viewMatrix );
+        //const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+        //    ->getRenderViewport();
 
-		const Viewport & viewport = 
-			this->getViewport();
+		size_t currentResolutionWidth = currentResolution.getWidth();
+		size_t currentResolutionHeight = currentResolution.getHeight();
 
-		const Resolution& contentResolution = Game::hostage()
-												->getContentResolution();
-		m_viewMatrix.v0.x = m_viewportSize.x / contentResolution[0];
-		m_viewMatrix.v1.y = m_viewportSize.y / contentResolution[1];
-		m_viewMatrix.v3.x = viewport.begin.x;
-		m_viewMatrix.v3.y = viewport.begin.y;
-		m_viewMatrix = mt::inv_m4( m_viewMatrix );
+		//size_t contentResolutionWidth = contentResolution.getWidth();
+		//size_t contentResolutionHeight = contentResolution.getHeight();
+		
+        //float renderWidth = renderViewport.getWidth();
+        //float renderHeight = renderViewport.getHeight();
 
-		Holder<RenderEngine>::hostage()
-			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, m_viewportSize.x, 0.0f, m_viewportSize.y, 0.0f, 1.0f );
+		const mt::mat4f & wm = this->getWorldMatrix();
+		
+		mt::mul_v2_m4( m_viewportWM.begin, m_viewport.begin, wm );
+		mt::mul_v2_m4( m_viewportWM.end, m_viewport.end, wm );
+
+        //float r_aspect = currentResolution.getAspectRatio();
+        //float c_aspect = contentResolution.getAspectRatio();
+        
+        float gameViewportAspect;
+        Viewport gameViewport; 
+        
+        APPLICATION_SERVICE(m_serviceProvider)
+            ->getGameViewport( gameViewportAspect, gameViewport );
+
+        m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - gameViewport.begin.x, 0.f );
+        m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - gameViewport.begin.y, 0.f );
+
+        float gameViewportWidth = gameViewport.getWidth();
+        float gameViewportHeight = gameViewport.getHeight();
+
+        m_viewportWM.end.x = std::min( m_viewportWM.end.x - gameViewport.begin.x, gameViewportWidth );            
+        m_viewportWM.end.y = std::min( m_viewportWM.end.y - gameViewport.begin.y, gameViewportHeight );
+
+        float scale_x = float(currentResolutionWidth) / gameViewportWidth;
+        float scale_y = float(currentResolutionHeight) / gameViewportHeight;
+
+        m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
+        m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
+
+		RENDER_SERVICE(m_serviceProvider)
+			->makeViewMatrixFromViewport( m_viewMatrixWM, m_viewportWM );
+		
+		Viewport projectViewport;
+
+		mt::mul_v2_m4( projectViewport.begin, m_viewport.begin, wm );
+		mt::mul_v2_m4( projectViewport.end, m_viewport.end, wm );
+		
+
+        if( projectViewport.begin.x < gameViewport.begin.x )
+        {
+            projectViewport.begin.x = gameViewport.begin.x;
+        }
+
+        if( projectViewport.begin.y < gameViewport.begin.y )
+        {
+            projectViewport.begin.y = gameViewport.begin.y;
+        }
+
+        if( projectViewport.end.x > gameViewport.end.x )
+        {
+            projectViewport.end.x = gameViewport.end.x;
+        }
+
+        if( projectViewport.end.y > gameViewport.end.y )
+        {
+            projectViewport.end.y = gameViewport.end.y;
+        }
+
+		RENDER_SERVICE(m_serviceProvider)
+			->makeProjectionOrthogonal( m_projectionMatrixWM, projectViewport, -1000.0f, 1000.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setParallax( const mt::vec2f& _parallax )
+	const Viewport & Camera2D::getViewport() const
 	{
-		m_parallax = _parallax;
-		invalidateViewport();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Camera2D::getParallax() const
-	{
-		return m_parallax;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setOffset( const mt::vec2f& _offset )
-	{
-		m_offset = _offset;
-		invalidateViewport();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Camera2D::getOffset() const
-	{
-		return m_offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f& Camera2D::getProjectionMatrix()
-	{
-		if( isInvalidateViewport() == true )
+		if( m_invalidateMatrix == true )
 		{
-			updateViewMatrix();
+			this->updateMatrix_();
 		}
 
-		return m_projectionMatrix;
+		return m_viewportWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat4f& Camera2D::getViewMatrix()
+	const mt::mat4f & Camera2D::getProjectionMatrix() const
 	{
-		if( isInvalidateViewMatrix() == true )
+		if( m_invalidateMatrix == true )
 		{
-			updateViewMatrix();
+			this->updateMatrix_();
 		}
 
-		return m_viewMatrix;
+		return m_projectionMatrixWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Camera2D::getRenderViewport()
+	const mt::mat4f & Camera2D::getViewMatrix() const
 	{
-		return m_renderViewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setRenderViewport( const Viewport & _viewport )
-	{
-		m_renderViewport = _viewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Camera2D::is3D() const 
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Camera2D::getViewportSize() const 
-	{
-		return m_viewportSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
 
+		return m_viewMatrixWM;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )
+	{
+        (void)_fullscreen;
+        (void)_resolution;
+
+		this->invalidateMatrix_();
+	}
 }

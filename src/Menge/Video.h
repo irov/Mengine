@@ -1,84 +1,109 @@
 #	pragma once
 
-#	include "Node.h"
-
-#	include "FixedVertices.h"
+#	include "Kernel/Node.h"
+#	include "Kernel/Animatable.h"
+#	include "Kernel/FixedVertices.h"
 
 namespace Menge
 {
+    class FileServiceInterface;
+    class CodecServiceInterface;
+    class ResourceServiceInterface;
+    class NodeServiceInterface;
+    class RenderServiceInterface;
+
 	class ResourceVideo;
 	//class ResourceSound;
 	class SoundEmitter;
 	class SoundSourceInterface;
-	class Texture;
-
-	/*! xml - файл имеет следующую структуру:
-	*	<Node Name = "имя_ноды" Type = "Video">
-	*		<ImageMap Name = "имя_ресурса_видео"/>
-	*		<AutoStart Value = "1/0"/>
-	*	</Node>
-	*/
+	class RenderTextureInterface;
+	
+	class InputStreamInterface;
+	class VideoDecoderInterface;
+	
+	struct RenderMaterialGroup;
 
 	class Video
 		: public Node
 		, public QuadVertices
+		, public Animatable
 	{
 	public:
 		Video();
 
 	public:
-		virtual void play();
-		virtual void stop();
 		virtual void pause();
-
-		virtual void setLooped( bool _loop );
-		virtual bool getLooped() const;
-
+		
 	public:
-		void setVideoResource( const String& _resource );
-		const String & getVideoResource() const;
+		void setVideoResource( const ConstString& _resource );
+		const ConstString & getVideoResource() const;
 
-		void setSoundResource( const String& _resource );
-		const String & getSoundResource() const;
+		void setSoundResource( const ConstString& _resource );
+		const ConstString & getSoundResource() const;
+		
+		void _setTiming( float _timing ) override;
+		float _getTiming() const override;
 
-	public:
-		void loader( XmlElement * _xml ) override;
+		void _setFirstFrame() override;
+		void _setLastFrame() override;
+
+		void setBlendAdd( bool _blendAdd );
+		bool isBlendAdd() const;
 
 	protected:
-		void _update( float _timing ) override;
-		void _render( Camera2D * _camera ) override;
-
+		void _update( float _current, float _timing ) override;
+		void _render( RenderCameraInterface * _camera ) override;
+		
+    protected:
 		bool _activate() override;
 		void _deactivate() override;
-
 		bool _compile() override;
 		void _release() override;
-		void _setListener( PyObject * _listener ) override;
+		void _setEventListener( PyObject * _listener ) override;
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
+		
+    protected:
+		void updateUV_();
+		void updateMaterial_();
 
-	private:
-		void play_();
+		bool sync_( float _timing );
+		bool compileDecoder_();
+        bool fillVideoBuffer_();
+
+	protected:
+		bool _play( float _time ) override;
+		bool _restart( float _time, size_t _enumerator ) override;
+		void _stop( size_t _enumerator ) override;
+		void _end( size_t _enumerator ) override;
+		bool _interrupt( size_t _enumerator ) override;
 
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
-		ResourceVideo* m_resourceVideo;
+		ResourceVideo * m_resourceVideo;
 
-		String m_resourceVideoName;
-		String m_resourceSoundName;
+		ConstString m_resourceVideoName;
+		ConstString m_resourceSoundName;
 
-		Texture* m_resourceImage;
+		RenderTextureInterface * m_textures[1];
 		SoundEmitter* m_soundEmitter;
+		
+		const RenderMaterialGroup * m_materialGroup;
+		const RenderMaterial * m_material;	
 
-		Material* m_material;	
+		VideoDecoderInterface * m_videoDecoder;
+		mt::vec2f m_frameSize;
+		mt::vec4f m_uv;
 
-		bool m_autoStart;
-		bool m_playing;
-		bool m_looping;
 		float m_timing;
+        size_t m_playIterator;
+
+		bool m_blendAdd;
+		bool m_autoStart;
 		bool m_needUpdate;
+        bool m_needUpdate2;
 	};
 }

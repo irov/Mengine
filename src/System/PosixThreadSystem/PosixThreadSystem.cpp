@@ -1,132 +1,163 @@
-
 #	include "PosixThreadSystem.h"
+#	include "PosixThreadIdentity.h"
 
-#	include <vector>
+#	include "Interface/LogSystemInterface.h"
+
+#	include "Logger/Logger.h"
 
 #if defined(WIN32)
-	#include <Windows.h>
+#include <Windows.h>
+#else
+#   include <sys/time.h>
 #endif
 
-#	include "PosixMutex.h"
+#	include <pthread.h>
 
-//////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( Menge::ThreadSystemInterface **_system )
+extern "C" // only required if using g++
 {
-	*_system = new Menge::PosixThreadSystem();
-	return true;
+    //////////////////////////////////////////////////////////////////////////
+    bool createThreadSystem( Menge::ThreadSystemInterface ** _threadSystem )
+    {
+        if( _threadSystem == 0 )
+        {
+            return false;
+        }
+
+        *_threadSystem = new Menge::PosixThreadSystem();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void destroyThreadSystem( Menge::ThreadSystemInterface * _threadSystem )
+    {
+        if( _threadSystem != 0 )
+        {
+            delete static_cast<Menge::PosixThreadSystem*>( _threadSystem );
+        }
+    }
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( Menge::ThreadSystemInterface *_system )
-{
-	delete static_cast<Menge::PosixThreadSystem*>(_system);
-}
-//////////////////////////////////////////////////////////////////////////
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ThreadHolder
+	namespace Detail
 	{
-	public:
-		ThreadHolder( PosixThreadSystem* _system, ThreadInterface* _interface )
-			: m_system( _system )
-			, m_interface( _interface )
+		//////////////////////////////////////////////////////////////////////////
+		static void * s_tread_job( void * _listener )
 		{
-		}
+			//ThreadHolder * threadHolder = (ThreadHolder *)_threadHolder;
+			Menge::ThreadListener * threadListener = static_cast<Menge::ThreadListener*>(_listener);
 
-		void main()
-		{
-			m_interface->main();
-			pthread_t tid;
-			m_system->removeThread( m_interface, tid );
-		}
+#if defined(WIN32) && defined(PTW32_STATIC_LIB)
+			pthread_win32_thread_attach_np();
+#endif
 
-	protected:
-		PosixThreadSystem* m_system;
-		ThreadInterface* m_interface;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	static void * s_tread_job( void * _threadHolder )
-	{
-		ThreadHolder* threadHolder = (ThreadHolder*)_threadHolder;
+			threadListener->main();
+
 #if defined(WIN32) && defined(PTW32_STATIC_LIB)
-		pthread_win32_thread_attach_np();
-#endif
-		threadHolder->main();
-		delete threadHolder;
-#if defined(WIN32) && defined(PTW32_STATIC_LIB)
-		pthread_win32_thread_detach_np();
-#endif
-		//pthread_exit( 0 );
-		return 0;
+			pthread_win32_thread_detach_np();
+#endif		
+			return threadListener;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PosixThreadSystem::PosixThreadSystem()
+		: m_serviceProvider(0)
 	{
-#if defined(WIN32) && defined(PTW32_STATIC_LIB)
-		// init pthreads
-		pthread_win32_process_attach_np();
-#endif
-
-		pthread_mutex_init( &m_tidMapMutex, NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PosixThreadSystem::~PosixThreadSystem()
 	{
-		std::vector< pthread_t > vThreads;
-		pthread_mutex_lock( &m_tidMapMutex );
-		vThreads.reserve( m_tidMap.size() );
-		for( TTIDMap::iterator it = m_tidMap.begin(), it_end = m_tidMap.end();
-			it != it_end;
-			++it )
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void PosixThreadSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * PosixThreadSystem::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool PosixThreadSystem::initialize()		
+	{
+	#if defined(WIN32) && defined(PTW32_STATIC_LIB)
+		// init pthreads
+		int state = pthread_win32_process_attach_np();
+		if(state == 0)
 		{
-			vThreads.push_back( it->second );
+			return false;
 		}
-		pthread_mutex_unlock( &m_tidMapMutex );
-
-		int ret;
-		for( std::vector< pthread_t >::iterator it = vThreads.begin(), it_end = vThreads.end();
-			it != it_end;
-			++it )
-		{
-			pthread_join( (*it), (void**)&ret );
-		}
-		pthread_mutex_destroy( &m_tidMapMutex );
-#if defined(WIN32) && defined(PTW32_STATIC_LIB)
+	#endif
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PosixThreadSystem::finalize()
+	{
+	#if defined(WIN32) && defined(PTW32_STATIC_LIB)
 		// deinitialize pthreads
 		pthread_win32_thread_detach_np();
 		pthread_win32_process_detach_np();
-#endif
+	#endif
+
+		for(TVectorPosixThreadIdentity::iterator
+			it = m_threadIdentities.begin(),
+			it_end = m_threadIdentities.end();
+		it != it_end;
+		++it )
+		{
+			PosixThreadIdentity * identity = *it;
+			delete identity;
+		}
+
+		m_threadIdentities.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixThreadSystem::createThread( ThreadInterface * _thread )
+	ThreadIdentity * PosixThreadSystem::createThread( ThreadListener * _thread )
 	{
-		pthread_mutex_lock( &m_tidMapMutex );
-		TTIDMap::iterator it_insert = m_tidMap.insert( std::make_pair( _thread, pthread_t() ) ).first;
-		pthread_mutex_unlock( &m_tidMapMutex );
-
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE );
-		pthread_create( &it_insert->second, &attr, s_tread_job, new ThreadHolder( this, _thread ) );
 
-		pthread_attr_destroy(&attr);
-	}
-// 	//////////////////////////////////////////////////////////////////////////
-// 	void PosixThreadSystem::onThreadEnd( ThreadInterface* _thread )
-// 	{
-// 
-// 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PosixThreadSystem::joinThread( ThreadInterface* _thread )
-	{
-		int ret;
-		pthread_t tid;
-		bool found = removeThread( _thread, tid );
-		if( found == true )
-		{
-			pthread_join( tid, (void**)&ret );
+		//Detail::ThreadHolder * holder = new Detail::ThreadHolder( this, _thread );
+		pthread_t threadId;
+		int error_code = pthread_create( &threadId, &attr, Detail::s_tread_job, _thread );
+		if( error_code != 0 )
+		{			
+			LOGGER_ERROR(m_serviceProvider)("PosixThreadSystem::createThread: invalid create thread error code - %d"
+				, error_code
+				);
+
+			return NULL;
 		}
+		
+		PosixThreadIdentity * identity = new PosixThreadIdentity(threadId);
+		m_threadIdentities.push_back( identity );
+		pthread_attr_destroy(&attr);
+		
+		return identity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PosixThreadSystem::joinThread( ThreadIdentity * _thread )
+	{
+		PosixThreadIdentity * identity = static_cast<PosixThreadIdentity*>(_thread);
+
+		pthread_t threadId = identity->getId();
+
+		ThreadListener * listener = NULL;
+		int error_code = pthread_join( threadId, (void**)&listener );
+		if( error_code != 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("PosixThreadSystem::joinThread: invalid join thread error code - %d"
+				, error_code
+				);
+
+			return;
+		}
+
+		//listener->join();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PosixThreadSystem::sleep( unsigned int _ms )
@@ -157,44 +188,4 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PosixThreadSystem::removeThread( ThreadInterface* _thread, pthread_t& _tid )
-	{
-		bool found = false;
-
-		pthread_mutex_lock( &m_tidMapMutex );
-
-		TTIDMap::iterator it_find = m_tidMap.find( _thread );
-		if( it_find != m_tidMap.end() )
-		{
-			found = true;
-			_tid = it_find->second;
-		}
-
-		m_tidMap.erase( _thread );
-		pthread_mutex_unlock( &m_tidMapMutex );
-
-		return found;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MutexInterface* PosixThreadSystem::createMutex()
-	{
-		PosixMutex* posixMutex = new PosixMutex();
-		if( posixMutex->initialize() == false )
-		{
-			delete posixMutex;
-			return NULL;
-		}
-
-		return posixMutex;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PosixThreadSystem::releaseMutex( MutexInterface* _mutex )
-	{
-		if( _mutex != NULL )
-		{
-			PosixMutex* posixMutex = static_cast<PosixMutex*>( _mutex );
-			delete posixMutex;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}

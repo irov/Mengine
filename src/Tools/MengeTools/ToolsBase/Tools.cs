@@ -197,25 +197,24 @@ namespace MengeToolsBase
         {
             Dictionary<string, FontResource> retMap = new Dictionary<string, FontResource>();
             ArrayList resourceFileList = new ArrayList();
-            XmlNodeList xmlResourceList = _xmlDoc.SelectNodes("/Resources/Resource");
-            foreach (XmlNode xmlResourceNode in xmlResourceList)
+            XmlNodeList xmlResourceList = _xmlDoc.GetElementsByTagName("Resource");
+            foreach (XmlNode xmlNode in xmlResourceList)
             {
                 string path = "";
-                foreach (XmlAttribute xmlAttrib in xmlResourceNode.Attributes)
+                foreach (XmlAttribute xmlAttrib in xmlNode.Attributes)
                 {
                     if (xmlAttrib.Name == "Path")
                     {
                         path = xmlAttrib.Value;
                     }
                 }
-                XmlNodeList xmlResourceNames = xmlResourceNode.SelectNodes("Resource/@Name");
-                foreach (XmlNode xmlResourceName in xmlResourceNames)
+                foreach (XmlNode xmlSubNode in xmlNode.ChildNodes)
                 {
                     string resFilename = _rootFolder;
                     resFilename += System.IO.Path.DirectorySeparatorChar;
                     resFilename += path;
                     resFilename += System.IO.Path.DirectorySeparatorChar;
-                    resFilename += xmlResourceName.Value + ".resource";
+                    resFilename += xmlSubNode.Name + ".resource";
                     resourceFileList.Add(resFilename);
                 }
 

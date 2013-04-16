@@ -1,53 +1,66 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
+#   include "Interface/AccountInterface.h"
 
-#	include "Loadable.h"
+#	include "Config/Typedef.h"
+#	include "Core/ConstString.h"
 
 #	include <map>
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include "pybind/types.hpp"
 
 namespace Menge
 {
+    class ServiceProviderInterface;
+
+    class LogServiceInterface;
+    class FileServiceInterface;
+
 	class Account
-		: public Loadable
+        : public AccountInterface
 	{		
 	public:
-		Account( /*const String& _name,*/ const String& _folder );
+		Account( ServiceProviderInterface * _serviceProvider, const WString & _name );
 		~Account();
+        
+    public:
+        void setFolder( const FilePath & _folder );
 
 	public:
-		//const String& getName() const;
-		const String& getFolder() const;
+		const WString & getName() const override;
+        const FilePath & getFolder() const override;
 
-		void addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
-		void changeSetting( const String& _setting, const String& _value );
-		const String& getSetting( const String& _setting );
-
-		void addSettingU( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
-		void changeSettingU( const String& _setting, const String& _value );
-		const String& getSettingU( const String& _setting );
-
-		void apply();
-
-		void load();
-		void save();
+    public:
+		void addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
+		void changeSetting( const WString& _setting, const WString& _value ) override;
+		const WString& getSetting( const WString& _setting ) const override;
+        bool hasSetting( const WString& _setting ) const override;
 
 	public:
-		void loader( XmlElement* _xml ) override;
-		void parser( BinParser * _parser ) override;
+		void apply() override;
 
+		bool load() override;
+		bool save() override;
+
+    public:
+        bool loadBinaryFile( const FilePath & _filename, TBlobject & _data ) override;
+        bool writeBinaryFile( const FilePath & _filename, const TBlobject & _data ) override;
+	
 	protected:
-		//String m_name;
-		String m_folder;
+        ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::map< String, std::pair<String, PyObject*> > TSettingsMap;
-		TSettingsMap m_settings;
-		TSettingsMap m_settingsU;
+		WString m_name;
+
+        FilePath m_folder;
+        FilePath m_settingsPath;
+        		
+        struct Setting
+        {
+            WString value;
+            PyObject * cb;
+        };
+
+		typedef std::map<WString, Setting> TMapSettings;
+		TMapSettings m_settings;
 	};
 }	// namespace Menge

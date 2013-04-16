@@ -7,7 +7,11 @@
  */
 
 #	include "Interface/SoundSystemInterface.h"
+#ifdef __APPLE__
+#   include <OpenAL/al.h>
+#else
 #	include <AL/al.h>
+#endif
 
 namespace Menge
 {
@@ -18,7 +22,7 @@ namespace Menge
 		: public SoundSourceInterface
 	{
 	public:
-		OALSoundSource( OALSoundSystem* _soundSystem );
+		OALSoundSource( ServiceProviderInterface * _serviceProvider, OALSoundSystem* _soundSystem );
 		~OALSoundSource();
 
 	public:
@@ -33,36 +37,39 @@ namespace Menge
 		void setPosition( float _x, float _y, float _z ) override;
 		const float * getPosition() const override;
 
-		void setLooped( bool _loop ) override;
-		bool isLooped() const override;
+		void setLoop( bool _loop ) override;
+		bool getLoop() const override;
 
-		float getLengthMs() override;
-		float getPosMs() override;
+		float getLengthMs() const override;
+		float getPosMs() const override;
 		void setPosMs( float _posMs ) override;
 
 		void loadBuffer( SoundBufferInterface* _soundBuffer ) override;
-		SoundBufferInterface* getSoundBuffer() override;
+		SoundBufferInterface* getSoundBuffer() const override;
 
 	public:
 		void setHeadMode( bool _headMode );
 		bool getHeadMode() const;
 
-	private:
-		bool m_headMode;
-		bool m_playing;
+    protected:
+        void unloadBuffer_();
+
+    private:
+        ServiceProviderInterface * m_serviceProvider;
+        
+        OALSoundSystem* m_soundSystem;
+
 		float m_position[3];
 		float m_volume;
-		bool m_looped;
 		void apply_( ALuint _source );
 
-		ALuint m_alSourceName;
+		ALuint m_sourceId;
 		float m_timing;
 
 		OALSoundBufferBase* m_soundBuffer;
-		
-		OALSoundSystem* m_soundSystem;
 
-		void unloadBuffer_();
-
+        bool m_headMode;
+        bool m_playing;
+        bool m_loop;
 	};
 }	// namespace Menge

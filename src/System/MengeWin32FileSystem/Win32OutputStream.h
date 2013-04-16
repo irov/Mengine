@@ -1,33 +1,30 @@
-/*
- *	Win32OutputStream.h
- *
- *	Created by _Berserk_ on 18.11.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
-
-#include "WindowsLayer/WindowsLayer.h"
+#	include "Interface/WindowsLayerInterface.h"
 
 namespace Menge
 {
 	class Win32OutputStream
-		: public OutputStreamInterface
+		: public FileOutputStreamInterface
 	{
 	public:
-		Win32OutputStream();
+		Win32OutputStream( ServiceProviderInterface * _serviceProvider );
 		~Win32OutputStream();
 
-		bool open( const String& _filename );
-		void close();
 	public:
-		void write( const void * _data, std::streamsize _count ) override;
+		bool open( const FilePath& _filename ) override;
+
+	public:
+		bool write( const void * _data, size_t _count ) override;
 		void flush() override;
 
+    public:
+        void destroy() override;
+
 	private:
+        ServiceProviderInterface * m_serviceProvider;
+        
 		HANDLE m_hFile;
 	};
 }	// namespace Menge

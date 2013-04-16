@@ -1,46 +1,49 @@
 
 set( MY_LIB_NAME OGLRenderSystem )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
+#set( WIN_CONTEXT )
 
-set( WIN_CONTEXT )
-
-if( WIN32 )
-	set( WIN_CONTEXT OGLWin32WindowContext )
-elseif( APPLE )
-	set( WIN_CONTEXT OGLMacOSXWindowContext )
-endif( WIN32 )
+#if( WIN32 )
+#	set( WIN_CONTEXT OGLWin32WindowContext )
+#elseif( APPLE )
+#	set( WIN_CONTEXT OGLMacOSXWindowContext )
+#endif( WIN32 )
 
 include_directories( ${THIRDPARTY_DIR}/GLee ${Mengine_SOURCE_DIR}/Utils)
 
-
-
+if( WIN32 )
 ADD_FILTER(
 src
 	OGLRenderSystem.cpp
 	OGLRenderSystem.h
-	OGLWindowContext.h
-	${WIN_CONTEXT}.h
-	${WIN_CONTEXT}.cpp
 	OGLTexture.h
 	OGLTexture.cpp
 )
+endif( WIN32 )
+
+if( APPLE )
+ADD_FILTER(
+src
+	OGLRenderSystem.cpp
+	OGLRenderSystem.h
+	OGLTexture.h
+	OGLTexture.cpp
+)
+endif( APPLE )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
+if( WIN32 )
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
- debug ${MENGINE_LIB_PREFIX}GLee_static${MENGINE_LIB_SUFFIXD}
- optimized ${MENGINE_LIB_PREFIX}GLee_static${MENGINE_LIB_SUFFIX}
+ ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}GLee_static${MENGINE_LIB_SUFFIX} 
 )
 
-if( WIN32 )
-	SET( APPLICATION_LIBS
-	 ${APPLICATION_LIBS}
-	 ${MENGINE_LIB_PREFIX}opengl32${MENGINE_LIB_POSTFIX}
-	)
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+ ${MENGINE_LIB_PREFIX}opengl32${MENGINE_LIB_POSTFIX}
+ ${MENGINE_LIB_PREFIX}Glu32${MENGINE_LIB_POSTFIX}
+)
 endif( WIN32 )
 
 SET( APPLICATION_LIBS

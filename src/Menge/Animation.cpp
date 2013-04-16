@@ -4,219 +4,198 @@
 
 #	include "ResourceAnimation.h"
 
-#	include "XmlEngine.h"
-#	include "BinParser.h"
+#	include "ResourceImage.h"
 
 #	include "Logger/Logger.h"
 
 #	include "Math/rand.h"
 
+#	include "pybind/system.hpp"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
-	: m_resourceAnimation(0)
-	, m_playing(false)
-	, m_autoStart(false)
-	, m_randomStart(false)
-	, m_looping(false)
-	, m_delay(0)
-	, m_currentFrame(0)
-	, m_onEndFrameTick(false)
-	, m_onEndFrameEvent(false)
-	, m_onEndAnimationEvent(false)
-	, m_animationFactor(1.f)
-	{}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::loader( XmlElement * _xml )
+		: m_resourceAnimation(0)
+		, m_frameTiming(0.f)
+		, m_currentFrame(0)
+        , m_playIterator(0)
+		, m_onEndFrameTick(false)
+		, m_onEndFrameEvent(false)
+		, m_onEndAnimationEvent(false)
 	{
-		Sprite::loader(_xml);
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourceAnimationName );
-			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
-			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
-			XML_CASE_ATTRIBUTE_NODE( "RandomStart", "Value", m_randomStart );			
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::parser( BinParser * _parser )
+	Animation::~Animation()
 	{
-		Sprite::parser(_parser);
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looping );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
-			BIN_CASE_ATTRIBUTE( Protocol::RandomStart_Value, m_randomStart );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimationResource( const String& _resource )
+	void Animation::setAnimationResource( const ConstString& _resource )
 	{
 		if( m_resourceAnimationName == _resource ) 
 		{
 			return;
 		}
-		
+
 		m_resourceAnimationName = _resource;
 
-		recompile();
+		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimationFactor( float _factor )
+	const ConstString & Animation::getAnimationResource() const
 	{
-		m_animationFactor = _factor;
+		return m_resourceAnimationName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Animation::getAnimationFactor() const
+	void Animation::_update( float _current, float _timing )
 	{
-		return m_animationFactor;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::setLooped( bool _loop )
-	{
-		m_looping = _loop;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Animation::getLooped() const
-	{
-		return m_looping;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::_update( float _timing )
-	{
-		Sprite::_update( _timing );
-
-		if( m_playing == false )
+		if( this->isPlay() == false )
 		{
 			return; 
 		}
 
-		if( m_resourceAnimation == NULL )
+		if( m_playTime > _current )
 		{
-			MENGE_LOG_ERROR( "Sprite '%s': Image resource not getting "
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
-				);
+			float deltha = m_playTime - _current;
+			_timing -= deltha;
 		}
 
-		std::size_t frameSize = m_resourceAnimation->getSequenceCount();
+		size_t frameCount = m_resourceAnimation->getSequenceCount();
 
-		m_delay += _timing;
+		float speedFactor = this->getSpeedFactor();
+		m_frameTiming += _timing * speedFactor;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-		delay *= m_animationFactor;
 
-		while( m_delay >= delay )
+		size_t lastFrame = m_currentFrame;
+
+        if( m_currentFrame != frameCount )
+        {
+            while( m_frameTiming >= delay )
+            {
+                m_frameTiming -= delay;
+
+                if( m_onEndFrameEvent == true )
+                {
+                    EVENTABLE_CALL(this, EVENT_FRAME_END)( "(OI)", this->getEmbed(), m_currentFrame );
+                }
+
+                if( m_onEndFrameTick == true )
+                {
+                    EVENTABLE_CALL(this, EVENT_FRAME_TICK)( "(OII)", this->getEmbed(), m_currentFrame, frameCount );
+                }
+                else
+                {
+                    ++m_currentFrame;
+                }
+
+                if( m_currentFrame == frameCount )
+                {
+                    if( this->getLoop() == true )
+                    {
+                        this->setTiming( m_frameTiming );                                   
+                    }
+                    else
+                    {
+                        if( --m_playIterator == 0 )
+                        {
+                            m_currentFrame = frameCount - 1;
+                            this->updateCurrentFrame_();
+
+                            m_frameTiming = 0.f;
+
+                            lastFrame = m_currentFrame;
+
+                            this->end();
+
+                            break;
+                        }
+                        else
+                        {
+                            this->setTiming( m_frameTiming );
+                        }					
+                    }
+
+                    lastFrame = m_currentFrame;
+                }
+
+                delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
+            }
+        }
+
+		if( lastFrame != m_currentFrame )
 		{
-			m_delay -= delay;
-			
-			if( m_onEndFrameEvent == true )
-			{
-				callEvent( EVENT_FRAME_END, "(OI)", this->getEmbedding(), m_currentFrame );
-			}
-
-			if( m_onEndFrameTick == true )
-			{
-				this->askEvent( m_currentFrame, EVENT_FRAME_END, "(OII)", this->getEmbedding(), m_currentFrame, frameSize );
-			}
-			else
-			{
-				++m_currentFrame;
-			}
-
-			if( m_currentFrame == frameSize )
-			{
-				if( m_looping == false )
-				{
-					m_playing = false;
-					--m_currentFrame;
-
-					if( m_onEndAnimationEvent == true )
-					{
-						callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), true );
-					}
-
-					break;
-				}
-				else
-				{
-					m_currentFrame = 0;
-				}
-			}	
-			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-			delay *= m_animationFactor;
+			this->updateCurrentFrame_();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_render( RenderCameraInterface * _camera )
+	{
+		//printf("Animation::_render %s %d %f\n"
+		//	, m_name.c_str()
+		//	, m_currentFrame
+		//	, this->getTiming()
+		//	);
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
+		Sprite::_render( _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()
 	{
-		if( Sprite::_activate() == false )
+		if( m_resourceAnimationName.empty() == true )
 		{
 			return false;
 		}
-
-		if( m_autoStart )
+        
+		if( m_resourceAnimation == NULL )
 		{
-			resume_();
-		}
-		else
-		{
-			m_currentFrame = 0;
-
-			if( m_resourceAnimation == NULL )
-			{
-				MENGE_LOG_ERROR( "Animation '%s': Image resource not getting "
-					, getName().c_str()
-					, m_resourceAnimationName.c_str() 
-					);
-			}
-
-			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-			setImageIndex( currentImageIndex );
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Animation::_compile()
-	{
-		if( Sprite::_compile() == false )
-		{
-			return false;
-		}
-
-		m_resourceAnimation = ResourceManager::hostage()
-			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
-
-		if( m_resourceAnimation == 0 )
-		{
-			MENGE_LOG_ERROR( "Animation: no found resource with name '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' Image resource not getting '%s'"
+				, getName().c_str()
 				, m_resourceAnimationName.c_str() 
 				);
 
 			return false;
 		}
 
-		if( m_randomStart )
-		{			
-			std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
-
-			m_currentFrame = mt::rand( sequenceCount-1 );
-
-			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-			m_delay = mt::even_rand( 0.0f, sequenceDelay );
-		}
-		else
+        this->setTiming( 0.f );
+			
+		if( Sprite::_activate() == false )
 		{
-			m_currentFrame = 0;
-			m_delay = 0.0f;
+			return false;
+		}
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_deactivate()
+	{
+		this->stop();
+
+		Sprite::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Animation::_compile()
+	{
+		if( m_resourceAnimationName.empty() == true )
+		{	
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' no set resource name"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+		
+		m_resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
+
+		if( m_resourceAnimation == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' no found resource with name '%s'"
+				, m_name.c_str()
+				, m_resourceAnimationName.c_str() 
+				);
+
+			return false;
 		}
 
 		return true;
@@ -226,114 +205,165 @@ namespace	Menge
 	{
 		Sprite::_release();
 
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resourceAnimation );
+		if( m_resourceAnimation != 0 )
+		{
+			m_resourceAnimation->decrementReference();
+			m_resourceAnimation = 0;
+		}
+
+		m_play = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::stop()
+	bool Animation::_play( float _time )
 	{
-		if( isActivate() == false )
+        (void)_time;
+
+		if( this->isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.stop: not activate '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' play not activate"
+				, getName().c_str()
+				);
+
+			return false;
+		}
+		        
+        m_playIterator = this->getPlayCount();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Animation::_restart( float _time, size_t _enumerator )
+	{
+        (void)_time;
+        (void)_enumerator;
+
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+
+        m_playIterator = this->getPlayCount();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_stop( size_t _enumerator )
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' stop not activate"
 				, getName().c_str()
 				);
 
 			return;
 		}
-
-		stop_();
+        
+		if( m_onEndAnimationEvent == true )
+		{
+			EVENTABLE_CALL(this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::pause()
+	void Animation::_end( size_t _enumerator )
 	{
-		if( isActivate() == false )
+		if( this->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.pause: not activate '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' end not activate"
 				, getName().c_str()
 				);
 
 			return;
 		}
-
-		m_playing = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::resume()
-	{
-		if( isActivate() == false )
+        
+		if( m_onEndAnimationEvent == true )
 		{
-			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
-				, getName().c_str()
-				);
-
-			return;
-		}	
-
-		resume_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::play()
-	{
-		if( isActivate() == false )
-		{
-			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
-				, getName().c_str()
-				);
-
-			return;
+			EVENTABLE_CALL(this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 		}
-
-		stop_();
-		resume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::stop_()
+	size_t Animation::getFrame_( float _timing, float & _delthaTiming ) const
 	{
-		m_currentFrame = 0;
-		m_delay = 0;
-
-		if( m_playing == true )
+		if( _timing <= 0.f )
 		{
-			m_playing = false;
+			_delthaTiming = _timing;
 
-			if( m_onEndAnimationEvent == true )
+			return 0;
+		}
+				
+		float duration = m_resourceAnimation->getSequenceDuration();
+
+		if( _timing >= duration )
+		{
+			_timing -= floorf( _timing / duration ) * duration;
+
+            if( fabsf(_timing) < 0.0001f )
 			{
-				callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), false );
+				_delthaTiming = 0.f;
+
+				return 0;
 			}
 		}
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
-		setImageIndex( currentImageIndex );
+		size_t count = m_resourceAnimation->getSequenceCount();
+				 
+		for( size_t frame = 0; frame != count; ++frame )
+		{
+			float delay = m_resourceAnimation->getSequenceDelay( frame );
+
+			_timing -= delay;
+
+			if( _timing <= 0.f )
+			{
+				_delthaTiming = _timing + delay;
+
+				return frame;
+			}
+		}
+		
+		return count - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::resume_()
+	bool Animation::updateCurrentFrame_()
 	{
-		m_playing = true;
+		if( m_resource != NULL )
+		{
+			m_resource->decrementReference();
+            m_resource = NULL;
+		}
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
+		m_resourceName =  m_resourceAnimation->getSequenceResourceName( m_currentFrame );
+		m_resource =  m_resourceAnimation->getSequenceResource( m_currentFrame );
+		m_resource->incrementReference();
+        	
+		if( Sprite::_compile() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_setListener( PyObject * _listener )
+	void Animation::_setEventListener( PyObject * _listener )
 	{
-		Sprite::_setListener( _listener );
+		Sprite::_setEventListener( _listener );
 
-		m_onEndFrameEvent = Eventable::registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
-		m_onEndFrameTick = Eventable::registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
+		this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener, &m_onEndFrameEvent );
+		this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener, &m_onEndFrameTick );
 
-		m_onEndAnimationEvent = Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
+		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener, &m_onEndAnimationEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Animation::getCurrentFrame() const
+	size_t Animation::getCurrentFrame() const
 	{
 		return m_currentFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Animation::getFrameCount() const
+	size_t Animation::getFrameCount() const
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.getFrameCount: not compiled resource '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameCount: '%s' not compiled resource '%s'"
+				, m_name.c_str()
 				, m_resourceAnimationName.c_str()
 				);
 
@@ -343,23 +373,40 @@ namespace	Menge
 		return m_resourceAnimation->getSequenceCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setCurrentFrame( std::size_t _frame )
+	float Animation::getFrameDelay( size_t  _frame ) const
 	{
-		if( isActivate() == false )
+		if( this->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Animation '%s': not activate '%s'"
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
+			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameDelay: '%s' not compiled resource '%s'"
+				, m_name.c_str()
+				, m_resourceAnimationName.c_str()
+				);
+
+			return 0.f;
+		}
+
+		float delay = m_resourceAnimation->getSequenceDelay( _frame );
+
+        return delay;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setCurrentFrame( size_t _frame )
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation.setCurrentFrame: '%s' not activate"
+				, m_name.c_str()
 				);
 
 			return;
 		}
 
-		std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
 		if( _frame >= sequenceCount )	
 		{
-			MENGE_LOG_ERROR( "Animation::setCurrentFrame _frame(%d) >= sequenceCount(%d)"
+			LOGGER_ERROR(m_serviceProvider)( "Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
+				, m_name.c_str()
 				, _frame
 				, sequenceCount
 				);
@@ -368,8 +415,78 @@ namespace	Menge
 		}
 
 		m_currentFrame = _frame;
+		m_frameTiming = 0.f;
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
+		this->updateCurrentFrame_();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setFirstFrame()
+	{
+		size_t firstFrame = 0;
+
+		this->setCurrentFrame( firstFrame );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setLastFrame()
+	{
+		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+
+		size_t lastFrame = sequenceCount - 1;
+
+		this->setCurrentFrame( lastFrame );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setReverse( bool _value )
+	{
+        (void)_value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setTiming( float _timing )
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation._setTiming: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+				
+		m_currentFrame = this->getFrame_( _timing, m_frameTiming );
+
+		this->updateCurrentFrame_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Animation::_getTiming() const
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation._getTiming: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return 0.f;
+		}
+
+		float timing = 0.f;
+
+		for( size_t frame = 0; frame != m_currentFrame; ++frame )
+		{
+			float delay = m_resourceAnimation->getSequenceDelay( frame );
+
+			timing += delay;
+		}
+
+		timing += m_frameTiming;
+
+		return timing; 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Animation::_interrupt( size_t _enumerator )
+	{
+        (void)_enumerator;
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

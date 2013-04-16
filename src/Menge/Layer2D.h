@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Layer.h"
+#	include "Kernel/Layer.h"
 #	include "Core/Viewport.h"
 
 namespace Menge
@@ -10,6 +10,8 @@ namespace Menge
 	class Layer2D
 		: public Layer
 	{
+        DECLARE_VISITABLE()
+
 	public:
 		Layer2D();
 
@@ -17,31 +19,39 @@ namespace Menge
 		void setParallaxFactor( const mt::vec2f & _factor );
 		const mt::vec2f & getParallaxFactor() const;
 
+	public:
 		void setRenderViewport( const Viewport & _viewport );
-		const Viewport & getRenderViewport() const;
+		void removeRenderViewport();
 
+    protected:
+        void createRenderViewport_();
+        void clearRenderViewport_();
+
+	public:
 		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 
 	public:
-		mt::vec2f screenToLocal( const mt::vec2f& _point );
+		mt::vec2f cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point );
 
-		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const override;
+		virtual void calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const override;
 
-		Camera* getCamera() override;
-
-	public:
-		void loader( XmlElement * _xml ) override;
-		void render( Camera2D * _camera ) override;
-
-	protected:
+    protected:
+        bool _activate() override;
+        void _deactivate() override;
+    
+    protected:
 		void _addChildren( Node * _node ) override;
-		bool _activate() override;
-		void _deactivate() override;
 
 	protected:
 		mt::vec2f m_factorParallax;
-		Viewport m_renderViewport;
 
-		Camera2D* m_camera2D;
+		Viewport m_viewport;
+		
+		Camera2D * m_cameraViewport;
+		//Viewport m_viewportWM;
+		//mt::mat4f m_viewMatrix;
+		//mt::mat4f m_projectionMatrix;
+
+		bool m_hasViewport;
 	};
 }

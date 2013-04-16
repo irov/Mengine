@@ -1,18 +1,10 @@
-/*
- *	HotSpotImage.h
- *
- *	Created by _Berserk_ on 3.3.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "HotSpot.h"
 
 namespace Menge
 {
-	class ResourceHotspotImage;
+	class ResourceHIT;
 
 	class HotSpotImage
 		: public HotSpot
@@ -22,32 +14,32 @@ namespace Menge
 		~HotSpotImage();
 
 	public:
-		bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform ) override;
+		bool testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform ) override;
+		bool testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform ) override;
 
 	public:
 		void setAlphaTest( float _value );
 		float getAlphaTest() const;
 
-	public:
-		ResourceHotspotImage * getResourseHotspotImage();
+        size_t getWidth() const;
+        size_t getHeight() const;
 
 	public:
-		void setResourceName( const String& _resourceName );
-		void setFrame( std::size_t _frame );
+		ResourceHIT * getResourseHIT() const;
 
-	public:
-		void loader( XmlElement *_xml ) override;
-		void parser( BinParser * _parser ) override;
+    public:
+        void setResourceHIT( const ConstString& _resourceName );
+        const ConstString & getResourceHIT() const;
 
-	protected:
+    protected:
 		bool _compile() override;
 		void _release() override;
 
 	private:
-		String m_resourceName;
-		std::size_t m_frame;
+        ConstString m_resourceHITName;
 
-		float m_alphaTest;
-		ResourceHotspotImage* m_resourceHotspotImage;
+        ResourceHIT * m_resourceHIT;
+
+		float m_alphaTest;		
 	};
 }	// namespace Menge

@@ -1,14 +1,11 @@
 #	include "Point.h"
 
-#	include "XmlEngine.h"
-
 #	include "Camera2D.h"
 #	include "HotSpot.h"
 
-#	include "RenderEngine.h"
-#	include "Sprite.h"
+#   include "Interface/RenderSystemInterface.h"
 
-#	include "Application.h"
+#	include "Sprite.h"
 
 namespace	Menge
 {
@@ -17,32 +14,42 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Point::testHotSpot( HotSpot * _hotspot )
+	bool Point::testHotSpot( RenderCameraInterface * _camera2D, HotSpot * _hotspot )
 	{
-		const mt::vec2f& pos = this->getScreenPosition();
-		bool result = _hotspot->testPoint( pos );
-		return result;
+		mt::vec2f position;
+        this->getCameraPosition( _camera2D, position );
+
+		if( _hotspot->testPoint( position ) == false )
+        {
+            return false;
+        }
+
+		return true;
 	}
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_debugRender( Camera2D * _camera, unsigned int _debugMask )
+	void Point::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
+        (void)_camera;
+        (void)_debugMask;
+
 		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
-			const mt::vec2f& pos = getWorldPosition();
+			//const mt::vec3f& pos = getWorldPosition();
+
 			//mt::vec2f pos;
 			//mt::mul_v2_m3_r( pos, getWorldPosition(), getWorldMatrix() );
-			mt::vec2f pos1( pos + mt::vec2f( -5.0f, -5.0f ) );
-			mt::vec2f pos2( pos + mt::vec2f( 5.0f, -5.0f ) );
-			mt::vec2f pos3( pos + mt::vec2f( 5.0f, 5.0f ) );
-			mt::vec2f pos4( pos + mt::vec2f( -5.0f, 5.0f ) );
+			//mt::vec3f pos1( pos + mt::vec2f( -5.0f, -5.0f ) );
+			//mt::vec3f pos2( pos + mt::vec2f( 5.0f, -5.0f ) );
+			//mt::vec3f pos3( pos + mt::vec2f( 5.0f, 5.0f ) );
+			//mt::vec3f pos4( pos + mt::vec2f( -5.0f, 5.0f ) );
 			//renderEngine->renderLine( 0xFF00FFFF, pos1, pos2 );
 			//renderEngine->renderLine( 0xFF00FFFF, pos2, pos3 );
 			//renderEngine->renderLine( 0xFF00FFFF, pos1, pos4 );
 			//renderEngine->renderLine( 0xFF00FFFF, pos4, pos3 );
 		}
 	}
-#	endif
+//#	endif
 	//////////////////////////////////////////////////////////////////////////
 
 }

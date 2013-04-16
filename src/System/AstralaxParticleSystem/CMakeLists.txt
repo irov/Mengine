@@ -1,10 +1,6 @@
 
 set( MY_LIB_NAME AstralaxParticleSystem )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 ADD_FILTER(
 src
 	AstralaxEmitter.cpp
@@ -15,6 +11,12 @@ src
 	AstralaxParticleSystem.h
 	AstralaxParticleSystem.def
 )
+
+SET( MAGIC_3D 0 )
+
+if( MAGIC_3D )
+    add_definitions(-DMAGIC_3D)
+endif( MAGIC_3D )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )
 
@@ -33,38 +35,84 @@ SET( APPLICATION_DEPENDENCIES
 SET( magic_lib_path )
 
 if( WIN32 )
-	SET( magic_lib_path ${magic_lib_path} win/lib/microsoft/ )
+ SET( magic_lib_path ${magic_lib_path}/win/lib )
 elseif( APPLE )
-	SET( magic_lib_path ${magic_lib_path} mac/ )
+ #if(DEFINED MENGINE_IPAD)
+  SET( magic_lib_path ${magic_lib_path}/iphone )
+ #endif(DEFINED MENGINE_IPAD)
+
+ IF(${MENGINE_TARGET} STREQUAL "MACOS")
+  SET( magic_lib_path ${magic_lib_path}/win/lib/mingw )
+ ENDIF(${MENGINE_TARGET} STREQUAL "MACOS")
 endif( WIN32 )
 
 if( MINGW )
-	SET( magic_lib_path ${magic_lib_path} win/lib/mingw/ )
+ SET( magic_lib_path ${magic_lib_path}/mingw )
 elseif( MSVC )
-	SET( magic_lib_path ${magic_lib_path} win/lib/microsoft/ )
+ SET( magic_lib_path ${magic_lib_path}/microsoft )
 endif( MINGW )
 
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
- ${THIRDPARTY_DIR}/Astralax/${magic_lib_path}
-)
+SET( magic_lib_path ${THIRDPARTY_DIR}/astralax${magic_lib_path} )
+MESSAGE( ${magic_lib_path} )
 
 SET( APPLICATION_LIB_PATHS
  ${APPLICATION_LIB_PATHS}
  PARENT_SCOPE
 )
 
-if( WIN32 )
-	SET( APPLICATION_LIBS
-	${APPLICATION_LIBS}
-	magic${MENGINE_LIB_POSTFIX}
-	)
-elseif( APPLE )
-	SET( APPLICATION_LIBS
-	${APPLICATION_LIBS}
-	magic.dylib
-	)
-endif( WIN32 )
+if( MAGIC_3D )
+    if( MINGW )
+        SET( APPLICATION_LIBS
+        ${APPLICATION_LIBS}
+        ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic3d.a
+        )
+    elseif( WIN32 )
+        SET( APPLICATION_LIBS
+        ${APPLICATION_LIBS}
+        ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic3d.lib
+        )
+    elseif( APPLE )
+        IF(${MENGINE_TARGET} STREQUAL "IPAD")
+            SET( APPLICATION_LIBS
+            ${APPLICATION_LIBS}
+            ${magic_lib_path}/libimagic.a
+            )
+        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD")
+        
+        IF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
+            SET( APPLICATION_LIBS
+            ${APPLICATION_LIBS}
+            ${magic_lib_path}/libimagic_simulator.a
+            )    
+        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
+    endif( MINGW )
+else( MAGIC_3D )
+    if( MINGW )
+        SET( APPLICATION_LIBS
+        ${APPLICATION_LIBS}
+        ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic.a
+        )
+    elseif( WIN32 )
+        SET( APPLICATION_LIBS
+        ${APPLICATION_LIBS}
+        ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic.lib
+        )
+    elseif( APPLE )
+        IF(${MENGINE_TARGET} STREQUAL "IPAD")
+            SET( APPLICATION_LIBS
+            ${APPLICATION_LIBS}
+            ${magic_lib_path}/libimagic.a
+            )
+        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD")
+        
+        IF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
+            SET( APPLICATION_LIBS
+            ${APPLICATION_LIBS}
+            ${magic_lib_path}/libimagic_simulator.a
+            )    
+        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
+    endif( MINGW )
+endif( MAGIC_3D )
 
 
 SET( APPLICATION_LIBS

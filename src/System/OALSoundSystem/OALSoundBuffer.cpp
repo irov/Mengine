@@ -7,36 +7,39 @@
  */
 
 #	include "OALSoundBuffer.h"
+#	include "OALSoundSystem.h"
+
 #	include "Interface/SoundCodecInterface.h"
 
 #	include "OALError.h"
 
-#	define OAL_CHECK_ERROR() s_OALErrorCheck( m_soundSystem, __FILE__, __LINE__ )
+#	define OAL_CHECK_ERROR() s_OALErrorCheck( m_serviceProvider, __FILE__, __LINE__ )
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundBuffer::OALSoundBuffer( OALSoundSystem * _soundSystem )
-		: m_soundSystem(_soundSystem)
-		, m_alBufferName( 0 )
+	OALSoundBuffer::OALSoundBuffer( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
+		: m_serviceProvider(_serviceProvider)
+        , m_soundSystem(_soundSystem)
+		, m_alBufferId(0)
 	{
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBuffer::~OALSoundBuffer()
 	{
-		cleanup_();
+		if( m_alBufferId != 0 )
+		{
+			m_soundSystem->releaseBufferId( m_alBufferId );
+			m_alBufferId = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( SoundDecoderInterface * _soundDecoder )
 	{
-		cleanup_();
+		m_alBufferId = m_soundSystem->genBufferId();		
 
-		while( alGetError() != AL_NO_ERROR );
-		
-		alGenBuffers( 1, &m_alBufferName );
-		ALenum error = alGetError();
-		if( error != AL_NO_ERROR )
+		if( m_alBufferId == 0 )
 		{
 			// TODO: report in case of error
 			//printf( "Error: %s\n", alGetString( error ) );
@@ -48,10 +51,10 @@ namespace Menge
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
 		m_time_total = dataInfo->time_total_secs;
-		std::size_t size = dataInfo->size;
+		size_t size = dataInfo->size;
 
-		unsigned char* buffer = new unsigned char[ size ];
-		_soundDecoder->decode( buffer, size );
+		unsigned char* buffer = new unsigned char[ size /*+ fixed_sound_buffer_size*/ ];
+		unsigned int decode_size = _soundDecoder->decode( buffer, size );
 
 		if( m_channels == 1 )
 		{
@@ -63,27 +66,13 @@ namespace Menge
 			m_format = AL_FORMAT_STEREO16;
 			m_isStereo = true;
 		}
-		alBufferData( m_alBufferName, m_format, buffer, size, m_frequency );
 
-		delete[] buffer;
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			// TODO: report in case of error
-			//printf( "Error: %s\n", alGetString( error ) );
-			return false;
-		}
+		alBufferData( m_alBufferId, m_format, buffer, decode_size, m_frequency );
+		OAL_CHECK_ERROR();
+
+		delete[] buffer;		
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::cleanup_()
-	{
-		if( m_alBufferName != 0 )
-		{
-			alDeleteBuffers( 1, &m_alBufferName );
-			OAL_CHECK_ERROR();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::play( ALenum _source, bool _looped, float _pos )
@@ -91,7 +80,8 @@ namespace Menge
 		ALint state = 0;
 		alGetSourcei( _source, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR();
-		if( state != AL_STOPPED || state != AL_INITIAL )
+
+		if( state == AL_PLAYING )
 		{
 			alSourceStop( _source );
 			OAL_CHECK_ERROR();
@@ -103,7 +93,7 @@ namespace Menge
 		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
 		OAL_CHECK_ERROR();
 
-		alSourcei( _source, AL_BUFFER, m_alBufferName );
+		alSourcei( _source, AL_BUFFER, m_alBufferId );
 		OAL_CHECK_ERROR();
 
 		alSourcef( _source, AL_SEC_OFFSET, _pos );
@@ -111,13 +101,13 @@ namespace Menge
 
 		alSourcePlay( _source );
 		OAL_CHECK_ERROR();
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::pause( ALenum _source )
 	{
 		alSourcePause( _source );
 		OAL_CHECK_ERROR();
+
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
 	}
@@ -126,16 +116,25 @@ namespace Menge
 	{
 		alSourceStop( _source );
 		OAL_CHECK_ERROR();
+
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float OALSoundBuffer::getTimePos( ALenum _source )
+	bool OALSoundBuffer::getTimePos( ALenum _source, float & _pos ) const
 	{
-		float pos = 0.0f;
+		float pos = 0.f;
+
 		alGetSourcef( _source, AL_SEC_OFFSET, &pos );
-		OAL_CHECK_ERROR();		
-		return pos;
+		
+        if( OAL_CHECK_ERROR() == true )
+        {
+            return false;
+        }
+
+        _pos = pos;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

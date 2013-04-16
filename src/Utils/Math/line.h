@@ -9,7 +9,7 @@
 
 namespace mt
 {
-	MATH_INLINE bool line_intersect_v2(
+	MATH_FUNCTION_INLINE bool line_intersect_v2(
 			const mt::vec2f & begin_,
 			const mt::vec2f & end_,
 			const mt::vec2f & other_line_begin_,

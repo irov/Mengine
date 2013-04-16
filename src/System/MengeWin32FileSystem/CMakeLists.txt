@@ -1,10 +1,6 @@
 
 set( MY_LIB_NAME MengeWin32FileSystem )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 ADD_FILTER(
 src
 	#FileStream.h
@@ -15,12 +11,14 @@ src
 	Win32FileSystem.h
 	Win32InputStream.h
 	Win32InputStream.cpp
+	Win32MappedInputStream.h
+	Win32MappedInputStream.cpp
 )
-
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
+add_definitions(-DUNICODE)
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} WindowsLayer)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

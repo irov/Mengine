@@ -14,9 +14,11 @@
 
 namespace Menge
 {
+    static const int INVALID_HANDLE_VALUE = -1;
+
 	//////////////////////////////////////////////////////////////////////////
 	PosixInputStream::PosixInputStream()
-		: m_hFile( -1 )
+		: m_hFile(INVALID_HANDLE_VALUE)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,7 +29,8 @@ namespace Menge
 	bool PosixInputStream::open( const String& _filename )
 	{
 		m_hFile = ::open( _filename.c_str(), O_RDONLY );
-		if( m_hFile == -1 )
+
+		if( m_hFile == INVALID_HANDLE_VALUE )
 		{
 			return false;
 		}
@@ -35,6 +38,7 @@ namespace Menge
 		struct stat hStat;
 		std::fill( reinterpret_cast<unsigned char*>( &hStat ),
 			reinterpret_cast<unsigned char*>( &hStat ) + sizeof( hStat ), 0 );
+
 		if( fstat( m_hFile, &hStat ) != 0 )
 		{
 			return false;
@@ -45,12 +49,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixInputStream::close()
+	void PosixInputStream::destroy()
 	{
-		if( m_hFile != -1 )
+		if( m_hFile != INVALID_HANDLE_VALUE )
 		{
 			::close( m_hFile );
-			m_hFile = -1;
+
+			m_hFile = INVALID_HANDLE_VALUE;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,10 +63,12 @@ namespace Menge
 	{
 		ssize_t bytesRead = 0;
 		ssize_t result = ::read( m_hFile, _buf, _count );
-		if( result != -1 )
+
+		if( result == -1 )
 		{
-			bytesRead = result;
+			return 0;
 		}
+
 		return static_cast<int>( bytesRead );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -69,10 +76,23 @@ namespace Menge
 	{
 		::lseek( m_hFile, _pos, SEEK_SET );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    int PosixInputStream::tell() const
+    {
+        return lseek( m_hFile, 0, SEEK_CUR );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	int PosixInputStream::size() const
 	{
 		return static_cast<int>( m_size );
 	}
 	//////////////////////////////////////////////////////////////////////////
+    bool PosixInputStream::time( time_t & _time ) const
+    {
+        struct stat buffer;
+        if( fstat( m_hFile, &buffer ) )
+            return false;
+        _time = buffer.st_mtime; // last modification?
+        return true;
+    }
 }	// namespace Menge

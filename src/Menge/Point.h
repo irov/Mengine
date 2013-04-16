@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "Kernel/Node.h"
 
 namespace Menge
 {
@@ -13,11 +13,11 @@ namespace Menge
 		Point();
 
 	public:
-		bool testHotSpot( HotSpot * _hotspot );
+		bool testHotSpot( RenderCameraInterface * _camera, HotSpot * _hotspot );
 
-#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGE_MASTER_RELEASE
 	protected:
-		void _debugRender( Camera2D * _camera, unsigned int _debugMask ) override;
-#	endif
+		void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+//#	endif
 	};
 }

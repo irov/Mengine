@@ -1,18 +1,26 @@
 
 
 ADD_SUBDIRECTORY( AstralaxParticleSystem )
+
 ADD_SUBDIRECTORY( Box2DPhysicSystem )
-ADD_SUBDIRECTORY( MengeCodecSystem )
-ADD_SUBDIRECTORY( MengeLogSystem )
+
+
+#ADD_SUBDIRECTORY( MengeLogSystem )
 ADD_SUBDIRECTORY( OALSoundSystem )
+ADD_SUBDIRECTORY( SilentSoundSystem )
+ADD_SUBDIRECTORY( ICUUnicodeSystem )
 ADD_SUBDIRECTORY( PosixThreadSystem )
-ADD_SUBDIRECTORY( PythonScriptSystem )
+#ADD_SUBDIRECTORY( PythonScriptSystem )
+
 
 if( WIN32 )
 	ADD_SUBDIRECTORY( MengeWin32FileSystem )
 elseif( APPLE )
-	#ADD_SUBDIRECTORY( MengeMacOSFileSystem )
-	ADD_SUBDIRECTORY( PosixFileSystem )
+	
+	IF(${MENGINE_TARGET} STREQUAL "MACOS")
+		#ADD_SUBDIRECTORY( MengeMacOSFileSystem )
+		ADD_SUBDIRECTORY( PosixFileSystem )
+	ENDIF(${MENGINE_TARGET} STREQUAL "MACOS")
 endif( WIN32 )
 
 if( WIN32 )

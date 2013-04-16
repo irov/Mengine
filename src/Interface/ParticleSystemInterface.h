@@ -1,96 +1,166 @@
 #	pragma once
 
+#   include "Interface/ServiceInterface.h"
+
 #	include "Config/Typedef.h"
+
+#   include "Core/ConstString.h"
+#   include "Core/FilePath.h"
+
+#	include "Math/vec2.h"
+#	include "Math/box2.h"
+
+#   include "Math/mat4.h"
 
 #	include <vector>
 
 namespace Menge
 {
-	struct RenderParticleRectangle
+	struct ParticleVertices
 	{
-		float x1,y1;
-		float x2,y2;
-		float x3,y3;
-		float x4,y4;
+		mt::vec3f v[4];
+		mt::vec2f uv[4];
+
+		unsigned long color;
 	};
 
-	struct RenderParticleTexture
-	{
-		float u0,v0;
-		float u1,v1;
-		int frame;
-	};
+	typedef std::vector<ParticleVertices> TVectorParticleVerices;
 
-	struct RenderParticleColor
+	struct ParticleMesh
 	{
-		unsigned long rgba;
-	};
+		size_t begin;
+		size_t size;
 
-	struct RenderParticle
-	{
-		RenderParticleRectangle rectangle;
-		RenderParticleTexture texture;
-		RenderParticleColor color;
+		int texture;
+		bool intense;
 	};
-
-	typedef std::vector<RenderParticle> TVectorRenderParticle;
 
 	class ParticleEmitterListenerInterface
 	{
 	public:
-		virtual void onStopped() = 0;
+		virtual void onParticleEmitterStopped() = 0;
 	};
 
 	class EmitterInterface
 	{
 	public:
-		virtual const std::string & getName() const = 0;
+		virtual const ConstString & getName() const = 0;
 
 	public:
 		virtual void play() = 0;
 		virtual void stop() = 0;
 		virtual void pause() = 0;
 		virtual void restart() = 0;
+		virtual void seek( float _timming ) = 0;
+	public:
+		virtual bool update( float _timing ) = 0;
 
 	public:
-		virtual void update( float _timing ) = 0;
+		virtual void setLoop( bool _loop ) = 0;
+		virtual bool getLoop() const = 0;
 
 	public:
-		virtual void setLooped( int _loop ) = 0;
-		virtual int getLooped() const = 0;
+		virtual void interrupt() = 0;
 
 	public:
-		virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
+		virtual void getBoundingBox( mt::box2f& _box ) const = 0;
 		virtual void setLeftBorder( float _leftBorder ) = 0;
-		virtual int getNumTypes() const = 0;
+		
+		virtual float getLeftBorder() const = 0;
+		virtual float getRightBorder() const = 0;
+		virtual float getDuration() const = 0;
+		
 		virtual bool isIntensive() const = 0;
-
+		virtual void setEmitterTranslateWithParticle( bool _value ) = 0;
 	public:
-		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
-		virtual void setPosition( float _x, float _y ) = 0;
-		virtual void setAngle( float _radians ) = 0;
-	};
+		virtual bool changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
+		virtual bool changeEmitterModel( float * _points, int _count ) = 0;
+	public:
+		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;		
 
+    public:
+		virtual void setPosition( const mt::vec3f & _pos ) = 0;
+		virtual void getPosition( mt::vec3f & _pos ) = 0;
+
+        virtual void getBasePosition( mt::vec3f & _pos ) = 0;
+
+		virtual void setScale( float _scale ) = 0;
+
+		virtual void setAngle( float _radians ) = 0;
+
+		virtual void setRandomMode( bool _randomMode ) = 0;
+		virtual bool getRandomMode() const = 0;
+       
+    public:
+        virtual bool getBackgroundBox( mt::box2f & _box ) = 0;
+	};
+	
 	class EmitterContainerInterface
 	{
-	//public:
-		//virtual ~EmitterContainerInterface() {};
+	public:
+		struct EmitterAtlas
+		{
+			FilePath file;
+			//WString path;
+		};
+		
+		class EmitterContainerVisitor
+		{
+		public:
+			virtual void visitEmitterName( const ConstString & _name ) = 0;
+			virtual void visitAtlas( const EmitterAtlas & _atlas ) = 0;
+		};
+
+		typedef std::vector<EmitterAtlas> TVectorAtlas;
+			
+	public:
+		virtual const TVectorAtlas & getAtlas() const = 0;
+		virtual void visitContainer( EmitterContainerVisitor * visitor ) = 0;
+		virtual EmitterInterface * createEmitter( const ConstString & _name ) = 0;
+		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
+	};
+
+	struct EmitterRenderFlush
+	{
+		size_t meshCount;
+		size_t particleCount;
 	};
 
 	class ParticleSystemInterface
+        : public ServiceInterface
 	{
-	public:
-		virtual EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) = 0;
-		virtual void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) = 0;
-		virtual EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container ) = 0;
-		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
-		virtual bool lockEmitter( EmitterInterface * _emitter, int _typeParticle ) = 0;
-		virtual int getTextureCount() const = 0;
-		virtual String getTextureName( int _index ) const = 0;
-		virtual int flushParticles( TVectorRenderParticle & _particles, int _particlesLimit ) = 0;
-		virtual void unlockEmitter( EmitterInterface * _emitter ) = 0;
-	};
-}
+        SERVICE_DECLARE("ParticleSystem")
 
-bool	initInterfaceSystem( Menge::ParticleSystemInterface** );
-void	releaseInterfaceSystem( Menge::ParticleSystemInterface* );
+	public:
+		virtual EmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) = 0;
+		virtual void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) = 0;
+		
+	public:
+        virtual bool flushParticles( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush ) = 0;
+	};
+
+#   define PARTICLE_SYSTEM( serviceProvider )\
+    (Menge::getService<Menge::ParticleSystemInterface>(serviceProvider))
+
+    class ParticleServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE("ParticleService")
+
+    public:
+        virtual bool flushEmitter( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush ) = 0;
+        virtual size_t renderParticlesCount( size_t _count ) = 0;
+
+        virtual EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
+        virtual void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) = 0;
+
+    public:
+        virtual size_t getMaxParticlesCount() const = 0;
+
+    public:
+        virtual void beginParticlesCount() = 0;
+    };
+
+#   define PARTICLE_SERVICE( serviceProvider )\
+    (Menge::getService<Menge::ParticleServiceInterface>(serviceProvider))
+}

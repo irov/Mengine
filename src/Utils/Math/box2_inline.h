@@ -2,31 +2,31 @@
 
 namespace mt
 {
-	MATH_INLINE box2f::box2f()
+	MATH_METHOD_INLINE box2f::box2f()
 	{}
 
-	MATH_INLINE box2f::box2f( const box2f & _box )
+	MATH_METHOD_INLINE box2f::box2f( const box2f & _box )
 		: minimum( _box.minimum )
 		, maximum( _box.maximum )
 	{}
 
-	MATH_INLINE box2f::box2f( const vec2f & _min, const vec2f & _max )
+	MATH_METHOD_INLINE box2f::box2f( const vec2f & _min, const vec2f & _max )
 		: minimum( _min )
 		, maximum( _max )
 	{}
 
-	MATH_INLINE void reset( box2f & box, const vec2f &initValue)
+	MATH_FUNCTION_INLINE void reset( box2f & box, const vec2f &initValue)
 	{
 		box.maximum = initValue;
 		box.minimum = initValue;
 	}
 
-	MATH_INLINE void reset( box2f & box, float x, float y)
+	MATH_FUNCTION_INLINE void reset( box2f & box, float x, float y)
 	{
 		reset(box,vec2f(x,y));
 	}
 
-	MATH_INLINE void add_internal_point( box2f & box, float x,float y)
+	MATH_FUNCTION_INLINE void add_internal_point( box2f & box, float x,float y)
 	{
 		if (x>box.maximum.x) box.maximum.x = x;
 		if (y>box.maximum.y) box.maximum.y = y;
@@ -34,12 +34,12 @@ namespace mt
 		if (y<box.minimum.y) box.minimum.y = y;
 	}
 
-	MATH_INLINE void add_internal_point( box2f & box, const vec2f &p)
+	MATH_FUNCTION_INLINE void add_internal_point( box2f & box, const vec2f &p)
 	{
 		add_internal_point(box,p.x, p.y);
 	}
 
-	MATH_INLINE void merge_box( box2f & box, const box2f & external_box )
+	MATH_FUNCTION_INLINE void merge_box( box2f & box, const box2f & external_box )
 	{
 		if ( external_box.maximum.x > box.maximum.x ) box.maximum.x = external_box.maximum.x;
 		if ( external_box.maximum.y > box.maximum.y ) box.maximum.y = external_box.maximum.y;
@@ -47,31 +47,19 @@ namespace mt
 		if ( external_box.minimum.y < box.minimum.y ) box.minimum.y = external_box.minimum.y;
 	}
 
-	MATH_INLINE bool exist_box( const box2f & box, const box2f & external_box )
-	{
-		bool exist = true;
-
-		if ( external_box.maximum.x > box.maximum.x ) exist = false;
-		if ( external_box.maximum.y > box.maximum.y ) exist = false;
-		if ( external_box.maximum.x < box.minimum.x ) exist = false;
-		if ( external_box.maximum.y < box.minimum.y ) exist = false;
-
-		return exist;
-	}
-
-	MATH_INLINE void set_box_from_min_max( box2f & box, const vec2f &minimum, const vec2f &maximum)
+	MATH_FUNCTION_INLINE void set_box_from_min_max( box2f & box, const vec2f &minimum, const vec2f &maximum)
 	{
 		box.minimum = minimum;
 		box.maximum = maximum;
 	}
 
-	MATH_INLINE void set_box_from_center_and_extent( box2f & box, const vec2f &center, const vec2f &extent)
+	MATH_FUNCTION_INLINE void set_box_from_center_and_extent( box2f & box, const vec2f &center, const vec2f &extent)
 	{
 		box.minimum = center - extent;
 		box.maximum = center + extent;
 	}
 
-	MATH_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f& _size, const mt::mat3f& _wm )
+	MATH_FUNCTION_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f& _size, const mt::mat3f& _wm )
 	{
 		mt::vec2f bounds[4];
 
@@ -93,7 +81,7 @@ namespace mt
 
 		mt::vec2f temp;
 			
-		for( unsigned int i = 1; i < 4; ++i)
+		for( unsigned int i = 1; i != 4; ++i)
 		{
 			mt::mul_v2_m3(temp, bounds[i], _wm );
 
@@ -105,24 +93,38 @@ namespace mt
 		}
 	}
 
-	MATH_INLINE bool is_intersect( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
+	MATH_FUNCTION_INLINE bool is_intersect( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
 	{
-		return (_amaximum.y > _bminimum.y && _aminimum.y < _bmaximum.y &&
-			_amaximum.x > _bminimum.x && _aminimum.x < _bmaximum.x);
+        if( _amaximum.x < _bminimum.x || _aminimum.x > _bmaximum.x )
+        {
+            return false;
+        }
+
+        if( _amaximum.y < _bminimum.y || _aminimum.y > _bmaximum.y )
+        {
+            return false;
+        }
+    
+        return true;
 	}
 
-	MATH_INLINE bool is_exist( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
+	MATH_FUNCTION_INLINE bool is_exist( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
 	{
 		return (_aminimum.x >= _bminimum.x && _amaximum.x <= _bmaximum.x) 
 			&& (_aminimum.y >= _bminimum.y && _amaximum.y <= _bmaximum.y);
 	}
 
-	MATH_INLINE bool is_intersect( const box2f & _a, const box2f & _b )
+	MATH_FUNCTION_INLINE bool is_intersect( const box2f & _a, const box2f & _b )
 	{
 		return is_intersect( _a.minimum, _a.maximum, _b.minimum, _b.maximum );
 	}
 
-	MATH_INLINE vec2f box_size( const box2f& _box )
+    MATH_FUNCTION_INLINE bool is_intersect(const box2f & _a, const vec2f & _b)
+    {
+        return is_intersect( _a.minimum, _a.maximum, _b, _b );
+    }
+
+	MATH_FUNCTION_INLINE vec2f box_size( const box2f& _box )
 	{
 		return _box.maximum - _box.minimum;
 	}

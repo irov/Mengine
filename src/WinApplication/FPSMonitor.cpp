@@ -3,10 +3,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static DWORD WINAPI s_threadFrameSignal(LPVOID lpParameter)
+	static DWORD WINAPI s_threadFrameSignal( LPVOID lpParameter )
 	{
-		FPSMonitor* monitor = reinterpret_cast<FPSMonitor*>( lpParameter );
-		return monitor->threadFrameSignal();
+		FPSMonitor* monitor = reinterpret_cast<FPSMonitor*>(lpParameter);
+
+        DWORD ret = monitor->threadFrameSignal();
+
+		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FPSMonitor::FPSMonitor()
@@ -14,7 +17,7 @@ namespace Menge
 		, m_hDestroySignalEvent(INVALID_HANDLE_VALUE)
 		, m_hFrameSignalThread(INVALID_HANDLE_VALUE)
 		, m_running(true)
-		, m_active(true)
+		, m_active(false)
 		, m_frameTiming(100)	
 	{
 	}
@@ -28,7 +31,7 @@ namespace Menge
 		SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FPSMonitor::finialize()
+	void FPSMonitor::finalize()
 	{
 		if( m_hFrameSignalEvent == INVALID_HANDLE_VALUE )
 		{
@@ -47,7 +50,7 @@ namespace Menge
 
 		m_running = false;
 
-		WaitForSingleObject(m_hDestroySignalEvent, INFINITE);
+		WaitForSingleObject( m_hDestroySignalEvent, INFINITE );
 		
 		CloseHandle( m_hFrameSignalEvent );
 		CloseHandle( m_hDestroySignalEvent );
@@ -59,7 +62,7 @@ namespace Menge
 		m_active = _active;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FPSMonitor::setFrameTime( unsigned long _frameTiming )
+	void FPSMonitor::setFrameTime( float _frameTiming )
 	{
 		m_frameTiming = _frameTiming;
 	}
@@ -68,7 +71,7 @@ namespace Menge
 	{
 		if( m_active == true )
 		{
-			WaitForSingleObject(m_hFrameSignalEvent, INFINITE);
+			WaitForSingleObject( m_hFrameSignalEvent, INFINITE );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -78,15 +81,18 @@ namespace Menge
 		{
 			if( m_active == true )
 			{
-				Sleep( m_frameTiming );
+                unsigned long ms_frameTiming = (unsigned long)m_frameTiming;
+				Sleep( ms_frameTiming );
 				SetEvent( m_hFrameSignalEvent );
 			}
 			else
 			{
-				Sleep( 100 );
+				Sleep( 1000 );
 			}
 		}
+
 		SetEvent( m_hDestroySignalEvent );
+
 		return 0;
 	}
 }

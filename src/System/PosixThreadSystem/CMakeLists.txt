@@ -1,16 +1,12 @@
 
 set( MY_LIB_NAME PosixThreadSystem )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 ADD_FILTER(
 src
 	PosixThreadSystem.cpp
 	PosixThreadSystem.h
-	PosixMutex.cpp
-	PosixMutex.h
+	PosixThreadIdentity.cpp
+    PosixThreadIdentity.h
 )
 
 IF( WIN32 )
@@ -23,8 +19,7 @@ ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 IF(WIN32)
 	SET( APPLICATION_LIBS
 	 ${APPLICATION_LIBS}
-	 debug ${MENGINE_LIB_PREFIX}pthreads_static${MENGINE_LIB_SUFFIXD}
-	 optimized ${MENGINE_LIB_PREFIX}pthreads_static${MENGINE_LIB_SUFFIX}
+	 ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}pthreads_static${MENGINE_LIB_SUFFIX}
 	)
 ENDIF(WIN32)
 

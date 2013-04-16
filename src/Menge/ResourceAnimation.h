@@ -1,73 +1,63 @@
 #	pragma once
 
-#	include "ResourceReference.h"
+#	include "Kernel/ResourceReference.h"
 
 #	include <vector>
 
 namespace Menge
 {
-	//! ResourceAnimation - ресурс-файл который содержит список пар (индекс, задержка).
+    class ResourceImage;
+	
+	struct AnimationSequence
+	{
+		AnimationSequence()
+			: resource(NULL)
+			, delay(0.0f)
+		{}
+		
+		ResourceImage * resource;
+		float delay;
+		ConstString resourceName;
+	};
 
-    /** xml - файл имеет следующую структуру:
-	 *<Resource Name = "имя_ресурса" Type = "ResourceAnimation" >
-	 *	<Sequences>
-	 *		<Sequence Index = "индекс_изображения0" Delay = "задержка0" />
-	 *			...
-	 *		<Sequence Index = "индекс_изображенияN" Delay = "задержкаN" />
-	 * 	</Sequences>
-	 *</Resource>
-	*/
+	typedef std::vector<AnimationSequence> TVectorAnimationSequence;
 
 	class ResourceAnimation
 		: public ResourceReference
 	{
-		 RESOURCE_DECLARE( ResourceAnimation )
+		RESOURCE_DECLARE( ResourceAnimation )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourceAnimation();
 
 	public:
+		size_t getSequenceCount() const;
+		float getSequenceDelay( size_t _sequence ) const;		
+		const ConstString& getSequenceResourceName( size_t _sequence ) const;
+		ResourceImage *  getSequenceResource( size_t _sequence ) const;
 
-		//! Возвращает количество изображений
-		/*!
-		\return количество изображений
-		*/
-		virtual std::size_t getSequenceCount() const;
-
-		//! Возвращает задержку для _sequence кадра
-		/*!
-		\param _sequence индекс кадра
-		\return задержка
-		*/
-		virtual float getSequenceDelay( std::size_t _sequence ) const;
-
-		
-		//! Возвращает индекс изображения
-		/*!
-		\param _sequence индекс кадра
-		\return индекс изображения
-		*/
-		virtual std::size_t getSequenceIndex( std::size_t _sequence ) const;
+		size_t getLastFrameIndex() const;
+		float getSequenceDuration() const;
 
 	public:
-		void loader( XmlElement * _xml );
-		void loaderSequences_( XmlElement * _xml );
+		void setSequences( const TVectorAnimationSequence & _sequence );
+		const TVectorAnimationSequence & getSequences() const;
+
+	protected:
+		bool _loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		bool _compile() override;
+		void _release() override;
 
-	private:
-		struct Sequence
-		{
-			float delay;
-			std::size_t index;
-		};
+	private:		
+		TVectorAnimationSequence m_sequence;
 
-		typedef std::vector<Sequence> TVectorSequence;
-		TVectorSequence m_vectorSequence;
+		float m_duration;
 	};
 }
+
+
+
+
+

@@ -1,11 +1,12 @@
-
 #	pragma once
 
 #	include "Interface/CodecInterface.h"
+#	include "Interface/FileSystemInterface.h"
+
+#	include "Utils/Core/ConstString.h"
 
 namespace Menge
 {
-
 	struct SoundCodecDataInfo
 		: public CodecDataInfo
 	{
@@ -14,8 +15,13 @@ namespace Menge
 		float time_total_secs;
 	};
 
+	struct SoundCodecOptions
+		: public CodecOptions
+	{
+	};
+
 	class SoundDecoderInterface
-		: virtual public DecoderInterface
+		: public DecoderInterface
 	{
 	public:
 		virtual bool seek( float _timing ) = 0;

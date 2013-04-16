@@ -14,34 +14,39 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX8Texture::DX8Texture( IDirect3DTexture8* _d3dInterface )
-		: m_d3dInterface( _d3dInterface )
+	DX8Texture::DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
+		: m_d3dInterface(_d3dInterface)
+        , m_hwWidth(_hwWidth)
+        , m_hwHeight(_hwHeight)
+        , m_hwChannels(_hwChannels)
+        , m_hwPixelFormat(_hwPixelFormat)
 	{
-		D3DSURFACE_DESC desc;
-		_d3dInterface->GetLevelDesc( 0, &desc );
-		m_hwWidth = desc.Width;
-		m_hwHeight = desc.Height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8Texture::~DX8Texture()
 	{
-
 	}
-	//////////////////////////////////////////////////////////////////////////
-	unsigned char* DX8Texture::lock( int* _pitch, bool _readOnly /*= true */ )
+	///////////////////////////////////////////////////////////////////////////
+	unsigned char * DX8Texture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
 	{
-		D3DSURFACE_DESC TDesc;
-		D3DLOCKED_RECT TRect;
-		RECT* prec = NULL;
 		int flags;
+		if( _readOnly )
+		{
+			flags=D3DLOCK_READONLY;
+		}
+		else 
+		{
+			flags=0;
+		}
 
-		m_d3dInterface->GetLevelDesc(0, &TDesc);
-		//if(TDesc.Format!=D3DFMT_A8R8G8B8 && TDesc.Format!=D3DFMT_X8R8G8B8) return 0;
+		RECT rect;
+		rect.top = _rect.top;
+		rect.bottom = _rect.bottom;
+		rect.left = _rect.left;
+		rect.right = _rect.right;
 
-		if(_readOnly) flags=D3DLOCK_READONLY;
-		else flags=0;
-
-		HRESULT hr = m_d3dInterface->LockRect(0, &TRect, prec, flags);
+		D3DLOCKED_RECT TRect;
+		HRESULT hr = m_d3dInterface->LockRect(0, &TRect, &rect, flags);
 		if(FAILED( hr ))
 		{
 			//_PostError( "Can't lock texture" );
@@ -57,19 +62,45 @@ namespace Menge
 		m_d3dInterface->UnlockRect(0);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IDirect3DTexture8* DX8Texture::getInterface()
+	void DX8Texture::destroy()
+	{
+		this->release();
+
+		delete this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	IDirect3DTexture8 * DX8Texture::getInterface() const
 	{
 		return m_d3dInterface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t DX8Texture::getWidth() const
+	size_t DX8Texture::getHWWidth() const
 	{
 		return m_hwWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t DX8Texture::getHeight() const
+	size_t DX8Texture::getHWHeight() const
 	{
 		return m_hwHeight;
+	}
+    //////////////////////////////////////////////////////////////////////////
+    PixelFormat DX8Texture::getHWPixelFormat() const
+    {
+        return m_hwPixelFormat;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t DX8Texture::getHWChannels() const
+    {
+        return m_hwChannels;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	void DX8Texture::release()
+	{
+		if( m_d3dInterface )
+		{
+			m_d3dInterface->Release();
+            m_d3dInterface = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

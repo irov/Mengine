@@ -1,82 +1,78 @@
 #	pragma once
 
-#	include "Core/Holder.h"
+#   include "Interface/MousePickerSystemInterface.h"
+
 #	include "Core/Viewport.h"
 
+#	include <list>
 #	include <vector>
 
 namespace Menge
 {
-	class MousePickerTrap;
-	class InputHandler;
-
-	class Arrow;
-
-	typedef std::vector<MousePickerTrap *> TVectorPickerTraps;
-
 	class MousePickerSystem
-		: public Holder<MousePickerSystem>
+		: public MousePickerSystemInterface
 	{
 	public:
-		MousePickerSystem();
+		MousePickerSystem( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void update( Arrow * _arrow );
-		void clear();
+		void block( bool _value ) override;
 
-		void pickTrap( Arrow * _arrow, TVectorPickerTraps & _traps );
+	public:
+		void setArrow( Arrow * _arrow ) override;
+
+	public:
+		void update() override;
+		void clear() override;
+
+    public:
+		void pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) override;
 		
-		std::size_t regTrap( MousePickerTrap * _trap );
-		void unregTrap( std::size_t _id );
-		void updateTrap( std::size_t _id );
+		PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) override;
+		void unregTrap( PickerTrapState * _id ) override;
 
-		bool handleKeyEvent( Arrow * _arrow, unsigned int _key, unsigned int _char, bool _isDown );
-		bool handleMouseButtonEvent( Arrow * _arrow, unsigned int _button, bool _isDown );
-		bool handleMouseButtonEventEnd( Arrow * _arrow, unsigned int _button, bool _isDown );
-		bool handleMouseMove( Arrow * _arrow, float _x, float _y, int _whell );
+	public:
+		void beginTrap() override;
+		void updateTrap( PickerTrapState * _id ) override;
 
-		
+	public:
+		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+				
+	public:
+		void handleMouseEnter( const mt::vec2f & _point ) override;
+		void handleMouseLeave() override;
+
+	public:
+		size_t getPickerTrapCount() const override;
 
 	private:
-		void updatePicked_( Arrow * _arrow );
+		void updatePicked_( const mt::vec2f& _point );		
 		void updateDead_();
 
-		void execReg_();
+		bool execReg_();
 
 	private:
-		struct PickerTrapState
-		{
-			MousePickerTrap * trap;
-			std::size_t id;
-			bool picked;
-			bool handle;
-			bool dead;
-		};
+        ServiceProviderInterface * m_serviceProvider;
 
-		struct PickerFinder
-		{
-			std::size_t m_id;
+		size_t m_enumerator;
 
-			PickerFinder( std::size_t _id )
-				: m_id( _id )
-			{
-			}
+		bool m_block;
 
-			bool operator()( const PickerTrapState& _pickerState )
-			{
-				return _pickerState.id == m_id;
-			}
+		Arrow * m_arrow;
 
-		};
+		typedef std::list<PickerTrapState> TPickerTrapState;
+		TPickerTrapState m_pickerTrapState;
 
-		std::size_t m_enumerator;
-
-		typedef std::vector<PickerTrapState> TVectorPickerTrapState;
-		TVectorPickerTrapState m_listPickerTrap;
-		TVectorPickerTrapState m_registration;
-		TVectorPickerTrapState::iterator m_trapIterator;
+		typedef std::vector<PickerTrapState *> TPickerTrapRef;
+		TPickerTrapRef m_registration;
+		TPickerTrapRef m_process;
+		//TVectorPickerTrapState::iterator m_trapIterator;
 
 	private:
-		static bool isPicked( const PickerTrapState & _state );
+		static bool isPicked( const PickerTrapState * _state );
 	};
 }

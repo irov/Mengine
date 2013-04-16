@@ -1,51 +1,50 @@
 #	include "Sprite.h" 
-
 #	include "Layer2D.h"
 
-#	include "XmlEngine.h"
-
-#	include "RenderEngine.h"
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/ResourceInterface.h"
 
 #	include "ResourceImage.h"
 
-#	include "ResourceManager.h"
+#	include "Consts.h"
 
 #	include "Logger/Logger.h"
 
 #	include "math/box2.h"
 #	include "math/clamp.h"
 
-#	include "pybind/pybind.hpp"
-
 //#	 include "ResourceTexture.h"
-#	include "Material.h"
-#	include "Affector.h"
-#	include "Texture.h"
+//#	include "Kernel/Affector.h"
 
 namespace	Menge
 {
 	enum ESpriteVerticesInvalidate
 	{
-		ESVI_POSITION = 0x01,
+		ESVI_TRANSFORM = 0x01,
 		ESVI_COLOR = 0x02,
+		ESVI_MATERIAL = 0x04,
+		ESVI_TEXTURE = 0x08,
 		ESVI_FULL = 0xFF
 	};
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_resource( 0 )
-		, m_currentImageIndex( 0 )
-		, m_currentAlphaImageIndex( 0 )
-		, m_centerAlign( false )
-		, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-		, m_flipX( false )
-		, m_flipY( false )
-		, m_blendSrc( BF_SOURCE_ALPHA )
-		, m_blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
-		, m_material( NULL )
-		, m_alphaImage( NULL )
-		, m_disableTextureColor( false )
-		, m_texturesNum( 0 )
-		, m_textureMatrixOffset( 0.0f, 0.0f )
+		: m_resource(0)
+		, m_flipX(false)
+		, m_flipY(false)
+		, m_percentVisibility(0.f, 0.f, 0.f, 0.f)
+		, m_materialGroup(NULL)
+		, m_material(NULL)
+		, m_disableTextureColor(false)
+		, m_texturesNum(0)
+		, m_textureMatrixOffset(0.f, 0.f)
+        , m_textureUVOffset(0.f, 0.f)
+        , m_textureUVScale(1.f, 1.f)
+		, m_blendAdd(false)
+		, m_solid(false)
+		, m_isCustomSize(false)
+		, m_spriteSize(0.f, 0.f)
+        , m_invalidateVerticesLocal(0xFF)
+        , m_invalidateVerticesWM(true)
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -55,37 +54,6 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::loader( XmlElement * _xml )
-	{
-		Node::loader(_xml);
-
-		XML_SWITCH_NODE(_xml)
-		{
-			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( "ImageAlpha", "Name", m_alphaImageName );
-			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
-			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( "PercentVisibility", "Value", m_percent );
-			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendSource", "Value", &Sprite::setBlendSource, int );
-			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendDest", "Value", &Sprite::setBlendDest, int );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::_activate()
-	{
-		if( Node::_activate() == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_deactivate()
-	{
-		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()
 	{
 		if( Node::_compile() == false )
@@ -93,70 +61,13 @@ namespace	Menge
 			return false;
 		}
 
-		if( compileResource_() == false )
+		if( this->compileResource_() == false )
 		{
 			return false;
 		}
-
-		std::size_t max = m_resource->getCount();
-		if( m_currentImageIndex >= max )
-		{
-			MENGE_LOG_WARNING( "Warning: (Sprite::_compile) index (%d) >= image count(%d)"
-				, m_currentImageIndex
-				, max
-				);
-
-			return false;
-		}
-
-		m_material = Holder<RenderEngine>::hostage()
-			->createMaterial();
-
-		m_material->blendSrc = m_blendSrc;
-		m_material->blendDst = m_blendDst;
-
-		m_texturesNum = 1;
-
-		m_material->textureStage[0].alphaOp = TOP_MODULATE;
-
-		if( m_disableTextureColor == true )
-		{
-			m_material->textureStage[0].colorOp = TOP_SELECTARG2;
-		}
-		else
-		{
-			m_material->textureStage[0].colorOp = TOP_MODULATE;
-		}
-
-		if( m_alphaImageName.empty() == false )
-		{
-			m_alphaImage = Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_alphaImageName );
-
-			if( m_alphaImage == NULL )
-			{
-				MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage '%s'"
-					, m_alphaImageName.c_str() 
-					);
-
-				return false;
-			}
-
-			m_texturesNum = 2;
-			m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
-
-			TextureStage & ts = m_material->textureStage[1];
-
-			ts.colorOp = TOP_SELECTARG1;
-			ts.colorArg1 = TARG_CURRENT;
-			ts.alphaOp = TOP_MODULATE;
-			ts.alphaArg1 = TARG_TEXTURE;
-			ts.alphaArg2 = TARG_CURRENT;
-			//m_material->textureStage[0].alphaOp = TOP_SELECTARG2;
-		}
-
-		invalidateVertices();
-		invalidateBoundingBox();
+    
+		this->invalidateVertices_();
+		this->invalidateBoundingBox();
 
 		return true;
 	}
@@ -165,21 +76,30 @@ namespace	Menge
 	{
 		if( m_resource )
 		{
+			if( m_resource->compile() == false )
+			{
+				return false;
+			}
+
 			return true;
 		}
 
-		if( m_resourceName.empty() )
+		if( m_resourceName.empty() == true )
 		{
+			LOGGER_ERROR(m_serviceProvider)( "Sprite.compileResource_: '%s' Image resource empty"
+				, m_name.c_str() 
+				);
+
 			return false;
 		}
 
-		m_resource = 
-			Holder<ResourceManager>::hostage()
+		m_resource = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceImage>( m_resourceName );
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Sprite: Image resource not found '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Sprite: '%s' Image resource not found resource '%s'"
+				, m_name.c_str()
 				, m_resourceName.c_str() 
 				);
 
@@ -193,73 +113,43 @@ namespace	Menge
 	{
 		Node::_release();
 
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_alphaImage );
-
-		m_alphaImage = 0;
-
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resource );
-
-		m_resource = 0;
-
-		if( m_material != NULL &&
-			m_material->textureStage[0].matrix != NULL )
+		if( m_resource != 0 )
 		{
-			delete m_material->textureStage[0].matrix;
-			m_material->textureStage[0].matrix = NULL;
+			m_resource->decrementReference();
+			m_resource = 0;
 		}
-		Holder<RenderEngine>::hostage()
-			->releaseMaterial( m_material );
-
+		
+		m_materialGroup = NULL;
 		m_material = NULL;
-
-		m_resource = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::flip( bool _x )
+	void Sprite::setFlipX( bool _flipX )
 	{
-		if( _x )
-		{
-			m_flipX = !m_flipX;
-		}
-		else
-		{
-			m_flipY = !m_flipY;
-		}
+		m_flipX = _flipX;
 
-		invalidateVertices( ESVI_FULL );
-		invalidateBoundingBox();
+		this->invalidateVertices_();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageIndex( std::size_t _index )
+	void Sprite::setFlipY( bool _flipY )
 	{
-		m_currentImageIndex = _index;
+		m_flipY = _flipY;
 
-		if( m_resource != NULL )
-		{
-			std::size_t max = m_resource->getCount();
-			if( _index >= max )
-			{
-				MENGE_LOG_WARNING( "Warning: (Sprite::setImageIndex) index (%d) >= image count(%d)"
-					, _index
-					, max
-					);
-
-				m_currentImageIndex = max - 1;
-			}
-		}
-
-		invalidateVertices();
-		invalidateBoundingBox();
+		this->invalidateVertices_();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Sprite::getImageIndex() const
+	bool Sprite::getFlipX() const
 	{
-		return m_currentImageIndex;
+		return m_flipX;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageResource( const String& _name )
+	bool Sprite::getFlipY() const
+	{
+		return m_flipY;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setImageResourceName( const ConstString& _name )
 	{
 		if( m_resourceName == _name )
 		{
@@ -268,74 +158,126 @@ namespace	Menge
 
 		m_resourceName = _name;
 
-		m_currentImageIndex = 0; //?? wtf
+		this->recompile();
 
-		recompile();
-
-		//invalidateVertices(); //?? wtf
-		//invalidateBoundingBox(); //?? wtf
+		this->invalidateVertices_();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Sprite::getImageResource() const
+	const ConstString & Sprite::getImageResourceName() const
 	{
 		return m_resourceName;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceImage * Sprite::getImageResource() const
+    {
+        return m_resource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Sprite::updateVerticesWM_()
+    {
+        m_invalidateVerticesWM = false;
+
+        if( m_invalidateVerticesLocal != 0 )
+        {
+            this->updateVertices_();
+
+            m_invalidateVerticesLocal = 0;
+        }
+
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        for( size_t i = 0; i != 4; ++i )
+        {
+            const mt::vec3f & pos = m_verticesLocal[i];
+
+            mt::vec3f & wm_pos = m_verticesWM[i].pos;
+            mt::mul_v3_m4( wm_pos, pos, wm);
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Sprite::invalidateVertices_( unsigned char _invalidate )
+    {
+        m_invalidateVerticesLocal |= _invalidate;
+
+        this->invalidateVerticesWM_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Sprite::invalidateVerticesWM_()
+    {
+        m_invalidateVerticesWM = true;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices )
+	void Sprite::updateVertices_()
 	{
-		if( m_resource == 0 ) 
+		if( m_resource == 0 )
 		{
 			return;
 		}
 
-		if( _invalidateVertices & ESVI_POSITION )
+		bool wrapX = m_resource->isWrapX();
+		bool wrapY = m_resource->isWrapY();
+
+		if( m_invalidateVerticesLocal & ESVI_TEXTURE )
 		{
-			bool wrapX = m_resource->getWrapX( m_currentImageIndex );
-			bool wrapY = m_resource->getWrapY( m_currentImageIndex );
+			m_textures[0] = m_resource->getTexture();
+            m_textures[1] = m_resource->getTextureAlpha();
+		}
 
-			ResourceImage * resource = m_alphaImage ? m_alphaImage : m_resource;
+		if( m_invalidateVerticesLocal & ESVI_TRANSFORM )
+		{
+			mt::vec2f size;
+			mt::vec2f maxSize;
 
-			mt::vec2f size = resource->getSize( m_currentImageIndex );
-			const mt::vec2f& maxSize = resource->getMaxSize( m_currentImageIndex );
-			mt::vec2f offset = resource->getOffset( m_currentImageIndex );
-
-			mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
-				m_percent.z * maxSize.x, m_percent.w * maxSize.y );
-
-			percentPx.x -= offset.x;
-			percentPx.y -= offset.y;
-			percentPx.z -= (maxSize.x - offset.x - size.x);
-			percentPx.w -= (maxSize.y - offset.y - size.y);
+			if( m_isCustomSize == false )
+			{
+				size = m_resource->getSize();
+				maxSize = m_resource->getMaxSize();
+			}
+			else
+			{
+				size = m_spriteSize;
+				maxSize = m_spriteSize;
+			}
+			
+			mt::vec4f percentPx( m_percentVisibility.x * maxSize.x, m_percentVisibility.y * maxSize.y,
+				m_percentVisibility.z * maxSize.x, m_percentVisibility.w * maxSize.y );
+				
+			percentPx.z -= (maxSize.x - size.x);
+			percentPx.w -= (maxSize.y - size.y);
 
 			if( wrapX == false && wrapY == false )
 			{
-				if( percentPx.x < 0.0f )
+				if( percentPx.x < 0.f )
 				{
-					percentPx.x = 0.0f;
+					percentPx.x = 0.f;
 				}
 				else if( percentPx.x > size.x )
 				{
 					percentPx.x = size.x;
 				}
-				if( percentPx.y < 0.0f )
+
+				if( percentPx.y < 0.f )
 				{
-					percentPx.y = 0.0f;
+					percentPx.y = 0.f;
 				}
 				else if( percentPx.y > size.y )
 				{
 					percentPx.y = size.y;
 				}
-				if( percentPx.z < 0.0f )
+
+				if( percentPx.z < 0.f )
 				{
-					percentPx.z = 0.0f;
+					percentPx.z = 0.f;
 				}
 				else if( percentPx.z > size.x )
 				{
 					percentPx.z = size.x;
 				}
-				if( percentPx.w < 0.0f )
+
+				if( percentPx.w < 0.f )
 				{
-					percentPx.w = 0.0f;
+					percentPx.w = 0.f;
 				}
 				else if( percentPx.w > size.y )
 				{
@@ -347,167 +289,288 @@ namespace	Menge
 				percentPx.z / size.x, percentPx.w / size.y );
 
 			// adjust texture visibility
-			percent.x = ::floorf( percent.x * size.x + 0.5f ) / size.x;
-			percent.y = ::floorf( percent.y * size.y + 0.5f ) / size.y;
-			percent.z = ::floorf( percent.z * size.x + 0.5f ) / size.x;
-			percent.w = ::floorf( percent.w * size.y + 0.5f ) / size.y;
+			//percent.x = ::floorf( percent.x * size.x + 0.5f ) / size.x;
+			//percent.y = ::floorf( percent.y * size.y + 0.5f ) / size.y;
+			//percent.z = ::floorf( percent.z * size.x + 0.5f ) / size.x;
+			//percent.w = ::floorf( percent.w * size.y + 0.5f ) / size.y;
 
-			if( _invalidateVertices == ESVI_FULL )
+			if( m_invalidateVerticesLocal == ESVI_FULL )
 			{
-				m_textures[0] = m_resource->getTexture( m_currentImageIndex );
+                bool isRotate = m_resource->isUVRotate();
 
-				m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
-				m_material->textureStage[0].addressV = wrapY ? TAM_WRAP : TAM_CLAMP;
+                if( isRotate == false )
+                {
+                    // RGB(A)
+                    {
+                        mt::vec4f uv = m_resource->getUVImage();
 
-				mt::vec4f uv = m_resource->getUV( m_currentImageIndex );
+                        float uvX = uv.z - uv.x;
+                        float uvY = uv.w - uv.y;
 
-				float uvX = uv.z - uv.x;
-				float uvY = uv.w - uv.y;
+                        uv.x += percent.x * uvX;
+                        uv.y += percent.y * uvY;
+                        uv.z -= percent.z * uvX;
+                        uv.w -= percent.w * uvY;
 
-				uv.x += percent.x * uvX;
-				uv.y += percent.y * uvY;
-				uv.z -= percent.z * uvX;
-				uv.w -= percent.w * uvY;
+                        if( m_flipX == true )
+                        {
+                            std::swap( uv.x, uv.z );
+                        }
 
-				if( m_flipX == true )
-				{
-					std::swap( uv.x, uv.z );
-				}
+                        if( m_flipY == true )
+                        {
+                            std::swap( uv.y, uv.w );
+                        }
 
-				if( m_flipY == true )
-				{
-					std::swap( uv.y, uv.w );
-				}
+                        m_verticesWM[0].uv.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[0].uv.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[1].uv.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[1].uv.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[2].uv.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[2].uv.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[3].uv.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[3].uv.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
+                    }
 
-				_vertcies[0].uv[0] = uv.x;
-				_vertcies[0].uv[1] = uv.y;
-				_vertcies[1].uv[0] = uv.z;
-				_vertcies[1].uv[1] = uv.y;
-				_vertcies[2].uv[0] = uv.z;
-				_vertcies[2].uv[1] = uv.w;
-				_vertcies[3].uv[0] = uv.x;
-				_vertcies[3].uv[1] = uv.w;
+                    // Alpha
+                    if( m_textures[1] != NULL )
+                    {
+                        mt::vec4f uv = m_resource->getUVAlpha();
+
+                        float uvX = uv.z - uv.x;
+                        float uvY = uv.w - uv.y;
+
+                        uv.x += percent.x * uvX;
+                        uv.y += percent.y * uvY;
+                        uv.z -= percent.z * uvX;
+                        uv.w -= percent.w * uvY;
+
+                        if( m_flipX == true )
+                        {
+                            std::swap( uv.x, uv.z );
+                        }
+
+                        if( m_flipY == true )
+                        {
+                            std::swap( uv.y, uv.w );
+                        }
+
+                        m_verticesWM[0].uv2.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[0].uv2.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[1].uv2.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[1].uv2.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[2].uv2.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[2].uv2.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[3].uv2.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[3].uv2.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
+                    }
+                    else
+                    {
+                        m_verticesWM[0].uv2.x = 0.f;
+                        m_verticesWM[0].uv2.y = 0.f;
+                        m_verticesWM[1].uv2.x = 0.f;
+                        m_verticesWM[1].uv2.y = 0.f;
+                        m_verticesWM[2].uv2.x = 0.f;
+                        m_verticesWM[2].uv2.y = 0.f;
+                        m_verticesWM[3].uv2.x = 0.f;
+                        m_verticesWM[3].uv2.y = 0.f;
+                    }
+                }
+                else
+                {
+                    // RGB(A)
+                    {
+                        mt::vec4f uv = m_resource->getUVImage();
+
+                        float uvX = uv.z - uv.x;
+                        float uvY = uv.w - uv.y;
+
+                        uv.x += percent.x * uvX;
+                        uv.y += percent.y * uvY;
+                        uv.z -= percent.z * uvX;
+                        uv.w -= percent.w * uvY;
+
+                        if( m_flipX == true )
+                        {
+                            std::swap( uv.x, uv.z );
+                        }
+
+                        if( m_flipY == true )
+                        {
+                            std::swap( uv.y, uv.w );
+                        }
+
+                        m_verticesWM[0].uv.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[0].uv.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[1].uv.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[1].uv.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[2].uv.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[2].uv.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[3].uv.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[3].uv.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
+                    }
+
+                    // Alpha
+                    if( m_textures[1] != NULL )
+                    {
+                        mt::vec4f uv = m_resource->getUVAlpha();
+
+                        float uvX = uv.z - uv.x;
+                        float uvY = uv.w - uv.y;
+
+                        uv.x += percent.y * uvY;
+                        uv.y += percent.x * uvX;
+                        uv.z -= percent.w * uvY;
+                        uv.w -= percent.z * uvX;                        
+                        
+                        if( m_flipX == true )
+                        {
+                            std::swap( uv.y, uv.w );
+                        }
+
+                        if( m_flipY == true )
+                        {
+                            std::swap( uv.x, uv.z );
+                        }
+
+                        m_verticesWM[0].uv2.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[0].uv2.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[1].uv2.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[1].uv2.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[2].uv2.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[2].uv2.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
+                        m_verticesWM[3].uv2.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
+                        m_verticesWM[3].uv2.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
+                    }
+                    else
+                    {
+                        m_verticesWM[0].uv2.x = 0.f;
+                        m_verticesWM[0].uv2.y = 0.f;
+                        m_verticesWM[1].uv2.x = 0.f;
+                        m_verticesWM[1].uv2.y = 0.f;
+                        m_verticesWM[2].uv2.x = 0.f;
+                        m_verticesWM[2].uv2.y = 0.f;
+                        m_verticesWM[3].uv2.x = 0.f;
+                        m_verticesWM[3].uv2.y = 0.f;
+                    }
+                }
 			}
 
 			mt::vec2f visOffset( size.x * percent.x, size.y * percent.y );
 
 			size.x -= size.x * ( percent.x + percent.z );
 			size.y -= size.y * ( percent.y + percent.w );
+             
+            m_verticesLocal[0] = mt::vec3f(visOffset.x + 0.f, visOffset.y + 0.f, 0.f);
+            m_verticesLocal[1] = mt::vec3f(visOffset.x + size.x, visOffset.y + 0.f, 0.f);
+            m_verticesLocal[2] = mt::vec3f(visOffset.x + size.x, visOffset.y + size.y, 0.f);
+            m_verticesLocal[3] = mt::vec3f(visOffset.x + 0.f, visOffset.y + size.y, 0.f);
+		}
 
-			if( m_centerAlign )
+		if( m_invalidateVerticesLocal & ESVI_COLOR )
+		{
+			ColourValue color;
+			this->calcTotalColor(color);
+
+			uint32 argb = color.getAsARGB();
+
+			ApplyColor2D applyColor( argb );
+			std::for_each( m_verticesWM, m_verticesWM + 4, applyColor );
+			
+			bool solid = (( argb & 0xFF000000 ) == 0xFF000000 );
+
+			if( m_solid != solid )
 			{
-				mt::vec2f alignOffset = maxSize * -0.5f;
-				alignOffset.x = ::floorf( alignOffset.x + 0.5f );
-				alignOffset.y = ::floorf( alignOffset.y + 0.5f );
-
-				visOffset += alignOffset;
-			}
-
-			if( m_flipX )
-			{
-				offset.x = maxSize.x - ( size.x + offset.x );
-			}
-
-			if( m_flipY )
-			{
-				offset.y = maxSize.y - ( size.y + offset.y );
-			}
-
-			visOffset += offset;
-
-			if( m_alphaImage )
-			{
-				m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
-				const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
-				if( rgbSize.x > size.x 
-					|| rgbSize.y > size.y )
-				{
-					Texture* rgbTexture = m_resource->getTexture( m_currentImageIndex );
-					if( m_material->textureStage[0].matrix == NULL )
-					{
-						m_material->textureStage[0].matrix = new mt::mat4f();
-					}
-					mt::mat4f* texMat = m_material->textureStage[0].matrix;
-					mt::ident_m4( *texMat );
-					texMat->v0.x = size.x / rgbSize.x;
-					texMat->v1.y = size.y / rgbSize.y;
-
-					texMat->v2.x = ( offset.x + m_textureMatrixOffset.x ) / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
-					texMat->v2.y = ( offset.y + m_textureMatrixOffset.y ) / rgbTexture->getHWHeight();	// texture here, either about texture matrix
-				}
-			}
-
-			const mt::mat3f & wm = getWorldMatrix();
-
-			//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
-			//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
-			//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
-			//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-			mt::vec2f transformX;
-			mt::vec2f transformY;
-
-			mt::vec2f vertices[4];
-
-			mt::mul_v2_m3( vertices[0], visOffset, wm );
-			mt::mul_v2_m3_r( transformX, mt::vec2f( size.x, 0.0f ), wm );
-			mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, size.y ), wm );
-
-			vertices[1] = vertices[0] + transformX;
-			vertices[2] = vertices[1] + transformY;
-			vertices[3] = vertices[0] + transformY;
-
-			for( int i = 0; i < 4; i++ )
-			{
-				_vertcies[i].pos[0] = vertices[i].x;
-				_vertcies[i].pos[1] = vertices[i].y;
+				m_solid = solid;
+				m_invalidateVerticesLocal |= ESVI_MATERIAL;
 			}
 		}
 
-		if( _invalidateVertices & ESVI_COLOR )
+		if( m_invalidateVerticesLocal & ESVI_MATERIAL )
 		{
-			uint32 argb = getWorldColor().getAsARGB();
-			ApplyColor2D applyColor( argb );
-			std::for_each( _vertcies, _vertcies + 4, applyColor );
-
-			if( ( argb & 0xFF000000 ) == 0xFF000000 )
-			{
-				m_material->isSolidColor = true;
-			}
-			else
-			{
-				m_material->isSolidColor = false;
-			}
+			this->updateMaterial_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( Camera2D * _camera )
+	void Sprite::updateMaterial_()
+	{
+        RenderTextureInterface * textureAlpha = m_resource->getTextureAlpha();
+
+        if( textureAlpha != NULL )
+        {
+            m_texturesNum = 2;
+
+            m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
+        }
+		else if ( m_blendAdd == true )
+		{
+			m_texturesNum = 1;
+
+			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+				->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
+		}
+		else if( m_disableTextureColor == true )
+		{
+			m_texturesNum = 1;
+
+			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+				->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
+		}
+		else
+		{
+			m_texturesNum = 1;
+
+			if( m_resource->isAlpha() == true || m_solid == false )
+			{
+				m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+					->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+			}
+			else
+			{
+				m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+					->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+			}
+		}
+
+        //m_resource = 0;
+
+		bool wrapX = m_resource->isWrapX();
+		bool wrapY = m_resource->isWrapY();
+
+		ETextureAddressMode textureU = wrapX ? TAM_WRAP : TAM_CLAMP;
+		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
+
+		m_material = m_materialGroup->getMaterial( textureU, textureV );
+
+		if( m_material == NULL )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Sprite::updateMaterial_ %s m_material is NULL"
+				, this->getName().c_str()
+				);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::_render( RenderCameraInterface * _camera )
 	{
 		Node::_render( _camera );
+		
+		const Vertex2D * vertices = this->getVerticesWM_();
 
-		//m_textures[0] = m_resource->getTexture( m_currentImageIndex );
-
-		Vertex2D * vertices = getVertices();
-
-		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
-
+		RENDER_SERVICE(m_serviceProvider)
+			->addRenderObject2D( _camera, m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
 	{
-		invalidateVertices( ESVI_POSITION );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_setListener( PyObject * _listener )
-	{
-		Node::_setListener( _listener );
+		Node::_invalidateWorldMatrix();
 
-		//ToDo
+        this->invalidateVerticesWM_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		Vertex2D * vertices = getVertices();
+		const Vertex2D * vertices = this->getVerticesWM_();
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
@@ -519,143 +582,96 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateColor()
 	{
-		invalidateVertices( ESVI_COLOR );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Sprite::getImageSize()
-	{
-		compileResource_();
+		Node::_invalidateColor();
 
-		if( m_resource == NULL )
-		{
-			MENGE_LOG_ERROR( "Sprite %s: Can't get image size, because resource is NULL '%s'"
-				, getName().c_str()
-				, m_resourceName.c_str() 
-				);
-
-			return mt::vec2f(0.f,0.f);
-		}
-
-		const mt::vec2f & size = 
-			m_resource->getMaxSize( m_currentImageIndex );
-		//m_resource->getSize( m_currentImageIndex );
-
-		return size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::getCenterAlign() const
-	{
-		return m_centerAlign;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t Sprite::getImageCount()
-	{
-		compileResource_();
-
-		if( m_resource == 0 )
-		{
-			MENGE_LOG_ERROR( "Sprite %s: Can't get image count, because resource is NULL '%s'"
-				, getName().c_str()
-				, m_resourceName.c_str() 
-				);
-
-			return 0;
-		}
-
-		return m_resource->getCount();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setCenterAlign( bool _centerAlign )
-	{
-		m_centerAlign = _centerAlign;
-
-		invalidateVertices( ESVI_POSITION );
-		invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageAlpha( const String& _name )
-	{
-		if( m_alphaImageName == _name )
-		{
-			return;
-		}
-
-		m_alphaImageName = _name;
-
-		recompile();
-
-		//invalidateVertices();
-		//invalidateBoundingBox();
+		this->invalidateVertices_( ESVI_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::disableTextureColor( bool _disable )
 	{
-		m_disableTextureColor = _disable;
-		if( m_material == NULL )
+		if( m_disableTextureColor == _disable )
 		{
 			return;
 		}
-		// else
-		if( m_disableTextureColor == true )
-		{
-			m_material->textureStage[0].colorOp = TOP_SELECTARG2;
-		}
-		else
-		{
-			m_material->textureStage[0].colorOp = TOP_MODULATE;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setBlendSource( EBlendFactor _src )
-	{
-		m_blendSrc = _src;
 
-		if( m_material )
-		{
-			m_material->blendSrc = m_blendSrc;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setBlendDest( EBlendFactor _dst )
-	{
-		m_blendDst = _dst;
+		m_disableTextureColor = _disable;
 
-		if( m_material )
+		if( this->isCompile() == false )
 		{
-			m_material->blendDst = m_blendDst;
+			return;
 		}
+
+		m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+			->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
+
+		this->invalidateVertices_( ESVI_MATERIAL );
 	}
 	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
+	void Sprite::setPercentVisibility( const mt::vec4f& _percent )
 	{
-		m_percent = mt::vec4f( _percentX, _percentY );
+		m_percentVisibility = _percent;
 
-		invalidateVertices();
-		invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
-	{
-		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
+		this->invalidateVertices_( ESVI_FULL );
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Sprite::getPercentVisibility() const
 	{
-		return m_percent;
+		return m_percentVisibility;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setTextureMatrixOffset( const mt::vec2f& _offset )
 	{
 		m_textureMatrixOffset = _offset;
+
+		this->invalidateVertices_( ESVI_TRANSFORM );
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void Sprite::setTextureUVOffset( const mt::vec2f & _offset )
+    {
+        m_textureUVOffset = _offset;
+
+        this->invalidateVertices_( ESVI_TRANSFORM );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & Sprite::getTextureUVOffset() const
+    {
+        return m_textureUVOffset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Sprite::setTextureUVScale( const mt::vec2f & _scale )
+    {
+        m_textureUVScale = _scale;
+
+        this->invalidateVertices_( ESVI_TRANSFORM );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & Sprite::getTextureUVScale() const
+    {
+        return m_textureUVScale;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setBlendAdd( bool _value )
+	{
+		if ( m_blendAdd == _value )
+		{
+			return;
+		}
+
+		m_blendAdd = _value;
+
+		this->invalidateVertices_( ESVI_MATERIAL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setAlphaImageIndex( std::size_t _index )
+	bool Sprite::isBlendAdd() const
 	{
-		if( m_alphaImage != NULL )
-		{
-			m_currentAlphaImageIndex = mt::clamp<size_t>( 0, _index, m_alphaImage->getCount()-1 );
-			m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
-		}
+		return m_blendAdd;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setSpriteSize( const mt::vec2f& _size )
+	{
+		m_spriteSize = _size;
+		m_isCustomSize = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

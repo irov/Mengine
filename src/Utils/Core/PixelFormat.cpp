@@ -5,15 +5,13 @@
 #	include <algorithm>
 #	include <map>
 
-#	include <string.h>
-
 namespace Menge
 {
 	// A record that describes a pixel format in detail.
 	struct PixelFormatDescription 
 	{
 		// Name of the format, as in the enum 
-		const TChar *name;
+		const char *name;
 		// Number of bytes one element (colour value) takes.
 		unsigned char elemBytes;
 		// Pixel format flags, see enum PixelFormatFlags for the bit field
@@ -360,41 +358,6 @@ namespace Menge
 		},
 	};
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PixelBox::getConsecutiveSize() const
-	{
-		return PixelUtil::getMemorySize( getWidth(), getHeight(), getDepth(), format );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	/*PixelBox PixelBox::getSubVolume(const Box &def) const
-	{
-		if(PixelUtil::isCompressed(format))
-		{
-			if(def.left == left && def.top == top && def.front == front &&
-				def.right == right && def.bottom == bottom && def.back == back)
-			{
-				// Entire buffer is being queried
-				return *this;
-			}
-			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Cannot return subvolume of compressed PixelBuffer", "PixelBox::getSubVolume");
-		}
-		if(!contains(def))
-			OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Bounds out of range", "PixelBox::getSubVolume");
-
-		const size_t elemSize = PixelUtil::getNumElemBytes(format);
-		// Calculate new data origin
-		PixelBox rval(def, format, ((uint8*)data)
-			+ ((def.left-left)*elemSize)
-			+ ((def.top-top)*rowPitch*elemSize)
-			+ ((def.front-front)*slicePitch*elemSize)
-			);
-
-		rval.rowPitch = rowPitch;
-		rval.slicePitch = slicePitch;
-		rval.format = format;
-
-		return rval;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	static inline const PixelFormatDescription &getDescriptionFor( const PixelFormat _fmt )
 	{
 		const int ord = (int)_fmt;
@@ -403,12 +366,12 @@ namespace Menge
 		return _pixelFormats[ord];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PixelUtil::getNumElemBytes( PixelFormat _format )
+	size_t PixelUtil::getNumElemBytes( PixelFormat _format )
 	{
 		return getDescriptionFor( _format ).elemBytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PixelUtil::getMemorySize( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format )
+	size_t PixelUtil::getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format )
 	{
 		if( isCompressed( _format ) )
 		{
@@ -476,7 +439,7 @@ namespace Menge
 		return (PixelUtil::getFlags(_format) & PFF_LUMINANCE) > 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PixelUtil::isValidExtent( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format )
+	bool PixelUtil::isValidExtent( size_t _width, size_t _height, size_t _depth, PixelFormat _format )
 	{
 		if(isCompressed(_format))
 		{
@@ -938,140 +901,6 @@ namespace Menge
 				assert( 0 && String( "PixelUtil::unpackColour -> unpack from "+getFormatName(_pf)+" not implemented" ).c_str() );
 				break;
 			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	/* Convert pixels from one format to another */
-	void PixelUtil::bulkPixelConversion( void* _srcp, PixelFormat _srcFormat,
-		void* _destp, PixelFormat _dstFormat, unsigned int _count )
-	{
-		PixelBox src( _count, 1, 1, _srcFormat, _srcp ),
-			dst( _count, 1, 1, _dstFormat, _destp );
-
-		bulkPixelConversion( src, dst );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PixelUtil::bulkPixelConversion(const PixelBox &src, const PixelBox &dst)
-	{
-		assert(src.getWidth() == dst.getWidth() &&
-			src.getHeight() == dst.getHeight() &&
-			src.getDepth() == dst.getDepth());
-
-		// Check for compressed formats, we don't support decompression, compression or recoding
-		if(PixelUtil::isCompressed(src.format) || PixelUtil::isCompressed(dst.format))
-		{
-			if(src.format == dst.format)
-			{
-				memcpy(dst.data, src.data, src.getConsecutiveSize());
-				return;
-			}
-			else
-			{
-				assert( 0 && "PixelUtil::bulkPixelConversion -> This method can not be used to compress or decompress images" );
-			}
-		}
-
-		// The easy case
-		if(src.format == dst.format) 
-		{
-			// Everything consecutive?
-			if(src.isConsecutive() && dst.isConsecutive())
-			{
-				memcpy(dst.data, src.data, src.getConsecutiveSize());
-				return;
-			}
-
-			uint8 *srcptr = static_cast<uint8*>(src.data);
-			uint8 *dstptr = static_cast<uint8*>(dst.data);
-			const size_t srcPixelSize = PixelUtil::getNumElemBytes(src.format);
-			const size_t dstPixelSize = PixelUtil::getNumElemBytes(dst.format);
-
-			// Calculate pitches+skips in bytes
-			const size_t srcRowPitchBytes = src.rowPitch*srcPixelSize;
-			//const size_t srcRowSkipBytes = src.getRowSkip()*srcPixelSize;
-			const size_t srcSliceSkipBytes = src.getSliceSkip()*srcPixelSize;
-
-			const size_t dstRowPitchBytes = dst.rowPitch*dstPixelSize;
-			//const size_t dstRowSkipBytes = dst.getRowSkip()*dstPixelSize;
-			const size_t dstSliceSkipBytes = dst.getSliceSkip()*dstPixelSize;
-
-			// Otherwise, copy per row
-			const size_t rowSize = src.getWidth()*srcPixelSize;
-			for(size_t z=src.front; z<src.back; z++)
-			{
-				for(size_t y=src.top; y<src.bottom; y++)
-				{
-					memcpy(dstptr, srcptr, rowSize);
-					srcptr += srcRowPitchBytes;
-					dstptr += dstRowPitchBytes;
-				}
-				srcptr += srcSliceSkipBytes;
-				dstptr += dstSliceSkipBytes;
-			}
-			return;
-		}
-		// Converting to PF_X8R8G8B8 is exactly the same as converting to
-		// PF_A8R8G8B8. (same with PF_X8B8G8R8 and PF_A8B8G8R8)
-		if(dst.format == PF_X8R8G8B8 || dst.format == PF_X8B8G8R8)
-		{
-			// Do the same conversion, with PF_A8R8G8B8, which has a lot of
-			// optimized conversions
-			PixelBox tempdst = dst;
-			tempdst.format = dst.format==PF_X8R8G8B8?PF_A8R8G8B8:PF_A8B8G8R8;
-			bulkPixelConversion(src, tempdst);
-			return;
-		}
-		// Converting from PF_X8R8G8B8 is exactly the same as converting from
-		// PF_A8R8G8B8, given that the destination format does not have alpha.
-		if((src.format == PF_X8R8G8B8||src.format == PF_X8B8G8R8) && !hasAlpha(dst.format))
-		{
-			// Do the same conversion, with PF_A8R8G8B8, which has a lot of
-			// optimized conversions
-			PixelBox tempsrc = src;
-			tempsrc.format = src.format==PF_X8R8G8B8?PF_A8R8G8B8:PF_A8B8G8R8;
-			bulkPixelConversion(tempsrc, dst);
-			return;
-		}
-
-		// NB VC6 can't handle the templates required for optimised conversion, tough
-#if MENGE_COMPILER != MENGE_COMPILER_MSVC || MENGE_COMP_VER >= 1300
-		// Is there a specialized, inlined, conversion?
-		/*if(doOptimizedConversion(src, dst))
-		{
-			// If so, good
-			return;
-		}*/
-#endif
-
-		uint8 *srcptr = static_cast<uint8*>(src.data);
-		uint8 *dstptr = static_cast<uint8*>(dst.data);
-		const size_t srcPixelSize = PixelUtil::getNumElemBytes(src.format);
-		const size_t dstPixelSize = PixelUtil::getNumElemBytes(dst.format);
-
-		// Calculate pitches+skips in bytes
-		const size_t srcRowSkipBytes = src.getRowSkip()*srcPixelSize;
-		const size_t srcSliceSkipBytes = src.getSliceSkip()*srcPixelSize;
-		const size_t dstRowSkipBytes = dst.getRowSkip()*dstPixelSize;
-		const size_t dstSliceSkipBytes = dst.getSliceSkip()*dstPixelSize;
-
-		// The brute force fallback
-		float r,g,b,a;
-		for(size_t z=src.front; z<src.back; z++)
-		{
-			for(size_t y=src.top; y<src.bottom; y++)
-			{
-				for(size_t x=src.left; x<src.right; x++)
-				{
-					unpackColour(&r, &g, &b, &a, src.format, srcptr);
-					packColour(r, g, b, a, dst.format, dstptr);
-					srcptr += srcPixelSize;
-					dstptr += dstPixelSize;
-				}
-				srcptr += srcRowSkipBytes;
-				dstptr += dstRowSkipBytes;
-			}
-			srcptr += srcSliceSkipBytes;
-			dstptr += dstSliceSkipBytes;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

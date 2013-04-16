@@ -1,93 +1,148 @@
 #	include "ResourceAnimation.h"
+#	include "Kernel/ResourceImplement.h"
 
-#	include "ResourceImplement.h"
+#	include "ResourceImage.h"
 
-#	include "XmlEngine.h"
+#   include "Interface/ResourceInterface.h"
+
+#	include "Metacode.h"
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceAnimation )
+	RESOURCE_IMPLEMENT( ResourceAnimation );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation::ResourceAnimation()
+		: m_duration(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceAnimation::getSequenceCount() const
+	bool ResourceAnimation::_loader( const Metabuf::Metadata * _meta )
 	{
-		return m_vectorSequence.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDelay( std::size_t _sequence ) const
-	{
-		return m_vectorSequence[ _sequence ].delay;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceAnimation::getSequenceIndex( std::size_t _sequence ) const
-	{
-		return m_vectorSequence[ _sequence ].index;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::loader( XmlElement * _xml )
-	{
-		ResourceReference::loader( _xml );
+        const Metacode::Meta_DataBlock::Meta_ResourceAnimation * metadata
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceAnimation *>(_meta);
 
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Sequences" )
-			{
-				XML_PARSE_ELEMENT( this, &ResourceAnimation::loaderSequences_ );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::loaderSequences_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Sequence" )
-			{
-				Sequence sq;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Index", sq.index );
-					XML_CASE_ATTRIBUTE( "Delay", sq.delay );
-					//if(abs(sq.delay) > 10000) continue;
-				}
-				m_vectorSequence.push_back( sq );
-			}
-			XML_CASE_NODE( "SequenceArray" )
-			{
-				std::size_t count = 0;
-				float delay;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Count", count );
-					XML_CASE_ATTRIBUTE( "Delay", delay );
-				}
-				for( std::size_t i = 0; i < count; i++ )
-				{
-					Sequence sq;
-					sq.delay = delay;
-					sq.index = m_vectorSequence.size();
-					m_vectorSequence.push_back( sq );
-				}
-			}
-		}
+        const Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence & includes_sequence = metadata->get_IncludesSequence();
+
+        for( Metacode::Meta_DataBlock::Meta_ResourceAnimation::TVectorMeta_Sequence::const_iterator
+            it = includes_sequence.begin(),
+            it_end = includes_sequence.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & meta_sequence = *it;
+
+            AnimationSequence sq;
+
+            meta_sequence.swap_ResourceImageName( sq.resourceName );
+            sq.delay = meta_sequence.get_Delay();
+
+            m_sequence.push_back( sq );
+        }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimation::_compile()
 	{
-		if( m_vectorSequence.empty() )
+		if( m_sequence.empty() )
 		{
-			MENGE_LOG_ERROR( "Animation: sequence count is empty '%s'"
-				, getName().c_str()
+			LOGGER_ERROR(m_serviceProvider)( "ResourceAnimation::_compile: '%s' sequence count is empty"
+				, this->getName().c_str()
 				);
 
 			return false;
 		}
 
+		m_duration = 0.f;
+
+		for( TVectorAnimationSequence::iterator
+			it = m_sequence.begin(),
+			it_end = m_sequence.end();
+		it != it_end;
+		++it )
+		{
+			AnimationSequence & sequence = *(it);
+			
+			ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceImage>( sequence.resourceName );
+
+			if( resource == 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceAnimation::_compile: '%s' Image resource not found resource '%s'"
+					, this->getName().c_str()
+					, sequence.resourceName.c_str() 
+					);
+
+				return false;
+			}
+
+			sequence.resource = resource;
+
+			m_duration += sequence.delay;
+		}
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceAnimation::_release()
+	{
+		for( TVectorAnimationSequence::iterator
+			it = m_sequence.begin(),
+			it_end = m_sequence.end();
+		it != it_end;
+		++it )
+		{
+			AnimationSequence & sequence = *(it);
+
+			if( sequence.resource == NULL )
+			{
+				continue;
+			}
+			
+			sequence.resource->decrementReference();
+			sequence.resource = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceAnimation::getSequenceCount() const
+	{
+		return m_sequence.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceAnimation::getSequenceDelay( size_t _sequence ) const
+	{
+		return m_sequence[_sequence].delay;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString& ResourceAnimation::getSequenceResourceName( size_t _sequence ) const
+	{
+		return m_sequence[_sequence].resourceName;
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceAnimation::getLastFrameIndex() const
+	{
+		return m_sequence.size() - 1;	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceAnimation::setSequences( const TVectorAnimationSequence & _sequence )
+	{
+		m_sequence = _sequence;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TVectorAnimationSequence & ResourceAnimation::getSequences() const
+	{
+		return m_sequence;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage * ResourceAnimation::getSequenceResource( size_t _sequence ) const
+	{
+		return m_sequence[_sequence].resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceAnimation::getSequenceDuration() const
+	{
+		return m_duration;
 	}
 }

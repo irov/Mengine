@@ -4,24 +4,24 @@
 
 namespace mt
 {
-	MATH_INLINE simplex_solver::simplex_solver()
+	MATH_METHOD_INLINE simplex_solver::simplex_solver()
 		: size(0)
 		, eps(0.00001f)
 	{}
 
-	MATH_INLINE void simplex_solver::reset()
+	MATH_METHOD_INLINE void simplex_solver::reset()
 	{
 		size = 0;
 	}
 
-	MATH_INLINE void simplex_solver::addWPQ( const mt::vec3f & w, const mt::vec3f & p, const mt::vec3f & q  )
+	MATH_METHOD_INLINE void simplex_solver::addWPQ( const mt::vec3f & w, const mt::vec3f & p, const mt::vec3f & q  )
 	{
 		W[size] = w;
 		P[size] = p;
 		Q[size++] = q;
 	}
 
-	MATH_INLINE bool simplex_solver::update( mt::vec3f & V )
+	MATH_METHOD_INLINE bool simplex_solver::update( mt::vec3f & V )
 	{
 		bool found = false; 
 
@@ -49,18 +49,25 @@ namespace mt
 		return found;
 	}
 
-	MATH_INLINE void simplex_solver::remove( int _size )
+	MATH_METHOD_INLINE void simplex_solver::remove_1()
 	{
-		assert( _size );
+		W[0] = W[1];
+		P[0] = P[1];
+		Q[0] = Q[1];
 
-		W[ _size - 1 ] = W[ _size ];
-		P[ _size - 1 ] = P[ _size ];
-		Q[ _size - 1 ] = Q[ _size ];
-
-		size = _size;
+		size = 1;
 	}
 
-	MATH_INLINE bool simplex_solver::solve( mt::vec3f AO, mt::vec3f AB, mt::vec3f & V )
+	MATH_METHOD_INLINE void simplex_solver::remove_2()
+	{
+		W[1] = W[2];
+		P[1] = P[2];
+		Q[1] = Q[2];
+
+		size = 2;
+	}
+
+	MATH_METHOD_INLINE bool simplex_solver::solve( mt::vec3f AO, mt::vec3f AB, mt::vec3f & V )
 	{
 		if( mt::dot_v3_v3( AO, AB ) > 0 )
 		{
@@ -80,13 +87,13 @@ namespace mt
 		else
 		{
 			V = AO;
-			remove(1);
+			remove_1();
 		}
 
 		return false;
 	}
 
-	MATH_INLINE bool simplex_solver::solve( mt::vec3f AO, mt::vec3f AB, mt::vec3f AC, mt::vec3f & V )
+	MATH_METHOD_INLINE bool simplex_solver::solve( mt::vec3f AO, mt::vec3f AB, mt::vec3f AC, mt::vec3f & V )
 	{
 		mt::vec3f ABC = mt::cross_v3_v3( AB, AC );
 
@@ -98,13 +105,13 @@ namespace mt
 
 		if( AB_SIDE < -eps )
 		{
-			remove(1);
-			remove(2);
+			remove_1();
+			remove_2();
 			return solve(AO,AB,V);
 		}
 		else if( AC_SIDE > eps )
 		{
-			remove(2);
+			remove_2();
 			return solve(AO,AC,V);
 		}
 		else

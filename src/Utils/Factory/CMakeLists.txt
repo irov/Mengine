@@ -1,29 +1,20 @@
-
-set( MY_LIB_NAME Factory )
-
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
+SET( MY_LIB_NAME Factory )
 
 ADD_FILTER(
 src
-	FactoryDefault.h
-	FactoryPool.h
-	Factorable.h
-	Factorable.cpp
+    Factorable.h
+    Factorable.cpp    
 	Factory.h
 	Factory.cpp
-	FactoryIdentity.h
-	FactoryIdentity.cpp
-	FactoryManager.h
-	FactoryManager.cpp
-	
+    FactoryManager.h
+    FactoryManager.cpp
+    FactoryDefault.h
+    FactoryPool.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
-) 
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils ) 
 
 SET( MENGE_DEPENDENCIES
  ${MENGE_DEPENDENCIES}

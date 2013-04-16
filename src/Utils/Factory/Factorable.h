@@ -8,7 +8,7 @@ namespace Menge
 	{
 	public:
 		Factorable();
-		virtual ~Factorable();
+		~Factorable();
 
 	public:
 		void setFactory( Factory * _factory );
@@ -18,10 +18,11 @@ namespace Menge
 		void destroy();
 
 	protected:
-		virtual void _destroy();
+		virtual bool _destroy();
 
 	protected:
 		Factory * m_factory;
+        bool m_destroy;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline Factory * Factorable::getFactory() const

@@ -1,22 +1,20 @@
-
 #	include "Window.h"
 
-#	include "ResourceManager.h"
-#	include "XmlEngine.h"
-#	include "Logger/Logger.h"
-#	include "RenderEngine.h"
-#	include "Material.h"
+#   include "Interface/ResourceInterface.h"
+#   include "Interface/RenderSystemInterface.h"
 
-#	include "Texture.h"
+#   include "Logger/Logger.h"
+
+#	include "Consts.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Window::Window()
-		: m_clientSize( 100.0f, 100.0f )
-		, m_resource( NULL )
+		: m_clientSize(100.f, 100.f)
+		, m_resource(NULL)
 	{
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
 			m_initialSizes[i].x = 0.0f;
 			m_initialSizes[i].y = 0.0f;
@@ -28,18 +26,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::loader( XmlElement* _xml )
-	{
-		Node::loader( _xml );
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "WindowResource", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "ClientSize", "Value", &Window::setClientSize );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "ClientSizeInTiles", "Value", &Window::setClientSizeInTiles );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Window::_compile()
 	{
 		if( Node::_compile() == false )
@@ -47,169 +33,247 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceWindow>( m_resourceName );
+		m_resource = RESOURCE_SERVICE(m_serviceProvider)->getResourceT<ResourceWindow>( m_resourceName );
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( "Window: Error while compiling resources. Resource '%s' does not exist" 
+			LOGGER_ERROR(m_serviceProvider)( "Window::_compile %s Error while compiling resources. Resource '%s' does not exist" 
+				, this->getName().c_str()
 				, m_resourceName.c_str() 
 				);
 
 			return false;
 		}
 
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			Texture* image = m_resource->getImage( i );
+			ResourceImage * image = m_resource->getResource( i );
+
 			if( image != NULL )
 			{
-				m_initialSizes[i].x = image->getWidth();
-				m_initialSizes[i].y = image->getHeight();
+				m_initialSizes[i] = image->getSize();
 			}
 		}
 
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
+		const RenderMaterialGroup * mg_sprite = RENDER_SERVICE(m_serviceProvider)->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+
+		for( int i = 0; i < ResourceWindow_Count; ++i )
 		{
-			m_material[i] = Holder<RenderEngine>::hostage()
-									->createMaterial();
+            ResourceImage * image = m_resource->getResource( i );
 
-			//m_material[i]->textureStages = 1;
-			m_textures[i] = m_resource->getImage( i );
-			m_material[i]->blendSrc = BF_SOURCE_ALPHA;
-			m_material[i]->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-			m_material[i]->textureStage[0].colorOp = TOP_MODULATE;
-			m_material[i]->textureStage[0].alphaOp = TOP_MODULATE;
+            if( image != NULL )
+            {
+                const RenderTextureInterface * texture = image->getTexture();
+
+                m_textures[i] = texture;
+            }
+            else
+            {
+                m_textures[i] = NULL;
+            }			
 		}
-		m_material[0]->textureStage[0].addressU = TAM_WRAP;
-		m_material[0]->textureStage[0].addressV = TAM_WRAP;
-		m_material[1]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[1]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[2]->textureStage[0].addressU = TAM_WRAP;
-		m_material[2]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[3]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[3]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[4]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[4]->textureStage[0].addressV = TAM_WRAP;
-		m_material[5]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[5]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[6]->textureStage[0].addressU = TAM_WRAP;
-		m_material[6]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[7]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[7]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[8]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[8]->textureStage[0].addressV = TAM_WRAP;
 
-		invalidateVertices();
-		invalidateBoundingBox();
+		m_material[ResourceWindow_Background] = mg_sprite->getMaterial( TAM_WRAP, TAM_WRAP );
+		m_material[ResourceWindow_LeftTop] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[ResourceWindow_Top] = mg_sprite->getMaterial( TAM_WRAP, TAM_CLAMP );
+		m_material[ResourceWindow_RightTop] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[ResourceWindow_Right] = mg_sprite->getMaterial( TAM_CLAMP, TAM_WRAP );
+		m_material[ResourceWindow_RightBottom] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[ResourceWindow_Bottom] = mg_sprite->getMaterial( TAM_WRAP, TAM_CLAMP );
+		m_material[ResourceWindow_LeftBottom] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[ResourceWindow_Left] = mg_sprite->getMaterial( TAM_CLAMP, TAM_WRAP );
+
+		this->invalidateVertices();
+		this->invalidateBoundingBox();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_release()
 	{
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
+		for( int i = 0; i < ResourceWindow_Count; ++i )
 		{
-			Holder<RenderEngine>::hostage()
-				->releaseMaterial( m_material[i] );
 			m_material[i] = NULL;
 		}
 
 		if( m_resource != NULL )
 		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_resource );
+			m_resource->decrementReference();
+			m_resource = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_render( Camera2D * _camera )
+	void Window::_render( RenderCameraInterface * _camera )
 	{
 		Node::_render( _camera );
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		const Vertex2D * vertices = this->getVertices();
 
-		Vertex2D * vertices = getVertices();
+        if( this->hasBackground() == true )
+        {
+            RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Background], &m_textures[ResourceWindow_Background], 1, &vertices[0*4], 4, LPT_QUAD );
+        }
 
-		renderEngine->renderObject2D( m_material[1], &m_textures[1], 1, &vertices[1*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[3], &m_textures[3], 1, &vertices[3*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[5], &m_textures[5], 1, &vertices[5*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[7], &m_textures[7], 1, &vertices[7*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[2], &m_textures[2], 1, &vertices[2*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[6], &m_textures[6], 1, &vertices[6*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[4], &m_textures[4], 1, &vertices[4*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[8], &m_textures[8], 1, &vertices[8*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[0], &m_textures[0], 1, &vertices[0*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_LeftTop], &m_textures[ResourceWindow_LeftTop], 1, &vertices[1*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_RightTop], &m_textures[ResourceWindow_RightTop], 1, &vertices[3*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_RightBottom], &m_textures[ResourceWindow_RightBottom], 1, &vertices[5*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_LeftBottom], &m_textures[ResourceWindow_LeftBottom], 1, &vertices[7*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Top], &m_textures[ResourceWindow_Top], 1, &vertices[2*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Bottom], &m_textures[ResourceWindow_Bottom], 1, &vertices[6*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Right], &m_textures[ResourceWindow_Right], 1, &vertices[4*4], 4, LPT_QUAD );
+		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Left], &m_textures[ResourceWindow_Left], 1, &vertices[8*4], 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
 	{
-		const mt::mat3f& wm = getWorldMatrix();
-
-		mt::vec2f transform1X, transform5X, transformClX;
-		mt::vec2f transfrom1Y, transform5Y, transfromClY;
-
-		mt::mul_v2_m3_r( transform1X, mt::vec2f( m_initialSizes[1].x, 0.0f ), wm );
-		mt::mul_v2_m3_r( transfrom1Y, mt::vec2f( 0.0f, m_initialSizes[1].y ), wm );
-		mt::mul_v2_m3_r( transform5X, mt::vec2f( m_initialSizes[5].x, 0.0f ), wm );
-		mt::mul_v2_m3_r( transform5Y, mt::vec2f( 0.0f, m_initialSizes[5].y ), wm );
-		mt::mul_v2_m3_r( transformClX, mt::vec2f( m_clientSize.x, 0.0f ), wm );
-		mt::mul_v2_m3_r( transfromClY, mt::vec2f( 0.0f, m_clientSize.y ), wm );
+        (void)_invalidateVertices;
 
 		struct TQuad
 		{
 			mt::vec2f a,b,c,d;
 		};
 
-		TQuad quads[MAX_WINDOW_ELEMENTS];
+		TQuad quads[ResourceWindow_Count];
 
-		//quads[1].a = wm.v2.v2;
-		quads[1].a.x = wm.v2.x;
-		quads[1].a.y = wm.v2.y;
-		quads[1].b = quads[1].a + transform1X;
-		quads[1].c = quads[1].b + transfrom1Y;
-		quads[1].d = quads[1].a + transfrom1Y;
+		const mt::vec2f & offsetLeftTop = m_resource->getOffset(ResourceWindow_LeftTop);
 
-		quads[2].a = quads[1].b;
-		quads[2].b = quads[2].a + transformClX;
-		quads[2].c = quads[2].b + transfrom1Y;
-		quads[2].d = quads[1].c;
+		quads[ResourceWindow_LeftTop].a.x = offsetLeftTop.x;
+		quads[ResourceWindow_LeftTop].a.y = offsetLeftTop.y;
+		
+		quads[ResourceWindow_LeftTop].b.x = quads[ResourceWindow_LeftTop].a.x + m_initialSizes[ResourceWindow_LeftTop].x;
+		quads[ResourceWindow_LeftTop].b.y = quads[ResourceWindow_LeftTop].a.y;
+		
+		quads[ResourceWindow_LeftTop].c.x = quads[ResourceWindow_LeftTop].b.x;
+		quads[ResourceWindow_LeftTop].c.y = quads[ResourceWindow_LeftTop].b.y + m_initialSizes[ResourceWindow_LeftTop].y;
 
-		quads[3].a = quads[2].b;
-		quads[3].b = quads[3].a + transform5X;
-		quads[3].c = quads[3].b + transfrom1Y;
-		quads[3].d = quads[2].c;
+		quads[ResourceWindow_LeftTop].d.x = quads[ResourceWindow_LeftTop].a.x;
+		quads[ResourceWindow_LeftTop].d.y = quads[ResourceWindow_LeftTop].c.y;
 
-		quads[4].a = quads[3].d;
-		quads[4].b = quads[3].c;
-		quads[4].c = quads[4].b + transfromClY;
-		quads[4].d = quads[4].a + transfromClY;
+		/////////////////////////////////////////////////////////////////
+		const mt::vec2f & offsetTop = m_resource->getOffset(ResourceWindow_Top);
+		
+		quads[ResourceWindow_Top].a.x = quads[ResourceWindow_LeftTop].b.x;
+		quads[ResourceWindow_Top].a.y = offsetTop.y;
+		
+		const mt::vec2f & offsetRightTop = m_resource->getOffset(ResourceWindow_RightTop);
+		float distance = m_clientSize.x - ( (m_initialSizes[ResourceWindow_LeftTop].x + offsetLeftTop.x) + (m_initialSizes[ResourceWindow_RightTop].x - offsetRightTop.x) );
 
-		quads[5].a = quads[4].d;
-		quads[5].b = quads[4].c;
-		quads[5].c = quads[5].b + transform5Y;
-		quads[5].d = quads[5].a + transform5Y;
+		quads[ResourceWindow_Top].b.x = quads[ResourceWindow_Top].a.x + distance;
+		quads[ResourceWindow_Top].b.y = quads[ResourceWindow_Top].a.y;
 
-		quads[6].a = quads[5].a - transformClX;
-		quads[6].b = quads[5].a;
-		quads[6].c = quads[5].d;
-		quads[6].d = quads[6].a + transform5Y;
+		quads[ResourceWindow_Top].c.x = quads[ResourceWindow_Top].b.x;
+		quads[ResourceWindow_Top].c.y = quads[ResourceWindow_Top].a.y + m_initialSizes[ResourceWindow_Top].y;
 
-		quads[7].a = quads[6].a - transform1X;
-		quads[7].b = quads[6].a;
-		quads[7].c = quads[6].d;
-		quads[7].d = quads[7].a + transform5Y;
+		quads[ResourceWindow_Top].d.x = quads[ResourceWindow_Top].a.x;
+		quads[ResourceWindow_Top].d.y = quads[ResourceWindow_Top].c.y;
 
-		quads[8].a = quads[1].d;
-		quads[8].b = quads[1].c;
-		quads[8].c = quads[7].b;
-		quads[8].d = quads[7].a;
+		/////////////////////////////////////////////////////////////////
 
-		quads[0].a = quads[1].c;
-		quads[0].b = quads[3].d;
-		quads[0].c = quads[5].a;
-		quads[0].d = quads[7].b;
+		quads[ResourceWindow_RightTop].a.x = quads[ResourceWindow_Top].b.x;
+		quads[ResourceWindow_RightTop].a.y = offsetRightTop.y;
 
-		mt::vec2f uvs[MAX_WINDOW_ELEMENTS];
+		quads[ResourceWindow_RightTop].b.x = quads[ResourceWindow_RightTop].a.x + m_initialSizes[ResourceWindow_RightTop].x;
+		quads[ResourceWindow_RightTop].b.y = quads[ResourceWindow_RightTop].a.y;
+
+		quads[ResourceWindow_RightTop].c.x = quads[ResourceWindow_RightTop].b.x;
+		quads[ResourceWindow_RightTop].c.y = quads[ResourceWindow_RightTop].b.y + m_initialSizes[ResourceWindow_RightTop].y;
+
+		quads[ResourceWindow_RightTop].d.x = quads[ResourceWindow_RightTop].a.x;
+		quads[ResourceWindow_RightTop].d.y = quads[ResourceWindow_RightTop].c.y;
+
+		/////////////////////////////////////////////////////////////////
+		const mt::vec2f & offsetRight = m_resource->getOffset(ResourceWindow_Right);
+
+		quads[ResourceWindow_Right].b.x = m_clientSize.x + offsetRight.x;
+		quads[ResourceWindow_Right].b.y = quads[ResourceWindow_RightTop].d.y;
+		
+		const mt::vec2f & offsetRightBottom = m_resource->getOffset(ResourceWindow_RightBottom);
+		float distanceRight = m_clientSize.y - ( (m_initialSizes[ResourceWindow_RightTop].y + offsetRightTop.y) + (m_initialSizes[ResourceWindow_RightBottom].y - offsetRightBottom.y) );
+
+		quads[ResourceWindow_Right].c.x = quads[ResourceWindow_Right].b.x;
+		quads[ResourceWindow_Right].c.y = quads[ResourceWindow_Right].b.y + distanceRight;
+		
+		quads[ResourceWindow_Right].d.x = quads[ResourceWindow_Right].b.x - m_initialSizes[ResourceWindow_Right].x;
+		quads[ResourceWindow_Right].d.y = quads[ResourceWindow_Right].c.y;
+
+		quads[ResourceWindow_Right].a.x = quads[ResourceWindow_Right].d.x;
+		quads[ResourceWindow_Right].a.y = quads[ResourceWindow_Right].b.y;
+			
+		/////////////////////////////////////////////////////////////////
+		
+		quads[ResourceWindow_RightBottom].b.x = m_clientSize.x + offsetRightBottom.x;
+		quads[ResourceWindow_RightBottom].b.y = quads[ResourceWindow_Right].c.y;
+		
+		quads[ResourceWindow_RightBottom].c.x = quads[ResourceWindow_RightBottom].b.x;
+		quads[ResourceWindow_RightBottom].c.y = quads[ResourceWindow_RightBottom].b.y + m_initialSizes[ResourceWindow_RightBottom].y;
+				
+		quads[ResourceWindow_RightBottom].d.x = quads[ResourceWindow_RightBottom].c.x - m_initialSizes[ResourceWindow_RightBottom].x;
+		quads[ResourceWindow_RightBottom].d.y = quads[ResourceWindow_RightBottom].c.y;
+
+		quads[ResourceWindow_RightBottom].a.x = quads[ResourceWindow_RightBottom].d.x;
+		quads[ResourceWindow_RightBottom].a.y = quads[ResourceWindow_RightBottom].b.y;
+		
+		/////////////////////////////////////////////////////////////////
+		
+		const mt::vec2f & offsetBottom = m_resource->getOffset(ResourceWindow_Bottom);
+
+		quads[ResourceWindow_Bottom].c.x = quads[ResourceWindow_RightBottom].a.x;
+		quads[ResourceWindow_Bottom].c.y =  m_clientSize.y + offsetBottom.y;
+
+		const mt::vec2f & offsetLeftBottom = m_resource->getOffset(ResourceWindow_LeftBottom);
+		float distanceBottom = m_clientSize.x - ( (m_initialSizes[ResourceWindow_LeftBottom].x + offsetLeftBottom.x) + (m_initialSizes[ResourceWindow_RightBottom].x - offsetRightBottom.x) );
+
+		quads[ResourceWindow_Bottom].d.x = quads[ResourceWindow_Bottom].c.x - distanceBottom;
+		quads[ResourceWindow_Bottom].d.y = quads[ResourceWindow_Bottom].c.y;
+
+		quads[ResourceWindow_Bottom].a.x = quads[ResourceWindow_Bottom].d.x;
+		quads[ResourceWindow_Bottom].a.y = quads[ResourceWindow_Bottom].c.y - m_initialSizes[ResourceWindow_Bottom].y;
+
+		quads[ResourceWindow_Bottom].b.x = quads[ResourceWindow_Bottom].c.x;
+		quads[ResourceWindow_Bottom].b.y = quads[ResourceWindow_Bottom].a.y;
+					
+		/////////////////////////////////////////////////////////////////
+		
+		quads[ResourceWindow_LeftBottom].d.x = offsetLeftBottom.x;
+		quads[ResourceWindow_LeftBottom].d.y = m_clientSize.y + offsetLeftBottom.y;
+
+		quads[ResourceWindow_LeftBottom].a.x = quads[ResourceWindow_LeftBottom].d.x; 
+		quads[ResourceWindow_LeftBottom].a.y = quads[ResourceWindow_LeftBottom].d.y - m_initialSizes[ResourceWindow_LeftBottom].y;
+
+		quads[ResourceWindow_LeftBottom].b.x = quads[ResourceWindow_Bottom].a.x;
+		quads[ResourceWindow_LeftBottom].b.y = quads[ResourceWindow_LeftBottom].a.y;
+
+		quads[ResourceWindow_LeftBottom].c.x = quads[ResourceWindow_LeftBottom].b.x;
+		quads[ResourceWindow_LeftBottom].c.y = quads[ResourceWindow_LeftBottom].d.y;
+
+		/////////////////////////////////////////////////////////////////
+
+		const mt::vec2f & offsetLeft = m_resource->getOffset(ResourceWindow_Left);
+
+		quads[ResourceWindow_Left].d.x =  offsetLeft.x;
+		quads[ResourceWindow_Left].d.y = quads[ResourceWindow_LeftBottom].a.y;
+					
+		float distanceLeft = m_clientSize.y - ( ( m_initialSizes[ResourceWindow_LeftTop].y + offsetLeftTop.y ) + (m_initialSizes[ResourceWindow_LeftBottom].y - offsetLeftBottom.y) );
+
+		quads[ResourceWindow_Left].a.x = quads[ResourceWindow_Left].d.x;
+		quads[ResourceWindow_Left].a.y = quads[ResourceWindow_Left].d.y - distanceLeft;
+
+		quads[ResourceWindow_Left].b.x = quads[ResourceWindow_Left].a.x + m_initialSizes[ResourceWindow_Left].x;
+		quads[ResourceWindow_Left].b.y = quads[ResourceWindow_Left].a.y;
+		
+		quads[ResourceWindow_Left].c.x = quads[ResourceWindow_Left].b.x;
+		quads[ResourceWindow_Left].c.y = quads[ResourceWindow_Left].d.y;
+		
+		/////////////////////////////////////////////////////////////////
+
+		quads[ResourceWindow_Background].a = mt::vec2f( 0.0f, 0.0f );
+		quads[ResourceWindow_Background].b = mt::vec2f( m_clientSize.x, 0.0f );
+		quads[ResourceWindow_Background].c = mt::vec2f( m_clientSize.x, m_clientSize.y );
+		quads[ResourceWindow_Background].d = mt::vec2f( 0.0f, m_clientSize.y );
+
+		/////////////////////////////////////////////////////////////////
+
+		mt::vec2f uvs[ResourceWindow_Count];
 
 		uvs[0] = mt::vec2f( m_clientSize.x / m_initialSizes[0].x, m_clientSize.y / m_initialSizes[0].y );
 		uvs[1] = mt::vec2f( 1.0f, 1.0f );
@@ -221,39 +285,88 @@ namespace Menge
 		uvs[7] = mt::vec2f( 1.0f, 1.0f );
 		uvs[8] = mt::vec2f( 1.0f, m_clientSize.y / m_initialSizes[8].y );
 
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
-		{
-			_vertices[i*4 + 0].pos[0] = quads[i].a.x;
-			_vertices[i*4 + 0].pos[1] = quads[i].a.y;
-			_vertices[i*4 + 0].uv[0] = 0.0f;
-			_vertices[i*4 + 0].uv[1] = 0.0f;
+		const mt::mat4f& worldMatrix = this->getWorldMatrix();
+		mt::vec2f worldVertice;
 
-			_vertices[i*4 + 1].pos[0] = quads[i].b.x;
-			_vertices[i*4 + 1].pos[1] = quads[i].b.y;
-			_vertices[i*4 + 1].uv[0] = uvs[i].x;
-			_vertices[i*4 + 1].uv[1] = 0.0f;
+		for( int i = 0; i < ResourceWindow_Count; ++i )
+		{   
+            mt::vec4f uv;
+            
+            uv.x = 0.f;
+            uv.y = 0.f;
+            uv.z = 1.f;
+            uv.w = 1.f;
 
-			_vertices[i*4 + 2].pos[0] = quads[i].c.x;
-			_vertices[i*4 + 2].pos[1] = quads[i].c.y;
-			_vertices[i*4 + 2].uv[0] = uvs[i].x;
-			_vertices[i*4 + 2].uv[1] = uvs[i].y;
+            ResourceImage * image = m_resource->getResource( i );
 
-			_vertices[i*4 + 3].pos[0] = quads[i].d.x;
-			_vertices[i*4 + 3].pos[1] = quads[i].d.y;
-			_vertices[i*4 + 3].uv[0] = 0.0f;
-			_vertices[i*4 + 3].uv[1] = uvs[i].y;
+            if( image != NULL )
+            {
+                const mt::vec4f & texture_uv = image->getUVImage();
+
+                float w = texture_uv.z - texture_uv.x;
+                float h = texture_uv.w - texture_uv.y;
+
+                uv.x = texture_uv.x;
+                uv.y = texture_uv.y;
+                uv.z = texture_uv.x + uvs[i].x * w;
+                uv.w = texture_uv.y + uvs[i].y * h;
+            }
+
+            const TQuad & quad = quads[i];
+
+			mt::mul_v2_m4( worldVertice, quad.a, worldMatrix );
+			_vertices[i*4 + 0].pos.x = worldVertice.x;
+			_vertices[i*4 + 0].pos.y = worldVertice.y;
+			_vertices[i*4 + 0].pos.z = 0.f;
+			
+			_vertices[i*4 + 0].uv.x = uv.x;
+			_vertices[i*4 + 0].uv.y = uv.y;
+            _vertices[i*4 + 0].uv2.x = 0.f;
+            _vertices[i*4 + 0].uv2.y = 0.f;
+			
+			mt::mul_v2_m4( worldVertice, quad.b, worldMatrix );
+			_vertices[i*4 + 1].pos.x = worldVertice.x;
+			_vertices[i*4 + 1].pos.y = worldVertice.y;
+			_vertices[i*4 + 1].pos.z = 0.f;
+
+			_vertices[i*4 + 1].uv.x = uv.z;
+			_vertices[i*4 + 1].uv.y = uv.y;
+            _vertices[i*4 + 1].uv2.x = 0.f;
+            _vertices[i*4 + 1].uv2.y = 0.f;
+
+			mt::mul_v2_m4( worldVertice, quad.c, worldMatrix );
+			_vertices[i*4 + 2].pos.x = worldVertice.x;
+			_vertices[i*4 + 2].pos.y = worldVertice.y;
+			_vertices[i*4 + 2].pos.z = 0.f;
+
+			_vertices[i*4 + 2].uv.x = uv.z;
+			_vertices[i*4 + 2].uv.y = uv.w;
+            _vertices[i*4 + 2].uv2.x = 0.f;
+            _vertices[i*4 + 2].uv2.y = 0.f;
+			
+			mt::mul_v2_m4( worldVertice, quad.d, worldMatrix );
+			_vertices[i*4 + 3].pos.x = worldVertice.x;
+			_vertices[i*4 + 3].pos.y = worldVertice.y;
+			_vertices[i*4 + 3].pos.z = 0.f;
+
+			_vertices[i*4 + 3].uv.x = uv.x;
+			_vertices[i*4 + 3].uv.y = uv.w;
+            _vertices[i*4 + 3].uv2.x = 0.f;
+            _vertices[i*4 + 3].uv2.y = 0.f;
 		}
 
-		const ColourValue& color = getWorldColor();
+		ColourValue color;
+		this->calcTotalColor(color);
+
 		unsigned int argb = color.getAsARGB();
 
 		ApplyColor2D applyColor( argb );
-		std::for_each( _vertices, _vertices + MAX_WINDOW_ELEMENTS*4, applyColor );
+		std::for_each( _vertices, _vertices + ResourceWindow_Count*4, applyColor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		Vertex2D * vertices = getVertices();
+		const Vertex2D * vertices = this->getVertices();
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
@@ -265,32 +378,47 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_invalidateWorldMatrix()
 	{
-		invalidateVertices();
+		Node::_invalidateWorldMatrix();
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_invalidateColor()
 	{
-		invalidateVertices();
+		Node::_invalidateColor();
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSizeClip( const mt::vec2f& _clientSize )
 	{
+		if( this->hasBackground() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Window::setClientSizeClip: '%s' background not exist"
+                , this->getName().c_str()
+                );
+
+			return;
+		}
+
 		mt::vec2f clSize = _clientSize;
-		if( m_initialSizes[0].x > 0.001f )
+
+		if( m_initialSizes[ResourceWindow_Background].x > 0.001f )
 		{
-			clSize.x = ::ceilf( clSize.x / m_initialSizes[0].x ) * m_initialSizes[0].x;	
+			clSize.x = ::ceilf( clSize.x / m_initialSizes[ResourceWindow_Background].x ) * m_initialSizes[ResourceWindow_Background].x;	
 		}
-		if( m_initialSizes[0].y > 0.001f )
+
+		if( m_initialSizes[ResourceWindow_Background].y > 0.001f )
 		{
-			clSize.y = ::ceilf( clSize.y / m_initialSizes[0].y ) * m_initialSizes[0].y;
+			clSize.y = ::ceilf( clSize.y / m_initialSizes[ResourceWindow_Background].y ) * m_initialSizes[ResourceWindow_Background].y;
 		}
-		setClientSize( clSize );
+		
+		this->setClientSize( clSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSize( const mt::vec2f& _clientSize )
 	{
 		m_clientSize = _clientSize;
-		invalidateVertices();
+
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f Window::getClientSize() const
@@ -300,43 +428,83 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Window::getWindowSize() const
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid call 'Window::getWindowSize'. Node not compiled. ClientSize will be returned" );
+			LOGGER_ERROR(m_serviceProvider)( "Window::getWindowSize: '%s' not compiled"
+                , this->getName().c_str()
+                );
 			
-			return mt::vec2f::zero_v2;
+			return mt::zero_v2;
 		}
 
 		mt::vec2f windowSize = m_clientSize;
-		windowSize += m_initialSizes[1];
-		windowSize += m_initialSizes[5];
+		windowSize += m_initialSizes[ResourceWindow_LeftTop];
+		windowSize += m_initialSizes[ResourceWindow_RightBottom];
+
 		return windowSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Window::getTileSize( int _tile ) const
 	{
-		if( _tile < 0 || _tile > MAX_WINDOW_ELEMENTS )
+		if( _tile < 0 || _tile > ResourceWindow_Count )
 		{
-			MENGE_LOG_ERROR( "Error: 'Window::getTileSize' invalid tile argument '%d'"
+			LOGGER_ERROR(m_serviceProvider)( "Window::getTileSize: %s invalid tile argument '%d'"
+                , this->getName().c_str()
 				, _tile 
 				);
 
-			return mt::vec2f::zero_v2;
+			return mt::zero_v2;
 		}
-		return m_initialSizes[_tile];
+
+        const mt::vec2f& size = m_initialSizes[_tile];
+
+		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSizeInTiles( const mt::vec2f& _tiles )
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid call 'Window::getClientSizeInTiles'. Node not compiled." );
+			LOGGER_ERROR(m_serviceProvider)( "Window::setClientSizeInTiles: '%s' not compiled."
+                , this->getName().c_str()
+                );
 
 			return;
 		}
 
-		setClientSize( mt::vec2f( static_cast<int>( _tiles.x ) * m_initialSizes[0].x,
-									static_cast<int>( _tiles.y ) * m_initialSizes[0].y ) );
+		if( this->hasBackground() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Window::setClientSizeInTiles: '%s' background not exist"
+                , this->getName().c_str()
+                );
+
+			return;
+		}
+
+		this->setClientSize( mt::vec2f( static_cast<int>( _tiles.x ) * m_initialSizes[ResourceWindow_Background].x,
+									static_cast<int>( _tiles.y ) * m_initialSizes[ResourceWindow_Background].y ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Window::setResourceWindow( const ConstString & _resourceName )
+	{
+		if( m_resourceName == _resourceName )
+		{
+			return;
+		}
+
+		m_resourceName = _resourceName;
+
+        this->recompile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Window::hasBackground() const
+	{
+		if( m_textures[ResourceWindow_Background] == NULL )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

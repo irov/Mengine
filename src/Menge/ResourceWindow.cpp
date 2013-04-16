@@ -1,10 +1,14 @@
-
 #	include "ResourceWindow.h"
+#	include "Kernel/ResourceImplement.h"
 
-#	include "ResourceImplement.h"
-#	include "XmlEngine.h"
-#	include "Texture.h"
-#	include "RenderEngine.h"
+#   include "Interface/ResourceInterface.h"
+#	include "Interface/RenderSystemInterface.h"
+#	include "Logger/Logger.h"
+
+#	include "ResourceImage.h"
+
+#	include "Metacode.h"
+
 
 namespace Menge
 {
@@ -13,9 +17,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceWindow::ResourceWindow()
 	{
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			m_renderImage[i] = NULL;
+			m_images[i].resource = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -23,82 +27,62 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceWindow::loader( XmlElement * _xml )
+	bool ResourceWindow::_loader( const Metabuf::Metadata * _meta )
 	{
-		ResourceReference::loader( _xml );
+        const Metacode::Meta_DataBlock::Meta_ResourceWindow * metadata 
+            = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceWindow *>(_meta);
 
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "Background", "Image", m_imagePath[0] );
-			XML_CASE_ATTRIBUTE_NODE( "LeftTop", "Image", m_imagePath[1] );
-			XML_CASE_ATTRIBUTE_NODE( "Top", "Image", m_imagePath[2] );
-			XML_CASE_ATTRIBUTE_NODE( "RightTop", "Image", m_imagePath[3] );
-			XML_CASE_ATTRIBUTE_NODE( "Right", "Image", m_imagePath[4] );
-			XML_CASE_ATTRIBUTE_NODE( "RightBottom", "Image", m_imagePath[5] );
-			XML_CASE_ATTRIBUTE_NODE( "Bottom", "Image", m_imagePath[6] );
-			XML_CASE_ATTRIBUTE_NODE( "LeftBottom", "Image", m_imagePath[7] );
-			XML_CASE_ATTRIBUTE_NODE( "Left", "Image", m_imagePath[8] );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getBackgroundImage() const
-	{
-		return m_imagePath[0];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getLeftTopImage() const
-	{
-		return m_imagePath[1];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getTopImage() const
-	{
-		return m_imagePath[2];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getRightTopImage() const
-	{
-		return m_imagePath[3];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getRightImage() const
-	{
-		return m_imagePath[4];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getRightBottomImage() const
-	{
-		return m_imagePath[5];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getBottomImage() const
-	{
-		return m_imagePath[6];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getLeftBottomImage() const
-	{
-		return m_imagePath[7];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getLeftImage() const
-	{
-		return m_imagePath[8];
+        metadata->swap_WindowBackground_ResourceImageName( m_images[ResourceWindow_Background].resourceName );
+
+        metadata->swap_WindowBottom_ResourceImageName( m_images[ResourceWindow_Bottom].resourceName );
+        metadata->swap_WindowLeft_ResourceImageName( m_images[ResourceWindow_Left].resourceName );
+        metadata->swap_WindowLeftBottom_ResourceImageName( m_images[ResourceWindow_LeftBottom].resourceName );
+        metadata->swap_WindowLeftTop_ResourceImageName( m_images[ResourceWindow_LeftTop].resourceName );
+        metadata->swap_WindowRight_ResourceImageName( m_images[ResourceWindow_Right].resourceName );
+        metadata->swap_WindowRightBottom_ResourceImageName( m_images[ResourceWindow_RightBottom].resourceName );
+        metadata->swap_WindowRightTop_ResourceImageName( m_images[ResourceWindow_RightTop].resourceName );
+        metadata->swap_WindowTop_ResourceImageName( m_images[ResourceWindow_Top].resourceName );
+        
+        m_images[ResourceWindow_Bottom].offset = metadata->get_WindowBottom_Offset();
+        m_images[ResourceWindow_Left].offset = metadata->get_WindowLeft_Offset();
+        m_images[ResourceWindow_LeftBottom].offset = metadata->get_WindowLeftBottom_Offset();
+        m_images[ResourceWindow_LeftTop].offset = metadata->get_WindowLeftTop_Offset();
+        m_images[ResourceWindow_Right].offset = metadata->get_WindowRight_Offset();
+        m_images[ResourceWindow_RightBottom].offset = metadata->get_WindowRightBottom_Offset();
+        m_images[ResourceWindow_RightTop].offset = metadata->get_WindowRightTop_Offset();
+        m_images[ResourceWindow_Top].offset = metadata->get_WindowTop_Offset();
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceWindow::_compile()
 	{
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			if( m_imagePath[i].empty() == true )
+			m_images[i].resource = NULL;
+
+			if( m_images[i].resourceName.empty() == true )
 			{
-				continue;
+				if( i == ResourceWindow_Background )
+				{
+					continue;
+				}
 			}
 
-			const String & category = this->getCategory();
+			ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceImage>( m_images[i].resourceName );
+			
+			if( resource == 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceWindow: '%s' Image resource not found resource '%s'"
+					, m_name.c_str()
+					, m_images[i].resourceName.c_str() 
+					);
 
-			m_renderImage[i] = RenderEngine::hostage()
-				->loadTexture( category, m_imagePath[i] );
+				return false;
+			}
+
+			m_images[i].resource = resource;
 		}
 
 		return true;
@@ -106,20 +90,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceWindow::_release()
 	{
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			if( m_renderImage[i] != NULL )
+			if( m_images[i].resource != NULL )
 			{
-				Holder<RenderEngine>::hostage()
-					->releaseTexture( m_renderImage[i] );
-				m_renderImage[i] = NULL;
+				m_images[i].resource->decrementReference();
+				m_images[i].resource = NULL;
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceWindow::getImage( int _type )
+	ResourceImage * ResourceWindow::getResource( int _type )
 	{
-		return m_renderImage[_type];
+		ResourceImage * resource = m_images[_type].resource;
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & ResourceWindow::getOffset( int _type )
+	{
+		return m_images[_type].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

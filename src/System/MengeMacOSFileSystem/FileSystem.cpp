@@ -1,13 +1,8 @@
-#	include "Interface/LogSystemInterface.h"
-
 #	include "FileSystem.h"
 
 #	include "DataStream.h"
-#	include "MemoryDataStream.h"
 #	include "FileStreamDataStream.h"
 #	include "FileStreamOutStream.h"
-
-#	include "Menge/Utils.h"
 
 #include <sys/param.h>
 #include <sys/types.h>

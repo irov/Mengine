@@ -15,8 +15,6 @@
 
 namespace Menge
 {
-	class PosixInputStream;
-
 	class PosixFileSystem
 		: public FileSystemInterface
 	{
@@ -24,28 +22,25 @@ namespace Menge
 		PosixFileSystem();
 		~PosixFileSystem();
 
-		bool existFile( const String& _filename ) override;
-		InputStreamInterface* openInputStream( const String& _filename ) override;
-		void closeInputStream( InputStreamInterface* _stream ) override;
-		OutputStreamInterface* openOutputStream( const String& _filename ) override;
-		void closeOutputStream( OutputStreamInterface* _stream ) override;
-		void* openMappedFile( const String& _filename, int* _size ) override;
-		void closeMappedFile( void* _file ) override;
-		bool deleteFile( const String& _filename ) override;
-		bool createFolder( const String& _path ) override;
-		bool deleteFolder( const String& _path ) override;
+    public:
+        bool initialize( ServiceProviderInterface * _serviceProvider ) override;
+
+    public:
+		bool existFile( const String& _filename ) const override;
+
+    public:
+        FileInputStreamInterface* createInputStream() override;		
+        FileOutputStreamInterface* createOutputStream() override;
+
+    public:
+        MappedFileInputStreamInterface * createMappedInputStream();
+
+    public:
+        bool deleteFile( const FilePath & _filename ) override;
+        bool createFolder( const FilePath & _path ) override;
+        bool deleteFolder( const FilePath & _path ) override;
 
 	private:
-		typedef std::vector<PosixInputStream*> TInputStreamPool;
-		TInputStreamPool m_inputStreamPool;
-
-		struct FileMappingInfo
-		{
-			int hFile;
-			int size;
-		};
-		typedef std::map< void*, FileMappingInfo > TFileMappingMap;
-
-		TFileMappingMap m_fileMappingMap;
+        ServiceProviderInterface * m_serviceProvider;
 	};
 }	// namespace Menge

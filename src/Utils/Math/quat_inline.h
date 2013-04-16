@@ -6,41 +6,41 @@
 
 namespace mt
 {
-	MATH_INLINE quatf::quatf()
+	MATH_METHOD_INLINE quatf::quatf()
 	{}
 
-	MATH_INLINE quatf::quatf(float _w, float _x, float _y, float _z)
-		:w(_w)
-		,x(_x)
+	MATH_METHOD_INLINE quatf::quatf(float _w, float _x, float _y, float _z)
+		:x(_x)
 		,y(_y)
 		,z(_z)
+        ,w(_w)
 	{}
 
-	MATH_INLINE quatf::quatf(float _angle, const mt::vec3f & _v)
+	MATH_METHOD_INLINE quatf::quatf(float _angle, const mt::vec3f & _v)
 	{
 		*this = q_from_angle_axis(_v,_angle);
 	}
 
-	MATH_INLINE quatf::quatf(const quatf& _q)
-		:w(_q.w)
-		,x(_q.x)
+	MATH_METHOD_INLINE quatf::quatf(const quatf& _q)
+		:x(_q.x)
 		,y(_q.y)
 		,z(_q.z)
+        ,w(_q.w)
 	{}
 
-	MATH_INLINE float& quatf::operator[](int i)
+	MATH_METHOD_INLINE float& quatf::operator[](int i)
 	{
 		assert(i < 4);
 		return (&x)[i];
 	}
 
-	MATH_INLINE const float quatf::operator[](int i)const
+	MATH_METHOD_INLINE const float quatf::operator[](int i)const
 	{
 		assert(i < 4);
 		return (&x)[i];
 	}
 
-	MATH_INLINE quatf& quatf::operator=(const quatf& q)
+	MATH_METHOD_INLINE quatf& quatf::operator=(const quatf& q)
 	{
 		x = q.x;
 		y = q.y;
@@ -49,12 +49,12 @@ namespace mt
 		return *this;
 	}
 
-	MATH_INLINE float quatf::norm() const
+	MATH_METHOD_INLINE float quatf::norm() const
 	{
-		return x*x+y*y+z*z+w*w;
+		return x*x + y*y + z*z + w*w;
 	}
 
-	MATH_INLINE void quatf::multiply(const quatf& left, const vec3f& right)		
+	MATH_METHOD_INLINE void quatf::multiply(const quatf& left, const vec3f& right)		
 	{
 		float a,b,c,d;
 
@@ -69,7 +69,7 @@ namespace mt
 		z = d;
 	}
 
-	MATH_INLINE void quatf::rotate(vec3f & v) const						
+	MATH_METHOD_INLINE void quatf::rotate(vec3f & v) const						
 	{
 		quatf myInverse;
 		myInverse.x = -x;//*msq;
@@ -86,14 +86,14 @@ namespace mt
 		v.z =left.w*myInverse.z + myInverse.w*left.z + left.x*myInverse.y - myInverse.x*left.y;
 	}
 
-	MATH_INLINE float quatf::getPitch(bool _reprojectAxis) const
+	MATH_METHOD_INLINE float quatf::getPitch(bool _reprojectAxis) const
 	{
 		if (_reprojectAxis)
 		{
 			// pitch = atan2(localy.z, localy.y)
 			// pick parts of yAxis() implementation that we need
 			float fTx  = 2.f*x;
-			float fTy  = 2.f*y;
+			//float fTy  = 2.f*y;
 			float fTz  = 2.f*z;
 			float fTwx = fTx*w;
 			float fTxx = fTx*x;
@@ -110,7 +110,7 @@ namespace mt
 		}
 	}
 
-	MATH_INLINE float quatf::getYaw(bool _reprojectAxis) const
+	MATH_METHOD_INLINE float quatf::getYaw(bool _reprojectAxis) const
 	{
 		if (_reprojectAxis)
 		{
@@ -131,23 +131,23 @@ namespace mt
 		}
 	}
 
-	MATH_INLINE bool cmp_q_q(const quatf& _a, const quatf& _b, float eps)
+	MATH_FUNCTION_INLINE bool cmp_q_q(const quatf& _a, const quatf& _b, float eps)
 	{
 		return	(fabsf(_a.w - _b.w) < eps) && (fabsf(_a.x - _b.x) < eps) && (fabsf(_a.y - _b.y) < eps) && (fabsf(_a.z - _b.z) < eps);
 	}
 
-	MATH_INLINE bool operator==(const quatf& _a, const quatf& _b) 
+	MATH_FUNCTION_INLINE bool operator==(const quatf& _a, const quatf& _b) 
 	{
 		return cmp_q_q(_a, _b);
 	}
 
-	MATH_INLINE bool operator!=(const quatf& _a, const quatf& _b) 
+	MATH_FUNCTION_INLINE bool operator!=(const quatf& _a, const quatf& _b) 
 	{
 		return !operator==(_a, _b);
 	}
 
 	/* Addition */
-	MATH_INLINE void add_q_q(quatf&	_out, const quatf& _a,const quatf& _b)
+	MATH_FUNCTION_INLINE void add_q_q(quatf&	_out, const quatf& _a,const quatf& _b)
 	{
 		_out[0] = _a[0] + _b[0];
 		_out[1] = _a[1] + _b[1];
@@ -155,7 +155,7 @@ namespace mt
 		_out[3] = _a[3] + _b[3];
 	}
 
-	MATH_INLINE quatf operator+(const quatf& _a, const quatf& _b)
+	MATH_FUNCTION_INLINE quatf operator+(const quatf& _a, const quatf& _b)
 	{
 		quatf out;
 		add_q_q(out,_a,_b);
@@ -163,7 +163,7 @@ namespace mt
 	}
 
 	/*  Substr  */
-	MATH_INLINE void sub_q_q(quatf&	_out, const quatf& _a,const quatf& _b)
+	MATH_FUNCTION_INLINE void sub_q_q(quatf&	_out, const quatf& _a,const quatf& _b)
 	{
 		_out[0] = _a[0] - _b[0];
 		_out[1] = _a[1] - _b[1];
@@ -171,7 +171,7 @@ namespace mt
 		_out[3] = _a[3] - _b[3];
 	}
 
-	MATH_INLINE quatf operator-(const quatf& _a, const quatf& _b)
+	MATH_FUNCTION_INLINE quatf operator-(const quatf& _a, const quatf& _b)
 	{
 		quatf out;
 		sub_q_q(out,_a,_b);
@@ -179,7 +179,7 @@ namespace mt
 	}
 
 	/*	Mult  Q &  Q */
-	MATH_INLINE void mul_q_q(quatf& out, const quatf& _rhs, const quatf& in2)
+	MATH_FUNCTION_INLINE void mul_q_q(quatf& out, const quatf& _rhs, const quatf& in2)
 	{
 		out[0]=_rhs[0] * in2[0] - _rhs[1] * in2[1] - _rhs[2] * in2[2] - _rhs[3]*in2[3];
 		out[1]=_rhs[0] * in2[1] + _rhs[1] * in2[0] + _rhs[2] * in2[3] - _rhs[3]*in2[2];
@@ -187,7 +187,7 @@ namespace mt
 		out[3]=_rhs[0] * in2[3] + _rhs[3] * in2[0] + _rhs[1] * in2[2] - _rhs[2]*in2[1];
 	}
 
-	MATH_INLINE quatf operator*(const quatf& _a, const quatf& _b)
+	MATH_FUNCTION_INLINE quatf operator*(const quatf& _a, const quatf& _b)
 	{
 		quatf out;
 		mul_q_q(out,_a,_b);
@@ -195,7 +195,7 @@ namespace mt
 	}
 
 	/*	Mult  Q &  V */
-	MATH_INLINE void mul_q_v3(vec3f &out,const quatf& _rhs,const vec3f& _v)
+	MATH_FUNCTION_INLINE void mul_q_v3(vec3f &out,const quatf& _rhs,const vec3f& _v)
 	{
 		vec3f uv; 
 		vec3f uuv;
@@ -207,14 +207,14 @@ namespace mt
 		add_v3_v3(out,_v,uv);
 	};
 
-	MATH_INLINE vec3f operator*(const quatf& _rhs, const vec3f& _v)
+	MATH_FUNCTION_INLINE vec3f operator*(const quatf& _rhs, const vec3f& _v)
 	{
 		vec3f out;
 		mul_q_v3(out,_rhs,_v);
 		return out;
 	}
 
-	MATH_INLINE void scale_q_s(quatf &out, const quatf& _rhs, float _val)
+	MATH_FUNCTION_INLINE void scale_q_s(quatf &out, const quatf& _rhs, float _val)
 	{
 		out.w = _rhs.w * _val;
 		out.x = _rhs.x * _val;
@@ -222,38 +222,38 @@ namespace mt
 		out.z = _rhs.z * _val;
 	}
 
-	MATH_INLINE quatf operator*(const quatf& _rhs, float _val)
+	MATH_FUNCTION_INLINE quatf operator*(const quatf& _rhs, float _val)
 	{
 		quatf out;
 		scale_q_s(out,_rhs,_val);
 		return out;
 	}
 
-	MATH_INLINE quatf operator/(const quatf& _rhs, float _val)
+	MATH_FUNCTION_INLINE quatf operator/(const quatf& _rhs, float _val)
 	{
 		return operator*(_rhs, 1/_val);;
 	}
 
 	/*	Dot	Product			*/
-	MATH_INLINE float dot_q_q(const quatf& _a, const quatf& _b)
+	MATH_FUNCTION_INLINE float dot_q_q(const quatf& _a, const quatf& _b)
 	{
 		return  _a.w * _b.w + _a.x * _b.x + _a.y * _b.y + _a.z * _b.z;
 	}
 
 	/*	Normalize Vector*/
-	MATH_INLINE void norm_q(quatf& _out, const quatf& _rhs)
+	MATH_FUNCTION_INLINE void norm_q(quatf& _out, const quatf& _rhs)
 	{
 		_out = _rhs / _rhs.norm();
 	}
 
-	MATH_INLINE quatf norm_q(const quatf& _rhs)
+	MATH_FUNCTION_INLINE quatf norm_q(const quatf& _rhs)
 	{
 		quatf	out;
 		norm_q(out, _rhs);
 		return	out;
 	}
 
-	MATH_INLINE void norm_safe_q(quatf& out, const quatf& _rhs, float err)
+	MATH_FUNCTION_INLINE void norm_safe_q(quatf& out, const quatf& _rhs, float err)
 	{
 		float len = _rhs.norm();
 		if (len > err)
@@ -266,7 +266,7 @@ namespace mt
 		}
 	}
 
-	MATH_INLINE quatf norm_safe_q(const quatf& _rhs)
+	MATH_FUNCTION_INLINE quatf norm_safe_q(const quatf& _rhs)
 	{
 		quatf out;
 		norm_safe_q(out, _rhs);
@@ -274,7 +274,7 @@ namespace mt
 	}
 
 	/* ohter stuff */
-	MATH_INLINE void q_from_angle_axis(quatf& out, const vec3f& _rhs, float _val)
+	MATH_FUNCTION_INLINE void q_from_angle_axis(quatf& out, const vec3f& _rhs, float _val)
 	{
 		float hangle = 0.01745329251994329547f * _val * 0.5f;
 		float fsin = sinf(hangle);
@@ -287,14 +287,14 @@ namespace mt
 		out.z = fsin * _rhs[2] * i_length;
 	};
 
-	MATH_INLINE quatf q_from_angle_axis(const vec3f& _rhs, float _val)
+	MATH_FUNCTION_INLINE quatf q_from_angle_axis(const vec3f& _rhs, float _val)
 	{
 		quatf out;
 		q_from_angle_axis(out,_rhs,_val);
 		return out;
 	};
 
-	MATH_INLINE void inverse_q(quatf& _out, const quatf& _rhs)
+	MATH_FUNCTION_INLINE void inverse_q(quatf& _out, const quatf& _rhs)
 	{
 		float norm = _rhs.norm();
 
@@ -312,14 +312,14 @@ namespace mt
 		}
 	}
 
-	MATH_INLINE quatf inverse_q(const quatf& _rhs)
+	MATH_FUNCTION_INLINE quatf inverse_q(const quatf& _rhs)
 	{
 		quatf out;
 		inverse_q(out,_rhs);
 		return	out;
 	};
 
-	MATH_INLINE void exp_q(quatf& _out, const quatf& _rhs)
+	MATH_FUNCTION_INLINE void exp_q(quatf& _out, const quatf& _rhs)
 	{
 		/* 
 			If q = A*(x*i+y*j+z*k) where (x,y,z) is unit length, then
@@ -347,14 +347,14 @@ namespace mt
 		}
 	};
 
-	MATH_INLINE quatf exp_q(const quatf& _rhs)
+	MATH_FUNCTION_INLINE quatf exp_q(const quatf& _rhs)
 	{
 		quatf out;
 		exp_q(out,_rhs);
 		return out;
 	};
 
-	MATH_INLINE void log_q(quatf& _out, const quatf& _rhs)
+	MATH_FUNCTION_INLINE void log_q(quatf& _out, const quatf& _rhs)
 	{
 		/*
 			If q = cos(A)+sin(A)*(x*i+y*j+z*k) where (x,y,z) is unit length, then
@@ -382,14 +382,14 @@ namespace mt
 		_out.z = _rhs.z;
 	};
 
-	MATH_INLINE quatf log_q(const quatf& _rhs)
+	MATH_FUNCTION_INLINE quatf log_q(const quatf& _rhs)
 	{
 		quatf	out;
 		log_q(out,_rhs);
 		return	out;
 	};
 
-	MATH_INLINE void q_from_rot_m3(quatf& out, const mat3f& _rhs)
+	MATH_FUNCTION_INLINE void q_from_rot_m3(quatf& out, const mat3f& _rhs)
 	{
 		float ftrace = _rhs.v0.x+_rhs.v1.y+_rhs.v2.z;
 		float froot;
@@ -429,14 +429,14 @@ namespace mt
 		}
 	};
 
-	MATH_INLINE quatf q_from_rot_m3(const mat3f& _rhs)
+	MATH_FUNCTION_INLINE quatf q_from_rot_m3(const mat3f& _rhs)
 	{
 		quatf out;
 		q_from_rot_m3(out,_rhs);
 		return out;
 	};
 
-	MATH_INLINE void q_from_rot_m4(quatf& out, const mat4f& _rhs)
+	MATH_FUNCTION_INLINE void q_from_rot_m4(quatf& out, const mat4f& _rhs)
 	{
 		float ftrace = _rhs.v0.x +_rhs.v1.y+_rhs.v2.z;
 		float froot;
@@ -476,14 +476,14 @@ namespace mt
 		}
 	};
 
-	MATH_INLINE quatf q_from_rot_m4(const mat4f& _rhs)
+	MATH_FUNCTION_INLINE quatf q_from_rot_m4(const mat4f& _rhs)
 	{
 		quatf out;
 		q_from_rot_m4(out,_rhs);
 		return out;
 	};
 
-	MATH_INLINE void q_to_rot_m3(mat3f& out, const quatf& _rhs)
+	MATH_FUNCTION_INLINE void q_to_rot_m3(mat3f& out, const quatf& _rhs)
 	{
 		float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 		x2 = _rhs.x + _rhs.x;
@@ -498,14 +498,14 @@ namespace mt
 		out[2][0]=xz-wy;			out[2][1]=yz+wx;			out[2][2]=1.0f-(xx+yy);
 	}
 
-	MATH_INLINE mat3f q_to_rot_m3(const quatf& _rhs)
+	MATH_FUNCTION_INLINE mat3f q_to_rot_m3(const quatf& _rhs)
 	{
 		mat3f out;
 		q_to_rot_m3(out,_rhs);
 		return out;
 	}
 
-	MATH_INLINE void q_from_axes(quatf& out, const vec3f& _x, const vec3f& _y, const vec3f& _z)
+	MATH_FUNCTION_INLINE void q_from_axes(quatf& out, const vec3f& _x, const vec3f& _y, const vec3f& _z)
 	{
 		//mat3f rot(
 		//	vec3f(_x.x,_y.x,_z.x),
@@ -521,14 +521,14 @@ namespace mt
 		q_from_rot_m3(out,rot);
 	}
 
-	MATH_INLINE quatf q_from_axes(const vec3f& _x, const vec3f& _y, const vec3f& _z)
+	MATH_FUNCTION_INLINE quatf q_from_axes(const vec3f& _x, const vec3f& _y, const vec3f& _z)
 	{
 		quatf out;
 		q_from_axes(out,_x,_y,_z);
 		return out;
 	}
 
-	MATH_INLINE void q_to_angle_axis(vec3f& _out, float& _out1, const quatf& _rhs)
+	MATH_FUNCTION_INLINE void q_to_angle_axis(vec3f& _out, float& _out1, const quatf& _rhs)
 	{
 		float fsqrlen = _rhs[1]*_rhs[1]+_rhs[2]*_rhs[2]+_rhs[3]*_rhs[3];
 		if (fsqrlen > 0.0f)
@@ -548,20 +548,20 @@ namespace mt
 		}
 	}
 
-	MATH_INLINE vec3f q_to_angle_axis(float& _out, const quatf& _rhs)
+	MATH_FUNCTION_INLINE vec3f q_to_angle_axis(float& _out, const quatf& _rhs)
 	{
 		vec3f out;
 		q_to_angle_axis(out,_out,_rhs);
 		return	out;
 	}
 
-	MATH_INLINE void rotate_q(quatf& _out, const vec3f& axis, float angle)
+	MATH_FUNCTION_INLINE void rotate_q(quatf& _out, const vec3f& axis, float angle)
 	{
 		quatf q = q_from_angle_axis(axis,angle);
 		_out = _out * q;
 	}
 
-	MATH_INLINE void qpos_to_rot_m4(mat4f& out, const quatf& _rhs, const vec3f& _pos)
+	MATH_FUNCTION_INLINE void qpos_to_rot_m4(mat4f& out, const quatf& _rhs, const vec3f& _pos)
 	{
 		float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 		x2 = _rhs.x + _rhs.x;
@@ -577,7 +577,7 @@ namespace mt
 		out[3][0] = _pos.x;				out[3][1] = _pos.y;			out[3][2] = _pos.z;			out[3][3] = 1.0f;
 	}
 
-	MATH_INLINE mat4f qpos_to_rot_m4(const quatf& _rhs, const vec3f& _pos)
+	MATH_FUNCTION_INLINE mat4f qpos_to_rot_m4(const quatf& _rhs, const vec3f& _pos)
 	{
 		mat4f	out;
 		qpos_to_rot_m4(out,_rhs,_pos);

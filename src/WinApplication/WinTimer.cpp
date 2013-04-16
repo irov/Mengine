@@ -6,7 +6,7 @@ namespace Menge
 	WinTimer::WinTimer()
 		: m_timerMask()
 	{
-		reset();
+		this->reset();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinTimer::reset()
@@ -65,7 +65,7 @@ namespace Menge
 
 		HANDLE thread = GetCurrentThread();
 
-		DWORD oldMask = SetThreadAffinityMask(thread, m_timerMask);
+		DWORD_PTR oldMask = SetThreadAffinityMask(thread, m_timerMask);
 
 		QueryPerformanceCounter(&curTime);
 
@@ -87,35 +87,13 @@ namespace Menge
 		}
 
 		m_lastTime = newTime;
+
 		return newTicks;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned long WinTimer::getMicroseconds()
 	{
-		LARGE_INTEGER curTime;
-
-		HANDLE thread = GetCurrentThread();
-
-		DWORD oldMask = SetThreadAffinityMask(thread, m_timerMask);
-
-		QueryPerformanceCounter(&curTime);
-
-		SetThreadAffinityMask(thread, oldMask);
-
-		LONGLONG newTime = curTime.QuadPart - m_startTime.QuadPart;
-
-		unsigned long newTicks = (unsigned long) (1000 * newTime / m_frequency.QuadPart);
-
-		unsigned long check = GetTickCount() - m_startTick;
-		signed long msecOff = (signed long)(newTicks - check);
-		if (msecOff < -100 || msecOff > 100)
-		{
-			LONGLONG adjust = (std::min)(msecOff * m_frequency.QuadPart / 1000, newTime - m_lastTime);
-			m_startTime.QuadPart += adjust;
-			newTime -= adjust;
-		}
-
-		m_lastTime = newTime;
+		LONGLONG newTime = this->getMilliseconds();
 
 		unsigned long newMicro = (unsigned long) (1000000 * newTime / m_frequency.QuadPart);
 

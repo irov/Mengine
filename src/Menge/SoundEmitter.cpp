@@ -1,25 +1,25 @@
 #	include "SoundEmitter.h"
 
-#	include "XmlEngine.h"
-#	include "BinParser.h"
-
 #	include "ResourceSound.h"
 
-#	include "ResourceManager.h"
+#	include "Interface/ResourceInterface.h"
 
 #	include "Logger/Logger.h"
 
-#	include "SoundEngine.h"
+//#	include "SoundEngine.h"
+
+#	include <pybind/pybind.hpp>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
-		: m_resource(0)
-		, m_sourceID( 0 )
+		: m_resource(NULL)
+        , m_soundBuffer(NULL)
+		, m_sourceID(0)
 		, m_isHeadMode(false)
-		, m_looped( false )
-		, m_playing( false )
+		, m_onSoundPauseEvent(false)
+		, m_onSoundStopEvent(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -42,30 +42,6 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::loader( XmlElement * _xml )
-	{
-		Node::loader(_xml);
-
-		XML_SWITCH_NODE(_xml)
-		{
-			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "HeadMode", "Value", m_isHeadMode );
-			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looped );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::parser( BinParser * _parser )
-	{
-		Node::parser(_parser);
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
-			BIN_CASE_ATTRIBUTE( Protocol::HeadMode_Value, m_isHeadMode );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looped );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_compile()
 	{
 		if( Node::_compile() == false )
@@ -73,180 +49,261 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = 
-			ResourceManager::hostage()
-			->getResourceT<ResourceSound>( m_resourcename );
+		m_resource = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceT<ResourceSound>( m_resourceName );
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Error: sound emitter '%s' can't get resource '%s'"
-				, getName().c_str()
-				, m_resourcename.c_str()
+			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' can't get resource '%s'"
+				, this->getName().c_str()
+				, m_resourceName.c_str()
 				);
 
 			return false;
 		}
 
-		SoundBufferInterface * soundBuffer = m_resource->get();
+		m_soundBuffer = m_resource->createSoundBuffer();
 
-		m_sourceID = SoundEngine::hostage()
-			->createSoundSource( 
-			m_isHeadMode
-			, soundBuffer
-			, m_resource->isStreamable()
-			);
+        if( m_soundBuffer == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' sound buffer not create"
+                , this->getName().c_str() 
+                );
+
+            return false;
+        }
+
+		bool streamable = m_resource->isStreamable();
+
+		m_sourceID = SOUND_SERVICE(m_serviceProvider)
+			->createSoundSource( m_isHeadMode, m_soundBuffer, EST_SOUND, streamable );
 
 		if( m_sourceID == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: sound emitter '%s' not compiled"
-				, getName().c_str() 
+			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: sound emitter '%s' not compiled"
+				, this->getName().c_str() 
 				);
 
 			return false;
 		}
 
-		SoundEngine::hostage()
+		SOUND_SERVICE(m_serviceProvider)
 			->setSourceListener( m_sourceID, this );
 
-		SoundEngine::hostage()
-			->setLooped( m_sourceID, m_looped );
+		SOUND_SERVICE(m_serviceProvider)
+			->setLoop( m_sourceID, m_loop );
 
-		setVolume( m_resource->getDefaultVolume() );
+		float volume = m_resource->getDefaultVolume();
+		this->setVolume( volume );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
-	{
-		SoundEngine::hostage()
+	{ 
+		SOUND_SERVICE(m_serviceProvider)
 			->releaseSoundSource( m_sourceID );
 
-		ResourceManager::hostage()
-			->releaseResource( m_resource );
-
 		m_sourceID = 0;
-		m_resource = NULL;
-		m_playing = false;
+
+		if( m_resource != NULL )
+		{
+            if( m_soundBuffer != NULL )
+            {
+                m_resource->releaseSoundBuffer( m_soundBuffer );            
+            }
+
+			m_resource->decrementReference();
+			m_resource = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setSoundResource( const String& _name )
+	void SoundEmitter::setSoundResource( const ConstString& _name )
 	{
-		if( m_resourcename == _name )
+		if( m_resourceName == _name )
 		{
 			return;
 		}
 
-		m_resourcename = _name;
+		m_resourceName = _name;
 
-		recompile();
+		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenPaused()
+	void SoundEmitter::listenSoundNodePaused()
 	{
-		m_playing = false;
-		callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbedding() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenStopped()
-	{
-		m_playing = false;
-		callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbedding() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::play()
-	{
-		if( isActivate() == false )
+		if( m_onSoundPauseEvent == true )
 		{
-			return;
+			this->callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbed() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::listenSoundNodeStopped()
+	{
+		if( m_onSoundStopEvent )
+		{
+			this->end();
+			//this->callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEmitter::_play( float _time )
+	{
+        (void)_time;
+
+		if( this->isActivate() == false )
+		{
+			return false;
 		}
 
-		m_playing = true;
-		if( m_sourceID != 0 )
+		if( m_sourceID == 0 )
 		{
-			Holder<SoundEngine>::hostage()
-				->play( m_sourceID );
+			return false;
 		}
 
-		return;
+
+		if( SOUND_SERVICE(m_serviceProvider)
+			->play( m_sourceID ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_play %s invalid play [%d] resource %s"
+                , this->getName().c_str()
+                , m_sourceID
+                , m_resourceName.c_str()
+                );
+
+            return false;
+        }
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::pause()
+	bool SoundEmitter::_restart( float _time, size_t _enumerator )
 	{
-		m_playing = false;
-		if( m_sourceID != 0 )
-		{
-			Holder<SoundEngine>::hostage()
-				->pause( m_sourceID );
-		}
-		return;
+        (void)_time;
+        (void)_enumerator;
+		//ToDo
+
+		return false;
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//void SoundEmitter::pause()
+	//{
+	//	m_playing = false;
+	//	if( m_sourceID != 0 )
+	//	{
+	//		SoundEngine::get()
+	//			->pause( m_sourceID );
+	//	}
+	//	return;
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::stop()
+	void SoundEmitter::_stop( size_t _enumerator )
 	{
-		m_playing = false;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			SOUND_SERVICE(m_serviceProvider)
 				->stop( m_sourceID );
 		}
-		return;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::isPlaying()
-	{
-		return m_playing;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setVolume( float _volume )
-	{
-		if( m_sourceID != 0 )
-		{
-			Holder<SoundEngine>::hostage()
-				->setVolume( m_sourceID, _volume );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float SoundEmitter::getVolume()
-	{
-		if( m_sourceID != 0 )
-		{
-			return Holder<SoundEngine>::hostage()
-				->getVolume( m_sourceID );
-		}
-		return 0.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setLooped( bool _loop )
-	{
-		m_looped = _loop;
-		if( m_sourceID != 0 )
-		{
-			Holder<SoundEngine>::hostage()
-				->setLooped( m_sourceID, m_looped );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::isLooping()
-	{
-		return m_looped;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float SoundEmitter::getLengthMs()
-	{
-		if( m_sourceID != 0 )
-		{
-			return Holder<SoundEngine>::hostage()
-				->getLengthMs( m_sourceID );
-		}
-		return 0.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_setListener( PyObject * _listener )
-	{
-		Node::_setListener( _listener );
 
-		Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), _listener );
-		Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), _listener );
+		EVENTABLE_CALL(this, EVENT_SOUND_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_end( size_t _enumerator )
+	{
+		if( m_sourceID != 0 )
+		{
+			SOUND_SERVICE(m_serviceProvider)
+				->stop( m_sourceID );
+		}
+
+		EVENTABLE_CALL(this, EVENT_SOUND_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_setVolume( float _volume )
+	{
+        if( fabsf( m_volume - _volume ) < 0.00001f )
+        {
+            return;
+        }
+
+        m_volume = _volume;
+
+		if( m_sourceID == 0 )
+		{
+			return;
+		}        
+
+		if( SOUND_SERVICE(m_serviceProvider)
+			->setSourceVolume( m_sourceID, m_volume ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::setVolume invalid %s:%d %f"
+				, m_resourceName.c_str()
+                , m_sourceID
+                , m_volume
+				);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEmitter::_getVolume() const 
+	{
+        return m_volume;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_setLoop( bool _value )
+	{
+        (void)_value;
+
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+		
+		SOUND_SERVICE(m_serviceProvider)
+			->setLoop( m_sourceID, m_loop );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEmitter::getLengthMs() const
+	{
+		if( m_sourceID == 0 )
+		{
+			return 0.f;
+		}
+
+		float lengthMs = SOUND_SERVICE(m_serviceProvider)
+			->getLengthMs( m_sourceID );
+	
+		return lengthMs;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_setEventListener( PyObject * _listener )
+	{
+		Node::_setEventListener( _listener );
+
+		this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener, &m_onSoundPauseEvent );
+		this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener, &m_onSoundStopEvent );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEmitter::_interrupt( size_t _enumerator )
+	{
+        (void)_enumerator;
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_setTiming( float _timing )
+	{
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+
+		SOUND_SERVICE(m_serviceProvider)
+			->setPosMs( m_sourceID, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,15 +1,19 @@
 #	pragma once
 
-#	include "ResourceReference.h"
+#	include "Kernel/ResourceReference.h"
 
 #	include "Math/vec4.h"
+#	include "Core/ColourValue.h"
+
 #	include <vector>
 #	include <map>
 
 namespace Menge
 {
-	class Texture;
+	class RenderTextureInterface;
 	class DataStreamInterface;
+	class ResourceGlyph;
+	class Glyph;
 
 	//! ResourceFont - ресурс-файл, который содержит изображение, список uv - координат и коэффициентов пропорциональности. 
 
@@ -25,99 +29,56 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceFont )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourceFont();
 
 	public:
-		//! Возвращает uv - координаты глифа.
-		/*!
-		\param _id индекс глифа
-		\return uv - координаты глифа
-		*/
-		const mt::vec4f & getUV( unsigned int _id ) const;
-
-		//! Возвращает отношение ширины к высоте глифа.
-		/*!
-		\param _id индекс глифа
-		\return коэффициент пропорциональности глифа
-		*/
-		float getCharRatio( unsigned int _id ) const;
-
-		//! Возвращает изображение для шрифта.
-		/*!
-		\return изображение
-		*/
-		Texture* getImage();
-
-		//! Возвращает аутлан - изображение для шрифта.
-		/*!
-		\return изображение
-		*/
-		Texture* getOutlineImage();
-		float getInitSize() const;
-
-		const String& getFontdefPath() const;
-		const String& getImagePath() const;
-		const String& getOutlineImagePath() const;
-
-		const mt::vec2f& getOffset( unsigned int _char ) const;
-		const mt::vec2f& getSize( unsigned int _char ) const;
+		const ResourceGlyph * getResourceGlyph() const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		bool hasGlyph( WChar _id, const Glyph ** _glyph ) const;
+		const Glyph * getGlyph( WChar _id ) const;
+
+		const RenderTextureInterface * getTexture() const;
+		const RenderTextureInterface * getTextureImage() const;
+		const mt::vec4f&  getTextureUV() const;
+
+		const FilePath & getImagePath() const;
+		const FilePath & getOutlineImagePath() const;
+
+		const ColourValue & getColor() const;
+
+	public:
+		bool _loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 	private:
+		void setImagePath_( const FilePath & _path );
+		void setOutlineImagePath_( const FilePath & _path );
+		void updateTextureUV_();
 
-		void setFontdefPath_( const String& _path );
-		void setImagePath_( const String& _path );
-		void setOutlineImagePath_( const String& _path );
-
-		void setGlyph( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size );
-		String getFontDir( const String& _fontName );
-
-		bool parseFontdef( DataStreamInterface * _stream );
-		bool parseAttribute( const String& name, const String& params );
-
-		void loaderFontdef_( XmlElement* _xml );
-		void addGlyph_( const String& _glyph, const String& _rect, const String& _offset, int _width );
 	private:
+		ConstString m_resourceGlyphName;
+		ResourceGlyph * m_resourceGlyph;
+		
+		FilePath m_imageFile;
+		ConstString m_imageCodec;
 
-		struct Glyph
-		{
-			Glyph( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size )
-				: id( _id )
-				, uv( _uv )
-				, offset( _offset )
-				, ratio( _ratio )
-				, size( _size )
-			{}
-			unsigned int id;
-			mt::vec4f uv;
-			mt::vec2f offset;
-			float ratio;
-			mt::vec2f size;
-		};
+		//String m_fontdefPath;
 
-		typedef std::map<unsigned int, Glyph> TMapGlyph;
-		TMapGlyph	m_glyphs;
+		FilePath m_outlineImageFile;
+		ConstString m_outlineImageCodec;
 
-		String m_fontdefFile;
-		String m_imageFile;
-		String m_outlineImageFile;
-
-		float m_whsRatio;
-		float m_initSize;
 		float m_textureRatio;
 
-		Texture* m_image;
-		Texture* m_outline;
+		mt::vec4f m_textureUV;
+
+		RenderTextureInterface* m_texture;
+		RenderTextureInterface* m_outline;
 		mt::vec2f m_imageInvSize;
+
+		ColourValue m_color;
 	};
 }

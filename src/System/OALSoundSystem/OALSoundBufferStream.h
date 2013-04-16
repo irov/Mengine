@@ -16,33 +16,34 @@ namespace Menge
 		: public OALSoundBuffer
 	{
 	public:
-		OALSoundBufferStream( OALSoundSystem * _soundSystem );
+		OALSoundBufferStream( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
 		~OALSoundBufferStream();
 
 	public:
 		bool load( SoundDecoderInterface * _soundDecoder ) override;
 
+	public:
 		void play( ALenum _source, bool _looped, float _pos ) override;
 		void pause( ALenum _source ) override;
 		void stop( ALenum _source ) override;
-		float getTimePos( ALenum _source ) override;
+		bool getTimePos( ALenum _source, float & _pos ) const override;
 
 	public:
-		void updateStream_();
 		void update() override;
-
+		
 	private:
 		SoundDecoderInterface* m_soundDecoder;
-		ALuint m_alBufferName2;
-		std::size_t m_bufferSize;
+		ALuint m_alBufferId2;
+		size_t m_bufferSize;
 
-		ALuint m_source;
-		bool m_looped;
+		ALuint m_sourceId;
 		unsigned char* m_dataBuffer;
 
 		bool m_updating;
+
+	private:
 		void setUpdating( bool _updating );
-		bool getUpdating();
+		bool getUpdating() const;
 	};
 	
 }	// namespace Menge

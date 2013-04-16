@@ -62,30 +62,30 @@ namespace Menge
 		// Pixel Format
 		int format;
 		// row pitch
-		std::size_t rowPitch;
+		size_t rowPitch;
 
 		// slice pitch
-		std::size_t slicePitch;
+		size_t slicePitch;
 
-		std::size_t left, top, right, bottom, front, back;
+		size_t left, top, right, bottom, front, back;
 	};
 
 	class HardwarePixelBufferInterface
 	{
 	public:
 		/// Gets the width of this buffer
-		virtual std::size_t getWidth() const = 0;
+		virtual size_t getWidth() const = 0;
 		/// Gets the height of this buffer
-		virtual std::size_t getHeight() const = 0;
+		virtual size_t getHeight() const = 0;
 		/// Gets the depth of this buffer
-		virtual std::size_t getDepth() const = 0;
+		virtual size_t getDepth() const = 0;
 		/// Gets the native pixel format of this buffer
 		virtual int getFormat() const = 0;
 
 		virtual void blit( const HardwarePixelBufferInterface* _src ) = 0; 
 
 		virtual void blitFromMemory( const LockData& _src ) = 0;
-		virtual void blitFromMemory( const LockData& _src, const std::size_t* _box ) = 0;
+		virtual void blitFromMemory( const LockData& _src, const size_t* _box ) = 0;
 		//virtual void blitToMemory( const float* _box, const LockData& _dst ) = 0;
 	};
 }

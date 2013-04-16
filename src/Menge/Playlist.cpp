@@ -1,9 +1,8 @@
 #	include "Playlist.h"
 
-#	include "ResourcePlaylist.h"
-
 #	include "ResourceManager.h"
 
+#   include "Logger/Logger.h"
 #	include "Core/String.h"
 
 #	include <algorithm>
@@ -13,41 +12,53 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Playlist::Playlist( ResourcePlaylist * _resource )
-		: m_loop( false )
-		, m_oneTrackPlayed( false )
-		, m_oneTrackLooped( false )
-		, m_playlistResource( _resource )
-		, m_category("")
+	Playlist::Playlist( ServiceProviderInterface * _serviceProvider )
+		: m_serviceProvider(_serviceProvider)
+        , m_loop(false)
+		, m_playlistResource(NULL)    
+		, m_oneTrackPlayed(false)
+		, m_oneTrackLooped(false)
 	{
-		if( m_playlistResource ) 
-		{
-			setPlaylistResource( m_playlistResource );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::~Playlist()
 	{
-		Holder<ResourceManager>::hostage()->releaseResource( m_playlistResource );
+		if( m_playlistResource != NULL )
+		{
+			m_playlistResource->decrementReference();
+			m_playlistResource = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )
+	bool Playlist::initialize( const ConstString & _playlistResource )
 	{
+        m_playlistResource = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceT<ResourcePlaylist>( _playlistResource );
+
+        if( m_playlistResource == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Playlist::setPlaylistResource no found playlist with name '%s'"
+                , _playlistResource.c_str()
+                );
+
+            return false;
+        }
+
 		m_category = m_playlistResource->getCategory();
 		
-		const std::vector<String>& tracks = m_playlistResource->getTracks();
+		const TVectorTrackDesc & tracks = m_playlistResource->getTracks();
 
-		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
+		m_tracks.assign( tracks.begin(), tracks.end() );
 
 		bool is_looped = m_playlistResource->getLoop();
 		
-		setLooped( is_looped );
+		this->setLooped( is_looped );
 
 		bool is_shuffled = m_playlistResource->getShuffle();
 
 		if( is_shuffled == true )
 		{
-			shuffle();
+			this->shuffle();
 		}
 
 		return true;
@@ -92,23 +103,21 @@ namespace Menge
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Playlist::getTrack() const
+	const TrackDesc * Playlist::getTrack() const
 	{
 		if( m_track == m_tracks.end() )
 		{
-			return Utils::emptyString();
+			return 0;
 		}
 
-		return *m_track;
+		return &*m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
 	{
-		srand( (unsigned)std::time( NULL ) );
-
 		std::random_shuffle( m_tracks.begin(), m_tracks.end() );
 
-		first();
+		this->first();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::previous()
@@ -126,38 +135,36 @@ namespace Menge
 		m_track = m_tracks.end() - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t	 Playlist::numTracks() const
+	size_t	 Playlist::numTracks() const
 	{
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Playlist::getTrackByIndex( std::size_t _index )
+	const TrackDesc * Playlist::getTrackByIndex( size_t _index )
 	{
 		if( _index >= m_tracks.size() )
 		{
-			return Utils::emptyString();
+			return 0;
 		}
 
-		return m_tracks[_index];
+		return &m_tracks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::setTrack( std::size_t _index )
+	void Playlist::setTrack( size_t _index )
 	{
-		const String & _name = m_tracks[_index];
-
-		TVectorString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
-
-		if( it == m_tracks.end() )
+		if( _index >= m_tracks.size() )
 		{
-			first();
+			this->first();
 		}
-
-		m_oneTrackPlayed = true;
-
-		m_track = it;
+		else
+		{
+			m_track = m_tracks.begin();
+			std::advance( m_track, _index );
+			m_oneTrackPlayed = true;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Playlist::getCategory() const
+	const ConstString & Playlist::getCategory() const
 	{
 		return m_category;
 	}

@@ -1,107 +1,88 @@
 #	include "ParticleEmitter.h" 
 
-#	include "XmlEngine.h"
-#	include "BinParser.h"
-
 #	include "Logger/Logger.h"
-#	include "RenderEngine.h"
 
-#	include "Material.h"
+#   include "Interface/RenderSystemInterface.h"
+#   include "Interface/EventInterface.h"
+#   include "Interface/ApplicationInterface.h"
+
 #	include "Camera2D.h"
 
 #	include "Player.h"
 
-#	include "Application.h"
+#	include "Kernel/Scene.h"
+#	include "Kernel/Layer.h"
 
-#	include "ParticleEngine.h"
+#   include "Interface/ParticleSystemInterface.h"
 
 #	include "ResourceEmitterContainer.h"
+#	include "ResourceImageDefault.h"
+#	include "ResourceHIT.h"
 
-#	include "ResourceManager.h"
+#   include "Interface/ResourceInterface.h"
+
+#   include "Interface/AlphaChannelInterface.h"
+
+#	include "Sprite.h"
+#	include "Consts.h"
 
 #	include "math/box2.h"
-#	include "Texture.h"
+#	include "math/angle.h"
+//#	include "math/triangulation.h"
+
+#   include "pybind/pybind.hpp"
 
 namespace	Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    static const size_t maxParticleCount = 2000;
+    static const size_t maxMeshCount = 100;
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::ParticleEmitter()
-		: m_interface( 0 )
-		, m_resource( 0 )
-		, m_autoPlay( false )
-		, m_looped( false )
-		, m_onEmitterEndEvent( false )
-		, m_onEmitterStopEvent( false )
-		, m_startPosition( 0.0f )
-		, m_emitterRelative( false )
-		, m_checkViewport( NULL )
-		, m_playing( false )
+		: m_interface(0)
+		, m_resource(0)
+		, m_startPosition(0.f)
+        , m_randomMode(false)
+		, m_vertices(NULL)
+		, m_verticesCount(0)
+        , m_emitterRelative(false)
+        , m_emitterPosition(0.f, 0.f, 0.f)
+        , m_emitterTranslateWithParticle(true)
+        , m_emitterChangeRendering(true)
+        , m_emitterChangeRenderingExtra(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::~ParticleEmitter()
 	{
-	}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_setEventListener( PyObject * _listener )
+	{
+		Node::_setEventListener( _listener );
+
+		this->registerEvent( EVENT_PARTICLE_EMITTER_END, ("onParticleEmitterEnd"), _listener );
+		this->registerEvent( EVENT_PARTICLE_EMITTER_RESTART, ("onParticleEmitterRestart"), _listener );
+	}
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_activate()
 	{
-		//bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
-		if( /*!enabled ||*/ Node::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}
 
-		if( m_looped )
-		{
-			m_interface->setLooped( m_looped );
-		}
-
-		if( m_autoPlay )
-		{
-			m_playing = true;
-			m_interface->play();
-			m_interface->update( m_startPosition );
-			//m_interface->setLeftBorder( m_startPosition/* 1000.0f */);
-			//play();
-		}
-
-
+        m_emitterChangeRendering = true;
+        m_emitterChangeRenderingExtra = true;
+        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_deactivate()
 	{
 		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::loader( XmlElement * _xml )
-	{
-		Node::loader( _xml );
 
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "Emitter", "Name", m_emitterName );
-			XML_CASE_ATTRIBUTE_NODE( "AutoPlay", "Value", m_autoPlay );
-			XML_CASE_ATTRIBUTE_NODE( "Looped", "Value", m_looped );
-			XML_CASE_ATTRIBUTE_NODE( "StartPosition", "Value", m_startPosition );
-			XML_CASE_ATTRIBUTE_NODE( "EmitterRelative", "Value", m_emitterRelative );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::parser( BinParser * _parser )
-	{
-		Node::parser( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
-			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, m_autoPlay );
-			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_looped );
-			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
-			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
-		}
+		this->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_compile()
@@ -111,37 +92,44 @@ namespace	Menge
 			return false;
 		}
 
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceEmitterContainer>( m_resourcename );
+        ////// it`s not very pretty
+        if( m_emitterName.empty() == true )
+        {
+            return false;
+        }
+
+		m_resource = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceT<ResourceEmitterContainer>( m_resourceName );
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't open resource file '%s'"
-				, m_resourcename.c_str() 
+			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' can't open resource file '%s'"
+				, m_name.c_str()
+				, m_resourceName.c_str() 
 				);
 
 			return false;
 		}
+		
+		EmitterContainerInterface * container = m_resource->getContainer();
 
-		const EmitterContainerInterface * m_container = m_resource->getContainer();
-
-		if( m_container == NULL )
+		if( container == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't open container file '%s'"
-				, m_resourcename.c_str() 
+			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' can't open container file '%s'"
+				, m_name.c_str()
+				, m_resourceName.c_str() 
 				);
 
 			return false;
 		}
 
-		m_interface = Holder<ParticleEngine>::hostage()
-			->createEmitterFromContainer( m_emitterName, m_container );
+		m_interface = container->createEmitter( m_emitterName );
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't create emitter source '%s' - '%s'"
-				, m_resourcename.c_str()
+			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
+				, m_name.c_str()
+				, m_resourceName.c_str()
 				, m_emitterName.c_str() 
 				);
 
@@ -150,80 +138,42 @@ namespace	Menge
 
 		m_interface->setListener( this );
 
-		// reset editor position
-		if( m_emitterRelative == false )
+		m_interface->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+
+		const RenderMaterialGroup * mg_intensive = RENDER_SERVICE(m_serviceProvider)
+			->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
+
+		const RenderMaterialGroup * mg_nonintensive = RENDER_SERVICE(m_serviceProvider)
+			->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleBlend) );
+
+		m_materials[0] = mg_intensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_materials[1] = mg_nonintensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
+
+		if( m_emitterImageName.empty() == false )
 		{
-			const mt::vec2f& pos = getWorldPosition();
-			m_interface->setPosition( pos.x, pos.y );
-			const mt::vec2f& dir = getWorldDirection();
-			float rads = ::acosf( dir.x );
-			if( dir.y > 0.0f ) rads = -rads;
-			m_interface->setAngle( rads );
-		}
-		else
-		{
-			m_interface->setPosition( 0.0f, 0.0f );
-		}
-
-		int count = m_interface->getNumTypes();
-
-		for( int i = 0; i != count; ++i )
-		{
-			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
-
-			Material* material = Holder<RenderEngine>::hostage()->createMaterial();
-
-			m_imageOffsets.push_back( m_images.size() );
-
-			int textureCount = Holder<ParticleEngine>::hostage()->getTextureCount();
-			for( int i = 0; i < textureCount; ++i )
+			if( this->compileEmitterImage_() == false )
 			{
-				String textureName = Holder<ParticleEngine>::hostage()->getTextureName( i );
-
-			
-				ResourceImageDefault* image = m_resource->getRenderImage( textureName );
-	
-				if( image == 0 )
-				{
-					MENGE_LOG_ERROR( "Image can't loaded '%s' (ResourceName:%s, EmitterName:%s)"
-						, textureName.c_str()
-						, m_resourcename.c_str()
-						, m_emitterName.c_str() 
-						);
-
-					return false;
-				}
-				m_images.push_back( image );
+				return false;
 			}
-
-			//m_images.push_back( image );
-			//m_images.push_back( image );
-
-			m_blendSrc = BF_SOURCE_ALPHA;
-			if( m_interface->isIntensive() == true )
-			{
-				m_blendDst = BF_ONE;
-			}
-			else
-			{
-				m_blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-			}
-
-			//material->textureStages = 1;
-			material->blendSrc = m_blendSrc;
-			material->blendDst = m_blendDst;
-			material->isSolidColor = false;
-			//material->textureStage[0].texture = image;
-			material->textureStage[0].colorOp = TOP_MODULATE;
-			material->textureStage[0].alphaOp = TOP_MODULATE;
-
-			m_materials.push_back( material );
-
-			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
 		}
 
-		m_vertices.resize( count );
+        m_interface->setRandomMode( m_randomMode );
 
+        bool loop = this->getLoop();
+        m_interface->setLoop( loop );
+
+        size_t polygon_count = boost::geometry::num_points( m_polygon );
+
+        if( polygon_count != 0 )
+        {
+            if( this->compilePolygon_() == false )
+            {
+                return false;
+            }
+        }
+
+        this->updateRelative_();
+        
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -231,83 +181,120 @@ namespace	Menge
 	{
 		Node::_release();
 
-		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
-			it != it_end;
-			++it )
-		{
-			Holder<RenderEngine>::hostage()
-				->releaseMaterial( (*it) );
+        if( m_resource != 0 )
+        {
+		    if( m_interface )
+		    {
+			    EmitterContainerInterface * container = 
+				    m_resource->getContainer();
+
+			    container->releaseEmitter( m_interface );
+
+			    m_interface = NULL;
+		    }
+
+			m_resource->decrementReference();
+			m_resource = NULL;
 		}
 
-		m_materials.clear();
-		m_imageOffsets.clear();
+		delete [] m_vertices;
+        
+		m_vertices = NULL;
+		m_verticesCount = 0;
 
-		for( TVectorImages::iterator 
-			it = m_images.begin(),
-			it_end = m_images.end();
-		it != it_end;
-		++it )
-		{
-			m_resource->releaseRenderImage( *it );
-		}
-
-		m_images.clear();
-		
-		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
-
-		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
-
-		//m_images.clear();
-		m_interface = NULL;
-		m_resource = NULL;
+		//m_images.clear();				
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_render( Camera2D * _camera )
+	void ParticleEmitter::_render( RenderCameraInterface * _camera )
 	{
-		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
-		if( !enabled || m_playing == false )
-		{
-			return;
-		}	
-
-		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
-
 		Node::_render( _camera );
 
-		size_t partCount = 0;
-		std::size_t maxParticleCount = particleEngine->getMaxParticlesCount();
+		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
+			->getParticlesEnabled();
 
-		int typeCount = m_interface->getNumTypes();
-		
-		const Viewport & vp = _camera->getViewport();
+		if( enabled == false )
+		{
+			return;
+		}
 
-		for( TVectorBatchs::iterator
+		if( this->isPlay() == false)
+		{
+			return;
+		}
+
+		//size_t maxParticleCount = PARTICLE_SERVICE(m_serviceProvider)
+			//->getMaxParticlesCount();
+
+        if( m_emitterChangeRendering == true || m_emitterChangeRenderingExtra == true )
+        {
+            m_emitterChangeRenderingExtra = false;
+
+		    if( this->updateParticleVertex_( _camera ) == false )
+            {
+                return;
+            }
+        }
+
+		for( TVectorBatchs::const_iterator
 			it = m_batchs.begin(),
 			it_end = m_batchs.end();
 		it != it_end;
 		++it )
 		{
-			Batch & batch = *it;
-			RenderEngine::hostage()->
-				renderObject2D( m_materials[batch.type], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
+			const Batch & batch = *it;
+
+            Vertex2D * batch_vertices = m_vertices + batch.begin;
+
+			RENDER_SERVICE(m_serviceProvider)->
+				addRenderObject2D( _camera, batch.material, batch.texture, 1, batch_vertices, batch.size, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::play()
+	bool ParticleEmitter::_play( float _time )
 	{
-		if( isActivate() == false )
+        (void)_time;
+
+		if( this->isActivate() == false )
 		{
-			return;
+			return false;
 		}
 
-		m_playing = true;
 		m_interface->play();
-		_update( m_startPosition );
+
+		//TODO!???
+		if( m_startPosition > 0.f )
+		{
+			m_interface->update( m_startPosition );
+		}
+
+        m_emitterChangeRenderingExtra = true;
+		//ParticleEmitter::_update( 0.f, m_startPosition );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::_restart( float _time, size_t _enumerator )
+	{
+        (void)_time;
+        (void)_enumerator;
+
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+
+		EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_RESTART)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+
+		m_interface->restart();
+
+		m_emitterChangeRenderingExtra = true;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::pause()
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
@@ -315,343 +302,683 @@ namespace	Menge
 		m_interface->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::stop()
+	void ParticleEmitter::_stop( size_t _enumerator )
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
 
 		m_interface->stop();
 
-		if( m_onEmitterStopEvent == true )
-		{
-			this->callEvent( EVENT_EMITTER_STOP, "(O)", this->getEmbedding() );
-		}
+		EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setLooped( bool _loop )
+	void ParticleEmitter::_end( size_t _enumerator )
 	{
-		m_looped = _loop;
+		EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_setLoop( bool _value )
+	{
+		if( this->isCompile() == false )
+		{
+			return;
+		}
 
-		if( isActivate() == true )
+		m_interface->setLoop( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::_interrupt( size_t _enumerator )
+	{
+        (void)_enumerator;
+
+		if( this->isCompile() == false )
 		{
-			m_interface->setLooped( _loop );
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_interrupt '%s' can't compile"
+                , m_name.c_str()
+                );
+
+			return false;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getLooped() const
-	{
-		return m_looped;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setAutoPlay( bool _autoPlay )
-	{
-		m_autoPlay = _autoPlay;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getAutoPlay() const
-	{
-		return m_autoPlay;
+
+		m_interface->interrupt();
+
+		//this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLeftBorder( float _leftBorder )
 	{
-		if( isActivate() == false )
+		if( this->isCompile() == false )
 		{
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::setLeftBorder '%s' can't compile"
+                , m_name.c_str()
+                );
+
 			return;
 		}
 
 		return m_interface->setLeftBorder( _leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_update( float _timing )
+	void ParticleEmitter::_update( float _current, float _timing )
 	{
-		Node::_update( _timing );
-
-		const mt::mat3f& wm = getWorldMatrix();
-
-		if( m_emitterRelative == false )
+		if( this->isPlay() == false )
 		{
-			const mt::vec2f& pos = getWorldPosition();
-			m_interface->setPosition( pos.x, pos.y );
-			const mt::vec2f& dir = getWorldDirection();
-			float rads = ::acosf( dir.x );
-			if( dir.y > 0.0f ) rads = -rads;
-			m_interface->setAngle( rads );
+			return;
 		}
 
-		m_interface->update( _timing );
+		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
+			->getParticlesEnabled();
 
-		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
+		if( enabled == false )
+		{
+			return;
+		}
 
-		std::size_t partCount = 0;
-		std::size_t maxParticleCount = particleEngine->renderParticlesCount(0);
+		if( m_playTime > _current )
+		{
+			float deltha = m_playTime - _current;
+			_timing -= deltha;
+		}
 
-		int typeCount = m_interface->getNumTypes();
+		m_emitterChangeRendering = m_interface->update( _timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::updateParticleVertex_( RenderCameraInterface * _camera )
+	{
+        (void)_camera;
 
-		bool firstPoint = true;
+		size_t partCount = 0;
+				
+		Node::_updateBoundingBox( m_localBoundingBox );
 
-		Node::_updateBoundingBox( m_boundingBox );
+		ColourValue color;
+		this->calcTotalColor(color);
 
-		const Viewport & vp = Player::hostage()->getRenderCamera2D()->getViewport();
-
-		const ColourValue & color = getWorldColor();
 		ARGB color_argb = color.getAsARGB();
 
-		static TVectorRenderParticle s_particles(maxParticleCount);
-		m_vertices.clear();
+        static ParticleVertices s_particles[maxParticleCount];
+		static ParticleMesh s_meshes[maxMeshCount];
+		//s_particles.clear();
+		//s_meshes.clear();
+
+		//m_vertices.clear();		
+
 		m_batchs.clear();
 
-		for( int i = 0; i != typeCount; ++i )
+        //const mt::mat4f & viewMatrix = _camera->getViewMatrix();
+
+        mt::vec3f Eye(0,0,-840.f);
+        mt::vec3f At(0,0,0);        
+        mt::vec3f Up(0,1,0);
+
+        mt::vec3f zaxis = mt::norm_v3( At - Eye );
+        mt::vec3f xaxis = mt::norm_v3( mt::cross_v3_v3( Up, zaxis ) );
+        mt::vec3f yaxis = mt::cross_v3_v3( zaxis, xaxis );
+
+        mt::mat4f viewMatrix;
+        viewMatrix.v0 = mt::vec4f(xaxis.x, yaxis.x, zaxis.x, 0);
+        viewMatrix.v1 = mt::vec4f(xaxis.y, yaxis.y, zaxis.y, 0);
+        viewMatrix.v2 = mt::vec4f(xaxis.z, yaxis.z, zaxis.z, 0);
+        viewMatrix.v3 = mt::vec4f(-mt::dot_v3_v3( xaxis, Eye ), -mt::dot_v3_v3( yaxis, Eye ),  -mt::dot_v3_v3(zaxis, Eye), 1);
+
+		EmitterRenderFlush flush;
+
+		if( PARTICLE_SERVICE(m_serviceProvider)
+			->flushEmitter( viewMatrix, m_interface, s_meshes, s_particles, maxParticleCount, flush ) == false )
 		{
-			bool nextParticleType = false;
+			return false;
+		}
 
-			int texturesNum = 0;
-			int particlesNum = 0;
-			if( particleEngine->flushEmitter( m_interface, i, s_particles, texturesNum, particlesNum, maxParticleCount ) == false )
-			{
-				continue;
-			}
+		if( m_verticesCount < flush.particleCount * 4 )
+		{			
+			m_verticesCount = flush.particleCount * 4;
 
-			m_vertices.resize( m_vertices.size() + particlesNum * 4 );
+			delete [] m_vertices;
+			m_vertices = new Vertex2D [m_verticesCount];
+		}
 
-			for( RenderParticle *
-				it = &s_particles[0],
-				*it_end = &s_particles[particlesNum];
-			it != it_end && partCount < maxParticleCount;
+		//const mt::mat4f & wm = this->getWorldMatrix();
+
+        //mt::vec2f pos;
+        //m_interface->getPosition( pos );
+		
+		for( size_t
+			it = 0,
+			it_end = flush.meshCount;
+		it != it_end;
+		++it )
+		{
+			const ParticleMesh & mesh = s_meshes[it];
+
+			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
+			RenderTextureInterface* texture = image->getTexture();
+
+			const mt::vec4f & mesh_uv = texture->getUV();
+
+			for( size_t
+				it = mesh.begin,
+				it_end = mesh.begin + mesh.size;
+			it != it_end;
 			++it )
 			{
-				RenderParticle & p = *it;
-
-				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
-
-				if( m_emitterRelative == true )
-				{
-					mt::vec2f origin, transformX, transformY;
-					mt::mul_v2_m3( origin, eq.v[0], wm );
-					mt::mul_v2_m3_r( transformX, eq.v[1] - eq.v[0], wm );
-					mt::mul_v2_m3_r( transformY, eq.v[3] - eq.v[0], wm );
-					eq.v[0] = origin;
-					eq.v[1] = eq.v[0] + transformX;
-					eq.v[2] = eq.v[1] + transformY;
-					eq.v[3] = eq.v[0] + transformY;
-				}
-
-				int ioffset = m_imageOffsets[i];
-				ResourceImageDefault * image = m_images[ioffset+p.texture.frame];
-
-				const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
-				
-				const mt::vec2f& offset = frame.offset;
-				const mt::vec2f& size = frame.size;
-				const mt::vec2f& maxSize = frame.maxSize;
-				float dx1 = offset.x / maxSize.x;
-				float dy1 = offset.y / maxSize.y;
-				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
-				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
-
-				mt::vec2f axisX( eq.v[1] - eq.v[0] );
-				mt::vec2f axisY( eq.v[3] - eq.v[0] );
-
-				eq.v[0] += axisX * dx1 + axisY * dy1;
-				eq.v[1] += -axisX * dx2 + axisY * dy1;
-				eq.v[2] += -axisX * dx2 - axisY * dy2;
-				eq.v[3] += axisX * dx1 - axisY * dy2;
-
-				mt::box2f pbox;
-				mt::reset( pbox, eq.v[0] );
-				mt::add_internal_point( pbox, eq.v[1] );
-				mt::add_internal_point( pbox, eq.v[2] );
-				mt::add_internal_point( pbox, eq.v[3] );
-
-				if( vp.testBBox( pbox ) == false )
-				{
-					continue;
-				}
-
-				if( firstPoint == true )
-				{
-					firstPoint = false;
-					m_boundingBox = pbox; 
-				}
-				else
-				{
-					mt::merge_box( m_boundingBox, pbox );
-				}
+				const ParticleVertices & p = s_particles[it];
 
 				uint32 argb;
 
 				if( color.isIdentity() )
 				{
-					argb = p.color.rgba;
+					argb = p.color;
 				}
-				else if( p.color.rgba == 0xFFFFFFFF )
+				else if( p.color == 0xFFFFFFFF )
 				{
 					argb = color_argb;
 				}
 				else
 				{
-					ColourValue cv( ARGB(p.color.rgba) );
+					ColourValue cv( ARGB(p.color) );
 					cv *= color;
 					argb = cv.getAsARGB();
 				}
 
-				Vertex2D * vertice = &m_vertices[partCount * 4];
+				Vertex2D * vertice = &m_vertices[it * 4];
+
+				//mt::vec3f wm_pos0;
+				//mt::mul_v3_m4( wm_pos0, p.v[0] + relation_pos, wm);
+
+                const mt::vec3f & wm_pos0 = p.v[0];
+
+                vertice[0].pos[0] = wm_pos0.x;
+                vertice[0].pos[1] = wm_pos0.y;
+				vertice[0].pos[2] = wm_pos0.z;
+
+
+				vertice[0].color = argb;
+
+                //mt::vec3f wm_pos1;
+                //mt::mul_v3_m4( wm_pos1, p.v[1] + relation_pos, wm);
+
+                const mt::vec3f & wm_pos1 = p.v[1];
+
+                vertice[1].pos[0] = wm_pos1.x;
+                vertice[1].pos[1] = wm_pos1.y;
+				vertice[1].pos[2] = wm_pos1.z;
+
+                vertice[1].color = argb;
+
+                //mt::vec3f wm_pos2;
+                //mt::mul_v3_m4( wm_pos2, p.v[2] + relation_pos, wm);
 				
-				for( int j = 0; j != 4; ++j )
-				{
-					//renderObject->vertices.push_back( TVertex() );
-					vertice[j].pos[0] = eq.v[j].x;
-					vertice[j].pos[1] = eq.v[j].y;
-					vertice[j].color = argb;
-				}
+                const mt::vec3f & wm_pos2 = p.v[2];
 
-				const mt::vec4f& uv = frame.uv;
+				vertice[2].pos[0] = wm_pos2.x;
+				vertice[2].pos[1] = wm_pos2.y;
+				vertice[2].pos[2] = wm_pos2.z;
 
-				if( p.texture.u0 < p.texture.u1 )
-				{
-					vertice[0].uv[0] = uv.x;
-					vertice[3].uv[0] = uv.x;
-					vertice[1].uv[0] = uv.z;
-					vertice[2].uv[0] = uv.z;
-				}
-				else
-				{
-					vertice[0].uv[0] = uv.z;
-					vertice[3].uv[0] = uv.z;
-					vertice[1].uv[0] = uv.x;
-					vertice[2].uv[0] = uv.x;
-				}
-				if( p.texture.v0 < p.texture.v1 )
-				{
-					vertice[0].uv[1] = uv.y;
-					vertice[1].uv[1] = uv.y;
-					vertice[2].uv[1] = uv.w;
-					vertice[3].uv[1] = uv.w;
-				}
-				else
-				{
-					vertice[0].uv[1] = uv.w;
-					vertice[1].uv[1] = uv.w;
-					vertice[2].uv[1] = uv.y;
-					vertice[3].uv[1] = uv.y;
-				}
+				vertice[2].color = argb;
 
-				//m_vertices.insert( m_vertices.begin(), vertice, vertice + 4 );
+                //mt::vec3f wm_pos3;
+                //mt::mul_v3_m4( wm_pos3, p.v[3] + relation_pos, wm);
 
-				Texture* texture = frame.texture;
+                const mt::vec3f & wm_pos3 = p.v[3];
 
-				++partCount;
+                vertice[3].pos[0] = wm_pos3.x;
+                vertice[3].pos[1] = wm_pos3.y;
+				vertice[3].pos[2] = wm_pos3.z;				
 
-				if( m_batchs.empty() )
-				{
-					Batch batch;
-					batch.it_begin = 0;
-					batch.it_end = partCount * 4;
-					batch.texture = texture;
-					batch.type = i;
-					m_batchs.push_back( batch );
-				}
-				else
-				{
-					Batch & prev = m_batchs.back();
-					if( prev.texture == texture )
-					{
-						prev.it_end = partCount * 4;
-					}
-					else
-					{
-						Batch batch;
-						batch.it_begin = prev.it_end;
-						batch.it_end = partCount * 4;
-						batch.texture = texture;
-						batch.type = i;
-						m_batchs.push_back( batch );
-					}
-				}
+				vertice[3].color = argb;
+				
+				mt::vec2f uv[4];
+
+				uv[0].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[0].x;
+				uv[0].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[0].y;
+				uv[1].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[1].x;
+				uv[1].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[1].y;
+				uv[2].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[2].x;
+				uv[2].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[2].y;
+				uv[3].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[3].x;
+				uv[3].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[3].y;
+
+				vertice[0].uv[0] = uv[0].x;
+				vertice[0].uv[1] = uv[0].y;
+				vertice[1].uv[0] = uv[1].x;
+				vertice[1].uv[1] = uv[1].y;
+				vertice[2].uv[0] = uv[2].x;
+				vertice[2].uv[1] = uv[2].y;
+				vertice[3].uv[0] = uv[3].x;
+				vertice[3].uv[1] = uv[3].y;
+
+                vertice[0].uv2[0] = 0.f;
+                vertice[0].uv2[1] = 0.f;
+                vertice[1].uv2[0] = 0.f;
+                vertice[1].uv2[1] = 0.f;
+                vertice[2].uv2[0] = 0.f;
+                vertice[2].uv2[1] = 0.f;
+                vertice[3].uv2[0] = 0.f;
+                vertice[3].uv2[1] = 0.f;
 			}
+
+			++partCount;
+
+			Batch batch;
+			batch.begin = mesh.begin * 4;
+			batch.size = mesh.size * 4;
+			batch.texture[0] = texture;
+			batch.material = mesh.intense ? m_materials[0] : m_materials[1];
+
+			m_batchs.push_back( batch );
 		}
 
-		particleEngine->renderParticlesCount(partCount);
+        if( m_emitterRelative == false )
+        {
+            this->updateVertexWM_();
+        }
 
-		this->invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::onStopped()
-	{
-		m_playing = false;
-		if( m_onEmitterEndEvent == true )
-		{
-			this->callEvent( EVENT_EMITTER_END, "(O)", this->getEmbedding() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_setListener( PyObject * _listener )
-	{
-		Node::_setListener( _listener );
+		PARTICLE_SERVICE(m_serviceProvider)
+			->renderParticlesCount( partCount );
 
-		m_onEmitterEndEvent = Eventable::registerEvent( EVENT_EMITTER_END, ("onEmitterEnd"), _listener );
-		m_onEmitterStopEvent = Eventable::registerEvent( EVENT_EMITTER_STOP, ("onEmitterStop"), _listener );
+        return true;
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ParticleEmitter::updateVertexWM_()
+    {
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        if( mt::is_ident_m34( wm ) == true )
+        {
+            return;
+        }
+
+        for( TVectorBatchs::const_iterator
+            it = m_batchs.begin(),
+            it_end = m_batchs.end();
+        it != it_end;
+        ++it )
+        {
+            const Batch & batch = *it;
+
+            for( size_t 
+                index = batch.begin, 
+                index_end = batch.begin + batch.size; 
+            index != index_end; 
+            ++index )
+            {
+                mt::vec3f & pos = m_vertices[index].pos;
+
+                mt::vec3f wm_pos;
+                mt::mul_v3_m4( wm_pos, pos, wm);
+
+                pos = wm_pos;
+            }
+        }
+    }
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::onParticleEmitterStopped()
+	{
+		this->end();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::restart()
 	{
-		if( isActivate() == true )
-		{
-			m_interface->restart();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setResource( const String& _resourceName )
-	{
-		if( m_resourcename == _resourceName )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
-		
-		m_resourcename = _resourceName;
-		
-		recompile();
+
+		m_interface->restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitter( const String& _emitterName )
+	void ParticleEmitter::setResource( const ConstString& _resourceName )
+	{
+		if( m_resourceName == _resourceName )
+		{
+			return;
+		}
+
+		m_resourceName = _resourceName;
+
+		this->recompile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setEmitter( const ConstString& _emitterName )
 	{
 		if( m_emitterName == _emitterName )
 		{
 			return;
 		}
-		
+
 		m_emitterName = _emitterName;
 
-		recompile();
+		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::playFromPosition( float _pos )
 	{
-		if( isActivate() == true )
+		if( this->isActivate() == false )
 		{
-			//m_interface->setLeftBorder( _pos );
-			m_playing = true;
-			m_interface->restart();
-			m_interface->play();
-			m_interface->update( _pos );
+			return;
 		}
+
+		m_interface->seek( _pos );
+		//m_interface->setLeftBorder( _pos );
+		//m_interface->restart();
+		//m_interface->play();
+		//m_interface->update( _pos );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setEmitterTranslateWithParticle( bool _with )
+	{
+		m_emitterTranslateWithParticle = _with;
+		
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
+		m_interface->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ParticleEmitter::updateRelative_()
+    {
+        if( m_emitterRelative == true )
+        {
+            m_emitterPosition.x = 0.f;
+            m_emitterPosition.y = 0.f;
+            m_emitterPosition.z = 0.f;
+        }
+        else
+        {
+            m_interface->getBasePosition( m_emitterPosition );
+        }
+
+        this->invalidateWorldMatrix();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterRelative( bool _relative )
 	{
-		m_interface->setPosition( 0.0f, 0.0f );
-		m_emitterRelative = _relative;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )
-	{
-		//Empty
+        m_emitterRelative = _relative;
+
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
+        this->updateRelative_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setStartPosition( float _pos )
 	{
 		m_startPosition = _pos;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setEmitterImage( const ConstString & _emitterImageName )
+	{
+		m_emitterImageName = _emitterImageName;
+
+        //this->removeEmitterPolygon();
+
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
+		this->compileEmitterImage_();
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ParticleEmitter::removeEmitterImage()
+    {
+        m_emitterImageName.clear();
+
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
+        m_interface->changeEmitterImage( 0, 0, 0, 1 );
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::compileEmitterImage_()
+	{
+		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceT<ResourceHIT>(m_emitterImageName);
+
+		if( resourceHIT == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't compile emitter hit %s"
+				, m_name.c_str()
+				, m_emitterImageName.c_str()
+				);
+
+			return false;
+		}
+
+		size_t alphaWidth = resourceHIT->getWidth();
+		size_t alphaHeight = resourceHIT->getHeight();
+
+        unsigned char * alphaBuffer = resourceHIT->getBuffer();
+        
+		if (m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false)
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::setEmitterImage %s changeEmitterImage Error image %s"
+                , m_name.c_str()
+                , m_emitterImageName.c_str()
+                );
+
+			return false;
+		}
+				
+		resourceHIT->decrementReference();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::changeEmitterPolygon( const Polygon & _polygon )
+	{
+        m_polygon = _polygon;
+
+        boost::geometry::correct( m_polygon );
+
+        if( this->isCompile() == false ) 
+		{
+			return true;
+		}
+
+        if( this->compilePolygon_() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ParticleEmitter::compilePolygon_()
+    {
+        size_t n = boost::geometry::num_points( m_polygon );
+
+        if( n == 0 )
+        {
+            return true;
+        }
+
+		TVectorPoints points;
+		if( triangulate_polygon( m_polygon, points ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		if( points.empty() == true )
+		{
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' empty points"
+                , m_name.c_str()
+                );
+
+			return false;
+		}
+        
+        float * triangles_ptr = points.front().buff();
+        size_t triangles_size = points.size() / 3;
+
+        if( m_interface->changeEmitterModel( triangles_ptr, triangles_size ) == false)
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+        return true;
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ParticleEmitter::removeEmitterPolygon()
+    {
+        m_polygon = Polygon();
+        
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
+        m_interface->changeEmitterModel( NULL, 0 );
+    }
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )
+	{
+        (void)_boundingBox;
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_invalidateWorldMatrix()
+	{
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
+        if( m_emitterRelative == true )
+        {
+            const mt::vec3f & wm_pos = this->getWorldPosition();
+
+            m_interface->setPosition( wm_pos );
+        }
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ParticleEmitter::_invalidateColor()
+    {
+        m_emitterChangeRenderingExtra = true;
+    }
+	/////////////////////////////////////////////////////////////////////////
+	float ParticleEmitter::getDuration() const
+	{
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getDuration '%s' can't compile"
+                , m_name.c_str()
+                );
+
+            return 0.f;
+        }
+
+        float duration = m_interface->getDuration();
+
+		return duration;
+	}
+	/////////////////////////////////////////////////////////////////////////
+	float ParticleEmitter::getLeftBorder() const
+	{
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getLeftBorder '%s' can't compile"
+                , m_name.c_str()
+                );
+
+            return 0.f;
+        }
+
+        float leftBoard = m_interface->getLeftBorder();
+
+		return leftBoard;
+	}
+	/////////////////////////////////////////////////////////////////////////
+	float ParticleEmitter::getRightBorder() const
+	{
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getRightBorder '%s' can't compile"
+                , m_name.c_str()
+                );
+
+            return 0.f;
+        }
+
+        float rightBoard = m_interface->getRightBorder();
+
+		return rightBoard;
+	}
+	/////////////////////////////////////////////////////////////////////////
+	const ConstString& ParticleEmitter::getEmitterName() const
+	{
+		return m_emitterName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::box2f ParticleEmitter::getEmitterBoundingBox() const
+	{
+		mt::box2f box;
+
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getEmitterBoundingBox '%s' can't compile"
+                , m_name.c_str()
+                );
+
+            return box;
+        }
+
+		m_interface->getBoundingBox( box );
+
+		return box;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f ParticleEmitter::getEmitterPosition() const
+	{
+		mt::vec3f pos;
+
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getEmitterPosition '%s' can't compile"
+                , m_name.c_str()
+                );
+
+            return pos;
+        }
+
+		m_interface->getPosition( pos );
+
+		return pos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setRandomMode( bool _randomMode )
+	{
+        m_randomMode = _randomMode;
+
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
+		m_interface->setRandomMode( _randomMode );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::getRandomMode() const
+	{
+        return m_randomMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,65 +1,36 @@
 #	pragma once
 
 #	include "Interface/LogSystemInterface.h"
-#	include "Core/Holder.h"
 
 namespace Menge
-{
-	class Logger
-		: public Holder<Logger>
-	{
-	public:
-		Logger();
-		~Logger();
-
-	public:
-		bool initialize( LogSystemInterface * _interface );
-
-	public:
-		void logMessage( const String& _message, EMessageLevel _level = LM_LOG );
-		void setVerboseLevel( EMessageLevel _level );
-		bool registerLogger( LoggerInterface* _logger );
-		void unregisterLogger( LoggerInterface* _logger );
-		LogSystemInterface* getInterface();
-		
-	protected:
-		LogSystemInterface * m_interface;
-	};
-
+{	
 	class LoggerOperator
 	{
 	public:
-		LoggerOperator( const char * _file, EMessageLevel _level );
+		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level );
 
 	public:
 		void operator()( const char* _message, ... );
 
+	public:
+		void logMessage(  const char * _message, size_t _size  );
+
 	protected:
-		const char * m_file;
+		LogServiceInterface * m_log;
 		EMessageLevel m_level;
 	};
 }
 
-#	define MENGE_LOG_ERROR\
-	Menge::LoggerOperator( __FILE__, Menge::LM_ERROR )
-	//Menge::Log().get( Menge::LM_ERROR )
+#	define LOGGER_VERBOSE_LEVEL( LOGGER, LEVEL )\
+	if( LOGGER->validVerboseLevel(LEVEL) == false) {} else Menge::LoggerOperator(LOGGER, LEVEL)
 
-#	define MENGE_LOG_WARNING\
-	Menge::LoggerOperator( __FILE__, Menge::LM_WARNING )
-	//Menge::Log().get( Menge::LM_WARNING )
+#	define LOGGER_ERROR( serviceProvider )\
+	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_ERROR )
+	//if( LOGGER->validVerboseLevel(Menge::LM_ERROR) == false) {} else Menge::LoggerOperator( LOGGER, 1 )
+		
+#	define LOGGER_WARNING( serviceProvider )\
+	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_WARNING )
+	
+#	define LOGGER_INFO( serviceProvider )\
+	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_INFO )
 
-#	define MENGE_LOG\
-	Menge::LoggerOperator( __FILE__, Menge::LM_LOG )
-	//Menge::Log().get( Menge::LM_LOG )
-
-#	define MENGE_LOG_INFO\
-	Menge::LoggerOperator( __FILE__, Menge::LM_INFO)
-
-//#	define MENGE_LOG_DEBUG\
-//	Menge::LoggerOperator( __FILE__, ELoggerLog | ELoggerDebug )
-
-/*#	define MENGE_SCRIPT_BREACK\
-	Menge::LoggerOperator( __FILE__, LM_ERROR, LO_SCRIPT_BREAK )
-
-#	define MENGE_LOG_CRITICAL\
-	Menge::LoggerOperator( __FILE__, LM_ERROR, LO_MESSAGE_BOX )*/

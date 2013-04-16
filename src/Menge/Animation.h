@@ -2,77 +2,72 @@
 
 #	include "Sprite.h"
 
+#	include "Kernel/Animatable.h"
+
 namespace Menge
 {
 	class ResourceAnimation;
 
-	//! Animation - анимация. Наследуется от Sprite, и для прогрываемого кадра устанавливает изображение через Sprite::setImageIndex. см. описание Sprite.
-
-    /*! xml - файл имеет следующую структуру:
-	*	<Node Name = "имя_ноды" Type = "Animation">
-	*		<ImageMap Name = "имя_ресурса_спрайта"/>
-	*		<Animation Name = "имя_ресурса_анимации"/>
-	*		<AutoStart Value = "1/0"/>
-	*		<Looping Value = "1/0"/>
-	*		<Transformation Value = "1;0;0;1;512;0"/>
-	*	</Node>
-	*/
-
 	class Animation
 		: public Sprite
+		, public Animatable
 	{
 	public:
 		Animation();
+		~Animation();
 
 	public:
-		virtual void play();
-		virtual void stop();
-		virtual void pause();
-		virtual void resume();
+		void setAnimationResource( const ConstString& _resource );
+		const ConstString& getAnimationResource() const;
 
-		virtual void setLooped( bool _loop );
-		virtual bool getLooped() const;
+		size_t getFrameCount() const;
+		float getFrameDelay( size_t  _frame ) const;
 
-		void setAnimationResource( const String& _resource );
-		void setAnimationFactor( float _factor );
-		float getAnimationFactor() const;
-
-		std::size_t getCurrentFrame() const;
-		std::size_t getFrameCount() const;
-		void setCurrentFrame( std::size_t _frame );
-
-	public:
-		void loader( XmlElement * _xml ) override;
-		void parser( BinParser * _parser ) override;
+		void setCurrentFrame( size_t _frame );
+		size_t getCurrentFrame() const;
 
 	protected:
-		void _update( float _timing ) override;
+		void _setTiming( float _timming ) override;
+		float _getTiming() const override;
+
+		void _setFirstFrame() override;
+		void _setLastFrame() override;
+
+		void _setReverse( bool _value ) override;
+
+	protected:
+		bool _play( float _time ) override;
+		bool _restart( float _time, size_t _enumerator ) override;
+		void _stop( size_t _enumerator ) override;
+		void _end( size_t _enumerator ) override;
+		bool _interrupt( size_t _enumerator ) override;
+
+	protected:
+		void _update( float _current, float _timing ) override;
+		void _render( RenderCameraInterface * _camera ) override;
 
 		bool _activate() override;
+		void _deactivate() override;
 
 		bool _compile() override;
 		void _release() override;
 
-		void _setListener( PyObject * _listener ) override;
+		void _setEventListener( PyObject * _listener ) override;
 
-	private:
-		void stop_();
-		void resume_();
+	protected:
+		size_t getFrame_( float _timing, float & _delthaTiming ) const;
+		bool updateCurrentFrame_();
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;
-		String m_resourceAnimationName;
-	
-		float m_delay;
+		ConstString m_resourceAnimationName;
 
-		bool m_autoStart;
-		bool m_randomStart;
-		bool m_playing;
-		bool m_looping;
-		std::size_t m_currentFrame;
+		float m_frameTiming;
 
-		float m_animationFactor;
+        size_t m_playIterator;
 
+		size_t m_currentFrame;
+		
 		bool m_onEndFrameEvent;
 		bool m_onEndFrameTick;
 		bool m_onEndAnimationEvent;

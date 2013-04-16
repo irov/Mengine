@@ -15,6 +15,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferBase::OALSoundBufferBase()
+        : m_format(0)
+        , m_frequency(0)
+        , m_channels(0)
+        , m_time_total(0.f)
+        , m_isStereo(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -51,22 +56,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferBase::play( ALenum _source, bool _looped, float _pos )
 	{
+        (void)_source;
+        (void)_looped;
+        (void)_pos;
 		// nothing to do
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferBase::pause( ALenum _source )
 	{
+        (void)_source;
 		// nothing to do
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferBase::stop( ALenum _source )
 	{
+        (void)_source;
 		// nothing to do
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float OALSoundBufferBase::getTimePos( ALenum _source )
+	bool OALSoundBufferBase::getTimePos( ALenum _source, float & _pos ) const
 	{
-		return 0.0f;
+        (void)_source;
+        (void)_pos;
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferBase::isStereo() const

@@ -1,16 +1,20 @@
-
 #	pragma once
 
 #	include "Interface/SoundSystemInterface.h"
 
+#ifdef __APPLE__
+#   include <OpenAL/al.h>
+#   include <OpenAL/alc.h>
+#else
 #	include <AL/al.h>
-#	include <Al/alc.h>
-
-class SulkSystem;
+#	include <AL/alc.h>
+#endif
 
 namespace Menge
 {
 	class OALSoundSource;
+
+	class ServiceProviderInterface;
 
 	class OALSoundSystem
 		: public SoundSystemInterface
@@ -19,10 +23,18 @@ namespace Menge
 		OALSoundSystem();
 		~OALSoundSystem();
 
-	public:	// interfaces
-		bool initialize( LogSystemInterface* _logSystem ) override;
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
 
-		void setListenerOrient( const float* _position, const float* _front, const float* _top) override;
+	public:
+		bool initialize() override;
+        void finalize() override;
+		
+	public:
+		void onTurnSound( bool _turn ) override;
+
+	public:
 		SoundSourceInterface* createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) override;
 
 		SoundBufferInterface* createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream ) override;
@@ -31,36 +43,20 @@ namespace Menge
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
 		void releaseSoundNode( SoundSourceInterface * _sn ) override;
 
-		bool setBlow( bool _active ) override;
-		float getBlow() override;
+	public:
+		ALuint genSourceId();
+		void releaseSourceId( ALuint _sourceId );
 
-		void setEnoughBlow( float _enoughBlow ) override;
-		void setBlowCallback( SoundSulkCallbackInterface * _callback ) override;
-
-		void update( float _timing ) override;
+		ALuint genBufferId();
+		void releaseBufferId( ALuint _bufferId );
 
 	public:
-		ALuint popSource( bool _isStereo );
-		void pushSource( ALuint _source, bool _isStereo );
-
-	public:
-		void log( const char* _message, ... );
-		void log_error( const char* _message, ... );
+		void clearSourceId( ALuint _sourceId );
 
 	private:
-		LogSystemInterface * m_logSystem;
-
-		bool m_initialized;
-		typedef std::vector<ALuint> TSourcePool;
-		TSourcePool m_monoPool;
-		TSourcePool m_stereoPool;
+		ServiceProviderInterface * m_serviceProvider;
 
 		ALCcontext* m_context;
 		ALCdevice* m_device;
-
-		SulkSystem * m_sulk;
-
-		typedef std::vector<OALSoundSource*> TSoundSourceVector;
-		TSoundSourceVector m_soundSourcePool;
 	};
 }	// namespace Menge

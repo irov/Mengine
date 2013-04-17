@@ -1,0 +1,185 @@
+options
+{
+	lib
+	arm-cpu=6
+	arm-fpu=vfpv3
+	strict-mkb
+	enable-exceptions
+	preinclude=preinclude_dependencies.h
+}
+
+defines
+{
+	S3E_NO_INLINE
+}
+
+subprojects 
+{
+	iwutil
+}
+
+includepaths
+{
+    "."
+	"../src"
+	"../src/Utils"
+	"../dependencies"
+	"../dependencies/pugixml/src"
+	"../dependencies/pybind/include"
+	"../dependencies/boost"
+	"../dependencies/simpleini"
+	"../dependencies/metabuf"
+    
+    "./Modified/Python"
+	"../dependencies/Python/Include"	
+    
+    "../dependencies/simpleini"
+    "../dependencies/zlib"
+    "../dependencies/icu"
+	"../dependencies/icu/source/common"
+    "../dependencies/libjpeg"
+}
+
+
+files
+{
+	("../src/config")
+	[Config]
+	"*.h"
+
+    [metabuf]
+	("../dependencies/metabuf/metabuf")	
+	"*.hpp"
+	"*.cpp"
+    
+    [pybind]
+	("../dependencies/pybind")	    
+    "include/config/*.hpp"
+    "include/pybind/*.hpp"
+	"src/*.cpp"
+    
+    [simpleini]
+    ("../dependencies/simpleini")
+    SimpleIni.h
+    ConvertUTF.c
+    ConvertUTF.h
+    
+    [zlib]
+    ("../dependencies/zlib")
+    crc32.h
+    deflate.h
+    inffast.h
+    inffixed.h
+    inflate.h
+    inftrees.h
+    trees.h
+    zconf.h
+    zlib.h
+    zutil.h
+    adler32.c
+    compress.c
+    crc32.c
+    deflate.c
+    gzclose.c
+    gzlib.c
+    gzread.c
+    gzwrite.c
+    infback.c
+    inffast.c
+    inflate.c
+    inftrees.c
+    trees.c
+    uncompr.c
+    zutil.c
+    
+    [icu]
+    ("../dependencies/icu")
+    source/common/ustring.cpp
+    source/common/ustrtrns.cpp
+
+    source/common/cmemory.c
+    source/common/cstring.c
+    source/common/uinvchar.c
+    source/common/udataswp.c
+    source/common/utf_impl.c
+    source/common/utypes.c
+    source/common/ustr_wcs.cpp
+    
+    [libJPEG]
+    ("../dependencies/libjpeg")    
+    jaricom.c
+    jcapimin.c
+    jcapistd.c
+    jcarith.c
+    jccoefct.c
+    jccolor.c
+    jcdctmgr.c
+    jchuff.c
+    jcinit.c
+    jcmainct.c
+    jcmarker.c
+    jcmaster.c
+    jcomapi.c
+    jcparam.c
+    jcprepct.c
+    jcsample.c
+    jctrans.c
+    jdapimin.c
+    jdapistd.c
+    jdarith.c
+    jdatadst.c
+    jdatasrc.c
+    jdcoefct.c
+    jdcolor.c
+    jddctmgr.c
+    jdhuff.c
+    jdinput.c
+    jdmainct.c
+    jdmarker.c
+    jdmaster.c
+    jdmerge.c
+    jdpostct.c
+    jdsample.c
+    jdtrans.c
+    jerror.c
+    jfdctflt.c
+    jfdctfst.c
+    jfdctint.c
+    jidctflt.c
+    jidctfst.c
+    jidctint.c
+    jquant1.c
+    jquant2.c
+    jutils.c
+    jmemmgr.c    
+    
+    [libPNG]
+    ("../dependencies/libpng")
+    png.h
+    pngconf.h
+    pngpriv.h
+    png.c
+    pngerror.c
+    pngget.c
+    pngmem.c
+    pngpread.c
+    pngread.c
+    pngrio.c
+    pngrtran.c
+    pngrutil.c
+    pngset.c
+    pngtrans.c
+    pngwio.c
+    pngwrite.c
+    pngwtran.c
+    pngwutil.c
+
+    [pugixml]
+    ("../dependencies/pugixml")
+    src/pugixml.hpp
+    src/pugixml.cpp
+    
+}
+
+#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
+#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

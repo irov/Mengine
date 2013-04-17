@@ -1,0 +1,35 @@
+set( MY_LIB_NAME MengeXmlCodecPlugin )
+
+ADD_FILTER(
+src
+	XmlCodecPlugin.h
+	XmlCodecPlugin.cpp
+	XmlToBinDecoder.h
+	XmlToBinDecoder.cpp
+    XmlCodecPlugin.def
+)
+
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
+			         ${THIRDPARTY_DIR}/pugixml/src
+                     ${THIRDPARTY_DIR}/metabuf
+)
+ 
+#ADD_DEPENDENCIES( ${MY_LIB_NAME} LoggerLib )
+				 
+ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+#SET_TARGET_PROPERTIES( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS "/def:XmlCodecPlugin.def" )
+
+SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec )
+
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}pugixml_static
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}xml2metabuf_static
+    )
+
+#ADD_EXECUTABLE( ${MY_LIB_NAME} ${SRC_FILES} )

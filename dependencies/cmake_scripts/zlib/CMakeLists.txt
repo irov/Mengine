@@ -2,7 +2,9 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( zlib )
 
-SET( SOURCE_DIR ${CMAKE_CURRNET_SOURCE_DIR}../../zlib )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../zlib )
+
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.in ${SOURCE_DIR}/zconf.h @ONLY)
 
 # OUR SOURCES
 set( zlib_sources

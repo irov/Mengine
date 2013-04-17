@@ -1,0 +1,60 @@
+LDFLAGS='-mwindows' ./configure \
+--prefix=/usr/ffmpeg-install \
+--enable-memalign-hack \
+--disable-static \
+--enable-shared \
+--enable-version3 \
+--enable-runtime-cpudetect \
+--disable-pthreads \
+--disable-doc \
+--disable-ffmpeg \
+--disable-ffplay \
+--disable-ffprobe \
+--disable-ffserver \
+--disable-postproc \
+--disable-yasm \
+--disable-iconv \
+--enable-bzlib \
+--enable-zlib \
+--enable-libvorbis \
+--enable-libvpx \
+--enable-swscale \
+--disable-encoders \
+--disable-muxers \
+--disable-decoders \
+--enable-decoder=vp6 \
+--enable-decoder=vp6a \
+--enable-decoder=vp6f \
+--enable-decoder=vp8 \
+--disable-encoders \
+--disable-muxers \
+--disable-demuxers \
+--enable-demuxer=flv \
+--enable-demuxer=matroska \
+--enable-demuxer=matroska,webm \
+--enable-cross-compile \
+--arch=x86 \
+--target-os=mingw32 \
+--disable-debug
+
+LDFLAGS='-mwindows' ./configure \
+--target=x86-win32-gcc \
+--disable-multithread \
+--disable-vp8-encoder
+
+./configure \
+--disable-vp8-encoder
+
+
+LDFLAGS='-mwindows' ./configure --enable-static --disable-shared --prefix=$LOCALDESTDIR && make && make install
+LDFLAGS='-mwindows' ./configure --enable-static --disable-shared --prefix=$LOCALDESTDIR && make && make install
+
+make install -fwin32/Makefile.gcc SHARED_MODE=0 BINARY_PATH=$LOCALDESTDIR/bin INCLUDE_PATH=$LOCALDESTDIR/include LIBRARY_PATH=$LOCALDESTDIR/lib
+
+sed 's/-O3/-O3 -mms-bitfields -mthreads/' && make IMPLIB='libz.dll.a' -fMakefile.gcc && install zlib1.dll $LOCALDESTDIR/bin && install libz.dll.a $LOCALDESTDIR/lib && install libz.a $LOCALDESTDIR/lib && install zlib.h $LOCALDESTDIR/include && install zconf.h $LOCALDESTDIR/include
+
+LDFLAGS='-mwindows' ./configure --static --prefix=$LOCALDESTDIR
+
+http://exlmoto.ru/mingw-development-environment/
+http://code.google.com/p/coolvideoplayer/wiki/HowToBuildFFmpeg
+http://lardbucket.org/blog/archives/2010/05/19/vp8-webm-and-ffmpeg/

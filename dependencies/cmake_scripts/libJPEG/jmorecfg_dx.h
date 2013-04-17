@@ -11,6 +11,9 @@
  * optimizations.  Most users will not need to touch this file.
  */
 
+#ifndef HAVE_NORETURN_T  
+typedef void noreturn_t;  
+#endif  
 
 /*
  * Define BITS_IN_JSAMPLE as either

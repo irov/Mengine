@@ -1,0 +1,181 @@
+#!/usr/bin/env mkb
+options
+{
+	lib
+	arm-cpu=6
+	arm-fpu=vfpv3
+	strict-mkb
+	enable-exceptions
+	preinclude=preinclude_menge.h
+}
+
+defines
+{
+	MENGINE_CONFIG=Config_MARMALADE.h
+}
+
+subprojects 
+{
+	iwutil
+    iwgl
+}
+
+includepaths
+{
+    "."
+	"../src"
+	"../src/Utils"
+	"../src/MarmaladeApplication"
+	"../dependencies"
+	"../dependencies/pugixml/src"
+	"../dependencies/pybind/include"
+	"../dependencies/boost"
+	"../dependencies/simpleini"
+	"../dependencies/metabuf"
+	"../dependencies/Python_Marmalade/Include"
+	"../dependencies/Python_Marmalade/Marmalade"
+    "../dependencies/simpleini"
+    "../dependencies/zlib"
+    "../dependencies/icu/source/common"
+    "../dependencies/libjpeg"
+}
+
+files
+{
+    [Config]
+	("../src/Config")	
+	"*.h"
+    
+    [Interface]
+	("../src/Interface")	
+	"*.h"
+    
+    [Kernel]
+    ("../src/Kernel")
+    "*.h"
+	"*.cpp"
+
+    [Menge]
+	("../src/Menge")	
+	"*.h"
+	"*.cpp"
+
+    [Plugin/MengeImageCodecPlugin]
+    ("../src/Plugin/MengeImageCodecPlugin")	
+	"*.h"
+	"*.cpp"
+    
+    [Service/ServiceCodec]
+    ("../src/Service/ServiceCodec")	
+	"*.h"
+	"*.cpp"    
+
+    [Service/ServiceConverter]
+    ("../src/Service/ServiceConverter")	
+	"*.h"
+	"*.cpp"
+    
+    [Service/ServiceFile]
+    ("../src/Service/ServiceFile")	
+	"*.h"
+	"*.cpp"
+
+    [Service/ServiceLog]
+    ("../src/Service/ServiceLog")	
+	"*.h"
+	"*.cpp"
+    
+    [Service/ServiceProvider]
+    ("../src/Service/ServiceProvider")	
+	"*.h"
+	"*.cpp"
+
+    [Service/ServiceRender]
+    ("../src/Service/ServiceRender")	
+	"*.h"
+	"*.cpp"    
+        
+    [Service/ServiceScript]
+    ("../src/Service/ServiceScript")	
+	"*.h"
+	"*.cpp"    
+    
+    [Service/ServiceSound]
+    ("../src/Service/ServiceSound")	
+	"*.h"
+	"*.cpp"
+
+    [Service/ServiceStringize]
+    ("../src/Service/ServiceStringize")	
+	"*.h"
+	"*.cpp"    
+    
+    [Service/ServiceUnicode]
+    ("../src/Service/ServiceUnicode")	
+	"*.h"
+	"*.cpp"        
+    
+    [System/ICUUnicodeSystem]
+    ("../src/System/ICUUnicodeSystem")	
+	"*.h"
+	"*.cpp"      
+
+    [System/MarmaladeFileSystem]
+    ("../src/System/MarmaladeFileSystem")	
+	"*.h"
+	"*.cpp"       
+	
+    [System/OGLRenderSystem]
+    ("../src/System/OGLRenderSystem")	
+	"*.h"
+	"*.cpp"       
+
+    [System/SilentSoundSystem]
+    ("../src/System/SilentSoundSystem")	
+	"*.h"
+	"*.cpp"       
+    
+    
+    [Utils/Archive]
+	("../src/Utils/Archive")	
+	"*.hpp"
+	"*.cpp"
+
+    [Utils/ConfigFile]
+	("../src/Utils/ConfigFile")	
+	"*.h"
+	"*.cpp"
+
+    [Utils/Core]
+	("../src/Utils/Core")	
+	"*.h"
+	"*.cpp"
+    
+    [Utils/Codec]
+	("../src/Utils/Codec")	
+	"*.h"
+	"*.cpp"    
+
+    [Utils/Factory]
+	("../src/Utils/Factory")	
+	"*.h"
+	"*.cpp"
+
+    [Utils/Logger]
+	("../src/Utils/Logger")	
+	"*.h"
+	"*.cpp"
+
+    [Utils/StartupConfigLoader]
+	("../src/Utils/StartupConfigLoader")	
+	"*.h"
+	"*.cpp"
+
+    [Utils/Math]
+	("../src/Utils/Math")	
+	"*.h"
+    "*.cpp" 
+}
+
+#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
+#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

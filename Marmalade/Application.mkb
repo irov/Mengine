@@ -1,0 +1,60 @@
+#!/usr/bin/env mkb
+options
+{
+	arm-cpu=6
+	arm-fpu=vfpv3
+	strict-mkb
+	enable-exceptions
+	preinclude=preinclude_application.h
+}
+
+librarypath
+{
+    ./lib
+}
+
+library ".,Dependencies"
+library ".,Menge"
+library ".,Python"
+
+defines
+{
+	MENGINE_CONFIG=Config_MARMALADE.h
+	BOOST_UBLAS_UNSUPPORTED_COMPILER=0
+}
+
+subprojects 
+{
+
+}
+
+includepaths
+{
+    "."
+	"../src"
+	"../src/Utils"
+	"../src/MarmaladeApplication"
+	"../dependencies"
+	"../dependencies/pugixml/src"
+	"../dependencies/pybind/include"
+	"../dependencies/boost"
+	"../dependencies/simpleini"
+	"../dependencies/metabuf"
+	"../dependencies/Python_Marmalade/Include"
+	"../dependencies/Python_Marmalade/Marmalade"
+    "../dependencies/simpleini"
+    "../dependencies/zlib"
+    "../dependencies/icu/source/common"
+    "../dependencies/libjpeg"
+}
+
+files
+{
+	[MarmaladeApplication]
+    ("../src/MarmaladeApplication")	
+	"*.h"
+	"*.cpp"   
+}
+
+#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
+#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

@@ -1,0 +1,247 @@
+options
+{
+	lib
+	arm-cpu=6
+	arm-fpu=vfpv3
+	strict-mkb
+	enable-exceptions
+	preinclude=preinclude_python.h
+}
+
+defines
+{
+	S3E_NO_INLINE
+}
+
+subprojects 
+{
+	iwutil
+}
+
+includepaths
+{
+    "."
+	"../src"
+	"../src/Utils"
+	"../dependencies"
+	"../dependencies/pugixml/src"
+	"../dependencies/pybind/include"
+	"../dependencies/boost"
+	"../dependencies/simpleini"
+	"../dependencies/metabuf"
+    
+    "./Modified/Python"
+	"../dependencies/Python/Include"	
+    
+    "../dependencies/simpleini"
+    "../dependencies/zlib"
+    "../dependencies/icu"
+	"../dependencies/icu/source/common"
+    "../dependencies/libjpeg"
+}
+
+
+files
+{
+    [Python]
+    ("./Modified/Python")
+    config.c
+    errors.c
+    pyconfig.h
+    
+    ("../dependencies/Python/Python")    
+    codecs.c
+    frozenmain.c
+    getcompiler.c    
+    mystrtoul.c
+    formatter_string.c
+    formatter_unicode.c
+    ceval.c
+    asdl.c
+    getargs.c
+    pyarena.c
+    traceback.c
+    graminit.c
+    sigcheck.c
+    ast.c
+    pystate.c
+    atof.c
+    getopt.c
+    pythonrun.c
+    mysnprintf.c
+    import.c
+    structmember.c
+    symtable.c
+    pyfpe.c
+    getversion.c
+    marshal.c
+    pystrtod.c
+    compile.c
+    peephole.c
+    frozen.c
+    Python-ast.c
+    pystrcmp.c
+    getcopyright.c
+    future.c
+    modsupport.c
+    bltinmodule.c
+    sysmodule.c
+    getplatform.c
+    thread_pthread.h
+    dynload_stub.c
+    thread.c
+    _warnings.c
+
+    ("../dependencies/Python/Include")
+    classobject.h
+    iterobject.h
+    ucnhash.h
+    enumobject.h
+    stringobject.h
+    datetime.h
+    pyport.h
+    complexobject.h
+    codecs.h
+    longintrepr.h
+    opcode.h
+    code.h
+    dictobject.h
+    py_curses.h
+    unicodeobject.h
+    intobject.h
+    asdl.h
+    errcode.h
+    rangeobject.h
+    pgenheaders.h
+    ceval.h
+    objimpl.h
+    timefuncs.h
+    pyarena.h
+    listobject.h
+    cobject.h
+    graminit.h
+    pygetopt.h
+    moduleobject.h
+    traceback.h
+    token.h
+    Python.h
+    funcobject.h
+    osdefs.h
+    grammar.h
+    pymem.h
+    patchlevel.h
+    ast.h
+    parsetok.h
+    pystate.h
+    bitset.h
+    floatobject.h
+    structseq.h
+    cStringIO.h
+    abstract.h
+    pythonrun.h
+    object.h
+    cellobject.h
+    methodobject.h
+    import.h
+    weakrefobject.h
+    structmember.h
+    pythread.h
+    symtable.h
+    tupleobject.h
+    boolobject.h
+    pyfpe.h
+    marshal.h
+    descrobject.h
+    pystrtod.h
+    compile.h
+    pgen.h
+    pyexpat.h
+    metagrammar.h
+    pydebug.h
+    bufferobject.h
+    genobject.h
+    Python-ast.h
+    fileobject.h
+    modsupport.h
+    pymactoolbox.h
+    frameobject.h
+    setobject.h
+    sysmodule.h
+    pyerrors.h
+    node.h
+    longobject.h
+    sliceobject.h
+    eval.h
+    
+    ("../dependencies/Python/Modules")
+    gcmodule.c
+    getpath.c
+    operator.c
+    getbuildinfo.c    
+    timemodule.c
+    errnomodule.c
+    threadmodule.c
+    _functoolsmodule.c
+    _collectionsmodule.c
+    _sre.c
+    
+    ("../dependencies/Python/Objects")
+    methodobject.c
+    bytearrayobject.c
+    bytes_methods.c
+    cellobject.c
+    object.c
+    complexobject.c
+    codeobject.c
+    abstract.c
+    weakrefobject.c
+    typeobject.c
+    dictobject.c
+    unicodeobject.c
+    tupleobject.c
+    intobject.c
+    boolobject.c
+    rangeobject.c
+    descrobject.c
+    unicodectype.c
+    genobject.c
+    bufferobject.c
+    listobject.c
+    unicodetype_db.h
+    fileobject.c
+    cobject.c
+    moduleobject.c
+    exceptions.c
+    frameobject.c
+    setobject.c
+    funcobject.c
+    sliceobject.c
+    longobject.c
+    obmalloc.c
+    iterobject.c
+    enumobject.c
+    classobject.c
+    floatobject.c
+    stringobject.c
+    structseq.c  
+    
+    ("../dependencies/Python/Parser")
+    acceler.c
+    parser.h
+    grammar1.c
+    tokenizer.c
+    tokenizer.h
+    listnode.c
+    grammar.c
+    node.c
+    firstsets.c
+    parsetok.c
+    myreadline.c
+    pgen.c
+    bitset.c
+    parser.c
+    metagrammar.c
+}
+
+#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
+#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

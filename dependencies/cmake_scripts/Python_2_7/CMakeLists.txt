@@ -210,6 +210,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 				${SOURCE_DIR}/Python/formatter_unicode.c
 				${SOURCE_DIR}/Python/formatter_string.c
                 ${SOURCE_DIR}/Python/pyctype.c
+                ${SOURCE_DIR}/Python/random.c
                 
                 #${MACHDEP_SRCS}
                 ${THREAD_SRC}
@@ -221,6 +222,7 @@ set(MODULE_SRCS ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/Modules/main.c 
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/mathmodule.c
+                ${SOURCE_DIR}/Modules/posixmodule.c
                 ${SOURCE_DIR}/Modules/_math.c
                 
                 #${SOURCE_DIR}/Modules/timemodule.c

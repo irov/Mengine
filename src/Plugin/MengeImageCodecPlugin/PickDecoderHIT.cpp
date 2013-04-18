@@ -26,6 +26,9 @@ namespace Menge
 
         if( magic != hit_magic )
         {
+            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid magic"
+                );
+
             return false;
         }
 
@@ -35,6 +38,11 @@ namespace Menge
 
         if( version != hit_version )
         {
+            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid hit version %d need %d"
+                , version
+                , hit_version
+                );
+
             return false;
         }
 
@@ -45,11 +53,19 @@ namespace Menge
 
         m_stream->read( &m_mipmapcompresssize, sizeof(m_mipmapcompresssize) );
 
+        if( m_mipmapcompresssize == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid m_mipmapcompresssize is 0 (hit file incorupt)"
+                );
+
+            return 0;
+        }
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int PickDecoderHIT::decode( unsigned char* _buffer, unsigned int _bufferSize )
-	{	
+	{	        
         static TBlobject compressBuffer;
         compressBuffer.resize( m_mipmapcompresssize );
 

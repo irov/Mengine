@@ -13,7 +13,7 @@ if(WIN32)
         ADD_SUBDIRECTORY( CURLHTTPSystem )
         ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
         
-        ADD_SUBDIRECTORY( MengeXlsExportPlugin )
+        #ADD_SUBDIRECTORY( MengeXlsExportPlugin )
         ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
         
 #        ADD_SUBDIRECTORY( ToolsHotspotImageConverterPlugin )

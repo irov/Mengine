@@ -162,12 +162,15 @@ namespace Menge
 			it->second->destroy();
 		}
 
-		m_scriptWrapper.clear();        
+		m_scriptWrapper.clear();       
+
+        delete m_loger;
+        delete m_errorLogger;
+
+        pybind::setStdOutHandle( NULL );
+        pybind::setStdErrorHandle( NULL );
 
 		pybind::finalize();
-
-		delete m_loger;
-		delete m_errorLogger;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )

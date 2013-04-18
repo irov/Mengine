@@ -9,7 +9,8 @@ ADD_SUBDIRECTORY( Box2DPhysicSystem )
 ADD_SUBDIRECTORY( OALSoundSystem )
 ADD_SUBDIRECTORY( SilentSoundSystem )
 ADD_SUBDIRECTORY( ICUUnicodeSystem )
-ADD_SUBDIRECTORY( PosixThreadSystem )
+#ADD_SUBDIRECTORY( PosixThreadSystem )
+ADD_SUBDIRECTORY( Win32ThreadSystem )
 #ADD_SUBDIRECTORY( PythonScriptSystem )
 
 

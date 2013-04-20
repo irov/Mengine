@@ -14,8 +14,7 @@ namespace Menge
 		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, buffer, size, NULL, NULL );
 		_utf8.assign( buffer );
 		delete [] buffer;
-	}
-	
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	HTTPLoggerCURL::HTTPLoggerCURL( HTTPSystemInterface * _interfaceHTTP )
 		: HTTPLogger(_interfaceHTTP)
@@ -26,7 +25,7 @@ namespace Menge
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HTTPLoggerCURL::log( const char * _data, int _count, EMessageLevel _level )
+	void HTTPLoggerCURL::log( const char * _data, size_t _count, EMessageLevel _level )
 	{
         (void)_level;
 

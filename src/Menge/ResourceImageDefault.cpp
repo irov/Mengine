@@ -45,6 +45,25 @@ namespace Menge
 		{
 			return false;
 		}
+        
+        InputStreamInterface * stream = 
+            FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_fileName );
+
+        if( stream == 0 )
+        {
+            return false;
+        }	
+                
+        ImageDecoderInterface * imageDecoder = 
+            CODEC_SERVICE(m_serviceProvider)->createDecoderT<ImageDecoderInterface>( m_codecType, stream );
+
+        if( imageDecoder == NULL )
+        {
+            return false;
+        }
+
+        imageDecoder->destroy();
+        stream->destroy();
 
 		return true;
 	}
@@ -63,7 +82,12 @@ namespace Menge
         m_wrapY = false;
         
         metadata->swap_File_Path( m_fileName );        
-        metadata->swap_File_Codec( m_codecType );        
+        metadata->swap_File_Codec( m_codecType );
+
+        if( m_codecType.empty() == true )
+        {
+            m_codecType = this->getCodec_( m_fileName );
+        }
 
         metadata->get_File_UV( m_uv );
         metadata->get_File_Alpha( m_isAlpha );

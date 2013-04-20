@@ -111,7 +111,7 @@ namespace	Menge
 			unsigned int sourceID = SOUND_SERVICE(m_serviceProvider)
                 ->createSoundSource( true, soundBuffer, _type, streamable );
 
-			if( sourceID == NULL )
+			if( sourceID == 0 )
 			{
 				if( resource != NULL )
 				{

@@ -16,17 +16,31 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
+	static void s_handlerError( png_structp png_ptr, const char * _error ) 
 	{
-		png_voidp error_ptr = png_get_error_ptr( _png_ptr );
+		png_voidp error_ptr = png_get_error_ptr( png_ptr );
 		ImageEncoderPNG * imageEncoderPNG = static_cast<ImageEncoderPNG*>(error_ptr);
 
 		ServiceProviderInterface * serviceProvider = imageEncoderPNG->getServiceProvider();
 
-		LOGGER_ERROR(serviceProvider)( "ImageEncoderPNG::s_errorHandler %s"
+		LOGGER_ERROR(serviceProvider)( "ImageEncoderPNG::s_handlerError %s"
 			, _error 
 			);
+        
+        longjmp( png_jmpbuf( png_ptr ), 1);
 	}
+    //////////////////////////////////////////////////////////////////////////
+    static void s_handlerWarning( png_structp _png_ptr, const char * _error )
+    {
+        png_voidp error_ptr = png_get_error_ptr( _png_ptr );
+        ImageEncoderPNG * imageEncoderPNG = static_cast<ImageEncoderPNG*>(error_ptr);
+
+        ServiceProviderInterface * serviceProvider = imageEncoderPNG->getServiceProvider();
+
+        LOGGER_WARNING(serviceProvider)( "ImageEncoderPNG::s_handlerWarning %s"
+            , _error 
+            );       
+    }
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_writeProc( png_structp _png_ptr, unsigned char *data, png_size_t size )
 	{
@@ -148,7 +162,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageEncoderPNG::_initialize()
 	{
-		m_png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)this, s_errorHandler, s_errorHandler );
+		m_png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)this, s_handlerError, s_handlerWarning );
 
 		if( m_png_ptr == NULL )  
 		{

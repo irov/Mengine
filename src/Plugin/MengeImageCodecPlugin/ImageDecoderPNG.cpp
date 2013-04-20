@@ -9,13 +9,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static void PNGAPI s_errorHandler( png_structp png_ptr, const char * _error ) 
+	static void PNGAPI s_handlerError( png_structp png_ptr, const char * _error ) 
 	{
 		png_voidp error_ptr = png_get_error_ptr( png_ptr );		
 		ImageDecoderPNG * imageDecoderPNG = static_cast<ImageDecoderPNG*>(error_ptr);
 		ServiceProviderInterface * serviceProvider = imageDecoderPNG->getServiceProvider();
 
-		LOGGER_ERROR(serviceProvider)( "ImageDecoderPNG error: %s"
+		LOGGER_ERROR(serviceProvider)( "ImageDecoderPNG::s_handlerError '%s'"
 			, _error 
 			);
 
@@ -23,8 +23,23 @@ namespace Menge
         //jmp_buf * jb = png_jmpbuf( png_ptr );
         //longjmp(jb, 1);
         longjmp(png_jmpbuf(png_ptr), 1);
-
 	}
+    //////////////////////////////////////////////////////////////////////////
+    static void PNGAPI s_handlerWarning( png_structp png_ptr, const char * _error )
+    {
+        png_voidp error_ptr = png_get_error_ptr( png_ptr );		
+        ImageDecoderPNG * imageDecoderPNG = static_cast<ImageDecoderPNG*>(error_ptr);
+        ServiceProviderInterface * serviceProvider = imageDecoderPNG->getServiceProvider();
+
+        LOGGER_WARNING(serviceProvider)( "ImageDecoderPNG::s_handlerWarning '%s'"
+            , _error 
+            );
+
+        // Return control to the setjmp point
+        //jmp_buf * jb = png_jmpbuf( png_ptr );
+        //longjmp(jb, 1);
+        //longjmp(png_jmpbuf(png_ptr), 1);
+    }
 	//////////////////////////////////////////////////////////////////////////
 	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
 	{
@@ -76,10 +91,7 @@ namespace Menge
         }
 
         // create the chunk manage structure
-        m_png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING,
-            (png_voidp)this,
-            s_errorHandler,
-            s_errorHandler );
+        m_png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, (png_voidp)this, s_handlerError, s_handlerWarning );
 
         if( m_png_ptr == 0 )
         {
@@ -102,7 +114,7 @@ namespace Menge
             return false;
         }
 
-        if (setjmp(png_jmpbuf(m_png_ptr)))  
+        if( setjmp( png_jmpbuf( m_png_ptr ) ) )
         {
             LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPNG::initialize" 
                 );
@@ -221,7 +233,7 @@ namespace Menge
 
         if (setjmp(png_jmpbuf(m_png_ptr)))  
         {
-            LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPNG::initialize" );
+            LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPNG::decode" );
 
             //png_destroy_write_struct(&m_png_ptr, 0);
             //m_png_ptr = 0;

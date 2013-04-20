@@ -39,11 +39,11 @@ extern "C" // only required if using g++
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 }
 
-PyObject * PyToolException;
+static PyObject * PyToolException;
 
 namespace Menge
 {
-    ServiceProviderInterface * serviceProvider = NULL;
+    static ServiceProviderInterface * serviceProvider = NULL;
 
     static bool initialize()
     {
@@ -110,7 +110,7 @@ namespace Menge
             bool validVerboseLevel( EMessageLevel _level ) const override { return true; };
 
         public:
-            void log( const char * _data, int _count, EMessageLevel _level ) override
+            void log( const char * _data, size_t _count, EMessageLevel _level ) override
             {
                 printf("%s"
                     , _data
@@ -496,6 +496,7 @@ PyMODINIT_FUNC PyInit_ToolsPNGAlphaSpreadingPlugin(void)
     PyToolException = PyErr_NewException("PyInit_ToolsPNGAlphaSpreadingPlugin.error", NULL, NULL);
 
     Py_INCREF( PyToolException );
+
     PyModule_AddObject( m, "error", PyToolException );
 
     return m;

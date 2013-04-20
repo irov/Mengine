@@ -4,55 +4,55 @@ namespace Metacode
 {
     bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, size_t & _readVersion, size_t & _needVersion, void * _userData )
     {
-       Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
+        Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
-       unsigned int head;
-       ar.read( head );
+        unsigned int head;
+        ar.read( head );
 
-       if( head != 3133062829 )
-       {
-           return false;
-       }
+        if( head != 3133062829 )
+        {
+            return false;
+        }
 
-       unsigned int version;
-       ar.read( version );
+        unsigned int version;
+        ar.read( version );
 
-       _readVersion = version;
-       _needVersion = 8;
+        _readVersion = version;
+        _needVersion = 9;
 
-       if( version != 8 )
-       {
-           return false;
-       }
+        if( version != 9 )
+        {
+            return false;
+        }
 
-       return true;
+        return true;
     }
 
     bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, size_t & _stringCount, void * _userData )
     {
-       Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
+        Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
-       unsigned int count;
-       ar.read( count );
+        unsigned int count;
+        ar.read( count );
 
-       _stringCount = count;
+        _stringCount = count;
 
-       return true;
+        return true;
     }
 
     const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, size_t & _stringSize, void * _userData )
     {
-       Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
+        Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
-       unsigned int size;
-       ar.readSize( size );
+        unsigned int size;
+        ar.readSize( size );
 
-       const char * value = ar.current_buff<const char *>();
-       ar.skip( size );
+        const char * value = ar.current_buff<const char *>();
+        ar.skip( size );
 
-       _stringSize = size;
+        _stringSize = size;
 
-       return value;
+        return value;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )

@@ -21,7 +21,7 @@ namespace Menge
 		OutputStreamInterface * getStream() const;
 
 	protected:
-		void log( const char * _data, int _count, EMessageLevel _level ) override;
+		void log( const char * _data, size_t _count, EMessageLevel _level ) override;
 		void flush() override;
 
 	protected:

@@ -206,6 +206,7 @@ namespace Menge
 
         return true;
     }
+#ifdef _DEBUG
     //////////////////////////////////////////////////////////////////////////
     static bool getFileName( const WString & _filename, WString & _out )
     {
@@ -238,6 +239,7 @@ namespace Menge
 
         return true;
     }
+#endif
     //////////////////////////////////////////////////////////////////////////
     HANDLE VistaWindowsLayer::createFile( const WString & _path, DWORD _desiredAccess,
         DWORD _sharedMode, DWORD _creationDisposition )

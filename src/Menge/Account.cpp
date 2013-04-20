@@ -3,6 +3,7 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/ArchiveInterface.h"
 
 #	include "ConfigFile/ConfigFile.h"
 
@@ -298,21 +299,48 @@ namespace Menge
             return false;
         }
 
-        size_t file_size = file->size();
+        //size_t file_size = file->size();
 
         size_t load_crc32 = 0;
+        if( file->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (load crc32)"
+                , m_name.c_str()
+                , fullpath.c_str()
+                );
 
-        size_t data_size = file_size - sizeof(load_crc32);
+            return false;
+        }
 
-        _data.resize( data_size + 1 );
-        _data[data_size] = 0;
+        size_t load_data_size = 0;
+        if( file->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (load data size)"
+                , m_name.c_str()
+                , fullpath.c_str()
+                );
 
-        file->read( &load_crc32, sizeof(load_crc32) );
-        file->read( &_data[0], data_size );
+            return false;
+        }
+
+        size_t load_compress_size = 0;
+        if( file->read( &load_compress_size, sizeof(load_compress_size) ) != sizeof(load_compress_size) )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (load compress size)"
+                , m_name.c_str()
+                , fullpath.c_str()
+                );
+
+            return false;
+        }
+        //size_t data_size = file_size - sizeof(load_crc32);
+
+        TBlobject archive_blob(load_compress_size);
+        file->read( &archive_blob[0], load_compress_size );
 
         file->destroy();
 
-        size_t check_crc32 = make_crc32( &_data[0], data_size );
+        size_t check_crc32 = make_crc32( &archive_blob[0], load_compress_size );
 
         if( load_crc32 != check_crc32 )
         {
@@ -322,7 +350,21 @@ namespace Menge
                 );
 
             return false;
-        }		
+        }
+
+        _data.resize( load_data_size );
+
+        size_t uncompress_size;
+        if( ARCHIVE_SERVICE(m_serviceProvider)
+            ->uncompress( &_data[0], load_data_size, uncompress_size, &archive_blob[0], load_compress_size ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls: invalid load file %s (uncompress failed)"
+                , m_name.c_str()
+                , fullpath.c_str()
+                );
+
+            return false;
+        }
 
         return true;
     }
@@ -336,7 +378,8 @@ namespace Menge
 
         ConstString fullpath = Helper::stringizeString( m_serviceProvider, cachepath );
 
-        OutputStreamInterface * file = FILE_SERVICE(m_serviceProvider)->openOutputFile( CONST_STRING(m_serviceProvider, user), fullpath );
+        OutputStreamInterface * file = FILE_SERVICE(m_serviceProvider)
+            ->openOutputFile( CONST_STRING(m_serviceProvider, user), fullpath );
 
         if( file == 0 )
         {
@@ -348,11 +391,70 @@ namespace Menge
             return false;
         }
 
-        size_t value_crc32 = make_crc32( &_data[0], _data.size() );
+        if( _data.empty() == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls write empty file %s"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        size_t data_size = _data.size();
+        
+        size_t archive_size = ARCHIVE_SERVICE(m_serviceProvider)
+            ->compressBound( data_size );
+
+        if( archive_size == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write file %s (archive_size is zero)"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        TBlobject archive_blob(archive_size);
+
+        size_t comress_size;
+        if( ARCHIVE_SERVICE(m_serviceProvider)
+            ->compress( &archive_blob[0], archive_size, comress_size, &_data[0], _data.size() ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'crc32' %s (compress failed)"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        size_t value_crc32 = make_crc32( &archive_blob[0], comress_size );
 
         if( file->write( &value_crc32, sizeof(value_crc32) ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write crc32 %s (not create)"
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'crc32' %s (not create)"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        if( file->write( &data_size, sizeof(data_size) ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'data size' %s (not create)"
+                , m_name.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        if( file->write( &comress_size, sizeof(comress_size) ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'compress size' %s (not create)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );
@@ -360,9 +462,9 @@ namespace Menge
             return false;
         }
         
-        if( file->write( &_data[0], _data.size() ) == false )
+        if( file->write( &archive_blob[0], comress_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write data %s (not create)"
+            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'data' %s (not create)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );

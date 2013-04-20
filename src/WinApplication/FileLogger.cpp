@@ -26,7 +26,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileLogger::log( const char * _data, int _count, EMessageLevel _level )
+	void FileLogger::log( const char * _data, size_t _count, EMessageLevel _level )
 	{
         (void)_level;
 

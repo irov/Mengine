@@ -222,7 +222,7 @@ set(MODULE_SRCS ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/Modules/main.c 
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/mathmodule.c
-                ${SOURCE_DIR}/Modules/posixmodule.c
+                #${SOURCE_DIR}/Modules/posixmodule.c
                 ${SOURCE_DIR}/Modules/_math.c
                 
                 #${SOURCE_DIR}/Modules/timemodule.c
@@ -233,9 +233,11 @@ set(MODULE_SRCS ${SOURCE_DIR}/PC/config.c
 				
 				
                 ${MOD_SRCS} )
+                
+set( MODULE_SRCS ${MODULE_SRCS} Configure/mockup.c )                
 				
 if( NOT WIN32 )
-	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
+	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )    
 else( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} 
 	${SOURCE_DIR}/Modules/wininit.c

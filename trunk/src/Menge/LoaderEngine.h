@@ -47,7 +47,9 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		Archive m_bufferArchive;
+		TBlobject m_bufferBin;
+        TBlobject m_bufferCompress;
+
         TVectorConstString m_bufferConstString;
 	};
 }

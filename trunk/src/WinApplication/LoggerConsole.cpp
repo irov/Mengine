@@ -114,7 +114,7 @@ namespace Menge
 		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::log( const char * _data, int _count, EMessageLevel _level )
+	void LoggerConsole::log( const char * _data, size_t _count, EMessageLevel _level )
 	{
 		//String utf8(_data, _count);
 

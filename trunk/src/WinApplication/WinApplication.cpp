@@ -391,6 +391,20 @@ namespace Menge
             return false;
         }
 
+        if( m_developmentMode == true )
+        {
+            ConstString dev = Helper::stringizeString( m_serviceProvider, "dev" );
+            // mount root		
+            if( m_fileService->mountFileSystem( dev, ConstString::none(), Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
+                    , m_currentPath.c_str()
+                    );
+
+                return false;
+            }
+        }
+
         if( this->setupApplicationSetting_() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to setup application %ls"

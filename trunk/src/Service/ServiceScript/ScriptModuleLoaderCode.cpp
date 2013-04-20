@@ -1,6 +1,9 @@
 #	include "ScriptModuleLoaderCode.h"
 
 #	include "Interface/StreamInterface.h"
+#	include "Interface/ArchiveInterface.h"
+
+#   include "Logger/Logger.h"
 
 #	include <pybind/../config/python.hpp>
 
@@ -84,23 +87,49 @@ namespace Menge
         
         if( file_size == 0 )
         {
+            LOGGER_ERROR(m_serviceProvider)("ScriptModuleLoaderCode::unmarshal_code zero size"
+                );
+
             return NULL;
         }
 
-        typedef std::vector<char> TVectorChar; 
-        static TVectorChar buf;
+        size_t code_size;
+        m_stream->read( &code_size, sizeof(code_size) );
 
-        buf.resize( file_size );
+        size_t compress_size;
+        m_stream->read( &compress_size, sizeof(compress_size) );
 
-        if( file_size > 0 )
+        static TBlobject compress_buf;
+
+        compress_buf.resize( compress_size );
+
+        m_stream->read( &compress_buf[0], compress_size );
+
+        static TBlobject code_buf;
+
+        code_buf.resize( code_size );
+        
+        size_t uncompress_size;
+        if( ARCHIVE_SERVICE(m_serviceProvider)
+            ->uncompress( &code_buf[0], code_size, uncompress_size, &compress_buf[0], compress_size ) == false )
         {
-            m_stream->read( &buf[0], file_size );
+            LOGGER_ERROR(m_serviceProvider)("ScriptModuleLoaderCode::unmarshal_code uncompress failed"
+                );
+
+            return NULL;
         }
+
+        //buf.resize( file_size );
+
+        //if( file_size > 0 )
+        //{
+        //    m_stream->read( &buf[0], file_size );
+        //}
 
         m_stream->destroy();
         m_stream = NULL;
         
-        long file_magic = get_int( (unsigned char *)&buf[0] );
+        long file_magic = get_int( &code_buf[0] );
         long py_magic = PyImport_GetMagicNumber();
 
         if( file_magic != py_magic )
@@ -108,7 +137,7 @@ namespace Menge
             return NULL;
         }
 
-        PyObject * code = PyMarshal_ReadObjectFromString( &buf[0] + 8, file_size - 8 );
+        PyObject * code = PyMarshal_ReadObjectFromString( (char *)&code_buf[0] + 8, code_size - 8 );
 
         if( code == NULL )
         {

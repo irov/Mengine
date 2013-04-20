@@ -1,8 +1,6 @@
 #	pragma once
 
 #	include "Interface/XmlCodecInterface.h"
-#	include "Interface/LogSystemInterface.h"
-#	include "Interface/UnicodeInterface.h"
 
 namespace Menge
 {

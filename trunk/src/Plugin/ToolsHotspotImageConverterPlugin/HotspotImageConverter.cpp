@@ -111,8 +111,11 @@ namespace Menge
             bool validVerboseLevel( EMessageLevel _level ) const override { return true; };
 
         public:
-            void log( const char * _data, int _count, EMessageLevel _level ) override
+            void log( const char * _data, size_t _count, EMessageLevel _level ) override
             {
+                (void)_count;
+                (void)_level;
+
                 printf("%s"
                     , _data
                     );

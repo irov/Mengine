@@ -5,6 +5,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
+#	include "Interface/ArchiveInterface.h"
 #	include "Interface/XmlCodecInterface.h"
 #	include "Interface/StringizeInterface.h"
 
@@ -96,33 +97,24 @@ namespace Menge
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::importBin_( InputStreamInterface * _bin, Metabuf::Metadata * _metadata, bool * _reimport )
+	bool LoaderEngine::importBin_( InputStreamInterface * _stream, Metabuf::Metadata * _metadata, bool * _reimport )
 	{
-		int size = _bin->size();
+		int size = _stream->size();
 
 		if( size == 0 )
 		{
 			return true;
 		}
 
-		m_bufferArchive.resize( size );
+        TBlobject::value_type header_buff[Metabuf::header_size];
 
-		int reading = _bin->read( &m_bufferArchive.front(), size );
+        _stream->read( header_buff, Metabuf::header_size );
 
-		if( reading != size )
-		{
-			return false;
-		}
+        size_t header_read = 0;
+        size_t readVersion;
+        size_t needVersion;
 
-        size_t read_size = 0;
-
-        size_t readVersion = 0;
-        size_t needVersion = 0;
-
-        TBlobject::value_type * archiveBuff = &m_bufferArchive[0];
-        size_t archiveSize = m_bufferArchive.size();
-
-        if( Metacode::readHeader( archiveBuff, archiveSize, read_size, readVersion, needVersion, (void *)m_serviceProvider ) == false )
+        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, (void *)m_serviceProvider ) == false )
         {
             if( _reimport == NULL )
             {
@@ -139,8 +131,42 @@ namespace Menge
             return false;
         }
 
+        size_t bin_size;
+        _stream->read( &bin_size, sizeof(bin_size) );
+
+        m_bufferBin.resize( bin_size );
+
+        size_t compress_size;
+        _stream->read( &compress_size, sizeof(compress_size) );
+        
+		m_bufferCompress.resize( compress_size );
+
+		size_t compress_reading = _stream->read( &m_bufferCompress[0], compress_size );
+
+		if( compress_reading != compress_size )
+		{
+            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid compress size %d need %d"
+                , compress_reading
+                , compress_size
+                );
+
+			return false;
+		}
+
+        size_t uncompress_size;
+        if( ARCHIVE_SERVICE(m_serviceProvider)
+            ->uncompress( &m_bufferBin[0], bin_size, uncompress_size, &m_bufferCompress[0], compress_size ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid uncompress"
+                );
+
+            return false;
+        }
+        
+        size_t read_size = 0;
+
         size_t stringCount;
-        if( Metacode::readStrings( archiveBuff, archiveSize, read_size, stringCount, (void *)m_serviceProvider ) == false )
+        if( Metacode::readStrings( &m_bufferBin[0], bin_size, read_size, stringCount, (void *)m_serviceProvider ) == false )
         {
             return false;
         }
@@ -154,7 +180,7 @@ namespace Menge
         ++it )
         {
             size_t stringSize;
-            const char * str = Metacode::readString( archiveBuff, archiveSize, read_size, stringSize, (void *)m_serviceProvider );
+            const char * str = Metacode::readString( &m_bufferBin[0], bin_size, read_size, stringSize, (void *)m_serviceProvider );
 
             if( str == NULL )
             {
@@ -164,7 +190,7 @@ namespace Menge
             *it = Helper::stringizeStringSize(m_serviceProvider, str, stringSize);
         }
 
-        if( _metadata->parse( archiveBuff, archiveSize, read_size, (void *)this ) == false )
+        if( _metadata->parse( &m_bufferBin[0], bin_size, read_size, (void *)this ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid parse (error)"
                 );
@@ -174,7 +200,7 @@ namespace Menge
 
         m_bufferConstString.clear();
 
-        if( read_size != archiveSize )
+        if( read_size != bin_size )
         {
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid parse (read != archive)"
                 );
@@ -281,7 +307,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin )
 	{
-		XmlDecoderInterface * decoder = CODEC_SERVICE(m_serviceProvider)->createDecoderT<XmlDecoderInterface>( Helper::stringizeString(m_serviceProvider, "xml2bin"), 0 );
+		XmlDecoderInterface * decoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<XmlDecoderInterface>( Helper::stringizeString(m_serviceProvider, "xml2bin"), 0 );
 
 		if( decoder == NULL )
 		{

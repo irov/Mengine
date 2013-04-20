@@ -108,7 +108,7 @@ namespace Menge
     {
         this->convertDotToSlash_( _module );
 
-        m_modulePathCache += ".pyo";
+        m_modulePathCache += ".pyz";
 
         PyObject * packagePath = NULL;
 
@@ -121,7 +121,7 @@ namespace Menge
             m_modulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
 
             m_modulePathCache += "__init__";
-            m_modulePathCache += ".pyo";
+            m_modulePathCache += ".pyz";
 
             stream = this->findModule( m_modulePathCache );
 

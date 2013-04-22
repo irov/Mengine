@@ -61,7 +61,7 @@ namespace Menge
 	{
 		if( m_soundSource->state == ESS_STOPPING )
 		{
-			m_soundSource->state = ESS_STROPPED;
+			m_soundSource->state = ESS_STOPPED;
 		}
 		else if( m_soundSource->state == ESS_PAUSING )
 		{

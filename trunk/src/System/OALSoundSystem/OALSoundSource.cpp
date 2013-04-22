@@ -63,27 +63,27 @@ namespace Menge
 
 		m_playing = false;
 
-		if( m_sourceId != 0 )
+		if( m_sourceId == 0 )
 		{
-            float timing = 0.f;
-            if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("OALSoundSource::pause invalid get time pos %d (play %d)"
-                    , m_sourceId
-                    , m_playing
-                    );
-            }
+            return;
+        }
+         
+        float timing = 0.f;
+        if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::pause invalid get time pos %d (play %d)"
+                , m_sourceId
+                , m_playing
+                );
+        }
 
-            m_timing = timing;
+        m_timing = timing;
 
-            ALuint sourceId = m_sourceId;
-            m_sourceId = 0;
+        ALuint sourceId = m_sourceId;
+        m_sourceId = 0;
 
-			m_soundBuffer->stop( sourceId );
-// 			alSourceRewind( m_sourceId );
-// 			OAL_CHECK_ERROR();
-			m_soundSystem->releaseSourceId( sourceId );
-		}
+        m_soundBuffer->stop( sourceId );
+        m_soundSystem->releaseSourceId( sourceId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::stop()
@@ -177,7 +177,7 @@ namespace Menge
 
 		if( m_sourceId == 0 )
 		{
-			return 0.f;
+			return m_timing * 1000.f;
 		}
 			
 		float posms = 0.f;

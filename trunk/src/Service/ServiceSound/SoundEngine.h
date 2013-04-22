@@ -15,7 +15,7 @@ namespace Menge
 
 	enum ESoundSourceState
 	{
-		ESS_STROPPED = 0,	    // currently stopped
+		ESS_STOPPED = 0,	    // currently stopped
 		ESS_STOP_PLAY = 1,		// currently stopped, but need play
 		ESS_PLAYING = 2,		// currently playing
 		ESS_STOPPING = 3,		// currently playing, but need stop
@@ -120,6 +120,15 @@ namespace Menge
         bool getSoundSourceDesc_( unsigned int _emitterId, SoundSourceDesc ** _desc );
         bool getSoundSourceDesc_( unsigned int _emitterId, const SoundSourceDesc ** _desc ) const;
 
+    protected:
+        void playSounds_();
+        void stopSounds_();
+        void updateVolume_();
+
+    protected:
+        void stopSoundBufferUpdate_( SoundSourceDesc * _source );
+        void playSoundBufferUpdate_( SoundSourceDesc * _source );
+
 	protected:
 		SoundSystemInterface * m_soundSystem;
 
@@ -152,10 +161,5 @@ namespace Menge
 		bool m_muted;
 
 		bool m_turn;
-
-	private:
-		void playSounds_();
-		void stopSounds_();
-		void updateVolume_();
 	};
 };

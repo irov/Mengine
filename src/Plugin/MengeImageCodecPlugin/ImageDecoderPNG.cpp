@@ -31,7 +31,7 @@ namespace Menge
         ImageDecoderPNG * imageDecoderPNG = static_cast<ImageDecoderPNG*>(error_ptr);
         ServiceProviderInterface * serviceProvider = imageDecoderPNG->getServiceProvider();
 
-        LOGGER_WARNING(serviceProvider)( "ImageDecoderPNG::s_handlerWarning '%s'"
+        LOGGER_INFO(serviceProvider)( "ImageDecoderPNG::s_handlerWarning '%s'"
             , _error 
             );
 

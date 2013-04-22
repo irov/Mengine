@@ -210,7 +210,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::pause( ALenum _source )
 	{
-		this->stop( _source );
+		this->setUpdating( false );
+
+        m_soundSystem->clearSourceId( _source );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::stop( ALenum _source )

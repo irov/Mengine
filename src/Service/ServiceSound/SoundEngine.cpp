@@ -96,18 +96,15 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc & desc = it->second;
+            SoundSourceDesc & source = it->second;
 
-			if( desc.state == ESS_PLAYING )
+			if( source.state == ESS_PLAYING )
 			{
-				desc.soundSourceInterface->play();
+				source.soundSourceInterface->play();
 
-				if( desc.streamable == true && desc.taskSoundBufferUpdate == NULL )
+				if( source.streamable == true && source.taskSoundBufferUpdate == NULL )
 				{
-					desc.taskSoundBufferUpdate = new ThreadTaskSoundBufferUpdate(m_serviceProvider, &desc);
-
-					THREAD_SERVICE(m_serviceProvider)
-                        ->addTask( desc.taskSoundBufferUpdate );
+                    this->playSoundBufferUpdate_( &source );
 				}
 			}
 		}
@@ -121,36 +118,27 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc & desc = it->second;
+            SoundSourceDesc * source = &it->second;
 
-			if( desc.state == ESS_PLAYING )
-			{
-				if( desc.taskSoundBufferUpdate != NULL )
-				{
-					desc.taskSoundBufferUpdate->stop();
+			switch( source->state )
+            {
+            case ESS_PLAYING:
+                {
+                    if( source->taskSoundBufferUpdate != NULL )
+                    {
+                        this->stopSoundBufferUpdate_( source );
+                    }
 
-					THREAD_SERVICE(m_serviceProvider)
-                        ->joinTask( desc.taskSoundBufferUpdate );
-
-                    delete desc.taskSoundBufferUpdate;
-                    desc.taskSoundBufferUpdate = NULL;
-				}
-
-				desc.soundSourceInterface->pause();
-			}
-			else if( desc.state == ESS_STOPPING )
-			{
-				if( desc.taskSoundBufferUpdate != NULL )
-				{
-					desc.taskSoundBufferUpdate->stop();
-
-					THREAD_SERVICE(m_serviceProvider)
-                        ->joinTask( desc.taskSoundBufferUpdate );
-
-                    delete desc.taskSoundBufferUpdate;
-                    desc.taskSoundBufferUpdate = NULL;
-				}
-			}
+                    source->soundSourceInterface->pause();
+                }
+            case ESS_STOPPING:
+                {
+                    if( source->taskSoundBufferUpdate != NULL )
+                    {
+                        this->stopSoundBufferUpdate_( source );
+                    }
+                }
+            }
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -199,7 +187,7 @@ namespace Menge
 		source.taskSoundBufferUpdate = NULL;
 		source.timing = 0.f;
 		source.volume = 1.f;
-		source.state = ESS_STROPPED;        
+		source.state = ESS_STOPPED;        
 		source.type = _type;
         source.streamable = _streamable;
 		source.looped = false;
@@ -333,22 +321,16 @@ namespace Menge
 			return;
 		}
 
-        SoundSourceDesc & desc = it_find->second;
+        SoundSourceDesc & source = it_find->second;
 
-        if( desc.taskSoundBufferUpdate != NULL )
+        if( source.taskSoundBufferUpdate != NULL )
         {
-            desc.taskSoundBufferUpdate->stop();
-
-            THREAD_SERVICE(m_serviceProvider)
-                ->joinTask( desc.taskSoundBufferUpdate );
-
-            delete desc.taskSoundBufferUpdate;
-            desc.taskSoundBufferUpdate = NULL;
+            this->stopSoundBufferUpdate_( &source );
         }
 
-        desc.soundSourceInterface->stop();
+        source.soundSourceInterface->stop();
 
-        m_soundSystem->releaseSoundNode( desc.soundSourceInterface );
+        m_soundSystem->releaseSoundNode( source.soundSourceInterface );
 
 		m_soundSourceMap.erase( it_find );
 	}
@@ -406,7 +388,7 @@ namespace Menge
 
 			switch( source.state )
 			{
-			case ESS_STROPPED:
+			case ESS_STOPPED:
 			case ESS_PAUSED:
                 {
                 }break;
@@ -429,7 +411,7 @@ namespace Menge
                             }
                             else
                             {
-                                source.state = ESS_STROPPED;
+                                source.state = ESS_STOPPED;
                                 source.soundSourceInterface->stop();
                             }
 
@@ -448,7 +430,7 @@ namespace Menge
                     }
                     else
                     {
-                        source.state = ESS_STROPPED;
+                        source.state = ESS_STOPPED;
                         source.soundSourceInterface->stop();
                     }
 
@@ -483,27 +465,19 @@ namespace Menge
 
                     if( source.taskSoundBufferUpdate != NULL )
                     {
-                        source.taskSoundBufferUpdate->stop();
-
-                        THREAD_SERVICE(m_serviceProvider)
-                            ->joinTask( source.taskSoundBufferUpdate );
-
-                        delete source.taskSoundBufferUpdate;
-                        source.taskSoundBufferUpdate = NULL;
+                        this->stopSoundBufferUpdate_( &source );
                     }
 
                     source.state = ESS_PLAYING;
                     source.timing = source.soundSourceInterface->getLengthMs();
+                    source.timing -= source.soundSourceInterface->getPosMs();
                     source.soundSourceInterface->stop();
 
                     source.soundSourceInterface->play();
 
                     if( source.streamable == true )
                     {
-                        source.taskSoundBufferUpdate = new ThreadTaskSoundBufferUpdate(m_serviceProvider, &source);
-
-                        THREAD_SERVICE(m_serviceProvider)
-                            ->addTask( source.taskSoundBufferUpdate );
+                        this->playSoundBufferUpdate_( &source );
                     }
 
                     if( source.listener != NULL )
@@ -598,30 +572,23 @@ namespace Menge
 
 		switch( source->state )
 		{
-		case ESS_STROPPED:
+		case ESS_STOPPED:
             {
                 if( source->taskSoundBufferUpdate != NULL )
                 {
-                    source->taskSoundBufferUpdate->stop();
-
-                    THREAD_SERVICE(m_serviceProvider)
-                        ->joinTask( source->taskSoundBufferUpdate );
-
-                    delete source->taskSoundBufferUpdate;
-                    source->taskSoundBufferUpdate = NULL;
+                    this->stopSoundBufferUpdate_( source );
                 }
 
                 source->timing = source->soundSourceInterface->getLengthMs();
+                source->timing -= source->soundSourceInterface->getPosMs();
+
                 source->soundSourceInterface->play();
 
                 source->state = ESS_PLAYING;
 
                 if( source->streamable == true )				
                 {
-                    source->taskSoundBufferUpdate = new ThreadTaskSoundBufferUpdate(m_serviceProvider, source);
-
-                    THREAD_SERVICE(m_serviceProvider)
-                        ->addTask( source->taskSoundBufferUpdate );
+                    this->playSoundBufferUpdate_( source );
                 }
             }break;
 		case ESS_PAUSED:
@@ -658,14 +625,14 @@ namespace Menge
 
 		switch( source->state )
 		{
-		case ESS_STROPPED:
+		case ESS_STOPPED:
 		case ESS_PAUSED:
 		case ESS_STOPPING:
 		case ESS_PAUSING:
 			// nothing to do
 			break;
 		case ESS_STOP_PLAY:
-			source->state = ESS_STROPPED;
+			source->state = ESS_STOPPED;
 			break;
 		case ESS_PAUSE_PLAY:
 			source->state = ESS_PAUSED;
@@ -695,12 +662,12 @@ namespace Menge
         
         switch( source->state )
 		{
-		case ESS_STROPPED:
+		case ESS_STOPPED:
 		case ESS_STOPPING:
 			// nothing to do
 			break;
 		case ESS_STOP_PLAY:
-			source->state = ESS_STROPPED;
+			source->state = ESS_STOPPED;
 			break;
 		case ESS_PLAYING:
 		case ESS_NEED_RESTART:
@@ -881,8 +848,10 @@ namespace Menge
             return;
         }
 
-        if( source->state == ESS_STROPPED || source->state == ESS_STOPPING )
+        if( source->state == ESS_STOPPED || source->state == ESS_STOPPING )
         {
+            source->soundSourceInterface->setPosMs( _pos );
+
             return;
         }
         
@@ -890,13 +859,7 @@ namespace Menge
         
         if( hasBufferUpdate == true )
         {
-            source->taskSoundBufferUpdate->stop();
-
-            THREAD_SERVICE(m_serviceProvider)
-                ->joinTask( source->taskSoundBufferUpdate );
-
-            delete source->taskSoundBufferUpdate;
-            source->taskSoundBufferUpdate = NULL;
+            this->stopSoundBufferUpdate_( source );
         }
 
         source->soundSourceInterface->pause();
@@ -907,12 +870,29 @@ namespace Menge
 
         if( hasBufferUpdate == true )				
         {
-            source->taskSoundBufferUpdate = new ThreadTaskSoundBufferUpdate(m_serviceProvider, source);
-
-            THREAD_SERVICE(m_serviceProvider)
-                ->addTask( source->taskSoundBufferUpdate );
+            this->playSoundBufferUpdate_( source );
         }
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void SoundEngine::stopSoundBufferUpdate_( SoundSourceDesc * _source )
+    {
+        _source->taskSoundBufferUpdate->stop();
+
+        THREAD_SERVICE(m_serviceProvider)
+            ->joinTask( _source->taskSoundBufferUpdate );
+
+        delete _source->taskSoundBufferUpdate;
+        _source->taskSoundBufferUpdate = NULL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundEngine::playSoundBufferUpdate_( SoundSourceDesc * _source )
+    {
+        _source->taskSoundBufferUpdate = 
+            new ThreadTaskSoundBufferUpdate(m_serviceProvider, _source);
+
+        THREAD_SERVICE(m_serviceProvider)
+            ->addTask( _source->taskSoundBufferUpdate );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getPosMs( unsigned int _emitter ) const
 	{

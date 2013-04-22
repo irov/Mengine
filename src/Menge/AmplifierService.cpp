@@ -267,7 +267,7 @@ namespace Menge
 			return;
 		}
 
-		if(m_currentPlayList->getLooped())
+		if( m_currentPlayList->getLooped() == false )
 		{
 			m_currentPlayList->next();
 			const TrackDesc * track = m_currentPlayList->getTrack();
@@ -297,7 +297,8 @@ namespace Menge
 		this->stop();
 		//_release();
 
-		m_buffer = SOUND_SERVICE(m_serviceProvider)->createSoundBufferFromFile( _pakName, _file, _codec, true );
+		m_buffer = SOUND_SERVICE(m_serviceProvider)
+            ->createSoundBufferFromFile( _pakName, _file, _codec, true );
 
 		if( m_buffer == 0 )
 		{
@@ -308,7 +309,8 @@ namespace Menge
 			return;			
 		}
 
-		m_sourceID = SOUND_SERVICE(m_serviceProvider)->createSoundSource( false, m_buffer, EST_MUSIC, true );
+		m_sourceID = SOUND_SERVICE(m_serviceProvider)
+            ->createSoundSource( false, m_buffer, EST_MUSIC, true );
 
 		if( m_sourceID == 0 )
 		{
@@ -319,15 +321,20 @@ namespace Menge
 			return;
 		}
 		
-		SOUND_SERVICE(m_serviceProvider)->setSourceListener( m_sourceID, this );
+		SOUND_SERVICE(m_serviceProvider)
+            ->setSourceListener( m_sourceID, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::release_()
 	{
-		SOUND_SERVICE(m_serviceProvider)->releaseSoundSource( m_sourceID );
+		SOUND_SERVICE(m_serviceProvider)
+            ->releaseSoundSource( m_sourceID );
+
         m_sourceID = 0;
 
-		SOUND_SERVICE(m_serviceProvider)->releaseSoundBuffer( m_buffer );		
+		SOUND_SERVICE(m_serviceProvider)
+            ->releaseSoundBuffer( m_buffer );	
+
 		m_buffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -339,27 +346,32 @@ namespace Menge
 	void AmplifierService::setVolume( float _volume )
 	{
 		//m_volumeOverride = m_volume;
-		SOUND_SERVICE(m_serviceProvider)->setMusicVolume( _volume );
+		SOUND_SERVICE(m_serviceProvider)
+            ->setMusicVolume( _volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float AmplifierService::getPosMs() const
 	{
 		if( m_sourceID == 0 )
 		{
-			return 0.0f;
+			return 0.f;
 		}
 
-		float pos = SOUND_SERVICE(m_serviceProvider)->getPosMs( m_sourceID );
+		float pos = SOUND_SERVICE(m_serviceProvider)
+            ->getPosMs( m_sourceID );
 		
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::setPosMs( float _posMs )
 	{
-		if( m_sourceID != 0 )
+		if( m_sourceID == 0 )
 		{
-			SOUND_SERVICE(m_serviceProvider)->setPosMs( m_sourceID, _posMs );
-		}
+            return;
+        }
+		
+        SOUND_SERVICE(m_serviceProvider)
+            ->setPosMs( m_sourceID, _posMs );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

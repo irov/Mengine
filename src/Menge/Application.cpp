@@ -1208,13 +1208,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const
     {
-        LOGGER_WARNING(m_serviceProvider)("Application::findBestAspectViewport_ for aspect %f"
+        LOGGER_INFO(m_serviceProvider)("Application::findBestAspectViewport_ for aspect %f"
             , _aspect
             );
 
         if( m_aspectRatioViewports.empty() == true )
         {
-            LOGGER_WARNING(m_serviceProvider)("Application::findBestAspectViewport_ empty"
+            LOGGER_INFO(m_serviceProvider)("Application::findBestAspectViewport_ empty"
                 );
 
             return false;
@@ -1248,7 +1248,7 @@ namespace Menge
             _viewport = it_first->second;
         }
 
-        LOGGER_WARNING(m_serviceProvider)("Application::findBestAspectViewport_ best aspect %f viewport [%f, %f, %f, %f]"
+        LOGGER_INFO(m_serviceProvider)("Application::findBestAspectViewport_ best aspect %f viewport [%f, %f, %f, %f]"
             , _bestAspect
             , _viewport.begin.x
             , _viewport.begin.y
@@ -1328,7 +1328,7 @@ namespace Menge
         Resolution windowResolution;
         this->calcWindowResolution( windowResolution );
 
-        printf("Application::isValidWindowMode resolution %d:%d\n"
+        LOGGER_INFO(m_serviceProvider)("Application::isValidWindowMode resolution %d:%d\n"
             , windowResolution.getWidth()
             , windowResolution.getHeight()
             );
@@ -1340,7 +1340,7 @@ namespace Menge
 
         if( this->findBestAspectViewport_( aspect, bestAspect, aspectRatioViewport ) == true )
         {
-            printf("Application::isValidWindowMode viewport (1) %f:%f\n"
+            LOGGER_INFO(m_serviceProvider)("Application::isValidWindowMode viewport (1) %f:%f\n"
                 , aspectRatioViewport.getWidth()
                 , aspectRatioViewport.getHeight()
                 );
@@ -1353,7 +1353,7 @@ namespace Menge
         }
         else
         {
-            printf("Application::isValidWindowMode viewport (2) %d:%d\n"
+            LOGGER_INFO(m_serviceProvider)("Application::isValidWindowMode viewport (2) %d:%d\n"
                 , m_contentResolution.getWidth()
                 , m_contentResolution.getHeight()
                 );

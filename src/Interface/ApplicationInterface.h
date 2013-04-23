@@ -78,6 +78,7 @@ namespace Menge
 
 	public:
 		virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;
+        virtual bool cmd( const WString & _command ) = 0;
 	};
 
 #   define PLATFORM_SERVICE( serviceProvider )\

@@ -23,7 +23,7 @@ namespace Menge
         const String & getConvertExt() const override;
 
     public:
-		bool convert( bool & _skip ) override;
+		bool convert() override;
         	
     protected:
 		bool convert_( const FilePath & _input, const FilePath & _output );

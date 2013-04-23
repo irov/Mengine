@@ -130,8 +130,88 @@ namespace Menge
 
         converter->setOptions( &options );
 
-        bool skip;
-        if ( converter->convert( skip ) == false )
+        if( options.inputFileName.empty() == true  )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert input file is empty"
+                );
+
+            converter->destroy();
+
+            return false;
+        }
+
+        if( options.outputFileName.empty() == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert output file is empty"
+                );
+            
+            converter->destroy();
+
+            return false;
+        }
+
+        if( FILE_SERVICE(m_serviceProvider)
+            ->existFile( options.pakName, options.inputFileName, NULL ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert: input file '%s' not found"
+                , options.inputFileName.c_str()
+                );
+
+            return false;
+        }
+
+        if( FILE_SERVICE(m_serviceProvider)
+            ->existFile( options.pakName, options.outputFileName, NULL ) == true )
+        {			
+            InputStreamInterface * oldFile = FILE_SERVICE(m_serviceProvider)
+                ->openInputFile( options.pakName, options.inputFileName );
+
+            if( oldFile == NULL )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert '%s' can't open input file '%s' (time)"
+                    , _converter.c_str()
+                    , options.inputFileName.c_str()
+                    );
+
+                return false;
+            }
+
+            time_t fileTimeInput;
+            oldFile->time( fileTimeInput );
+
+            oldFile->destroy();
+            oldFile = NULL;
+
+            InputStreamInterface * newFile = FILE_SERVICE(m_serviceProvider)
+                ->openInputFile( options.pakName, options.outputFileName );
+
+            if( newFile == NULL )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert '%s' can't open output file '%s' (time)"
+                    , _converter.c_str()
+                    , options.outputFileName.c_str()
+                    );
+
+                return false;
+            }
+
+            time_t fileTimeOutput;
+            newFile->time( fileTimeOutput );
+
+            newFile->destroy();
+            newFile = NULL;
+
+            if( fileTimeInput <= fileTimeOutput )
+            {
+                _out = options.outputFileName;
+
+                converter->destroy();
+
+                return true;
+            }
+        }
+
+        if ( converter->convert() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
                 , _converter.c_str()
@@ -144,15 +224,12 @@ namespace Menge
             return false;
         }
 
-        if( skip == false )
-        {
-            LOGGER_WARNING(m_serviceProvider)( "ConverterEngine::convert '%s'\nfrom: %s\nto: %s\n"
-                , _converter.c_str()
-                , options.inputFileName.c_str()
-                , options.outputFileName.c_str()
-                );
-        }
-
+        LOGGER_WARNING(m_serviceProvider)( "ConverterEngine::convert '%s'\nfrom: %s\nto: %s\n"
+            , _converter.c_str()
+            , options.inputFileName.c_str()
+            , options.outputFileName.c_str()
+            );
+        
         _out = options.outputFileName;
         
         converter->destroy();

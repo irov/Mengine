@@ -35,107 +35,15 @@ namespace Menge
         return m_convertExt;
     }
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool HotspotImageConverterPNGToHIT::convert( bool & _skip )
-	{
-        _skip = false;
-
-		if( m_options.inputFileName.empty() == true || m_options.outputFileName.empty() == true )
-		{
-			LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert input(%s) or output(%s) file name is empty"
-                , m_options.inputFileName.c_str()
-                , m_options.outputFileName.c_str()
-                );
-
-			return false;
-		}
-
- 		const FilePath & inputFile = m_options.inputFileName;
-		
-		if( FILE_SERVICE(m_serviceProvider)
-            ->existFile( m_options.pakName, inputFile, NULL ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert: Can't open  input file '%s'"
-				, inputFile.c_str()
-				);
-
-			return false;
-		}
-
-
-        const FilePath & outputFile = m_options.outputFileName;
-        
-		if( FILE_SERVICE(m_serviceProvider)
-            ->existFile( m_options.pakName, outputFile, NULL ) == false )
-		{
-			if( this->convert_( m_options.inputFileName, outputFile ) == false)
-			{
-				LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert Can't convert png file '%s'"
-					, m_options.inputFileName.c_str()
-					);
-		
-				return false;
-			}
-		}
-		else
-		{			
-			InputStreamInterface * oldFile = FILE_SERVICE(m_serviceProvider)
-                ->openInputFile( m_options.pakName, inputFile );
-
-			if( oldFile == NULL )
-			{
-				return false;
-			}
-
-            time_t fileTimeInput;
-			oldFile->time(fileTimeInput);
-			
-            oldFile->destroy();
-			oldFile = NULL;
-
-			
-			InputStreamInterface * newFile = FILE_SERVICE(m_serviceProvider)
-                ->openInputFile( m_options.pakName, outputFile );
-
-			if( newFile == NULL )
-			{
-				return false;
-			}
-
-            time_t fileTimeOutput;
-			newFile->time(fileTimeOutput);
-
-			newFile->destroy();
-			newFile = NULL;
-
-			if( fileTimeInput > fileTimeOutput )
-			{
-				if( this->convert_( inputFile, outputFile ) == false)
-				{
-					LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert Can't convert png file '%s'"
-						, inputFile.c_str()
-						);
-							
-					return false;
-				}
-			}
-            else
-            {
-                _skip = true;
-            }
-		}
-
-		return true;
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool HotspotImageConverterPNGToHIT::convert_( const FilePath & _input, const FilePath & _output )
+	bool HotspotImageConverterPNGToHIT::convert()
 	{
         InputStreamInterface * input_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( m_options.pakName, _input );
+            ->openInputFile( m_options.pakName, m_options.inputFileName );
 
         if( input_stream == 0 )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image file '%s' was not found"
-                , _input.c_str() 
+                , m_options.inputFileName.c_str() 
                 );
 
             return NULL;
@@ -148,7 +56,7 @@ namespace Menge
         if( imageDecoder == 0 )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
-                , _input.c_str() 
+                , m_options.inputFileName.c_str() 
                 );
 
             input_stream->destroy();
@@ -179,7 +87,7 @@ namespace Menge
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_ Invalid decode %s"
-                , _input.c_str()                
+                , m_options.inputFileName.c_str()                
                 );
             
             imageDecoder->destroy();
@@ -194,12 +102,12 @@ namespace Menge
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
         OutputStreamInterface * output_stream = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( m_options.pakName, _output );
+            ->openOutputFile( m_options.pakName, m_options.outputFileName );
 
         if( output_stream == NULL )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
-                , _output.c_str() 
+                , m_options.outputFileName.c_str() 
                 , m_options.pakName.c_str()
                 );
 
@@ -212,7 +120,7 @@ namespace Menge
         if( encoder == NULL )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
-                , _output.c_str() 
+                , m_options.outputFileName.c_str() 
                 );
 
             return NULL;

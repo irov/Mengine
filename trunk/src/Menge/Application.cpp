@@ -592,10 +592,11 @@ namespace Menge
             return false;
         }
 
-#       ifdef _DEBUG
-        RESOURCE_SERVICE(m_serviceProvider)
-            ->validationResources();
-#       endif
+        if( m_developmentMode == true )
+        {
+            RESOURCE_SERVICE(m_serviceProvider)
+                ->validationResources();
+        }
 
         String personalityModule;                
         if( Helper::unicodeToUtf8( m_serviceProvider, _module, personalityModule ) == false )

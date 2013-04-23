@@ -591,7 +591,18 @@ namespace Menge
         {
             return false;
         }
-		
+
+#       ifdef _DEBUG
+        if( RESOURCE_SERVICE(m_serviceProvider)
+            ->validationResources() == false )
+        {
+            LOGGER_INFO(m_serviceProvider)( "Application:createGame validationResources failed"
+                );
+
+            return false;
+        }
+#       endif
+
         String personalityModule;                
         if( Helper::unicodeToUtf8( m_serviceProvider, _module, personalityModule ) == false )
         {

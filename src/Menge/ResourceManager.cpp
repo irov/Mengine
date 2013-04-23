@@ -114,7 +114,7 @@ namespace Menge
 
             if( resource->_loader( meta_resource ) == false )
             {
-                LOGGER_WARNING(m_serviceProvider)("ResourceManager::createResource %s type [%s] invalid load"
+                LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid load"
                     , name.c_str()
                     , type.c_str()
                     );
@@ -124,27 +124,45 @@ namespace Menge
             
             if( resource->convert() == false )
             {
-                LOGGER_WARNING(m_serviceProvider)("ResourceManager::createResource %s type [%s] invalid convert"
+                LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid convert"
                     , name.c_str()
                     , type.c_str()
                     );
 
                 continue;
             }
-
-#       ifdef _DEBUG
-            if( resource->isValid() == false )
-            {
-                LOGGER_WARNING(m_serviceProvider)("ResourceManager::createResource %s type [%s] invalid validation"
-                    , name.c_str()
-                    , type.c_str()
-                    );
-
-                continue;
-            }
-#       endif
         }
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceManager::validationResources() const
+    {
+        LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource begin (PLEASE WAIT):");
+        LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
+
+        for( TMapResource::const_iterator
+            it = m_resources.begin(),
+            it_end = m_resources.end();
+        it != it_end;
+        ++it )
+        {
+            const ResourceReference * resource = it->second.resource;
+
+            if( resource->isValid() == false )
+            {
+                LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
+                    , resource->getName().c_str()
+                    , resource->getType().c_str()
+                    );                
+            }
+        }
+
+        LOG_SERVICE(m_serviceProvider)->logMessage( Menge::LM_WARNING, "\n", 2 );
+
+        LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
+        LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource complete!");
+        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -172,6 +172,28 @@ namespace Menge
             }
         }
 
+        if( m_keyFramePackPath.empty() == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' don`t have Key Frames Pack Path"
+                , this->getName().c_str()
+                );
+
+            return false;
+        }
+
+        const ConstString& category = this->getCategory();
+
+        if( MOVIEKEYFRAME_SERVICE(m_serviceProvider)
+            ->hasMovieFramePak( category, m_keyFramePackPath ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' don`t have Key Frames Pack '%s'"
+                , this->getName().c_str()
+                , m_keyFramePackPath.c_str()
+                );
+
+            return false;
+        }
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -186,7 +208,7 @@ namespace Menge
         metadata->get_Height_Value( m_size.y );
         
         metadata->swap_KeyFramesPackPath_Path( m_keyFramePackPath );
-		
+
         m_layers.clear();
 
         const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D & includes_layer2d = metadata->get_IncludesMovieLayer2D();

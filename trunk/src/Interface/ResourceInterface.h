@@ -79,7 +79,7 @@ namespace Menge
         virtual void visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor ) const = 0;
 
     public:
-        virtual bool validationResources() const = 0; 
+        virtual void validationResources() const = 0; 
 
     public:
         virtual bool directResourceCompile( const ConstString& _name ) = 0;

@@ -593,14 +593,8 @@ namespace Menge
         }
 
 #       ifdef _DEBUG
-        if( RESOURCE_SERVICE(m_serviceProvider)
-            ->validationResources() == false )
-        {
-            LOGGER_INFO(m_serviceProvider)( "Application:createGame validationResources failed"
-                );
-
-            return false;
-        }
+        RESOURCE_SERVICE(m_serviceProvider)
+            ->validationResources();
 #       endif
 
         String personalityModule;                

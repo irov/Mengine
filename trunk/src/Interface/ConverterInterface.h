@@ -38,7 +38,7 @@ namespace Menge
         virtual const String & getConvertExt() const = 0;
 
     public:
-		virtual bool convert( bool & _skip ) = 0;
+		virtual bool convert() = 0;
 
     public:
 		virtual void destroy() = 0;

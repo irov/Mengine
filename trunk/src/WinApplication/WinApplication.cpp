@@ -2807,4 +2807,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+    bool WinApplication::cmd( const WString & _command )
+    {
+        int err = _wsystem( _command.c_str() );
+
+        if( err != 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication::cmd: command:\n%ls\nerror: %d"
+                , _command.c_str()
+                , err
+                );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -84,6 +84,7 @@ namespace Menge
 		void notifyCursorUnClipping() override;
 
 		bool openUrlInDefaultBrowser( const WString & _url ) override;
+        bool cmd( const WString & _command ) override;
 		
 		bool isSaverRunning() const;
 

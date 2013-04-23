@@ -136,7 +136,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceManager::validationResources() const
+    void ResourceManager::validationResources() const
     {
         LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource begin (PLEASE WAIT):");
         LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
@@ -154,7 +154,7 @@ namespace Menge
                 LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
                     , resource->getName().c_str()
                     , resource->getType().c_str()
-                    );                
+                    );
             }
         }
 
@@ -162,8 +162,6 @@ namespace Menge
 
         LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
         LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource complete!");
-        
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )

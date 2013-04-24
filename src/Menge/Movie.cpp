@@ -1730,11 +1730,7 @@ namespace Menge
                         break;
                     }
                     else
-                    {
-                        if( String(m_name.c_str()) == "Movie_Rain" )
-                        {
-                            printf("111");
-                        }
+                    {   
                         //this->setTiming( 0.f );
                         this->setTiming( m_frameTiming );
 

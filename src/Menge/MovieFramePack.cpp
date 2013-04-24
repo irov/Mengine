@@ -21,6 +21,16 @@ namespace Menge
 			frameLayer.frames.reserve( _count );
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool MovieFramePack::hasLayer( size_t _layerIndex ) const
+    {
+        if( (_layerIndex - 1) >= m_layers.size() )
+        {
+            return false;
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const MovieLayerFrame & MovieFramePack::getLayer( size_t _layerIndex ) const
 	{
@@ -116,16 +126,21 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const
 	{
+        if( (_layerIndex - 1) >= m_layers.size() )
+        {
+            return false;
+        }
+
 		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
 
 		if( frameLayer.immutable == false )
 		{
 			const TVectorMovieFrameSource & frameSource = frameLayer.frames;
 
-			if( frameSource.empty() == true )
-			{
-				return false;
-			}
+            if( _frameIndex >= frameSource.size() )
+            {
+                return false;
+            }
 		
 			_frame =  frameSource[_frameIndex];
 		}

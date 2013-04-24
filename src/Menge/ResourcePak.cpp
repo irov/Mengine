@@ -83,7 +83,7 @@ namespace Menge
 
         FilePath fullpath = Helper::stringizeString( m_serviceProvider, cache_fullpath );
 
-		if( FILE_SERVICE(m_serviceProvider)->mountFileSystem( m_name, fullpath, m_type, false ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, fullpath, m_type, false ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load failed to mount pak '%s:%s'"
 				, m_name.c_str()

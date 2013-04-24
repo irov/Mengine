@@ -36,8 +36,28 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool SoundConverterFFMPEGToOGG::convert()
 	{
+        if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "SoundConverterFFMPEGToOGG::convert_: not found file group '%s'"
+                , m_options.pakName.c_str()
+                );
+
+            return false;
+        }
+
+        FileGroupInterface * fileGroup = FILE_SERVICE(m_serviceProvider)
+            ->getFileGroup( m_options.pakName );
+
+        const ConstString & pakPath = fileGroup->getPath();            
+
+        String full_input = pakPath.c_str();
+        full_input += m_options.inputFileName.c_str();
+
+        String full_output = pakPath.c_str();
+        full_output += m_options.outputFileName.c_str();
+
         WString unicode_input;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, m_options.inputFileName.c_str(), m_options.inputFileName.size(), unicode_input ) == false )
+        if( Helper::utf8ToUnicodeSize( m_serviceProvider, full_input.c_str(), full_input.size(), unicode_input ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SoundConverterFFMPEGToOGG::convert_: invalid convert input utf8 to unicode %s"
                 , m_options.inputFileName.c_str()
@@ -47,7 +67,7 @@ namespace Menge
         }
                 
         WString unicode_output;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, m_options.outputFileName.c_str(), m_options.outputFileName.size(), unicode_output ) == false )
+        if( Helper::utf8ToUnicodeSize( m_serviceProvider, full_output.c_str(), full_output.size(), unicode_output ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SoundConverterFFMPEGToOGG::convert_: invalid convert output utf8 to unicode %s"
                 , m_options.outputFileName.c_str()

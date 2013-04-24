@@ -30,12 +30,12 @@ namespace Menge
 		bool initialize() override;
 
 	public:	// FileEngine Interface
-		bool mountFileSystem( const ConstString& _fileSystemName, const FilePath& _path, const ConstString & _type, bool _create ) override;
-		void unmountFileSystem( const ConstString& _fileSystemName ) override;
+		bool mountFileGroup( const ConstString& _fileSystemName, const FilePath& _path, const ConstString & _type, bool _create ) override;
+		void unmountFileGroup( const ConstString& _fileSystemName ) override;
 
     public:
-        bool hasFileSystem( const ConstString& _fileSystemName ) const override;
-        FileGroupInterface * getFileSystem( const ConstString& _fileSystemName ) const override;
+        bool hasFileGroup( const ConstString& _fileSystemName ) const override;
+        FileGroupInterface * getFileGroup( const ConstString& _fileSystemName ) const override;
         
     public:
 		bool existFile( const ConstString& _fileSystemName, const FilePath& _filename, FileGroupInterface ** _group ) const override;

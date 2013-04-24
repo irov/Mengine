@@ -37,6 +37,7 @@ namespace Menge
     class MovieFramePackInterface
     {
     public:
+        virtual bool hasLayer( size_t _layerIndex ) const = 0;
         virtual const MovieLayerFrame & getLayer( size_t _layerIndex ) const = 0;
 
     public:
@@ -49,7 +50,6 @@ namespace Menge
         SERVICE_DECLARE("MovieKeyFrameService")
 
     public:
-        virtual bool hasMovieFramePak( const ConstString & _pak, const FilePath & _path ) = 0;
         virtual MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) = 0;
         virtual void releaseMovieFramePak( MovieFramePackInterface * _framePak ) = 0;
     };

@@ -151,7 +151,7 @@ namespace Menge
 
             if( resource->isValid() == false )
             {
-                LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
+                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
                     , resource->getName().c_str()
                     , resource->getType().c_str()
                     );

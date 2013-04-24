@@ -326,7 +326,7 @@ namespace Menge
 
 
         FileGroupInterface * fileGroup = FILE_SERVICE(m_serviceProvider)
-            ->getFileSystem( _pak );
+            ->getFileGroup( _pak );
 
         if( fileGroup == NULL )
         {

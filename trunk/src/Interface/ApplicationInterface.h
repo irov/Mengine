@@ -98,22 +98,20 @@ namespace Menge
 	{
 		String baseDir;
 
-		String platformName;        		
+		String platformName;
 		String projectCodename;
 
 		Resolution contentResolution;
+        Resolution windowResolution;
 
-		bool fixedContentResolution;
-
-		Resolution windowResolution;
+		TVectorAspectRatioViewports aspectRatioViewports;
+		
 		size_t bits;
 		bool fullscreen;
-		bool vsync;		
+		bool vsync;
 
         bool windowModeCheck;
-
-        
-        TVectorAspectRatioViewports aspectRatioViewports;
+        bool fixedContentResolution;
 	};
 
 	struct ResourcePackDesc

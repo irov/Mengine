@@ -1386,7 +1386,14 @@ namespace Menge
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
-		this->setupParent_();
+		if( this->setupParent_() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't setup layer parents"
+                , m_name.c_str()
+                );
+
+            return false;
+        }
 
 		return true;
 	}
@@ -1412,7 +1419,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setupParent_()
+	bool Movie::setupParent_()
 	{
         for( TVectorNodies::reverse_iterator
             it = m_nodies.rbegin(),
@@ -1452,7 +1459,7 @@ namespace Menge
             MovieFrameSource frame;
             if( m_resourceMovie->getFrame( layer, 0, frame ) == false )
             {
-                continue;
+                return false;
             }
 
             this->updateFrameNode_( layer, node, frame );
@@ -1468,13 +1475,14 @@ namespace Menge
 						, layer.parent
 						);
 
-					continue;
+					return false;
 				}
 
 				node->setRelationTransformation( node_parent );	
 			}
-
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::removeParent_()
@@ -1723,12 +1731,18 @@ namespace Menge
                     }
                     else
                     {
+                        if( String(m_name.c_str()) == "Movie_Rain" )
+                        {
+                            printf("111");
+                        }
                         //this->setTiming( 0.f );
                         this->setTiming( m_frameTiming );
 
                         lastFrame = m_currentFrame;
 
-                        needUpdate = true;
+                        this->updateAnimatablePlay_();
+
+                        needUpdate = false;
                     }
                 }	
             }

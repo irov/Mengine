@@ -382,7 +382,7 @@ namespace Menge
 
         FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
         // mount root		
-        if( m_fileService->mountFileSystem( ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+        if( m_fileService->mountFileGroup( ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount application directory %ls"
                 , m_currentPath.c_str()
@@ -395,7 +395,7 @@ namespace Menge
         {
             ConstString dev = Helper::stringizeString( m_serviceProvider, "dev" );
             // mount root		
-            if( m_fileService->mountFileSystem( dev, ConstString::none(), Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+            if( m_fileService->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
                     , m_currentPath.c_str()
@@ -485,7 +485,7 @@ namespace Menge
         FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
         // mount user directory
-        if( m_fileService->mountFileSystem( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
+        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
                 , m_userPath.c_str()
@@ -2809,13 +2809,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     bool WinApplication::cmd( const WString & _command )
     {
-        int err = _wsystem( _command.c_str() );
+        const wchar_t * wc = _command.c_str();
+        int err = _wsystem( wc );
 
         if( err != 0 )
         {
+            int er1;
+            _get_errno(&er1);
+
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::cmd: command:\n%ls\nerror: %d"
                 , _command.c_str()
-                , err
+                , er1
                 );
 
             return false;

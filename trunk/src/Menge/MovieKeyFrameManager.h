@@ -23,7 +23,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-        bool hasMovieFramePak( const ConstString & _pak, const FilePath & _path ) override;
 		MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) override;
 		void releaseMovieFramePak( MovieFramePackInterface * _framePak ) override;
 

@@ -208,7 +208,7 @@ namespace Menge
     }
 #ifdef _DEBUG
     //////////////////////////////////////////////////////////////////////////
-    static bool getFileName( const WString & _filename, WString & _out )
+    static bool s_getFileName( const WString & _filename, WString & _out )
     {
         WString::size_type pos1 = _filename.find_last_of(L"\\");
 
@@ -256,19 +256,20 @@ namespace Menge
         WIN32_FIND_DATA wfd;
         HANDLE hFind = ::FindFirstFile( _path.c_str(), &wfd );
 
-        WString filename;
-        getFileName( _path, filename );
-
         if( hFind == INVALID_HANDLE_VALUE )
         {
-            printf("File invalid open ??? (%ls)"
-                , filename.c_str()
+            printf("File invalid find ??? (%ls)\n"
+                , _path.c_str()
                 );
         }
 
+        WString filename;
+        s_getFileName( _path, filename );
+
         if( filename != wfd.cFileName )
         {
-            printf("File invalid name lowercase|upcase:\npath - %ls\ncurrent file name - %ls\n\n"
+            printf("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
+                , _path.c_str()
                 , filename.c_str()
                 , wfd.cFileName
                 );

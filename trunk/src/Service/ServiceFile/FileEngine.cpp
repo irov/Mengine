@@ -64,7 +64,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileSystem( const ConstString& _fileSystemName, const FilePath& _path, const ConstString & _type, bool _create )
+	bool FileEngine::mountFileGroup( const ConstString& _fileSystemName, const FilePath& _path, const ConstString & _type, bool _create )
 	{
         LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%s' _type '%s'"
                        , _fileSystemName.c_str() 
@@ -113,7 +113,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unmountFileSystem( const ConstString& _fileSystemName )
+	void FileEngine::unmountFileGroup( const ConstString& _fileSystemName )
 	{
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -156,7 +156,7 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool FileEngine::hasFileSystem( const ConstString& _fileSystemName ) const
+    bool FileEngine::hasFileGroup( const ConstString& _fileSystemName ) const
     {
         TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 
@@ -168,7 +168,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	FileGroupInterface * FileEngine::getFileSystem( const ConstString& _fileSystemName ) const
+	FileGroupInterface * FileEngine::getFileGroup( const ConstString& _fileSystemName ) const
 	{
 		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 
@@ -188,7 +188,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterface * FileEngine::openInputFile( const ConstString& _fileSystemName, const FilePath & _filename )
 	{
-		FileGroupInterface * group = this->getFileSystem( _fileSystemName );
+		FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
 		if( group == NULL )
 		{
@@ -227,7 +227,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutputStreamInterface* FileEngine::openOutputFile( const ConstString & _fileSystemName, const FilePath & _filename )
 	{
-        FileGroupInterface * group = this->getFileSystem( _fileSystemName );
+        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
         if( group == NULL )
         {
@@ -293,7 +293,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const FilePath & _path )
 	{
-        FileGroupInterface * group = this->getFileSystem( _fileSystemName );
+        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
         if( group == NULL )
 		{
@@ -314,7 +314,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::removeDirectory( const ConstString& _fileSystemName, const FilePath & _path )
 	{
-        FileGroupInterface * group = this->getFileSystem( _fileSystemName );
+        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
 		if( group == NULL )
 		{
@@ -335,7 +335,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::removeFile( const ConstString& _fileSystemName, const FilePath & _filename )
 	{
-        FileGroupInterface * group = this->getFileSystem( _fileSystemName );
+        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
         if( group == NULL )
         {

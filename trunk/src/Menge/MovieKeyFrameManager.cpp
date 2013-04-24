@@ -30,20 +30,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool MovieKeyFrameManager::hasMovieFramePak( const ConstString & _pak, const FilePath & _path )
-    {
-        bool exist = false;
-
-        Metacode::Meta_KeyFramesPack keyFramesPack;
-
-        if( LOADER_SERVICE(m_serviceProvider)->load( _pak, _path, &keyFramesPack, exist ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
 	////////////////////////////////////////////////////////////////////////////////////////////
 	MovieFramePackInterface * MovieKeyFrameManager::getMovieFramePak( const ConstString & _pak, const FilePath & _path )
 	{

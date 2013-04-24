@@ -21,7 +21,8 @@ namespace Menge
 		void initializeLayer( size_t _layerIndex, size_t _count, bool _immutable );
 
 	public:
-		const MovieLayerFrame & getLayer( size_t _layerIndex ) const;
+        bool hasLayer( size_t _layerIndex ) const override;
+		const MovieLayerFrame & getLayer( size_t _layerIndex ) const override;
 
 	public:
 		bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const override;

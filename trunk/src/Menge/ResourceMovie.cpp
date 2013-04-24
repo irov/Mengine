@@ -102,6 +102,13 @@ namespace Menge
 	{
 		if( m_framePack->getLayerFrame( _layer.index, _index, _frame ) == false )
 		{
+            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getFrame %s invalid frame '%s' %d:%d"
+                , this->getName().c_str()
+                , _layer.name.c_str()
+                , _layer.index
+                , _index                
+                );
+
 			return false;
 		}
 
@@ -183,16 +190,45 @@ namespace Menge
 
         const ConstString& category = this->getCategory();
 
-        if( MOVIEKEYFRAME_SERVICE(m_serviceProvider)
-            ->hasMovieFramePak( category, m_keyFramePackPath ) == false )
+        MovieFramePackInterface * framePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
+            ->getMovieFramePak( category, m_keyFramePackPath );
+
+        if( framePack == NULL )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' don`t have Key Frames Pack '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid get Key Frames Pack '%s'"
                 , this->getName().c_str()
                 , m_keyFramePackPath.c_str()
                 );
 
             return false;
         }
+
+        for( TVectorMovieLayers::const_iterator
+            it = m_layers.begin(),
+            it_end = m_layers.end();
+        it != it_end;
+        ++it )
+        {
+            const MovieLayer & layer = *it;
+
+            if( framePack->hasLayer( layer.index ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer %d '%s'"
+                    , this->getName().c_str()
+                    , layer.index
+                    , layer.name.c_str()
+                    );
+
+                MOVIEKEYFRAME_SERVICE(m_serviceProvider)
+                    ->releaseMovieFramePak( framePack );
+
+                return false;
+            }
+        }
+
+
+        MOVIEKEYFRAME_SERVICE(m_serviceProvider)
+            ->releaseMovieFramePak( framePack );       
 
         return true;
     }

@@ -96,12 +96,12 @@ namespace Menge
         virtual bool initialize() = 0;
 
     public:
-        virtual bool mountFileSystem( const ConstString& _fileSystemName, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
-        virtual void unmountFileSystem( const ConstString& _fileSystemName ) = 0;
+        virtual bool mountFileGroup( const ConstString& _fileSystemName, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
+        virtual void unmountFileGroup( const ConstString& _fileSystemName ) = 0;
 
     public:
-        virtual bool hasFileSystem( const ConstString& _fileSystemName ) const = 0;
-        virtual FileGroupInterface * getFileSystem( const ConstString& _fileSystemName ) const = 0;
+        virtual bool hasFileGroup( const ConstString& _fileSystemName ) const = 0;
+        virtual FileGroupInterface * getFileGroup( const ConstString& _fileSystemName ) const = 0;
 
 	public:
 		virtual bool existFile( const ConstString& _fileSystemName, const FilePath & _filename, FileGroupInterface ** _group ) const = 0;

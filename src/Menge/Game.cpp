@@ -360,6 +360,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality( const ConstString & _module )
 	{
+        SCRIPT_SERVICE(m_serviceProvider)
+            ->addGlobalModule( "_DEVELOPMENT", pybind::get_bool(m_developmentMode) );
+
 		PyObject * personality = SCRIPT_SERVICE(m_serviceProvider)
 			->importModule( _module );
 
@@ -462,7 +465,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("Game::initialize failed load accounts"
                 );
 
-            return false;
+            //return false;
         }
 		
 		m_defaultArrow = ARROW_SERVICE(m_serviceProvider)
@@ -501,6 +504,7 @@ namespace Menge
             , m_platformName.c_str()
             , isMaster
             );
+
 
         bool result = false;
         EVENTABLE_ASK(this, EVENT_INITIALIZE)( result, true, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) );

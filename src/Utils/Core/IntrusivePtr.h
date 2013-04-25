@@ -9,7 +9,6 @@ namespace Menge
 	class IntrusivePtr
 	{
 	public:
-		typedef IntrusivePtr<T> this_type;
 		typedef T element_type;
 
 	public:
@@ -23,14 +22,7 @@ namespace Menge
 		{
 			this->incref();
 		}
-
-		template<class U>
-		IntrusivePtr( const IntrusivePtr<U> & _rhs )
-			: m_ptr(_rhs.get())
-		{
-			this->incref();
-		}
-
+        
 		IntrusivePtr(const IntrusivePtr & _rhs)
 			: m_ptr(_rhs.m_ptr)
 		{
@@ -42,22 +34,15 @@ namespace Menge
 			this->decref();
 		}
 
-		template<class U> 
-		IntrusivePtr & operator = ( const IntrusivePtr<U> & _rhs )
-		{
-			this_type(_rhs).swap(*this);
-			return *this;
-		}
-
 		IntrusivePtr & operator = ( const IntrusivePtr & _rhs )
 		{
-			this_type(_rhs).swap(*this);
+			IntrusivePtr(_rhs).swap(*this);
 			return *this;
 		}
 
 		IntrusivePtr & operator = ( T * _rhs )
 		{
-			this_type(_rhs).swap(*this);
+			IntrusivePtr(_rhs).swap(*this);
 			return *this;
 		}
 
@@ -115,38 +100,26 @@ namespace Menge
 		return _left.get() != _right.get();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	template<class T, class U> 
-	inline bool operator == ( const IntrusivePtr<T> & _left, const IntrusivePtr<U> & _right )
-	{
-		return _left.get() == _right.get();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	template<class T, class U> 
-	inline bool operator != ( const IntrusivePtr<T> & _left, const IntrusivePtr<U> & _right )
-	{
-		return _left.get() != _right.get();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	template<class T, class U> 
-	inline bool operator == ( const IntrusivePtr<T> & _left, const U * _right )
+	template<class T> 
+	inline bool operator == ( const IntrusivePtr<T> & _left, const T * _right )
 	{
 		return _left.get() == _right;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	template<class T, class U> 
-	inline bool operator != ( const IntrusivePtr<T> & _left, const U * _right )
+	template<class T> 
+	inline bool operator != ( const IntrusivePtr<T> & _left, const T * _right )
 	{
 		return _left.get() == _right;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	template<class T, class U> 
-	inline bool operator == ( const T * _left, const IntrusivePtr<U> & _right )
+	template<class T> 
+	inline bool operator == ( const T * _left, const IntrusivePtr<T> & _right )
 	{
 		return _left == _right.get();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	template<class T, class U> 
-	inline bool operator != ( const T * _left, const IntrusivePtr<U> & _right )
+	template<class T> 
+	inline bool operator != ( const T * _left, const IntrusivePtr<T> & _right )
 	{
 		return _left != _right.get();
 	}
@@ -157,7 +130,8 @@ namespace Menge
 		return std::less<T *>()( _left.get(), _right.get() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	template<class T> void swap( const IntrusivePtr<T> & _left, const IntrusivePtr<T> & _right )
+	template<class T> 
+    inline void swap( const IntrusivePtr<T> & _left, const IntrusivePtr<T> & _right )
 	{
 		_left.swap(_right);
 	}

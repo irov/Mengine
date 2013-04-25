@@ -12,7 +12,9 @@
 
 #	include <cstdio>
 #	include <clocale>
+
 #	include <shlobj.h>
+#   include <errno.h>
 
 #	include "LoggerConsole.h"
 
@@ -2810,16 +2812,14 @@ namespace Menge
     bool WinApplication::cmd( const WString & _command )
     {
         const wchar_t * wc = _command.c_str();
+
         int err = _wsystem( wc );
 
         if( err != 0 )
         {
-            int er1;
-            _get_errno(&er1);
-
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::cmd: command:\n%ls\nerror: %d"
                 , _command.c_str()
-                , er1
+                , errno
                 );
 
             return false;

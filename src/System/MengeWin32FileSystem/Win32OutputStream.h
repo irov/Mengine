@@ -9,8 +9,11 @@ namespace Menge
 		: public FileOutputStreamInterface
 	{
 	public:
-		Win32OutputStream( ServiceProviderInterface * _serviceProvider );
+		Win32OutputStream();
 		~Win32OutputStream();
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		bool open( const FilePath& _filename ) override;
@@ -20,7 +23,7 @@ namespace Menge
 		void flush() override;
 
     public:
-        void destroy() override;
+        bool _destroy() override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

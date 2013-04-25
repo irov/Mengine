@@ -3,14 +3,21 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 
+#   include "Core/MemoryProxyInput.h"
+
+#   include "Utils/Factory/FactoryPool.h"
+
 namespace Menge
 {
 	class Win32MappedInputStream
 		: public MappedFileInputStreamInterface
 	{
 	public:
-		Win32MappedInputStream( ServiceProviderInterface * _serviceProvider );
+		Win32MappedInputStream();
 		~Win32MappedInputStream();
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
         InputStreamInterface * createInputMemory() override;
@@ -29,7 +36,7 @@ namespace Menge
         bool time( time_t & _time ) const override;
 
     public:
-        void destroy() override;
+        bool _destroy() override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
@@ -42,6 +49,9 @@ namespace Menge
         unsigned char* m_data;
         unsigned char* m_pos;
         unsigned char* m_end;
-        size_t m_size;		
+        size_t m_size;
+
+        typedef FactoryPool<MemoryProxyInput, 16> TFactoryMemoryProxyInput;
+        TFactoryMemoryProxyInput m_factoryMemoryProxyInput;
 	};
 }	// namespace Menge

@@ -8,8 +8,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32OutputStream::Win32OutputStream( ServiceProviderInterface * _serviceProvider )		
-        : m_serviceProvider(_serviceProvider)
+	Win32OutputStream::Win32OutputStream()		
+        : m_serviceProvider(NULL)
         , m_hFile(INVALID_HANDLE_VALUE)
 	{
 	}
@@ -17,6 +17,11 @@ namespace Menge
 	Win32OutputStream::~Win32OutputStream()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Win32OutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32OutputStream::open( const FilePath& _filename )
 	{        
@@ -49,7 +54,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32OutputStream::destroy()
+	bool Win32OutputStream::_destroy()
 	{
 		if( m_hFile != INVALID_HANDLE_VALUE )
 		{
@@ -57,7 +62,7 @@ namespace Menge
 			m_hFile = INVALID_HANDLE_VALUE;
 		}
 
-        delete this;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32OutputStream::write( const void * _data, size_t _count )

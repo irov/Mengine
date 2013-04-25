@@ -85,9 +85,4 @@ namespace Menge
 
 		return false;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MemoryProxyInput::destroy()
-    {
-        delete this;
-    }
 }	// namespace Menge

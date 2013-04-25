@@ -760,7 +760,7 @@ namespace	Menge
 
         unsigned char * alphaBuffer = resourceHIT->getBuffer();
         
-		if (m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false)
+		if( m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false)
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::setEmitterImage %s changeEmitterImage Error image %s"
                 , m_name.c_str()

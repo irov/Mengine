@@ -213,7 +213,7 @@ namespace Menge
         ConstString dev = Helper::stringizeString(serviceProvider, "dev");
 
         if( FILE_SERVICE(serviceProvider)
-            ->mountFileSystem( dev, ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
+            ->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
         {
             return false;
         }

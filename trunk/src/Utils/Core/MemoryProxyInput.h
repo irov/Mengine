@@ -24,9 +24,6 @@ namespace Menge
     public:
 		bool time( time_t & _time ) const override;
 
-    public:
-        void destroy() override;
-
 	protected:
 		unsigned char* m_data;
 		unsigned char* m_pos;

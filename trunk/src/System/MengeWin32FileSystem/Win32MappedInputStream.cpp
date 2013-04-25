@@ -3,15 +3,13 @@
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
-#   include "Core/MemoryProxyInput.h"
-
 #   include "Logger/Logger.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32MappedInputStream::Win32MappedInputStream( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
+	Win32MappedInputStream::Win32MappedInputStream()
+		: m_serviceProvider(NULL)
         , m_hFile(INVALID_HANDLE_VALUE)
 		, m_hMapping(INVALID_HANDLE_VALUE)
 		, m_memory(0)
@@ -26,9 +24,14 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
+    void Win32MappedInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
     InputStreamInterface * Win32MappedInputStream::createInputMemory()
     {
-        MemoryProxyInput * memory = new MemoryProxyInput;
+        MemoryProxyInput * memory = m_factoryMemoryProxyInput.createObjectT();
 
         return memory;
     }
@@ -115,7 +118,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32MappedInputStream::destroy()
+	bool Win32MappedInputStream::_destroy()
 	{
         UnmapViewOfFile( m_memory );
 
@@ -131,7 +134,7 @@ namespace Menge
 			m_hFile = INVALID_HANDLE_VALUE;
 		}
 
-        delete this;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32MappedInputStream::read( void* _buf, size_t _count )

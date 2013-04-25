@@ -2,16 +2,8 @@
 
 #	include <algorithm>
 
-//#	define _WIN32_WINNT 0x0501
 #	include <shlobj.h>
-
-//#	include <direct.h>
 #	include <ShellAPI.h>
-
-//#	include "FileStream.h"
-#	include "Win32InputStream.h"
-#	include "Win32OutputStream.h"
-#	include "Win32MappedInputStream.h"
 
 #   include "Logger/Logger.h"
 
@@ -42,23 +34,29 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterface* Win32FileSystem::createInputStream()
 	{
-		Win32InputStream* inputStream = new Win32InputStream(m_serviceProvider);
+        Win32InputStream * inputStream = m_factoryInputStream.createObjectT();
 
+        inputStream->setServiceProvider( m_serviceProvider );
+		
 		return inputStream;
 	}
     //////////////////////////////////////////////////////////////////////////
     FileOutputStreamInterface* Win32FileSystem::createOutputStream()
     {
-        Win32OutputStream* outStream = new Win32OutputStream(m_serviceProvider);
+        Win32OutputStream * outputStream = m_factoryOutputStream.createObjectT();
 
-        return outStream;
+        outputStream->setServiceProvider( m_serviceProvider );
+
+        return outputStream;
     }
     //////////////////////////////////////////////////////////////////////////
     MappedFileInputStreamInterface * Win32FileSystem::createMappedInputStream()
     {
-        Win32MappedInputStream* inputStream = new Win32MappedInputStream(m_serviceProvider);
+        Win32MappedInputStream * mappedStream = m_factoryMappedInputStream.createObjectT();
 
-        return inputStream;
+        mappedStream->setServiceProvider( m_serviceProvider );
+
+        return mappedStream;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::existFile( const FilePath& _filename ) const

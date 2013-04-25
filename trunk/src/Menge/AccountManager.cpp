@@ -419,7 +419,7 @@ namespace Menge
                 , _accountID.c_str()
                 );
 
-            return 0;
+            return NULL;
         }       
         
 		return account;

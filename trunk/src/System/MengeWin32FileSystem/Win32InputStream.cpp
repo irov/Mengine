@@ -8,8 +8,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32InputStream::Win32InputStream( ServiceProviderInterface * _serviceProvider )
-        : m_serviceProvider(_serviceProvider)
+	Win32InputStream::Win32InputStream()
+        : m_serviceProvider(NULL)
         , m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
         , m_carriage(0)
@@ -21,7 +21,12 @@ namespace Menge
 	Win32InputStream::~Win32InputStream()
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    void Win32InputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
 	bool Win32InputStream::open( const FilePath& _filename )
 	{
         WString unicode_filename;
@@ -67,7 +72,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32InputStream::destroy()
+	bool Win32InputStream::_destroy()
 	{
 		if( m_hFile != INVALID_HANDLE_VALUE )
 		{
@@ -75,7 +80,7 @@ namespace Menge
 			m_hFile = INVALID_HANDLE_VALUE;
 		}
 
-        delete this;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32InputStream::read( void* _buf, size_t _count )

@@ -50,6 +50,8 @@ namespace Menge
         m_leftBorder = Magic_GetInterval1( m_id );
         m_rightBorder = Magic_GetInterval2( m_id );
 
+        m_rate = Magic_GetUpdateTime( m_id );
+
         MAGIC_RECT rect;
 
         if( Magic_GetBackgroundRect( m_id, &rect ) != MAGIC_SUCCESS )
@@ -57,24 +59,33 @@ namespace Menge
             return false;
         }
 
-        MAGIC_POSITION pos;
-        Magic_GetEmitterPosition( m_id, &pos );
+        if( rect.left == rect.right || rect.bottom == rect.bottom )
+        {
+            MAGIC_POSITION pos;
+            pos.x = 0.f;
+            pos.y = 0.f;
 
-        pos.x -= (float)rect.left;
-        pos.y -= (float)rect.top;
+            Magic_SetEmitterPosition( m_id, &pos );
+        }
+        else
+        {
+            MAGIC_POSITION pos;
+            Magic_GetEmitterPosition( m_id, &pos );
 
-        Magic_SetEmitterPosition( m_id, &pos );
+            pos.x -= (float)rect.left;
+            pos.y -= (float)rect.top;
 
-        m_basePosition.x = pos.x;
-        m_basePosition.y = pos.y;
+            Magic_SetEmitterPosition( m_id, &pos );
+
+            m_basePosition.x = pos.x;
+            m_basePosition.y = pos.y;
 
 #ifdef MAGIC_3D
-        m_basePosition.z = pos.z;
+            m_basePosition.z = pos.z;
 #else
-        m_basePosition.z = 0.f;
-#endif
-
-        m_rate = Magic_GetUpdateTime( m_id );
+            m_basePosition.z = 0.f;
+#endif            
+        }
                
         return true;
     }

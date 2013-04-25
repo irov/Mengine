@@ -29,9 +29,7 @@ namespace Menge
 		, m_cameraRevision(0)
 		, m_renderCamera(0)
 		, m_shallowGrave(0)
-#	ifndef MENGE_MASTER_RELEASE
 		, m_debugMaterial(NULL)
-#	endif
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -672,7 +670,6 @@ namespace Menge
 	{
 		GlobalHandleAdapter::activateGlobalHandle();
 
-//#ifndef MENGE_MASTER_RELEASE
 		const RenderMaterialGroup * mg_debug = RENDER_SERVICE(m_serviceProvider)
             ->getMaterialGroup( Helper::stringizeString(m_serviceProvider, "Debug") );
 
@@ -690,7 +687,6 @@ namespace Menge
 		ApplyColor2D applyColor( 0xFF00FF00 );
 
 		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
-//#endif // MENGE_MASTER_RELEASE
 
 		return true;
 	}
@@ -707,9 +703,7 @@ namespace Menge
 
 		GlobalHandleAdapter::deactivateGlobalHandle();
 
-//#ifndef MENGE_MASTER_RELEASE
-		m_debugMaterial = 0;
-//#endif // MENGE_MASTER_RELEASE
+		m_debugMaterial = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_afterDeactivate()
@@ -1083,7 +1077,6 @@ namespace Menge
 			m_rendering = true;
 		}
 	}
-//#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
@@ -1123,5 +1116,4 @@ namespace Menge
 				->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, m_debugBox, 5, LPT_LINE );
 		}
 	}
-//#	endif
 }

@@ -393,19 +393,18 @@ namespace Menge
             return false;
         }
 
-        if( m_developmentMode == true )
-        {
-            ConstString dev = Helper::stringizeString( m_serviceProvider, "dev" );
+#	ifndef MENGE_MASTER_RELEASE
+        ConstString dev = Helper::stringizeString( m_serviceProvider, "dev" );
             // mount root		
-            if( m_fileService->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
-                    , m_currentPath.c_str()
-                    );
+        if( m_fileService->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
+                , m_currentPath.c_str()
+                );
 
-                return false;
-            }
+            return false;
         }
+#   endif
 
         if( this->setupApplicationSetting_() == false )
         {

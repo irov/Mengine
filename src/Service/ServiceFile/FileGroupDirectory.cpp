@@ -115,8 +115,8 @@ namespace Menge
 
 		if( file->open( fullname ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed open file %s"
-                , m_fullnameCache.c_str()
+            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed open file '%s'"
+                , fullname.c_str()
                 );
 
             return false;
@@ -149,7 +149,7 @@ namespace Menge
         if( file->open( fullname ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openOutputFile failed open file %s"
-                , m_fullnameCache.c_str()
+                , fullname.c_str()
                 );
 
             return false;

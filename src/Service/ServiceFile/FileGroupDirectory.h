@@ -49,8 +49,6 @@ namespace Menge
 		FilePath m_path;
         ConstString m_type;
 
-        FileSystemInterface * m_fileSystem;
-		
-        String m_fullnameCache;        
+        FileSystemInterface * m_fileSystem;      
 	};
 }	// namespace Menge

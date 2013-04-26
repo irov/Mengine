@@ -154,7 +154,7 @@ namespace Menge
             return false;
         }
 
-		InputStreamInterface* file = 
+		InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
 
         if( file == NULL )
@@ -173,13 +173,8 @@ namespace Menge
 				, m_settingsPath.c_str() 
 				);
 
-            file->destroy();
-
 			return false;
 		}
-
-		file->destroy();
-        file = NULL;
 
 		for( TMapSettings::iterator 
 			it = m_settings.begin(), 
@@ -206,7 +201,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::save()
 	{
-		OutputStreamInterface* file = FILE_SERVICE(m_serviceProvider)
+		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
 
 		if( file == 0 )
@@ -244,14 +239,8 @@ namespace Menge
                 , m_settingsPath.c_str()
                 );
 
-            file->destroy();
-            file = NULL;
-
             return false;
         }
-
-		file->destroy();
-        file = NULL;
 
         return true;
 	}
@@ -286,7 +275,7 @@ namespace Menge
 
         ConstString fullpath = Helper::stringizeString( m_serviceProvider, cachepath );
 
-        InputStreamInterface * file = 
+        InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath );
 
         if( file == 0 )
@@ -337,8 +326,7 @@ namespace Menge
 
         TBlobject archive_blob(load_compress_size);
         file->read( &archive_blob[0], load_compress_size );
-
-        file->destroy();
+        file = nullptr;
 
         size_t check_crc32 = make_crc32( &archive_blob[0], load_compress_size );
 
@@ -378,10 +366,10 @@ namespace Menge
 
         ConstString fullpath = Helper::stringizeString( m_serviceProvider, cachepath );
 
-        OutputStreamInterface * file = FILE_SERVICE(m_serviceProvider)
+        OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), fullpath );
 
-        if( file == 0 )
+        if( file == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write file %s (not create)"
                 , m_name.c_str()
@@ -471,8 +459,6 @@ namespace Menge
 
             return false;
         }
-
-        file->destroy();
 
         return true;
     }

@@ -46,7 +46,7 @@ namespace Menge
 			return false;
 		}
         
-        InputStreamInterface * stream = 
+        InputStreamInterfacePtr stream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_fileName );
 
         if( stream == 0 )
@@ -62,8 +62,7 @@ namespace Menge
             return false;
         }
 
-        imageDecoder->destroy();
-        stream->destroy();
+        imageDecoder->destroy();        
 
 		return true;
 	}

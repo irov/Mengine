@@ -10,23 +10,19 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupDirectory::FileGroupDirectory()
-		: m_fileSystem(NULL)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupDirectory::~FileGroupDirectory()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path, const ConstString & _type, FileSystemInterface * _fileSystem, bool _create )
+	bool FileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path, const ConstString & _type, bool _create )
 	{
         m_serviceProvider = _serviceProvider;
 
 		m_path = _path;
         m_type = _type;
-
-        m_fileSystem = _fileSystem;
 
         if( this->initializeDirectory_( _create ) == false )
         {
@@ -38,7 +34,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupDirectory::initializeDirectory_( bool _create )
     {
-		if( m_fileSystem->existFile( m_path ) == true )
+		if( FILE_SYSTEM(m_serviceProvider)->existFile( m_path ) == true )
 		{
             return true;
         }
@@ -56,7 +52,7 @@ namespace Menge
 			, m_path.c_str() 
 			);
 
-		if( m_fileSystem->createFolder( m_path ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_path ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::initialize failed to create directory %s"
 				, m_path.c_str() 
@@ -87,19 +83,20 @@ namespace Menge
 	{
 		FilePath fullname = this->makeFullname_( _filename );
 
-		bool exist = m_fileSystem->existFile( fullname );
+		bool exist = FILE_SYSTEM(m_serviceProvider)->existFile( fullname );
 
         return exist;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface* FileGroupDirectory::createInputFile()
+	InputStreamInterfacePtr FileGroupDirectory::createInputFile()
 	{
-		FileInputStreamInterface * inputStream = m_fileSystem->createInputStream();
+		FileInputStreamInterfacePtr inputStream = FILE_SYSTEM(m_serviceProvider)
+            ->createInputStream();
 
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::openInputFile( const FilePath& _filename, InputStreamInterface* _stream )
+	bool FileGroupDirectory::openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _stream )
 	{
         if( _stream == NULL )
         {
@@ -111,7 +108,7 @@ namespace Menge
 
         FilePath fullname = this->makeFullname_( _filename );
 
-        FileInputStreamInterface * file = static_cast<FileInputStreamInterface*>(_stream);
+        FileInputStreamInterfacePtr file = intrusive_cast<FileInputStreamInterfacePtr>(_stream);
 
 		if( file->open( fullname ) == false )
         {
@@ -125,14 +122,15 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* FileGroupDirectory::createOutputFile()
+	OutputStreamInterfacePtr FileGroupDirectory::createOutputFile()
 	{
-        FileOutputStreamInterface * outputStream = m_fileSystem->createOutputStream();
+        FileOutputStreamInterfacePtr outputStream = FILE_SYSTEM(m_serviceProvider)
+            ->createOutputStream();
 
 		return outputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool FileGroupDirectory::openOutputFile( const FilePath & _filename, OutputStreamInterface* _stream )
+	bool FileGroupDirectory::openOutputFile( const FilePath & _filename, const OutputStreamInterfacePtr & _stream )
 	{
         if( _stream == NULL )
         {
@@ -144,7 +142,7 @@ namespace Menge
 
         FilePath fullname = this->makeFullname_( _filename );
 
-        FileOutputStreamInterface * file = static_cast<FileOutputStreamInterface*>(_stream);
+        FileOutputStreamInterface * file = intrusive_get<FileOutputStreamInterface>(_stream);
 
         if( file->open( fullname ) == false )
         {
@@ -162,7 +160,7 @@ namespace Menge
 	{
 		FilePath fullname = this->makeFullname_( _path );
 	
-		if( m_fileSystem->createFolder( fullname ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->createFolder( fullname ) == false )
         {
             return false;
         }
@@ -174,7 +172,7 @@ namespace Menge
 	{
 		FilePath fullname = this->makeFullname_( _path );
 
-		if( m_fileSystem->deleteFolder( fullname ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->deleteFolder( fullname ) == false )
         {
             return false;
         }
@@ -186,7 +184,7 @@ namespace Menge
 	{
 		FilePath fullname = this->makeFullname_( _filename );
 
-		if( m_fileSystem->deleteFile( fullname ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->deleteFile( fullname ) == false )
         {
             return false;
         }

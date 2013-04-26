@@ -1,16 +1,6 @@
-/*
- *	ImageEncoderPNG.cpp
- *
- *	Created by _Berserk_ on 22.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	include "ImageEncoderPNG.h"
+
 #	include "Utils/Logger/Logger.h"
-
-#	include "Interface/FileSystemInterface.h"
-
 #	include "Utils/Core/PixelFormat.h"
 
 namespace Menge
@@ -45,7 +35,7 @@ namespace Menge
 	static void	s_writeProc( png_structp _png_ptr, unsigned char *data, png_size_t size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		FileOutputStreamInterface* stream = static_cast<FileOutputStreamInterface*>( io_ptr );
+		OutputStreamInterface* stream = static_cast<OutputStreamInterface*>( io_ptr );
 
 		stream->write( (char*)data, size );
 	}
@@ -53,7 +43,7 @@ namespace Menge
 	static void	s_flushProc( png_structp _png_ptr ) 
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		FileOutputStreamInterface* stream = static_cast<FileOutputStreamInterface*>( io_ptr );
+		OutputStreamInterface* stream = static_cast<OutputStreamInterface*>( io_ptr );
 
 		stream->flush();
 	}
@@ -171,7 +161,7 @@ namespace Menge
 		}
 
 		// init the IO
-		png_set_write_fn( m_png_ptr, m_stream, s_writeProc, s_flushProc );
+		png_set_write_fn( m_png_ptr, m_stream.get(), s_writeProc, s_flushProc );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

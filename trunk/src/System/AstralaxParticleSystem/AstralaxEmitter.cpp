@@ -59,7 +59,7 @@ namespace Menge
             return false;
         }
 
-        if( rect.left == rect.right || rect.bottom == rect.bottom )
+        if( rect.left == rect.right || rect.bottom == rect.top )
         {
             MAGIC_POSITION pos;
             pos.x = 0.f;

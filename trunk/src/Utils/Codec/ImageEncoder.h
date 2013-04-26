@@ -14,7 +14,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const;
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, OutputStreamInterface * _stream ) override;
+        bool initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream ) override;
 
     protected:
         virtual bool _initialize();
@@ -26,11 +26,11 @@ namespace Menge
         virtual bool _invalidateOptions();
 
     public:
-        OutputStreamInterface * getStream() const override;
+        OutputStreamInterfacePtr getStream() const override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
-        OutputStreamInterface * m_stream;
+        OutputStreamInterfacePtr m_stream;
 
 		ImageCodecOptions m_options;
 	};

@@ -32,7 +32,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		InputStreamInterface * fileStream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr fileStream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( category, m_path );
 
 		if( fileStream == 0 )
@@ -45,9 +45,6 @@ namespace Menge
 		m_buffer = new char [m_bufferSize];
 
 		fileStream->read( m_buffer, m_bufferSize );
-
-		fileStream->destroy();
-        fileStream = NULL;
 
 		return true;
 	}

@@ -31,13 +31,13 @@ namespace Menge
         : public Factorable
 	{
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider, InputStreamInterface * _stream ) = 0;
+        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool setOptions( CodecOptions * _options ) = 0;
 
 	public:
-        virtual InputStreamInterface * getStream() const = 0;
+        virtual InputStreamInterfacePtr getStream() const = 0;
 		virtual const CodecDataInfo* getCodecDataInfo() const = 0;		
 
     public:
@@ -56,7 +56,7 @@ namespace Menge
         : public Factorable
 	{
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider, OutputStreamInterface * _stream ) = 0;
+        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool setOptions( CodecOptions * _options ) = 0;
@@ -65,7 +65,7 @@ namespace Menge
 		virtual unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) = 0;
 
     public:
-        virtual OutputStreamInterface * getStream() const = 0;
+        virtual OutputStreamInterfacePtr getStream() const = 0;
 	};
 
 	class EncoderFactoryInterface
@@ -94,10 +94,10 @@ namespace Menge
 		virtual void unregisterEncoder( const ConstString& _type ) = 0;
 
     public:
-		virtual DecoderInterface * createDecoder( const ConstString & _type, InputStreamInterface * _stream ) = 0; 
+		virtual DecoderInterface * createDecoder( const ConstString & _type, const InputStreamInterfacePtr & _stream ) = 0; 
 
         template<class T>
-        T * createDecoderT( const ConstString& _type, InputStreamInterface * _stream )
+        T * createDecoderT( const ConstString& _type, const InputStreamInterfacePtr & _stream )
         {
             DecoderInterface * decoder = this->createDecoder( _type, _stream );
 
@@ -105,10 +105,10 @@ namespace Menge
         }
 
     public:
-        virtual EncoderInterface * createEncoder( const ConstString& _type, OutputStreamInterface * stream ) = 0;
+        virtual EncoderInterface * createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) = 0;
 
         template<class T>
-        T * createEncoderT( const ConstString& _type, OutputStreamInterface * _stream )
+        T * createEncoderT( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
         {
             EncoderInterface * encoder = this->createEncoder( _type, _stream );
 

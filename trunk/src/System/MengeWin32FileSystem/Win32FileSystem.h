@@ -29,11 +29,11 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		FileInputStreamInterface* createInputStream() override;
-		FileOutputStreamInterface* createOutputStream() override;
+		FileInputStreamInterfacePtr createInputStream() override;
+		FileOutputStreamInterfacePtr createOutputStream() override;
 		
     public:
-        MappedFileInputStreamInterface * createMappedInputStream() override;
+        MappedFileInputStreamInterfacePtr createMappedInputStream() override;
 
     public:
 		bool existFile( const FilePath& _filename  ) const override;

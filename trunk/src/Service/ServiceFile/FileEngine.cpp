@@ -24,8 +24,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::FileEngine()
-		: m_fileSystem(NULL)
-        , m_serviceProvider(NULL)
+		: m_serviceProvider(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -46,8 +45,6 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
 
         FactoryManager::setServiceProvider( m_serviceProvider );
-
-        m_fileSystem = FILE_SYSTEM(m_serviceProvider);
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * FileEngine::getServiceProvider() const
@@ -97,7 +94,7 @@ namespace Menge
 			//fs = FactoryManager::createObjectT<FileSystem>( Consts::get()->c_builtin_empty );
 		}
 
-		if( fs->initialize( m_serviceProvider, _path, _type, m_fileSystem, _create ) == false )
+		if( fs->initialize( m_serviceProvider, _path, _type, _create ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "FileEngine::mountFileSystem can't initialize FileSystem for object '%s'"
 				, _path.c_str() 
@@ -186,7 +183,7 @@ namespace Menge
 		return fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface * FileEngine::openInputFile( const ConstString& _fileSystemName, const FilePath & _filename )
+	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _fileSystemName, const FilePath & _filename )
 	{
 		FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
@@ -199,7 +196,7 @@ namespace Menge
 			return NULL;
 		}
 
-		InputStreamInterface * file = group->createInputFile();
+		InputStreamInterfacePtr file = group->createInputFile();
 
 		if( file == 0 )
 		{
@@ -207,25 +204,23 @@ namespace Menge
 				, _fileSystemName.c_str()
 				);
 
-			return 0;
+			return NULL;
 		}
 
 		if( group->openInputFile( _filename, file ) == false )
 		{
-            file->destroy();
-
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't open input file '%s' '%s'"
 				, _fileSystemName.c_str()
 				, _filename.c_str()
 				);
 
-			return 0;
+			return NULL;
 		}		
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* FileEngine::openOutputFile( const ConstString & _fileSystemName, const FilePath & _filename )
+	OutputStreamInterfacePtr FileEngine::openOutputFile( const ConstString & _fileSystemName, const FilePath & _filename )
 	{
         FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
@@ -238,7 +233,7 @@ namespace Menge
             return NULL;
         }
 
-        OutputStreamInterface * file = group->createOutputFile();
+        OutputStreamInterfacePtr file = group->createOutputFile();
 
 		if( file == 0 )
 		{
@@ -246,27 +241,26 @@ namespace Menge
 				, _fileSystemName.c_str()
 				);
 
-			return 0;
+			return NULL;
 		}
 
 		if( group->openOutputFile( _filename, file ) == false )
 		{
-			file->destroy();
-
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't open output file '%s' '%s'"
 				, _fileSystemName.c_str()
 				, _filename.c_str()
 				);
 			
-			return 0;
+			return NULL;
 		}
 
 		return file;
 	}
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInputStreamInterface * FileEngine::openMappedInputStream( const FilePath& _filename )
+    MappedFileInputStreamInterfacePtr FileEngine::openMappedInputStream( const FilePath& _filename )
     {
-        MappedFileInputStreamInterface * mappedFile = m_fileSystem->createMappedInputStream();
+        MappedFileInputStreamInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
+            ->createMappedInputStream();
 
         if( mappedFile == 0 )
         {
@@ -282,8 +276,6 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedInputStream can't open output file '%s'"
                 , _filename.c_str()
                 );
-
-            mappedFile->destroy();
 
             return 0;
         }

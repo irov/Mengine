@@ -40,11 +40,11 @@ namespace Menge
     public:
 		bool existFile( const ConstString& _fileSystemName, const FilePath& _filename, FileGroupInterface ** _group ) const override;
 		
-		InputStreamInterface * openInputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
-		OutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
+		InputStreamInterfacePtr openInputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
+		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
         
     public:
-        MappedFileInputStreamInterface * openMappedInputStream( const FilePath& _filename ) override;     
+        MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath& _filename ) override;     
         
 	public:
 		bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path );
@@ -56,7 +56,5 @@ namespace Menge
 
 		typedef std::map<ConstString, FileGroupInterface*> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;
-
-		FileSystemInterface * m_fileSystem;
 	};
 }

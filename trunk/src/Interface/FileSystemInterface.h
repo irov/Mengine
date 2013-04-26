@@ -1,9 +1,7 @@
 #	pragma once
 
 #   include "Interface/ServiceInterface.h"
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/StreamInterface.h"
-#	include "Interface/PluginInterface.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
@@ -19,14 +17,17 @@ namespace Menge
 		virtual bool open( const FilePath & _filename ) = 0;
 	};
 
+    typedef IntrusivePtr<FileInputStreamInterface> FileInputStreamInterfacePtr;
+
 	class MappedFileInputStreamInterface
 		: public FileInputStreamInterface
 	{
 	public:
-        virtual InputStreamInterface * createInputMemory() = 0;
-        virtual void openInputMemory( InputStreamInterface * _stream, const FilePath & _filename, size_t _offset, size_t _size ) = 0;
-		//virtual void * getMemory() const = 0;
+        virtual InputStreamInterfacePtr createInputMemory() = 0;
+        virtual void openInputMemory( const InputStreamInterfacePtr & _stream, const FilePath & _filename, size_t _offset, size_t _size ) = 0;
 	};
+
+    typedef IntrusivePtr<MappedFileInputStreamInterface> MappedFileInputStreamInterfacePtr;
 	
 	class FileOutputStreamInterface
 		: public OutputStreamInterface
@@ -34,6 +35,8 @@ namespace Menge
 	public:
 		virtual bool open( const FilePath & _filename ) = 0;
 	};
+
+    typedef IntrusivePtr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
 	
 	class FileSystemInterface
         : public ServiceInterface
@@ -44,11 +47,11 @@ namespace Menge
 		virtual bool existFile( const FilePath & _filename ) const = 0;
 		
     public:
-		virtual FileInputStreamInterface* createInputStream() = 0;		
-        virtual FileOutputStreamInterface* createOutputStream() = 0;
+		virtual FileInputStreamInterfacePtr createInputStream() = 0;		
+        virtual FileOutputStreamInterfacePtr createOutputStream() = 0;
 
     public:
-        virtual MappedFileInputStreamInterface * createMappedInputStream() = 0;
+        virtual MappedFileInputStreamInterfacePtr createMappedInputStream() = 0;
 
     public:
 		virtual bool deleteFile( const FilePath & _filename ) = 0;
@@ -63,7 +66,7 @@ namespace Menge
         : public Factorable
     {
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath& _path, const ConstString & _type, FileSystemInterface * _fileSystem, bool _create ) = 0;
+        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath& _path, const ConstString & _type, bool _create ) = 0;
         virtual void finalize() = 0;
 
     public:
@@ -74,12 +77,12 @@ namespace Menge
         virtual bool existFile( const FilePath& _filename ) = 0;
 
     public:
-        virtual InputStreamInterface* createInputFile() = 0;
-        virtual bool openInputFile( const FilePath& _filename, InputStreamInterface* _stream ) = 0;
+        virtual InputStreamInterfacePtr createInputFile() = 0;
+        virtual bool openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
-        virtual OutputStreamInterface* createOutputFile() = 0;
-        virtual bool openOutputFile( const FilePath& _filename, OutputStreamInterface* _stream ) = 0;
+        virtual OutputStreamInterfacePtr createOutputFile() = 0;
+        virtual bool openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool createDirectory( const FilePath& _path ) = 0;
@@ -106,11 +109,11 @@ namespace Menge
 	public:
 		virtual bool existFile( const ConstString& _fileSystemName, const FilePath & _filename, FileGroupInterface ** _group ) const = 0;
 
-		virtual InputStreamInterface * openInputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
-		virtual OutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
+		virtual InputStreamInterfacePtr openInputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
+		virtual OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
 
     public:
-        virtual MappedFileInputStreamInterface * openMappedInputStream( const FilePath& _filename ) = 0;
+        virtual MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath& _filename ) = 0;
 
     public:
         virtual bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;

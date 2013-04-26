@@ -4,7 +4,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileLogger::FileLogger( OutputStreamInterface* _fileStream )
+	FileLogger::FileLogger( const OutputStreamInterfacePtr & _fileStream )
 		: m_stream(_fileStream)
 		, m_verboseLevel(LM_INFO)
 	{
@@ -38,7 +38,7 @@ namespace Menge
 		m_stream->flush();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* FileLogger::getStream() const
+	OutputStreamInterfacePtr FileLogger::getStream() const
 	{
 		return m_stream;
 	}

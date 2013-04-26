@@ -210,7 +210,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePak::loadText_( const ConstString & _pakName, const FilePath & _path )
     {
-        InputStreamInterface * xml_text = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr xml_text = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( _pakName, _path );
 
         if( xml_text == NULL )
@@ -228,8 +228,7 @@ namespace Menge
 
         xml_text->read( xml_buffer, xml_buffer_size );
 
-        xml_text->destroy();
-        xml_text = NULL;
+        xml_text = nullptr;
 
 
         pugi::xml_document doc;

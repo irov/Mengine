@@ -281,7 +281,7 @@ namespace Menge
 		jpeg_create_decompress( m_jpegObject );
 
 		// step 2a: specify data source (eg, a handle)
-		jpeg_menge_src( m_jpegObject, m_stream );
+		jpeg_menge_src( m_jpegObject, m_stream.get() );
 
 		// step 3: read handle parameters with jpeg_read_header()
 		jpeg_read_header( m_jpegObject, TRUE );

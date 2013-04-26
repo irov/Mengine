@@ -17,6 +17,8 @@
 #	include "pybind/system.hpp"
 #	include "Consts.h"
 
+#   include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -229,9 +231,6 @@ namespace Menge
 
 		if( m_videoDecoder != NULL )
 		{
-            InputStreamInterface * stream = m_videoDecoder->getStream();
-            stream->destroy();
-
 			m_videoDecoder->destroy();
 			m_videoDecoder = NULL;
 		}

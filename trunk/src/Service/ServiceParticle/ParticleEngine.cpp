@@ -39,10 +39,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
 	{
-		InputStreamInterface* file = 
+		InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _fileSystemName, _filename );
 
-		if( file == NULL )
+		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEngine %s can't open file %s"				
 				, _fileSystemName.c_str()
@@ -59,7 +59,7 @@ namespace Menge
 
 		file->read( &fileBuffer[0], fileSize );
 
-		file->destroy();
+		file = nullptr;
 
 		EmitterContainerInterface * container = m_particleSystem->createEmitterContainerFromMemory( &fileBuffer[0] );
 

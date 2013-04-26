@@ -7,7 +7,7 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    ScriptModuleLoaderSource::ScriptModuleLoaderSource( ServiceProviderInterface * _serviceProvider, InputStreamInterface * _stream, PyObject * _packagePath )
+    ScriptModuleLoaderSource::ScriptModuleLoaderSource( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, PyObject * _packagePath )
         : m_serviceProvider(_serviceProvider)
         , m_stream(_stream)
         , m_packagePath(_packagePath)
@@ -21,11 +21,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleLoaderSource::~ScriptModuleLoaderSource()
     {
-        if( m_stream )
-        {
-            m_stream->destroy();
-        }
-        
         if( m_packagePath )
         {
             pybind::decref( m_packagePath );
@@ -86,8 +81,7 @@ namespace Menge
         buf[file_size] = '\n';
         buf[file_size + 1] = '\0';
 
-        m_stream->destroy();
-        m_stream = NULL;
+        m_stream = nullptr;
 
         PyObject * code = Py_CompileString( &buf[0], _module, Py_file_input );
         

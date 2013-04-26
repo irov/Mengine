@@ -44,7 +44,7 @@ namespace Menge
 	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		FileInputStreamInterface* stream = static_cast<FileInputStreamInterface*>( io_ptr );
+		InputStreamInterface* stream = static_cast<InputStreamInterface*>( io_ptr );
 
 		stream->read( _data, (std::streamsize)_size );
 	}
@@ -125,7 +125,7 @@ namespace Menge
         }
 
         // init the IO
-        png_set_read_fn( m_png_ptr, m_stream, s_readProc );
+        png_set_read_fn( m_png_ptr, m_stream.get(), s_readProc );
 
         // because we have already read the signature...
         png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );

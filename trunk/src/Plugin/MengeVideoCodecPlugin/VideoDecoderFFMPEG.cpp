@@ -100,7 +100,7 @@ namespace Menge
 			 m_bufferIO //IO buffer
 			, 4096 //size of IO buffer
 			, 0 //write flag set to 0
-			, m_stream //IO source - it will be send as opaque argument to IO callbacks
+			, m_stream.get() //IO source - it will be send as opaque argument to IO callbacks
 			, ReadIOWrapper //read callback 
 			, NULL //write callback
 			, SeekIOWrapper //seek callback
@@ -453,7 +453,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::eof()
 	{
-		if( Utils::eof( m_stream ) == true )
+		if( Utils::eof( m_stream.get() ) == true )
 		{
 			return true;
 		}

@@ -238,7 +238,7 @@ namespace Menge
         ConstString inputFileName = Helper::stringizeString(serviceProvider, utf8_inputFileName);
         ConstString outputFileName = Helper::stringizeString(serviceProvider, utf8_outputFileName);
 
-        InputStreamInterface * input_stream = 
+        InputStreamInterfacePtr input_stream = 
             FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), inputFileName );
         
         if( input_stream == 0 )
@@ -260,8 +260,6 @@ namespace Menge
 
         if( imageDecoder == 0 )
         {
-            input_stream->destroy();
-
             char error[512];
             sprintf( error, "spreadingPngAlpha not found decoder for file '%s'"
                 , inputFileName.c_str()
@@ -277,7 +275,6 @@ namespace Menge
         if( decode_dataInfo->channels != 4 )
         {
             imageDecoder->destroy();
-            input_stream->destroy();
 
             Py_RETURN_NONE;
         }
@@ -299,7 +296,6 @@ namespace Menge
         if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
         {
             imageDecoder->destroy();
-            input_stream->destroy();
 
             char error[512];
             sprintf( error, "spreadingPngAlpha invalid decode file '%s'"
@@ -379,10 +375,10 @@ namespace Menge
             }
         }
 
-        OutputStreamInterface * output_stream = 
+        OutputStreamInterfacePtr output_stream = 
             FILE_SERVICE(serviceProvider)->openOutputFile( ConstString::none(), outputFileName );
 
-        if( output_stream == 0 )
+        if( output_stream == nullptr )
         {
             delete [] textureBuffer;
 
@@ -402,7 +398,6 @@ namespace Menge
         if( imageEncoder == 0 )
         {
             delete [] textureBuffer;
-            output_stream->destroy();
 
             char error[512];
             sprintf( error, "spreadingPngAlpha not found encoder for file '%s'"
@@ -451,10 +446,7 @@ namespace Menge
 
         delete [] textureBuffer;
                 
-        input_stream->destroy();
         imageDecoder->destroy(); 
-
-        output_stream->destroy();
         imageEncoder->destroy();
 
         Py_RETURN_NONE;

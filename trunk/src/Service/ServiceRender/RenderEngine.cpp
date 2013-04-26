@@ -664,9 +664,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderTextureInterface* _image, const ConstString & _fileSystemName, const FilePath & _filename )
 	{
-		OutputStreamInterface * stream = FILE_SERVICE(m_serviceProvider)->openOutputFile( _fileSystemName, _filename );
+		OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+            ->openOutputFile( _fileSystemName, _filename );
 
-		if( stream == 0 )
+		if( stream == NULL )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : can't create file '%s' '%s'"
 				, _fileSystemName.c_str()
@@ -684,8 +685,6 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : can't create encoder for filename '%s'"
 				, _filename.c_str() 
 				);
-
-			stream->destroy();
 
 			return false;
 		}
@@ -788,7 +787,7 @@ namespace Menge
 			return texture;
 		}
 		
-		InputStreamInterface * stream = 
+		InputStreamInterfacePtr stream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _filename );
 		
 		if( stream == 0 )
@@ -809,8 +808,6 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			stream->destroy();
-
 			return NULL;
 		}
 
@@ -821,8 +818,6 @@ namespace Menge
 		if( texture == NULL )
 		{
 			imageDecoder->destroy();
-
-			stream->destroy();
 
 			return NULL;
 		}
@@ -837,14 +832,10 @@ namespace Menge
 
             imageDecoder->destroy();
 
-            stream->destroy();
-
             return NULL;
         }
 
 		imageDecoder->destroy();
-
-		stream->destroy();
 		
 		this->cacheFileTexture( _filename, texture );
 		

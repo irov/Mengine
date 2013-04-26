@@ -14,7 +14,7 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageEncoder::initialize( ServiceProviderInterface * _serviceProvider, OutputStreamInterface * _stream )
+    bool ImageEncoder::initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream )
     {
         m_serviceProvider = _serviceProvider;
         m_stream = _stream;
@@ -46,7 +46,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterface * ImageEncoder::getStream() const
+    OutputStreamInterfacePtr ImageEncoder::getStream() const
     {
         return m_stream;
     }

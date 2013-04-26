@@ -50,11 +50,11 @@ namespace Menge
     //    return x;
     //}
     //////////////////////////////////////////////////////////////////////////
-    static int read_int( FileInputStreamInterface * _fileStream )
+    static int read_int( const MappedFileInputStreamInterfacePtr & _stream )
     {
         unsigned char buff[4];
 
-        _fileStream->read( buff, 4 );
+        _stream->read( buff, 4 );
 
         int value = get_int( buff );
 
@@ -74,20 +74,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupZip::FileGroupZip()
         : m_serviceProvider(NULL)
-        , m_zipMappedFile(NULL)
+        , m_zipMappedFile(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupZip::~FileGroupZip()
 	{
-		if( m_zipMappedFile != NULL )
-		{
-			m_zipMappedFile->destroy();
-            m_zipMappedFile = NULL;
-		}        
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path, const ConstString & _type, FileSystemInterface * _fileSystem, bool _create )
+	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path, const ConstString & _type, bool _create )
 	{
         (void)_create;
 
@@ -96,9 +91,10 @@ namespace Menge
         m_path = _path;
         m_type = _type;
        
-		m_zipMappedFile = _fileSystem->createMappedInputStream();
+		MappedFileInputStreamInterfacePtr zipMappedFile = FILE_SYSTEM(m_serviceProvider)
+            ->createMappedInputStream();
 
-        if( m_zipMappedFile == NULL )
+        if( zipMappedFile == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize can't create mapped input stream for path %s"
                 , m_path.c_str()
@@ -107,28 +103,25 @@ namespace Menge
             return false;
         }
         
-        if( m_zipMappedFile->open( m_path ) == false )
+        if( zipMappedFile->open( m_path ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize can't open zip file data %s"
                 , m_path.c_str()
                 );
 
-            m_zipMappedFile->destroy();
-            m_zipMappedFile = NULL;
-
             return false;
         }
-        
+       
 		//uint32 signature = 0;
         
-        size_t zip_size = m_zipMappedFile->size();
-        m_zipMappedFile->seek( zip_size - 22 );
+        size_t zip_size = zipMappedFile->size();
+        zipMappedFile->seek( zip_size - 22 );
 
-        int header_position = m_zipMappedFile->tell();
+        int header_position = zipMappedFile->tell();
 
         unsigned char endof_central_dir[22];
 
-        if( m_zipMappedFile->read( endof_central_dir, 22 ) != 22 )
+        if( zipMappedFile->read( endof_central_dir, 22 ) != 22 )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize invalid zip format %s"
                 , _path.c_str()
@@ -156,9 +149,9 @@ namespace Menge
 
 		while( true, true )
 		{
-            m_zipMappedFile->seek( header_offset );
+            zipMappedFile->seek( header_offset );
 
-			int signature = read_int( m_zipMappedFile );
+			int signature = read_int( zipMappedFile );
 
 			if( signature != 0x02014B50 )
 			{
@@ -167,27 +160,27 @@ namespace Menge
             			
             ZipCentralDirectoryFileHeader header;
 
-            m_zipMappedFile->seek( header_offset + 10 );
+            zipMappedFile->seek( header_offset + 10 );
 
-            m_zipMappedFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
-            m_zipMappedFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
-            m_zipMappedFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
-            m_zipMappedFile->read( &header.crc32, sizeof( header.crc32 ) );
-            m_zipMappedFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
-            m_zipMappedFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
-            m_zipMappedFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
-            m_zipMappedFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
-            m_zipMappedFile->read( &header.commentLen, sizeof( header.commentLen ) );
+            zipMappedFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
+            zipMappedFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
+            zipMappedFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
+            zipMappedFile->read( &header.crc32, sizeof( header.crc32 ) );
+            zipMappedFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
+            zipMappedFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
+            zipMappedFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
+            zipMappedFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
+            zipMappedFile->read( &header.commentLen, sizeof( header.commentLen ) );
 
-            m_zipMappedFile->seek( header_offset + 42 );
+            zipMappedFile->seek( header_offset + 42 );
             
             uint32 localFileHeaderOffset; 
-            m_zipMappedFile->read( &localFileHeaderOffset, sizeof(localFileHeaderOffset) );
+            zipMappedFile->read( &localFileHeaderOffset, sizeof(localFileHeaderOffset) );
 
             uint32 fileOffset = localFileHeaderOffset + 30 + header.fileNameLen + header.extraFieldLen;
 
-            m_zipMappedFile->seek( header_offset + 46 );
-            m_zipMappedFile->read( &fileNameBuffer, header.fileNameLen );
+            zipMappedFile->seek( header_offset + 46 );
+            zipMappedFile->read( &fileNameBuffer, header.fileNameLen );
 
             uint32 header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
             header_offset += header_size;
@@ -218,21 +211,18 @@ namespace Menge
             			
 			m_files.insert( std::make_pair( fileName, fi ) );
 			
-			Utils::skip( m_zipMappedFile, header.compressedSize );
+			Utils::skip( zipMappedFile.get(), header.compressedSize );
 		}
 
-        m_zipMappedFile->seek( 0 );
+        zipMappedFile->seek( 0 );
+
+        m_zipMappedFile = zipMappedFile;
 
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     void FileGroupZip::finalize()
     {
-        if( m_zipMappedFile )
-        {
-            m_zipMappedFile->destroy();
-            m_zipMappedFile = NULL;
-        }
     }
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & FileGroupZip::getPath() const
@@ -260,14 +250,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface * FileGroupZip::createInputFile()
+	InputStreamInterfacePtr FileGroupZip::createInputFile()
 	{
-		InputStreamInterface * stream = m_zipMappedFile->createInputMemory();
+		InputStreamInterfacePtr stream = m_zipMappedFile->createInputMemory();
 
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::openInputFile( const FilePath& _filename, InputStreamInterface* _stream )
+	bool FileGroupZip::openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _stream )
 	{
 		if( _stream == 0 )
 		{
@@ -287,12 +277,12 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterface* FileGroupZip::createOutputFile()
+    OutputStreamInterfacePtr FileGroupZip::createOutputFile()
     {
         return NULL;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::openOutputFile( const FilePath& _filename, OutputStreamInterface* _file )
+    bool FileGroupZip::openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _file )
     {
         (void)_filename;
         (void)_file;

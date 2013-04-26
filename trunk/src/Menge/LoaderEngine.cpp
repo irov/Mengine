@@ -41,9 +41,8 @@ namespace Menge
             , _path.c_str()
             );
 
-		InputStreamInterface * file_bin = 0;
-		
-		if( this->openBin_( _pak, _path, &file_bin, _exist ) == false )
+		InputStreamInterfacePtr file_bin;
+		if( this->openBin_( _pak, _path, file_bin, _exist ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invalid open bin %s"
                 , _path.c_str()
@@ -52,10 +51,16 @@ namespace Menge
 			return false;
 		}
 
-		if( file_bin == 0 )
+		if( file_bin == nullptr )
 		{
 			return true;
 		}
+
+        if( file_bin->getReference() == 0 )
+        {
+            printf("1111");
+        }
+
 
 		bool reimport = false;
 		bool done = this->importBin_( file_bin, _metadata, &reimport );
@@ -63,7 +68,7 @@ namespace Menge
 #	ifndef MENGE_MASTER_RELEASE
 		if( reimport == true )
 		{
-			file_bin->destroy();
+            file_bin = nullptr;
 
             static String cache_path_xml;
             
@@ -93,12 +98,10 @@ namespace Menge
 		}
 #	endif
 
-		file_bin->destroy();
-
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::importBin_( InputStreamInterface * _stream, Metabuf::Metadata * _metadata, bool * _reimport )
+	bool LoaderEngine::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metadata * _metadata, bool * _reimport )
 	{
 		int size = _stream->size();
 
@@ -213,7 +216,7 @@ namespace Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterface ** _file, bool & _exist )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist )
 	{
 		static String cache_path_xml;
         
@@ -235,15 +238,15 @@ namespace Menge
 				return false;
 			}
 
-			InputStreamInterface * file_bin = 
+			InputStreamInterfacePtr file_bin = 
                 FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path );
 
-			if( file_bin == 0 )
+			if( file_bin == nullptr )
 			{
 				return false;
 			}
 
-			*_file = file_bin;
+			_file = file_bin;
 
 			return true;
 		}
@@ -254,27 +257,25 @@ namespace Menge
 		{
 			if( this->makeBin_( _pak, path_xml, _path ) == false )
 			{
-				*_file = 0;
+				_file = nullptr;
 
 				return false;
 			}
 		}
 
-		InputStreamInterface * file_bin = 
+		InputStreamInterfacePtr file_bin = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path );
 
-		if( file_bin == 0 )
+		if( file_bin == nullptr )
 		{
 			return false;
 		}
 
-		InputStreamInterface * file_xml = 
+		InputStreamInterfacePtr file_xml = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, path_xml );
 
-		if( file_xml == 0 )
+		if( file_xml == nullptr )
 		{
-			file_bin->destroy();
-
 			return false;
 		}
 
@@ -284,24 +285,25 @@ namespace Menge
 		time_t time_bin;
 		file_bin->time( time_bin );
 
-		file_xml->destroy();
+        file_xml = nullptr;
 
 		if( time_xml > time_bin )
 		{
 			//Rebild bin file from xml
-			file_bin->destroy();
+            file_bin = nullptr;
 
 			if( this->makeBin_( _pak, path_xml, _path ) == false )
 			{
-				*_file = 0;
+				_file = nullptr;
 
 				return false;
 			}
 
-			file_bin = FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path );
+			file_bin = FILE_SERVICE(m_serviceProvider)
+                ->openInputFile( _pak, _path );
 		}
 
-		*_file = file_bin;
+		_file = file_bin;
 
 		return true;
 	}
@@ -370,7 +372,7 @@ namespace Menge
 	}
 #	else
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterface ** _file, bool & _exist )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist )
 	{
 		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, NULL ) == false )
 		{
@@ -379,15 +381,15 @@ namespace Menge
 			return false;
 		}
 
-		InputStreamInterface * file_bin = 
+		InputStreamInterfacePtr file_bin = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path );
 
-		if( file_bin == 0 )
+		if( file_bin == nullptr )
 		{
 			return false;
 		}
 
-		*_file = file_bin;
+		_file = file_bin;
 
 		return true;
 	}

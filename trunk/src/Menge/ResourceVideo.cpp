@@ -127,7 +127,7 @@ namespace Menge
     {        
         const ConstString & category = this->getCategory();
 
-        InputStreamInterface * videoStream = 
+        InputStreamInterfacePtr videoStream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_path );
 
         if( videoStream == 0 )
@@ -149,8 +149,6 @@ namespace Menge
                 , this->getName().c_str()
                 , m_path.c_str()
                 );
-
-            videoStream->destroy();
 
             return NULL;
         }

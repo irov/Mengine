@@ -44,7 +44,7 @@ namespace Menge
 
     public:
         TemplatePool()
-            : m_free(0)
+            : m_free(nullptr)
         {
         }
 
@@ -61,7 +61,7 @@ namespace Menge
 	public:
 		void * alloc()
 		{
-			if( m_free == 0 )
+			if( m_free == nullptr )
 			{
                 this->addChunk_();
 			}
@@ -75,6 +75,7 @@ namespace Menge
 		{
 			TBlock * block = reinterpret_cast<TBlock*>(_buff);
 			block->next = m_free;
+
 			m_free = block;
 		}
 

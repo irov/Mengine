@@ -238,8 +238,8 @@ namespace Menge
 
 		desc.stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( _pakName, _filename );
-
-        if( desc.stream == NULL )
+        
+        if( desc.stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "SoundEngine::createSoundBufferFromFile: Can't open sound file %s:%s"
                 , _pakName.c_str()
@@ -258,8 +258,6 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			desc.stream->destroy();
-
 			return NULL;
 		}
 
@@ -274,7 +272,6 @@ namespace Menge
                 );
 
             desc.codec->destroy();
-            desc.stream->destroy();
 
             return NULL;
         }
@@ -286,7 +283,6 @@ namespace Menge
 		else
 		{
 			desc.codec->destroy();
-			desc.stream->destroy();
 		}
 
 		return sample;
@@ -306,8 +302,6 @@ namespace Menge
 		SoundDesc & desc = it_find->second;
 
 		desc.codec->destroy();
-
-		desc.stream->destroy();
 
 		m_bufferStreams.erase( it_find );
 	}

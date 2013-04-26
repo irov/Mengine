@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 	{
-		FileInputStreamInterface* stream = static_cast<FileInputStreamInterface*>(_datasource);
+		InputStreamInterface* stream = static_cast<InputStreamInterface*>(_datasource);
 		size_t count = stream->read( _ptr, _size * _nmemb );
 
 		return count;
@@ -25,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
 	{
-		FileInputStreamInterface* stream = static_cast<FileInputStreamInterface*>(_datasource);
+		InputStreamInterface* stream = static_cast<InputStreamInterface*>(_datasource);
 		ogg_int64_t offset = _offset;
 
 		switch( _whence )
@@ -49,7 +49,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static long s_tellOgg( void * _datasource )
 	{
-		FileInputStreamInterface* stream = static_cast<FileInputStreamInterface*>(_datasource);
+		InputStreamInterface* stream = static_cast<InputStreamInterface*>(_datasource);
         size_t pos = stream->tell();
 
         long long_pos = (long)pos;
@@ -85,7 +85,7 @@ namespace Menge
         vorbisCallbacks.close_func = s_closeOgg;
 
         //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 1" );
-        int opcall_err = ov_open_callbacks( m_stream, &m_oggVorbisFile, NULL, 0, vorbisCallbacks );
+        int opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, NULL, 0, vorbisCallbacks );
         
         if( opcall_err < 0 )
         {

@@ -2,6 +2,8 @@
 
 #   include "Utils/Factory/Factorable.h"
 
+#   include <stddef.h>
+
 namespace Menge
 {
 	class FactorablePtr

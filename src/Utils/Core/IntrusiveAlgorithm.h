@@ -1,6 +1,6 @@
 #	pragma once
 
-#   include "Config/Typedef.h"
+#   include <stddef.h>
 
 namespace Menge
 {

@@ -56,12 +56,6 @@ namespace Menge
 			return true;
 		}
 
-        if( file_bin->getReference() == 0 )
-        {
-            printf("1111");
-        }
-
-
 		bool reimport = false;
 		bool done = this->importBin_( file_bin, _metadata, &reimport );
 

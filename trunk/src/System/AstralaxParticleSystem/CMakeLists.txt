@@ -1,4 +1,3 @@
-
 set( MY_LIB_NAME AstralaxParticleSystem )
 
 ADD_FILTER(

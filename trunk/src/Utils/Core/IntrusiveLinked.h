@@ -16,15 +16,15 @@ namespace Menge
 
 	public:
 		inline IntrusiveLinked()
-			: m_right(0)
-			, m_left(0)
+			: m_right(nullptr)
+			, m_left(nullptr)
 			, m_tag(EILT_ELEMENT)
 		{
 		}
 
         inline IntrusiveLinked( EIntrusiveLinkedTag _tag )
-			: m_right(0)
-			, m_left(0)
+			: m_right(nullptr)
+			, m_left(nullptr)
 			, m_tag(_tag)
 		{
 		}
@@ -102,8 +102,8 @@ namespace Menge
 				m_left->m_right = m_right;
 			}
 			
-			m_left = 0;
-			m_right = 0;
+			m_left = nullptr;
+			m_right = nullptr;
 		}
 
 		inline TPtr * leftcast() const
@@ -220,7 +220,7 @@ namespace Menge
 				return this;
 			}
 
-			return 0;
+			return nullptr;
 		}
 
 		template<class F>
@@ -248,7 +248,7 @@ namespace Menge
 				it_left = it_left->m_left;
 			}
 
-			return 0;
+			return nullptr;
 		}
 
 	public:

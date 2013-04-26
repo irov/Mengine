@@ -7,6 +7,8 @@
 
 #	include "Consts.h"
 
+#   include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -361,7 +363,7 @@ namespace Menge
 		unsigned int argb = color.getAsARGB();
 
 		ApplyColor2D applyColor( argb );
-		std::for_each( _vertices, _vertices + ResourceWindow_Count*4, applyColor );
+		std::for_each( _vertices, _vertices + ResourceWindow_Count * 4, applyColor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )

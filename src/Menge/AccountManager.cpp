@@ -439,7 +439,7 @@ namespace Menge
 			return true;
 		}
         
-		InputStreamInterface* file = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
 
         if( file == NULL )
@@ -461,7 +461,7 @@ namespace Menge
 			return false;
 		}
 
-		file->destroy();
+		file = nullptr;
 
 		//unsigned int playerCount;
 
@@ -585,7 +585,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::saveAccountsInfo()
 	{
-		OutputStreamInterface* file = FILE_SERVICE(m_serviceProvider)->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
+		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
 
 		if( file == 0 )
 		{
@@ -640,12 +640,8 @@ namespace Menge
                 , m_accountsPath.c_str()
                 );
 
-            file->destroy();
-
             return false;
         }
-
-		file->destroy();
 
         return true;
 	}

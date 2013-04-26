@@ -69,9 +69,9 @@ namespace Menge
         
         PyObject * packagePath = NULL;
 
-        InputStreamInterface * stream = this->findModule( m_modulePathCache );
+        InputStreamInterfacePtr stream = this->findModule( m_modulePathCache );
 
-        if( stream == NULL )
+        if( stream == nullptr )
         {
             m_modulePathCache.erase( m_modulePathCache.size() - 3, 3 );
 
@@ -82,7 +82,7 @@ namespace Menge
 
             stream = this->findModule( m_modulePathCache );
 
-            if( stream == NULL )
+            if( stream == nullptr )
             {
                 return pybind::ret_none();
             }
@@ -110,11 +110,11 @@ namespace Menge
 
         m_modulePathCache += ".pyz";
 
-        PyObject * packagePath = NULL;
+        PyObject * packagePath = nullptr;
 
-        InputStreamInterface * stream = this->findModule( m_modulePathCache );
+        InputStreamInterfacePtr stream = this->findModule( m_modulePathCache );
 
-        if( stream == NULL )
+        if( stream == nullptr )
         {
             m_modulePathCache.erase( m_modulePathCache.size() - 4, 4 );
 
@@ -125,7 +125,7 @@ namespace Menge
 
             stream = this->findModule( m_modulePathCache );
 
-            if( stream == NULL )
+            if( stream == nullptr )
             {
                 return pybind::ret_none();
             }
@@ -147,7 +147,7 @@ namespace Menge
         return py_loader;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterface * ScriptModuleFinder::findModule( const String & _modulePath ) const
+    InputStreamInterfacePtr ScriptModuleFinder::findModule( const String & _modulePath ) const
     {
         FileServiceInterface * fileService = FILE_SERVICE(m_serviceProvider);
                 
@@ -179,17 +179,15 @@ namespace Menge
                     continue;
                 }
 
-                InputStreamInterface * stream = fileGroup->createInputFile();
+                InputStreamInterfacePtr stream = fileGroup->createInputFile();
 
-                if( stream == NULL )
+                if( stream == nullptr )
                 {
                     return NULL;
                 }
 
                 if( fileGroup->openInputFile( cs_modulePath, stream ) == false )
                 {
-                    stream->destroy();
-
                     return NULL;
                 }
 

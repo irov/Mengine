@@ -23,7 +23,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static SI_Error s_loadIniFile( CSimpleIniCaseW & _ini, InputStreamInterface * applicationInputStream )
+	static SI_Error s_loadIniFile( CSimpleIniCaseW & _ini, const InputStreamInterfacePtr & applicationInputStream )
 	{
         size_t size = applicationInputStream->size();
 
@@ -240,10 +240,10 @@ namespace Menge
 	/////////////////////////////////////////////////////
 	bool StartupConfigLoader::load( const ConstString & _fileGroup, const FilePath & _applicationPath, StartupSettings & _settings )
 	{
-        InputStreamInterface * applicationInputStream = 
+        InputStreamInterfacePtr applicationInputStream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _applicationPath );
 
-        if( applicationInputStream == NULL )
+        if( applicationInputStream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::load Invalid open application settings %s"
                 , _applicationPath.c_str()
@@ -256,8 +256,7 @@ namespace Menge
 
 		SI_Error iniError = s_loadIniFile( m_applicationIni, applicationInputStream );
 
-        applicationInputStream->destroy();
-        applicationInputStream = NULL;
+        applicationInputStream = nullptr;
 		
 		if( iniError != 0 )
 		{
@@ -302,7 +301,7 @@ namespace Menge
 
         FilePath gameIniPath = Helper::stringizeString( m_serviceProvider, gameIniUtf8 );
 
-        InputStreamInterface * gameInputStream = 
+        InputStreamInterfacePtr gameInputStream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, gameIniPath );
 
         if( gameInputStream == NULL )
@@ -323,7 +322,7 @@ namespace Menge
 			return false;
 		}
 
-        gameInputStream->destroy();
+        gameInputStream = nullptr;
 
         String resourcesIniUtf8;
         if( Helper::unicodeToUtf8( m_serviceProvider, w_resource_path, resourcesIniUtf8 ) == false )
@@ -337,7 +336,7 @@ namespace Menge
 
         FilePath resourcesIniPath = Helper::stringizeString( m_serviceProvider, resourcesIniUtf8 );
 
-        InputStreamInterface * resourceInputStream = 
+        InputStreamInterfacePtr resourceInputStream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, resourcesIniPath );
         		
         if( resourceInputStream == NULL )
@@ -358,13 +357,13 @@ namespace Menge
 
 			return false;
 		}
-
-        resourceInputStream->destroy();
+                
+        resourceInputStream = nullptr;
 
 		return true;
 	}
 	/////////////////////////////////////////////////////
-	bool StartupConfigLoader::loadGame_( InputStreamInterface * _inputStream, StartupSettings & _settings )
+	bool StartupConfigLoader::loadGame_( const InputStreamInterfacePtr & _inputStream, StartupSettings & _settings )
 	{
 		SI_Error game_error = s_loadIniFile( m_gameIni, _inputStream );
 
@@ -404,7 +403,7 @@ namespace Menge
 		return true;
 	}
 	/////////////////////////////////////////////////////
-	bool StartupConfigLoader::loadResourcePacks_( InputStreamInterface * _inputStream, StartupSettings & _settings )
+	bool StartupConfigLoader::loadResourcePacks_( const InputStreamInterfacePtr & _inputStream, StartupSettings & _settings )
 	{
 		SI_Error error = s_loadIniFile( m_resourcePackIni, _inputStream );
 

@@ -1,5 +1,7 @@
 #   pragma once
 
+#   include "Interface/StreamInterface.h"
+
 #	include "Config/Typedef.h"
 
 #   include "Core/ConstString.h"
@@ -9,8 +11,7 @@
 
 namespace Menge
 {
-    class ServiceProviderInterface;
-    class InputStreamInterface;
+    class ServiceProviderInterface;    
 
     class ScriptModuleFinder
     {
@@ -32,11 +33,11 @@ namespace Menge
         PyObject * find_module_code_( const char * _module );        
 
     protected:
-        PyObject * get_data( InputStreamInterface * _stream );
+        PyObject * get_data( const InputStreamInterfacePtr & _stream );
         PyObject * unmarshal_code( PyObject * data );
 
     protected:
-        InputStreamInterface * findModule( const String & _modulePath ) const;
+        InputStreamInterfacePtr findModule( const String & _modulePath ) const;
 
     protected:
         void convertDotToSlash_( const char * _module );

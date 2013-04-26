@@ -21,7 +21,7 @@ namespace Menge
         return x;
     }
     //////////////////////////////////////////////////////////////////////////
-    ScriptModuleLoaderCode::ScriptModuleLoaderCode( ServiceProviderInterface * _serviceProvider, InputStreamInterface * _stream, PyObject * _packagePath )
+    ScriptModuleLoaderCode::ScriptModuleLoaderCode( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, PyObject * _packagePath )
         : m_serviceProvider(_serviceProvider)
         , m_stream(_stream)
         , m_packagePath(_packagePath)
@@ -35,11 +35,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleLoaderCode::~ScriptModuleLoaderCode()
     {
-        if( m_stream )
-        {
-            m_stream->destroy();
-        }
-
         if( m_packagePath )
         {
             pybind::decref( m_packagePath );
@@ -126,8 +121,7 @@ namespace Menge
         //    m_stream->read( &buf[0], file_size );
         //}
 
-        m_stream->destroy();
-        m_stream = NULL;
+        m_stream = nullptr;
         
         long file_magic = get_int( &code_buf[0] );
         long py_magic = PyImport_GetMagicNumber();

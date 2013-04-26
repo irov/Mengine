@@ -14,9 +14,6 @@ namespace Menge
 	class DecoderInterface;
 	class EncoderInterface;
 
-	class FileInputStreamInterface;
-	class FileOutputStreamInterface;
-
 	class CodecEngine
 		: public CodecServiceInterface
 	{
@@ -36,10 +33,10 @@ namespace Menge
 		void unregisterEncoder( const ConstString& _type ) override;
 	
     public:
-		DecoderInterface * createDecoder( const ConstString& _type, InputStreamInterface * _stream ) override;
+		DecoderInterface * createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream ) override;
 
 	public:
-		EncoderInterface * createEncoder( const ConstString& _type, OutputStreamInterface * stream ) override;
+		EncoderInterface * createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) override;
 
     public:
         bool registerCodecExt( const String & _ext, const ConstString & _codecType ) override;

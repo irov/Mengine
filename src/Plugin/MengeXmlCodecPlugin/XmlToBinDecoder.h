@@ -1,11 +1,10 @@
 #	pragma once
 
 #	include "Interface/XmlCodecInterface.h"
+#   include "Interface/InputSystemInterface.h"
 
 namespace Menge
 {
-	class InputStreamInterface;
-
 	class XmlToBinDecoder
         : public XmlDecoderInterface
 	{
@@ -13,13 +12,13 @@ namespace Menge
 		XmlToBinDecoder();
 	
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, InputStreamInterface * _stream ) override;
+        bool initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream ) override;
 
     public:
         ServiceProviderInterface * getServiceProvider() const;
 
     protected:
-        InputStreamInterface * getStream() const override;
+        InputStreamInterfacePtr getStream() const override;
 
 	public:
 		bool setOptions( CodecOptions * _options ) override;
@@ -32,7 +31,7 @@ namespace Menge
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
-        InputStreamInterface * m_stream;
+        InputStreamInterfacePtr m_stream;
 
 		XmlCodecOptions m_options;
 	};

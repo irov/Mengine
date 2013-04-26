@@ -2,14 +2,13 @@
 
 #	include "Config/Typedef.h"
 
-#   include "Utils/Factory/Factorable.h"
+#   include "Utils/Factory/FactorablePtr.h"
 #   include "Utils/Core/IntrusivePtr.h"
 
 namespace Menge
 {
-	class InputStreamInterface
-        //: public IntrusivePtr<InputStreamInterface>
-        : public Factorable
+	class InputStreamInterface        
+        : public FactorablePtr
 	{
 	public:
 		virtual size_t read( void* _buf, size_t _count ) = 0;
@@ -21,11 +20,15 @@ namespace Menge
 		virtual bool time( time_t & _time ) const = 0;
 	};
 
+    typedef IntrusivePtr<InputStreamInterface> InputStreamInterfacePtr;
+
 	class OutputStreamInterface
-        : public Factorable
+        : public FactorablePtr
 	{
 	public:
 		virtual bool write( const void* _data, size_t _count ) = 0;
 		virtual void flush() = 0;
 	};
+
+    typedef IntrusivePtr<OutputStreamInterface> OutputStreamInterfacePtr;
 }

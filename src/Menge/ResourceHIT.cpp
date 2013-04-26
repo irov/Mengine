@@ -118,7 +118,7 @@ namespace Menge
 	{
         const ConstString & category = this->getCategory();
 
-        InputStreamInterface * stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( category, m_path );
 
         if( stream == NULL )
@@ -142,8 +142,6 @@ namespace Menge
                 , m_codec.c_str()
                 );
 
-            stream->destroy();
-
             return NULL;
         }
 
@@ -159,7 +157,6 @@ namespace Menge
         m_mipmapsize = decoder->decode( m_mipmap, mipmapsize );
 
         decoder->destroy();
-        stream->destroy();
 
         if( m_mipmapsize != mipmapsize )
         {

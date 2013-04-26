@@ -20,8 +20,8 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
-        InputStreamInterface * createInputMemory() override;
-        void openInputMemory( InputStreamInterface * _stream, const FilePath & _filename, size_t _offset, size_t _size ) override;
+        InputStreamInterfacePtr createInputMemory() override;
+        void openInputMemory( const InputStreamInterfacePtr & _stream, const FilePath & _filename, size_t _offset, size_t _size ) override;
 
 	public:
 		bool open( const FilePath& _filename ) override;		

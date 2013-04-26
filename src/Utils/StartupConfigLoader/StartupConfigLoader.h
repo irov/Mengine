@@ -5,13 +5,12 @@
 #	include "Core/String.h"
 #   include "Core/FilePath.h"
 
+#   include "Interface/StreamInterface.h"
 #   include "Interface/ApplicationInterface.h"
 
 namespace Menge
 {   
     class ServiceProviderInterface;
-
-    class InputStreamInterface;
 
 	struct StartupSettings
 	{
@@ -43,8 +42,8 @@ namespace Menge
 		bool load( const ConstString & _fileGroup, const FilePath & _applicationPath, StartupSettings & _settings );
 
     protected:
-		bool loadGame_( InputStreamInterface * _inputStream, StartupSettings & _settings );
-		bool loadResourcePacks_( InputStreamInterface * _inputStream, StartupSettings & _settings );
+		bool loadGame_( const InputStreamInterfacePtr & _inputStream, StartupSettings & _settings );
+		bool loadResourcePacks_( const InputStreamInterfacePtr & _inputStream, StartupSettings & _settings );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

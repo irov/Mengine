@@ -10,6 +10,8 @@ src
     FactoryManager.cpp
     FactoryDefault.h
     FactoryPool.h
+    FactorablePtr.h
+    FactorablePtr.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

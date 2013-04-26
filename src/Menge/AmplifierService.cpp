@@ -95,7 +95,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::playTrack( const ConstString& _playlistResource, int _index, bool _looped )
 	{
-		if( loadPlayList_( _playlistResource ) == false )
+		if( this->loadPlayList_( _playlistResource ) == false )
 		{
 			return;
 		}
@@ -130,7 +130,9 @@ namespace Menge
 			return 0;
 		}
 
-		return m_currentPlayList->numTracks();
+        size_t numTracks = m_currentPlayList->numTracks();
+
+		return numTracks;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::playAllTracks( const ConstString& _playlistResource )
@@ -210,7 +212,8 @@ namespace Menge
 
 		if( m_sourceID != 0 )
 		{
-			SOUND_SERVICE(m_serviceProvider)->stop( m_sourceID );
+			SOUND_SERVICE(m_serviceProvider)
+                ->stop( m_sourceID );
 
 			release_();
 		}
@@ -225,7 +228,8 @@ namespace Menge
 
 		m_playing = false;
 
-		SOUND_SERVICE(m_serviceProvider)->pause( m_sourceID );
+		SOUND_SERVICE(m_serviceProvider)
+            ->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::onTurnSound( bool _turn )

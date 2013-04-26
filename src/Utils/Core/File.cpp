@@ -1,14 +1,11 @@
 #	include "File.h"
-#	include "String.h"
-
-#	include "Interface/StreamInterface.h"
 
 namespace Menge
 {
 	namespace Utils
 	{
 		//////////////////////////////////////////////////////////////////////////
-		void skip( InputStreamInterface * _stream, int _count )
+		void skip( InputStreamInterface * _stream, size_t _count )
 		{
 			_stream->seek( _stream->tell() + _count );
 		}

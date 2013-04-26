@@ -163,7 +163,7 @@ namespace Menge
         if( FILE_SERVICE(m_serviceProvider)
             ->existFile( options.pakName, options.outputFileName, NULL ) == true )
         {			
-            InputStreamInterface * oldFile = FILE_SERVICE(m_serviceProvider)
+            InputStreamInterfacePtr oldFile = FILE_SERVICE(m_serviceProvider)
                 ->openInputFile( options.pakName, options.inputFileName );
 
             if( oldFile == NULL )
@@ -179,10 +179,9 @@ namespace Menge
             time_t fileTimeInput;
             oldFile->time( fileTimeInput );
 
-            oldFile->destroy();
-            oldFile = NULL;
+            oldFile = nullptr;
 
-            InputStreamInterface * newFile = FILE_SERVICE(m_serviceProvider)
+            InputStreamInterfacePtr newFile = FILE_SERVICE(m_serviceProvider)
                 ->openInputFile( options.pakName, options.outputFileName );
 
             if( newFile == NULL )
@@ -198,8 +197,7 @@ namespace Menge
             time_t fileTimeOutput;
             newFile->time( fileTimeOutput );
 
-            newFile->destroy();
-            newFile = NULL;
+            newFile = nullptr;
 
             if( fileTimeInput <= fileTimeOutput )
             {

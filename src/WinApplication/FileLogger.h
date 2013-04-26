@@ -1,24 +1,22 @@
 #	pragma once
 
+#	include "Interface/StreamInterface.h"
 #	include "Interface/LogSystemInterface.h"
-
 
 namespace Menge
 {
-	class OutputStreamInterface;
-
 	class FileLogger
 		: public LoggerInterface
 	{
 	public:
-		FileLogger( OutputStreamInterface* _fileStream );
+		FileLogger( const OutputStreamInterfacePtr & _fileStream );
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
 		bool validVerboseLevel( EMessageLevel _level ) const override;
 
 	public:
-		OutputStreamInterface * getStream() const;
+		OutputStreamInterfacePtr getStream() const;
 
 	protected:
 		void log( const char * _data, size_t _count, EMessageLevel _level ) override;
@@ -27,6 +25,6 @@ namespace Menge
 	protected:
 		EMessageLevel m_verboseLevel;
 
-		OutputStreamInterface * m_stream;
+		OutputStreamInterfacePtr m_stream;
 	};
 }

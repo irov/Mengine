@@ -10,7 +10,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::load( InputStreamInterface* _file )
+	bool ConfigFile::load( const InputStreamInterfacePtr & _file )
 	{
 		if( _file == 0 )
 		{
@@ -57,7 +57,7 @@ namespace Menge
         String & m_str;
     };
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::save( OutputStreamInterface* _file )
+	bool ConfigFile::save( const OutputStreamInterfacePtr & _file )
 	{
 		if( _file == 0 )
 		{

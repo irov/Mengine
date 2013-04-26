@@ -1,16 +1,15 @@
 #	pragma once
 
+#   include "Interface/StreamInterface.h"
+
 #	include "Config/Typedef.h"
 #	include "Core/ConstString.h"
 
 namespace Menge
 {
-	class InputStreamInterface;
-	class OutputStreamInterface;
-
 	namespace Utils
 	{
-		void skip( InputStreamInterface * _stream, int _count );
+		void skip( InputStreamInterface * _stream, size_t _count );
 		bool eof( InputStreamInterface * _stream );
 	}
 };

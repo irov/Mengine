@@ -32,9 +32,11 @@ namespace Menge
     {
         if( m_homeless )
         {
-            m_homeless->destroyAllChild();
-            delete m_homeless;
+            Node * homeless = m_homeless;
             m_homeless = NULL;
+
+            homeless->destroyAllChild();
+            delete homeless;            
         }
     }
     //////////////////////////////////////////////////////////////////////////

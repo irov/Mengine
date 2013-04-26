@@ -29,18 +29,18 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterface * Win32MappedInputStream::createInputMemory()
+    InputStreamInterfacePtr Win32MappedInputStream::createInputMemory()
     {
         MemoryProxyInput * memory = m_factoryMemoryProxyInput.createObjectT();
 
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32MappedInputStream::openInputMemory( InputStreamInterface * _stream, const FilePath & _filename, size_t _offset, size_t _size )
+    void Win32MappedInputStream::openInputMemory( const InputStreamInterfacePtr & _stream, const FilePath & _filename, size_t _offset, size_t _size )
     {
         (void)_filename;
 
-        MemoryProxyInput * memory = static_cast<MemoryProxyInput *>(_stream);
+        MemoryProxyInput * memory = intrusive_get<MemoryProxyInput>(_stream);
 
         unsigned char* pMem = static_cast<unsigned char*>(m_memory);
 

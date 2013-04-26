@@ -4,6 +4,8 @@
 #	include "Kernel/Animatable.h"
 #	include "Kernel/FixedVertices.h"
 
+#   include "Interface/InputSystemInterface.h"
+
 namespace Menge
 {
     class FileServiceInterface;
@@ -18,7 +20,6 @@ namespace Menge
 	class SoundSourceInterface;
 	class RenderTextureInterface;
 	
-	class InputStreamInterface;
 	class VideoDecoderInterface;
 	
 	struct RenderMaterialGroup;

@@ -8,10 +8,6 @@
 
 namespace Menge
 {
-	class FileInputMemory;
-	class FileSystemInterface;
-	class MappedFileInputStreamInterface;
-
 	class FileGroupZip
 		: public FileGroupInterface
 	{
@@ -20,7 +16,7 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath& _path, const ConstString & _type, FileSystemInterface * _fileSystem, bool _create ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath& _path, const ConstString & _type, bool _create ) override;
 		void finalize() override;
 
     public:
@@ -31,12 +27,12 @@ namespace Menge
 		bool existFile( const FilePath& _filename ) override;
 
     public:
-		InputStreamInterface * createInputFile() override;
-		bool openInputFile( const FilePath& _filename, InputStreamInterface* _file ) override;
+		InputStreamInterfacePtr createInputFile() override;
+		bool openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _file ) override;
 
     public:
-        OutputStreamInterface* createOutputFile() override;
-        bool openOutputFile( const FilePath& _filename, OutputStreamInterface* _file ) override;
+        OutputStreamInterfacePtr createOutputFile() override;
+        bool openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _file ) override;
 
     public:
         bool createDirectory( const FilePath& _path ) override;
@@ -49,7 +45,7 @@ namespace Menge
 		FilePath m_path;
         ConstString m_type;
 
-		MappedFileInputStreamInterface* m_zipMappedFile;
+		MappedFileInputStreamInterfacePtr m_zipMappedFile;
 		
 		struct FileInfo
 		{

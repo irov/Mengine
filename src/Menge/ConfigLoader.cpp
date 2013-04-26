@@ -29,10 +29,10 @@ namespace Menge
 			return false;
 		}
 
-		InputStreamInterface * file = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( _fileSystemName, _filename );
 
-		if( file == NULL )
+		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ConfigLoader::loadFile: not found ini file %s:%s"
 				, _fileSystemName.c_str()
@@ -47,8 +47,6 @@ namespace Menge
 			return false;
 		}
 		
-		file->destroy();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

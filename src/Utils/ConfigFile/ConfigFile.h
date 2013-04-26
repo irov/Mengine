@@ -1,5 +1,7 @@
 #	pragma once
 
+#   include "Interface/StreamInterface.h"
+
 #	include "SimpleIni.h"
 
 #	include "Core/String.h"
@@ -7,18 +9,15 @@
 #	include "stdio.h"
 
 namespace Menge
-{
-	class InputStreamInterface;
-	class OutputStreamInterface;
-
+{	
 	class ConfigFile
 	{
 	public:
 		ConfigFile();
 
 	public:
-		bool load( InputStreamInterface* _file );
-		bool save( OutputStreamInterface* _file );
+		bool load( const InputStreamInterfacePtr & _file );
+		bool save( const OutputStreamInterfacePtr & _file );
 
 	public:
 		bool getSetting( const WString& _section, const WString& _key, WString & _value ) const;

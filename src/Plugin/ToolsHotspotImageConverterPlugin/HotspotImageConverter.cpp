@@ -210,7 +210,7 @@ namespace Menge
             ->loadPlugin( "MengeHotspotImageConverterPlugin.dll" );
 
         if( FILE_SERVICE(serviceProvider)
-            ->mountFileSystem( Helper::stringizeString(serviceProvider, ""), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
+            ->mountFileGroup( Helper::stringizeString(serviceProvider, ""), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
         {
             return false;
         }
@@ -262,8 +262,7 @@ namespace Menge
         
         converter->setOptions( &options );
 
-        bool skip;
-        if( converter->convert( skip ) == false )
+        if( converter->convert() == false )
         {
             converter->destroy();
  

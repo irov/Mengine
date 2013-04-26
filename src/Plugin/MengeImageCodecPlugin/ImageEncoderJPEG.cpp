@@ -22,7 +22,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_destination_mgr pub;
 
-		OutputStreamInterface * m_stream;
+		OutputStreamInterfacePtr m_stream;
 		/// start of buffer
 		JOCTET * buffer;
 	} DestinationManager;
@@ -129,8 +129,7 @@ namespace Menge
 	//Prepare for output to a stdio stream.
 	//The caller must have already opened the stream, and is responsible
 	//for closing it after finishing compression.
-	GLOBAL(void)
-		jpeg_menge_dst (j_compress_ptr cinfo, OutputStreamInterface* _stream ) 
+	GLOBAL(void) jpeg_menge_dst(j_compress_ptr cinfo, OutputStreamInterface * _stream ) 
 	{
 			menge_dst_ptr dest;
 
@@ -229,7 +228,7 @@ namespace Menge
 
 		jpeg_create_compress( m_jpegObject );
 
-		jpeg_menge_dst( m_jpegObject, m_stream );
+		jpeg_menge_dst( m_jpegObject, m_stream.get() );
 
 		return true;
 	}

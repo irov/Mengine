@@ -9,7 +9,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool PickEncoder::initialize( ServiceProviderInterface * _serviceProvider, OutputStreamInterface * _stream )
+    bool PickEncoder::initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream )
     {
         m_serviceProvider = _serviceProvider;
         m_stream = _stream;
@@ -41,7 +41,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterface * PickEncoder::getStream() const
+    OutputStreamInterfacePtr PickEncoder::getStream() const
     {
         return m_stream;
     }

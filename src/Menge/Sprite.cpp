@@ -16,6 +16,8 @@
 //#	 include "ResourceTexture.h"
 //#	include "Kernel/Affector.h"
 
+#   include <algorithm>
+
 namespace	Menge
 {
 	enum ESpriteVerticesInvalidate

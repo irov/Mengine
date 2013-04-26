@@ -22,7 +22,10 @@ namespace Menge
 
 	protected:
 		Factory * m_factory;
+
+#   ifdef _DEBUG
         bool m_destroy;
+#   endif
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline Factory * Factorable::getFactory() const

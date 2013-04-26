@@ -14,7 +14,7 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::initialize( ServiceProviderInterface * _serviceProvider, InputStreamInterface * _stream )
+    bool VideoDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )
     {
         m_serviceProvider = _serviceProvider;
         m_stream = _stream;
@@ -46,7 +46,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterface * VideoDecoder::getStream() const
+    InputStreamInterfacePtr VideoDecoder::getStream() const
     {
         return m_stream;
     }

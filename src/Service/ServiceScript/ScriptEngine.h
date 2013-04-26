@@ -22,8 +22,6 @@ namespace Menge
 
     class ScriptModuleFinder;	
 
-    class InputStreamInterface;
-
 	class ScriptEngine
 		: public ScriptServiceInterface
 	{

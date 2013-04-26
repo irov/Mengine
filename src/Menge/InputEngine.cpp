@@ -3,6 +3,8 @@
 
 #	include "NotificationService.h"
 
+#   include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( InputService, Menge::InputServiceInterface, Menge::InputEngine );
 //////////////////////////////////////////////////////////////////////////
@@ -195,7 +197,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::removeMousePositionProvider( InputMousePositionProvider * _provider )
 	{
-        TVectorMousePositionProviders::iterator it_found = std::find( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), _provider );
+        TVectorMousePositionProviders::iterator it_found = 
+            std::find( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), _provider );
 
         if( it_found == m_mousePositionProviders.end() )
         {

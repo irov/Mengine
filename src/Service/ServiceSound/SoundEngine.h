@@ -3,6 +3,7 @@
 #	include "Core/ConstString.h"
 #	include	"math/vec3.h"
 
+#   include "Interface/StreamInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
 #	include <vector>
@@ -10,8 +11,7 @@
 
 namespace Menge
 {
-    class ThreadTaskSoundBufferUpdate;
-	class InputStreamInterface;
+    class ThreadTaskSoundBufferUpdate;	
 
 	enum ESoundSourceState
 	{
@@ -143,7 +143,7 @@ namespace Menge
 
 		struct SoundDesc
 		{
-			InputStreamInterface * stream;
+			InputStreamInterfacePtr stream;
 			SoundDecoderInterface * codec;
 		};
 

@@ -52,7 +52,7 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterface * XmlToBinDecoder::getStream() const
+    InputStreamInterfacePtr XmlToBinDecoder::getStream() const
     {
         return m_stream;
     }
@@ -69,7 +69,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlToBinDecoder::initialize( ServiceProviderInterface * _serviceProvider, InputStreamInterface * _stream )
+	bool XmlToBinDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )
 	{
         m_serviceProvider = _serviceProvider;
         m_stream = _stream;
@@ -84,7 +84,7 @@ namespace Menge
 
         ConstString dev = Helper::stringizeStringSize( m_serviceProvider, "dev", 3 );
 
-        InputStreamInterface * protocol_stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr protocol_stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( dev, m_options.pathProtocol );
 
 		//FILE * file_protocol = _wfopen( unicode_pathProtocol.c_str(), L"rb" );
@@ -102,7 +102,7 @@ namespace Menge
 
 		TBlobject protocol_buf(protocol_size);
         protocol_stream->read( &protocol_buf[0], protocol_size );
-        protocol_stream->destroy();
+        protocol_stream = nullptr;
 
         Metabuf::XmlProtocol xml_protocol;
 
@@ -116,7 +116,7 @@ namespace Menge
             return 0;
         }
         	
-        InputStreamInterface * xml_stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr xml_stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( dev, m_options.pathXml );
 
         if( xml_stream == NULL )
@@ -141,9 +141,9 @@ namespace Menge
 
         TBlobject xml_buf(xml_size);
         xml_stream->read( &xml_buf[0], xml_size );
-        xml_stream->destroy();
+        xml_stream = nullptr;
 
-        OutputStreamInterface * bin_stream = FILE_SERVICE(m_serviceProvider)
+        OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( dev, m_options.pathBin );
 
         if( bin_stream == NULL )
@@ -214,7 +214,6 @@ namespace Menge
         bin_stream->write( &bin_size, sizeof(bin_size) );
         bin_stream->write( &compress_size, sizeof(compress_size) );
         bin_stream->write( &compress_buf[0], compress_size );
-        bin_stream->destroy();
 		
 		return bin_size;
 	}

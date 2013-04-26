@@ -1,5 +1,7 @@
 #   pragma once
 
+#   include "Interface/StreamInterface.h"
+
 #	include "Config/Typedef.h"
 #   include "Core/ConstString.h"
 
@@ -7,13 +9,12 @@
 
 namespace Menge
 {
-    class ServiceProviderInterface;
-    class InputStreamInterface;
+    class ServiceProviderInterface;    
 
     class ScriptModuleLoaderSource
     {
     public:
-        ScriptModuleLoaderSource( ServiceProviderInterface * _serviceProvider, InputStreamInterface * _stream, PyObject * _packagePath );
+        ScriptModuleLoaderSource( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, PyObject * _packagePath );
         ~ScriptModuleLoaderSource();
 
     public:
@@ -28,7 +29,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
         
-        InputStreamInterface * m_stream;
+        InputStreamInterfacePtr m_stream;
         PyObject * m_packagePath;
 
         PyObject * m_embbed;

@@ -32,7 +32,7 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface* Win32FileSystem::createInputStream()
+	FileInputStreamInterfacePtr Win32FileSystem::createInputStream()
 	{
         Win32InputStream * inputStream = m_factoryInputStream.createObjectT();
 
@@ -41,7 +41,7 @@ namespace Menge
 		return inputStream;
 	}
     //////////////////////////////////////////////////////////////////////////
-    FileOutputStreamInterface* Win32FileSystem::createOutputStream()
+    FileOutputStreamInterfacePtr Win32FileSystem::createOutputStream()
     {
         Win32OutputStream * outputStream = m_factoryOutputStream.createObjectT();
 
@@ -50,7 +50,7 @@ namespace Menge
         return outputStream;
     }
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInputStreamInterface * Win32FileSystem::createMappedInputStream()
+    MappedFileInputStreamInterfacePtr Win32FileSystem::createMappedInputStream()
     {
         Win32MappedInputStream * mappedStream = m_factoryMappedInputStream.createObjectT();
 

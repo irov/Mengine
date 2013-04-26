@@ -52,7 +52,7 @@ namespace Menge
 		m_mapEncoderSystem.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const ConstString& _type, InputStreamInterface * _stream )
+	DecoderInterface * CodecEngine::createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream )
 	{
 		TMapDecoderSystem::iterator it_find = m_mapDecoderSystem.find( _type );
 		
@@ -84,7 +84,7 @@ namespace Menge
 		return decoder;
 	}
     //////////////////////////////////////////////////////////////////////////
-    EncoderInterface * CodecEngine::createEncoder( const ConstString& _type, OutputStreamInterface * _stream )
+    EncoderInterface * CodecEngine::createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
     {
         TMapEncoderSystem::iterator it_find = m_mapEncoderSystem.find( _type );
 

@@ -37,7 +37,7 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool HotspotImageConverterPNGToHIT::convert()
 	{
-        InputStreamInterface * input_stream = FILE_SERVICE(m_serviceProvider)
+        InputStreamInterfacePtr input_stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( m_options.pakName, m_options.inputFileName );
 
         if( input_stream == 0 )
@@ -58,8 +58,6 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
                 , m_options.inputFileName.c_str() 
                 );
-
-            input_stream->destroy();
 
             return NULL;
         }
@@ -92,16 +90,14 @@ namespace Menge
             
             imageDecoder->destroy();
 
-            input_stream->destroy();
-
             return false;
         }
 
-        input_stream->destroy();
+        input_stream = nullptr;
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
-        OutputStreamInterface * output_stream = FILE_SERVICE(m_serviceProvider)
+        OutputStreamInterfacePtr output_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( m_options.pakName, m_options.outputFileName );
 
         if( output_stream == NULL )
@@ -138,7 +134,6 @@ namespace Menge
         delete [] buffer;
 
         encoder->destroy();
-        output_stream->destroy();
 
         return true;
 	}

@@ -174,6 +174,7 @@ namespace Menge
         , m_noPluginMode(false)
         , m_pluginMengeImageCodec(NULL)
         , m_pluginMengeSoundCodec(NULL)
+        , m_fileLog(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -532,11 +533,12 @@ namespace Menge
            
         FilePath logFilename = Helper::stringizeString( m_serviceProvider, utf8_logFilename );
 
-        OutputStreamInterface* fileLogInterface = m_fileService->openOutputFile( Helper::stringizeString(m_serviceProvider, "user"), logFilename );
+        OutputStreamInterfacePtr fileLogInterface = 
+            m_fileService->openOutputFile( Helper::stringizeString(m_serviceProvider, "user"), logFilename );
 
-        if( fileLogInterface )
+        if( fileLogInterface != nullptr )
         {
-            m_fileLog = new FileLogger( fileLogInterface );
+            m_fileLog = new FileLogger(fileLogInterface);
 
             m_logService->registerLogger( m_fileLog );
 
@@ -1665,33 +1667,33 @@ namespace Menge
 			m_windowsLayer->unregisterClass( m_windowClassName, m_hInstance );
 		}	
 
-		if( m_fpsMonitor != NULL )
+		if( m_fpsMonitor != nullptr )
 		{
 			m_fpsMonitor->finalize();
 			delete m_fpsMonitor;
-			m_fpsMonitor = 0;
+			m_fpsMonitor = nullptr;
 		}
         
-		if( m_application != NULL )
+		if( m_application != nullptr )
 		{
 			m_application->finalize();
         }
 
-        if( m_renderService != NULL )
+        if( m_renderService != nullptr )
         {
             m_renderService->finalize();
         }
 
-        if( m_pluginMengeImageCodec != NULL )
+        if( m_pluginMengeImageCodec != nullptr )
         {
             m_pluginMengeImageCodec->destroy();
-            m_pluginMengeImageCodec = NULL;
+            m_pluginMengeImageCodec = nullptr;
         }
 
-        if( m_pluginMengeSoundCodec != NULL )
+        if( m_pluginMengeSoundCodec != nullptr )
         {
             m_pluginMengeSoundCodec->destroy();
-            m_pluginMengeSoundCodec = NULL;
+            m_pluginMengeSoundCodec = nullptr;
         }
 
         destroyInputService( m_inputService );
@@ -1705,13 +1707,13 @@ namespace Menge
         destroySoundService( m_soundService );        
         destroyAmplifierService( m_amplifierService );
 
-        if( m_application != NULL )
+        if( m_application != nullptr )
         {
             m_application->destroy();
 
             destroyApplication( m_application );
 
-            m_application = NULL;
+            m_application = nullptr;
         }
 
         {
@@ -1720,25 +1722,18 @@ namespace Menge
             destroyScriptService( m_scriptService );
         }
 
-		if( m_fileLog != NULL )
+		if( m_fileLog != nullptr )
 		{
 			if( m_logService )
 			{
 				m_logService->unregisterLogger( m_fileLog );
 			}
 
-			OutputStreamInterface * fileLogInterface = m_fileLog->getStream();
-			if( fileLogInterface != NULL )
-			{
-				fileLogInterface->destroy();
-                fileLogInterface = NULL;
-			}
-
-			delete m_fileLog;
-			m_fileLog = NULL;                        
+            delete m_fileLog;
+			m_fileLog = nullptr;
 		}
 
-		if( m_loggerConsole != NULL )
+		if( m_loggerConsole != nullptr )
 		{
 			if( m_logService )
 			{
@@ -1746,21 +1741,23 @@ namespace Menge
 			}
 			
 			delete m_loggerConsole;
-			m_loggerConsole = NULL;
+			m_loggerConsole = nullptr;
 		}
 
         destroyLogService( m_logService );
         
-		if( m_alreadyRunningMonitor != NULL )
+		if( m_alreadyRunningMonitor != nullptr )
 		{
 			m_alreadyRunningMonitor->stop();
+
 			delete m_alreadyRunningMonitor;
-			m_alreadyRunningMonitor = 0;
+			m_alreadyRunningMonitor = nullptr;
 		}
 
-		if( m_winTimer != NULL )
+		if( m_winTimer != nullptr )
 		{
 			delete static_cast<WinTimer*>(m_winTimer);
+            m_winTimer = nullptr;
 		}
 
         destroyServiceProvider(m_serviceProvider);

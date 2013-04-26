@@ -138,7 +138,7 @@ namespace Menge
 		}
 
 		////////////////////////////////////// init RGB Decoder
-		InputStreamInterface * streamRGB = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr streamRGB = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _pakName, _fileNameRGB );
 
 		if( streamRGB == NULL )
@@ -160,13 +160,11 @@ namespace Menge
 				, _fileNameRGB.c_str() 
 				);
 
-			streamRGB->destroy();
-
 			return NULL;
 		}
 
 		///Load Alpha data
-		InputStreamInterface * streamAlpha = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr streamAlpha = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _pakName, _fileNameAlpha );
 
 		if( streamAlpha == NULL )
@@ -176,7 +174,6 @@ namespace Menge
 				, _fileNameAlpha.c_str() 
 				);
 
-			streamRGB->destroy();
 			imageDecoderRGB->destroy();
 			
 			return NULL;
@@ -191,9 +188,7 @@ namespace Menge
 				, _fileNameAlpha.c_str() 
 				);
 
-			streamRGB->destroy();
 			imageDecoderRGB->destroy();
-			streamAlpha->destroy();
 			
 			return NULL;
 		}
@@ -213,10 +208,7 @@ namespace Menge
 				);
 
 			imageDecoderRGB->destroy();
-			streamRGB->destroy();
-
 			imageDecoderAlpha->destroy();
-			streamAlpha->destroy();
 			
 			return NULL;
 		}
@@ -238,10 +230,7 @@ namespace Menge
 				);
 
 			imageDecoderRGB->destroy();
-			streamRGB->destroy();
-
 			imageDecoderAlpha->destroy();
-			streamAlpha->destroy();
 
             RENDER_SERVICE(m_serviceProvider)
                 ->releaseTexture( texture );
@@ -259,10 +248,7 @@ namespace Menge
             texture->unlock();
 
             imageDecoderRGB->destroy();
-            streamRGB->destroy();
-
             imageDecoderAlpha->destroy();
-            streamAlpha->destroy();
 
             RENDER_SERVICE(m_serviceProvider)
                 ->releaseTexture( texture );
@@ -280,10 +266,7 @@ namespace Menge
             texture->unlock();
 
             imageDecoderRGB->destroy();
-            streamRGB->destroy();
-
             imageDecoderAlpha->destroy();
-            streamAlpha->destroy();
 
             RENDER_SERVICE(m_serviceProvider)
                 ->releaseTexture( texture );
@@ -300,10 +283,7 @@ namespace Menge
 		texture->unlock();
 		
 		imageDecoderRGB->destroy();
-		streamRGB->destroy();
-
 		imageDecoderAlpha->destroy();
-		streamAlpha->destroy();
 		
 		RENDER_SERVICE(m_serviceProvider)
 			->cacheFileTexture( _fileNameAlpha, texture );

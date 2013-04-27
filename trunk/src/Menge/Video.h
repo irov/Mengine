@@ -1,10 +1,11 @@
 #	pragma once
 
+#   include "Interface/StreamInterface.h"
+#   include "Interface/VideoCodecInterface.h"
+
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 #	include "Kernel/FixedVertices.h"
-
-#   include "Interface/InputSystemInterface.h"
 
 namespace Menge
 {
@@ -19,8 +20,6 @@ namespace Menge
 	class SoundEmitter;
 	class SoundSourceInterface;
 	class RenderTextureInterface;
-	
-	class VideoDecoderInterface;
 	
 	struct RenderMaterialGroup;
 
@@ -95,7 +94,7 @@ namespace Menge
 		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;	
 
-		VideoDecoderInterface * m_videoDecoder;
+		VideoDecoderInterfacePtr m_videoDecoder;
 		mt::vec2f m_frameSize;
 		mt::vec4f m_uv;
 

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
+#   include "Interface/SoundCodecInterface.h"
 
 #	include "Config/Typedef.h"
 
@@ -10,7 +11,6 @@
 namespace Menge
 {
 	class SoundSourceInterface;
-	class SoundDecoderInterface;
 	class ServiceProviderInterface;
 
     enum ESoundSourceType
@@ -79,7 +79,7 @@ namespace Menge
 
     public:
 		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) = 0;
-		virtual SoundBufferInterface* createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream ) = 0;
+		virtual SoundBufferInterface* createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
 
 		virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
 		virtual void releaseSoundNode( SoundSourceInterface * _sn ) = 0;

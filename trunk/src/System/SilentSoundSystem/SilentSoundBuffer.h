@@ -16,7 +16,7 @@ namespace Menge
         void update() override;
 
 	public:
-		bool load( SoundDecoderInterface * _soundDecoder );
+		bool load( const SoundDecoderInterfacePtr & _soundDecoder );
 
 		void play( size_t _id, bool _looped, float _pos );
 		void pause( size_t _id );

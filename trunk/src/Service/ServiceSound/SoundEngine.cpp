@@ -249,7 +249,8 @@ namespace Menge
             return NULL;
         }
 
-		desc.codec = CODEC_SERVICE(m_serviceProvider)->createDecoderT<SoundDecoderInterface>( _codecType, desc.stream );
+		desc.codec = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, desc.stream );
 		
     	if( desc.codec == NULL )
 		{
@@ -271,8 +272,6 @@ namespace Menge
                 , _filename.c_str() 
                 );
 
-            desc.codec->destroy();
-
             return NULL;
         }
 
@@ -282,7 +281,7 @@ namespace Menge
 		}
 		else
 		{
-			desc.codec->destroy();
+			desc.codec = nullptr;
 		}
 
 		return sample;
@@ -298,10 +297,6 @@ namespace Menge
 		{
 			return;
 		}
-
-		SoundDesc & desc = it_find->second;
-
-		desc.codec->destroy();
 
 		m_bufferStreams.erase( it_find );
 	}

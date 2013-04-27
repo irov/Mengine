@@ -31,7 +31,7 @@ namespace Menge
         //Empty
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundBuffer::load( SoundDecoderInterface * _soundDecoder )
+	bool SilentSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
 		const SoundCodecDataInfo* dataInfo = _soundDecoder->getCodecDataInfo();
 

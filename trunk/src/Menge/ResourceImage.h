@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/StreamInterface.h"
+#   include "Interface/ImageCodecInterface.h"
 
 #	include "Kernel/ResourceReference.h"
 
@@ -8,8 +9,7 @@
 
 namespace Menge
 {
-	class RenderTextureInterface;
-	class ImageDecoderInterface;
+	class RenderTextureInterface;	
     
 	class ResourceImage
 		: public ResourceReference
@@ -41,7 +41,7 @@ namespace Menge
 		bool prepareImageFrame_( RenderTextureInterface * _texture );
 
 	protected:
-		ImageDecoderInterface * createDecoder_( const InputStreamInterfacePtr & _stream,  const ConstString& _codec ) const;
+		ImageDecoderInterfacePtr createDecoder_( const InputStreamInterfacePtr & _stream,  const ConstString& _codec ) const;
 
     protected:
         void _release() override;

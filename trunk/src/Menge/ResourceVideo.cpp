@@ -78,7 +78,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideo::_isValid() const
     {   
-        VideoDecoderInterface * decoder = this->createVideoDecoder();
+        VideoDecoderInterfacePtr decoder = this->createVideoDecoder();
 
         if( decoder == NULL )
         {
@@ -89,8 +89,6 @@ namespace Menge
 
             return false;
         }
-
-        decoder->destroy();
 
         return true;
     }
@@ -123,34 +121,34 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    VideoDecoderInterface * ResourceVideo::createVideoDecoder() const
+    VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder() const
     {        
         const ConstString & category = this->getCategory();
 
         InputStreamInterfacePtr videoStream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_path );
 
-        if( videoStream == 0 )
+        if( videoStream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't open video file '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
-        VideoDecoderInterface * videoDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<VideoDecoderInterface>( m_codec, videoStream );
+        VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<VideoDecoderInterfacePtr>( m_codec, videoStream );
 
-        if( videoDecoder == 0 )
+        if( videoDecoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't create video decoder for file '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         VideoCodecOptions videoCodecOptions;
@@ -168,9 +166,7 @@ namespace Menge
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {
-            videoDecoder->destroy();
-
-            return NULL;
+            return nullptr;
         }
 
         return videoDecoder;

@@ -50,16 +50,16 @@ namespace Menge
         }
 
 
-        ImageDecoderInterface * imageDecoder = 
-            CODEC_SERVICE(m_serviceProvider)->createDecoderT<ImageDecoderInterface>( Helper::stringizeString(m_serviceProvider, "pngImage"), input_stream );
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<ImageDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "pngImage"), input_stream );
 
-        if( imageDecoder == 0 )
+        if( imageDecoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
                 , m_options.inputFileName.c_str() 
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
@@ -88,8 +88,6 @@ namespace Menge
                 , m_options.inputFileName.c_str()                
                 );
             
-            imageDecoder->destroy();
-
             return false;
         }
 
@@ -110,8 +108,8 @@ namespace Menge
             return NULL;
         }
 
-        PickEncoderInterface * encoder = CODEC_SERVICE(m_serviceProvider)
-            ->createEncoderT<PickEncoderInterface>(Helper::stringizeString(m_serviceProvider, "hitPick"), output_stream);
+        PickEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
+            ->createEncoderT<PickEncoderInterfacePtr>(Helper::stringizeString(m_serviceProvider, "hitPick"), output_stream);
         
         if( encoder == NULL )
         {
@@ -132,8 +130,6 @@ namespace Menge
         encoder->encode( buffer, &di );
 
         delete [] buffer;
-
-        encoder->destroy();
 
         return true;
 	}

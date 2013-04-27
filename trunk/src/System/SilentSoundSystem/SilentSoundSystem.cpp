@@ -90,7 +90,7 @@ namespace Menge
 		return soundSource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* SilentSoundSystem::createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream )
+	SoundBufferInterface* SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
         (void)_isStream;
 

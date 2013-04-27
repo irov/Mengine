@@ -361,8 +361,7 @@ namespace Menge
 	static inline const PixelFormatDescription &getDescriptionFor( const PixelFormat _fmt )
 	{
 		const int ord = (int)_fmt;
-		assert(ord>=0 && ord<PF_COUNT);
-
+		
 		return _pixelFormats[ord];
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -380,22 +379,19 @@ namespace Menge
 				// DXT formats work by dividing the image into 4x4 blocks, then encoding each
 				// 4x4 block with a certain number of bytes. DXT can only be used on 2D images.
 			case PF_DXT1:
-				assert( _depth == 1 );
 				return ( (_width+3)/4)*((_height+3)/4 )*8;
 			case PF_DXT2:
 			case PF_DXT3:
 			case PF_DXT4:
 			case PF_DXT5:
-				assert( _depth == 1 );
 				return ((_width+3)/4)*((_height+3)/4)*16;
-			default:
-				assert( 0 && "PixelUtil::getMemorySize -> Invalid compressed pixel format" );
 			}
 		}
 		else
 		{
 			return _width*_height*_depth*getNumElemBytes( _format );
 		}
+
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -761,7 +757,6 @@ namespace Menge
 				break;
 			default:
 				// Not yet supported
-				assert( 0 && String( "PixelUtil::packColour -> pack to "+getFormatName(_pf)+" not implemented" ).c_str() );
 				break;
 			}
 		}
@@ -898,7 +893,6 @@ namespace Menge
 				break;
 			default:
 				// Not yet supported
-				assert( 0 && String( "PixelUtil::unpackColour -> unpack from "+getFormatName(_pf)+" not implemented" ).c_str() );
 				break;
 			}
 		}

@@ -132,7 +132,7 @@ namespace Menge
         void enableDebugMode( bool _enable ) override;
 
 	public:
-		bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface * _imageDecoder ) override;
+		bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) override;
 		
 	public:
 		//void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;

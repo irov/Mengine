@@ -677,8 +677,8 @@ namespace Menge
 			return false;
 		}
 
-		ImageEncoderInterface * imageEncoder = 
-            CODEC_SERVICE(m_serviceProvider)->createEncoderT<ImageEncoderInterface>( Helper::stringizeString(m_serviceProvider, "pngImage"), stream );
+		ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(m_serviceProvider)
+            ->createEncoderT<ImageEncoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "pngImage"), stream );
 
 		if( imageEncoder == 0 )
 		{
@@ -790,36 +790,34 @@ namespace Menge
 		InputStreamInterfacePtr stream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _filename );
 		
-		if( stream == 0 )
+		if( stream == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image file '%s' was not found"
 				, _filename.c_str() 
 				);
 
-			return NULL;
+			return nullptr;
 		}	
 
-		ImageDecoderInterface * imageDecoder = 
-            CODEC_SERVICE(m_serviceProvider)->createDecoderT<ImageDecoderInterface>( _codec, stream );
+		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<ImageDecoderInterfacePtr>( _codec, stream );
 
-		if( imageDecoder == 0 )
+		if( imageDecoder == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image decoder for file '%s' was not found"
 				, _filename.c_str() 
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
         	
 		RenderTextureInterface * texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
 		
-		if( texture == NULL )
+		if( texture == nullptr )
 		{
-			imageDecoder->destroy();
-
-			return NULL;
+			return nullptr;
 		}
 
 		const Rect & rect = texture->getHWRect();
@@ -830,12 +828,8 @@ namespace Menge
                 , _filename.c_str() 
                 );
 
-            imageDecoder->destroy();
-
-            return NULL;
+            return nullptr;
         }
-
-		imageDecoder->destroy();
 		
 		this->cacheFileTexture( _filename, texture );
 		
@@ -946,7 +940,7 @@ namespace Menge
 		_texture->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, ImageDecoderInterface* _imageDecoder )
+	bool RenderEngine::loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
 	{
 		int pitch = 0;
 		unsigned char * textureBuffer = _texture->lock( &pitch, _rect, false );
@@ -1035,13 +1029,6 @@ namespace Menge
 
             for( size_t j = 0; j != height; ++j )
             {
-                //for( size_t i = width; i != hwWidth; ++i )
-                //{
-                //    std::copy( image_data + (i - 1) * pixel_size,
-                //        image_data + i * pixel_size,
-                //        image_data + i * pixel_size );
-                //}
-
                 std::copy( image_data + (width - 1) * pixel_size,
                     image_data + width * pixel_size,
                     image_data + width * pixel_size );
@@ -1059,14 +1046,6 @@ namespace Menge
                 );
 
             unsigned char* image_data = _textureBuffer;
-            //unsigned int pixel_size = _texturePitch / hwWidth;
-
-            //for( size_t j = height; j != hwHeight; ++j )
-            //{
-            //    std::copy( image_data + (j - 1) * _texturePitch,
-            //        image_data + j * _texturePitch,
-            //        image_data + j * _texturePitch );
-            //}
 
             std::copy( image_data + (height - 1) * _texturePitch,
                 image_data + height * _texturePitch,

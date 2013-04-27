@@ -151,7 +151,7 @@ namespace Menge
 			return NULL;
 		}
 
-		ImageDecoderInterface * imageDecoderRGB = this->createDecoder_( streamRGB, _codecRGB );
+		ImageDecoderInterfacePtr imageDecoderRGB = this->createDecoder_( streamRGB, _codecRGB );
 
 		if( imageDecoderRGB == NULL )
 		{
@@ -167,30 +167,26 @@ namespace Menge
 		InputStreamInterfacePtr streamAlpha = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _pakName, _fileNameAlpha );
 
-		if( streamAlpha == NULL )
+		if( streamAlpha == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with alpha channel data '%s' was not found"
 				, this->getName().c_str()
 				, _fileNameAlpha.c_str() 
 				);
-
-			imageDecoderRGB->destroy();
-			
-			return NULL;
+            		
+			return nullptr;
 		}
 
 		///Get Alpha Decoder
-		ImageDecoderInterface * imageDecoderAlpha = this->createDecoder_( streamAlpha, _codecAlpha );
+		ImageDecoderInterfacePtr imageDecoderAlpha = this->createDecoder_( streamAlpha, _codecAlpha );
 
-		if( imageDecoderAlpha == NULL )
+		if( imageDecoderAlpha == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: Image decoder for file '%s' was not found"
 				, _fileNameAlpha.c_str() 
 				);
-
-			imageDecoderRGB->destroy();
 			
-			return NULL;
+			return nullptr;
 		}
 
 		const ImageCodecDataInfo* dataInfoRGB = imageDecoderRGB->getCodecDataInfo();
@@ -198,7 +194,7 @@ namespace Menge
 		RenderTextureInterface* texture = RENDER_SERVICE(m_serviceProvider)
 			->createTexture( dataInfoRGB->width, dataInfoRGB->height, 4, PF_UNKNOWN );
 
-		if( texture == NULL )
+		if( texture == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t create texture %s width %i height %i "
 				, this->getName().c_str()
@@ -206,11 +202,8 @@ namespace Menge
 				, dataInfoRGB->width
 				, dataInfoRGB->height
 				);
-
-			imageDecoderRGB->destroy();
-			imageDecoderAlpha->destroy();
 			
-			return NULL;
+			return nullptr;
 		}
 
 		Rect rect;
@@ -229,9 +222,6 @@ namespace Menge
 				, _fileNameAlpha.c_str() 
 				);
 
-			imageDecoderRGB->destroy();
-			imageDecoderAlpha->destroy();
-
             RENDER_SERVICE(m_serviceProvider)
                 ->releaseTexture( texture );
 
@@ -247,13 +237,10 @@ namespace Menge
 
             texture->unlock();
 
-            imageDecoderRGB->destroy();
-            imageDecoderAlpha->destroy();
-
             RENDER_SERVICE(m_serviceProvider)
                 ->releaseTexture( texture );
 
-            return NULL;
+            return nullptr;
         }
 
         if( this->loadAlphaData_( buffer, pitch, imageDecoderAlpha ) == false )
@@ -264,9 +251,6 @@ namespace Menge
                 );
 
             texture->unlock();
-
-            imageDecoderRGB->destroy();
-            imageDecoderAlpha->destroy();
 
             RENDER_SERVICE(m_serviceProvider)
                 ->releaseTexture( texture );
@@ -282,16 +266,13 @@ namespace Menge
         
 		texture->unlock();
 		
-		imageDecoderRGB->destroy();
-		imageDecoderAlpha->destroy();
-		
 		RENDER_SERVICE(m_serviceProvider)
 			->cacheFileTexture( _fileNameAlpha, texture );
 
 		return texture;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCombineRGBAndAlpha::loadRGBData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderRGB ) const
+	bool ResourceImageCombineRGBAndAlpha::loadRGBData_( unsigned char * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderRGB ) const
 	{
 		//RGB
 		ImageCodecOptions optionsRGB;
@@ -315,7 +296,7 @@ namespace Menge
         return bufferSize == b;
 	}
     /////////////////////////////////////////////////////////////////////////
-    bool ResourceImageCombineRGBAndAlpha::loadAlphaData_( unsigned char * _buffer, int _pitch, ImageDecoderInterface * _imageDecoderAlpha ) const
+    bool ResourceImageCombineRGBAndAlpha::loadAlphaData_( unsigned char * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderAlpha ) const
     {
         //Alpha
         ImageCodecOptions optionsAlpha;

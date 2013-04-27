@@ -46,7 +46,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::load( SoundDecoderInterface * _soundDecoder )
+	bool OALSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
 		m_alBufferId = m_soundSystem->genBufferId();
 

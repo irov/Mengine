@@ -1,11 +1,3 @@
-/*
- *	OALSoundBufferBase.h
- *
- *	Created by _Berserk_ on 24.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "Interface/SoundSystemInterface.h"
@@ -29,7 +21,7 @@ namespace Menge
 		void update() override;
 
 	public:
-		virtual bool load( SoundDecoderInterface * _soundDecoder );
+		virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder );
 
 		virtual void play( ALenum _source, bool _looped, float _pos );
 		virtual	void pause( ALenum _source );

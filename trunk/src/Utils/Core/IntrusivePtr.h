@@ -107,12 +107,23 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     template<class U, class T>
-    inline U intrusive_cast( const IntrusivePtr<T> & _iptr )
+    inline U intrusive_static_cast( const IntrusivePtr<T> & _iptr )
     {
         typedef typename U::element_type U_type;
 
         T * t_ptr = _iptr.get();
         U_type * u_ptr = static_cast<U_type *>(t_ptr);
+
+        return U(u_ptr);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class U, class T>
+    inline U intrusive_dynamic_cast( const IntrusivePtr<T> & _iptr )
+    {
+        typedef typename U::element_type U_type;
+
+        T * t_ptr = _iptr.get();
+        U_type * u_ptr = dynamic_cast<U_type *>(t_ptr);
 
         return U(u_ptr);
     }

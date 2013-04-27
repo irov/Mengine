@@ -15,5 +15,5 @@ namespace Menge
     size_t FactorablePtr::getReference() const
     {
         return m_reference;
-    }
+    }  
 }

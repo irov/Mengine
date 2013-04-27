@@ -6,7 +6,10 @@
 #	include "Interface/StreamInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Core/FilePath.h"
+#   include "Utils/Factory/FactorablePtr.h"
+#   include "Utils/Core/IntrusivePtr.h"
+
+#	include "Utils/Core/FilePath.h"
 
 namespace Menge
 {
@@ -28,7 +31,7 @@ namespace Menge
 	};
 
 	class DecoderInterface
-        : public Factorable
+        : public FactorablePtr
 	{
     public:
         virtual bool initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream ) = 0;
@@ -44,16 +47,18 @@ namespace Menge
 		virtual unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) = 0;
 	};
 
+    typedef IntrusivePtr<DecoderInterface> DecoderInterfacePtr;
+
 	class DecoderFactoryInterface
 		: public CodecFactoryInterface
 	{
 	public:
-		virtual DecoderInterface * createDecoder() = 0;
+		virtual DecoderInterfacePtr createDecoder() = 0;
         virtual const ConstString & getName() const = 0;
 	};
 
 	class EncoderInterface
-        : public Factorable
+        : public FactorablePtr
 	{
     public:
         virtual bool initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream ) = 0;
@@ -68,11 +73,13 @@ namespace Menge
         virtual OutputStreamInterfacePtr getStream() const = 0;
 	};
 
+    typedef IntrusivePtr<EncoderInterface> EncoderInterfacePtr;
+
 	class EncoderFactoryInterface
 		: public CodecFactoryInterface
 	{
 	public:
-		virtual EncoderInterface * createEncoder() = 0;
+		virtual EncoderInterfacePtr createEncoder() = 0;
         virtual const ConstString & getName() const = 0;
 	};
 
@@ -94,25 +101,25 @@ namespace Menge
 		virtual void unregisterEncoder( const ConstString& _type ) = 0;
 
     public:
-		virtual DecoderInterface * createDecoder( const ConstString & _type, const InputStreamInterfacePtr & _stream ) = 0; 
+		virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const InputStreamInterfacePtr & _stream ) = 0; 
 
         template<class T>
-        T * createDecoderT( const ConstString& _type, const InputStreamInterfacePtr & _stream )
+        T createDecoderT( const ConstString& _type, const InputStreamInterfacePtr & _stream )
         {
-            DecoderInterface * decoder = this->createDecoder( _type, _stream );
+            DecoderInterfacePtr decoder = this->createDecoder( _type, _stream );
 
-            return dynamic_cast<T*>(decoder);
+            return intrusive_dynamic_cast<T>(decoder);
         }
 
     public:
-        virtual EncoderInterface * createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) = 0;
+        virtual EncoderInterfacePtr createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) = 0;
 
         template<class T>
-        T * createEncoderT( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
+        T createEncoderT( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
         {
-            EncoderInterface * encoder = this->createEncoder( _type, _stream );
+            EncoderInterfacePtr encoder = this->createEncoder( _type, _stream );
 
-            return dynamic_cast<T*>(encoder);
+            return intrusive_dynamic_cast<T>(encoder);
         }
 
 	public:

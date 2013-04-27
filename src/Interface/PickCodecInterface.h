@@ -37,8 +37,12 @@ namespace Menge
 		virtual const PickCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
 
+    typedef IntrusivePtr<PickDecoderInterface> PickDecoderInterfacePtr;
+
 	class PickEncoderInterface
 		: public EncoderInterface
 	{
 	};
-}	// namespace Menge
+
+    typedef IntrusivePtr<PickEncoderInterface> PickEncoderInterfacePtr;
+}	

@@ -131,8 +131,8 @@ namespace Menge
             return false;
         }
 
-        PickDecoderInterface * decoder = 
-            CODEC_SERVICE(m_serviceProvider)->createDecoderT<PickDecoderInterface>( m_codec, stream );
+        PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<PickDecoderInterfacePtr>( m_codec, stream );
 
         if( decoder == 0 )
         {
@@ -155,8 +155,6 @@ namespace Menge
         m_mipmap = new unsigned char [mipmapsize];
         
         m_mipmapsize = decoder->decode( m_mipmap, mipmapsize );
-
-        decoder->destroy();
 
         if( m_mipmapsize != mipmapsize )
         {

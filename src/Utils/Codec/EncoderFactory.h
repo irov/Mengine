@@ -20,7 +20,7 @@ namespace Menge
         }
 
     protected:
-        EncoderInterface * createEncoder() override
+        EncoderInterfacePtr createEncoder() override
         {
             T * encoder = m_factory.createObjectT();
 

@@ -33,10 +33,10 @@ namespace Menge
 		void unregisterEncoder( const ConstString& _type ) override;
 	
     public:
-		DecoderInterface * createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream ) override;
+		DecoderInterfacePtr createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream ) override;
 
 	public:
-		EncoderInterface * createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) override;
+		EncoderInterfacePtr createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) override;
 
     public:
         bool registerCodecExt( const String & _ext, const ConstString & _codecType ) override;

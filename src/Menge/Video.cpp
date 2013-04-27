@@ -229,24 +229,16 @@ namespace Menge
 		RENDER_SERVICE(m_serviceProvider)
 			->releaseTexture( m_textures[0] );
 
-		if( m_videoDecoder != NULL )
-		{
-			m_videoDecoder->destroy();
-			m_videoDecoder = NULL;
-		}
+        m_videoDecoder = nullptr;
 
-		if( m_resourceVideo != 0 )
+        if( m_resourceVideo != 0 )
 		{
 			m_resourceVideo->decrementReference();
 			m_resourceVideo = 0;
 		}
 
-        if( m_soundEmitter != NULL )
-        {
-            m_soundEmitter->destroy();
-            m_soundEmitter = NULL;
-        }
-	}
+        m_soundEmitter = nullptr;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )
 	{

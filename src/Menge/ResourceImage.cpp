@@ -113,10 +113,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderInterface * ResourceImage::createDecoder_(  const InputStreamInterfacePtr & _file, const ConstString& _codec ) const
+	ImageDecoderInterfacePtr ResourceImage::createDecoder_(  const InputStreamInterfacePtr & _file, const ConstString& _codec ) const
 	{
-		ImageDecoderInterface * imageDecoder = 
-            CODEC_SERVICE(m_serviceProvider)->createDecoderT<ImageDecoderInterface>( _codec, _file );
+		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<ImageDecoderInterfacePtr>( _codec, _file );
 
 		if( imageDecoder == 0 )
 		{

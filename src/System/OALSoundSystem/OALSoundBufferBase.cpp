@@ -32,7 +32,7 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferBase::load( SoundDecoderInterface * _soundDecoder )
+	bool OALSoundBufferBase::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
 		// determine data parameters
 		const SoundCodecDataInfo * dataInfo = _soundDecoder->getCodecDataInfo();

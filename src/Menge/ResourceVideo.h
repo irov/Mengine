@@ -1,13 +1,13 @@
 #	pragma once
 
+#   include "Interface/VideoCodecInterface.h"
+
 #	include "Kernel/ResourceReference.h"
 
 #	include "Math/vec2.h"
 
 namespace Menge
 {
-    class VideoDecoderInterface;
-
 	class ResourceVideo
 		: public ResourceReference
 	{
@@ -25,7 +25,7 @@ namespace Menge
 		const ConstString& getCodecType() const;
 
     public:
-        VideoDecoderInterface * createVideoDecoder() const;
+        VideoDecoderInterfacePtr createVideoDecoder() const;
 
 	public:
 		const mt::vec2f& getFrameSize() const;

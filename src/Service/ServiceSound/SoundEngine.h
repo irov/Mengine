@@ -144,7 +144,7 @@ namespace Menge
 		struct SoundDesc
 		{
 			InputStreamInterfacePtr stream;
-			SoundDecoderInterface * codec;
+			SoundDecoderInterfacePtr codec;
 		};
 
 		typedef std::map<SoundBufferInterface*, SoundDesc> TMapBufferStreams;

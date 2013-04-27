@@ -26,4 +26,6 @@ namespace Menge
 	public:
 		virtual const XmlCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
-}	// namespace Menge
+    
+    typedef IntrusivePtr<XmlDecoderInterface> XmlDecoderInterfacePtr;
+}	

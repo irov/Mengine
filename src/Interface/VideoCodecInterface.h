@@ -51,4 +51,6 @@ namespace Menge
     public:
 		virtual EVideoDecoderReadState readNextFrame( float _pts ) = 0;		
 	};
-}	// namespace Menge
+
+    typedef IntrusivePtr<VideoDecoderInterface> VideoDecoderInterfacePtr;
+}

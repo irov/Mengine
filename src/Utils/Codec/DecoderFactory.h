@@ -24,7 +24,7 @@ namespace Menge
         }
 
     protected:
-        DecoderInterface * createDecoder() override
+        DecoderInterfacePtr createDecoder() override
         {	
             T * decoder = m_factory.createObjectT();
 

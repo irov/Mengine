@@ -52,7 +52,7 @@ namespace Menge
 		m_mapEncoderSystem.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream )
+	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream )
 	{
 		TMapDecoderSystem::iterator it_find = m_mapDecoderSystem.find( _type );
 		
@@ -67,24 +67,22 @@ namespace Menge
 
         DecoderFactoryInterface * decoderFactory = it_find->second;
 
-		DecoderInterface * decoder = decoderFactory->createDecoder();
+		DecoderInterfacePtr decoder = decoderFactory->createDecoder();
 
-		if( decoder == 0 )
+		if( decoder == nullptr )
 		{
-			return 0;
+			return nullptr;
 		}
 
 		if( decoder->initialize( m_serviceProvider, _stream ) == false )
 		{
-			decoder->destroy();
-
-			return 0;
+			return nullptr;
 		}
 
 		return decoder;
 	}
     //////////////////////////////////////////////////////////////////////////
-    EncoderInterface * CodecEngine::createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
+    EncoderInterfacePtr CodecEngine::createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
     {
         TMapEncoderSystem::iterator it_find = m_mapEncoderSystem.find( _type );
 
@@ -95,17 +93,15 @@ namespace Menge
 
         EncoderFactoryInterface * encoderSystem = it_find->second;
 
-        EncoderInterface * encoder = encoderSystem->createEncoder();
+        EncoderInterfacePtr encoder = encoderSystem->createEncoder();
 
-        if( encoder == 0 )
+        if( encoder == nullptr )
         {
-            return 0;
+            return nullptr;
         }
 
         if( encoder->initialize( m_serviceProvider, _stream ) == false )
         {
-            encoder->destroy();
-
             return 0;
         }
 

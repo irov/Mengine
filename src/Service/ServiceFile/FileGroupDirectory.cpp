@@ -108,7 +108,7 @@ namespace Menge
 
         FilePath fullname = this->makeFullname_( _filename );
 
-        FileInputStreamInterfacePtr file = intrusive_cast<FileInputStreamInterfacePtr>(_stream);
+        FileInputStreamInterfacePtr file = intrusive_static_cast<FileInputStreamInterfacePtr>(_stream);
 
 		if( file->open( fullname ) == false )
         {

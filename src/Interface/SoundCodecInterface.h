@@ -29,4 +29,6 @@ namespace Menge
 
 		virtual const SoundCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
-}	// namespace Menge
+
+    typedef IntrusivePtr<SoundDecoderInterface> SoundDecoderInterfacePtr;
+}

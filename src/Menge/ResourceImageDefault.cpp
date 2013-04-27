@@ -54,15 +54,13 @@ namespace Menge
             return false;
         }	
                 
-        ImageDecoderInterface * imageDecoder = 
-            CODEC_SERVICE(m_serviceProvider)->createDecoderT<ImageDecoderInterface>( m_codecType, stream );
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType, stream );
 
-        if( imageDecoder == NULL )
+        if( imageDecoder == nullptr )
         {
             return false;
         }
-
-        imageDecoder->destroy();        
 
 		return true;
 	}

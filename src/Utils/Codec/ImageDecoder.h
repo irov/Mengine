@@ -35,5 +35,5 @@ namespace Menge
 
         ImageCodecOptions m_options;
 		ImageCodecDataInfo m_dataInfo;
-	};
+	};    
 }

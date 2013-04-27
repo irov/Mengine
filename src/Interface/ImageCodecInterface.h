@@ -1,8 +1,8 @@
-
 #	pragma once
 
 #	include "Interface/CodecInterface.h"
-#   include "Interface/RenderSystemInterface.h"
+
+#	include "Core/PixelFormat.h"
 
 namespace Menge
 {
@@ -68,8 +68,12 @@ namespace Menge
 		virtual const ImageCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
 
+    typedef IntrusivePtr<ImageDecoderInterface> ImageDecoderInterfacePtr;
+
 	class ImageEncoderInterface
 		: public EncoderInterface
 	{
 	};
-}	// namespace Menge
+
+    typedef IntrusivePtr<ImageEncoderInterface> ImageEncoderInterfacePtr;
+}

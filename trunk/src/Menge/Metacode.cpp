@@ -9,7 +9,7 @@ namespace Metacode
         unsigned int head;
         ar.read( head );
 
-        if( head != 3133062829 )
+        if( head != 3133062829u )
         {
             return false;
         }

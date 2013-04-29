@@ -52,8 +52,17 @@ namespace Menge
 
         m_rate = Magic_GetUpdateTime( m_id );
 
+        if( this->setupBasePosition_() == false )
+        {
+            return false;
+        }
+               
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxEmitter::setupBasePosition_()
+    {
         MAGIC_RECT rect;
-
         if( Magic_GetBackgroundRect( m_id, &rect ) != MAGIC_SUCCESS )
         {
             return false;
@@ -65,6 +74,12 @@ namespace Menge
             pos.x = 0.f;
             pos.y = 0.f;
 
+            m_basePosition.x = 0.f;
+            m_basePosition.y = 0.f;
+#ifdef MAGIC_3D
+            m_basePosition.z = 0.f;
+#endif
+
             Magic_SetEmitterPosition( m_id, &pos );
         }
         else
@@ -72,21 +87,22 @@ namespace Menge
             MAGIC_POSITION pos;
             Magic_GetEmitterPosition( m_id, &pos );
 
-            pos.x -= (float)rect.left;
-            pos.y -= (float)rect.top;
+            MAGIC_POSITION adapt_pos;
+            adapt_pos.x = pos.x - (float)rect.left;
+            adapt_pos.y = pos.y - (float)rect.top;
 
-            Magic_SetEmitterPosition( m_id, &pos );
+            Magic_SetEmitterPosition( m_id, &adapt_pos );
 
-            m_basePosition.x = pos.x;
-            m_basePosition.y = pos.y;
+            m_basePosition.x = adapt_pos.x;
+            m_basePosition.y = adapt_pos.y;
 
 #ifdef MAGIC_3D
-            m_basePosition.z = pos.z;
+            m_basePosition.z = adapt_pos.z;
 #else
             m_basePosition.z = 0.f;
 #endif            
         }
-               
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////

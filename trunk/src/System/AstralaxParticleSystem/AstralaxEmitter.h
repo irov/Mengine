@@ -81,6 +81,9 @@ namespace Menge
 
     public:
 		float getUpdateTemp() const;
+
+    protected:
+        bool setupBasePosition_();
 		
 	protected:
 		AstralaxEmitterContainer * m_container;

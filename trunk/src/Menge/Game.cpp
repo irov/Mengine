@@ -363,6 +363,14 @@ namespace Menge
         SCRIPT_SERVICE(m_serviceProvider)
             ->addGlobalModule( "_DEVELOPMENT", pybind::get_bool(m_developmentMode) );
 
+#   ifdef MENGE_MASTER_RELEASE
+        SCRIPT_SERVICE(m_serviceProvider)
+            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(true) );
+#   else
+        SCRIPT_SERVICE(m_serviceProvider)
+            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(false) );
+#   endif
+
 		PyObject * personality = SCRIPT_SERVICE(m_serviceProvider)
 			->importModule( _module );
 

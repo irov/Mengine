@@ -425,6 +425,7 @@ namespace Menge
 
 			ResourcePackDesc pack;
 
+            pack.dev = false;
 			pack.preload = true;
 			pack.type = "dir";
 
@@ -434,9 +435,10 @@ namespace Menge
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Locale", pack.locale );
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Platform", pack.platform );
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Description", pack.description );
-			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"PreLoad", pack.preload );						
+            s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Dev", pack.dev );
+			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"PreLoad", pack.preload );			
 
-			_settings.resourcePacks.push_back( pack );
+            _settings.resourcePacks.push_back( pack );
 		}
 
 		TVectorWString languagePackSettings;
@@ -452,8 +454,9 @@ namespace Menge
 
 			ResourcePackDesc pack;
 
+            pack.dev = false;
 			pack.preload = true;
-			pack.type = "dir";			
+			pack.type = "dir";
 
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Type", pack.type );
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Name", pack.name );
@@ -461,6 +464,7 @@ namespace Menge
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Locale", pack.locale );
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Platform", pack.platform );
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Description", pack.description );
+            s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"Dev", pack.dev );
 			s_getIniValue( m_resourcePackIni, resourcePack.c_str(), L"PreLoad", pack.preload );	
 
 			_settings.languagePacks.push_back( pack );

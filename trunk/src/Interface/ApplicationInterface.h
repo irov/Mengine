@@ -125,6 +125,7 @@ namespace Menge
         String path;
 		String description;
 
+        bool dev;
 		bool preload;
 	};
 

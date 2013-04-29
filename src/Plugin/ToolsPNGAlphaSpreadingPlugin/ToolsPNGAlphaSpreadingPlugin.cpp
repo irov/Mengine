@@ -255,8 +255,8 @@ namespace Menge
 
         ConstString codec = Helper::stringizeString(serviceProvider, "pngImage");
 
-        ImageDecoderInterface * imageDecoder = 
-            CODEC_SERVICE(serviceProvider)->createDecoderT<ImageDecoderInterface>( codec, input_stream );
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
+            ->createDecoderT<ImageDecoderInterfacePtr>( codec, input_stream );
 
         if( imageDecoder == 0 )
         {
@@ -274,8 +274,6 @@ namespace Menge
 
         if( decode_dataInfo->channels != 4 )
         {
-            imageDecoder->destroy();
-
             Py_RETURN_NONE;
         }
         
@@ -295,8 +293,6 @@ namespace Menge
 
         if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
         {
-            imageDecoder->destroy();
-
             char error[512];
             sprintf( error, "spreadingPngAlpha invalid decode file '%s'"
                 , inputFileName.c_str()
@@ -392,8 +388,8 @@ namespace Menge
             return NULL;
         }
 
-        ImageEncoderInterface * imageEncoder = 
-            CODEC_SERVICE(serviceProvider)->createEncoderT<ImageEncoderInterface>( codec, output_stream );
+        ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(serviceProvider)
+            ->createEncoderT<ImageEncoderInterfacePtr>( codec, output_stream );
 
         if( imageEncoder == 0 )
         {
@@ -432,7 +428,6 @@ namespace Menge
         if( bytesWritten == 0 )
         {
             delete [] textureBuffer;
-            imageEncoder->destroy();
 
             char error[512];
             sprintf( error, "spreadingPngAlpha not found encoder for file '%s'"
@@ -446,9 +441,6 @@ namespace Menge
 
         delete [] textureBuffer;
                 
-        imageDecoder->destroy(); 
-        imageEncoder->destroy();
-
         Py_RETURN_NONE;
     } 
 }  

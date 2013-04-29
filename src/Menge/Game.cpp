@@ -719,6 +719,13 @@ namespace Menge
 		{
 			const ResourcePackDesc & desc = *it;
 
+#   ifdef MENGE_MASTER_RELEASE
+            if( desc.dev == true )
+            {
+                continue;
+            }
+#   endif
+
 			ResourcePak * pack = new ResourcePak( 
                 m_serviceProvider
                 , Helper::stringizeString(m_serviceProvider, desc.name)
@@ -740,6 +747,13 @@ namespace Menge
 		++it )
 		{
 			const ResourcePackDesc & desc = *it;
+
+#   ifdef MENGE_MASTER_RELEASE
+            if( desc.dev == true )
+            {
+                continue;
+            }
+#   endif
 
 			ResourcePak * pack = new ResourcePak(
                 m_serviceProvider

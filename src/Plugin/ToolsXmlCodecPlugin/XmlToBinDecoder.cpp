@@ -232,8 +232,8 @@ namespace Menge
         String utf8_binPath;
         Helper::unicodeToUtf8( serviceProvider, _binPath, utf8_binPath );
 
-        XmlDecoderInterface * decoder = CODEC_SERVICE(serviceProvider)
-            ->createDecoderT<XmlDecoderInterface>( Helper::stringizeString(serviceProvider, "xml2bin"), 0 );
+        XmlDecoderInterfacePtr decoder = CODEC_SERVICE(serviceProvider)
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(serviceProvider, "xml2bin"), 0 );
 
         if( decoder == NULL )
         {
@@ -256,8 +256,6 @@ namespace Menge
                 , utf8_xmlPath.c_str()
                 );
 
-            decoder->destroy();
-
             return false;
         }
 
@@ -267,12 +265,8 @@ namespace Menge
                 , utf8_xmlPath.c_str()
                 );
 
-            decoder->destroy();
-
             return false;
         }
-
-        decoder->destroy();
 
         return true;
     }

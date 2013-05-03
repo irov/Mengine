@@ -8,8 +8,6 @@
 
 #   include "Logger/Logger.h"
 
-#	include <pybind/../config/python.hpp>
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -42,6 +40,27 @@ namespace Menge
 #   endif
 
         return loader;             
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * ScriptModuleFinder::_find_and_load( PyObject * _module, PyObject * _builtins_import )
+    {
+        PyObject * utf8_module = pybind::_unicode_to_utf8_obj( _module );
+        const char * utf8_module_str = pybind::string_to_char( utf8_module );
+
+#   ifndef MENGE_MASTER_RELEASE
+        PyObject * loader = find_module_source_( utf8_module_str );
+
+        if( pybind::is_none( loader ) == true )
+        {
+            loader = find_module_code_( utf8_module_str );
+        }
+#   else
+        PyObject * loader = find_module_code_( utf8_module_str );
+#   endif
+        
+        PyObject * module = pybind::ask_method( loader, "load_module", "(O)", utf8_module );
+
+        return module;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::convertDotToSlash_( const char * _module )
@@ -87,9 +106,9 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            PyObject * py_fullpath = PyString_FromStringAndSize( m_modulePathCache.c_str(), m_modulePathCache.size() );
+            PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
 
-            packagePath = Py_BuildValue( "[O]", py_fullpath );
+            packagePath = pybind::build_value( "[O]", py_fullpath );
             pybind::decref( py_fullpath );
         }
 
@@ -130,9 +149,9 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            PyObject * py_fullpath = PyString_FromStringAndSize( m_modulePathCache.c_str(), m_modulePathCache.size() );
+            PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
 
-            packagePath = Py_BuildValue( "[O]", py_fullpath );
+            packagePath = pybind::build_value( "[O]", py_fullpath );
             pybind::decref( py_fullpath );
         }
 

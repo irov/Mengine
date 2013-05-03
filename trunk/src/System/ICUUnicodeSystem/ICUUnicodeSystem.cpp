@@ -27,8 +27,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ICUUnicodeSystem::unicodeToUtf8Size( const wchar_t * _unicode, size_t _unicodeSize, size_t * _utfSize )
     {
-        size_t str_buffer_size = _unicodeSize * 2;
-        UChar * str_buffer = new UChar[str_buffer_size];
+        typedef std::vector<UChar> TVectorUCHar;
+        static TVectorUCHar s_str_buffer;
+
+        size_t str_buffer_size = _unicodeSize * 2 + 1;
+        s_str_buffer.resize(str_buffer_size);
+
+        UChar * str_buffer = &s_str_buffer[0];
                  
         int32_t str_len = 0; 
 
@@ -49,8 +54,6 @@ namespace Menge
                 , u_errorName(str_status)
                 );
 
-            delete [] str_buffer;
-
             return false;
         }
 
@@ -58,8 +61,6 @@ namespace Menge
 
         UErrorCode utf8_status = U_ZERO_ERROR;
         u_strToUTF8(NULL, 0, &utf8_len, str_buffer, str_len, &utf8_status );
-
-        delete [] str_buffer;
 
         if( U_FAILURE(utf8_status) && (utf8_status != U_BUFFER_OVERFLOW_ERROR)) 
         {			
@@ -78,8 +79,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ICUUnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
-        size_t str_buffer_size = _unicodeSize;
-        UChar * str_buffer = new UChar[str_buffer_size];
+        typedef std::vector<UChar> TVectorUCHar;
+        static TVectorUCHar s_str_buffer;
+
+        size_t str_buffer_size = _unicodeSize + 1;
+        s_str_buffer.resize(str_buffer_size);
+        
+        UChar * str_buffer = &s_str_buffer[0];
 
         int32_t str_len = 0; 
 
@@ -100,8 +106,6 @@ namespace Menge
                 , u_errorName(str_status)
                 );
 
-            delete [] str_buffer;
-
             return false;
         }
 
@@ -109,8 +113,6 @@ namespace Menge
 
         int32_t utf8_len;
         u_strToUTF8( _utf8, _utf8Capacity, &utf8_len, str_buffer, str_len, &utf8_status );
-
-        delete [] str_buffer;
 
         if( U_FAILURE(utf8_status) ) 
         {
@@ -132,8 +134,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ICUUnicodeSystem::utf8ToUnicodeSize( const char * _utf8, size_t _utf8Size, size_t * _unicodeSize )
     {
-        size_t str_buffer_size = _utf8Size;
-        UChar * str_buffer = new UChar[str_buffer_size];
+        typedef std::vector<UChar> TVectorUCHar;
+        static TVectorUCHar s_str_buffer;
+
+        size_t str_buffer_size = _utf8Size + 1;
+        s_str_buffer.resize(str_buffer_size);
+
+        UChar * str_buffer = &s_str_buffer[0];
 
         int32_t str_len;
 
@@ -155,8 +162,6 @@ namespace Menge
                 , status
                 );
 
-            delete [] str_buffer;
-
             return false;
         }
 
@@ -171,8 +176,6 @@ namespace Menge
             str_len, 
             &wcs_status 
             ); 
-
-        delete [] str_buffer;
 
         if( U_FAILURE(wcs_status) && (wcs_status != U_BUFFER_OVERFLOW_ERROR) ) 
         {
@@ -191,8 +194,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ICUUnicodeSystem::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
 	{
-        size_t str_buffer_size = _utf8Size;
-        UChar * str_buffer = new UChar[str_buffer_size];
+        typedef std::vector<UChar> TVectorUCHar;
+        static TVectorUCHar s_str_buffer;
+
+        size_t str_buffer_size = _utf8Size + 1;
+        s_str_buffer.resize(str_buffer_size);
+
+        UChar * str_buffer = &s_str_buffer[0];
 
 		int32_t str_len;
 
@@ -212,8 +220,6 @@ namespace Menge
 				, _utf8
 				, u_errorName(str_status)
 				);
-
-            delete [] str_buffer;
 			
 			return false;
 		}
@@ -229,8 +235,6 @@ namespace Menge
             str_len, 
             &wcs_status 
             ); 
-
-        delete [] str_buffer;
 
         if( U_FAILURE(wcs_status) ) 
         {

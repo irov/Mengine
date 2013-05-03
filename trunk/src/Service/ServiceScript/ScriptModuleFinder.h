@@ -26,7 +26,7 @@ namespace Menge
 
     public:
         PyObject * find_module( const char * _module, PyObject * _path );
-        PyObject * load_module( const char * _module );
+        PyObject * _find_and_load( PyObject * _module, PyObject * _builtins_import );
 
     protected:
         PyObject * find_module_source_( const char * _module );

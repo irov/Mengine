@@ -2066,7 +2066,6 @@ namespace Menge
         }
     };
 
-
     struct extract_WString_type
         : public pybind::type_cast_result<WString>
     {

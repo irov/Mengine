@@ -23,17 +23,7 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}/pybind/include
-    ${THIRDPARTY_DIR}/python/include
     ) 
-    
-if( WIN32 )
-	INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/python/PC )
-endif( WIN32 )
-if(APPLE)
-	include_directories( ${MENGINE_REPOSITORY}/dependencies/Python )
-endif(APPLE)
-
-add_definitions(-DPy_BUILD_CORE)
     
 SET( MENGE_DEPENDENCIES
  ${MENGE_DEPENDENCIES}

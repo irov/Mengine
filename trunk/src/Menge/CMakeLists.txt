@@ -426,7 +426,6 @@ INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/xxbind/
-    ${THIRDPARTY_DIR}/python/include
     ${THIRDPARTY_DIR}/boost
     ${THIRDPARTY_DIR}/simpleini
     ${THIRDPARTY_DIR}/metabuf
@@ -438,17 +437,7 @@ INCLUDE_DIRECTORIES(
 add_definitions(-D_UNICODE)
 #add_definitions(-DSI_CONVERT_ICU)
 
-if( WIN32 )
-	INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/python/PC )
-endif( WIN32 )
-
-add_definitions(-DPy_BUILD_CORE)
-
 include_directories( ${Mengine_SOURCE_DIR}/Menge )
-
-if(APPLE)
-	include_directories( ${MENGINE_REPOSITORY}/dependencies/Python )
-endif(APPLE)
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

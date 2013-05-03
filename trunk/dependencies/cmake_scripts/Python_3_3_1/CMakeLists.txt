@@ -87,18 +87,18 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 #endif(WIN32)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
-file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/PC)
-file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
+configure_file(Configure/getbuildinfo.c ${SOURCE_DIR}/Modules/getbuildinfo.c COPYONLY)
 
 
-#configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
-file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
+configure_file(Configure/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/config.c.cmake ${SOURCE_DIR}/PC/config.c COPYONLY)
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
+if( WIN32 )
+    configure_file(Configure/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
+	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+else( WIN32 )
+    configure_file(Configure/config.c ${SOURCE_DIR}/NOPC/config.c COPYONLY)
+	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/NOPC/pyconfig.h COPYONLY)
+endif( WIN32 )
 
 ############################## 
 
@@ -153,6 +153,9 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/tupleobject.c
         ${SOURCE_DIR}/Objects/typeobject.c
         ${SOURCE_DIR}/Objects/weakrefobject.c
+        ${SOURCE_DIR}/Objects/accu.c
+        ${SOURCE_DIR}/Objects/fileobject.c
+        ${SOURCE_DIR}/Objects/namespaceobject.c
         )
    
 set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
@@ -180,8 +183,6 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/getversion.c
                 ${SOURCE_DIR}/Python/graminit.c
                 ${SOURCE_DIR}/Python/import.c
-                ${SOURCE_DIR}/Python/importdl.c
-                ${SOURCE_DIR}/Python/importdl.h
                 ${SOURCE_DIR}/Python/marshal.c
                 ${SOURCE_DIR}/Python/modsupport.c
                 ${SOURCE_DIR}/Python/mysnprintf.c
@@ -201,10 +202,8 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/structmember.c
                 ${SOURCE_DIR}/Python/symtable.c
                 ${SOURCE_DIR}/Python/sysmodule.c
-                ${SOURCE_DIR}/Python/thread.c
-                ${SOURCE_DIR}/Python/thread_nt.h
                 ${SOURCE_DIR}/Python/traceback.c
-                ${SOURCE_DIR}/Python/dynload_win.c         
+                ${SOURCE_DIR}/Python/random.c
                 
                 ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/PC/getpathp.c
@@ -231,48 +230,38 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_bisectmodule.c
                 ${SOURCE_DIR}/Modules/_codecsmodule.c
                 ${SOURCE_DIR}/Modules/_collectionsmodule.c
-                ${SOURCE_DIR}/Modules/_csv.c
-                ${SOURCE_DIR}/Modules/_functoolsmodule.c
-                ${SOURCE_DIR}/Modules/_heapqmodule.c
-                ${SOURCE_DIR}/Modules/_localemodule.c
-                ${SOURCE_DIR}/Modules/_lsprof.c
+                ${SOURCE_DIR}/Modules/_functoolsmodule.c                
+                ${SOURCE_DIR}/Modules/_localemodule.c                
                 ${SOURCE_DIR}/Modules/_math.c
                 ${SOURCE_DIR}/Modules/_math.h
-                ${SOURCE_DIR}/Modules/_pickle.c
-                ${SOURCE_DIR}/Modules/_randommodule.c
-                ${SOURCE_DIR}/Modules/_sre.c
+                ${SOURCE_DIR}/Modules/_pickle.c                
                 ${SOURCE_DIR}/Modules/_struct.c
                 ${SOURCE_DIR}/Modules/_weakref.c
                                
                 ${SOURCE_DIR}/Modules/cjkcodecs/multibytecodec.c
                 
-                ${SOURCE_DIR}/Modules/arraymodule.c
-                ${SOURCE_DIR}/Modules/atexitmodule.c
-                ${SOURCE_DIR}/Modules/audioop.c
+                ${SOURCE_DIR}/Modules/arraymodule.c                                
                 ${SOURCE_DIR}/Modules/binascii.c
-                ${SOURCE_DIR}/Modules/cmathmodule.c
-                ${SOURCE_DIR}/Modules/_datetimemodule.c
+                ${SOURCE_DIR}/Modules/cmathmodule.c                
                 ${SOURCE_DIR}/Modules/errnomodule.c
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/itertoolsmodule.c
                 ${SOURCE_DIR}/Modules/main.c
-                ${SOURCE_DIR}/Modules/mathmodule.c
-                ${SOURCE_DIR}/Modules/mmapmodule.c
-                ${SOURCE_DIR}/Modules/operator.c
-                ${SOURCE_DIR}/Modules/parsermodule.c
-                ${SOURCE_DIR}/Modules/posixmodule.c
-                ${SOURCE_DIR}/Modules/rotatingtree.c
-                ${SOURCE_DIR}/Modules/rotatingtree.h
+                ${SOURCE_DIR}/Modules/mathmodule.c                
+                ${SOURCE_DIR}/Modules/operator.c                                
                 ${SOURCE_DIR}/Modules/signalmodule.c
                 ${SOURCE_DIR}/Modules/symtablemodule.c
-                ${SOURCE_DIR}/Modules/_threadmodule.c
-                ${SOURCE_DIR}/Modules/timemodule.c
-                ${SOURCE_DIR}/Modules/xxsubtype.c
+                ${SOURCE_DIR}/Modules/faulthandler.c
+                                
+                
+                
                 #${SOURCE_DIR}/Modules/timemodule.c
 				#${SOURCE_DIR}/Modules/cStringIO.c
 				#${SOURCE_DIR}/Modules/arraymodule.c
 				#${SOURCE_DIR}/Modules/datetimemodule.c				
                 ${MOD_SRCS} )
+                
+set( MODULE_SRCS ${MODULE_SRCS} Configure/mockup.c )                
 				
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )

@@ -35,7 +35,7 @@ if(NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
 endif(NOT MSVC)
 
-add_definitions(-DPYBIND_PYTHON_3)
+add_definitions(-DPYBIND_PYTHON_VERSION=320)
 add_definitions(-DPy_BUILD_CORE)
 
 #include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python)

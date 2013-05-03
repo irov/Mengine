@@ -5,8 +5,6 @@
 
 #   include "Logger/Logger.h"
 
-#	include <pybind/../config/python.hpp>
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -48,15 +46,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleLoaderCode::load_module( const char * _module )
     {   
-        PyObject * module = PyImport_AddModule( _module );
+        PyObject * module = pybind::module_init( _module );
 
-        PyObject * dict = PyModule_GetDict( module );
+        PyObject * dict = pybind::module_dict( module );
 
-        PyDict_SetItemString( dict, "__loader__", m_embbed );
+        pybind::dict_set( dict, "__loader__", m_embbed );
 
         if( m_packagePath != NULL )
         {
-            PyDict_SetItemString( dict, "__path__", m_packagePath );
+            pybind::dict_set( dict, "__path__", m_packagePath );
             pybind::decref( m_packagePath );
         }
 
@@ -69,7 +67,7 @@ namespace Menge
             return NULL;
         }
 
-        module = PyImport_ExecCodeModule( const_cast<char *>(_module), code );
+        module = pybind::module_execcode( _module, code );
 
         pybind::decref( code );
 
@@ -124,21 +122,21 @@ namespace Menge
         m_stream = nullptr;
         
         long file_magic = get_int( &code_buf[0] );
-        long py_magic = PyImport_GetMagicNumber();
+        long py_magic = pybind::marshal_magic_number();
 
         if( file_magic != py_magic )
         {
             return NULL;
         }
 
-        PyObject * code = PyMarshal_ReadObjectFromString( (char *)&code_buf[0] + 8, code_size - 8 );
+        PyObject * code = pybind::marshal_get_object( (char *)&code_buf[0] + 8, code_size - 8 );
 
         if( code == NULL )
         {
             return NULL;
         }
 
-        if( PyCode_Check(code) == 0 ) 
+        if( pybind::code_check( code ) == false ) 
         {
             return NULL;
         }

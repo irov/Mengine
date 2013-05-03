@@ -18,12 +18,10 @@
 #	include <iostream>
 #	include <stdarg.h>
 
-#	include <pybind/../config/python.hpp>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-    PyAPI_DATA(int) Py_ErrFormatFlag;
+    extern int Py_ErrFormatFlag;
 #ifdef __cplusplus
 }
 #endif
@@ -88,6 +86,9 @@ namespace Menge
 
         this->addGlobalModule( "Menge", m_moduleMenge );
 
+        size_t python_version = pybind::get_python_version();
+        this->addGlobalModule( "_PYTHON_VERSION", pybind::build_value("d", python_version) );
+
 		pybind::set_currentmodule( m_moduleMenge );
 
 		m_loger = new ScriptLogger(m_serviceProvider);
@@ -100,7 +101,7 @@ namespace Menge
 		PyObject * pyErrorLogger = m_errorLogger->embedding();
 		pybind::setStdErrorHandle( pyErrorLogger );
 
-        PyObject * py_meta_path = PySys_GetObject( "meta_path" );
+        
                 
         //pybind::class_<ScriptZipHolder>("ScriptZipHolder", true)
         //    .def_call( &ScriptZipHolder::make_finder )
@@ -116,7 +117,8 @@ namespace Menge
             ;
 
         pybind::class_<ScriptModuleFinder>("ScriptModuleFinder", true)
-            .def("find_module", &ScriptModuleFinder::find_module )            
+            .def("find_module", &ScriptModuleFinder::find_module )
+            .def("_find_and_load", &ScriptModuleFinder::_find_and_load)
             ;
         
         //pybind::class_<ScriptZipLoader>("ScriptZipLoader", true)
@@ -124,13 +126,11 @@ namespace Menge
             //;
 
         m_moduleFinder = new ScriptModuleFinder(m_serviceProvider);
-        
+       
         PyObject * py_moduleFinder = pybind::ptr( m_moduleFinder );
 
-        PyList_Insert( py_meta_path, 0, (PyObject *)py_moduleFinder );
-
-        pybind::decref( py_moduleFinder );
-
+        pybind::_set_module_finder( py_moduleFinder );
+        
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -263,11 +263,10 @@ namespace Menge
 	}
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::addGlobalModule( const String & _name, PyObject * _module )
-    {
-        bool bltin_exist;
-        PyObject * __builtin__ = pybind::module_import("__builtin__", bltin_exist);
+    {        
+        PyObject * builtins = pybind::get_builtins();
 
-        PyObject * dir_bltin = pybind::module_dict(__builtin__);
+        PyObject * dir_bltin = pybind::module_dict( builtins );
 
         pybind::dict_set( dir_bltin, _name.c_str(), _module );
     }

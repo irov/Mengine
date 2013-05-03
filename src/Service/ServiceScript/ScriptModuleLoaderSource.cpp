@@ -2,8 +2,6 @@
 
 #	include "Interface/StreamInterface.h"
 
-#	include <pybind/../config/python.hpp>
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -34,15 +32,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleLoaderSource::load_module( const char * _module )
     {
-        PyObject * module = PyImport_AddModule( _module );
+        PyObject * module = pybind::module_init( _module );
 
-        PyObject * dict = PyModule_GetDict( module );
+        PyObject * dict = pybind::module_dict( module );
 
-        PyDict_SetItemString( dict, "__loader__", m_embbed );
+        pybind::dict_set( dict, "__loader__", m_embbed );
 
         if( m_packagePath != NULL )
         {
-            PyDict_SetItemString( dict, "__path__", m_packagePath );
+            pybind::dict_set( dict, "__path__", m_packagePath );
             pybind::decref( m_packagePath );
         }
 
@@ -56,7 +54,7 @@ namespace Menge
         }
 
         pybind::incref( module );
-        module = PyImport_ExecCodeModule( const_cast<char *>(_module), code );
+        module = pybind::module_execcode( _module, code );
         pybind::decref( module );
 
         pybind::decref( code );
@@ -83,19 +81,16 @@ namespace Menge
 
         m_stream = nullptr;
 
-        PyObject * code = Py_CompileString( &buf[0], _module, Py_file_input );
+        PyObject * code = pybind::code_compile_file( &buf[0], _module );
         
         if( code == NULL )
         {
-            if( PyErr_Occurred() )
-            {
-                PyErr_Print();
-            }
+            pybind::check_error();
 
             return NULL;
         }
 
-        if( PyCode_Check(code) == 0 ) 
+        if( pybind::code_check( code ) == false ) 
         {
             return NULL;
         }

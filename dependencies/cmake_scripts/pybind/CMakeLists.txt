@@ -31,6 +31,7 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 add_definitions(-DPy_BUILD_CORE)
+add_definitions(-DPYBIND_PYTHON_VERSION=274)
 
 include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python)
 

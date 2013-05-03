@@ -82,8 +82,6 @@ WIN32 is still required for the locale module.
 #ifndef PYTHONPATH
 #	define PYTHONPATH L".\\DLLs;.\\lib"
 #endif
-#define NT_THREADS
-#define WITH_THREAD
 #ifndef NETSCAPE_PI
 #define USE_SOCKET
 #endif
@@ -562,7 +560,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #define HAVE_CLOCK */
 
 /* Define when any dynamic module loading is enabled */
-#define HAVE_DYNAMIC_LOADING
+//#define HAVE_DYNAMIC_LOADING
 
 /* Define if you have ftime.  */
 #ifndef MS_WINCE
@@ -648,6 +646,9 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #ifndef MS_WINCE
 #define HAVE_WCSXFRM 1
 #endif
+
+/* Define if the zlib library has inflateCopy */
+#define HAVE_ZLIB_COPY 1
 
 /* Define if you have the <dlfcn.h> header file.  */
 /* #undef HAVE_DLFCN_H */

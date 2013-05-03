@@ -24,7 +24,6 @@ extern PyObject* PyInit__collections(void);
 extern PyObject* PyInit__heapq(void);
 extern PyObject* PyInit__bisect(void);
 extern PyObject* PyInit__symtable(void);
-extern PyObject* PyInit_mmap(void);
 extern PyObject* PyInit__sre(void);
 extern PyObject* PyInit__struct(void);
 extern PyObject* PyInit__functools(void);
@@ -55,7 +54,6 @@ struct _inittab _PyImport_Inittab[] = {
     {"itertools", PyInit_itertools},
     {"_collections", PyInit__collections},
     {"_symtable", PyInit__symtable},
-    {"mmap", PyInit_mmap},
     {"_struct", PyInit__struct},
     {"_functools", PyInit__functools},
 

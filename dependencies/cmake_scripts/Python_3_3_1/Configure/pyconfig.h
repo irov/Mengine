@@ -224,6 +224,15 @@ typedef int pid_t;
 #include <basetsd.h>
 #endif
 
+#else
+    #define Py_WINVER 0x0501 /* _WIN32_WINNT_WINXP */
+
+#ifndef WINVER
+#define WINVER Py_WINVER
+#endif
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT Py_WINVER
+#endif
 #endif /* _MSC_VER */
 
 /* ------------------------------------------------------------------------*/

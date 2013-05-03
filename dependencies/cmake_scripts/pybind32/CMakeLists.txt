@@ -5,11 +5,6 @@ project(pybind32)
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind )
 
-
-if (NOT MSVC)
-    ADD_DEFINITIONS(-D"override = /* */")
-endif(NOT MSVC)  
-
 # OUR SOURCES
 set( pybind32_sources
 ${SOURCE_DIR}/src/class_info.cpp
@@ -35,16 +30,13 @@ if(NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
 endif(NOT MSVC)
 
-add_definitions(-DPYBIND_PYTHON_VERSION=320)
 add_definitions(-DPy_BUILD_CORE)
+add_definitions(-DPYBIND_PYTHON_VERSION=320)
 
-#include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python)
-
-MESSAGE( STATUS "PYTHON_DIR:         " ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32/include )
+include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32)
 
 IF(WIN32)
     include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32/PC)
-    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32/Include)
 ENDIF(WIN32)
 
 add_library( ${PROJECT_NAME}_static STATIC ${pybind32_sources} )

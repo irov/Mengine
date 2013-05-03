@@ -91,6 +91,7 @@ configure_file(Configure/getbuildinfo.c ${SOURCE_DIR}/Modules/getbuildinfo.c COP
 
 
 configure_file(Configure/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
+configure_file(Configure/random.c ${SOURCE_DIR}/Python/random.c COPYONLY)
 
 if( WIN32 )
     configure_file(Configure/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
@@ -207,7 +208,7 @@ set(PYTHON_SRCS
                 
                 ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/PC/getpathp.c
-                ${SOURCE_DIR}/PC/winreg.c
+                #${SOURCE_DIR}/PC/winreg.c
                 
                 
                 #${MACHDEP_SRCS}

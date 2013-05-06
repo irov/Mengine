@@ -14,10 +14,15 @@ namespace Menge
 	
     public:
 		void setVerboseLevel( EMessageLevel _level ) override;
-        bool validVerboseLevel( EMessageLevel _level ) const override;
+        void setVerboseFlag( size_t _flag ) override;
+
+    public:
+        bool validMessage( EMessageLevel _level, size_t _flag ) const override;
 
     protected:		
 		HTTPSystemInterface * m_interface;
+
         EMessageLevel m_verboseLevel;
+        size_t m_verboseFlag;
 	};
 }

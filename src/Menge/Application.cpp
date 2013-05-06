@@ -143,6 +143,7 @@ SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
 SERVICE_EXTERN(ArrowService, Menge::ArrowServiceInterface);
 SERVICE_EXTERN(AlphaChannelService, Menge::AlphaChannelServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
+SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -255,8 +256,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	bool Application::initialize()
 	{
-        m_watchdog = new Watchdog;
-
         ExecuteInitialize exinit( this );
 
         exinit.add( &Application::initializeNodeManager_ );
@@ -268,6 +267,7 @@ namespace Menge
         exinit.add( &Application::initializeEntityManager_ );		
         exinit.add( &Application::initializeTextManager_ );
         exinit.add( &Application::initializeEventManager_ );
+        exinit.add( &Application::initializeWatchdog_ );
 
         if( exinit.run() == false )
         {
@@ -276,7 +276,8 @@ namespace Menge
 
         if( m_soundMute == false )
         {
-            SOUND_SERVICE(m_serviceProvider)->mute( true );
+            SOUND_SERVICE(m_serviceProvider)
+                ->mute( true );
         }
 
         ScriptWrapper::constsWrap( m_serviceProvider );
@@ -401,7 +402,7 @@ namespace Menge
             return false;
         }
 
-        m_serviceProvider->registryService( "LoaderService", loaderService );
+        SERVICE_REGISTRY( m_serviceProvider, loaderService );
 
         m_loaderService = loaderService;
 
@@ -419,7 +420,7 @@ namespace Menge
             return false;
         }
 		
-        m_serviceProvider->registryService( "MovieKeyFrameService", movieKeyFrameService );
+        SERVICE_REGISTRY( m_serviceProvider, movieKeyFrameService );
 
         m_movieKeyFrameService = movieKeyFrameService;
 
@@ -436,11 +437,28 @@ namespace Menge
             return false;
         }
 
-        m_serviceProvider->registryService( "EventService", eventService );
+        SERVICE_REGISTRY( m_serviceProvider, eventService );
 
         m_eventService = eventService;
 
         return true;             
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::initializeWatchdog_()
+    {
+        LOGGER_INFO(m_serviceProvider)( "Inititalizing Watchdog..." );
+
+        WatchdogInterface * watchdog;
+        if( createWatchdog( &watchdog ) == false )
+        {
+            return false;
+        }
+
+        SERVICE_REGISTRY( m_serviceProvider, watchdog );
+
+        m_watchdog = watchdog;
+
+        return true;    
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeSceneManager_()
@@ -453,7 +471,7 @@ namespace Menge
             return false;
         }
 
-        m_serviceProvider->registryService("SceneService", sceneService );
+        SERVICE_REGISTRY( m_serviceProvider, sceneService );
 
         m_sceneService = sceneService;
 
@@ -470,7 +488,7 @@ namespace Menge
 		    return false;
         }
 
-        m_serviceProvider->registryService( "EntityService", entityService );
+        SERVICE_REGISTRY( m_serviceProvider, entityService );
  
         m_entityService = entityService;
 
@@ -487,7 +505,7 @@ namespace Menge
             return false;
         }
 
-        m_serviceProvider->registryService( "ResourceService", resourceService );
+        SERVICE_REGISTRY( m_serviceProvider, resourceService );
         
         m_resourceService = resourceService;
 
@@ -1133,15 +1151,10 @@ namespace Menge
 	{
 		delete m_game;
         
-        if( m_watchdog == NULL )
-        {
-            m_watchdog->destroy();
-            m_watchdog = NULL;
-        }
-
 		//delete m_paramManager;
         //destroyArrowService
 
+        destroyWatchdog( m_watchdog );
         destroyLoaderService( m_loaderService );        
         destroyTextService( m_textService );
         destroyArrowService( m_arrowService );
@@ -1580,11 +1593,6 @@ namespace Menge
 	{
 		return s_versionInfo;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    WatchdogInterface * Application::getWatchdog() const
-    {
-        return m_watchdog;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getVSync() const
 	{

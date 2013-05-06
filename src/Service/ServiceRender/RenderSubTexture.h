@@ -30,7 +30,7 @@ namespace Menge
 		~RenderSubTexture();
 		
 	public:
-		RenderImageInterface* getImage() const override;
+		RenderImageInterfacePtr getImage() const override;
 		void destroy() override;
 
 		size_t getId() const override;

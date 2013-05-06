@@ -14,18 +14,27 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX8Texture::DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
-		: m_d3dInterface(_d3dInterface)
-        , m_hwWidth(_hwWidth)
-        , m_hwHeight(_hwHeight)
-        , m_hwChannels(_hwChannels)
-        , m_hwPixelFormat(_hwPixelFormat)
+	DX8Texture::DX8Texture()
+		: m_d3dInterface(NULL)
+        , m_hwWidth(0)
+        , m_hwHeight(0)
+        , m_hwChannels(0)
+        , m_hwPixelFormat(PF_UNKNOWN)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8Texture::~DX8Texture()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void DX8Texture::initialize( IDirect3DTexture8 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
+    {
+        m_d3dInterface = _d3dInterface;
+        m_hwWidth = _hwWidth;
+        m_hwHeight = _hwHeight;
+        m_hwChannels = _hwChannels;
+        m_hwPixelFormat = _hwPixelFormat;
+    }
 	///////////////////////////////////////////////////////////////////////////
 	unsigned char * DX8Texture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
 	{
@@ -62,14 +71,18 @@ namespace Menge
 		m_d3dInterface->UnlockRect(0);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8Texture::destroy()
+	bool DX8Texture::_destroy()
 	{
-		this->release();
+        if( m_d3dInterface )
+        {
+            m_d3dInterface->Release();
+            m_d3dInterface = NULL;
+        }
 
-		delete this;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IDirect3DTexture8 * DX8Texture::getInterface() const
+	IDirect3DTexture8 * DX8Texture::getDXTextureInterface() const
 	{
 		return m_d3dInterface;
 	}
@@ -93,14 +106,5 @@ namespace Menge
     {
         return m_hwChannels;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void DX8Texture::release()
-	{
-		if( m_d3dInterface )
-		{
-			m_d3dInterface->Release();
-            m_d3dInterface = NULL;
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

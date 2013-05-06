@@ -43,9 +43,11 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* RenderSubTexture::getImage() const
+	RenderImageInterfacePtr RenderSubTexture::getImage() const
 	{
-		return m_texture->getImage();
+        RenderImageInterfacePtr image = m_texture->getImage();
+
+		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderSubTexture::destroy()

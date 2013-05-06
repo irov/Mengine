@@ -175,6 +175,7 @@ namespace Menge
         , m_pluginMengeImageCodec(NULL)
         , m_pluginMengeSoundCodec(NULL)
         , m_fileLog(NULL)
+        , m_profilerMode(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -596,7 +597,7 @@ namespace Menge
 
         m_logService = logService;
 
-        if( m_commandLine.find( " -console " ) != String::npos )
+        if( Helper::s_hasOption( " -console ", m_commandLine ) == true )
         {
             m_loggerConsole = new LoggerConsole(m_serviceProvider);
 
@@ -642,6 +643,15 @@ namespace Menge
         }
 
         m_logService->setVerboseLevel( m_logLevel );
+
+        size_t verboseFlag = 0;
+        
+        if( m_profilerMode )
+        {
+            verboseFlag |= 0x00000001;
+        }
+
+        m_logService->setVerboseFlag( verboseFlag );
 
         if( Helper::s_hasOption( " -verbose ", m_commandLine ) == true )
         {
@@ -1094,12 +1104,17 @@ namespace Menge
 		m_enableDebug = false;
 #	endif
         
-        if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
+        if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
         {
             m_developmentMode = true;
         }
 
-        if( Helper::s_hasOption( " -noplugin ", m_commandLine ) == true )	// create user directory in ./User/
+        if( Helper::s_hasOption( " -profiler ", m_commandLine ) == true )
+        {
+            m_profilerMode = true;
+        }
+
+        if( Helper::s_hasOption( " -noplugin ", m_commandLine ) == true )
         {
             m_noPluginMode = true;
         }

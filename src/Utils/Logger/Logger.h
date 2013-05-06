@@ -7,7 +7,7 @@ namespace Menge
 	class LoggerOperator
 	{
 	public:
-		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level );
+		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level, size_t _flag );
 
 	public:
 		void operator()( const char* _message, ... );
@@ -18,11 +18,12 @@ namespace Menge
 	protected:
 		LogServiceInterface * m_log;
 		EMessageLevel m_level;
+        size_t m_flag;
 	};
 }
 
 #	define LOGGER_VERBOSE_LEVEL( LOGGER, LEVEL )\
-	if( LOGGER->validVerboseLevel(LEVEL) == false) {} else Menge::LoggerOperator(LOGGER, LEVEL)
+	if( LOGGER->validMessage(LEVEL, 0) == false) {} else Menge::LoggerOperator(LOGGER, LEVEL, 0)
 
 #	define LOGGER_ERROR( serviceProvider )\
 	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_ERROR )

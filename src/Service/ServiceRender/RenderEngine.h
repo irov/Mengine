@@ -111,6 +111,8 @@ namespace Menge
 		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const override;
 		void removeMaterialGroup( const ConstString & _name );
 
+
+    public:
 		bool hasTexture( const FilePath & _filename ) const override;
 		
 		RenderTextureInterface * createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
@@ -295,7 +297,7 @@ namespace Menge
         TVectorRenderPass m_renderPasses;
 
         RenderPass * m_currentRenderPass;
-        
+               
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;

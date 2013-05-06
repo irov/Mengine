@@ -17,7 +17,9 @@ namespace Menge
 		virtual ~HTTPLoggerCURL();
 
 	public:
-		void log( const char * _data, size_t _count, EMessageLevel _level ) override;
+		void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override;
+
+    public:
 		void flush() override;
         void receive( const HTTPResponse & _response ) override;
 

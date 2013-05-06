@@ -2,16 +2,16 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#   include "DX8RenderTexture.h"
+
+#   include "Utils/Factory/FactoryPool.h"
+
 #	include <d3d8.h>
 
 #	include <map>
 
-
 namespace Menge
 {
-	class DX8Texture;
-	class DX8RenderTexture;
-
 	struct VBInfo
 	{
 		size_t length;
@@ -66,7 +66,7 @@ namespace Menge
 		void clear( uint32 _color ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
-		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
+		void screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
@@ -94,7 +94,7 @@ namespace Menge
 			, size_t _startIndex
 			, size_t _indexCount ) override;
 
-		void setTexture( size_t _stage, RenderImageInterface* _texture ) override;
+		void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32 _color ) override;
 
@@ -122,12 +122,12 @@ namespace Menge
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
 		// create empty render image
-		RenderImageInterface * createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-		RenderImageInterface * createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 		
 		
 		// create render target image
-		RenderImageInterface * createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 		// отрисовка изображения
 
 		bool beginScene() override;
@@ -138,7 +138,7 @@ namespace Menge
 		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
-		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
+		bool setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear ) override;
 
 		bool supportTextureFormat( PixelFormat _format ) const override;
 
@@ -200,7 +200,7 @@ namespace Menge
 
 		bool m_inRender;
 
-		DX8RenderTexture* m_curRenderTexture;
+		DX8RenderTexturePtr m_curRenderTexture;
 
         mt::mat4f m_projection;
         mt::mat4f m_modelview;
@@ -219,6 +219,12 @@ namespace Menge
 		TMapIBInfo m_indexBuffers;
 
         IDirect3DIndexBuffer8 * m_currentIB;
+
+        typedef FactoryPool<DX8Texture, 128> TFactoryDX8Texture;
+        TFactoryDX8Texture m_factoryDX8Texture;
+
+        typedef FactoryPool<DX8RenderTexture, 4> TFactoryDX8RenderTexture;
+        TFactoryDX8RenderTexture m_factoryDX8RenderTexture;
 		
 		bool m_syncReady;
 

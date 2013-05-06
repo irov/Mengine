@@ -21,10 +21,13 @@ namespace Menge
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
-		bool validVerboseLevel( EMessageLevel _level ) const override;
+        void setVerboseFlag( size_t _flag ) override;
+
+    public:
+		bool validMessage( EMessageLevel _level, size_t _flag ) const override;
 
 	public:
-		void logMessage( EMessageLevel _level,  const char * _message, size_t _size  ) override;
+		void logMessage( EMessageLevel _level, size_t _flag, const char * _message, size_t _size  ) override;
 
 	public:
 		bool registerLogger( LoggerInterface* _logger ) override;
@@ -34,8 +37,9 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		Menge::EMessageLevel m_verboseLevel;
+        size_t m_verboseFlag;
 
-		typedef std::vector<LoggerInterface*> TVectorLoggers;
+		typedef std::vector<LoggerInterface *> TVectorLoggers;
 		TVectorLoggers m_loggers;
 	};
 }

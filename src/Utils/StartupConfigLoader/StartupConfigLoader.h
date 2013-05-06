@@ -24,7 +24,7 @@ namespace Menge
 		
 		WString projectName;
 		WString companyName;
-		String defaultLocale;		
+		String defaultLocale;
 		
 		TVectorResourcePackDesc resourcePacks;
 		TVectorResourcePackDesc languagePacks;

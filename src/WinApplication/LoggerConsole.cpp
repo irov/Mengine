@@ -14,6 +14,7 @@ namespace Menge
 		: m_serviceProvider(_serviceProvider)
         , m_createConsole(false)
 		, m_verboseLevel(LM_INFO)
+        , m_verboseFlag(0xFFFFFFFF)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,13 +40,28 @@ namespace Menge
 	{
 		m_verboseLevel = _level;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerConsole::setVerboseFlag( size_t _flag )
+    {
+        m_verboseFlag = _flag;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool LoggerConsole::validVerboseLevel( EMessageLevel _level ) const
+	bool LoggerConsole::validMessage( EMessageLevel _level, size_t _flag ) const
 	{
 		if( m_verboseLevel < _level )
 		{
 			return false;
 		}
+
+        if( _flag == 0 )
+        {
+            return true;
+        }
+
+        if( (m_verboseFlag & _flag) == 0 )
+        {
+            return false;
+        }
 
 		return true;
 	}
@@ -114,7 +130,7 @@ namespace Menge
 		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::log( const char * _data, size_t _count, EMessageLevel _level )
+	void LoggerConsole::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
 	{
 		//String utf8(_data, _count);
 

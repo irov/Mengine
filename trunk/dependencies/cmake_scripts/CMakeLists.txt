@@ -46,7 +46,7 @@ ADD_SUBDIRECTORY( pugixml )
 
 if(MSVC)
     ADD_SUBDIRECTORY( Python_3_2 )
-    ADD_SUBDIRECTORY( pybind32 )    
+    ADD_SUBDIRECTORY( pybind32 )   
 endif(MSVC)
 
 if(WIN32)

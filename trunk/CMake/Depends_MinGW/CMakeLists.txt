@@ -5,6 +5,8 @@ PROJECT( Depends_MinGW )
 
 INCLUDE( ../mingw_template.cmake )
 
+set(MENGINE_LIB_DIR "build_mingw" )
+
 SET( MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )
 SET( THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies/cmake_scripts )
 

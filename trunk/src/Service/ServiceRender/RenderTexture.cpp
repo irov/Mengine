@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RenderTexture::RenderTexture( RenderImageInterface* _image
+	RenderTexture::RenderTexture( const RenderImageInterfacePtr & _image
 						, size_t _width
 						, size_t _height
                         , size_t _channels
@@ -35,14 +35,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* RenderTexture::getImage() const
+	RenderImageInterfacePtr RenderTexture::getImage() const
 	{
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTexture::destroy()
 	{
-		m_image->destroy();
         m_image = NULL;
 
         delete this;

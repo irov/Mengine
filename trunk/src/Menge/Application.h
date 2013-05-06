@@ -110,6 +110,7 @@ namespace Menge
 		bool initializeTextManager_();
 		bool initializeMovieKeyFrameManager_();
         bool initializeEventManager_();
+        bool initializeWatchdog_();
 
 	public:		
 		void destroy() override;
@@ -196,9 +197,6 @@ namespace Menge
 
     public:
         bool findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const; 
-
-    public:
-        WatchdogInterface * getWatchdog() const override;
 
 	protected:		
 		void calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport );

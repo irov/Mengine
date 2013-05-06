@@ -166,7 +166,6 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////
     static bool s_getIniValues( const CSimpleIniCaseW & _ini, const WChar * _section, const WChar * _key, TVectorAspectRatioViewports & _values )
     {
         CSimpleIniCaseW::TNamesDepend values;

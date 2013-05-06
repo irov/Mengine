@@ -19,16 +19,16 @@ namespace Menge
 		: public RenderTextureInterface
 	{
 	public:
-		RenderTexture( RenderImageInterface* _image
+		RenderTexture( const RenderImageInterfacePtr & _image
 				, size_t _width
 				, size_t _height
                 , size_t _channels
 				, size_t _id );
 
 		~RenderTexture();
-		
+
 	public:
-		RenderImageInterface* getImage() const override;
+		RenderImageInterfacePtr getImage() const override;
 
 		void destroy() override;
 
@@ -66,7 +66,7 @@ namespace Menge
 	protected:
 		mutable size_t m_ref;
 
-		RenderImageInterface* m_image;
+		RenderImageInterfacePtr m_image;
 		
 		FilePath m_filename;
 		

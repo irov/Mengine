@@ -725,74 +725,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::screenshot( RenderImageInterface* _image, const float * _rect )
-	{
-		/* old code which used before astralax plugin
+	void DX8RenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
+	{	
 		RECT rect;
-		if( _rect )
-		{
-		rect.left = (std::max)( 0L, (LONG)_rect[0] );
-		rect.top = (std::max)( 0L, (LONG)_rect[1] );
-		rect.right = std::min<LONG>( m_screenResolution.getWidth(), (LONG)_rect[2] );
-		rect.bottom = std::min<LONG>( m_screenResolution.getHeight(), (LONG)_rect[3] );
-		}
-		else
-		{
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = m_screenResolution.getWidth();
-		rect.bottom = m_screenResolution.getHeight();
-		}
 
-		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
-
-		LPDIRECT3DSURFACE8 surf;
-		//HRESULT hr = m_pD3DDevice->GetRenderTarget( &surf );
-
-		HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
-		//HRESULT hr = m_pD3DDevice->GetFrontBuffer( m_frontBufferCopySurface );
-		if( FAILED( hr ) )
-		{
-		LOGGER_ERROR(m_logService)( "D3D Error: failed to GetBackBuffer" );
-		return;
-		}
-
-		IDirect3DTexture8* dtext = dxTexture->getInterface();
-		LPDIRECT3DSURFACE8 dsurf;
-		D3DSURFACE_DESC desc;
-		dtext->GetLevelDesc(0, &desc);
-		hr = dtext->GetSurfaceLevel(0, &dsurf );
-		if( FAILED( hr ) )
-		{
-		LOGGER_ERROR(m_logService)( "D3D Error: failed to GetSurfaceLevel" );
-		return;
-		}
-
-		RECT dest_rect;
-		dest_rect.top = 0;
-		dest_rect.left = 0;
-		dest_rect.right = rect.right - rect.left;
-		dest_rect.bottom = rect.bottom - rect.top;
-		if( (UINT)dest_rect.right > desc.Width )
-		{
-		dest_rect.right = desc.Width;
-		}
-		if( (UINT)dest_rect.bottom > desc.Height )
-		{
-		dest_rect.bottom = desc.Height;
-		}
-		//m_pD3DDevice->CopyRects(surf, &rect, dsurf, &dest_rect );
-		hr = loadSurfaceFromSurface_( dsurf, &dest_rect, surf, &rect );
-		if( FAILED( hr ) )
-		{
-		LOGGER_ERROR(m_logService)( "D3D Error: failed to loadSurfaceFromSurface_" );
-		}
-		surf->Release();
-		
-		
-		*/
-		
-		RECT rect;
 		if( _rect )
 		{
 			rect.left = (std::max)( 0L, (LONG)_rect[0] );
@@ -808,7 +744,7 @@ namespace Menge
 			rect.bottom = m_windowResolution.getHeight();
 		}
 		
-		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
+		DX8TexturePtr dxTexture = intrusive_static_cast<DX8TexturePtr>( _image );
 				
 		LPDIRECT3DSURFACE8 renderTarget;
 		HRESULT hr;
@@ -847,7 +783,7 @@ namespace Menge
 			return;
 		}
 				
-		IDirect3DTexture8* dtext = dxTexture->getInterface();
+		IDirect3DTexture8* dtext = dxTexture->getDXTextureInterface();
 		LPDIRECT3DSURFACE8 dsurf;
 		D3DSURFACE_DESC desc;
 
@@ -993,7 +929,7 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr DX8RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
         size_t hwChannels = _channels;
 
@@ -1021,22 +957,23 @@ namespace Menge
 			return NULL;
 		}
 
-        D3DSURFACE_DESC desc;
-        dxTextureInterface->GetLevelDesc( 0, &desc );
+        D3DSURFACE_DESC texDesc;
+        dxTextureInterface->GetLevelDesc( 0, &texDesc );
 
-		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface, desc.Width, desc.Height, hwChannels, hwFormat );
+		DX8Texture * dxTexture = m_factoryDX8Texture.createObjectT();
+        dxTexture->initialize( dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat );
 
-		LOGGER_INFO(m_serviceProvider)( "DX8RenderSystem.createImage: texture created %dx%d %d"
-			, desc.Width
-			, desc.Height
-			, desc.Format
+		LOGGER_INFO(m_serviceProvider)( "DX8RenderSystem.createImage: texture created %dx%d %d:%d"
+			, texDesc.Width
+			, texDesc.Height
+			, texDesc.Format
             , hwChannels
 			);
 
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr DX8RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
         size_t hwChannels = _channels;
 
@@ -1067,18 +1004,20 @@ namespace Menge
         D3DSURFACE_DESC texDesc;
         dxTextureInterface->GetLevelDesc( 0, &texDesc );
 
-		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat );
+        DX8Texture * dxTexture = m_factoryDX8Texture.createObjectT();
+        dxTexture->initialize( dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat );		
         
-		LOGGER_INFO(m_serviceProvider)( "DX8RenderSystem.createDynamicImage: texture created %dx%d %d"
+		LOGGER_INFO(m_serviceProvider)( "DX8RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
 			, texDesc.Width
 			, texDesc.Height
-			, texDesc.Format 
+			, texDesc.Format
+            , hwChannels
 			);
 
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr DX8RenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
         size_t hwChannels = _channels;
 
@@ -1123,7 +1062,10 @@ namespace Menge
         D3DSURFACE_DESC texDesc;
         dxTextureInterface->GetLevelDesc( 0, &texDesc );
 
-		DX8RenderTexture* dxTexture = new DX8RenderTexture( dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat, dxSurfaceInterface );
+		DX8RenderTexture* dxTexture = m_factoryDX8RenderTexture.createObjectT();
+
+        dxTexture->initialize( dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat );
+        dxTexture->setSurface( dxSurfaceInterface );
 
         LOGGER_INFO(m_serviceProvider)( "DX8RenderSystem.createRenderTargetImage: texture created %dx%d %d"
             , texDesc.Width
@@ -1419,38 +1361,31 @@ namespace Menge
 		}        
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
+	bool DX8RenderSystem::setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear )
 	{
         if( m_pD3DDevice == NULL )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::setRenderTarget device not created"
                 );
 
-            return;
+            return false;
         }
-		/*if( m_inRender )
-		{
-		HRESULT hr = m_pD3DDevice->EndScene();
-		if( FAILED( hr ) )
-		{
-		log_error( "Error: DX8RenderSystem failed to EndScene (hr:%p)", hr );
-		}
-		}
-		else
-		{
-		m_inRender = true;
-		}*/
+
 		HRESULT hr;
-		LPDIRECT3DSURFACE8 pSurf=0, pDepth=0;
-		DX8RenderTexture* _target = static_cast<DX8RenderTexture*>( _renderTarget );
+		LPDIRECT3DSURFACE8 pSurf = NULL;
+        LPDIRECT3DSURFACE8 pDepth = NULL;
+
+		DX8RenderTexturePtr renderTarget = intrusive_static_cast<DX8RenderTexturePtr>(_renderTarget);
 		//begin_scene_( m_currentRenderTarget );
 
-		if( _target != m_curRenderTexture )
+		if( renderTarget != m_curRenderTexture )
 		{
-			if(_target)
+			if( renderTarget != NULL )
 			{
-				_target->getInterface()->GetSurfaceLevel(0, &pSurf);
-				pDepth = _target->getDepthInterface();
+				IDirect3DTexture8 * dxTexture = renderTarget->getDXTextureInterface();
+                dxTexture->GetSurfaceLevel( 0, &pSurf );
+
+				pDepth = renderTarget->getDepthInterface();
 			}
 			else
 			{
@@ -1462,34 +1397,40 @@ namespace Menge
 			
             if( FAILED( hr ) )
 			{
-				if( _target )
+				if( renderTarget != NULL )
 				{
 					pSurf->Release();
 				}
-				LOGGER_ERROR(m_serviceProvider)( "Gfx_BeginScene: Can't set render target %l",hr );
-				return;
+
+				LOGGER_ERROR(m_serviceProvider)( "Gfx_BeginScene: Can't set render target %l"
+                    , hr
+                    );
+
+				return false;
 			}
 
-			if( _target )
+			if( renderTarget != NULL )
 			{
 				pSurf->Release();
 			}
 
-			m_curRenderTexture = _target;
+			m_curRenderTexture = renderTarget;
 		}
 
 
-        if( _target == NULL ) 
+        if( renderTarget == NULL ) 
         {
-            return;
+            return true;
         }
 
-        if( _target->isDirty() && _clear )
+        if( renderTarget->isDirty() && _clear )
 		{
 			this->clear_( 0 );
 
-			_target->setDirty( false );
+			renderTarget->setDirty( false );
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::supportTextureFormat( PixelFormat _format ) const
@@ -1554,10 +1495,10 @@ namespace Menge
 					);
 			}
 
-			if( m_curRenderTexture )
+			if( m_curRenderTexture != NULL )
 			{
 				LPDIRECT3DSURFACE8 surf;
-				m_curRenderTexture->getInterface()->GetSurfaceLevel( 0, &surf );
+				m_curRenderTexture->getDXTextureInterface()->GetSurfaceLevel( 0, &surf );
 				//hr = m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface() );
 				hr = m_pD3DDevice->SetRenderTarget( surf, 0 );
 				if( FAILED( hr ) )
@@ -1737,7 +1678,7 @@ namespace Menge
 	{
 		//pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 		HRESULT	 hr;
-		if( m_curRenderTexture )
+		if( m_curRenderTexture != NULL )
 		{
 			//if( m_curRenderTexture->getDepthInterface() )
 			//{
@@ -2574,7 +2515,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setTexture( size_t _stage, RenderImageInterface* _texture )
+	void DX8RenderSystem::setTexture( size_t _stage, const RenderImageInterfacePtr & _texture )
 	{
         if( m_pD3DDevice == NULL )
         {
@@ -2588,8 +2529,8 @@ namespace Menge
 
         if( _texture != NULL )
         {
-            DX8Texture* t = static_cast<DX8Texture*>( _texture );
-            d3d8Texture = t->getInterface();
+            DX8TexturePtr t = intrusive_static_cast<DX8TexturePtr>(_texture);
+            d3d8Texture = t->getDXTextureInterface();
         }
 		
 		HRESULT hr = m_pD3DDevice->SetTexture( _stage, d3d8Texture );

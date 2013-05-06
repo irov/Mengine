@@ -11,6 +11,7 @@ namespace Menge
 	LogEngine::LogEngine()
 		: m_verboseLevel(LM_ERROR)
         , m_serviceProvider(NULL)
+        , m_verboseFlag(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,18 +41,33 @@ namespace Menge
 	{
 		m_verboseLevel = _level;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void LogEngine::setVerboseFlag( size_t _flag )
+    {
+        m_verboseFlag = _flag;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool LogEngine::validVerboseLevel( EMessageLevel _level ) const
+	bool LogEngine::validMessage( EMessageLevel _level, size_t _flag ) const
 	{
 		if( m_verboseLevel < _level )
 		{
 			return false;
 		}
 
+        if( _flag == 0 )
+        {
+            return true;
+        }
+
+        if( (m_verboseFlag & _flag) == 0 )
+        {
+            return false;
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::logMessage( EMessageLevel _level,  const char * _message, size_t _size  )
+	void LogEngine::logMessage( EMessageLevel _level, size_t _flag, const char * _message, size_t _size  )
 	{
 		for( TVectorLoggers::iterator 
 			it = m_loggers.begin(), 
@@ -61,12 +77,12 @@ namespace Menge
 		{
 			LoggerInterface * logger = (*it);
 
-			if( logger->validVerboseLevel( _level ) == false )
+			if( logger->validMessage( _level, _flag ) == false )
 			{
 				continue;
 			}
 
-			logger->log( _message, _size, _level );
+			logger->log( _level, _flag, _message, _size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

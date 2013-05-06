@@ -205,6 +205,7 @@ namespace Menge
 		bool m_enableDebug;
 		bool m_developmentMode;
         bool m_noPluginMode;
+        bool m_profilerMode;
 
         PluginInterface * m_pluginMengeImageCodec;
         PluginInterface * m_pluginMengeSoundCodec;

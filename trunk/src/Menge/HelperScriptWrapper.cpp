@@ -312,10 +312,7 @@ namespace Menge
 
 		float s_watchdog( const String & _tag )
 		{
-            WatchdogInterface * watchdog = APPLICATION_SERVICE(m_serviceProvider)
-                ->getWatchdog();
-
-			float watch = watchdog->watch( _tag );
+			float watch = WATCHDOG( m_serviceProvider, _tag );
 
 			return watch;
 		}

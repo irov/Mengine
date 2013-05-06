@@ -291,6 +291,7 @@ namespace Menge
     };
 
 	class RenderImageInterface
+        : public FactorablePtr
 	{
     public:
         virtual size_t getHWWidth() const = 0;
@@ -302,10 +303,9 @@ namespace Menge
 	public:	
         virtual unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
-
-	public:
-		virtual void destroy() = 0;
 	};
+
+    typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;
 
 	class RenderTextureInterface;
 
@@ -318,7 +318,7 @@ namespace Menge
 	class RenderTextureInterface
 	{
 	public:
-		virtual RenderImageInterface* getImage() const = 0;
+		virtual RenderImageInterfacePtr getImage() const = 0;
 
 		virtual void destroy() = 0;
         		
@@ -392,7 +392,7 @@ namespace Menge
     public:
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
-		virtual void screenshot( RenderImageInterface* _image, const float * _rect ) = 0;
+		virtual void screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) = 0;
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
@@ -417,7 +417,7 @@ namespace Menge
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
 			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) = 0;
 
-		virtual void setTexture( size_t _stage, RenderImageInterface* _texture ) = 0;
+		virtual void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
 		virtual void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
 		virtual void setTextureFactor( uint32 _color ) = 0;
 		virtual void setSrcBlendFactor( EBlendFactor _src ) = 0;
@@ -443,13 +443,13 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterface * createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
-		virtual RenderImageInterface * createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterface * createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 
 		//
 		// отрисовка изображения
@@ -466,7 +466,7 @@ namespace Menge
 		virtual void setViewport( const Viewport & _viewport ) = 0;
 
 		virtual void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
-		virtual void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;
+		virtual bool setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear ) = 0;
 
 		//new
 		//virtual LightInterface * createLight( const String & _name ) = 0;

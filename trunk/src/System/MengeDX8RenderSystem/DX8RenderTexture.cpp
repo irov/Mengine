@@ -12,9 +12,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX8RenderTexture::DX8RenderTexture( IDirect3DTexture8* _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat, IDirect3DSurface8* _depthInterface )
-		: DX8Texture(_d3dInterface, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat)
-		, m_depthInterface(_depthInterface)
+	DX8RenderTexture::DX8RenderTexture()
+		: m_depthInterface(NULL)
 		, m_dirty(true)
 	{
 	}
@@ -22,6 +21,11 @@ namespace Menge
 	DX8RenderTexture::~DX8RenderTexture()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void DX8RenderTexture::setSurface( IDirect3DSurface8 * _depthInterface )
+    {
+        m_depthInterface = _depthInterface;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderTexture::isDirty() const
 	{
@@ -48,13 +52,15 @@ namespace Menge
 		m_depthInterface = _d3dInterface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderTexture::release()
+	bool DX8RenderTexture::_destroy()
 	{
-        DX8Texture::release();
+        DX8Texture::_destroy();
 
 		if( m_depthInterface )
 		{
 			m_depthInterface->Release();
 		}
+
+        return true;
 	}
 }	// namespace Menge

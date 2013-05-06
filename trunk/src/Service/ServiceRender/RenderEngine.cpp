@@ -18,6 +18,8 @@
 #	include <map>
 #	include <ctime>
 
+#   include "Interface/WatchdogInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderService, Menge::RenderServiceInterface, Menge::RenderEngine );
 //////////////////////////////////////////////////////////////////////////
@@ -410,7 +412,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( RenderTextureInterface* _texture, const mt::vec4f & _rect )
 	{
-		RenderImageInterface* image = _texture->getImage();
+		RenderImageInterfacePtr image = _texture->getImage();
 
 		m_renderSystem->screenshot( image, _rect.buff() );
 	}
@@ -516,17 +518,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface * RenderEngine::createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-		RenderImageInterface * image = m_renderSystem->createImage( _width, _height, _channels, _format );
-       
-		if( image == NULL )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
-				, _width
-				, _height
-				);
+        RenderImageInterfacePtr image = m_renderSystem->createImage( _width, _height, _channels, _format );
 
-			return NULL;
-		}
+        if( image == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
+                , _width
+                , _height
+                );
+
+            return NULL;
+        }
 
 		size_t id = ++m_idEnumerator;
 
@@ -550,46 +552,6 @@ namespace Menge
 
 		return texture;
 	}
-    ////////////////////////////////////////////////////////////////////////////
-    //RenderTextureInterface * RenderEngine::createPoolTexture( size_t _width, size_t _height, PixelFormat _format )
-    //{
-    //    MENGE_LOG_INFO( "Creating pool texture %dx%d %d"
-    //        , _width
-    //        , _height
-    //        , _format 
-    //        );
-
-    //    PoolTextureKey key;
-
-    //    key.width = _width;
-    //    key.height = _height;
-    //    key.format = _format;
-
-    //    TMapPoolTextures::iterator it_found = m_poolTextures.find( key );
-
-    //    if( it_found == m_poolTextures.end() )
-    //    {
-    //        RenderTextureInterface * texture = this->createTexture( _width, _height, _format );
-
-    //        return texture;
-    //    }
-
-    //    TVectorTextures & textures = it_found->second;
-    //        
-    //    if( textures.empty() == true )
-    //    {
-    //        RenderTextureInterface * texture = this->createTexture( _width, _height, _format );
-
-    //        return texture;
-    //    }
-
-    //    RenderTextureInterface * texture = textures.back();
-    //    textures.pop_back();
-
-    //    return texture;
-
-    //    return 0;
-    //}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterface * RenderEngine::createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
@@ -599,17 +561,17 @@ namespace Menge
 			, _channels 
 			);
 
-		RenderImageInterface * image = m_renderSystem->createDynamicImage( _width, _height, _channels, _format );
+        RenderImageInterfacePtr image = m_renderSystem->createDynamicImage( _width, _height, _channels, _format );
 
-		if( image == NULL )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
-				, _width
-				, _height
-				);
+        if( image == NULL )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
+                , _width
+                , _height
+                );
 
-			return NULL;
-		}
+            return NULL;
+        }
 
 		size_t id = ++m_idEnumerator;
 
@@ -622,45 +584,6 @@ namespace Menge
 
 		return texture;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	//RenderTextureInterface * RenderEngine::createMegatexture( size_t _width, size_t _height, PixelFormat _format )
-	//{
-		//PixelFormat format = m_megatextures->getPixelFormat();
-
-		//if( _format != format )
-		//{
-		//	RenderTextureInterface * texture = this->createTexture( _width, _height, _format );
-
-		//	return texture;
-		//}
-
-		//RenderTextureInterface * texture = m_megatextures->createTexture( _width, _height );
-
-		//size_t memroy_size = texture->getMemoryUse();
-
-		//m_debugInfo.textureMemory += memroy_size;
-		//++m_debugInfo.textureCount;
-
-		//return texture;
-
-        //return NULL;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//RenderTextureInterface * RenderEngine::createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener )
-	//{
-	//	LOGGER_INFO(m_serviceProvider)( "Creating sub texture [%d %d - %d %d]"
-	//		, _rect.left
-	//		, _rect.top
-	//		, _rect.right
-	//		, _rect.bottom
-	//		);
-
-	//	size_t id = ++m_idEnumerator;
-
-	//	RenderSubTexture * texture = new RenderSubTexture( _texture, _rect, id, _listener );
-
-	//	return texture;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderTextureInterface* _image, const ConstString & _fileSystemName, const FilePath & _filename )
 	{
@@ -813,10 +736,28 @@ namespace Menge
 
 		const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
         	
+        WATCHDOG(m_serviceProvider, "texture create");
+
 		RenderTextureInterface * texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
+
+        this->cacheFileTexture( _filename, texture );
+
+        float texture_create = WATCHDOG(m_serviceProvider, "texture create");
+
+        LOGGER_WATCHDOG(m_serviceProvider)("texture create %.4f %s"
+            , texture_create
+            , _filename.c_str()
+            );
 		
 		if( texture == nullptr )
 		{
+            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: invalid create texture %d:%d %d for file '%s' was not found"
+                , dataInfo->width
+                , dataInfo->height
+                , dataInfo->channels
+                , _filename.c_str() 
+                );
+
 			return nullptr;
 		}
 
@@ -829,76 +770,10 @@ namespace Menge
                 );
 
             return nullptr;
-        }
-		
-		this->cacheFileTexture( _filename, texture );
+        }		
 		
 		return texture;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//RenderTextureInterface* RenderEngine::loadMegatexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec )
-	//{
-	//	TMapTextures::iterator it_find = m_textures.find( _filename );
-
-	//	if( it_find != m_textures.end() )
-	//	{
-	//		it_find->second->addRef();
-
-	//		return it_find->second;
-	//	}
-
-	//	InputStreamInterface * stream = 
- //           FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _filename );
-
-	//	if( stream == 0 )
-	//	{
-	//		LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image file '%s' was not found"
-	//			, _filename.c_str() 
-	//			);
-
-	//		return NULL;
-	//	}
-
-	//	ImageDecoderInterface * imageDecoder = 
- //           CODEC_SERVICE(m_serviceProvider)->createDecoderT<ImageDecoderInterface>( _codec, stream );
-
-	//	if( imageDecoder == 0 )
-	//	{
-	//		LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image decoder for file '%s' was not found"
-	//			, _filename.c_str() 
-	//			);
-
-	//		stream->destroy();
-
-	//		return NULL;
-	//	}
-
-	//	const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
-
-	//	RenderTextureInterface * texture = this->createMegatexture( dataInfo->width, dataInfo->height, dataInfo->channels );
-
-	//	//m_debugInfo.megatextures = m_megatextures->getMegatextureCount();
-
-	//	if( texture == NULL )
-	//	{
-	//		imageDecoder->destroy();
-
-	//		stream->destroy();
-
-	//		return NULL;
-	//	}
-
-	//	const Rect & rect = texture->getRect();
-	//	this->loadTextureRectImageData( texture, rect, imageDecoder );
-
-	//	imageDecoder->destroy();
-
-	//	stream->destroy();
-
-	//	this->cacheFileTexture( _filename, texture );
-
-	//	return texture;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseTexture( RenderTextureInterface* _texture )
 	{
@@ -936,7 +811,7 @@ namespace Menge
 
 		m_debugInfo.textureMemory -= memroy_size;
 		--m_debugInfo.textureCount;
-		
+
 		_texture->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -965,6 +840,8 @@ namespace Menge
 
         const ImageCodecDataInfo * data = _imageDecoder->getCodecDataInfo();
 
+        WATCHDOG(m_serviceProvider, "texture decode");
+
         unsigned int bufferSize = pitch * data->height;
         if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
         {
@@ -975,10 +852,27 @@ namespace Menge
             return false;
         }
 
+        float time_decode = WATCHDOG(m_serviceProvider, "texture decode");
+
+        LOGGER_WATCHDOG(m_serviceProvider)("texture decode %.4f %s"
+            , time_decode
+            , _texture->getFileName().c_str()
+            );
+
         //this->sweezleAlpha( _texture, textureBuffer, pitch );
         this->imageQuality( _texture, textureBuffer, pitch );
 
+        WATCHDOG(m_serviceProvider, "texture unlock");
+
 		_texture->unlock();
+
+        float time_unlock = WATCHDOG(m_serviceProvider, "texture unlock");
+
+        LOGGER_WATCHDOG(m_serviceProvider)("texture unlock %.4f %s"
+            , time_unlock
+            , _texture->getFileName().c_str()
+            );
+
 
 		return true;
 	}
@@ -1168,7 +1062,7 @@ namespace Menge
 			if( texture_id != m_currentTexturesID[stageId] || m_currentTexturesID[stageId] != 0 )
 			{
 				m_currentTexturesID[stageId] = texture_id;
-				RenderImageInterface * image = texture->getImage();
+				RenderImageInterfacePtr image = texture->getImage();
 
 				m_renderSystem->setTexture( stageId, image );
 			}
@@ -1811,8 +1705,8 @@ namespace Menge
 
 		for( size_t i = 0; i != _prev->textureStages; ++i )
 		{
-			RenderImageInterface * prevImage = _prev->textures[i]->getImage();
-			RenderImageInterface * nextImage = _next->textures[i]->getImage();
+			RenderImageInterfacePtr prevImage = _prev->textures[i]->getImage();
+			RenderImageInterfacePtr nextImage = _next->textures[i]->getImage();
 
 			if( prevImage != nextImage )
 			{
@@ -2228,7 +2122,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTargetTexture( RenderTextureInterface * _texture, bool _clear )
 	{
-		RenderImageInterface * image = _texture->getImage();
+		RenderImageInterfacePtr image = _texture->getImage();
 		
 		m_renderSystem->setRenderTarget( image, _clear );
 
@@ -2243,7 +2137,7 @@ namespace Menge
 			, _channels 
 			);
 
-		RenderImageInterface * image = m_renderSystem->createRenderTargetImage( _width, _height, _channels, _format );
+		RenderImageInterfacePtr image = m_renderSystem->createRenderTargetImage( _width, _height, _channels, _format );
 
 		if( image == NULL )
 		{

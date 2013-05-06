@@ -6,6 +6,7 @@ namespace Menge
 	HTTPLogger::HTTPLogger( HTTPSystemInterface * _interfaceHTTP )
 		: m_interface(_interfaceHTTP)
         , m_verboseLevel(LM_INFO)
+        , m_verboseFlag(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -18,9 +19,24 @@ namespace Menge
 		m_verboseLevel = _level; 
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool HTTPLogger::validVerboseLevel( EMessageLevel _level ) const
+    void HTTPLogger::setVerboseFlag( size_t _flag )
+    {
+        m_verboseFlag = _flag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HTTPLogger::validMessage( EMessageLevel _level, size_t _flag ) const
     {
         if( m_verboseLevel < _level )
+        {
+            return false;
+        }
+
+        if( _flag == 0 )
+        {
+            return true;
+        }
+
+        if( (m_verboseFlag & _flag) == 0 )
         {
             return false;
         }

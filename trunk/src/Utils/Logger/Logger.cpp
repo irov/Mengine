@@ -7,9 +7,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LoggerOperator::LoggerOperator( LogServiceInterface * _log, EMessageLevel _level )
+	LoggerOperator::LoggerOperator( LogServiceInterface * _log, EMessageLevel _level, size_t _flag )
 		: m_log(_log)
 		, m_level(_level)
+        , m_flag(_flag)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,6 +41,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerOperator::logMessage( const char * _message, size_t _size )
 	{
-		m_log->logMessage( m_level, _message, _size );
+		m_log->logMessage( m_level, m_flag, _message, _size );
 	}
 }

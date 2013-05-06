@@ -25,11 +25,11 @@ namespace Menge
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HTTPLoggerCURL::log( const char * _data, size_t _count, EMessageLevel _level )
+	void HTTPLoggerCURL::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
 	{
         (void)_level;
 
-		if( m_buffer.size() >= HTTP_LOGGER_CURL_BUFFER_LIMIT )
+		if( m_buffer.size() + _count >= HTTP_LOGGER_CURL_BUFFER_LIMIT )
 		{
 			this->flush();
 		}

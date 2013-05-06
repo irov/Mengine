@@ -1,16 +1,8 @@
-/*
- *	DX8Texture.h
- *
- *	Created by _Berserk_ on 22.1.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
 
-struct IDirect3DTexture8;
+#   include <d3d8.h>
 
 namespace Menge
 {
@@ -18,11 +10,14 @@ namespace Menge
 		: public RenderImageInterface
 	{
 	public:
-		DX8Texture( IDirect3DTexture8 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat );
-		virtual ~DX8Texture();
+		DX8Texture();
+        ~DX8Texture();
+
+    public:
+        void initialize( IDirect3DTexture8 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat );
 
 	public:
-		IDirect3DTexture8 * getInterface() const;		
+		IDirect3DTexture8 * getDXTextureInterface() const;		
 
 	public:
 		size_t getHWWidth() const override;
@@ -37,11 +32,8 @@ namespace Menge
 		void unlock() override;
 
 	public:
-		void destroy() override;
+		bool _destroy() override;
         		
-	public:
-		virtual void release();
-
 	protected:
 		IDirect3DTexture8* m_d3dInterface;
 
@@ -51,4 +43,6 @@ namespace Menge
 
         PixelFormat m_hwPixelFormat;        
 	};
+
+    typedef IntrusivePtr<DX8Texture> DX8TexturePtr;
 }	// namespace Menge

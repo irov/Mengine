@@ -8,7 +8,6 @@
 #	include "Core/Viewport.h"
 
 #	include "Interface/ServiceInterface.h"
-#   include "Interface/WatchdogInterface.h"
 
 namespace Menge
 {
@@ -233,9 +232,6 @@ namespace Menge
 
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;
-
-    public:
-        virtual WatchdogInterface * getWatchdog() const = 0;
 
     public:
         virtual void quit() = 0;

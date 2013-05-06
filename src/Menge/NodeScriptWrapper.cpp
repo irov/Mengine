@@ -2074,7 +2074,7 @@ namespace Menge
         {
             if( pybind::unicode_check( _obj ) == true )
             {
-                const pybind_unicode_t * value_char = pybind::unicode_to_wchar( _obj );
+                const pybind::pybind_unicode_t * value_char = pybind::unicode_to_wchar( _obj );
 
                 if( value_char == 0 )
                 {

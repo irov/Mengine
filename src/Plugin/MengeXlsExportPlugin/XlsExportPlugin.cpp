@@ -9,7 +9,7 @@
 #   include "XlsScriptLogger.h"
 
 #	include <Windows.h>
-#	include "Python.h"
+
 #	include <pybind\pybind.hpp>
 
 //////////////////////////////////////////////////////////////////////////
@@ -19,11 +19,11 @@ bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 	return true;
 }
 
-extern int Py_OptimizeFlag;
-extern int Py_NoSiteFlag;
-extern int Py_IgnoreEnvironmentFlag;
-extern int Py_VerboseFlag;
-extern int Py_NoUserSiteDirectory;
+//PyAPI_DATA(int) Py_OptimizeFlag;
+//extern int Py_NoSiteFlag;
+//extern int Py_IgnoreEnvironmentFlag;
+//extern int Py_VerboseFlag;
+//extern int Py_NoUserSiteDirectory;
 
 extern "C"
 {
@@ -51,10 +51,10 @@ namespace Menge
 	
 		PlatformInterface * platform = APPLICATION_SERVICE(m_serviceProvider)->getPlatform();
 
-		Py_IgnoreEnvironmentFlag = 1;
+		//Py_IgnoreEnvironmentFlag = 1;
 		//Py_VerboseFlag = 1;
 		//Py_NoUserSiteDirectory = 1;
-		Py_NoSiteFlag = 1;
+		//Py_NoSiteFlag = 1;
 
         String currentPath = platform->getCurrentPath();
 
@@ -79,10 +79,8 @@ namespace Menge
                 return false;
             }
 
-            Py_SetPath( unicode_shortpath );
-        }
-
-
+            pybind::set_path( unicode_shortpath );
+        }        
 
 		pybind::initialize( false, false );
 

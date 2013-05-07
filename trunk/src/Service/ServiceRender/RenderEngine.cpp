@@ -7,7 +7,6 @@
 #	include "Interface/ImageCodecInterface.h"
 #   include "Interface/FileSystemInterface.h"
 
-#	include "RenderTexture.h"
 #	include "RenderSubTexture.h"
 
 #	include "Megatextures.h"
@@ -230,23 +229,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::finalize()
 	{
-		if( m_nullTexture != NULL )
-		{
-			this->releaseTexture( m_nullTexture );
-		}
+		m_nullTexture = nullptr;
 
-		for( TMapTextures::iterator 
-			it = m_textures.begin(), 
-			it_end = m_textures.end();
-		it != it_end;
-		++it )
-		{
-            RenderTextureInterface * texture = it->second;
-
-			this->destroyTexture_( texture );
-		}
-
-		m_textures.clear();
+    	//m_textures.clear();
 
 		for( TMapMaterialGroup::iterator
 			it = m_mapMaterialGroup.begin(),
@@ -410,7 +395,7 @@ namespace Menge
 		this->restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::screenshot( RenderTextureInterface* _texture, const mt::vec4f & _rect )
+	void RenderEngine::screenshot( const RenderTextureInterfacePtr & _texture, const mt::vec4f & _rect )
 	{
 		RenderImageInterfacePtr image = _texture->getImage();
 
@@ -492,7 +477,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		return it_found->second;
@@ -516,23 +501,24 @@ namespace Menge
 		m_mapMaterialGroup.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * RenderEngine::createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderTextureInterfacePtr RenderEngine::createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
         RenderImageInterfacePtr image = m_renderSystem->createImage( _width, _height, _channels, _format );
 
-        if( image == NULL )
+        if( image == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
                 , _width
                 , _height
                 );
 
-            return NULL;
+            return nullptr;
         }
 
 		size_t id = ++m_idEnumerator;
 
-		RenderTextureInterface * texture = new RenderTexture( image, _width, _height, _channels, id );
+		RenderTexture * texture = m_factoryRenderTexture.createObjectT();
+        texture->initialize( image, _width, _height, _channels, id, this );
 
 		size_t memroy_size = texture->getMemoryUse();
 
@@ -553,7 +539,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * RenderEngine::createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderTextureInterfacePtr RenderEngine::createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
 		LOGGER_INFO(m_serviceProvider)( "Creating dynamic texture %dx%d channels %d"
 			, _width
@@ -563,19 +549,20 @@ namespace Menge
 
         RenderImageInterfacePtr image = m_renderSystem->createDynamicImage( _width, _height, _channels, _format );
 
-        if( image == NULL )
+        if( image == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
                 , _width
                 , _height
                 );
 
-            return NULL;
+            return nullptr;
         }
 
 		size_t id = ++m_idEnumerator;
 
-		RenderTextureInterface * texture = new RenderTexture( image, _width, _height, _channels, id );
+        RenderTexture * texture = m_factoryRenderTexture.createObjectT();
+        texture->initialize( image, _width, _height, _channels, id, this );
 
 		size_t memroy_size = texture->getMemoryUse();
 
@@ -585,7 +572,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( RenderTextureInterface* _image, const ConstString & _fileSystemName, const FilePath & _filename )
+	bool RenderEngine::saveImage( const RenderTextureInterfacePtr & _texture, const ConstString & _fileSystemName, const FilePath & _filename )
 	{
 		OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( _fileSystemName, _filename );
@@ -614,8 +601,8 @@ namespace Menge
 
 		ImageCodecDataInfo dataInfo;
 		//dataInfo.format = _image->getHWPixelFormat();
-        dataInfo.width = _image->getWidth();
-		dataInfo.height = _image->getHeight();		
+        dataInfo.width = _texture->getWidth();
+		dataInfo.height = _texture->getHeight();		
 		dataInfo.depth = 1;
 		dataInfo.num_mipmaps = 0;
 		dataInfo.flags = 0;
@@ -628,22 +615,8 @@ namespace Menge
 		rect.right = dataInfo.width;
 		rect.bottom = dataInfo.height;
 		
-		unsigned char * buffer = _image->lock( &pitch, rect, true );
-
-		/*unsigned char* lockBuffer = new unsigned char[ imgData.height * pitch ];
-
-		size_t mPitch = Menge::PixelUtil::getNumElemBytes( imgData.format ) * imgData.width;
-		for( size_t i = 0; i != imgData.height; i++ )
-		{
-		std::copy( buffer, buffer + mPitch, lockBuffer );
-		//memcpy( _dstData, _srcData, width * 4 );
-		lockBuffer += mPitch;
-		buffer += pitch;
-		}
-		_image->unlock();*/
-
-		//lockBuffer -= mPitch * imgData.height;
-
+		unsigned char * buffer = _texture->lock( &pitch, rect, true );
+        
 		ImageCodecOptions options;		
 
 		options.pitch = pitch;
@@ -654,9 +627,7 @@ namespace Menge
 
 		unsigned int bytesWritten = imageEncoder->encode( buffer, &dataInfo );
 
-		_image->unlock();
-
-		//imageEncoder->release();
+		_texture->unlock();
 
 		if( bytesWritten == 0 )
 		{
@@ -669,11 +640,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::cacheFileTexture( const FilePath& _filename, RenderTextureInterface* _texture )
+	void RenderEngine::cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture )
 	{
 		_texture->setFileName( _filename );
 
-        m_textures.insert( std::make_pair( _filename, _texture ) );
+        RenderTextureInterface * texture_ptr = _texture.get();
+        m_textures.insert( std::make_pair(_filename, texture_ptr) );
 
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s %d:%d"
             , _filename.c_str()
@@ -682,30 +654,27 @@ namespace Menge
             );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* RenderEngine::getTexture( const FilePath& _filename )
+	RenderTextureInterfacePtr RenderEngine::getTexture( const FilePath& _filename )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
 
 		if( it_find == m_textures.end() )
 		{
-            return NULL;
+            return nullptr;
         }
          
         RenderTextureInterface * texture = it_find->second;
-
-        texture->addRef();
-		
+        		
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface* RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec )
+	RenderTextureInterfacePtr RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
 	
 		if( it_find != m_textures.end() )
 		{
             RenderTextureInterface * texture = it_find->second;
-			texture->addRef();
 
 			return texture;
 		}
@@ -738,7 +707,7 @@ namespace Menge
         	
         WATCHDOG(m_serviceProvider, "texture create");
 
-		RenderTextureInterface * texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
+		RenderTextureInterfacePtr texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
 
         this->cacheFileTexture( _filename, texture );
 
@@ -774,29 +743,13 @@ namespace Menge
 		
 		return texture;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseTexture( RenderTextureInterface* _texture )
-	{
-		if( _texture == NULL )
-		{
-			return;
-		}
+    void RenderEngine::onRenderTextureRelease( const RenderTextureInterface * _texture )
+    {
+        const FilePath & filename = _texture->getFileName();
 
-		if( _texture->decRef() > 0 )
-		{
-			return;
-		}
+        m_textures.erase( filename );
 
-		const FilePath & filename = _texture->getFileName();
-		
-		m_textures.erase( filename );
-
-		this->destroyTexture_( _texture );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::destroyTexture_( RenderTextureInterface * _texture )
-	{
-		size_t memroy_size = _texture->getMemoryUse();
+        size_t memroy_size = _texture->getMemoryUse();
 
         size_t HWWidth = _texture->getHWWidth();
         size_t HWHeight = _texture->getHWHeight();
@@ -809,13 +762,11 @@ namespace Menge
             , memroy_size
             );
 
-		m_debugInfo.textureMemory -= memroy_size;
-		--m_debugInfo.textureCount;
-
-		_texture->destroy();
-	}
+        m_debugInfo.textureMemory -= memroy_size;
+        --m_debugInfo.textureCount;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
+	bool RenderEngine::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
 	{
 		int pitch = 0;
 		unsigned char * textureBuffer = _texture->lock( &pitch, _rect, false );
@@ -901,7 +852,7 @@ namespace Menge
 	//	}
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::imageQuality( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch )
+	void RenderEngine::imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch )
 	{
         size_t width = _texture->getWidth();
         size_t height = _texture->getHeight();
@@ -1050,7 +1001,7 @@ namespace Menge
 
 		for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
-			const RenderTextureInterface * texture = _renderObject->textures[stageId];
+			RenderTextureInterfacePtr texture = _renderObject->textures[stageId];
 
 			if( texture == NULL )
 			{
@@ -1388,7 +1339,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, size_t _texturesNum,
+	void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
@@ -2120,7 +2071,7 @@ namespace Menge
 		m_renderSystem->clear( _color );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderTargetTexture( RenderTextureInterface * _texture, bool _clear )
+	void RenderEngine::setRenderTargetTexture( const RenderTextureInterfacePtr & _texture, bool _clear )
 	{
 		RenderImageInterfacePtr image = _texture->getImage();
 		
@@ -2129,7 +2080,7 @@ namespace Menge
 		this->restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * RenderEngine::createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderTextureInterfacePtr RenderEngine::createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
 		LOGGER_INFO(m_serviceProvider)( "Creating texture %dx%d %d"
 			, _width
@@ -2151,7 +2102,10 @@ namespace Menge
 
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
-		RenderTexture* texture = new RenderTexture( image, _width, _height, _channels, ++m_idEnumerator );
+        size_t id = ++m_idEnumerator;
+
+        RenderTexture * texture = m_factoryRenderTexture.createObjectT();
+        texture->initialize( image, _width, _height, _channels, id, this );
 
         size_t memroy_size = texture->getMemoryUse();
 

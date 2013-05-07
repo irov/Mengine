@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/StreamInterface.h"
+#   include "Interface/RenderSystemInterface.h"
 #   include "Interface/ImageCodecInterface.h"
 
 #	include "Kernel/ResourceReference.h"
@@ -9,8 +10,6 @@
 
 namespace Menge
 {
-	class RenderTextureInterface;	
-    
 	class ResourceImage
 		: public ResourceReference
 	{
@@ -31,14 +30,14 @@ namespace Menge
         inline bool isUVRotate() const;
     
     public:
-		inline RenderTextureInterface* getTexture() const;
-        inline RenderTextureInterface* getTextureAlpha() const;
+		inline const RenderTextureInterfacePtr & getTexture() const;
+        inline const RenderTextureInterfacePtr & getTextureAlpha() const;
         
 	protected:
 		bool loadImageFrame_( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec );
 		
 		//bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
-		bool prepareImageFrame_( RenderTextureInterface * _texture );
+		bool prepareImageFrame_( const RenderTextureInterfacePtr & _texture );
 
 	protected:
 		ImageDecoderInterfacePtr createDecoder_( const InputStreamInterfacePtr & _stream,  const ConstString& _codec ) const;
@@ -47,8 +46,8 @@ namespace Menge
         void _release() override;
 		
 	protected:        
-        RenderTextureInterface* m_texture;
-        RenderTextureInterface* m_textureAlpha;
+        RenderTextureInterfacePtr m_texture;
+        RenderTextureInterfacePtr m_textureAlpha;
 
         mt::vec2f m_maxSize;
         mt::vec2f m_size;
@@ -95,12 +94,12 @@ namespace Menge
         return m_uv_alpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline RenderTextureInterface* ResourceImage::getTexture() const
+    inline const RenderTextureInterfacePtr & ResourceImage::getTexture() const
     {
         return m_texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline RenderTextureInterface * ResourceImage::getTextureAlpha() const
+    inline const RenderTextureInterfacePtr & ResourceImage::getTextureAlpha() const
     {
         return m_textureAlpha;
     }

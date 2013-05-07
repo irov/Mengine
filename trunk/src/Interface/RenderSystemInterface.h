@@ -316,16 +316,12 @@ namespace Menge
 	};
 	
 	class RenderTextureInterface
+        : public FactorablePtr
 	{
 	public:
 		virtual RenderImageInterfacePtr getImage() const = 0;
-
-		virtual void destroy() = 0;
-        		
+                		
 		virtual size_t getId() const = 0;
-
-		virtual size_t addRef() const = 0;
-		virtual size_t decRef() const = 0;
 
 		virtual const Rect & getRect() const = 0;
 		virtual const Rect & getHWRect() const = 0;
@@ -350,6 +346,8 @@ namespace Menge
 
 		virtual size_t getMemoryUse() const = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderTextureInterface> RenderTextureInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
 	{
@@ -509,12 +507,12 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, size_t _texturesNum,
+        virtual void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum,
             const Vertex2D * _vertices, size_t _verticesNum, 
             ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 ) = 0;
 
     public:
-        virtual RenderTextureInterface* loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) = 0;
 
     public:
         virtual const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const = 0;
@@ -530,22 +528,20 @@ namespace Menge
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
-		virtual void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect ) = 0;		
+		virtual void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) = 0;		
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual bool getVSync() const = 0;
 		virtual void setSeparateAlphaBlendMode() = 0;
 
 	public:
-		virtual RenderTextureInterface * createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+		virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 		//virtual RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) = 0;
-        virtual RenderTextureInterface * createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
-		virtual RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+		virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 
-        virtual RenderTextureInterface* getTexture( const FilePath& _filename ) = 0;
+        virtual RenderTextureInterfacePtr getTexture( const FilePath& _filename ) = 0;
 
         virtual bool hasTexture( const FilePath & _filename ) const = 0;
-
-		virtual void releaseTexture( RenderTextureInterface* _texture ) = 0;
 
     public:
         virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
@@ -554,10 +550,10 @@ namespace Menge
         virtual void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) = 0;
 
 	public:
-		virtual bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) = 0;
+		virtual bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) = 0;
 
 	public:
-		virtual void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) = 0;
+		virtual void setRenderTargetTexture( const RenderTextureInterfacePtr & _texture, bool _clear ) = 0;
 
     public:
         virtual void enableTextureFiltering( bool _enable ) = 0;
@@ -572,16 +568,16 @@ namespace Menge
 
     public:
         //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
-        virtual void imageQuality( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
+        virtual void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
 
-        virtual void cacheFileTexture( const FilePath& _filename, RenderTextureInterface* _texture ) = 0;
+        virtual void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:
         virtual const RenderDebugInfo & getDebugInfo() const = 0;
         virtual void resetFrameCount() = 0;
         
     public:
-        virtual bool saveImage( RenderTextureInterface* _image, const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
+        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
 	};
 
 #   define RENDER_SERVICE( serviceProvider )\

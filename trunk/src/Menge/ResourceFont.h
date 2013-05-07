@@ -1,5 +1,7 @@
 #	pragma once
 
+#   include "Interface/RenderSystemInterface.h"
+
 #	include "Kernel/ResourceReference.h"
 
 #	include "Math/vec4.h"
@@ -10,18 +12,8 @@
 
 namespace Menge
 {
-	class RenderTextureInterface;
-	class DataStreamInterface;
 	class ResourceGlyph;
 	class Glyph;
-
-	//! ResourceFont - ресурс-файл, который содержит изображение, список uv - координат и коэффициентов пропорциональности. 
-
-    /*! xml - файл имеет следующую структуру:
-	* <Resource Name = "имя_ресурса" Type = "ResourceFont" >
-	*	<File Path = "имя_файла"/>
-	* </Resource>
-	*/
 
 	class ResourceFont
 		: public ResourceReference
@@ -38,8 +30,8 @@ namespace Menge
 		bool hasGlyph( WChar _id, const Glyph ** _glyph ) const;
 		const Glyph * getGlyph( WChar _id ) const;
 
-		const RenderTextureInterface * getTexture() const;
-		const RenderTextureInterface * getTextureImage() const;
+		const RenderTextureInterfacePtr & getTexture() const;
+		const RenderTextureInterfacePtr & getTextureImage() const;
 		const mt::vec4f&  getTextureUV() const;
 
 		const FilePath & getImagePath() const;
@@ -75,8 +67,8 @@ namespace Menge
 
 		mt::vec4f m_textureUV;
 
-		RenderTextureInterface* m_texture;
-		RenderTextureInterface* m_outline;
+		RenderTextureInterfacePtr m_texture;
+		RenderTextureInterfacePtr m_outline;
 		mt::vec2f m_imageInvSize;
 
 		ColourValue m_color;

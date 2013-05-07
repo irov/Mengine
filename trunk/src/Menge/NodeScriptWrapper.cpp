@@ -862,10 +862,10 @@ namespace Menge
                 return;
             }
 
-            RenderTextureInterface * img = resource->getTexture();
+            const RenderTextureInterfacePtr & texture = resource->getTexture();
 
             RENDER_SERVICE(m_serviceProvider)
-                ->saveImage( img, CONST_STRING(m_serviceProvider, user), _filename );
+                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), _filename );
         }
         //////////////////////////////////////////////////////////////////////////
         void setParticlesEnabled( bool _enabled )

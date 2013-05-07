@@ -519,10 +519,7 @@ namespace Menge
 
 		if( m_globalHandleSystem )
 		{
-			if( handler == false )
-			{
-				handler = m_globalHandleSystem->handleKeyEvent( _point, _key, _char, _isDown );
-			}
+			m_globalHandleSystem->handleKeyEvent( _point, _key, _char, _isDown );			
 		}
 
 		if( m_mousePickerSystem )
@@ -538,15 +535,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		bool handler = false;
-
 		if( m_globalHandleSystem )
 		{
-			if( handler == false )
-			{
-				handler = m_globalHandleSystem->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
-			}
+			m_globalHandleSystem->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
 		}
+
+        bool handler = false;
 
 		if( m_mousePickerSystem )
 		{
@@ -597,10 +591,7 @@ namespace Menge
 
 		if( m_globalHandleSystem )
 		{
-			if( handler == false )
-			{
-				handler = m_globalHandleSystem->handleMouseMove( _touchId, _point, _x, _y, _whell );
-			}
+			m_globalHandleSystem->handleMouseMove( _touchId, _point, _x, _y, _whell );
 		}
 
 		if( m_mousePickerSystem )

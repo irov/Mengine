@@ -21,9 +21,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceFont );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont()
-		: m_texture(NULL)
-		, m_outline(NULL)
-		, m_textureRatio(1.0f)
+		: m_textureRatio(1.0f)
 		, m_resourceGlyph(NULL)
 		, m_textureUV(0, 0, 1.f, 1.f)
 	{
@@ -34,12 +32,12 @@ namespace Menge
 		return m_resourceGlyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterface * ResourceFont::getTexture() const
+	const RenderTextureInterfacePtr & ResourceFont::getTexture() const
 	{
 		return m_texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterface * ResourceFont::getTextureImage() const
+	const RenderTextureInterfacePtr & ResourceFont::getTextureImage() const
 	{
 		return m_outline;
 	}
@@ -138,7 +136,7 @@ namespace Menge
 		//m_texture = RenderEngine::get()
 		//	->loadMegatexture( category, m_imageFile, m_imageCodec );
 
-		if( m_texture == NULL )
+		if( m_texture == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceFont::_compile '%s' invalid loading font image '%s'"
 				, this->getName().c_str()
@@ -227,18 +225,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		RENDER_SERVICE(m_serviceProvider)
-			->releaseTexture( m_texture );
-
-		m_texture = NULL;
-
-		if( m_outline )
-		{
-			RENDER_SERVICE(m_serviceProvider)
-				->releaseTexture( m_outline );
-
-			m_outline = 0;
-		}
+		m_texture = nullptr;
+		m_outline = nullptr;
 
 		if( m_resourceGlyph )
 		{			

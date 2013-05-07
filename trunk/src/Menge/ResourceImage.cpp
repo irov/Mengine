@@ -28,7 +28,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::prepareImageFrame_( RenderTextureInterface* texture )
+	bool ResourceImage::prepareImageFrame_( const RenderTextureInterfacePtr & texture )
 	{
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
@@ -89,11 +89,8 @@ namespace Menge
             , _fileName.c_str()
             );
 
-		RenderTextureInterface* texture = RENDER_SERVICE(m_serviceProvider)
+		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
             ->loadTexture( _pakName, _fileName, _codec );
-
-		//RenderTextureInterface* texture = RenderEngine::get()
-		//	->loadMegatexture( _pakName, _fileName, _codec );
 
 		if( texture == 0 )
 		{
@@ -132,28 +129,24 @@ namespace Menge
         {
             const FilePath & filePath = m_texture->getFileName();
 
-            LOGGER_INFO(m_serviceProvider)("ResourceImageDefault::_release %s release texture %s"
+            LOGGER_INFO(m_serviceProvider)("ResourceImage::_release %s release texture %s"
                 , this->getName().c_str()
                 , filePath.c_str()
                 );
 
-            RENDER_SERVICE(m_serviceProvider)->releaseTexture( m_texture );
-
-            m_texture = NULL;
+            m_texture = nullptr;
         }
 
         if( m_textureAlpha != NULL )
         {
             const FilePath & filePath = m_textureAlpha->getFileName();
 
-            LOGGER_INFO(m_serviceProvider)("ResourceImageDefault::_release %s release texture alpha %s"
+            LOGGER_INFO(m_serviceProvider)("ResourceImage::_release %s release texture alpha %s"
                 , this->getName().c_str()
                 , filePath.c_str()
                 );
 
-            RENDER_SERVICE(m_serviceProvider)->releaseTexture( m_textureAlpha );
-
-            m_textureAlpha = NULL;
+            m_textureAlpha = nullptr;
         }
     }
 }

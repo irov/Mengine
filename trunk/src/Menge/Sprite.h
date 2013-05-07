@@ -114,7 +114,7 @@ namespace Menge
         mt::vec2f m_textureUVOffset;
         mt::vec2f m_textureUVScale;
 
-		const RenderTextureInterface * m_textures[2];
+		RenderTextureInterfacePtr m_textures[2];
 
         mt::vec3f m_verticesLocal[4];
         unsigned char m_invalidateVerticesLocal;

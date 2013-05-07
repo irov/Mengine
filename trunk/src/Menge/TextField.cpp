@@ -224,7 +224,7 @@ namespace Menge
 			countOfVertices = m_maxCharCount * 4;
 		}
 		
-        const RenderTextureInterface * fontTexture = m_resourceFont->getTexture();
+        const RenderTextureInterfacePtr & fontTexture = m_resourceFont->getTexture();
 
         RENDER_SERVICE(m_serviceProvider)
             ->addRenderObject2D( _camera, m_materialText, &fontTexture, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
@@ -250,7 +250,7 @@ namespace Menge
 			countOfVertices = m_maxCharCount * 4;
 		}
 
-		const RenderTextureInterface* outlineTexture = m_resourceFont->getTextureImage();
+		const RenderTextureInterfacePtr & outlineTexture = m_resourceFont->getTextureImage();
 
 		RENDER_SERVICE(m_serviceProvider)
 			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );

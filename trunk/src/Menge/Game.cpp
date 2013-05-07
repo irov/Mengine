@@ -224,18 +224,18 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
 			//askEvent( handle, EVENT_MOUSE_MOVE, "(Iffi)", _touchId, _x, _y, _whell );
 			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, false, "(Iffi)", _touchId, _x, _y, _whell );
 		}
 
-		if( !handle )
+		if( handle == false )
 		{
 			handle = m_player->handleMouseMove( _touchId, _point, _x, _y, _whell );
 		}
 
-		if( !handle )
+		if( handle == false )
 		{
 			for( TVectorHandlers::iterator
 				it = m_handlersMouseMove.begin(),

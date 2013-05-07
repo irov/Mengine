@@ -164,13 +164,8 @@ namespace Menge
 
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
-			//if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell ) == false )
-			//{
-			//	handle = m_defaultHandle;
-			//}
-
 			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell );
 		}
 

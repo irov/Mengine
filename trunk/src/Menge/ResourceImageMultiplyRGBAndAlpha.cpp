@@ -106,10 +106,10 @@ namespace Menge
             m_codecTypeAlpha = this->getCodec_( m_fileNameAlpha );
         }
         	
-        RenderTextureInterface * textureAlpha = RENDER_SERVICE(m_serviceProvider)
+        RenderTextureInterfacePtr textureAlpha = RENDER_SERVICE(m_serviceProvider)
             ->loadTexture( category, m_fileNameAlpha, m_codecTypeAlpha );
 
-        if( textureAlpha == 0 )
+        if( textureAlpha == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load alpha image file '%s'"
                 , this->getName().c_str()

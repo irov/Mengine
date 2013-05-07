@@ -20,8 +20,6 @@ namespace Menge
         __ResourceWindow__
     };
 
-	class RenderTextureInterface;
-
 	struct WindowElement
 	{
 		ConstString resourceName;

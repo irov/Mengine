@@ -2,10 +2,14 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#   include "RenderTexture.h"
+
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
 #	include "Core/ConstString.h"
 #	include "Core/Pool.h"
+
+#   include "Factory/FactoryPool.h"
 
 #	include "math/mat4.h"
 #	include "math/vec4.h"
@@ -21,9 +25,6 @@ namespace Menge
 {
 	//struct Material;
 	class Camera;
-	class RenderTexture;
-
-	class Megatextures;
 
 	struct Vertex2D;
 
@@ -34,7 +35,7 @@ namespace Menge
 		const RenderMaterial * material;
 
 		size_t textureStages;
-		const RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
+		RenderTextureInterfacePtr textures[MENGE_MAX_TEXTURE_STAGES];
 
 		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;
@@ -66,6 +67,7 @@ namespace Menge
 	class RenderEngine
 		: public RenderServiceInterface
         , public RenderSystemListener
+        , public RenderTextureInterfaceListener
 	{
 	public:
 		RenderEngine();
@@ -90,7 +92,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterface* const * _textures, size_t _texturesNum,
+		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum,
 			const Vertex2D * _vertices, size_t _verticesNum, 
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 ) override;
 
@@ -105,7 +107,7 @@ namespace Menge
 		bool updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count );
 
 	public:
-		void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect ) override;
+		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
 
 		bool createMaterialGroup( const ConstString & _name, const RenderMaterial & _material );
 		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const override;
@@ -115,40 +117,39 @@ namespace Menge
     public:
 		bool hasTexture( const FilePath & _filename ) const override;
 		
-		RenderTextureInterface * createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-        //RenderTextureInterface * createPoolTexture( size_t _width, size_t _height, PixelFormat _format );
+		RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 
-		RenderTextureInterface * createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 		//RenderTextureInterface * createMegatexture( size_t _width, size_t _height, PixelFormat _format );
-		//RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) override;
-		RenderTextureInterface * createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-		void releaseTexture( RenderTextureInterface* _texture ) override;
-				
-		void setRenderTargetTexture( RenderTextureInterface * _image, bool _clear ) override;
+		//RenderTextureInterface * createSubTexture( const RenderTextureInterfacePtr & _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) override;
+		RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		
+    protected:
+        void onRenderTextureRelease( const RenderTextureInterface * _texture ) override;
+
+
+    public:
+		void setRenderTargetTexture( const RenderTextureInterfacePtr & _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
 		void setSeparateAlphaBlendMode() override;
 
-		//RenderTextureInterface * getTexture( const ConstString & _name ) const;
-		//bool validTexture( const ConstString& _pakName, const WString& _filename, const ConstString& _codec );
-
         void enableDebugMode( bool _enable ) override;
-
+        
 	public:
-		bool loadTextureRectImageData( RenderTextureInterface * _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) override;
+		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) override;
 		
 	public:
-		//void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
-		void imageQuality( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
+		void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
 
 	public:
-		void cacheFileTexture( const FilePath& _filename, RenderTextureInterface* _texture ) override;
+		void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) override;
 
-		RenderTextureInterface* loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) override;
-		RenderTextureInterface* loadMegatexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec );
+		RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) override;
+		RenderTextureInterfacePtr loadMegatexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec );
 						
-		bool saveImage( RenderTextureInterface* _image, const ConstString& _fileSystemName, const FilePath & _filename ) override;
+		bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const FilePath & _filename ) override;
 		
-		RenderTextureInterface* getTexture( const FilePath& _filename ) override;
+		RenderTextureInterfacePtr getTexture( const FilePath& _filename ) override;
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
 		//void	setWorldMatrix( const mt::mat4f& _world );
@@ -184,7 +185,6 @@ namespace Menge
 
 	private:
 		RenderPass * createRenderPass_();
-		void destroyTexture_( RenderTextureInterface * _texture );
 				
 		void disableTextureStage_( size_t _stage );
 
@@ -264,10 +264,10 @@ namespace Menge
 
 		const RenderCameraInterface * m_currentRenderCamera;
 
-		typedef std::map<FilePath, RenderTextureInterface*> TMapTextures;
+		typedef std::map<FilePath, RenderTextureInterface *> TMapTextures;
 		TMapTextures m_textures;
 
-		RenderTextureInterface * m_nullTexture;	// dummy white pixel
+		RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
@@ -281,6 +281,9 @@ namespace Menge
 		size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
 		size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
 		size_t m_primitiveCount[LPT_PRIMITIVE_COUNT];
+
+        typedef FactoryPool<RenderTexture, 128> TFactoryRenderTexture;
+        TFactoryRenderTexture m_factoryRenderTexture;
 
 		mutable size_t m_vbPos;
 

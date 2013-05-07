@@ -35,7 +35,6 @@ namespace Menge
 		, m_blendAdd(false)
         , m_soundEmitter(NULL)
 	{
-		m_textures[0] = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_setEventListener( PyObject * _listener )
@@ -226,8 +225,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_release()
 	{
-		RENDER_SERVICE(m_serviceProvider)
-			->releaseTexture( m_textures[0] );
+        m_textures[0] = nullptr;
 
         m_videoDecoder = nullptr;
 
@@ -527,12 +525,14 @@ namespace Menge
 		rect.right = (size_t)m_frameSize.x;
 		rect.bottom = (size_t)m_frameSize.y;
 
+        const RenderTextureInterfacePtr & texture = m_textures[0];
+
         int pitch = 0;
-		unsigned char* lockRect = m_textures[0]->lock( &pitch, rect, false );
+		unsigned char* lockRect = texture->lock( &pitch, rect, false );
 
 		unsigned int decode = m_videoDecoder->decode( lockRect, pitch );
         
-		m_textures[0]->unlock();
+		texture->unlock();
 
         if( decode == 0 )
         {
@@ -551,7 +551,7 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::updateUV_()
 	{
-		RenderTextureInterface * texture = m_textures[0];
+		const RenderTextureInterfacePtr & texture = m_textures[0];
 
 		const Rect & rect = texture->getRect();
 

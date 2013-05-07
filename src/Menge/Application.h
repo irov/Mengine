@@ -120,7 +120,7 @@ namespace Menge
 
 		bool createRenderWindow( WindowHandle _renderWindowHandle ) override;
 
-		void screenshot( RenderTextureInterface * _renderTargetImage, const mt::vec4f & _rect );
+		//void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect );
 
 		void quit();
 		

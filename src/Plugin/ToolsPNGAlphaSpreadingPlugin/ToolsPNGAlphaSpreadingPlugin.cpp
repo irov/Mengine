@@ -106,18 +106,40 @@ namespace Menge
             : public LoggerInterface
         {
         public:
-            void setVerboseLevel( EMessageLevel _level ) override {};
-            bool validVerboseLevel( EMessageLevel _level ) const override { return true; };
+            void setVerboseLevel( EMessageLevel _level ) override 
+            {
+                (void)_level;
+            };
+
+            void setVerboseFlag( size_t _flag ) override 
+            {
+                (void)_flag;
+            };
 
         public:
-            void log( const char * _data, size_t _count, EMessageLevel _level ) override
+            bool validMessage( EMessageLevel _level, size_t _flag ) const override 
+            { 
+                (void)_level;
+                (void)_flag;
+
+                return true; 
+            };
+
+        public:
+            void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
             {
+                (void)_level;
+                (void)_flag;
+                (void)_count;
+
                 printf("%s"
                     , _data
                     );
             }
 
-            void flush() override {};
+            void flush() override 
+            {
+            }
         };
 
         logService->setVerboseLevel( LM_WARNING );

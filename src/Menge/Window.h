@@ -54,6 +54,6 @@ namespace Menge
 		bool m_hasBackGround;
 		
 		const RenderMaterial * m_material[ResourceWindow_Count];
-		const RenderTextureInterface * m_textures[ResourceWindow_Count];
+		RenderTextureInterfacePtr m_textures[ResourceWindow_Count];
 	};
 }	// namespace Menge

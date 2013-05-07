@@ -133,7 +133,7 @@ namespace Menge
 		{
 			TVectorVertex2D::size_type begin;
 			TVectorVertex2D::size_type size;
-			const RenderTextureInterface * texture[1];
+			RenderTextureInterfacePtr texture[1];
 			const RenderMaterial * material;
 		};
 

@@ -63,15 +63,15 @@ namespace Menge
 		{
             ResourceImage * image = m_resource->getResource( i );
 
-            if( image != NULL )
+            if( image != nullptr )
             {
-                const RenderTextureInterface * texture = image->getTexture();
+                const RenderTextureInterfacePtr & texture = image->getTexture();
 
                 m_textures[i] = texture;
             }
             else
             {
-                m_textures[i] = NULL;
+                m_textures[i] = nullptr;
             }			
 		}
 
@@ -93,15 +93,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_release()
 	{
-		for( int i = 0; i < ResourceWindow_Count; ++i )
+		for( size_t i = 0; i != ResourceWindow_Count; ++i )
 		{
-			m_material[i] = NULL;
+			m_material[i] = nullptr;
 		}
 
-		if( m_resource != NULL )
+        for( size_t i = 0; i != ResourceWindow_Count; ++i )
+        {
+            m_textures[i] = nullptr;
+        }
+
+		if( m_resource != nullptr )
 		{
 			m_resource->decrementReference();
-			m_resource = 0;
+			m_resource = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -501,7 +506,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Window::hasBackground() const
 	{
-		if( m_textures[ResourceWindow_Background] == NULL )
+		if( m_textures[ResourceWindow_Background] == nullptr )
 		{
 			return false;
 		}

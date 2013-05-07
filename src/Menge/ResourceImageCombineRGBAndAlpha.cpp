@@ -114,9 +114,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCombineRGBAndAlpha::loadImageFrameCombineRGBAndAlpha_( const ConstString& _pakName,  const FilePath& _fileNameRGB, const FilePath& _fileNameAlpha, const ConstString & _codecRGB , const ConstString & _codecAlpha  )
 	{
-		RenderTextureInterface * texture = this->createTextureRGBAndAlpha_( _pakName, _fileNameRGB, _fileNameAlpha, _codecRGB, _codecAlpha );
+		RenderTextureInterfacePtr texture = this->createTextureRGBAndAlpha_( _pakName, _fileNameRGB, _fileNameAlpha, _codecRGB, _codecAlpha );
 
-		if( texture == NULL )
+		if( texture == nullptr )
 		{
 			return false;
 		}		
@@ -126,12 +126,12 @@ namespace Menge
 		return res;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_( const ConstString& _pakName, const FilePath& _fileNameRGB, const FilePath& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const
+	RenderTextureInterfacePtr ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_( const ConstString& _pakName, const FilePath& _fileNameRGB, const FilePath& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const
 	{
 		if( RENDER_SERVICE(m_serviceProvider)
 			->hasTexture( _fileNameAlpha ) == true )
 		{
-			RenderTextureInterface * texture = RENDER_SERVICE(m_serviceProvider)
+			RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
 				->getTexture( _fileNameAlpha );
 
 			return texture;
@@ -141,7 +141,7 @@ namespace Menge
 		InputStreamInterfacePtr streamRGB = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _pakName, _fileNameRGB );
 
-		if( streamRGB == NULL )
+		if( streamRGB == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with RGB data '%s' was not found"
 				, this->getName().c_str()
@@ -153,14 +153,14 @@ namespace Menge
 
 		ImageDecoderInterfacePtr imageDecoderRGB = this->createDecoder_( streamRGB, _codecRGB );
 
-		if( imageDecoderRGB == NULL )
+		if( imageDecoderRGB == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image decoder for file '%s' was not found"
 				, this->getName().c_str()
 				, _fileNameRGB.c_str() 
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		///Load Alpha data
@@ -191,7 +191,7 @@ namespace Menge
 
 		const ImageCodecDataInfo* dataInfoRGB = imageDecoderRGB->getCodecDataInfo();
 
-		RenderTextureInterface* texture = RENDER_SERVICE(m_serviceProvider)
+		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
 			->createTexture( dataInfoRGB->width, dataInfoRGB->height, 4, PF_UNKNOWN );
 
 		if( texture == nullptr )
@@ -222,10 +222,9 @@ namespace Menge
 				, _fileNameAlpha.c_str() 
 				);
 
-            RENDER_SERVICE(m_serviceProvider)
-                ->releaseTexture( texture );
+            texture = nullptr;
 
-			return NULL;
+			return nullptr;
 		}
 
 		if( this->loadRGBData_( buffer, pitch, imageDecoderRGB ) == false )
@@ -237,8 +236,7 @@ namespace Menge
 
             texture->unlock();
 
-            RENDER_SERVICE(m_serviceProvider)
-                ->releaseTexture( texture );
+            texture = nullptr;
 
             return nullptr;
         }
@@ -252,10 +250,9 @@ namespace Menge
 
             texture->unlock();
 
-            RENDER_SERVICE(m_serviceProvider)
-                ->releaseTexture( texture );
+            texture = nullptr;
 
-            return NULL;
+            return nullptr;
         }
 
         //RENDER_SERVICE(m_serviceProvider)

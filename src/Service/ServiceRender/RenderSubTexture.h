@@ -21,22 +21,19 @@ namespace Menge
 		: public RenderTextureInterface
 	{
 	public:
-		RenderSubTexture( RenderTextureInterface * _texture
-				, const Rect & _rect
-				, size_t _id
-				, RenderTextureInterfaceListener * _listener				
-				);
-
+		RenderSubTexture();
 		~RenderSubTexture();
+
+    public:
+        void initialize( const RenderTextureInterfacePtr & _texture
+            , const Rect & _rect
+            , size_t _id
+            , RenderTextureInterfaceListener * _listener );		
 		
 	public:
 		RenderImageInterfacePtr getImage() const override;
-		void destroy() override;
 
 		size_t getId() const override;
-
-		size_t addRef() const override;
-		size_t decRef() const override;
 
 		const Rect & getRect() const override;
 		const Rect & getHWRect() const override;
@@ -59,15 +56,17 @@ namespace Menge
 		size_t getHWHeight() const override;
 		PixelFormat getHWPixelFormat() const override;
 
+    protected:
+        bool _destroy() override;
+
 	protected:
-		RenderTextureInterface * m_texture;
+		RenderTextureInterfacePtr m_texture;
 		Rect m_rect;
 		Rect m_hwRect;
 
 		RenderTextureInterfaceListener * m_listener;
 
-		mutable size_t m_ref;
-		mt::vec4f m_uv;
+        mt::vec4f m_uv;
 
 		FilePath m_fileName;
 

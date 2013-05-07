@@ -1,11 +1,3 @@
-/*
- *	Texture.h
- *
- *	Created by _Berserk_ on 12.3.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
@@ -19,23 +11,21 @@ namespace Menge
 		: public RenderTextureInterface
 	{
 	public:
-		RenderTexture( const RenderImageInterfacePtr & _image
-				, size_t _width
-				, size_t _height
-                , size_t _channels
-				, size_t _id );
-
+		RenderTexture();
 		~RenderTexture();
+
+    public:
+        void initialize( const RenderImageInterfacePtr & _image
+            , size_t _width
+            , size_t _height
+            , size_t _channels
+            , size_t _id
+            , RenderTextureInterfaceListener * _listener );
 
 	public:
 		RenderImageInterfacePtr getImage() const override;
-
-		void destroy() override;
-
+        
 		size_t getId() const override;
-
-		size_t addRef() const override;
-		size_t decRef() const override;
 
 		void setFileName( const FilePath & _filename ) override;
 		const FilePath & getFileName() const override;
@@ -63,10 +53,12 @@ namespace Menge
 
 		size_t getMemoryUse() const override;
 
-	protected:
-		mutable size_t m_ref;
+    protected:
+        bool _destroy() override;
 
+	protected:
 		RenderImageInterfacePtr m_image;
+        RenderTextureInterfaceListener * m_listener;
 		
 		FilePath m_filename;
 		

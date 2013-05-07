@@ -48,8 +48,6 @@ namespace	Menge
         , m_invalidateVerticesLocal(0xFF)
         , m_invalidateVerticesWM(true)
 	{ 
-		m_textures[0] = NULL;
-		m_textures[1] = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -120,6 +118,9 @@ namespace	Menge
 			m_resource->decrementReference();
 			m_resource = 0;
 		}
+
+        m_textures[0] = nullptr;
+        m_textures[1] = nullptr;
 		
 		m_materialGroup = NULL;
 		m_material = NULL;
@@ -335,7 +336,7 @@ namespace	Menge
                     }
 
                     // Alpha
-                    if( m_textures[1] != NULL )
+                    if( m_textures[1] != nullptr )
                     {
                         mt::vec4f uv = m_resource->getUVAlpha();
 
@@ -413,7 +414,7 @@ namespace	Menge
                     }
 
                     // Alpha
-                    if( m_textures[1] != NULL )
+                    if( m_textures[1] != nullptr )
                     {
                         mt::vec4f uv = m_resource->getUVAlpha();
 
@@ -496,7 +497,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial_()
 	{
-        RenderTextureInterface * textureAlpha = m_resource->getTextureAlpha();
+        const RenderTextureInterfacePtr & textureAlpha = m_resource->getTextureAlpha();
 
         if( textureAlpha != NULL )
         {

@@ -49,7 +49,7 @@ namespace Menge
 				continue;
 			}
 
-			const RenderTextureInterface * image = _resource->getTexture();
+			const RenderTextureInterfacePtr & image = _resource->getTexture();
 					
 			CharData charData;
 			charData.code = code;

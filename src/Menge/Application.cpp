@@ -1465,20 +1465,21 @@ namespace Menge
 		NOTIFICATION_SERVICE(m_serviceProvider)
 			->notify( "CHANGE_WINDOW_RESOLUTION", m_fullscreen, m_currentResolution );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::screenshot( RenderTextureInterface* _renderTargetImage, const mt::vec4f & _rect )
-	{
-		mt::vec4f res; 
+	////////////////////////////////////////////////////////////////////////////
+	//void Application::screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect )
+	//{
+	//	mt::vec4f res; 
 
-		res = _rect;
+	//	res = _rect;
 
-		res.x *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
-		res.y *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
-		res.z *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
-		res.w *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
-		
-		RENDER_SERVICE(m_serviceProvider)->screenshot( _renderTargetImage, _rect );
-	}
+	//	res.x *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
+	//	res.y *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
+	//	res.z *= static_cast<float>( m_currentResolution.getWidth() ) / m_contentResolution.getWidth();
+	//	res.w *= static_cast<float>( m_currentResolution.getHeight() ) / m_contentResolution.getHeight();
+	//	
+	//	RENDER_SERVICE(m_serviceProvider)
+ //           ->screenshot( _renderTargetImage, _rect );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{

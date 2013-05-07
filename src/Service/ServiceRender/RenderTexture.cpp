@@ -7,44 +7,57 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RenderTexture::RenderTexture( const RenderImageInterfacePtr & _image
-						, size_t _width
-						, size_t _height
-                        , size_t _channels
-						, size_t _id )
-		: m_image(_image)
-		, m_width(_width)
-		, m_height(_height)
-        , m_channels(_channels)
-		, m_ref(1)
+	RenderTexture::RenderTexture()
+		: m_width(0)
+		, m_height(0)
+        , m_channels(0)
 		, m_uv(0.f, 0.f, 1.f, 1.f)
-		, m_id(_id)
+        , m_id(0)
+        , m_listener(nullptr)
 	{
-		m_rect.left = 0;
-		m_rect.top = 0;
-		m_rect.right = m_width;
-		m_rect.bottom = m_height;
-
-        m_hwRect.left = 0;
-        m_hwRect.top = 0;
-        m_hwRect.right = m_image->getHWWidth();
-        m_hwRect.bottom = m_image->getHWHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::~RenderTexture()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void RenderTexture::initialize( const RenderImageInterfacePtr & _image
+        , size_t _width
+        , size_t _height
+        , size_t _channels
+        , size_t _id
+        , RenderTextureInterfaceListener * _listener )
+    {
+        m_image = _image;
+        m_width = _width;
+        m_height = _height;
+        m_channels = _channels;
+        m_id = _id;
+        m_listener = _listener;
+
+        m_rect.left = 0;
+        m_rect.top = 0;
+        m_rect.right = m_width;
+        m_rect.bottom = m_height;
+
+        m_hwRect.left = 0;
+        m_hwRect.top = 0;
+        m_hwRect.right = m_image->getHWWidth();
+        m_hwRect.bottom = m_image->getHWHeight();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr RenderTexture::getImage() const
 	{
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderTexture::destroy()
+	bool RenderTexture::_destroy()
 	{
-        m_image = NULL;
+        m_listener->onRenderTextureRelease( this );
 
-        delete this;
+        m_image = nullptr;
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getId() const
@@ -88,20 +101,12 @@ namespace Menge
 
 		return memroy_size;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::addRef() const
-	{        
-		return ++m_ref;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::decRef() const
-	{
-		return --m_ref;
-	}
     /////////////////////////////////////////////////////////////////////////////
 	unsigned char* RenderTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
 	{
-		return m_image->lock( _pitch, _rect, _readOnly );
+        unsigned char * buffer = m_image->lock( _pitch, _rect, _readOnly );
+
+		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTexture::unlock() const
@@ -111,22 +116,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getHWWidth() const
 	{
-		return m_image->getHWWidth();
+        size_t width = m_image->getHWWidth();
+
+		return width;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getHWHeight() const
 	{
-		return m_image->getHWHeight();
+        size_t height = m_image->getHWHeight();
+        
+		return height;
 	}
     //////////////////////////////////////////////////////////////////////////
     size_t RenderTexture::getHWChannels() const
     {
-        return m_image->getHWChannels();
+        size_t channels = m_image->getHWChannels();
+
+        return channels;
     }
 	//////////////////////////////////////////////////////////////////////////
 	Menge::PixelFormat RenderTexture::getHWPixelFormat() const
 	{
-		return m_image->getHWPixelFormat();
+        Menge::PixelFormat format = m_image->getHWPixelFormat();
+
+		return format;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getRect() const

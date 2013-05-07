@@ -8,16 +8,6 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.in ${SOURCE_DIR}/zconf.h @ON
 
 # OUR SOURCES
 set( zlib_sources
-${SOURCE_DIR}/crc32.h
-${SOURCE_DIR}/deflate.h
-${SOURCE_DIR}/inffast.h
-${SOURCE_DIR}/inffixed.h
-${SOURCE_DIR}/inflate.h
-${SOURCE_DIR}/inftrees.h
-${SOURCE_DIR}/trees.h
-${SOURCE_DIR}/zconf.h
-${SOURCE_DIR}/zlib.h
-${SOURCE_DIR}/zutil.h
 ${SOURCE_DIR}/adler32.c
 ${SOURCE_DIR}/compress.c
 ${SOURCE_DIR}/crc32.c

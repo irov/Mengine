@@ -226,7 +226,6 @@ typedef int pid_t;
 #define Py_IS_INFINITY(X) (!_finite(X) && !_isnan(X))
 #define Py_IS_FINITE(X) _finite(X)
 #define copysign _copysign
-#define hypot _hypot
 
 #endif /* _MSC_VER */
 
@@ -279,7 +278,6 @@ typedef int pid_t;
 #endif
 
 #define COMPILER "[gcc]"
-#define hypot _hypot
 #define PY_LONG_LONG long long
 #define PY_LLONG_MIN LLONG_MIN
 #define PY_LLONG_MAX LLONG_MAX

@@ -215,7 +215,7 @@ namespace Menge
             ->clearHomeless();
 
 		m_mousePickerSystem->clear();
-		m_globalHandleSystem->clear();
+		//m_globalHandleSystem->clear();
 
 		if( oldScene != NULL && m_destroyOldScene == true && m_destroyAfterSwitch == true )
 		{
@@ -519,7 +519,7 @@ namespace Menge
 
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleKeyEvent( _point, _key, _char, _isDown );			
+			m_globalHandleSystem->handleGlobalKeyEvent( _point, _key, _char, _isDown );			
 		}
 
 		if( m_mousePickerSystem )
@@ -537,7 +537,7 @@ namespace Menge
 	{
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
+			m_globalHandleSystem->handleGlobalMouseButtonEvent( _touchId, _point, _button, _isDown );
 		}
 
         bool handler = false;
@@ -557,7 +557,7 @@ namespace Menge
 	{
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+			m_globalHandleSystem->handleGlobalMouseButtonEventBegin( _touchId, _point, _button, _isDown );
 		}
 
 		if( m_mousePickerSystem )
@@ -572,7 +572,7 @@ namespace Menge
 	{
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
+			m_globalHandleSystem->handleGlobalMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 		}
 
 		if( m_mousePickerSystem )
@@ -591,7 +591,7 @@ namespace Menge
 
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleMouseMove( _touchId, _point, _x, _y, _whell );
+			m_globalHandleSystem->handleGlobalMouseMove( _touchId, _point, _x, _y, _whell );
 		}
 
 		if( m_mousePickerSystem )

@@ -37,10 +37,19 @@ namespace Menge
 
 #   ifdef _DEBUG
         m_destroy = true;
+
+        this->_checkDestroy();
 #   endif
 
         m_factory->destroyObject( this );
     }
+#   ifdef _DEBUG
+    //////////////////////////////////////////////////////////////////////////
+    void Factorable::_checkDestroy()
+    {
+        //Empty
+    }
+#   endif
     //////////////////////////////////////////////////////////////////////////
     bool Factorable::_destroy()
     {

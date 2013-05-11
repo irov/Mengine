@@ -82,6 +82,11 @@ namespace Menge
         (void)_buffer;
         (void)_bufferSize;
 
+        LOGGER_WARNING(m_serviceProvider)( "Xml2BinDecoder::decode: xml to bin:\nxml - %s\nbin - %s"
+            , m_options.pathXml.c_str()
+            , m_options.pathBin.c_str()
+            );
+
         ConstString dev = Helper::stringizeStringSize( m_serviceProvider, "dev", 3 );
 
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE(m_serviceProvider)

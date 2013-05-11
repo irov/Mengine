@@ -11,6 +11,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
+        //////////////////////////////////////////////////////////////////////////
         struct FScheduleFind
         {
             FScheduleFind( size_t _id )
@@ -25,19 +26,19 @@ namespace Menge
 
             size_t m_id;
         };
-
+        //////////////////////////////////////////////////////////////////////////
         struct FScheduleDead
         {
             bool operator ()( const ScheduleManager::ScheduleEvent & _event ) const
             {
-                if( _event.dead )
+                if( _event.dead == false )
                 {
-                    _event.listener->destroyScheduleListener();
-
-                    return true;
+                    return false;
                 }
+                 
+                _event.listener->destroyScheduleListener();
 
-                return false;
+                return true;
             }
         };	
     }	

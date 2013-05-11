@@ -30,6 +30,11 @@ namespace Menge
             }
         }
 
+#   ifdef _DEBUG
+    protected:
+        void _checkDestroy() override;
+#   endif
+
     protected:
         size_t m_reference;
 	};

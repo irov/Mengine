@@ -42,12 +42,14 @@ namespace Menge
             : flags(0)
             , pitch(0)
             , channels(0)
+            , bound(0xffffffff)
         {
         }
 
         size_t flags;
 		size_t pitch;
         size_t channels;
+        size_t bound;
 	};
 
 	enum ImageDecoderOptions

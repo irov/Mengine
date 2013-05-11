@@ -1037,6 +1037,7 @@ namespace Metacode
             Meta_ResourceImageDefault()
                 : Meta_Resource()
                 , File_Alpha_successful(false)
+                , File_Bound_successful(false)
                 , File_Codec_successful(false)
                 , File_Rotate_successful(false)
                 , File_UV_successful(false)
@@ -1078,6 +1079,41 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Alpha );
+            }
+            
+            bool get_File_Bound( mt::vec2f & _value ) const
+            {
+                if( File_Bound_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Bound;
+            
+                return true;
+            }
+            
+            bool swap_File_Bound( mt::vec2f & _value ) const
+            {
+                if( File_Bound_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Bound);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Bound( C * _self, M _method )
+            {
+                if( File_Bound_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Bound );
             }
             
             bool get_File_Codec( Menge::ConstString & _value ) const
@@ -1281,6 +1317,8 @@ namespace Metacode
         protected:
             bool File_Alpha_successful;
             mutable bool File_Alpha;
+            bool File_Bound_successful;
+            mutable mt::vec2f File_Bound;
             bool File_Codec_successful;
             mutable Menge::ConstString File_Codec;
             mutable Menge::ConstString File_Path;
@@ -1600,6 +1638,7 @@ namespace Metacode
         public:
             Meta_ResourceImageSubstract()
                 : Meta_Resource()
+                , Image_Rotate_successful(false)
             {
             }
         public:
@@ -1617,6 +1656,41 @@ namespace Metacode
             void method_Image_Name( C * _self, M _method )
             {
                 (_self->*_method)( this->Image_Name );
+            }
+            
+            bool get_Image_Rotate( bool & _value ) const
+            {
+                if( Image_Rotate_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_Rotate;
+            
+                return true;
+            }
+            
+            bool swap_Image_Rotate( bool & _value ) const
+            {
+                if( Image_Rotate_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_Rotate);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Image_Rotate( C * _self, M _method )
+            {
+                if( Image_Rotate_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Image_Rotate );
             }
             
             const mt::vec4f & get_Image_UV() const
@@ -1644,6 +1718,8 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::ConstString Image_Name;
+            bool Image_Rotate_successful;
+            mutable bool Image_Rotate;
             mutable mt::vec4f Image_UV;
         };
         

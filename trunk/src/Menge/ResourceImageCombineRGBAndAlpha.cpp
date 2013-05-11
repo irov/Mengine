@@ -128,13 +128,11 @@ namespace Menge
 	/////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_( const ConstString& _pakName, const FilePath& _fileNameRGB, const FilePath& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const
 	{
+        RenderTextureInterfacePtr texture_alpha;
 		if( RENDER_SERVICE(m_serviceProvider)
-			->hasTexture( _fileNameAlpha ) == true )
+			->hasTexture( _fileNameAlpha, &texture_alpha ) == true )
 		{
-			RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
-				->getTexture( _fileNameAlpha );
-
-			return texture;
+			return texture_alpha;
 		}
 
 		////////////////////////////////////// init RGB Decoder

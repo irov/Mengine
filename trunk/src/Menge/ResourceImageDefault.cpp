@@ -86,6 +86,7 @@ namespace Menge
             m_codecType = this->getCodec_( m_fileName );
         }
 
+        metadata->get_File_Bound( m_bound );
         metadata->get_File_UV( m_uv );
         metadata->get_File_Alpha( m_isAlpha );
         metadata->get_File_Rotate( m_isUVRotate );

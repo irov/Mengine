@@ -93,13 +93,6 @@ namespace Menge
 		void onTurnSound( bool _turn );
 
 	public:
-		void addMouseMoveHandler( PyObject * _cb ) override;
-		bool removeMouseMoveHandler( PyObject * _cb ) override;
-
-		void addMouseButtonHandler( PyObject * _cb ) override;
-		bool removeMouseButtonHandler( PyObject * _cb ) override;
-
-	public:
 		const WString & getParam( const WString & _paramName ) override;
 		bool hasParam( const WString & _paramName ) const override;
 
@@ -112,7 +105,7 @@ namespace Menge
 	public:
 		void destroyArrow();
 
-	private:
+    protected:
         ServiceProviderInterface * m_serviceProvider;
 
 		Player* m_player;
@@ -143,9 +136,6 @@ namespace Menge
 				
 		bool m_personalityHasOnClose;
 
-		typedef std::vector<PyObject *> TVectorHandlers;
-		TVectorHandlers m_handlersMouseMove;
-		TVectorHandlers m_handlersMouseButton;
 		TMapWString m_params;
 
 	protected:

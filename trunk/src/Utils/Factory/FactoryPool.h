@@ -9,6 +9,31 @@ namespace Menge
 	class FactoryPool
 		: public Factory
 	{
+    public:
+        FactoryPool()
+        {
+        }
+
+        ~FactoryPool()
+        {
+#   ifdef _DEBUG
+            TVectorAllockBlock & allock_blocks = m_pool.allock_blocks();
+
+            for( TVectorAllockBlock::iterator
+                it = allock_blocks.begin(),
+                it_end = allock_blocks.end();
+            it != it_end;
+            ++it )
+            {
+                void * impl = *it;
+
+                T * obj = static_cast<T *>(impl);
+
+                static_cast<T*>(obj)->~T();
+            }
+#   endif
+        }
+
 	public:
         T * createObjectT()
         {

@@ -30,6 +30,8 @@ namespace Menge
         metadata->swap_Image_Name( m_resourceImageName );
         m_uv = metadata->get_Image_UV();
 
+        metadata->get_Image_Rotate( m_isUVRotate );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,10 @@ namespace Menge
     {
         if( m_resourceImageName.empty() == true )
         {
+            LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstract::_compile '%s' not setup image resource"
+                , this->getName().c_str()
+                );
+
             return false;
         }
 
@@ -45,20 +51,14 @@ namespace Menge
 
         if( m_resourceImage == NULL )
         {
-            return false;
-        }
-        
-        bool wrapX = m_resourceImage->isWrapX();
-        bool wrapY = m_resourceImage->isWrapY();
-
-        if( wrapX == true || wrapY == true )
-        {
-            m_resourceImage->decrementReference();
-            m_resourceImage = NULL;
+            LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstract::_compile '%s' invalid get image resource '%s'"
+                , this->getName().c_str()
+                , m_resourceImageName.c_str()
+                );
 
             return false;
         }
-                
+                       
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
 

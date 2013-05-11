@@ -7,14 +7,15 @@ namespace Menge
     class Arrow;
 
     class GlobalHandleSystemInterface
-        : public InputSystemHandler
+        : public GlobalMouseHandler
+        , public GlobalKeyHandler
     {
     public:
-        virtual void regGlobalMouseEventable( GlobalMouseHandler * _handler ) = 0;
-        virtual void unregGlobalMouseEventable( GlobalMouseHandler * _handler ) = 0;
+        virtual size_t addGlobalMouseEventable( GlobalMouseHandler * _handler ) = 0;
+        virtual GlobalMouseHandler * removeGlobalMouseEventable( size_t _id ) = 0;
 
-        virtual void regGlobalKeyEventable( GlobalKeyHandler * _handler ) = 0;
-        virtual void unregGlobalKeyEventable( GlobalKeyHandler * _handler ) = 0;
+        virtual size_t addGlobalKeyEventable( GlobalKeyHandler * _handler ) = 0;
+        virtual GlobalKeyHandler * removeGlobalKeyEventable( size_t _id ) = 0;
 
     public:
         virtual void update() = 0;

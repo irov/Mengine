@@ -12,7 +12,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://www.cmake.org/files/v2.8/cmake-2.8.10.2-win32-x86.zip
 %toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib127.zip
 %toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.tar.gz
-%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng161.zip
+%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng162.zip
 %toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr9.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
@@ -58,8 +58,8 @@ if EXIST pthreads rmdir /s /q pthreads
 move pthreads-w32-2-9-1-release pthreads
 
 if EXIST libpng rmdir /s /q libpng
-7za x -y lpng161.zip
-move lpng161 libpng
+7za x -y lpng162.zip
+move lpng162 libpng
 
 if EXIST libjpeg rmdir /s /q libjpeg
 7za x -y jpegsr9.zip
@@ -104,7 +104,7 @@ move svn-win32-1.6.6 svn
 :: svn\bin\svn export --force http://svn.xiph.org/tags/theora/theora-1.0beta3 theora
 svn\bin\svn checkout http://box2d.googlecode.com/svn/trunk box2d
 svn\bin\svn checkout http://pugixml.googlecode.com/svn/trunk pugixml
-svn\bin\svn checkout https://pybind.svn.sourceforge.net/svnroot/pybind pybind
+svn\bin\svn checkout https://svn.code.sf.net/p/pybind/code/trunk pybind
 svn\bin\svn checkout https://svn.code.sf.net/p/metabuf/code/trunk metabuf
 svn\bin\svn checkout https://svn.code.sf.net/p/xxbind/code/trunk xxbind
 svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator

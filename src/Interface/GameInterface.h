@@ -19,13 +19,6 @@ namespace Menge
         virtual void setTimingFactor( float _timingFactor ) = 0;
 
     public:
-        virtual void addMouseMoveHandler( PyObject * _cb ) = 0;
-        virtual bool removeMouseMoveHandler( PyObject * _cb ) = 0;
-
-        virtual void addMouseButtonHandler( PyObject * _cb ) = 0;
-        virtual bool removeMouseButtonHandler( PyObject * _cb ) = 0;
-
-    public:
         virtual const WString & getParam( const WString & _paramName ) = 0;
         virtual bool hasParam( const WString & _paramName ) const = 0;
 

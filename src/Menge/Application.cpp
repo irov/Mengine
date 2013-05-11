@@ -87,6 +87,7 @@
 
 #	include "ResourceImageSolid.h"
 #	include "ResourceImageDefault.h"
+#	include "ResourceImageSubstract.h"
 #	include "ResourceImageCombineRGBAndAlpha.h"
 #	include "ResourceImageMultiplyRGBAndAlpha.h"
 
@@ -517,6 +518,7 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
 		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageDefault );
+        RESOURCE_FACTORY( m_serviceProvider, ResourceImageSubstract );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageCombineRGBAndAlpha );
         RESOURCE_FACTORY( m_serviceProvider, ResourceImageMultiplyRGBAndAlpha );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageSolid );

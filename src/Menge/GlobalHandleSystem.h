@@ -6,6 +6,22 @@
 
 namespace Menge
 {
+    struct GlobalMouseHandleDesc
+    {
+        size_t id;
+
+        GlobalMouseHandler * handler;
+        bool dead;
+    };
+
+    struct GlobalKeyHandleDesc
+    {
+        size_t id;
+
+        GlobalKeyHandler * handler;
+        bool dead;
+    };
+
 	class GlobalHandleSystem
 		: public GlobalHandleSystemInterface
 	{
@@ -13,49 +29,34 @@ namespace Menge
         GlobalHandleSystem( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void regGlobalMouseEventable( GlobalMouseHandler * _handler ) override;
-		void unregGlobalMouseEventable( GlobalMouseHandler * _handler ) override;
+		size_t addGlobalMouseEventable( GlobalMouseHandler * _handler ) override;
+		GlobalMouseHandler * removeGlobalMouseEventable( size_t _id ) override;
 
-		void regGlobalKeyEventable( GlobalKeyHandler * _handler ) override;
-		void unregGlobalKeyEventable( GlobalKeyHandler * _handler ) override;
+		size_t addGlobalKeyEventable( GlobalKeyHandler * _handler ) override;
+		GlobalKeyHandler * removeGlobalKeyEventable( size_t _id ) override;
 
 	public:
 		void update() override;
-		void clear() override;
+        void clear() override;
 
 	public:
-		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		void handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
 
 	public:
-		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+		void handleGlobalMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		void handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+        		
+		typedef std::vector<GlobalMouseHandleDesc> TVectorGlobalMouseHandler;
+		TVectorGlobalMouseHandler m_globalMouseHandler;
 
-		struct GlobalMouseDesc
-		{
-			GlobalMouseHandler * handler;
-			bool dead;
-		};
-		
-		typedef std::list<GlobalMouseDesc> TSetGlobalMouseHandler;
-		TSetGlobalMouseHandler m_globalMouseHandler;
-		TSetGlobalMouseHandler m_addGlobalMouseHandler;
+		typedef std::vector<GlobalKeyHandleDesc> TVectorGlobalKeyHandler;
+		TVectorGlobalKeyHandler m_globalKeyHandler;
 
-		struct GlobalKeyDesc
-		{
-			GlobalKeyHandler * handler;
-			bool dead;
-		};
-
-		typedef std::list<GlobalKeyDesc> TSetGlobalKeyHandler;
-		TSetGlobalKeyHandler m_globalKeyHandler;
-		TSetGlobalKeyHandler m_addGlobalKeyHandler;
-
-		static TSetGlobalMouseHandler::iterator s_findGlobalMouse( TSetGlobalMouseHandler & _set, GlobalMouseHandler * _handler );
-		static TSetGlobalKeyHandler::iterator s_findGlobalKey( TSetGlobalKeyHandler & _set, GlobalKeyHandler * _handler );
+        size_t m_handlersEnumerator;
 	};
 }

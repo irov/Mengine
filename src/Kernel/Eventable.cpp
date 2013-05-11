@@ -160,50 +160,52 @@ namespace Menge
 		va_start(valist, _format);
 				
 		this->callPyEventVaList( _event, pyevent, _format, valist );
-		
+
 		va_end( valist ); 
 	}
+    //////////////////////////////////////////////////////////////////////////
+    static void s_callPyEventVaList( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
+    {
+        PyObject * py_result = SCRIPT_SERVICE(_serviceProvider)
+            ->askFunctionVA( _pyevent, _format, _va );
+
+        if( py_result == 0 )
+        {
+            return;
+        }
+
+        if( pybind::is_none( py_result ) == false )
+        { 
+            const char * envString = eventToString( _event );
+            const char * objRepr = pybind::object_repr( py_result );
+
+            LOGGER_ERROR(_serviceProvider)( "Eventable: '%s' '%s' must return 'None', but return '%s'"
+                , envString
+                , pybind::object_repr( _pyevent )
+                , objRepr
+                );
+        }
+
+        pybind::decref( py_result );
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::callPyEventVaList( EEventName _event, PyObject * _pyevent, const char * _format, va_list _va ) const
-	{
+    void Eventable::callPyEventVaList( EEventName _event, PyObject * _pyevent, const char * _format, va_list _va ) const
+    {
         ServiceProviderInterface * serviceProvider = this->getServiceProvider();
 
         pybind::incref( _pyevent );
-
-        PyObject * py_result = SCRIPT_SERVICE(serviceProvider)
-            ->askFunctionVA( _pyevent, _format, _va );
+        
+        s_callPyEventVaList( serviceProvider, _event, _pyevent, _format, _va );
 
         pybind::decref( _pyevent );
-
-		if( py_result == 0 )
-		{
-			return;
-		}
-
-		if( pybind::is_none( py_result ) == false )
-		{ 
-			const char * envString = eventToString( _event );
-			const char * objRepr = pybind::object_repr( py_result );
-
-			LOGGER_ERROR(serviceProvider)( "Eventable: Event '%s' must return 'None', but return '%s'"
-				, envString
-				, objRepr
-				);
-		}
-
-		pybind::decref( py_result );
-	}
-	//////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
 	template<class T>
-	static bool s_askPyEventVaList( ServiceProviderInterface * _serviceProvider, T & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
+	static bool s_askPyEventVaList2( ServiceProviderInterface * _serviceProvider, T & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
 	{
-        pybind::incref( _pyevent );
-
 		PyObject * pyresult = SCRIPT_SERVICE(_serviceProvider)
 			->askFunctionVA( _pyevent, _format, _va );
-
-        pybind::decref( _pyevent );
-
+ 
 		if( pyresult == 0 )
 		{
 			return false;
@@ -215,15 +217,16 @@ namespace Menge
 			const char * typeName = typeid(T).name();
 			const char * objRepr = pybind::object_repr( pyresult );
 
-			LOGGER_ERROR(_serviceProvider)( "Eventable: '%s' must have return [%s] value '%s'"
+			LOGGER_ERROR(_serviceProvider)( "Eventable: '%s' '%s' must return '%s', but return '%s'"
 				, envString
+                , pybind::object_repr( _pyevent )
 				, typeName
 				, objRepr
 				);
 
 			pybind::decref( pyresult );
 
-			return false;
+            return false;
 		}
 
 		_result = pybind::extract<T>( pyresult );
@@ -232,6 +235,18 @@ namespace Menge
 
 		return true;		
 	}
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    static bool s_askPyEventVaList( ServiceProviderInterface * _serviceProvider, T & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
+    {
+        pybind::incref( _pyevent );
+
+        bool result = s_askPyEventVaList2( _serviceProvider, _result, _event, _pyevent, _format, _va );
+
+        pybind::decref( _pyevent );
+
+        return result;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( bool & _result, EEventName _event, const char * _format, ... ) const
 	{

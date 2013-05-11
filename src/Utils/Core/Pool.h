@@ -3,6 +3,13 @@
 #	include "Core/IntrusiveList.h"
 #	include "Core/IntrusiveSlug.h"
 
+#   ifdef _DEBUG
+#   include <vector>
+#   include <algorithm>
+
+typedef std::vector<void *> TVectorAllockBlock;
+#   endif
+
 namespace Menge
 {
 	template<size_t TSizeType, size_t TChunkSize>
@@ -45,6 +52,7 @@ namespace Menge
     public:
         TemplatePool()
             : m_free(nullptr)
+            , m_count(0)
         {
         }
 
@@ -68,16 +76,43 @@ namespace Menge
 
 			TBlock * free = m_free;
 			m_free = m_free->next;
-			return free;
+
+            ++m_count;
+
+            void * impl = static_cast<void *>(free);
+#   ifdef _DEBUG
+            m_allockBlock.push_back( impl );
+#   endif
+
+			return impl;
 		}
 
 		void free( void * _buff )
 		{
 			TBlock * block = reinterpret_cast<TBlock*>(_buff);
+
+#   ifdef _DEBUG
+            TVectorAllockBlock::iterator if_found = std::find( m_allockBlock.begin(), m_allockBlock.end(), _buff );
+            m_allockBlock.erase( if_found );
+#   endif
+            --m_count;
+
 			block->next = m_free;
 
 			m_free = block;
 		}
+
+#   ifdef _DEBUG
+        TVectorAllockBlock & allock_blocks()
+        {
+            return m_allockBlock;
+        }
+#   endif
+
+        bool empty() const
+        {
+            return m_count == 0;
+        }
 
 	protected:
 		void addChunk_()
@@ -90,6 +125,12 @@ namespace Menge
 	protected:
 		TListChunks m_chunks;
 
+#   ifdef _DEBUG
+        TVectorAllockBlock m_allockBlock;
+#   endif
+
 		TBlock * m_free;
+
+        size_t m_count;
 	};
 }

@@ -19,6 +19,7 @@ namespace Menge
 	public:        
 		inline const mt::vec2f & getMaxSize() const;
 		inline const mt::vec2f & getSize() const;
+        inline const mt::vec2f & getBound() const;
 		inline const mt::vec4f & getUV() const;
         inline const mt::vec4f & getUVScale() const;
 		inline const mt::vec4f & getUVImage() const;
@@ -51,6 +52,7 @@ namespace Menge
 
         mt::vec2f m_maxSize;
         mt::vec2f m_size;
+        mt::vec2f m_bound;
         mt::vec4f m_uv_image;
         mt::vec4f m_uv;
         mt::vec4f m_uv_scale;
@@ -72,6 +74,11 @@ namespace Menge
     inline const mt::vec2f & ResourceImage::getSize() const
     {
         return m_size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::vec2f & ResourceImage::getBound() const
+    {
+        return m_bound;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const mt::vec4f & ResourceImage::getUV() const

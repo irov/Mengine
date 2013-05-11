@@ -259,6 +259,21 @@ namespace Menge
 			return py_result;
 		}
 
+        float s_angle_between_two_vectors( const mt::vec2f & _v1, const mt::vec2f & _v2 )
+        {
+            mt::vec2f v1_norm;
+            mt::norm_v2( v1_norm, _v1 );
+
+            mt::vec2f v2_norm;
+            mt::norm_v2( v2_norm, _v2 );
+
+            float cos_v = mt::dot_v2_v2( v1_norm, v2_norm );
+
+            float angle = acosf( cos_v );
+
+            return angle;
+        }
+
 		PyObject * s_getPolygonPoints( const Polygon & _polygon )
 		{
 			PyObject * py_list = pybind::list_new(0);
@@ -1013,9 +1028,9 @@ namespace Menge
 		pybind::def_functor( "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
 		pybind::def_functor( "direction", helperScriptMethod, &HelperScriptMethod::mt_direction );
         pybind::def_functor( "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
-		
-		
-		pybind::def_functor( "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
+
+        pybind::def_functor( "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
+        pybind::def_functor( "angle_between_two_vectors", helperScriptMethod, &HelperScriptMethod::s_angle_between_two_vectors );
 
 		pybind::def_functor( "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::projectionPointToLine );
 
@@ -1103,8 +1118,7 @@ namespace Menge
 
         pybind::def_function( "length_v2_v2", &mt::length_v2_v2 );
         pybind::def_function( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
-
-
+        
         pybind::def_function( "signed_angle", &mt::signed_angle );
         pybind::def_function( "angle_length", &mt::angle_length );
         pybind::def_function( "perp", &mt::perp );

@@ -115,8 +115,10 @@ namespace Menge
 
 
     public:
-		bool hasTexture( const FilePath & _filename ) const override;
+		bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const override;
+        RenderTextureInterfacePtr getTexture( const FilePath& _filename ) override;
 		
+    public:
 		RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 
 		RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
@@ -136,7 +138,7 @@ namespace Menge
         void enableDebugMode( bool _enable ) override;
         
 	public:
-		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) override;
+		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder, size_t _bound ) override;
 		
 	public:
 		void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
@@ -144,12 +146,11 @@ namespace Menge
 	public:
 		void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) override;
 
-		RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) override;
+		RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _bound ) override;
 		RenderTextureInterfacePtr loadMegatexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec );
 						
 		bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const FilePath & _filename ) override;
-		
-		RenderTextureInterfacePtr getTexture( const FilePath& _filename ) override;
+				
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
 		//void	setWorldMatrix( const mt::mat4f& _world );

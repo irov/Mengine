@@ -1694,11 +1694,6 @@ namespace Menge
 			m_application->finalize();
         }
 
-        if( m_renderService != nullptr )
-        {
-            m_renderService->finalize();
-        }
-
         if( m_pluginMengeImageCodec != nullptr )
         {
             m_pluginMengeImageCodec->destroy();
@@ -1718,7 +1713,6 @@ namespace Menge
         destroyThreadService( m_threadService );
         destroyParticleService( m_particleService );
         destroyPhysicService2D( m_physicService2D );
-        destroyRenderService( m_renderService );
         destroySoundService( m_soundService );        
         destroyAmplifierService( m_amplifierService );
 
@@ -1737,6 +1731,13 @@ namespace Menge
             destroyScriptService( m_scriptService );
         }
 
+        if( m_renderService != nullptr )
+        {
+            m_renderService->finalize();
+        }
+
+        destroyRenderService( m_renderService );
+        
 		if( m_fileLog != nullptr )
 		{
 			if( m_logService )

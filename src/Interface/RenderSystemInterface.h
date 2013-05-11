@@ -512,7 +512,7 @@ namespace Menge
             ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _bound ) = 0;
 
     public:
         virtual const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const = 0;
@@ -541,7 +541,7 @@ namespace Menge
 
         virtual RenderTextureInterfacePtr getTexture( const FilePath& _filename ) = 0;
 
-        virtual bool hasTexture( const FilePath & _filename ) const = 0;
+        virtual bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const = 0;
 
     public:
         virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
@@ -550,7 +550,7 @@ namespace Menge
         virtual void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) = 0;
 
 	public:
-		virtual bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) = 0;
+		virtual bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder, size_t _bound ) = 0;
 
 	public:
 		virtual void setRenderTargetTexture( const RenderTextureInterfacePtr & _texture, bool _clear ) = 0;

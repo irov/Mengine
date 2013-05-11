@@ -230,7 +230,8 @@ namespace Menge
 	void RenderEngine::finalize()
 	{
 		m_nullTexture = nullptr;
-
+        m_renderObjects.clear();
+        m_renderPasses.clear();
     	//m_textures.clear();
 
 		for( TMapMaterialGroup::iterator
@@ -668,7 +669,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec )
+	RenderTextureInterfacePtr RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec, size_t _bound )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
 	
@@ -709,8 +710,6 @@ namespace Menge
 
 		RenderTextureInterfacePtr texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
 
-        this->cacheFileTexture( _filename, texture );
-
         float texture_create = WATCHDOG(m_serviceProvider, "texture create");
 
         LOGGER_WATCHDOG(m_serviceProvider)("texture create %.4f %s"
@@ -731,7 +730,7 @@ namespace Menge
 		}
 
 		const Rect & rect = texture->getHWRect();
-		if( this->loadTextureRectImageData( texture, rect, imageDecoder ) == false )
+		if( this->loadTextureRectImageData( texture, rect, imageDecoder, _bound ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: decode texture for file '%s:%s' error"
                 , _pakName.c_str()
@@ -740,6 +739,8 @@ namespace Menge
 
             return nullptr;
         }		
+
+        this->cacheFileTexture( _filename, texture );
 		
 		return texture;
 	}
@@ -766,7 +767,7 @@ namespace Menge
         --m_debugInfo.textureCount;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
+	bool RenderEngine::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder, size_t _bound )
 	{
 		int pitch = 0;
 		unsigned char * textureBuffer = _texture->lock( &pitch, _rect, false );
@@ -782,6 +783,7 @@ namespace Menge
 
         options.channels = _texture->getHWChannels();
         options.pitch = pitch;
+        options.bound = _bound;
 		
 		//options.flags |= DF_CUSTOM_PITCH;
 
@@ -1236,7 +1238,7 @@ namespace Menge
 		return m_debugInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::hasTexture( const FilePath & _filename ) const
+	bool RenderEngine::hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const
 	{
 		TMapTextures::const_iterator it_find = m_textures.find( _filename );
 
@@ -1244,6 +1246,11 @@ namespace Menge
 		{
 			return false;
 		}
+
+        if( _texture != nullptr )
+        {
+            *_texture = it_find->second;
+        }
 
 		return true;
 	}

@@ -20,6 +20,11 @@ namespace Menge
 	protected:
 		virtual bool _destroy();
 
+#   ifdef _DEBUG
+    protected:
+        virtual void _checkDestroy();
+#   endif
+
 	protected:
 		Factory * m_factory;
 

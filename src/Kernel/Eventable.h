@@ -33,9 +33,6 @@ namespace Menge
 		void callEvent( EEventName _event, const char * _format, ... ) const;
 
 	public:
-		void callPyEventVaList( EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
-
-	public:
 		bool askEvent( bool & _result, EEventName _event, const char * _format, ... ) const;
 		bool askEvent( size_t & _result, EEventName _event, const char * _format, ... ) const;
 		bool askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... ) const;
@@ -46,7 +43,10 @@ namespace Menge
 		bool askPyEventVaList( size_t & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
 		bool askPyEventVaList( Scriptable *& _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
 		bool askPyEventVaList( PyObject *& _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
-            
+        
+    public:
+        void callPyEventVaList( EEventName _event, PyObject * _pyevent, const char * _format, va_list _valist ) const;
+
 	protected:
 		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
 		void removeEvent_( EEventName _event );

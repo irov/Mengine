@@ -27,6 +27,14 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
+        m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
+        m_maxSize = mt::vec2f(-1.f, -1.f);
+        m_size = mt::vec2f(-1.f, -1.f);
+        m_isAlpha = true;
+        m_isUVRotate = false;
+        m_wrapX = false;
+        m_wrapY = false;
+
         metadata->swap_Image_Name( m_resourceImageName );
         m_uv = metadata->get_Image_UV();
 
@@ -79,6 +87,12 @@ namespace Menge
 
         m_wrapX = false;
         m_wrapY = false;
+
+        if( m_isUVRotate == true )
+        {
+            std::swap( m_maxSize.x, m_maxSize.y );
+            std::swap( m_size.x, m_size.y );
+        }
         
         return true;
     }

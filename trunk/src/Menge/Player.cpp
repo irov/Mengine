@@ -560,12 +560,17 @@ namespace Menge
 			m_globalHandleSystem->handleGlobalMouseButtonEventBegin( _touchId, _point, _button, _isDown );
 		}
 
-		if( m_mousePickerSystem )
-		{
-			m_mousePickerSystem->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+        bool handler = false;
+
+        if( m_mousePickerSystem )
+        {
+            if( handler == false )
+            {
+			    bool handler = m_mousePickerSystem->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+            }
 		}
 
-		return false;
+        return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
@@ -575,24 +580,29 @@ namespace Menge
 			m_globalHandleSystem->handleGlobalMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 		}
 
-		if( m_mousePickerSystem )
-		{
-			m_mousePickerSystem->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
+        bool handler = false;
+
+        if( m_mousePickerSystem )
+        {
+            if( handler == false )
+            {
+                handler = m_mousePickerSystem->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
+            }
 		}
 
-		return false;
+        return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		//m_arrow->onMouseMove( _x, _y );
-
-		bool handler = false;
-
+        
 		if( m_globalHandleSystem )
 		{
 			m_globalHandleSystem->handleGlobalMouseMove( _touchId, _point, _x, _y, _whell );
 		}
+
+        bool handler = false;
 
 		if( m_mousePickerSystem )
 		{

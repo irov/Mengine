@@ -74,14 +74,12 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
-			//PyObject * pychar = PyBuffer_FromMemory( &_char, sizeof(_char) );
-			//askEvent( handle, EVENT_KEY, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
 			EVENTABLE_ASK(this, EVENT_KEY)( handle, false, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
 		}
 
-		if( !handle )
+		if( handle == false )
 		{
 			handle = m_player->handleKeyEvent( _point, _key, _char, _isDown );
 		}	
@@ -93,13 +91,12 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
-			//askEvent( handle, EVENT_MOUSE_BUTTON, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
-		if( !handle )
+		if( handle == false )
 		{
 			handle = m_player->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
 		}
@@ -111,13 +108,12 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
-			//askEvent( handle, EVENT_MOUSE_BUTTON_BEGIN, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON_BEGIN)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
-		if( !handle )
+		if( handle == false )
 		{
 			handle = m_player->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
 		}	
@@ -129,13 +125,12 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
-			//askEvent( handle, EVENT_MOUSE_BUTTON_END, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON_END)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
-		if( !handle )
+		if( handle == false )
 		{
 			handle = m_player->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 		}	
@@ -149,7 +144,6 @@ namespace Menge
 
 		if( handle == false )
 		{
-			//askEvent( handle, EVENT_MOUSE_MOVE, "(Iffi)", _touchId, _x, _y, _whell );
 			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, false, "(Iffi)", _touchId, _x, _y, _whell );
 		}
 
@@ -286,7 +280,6 @@ namespace Menge
             , is_debug
             );
 
-        //return false;
 		bool result = true;
 		EVENTABLE_ASK(this, EVENT_PREPARATION)( result, false, "(O)", pybind::get_bool(is_debug) );
 
@@ -415,39 +408,39 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::destroyArrow()
 	{
-		if( m_defaultArrow )
+		if( m_defaultArrow != nullptr )
 		{
 			m_defaultArrow->destroy();
-			m_defaultArrow = NULL;
+			m_defaultArrow = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalize()
 	{	
-        if( m_accountService != NULL )
+        if( m_accountService != nullptr )
         {
             m_accountService->finalize();
         }
 
         EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
 
-        if( m_accountService != NULL )
+        if( m_accountService != nullptr )
         {
             destroyAccountService( m_accountService );
-            m_accountService = NULL;
+            m_accountService = nullptr;
         }
 
-        if( m_accountLister != NULL )
+        if( m_accountLister != nullptr )
         {
             delete static_cast<ApplicationAccountManagerListener*>(m_accountLister);
-            m_accountLister = NULL;
+            m_accountLister = nullptr;
         }
 
-		if( m_player != NULL )
+		if( m_player != nullptr )
 		{
 			m_player->finalize();
 			delete m_player;
-			m_player = NULL;
+			m_player = nullptr;
 		}
 
 		this->destroyArrow();
@@ -493,7 +486,7 @@ namespace Menge
 	{
 		this->removePredefinedResources_();
 
-		if( m_player )
+		if( m_player != nullptr )
 		{
 			m_player->finalizeRenderResources();
 		}
@@ -562,7 +555,6 @@ namespace Menge
 
 		if( m_personalityHasOnClose == true )
 		{
-			//askEvent( needQuit, EVENT_CLOSE, "()" );
 			EVENTABLE_ASK(this, EVENT_CLOSE)( needQuit, true, "()" );
 		}
 
@@ -686,21 +678,6 @@ namespace Menge
 			}
 		}
 
-		//if( it_language_find != m_languagePaks.end() )
-		//{
-		//	languagePak = *it_language_find;
-		//}
-
-		//if( languagePak == NULL && m_languagePaks.empty() == false )
-		//{
-		//	languagePak = m_languagePaks.front();
-		//}
-
-		//if( languagePak != NULL )
-		//{
-		//	m_paks.push_back( languagePak );
-		//}
-
 		for( TVectorResourcePak::iterator 
 			it = m_paks.begin(), 
 			it_end = m_paks.end();
@@ -776,7 +753,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Game::getParam( const WString & _paramName )
 	{
-		TMapWString::iterator it_find = m_params.find( _paramName );
+		TMapWString::const_iterator it_find = m_params.find( _paramName );
+
+        if( it_find == m_params.end() )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Game::getParam not found param '%ls'"
+                , _paramName.c_str()
+                );
+
+            return Utils::emptyWString();
+        }
 
         const WString & param = it_find->second;
 

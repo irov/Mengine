@@ -234,7 +234,10 @@ namespace Menge
 			{
 				MousePickerTrapInterface * trap = state->trap;
 
-				trap->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+				if( trap->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown ) == true )
+                {
+                    return true;
+                }
 			}
 		}
 
@@ -264,7 +267,10 @@ namespace Menge
 			{
 				MousePickerTrapInterface * trap = state->trap;
 
-				trap->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
+				if( trap->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown ) == true )
+                {
+                    return true;
+                }
 			}
 		}
 

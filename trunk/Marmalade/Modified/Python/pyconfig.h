@@ -40,7 +40,7 @@
 #define HAVE_INET_ATON 1
 
 /* Define this if you have the type long long. */
-#define HAVE_LONG_LONG 1
+#undef HAVE_LONG_LONG
 
 /* Define to 1 if you have the `memmove' function. */
 #define HAVE_MEMMOVE 1
@@ -197,7 +197,7 @@ void fprintf(FILE *, char *, ...);) *and* <stdarg.h> */
 #define PREFIX ""
 
 /* Define as the integral type used for Unicode representation. */
-#define PY_UNICODE_TYPE unsigned short
+#define PY_UNICODE_TYPE wchar_t
 
 /* Define as the size of the unicode type. */
 #define Py_UNICODE_SIZE 2

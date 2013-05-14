@@ -12,9 +12,7 @@
 
 #	include "Math/vec4.h"
 
-
-
-#	include <vector>
+#	include <list>
 
 namespace Menge
 {
@@ -73,8 +71,8 @@ namespace Menge
 
 		void setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number );
 
-		void setHeight( float _height );
-		float getHeight() const;
+		void setAlphaHeight( float _height );
+		float getAlphaHeight() const;
 
 		void setOutlineColor( const ColourValue& _color );
 		const ColourValue& getOutlineColor() const;
@@ -116,7 +114,9 @@ namespace Menge
 		bool getPixelsnap() const;
 
 	public:
-		const mt::vec2f& getLength() const;
+		const mt::vec2f& getTextSize() const;
+
+    public:
 		int getCharCount() const;
 
 	protected:
@@ -171,7 +171,7 @@ namespace Menge
 		WString m_format;
 		size_t m_number;
 
-		float m_height;		
+		float m_alphaHeight;		
 		
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;
@@ -181,7 +181,7 @@ namespace Menge
 		int m_maxCharCount;
 
 		mutable int m_charCount;
-		mutable mt::vec2f m_length;
+		mutable mt::vec2f m_textSize;
 
 		bool m_outline;
 		bool m_pixelsnap;

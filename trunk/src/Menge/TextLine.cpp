@@ -74,7 +74,7 @@ namespace Menge
 
 			const ResourceGlyph * resourceGlyph = _resource->getResourceGlyph();
 
-			float initSize = resourceGlyph->getHeight();
+			float initSize = resourceGlyph->getAlphaHeight();
 			charData.size /= initSize;
 			
 			if( m_charsData.empty() == false )

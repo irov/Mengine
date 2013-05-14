@@ -29,9 +29,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_resourceFont(0)
-		, m_length(0.f, 0.f)
+		, m_textSize(0.f, 0.f)
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
-		, m_height(0.f)
+		, m_alphaHeight(0.f)
 		, m_horizontAlign(ETFHA_NONE)
 		, m_verticalAlign(ETFVA_NONE)
 		, m_maxWidth(2048.f)
@@ -80,10 +80,6 @@ namespace Menge
 
 		if( m_resourceFontName.empty() == true )
 		{
-			//MENGE_LOG_ERROR( "Error: Font name is empty (TextField %s)"
-			//	, getName().c_str() 
-			//	);
-
 			m_resourceFontName = TEXT_SERVICE(m_serviceProvider)
 				->getDefaultResourceFontName();
 
@@ -96,7 +92,7 @@ namespace Menge
 		m_resourceFont = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceFont>( m_resourceFontName );
 
-		if( m_resourceFont == 0 )
+		if( m_resourceFont == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' can't find resource '%s'"
 				, this->getName().c_str()
@@ -118,11 +114,21 @@ namespace Menge
 	
 		const ResourceGlyph * resourceGlyph = m_resourceFont->getResourceGlyph();
 
-		m_height = resourceGlyph->getHeight();
+        if( resourceGlyph == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s':'%s' can't get resource glyph"
+                , this->getName().c_str()
+                , m_resourceFontName.c_str() 
+                );
+
+            return false;
+        }
+
+		m_alphaHeight = resourceGlyph->getAlphaHeight();
 
 		if( fabsf(m_lineOffset) < 0.0001f )
 		{
-			m_lineOffset = m_height;
+			m_lineOffset = m_alphaHeight;
 		}
 
 		const RenderMaterialGroup * mg_sprite = RENDER_SERVICE(m_serviceProvider)
@@ -140,10 +146,10 @@ namespace Menge
 	{
 		Node::_release();
 
-		if( m_resourceFont != 0 )
+		if( m_resourceFont != nullptr )
 		{
 			m_resourceFont->decrementReference();
-			m_resourceFont = 0;
+			m_resourceFont = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -328,14 +334,14 @@ namespace Menge
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float TextField::getHeight() const
+	float TextField::getAlphaHeight() const
 	{
-		return m_height;
+		return m_alphaHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setHeight( float _height )
+	void TextField::setAlphaHeight( float _height )
 	{
-		m_height = _height;
+		m_alphaHeight = _height;
 
 		this->invalidateVertices_();
 	}
@@ -345,15 +351,16 @@ namespace Menge
 		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& TextField::getLength() const
+	const mt::vec2f& TextField::getTextSize() const
 	{
-		if (this->isCompile() == false)
+		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getLength '%s' not compile"
+			LOGGER_ERROR(m_serviceProvider)("TextField::getTextLength '%s':'%s' not compile"
+                , this->getName().c_str()
 				, m_resourceFontName.c_str()
 				);
 
-			return m_length;
+			return m_textSize;
 		}
 
 		if( this->isInvalidateTextLines() == true )
@@ -361,7 +368,7 @@ namespace Menge
 			this->updateTextLines_();
 		}
 
-		return m_length;
+		return m_textSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateTextLines_() const
@@ -371,7 +378,7 @@ namespace Menge
 		m_lines.clear();
 		m_charCount = 0;
 
-		float maxlen = 0.0f;
+		float maxlen = 0.f;
         
         WString space_delim = L" ";
 
@@ -386,7 +393,7 @@ namespace Menge
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine(m_serviceProvider, m_height, m_charOffset);
+			TextLine textLine(m_serviceProvider, m_alphaHeight, m_charOffset);
 
 			textLine.initialize( m_resourceFont, *it );
 
@@ -401,14 +408,14 @@ namespace Menge
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
-					TextLine tl(m_serviceProvider, m_height, m_charOffset);
+					TextLine tl(m_serviceProvider, m_alphaHeight, m_charOffset);
 
 					WString tl_string( newLine + space_delim + words.front() );
 					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
-						TextLine line(m_serviceProvider, m_height, m_charOffset);
+						TextLine line(m_serviceProvider, m_alphaHeight, m_charOffset);
 
 						line.initialize( m_resourceFont, newLine );
 
@@ -425,7 +432,7 @@ namespace Menge
 					}
 				}
 
-				TextLine line(m_serviceProvider, m_height, m_charOffset);				
+				TextLine line(m_serviceProvider, m_alphaHeight, m_charOffset);				
 				line.initialize( m_resourceFont, newLine );
 
 				m_lines.push_back( line );
@@ -446,8 +453,8 @@ namespace Menge
 			m_charCount += it->getCharsDataSize();
 		}
 
-		m_length.x = maxlen;
-		m_length.y = m_height * m_lines.size();
+		m_textSize.x = maxlen;
+		m_textSize.y = m_alphaHeight * m_lines.size();
 
 		this->invalidateVertices_();
 		this->invalidateBoundingBox();
@@ -541,7 +548,7 @@ namespace Menge
 			}break;
 		case ETFVA_CENTER:
 			{
-				_offset.y = -m_height * 0.5f;
+				_offset.y = -m_alphaHeight * 0.5f;
 			}break;
 		}
 	}

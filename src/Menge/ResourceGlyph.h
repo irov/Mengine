@@ -24,7 +24,7 @@ namespace Menge
 		const Glyph * getGlyph( WChar _id ) const;
 	
 	public:
-		float getHeight() const;
+		float getAlphaHeight() const;
 		
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -33,7 +33,7 @@ namespace Menge
 		Glyph & addGlyph_( WChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width );
 
 	protected:
-		float m_height;
+		float m_alphaHeight;
 
 		typedef std::map<WChar, Glyph> TMapGlyph;
 		TMapGlyph m_glyphs;

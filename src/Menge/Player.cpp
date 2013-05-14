@@ -566,7 +566,7 @@ namespace Menge
         {
             if( handler == false )
             {
-			    bool handler = m_mousePickerSystem->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+			    handler = m_mousePickerSystem->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
             }
 		}
 

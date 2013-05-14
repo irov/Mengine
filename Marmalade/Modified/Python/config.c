@@ -24,7 +24,7 @@ struct _inittab _PyImport_Inittab[] = {
 
 	/* This lives in import.c */
 	{"imp", initimp},
-    {"initmath", initmath},
+    {"math", initmath},
 
 	/* This lives in Python/Python-ast.c */
 	{"_ast", init_ast},

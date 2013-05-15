@@ -25,6 +25,8 @@ namespace Menge
     const size_t MOVIE_LAYER_EXTRA = 0x0040;
     const size_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
 	
+    const size_t movie_layer_parent_none = (size_t)-1;
+
 	struct MovieLayer
 	{
 		MovieLayer()

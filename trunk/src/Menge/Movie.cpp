@@ -271,7 +271,7 @@ namespace Menge
 	{		
         Nodies ns;
         ns.node = _node;
-        ns.child = (_layer.parent != -1);
+        ns.child = (_layer.parent != movie_layer_parent_none);
 
 		m_nodies[_layer.index] = ns;
 	}
@@ -1464,7 +1464,7 @@ namespace Menge
 
             this->updateFrameNode_( layer, node, frame );
                  
-            if( layer.parent != 0 && layer.parent != -1 )
+            if( layer.parent != 0 && layer.parent != movie_layer_parent_none )
 			{
 				Node * node_parent = this->getMovieParent_( layer );
 

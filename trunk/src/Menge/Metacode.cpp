@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 11;
+        _needVersion = 13;
 
-        if( version != 11 )
+        if( version != 13 )
         {
             return false;
         }
@@ -1106,7 +1106,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_Alpha ) == false )
                 {
@@ -1114,17 +1114,6 @@ namespace Metacode
                 }
     
                 this->File_Alpha_successful = true;
-    
-                return true;
-            }break;
-        case 6:
-            {
-                if( this->read( _buff, _size, _read, this->File_Bound ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_Bound_successful = true;
     
                 return true;
             }break;
@@ -1139,6 +1128,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 10:
+            {
+                if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_MaxSize_successful = true;
+    
+                return true;
+            }break;
         case 3:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
@@ -1148,7 +1148,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->File_Rotate ) == false )
                 {
@@ -1170,7 +1170,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->File_WrapX ) == false )
                 {
@@ -1181,7 +1181,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->File_WrapY ) == false )
                 {

@@ -4,14 +4,20 @@
 #	include "Math/mat4.h"
 #   include "Math/box2.h"
 
-#pragma warning(push, 0) 
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   pragma warning(push, 0) 
+#   endif
+
 #	include <boost/geometry/geometry.hpp> 
 #	include <boost/geometry/core/tag.hpp> 
 #	include <boost/geometry/geometries/polygon.hpp>
 #	include <boost/geometry/geometries/box.hpp>
 
 #	include <boost/geometry/strategies/agnostic/point_in_poly_winding.hpp>
-#pragma warning(pop)
+
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   pragma warning(pop)
+#   endif
 
 namespace boost 
 {

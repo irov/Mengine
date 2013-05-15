@@ -23,6 +23,8 @@ namespace Menge
 
     typedef std::vector<MovieFrameSource> TVectorMovieFrameSource;
 
+    const size_t layer_frame_immutable_count = (size_t)-1;
+
     struct MovieLayerFrame
     {	
         size_t count;

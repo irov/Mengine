@@ -1,11 +1,12 @@
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/UnicodeInterface.h"
 
-#   include <s3eFile.h>
+#	include "MarmaladeInputStream.h"
+#	include "MarmaladeOutputStream.h"
+#	include "MarmaladeMappedInputStream.h"
 
-#	include <map>
+#   include "Utils/Factory/FactoryPool.h"
 
 namespace Menge
 {
@@ -29,11 +30,11 @@ namespace Menge
         bool initialize( ServiceProviderInterface * _serviceProvider ) override;
 
 	public:
-		FileInputStreamInterface* createInputStream() override;
-		FileOutputStreamInterface* createOutputStream() override;
+		FileInputStreamInterfacePtr createInputStream() override;
+		FileOutputStreamInterfacePtr createOutputStream() override;
 		
     public:
-        MappedFileInputStreamInterface * createMappedInputStream() override;
+        MappedFileInputStreamInterfacePtr createMappedInputStream() override;
 
     public:
 		bool existFile( const FilePath& _filename  ) const override;
@@ -44,5 +45,14 @@ namespace Menge
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
+
+        typedef FactoryPool<MarmaladeInputStream, 8> TFactoryFileInputStream;
+        TFactoryFileInputStream m_factoryInputStream;
+
+        typedef FactoryPool<MarmaladeOutputStream, 4> TFactoryFileOutputStream;
+        TFactoryFileOutputStream m_factoryOutputStream;
+
+        typedef FactoryPool<MarmaladeMappedInputStream, 4> TFactoryMappedInputStream;
+        TFactoryMappedInputStream m_factoryMappedInputStream;
 	};
 }

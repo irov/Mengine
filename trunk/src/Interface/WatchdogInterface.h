@@ -28,4 +28,10 @@ namespace Menge
 
 #   define LOGGER_WATCHDOG( serviceProvider )\
     if( LOG_SERVICE(serviceProvider)->validMessage(Menge::LM_ERROR, 1) == false) {} else Menge::LoggerOperator(LOG_SERVICE(serviceProvider), Menge::LM_ERROR, 1)
+
+#   define BEGIN_WATCHDOG( serviceProvider, tag )\
+    WATCHDOG(serviceProvider, tag)
+
+#   define END_WATCHDOG( serviceProvider, tag )\
+    LOGGER_WATCHDOG(serviceProvider)("(%.4f)", WATCHDOG(m_serviceProvider, "texture create"))    
 }

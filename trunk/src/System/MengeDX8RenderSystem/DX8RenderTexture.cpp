@@ -1,13 +1,4 @@
-/*
- *	DX8RenderTexture.cpp
- *
- *	Created by _Berserk_ on 23.1.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	include "DX8RenderTexture.h"
-#	include <d3d8.h>
 
 namespace Menge
 {

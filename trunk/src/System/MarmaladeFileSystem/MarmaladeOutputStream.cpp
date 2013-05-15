@@ -7,15 +7,20 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeOutputStream::MarmaladeOutputStream( ServiceProviderInterface * _serviceProvider )		
-        : m_serviceProvider(_serviceProvider)
-        , m_hFile(NULL)
+	MarmaladeOutputStream::MarmaladeOutputStream()		
+        : m_serviceProvider(nullptr)
+        , m_hFile(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeOutputStream::~MarmaladeOutputStream()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeOutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeOutputStream::open( const FilePath& _filePath )
 	{        
@@ -24,20 +29,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeOutputStream::destroy()
+	bool MarmaladeOutputStream::_destroy()
 	{
-		if( m_hFile != NULL )
+		if( m_hFile != nullptr )
 		{
 			s3eFileClose( m_hFile );
-			m_hFile = NULL;
+			m_hFile = nullptr;
 		}
 
-        delete this;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeOutputStream::write( const void * _data, size_t _count )
 	{
         uint32 bytesWritten = s3eFileWrite( _data, _count, 1, m_hFile );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

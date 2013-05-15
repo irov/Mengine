@@ -45,6 +45,7 @@ namespace Menge
 	void FileLogger::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
 	{
         (void)_level;
+        (void)_flag;
 
 		m_stream->write( _data, _count );
 	}

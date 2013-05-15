@@ -12,18 +12,18 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OGLTexture::OGLTexture( GLuint _uid, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
-		: m_uid(_uid)
-		, m_hwWidth(_width)
-		, m_hwHeight(_height)
-        , m_hwChannels(_channels)
-		, m_pitch(_pitch)
-		, m_hwPixelFormat(_pixelFormat)
-		, m_internalFormat(_internalFormat)
-		, m_format(_format)
-		, m_type(_type)
-		, m_isRenderTarget(_isRenderTarget)
-		, m_lock(NULL)
+	OGLTexture::OGLTexture()
+		: m_uid(0)
+		, m_hwWidth(0)
+		, m_hwHeight(0)
+        , m_hwChannels(0)
+		, m_pitch(0)
+		, m_hwPixelFormat(PF_UNKNOWN)
+		, m_internalFormat(0)
+		, m_format(0)
+		, m_type(0)
+		, m_isRenderTarget(false)
+		, m_lock(nullptr)
 		, m_wrapS(0)
 		, m_wrapT(0)
 		, m_minFilter(0)
@@ -34,6 +34,20 @@ namespace Menge
 	OGLTexture::~OGLTexture()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void OGLTexture::initialize( GLuint _uid, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
+    {
+        m_uid = _uid;
+        m_hwWidth = _width;
+        m_hwHeight = _height;
+        m_hwChannels = _channels;
+        m_pitch = _pitch;
+        m_hwPixelFormat = _pixelFormat;
+        m_internalFormat = _internalFormat;
+        m_format = _format;
+        m_type = _type;
+        m_isRenderTarget = _isRenderTarget;
+    }
     //////////////////////////////////////////////////////////////////////////
     size_t OGLTexture::getHWWidth() const 
     {

@@ -4,7 +4,6 @@
 #	include <cmath>
 
 #	include "Interface/LogSystemInterface.h"
-#	include "OGLTexture.h"
 //#	include "OGLWindowContext.h"
 
 #   include "Logger/Logger.h"
@@ -18,18 +17,6 @@ SERVICE_FACTORY( RenderSystem, Menge::RenderSystemInterface, Menge::OGLRenderSys
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-    static Menge::uint32 s_firstPO2From( Menge::uint32 n )
-    {
-	    --n;            
-	    n |= n >> 16;
-	    n |= n >> 8;
-	    n |= n >> 4;
-	    n |= n >> 2;
-	    n |= n >> 1;
-	    ++n;
-	    return n;
-    }
     //////////////////////////////////////////////////////////////////////////
     static const GLenum s_toGLBlendFactor[] = 
     {
@@ -382,7 +369,7 @@ namespace Menge
 		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::screenshot( RenderImageInterface* _image, const float * _rect )
+	void OGLRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
 	{
         //NOT SUPPORT!
 	}
@@ -622,19 +609,19 @@ namespace Menge
 		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setTexture( std::size_t _stage, RenderImageInterface* _texture )
-	{
-        OGLTexture* texture = static_cast<OGLTexture*>(_texture);
+	void OGLRenderSystem::setTexture( std::size_t _stage, const RenderImageInterfacePtr & _texture )
+	{        
+        TextureStage & tStage = m_textureStage[_stage];
 
-        if( texture != NULL )
+        if( _texture != nullptr )
         {
-            TextureStage& tStage = m_textureStage[_stage];
-
+            OGLTexture * texture = intrusive_get<OGLTexture>(_texture);
+            
             tStage.texture = texture->getUId();
         }
         else
         {
-            m_textureStage[_stage].texture = 0;
+            tStage.texture = 0;
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -874,25 +861,11 @@ namespace Menge
         return hwFormat;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* OGLRenderSystem::createImage( std::size_t _width, std::size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr OGLRenderSystem::createImage( std::size_t _width, std::size_t _height, size_t _channels, PixelFormat _format )
 	{
         std::size_t hwChannels = _channels;
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
-
-		std::size_t hwWidth = _width;
-		std::size_t hwHeight = _height;        
-
-		if( ( _width & ( _width - 1 ) ) != 0
-			|| ( _height & ( _height - 1 ) ) != 0 )
-		{
-			bool npot = false;//m_supportNPOT;//();
-			if( npot == false )	// we're all gonna die
-			{
-				hwWidth = s_firstPO2From( _width );
-				hwHeight = s_firstPO2From( _height );
-			}
-		}
 
 		GLuint tuid = 0;
 		glGenTextures( 1, &tuid );
@@ -900,12 +873,14 @@ namespace Menge
 		GLint internalFormat = s_toGLInternalFormat( hwFormat );
 		GLint textureFormat = s_toGLColorFormat( hwFormat );
 		GLint textureType = s_getGLColorDataType( hwFormat );
-		GLint texturePitch = hwWidth * hwChannels;
+		GLint texturePitch = _width * hwChannels;
 
-		OGLTexture* texture = new OGLTexture( 
+        OGLTexture * texture = m_factoryOGLTexture.createObjectT();
+
+		texture->initialize( 
             tuid
-            , hwWidth
-            , hwHeight
+            , _width
+            , _height
             , hwChannels
             , texturePitch
             , hwFormat
@@ -1071,10 +1046,11 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
+	bool OGLRenderSystem::setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear )
 	{
-		OGLTexture* oglTexture = static_cast<OGLTexture*>( _renderTarget );
-		if( m_activeRenderTarget != 0 )
+		OGLTexturePtr oglTexture = intrusive_static_cast<OGLTexturePtr>(_renderTarget);
+
+		if( m_activeRenderTarget != nullptr )
 		{
 			GLuint uid = m_activeRenderTarget->getUId();
 			glBindTexture( GL_TEXTURE_2D, uid );
@@ -1108,6 +1084,8 @@ namespace Menge
 			m_winHeight = m_winContextHeight;
 		//}
 		clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
+
+        return true;
 	}
 
 	bool OGLRenderSystem::supportTextureFormat( PixelFormat _format ) const
@@ -1135,12 +1113,12 @@ namespace Menge
     
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterface * OGLRenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+    RenderImageInterfacePtr OGLRenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
     {
         return NULL;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * OGLRenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr OGLRenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
 		return NULL;
 	}

@@ -133,18 +133,6 @@ namespace Menge
 		return D3DPT_POINTLIST;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static Menge::uint32 s_firstPOW2From( Menge::uint32 _n )
-	{
-		--_n;            
-		_n |= _n >> 16;
-		_n |= _n >> 8;
-		_n |= _n >> 4;
-		_n |= _n >> 2;
-		_n |= _n >> 1;
-		++_n;
-		return _n;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	static D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
 	{
 		switch( _mode )
@@ -912,22 +900,6 @@ namespace Menge
 
         return hwFormat;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void DX8RenderSystem::fixNPOTSupport_( size_t & _width, size_t & _height ) const
-    {
-        bool npot = this->supportNPOT_();
-        
-        if( npot == true )	// we're all gonna die
-        {
-            return;
-        }
-
-        if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
-        {
-            _width = s_firstPOW2From( _width );
-            _height = s_firstPOW2From( _height );
-        }
-    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX8RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
@@ -935,21 +907,16 @@ namespace Menge
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 
-		size_t hwWidth = _width;
-		size_t hwHeight = _height;
-
-        this->fixNPOTSupport_( hwWidth, hwHeight );
-
 		IDirect3DTexture8* dxTextureInterface = NULL;
 
-		HRESULT hr = this->d3dCreateTexture_( hwWidth, hwHeight, 1, 0,
+		HRESULT hr = this->d3dCreateTexture_( _width, _height, 1, 0,
 			hwFormat, D3DPOOL_MANAGED, &dxTextureInterface );
 		
 		if( FAILED( hr ) )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "DX8RenderSystem.createImage: can't create texture %dx%d %d (hr:%p)"
-				, hwWidth
-				, hwHeight
+				, _width
+				, _height
 				, hwFormat
 				, hr 
 				);
@@ -979,14 +946,9 @@ namespace Menge
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 
-		size_t hwWidth = _width;
-		size_t hwHeight = _height;
-
-		this->fixNPOTSupport_( hwWidth, hwHeight );
-
 		IDirect3DTexture8* dxTextureInterface = NULL;
 
-		HRESULT hr = d3dCreateTexture_( hwWidth, hwHeight, 1, 0,
+		HRESULT hr = d3dCreateTexture_( _width, _height, 1, 0,
 			hwFormat, D3DPOOL_MANAGED, &dxTextureInterface );
 
 		if( FAILED( hr ) )
@@ -1023,13 +985,8 @@ namespace Menge
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 
-        size_t hwWidth = _width;
-        size_t hwHeight = _height;
-
-        this->fixNPOTSupport_( hwWidth, hwHeight );
-
 		IDirect3DTexture8 * dxTextureInterface = NULL;		
-		HRESULT hr = this->d3dCreateTexture_( hwWidth, hwHeight, 1, D3DUSAGE_RENDERTARGET, 
+		HRESULT hr = this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, 
 			hwFormat, D3DPOOL_DEFAULT, &dxTextureInterface );
 		
 		if( FAILED( hr ) )

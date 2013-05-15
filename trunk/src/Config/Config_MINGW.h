@@ -16,7 +16,7 @@
 //#	define MENGE_UNICODE
 
 // Compiler
-#	define MENGE_COMPILER_MSVC	(1)
+#	define MENGE_COMPILER_MSVC
 
 #if defined( _MSC_VER )
 #   define MENGE_COMPILER MENGE_COMPILER_MSVC

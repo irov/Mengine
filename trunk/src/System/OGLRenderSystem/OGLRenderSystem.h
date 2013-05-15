@@ -1,8 +1,10 @@
 #	pragma once
 
-#	include "Config/Platform.h" 
-
 #	include "Interface/RenderSystemInterface.h"
+
+#   include "OGLTexture.h"
+
+#   include "Utils/Factory/FactoryPool.h"
 
 #	include <map>
 
@@ -63,7 +65,7 @@ namespace Menge
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
 
-		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
+		void screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) override;
 
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _view ) override;
@@ -87,7 +89,7 @@ namespace Menge
 		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
 			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) override;
 
-		void setTexture( std::size_t _stage, RenderImageInterface* _texture ) override;
+		void setTexture( std::size_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32 _color ) override;
 		void setSrcBlendFactor( EBlendFactor _src ) override;
@@ -113,7 +115,7 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		RenderImageInterface * createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
@@ -121,9 +123,9 @@ namespace Menge
 		// RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
 		// удаления изображения
         
-        RenderImageInterface * createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+        RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 
-		RenderImageInterface * createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 
 		bool beginScene() override;
 		void endScene() override;
@@ -136,7 +138,7 @@ namespace Menge
 		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
-		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
+		bool setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear ) override;
 
 		bool supportTextureFormat( PixelFormat _format ) const override;
 
@@ -206,6 +208,9 @@ namespace Menge
             GLenum alphaArg2;
         };
 
+        typedef FactoryPool<OGLTexture, 128> TFactoryOGLTexture;
+        TFactoryOGLTexture m_factoryOGLTexture;
+
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 		size_t m_winWidth;
 		size_t m_winHeight;
@@ -213,7 +218,7 @@ namespace Menge
 		size_t m_winContextHeight;
 
 		bool m_depthMask;
-		OGLTexture* m_activeRenderTarget;
+		OGLTexturePtr m_activeRenderTarget;
 	};
 
 }	// namespace Menge

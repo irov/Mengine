@@ -89,10 +89,13 @@ namespace Menge
             , _fileName.c_str()
             );
 
-		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
-            ->loadTexture( _pakName, _fileName, _codec );
+        size_t texture_width = (size_t)m_maxSize.x;
+        size_t texture_height = (size_t)m_maxSize.y;
 
-		if( texture == 0 )
+		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
+            ->loadTexture( _pakName, _fileName, _codec, texture_width, texture_height );
+
+		if( texture == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceImage::loadImageFrame_: '%s' can't load image file '%s'"
 				, this->getName().c_str()

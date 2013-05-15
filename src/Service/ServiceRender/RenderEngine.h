@@ -146,7 +146,7 @@ namespace Menge
 	public:
 		void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) override;
 
-        RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) override;		
+        RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _width, size_t _height ) override;		
 					
     public:
 		bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const FilePath & _filename ) override;

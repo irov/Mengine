@@ -700,7 +700,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec )
+	RenderTextureInterfacePtr RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec, size_t _width, size_t _height )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
 	
@@ -739,7 +739,11 @@ namespace Menge
         	
         BEGIN_WATCHDOG(m_serviceProvider, "texture create");
 
-		RenderTextureInterfacePtr texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
+        size_t texture_witdh = _width > dataInfo->width? _width: dataInfo->width;
+        size_t texture_height = _height > dataInfo->height? _height: dataInfo->height;
+        size_t texture_channels = dataInfo->channels;
+
+		RenderTextureInterfacePtr texture = this->createTexture( texture_witdh, texture_height, texture_channels, dataInfo->format );
 
         END_WATCHDOG(m_serviceProvider, "texture create")("texture create %s"
             , _filename.c_str()
@@ -748,9 +752,9 @@ namespace Menge
 		if( texture == nullptr )
 		{
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: invalid create texture %d:%d %d for file '%s' was not found"
-                , dataInfo->width
-                , dataInfo->height
-                , dataInfo->channels
+                , texture_witdh
+                , texture_height
+                , texture_channels
                 , _filename.c_str() 
                 );
 

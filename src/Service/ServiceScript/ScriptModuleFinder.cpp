@@ -44,6 +44,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleFinder::_find_and_load( PyObject * _module, PyObject * _builtins_import )
     {
+        (void)_builtins_import;
+
         PyObject * utf8_module = pybind::_unicode_to_utf8_obj( _module );
         const char * utf8_module_str = pybind::string_to_char( utf8_module );
 

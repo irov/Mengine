@@ -6,12 +6,11 @@ options
 	arm-fpu=vfpv3
 	strict-mkb
 	enable-exceptions
-	preinclude=preinclude_menge.h
+	preinclude=preinclude_mengine.h
 }
 
 defines
-{
-	MENGINE_CONFIG=Config_MARMALADE.h
+{	
 }
 
 subprojects 
@@ -32,8 +31,6 @@ includepaths
 	"../dependencies/boost"
 	"../dependencies/simpleini"
 	"../dependencies/metabuf"
-	"../dependencies/Python_Marmalade/Include"
-	"../dependencies/Python_Marmalade/Marmalade"
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/icu/source/common"
@@ -176,6 +173,3 @@ files
 	"*.h"
     "*.cpp" 
 }
-
-#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
-#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

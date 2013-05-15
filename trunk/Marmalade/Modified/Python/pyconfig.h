@@ -40,7 +40,8 @@
 #define HAVE_INET_ATON 1
 
 /* Define this if you have the type long long. */
-#undef HAVE_LONG_LONG
+#define HAVE_LONG_LONG
+//#undef HAVE_LONG_LONG
 
 /* Define to 1 if you have the `memmove' function. */
 #define HAVE_MEMMOVE 1
@@ -280,7 +281,7 @@ void fprintf(FILE *, char *, ...);) *and* <stdarg.h> */
 #define WITH_PYMALLOC 1
 
 /* Define if you want to compile in rudimentary thread support */
-#define WITH_THREAD 1
+#undef WITH_THREAD
 
 /* Define to profile with the Pentium timestamp counter */
 /* #undef WITH_TSC */

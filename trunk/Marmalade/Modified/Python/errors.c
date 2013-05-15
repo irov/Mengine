@@ -20,7 +20,7 @@ extern char *strerror(int);
 extern "C" {
 #endif
 
-PyAPI_DATA(int) Py_ErrFormatFlag = 0;
+int Py_ErrFormatFlag = 0;
 
 void
 PyErr_Restore(PyObject *type, PyObject *value, PyObject *traceback)

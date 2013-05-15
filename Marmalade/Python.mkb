@@ -8,36 +8,10 @@ options
 	preinclude=preinclude_python.h
 }
 
-defines
-{
-	S3E_NO_INLINE
-}
-
-subprojects 
-{
-	iwutil
-}
-
 includepaths
 {
-    "."
-	"../src"
-	"../src/Utils"
-	"../dependencies"
-	"../dependencies/pugixml/src"
-	"../dependencies/pybind/include"
-	"../dependencies/boost"
-	"../dependencies/simpleini"
-	"../dependencies/metabuf"
-    
     "./Modified/Python"
-	"../dependencies/Python/Include"	
-    
-    "../dependencies/simpleini"
-    "../dependencies/zlib"
-    "../dependencies/icu"
-	"../dependencies/icu/source/common"
-    "../dependencies/libjpeg"
+	"../dependencies/Python/Include"	   
 }
 
 
@@ -61,8 +35,7 @@ files
     getargs.c
     pyarena.c
     traceback.c
-    graminit.c
-    sigcheck.c
+    graminit.c    
     ast.c
     pystate.c
     atof.c
@@ -87,10 +60,8 @@ files
     bltinmodule.c
     sysmodule.c
     getplatform.c
-    thread_pthread.h
-    dynload_stub.c
-    thread.c
     _warnings.c
+    pyctype.c
 
     ("../dependencies/Python/Include")
     classobject.h
@@ -177,13 +148,17 @@ files
     gcmodule.c
     getpath.c
     operator.c
-    getbuildinfo.c    
+    getbuildinfo.c
     timemodule.c
-    errnomodule.c
-    threadmodule.c
+    errnomodule.c    
     _functoolsmodule.c
     _collectionsmodule.c
     _sre.c
+    signalmodule.c
+    mathmodule.c
+    _math.c
+    cPickle.c
+    cStringIO.c
     
     ("../dependencies/Python/Objects")
     methodobject.c
@@ -223,7 +198,8 @@ files
     classobject.c
     floatobject.c
     stringobject.c
-    structseq.c  
+    structseq.c
+    capsule.c
     
     ("../dependencies/Python/Parser")
     acceler.c
@@ -242,6 +218,3 @@ files
     parser.c
     metagrammar.c
 }
-
-#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
-#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

@@ -1,12 +1,11 @@
 #   pragma once
 
 #   define PYBIND_MARMALADE
+#   define PYBIND_PYTHON_VERSION 274
 
 #   define Py_BUILD_CORE
 
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0
-
-#   define PUGIXML_NO_STL
 
 #   define SIGBREAK        21
 

@@ -31,7 +31,7 @@ includepaths
 	"../dependencies/metabuf"
     
     "./Modified/Python"
-	"../dependencies/Python/Include"	
+	"../dependencies/Python"
     
     "../dependencies/simpleini"
     "../dependencies/zlib"
@@ -80,10 +80,10 @@ files
     compress.c
     crc32.c
     deflate.c
-    gzclose.c
-    gzlib.c
-    gzread.c
-    gzwrite.c
+    #gzclose.c
+    #gzlib.c
+    #gzread.c
+    #gzwrite.c
     infback.c
     inffast.c
     inflate.c
@@ -177,9 +177,5 @@ files
     [pugixml]
     ("../dependencies/pugixml")
     src/pugixml.hpp
-    src/pugixml.cpp
-    
+    src/pugixml.cpp    
 }
-
-#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
-#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

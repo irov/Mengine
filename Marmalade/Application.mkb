@@ -14,13 +14,11 @@ librarypath
 }
 
 library ".,Dependencies"
-library ".,Menge"
+library ".,Mengine"
 library ".,Python"
 
 defines
 {
-	MENGINE_CONFIG=Config_MARMALADE.h
-	BOOST_UBLAS_UNSUPPORTED_COMPILER=0
 }
 
 subprojects 
@@ -40,8 +38,6 @@ includepaths
 	"../dependencies/boost"
 	"../dependencies/simpleini"
 	"../dependencies/metabuf"
-	"../dependencies/Python_Marmalade/Include"
-	"../dependencies/Python_Marmalade/Marmalade"
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/icu/source/common"
@@ -55,6 +51,3 @@ files
 	"*.h"
 	"*.cpp"   
 }
-
-#postbuild 'xcopy lib ..\\hog-orinoco\\menge\\lib /s /y'
-#postbuild 'xcopy lib\\x86\\menge_d.lib d:\\orinoco\\menge\\lib\\x86\\ /s /y'

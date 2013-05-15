@@ -1,10 +1,10 @@
 #   pragma once
 
-#   define Py_BUILD_CORE
-
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0
 
 #   define PYBIND_MARMALADE
+#   define PYBIND_PYTHON_VERSION 274
+
 #   define TARGET_MARMALADE 1
 
 #   define SIGBREAK        21
@@ -14,4 +14,14 @@
 
 #   define PUGIXML_NO_STL
 #   define PUGIXML_NO_XPATH
+
+#   define MENGINE_CONFIG Config_Marmalade.h
+
 #	define override
+
+typedef void * nullptr_t;
+#   define nullptr 0
+
+#   define _BIG_ENDIAN
+
+#   define MENGINE_UNSUPPORT_PRAGMA_WARNING

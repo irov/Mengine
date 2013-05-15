@@ -7,9 +7,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeInputStream::MarmaladeInputStream( ServiceProviderInterface * _serviceProvider )
-        : m_serviceProvider(_serviceProvider)
-        , m_hFile(NULL)
+	MarmaladeInputStream::MarmaladeInputStream()
+        : m_serviceProvider(nullptr)
+        , m_hFile(nullptr)
 		, m_size(0)
         , m_carriage(0)
         , m_capacity(0)
@@ -20,6 +20,11 @@ namespace Menge
 	MarmaladeInputStream::~MarmaladeInputStream()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeInputStream::open( const FilePath& _filePath )
 	{
@@ -27,20 +32,31 @@ namespace Menge
 
         m_hFile = s3eFileOpen( m_filePath.c_str(), "rb" );
 
-        m_size = s3eFileGetSize( m_hFile );
+        int32 s3e_size = s3eFileGetSize( m_hFile );
+
+        if( s3e_size < 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open %s invalid get size"
+                , _filePath.c_str()
+                );
+
+            return false;
+        }
+
+        m_size = (size_t)s3e_size;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeInputStream::destroy()
+	bool MarmaladeInputStream::_destroy()
 	{
-		if( m_hFile != NULL )
+		if( m_hFile != nullptr )
 		{
 			s3eFileClose( m_hFile );
-			m_hFile = NULL;
+			m_hFile = nullptr;
 		}
 
-        delete this;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MarmaladeInputStream::read( void* _buf, size_t _count )

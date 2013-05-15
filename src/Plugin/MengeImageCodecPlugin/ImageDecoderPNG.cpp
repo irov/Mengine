@@ -247,10 +247,8 @@ namespace Menge
 		{
 			if( m_dataInfo.channels == 1 && m_options.channels == 1 )
 			{
-                size_t height = (m_options.bound == -1) ? m_dataInfo.height : m_options.bound;
-
                 unsigned char * bufferCursor = _buffer;
-				for( size_t i = 0; i != height; ++i )
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, bufferCursor, NULL );
 
@@ -263,9 +261,7 @@ namespace Menge
                 TBlobject::value_type * buff = &s_row_buffer[0];
                 unsigned char * bufferCursor = _buffer;
 
-                size_t height = (m_options.bound == -1) ? m_dataInfo.height : m_options.bound;
-
-				for( size_t i = 0; i != height; ++i )
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, buff, NULL );
 
@@ -296,9 +292,7 @@ namespace Menge
 				TBlobject::value_type * buff = &s_row_buffer[0];
 				unsigned char * bufferCursor = _buffer;
 
-                size_t height = (m_options.bound == -1) ? m_dataInfo.height : m_options.bound;
-
-				for( size_t i = 0; i != height; ++i )
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, buff, NULL );
 
@@ -316,9 +310,7 @@ namespace Menge
                 TBlobject::value_type * buff = &s_row_buffer[0];
                 unsigned char * bufferCursor = _buffer;
 
-                size_t height = (m_options.bound == -1) ? m_dataInfo.height : m_options.bound;
-
-				for( size_t i = 0; i != height; ++i )
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, buff, NULL );
 
@@ -348,9 +340,7 @@ namespace Menge
                 TBlobject::value_type * buff = &s_row_buffer[0];
                 unsigned char * bufferCursor = _buffer;
 
-                size_t height = (m_options.bound == -1) ? m_dataInfo.height : m_options.bound;
-
-                for( size_t i = 0; i != height; ++i )
+                for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
                     png_read_row( m_png_ptr, buff, NULL );
 
@@ -371,9 +361,7 @@ namespace Menge
                 TBlobject::value_type * buff = &s_row_buffer[0];
                 unsigned char * bufferCursor = _buffer;
 
-                size_t height = (m_options.bound == -1) ? m_dataInfo.height : m_options.bound;
-
-                for( size_t i = 0; i != height; ++i )
+                for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
                     png_read_row( m_png_ptr, buff, NULL );
 
@@ -393,9 +381,7 @@ namespace Menge
             {
                 unsigned char * bufferCursor = _buffer;
 
-                size_t height = (m_options.bound == -1) ? m_dataInfo.height : m_options.bound;
-
-                for( size_t i = 0; i != height; ++i )
+                for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
                     png_read_row( m_png_ptr, bufferCursor, NULL );
 

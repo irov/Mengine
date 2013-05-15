@@ -138,7 +138,7 @@ namespace Menge
         void enableDebugMode( bool _enable ) override;
         
 	public:
-		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder, size_t _bound ) override;
+		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) override;
 		
 	public:
 		void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
@@ -146,9 +146,9 @@ namespace Menge
 	public:
 		void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) override;
 
-		RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _bound ) override;
-		RenderTextureInterfacePtr loadMegatexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec );
-						
+        RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) override;		
+					
+    public:
 		bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const FilePath & _filename ) override;
 				
 		//void	setProjectionMatrix( const mt::mat4f& _projection );

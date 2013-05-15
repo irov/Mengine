@@ -14,8 +14,11 @@ namespace Menge
 		: public FileInputStreamInterface
 	{
 	public:
-		MarmaladeInputStream( ServiceProviderInterface * _serviceProvider );
+		MarmaladeInputStream();
 		~MarmaladeInputStream();
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		bool open( const FilePath& _filename ) override;
@@ -30,7 +33,7 @@ namespace Menge
         bool time( time_t & _time ) const override;
 
     public:
-        void destroy() override;
+        bool _destroy() override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
@@ -38,7 +41,8 @@ namespace Menge
         FilePath m_filePath;
 
 		s3eFile * m_hFile;
-		int32 m_size;
+		
+        size_t m_size;
 
         uint32 m_carriage;
         uint32 m_capacity;

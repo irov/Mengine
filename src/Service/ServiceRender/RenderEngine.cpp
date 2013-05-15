@@ -24,6 +24,18 @@ SERVICE_FACTORY( RenderService, Menge::RenderServiceInterface, Menge::RenderEngi
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    static Menge::uint32 s_firstPO2From( Menge::uint32 n )
+    {
+        --n;            
+        n |= n >> 16;
+        n |= n >> 8;
+        n |= n >> 4;
+        n |= n >> 2;
+        n |= n >> 1;
+        ++n;
+        return n;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
 		: m_renderSystem(NULL)
@@ -504,13 +516,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr RenderEngine::createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-        RenderImageInterfacePtr image = m_renderSystem->createImage( _width, _height, _channels, _format );
+        std::size_t pow2_width = _width;
+        std::size_t pow2_height = _height;
+
+        if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+        {
+            pow2_width = s_firstPO2From( _width );
+            pow2_height = s_firstPO2From( _height );
+        }
+
+        RenderImageInterfacePtr image = m_renderSystem->createImage( pow2_width, pow2_height, _channels, _format );
 
         if( image == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
-                , _width
-                , _height
+                , pow2_width
+                , pow2_height
                 );
 
             return nullptr;
@@ -542,19 +563,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr RenderEngine::createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-		LOGGER_INFO(m_serviceProvider)( "Creating dynamic texture %dx%d channels %d"
-			, _width
-			, _height
-			, _channels 
-			);
+        std::size_t pow2_width = _width;
+        std::size_t pow2_height = _height;
 
-        RenderImageInterfacePtr image = m_renderSystem->createDynamicImage( _width, _height, _channels, _format );
+        if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+        {
+            pow2_width = s_firstPO2From( _width );
+            pow2_height = s_firstPO2From( _height );
+        }
+
+        RenderImageInterfacePtr image = m_renderSystem->createDynamicImage( pow2_width, pow2_height, _channels, _format );
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
-                , _width
-                , _height
+            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createDynamicTexture couldn't create image %dx%d channels %d"
+                , pow2_width
+                , pow2_height
+                , _channels
                 );
 
             return nullptr;
@@ -569,6 +594,12 @@ namespace Menge
 
 		m_debugInfo.textureMemory += memroy_size;
 		++m_debugInfo.textureCount;
+
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createDynamicTexture creating dynamic texture %dx%d channels %d"
+            , pow2_width
+            , pow2_height
+            , _channels 
+            );
 
 		return texture;
 	}
@@ -669,7 +700,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec, size_t _bound )
+	RenderTextureInterfacePtr RenderEngine::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
 	
@@ -706,14 +737,11 @@ namespace Menge
 
 		const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
         	
-        WATCHDOG(m_serviceProvider, "texture create");
+        BEGIN_WATCHDOG(m_serviceProvider, "texture create");
 
 		RenderTextureInterfacePtr texture = this->createTexture( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
 
-        float texture_create = WATCHDOG(m_serviceProvider, "texture create");
-
-        LOGGER_WATCHDOG(m_serviceProvider)("texture create %.4f %s"
-            , texture_create
+        END_WATCHDOG(m_serviceProvider, "texture create")("texture create %s"
             , _filename.c_str()
             );
 		
@@ -730,7 +758,7 @@ namespace Menge
 		}
 
 		const Rect & rect = texture->getHWRect();
-		if( this->loadTextureRectImageData( texture, rect, imageDecoder, _bound ) == false )
+		if( this->loadTextureRectImageData( texture, rect, imageDecoder ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: decode texture for file '%s:%s' error"
                 , _pakName.c_str()
@@ -744,6 +772,7 @@ namespace Menge
 		
 		return texture;
 	}
+    //////////////////////////////////////////////////////////////////////////
     void RenderEngine::onRenderTextureRelease( const RenderTextureInterface * _texture )
     {
         const FilePath & filename = _texture->getFileName();
@@ -767,7 +796,7 @@ namespace Menge
         --m_debugInfo.textureCount;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder, size_t _bound )
+	bool RenderEngine::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
 	{
 		int pitch = 0;
 		unsigned char * textureBuffer = _texture->lock( &pitch, _rect, false );
@@ -783,7 +812,6 @@ namespace Menge
 
         options.channels = _texture->getHWChannels();
         options.pitch = pitch;
-        options.bound = _bound;
 		
 		//options.flags |= DF_CUSTOM_PITCH;
 
@@ -793,7 +821,7 @@ namespace Menge
 
         const ImageCodecDataInfo * data = _imageDecoder->getCodecDataInfo();
 
-        WATCHDOG(m_serviceProvider, "texture decode");
+        BEGIN_WATCHDOG(m_serviceProvider, "texture decode");
 
         unsigned int bufferSize = pitch * data->height;
         if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
@@ -805,24 +833,18 @@ namespace Menge
             return false;
         }
 
-        float time_decode = WATCHDOG(m_serviceProvider, "texture decode");
-
-        LOGGER_WATCHDOG(m_serviceProvider)("texture decode %.4f %s"
-            , time_decode
+        END_WATCHDOG(m_serviceProvider, "texture decode")("texture decode %s"
             , _texture->getFileName().c_str()
             );
 
         //this->sweezleAlpha( _texture, textureBuffer, pitch );
         this->imageQuality( _texture, textureBuffer, pitch );
 
-        WATCHDOG(m_serviceProvider, "texture unlock");
+        BEGIN_WATCHDOG(m_serviceProvider, "texture unlock");
 
 		_texture->unlock();
 
-        float time_unlock = WATCHDOG(m_serviceProvider, "texture unlock");
-
-        LOGGER_WATCHDOG(m_serviceProvider)("texture unlock %.4f %s"
-            , time_unlock
+        END_WATCHDOG(m_serviceProvider, "texture unlock")("texture unlock %.4f %s"
             , _texture->getFileName().c_str()
             );
 
@@ -2089,22 +2111,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr RenderEngine::createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-		LOGGER_INFO(m_serviceProvider)( "Creating texture %dx%d %d"
-			, _width
-			, _height
-			, _channels 
-			);
+        std::size_t pow2_width = _width;
+        std::size_t pow2_height = _height;
 
-		RenderImageInterfacePtr image = m_renderSystem->createRenderTargetImage( _width, _height, _channels, _format );
+        if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+        {
+            pow2_width = s_firstPO2From( _width );
+            pow2_height = s_firstPO2From( _height );
+        }
 
-		if( image == NULL )
+		RenderImageInterfacePtr image = m_renderSystem->createRenderTargetImage( pow2_width, pow2_height, _channels, _format );
+
+		if( image == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTargetTexture %dx%d"
-				, _width
-				, _height 
+			LOGGER_ERROR(m_serviceProvider)( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTargetTexture %dx%d %d"
+				, pow2_width
+				, pow2_height 
+                , _channels
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
@@ -2118,6 +2144,12 @@ namespace Menge
 
         m_debugInfo.textureMemory += memroy_size;
         ++m_debugInfo.textureCount;
+
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createRenderTargetTexture creating render target texture %dx%d %d"
+            , pow2_width
+            , pow2_height 
+            , _channels 
+            );
 
 		return texture;
 	}

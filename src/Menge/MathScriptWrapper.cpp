@@ -16,12 +16,18 @@
 #	include "Utils/Core/Viewport.h"
 #	include "Utils/Core/Rect.h"
 
-#pragma warning(push, 0) 
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   pragma warning(push, 0) 
+#   endif
+
 #	include <boost/geometry/geometry.hpp> 
 #	include <boost/geometry/geometries/point_xy.hpp>
 #	include <boost/geometry/geometries/polygon.hpp>
 #	include <boost/geometry/algorithms/intersects.hpp>
-#pragma warning(pop) 
+
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   pragma warning(pop) 
+#   endif
 
 #	include <sstream>
 

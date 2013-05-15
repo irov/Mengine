@@ -1,16 +1,6 @@
-/*
- *	DX8RenderTexture.h
- *
- *	Created by _Berserk_ on 23.1.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "DX8Texture.h"
-
-struct IDirect3DSurface8;
 
 namespace Menge
 {

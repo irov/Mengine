@@ -17,7 +17,6 @@ namespace Menge
         , m_textureAlpha(0)
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
-        , m_bound(-1.f, -1.f)
         , m_uv_image(0.f, 0.f, 0.f, 0.f)
         , m_uv(0.f, 0.f, 0.f, 0.f)
         , m_uv_scale(0.f, 0.f, 0.f, 0.f)
@@ -90,15 +89,8 @@ namespace Menge
             , _fileName.c_str()
             );
 
-        size_t bound = -1;
-        
-        if( m_bound.y >= 0.f )
-        {
-            bound = (size_t)(m_bound.y + 0.5f);
-        }
-
 		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
-            ->loadTexture( _pakName, _fileName, _codec, bound );
+            ->loadTexture( _pakName, _fileName, _codec );
 
 		if( texture == 0 )
 		{

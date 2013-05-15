@@ -51,26 +51,32 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-	FileInputStreamInterface* MarmaladeFileSystem::createInputStream()
+	FileInputStreamInterfacePtr MarmaladeFileSystem::createInputStream()
 	{
-		MarmaladeInputStream* inputStream = new MarmaladeInputStream(m_serviceProvider);
+		MarmaladeInputStream * inputStream = m_factoryInputStream.createObjectT();;
+
+        inputStream->setServiceProvider( m_serviceProvider );
 
 		return inputStream;
 	}
     //////////////////////////////////////////////////////////////////////////
-    FileOutputStreamInterface* MarmaladeFileSystem::createOutputStream()
+    FileOutputStreamInterfacePtr MarmaladeFileSystem::createOutputStream()
     {
-        MarmaladeOutputStream* outStream = new MarmaladeOutputStream(m_serviceProvider);
+        MarmaladeOutputStream * outStream = m_factoryOutputStream.createObjectT();
+
+        outStream->setServiceProvider( m_serviceProvider );
 
         return outStream;
     }
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInputStreamInterface * MarmaladeFileSystem::createMappedInputStream()
+    MappedFileInputStreamInterfacePtr MarmaladeFileSystem::createMappedInputStream()
     {
-        //MarmaladeMappedInputStream* inputStream = new MarmaladeMappedInputStream(m_serviceProvider);
+        MarmaladeMappedInputStream* inputStream = m_factoryMappedInputStream.createObjectT();
+
+        inputStream->setServiceProvider( m_serviceProvider );
 
         //Do not support
-        return NULL;
+        return nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileSystem::existFile( const FilePath& _filename ) const

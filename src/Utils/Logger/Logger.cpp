@@ -14,7 +14,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerOperator::operator ()( const char* _message, ... )
+	LoggerOperator & LoggerOperator::operator ()( const char* _message, ... )
 	{
 		va_list argList;
 
@@ -30,13 +30,16 @@ namespace Menge
         {
             char msg [] = "LoggerOperator::operator invalid message :(\n";
             this->logMessage( msg, sizeof(msg) );
-            return;
-        }
 
+            return *this;
+        }
+        
         str[size] = '\n';
         str[size + 1] = 0;	
 
 		this->logMessage( str, size + 1 );
+
+        return *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerOperator::logMessage( const char * _message, size_t _size )

@@ -10,7 +10,7 @@ namespace Menge
 		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level, size_t _flag );
 
 	public:
-		void operator()( const char* _message, ... );
+		LoggerOperator & operator()( const char* _message, ... );
 
 	public:
 		void logMessage(  const char * _message, size_t _size  );

@@ -26,6 +26,9 @@ src
     FilePath.h
     FilePath.cpp
 	
+	MemoryInput.h
+	MemoryInput.cpp
+    
 	MemoryProxyInput.h
 	MemoryProxyInput.cpp
 	

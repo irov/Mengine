@@ -107,7 +107,7 @@ namespace Menge
         }
         	
         RenderTextureInterfacePtr textureAlpha = RENDER_SERVICE(m_serviceProvider)
-            ->loadTexture( category, m_fileNameAlpha, m_codecTypeAlpha, -1 );
+            ->loadTexture( category, m_fileNameAlpha, m_codecTypeAlpha );
 
         if( textureAlpha == nullptr )
         {

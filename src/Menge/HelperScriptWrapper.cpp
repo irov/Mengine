@@ -56,9 +56,15 @@
 #	include "EventManager.h"
 #	include "TimingManager.h"
 
-#pragma warning(push, 0) 
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   pragma warning(push, 0) 
+#   endif
+
 #	include "boost/geometry/geometries/box.hpp"
-#pragma warning(pop) 
+
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   pragma warning(pop) 
+#   endif
 
 
 namespace Menge

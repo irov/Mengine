@@ -24,8 +24,11 @@ namespace Menge
 		: public RenderImageInterface
 	{
 	public:
-		OGLTexture( GLuint _uid, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
+		OGLTexture();
 		~OGLTexture();
+
+    public:
+        void initialize( GLuint _uid, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
 
 	public:
         unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
@@ -82,4 +85,5 @@ namespace Menge
 		unsigned char* m_lock;
 	};
 
+    typedef IntrusivePtr<OGLTexture> OGLTexturePtr;
 }	// namespace Menge

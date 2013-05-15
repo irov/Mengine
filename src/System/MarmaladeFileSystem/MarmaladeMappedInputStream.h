@@ -1,46 +1,58 @@
-//#	pragma once
-//
-//#	include "Interface/FileSystemInterface.h"
-//
-//namespace Menge
-//{
-//	class MarmaladeMappedInputStream
-//		: public MappedFileInputStreamInterface
-//	{
-//	public:
-//		MarmaladeMappedInputStream( ServiceProviderInterface * _serviceProvider );
-//		~MarmaladeMappedInputStream();
-//
-//    public:
-//        InputStreamInterface * createInputMemory() override;
-//        void openInputMemory( InputStreamInterface * _stream, const FilePath & _filename, size_t _offset, size_t _size ) override;
-//
-//	public:
-//		bool open( const FilePath& _filename ) override;		
-//
-//	public:
-//		int read( void* _buf, int _count ) override;
-//		void seek( int _pos ) override;
-//		int tell() const override;
-//		int size() const override;		
-//
-//    public:
-//        bool time( time_t & _time ) const override;
-//
-//    public:
-//        void destroy() override;
-//
-//	private:
-//        ServiceProviderInterface * m_serviceProvider;
-//        
-//		s3eFile * m_hFile;
-//		HANDLE m_hMapping;
-//
-//        void * m_memory;
-//
-//        unsigned char* m_data;
-//        unsigned char* m_pos;
-//        unsigned char* m_end;
-//        int m_size;		
-//	};
-//}	// namespace Menge
+#	pragma once
+
+#	include "MarmaladeInputStream.h"
+
+#   include "Utils/Core/MemoryInput.h"
+
+#   include "Utils/Factory/FactoryPool.h"
+
+namespace Menge
+{
+	class MarmaladeMappedInputStream
+		: public MappedFileInputStreamInterface
+	{
+	public:
+		MarmaladeMappedInputStream();
+		~MarmaladeMappedInputStream();
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+
+    public:
+        InputStreamInterfacePtr createInputMemory() override;
+        void openInputMemory( const InputStreamInterfacePtr & _stream, const FilePath & _filename, size_t _offset, size_t _size ) override;
+
+    public:
+        bool open( const FilePath& _filename ) override;
+
+    public:
+        size_t read( void* _buf, size_t _count ) override;
+        void seek( size_t _pos ) override;
+        size_t tell() const override;
+        size_t size() const override;		
+
+    public:
+        bool time( time_t & _time ) const override;
+
+    public:
+        bool _destroy() override;
+
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
+
+        typedef FactoryPool<MemoryInput, 16> TFactoryMemoryInput;
+        TFactoryMemoryInput m_factoryMemoryInput;               
+
+        FilePath m_filePath;
+
+        s3eFile * m_hFile;
+
+        size_t m_size;
+
+        uint32 m_carriage;
+        uint32 m_capacity;
+        uint32 m_reading;
+
+        char m_buff[FILE_BUFFER_SIZE];
+	};
+}	// namespace Menge

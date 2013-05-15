@@ -91,6 +91,7 @@ namespace Menge
         metadata->get_File_Rotate( m_isUVRotate );
         metadata->get_File_WrapX( m_wrapX );
         metadata->get_File_WrapY( m_wrapY );
+        metadata->get_File_MaxSize( m_maxSize );
 
         return true;
     }

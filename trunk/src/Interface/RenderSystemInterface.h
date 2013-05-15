@@ -512,7 +512,7 @@ namespace Menge
             ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _width, size_t _height ) = 0;
 
     public:
         virtual const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const = 0;

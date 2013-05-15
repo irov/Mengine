@@ -9,21 +9,33 @@ namespace Menge
 	{
     }
     //////////////////////////////////////////////////////////////////////////
-	void MarmaladeLogger::log( const char * _msg, int _count, EMessageLevel _level )
+	void MarmaladeLogger::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
 	{
-		printf( "%s", _msg );
+		printf("%s"
+            , _data 
+            );
 	}
     //////////////////////////////////////////////////////////////////////////
-	void MarmaladeLogger::flush( void )
+	void MarmaladeLogger::flush()
 	{
 		fflush(stdout);
 	}
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladeLogger::setVerboseLevel( EMessageLevel _level )
 	{
+        (void)_level;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeLogger::validVerboseLevel( EMessageLevel _level ) const
+    void MarmaladeLogger::setVerboseFlag( size_t _flag )
+    {
+        (void)_flag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+	bool MarmaladeLogger::validMessage( EMessageLevel _level, size_t _flag ) const
 	{
+        (void)_level;
+        (void)_flag;
+
+        return true;
 	}
 }

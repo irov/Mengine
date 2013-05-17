@@ -50,6 +50,7 @@ namespace Menge
         EVENT_CLOSE,
         EVENT_PREPARATION,
         EVENT_ACTIVATE,
+        EVENT_PREPARATION_DEACTIVATE,
         EVENT_DEACTIVATE,
         EVENT_COMPILE,
         EVENT_RELEASE,

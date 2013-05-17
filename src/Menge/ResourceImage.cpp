@@ -89,8 +89,8 @@ namespace Menge
             , _fileName.c_str()
             );
 
-        size_t texture_width = (size_t)m_maxSize.x;
-        size_t texture_height = (size_t)m_maxSize.y;
+        size_t texture_width = m_maxSize.x < 0.f ? 0 : (size_t)m_maxSize.x;
+        size_t texture_height = m_maxSize.y < 0.f ? 0 : (size_t)m_maxSize.y;
 
 		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
             ->loadTexture( _pakName, _fileName, _codec, texture_width, texture_height );

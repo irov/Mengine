@@ -11,7 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ICUUnicodeSystem::ICUUnicodeSystem()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -23,58 +23,6 @@ namespace Menge
     ServiceProviderInterface * ICUUnicodeSystem::getServiceProvider() const
     {
         return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ICUUnicodeSystem::unicodeToUtf8Size( const wchar_t * _unicode, size_t _unicodeSize, size_t * _utfSize )
-    {
-        typedef std::vector<UChar> TVectorUCHar;
-        static TVectorUCHar s_str_buffer;
-
-        size_t str_buffer_size = _unicodeSize * 2 + 1;
-        s_str_buffer.resize(str_buffer_size);
-
-        UChar * str_buffer = &s_str_buffer[0];
-                 
-        int32_t str_len = 0; 
-
-        UErrorCode str_status = U_ZERO_ERROR;
-        u_strFromWCS( 
-            str_buffer,
-            str_buffer_size, 
-            &str_len, 
-            _unicode, 
-            _unicodeSize, 
-            &str_status 
-            );
-
-        if( U_FAILURE(str_status) ) 
-        { 
-            LOGGER_ERROR(m_serviceProvider)("ICUUnicodeService::unicodeToUtf8 size %ls - err %s"
-                , _unicode
-                , u_errorName(str_status)
-                );
-
-            return false;
-        }
-
-        int32_t utf8_len;
-
-        UErrorCode utf8_status = U_ZERO_ERROR;
-        u_strToUTF8(NULL, 0, &utf8_len, str_buffer, str_len, &utf8_status );
-
-        if( U_FAILURE(utf8_status) && (utf8_status != U_BUFFER_OVERFLOW_ERROR)) 
-        {			
-            LOGGER_ERROR(m_serviceProvider)("ICUUnicodeService::unicodeToUtf8 size %ls - err %s"
-                , _unicode
-                , u_errorName(utf8_status)
-                );
-
-            return false;
-        }
-
-        *_utfSize = utf8_len;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ICUUnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
@@ -114,7 +62,7 @@ namespace Menge
         int32_t utf8_len;
         u_strToUTF8( _utf8, _utf8Capacity, &utf8_len, str_buffer, str_len, &utf8_status );
 
-        if( U_FAILURE(utf8_status) ) 
+        if( U_FAILURE(utf8_status) && (utf8_status != U_BUFFER_OVERFLOW_ERROR) ) 
         {
             LOGGER_ERROR(m_serviceProvider)("ICUUnicodeService::unicodeToUtf8 conv %ls - err %s"
                 , _unicode
@@ -124,71 +72,11 @@ namespace Menge
             return false;
         }
 
-        if( _utf8Size != NULL )
+        if( _utf8Size != nullptr )
         {
             *_utf8Size = utf8_len;
         }
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ICUUnicodeSystem::utf8ToUnicodeSize( const char * _utf8, size_t _utf8Size, size_t * _unicodeSize )
-    {
-        typedef std::vector<UChar> TVectorUCHar;
-        static TVectorUCHar s_str_buffer;
-
-        size_t str_buffer_size = _utf8Size + 1;
-        s_str_buffer.resize(str_buffer_size);
-
-        UChar * str_buffer = &s_str_buffer[0];
-
-        int32_t str_len;
-
-        UErrorCode str_status = U_ZERO_ERROR;
-        u_strFromUTF8(
-            str_buffer, 
-            str_buffer_size, 
-            &str_len, 
-            _utf8, 
-            _utf8Size, 
-            &str_status 
-            );
-        
-        if( U_FAILURE(str_status) && (str_status != U_BUFFER_OVERFLOW_ERROR)) 
-        {
-            const char * status = u_errorName(str_status);
-            LOGGER_ERROR(m_serviceProvider)("ICUUnicodeService::utf8ToUnicode size |%s| - err '%s'"
-                , _utf8
-                , status
-                );
-
-            return false;
-        }
-
-        int32_t wcs_len;
-
-        UErrorCode wcs_status = U_ZERO_ERROR;
-        u_strToWCS( 
-            NULL, 
-            0, 
-            &wcs_len, 
-            str_buffer, 
-            str_len, 
-            &wcs_status 
-            ); 
-
-        if( U_FAILURE(wcs_status) && (wcs_status != U_BUFFER_OVERFLOW_ERROR) ) 
-        {
-            LOGGER_ERROR(m_serviceProvider)("ICUUnicodeService::utf8ToUnicode u_strToWCS %s - err %s"
-                , _utf8
-                , u_errorName(wcs_status)
-                );
-
-            return false;
-        }
-
-        *_unicodeSize = wcs_len;
-        
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -236,7 +124,7 @@ namespace Menge
             &wcs_status 
             ); 
 
-        if( U_FAILURE(wcs_status) ) 
+        if( U_FAILURE(wcs_status) && (wcs_status != U_BUFFER_OVERFLOW_ERROR) )
         {
             LOGGER_ERROR(m_serviceProvider)("ICUUnicodeService::utf8ToUnicode u_strToWCS %s - err %s"
                 , _utf8
@@ -246,7 +134,7 @@ namespace Menge
             return false;
         }
 
-        if( _sizeUnicode != NULL )
+        if( _sizeUnicode != nullptr )
         {
 		    *_sizeUnicode = wcs_len;
         }

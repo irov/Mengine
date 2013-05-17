@@ -131,11 +131,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
-	{
-		//String utf8(_data, _count);
-
-		//WindowsLayer::utf8ToAnsi( utf8, ansi );
-		
+	{	
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 		::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo);
 
@@ -157,12 +153,6 @@ namespace Menge
 			break;
 		}
 		::SetConsoleTextAttribute( m_ConsoleHandle, textColor);
-                
-        //static String utf8;
-        //utf8.assign( _data, _count );
-
-        //static WString unicode;
-        //Helper::utf8ToUnicode(m_serviceProvider, utf8, unicode);
 
 		std::cout.write( _data, _count );
 

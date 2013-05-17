@@ -39,15 +39,20 @@ namespace Menge
 	{
 		Node::_afterActivate();
 
-		//this->callEvent( EVENT_ACTIVATE, "()" );
 		EVENTABLE_CALL(this, EVENT_ACTIVATE)("()");
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_deactivate()
+    {
+        Node::_deactivate();
+
+        EVENTABLE_CALL(this, EVENT_PREPARATION_DEACTIVATE)("()");
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterDeactivate()
 	{
 		Node::_afterDeactivate();
 
-		//this->callEvent( EVENT_DEACTIVATE, "()" );
 		EVENTABLE_CALL(this, EVENT_DEACTIVATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,7 +63,6 @@ namespace Menge
 			return false;
 		}
 
-		//this->callEvent( EVENT_COMPILE, "()" );
 		EVENTABLE_CALL(this, EVENT_COMPILE)("()");
 		
 		return true;
@@ -68,7 +72,6 @@ namespace Menge
 	{
 		Node::_release();
 
-		//this->callEvent( EVENT_RELEASE, "()" );
 		EVENTABLE_CALL(this, EVENT_RELEASE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -76,19 +79,19 @@ namespace Menge
 	{
 		Node::_embedding( _embed );
 
-		this->registerEvent( EVENT_CREATE, ("onCreate"), _embed );
-		this->registerEvent( EVENT_DESTROY, ("onDestroy"), _embed );
+		this->registerEvent( EVENT_CREATE, "onCreate", _embed );
+		this->registerEvent( EVENT_DESTROY, "onDestroy", _embed );
 		
-		this->registerEvent( EVENT_PREPARATION, ("onPreparation"), _embed );
-		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _embed );
-		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _embed );
-		this->registerEvent( EVENT_COMPILE, ("onCompile"), _embed );
-		this->registerEvent( EVENT_RELEASE, ("onRelease"), _embed );		
+		this->registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
+		this->registerEvent( EVENT_ACTIVATE, "onActivate", _embed );        
+        this->registerEvent( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", _embed );
+		this->registerEvent( EVENT_DEACTIVATE, "onDeactivate", _embed );
+		this->registerEvent( EVENT_COMPILE, "onCompile", _embed );
+		this->registerEvent( EVENT_RELEASE, "onRelease", _embed );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
-		//this->callEvent( EVENT_CREATE, "()" );
 		EVENTABLE_CALL(this, EVENT_CREATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////

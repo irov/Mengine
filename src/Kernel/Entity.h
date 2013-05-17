@@ -23,8 +23,11 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _afterActivate() override;
+        
+        void _deactivate() override;
 		void _afterDeactivate() override;
-		bool _compile() override;
+		
+        bool _compile() override;
 		void _release() override;
 				
 		bool _destroy() override;

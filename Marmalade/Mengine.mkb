@@ -120,6 +120,11 @@ files
     [System/MarmaladeFileSystem]
     ("../src/System/MarmaladeFileSystem")	
 	"*.h"
+	"*.cpp"      
+
+    [System/MarmaladeUnicodeSystem]
+    ("../src/System/MarmaladeUnicodeSystem")	
+	"*.h"
 	"*.cpp"       
 	
     [System/OGLRenderSystem]

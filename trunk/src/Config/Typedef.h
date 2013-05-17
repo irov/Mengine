@@ -43,7 +43,12 @@ namespace Menge
 #   endif
 	
 	typedef std::vector<unsigned char> TBlobject;
+    
+    typedef std::vector<Char> TVectorChar;
 	typedef std::vector<String> TVectorString;
-	typedef std::vector<WString> TVectorWString;    
+
+    typedef std::vector<WChar> TVectorWChar;
+	typedef std::vector<WString> TVectorWString;
+
 	typedef std::map<WString, WString> TMapWString;
 }

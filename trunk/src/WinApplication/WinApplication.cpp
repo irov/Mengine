@@ -202,6 +202,8 @@ namespace Menge
         {
             return 0;
         }
+
+        _shortpath[ utf8_shortpath_len ] = '\0';
         
         return utf8_shortpath_len;
     }
@@ -396,9 +398,10 @@ namespace Menge
         }
 
 #	ifndef MENGE_MASTER_RELEASE
-        ConstString dev = Helper::stringizeString( m_serviceProvider, "dev" );
+        ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
+        ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
             // mount root		
-        if( m_fileService->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+        if( m_fileService->mountFileGroup( c_dev, ConstString::none(), c_dir, false ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
                 , m_currentPath.c_str()

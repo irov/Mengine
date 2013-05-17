@@ -12,28 +12,11 @@
 // Static Library
 #	define MENGE_STATIC_LIB
 
-// Unicode
-//#	define MENGE_UNICODE
-
-// Compiler
-#	define MENGE_COMPILER_MSVC
-
-#if defined( _MSC_VER )
-#   define MENGE_COMPILER MENGE_COMPILER_MSVC
-#   define MENGE_COMP_VER _MSC_VER
-#endif
-
-#if MENGE_COMPILER == MENGE_COMPILER_MSVC
-#   if MENGE_COMP_VER >= 1200
-#       define FORCEINLINE __forceinline
-#   endif
-#elif defined(__MINGW32__)
 #   if !defined(FORCEINLINE)
 #       define FORCEINLINE __inline
+#   else
+#       define FORCEINLINE __inline
 #   endif
-#else
-#   define FORCEINLINE __inline
-#endif
 
 //	exclude all dev stuff
 

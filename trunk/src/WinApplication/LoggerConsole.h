@@ -35,10 +35,7 @@ namespace Menge
 
 		bool m_createConsole;
 		
-		typedef std::vector<WChar> TVectorWChar;
 		TVectorWChar m_wBuffer;
-
-		typedef std::vector<Char> TVectorChar;
 		TVectorChar m_aBuffer;
 
 		HANDLE m_ConsoleHandle;

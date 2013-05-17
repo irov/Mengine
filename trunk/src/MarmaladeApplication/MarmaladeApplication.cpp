@@ -140,10 +140,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     MarmaladeApplication::MarmaladeApplication()
         : m_running(true)
-        , m_application(NULL)
-        , m_logService(NULL)
-        , m_fileService(NULL)
-        , m_inputService(0)
+        , m_application(nullptr)
+        , m_logService(nullptr)
+        , m_fileService(nullptr)
+        , m_inputService(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -854,10 +854,10 @@ namespace Menge
             return false;
         }
 
-        //	if( this->initializeUnicodeEngine_() == false )
-        //	{
-        //		return false;
-        //	}
+        if( this->initializeUnicodeEngine_() == false )
+        {
+            return false;
+        }
 
         if( this->initializeFileEngine_() == false )
         {

@@ -1131,7 +1131,6 @@ namespace Menge
         pybind::def_function( "perp_left", &mt::perp_left );
 
         pybind::def_function( "getrefcount", &pybind::refcount );
-        pybind::def_function( "decref", &pybind::decref );
         pybind::def_function( "is_wrap", &pybind::is_wrap );
 
         pybind::def_functor( "addText", helperScriptMethod, &HelperScriptMethod::s_addText );

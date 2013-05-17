@@ -14,10 +14,7 @@ namespace Menge
         SERVICE_DECLARE("UnicodeSystem");
 
     public:
-        virtual bool unicodeToUtf8Size( const wchar_t * _unicode, size_t _unicodeSize, size_t * _utf8Size ) = 0;
         virtual bool unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size ) = 0;
-
-        virtual bool utf8ToUnicodeSize( const char * _utf8, size_t _utf8Size, size_t * _unicodeSize ) = 0;
         virtual bool utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize ) = 0;
     };
 
@@ -31,10 +28,7 @@ namespace Menge
         SERVICE_DECLARE("UnicodeService");
 
 	public:
-        virtual bool unicodeToUtf8Size( const wchar_t * _unicode, size_t _unicodeSize, size_t * _utf8Size ) = 0;
         virtual bool unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size ) = 0;
-
-        virtual bool utf8ToUnicodeSize( const char * _utf8, size_t _utf8Size, size_t * _unicodeSize ) = 0;
         virtual bool utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize ) = 0;
 	};
 
@@ -48,13 +42,8 @@ namespace Menge
         {
             UnicodeServiceInterface * unicodeService = UNICODE_SERVICE(_serviceProvide);
 
-            if( unicodeService == NULL )
-            {
-                return false;
-            }
-
             size_t utf8Size;
-            if( unicodeService->unicodeToUtf8Size( _unicode, _unicodeSize, &utf8Size ) == false )
+            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, nullptr, 0, &utf8Size ) == false )
             {
                 return false;
             }
@@ -68,7 +57,7 @@ namespace Menge
 
             _utf8.resize( utf8Size );
 
-            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, &_utf8[0], utf8Size, 0 ) == false )
+            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, &_utf8[0], utf8Size, nullptr ) == false )
             {
                 _utf8.clear();
 
@@ -89,13 +78,8 @@ namespace Menge
         {
             UnicodeServiceInterface * unicodeService = UNICODE_SERVICE( _serviceProvide );
 
-            if( unicodeService == NULL )
-            {
-                return false;
-            }
-
             size_t unicodeSize;
-            if( unicodeService->utf8ToUnicodeSize( _utf8, _utf8Size, &unicodeSize ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, nullptr, 0, &unicodeSize ) == false )
             {
                 return false;
             }
@@ -109,7 +93,7 @@ namespace Menge
 
             _unicode.resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, &_unicode[0], unicodeSize, 0 ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, &_unicode[0], unicodeSize, nullptr ) == false )
             {
                 _unicode.clear();
 

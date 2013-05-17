@@ -79,16 +79,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AccountInterface * AccountManager::createAccount()
 	{
-		WString accountID = (UnicodeFormat(L"Player_%d") % m_playerEnumerator).str();
+        size_t new_playerID = ++m_playerEnumerator;
 
+		WString accountID = (UnicodeFormat(L"Player_%d") % new_playerID).str();
+        
 		Account * account = this->createAccount_( accountID );
 
         if( account == NULL )
         {
             return NULL;
         }
-		
-		++m_playerEnumerator;
 
         if( this->saveAccountsInfo() == false )
         {
@@ -134,30 +134,29 @@ namespace Menge
 	Account * AccountManager::createAccount_( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
+
 		if( it_find != m_accounts.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account with ID '%ls' already exist. Account not created"
 				, _accountID.c_str() 
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
         this->unselectCurrentAccount_();
 				
 		Account * newAccount = this->newAccount_( _accountID );
 
-        if( newAccount == NULL )
+        if( newAccount == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account with ID '%ls' invalid create. Account not created"
                 , _accountID.c_str() 
                 );
 
-            return NULL;
+            return nullptr;
         }
-
-		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
-
+        
 		m_currentAccount = newAccount;
 
         if( m_accountListener )
@@ -174,7 +173,7 @@ namespace Menge
                 , folder.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
 		if( newAccount->save() == false )
@@ -183,8 +182,10 @@ namespace Menge
                 , _accountID.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
+
+        m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
         return newAccount;
 	}
@@ -585,7 +586,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::saveAccountsInfo()
 	{
-		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
+		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
+            ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
 
 		if( file == 0 )
 		{

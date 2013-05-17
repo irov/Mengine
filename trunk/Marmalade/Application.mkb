@@ -40,7 +40,6 @@ includepaths
 	"../dependencies/metabuf"
     "../dependencies/simpleini"
     "../dependencies/zlib"
-    "../dependencies/icu/source/common"
     "../dependencies/libjpeg"
 }
 

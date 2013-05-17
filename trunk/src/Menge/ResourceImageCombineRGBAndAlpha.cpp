@@ -70,8 +70,9 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha *>(_meta);
 
         m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_maxSize = mt::vec2f(-1.f, -1.f);
-        m_size = mt::vec2f(-1.f, -1.f);
+        m_textureSize = mt::vec2f(0.f, 0.f);
+        m_maxSize = mt::vec2f(0.f, 0.f);
+        m_size = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_wrapX = false;  
         m_wrapY = false;
@@ -190,7 +191,7 @@ namespace Menge
 		const ImageCodecDataInfo* dataInfoRGB = imageDecoderRGB->getCodecDataInfo();
 
 		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
-			->createTexture( dataInfoRGB->width, dataInfoRGB->height, 4, PF_UNKNOWN );
+			->createTexture( dataInfoRGB->width, dataInfoRGB->height, 4, PF_UNKNOWN, dataInfoRGB->width, dataInfoRGB->height );
 
 		if( texture == nullptr )
 		{

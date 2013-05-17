@@ -240,10 +240,6 @@ namespace Menge
 		TMapFileInfo::iterator it_find = m_files.find( _filename );
 		if( it_find == m_files.end() )
 		{
-            LOGGER_INFO(m_serviceProvider)("FileSystemZip::existFile file %s not exist"
-                , _filename.c_str()
-                );
-
 			return false;
 		}
 		

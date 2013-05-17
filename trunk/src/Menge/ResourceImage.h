@@ -17,6 +17,7 @@ namespace Menge
 		ResourceImage();
 
 	public:        
+        inline const mt::vec2f & getTextureSize() const;
 		inline const mt::vec2f & getMaxSize() const;
 		inline const mt::vec2f & getSize() const;
         inline const mt::vec2f & getBound() const;
@@ -50,6 +51,7 @@ namespace Menge
         RenderTextureInterfacePtr m_texture;
         RenderTextureInterfacePtr m_textureAlpha;
 
+        mt::vec2f m_textureSize;
         mt::vec2f m_maxSize;
         mt::vec2f m_size;
 
@@ -65,6 +67,11 @@ namespace Menge
         bool m_wrapX;
         bool m_wrapY;        
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::vec2f & ResourceImage::getTextureSize() const
+    {
+        return m_textureSize;
+    }
     //////////////////////////////////////////////////////////////////////////
     inline const mt::vec2f & ResourceImage::getMaxSize() const
     {

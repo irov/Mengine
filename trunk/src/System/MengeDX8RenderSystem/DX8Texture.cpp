@@ -15,7 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX8Texture::DX8Texture()
-		: m_d3dInterface(NULL)
+		: m_d3dInterface(nullptr)
         , m_hwWidth(0)
         , m_hwHeight(0)
         , m_hwChannels(0)
@@ -58,8 +58,7 @@ namespace Menge
 		HRESULT hr = m_d3dInterface->LockRect(0, &TRect, &rect, flags);
 		if(FAILED( hr ))
 		{
-			//_PostError( "Can't lock texture" );
-			return 0;
+			return nullptr;
 		}
 
 		*_pitch = TRect.Pitch;

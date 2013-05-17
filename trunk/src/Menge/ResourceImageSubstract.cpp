@@ -18,7 +18,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceImageSubstract );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstract::ResourceImageSubstract()
-        : m_resourceImage(NULL)
+        : m_resourceImage(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -28,8 +28,9 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
         m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_maxSize = mt::vec2f(-1.f, -1.f);
-        m_size = mt::vec2f(-1.f, -1.f);
+        m_textureSize = mt::vec2f(0.f, 0.f);
+        m_maxSize = mt::vec2f(0.f, 0.f);
+        m_size = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_isUVRotate = false;
         m_wrapX = false;
@@ -57,7 +58,7 @@ namespace Menge
         m_resourceImage = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceT<ResourceImage>( m_resourceImageName );
 
-        if( m_resourceImage == NULL )
+        if( m_resourceImage == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstract::_compile '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
@@ -99,10 +100,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSubstract::_release()
     {
-        if( m_resourceImage != NULL )
+        ResourceImage::_release();
+
+        if( m_resourceImage != nullptr )
         {
             m_resourceImage->decrementReference();
-            m_resourceImage = NULL;
+            m_resourceImage = nullptr;
         }
     }
 }

@@ -30,12 +30,12 @@ namespace	Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_resource(0)
+		: m_resource(nullptr)
 		, m_flipX(false)
 		, m_flipY(false)
 		, m_percentVisibility(0.f, 0.f, 0.f, 0.f)
-		, m_materialGroup(NULL)
-		, m_material(NULL)
+		, m_materialGroup(nullptr)
+		, m_material(nullptr)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
 		, m_textureMatrixOffset(0.f, 0.f)
@@ -96,7 +96,7 @@ namespace	Menge
 		m_resource = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceImage>( m_resourceName );
 
-		if( m_resource == 0 )
+		if( m_resource == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Sprite: '%s' Image resource not found resource '%s'"
 				, m_name.c_str()
@@ -113,17 +113,17 @@ namespace	Menge
 	{
 		Node::_release();
 
-		if( m_resource != 0 )
+		if( m_resource != nullptr )
 		{
 			m_resource->decrementReference();
-			m_resource = 0;
+			m_resource = nullptr;
 		}
 
         m_textures[0] = nullptr;
         m_textures[1] = nullptr;
 		
-		m_materialGroup = NULL;
-		m_material = NULL;
+		m_materialGroup = nullptr;
+		m_material = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setFlipX( bool _flipX )

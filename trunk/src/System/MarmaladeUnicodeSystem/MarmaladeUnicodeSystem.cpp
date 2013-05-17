@@ -61,7 +61,6 @@ namespace Menge
             return false;
         }
 
-
         if( _sizeUnicode != nullptr )
         {
             size_t u_wc_size = (size_t)wc_size;

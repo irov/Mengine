@@ -70,8 +70,9 @@ namespace Menge
 
         m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
         m_uv_alpha = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_maxSize = mt::vec2f(-1.f, -1.f);
-        m_size = mt::vec2f(-1.f, -1.f);
+        m_textureSize = mt::vec2f(0.f, 0.f);
+        m_maxSize = mt::vec2f(0.f, 0.f);
+        m_size = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_wrapX = false;
         m_wrapY = false;

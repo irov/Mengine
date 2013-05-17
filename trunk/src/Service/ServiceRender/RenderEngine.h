@@ -119,7 +119,7 @@ namespace Menge
         RenderTextureInterfacePtr getTexture( const FilePath& _filename ) override;
 		
     public:
-		RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format, size_t _textureWidth, size_t _textureHeight ) override;
 
 		RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 		//RenderTextureInterface * createMegatexture( size_t _width, size_t _height, PixelFormat _format );

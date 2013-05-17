@@ -33,7 +33,6 @@ includepaths
 	"../dependencies/metabuf"
     "../dependencies/simpleini"
     "../dependencies/zlib"
-    "../dependencies/icu/source/common"
     "../dependencies/libjpeg"
 }
 
@@ -111,12 +110,7 @@ files
     ("../src/Service/ServiceUnicode")	
 	"*.h"
 	"*.cpp"        
-    
-    [System/ICUUnicodeSystem]
-    ("../src/System/ICUUnicodeSystem")	
-	"*.h"
-	"*.cpp"      
-
+        
     [System/MarmaladeFileSystem]
     ("../src/System/MarmaladeFileSystem")	
 	"*.h"

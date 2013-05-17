@@ -23,7 +23,7 @@ defines
 
 subprojects 
 {
-
+    iwutil
 }
 
 includepaths

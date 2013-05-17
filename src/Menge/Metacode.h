@@ -1040,6 +1040,7 @@ namespace Metacode
                 , File_Codec_successful(false)
                 , File_MaxSize_successful(false)
                 , File_Rotate_successful(false)
+                , File_TextureSize_successful(false)
                 , File_UV_successful(false)
                 , File_WrapX_successful(false)
                 , File_WrapY_successful(false)
@@ -1202,6 +1203,41 @@ namespace Metacode
                 (_self->*_method)( this->File_Rotate );
             }
             
+            bool get_File_TextureSize( mt::vec2f & _value ) const
+            {
+                if( File_TextureSize_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_TextureSize;
+            
+                return true;
+            }
+            
+            bool swap_File_TextureSize( mt::vec2f & _value ) const
+            {
+                if( File_TextureSize_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_TextureSize);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_TextureSize( C * _self, M _method )
+            {
+                if( File_TextureSize_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_TextureSize );
+            }
+            
             bool get_File_UV( mt::vec4f & _value ) const
             {
                 if( File_UV_successful == false )
@@ -1324,6 +1360,8 @@ namespace Metacode
             mutable Menge::ConstString File_Path;
             bool File_Rotate_successful;
             mutable bool File_Rotate;
+            bool File_TextureSize_successful;
+            mutable mt::vec2f File_TextureSize;
             bool File_UV_successful;
             mutable mt::vec4f File_UV;
             bool File_WrapX_successful;

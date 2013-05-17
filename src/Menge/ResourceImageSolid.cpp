@@ -40,12 +40,13 @@ namespace Menge
         m_color = metadata->get_Color_Value();
 
         m_maxSize = m_size;
+        m_textureSize = m_size;
         m_uv = mt::vec4f(0.f,0.f,1.f,1.f);
         m_isAlpha = false;
         m_wrapX = true;
         m_wrapY = true;
 
-        m_texture = NULL;
+        m_texture = nullptr;
 
         return true;
 	}

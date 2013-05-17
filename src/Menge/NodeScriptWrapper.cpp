@@ -1010,7 +1010,7 @@ namespace Menge
                 ResourceImage * resource = RESOURCE_SERVICE(m_serviceProvider)
                     ->getResourceT<ResourceImage>( resourceName );
 
-                if( resource == NULL )
+                if( resource == nullptr )
                 {
                     size.x = 0.f;
                     size.y = 0.f;

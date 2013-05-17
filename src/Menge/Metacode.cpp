@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 13;
+        _needVersion = 14;
 
-        if( version != 13 )
+        if( version != 14 )
         {
             return false;
         }
@@ -1156,6 +1156,17 @@ namespace Metacode
                 }
     
                 this->File_Rotate_successful = true;
+    
+                return true;
+            }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->File_TextureSize ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_TextureSize_successful = true;
     
                 return true;
             }break;

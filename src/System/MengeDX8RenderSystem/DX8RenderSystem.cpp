@@ -2,6 +2,8 @@
 #	include "DX8Texture.h"
 #	include "DX8RenderTexture.h"
 
+#   include "DX8Error.h"
+
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 
@@ -11,10 +13,11 @@
 
 #	include "Logger/Logger.h"
 
+
 SERVICE_FACTORY( RenderSystem, Menge::RenderSystemInterface, Menge::DX8RenderSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
-{
+{    
 	typedef IDirect3D8* (WINAPI *PDIRECT3DCREATE8)(UINT);
 
 	static const D3DFORMAT D32SFormats[]	= { D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT) 0 };
@@ -908,18 +911,18 @@ namespace Menge
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 
 		IDirect3DTexture8* dxTextureInterface = NULL;
-
+        
 		HRESULT hr = this->d3dCreateTexture_( _width, _height, 1, 0,
 			hwFormat, D3DPOOL_MANAGED, &dxTextureInterface );
 		
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX8RenderSystem.createImage: can't create texture %dx%d %d (hr:%p)"
+			LOGGER_ERROR(m_serviceProvider)( "DX8RenderSystem.createImage: can't create texture %dx%d %d (hr:%s:%s)"
 				, _width
 				, _height
 				, hwFormat
-				, hr 
-				);
+				, DXGetErrorString8(hr), DXGetErrorDescription8(hr)
+                );
 
 			return NULL;
 		}

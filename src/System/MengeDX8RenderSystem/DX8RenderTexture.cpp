@@ -45,7 +45,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderTexture::_destroy()
 	{
-        DX8Texture::_destroy();
+        if( DX8Texture::_destroy() == false )
+        {
+            return false;
+        }
 
 		if( m_depthInterface )
 		{

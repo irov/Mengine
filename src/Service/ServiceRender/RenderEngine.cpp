@@ -351,7 +351,7 @@ namespace Menge
 		size_t null_height = 2;
         size_t null_channels = 3;
 
-		m_nullTexture = this->createTexture( null_width, null_height, null_channels, PF_UNKNOWN );
+		m_nullTexture = this->createTexture( null_width, null_height, null_channels, PF_UNKNOWN, null_width, null_height );
 
 		if( m_nullTexture == NULL )
 		{
@@ -514,18 +514,18 @@ namespace Menge
 		m_mapMaterialGroup.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderEngine::createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderTextureInterfacePtr RenderEngine::createTexture( size_t _imageWidth, size_t _imageHeight, size_t _imageChannels, PixelFormat _imageFormat, size_t _textureWidth, size_t _textureHeight )
 	{
-        std::size_t pow2_width = _width;
-        std::size_t pow2_height = _height;
+        std::size_t pow2_width = _imageWidth;
+        std::size_t pow2_height = _imageHeight;
 
-        if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+        if( ( _imageWidth & ( _imageWidth - 1 ) ) != 0 || ( _imageHeight & ( _imageHeight - 1 ) ) != 0 )
         {
-            pow2_width = s_firstPO2From( _width );
-            pow2_height = s_firstPO2From( _height );
+            pow2_width = s_firstPO2From( _imageWidth );
+            pow2_height = s_firstPO2From( _imageHeight );
         }
 
-        RenderImageInterfacePtr image = m_renderSystem->createImage( pow2_width, pow2_height, _channels, _format );
+        RenderImageInterfacePtr image = m_renderSystem->createImage( pow2_width, pow2_height, _imageChannels, _imageFormat );
 
         if( image == nullptr )
         {
@@ -540,7 +540,7 @@ namespace Menge
 		size_t id = ++m_idEnumerator;
 
 		RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( image, _width, _height, _channels, id, this );
+        texture->initialize( image, _textureWidth, _textureHeight, _imageChannels, id, this );
 
 		size_t memroy_size = texture->getMemoryUse();
 
@@ -551,11 +551,12 @@ namespace Menge
 		m_debugInfo.textureMemory += memroy_size;
 		++m_debugInfo.textureCount;
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createTexture creating texture %dx%d %d memory %d"
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createTexture creating texture %dx%d %d memory %d:%d"
             , HWWidth
             , HWHeight
             , HWPixelFormat
             , memroy_size
+            , m_debugInfo.textureMemory
             );
 
 		return texture;
@@ -595,10 +596,12 @@ namespace Menge
 		m_debugInfo.textureMemory += memroy_size;
 		++m_debugInfo.textureCount;
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createDynamicTexture creating dynamic texture %dx%d channels %d"
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createDynamicTexture creating dynamic texture %dx%d channels %d use memory %d:%d"
             , pow2_width
             , pow2_height
             , _channels 
+            , memroy_size
+            , m_debugInfo.textureMemory
             );
 
 		return texture;
@@ -739,11 +742,14 @@ namespace Menge
         	
         BEGIN_WATCHDOG(m_serviceProvider, "texture create");
 
-        size_t texture_witdh = _width > dataInfo->width? _width: dataInfo->width;
-        size_t texture_height = _height > dataInfo->height? _height: dataInfo->height;
-        size_t texture_channels = dataInfo->channels;
+        size_t image_width = _width > dataInfo->width? _width: dataInfo->width;
+        size_t image_height = _height > dataInfo->height? _height: dataInfo->height;
+        size_t image_channels = dataInfo->channels;
 
-		RenderTextureInterfacePtr texture = this->createTexture( texture_witdh, texture_height, texture_channels, dataInfo->format );
+        size_t texture_width = dataInfo->width;
+        size_t texture_height = dataInfo->height;
+
+		RenderTextureInterfacePtr texture = this->createTexture( image_width, image_height, image_channels, dataInfo->format, texture_width, texture_height );
 
         END_WATCHDOG(m_serviceProvider, "texture create")("texture create %s"
             , _filename.c_str()
@@ -751,10 +757,11 @@ namespace Menge
 		
 		if( texture == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: invalid create texture %d:%d %d for file '%s' was not found"
-                , texture_witdh
-                , texture_height
-                , texture_channels
+            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: invalid create texture %d:%d channels %d format %d for file '%s'"
+                , image_width
+                , image_height
+                , image_channels
+                , dataInfo->format
                 , _filename.c_str() 
                 );
 
@@ -789,15 +796,16 @@ namespace Menge
         size_t HWHeight = _texture->getHWHeight();
         PixelFormat HWPixelFormat = _texture->getHWPixelFormat();
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::destroyTexture_ destroy texture %dx%d %d memory %d"
+        m_debugInfo.textureMemory -= memroy_size;
+        --m_debugInfo.textureCount;
+
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::destroyTexture_ destroy texture %dx%d %d memory %d:%d"
             , HWWidth
             , HWHeight
             , HWPixelFormat
             , memroy_size
+            , m_debugInfo.textureMemory
             );
-
-        m_debugInfo.textureMemory -= memroy_size;
-        --m_debugInfo.textureCount;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
@@ -2149,10 +2157,12 @@ namespace Menge
         m_debugInfo.textureMemory += memroy_size;
         ++m_debugInfo.textureCount;
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createRenderTargetTexture creating render target texture %dx%d %d"
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createRenderTargetTexture creating render target texture %dx%d %d memory %d:%d"
             , pow2_width
             , pow2_height 
             , _channels 
+            , memroy_size
+            , m_debugInfo.textureMemory
             );
 
 		return texture;

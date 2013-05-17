@@ -9,12 +9,13 @@ src
 	DX8Texture.cpp
 	DX8RenderTexture.h
 	DX8RenderTexture.cpp
+    DX8Error.h
+    DX8Error.cpp
 )
 
 include_directories( 
 ${Mengine_SOURCE_DIR}/Utils
 ${THIRDPARTY_DIR}/DirectX/DX8/Include )
-#INCLUDE_DIRECTORIES(  )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
@@ -27,21 +28,6 @@ SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  PARENT_SCOPE
 )
-
-# SET( APPLICATION_LIBS
- # ${APPLICATION_LIBS}
- # ${MENGINE_LIB_PREFIX}d3d8${MENGINE_LIB_POSTFIX}
-# )
-
-# if(MSVC)
-
-	# SET( APPLICATION_LIB_PATHS
-	 # ${APPLICATION_LIB_PATHS}
-	 # ${THIRDPARTY_DIR}/DirectX/DX8/lib
-	# )
-
-# endif(MSVC)
-
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

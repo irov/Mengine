@@ -15,6 +15,7 @@ namespace Menge
 	ResourceImage::ResourceImage()
         : m_texture(0)
         , m_textureAlpha(0)
+        , m_textureSize(0.f, 0.f)
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
         , m_uv_image(0.f, 0.f, 0.f, 0.f)
@@ -37,17 +38,20 @@ namespace Menge
 		m_size.y = height;
 
 		const Rect & rect = texture->getRect();
-		
+
         float hwWidth = (float)texture->getHWWidth();
         float hwHeight = (float)texture->getHWHeight();
-
-        m_maxSize.x = hwWidth;
-        m_maxSize.y = hwHeight;
 
         m_uv_scale.x = float(rect.left) / hwWidth;
         m_uv_scale.y = float(rect.top) / hwHeight;
         m_uv_scale.z = float(rect.right) / hwWidth;
         m_uv_scale.w = float(rect.bottom) / hwHeight;
+
+        if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
+        {
+            m_maxSize.x = m_size.x;
+            m_maxSize.y = m_size.y;
+        }
 
 		m_texture = texture;
 
@@ -89,8 +93,8 @@ namespace Menge
             , _fileName.c_str()
             );
 
-        size_t texture_width = m_maxSize.x < 0.f ? 0 : (size_t)m_maxSize.x;
-        size_t texture_height = m_maxSize.y < 0.f ? 0 : (size_t)m_maxSize.y;
+        size_t texture_width = (size_t)m_textureSize.x;
+        size_t texture_height = (size_t)m_textureSize.y;
 
 		RenderTextureInterfacePtr texture = RENDER_SERVICE(m_serviceProvider)
             ->loadTexture( _pakName, _fileName, _codec, texture_width, texture_height );
@@ -128,7 +132,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     void ResourceImage::_release()
     {
-        if( m_texture != NULL )
+        if( m_texture != nullptr )
         {
             const FilePath & filePath = m_texture->getFileName();
 
@@ -140,7 +144,7 @@ namespace Menge
             m_texture = nullptr;
         }
 
-        if( m_textureAlpha != NULL )
+        if( m_textureAlpha != nullptr )
         {
             const FilePath & filePath = m_textureAlpha->getFileName();
 

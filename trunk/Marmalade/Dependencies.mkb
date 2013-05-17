@@ -35,8 +35,6 @@ includepaths
     
     "../dependencies/simpleini"
     "../dependencies/zlib"
-    "../dependencies/icu"
-	"../dependencies/icu/source/common"
     "../dependencies/libjpeg"
 }
 
@@ -91,20 +89,7 @@ files
     trees.c
     uncompr.c
     zutil.c
-    
-    [icu]
-    ("../dependencies/icu")
-    source/common/ustring.cpp
-    source/common/ustrtrns.cpp
-
-    source/common/cmemory.c
-    source/common/cstring.c
-    source/common/uinvchar.c
-    source/common/udataswp.c
-    source/common/utf_impl.c
-    source/common/utypes.c
-    source/common/ustr_wcs.cpp
-    
+       
     [libJPEG]
     ("../dependencies/libjpeg")    
     jaricom.c

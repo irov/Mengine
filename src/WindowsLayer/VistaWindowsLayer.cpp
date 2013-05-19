@@ -31,11 +31,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VistaWindowsLayer::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterface * VistaWindowsLayer::loadDynamicLibrary( const WString & _path )
     {
         LOGGER_INFO(m_serviceProvider)("VistaWindowsLayer::loadDynamicLibrary load %ls"

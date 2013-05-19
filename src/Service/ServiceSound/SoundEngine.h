@@ -53,9 +53,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        void destroy() override;
-
-    public:
 		bool initialize( bool _silent ) override;
 		void finalize() override;
 

@@ -27,9 +27,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        void destroy() override;
-
-    public:
         bool initialize( size_t _threadCount ) override;
         void finalize() override;
 

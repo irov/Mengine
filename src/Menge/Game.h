@@ -40,9 +40,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        void destroy() override;
-
-    public:
         bool initialize( const TMapWString & _params ) override;
         void finalize() override;
 

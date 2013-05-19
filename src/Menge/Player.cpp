@@ -78,11 +78,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Player::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
 	{

@@ -14,9 +14,6 @@ namespace Menge
     public:
         virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
         virtual ServiceProviderInterface * getServiceProvider() const = 0;
-
-    public:
-        virtual void destroy() = 0;
 	};
 
 	class ServiceListenerInterface
@@ -76,12 +73,16 @@ namespace Menge
     {\
     bool create##Name( Service ** _service )\
     {\
-    if( _service == NULL )\
+    if( _service == nullptr )\
     {\
     return false;\
     }\
     *_service = new Implement();\
     return true;\
+    }\
+    void destroy##Name( Service * _service )\
+    {\
+    delete _service;\
     }\
     }\
     struct __mengine_dummy{}
@@ -90,6 +91,7 @@ namespace Menge
     extern "C"\
     {\
     extern bool create##Name( Service ** );\
+    extern void destroy##Name( Service * );\
     }\
     struct __mengine_extern_dummy_##Name{}
 
@@ -97,6 +99,7 @@ namespace Menge
     extern "C"\
     {\
     bool create##Name( Service ** ){return false;};\
+    void destroy##Name( Service * ){};\
     }\
     struct __mengine_extern_dummy_##Name{}
 
@@ -106,11 +109,6 @@ namespace Menge
 #   define SERVICE_CREATE( Name, Service )\
     create##Name( Service )
 
-#   define SERVICE_DESTROY( Service )\
-    if( Service != nullptr )\
-    {\
-        Service->destroy();\
-    }    
-
-
+#   define SERVICE_DESTROY( Name, Service )\
+    destroy##Name( Service )
 }

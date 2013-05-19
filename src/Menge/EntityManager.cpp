@@ -35,11 +35,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void EntityManager::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	Entity * EntityManager::createEntity( const ConstString & _prototype )
 	{		

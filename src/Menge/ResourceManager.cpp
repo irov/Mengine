@@ -25,22 +25,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::~ResourceManager()
 	{		
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-
-        FactoryManager::setServiceProvider( m_serviceProvider );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ResourceManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::destroy()
-    {
         //_dumpResources();
 
         for( TMapResource::const_iterator
@@ -54,8 +38,18 @@ namespace Menge
             ResourceReference * resource = entry.resource;
             resource->destroy();
         }
+	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
 
-        delete this;
+        FactoryManager::setServiceProvider( m_serviceProvider );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * ResourceManager::getServiceProvider() const
+    {
+        return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceManager::registerResourceFactory( const ConstString & _type, Factory * _factory )

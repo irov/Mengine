@@ -17,6 +17,23 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    PluginService::~PluginService()
+    {
+        for( TMapPlugins::iterator
+            it = m_plugins.begin(),
+            it_end = m_plugins.end();
+        it != it_end;
+        ++it )
+        {
+            const PluginDesc & desc = it->second;
+
+            desc.plugin->destroy();
+            desc.dlib->destroy();
+        }
+
+        m_plugins.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PluginService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
@@ -127,22 +144,5 @@ namespace Menge
         desc.dlib->destroy();
 
         m_plugins.erase( it_found );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PluginService::destroy()
-    {
-        for( TMapPlugins::iterator
-            it = m_plugins.begin(),
-            it_end = m_plugins.end();
-        it != it_end;
-        ++it )
-        {
-            const PluginDesc & desc = it->second;
-
-            desc.plugin->destroy();
-            desc.dlib->destroy();
-        }
-
-        m_plugins.clear();
     }
 }

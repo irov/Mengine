@@ -33,11 +33,6 @@ namespace Menge
     {
         return m_serviceProvider;             
     }
-    //////////////////////////////////////////////////////////////////////////
-    void LoaderEngine::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist )
 	{

@@ -34,11 +34,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void TextManager::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
 	{

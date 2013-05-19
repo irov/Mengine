@@ -44,11 +44,6 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;

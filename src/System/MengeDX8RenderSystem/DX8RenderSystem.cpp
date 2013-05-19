@@ -389,11 +389,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX8RenderSystem::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void DX8RenderSystem::setRenderListener( RenderSystemListener * _listener )
     {
         m_listener = _listener;

@@ -31,11 +31,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeManager::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void NodeManager::initialize()
     {
         m_homeless = new Node();

@@ -1106,11 +1106,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void WinApplication::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{	
@@ -1725,37 +1720,33 @@ namespace Menge
             m_pluginMengeSoundCodec = nullptr;
         }
 
-        m_inputService->destroy();
-        m_unicodeService->destroy();        
-        m_fileService->destroy();
-        m_codecService->destroy();
-        m_threadService->destroy();
-        m_particleService->destroy();
+        SERVICE_DESTROY( InputService, m_inputService );
+        SERVICE_DESTROY( UnicodeService, m_unicodeService );        
+        SERVICE_DESTROY( FileService, m_fileService );
+        SERVICE_DESTROY( CodecService, m_codecService );
+        SERVICE_DESTROY( ThreadService, m_threadService );
+        SERVICE_DESTROY( ParticleService, m_particleService );
         
-        SERVICE_DESTROY( m_physicService2D );
+        SERVICE_DESTROY( PhysicService2D, m_physicService2D );
         
-        m_soundService->destroy();
-        m_amplifierService->destroy();
+        SERVICE_DESTROY( SoundService, m_soundService );
+        SERVICE_DESTROY( AmplifierService, m_amplifierService );
 
-        if( m_application != nullptr )
-        {
-            m_application->destroy();
+        SERVICE_DESTROY( Application, m_application );
 
-            m_application = nullptr;
-        }
-
+        if( m_scriptService != nullptr )
         {
             m_scriptService->finalize();
 
-            m_scriptService->destroy();
+            SERVICE_DESTROY( ScriptService, m_scriptService );
         }
 
         if( m_renderService != nullptr )
         {
             m_renderService->finalize();
-        }
 
-        m_renderService->destroy();
+            SERVICE_DESTROY( RenderService, m_renderService );
+        }        
         
 		if( m_fileLog != nullptr )
 		{
@@ -1779,7 +1770,7 @@ namespace Menge
 			m_loggerConsole = nullptr;
 		}
 
-        m_logService->destroy();
+        SERVICE_DESTROY( LogService, m_logService );
         
 		if( m_alreadyRunningMonitor != nullptr )
 		{
@@ -1795,7 +1786,7 @@ namespace Menge
             m_winTimer = nullptr;
 		}
 
-        m_serviceProvider->destroy();
+        SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
 
 		//::timeEndPeriod( 1 );
 	}

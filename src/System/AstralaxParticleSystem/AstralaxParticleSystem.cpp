@@ -19,6 +19,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticleSystem::~AstralaxParticleSystem()
 	{		
+        Magic_DestroyAll();
 	}
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -29,13 +30,6 @@ namespace Menge
     ServiceProviderInterface * AstralaxParticleSystem::getServiceProvider() const
     {
         return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem::destroy()
-    {
-        Magic_DestroyAll();
-
-        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	static size_t s_getCountTag( const String & _fullname, String & _name )

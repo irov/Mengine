@@ -15,7 +15,6 @@ namespace Menge
 
     public:
         virtual float watch( const String & _tag ) = 0;
-        virtual void destroy() = 0;
     };
 
 #   ifdef MENGE_MASTER_RELEASE

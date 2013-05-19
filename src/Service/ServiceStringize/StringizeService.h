@@ -21,9 +21,6 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
-    public:
-        void destroy() override;
-
 	public:
 		ConstString stringize( const char * _str, size_t _size ) override;
 

@@ -30,11 +30,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void MovieKeyFrameManager::destroy()
-    {
-        delete this;
-    }
 	////////////////////////////////////////////////////////////////////////////////////////////
 	MovieFramePackInterface * MovieKeyFrameManager::getMovieFramePak( const ConstString & _pak, const FilePath & _path )
 	{

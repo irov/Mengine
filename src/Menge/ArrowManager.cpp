@@ -31,11 +31,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void ArrowManager::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * ArrowManager::createArrow( const ConstString & _prototype )
 	{

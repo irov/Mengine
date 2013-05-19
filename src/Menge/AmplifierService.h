@@ -26,9 +26,6 @@ namespace	Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
-    public:
-        void destroy() override;
-
 	public:
         void playTrack( const ConstString& _playlistResource, int _index, bool _looped ) override;
 		void playAllTracks( const ConstString& _playlistResource ) override;

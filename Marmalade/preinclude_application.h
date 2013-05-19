@@ -1,6 +1,8 @@
 #   pragma once
 
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0
+#   define BOOST_NO_CXX11_NULLPTR
+
 
 #   define PYBIND_MARMALADE
 #   define PYBIND_PYTHON_VERSION 274
@@ -24,5 +26,7 @@ typedef void * nullptr_t;
 
 #   define _BIG_ENDIAN
 
-#   define MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   ifndef _MSC_VER
+#       define MENGINE_UNSUPPORT_PRAGMA_WARNING
+#   endif
 

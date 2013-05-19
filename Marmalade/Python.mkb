@@ -19,6 +19,7 @@ files
 {
     [Python]
     ("./Modified/Python")
+    mockup.c
     config.c
     errors.c
     pyconfig.h
@@ -62,87 +63,7 @@ files
     getplatform.c
     _warnings.c
     pyctype.c
-
-    ("../dependencies/Python/Include")
-    classobject.h
-    iterobject.h
-    ucnhash.h
-    enumobject.h
-    stringobject.h
-    datetime.h
-    pyport.h
-    complexobject.h
-    codecs.h
-    longintrepr.h
-    opcode.h
-    code.h
-    dictobject.h
-    py_curses.h
-    unicodeobject.h
-    intobject.h
-    asdl.h
-    errcode.h
-    rangeobject.h
-    pgenheaders.h
-    ceval.h
-    objimpl.h
-    timefuncs.h
-    pyarena.h
-    listobject.h
-    cobject.h
-    graminit.h
-    pygetopt.h
-    moduleobject.h
-    traceback.h
-    token.h
-    Python.h
-    funcobject.h
-    osdefs.h
-    grammar.h
-    pymem.h
-    patchlevel.h
-    ast.h
-    parsetok.h
-    pystate.h
-    bitset.h
-    floatobject.h
-    structseq.h
-    cStringIO.h
-    abstract.h
-    pythonrun.h
-    object.h
-    cellobject.h
-    methodobject.h
-    import.h
-    weakrefobject.h
-    structmember.h
-    pythread.h
-    symtable.h
-    tupleobject.h
-    boolobject.h
-    pyfpe.h
-    marshal.h
-    descrobject.h
-    pystrtod.h
-    compile.h
-    pgen.h
-    pyexpat.h
-    metagrammar.h
-    pydebug.h
-    bufferobject.h
-    genobject.h
-    Python-ast.h
-    fileobject.h
-    modsupport.h
-    pymactoolbox.h
-    frameobject.h
-    setobject.h
-    sysmodule.h
-    pyerrors.h
-    node.h
-    longobject.h
-    sliceobject.h
-    eval.h
+    random.c
     
     ("../dependencies/Python/Modules")
     gcmodule.c
@@ -200,6 +121,7 @@ files
     stringobject.c
     structseq.c
     capsule.c
+    memoryobject.c
     
     ("../dependencies/Python/Parser")
     acceler.c

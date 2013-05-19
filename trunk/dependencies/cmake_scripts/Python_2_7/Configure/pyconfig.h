@@ -304,7 +304,9 @@ typedef int pid_t;
 #endif
 
 /* 64 bit ints are usually spelt __int64 unless compiler has overridden */
-#define HAVE_LONG_LONG 1
+//#define HAVE_LONG_LONG 1
+#undef HAVE_LONG_LONG
+
 #ifndef PY_LONG_LONG
 #	define PY_LONG_LONG __int64
 #	define PY_LLONG_MAX _I64_MAX
@@ -355,9 +357,10 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
    then this is true. The uses of HAVE_LARGEFILE_SUPPORT imply that Win64
    should define this. */
 #	define HAVE_LARGEFILE_SUPPORT
+
 #elif defined(MS_WIN32)
 #	define PLATFORM "win32"
-#	define HAVE_LARGEFILE_SUPPORT
+#   undef HAVE_LARGEFILE_SUPPORT
 #	define SIZEOF_VOID_P 4
 #	define SIZEOF_OFF_T 4
 #	define SIZEOF_FPOS_T 8

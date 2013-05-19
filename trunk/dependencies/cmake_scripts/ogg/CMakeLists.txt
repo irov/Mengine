@@ -7,8 +7,6 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg )
 
 # OUR SOURCES
 set( ogg_sources
-${SOURCE_DIR}/include/ogg/ogg.h
-${SOURCE_DIR}/include/ogg/os_types.h
 ${SOURCE_DIR}/src/bitwise.c
 ${SOURCE_DIR}/src/framing.c
 )

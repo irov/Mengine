@@ -57,7 +57,7 @@ namespace Menge
     private:
         ServiceProviderInterface * m_serviceProvider;
         
-        OALSoundSystem* m_soundSystem;
+        OALSoundSystem * m_soundSystem;
 
 		float m_position[3];
 		float m_volume;

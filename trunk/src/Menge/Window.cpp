@@ -35,7 +35,8 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = RESOURCE_SERVICE(m_serviceProvider)->getResourceT<ResourceWindow>( m_resourceName );
+		m_resource = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceT<ResourceWindow>( m_resourceName );
 
 		if( m_resource == NULL )
 		{
@@ -57,7 +58,8 @@ namespace Menge
 			}
 		}
 
-		const RenderMaterialGroup * mg_sprite = RENDER_SERVICE(m_serviceProvider)->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+		const RenderMaterialGroup * mg_sprite = RENDER_SERVICE(m_serviceProvider)
+            ->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
 
 		for( int i = 0; i < ResourceWindow_Count; ++i )
 		{
@@ -118,7 +120,8 @@ namespace Menge
 
         if( this->hasBackground() == true )
         {
-            RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Background], &m_textures[ResourceWindow_Background], 1, &vertices[0*4], 4, LPT_QUAD );
+            RENDER_SERVICE(m_serviceProvider)
+                ->addRenderObject2D( _camera, m_material[ResourceWindow_Background], &m_textures[ResourceWindow_Background], 1, &vertices[0*4], 4, LPT_QUAD );
         }
 
 		RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_LeftTop], &m_textures[ResourceWindow_LeftTop], 1, &vertices[1*4], 4, LPT_QUAD );

@@ -121,6 +121,7 @@
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
+#   pragma warning(disable:4800)  
 #   endif
 
 #	include <boost/geometry/geometry.hpp> 
@@ -359,16 +360,16 @@ namespace Menge
         protected:
             bool updateTiming( size_t _id, float _timing ) override
             {
-                EVENT_SERVICE(m_serviceProvider)
-                    ->addEventFormat( EVENT_TIMING, m_script, "(if)", _id, _timing );
+                SCRIPT_SERVICE(m_serviceProvider)
+                    ->callFunction( m_script, "(if)", _id, _timing );
 
                 return false;
             }
 
             void removeTiming( size_t _id ) override
             {
-                EVENT_SERVICE(m_serviceProvider)
-                    ->addEventFormat( EVENT_TIMING, m_script, "(iO)", _id, pybind::get_bool(true) );
+                SCRIPT_SERVICE(m_serviceProvider)
+                    ->callFunction( m_script, "(iO)", _id, pybind::get_bool(true) );
             }
 
             void deleteTimingListener() const override
@@ -733,7 +734,7 @@ namespace Menge
         const mt::vec2f& s_getCamera2DPosition()
         {
             return PLAYER_SERVICE(m_serviceProvider)
-                ->getRenderCamera2D()->getViewport().begin;
+                ->getCamera2D()->getViewport().begin;
         }
         //////////////////////////////////////////////////////////////////////////
         size_t s_Animatable_play( Animatable * _animatable )
@@ -928,7 +929,7 @@ namespace Menge
         bool s_isInViewport( const mt::vec2f & _pos )
         {
             return PLAYER_SERVICE(m_serviceProvider)
-                ->getRenderCamera2D()->getViewport().testPoint( _pos );
+                ->getCamera2D()->getViewport().testPoint( _pos );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_enableTextureFiltering( bool _enable )
@@ -1448,7 +1449,7 @@ namespace Menge
         Camera2D * s_getRenderCamera2D()
         {
             Camera2D * renderCamera2D = PLAYER_SERVICE(m_serviceProvider)
-                ->getRenderCamera2D();
+                ->getCamera2D();
 
             return renderCamera2D;
         }
@@ -2191,7 +2192,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Node );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2D );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
+        //SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
         //SCRIPT_CLASS_WRAPPING( Light2D );
         //SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
@@ -2838,7 +2839,10 @@ namespace Menge
                     .def( "removeRenderViewport", &Layer2D::removeRenderViewport )
                     .def( "cameraToLocal", &Layer2D::cameraToLocal )
                     ;
-                pybind::interface_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false);
+
+                //pybind::interface_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false)
+                //    ;
+
                 //pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
                 //	.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
                 //	.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
@@ -2850,16 +2854,13 @@ namespace Menge
                     .def( "pick", &MousePickerTrapInterface::pick )
                     ;
 
-                pybind::interface_<MousePickerAdapter, pybind::bases<MousePickerTrapInterface> >("MousePickerAdapter", false)
-                    .def( "setDefaultHandle", &MousePickerAdapter::setDefaultHandle )
-                    .def( "getDefaultHandle", &MousePickerAdapter::getDefaultHandle )
-                    ;
-
-                pybind::interface_<HotSpot, pybind::bases<Node, MousePickerAdapter> >("HotSpot", false)
+                pybind::interface_<HotSpot, pybind::bases<Node> >("HotSpot", false)
                     .def( "testPoint", &HotSpot::testPoint )
                     .def( "clearPoints", &HotSpot::clearPoints )
                     .def( "getPolygon", &HotSpot::getPolygon )
                     .def( "setPolygon", &HotSpot::setPolygon )
+                    .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
+                    .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
                     .def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalPolygonCenter )
                     .def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygonCenter )
                     .def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygon )

@@ -20,5 +20,5 @@ namespace Menge
     };
 
 #   define ENTITY_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::EntityServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::EntityServiceInterface>(serviceProvider))
 }

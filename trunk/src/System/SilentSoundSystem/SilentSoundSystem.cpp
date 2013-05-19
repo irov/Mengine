@@ -12,29 +12,8 @@
 #	include <stdio.h>
 #	include <stdarg.h>
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool createSilentSoundSystem( Menge::SoundSystemInterface ** _soundSystem )
-    {
-        if( _soundSystem == 0 )
-        {
-            return false;
-        }
-
-        *_soundSystem = new Menge::SilentSoundSystem();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void destroySilentSoundSystem( Menge::SoundSystemInterface * _soundSystem )
-    {
-        if( _soundSystem )
-        {
-            delete static_cast<Menge::SilentSoundSystem *>(_soundSystem);
-        }
-    }
-}
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( SilentSoundSystem, Menge::SoundSystemInterface, Menge::SilentSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -59,6 +38,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void SilentSoundSystem::destroy()
+    {
+        delete this;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool SilentSoundSystem::initialize()
 	{
@@ -69,7 +53,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSystem::finalize()
     {
-        delete this;
+        
     }
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSystem::onTurnSound( bool _turn )

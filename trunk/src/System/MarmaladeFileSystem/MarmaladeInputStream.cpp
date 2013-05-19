@@ -30,7 +30,9 @@ namespace Menge
 	{
         m_filePath = _filePath;
 
-        m_hFile = s3eFileOpen( m_filePath.c_str(), "rb" );
+        const char * filepath = m_filePath.c_str(); 
+
+        m_hFile = s3eFileOpen( filepath, "rb" );
 
         int32 s3e_size = s3eFileGetSize( m_hFile );
 
@@ -206,7 +208,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeInputStream::time( time_t & _time ) const
 	{
-        int64 time = s3eFileGetFileInt( m_filePath.c_str(), S3E_FILE_MODIFIED_DATE );
+        const char * filepath = m_filePath.c_str();
+
+        int64 time = s3eFileGetFileInt( filepath, S3E_FILE_MODIFIED_DATE );
 
         _time = static_cast<time_t>(time / 1000); // ms to s
 

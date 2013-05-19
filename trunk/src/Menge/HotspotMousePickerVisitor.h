@@ -10,12 +10,12 @@ namespace Menge
     class HotSpot;
     class RenderCameraInterface;
 
-    class MousePicker
+    class HotspotMousePickerVisitor
         : public Visitor
         , public ConcreteVisitor<Layer2D>
     {
     public:
-        MousePicker( HotSpot * _layerspaceHotspot, RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow );
+        HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow );
 
     public:
         bool test( Layer * _layer );

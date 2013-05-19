@@ -248,7 +248,7 @@ namespace Menge
 		m_needUpdate = false;
         m_needUpdate2 = false;
 
-		EVENTABLE_CALL(this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( size_t _enumerator )
@@ -258,7 +258,7 @@ namespace Menge
 			m_soundEmitter->stop();
 		}
 
-		EVENTABLE_CALL(this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::pause()
@@ -573,11 +573,13 @@ namespace Menge
 	{
 		if ( this->isBlendAdd() == true )
 		{
-			m_materialGroup = RENDER_SERVICE(m_serviceProvider)->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
+			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                ->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
 		}
 		else
 		{
-			m_materialGroup = RENDER_SERVICE(m_serviceProvider)->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                ->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
 		}
 
 		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );

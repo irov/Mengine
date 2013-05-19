@@ -20,5 +20,5 @@ namespace Menge
     };
 
 #   define SCENE_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::SceneServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::SceneServiceInterface>(serviceProvider))
 }

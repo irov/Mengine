@@ -8,9 +8,10 @@
 namespace Menge
 {
     class Arrow;
+    class Eventable;
 
     class MousePickerTrapInterface
-        : virtual public InputSystemHandler
+        : public InputSystemHandler
     {
     public:
         virtual bool pick( const mt::vec2f& _point, Arrow * _arrow ) = 0;
@@ -20,10 +21,13 @@ namespace Menge
         virtual void onMouseLeave() = 0;
 
     public:
-        virtual PyObject * getPickerEmbed() = 0; 
+        virtual PyObject * getPickerEmbed() = 0;
 
     public:
-        virtual bool isPickerActive() const = 0;        
+        virtual Eventable * getPickerEventable() = 0;
+
+    public:
+        virtual bool isPickerActive() const = 0;
     };
 
     typedef std::vector<MousePickerTrapInterface *> TVectorPickerTraps;

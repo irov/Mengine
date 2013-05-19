@@ -81,12 +81,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileSystem::existFile( const FilePath& _filename ) const
 	{
-        if( s3eFileGetFileInt( _filename.c_str(), S3E_FILE_ISDIR ) != 0 )
+        if( _filename.empty() == true )
         {
             return true;
         }
 
-        if( s3eFileCheckExists( _filename.c_str() ) != S3E_FALSE )
+        const char * filename = _filename.c_str();
+
+        if( s3eFileGetFileInt( filename, S3E_FILE_ISDIR ) != 0 )
+        {
+            return true;
+        }
+
+        if( s3eFileCheckExists( filename ) != S3E_FALSE )
         {
             return true;
         }

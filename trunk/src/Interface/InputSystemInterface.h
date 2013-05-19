@@ -314,5 +314,5 @@ namespace Menge
 	};
 
 #   define INPUT_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::InputServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::InputServiceInterface>(serviceProvider))
 }

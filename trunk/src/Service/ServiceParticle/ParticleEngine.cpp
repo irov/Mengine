@@ -14,8 +14,7 @@ SERVICE_FACTORY( ParticleService, Menge::ParticleServiceInterface, Menge::Partic
 namespace Menge
 {
 	ParticleEngine::ParticleEngine()
-		: m_serviceProvider(NULL)
-        , m_particleSystem(NULL)
+		: m_serviceProvider(nullptr)
 		, m_maxParticlesNum(2000)
 		, m_renderParticleNum(0)        
 	{
@@ -28,13 +27,16 @@ namespace Menge
     void ParticleEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        m_particleSystem = PARTICLE_SYSTEM( m_serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * ParticleEngine::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ParticleEngine::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
@@ -61,7 +63,8 @@ namespace Menge
 
 		file = nullptr;
 
-		EmitterContainerInterface * container = m_particleSystem->createEmitterContainerFromMemory( &fileBuffer[0] );
+		EmitterContainerInterface * container = PARTICLE_SYSTEM(m_serviceProvider)
+            ->createEmitterContainerFromMemory( &fileBuffer[0] );
 
 		if( container == NULL )
 		{
@@ -77,7 +80,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine::flushEmitter( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush )
 	{
-		if( m_particleSystem->flushParticles( _viewMatrix, _emitter, _meshes, _particles, _particlesLimit, _flush ) == false )
+		if( PARTICLE_SYSTEM(m_serviceProvider)->flushParticles( _viewMatrix, _emitter, _meshes, _particles, _particlesLimit, _flush ) == false )
         {
             return false;
         }
@@ -87,7 +90,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )
 	{
-		m_particleSystem->releaseEmitterContainer( _containerInterface );
+		PARTICLE_SYSTEM(m_serviceProvider)
+            ->releaseEmitterContainer( _containerInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ParticleEngine::getMaxParticlesCount() const

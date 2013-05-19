@@ -2,7 +2,7 @@
 
 #	include "Logger/Logger.h"
 
-#   include <Windows.h>
+#   include "WindowsLayer/WindowsIncluder.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Menge::UnicodeSystemInterface, Menge::Win32UnicodeSystem );
@@ -23,6 +23,11 @@ namespace Menge
     ServiceProviderInterface * Win32UnicodeSystem::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32UnicodeSystem::destroy()
+    {
+        delete this;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )

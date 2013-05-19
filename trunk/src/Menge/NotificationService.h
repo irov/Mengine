@@ -20,6 +20,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		void addObserver( const String & _id, Observer * _observer ) override;
 		void removeObserver( const String & _id, Observer * _observer ) override;

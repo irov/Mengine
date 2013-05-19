@@ -19,6 +19,9 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
+        void destroy() override;
+
+    public:
         DynamicLibraryInterface * loadDynamicLibrary( const WString & _path ) override;
 
     public:

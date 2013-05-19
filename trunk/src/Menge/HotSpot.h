@@ -2,11 +2,9 @@
 
 #	include "Kernel/Node.h"
 
-#	include "MousePickerAdapter.h"
+#	include "HotspotMousePickerAdapter.h"
+
 #	include "Kernel/VectorVertices.h"
-
-#	include "Kernel/Node.h"
-
 #	include "Core/Polygon.h"
 
 namespace Menge
@@ -15,24 +13,23 @@ namespace Menge
 
 	class HotSpot
 		: public Node
-		, public MousePickerAdapter
-//#	ifndef MENGE_MASTER_RELEASE
 		, public VectorVertices
-//#	endif
 	{
 	public:
 		HotSpot();
 		~HotSpot();
 
+    protected:
+        void _setServiceProvider( ServiceProviderInterface * _serviceProvider );
+
 	public:
 		void setPolygon( const Polygon & _polygon );
 		const Polygon & getPolygon() const;
-		
-	protected:
-		bool pick( const mt::vec2f& _point, Arrow * _arrow ) override;
-		bool isPickerActive() const override;
-        PyObject * getPickerEmbed() override;
 
+    public:
+        void setDefaultHandle( bool _handle );
+        bool getDefaultHandle() const;
+		    
 	public:
 		virtual bool testArrow( const mt::mat4f& _transform, Arrow * _arrow, const mt::mat4f& _screenTransform );
 
@@ -41,9 +38,9 @@ namespace Menge
 		virtual bool testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform );
 		virtual bool testPoint( const mt::vec2f & _p );
 
-	protected:
-		bool onMouseEnter() override;
-		void onMouseLeave() override;
+    public:        
+        void setDebugColor( uint32 _color );
+        uint32 getDebugColor() const;
 
 	public:
 		void clearPoints();
@@ -75,6 +72,8 @@ namespace Menge
 
 	protected:
 		uint32 m_debugColor;
+
+        HotspotMousePickerAdapter m_mousePickerAdapter;
 //#	endif
 	};
 }

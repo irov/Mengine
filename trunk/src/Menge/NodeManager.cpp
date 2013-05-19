@@ -14,10 +14,27 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeManager::NodeManager()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
         , m_homeless(0)
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void NodeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+
+        FactoryManager::setServiceProvider( m_serviceProvider );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * NodeManager::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeManager::destroy()
+    {
+        delete this;
+    }
     //////////////////////////////////////////////////////////////////////////
     void NodeManager::initialize()
     {
@@ -38,18 +55,6 @@ namespace Menge
             homeless->destroyAllChild();
             delete homeless;            
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-
-        FactoryManager::setServiceProvider( m_serviceProvider );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * NodeManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
 	Node * NodeManager::createNode( const ConstString& _type )

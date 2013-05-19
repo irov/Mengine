@@ -33,5 +33,5 @@ namespace Menge
     };
 
 #   define PLUGIN_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::PluginServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::PluginServiceInterface>(serviceProvider))
 }

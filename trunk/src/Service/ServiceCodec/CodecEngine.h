@@ -25,6 +25,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		void registerDecoder( const ConstString& _type, DecoderFactoryInterface * _interface ) override;
 		void unregisterDecoder( const ConstString& _type ) override;

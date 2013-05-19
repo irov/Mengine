@@ -1,15 +1,6 @@
-/*
- *	OALSoundBufferBase.cpp
- *
- *	Created by _Berserk_ on 24.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	include "OALSoundBufferBase.h"
-#	include "Interface/SoundCodecInterface.h"
 
-#	define OAL_CHECK_ERROR() s_OALErrorCheck( m_soundSystem, __FILE__, __LINE__ )
+#	include "Interface/SoundCodecInterface.h"
 
 namespace Menge
 {

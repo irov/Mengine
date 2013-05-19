@@ -17,7 +17,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     EntityManager::EntityManager()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,11 @@ namespace Menge
     ServiceProviderInterface * EntityManager::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void EntityManager::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	Entity * EntityManager::createEntity( const ConstString & _prototype )

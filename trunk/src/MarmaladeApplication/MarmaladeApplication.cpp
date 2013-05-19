@@ -15,7 +15,7 @@
 //#	include "AlreadyRunningMonitor.h"
 //#	include "CriticalErrorsMonitor.h"
 
-//#	include "FileLogger.h"
+#	include "Utils/Core/FileLogger.h"
 
 //#	include "resource.h"
 
@@ -182,6 +182,9 @@ namespace Menge
 
         m_application = application;
 
+        LOGGER_INFO(m_serviceProvider)( "Application Initialize..."
+            );
+
         if( m_application->initialize() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application initialize failed" 
@@ -213,50 +216,149 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeThreadEngine_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
+        //LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
 
-        ThreadSystemInterface * threadSystem;
-        if( createThreadSystem( &threadSystem ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
-                );
+        //ThreadSystemInterface * threadSystem;
+        //if( createThreadSystem( &threadSystem ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY(m_serviceProvider, threadSystem) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY(m_serviceProvider, threadSystem) == false )
+        //{
+        //    return false;
+        //}
 
-        threadSystem->initialize();
+        //threadSystem->initialize();
 
-        ThreadServiceInterface * threadService;
-        if( createThreadService( &threadService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
-                );
+        //ThreadServiceInterface * threadService;
+        //if( createThreadService( &threadService ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
+        //        );
 
-            return false;               
-        }
+        //    return false;               
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, threadService ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, threadService ) == false )
+        //{
+        //    return false;
+        //}
 
-        m_threadService = threadService;
+        //m_threadService = threadService;
 
-        if( m_threadService->initialize( 2 ) == false )
-        {
-            return false;
-        }
+        //if( m_threadService->initialize( 2 ) == false )
+        //{
+        //    return false;
+        //}
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeFileEngine_()
     {
+        LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
+
+        FileSystemInterface * fileSystem;
+        if( createFileSystem( &fileSystem ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileSystem"
+                );
+
+            return false;
+        }
+
+        if( SERVICE_REGISTRY( m_serviceProvider, fileSystem ) == false )
+        {
+            return false;
+        }
+
+        FileServiceInterface * fileService;
+        if( createFileService( &fileService ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileService"
+                );
+
+            return false;
+        }
+
+        if( SERVICE_REGISTRY( m_serviceProvider, fileService ) == false )
+        {
+            return false;
+        }
+
+        m_fileService = fileService;
+
+        if( m_fileService->initialize() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to initialize fileService"
+                );
+
+            return false;
+        }
+        
+        m_currentPath.clear();
+
+        String utf8_currentPath;        
+        if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to convert %ls to utf8"
+                , m_currentPath.c_str()
+                );
+
+            return false;
+        }
+
+        FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
+        // mount root		
+        if( m_fileService->mountFileGroup( ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount application directory %ls"
+                , m_currentPath.c_str()
+                );
+
+            return false;
+        }
+
+        if( this->setupApplicationSetting_() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to setup application %ls"
+                , m_currentPath.c_str()
+                );
+
+            return false;
+        }
+
+        //m_tempPath.clear();
+        m_userPath.clear();
+
+        m_userPath += L"User";
+        m_userPath += MENGE_FOLDER_DELIM;
+
+        String utf8_userPath;
+        if( Helper::unicodeToUtf8( m_serviceProvider, m_userPath, utf8_userPath ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed user directory %ls convert to ut8f"
+                , m_userPath.c_str()
+                );
+
+            return false;
+        }
+
+        FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
+
+        // mount user directory
+        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
+                , m_userPath.c_str()
+                );
+
+            return false;
+        }
 
         return true;
     }
@@ -365,90 +467,90 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeParticleEngine_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
+        //LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
 
-        ParticleSystemInterface * particleSystem;
-        if( createParticleSystem( &particleSystem ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
-                );
+        //ParticleSystemInterface * particleSystem;
+        //if( createParticleSystem( &particleSystem ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
+        //{
+        //    return false;
+        //}
 
-        ParticleServiceInterface * particleService;
-        if( createParticleService( &particleService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
-                );
+        //ParticleServiceInterface * particleService;
+        //if( createParticleService( &particleService ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
+        //{
+        //    return false;
+        //}
 
-        m_particleService = particleService;
+        //m_particleService = particleService;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializePhysicEngine2D_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Physics2D Service..." );
+        //LOGGER_INFO(m_serviceProvider)( "Inititalizing Physics2D Service..." );
 
-        PhysicSystem2DInterface * physicSystem2D;
-        if( createPhysicSystem2D( &physicSystem2D ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
-                );
+        //PhysicSystem2DInterface * physicSystem2D;
+        //if( createPhysicSystem2D( &physicSystem2D ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, physicSystem2D ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, physicSystem2D ) == false )
+        //{
+        //    return false;
+        //}
 
-        if( physicSystem2D->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize Physics System 2D"
-                );
+        //if( physicSystem2D->initialize() == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize Physics System 2D"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        PhysicService2DInterface * physicService2D;
-        if( createPhysicService2D( &physicService2D ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to create Physic Service 2D"
-                );
+        //PhysicService2DInterface * physicService2D;
+        //if( createPhysicService2D( &physicService2D ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to create Physic Service 2D"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, physicService2D ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, physicService2D ) == false )
+        //{
+        //    return false;
+        //}
 
-        m_physicService2D = physicService2D;
+        //m_physicService2D = physicService2D;
 
-        if( m_physicService2D->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize Physics Service 2D"
-                );
+        //if( m_physicService2D->initialize() == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize Physics Service 2D"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
         return true;
     }
@@ -502,52 +604,52 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeSoundEngine_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
+        //LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
 
-        SoundSystemInterface * soundSystem;
-        if( createSoundSystem( &soundSystem ) == false )
-        {
-            return false;
-        }
+        //SoundSystemInterface * soundSystem;
+        //if( createSoundSystem( &soundSystem ) == false )
+        //{
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
+        //{
+        //    return false;
+        //}
 
-        if( soundSystem->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound System"
-                );
+        //if( soundSystem->initialize() == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound System"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        SoundServiceInterface * soundService;
-        if( createSoundService( &soundService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
-                );
+        //SoundServiceInterface * soundService;
+        //if( createSoundService( &soundService ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
+        //{
+        //    return false;
+        //}
 
-        m_soundService = soundService;
+        //m_soundService = soundService;
 
-        if( m_soundService->initialize( false ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
-                );
+        //if( m_soundService->initialize( false ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
+        //        );
 
-            m_serviceProvider->unregistryService( "SoundService" );
+        //    m_serviceProvider->unregistryService( "SoundService" );
 
-            return false;
-        }
+        //    return false;
+        //}
 
         return true;
     }
@@ -734,20 +836,20 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializePluginService_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
+        //LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
 
-        PluginServiceInterface * pluginService;
-        if( createPluginService( &pluginService ) == false )
-        {
-            return false;
-        }
+        //PluginServiceInterface * pluginService;
+        //if( createPluginService( &pluginService ) == false )
+        //{
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY(m_serviceProvider, pluginService) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY(m_serviceProvider, pluginService) == false )
+        //{
+        //    return false;
+        //}
 
-        m_pluginService = pluginService;
+        //m_pluginService = pluginService;
 
         return true;
     }
@@ -884,63 +986,54 @@ namespace Menge
             return false;
         }
 
-        //if( this->initializeSoundEngine_() == false )
-        //{
-        //	if( this->initializeSilentSoundEngine_() == false )
-        //	{
-        //		return false;
-        //	}
-        //}
-        /*
+        if( this->initializeSilentSoundEngine_() == false )
+        {
+            return false;
+        }
+        
         if( this->initializeScriptEngine_() == false )
         {
-        return false;
+            return false;
         }
 
         if( this->initializeCodecEngine_() == false )
         {
-        return false;
+            return false;
         }
 
         if( this->initializeConverterEngine_() == false )
         {
-        return false;
+            return false;
         }
 
         if( this->initializeInputEngine_() == false )
         {
-        return false;
+            return false;
         }
 
-        if( this->initializeAmplifierService_() == false )
-        {
-        return false;
-        }
+        //if( this->initializeAmplifierService_() == false )
+        //{
+        //    return false;
+        //}
 
         if( this->initializeApplicationService_() == false )
         {
-        return false;
+            return false;
         }
 
         if( this->initializePluginService_() == false )
         {
-        return false;
+            return false;
         }
-
+        
         if( m_application->setup( m_commandLine, m_settings.applicationSettings ) == false )
         {
-        LOGGER_ERROR(m_serviceProvider)( "Application setup failed" 
-        );
+            LOGGER_ERROR(m_serviceProvider)( "Application setup failed" 
+                );
 
-        return false;
+            return false;
         }
 
-        */
-
-
-        LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-            , m_settings.applicationSettings.platformName.c_str() 
-            );
 
         //const WString & projectTitle = m_application->getProjectTitle();
 
@@ -949,15 +1042,47 @@ namespace Menge
         //	, versionInfo
         //	);
 
-        //LOGGER_INFO(m_serviceProvider)( "Initializing Game data..." );
+        {
+            LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
 
-        //if( m_application->initializeGame( m_settings.appParams, scriptInit ) == false )
-        //{
-        //	LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
-        //		);
+            initPluginMengeImageCodec( &m_pluginMengeImageCodec );
+            m_pluginMengeImageCodec->initialize( m_serviceProvider );
+        }
 
-        //	return false;
-        //}
+        {
+            LOGGER_INFO(m_serviceProvider)( "initialize Sound Codec..." );
+
+            initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
+            m_pluginMengeSoundCodec->initialize( m_serviceProvider );
+        }
+
+        String languagePack = m_settings.defaultLocale;
+
+        LOGGER_WARNING(m_serviceProvider)("Locale %s"
+            , languagePack.c_str()
+            );
+
+        if( m_application->createGame( m_settings.personalityModule, Helper::stringizeString(m_serviceProvider, languagePack), m_settings.resourcePacks, m_settings.languagePacks ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Application create game failed"
+                );
+
+            return false;
+        }
+
+        LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
+            , m_settings.applicationSettings.platformName.c_str() 
+            );
+
+        LOGGER_INFO(m_serviceProvider)( "Initializing Game data..." );
+
+        if( m_application->initializeGame( m_settings.appParams, scriptInit ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
+                );
+
+            return false;
+        }
 
         return true;
     }

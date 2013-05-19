@@ -81,7 +81,7 @@ namespace Menge
 	};
 
 #   define PLATFORM_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::PlatformInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::PlatformInterface>(serviceProvider))
 
     struct AspectRatioViewports
     {
@@ -235,11 +235,8 @@ namespace Menge
 
     public:
         virtual void quit() = 0;
-
-	public:		
-		virtual void destroy() = 0;
 	};
 
 #   define APPLICATION_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::ApplicationInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::ApplicationInterface>(serviceProvider))
 }

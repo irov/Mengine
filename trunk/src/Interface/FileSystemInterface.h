@@ -60,7 +60,7 @@ namespace Menge
 	};
 
 #   define FILE_SYSTEM( serviceProvider )\
-    (Menge::getService<Menge::FileSystemInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::FileSystemInterface>(serviceProvider))
 
     class FileGroupInterface
         : public Factorable
@@ -122,7 +122,7 @@ namespace Menge
 	};
 
 #   define FILE_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::FileServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::FileServiceInterface>(serviceProvider))
 }
 
 

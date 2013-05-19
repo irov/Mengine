@@ -6,12 +6,12 @@
 
 namespace Menge
 {
-	class LoggerConsole
+	class ConsoleLogger
 		: public LoggerInterface
 	{
 	public:
-		LoggerConsole( ServiceProviderInterface * _serviceProvider );
-		~LoggerConsole();
+		ConsoleLogger( ServiceProviderInterface * _serviceProvider );
+		~ConsoleLogger();
 
 	public:
 		void createConsole();

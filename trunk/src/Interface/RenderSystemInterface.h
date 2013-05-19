@@ -482,7 +482,7 @@ namespace Menge
 	};
 
 #   define RENDER_SYSTEM( serviceProvider )\
-    (Menge::getService<Menge::RenderSystemInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::RenderSystemInterface>(serviceProvider))
 
     struct RenderDebugInfo
     {
@@ -581,5 +581,5 @@ namespace Menge
 	};
 
 #   define RENDER_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::RenderServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::RenderServiceInterface>(serviceProvider))
 }

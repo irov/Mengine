@@ -24,6 +24,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void StringizeService::destroy()
+    {
+        delete this;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	ConstString StringizeService::stringize( const char * _str, size_t _size )
 	{

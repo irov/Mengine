@@ -1,4 +1,4 @@
-#   include "MousePicker.h"
+#   include "HotspotMousePickerVisitor.h"
 
 #   include "Arrow.h"
 #   include "HotSpot.h"
@@ -7,7 +7,7 @@
 
 namespace Menge
 {
-    MousePicker::MousePicker( HotSpot * _layerspaceHotspot, RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow )
+    HotspotMousePickerVisitor::HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow )
         : m_layerspaceHotspot(_layerspaceHotspot)
         , m_camera(_camera)
         , m_point(_point)
@@ -15,14 +15,14 @@ namespace Menge
         , m_result(false)
     {
     }
-    bool MousePicker::test( Layer * _layer )
+    bool HotspotMousePickerVisitor::test( Layer * _layer )
     {
         _layer->visit( this );
 
         return m_result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MousePicker::accept( Layer2D * _visited )
+    void HotspotMousePickerVisitor::accept( Layer2D * _visited )
     {
         (void)_visited;
 

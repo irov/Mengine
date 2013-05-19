@@ -30,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-		EVENTABLE_CALL(this, EVENT_PREPARATION)("()");
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PREPARATION)("()");
 
 		return Node::_activate();
 	}
@@ -39,21 +39,21 @@ namespace Menge
 	{
 		Node::_afterActivate();
 
-		EVENTABLE_CALL(this, EVENT_ACTIVATE)("()");
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)("()");
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
         Node::_deactivate();
 
-        EVENTABLE_CALL(this, EVENT_PREPARATION_DEACTIVATE)("()");
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_PREPARATION_DEACTIVATE)("()");
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterDeactivate()
 	{
 		Node::_afterDeactivate();
 
-		EVENTABLE_CALL(this, EVENT_DEACTIVATE)("()");
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
@@ -63,7 +63,7 @@ namespace Menge
 			return false;
 		}
 
-		EVENTABLE_CALL(this, EVENT_COMPILE)("()");
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_COMPILE)("()");
 		
 		return true;
 	}
@@ -72,7 +72,7 @@ namespace Menge
 	{
 		Node::_release();
 
-		EVENTABLE_CALL(this, EVENT_RELEASE)("()");
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_embedding( PyObject * _embed )
@@ -92,7 +92,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
-		EVENTABLE_CALL(this, EVENT_CREATE)("()");
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_CREATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_destroy()
@@ -105,7 +105,7 @@ namespace Menge
             return false;
         }
 
-        EVENTABLE_CALL(this, EVENT_DESTROY)("()");
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_DESTROY)("()");
 
         bool result = Node::_destroy();
 

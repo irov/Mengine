@@ -81,5 +81,5 @@ namespace Menge
 	};
 
 #   define SCRIPT_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::ScriptServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::ScriptServiceInterface>(serviceProvider))
 }

@@ -18,7 +18,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     SceneManager::SceneManager()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,11 @@ namespace Menge
     ServiceProviderInterface * SceneManager::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SceneManager::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	Scene * SceneManager::createScene( const ConstString & _name )

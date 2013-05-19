@@ -16,22 +16,24 @@
 
 #	include "Logger/Logger.h"
 
-#   include "MousePicker.h"
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-		: MousePickerAdapter(true)
-//#	ifndef MENGE_MASTER_RELEASE
-		, m_debugColor(0x80FFFFFF)
-//#	endif
+		: m_debugColor(0x80FFFFFF)
 	{
+        m_mousePickerAdapter.setHotspot( this );
+        m_mousePickerAdapter.setDefaultHandle( true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::_setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_mousePickerAdapter.setServiceProvider( _serviceProvider );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setPolygon( const Polygon & _polygon )
 	{
@@ -46,67 +48,30 @@ namespace	Menge
 	{
 		return m_polygon;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::isPickerActive() const
-	{
-		//if( m_layer != 0 )
-		//{
-		//	Scene* scene = m_layer->getScene();
-		//	if( scene != 0 )
-		//	{
-		//		if( scene->getBlockInput() == true )
-		//		{
-		//			return false;
-		//		}
-		//	}
-		//}
-
-		if( this->isFreeze() == true )
-		{
-			return false;
-		}
-
-		if( this->isActivate() == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
-    PyObject * HotSpot::getPickerEmbed()
+    void HotSpot::setDefaultHandle( bool _handle )
     {
-        PyObject * embed = this->getEmbed();
-
-        return embed;
+        m_mousePickerAdapter.setDefaultHandle( _handle );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::onMouseLeave()
-	{
-		MousePickerAdapter::onMouseLeave();
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpot::getDefaultHandle() const
+    {
+        bool handle = m_mousePickerAdapter.getDefaultHandle();
 
-//#	ifndef MENGE_MASTER_RELEASE
-		m_debugColor &= 0xFF000000;
-		m_debugColor |= 0x00FFFFFF;
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::setDebugColor( uint32 _color )
+    {
+        m_debugColor = _color;
 
-		VectorVertices::invalidateVertices();
-//#	endif
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::onMouseEnter()
-	{
-		bool handle = false;
-
-		handle = MousePickerAdapter::onMouseEnter();
-
-//#	ifndef MENGE_MASTER_RELEASE
-		m_debugColor &= 0xFF000000;
-		m_debugColor |= 0x00FF0000;
-		VectorVertices::invalidateVertices();
-//#	endif
-
-		return handle;
-	}
+        VectorVertices::invalidateVertices();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32 HotSpot::getDebugColor() const
+    {
+        return m_debugColor;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint_( const mt::vec2f & _p )
 	{
@@ -121,55 +86,12 @@ namespace	Menge
 
 		invalidateBoundingBox();
 	}
-//	//////////////////////////////////////////////////////////////////////////
-//	void HotSpot::_invalidateBoundingBox()
-//	{
-//		Node::_invalidateBoundingBox();
-//
-//#	ifndef MENGE_MASTER_RELEASE
-//		VectorVertices::invalidateVertices();
-//#	endif
-//	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( const mt::vec2f& _point, Arrow * _arrow )
-	{
-		Layer * layer = this->getLayer();
-
-		if( layer == 0 )
-		{
-			return false;
-		}
-		
-        Camera2D * camera = PLAYER_SERVICE(m_serviceProvider)
-            ->getRenderCamera2D();
-
-        //const Viewport & viewport = camera->getViewport();
-        
-		//const mt::box2f & myBB = this->getBoundingBox();
-		//const mt::box2f & otherBB = _hotspot->getBoundingBox();
-        
-		//if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
-		//{
-		//	return false;
-		//}
-
-        MousePicker mp(this, camera, _point, _arrow);
-
-        bool result = mp.test( layer );
-
-		//if( layer->testArrow( camera, this, _point, _arrow ) == false )
-		//{
-			//return false;
-		//}
-
-		return result;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( PyObject * _listener )
 	{
 		Node::_setEventListener( _listener );
 
-		MousePickerAdapter::setEventListener( _listener );
+		m_mousePickerAdapter.setEventListener( _listener );
 
 		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
@@ -182,9 +104,9 @@ namespace	Menge
 			return false;
 		}
 
-		MousePickerAdapter::activatePicker();
+        m_mousePickerAdapter.activatePicker();
 
-		EVENTABLE_CALL(this, EVENT_ACTIVATE)( "()" );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)( "()" );
 
 //#	ifndef MENGE_MASTER_RELEASE
 		if( m_enable )
@@ -204,9 +126,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		MousePickerAdapter::deactivatePicker();
+		m_mousePickerAdapter.deactivatePicker();
 
-		EVENTABLE_CALL(this, EVENT_DEACTIVATE)( "()" );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
 
 //#	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0x00000000;
@@ -218,8 +140,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
-		Camera2D * camera = PLAYER_SERVICE(m_serviceProvider)
-			->getRenderCamera2D();
+		RenderCameraInterface * camera = PLAYER_SERVICE(m_serviceProvider)
+			->getCamera2D();
 
 		const Viewport & viewport = camera->getViewport();
 
@@ -303,7 +225,7 @@ namespace	Menge
 	{
 		Node::_update( _current, _timing );
 
-		MousePickerAdapter::updatePicker();
+		m_mousePickerAdapter.updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::mat4f& _transform, const Polygon & _screenPoly, const mt::mat4f& _screenTransform )

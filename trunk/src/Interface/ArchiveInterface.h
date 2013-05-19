@@ -20,5 +20,5 @@ namespace Menge
     };
 
 #   define ARCHIVE_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::ArchiveServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::ArchiveServiceInterface>(serviceProvider))
 }

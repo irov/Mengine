@@ -134,4 +134,9 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::destroy()
+    {
+        delete this;
+    }
 }

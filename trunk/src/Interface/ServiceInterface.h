@@ -2,6 +2,9 @@
 
 #	include "Config/Typedef.h"
 
+#   include "Utils/Factory/Factory.h"
+#   include "Utils/Factory/Factorable.h"
+
 namespace Menge
 {
     class ServiceProviderInterface;
@@ -11,6 +14,9 @@ namespace Menge
     public:
         virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
         virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
+    public:
+        virtual void destroy() = 0;
 	};
 
 	class ServiceListenerInterface
@@ -29,41 +35,41 @@ namespace Menge
 
 	public:
 		virtual bool addServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) = 0;
-		virtual bool removeServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) = 0;
+		virtual bool removeServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) = 0;    
 
-	public:
-		template<class T>
-		T * getServiceT( const String & _name )
-		{
-            ServiceInterface * service = this->getService( _name );
+    public:
+        virtual void destroy() = 0;
+	};
 
-            if( service == NULL )
+    namespace Helper
+    {
+        template<class T>
+        inline T * getService( ServiceProviderInterface * _serviceProvider )
+        {
+            static T * s_service = nullptr;
+
+            if( s_service == nullptr )
             {
-                return NULL;
+                const char * serviceName = T::getServiceName();
+
+                ServiceInterface * service = _serviceProvider->getService( serviceName );
+
+                if( service == nullptr )
+                {
+                    return nullptr;
+                }
+
+                s_service = dynamic_cast<T*>(service);
             }
 
-			return dynamic_cast<T*>(service);
-		}        
-	};
+            return s_service;
+        }
+    }
 
 #   define SERVICE_DECLARE( NAME )\
     public:\
         inline static const char * getServiceName(){ return NAME; };\
     protected:
-
-    template<class T>
-    inline T * getService( ServiceProviderInterface * _serviceProvider )
-    {
-        static T * s_service = NULL;
-
-        if( s_service == NULL )
-        {
-            const char * serviceName = T::getServiceName();
-            s_service = _serviceProvider->getServiceT<T>(serviceName);
-        }
-
-        return s_service;
-    }
 
 #   define SERVICE_FACTORY( Name, Service, Implement )\
     extern "C"\
@@ -77,13 +83,6 @@ namespace Menge
     *_service = new Implement();\
     return true;\
     }\
-    void destroy##Name( Service * _service )\
-    {\
-    if( _service )\
-    {\
-    delete static_cast<Implement *>(_service);\
-    }\
-    }\
     }\
     struct __mengine_dummy{}
 
@@ -91,10 +90,27 @@ namespace Menge
     extern "C"\
     {\
     extern bool create##Name( Service ** );\
-        extern void destroy##Name( Service * );\
+    }\
+    struct __mengine_extern_dummy_##Name{}
+
+#   define SERVICE_DUMMY( Name, Service )\
+    extern "C"\
+    {\
+    bool create##Name( Service ** ){return false;};\
     }\
     struct __mengine_extern_dummy_##Name{}
 
 #   define SERVICE_REGISTRY( Provider, Service )\
     (Provider->registryService(Service->getServiceName(), Service))
+
+#   define SERVICE_CREATE( Name, Service )\
+    create##Name( Service )
+
+#   define SERVICE_DESTROY( Service )\
+    if( Service != nullptr )\
+    {\
+        Service->destroy();\
+    }    
+
+
 }

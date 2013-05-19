@@ -138,5 +138,8 @@ namespace Menge
         FileLogger * m_fileLog;
 
         String m_commandLine;
+
+        PluginInterface * m_pluginMengeImageCodec;
+        PluginInterface * m_pluginMengeSoundCodec;
     };
 }

@@ -1,4 +1,4 @@
-#	include "LoggerConsole.h"
+#	include "ConsoleLogger.h"
 
 #   include "Interface/UnicodeInterface.h"
 
@@ -10,7 +10,7 @@ typedef BOOL (WINAPI *PATTACHCONSOLE)(DWORD);
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LoggerConsole::LoggerConsole( ServiceProviderInterface * _serviceProvider )
+	ConsoleLogger::ConsoleLogger( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
         , m_createConsole(false)
 		, m_verboseLevel(LM_INFO)
@@ -18,7 +18,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LoggerConsole::~LoggerConsole()
+	ConsoleLogger::~ConsoleLogger()
 	{
 		if( m_createConsole == false )
 		{
@@ -36,17 +36,17 @@ namespace Menge
 		FreeConsole();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::setVerboseLevel( EMessageLevel _level )
+	void ConsoleLogger::setVerboseLevel( EMessageLevel _level )
 	{
 		m_verboseLevel = _level;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void LoggerConsole::setVerboseFlag( size_t _flag )
+    void ConsoleLogger::setVerboseFlag( size_t _flag )
     {
         m_verboseFlag = _flag;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool LoggerConsole::validMessage( EMessageLevel _level, size_t _flag ) const
+	bool ConsoleLogger::validMessage( EMessageLevel _level, size_t _flag ) const
 	{
 		if( m_verboseLevel < _level )
 		{
@@ -66,7 +66,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::createConsole()
+	void ConsoleLogger::createConsole()
 	{
 		PATTACHCONSOLE pAttachConsole = NULL;
 		HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
@@ -130,8 +130,10 @@ namespace Menge
 		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
+	void ConsoleLogger::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
 	{	
+        (void)_flag;
+
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 		::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo);
 
@@ -163,7 +165,7 @@ namespace Menge
 		//::WriteConsoleA( , ansi.c_str(), ansi.length(), &writtenCharsCount, NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::flush()
+	void ConsoleLogger::flush()
 	{
 
 	}

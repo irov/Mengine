@@ -8,7 +8,7 @@
 
 #   include "XlsScriptLogger.h"
 
-#	include <Windows.h>
+#   include "WindowsLayer/WindowsIncluder.h"
 
 #	include <pybind\pybind.hpp>
 

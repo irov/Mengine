@@ -11,7 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadSystem::Win32ThreadSystem()
-		: m_serviceProvider(0)
+		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,11 @@ namespace Menge
     ServiceProviderInterface * Win32ThreadSystem::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32ThreadSystem::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::initialize()		
@@ -55,7 +60,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static DWORD WINAPI s_tread_job( LPVOID _userData )
     {
-        //ThreadHolder * threadHolder = (ThreadHolder *)_threadHolder;
         ThreadListener * threadListener = static_cast<ThreadListener*>(_userData);
 
         threadListener->main();

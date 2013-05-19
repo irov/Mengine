@@ -24,9 +24,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AccountManager::AccountManager()
-		: m_accountListener(NULL)
-        , m_serviceProvider(NULL)
-		, m_currentAccount(NULL)
+		: m_serviceProvider(nullptr)
+        , m_accountListener(nullptr)
+		, m_currentAccount(nullptr)
 		, m_playerEnumerator(0)
 	{
 	}
@@ -45,6 +45,11 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
+    void AccountManager::destroy()
+    {
+        delete this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AccountManager::initialize( const FilePath & _accountsPath, AccountServiceListener * _listener )
     {
         m_accountsPath = _accountsPath;
@@ -61,8 +66,7 @@ namespace Menge
         m_currentAccount = lastAccount;
         this->saveAccountsInfo();
 
-        m_currentAccount = NULL;
-               
+        m_currentAccount = nullptr;               
 
         for( TMapAccounts::iterator 
             it = m_accounts.begin(), 

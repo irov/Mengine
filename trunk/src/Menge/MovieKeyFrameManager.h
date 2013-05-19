@@ -22,6 +22,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) override;
 		void releaseMovieFramePak( MovieFramePackInterface * _framePak ) override;

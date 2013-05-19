@@ -56,8 +56,12 @@
 #	include "EventManager.h"
 #	include "TimingManager.h"
 
+#   include "pybind/pybind.hpp"
+
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
+#   pragma warning(disable:4800)
+#   pragma warning(disable:4702)
 #   endif
 
 #	include "boost/geometry/geometries/box.hpp"
@@ -866,8 +870,8 @@ namespace Menge
 			
 			    PyObject * py_out = pybind::ptr(out);
 
-			    EVENT_SERVICE(m_serviceProvider)
-				    ->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, py_out, pybind::get_bool(done) );
+                SCRIPT_SERVICE(m_serviceProvider)
+                    ->callFunction( m_cb, "(iOO)", _id, py_out, pybind::get_bool(done) );
 
 			    pybind::decref( py_out );
 
@@ -876,8 +880,8 @@ namespace Menge
 
 		    void removeTiming( size_t _id ) override
 		    {			
-			    EVENT_SERVICE(m_serviceProvider)
-				    ->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
+			    SCRIPT_SERVICE(m_serviceProvider)
+				    ->callFunction( m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
 		    }
 
             void deleteTimingListener() const override
@@ -942,16 +946,16 @@ namespace Menge
 			    float out;
 			    bool done = m_interpolator.update( _timing, &out );
 
-			    EVENT_SERVICE(m_serviceProvider)
-				    ->addEventFormat( EVENT_TIMING, m_cb, "(ifO)", _id, out, pybind::get_bool(done), pybind::get_bool(false) );
+			    SCRIPT_SERVICE(m_serviceProvider)
+				    ->callFunction( m_cb, "(ifO)", _id, out, pybind::get_bool(done), pybind::get_bool(false) );
 
 			    return done;
 		    }
 
 		    void removeTiming( size_t _id ) override
 		    {			
-			    EVENT_SERVICE(m_serviceProvider)
-				    ->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
+			    SCRIPT_SERVICE(m_serviceProvider)
+				    ->callFunction( m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
 		    }
 
             void deleteTimingListener() const override

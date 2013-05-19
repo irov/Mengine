@@ -14,7 +14,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     ArrowManager::ArrowManager()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,11 @@ namespace Menge
     ServiceProviderInterface * ArrowManager::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ArrowManager::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * ArrowManager::createArrow( const ConstString & _prototype )

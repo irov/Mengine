@@ -23,7 +23,7 @@ namespace Menge
     (0.f)
 #   else //MENGE_MASTER_RELEASE
 #   define WATCHDOG( serviceProvider, tag )\
-    (Menge::getService<Menge::WatchdogInterface>(serviceProvider)->watch(tag))
+    (Menge::Helper::getService<Menge::WatchdogInterface>(serviceProvider)->watch(tag))
 #   endif //MENGE_MASTER_RELEASE
 
 #   define LOGGER_WATCHDOG( serviceProvider )\

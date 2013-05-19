@@ -23,6 +23,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		EmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) override;
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) override;

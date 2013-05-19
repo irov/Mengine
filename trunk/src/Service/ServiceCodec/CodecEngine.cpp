@@ -31,6 +31,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void CodecEngine::destroy()
+    {
+        delete this;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerDecoder( const ConstString& _type, DecoderFactoryInterface * _interface )
 	{

@@ -25,6 +25,9 @@ src
     
     FilePath.h
     FilePath.cpp
+    
+    FileLogger.cpp
+    FileLogger.h
 	
 	MemoryInput.h
 	MemoryInput.cpp

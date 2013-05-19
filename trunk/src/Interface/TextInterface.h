@@ -30,5 +30,5 @@ namespace Menge
     };
 
 #   define TEXT_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::TextServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::TextServiceInterface>(serviceProvider))
 }

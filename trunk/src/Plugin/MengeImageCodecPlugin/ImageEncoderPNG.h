@@ -2,7 +2,7 @@
 
 #	include "Codec/ImageEncoder.h"
 
-#	include "libPNG/png.h"
+#	include <png.h>
 
 namespace Menge
 {

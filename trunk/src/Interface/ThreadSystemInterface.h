@@ -62,7 +62,7 @@ namespace Menge
 	};
 
 #   define THREAD_SYSTEM( serviceProvider )\
-    (Menge::getService<Menge::ThreadSystemInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::ThreadSystemInterface>(serviceProvider))
 
     class ThreadServiceInterface
         : public ServiceInterface
@@ -86,5 +86,5 @@ namespace Menge
     };
 
 #   define THREAD_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::ThreadServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::ThreadServiceInterface>(serviceProvider))
 }

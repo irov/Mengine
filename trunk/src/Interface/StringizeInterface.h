@@ -17,15 +17,17 @@ namespace Menge
 		virtual ConstString stringize( const char * _str, size_t _size ) = 0;
 	};
 
+
+#   define STRINGIZE_SERVICE( serviceProvider )\
+    (Helper::getService<Menge::StringizeServiceInterface>(serviceProvider))
+
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size )
         {
-            StringizeServiceInterface * stringizeService = 
-                _serviceProvider->getServiceT<Menge::StringizeServiceInterface>("StringizeService");
-
-            ConstString cstr = stringizeService->stringize( _value, _size );
+            ConstString cstr = STRINGIZE_SERVICE(_serviceProvider)
+                ->stringize( _value, _size );
 
             return cstr;
         }
@@ -39,6 +41,4 @@ namespace Menge
     }
 }
 
-#   define STRINGIZE_SERVICE( serviceProvider )\
-    (serviceProvider->getServiceT<Menge::StringizeServiceInterface>("StringizeService"))
 

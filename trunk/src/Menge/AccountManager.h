@@ -26,6 +26,9 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
+        void destroy() override;
+
+    public:
         bool initialize( const FilePath & _accountsPath, AccountServiceListener * _listener ) override;
         void finalize() override;
 

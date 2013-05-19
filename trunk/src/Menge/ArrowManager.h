@@ -22,6 +22,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		Arrow * createArrow( const ConstString & _prototype ) override;
 

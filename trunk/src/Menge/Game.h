@@ -28,52 +28,59 @@ namespace Menge
 	class LightSystem;
 
 	class Game
-		: public GameServiceInterface
-		, public InputSystemHandler
+		: public GameServiceInterface		
 		, public Eventable
 	{
 	public:
-		Game( const String & _baseDir, bool _developmentMode, const String & _platformName );
+		Game();
 		~Game();
-
-    public:
-        Player * getPlayer() const;
-
-	public:
-		bool update();
-		void tick( float _timing );
-
-    public:
-		bool render() override;
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
+    public:
+        bool initialize( const TMapWString & _params ) override;
+        void finalize() override;
+
+    public:
+        void setBaseDir( const String & _baseDir ) override;
+        void setDevelopmentMode( bool _developmentMode ) override;
+        void setPlatformName( const String & _platformName ) override;
+
+    public:
+        PlayerServiceInterface * getPlayer() const override;
+
 	public:
-		bool initialize( const TMapWString & _params );
-		void finalize();
+		bool update() override;
+		void tick( float _timing ) override;
 
     public:
-        bool run( const String& _scriptInitParams );
+		bool render() override;
 
     public:
-		void initializeRenderResources();
-		void finalizeRenderResources();
+        bool run( const String& _scriptInitParams ) override;
 
-		bool loadPersonality( const ConstString & _module );
+    public:
+		void initializeRenderResources() override;
+		void finalizeRenderResources() override;
+
+		bool loadPersonality( const ConstString & _module ) override;
 		
-		bool loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack );
-		bool applyConfigPaks();
+		bool loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
+		bool applyConfigPaks() override;
 
-		void setLanguagePack( const ConstString& _packName );
+		void setLanguagePack( const ConstString& _packName ) override;
         const ConstString & getLanguagePack() const override;
 
 	protected:
 		bool loadLocalePaksByName_( const ConstString & _locale, const String & _platform );
 			
 	public:
-		void setCursorMode( bool _mode );
+		void setCursorMode( bool _mode ) override;
 
 	public:
 		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -82,15 +89,15 @@ namespace Menge
 		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 		
-		void onAppMouseLeave();
-		void onAppMouseEnter( const mt::vec2f & _point );
+		void onAppMouseLeave() override;
+		void onAppMouseEnter( const mt::vec2f & _point ) override;
 
-		void onFocus( bool _focus );
-		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
-        void onFixedContentResolution( const Resolution & _resolution, bool _fixed );
-		bool onClose();
+		void onFocus( bool _focus ) override;
+		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
+        void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
+		bool onClose() override;
 
-		void onTurnSound( bool _turn );
+		void onTurnSound( bool _turn ) override;
 
 	public:
 		const WString & getParam( const WString & _paramName ) override;

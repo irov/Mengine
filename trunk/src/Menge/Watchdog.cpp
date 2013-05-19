@@ -45,9 +45,4 @@ namespace Menge
 
 		return time;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Watchdog::destroy()
-    {
-        delete this;
-    }
 }

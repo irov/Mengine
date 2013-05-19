@@ -27,9 +27,6 @@ namespace Menge
     public:
         virtual PluginInterface * loadPlugin( const String & _name ) = 0;
         virtual void unloadPlugin( const String & _name ) = 0;
-
-    public:
-        virtual void destroy() = 0;
     };
 
 #   define PLUGIN_SERVICE( serviceProvider )\

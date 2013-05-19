@@ -32,11 +32,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32FileSystem::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterfacePtr Win32FileSystem::createInputStream()
 	{
         Win32InputStream * inputStream = m_factoryInputStream.createObjectT();

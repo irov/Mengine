@@ -417,7 +417,7 @@ namespace Menge
 		
 		MovieKeyFrameServiceInterface * movieKeyFrameService;
 
-        if( createMovieKeyFrameService( &movieKeyFrameService ) == false )
+        if( SERVICE_CREATE( MovieKeyFrameService, &movieKeyFrameService ) == false )
         {
             return false;
         }
@@ -1158,28 +1158,23 @@ namespace Menge
 		{
             ScriptWrapper::constsUnwrap( m_serviceProvider );            			
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::destroy()
-	{
-		m_game->destroy();
-        
-		//delete m_paramManager;
+
+        SERVICE_DESTROY( GameService, m_game );
+
+        //delete m_paramManager;
         //destroyArrowService
 
-        m_watchdog->destroy();
-        m_loaderService->destroy();
-        m_textService->destroy();
-        m_arrowService->destroy();
-        
-        m_sceneService->destroy();
-        m_entityService->destroy();
-        m_nodeService->destroy();
-        m_movieKeyFrameService->destroy();
-        //m_eventService->destroy();
-        m_resourceService->destroy();
+        SERVICE_DESTROY( Watchdog, m_watchdog );
+        SERVICE_DESTROY( LoaderService, m_loaderService );
+        SERVICE_DESTROY( TextService, m_textService );
+        SERVICE_DESTROY( ArrowService, m_arrowService );
 
-        delete this;
+        SERVICE_DESTROY( SceneService, m_sceneService );
+        SERVICE_DESTROY( EntityService, m_entityService );
+        SERVICE_DESTROY( NodeService, m_nodeService );
+        SERVICE_DESTROY( MovieKeyFrameService, m_movieKeyFrameService );
+        //m_eventService->destroy();
+        SERVICE_DESTROY( ResourceService, m_resourceService );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const

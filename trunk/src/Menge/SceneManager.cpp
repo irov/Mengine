@@ -35,11 +35,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void SceneManager::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	Scene * SceneManager::createScene( const ConstString & _name )
 	{

@@ -48,9 +48,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        void destroy() override;
-
-    public:
         bool initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution );
         void finalize();
 

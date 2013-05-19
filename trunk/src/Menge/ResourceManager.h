@@ -33,9 +33,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        void destroy() override;
-
-    public:
         void registerResourceFactory( const ConstString & _type, Factory * _factory ) override;
 
 	public:

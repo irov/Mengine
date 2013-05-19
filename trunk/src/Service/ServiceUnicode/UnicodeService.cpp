@@ -25,11 +25,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void UnicodeService::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool UnicodeService::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {  
         if( UNICODE_SYSTEM(m_serviceProvider)

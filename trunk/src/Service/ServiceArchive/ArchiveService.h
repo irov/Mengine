@@ -16,9 +16,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
         
     public:
-        void destroy() override;
-
-    public:
         size_t compressBound( size_t _size ) override;
 
     public:

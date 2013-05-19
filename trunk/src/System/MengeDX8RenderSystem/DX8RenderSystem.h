@@ -42,9 +42,6 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
-    public:
-        void destroy() override;
-    
     protected:
 		void clear_( DWORD _color );
 		bool supportNPOT_() const;

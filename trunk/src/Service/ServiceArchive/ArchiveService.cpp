@@ -29,11 +29,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArchiveService::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     size_t ArchiveService::compressBound( size_t _size )
     {
         uLong size = ::compressBound( _size );

@@ -25,11 +25,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32UnicodeSystem::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
 #   if (WINVER >= 0x0600)

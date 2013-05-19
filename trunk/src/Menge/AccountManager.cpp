@@ -45,11 +45,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountManager::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool AccountManager::initialize( const FilePath & _accountsPath, AccountServiceListener * _listener )
     {
         m_accountsPath = _accountsPath;

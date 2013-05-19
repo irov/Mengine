@@ -112,9 +112,6 @@ namespace Menge
         bool initializeEventManager_();
         bool initializeWatchdog_();
 
-	public:		
-		void destroy() override;
-
 	public:
 		void setBaseDir( const String & _dir );
 

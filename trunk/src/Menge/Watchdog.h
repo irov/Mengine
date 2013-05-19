@@ -20,7 +20,6 @@ namespace Menge
 
 	public:
 		float watch( const String & _tag ) override;
-        void destroy() override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

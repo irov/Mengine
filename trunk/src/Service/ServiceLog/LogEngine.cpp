@@ -36,11 +36,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void LogEngine::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::setVerboseLevel( EMessageLevel _level )
 	{

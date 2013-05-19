@@ -75,11 +75,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Game::setBaseDir( const String & _baseDir )
     {
         m_baseDir = _baseDir;
@@ -448,7 +443,7 @@ namespace Menge
 
         if( m_accountService != nullptr )
         {
-            m_accountService->destroy();
+            SERVICE_DESTROY(AccountService, m_accountService);
             m_accountService = nullptr;
         }
 

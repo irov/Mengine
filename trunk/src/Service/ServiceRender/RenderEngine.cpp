@@ -87,11 +87,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::destroy()
-    {
-        delete this;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::initialize( size_t _maxQuadCount )
     {
         m_maxQuadCount = _maxQuadCount;

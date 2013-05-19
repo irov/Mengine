@@ -28,11 +28,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void NotificationService::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::addObserver( const String & _id, Observer * _observer )
 	{

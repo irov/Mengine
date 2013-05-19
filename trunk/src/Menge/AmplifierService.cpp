@@ -52,11 +52,6 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void AmplifierService::destroy()
-    {
-        delete this;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool AmplifierService::loadPlayList_( const ConstString& _playlistResource )
 	{

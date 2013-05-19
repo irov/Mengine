@@ -35,5 +35,5 @@ namespace Menge
 	};
 
 #   define AMPLIFIER_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::AmplifierServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::AmplifierServiceInterface>(serviceProvider))
 }

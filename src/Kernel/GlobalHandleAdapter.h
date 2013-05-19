@@ -19,6 +19,9 @@ namespace Menge
 	public:
 		GlobalHandleAdapter();
 
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+
 	public:
 		void setEventListener( PyObject * _listener );
 
@@ -50,6 +53,8 @@ namespace Menge
         GlobalHandleSystemInterface * getGlobalHandleSystem() const;
 
 	protected:
+        ServiceProviderInterface * m_serviceProvider;
+
 		bool m_globalMouseEvent;
 		bool m_globalKeyEvent;
 

@@ -11,7 +11,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     NotificationService::NotificationService()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -27,6 +27,11 @@ namespace Menge
     ServiceProviderInterface * NotificationService::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NotificationService::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::addObserver( const String & _id, Observer * _observer )

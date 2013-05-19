@@ -5,6 +5,7 @@
 #   include "Interface/ScheduleManagerInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"
 #   include "Interface/GlobalHandleSystemInterface.h"
+#   include "Interface/RenderSystemInterface.h"
 #   include "Interface/NodeInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 
@@ -33,8 +34,8 @@ namespace Menge
         virtual Arrow * getArrow() const = 0;
 
     public:
-        virtual void setRenderCamera2D( Camera2D * _camera) = 0;
-        virtual Camera2D * getRenderCamera2D() const = 0;
+        virtual void setCamera2D( Camera2D * _camera) = 0;
+        virtual Camera2D * getCamera2D() const = 0;
         
     public:
         virtual MousePickerSystemInterface * getMousePickerSystem() const = 0;
@@ -54,8 +55,11 @@ namespace Menge
         virtual bool isJoin( Node * _left, Node * _right ) const = 0;
 
         virtual void getJoins( Node * _node, TVectorNode & _joins ) const = 0;
+
+    public:
+        virtual void toggleDebugText() = 0;
     };
 
 #   define PLAYER_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::PlayerServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::PlayerServiceInterface>(serviceProvider))
 }

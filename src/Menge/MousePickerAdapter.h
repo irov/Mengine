@@ -2,9 +2,6 @@
 
 #   include "Interface/MousePickerSystemInterface.h"
 
-#	include "Kernel/Scriptable.h"
-#	include "Kernel/Eventable.h"
-
 namespace Menge
 {
     class MousePickerSystemInterface;
@@ -12,18 +9,19 @@ namespace Menge
 
 	class MousePickerAdapter
 		: public MousePickerTrapInterface        
-        , virtual public Scriptable
-		, virtual public Eventable
 	{
 	public:
-		MousePickerAdapter( bool _defaultHandle );
+		MousePickerAdapter();
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		void setEventListener( PyObject * _listener );
 
-	public:
-		void setDefaultHandle( bool _handle );
-		bool getDefaultHandle() const;
+    public:
+        void setDefaultHandle( bool _handle );
+        bool getDefaultHandle() const;
 
 	public:
 		void activatePicker();
@@ -48,6 +46,8 @@ namespace Menge
         MousePickerSystemInterface * getMousePickerSystem() const;
 
 	protected:
+        ServiceProviderInterface * m_serviceProvider;
+        
 		PickerTrapState * m_picker;
 
 		bool m_defaultHandle;

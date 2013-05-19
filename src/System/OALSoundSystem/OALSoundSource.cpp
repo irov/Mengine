@@ -8,8 +8,6 @@
 
 #   include <math.h>
 
-#	define OAL_CHECK_ERROR() s_OALErrorCheck( m_serviceProvider, __FILE__, __LINE__ )
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -121,7 +119,7 @@ namespace Menge
         if( m_playing == true && m_sourceId != 0 )
 		{
 			alSourcef( m_sourceId, AL_GAIN, m_volume );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -139,7 +137,7 @@ namespace Menge
 		if( m_playing == true && m_sourceId != 0 )
 		{
 			alSourcefv( m_sourceId, AL_POSITION, &(m_position[0]) );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -239,37 +237,37 @@ namespace Menge
 		if( m_headMode )
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 0.f );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 
 			alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 		} 
 		else 
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.f );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
-		OAL_CHECK_ERROR();
+		OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
-		OAL_CHECK_ERROR();
+		OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_MIN_GAIN, 0.f );
-		OAL_CHECK_ERROR();
+		OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_MAX_GAIN, 1.f );
-		OAL_CHECK_ERROR();
+		OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_GAIN, m_volume );
-		OAL_CHECK_ERROR();
+		OAL_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface* OALSoundSource::getSoundBuffer() const

@@ -8,7 +8,7 @@
 
 #	include "Logger/Logger.h"
 
-#	include <Windows.h>
+#   include "WindowsLayer/WindowsIncluder.h"
 
 namespace Menge
 {

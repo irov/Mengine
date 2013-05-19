@@ -57,5 +57,5 @@ namespace Menge
     };
 
 #   define MOVIEKEYFRAME_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::MovieKeyFrameServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::MovieKeyFrameServiceInterface>(serviceProvider))
 }

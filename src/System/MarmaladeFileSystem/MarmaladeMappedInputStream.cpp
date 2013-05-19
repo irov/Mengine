@@ -219,7 +219,7 @@ namespace Menge
         return current;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MarmaladeInputStream::size() const 
+    size_t MarmaladeMappedInputStream::size() const 
     {
         return static_cast<size_t>( m_size );
     }

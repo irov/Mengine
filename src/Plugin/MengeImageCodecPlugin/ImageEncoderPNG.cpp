@@ -156,12 +156,15 @@ namespace Menge
 
 		if( m_png_ptr == NULL )  
 		{
-			LOGGER_ERROR(m_serviceProvider)( "PNG encoder error: Can't create write structure" );
+			LOGGER_ERROR(m_serviceProvider)( "PNG encoder error: Can't create write structure" 
+                );
+
 			return false;
 		}
 
 		// init the IO
 		png_set_write_fn( m_png_ptr, m_stream.get(), s_writeProc, s_flushProc );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

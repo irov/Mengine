@@ -10,8 +10,8 @@ if(WIN32)
         ADD_SUBDIRECTORY( MengeHotspotImageConverterPlugin )
         #ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
         
-        ADD_SUBDIRECTORY( CURLHTTPSystem )
-        ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
+        #ADD_SUBDIRECTORY( CURLHTTPSystem )
+        #ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
         
         ADD_SUBDIRECTORY( MengeXlsExportPlugin )
         ADD_SUBDIRECTORY( MengeXmlCodecPlugin )

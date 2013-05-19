@@ -53,6 +53,9 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
+        void destroy() override;
+
+    public:
 		bool initialize( bool _silent ) override;
 		void finalize() override;
 
@@ -130,8 +133,6 @@ namespace Menge
         void playSoundBufferUpdate_( SoundSourceDesc * _source );
 
 	protected:
-		SoundSystemInterface * m_soundSystem;
-
         ServiceProviderInterface * m_serviceProvider;
 
         float m_commonVolume;

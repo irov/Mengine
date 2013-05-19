@@ -12,7 +12,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
 		, m_cursorPosition(0.f, 0.f)
         , m_dimentions(0.f, 0.f)
 		, m_inputScale(1.f, 1.f)
@@ -33,6 +33,11 @@ namespace Menge
     ServiceProviderInterface * InputEngine::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputEngine::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize()
@@ -285,10 +290,11 @@ namespace Menge
         (void)_fullscreen;
         (void)_resolution;
 
-		ApplicationInterface * applicationService = m_serviceProvider->getServiceT<ApplicationInterface>("ApplicationService");
-		
-		const Resolution & contentResolution = applicationService->getContentResolution();		
-		const Viewport & renderViewport = applicationService->getRenderViewport();
+		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+            ->getContentResolution();		
+
+		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+            ->getRenderViewport();
 
 		size_t contentResolutionWidth = contentResolution.getWidth();
 		size_t contentResolutionHeight = contentResolution.getHeight();
@@ -301,7 +307,9 @@ namespace Menge
 
         float gameViewportAspect;
         Viewport gameViewport; 
-        applicationService->getGameViewport( gameViewportAspect, gameViewport );
+
+        APPLICATION_SERVICE(m_serviceProvider)
+            ->getGameViewport( gameViewportAspect, gameViewport );
 
         m_inputViewport.begin = renderViewport.begin;
         m_inputViewport.end = renderViewport.end;

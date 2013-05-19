@@ -1,5 +1,5 @@
 #	include "HTTPLoggerCURL.h"
-#	include "windows.h"
+#   include "WindowsLayer/WindowsIncluder.h"
 //1 mb buffer
 #	define HTTP_LOGGER_CURL_BUFFER_LIMIT 1048576
 

@@ -9,21 +9,13 @@
 #   include "Core/ConstString.h"
 
 namespace Menge
-{
-	class ConverterServiceInterface;
-
-	//struct ConverterDataInfo 
-	//{
-	//	FilePath outputFileName;
-	//};
-	
+{	
 	struct ConverterOptions
 	{		
 		ConstString pakName; 
 
 		FilePath inputFileName;
         FilePath outputFileName;
-		//FilePath pakNameFullPath;
 	};
 	
 	class ConverterInterface
@@ -76,5 +68,5 @@ namespace Menge
 	};
 
 #   define CONVERTER_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::ConverterServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::ConverterServiceInterface>(serviceProvider))
 }	// namespace Menge

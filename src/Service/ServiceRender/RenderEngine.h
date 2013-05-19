@@ -77,6 +77,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _provider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		bool initialize( size_t _maxQuadCount ) override;
 		void finalize() override;
@@ -216,8 +219,6 @@ namespace Menge
         void calcQuadSquare_( const Vertex2D * _vertex, size_t _num );
 
 	private:
-		RenderSystemInterface * m_renderSystem;
-
         ServiceProviderInterface * m_serviceProvider;
 
 		size_t m_maxQuadCount;

@@ -13,7 +13,7 @@ namespace Menge
 {
 	////////////////////////////////////////////////////////////////////////////////////////////
 	MovieKeyFrameManager::MovieKeyFrameManager()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +30,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieKeyFrameManager::destroy()
+    {
+        delete this;
+    }
 	////////////////////////////////////////////////////////////////////////////////////////////
 	MovieFramePackInterface * MovieKeyFrameManager::getMovieFramePak( const ConstString & _pak, const FilePath & _path )
 	{
@@ -42,7 +47,7 @@ namespace Menge
 				, _path.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		return framePak;
@@ -69,7 +74,7 @@ namespace Menge
                     );
             }
 
-            return NULL;
+            return nullptr;
         }
 
         size_t maxIndex = keyFramesPack.get_MaxIndex();

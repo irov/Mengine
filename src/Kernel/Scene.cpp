@@ -47,7 +47,7 @@ namespace Menge
 			return;
 		}
 
-		EVENTABLE_CALL(this, EVENT_ON_SUB_SCENE)( "(O)", m_parentScene->getEmbed() );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_SUB_SCENE)( "(O)", m_parentScene->getEmbed() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Scene::getParentScene() const
@@ -114,7 +114,7 @@ namespace Menge
 		//	handle = false;
 		//}
 
-		EVENTABLE_ASK(this, EVENT_APP_MOUSE_LEAVE)( handle, false, "()" );
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE)( handle, false, "()" );
 
 		if( handle == false )
 		{
@@ -139,7 +139,7 @@ namespace Menge
 		//	handle = false;
 		//}
 
-		EVENTABLE_ASK(this, EVENT_APP_MOUSE_ENTER)( handle, false, "()" );
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( handle, false, "()" );
 
 		if( handle == false )
 		{
@@ -164,7 +164,7 @@ namespace Menge
 		//	handle = false;
 		//}
 
-		EVENTABLE_ASK(this, EVENT_FOCUS)( handle, false, "(O)", pybind::get_bool(_focus) );
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_FOCUS)( handle, false, "(O)", pybind::get_bool(_focus) );
 
 		if( handle == false )
 		{

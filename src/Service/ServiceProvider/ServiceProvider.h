@@ -21,6 +21,9 @@ namespace Menge
 		bool addServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) override;
 		bool removeServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) override;
 
+    public:
+        void destroy() override;
+
 	protected:
 		typedef std::map<String, ServiceInterface *> TMapServices;
 		TMapServices m_services;

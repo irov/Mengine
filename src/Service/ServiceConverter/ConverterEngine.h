@@ -23,6 +23,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		void registerConverter( const ConstString& _type, ConverterFactoryInterface * _interface ) override;
 		void unregisterConverter( const ConstString& _type ) override;

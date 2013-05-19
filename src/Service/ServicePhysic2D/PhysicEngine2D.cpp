@@ -15,8 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine2D::PhysicEngine2D()
-		: m_physicSystem(NULL)
-        , m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
 		, m_timing(0.f)
 		, m_timeStep(1.f/60.f)
 		, m_iterating(10)
@@ -30,23 +29,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine2D::~PhysicEngine2D()
 	{
-		if( m_physicSystem != NULL )
-		{
-			m_physicSystem->finalize();
-			m_physicSystem = NULL;
-		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void PhysicEngine2D::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        m_physicSystem = PHYSIC2D_SYSTEM(m_serviceProvider);
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * PhysicEngine2D::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PhysicEngine2D::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool PhysicEngine2D::initialize()

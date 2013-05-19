@@ -15,8 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine()
-		: m_soundSystem(NULL)
-        , m_serviceProvider(NULL)
+		: m_serviceProvider(NULL)
 		, m_soundVolume(1.f)
 		, m_commonVolume(1.f)
 		, m_musicVolume(1.f)
@@ -35,13 +34,16 @@ namespace Menge
     void SoundEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        m_soundSystem = SOUND_SYSTEM(m_serviceProvider);
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * SoundEngine::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundEngine::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::initialize( bool _silent )
@@ -67,7 +69,8 @@ namespace Menge
             {
                 desc.taskSoundBufferUpdate->stop();
 
-                THREAD_SERVICE(m_serviceProvider)->joinTask( desc.taskSoundBufferUpdate );
+                THREAD_SERVICE(m_serviceProvider)
+                    ->joinTask( desc.taskSoundBufferUpdate );
 
                 delete desc.taskSoundBufferUpdate;
                 desc.taskSoundBufferUpdate = NULL;
@@ -75,17 +78,9 @@ namespace Menge
 
             desc.soundSourceInterface->stop();
 
-            if( m_soundSystem != NULL )
-            {
-                m_soundSystem->releaseSoundNode( desc.soundSourceInterface );
-            }
+            SOUND_SYSTEM(m_serviceProvider)
+                ->releaseSoundNode( desc.soundSourceInterface );
         }
-
-		if( m_soundSystem != NULL )
-		{
-            m_soundSystem->finalize();
-			m_soundSystem = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::playSounds_()
@@ -160,15 +155,16 @@ namespace Menge
     {
 		m_turn = _turn;
         
-		m_soundSystem->onTurnSound( m_turn );
+		SOUND_SYSTEM(m_serviceProvider)
+            ->onTurnSound( m_turn );
 
 		this->updateVolume_();
     }
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int SoundEngine::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable )
 	{
-		SoundSourceInterface* sourceInterface = 
-			m_soundSystem->createSoundSource( _isHeadMode, _sample );
+		SoundSourceInterface* sourceInterface = SOUND_SYSTEM(m_serviceProvider)
+            ->createSoundSource( _isHeadMode, _sample );
 
 		if( sourceInterface == 0 )
 		{
@@ -262,8 +258,8 @@ namespace Menge
 			return NULL;
 		}
 
-		SoundBufferInterface* sample = 
-			m_soundSystem->createSoundBuffer( desc.codec, _isStream );
+		SoundBufferInterface* sample = SOUND_SYSTEM(m_serviceProvider)
+            ->createSoundBuffer( desc.codec, _isStream );
 
         if( sample == NULL )
         {
@@ -289,7 +285,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
-		m_soundSystem->releaseSoundBuffer( _soundBuffer );
+		SOUND_SYSTEM(m_serviceProvider)
+            ->releaseSoundBuffer( _soundBuffer );
 
 		TMapBufferStreams::iterator it_find = m_bufferStreams.find( _soundBuffer );
 				
@@ -319,7 +316,8 @@ namespace Menge
 
         source.soundSourceInterface->stop();
 
-        m_soundSystem->releaseSoundNode( source.soundSourceInterface );
+        SOUND_SYSTEM(m_serviceProvider)
+            ->releaseSoundNode( source.soundSourceInterface );
 
 		m_soundSourceMap.erase( it_find );
 	}

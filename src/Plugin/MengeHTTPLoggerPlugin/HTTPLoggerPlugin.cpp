@@ -18,13 +18,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HTTPLoggerPlugin::initialize( ServiceProviderInterface * _provider )
 	{
-		m_loggerService = _provider->getServiceT<LogServiceInterface>( "LogService" );
-
-		if( m_loggerService == 0 )
-		{
-			return false;
-		}
-		
 		HTTPServiceInterface * httpService = _provider->getServiceT<HTTPServiceInterface>( "HTTPService" );
 
 		if( httpService == 0 )

@@ -19,6 +19,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
         void setVerboseFlag( size_t _flag ) override;

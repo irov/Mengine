@@ -36,7 +36,9 @@ namespace Menge
 		++it )
 		{
 			const ConstString & name = (*it)->getName();
-			CONVERTER_SERVICE(m_serviceProvider)->registerConverter( name, (*it) );
+
+			CONVERTER_SERVICE(m_serviceProvider)
+                ->registerConverter( name, (*it) );
 		}
 
         return true;
@@ -51,7 +53,9 @@ namespace Menge
 		++it )
 		{
 			const ConstString & name = (*it)->getName();
-			CONVERTER_SERVICE(m_serviceProvider)->unregisterConverter( name );
+
+			CONVERTER_SERVICE(m_serviceProvider)
+                ->unregisterConverter( name );
 
 			(*it)->destroy();
 		}

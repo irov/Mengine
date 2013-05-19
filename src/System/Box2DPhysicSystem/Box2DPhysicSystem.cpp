@@ -35,10 +35,10 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DPhysicSystem::Box2DPhysicSystem()
-        : m_serviceProvider(NULL)
-        , m_world(NULL)
-        , m_mouseJoint(NULL)
-        , m_scaler(NULL)
+        : m_serviceProvider(nullptr)
+        , m_world(nullptr)
+        , m_mouseJoint(nullptr)
+        , m_scaler(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -50,6 +50,11 @@ namespace Menge
     ServiceProviderInterface * Box2DPhysicSystem::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Box2DPhysicSystem::destroy()
+    {
+        delete this;
     }
     //////////////////////////////////////////////////////////////////////////
     Box2DPhysicSystem::~Box2DPhysicSystem()

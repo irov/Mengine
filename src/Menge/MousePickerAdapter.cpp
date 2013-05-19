@@ -4,29 +4,39 @@
 
 #	include "MousePickerSystem.h"
 
+#   include "Kernel/Eventable.h"
+
 #	include "pybind/system.hpp"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MousePickerAdapter::MousePickerAdapter( bool _defaultHandle )
-		: m_picker(NULL)
-		, m_defaultHandle(_defaultHandle)
+	MousePickerAdapter::MousePickerAdapter()
+		: m_serviceProvider(nullptr)        
+		, m_defaultHandle(false)
+        , m_picker(nullptr)
 		, m_onEnterEvent(false)
 		, m_onLeaveEvent(false)
 	{		
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MousePickerAdapter::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::setEventListener( PyObject * _listener )
 	{
-		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
-		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );		
-		this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
-		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
-		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
+        Eventable * eventable = this->getPickerEventable();
 
-		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onLeaveEvent );
-		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onEnterEvent );
+		eventable->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );		
+		eventable->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
+
+		eventable->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onLeaveEvent );
+		eventable->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onEnterEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::setDefaultHandle( bool _handle )
@@ -43,7 +53,7 @@ namespace Menge
 	{
         MousePickerSystemInterface * mousePickerSystem = this->getMousePickerSystem();
         
-		if( mousePickerSystem == NULL )
+		if( mousePickerSystem == nullptr )
 		{
 			return;
 		}
@@ -60,7 +70,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::updatePicker()
 	{
-		if( m_picker == NULL )
+		if( m_picker == nullptr )
 		{
 			return;
 		}
@@ -74,7 +84,9 @@ namespace Menge
 	{
 		if( m_onLeaveEvent )
 		{
-			EVENTABLE_CALL(this, EVENT_MOUSE_LEAVE)( "(O)", this->getEmbed() );
+            Eventable * evantable = this->getPickerEventable();
+
+			EVENTABLE_CALL(m_serviceProvider, evantable, EVENT_MOUSE_LEAVE)( "(O)", this->getPickerEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -86,12 +98,9 @@ namespace Menge
 		{
 			if( m_onEnterEvent )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 			{
-				//if( this->askEvent( handle, EVENT_MOUSE_ENTER, "(O)", this->getEmbed() ) == false )
-				//{
-				//	handle = m_defaultHandle;
-				//}
+                Eventable * evantable = this->getPickerEventable();
 
-				EVENTABLE_ASK(this, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(O)", this->getEmbed() );
+				EVENTABLE_ASK(m_serviceProvider, evantable, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(O)", this->getPickerEmbed() );
 			}
 			else
 			{
@@ -108,14 +117,11 @@ namespace Menge
 
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
-			//if( this->askEvent( handle, EVENT_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) ) == false )
-			//{
-			//	handle = m_defaultHandle;
-			//}
+            Eventable * evantable = this->getPickerEventable();
 
-			EVENTABLE_ASK(this, EVENT_KEY)( handle, m_defaultHandle, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, evantable, EVENT_KEY)( handle, m_defaultHandle, "(OIIO)", this->getPickerEmbed(), _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -127,14 +133,11 @@ namespace Menge
 
 		bool handle = false;
 
-		if( !handle )
+		if( handle == false )
 		{
-			//if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) ) == false )
-			//{
-			//	handle = m_defaultHandle;
-			//}
+            Eventable * evantable = this->getPickerEventable();
 
-			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, evantable, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIIO)", this->getPickerEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -144,7 +147,9 @@ namespace Menge
 	{
         (void)_point; //TODO
 
-		EVENTABLE_CALL(this, EVENT_MOUSE_BUTTON_BEGIN)( "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+        Eventable * evantable = this->getPickerEventable();
+
+		EVENTABLE_CALL(m_serviceProvider, evantable, EVENT_MOUSE_BUTTON_BEGIN)( "(OIIO)", this->getPickerEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 
 		return false;
 	}
@@ -153,7 +158,9 @@ namespace Menge
 	{
         (void)_point; //TODO
 
-		EVENTABLE_CALL(this, EVENT_MOUSE_BUTTON_END)( "(OIIO)", this->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+        Eventable * evantable = this->getPickerEventable();
+
+		EVENTABLE_CALL(m_serviceProvider, evantable, EVENT_MOUSE_BUTTON_END)( "(OIIO)", this->getPickerEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
 
 		return false;
 	}
@@ -166,7 +173,9 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffi)", this->getEmbed(), _touchId, _x, _y, _whell );
+            Eventable * evantable = this->getPickerEventable();
+
+			EVENTABLE_ASK(m_serviceProvider, evantable, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffi)", this->getPickerEmbed(), _touchId, _x, _y, _whell );
 		}
 
 		return handle;
@@ -174,9 +183,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     MousePickerSystemInterface * MousePickerAdapter::getMousePickerSystem() const
     {
-        ServiceProviderInterface * serviceProvider = this->getServiceProvider();
-
-        MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(serviceProvider)
+        MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
             ->getMousePickerSystem();
 
         return mousePickerSystem;

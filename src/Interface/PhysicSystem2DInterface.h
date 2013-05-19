@@ -194,5 +194,5 @@ namespace Menge
     };
 
 #   define PHYSIC2D_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::PhysicService2DInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::PhysicService2DInterface>(serviceProvider))
 }

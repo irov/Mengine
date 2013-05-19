@@ -29,7 +29,7 @@
 namespace Menge
 {
 	class SystemDLL;
-	class LoggerConsole;
+	class ConsoleLogger;
 	class Application;
 	class FPSMonitor;
 	class AlreadyRunningMonitor;
@@ -47,6 +47,9 @@ namespace Menge
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
+
+    public:
+        void destroy() override;
 
 	public:
 		bool initialize();
@@ -139,12 +142,12 @@ namespace Menge
 		ApplicationInterface * m_application;
         StartupSettings m_settings;
 
-		bool	m_running;
-		bool	m_active;
+		bool m_running;
+		bool m_active;
 
-		HWND	m_hWnd;
-		bool	m_hasWindowPanel;
-		bool	m_cursorInArea;
+		HWND m_hWnd;
+		bool m_hasWindowPanel;
+		bool m_cursorInArea;
 		HCURSOR m_cursor;
 		
 		typedef std::map<WString, HCURSOR> TMapCursors;
@@ -185,7 +188,7 @@ namespace Menge
 
 		FileLogger * m_fileLog;
 
-		LoggerConsole* m_loggerConsole;
+		ConsoleLogger* m_loggerConsole;
 		String m_commandLine;
 
 		int m_lastMouseX;

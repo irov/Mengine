@@ -48,6 +48,9 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
+        void destroy() override;
+
+    public:
         bool initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution );
         void finalize();
 
@@ -81,8 +84,8 @@ namespace Menge
         TimingManagerInterface * getTimingManagerGlobal() const override;
 
 	public:
-		void setRenderCamera2D( Camera2D * _camera) override;
-		Camera2D * getRenderCamera2D() const override;
+		void setCamera2D( Camera2D * _camera) override;
+		Camera2D * getCamera2D() const override;
 
     public:
 		void setCamera2DPosition( const mt::vec2f & _pos );
@@ -150,7 +153,7 @@ namespace Menge
 		Scene * m_scene;
 		Arrow * m_arrow;
 		
-		Camera2D * m_renderCamera2D;
+		Camera2D * m_camera2D;
 
         MousePickerSystemInterface * m_mousePickerSystem;
         GlobalHandleSystemInterface * m_globalHandleSystem;
@@ -188,7 +191,7 @@ namespace Menge
 
 //#	ifndef MENGE_MASTER_RELEASE
 	public:
-		void toggleDebugText();
+		void toggleDebugText() override;
 
 	protected:
 		bool m_showDebugText;

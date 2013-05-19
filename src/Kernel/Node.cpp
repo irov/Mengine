@@ -40,11 +40,20 @@ namespace Menge
     void Node::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
+
+        this->_setServiceProvider( m_serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * Node::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        (void)_serviceProvider;
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::setShallowGrave()

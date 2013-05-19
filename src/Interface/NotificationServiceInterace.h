@@ -275,5 +275,5 @@ namespace Menge
 	};	
 
 #   define NOTIFICATION_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::NotificationServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::NotificationServiceInterface>(serviceProvider))
 }

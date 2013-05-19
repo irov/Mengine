@@ -43,12 +43,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player( Game * _game )
         : m_game(_game)
-        , m_serviceProvider(NULL)
-		, m_scene(NULL)
-		, m_arrow(NULL)
-		, m_scheduleManager(NULL)
-		, m_scheduleManagerGlobal(NULL)
-		, m_renderCamera2D(0)
+        , m_serviceProvider(nullptr)
+		, m_scene(nullptr)
+		, m_arrow(nullptr)
+		, m_scheduleManager(nullptr)
+		, m_scheduleManagerGlobal(nullptr)
+		, m_camera2D(nullptr)
 		, m_switchScene(false)
 		, m_removeScene(false)
 		, m_destroyOldScene(false)
@@ -68,6 +68,21 @@ namespace Menge
 	Player::~Player()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Player::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * Player::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Player::destroy()
+    {
+        delete this;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
 	{
@@ -356,16 +371,6 @@ namespace Menge
     {
         return m_timingManagerGlobal;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Player::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Player::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution )
 	{
@@ -411,7 +416,7 @@ namespace Menge
 
 		camera->enable();
 
-		this->setRenderCamera2D( camera );
+		this->setCamera2D( camera );
 		this->setArrow( _arrow );
 
 		return true;
@@ -419,64 +424,64 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::finalize()
 	{
-        if( m_scene != NULL )
+        if( m_scene != nullptr )
         {
             m_scene->destroy();
-            m_scene = NULL;
+            m_scene = nullptr;
         }
 
-        if( m_removeSceneCb != NULL )
+        if( m_removeSceneCb != nullptr )
         {
             pybind::decref(m_removeSceneCb);
-            m_removeSceneCb = NULL;
+            m_removeSceneCb = nullptr;
         }
 
-        if( m_changeSceneCb != NULL )
+        if( m_changeSceneCb != nullptr )
         {
             pybind::decref(m_changeSceneCb);
-            m_changeSceneCb = NULL;
+            m_changeSceneCb = nullptr;
         }
 
-		if( m_renderCamera2D )
-		{
-			m_renderCamera2D->destroy();
-			m_renderCamera2D = NULL;
+        if( m_camera2D != nullptr )
+        {
+            m_camera2D->destroy();
+			m_camera2D = nullptr;
 		}
 
-		if( m_mousePickerSystem )
+		if( m_mousePickerSystem != nullptr )
 		{
 			delete m_mousePickerSystem;
-			m_mousePickerSystem = 0;
+			m_mousePickerSystem = nullptr;
 		}
 
-		if( m_globalHandleSystem )
+		if( m_globalHandleSystem != nullptr )
 		{
 			delete m_globalHandleSystem;
-			m_globalHandleSystem = 0;
+			m_globalHandleSystem = nullptr;
 		}
 
-		if( m_scheduleManager != NULL )
+		if( m_scheduleManager != nullptr )
 		{
 			m_scheduleManager->destroy();
-			m_scheduleManager = NULL;
+			m_scheduleManager = nullptr;
 		}
 
-		if( m_scheduleManagerGlobal != NULL )
+		if( m_scheduleManagerGlobal != nullptr )
 		{
 			m_scheduleManagerGlobal->destroy();
-			m_scheduleManagerGlobal = NULL;
+			m_scheduleManagerGlobal = nullptr;
 		}
 
-		if( m_timingManager != NULL )
+		if( m_timingManager != nullptr )
 		{
 			m_timingManager->destroy();
-			m_timingManager = NULL;
+			m_timingManager = nullptr;
 		}
 
-        if( m_timingManagerGlobal != NULL )
+        if( m_timingManagerGlobal != nullptr )
         {
             m_timingManagerGlobal->destroy();
-            m_timingManagerGlobal = NULL;
+            m_timingManagerGlobal = nullptr;
         }
 
 		for( TVectorJoins::iterator
@@ -640,29 +645,29 @@ namespace Menge
 		//		->onMouseMove( arrowPos );
 		//}
 
-		if( m_renderCamera2D )
+		if( m_camera2D != nullptr )
 		{
-			m_renderCamera2D->update( gameTime, _timing );
+			m_camera2D->update( gameTime, _timing );
 		}
 
-		if( m_arrow )
+		if( m_arrow != nullptr )
 		{
 			m_arrow->update( gameTime, _timing );
 		}
 
-		if( m_scene )
+		if( m_scene != nullptr )
 		{
 			m_scene->update( gameTime, _timing );
 		}
 
 		this->updateJoins_();
 
-		if( m_scheduleManager )
+		if( m_scheduleManager != nullptr )
 		{
 			m_scheduleManager->update( gameTime, _timing );
 		}
 
-		if( m_scheduleManagerGlobal )
+		if( m_scheduleManagerGlobal != nullptr )
 		{
 			m_scheduleManagerGlobal->update( gameTime, _timing );
 		}
@@ -854,22 +859,22 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setRenderCamera2D( Camera2D * _camera)
+	void Player::setCamera2D( Camera2D * _camera)
 	{
-		m_renderCamera2D = _camera;
+		m_camera2D = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera2D * Player::getRenderCamera2D() const
+	Camera2D * Player::getCamera2D() const
 	{
-		return m_renderCamera2D;
+		return m_camera2D;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCamera2DPosition( const mt::vec2f & _pos )
 	{
-		if( m_renderCamera2D )
+		if( m_camera2D != nullptr )
 		{
 			mt::vec3f v3_pos(_pos, 0.f);
-			m_renderCamera2D->setLocalPosition( v3_pos );
+			m_camera2D->setLocalPosition( v3_pos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -952,7 +957,7 @@ namespace Menge
 
 		if( m_scene != NULL )
 		{
-			m_scene->render( m_renderCamera2D, debugMask );
+			m_scene->render( m_camera2D, debugMask );
 		}
 
 		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
@@ -967,7 +972,7 @@ namespace Menge
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{
-			m_arrow->render( m_renderCamera2D, debugMask );
+			m_arrow->render( m_camera2D, debugMask );
 		}
 
 //#	ifndef MENGE_MASTER_RELEASE
@@ -1008,7 +1013,7 @@ namespace Menge
 			WString text = ss.str();
 
 			m_debugText->setText( text );
-			m_debugText->render( m_renderCamera2D, debugMask );
+			m_debugText->render( m_camera2D, debugMask );
 		}
 //#	endif
 		//m_renderCamera2D->setLocalPosition( pos );
@@ -1068,7 +1073,7 @@ namespace Menge
     {
         m_currentResolution = _resolution;
 
-        if( m_renderCamera2D )
+        if( m_camera2D != nullptr )
         {
             //mt::vec2f size;
             //size.x = float(m_contentResolution.getWidth());

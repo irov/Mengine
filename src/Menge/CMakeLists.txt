@@ -91,8 +91,6 @@ ADD_FILTER(
 MousePickerTrap
 	MousePickerSystem.cpp
 	MousePickerSystem.h
-    MousePicker.cpp
-    MousePicker.h
 	MousePickerAdapter.cpp
 	MousePickerAdapter.h
 )
@@ -123,6 +121,10 @@ ADD_FILTER(
 Object2D\\\\HotSpot
 	HotSpot.cpp
 	HotSpot.h
+    HotspotMousePickerAdapter.h
+    HotspotMousePickerAdapter.cpp
+    HotspotMousePickerVisitor.h
+    HotspotMousePickerVisitor.cpp
 )
 
 ADD_FILTER(
@@ -336,14 +338,6 @@ Manager\\\\Timing
 	TimingManager.h
 )
 
-
-ADD_FILTER(
-Manager\\\\Event
-	EventManager.cpp
-	EventManager.h
-)
-
-
 ADD_FILTER(
 Manager\\\\ThreadTask
 	ThreadTaskLoadResourceImage.h
@@ -391,8 +385,6 @@ ADD_FILTER(
 Scene\\\\Layer2D
 	Layer2D.cpp
 	Layer2D.h
-	Layer2DPhysic.cpp
-	Layer2DPhysic.h
 )
 
 ADD_FILTER(

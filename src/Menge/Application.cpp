@@ -145,6 +145,7 @@ SERVICE_EXTERN(ArrowService, Menge::ArrowServiceInterface);
 SERVICE_EXTERN(AlphaChannelService, Menge::AlphaChannelServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
+SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -377,7 +378,7 @@ namespace Menge
 		//NODE_FACTORY( Model );
 		NODE_FACTORY( m_serviceProvider, Video );
 		NODE_FACTORY( m_serviceProvider, Layer2D );
-		NODE_FACTORY( m_serviceProvider, Layer2DPhysic );
+		//NODE_FACTORY( m_serviceProvider, Layer2DPhysic );
 		//NODE_FACTORY( Layer2DLoop );
 		//NODE_FACTORY( Layer2DAccumulator );
 		//NODE_FACTORY( Layer2DTexture );
@@ -430,17 +431,17 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeEventManager_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Event Manager..." );
+        //LOGGER_INFO(m_serviceProvider)( "Inititalizing Event Manager..." );
 
-        EventServiceInterface * eventService;
-        if( createEventService( &eventService ) == false )
-        {
-            return false;
-        }
+        //EventServiceInterface * eventService;
+        //if( SERVICE_CREATE( EventService, &eventService ) == false )
+        //{
+        //    return false;
+        //}
 
-        SERVICE_REGISTRY( m_serviceProvider, eventService );
+        //SERVICE_REGISTRY( m_serviceProvider, eventService );
 
-        m_eventService = eventService;
+        //m_eventService = eventService;
 
         return true;             
     }
@@ -450,7 +451,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Watchdog..." );
 
         WatchdogInterface * watchdog;
-        if( createWatchdog( &watchdog ) == false )
+        if( SERVICE_CREATE( Watchdog, &watchdog ) == false )
         {
             return false;
         }
@@ -591,10 +592,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePacks, const TVectorResourcePackDesc & _languagePacks )
 	{
-		m_game = new Game(m_baseDir, m_developmentMode, m_platformName);
+        SERVICE_CREATE(GameService, &m_game);
 
-        m_serviceProvider->registryService( "GameService", m_game );
+        if( SERVICE_REGISTRY( m_serviceProvider, m_game ) == false )
+        {
+            LOGGER_INFO(m_serviceProvider)( "Application:createGame invalid register game service"
+                );
 
+            return false;
+        }
+
+		m_game->setBaseDir( m_baseDir );
+        m_game->setDevelopmentMode( m_developmentMode );
+        m_game->setPlatformName( m_platformName );
+        
 		LOGGER_INFO(m_serviceProvider)( "Application:createGame load game resource"
 			);
 
@@ -837,7 +848,7 @@ namespace Menge
 
 			if( _key == KC_F11 && _isDown )
 			{
-                Player * player = m_game->getPlayer();
+                PlayerServiceInterface * player = m_game->getPlayer();
 				
                 player->toggleDebugText();
 			}
@@ -991,7 +1002,7 @@ namespace Menge
 			return false;
 		}
 
-        EVENT_SERVICE(m_serviceProvider)->update();
+        //EVENT_SERVICE(m_serviceProvider)->update();
 
 		if( !m_focus && m_update )
 		{
@@ -1151,21 +1162,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::destroy()
 	{
-		delete m_game;
+		m_game->destroy();
         
 		//delete m_paramManager;
         //destroyArrowService
 
-        destroyWatchdog( m_watchdog );
-        destroyLoaderService( m_loaderService );        
-        destroyTextService( m_textService );
-        destroyArrowService( m_arrowService );
-        destroySceneService( m_sceneService );
-        destroyEntityService( m_entityService );
-        destroyNodeService( m_nodeService );
-        destroyMovieKeyFrameService( m_movieKeyFrameService );
-        destroyEventService( m_eventService );
-        destroyResourceService( m_resourceService );
+        m_watchdog->destroy();
+        m_loaderService->destroy();
+        m_textService->destroy();
+        m_arrowService->destroy();
+        
+        m_sceneService->destroy();
+        m_entityService->destroy();
+        m_nodeService->destroy();
+        m_movieKeyFrameService->destroy();
+        //m_eventService->destroy();
+        m_resourceService->destroy();
+
+        delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const

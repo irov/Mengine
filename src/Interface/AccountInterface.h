@@ -86,5 +86,5 @@ namespace Menge
     };
 
 #   define ACCOUNT_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::AccountServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::AccountServiceInterface>(serviceProvider))
 }

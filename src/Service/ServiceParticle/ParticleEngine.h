@@ -20,6 +20,9 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+    public:
+        void destroy() override;
+
 	public:
 		EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) override;
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
@@ -39,8 +42,6 @@ namespace Menge
 		size_t renderParticlesCount( size_t _count );
 
 	protected:
-		ParticleSystemInterface * m_particleSystem;
-
         ServiceProviderInterface * m_serviceProvider;
 
 		size_t m_maxParticlesNum;

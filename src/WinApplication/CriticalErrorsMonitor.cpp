@@ -1,6 +1,6 @@
 #	include "CriticalErrorsMonitor.h"
 
-#   include <Windows.h>
+#   include "WindowsLayer/WindowsIncluder.h"
 #   include "DbgHelp.h"
 
 #	include <cstdio>

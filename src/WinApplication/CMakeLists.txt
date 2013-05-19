@@ -1,9 +1,9 @@
 set( MY_LIB_NAME WinApplication )
 
 ADD_FILTER(
-LoggerConsole
-	LoggerConsole.cpp
-	LoggerConsole.h
+ConsoleLogger
+    ConsoleLogger.cpp
+    ConsoleLogger.h
 )
 
 #ADD_FILTER(
@@ -12,13 +12,6 @@ LoggerConsole
 #	resource.h
 #	WinApplication.rc
 #)
-
-ADD_FILTER(
-FileLogger
-	FileLogger.h
-	FileLogger.cpp
-)
-
 	
 ADD_FILTER(
 src

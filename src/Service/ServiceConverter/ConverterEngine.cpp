@@ -28,6 +28,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ConverterEngine::destroy()
+    {
+        delete this;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ConverterEngine::registerConverter( const ConstString& _type, ConverterFactoryInterface * _interface )
 	{

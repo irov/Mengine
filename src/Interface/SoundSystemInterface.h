@@ -75,6 +75,7 @@ namespace Menge
 		virtual bool initialize() = 0;
         virtual void finalize() = 0;
 
+    public:
 		virtual void onTurnSound( bool _turn ) = 0;
 
     public:
@@ -86,7 +87,7 @@ namespace Menge
 	};
 
 #   define SOUND_SYSTEM( serviceProvider )\
-    (Menge::getService<Menge::SoundSystemInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::SoundSystemInterface>(serviceProvider))
 
 	class SoundServiceInterface
 		: public ServiceInterface
@@ -158,5 +159,5 @@ namespace Menge
 	};
 
 #   define SOUND_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::SoundServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::SoundServiceInterface>(serviceProvider))
 }

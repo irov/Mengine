@@ -18,6 +18,7 @@
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
+#   pragma warning(disable:4800)
 #   endif
 
 #	include <boost/geometry/geometry.hpp> 

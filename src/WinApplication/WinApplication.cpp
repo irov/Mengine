@@ -16,13 +16,13 @@
 #	include <shlobj.h>
 #   include <errno.h>
 
-#	include "LoggerConsole.h"
+#	include "ConsoleLogger.h"
 
 #	include "FPSMonitor.h"
 #	include "AlreadyRunningMonitor.h"
 #	include "CriticalErrorsMonitor.h"
 
-#	include "FileLogger.h"
+#	include "Utils/Core/FileLogger.h"
 
 #	include "resource.h"
 
@@ -60,8 +60,8 @@ SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
 SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
 
-SERVICE_EXTERN(PhysicSystem2D, Menge::PhysicSystem2DInterface);
-SERVICE_EXTERN(PhysicService2D, Menge::PhysicService2DInterface);
+SERVICE_DUMMY(PhysicSystem2D, Menge::PhysicSystem2DInterface);
+SERVICE_DUMMY(PhysicService2D, Menge::PhysicService2DInterface);
 
 SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
 SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
@@ -151,9 +151,9 @@ namespace Menge
 		, m_hWnd(0)
 		, m_cursorInArea(false)
 		, m_hInstance(_hInstance)
-		, m_loggerConsole(NULL)
+		, m_loggerConsole(nullptr)
 		, m_commandLine(" " + _commandLine + " ")
-		, m_application(NULL)
+		, m_application(nullptr)
 		, m_fpsMonitor(0)
 		, m_alreadyRunningMonitor(0)
 		, m_lastMouseX(0)
@@ -163,19 +163,30 @@ namespace Menge
 		, m_cursorMode(false)
 		, m_clipingCursor(FALSE)
 		, m_deadKey('\0')
-		, m_logService(NULL)
-        , m_fileService(NULL)
-		, m_winTimer(NULL)
+		, m_winTimer(nullptr)
 		, m_isDoubleClick(false)
-		, m_cursor(NULL)
+		, m_cursor(nullptr)
 		, m_enableDebug(false)
-		, m_inputService(0)
 		, m_developmentMode(false)
         , m_noPluginMode(false)
-        , m_pluginMengeImageCodec(NULL)
-        , m_pluginMengeSoundCodec(NULL)
-        , m_fileLog(NULL)
+        , m_pluginMengeImageCodec(nullptr)
+        , m_pluginMengeSoundCodec(nullptr)
+        , m_fileLog(nullptr)
         , m_profilerMode(false)
+        , m_inputService(nullptr)
+        , m_unicodeService(nullptr)
+        , m_logService(nullptr)
+        , m_fileService(nullptr)
+        , m_codecService(nullptr)
+        , m_archiveService(nullptr)
+        , m_threadService(nullptr)
+        , m_particleService(nullptr)
+        , m_physicService2D(nullptr)
+        , m_renderService(nullptr)
+        , m_soundService(nullptr)
+        , m_scriptService(nullptr)
+        , m_amplifierService(nullptr)
+        , m_pluginService(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -602,7 +613,7 @@ namespace Menge
 
         if( Helper::s_hasOption( " -console ", m_commandLine ) == true )
         {
-            m_loggerConsole = new LoggerConsole(m_serviceProvider);
+            m_loggerConsole = new ConsoleLogger(m_serviceProvider);
 
             EWindowsType winType = m_windowsLayer->getWindowsType();
 
@@ -739,7 +750,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Physics2D Service..." );
         
         PhysicSystem2DInterface * physicSystem2D;
-        if( createPhysicSystem2D( &physicSystem2D ) == false )
+        if( SERVICE_CREATE( PhysicSystem2D, &physicSystem2D ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
                 );
@@ -761,7 +772,7 @@ namespace Menge
         }
         
         PhysicService2DInterface * physicService2D;
-        if( createPhysicService2D( &physicService2D ) == false )
+        if( SERVICE_CREATE( PhysicService2D, &physicService2D ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to create Physic Service 2D"
                 );
@@ -1095,6 +1106,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void WinApplication::destroy()
+    {
+        delete this;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{	
@@ -1185,10 +1201,10 @@ namespace Menge
             return false;
         }
 
-        if( this->initializePhysicEngine2D_() == false )
-        {
-            return false;
-        }
+        //if( this->initializePhysicEngine2D_() == false )
+        //{
+        //    return false;
+        //}
 
         if( this->initializeRenderEngine_() == false )
         {
@@ -1677,7 +1693,7 @@ namespace Menge
 		if( m_hWnd )
 		{
 			m_windowsLayer->destroyWindow( m_hWnd );
-			m_hWnd = NULL;
+			m_hWnd = 0;
 		}
 
 		if( m_hInstance )
@@ -1709,21 +1725,21 @@ namespace Menge
             m_pluginMengeSoundCodec = nullptr;
         }
 
-        destroyInputService( m_inputService );
-        destroyUnicodeService( m_unicodeService );        
-        destroyFileService( m_fileService );
-        destroyCodecService( m_codecService );
-        destroyThreadService( m_threadService );
-        destroyParticleService( m_particleService );
-        destroyPhysicService2D( m_physicService2D );
-        destroySoundService( m_soundService );        
-        destroyAmplifierService( m_amplifierService );
+        m_inputService->destroy();
+        m_unicodeService->destroy();        
+        m_fileService->destroy();
+        m_codecService->destroy();
+        m_threadService->destroy();
+        m_particleService->destroy();
+        
+        SERVICE_DESTROY( m_physicService2D );
+        
+        m_soundService->destroy();
+        m_amplifierService->destroy();
 
         if( m_application != nullptr )
         {
             m_application->destroy();
-
-            destroyApplication( m_application );
 
             m_application = nullptr;
         }
@@ -1731,7 +1747,7 @@ namespace Menge
         {
             m_scriptService->finalize();
 
-            destroyScriptService( m_scriptService );
+            m_scriptService->destroy();
         }
 
         if( m_renderService != nullptr )
@@ -1739,11 +1755,11 @@ namespace Menge
             m_renderService->finalize();
         }
 
-        destroyRenderService( m_renderService );
+        m_renderService->destroy();
         
 		if( m_fileLog != nullptr )
 		{
-			if( m_logService )
+			if( m_logService != nullptr )
 			{
 				m_logService->unregisterLogger( m_fileLog );
 			}
@@ -1763,7 +1779,7 @@ namespace Menge
 			m_loggerConsole = nullptr;
 		}
 
-        destroyLogService( m_logService );
+        m_logService->destroy();
         
 		if( m_alreadyRunningMonitor != nullptr )
 		{
@@ -1779,7 +1795,7 @@ namespace Menge
             m_winTimer = nullptr;
 		}
 
-        destroyServiceProvider(m_serviceProvider);
+        m_serviceProvider->destroy();
 
 		//::timeEndPeriod( 1 );
 	}

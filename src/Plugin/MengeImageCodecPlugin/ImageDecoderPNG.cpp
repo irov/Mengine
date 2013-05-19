@@ -9,19 +9,17 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static void PNGAPI s_handlerError( png_structp png_ptr, const char * _error ) 
+	static void s_handlerError( png_structp png_ptr, const char * _error ) 
 	{
 		png_voidp error_ptr = png_get_error_ptr( png_ptr );		
 		ImageDecoderPNG * imageDecoderPNG = static_cast<ImageDecoderPNG*>(error_ptr);
+
 		ServiceProviderInterface * serviceProvider = imageDecoderPNG->getServiceProvider();
 
 		LOGGER_ERROR(serviceProvider)( "ImageDecoderPNG::s_handlerError '%s'"
 			, _error 
 			);
 
-        // Return control to the setjmp point
-        //jmp_buf * jb = png_jmpbuf( png_ptr );
-        //longjmp(jb, 1);
         longjmp(png_jmpbuf(png_ptr), 1);
 	}
     //////////////////////////////////////////////////////////////////////////

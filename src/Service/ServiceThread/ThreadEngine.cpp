@@ -32,6 +32,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadEngine::destroy()
+    {
+        delete this;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::initialize( size_t _threadCount )
 	{

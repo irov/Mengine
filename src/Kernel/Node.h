@@ -58,7 +58,6 @@ namespace Menge
 		, public Colorable
 		, public Affectorable
         , public Visitable
-        , virtual public ServiceInterface
 		, virtual public Scriptable
 		, virtual public Eventable
 	{
@@ -69,8 +68,11 @@ namespace Menge
 		~Node();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+        ServiceProviderInterface * getServiceProvider() const;
+
+    protected:
+        virtual void _setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

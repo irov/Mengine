@@ -35,7 +35,7 @@ namespace Menge
     class WatchdogInterface;
 
 	class FileOutputStreamInterface;
-	class Game;
+	class GameServiceInterface;
 	class ResourceManager;
 	class CodecEngine;
 	class TextManager;
@@ -210,7 +210,7 @@ namespace Menge
 		typedef std::map<String, DynamicLibraryInterface*> TDynamicLibraries;
 		TDynamicLibraries m_dynamicLibraries;
 
-		Game * m_game;
+		GameServiceInterface * m_game;
 
 		Resolution m_currentResolution;
 
@@ -261,7 +261,7 @@ namespace Menge
 		SceneServiceInterface * m_sceneService;
 		EntityServiceInterface * m_entityService;
 		MovieKeyFrameServiceInterface * m_movieKeyFrameService;		
-        EventServiceInterface * m_eventService;
+        //EventServiceInterface * m_eventService;
 
 		WatchdogInterface * m_watchdog;
 

@@ -20,5 +20,5 @@ namespace Menge
     };
 
 #   define ARROW_SERVICE( serviceProvider )\
-    (Menge::getService<Menge::ArrowServiceInterface>(serviceProvider))
+    (Menge::Helper::getService<Menge::ArrowServiceInterface>(serviceProvider))
 }

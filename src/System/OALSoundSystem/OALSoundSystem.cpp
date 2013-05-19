@@ -13,31 +13,8 @@
 #	include <stdio.h>
 #	include <stdarg.h>
 
-#	define OAL_CHECK_ERROR() s_OALErrorCheck( m_serviceProvider, __FILE__, __LINE__ )
-
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool createSoundSystem( Menge::SoundSystemInterface ** _soundSystem )
-    {
-        if( _soundSystem == 0 )
-        {
-            return false;
-        }
-
-        *_soundSystem = new Menge::OALSoundSystem();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void destroySoundSystem( Menge::SoundSystemInterface * _soundSystem )
-    {
-        if( _soundSystem )
-        {
-            delete static_cast<Menge::OALSoundSystem *>(_soundSystem);
-        }
-    }
-}
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::OALSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -46,9 +23,9 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
-		: m_serviceProvider(NULL)
-		, m_context(NULL)
-		, m_device(NULL)
+		: m_serviceProvider(nullptr)
+		, m_context(nullptr)
+		, m_device(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,6 +42,11 @@ namespace Menge
     ServiceProviderInterface * OALSoundSystem::getServiceProvider() const
     {
         return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSystem::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundSystem::initialize()
@@ -269,7 +251,7 @@ namespace Menge
 	{
 		ALuint sourceId = 0;
 		alGenSources( 1, &sourceId );
-        OAL_CHECK_ERROR();
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		return sourceId;
 
@@ -287,7 +269,7 @@ namespace Menge
 	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
 	{
 		alDeleteSources( 1, &_sourceId );
-        OAL_CHECK_ERROR();
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		//ALint state = 0;
 		//alGetSourcei( _sourceId, AL_SOURCE_STATE, &state );
@@ -306,7 +288,7 @@ namespace Menge
 	{
 		ALuint bufferId = 0;
 		alGenBuffers( 1, &bufferId );
-        OAL_CHECK_ERROR();
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		return bufferId;
 
@@ -324,7 +306,7 @@ namespace Menge
 	void OALSoundSystem::releaseBufferId( ALuint _bufferId )
 	{
 		alDeleteBuffers( 1, &_bufferId );
-        OAL_CHECK_ERROR();
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		//m_bufferPool.push_back( _sourceId );
 	}
@@ -334,7 +316,7 @@ namespace Menge
 		ALint process_count = 0;
 		// Получаем количество отработанных буферов
 		alGetSourcei( _sourceId, AL_BUFFERS_PROCESSED, &process_count );
-		OAL_CHECK_ERROR();
+		OAL_CHECK_ERROR(m_serviceProvider);
 
 		// Если таковые существуют то
 		while( process_count-- > 0 )
@@ -343,16 +325,16 @@ namespace Menge
 			ALuint buffer = 0;
 
 			alSourceUnqueueBuffers( _sourceId, 1, &buffer );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 
 		alSourceStop( _sourceId );
-        OAL_CHECK_ERROR();
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		ALint queued_count = 0;
 		// unqueue remaining buffers
 		alGetSourcei( _sourceId, AL_BUFFERS_QUEUED, &queued_count );
-		OAL_CHECK_ERROR();
+		OAL_CHECK_ERROR(m_serviceProvider);
 
 		while( queued_count-- > 0 )
 		{
@@ -360,18 +342,18 @@ namespace Menge
 			ALuint buffer = 0;
 
 			alSourceUnqueueBuffers( _sourceId, 1, &buffer );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 
 		ALint state;
 		do 
 		{			
 			alGetSourcei( _sourceId, AL_SOURCE_STATE, &state );
-			OAL_CHECK_ERROR();
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 		while( state == AL_PLAYING );
         
 		alSourcei( _sourceId, AL_BUFFER, 0 );
-        OAL_CHECK_ERROR();
+        OAL_CHECK_ERROR(m_serviceProvider);
 	}
 }	// namespace Menge

@@ -37,22 +37,22 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AccountService, Menge::AccountServiceInterface );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( GameService, Menge::GameServiceInterface, Menge::Game );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Game::Game( const String & _baseDir, bool _developmentMode, const String & _platformName )
-		: m_baseDir(_baseDir)
-		, m_platformName(_platformName)
-		, m_developmentMode(_developmentMode)
-        , m_serviceProvider(NULL)
+	Game::Game()
+		: m_serviceProvider(nullptr)
+		, m_developmentMode(false)
 		, m_hasWindowPanel(true)
 		, m_personalityHasOnClose(false)
-		, m_player(NULL)
-		, m_accountLister(0)
-		, m_accountService(0)
-		, m_defaultArrow(0)
+		, m_player(nullptr)
+		, m_accountLister(nullptr)
+		, m_accountService(nullptr)
+		, m_defaultArrow(nullptr)
 		, m_timingFactor(1.f)
-        , m_embed(NULL)
+        , m_embed(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,37 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    Player * Game::getPlayer() const
+    void Game::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * Game::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::destroy()
+    {
+        delete this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setBaseDir( const String & _baseDir )
+    {
+        m_baseDir = _baseDir;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setDevelopmentMode( bool _developmentMode )
+    {
+        m_developmentMode = _developmentMode;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setPlatformName( const String & _platformName )
+    {
+        m_platformName = _platformName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PlayerServiceInterface * Game::getPlayer() const
     {
         return m_player;
     }
@@ -76,7 +106,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(this, EVENT_KEY)( handle, false, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY)( handle, false, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		if( handle == false )
@@ -93,7 +123,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( handle == false )
@@ -110,7 +140,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON_BEGIN)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( handle == false )
@@ -127,7 +157,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(this, EVENT_MOUSE_BUTTON_END)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_END)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( handle == false )
@@ -144,7 +174,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(this, EVENT_MOUSE_MOVE)( handle, false, "(Iffi)", _touchId, _x, _y, _whell );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, false, "(Iffi)", _touchId, _x, _y, _whell );
 		}
 
 		if( handle == false )
@@ -157,7 +187,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onAppMouseLeave()
 	{		
-		EVENTABLE_CALL(this, EVENT_APP_MOUSE_LEAVE)( "()" );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE)( "()" );
 
 		m_player->onAppMouseLeave();
 	}
@@ -165,7 +195,7 @@ namespace Menge
 	void Game::onAppMouseEnter( const mt::vec2f & _point )
 	{
 		PyObject * py_point = pybind::ptr(_point);
-		EVENTABLE_CALL(this, EVENT_APP_MOUSE_ENTER)( "(O)", py_point );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( "(O)", py_point );
 		pybind::decref(py_point);
 
 		m_player->onAppMouseEnter( _point );
@@ -281,7 +311,7 @@ namespace Menge
             );
 
 		bool result = true;
-		EVENTABLE_ASK(this, EVENT_PREPARATION)( result, false, "(O)", pybind::get_bool(is_debug) );
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_PREPARATION)( result, false, "(O)", pybind::get_bool(is_debug) );
 
 		return result;
 	}
@@ -292,46 +322,38 @@ namespace Menge
 			: public AccountServiceListener
 		{
 		public:
-			ApplicationAccountManagerListener( Game * _game )
-				: m_game(_game)
+			ApplicationAccountManagerListener( ServiceProviderInterface * _serviceProvider, Game * _game )
+                : m_serviceProvider(_serviceProvider)
+				, m_game(_game)
 			{
 			}
 
 		protected:
 			void onCreateAccount( const WString & _accountID ) override
 			{
-				EVENTABLE_CALL(m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
+				EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
 			}
 
             void onDeleteAccount( const WString & _accountID ) override
             {
-                EVENTABLE_CALL(m_game, EVENT_DELETE_ACCOUNT)( "(u)", _accountID.c_str() );
+                EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( "(u)", _accountID.c_str() );
             }
 
 			void onSelectAccount( const WString & _accountID ) override
 			{
-				EVENTABLE_CALL(m_game, EVENT_SELECT_ACCOUNT)( "(u)", _accountID.c_str() );
+				EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( "(u)", _accountID.c_str() );
 			}
 
             void onUnselectAccount( const WString & _accountID ) override
             {
-                EVENTABLE_CALL(m_game, EVENT_UNSELECT_ACCOUNT)( "(u)", _accountID.c_str() );
+                EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( "(u)", _accountID.c_str() );
             }
 
 		protected:
+            ServiceProviderInterface * m_serviceProvider;
 			Game * m_game;
 		};
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Game::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Game::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::initialize( const TMapWString & _params )
 	{
@@ -348,7 +370,7 @@ namespace Menge
 		
         SERVICE_REGISTRY( m_serviceProvider, m_accountService );
 
-        m_accountLister = new ApplicationAccountManagerListener(this);
+        m_accountLister = new ApplicationAccountManagerListener(m_serviceProvider, this);
 
         FilePath accountPath = Helper::stringizeString( m_serviceProvider, "accounts.ini" );
 
@@ -401,7 +423,7 @@ namespace Menge
 
 
         bool result = false;
-        EVENTABLE_ASK(this, EVENT_INITIALIZE)( result, true, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) );
+        EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) );
 
         return result;
     }
@@ -422,11 +444,11 @@ namespace Menge
             m_accountService->finalize();
         }
 
-        EVENTABLE_CALL(this, EVENT_FINALIZE)( "()" );
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_FINALIZE)( "()" );
 
         if( m_accountService != nullptr )
         {
-            destroyAccountService( m_accountService );
+            m_accountService->destroy();
             m_accountService = nullptr;
         }
 
@@ -470,7 +492,7 @@ namespace Menge
 
 		m_paks.clear();
 				
-		EVENTABLE_CALL(this, EVENT_DESTROY)( "()" );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DESTROY)( "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()
@@ -479,7 +501,7 @@ namespace Menge
 
 		m_player->initializeRenderResources();
 
-        EVENTABLE_CALL(this, EVENT_INITIALIZE_RENDER_RESOURCES)( "()" );
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_INITIALIZE_RENDER_RESOURCES)( "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalizeRenderResources()
@@ -507,7 +529,7 @@ namespace Menge
 			m_player->onFocus( _focus );
 		}				
 
-		EVENTABLE_CALL(this, EVENT_FOCUS)( "(O)", pybind::get_bool(_focus) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FOCUS)( "(O)", pybind::get_bool(_focus) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::getHasWindowPanel() const
@@ -539,14 +561,14 @@ namespace Menge
 	{
 		m_player->onFullscreen( _resolution, _fullscreen );
 
-		EVENTABLE_CALL(this, EVENT_FULLSCREEN)( "(O)", pybind::get_bool(_fullscreen) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FULLSCREEN)( "(O)", pybind::get_bool(_fullscreen) );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::onFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
         m_player->onFixedContentResolution( _resolution, _fixed );
 
-        EVENTABLE_CALL(this, EVENT_FIXED_CONTENT_RESOLUTION)( "(O)", pybind::get_bool(_fixed) );
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_FIXED_CONTENT_RESOLUTION)( "(O)", pybind::get_bool(_fixed) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()
@@ -555,7 +577,7 @@ namespace Menge
 
 		if( m_personalityHasOnClose == true )
 		{
-			EVENTABLE_ASK(this, EVENT_CLOSE)( needQuit, true, "()" );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_CLOSE)( needQuit, true, "()" );
 		}
 
 		return needQuit;
@@ -736,7 +758,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
 	{
-		EVENTABLE_CALL(this, EVENT_CURSOR_MODE)( "(O)", pybind::get_bool(_mode) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_CURSOR_MODE)( "(O)", pybind::get_bool(_mode) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Game::getTimingFactor() const
@@ -748,7 +770,7 @@ namespace Menge
 	{
 		m_timingFactor = _timingFactor;
 
-		EVENTABLE_CALL(this, EVENT_ON_TIMING_FACTOR)( "(f)", m_timingFactor );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_TIMING_FACTOR)( "(f)", m_timingFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Game::getParam( const WString & _paramName )

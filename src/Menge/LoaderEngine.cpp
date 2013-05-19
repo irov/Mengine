@@ -20,7 +20,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	LoaderEngine::LoaderEngine()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,11 @@ namespace Menge
     ServiceProviderInterface * LoaderEngine::getServiceProvider() const
     {
         return m_serviceProvider;             
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoaderEngine::destroy()
+    {
+        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist )

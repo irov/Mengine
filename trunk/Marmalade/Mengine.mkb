@@ -34,6 +34,9 @@ includepaths
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/libjpeg"
+    "./Modified/ogg/include"
+    "../dependencies/ogg/include"   
+    "../dependencies/vorbis/include"
 }
 
 files
@@ -60,6 +63,11 @@ files
     ("../src/Plugin/MengeImageCodecPlugin")	
 	"*.h"
 	"*.cpp"
+    
+    [Plugin/MengeSoundCodecPlugin]
+    ("../src/Plugin/MengeSoundCodecPlugin")	
+	"*.h"
+	"*.cpp"    
     
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	

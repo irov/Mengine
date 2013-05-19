@@ -31,11 +31,14 @@ includepaths
 	"../dependencies/metabuf"
     
     "./Modified/Python"
+    "./Modified/ogg/include"
 	"../dependencies/Python"
     
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/libjpeg"
+    "../dependencies/ogg/include"
+    "../dependencies/vorbis/include"
 }
 
 
@@ -138,26 +141,37 @@ files
     jutils.c
     jmemmgr.c    
     
-    [libPNG]
-    ("../dependencies/libpng")
-    png.h
-    pngconf.h
-    pngpriv.h
-    png.c
-    pngerror.c
-    pngget.c
-    pngmem.c
-    pngpread.c
-    pngread.c
-    pngrio.c
-    pngrtran.c
-    pngrutil.c
-    pngset.c
-    pngtrans.c
-    pngwio.c
-    pngwrite.c
-    pngwtran.c
-    pngwutil.c
+    [vorbis]
+    ("../dependencies/vorbis")
+    lib/analysis.c
+    lib/bitrate.c
+    lib/block.c
+    lib/codebook.c
+    lib/envelope.c
+    lib/floor0.c
+    lib/floor1.c
+    lib/info.c
+    lib/lookup.c
+    lib/lpc.c
+    lib/lsp.c
+    lib/mapping0.c
+    lib/mdct.c
+    lib/psy.c
+    lib/registry.c
+    lib/res0.c
+    lib/sharedbook.c
+    lib/smallft.c
+    lib/synthesis.c
+    lib/window.c    
+    
+    [vorbisfile]
+    ("../dependencies/vorbis")
+    lib/vorbisfile.c
+    
+    [ogg]
+    ("../dependencies/ogg")
+    src/bitwise.c
+    src/framing.c    
 
     [pugixml]
     ("../dependencies/pugixml")

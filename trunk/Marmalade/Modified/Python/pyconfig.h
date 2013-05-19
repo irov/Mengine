@@ -10,7 +10,7 @@
 #define HAVE_ADDRINFO 1
 
 /* Define to 1 if you have the `alarm' function. */
-#define HAVE_ALARM 1
+#undef HAVE_ALARM
 
 /* Define to 1 if you have the <asm/types.h> header file. */
 #define HAVE_ASM_TYPES_H 1
@@ -40,8 +40,8 @@
 #define HAVE_INET_ATON 1
 
 /* Define this if you have the type long long. */
-#define HAVE_LONG_LONG
-//#undef HAVE_LONG_LONG
+//#define HAVE_LONG_LONG
+#undef HAVE_LONG_LONG
 
 /* Define to 1 if you have the `memmove' function. */
 #define HAVE_MEMMOVE 1
@@ -56,7 +56,7 @@
 #define HAVE_MREMAP 1
 
 /* Define to 1 if you have the `pause' function. */
-#define HAVE_PAUSE 1
+#undef HAVE_PAUSE
 
 /* Define to 1 if you have the `plock' function. */
 /* #undef HAVE_PLOCK */
@@ -356,12 +356,10 @@ We just want to avoid a redefinition error message. */
 #define STRICT_SYSV_CURSES /* Don't use ncurses extensions */
 #endif
 
-#ifdef _MSC_VER
-#define PY_LONG_LONG __int64
-#endif
+//#ifdef _MSC_VER
+//#define PY_LONG_LONG __int64
+//#endif
 
-#define PY_FORMAT_LONG_LONG "ull"
-
-
+//#define PY_FORMAT_LONG_LONG "ull"
 
 #endif /*Py_PYCONFIG_H*/

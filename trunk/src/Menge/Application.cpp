@@ -31,10 +31,7 @@
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/AlphaChannelInterface.h"
-#   include "Interface/ArrowInterface.h"
 #   include "Interface/AccountInterface.h"
-#   include "Interface/SceneInterface.h"
-#   include "Interface/EntityInterface.h"
 
 #	include "Watchdog.h"
 
@@ -137,15 +134,12 @@
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
 SERVICE_EXTERN(MovieKeyFrameService, Menge::MovieKeyFrameServiceInterface);
-SERVICE_EXTERN(EventService, Menge::EventServiceInterface);
-SERVICE_EXTERN(SceneService, Menge::SceneServiceInterface);
-SERVICE_EXTERN(EntityService, Menge::EntityServiceInterface);
 SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
-SERVICE_EXTERN(ArrowService, Menge::ArrowServiceInterface);
 SERVICE_EXTERN(AlphaChannelService, Menge::AlphaChannelServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
+SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -179,6 +173,7 @@ namespace Menge
 		, m_countThreads(2)
 		, m_mouseEnter(false)
 		, m_developmentMode(false)
+        , m_resourceCheck(true)
 		, m_cursorResource(NULL)
 		, m_fixedContentResolution(false)
 		, m_vsync(false)
@@ -261,14 +256,12 @@ namespace Menge
         ExecuteInitialize exinit( this );
 
         exinit.add( &Application::initializeNodeManager_ );
+        exinit.add( &Application::initializePrototypeManager_ );
         exinit.add( &Application::initializeLoaderEngine_ );
         exinit.add( &Application::initializeMovieKeyFrameManager_ );
         exinit.add( &Application::initializeResourceManager_ );
-        exinit.add( &Application::initializeArrowManager_ );
         exinit.add( &Application::initializeSceneManager_ );
-        exinit.add( &Application::initializeEntityManager_ );		
-        exinit.add( &Application::initializeTextManager_ );
-        exinit.add( &Application::initializeEventManager_ );
+        exinit.add( &Application::initializeTextManager_ );        
         exinit.add( &Application::initializeWatchdog_ );
 
         if( exinit.run() == false )
@@ -429,21 +422,22 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeEventManager_()
+    bool Application::initializePrototypeManager_()
     {
-        //LOGGER_INFO(m_serviceProvider)( "Inititalizing Event Manager..." );
+        LOGGER_INFO(m_serviceProvider)( "Inititalizing PrototypeManager..." );
 
-        //EventServiceInterface * eventService;
-        //if( SERVICE_CREATE( EventService, &eventService ) == false )
-        //{
-        //    return false;
-        //}
+        PrototypeServiceInterface * prototypeService;
 
-        //SERVICE_REGISTRY( m_serviceProvider, eventService );
+        if( SERVICE_CREATE( PrototypeService, &prototypeService ) == false )
+        {
+            return false;
+        }
 
-        //m_eventService = eventService;
+        SERVICE_REGISTRY( m_serviceProvider, prototypeService );
 
-        return true;             
+        m_prototypeService = prototypeService;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeWatchdog_()
@@ -462,37 +456,67 @@ namespace Menge
 
         return true;    
     }
+    //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        class SceneCategoryGenerator
+            : public PrototypeGeneratorInterface
+        {
+        public:
+            SceneCategoryGenerator( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider(_serviceProvider)
+            {
+            }
+
+        protected:
+            PrototypeInterface * generate( const ConstString & _category, const ConstString & _prototype ) override
+            {
+                Scene * scene = NODE_SERVICE(m_serviceProvider)
+                    ->createNodeT<Scene>( CONST_STRING(m_serviceProvider, Scene) );
+
+                if( scene == nullptr )
+                {
+                    LOGGER_ERROR(m_serviceProvider)( "SceneCategoryGenerator can't create %s %s"
+                        , _category.c_str()
+                        , _prototype.c_str()
+                        );
+
+                    return nullptr;
+                }
+
+                scene->setName( _prototype );
+
+                return scene;
+            }
+
+            void destroy() override
+            {
+                delete this;
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+        };
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeSceneManager_()
 	{
 		LOGGER_INFO(m_serviceProvider)( "initialize Scene Manager..." );
 
-        SceneServiceInterface * sceneService;
-        if( createSceneService( &sceneService ) == false )
-        {
-            return false;
-        }
+        //SceneServiceInterface * sceneService;
+        //if( createSceneService( &sceneService ) == false )
+        //{
+        //    return false;
+        //}
 
-        SERVICE_REGISTRY( m_serviceProvider, sceneService );
+        //SERVICE_REGISTRY( m_serviceProvider, sceneService );
 
-        m_sceneService = sceneService;
+        //m_sceneService = sceneService;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeEntityManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "initialize Entity Manager..." );
+        PrototypeGeneratorInterface * generator = new SceneCategoryGenerator(m_serviceProvider);
 
-        EntityServiceInterface * entityService;
-        if( createEntityService( &entityService ) == false )
-        {
-		    return false;
-        }
-
-        SERVICE_REGISTRY( m_serviceProvider, entityService );
- 
-        m_entityService = entityService;
+        PROTOTYPE_SERVICE(m_serviceProvider)
+            ->addPrototype( CONST_STRING(m_serviceProvider, Scene), ConstString::none(), generator );
 
 		return true;
 	}
@@ -538,23 +562,6 @@ namespace Menge
         RESOURCE_FACTORY( m_serviceProvider, ResourceExternal );
 
 #	undef RESOURCE_FACTORY
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeArrowManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "initialize Arrow Manager..." );
-        
-        ArrowServiceInterface * arrowService;
-        if( createArrowService( &arrowService ) == false )
-        {
-            return false;
-        }
-
-        m_arrowService = arrowService;
-
-        m_serviceProvider->registryService( "ArrowService", m_arrowService );
 
 		return true;
 	}
@@ -623,7 +630,7 @@ namespace Menge
             return false;
         }
 
-        if( m_developmentMode == true )
+        if( m_developmentMode == true && m_resourceCheck == true )
         {
             RESOURCE_SERVICE(m_serviceProvider)
                 ->validationResources();
@@ -738,23 +745,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
-		String::size_type idx_mute = _arguments.find( "-mute" );
+		String::size_type idx_mute = _arguments.find( " -mute " );
 		if( idx_mute != String::npos )
 		{
 			m_soundMute = false;
 		}
 
-		String::size_type idx_particles = _arguments.find( "-particles" );
+		String::size_type idx_particles = _arguments.find( " -particles " );
 		if( idx_particles != String::npos )
 		{
 			m_particles = false;
 		}
 
-		String::size_type idx_dev = _arguments.find( "-dev" );
-		if( idx_dev != String::npos )
-		{
-			m_developmentMode = true;
-		}
+        String::size_type idx_dev = _arguments.find( " -dev " );
+        if( idx_dev != String::npos )
+        {
+            m_developmentMode = true;
+        }
+
+        String::size_type idx_noresourcecheck = _arguments.find( " -noresourcecheck " );
+        if( idx_noresourcecheck != String::npos )
+        {
+            m_resourceCheck = false;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
@@ -1167,10 +1180,6 @@ namespace Menge
         SERVICE_DESTROY( Watchdog, m_watchdog );
         SERVICE_DESTROY( LoaderService, m_loaderService );
         SERVICE_DESTROY( TextService, m_textService );
-        SERVICE_DESTROY( ArrowService, m_arrowService );
-
-        SERVICE_DESTROY( SceneService, m_sceneService );
-        SERVICE_DESTROY( EntityService, m_entityService );
         SERVICE_DESTROY( NodeService, m_nodeService );
         SERVICE_DESTROY( MovieKeyFrameService, m_movieKeyFrameService );
         //m_eventService->destroy();

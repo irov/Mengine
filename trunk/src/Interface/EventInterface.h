@@ -80,20 +80,4 @@ namespace Menge
         EVENT_CURSOR_MODE,
         __EVENT_LAST__
     };
-
-//    class EventServiceInterface
-//        : public ServiceInterface
-//    {
-//        SERVICE_DECLARE("EventService")
-//
-//    public:
-//        virtual void addEventFormat( EEventName _event, PyObject * _method, const char * _format, ... ) = 0;
-//        virtual void addEvent( EEventName _event, PyObject * _method, PyObject * _args ) = 0;
-//
-//    public:
-//        virtual void update() = 0;
-//    };
-//
-//#   define EVENT_SERVICE( serviceProvider )\
-//    (Menge::Helper::getService<Menge::EventServiceInterface>(serviceProvider))
 }

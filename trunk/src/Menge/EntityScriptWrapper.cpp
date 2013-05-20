@@ -9,7 +9,6 @@
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/EntityInterface.h"
 #   include "Interface/NodeInterface.h"
 
 #   include "Consts.h"
@@ -28,18 +27,141 @@ namespace Menge
         }
 
     public:
+        //////////////////////////////////////////////////////////////////////////
+        class PythonPrototypeGenerator
+            : public PrototypeGeneratorInterface
+        {
+        public:
+            PythonPrototypeGenerator( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _prototype, PyObject * _module )
+                : m_serviceProvider(_serviceProvider)
+                , m_category(_category)
+                , m_prototype(_prototype)
+                , m_module(_module)
+            {
+                pybind::incref( m_module );
+            }
+
+            virtual ~PythonPrototypeGenerator()
+            {
+                pybind::decref( m_module );
+            }
+
+        public:
+            PyObject * getModule() const
+            {
+                return m_module;
+            }
+
+        public:
+            bool initialize()
+            {
+                if( pybind::type_initialize( m_module ) == false )
+                {
+                    LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type initialize"
+                        , m_category.c_str()
+                        , m_prototype.c_str()
+                        );
+
+                    return false;
+                }
+
+                return true;
+            }
+
+        protected:
+            void destroy() override
+            {
+                delete this;
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+            ConstString m_category;
+            ConstString m_prototype;
+            PyObject * m_module;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        class EntityPrototypeGenerator
+            : public PythonPrototypeGenerator
+        {
+        public:
+            EntityPrototypeGenerator( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _prototype, PyObject * _module )
+                : PythonPrototypeGenerator(_serviceProvider, _category, _prototype, _module)
+            {
+            }
+
+        protected:
+            PrototypeInterface * generate( const ConstString & _category, const ConstString & _prototype ) override
+            {
+                (void)_category;
+                (void)_prototype;
+
+                Entity * entity = SCRIPT_SERVICE(m_serviceProvider)
+                    ->createEntityT<Entity>( CONST_STRING(m_serviceProvider, Entity), m_prototype, m_module );
+
+                if( entity == nullptr )
+                {
+                    LOGGER_ERROR(m_serviceProvider)( "EntityPrototypeGenerator can't generate %s %s"
+                        , m_category.c_str()
+                        , m_prototype.c_str()
+                        );
+
+                    return nullptr;
+                }
+
+                return entity;
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        bool s_addPrototype( const ConstString & _category, const ConstString & _prototype, PyObject * _module )
+        {
+            EntityPrototypeGenerator * generator = 
+                new EntityPrototypeGenerator(m_serviceProvider, _category, _prototype, _module);
+
+            if( generator->initialize() == false )
+            {
+                return false;
+            }
+
+            PROTOTYPE_SERVICE(m_serviceProvider)
+                ->addPrototype( _category, _prototype, generator );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_addEntityPrototype( const ConstString & _prototype, PyObject * _module )
+        {
+            bool result = s_addPrototype( CONST_STRING(m_serviceProvider, Entity), _prototype, _module );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_addScenePrototype( const ConstString & _prototype, PyObject * _module )
+        {
+            bool result = s_addPrototype( CONST_STRING(m_serviceProvider, Scene), _prototype, _module );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_addArrowPrototype( const ConstString & _prototype, PyObject * _module )
+        {
+            bool result = s_addPrototype( CONST_STRING(m_serviceProvider, Arrow), _prototype, _module );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
 		PyObject * s_createEntity( const ConstString & _prototype )
 		{
-			Entity * entity = ENTITY_SERVICE(m_serviceProvider)
-				->createEntity( _prototype );
+			Entity * entity = PROTOTYPE_SERVICE(m_serviceProvider)
+				->generatePrototypeT<Entity>( CONST_STRING(m_serviceProvider, Entity), _prototype );
 
-			if( entity == 0 )
+			if( entity == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "Error: can't create Entity '%s'"
 					, _prototype.c_str()
 					);
 
-				return 0;
+				return nullptr;
 			}
 
 			NODE_SERVICE(m_serviceProvider)
@@ -51,20 +173,33 @@ namespace Menge
 
 			return py_embedding;
 		}
-
-        PyObject * s_importEntity( const ConstString & _type )
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_importEntity( const ConstString & _prototype )
         {
-            PyObject * py_prototype = ENTITY_SERVICE(m_serviceProvider)
-                ->getPrototype( _type );
+            PrototypeGeneratorInterface * generator = nullptr;
+            if( PROTOTYPE_SERVICE(m_serviceProvider)
+                ->hasPrototype( CONST_STRING(m_serviceProvider, Entity), _prototype, &generator ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "Error: can't import Entity '%s'"
+                    , _prototype.c_str()
+                    );
 
-            if( py_prototype == 0 )
+                return pybind::ret_none();
+            }
+
+            PythonPrototypeGenerator * pythonGenerator = 
+                dynamic_cast<PythonPrototypeGenerator *>(generator);
+
+            if( pythonGenerator == nullptr )
             {
                 return pybind::ret_none();
             }
 
-            pybind::incref( py_prototype );
+            PyObject * py_module = pythonGenerator->getModule();
 
-            return py_prototype;
+            pybind::incref( py_module );
+
+            return py_module;
         }
 
     protected:
@@ -163,6 +298,9 @@ namespace Menge
 
         EntityScriptMethod * entityScriptMethod = new EntityScriptMethod(_serviceProvider);
 
+        pybind::def_functor( "addEntityPrototype", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototype );
+        pybind::def_functor( "addScenePrototype", entityScriptMethod, &EntityScriptMethod::s_addScenePrototype );
+        pybind::def_functor( "addArrowPrototype", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototype );
 		pybind::def_functor( "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
         pybind::def_functor( "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 		//pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );

@@ -17,8 +17,6 @@
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/AccountInterface.h"
-#   include "Interface/ArrowInterface.h"
-#   include "Interface/SceneInterface.h"
 #   include "Interface/NodeInterface.h"
 #   include "Interface/TextInterface.h"
 #   include "Interface/StringizeInterface.h"
@@ -379,8 +377,8 @@ namespace Menge
             //return false;
         }
 		
-		m_defaultArrow = ARROW_SERVICE(m_serviceProvider)
-            ->createArrow( CONST_STRING(m_serviceProvider, Default) );
+		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
+            ->generatePrototypeT<Arrow>( CONST_STRING(m_serviceProvider, Arrow), CONST_STRING(m_serviceProvider, Default) );
 
         if( m_defaultArrow == NULL )
         {

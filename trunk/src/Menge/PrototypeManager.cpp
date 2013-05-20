@@ -2,90 +2,95 @@
 
 #	include "Logger/Logger.h"
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( PrototypeService, Menge::PrototypeServiceInterface, Menge::PrototypeManager );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeManager::PrototypeManager()
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeManager::~PrototypeManager()
 	{
-		for( TMapPrototypes::iterator
-			it = m_prototypes.begin(),
-			it_end = m_prototypes.end();
-		it != it_end;
-		++it )
-		{
-			PyObject * module = it->second;
-
-			pybind::decref( module );
-		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void PrototypeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * PrototypeManager::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool PrototypeManager::addPrototype( const ConstString & _prototype, PyObject * _module )
+	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterface * _generator )
 	{
-		if( pybind::type_initialize( _module ) == false )
-		{
-			ServiceProviderInterface * serviceProvider = this->getServiceProvider();
+        CategoryKey key;
+        key.category = _category;
+        key.prototype = _prototype;
 
-			LOGGER_ERROR(serviceProvider)("PrototypeManager::addPrototype prototype %s invalid type initialize"
-				, _prototype.c_str()
-				);
+        m_prototypes[key] = _generator; //replace
 
-			return false;
-		}
-
-		pybind::incref( _module );
-
-		TMapPrototypes::iterator it_found = m_prototypes.find( _prototype );
-
-		if( it_found != m_prototypes.end() )
-		{
-			m_prototypes[_prototype] = _module;
-		}
-		else
-		{
-			m_prototypes.insert( std::make_pair(_prototype, _module) );
-		}
+        LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"
+            , _category.c_str()
+            , _prototype.c_str()
+            );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * PrototypeManager::getPrototype( const ConstString & _prototype ) const
+	bool PrototypeManager::hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterface ** _generator ) const
 	{
-		TMapPrototypes::const_iterator it_found = m_prototypes.find( _prototype );
+        CategoryKey prototype_key;
+        prototype_key.category = _category;
+        prototype_key.prototype = _prototype;
+
+		TMapPrototypes::const_iterator it_found = m_prototypes.find( prototype_key );
 
 		if( it_found == m_prototypes.end() )
 		{
-			ServiceProviderInterface * serviceProvider = this->getServiceProvider();
+            CategoryKey category_key;
+            category_key.category = _category;
 
-			LOGGER_ERROR(serviceProvider)("PrototypeManager::getPrototype prototype %s not found"
-				, _prototype.c_str()
-				);
-
-			return 0;
+            it_found = m_prototypes.find( category_key );
+            
+            if( it_found == m_prototypes.end() )
+            {
+                return false;
+            }
 		}
 
-		PyObject * module = it_found->second;
-
-		return module;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PrototypeManager::hasPrototype( const ConstString & _prototype, PyObject ** _module ) const
-	{
-		TMapPrototypes::const_iterator it_found = m_prototypes.find( _prototype );
-
-		if( it_found == m_prototypes.end() )
-		{
-			return false;
-		}
-
-		if( _module != NULL )
-		{
-			*_module = it_found->second;
-		}
+        if( _generator != nullptr )
+        {
+            *_generator = it_found->second;
+        }
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    PrototypeInterface * PrototypeManager::generatePrototype( const ConstString & _category, const ConstString & _prototype )
+    {
+        CategoryKey key;
+        key.category = _category;
+        key.prototype = _prototype;
+
+        PrototypeGeneratorInterface * generator = nullptr;
+        if( this->hasPrototype( _category, _prototype, &generator ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("PrototypeManager::generatePrototype prototype %s:%s not found"
+                , _category.c_str()
+                , _prototype.c_str()
+                );
+
+            return nullptr;
+        }
+
+        PrototypeInterface * prototype = generator->generate( _category, _prototype );
+
+        return prototype;
+    }
 }

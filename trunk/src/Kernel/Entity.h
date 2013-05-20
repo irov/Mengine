@@ -1,11 +1,14 @@
 #	pragma once
 
+#   include "Interface/PrototypeManagerInterface.h"
+
 #	include "Node.h"
 
 namespace Menge
 {
 	class Entity
 		: public Node
+        , public PrototypeInterface
 	{
     public:
         Entity();

@@ -18,7 +18,6 @@
 #	include "Logger/Logger.h"
 
 #	include "Interface/ThreadSystemInterface.h"
-#	include "Interface/EntityInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -53,7 +52,6 @@
 
 #	include "Interface/ScriptSystemInterface.h"
 
-#	include "EventManager.h"
 #	include "TimingManager.h"
 
 #   include "pybind/pybind.hpp"

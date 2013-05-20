@@ -5,7 +5,6 @@
 #   include "Interface/FileSystemInterface.h"
 
 #   include "Interface/InputSystemInterface.h"
-#   include "Interface/EntityInterface.h"
 #   include "Interface/NodeInterface.h"
 
 #	include "Kernel/ThreadTask.h"
@@ -21,9 +20,6 @@
 #   include "Interface/ScheduleManagerInterface.h"
 
 #   include "Interface/TextInterface.h"
-#   include "Interface/ArrowInterface.h"
-
-#   include "Interface/SceneInterface.h"
 #   include "Interface/AccountInterface.h"
 
 #   include "Interface/EventInterface.h"
@@ -663,18 +659,18 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         Scene * s_createScene( const ConstString & _name )
         {
-            Scene * scene = SCENE_SERVICE(m_serviceProvider)
-                ->createScene( _name );
+            Scene * scene = PROTOTYPE_SERVICE(m_serviceProvider)
+                ->generatePrototypeT<Scene>( CONST_STRING(m_serviceProvider, Scene), _name );
 
             return scene;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setArrow( const ConstString & _prototype )
         {
-            Arrow * arrow = ARROW_SERVICE(m_serviceProvider)
-                ->createArrow( _prototype );
+            Arrow * arrow = PROTOTYPE_SERVICE(m_serviceProvider)
+                ->generatePrototypeT<Arrow>( CONST_STRING(m_serviceProvider, Arrow), _prototype );
 
-            if( arrow == 0 )
+            if( arrow == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Error: can't setup arrow '%s'"
                     , _prototype.c_str()
@@ -1780,22 +1776,6 @@ namespace Menge
             return duration;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addEntityPrototype( const ConstString & _prototype, PyObject * _module )
-        {
-            bool result = ENTITY_SERVICE(m_serviceProvider)
-                ->addPrototype( _prototype, _module );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_addScenePrototype( const ConstString & _prototype, PyObject * _module )
-        {
-            bool result = SCENE_SERVICE(m_serviceProvider)
-                ->addPrototype( _prototype, _module );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
         Viewport s_getGameViewport()
         {
             float aspect;
@@ -1805,14 +1785,6 @@ namespace Menge
                 ->getGameViewport( aspect, viewport );
 
             return viewport;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_addArrowPrototype( const ConstString & _prototype, PyObject * _module )
-        {
-            bool result = ARROW_SERVICE(m_serviceProvider)
-                ->addPrototype( _prototype, _module );
-
-            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_hasGameParam( const WString & _paramName )
@@ -3175,10 +3147,6 @@ namespace Menge
             pybind::def_functor( "getNullObjectsFromResourceVideo", nodeScriptMethod, &NodeScriptMethod::s_getNullObjectsFromResourceVideo );
 
             pybind::def_functor( "getMovieDuration", nodeScriptMethod, &NodeScriptMethod::s_getMovieDuration );
-
-            pybind::def_functor( "addEntityPrototype", nodeScriptMethod, &NodeScriptMethod::s_addEntityPrototype );
-            pybind::def_functor( "addScenePrototype", nodeScriptMethod, &NodeScriptMethod::s_addScenePrototype );
-            pybind::def_functor( "addArrowPrototype", nodeScriptMethod, &NodeScriptMethod::s_addArrowPrototype );
 
             pybind::def_functor( "getGameViewport", nodeScriptMethod, &NodeScriptMethod::s_getGameViewport );			
                         

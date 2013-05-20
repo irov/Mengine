@@ -1,13 +1,10 @@
 #	pragma once
 
-#	include "MengeExport.h"
-
-//#	include "Loadable.h"
-
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
 #	include "Interface/ApplicationInterface.h"
+#   include "Interface/PrototypeManagerInterface.h"
 
 #	include "Core/ConstString.h"
 
@@ -26,11 +23,7 @@ namespace Menge
     class AlphaChannelServiceInterface;
     class TextServiceInterface;
     class NodeServiceInterface;
-    class ArrowServiceInterface;
-    class SceneServiceInterface;
-    class EntityServiceInterface;
     class MovieKeyFrameServiceInterface;
-    class EventServiceInterface;
 
     class WatchdogInterface;
 
@@ -104,12 +97,10 @@ namespace Menge
 		bool initializeNodeManager_();
 		bool initializeLoaderEngine_();
 		bool initializeResourceManager_();
-		bool initializeArrowManager_();
 		bool initializeSceneManager_();
-		bool initializeEntityManager_();
 		bool initializeTextManager_();
 		bool initializeMovieKeyFrameManager_();
-        bool initializeEventManager_();
+        bool initializePrototypeManager_();
         bool initializeWatchdog_();
 
 	public:
@@ -254,11 +245,8 @@ namespace Menge
 		ResourceServiceInterface * m_resourceService;
 		TextServiceInterface* m_textService;
 		NodeServiceInterface * m_nodeService;
-		ArrowServiceInterface * m_arrowService;
-		SceneServiceInterface * m_sceneService;
-		EntityServiceInterface * m_entityService;
-		MovieKeyFrameServiceInterface * m_movieKeyFrameService;		
-        //EventServiceInterface * m_eventService;
+		MovieKeyFrameServiceInterface * m_movieKeyFrameService;
+        PrototypeServiceInterface * m_prototypeService;
 
 		WatchdogInterface * m_watchdog;
 
@@ -287,5 +275,6 @@ namespace Menge
 		bool m_developmentMode;
 
         bool m_windowModeCheck;
+        bool m_resourceCheck;
 	};
 }

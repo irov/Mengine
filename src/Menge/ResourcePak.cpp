@@ -8,10 +8,6 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
-#	include "Interface/SceneInterface.h"
-#	include "Interface/ArrowInterface.h"
-#	include "Interface/EntityInterface.h"
-
 #	include "Metacode.h"
 
 #   include "Logger/Logger.h"

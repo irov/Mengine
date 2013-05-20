@@ -22,7 +22,6 @@
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 
-#   include "Interface/SceneInterface.h"
 #   include "Interface/EventInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
@@ -198,16 +197,16 @@ namespace Menge
 		m_switchScene = false;
 
 		Scene * oldScene = m_scene;
-		m_scene = 0;
+		m_scene = nullptr;
 
-		if( m_restartScene && oldScene != NULL )		// just restart scene
+		if( m_restartScene && oldScene != nullptr )		// just restart scene
 		{		
 			m_restartScene = false;
 
 			m_switchSceneName = oldScene->getName();
 		}
 
-		if( m_arrow )
+		if( m_arrow != nullptr )
 		{
 			m_arrow->removeFromParent();
 			m_arrow->disable();
@@ -216,7 +215,7 @@ namespace Menge
 		m_scheduleManager->removeAll();
 		m_timingManager->removeAll(false);
 
-		if( oldScene != NULL && m_destroyOldScene == true && m_destroyAfterSwitch == false )
+		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == false )
 		{
             oldScene->destroy();
 		}
@@ -227,7 +226,7 @@ namespace Menge
 		m_mousePickerSystem->clear();
 		//m_globalHandleSystem->clear();
 
-		if( oldScene != NULL && m_destroyOldScene == true && m_destroyAfterSwitch == true )
+		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == true )
 		{
             oldScene->destroy();
 		}
@@ -244,23 +243,23 @@ namespace Menge
 		m_joins.clear();
 
         PyObject * cb = m_changeSceneCb;
-        m_changeSceneCb = NULL;
+        m_changeSceneCb = nullptr;
         
-        if( cb != NULL )
+        if( cb != nullptr )
         {
             pybind::call( cb, "(OO)", pybind::get_none(), pybind::get_bool(false) );
         }
         
-        m_scene = SCENE_SERVICE(m_serviceProvider)
-			->createScene( m_switchSceneName );
+        m_scene = PROTOTYPE_SERVICE(m_serviceProvider)
+			->generatePrototypeT<Scene>( CONST_STRING(m_serviceProvider, Scene), m_switchSceneName );
 
-		if( m_scene == 0 )
+		if( m_scene == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Player::updateChangeScene scene not found %s"
 				, m_switchSceneName.c_str() 
 				);
 
-			if( cb != NULL )
+			if( cb != nullptr )
 			{
 				pybind::call( cb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
 
@@ -270,7 +269,7 @@ namespace Menge
 			return;
 		}
 
-		if( cb != NULL )
+		if( cb != nullptr )
 		{
 			pybind::call( cb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
 		}
@@ -279,19 +278,19 @@ namespace Menge
 
         m_scene->enable();
 
-        if( m_arrow != NULL )
+        if( m_arrow != nullptr )
         {
             m_arrow->enable();
         }
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next scene " + m_scene->getName() );
 
-		if( cb != NULL )
+		if( cb != nullptr )
 		{
 			pybind::call( cb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
 		}
 	
-		if( cb != NULL )
+		if( cb != nullptr )
 		{
 			pybind::decref( cb );
 		}
@@ -308,16 +307,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setArrow(Arrow * _arrow)
 	{
-		if( m_arrow )
+		if( m_arrow != nullptr )
 		{
 			m_arrow->disable();
 		}
 
 		m_arrow = _arrow;
 
-		if( m_arrow )
+		if( m_arrow != nullptr)
 		{
-			if( m_scene )
+			if( m_scene != nullptr )
 			{
 				m_arrow->enable();
 			}
@@ -326,7 +325,7 @@ namespace Menge
 			m_arrow->setCurrentResolution( m_currentResolution );
 		}
 
-        if( m_mousePickerSystem )
+        if( m_mousePickerSystem != nullptr )
         {
 		    m_mousePickerSystem->setArrow( m_arrow );
         }

@@ -312,14 +312,6 @@ Manager\\\\MovieKeyFrame
     MovieFramePack.cpp
 )
 
-
-ADD_FILTER(
-Manager\\\\Entity
-	EntityManager.cpp
-	EntityManager.h
-)
-
-
 ADD_FILTER(
 Manager\\\\Text
 	TextManager.cpp
@@ -358,19 +350,6 @@ ADD_FILTER(
 Manager\\\\Node
 	NodeManager.cpp
 	NodeManager.h
-)
-
-ADD_FILTER(
-Manager\\\\Scene
-	SceneManager.cpp	
-	SceneManager.h
-)
-
-ADD_FILTER(
-Manager\\\\Arrow
-
-	ArrowManager.cpp	
-	ArrowManager.h
 )
 
 ADD_FILTER(

@@ -5,7 +5,6 @@
 #	include "Interface/PhysicSystem2DInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #   include "Interface/ResourceInterface.h"
-#   include "Interface/SceneInterface.h"
 #   include "Interface/NodeInterface.h"
 
 #	include "Logger/Logger.h"

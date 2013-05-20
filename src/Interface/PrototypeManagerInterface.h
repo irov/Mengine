@@ -44,3 +44,4 @@ namespace Menge
 
 #   define PROTOTYPE_SERVICE( serviceProvider )\
     (Menge::Helper::getService<Menge::PrototypeServiceInterface>(serviceProvider))
+

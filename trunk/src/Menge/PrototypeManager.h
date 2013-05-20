@@ -42,7 +42,7 @@ namespace Menge
                 if( _left.category < _right.category )
                 {
                     return true;
-                }                               
+                }
                 else if( _left.category == _right.category )
                 {
                     return _left.prototype < _right.prototype;

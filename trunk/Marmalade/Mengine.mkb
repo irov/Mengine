@@ -88,6 +88,11 @@ files
     ("../src/Service/ServiceLog")	
 	"*.h"
 	"*.cpp"
+        
+    [Service/ServiceArchive]
+    ("../src/Service/ServiceArchive")	
+	"*.h"
+	"*.cpp"
     
     [Service/ServiceProvider]
     ("../src/Service/ServiceProvider")	

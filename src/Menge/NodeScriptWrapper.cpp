@@ -317,12 +317,20 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_blockInput( bool _value )
+        void s_setMousePickerBlockInput( bool _value )
         {
             MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getMousePickerSystem();
 
-            mousePickerSystem->block(_value);
+            mousePickerSystem->setBlock( _value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_setMousePickerHandleValue( bool _value )
+        {
+            MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
+                ->getMousePickerSystem();
+
+            mousePickerSystem->setHandleValue( _value );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setInputMouseButtonEventBlock( bool _value )
@@ -3075,7 +3083,9 @@ namespace Menge
 
             pybind::def_functor( "pickHotspot", nodeScriptMethod, &NodeScriptMethod::s_pickHotspot );
 
-            pybind::def_functor( "blockInput", nodeScriptMethod, &NodeScriptMethod::s_blockInput );
+            pybind::def_functor( "blockInput", nodeScriptMethod, &NodeScriptMethod::s_setMousePickerBlockInput );
+            pybind::def_functor( "setMousePickerHandleValue", nodeScriptMethod, &NodeScriptMethod::s_setMousePickerHandleValue );
+
             pybind::def_functor( "setInputMouseButtonEventBlock", nodeScriptMethod, &NodeScriptMethod::s_setInputMouseButtonEventBlock );
             pybind::def_functor( "getInputMouseButtonEventBlock", nodeScriptMethod, &NodeScriptMethod::s_getInputMouseButtonEventBlock );
 

@@ -17,7 +17,7 @@ namespace Menge
         virtual bool pick( const mt::vec2f& _point, Arrow * _arrow ) = 0;
 
     public:
-        virtual bool onMouseEnter() = 0;
+        virtual bool onMouseEnter( const mt::vec2f & _point ) = 0;
         virtual void onMouseLeave() = 0;
 
     public:
@@ -45,7 +45,8 @@ namespace Menge
         : public InputSystemHandler
     {
     public:
-        virtual void block( bool _value ) = 0;
+        virtual void setBlock( bool _value ) = 0;
+        virtual void setHandleValue( bool _value ) = 0;
 
     public:
         virtual void setArrow( Arrow * _arrow ) = 0;

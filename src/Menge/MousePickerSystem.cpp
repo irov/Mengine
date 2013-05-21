@@ -16,32 +16,29 @@ namespace Menge
 		: m_serviceProvider(_serviceProvider)
         , m_enumerator(0)
 		, m_block(false)
-		, m_arrow(0)
+        , m_handleValue(true)
+		, m_arrow(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::block( bool _value )
+	void MousePickerSystem::setBlock( bool _value )
 	{
 		m_block = _value;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MousePickerSystem::setHandleValue( bool _value )
+    {
+        m_handleValue = _value;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::setArrow( Arrow * _arrow )
 	{
 		m_arrow = _arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::update( const mt::vec2f& _point )
-	{	
-		if( INPUT_SERVICE(m_serviceProvider)
-            ->validCursorPosition( _point ) == true )
-		{			
-			this->updatePicked_( _point );			
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
 	{
-		this->updatePicked_( _point );
+		this->update( _point );
 
 		for( TPickerTrapState::reverse_iterator
 			it = m_pickerTrapState.rbegin(),
@@ -142,7 +139,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		this->updatePicked_( _point );
+		this->update( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -163,7 +160,7 @@ namespace Menge
 
 				if( trap->handleKeyEvent( _point, _key, _char, _isDown ) == true )
 				{
-					return true;
+					return m_handleValue;
 				}
 			}
 		}
@@ -173,7 +170,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->updatePicked_( _point );
+		this->update( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -194,7 +191,7 @@ namespace Menge
 
 				if( trap->handleMouseButtonEvent( _touchId, _point, _button, _isDown ) == true )
 				{
-					return true;
+					return m_handleValue;
 				}
 			}
 		}
@@ -204,7 +201,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->updatePicked_( _point );
+		this->update( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -225,7 +222,7 @@ namespace Menge
 
 				if( trap->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown ) == true )
                 {
-                    return true;
+                    return m_handleValue;
                 }
 			}
 		}
@@ -254,7 +251,7 @@ namespace Menge
 
 				if( trap->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown ) == true )
                 {
-                    return true;
+                    return m_handleValue;
                 }
 			}
 		}
@@ -264,7 +261,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
-		this->updatePicked_( _point );
+		this->update( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -285,7 +282,7 @@ namespace Menge
 
 				if( trap->handleMouseMove( _touchId, _point, _x, _y, _whell ) == true )
 				{
-					return true;
+					return m_handleValue;
 				}
 			}
 		}
@@ -295,7 +292,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::handleMouseEnter( const mt::vec2f & _point )
 	{
-		this->updatePicked_( _point );
+		this->update( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::handleMouseLeave()
@@ -349,12 +346,18 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::updatePicked_( const mt::vec2f& _point )
+	void MousePickerSystem::update( const mt::vec2f& _point )
 	{
 		if( m_arrow == NULL )
 		{
 			return;
 		}
+
+        if( INPUT_SERVICE(m_serviceProvider)
+            ->validCursorPosition( _point ) == false )
+        {		
+            return;
+        }
 
         this->execReg_();
 
@@ -375,11 +378,11 @@ namespace Menge
 
 			MousePickerTrapInterface * trap = state->trap;
 
-			if( handle == false && m_block == false && trap->isPickerActive() == true && trap->pick( _point, m_arrow ) == true )
+			if( ( handle == false || m_handleValue == false ) && m_block == false && trap->isPickerActive() == true && trap->pick( _point, m_arrow ) == true )
 			{
 				if( state->picked == false )
 				{
-					handle = trap->onMouseEnter();
+					handle = trap->onMouseEnter( _point );
 
 					state->picked = true;					
 					state->handle = handle;

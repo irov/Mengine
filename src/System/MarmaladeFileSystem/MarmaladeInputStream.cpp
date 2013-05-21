@@ -65,12 +65,12 @@ namespace Menge
 	{     
         if( _count == m_size )
         {
-            uint32 bytesRead = s3eFileRead( _buf, static_cast<uint32>(_count), 1, m_hFile );
+            uint32 s3e_count = static_cast<uint32>(_count);
+            uint32 bytesRead = s3eFileRead( _buf, 1, s3e_count, m_hFile );
 
-            if( bytesRead != _count )
+            s3eFileError error = s3eFileGetError();
+            if( bytesRead != S3E_FILE_ERR_NONE )
             {
-                s3eFileError error = s3eFileGetError();
-
                 LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read (%d:%d) size %d get error %d"
                     , bytesRead
                     , _count
@@ -88,23 +88,22 @@ namespace Menge
 
             return bytesRead;
         }
-        
+
         if( _count > FILE_BUFFER_SIZE )
         {            
             size_t tail = m_capacity - m_carriage;
-            
+
             if( tail != 0 )
             {
                 memcpy( _buf, m_buff + m_carriage, tail );
             }
 
             uint32 read_count = static_cast<uint32>( _count - tail );
-            uint32 bytesRead = s3eFileRead( (char *)_buf + tail, read_count, 1, m_hFile );
-            
-            if( bytesRead != read_count )
-            {
-                s3eFileError error = s3eFileGetError();
+            uint32 bytesRead = s3eFileRead( (char *)_buf + tail, 1, read_count, m_hFile );
 
+            s3eFileError error = s3eFileGetError();
+            if( error != S3E_FILE_ERR_NONE )
+            {
                 LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read error %d:%d size %d get error %d"
                     , bytesRead
                     , read_count
@@ -122,7 +121,7 @@ namespace Menge
 
             return bytesRead + tail;
         }
-        
+
         if( m_carriage + _count <= m_capacity )
         {
             memcpy( _buf, m_buff + m_carriage, _count );
@@ -139,11 +138,13 @@ namespace Menge
             memcpy( _buf, m_buff + m_carriage, tail );
         }
 
-        uint32 bytesRead = ::s3eFileRead( m_buff, FILE_BUFFER_SIZE, 1, m_hFile );
-        if( bytesRead != FILE_BUFFER_SIZE )
-        {
-            s3eFileError error = s3eFileGetError();
+        uint32 needRead = (m_reading + FILE_BUFFER_SIZE > m_size) ? _count: FILE_BUFFER_SIZE;
 
+        uint32 bytesRead = ::s3eFileRead( m_buff, 1, needRead, m_hFile );
+
+        s3eFileError error = s3eFileGetError();
+        if( error != S3E_FILE_ERR_NONE )
+        {
             LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read (%d:%d) size %d get error %d"
                 , bytesRead
                 , FILE_BUFFER_SIZE
@@ -153,7 +154,7 @@ namespace Menge
 
             return 0;
         }
-        
+
         uint32 readSize = (std::min)( static_cast<uint32>(_count - tail), bytesRead );
 
         memcpy( (char *)_buf + tail, m_buff, readSize );
@@ -203,7 +204,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MarmaladeInputStream::size() const 
 	{
-		return static_cast<size_t>( m_size );
+		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeInputStream::time( time_t & _time ) const

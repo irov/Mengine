@@ -30,17 +30,12 @@ namespace Menge
 		m_arrow = _arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::update()
+	void MousePickerSystem::update( const mt::vec2f& _point )
 	{	
-		const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-			->getCursorPosition();
-
 		if( INPUT_SERVICE(m_serviceProvider)
-            ->validCursorPosition( pos ) == true )
-		{
-			this->execReg_();
-			this->updatePicked_( pos );
-			this->updateDead_();
+            ->validCursorPosition( _point ) == true )
+		{			
+			this->updatePicked_( _point );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -147,9 +142,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		this->execReg_();
-		this->updatePicked_(_point);
-		this->updateDead_();
+		this->updatePicked_( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -180,9 +173,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->execReg_();
-		this->updatePicked_(_point);
-		this->updateDead_();
+		this->updatePicked_( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -213,9 +204,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->execReg_();
-		this->updatePicked_(_point);
-		this->updateDead_();
+		this->updatePicked_( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -246,10 +235,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		//this->execReg_();
-		//this->updatePicked_( _point );
-		//this->updateDead_();
-
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
 			it_end = m_process.rend();
@@ -279,9 +264,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
-		this->execReg_();
-		this->updatePicked_(_point);
-		this->updateDead_();
+		this->updatePicked_( _point );
 
 		for( TPickerTrapRef::reverse_iterator
 			it = m_process.rbegin(),
@@ -312,15 +295,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::handleMouseEnter( const mt::vec2f & _point )
 	{
-		if( INPUT_SERVICE(m_serviceProvider)
-			->validCursorPosition( _point ) == false )
-		{
-			return;
-		}
-
-		this->execReg_();
 		this->updatePicked_( _point );
-		this->updateDead_();		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::handleMouseLeave()
@@ -381,6 +356,8 @@ namespace Menge
 			return;
 		}
 
+        this->execReg_();
+
 		bool handle = false;
 
 		for( TPickerTrapRef::reverse_iterator
@@ -421,6 +398,8 @@ namespace Menge
 				}
 			}
 		}		
+
+        this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()

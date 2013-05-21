@@ -51,7 +51,7 @@ namespace Menge
         virtual void setArrow( Arrow * _arrow ) = 0;
 
     public:
-        virtual void update() = 0;
+        virtual void update( const mt::vec2f& _point ) = 0;
         virtual void clear() = 0;
 
     public:

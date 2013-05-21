@@ -22,7 +22,7 @@ namespace Menge
 		void setArrow( Arrow * _arrow ) override;
 
 	public:
-		void update() override;
+		void update( const mt::vec2f& _point ) override;
 		void clear() override;
 
     public:

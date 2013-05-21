@@ -16,6 +16,7 @@
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/AmplifierServiceInterface.h"
 #   include "Interface/PluginInterface.h"
+#	include "Interface/ArchiveInterface.h"
 
 #   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
 #	include "MarmaladeLogger.h"
@@ -100,6 +101,7 @@ namespace Menge
         bool initializeInputEngine_();
         bool initializeAmplifierService_();
         bool initializePluginService_();
+        bool initializeArchiveService_();
 
     protected:
         bool setupApplicationSetting_();
@@ -134,6 +136,7 @@ namespace Menge
         ScriptServiceInterface * m_scriptService;
         AmplifierServiceInterface * m_amplifierService;
         PluginServiceInterface * m_pluginService;
+        ArchiveServiceInterface * m_archiveService;
 
         FileLogger * m_fileLog;
 

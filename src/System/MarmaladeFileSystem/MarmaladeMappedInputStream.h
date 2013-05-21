@@ -39,20 +39,10 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-
+        
         typedef FactoryPool<MemoryInput, 16> TFactoryMemoryInput;
         TFactoryMemoryInput m_factoryMemoryInput;               
 
-        FilePath m_filePath;
-
-        s3eFile * m_hFile;
-
-        size_t m_size;
-
-        uint32 m_carriage;
-        uint32 m_capacity;
-        uint32 m_reading;
-
-        char m_buff[FILE_BUFFER_SIZE];
+        MarmaladeInputStream m_inputStream;
 	};
 }	// namespace Menge

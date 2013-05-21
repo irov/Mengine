@@ -683,7 +683,10 @@ namespace Menge
 
 		if( m_mousePickerSystem )
 		{
-			m_mousePickerSystem->update();
+            const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
+                ->getCursorPosition();
+
+			m_mousePickerSystem->update( pos );
 		}
 
 		if( m_globalHandleSystem )

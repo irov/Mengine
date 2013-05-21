@@ -15,7 +15,6 @@
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/InputSystemInterface.h"
-#   include "Interface/AmplifierServiceInterface.h"
 #   include "Interface/PluginInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 
@@ -104,12 +103,10 @@ namespace Menge
         bool initializeRenderEngine_();
         bool initializeSoundEngine_();
         bool initializeSilentSoundEngine_();
-        bool initializeNodeManager_();
         bool initializeScriptEngine_();
         bool initializeCodecEngine_();
         bool initializeConverterEngine_();
         bool initializeInputEngine_();
-        bool initializeAmplifierService_();
         bool initializePluginService_();
         bool initializeArchiveService_();
 
@@ -180,7 +177,6 @@ namespace Menge
         RenderServiceInterface * m_renderService;
         SoundServiceInterface * m_soundService;
         ScriptServiceInterface * m_scriptService;
-        AmplifierServiceInterface * m_amplifierService;
         PluginServiceInterface * m_pluginService;
 
 		FileLogger * m_fileLog;

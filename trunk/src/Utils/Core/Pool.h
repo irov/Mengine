@@ -52,7 +52,8 @@ namespace Menge
     public:
         TemplatePool()
             : m_free(nullptr)
-            , m_count(0)
+            , m_countBlock(0)
+            , m_countChunk(0)
         {
         }
 
@@ -77,7 +78,7 @@ namespace Menge
 			TBlock * free = m_free;
 			m_free = m_free->next;
 
-            ++m_count;
+            ++m_countBlock;
 
             void * impl = static_cast<void *>(free);
 #   ifdef _DEBUG
@@ -95,7 +96,7 @@ namespace Menge
             TVectorAllockBlock::iterator if_found = std::find( m_allockBlock.begin(), m_allockBlock.end(), _buff );
             m_allockBlock.erase( if_found );
 #   endif
-            --m_count;
+            --m_countBlock;
 
 			block->next = m_free;
 
@@ -111,7 +112,7 @@ namespace Menge
 
         bool empty() const
         {
-            return m_count == 0;
+            return m_countBlock == 0;
         }
 
 	protected:
@@ -120,6 +121,8 @@ namespace Menge
 			TChunk * chunk = new TChunk( &m_free );
 
 			m_chunks.push_back( chunk );
+
+            ++m_countChunk;
 		}
 
 	protected:
@@ -131,6 +134,7 @@ namespace Menge
 
 		TBlock * m_free;
 
-        size_t m_count;
+        size_t m_countBlock;
+        size_t m_countChunk;
 	};
 }

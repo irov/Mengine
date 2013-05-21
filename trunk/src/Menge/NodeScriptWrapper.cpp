@@ -948,15 +948,14 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_pickHotspot( const mt::vec2f & _point )
-        {
-            TVectorPickerTraps traps;
-
+        {           
             MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getMousePickerSystem();
+            
+            TVectorPickerTraps traps;
+            mousePickerSystem->pickTrap( _point, traps );
 
-            mousePickerSystem->pickTrap( _point, arrow, traps );
-
-            PyObject * pyret = pybind::list_new(0);
+            PyObject * pyret = pybind::list_new( 0 );
 
             bool onFocus = APPLICATION_SERVICE(m_serviceProvider)
                 ->isFocus();

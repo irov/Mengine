@@ -76,7 +76,7 @@ namespace Menge
         inputStream->setServiceProvider( m_serviceProvider );
 
         //Do not support
-        return nullptr;
+        return inputStream;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileSystem::existFile( const FilePath& _filename ) const

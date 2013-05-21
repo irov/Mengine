@@ -76,7 +76,7 @@ SERVICE_EXTERN(SoundSystem, Menge::SoundSystemInterface);
 SERVICE_EXTERN(SilentSoundSystem, Menge::SoundSystemInterface);
 SERVICE_EXTERN(SoundService, Menge::SoundServiceInterface);
 
-SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
+
 SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
@@ -184,8 +184,7 @@ namespace Menge
         , m_physicService2D(nullptr)
         , m_renderService(nullptr)
         , m_soundService(nullptr)
-        , m_scriptService(nullptr)
-        , m_amplifierService(nullptr)
+        , m_scriptService(nullptr)        
         , m_pluginService(nullptr)
 	{
 	}
@@ -1056,27 +1055,6 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool WinApplication::initializeAmplifierService_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Amplifier Service..." );
-
-        AmplifierServiceInterface * amplifierService;
-        if( createAmplifierService( &amplifierService ) == false )
-        {
-            return false;
-        }
-        
-        if( SERVICE_REGISTRY( m_serviceProvider, amplifierService ) == false )
-        {
-            return false;
-        }
-
-        m_amplifierService = amplifierService;
-
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool WinApplication::initializePluginService_()
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
@@ -1230,11 +1208,6 @@ namespace Menge
         }
 
         if( this->initializeInputEngine_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeAmplifierService_() == false )
         {
             return false;
         }
@@ -1729,8 +1702,7 @@ namespace Menge
         
         SERVICE_DESTROY( PhysicService2D, m_physicService2D );
         
-        SERVICE_DESTROY( SoundService, m_soundService );
-        SERVICE_DESTROY( AmplifierService, m_amplifierService );
+        SERVICE_DESTROY( SoundService, m_soundService );        
 
         SERVICE_DESTROY( Application, m_application );
 

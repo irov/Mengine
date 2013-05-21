@@ -44,6 +44,8 @@ SERVICE_EXTERN(Application, Menge::ApplicationInterface);
 SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
 SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
 
+SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
+
 SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
 SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
@@ -430,6 +432,29 @@ namespace Menge
 
             LOGGER_INFO(m_serviceProvider)( "Verbose logging mode enabled" );
         }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MarmaladeApplication::initializeArchiveService_()
+    {
+        LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
+
+        ArchiveServiceInterface * archiveService;
+        if( createArchiveService( &archiveService ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeArchiveService_ failed to create ArchiveService"
+                );
+
+            return false;
+        }
+
+        if( SERVICE_REGISTRY(m_serviceProvider, archiveService) == false )
+        {
+            return false;
+        }
+
+        m_archiveService = archiveService;
 
         return true;
     }
@@ -947,6 +972,11 @@ namespace Menge
         }
 
         if( this->initializeLogEngine_() == false )
+        {
+            return false;
+        }
+
+        if( this->initializeArchiveService_() == false )
         {
             return false;
         }

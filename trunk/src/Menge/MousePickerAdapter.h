@@ -31,7 +31,7 @@ namespace Menge
 		void updatePicker();
 
 	protected:
-		bool onMouseEnter() override;
+        bool onMouseEnter( const mt::vec2f & _point ) override;
 		void onMouseLeave() override;
 
 	protected:

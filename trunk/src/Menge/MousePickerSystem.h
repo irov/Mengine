@@ -16,7 +16,8 @@ namespace Menge
 		MousePickerSystem( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void block( bool _value ) override;
+		void setBlock( bool _value ) override;
+        void setHandleValue( bool _value ) override;
 
 	public:
 		void setArrow( Arrow * _arrow ) override;
@@ -50,7 +51,6 @@ namespace Menge
 		size_t getPickerTrapCount() const override;
 
 	private:
-		void updatePicked_( const mt::vec2f& _point );		
 		void updateDead_();
 
 		bool execReg_();
@@ -61,6 +61,7 @@ namespace Menge
 		size_t m_enumerator;
 
 		bool m_block;
+        bool m_handleValue;
 
 		Arrow * m_arrow;
 

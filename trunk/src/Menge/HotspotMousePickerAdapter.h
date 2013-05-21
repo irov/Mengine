@@ -19,7 +19,7 @@ namespace Menge
         bool pick( const mt::vec2f& _point, Arrow * _arrow ) override;
 
     public:
-        bool onMouseEnter() override;
+        bool onMouseEnter( const mt::vec2f & _point ) override;
         void onMouseLeave() override;
 
     public:

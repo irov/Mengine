@@ -82,7 +82,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::onMouseLeave()
 	{
-		if( m_onLeaveEvent )
+		if( m_onLeaveEvent == true )
 		{
             Eventable * evantable = this->getPickerEventable();
 
@@ -90,23 +90,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::onMouseEnter()
+	bool MousePickerAdapter::onMouseEnter( const mt::vec2f & _point )
 	{
-		bool handle = false;
+        (void)_point;
 
-		if( !handle )
-		{
-			if( m_onEnterEvent )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-			{
-                Eventable * evantable = this->getPickerEventable();
+		bool handle = m_defaultHandle;
 
-				EVENTABLE_ASK(m_serviceProvider, evantable, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(O)", this->getPickerEmbed() );
-			}
-			else
-			{
-				handle = m_defaultHandle;
-			}
-		}
+        if( m_onEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+        {
+            Eventable * evantable = this->getPickerEventable();
+
+            EVENTABLE_ASK(m_serviceProvider, evantable, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(O)", this->getPickerEmbed() );
+        }
 
 		return handle;
 	}

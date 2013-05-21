@@ -140,6 +140,7 @@ SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
+SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -147,7 +148,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
-		: m_platform(NULL)
+		: m_platform(nullptr)
 		, m_particles(true)
 		, m_soundMute(true)
 		, m_debugMask(0)
@@ -156,14 +157,15 @@ namespace Menge
 		, m_maxTiming(100.f)
         , m_mouseBounded(false)
         , m_allowFullscreenSwitchShortcut(true)
-        , m_game(NULL)
+        , m_game(nullptr)
         , m_focus(true)
         , m_update(true)				
-        , m_console(NULL)
-		, m_loaderService(NULL)
-		, m_resourceService(NULL)
-		, m_textService(NULL)
-        , m_nodeService(NULL)
+        , m_console(nullptr)
+		, m_loaderService(nullptr)
+		, m_resourceService(nullptr)
+		, m_textService(nullptr)
+        , m_nodeService(nullptr)
+        , m_amplifierService(nullptr)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -174,7 +176,7 @@ namespace Menge
 		, m_mouseEnter(false)
 		, m_developmentMode(false)
         , m_resourceCheck(true)
-		, m_cursorResource(NULL)
+		, m_cursorResource(nullptr)
 		, m_fixedContentResolution(false)
 		, m_vsync(false)
 		, m_fullScreen(true)
@@ -257,6 +259,7 @@ namespace Menge
 
         exinit.add( &Application::initializeNodeManager_ );
         exinit.add( &Application::initializePrototypeManager_ );
+        exinit.add( &Application::initializeAmplifierService_ );
         exinit.add( &Application::initializeLoaderEngine_ );
         exinit.add( &Application::initializeMovieKeyFrameManager_ );
         exinit.add( &Application::initializeResourceManager_ );
@@ -520,10 +523,30 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::initializeAmplifierService_()
+    {
+        LOGGER_INFO(m_serviceProvider)( "Initializing Amplifier Service..." );
+
+        AmplifierServiceInterface * amplifierService;
+        if( createAmplifierService( &amplifierService ) == false )
+        {
+            return false;
+        }
+
+        if( SERVICE_REGISTRY( m_serviceProvider, amplifierService ) == false )
+        {
+            return false;
+        }
+
+        m_amplifierService = amplifierService;
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeResourceManager_()
 	{
-        LOGGER_INFO(m_serviceProvider)( "Creating Resource Manager..." );
+        LOGGER_INFO(m_serviceProvider)( "Initializing Resource Manager..." );
 
         ResourceServiceInterface * resourceService;
         if( createResourceService( &resourceService ) == false )
@@ -1179,6 +1202,7 @@ namespace Menge
 
         SERVICE_DESTROY( Watchdog, m_watchdog );
         SERVICE_DESTROY( LoaderService, m_loaderService );
+        SERVICE_DESTROY( AmplifierService, m_amplifierService );
         SERVICE_DESTROY( TextService, m_textService );
         SERVICE_DESTROY( NodeService, m_nodeService );
         SERVICE_DESTROY( MovieKeyFrameService, m_movieKeyFrameService );

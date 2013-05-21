@@ -151,9 +151,12 @@ namespace Menge
 			return false;
 		}
 
-        size_t uncompress_size;
+        unsigned char * buffer = &m_bufferBin[0];
+        unsigned char * source = &m_bufferCompress[0];
+
+        size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( &m_bufferBin[0], bin_size, uncompress_size, &m_bufferCompress[0], compress_size ) == false )
+            ->uncompress( buffer, bin_size, uncompress_size, source, compress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid uncompress"
                 );

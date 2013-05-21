@@ -954,7 +954,7 @@ namespace Menge
             MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getMousePickerSystem();
 
-            mousePickerSystem->pickTrap( _point, traps );
+            mousePickerSystem->pickTrap( _point, arrow, traps );
 
             PyObject * pyret = pybind::list_new(0);
 

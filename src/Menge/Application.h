@@ -5,6 +5,7 @@
 
 #	include "Interface/ApplicationInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
+#   include "Interface/AmplifierServiceInterface.h"
 
 #	include "Core/ConstString.h"
 
@@ -96,6 +97,7 @@ namespace Menge
 	protected:
 		bool initializeNodeManager_();
 		bool initializeLoaderEngine_();
+        bool initializeAmplifierService_();
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
@@ -243,6 +245,7 @@ namespace Menge
 
 		LoaderServiceInterface * m_loaderService;
 		ResourceServiceInterface * m_resourceService;
+        AmplifierServiceInterface * m_amplifierService;
 		TextServiceInterface* m_textService;
 		NodeServiceInterface * m_nodeService;
 		MovieKeyFrameServiceInterface * m_movieKeyFrameService;

@@ -2,16 +2,22 @@
 
 #   include "Core/ConstStringHolder.h"
 
+#   include <memory.h>
+
 namespace Menge
 {
-    class ConstStringHolderString256
+    template<size_t I_Size>
+    class ConstStringHolderStringSize
         : public ConstStringHolder
     {
     public:
-        ConstStringHolderString256();
+        void setValue( const char * _value, size_t _size )
+        {
+            memcpy( m_value, _value, _size );
+            m_value[_size] = 0;
 
-    public:
-        void setValue( const char * _value, size_t _size );
+            this->setup( m_value, _size );
+        }
 
     protected:
         const char * _c_str() const override
@@ -20,6 +26,6 @@ namespace Menge
         }
 
     protected:			
-        char m_value[256];
+        char m_value[I_Size];
     };
 }

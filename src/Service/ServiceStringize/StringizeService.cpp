@@ -28,13 +28,41 @@ namespace Menge
 	ConstString StringizeService::stringize( const char * _str, size_t _size )
 	{
         ConstStringHolder * stringHolder = NULL;
-
-        if( _size < 256 )
+        
+        if( _size < 16 )
         {
-            ConstStringHolderString256 * string256 = m_poolString256.createObjectT();
-            string256->setValue( _str, _size );
+            ConstStringHolderString16 * string = m_poolString16.createObjectT();
+            string->setValue( _str, _size );
 
-            stringHolder = string256;
+            stringHolder = string;
+        }
+        else if( _size < 32 )
+        {
+            ConstStringHolderString32 * string = m_poolString32.createObjectT();
+            string->setValue( _str, _size );
+
+            stringHolder = string;
+        }
+        else if( _size < 64 )
+        {
+            ConstStringHolderString64 * string = m_poolString64.createObjectT();
+            string->setValue( _str, _size );
+
+            stringHolder = string;
+        }
+        else if( _size < 128 )
+        {
+            ConstStringHolderString128 * string = m_poolString128.createObjectT();
+            string->setValue( _str, _size );
+
+            stringHolder = string;
+        }
+        else if( _size < 256 )
+        {
+            ConstStringHolderString256 * string = m_poolString256.createObjectT();
+            string->setValue( _str, _size );
+
+            stringHolder = string;
         }
         else
         {

@@ -27,10 +27,27 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef FactoryPool<ConstStringHolderString256, 256> FactoryPoolString256;
+        typedef ConstStringHolderStringSize<256> ConstStringHolderString256;
+        typedef FactoryPool<ConstStringHolderString256, 128> FactoryPoolString256;
         FactoryPoolString256 m_poolString256;
 
-        typedef FactoryPool<ConstStringHolderStringSTL, 64> FactoryPoolSTLString;
+        typedef ConstStringHolderStringSize<128> ConstStringHolderString128;
+        typedef FactoryPool<ConstStringHolderString128, 128> FactoryPoolString128;
+        FactoryPoolString128 m_poolString128;
+
+        typedef ConstStringHolderStringSize<64> ConstStringHolderString64;
+        typedef FactoryPool<ConstStringHolderString64, 128> FactoryPoolString64;
+        FactoryPoolString64 m_poolString64;
+
+        typedef ConstStringHolderStringSize<32> ConstStringHolderString32;
+        typedef FactoryPool<ConstStringHolderString32, 128> FactoryPoolString32;
+        FactoryPoolString32 m_poolString32;
+
+        typedef ConstStringHolderStringSize<16> ConstStringHolderString16;
+        typedef FactoryPool<ConstStringHolderString16, 128> FactoryPoolString16;
+        FactoryPoolString16 m_poolString16;
+
+        typedef FactoryPool<ConstStringHolderStringSTL, 32> FactoryPoolSTLString;
         FactoryPoolSTLString m_poolSTLString;
 	};
 }

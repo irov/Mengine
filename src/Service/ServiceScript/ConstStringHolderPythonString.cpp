@@ -16,7 +16,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderPythonString::setValue( PyObject * _value )
+    void ConstStringHolderPythonString::setPythonObject( PyObject * _value )
     {        
         m_value = _value;
 

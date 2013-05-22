@@ -145,7 +145,7 @@ namespace Menge
             return false;
         }
 
-        if( _group != NULL )
+        if( _group != nullptr )
         {
             *_group = fileGroup;
         }
@@ -187,24 +187,24 @@ namespace Menge
 	{
 		FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
-		if( group == NULL )
+		if( group == nullptr )
 		{
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't get group '%s'"
                 , _fileSystemName.c_str()
                 );
 
-			return NULL;
+			return nullptr;
 		}
 
 		InputStreamInterfacePtr file = group->createInputFile();
 
-		if( file == 0 )
+		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't create input file '%s'"
 				, _fileSystemName.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		if( group->openInputFile( _filename, file ) == false )
@@ -214,7 +214,7 @@ namespace Menge
 				, _filename.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}		
 
 		return file;
@@ -224,24 +224,24 @@ namespace Menge
 	{
         FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
-        if( group == NULL )
+        if( group == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't get group '%s'"
                 , _fileSystemName.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         OutputStreamInterfacePtr file = group->createOutputFile();
 
-		if( file == 0 )
+		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't create output file '%s'"
 				, _fileSystemName.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		if( group->openOutputFile( _filename, file ) == false )
@@ -251,7 +251,7 @@ namespace Menge
 				, _filename.c_str()
 				);
 			
-			return NULL;
+			return nullptr;
 		}
 
 		return file;
@@ -262,13 +262,13 @@ namespace Menge
         MappedFileInputStreamInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
             ->createMappedInputStream();
 
-        if( mappedFile == 0 )
+        if( mappedFile == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedInputStream can't create output file '%s'"
                 , _filename.c_str()
                 );
 
-            return 0;
+            return nullptr;
         }
 
         if( mappedFile->open( _filename ) == false )
@@ -277,7 +277,7 @@ namespace Menge
                 , _filename.c_str()
                 );
 
-            return 0;
+            return nullptr;
         }
 
         return mappedFile;
@@ -287,7 +287,7 @@ namespace Menge
 	{
         FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
-        if( group == NULL )
+        if( group == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "FileEngine::createDirectory '%s' not mount"
 				, _fileSystemName.c_str() 
@@ -308,7 +308,7 @@ namespace Menge
 	{
         FileGroupInterface * group = this->getFileGroup( _fileSystemName );
 
-		if( group == NULL )
+		if( group == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "FileEngine::removeDirectory '%s' not mount"
 				, _fileSystemName.c_str() 

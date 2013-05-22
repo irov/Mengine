@@ -31,10 +31,10 @@ namespace Menge
         const FilePath & getFolder() const override;
 
     public:
-		void addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
-		void changeSetting( const WString& _setting, const WString& _value ) override;
-		const WString& getSetting( const WString& _setting ) const override;
-        bool hasSetting( const WString& _setting ) const override;
+		void addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
+		void changeSetting( const ConstString & _setting, const WString& _value ) override;
+		const WString& getSetting( const ConstString & _setting ) const override;
+        bool hasSetting( const ConstString & _setting ) const override;
 
 	public:
 		void apply() override;
@@ -60,7 +60,7 @@ namespace Menge
             PyObject * cb;
         };
 
-		typedef std::map<WString, Setting> TMapSettings;
+		typedef std::map<ConstString, Setting> TMapSettings;
 		TMapSettings m_settings;
 	};
 }	// namespace Menge

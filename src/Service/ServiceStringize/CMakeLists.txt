@@ -5,9 +5,8 @@ src
 	StringizeService.h
 	StringizeService.cpp
     ConstStringHolderStringSTL.h
-    ConstStringHolderStringSTL.cpp
-    ConstStringHolderString256.h
-    ConstStringHolderString256.cpp    
+    ConstStringHolderStringSTL.cpp    
+    ConstStringHolderStringSize.h    
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

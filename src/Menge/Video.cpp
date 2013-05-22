@@ -53,7 +53,7 @@ namespace Menge
 
 		m_resourceVideoName = _resource;
 
-		recompile();
+		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Video::getVideoResource() const
@@ -70,7 +70,7 @@ namespace Menge
 
 		m_resourceSoundName = _resource;
 
-		recompile();
+		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Video::getSoundResource() const

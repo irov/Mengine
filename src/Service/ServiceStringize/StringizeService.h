@@ -5,7 +5,7 @@
 #   include "Factory/FactoryPool.h"
 
 #   include "ConstStringHolderStringSTL.h"
-#   include "ConstStringHolderString256.h"
+#   include "ConstStringHolderStringSize.h"
 
 namespace Menge
 {	

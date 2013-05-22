@@ -28,7 +28,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
-		: m_resourceFont(0)
+		: m_resourceFont(nullptr)
 		, m_textSize(0.f, 0.f)
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
 		, m_alphaHeight(0.f)
@@ -481,7 +481,7 @@ namespace Menge
 		
 		m_resourceFontName = _resName;
 
-		recompile();
+		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getResourceFont() const

@@ -415,14 +415,15 @@ namespace Menge
 			return v_accounts;
 		}
 
-		void s_addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc )
+		void s_addSetting( const ConstString & _setting, const WString & _defaultValue, PyObject * _applyFunc )
 		{
 			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
-			if( currentAccount == NULL )
+			if( currentAccount == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Error addSetting: currentAccount is none"
+				LOGGER_ERROR(m_serviceProvider)( "Error addSetting: currentAccount is none [%s]"
+                    , _setting.c_str()
 					);
 
 				return;
@@ -431,20 +432,33 @@ namespace Menge
 			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 		}
 
-		void s_changeSetting( const WString& _setting, const WString& _value )
+		bool s_changeSetting( const ConstString & _setting, const WString & _value )
 		{
-			ACCOUNT_SERVICE(m_serviceProvider)
-				->changeSetting( _setting, _value );
+            AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+                ->getCurrentAccount();
+
+            if( currentAccount == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "changeSetting: currentAccount is none [%s]"
+                    , _setting.c_str()
+                    );
+
+                return false;
+            }
+
+            currentAccount->changeSetting( _setting, _value );
+
+            return true;
 		}
 
-        bool s_hasSetting( const WString& _setting )
+        bool s_hasSetting( const ConstString & _setting )
         {
             AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
                 ->getCurrentAccount();
 
-            if( currentAccount == NULL )
+            if( currentAccount == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "getSetting: currentAccount is none [%S]"
+                LOGGER_ERROR(m_serviceProvider)( "getSetting: currentAccount is none [%s]"
                     , _setting.c_str()
                     );
 
@@ -456,14 +470,14 @@ namespace Menge
             return value;
         }
 
-		PyObject * s_getSetting( const WString& _setting )
+		PyObject * s_getSetting( const ConstString & _setting )
 		{
 			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
 			if( currentAccount == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSetting: currentAccount is none [%S]"
+				LOGGER_ERROR(m_serviceProvider)( "getSetting: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
@@ -477,14 +491,14 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject * s_getSettingUInt( const WString& _setting )
+		PyObject * s_getSettingUInt( const ConstString & _setting )
 		{
 			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
 			if( currentAccount == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingUInt: currentAccount is none [%S]"
+				LOGGER_ERROR(m_serviceProvider)( "getSettingUInt: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
@@ -496,7 +510,7 @@ namespace Menge
 			size_t value;
 			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingUInt: can't scanf from [%S]"
+				LOGGER_ERROR(m_serviceProvider)( "getSettingUInt: can't scanf from [%s]"
 					, _setting.c_str()
 					);
 
@@ -508,14 +522,14 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject * s_getSettingFloat( const WString& _setting )
+		PyObject * s_getSettingFloat( const ConstString & _setting )
 		{
 			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
 			if( currentAccount == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingFloat: currentAccount is none [%S]"
+				LOGGER_ERROR(m_serviceProvider)( "getSettingFloat: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
@@ -539,14 +553,14 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject* s_getAccountSetting( const WString& _accountID, const WString& _setting )
+		PyObject* s_getAccountSetting( const WString & _accountID, const ConstString & _setting )
 		{
 			AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
 						
 			if( account == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Error getAccountSetting: Account '%S' is none"
+				LOGGER_ERROR(m_serviceProvider)( "getAccountSetting account '%ls' is none"
 					, _accountID.c_str()
 					);
 
@@ -560,14 +574,14 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject* s_getAccountSettingUInt( const WString& _accountID, const WString& _setting )
+		PyObject* s_getAccountSettingUInt( const WString& _accountID, const ConstString & _setting )
 		{
 			AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
 
 			if( account == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Error getAccountSetting: Account '%S' is none"
+				LOGGER_ERROR(m_serviceProvider)( "getAccountSettingUInt account '%ls' is none"
 					, _accountID.c_str()
 					);
 
@@ -579,7 +593,8 @@ namespace Menge
 			size_t value;
 			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingUInt: can't scanf from [%S]"
+				LOGGER_ERROR(m_serviceProvider)( "getAccountSettingUInt account '%ls'can't scanf from '%s'"
+                    , _accountID.c_str()
 					, _setting.c_str()
 					);
 
@@ -596,7 +611,7 @@ namespace Menge
             AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
                 ->createAccount();
 
-            if( account == NULL )
+            if( account == nullptr )
             {
                 return pybind::ret_none();
             }
@@ -646,30 +661,30 @@ namespace Menge
 		
 		void s_saveAccount()
 		{
-			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
+			//AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			//	->getCurrentAccount();
 
-			if( currentAccount == NULL )
-			{
-				LOGGER_ERROR(m_serviceProvider)( "Error saveCurrentAccount: currentAccount is none"
-					);
+			//if( currentAccount == NULL )
+			//{
+			//	LOGGER_ERROR(m_serviceProvider)( "Error saveCurrentAccount: currentAccount is none"
+			//		);
 
-				return;
-			}
+			//	return;
+			//}
 
-			currentAccount->save();
+			//currentAccount->save();
 		}
 	
 		void s_saveAccounts()
 		{
-			ACCOUNT_SERVICE(m_serviceProvider)
-				->saveAccounts();
+			//ACCOUNT_SERVICE(m_serviceProvider)
+			//	->saveAccounts();
 		}
 
 		void s_saveAccountsInfo()
 		{
-			ACCOUNT_SERVICE(m_serviceProvider)
-				->saveAccountsInfo();
+			//ACCOUNT_SERVICE(m_serviceProvider)
+			//	->saveAccountsInfo();
 		}
 
 		void s_deleteAccount( const WString& _accountName )

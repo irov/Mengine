@@ -11,6 +11,7 @@
 
 #   include "Logger/Logger.h"
 
+#	include "Core/Ini.h"
 #	include "Core/String.h"
 #	include "Core/File.h"
 #	include "Core/CRC32.h"
@@ -62,7 +63,7 @@ namespace Menge
         return m_folder;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Account::addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc )
+	void Account::addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc )
 	{
 		TMapSettings::iterator it = m_settings.find( _setting );
 		
@@ -84,7 +85,7 @@ namespace Menge
 		m_settings[_setting] = st;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Account::changeSetting( const WString& _setting, const WString& _value )
+	void Account::changeSetting( const ConstString & _setting, const WString& _value )
 	{
 		TMapSettings::iterator it = m_settings.find( _setting );
 		
@@ -108,10 +109,10 @@ namespace Menge
                 );
 		}		
 
-		this->save();
+		//this->save();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Account::getSetting( const WString& _setting ) const
+	const WString & Account::getSetting( const ConstString & _setting ) const
 	{
 		TMapSettings::const_iterator it = m_settings.find( _setting );
 		
@@ -129,7 +130,7 @@ namespace Menge
 		return st.value;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Account::hasSetting( const WString& _setting ) const
+    bool Account::hasSetting( const ConstString & _setting ) const
     {
         TMapSettings::const_iterator it = m_settings.find( _setting );
 
@@ -143,7 +144,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::load()
 	{
-		ConfigFile config;
+		ConfigFile config(m_serviceProvider);
 
         if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, NULL ) == false )
         {
@@ -157,7 +158,7 @@ namespace Menge
 		InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
 
-        if( file == NULL )
+        if( file == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Account::load can't open file for read. Account '%ls' settings not load '%s'"
                 , m_name.c_str() 
@@ -182,11 +183,11 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            const WString & key = it->first;
+            const ConstString & key = it->first;
 
             Setting & st = it->second;
 
-			if( config.getSetting( L"SETTINGS", key, st.value ) == false )
+			if( config.getSetting( "SETTINGS", key, st.value ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Account::load failed get setting '%ls'"
                     , key.c_str() 
@@ -204,7 +205,7 @@ namespace Menge
 		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
 
-		if( file == 0 )
+		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Account::save can't open file for writing. Account '%ls' settings not saved %s"
 				, m_name.c_str() 
@@ -213,34 +214,21 @@ namespace Menge
 
 			return false;
 		}
-
-		ConfigFile config;
-				
-		//Utils::stringWriteU( file, L"[SETTINGS]\n" );
-
-		for( TMapSettings::iterator 
+        
+        writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
+        
+		for( TMapSettings::const_iterator 
 			it = m_settings.begin(), 
 			it_end = m_settings.end();
 		it != it_end;
 		++it )
 		{
-            const WString & key = it->first;
+            const ConstString & key = it->first;
 
-            Setting & st = it->second;
+            const Setting & st = it->second;
 
-			config.setSetting( L"SETTINGS", key, st.value );
-			//Utils::stringWriteU( file, it->first + L" = " + it->second.first + L"\n" );
+            writeIniSetting( m_serviceProvider, file, key, st.value );
 		}
-
-		if( config.save( file ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Account::save can't save config. Account '%ls' settings not saved %s"
-                , m_name.c_str() 
-                , m_settingsPath.c_str()
-                );
-
-            return false;
-        }
 
         return true;
 	}
@@ -268,8 +256,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     bool Account::loadBinaryFile( const FilePath & _filename, TBlobject & _data )
     {
-        String cachepath;
-        cachepath.append( m_folder.c_str(), m_folder.size() );
+        static String cachepath;
+        cachepath.assign( m_folder.c_str(), m_folder.size() );
         cachepath += MENGE_FOLDER_DELIM;
         cachepath.append( _filename.c_str(), _filename.size() );
 
@@ -278,7 +266,7 @@ namespace Menge
         InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath );
 
-        if( file == 0 )
+        if( file == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (file not found)"
                 , m_name.c_str()
@@ -359,8 +347,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Account::writeBinaryFile( const FilePath & _filename, const TBlobject & _data )
     {
-        String cachepath;
-        cachepath.append( m_folder.c_str(), m_folder.size() );
+        static String cachepath;
+        cachepath.assign( m_folder.c_str(), m_folder.size() );
         cachepath += MENGE_FOLDER_DELIM;
         cachepath.append( _filename.c_str(), _filename.size() );
 

@@ -20,6 +20,9 @@ src
 	Holder.h
 	Pool.h
     
+    Ini.h
+    Ini.cpp
+    
     File.h
     File.cpp
     

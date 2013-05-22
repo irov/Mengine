@@ -77,7 +77,7 @@ namespace Menge
         }
 
     public:
-        virtual ConstString stringize( PyObject * _str, bool & _valid ) = 0;
+        virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
 	};
 
 #   define SCRIPT_SERVICE( serviceProvider )\

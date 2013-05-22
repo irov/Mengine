@@ -1,37 +1,39 @@
 #	pragma once
 
+#   include "Interface/ServiceInterface.h"
 #   include "Interface/StreamInterface.h"
 
 #	include "SimpleIni.h"
 
+#	include "Core/ConstString.h"
 #	include "Core/String.h"
 
 #	include "stdio.h"
 
 namespace Menge
 {	
+    typedef CSimpleIniCaseA TIniParser;
+
 	class ConfigFile
 	{
 	public:
-		ConfigFile();
+		ConfigFile( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		bool load( const InputStreamInterfacePtr & _file );
 		bool save( const OutputStreamInterfacePtr & _file );
 
 	public:
-		bool getSetting( const WString& _section, const WString& _key, WString & _value ) const;
-		bool getSettings( const WString& _section, const WString& _key, TVectorWString & _values ) const;
-		bool getAllSettings( const WString& _section, TMapWString & _values );
-
-	public:
-		bool getSettingUInt( const WString& _section, const WString& _key, size_t & _value ) const;
+		bool getSetting( const char * _section, const ConstString & _key, WString & _value ) const;
+		bool getSettings( const char * _section, const ConstString & _key, TVectorWString & _values ) const;
 		
 	public:
-		bool setSetting( const WString& _section, const WString& _key, const WString & _value );
+		bool getSettingUInt( const char * _section, const ConstString & _key, size_t & _value ) const;
+		
+	protected:      
+        ServiceProviderInterface * m_serviceProvider;
 
-	protected:
-		CSimpleIniCaseW m_ini;
+		TIniParser m_ini;
 	};
 
 }	// namespace Menge

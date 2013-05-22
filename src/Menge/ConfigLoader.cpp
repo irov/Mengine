@@ -13,6 +13,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ConfigLoader::ConfigLoader( ServiceProviderInterface * _serviceProvider )
         : m_serviceProvider(_serviceProvider)
+        , m_config(_serviceProvider)
 	{
         
 	}
@@ -50,14 +51,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, WString & _value ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, WString & _value ) const
 	{
 		bool result = m_config.getSetting( _section, _key, _value );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, ConstString & _value ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, ConstString & _value ) const
 	{
 		WString wstring_value;
 		if( this->getSetting( _section, _key, wstring_value ) == false )
@@ -76,7 +77,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, WString & _value, const WString & _default ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, WString & _value, const WString & _default ) const
 	{
 		bool result = this->getSetting( _section, _key, _value );
 
@@ -88,7 +89,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, ConstString & _value, const ConstString & _default ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, ConstString & _value, const ConstString & _default ) const
 	{
 		bool result = this->getSetting( _section, _key, _value );
 
@@ -100,7 +101,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, bool & _value ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, bool & _value ) const
 	{
 		int tmp_value;
 		if( this->getSetting( _section, _key, tmp_value ) == false )
@@ -113,7 +114,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, int & _value ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, int & _value ) const
 	{
 		WString wvalue;
 		bool result = this->getSetting( _section, _key, wvalue );
@@ -131,7 +132,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, Resolution & _value ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, Resolution & _value ) const
 	{
 		WString wvalue;
 		bool result = this->getSetting( _section, _key, wvalue );
@@ -155,7 +156,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSetting( const WString & _section, const WString & _key, Viewport & _value ) const
+	bool ConfigLoader::getSetting( const char * _section, const ConstString & _key, Viewport & _value ) const
 	{
 		WString wvalue;
 		bool result = this->getSetting( _section, _key, wvalue );
@@ -182,19 +183,4 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getSettings( const WString & _section, const WString & _key, TVectorWString & _values ) const
-	{
-		bool result = m_config.getSettings( _section, _key, _values );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ConfigLoader::getAllSettings( const WString& _section, TMapWString & _values )
-	{
-		bool result = m_config.getAllSettings( _section, _values );
-
-		return result;
-	}
-
 }

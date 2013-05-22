@@ -79,13 +79,10 @@ namespace Menge
     public:
         PyObject * s_createConstString( PyObject * _str )
         {       
-            bool valid = false;
+            ConstString cstr;
 
-            ConstString cstr = SCRIPT_SERVICE(m_serviceProvider)
-                ->stringize( _str, valid );
-            //ConstString cstr = Helper::StringizeString(m_serviceProvider, _str);
-
-            if( valid == false )
+            if( SCRIPT_SERVICE(m_serviceProvider)
+                ->stringize( _str, cstr ) == false )
             {
                 pybind::throw_exception();
 
@@ -101,16 +98,38 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
     };
     //////////////////////////////////////////////////////////////////////////
-    static ConstsScriptMethod * constScriptMethod = 0;
+    static bool ConstString_convert( PyObject * _obj, void * _place, void * _user )
+    {
+        if( pybind::string_check( _obj ) == false )
+        {
+            return false;
+        }
+
+        ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(_user);
+
+        ConstString & cstr = *(ConstString*)_place;
+
+        if( SCRIPT_SERVICE(serviceProvider)
+            ->stringize( _obj, cstr ) == false )
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ConstsScriptMethod * constScriptMethod = nullptr;
     //////////////////////////////////////////////////////////////////////////
 	void ScriptWrapper::constsWrap( ServiceProviderInterface * _serviceProvider )
 	{
         pybind::struct_<ConstString>("ConstString")
             .def_compare( &s_ConstString_compare )
-            //.def_convert( &ScriptMethod::vec2f_convert )
+            .def_convert( &ConstString_convert, _serviceProvider )
             .def_repr( &s_ConstString_repr )
             .def_hash( &s_ConstString_hash )
             ;
+
+        //pybind::registration_type_cast<ConstString>( new extract_ConstString_type(_serviceProvider) );
 
         constScriptMethod = new ConstsScriptMethod(_serviceProvider);
         	
@@ -147,6 +166,11 @@ namespace Menge
         DEF_CONST_STRING( _serviceProvider, "Window" );
         DEF_CONST_STRING( _serviceProvider, "HotSpotImage" );
         DEF_CONST_STRING( _serviceProvider, "WhitePixel" );
+
+        DEF_CONST_STRING( _serviceProvider, "AccountEnumerator" );
+        DEF_CONST_STRING( _serviceProvider, "DefaultAccountID" );
+        DEF_CONST_STRING( _serviceProvider, "SelectAccountID" );
+        DEF_CONST_STRING( _serviceProvider, "Account" );
 
 #   undef DEF_CONST_STRING
 	}

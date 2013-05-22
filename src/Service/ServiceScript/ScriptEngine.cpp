@@ -271,28 +271,24 @@ namespace Menge
         pybind::dict_set( dir_bltin, _name.c_str(), _module );
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstString ScriptEngine::stringize( PyObject * _str, bool & _valid )
+    bool ScriptEngine::stringize( PyObject * _object, ConstString & _str )
     {
-        if( pybind::string_check( _str ) == false )
+        if( pybind::string_check( _object ) == false )
         {            
             LOGGER_ERROR(m_serviceProvider)("ScriptEngine::stringize invalid stringize object %s"
-                , pybind::object_repr( _str )
+                , pybind::object_repr( _object )
                 );
 
-            _valid = false;
-
-            return ConstString::none();
+            return false;
         }
 
         ConstStringHolderPythonString * stlString = m_poolPythonString.createObjectT();
 
-        stlString->setValue( _str );
+        stlString->setPythonObject( _object );
 
-        ConstString cs_str(stlString);
+        _str = ConstString(stlString);
 
-        _valid = true;
-
-        return cs_str;
+        return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator )

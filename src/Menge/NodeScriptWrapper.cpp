@@ -2246,14 +2246,15 @@ namespace Menge
         {
             if( pybind::unicode_check( _obj ) == true )
             {
-                const pybind::pybind_unicode_t * value_char = pybind::unicode_to_wchar( _obj );
+                size_t size = 0;
+                const pybind::pybind_unicode_t * value_char = pybind::unicode_to_wchar_and_size( _obj, size );
 
-                if( value_char == 0 )
+                if( value_char == nullptr )
                 {
                     return false;
                 }
 
-                _value.assign( value_char );
+                _value.assign( value_char, size );
             }
             else
             {

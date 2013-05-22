@@ -22,24 +22,19 @@ namespace Menge
 		bool loadFile( const ConstString& _fileSystemName, const FilePath& _filename );
 
 	public:
-		bool getSetting( const WString & _section, const WString & _key, WString & _value ) const;		
-		bool getSetting( const WString & _section, const WString & _key, ConstString & _value ) const;
+		bool getSetting( const char * _section, const ConstString & _key, WString & _value ) const;		
+		bool getSetting( const char * _section, const ConstString & _key, ConstString & _value ) const;
 
 	public:
-		bool getSetting( const WString & _section, const WString & _key, WString & _value, const WString & _default ) const;
-		bool getSetting( const WString & _section, const WString & _key, ConstString & _value, const ConstString & _default ) const;
+		bool getSetting( const char * _section, const ConstString & _key, WString & _value, const WString & _default ) const;
+		bool getSetting( const char * _section, const ConstString & _key, ConstString & _value, const ConstString & _default ) const;
 
 	public:
-		bool getSetting( const WString & _section, const WString & _key, bool & _value ) const;
-		bool getSetting( const WString & _section, const WString & _key, int & _value ) const;
+		bool getSetting( const char * _section, const ConstString & _key, bool & _value ) const;
+		bool getSetting( const char * _section, const ConstString & _key, int & _value ) const;
 
-		bool getSetting( const WString & _section, const WString & _key, Resolution & _value ) const;
-		bool getSetting( const WString & _section, const WString & _key, Viewport & _value ) const;
-		
-
-	public:
-		bool getSettings( const WString & _section, const WString & _key, TVectorWString & _values ) const;
-		bool getAllSettings( const WString& _section, TMapWString & _values );
+		bool getSetting( const char * _section, const ConstString & _key, Resolution & _value ) const;
+		bool getSetting( const char * _section, const ConstString & _key, Viewport & _value ) const;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

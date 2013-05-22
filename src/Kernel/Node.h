@@ -201,6 +201,7 @@ namespace Menge
 
 	protected:
 		void _recompile() override;
+        void _uncompile() override;
 
 	public:
 		bool enable();

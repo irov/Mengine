@@ -175,10 +175,31 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::createDirectory( const WString& _path )
     {
-        if( ::SHCreateDirectoryEx( NULL, _path.c_str(), NULL ) == ERROR_SUCCESS )
+        int cd_code = ::SHCreateDirectoryEx( NULL, _path.c_str(), NULL );
+
+        if( cd_code == ERROR_SUCCESS )
         {
             return true;
         }
+
+        if( cd_code == ERROR_ALREADY_EXISTS )
+        {
+            LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls alredy exists"
+                , _path.c_str()
+                );
+
+            return true;
+        }
+    
+        DWORD err = GetLastError();
+
+        WString message;
+        this->makeFormatMessage( err, message );
+
+        LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectory invalid create dir '%ls' - '%ls'"
+            , _path.c_str()
+            , message.c_str()
+            );
 
         return false;
     }

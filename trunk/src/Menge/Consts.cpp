@@ -81,6 +81,11 @@ namespace Menge
         c_MovieEvent = Helper::stringizeString(_serviceProvider, "MovieEvent");
         c_BlendingModeAdd = Helper::stringizeString(_serviceProvider, "BlendingModeAdd");
         c_BlendingModeNormal = Helper::stringizeString(_serviceProvider, "BlendingModeNormal");
+
+        c_AccountEnumerator = Helper::stringizeString(_serviceProvider, "AccountEnumerator");
+        c_DefaultAccountID = Helper::stringizeString(_serviceProvider, "DefaultAccountID");
+        c_SelectAccountID = Helper::stringizeString(_serviceProvider, "SelectAccountID");
+        c_Account = Helper::stringizeString(_serviceProvider, "Account");
     }
     //////////////////////////////////////////////////////////////////////////
     const Consts & getConsts( ServiceProviderInterface * _serviceProvider )

@@ -24,7 +24,9 @@ namespace Menge
 	protected:
 		virtual bool _compile();
 		virtual void _release();
+
 		virtual void _recompile();
+        virtual void _uncompile();
 
 	protected:
 		bool m_compile;

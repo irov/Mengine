@@ -69,6 +69,8 @@ namespace Menge
 		{		
 			m_compile = false;
 
+            this->_uncompile();
+
 			return false;
 		}
 
@@ -81,4 +83,9 @@ namespace Menge
 	{
 		//Empty
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::_uncompile()
+    {
+        //Empty
+    }
 }

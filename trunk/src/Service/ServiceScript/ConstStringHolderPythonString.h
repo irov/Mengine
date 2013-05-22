@@ -14,7 +14,7 @@ namespace Menge
         ~ConstStringHolderPythonString();
 
     public:
-        void setValue( PyObject * _value );
+        void setPythonObject( PyObject * _value );
 
     protected:
         const char * _c_str() const override

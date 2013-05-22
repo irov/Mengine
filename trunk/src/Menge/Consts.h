@@ -91,6 +91,11 @@ namespace Menge
 
 		ConstString c_BlendingModeAdd;
 		ConstString c_BlendingModeNormal;
+
+        ConstString c_AccountEnumerator;
+        ConstString c_DefaultAccountID;
+        ConstString c_SelectAccountID;
+        ConstString c_Account;
 	};
 
     const Consts & getConsts( ServiceProviderInterface * _serviceProvider );

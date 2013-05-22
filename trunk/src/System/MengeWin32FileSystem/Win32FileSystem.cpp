@@ -14,7 +14,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::Win32FileSystem()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::existFile( const FilePath& _filename ) const
 	{
-        WString unicode_filename;
+        static WString unicode_filename;
         if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFile invlalid convert utf8 to unicode %s"
@@ -79,7 +79,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::createFolder( const FilePath& _path )
 	{
-        WString unicode_path;
+        static WString unicode_path;
         if( Helper::utf8ToUnicodeSize( m_serviceProvider, _path.c_str(), _path.size(), unicode_path ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::createFolder invlalid convert utf8 to unicode %s"
@@ -97,7 +97,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::deleteFolder( const FilePath& _path )
 	{
-        WString unicode_path;
+        static WString unicode_path;
         if( Helper::utf8ToUnicodeSize( m_serviceProvider, _path.c_str(), _path.size(), unicode_path ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder invlalid convert utf8 to unicode %s"
@@ -138,7 +138,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::deleteFile( const FilePath& _filename )
 	{
-        WString unicode_filename;
+        static WString unicode_filename;
         if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFile invlalid convert utf8 to unicode %s"

@@ -33,20 +33,14 @@ namespace Menge
 		AccountInterface * createAccount() override;
 
 	public:
-		void addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
-		void changeSetting( const WString & _setting, const WString & _value ) override;
-
-	public:
 		void deleteAccount( const WString& _accountID ) override;
 		bool selectAccount( const WString& _accountID ) override;
-		bool saveAccount( const WString& _accountID ) override;
-
-	public:
-		void saveAccounts() override;
 
 	public:
 		bool loadAccountsInfo() override;
-		bool saveAccountsInfo() override;
+
+    protected:
+		bool saveAccountsInfo_();
 
 	public:
 		void setDefaultAccount( const WString & _accountID ) override;

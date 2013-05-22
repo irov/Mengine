@@ -9,6 +9,7 @@
 
 #	include "Consts.h"
 
+#	include "Core/Ini.h"
 #	include "Core/String.h"
 #	include "Core/File.h"
 #	include "Core/UnicodeFormat.h"
@@ -59,9 +60,9 @@ namespace Menge
         this->unselectCurrentAccount_();
 
         m_currentAccount = lastAccount;
-        this->saveAccountsInfo();
+        this->saveAccountsInfo_();
 
-        m_currentAccount = nullptr;               
+        m_currentAccount = nullptr;
 
         for( TMapAccounts::iterator 
             it = m_accounts.begin(), 
@@ -70,6 +71,8 @@ namespace Menge
         ++it )
         {
             AccountInterface * account = it->second;
+            account->save();
+
             delete static_cast<Account *>(account);
         }
 
@@ -84,50 +87,12 @@ namespace Menge
         
 		Account * account = this->createAccount_( accountID );
 
-        if( account == NULL )
+        if( account == nullptr )
         {
-            return NULL;
+            return nullptr;
         }
-
-        if( this->saveAccountsInfo() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount: Account '%ls' failed to saveAccountsInfo"
-                , accountID.c_str()
-                );
-
-            return NULL;
-        }
-		
+        	
 		return account;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc )
-	{
-		if( m_currentAccount == 0 )
-		{
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::addSetting: not setup currentAccount '%ls'"
-                , _setting.c_str()
-                );
-
-			return;
-		}
-
-		m_currentAccount->addSetting( _setting, _defaultValue, _applyFunc );		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::changeSetting( const WString & _setting, const WString & _value )
-	{
-		if( m_currentAccount == 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("AccountManager::changeSetting not setup currentAccount [%ls, %ls]"
-				, _setting.c_str()
-				, _value.c_str()
-				);
-
-			return;
-		}
-        
-		m_currentAccount->changeSetting( _setting, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Account * AccountManager::createAccount_( const WString& _accountID )
@@ -174,16 +139,7 @@ namespace Menge
 
             return nullptr;
         }
-
-		if( newAccount->save() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account '%ls' failed to save"
-                , _accountID.c_str()
-                );
-
-            return nullptr;
-        }
-
+        
         m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
         return newAccount;
@@ -207,18 +163,17 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     Account * AccountManager::newAccount_( const WString& _accountID )
     {
-        String utf8_path;
+        Account * newAccount = new Account(m_serviceProvider, _accountID);
 
+        String utf8_path;
         if( Helper::unicodeToUtf8( m_serviceProvider, _accountID, utf8_path ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "AccountManager::newAccount_ can't convert accountID '%ls' to utf8"
                 , _accountID.c_str() 
                 );
 
-            return NULL;
+            return nullptr;
         }
-
-        Account* newAccount = new Account(m_serviceProvider, _accountID);
 
         FilePath folder = Helper::stringizeString( m_serviceProvider, utf8_path );
 
@@ -259,9 +214,7 @@ namespace Menge
 
 		m_accounts.erase( it_find );
 
-		this->saveAccountsInfo();
-
-        if( m_accountListener != NULL )
+        if( m_accountListener != nullptr )
         {
             m_accountListener->onDeleteAccount( _accountID );
         }  
@@ -280,7 +233,7 @@ namespace Menge
 			return false;
 		}
 
-        if( m_currentAccount != NULL )
+        if( m_currentAccount != nullptr )
         {
             const WString & currAccountId = m_currentAccount->getName();
 
@@ -288,6 +241,14 @@ namespace Menge
             {
                 this->unselectCurrentAccount_();
             }
+            else
+            {
+                LOGGER_WARNING(m_serviceProvider)( "AccountManager::selectAccount account '%ls' is alredy selected!"
+                    , _accountID.c_str() 
+                    );
+
+                return true;
+            }            
         }
 
         AccountInterface * account = it_find->second;
@@ -304,15 +265,6 @@ namespace Menge
         m_currentAccount = account;
 
 		m_currentAccount->apply();
-
-		if( this->saveAccountsInfo() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::selectAccount Can't select account '%ls'. invalid saveAccountsInfo"
-                , _accountID.c_str() 
-                );
-
-            return false;
-        }
 
         if( m_accountListener )
         {
@@ -338,11 +290,11 @@ namespace Menge
 		
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account with ID '%ls' not found"
+			LOGGER_ERROR(m_serviceProvider)( "AccountManager::getAccount account with ID '%ls' not found"
 				, _accountID.c_str() 
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		return it_find->second;
@@ -356,8 +308,6 @@ namespace Menge
 	void AccountManager::setDefaultAccount( const WString & _accountID )
 	{
 		m_defaultAccountID = _accountID;
-
-		this->saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & AccountManager::getDefaultAccount() const
@@ -395,16 +345,16 @@ namespace Menge
 	{
 		Account* account = this->newAccount_( _accountID );
 
-        if( account == NULL )
+        if( account == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccount_ invalid create account %ls"
                 , _accountID.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
         
-        if( m_accountListener )
+        if( m_accountListener != nullptr )
         {
             m_currentAccount = account;
             m_accountListener->onCreateAccount( _accountID );
@@ -419,16 +369,16 @@ namespace Menge
                 , _accountID.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }       
         
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::loadAccountsInfo()
-	{
+	{        
 		bool accountsExist = FILE_SERVICE(m_serviceProvider)
-            ->existFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, NULL );
+            ->existFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, nullptr );
 
 		if( accountsExist == false )
 		{
@@ -442,7 +392,7 @@ namespace Menge
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
 
-        if( file == NULL )
+        if( file == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts open accounts failed '%s'"
                 , m_accountsPath.c_str()
@@ -451,7 +401,7 @@ namespace Menge
             return false;
         }
 		
-        ConfigFile config;
+        ConfigFile config(m_serviceProvider);
 		if( config.load( file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts parsing accounts failed '%s'"
@@ -466,7 +416,7 @@ namespace Menge
 		//unsigned int playerCount;
 
 		//config.getSettingUInt( L"SETTINGS", L"AccountCount", playerCount );
-		if( config.getSettingUInt( L"SETTINGS", L"AccountEnumerator", m_playerEnumerator ) == false )
+		if( config.getSettingUInt( "SETTINGS", CONST_STRING(m_serviceProvider, AccountEnumerator), m_playerEnumerator ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts get AccountEnumerator failed '%s'"
                 , m_accountsPath.c_str()
@@ -475,7 +425,7 @@ namespace Menge
             return false;
         }
 
-		if( config.getSetting( L"SETTINGS", L"DefaultAccountID", m_defaultAccountID ) == false )
+		if( config.getSetting( "SETTINGS", CONST_STRING(m_serviceProvider, DefaultAccountID), m_defaultAccountID ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get DefaultAccountID failed '%s'"
                 , m_accountsPath.c_str()
@@ -483,7 +433,7 @@ namespace Menge
         }           
 
 		WString selectAccountID;
-		if( config.getSetting( L"SETTINGS", L"SelectAccountID", selectAccountID ) == false )
+		if( config.getSetting( "SETTINGS", CONST_STRING(m_serviceProvider, SelectAccountID), selectAccountID ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get SelectAccountID failed '%s'"
                 , m_accountsPath.c_str()
@@ -491,14 +441,14 @@ namespace Menge
         }   
         
         TVectorWString values;
-		if( config.getSettings( L"ACCOUNTS", L"Account", values ) == false )
+		if( config.getSettings( "ACCOUNTS", CONST_STRING(m_serviceProvider, Account), values ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
                 , m_accountsPath.c_str()
                 );
         }  
 
-        Account * validAccount = 0;
+        Account * validAccount = nullptr;
 
 		for( TVectorWString::const_iterator
 			it = values.begin(), 
@@ -507,11 +457,10 @@ namespace Menge
 		++it )
 		{
 			const WString & name = *it;
-			//config.indexSetting( it, "ACCOUNTS", "Account", accountID );
 
 			Account * account = this->loadAccount_( name );
 
-            if( account == 0 )
+            if( account == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccountsInfo invalid load account '%ls'"
                     , name.c_str()
@@ -555,7 +504,7 @@ namespace Menge
                 return false;
             }
         }
-        else if( validAccount != NULL )
+        else if( validAccount != nullptr )
         {
             const WString & accountID = validAccount->getName();
 
@@ -583,12 +532,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AccountManager::saveAccountsInfo()
+	bool AccountManager::saveAccountsInfo_()
 	{
 		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
 
-		if( file == 0 )
+		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "AccountManager::saveAccountsInfo can't open file for writing. Accounts '%s' settings not saved"
 				, m_accountsPath.c_str()
@@ -597,33 +546,26 @@ namespace Menge
 			return false;
 		}
 
-		ConfigFile config;
-
-		//Utils::stringWriteU( file, L"[SETTINGS]\n" );
+        writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
 
 		if( m_defaultAccountID.empty() == false )
 		{
-			config.setSetting( L"SETTINGS", L"DefaultAccountID", m_defaultAccountID );
-			//Utils::stringWriteU( file, L"DefaultAccountID = " + m_defaultAccountID + L"\n" );
+            writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, DefaultAccountID), m_defaultAccountID );
 		}
 
-		if( m_currentAccount != NULL )
+		if( m_currentAccount != nullptr )
 		{
 			const WString & name = m_currentAccount->getName();
 
-			config.setSetting( L"SETTINGS", L"SelectAccountID", name );
-			//Utils::stringWriteU( file, L"SelectAccountID = " + name + L"\n" );
+            writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, SelectAccountID), name );
 		}
-
-		//Utils::stringWriteU( file, L"AccountCount = " + Utils::toString( ( unsigned int )m_accounts.size() ) + "\n" );
 
         WString AccountEnumerator;
         Utils::unsignedToWString( m_playerEnumerator, AccountEnumerator );
 
-		config.setSetting( L"SETTINGS", L"AccountEnumerator", AccountEnumerator );
-		//Utils::stringWriteU( file, L"AccountEnumerator = " + Utils::toWString( m_playerEnumerator ) + L"\n" );
-		
-		//Utils::stringWriteU( file, L"[ACCOUNTS]\n" );
+        writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, AccountEnumerator), AccountEnumerator );
+        
+        writeIniSection( m_serviceProvider, file, "[ACCOUNTS]" );
 
 		for( TMapAccounts::iterator 
 			it = m_accounts.begin(), 
@@ -631,58 +573,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			config.setSetting( L"ACCOUNTS", L"Account", it->first );
-			//Utils::stringWriteU( file, L"Account = " + it->first + L"\n" );
+            writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, Account), it->first );
 		}
-
-		if( config.save( file ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::saveAccountsInfo '%s' settings not saved (config failed save)"
-                , m_accountsPath.c_str()
-                );
-
-            return false;
-        }
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool AccountManager::saveAccount( const WString& _accountID )
-	{
-		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
-
-		if( it_find == m_accounts.end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "AccountManager::saveAccount: Account with ID '%ls' does not exist. Can't save"
-				, _accountID.c_str() 
-				);
-
-			return false;
-		}
-	
-        AccountInterface * account = it_find->second;
-
-		if( account->save() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::saveAccount: Account with ID '%ls' does not save"
-                , _accountID.c_str() 
-                );
-
-            return false;
-        }
-
-        return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::saveAccounts()
-	{
-		for( TMapAccounts::iterator 
-			it = m_accounts.begin(), 
-			it_end = m_accounts.end();
-		it != it_end;
-		++it )
-		{
-			it->second->save();
-		}
 	}
 }

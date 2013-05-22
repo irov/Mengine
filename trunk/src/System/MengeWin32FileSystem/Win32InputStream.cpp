@@ -29,7 +29,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool Win32InputStream::open( const FilePath& _filename )
 	{
-        WString unicode_filename;
+        static WString unicode_filename;
         if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %s invalid convert utf8 to unicode"

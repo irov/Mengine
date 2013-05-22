@@ -1,5 +1,7 @@
 #	include "Win32UnicodeSystem.h"
 
+#   include "Interface/WindowsLayerInterface.h"
+
 #	include "Logger/Logger.h"
 
 #   include "WindowsLayer/WindowsIncluder.h"
@@ -33,13 +35,21 @@ namespace Menge
         DWORD dwConversionFlags = 0;
 #   endif
 
+        int int_unicodeSize = static_cast<int>(_unicodeSize);
+        int int_utf8Capacity = static_cast<int>(_utf8Capacity);
+
+        if( int_unicodeSize == -1 && int_utf8Capacity != 0 )
+        {
+            ++int_utf8Capacity;
+        }
+
         int utf8_size = ::WideCharToMultiByte(
             CP_UTF8
             , dwConversionFlags
             , _unicode
-            , static_cast<int>(_unicodeSize)
+            , int_unicodeSize
             , _utf8
-            , static_cast<int>(_utf8Capacity)
+            , int_utf8Capacity
             , NULL
             , NULL
             );
@@ -51,6 +61,11 @@ namespace Menge
                 );
 
             return false;
+        }
+
+        if( int_unicodeSize == -1 )
+        {
+            --utf8_size;
         }
 
         if( _utf8Size != nullptr )
@@ -69,22 +84,42 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32UnicodeSystem::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
 	{
+        int int_utf8Size = static_cast<int>(_utf8Size);
+        int int_unicodeCapacity = static_cast<int>(_unicodeCapacity);
+
+        if( int_utf8Size == -1 && int_unicodeCapacity != 0 )
+        {
+            ++int_unicodeCapacity;
+        }
+
         int wc_size = ::MultiByteToWideChar(
             CP_UTF8
             , MB_ERR_INVALID_CHARS
             , _utf8
-            , static_cast<int>(_utf8Size)
+            , int_utf8Size
             , _unicode
-            , _unicodeCapacity
+            , int_unicodeCapacity
             );
-
+        
         if( wc_size == 0 && _utf8Size != 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar 0"
+            DWORD err = GetLastError();
+
+            WString wstr_err;
+            WINDOWSLAYER_SERVICE(m_serviceProvider)
+                ->makeFormatMessage(err, wstr_err);
+
+            LOGGER_ERROR(m_serviceProvider)("Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar 0 %ls"
                 , _utf8
+                , wstr_err.c_str()
                 );
 
             return false;
+        }
+
+        if( int_utf8Size == -1 )
+        {
+            --wc_size;
         }
 
         if( _sizeUnicode != nullptr )

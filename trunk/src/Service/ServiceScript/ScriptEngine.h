@@ -59,7 +59,7 @@ namespace Menge
 		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator ) override;
 
     public:
-        ConstString stringize( PyObject * _str, bool & _valid ) override;
+        bool stringize( PyObject * _object, ConstString & _str ) override;
 
 	public:
 		void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) override;

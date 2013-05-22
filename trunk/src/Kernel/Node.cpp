@@ -107,7 +107,7 @@ namespace Menge
 				//	, m_name.c_str() 
 				//	);
 
-				return false;
+                return false;
 			}
 		}
 
@@ -125,6 +125,8 @@ namespace Menge
 
 		m_active = true;
 
+        this->updateRendering_();
+
 		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
 		{
 			Node * children = (*it);
@@ -140,9 +142,7 @@ namespace Menge
 		//		, m_name.c_str() 
 		//		);
 		//}
-
-		this->updateRendering_();
-
+        
 		this->removeShallowGrave();
 
 		return m_active;
@@ -170,14 +170,14 @@ namespace Menge
 
 		m_active = false;
 
+        this->updateRendering_();
+
 		//if( this->isCompile() == true )
 		//{
 		//	this->release();
 		//}
 
-		this->_afterDeactivate();
-
-		this->updateRendering_();
+		this->_afterDeactivate();		
 
 		this->removeShallowGrave();
 	}
@@ -770,6 +770,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_recompile()
 	{
+        this->updateRendering_();
+
 		if( m_enable == false )
 		{
 			return;
@@ -782,6 +784,23 @@ namespace Menge
 
 		this->activate();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_uncompile()
+    {
+        this->updateRendering_();
+
+        if( m_enable == false )
+        {
+            return;
+        }
+
+        if( m_active == false )
+        {
+            return;
+        }
+
+        this->deactivate();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Node::render( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{

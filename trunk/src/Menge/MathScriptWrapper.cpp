@@ -59,7 +59,7 @@ namespace Menge
 			return py_list_vec2f;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * vec2f_repr( PyObject * _obj, mt::vec2f * _v )
+		static PyObject * vec2f_repr( PyObject * _obj, mt::vec2f * _v )
 		{
             (void)_obj;
 
@@ -71,7 +71,7 @@ namespace Menge
             return pybind::ptr(repr);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		float vec2_sequence( mt::vec2f * _vec, size_t _index )
+		static float vec2_sequence( mt::vec2f * _vec, size_t _index )
 		{
 			if( _index > 2 )
 			{
@@ -81,7 +81,7 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
         //////////////////////////////////////////////////////////////////////////
-        PyObject * vec3f_repr( PyObject * _obj, mt::vec3f * _v )
+        static PyObject * vec3f_repr( PyObject * _obj, mt::vec3f * _v )
         {
             (void)_obj;
 
@@ -93,7 +93,7 @@ namespace Menge
             return pybind::ptr(repr);
         }
 		//////////////////////////////////////////////////////////////////////////
-		float vec3_sequence( mt::vec3f * _vec, size_t _index )
+		static float vec3_sequence( mt::vec3f * _vec, size_t _index )
 		{
 			if( _index > 3 )
 			{
@@ -103,7 +103,7 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
         //////////////////////////////////////////////////////////////////////////
-        PyObject * vec4f_repr( PyObject * _obj, mt::vec4f * _v )
+        static PyObject * vec4f_repr( PyObject * _obj, mt::vec4f * _v )
         {
             (void)_obj;
 
@@ -115,7 +115,7 @@ namespace Menge
             return pybind::ptr(repr);
         }
 		//////////////////////////////////////////////////////////////////////////
-		float vec4_sequence( mt::vec4f * _vec, size_t _index )
+		static float vec4_sequence( mt::vec4f * _vec, size_t _index )
 		{
 			if( _index > 4 )
 			{
@@ -125,8 +125,10 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool vec2f_convert( PyObject * _obj, void * _place )
+		static bool vec2f_convert( PyObject * _obj, void * _place, void * _user )
 		{
+            (void)_user;
+
 			if( pybind::instance_of<mt::vec3f>( _obj ) == true )
 			{
 				mt::vec3f v3 = pybind::extract<mt::vec3f>(_obj);
@@ -176,8 +178,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool vec3f_convert( PyObject * _obj, void * _place )
+		static bool vec3f_convert( PyObject * _obj, void * _place, void * _user )
 		{
+            (void)_user;
+
 			if( pybind::instance_of<mt::vec2f>( _obj ) == true )
 			{
 				mt::vec2f v2 = pybind::extract<mt::vec2f>(_obj);
@@ -248,8 +252,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool vec4f_convert( PyObject * _obj, void * _place )
+		static bool vec4f_convert( PyObject * _obj, void * _place, void * _user )
 		{
+            (void)_user;
+
 			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 4 )
@@ -296,8 +302,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool box2f_convert( PyObject * _obj, void * _place )
-		{
+		static bool box2f_convert( PyObject * _obj, void * _place, void * _user )
+        {
+            (void)_user;
+
 			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 4 )
@@ -344,8 +352,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Polygon_convert( PyObject * _obj, void * _place )
-		{
+		static bool Polygon_convert( PyObject * _obj, void * _place, void * _user )
+        {
+            (void)_user;
+
 			if( pybind::list_check( _obj ) == false )
 			{
 				return false;
@@ -367,8 +377,8 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * color_repr( PyObject * _obj, ColourValue * _v )
-		{
+		static PyObject * color_repr( PyObject * _obj, ColourValue * _v )
+        {
             (void)_obj;
 
 			Stringstream ss;
@@ -379,8 +389,10 @@ namespace Menge
             return pybind::ptr(repr);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool color_convert( PyObject * _obj, void * _place )
-		{
+		static bool color_convert( PyObject * _obj, void * _place, void * _user )
+        {
+            (void)_user;
+
 			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 4 )
@@ -429,8 +441,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Resolution_convert( PyObject * _obj, void * _place )
-		{
+		static bool Resolution_convert( PyObject * _obj, void * _place, void * _user )
+        {
+            (void)_user;
+
 			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 2 )
@@ -475,8 +489,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Viewport_convert( PyObject * _obj, void * _place )
-		{
+		static bool Viewport_convert( PyObject * _obj, void * _place, void * _user )
+        {
+            (void)_user;
+
 			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 2 )
@@ -519,8 +535,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Rect_convert( PyObject * _obj, void * _place )
-		{
+		static bool Rect_convert( PyObject * _obj, void * _place, void * _user )
+        {
+            (void)_user;
+
 			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 4 )
@@ -567,14 +585,14 @@ namespace Menge
 			return false;
 		}
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	void ScriptWrapper::mathWrap( ServiceProviderInterface * _serviceProvider )
 	{
         (void)_serviceProvider;
 
 		pybind::struct_<mt::vec2f>("vec2f")
 			.def_constructor( pybind::init<float,float>() )
-			.def_convert( &ScriptMethod::vec2f_convert )
+			.def_convert( &ScriptMethod::vec2f_convert, nullptr )
 			.def_static_sequence( &ScriptMethod::vec2_sequence )
 			.def_repr( &ScriptMethod::vec2f_repr )
 
@@ -595,7 +613,7 @@ namespace Menge
 
 		pybind::struct_<mt::vec3f>("vec3f")
 			.def_constructor( pybind::init<float,float,float>() )
-			.def_convert( &ScriptMethod::vec3f_convert )
+			.def_convert( &ScriptMethod::vec3f_convert, nullptr )
 			.def_static_sequence( &ScriptMethod::vec3_sequence )
             .def_repr( &ScriptMethod::vec3f_repr )
 			.def_member( "x", &mt::vec3f::x )
@@ -605,7 +623,7 @@ namespace Menge
 
 		pybind::struct_<mt::vec4f>("vec4f")
 			.def_constructor( pybind::init<float,float,float,float>() )
-			.def_convert( &ScriptMethod::vec4f_convert )
+			.def_convert( &ScriptMethod::vec4f_convert, nullptr )
 			.def_static_sequence( &ScriptMethod::vec4_sequence )
             .def_repr( &ScriptMethod::vec4f_repr )
 			.def_member( "x", &mt::vec4f::x )
@@ -616,14 +634,14 @@ namespace Menge
 
 		pybind::struct_<mt::box2f>("box2f")
 			.def_constructor( pybind::init<mt::vec2f,mt::vec2f>() )
-			.def_convert( &ScriptMethod::box2f_convert )
+			.def_convert( &ScriptMethod::box2f_convert, nullptr )
 			.def_member( "minimum", &mt::box2f::minimum )
 			.def_member( "maximum", &mt::box2f::maximum )
 			;
 
 		pybind::struct_<Rect>("Rect")
 			.def_constructor( pybind::init<size_t,size_t,size_t,size_t>() )
-			.def_convert( &ScriptMethod::Rect_convert )
+			.def_convert( &ScriptMethod::Rect_convert, nullptr )
 			.def_member( "left", &Rect::left )
 			.def_member( "top",  &Rect::top ) 
 			.def_member( "right",  &Rect::right )
@@ -642,20 +660,20 @@ namespace Menge
 			;
 
 		pybind::struct_<Polygon>("Polygon")
-			.def_convert( &ScriptMethod::Polygon_convert )
+			.def_convert( &ScriptMethod::Polygon_convert, nullptr )
 			.def_static("getPoints", &ScriptMethod::s_getPoints)
 			;
 
 		pybind::struct_<Viewport>("Viewport")
 			.def_constructor( pybind::init<mt::vec2f,mt::vec2f>() )
-			.def_convert( &ScriptMethod::Viewport_convert )
+			.def_convert( &ScriptMethod::Viewport_convert, nullptr )
 			.def_member( "begin", &Viewport::begin )
 			.def_member( "end", &Viewport::end )
 			;
 
 		pybind::struct_<ColourValue>("Color")
 			.def_constructor( pybind::init<float, float, float, float>() )
-			.def_convert( &ScriptMethod::color_convert )
+			.def_convert( &ScriptMethod::color_convert, nullptr )
 			.def( "getA", &ColourValue::getA )
 			.def( "getR", &ColourValue::getR )
 			.def( "getG", &ColourValue::getG )
@@ -669,7 +687,7 @@ namespace Menge
 
 		pybind::struct_<Resolution>("Resolution")
 			.def_constructor( pybind::init<size_t, size_t>() )
-			.def_convert( &ScriptMethod::Resolution_convert )
+			.def_convert( &ScriptMethod::Resolution_convert, nullptr )
 			.def( "setWidth", &Resolution::setWidth )
 			.def( "setHeight", &Resolution::setHeight )
 			.def( "getWidth", &Resolution::getWidth )

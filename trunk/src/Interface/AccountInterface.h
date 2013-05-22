@@ -14,10 +14,10 @@ namespace Menge
         virtual const FilePath & getFolder() const = 0;
 
     public:
-        virtual void addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc ) = 0;
-        virtual void changeSetting( const WString& _setting, const WString& _value ) = 0;
-        virtual const WString& getSetting( const WString& _setting ) const = 0;
-        virtual bool hasSetting( const WString& _setting ) const = 0;
+        virtual void addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) = 0;
+        virtual void changeSetting( const ConstString & _setting, const WString& _value ) = 0;
+        virtual const WString& getSetting( const ConstString & _setting ) const = 0;
+        virtual bool hasSetting( const ConstString & _setting ) const = 0;
 
     public:
         virtual void apply() = 0;
@@ -54,20 +54,11 @@ namespace Menge
         virtual AccountInterface * createAccount() = 0;
 
     public:
-        virtual void addSetting( const WString& _setting, const WString& _defaultValue, PyObject* _applyFunc ) = 0;
-        virtual void changeSetting( const WString & _setting, const WString & _value ) = 0;
-
-    public:
         virtual void deleteAccount( const WString& _accountID ) = 0;
         virtual bool selectAccount( const WString& _accountID ) = 0;
-        virtual bool saveAccount( const WString& _accountID ) = 0;
-
-    public:
-        virtual void saveAccounts() = 0;
 
     public:
         virtual bool loadAccountsInfo() = 0;
-        virtual bool saveAccountsInfo() = 0;
 
     public:
         virtual void setDefaultAccount( const WString & _accountID ) = 0;

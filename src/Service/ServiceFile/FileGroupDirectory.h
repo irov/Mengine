@@ -41,7 +41,6 @@ namespace Menge
 
 	private:
         bool initializeDirectory_( bool _create );
-		FilePath makeFullname_( const FilePath& _filename );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

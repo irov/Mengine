@@ -20,7 +20,7 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool open( const FilePath& _filename ) override;
+		bool open( const FilePath & _folder, const FilePath& _filename ) override;
 		
 	public:
 		size_t read( void* _buf, size_t _count ) override;

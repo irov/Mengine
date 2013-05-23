@@ -14,7 +14,7 @@ namespace Menge
 		: public InputStreamInterface
 	{
 	public:
-		virtual bool open( const FilePath & _filename ) = 0;
+		virtual bool open( const FilePath & _folder, const FilePath & _filename ) = 0;
 	};
 
     typedef IntrusivePtr<FileInputStreamInterface> FileInputStreamInterfacePtr;
@@ -33,7 +33,7 @@ namespace Menge
 		: public OutputStreamInterface
 	{
 	public:
-		virtual bool open( const FilePath & _filename ) = 0;
+		virtual bool open( const FilePath & _folder, const FilePath & _filename ) = 0;
 	};
 
     typedef IntrusivePtr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
@@ -44,7 +44,8 @@ namespace Menge
         SERVICE_DECLARE( "FileSystem" )
 
 	public:
-		virtual bool existFile( const FilePath & _filename ) const = 0;
+		virtual bool existFile( const FilePath & _folder, const FilePath & _filename ) const = 0;
+        virtual bool deleteFile( const FilePath & _folder, const FilePath & _filename ) = 0;
 		
     public:
 		virtual FileInputStreamInterfacePtr createInputStream() = 0;		
@@ -53,10 +54,10 @@ namespace Menge
     public:
         virtual MappedFileInputStreamInterfacePtr createMappedInputStream() = 0;
 
-    public:
-		virtual bool deleteFile( const FilePath & _filename ) = 0;
-		virtual bool createFolder( const FilePath & _path ) = 0;
-		virtual bool deleteFolder( const FilePath & _path ) = 0;
+    public:		
+        virtual bool existFolder( const FilePath & _folder, const FilePath & _path ) const = 0;
+		virtual bool createFolder( const FilePath & _folder, const FilePath & _path ) = 0;
+		virtual bool deleteFolder( const FilePath & _folder, const FilePath & _path ) = 0;
 	};
 
 #   define FILE_SYSTEM( serviceProvider )\
@@ -113,7 +114,7 @@ namespace Menge
 		virtual OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
 
     public:
-        virtual MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath& _filename ) = 0;
+        virtual MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath & _foldername, const FilePath& _filename ) = 0;
 
     public:
         virtual bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;

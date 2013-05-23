@@ -257,7 +257,7 @@ namespace Menge
 		return file;
 	}
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInputStreamInterfacePtr FileEngine::openMappedInputStream( const FilePath& _filename )
+    MappedFileInputStreamInterfacePtr FileEngine::openMappedInputStream( const FilePath & _foldername, const FilePath& _filename )
     {
         MappedFileInputStreamInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
             ->createMappedInputStream();
@@ -271,7 +271,7 @@ namespace Menge
             return nullptr;
         }
 
-        if( mappedFile->open( _filename ) == false )
+        if( mappedFile->open( _foldername, _filename ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedInputStream can't open output file '%s'"
                 , _filename.c_str()

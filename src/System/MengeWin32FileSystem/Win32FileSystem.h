@@ -36,11 +36,12 @@ namespace Menge
         MappedFileInputStreamInterfacePtr createMappedInputStream() override;
 
     public:
-		bool existFile( const FilePath& _filename  ) const override;
-		bool deleteFile( const FilePath& _filename ) override;
+		bool existFile( const FilePath & _folder, const FilePath& _filename  ) const override;
+		bool deleteFile( const FilePath & _folder, const FilePath& _filename ) override;
 
-		bool createFolder( const FilePath& _path ) override;
-		bool deleteFolder( const FilePath& _path ) override;
+        bool existFolder( const FilePath & _folder, const FilePath& _filename  ) const override;
+		bool createFolder( const FilePath & _folder, const FilePath& _path ) override;
+		bool deleteFolder( const FilePath & _folder, const FilePath& _path ) override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

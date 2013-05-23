@@ -23,12 +23,14 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32OutputStream::open( const FilePath& _filename )
+	bool Win32OutputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{        
-        static WString unicode_filename;        
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
+        WChar filePath[MAX_PATH];
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open %s invalid convert utf8 to unicode"
+            LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
+                , _folder.c_str()
                 , _filename.c_str()
                 );
 
@@ -36,16 +38,16 @@ namespace Menge
         }
 
 		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
-            unicode_filename,    // file to open
-			GENERIC_WRITE, // open for writing
-			FILE_SHARE_READ | FILE_SHARE_WRITE,	// share for reading, exclusive for mapping
-			CREATE_ALWAYS
+            filePath
+            , GENERIC_WRITE
+            , FILE_SHARE_READ | FILE_SHARE_WRITE
+            , CREATE_ALWAYS
             );
 
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open %ls invalid open"
-                , unicode_filename.c_str()
+                , filePath
                 );
 
 			return false;

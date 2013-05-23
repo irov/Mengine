@@ -73,7 +73,7 @@ namespace Menge
     //}
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupZip::FileGroupZip()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
         , m_zipMappedFile(nullptr)
 	{
 	}
@@ -103,7 +103,7 @@ namespace Menge
             return false;
         }
         
-        if( zipMappedFile->open( m_path ) == false )
+        if( zipMappedFile->open( ConstString::none(), m_path ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize can't open zip file data %s"
                 , m_path.c_str()
@@ -223,6 +223,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void FileGroupZip::finalize()
     {
+        m_zipMappedFile = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & FileGroupZip::getPath() const
@@ -238,6 +239,7 @@ namespace Menge
 	bool FileGroupZip::existFile( const FilePath& _filename )
 	{
 		TMapFileInfo::iterator it_find = m_files.find( _filename );
+
 		if( it_find == m_files.end() )
 		{
 			return false;
@@ -255,12 +257,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _stream )
 	{
-		if( _stream == 0 )
+		if( _stream == nullptr )
 		{
 			return false;
 		}
 
 		TMapFileInfo::iterator it_find = m_files.find( _filename );
+
 		if( it_find == m_files.end() )
 		{
 			return false;
@@ -275,7 +278,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile()
     {
-        return NULL;
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _file )
@@ -322,6 +325,4 @@ namespace Menge
 
         return false;
     }
-
-
 }	// namespace Menge

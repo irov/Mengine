@@ -1,10 +1,12 @@
 #   pragma once
 
+#   include "Config/Typedef.h"
+
 #   include "Interface/ServiceInterface.h"
 
-#   include "wtypes.h"
+#   include "Core/FilePath.h"
 
-#   include "Config/Typedef.h"
+#   include <wtypes.h>
 
 namespace Menge
 {
@@ -25,7 +27,7 @@ namespace Menge
         virtual void destroy() = 0;
 
     public:
-        virtual TDynamicLibraryFunction getSymbol( const String& _name ) const = 0;
+        virtual TDynamicLibraryFunction getSymbol( const char * _name ) const = 0;
     };
 
     class WindowsLayerInterface
@@ -35,33 +37,33 @@ namespace Menge
         SERVICE_DECLARE("WindowsLayerService")
 
     public:
-        virtual DynamicLibraryInterface * loadDynamicLibrary( const WString & _path ) = 0;
+        virtual DynamicLibraryInterface * loadDynamicLibrary( const WString & _name ) = 0;
 
     public:
         virtual EWindowsType getWindowsType() = 0;
         virtual bool setProcessDPIAware() = 0;
         virtual bool supportUnicode() = 0;
 
-        virtual bool setCurrentDirectory( const WString & _path ) = 0;
+        virtual bool setCurrentDirectory( const WChar * _path ) = 0;
         virtual bool setModuleCurrentDirectory() = 0;
-        virtual bool createDirectory( const WString & _path ) = 0;
-        virtual bool fileExists( const WString & _path ) = 0;
+        virtual bool createDirectory( const WChar * _path ) = 0;
+        virtual bool fileExists( const WChar * _path ) = 0;
 
-        virtual HANDLE createFile( const WString & _filename, DWORD _desiredAccess,
+        virtual HANDLE createFile( const WChar * _filename, DWORD _desiredAccess,
             DWORD _sharedMode, DWORD _creationDisposition ) = 0;
 
         virtual ATOM registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra
             , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
-            , const Menge::WString& _className ) = 0;
+            , const WChar * _className ) = 0;
 
-        virtual bool unregisterClass( const WString& _className, HINSTANCE _hInstance ) = 0;
+        virtual bool unregisterClass( const WChar * _className, HINSTANCE _hInstance ) = 0;
 
-        virtual HWND createWindow( const WString& _className, const WString& _windowName
+        virtual HWND createWindow( const WChar * _className, const WChar * _windowName
             , DWORD _style, int _x, int _y, int _width, int _height, HWND _parent, HMENU _hMenu
             , HINSTANCE _hInstance, LPVOID _param ) = 0;
 
-        virtual HWND createWindowEx( DWORD _exStyle, const WString& _className
-            , const WString& _windowName,	DWORD _style, int _x, int _y
+        virtual HWND createWindowEx( DWORD _exStyle, const WChar * _className
+            , const WChar * _windowName,	DWORD _style, int _x, int _y
             , int _width, int _height, HWND _parent, HMENU _hMenu
             , HINSTANCE _hInstance,	LPVOID _param ) = 0;
 
@@ -76,13 +78,14 @@ namespace Menge
         virtual bool peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax, UINT _removeMsg ) = 0;
         virtual LRESULT dispatchMessage( const MSG* _msg ) = 0;
 
-        virtual int messageBox( HWND _hWnd, const WString & _text, const WString & _caption, UINT _type ) = 0;
+        virtual int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) = 0;
 
-        virtual bool getModuleFileName( HMODULE hModule, WString & _moduleFilename ) = 0;
+        virtual bool getModuleFileName( HMODULE hModule, WChar * _moduleFilename, size_t _capacity ) = 0;
         //LONG setRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
         //LONG deleteRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName );
 
         virtual bool makeFormatMessage( HRESULT _hresult, WString & _out ) = 0;
+        virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _filename, WChar * _filePath, size_t _capacity ) = 0;
     };
 
 #   define WINDOWSLAYER_SERVICE( serviceProvider )\

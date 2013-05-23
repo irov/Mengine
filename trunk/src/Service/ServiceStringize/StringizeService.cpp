@@ -7,7 +7,7 @@ namespace Menge
 {	
     //////////////////////////////////////////////////////////////////////////
     StringizeService::StringizeService()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ConstString StringizeService::stringize( const char * _str, size_t _size )
 	{
-        ConstStringHolder * stringHolder = NULL;
+        ConstStringHolder * stringHolder = nullptr;
         
         if( _size < 16 )
         {

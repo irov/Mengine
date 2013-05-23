@@ -140,9 +140,9 @@ namespace Menge
         return m_supportUnicode;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::setCurrentDirectory( const WString & _path )
+    bool VistaWindowsLayer::setCurrentDirectory( const WChar * _path )
     {
-        if( ::SetCurrentDirectory( _path.c_str() ) == FALSE )
+        if( ::SetCurrentDirectory( _path ) == FALSE )
         {
             return false;
         }
@@ -173,9 +173,9 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::createDirectory( const WString& _path )
+    bool VistaWindowsLayer::createDirectory( const WChar * _path )
     {
-        int cd_code = ::SHCreateDirectoryEx( NULL, _path.c_str(), NULL );
+        int cd_code = ::SHCreateDirectoryEx( NULL, _path, NULL );
 
         if( cd_code == ERROR_SUCCESS )
         {
@@ -185,7 +185,7 @@ namespace Menge
         if( cd_code == ERROR_ALREADY_EXISTS )
         {
             LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls alredy exists"
-                , _path.c_str()
+                , _path
                 );
 
             return true;
@@ -197,28 +197,27 @@ namespace Menge
         this->makeFormatMessage( err, message );
 
         LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectory invalid create dir '%ls' - '%ls'"
-            , _path.c_str()
+            , _path
             , message.c_str()
             );
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::fileExists( const WString& _path )
+    bool VistaWindowsLayer::fileExists( const WChar * _path )
     {
-        if( _path.empty() == true )	// current dir
+        size_t len = wcslen( _path );
+        if( len == 0 )	// current dir
         {
             return true;
         }
 
-        WString::size_type length = _path.length();
-
-        if( _path[length - 1] == L':' )	// root dir
+        if( _path[len - 1] == L':' )	// root dir
         {
             return true;	// let it be
         }
 
-        DWORD attributes = GetFileAttributes( _path.c_str() );
+        DWORD attributes = GetFileAttributes( _path );
 
         if( attributes == INVALID_FILE_ATTRIBUTES )
         {
@@ -262,10 +261,10 @@ namespace Menge
     }
 #endif
     //////////////////////////////////////////////////////////////////////////
-    HANDLE VistaWindowsLayer::createFile( const WString & _path, DWORD _desiredAccess,
+    HANDLE VistaWindowsLayer::createFile( const WChar * _path, DWORD _desiredAccess,
         DWORD _sharedMode, DWORD _creationDisposition )
     {
-        HANDLE handle = ::CreateFile( _path.c_str(), _desiredAccess, _sharedMode, NULL,
+        HANDLE handle = ::CreateFile( _path, _desiredAccess, _sharedMode, NULL,
             _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
 
 #ifdef _DEBUG
@@ -275,22 +274,23 @@ namespace Menge
         }
 
         WIN32_FIND_DATA wfd;
-        HANDLE hFind = ::FindFirstFile( _path.c_str(), &wfd );
+        HANDLE hFind = ::FindFirstFile( _path, &wfd );
 
         if( hFind == INVALID_HANDLE_VALUE )
         {
             printf("File invalid find ??? (%ls)\n"
-                , _path.c_str()
+                , _path
                 );
         }
 
         WString filename;
-        s_getFileName( _path, filename );
+        WString path_filename(_path);
+        s_getFileName( path_filename, filename );
 
         if( filename != wfd.cFileName )
         {
             printf("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
-                , _path.c_str()
+                , _path
                 , filename.c_str()
                 , wfd.cFileName
                 );
@@ -302,7 +302,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ATOM VistaWindowsLayer::registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra
         , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
-        , const WString& _className )
+        , const WChar * _className )
     {
         WNDCLASS wc;
         ::ZeroMemory( &wc, sizeof(WNDCLASS) );
@@ -315,7 +315,7 @@ namespace Menge
         wc.hIcon = LoadIcon( _hInstance, MAKEINTRESOURCEW(_hIcon) );
         wc.hCursor = LoadCursor( NULL, MAKEINTRESOURCEW(32512) );
 
-        wc.lpszClassName = _className.c_str();
+        wc.lpszClassName = _className;
         wc.hbrBackground = _hbrBackground;
 
         ATOM atom = ::RegisterClass( &wc );
@@ -323,9 +323,9 @@ namespace Menge
         return atom;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::unregisterClass( const WString& _className, HINSTANCE _hInstance )
+    bool VistaWindowsLayer::unregisterClass( const WChar * _className, HINSTANCE _hInstance )
     {
-        if( ::UnregisterClass( _className.c_str(), _hInstance ) == FALSE )
+        if( ::UnregisterClass( _className, _hInstance ) == FALSE )
         {
             return false;
         }
@@ -333,22 +333,22 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    HWND VistaWindowsLayer::createWindow( const WString& _className, const WString& _windowName
+    HWND VistaWindowsLayer::createWindow( const WChar * _className, const WChar * _windowName
         , DWORD _style, int _x, int _y, int _width, int _height, HWND _parent, HMENU _hMenu
         , HINSTANCE _hInstance, LPVOID _param )
     {
-        HWND hwnd = ::CreateWindow( _className.c_str(), _windowName.c_str()
+        HWND hwnd = ::CreateWindow( _className, _windowName
             , _style, _x, _y, _width, _height, _parent, _hMenu, _hInstance, _param );
 
         return hwnd;
     }
     //////////////////////////////////////////////////////////////////////////
-    HWND VistaWindowsLayer::createWindowEx( DWORD _exStyle, const WString& _className
-        , const WString& _windowName,	DWORD _style, int _x, int _y
+    HWND VistaWindowsLayer::createWindowEx( DWORD _exStyle, const WChar * _className
+        , const WChar * _windowName,	DWORD _style, int _x, int _y
         , int _width, int _height, HWND _parent, HMENU _hMenu
         , HINSTANCE _hInstance,	LPVOID _param )
     {
-        HWND hwnd = ::CreateWindowEx( _exStyle, _className.c_str(), _windowName.c_str()
+        HWND hwnd = ::CreateWindowEx( _exStyle, _className, _windowName
             , _style, _x, _y, _width, _height, _parent, _hMenu, _hInstance, _param );
 
         //SetWindowTextW( hwnd, _windowName.c_str() );
@@ -437,22 +437,19 @@ namespace Menge
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    int VistaWindowsLayer::messageBox( HWND _hWnd, const WString& _text, const WString& _caption, UINT _type )
+    int VistaWindowsLayer::messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type )
     {
-        int result = ::MessageBox( _hWnd, _text.c_str(), _caption.c_str(), _type );
+        int result = ::MessageBox( _hWnd, _text, _caption, _type );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::getModuleFileName( HMODULE hModule, WString & _moduleFilename )
+    bool VistaWindowsLayer::getModuleFileName( HMODULE hModule, WChar * _moduleFilename, size_t _capacity )
     {
-        WChar exeFilePath[MAX_PATH];
-        if( ::GetModuleFileName( hModule, exeFilePath, MAX_PATH ) == 0 )
+        if( ::GetModuleFileName( hModule, _moduleFilename, _capacity ) == 0 )
         {
             return false;
         }
-
-        _moduleFilename.assign( exeFilePath );
 
         return true;             
     }
@@ -528,6 +525,44 @@ namespace Menge
 
         LocalFree( errorText );
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VistaWindowsLayer::concatenateFilePath( const FilePath & _folder, const FilePath & _filename, WChar * _filePath, size_t _capacity )
+    {        
+        size_t folderSize = _folder.size();
+        size_t fileNameSize = _filename.size();
+                        
+        size_t filePathSize = folderSize;
+        
+        if( fileNameSize != 0 )
+        {
+            filePathSize += fileNameSize;
+        }
+        
+        if( filePathSize >= MAX_PATH )
+        {
+            return false;
+        }
+
+        Char filePath[MAX_PATH];
+        memcpy(filePath, _folder.c_str(), folderSize);        
+
+        if( fileNameSize != 0 )
+        {
+            memcpy(filePath + folderSize, _filename.c_str(), fileNameSize );
+        }
+
+        filePath[filePathSize] = L'\0';
+
+        filePathSize += 1; //Null
+
+        if( UNICODE_SERVICE(m_serviceProvider)
+            ->utf8ToUnicode( filePath, filePathSize, _filePath, _capacity, nullptr ) == false )
+        {
+            return false;
+        }
+        
         return true;
     }
 }

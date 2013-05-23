@@ -59,12 +59,14 @@ namespace Menge
         return mappedStream;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::existFile( const FilePath& _filename ) const
+	bool Win32FileSystem::existFile( const FilePath & _folder, const FilePath& _filename ) const
 	{
-        static WString unicode_filename;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
+        WChar filePath[MAX_PATH];
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFile invlalid convert utf8 to unicode %s"
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
+                , _folder.c_str()
                 , _filename.c_str()
                 );
 
@@ -72,49 +74,73 @@ namespace Menge
         }
 
         bool result = WINDOWSLAYER_SERVICE(m_serviceProvider)
-            ->fileExists( unicode_filename );
+            ->fileExists( filePath );
 
 		return result;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::createFolder( const FilePath& _path )
-	{
-        static WString unicode_path;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _path.c_str(), _path.size(), unicode_path ) == false )
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileSystem::existFolder( const FilePath & _folder, const FilePath& _filename  ) const
+    {
+        WChar filePath[MAX_PATH];
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::createFolder invlalid convert utf8 to unicode %s"
-                , _path.c_str()
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFolder invlalid concatenate filePath '%s':'%s'"
+                , _folder.c_str()
+                , _filename.c_str()
+                );
+
+            return false;
+        }
+
+        bool result = WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->fileExists( filePath );
+
+        return result;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileSystem::createFolder( const FilePath & _folder, const FilePath& _filename )
+	{
+        WChar filePath[MAX_PATH];
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::createFolder invlalid concatenate filePath '%s':'%s'"
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;
         }
         
         bool result = WINDOWSLAYER_SERVICE(m_serviceProvider)
-            ->createDirectory( unicode_path );
+            ->createDirectory( filePath );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::deleteFolder( const FilePath& _path )
+	bool Win32FileSystem::deleteFolder( const FilePath & _folder, const FilePath& _filename )
 	{
-        static WString unicode_path;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _path.c_str(), _path.size(), unicode_path ) == false )
+        WChar filePath[MAX_PATH];
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder invlalid convert utf8 to unicode %s"
-                , _path.c_str()
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder invlalid concatenate filePath '%s':'%s'"
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;
         }
 
-        unicode_path += L" ";
-        unicode_path[unicode_path.size() - 1] = L'\0';
+        size_t fp_len = wcslen(filePath);
+        filePath[fp_len] = L'\0';
 
 		SHFILEOPSTRUCT fileop;
 		ZeroMemory(&fileop, sizeof(SHFILEOPSTRUCT));
 		fileop.hwnd = NULL;
         fileop.wFunc = FO_DELETE;
-		fileop.pFrom = unicode_path.c_str();
+		fileop.pFrom = filePath;
         fileop.pTo = NULL;		
 		fileop.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
         fileop.fAnyOperationsAborted = FALSE;
@@ -126,7 +152,7 @@ namespace Menge
 		if( err != 0 )
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder %s error %d"
-                , _path.c_str()
+                , _filename
                 , err
                 );
 
@@ -136,12 +162,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileSystem::deleteFile( const FilePath& _filename )
+	bool Win32FileSystem::deleteFile( const FilePath & _folder, const FilePath& _filename )
 	{
-        static WString unicode_filename;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
+        WChar filePath[MAX_PATH];
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFile invlalid convert utf8 to unicode %s"
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFile invlalid concatenate filePath '%s':'%s'"
+                , _folder.c_str()
                 , _filename.c_str()
                 );
 
@@ -151,13 +179,20 @@ namespace Menge
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
 		fs.hwnd = NULL;
-		fs.pFrom = unicode_filename.c_str();
+		fs.pFrom = filePath;
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
 		
-		if( ::SHFileOperation( &fs ) != 0 )
+        int err = ::SHFileOperation( &fs );
+
+		if( err != 0 )
 		{
+            LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFile %s error %d"
+                , _filename
+                , err
+                );
+
 			return false;
 		}
 

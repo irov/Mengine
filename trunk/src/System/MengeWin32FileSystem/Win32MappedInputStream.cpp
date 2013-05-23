@@ -47,12 +47,14 @@ namespace Menge
         memory->setMemory( pMem + _offset, _size );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32MappedInputStream::open( const FilePath & _filename )
+	bool Win32MappedInputStream::open( const FilePath & _folder, const FilePath & _filename )
 	{
-        WString unicode_filename;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, _filename.c_str(), _filename.size(), unicode_filename ) == false )
+        WChar filePath[MAX_PATH];
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %s invalid convert utf8 to unicode"
+            LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
+                , _folder.c_str()
                 , _filename.c_str()
                 );
 
@@ -60,7 +62,7 @@ namespace Menge
         }
 
 		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
-            unicode_filename, // file to open
+            filePath, // file to open
 			GENERIC_READ, // open for reading
 			FILE_SHARE_READ, // share for reading, exclusive for mapping
 			OPEN_EXISTING // existing file only
@@ -69,7 +71,7 @@ namespace Menge
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open %ls invalid open"
-                , unicode_filename.c_str()
+                , filePath
                 );
 
 			return false;
@@ -86,7 +88,7 @@ namespace Menge
 		if( m_hMapping == NULL )
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open %ls invalid create file mapping"
-                , unicode_filename.c_str()
+                , filePath
                 );
 
 			::CloseHandle( m_hFile );
@@ -99,7 +101,7 @@ namespace Menge
 		if( m_memory == NULL )
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open %ls invalid map view of file"
-                , unicode_filename.c_str()
+                , filePath
                 );
 
 			::CloseHandle( m_hMapping );

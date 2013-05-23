@@ -1,7 +1,5 @@
 #	include "FileGroupDirectory.h"
 
-#   include "Interface/StringizeInterface.h"
-
 #	include "Logger/Logger.h"
 
 #	include "Core/String.h"
@@ -34,7 +32,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupDirectory::initializeDirectory_( bool _create )
     {
-		if( FILE_SYSTEM(m_serviceProvider)->existFile( m_path ) == true )
+        if( FILE_SYSTEM(m_serviceProvider)->existFolder( m_path, ConstString::none() ) == true )
 		{
             return true;
         }
@@ -52,7 +50,7 @@ namespace Menge
 			, m_path.c_str() 
 			);
 
-		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_path ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_path, ConstString::none() ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::initialize failed to create directory %s"
 				, m_path.c_str() 
@@ -81,9 +79,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::existFile( const FilePath& _filename )
 	{
-		FilePath fullname = this->makeFullname_( _filename );
-
-		bool exist = FILE_SYSTEM(m_serviceProvider)->existFile( fullname );
+		bool exist = FILE_SYSTEM(m_serviceProvider)->existFile( m_path, _filename );
 
         return exist;
 	}
@@ -106,14 +102,13 @@ namespace Menge
             return false;
         }
 
-        FilePath fullname = this->makeFullname_( _filename );
-
         FileInputStreamInterfacePtr file = intrusive_static_cast<FileInputStreamInterfacePtr>(_stream);
 
-		if( file->open( fullname ) == false )
+		if( file->open( m_path, _filename ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed open file '%s'"
-                , fullname.c_str()
+            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed open file '%s':'%s'"
+                , m_path.c_str()
+                , _filename.c_str()
                 );
 
             return false;
@@ -140,14 +135,13 @@ namespace Menge
             return false;
         }
 
-        FilePath fullname = this->makeFullname_( _filename );
-
         FileOutputStreamInterface * file = intrusive_get<FileOutputStreamInterface>(_stream);
 
-        if( file->open( fullname ) == false )
+        if( file->open( m_path, _filename ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openOutputFile failed open file %s"
-                , fullname.c_str()
+            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openOutputFile failed open file '%s':'%s'"
+                , m_path.c_str()
+                , _filename.c_str()
                 );
 
             return false;
@@ -158,9 +152,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::createDirectory( const FilePath & _path )
 	{
-		FilePath fullname = this->makeFullname_( _path );
-	
-		if( FILE_SYSTEM(m_serviceProvider)->createFolder( fullname ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_path, _path ) == false )
         {
             return false;
         }
@@ -170,9 +162,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::removeDirectory( const FilePath & _path )
 	{
-		FilePath fullname = this->makeFullname_( _path );
-
-		if( FILE_SYSTEM(m_serviceProvider)->deleteFolder( fullname ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->deleteFolder( m_path, _path ) == false )
         {
             return false;
         }
@@ -182,21 +172,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::removeFile( const FilePath & _filename )
 	{
-		FilePath fullname = this->makeFullname_( _filename );
-
-		if( FILE_SYSTEM(m_serviceProvider)->deleteFile( fullname ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->deleteFile( m_path, _filename ) == false )
         {
             return false;
         }
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FilePath FileGroupDirectory::makeFullname_( const FilePath & _path )
-	{
-        FilePath fullpath = concatenationFilePath( m_serviceProvider, m_path, _path );
-
-        return fullpath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

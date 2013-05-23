@@ -1362,7 +1362,7 @@ namespace Menge
 			}
 			else if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
 			{
-				if( m_windowsLayer->messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", projectTitle, MB_YESNO ) == IDNO )
+				if( m_windowsLayer->messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", projectTitle.c_str(), MB_YESNO ) == IDNO )
 				{
 					return false;
 				}
@@ -1666,7 +1666,7 @@ namespace Menge
 
 		if( m_hInstance )
 		{
-			m_windowsLayer->unregisterClass( m_windowClassName, m_hInstance );
+			m_windowsLayer->unregisterClass( m_windowClassName.c_str(), m_hInstance );
 		}	
 
 		if( m_fpsMonitor != nullptr )
@@ -2283,7 +2283,7 @@ namespace Menge
             m_hInstance, 
             IDI_MENGE, 
             black_brush, 
-            m_windowClassName
+            m_windowClassName.c_str()
             );
 
 		if( result == FALSE )
@@ -2301,7 +2301,7 @@ namespace Menge
 		DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
         //DWORD exStyle = 0;
 
-		HWND hwnd = m_windowsLayer->createWindowEx( exStyle, m_windowClassName, _projectTitle, dwStyle
+		HWND hwnd = m_windowsLayer->createWindowEx( exStyle, m_windowClassName.c_str(), _projectTitle.c_str(), dwStyle
 				, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
 				, NULL, NULL, m_hInstance, (LPVOID)this );
 
@@ -2611,7 +2611,7 @@ namespace Menge
 			icoDir += m_userPath;
 			icoDir += L"IconCache";
 
-            m_windowsLayer->createDirectory( icoDir );
+            m_windowsLayer->createDirectory( icoDir.c_str() );
 
             WString icoFile;
 
@@ -2626,7 +2626,7 @@ namespace Menge
 
 			WString icoDir2 = icoFile.substr( 0, pos );
 
-			m_windowsLayer->createDirectory( icoDir2 );
+			m_windowsLayer->createDirectory( icoDir2.c_str() );
 
 			FILE * file = _wfopen( icoFile.c_str(), L"wb" );
 
@@ -2695,29 +2695,23 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::isSaverRunning() const
-	{ 
-		WString fileName;
-		WString extention;
-
-		if( m_windowsLayer->getModuleFileName( NULL, fileName ) == false )
+	{ 		
+        WChar fileName[MAX_PATH];
+		if( m_windowsLayer->getModuleFileName( NULL, fileName, MAX_PATH ) == false )
         {
             return false;
         }
 
-		if( fileName.length() < 4 )
+        size_t fn_len = wcslen( fileName );
+
+		if( fn_len < 4 )
 		{
 			return false;
 		}
 
-		extention = fileName.substr( fileName.length() - 4 );
+		WChar * extention = fileName + (fn_len - 4);
 
-		//std::transform( extention.begin(), extention.end(), extention.begin(), std::ptr_fun( ::tolower ) );
-		/*for( int i=0; i<extention.length(); ++i )
-		{
-			extention[i] = tolower(extention[i]);
-		}*/
-
-		if( extention == L".scr" )
+		if( wcscpy( extention, L".scr" ) == 0 )
 		{
 			return true;
 		}

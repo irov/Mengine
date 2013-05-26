@@ -1,8 +1,5 @@
 #	include "SilentSoundSystem.h"
 
-#	include "SilentSoundBuffer.h"
-#	include "SilentSoundSource.h"
-
 #	include "Interface/LogSystemInterface.h"
 
 #	include "Config/Config.h"
@@ -57,9 +54,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterface* SilentSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
-	{
-		//OALSoundSource* soundSource = m_soundSources.get();
-		SilentSoundSource * soundSource = new SilentSoundSource;
+	{		
+		SilentSoundSource * soundSource = m_poolSilentSoundSource.createObjectT();
 
 		soundSource->initialize(this);
 		
@@ -73,34 +69,19 @@ namespace Menge
 	{
         (void)_isStream;
 
-		SilentSoundBuffer * buffer = new SilentSoundBuffer();
+		SilentSoundBuffer * buffer = m_poolSilentSoundBuffer.createObjectT();
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "SilentSoundSystem: failed to load sound buffer from decoder" 
 				);
 
-			buffer->release();
+			buffer->destroy();
 			
-            return NULL;
+            return nullptr;
 		}
 
 		return buffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
-	{
-		if( _soundBuffer != NULL )
-		{
-			_soundBuffer->release();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
-	{
-		SilentSoundSource * soundSource = static_cast<SilentSoundSource *>( _sn );
-
-		delete soundSource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t SilentSoundSystem::genSourceId()

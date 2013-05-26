@@ -61,10 +61,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileGroup( const ConstString& _fileSystemName, const FilePath& _path, const ConstString & _type, bool _create )
+	bool FileEngine::mountFileGroup( const ConstString& _fileSystemName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create )
 	{
-        LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%s' _type '%s'"
+        LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%s':'%s' _type '%s'"
                        , _fileSystemName.c_str() 
+                       , _folder.c_str()
                        , _path.c_str()
                        , _type.c_str()
                        );
@@ -82,9 +83,12 @@ namespace Menge
 
 		FileGroupInterface * fs = FactoryManager::createObjectT<FileGroupInterface>( _type );
 
-		if( fs == NULL )
+		if( fs == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::mountFileSystem can't find FileSystem for object '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s':'%s'"
+                , _fileSystemName.c_str()
+                , _type.c_str()
+                , _folder.c_str()
 				, _path.c_str() 
 				);
 
@@ -94,7 +98,7 @@ namespace Menge
 			//fs = FactoryManager::createObjectT<FileSystem>( Consts::get()->c_builtin_empty );
 		}
 
-		if( fs->initialize( m_serviceProvider, _path, _type, _create ) == false )
+		if( fs->initialize( m_serviceProvider, _folder, _path, _type, _create ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "FileEngine::mountFileSystem can't initialize FileSystem for object '%s'"
 				, _path.c_str() 

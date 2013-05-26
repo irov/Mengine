@@ -14,7 +14,7 @@ namespace Menge
         SERVICE_DECLARE("StringizeService")
 
 	public:
-		virtual ConstString stringize( const char * _str, size_t _size ) = 0;
+		virtual bool stringize( const char * _str, size_t _size, ConstString & _cstr ) = 0;
 	};
 
 
@@ -26,8 +26,9 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size )
         {
-            ConstString cstr = STRINGIZE_SERVICE(_serviceProvider)
-                ->stringize( _value, _size );
+            ConstString cstr;
+            STRINGIZE_SERVICE(_serviceProvider)
+                ->stringize( _value, _size, cstr );
 
             return cstr;
         }

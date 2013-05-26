@@ -11,9 +11,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskSoundBufferUpdate::ThreadTaskSoundBufferUpdate( ServiceProviderInterface * _serviceProvider, SoundSourceDesc* _soundSource )
-		: m_serviceProvider(_serviceProvider)
-		, m_soundSource(_soundSource)
+	ThreadTaskSoundBufferUpdate::ThreadTaskSoundBufferUpdate()
+		: m_serviceProvider(nullptr)
+		, m_soundSource(nullptr)
         , m_running(true)
 	{
 	}
@@ -21,6 +21,17 @@ namespace Menge
 	ThreadTaskSoundBufferUpdate::~ThreadTaskSoundBufferUpdate()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadTaskSoundBufferUpdate::_destroy()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskSoundBufferUpdate::initialize( ServiceProviderInterface * _serviceProvider, SoundSourceDesc* _soundSource )
+    {
+        m_serviceProvider = _serviceProvider;
+        m_soundSource = _soundSource;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskSoundBufferUpdate::stop()
 	{

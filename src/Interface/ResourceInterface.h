@@ -14,7 +14,7 @@ namespace Menge
         ConstString pakName;
         ConstString pakType;
 
-        String pakPath;
+        FilePath pakPath;
 
         FilePath path;
         bool script;
@@ -71,7 +71,7 @@ namespace Menge
 
         virtual ResourceReference * getResourceReference( const ConstString& _name ) const = 0;
 
-        virtual bool hasResource( const ConstString& _name ) const = 0;
+        virtual bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const = 0;
         virtual bool validResource( const ConstString& _name ) const = 0;
 
         virtual bool validResourceType( const ConstString& _name, const ConstString& _type ) const = 0;

@@ -5,6 +5,8 @@
 
 #	include "Config/Typedef.h"
 
+#	include "Factory/Factorable.h"
+
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
@@ -28,13 +30,14 @@ namespace Menge
 	};
 
 	class SoundBufferInterface
+        : public Factorable
 	{
 	public:
-		virtual void release() = 0;
 		virtual void update() = 0;
 	};
 
 	class SoundSourceInterface
+        : public Factorable
 	{
 	public:
 		virtual void play() = 0;
@@ -81,9 +84,6 @@ namespace Menge
     public:
 		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) = 0;
 		virtual SoundBufferInterface* createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
-
-		virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
-		virtual void releaseSoundNode( SoundSourceInterface * _sn ) = 0;
 	};
 
 #   define SOUND_SYSTEM( serviceProvider )\

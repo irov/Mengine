@@ -16,9 +16,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundBuffer::OALSoundBuffer( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
-		: m_serviceProvider(_serviceProvider)
-        , m_soundSystem(_soundSystem)
+	OALSoundBuffer::OALSoundBuffer()
+		: m_serviceProvider(nullptr)
+        , m_soundSystem(nullptr)
 		, m_alBufferId(0)
 	{
 		
@@ -32,6 +32,12 @@ namespace Menge
 			m_alBufferId = 0;
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundBuffer::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
+    {
+        m_serviceProvider = _serviceProvider;
+        m_soundSystem = _soundSystem;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{

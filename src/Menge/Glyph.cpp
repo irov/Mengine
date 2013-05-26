@@ -11,6 +11,14 @@
 
 namespace Menge
 {
+    //////////////////////////////////////////////////////////////////////////
+    Glyph::Glyph()
+        : m_uv(0.f, 0.f, 0.f, 0.f)
+        , m_offset(0.f, 0.f)
+        , m_ratio(0.f)
+        , m_size(0.f, 0.f)
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	Glyph::Glyph( const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size )
 		: m_uv(_uv)

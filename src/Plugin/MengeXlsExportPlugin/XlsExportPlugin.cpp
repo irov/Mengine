@@ -42,14 +42,16 @@ namespace Menge
 	{
         m_serviceProvider = _serviceProvider;
 
-		const String & projectCodename = APPLICATION_SERVICE(m_serviceProvider)->getProjectCodename();
+		const ConstString & projectCodename = APPLICATION_SERVICE(m_serviceProvider)
+            ->getProjectCodename();
 
         if( projectCodename.empty() == true )
         {
             return false;
         }
 	
-		PlatformInterface * platform = APPLICATION_SERVICE(m_serviceProvider)->getPlatform();
+		PlatformInterface * platform = APPLICATION_SERVICE(m_serviceProvider)
+            ->getPlatform();
 
 		//Py_IgnoreEnvironmentFlag = 1;
 		//Py_VerboseFlag = 1;
@@ -132,7 +134,7 @@ namespace Menge
 
 		pybind::decref( py_syspath );		
 
-		this->proccess( projectCodename );
+		this->proccess_( projectCodename.c_str() );
 
 		pybind::finalize();
 
@@ -147,7 +149,7 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XlsExportPlugin::proccess( const String & _projectName )
+	bool XlsExportPlugin::proccess_( const char * _projectName )
 	{
 		bool exist = false;
 		PyObject * py_xlsxExporter = pybind::module_import( "xlsxExporter", exist );
@@ -158,7 +160,7 @@ namespace Menge
 		}
 
 		pybind::call_method( py_xlsxExporter, "export", "(s)"
-			, _projectName.c_str()
+			, _projectName
 			);
 
 		return true;

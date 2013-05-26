@@ -8,6 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupDirectory::FileGroupDirectory()
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -15,10 +16,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path, const ConstString & _type, bool _create )
+	bool FileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create )
 	{
         m_serviceProvider = _serviceProvider;
 
+        m_folder = _folder;
 		m_path = _path;
         m_type = _type;
 
@@ -50,7 +52,7 @@ namespace Menge
 			, m_path.c_str() 
 			);
 
-		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_path, ConstString::none() ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_folder, m_path ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::initialize failed to create directory %s"
 				, m_path.c_str() 

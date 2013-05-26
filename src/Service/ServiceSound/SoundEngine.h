@@ -1,18 +1,20 @@
 #	pragma once
 
-#	include "Core/ConstString.h"
-#	include	"math/vec3.h"
-
 #   include "Interface/StreamInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
+#   include "ThreadTaskSoundBufferUpdate.h"
+
+#	include "Core/ConstString.h"
+#	include "Core/BinaryVector.h"
+#   include "Factory/FactoryPool.h"
+
+#	include	"math/vec3.h"
+
 #	include <vector>
-#	include <map>
 
 namespace Menge
 {
-    class ThreadTaskSoundBufferUpdate;	
-
 	enum ESoundSourceState
 	{
 		ESS_STOPPED = 0,	    // currently stopped
@@ -145,11 +147,14 @@ namespace Menge
 			SoundDecoderInterfacePtr codec;
 		};
 
-		typedef std::map<SoundBufferInterface*, SoundDesc> TMapBufferStreams;
-		TMapBufferStreams m_bufferStreams;
+        typedef TemplatePool<SoundSourceDesc, 32> TPoolSoundSourceDesc;
+        TPoolSoundSourceDesc m_poolSoundSourceDesc;
 
-		typedef std::map<unsigned int, SoundSourceDesc> TMapSoundSource;
+		typedef BinaryVector<unsigned int, SoundSourceDesc *> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
+
+        typedef FactoryPool<ThreadTaskSoundBufferUpdate, 32> TPoolThreadTaskSoundBufferUpdate;
+        TPoolThreadTaskSoundBufferUpdate m_poolThreadTaskSoundBufferUpdate;
 
 		typedef std::vector<SoundNodeListenerInterface*> TVectorSourceListener;
 		TVectorSourceListener m_stopListeners;

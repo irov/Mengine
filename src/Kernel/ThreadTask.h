@@ -2,8 +2,6 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
-#	include <vector>
-
 namespace Menge 
 {
 	class ThreadTask;
@@ -21,9 +19,6 @@ namespace Menge
 	public:
 		ThreadTask();
 		virtual ~ThreadTask();
-	
-	public:
-		void destroy() override;
 		
 	public:	
 		bool isComplete() const override;
@@ -54,13 +49,7 @@ namespace Menge
 		virtual void _onUpdate();
 		virtual void _onInterrupt();
 
-	public:
-		void addListener( ThreadTaskListener * _listener );
-
 	protected:
-		typedef std::vector<ThreadTaskListener *> TVectorTaskListener;
-		TVectorTaskListener m_listeners;
-
 		bool m_complete;
 		bool m_interrupt;
 	};

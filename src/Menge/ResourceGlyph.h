@@ -4,9 +4,10 @@
 
 #	include "Glyph.h"
 
+#   include "Utils/Core/BinaryVector.h"
+
 #	include "Math/vec4.h"
 
-#	include <map>
 
 namespace Menge
 {
@@ -35,7 +36,7 @@ namespace Menge
 	protected:
 		float m_alphaHeight;
 
-		typedef std::map<WChar, Glyph> TMapGlyph;
+		typedef BinaryVector<WChar, Glyph> TMapGlyph;
 		TMapGlyph m_glyphs;
 	};
 }

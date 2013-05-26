@@ -36,17 +36,26 @@ namespace Metabuf
 	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, Menge::WChar & _value, void * _userData )
-    {
-        static Menge::String utf8;
-        ar.read( utf8 );
+    {   
+        size_t size;
+        ar.readPOD( size );
+
+        char utf8[32];
+        ar.readBuffer( (unsigned char *)utf8, size );
 
         Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
         Menge::ServiceProviderInterface * serviceProvider = loader->getServiceProvider();
 
-        static Menge::WString unicode;
-        Menge::Helper::utf8ToUnicode( serviceProvider, utf8, unicode );
+        size_t unicodeSize;
 
-        if( unicode.empty() == true )
+        Menge::WChar unicode[2];
+        if( UNICODE_SERVICE(serviceProvider)
+            ->utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
+        {
+            return;
+        }
+
+        if( unicodeSize == 0 )
         {
             return;
         }

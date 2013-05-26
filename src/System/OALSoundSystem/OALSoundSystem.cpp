@@ -3,9 +3,6 @@
 #	include "Config/Config.h"
 
 #	include "OALError.h"
-#	include "OALSoundBufferBase.h"
-#	include "OALSoundBufferStream.h"
-#	include "OALSoundSource.h"
 
 #	include "Logger/Logger.h"
 
@@ -187,7 +184,9 @@ namespace Menge
 	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
-		OALSoundSource* soundSource = new OALSoundSource( m_serviceProvider, this );
+		OALSoundSource * soundSource = m_poolOALSoundSource.createObjectT();
+
+        soundSource->initialize( m_serviceProvider, this );
         		
 		soundSource->setHeadMode( _isHeadMode );
 		soundSource->loadBuffer( _sample );
@@ -197,49 +196,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface* OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
-		OALSoundBufferBase * buffer = NULL;
+		OALSoundBufferBase * base = NULL;
 
         if( _isStream == false )
         {
-            buffer = new OALSoundBuffer( m_serviceProvider, this );
+            OALSoundBuffer * buffer = m_poolOALSoundBuffer.createObjectT();
+            
+            buffer->initialize( m_serviceProvider, this );
+
+            base = buffer;
         }
         else
         {
-            buffer = new OALSoundBufferStream( m_serviceProvider, this );
+            OALSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObjectT();
+
+            buffer->initialize( m_serviceProvider, this );
+
+            base = buffer;
         }
 
-		if( buffer->load( _soundDecoder ) == false )
+		if( base->load( _soundDecoder ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem: Failed to create sound buffer from stream" 
 				);
 
-			buffer->release();
-			buffer = NULL;
+			base->destroy();
+			
+            return nullptr;
 		}
 
-		return buffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	//SoundBufferInterface* OALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
-	//{
-
-	//	return NULL;
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
-	{
-		if( _soundBuffer != NULL )
-		{
-			_soundBuffer->release();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
-	{
-		OALSoundSource* soundSource = static_cast<OALSoundSource*>( _sn );
-
-		//m_soundSources.release(soundSource);
-		delete soundSource;
+		return base;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::genSourceId()
@@ -249,34 +235,12 @@ namespace Menge
         OAL_CHECK_ERROR(m_serviceProvider);
 
 		return sourceId;
-
-		//if( m_sourcePool.empty() == true )
-		//{
-		//	return 0;
-		//}
-
-		//ALuint sourceId = m_sourcePool.back();
-		//m_sourcePool.pop_back();
-
-		//return sourceId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
 	{
 		alDeleteSources( 1, &_sourceId );
         OAL_CHECK_ERROR(m_serviceProvider);
-
-		//ALint state = 0;
-		//alGetSourcei( _sourceId, AL_SOURCE_STATE, &state );
-
-		//if( state != AL_STOPPED && state != AL_INITIAL )
-		//{
-		//	this->clearSourceId( _sourceId );
-		//}
-		//
-		//alSourcei( _sourceId, AL_BUFFER, 0 );
-		//
-		//m_sourcePool.push_back( _sourceId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::genBufferId()
@@ -286,24 +250,12 @@ namespace Menge
         OAL_CHECK_ERROR(m_serviceProvider);
 
 		return bufferId;
-
-		//if( m_bufferPool.empty() == true )
-		//{
-		//	return 0;
-		//}
-
-		//ALuint bufferId = m_bufferPool.back();
-		//m_bufferPool.pop_back();
-
-		//return bufferId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::releaseBufferId( ALuint _bufferId )
 	{
 		alDeleteBuffers( 1, &_bufferId );
         OAL_CHECK_ERROR(m_serviceProvider);
-
-		//m_bufferPool.push_back( _sourceId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::clearSourceId( ALuint _sourceId )

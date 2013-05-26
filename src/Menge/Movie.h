@@ -3,6 +3,8 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
+#   include "Core/BinaryVector.h"
+
 namespace Menge
 {
 	class Camera3D;
@@ -161,16 +163,16 @@ namespace Menge
 		typedef std::vector<Nodies> TVectorNodies;
 		TVectorNodies m_nodies;
 		
-		typedef std::map<ConstString, Node *> TMapMovieSlots;
+		typedef BinaryVector<ConstString, Node *> TMapMovieSlots;
 		TMapMovieSlots m_slots;
 
-        typedef std::map<ConstString, Movie *> TMapSubMovies;
+        typedef BinaryVector<ConstString, Movie *> TMapSubMovies;
         TMapSubMovies m_subMovies;
 
-        typedef std::map<ConstString, HotSpotImage *> TMapSockets;
+        typedef BinaryVector<ConstString, HotSpotImage *> TMapSockets;
         TMapSockets m_sockets;
 
-        typedef std::map<ConstString, MovieEvent *> TMapMovieEvent;
+        typedef BinaryVector<ConstString, MovieEvent *> TMapMovieEvent;
         TMapMovieEvent m_events;
 
 		float m_frameTiming;

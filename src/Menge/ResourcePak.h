@@ -12,16 +12,16 @@ namespace Menge
 	class ResourcePak
 	{
 	public:
-		ResourcePak( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const ConstString & _type, const ConstString & _locale, const String & _platform, const String & _filename, const String & _path, bool _preload, const String & _baseDir );
+		ResourcePak( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const ConstString & _type, const ConstString & _locale, const ConstString & _platform, const FilePath & _filename, const FilePath & _path, bool _preload, const FilePath & _baseDir );
 
 	public:
 		bool isPreload() const;
 
 		const ConstString & getName() const;
 		const ConstString & getLocale() const;
-		const String & getPlatfrom() const;
+		const ConstString & getPlatfrom() const;
 
-		const String & getPath() const;
+		const FilePath & getPath() const;
 
 	public:
 		bool load();
@@ -51,11 +51,11 @@ namespace Menge
 		ConstString m_type;
 		ConstString m_locale;
 
-		String m_platform;		
-		String m_filename;
+		ConstString m_platform;		
+		FilePath m_filename;
 
-        String m_baseDir;
-		String m_path;
+        FilePath m_baseDir;
+		FilePath m_path;
 
 		TVectorFilePath m_pathScripts;
 

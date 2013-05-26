@@ -108,7 +108,13 @@ namespace Menge
         {
             DecoderInterfacePtr decoder = this->createDecoder( _type, _stream );
 
-            return intrusive_dynamic_cast<T>(decoder);
+#   ifdef _DEBUG
+            T t = intrusive_dynamic_cast<T>(decoder);
+#   else
+            T t = intrusive_static_cast<T>(decoder);
+#   endif
+
+            return t;
         }
 
     public:
@@ -119,7 +125,13 @@ namespace Menge
         {
             EncoderInterfacePtr encoder = this->createEncoder( _type, _stream );
 
-            return intrusive_dynamic_cast<T>(encoder);
+#   ifdef _DEBUG
+            T t = intrusive_dynamic_cast<T>(encoder);
+#   else
+            T t = intrusive_static_cast<T>(encoder);
+#   endif
+
+            return t;
         }
 
 	public:

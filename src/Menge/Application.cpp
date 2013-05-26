@@ -108,8 +108,6 @@
 #	include "ResourceInternalObject.h"
 #   include "ResourceExternal.h"
 
-#	include "ConfigFile/ConfigFile.h"
-
 #	include "Interface/UnicodeInterface.h"
 
 #	include "ScriptWrapper.h"
@@ -128,7 +126,7 @@
 
 #	include "Config/Config.h"
 
-#	include "ConfigLoader.h"
+#   include "Core/String.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
@@ -204,7 +202,7 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const String & Application::getPlatformName() const
+	const ConstString & Application::getPlatformName() const
 	{
 		return m_platformName;
 	}
@@ -334,7 +332,10 @@ namespace Menge
             return false;
         }
 
-        m_serviceProvider->registryService( "NodeService", nodeService );
+        if( SERVICE_REGISTRY( m_serviceProvider, nodeService ) == false )
+        {
+            return false;
+        }
 
         m_nodeService = nodeService;
 
@@ -601,12 +602,15 @@ namespace Menge
 
         m_textService = textService;
 
-        m_serviceProvider->registryService( "TextService", m_textService );
+        if( SERVICE_REGISTRY( m_serviceProvider, m_textService ) == false )
+        {
+            return false;
+        }
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setBaseDir( const String & _dir )
+	void Application::setBaseDir( const FilePath & _dir )
 	{
 		m_baseDir = _dir;
 
@@ -615,7 +619,7 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Application::getBaseDir() const
+	const FilePath & Application::getBaseDir() const
 	{
 		return m_baseDir;
 	}
@@ -1577,7 +1581,7 @@ namespace Menge
 		return text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Application::getProjectCodename() const
+	const ConstString & Application::getProjectCodename() const
 	{
 		return m_projectCodename;
 	}

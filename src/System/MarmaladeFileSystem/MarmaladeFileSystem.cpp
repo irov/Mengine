@@ -1,5 +1,7 @@
 #	include "MarmaladeFileSystem.h"
 
+#   include "Interface/MarmaladeLayerInterface.h"
+
 #	include "MarmaladeInputStream.h"
 #	include "MarmaladeOutputStream.h"
 #	include "MarmaladeMappedInputStream.h"
@@ -36,7 +38,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeFileSystem::MarmaladeFileSystem()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,31 +81,102 @@ namespace Menge
         return inputStream;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileSystem::existFile( const FilePath& _filename ) const
+	bool MarmaladeFileSystem::existFile( const FilePath & _folder, const FilePath& _filename ) const
 	{
-        if( _filename.empty() == true )
+        char filePath[MAX_PATH];
+        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
+                , _folder
+                , _filename
+                );
+
+            return false;
+        }
+
+        if( s3eFileGetFileInt( filePath, S3E_FILE_ISFILE ) != 0 )
         {
             return true;
         }
 
-        const char * filename = _filename.c_str();
-
-        if( s3eFileGetFileInt( filename, S3E_FILE_ISDIR ) != 0 )
-        {
-            return true;
-        }
-
-        if( s3eFileCheckExists( filename ) != S3E_FALSE )
+        if( s3eFileCheckExists( filePath ) != S3E_FALSE )
         {
             return true;
         }
 
         return false;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool MarmaladeFileSystem::deleteFile( const FilePath & _folder, const FilePath& _filename )
+    {
+        char filePath[MAX_PATH];
+        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::deleteFile invalid concatenate '%s':'%s'"
+                , _folder
+                , _filename
+                );
+
+            return false;
+        }
+
+        if( s3eFileDelete( filePath ) != S3E_RESULT_SUCCESS )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MarmaladeFileSystem::existFolder( const FilePath & _folder, const FilePath & _filename ) const
+    {
+        if( _folder.empty() == true && _filename.empty() == true )
+        {
+            return true;
+        }
+
+        char filePath[MAX_PATH];
+        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
+                , _folder
+                , _filename
+                );
+
+            return false;
+        }
+
+        if( s3eFileGetFileInt( filePath, S3E_FILE_ISDIR ) != 0 )
+        {
+            return true;
+        }
+
+        if( s3eFileCheckExists( filePath ) != S3E_FALSE )
+        {
+            return true;
+        }
+
+        return false;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileSystem::createFolder( const FilePath& _path )
+	bool MarmaladeFileSystem::createFolder( const FilePath & _folder, const FilePath& _filename )
 	{
-        if( s3eFileMakeDirectory( _path.c_str() ) != S3E_RESULT_SUCCESS )
+        char filePath[MAX_PATH];
+        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
+                , _folder
+                , _filename
+                );
+
+            return false;
+        }
+
+        if( s3eFileMakeDirectory( filePath ) != S3E_RESULT_SUCCESS )
         {
             return false;
         }
@@ -111,19 +184,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileSystem::deleteFolder( const FilePath& _path )
+	bool MarmaladeFileSystem::deleteFolder( const FilePath & _folder, const FilePath& _filename )
 	{
-        if( s3eFileDeleteDirectory( _path.c_str() ) != S3E_RESULT_SUCCESS )
+        char filePath[MAX_PATH];
+        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
+                , _folder
+                , _filename
+                );
+
             return false;
         }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileSystem::deleteFile( const FilePath& _filename )
-	{
-        if( s3eFileDelete( _filename.c_str() ) != S3E_RESULT_SUCCESS )
+        if( s3eFileDeleteDirectory( filePath ) != S3E_RESULT_SUCCESS )
         {
             return false;
         }

@@ -23,8 +23,6 @@
 
 #	include "Logger/Logger.h"
 
-#	include "ConfigLoader.h"
-
 #	include "Consts.h"
 
 #	include "Core/String.h"
@@ -73,7 +71,7 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setBaseDir( const String & _baseDir )
+    void Game::setBaseDir( const FilePath & _baseDir )
     {
         m_baseDir = _baseDir;
     }
@@ -83,7 +81,7 @@ namespace Menge
         m_developmentMode = _developmentMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setPlatformName( const String & _platformName )
+    void Game::setPlatformName( const ConstString & _platformName )
     {
         m_platformName = _platformName;
     }
@@ -354,7 +352,10 @@ namespace Menge
 
 		m_player = new Player(this);
 
-        m_serviceProvider->registryService("PlayerService", m_player );		
+        if( SERVICE_REGISTRY( m_serviceProvider, m_player ) == false )
+        {
+            return false;
+        }
 
 		if( createAccountService( &m_accountService ) == false )
         {
@@ -576,7 +577,7 @@ namespace Menge
 		return needQuit;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadLocalePaksByName_( const ConstString & _locale, const String & _platform )
+	bool Game::loadLocalePaksByName_( const ConstString & _locale, const ConstString & _platform )
 	{
 		bool hasLocale = false;
 
@@ -589,7 +590,7 @@ namespace Menge
 			ResourcePak * pak = *it;
 
 			const ConstString & pakLocale = pak->getLocale();
-			const String & pakPlatform = pak->getPlatfrom();
+			const ConstString & pakPlatform = pak->getPlatfrom();
 
 			if( pakPlatform.empty() == false && pakPlatform != _platform )
 			{
@@ -628,9 +629,9 @@ namespace Menge
 
 			ResourcePak * pack = new ResourcePak( 
                 m_serviceProvider
-                , Helper::stringizeString(m_serviceProvider, desc.name)
-                , Helper::stringizeString(m_serviceProvider, desc.type)
-                , Helper::stringizeString(m_serviceProvider, desc.locale)
+                , desc.name
+                , desc.type
+                , desc.locale
                 , desc.platform
                 , desc.description
                 , desc.path
@@ -657,9 +658,9 @@ namespace Menge
 
 			ResourcePak * pack = new ResourcePak(
                 m_serviceProvider
-                , Helper::stringizeString(m_serviceProvider, desc.name)
-                , Helper::stringizeString(m_serviceProvider, desc.type)
-                , Helper::stringizeString(m_serviceProvider, desc.locale)
+                , desc.name
+                , desc.type
+                , desc.locale
                 , desc.platform
                 , desc.description
                 , desc.path

@@ -58,7 +58,18 @@ namespace Menge
 		template<class T>
 		T * createConverterT( const ConstString& _type )
 		{
-			return dynamic_cast<T*>( createConverter( _type ) );
+            ConverterInterface * converter = this->createConverter( _type );
+
+#   ifdef _DEBUG
+            if( dynamic_cast<T*>(converter) == nullptr )
+            {
+                return nullptr;
+            }
+#   endif
+
+            T * t = static_cast<T*>(converter);
+
+			return t;
 		}
 
 		virtual ConverterInterface * createConverter( const ConstString & _type ) = 0; 

@@ -1,6 +1,6 @@
 #	include "MarmaladeOutputStream.h"
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/MarmaladeLayerInterface.h"
 
 #   include "Utils/Logger/Logger.h"
 
@@ -22,9 +22,21 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeOutputStream::open( const FilePath& _filePath )
+	bool MarmaladeOutputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{        
-        m_hFile = s3eFileOpen( _filePath.c_str(), "wb" );
+        char filePath[MAX_PATH];
+        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::open invalid concatenate '%s':'%s'"
+                , _folder
+                , _filename
+                );
+
+            return false;
+        }
+
+        m_hFile = s3eFileOpen( filePath, "wb" );
 
 		return true;
 	}

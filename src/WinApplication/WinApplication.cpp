@@ -133,7 +133,7 @@ namespace Menge
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool s_hasOption( const Menge::String& _option, const Menge::String& _commandLine )
+		static bool s_hasOption( const char * _option, const Menge::String& _commandLine )
 		{
 			if( _commandLine.find( _option ) == Menge::String::npos )
 			{
@@ -398,7 +398,7 @@ namespace Menge
 
         FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
         // mount root		
-        if( m_fileService->mountFileGroup( ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+        if( m_fileService->mountFileGroup( ConstString::none(), ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount application directory %ls"
                 , m_currentPath.c_str()
@@ -411,7 +411,7 @@ namespace Menge
         ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
         ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
             // mount root		
-        if( m_fileService->mountFileGroup( c_dev, ConstString::none(), c_dir, false ) == false )
+        if( m_fileService->mountFileGroup( c_dev, ConstString::none(), ConstString::none(), c_dir, false ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
                 , m_currentPath.c_str()
@@ -501,7 +501,7 @@ namespace Menge
         FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
         // mount user directory
-        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
+        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none(), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
                 , m_userPath.c_str()
@@ -1122,14 +1122,14 @@ namespace Menge
 
         m_serviceProvider = serviceProvider;
 
-        if( m_serviceProvider->registryService( "PlatformService", this ) == false )
+        if( SERVICE_REGISTRY( m_serviceProvider, this ) == false )
         {
             return false;
         }
 
         m_windowsLayer = new VistaWindowsLayer();
 
-        if( m_serviceProvider->registryService( "WindowsLayerService", m_windowsLayer ) == false )
+        if( SERVICE_REGISTRY( m_serviceProvider, m_windowsLayer ) == false )
         {
             return false;
         }
@@ -1524,7 +1524,7 @@ namespace Menge
             platformName = "WIN";
         }
 
-        m_settings.applicationSettings.platformName = platformName;
+        m_settings.applicationSettings.platformName = Helper::stringizeString( m_serviceProvider, platformName );
 
         String utf8_currentPath;
         if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
@@ -1538,7 +1538,7 @@ namespace Menge
             return false;
         }
 
-        m_settings.applicationSettings.baseDir = utf8_currentPath;
+        m_settings.applicationSettings.baseDir = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
 
         if( m_projectName.empty() == true )
         {

@@ -19,9 +19,9 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual void setBaseDir( const String & _baseDir ) = 0;
+        virtual void setBaseDir( const FilePath & _baseDir ) = 0;
         virtual void setDevelopmentMode( bool _developmentMode ) = 0;
-        virtual void setPlatformName( const String & _platformName ) = 0;
+        virtual void setPlatformName( const ConstString & _platformName ) = 0;
 
     public:
         virtual bool run( const String& _scriptInitParams ) = 0;

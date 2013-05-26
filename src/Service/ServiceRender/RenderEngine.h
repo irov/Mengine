@@ -15,9 +15,9 @@
 #	include "math/vec4.h"
 
 #	include <vector>
-#	include <map>
 
 #	include "Core/ConstString.h"
+#	include "Core/BinaryVector.h"
 
 //#	include "ColourValue.h"
 
@@ -263,7 +263,7 @@ namespace Menge
 
 		const RenderCameraInterface * m_currentRenderCamera;
 
-		typedef std::map<FilePath, RenderTextureInterface *> TMapTextures;
+		typedef BinaryVector<FilePath, RenderTextureInterface *> TMapTextures;
 		TMapTextures m_textures;
 
 		RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
@@ -273,7 +273,7 @@ namespace Menge
 		//typedef Pool<RenderObject> TPoolRenderObject;
 		//TPoolRenderObject m_renderObjectPool;
 
-		typedef std::map<ConstString, RenderMaterialGroup *> TMapMaterialGroup;
+		typedef BinaryVector<ConstString, RenderMaterialGroup *> TMapMaterialGroup;
 		TMapMaterialGroup m_mapMaterialGroup;
 
 		size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];

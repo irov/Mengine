@@ -18,14 +18,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundBufferStream::OALSoundBufferStream( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
-		: OALSoundBuffer(_serviceProvider, _soundSystem)
-		, m_soundDecoder(NULL)
+	OALSoundBufferStream::OALSoundBufferStream()
+		: m_soundDecoder(nullptr)
 		, m_alBufferId2(0)
 		, m_bufferSize(0)
 		, m_sourceId(0)
 		, m_updating(false)
-		, m_dataBuffer(NULL)
+        //, m_dataBuffer(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -37,11 +36,11 @@ namespace Menge
 			m_alBufferId2 = 0;
 		}
 
-		if( m_dataBuffer != NULL )
-		{
-			delete[] m_dataBuffer;
-			m_dataBuffer = NULL;
-		}
+		//if( m_dataBuffer != NULL )
+		//{
+		//	delete[] m_dataBuffer;
+		//	m_dataBuffer = NULL;
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
@@ -120,7 +119,7 @@ namespace Menge
             return false;
         }
 
-		m_dataBuffer = new unsigned char[m_bufferSize /*+ fixed_sound_buffer_size*/];
+		//m_dataBuffer = new unsigned char[m_bufferSize /*+ fixed_sound_buffer_size*/];
 
 		return true;
 	}

@@ -40,7 +40,12 @@ namespace Menge
 	protected:
 		PyObject * wrap( Node * _node ) override
 		{
+#   ifdef _DEBUG
 			T * obj = dynamic_cast<T *>( _node );
+#   else
+            T * obj = static_cast<T *>( _node );
+#   endif
+
 			PyObject * py_embedded =  pybind::class_holder<T>( obj );
 
 			//pybind::set_attr( py_embedded, "Menge_name", pybind::ptr(_node->getName()) );

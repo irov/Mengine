@@ -1,15 +1,14 @@
-
 #	pragma once
 
 #	include "Interface/SoundSystemInterface.h"
 
+#   include "Utils/Factory/FactoryPool.h"
+
+#	include "SilentSoundBuffer.h"
+#	include "SilentSoundSource.h"
+
 namespace Menge
-{
-	class SilentSoundSource;
-
-	class ServiceProviderInterface;
-	class LogServiceInterface;
-
+{	
 	class SilentSoundSystem
 		: public SoundSystemInterface
 	{
@@ -30,11 +29,7 @@ namespace Menge
 
 	public:
 		SoundSourceInterface* createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) override;
-
 		SoundBufferInterface* createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
-
-		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
-		void releaseSoundNode( SoundSourceInterface * _sn ) override;
 
 	public:
 		size_t genSourceId();
@@ -50,5 +45,11 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
         size_t m_enumerate;
+
+        typedef FactoryPool<SilentSoundBuffer, 32> TPoolSilentSoundBuffer;
+        TPoolSilentSoundBuffer m_poolSilentSoundBuffer;
+
+        typedef FactoryPool<SilentSoundSource, 32> TPoolSilentSoundSource;
+        TPoolSilentSoundSource m_poolSilentSoundSource;
 	};
 }	// namespace Menge

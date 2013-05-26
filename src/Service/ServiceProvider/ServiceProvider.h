@@ -7,29 +7,29 @@
 
 namespace Menge
 {
+    const size_t SERVICE_PROVIDER_SIZE = 64;
+
 	class ServiceProvider
 		: public ServiceProviderInterface
 	{
-	public:
-		bool registryService( const String & _name, ServiceInterface * _service ) override;
-		bool unregistryService( const String & _name ) override;
-
-	public:
-		ServiceInterface * getService( const String & _name ) override;
-
-	public:
-		bool addServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) override;
-		bool removeServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) override;
+    public:
+        ServiceProvider();
+        ~ServiceProvider();
 
     public:
-        void destroy() override;
+        ServiceInterface * getService( const char * _name ) const override;
 
+	public:
+		bool registryService( const char * _name, ServiceInterface * _service ) override;
+		bool unregistryService( const char * _name ) override;
+        
 	protected:
-		typedef std::map<String, ServiceInterface *> TMapServices;
-		TMapServices m_services;
+        struct ServiceDesc
+        {
+            char name[64];
+            ServiceInterface * service;
+        };
 
-		typedef std::vector<ServiceListenerInterface *> TVectorListenerServices;
-		typedef std::map<String, TVectorListenerServices> TMapListenerServices;
-		TMapListenerServices m_listeners;
+        ServiceDesc m_services[SERVICE_PROVIDER_SIZE];
 	};
 }

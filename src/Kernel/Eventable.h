@@ -3,13 +3,14 @@
 #   include "Interface/ServiceInterface.h"
 
 #	include "Config/Typedef.h"
+
 #	include "Core/ConstString.h"
+#	include "Utils/Core/BinaryVector.h"
 
 #	include "Kernel/EventEnum.h"
 
 #	include "pybind/types.hpp"
 
-#	include <map>
 #	include <string>
 #	include <stdarg.h>
 
@@ -33,7 +34,7 @@ namespace Menge
 		void removeEvent_( EEventName _event );
 
 	private:
-		typedef std::map<EEventName, PyObject *> TMapEvent;
+		typedef BinaryVector<EEventName, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;
 	};
 

@@ -989,9 +989,9 @@ namespace Menge
             return pyret;
         }
         //////////////////////////////////////////////////////////////////////////
-        const String & s_getPlatformName()
+        const ConstString & s_getPlatformName()
         {
-            const String & platformName = APPLICATION_SERVICE(m_serviceProvider)
+            const ConstString & platformName = APPLICATION_SERVICE(m_serviceProvider)
                 ->getPlatformName();
 
             return platformName;
@@ -1535,7 +1535,7 @@ namespace Menge
         bool hasResource( const ConstString & _name )
         {
             return RESOURCE_SERVICE(m_serviceProvider)
-                ->hasResource( _name );
+                ->hasResource( _name, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void removeCurrentScene( PyObject * _cb )

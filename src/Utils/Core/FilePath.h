@@ -8,6 +8,10 @@
 
 namespace Menge
 {
+#   ifndef MAX_PATH
+#   define MAX_PATH 260
+#   endif
+
     typedef ConstString FilePath; //UTF8
 
     typedef std::vector<FilePath> TVectorFilePath;

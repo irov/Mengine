@@ -82,12 +82,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path, const ConstString & _type, bool _create )
+	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create )
 	{
         (void)_create;
 
         m_serviceProvider = _serviceProvider;
 
+        m_folder = _folder;
         m_path = _path;
         m_type = _type;
        

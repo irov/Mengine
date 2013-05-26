@@ -3,10 +3,9 @@
 #   include "Interface/TextInterface.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/BinaryVector.h"
 
 #	include "Config/Typedef.h"
-
-#	include <map>
 
 namespace Menge
 {
@@ -37,7 +36,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::map<ConstString, TextEntry> TMapTextEntry;
+		typedef BinaryVector<ConstString, TextEntry> TMapTextEntry;
 		TMapTextEntry m_textMap;
 
 		ConstString m_defaultResourceFontName;

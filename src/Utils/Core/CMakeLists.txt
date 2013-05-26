@@ -22,6 +22,8 @@ src
     
     Ini.h
     Ini.cpp
+    IniUtil.h
+    IniUtil.cpp
     
     File.h
     File.cpp

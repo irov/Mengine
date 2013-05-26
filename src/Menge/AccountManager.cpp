@@ -10,13 +10,13 @@
 #	include "Consts.h"
 
 #	include "Core/Ini.h"
+#	include "Core/IniUtil.h"
+
 #	include "Core/String.h"
 #	include "Core/File.h"
 #	include "Core/UnicodeFormat.h"
 
 #	include "Config/Typedef.h"
-
-#	include "ConfigFile/ConfigFile.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Menge::AccountServiceInterface, Menge::AccountManager );
@@ -401,8 +401,8 @@ namespace Menge
             return false;
         }
 		
-        ConfigFile config(m_serviceProvider);
-		if( config.load( file ) == false )
+        Ini ini(m_serviceProvider);
+		if( ini.load( file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts parsing accounts failed '%s'"
 				, m_accountsPath.c_str()
@@ -416,7 +416,7 @@ namespace Menge
 		//unsigned int playerCount;
 
 		//config.getSettingUInt( L"SETTINGS", L"AccountCount", playerCount );
-		if( config.getSettingUInt( "SETTINGS", CONST_STRING(m_serviceProvider, AccountEnumerator), m_playerEnumerator ) == false )
+        if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator, m_serviceProvider ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts get AccountEnumerator failed '%s'"
                 , m_accountsPath.c_str()
@@ -425,7 +425,7 @@ namespace Menge
             return false;
         }
 
-		if( config.getSetting( "SETTINGS", CONST_STRING(m_serviceProvider, DefaultAccountID), m_defaultAccountID ) == false )
+		if( IniUtil::getIniValue( ini, "SETTINGS", "DefaultAccountID", m_defaultAccountID, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get DefaultAccountID failed '%s'"
                 , m_accountsPath.c_str()
@@ -433,7 +433,7 @@ namespace Menge
         }           
 
 		WString selectAccountID;
-		if( config.getSetting( "SETTINGS", CONST_STRING(m_serviceProvider, SelectAccountID), selectAccountID ) == false )
+		if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get SelectAccountID failed '%s'"
                 , m_accountsPath.c_str()
@@ -441,7 +441,7 @@ namespace Menge
         }   
         
         TVectorWString values;
-		if( config.getSettings( "ACCOUNTS", CONST_STRING(m_serviceProvider, Account), values ) == false )
+		if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
                 , m_accountsPath.c_str()
@@ -546,26 +546,26 @@ namespace Menge
 			return false;
 		}
 
-        writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
+        IniUtil::writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
 
 		if( m_defaultAccountID.empty() == false )
 		{
-            writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, DefaultAccountID), m_defaultAccountID );
+            IniUtil::writeIniSetting( m_serviceProvider, file, "DefaultAccountID", m_defaultAccountID );
 		}
 
 		if( m_currentAccount != nullptr )
 		{
 			const WString & name = m_currentAccount->getName();
 
-            writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, SelectAccountID), name );
+            IniUtil::writeIniSetting( m_serviceProvider, file, "SelectAccountID", name );
 		}
 
         WString AccountEnumerator;
         Utils::unsignedToWString( m_playerEnumerator, AccountEnumerator );
 
-        writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, AccountEnumerator), AccountEnumerator );
-        
-        writeIniSection( m_serviceProvider, file, "[ACCOUNTS]" );
+        IniUtil::writeIniSetting( m_serviceProvider, file, "AccountEnumerator", AccountEnumerator );        
+
+        IniUtil::writeIniSection( m_serviceProvider, file, "[ACCOUNTS]" );
 
 		for( TMapAccounts::iterator 
 			it = m_accounts.begin(), 
@@ -573,7 +573,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            writeIniSetting( m_serviceProvider, file, CONST_STRING(m_serviceProvider, Account), it->first );
+            IniUtil::writeIniSetting( m_serviceProvider, file, "Account", it->first );
 		}
 
         return true;

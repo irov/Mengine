@@ -38,10 +38,12 @@ namespace Menge
         {
             Factorable * factorable = this->createObject( _type );
 
-            if( dynamic_cast<T*>(factorable) == NULL )
+#   ifdef _DEBUG
+            if( dynamic_cast<T*>(factorable) == nullptr )
             {
-                return NULL;
+                return nullptr;
             }
+#   endif
 
             T * t = static_cast<T*>(factorable);			
 

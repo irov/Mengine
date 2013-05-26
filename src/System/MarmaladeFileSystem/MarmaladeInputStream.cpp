@@ -26,20 +26,20 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::open( const FilePath& _filePath )
+	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{
-        m_filePath = _filePath;
+        char filePath[260];
+        strcpy( filePath, _folder.c_str() );
+        strcat( filePath, _filename.c_str() );
 
-        const char * filepath = m_filePath.c_str(); 
-
-        m_hFile = s3eFileOpen( filepath, "rb" );
+        m_hFile = s3eFileOpen( filePath, "rb" );
 
         int32 s3e_size = s3eFileGetSize( m_hFile );
 
         if( s3e_size < 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open %s invalid get size"
-                , _filePath.c_str()
+                , filePath
                 );
 
             return false;
@@ -209,12 +209,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeInputStream::time( time_t & _time ) const
 	{
-        const char * filepath = m_filePath.c_str();
-
-        int64 time = s3eFileGetFileInt( filepath, S3E_FILE_MODIFIED_DATE );
-
-        _time = static_cast<time_t>(time / 1000); // ms to s
-
-        return true;
+        return false;
 	}
 }	// namespace Menge

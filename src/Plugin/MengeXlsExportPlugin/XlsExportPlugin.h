@@ -18,7 +18,7 @@ namespace Menge
 		void destroy() override;
 
 	protected:
-		bool proccess( const String & _projectName );
+		bool proccess_( const char * _projectName );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

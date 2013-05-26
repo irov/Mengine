@@ -17,8 +17,10 @@ namespace Menge
 		virtual ~OALSoundBufferBase();
 
 	public:
-		void release() override;
 		void update() override;
+
+    public:
+        bool _destroy() override;
 
 	public:
 		virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder );

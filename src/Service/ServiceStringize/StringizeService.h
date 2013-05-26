@@ -22,7 +22,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		ConstString stringize( const char * _str, size_t _size ) override;
+		bool stringize( const char * _str, size_t _size, ConstString & _cstr ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

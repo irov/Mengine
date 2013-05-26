@@ -5,13 +5,12 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
-#	include "ConfigFile/ConfigFile.h"
-
 #	include "Consts.h"
 
 #   include "Logger/Logger.h"
 
-#	include "Core/Ini.h"
+#	include "Core/IniUtil.h"
+
 #	include "Core/String.h"
 #	include "Core/File.h"
 #	include "Core/CRC32.h"
@@ -82,7 +81,7 @@ namespace Menge
         st.value = _defaultValue;
         st.cb = _applyFunc;
         
-		m_settings[_setting] = st;
+        m_settings.insert( std::make_pair(_setting, st) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::changeSetting( const ConstString & _setting, const WString& _value )
@@ -108,8 +107,6 @@ namespace Menge
                 , pybind::ptr(_value)
                 );
 		}		
-
-		//this->save();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Account::getSetting( const ConstString & _setting ) const
@@ -144,9 +141,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::load()
 	{
-		ConfigFile config(m_serviceProvider);
-
-        if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, NULL ) == false )
+        if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Account::load settings not found '%s'"
                 , m_settingsPath.c_str() 
@@ -168,7 +163,8 @@ namespace Menge
             return false;
         }
 
-		if( config.load( file ) == false )
+        Ini ini(m_serviceProvider);
+		if( ini.load( file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Account::load parsing Account settings failed '%s'"
 				, m_settingsPath.c_str() 
@@ -176,6 +172,8 @@ namespace Menge
 
 			return false;
 		}
+
+        file = nullptr;
 
 		for( TMapSettings::iterator 
 			it = m_settings.begin(), 
@@ -187,7 +185,7 @@ namespace Menge
 
             Setting & st = it->second;
 
-			if( config.getSetting( "SETTINGS", key, st.value ) == false )
+            if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value, m_serviceProvider ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Account::load failed get setting '%ls'"
                     , key.c_str() 
@@ -215,7 +213,7 @@ namespace Menge
 			return false;
 		}
         
-        writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
+        IniUtil::writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
         
 		for( TMapSettings::const_iterator 
 			it = m_settings.begin(), 
@@ -227,7 +225,7 @@ namespace Menge
 
             const Setting & st = it->second;
 
-            writeIniSetting( m_serviceProvider, file, key, st.value );
+            IniUtil::writeIniSetting( m_serviceProvider, file, key.c_str(), st.value );
 		}
 
         return true;

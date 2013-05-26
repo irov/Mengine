@@ -25,7 +25,7 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ConstString StringizeService::stringize( const char * _str, size_t _size )
+	bool StringizeService::stringize( const char * _str, size_t _size, ConstString & _cstr )
 	{
         ConstStringHolder * stringHolder = nullptr;
         
@@ -72,8 +72,8 @@ namespace Menge
             stringHolder = stringSTL;
         }
 
-        ConstString cs_str(stringHolder);
+        _cstr = ConstString(stringHolder);
 
-		return cs_str;
+		return true;
 	}	
 }

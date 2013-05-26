@@ -3,8 +3,7 @@
 #	include "Interface/FileSystemInterface.h"
 
 #	include "Core/Pool.h"
-
-#	include <map>
+#   include "Core/BinaryVector.h"
 
 namespace Menge
 {
@@ -16,7 +15,7 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath& _path, const ConstString & _type, bool _create ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath& _path, const ConstString & _type, bool _create ) override;
 		void finalize() override;
 
     public:
@@ -42,6 +41,7 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
+        FilePath m_folder;
 		FilePath m_path;
         ConstString m_type;
 
@@ -55,7 +55,7 @@ namespace Menge
 			uint16 compr_method;
 		};
 
-		typedef std::map<FilePath, FileInfo> TMapFileInfo;
+		typedef BinaryVector<FilePath, FileInfo> TMapFileInfo;
 		TMapFileInfo m_files;
 
 		//typedef Pool<MemoryFileInput, PoolPlacementPolicyNone> TFileInputPool;

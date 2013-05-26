@@ -26,16 +26,11 @@ namespace Menge
 	class ServiceProviderInterface
 	{
 	public:
-		virtual ServiceInterface * getService( const String & _name ) = 0;
-		virtual bool registryService( const String & _name, ServiceInterface * _service ) = 0;
-		virtual bool unregistryService( const String & _name ) = 0;
-
-	public:
-		virtual bool addServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) = 0;
-		virtual bool removeServiceListener( const String & _name, ServiceListenerInterface * _serviceListener ) = 0;    
+		virtual ServiceInterface * getService( const char * _name ) const = 0;
 
     public:
-        virtual void destroy() = 0;
+		virtual bool registryService( const char * _name, ServiceInterface * _service ) = 0;
+		virtual bool unregistryService( const char * _name ) = 0;
 	};
 
     namespace Helper
@@ -56,7 +51,11 @@ namespace Menge
                     return nullptr;
                 }
 
-                s_service = dynamic_cast<T*>(service);
+#   ifdef _DEBUG
+                s_service = dynamic_cast<T *>(service);
+#   else
+                s_service = static_cast<T *>(service);
+#   endif
             }
 
             return s_service;

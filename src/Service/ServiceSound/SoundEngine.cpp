@@ -4,8 +4,6 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 
-#	include "ThreadTaskSoundBufferUpdate.h"
-
 #	include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -15,7 +13,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
 		, m_soundVolume(1.f)
 		, m_commonVolume(1.f)
 		, m_musicVolume(1.f)
@@ -58,23 +56,21 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            SoundSourceDesc & desc = it->second;
+            SoundSourceDesc * desc = it->second;
 
-            if( desc.taskSoundBufferUpdate != NULL )
+            if( desc->taskSoundBufferUpdate != NULL )
             {
-                desc.taskSoundBufferUpdate->stop();
+                desc->taskSoundBufferUpdate->stop();
 
                 THREAD_SERVICE(m_serviceProvider)
-                    ->joinTask( desc.taskSoundBufferUpdate );
+                    ->joinTask( desc->taskSoundBufferUpdate );
 
-                delete desc.taskSoundBufferUpdate;
-                desc.taskSoundBufferUpdate = NULL;
+                desc->taskSoundBufferUpdate->destroy();
+                desc->taskSoundBufferUpdate = nullptr;
             }
 
-            desc.soundSourceInterface->stop();
-
-            SOUND_SYSTEM(m_serviceProvider)
-                ->releaseSoundNode( desc.soundSourceInterface );
+            desc->soundSourceInterface->stop();
+            desc->soundSourceInterface->destroy();
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -86,15 +82,15 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc & source = it->second;
+            SoundSourceDesc * source = it->second;
 
-			if( source.state == ESS_PLAYING )
+			if( source->state == ESS_PLAYING )
 			{
-				source.soundSourceInterface->play();
+				source->soundSourceInterface->play();
 
-				if( source.streamable == true && source.taskSoundBufferUpdate == NULL )
+				if( source->streamable == true && source->taskSoundBufferUpdate == NULL )
 				{
-                    this->playSoundBufferUpdate_( &source );
+                    this->playSoundBufferUpdate_( source );
 				}
 			}
 		}
@@ -108,13 +104,13 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = &it->second;
+            SoundSourceDesc * source = it->second;
 
 			switch( source->state )
             {
             case ESS_PLAYING:
                 {
-                    if( source->taskSoundBufferUpdate != NULL )
+                    if( source->taskSoundBufferUpdate != nullptr )
                     {
                         this->stopSoundBufferUpdate_( source );
                     }
@@ -123,7 +119,7 @@ namespace Menge
                 }
             case ESS_STOPPING:
                 {
-                    if( source->taskSoundBufferUpdate != NULL )
+                    if( source->taskSoundBufferUpdate != nullptr )
                     {
                         this->stopSoundBufferUpdate_( source );
                     }
@@ -158,10 +154,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int SoundEngine::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable )
 	{
-		SoundSourceInterface* sourceInterface = SOUND_SYSTEM(m_serviceProvider)
+		SoundSourceInterface * sourceInterface = SOUND_SYSTEM(m_serviceProvider)
             ->createSoundSource( _isHeadMode, _sample );
 
-		if( sourceInterface == 0 )
+		if( sourceInterface == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundSource: create SoundSource invalid"
                 );
@@ -172,23 +168,25 @@ namespace Menge
 		++m_enumerator;
 		unsigned int soundId = m_enumerator;
 
-		SoundSourceDesc source;
-		source.soundSourceInterface = sourceInterface;
-		source.listener = NULL;
-		source.taskSoundBufferUpdate = NULL;
-		source.timing = 0.f;
-		source.volume = 1.f;
-		source.state = ESS_STOPPED;        
-		source.type = _type;
-        source.streamable = _streamable;
-		source.looped = false;
+		SoundSourceDesc * source = m_poolSoundSourceDesc.createT();
+
+		source->soundSourceInterface = sourceInterface;
+		source->listener = nullptr;
+		source->taskSoundBufferUpdate = nullptr;
+		
+        source->timing = 0.f;
+		source->volume = 1.f;
+
+		source->state = ESS_STOPPED;        
+		source->type = _type;
+
+        source->streamable = _streamable;
+		source->looped = false;
 
 		TMapSoundSource::iterator it_insert = 
-            m_soundSourceMap.insert( std::make_pair( soundId, source ) ).first;
+            m_soundSourceMap.insert( std::make_pair( soundId, source ) );
         
-        SoundSourceDesc * insert_source = &it_insert->second;
-
-        this->updateSourceVolume_( insert_source, 1.f );
+        this->updateSourceVolume_( source, 1.f );
 
 		return soundId;
 	}
@@ -237,40 +235,36 @@ namespace Menge
                 , _filename.c_str() 
                 );
 
-            return NULL;
+            return nullptr;
         }
 
 		desc.codec = CODEC_SERVICE(m_serviceProvider)
             ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, desc.stream );
 		
-    	if( desc.codec == NULL )
+    	if( desc.codec == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "SoundEngine::createSoundBufferFromFile: Can't create sound decoder for file %s:%s"
                 , _pakName.c_str()
 				, _filename.c_str() 
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		SoundBufferInterface* sample = SOUND_SYSTEM(m_serviceProvider)
             ->createSoundBuffer( desc.codec, _isStream );
 
-        if( sample == NULL )
+        if( sample == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "SoundEngine::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
                 , _pakName.c_str()
                 , _filename.c_str() 
                 );
 
-            return NULL;
+            return nullptr;
         }
 
-		if( _isStream == true )
-		{
-			m_bufferStreams.insert( std::make_pair( sample, desc ) );
-		}
-		else
+		if( _isStream == false )
 		{
 			desc.codec = nullptr;
 		}
@@ -278,19 +272,9 @@ namespace Menge
 		return sample;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
+	void SoundEngine::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
 	{
-		SOUND_SYSTEM(m_serviceProvider)
-            ->releaseSoundBuffer( _soundBuffer );
-
-		TMapBufferStreams::iterator it_find = m_bufferStreams.find( _soundBuffer );
-				
-		if( it_find == m_bufferStreams.end() )
-		{
-			return;
-		}
-
-		m_bufferStreams.erase( it_find );
+        _soundBuffer->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundSource( unsigned int _sourceID )
@@ -302,19 +286,19 @@ namespace Menge
 			return;
 		}
 
-        SoundSourceDesc & source = it_find->second;
+        SoundSourceDesc * source = it_find->second;
 
-        if( source.taskSoundBufferUpdate != NULL )
+        if( source->taskSoundBufferUpdate != nullptr )
         {
-            this->stopSoundBufferUpdate_( &source );
+            this->stopSoundBufferUpdate_( source );
         }
 
-        source.soundSourceInterface->stop();
-
-        SOUND_SYSTEM(m_serviceProvider)
-            ->releaseSoundNode( source.soundSourceInterface );
+        source->soundSourceInterface->stop();
+        source->soundSourceInterface->destroy();
 
 		m_soundSourceMap.erase( it_find );
+        
+        m_poolSoundSourceDesc.destroyT( source );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::validSoundSource( unsigned int _sourceID ) const
@@ -366,9 +350,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			SoundSourceDesc & source = it->second;
+			SoundSourceDesc * source = it->second;
 
-			switch( source.state )
+			switch( source->state )
 			{
 			case ESS_STOPPED:
 			case ESS_PAUSED:
@@ -380,62 +364,62 @@ namespace Menge
                 }break;
             case ESS_PLAYING:
                 {
-                    if( source.looped == false )
+                    if( source->looped == false )
                     {
-                        source.timing -= _timing;
+                        source->timing -= _timing;
 
-                        if( source.timing <= 0.f )
+                        if( source->timing <= 0.f )
                         {
-                            if( source.streamable == true && source.taskSoundBufferUpdate != NULL )
+                            if( source->streamable == true && source->taskSoundBufferUpdate != nullptr )
                             {
-                                source.state = ESS_STOPPING;
-                                source.taskSoundBufferUpdate->stop();
+                                source->state = ESS_STOPPING;
+                                source->taskSoundBufferUpdate->stop();
                             }
                             else
                             {
-                                source.state = ESS_STOPPED;
-                                source.soundSourceInterface->stop();
+                                source->state = ESS_STOPPED;
+                                source->soundSourceInterface->stop();
                             }
 
-                            if( source.listener != NULL )
+                            if( source->listener != nullptr )
                             {
-                                m_stopListeners.push_back( source.listener );
+                                m_stopListeners.push_back( source->listener );
                             }
                         }
                     }
                 }break;
 			case ESS_STOPPING:
                 {
-                    if( source.streamable == true && source.taskSoundBufferUpdate != NULL )
+                    if( source->streamable == true && source->taskSoundBufferUpdate != nullptr )
                     {
-                        source.taskSoundBufferUpdate->stop();
+                        source->taskSoundBufferUpdate->stop();
                     }
                     else
                     {
-                        source.state = ESS_STOPPED;
-                        source.soundSourceInterface->stop();
+                        source->state = ESS_STOPPED;
+                        source->soundSourceInterface->stop();
                     }
 
-                    if( source.listener != NULL )
+                    if( source->listener != nullptr )
                     {
-                        m_stopListeners.push_back( source.listener );
+                        m_stopListeners.push_back( source->listener );
                     }
                 }break;
             case ESS_PAUSING:
                 {
-                    if( source.streamable == true && source.taskSoundBufferUpdate != NULL )
+                    if( source->streamable == true && source->taskSoundBufferUpdate != nullptr )
                     {
-                        source.taskSoundBufferUpdate->stop();
+                        source->taskSoundBufferUpdate->stop();
                     }
                     else
                     {
-                        source.state = ESS_PAUSED;
-                        source.soundSourceInterface->pause();
+                        source->state = ESS_PAUSED;
+                        source->soundSourceInterface->pause();
                     }
 
-                    if( source.listener != NULL )
+                    if( source->listener != nullptr )
                     {
-                        m_pauseListeners.push_back( source.listener );
+                        m_pauseListeners.push_back( source->listener );
                     }
                 }break;
             case ESS_NEED_RESTART:
@@ -445,26 +429,26 @@ namespace Menge
                     //    break;	// can't restart until stopped
                     //}
 
-                    if( source.taskSoundBufferUpdate != NULL )
+                    if( source->taskSoundBufferUpdate != nullptr )
                     {
-                        this->stopSoundBufferUpdate_( &source );
+                        this->stopSoundBufferUpdate_( source );
                     }
 
-                    source.state = ESS_PLAYING;
-                    source.timing = source.soundSourceInterface->getLengthMs();
-                    source.timing -= source.soundSourceInterface->getPosMs();
-                    source.soundSourceInterface->stop();
+                    source->state = ESS_PLAYING;
+                    source->timing = source->soundSourceInterface->getLengthMs();
+                    source->timing -= source->soundSourceInterface->getPosMs();
+                    source->soundSourceInterface->stop();
 
-                    source.soundSourceInterface->play();
+                    source->soundSourceInterface->play();
 
-                    if( source.streamable == true )
+                    if( source->streamable == true )
                     {
-                        this->playSoundBufferUpdate_( &source );
+                        this->playSoundBufferUpdate_( source );
                     }
 
-                    if( source.listener != NULL )
+                    if( source->listener != nullptr )
                     {
-                        m_stopListeners.push_back( source.listener );
+                        m_stopListeners.push_back( source->listener );
                     }
                 }break;
 			}
@@ -521,7 +505,7 @@ namespace Menge
             return false;
         }
 
-        *_desc = &it_find->second;
+        *_desc = it_find->second;
 
         return true;
     }
@@ -535,7 +519,7 @@ namespace Menge
             return false;
         }
 
-        *_desc = &it_find->second;
+        *_desc = it_find->second;
 
         return true;
     }
@@ -702,7 +686,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = &it->second;
+            SoundSourceDesc * source = it->second;
 
             this->updateSourceVolume_( source, source->volume );
 		}
@@ -863,14 +847,16 @@ namespace Menge
         THREAD_SERVICE(m_serviceProvider)
             ->joinTask( _source->taskSoundBufferUpdate );
 
-        delete _source->taskSoundBufferUpdate;
-        _source->taskSoundBufferUpdate = NULL;
+        _source->taskSoundBufferUpdate->destroy();
+        _source->taskSoundBufferUpdate = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::playSoundBufferUpdate_( SoundSourceDesc * _source )
     {
         _source->taskSoundBufferUpdate = 
-            new ThreadTaskSoundBufferUpdate(m_serviceProvider, _source);
+            m_poolThreadTaskSoundBufferUpdate.createObjectT();
+
+        _source->taskSoundBufferUpdate->initialize( m_serviceProvider, _source );
 
         THREAD_SERVICE(m_serviceProvider)
             ->addTask( _source->taskSoundBufferUpdate );

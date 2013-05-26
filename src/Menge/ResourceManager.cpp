@@ -87,6 +87,10 @@ namespace Menge
 
         const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
 
+        size_t resources_size = m_resources.size();
+        size_t includes_size = includes_resource.size();
+        m_resources.reserve( resources_size + includes_size );
+
         for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
             it = includes_resource.begin(),
             it_end = includes_resource.end();
@@ -98,10 +102,27 @@ namespace Menge
             const ConstString & name = meta_resource->get_Name();
             const ConstString & type = meta_resource->get_Type();
 
+#   ifdef _DEBUG
+            ResourceReference * has_resource = nullptr;
+            if( this->hasResource( name, &has_resource ) == true )
+            {
+                const ConstString & resource_category = has_resource->getCategory();
+
+                LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: already exist resource name '%s' in group '%s' category '%s' ('%s')"
+                    , name.c_str()
+                    , groupName.c_str()
+                    , _desc.pakName.c_str()
+                    , resource_category.c_str()
+                    );
+
+                return nullptr;
+            }
+#   endif
+
             ResourceReference * resource = 
                 this->createResource( _desc.pakName, groupName, name, type );
 
-            if( resource == NULL )
+            if( resource == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: invalid create resource %s:%s name %s type %s"
                     , _desc.pakName.c_str()
@@ -133,6 +154,8 @@ namespace Menge
                 continue;
             }
         }
+
+        m_resources.sort();
 
         return true;
     }
@@ -167,30 +190,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-		TMapResource::iterator it_find = m_resources.find( _name );
-
-		if( it_find != m_resources.end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: already exist resource name '%s' in group '%s' category '%s' ('%s')"
-				, _name.c_str()
-				, _group.c_str()
-				, _category.c_str()
-                , it_find->second.resource->getCategory().c_str()
-				);
-
-			return 0;
-		}
-
 		ResourceReference * resource = 
 			this->createObjectT<ResourceReference>( _type );
 
-		if( resource == 0 )
+		if( resource == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: not registered resource type '%s'"
 				, _type.c_str() 
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		resource->setCategory( _category );
@@ -204,15 +213,12 @@ namespace Menge
 		entry.resource = resource;
 		entry.isLocked = false;
 
-		m_resources.insert( it_find, std::make_pair( _name, entry ) );
-
-        TVectorResource & resources = m_cacheResource[_category][_group];
-        resources.push_back( resource );
-
+        m_resources.insert( std::make_pair(_name, entry) );
+        
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::hasResource( const ConstString& _name ) const
+	bool ResourceManager::hasResource( const ConstString& _name, ResourceReference ** _resource ) const
 	{
 		TMapResource::const_iterator it_find = m_resources.find( _name );
 
@@ -220,6 +226,11 @@ namespace Menge
 		{
 			return false;
 		}
+
+        if( _resource != nullptr )
+        {
+            *_resource = it_find->second.resource;
+        }
 
 		return true;
 	}
@@ -255,6 +266,7 @@ namespace Menge
 		}
 
 		const ResourceEntry & entry = it_find->second;
+
 		ResourceReference * resource = entry.resource;
 
 		bool valid = resource->isValid();
@@ -322,17 +334,18 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		const ResourceEntry & entry = it_find->second;
+
 		if( entry.isLocked == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' is LOCK!"
 				, _name.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 		
 		ResourceReference * resource = entry.resource;
@@ -344,7 +357,7 @@ namespace Menge
                 , resource->getType().c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		return resource;
@@ -360,14 +373,14 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		const ResourceEntry & entry = it_find->second;
 		
         if( entry.isLocked == true )
 		{
-			return 0;
+			return nullptr;
 		}
 		
 		ResourceReference * resource = entry.resource;
@@ -385,6 +398,7 @@ namespace Menge
 		}
 
 		const ResourceEntry & entry = it_found->second;
+
 		ResourceReference * resource = entry.resource;
 
 		const ConstString & type = resource->getType();
@@ -392,36 +406,34 @@ namespace Menge
 		return type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor ) const
+	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const
 	{
-        TMapCategoryCacheResource::const_iterator it_category_found = m_cacheResource.find( _category );
-
-        if( it_category_found == m_cacheResource.end() )
+        for( TMapResource::const_iterator
+            it = m_resources.begin(),
+            it_end = m_resources.end();
+        it != it_end;
+        ++it )
         {
-            return;
+            const ResourceEntry & entry = it->second;
+
+            ResourceReference * resource = entry.resource;
+
+            const ConstString & category = resource->getCategory();
+
+            if( category != _category )
+            {
+                continue;
+            }
+
+            const ConstString & group = resource->getGroup();
+
+            if( group != _group )
+            {
+                continue;
+            }
+
+            _visitor->visit( resource );
         }
-
-        const TMapGroupCacheResource & cacheGroup = it_category_found->second;
-
-        TMapGroupCacheResource::const_iterator it_group_found = cacheGroup.find( _groupName );
-
-        if( it_group_found == cacheGroup.end() )
-        {
-            return;
-        }
-
-        const TVectorResource & resources = it_group_found->second;
-
-		for( TVectorResource::const_iterator
-			it = resources.begin(),
-			it_end = resources.end();
-		it != it_end;
-		++it )
-		{
-			ResourceReference * resource = *it;
-
-			_visitor->visit( resource );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const ConstString& _name )
@@ -434,6 +446,7 @@ namespace Menge
 		}
 
 		const ResourceEntry & entry = it_find->second;
+
 		ResourceReference * ref = entry.resource;
 
 		ref->incrementReference();
@@ -451,6 +464,7 @@ namespace Menge
 		}
 
 		const ResourceEntry & entry = it_find->second;
+
 		ResourceReference * ref = entry.resource;
 
 		ref->decrementReference();
@@ -459,16 +473,9 @@ namespace Menge
 	void ResourceManager::dumpResources( const String & _tag )
 	{
 #	ifdef _DEBUG
-		FILE* file = fopen( "ResourceDump.log", "a" );
-
-		if( file == 0 )
-		{
-			return;
-		}
-
-		fprintf( file, "Dumping resources... ");
-		fprintf( file, "%s", _tag.c_str() );
-		fprintf( file, "\n" );
+        LOGGER_ERROR(m_serviceProvider)("Dumping resources... %s"
+            , _tag.c_str()
+            );
 
 		for( TMapResource::iterator 
 			it = m_resources.begin()
@@ -477,6 +484,7 @@ namespace Menge
 		++it )
 		{
 			const ResourceEntry & entry = it->second;
+
 			ResourceReference * resource = entry.resource;
 
 			unsigned int count = resource->countReference();
@@ -492,15 +500,14 @@ namespace Menge
 			}
 
 			unsigned int memoryUse = resource->memoryUse();
+            float memoryUseMb = float(memoryUse)/(1024.f*1024.f);
 
-			fprintf( file, "--> %s : count - %u memory - %f\n"
-				, it->first.c_str()
-				, count
-				, float(memoryUse)/(1024.f*1024.f)
-				);
+            LOGGER_ERROR(m_serviceProvider)("--> %s : count - %u memory - %f"
+                , it->first.c_str()
+                , count
+                , memoryUseMb
+                );
 		}
-
-		fclose( file );
 #	endif
 	}
 }

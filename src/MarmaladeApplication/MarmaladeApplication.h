@@ -17,6 +17,7 @@
 #   include "Interface/AmplifierServiceInterface.h"
 #   include "Interface/PluginInterface.h"
 #	include "Interface/ArchiveInterface.h"
+#   include "Interface/MarmaladeLayerInterface.h"
 
 #   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
 #	include "MarmaladeLogger.h"
@@ -88,6 +89,7 @@ namespace Menge
         bool initializeThreadEngine_();
         bool initializeFileEngine_();
         bool initializeLogEngine_();
+        bool initializeMarmaladeLayerService_();
         bool initializeUnicodeEngine_();
         bool initializeParticleEngine_();
         bool initializePhysicEngine2D_();
@@ -114,7 +116,7 @@ namespace Menge
         bool	m_running;
         bool	m_active;
 
-        WString m_currentPath;
+        FilePath m_currentPath;
         WString m_userPath;
         WString m_tempPath;
 
@@ -137,6 +139,8 @@ namespace Menge
         AmplifierServiceInterface * m_amplifierService;
         PluginServiceInterface * m_pluginService;
         ArchiveServiceInterface * m_archiveService;
+
+        MarmaladeLayerInterface * m_marmaladeLayer; 
 
         FileLogger * m_fileLog;
 

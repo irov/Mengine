@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "SimpleIni.h"
-
 #	include "Core/String.h"
 #   include "Core/FilePath.h"
 
@@ -42,14 +40,10 @@ namespace Menge
 		bool load( const ConstString & _fileGroup, const FilePath & _applicationPath, StartupSettings & _settings );
 
     protected:
-		bool loadGame_( const InputStreamInterfacePtr & _inputStream, StartupSettings & _settings );
-		bool loadResourcePacks_( const InputStreamInterfacePtr & _inputStream, StartupSettings & _settings );
+		bool loadGame_( const ConstString & _fileGroup, const FilePath & _gameIni, StartupSettings & _settings );
+		bool loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni, StartupSettings & _settings );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-
-		CSimpleIniCaseW m_applicationIni;
-		CSimpleIniCaseW m_gameIni;
-		CSimpleIniCaseW m_resourcePackIni;
 	};
 }

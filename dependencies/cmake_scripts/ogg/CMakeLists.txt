@@ -5,6 +5,8 @@ project( ogg )
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg )
 
+configure_file(Modified/os_types.h ${SOURCE_DIR}/include/ogg/os_types.h COPYONLY)
+
 # OUR SOURCES
 set( ogg_sources
 ${SOURCE_DIR}/src/bitwise.c
@@ -12,5 +14,6 @@ ${SOURCE_DIR}/src/framing.c
 )
 
 include_directories(${SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
 
 add_library( ${PROJECT_NAME}_static STATIC ${ogg_sources} )

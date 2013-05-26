@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python275 )
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -92,15 +92,16 @@ file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
 file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
-configure_file(Configure/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
+configure_file(Modified/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 
-configure_file(Configure/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
+configure_file(Modified/pymem.h ${SOURCE_DIR}/Include/pymem.h COPYONLY)
+configure_file(Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 if( WIN32 )
-    configure_file(Configure/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
-	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+    configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
+	configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 else( WIN32 )
-    configure_file(Configure/config.c ${SOURCE_DIR}/NOPC/config.c COPYONLY)
-	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/NOPC/pyconfig.h COPYONLY)
+    configure_file(Modified/config.c ${SOURCE_DIR}/NOPC/config.c COPYONLY)
+	configure_file(Modified/pyconfig.h ${SOURCE_DIR}/NOPC/pyconfig.h COPYONLY)
 endif( WIN32 )
 
 #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
@@ -211,6 +212,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 				${SOURCE_DIR}/Python/formatter_string.c
                 ${SOURCE_DIR}/Python/pyctype.c
                 ${SOURCE_DIR}/Python/random.c
+                ${SOURCE_DIR}/Python/dtoa.c
                 
                 #${MACHDEP_SRCS}
                 ${THREAD_SRC}
@@ -234,7 +236,7 @@ set(MODULE_SRCS ${SOURCE_DIR}/PC/config.c
 				
                 ${MOD_SRCS} )
                 
-set( MODULE_SRCS ${MODULE_SRCS} Configure/mockup.c )                
+set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )                
 				
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )    
@@ -249,6 +251,8 @@ set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_F
 
 #include_directories(${SOURCE_DIR}/Modules/zlib ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
+
 if(WIN32)
   include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python)
   if(MSVC)

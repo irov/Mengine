@@ -9,6 +9,7 @@ set( vorbisfile_sources
 ${SOURCE_DIR}/lib/vorbisfile.c
 )
 
-include_directories( ${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg/include )
+include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
 
 add_library( ${PROJECT_NAME}_static STATIC ${vorbisfile_sources} )

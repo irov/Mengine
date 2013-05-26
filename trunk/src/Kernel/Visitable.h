@@ -17,7 +17,7 @@ namespace Menge
 
 			TConcreteVisitor * ptr = dynamic_cast<TConcreteVisitor*>(_visitor);
 			
-			if( ptr == 0 )
+			if( ptr == nullptr )
 			{
 				return;
 			}

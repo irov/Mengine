@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include "Factory.h"
+#	include "Factory/Factory.h"
+
 #	include "Core/Pool.h"
 
 namespace Menge
@@ -16,22 +17,6 @@ namespace Menge
 
         ~FactoryPool()
         {
-#   ifdef _DEBUG
-            TVectorAllockBlock & allock_blocks = m_pool.allock_blocks();
-
-            for( TVectorAllockBlock::iterator
-                it = allock_blocks.begin(),
-                it_end = allock_blocks.end();
-            it != it_end;
-            ++it )
-            {
-                void * impl = *it;
-
-                T * obj = static_cast<T *>(impl);
-
-                static_cast<T*>(obj)->~T();
-            }
-#   endif
         }
 
 	public:
@@ -39,28 +24,28 @@ namespace Menge
         {
             Factorable * obj = this->createObject();
 
-            return static_cast<T *>(obj);
+            T * t = static_cast<T *>(obj);
+
+            return t;
         }
 
     protected:
         Factorable * _createObject() override
         {
-            void * ptr = m_pool.alloc();
+            T * ptr = m_pool.createT();
 
-            T * node = new (ptr) T();
-
-            return node;
+            return ptr;
         }
 
 		void _destroyObject( Factorable * _node ) override
 		{
-            static_cast<T*>(_node)->~T();
+            T * ptr = static_cast<T*>(_node);
 
-            m_pool.free( _node );
+            m_pool.destroyT( ptr );
 		}
 
 	protected:
-		typedef TemplatePool<sizeof(T), Count> TNodePool;
-		TNodePool m_pool;
+		typedef TemplatePool<T, Count> TTemplatePool;
+		TTemplatePool m_pool;
 	};
 }

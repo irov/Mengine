@@ -66,7 +66,7 @@ namespace Menge
         bool setup( const String& _args, const ApplicationSettings & _setting ) override;
 		
 	public:
-		const String & getBaseDir() const override;
+		const FilePath & getBaseDir() const override;
 
 	public:
 		PlatformInterface * getPlatform() const override;
@@ -92,7 +92,7 @@ namespace Menge
 		bool isFocus() const override;
 
 	public:
-		const String & getPlatformName() const override;
+		const ConstString & getPlatformName() const override;
 
 	protected:
 		bool initializeNodeManager_();
@@ -106,7 +106,7 @@ namespace Menge
         bool initializeWatchdog_();
 
 	public:
-		void setBaseDir( const String & _dir );
+		void setBaseDir( const FilePath & _dir );
 
 		bool createRenderWindow( WindowHandle _renderWindowHandle ) override;
 
@@ -160,7 +160,7 @@ namespace Menge
 		unsigned int getDebugMask() const override;
 
 		const WString & getProjectTitle() const override;
-		const String & getProjectCodename() const override;
+		const ConstString & getProjectCodename() const override;
 
 	public:
 		const Resolution & getWindowResolution() const;
@@ -255,12 +255,12 @@ namespace Menge
 
 		void parseArguments_( const String& _arguments );
 
-		String m_baseDir;
+		FilePath m_baseDir;
 		
 		ResourceCursor * m_cursorResource;
 		
-		String m_platformName;
-		String m_projectCodename;
+		ConstString m_platformName;
+		ConstString m_projectCodename;
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;

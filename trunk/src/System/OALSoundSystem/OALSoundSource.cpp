@@ -11,9 +11,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundSource::OALSoundSource( ServiceProviderInterface * _serviceProvider, OALSoundSystem* _soundSystem )
-		: m_serviceProvider(_serviceProvider)         
-        , m_soundSystem(_soundSystem)
+	OALSoundSource::OALSoundSource()
+		: m_serviceProvider(nullptr)         
+        , m_soundSystem(nullptr)
 		, m_volume(1.f)
 		, m_sourceId(0)
 		, m_timing(0.f)
@@ -31,6 +31,17 @@ namespace Menge
 	{
 		this->stop();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSource::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem* _soundSystem )
+    {
+        m_serviceProvider = _serviceProvider;
+        m_soundSystem = _soundSystem;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OALSoundSource::_destroy()
+    {
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::play()
 	{

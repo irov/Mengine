@@ -41,9 +41,9 @@ namespace Menge
         m_inputStream.read( buffer, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeMappedInputStream::open( const FilePath& _filePath )
+    bool MarmaladeMappedInputStream::open( const FilePath & _folder, const FilePath& _filePath )
     {
-        if( m_inputStream.open( _filePath ) == false )
+        if( m_inputStream.open( _folder, _filePath ) == false )
         {
             return false;
         }

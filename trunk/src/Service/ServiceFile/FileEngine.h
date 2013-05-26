@@ -5,10 +5,10 @@
 #	include "Factory/FactoryManager.h"
 
 #	include "Core/Pool.h"
+#   include "Core/BinaryVector.h"
 
 #	include <string>
 #	include <vector>
-#	include <map>
 
 namespace Menge
 {
@@ -30,7 +30,7 @@ namespace Menge
 		bool initialize() override;
 
 	public:	// FileEngine Interface
-		bool mountFileGroup( const ConstString& _fileSystemName, const FilePath& _path, const ConstString & _type, bool _create ) override;
+		bool mountFileGroup( const ConstString& _fileSystemName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create ) override;
 		void unmountFileGroup( const ConstString& _fileSystemName ) override;
 
     public:
@@ -54,7 +54,7 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::map<ConstString, FileGroupInterface*> TMapFileSystem;
+		typedef BinaryVector<ConstString, FileGroupInterface *> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;
 	};
 }

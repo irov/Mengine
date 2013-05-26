@@ -5,138 +5,91 @@ SERVICE_FACTORY( ServiceProvider, Menge::ServiceProviderInterface, Menge::Servic
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	bool ServiceProvider::registryService( const String & _name, ServiceInterface * _service )
-	{
-        if( _service == NULL )
-        {
-            return false;
-        }
-
-		m_services[_name] = _service;
-
-        _service->setServiceProvider( this );
-
-		TMapListenerServices::iterator it_found = m_listeners.find( _name );
-
-		if( it_found != m_listeners.end() )
-		{
-			const TVectorListenerServices & listeners = it_found->second;
-
-			for( TVectorListenerServices::const_iterator
-				it = listeners.begin(),
-				it_end = listeners.end();
-			it != it_end;
-			++it )
-			{
-				if( (*it)->onRegistryService( this, _service ) == false )
-                {
-                    return false;
-                }
-			}
-		}
-
-        return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ServiceProvider::unregistryService( const String & _name )
-	{
-        TMapServices::iterator it_service_found = m_services.find( _name );
-
-        if( it_service_found == m_services.end() )
-        {
-            return false;
-        }
-
-        ServiceInterface * service = it_service_found->second;
-
-        TMapListenerServices::iterator it_listener_found = m_listeners.find( _name );
-
-        if( it_listener_found != m_listeners.end() )
-        {
-            const TVectorListenerServices & listeners = it_listener_found->second;
-
-            for( TVectorListenerServices::const_iterator
-                it = listeners.begin(),
-                it_end = listeners.end();
-            it != it_end;
-            ++it )
-            {
-                (*it)->onUnregistryService( this, service );
-            }
-        }
-
-		m_services.erase( it_service_found );
-
-        return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceInterface * ServiceProvider::getService( const String & _name )
-	{
-		TMapServices::iterator it_found = m_services.find( _name );
-
-		if( it_found == m_services.end() )
-		{
-			return NULL;
-		}
-
-        ServiceInterface * service = it_found->second;
-
-		return service;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ServiceProvider::addServiceListener( const String & _name, ServiceListenerInterface * _serviceListener )
-	{
-        TMapServices::iterator it_service_found = m_services.find( _name );
-
-        if( it_service_found == m_services.end() )
-        {
-            return false;
-        }
-
-		TMapListenerServices::iterator it_found = m_listeners.find( _name );
-
-		if( it_found == m_listeners.end() )
-		{
-			TVectorListenerServices listeners;
-			it_found = m_listeners.insert( std::make_pair(_name, listeners) ).first;
-		}
-
-		it_found->second.push_back( _serviceListener );
-
-        return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ServiceProvider::removeServiceListener( const String & _name, ServiceListenerInterface * _serviceListener )
-	{
-		TMapListenerServices::iterator it_found = m_listeners.find( _name );
-
-		if( it_found == m_listeners.end() )
-		{
-			return false;
-		}
-
-		TVectorListenerServices & listeners = it_found->second;
-
-		for( TVectorListenerServices::iterator
-			it = listeners.begin(),
-			it_end = listeners.end();
-		it != it_end;
-		++it )
-		{
-			if( *it == _serviceListener )
-			{
-				listeners.erase( it );
-
-				break;
-			}
-		}
-
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::destroy()
+    ServiceProvider::ServiceProvider()
     {
-        delete this;
+        for( size_t index = 0; index != SERVICE_PROVIDER_SIZE; ++index )
+        {
+            ServiceDesc & desc = m_services[index];
+
+            desc.service = nullptr;
+        }
     }
-}
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProvider::~ServiceProvider()
+    {
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool ServiceProvider::registryService( const char * _name, ServiceInterface * _service )
+	{
+        if( _service == nullptr )
+        {
+            return false;
+        }
+
+        for( size_t index = 0; index != SERVICE_PROVIDER_SIZE; ++index )
+        {
+            ServiceDesc & desc = m_services[index];
+
+            if( desc.service != nullptr )
+            {
+                continue;
+            }
+
+            strcpy( desc.name, _name );
+            desc.service = _service;
+
+            desc.service->setServiceProvider( this );
+
+            return true;
+        }
+
+        return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ServiceProvider::unregistryService( const char * _name )
+	{
+        for( size_t index = 0; index != SERVICE_PROVIDER_SIZE; ++index )
+        {
+            ServiceDesc & desc = m_services[index];
+
+            if( desc.service == nullptr )
+            {
+                break;
+            }
+
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                continue;
+            }
+            
+            desc.service = nullptr;
+            
+            return true;
+        }
+
+        return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceInterface * ServiceProvider::getService( const char * _name ) const
+	{
+        for( size_t index = 0; index != SERVICE_PROVIDER_SIZE; ++index )
+        {
+            const ServiceDesc & desc = m_services[index];
+
+            if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                continue;
+            }
+
+            return desc.service;
+        }
+
+		return nullptr;
+	}
+ }

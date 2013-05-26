@@ -3,9 +3,9 @@
 #   include "Interface/AccountInterface.h"
 
 #	include "Config/Typedef.h"
-#	include "Core/ConstString.h"
 
-#	include <map>
+#	include "Core/ConstString.h"
+#	include "Core/BinaryVector.h"
 
 #	include "pybind/types.hpp"
 
@@ -60,7 +60,7 @@ namespace Menge
             PyObject * cb;
         };
 
-		typedef std::map<ConstString, Setting> TMapSettings;
+		typedef BinaryVector<ConstString, Setting> TMapSettings;
 		TMapSettings m_settings;
 	};
 }	// namespace Menge

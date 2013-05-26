@@ -10,6 +10,8 @@
 
 #   include "Logger/Logger.h"
 
+#   include <Shlwapi.h>
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -226,40 +228,6 @@ namespace Menge
 
         return true;
     }
-#ifdef _DEBUG
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_getFileName( const WString & _filename, WString & _out )
-    {
-        WString::size_type pos1 = _filename.find_last_of(L"\\");
-
-        WString::size_type pos2 = _filename.find_last_of(L"/");
-
-        WString::size_type pos;
-
-        if( pos1 != WString::npos && pos2 != WString::npos )
-        {
-            pos = (std::max)( pos1, pos2 );
-        } 
-        else if( pos1 == WString::npos )
-        {
-            pos = pos2;
-        }
-        else if( pos2 == WString::npos )
-        {
-            pos = pos1;
-        }
-        else
-        {
-            return false;
-        }
-
-        WString::size_type length = _filename.length();
-
-        _out = _filename.substr( ++pos, length );
-
-        return true;
-    }
-#endif
     //////////////////////////////////////////////////////////////////////////
     HANDLE VistaWindowsLayer::createFile( const WChar * _path, DWORD _desiredAccess,
         DWORD _sharedMode, DWORD _creationDisposition )
@@ -283,15 +251,13 @@ namespace Menge
                 );
         }
 
-        WString filename;
-        WString path_filename(_path);
-        s_getFileName( path_filename, filename );
+        const WChar * filename = PathFindFileName( _path );
 
-        if( filename != wfd.cFileName )
+        if( wcscmp( filename, wfd.cFileName ) != 0 )
         {
             printf("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
                 , _path
-                , filename.c_str()
+                , filename
                 , wfd.cFileName
                 );
         }
@@ -533,12 +499,7 @@ namespace Menge
         size_t folderSize = _folder.size();
         size_t fileNameSize = _filename.size();
                         
-        size_t filePathSize = folderSize;
-        
-        if( fileNameSize != 0 )
-        {
-            filePathSize += fileNameSize;
-        }
+        size_t filePathSize = folderSize + fileNameSize;
         
         if( filePathSize >= MAX_PATH )
         {
@@ -547,14 +508,9 @@ namespace Menge
 
         Char filePath[MAX_PATH];
         memcpy(filePath, _folder.c_str(), folderSize);        
-
-        if( fileNameSize != 0 )
-        {
-            memcpy(filePath + folderSize, _filename.c_str(), fileNameSize );
-        }
+        memcpy(filePath + folderSize, _filename.c_str(), fileNameSize );
 
         filePath[filePathSize] = L'\0';
-
         filePathSize += 1; //Null
 
         if( UNICODE_SERVICE(m_serviceProvider)

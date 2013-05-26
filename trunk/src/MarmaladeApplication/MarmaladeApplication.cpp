@@ -43,6 +43,7 @@ SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
 SERVICE_EXTERN(Application, Menge::ApplicationInterface);
 SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
 SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
+SERVICE_EXTERN(MarmaladeLayer, Menge::MarmaladeLayerInterface);
 
 SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
 
@@ -129,7 +130,7 @@ namespace Menge
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_hasOption( const Menge::String& _option, const Menge::String& _commandLine )
+        static bool s_hasOption( const char * _option, const Menge::String& _commandLine )
         {
             if( _commandLine.find( _option ) == Menge::String::npos )
             {
@@ -146,6 +147,7 @@ namespace Menge
         , m_logService(nullptr)
         , m_fileService(nullptr)
         , m_inputService(nullptr)
+        , m_marmaladeLayer(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -302,21 +304,9 @@ namespace Menge
             return false;
         }
         
-        m_currentPath.clear();
-
-        String utf8_currentPath;        
-        if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to convert %ls to utf8"
-                , m_currentPath.c_str()
-                );
-
-            return false;
-        }
-
-        FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
         // mount root		
-        if( m_fileService->mountFileGroup( ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+        ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
+        if( m_fileService->mountFileGroup( ConstString::none(), ConstString::none(), m_currentPath, c_dir, false ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount application directory %ls"
                 , m_currentPath.c_str()
@@ -353,7 +343,7 @@ namespace Menge
         FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
         // mount user directory
-        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
+        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none(), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
                 , m_userPath.c_str()
@@ -432,6 +422,29 @@ namespace Menge
 
             LOGGER_INFO(m_serviceProvider)( "Verbose logging mode enabled" );
         }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MarmaladeApplication::initializeMarmaladeLayerService_()
+    {
+        LOGGER_INFO(m_serviceProvider)( "Inititalizing MarmaladeLayer Service..." );
+
+        MarmaladeLayerInterface * marmaladeLayer;
+        if( SERVICE_CREATE( MarmaladeLayer, &marmaladeLayer ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeMarmaladeLayerService_ failed to create MarmaladeLayer"
+                );
+
+            return false;
+        }
+
+        if( SERVICE_REGISTRY(m_serviceProvider, marmaladeLayer) == false )
+        {
+            return false;
+        }
+
+        m_marmaladeLayer = marmaladeLayer;
 
         return true;
     }
@@ -917,14 +930,7 @@ namespace Menge
         }
 
         m_settings.applicationSettings.platformName = platformName;
-
-        String utf8_currentPath;
-        if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
-        {
-            return false;
-        }
-
-        m_settings.applicationSettings.baseDir = utf8_currentPath;
+        m_settings.applicationSettings.baseDir = m_currentPath;
 
         if( m_projectName.empty() == true )
         {
@@ -972,6 +978,11 @@ namespace Menge
         }
 
         if( this->initializeLogEngine_() == false )
+        {
+            return false;
+        }
+
+        if( this->initializeMarmaladeLayerService_() == false )
         {
             return false;
         }

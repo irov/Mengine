@@ -2,6 +2,12 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
+#	include "OALSoundBufferBase.h"
+#	include "OALSoundBufferStream.h"
+#	include "OALSoundSource.h"
+
+#   include "Utils/Factory/FactoryPool.h"
+
 #ifdef __APPLE__
 #   include <OpenAL/al.h>
 #   include <OpenAL/alc.h>
@@ -40,9 +46,6 @@ namespace Menge
 		SoundBufferInterface* createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
 		//SoundBufferInterface* createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
 
-		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
-		void releaseSoundNode( SoundSourceInterface * _sn ) override;
-
 	public:
 		ALuint genSourceId();
 		void releaseSourceId( ALuint _sourceId );
@@ -58,5 +61,14 @@ namespace Menge
 
 		ALCcontext* m_context;
 		ALCdevice* m_device;
-	};
+
+        typedef FactoryPool<OALSoundBuffer, 32> TPoolOALSoundBuffer;
+        TPoolOALSoundBuffer m_poolOALSoundBuffer;
+
+        typedef FactoryPool<OALSoundBufferStream, 32> TPoolOALSoundBufferStream;
+        TPoolOALSoundBufferStream m_poolOALSoundBufferStream;
+
+        typedef FactoryPool<OALSoundSource, 32> TPoolOALSoundSource;
+        TPoolOALSoundSource m_poolOALSoundSource;
+    };
 }	// namespace Menge

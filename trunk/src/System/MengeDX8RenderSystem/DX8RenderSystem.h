@@ -5,10 +5,9 @@
 #   include "DX8RenderTexture.h"
 
 #   include "Utils/Factory/FactoryPool.h"
+#   include "Utils/Core/BinaryVector.h"
 
 #	include <d3d8.h>
-
-#	include <map>
 
 namespace Menge
 {
@@ -210,12 +209,12 @@ namespace Menge
 		VBHandle m_vbHandleCounter;
 		IBHandle m_ibHandleCounter;
 
-		typedef std::map<VBHandle, VBInfo> TMapVBInfo;
+		typedef BinaryVector<VBHandle, VBInfo> TMapVBInfo;
 		TMapVBInfo m_vertexBuffers;
 
         IDirect3DVertexBuffer8 * m_currentVB;
 
-		typedef std::map<VBHandle, IBInfo> TMapIBInfo;
+		typedef BinaryVector<VBHandle, IBInfo> TMapIBInfo;
 		TMapIBInfo m_indexBuffers;
 
         IDirect3DIndexBuffer8 * m_currentIB;

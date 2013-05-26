@@ -6,6 +6,7 @@
 #   include "Core/FilePath.h"
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
+#   include "Core/AspectRatioViewports.h"
 
 #	include "Interface/ServiceInterface.h"
 
@@ -83,22 +84,12 @@ namespace Menge
 #   define PLATFORM_SERVICE( serviceProvider )\
     (Menge::Helper::getService<Menge::PlatformInterface>(serviceProvider))
 
-    struct AspectRatioViewports
-    {
-        float width;
-        float height;
-
-        Viewport viewport;
-    };
-
-    typedef std::vector<AspectRatioViewports> TVectorAspectRatioViewports;
-
 	struct ApplicationSettings
 	{
-		String baseDir;
+		FilePath baseDir;
 
-		String platformName;
-		String projectCodename;
+		ConstString platformName;
+		ConstString projectCodename;
 
 		Resolution contentResolution;
         Resolution windowResolution;
@@ -115,14 +106,14 @@ namespace Menge
 
 	struct ResourcePackDesc
 	{
-        String name;
-		String type;
+        ConstString name;
+		ConstString type;
 
-		String locale;
-		String platform;
+		ConstString locale;
+		ConstString platform;
 
-        String path;
-		String description;
+        FilePath path;
+		FilePath description;
 
         bool dev;
 		bool preload;
@@ -142,7 +133,7 @@ namespace Menge
     public:
         virtual bool setup( const String& _args, const ApplicationSettings & _setting ) = 0;
 
-		virtual const String & getBaseDir() const = 0;
+		virtual const FilePath & getBaseDir() const = 0;
 		
 	public:
 		virtual PlatformInterface * getPlatform() const = 0;
@@ -175,7 +166,7 @@ namespace Menge
         
 	public:
 		virtual const WString & getProjectTitle() const = 0;
-		virtual const String & getProjectCodename() const = 0;
+		virtual const ConstString & getProjectCodename() const = 0;
 
 	public:
 		virtual void setFullscreenMode( bool _fullscreen ) = 0;
@@ -228,7 +219,7 @@ namespace Menge
 
         virtual unsigned int getDebugMask() const = 0;
 
-        virtual const String & getPlatformName() const = 0;
+        virtual const ConstString & getPlatformName() const = 0;
 
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;

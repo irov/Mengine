@@ -2313,30 +2313,57 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
+	void * DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
 	{
-		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
-		void* lock = NULL;
+        VBInfo * vbinfo;
+
+        if( m_vertexBuffers.has( _vbHandle, &vbinfo ) == false )
+        {
+            return nullptr;
+        }
+
+		IDirect3DVertexBuffer8 * vb = vbinfo->pVB;
+
+		void * lock = nullptr;
+
 		HRESULT hr = vb->Lock( _offset, _size, (BYTE**)&lock, _flags );
+
 		if( FAILED( hr ) )
 		{
-			lock = NULL;
+			return nullptr;
 		}
+
 		return lock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
 	{
-		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
+        VBInfo * vbinfo;
+
+        if( m_vertexBuffers.has( _vbHandle, &vbinfo ) == false )
+        {
+            return false;
+        }
+
+        IDirect3DVertexBuffer8 * vb = vbinfo->pVB;
+
 		HRESULT hr = vb->Unlock();
+
 		return SUCCEEDED( hr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint16* DX8RenderSystem::lockIndexBuffer( IBHandle _ibHandle )
 	{
-		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
+        IBInfo * ibinfo;
 
-		uint16* lock = NULL;
+        if( m_indexBuffers.has( _ibHandle, &ibinfo ) == false )
+        {
+            return nullptr;
+        }
+
+        IDirect3DIndexBuffer8 * ib = ibinfo->pIB;
+        
+		uint16* lock = nullptr;
 		HRESULT hr = ib->Lock( 0, 0, (BYTE**)&lock, 0 );
 
         if( hr != D3D_OK )
@@ -2345,7 +2372,7 @@ namespace Menge
                 , hr
                 );
 
-            return NULL;
+            return nullptr;
         }
         
 		return lock;
@@ -2353,7 +2380,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
 	{
-		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
+        IBInfo * ibinfo;
+
+        if( m_indexBuffers.has( _ibHandle, &ibinfo ) == false )
+        {
+            return nullptr;
+        }
+
+        IDirect3DIndexBuffer8 * ib = ibinfo->pIB;
 
 		HRESULT hr = ib->Unlock();
 
@@ -2371,7 +2405,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setVertexBuffer( VBHandle _vbHandle )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::setVertexBuffer device not created"
                 );

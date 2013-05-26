@@ -8,10 +8,10 @@
 
 #	include "pybind/pybind.hpp"
 
-#	include <map>
+#   include "Core/BinaryVector.h"
+
 #	include <list>
 #	include <cstdarg>
-
 
 namespace Menge
 {
@@ -90,13 +90,13 @@ namespace Menge
 
 		PyObject * m_internalObjectFinder;
 
-		typedef std::map<ConstString, PyObject *> TMapModules;
-		typedef std::map<ConstString, TMapModules> TMapCategoryPrototypies;
+		typedef BinaryVector<ConstString, PyObject *> TMapModules;
+		typedef BinaryVector<ConstString, TMapModules> TMapCategoryPrototypies;
 		TMapCategoryPrototypies m_prototypies;
 
 		TMapModules m_modules;
 
-		typedef std::map<ConstString, ScriptClassInterface *> TMapScriptWrapper;
+		typedef BinaryVector<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef FactoryPool<ConstStringHolderPythonString, 256> FactoryPoolPythonString;

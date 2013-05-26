@@ -16,6 +16,8 @@
 
 #   include "Interface/MovieKeyFrameInterface.h"
 
+#   include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

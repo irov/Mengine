@@ -12,8 +12,14 @@ namespace Menge
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskSoundBufferUpdate( ServiceProviderInterface * _serviceProvider, SoundSourceDesc* _source );
+		ThreadTaskSoundBufferUpdate();
 		~ThreadTaskSoundBufferUpdate();
+
+    public:        
+        void initialize( ServiceProviderInterface * _serviceProvider, SoundSourceDesc * _soundSource );
+
+    public:
+        bool _destroy() override;
 
 	public:
 		void stop();

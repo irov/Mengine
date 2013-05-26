@@ -41,15 +41,15 @@ namespace Menge
 		if( it_find != m_textMap.end() )
 		{
 			LOGGER_INFO(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s"
-				, _key.c_str() 
+				, _key.c_str()
 				);
 
 			it_find->second = _entry;
+
+            return;
 		}
-		else
-		{
-			m_textMap.insert( std::make_pair( _key, _entry ) );
-		}
+
+        m_textMap.insert( std::make_pair( _key, _entry ) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TextEntry & TextManager::getTextEntry( const ConstString& _key ) const

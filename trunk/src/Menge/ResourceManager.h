@@ -5,6 +5,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Factory/FactoryManager.h"
+#   include "Utils/Core/BinaryVector.h"
 
 #	include <map>
 #	include <list>
@@ -41,7 +42,7 @@ namespace Menge
 	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
         
-		bool hasResource( const ConstString& _name ) const override;
+		bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const override;
 		bool lockResource( const ConstString& _name );
 		bool unlockResource( const ConstString& _name );
 		bool validResourceType( const ConstString& _name, const ConstString& _type ) const override;
@@ -58,7 +59,7 @@ namespace Menge
         void validationResources() const override;
 
 	public:
-		void visitResources( const ConstString & _category, const ConstString & _groupName, ResourceVisitor * _visitor ) const override;
+		void visitResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const override;
 			
 
 	public:
@@ -70,16 +71,10 @@ namespace Menge
 		
 	protected:
         ServiceProviderInterface * m_serviceProvider;
-
-		typedef std::map<ConstString, ResourceEntry> TMapResource;
+                
+		typedef BinaryVector<ConstString, ResourceEntry> TMapResource;
 		TMapResource m_resources;
-
-        typedef std::vector<ResourceReference *> TVectorResource;
-        typedef std::map<ConstString, TVectorResource> TMapGroupCacheResource;
-        typedef std::map<ConstString, TMapGroupCacheResource> TMapCategoryCacheResource;
-
-        TMapCategoryCacheResource m_cacheResource;
-
+        
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;
 	};

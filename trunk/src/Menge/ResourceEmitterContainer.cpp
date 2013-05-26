@@ -88,7 +88,7 @@ namespace Menge
 			ConstString name = Helper::stringizeString( m_serviceProvider, cache_name );
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResource( name ) == false )
+				->hasResource( name, nullptr ) == false )
 			{				
                 static String cache_path;
                 cache_path.assign( m_folder.c_str(), m_folder.size() );

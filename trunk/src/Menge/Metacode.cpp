@@ -464,13 +464,13 @@ namespace Metacode
         {
         case 3:
             {
-                Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence metadata;
+                Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & metadata = includes_Meta_Sequence.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Sequence.push_back(metadata);
                 return true;
                 break;
             }
@@ -1635,37 +1635,37 @@ namespace Metacode
         {
         case 10:
             {
-                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D metadata;
+                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_MovieCamera3D.push_back(metadata);
                 return true;
                 break;
             }
         case 8:
             {
-                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D metadata;
+                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_MovieLayer2D.push_back(metadata);
                 return true;
                 break;
             }
         case 9:
             {
-                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D metadata;
+                Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_MovieLayer3D.push_back(metadata);
                 return true;
                 break;
             }
@@ -2083,13 +2083,13 @@ namespace Metacode
         {
         case 5:
             {
-                Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks metadata;
+                Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks & metadata = includes_Meta_Tracks.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Tracks.push_back(metadata);
                 return true;
                 break;
             }
@@ -2137,13 +2137,13 @@ namespace Metacode
         {
         case 1:
             {
-                Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track metadata;
+                Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & metadata = includes_Meta_Track.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Track.push_back(metadata);
                 return true;
                 break;
             }
@@ -2635,13 +2635,13 @@ namespace Metacode
         {
         case 2:
             {
-                Meta_Font::Meta_Char metadata;
+                Meta_Font::Meta_Char & metadata = includes_Meta_Char.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Char.push_back(metadata);
                 return true;
                 break;
             }
@@ -2723,13 +2723,13 @@ namespace Metacode
         {
         case 5:
             {
-                Meta_Font::Meta_Char::Meta_Kerning metadata;
+                Meta_Font::Meta_Char::Meta_Kerning & metadata = includes_Meta_Kerning.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Kerning.push_back(metadata);
                 return true;
                 break;
             }
@@ -2844,25 +2844,25 @@ namespace Metacode
         {
         case 2:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames2D metadata;
+                Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_KeyFrames2D.push_back(metadata);
                 return true;
                 break;
             }
         case 3:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames3D metadata;
+                Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_KeyFrames3D.push_back(metadata);
                 return true;
                 break;
             }
@@ -2939,13 +2939,13 @@ namespace Metacode
         {
         case 4:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D metadata;
+                Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & metadata = includes_Meta_KeyFrame2D.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_KeyFrame2D.push_back(metadata);
                 return true;
                 break;
             }
@@ -3113,13 +3113,13 @@ namespace Metacode
         {
         case 2:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D metadata;
+                Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & metadata = includes_Meta_KeyFrame3D.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_KeyFrame3D.push_back(metadata);
                 return true;
                 break;
             }
@@ -3281,37 +3281,37 @@ namespace Metacode
         {
         case 2:
             {
-                Meta_Pak::Meta_Resources metadata;
+                Meta_Pak::Meta_Resources & metadata = includes_Meta_Resources.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Resources.push_back(metadata);
                 return true;
                 break;
             }
         case 1:
             {
-                Meta_Pak::Meta_Scripts metadata;
+                Meta_Pak::Meta_Scripts & metadata = includes_Meta_Scripts.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Scripts.push_back(metadata);
                 return true;
                 break;
             }
         case 3:
             {
-                Meta_Pak::Meta_Texts metadata;
+                Meta_Pak::Meta_Texts & metadata = includes_Meta_Texts.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Texts.push_back(metadata);
                 return true;
                 break;
             }
@@ -3359,13 +3359,13 @@ namespace Metacode
         {
         case 1:
             {
-                Meta_Pak::Meta_Resources::Meta_Resource metadata;
+                Meta_Pak::Meta_Resources::Meta_Resource & metadata = includes_Meta_Resource.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Resource.push_back(metadata);
                 return true;
                 break;
             }
@@ -3503,13 +3503,13 @@ namespace Metacode
         {
         case 1:
             {
-                Meta_Pak::Meta_Texts::Meta_Text metadata;
+                Meta_Pak::Meta_Texts::Meta_Text & metadata = includes_Meta_Text.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Text.push_back(metadata);
                 return true;
                 break;
             }
@@ -3602,13 +3602,13 @@ namespace Metacode
         {
         case 1:
             {
-                Meta_Texts::Meta_Text metadata;
+                Meta_Texts::Meta_Text & metadata = includes_Meta_Text.emplace_back();
+    
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
                     return false;
                 }
     
-                includes_Meta_Text.push_back(metadata);
                 return true;
                 break;
             }

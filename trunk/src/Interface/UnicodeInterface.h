@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class LogServiceInterface;
+    const size_t UNICODE_UNSIZE = (size_t)-1;
 
     class UnicodeSystemInterface
         : public ServiceInterface

@@ -23,7 +23,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePak::ResourcePak( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const ConstString & _type, const ConstString & _locale, const String & _platform, const String & _filename, const String & _path, bool _preload, const String & _baseDir )
+	ResourcePak::ResourcePak( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const ConstString & _type, const ConstString & _locale, const ConstString & _platform, const FilePath & _filename, const FilePath & _path, bool _preload, const FilePath & _baseDir )
 		: m_serviceProvider(_serviceProvider)
         , m_name(_name)
 		, m_type(_type)
@@ -51,39 +51,24 @@ namespace Menge
 		return m_locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourcePak::getPlatfrom() const
+	const ConstString & ResourcePak::getPlatfrom() const
 	{
 		return m_platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourcePak::getPath() const
+	const FilePath & ResourcePak::getPath() const
 	{
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{		
-		static String cache_fullpath;
-
-        cache_fullpath = m_baseDir;
-		cache_fullpath += m_path;
-		
-		if(  m_type == CONST_STRING(m_serviceProvider, zip) )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_baseDir, m_path, m_type, false ) == false )
 		{
-			//fullPakPath += L".zip";
-		}
-		else
-		{
-			cache_fullpath += MENGE_FOLDER_DELIM;
-		}
-
-        FilePath fullpath = Helper::stringizeString( m_serviceProvider, cache_fullpath );
-
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, fullpath, m_type, false ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load failed to mount pak '%s:%s'"
+			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load failed to mount pak '%s' path '%s':'%s'"
 				, m_name.c_str()
-				, fullpath.c_str()
+				, m_baseDir.c_str()
+                , m_path.c_str()
 				);
 
 			return false;
@@ -91,10 +76,8 @@ namespace Menge
 
 		Metacode::Meta_Pak pak;
 
-        FilePath filepath = Helper::stringizeString( m_serviceProvider, m_filename );
-
 		bool exist = false;
-		if( LOADER_SERVICE(m_serviceProvider)->load( m_name, filepath, &pak, exist ) == false )
+		if( LOADER_SERVICE(m_serviceProvider)->load( m_name, m_filename, &pak, exist ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load Invalid resource file '%s:%s' '%s'"
 				, m_path.c_str()
@@ -104,6 +87,9 @@ namespace Menge
 
 			return false;
 		}
+
+        m_resourcesDesc.reserve( 32 );
+        m_textsDesc.reserve( 8 );
 
 		const Metacode::Meta_Pak::TVectorMeta_Scripts & includes_scripts = pak.get_IncludesScripts();
 
@@ -129,7 +115,7 @@ namespace Menge
 			const Metacode::Meta_Pak::Meta_Resources & meta_resources = *it;
 
 			const Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource & includes_resource = meta_resources.get_IncludesResource();
-
+            
 			for( Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource::const_iterator
 				it = includes_resource.begin(),
 				it_end = includes_resource.end();

@@ -16,7 +16,7 @@ namespace Menge
 		~FileGroupDirectory();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path, const ConstString & _type, bool _create ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create ) override;
         void finalize() override;
 
     public:
@@ -45,9 +45,9 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
+        FilePath m_folder;
 		FilePath m_path;
-        ConstString m_type;
 
-        FileSystemInterface * m_fileSystem;      
+        ConstString m_type;   
 	};
 }	// namespace Menge

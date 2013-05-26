@@ -16,7 +16,7 @@ namespace Menge
 		: public OALSoundBuffer
 	{
 	public:
-		OALSoundBufferStream( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
+		OALSoundBufferStream();
 		~OALSoundBufferStream();
 
 	public:
@@ -37,7 +37,7 @@ namespace Menge
 		size_t m_bufferSize;
 
 		ALuint m_sourceId;
-		unsigned char* m_dataBuffer;
+		unsigned char m_dataBuffer[44100];
 
 		bool m_updating;
 

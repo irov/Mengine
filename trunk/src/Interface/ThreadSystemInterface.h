@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#	include "Utils/Factory/Factorable.h"
+
 #	include "Config/Typedef.h"
 
 #   include <vector>
@@ -18,7 +20,8 @@ namespace Menge
 	};
 
     class ThreadTaskInterface
-        : public ThreadListener
+        : public Factorable
+        , public ThreadListener
     {
     public:	
         virtual bool isComplete() const = 0;
@@ -37,7 +40,6 @@ namespace Menge
     public:
         virtual void cancel() = 0;
         virtual void update() = 0;
-        virtual void destroy() = 0;
     };
 
     typedef std::vector<ThreadTaskInterface *> TVectorThreadTask;

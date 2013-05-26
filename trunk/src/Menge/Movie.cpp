@@ -298,7 +298,7 @@ namespace Menge
 				, m_name.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		TMapMovieSlots::const_iterator it_found = m_slots.find( _name );
@@ -331,7 +331,7 @@ namespace Menge
 
 			Node * slot = movie->getMovieSlot( _name );
 
-			if( slot == NULL )
+			if( slot == nullptr )
 			{
 				continue;
 			}
@@ -344,7 +344,7 @@ namespace Menge
 			, _name.c_str()
 			);
 
-		return NULL;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::hasMovieSlot( const ConstString & _name ) const
@@ -355,7 +355,7 @@ namespace Menge
 				, m_name.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		TMapMovieSlots::const_iterator it_found = m_slots.find( _name );
@@ -403,7 +403,7 @@ namespace Menge
                 , m_name.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
@@ -436,7 +436,7 @@ namespace Menge
 
             Movie * submovie = movie->getSubMovie( _name );
 
-            if( submovie == NULL )
+            if( submovie == nullptr )
             {
                 continue;
             }
@@ -449,7 +449,7 @@ namespace Menge
             , _name.c_str()
             );
 
-        return NULL;
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie::hasSubMovie( const ConstString & _name ) const
@@ -460,7 +460,7 @@ namespace Menge
                 , m_name.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
@@ -508,7 +508,7 @@ namespace Menge
                 , m_name.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         TMapSockets::const_iterator it_found = m_sockets.find( _name );
@@ -554,7 +554,7 @@ namespace Menge
             , _name.c_str()
             );
 
-        return NULL;
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie::hasSocket( const ConstString & _name ) const
@@ -565,7 +565,7 @@ namespace Menge
                 , m_name.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         TMapSockets::const_iterator it_found = m_sockets.find( _name );
@@ -711,14 +711,14 @@ namespace Menge
 		ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceInternalObject>( _resource );
 
-		if( resourceInternalObject == NULL )
+		if( resourceInternalObject == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't find internal resource '%s'"
 				, m_name.c_str()
 				, _resource.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
@@ -730,7 +730,7 @@ namespace Menge
 
 		resourceInternalObject->decrementReference();
 
-		if( py_object == NULL )
+		if( py_object == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't find internal object '%s:%s'"
 				, m_name.c_str()
@@ -738,7 +738,7 @@ namespace Menge
 				, internalName.c_str()				
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		return py_object;

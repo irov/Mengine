@@ -44,9 +44,9 @@ namespace Menge
         void finalize() override;
 
     public:
-        void setBaseDir( const String & _baseDir ) override;
+        void setBaseDir( const FilePath & _baseDir ) override;
         void setDevelopmentMode( bool _developmentMode ) override;
-        void setPlatformName( const String & _platformName ) override;
+        void setPlatformName( const ConstString & _platformName ) override;
 
     public:
         PlayerServiceInterface * getPlayer() const override;
@@ -74,7 +74,7 @@ namespace Menge
         const ConstString & getLanguagePack() const override;
 
 	protected:
-		bool loadLocalePaksByName_( const ConstString & _locale, const String & _platform );
+		bool loadLocalePaksByName_( const ConstString & _locale, const ConstString & _platform );
 			
 	public:
 		void setCursorMode( bool _mode ) override;
@@ -127,7 +127,7 @@ namespace Menge
 		bool m_hasWindowPanel;
 		float m_timingFactor;
 
-		String m_baseDir;
+		FilePath m_baseDir;
 		FilePath m_iconPath;
 
 		typedef std::vector<ResourcePak *> TVectorResourcePak;
@@ -136,7 +136,7 @@ namespace Menge
 		TVectorResourcePak m_languagePaks;
 
 		ConstString m_languagePak;
-		String m_platformName;
+		ConstString m_platformName;
 				
 		bool m_personalityHasOnClose;
 

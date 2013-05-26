@@ -4,9 +4,6 @@
 
 #   include "Metatype.h"
 
-#   include <vector>
-#   include <algorithm>
-
 namespace Metacode
 {
     bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, size_t & _readVersion, size_t & _needVersion, void * _userData );
@@ -182,7 +179,7 @@ namespace Metacode
         protected:
         protected:
         public:
-            typedef std::vector<Meta_Sequence> TVectorMeta_Sequence;
+            typedef Metabuf::Array<Meta_Sequence> TVectorMeta_Sequence;
         
             const TVectorMeta_Sequence & get_IncludesSequence() const
             {
@@ -2525,7 +2522,7 @@ namespace Metacode
             bool Width_Value_successful;
             mutable float Width_Value;
         public:
-            typedef std::vector<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;
+            typedef Metabuf::Array<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;
         
             const TVectorMeta_MovieCamera3D & get_IncludesMovieCamera3D() const
             {
@@ -2535,7 +2532,7 @@ namespace Metacode
         protected:
             TVectorMeta_MovieCamera3D includes_Meta_MovieCamera3D;
         public:
-            typedef std::vector<Meta_MovieLayer2D> TVectorMeta_MovieLayer2D;
+            typedef Metabuf::Array<Meta_MovieLayer2D> TVectorMeta_MovieLayer2D;
         
             const TVectorMeta_MovieLayer2D & get_IncludesMovieLayer2D() const
             {
@@ -2545,7 +2542,7 @@ namespace Metacode
         protected:
             TVectorMeta_MovieLayer2D includes_Meta_MovieLayer2D;
         public:
-            typedef std::vector<Meta_MovieLayer3D> TVectorMeta_MovieLayer3D;
+            typedef Metabuf::Array<Meta_MovieLayer3D> TVectorMeta_MovieLayer3D;
         
             const TVectorMeta_MovieLayer3D & get_IncludesMovieLayer3D() const
             {
@@ -2735,7 +2732,7 @@ namespace Metacode
             protected:
             protected:
             public:
-                typedef std::vector<Meta_Track> TVectorMeta_Track;
+                typedef Metabuf::Array<Meta_Track> TVectorMeta_Track;
             
                 const TVectorMeta_Track & get_IncludesTrack() const
                 {
@@ -2753,7 +2750,7 @@ namespace Metacode
             bool Shuffle_Value_successful;
             mutable bool Shuffle_Value;
         public:
-            typedef std::vector<Meta_Tracks> TVectorMeta_Tracks;
+            typedef Metabuf::Array<Meta_Tracks> TVectorMeta_Tracks;
         
             const TVectorMeta_Tracks & get_IncludesTracks() const
             {
@@ -3473,7 +3470,7 @@ namespace Metacode
     protected:
         mutable Menge::ConstString Name;
     public:
-        typedef std::vector<Meta_Resource *> TVectorMeta_Resource;
+        typedef Metabuf::Array<Meta_Resource *> TVectorMeta_Resource;
     
         const TVectorMeta_Resource & get_IncludesResource() const
         {
@@ -3654,7 +3651,7 @@ namespace Metacode
             mutable mt::vec4f rect;
             mutable float width;
         public:
-            typedef std::vector<Meta_Kerning> TVectorMeta_Kerning;
+            typedef Metabuf::Array<Meta_Kerning> TVectorMeta_Kerning;
         
             const TVectorMeta_Kerning & get_IncludesKerning() const
             {
@@ -3669,7 +3666,7 @@ namespace Metacode
     protected:
         mutable float height;
     public:
-        typedef std::vector<Meta_Char> TVectorMeta_Char;
+        typedef Metabuf::Array<Meta_Char> TVectorMeta_Char;
     
         const TVectorMeta_Char & get_IncludesChar() const
         {
@@ -4107,7 +4104,7 @@ namespace Metacode
             mutable bool Immutable;
             mutable size_t LayerIndex;
         public:
-            typedef std::vector<Meta_KeyFrame2D> TVectorMeta_KeyFrame2D;
+            typedef Metabuf::Array<Meta_KeyFrame2D> TVectorMeta_KeyFrame2D;
         
             const TVectorMeta_KeyFrame2D & get_IncludesKeyFrame2D() const
             {
@@ -4400,7 +4397,7 @@ namespace Metacode
         protected:
             mutable size_t LayerIndex;
         public:
-            typedef std::vector<Meta_KeyFrame3D> TVectorMeta_KeyFrame3D;
+            typedef Metabuf::Array<Meta_KeyFrame3D> TVectorMeta_KeyFrame3D;
         
             const TVectorMeta_KeyFrame3D & get_IncludesKeyFrame3D() const
             {
@@ -4415,7 +4412,7 @@ namespace Metacode
     protected:
         mutable size_t MaxIndex;
     public:
-        typedef std::vector<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
+        typedef Metabuf::Array<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
     
         const TVectorMeta_KeyFrames2D & get_IncludesKeyFrames2D() const
         {
@@ -4425,7 +4422,7 @@ namespace Metacode
     protected:
         TVectorMeta_KeyFrames2D includes_Meta_KeyFrames2D;
     public:
-        typedef std::vector<Meta_KeyFrames3D> TVectorMeta_KeyFrames3D;
+        typedef Metabuf::Array<Meta_KeyFrames3D> TVectorMeta_KeyFrames3D;
     
         const TVectorMeta_KeyFrames3D & get_IncludesKeyFrames3D() const
         {
@@ -4505,7 +4502,7 @@ namespace Metacode
         protected:
         protected:
         public:
-            typedef std::vector<Meta_Resource> TVectorMeta_Resource;
+            typedef Metabuf::Array<Meta_Resource> TVectorMeta_Resource;
         
             const TVectorMeta_Resource & get_IncludesResource() const
             {
@@ -4606,7 +4603,7 @@ namespace Metacode
         protected:
         protected:
         public:
-            typedef std::vector<Meta_Text> TVectorMeta_Text;
+            typedef Metabuf::Array<Meta_Text> TVectorMeta_Text;
         
             const TVectorMeta_Text & get_IncludesText() const
             {
@@ -4620,7 +4617,7 @@ namespace Metacode
     protected:
     protected:
     public:
-        typedef std::vector<Meta_Resources> TVectorMeta_Resources;
+        typedef Metabuf::Array<Meta_Resources> TVectorMeta_Resources;
     
         const TVectorMeta_Resources & get_IncludesResources() const
         {
@@ -4630,7 +4627,7 @@ namespace Metacode
     protected:
         TVectorMeta_Resources includes_Meta_Resources;
     public:
-        typedef std::vector<Meta_Scripts> TVectorMeta_Scripts;
+        typedef Metabuf::Array<Meta_Scripts> TVectorMeta_Scripts;
     
         const TVectorMeta_Scripts & get_IncludesScripts() const
         {
@@ -4640,7 +4637,7 @@ namespace Metacode
     protected:
         TVectorMeta_Scripts includes_Meta_Scripts;
     public:
-        typedef std::vector<Meta_Texts> TVectorMeta_Texts;
+        typedef Metabuf::Array<Meta_Texts> TVectorMeta_Texts;
     
         const TVectorMeta_Texts & get_IncludesTexts() const
         {
@@ -4857,7 +4854,7 @@ namespace Metacode
     protected:
     protected:
     public:
-        typedef std::vector<Meta_Text> TVectorMeta_Text;
+        typedef Metabuf::Array<Meta_Text> TVectorMeta_Text;
     
         const TVectorMeta_Text & get_IncludesText() const
         {

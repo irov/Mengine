@@ -18,8 +18,11 @@ namespace Menge
 		: public OALSoundBufferBase
 	{
 	public:
-		OALSoundBuffer( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
+		OALSoundBuffer();
 		~OALSoundBuffer();
+
+    public:
+        void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
 
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;

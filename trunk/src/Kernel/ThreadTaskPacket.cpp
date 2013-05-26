@@ -12,7 +12,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPacket::addTask( ThreadTask * _task )
 	{
-		_task->addListener( this );
+		//_task->addListener( this );
 
 		m_tasks.push_back( _task );	
 	}

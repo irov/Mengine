@@ -26,6 +26,21 @@ extern "C" {
 }
 #endif
 
+void Mengine_alloc(size_t)
+{
+
+}
+
+void Mengine_realloc(void *, size_t)
+{
+
+}
+
+void Mengine_free(void *)
+{
+
+}
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Menge::ScriptServiceInterface, Menge::ScriptEngine );
 //////////////////////////////////////////////////////////////////////////

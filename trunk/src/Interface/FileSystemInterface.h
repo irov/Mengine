@@ -67,7 +67,7 @@ namespace Menge
         : public Factorable
     {
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath& _path, const ConstString & _type, bool _create ) = 0;
+        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath& _path, const ConstString & _type, bool _create ) = 0;
         virtual void finalize() = 0;
 
     public:
@@ -100,7 +100,7 @@ namespace Menge
         virtual bool initialize() = 0;
 
     public:
-        virtual bool mountFileGroup( const ConstString& _fileSystemName, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
+        virtual bool mountFileGroup( const ConstString& _fileSystemName, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
         virtual void unmountFileGroup( const ConstString& _fileSystemName ) = 0;
 
     public:

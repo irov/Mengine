@@ -4,13 +4,14 @@
 
 #	include "Math/vec4.h"
 
-#	include <map>
+#	include "Core/BinaryVector.h"
 
 namespace Menge
 {
 	class Glyph
 	{
 	public:
+        Glyph();
 		Glyph( const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size );
 
 	public:
@@ -29,7 +30,7 @@ namespace Menge
 		float m_ratio;
 		mt::vec2f m_size;
 
-		typedef std::map<WChar, float> TMapKerning;
+		typedef BinaryVector<WChar, float> TMapKerning;
 		TMapKerning m_kernings;
 	};
 }

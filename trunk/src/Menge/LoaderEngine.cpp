@@ -44,7 +44,8 @@ namespace Menge
 		InputStreamInterfacePtr file_bin;
 		if( this->openBin_( _pak, _path, file_bin, _exist ) == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invalid open bin %s"
+            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invalid open bin '%s':'%s'"
+                , _pak.c_str()
                 , _path.c_str()
                 );
 

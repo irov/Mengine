@@ -3,8 +3,7 @@
 #	include "Interface/ConverterInterface.h"
 
 #	include "Core/ConstString.h"
-
-#	include <map>
+#   include "Core/BinaryVector.h"
 
 namespace Menge
 {
@@ -35,7 +34,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::map<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
+		typedef BinaryVector<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
 		TMapConverterSystem m_mapConverterSystem;
 	};
 }

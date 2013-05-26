@@ -3,13 +3,6 @@
 #	include "Core/IntrusiveList.h"
 #	include "Core/IntrusiveSlug.h"
 
-#   ifdef _DEBUG
-#   include <vector>
-#   include <algorithm>
-
-typedef std::vector<void *> TVectorAllockBlock;
-#   endif
-
 namespace Menge
 {
 	template<size_t TSizeType, size_t TChunkSize>
@@ -41,7 +34,7 @@ namespace Menge
 	};
 
 	template<size_t TSizeType, size_t TChunkSize>
-	class TemplatePool
+	class Pool
 	{
 		typedef TemplateChunk<TSizeType, TChunkSize> TChunk;
 		typedef typename TChunk::Block TBlock;
@@ -50,14 +43,14 @@ namespace Menge
         typedef IntrusiveSlug<TChunk> TSlugChunks;
 
     public:
-        TemplatePool()
+        Pool()
             : m_free(nullptr)
             , m_countBlock(0)
             , m_countChunk(0)
         {
         }
 
-        ~TemplatePool()
+        ~Pool()
         {
             for( TSlugChunks it(m_chunks); it.eof() == false; it.next_shuffle() )
             {
@@ -81,9 +74,6 @@ namespace Menge
             ++m_countBlock;
 
             void * impl = static_cast<void *>(free);
-#   ifdef _DEBUG
-            m_allockBlock.push_back( impl );
-#   endif
 
 			return impl;
 		}
@@ -91,24 +81,12 @@ namespace Menge
 		void free( void * _buff )
 		{
 			TBlock * block = reinterpret_cast<TBlock*>(_buff);
-
-#   ifdef _DEBUG
-            TVectorAllockBlock::iterator if_found = std::find( m_allockBlock.begin(), m_allockBlock.end(), _buff );
-            m_allockBlock.erase( if_found );
-#   endif
-            --m_countBlock;
-
+            
 			block->next = m_free;
 
 			m_free = block;
+            --m_countBlock;
 		}
-
-#   ifdef _DEBUG
-        TVectorAllockBlock & allock_blocks()
-        {
-            return m_allockBlock;
-        }
-#   endif
 
         bool empty() const
         {
@@ -128,13 +106,47 @@ namespace Menge
 	protected:
 		TListChunks m_chunks;
 
-#   ifdef _DEBUG
-        TVectorAllockBlock m_allockBlock;
-#   endif
-
 		TBlock * m_free;
 
         size_t m_countBlock;
         size_t m_countChunk;
 	};
+
+    template<class T, size_t TChunkSize>
+    class TemplatePool
+    {
+    public:
+        TemplatePool()
+        {
+        }
+
+    public:
+        T * createT()
+        {
+            void * impl = m_pool.alloc();
+
+            T * t = new (impl) T;
+            
+            return t;
+        }
+
+        void destroyT( T * _t )
+        {
+            _t->~T();
+
+            m_pool.free( _t );
+        }
+
+    public:
+        bool empty() const
+        {
+            bool result = m_pool.empty();
+
+            return result;
+        }
+
+    protected:
+        typedef Pool<sizeof(T), TChunkSize> TPool;
+        TPool m_pool;
+    };
 }

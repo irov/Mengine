@@ -27,12 +27,14 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 add_definitions(-DPy_BUILD_CORE)
-add_definitions(-DPYBIND_PYTHON_VERSION=274)
+add_definitions(-DPYBIND_PYTHON_VERSION=275)
 
-include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python)
+include_directories(${SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python275)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
 
 IF(WIN32)
-    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python/PC)
+    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python275/PC)
 ENDIF(WIN32)
 
 add_library( ${PROJECT_NAME}_static STATIC ${pybind_sources} )

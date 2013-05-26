@@ -9,8 +9,10 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 set( metabuf_sources
-${SOURCE_DIR}/metabuf/Metabuf.cpp
-)
+    ${SOURCE_DIR}/metabuf/Metabuf.cpp
+    )
+    
+include_directories(${SOURCE_DIR})
 
 add_library( metabuf_static STATIC ${metabuf_sources} )
 

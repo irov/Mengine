@@ -28,6 +28,7 @@ ${SOURCE_DIR}/lib/synthesis.c
 ${SOURCE_DIR}/lib/window.c
 )
 
-include_directories( ${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg/include )
+include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
 
 add_library( ${PROJECT_NAME}_static STATIC ${vorbis_sources} )

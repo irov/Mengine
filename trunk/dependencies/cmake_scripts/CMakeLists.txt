@@ -19,7 +19,7 @@ set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 
 #ADD_SUBDIRECTORY( AtlasAllocator )
 
-ADD_SUBDIRECTORY( simpleini )
+#ADD_SUBDIRECTORY( simpleini )
 
 ADD_SUBDIRECTORY( zlib )
 #ADD_SUBDIRECTORY( icu )
@@ -51,7 +51,8 @@ endif(MSVC)
 
 if(WIN32)
     #ADD_SUBDIRECTORY( tinyxml )
-    ADD_SUBDIRECTORY( Python_2_7 )    
+    ADD_SUBDIRECTORY( dlmalloc )
+    ADD_SUBDIRECTORY( Python_2_7_5 )    
     ADD_SUBDIRECTORY( Python_3_3_1 )
 endif(WIN32)
 

@@ -20,6 +20,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32InputStream::~Win32InputStream()
 	{
+        if( m_hFile != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_hFile );
+            m_hFile = INVALID_HANDLE_VALUE;
+        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void Win32InputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -72,17 +77,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::_destroy()
-	{
-		if( m_hFile != INVALID_HANDLE_VALUE )
-		{
-			::CloseHandle( m_hFile );
-			m_hFile = INVALID_HANDLE_VALUE;
-		}
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32InputStream::read( void* _buf, size_t _count )

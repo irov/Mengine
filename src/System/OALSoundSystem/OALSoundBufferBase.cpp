@@ -17,11 +17,6 @@ namespace Menge
 	OALSoundBufferBase::~OALSoundBufferBase()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferBase::_destroy()
-    {
-        return true;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferBase::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{

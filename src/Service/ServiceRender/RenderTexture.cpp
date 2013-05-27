@@ -19,6 +19,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::~RenderTexture()
 	{
+        m_listener->onRenderTextureRelease( this );
+        m_image = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::initialize( const RenderImageInterfacePtr & _image
@@ -49,15 +51,6 @@ namespace Menge
 	RenderImageInterfacePtr RenderTexture::getImage() const
 	{
 		return m_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderTexture::_destroy()
-	{
-        m_listener->onRenderTextureRelease( this );
-
-        m_image = nullptr;
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getId() const

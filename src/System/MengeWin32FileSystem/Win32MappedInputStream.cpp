@@ -22,6 +22,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32MappedInputStream::~Win32MappedInputStream()
 	{
+        UnmapViewOfFile( m_memory );
+
+        if( m_hMapping != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_hMapping );
+            m_hMapping = INVALID_HANDLE_VALUE;
+        }
+
+        if( m_hFile != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_hFile );
+            m_hFile = INVALID_HANDLE_VALUE;
+        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void Win32MappedInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -118,25 +131,6 @@ namespace Menge
         m_end = m_data + m_size;
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32MappedInputStream::_destroy()
-	{
-        UnmapViewOfFile( m_memory );
-
-		if( m_hMapping != INVALID_HANDLE_VALUE )
-		{
-			::CloseHandle( m_hMapping );
-			m_hMapping = INVALID_HANDLE_VALUE;
-		}
-
-		if( m_hFile != INVALID_HANDLE_VALUE )
-		{
-			::CloseHandle( m_hFile );
-			m_hFile = INVALID_HANDLE_VALUE;
-		}
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32MappedInputStream::read( void* _buf, size_t _count )

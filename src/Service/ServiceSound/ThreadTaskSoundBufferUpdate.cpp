@@ -22,11 +22,6 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskSoundBufferUpdate::_destroy()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ThreadTaskSoundBufferUpdate::initialize( ServiceProviderInterface * _serviceProvider, SoundSourceDesc* _soundSource )
     {
         m_serviceProvider = _serviceProvider;

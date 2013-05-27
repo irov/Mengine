@@ -53,9 +53,6 @@ namespace Menge
 
 		size_t getMemoryUse() const override;
 
-    protected:
-        bool _destroy() override;
-
 	protected:
 		RenderImageInterfacePtr m_image;
         RenderTextureInterfaceListener * m_listener;

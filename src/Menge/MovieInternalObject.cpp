@@ -73,7 +73,7 @@ namespace Menge
 	bool MovieInternalObject::_destroy()
 	{		
 		pybind::decref( m_internalObject );
-		m_internalObject = NULL;
+		m_internalObject = nullptr;
 
 		bool result = Node::_destroy();
 

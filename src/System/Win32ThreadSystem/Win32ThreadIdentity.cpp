@@ -3,10 +3,14 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32ThreadIdentity::Win32ThreadIdentity( HANDLE _handle )
-		: m_handle(_handle)
+	Win32ThreadIdentity::Win32ThreadIdentity()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Win32ThreadIdentity::setHandle( HANDLE _handle )
+    {
+        m_handle = _handle;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	HANDLE Win32ThreadIdentity::getHandle() const
 	{

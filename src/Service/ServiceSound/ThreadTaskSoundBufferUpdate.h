@@ -18,9 +18,6 @@ namespace Menge
     public:        
         void initialize( ServiceProviderInterface * _serviceProvider, SoundSourceDesc * _soundSource );
 
-    public:
-        bool _destroy() override;
-
 	public:
 		void stop();
 

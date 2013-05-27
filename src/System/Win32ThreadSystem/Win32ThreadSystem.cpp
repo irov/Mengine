@@ -1,5 +1,4 @@
 #	include "Win32ThreadSystem.h"
-#	include "Win32ThreadIdentity.h"
 
 #	include "Logger/Logger.h"
 
@@ -47,7 +46,7 @@ namespace Menge
             HANDLE handle = identity->getHandle();
             CloseHandle( handle );
 
-			delete identity;
+			m_poolWin32ThreadIdentity.destroyT( identity );
 		}
 
 		m_threadIdentities.clear();
@@ -74,10 +73,12 @@ namespace Menge
                 , error_code
                 );
 
-            return NULL;
+            return nullptr;
         }
 
-        Win32ThreadIdentity * identity = new Win32ThreadIdentity(handle);
+        Win32ThreadIdentity * identity = m_poolWin32ThreadIdentity.createT();
+        identity->setHandle( handle );
+
         m_threadIdentities.push_back( identity );
 		
 		return identity;
@@ -97,7 +98,9 @@ namespace Menge
             std::remove( m_threadIdentities.begin(), m_threadIdentities.end(), identity )
             , m_threadIdentities.end() 
             );
-	}
+    
+        m_poolWin32ThreadIdentity.destroyT( identity );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::sleep( unsigned int _ms )
 	{

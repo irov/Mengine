@@ -137,56 +137,56 @@ namespace	Menge
 		
 		Node::_deactivate();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPoint( const mt::vec2f & _p )
-	{
-		RenderCameraInterface * camera = PLAYER_SERVICE(m_serviceProvider)
-			->getCamera2D();
+	////////////////////////////////////////////////////////////////////////////
+	//bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _p, const mt::mat4f& _screenTransform )
+	//{
+	//	RenderCameraInterface * camera = PLAYER_SERVICE(m_serviceProvider)
+	//		->getCamera2D();
 
-		const Viewport & viewport = camera->getViewport();
+	//	const Viewport & viewport = camera->getViewport();
 
-		//const mt::vec2f & direction = this->getWorldDirection();
-		//const mt::vec2f & position = this->getScreenPosition();
+	//	//const mt::vec2f & direction = this->getWorldDirection();
+	//	//const mt::vec2f & position = this->getScreenPosition();
 
-		mt::box2f myBBox;
-		this->getBoundingBox( myBBox );
+	//	mt::box2f myBBox;
+	//	this->getBoundingBox( myBBox );
 
-		if( m_layer != 0 )
-		{
-			if( m_layer->testBoundingBox( viewport, myBBox, mt::box2f( _p, _p ) ) == false )
-			{
-				return false;
-			}
+	//	if( m_layer != 0 )
+	//	{
+	//		if( m_layer->testBoundingBox( viewport, myBBox, mt::box2f( _p, _p ) ) == false )
+	//		{
+	//			return false;
+	//		}
 
-			if( m_layer->testPoint( camera, this, _p ) == false )
-			{
-				return false;
-			}
-		}
-		else
-		{
-			if( mt::is_intersect( myBBox, mt::box2f( _p, _p ) ) == false )
-			{
-				return false;
-			}
+	//		if( m_layer->testPoint( camera, this, _p ) == false )
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		if( mt::is_intersect( myBBox, mt::box2f( _p, _p ) ) == false )
+	//		{
+	//			return false;
+	//		}
 
-			const mt::mat4f & wm = getWorldMatrix();
-			
-			mt::vec2f wmp;
-			mt::mul_v2_m4( wmp, _p, wm );
+	//		const mt::mat4f & wm = getWorldMatrix();
+	//		
+	//		mt::vec2f wmp;
+	//		mt::mul_v2_m4( wmp, _p, wm );
 
-			Polygon point_polygon;
-			boost::geometry::append(point_polygon, wmp);
+	//		Polygon point_polygon;
+	//		boost::geometry::append(point_polygon, wmp);
 
-			//bool result = mt::is_point_inside_polygon_wm( m_polygon, _p, wm );
-			bool result = boost::geometry::intersects( m_polygon, point_polygon );
+	//		//bool result = mt::is_point_inside_polygon_wm( m_polygon, _p, wm );
+	//		bool result = boost::geometry::intersects( m_polygon, point_polygon );
 
-			return result;
-		}
+	//		return result;
+	//	}
 
-		//bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
-		return true;
-	}
+	//	//bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
+	//	return true;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
@@ -230,8 +230,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::mat4f& _transform, const Polygon & _screenPoly, const mt::mat4f& _screenTransform )
 	{
-		bool intersect = false;
-
 		m_polygonWM.clear();
 		polygon_wm( m_polygonWM, m_polygon, _transform );
 
@@ -241,46 +239,51 @@ namespace	Menge
             return false;
         }
 
-		size_t num_of_screen_poly_points = boost::geometry::num_points(_screenPoly);
+        m_polygonScreen.clear();
+        polygon_wm( m_polygonScreen, _screenPoly, _screenTransform );
 
-		if( num_of_screen_poly_points == 1 )
-		{
-			const Polygon::ring_type & ring = _screenPoly.outer();
+        mt::box2f bb_screen;
+        if( polygon_to_box2f( bb_screen, m_polygonScreen ) == false )
+        {
+            return false;
+        }
 
-			mt::vec2f wmp;
-			mt::mul_v2_m4( wmp, ring[0], _screenTransform );
+        if( mt::is_intersect( bb, bb_screen ) == false )
+        {
+            return false;
+        }
 
-            if( mt::is_intersect( bb, wmp ) == false )
-            {
-                return false;
-            }
-
-			m_polygonScreen.clear();
-			boost::geometry::append(m_polygonScreen, wmp);
-			
-			intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
-		}
-		else
-		{
-			m_polygonScreen.clear();
-			polygon_wm( m_polygonScreen, _screenPoly, _screenTransform );
-
-            mt::box2f bb_screen;
-            if( polygon_to_box2f( bb_screen, m_polygonScreen ) == false )
-            {
-                return false;
-            }
-
-            if( mt::is_intersect( bb, bb_screen ) == false )
-            {
-                return false;
-            }
-
-			intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
-		}
-
+		bool intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
+        
 		return intersect;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _p, const mt::mat4f& _screenTransform )
+    {
+        m_polygonWM.clear();
+        polygon_wm( m_polygonWM, m_polygon, _transform );
+
+        mt::box2f bb;
+        if( polygon_to_box2f( bb, m_polygonWM ) == false )
+        {
+            return false;
+        }
+
+        mt::vec2f wmp;
+        mt::mul_v2_m4( wmp, _p, _screenTransform );
+        
+        if( mt::is_intersect( bb, wmp ) == false )
+        {
+            return false;
+        }
+
+        m_polygonScreen.clear();
+        boost::geometry::append(m_polygonScreen, wmp);
+
+        bool intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
+
+        return intersect;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testArrow( const mt::mat4f& _transform, Arrow * _arrow, const mt::mat4f& _screenTransform )
 	{
@@ -303,11 +306,10 @@ namespace	Menge
 	bool HotSpot::testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform )
 	{
         (void)_radius;
+                
+        mt::vec2f point(0.f, 0.f);
 
-        Polygon polygon_point;
-        boost::geometry::append( polygon_point, mt::vec2f(0.f, 0.f) ); 
-
-        bool intersect = this->testPolygon( _transform, polygon_point, _screenTransform );
+        bool intersect = this->testPoint( _transform, point, _screenTransform );
 
 		return intersect;
 	}

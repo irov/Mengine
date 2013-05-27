@@ -11,6 +11,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderTexture::~DX8RenderTexture()
 	{
+        if( m_depthInterface )
+        {
+            m_depthInterface->Release();
+            m_depthInterface = nullptr;
+        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void DX8RenderTexture::setSurface( IDirect3DSurface8 * _depthInterface )
@@ -42,19 +47,4 @@ namespace Menge
 	{
 		m_depthInterface = _d3dInterface;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderTexture::_destroy()
-	{
-        if( DX8Texture::_destroy() == false )
-        {
-            return false;
-        }
-
-		if( m_depthInterface )
-		{
-			m_depthInterface->Release();
-		}
-
-        return true;
-	}
-}	// namespace Menge
+}

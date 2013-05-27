@@ -34,10 +34,7 @@ namespace Menge
 
     public:
         bool time( time_t & _time ) const override;
-
-    public:
-        bool _destroy() override;
-
+        
 	private:
         ServiceProviderInterface * m_serviceProvider;
         

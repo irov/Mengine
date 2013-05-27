@@ -56,9 +56,6 @@ namespace Menge
 		size_t getHWHeight() const override;
 		PixelFormat getHWPixelFormat() const override;
 
-    protected:
-        bool _destroy() override;
-
 	protected:
 		RenderTextureInterfacePtr m_texture;
 		Rect m_rect;

@@ -30,10 +30,7 @@ namespace Menge
 	public:
         unsigned char * lock( int* _pitch, const Rect& _rect, bool _readOnly ) override;
 		void unlock() override;
-
-	public:
-		bool _destroy() override;
-        		
+                		
 	protected:
 		IDirect3DTexture8* m_d3dInterface;
 

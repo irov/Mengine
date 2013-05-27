@@ -10,9 +10,10 @@ namespace Menge
 		: public ThreadIdentity
 	{
 	public:
-		Win32ThreadIdentity( HANDLE _handle );
+		Win32ThreadIdentity();
 
 	public:
+        void setHandle( HANDLE _handle );
 		HANDLE getHandle() const;
 
 	protected:

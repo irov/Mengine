@@ -46,6 +46,13 @@ namespace Menge
 		m_mouseBuffer[1] = false;
 		m_mouseBuffer[2] = false;
 
+        m_eventsAdd.reserve(16);
+        m_events.reserve(16);
+        m_keyEventParams.reserve(16);
+        m_mouseButtonEventParams.reserve(16);
+        m_mouseMoveEventParams.reserve(16);
+        m_mousePositionEventParams.reserve(16);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

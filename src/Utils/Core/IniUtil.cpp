@@ -248,7 +248,7 @@ namespace Menge
         bool writeIniSetting( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value )
         {
             size_t len = strlen(_key);
-            _file->write( _key, len - 1 );
+            _file->write( _key, len );
             _file->write( " = ", sizeof(" = ") - 1 );
 
             size_t utf8_size = 0;

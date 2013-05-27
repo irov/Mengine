@@ -230,6 +230,7 @@ namespace Menge
 		Resolution m_contentResolution;
 		
 		ConstString m_currentRenderTarget;
+        ConstString m_defaultRenderTarget;
 
 		bool m_layer3D;
 		mt::mat4f m_renderAreaProj;

@@ -525,11 +525,9 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 #ifndef DLMALLOC_VERSION
 #define DLMALLOC_VERSION 20806
 #endif /* DLMALLOC_VERSION */
-
 #ifndef DLMALLOC_EXPORT
 #define DLMALLOC_EXPORT extern
 #endif
-
 #ifndef WIN32
 #ifdef _WIN32
 #define WIN32 1
@@ -2803,51 +2801,6 @@ static size_t traverse_and_check(mstate m);
 #define smallbin_at(M, i)   ((sbinptr)((char*)&((M)->smallbins[(i)<<1])))
 #define treebin_at(M,i)     (&((M)->treebins[i]))
 
-/* assign tree index for size S to variable I. Use x86 asm if possible  */
-#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
-#define compute_tree_index(S, I)\
-{\
-  unsigned int X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
-    I = 0;\
-  else if (X > 0xFFFF)\
-    I = NTREEBINS-1;\
-  else {\
-    unsigned int K = (unsigned) sizeof(X)*__CHAR_BIT__ - 1 - (unsigned) __builtin_clz(X); \
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
-  }\
-}
-
-#elif defined (__INTEL_COMPILER)
-#define compute_tree_index(S, I)\
-{\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
-    I = 0;\
-  else if (X > 0xFFFF)\
-    I = NTREEBINS-1;\
-  else {\
-    unsigned int K = _bit_scan_reverse (X); \
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
-  }\
-}
-
-#elif defined(_MSC_VER) && _MSC_VER>=1300
-#define compute_tree_index(S, I)\
-{\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
-    I = 0;\
-  else if (X > 0xFFFF)\
-    I = NTREEBINS-1;\
-  else {\
-    unsigned int K;\
-    _BitScanReverse((DWORD *) &K, (DWORD) X);\
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
-  }\
-}
-
-#else /* GNUC */
 #define compute_tree_index(S, I)\
 {\
   size_t X = S >> TREEBIN_SHIFT;\
@@ -2865,7 +2818,6 @@ static size_t traverse_and_check(mstate m);
     I = (K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1));\
   }\
 }
-#endif /* GNUC */
 
 /* Bit representing maximum resolved size in a treebin at i */
 #define bit_for_tree_index(i) \
@@ -2907,34 +2859,6 @@ static size_t traverse_and_check(mstate m);
 
 /* index corresponding to given bit. Use x86 asm if possible */
 
-#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
-#define compute_bit2idx(X, I)\
-{\
-  unsigned int J;\
-  J = __builtin_ctz(X); \
-  I = (bindex_t)J;\
-}
-
-#elif defined (__INTEL_COMPILER)
-#define compute_bit2idx(X, I)\
-{\
-  unsigned int J;\
-  J = _bit_scan_forward (X); \
-  I = (bindex_t)J;\
-}
-
-#elif defined(_MSC_VER) && _MSC_VER>=1300
-#define compute_bit2idx(X, I)\
-{\
-  unsigned int J;\
-  _BitScanForward((DWORD *) &J, X);\
-  I = (bindex_t)J;\
-}
-
-#elif USE_BUILTIN_FFS
-#define compute_bit2idx(X, I) I = ffs(X)-1
-
-#else
 #define compute_bit2idx(X, I)\
 {\
   unsigned int Y = X - 1;\
@@ -2946,8 +2870,6 @@ static size_t traverse_and_check(mstate m);
   N += K = Y >> (1-0) &  1;  Y >>= K;\
   I = (bindex_t)(N + Y);\
 }
-#endif /* GNUC */
-
 
 /* ----------------------- Runtime Check Support ------------------------- */
 

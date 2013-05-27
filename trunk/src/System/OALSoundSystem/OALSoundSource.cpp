@@ -17,7 +17,7 @@ namespace Menge
 		, m_volume(1.f)
 		, m_sourceId(0)
 		, m_timing(0.f)
-        , m_soundBuffer(NULL)
+        , m_soundBuffer(nullptr)
         , m_headMode(true)
         , m_playing(false)
         , m_loop(false)
@@ -36,11 +36,6 @@ namespace Menge
     {
         m_serviceProvider = _serviceProvider;
         m_soundSystem = _soundSystem;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OALSoundSource::_destroy()
-    {
-        return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::play()

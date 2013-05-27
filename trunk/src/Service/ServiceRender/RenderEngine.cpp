@@ -236,6 +236,8 @@ namespace Menge
 		
 		//m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
+        m_defaultRenderTarget = Helper::stringizeString(m_serviceProvider, "Window");
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -974,7 +976,7 @@ namespace Menge
 
 		m_currentRenderCamera = NULL;
 
-		m_currentRenderTarget = Helper::stringizeString(m_serviceProvider, "Window");
+		m_currentRenderTarget = m_defaultRenderTarget;
 		m_renderTargetResolution = m_windowResolution;
 		
 		if( RENDER_SYSTEM(m_serviceProvider)->beginScene() == false )

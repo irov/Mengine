@@ -14,9 +14,6 @@ namespace Menge
     public:        
         void update() override;
 
-    public:
-        bool _destroy() override;
-
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder );
 

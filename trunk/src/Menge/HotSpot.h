@@ -36,7 +36,7 @@ namespace Menge
 	public:
 		virtual bool testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform );
 		virtual bool testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform );
-		virtual bool testPoint( const mt::vec2f & _p );
+		virtual bool testPoint( const mt::mat4f& _transform, const mt::vec2f & _p, const mt::mat4f& _screenTransform );
 
     public:        
         void setDebugColor( uint32 _color );

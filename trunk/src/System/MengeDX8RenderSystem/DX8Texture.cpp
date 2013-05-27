@@ -25,6 +25,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX8Texture::~DX8Texture()
 	{
+        if( m_d3dInterface )
+        {
+            m_d3dInterface->Release();
+            m_d3dInterface = nullptr;
+        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void DX8Texture::initialize( IDirect3DTexture8 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
@@ -68,17 +73,6 @@ namespace Menge
 	void DX8Texture::unlock()
 	{
 		m_d3dInterface->UnlockRect(0);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX8Texture::_destroy()
-	{
-        if( m_d3dInterface )
-        {
-            m_d3dInterface->Release();
-            m_d3dInterface = NULL;
-        }
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	IDirect3DTexture8 * DX8Texture::getDXTextureInterface() const

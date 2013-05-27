@@ -8,10 +8,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderSubTexture::RenderSubTexture()
-		: m_listener(NULL)
+		: m_listener(nullptr)
 		, m_id(0)
 	{		
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderSubTexture::~RenderSubTexture()
@@ -47,13 +46,6 @@ namespace Menge
         RenderImageInterfacePtr image = m_texture->getImage();
 
 		return image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderSubTexture::_destroy()
-	{
-		m_texture = NULL;
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderSubTexture::getId() const

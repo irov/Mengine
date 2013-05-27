@@ -22,9 +22,6 @@ namespace Menge
 		bool write( const void * _data, size_t _count ) override;
 		void flush() override;
 
-    public:
-        bool _destroy() override;
-
 	private:
         ServiceProviderInterface * m_serviceProvider;
         

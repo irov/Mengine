@@ -13,19 +13,6 @@ namespace	Menge
 	Point::Point()
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Point::testHotSpot( RenderCameraInterface * _camera2D, HotSpot * _hotspot )
-	{
-		mt::vec2f position;
-        this->getCameraPosition( _camera2D, position );
-
-		if( _hotspot->testPoint( position ) == false )
-        {
-            return false;
-        }
-
-		return true;
-	}
 //#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )

@@ -14,6 +14,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     Factorable::~Factorable()
     {
+#   ifdef _DEBUG
+        if( m_destroy == false && m_factory != nullptr )
+        {
+            throw std::exception("Factorable delete!!!!!");
+        }
+#   endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::setFactory( Factory * _factory )

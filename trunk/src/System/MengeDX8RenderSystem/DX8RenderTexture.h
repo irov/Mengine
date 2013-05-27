@@ -25,13 +25,10 @@ namespace Menge
 		void setTexInterface( IDirect3DTexture8* _d3dInterface );
 		void setDepthInterface( IDirect3DSurface8* _d3dInterface );
 
-	public:
-		bool _destroy() override;
-
 	protected:
 		bool m_dirty;
 		IDirect3DSurface8* m_depthInterface;
 	};
 
     typedef IntrusivePtr<DX8RenderTexture> DX8RenderTexturePtr;
-}	// namespace Menge
+}

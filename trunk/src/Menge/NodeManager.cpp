@@ -15,7 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	NodeManager::NodeManager()
         : m_serviceProvider(nullptr)
-        , m_homeless(0)
+        , m_homeless(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ namespace Menge
         if( m_homeless )
         {
             Node * homeless = m_homeless;
-            m_homeless = NULL;
+            m_homeless = nullptr;
 
             homeless->destroyAllChild();
             delete homeless;            
@@ -56,13 +56,13 @@ namespace Menge
 	{
 		Node * node = FactoryManager::createObjectT<Node>( _type );
 
-		if( node == 0 )
+		if( node == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("NodeManager::createNode: Invalid Node Type '%s'"
 				, _type.c_str() 
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		node->setType( _type );
@@ -74,7 +74,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void NodeManager::addHomeless( Node * _homeless )
     {
-        if( m_homeless == NULL )
+        if( m_homeless == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "NodeManager::addHomeless: not initialize"
                 );

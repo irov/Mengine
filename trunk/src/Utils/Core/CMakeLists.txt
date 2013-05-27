@@ -20,6 +20,8 @@ src
 	Holder.h
 	Pool.h
     
+    BinaryVector.h
+    
     Ini.h
     Ini.cpp
     IniUtil.h

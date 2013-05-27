@@ -2802,7 +2802,7 @@ namespace Menge
                     ;
 
                 pybind::interface_<Point, pybind::bases<Node> >("Point", false)
-                    .def( "testHotSpot", &Point::testHotSpot )
+                    //.def( "testHotSpot", &Point::testHotSpot )
                     ;
 
                 pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)

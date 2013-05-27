@@ -14,7 +14,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadEngine::ThreadEngine()
-		: m_serviceProvider(NULL)      
+		: m_serviceProvider(nullptr)      
         , m_threadCount(0)
 	{
 	}

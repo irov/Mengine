@@ -12,8 +12,8 @@ namespace Menge
 	public:
 		Point();
 
-	public:
-		bool testHotSpot( RenderCameraInterface * _camera, HotSpot * _hotspot );
+	//public:
+		//bool testHotSpot( RenderCameraInterface * _camera, HotSpot * _hotspot );
 
 //#	ifndef MENGE_MASTER_RELEASE
 	protected:

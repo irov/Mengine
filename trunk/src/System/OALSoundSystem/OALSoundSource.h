@@ -22,9 +22,6 @@ namespace Menge
     public:
         void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem* _soundSystem );
 
-    public:
-        bool _destroy() override;
-
 	public:
 		void play() override;
 		void pause() override;

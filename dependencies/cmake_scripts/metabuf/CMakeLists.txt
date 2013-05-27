@@ -6,6 +6,8 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../metabuf )
 
 if(NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
+    ADD_DEFINITIONS(-D"nullptr=0")
+    ADD_DEFINITIONS(-D"nullptr_t=void*")    
 endif(NOT MSVC)
 
 set( metabuf_sources

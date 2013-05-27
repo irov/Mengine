@@ -210,8 +210,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/pystrtod.c 
 				${SOURCE_DIR}/Python/formatter_unicode.c
 				${SOURCE_DIR}/Python/formatter_string.c
-                ${SOURCE_DIR}/Python/pyctype.c
-                ${SOURCE_DIR}/Python/random.c
+                ${SOURCE_DIR}/Python/pyctype.c                
                 ${SOURCE_DIR}/Python/dtoa.c
                 
                 #${MACHDEP_SRCS}
@@ -251,10 +250,11 @@ set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_F
 
 #include_directories(${SOURCE_DIR}/Modules/zlib ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
+include_directories(${SOURCE_DIR}/Python)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
 
 if(WIN32)
-  include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python)
+  include_directories(${SOURCE_DIR}/PC)
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
   else(MSVC)

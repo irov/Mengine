@@ -16,8 +16,8 @@ namespace Menge
     {
 #   ifdef _DEBUG
         if( m_destroy == false && m_factory != nullptr )
-        {
-            throw std::exception("Factorable delete!!!!!");
+        {            
+            throw std::exception(); //Factorable delete!!!!!
         }
 #   endif
     }

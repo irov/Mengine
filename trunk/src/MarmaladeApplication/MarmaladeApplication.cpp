@@ -352,6 +352,18 @@ namespace Menge
             return false;
         }
 
+        FilePath logFilename = Helper::stringizeString( m_serviceProvider, "log.log" );
+
+        OutputStreamInterfacePtr fileLogInterface = 
+            m_fileService->openOutputFile( Helper::stringizeString(m_serviceProvider, "user"), logFilename );
+
+        if( fileLogInterface != nullptr )
+        {
+            m_fileLog = new FileLogger(fileLogInterface);
+
+            m_logService->registerLogger( m_fileLog );
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -929,7 +941,7 @@ namespace Menge
             platformName = "Marmalade";
         }
 
-        m_settings.applicationSettings.platformName = platformName;
+        m_settings.applicationSettings.platformName = Helper::stringizeString( m_serviceProvider, platformName );
         m_settings.applicationSettings.baseDir = m_currentPath;
 
         if( m_projectName.empty() == true )

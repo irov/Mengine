@@ -43,10 +43,19 @@ includepaths
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/libjpeg"
+    "../dependencies/dlmalloc"
 }
 
 files
 {
+    [Config]
+	("../src/Config")	
+	"*.h"
+    
+    [Interface]
+	("../src/Interface")	
+	"*.h"
+    
 	[MarmaladeApplication]
     ("../src/MarmaladeApplication")	
 	"*.h"

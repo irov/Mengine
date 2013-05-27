@@ -29,4 +29,3 @@ typedef void * nullptr_t;
 #   ifndef _MSC_VER
 #       define MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   endif
-

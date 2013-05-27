@@ -11,7 +11,8 @@ options
 includepaths
 {
     "./Modified/Python"
-	"../dependencies/Python/Include"	   
+	"../dependencies/Python/Include"
+    "../dependencies/dlmalloc"    
 }
 
 

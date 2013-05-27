@@ -39,6 +39,7 @@ includepaths
     "../dependencies/libjpeg"
     "../dependencies/ogg/include"
     "../dependencies/vorbis/include"
+    "../dependencies/dlmalloc"
 }
 
 
@@ -177,4 +178,9 @@ files
     ("../dependencies/pugixml")
     src/pugixml.hpp
     src/pugixml.cpp    
+    
+    [dlmalloc]
+    ("../dependencies/dlmalloc")
+    dlmalloc.h
+    dlmalloc.c    
 }

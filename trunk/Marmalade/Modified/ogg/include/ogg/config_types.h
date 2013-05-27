@@ -1,10 +1,12 @@
 #ifndef _CONFIG_TYPES_H
 #define _CONFIG_TYPES_H
 
-#define _ogg_malloc  malloc
-#define _ogg_calloc  calloc
-#define _ogg_realloc realloc
-#define _ogg_free    free
+#   include <dlmalloc.h>
+
+#define _ogg_malloc  dlmalloc
+#define _ogg_calloc  dlcalloc
+#define _ogg_realloc dlrealloc
+#define _ogg_free    dlfree
 
 #ifdef __cplusplus
 extern "C" {

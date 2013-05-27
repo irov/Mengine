@@ -27,6 +27,11 @@ extern "C" {
         return PyLong_FromSsize_t(ival);
     }
 
+    void
+        _PyRandom_Init(void)
+    {
+
+    }
     
 #undef IS_LITTLE_ENDIAN
 

@@ -37,6 +37,7 @@ includepaths
     "./Modified/ogg/include"
     "../dependencies/ogg/include"   
     "../dependencies/vorbis/include"
+    "../dependencies/dlmalloc"
 }
 
 files
@@ -148,11 +149,6 @@ files
     [Utils/Archive]
 	("../src/Utils/Archive")	
 	"*.hpp"
-	"*.cpp"
-
-    [Utils/ConfigFile]
-	("../src/Utils/ConfigFile")	
-	"*.h"
 	"*.cpp"
 
     [Utils/Core]

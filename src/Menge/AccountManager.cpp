@@ -241,26 +241,26 @@ namespace Menge
             {
                 this->unselectCurrentAccount_();
             }
-            else
-            {
-                LOGGER_WARNING(m_serviceProvider)( "AccountManager::selectAccount account '%ls' is alredy selected!"
-                    , _accountID.c_str() 
-                    );
+            //else
+            //{
+                //LOGGER_WARNING(m_serviceProvider)( "AccountManager::selectAccount account '%ls' is alredy selected!"
+                //    , _accountID.c_str() 
+                //    );
 
-                return true;
-            }            
+                //return true;
+            //}            
         }
 
         AccountInterface * account = it_find->second;
 		
-        if( account->load() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::selectAccount Can't select account '%ls'. account not load"
-                , _accountID.c_str() 
-                );
+        //if( account->load() == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)( "AccountManager::selectAccount Can't select account '%ls'. account not load"
+        //        , _accountID.c_str() 
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
         
         m_currentAccount = account;
 

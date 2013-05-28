@@ -121,6 +121,8 @@ namespace Menge
 
 	typedef std::vector<ResourcePackDesc> TVectorResourcePackDesc;
 
+    typedef std::map<ConstString, WString> TMapParams;
+
 	class ApplicationInterface
 		: public ServiceInterface
 	{
@@ -162,7 +164,7 @@ namespace Menge
 
 	public:		
 		virtual bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
-		virtual bool initializeGame( const TMapWString & _params, const String & _scriptInitParams ) = 0;
+		virtual bool initializeGame( const TMapParams & _params, const String & _scriptInitParams ) = 0;
         
 	public:
 		virtual const WString & getProjectTitle() const = 0;

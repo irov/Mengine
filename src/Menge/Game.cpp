@@ -346,7 +346,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const TMapWString & _params )
+	bool Game::initialize( const TMapParams & _params )
 	{
 		m_params = _params;
 
@@ -767,13 +767,13 @@ namespace Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_TIMING_FACTOR)( "(f)", m_timingFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Game::getParam( const WString & _paramName )
+	const WString & Game::getParam( const ConstString & _paramName )
 	{
-		TMapWString::const_iterator it_find = m_params.find( _paramName );
+		TMapParams::const_iterator it_find = m_params.find( _paramName );
 
         if( it_find == m_params.end() )
         {
-            LOGGER_ERROR(m_serviceProvider)("Game::getParam not found param '%ls'"
+            LOGGER_ERROR(m_serviceProvider)("Game::getParam not found param '%s'"
                 , _paramName.c_str()
                 );
 
@@ -785,9 +785,9 @@ namespace Menge
 		return param;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::hasParam( const WString & _paramName ) const
+	bool Game::hasParam( const ConstString & _paramName ) const
 	{
-		TMapWString::const_iterator it_find = m_params.find( _paramName );
+		TMapParams::const_iterator it_find = m_params.find( _paramName );
 
 		if( it_find == m_params.end() )
 		{

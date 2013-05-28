@@ -1,5 +1,3 @@
-#   pragma once
-
 #   include "Utils/Core/IniUtil.h"
 
 #   include "Interface/UnicodeInterface.h"
@@ -207,7 +205,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const Ini & _ini, const Char * _section, TMapWString & _values, ServiceProviderInterface * _serviceProvider )
+        bool getIniAllSettings( const Ini & _ini, const Char * _section, TMapParams & _values, ServiceProviderInterface * _serviceProvider )
         {
             size_t count = _ini.countSettings( _section );
 
@@ -217,8 +215,12 @@ namespace Menge
                 const char * value;
                 _ini.getSettings( _section, index, &key, &value );
 
-                WString w_key;
-                if( Helper::utf8ToUnicodeSize( _serviceProvider, key, UNICODE_UNSIZE, w_key ) == false )
+
+                size_t len = strlen(key);
+
+                ConstString c_key;
+                if( STRINGIZE_SERVICE(_serviceProvider)
+                    ->stringize( key, len, c_key ) == false )
                 {
                     return false;
                 }
@@ -229,7 +231,7 @@ namespace Menge
                     return false;
                 }
 
-                _values.insert( std::make_pair( w_key, w_value ) );
+                _values.insert( std::make_pair( c_key, w_value ) );
             }
 
             return true;

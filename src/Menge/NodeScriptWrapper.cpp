@@ -1794,7 +1794,7 @@ namespace Menge
             return viewport;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasGameParam( const WString & _paramName )
+        bool s_hasGameParam( const ConstString & _paramName )
         {
             if(	GAME_SERVICE(m_serviceProvider)
                 ->hasParam( _paramName ) == false )
@@ -1805,7 +1805,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParam( const WString & _paramName )
+        PyObject * s_getGameParam( const ConstString & _paramName )
         {
             if(	GAME_SERVICE(m_serviceProvider)
                 ->hasParam( _paramName ) == false )
@@ -1819,7 +1819,7 @@ namespace Menge
             return pybind::ptr(val);
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParamFloat( const WString & _paramName )
+        PyObject * s_getGameParamFloat( const ConstString & _paramName )
         {
             if(	GAME_SERVICE(m_serviceProvider)
                 ->hasParam( _paramName ) == false )
@@ -1836,7 +1836,7 @@ namespace Menge
             return pybind::ptr(value);
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParamInt( const WString & _paramName )
+        PyObject * s_getGameParamInt( const ConstString & _paramName )
         {
             if(	GAME_SERVICE(m_serviceProvider)
                 ->hasParam( _paramName ) == false )
@@ -1853,7 +1853,7 @@ namespace Menge
             return pybind::ptr(value);
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParamBool( const WString & _paramName )
+        PyObject * s_getGameParamBool( const ConstString & _paramName )
         {
             if(	GAME_SERVICE(m_serviceProvider)
                 ->hasParam( _paramName ) == false )

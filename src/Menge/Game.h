@@ -24,9 +24,7 @@ namespace Menge
 	class Node;
 	class Scene;
 	class Arrow;
-
-	class LightSystem;
-
+    
 	class Game
 		: public GameServiceInterface		
 		, public Eventable
@@ -40,7 +38,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const TMapWString & _params ) override;
+        bool initialize( const TMapParams & _params ) override;
         void finalize() override;
 
     public:
@@ -97,8 +95,8 @@ namespace Menge
 		void onTurnSound( bool _turn ) override;
 
 	public:
-		const WString & getParam( const WString & _paramName ) override;
-		bool hasParam( const WString & _paramName ) const override;
+		const WString & getParam( const ConstString & _paramName ) override;
+		bool hasParam( const ConstString & _paramName ) const override;
 
 		bool getHasWindowPanel() const;
 
@@ -139,8 +137,8 @@ namespace Menge
 		ConstString m_platformName;
 				
 		bool m_personalityHasOnClose;
-
-		TMapWString m_params;
+        
+		TMapParams m_params;
 
 	protected:
 		void initPredefinedResources_();

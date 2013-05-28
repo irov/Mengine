@@ -68,7 +68,8 @@ namespace Menge
 		
 		if( it != m_settings.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Warning: Setting '%ls' already exist"
+			LOGGER_ERROR(m_serviceProvider)( "Account::addSetting: account '%ls' setting '%s' already exist"
+                , m_name.c_str()
 				, _setting.c_str() 
 				);
 
@@ -90,7 +91,8 @@ namespace Menge
 		
 		if( it == m_settings.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::changeSetting setting '%ls' does not exist. Can't change"
+			LOGGER_ERROR(m_serviceProvider)( "Account::changeSetting account %ls setting '%s' does not exist. Can't change"
+                , m_name.c_str()
 				, _setting.c_str()
 				);
 
@@ -115,7 +117,8 @@ namespace Menge
 		
 		if( it == m_settings.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::getSetting '%ls' does not exist. Can't get"
+			LOGGER_ERROR(m_serviceProvider)( "Account::getSetting account '%ls' setting '%s' does not exist. Can't get"
+                , m_name.c_str()
 				, _setting.c_str()
 				);
 
@@ -143,7 +146,8 @@ namespace Menge
 	{
         if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::load settings not found '%s'"
+            LOGGER_ERROR(m_serviceProvider)( "Account::load account '%ls' settings not found '%s'"
+                , m_name.c_str()
                 , m_settingsPath.c_str() 
                 );
 
@@ -166,7 +170,8 @@ namespace Menge
         Ini ini(m_serviceProvider);
 		if( ini.load( file ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::load parsing Account settings failed '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Account::load parsing Account '%ls' settings failed '%s'"
+                , m_name.c_str()
 				, m_settingsPath.c_str() 
 				);
 
@@ -187,7 +192,8 @@ namespace Menge
 
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value, m_serviceProvider ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Account::load failed get setting '%ls'"
+                LOGGER_ERROR(m_serviceProvider)( "Account::load account '%ls' failed get setting '%s'"
+                    , m_name.c_str()
                     , key.c_str() 
                     );
 

@@ -16,7 +16,7 @@ namespace Menge
 
         WString personalityModule;
 		
-		TMapWString appParams;
+		TMapParams appParams;
 		TVectorWString plugins;
         TVectorWString devPlugins;
 		

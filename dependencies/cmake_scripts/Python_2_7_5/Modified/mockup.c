@@ -26,13 +26,13 @@ extern "C" {
 
 #   undef IS_LITTLE_ENDIAN
 
-#if defined _MSC_VER && _MSC_VER >= 1200
     PyObject *
-        _PyLong_FromSize_t(Py_ssize_t ival)
+        PyLong_FromSize_t(size_t ival)
     {
-        return PyLong_FromSsize_t(ival);
+        PyObject * obj = PyInt_FromLong(ival);
+
+        return obj;
     }
-#endif    
 
     void
         _PyRandom_Init(void)

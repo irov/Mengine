@@ -152,7 +152,7 @@ namespace Menge
 		if( err != 0 )
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder %s error %d"
-                , _filename
+                , _filename.c_str()
                 , err
                 );
 
@@ -189,7 +189,7 @@ namespace Menge
 		if( err != 0 )
 		{
             LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFile %s error %d"
-                , _filename
+                , _filename.c_str()
                 , err
                 );
 

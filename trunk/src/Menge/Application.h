@@ -76,7 +76,7 @@ namespace Menge
         	
 	public:
 		bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
-		bool initializeGame( const TMapWString & _params, const String & _scriptInitParams ) override;
+		bool initializeGame( const TMapParams & _params, const String & _scriptInitParams ) override;
 
 	public:
 		void setFullscreenMode( bool _fullscreen ) override;

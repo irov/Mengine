@@ -746,7 +746,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGame( const TMapWString & _params, const String & _scriptInitParams )
+	bool Application::initializeGame( const TMapParams & _params, const String & _scriptInitParams )
 	{
 		if( m_game->initialize( _params ) == false )
 		{

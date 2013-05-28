@@ -7,7 +7,7 @@
 namespace Menge
 {
     class Node;
-
+    
     class GameServiceInterface
         : public ServiceInterface
         , public InputSystemHandler
@@ -15,7 +15,7 @@ namespace Menge
         SERVICE_DECLARE("GameService")
 
     public:
-        virtual bool initialize( const TMapWString & _params ) = 0;
+        virtual bool initialize( const TMapParams & _params ) = 0;
         virtual void finalize() = 0;
 
     public:
@@ -42,8 +42,8 @@ namespace Menge
         virtual void setTimingFactor( float _timingFactor ) = 0;
 
     public:
-        virtual const WString & getParam( const WString & _paramName ) = 0;
-        virtual bool hasParam( const WString & _paramName ) const = 0;
+        virtual const WString & getParam( const ConstString & _paramName ) = 0;
+        virtual bool hasParam( const ConstString & _paramName ) const = 0;
 
     public:
         virtual void setLanguagePack( const ConstString& _packName ) = 0;

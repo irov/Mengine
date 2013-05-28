@@ -2,6 +2,7 @@
 
 #   include "Utils/Core/Ini.h"
 
+#   include "Interface/ApplicationInterface.h"
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/StreamInterface.h"
 
@@ -25,7 +26,7 @@ namespace Menge
         bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, TVectorString & _values, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, TVectorWString & _values, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, TVectorAspectRatioViewports & _values, ServiceProviderInterface * _serviceProvider );
-        bool getIniAllSettings( const Ini & _ini, const Char * _section, TMapWString & _values, ServiceProviderInterface * _serviceProvider );
+        bool getIniAllSettings( const Ini & _ini, const Char * _section, TMapParams & _values, ServiceProviderInterface * _serviceProvider );
 
         bool writeIniSetting( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value );
         bool writeIniSection( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _section, size_t _sectionSize );

@@ -726,7 +726,7 @@ namespace Menge
             AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
-			if( currentAccount == NULL )
+			if( currentAccount == nullptr )
 			{                
 				LOGGER_ERROR(m_serviceProvider)( "s_writeAccountBinaryFile: invalid write file %ls (currentAccount is none)"
                     , _filename.c_str()
@@ -767,7 +767,7 @@ namespace Menge
             AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
-			if( currentAccount == NULL )
+			if( currentAccount == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "s_loadAccountBinaryFile: invalid load file %ls (currentAccount is none)"
                     , _filename.c_str()

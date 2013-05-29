@@ -62,6 +62,9 @@ src
     ConstStringHolder.h
     ConstStringHolder.cpp
     
+    ConstStringHolderNone.h
+    ConstStringHolderNone.cpp
+    
 	IntrusivePtr.h
 	IntrusiveLinked.h
 	IntrusiveList.h

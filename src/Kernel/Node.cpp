@@ -240,7 +240,7 @@ namespace Menge
             //NODE_SERVICE(m_serviceProvider)
             //    ->addHomeless( node );            
 
-			node->setParent_( NULL );
+			node->setParent_( nullptr );
             //node->setLayer( NULL );
 
 			TListNodeChild::iterator it_node(node);
@@ -270,8 +270,8 @@ namespace Menge
                 continue;
             }
 
-            node->setParent_( NULL );
-            node->setLayer( NULL );
+            node->setParent_( nullptr );
+            node->setLayer( nullptr );
 		}
 
 		m_child.clear();
@@ -291,7 +291,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
 	{
-		if( _node == 0 )
+		if( _node == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Node::addChildren '%s' invalid add NULL node"
 				, this->getName().c_str()
@@ -307,7 +307,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildrenFront( Node * _node )
 	{
-		if( _node == 0 )
+		if( _node == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Node::addChildrenFront '%s' invalid add NULL node"
 				, this->getName().c_str()
@@ -323,7 +323,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildrenAfter( Node* _node, Node * _after )
 	{
-		if( _node == 0 )
+		if( _node == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Node::addChildrenAfter '%s' invalid add NULL node (node)"
 				, this->getName().c_str()
@@ -332,7 +332,7 @@ namespace Menge
 			return false;
 		}
 
-		if( _after == 0 )
+		if( _after == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Node::addChildrenAfter '%s' invalid add NULL node (after)"
 				, this->getName().c_str()

@@ -821,7 +821,9 @@ namespace Menge
 			//Application::get()
 				//->utf8Count( entry.text, count );
 
-			return entry.text.size();
+            size_t count = entry.text.size();
+
+			return count;
 		}
 
 		void s_setVSync( bool _vSync )
@@ -832,8 +834,10 @@ namespace Menge
 
 		bool s_getVSync()
 		{
-			return APPLICATION_SERVICE(m_serviceProvider)
+			bool vsync = APPLICATION_SERVICE(m_serviceProvider)
 				->getVSync();
+
+            return vsync;
 		}
 
 		void s_setCursorMode( bool _mode )
@@ -844,8 +848,10 @@ namespace Menge
 
 		bool s_getCursorMode()
 		{
-			return APPLICATION_SERVICE(m_serviceProvider)
+			bool cursorMode = APPLICATION_SERVICE(m_serviceProvider)
 				->getCursorMode();
+
+            return cursorMode;
 		}
 
 		bool s_setCursorIcon(const ConstString & _resourceName)

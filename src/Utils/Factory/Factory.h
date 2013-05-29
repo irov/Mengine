@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "Core/ConstString.h"
 
 namespace Menge
 {

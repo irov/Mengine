@@ -9,6 +9,32 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
+    static void s_rtrim( char * s )
+    {
+        size_t len = strlen(s);
+
+        char * e = s + len - 1;
+
+        while( *e == ' ' || *e == '\t' )
+        {
+            --e;
+        }
+
+        *(e + 1) = '\0';
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static char * s_trim( char * s )
+    {
+        while( *s == ' ' || *s == '\t' )
+        {
+            ++s;
+        }
+
+        s_rtrim( s );
+
+        return s;
+    } 
+    //////////////////////////////////////////////////////////////////////////
     Ini::Ini( ServiceProviderInterface * _serviceProvider )
         : m_serviceProvider(_serviceProvider)
         , m_currentSection(nullptr)
@@ -46,35 +72,9 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void rtrim( char * s )
-    {
-        size_t len = strlen(s);
-               
-        char * e = s + len - 1;
-
-        while( *e == ' ' || *e == '\t' )
-        {
-            --e;
-        }
-
-        *(e + 1) = '\0';
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static char * trim( char * s )
-    {
-        while( *s == ' ' || *s == '\t' )
-        {
-            ++s;
-        }
-        
-        rtrim( s );
-
-        return s;
-    } 
-    //////////////////////////////////////////////////////////////////////////
     bool Ini::loadLine_( char * _line )
     {
-        char * trim_line = trim( _line );
+        char * trim_line = s_trim( _line );
 
         size_t len = strlen( trim_line );
 
@@ -120,12 +120,12 @@ namespace Menge
             char * key_str = strstr( trim_line, key );
             size_t key_len = strlen( key );
             key_str[key_len] = '\0';
-            rtrim( key_str );
+            s_rtrim( key_str );
 
             char * value_str = strstr( trim_line + key_len + 1, value );
             size_t value_len = strlen( value );
             value_str[value_len] = '\0';
-            rtrim( value_str );
+            s_rtrim( value_str );
 
             Setting & setting = m_settings[m_settingsCount];
 

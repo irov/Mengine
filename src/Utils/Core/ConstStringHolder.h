@@ -8,18 +8,39 @@
 
 namespace Menge
 {
-    class ConstStringHolder
-        : public IntrusiveLinked<ConstStringHolder>
+    namespace Detail
+    {
+        template<class T>
+        int cs_strcmp( const T * _left, const T * _right );
+
+        template<class T>
+        size_t cs_make_hash( const T * _data );
+    }
+
+    template<class T>
+    class ConstStringHolderT
+        : public IntrusiveLinked< ConstStringHolderT<T> >
         , public Factorable
     {
     protected:
-        ConstStringHolder();        
+        ConstStringHolderT()
+            : m_reference(0)
+            , m_hash(0)
+            , m_size(0)
+        {
+            m_owner = this;
+        }
 
     private:
-        ConstStringHolder & operator = ( const ConstStringHolder & _holder );
+        ConstStringHolderT & operator = ( const ConstStringHolderT & _holder )
+        {
+            (void)_holder;
+
+            return *this;
+        }
 
     public:
-        inline const char * c_str() const
+        inline const T * c_str() const
         {
             return m_owner->_c_str();
         }
@@ -35,7 +56,7 @@ namespace Menge
         }
 
     protected:
-        virtual const char * _c_str() const
+        virtual const T * _c_str() const
         {
             return "";
         }
@@ -47,7 +68,7 @@ namespace Menge
         }
 
     public:
-        inline ConstStringHolder * owner() const
+        inline ConstStringHolderT * owner() const
         {
             return m_owner;
         }
@@ -58,29 +79,171 @@ namespace Menge
         }
 
     public:
-        bool less( ConstStringHolder * _holder );
-        bool equal( ConstStringHolder * _holder );
+        bool less( ConstStringHolderT * _holder )
+        {
+            if( m_hash < _holder->m_hash )
+            {
+                return true;
+            }
+
+            if( m_hash > _holder->m_hash )
+            {
+                return false;
+            }
+
+            if( m_owner == _holder->m_owner )
+            {
+                return false;
+            }
+
+            const T * left = this->c_str();
+            const T * right = _holder->c_str();
+
+            int res = Detail::cs_strcmp<T>( left, right );
+
+            if( res == 0 )
+            {
+                this->combine( _holder );
+
+                return false;
+            }
+
+            return res < 0;
+        }
+
+        bool equal( ConstStringHolderT * _holder )
+        {
+            if( m_owner == _holder->m_owner )
+            {
+                return true;
+            }
+
+            if( m_hash != _holder->m_hash )
+            {
+                return false;
+            }
+
+            const T * left = this->c_str();
+            const T * right = _holder->c_str();
+
+            if( Detail::cs_strcmp( left, right ) != 0 )
+            {
+                return false;
+            }
+
+            this->combine( _holder );
+
+            return true;
+        }
 
     public:
-        void combine( ConstStringHolder * _holder );            
+        void combine( ConstStringHolderT * _holder )
+        {
+            if( m_owner->m_reference > _holder->m_owner->m_reference )
+            {
+                this->combine_from( _holder, this );
+            }
+            else
+            {
+                this->combine_from( this, _holder );
+            }
+        }
+
+    protected:        
+        class ForeachCombineOwner
+        {
+        public:
+            ForeachCombineOwner( ConstStringHolderT * _out )
+                : m_out(_out)
+            {
+            }
+
+        public:
+            void operator () ( IntrusiveLinked<ConstStringHolderT> * _linked ) const
+            {
+                ConstStringHolderT * elem = static_cast<ConstStringHolderT *>(_linked);
+
+                elem->combine_owner( m_out );
+            }
+
+        protected:
+            ConstStringHolderT * m_out;
+        };
+        
+        class ForeachCombineOther
+        {
+        public:
+            ForeachCombineOther( ConstStringHolderT * _out )
+                : m_out(_out)
+            {
+            }
+
+        public:
+            void operator () ( IntrusiveLinked<ConstStringHolderT> * _linked ) const
+            {
+                ConstStringHolderT * elem = static_cast<ConstStringHolderT *>(_linked);
+
+                elem->combine_other( m_out );
+            }
+
+        protected:
+            ConstStringHolderT * m_out;
+        };
+
+        void combine_owner( ConstStringHolderT * _out )
+        {
+            this->m_owner = _out->m_owner;
+            this->m_reference >>= 1;
+
+            _out->m_owner->m_reference += this->m_reference;
+        }
+
+        void combine_other( ConstStringHolderT * _out )
+        {
+            this->m_owner->m_reference -= this->m_reference;
+            this->m_owner = _out->m_owner;
+
+            _out->m_owner->m_reference += this->m_reference;
+        }
+
+        void combine_from( ConstStringHolderT * _from, ConstStringHolderT * _out )
+        {
+            _from->m_owner->releaseString();
+
+            if( _from->unique() == true )
+            {
+                ForeachCombineOwner combineowner(_out);
+                _from->foreach_self( combineowner );
+            }
+            else
+            {
+                ConstStringHolderT * from_owner = _from->m_owner;
+
+                ForeachCombineOther combineother(_out);
+                from_owner->foreach_other( combineother );
+
+                if( from_owner->m_reference == 0 )
+                {
+                    from_owner->destroy();
+                }
+                else
+                {
+                    ForeachCombineOwner combineowner(_out);
+                    from_owner->foreach_self( combineowner );						
+                }
+            }
+
+            _from->linkall( _out );
+        }
 
     protected:
-        class ForeachCombineOwner;
-        class ForeachCombineOther;
-
-        void combine_owner( ConstStringHolder * _out );
-        void combine_other( ConstStringHolder * _out );
-
-        void combine_from( ConstStringHolder * _from, ConstStringHolder * _out );
-
-    protected:
-        friend inline void intrusive_ptr_add_ref( ConstStringHolder * _ptr )
+        friend inline void intrusive_ptr_add_ref( ConstStringHolderT * _ptr )
         {
             ++_ptr->m_reference;
             ++_ptr->m_owner->m_reference;
         }
 
-        friend inline void intrusive_ptr_release( ConstStringHolder * _ptr )
+        friend inline void intrusive_ptr_release( ConstStringHolderT * _ptr )
         {
             if( --_ptr->m_owner->m_reference == 0 )
             {
@@ -94,7 +257,11 @@ namespace Menge
         }
 
     protected:
-        void setup( const char * _data, size_t _size );
+        void setup( const char * _data, size_t _size )
+        {
+            m_hash = Detail::cs_make_hash( _data );
+            m_size = _size;
+        }
 
     protected:
         size_t m_reference;
@@ -102,8 +269,10 @@ namespace Menge
         size_t m_hash;
         size_t m_size;
 
-        mutable ConstStringHolder * m_owner;
+        mutable ConstStringHolderT * m_owner;
     };
+
+    typedef ConstStringHolderT<char> ConstStringHolder;
 
     typedef IntrusivePtr<ConstStringHolder> ConstStringHolderPtr;
 }

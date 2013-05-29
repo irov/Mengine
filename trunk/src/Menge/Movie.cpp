@@ -751,6 +751,8 @@ namespace Menge
 
         layer_slot->setName( _layer.name );
 
+        layer_slot->setMovieName( m_name );
+
 		//layer_slot->enable();
 		layer_slot->localHide(true);
         

@@ -5,7 +5,7 @@
 
 namespace Menge
 {
-    template<class Key, class T, class L = std::less<Key>>
+    template<class Key, class T, class L = std::less<Key> >
     class BinaryVector
     {
     public:

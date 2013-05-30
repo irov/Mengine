@@ -2541,13 +2541,13 @@ namespace Menge
         (void)_handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setCursorPosition( int _x, int _y )
+	void WinApplication::setCursorPosition( const mt::vec2f & _pos )
 	{
-		m_lastMouseX = _x;
-		m_lastMouseY = _y;
-		POINT cPos = { _x, _y };
+		POINT cPos = { (int)_pos.x, (int)_pos.y };
 
 		::ClientToScreen( m_hWnd, &cPos );
+
+        ::SetCursorPos( cPos.x, cPos.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showKeyboard()

@@ -2542,7 +2542,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setCursorPosition( const mt::vec2f & _pos )
-	{
+	{        
 		POINT cPos = { (int)_pos.x, (int)_pos.y };
 
 		::ClientToScreen( m_hWnd, &cPos );

@@ -136,8 +136,19 @@ namespace Menge
 
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
+            const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+                ->getContentResolution();
+
+            const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+                ->getCurrentResolution();
+
+            mt::vec2f adapt_pos;
+
+            adapt_pos.x = _pos.x / contentResolution.getWidth() * currentResolution.getWidth();
+            adapt_pos.y = _pos.y / contentResolution.getHeight() * currentResolution.getHeight();
+
             PLATFORM_SERVICE(m_serviceProvider)
-                ->setCursorPosition( _pos );
+                ->setCursorPosition( adapt_pos );
         }
 
         bool s_isValidWindowMode()

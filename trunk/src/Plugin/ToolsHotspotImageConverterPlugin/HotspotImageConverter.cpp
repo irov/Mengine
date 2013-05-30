@@ -227,7 +227,7 @@ namespace Menge
             ->loadPlugin( "MengeHotspotImageConverterPlugin.dll" );
 
         if( FILE_SERVICE(serviceProvider)
-            ->mountFileGroup( Helper::stringizeString(serviceProvider, ""), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
+            ->mountFileGroup( Helper::stringizeString(serviceProvider, ""), ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
         {
             return false;
         }

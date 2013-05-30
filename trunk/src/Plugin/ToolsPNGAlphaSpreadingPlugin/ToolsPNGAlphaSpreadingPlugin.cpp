@@ -225,7 +225,7 @@ namespace Menge
         plugin_image_codec->initialize( serviceProvider );
         
         if( FILE_SERVICE(serviceProvider)
-            ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
+            ->mountFileGroup( ConstString::none(), ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
         {
             return false;
         }

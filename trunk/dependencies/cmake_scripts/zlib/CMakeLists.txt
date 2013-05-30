@@ -4,7 +4,7 @@ project( zlib )
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../zlib )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.in ${SOURCE_DIR}/zconf.h @ONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h ${SOURCE_DIR}/zconf.h COPYONLY)
 
 # OUR SOURCES
 set( zlib_sources

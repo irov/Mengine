@@ -7,14 +7,15 @@
 #	include "Math/vec4.h"
 #	include "Core/ColourValue.h"
 
+#   include "Glyph.h"
+
 #	include <vector>
 #	include <map>
 
 namespace Menge
 {
 	class ResourceGlyph;
-	class Glyph;
-
+	
 	class ResourceFont
 		: public ResourceReference
 	{
@@ -27,9 +28,10 @@ namespace Menge
 		const ResourceGlyph * getResourceGlyph() const;
 
 	public:
-		bool hasGlyph( WChar _id, const Glyph ** _glyph ) const;
-		const Glyph * getGlyph( WChar _id ) const;
+		bool hasGlyph( GlyphChar _id, const Glyph ** _glyph ) const;
+		const Glyph * getGlyph( GlyphChar _id ) const;
 
+    public:
 		const RenderTextureInterfacePtr & getTexture() const;
 		const RenderTextureInterfacePtr & getTextureImage() const;
 		const mt::vec4f&  getTextureUV() const;

@@ -22,6 +22,8 @@ src
     
     BinaryVector.h
     
+    GlyphChar.h
+    
     Ini.h
     Ini.cpp
     IniUtil.h

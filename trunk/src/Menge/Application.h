@@ -159,7 +159,7 @@ namespace Menge
 
 		unsigned int getDebugMask() const override;
 
-		const WString & getProjectTitle() const override;
+		const ConstString & getProjectTitle() const override;
 		const ConstString & getProjectCodename() const override;
 
 	public:
@@ -259,6 +259,8 @@ namespace Menge
 		
 		ResourceCursor * m_cursorResource;
 		
+        mutable ConstString m_projectTitleCache;
+
 		ConstString m_platformName;
 		ConstString m_projectCodename;
 		

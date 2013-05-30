@@ -5,7 +5,7 @@
 
 namespace Menge
 {
-    template<class Key, class T>
+    template<class Key, class T, class L = std::less<Key>>
     class BinaryVector
     {
     public:
@@ -21,7 +21,7 @@ namespace Menge
         public:
             bool operator () ( const TBinaryPair & _left, const TBinaryPair & _right ) const
             {
-                return _left.first < _right.first;
+                return L()( _left.first, _right.first );
             }
         };
 

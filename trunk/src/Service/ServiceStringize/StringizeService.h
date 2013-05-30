@@ -5,6 +5,7 @@
 #   include "Factory/FactoryPool.h"
 
 #   include "ConstStringHolderStringSTL.h"
+#   include "ConstStringHolderWStringSTL.h"
 #   include "ConstStringHolderStringSize.h"
 
 namespace Menge
@@ -23,6 +24,7 @@ namespace Menge
 
 	public:
 		bool stringize( const char * _str, size_t _size, ConstString & _cstr ) override;
+        bool stringizeW( const wchar_t * _str, size_t _size, ConstWString & _cstr ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -47,7 +49,10 @@ namespace Menge
         typedef FactoryPool<ConstStringHolderString16, 128> FactoryPoolString16;
         FactoryPoolString16 m_poolString16;
 
-        typedef FactoryPool<ConstStringHolderStringSTL, 32> FactoryPoolSTLString;
-        FactoryPoolSTLString m_poolSTLString;
+        typedef FactoryPool<ConstStringHolderStringSTL, 32> FactoryPoolStringSTL;
+        FactoryPoolStringSTL m_poolStringSTL;
+
+        typedef FactoryPool<ConstStringHolderWStringSTL, 32> FactoryPoolWStringSTL;
+        FactoryPoolWStringSTL m_poolWStringSTL;
 	};
 }

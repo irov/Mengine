@@ -1,24 +1,24 @@
-#   include "ConstStringHolderStringSTL.h"
+#   include "ConstStringHolderWStringSTL.h"
 
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolderStringSTL::ConstStringHolderStringSTL()
+    ConstStringHolderWStringSTL::ConstStringHolderWStringSTL()
     {    
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderStringSTL::setValue( const char * _value, size_t _size )
+    void ConstStringHolderWStringSTL::setValue( const wchar_t * _value, size_t _size )
     {
         m_value.assign( _value, _size );
 
-        const char * data = m_value.c_str();
+        const wchar_t * data = m_value.c_str();
 
         this->setup( data, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderStringSTL::releaseString()
+    void ConstStringHolderWStringSTL::releaseString()
     {
-        String empty;
+        WString empty;
         m_value.swap(empty);
     }
 }

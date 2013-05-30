@@ -9,6 +9,8 @@
 
 #	include "Logger/Logger.h"
 
+#   include <utf8.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,26 +24,39 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::initialize( const ResourceFont * _resource, const WString& _text )
+	void TextLine::initialize( const ResourceFont * _resource, const String& _text )
 	{
 		WString::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );
 
 		float totalKerning = 0.0f;
 		
-		for( WString::const_iterator
-			it = _text.begin(), 
-			it_end = _text.end();
-		it != it_end; 
-		++it )
-		{	
-			WString::value_type code = (*it);
+        const char * text_str = _text.c_str();
+        size_t text_len = _text.size();
+
+        //const char * text_it = text_str;
+        //const char * text_end = text_str + text_len + 1;
+
+		for( const char
+            *text_it = text_str,
+            *text_end = text_str + text_len + 1;
+        text_it != text_end;
+        )
+		{				
+            size_t code = utf8::next(text_it, text_end);
+
+            if( code == 0 )
+            {
+                continue;
+            }
+
+            GlyphChar glyphChar;
+            glyphChar.setCode( code );
 
             const Glyph * glyph;
-
-			if ( _resource->hasGlyph( code, &glyph ) == false )
+			if ( _resource->hasGlyph( glyphChar, &glyph ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "TextLine for resource %s invalid glyph %i"
+				LOGGER_ERROR(m_serviceProvider)( "TextLine for resource %s invalid glyph %d"
 					, _resource->getName().c_str()
 					, code
 					);
@@ -52,8 +67,9 @@ namespace Menge
 			const RenderTextureInterfacePtr & image = _resource->getTexture();
 					
 			CharData charData;
-			charData.code = code;
-			
+
+			charData.code = glyphChar;	
+
 			charData.uv = glyph->getUV();
 
 			mt::vec2f imageInvSize;
@@ -81,11 +97,11 @@ namespace Menge
 			{
 				const CharData & prevChar = m_charsData.back();
 
-                WChar wchar_prev_code = (WChar)prevChar.code;
-				const Glyph * prevGlyph = _resource->getGlyph( wchar_prev_code );
+                GlyphChar prev_code = prevChar.code;
+				const Glyph * prevGlyph = _resource->getGlyph( prev_code );
 
-                WChar wchar_curr_code = (WChar)charData.code;
-				float kerning = prevGlyph->getKerning( wchar_curr_code );
+                GlyphChar curr_code = charData.code;
+				float kerning = prevGlyph->getKerning( curr_code );
 
 				totalKerning += kerning;
 			}

@@ -1558,27 +1558,29 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Application::getProjectTitle() const
+	const ConstString & Application::getProjectTitle() const
 	{
-		if( TEXT_SERVICE(m_serviceProvider) == NULL )
+		if( TEXT_SERVICE(m_serviceProvider) == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::getProjectTitle not initialize textManager"
 				);
 
-			return Utils::emptyWString();
+			return ConstString::none();
 		}
 
         ConstString key = Helper::stringizeString(m_serviceProvider, "APPLICATION_TITLE");
 
-        const TextEntry * entry = 0;
+        const TextEntry * entry = nullptr;
 		if( TEXT_SERVICE(m_serviceProvider)->existText( key, &entry ) == false )
 		{
-			return Utils::emptyWString();
+            return ConstString::none();
 		}
 
-        const WString & text = entry->text;
+        const String & text = entry->text;
 
-		return text;
+        m_projectTitleCache = Helper::stringizeString( m_serviceProvider, text );
+
+		return m_projectTitleCache;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectCodename() const

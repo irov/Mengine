@@ -3521,12 +3521,12 @@ namespace Metacode
             {
             }
         public:
-            const Menge::WChar & get_code() const
+            const Menge::GlyphChar & get_code() const
             {
                 return this->code;
             }
             
-            void swap_code( Menge::WChar & _value ) const
+            void swap_code( Menge::GlyphChar & _value ) const
             {
                 std::swap( _value, this->code);
             }
@@ -3616,12 +3616,12 @@ namespace Metacode
                     (_self->*_method)( this->advance );
                 }
                 
-                const Menge::WChar & get_id() const
+                const Menge::GlyphChar & get_id() const
                 {
                     return this->id;
                 }
                 
-                void swap_id( Menge::WChar & _value ) const
+                void swap_id( Menge::GlyphChar & _value ) const
                 {
                     std::swap( _value, this->id);
                 }
@@ -3641,12 +3641,12 @@ namespace Metacode
             protected:
             protected:
                 mutable float advance;
-                mutable Menge::WChar id;
+                mutable Menge::GlyphChar id;
             };
             
         protected:
         protected:
-            mutable Menge::WChar code;
+            mutable Menge::GlyphChar code;
             mutable mt::vec2f offset;
             mutable mt::vec4f rect;
             mutable float width;

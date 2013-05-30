@@ -98,6 +98,16 @@ namespace Metabuf
 
         _value.invalidate();
     }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( ArchiveReader & ar, Menge::GlyphChar & _value, void * _userData )
+    {
+        (void)_userData;
+
+        size_t code;
+        ar.readPOD( code );
+
+        _value.setCode( code );
+    }    
 	//////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, mt::vec2f & _value, void * _userData )
 	{

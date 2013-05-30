@@ -1331,13 +1331,21 @@ namespace Menge
 			, m_settings.applicationSettings.platformName.c_str() 
 			);
 		
-		const WString & projectTitle = m_application->getProjectTitle();
+		const ConstString & projectTitle = m_application->getProjectTitle();
+
+        WString wprojectTitle;
+        if( Helper::utf8ToUnicodeSize(m_serviceProvider, projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Application project title %s not convert to unicode"
+                , projectTitle.c_str()
+                );
+        }
 
         if( m_settings.alreadyRunning == true )
         {	
             m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
 
-            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, projectTitle ) == false )
+            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, wprojectTitle ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Application invalid running monitor"
                     );
@@ -1362,7 +1370,7 @@ namespace Menge
 			}
 			else if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
 			{
-				if( m_windowsLayer->messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", projectTitle.c_str(), MB_YESNO ) == IDNO )
+				if( m_windowsLayer->messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", wprojectTitle.c_str(), MB_YESNO ) == IDNO )
 				{
 					return false;
 				}
@@ -1443,7 +1451,7 @@ namespace Menge
         Resolution windowResolution;
         m_application->calcWindowResolution( windowResolution );
 
-        m_hWnd = this->createWindow( projectTitle, windowResolution, fullscreen );
+        m_hWnd = this->createWindow( wprojectTitle, windowResolution, fullscreen );
 
         mt::vec2f point;
         this->getCursorPosition( point );

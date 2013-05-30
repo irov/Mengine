@@ -278,17 +278,7 @@ namespace Menge
             {
                 const char * value = Value.value();
 
-                String utf8_value(value);
-
-                if( Helper::utf8ToUnicode( m_serviceProvider, utf8_value, textEntry.text ) == false )
-                {
-                    LOGGER_WARNING(m_serviceProvider)("TextManager::loadResource %s:%s invalid conver %s:%s from utf8 to unicode"
-                        , _pakName.c_str()
-                        , _path.c_str()
-                        , attribute_key
-                        , value
-                        );
-                }
+                textEntry.text.assign( value );
             }
 
             pugi::xml_attribute Font = element.attribute("Font");
@@ -334,8 +324,9 @@ namespace Menge
                 }
             }
 
+            ConstString c_attribute_key = Helper::stringizeString(m_serviceProvider, attribute_key);
             TEXT_SERVICE(m_serviceProvider)
-                ->addTextEntry( Helper::stringizeString(m_serviceProvider, attribute_key), textEntry );
+                ->addTextEntry( c_attribute_key, textEntry );
         }
 
         return true;

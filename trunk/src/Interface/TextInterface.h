@@ -8,7 +8,7 @@ namespace Menge
 {
     struct TextEntry
     {
-        WString text;
+        String text;
         ConstString font;
         float charOffset;
         float lineOffset;

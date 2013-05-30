@@ -142,6 +142,24 @@ namespace Menge
 
     public:
         //////////////////////////////////////////////////////////////////////////
+        void textfield_setText( TextField * _textField, const WString & _unicode )
+        {
+            String utf8;
+            Helper::unicodeToUtf8( m_serviceProvider, _unicode, utf8 );
+
+            _textField->setText( utf8 );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        WString textfield_getText( TextField * _textField )
+        {
+            const String & utf8 = _textField->getText();
+
+            WString unicode;
+            Helper::utf8ToUnicode( m_serviceProvider, utf8, unicode );
+
+            return unicode;            
+        }
+        //////////////////////////////////////////////////////////////////////////
         float movie_getFrameDuration( Movie * _movie )
         {
             ResourceMovie * resourceMovie = _movie->getResourceMovie();
@@ -2739,7 +2757,7 @@ namespace Menge
                     .def( "getLeftBorder" , &ParticleEmitter::getLeftBorder )
                     .def( "getRightBorder" , &ParticleEmitter::getRightBorder )
                     .def( "getDuration" , &ParticleEmitter::getDuration )
-                     .def( "getEmitterBoundingBox", &ParticleEmitter::getEmitterBoundingBox )
+                    .def( "getEmitterBoundingBox", &ParticleEmitter::getEmitterBoundingBox )
                     .def( "getEmitterPosition", &ParticleEmitter::getEmitterPosition )
                     .def( "setRandomMode", &ParticleEmitter::setRandomMode )
                     .def( "getRandomMode", &ParticleEmitter::getRandomMode )
@@ -2754,8 +2772,8 @@ namespace Menge
                     ;
 
                 pybind::interface_<TextField, pybind::bases<Node> >("TextField", false)
-                    .def( "setText", &TextField::setText )
-                    .def( "getText", &TextField::getText )
+                    .def_proxy_static( "setText", nodeScriptMethod, &NodeScriptMethod::textfield_setText )
+                    .def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
                     .def_depricated( "setHeight", &TextField::setAlphaHeight, "use setAlphaHeight" )
                     .def_depricated( "getHeight", &TextField::getAlphaHeight, "use getAlphaHeight" )
                     .def( "setAlphaHeight", &TextField::setAlphaHeight )

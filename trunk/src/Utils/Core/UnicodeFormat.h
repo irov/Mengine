@@ -16,5 +16,6 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef boost::basic_format<Char> StringFormat;
     typedef boost::basic_format<WChar> UnicodeFormat;
 }

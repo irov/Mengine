@@ -8,6 +8,8 @@
 #ifndef ZCONF_H
 #define ZCONF_H
 
+#   include <stdarg.h>
+
 /*
  * If you *really* need a unique prefix for all types and library functions,
  * compile with -DZ_PREFIX. The "standard" zlib should be compiled without it.
@@ -418,8 +420,6 @@ typedef uLong FAR uLongf;
 #ifdef HAVE_STDARG_H    /* may be set to #if 1 by ./configure */
 #  define Z_HAVE_STDARG_H
 #endif
-
-#define Z_SOLO
 
 #ifdef STDC
 #  ifndef Z_SOLO

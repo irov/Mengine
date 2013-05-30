@@ -49,7 +49,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Utils ${CMAKE_TEMP_DIR}/Utils )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/WindowsLayer ${CMAKE_TEMP_DIR}/WindowsLayer )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/MengeWin32FileSystem ${CMAKE_TEMP_DIR}/System/MengeWin32FileSystem )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/ICUUnicodeSystem ${CMAKE_TEMP_DIR}/System/ICUUnicodeSystem )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32UnicodeSystem ${CMAKE_TEMP_DIR}/System/Win32UnicodeSystem )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceProvider ${CMAKE_TEMP_DIR}/Service/ServiceProvider )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceStringize ${CMAKE_TEMP_DIR}/Service/ServiceStringize )

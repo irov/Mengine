@@ -8,7 +8,6 @@
 
 #	include "Math/vec4.h"
 
-
 namespace Menge
 {
 	class ResourceGlyph
@@ -21,8 +20,8 @@ namespace Menge
         ~ResourceGlyph();
 		
 	public:
-		bool hasGlyph( WChar _id, const Glyph ** _glyph ) const;
-		const Glyph * getGlyph( WChar _id ) const;
+		bool hasGlyph( GlyphChar _id, const Glyph ** _glyph ) const;
+		const Glyph * getGlyph( GlyphChar _id ) const;
 	
 	public:
 		float getAlphaHeight() const;
@@ -31,12 +30,12 @@ namespace Menge
 		bool _loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
-		Glyph & addGlyph_( WChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width );
+		Glyph & addGlyph_( GlyphChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width );
 
 	protected:
 		float m_alphaHeight;
 
-		typedef BinaryVector<WChar, Glyph> TMapGlyph;
+		typedef BinaryVector<GlyphChar, Glyph, GlyphCharLess> TMapGlyph;
 		TMapGlyph m_glyphs;
 	};
 }

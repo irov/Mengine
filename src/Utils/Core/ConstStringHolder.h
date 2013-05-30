@@ -4,6 +4,7 @@
 
 #	include "Core/IntrusivePtr.h"
 #	include "Core/IntrusiveLinked.h"
+
 #	include "Factory/Factorable.h"
 
 namespace Menge
@@ -25,6 +26,7 @@ namespace Menge
     protected:
         ConstStringHolderT()
             : m_reference(0)
+            , m_data(nullptr)
             , m_hash(0)
             , m_size(0)
         {
@@ -56,16 +58,13 @@ namespace Menge
         }
 
     protected:
-        virtual const T * _c_str() const
+        const T * _c_str() const
         {
-            return "";
+            return m_data;
         }
 
     protected:
-        virtual void releaseString() 
-        {
-            //Empty 
-        }
+        virtual void releaseString() = 0;
 
     public:
         inline ConstStringHolderT * owner() const
@@ -257,22 +256,21 @@ namespace Menge
         }
 
     protected:
-        void setup( const char * _data, size_t _size )
+        void setup( const T * _data, size_t _size )
         {
-            m_hash = Detail::cs_make_hash( _data );
+            m_data = _data;
+            m_hash = Detail::cs_make_hash( m_data );
             m_size = _size;
         }
 
     protected:
         size_t m_reference;
 
+        const T * m_data;
+
         size_t m_hash;
         size_t m_size;
 
         mutable ConstStringHolderT * m_owner;
     };
-
-    typedef ConstStringHolderT<char> ConstStringHolder;
-
-    typedef IntrusivePtr<ConstStringHolder> ConstStringHolderPtr;
 }

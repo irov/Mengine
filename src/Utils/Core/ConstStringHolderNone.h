@@ -29,6 +29,12 @@ namespace Menge
         }
 
     protected:
+        void releaseString() override
+        {
+            //Empty
+        }
+
+    protected:
         Factorable * _createObject() override
         {
             return nullptr;

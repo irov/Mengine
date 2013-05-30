@@ -5,7 +5,7 @@
 namespace Menge
 {
     class ConstStringHolderStringSTL
-        : public ConstStringHolder
+        : public ConstStringHolderT<char>
     {
     public:
         ConstStringHolderStringSTL();
@@ -14,17 +14,9 @@ namespace Menge
         void setValue( const char * _value, size_t _size );
 
     protected:
-        const char * _c_str() const override
-        {
-            const char * str = m_value.c_str();
-
-            return str;
-        }
-
-    protected:
         void releaseString() override;
 
-    protected:			
+    protected:
         String m_value;
     };
 }

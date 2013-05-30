@@ -6,6 +6,8 @@ src
 	StringizeService.cpp
     ConstStringHolderStringSTL.h
     ConstStringHolderStringSTL.cpp    
+    ConstStringHolderWStringSTL.h
+    ConstStringHolderWStringSTL.cpp    
     ConstStringHolderStringSize.h    
 )
 

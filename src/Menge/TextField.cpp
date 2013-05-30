@@ -322,7 +322,7 @@ namespace Menge
 		return m_outlineColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setText( const WString & _text )
+	void TextField::setText( const String & _text )
 	{
 		if( m_text == _text )
 		{
@@ -346,7 +346,7 @@ namespace Menge
 		this->invalidateVertices_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString& TextField::getText() const
+	const String& TextField::getText() const
 	{
 		return m_text;
 	}
@@ -380,14 +380,14 @@ namespace Menge
 
 		float maxlen = 0.f;
         
-        WString space_delim = L" ";
+        String space_delim = " ";
 
-		TVectorWString lines;
+		TVectorString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
-		Utils::wsplit( lines, m_text, false, L"\n" );
+		Utils::split( lines, m_text, false, "\n" );
 
-		for(TVectorWString::iterator 
+		for(TVectorString::iterator 
 			it = lines.begin(),
 			it_end = lines.end(); 
 		it != it_end; 
@@ -401,16 +401,16 @@ namespace Menge
 
 			if( textLength > m_maxWidth )
 			{
-				TVectorWString words;
-				Utils::wsplit( words, *it, false, L" " );
+				TVectorString words;
+				Utils::split( words, *it, false, " " );
 
-				WString newLine = words.front();
+				String newLine = words.front();
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
 					TextLine tl(m_serviceProvider, m_alphaHeight, m_charOffset);
 
-					WString tl_string( newLine + space_delim + words.front() );
+					String tl_string( newLine + space_delim + words.front() );
 					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
@@ -616,7 +616,7 @@ namespace Menge
 		this->setText( textEntry.text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & TextField::getDefaultText() const
+	const String & TextField::getDefaultText() const
 	{
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( m_key );
@@ -624,7 +624,7 @@ namespace Menge
 		return textEntry.text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number )
+	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number )
 	{
 		if( _key.empty() == true )
 		{
@@ -659,7 +659,7 @@ namespace Menge
 			this->setLineOffset( textEntry.lineOffset );
 		}
         
-		WString format_text = (UnicodeFormat(m_format) % textEntry.text % m_number).str();
+		String format_text = (StringFormat(m_format) % textEntry.text % m_number).str();
 
 		this->setText( format_text );
 	}

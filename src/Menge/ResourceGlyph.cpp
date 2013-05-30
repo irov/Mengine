@@ -28,24 +28,24 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	const Glyph * ResourceGlyph::getGlyph( WChar _id ) const
+	const Glyph * ResourceGlyph::getGlyph( GlyphChar _id ) const
 	{
 		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
 
 		if( it_found == m_glyphs.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceGlyph: Glyph code '%s:%i' not found"
+			LOGGER_ERROR(m_serviceProvider)( "ResourceGlyph: Glyph code '%s:%d' not found"
 				, m_name.c_str()
 				, _id
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		return &it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceGlyph::hasGlyph( WChar _id, const Glyph ** _glyph ) const
+	bool ResourceGlyph::hasGlyph( GlyphChar _id, const Glyph ** _glyph ) const
 	{
 		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
 
@@ -112,7 +112,7 @@ namespace Menge
             const Metacode::Meta_Font::Meta_Char & meta_char = *it;
 
             float width = meta_char.get_width();
-            WChar code = meta_char.get_code();
+            GlyphChar code = meta_char.get_code();
 
             const mt::vec4f & rect = meta_char.get_rect();
             const mt::vec2f & offset = meta_char.get_offset();
@@ -129,7 +129,7 @@ namespace Menge
             {
                 const Metacode::Meta_Font::Meta_Char::Meta_Kerning & meta_kerning = *it;
 
-                WChar id = meta_kerning.get_id();
+                GlyphChar id = meta_kerning.get_id();
                 float advance = meta_kerning.get_advance();                
 
                 glyph.addKerning( id, advance );
@@ -139,7 +139,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Glyph & ResourceGlyph::addGlyph_( WChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width )
+	Glyph & ResourceGlyph::addGlyph_( GlyphChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width )
 	{
 		mt::vec4f uv(_rect.x, _rect.y, _rect.x + _rect.z, _rect.y + _rect.w);
 		mt::vec2f size(_rect.z, _rect.w);

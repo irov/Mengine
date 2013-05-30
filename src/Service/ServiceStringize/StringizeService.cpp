@@ -27,7 +27,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool StringizeService::stringize( const char * _str, size_t _size, ConstString & _cstr )
 	{
-        ConstStringHolder * stringHolder = nullptr;
+        ConstStringHolderT<char> * stringHolder = nullptr;
         
         if( _size < 16 )
         {
@@ -66,7 +66,7 @@ namespace Menge
         }
         else
         {
-            ConstStringHolderStringSTL * stringSTL = m_poolSTLString.createObjectT();
+            ConstStringHolderStringSTL * stringSTL = m_poolStringSTL.createObjectT();
             stringSTL->setValue( _str, _size );
 
             stringHolder = stringSTL;
@@ -75,5 +75,15 @@ namespace Menge
         _cstr = ConstString(stringHolder);
 
 		return true;
-	}	
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool StringizeService::stringizeW( const wchar_t * _str, size_t _size, ConstWString & _cstr )
+    {
+        ConstStringHolderWStringSTL * wstringSTL = m_poolWStringSTL.createObjectT();
+        wstringSTL->setValue( _str, _size );
+
+        _cstr = ConstWString(wstringSTL);
+
+        return true;
+    }
 }

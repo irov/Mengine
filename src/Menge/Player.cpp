@@ -899,7 +899,7 @@ namespace Menge
 		: public VisitorFactoryManager
 	{
 	public:
-		VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, WStringstream & _ss )
+		VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, Stringstream & _ss )
 			: m_serviceProvider(_serviceProvider)
             , m_ss(_ss)
 		{
@@ -923,20 +923,12 @@ namespace Menge
 				return;
 			}
 
-            String str_type = _type.c_str();
-
-            WString unicode_type;
-            if( Helper::utf8ToUnicode( m_serviceProvider, str_type, unicode_type ) == false )
-            {
-                return;
-            }
-
-			m_ss << L"Factory Object " << unicode_type << L": " << count << L"\n";
+			m_ss << "Factory Object " << _type.c_str() << ": " << count << "\n";
 		}
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
-		WStringstream & m_ss;
+		Stringstream & m_ss;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
@@ -998,31 +990,31 @@ namespace Menge
 
 			size_t particlesCount = 0;
 
-			WStringstream ss;
+			Stringstream ss;
 			
 			ss << L"FPS: " << m_fps << std::endl;
 
             double sreenfillrate = redi.fillrate / double(m_contentResolution.getWidth() * m_contentResolution.getHeight());
 
-            ss << L"Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << redi.object << " Triangle " << redi.triangle << ")" << std::endl;
-			ss << L"DIP: " << redi.dips << std::endl;
-			ss << L"Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << std::endl;
-			ss << L"Texture Count: " << redi.textureCount << std::endl;
-			ss << L"Particles: " << particlesCount << std::endl;
+            ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << redi.object << " Triangle " << redi.triangle << ")" << std::endl;
+			ss << "DIP: " << redi.dips << std::endl;
+			ss << "Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << std::endl;
+			ss << "Texture Count: " << redi.textureCount << std::endl;
+			ss << "Particles: " << particlesCount << std::endl;
 
             MousePickerSystemInterface * mousePickerSystem = 
                 PLAYER_SERVICE(m_serviceProvider)->getMousePickerSystem();
 
-			ss << L"PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
+			ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
 
 			VisitorPlayerFactoryManager pfmv(m_serviceProvider, ss);
 
 			NODE_SERVICE(m_serviceProvider)
 				->visitFactories( &pfmv );
 
-            ss << L"Entities: " << Entity::s_enum << std::endl;
+            ss << "Entities: " << Entity::s_enum << std::endl;
 
-			WString text = ss.str();
+			String text = ss.str();
 
 			m_debugText->setText( text );
 			m_debugText->render( m_camera2D, debugMask );

@@ -60,16 +60,16 @@ namespace Menge
 		void setMaxLen( float _len );
 		float getMaxLen() const;
 
-		void setText( const WString& _text );
-		const WString& getText() const;
+		void setText( const String& _text );
+		const String& getText() const;
 
-		const WString & getDefaultText() const;
+		const String & getDefaultText() const;
 
 
 		void setTextByKey( const ConstString& _key );
 		const ConstString & getTextKey() const;
 
-		void setTextByKeyFormat( const ConstString& _key, const WString & _format, size_t _number );
+		void setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number );
 
 		void setAlphaHeight( float _height );
 		float getAlphaHeight() const;
@@ -167,8 +167,8 @@ namespace Menge
 
 		ColourValue m_outlineColor;
 
-		WString m_text;
-		WString m_format;
+		String m_text;
+		String m_format;
 		size_t m_number;
 
 		float m_alphaHeight;		

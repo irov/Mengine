@@ -8,7 +8,7 @@ namespace Menge
 {
     template<size_t I_Size>
     class ConstStringHolderStringSize
-        : public ConstStringHolder
+        : public ConstStringHolderT<char>
     {
     public:
         void setValue( const char * _value, size_t _size )
@@ -20,9 +20,9 @@ namespace Menge
         }
 
     protected:
-        const char * _c_str() const override
+        void releaseString() override
         {
-            return m_value;
+            //Empty
         }
 
     protected:			

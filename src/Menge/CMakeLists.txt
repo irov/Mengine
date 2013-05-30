@@ -395,6 +395,7 @@ INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/simpleini
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/pugixml/src
+    ${THIRDPARTY_DIR}/utf8/source
 )
 
 

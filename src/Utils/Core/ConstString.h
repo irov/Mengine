@@ -126,9 +126,9 @@ namespace Menge
         }
 
 	public:
-        typedef ConstStringHolderT<char> TConstStringHolder;
-        typedef IntrusivePtr<ConstStringHolder> TConstStringHolderPtr;
-		ConstStringHolderPtr m_holder;
+        typedef ConstStringHolderT<T> TConstStringHolder;
+        typedef IntrusivePtr<TConstStringHolder> TConstStringHolderPtr;
+		TConstStringHolderPtr m_holder;
 	};
     //////////////////////////////////////////////////////////////////////////
     template<class T>
@@ -158,4 +158,5 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     typedef ConstStringT<char> ConstString;
+    typedef ConstStringT<wchar_t> ConstWString;
 }

@@ -4,7 +4,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolderPythonString::ConstStringHolderPythonString()
-        : m_value(NULL)
+        : m_value(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -31,6 +31,6 @@ namespace Menge
     void ConstStringHolderPythonString::releaseString()
     {
         pybind::decref( m_value );
-        m_value = NULL;
+        m_value = nullptr;
     }
 }

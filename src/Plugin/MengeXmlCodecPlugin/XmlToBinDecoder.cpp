@@ -11,6 +11,7 @@
 #	include "xml2metabuf/Xml2Metacode.hpp"
 
 #   include <stdio.h>
+#   include <utf8.h>
 
 namespace Menge
 {
@@ -37,6 +38,21 @@ namespace Menge
         _metabuf->write( utf8_size );
 
         _metabuf->writeCount( &_value[0], utf8_size );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_write_utf8( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
+    {
+        (void)_user;
+
+        size_t len = strlen(_value);
+        const char * text_it = _value;
+        const char * text_end = _value + len + 1;
+        
+        size_t code = utf8::next(text_it, text_end);
+
+        _metabuf->write( code );
 
         return true;
     }
@@ -171,6 +187,7 @@ namespace Menge
 
         xml_metabuf.addSerializator( "wstring", &s_write_wstring, (void*)m_serviceProvider );
         xml_metabuf.addSerializator( "wchar_t", &s_write_wchar_t, (void*)m_serviceProvider );
+        xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void*)m_serviceProvider );
 		
         TBlobject header_buf(Metabuf::header_size);
 

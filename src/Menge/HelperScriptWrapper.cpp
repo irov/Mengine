@@ -86,17 +86,28 @@ namespace Menge
             return pybind::detail::is_class( _obj );
         }
 
-        void s_addText( const ConstString & _id, const WString & _text, const ConstString & _font, float _charOffset, float _lineOffset )
+        bool s_addText( const ConstString & _id, const WString & _text, const ConstString & _font, float _charOffset, float _lineOffset )
         {
-            TextEntry te;
+            TextEntry te;                                   
 
-            te.text = _text;
+            if( Helper::unicodeToUtf8( m_serviceProvider, _text, te.text ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Menge.addText %s text %ls not convert to utf8"
+                    , _id.c_str()
+                    , _text.c_str()
+                    );
+
+                return false;
+            }
+
             te.font = _font;
             te.charOffset = _charOffset;
             te.lineOffset = _lineOffset;
 
             TEXT_SERVICE(m_serviceProvider)
                 ->addTextEntry( _id, te );
+
+            return true;
         }
         
         const ConstString & s_getLanguagePack()
@@ -808,7 +819,18 @@ namespace Menge
 			const TextEntry & entry = TEXT_SERVICE(m_serviceProvider)
 				->getTextEntry( _key );
 
-			return entry.text;
+            WString unicode;
+            if( Helper::utf8ToUnicode(m_serviceProvider, entry.text, unicode ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid text key %s convert %s to unicode"
+                    , _key.c_str()
+                    , entry.text.c_str()                    
+                    );
+
+                pybind::throw_exception();
+            }
+
+			return unicode;
 		}
 
 		size_t s_getTextCharCountByKey( const ConstString& _key )

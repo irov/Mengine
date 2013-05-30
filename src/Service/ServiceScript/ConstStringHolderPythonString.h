@@ -7,7 +7,7 @@
 namespace Menge
 {
     class ConstStringHolderPythonString
-        : public ConstStringHolder
+        : public ConstStringHolderT<char>
     {
     public:
         ConstStringHolderPythonString();
@@ -15,14 +15,6 @@ namespace Menge
 
     public:
         void setPythonObject( PyObject * _value );
-
-    protected:
-        const char * _c_str() const override
-        {
-            const char * str = pybind::string_to_char( m_value );
-
-            return str;
-        }
 
     protected:
         void releaseString() override;

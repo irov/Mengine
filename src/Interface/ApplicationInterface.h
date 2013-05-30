@@ -167,7 +167,7 @@ namespace Menge
 		virtual bool initializeGame( const TMapParams & _params, const String & _scriptInitParams ) = 0;
         
 	public:
-		virtual const WString & getProjectTitle() const = 0;
+		virtual const ConstString & getProjectTitle() const = 0;
 		virtual const ConstString & getProjectCodename() const = 0;
 
 	public:

@@ -4,6 +4,7 @@
 
 #	include "Math/vec4.h"
 
+#   include "Core/GlyphChar.h"
 #	include "Core/BinaryVector.h"
 
 namespace Menge
@@ -21,8 +22,8 @@ namespace Menge
 		const mt::vec2f & getSize() const;
 
 	public:
-		void addKerning( WChar _char, float _kerning );
-		float getKerning( WChar _char ) const;
+		void addKerning( GlyphChar _char, float _kerning );
+		float getKerning( GlyphChar _char ) const;
 
 	protected:
 		mt::vec4f m_uv;
@@ -30,7 +31,7 @@ namespace Menge
 		float m_ratio;
 		mt::vec2f m_size;
 
-		typedef BinaryVector<WChar, float> TMapKerning;
+		typedef BinaryVector<GlyphChar, float, GlyphCharLess> TMapKerning;
 		TMapKerning m_kernings;
 	};
 }

@@ -66,7 +66,7 @@ namespace Menge
 		return m_outlineImageFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceFont::hasGlyph( WChar _id, const Glyph ** _glyph ) const
+	bool ResourceFont::hasGlyph( GlyphChar _id, const Glyph ** _glyph ) const
 	{
 		if( this->isCompile() == false )
 		{
@@ -83,11 +83,11 @@ namespace Menge
 		return m_textureUV;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Glyph * ResourceFont::getGlyph( WChar _id ) const
+	const Glyph * ResourceFont::getGlyph( GlyphChar _id ) const
 	{
 		if( this->isCompile() == false )
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		const Glyph * glyph = m_resourceGlyph->getGlyph( _id );
@@ -191,7 +191,9 @@ namespace Menge
 			return false;
 		}
 
-		const Glyph * glyph = m_resourceGlyph->getGlyph(L'A');
+        GlyphChar gc_A;
+        gc_A.setCode('A');
+		const Glyph * glyph = m_resourceGlyph->getGlyph(gc_A);
 	
 		if( glyph == 0 )
 		{

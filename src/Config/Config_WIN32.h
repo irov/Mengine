@@ -18,14 +18,22 @@
 // Compiler
 #	define MENGE_COMPILER_MSVC	(1)
 
+#if defined( _MSC_VER )
 #   define MENGE_COMPILER MENGE_COMPILER_MSVC
 #   define MENGE_COMP_VER _MSC_VER
+#endif
 
+#if MENGE_COMPILER == MENGE_COMPILER_MSVC
 #   if MENGE_COMP_VER >= 1200
 #       define FORCEINLINE __forceinline
-#   else
+#   endif
+#elif defined(__MINGW32__)
+#   if !defined(FORCEINLINE)
 #       define FORCEINLINE __inline
 #   endif
+#else
+#   define FORCEINLINE __inline
+#endif
 
 //	exclude all dev stuff
 

@@ -10,7 +10,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://www.cmake.org/files/v2.8/cmake-2.8.10.2-win32-x86.zip
-%toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib127.zip
+%toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib128.zip
 %toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-9-1-release.tar.gz
 %toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng162.zip
 %toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr9.zip
@@ -49,8 +49,8 @@ if EXIST CMake rmdir /s /q CMake
 move cmake-2.8.10.2-win32-x86 CMake
 
 if EXIST zlib rmdir /s /q zlib
-7za x -y zlib127.zip
-move zlib-1.2.7 zlib
+7za x -y zlib128.zip
+move zlib-1.2.8 zlib
 
 if EXIST pthreads rmdir /s /q pthreads
 7za x -y pthreads-w32-2-9-1-release.tar.gz
@@ -102,13 +102,14 @@ move svn-win32-1.6.6 svn
 :: svn\bin\svn export --force http://svn.xiph.org/tags/ogg/libogg-1.1.3 ogg
 :: svn\bin\svn export --force http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0 vorbis
 :: svn\bin\svn export --force http://svn.xiph.org/tags/theora/theora-1.0beta3 theora
-svn\bin\svn checkout http://box2d.googlecode.com/svn/trunk box2d
+:: svn\bin\svn checkout http://box2d.googlecode.com/svn/trunk box2d
 svn\bin\svn checkout http://pugixml.googlecode.com/svn/trunk pugixml
 svn\bin\svn checkout https://svn.code.sf.net/p/pybind/code/trunk pybind
 svn\bin\svn checkout https://svn.code.sf.net/p/metabuf/code/trunk metabuf
-svn\bin\svn checkout https://svn.code.sf.net/p/xxbind/code/trunk xxbind
-svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator
-svn\bin\svn checkout http://simpleini.googlecode.com/svn/trunk simpleini
+svn\bin\svn checkout http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
+:: svn\bin\svn checkout https://svn.code.sf.net/p/xxbind/code/trunk xxbind
+::svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator
+:: svn\bin\svn checkout http://simpleini.googlecode.com/svn/trunk simpleini
 ::svn\bin\svn export --force -r2465 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
 
 goto end

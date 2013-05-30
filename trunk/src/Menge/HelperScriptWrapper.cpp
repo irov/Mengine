@@ -134,6 +134,12 @@ namespace Menge
             return utf8;
         }
 
+        void s_setCursorPosition( const mt::vec2f & _pos )
+        {
+            PLATFORM_SERVICE(m_serviceProvider)
+                ->setCursorPosition( _pos );
+        }
+
         bool s_isValidWindowMode()
         {
             //bool check = APPLICATION_SERVICE(m_serviceProvider)
@@ -1185,5 +1191,6 @@ namespace Menge
 
         pybind::def_functor( "utf8ToUnicode", helperScriptMethod, &HelperScriptMethod::s_utf8ToUnicode );
         pybind::def_functor( "unicodeToUtf8", helperScriptMethod, &HelperScriptMethod::s_unicodeToUtf8 );
+        pybind::def_functor( "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
 	}
 }

@@ -17,6 +17,7 @@
 #   define PUGIXML_NO_STL
 #   define PUGIXML_NO_XPATH
 
+#   define MENGE_MASTER_RELEASE
 #   define MENGINE_CONFIG Config_Marmalade.h
     
 #	define override

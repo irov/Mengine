@@ -1451,7 +1451,7 @@ namespace Menge
         Resolution windowResolution;
         m_application->calcWindowResolution( windowResolution );
 
-        m_hWnd = this->createWindow( wprojectTitle, windowResolution, false );
+        m_hWnd = this->createWindow( wprojectTitle, windowResolution, fullscreen );
 
         mt::vec2f point;
         this->getCursorPosition( point );

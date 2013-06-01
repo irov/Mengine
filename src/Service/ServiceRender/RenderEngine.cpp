@@ -158,14 +158,16 @@ namespace Menge
             ts0.colorArg1 = TARG_TEXTURE;
             ts0.colorArg2 = TARG_DIFFUSE;
             ts0.alphaOp = TOP_SELECTARG1;
-            ts0.alphaArg2 = TARG_DIFFUSE;
+            ts0.alphaArg1 = TARG_DIFFUSE;
 
 			RenderTextureStage & ts1 = mt.textureStage[1];
 
             ts1.colorOp = TOP_SELECTARG1;
             ts1.colorArg1 = TARG_CURRENT;
-            ts1.alphaOp = TOP_SELECTARG1;
-            ts1.alphaArg1 = TARG_TEXTURE;            
+            ts1.alphaOp = TOP_MODULATE;
+            ts1.alphaArg1 = TARG_TEXTURE;
+            ts1.alphaArg2 = TARG_CURRENT;
+            ts1.texCoordIndex = 1;
 
 			this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "ExternalAlpha"), mt );
 		}

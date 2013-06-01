@@ -14,8 +14,9 @@ src
 	#ImageDecoderMNE.h
 	ImageDecoderPNG.cpp
 	ImageDecoderPNG.h
-    #ImageDecoderDDS.cpp
-    #ImageDecoderDDS.h
+    ImageDecoderDDZ.cpp
+    ImageDecoderDDZ.h
+    DDSHeader.h
 	#ImageDecoderCombinerRGBAndAlpha.cpp
     #ImageDecoderCombinerRGBAndAlpha.h
 

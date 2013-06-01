@@ -684,24 +684,24 @@ namespace Menge
         //    m_fullscreen = true;
         //}
 
-		if( m_fullscreen == true )
-		{
-            Resolution desktopResolution;
-            m_platform->getDesktopResolution( desktopResolution );
+		//if( m_fullscreen == true )
+		//{
+  //          Resolution desktopResolution;
+  //          m_platform->getDesktopResolution( desktopResolution );
 
-            m_currentResolution = desktopResolution;
-		}
-		else
-		{
-			this->calcWindowResolution( m_currentResolution );
-		}
+  //          m_currentResolution = desktopResolution;
+		//}
+		//else
+		//{
+        this->calcWindowResolution( m_currentResolution );
+		//}
 
 		RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
 
 		LOGGER_WARNING(m_serviceProvider)( "Application::createRenderWindow current resolution %d %d %s"			
 			, m_currentResolution.getWidth()
 			, m_currentResolution.getHeight()
-            , m_fullscreen ? "Fullscreen" : "Window"
+            , "Window"
 			);
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
@@ -713,7 +713,7 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
-		m_createRenderWindow = RENDER_SERVICE(m_serviceProvider)->createRenderWindow( m_currentResolution, m_contentResolution, m_renderViewport, m_bits, m_fullscreen,
+		m_createRenderWindow = RENDER_SERVICE(m_serviceProvider)->createRenderWindow( m_currentResolution, m_contentResolution, m_renderViewport, m_bits, false,
 														_renderWindowHandle, m_FSAAType, m_FSAAQuality );
 
 		if( m_createRenderWindow == false )
@@ -724,14 +724,14 @@ namespace Menge
 			return false;
 		}
 		
-		if( m_fullscreen == true )
-		{
-			m_platform->notifyCursorClipping( m_renderViewport );
-		}
-		else
-		{
-			m_platform->notifyCursorUnClipping();
-		}
+		//if( m_fullscreen == true )
+		//{
+		//	m_platform->notifyCursorClipping( m_renderViewport );
+		//}
+		//else
+		//{
+        m_platform->notifyCursorUnClipping();
+		//}
 
 		//m_renderEngine->setRenderViewport( renderViewport );
 
@@ -741,7 +741,7 @@ namespace Menge
         m_game->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
-            ->notify( "CHANGE_WINDOW_RESOLUTION", m_fullscreen, m_currentResolution );
+            ->notify( "CHANGE_WINDOW_RESOLUTION", false, m_currentResolution );
 			
 		return true;
 	}

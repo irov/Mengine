@@ -2945,7 +2945,7 @@ namespace Menge
 	void DX8RenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp
 		,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::setTextureStageAlphaOp device not created"
                 );

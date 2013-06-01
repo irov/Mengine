@@ -686,20 +686,20 @@ namespace Menge
             mt::vec2f mouse_pos;
             //const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
             //    ->getCursorPosition();
-            if( m_arrow )
-            {
-                const mt::vec3f & arrow_pos = m_arrow->getLocalPosition();
-                mouse_pos.x = arrow_pos.x;
-                mouse_pos.y = arrow_pos.y;
-            }
-            else
-            {
-                const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-                    ->getCursorPosition();
+            //if( m_arrow )
+            //{
+            //    const mt::vec3f & arrow_pos = m_arrow->getLocalPosition();
+            //    mouse_pos.x = arrow_pos.x;
+            //    mouse_pos.y = arrow_pos.y;
+            //}
+            //else
+            //{
+            const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
+                ->getCursorPosition();
 
-                mouse_pos.x = pos.x;
-                mouse_pos.y = pos.y;
-            }
+            mouse_pos.x = pos.x;
+            mouse_pos.y = pos.y;
+            //}
 
 			m_mousePickerSystem->update( mouse_pos );
 		}

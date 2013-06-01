@@ -129,7 +129,7 @@ namespace Menge
             return NULL;
         }
 
-        PyObject * code = pybind::marshal_get_object( (char *)&code_buf[0] + 8, code_size - 8 );
+        PyObject * code = pybind::marshal_get_object( (char *)&code_buf[0] + 8, uncompress_size - 8 );
 
         if( code == NULL )
         {

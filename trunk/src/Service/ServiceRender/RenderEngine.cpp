@@ -38,7 +38,7 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
         , m_maxQuadCount(0)
 		, m_windowCreated(false)
 		, m_vsync(false)
@@ -49,14 +49,14 @@ namespace Menge
 		, m_currentIBHandle(0)
 		, m_currentBaseVertexIndex(0)
 		, m_currentTextureStages(0)
-		, m_currentRenderCamera(NULL)
-		, m_nullTexture(NULL)
+		, m_currentRenderCamera(nullptr)
+		, m_nullTexture(nullptr)
 		, m_currentVertexDeclaration(0)
 		, m_maxPrimitiveVertices2D(0)
 		, m_maxIndexCount(0)
         , m_idEnumerator(0)
         , m_vbPos(0)
-        , m_currentRenderPass(NULL)
+        , m_currentRenderPass(nullptr)
 		, m_depthBufferWriteEnable(false)
 		, m_alphaBlendEnable(false)
 		, m_alphaTestEnable(false)
@@ -65,6 +65,7 @@ namespace Menge
 		//, m_renderOffset(0.f, 0.f)
 		//, m_megatextures(NULL)
         , m_debugMode(false)
+        , m_currentMaterial(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -153,11 +154,12 @@ namespace Menge
 
 			RenderTextureStage & ts0 = mt.textureStage[0];
 
-			ts0.colorOp = TOP_MODULATE;
-			ts0.colorArg1 = TARG_TEXTURE;
-			ts0.colorArg2 = TARG_DIFFUSE;
-			ts0.alphaOp = TOP_SELECTARG1;
-			ts0.alphaArg1 = TARG_DIFFUSE;
+            ts0.colorOp = TOP_MODULATE;
+            ts0.colorArg1 = TARG_TEXTURE;
+            ts0.colorArg2 = TARG_DIFFUSE;
+
+            ts0.alphaOp = TOP_SELECTARG1;
+            ts0.alphaArg2 = TARG_DIFFUSE;
 
 			RenderTextureStage & ts1 = mt.textureStage[1];
 
@@ -495,7 +497,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		return it_found->second;
+        RenderMaterialGroup * materialGroup = it_found->second;
+
+		return materialGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::removeMaterialGroup( const ConstString & _name )
@@ -1046,7 +1050,7 @@ namespace Menge
 		{
 			RenderTextureInterfacePtr texture = _renderObject->textures[stageId];
 
-			if( texture == NULL )
+			if( texture == nullptr )
 			{
 				texture = m_nullTexture;
 			}
@@ -1061,92 +1065,107 @@ namespace Menge
 				RENDER_SYSTEM(m_serviceProvider)
                     ->setTexture( stageId, image );
 			}
+        }
 
-			if( m_currentMaterial != material )
-			{
-				RenderTextureStage & current_stage = m_currentTextureStage[stageId];
-				const RenderTextureStage & stage = material->textureStage[stageId];
+        if( m_currentMaterial != material )
+        {
+            for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
+            {
+                RenderTextureStage & current_stage = m_currentTextureStage[stageId];
+                const RenderTextureStage & stage = material->textureStage[stageId];
 
-				if( current_stage.filter != stage.filter )
-				{
-					current_stage.filter = stage.filter;
+                if( current_stage.filter != stage.filter )
+                {
+                    current_stage.filter = stage.filter;
 
-					RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( stageId, TFT_MAGNIFICATION, current_stage.filter );
-					RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( stageId, TFT_MINIFICATION, current_stage.filter );
-				}
+                    RENDER_SYSTEM(m_serviceProvider)
+                        ->setTextureStageFilter( stageId, TFT_MAGNIFICATION, current_stage.filter );
 
-				if( current_stage.addressU != stage.addressU
-					|| current_stage.addressV != stage.addressV )
-				{
-					current_stage.addressU = stage.addressU;
-					current_stage.addressV = stage.addressV;
+                    RENDER_SYSTEM(m_serviceProvider)
+                        ->setTextureStageFilter( stageId, TFT_MINIFICATION, current_stage.filter );
+                }
 
-					RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( stageId
-						, current_stage.addressU
-						, current_stage.addressV );
-				}
+                if( current_stage.addressU != stage.addressU
+                    || current_stage.addressV != stage.addressV )
+                {
+                    current_stage.addressU = stage.addressU;
+                    current_stage.addressV = stage.addressV;
 
-				if( current_stage.colorOp != stage.colorOp
-					|| current_stage.colorArg1 != stage.colorArg1
-					|| current_stage.colorArg2 != stage.colorArg2 )
-				{
-					current_stage.colorOp = stage.colorOp;
-					current_stage.colorArg1 = stage.colorArg1;
-					current_stage.colorArg2 = stage.colorArg2;
+                    RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( stageId
+                        , current_stage.addressU
+                        , current_stage.addressV );
+                }
 
-					RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( stageId
-						, current_stage.colorOp
-						, current_stage.colorArg1
-						, current_stage.colorArg2 );
-				}
+                if( current_stage.colorOp != stage.colorOp
+                    || current_stage.colorArg1 != stage.colorArg1
+                    || current_stage.colorArg2 != stage.colorArg2 )
+                {
+                    current_stage.colorOp = stage.colorOp;
+                    current_stage.colorArg1 = stage.colorArg1;
+                    current_stage.colorArg2 = stage.colorArg2;
 
-				if( current_stage.alphaOp != stage.alphaOp
-					|| current_stage.alphaArg1 != stage.alphaArg1
-					|| current_stage.alphaArg2 != stage.alphaArg2 )
-				{
-					current_stage.alphaOp = stage.alphaOp;
-					current_stage.alphaArg1 = stage.alphaArg1;
-					current_stage.alphaArg2 = stage.alphaArg2;
+                    RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( stageId
+                        , current_stage.colorOp
+                        , current_stage.colorArg1
+                        , current_stage.colorArg2 );
+                }
 
-					RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( stageId
-						, current_stage.alphaOp
-						, current_stage.alphaArg1
-						, current_stage.alphaArg2 );
-				}
-			}
-		}
+                if( current_stage.alphaOp != stage.alphaOp
+                    || current_stage.alphaArg1 != stage.alphaArg1
+                    || current_stage.alphaArg2 != stage.alphaArg2 )
+                {
+                    current_stage.alphaOp = stage.alphaOp;
+                    current_stage.alphaArg1 = stage.alphaArg1;
+                    current_stage.alphaArg2 = stage.alphaArg2;
 
-		if( m_currentMaterial != material )
-		{
+                    RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( stageId
+                        , current_stage.alphaOp
+                        , current_stage.alphaArg1
+                        , current_stage.alphaArg2 );
+                }
+            }
+
 			if( m_depthBufferWriteEnable != material->depthBufferWriteEnable )
 			{
 				m_depthBufferWriteEnable = material->depthBufferWriteEnable;
-				RENDER_SYSTEM(m_serviceProvider)->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+
+				RENDER_SYSTEM(m_serviceProvider)
+                    ->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
 			}
 
 			if( m_alphaTestEnable != material->alphaTestEnable )
 			{
 				m_alphaTestEnable = material->alphaTestEnable;
-				RENDER_SYSTEM(m_serviceProvider)->setAlphaTestEnable( m_alphaTestEnable );
+
+				RENDER_SYSTEM(m_serviceProvider)
+                    ->setAlphaTestEnable( m_alphaTestEnable );
 			}
 
 			if( m_alphaBlendEnable != material->alphaBlendEnable )
 			{
 				m_alphaBlendEnable = material->alphaBlendEnable;
-				RENDER_SYSTEM(m_serviceProvider)->setAlphaBlendEnable( m_alphaBlendEnable );
+
+				RENDER_SYSTEM(m_serviceProvider)
+                    ->setAlphaBlendEnable( m_alphaBlendEnable );
 			}
 
 			if( m_currentBlendSrc != material->blendSrc )
 			{
 				m_currentBlendSrc = material->blendSrc;
-				RENDER_SYSTEM(m_serviceProvider)->setSrcBlendFactor( m_currentBlendSrc );
+
+				RENDER_SYSTEM(m_serviceProvider)
+                    ->setSrcBlendFactor( m_currentBlendSrc );
 			}
 
 			if( m_currentBlendDst != material->blendDst )
 			{
 				m_currentBlendDst = material->blendDst;
-				RENDER_SYSTEM(m_serviceProvider)->setDstBlendFactor( m_currentBlendDst );
+
+				RENDER_SYSTEM(m_serviceProvider)
+                    ->setDstBlendFactor( m_currentBlendDst );
 			}
+
+            m_currentMaterial = material;
 		}
 
 		if( m_currentIBHandle != _renderObject->ibHandle || 
@@ -1155,7 +1174,8 @@ namespace Menge
 			m_currentIBHandle = _renderObject->ibHandle;
 			m_currentBaseVertexIndex = _renderObject->baseVertexIndex;
 
-			RENDER_SYSTEM(m_serviceProvider)->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
+			RENDER_SYSTEM(m_serviceProvider)
+                ->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
 		}
 
 		RENDER_SYSTEM(m_serviceProvider)->drawIndexedPrimitive( 
@@ -1167,8 +1187,6 @@ namespace Menge
 			_renderObject->dipIndiciesNum 
 			);
 
-		m_currentMaterial = material;
-
 		++m_debugInfo.dips;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1176,14 +1194,12 @@ namespace Menge
 	{
 		RenderTextureStage & stage = m_currentTextureStage[_stage];
 
+        stage = RenderTextureStage();
+
 		m_currentTexturesID[_stage] = 0;
 
-		stage.colorOp = TOP_DISABLE;
-		stage.colorArg1 = TARG_TEXTURE;
-		stage.colorArg2 = TARG_DIFFUSE;
-
 		RENDER_SYSTEM(m_serviceProvider)
-            ->setTexture( _stage, NULL );
+            ->setTexture( _stage, nullptr );
 
 		RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( _stage
 			, stage.colorOp
@@ -1191,8 +1207,18 @@ namespace Menge
 			, stage.colorArg2
 			);
 
+        RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( _stage
+            , stage.alphaOp
+            , stage.alphaArg1
+            , stage.alphaArg2
+            );
+
+        RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( _stage
+            , stage.addressU
+            , stage.addressV );
+
 		RENDER_SYSTEM(m_serviceProvider)
-            ->setTextureMatrix( _stage, NULL );
+            ->setTextureMatrix( _stage, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::restoreRenderSystemStates_()

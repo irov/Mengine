@@ -526,14 +526,28 @@ namespace Menge
 
         if( m_supportL8 == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_L8" );
+            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_L8" 
+                );
+
+            return false;
         }
 
 		m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
 
         if( m_supportR8G8B8 == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_R8G8B8" );
+            LOGGER_WARNING(m_serviceProvider)( "Render don't support PF_R8G8B8" 
+                );
+        }
+
+        bool supportDXT1 = supportTextureFormat( PF_DXT1 );
+
+        if( supportDXT1 == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_DXT1" 
+                );
+
+            return false;
         }
 
 		return true;
@@ -910,7 +924,7 @@ namespace Menge
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 
-		IDirect3DTexture8* dxTextureInterface = NULL;
+		IDirect3DTexture8* dxTextureInterface = nullptr;
         
 		HRESULT hr = this->d3dCreateTexture_( _width, _height, 1, 0,
 			hwFormat, D3DPOOL_MANAGED, &dxTextureInterface );
@@ -924,7 +938,7 @@ namespace Menge
 				, DXGetErrorString8(hr), DXGetErrorDescription8(hr)
                 );
 
-			return NULL;
+			return nullptr;
 		}
 
         D3DSURFACE_DESC texDesc;
@@ -949,7 +963,7 @@ namespace Menge
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 
-		IDirect3DTexture8* dxTextureInterface = NULL;
+		IDirect3DTexture8* dxTextureInterface = nullptr;
 
 		HRESULT hr = d3dCreateTexture_( _width, _height, 1, 0,
 			hwFormat, D3DPOOL_MANAGED, &dxTextureInterface );
@@ -963,7 +977,7 @@ namespace Menge
 				, hr 
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
         D3DSURFACE_DESC texDesc;
@@ -988,7 +1002,7 @@ namespace Menge
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 
-		IDirect3DTexture8 * dxTextureInterface = NULL;		
+		IDirect3DTexture8 * dxTextureInterface = nullptr;		
 		HRESULT hr = this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, 
 			hwFormat, D3DPOOL_DEFAULT, &dxTextureInterface );
 		
@@ -1001,10 +1015,10 @@ namespace Menge
 				, hr 
 				);
 
-			return NULL;
+			return nullptr;
 		}
 		
-        IDirect3DSurface8 * dxSurfaceInterface = NULL;
+        IDirect3DSurface8 * dxSurfaceInterface = nullptr;
 		hr = dxTextureInterface->GetSurfaceLevel(0, &dxSurfaceInterface);
 
 		if( FAILED( hr ) )
@@ -1016,7 +1030,7 @@ namespace Menge
                 , hr 
                 );
 
-			return NULL;
+			return nullptr;
 		}
 
         D3DSURFACE_DESC texDesc;
@@ -1041,7 +1055,7 @@ namespace Menge
         D3DDISPLAYMODE Mode;
         HRESULT hr;
 
-        if( !m_fullscreen )
+        if( m_fullscreen == false )
         {
             hr = m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode);
             if( FAILED( hr ) || Mode.Format==D3DFMT_UNKNOWN) 
@@ -1076,7 +1090,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::beginScene()
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::beginScene device not created"
                 );
@@ -1139,7 +1153,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::endScene()
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::endScene device not created"
                 );
@@ -1163,7 +1177,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::swapBuffers()
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::swapBuffers device not created"
                 );
@@ -1183,7 +1197,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color, float _depth, uint16 _stencil )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::clearFrameBuffer device not created"
                 );
@@ -1219,7 +1233,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setViewport( const Viewport & _viewport )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::setViewport device not created"
                 );
@@ -1323,7 +1337,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::setRenderTarget device not created"
                 );

@@ -118,6 +118,9 @@ namespace Menge
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
 		void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+
+        void setTextureStageTexCoordIndex( size_t _stage, size_t _index ) override;
+
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
 		// create empty render image
@@ -229,6 +232,7 @@ namespace Menge
 
         bool m_supportNPOT;
         bool m_supportL8;
+        bool m_supportA8;
         bool m_supportR8G8B8;
 	};
 }	// namespace Menge

@@ -992,7 +992,7 @@ namespace Menge
 
 			Stringstream ss;
 			
-			ss << L"FPS: " << m_fps << std::endl;
+			ss << "FPS: " << m_fps << std::endl;
 
             double sreenfillrate = redi.fillrate / double(m_contentResolution.getWidth() * m_contentResolution.getHeight());
 

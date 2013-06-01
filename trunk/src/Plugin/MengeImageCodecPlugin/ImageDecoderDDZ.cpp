@@ -49,47 +49,22 @@ namespace Menge
             return false;
         }
 
-        size_t dds_size;
-        m_stream->read( &dds_size, sizeof(dds_size) );
+        m_stream->read( &m_dds_size, sizeof(m_dds_size) );
+        m_stream->read( &m_compress_size, sizeof(m_compress_size) );
 
-        size_t compress_size;
-        m_stream->read( &compress_size, sizeof(compress_size) );
+        uint32 magic;
+        m_stream->read( &magic, sizeof(magic) );
 
-        static TBlobject compress_buf;
-
-        compress_buf.resize( compress_size );
-
-        m_stream->read( &compress_buf[0], compress_size );
-
-        m_buffer.resize( dds_size );
-        
-        size_t uncompress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( &m_buffer[0], dds_size, uncompress_size, &compress_buf[0], compress_size ) == false )
+        if( magic != DDS_MAGIC )
         {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::_initialize uncompress failed"
+            LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize invalid dds file magic number" 
                 );
 
             return false;
         }
         
-        m_dds_size = uncompress_size;
+        m_stream->read( &m_header, sizeof(m_header) );
         
-        TBlobject::value_type * buffer = &m_buffer[0];
-
-		uint32 magic;
-        memcpy( &magic, buffer, sizeof(magic) );
-
-		if( magic != DDS_MAGIC )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize invalid dds file magic number" 
-                );
-
-			return false;
-		}
-                
-        memcpy( &m_header, buffer + sizeof(magic), sizeof(DDS_HEADER) );
-
 		//Check valid structure sizes
 		if( m_header.dwSize != 124 && m_header.ddspf.dwSize != 32)
 		{
@@ -131,17 +106,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderDDZ::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-        size_t dds_size = m_dds_size - sizeof(uint32) - sizeof(DDS_HEADER);
+        static TBlobject compress_buf;
 
-        TBlobject::value_type * buffer = &m_buffer[0];
+        compress_buf.resize( m_compress_size );
 
-        buffer += sizeof(uint32);
-        buffer += sizeof(DDS_HEADER);
+        m_stream->read( &compress_buf[0], m_compress_size );
 
-        memcpy( _buffer, buffer, dds_size );
-		//size_t read = m_stream->read( _buffer, dds_size );
+        size_t uncompress_size;
+        if( ARCHIVE_SERVICE(m_serviceProvider)
+            ->uncompress( _buffer, m_dds_size, uncompress_size, &compress_buf[0], m_compress_size ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::decode uncompress failed"
+                );
 
-		return dds_size;
+            return 0;
+        }		
+
+		return uncompress_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

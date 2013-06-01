@@ -49,13 +49,13 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 		
 		if( FILE_SERVICE(m_serviceProvider)
-			->existFile( category, m_fileNameRGB, NULL ) == false )
+			->existFile( category, m_fileNameRGB, nullptr ) == false )
 		{
 			return false;
 		}
 
 		if( FILE_SERVICE(m_serviceProvider)
-			->existFile( category, m_fileNameAlpha, NULL ) == false )
+			->existFile( category, m_fileNameAlpha, nullptr ) == false )
 		{
 			return false;
 		}

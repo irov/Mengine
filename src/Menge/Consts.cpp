@@ -67,6 +67,7 @@ namespace Menge
         c_SolidSprite = Helper::stringizeString(_serviceProvider, "SolidSprite");
         c_OnlyColor = Helper::stringizeString(_serviceProvider, "OnlyColor");
         c_ExternalAlpha = Helper::stringizeString(_serviceProvider, "ExternalAlpha");
+        c_ExternalAlpha2 = Helper::stringizeString(_serviceProvider, "ExternalAlpha2");
         c_Debug = Helper::stringizeString(_serviceProvider, "Debug");
         c_ParticleIntensive = Helper::stringizeString(_serviceProvider, "ParticleIntensive");
         c_ParticleBlend = Helper::stringizeString(_serviceProvider, "ParticleBlend");

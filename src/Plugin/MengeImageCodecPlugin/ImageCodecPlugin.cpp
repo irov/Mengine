@@ -8,7 +8,7 @@
 #	include "ImageDecoderPNG.h"
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderMNE.h"
-//#	include "ImageDecoderDDS.h"
+#	include "ImageDecoderDDZ.h"
 
 #	include "ImageEncoderPNG.h"
 //#   include "ImageDecoderCombinerRGBAndAlpha.h"
@@ -56,6 +56,9 @@ namespace Menge
 
         m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pngImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "jpegImage")) );
+        m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ddsImage")) );
+        m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ddzImage")) );
+
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logService) );
 		//m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, Helper::StringizeString(m_serviceProvider, "ddsImage")) );

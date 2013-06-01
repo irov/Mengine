@@ -16,8 +16,6 @@
 //#	 include "ResourceTexture.h"
 //#	include "Kernel/Affector.h"
 
-#   include <algorithm>
-
 namespace	Menge
 {
 	enum ESpriteVerticesInvalidate
@@ -31,6 +29,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 		: m_resource(nullptr)
+		, m_centerAlign(false)
 		, m_flipX(false)
 		, m_flipY(false)
 		, m_percentVisibility(0.f, 0.f, 0.f, 0.f)
@@ -463,7 +462,14 @@ namespace	Menge
 
 			size.x -= size.x * ( percent.x + percent.z );
 			size.y -= size.y * ( percent.y + percent.w );
-             
+
+			if( m_centerAlign )
+			{
+				mt::vec2f alignOffset = maxSize * -0.5f;
+
+				visOffset += alignOffset;
+			}
+
             m_verticesLocal[0] = mt::vec3f(visOffset.x + 0.f, visOffset.y + 0.f, 0.f);
             m_verticesLocal[1] = mt::vec3f(visOffset.x + size.x, visOffset.y + 0.f, 0.f);
             m_verticesLocal[2] = mt::vec3f(visOffset.x + size.x, visOffset.y + size.y, 0.f);
@@ -506,7 +512,7 @@ namespace	Menge
             m_materialGroup = RENDER_SERVICE(m_serviceProvider)
                 ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
         }
-		else if ( m_blendAdd == true )
+		else if( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
 
@@ -546,7 +552,7 @@ namespace	Menge
 
 		m_material = m_materialGroup->getMaterial( textureU, textureV );
 
-		if( m_material == NULL )
+		if( m_material == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Sprite::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
@@ -590,6 +596,19 @@ namespace	Menge
 		this->invalidateVertices_( ESVI_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::getCenterAlign() const
+	{
+		return m_centerAlign;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setCenterAlign( bool _centerAlign )
+	{
+		m_centerAlign = _centerAlign;
+
+		this->invalidateVertices_( ESVI_TRANSFORM );
+		this->invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::disableTextureColor( bool _disable )
 	{
 		if( m_disableTextureColor == _disable )
@@ -629,7 +648,7 @@ namespace	Menge
 
 		this->invalidateVertices_( ESVI_TRANSFORM );
 	}
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
     void Sprite::setTextureUVOffset( const mt::vec2f & _offset )
     {
         m_textureUVOffset = _offset;

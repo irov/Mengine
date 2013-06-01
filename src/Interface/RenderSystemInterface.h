@@ -176,18 +176,6 @@ namespace Menge
 
     struct RenderTextureStage
     {
-        ETextureAddressMode addressU;
-        ETextureAddressMode addressV;
-
-        ETextureFilter filter;
-
-        ETextureOp colorOp;
-        ETextureArgument colorArg1;
-        ETextureArgument colorArg2;
-        ETextureOp alphaOp;
-        ETextureArgument alphaArg1;
-        ETextureArgument alphaArg2;
-
         RenderTextureStage()
             : addressU(TAM_CLAMP)
             , addressV(TAM_CLAMP)
@@ -200,6 +188,18 @@ namespace Menge
             , alphaArg2(TARG_DIFFUSE)
         {
         }
+
+        ETextureAddressMode addressU;
+        ETextureAddressMode addressV;
+
+        ETextureFilter filter;
+
+        ETextureOp colorOp;
+        ETextureArgument colorArg1;
+        ETextureArgument colorArg2;
+        ETextureOp alphaOp;
+        ETextureArgument alphaArg1;
+        ETextureArgument alphaArg2;
     };
 
     struct RenderMaterial

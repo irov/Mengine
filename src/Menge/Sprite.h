@@ -35,6 +35,9 @@ namespace Menge
         ResourceImage * getImageResource() const;
         
     public:
+		void setCenterAlign( bool _centerAlign );
+		bool getCenterAlign() const;
+
 		void setFlipX( bool _flipX );
 		bool getFlipX() const;
 
@@ -95,6 +98,7 @@ namespace Menge
         mt::vec2f m_spriteSize;
 		bool m_isCustomSize;
 
+		bool m_centerAlign;
 		bool m_flipX;
 		bool m_flipY;
 

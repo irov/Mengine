@@ -19,9 +19,9 @@ namespace Menge
 	public:
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 	
-	private:
-        TBlobject m_buffer;
+	private:       
         size_t m_dds_size;
+        size_t m_compress_size;
         DDS_HEADER m_header;
 	};
 }	// namespace Menge

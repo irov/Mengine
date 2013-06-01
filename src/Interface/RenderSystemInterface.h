@@ -186,6 +186,7 @@ namespace Menge
             , alphaOp(TOP_DISABLE)
             , alphaArg1(TARG_TEXTURE)
             , alphaArg2(TARG_DIFFUSE)
+            , texCoordIndex(0)
         {
         }
 
@@ -200,6 +201,8 @@ namespace Menge
         ETextureOp alphaOp;
         ETextureArgument alphaArg1;
         ETextureArgument alphaArg2;
+
+        size_t texCoordIndex;
     };
 
     struct RenderMaterial
@@ -435,6 +438,8 @@ namespace Menge
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
 		virtual void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
+
+        virtual void setTextureStageTexCoordIndex( size_t _stage, size_t _index ) = 0;
 		virtual void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) = 0;
 		// create texture
 		// [in/out] _width ( desired texture width, returns actual texture width )

@@ -77,6 +77,9 @@ namespace Menge
         m_wrapX = false;
         m_wrapY = false;
 
+        metadata->get_File_WrapX( m_wrapX );
+        metadata->get_File_WrapY( m_wrapY );
+
         metadata->swap_FileRGB_Path( m_fileNameRGB );
         metadata->swap_FileRGB_Codec( m_codecTypeRGB );
         metadata->get_FileRGB_UV( m_uv );
@@ -101,6 +104,8 @@ namespace Menge
         {
             return false;
         }
+
+        m_isAlpha = true;
 
         if( m_codecTypeAlpha.empty() == true )
         {

@@ -1373,6 +1373,8 @@ namespace Metacode
         public:
             Meta_ResourceImageMultiplyRGBAndAlpha()
                 : Meta_Resource()
+                , File_WrapX_successful(false)
+                , File_WrapY_successful(false)
                 , FileAlpha_Codec_successful(false)
                 , FileAlpha_Path_successful(false)
                 , FileAlpha_UV_successful(false)
@@ -1382,6 +1384,76 @@ namespace Metacode
             {
             }
         public:
+            bool get_File_WrapX( bool & _value ) const
+            {
+                if( File_WrapX_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_WrapX;
+            
+                return true;
+            }
+            
+            bool swap_File_WrapX( bool & _value ) const
+            {
+                if( File_WrapX_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_WrapX);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_WrapX( C * _self, M _method )
+            {
+                if( File_WrapX_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_WrapX );
+            }
+            
+            bool get_File_WrapY( bool & _value ) const
+            {
+                if( File_WrapY_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_WrapY;
+            
+                return true;
+            }
+            
+            bool swap_File_WrapY( bool & _value ) const
+            {
+                if( File_WrapY_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_WrapY);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_WrapY( C * _self, M _method )
+            {
+                if( File_WrapY_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_WrapY );
+            }
+            
             bool get_FileAlpha_Codec( Menge::ConstString & _value ) const
             {
                 if( FileAlpha_Codec_successful == false )
@@ -1600,6 +1672,10 @@ namespace Metacode
         public:
         protected:
         protected:
+            bool File_WrapX_successful;
+            mutable bool File_WrapX;
+            bool File_WrapY_successful;
+            mutable bool File_WrapY;
             bool FileAlpha_Codec_successful;
             mutable Menge::ConstString FileAlpha_Codec;
             bool FileAlpha_Path_successful;

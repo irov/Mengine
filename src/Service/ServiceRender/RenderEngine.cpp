@@ -157,17 +157,15 @@ namespace Menge
             ts0.colorOp = TOP_MODULATE;
             ts0.colorArg1 = TARG_TEXTURE;
             ts0.colorArg2 = TARG_DIFFUSE;
-
             ts0.alphaOp = TOP_SELECTARG1;
             ts0.alphaArg2 = TARG_DIFFUSE;
 
 			RenderTextureStage & ts1 = mt.textureStage[1];
 
-			ts1.colorOp = TOP_SELECTARG1;
-			ts1.colorArg1 = TARG_CURRENT;
-			ts1.alphaOp = TOP_MODULATE;
-			ts1.alphaArg1 = TARG_TEXTURE;
-			ts1.alphaArg2 = TARG_CURRENT;
+            ts1.colorOp = TOP_SELECTARG1;
+            ts1.colorArg1 = TARG_CURRENT;
+            ts1.alphaOp = TOP_SELECTARG1;
+            ts1.alphaArg1 = TARG_TEXTURE;            
 
 			this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "ExternalAlpha"), mt );
 		}
@@ -1123,6 +1121,15 @@ namespace Menge
                         , current_stage.alphaArg1
                         , current_stage.alphaArg2 );
                 }
+
+                if( current_stage.texCoordIndex != stage.texCoordIndex )
+                {
+                    current_stage.texCoordIndex = stage.texCoordIndex;
+
+                    RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( stageId
+                        , current_stage.texCoordIndex
+                        );
+                }
             }
 
 			if( m_depthBufferWriteEnable != material->depthBufferWriteEnable )
@@ -1201,6 +1208,10 @@ namespace Menge
 		RENDER_SYSTEM(m_serviceProvider)
             ->setTexture( _stage, nullptr );
 
+        RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( _stage
+            , stage.addressU
+            , stage.addressV );
+
 		RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( _stage
 			, stage.colorOp
 			, stage.colorArg1
@@ -1213,10 +1224,10 @@ namespace Menge
             , stage.alphaArg2
             );
 
-        RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( _stage
-            , stage.addressU
-            , stage.addressV );
-
+        RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( _stage
+            , 0 
+            );
+        
 		RENDER_SYSTEM(m_serviceProvider)
             ->setTextureMatrix( _stage, nullptr );
 	}
@@ -1270,6 +1281,10 @@ namespace Menge
 				, stage.alphaOp
 				, stage.alphaArg1
 				, stage.alphaArg2 );
+
+            RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( i
+                , stage.texCoordIndex
+                );
 
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MIPMAP, stage.filter );
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MAGNIFICATION, stage.filter );

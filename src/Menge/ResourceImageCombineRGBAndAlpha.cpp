@@ -124,6 +124,8 @@ namespace Menge
 						
 		bool res = this->prepareImageFrame_( texture );
 
+        m_isAlpha = true;
+
 		return res;
 	}
 	/////////////////////////////////////////////////////////////////////////

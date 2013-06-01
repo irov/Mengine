@@ -82,7 +82,7 @@ namespace Menge
         m_uv_image = m_uv;
 
         m_uv_scale = m_resourceImage->getUVScale();
-        m_uv_alpha = m_resourceImage->getUVAlpha();
+        m_uv_alpha = m_uv;
 
         m_isAlpha = m_resourceImage->isAlpha();
 

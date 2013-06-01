@@ -367,6 +367,7 @@ namespace Menge
 		, m_listener(NULL)
 		, m_supportNPOT(false)
         , m_supportL8(false)
+        , m_supportA8(false)
 		, m_supportR8G8B8(false)
 		, m_syncReady(false)
         , m_hd3d8(NULL)
@@ -526,11 +527,20 @@ namespace Menge
 
         if( m_supportL8 == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_L8" 
+            LOGGER_WARNING(m_serviceProvider)( "Render don't support PF_L8" 
+                );
+        }
+
+        m_supportA8 = this->supportTextureFormat( PF_A8 );
+
+        if( m_supportA8 == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_A8" 
                 );
 
             return false;
         }
+
 
 		m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
 
@@ -882,9 +892,9 @@ namespace Menge
             {
                 if( _channels == 1 )
                 {
-                    if( m_supportL8 == true )
+                    if( m_supportA8 == true )
                     {
-                        hwFormat = PF_L8;
+                        hwFormat = PF_A8;
                     }
                     else
                     {
@@ -2982,6 +2992,27 @@ namespace Menge
 				);
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void DX8RenderSystem::setTextureStageTexCoordIndex( size_t _stage, size_t _index )
+    {
+        if( m_pD3DDevice == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX8RenderSystem::setTextureStageAlphaOp device not created"
+                );
+
+            return;
+        }
+
+        HRESULT hr;
+
+        hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_TEXCOORDINDEX, _index );
+        if( FAILED( hr ) )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Error: DX8RenderSystem failed to setTextureStageTexCoordIndex (hr:%p)"
+                , hr
+                );
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{

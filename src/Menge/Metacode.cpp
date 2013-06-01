@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 16;
+        _needVersion = 17;
 
-        if( version != 16 )
+        if( version != 17 )
         {
             return false;
         }
@@ -1243,7 +1243,29 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->File_WrapX ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_WrapX_successful = true;
+    
+                return true;
+            }break;
+        case 4:
+            {
+                if( this->read( _buff, _size, _read, this->File_WrapY ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_WrapY_successful = true;
+    
+                return true;
+            }break;
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->FileAlpha_Codec ) == false )
                 {
@@ -1254,7 +1276,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->FileAlpha_Path ) == false )
                 {
@@ -1265,7 +1287,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->FileAlpha_UV ) == false )
                 {
@@ -1276,7 +1298,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->FileRGB_Codec ) == false )
                 {
@@ -1287,7 +1309,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->FileRGB_Path ) == false )
                 {
@@ -1298,7 +1320,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->FileRGB_UV ) == false )
                 {

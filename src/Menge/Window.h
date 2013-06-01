@@ -48,12 +48,18 @@ namespace Menge
 		ResourceWindow* m_resource;
 
 		mt::vec2f m_clientSize;
-
-		mt::vec2f m_initialSizes[ResourceWindow_Count];
-		
+	
 		bool m_hasBackGround;
 		
-		const RenderMaterial * m_material[ResourceWindow_Count];
-		RenderTextureInterfacePtr m_textures[ResourceWindow_Count];
+        struct WindowEdge
+        {
+            mt::vec2f initialSize;
+            const RenderMaterial * material;
+
+            size_t textureCount;
+            RenderTextureInterfacePtr textures[2];
+        };
+
+		WindowEdge m_edge[ResourceWindow_Count];
 	};
 }	// namespace Menge

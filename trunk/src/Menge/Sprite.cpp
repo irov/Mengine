@@ -213,7 +213,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVertices_()
 	{
-		if( m_resource == 0 )
+		if( m_resource == nullptr)
 		{
 			return;
 		}
@@ -499,7 +499,7 @@ namespace	Menge
 	{
         const RenderTextureInterfacePtr & textureAlpha = m_resource->getTextureAlpha();
 
-        if( textureAlpha != NULL )
+        if( textureAlpha != nullptr )
         {
             m_texturesNum = 2;
 

@@ -38,6 +38,7 @@ includepaths
     "../dependencies/ogg/include"   
     "../dependencies/vorbis/include"
     "../dependencies/dlmalloc"
+    "../dependencies/utf8/source"
 }
 
 files
@@ -135,8 +136,8 @@ files
 	"*.h"
 	"*.cpp"       
 	
-    [System/OGLRenderSystem]
-    ("../src/System/OGLRenderSystem")	
+    [System/MarmaladeRenderSystem]
+    ("../src/System/MarmaladeRenderSystem")	
 	"*.h"
 	"*.cpp"       
 

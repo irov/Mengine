@@ -59,7 +59,7 @@ namespace Menge
         void minimizeWindow() override;
 
         void setHandleMouse( bool _handle ) override;
-        void setCursorPosition( int _x, int _y ) override;
+        void setCursorPosition( const mt::vec2f & _pos ) override;
 
         TimerInterface * getTimer() const override;
 

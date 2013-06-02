@@ -509,8 +509,16 @@ namespace	Menge
         {
             m_texturesNum = 2;
 
-            m_materialGroup = RENDER_SERVICE(m_serviceProvider)
-                ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
+            if( m_resource->isAlpha() == true || m_solid == false )
+            {
+                m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
+            }
+            else
+            {
+                m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+            }
         }
 		else if( m_blendAdd == true )
 		{

@@ -1200,7 +1200,7 @@ namespace Menge
 
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::setCursorPosition( int _x, int _y )
+    void MarmaladeApplication::setCursorPosition( const mt::vec2f & _pos )
     {
 
     }

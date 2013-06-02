@@ -2,29 +2,13 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#   include "OGLTexture.h"
+#   include "MarmaladeTexture.h"
 
+#	include "Utils/Core/BinaryVector.h"
 #   include "Utils/Factory/FactoryPool.h"
 
-#	include <map>
-
-
-#if WIN32
-#	include <Windows.h>
-#	include <GLee.h>
-#	include <GL/GLu.h>
-
-#	include "OGLWindowContext.h"
-#elif (TARGET_OS_MAC && !TARGET_OS_IPHONE)
-#   include <OpenGL/gl.h>
-#elif TARGET_MARMALADE
 #   include "IwGL.h"
 #   include "s3e.h"
-#else
-//#	include "TargetConditionals.h"
-#	include <OpenGLES/ES1/gl.h>
-#	include <OpenGLES/ES1/glext.h>
-#endif
 
 namespace Menge
 {
@@ -32,14 +16,14 @@ namespace Menge
     class LogServiceInterface;
     
 	class OGLWindowContext;
-	class OGLTexture;
+	class MarmaladeTexture;
 
-	class OGLRenderSystem 
+	class MarmaladeRenderSystem 
 		: public RenderSystemInterface
 	{
 	public:
-		OGLRenderSystem();
-		~OGLRenderSystem();
+		MarmaladeRenderSystem();
+		~MarmaladeRenderSystem();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
@@ -180,11 +164,11 @@ namespace Menge
 			size_t offset;
 		};
 
-		typedef std::map<VBHandle, MemoryRange> TMapVBufferMemory;
+		typedef BinaryVector<VBHandle, MemoryRange> TMapVBufferMemory;
 		TMapVBufferMemory m_vBuffersMemory;
 		TMapVBufferMemory m_vBuffersLocks;
 		
-		typedef std::map<IBHandle, MemoryRange> TMapIBufferMemory;
+		typedef BinaryVector<IBHandle, MemoryRange> TMapIBufferMemory;
 		TMapIBufferMemory m_iBuffersMemory;
 		TMapIBufferMemory m_iBuffersLocks;
 
@@ -207,9 +191,10 @@ namespace Menge
             GLenum alphaOp;
             GLenum alphaArg1;
             GLenum alphaArg2;
+            size_t texCoordIndex;
         };
 
-        typedef FactoryPool<OGLTexture, 128> TFactoryOGLTexture;
+        typedef FactoryPool<MarmaladeTexture, 128> TFactoryOGLTexture;
         TFactoryOGLTexture m_factoryOGLTexture;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];

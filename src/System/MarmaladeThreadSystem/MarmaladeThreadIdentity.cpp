@@ -1,0 +1,14 @@
+#	include "PosixThreadIdentity.h"
+namespace Menge
+{
+	//////////////////////////////////////////////////////////////////////////
+	PosixThreadIdentity::PosixThreadIdentity( pthread_t _id )
+		: m_id(_id)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	pthread_t PosixThreadIdentity::getId() const
+	{
+		return m_id;
+	}
+}

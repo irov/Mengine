@@ -38,8 +38,9 @@ namespace Menge
 
         metadata->swap_Image_Name( m_resourceImageName );
         m_uv = metadata->get_Image_UV();
-
+        
         metadata->get_Image_Rotate( m_isUVRotate );
+        metadata->get_Image_Alpha( m_isAlpha );
 
         return true;
     }
@@ -83,9 +84,7 @@ namespace Menge
 
         m_uv_scale = m_resourceImage->getUVScale();
         m_uv_alpha = m_uv;
-
-        m_isAlpha = m_resourceImage->isAlpha();
-
+        
         m_wrapX = false;
         m_wrapY = false;
 

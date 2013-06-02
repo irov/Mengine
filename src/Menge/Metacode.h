@@ -1749,10 +1749,46 @@ namespace Metacode
         public:
             Meta_ResourceImageSubstract()
                 : Meta_Resource()
+                , Image_Alpha_successful(false)
                 , Image_Rotate_successful(false)
             {
             }
         public:
+            bool get_Image_Alpha( bool & _value ) const
+            {
+                if( Image_Alpha_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_Alpha;
+            
+                return true;
+            }
+            
+            bool swap_Image_Alpha( bool & _value ) const
+            {
+                if( Image_Alpha_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_Alpha);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Image_Alpha( C * _self, M _method )
+            {
+                if( Image_Alpha_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Image_Alpha );
+            }
+            
             const Menge::ConstString & get_Image_Name() const
             {
                 return this->Image_Name;
@@ -1828,6 +1864,8 @@ namespace Metacode
         public:
         protected:
         protected:
+            bool Image_Alpha_successful;
+            mutable bool Image_Alpha;
             mutable Menge::ConstString Image_Name;
             bool Image_Rotate_successful;
             mutable bool Image_Rotate;

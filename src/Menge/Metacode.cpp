@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 17;
+        _needVersion = 19;
 
-        if( version != 17 )
+        if( version != 19 )
         {
             return false;
         }
@@ -1429,6 +1429,17 @@ namespace Metacode
     
         switch( _id )
         {
+        case 6:
+            {
+                if( this->read( _buff, _size, _read, this->Image_Alpha ) == false )
+                {
+                    return false;
+                }
+    
+                this->Image_Alpha_successful = true;
+    
+                return true;
+            }break;
         case 3:
             {
                 if( this->read( _buff, _size, _read, this->Image_Name ) == false )

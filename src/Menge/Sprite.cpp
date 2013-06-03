@@ -507,15 +507,24 @@ namespace	Menge
 
         if( textureAlpha != nullptr )
         {
-            m_texturesNum = 2;
-
-            if( m_resource->isAlpha() == true || m_solid == false )
+            if( m_disableTextureColor == true )
             {
+                m_texturesNum = 1;
+
+                m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
+            }
+            else if( m_resource->isAlpha() == true || m_solid == false )
+            {
+                m_texturesNum = 2;               
+
                 m_materialGroup = RENDER_SERVICE(m_serviceProvider)
                     ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
             }
             else
             {
+                m_texturesNum = 1;
+
                 m_materialGroup = RENDER_SERVICE(m_serviceProvider)
                     ->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
             }

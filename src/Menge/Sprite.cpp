@@ -509,10 +509,10 @@ namespace	Menge
         {
             if( m_disableTextureColor == true )
             {
-                m_texturesNum = 1;
+                m_texturesNum = 2;
 
                 m_materialGroup = RENDER_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
+                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor) );
             }
             else if( m_resource->isAlpha() == true || m_solid == false )
             {

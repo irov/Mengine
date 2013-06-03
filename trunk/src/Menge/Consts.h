@@ -74,7 +74,7 @@ namespace Menge
 		ConstString c_SolidSprite;
 		ConstString c_OnlyColor;
 		ConstString c_ExternalAlpha;
-        ConstString c_ExternalAlpha2;
+        ConstString c_ExternalAlpha_OnlyColor;
 		ConstString c_Debug;
 		ConstString c_ParticleIntensive;
 		ConstString c_ParticleBlend;

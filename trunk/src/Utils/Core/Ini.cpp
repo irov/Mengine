@@ -138,6 +138,24 @@ namespace Menge
             return true;
         }
 
+        if( sscanf( trim_line, "%[^=] =", key ) == 1 )
+        {
+            char * key_str = strstr( trim_line, key );
+            size_t key_len = strlen( key );
+            key_str[key_len] = '\0';
+            s_rtrim( key_str );
+
+            Setting & setting = m_settings[m_settingsCount];
+
+            setting.section = m_currentSection;
+            setting.key = key_str;
+            setting.value = key_str + key_len;
+
+            ++m_settingsCount;
+
+            return true;
+        }
+
         return false;
     }    
     //////////////////////////////////////////////////////////////////////////

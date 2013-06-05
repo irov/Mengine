@@ -144,15 +144,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
+	WinApplication::WinApplication() 
 		: m_running(true)
 		, m_active(false)
 		, m_windowClassName(L"MengeWnd")
 		, m_hWnd(0)
 		, m_cursorInArea(false)
-		, m_hInstance(_hInstance)
+		, m_hInstance(NULL)
 		, m_loggerConsole(nullptr)
-		, m_commandLine(" " + _commandLine + " ")
 		, m_application(nullptr)
 		, m_fpsMonitor(0)
 		, m_alreadyRunningMonitor(0)
@@ -1085,8 +1084,11 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initialize()
+	bool WinApplication::initialize( HINSTANCE _hInstance, const String& _commandLine )
 	{	
+        m_hInstance = _hInstance;
+        m_commandLine = " " + _commandLine + " ";
+
         setlocale( LC_CTYPE, "" );
 		//::timeBeginPeriod( 1 );
         
@@ -1593,6 +1595,7 @@ namespace Menge
         }
 
         m_winTimer = new WinTimer();
+        m_winTimer->initialize();
 
         // seed randomizer
         LARGE_INTEGER randomSeed;

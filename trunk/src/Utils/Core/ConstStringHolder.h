@@ -64,7 +64,14 @@ namespace Menge
         }
 
     protected:
-        virtual void releaseString() = 0;
+        void releaseString()
+        {
+            m_data = nullptr;
+
+            this->_releaseString();
+        }
+
+        virtual void _releaseString() = 0;
 
     public:
         inline ConstStringHolderT * owner() const

@@ -106,13 +106,33 @@ namespace Menge
             return false;
         }
 
+        if( vorbisInfo->channels != 2 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_initialize invalid channels %d need %d"
+                , vorbisInfo->channels
+                , 2
+                );
+
+            return false;
+        }
+
+        if( vorbisInfo->rate != 44100 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_initialize invalid rate %d need %d"
+                , vorbisInfo->rate
+                , 44100
+                );
+
+            return false;
+        }
+
         //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 3" );
         ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );	// number of 16bit samples
 
         size_t size_pcmTotal = (size_t)pcmTotal;
 
         //m_dataInfo.size = pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
-        m_dataInfo.size = size_pcmTotal * 4;	// 2 bytes per sample x channels num
+        m_dataInfo.size = size_pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
         m_dataInfo.channels = vorbisInfo->channels;
         m_dataInfo.frequency = vorbisInfo->rate;
         m_dataInfo.time_total_secs = (float)ov_time_total( &m_oggVorbisFile, -1 );

@@ -80,7 +80,7 @@ namespace Menge
     {   
         VideoDecoderInterfacePtr decoder = this->createVideoDecoder();
 
-        if( decoder == NULL )
+        if( decoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::isValid '%s' can't create decoder '%s'"
                 , this->getName().c_str()

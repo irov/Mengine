@@ -15,6 +15,8 @@
 
 #	include "OALError.h"
 
+#   include <malloc.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -35,12 +37,6 @@ namespace Menge
 			m_soundSystem->releaseBufferId( m_alBufferId2 );
 			m_alBufferId2 = 0;
 		}
-
-		//if( m_dataBuffer != NULL )
-		//{
-		//	delete[] m_dataBuffer;
-		//	m_dataBuffer = NULL;
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
@@ -70,6 +66,17 @@ namespace Menge
 
 		const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
 		m_frequency = dataInfo->frequency;
+
+        if( dataInfo->channels != 2 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid channels %d mast be %d"
+                , dataInfo->channels
+                , 2
+                );
+
+            return false;
+        }
+
 		//m_channels = dataInfo->channels;
         m_channels = 2;
 		m_time_total = dataInfo->time_total_secs;
@@ -155,11 +162,13 @@ namespace Menge
             return;
         }
 
-		unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+        unsigned char * dataBuffer = (unsigned char*)alloca(m_bufferSize);
+
+		unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
 			
 		if ( bytesWritten > 0 )
 		{
-			alBufferData( m_alBufferId, m_format, m_dataBuffer, bytesWritten, m_frequency );
+			alBufferData( m_alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
 
 			if( OAL_CHECK_ERROR(m_serviceProvider) == true )
             {
@@ -175,11 +184,11 @@ namespace Menge
 			OAL_CHECK_ERROR(m_serviceProvider);          
 		}
 
-		bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+		bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
 
 		if ( bytesWritten > 0 )
 		{
-			alBufferData( m_alBufferId2, m_format, m_dataBuffer, bytesWritten, m_frequency );
+			alBufferData( m_alBufferId2, m_format, dataBuffer, bytesWritten, m_frequency );
 
 
             if( OAL_CHECK_ERROR(m_serviceProvider) == true )
@@ -265,15 +274,17 @@ namespace Menge
         int processed = 0;
 		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
         OAL_CHECK_ERROR(m_serviceProvider);
+
+        unsigned char * dataBuffer = (unsigned char*)alloca(m_bufferSize);
                 
 		for( int curr_processed = 0; curr_processed != processed; ++curr_processed )
 		{
 			// Исключаем их из очереди
 			alSourceUnqueueBuffers( m_sourceId, 1, &buffer );
             OAL_CHECK_ERROR(m_serviceProvider);
-
+                        
 			// Читаем очередную порцию данных
-			bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+			bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
 
 			//if( bytesWritten == 0 )
 			//{
@@ -291,7 +302,7 @@ namespace Menge
 			if( bytesWritten > 0 )
 			{
 				// Включаем буфер обратно в очередь
-				alBufferData( buffer, m_format, m_dataBuffer, bytesWritten, m_frequency );
+				alBufferData( buffer, m_format, dataBuffer, bytesWritten, m_frequency );
                 OAL_CHECK_ERROR(m_serviceProvider);
 
 				alSourceQueueBuffers( m_sourceId, 1, &buffer );

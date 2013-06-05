@@ -24,6 +24,7 @@ namespace Menge
 		, m_volume(1.f)
 		, m_volumeOverride(1.f)
 		, m_playing(false)
+        , m_turn(true)
 		, m_currentSoundPosition(0.f)
 	{
 	}
@@ -153,7 +154,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::play()
 	{
-		
+        if( m_playing == true )
+        {
+            return;
+        }
+
 		//Holder<SoundEngine>::get()
 		//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
 		if( this->preparePlay_() == false )
@@ -166,7 +171,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AmplifierService::preparePlay_()
 	{
-		if( m_currentPlayList == NULL )
+		if( m_currentPlayList == nullptr )
 		{
 			return false;
 		}
@@ -234,6 +239,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::onTurnSound( bool _turn )
 	{
+        if( m_turn == _turn )
+        {
+            return;
+        }
+
+        m_turn = _turn;
+
 		if( _turn == false )
 		{
 			if( m_sourceID == 0)

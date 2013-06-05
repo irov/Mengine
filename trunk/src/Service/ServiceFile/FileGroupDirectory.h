@@ -35,6 +35,7 @@ namespace Menge
 		bool openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _file ) override;
 
     public:
+        bool existDirectory( const FilePath& _path ) override;
 		bool createDirectory( const FilePath& _path ) override;
 		bool removeDirectory( const FilePath& _path ) override;
 		bool removeFile( const FilePath& _filename ) override;

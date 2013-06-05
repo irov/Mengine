@@ -151,6 +151,16 @@ namespace Menge
         		
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupDirectory::existDirectory( const FilePath& _path )
+    {
+        if( FILE_SYSTEM(m_serviceProvider)->existFolder( m_path, _path ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::createDirectory( const FilePath & _path )
 	{

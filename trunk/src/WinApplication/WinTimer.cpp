@@ -4,49 +4,55 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	WinTimer::WinTimer()
-		: m_timerMask()
+		: m_timerMask(0)
+        , m_startTick(0)
+        , m_lastTime(0)
 	{
 		this->reset();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void WinTimer::initialize()
+    {
+        DWORD procMask;
+        DWORD sysMask;
+
+#if _MSC_VER >= 1400 && defined (_M_X64)
+        GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&procMask, (PDWORD_PTR)&sysMask);
+#else
+        GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
+#endif
+
+        if (procMask == 0)
+            procMask = 1;
+
+        if( m_timerMask == 0 )
+        {
+            m_timerMask = 1;
+            while( ( m_timerMask & procMask ) == 0 )
+            {
+                m_timerMask <<= 1;
+            }
+        }
+
+        HANDLE thread = GetCurrentThread();
+
+        DWORD oldMask = SetThreadAffinityMask(thread, m_timerMask);
+
+        QueryPerformanceFrequency(&m_frequency);
+
+        QueryPerformanceCounter(&m_startTime);
+
+        m_startTick = GetTickCount();
+
+        SetThreadAffinityMask(thread, oldMask);
+        
+        this->reset();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void WinTimer::reset()
 	{
-		DWORD procMask;
-		DWORD sysMask;
-
-	#if _MSC_VER >= 1400 && defined (_M_X64)
-		GetProcessAffinityMask(GetCurrentProcess(), (PDWORD_PTR)&procMask, (PDWORD_PTR)&sysMask);
-	#else
-		GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
-	#endif
-
-		if (procMask == 0)
-			procMask = 1;
-
-		if( m_timerMask == 0 )
-		{
-			m_timerMask = 1;
-			while( ( m_timerMask & procMask ) == 0 )
-			{
-				m_timerMask <<= 1;
-			}
-		}
-
-		HANDLE thread = GetCurrentThread();
-
-		DWORD oldMask = SetThreadAffinityMask(thread, m_timerMask);
-
-		QueryPerformanceFrequency(&m_frequency);
-
-		QueryPerformanceCounter(&m_startTime);
-
-		m_startTick = GetTickCount();
-
-		SetThreadAffinityMask(thread, oldMask);
-
-		::QueryPerformanceCounter(&m_lastdt);
-
-		m_lastTime = 0;
+        m_lastTime = 0;
+        ::QueryPerformanceCounter(&m_lastdt);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float WinTimer::getDeltaTime() const

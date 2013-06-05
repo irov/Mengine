@@ -15,7 +15,7 @@
 
 #	include "Math/mat4.h"
 
-#	define MENGE_MAX_TEXTURE_STAGES 4
+#	define MENGE_MAX_TEXTURE_STAGES 2
 
 namespace Menge
 {

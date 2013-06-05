@@ -13,9 +13,9 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( nShowCmd );
 
-	Menge::WinApplication winApplication( hInstance, lpCmdLine );
+	Menge::WinApplication winApplication;
 	
-	if( winApplication.initialize() == false )
+	if( winApplication.initialize( hInstance, lpCmdLine ) == false )
 	{
         return 0;
     }

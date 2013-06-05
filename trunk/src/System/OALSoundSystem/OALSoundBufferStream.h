@@ -37,8 +37,6 @@ namespace Menge
 		size_t m_bufferSize;
 
 		ALuint m_sourceId;
-		unsigned char m_dataBuffer[44100];
-
 		bool m_updating;
 
 	private:

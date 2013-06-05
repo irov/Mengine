@@ -129,15 +129,20 @@ namespace Menge
         }
 
 		const FilePath & folder = newAccount->getFolder();
-
-		if( FILE_SERVICE(m_serviceProvider)->createDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
+        
+        if( FILE_SERVICE(m_serviceProvider)
+            ->existDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account '%ls' failed create directory '%s'"
-                , _accountID.c_str() 
-                , folder.c_str()
-                );
+		    if( FILE_SERVICE(m_serviceProvider)
+                ->createDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account '%ls' failed create directory '%s'"
+                    , _accountID.c_str() 
+                    , folder.c_str()
+                    );
 
-            return nullptr;
+                return nullptr;
+            }
         }
         
         m_accounts.insert( std::make_pair( _accountID, newAccount ) );

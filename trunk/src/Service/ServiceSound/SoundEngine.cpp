@@ -545,8 +545,10 @@ namespace Menge
                     this->stopSoundBufferUpdate_( source );
                 }
 
-                source->timing = source->soundSourceInterface->getLengthMs();
-                source->timing -= source->soundSourceInterface->getPosMs();
+                float length_ms = source->soundSourceInterface->getLengthMs();
+                float pos_ms = source->soundSourceInterface->getPosMs();
+
+                source->timing = length_ms - pos_ms;
 
                 source->soundSourceInterface->play();
 

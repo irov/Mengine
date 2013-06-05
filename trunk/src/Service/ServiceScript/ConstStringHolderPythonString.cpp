@@ -28,7 +28,7 @@ namespace Menge
         this->setup( data, size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderPythonString::releaseString()
+    void ConstStringHolderPythonString::_releaseString()
     {
         pybind::decref( m_value );
         m_value = nullptr;

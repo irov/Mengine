@@ -962,11 +962,14 @@ namespace Menge
 
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initialize()
+    bool MarmaladeApplication::initialize( const String & _commandLine )
     {
+        m_commandLine = _commandLine;
+
         setlocale( LC_CTYPE, "" );
         //::timeBeginPeriod( 1 );
 
+        m_timer.initialize();
 
         String scriptInit;
         Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
@@ -1086,8 +1089,7 @@ namespace Menge
 
             return false;
         }
-
-
+        
         //const WString & projectTitle = m_application->getProjectTitle();
 
         //const char * versionInfo = Application::getVersionInfo();
@@ -1137,31 +1139,66 @@ namespace Menge
             return false;
         }
 
+        LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
+
+        if( m_application->createRenderWindow( 0 ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::loop()
     {
-        if( m_application == 0 )
+        if( m_application == nullptr )
         {
             return;
         }
 
-        s3eDeviceYield(0);
+        m_input.setServiceProvider( m_serviceProvider );
+        m_input.initialize();
 
-        bool rendered = false;
-
-        if( m_application->isFocus() == true )
+        m_timer.reset();
+        
+        while( true )
         {
-            s3eDeviceBacklightOn();
-            rendered = m_application->onRender();
-        }
+            s3eBool quit = s3eDeviceCheckQuitRequest();
 
-        bool updating = m_application->onUpdate();
+            if( quit == S3E_TRUE )
+            {
+                break;
+            }
+            
+            s3eDeviceYield(0);
 
-        if( rendered )
-        {
-            m_application->onFlush();
+            bool rendered = false;
+
+            if( m_application->isFocus() == true )
+            {
+                s3eDeviceBacklightOn();
+                rendered = m_application->onRender();
+            }
+
+            m_input.update();
+            
+            bool updating = m_application->onUpdate();
+
+            float frameTime = m_timer.getDeltaTime();
+
+            if( updating == true )
+            {                
+                m_application->onTick( frameTime );
+            }
+            else
+            {
+                //Sleep?
+            }
+
+            if( rendered )
+            {
+                m_application->onFlush();
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1188,6 +1225,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::getDesktopResolution( Resolution & _resolution ) const
     {
+        int32 width = s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
+        int32 height = s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
+
+        _resolution.setWidth( width );
+        _resolution.setHeight( height );
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::minimizeWindow()

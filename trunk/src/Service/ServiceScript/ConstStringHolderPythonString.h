@@ -17,7 +17,7 @@ namespace Menge
         void setPythonObject( PyObject * _value );
 
     protected:
-        void releaseString() override;
+        void _releaseString() override;
 
     protected:			
         PyObject * m_value;

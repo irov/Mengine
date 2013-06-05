@@ -14,7 +14,7 @@ namespace Menge
         void setValue( const wchar_t * _value, size_t _size );
 
     protected:
-        void releaseString() override;
+        void _releaseString() override;
 
     protected:
         WString m_value;

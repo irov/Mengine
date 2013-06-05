@@ -286,6 +286,24 @@ namespace Menge
 
         return mappedFile;
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileEngine::existDirectory( const ConstString& _fileSystemName, const FilePath& _path )
+    {
+        TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
+        if( it_find == m_fileSystemMap.end() )
+        {
+            return false;
+        }
+
+        FileGroupInterface * fileGroup = it_find->second;
+
+        if( fileGroup->existDirectory( _path ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const FilePath & _path )
 	{

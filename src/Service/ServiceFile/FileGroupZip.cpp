@@ -188,11 +188,13 @@ namespace Menge
 
             if( header.compressedSize == 0 ) // if folder
             {
+                //m_folders.insert( fileName );
+
                 continue;
             }
-			
+
             FilePath fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
-            						
+                        						
 			if( header.compressionMethod != 0 )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize compressed %d file '%s'"
@@ -208,8 +210,8 @@ namespace Menge
             fi.seek_pos = fileOffset;
             fi.file_size = header.compressedSize;
             fi.unz_size = header.uncompressedSize;
-            fi.compr_method = header.compressionMethod;
-            			
+            fi.compr_method = header.compressionMethod;            			
+                        
 			m_files.insert( std::make_pair( fileName, fi ) );
 			
 			Utils::skip( zipMappedFile.get(), header.compressedSize );
@@ -289,6 +291,23 @@ namespace Menge
 
         LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openOutputFile %s unsupport method"
             , _filename.c_str()
+            );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::existDirectory( const FilePath& _path )
+    {
+        //bool result = m_folders.has( _path );
+
+        //return result;
+
+        (void)_path;
+
+        LOGGER_ERROR(m_serviceProvider)("FileGroupZip::existDirectory '%s:%s' unsupport method (path %s)"
+            , m_folder.c_str()
+            , m_path.c_str()
+            , _path.c_str()
             );
 
         return false;

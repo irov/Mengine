@@ -29,6 +29,9 @@ namespace Menge
 		bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
+    protected:
+        bool _isValid() const override;
+
 	public:
 		SoundBufferInterface * createSoundBuffer() const;
         void releaseSoundBuffer( SoundBufferInterface * _soundBufer ) const;

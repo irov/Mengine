@@ -13,6 +13,7 @@ namespace Menge
 		WinTimer();
 
 	public:
+        void initialize() override;
 		void reset() override;
 		float getDeltaTime() const override;
 

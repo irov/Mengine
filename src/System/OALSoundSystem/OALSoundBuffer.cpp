@@ -57,6 +57,10 @@ namespace Menge
 		m_time_total = dataInfo->time_total_secs;
 		size_t size = dataInfo->size;
 
+        //printf("OALSoundBuffer::load %.4f\n"
+        //    , float(size) / 1024.f
+        //    );
+
 		unsigned char* buffer = new unsigned char[ size /*+ fixed_sound_buffer_size*/ ];
 		unsigned int decode_size = _soundDecoder->decode( buffer, size );
 

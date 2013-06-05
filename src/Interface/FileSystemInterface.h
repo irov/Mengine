@@ -86,6 +86,7 @@ namespace Menge
         virtual bool openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:
+        virtual bool existDirectory( const FilePath& _path ) = 0;
         virtual bool createDirectory( const FilePath& _path ) = 0;
         virtual bool removeDirectory( const FilePath& _path ) = 0;
         virtual bool removeFile( const FilePath& _filename ) = 0;
@@ -117,6 +118,7 @@ namespace Menge
         virtual MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath & _foldername, const FilePath& _filename ) = 0;
 
     public:
+        virtual bool existDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;
         virtual bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;
         virtual bool removeDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;
         virtual bool removeFile( const ConstString& _fileSystemName, const FilePath& _filename ) = 0;

@@ -20,7 +20,7 @@ namespace Menge
         }
 
     protected:
-        void releaseString() override
+        void _releaseString() override
         {
             //Empty
         }

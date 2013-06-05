@@ -204,9 +204,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::tick( float _timing )
 	{
+#   ifdef MENGE_PARTICLES
 		PARTICLE_SERVICE(m_serviceProvider)
 			->beginParticlesCount();
-				
+#   endif
+
 		float timing = _timing * m_timingFactor;
 		
 		//m_amplifierService->update( timing );

@@ -209,6 +209,9 @@ namespace Menge
         mt::mat4f m_projection;
         mt::mat4f m_modelview;
 
+        UINT m_adapterToUse;
+        D3DDEVTYPE m_deviceType;
+
         Viewport m_viewport;
 
 		VBHandle m_vbHandleCounter;

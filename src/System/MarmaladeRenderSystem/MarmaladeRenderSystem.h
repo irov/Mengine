@@ -18,6 +18,43 @@ namespace Menge
 	class OGLWindowContext;
 	class MarmaladeTexture;
 
+    struct TextureStage
+    {
+        TextureStage()
+            : enabled(false)
+            , minFilter(TF_LINEAR)
+            , magFilter(TF_LINEAR)
+            , wrapS(GL_CLAMP_TO_EDGE)
+            , wrapT(GL_CLAMP_TO_EDGE)
+            , mengeMinFilter(TF_LINEAR)
+            , mengeMipFilter(TF_LINEAR)
+            , texture(0)
+            , colorOp(GL_MODULATE)
+            , colorArg1(GL_TEXTURE)
+            , colorArg2(GL_PRIMARY_COLOR)
+            , alphaOp(GL_MODULATE)
+            , alphaArg1(GL_TEXTURE)
+            , alphaArg2(GL_PRIMARY_COLOR)
+        {
+
+        }
+
+        bool enabled;
+        GLenum minFilter;
+        GLenum magFilter;
+        GLenum wrapS;
+        GLenum wrapT;
+        Menge::ETextureFilter mengeMinFilter;
+        Menge::ETextureFilter mengeMipFilter;
+        GLuint texture;
+        GLenum colorOp;
+        GLenum colorArg1;
+        GLenum colorArg2;
+        GLenum alphaOp;
+        GLenum alphaArg1;
+        GLenum alphaArg2;
+    };
+    
 	class MarmaladeRenderSystem 
 		: public RenderSystemInterface
 	{
@@ -174,25 +211,6 @@ namespace Menge
 
 		size_t m_activeTextureStage;
 		GLuint m_activeTexture;
-
-        struct TextureStage
-        {
-            bool enabled;
-            GLenum minFilter;
-            GLenum magFilter;
-            GLenum wrapS;
-            GLenum wrapT;
-            Menge::ETextureFilter mengeMinFilter;
-            Menge::ETextureFilter mengeMipFilter;
-            GLuint texture;
-            GLenum colorOp;
-            GLenum colorArg1;
-            GLenum colorArg2;
-            GLenum alphaOp;
-            GLenum alphaArg1;
-            GLenum alphaArg2;
-            size_t texCoordIndex;
-        };
 
         typedef FactoryPool<MarmaladeTexture, 128> TFactoryOGLTexture;
         TFactoryOGLTexture m_factoryOGLTexture;

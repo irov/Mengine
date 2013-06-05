@@ -47,9 +47,10 @@ namespace Menge
         MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath & _foldername, const FilePath& _filename ) override;     
         
 	public:
-		bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path );
-		bool removeDirectory( const ConstString& _fileSystemName, const FilePath& _path );
-		bool removeFile( const ConstString& _fileSystemName, const FilePath& _filename );
+        bool existDirectory( const ConstString& _fileSystemName, const FilePath& _path ) override;
+		bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path ) override;
+		bool removeDirectory( const ConstString& _fileSystemName, const FilePath& _path ) override;
+		bool removeFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

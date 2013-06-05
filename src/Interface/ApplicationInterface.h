@@ -15,6 +15,7 @@ namespace Menge
 	class TimerInterface
 	{
 	public:
+        virtual void initialize() = 0;
 		virtual void reset() = 0;
 		virtual float getDeltaTime() const = 0;
 

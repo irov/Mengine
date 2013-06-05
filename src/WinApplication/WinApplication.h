@@ -41,7 +41,7 @@ namespace Menge
 		: public PlatformInterface
 	{
 	public:
-		WinApplication( HINSTANCE _hInstance, const String& _commandLine );
+		WinApplication();
 		~WinApplication();
 
     public:
@@ -49,7 +49,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize();
+		bool initialize( HINSTANCE _hInstance, const String& _commandLine );
 		void finalize();
 
 		void loop();

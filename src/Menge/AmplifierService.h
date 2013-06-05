@@ -67,6 +67,7 @@ namespace	Menge
 
 		bool m_playing;
 		bool m_needRefocus;
+        bool m_turn;
 
     protected:
 		void listenSoundNodePaused() override;

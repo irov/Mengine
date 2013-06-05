@@ -16,7 +16,7 @@ namespace Menge
         this->setup( data, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderWStringSTL::releaseString()
+    void ConstStringHolderWStringSTL::_releaseString()
     {
         WString empty;
         m_value.swap(empty);

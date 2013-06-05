@@ -127,6 +127,72 @@ namespace Menge
 	void ResourceSound::_release()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceSound::_isValid() const
+    {
+        const ConstString & category = this->getCategory();
+
+        InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+            ->openInputFile( category, m_path );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceSound::_isValid: %s can't open sound file %s:%s"
+                , m_name.c_str()
+                , category.c_str()
+                , m_path.c_str() 
+                );
+
+            return false;
+        }
+
+        SoundDecoderInterfacePtr codec = CODEC_SERVICE(m_serviceProvider)
+            ->createDecoderT<SoundDecoderInterfacePtr>( m_codec, stream );
+
+        if( codec == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "SoundEngine::_isValid: %s can't create sound decoder for file %s:%s"
+                , m_name.c_str()
+                , category.c_str()
+                , m_path.c_str() 
+                );
+
+            return false;
+        }
+
+        const SoundCodecDataInfo * dataInfo = codec->getCodecDataInfo();
+
+        if( dataInfo->time_total_secs > 0.5f && m_isStreamable == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > 0.5s)\nfile - %s:%s"
+                , m_name.c_str()
+                , dataInfo->time_total_secs
+                , category.c_str()
+                , m_path.c_str() 
+                );
+
+            const_cast<ResourceSound *>(this)->m_isStreamable = true;
+        }
+
+        codec = nullptr;
+        stream = nullptr;
+
+        SoundBufferInterface * buffer = this->createSoundBuffer();
+
+        if( buffer == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "SoundEngine::isValid '%s' can't create buffer '%s'"
+                , this->getName().c_str()
+                , m_path.c_str()
+                );
+
+            return false;
+        }
+
+        buffer->destroy();
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * ResourceSound::createSoundBuffer() const
 	{
@@ -142,7 +208,7 @@ namespace Menge
                 , m_path.c_str()
                 );
 
-            return NULL;			
+            return nullptr;			
         }
 
         return soundBuffer;

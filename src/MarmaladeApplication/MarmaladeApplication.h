@@ -20,7 +20,10 @@
 #   include "Interface/MarmaladeLayerInterface.h"
 
 #   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
+
 #	include "MarmaladeLogger.h"
+#   include "MarmaladeTimer.h"
+#   include "MarmaladeInput.h"
 
 #	include <map>
 
@@ -45,7 +48,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize();
+        bool initialize( const String & _commandLine );
         void finalize();
 
         void loop();
@@ -145,6 +148,9 @@ namespace Menge
         FileLogger * m_fileLog;
 
         String m_commandLine;
+
+        MarmaladeTimer m_timer;
+        MarmaladeInput m_input;
 
         PluginInterface * m_pluginMengeImageCodec;
         PluginInterface * m_pluginMengeSoundCodec;

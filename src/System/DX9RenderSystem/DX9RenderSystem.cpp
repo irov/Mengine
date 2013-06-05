@@ -372,6 +372,8 @@ namespace Menge
 		, m_supportR8G8B8(false)
 		, m_syncReady(false)
         , m_hd3d9(NULL)
+        , m_adapterToUse(D3DADAPTER_DEFAULT)
+        , m_deviceType(D3DDEVTYPE_HAL)
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
@@ -433,9 +435,35 @@ namespace Menge
 			return false;
 		}
 
+        m_adapterToUse = D3DADAPTER_DEFAULT;
+        m_deviceType = D3DDEVTYPE_HAL;
+
+        UINT AdapterCount = m_pD3D->GetAdapterCount();
+        for( UINT Adapter = 0; Adapter != AdapterCount; ++Adapter )
+        {
+            D3DADAPTER_IDENTIFIER9 Identifier;
+            if( m_pD3D->GetAdapterIdentifier( Adapter, 0, &Identifier ) != D3D_OK )
+            {
+                continue;
+            }
+
+            if( strstr( Identifier.Description, "PerfHUD" ) != 0 )
+            {
+                m_adapterToUse = Adapter;
+                m_deviceType = D3DDEVTYPE_REF;
+                break;
+            }
+        }
+
 		// Get adapter info
         D3DADAPTER_IDENTIFIER9 AdID;
-		m_pD3D->GetAdapterIdentifier( D3DADAPTER_DEFAULT, D3DENUM_WHQL_LEVEL, &AdID );
+        if(FAILED( m_pD3D->GetAdapterIdentifier( m_adapterToUse, 0, &AdID ) ) )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Can't determine adapter identifier" 
+                );
+
+            return false;
+        }
 
 		LOGGER_INFO(m_serviceProvider)( "VendorId: %d", AdID.VendorId  );
 		LOGGER_INFO(m_serviceProvider)( "DeviceId: %d", AdID.DeviceId );
@@ -451,8 +479,8 @@ namespace Menge
 
 		// Set up Windowed presentation parameters
         D3DDISPLAYMODE Mode;
-		if(FAILED( m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN ) 
-		{
+        if(FAILED( m_pD3D->GetAdapterDisplayMode( m_adapterToUse, &Mode )) || Mode.Format==D3DFMT_UNKNOWN ) 
+        {
 			LOGGER_ERROR(m_serviceProvider)( "Can't determine desktop video mode"
                 );
 
@@ -466,7 +494,7 @@ namespace Menge
 		m_d3dppW.BackBufferFormat = Mode.Format;
 
 		// Set up Full Screen presentation parameters
-		UINT nModes = m_pD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8 );
+		UINT nModes = m_pD3D->GetAdapterModeCount( m_adapterToUse, D3DFMT_X8R8G8B8 );
 
 		//for(i=0; i<nModes; i++)
 		//{
@@ -481,7 +509,7 @@ namespace Menge
 		for( UINT i = 0; i < nModes; ++i )
 		{
 			//Mode = m_displayModes[i];
-			m_pD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8, i, &Mode );
+			m_pD3D->EnumAdapterModes( m_adapterToUse, D3DFMT_X8R8G8B8, i, &Mode );
 
 			if(Mode.Width != screenWidth || Mode.Height != screenHeight) 
 			{
@@ -507,7 +535,7 @@ namespace Menge
 		s_matIdent_( &m_matTexture );
 
 		D3DCAPS9 caps;
-		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
+		m_pD3D->GetDeviceCaps( m_adapterToUse, m_deviceType, &caps );
 
 		if( ( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 )
 			/*|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )*/ )
@@ -684,14 +712,14 @@ namespace Menge
 		// Create D3D Device
 		HRESULT hr;
 
-		hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+		hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 			m_d3dpp, &m_pD3DDevice );
 
 		if( FAILED( hr ) )
 		{
 			Sleep( 100 );
-			hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 				D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 				m_d3dpp, &m_pD3DDevice );
 		}
@@ -699,14 +727,14 @@ namespace Menge
 		if( FAILED( hr ) )
 		{
 			Sleep( 100 );
-			hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 				D3DCREATE_MIXED_VERTEXPROCESSING |D3DCREATE_FPU_PRESERVE ,
 				m_d3dpp, &m_pD3DDevice );
 
 			if( FAILED( hr ) )
 			{
 				Sleep( 100 );
-				hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+				hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 					D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 					m_d3dpp, &m_pD3DDevice );
 			}

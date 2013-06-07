@@ -61,7 +61,7 @@ namespace Menge
 		m_container = PARTICLE_SERVICE(m_serviceProvider)
 			->createEmitterContainerFromFile( category, m_filename );
 
-		if( m_container == 0 )
+		if( m_container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Image can't create container file '%s'"
 				, m_filename.c_str() 

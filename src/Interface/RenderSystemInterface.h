@@ -381,7 +381,7 @@ namespace Menge
     public:
         virtual void setRenderListener( RenderSystemListener * _listener ) = 0;
 
-		virtual bool createRenderWindow( size_t _width, size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		virtual bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 
     public:

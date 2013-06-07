@@ -137,6 +137,8 @@ namespace Menge
 		ApplicationInterface * m_application;
         StartupSettings m_settings;
 
+        EWindowsType m_windowsType;
+
 		bool m_running;
 		bool m_active;
 

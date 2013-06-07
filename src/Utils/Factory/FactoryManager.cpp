@@ -78,20 +78,20 @@ namespace Menge
                 , _type.c_str() 
                 );
 
-			return 0;
+			return nullptr;
 		}
 
         Factory * factory = it_found->second;
 
 		Factorable * object = factory->createObject();
 
-		if( object == NULL )
+		if( object == nullptr )
 		{
             LOGGER_ERROR(m_serviceProvider)("FactoryManager::createObject: invalid create object factory '%s'"
                 , _type.c_str() 
                 );
 
-			return NULL;
+			return nullptr;
 		}
 
 		return object;

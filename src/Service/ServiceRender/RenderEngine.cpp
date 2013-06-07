@@ -346,11 +346,8 @@ namespace Menge
             , m_fullscreen
             );
 		
-		size_t width = m_windowResolution.getWidth();
-		size_t height = m_windowResolution.getHeight();
-
 		m_windowCreated = RENDER_SYSTEM(m_serviceProvider)
-            ->createRenderWindow( width, height, _bits, m_fullscreen, _winHandle, m_vsync, _FSAAType, _FSAAQuality );
+            ->createRenderWindow( m_windowResolution, _bits, m_fullscreen, _winHandle, m_vsync, _FSAAType, _FSAAQuality );
 
 		if( m_windowCreated == false )
 		{
@@ -1436,13 +1433,18 @@ namespace Menge
 		//renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
 		//renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
 		
-		RENDER_SYSTEM(m_serviceProvider)->setViewport( renderViewport );
+		RENDER_SYSTEM(m_serviceProvider)
+            ->setViewport( renderViewport );
 
 		const mt::mat4f & viewMatrix = camera->getViewMatrix();
-		RENDER_SYSTEM(m_serviceProvider)->setModelViewMatrix( viewMatrix );
+
+		RENDER_SYSTEM(m_serviceProvider)
+            ->setModelViewMatrix( viewMatrix );
 
 		const mt::mat4f & projectionMatrix = camera->getProjectionMatrix();
-		RENDER_SYSTEM(m_serviceProvider)->setProjectionMatrix( projectionMatrix );
+
+		RENDER_SYSTEM(m_serviceProvider)
+            ->setProjectionMatrix( projectionMatrix );
 
 		this->renderObjects_( _renderPass );
 	}

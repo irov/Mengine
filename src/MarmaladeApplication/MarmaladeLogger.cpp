@@ -1,6 +1,6 @@
-
 #	include "MarmaladeLogger.h"
 
+#   include "s3eDebug.h"
 
 namespace Menge
 {
@@ -11,8 +11,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladeLogger::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
 	{
-		printf("%s"
-            , _data 
+		//s3eDebugErrorPrintf("%s"
+  //          , _data 
+  //          );
+        printf("%s"
+            , _data
             );
 	}
     //////////////////////////////////////////////////////////////////////////

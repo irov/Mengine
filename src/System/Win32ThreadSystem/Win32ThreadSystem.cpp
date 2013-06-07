@@ -84,7 +84,7 @@ namespace Menge
 		return identity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32ThreadSystem::joinThread( ThreadIdentity * _thread )
+	bool Win32ThreadSystem::joinThread( ThreadIdentity * _thread )
 	{
 		Win32ThreadIdentity * identity = static_cast<Win32ThreadIdentity*>(_thread);
 
@@ -100,6 +100,8 @@ namespace Menge
             );
     
         m_poolWin32ThreadIdentity.destroyT( identity );
+
+        return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::sleep( unsigned int _ms )

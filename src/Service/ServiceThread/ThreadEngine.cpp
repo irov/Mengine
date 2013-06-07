@@ -108,7 +108,7 @@ namespace Menge
 
         ThreadIdentity * threadIdentity = THREAD_SYSTEM(m_serviceProvider)->createThread( _task );
 
-        if( threadIdentity == 0 )
+        if( threadIdentity == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ThreadEngine::addTask invalid create identity"               
                 );
@@ -161,13 +161,22 @@ namespace Menge
 	{
 		ThreadIdentity * threadIdentity = this->getThreadIdentity_( _task );
 
-		if( threadIdentity == NULL )
+		if( threadIdentity == nullptr )
 		{
+            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::joinTask_: threadIdentity is null"
+                );
+
 			return false;
 		}
 
-		THREAD_SYSTEM(m_serviceProvider)
-            ->joinThread( threadIdentity );
+		if( THREAD_SYSTEM(m_serviceProvider)
+            ->joinThread( threadIdentity ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::joinTask_: invalid join thread"
+                );
+
+            return false;
+        }
 
         this->testComplete_();
 
@@ -276,7 +285,7 @@ namespace Menge
 			return threadIdentity;
 		}
 
-		return NULL;
+		return nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     void ThreadEngine::sleep( unsigned int _ms )

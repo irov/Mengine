@@ -294,6 +294,14 @@ namespace Menge
         m_contentResolution = _setting.contentResolution;
         m_fixedContentResolution = _setting.fixedContentResolution;
 
+        if( _setting.aspectRatioViewports.empty() == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Application::setup please setup aspect ratio viewports!"
+                );
+                
+            return false;
+        }
+
         for( TVectorAspectRatioViewports::const_iterator
             it = _setting.aspectRatioViewports.begin(),
             it_end = _setting.aspectRatioViewports.end();
@@ -354,7 +362,10 @@ namespace Menge
 
 		NODE_FACTORY( m_serviceProvider, Animation );
 		
+#   ifdef MENGE_PARTICLES
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter );
+#   endif
+
 		NODE_FACTORY( m_serviceProvider, HotSpot );
 		//NODE_FACTORY( Light2D );
 		//NODE_FACTORY( ShadowCaster2D );
@@ -563,7 +574,11 @@ namespace Menge
     RESOURCE_SERVICE(serviceProvider)->registerResourceFactory( Helper::stringizeString(serviceProvider, #Type), new FactoryPool<Type, 128>() )
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
+
+#   ifdef MENGE_PARTICLES
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
+#   endif
+
 		RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
 		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageDefault );

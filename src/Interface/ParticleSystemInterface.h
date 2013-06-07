@@ -158,7 +158,7 @@ namespace Menge
         virtual size_t getMaxParticlesCount() const = 0;
 
     public:
-        virtual void beginParticlesCount() = 0;
+        virtual void update() = 0;
     };
 
 #   define PARTICLE_SERVICE( serviceProvider )\

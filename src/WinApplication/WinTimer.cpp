@@ -22,12 +22,15 @@ namespace Menge
         GetProcessAffinityMask(GetCurrentProcess(), &procMask, &sysMask);
 #endif
 
-        if (procMask == 0)
+        if( procMask == 0 )
+        {
             procMask = 1;
+        }
 
         if( m_timerMask == 0 )
         {
             m_timerMask = 1;
+
             while( ( m_timerMask & procMask ) == 0 )
             {
                 m_timerMask <<= 1;

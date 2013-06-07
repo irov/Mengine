@@ -220,44 +220,44 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeThreadEngine_()
     {
-        //LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
+        LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
 
-        //ThreadSystemInterface * threadSystem;
-        //if( createThreadSystem( &threadSystem ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
-        //        );
+        ThreadSystemInterface * threadSystem;
+        if( createThreadSystem( &threadSystem ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
+                );
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //if( SERVICE_REGISTRY(m_serviceProvider, threadSystem) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY(m_serviceProvider, threadSystem) == false )
+        {
+            return false;
+        }
 
-        //threadSystem->initialize();
+        threadSystem->initialize();
 
-        //ThreadServiceInterface * threadService;
-        //if( createThreadService( &threadService ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
-        //        );
+        ThreadServiceInterface * threadService;
+        if( createThreadService( &threadService ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
+                );
 
-        //    return false;               
-        //}
+            return false;               
+        }
 
-        //if( SERVICE_REGISTRY( m_serviceProvider, threadService ) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY( m_serviceProvider, threadService ) == false )
+        {
+            return false;
+        }
 
-        //m_threadService = threadService;
+        m_threadService = threadService;
 
-        //if( m_threadService->initialize( 2 ) == false )
-        //{
-        //    return false;
-        //}
+        if( m_threadService->initialize( 2 ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -517,37 +517,37 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeParticleEngine_()
     {
-        //LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
+        LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
 
-        //ParticleSystemInterface * particleSystem;
-        //if( createParticleSystem( &particleSystem ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
-        //        );
+        ParticleSystemInterface * particleSystem;
+        if( createParticleSystem( &particleSystem ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
+                );
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
+        {
+            return false;
+        }
 
-        //ParticleServiceInterface * particleService;
-        //if( createParticleService( &particleService ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
-        //        );
+        ParticleServiceInterface * particleService;
+        if( createParticleService( &particleService ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
+                );
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
+        {
+            return false;
+        }
 
-        //m_particleService = particleService;
+        m_particleService = particleService;
 
         return true;
     }
@@ -938,7 +938,7 @@ namespace Menge
 
         if( platformName.empty() == true )
         {
-            platformName = "Marmalade";
+            platformName = "IPAD";
         }
 
         m_settings.applicationSettings.platformName = Helper::stringizeString( m_serviceProvider, platformName );
@@ -1022,15 +1022,15 @@ namespace Menge
             return false;
         }
 
-        //	if( this->initializeThreadEngine_() == false )
-        //	{
-        //		return false;
-        //	}
+        if( this->initializeThreadEngine_() == false )
+        {
+            return false;
+        }
 
-        //	if( this->initializeParticleEngine_() == false )
-        //	{
-        //		return false;
-        //	}
+        if( this->initializeParticleEngine_() == false )
+        {
+            return false;
+        }
 
         //	if( this->initializePhysicEngine2D_() == false )
         //	{
@@ -1249,12 +1249,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::showKeyboard()
     {
-
+        m_input.showKeyboard( true );
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::hideKeyboard()
     {
-
+        m_input.showKeyboard( false );
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )

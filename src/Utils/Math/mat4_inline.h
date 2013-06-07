@@ -469,37 +469,6 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 
-    MATH_FUNCTION_INLINE void make_projection_ortho_gl_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
-    {
-        float tx = - (_right + _left) / (_right - _left);
-        float ty = - (_top + _bottom) / (_top - _bottom);
-        float tz = - (_far + _near) / (_far - _near);
-
-        // 2/(r-l)      0            0           0
-        _out.v0.x = 2.f / (_right - _left);
-        _out.v0.y = 0.f;
-        _out.v0.z = 0.f;
-        _out.v0.w = 0.f;
-
-        //0            2/(t-b)      0           0
-        _out.v1.x = 0.f;
-        _out.v1.y = 2.f / (_top - _bottom);
-        _out.v1.z = 0.f;
-        _out.v1.w = 0.f;
-
-        //0            0            1/(zf-zn)   0
-        _out.v2.x = 0.f;
-        _out.v2.y = 0.f;
-        _out.v2.z = -2.f / (_far - _near);
-        _out.v2.w = 0.f;
-
-        //(l+r)/(l-r)  (t+b)/(b-t)  zn/(zn-zf)  1
-        _out.v3.x = tx;
-        _out.v3.y = ty;
-        _out.v3.z = tz;
-        _out.v3.w = 1.f;
-    }
-
 	MATH_FUNCTION_INLINE void make_projection_frustum_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
 	{
 		//2*zn/(r-l)   0            0              0

@@ -26,6 +26,7 @@ namespace Menge
 
 	public:
 		bool main() override;
+        void join() override;
 		void cancel() override;
 		void update() override;
 

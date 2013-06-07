@@ -84,7 +84,7 @@ namespace	Menge
         //float c_aspect = contentResolution.getAspectRatio();
         
         float gameViewportAspect;
-        Viewport gameViewport; 
+        Viewport gameViewport;
         
         APPLICATION_SERVICE(m_serviceProvider)
             ->getGameViewport( gameViewportAspect, gameViewport );
@@ -95,7 +95,7 @@ namespace	Menge
         float gameViewportWidth = gameViewport.getWidth();
         float gameViewportHeight = gameViewport.getHeight();
 
-        m_viewportWM.end.x = std::min( m_viewportWM.end.x - gameViewport.begin.x, gameViewportWidth );            
+        m_viewportWM.end.x = std::min( m_viewportWM.end.x - gameViewport.begin.x, gameViewportWidth );
         m_viewportWM.end.y = std::min( m_viewportWM.end.y - gameViewport.begin.y, gameViewportHeight );
 
         float scale_x = float(currentResolutionWidth) / gameViewportWidth;

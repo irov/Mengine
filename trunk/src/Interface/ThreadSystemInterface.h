@@ -16,7 +16,7 @@ namespace Menge
 	{
 	public:
 		virtual bool main() = 0;
-		//virtual void join() = 0;
+		virtual void join() = 0;
 	};
 
     class ThreadTaskInterface
@@ -59,7 +59,7 @@ namespace Menge
 
 	public:
 		virtual ThreadIdentity * createThread( ThreadListener * _listener ) = 0;
-		virtual void joinThread( ThreadIdentity * _thread ) = 0;
+		virtual bool joinThread( ThreadIdentity * _thread ) = 0;
 		virtual void sleep( unsigned int _ms ) = 0;
 	};
 

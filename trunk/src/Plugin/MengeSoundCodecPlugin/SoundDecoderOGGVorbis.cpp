@@ -116,16 +116,6 @@ namespace Menge
             return false;
         }
 
-        if( vorbisInfo->rate != 44100 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_initialize invalid rate %d need %d"
-                , vorbisInfo->rate
-                , 44100
-                );
-
-            return false;
-        }
-
         //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 3" );
         ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );	// number of 16bit samples
 

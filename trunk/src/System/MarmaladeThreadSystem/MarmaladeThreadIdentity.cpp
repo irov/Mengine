@@ -1,14 +1,15 @@
-#	include "PosixThreadIdentity.h"
+#	include "MarmaladeThreadIdentity.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	PosixThreadIdentity::PosixThreadIdentity( pthread_t _id )
-		: m_id(_id)
+	MarmaladeThreadIdentity::MarmaladeThreadIdentity( s3eThread * _thread )
+		: m_thread(_thread)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	pthread_t PosixThreadIdentity::getId() const
+	s3eThread * MarmaladeThreadIdentity::getThread() const
 	{
-		return m_id;
+		return m_thread;
 	}
 }

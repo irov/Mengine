@@ -2,19 +2,20 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
-#	include <pthread.h>
+#   include "s3eThread.h"
+
 namespace Menge
 {
-	class PosixThreadIdentity
+	class MarmaladeThreadIdentity
 		: public ThreadIdentity
 	{
 	public:
-		PosixThreadIdentity( pthread_t _id );
+		MarmaladeThreadIdentity( s3eThread * _thread );
 
 	public:
-		pthread_t getId() const;
+		s3eThread * getThread() const;
 
 	protected:
-		pthread_t m_id;
+		s3eThread * m_thread;
 	};
 }

@@ -27,7 +27,7 @@ namespace Menge
 
 	public:
 		ThreadIdentity * createThread( ThreadListener * _listener ) override;
-		void joinThread( ThreadIdentity * _thread ) override;
+		bool joinThread( ThreadIdentity * _thread ) override;
 		void sleep( unsigned int _ms ) override;
 	
 	protected:

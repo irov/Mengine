@@ -69,7 +69,7 @@ namespace Menge
             uint32 bytesRead = s3eFileRead( _buf, 1, s3e_count, m_hFile );
 
             s3eFileError error = s3eFileGetError();
-            if( bytesRead != S3E_FILE_ERR_NONE )
+            if( error != S3E_FILE_ERR_NONE )
             {
                 LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read (%d:%d) size %d get error %d"
                     , bytesRead

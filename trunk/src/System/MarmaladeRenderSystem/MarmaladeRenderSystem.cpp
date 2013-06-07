@@ -244,10 +244,12 @@ namespace Menge
         m_listener = _listener;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits,
+	bool MarmaladeRenderSystem::createRenderWindow( const Resolution & _resolution, int _bits,
 												bool _fullscreen, WindowHandle _winHandle, 
 												bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
+        m_resolution = _resolution;
+
 		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			glActiveTexture( GL_TEXTURE0 + i );
@@ -298,9 +300,11 @@ namespace Menge
         float w = _viewport.getWidth();
         float h = _viewport.getHeight();
         float xb = _viewport.begin.x;
-        float yb = _viewport.begin.y;
+        float yb = _viewport.end.y;
 
-        glViewport( (GLsizei)xb, (GLsizei)yb, (GLsizei)w, (GLsizei)h );    
+        float height = m_resolution.getHeight();
+
+        glViewport( (GLsizei)xb, (GLsizei)(height - yb), (GLsizei)w, (GLsizei)h );    
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
@@ -940,16 +944,17 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
-	{/*
+	{
+        m_resolution = _resolution;
+        
 		//m_windowContext->setFullscreenMode( _resolution.getWidth(), _resolution.getHeight(), _fullscreen );
 		//glViewport( 0, 0, _resolution.getWidth(), _resolution.getHeight() );
-		glViewport( 0, 0, _resolution.getHeight(), _resolution.getWidth() );
+		//glViewport( 0, 0, _resolution.getHeight(), _resolution.getWidth() );
 		//glScissor( 0, 0, _resolution.getWidth(), _resolution.getHeight() );
-		m_winWidth = _resolution.getWidth();
-		m_winHeight = _resolution.getHeight();
-		m_winContextWidth = _resolution.getWidth();
-		m_winContextHeight = _resolution.getHeight();*/
-
+		//m_winWidth = _resolution.getWidth();
+		//m_winHeight = _resolution.getHeight();
+		//m_winContextWidth = _resolution.getWidth();
+		//m_winContextHeight = _resolution.getHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear )
@@ -995,11 +1000,11 @@ namespace Menge
     void MarmaladeRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
         mt::mat4f scale;
-        mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
+        mt::make_scale_m4( scale, 1.f, 1.f, 1.f );
 
         //D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
         mt::mat4f translation;
-        mt::make_translation_m4( translation, -0.0f, -0.0f, 0.0f );
+        mt::make_translation_m4( translation, 0.f, 0.f, 0.f );
 
         //D3DXMatrixMultiply(&matProj, &matProj, &tmp);
         mt::mat4f transform;
@@ -1007,7 +1012,7 @@ namespace Menge
 
         //D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
         mt::mat4f ortho;
-        mt::make_projection_ortho_gl_m4(ortho, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
+        mt::make_projection_ortho_lh_m4(ortho, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 
         //D3DXMatrixMultiply(&matProj, &matProj, &tmp);
         mt::mul_m4_m4( _projectionMatrix, transform, ortho );

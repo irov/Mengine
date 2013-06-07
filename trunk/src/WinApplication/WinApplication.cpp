@@ -613,9 +613,7 @@ namespace Menge
         {
             m_loggerConsole = new ConsoleLogger(m_serviceProvider);
 
-            EWindowsType winType = m_windowsLayer->getWindowsType();
-
-            if( winType != EWT_98 )
+            if( m_windowsType != EWT_98 )
             {
                 m_loggerConsole->createConsole();
             }
@@ -1136,6 +1134,8 @@ namespace Menge
             return false;
         }
 
+        m_windowsType = m_windowsLayer->getWindowsType();
+
         if( this->initializeStringizeService_() == false )
         {
             return false;
@@ -1625,6 +1625,15 @@ namespace Menge
 
 		while( m_running )
 		{
+            EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
+            
+            if( m_windowsType == EWT_VISTA )
+            {
+                aState = aState | ES_AWAYMODE_REQUIRED;
+            }
+
+            SetThreadExecutionState(aState);
+
 			MSG  msg;
 			while( m_windowsLayer->peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 			{
@@ -1934,7 +1943,7 @@ namespace Menge
             {
                 if( wParam == SIZE_MAXIMIZED )
                 {
-                    m_application->setFullscreenMode( true );
+                    //m_application->setFullscreenMode( true );
 
                     this->setActive( true );
                 }
@@ -1963,20 +1972,20 @@ namespace Menge
 			}break;
 		case WM_SYSKEYDOWN:
 			{
-                if( wParam == VK_F4 )
-                {
-                    this->stop();
+                //if( wParam == VK_F4 )
+                //{
+                //    this->stop();
 
-                    return FALSE;
-                }
-                else if( wParam == VK_RETURN )
-                {
-                    bool fullscreen = m_application->getFullscreenMode();
-                    m_application->setFullscreenMode( !fullscreen );
+                //    return FALSE;
+                //}
+                //else if( wParam == VK_RETURN )
+                //{
+                //    bool fullscreen = m_application->getFullscreenMode();
+                //    m_application->setFullscreenMode( !fullscreen );
 
-                    return FALSE;
-                }
-                else
+                //    return FALSE;
+                //}
+                //else
                 {
                     unsigned int vkc = static_cast<unsigned int>( wParam );
                     HKL  layout = ::GetKeyboardLayout(0);
@@ -2007,10 +2016,35 @@ namespace Menge
 			}break;
 		case WM_SYSCOMMAND:
             {
-                if( wParam == SC_CLOSE )
+                switch( wParam )
                 {
-                    this->stop();
+                case SC_CLOSE:
+                    {
+                        this->stop();
+                    }break;
+
+                case SC_KEYMENU:
+                    {
+                        if( lParam == 13 )
+                        {					
+                            bool fullscreen = m_application->getFullscreenMode();
+                            m_application->setFullscreenMode( !fullscreen );
+                        }
+
+                        //return FALSE;
+                    }break;
+                case SC_SCREENSAVE:
+                    {
+                        //Disable Screensave
+                        return TRUE;
+                    }break;
+                case SC_MONITORPOWER:
+                    {
+                        return TRUE;
+                    }break;
                 }
+
+
                 //         else if( (wParam & 0xFFF0) ==  SC_RESTORE )
                 //         {
                 //            m_active = true;
@@ -2024,7 +2058,7 @@ namespace Menge
                 //	}
 
                 //	//return FALSE;
-                //}break;
+                //}break;                
             }break;
 		case WM_SETCURSOR:
 			//printf( "set cursor\n" );

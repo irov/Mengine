@@ -2,18 +2,20 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
+#   include "s3eThread.h"
+
 namespace Menge
 {
-	class PosixThreadIdentity;
+	class MarmaladeThreadIdentity;
 	class ServiceProviderInterface;
 	class LogServiceInterface;
 
-	class PosixThreadSystem
+	class MarmaladeThreadSystem
 		: public ThreadSystemInterface
 	{
 	public:
-		PosixThreadSystem();
-		~PosixThreadSystem();
+		MarmaladeThreadSystem();
+		~MarmaladeThreadSystem();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
@@ -25,11 +27,11 @@ namespace Menge
 
 	public:
 		ThreadIdentity * createThread( ThreadListener * _listener ) override;
-		void joinThread( ThreadIdentity * _thread ) override;
+		bool joinThread( ThreadIdentity * _thread ) override;
 		void sleep( unsigned int _ms ) override;
 	
 	protected:
-		typedef std::vector<PosixThreadIdentity *> TVectorPosixThreadIdentity;
+		typedef std::vector<MarmaladeThreadIdentity *> TVectorPosixThreadIdentity;
 		TVectorPosixThreadIdentity m_threadIdentities;
 
 		ServiceProviderInterface * m_serviceProvider;

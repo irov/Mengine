@@ -374,7 +374,7 @@ namespace	Menge
 
 			return mute;
 		}
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_isSilent()
         {
             bool silent = SOUND_SERVICE(m_serviceProvider)
@@ -429,6 +429,5 @@ namespace	Menge
         pybind::def_functor( "voiceStop", soundScriptMethod, &SoundScriptMethod::s_voiceStop );
         pybind::def_functor( "voiceSetVolume", soundScriptMethod, &SoundScriptMethod::voiceSetVolume );
         pybind::def_functor( "voiceGetVolume", soundScriptMethod, &SoundScriptMethod::voiceGetVolume );
-
 	}
 }

@@ -74,7 +74,7 @@ namespace Menge
         void setRenderListener( RenderSystemListener * _listener ) override;
 
 	public:
-		bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 
 
@@ -177,11 +177,13 @@ namespace Menge
         PixelFormat findFormatFromChannels_( size_t & _channels, PixelFormat _format ) const;
 
 	private:
-        ServiceProviderInterface* m_serviceProvider;
+        ServiceProviderInterface * m_serviceProvider;
 
         RenderSystemListener * m_listener;
 		
 		OGLWindowContext* m_windowContext;
+
+        Resolution m_resolution;
 
 		String m_ext;
 

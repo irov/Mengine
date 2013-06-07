@@ -99,7 +99,7 @@ namespace Menge
 		m_maxParticlesNum = _count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::beginParticlesCount()
+	void ParticleEngine::update()
 	{
 		m_renderParticleNum = m_maxParticlesNum;
 	}

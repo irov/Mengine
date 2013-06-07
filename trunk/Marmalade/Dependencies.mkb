@@ -10,7 +10,6 @@ options
 
 defines
 {
-	S3E_NO_INLINE
 }
 
 subprojects 

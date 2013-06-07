@@ -1,7 +1,7 @@
 #	pragma once
 
 // Build-in particle system
-//#	define MENGE_PARTICLES
+#	define MENGE_PARTICLES
 
 //	Endian type
 #	define MENGE_ENDIAN_LITTLE	(1)

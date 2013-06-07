@@ -105,11 +105,21 @@ files
     ("../src/Service/ServiceRender")	
 	"*.h"
 	"*.cpp"    
+    
+    [Service/ServiceThread]
+    ("../src/Service/ServiceThread")	
+	"*.h"
+	"*.cpp"     
         
     [Service/ServiceScript]
     ("../src/Service/ServiceScript")	
 	"*.h"
 	"*.cpp"    
+    
+    [Service/ServiceParticle]
+    ("../src/Service/ServiceParticle")	
+	"*.h"
+	"*.cpp"       
     
     [Service/ServiceSound]
     ("../src/Service/ServiceSound")	

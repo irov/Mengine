@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/ImageCodecInterface.h"
 
 #   include "RenderTexture.h"
 
@@ -137,8 +138,8 @@ namespace Menge
 
         void enableDebugMode( bool _enable ) override;
         
-	public:
-		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) override;
+    protected:
+		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );
 		
 	public:
 		void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
@@ -183,6 +184,8 @@ namespace Menge
 
 		void setVSync( bool _vSync ) override;
 		bool getVSync() const override;
+
+        size_t getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format ) const override;
 
 	private:
 		RenderPass * createRenderPass_();

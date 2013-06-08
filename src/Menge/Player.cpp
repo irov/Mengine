@@ -896,11 +896,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorPlayerFactoryManager
-		: public VisitorFactoryManager
+		: public VisitorPrototypeGenerator
 	{
 	public:
-		VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, Stringstream & _ss )
+		VisitorPlayerFactoryManager( ServiceProviderInterface * _serviceProvider, const ConstString & _category, Stringstream & _ss )
 			: m_serviceProvider(_serviceProvider)
+            , m_category(_category)
             , m_ss(_ss)
 		{
 		}
@@ -914,9 +915,14 @@ namespace Menge
         }
 
 	protected:
-		void visit( const ConstString & _type, Factory * _factory ) override
+		void visit( const ConstString & _category, const ConstString & _type, PrototypeGeneratorInterface * _generator ) override
 		{
-			size_t count = _factory->countObject();
+            if( m_category != _category )
+            {
+                return;
+            }
+
+			size_t count = _generator->count();
 
 			if( count == 0 )
 			{
@@ -928,6 +934,7 @@ namespace Menge
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+        ConstString m_category;
 		Stringstream & m_ss;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -1007,10 +1014,10 @@ namespace Menge
 
 			ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
 
-			VisitorPlayerFactoryManager pfmv(m_serviceProvider, ss);
+			VisitorPlayerFactoryManager pfmv(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
 
-			NODE_SERVICE(m_serviceProvider)
-				->visitFactories( &pfmv );
+			PROTOTYPE_SERVICE(m_serviceProvider)
+				->visitGenerators( &pfmv );
 
             ss << "Entities: " << Entity::s_enum << std::endl;
 

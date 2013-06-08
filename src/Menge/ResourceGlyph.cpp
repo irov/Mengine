@@ -148,7 +148,7 @@ namespace Menge
 
 		Glyph gl(uv, _offset, ratio, size);
 
-		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( _glyph, gl ) );
+		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( _glyph, gl ) ).first;
 		
 		return it_insert->second;
 	}

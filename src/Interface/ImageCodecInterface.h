@@ -1,8 +1,7 @@
 #	pragma once
 
 #	include "Interface/CodecInterface.h"
-
-#	include "Core/PixelFormat.h"
+#	include "Interface/RenderSystemInterface.h"
 
 namespace Menge
 {
@@ -13,7 +12,7 @@ namespace Menge
 			: width(0)
 			, height(0)
 			, depth(1)
-			, num_mipmaps(0)
+			, mipmaps(0)
 			, flags(0)
 			, quality(100)
 			, channels(0)
@@ -25,8 +24,8 @@ namespace Menge
 		size_t height;
 		
 		size_t depth;
+		size_t mipmaps;
 
-		unsigned short num_mipmaps;
 		unsigned int flags;
 
 		int quality;

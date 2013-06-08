@@ -4,7 +4,6 @@
 
 #	include "Config/Typedef.h"
 
-#	include "Factory/FactoryManager.h"
 #   include "Utils/Core/BinaryVector.h"
 
 #	include <map>
@@ -23,7 +22,6 @@ namespace Menge
 
 	class ResourceManager
 		: public ResourceServiceInterface
-        , public FactoryManager
 	{
 	public:
 		ResourceManager();
@@ -32,9 +30,6 @@ namespace Menge
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-        void registerResourceFactory( const ConstString & _type, Factory * _factory ) override;
 
 	public:
 		bool loadResource( const ResourceDesc & _desc ) override;

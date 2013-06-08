@@ -255,8 +255,8 @@ namespace Menge
 	{
         ExecuteInitialize exinit( this );
 
-        exinit.add( &Application::initializeNodeManager_ );
         exinit.add( &Application::initializePrototypeManager_ );
+        exinit.add( &Application::initializeNodeManager_ );        
         exinit.add( &Application::initializeAmplifierService_ );
         exinit.add( &Application::initializeLoaderEngine_ );
         exinit.add( &Application::initializeMovieKeyFrameManager_ );
@@ -331,6 +331,63 @@ namespace Menge
 	{
 		return m_platform;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        template<class Type, size_t Count>
+        class NodePrototypeGenerator
+            : public PrototypeGeneratorInterface
+        {
+        public:
+            NodePrototypeGenerator( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider(_serviceProvider)
+            {
+            }
+
+        protected:
+            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
+            {
+                (void)_category;
+                (void)_prototype;
+
+                Node * node = m_factory.createObjectT();
+
+                if( node == nullptr )
+                {
+                    LOGGER_ERROR(m_serviceProvider)( "NodePrototypeGenerator can't generate %s %s"
+                        , _category.c_str()
+                        , _prototype.c_str()
+                        );
+
+                    return nullptr;
+                }
+
+                node->setType( _prototype );
+
+                node->setServiceProvider( m_serviceProvider );
+
+                return node;
+            }
+
+            size_t count() const override
+            {
+                size_t count = m_factory.countObject();
+
+                return count;
+            }
+
+            void destroy() override
+            {
+                delete this;
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+
+            typedef FactoryPool<Type, Count> TNodeFactory;
+            TNodeFactory m_factory;
+        };
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
 	{	
@@ -349,8 +406,12 @@ namespace Menge
 
         m_nodeService->initialize();
 
+//#	define NODE_FACTORY( serviceProvider, Type )\
+//		nodeService->registerFactory( Helper::stringizeString( serviceProvider, #Type), new FactoryPool<Type, 128> )
+
 #	define NODE_FACTORY( serviceProvider, Type )\
-		nodeService->registerFactory( Helper::stringizeString( serviceProvider, #Type), new FactoryPool<Type, 128> )
+        PROTOTYPE_SERVICE(serviceProvider)\
+            ->addPrototype( CONST_STRING(serviceProvider, Node), Helper::stringizeString( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
 
 		LOGGER_INFO(m_serviceProvider)( "Creating Object Factory..." );
 
@@ -484,7 +545,7 @@ namespace Menge
             }
 
         protected:
-            PrototypeInterface * generate( const ConstString & _category, const ConstString & _prototype ) override
+            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
             {
                 Scene * scene = NODE_SERVICE(m_serviceProvider)
                     ->createNodeT<Scene>( CONST_STRING(m_serviceProvider, Scene) );
@@ -502,6 +563,11 @@ namespace Menge
                 scene->setName( _prototype );
 
                 return scene;
+            }
+
+            size_t count() const override
+            {
+                return 0;
             }
 
             void destroy() override
@@ -555,6 +621,63 @@ namespace Menge
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    namespace
+    {
+        template<class Type, size_t Count>
+        class ResourcePrototypeGenerator
+            : public PrototypeGeneratorInterface
+        {
+        public:
+            ResourcePrototypeGenerator( ServiceProviderInterface * _serviceProvider )
+                : m_serviceProvider(_serviceProvider)
+            {
+            }
+
+        protected:
+            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
+            {
+                (void)_category;
+                (void)_prototype;
+
+                ResourceReference * resource = m_factory.createObjectT();
+
+                if( resource == nullptr )
+                {
+                    LOGGER_ERROR(m_serviceProvider)( "ResourcePrototypeGenerator can't generate %s %s"
+                        , _category.c_str()
+                        , _prototype.c_str()
+                        );
+
+                    return nullptr;
+                }
+
+                resource->setType( _prototype );
+
+                resource->setServiceProvider( m_serviceProvider );
+
+                return resource;
+            }
+
+            size_t count() const override
+            {
+                size_t count = m_factory.countObject();
+
+                return count;
+            }
+
+            void destroy() override
+            {
+                delete this;
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+
+            typedef FactoryPool<Type, Count> TNodeFactory;
+            TNodeFactory m_factory;
+        };
+    }    
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeResourceManager_()
 	{
@@ -570,8 +693,9 @@ namespace Menge
         
         m_resourceService = resourceService;
 
+
 #	define RESOURCE_FACTORY( serviceProvider, Type ) \
-    RESOURCE_SERVICE(serviceProvider)->registerResourceFactory( Helper::stringizeString(serviceProvider, #Type), new FactoryPool<Type, 128>() )
+    PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), Helper::stringizeString(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
 

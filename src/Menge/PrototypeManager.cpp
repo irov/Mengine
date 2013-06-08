@@ -33,7 +33,7 @@ namespace Menge
         key.category = _category;
         key.prototype = _prototype;
 
-        m_prototypes[key] = _generator; //replace
+        m_prototypes.insert( std::make_pair( key, _generator) ); //replace
 
         LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"
             , _category.c_str()
@@ -72,7 +72,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    PrototypeInterface * PrototypeManager::generatePrototype( const ConstString & _category, const ConstString & _prototype )
+    Factorable * PrototypeManager::generatePrototype( const ConstString & _category, const ConstString & _prototype )
     {
         CategoryKey key;
         key.category = _category;
@@ -89,8 +89,23 @@ namespace Menge
             return nullptr;
         }
 
-        PrototypeInterface * prototype = generator->generate( _category, _prototype );
+        Factorable * prototype = generator->generate( _category, _prototype );
 
         return prototype;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PrototypeManager::visitGenerators( VisitorPrototypeGenerator * _visitor ) const
+    {
+        for( TMapPrototypes::const_iterator
+            it = m_prototypes.begin(),
+            it_end = m_prototypes.end();
+        it != it_end;
+        ++it )
+        {
+            const CategoryKey & keys = it->first;
+            PrototypeGeneratorInterface * generator = it->second;
+
+            _visitor->visit( keys.category, keys.prototype, generator );
+        }
     }
 }

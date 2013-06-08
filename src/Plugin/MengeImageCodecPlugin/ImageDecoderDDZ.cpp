@@ -4,7 +4,6 @@
 #   include "Interface/ArchiveInterface.h"
 
 #	include "Utils/Logger/Logger.h"
-#	include "Utils/Core/PixelFormat.h"
 
 namespace Menge
 {
@@ -81,7 +80,7 @@ namespace Menge
 		}
 
 		m_dataInfo.depth = m_header.dwDepth;
-		m_dataInfo.num_mipmaps = m_header.dwMipMapCount;
+		m_dataInfo.mipmaps = m_header.dwMipMapCount;
 		m_dataInfo.width = m_header.dwWidth;
 		m_dataInfo.height = m_header.dwHeight;
         m_dataInfo.channels = 3;
@@ -99,13 +98,16 @@ namespace Menge
 
         m_dataInfo.format = s_convertFourCCFormat( m_header.ddspf.dwFourCC );
 
-        m_dataInfo.size = PixelUtil::getMemorySize( m_dataInfo.width, m_dataInfo.height, 1, m_dataInfo.format );
+        m_dataInfo.size = RENDER_SERVICE(m_serviceProvider)
+            ->getMemorySize( m_dataInfo.width, m_dataInfo.height, 1, m_dataInfo.format );
         
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderDDZ::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
+        (void)_bufferSize;
+
         static TBlobject compress_buf;
 
         compress_buf.resize( m_compress_size );

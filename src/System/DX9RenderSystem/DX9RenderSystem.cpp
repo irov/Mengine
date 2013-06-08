@@ -603,7 +603,7 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::createRenderWindow( size_t _width, size_t _height, int _bits, 
+	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, int _bits, 
 		bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
         (void)_bits;
@@ -619,8 +619,7 @@ namespace Menge
 			,"A8R8G8B8"
 		};
 		
-		m_windowResolution.setWidth(_width);
-		m_windowResolution.setHeight(_height);
+		m_windowResolution = _resolution;		
 
 		m_fullscreen = _fullscreen;
 
@@ -628,8 +627,8 @@ namespace Menge
 		m_d3dppW.Windowed         = TRUE;
 		m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-		m_d3dppW.BackBufferWidth  = _width;
-		m_d3dppW.BackBufferHeight = _height;
+		m_d3dppW.BackBufferWidth  = m_windowResolution.getWidth();
+		m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
 		m_d3dppW.BackBufferCount  = 1;
 
 		m_d3dppW.hDeviceWindow    = (HWND)_winHandle;
@@ -666,8 +665,8 @@ namespace Menge
 		m_d3dppFS.MultiSampleType = D3DMULTISAMPLE_NONE;
         m_d3dppFS.Windowed = FALSE;
 
-		m_d3dppFS.BackBufferWidth  = _width;
-		m_d3dppFS.BackBufferHeight = _height;
+		m_d3dppFS.BackBufferWidth  = m_windowResolution.getWidth();
+		m_d3dppFS.BackBufferHeight = m_windowResolution.getHeight();
 		m_d3dppFS.BackBufferCount  = 1;
 
 		m_d3dppFS.hDeviceWindow    = (HWND)_winHandle;
@@ -751,8 +750,8 @@ namespace Menge
 		}
 
 		LOGGER_INFO(m_serviceProvider)( "Mode: %d x %d x %s\n"
-			, _width
-			, _height
+			, m_windowResolution.getWidth()
+			, m_windowResolution.getHeight()
 			, szFormats[s_format_id_(m_d3dpp->BackBufferFormat)]
 			);
 

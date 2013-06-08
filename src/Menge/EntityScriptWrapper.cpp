@@ -91,7 +91,7 @@ namespace Menge
             }
 
         protected:
-            PrototypeInterface * generate( const ConstString & _category, const ConstString & _prototype ) override
+            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
             {
                 (void)_category;
                 (void)_prototype;
@@ -110,6 +110,12 @@ namespace Menge
                 }
 
                 return entity;
+            }
+
+        protected:
+            size_t count() const override
+            {
+                return 0;
             }
         };
         //////////////////////////////////////////////////////////////////////////

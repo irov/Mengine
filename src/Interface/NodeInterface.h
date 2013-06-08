@@ -1,7 +1,6 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
-#   include "Interface/FactoryManagerInterface.h"
 
 #   include "Core/ConstString.h"
 
@@ -9,12 +8,9 @@ namespace Menge
 {
     class Node;
     class Factory;
-    
-    typedef std::vector<Node*> TVectorNode;
 
     class NodeServiceInterface
         : public ServiceInterface
-        , virtual public FactoryManagerInterface
     {
         SERVICE_DECLARE("NodeService")
                 
@@ -30,7 +26,16 @@ namespace Menge
         {
             Node * node = this->createNode( _type );
 
-            return static_cast<T*>(node);
+#   ifdef _DEBUG
+            if( dynamic_cast<T *>(node) == nullptr )
+            {
+                return nullptr;
+            }
+#   endif
+
+            T * t = static_cast<T*>(node);
+
+            return t;
         }
 
     public:

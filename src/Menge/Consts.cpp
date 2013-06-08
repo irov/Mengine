@@ -34,6 +34,7 @@ namespace Menge
         c_SubMovie = Helper::stringizeString(_serviceProvider, "SubMovie");
         c_user = Helper::stringizeString(_serviceProvider, "user");
         c_WhitePixel = Helper::stringizeString(_serviceProvider, "WhitePixel");
+        c_Resource = Helper::stringizeString(_serviceProvider, "Resource");
         c_ResourceSound = Helper::stringizeString(_serviceProvider, "ResourceSound");
         c_ResourceImageInAtlasCombineRGBAndAlpha = Helper::stringizeString(_serviceProvider, "ResourceImageInAtlasCombineRGBAndAlpha");
         c_ResourceImageInAtlasDefault = Helper::stringizeString(_serviceProvider, "ResourceImageInAtlasDefault");

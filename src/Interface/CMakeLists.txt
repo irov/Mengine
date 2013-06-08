@@ -36,7 +36,6 @@ src
     MovieKeyFrameInterface.h
     PlayerInterface.h
     GameInterface.h    
-    FactoryManagerInterface.h
     PrototypeManagerInterface.h
     WatchdogInterface.h
     EventInterface.h

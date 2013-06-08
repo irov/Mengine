@@ -13,13 +13,14 @@ namespace Menge
     {
         PyObject * wrap( typename pybind::interface_<T>::extract_type_ptr::TCastRef _node ) override
         {
-            if( _node == 0 )
+            if( _node == nullptr )
             {
                 return pybind::ret_none();
             }
 
             PyObject * pyObj = _node->getEmbed();
-            pybind::incref(pyObj);
+
+            pybind::incref( pyObj );
 
             return pyObj;
         }
@@ -29,8 +30,6 @@ namespace Menge
 	class ScriptClassWrapper
 		: public ScriptClassInterface
 	{
-	protected:
-
 	public:
 		ScriptClassWrapper()
 		{
@@ -41,10 +40,13 @@ namespace Menge
 		PyObject * wrap( Node * _node ) override
 		{
 #   ifdef _DEBUG
-			T * obj = dynamic_cast<T *>( _node );
-#   else
-            T * obj = static_cast<T *>( _node );
+			if( dynamic_cast<T *>( _node ) == nullptr )
+            {
+                return nullptr;
+            }
 #   endif
+
+            T * obj = static_cast<T *>( _node );
 
 			PyObject * py_embedded =  pybind::class_holder<T>( obj );
 

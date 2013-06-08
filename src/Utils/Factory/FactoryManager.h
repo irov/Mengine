@@ -1,20 +1,21 @@
 #	pragma once
 
-#   include "Interface/FactoryManagerInterface.h"
-
-#	include "Factory.h"
+#   include "Interface/ServiceInterface.h"
 
 #	include "Core/ConstString.h"
-
-#	include <map>
+#	include "Core/BinaryVector.h"
 
 namespace Menge
 {
     class Factory;
-    class ServiceProviderInterface;
 
+    class VisitorFactoryManager
+    {
+    public:
+        virtual void visit( const ConstString & _type, Factory * _factory ) = 0;
+    };
+    
 	class FactoryManager
-        : virtual public FactoryManagerInterface
 	{
 	public:
 		FactoryManager();
@@ -24,14 +25,14 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void registerFactory( const ConstString & _type, Factory * _factory ) override;
-		void unregisterFactory( const ConstString & _type ) override;
+		void registerFactory( const ConstString & _type, Factory * _factory );
+		void unregisterFactory( const ConstString & _type );
 
 	public:
-		bool hasFactory( const ConstString & _type ) const override;
+		bool hasFactory( const ConstString & _type ) const;
 
 	public:
-		Factorable * createObject( const ConstString & _type ) override;
+		Factorable * createObject( const ConstString & _type );
 
         template<class T>
         T * createObjectT( const ConstString & _type )
@@ -51,12 +52,12 @@ namespace Menge
         }
 
 	public:
-		void visitFactories( VisitorFactoryManager * _visit ) override;
+		void visitFactories( VisitorFactoryManager * _visit );
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::map<ConstString, Factory *> TMapFactory;
+		typedef BinaryVector<ConstString, Factory *> TMapFactory;
 		TMapFactory m_factories;
 	};
 }

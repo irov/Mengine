@@ -197,7 +197,7 @@ namespace Menge
         m_dataInfo.height = height;
         m_dataInfo.depth = 1;
         m_dataInfo.size = decodedDataSize;
-        m_dataInfo.num_mipmaps = 0;
+        m_dataInfo.mipmaps = 0;
         m_dataInfo.flags = 0;
         m_dataInfo.channels = channels;
 

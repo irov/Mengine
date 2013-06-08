@@ -1,7 +1,6 @@
 #	include "ImageEncoderPNG.h"
 
 #	include "Utils/Logger/Logger.h"
-#	include "Utils/Core/PixelFormat.h"
 
 namespace Menge
 {

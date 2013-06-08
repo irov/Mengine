@@ -3,8 +3,7 @@
 #   include "Interface/PrototypeManagerInterface.h"
 
 #	include "Core/ConstString.h"
-
-#	include <map>
+#	include "Core/BinaryVector.h"
 
 namespace Menge
 {
@@ -24,7 +23,10 @@ namespace Menge
 		bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterface ** _generator ) const override;
 
     public:
-        PrototypeInterface * generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
+        Factorable * generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
+
+    public:
+        void visitGenerators( VisitorPrototypeGenerator * _visitor ) const override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -52,7 +54,7 @@ namespace Menge
             }
         };
 
-        typedef std::map<CategoryKey, PrototypeGeneratorInterface *, CategoryKeyLess> TMapPrototypes;        
+        typedef BinaryVector<CategoryKey, PrototypeGeneratorInterface *, CategoryKeyLess> TMapPrototypes;        
 		TMapPrototypes m_prototypes;       
 	};
 }

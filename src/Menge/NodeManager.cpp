@@ -1,10 +1,12 @@
 #	include "NodeManager.h"
 
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/PrototypeManagerInterface.h"
 
 #   include "Logger/Logger.h"
 
 #	include "Kernel/Node.h"
+#	include "Consts.h"
 
 #	include <memory>
 
@@ -22,8 +24,6 @@ namespace Menge
     void NodeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        FactoryManager::setServiceProvider( m_serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * NodeManager::getServiceProvider() const
@@ -54,7 +54,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * NodeManager::createNode( const ConstString& _type )
 	{
-		Node * node = FactoryManager::createObjectT<Node>( _type );
+		Node * node = PROTOTYPE_SERVICE(m_serviceProvider)
+            ->generatePrototypeT<Node>( CONST_STRING(m_serviceProvider, Node), _type );
 
 		if( node == nullptr )
 		{

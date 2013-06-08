@@ -46,7 +46,7 @@ namespace Menge
 	typedef IntrusiveSlug<Node> TSlugChild;
 
 	class Node
-        : public IntrusiveLinked<Node>
+        : public IntrusiveLinked<Node>        
 		, public Factorable
 		, public Identity
 		, public Resource

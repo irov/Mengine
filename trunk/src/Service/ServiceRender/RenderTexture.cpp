@@ -1,19 +1,18 @@
 #	include "RenderTexture.h"
 
-#	include "Core/PixelFormat.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
-		: m_width(0)
+        : m_serviceProvider(nullptr)
+        , m_listener(nullptr)
+		, m_width(0)
 		, m_height(0)
         , m_channels(0)
 		, m_uv(0.f, 0.f, 1.f, 1.f)
-        , m_id(0)
-        , m_listener(nullptr)
+        , m_id(0)        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -23,13 +22,16 @@ namespace Menge
         m_image = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::initialize( const RenderImageInterfacePtr & _image
+    void RenderTexture::initialize( ServiceProviderInterface * _serviceProvider
+        , const RenderImageInterfacePtr & _image
         , size_t _width
         , size_t _height
         , size_t _channels
         , size_t _id
         , RenderTextureInterfaceListener * _listener )
     {
+        m_serviceProvider = _serviceProvider;
+
         m_image = _image;
         m_width = _width;
         m_height = _height;
@@ -90,7 +92,8 @@ namespace Menge
 
 		PixelFormat HWFormat = this->getHWPixelFormat();
 
-		size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, HWFormat );
+		size_t memroy_size = RENDER_SERVICE(m_serviceProvider)
+            ->getMemorySize( HWWidth, HWHeight, 1, HWFormat );
 
 		return memroy_size;
 	}

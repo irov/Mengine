@@ -8,7 +8,6 @@ namespace Menge
 {
 	class Entity
 		: public Node
-        , public PrototypeInterface
 	{
     public:
         Entity();

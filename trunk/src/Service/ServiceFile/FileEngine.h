@@ -55,6 +55,8 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
+        FactoryManager m_factoryFileGroup;
+
 		typedef BinaryVector<ConstString, FileGroupInterface *> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;
 	};

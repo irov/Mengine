@@ -287,7 +287,7 @@ namespace Menge
 		jpeg_read_header( m_jpegObject, TRUE );
 
 		m_dataInfo.depth = 1;
-		m_dataInfo.num_mipmaps = 0;
+		m_dataInfo.mipmaps = 0;
 		m_dataInfo.width = m_jpegObject->image_width;
 		m_dataInfo.height = m_jpegObject->image_height;
 		m_dataInfo.quality = getQuality( m_jpegObject );

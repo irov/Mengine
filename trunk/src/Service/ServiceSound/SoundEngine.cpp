@@ -184,7 +184,7 @@ namespace Menge
 		source->looped = false;
 
 		TMapSoundSource::iterator it_insert = 
-            m_soundSourceMap.insert( std::make_pair( soundId, source ) );
+            m_soundSourceMap.insert( std::make_pair( soundId, source ) ).first;
         
         this->updateSourceVolume_( source, 1.f );
 

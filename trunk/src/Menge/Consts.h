@@ -41,6 +41,7 @@ namespace Menge
         ConstString c_SubMovie;
 		ConstString c_user;
 		ConstString c_WhitePixel;
+        ConstString c_Resource;
 		ConstString c_ResourceSound;
 		ConstString c_ResourceImageInAtlasDefault;
 		ConstString c_ResourceImageInAtlasCombineRGBAndAlpha;

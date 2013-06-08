@@ -2,9 +2,12 @@
 
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/LoaderInterface.h"
+#   include "Interface/PrototypeManagerInterface.h"
 
 #	include "Kernel/Loadable.h"
 #	include "Kernel/ResourceReference.h"
+
+#   include "Consts.h"
 
 #	include "Metacode.h"
 
@@ -43,18 +46,11 @@ namespace Menge
     void ResourceManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        FactoryManager::setServiceProvider( m_serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * ResourceManager::getServiceProvider() const
     {
         return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::registerResourceFactory( const ConstString & _type, Factory * _factory )
-    {
-        this->registerFactory( _type, _factory );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const ResourceDesc & _desc )
@@ -188,8 +184,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-		ResourceReference * resource = 
-			this->createObjectT<ResourceReference>( _type );
+        ResourceReference * resource = PROTOTYPE_SERVICE(m_serviceProvider)
+            ->generatePrototypeT<ResourceReference>( CONST_STRING(m_serviceProvider, Resource), _type );
 
 		if( resource == nullptr )
 		{
@@ -202,10 +198,7 @@ namespace Menge
 
 		resource->setCategory( _category );
 		resource->setGroup( _group );
-		resource->setName( _name );
-		resource->setType( _type );
-
-        resource->setServiceProvider( m_serviceProvider );
+		resource->setName( _name );		
 
 		ResourceEntry entry;
 		entry.resource = resource;

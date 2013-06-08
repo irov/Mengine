@@ -6,8 +6,6 @@
 
 #	include "Core/ConstString.h"
 
-#	include "Factory/FactoryManager.h"
-
 
 namespace Menge
 {
@@ -16,7 +14,6 @@ namespace Menge
 
 	class NodeManager
         : public NodeServiceInterface
-		, public FactoryManager
 	{
 	public:
 		NodeManager();
@@ -29,8 +26,8 @@ namespace Menge
         void initialize() override;
         void finalize() override;
 
-	public:
-		Node * createNode( const ConstString& _type ) override;
+    public:
+        Node * createNode( const ConstString& _type ) override;
 
     public:
         void addHomeless( Node * _homeless ) override;

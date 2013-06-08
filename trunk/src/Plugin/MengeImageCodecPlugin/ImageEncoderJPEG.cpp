@@ -1,13 +1,4 @@
- /*
- *	ImageEncoderJPEG.cpp
- *
- *	Created by _Berserk_ on 16.4.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	include "ImageEncoderJPEG.h"
-#	include "Utils/Core/PixelFormat.h"
 
 #	include "Interface/FileSystemInterface.h"
 

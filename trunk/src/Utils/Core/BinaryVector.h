@@ -78,13 +78,21 @@ namespace Menge
         }
 
     public:
-        iterator insert( const TBinaryPair & _pair )
+        std::pair<iterator, bool> insert( const TBinaryPair & _pair )
         {
             iterator it_lower_bound = std::lower_bound( m_buffer.begin(), m_buffer.end(), _pair, BinaryVectorLess() );
 
+            if( it_lower_bound != m_buffer.end() )
+            {
+                if( BinaryVectorLess()( _pair, *it_lower_bound ) == false )
+                {
+                    return std::make_pair(it_lower_bound, false);
+                }
+            }
+
             iterator it_insert = m_buffer.insert( it_lower_bound, _pair );
             
-            return it_insert;
+            return std::make_pair(it_insert, true);
         }
 
         void erase( iterator _erase )

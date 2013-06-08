@@ -754,7 +754,7 @@ namespace Menge
         layer_slot->setMovieName( m_name );
 
 		//layer_slot->enable();
-		layer_slot->localHide(true);
+		layer_slot->localHide( true );
         
 
 		m_slots.insert( std::make_pair(_layer.name, layer_slot) );
@@ -776,7 +776,7 @@ namespace Menge
         sceneeffect_slot->setPropagateNode( layer );
 
         //layer_slot->enable();
-        sceneeffect_slot->localHide(true);
+        sceneeffect_slot->localHide( true );
 
         this->addMovieNode_( _layer, sceneeffect_slot );
 
@@ -790,7 +790,7 @@ namespace Menge
 
         layer_slot->setName( _layer.name );
 
-		layer_slot->localHide(true);
+		layer_slot->localHide( true );
 
 		this->addMovieNode_( _layer, layer_slot );
 
@@ -830,7 +830,7 @@ namespace Menge
 				);
 		}
 
-		layer_sprite->localHide(true);
+		layer_sprite->localHide( true );
 
 		this->addMovieNode_( _layer, layer_sprite );
 
@@ -889,7 +889,7 @@ namespace Menge
 			return false;
 		}
 
-		layer_sprite->localHide(true);
+		layer_sprite->localHide( true );
 
 		this->addMovieNode_( _layer, layer_sprite );
 
@@ -899,7 +899,7 @@ namespace Menge
     bool Movie::createMovieSocket_( const MovieLayer & _layer )
     {
         HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, Sprite) );
+            ->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, HotSpotImage) );
 
         layer_hotspotimage->setResourceHIT( _layer.source );
 
@@ -917,7 +917,7 @@ namespace Menge
             return false;
         }
 
-        layer_hotspotimage->localHide(true);
+        layer_hotspotimage->localHide( true );
 
         m_sockets.insert( std::make_pair(_layer.name, layer_hotspotimage) );
 
@@ -1611,6 +1611,7 @@ namespace Menge
 
 		m_slots.clear();
         m_events.clear();
+        m_sockets.clear();
 
 		this->destroyCamera3D_();
 

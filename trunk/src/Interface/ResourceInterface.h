@@ -36,9 +36,6 @@ namespace Menge
         SERVICE_DECLARE("ResourceService")
 
     public:
-        virtual void registerResourceFactory( const ConstString & _type, Factory * _factory ) = 0;
-
-    public:
         virtual bool loadResource( const ResourceDesc & _desc ) = 0;
 
     public:

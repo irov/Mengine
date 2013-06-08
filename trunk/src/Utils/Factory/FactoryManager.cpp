@@ -10,7 +10,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FactoryManager::FactoryManager()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -33,19 +33,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::registerFactory( const ConstString & _type, Factory * _factory )
 	{
-        LOGGER_INFO(m_serviceProvider)("FactoryManager::registerFactory: register factory '%s'"
-            , _type.c_str() 
-            );
-
 		m_factories.insert( std::make_pair(_type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::unregisterFactory( const ConstString & _type )
 	{
-        LOGGER_INFO(m_serviceProvider)("FactoryManager::unregisterFactory: unregister factory '%s'"
-            , _type.c_str() 
-            );
-
 		TMapFactory::iterator it_found = m_factories.find( _type );
 
 		if( it_found != m_factories.end() )

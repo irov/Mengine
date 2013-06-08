@@ -50,10 +50,6 @@ src
 	String.cpp
     UnicodeFormat.h
     
-	PixelFormat.h
-	PixelFormat.cpp
-	Bitwise.h
-    
     Stream.h
 	Rect.h
 	Rect.cpp

@@ -261,7 +261,6 @@ Resource\\\\Playlist
 	ResourcePlaylist.h
 )
 
-
 ADD_FILTER(
 Resource\\\\Sound
 	ResourceSound.cpp

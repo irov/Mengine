@@ -44,7 +44,7 @@ namespace Menge
     {
         m_serviceProvider = _serviceProvider;
 
-        FactoryManager::setServiceProvider( m_serviceProvider );
+        m_factoryFileGroup.setServiceProvider( m_serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * FileEngine::getServiceProvider() const
@@ -54,11 +54,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{
-		FactoryManager::registerFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactoryDefault<FileGroupDirectory>() );
-        FactoryManager::registerFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactoryDefault<FileGroupDirectory>() );
-		FactoryManager::registerFactory( Helper::stringizeString(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>() );
-       
-		return true;
+		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactoryDefault<FileGroupDirectory>() );
+		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>() );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::mountFileGroup( const ConstString& _fileSystemName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create )
@@ -81,7 +80,7 @@ namespace Menge
 			return false;
 		}
 
-		FileGroupInterface * fs = FactoryManager::createObjectT<FileGroupInterface>( _type );
+		FileGroupInterface * fs = m_factoryFileGroup.createObjectT<FileGroupInterface>( _type );
 
 		if( fs == nullptr )
 		{
@@ -93,9 +92,6 @@ namespace Menge
 				);
 
 			return false;
-
-			// try mount as Directory
-			//fs = FactoryManager::createObjectT<FileSystem>( Consts::get()->c_builtin_empty );
 		}
 
 		if( fs->initialize( m_serviceProvider, _folder, _path, _type, _create ) == false )

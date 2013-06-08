@@ -15,7 +15,8 @@ namespace Menge
 		~RenderTexture();
 
     public:
-        void initialize( const RenderImageInterfacePtr & _image
+        void initialize( ServiceProviderInterface * _serviceProvider
+            , const RenderImageInterfacePtr & _image
             , size_t _width
             , size_t _height
             , size_t _channels
@@ -50,10 +51,11 @@ namespace Menge
 		
         PixelFormat getHWPixelFormat() const override;
 
-
 		size_t getMemoryUse() const override;
 
 	protected:
+        ServiceProviderInterface * m_serviceProvider;
+
 		RenderImageInterfacePtr m_image;
         RenderTextureInterfaceListener * m_listener;
 		

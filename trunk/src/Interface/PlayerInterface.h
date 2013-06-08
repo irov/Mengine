@@ -16,6 +16,8 @@ namespace Menge
     class Scene;
     class Arrow;
     class Camera2D;
+
+    typedef std::vector<Node *> TVectorNode;
     
     class PlayerServiceInterface
         : public ServiceInterface

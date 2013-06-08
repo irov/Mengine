@@ -5,6 +5,7 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 #	include "Interface/NodeInterface.h"
+#   include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/VideoCodecInterface.h"
@@ -173,8 +174,8 @@ namespace Menge
 
 		if( m_resourceSoundName.empty() == false )
 		{
-			m_soundEmitter = NODE_SERVICE(m_serviceProvider)
-                ->createNodeT<SoundEmitter>( CONST_STRING(m_serviceProvider, SoundEmitter) );
+			m_soundEmitter = PROTOTYPE_SERVICE(m_serviceProvider)
+                ->generatePrototypeT<SoundEmitter>( CONST_STRING(m_serviceProvider, Node), CONST_STRING(m_serviceProvider, SoundEmitter) );
 			
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
 

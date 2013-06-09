@@ -15,7 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::HotSpotImage()
-		: m_resourceHIT(NULL)
+		: m_resourceHIT(nullptr)
         , m_alphaTest(0.f)
 	{
 	}
@@ -70,10 +70,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_release()
 	{
-		if( m_resourceHIT != 0 )
+		if( m_resourceHIT != nullptr )
 		{
 			m_resourceHIT->decrementReference();
-			m_resourceHIT = 0;
+			m_resourceHIT = nullptr;
 		}
 
 		HotSpot::_release();
@@ -140,14 +140,14 @@ namespace Menge
 		return m_resourceHIT;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotImage::setResourceHIT( const ConstString& _resourceName )
+    void HotSpotImage::setResourceHITName( const ConstString& _resourceName )
     {
         m_resourceHITName = _resourceName;
 
         this->recompile();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & HotSpotImage::getResourceHIT() const
+    const ConstString & HotSpotImage::getResourceHITName() const
     {
         return m_resourceHITName;
     }
@@ -164,7 +164,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     size_t HotSpotImage::getWidth() const
     {
-        if( m_resourceHIT == NULL )
+        if( m_resourceHIT == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("HotSpot::getWidth %s not compiled"
                 , this->getName().c_str()
@@ -180,7 +180,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     size_t HotSpotImage::getHeight() const
     {
-        if( m_resourceHIT == NULL )
+        if( m_resourceHIT == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("HotSpot::getHeight %s not compiled"
                 , this->getName().c_str()

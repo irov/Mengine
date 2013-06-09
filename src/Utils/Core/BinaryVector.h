@@ -78,6 +78,25 @@ namespace Menge
         }
 
     public:
+        std::pair<iterator, bool> replace( const TBinaryPair & _pair )
+        {
+            iterator it_lower_bound = std::lower_bound( m_buffer.begin(), m_buffer.end(), _pair, BinaryVectorLess() );
+
+            if( it_lower_bound != m_buffer.end() )
+            {
+                if( BinaryVectorLess()( _pair, *it_lower_bound ) == false )
+                {
+                    it_lower_bound->second = _pair.second;
+
+                    return std::make_pair(it_lower_bound, true);
+                }
+            }
+
+            iterator it_insert = m_buffer.insert( it_lower_bound, _pair );
+
+            return std::make_pair(it_insert, false);
+        }
+
         std::pair<iterator, bool> insert( const TBinaryPair & _pair )
         {
             iterator it_lower_bound = std::lower_bound( m_buffer.begin(), m_buffer.end(), _pair, BinaryVectorLess() );

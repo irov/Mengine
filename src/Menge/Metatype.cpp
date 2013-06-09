@@ -13,10 +13,12 @@ namespace Metabuf
         (void)_userData;
 
 		size_t size;
-		ar.readPOD( size );
+		ar.readSize( size );
 
         if( size == 0 )
         {
+            _value.clear();
+
             return;
         }
 
@@ -30,7 +32,7 @@ namespace Metabuf
         Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 
 		size_t index;
-		ar.read( index );
+		ar.readSize( index );
 
         _value = loader->getCacheConstString( index );
 	}
@@ -38,7 +40,7 @@ namespace Metabuf
     void archive_read( ArchiveReader & ar, Menge::WChar & _value, void * _userData )
     {   
         size_t size;
-        ar.readPOD( size );
+        ar.readSize( size );
 
         char utf8[32];
         ar.readBuffer( (unsigned char *)utf8, size );
@@ -52,11 +54,15 @@ namespace Metabuf
         if( UNICODE_SERVICE(serviceProvider)
             ->utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
         {
+            throw Metabuf::ArchiveException();
+
             return;
         }
 
         if( unicodeSize == 0 )
         {
+            throw Metabuf::ArchiveException();
+
             return;
         }
 
@@ -107,7 +113,30 @@ namespace Metabuf
         ar.readPOD( code );
 
         _value.setCode( code );
-    }    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( ArchiveReader & ar, Menge::Polygon & _value, void * _userData )
+    {
+        (void)_userData;
+
+        size_t count;
+        ar.readSize(count);
+
+        if( count % 2 != 0 )
+        {
+            throw Metabuf::ArchiveException();
+
+            return;
+        }
+
+        for( size_t i = 0; i != count; i += 2 )
+        {
+            mt::vec2f v;
+            ar.read( v );
+
+            boost::geometry::append( _value, v );
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, mt::vec2f & _value, void * _userData )
 	{

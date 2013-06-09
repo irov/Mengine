@@ -44,6 +44,8 @@
 #	include "MovieInternalObject.h"
 #	include "Animation.h"
 #	include "HotSpot.h"
+#	include "HotSpotImage.h"
+#   include "HotSpotShape.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
 #	include "Arrow.h"
@@ -70,7 +72,7 @@
 #	include "Video.h"
 
 #	include "Window.h"
-#	include "HotSpotImage.h"
+
 
 #	include "Kernel/Entity.h"
 
@@ -158,6 +160,46 @@ namespace Menge
             Helper::utf8ToUnicode( m_serviceProvider, utf8, unicode );
 
             return unicode;            
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonVisitorMovieSocket
+            : public VisitorMovieSocket
+        {
+        public:
+            PythonVisitorMovieSocket( PyObject * _list )
+                : m_list(_list)
+            {
+            }
+
+        protected:
+            void visitSocket( const ConstString & _name, HotSpot * _hotspot ) override
+            {
+                PyObject * py_name = pybind::ptr( _name );
+                PyObject * py_hotspot = pybind::ptr( _hotspot );
+
+                PyObject * py_arg = pybind::list_new(0);
+                pybind::list_appenditem( py_arg, py_name );
+                pybind::list_appenditem( py_arg, py_hotspot );
+                pybind::decref( py_name );
+                pybind::decref( py_hotspot );
+
+                pybind::list_appenditem( m_list, py_arg );
+                pybind::decref( py_arg );
+            }
+
+        protected:
+            PyObject * m_list;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * movie_getSockets( Movie * _movie )
+        {
+            PyObject * py_list = pybind::list_new(0);
+
+            PythonVisitorMovieSocket pvms(py_list);
+
+            _movie->visitSockets( &pvms );
+
+            return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         float movie_getFrameDuration( Movie * _movie )
@@ -2865,14 +2907,17 @@ namespace Menge
                     ;
 
                 pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
-                    .def( "setResourceHIT", &HotSpotImage::setResourceHIT )
-                    .def( "getResourceHIT", &HotSpotImage::getResourceHIT )
-                    //.def( "setFrame", &HotSpotImage::setFrame )
-                    //.def( "getFrame", &HotSpotImage::getFrame )
+                    .def( "setResourceHIT", &HotSpotImage::setResourceHITName )
+                    .def( "getResourceHIT", &HotSpotImage::getResourceHITName )
                     .def( "setAlphaTest", &HotSpotImage::setAlphaTest )
                     .def( "getAlphaTest", &HotSpotImage::getAlphaTest )
                     .def( "getWidth", &HotSpotImage::getWidth )
                     .def( "getHeight", &HotSpotImage::getHeight )
+                    ;
+
+                pybind::interface_<HotSpotShape, pybind::bases<HotSpot> >("HotSpotShape", false)
+                    .def( "setResourceShape", &HotSpotShape::setResourceShapeName )
+                    .def( "getResourceShape", &HotSpotShape::getResourceShapeName )
                     ;
 
                 pybind::interface_<Sprite, pybind::bases<Node> >("Sprite", false)
@@ -2984,6 +3029,7 @@ namespace Menge
                     .def( "hasSocket", &Movie::hasSocket )
                     .def( "setMovieEvent", &Movie::setMovieEvent )
                     .def( "hasMovieEvent", &Movie::hasMovieEvent )
+                    .def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )
                     .def_proxy_static( "getFrameDuration", nodeScriptMethod, &NodeScriptMethod::movie_getFrameDuration )
                     .def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
                     .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )

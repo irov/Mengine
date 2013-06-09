@@ -22,8 +22,7 @@ namespace Menge
 
         size_t utf8_size = strlen( _value ); 
 
-        _metabuf->write( utf8_size );
-        
+        _metabuf->writeSize( utf8_size );        
         _metabuf->writeCount( &_value[0], utf8_size );
 
         return true;
@@ -35,8 +34,7 @@ namespace Menge
 
         size_t utf8_size = strlen( _value ); 
 
-        _metabuf->write( utf8_size );
-
+        _metabuf->writeSize( utf8_size );
         _metabuf->writeCount( &_value[0], utf8_size );
 
         return true;
@@ -110,7 +108,7 @@ namespace Menge
 
 		//FILE * file_protocol = _wfopen( unicode_pathProtocol.c_str(), L"rb" );
 
-        if( protocol_stream == NULL )
+        if( protocol_stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error open protocol %s"
                 , m_options.pathProtocol.c_str()
@@ -140,7 +138,7 @@ namespace Menge
         InputStreamInterfacePtr xml_stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( dev, m_options.pathXml );
 
-        if( xml_stream == NULL )
+        if( xml_stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error open xml %s"
                 , m_options.pathXml.c_str()
@@ -163,18 +161,6 @@ namespace Menge
         TBlobject xml_buf(xml_size);
         xml_stream->read( &xml_buf[0], xml_size );
         xml_stream = nullptr;
-
-        OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( dev, m_options.pathBin );
-
-        if( bin_stream == NULL )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error create bin %s"
-                , m_options.pathBin.c_str()
-                );
-
-            return 0;
-        }
 
 		Metabuf::Xml2Metabuf xml_metabuf(&xml_protocol);
 
@@ -201,8 +187,6 @@ namespace Menge
 
             return 0;
         }
-
-        bin_stream->write( &header_buf[0], Metabuf::header_size );
 
         TBlobject bin_buf(xml_size * 2);
 
@@ -232,6 +216,20 @@ namespace Menge
 
             return 0;
         }
+
+        OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
+            ->openOutputFile( dev, m_options.pathBin );
+
+        if( bin_stream == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error create bin %s"
+                , m_options.pathBin.c_str()
+                );
+
+            return 0;
+        }
+
+        bin_stream->write( &header_buf[0], Metabuf::header_size );
         
         bin_stream->write( &bin_size, sizeof(bin_size) );
         bin_stream->write( &compress_size, sizeof(compress_size) );

@@ -425,7 +425,11 @@ namespace Menge
 			{
                 it->state = MOVIE_LAYER_NODE;
 			}
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocket) )
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+            {
+                it->state = MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
             {
                 it->state = MOVIE_LAYER_NODE;
             }

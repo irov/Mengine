@@ -72,6 +72,7 @@
 #	include "Layer3D.h"
 #	include "Window.h"
 #	include "HotSpotImage.h"
+#	include "HotSpotShape.h"
 #	include "Layer2DTexture.h"
 #	include "PhysicalBody2D.h"
 #	include "Layer2DPhysic.h"
@@ -103,6 +104,7 @@
 #	include "ResourceMaterial.h"
 #	include "ResourceWindow.h"
 #   include "ResourceHIT.h"
+#   include "ResourceShape.h"
 #	include "ResourceCursorICO.h"
 #	include "ResourceCursorSystem.h"
 #	include "ResourceInternalObject.h"
@@ -428,6 +430,8 @@ namespace Menge
 #   endif
 
 		NODE_FACTORY( m_serviceProvider, HotSpot );
+        NODE_FACTORY( m_serviceProvider, HotSpotImage );
+        NODE_FACTORY( m_serviceProvider, HotSpotShape );
 		//NODE_FACTORY( Light2D );
 		//NODE_FACTORY( ShadowCaster2D );
 		//NODE_FACTORY( TilePolygon );
@@ -457,7 +461,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Camera3D );
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( m_serviceProvider, Window );
-		NODE_FACTORY( m_serviceProvider, HotSpotImage );
+		
 #	undef NODE_FACTORY
 
 		return true;
@@ -718,6 +722,7 @@ namespace Menge
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceWindow );
         RESOURCE_FACTORY( m_serviceProvider, ResourceHIT );
+        RESOURCE_FACTORY( m_serviceProvider, ResourceShape );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceCursorICO );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceCursorSystem );
 

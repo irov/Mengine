@@ -24,6 +24,7 @@ namespace Menge
         c_Layer2D = Helper::stringizeString(_serviceProvider, "Layer2D");
         c_HotSpot = Helper::stringizeString(_serviceProvider, "HotSpot");
         c_HotSpotImage = Helper::stringizeString(_serviceProvider, "HotSpotImage");
+        c_HotSpotShape = Helper::stringizeString(_serviceProvider, "HotSpotShape");
         c_Point = Helper::stringizeString(_serviceProvider, "Point");
         c_Window = Helper::stringizeString(_serviceProvider, "Window");
         c_Image = Helper::stringizeString(_serviceProvider, "Image");
@@ -76,7 +77,8 @@ namespace Menge
         c_ParticleEmitter = Helper::stringizeString(_serviceProvider, "ParticleEmitter");
         c_LayerCamera2D = Helper::stringizeString(_serviceProvider, "LayerCamera2D");
         c_MovieSlot = Helper::stringizeString(_serviceProvider, "MovieSlot");
-        c_MovieSocket = Helper::stringizeString(_serviceProvider, "MovieSocket");
+        c_MovieSocketImage = Helper::stringizeString(_serviceProvider, "MovieSocketImage");
+        c_MovieSocketShape = Helper::stringizeString(_serviceProvider, "MovieSocketShape");
         c_MovieText = Helper::stringizeString(_serviceProvider, "MovieText");
         c_MovieSceneEffect = Helper::stringizeString(_serviceProvider, "MovieSceneEffect");
         c_MovieNullObject = Helper::stringizeString(_serviceProvider, "MovieNullObject");

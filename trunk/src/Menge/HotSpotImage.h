@@ -28,8 +28,8 @@ namespace Menge
 		ResourceHIT * getResourseHIT() const;
 
     public:
-        void setResourceHIT( const ConstString& _resourceName );
-        const ConstString & getResourceHIT() const;
+        void setResourceHITName( const ConstString& _resourceName );
+        const ConstString & getResourceHITName() const;
 
     protected:
 		bool _compile() override;

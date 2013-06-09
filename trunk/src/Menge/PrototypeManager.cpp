@@ -33,7 +33,7 @@ namespace Menge
         key.category = _category;
         key.prototype = _prototype;
 
-        m_prototypes.insert( std::make_pair( key, _generator) ); //replace
+        m_prototypes.replace( std::make_pair( key, _generator) ); //replace
 
         LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"
             , _category.c_str()

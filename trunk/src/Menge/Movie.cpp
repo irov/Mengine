@@ -23,6 +23,7 @@
 #   include "MovieNodeExtra.h"
 #   include "MovieEvent.h"
 #   include "HotSpotImage.h"
+#   include "HotSpotShape.h"
 #   include "MovieSceneEffect.h"
 #	include "MovieInternalObject.h"
 
@@ -500,7 +501,58 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    HotSpotImage * Movie::getSocket( const ConstString & _name ) const
+    bool Movie::visitSockets( VisitorMovieSocket * _visitor ) const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile"
+                , m_name.c_str()
+                );
+
+            return false;
+        }
+
+        for( TMapSockets::const_iterator
+            it = m_sockets.begin(),
+            it_end = m_sockets.end();
+        it != it_end;
+        ++it )
+        {
+            const ConstString & name = it->first;
+            HotSpot * hotspot = it->second;
+
+            _visitor->visitSocket( name, hotspot );
+        }
+
+        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+        for( TVectorMovieLayers::const_iterator
+            it = layers.begin(),
+            it_end = layers.end();
+        it != it_end;
+        ++it )
+        {
+            const MovieLayer & layer = *it;
+
+            if( layer.isMovie() == false || layer.isSubMovie() == true )
+            {
+                continue;
+            }
+
+            Node * node = this->getMovieNode_( layer );
+
+            Movie * movie = dynamic_cast<Movie *>(node);
+
+            if( movie->visitSockets( _visitor ) == false )
+            {
+                continue;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HotSpot * Movie::getSocket( const ConstString & _name ) const
     {
         if( this->isCompile() == false )
         {
@@ -515,7 +567,7 @@ namespace Menge
 
         if( it_found != m_sockets.end() )
         {	
-            HotSpotImage * slot = it_found->second;
+            HotSpot * slot = it_found->second;
 
             return slot;
         }
@@ -539,7 +591,7 @@ namespace Menge
 
             Movie * movie = dynamic_cast<Movie *>(node);
 
-            HotSpotImage * socket = movie->getSocket( _name );
+            HotSpot * socket = movie->getSocket( _name );
 
             if( socket == NULL )
             {
@@ -896,12 +948,12 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieSocket_( const MovieLayer & _layer )
+    bool Movie::createMovieSocketImage_( const MovieLayer & _layer )
     {
         HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, HotSpotImage) );
 
-        layer_hotspotimage->setResourceHIT( _layer.source );
+        layer_hotspotimage->setResourceHITName( _layer.source );
 
         layer_hotspotimage->setName( _layer.name );
 
@@ -922,6 +974,36 @@ namespace Menge
         m_sockets.insert( std::make_pair(_layer.name, layer_hotspotimage) );
 
         this->addMovieNode_( _layer, layer_hotspotimage );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
+    {
+        HotSpotShape * layer_hotspotshape = NODE_SERVICE(m_serviceProvider)
+            ->createNodeT<HotSpotShape>( CONST_STRING(m_serviceProvider, HotSpotShape) );
+
+        layer_hotspotshape->setResourceShapeName( _layer.source );
+
+        layer_hotspotshape->setName( _layer.name );
+
+        if( layer_hotspotshape->compile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile HotSpotShape '%s'"
+                , m_name.c_str()
+                , _layer.name.c_str()
+                );
+
+            layer_hotspotshape->destroy();
+
+            return false;
+        }
+
+        layer_hotspotshape->localHide( true );
+
+        m_sockets.insert( std::make_pair(_layer.name, layer_hotspotshape) );
+
+        this->addMovieNode_( _layer, layer_hotspotshape );
 
         return true;
     }
@@ -1309,9 +1391,16 @@ namespace Menge
 					return false;
 				}
 			}
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocket) )
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
             {
-                if( this->createMovieSocket_( layer ) == false )
+                if( this->createMovieSocketImage_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+            {
+                if( this->createMovieSocketShape_( layer ) == false )
                 {
                     return false;
                 }

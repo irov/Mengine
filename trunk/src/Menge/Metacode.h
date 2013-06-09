@@ -2875,6 +2875,42 @@ namespace Metacode
             TVectorMeta_Tracks includes_Meta_Tracks;
         };
         
+        class Meta_ResourceShape
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceShape()
+                : Meta_Resource()
+            {
+            }
+        public:
+            const Menge::Polygon & get_Polygon_Value() const
+            {
+                return this->Polygon_Value;
+            }
+            
+            void swap_Polygon_Value( Menge::Polygon & _value ) const
+            {
+                std::swap(_value, this->Polygon_Value);
+            }
+            
+            template<class C, class M>
+            void method_Polygon_Value( C * _self, M _method )
+            {
+                (_self->*_method)( this->Polygon_Value );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::Polygon Polygon_Value;
+        };
+        
         class Meta_ResourceSound
             : public Meta_Resource
         { 

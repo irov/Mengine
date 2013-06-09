@@ -31,6 +31,7 @@ namespace Menge
         ConstString c_Layer2D;
         ConstString c_HotSpot;
         ConstString c_HotSpotImage;
+        ConstString c_HotSpotShape;
         ConstString c_Point;
 		ConstString c_Window;
 		ConstString c_Image;
@@ -85,7 +86,8 @@ namespace Menge
 		ConstString c_LayerCamera2D;
 
 		ConstString c_MovieSlot;
-        ConstString c_MovieSocket;
+        ConstString c_MovieSocketImage;
+        ConstString c_MovieSocketShape;
         ConstString c_MovieSceneEffect;
         ConstString c_MovieText;
 		ConstString c_MovieNullObject;

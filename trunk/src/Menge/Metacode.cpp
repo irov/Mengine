@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 19;
+        _needVersion = 20;
 
-        if( version != 19 )
+        if( version != 20 )
         {
             return false;
         }
@@ -156,7 +156,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 21:
+        case 22:
             {
                 Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -313,6 +313,20 @@ namespace Metacode
         case 10:
             {
                 Meta_DataBlock::Meta_ResourcePlaylist * metadata = new Meta_DataBlock::Meta_ResourcePlaylist ();
+                if( metadata->parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    delete metadata;
+    
+                    return false;
+                }
+    
+                includes_Meta_Resource.push_back(metadata);
+                return true;
+                break;
+            }
+        case 21:
+            {
+                Meta_DataBlock::Meta_ResourceShape * metadata = new Meta_DataBlock::Meta_ResourceShape ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
                 {
                     delete metadata;
@@ -2247,6 +2261,55 @@ namespace Metacode
         (void)_read;
         (void)_generators;
     
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->Polygon_Value ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceShape::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    {
+        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceShape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
+        {
+            return true;
+        }
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceShape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
+        {
+            return true;
+        }
         return false;
     }
     //////////////////////////////////////////////////////////////////////////

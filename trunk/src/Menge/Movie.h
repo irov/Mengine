@@ -11,12 +11,18 @@ namespace Menge
     class MovieNodeExtra;
     class MovieEvent;
 
-    class HotSpotImage;
+    class HotSpot;
 
 	struct MovieLayer;
 	struct MovieFrameSource;    
 
 	class ResourceMovie;
+
+    class VisitorMovieSocket
+    {
+    public:
+        virtual void visitSocket( const ConstString & _name, HotSpot * _hotspot ) = 0;
+    };
 
 	class Movie
 		: public Node
@@ -45,7 +51,9 @@ namespace Menge
         bool hasSubMovie( const ConstString & _name ) const;
 
     public:
-        HotSpotImage * getSocket( const ConstString & _name ) const;
+        bool visitSockets( VisitorMovieSocket * _visitor ) const;
+
+        HotSpot * getSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
 
     public:
@@ -121,7 +129,8 @@ namespace Menge
 		bool createMovieNullObject_( const MovieLayer & _layer );
 		bool createMovieImage_( const MovieLayer & _layer );
 		bool createMovieImageSolid_( const MovieLayer & _layer );
-        bool createMovieSocket_( const MovieLayer & _layer );
+        bool createMovieSocketImage_( const MovieLayer & _layer );
+        bool createMovieSocketShape_( const MovieLayer & _layer );
 		bool createMovieAnimation_( const MovieLayer & _layer );
 		bool createMovieMovie_( const MovieLayer & _layer );
         bool createMovieSubMovie_( const MovieLayer & _layer );
@@ -169,7 +178,7 @@ namespace Menge
         typedef BinaryVector<ConstString, Movie *> TMapSubMovies;
         TMapSubMovies m_subMovies;
 
-        typedef BinaryVector<ConstString, HotSpotImage *> TMapSockets;
+        typedef BinaryVector<ConstString, HotSpot *> TMapSockets;
         TMapSockets m_sockets;
 
         typedef BinaryVector<ConstString, MovieEvent *> TMapMovieEvent;

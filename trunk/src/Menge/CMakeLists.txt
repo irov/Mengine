@@ -182,6 +182,12 @@ Object2D\\\\HotSpotImage
 )
 
 ADD_FILTER(
+Object2D\\\\HotSpotShape
+	HotSpotShape.cpp
+	HotSpotShape.h
+)
+
+ADD_FILTER(
 Player
 	Player.cpp
 	Player.h
@@ -265,6 +271,12 @@ ADD_FILTER(
 Resource\\\\Sound
 	ResourceSound.cpp
 	ResourceSound.h
+)
+
+ADD_FILTER(
+Resource\\\\Shape
+	ResourceShape.cpp
+	ResourceShape.h
 )
 
 ADD_FILTER(

@@ -1972,32 +1972,16 @@ namespace Menge
 			}break;
 		case WM_SYSKEYDOWN:
 			{
-                //if( wParam == VK_F4 )
-                //{
-                //    this->stop();
+                unsigned int vkc = static_cast<unsigned int>( wParam );
+                HKL  layout = ::GetKeyboardLayout(0);
+                unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
-                //    return FALSE;
-                //}
-                //else if( wParam == VK_RETURN )
-                //{
-                //    bool fullscreen = m_application->getFullscreenMode();
-                //    m_application->setFullscreenMode( !fullscreen );
+                mt::vec2f point;
+                this->getCursorPosition(point);
 
-                //    return FALSE;
-                //}
-                //else
-                {
-                    unsigned int vkc = static_cast<unsigned int>( wParam );
-                    HKL  layout = ::GetKeyboardLayout(0);
-                    unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
+                unsigned int tvk = translateVirtualKey_( vkc, vk );
 
-                    mt::vec2f point;
-                    this->getCursorPosition(point);
-
-                    unsigned int tvk = translateVirtualKey_( vkc, vk );
-
-                    m_inputService->onKeyEvent( point, vkc, tvk, true );
-                }                
+                m_inputService->onKeyEvent( point, vkc, tvk, true );             
 			}break;
 		case WM_SYSKEYUP:
 			{
@@ -2011,8 +1995,6 @@ namespace Menge
                 unsigned int tvk = translateVirtualKey_( vkc, vk );
 
 				m_inputService->onKeyEvent( point, vkc, tvk, false );
-
-                //return FALSE;
 			}break;
 		case WM_SYSCOMMAND:
             {
@@ -2042,26 +2024,9 @@ namespace Menge
                     {
                         return TRUE;
                     }break;
-                }
-
-
-                //         else if( (wParam & 0xFFF0) ==  SC_RESTORE )
-                //         {
-                //            m_active = true;
-                //         }
-                //else if( (wParam & 0xFFF0) == SC_KEYMENU )
-                //{
-                //	if( lParam == 13 )
-                //	{					
-                //		bool fullscreen = m_application->getFullscreenMode();
-                //		m_application->setFullscreenMode( !fullscreen );
-                //	}
-
-                //	//return FALSE;
-                //}break;                
+                }            
             }break;
 		case WM_SETCURSOR:
-			//printf( "set cursor\n" );
 			{
 				if( m_application->isFocus() && LOWORD(lParam) == HTCLIENT && m_cursorMode == false )
 				{
@@ -2085,10 +2050,6 @@ namespace Menge
 				return FALSE;
 			}break;
 		case WM_DESTROY: 
-
-			// Post the WM_QUIT message to 
-			// quit the application terminate. 
-
 			::PostQuitMessage(0);
 
 			return 0;

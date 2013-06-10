@@ -2130,7 +2130,7 @@ namespace Menge
                 float fdy = (float)dy;
 
                 const Resolution & contentResolution = m_application->getContentResolution();
-                mt::vec2f resolutionScale = m_windowResolution.getScale( contentResolution );
+                mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
                 
                 float fdx_scale = fdx * resolutionScale.x;
                 float fdy_scale = fdy * resolutionScale.y;
@@ -2145,7 +2145,7 @@ namespace Menge
 			}break;
 		case WM_MOUSEWHEEL:
 			{
-				int zDelta = static_cast<short>( HIWORD(wParam) );
+				int zDelta = (int)(short)( HIWORD(wParam) );
 
 				mt::vec2f point;
 				this->getCursorPosition( point );				

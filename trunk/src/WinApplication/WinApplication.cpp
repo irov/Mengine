@@ -2129,7 +2129,13 @@ namespace Menge
                 float fdx = (float)dx;
                 float fdy = (float)dy;
 
-				m_inputService->onMouseMove( 0, point, fdx, fdy, 0 );
+                const Resolution & contentResolution = m_application->getContentResolution();
+                mt::vec2f resolutionScale = m_windowResolution.getScale( contentResolution );
+                
+                float fdx_scale = fdx * resolutionScale.x;
+                float fdy_scale = fdy * resolutionScale.y;
+
+				m_inputService->onMouseMove( 0, point, fdx_scale, fdy_scale, 0 );
 
 				m_lastMouseX = x;
 				m_lastMouseY = y;

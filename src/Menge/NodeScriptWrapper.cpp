@@ -196,7 +196,6 @@ namespace Menge
             PyObject * py_list = pybind::list_new(0);
 
             PythonVisitorMovieSocket pvms(py_list);
-
             _movie->visitSockets( &pvms );
 
             return py_list;

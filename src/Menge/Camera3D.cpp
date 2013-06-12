@@ -12,7 +12,11 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
 		: m_invalidateMatrix(true)
-		, m_notifyChangeWindowResolution(0)
+		, m_notifyChangeWindowResolution(nullptr)
+        , m_cameraPosition(0.f, 0.f, 0.f)
+        , m_cameraInterest(0.f, 0.f, 0.f)
+        , m_cameraFOV(0.f)
+        , m_cameraAspect(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,6 +53,13 @@ namespace Menge
 
 		this->invalidateMatrix_();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Camera3D::setCameraPosition( const mt::vec3f & _pos )
+    {
+        m_cameraPosition = _pos;
+
+        this->invalidateMatrix_();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setCameraInterest( const mt::vec3f & _pos )
 	{
@@ -87,11 +98,7 @@ namespace Menge
 		size_t contentResolutionWidth = contentResolution.getWidth();
 		size_t contentResolutionHeight = contentResolution.getHeight();
 
-		//m_viewportWM = m_viewport;
-
-        Node * parent = this->getParent();
-
-        const mt::mat4f & wm = parent->getWorldMatrix();
+        const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::mul_v2_m4( m_viewportWM.begin, m_viewport.begin, wm );
         mt::mul_v2_m4( m_viewportWM.end, m_viewport.end, wm );
@@ -100,7 +107,7 @@ namespace Menge
         //float c_aspect = contentResolution.getAspectRatio();
 
         float gameViewportAspect;
-        Viewport gameViewport; 
+        Viewport gameViewport;
 
         APPLICATION_SERVICE(m_serviceProvider)
             ->getGameViewport( gameViewportAspect, gameViewport );
@@ -120,43 +127,35 @@ namespace Menge
         m_viewportWM.begin *= mt::vec2f(viewport_scale_x, viewport_scale_y);
         m_viewportWM.end *= mt::vec2f(viewport_scale_x, viewport_scale_y);
 
-		const mt::vec3f & wm_pos = this->getWorldPosition();
-        const mt::vec3f & local_pos = this->getLocalPosition();
+        mt::vec3f wm_position;
+        mt::mul_v3_m4(wm_position, m_cameraPosition, wm);
 
-        mt::vec3f local_dir = m_cameraInterest - local_pos;
-        mt::vec3f wm_interest = wm_pos + local_dir;
-
-		mt::make_lookat_m4( m_viewMatrixWM, wm_pos, wm_interest, mt::vec3f(0.f, 1.f, 0.f) );
+        mt::vec3f wm_interest;
+        mt::mul_v3_m4(wm_interest, m_cameraInterest, wm);
+        
+        RENDER_SERVICE(m_serviceProvider)
+            ->makeViewMatrixLookAt( m_viewMatrixWM, wm_position, wm_interest, mt::vec3f(0.f, 1.f, 0.f) );
 
 		float tangent = tanf(m_cameraFOV * 0.5f);
 		float height = 2.f * 1.f * tangent;
 		float width = height * m_cameraAspect;
 
-		float projection_factor_x = width / contentResolutionWidth; 
-		float projection_factor_y = height / contentResolutionHeight;
+		float projection_factor_x = width / gameViewportWidth; 
+		float projection_factor_y = height / gameViewportHeight;
 
 		Viewport projectViewport;
         
-        float projection_scale_x = float(currentResolutionWidth) / gameViewportWidth;
-        float projection_scale_y = float(currentResolutionHeight) / gameViewportHeight;
-
         projectViewport = gameViewport;
 
         projectViewport.centerize( mt::vec2f(contentResolutionWidth * 0.5f, contentResolutionHeight * 0.5f) );
-
-        projectViewport.begin.x *= projection_scale_x;
-        projectViewport.begin.y *= projection_scale_y;
-        projectViewport.end.x *= projection_scale_x;
-        projectViewport.end.y *= projection_scale_y;
-
 
         projectViewport.begin.x *= projection_factor_x;
         projectViewport.begin.y *= projection_factor_y;
         projectViewport.end.x *= projection_factor_x;
         projectViewport.end.y *= projection_factor_y;
 
-		RENDER_SERVICE(m_serviceProvider)
-			->makeProjectionFrustum( m_projectionMatrixWM, projectViewport, 1.f, 10000.f );
+        RENDER_SERVICE(m_serviceProvider)
+            ->makeProjectionFrustum( m_projectionMatrixWM, projectViewport, 1.f, 10000.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & Camera3D::getViewport() const

@@ -115,8 +115,8 @@ namespace Menge
                 mt::vec2f scale2d;
 
                 MovieFrameSource frame;
-				
-				float volume = 1.f;
+
+                float volume = 1.f;
 
                 if( pack->getLayerFrameLast( layerIndex, frame ) == true )
                 {
@@ -125,7 +125,7 @@ namespace Menge
                     anchorPoint2d = frame.anchorPoint.to_vec2f();
                     position2d = frame.position.to_vec2f();
                     scale2d = frame.scale.to_vec2f();
-					volume = frame.volume;
+                    volume = frame.volume;
                 }
 
                 meta_frame2d.get_AnchorPoint( anchorPoint2d );
@@ -172,7 +172,13 @@ namespace Menge
 
             size_t layerIndex = meta_frames3d.get_LayerIndex();
 
-            pack->initializeLayer( layerIndex, (size_t)-1, false );
+            size_t count = (size_t)-1;
+            meta_frames3d.get_Count( count );
+
+            bool immutable = false;
+            meta_frames3d.get_Immutable( immutable );
+
+            pack->initializeLayer( layerIndex, count, immutable );
 
             const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
 
@@ -184,7 +190,25 @@ namespace Menge
             {
                 const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it;
 
+                size_t count = 1;
+
+                mt::vec3f anchorPoint;
+                mt::vec3f rotation;
+                mt::vec3f position;
+                mt::vec3f scale;
+
                 MovieFrameSource frame;
+
+                float volume = 1.f;
+
+                if( pack->getLayerFrameLast( layerIndex, frame ) == true )
+                {
+                    anchorPoint = frame.anchorPoint;
+                    position = frame.position;
+                    rotation = frame.rotation;
+                    scale = frame.scale;
+                    volume = frame.volume;
+                }
 
                 meta_frame3d.get_AnchorPoint( frame.anchorPoint );
                 meta_frame3d.get_Position( frame.position );
@@ -195,7 +219,17 @@ namespace Menge
 				frame.volume = 1.f;
 				meta_frame3d.get_Volume( frame.volume );
 
-                pack->addLayerFrame( layerIndex, frame );
+                if( pack->isLayerImmutable( layerIndex ) == false )
+                {
+                    for( size_t i = 0; i != count; ++i )
+                    {
+                        pack->addLayerFrame( layerIndex, frame );
+                    }
+                }
+                else
+                {
+                    pack->setLayerImmutableFrame( layerIndex, frame );
+                }
             }
         }
 

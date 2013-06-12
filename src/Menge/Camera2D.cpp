@@ -89,20 +89,20 @@ namespace	Menge
         APPLICATION_SERVICE(m_serviceProvider)
             ->getGameViewport( gameViewportAspect, gameViewport );
 
-        m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - gameViewport.begin.x, 0.f );
-        m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - gameViewport.begin.y, 0.f );
-
         float gameViewportWidth = gameViewport.getWidth();
         float gameViewportHeight = gameViewport.getHeight();
+
+        m_viewportWM.begin.x = std::max( m_viewportWM.begin.x - gameViewport.begin.x, 0.f );
+        m_viewportWM.begin.y = std::max( m_viewportWM.begin.y - gameViewport.begin.y, 0.f );
 
         m_viewportWM.end.x = std::min( m_viewportWM.end.x - gameViewport.begin.x, gameViewportWidth );
         m_viewportWM.end.y = std::min( m_viewportWM.end.y - gameViewport.begin.y, gameViewportHeight );
 
-        float scale_x = float(currentResolutionWidth) / gameViewportWidth;
-        float scale_y = float(currentResolutionHeight) / gameViewportHeight;
+        float viewport_scale_x = float(currentResolutionWidth) / gameViewportWidth;
+        float viewport_scale_y = float(currentResolutionHeight) / gameViewportHeight;
 
-        m_viewportWM.begin *= mt::vec2f(scale_x, scale_y);
-        m_viewportWM.end *= mt::vec2f(scale_x, scale_y);
+        m_viewportWM.begin *= mt::vec2f(viewport_scale_x, viewport_scale_y);
+        m_viewportWM.end *= mt::vec2f(viewport_scale_x, viewport_scale_y);
 
 		RENDER_SERVICE(m_serviceProvider)
 			->makeViewMatrixFromViewport( m_viewMatrixWM, m_viewportWM );

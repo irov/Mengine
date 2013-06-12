@@ -2330,7 +2330,7 @@ namespace Menge
 
 		const MovieLayerCamera3D & camera3D = m_resourceMovie->getCamera3D();
 
-		m_renderCamera3D->setLocalPosition( camera3D.cameraPosition );
+		m_renderCamera3D->setCameraPosition( camera3D.cameraPosition );
 		m_renderCamera3D->setCameraInterest( camera3D.cameraInterest );
 		m_renderCamera3D->setCameraFOV( camera3D.cameraFOV );
 		m_renderCamera3D->setCameraAspect( camera3D.cameraAspect );

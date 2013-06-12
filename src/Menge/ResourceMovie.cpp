@@ -262,6 +262,8 @@ namespace Menge
             m_layers.push_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
 
+            ml.state = 0;
+
             meta_layer2d.swap_Name( ml.name );
             meta_layer2d.swap_Source( ml.source );
             meta_layer2d.swap_BlendingMode( ml.blendingMode );
@@ -300,7 +302,7 @@ namespace Menge
             m_layers.push_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
 
-            ml.state = MOVIE_LAYER_THREED;
+            ml.state |= MOVIE_LAYER_THREED;
 
             MovieLayerCamera3D camera;
 
@@ -401,69 +403,69 @@ namespace Menge
 															
 			if( it->layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
 			{
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
 			}
             else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
             {
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
 
                 it->parent = (size_t)-1;
             }
             else if( it->layerType == CONST_STRING(m_serviceProvider, MovieText) )
             {
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
             }
 			else if( it->layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
 			{
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, Image) )
 			{
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
 			{
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
 			}
             else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
             {
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
             }
             else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
             {
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
             }
 			else if( it->layerType == CONST_STRING(m_serviceProvider, Animation) )
 			{
-                it->state = MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, Video) )
 			{
-                it->state = MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, Sound) )
 			{
-                it->state = MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
 			{
-                it->state = MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, Movie) )
 			{
-                it->state = MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
 			}
             else if( it->layerType == CONST_STRING(m_serviceProvider, SubMovie) )
             {
-                it->state = MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
             }
 			else if( it->layerType == CONST_STRING(m_serviceProvider, MovieInternalObject) )
 			{
-                it->state = MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE;
 			}
             else if( it->layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
             {
-                it->state = MOVIE_LAYER_EXTRA;
+                it->state |= MOVIE_LAYER_EXTRA;
             }
 			else
 			{

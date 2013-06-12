@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 20;
+        _needVersion = 21;
 
-        if( version != 20 )
+        if( version != 21 )
         {
             return false;
         }
@@ -3176,6 +3176,28 @@ namespace Metacode
     {
         switch( _id )
         {
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->Count ) == false )
+                {
+                    return false;
+                }
+    
+                this->Count_successful = true;
+    
+                return true;
+            }break;
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->Immutable ) == false )
+                {
+                    return false;
+                }
+    
+                this->Immutable_successful = true;
+    
+                return true;
+            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->LayerIndex ) == false )
@@ -3193,7 +3215,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 4:
             {
                 includes_Meta_KeyFrame3D.reserve( _count );
                 return true;
@@ -3207,7 +3229,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 4:
             {
                 Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & metadata = includes_Meta_KeyFrame3D.emplace_back();
     

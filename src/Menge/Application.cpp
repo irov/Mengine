@@ -296,14 +296,6 @@ namespace Menge
         m_contentResolution = _setting.contentResolution;
         m_fixedContentResolution = _setting.fixedContentResolution;
 
-        if( _setting.aspectRatioViewports.empty() == true )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Application::setup please setup aspect ratio viewports!"
-                );
-                
-            return false;
-        }
-
         for( TVectorAspectRatioViewports::const_iterator
             it = _setting.aspectRatioViewports.begin(),
             it_end = _setting.aspectRatioViewports.end();
@@ -1477,8 +1469,8 @@ namespace Menge
             , _resolution.getHeight()
             );
 
-        float rw = float(_resolution.getWidth());
-		float rh = float(_resolution.getHeight());
+        float rw = (float)_resolution.getWidth();
+		float rh = (float)_resolution.getHeight();
 
         float r_aspect = _resolution.getAspectRatio();
         

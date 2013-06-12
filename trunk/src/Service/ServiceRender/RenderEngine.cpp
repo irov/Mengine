@@ -1323,22 +1323,32 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )
     {
-        RENDER_SYSTEM(m_serviceProvider)->makeProjectionOrthogonal( _projectionMatrix, _viewport, zn, zf );
+        RENDER_SYSTEM(m_serviceProvider)
+            ->makeProjectionOrthogonal( _projectionMatrix, _viewport, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
     {
-        RENDER_SYSTEM(m_serviceProvider)->makeProjectionPerspective( _projectionMatrix, _fov, _aspect, zn, zf );
+        RENDER_SYSTEM(m_serviceProvider)
+            ->makeProjectionPerspective( _projectionMatrix, _fov, _aspect, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf )
     {
-        RENDER_SYSTEM(m_serviceProvider)->makeProjectionFrustum( _projectionMatrix, _viewport, zn, zf );
+        RENDER_SYSTEM(m_serviceProvider)
+            ->makeProjectionFrustum( _projectionMatrix, _viewport, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport )
     {
-        RENDER_SYSTEM(m_serviceProvider)->makeViewMatrixFromViewport( _viewMatrix, _viewport );
+        RENDER_SYSTEM(m_serviceProvider)
+            ->makeViewMatrixFromViewport( _viewMatrix, _viewport );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up )
+    {
+        RENDER_SYSTEM(m_serviceProvider)
+            ->makeViewMatrixLookAt( _viewMatrix, _eye, _at, _up );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderDebugInfo& RenderEngine::getDebugInfo() const

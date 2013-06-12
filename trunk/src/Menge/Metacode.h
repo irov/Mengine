@@ -4271,9 +4271,81 @@ namespace Metacode
         public:
             Meta_KeyFrames3D()
                 : Metabuf::Metadata()
+                , Count_successful(false)
+                , Immutable_successful(false)
             {
             }
         public:
+            bool get_Count( size_t & _value ) const
+            {
+                if( Count_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Count;
+            
+                return true;
+            }
+            
+            bool swap_Count( size_t & _value ) const
+            {
+                if( Count_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Count);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Count( C * _self, M _method ) const
+            {
+                if( Count_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Count );
+            }
+            
+            bool get_Immutable( bool & _value ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Immutable;
+            
+                return true;
+            }
+            
+            bool swap_Immutable( bool & _value ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Immutable);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Immutable( C * _self, M _method ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Immutable );
+            }
+            
             const size_t & get_LayerIndex() const
             {
                 return this->LayerIndex;
@@ -4545,6 +4617,10 @@ namespace Metacode
             
         protected:
         protected:
+            bool Count_successful;
+            mutable size_t Count;
+            bool Immutable_successful;
+            mutable bool Immutable;
             mutable size_t LayerIndex;
         public:
             typedef Metabuf::Array<Meta_KeyFrame3D> TVectorMeta_KeyFrame3D;

@@ -3007,24 +3007,24 @@ namespace Menge
 	void DX9RenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
 		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
-		mt::mat4f scale;
-		mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
+		//mt::mat4f scale;
+		//mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 		
 		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
-		mt::mat4f translation;
+		//mt::mat4f translation;
         //mt::ident_m4( translation );
-		mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
+		//mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
 
 		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
-		mt::mat4f transform;
-		mt::mul_m4_m4( transform, scale, translation );
+		//mt::mat4f transform;
+		//mt::mul_m4_m4( transform, scale, translation );
 
 		//D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
-		mt::mat4f ortho;
-		mt::make_projection_ortho_lh_m4(ortho, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
+		//mt::mat4f ortho;
+		mt::make_projection_ortho_lh_m4( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 				
 		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
-		mt::mul_m4_m4( _projectionMatrix, transform, ortho );
+		//mt::mul_m4_m4( _projectionMatrix, transform, ortho );
 					
 		//D3DXMatrixOrthoOffCenterLH()
 	}
@@ -3032,43 +3032,43 @@ namespace Menge
 	void DX9RenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
 		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
-		mt::mat4f scale;
-		mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
+		//mt::mat4f scale;
+		//mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 
 		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
-		mt::mat4f translation;
-		mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
+		//mt::mat4f translation;
+		//mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
 
 		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
-		mt::mat4f transform;
-		mt::mul_m4_m4( transform, scale, translation );
+		//mt::mat4f transform;
+		//mt::mul_m4_m4( transform, scale, translation );
 
 		//D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
-		mt::mat4f frustum;
-		mt::make_projection_frustum_m4(frustum, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
+		//mt::mat4f frustum;
+		mt::make_projection_frustum_m4( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 
 		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
-		mt::mul_m4_m4( _projectionMatrix, transform, frustum );
+		//mt::mul_m4_m4( _projectionMatrix, transform, frustum );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
 	{
 		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
-		mt::mat4f scale;
-		mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
+		//mt::mat4f scale;
+		//mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 
 		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
-		mt::mat4f translation;
-		mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
+		//mt::mat4f translation;
+		//mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
 
 		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
-		mt::mat4f transform;
-		mt::mul_m4_m4( transform, scale, translation );
+		//mt::mat4f transform;
+		//mt::mul_m4_m4( transform, scale, translation );
 
-		mt::mat4f projection_fov;
-		mt::make_projection_fov_m4( projection_fov, _fov, _aspect, _zn, _zf );
+		//mt::mat4f projection_fov;
+		mt::make_projection_fov_m4( _projectionMatrix, _fov, _aspect, _zn, _zf );
 
-		mt::mul_m4_m4( _projectionMatrix, transform, projection_fov );
+		//mt::mul_m4_m4( _projectionMatrix, transform, projection_fov );
 	}
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )
@@ -3079,6 +3079,11 @@ namespace Menge
         mt::ident_m4( wm );
 
         mt::inv_m4( _viewMatrix, wm );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up )
+    {
+        mt::make_lookat_m4( _viewMatrix, _eye, _at, _up );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::clear( uint32 _color )

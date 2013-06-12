@@ -30,6 +30,9 @@ namespace Menge
 
 	public:
 		void update() override;
+
+    protected:
+        bool bufferData_( ALuint _alBufferId, unsigned int & _bytes );
 		
 	private:
 		SoundDecoderInterfacePtr m_soundDecoder;

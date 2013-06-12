@@ -13,7 +13,7 @@ namespace Menge
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
 		, m_rotation(0.f, 0.f, 0.f)
-		, m_relationTransformation(NULL)
+		, m_relationTransformation(nullptr)
         , m_invalidateWorldMatrix(true)
         , m_invalidateLocalMatrix(true)
 	{
@@ -23,14 +23,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRelationTransformation( Transformation3D * _relationTransformation )
 	{
-        if( m_relationTransformation != NULL )
+        if( m_relationTransformation != nullptr )
         {
             m_relationTransformation->removeRelationChildren( this );
         }
 
 		m_relationTransformation = _relationTransformation;
 
-        if( m_relationTransformation != NULL )
+        if( m_relationTransformation != nullptr )
         {
             m_relationTransformation->addRelationChildren( this );
         }
@@ -186,7 +186,7 @@ namespace Menge
 		
 		mt::mat4f mat_rot;
 		mt::make_rotate_m4( mat_rot, m_rotation.x, m_rotation.y, m_rotation.z );
-
+        
 		mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
 
 		m_localMatrix.v3.x += m_position.x + m_coordinate.x;

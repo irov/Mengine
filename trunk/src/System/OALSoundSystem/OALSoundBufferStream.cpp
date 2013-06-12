@@ -161,50 +161,18 @@ namespace Menge
 
             return;
         }
+        
+        unsigned int bytesWritten;
+        if( this->bufferData_( m_alBufferId, bytesWritten ) == false )
+        {
+            return;
+        }
 
-        unsigned char * dataBuffer = (unsigned char*)alloca(m_bufferSize);
-
-		unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
-			
-		if ( bytesWritten > 0 )
-		{
-			alBufferData( m_alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
-
-			if( OAL_CHECK_ERROR(m_serviceProvider) == true )
-            {
-                LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::play buffer=1 id=%d format=%d bytes=%d frequency=%d"
-                    , m_alBufferId
-                    , m_format
-                    , bytesWritten
-                    , m_frequency
-                    );
-            }
-
-			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId );
-			OAL_CHECK_ERROR(m_serviceProvider);          
-		}
-
-		bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
-
-		if ( bytesWritten > 0 )
-		{
-			alBufferData( m_alBufferId2, m_format, dataBuffer, bytesWritten, m_frequency );
-
-
-            if( OAL_CHECK_ERROR(m_serviceProvider) == true )
-            {
-                LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::play buffer=2 id=%d format=%d bytes=%d frequency=%d"
-                    , m_alBufferId2
-                    , m_format
-                    , bytesWritten
-                    , m_frequency
-                    );
-            }
-
-			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId2 );
-			OAL_CHECK_ERROR(m_serviceProvider);           
-		}
-
+        if( this->bufferData_( m_alBufferId2, bytesWritten ) == false )
+        {
+            return;
+        }
+        
 		alSourcePlay( m_sourceId );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
@@ -258,11 +226,8 @@ namespace Menge
 		{
 			return;
 		}
-        	
-		unsigned int bytesWritten = 0;
-        bool is_end = false;
 
-		ALuint buffer;
+        bool is_end = false;
 
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
         OAL_CHECK_ERROR(m_serviceProvider);
@@ -274,40 +239,20 @@ namespace Menge
         int processed = 0;
 		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
         OAL_CHECK_ERROR(m_serviceProvider);
-
-        unsigned char * dataBuffer = (unsigned char*)alloca(m_bufferSize);
-                
+                       
 		for( int curr_processed = 0; curr_processed != processed; ++curr_processed )
 		{
 			// Исключаем их из очереди
+            ALuint buffer;
 			alSourceUnqueueBuffers( m_sourceId, 1, &buffer );
             OAL_CHECK_ERROR(m_serviceProvider);
                         
 			// Читаем очередную порцию данных
-			bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
-
-			//if( bytesWritten == 0 )
-			//{
-			//	m_soundDecoder->seek( 0.f );
-
-			//	bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
-			//}
-
-			//if( bytesWritten == 0 )
-			//{
-			//	LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::update bytesWritten is zero"
-			//		);
-			//}
-
-			if( bytesWritten > 0 )
-			{
-				// Включаем буфер обратно в очередь
-				alBufferData( buffer, m_format, dataBuffer, bytesWritten, m_frequency );
-                OAL_CHECK_ERROR(m_serviceProvider);
-
-				alSourceQueueBuffers( m_sourceId, 1, &buffer );
-                OAL_CHECK_ERROR(m_serviceProvider);
-			}
+            unsigned int bytesWritten;
+			if( this->bufferData_( buffer, bytesWritten ) == false )
+            {
+                continue;
+            }
 
             if( bytesWritten < m_bufferSize )
             {
@@ -362,4 +307,38 @@ namespace Menge
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
+    bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, unsigned int & _bytes  )
+    {
+        unsigned char * dataBuffer = (unsigned char*)alloca(m_bufferSize);
+
+        unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
+
+        if ( bytesWritten == 0 )
+        {
+            _bytes = 0;
+
+            return true;
+        }
+
+        alBufferData( _alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
+        
+        if( OAL_CHECK_ERROR(m_serviceProvider) == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::play buffer=%d id=%d format=%d bytes=%d frequency=%d"
+                , _alBufferId
+                , m_format
+                , bytesWritten
+                , m_frequency
+                );
+
+            return false;
+        }
+
+        alSourceQueueBuffers( m_sourceId, 1, &_alBufferId );
+        OAL_CHECK_ERROR(m_serviceProvider);
+
+        _bytes = bytesWritten;
+
+        return true;
+    }
 }	// namespace Menge

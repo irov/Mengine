@@ -43,6 +43,10 @@ namespace Menge
 
 		const Vertex2D * vertexData;
 		size_t verticesNum;
+
+        const uint16 * indicesData;
+        size_t indicesNum;
+
 		size_t minIndex;
 		size_t startIndex;
 
@@ -50,6 +54,7 @@ namespace Menge
 		size_t dipVerticesNum;
 
 		IBHandle ibHandle;
+        VBHandle vbHandle;
 		size_t baseVertexIndex;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -79,7 +84,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize( size_t _maxQuadCount ) override;
+		bool initialize( size_t _vertexCount ) override;
 		void finalize() override;
 
 	public:
@@ -93,9 +98,10 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum,
-			const Vertex2D * _vertices, size_t _verticesNum, 
-			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 ) override;
+		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , ELogicPrimitiveType _type
+            , const Vertex2D * _vertices, size_t _verticesNum 
+			, const uint16 * _indices = 0, size_t _indicesNum = 0 ) override;
 
 	public:
 		VBHandle createVertexBuffer( const Vertex2D * _vertexies, size_t _verticesNum );
@@ -168,6 +174,8 @@ namespace Menge
 		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const ConstString & getRenderTarget() const;
 
+        const Viewport & getRenderViewport() const;
+
 		bool isWindowCreated() const override;
 		
 		void makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
@@ -193,7 +201,7 @@ namespace Menge
 				
 		void disableTextureStage_( size_t _stage );
 
-		void setRenderSystemDefaults_( size_t _maxQuadCount );
+		void setRenderSystemDefaults_( size_t _vertexCount );
 		void restoreRenderSystemStates_();
 		
 		void renderPasses_();
@@ -214,15 +222,15 @@ namespace Menge
 		bool refillIndexBuffer2D_( size_t & _maxVertices );
 		bool recreate2DBuffers_( size_t _maxIndexCount );
 
-		const Viewport & getRenderViewport() const;
 		
     private:
-        void calcQuadSquare_( const Vertex2D * _vertex, size_t _num );
+        void calcQuadSquare_( const Vertex2D * _vertex, size_t _vertexNum );
+        void calcMeshSquare_( const Vertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum );
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		size_t m_maxQuadCount;
+		size_t m_primitiveVertexCount;
 
 		bool m_windowCreated;
 		bool m_vsync;

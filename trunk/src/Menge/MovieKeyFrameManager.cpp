@@ -109,6 +109,7 @@ namespace Menge
                 size_t count = 1;
 
                 float angle;
+                size_t mask = INVALID_MASK;
 
                 mt::vec2f anchorPoint2d;
                 mt::vec2f position2d;
@@ -126,6 +127,7 @@ namespace Menge
                     position2d = frame.position.to_vec2f();
                     scale2d = frame.scale.to_vec2f();
                     volume = frame.volume;
+                    mask = frame.mask;
                 }
 
                 meta_frame2d.get_AnchorPoint( anchorPoint2d );
@@ -135,6 +137,22 @@ namespace Menge
                 meta_frame2d.get_Opacity( frame.opacity );
                 meta_frame2d.get_Count( count );
 				meta_frame2d.get_Volume( volume );
+
+                if( meta_frame2d.has_Mask() == true )
+                {
+                    Polygon polygon;
+                    meta_frame2d.get_Mask( polygon );
+
+                    boost::geometry::correct( polygon );
+
+                    size_t index = pack->addPolygon( polygon );
+
+                    frame.mask = index;
+                }
+                else
+                {
+                    frame.mask = mask;
+                }
 
                 frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
                 frame.position = mt::vec3f(position2d, 0.f);
@@ -192,6 +210,8 @@ namespace Menge
 
                 size_t count = 1;
 
+                size_t mask = INVALID_MASK;
+
                 mt::vec3f anchorPoint;
                 mt::vec3f rotation;
                 mt::vec3f position;
@@ -208,13 +228,31 @@ namespace Menge
                     rotation = frame.rotation;
                     scale = frame.scale;
                     volume = frame.volume;
+                    mask = frame.mask;
                 }
 
                 meta_frame3d.get_AnchorPoint( frame.anchorPoint );
                 meta_frame3d.get_Position( frame.position );
                 meta_frame3d.get_Rotation( frame.rotation );
-                meta_frame3d.get_Scale( frame.scale );
+                meta_frame3d.get_Scale( frame.scale );                
                 meta_frame3d.get_Opacity( frame.opacity );
+                meta_frame3d.get_Count( count );
+
+                if( meta_frame3d.has_Mask() == true )
+                {
+                    Polygon polygon;
+                    meta_frame3d.get_Mask( polygon );
+
+                    boost::geometry::correct( polygon );
+
+                    size_t index = pack->addPolygon( polygon );
+
+                    frame.mask = index;
+                }
+                else
+                {
+                    frame.mask = mask;
+                }
 				
 				frame.volume = 1.f;
 				meta_frame3d.get_Volume( frame.volume );

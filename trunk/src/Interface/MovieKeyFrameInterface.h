@@ -4,6 +4,7 @@
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
+#   include "Core/Polygon.h"
 
 #   include "Math/vec3.h"
 
@@ -11,6 +12,8 @@
 
 namespace Menge
 {
+    const size_t INVALID_MASK = (size_t)-1;
+
     struct MovieFrameSource
     {
         mt::vec3f anchorPoint;
@@ -19,6 +22,7 @@ namespace Menge
         mt::vec3f scale;
         float opacity;
         float volume;
+        size_t mask;
     };
 
     typedef std::vector<MovieFrameSource> TVectorMovieFrameSource;
@@ -26,7 +30,7 @@ namespace Menge
     const size_t layer_frame_immutable_count = (size_t)-1;
 
     struct MovieLayerFrame
-    {	
+    {
         size_t count;
         TVectorMovieFrameSource frames;
 
@@ -41,6 +45,8 @@ namespace Menge
     public:
         virtual bool hasLayer( size_t _layerIndex ) const = 0;
         virtual const MovieLayerFrame & getLayer( size_t _layerIndex ) const = 0;
+
+        virtual const Polygon * getPolygon( size_t _index ) const = 0;
 
     public:
         virtual bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const = 0;

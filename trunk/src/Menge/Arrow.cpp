@@ -219,8 +219,11 @@ namespace	Menge
             return;
         }
 
-        RENDER_SERVICE(m_serviceProvider)
-            ->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE );
+        RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_debugMaterial, NULL, 0
+            , LPT_LINE
+            , &(vertices[0])
+            , vertices.size()
+            );
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )

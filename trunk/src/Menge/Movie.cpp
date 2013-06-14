@@ -229,8 +229,56 @@ namespace Menge
 			_node->setLocalAlpha( _frame.opacity );
 		}
 
+        if( _layer.isMask() == true && _frame.mask != INVALID_MASK )
+        {
+#   ifdef _DEBUG
+            if( dynamic_cast<Sprite *>( _node ) == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Masked but node is not Sprite %s:%s"
+                    , this->getName().c_str()
+                    , _layer.name.c_str()
+                    , _node->getName().c_str()
+                    , _node->getType().c_str()
+                    );
+
+                return;
+            }
+#   endif
+
+            Sprite * sprite = dynamic_cast<Sprite *>( _node );
+
+            const Polygon * polygon = m_resourceMovie->getPolygon( _frame.mask );
+
+            if( polygon == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mask but polygon is Null %d"
+                    , this->getName().c_str()
+                    , _layer.name.c_str()
+                    , _frame.mask
+                    );
+
+                return;
+            }
+
+            sprite->setMask( *polygon );
+        }
+
 		if( _layer.isAudio() == true )
 		{
+#   ifdef _DEBUG
+            if( dynamic_cast<Soundable *>( _node ) == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Audio but node is not Soundable %s:%s"
+                    , this->getName().c_str()
+                    , _layer.name.c_str()
+                    , _node->getName().c_str()
+                    , _node->getType().c_str()
+                    );
+
+                return;
+            }
+#   endif
+
 			Soundable * sounding = dynamic_cast<Soundable *>( _node );
 
 			sounding->setVolume( _frame.volume );

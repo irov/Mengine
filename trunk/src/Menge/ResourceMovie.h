@@ -24,6 +24,7 @@ namespace Menge
     const size_t MOVIE_LAYER_EVENT = 0x0020;
     const size_t MOVIE_LAYER_EXTRA = 0x0040;
     const size_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
+    const size_t MOVIE_LAYER_MASK = 0x0100;
 	
     const size_t movie_layer_parent_none = (size_t)-1;
 
@@ -76,6 +77,11 @@ namespace Menge
 		bool isMovie() const
         {
             return (state & MOVIE_LAYER_MOVIE) > 0;
+        }
+
+        bool isMask() const
+        {
+            return (state & MOVIE_LAYER_MASK) > 0;
         }
 
 		bool isThreeD() const
@@ -169,6 +175,7 @@ namespace Menge
 
 	public:
 		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
+        const Polygon * getPolygon( size_t _index ) const;
 
 	public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );

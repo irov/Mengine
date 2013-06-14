@@ -71,29 +71,24 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerFrameLast( size_t _layerIndex, MovieFrameSource & _frame ) const
 	{
-		if( this->isLayerImmutable( _layerIndex ) == false )
+		if( this->isLayerImmutable( _layerIndex ) == true )
 		{
-			const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
+            return false;
+        }
+		
+        const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
 
-			if( frameLayer.frames.empty() == true )
-			{
-				return false;
-			}
+        if( frameLayer.frames.empty() == true )
+        {
+            return false;
+        }
 
-			size_t lastIndex = frameLayer.frames.size() - 1;
+        size_t lastIndex = frameLayer.frames.size() - 1;
 
-			if( this->getLayerFrame( _layerIndex, lastIndex, _frame ) == false )
-			{
-				return false;
-			}
-		}
-		else
-		{
-			if( this->getLayerImmutableFrame( _layerIndex, _frame ) == false )
-			{
-				return false;
-			}
-		}
+        if( this->getLayerFrame( _layerIndex, lastIndex, _frame ) == false )
+        {
+            return false;
+        }
 
 		return true;
 	}
@@ -152,4 +147,44 @@ namespace Menge
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////
+    size_t MovieFramePack::addPolygon( const Polygon & _polygon )
+    {
+        for( TVectorPolygons::iterator
+            it = m_polygons.begin(),
+            it_end = m_polygons.end();
+        it != it_end;
+        ++it )
+        {
+            const Polygon & polygon = *it;
+
+            if( boost::geometry::equals( polygon, _polygon ) == false )
+            {
+                continue;
+            }
+            
+            size_t index = std::distance( m_polygons.begin(), it );
+
+            return index;
+        }
+
+        size_t new_index = m_polygons.size();
+
+        m_polygons.push_back( _polygon );
+
+        return new_index;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Polygon * MovieFramePack::getPolygon( size_t _index ) const
+    {
+        size_t count = m_polygons.size();
+
+        if( count <= _index )
+        {
+            return nullptr;
+        }
+
+        const Polygon & polygon = m_polygons[_index];
+
+        return &polygon;
+    }
 }

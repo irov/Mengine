@@ -364,6 +364,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_Color_Value() const
+            {
+                return Color_Value_successful;
+            }
+            
             bool get_Color_Value( Menge::ColourValue & _value ) const
             {
                 if( Color_Value_successful == false )
@@ -397,6 +402,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->Color_Value );
+            }
+            
+            bool has_Image_Codec() const
+            {
+                return Image_Codec_successful;
             }
             
             bool get_Image_Codec( Menge::ConstString & _value ) const
@@ -450,6 +460,11 @@ namespace Metacode
                 (_self->*_method)( this->Image_Path );
             }
             
+            bool has_OutlineImage_Codec() const
+            {
+                return OutlineImage_Codec_successful;
+            }
+            
             bool get_OutlineImage_Codec( Menge::ConstString & _value ) const
             {
                 if( OutlineImage_Codec_successful == false )
@@ -483,6 +498,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->OutlineImage_Codec );
+            }
+            
+            bool has_OutlineImage_Path() const
+            {
+                return OutlineImage_Path_successful;
             }
             
             bool get_OutlineImage_Path( Menge::ConstString & _value ) const
@@ -603,6 +623,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_File_Codec() const
+            {
+                return File_Codec_successful;
+            }
+            
             bool get_File_Codec( Menge::ConstString & _value ) const
             {
                 if( File_Codec_successful == false )
@@ -636,6 +661,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Codec );
+            }
+            
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
             }
             
             bool get_File_Converter( Menge::ConstString & _value ) const
@@ -721,6 +751,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_File_Alpha() const
+            {
+                return File_Alpha_successful;
+            }
+            
             bool get_File_Alpha( bool & _value ) const
             {
                 if( File_Alpha_successful == false )
@@ -754,6 +789,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Alpha );
+            }
+            
+            bool has_File_CodecAlpha() const
+            {
+                return File_CodecAlpha_successful;
             }
             
             bool get_File_CodecAlpha( Menge::ConstString & _value ) const
@@ -791,6 +831,11 @@ namespace Metacode
                 (_self->*_method)( this->File_CodecAlpha );
             }
             
+            bool has_File_CodecRGB() const
+            {
+                return File_CodecRGB_successful;
+            }
+            
             bool get_File_CodecRGB( Menge::ConstString & _value ) const
             {
                 if( File_CodecRGB_successful == false )
@@ -824,6 +869,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_CodecRGB );
+            }
+            
+            bool has_File_PathAlpha() const
+            {
+                return File_PathAlpha_successful;
             }
             
             bool get_File_PathAlpha( Menge::ConstString & _value ) const
@@ -861,6 +911,11 @@ namespace Metacode
                 (_self->*_method)( this->File_PathAlpha );
             }
             
+            bool has_File_PathRGB() const
+            {
+                return File_PathRGB_successful;
+            }
+            
             bool get_File_PathRGB( Menge::ConstString & _value ) const
             {
                 if( File_PathRGB_successful == false )
@@ -894,6 +949,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_PathRGB );
+            }
+            
+            bool has_File_UV() const
+            {
+                return File_UV_successful;
             }
             
             bool get_File_UV( mt::vec4f & _value ) const
@@ -931,6 +991,11 @@ namespace Metacode
                 (_self->*_method)( this->File_UV );
             }
             
+            bool has_File_WrapX() const
+            {
+                return File_WrapX_successful;
+            }
+            
             bool get_File_WrapX( bool & _value ) const
             {
                 if( File_WrapX_successful == false )
@@ -964,6 +1029,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_WrapX );
+            }
+            
+            bool has_File_WrapY() const
+            {
+                return File_WrapY_successful;
             }
             
             bool get_File_WrapY( bool & _value ) const
@@ -1044,6 +1114,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_File_Alpha() const
+            {
+                return File_Alpha_successful;
+            }
+            
             bool get_File_Alpha( bool & _value ) const
             {
                 if( File_Alpha_successful == false )
@@ -1079,6 +1154,11 @@ namespace Metacode
                 (_self->*_method)( this->File_Alpha );
             }
             
+            bool has_File_Codec() const
+            {
+                return File_Codec_successful;
+            }
+            
             bool get_File_Codec( Menge::ConstString & _value ) const
             {
                 if( File_Codec_successful == false )
@@ -1112,6 +1192,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Codec );
+            }
+            
+            bool has_File_MaxSize() const
+            {
+                return File_MaxSize_successful;
             }
             
             bool get_File_MaxSize( mt::vec2f & _value ) const
@@ -1165,6 +1250,11 @@ namespace Metacode
                 (_self->*_method)( this->File_Path );
             }
             
+            bool has_File_Rotate() const
+            {
+                return File_Rotate_successful;
+            }
+            
             bool get_File_Rotate( bool & _value ) const
             {
                 if( File_Rotate_successful == false )
@@ -1198,6 +1288,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Rotate );
+            }
+            
+            bool has_File_TextureSize() const
+            {
+                return File_TextureSize_successful;
             }
             
             bool get_File_TextureSize( mt::vec2f & _value ) const
@@ -1235,6 +1330,11 @@ namespace Metacode
                 (_self->*_method)( this->File_TextureSize );
             }
             
+            bool has_File_UV() const
+            {
+                return File_UV_successful;
+            }
+            
             bool get_File_UV( mt::vec4f & _value ) const
             {
                 if( File_UV_successful == false )
@@ -1270,6 +1370,11 @@ namespace Metacode
                 (_self->*_method)( this->File_UV );
             }
             
+            bool has_File_WrapX() const
+            {
+                return File_WrapX_successful;
+            }
+            
             bool get_File_WrapX( bool & _value ) const
             {
                 if( File_WrapX_successful == false )
@@ -1303,6 +1408,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_WrapX );
+            }
+            
+            bool has_File_WrapY() const
+            {
+                return File_WrapY_successful;
             }
             
             bool get_File_WrapY( bool & _value ) const
@@ -1384,6 +1494,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_File_WrapX() const
+            {
+                return File_WrapX_successful;
+            }
+            
             bool get_File_WrapX( bool & _value ) const
             {
                 if( File_WrapX_successful == false )
@@ -1417,6 +1532,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_WrapX );
+            }
+            
+            bool has_File_WrapY() const
+            {
+                return File_WrapY_successful;
             }
             
             bool get_File_WrapY( bool & _value ) const
@@ -1454,6 +1574,11 @@ namespace Metacode
                 (_self->*_method)( this->File_WrapY );
             }
             
+            bool has_FileAlpha_Codec() const
+            {
+                return FileAlpha_Codec_successful;
+            }
+            
             bool get_FileAlpha_Codec( Menge::ConstString & _value ) const
             {
                 if( FileAlpha_Codec_successful == false )
@@ -1487,6 +1612,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->FileAlpha_Codec );
+            }
+            
+            bool has_FileAlpha_Path() const
+            {
+                return FileAlpha_Path_successful;
             }
             
             bool get_FileAlpha_Path( Menge::ConstString & _value ) const
@@ -1524,6 +1654,11 @@ namespace Metacode
                 (_self->*_method)( this->FileAlpha_Path );
             }
             
+            bool has_FileAlpha_UV() const
+            {
+                return FileAlpha_UV_successful;
+            }
+            
             bool get_FileAlpha_UV( mt::vec4f & _value ) const
             {
                 if( FileAlpha_UV_successful == false )
@@ -1557,6 +1692,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->FileAlpha_UV );
+            }
+            
+            bool has_FileRGB_Codec() const
+            {
+                return FileRGB_Codec_successful;
             }
             
             bool get_FileRGB_Codec( Menge::ConstString & _value ) const
@@ -1594,6 +1734,11 @@ namespace Metacode
                 (_self->*_method)( this->FileRGB_Codec );
             }
             
+            bool has_FileRGB_Path() const
+            {
+                return FileRGB_Path_successful;
+            }
+            
             bool get_FileRGB_Path( Menge::ConstString & _value ) const
             {
                 if( FileRGB_Path_successful == false )
@@ -1627,6 +1772,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->FileRGB_Path );
+            }
+            
+            bool has_FileRGB_UV() const
+            {
+                return FileRGB_UV_successful;
             }
             
             bool get_FileRGB_UV( mt::vec4f & _value ) const
@@ -1754,6 +1904,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_Image_Alpha() const
+            {
+                return Image_Alpha_successful;
+            }
+            
             bool get_Image_Alpha( bool & _value ) const
             {
                 if( Image_Alpha_successful == false )
@@ -1803,6 +1958,11 @@ namespace Metacode
             void method_Image_Name( C * _self, M _method )
             {
                 (_self->*_method)( this->Image_Name );
+            }
+            
+            bool has_Image_Rotate() const
+            {
+                return Image_Rotate_successful;
             }
             
             bool get_Image_Rotate( bool & _value ) const
@@ -1939,6 +2099,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_Duration_Value() const
+            {
+                return Duration_Value_successful;
+            }
+            
             bool get_Duration_Value( float & _value ) const
             {
                 if( Duration_Value_successful == false )
@@ -1972,6 +2137,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->Duration_Value );
+            }
+            
+            bool has_FrameDuration_Value() const
+            {
+                return FrameDuration_Value_successful;
             }
             
             bool get_FrameDuration_Value( float & _value ) const
@@ -2009,6 +2179,11 @@ namespace Metacode
                 (_self->*_method)( this->FrameDuration_Value );
             }
             
+            bool has_Height_Value() const
+            {
+                return Height_Value_successful;
+            }
+            
             bool get_Height_Value( float & _value ) const
             {
                 if( Height_Value_successful == false )
@@ -2044,6 +2219,11 @@ namespace Metacode
                 (_self->*_method)( this->Height_Value );
             }
             
+            bool has_KeyFramesPackPath_Path() const
+            {
+                return KeyFramesPackPath_Path_successful;
+            }
+            
             bool get_KeyFramesPackPath_Path( Menge::ConstString & _value ) const
             {
                 if( KeyFramesPackPath_Path_successful == false )
@@ -2077,6 +2257,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->KeyFramesPackPath_Path );
+            }
+            
+            bool has_Width_Value() const
+            {
+                return Width_Value_successful;
             }
             
             bool get_Width_Value( float & _value ) const
@@ -2345,6 +2530,11 @@ namespace Metacode
                 void method_Parent( C * _self, M _method ) const
                 {
                     (_self->*_method)( this->Parent );
+                }
+                
+                bool has_PlayCount() const
+                {
+                    return PlayCount_successful;
                 }
                 
                 bool get_PlayCount( size_t & _value ) const
@@ -2678,6 +2868,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_Loop_Value() const
+            {
+                return Loop_Value_successful;
+            }
+            
             bool get_Loop_Value( bool & _value ) const
             {
                 if( Loop_Value_successful == false )
@@ -2711,6 +2906,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->Loop_Value );
+            }
+            
+            bool has_Shuffle_Value() const
+            {
+                return Shuffle_Value_successful;
             }
             
             bool get_Shuffle_Value( bool & _value ) const
@@ -2779,6 +2979,11 @@ namespace Metacode
                     {
                     }
                 public:
+                    bool has_Codec() const
+                    {
+                        return Codec_successful;
+                    }
+                    
                     bool get_Codec( Menge::ConstString & _value ) const
                     {
                         if( Codec_successful == false )
@@ -2924,6 +3129,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_DefaultVolume_Value() const
+            {
+                return DefaultVolume_Value_successful;
+            }
+            
             bool get_DefaultVolume_Value( float & _value ) const
             {
                 if( DefaultVolume_Value_successful == false )
@@ -2959,6 +3169,11 @@ namespace Metacode
                 (_self->*_method)( this->DefaultVolume_Value );
             }
             
+            bool has_File_Codec() const
+            {
+                return File_Codec_successful;
+            }
+            
             bool get_File_Codec( Menge::ConstString & _value ) const
             {
                 if( File_Codec_successful == false )
@@ -2992,6 +3207,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Codec );
+            }
+            
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
             }
             
             bool get_File_Converter( Menge::ConstString & _value ) const
@@ -3043,6 +3263,11 @@ namespace Metacode
             void method_File_Path( C * _self, M _method )
             {
                 (_self->*_method)( this->File_Path );
+            }
+            
+            bool has_IsStreamable_Value() const
+            {
+                return IsStreamable_Value_successful;
             }
             
             bool get_IsStreamable_Value( bool & _value ) const
@@ -3112,6 +3337,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_File_Alpha() const
+            {
+                return File_Alpha_successful;
+            }
+            
             bool get_File_Alpha( bool & _value ) const
             {
                 if( File_Alpha_successful == false )
@@ -3145,6 +3375,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Alpha );
+            }
+            
+            bool has_File_Codec() const
+            {
+                return File_Codec_successful;
             }
             
             bool get_File_Codec( Menge::ConstString & _value ) const
@@ -3182,6 +3417,11 @@ namespace Metacode
                 (_self->*_method)( this->File_Codec );
             }
             
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
+            }
+            
             bool get_File_Converter( Menge::ConstString & _value ) const
             {
                 if( File_Converter_successful == false )
@@ -3215,6 +3455,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Converter );
+            }
+            
+            bool has_File_NoSeek() const
+            {
+                return File_NoSeek_successful;
             }
             
             bool get_File_NoSeek( bool & _value ) const
@@ -3297,6 +3542,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_WindowBackground_ResourceImageName() const
+            {
+                return WindowBackground_ResourceImageName_successful;
+            }
+            
             bool get_WindowBackground_ResourceImageName( Menge::ConstString & _value ) const
             {
                 if( WindowBackground_ResourceImageName_successful == false )
@@ -3869,6 +4119,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_Count() const
+            {
+                return Count_successful;
+            }
+            
             bool get_Count( size_t & _value ) const
             {
                 if( Count_successful == false )
@@ -3902,6 +4157,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->Count );
+            }
+            
+            bool has_Immutable() const
+            {
+                return Immutable_successful;
             }
             
             bool get_Immutable( bool & _value ) const
@@ -3969,6 +4229,7 @@ namespace Metacode
                     : Metabuf::Metadata()
                     , AnchorPoint_successful(false)
                     , Count_successful(false)
+                    , Mask_successful(false)
                     , Opacity_successful(false)
                     , Position_successful(false)
                     , Rotation_successful(false)
@@ -3977,6 +4238,11 @@ namespace Metacode
                 {
                 }
             public:
+                bool has_AnchorPoint() const
+                {
+                    return AnchorPoint_successful;
+                }
+                
                 bool get_AnchorPoint( mt::vec2f & _value ) const
                 {
                     if( AnchorPoint_successful == false )
@@ -4010,6 +4276,11 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->AnchorPoint );
+                }
+                
+                bool has_Count() const
+                {
+                    return Count_successful;
                 }
                 
                 bool get_Count( size_t & _value ) const
@@ -4047,6 +4318,51 @@ namespace Metacode
                     (_self->*_method)( this->Count );
                 }
                 
+                bool has_Mask() const
+                {
+                    return Mask_successful;
+                }
+                
+                bool get_Mask( Menge::Polygon & _value ) const
+                {
+                    if( Mask_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Mask;
+                
+                    return true;
+                }
+                
+                bool swap_Mask( Menge::Polygon & _value ) const
+                {
+                    if( Mask_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Mask);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Mask( C * _self, M _method ) const
+                {
+                    if( Mask_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Mask );
+                }
+                
+                bool has_Opacity() const
+                {
+                    return Opacity_successful;
+                }
+                
                 bool get_Opacity( float & _value ) const
                 {
                     if( Opacity_successful == false )
@@ -4080,6 +4396,11 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->Opacity );
+                }
+                
+                bool has_Position() const
+                {
+                    return Position_successful;
                 }
                 
                 bool get_Position( mt::vec2f & _value ) const
@@ -4117,6 +4438,11 @@ namespace Metacode
                     (_self->*_method)( this->Position );
                 }
                 
+                bool has_Rotation() const
+                {
+                    return Rotation_successful;
+                }
+                
                 bool get_Rotation( float & _value ) const
                 {
                     if( Rotation_successful == false )
@@ -4152,6 +4478,11 @@ namespace Metacode
                     (_self->*_method)( this->Rotation );
                 }
                 
+                bool has_Scale() const
+                {
+                    return Scale_successful;
+                }
+                
                 bool get_Scale( mt::vec2f & _value ) const
                 {
                     if( Scale_successful == false )
@@ -4185,6 +4516,11 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->Scale );
+                }
+                
+                bool has_Volume() const
+                {
+                    return Volume_successful;
                 }
                 
                 bool get_Volume( float & _value ) const
@@ -4234,6 +4570,8 @@ namespace Metacode
                 mutable mt::vec2f AnchorPoint;
                 bool Count_successful;
                 mutable size_t Count;
+                bool Mask_successful;
+                mutable Menge::Polygon Mask;
                 bool Opacity_successful;
                 mutable float Opacity;
                 bool Position_successful;
@@ -4276,6 +4614,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_Count() const
+            {
+                return Count_successful;
+            }
+            
             bool get_Count( size_t & _value ) const
             {
                 if( Count_successful == false )
@@ -4309,6 +4652,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->Count );
+            }
+            
+            bool has_Immutable() const
+            {
+                return Immutable_successful;
             }
             
             bool get_Immutable( bool & _value ) const
@@ -4375,6 +4723,8 @@ namespace Metacode
                 Meta_KeyFrame3D()
                     : Metabuf::Metadata()
                     , AnchorPoint_successful(false)
+                    , Count_successful(false)
+                    , Mask_successful(false)
                     , Opacity_successful(false)
                     , Position_successful(false)
                     , Rotation_successful(false)
@@ -4383,6 +4733,11 @@ namespace Metacode
                 {
                 }
             public:
+                bool has_AnchorPoint() const
+                {
+                    return AnchorPoint_successful;
+                }
+                
                 bool get_AnchorPoint( mt::vec3f & _value ) const
                 {
                     if( AnchorPoint_successful == false )
@@ -4416,6 +4771,91 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->AnchorPoint );
+                }
+                
+                bool has_Count() const
+                {
+                    return Count_successful;
+                }
+                
+                bool get_Count( size_t & _value ) const
+                {
+                    if( Count_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Count;
+                
+                    return true;
+                }
+                
+                bool swap_Count( size_t & _value ) const
+                {
+                    if( Count_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Count);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Count( C * _self, M _method ) const
+                {
+                    if( Count_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Count );
+                }
+                
+                bool has_Mask() const
+                {
+                    return Mask_successful;
+                }
+                
+                bool get_Mask( Menge::Polygon & _value ) const
+                {
+                    if( Mask_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Mask;
+                
+                    return true;
+                }
+                
+                bool swap_Mask( Menge::Polygon & _value ) const
+                {
+                    if( Mask_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Mask);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Mask( C * _self, M _method ) const
+                {
+                    if( Mask_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Mask );
+                }
+                
+                bool has_Opacity() const
+                {
+                    return Opacity_successful;
                 }
                 
                 bool get_Opacity( float & _value ) const
@@ -4453,6 +4893,11 @@ namespace Metacode
                     (_self->*_method)( this->Opacity );
                 }
                 
+                bool has_Position() const
+                {
+                    return Position_successful;
+                }
+                
                 bool get_Position( mt::vec3f & _value ) const
                 {
                     if( Position_successful == false )
@@ -4486,6 +4931,11 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->Position );
+                }
+                
+                bool has_Rotation() const
+                {
+                    return Rotation_successful;
                 }
                 
                 bool get_Rotation( mt::vec3f & _value ) const
@@ -4523,6 +4973,11 @@ namespace Metacode
                     (_self->*_method)( this->Rotation );
                 }
                 
+                bool has_Scale() const
+                {
+                    return Scale_successful;
+                }
+                
                 bool get_Scale( mt::vec3f & _value ) const
                 {
                     if( Scale_successful == false )
@@ -4556,6 +5011,11 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->Scale );
+                }
+                
+                bool has_Volume() const
+                {
+                    return Volume_successful;
                 }
                 
                 bool get_Volume( float & _value ) const
@@ -4603,6 +5063,10 @@ namespace Metacode
             protected:
                 bool AnchorPoint_successful;
                 mutable mt::vec3f AnchorPoint;
+                bool Count_successful;
+                mutable size_t Count;
+                bool Mask_successful;
+                mutable Menge::Polygon Mask;
                 bool Opacity_successful;
                 mutable float Opacity;
                 bool Position_successful;
@@ -4902,6 +5366,11 @@ namespace Metacode
             {
             }
         public:
+            bool has_CharOffset() const
+            {
+                return CharOffset_successful;
+            }
+            
             bool get_CharOffset( float & _value ) const
             {
                 if( CharOffset_successful == false )
@@ -4935,6 +5404,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->CharOffset );
+            }
+            
+            bool has_Font() const
+            {
+                return Font_successful;
             }
             
             bool get_Font( Menge::ConstString & _value ) const
@@ -4988,6 +5462,11 @@ namespace Metacode
                 (_self->*_method)( this->Key );
             }
             
+            bool has_LineOffset() const
+            {
+                return LineOffset_successful;
+            }
+            
             bool get_LineOffset( float & _value ) const
             {
                 if( LineOffset_successful == false )
@@ -5021,6 +5500,11 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->LineOffset );
+            }
+            
+            bool has_Value() const
+            {
+                return Value_successful;
             }
             
             bool get_Value( Menge::WString & _value ) const

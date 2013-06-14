@@ -332,7 +332,7 @@ namespace	Menge
 		}
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE );
+			->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, LPT_LINE, &(vertices[0]), vertices.size() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )

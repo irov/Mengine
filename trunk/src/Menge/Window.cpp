@@ -158,7 +158,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderObject2D( _camera, edge.material, edge.textures, edge.textureCount, &vertices[0*4], 4, LPT_QUAD );
+                ->addRenderObject2D( _camera, edge.material, edge.textures, edge.textureCount, LPT_QUAD, &vertices[0*4], 4 );
         }
 
         for( size_t i = 1; i != ResourceWindow_Count; ++i )
@@ -166,7 +166,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[i];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderObject2D( _camera, edge.material, edge.textures, edge.textureCount, &vertices[i*4], 4, LPT_QUAD );
+                ->addRenderObject2D( _camera, edge.material, edge.textures, edge.textureCount, LPT_QUAD, &vertices[i*4], 4 );
         }
 
 		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_LeftTop], &m_textures[ResourceWindow_LeftTop], 1, &vertices[1*4], 4, LPT_QUAD );

@@ -33,7 +33,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderEngine::RenderEngine()
         : m_serviceProvider(nullptr)
-        , m_maxQuadCount(0)
+        , m_primitiveVertexCount(0)
         , m_windowCreated(false)
         , m_vsync(false)
         , m_layer3D(false)
@@ -82,11 +82,11 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::initialize( size_t _maxQuadCount )
+    bool RenderEngine::initialize( size_t _vertexCount )
     {
-        m_maxQuadCount = _maxQuadCount;
+        m_primitiveVertexCount = _vertexCount;
 
-        this->setRenderSystemDefaults_( m_maxQuadCount );
+        this->setRenderSystemDefaults_( _vertexCount );
 
         {
             RenderMaterial mt;
@@ -1208,6 +1208,14 @@ namespace Menge
                 ->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
         }
 
+        if( m_currentVBHandle != _renderObject->vbHandle )
+        {
+            m_currentVBHandle = _renderObject->vbHandle;
+
+            RENDER_SYSTEM(m_serviceProvider)
+                ->setVertexBuffer( m_currentVBHandle );
+        }
+
         RENDER_SYSTEM(m_serviceProvider)->drawIndexedPrimitive( 
             _renderObject->primitiveType, 
             _renderObject->baseVertexIndex, 
@@ -1463,19 +1471,17 @@ namespace Menge
 
         for( ;it_begin != it_end; ++it_begin )
         {
-            const RenderObject* renderObject = &(*it_begin);
+            const RenderObject * renderObject = &(*it_begin);
 
             this->renderObject_( renderObject );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum,
-        const Vertex2D* _vertices, size_t _verticesNum,
-        ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
+    void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+        , ELogicPrimitiveType _type
+        , const Vertex2D * _vertices, size_t _verticesNum
+        , const uint16 * _indices, size_t _indicesNum )
     {
-        (void)_indicesNum; //TODO
-        (void)_ibHandle; //TODO
-
         if( _camera == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D camera == NULL"
@@ -1515,7 +1521,9 @@ namespace Menge
         ro.logicPrimitiveType = _type;
 
         ro.dipIndiciesNum = m_primitiveIndexStride[_type] * _verticesNum / m_primitiveVertexStride[_type];
+
         ro.ibHandle = m_ibHandle2D;
+        ro.vbHandle = m_vbHandle2D;
 
         if( _vertices == nullptr )
         {
@@ -1525,11 +1533,14 @@ namespace Menge
         ro.vertexData = _vertices;
         ro.verticesNum = _verticesNum;
 
+        ro.indicesData = _indices;
+        ro.indicesNum = _indicesNum;
+
         ro.baseVertexIndex = 0;
 
         for( size_t i = 0; i != _texturesNum; ++i )
         {
-            if( _textures == NULL )
+            if( _textures == nullptr )
             {
                 ro.textures[i] = 0;
             }
@@ -1555,7 +1566,11 @@ namespace Menge
             ro.primitiveType = PT_LINESTRIP;
             break;
         default:
-            ro.primitiveType = PT_TRIANGLELIST;
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderObject2D not support primetive type %d"
+                , _type
+                );
+
+            return;            
         }
 
         ++m_currentRenderPass->countRenderObject;
@@ -1564,7 +1579,7 @@ namespace Menge
     VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, size_t _count )
     {
         VBHandle vbHandle = RENDER_SYSTEM(m_serviceProvider)
-            ->createVertexBuffer( _count, sizeof(Vertex2D) );
+            ->createVertexBuffer( _count, sizeof(Vertex2D), true );
 
         if( vbHandle == 0 )
         {
@@ -1581,7 +1596,7 @@ namespace Menge
     IBHandle RenderEngine::createIndicesBuffer( const unsigned short * _buffer, size_t _count )
     {
         IBHandle ibHandle = RENDER_SYSTEM(m_serviceProvider)
-            ->createIndexBuffer(_count);
+            ->createIndexBuffer( _count, false );
 
         if( ibHandle == 0 )
         {
@@ -1894,7 +1909,7 @@ namespace Menge
 
         if( m_vbPos + _renderObject->verticesNum > m_maxPrimitiveVertices2D )
         {
-            LOGGER_ERROR(m_serviceProvider)("Warning: vertex buffer overflow"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::insertRenderObject_: vertex buffer overflow"
                 );
 
             _renderObject->verticesNum = m_maxPrimitiveVertices2D - m_vbPos;
@@ -1931,7 +1946,7 @@ namespace Menge
         {
             m_vbPos = 0;
 
-            LOGGER_WARNING(m_serviceProvider)("Warning: vertex buffer overflow"
+            LOGGER_WARNING(m_serviceProvider)("RenderEngine::flushRender_: vertex buffer overflow"
                 );
 
             ////vertexDataSize = m_maxPrimitiveVertices2D;
@@ -2062,7 +2077,7 @@ namespace Menge
         }
 
         m_ibHandle2D = RENDER_SYSTEM(m_serviceProvider)
-            ->createIndexBuffer( _maxIndexCount );
+            ->createIndexBuffer( _maxIndexCount, false );
 
         if( m_ibHandle2D == 0 )
         {
@@ -2095,7 +2110,7 @@ namespace Menge
         }
 
         m_vbHandle2D = RENDER_SYSTEM(m_serviceProvider)
-            ->createVertexBuffer( m_maxPrimitiveVertices2D, sizeof(Vertex2D) );
+            ->createVertexBuffer( m_maxPrimitiveVertices2D, sizeof(Vertex2D), true );
 
         if( m_vbHandle2D == 0 )
         {
@@ -2109,10 +2124,8 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::setRenderSystemDefaults_( size_t _maxQuadCount )
+    void RenderEngine::setRenderSystemDefaults_( size_t _vertexCount )
     {
-        m_primitiveCount[LPT_QUAD] = _maxQuadCount;
-
         m_primitiveIndexStride[LPT_QUAD] = 6;
         m_primitiveVertexStride[LPT_QUAD] = 4;
         //m_primitiveIndexStride[LPT_TRIANGLE] = 3;
@@ -2122,17 +2135,18 @@ namespace Menge
         //m_primitiveIndexStride[LPT_RECTANGLE] = 5;
         //m_primitiveVertexStride[LPT_RECTANGLE] = 4;
 
-        for( size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
+        for( size_t i = 0; i != LPT_PRIMITIVE_COUNT; ++i )
         {
-            m_primitiveCount[i] = m_primitiveCount[LPT_QUAD] * m_primitiveVertexStride[LPT_QUAD] / m_primitiveVertexStride[i];
+            m_primitiveCount[i] = _vertexCount / m_primitiveVertexStride[i];
         }
 
         m_primitiveIndexStart[LPT_QUAD] = 0;
         for( size_t i = 0; i != LPT_PRIMITIVE_COUNT - 1; ++i )
         {
-            m_primitiveIndexStart[i+1] = m_primitiveIndexStart[i] + m_primitiveCount[i] * m_primitiveIndexStride[i];
+            m_primitiveIndexStart[i + 1] = m_primitiveIndexStart[i] + m_primitiveCount[i] * m_primitiveIndexStride[i];
         }
 
+        m_maxIndexCount = 0;
         for( size_t i = 0; i != LPT_PRIMITIVE_COUNT; ++i )
         {
             m_maxIndexCount += m_primitiveCount[i] * m_primitiveIndexStride[i];
@@ -2314,11 +2328,32 @@ namespace Menge
     {
         for( size_t i = 0; i != (_num / 4); ++i )
         {
-            m_debugInfo.fillrate += s_calcTriangleSquare( _vertex[i + 0], _vertex[i + 1], _vertex[i + 2] );
-            m_debugInfo.fillrate += s_calcTriangleSquare( _vertex[i + 0], _vertex[i + 2], _vertex[i + 3] );
+            const Vertex2D & v0 = _vertex[i + 0];
+            const Vertex2D & v1 = _vertex[i + 1];
+            const Vertex2D & v2 = _vertex[i + 2];
+            const Vertex2D & v3 = _vertex[i + 3];
+
+            m_debugInfo.fillrate += s_calcTriangleSquare( v0, v1, v2 );
+            m_debugInfo.fillrate += s_calcTriangleSquare( v0, v2, v3 );
 
             m_debugInfo.triangle += 2;
         }        
+
+        m_debugInfo.object += 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderEngine::calcMeshSquare_( const Vertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum )
+    {
+        for( size_t i = 0; i != (_indicesNum / 3); ++i )
+        {
+            uint16 i0 = _indices[i + 0];
+            uint16 i1 = _indices[i + 1];
+            uint16 i2 = _indices[i + 2];
+
+            m_debugInfo.fillrate += s_calcTriangleSquare( _vertex[i0], _vertex[i1], _vertex[i2] );
+
+            m_debugInfo.triangle += 1;
+        }
 
         m_debugInfo.object += 1;
     }

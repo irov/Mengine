@@ -88,8 +88,10 @@ namespace mt
 
 	MATH_METHOD_INLINE float vec3f::length()	const
 	{
-		float len = sqrlength();
-		return sqrtf(len);
+		float sqrlen = sqrlength();
+        float len = sqrtf(sqrlen);
+
+		return len;
 	}
 
 	MATH_METHOD_INLINE vec2f & vec3f::to_vec2f()
@@ -122,12 +124,16 @@ namespace mt
 	MATH_FUNCTION_INLINE float length_v3_v3(const vec3f& _a, const vec3f& _b)
 	{
 		vec3f c = _a - _b;
-		return c.length();
+        float len = c.length();
+
+		return len;
 	}
 
 	MATH_FUNCTION_INLINE float length_v3(const vec3f& _a)
 	{
-		return _a.length();
+        float len = _a.length();
+
+		return len;
 	}
 
 	MATH_FUNCTION_INLINE bool cmp_v3_v3(const vec3f& _a, const vec3f& _b, float eps)

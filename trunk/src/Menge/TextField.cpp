@@ -233,7 +233,7 @@ namespace Menge
         const RenderTextureInterfacePtr & fontTexture = m_resourceFont->getTexture();
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderObject2D( _camera, m_materialText, &fontTexture, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
+            ->addRenderObject2D( _camera, m_materialText, &fontTexture, 1, LPT_QUAD, &(textVertices[0]), countOfVertices );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( RenderCameraInterface * _camera )
@@ -259,7 +259,7 @@ namespace Menge
 		const RenderTextureInterfacePtr & outlineTexture = m_resourceFont->getTextureImage();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
+			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, 1, LPT_QUAD, &(outlineVertices[0]), countOfVertices );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const

@@ -30,6 +30,6 @@ namespace Menge
 		MovieFramePackInterface * createMovieFramePak_( const ConstString & _pak, const FilePath & _path );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
+        ServiceProviderInterface * m_serviceProvider;        
 	};
 }

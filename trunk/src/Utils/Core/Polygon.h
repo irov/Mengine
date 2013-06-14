@@ -1,5 +1,7 @@
 #	pragma once
 
+#   include "Config/Typedef.h"
+
 #	include "Math/vec2.h"
 #	include "Math/mat4.h"
 #   include "Math/box2.h"
@@ -69,12 +71,14 @@ namespace boost
 
 namespace Menge
 {
-    typedef std::vector<mt::vec2f> TVectorPoints;	
+    typedef std::vector<mt::vec2f> TVectorPoints;
+    typedef std::vector<uint16> TVectorIndices;
 
     typedef boost::geometry::model::polygon<mt::vec2f> Polygon;
     typedef boost::geometry::model::box<mt::vec2f> Box;
 
     bool triangulate_polygon( const Polygon & _polygon, TVectorPoints & _result );
+    bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result );
 
     void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm );
     bool polygon_to_box2f( mt::box2f & _box2f, const Polygon & _polygon );

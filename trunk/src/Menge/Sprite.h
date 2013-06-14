@@ -11,6 +11,8 @@
 #	include "math/vec4.h"
 #	include "math/mat4.h"
 
+#   include "Core/Polygon.h"
+
 #	include <vector>
 
 namespace Menge
@@ -18,7 +20,7 @@ namespace Menge
 	class ResourceImage;
 	
 	struct RenderMaterial;
-	struct RenderMaterialGroup;
+	struct RenderMaterialGroup;    
 	
 	class Sprite
 		: public Node
@@ -61,6 +63,7 @@ namespace Menge
 		bool isBlendAdd() const;
 
 		void setSpriteSize( const mt::vec2f& _size );
+        void setMask( const Polygon & _polygon );
 
 	protected:
 		bool _compile() override;
@@ -123,9 +126,18 @@ namespace Menge
         mt::vec3f m_verticesLocal[4];
         unsigned char m_invalidateVerticesLocal;
 
+        mt::vec3f * m_verticesLocalMask;
+
         Vertex2D m_verticesWM[4];
         bool m_invalidateVerticesWM;
-	};
+
+        Polygon m_mask;
+        Polygon m_maskPolygon;
+        TVectorIndices m_maskIndices;
+
+        VBHandle m_maskVB;
+        IBHandle m_maskIB;
+    };
     //////////////////////////////////////////////////////////////////////////
     inline const Vertex2D * Sprite::getVerticesWM_()
     {

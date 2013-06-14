@@ -116,6 +116,13 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const Polygon * ResourceMovie::getPolygon( size_t _index ) const
+    {
+        const Polygon * polygon = m_framePack->getPolygon( _index );
+
+        return polygon;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const
 	{
@@ -421,7 +428,7 @@ namespace Menge
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, Image) )
 			{
-                it->state |= MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_MASK;
 			}
 			else if( it->layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
 			{

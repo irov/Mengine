@@ -2166,7 +2166,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle DX9RenderSystem::createVertexBuffer( size_t _verticesNum, size_t _vertexSize )
+	VBHandle DX9RenderSystem::createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic )
 	{
         if( m_pD3DDevice == NULL )
         {
@@ -2176,12 +2176,23 @@ namespace Menge
             return 0;
         }
 
+        DWORD Usage = D3DUSAGE_WRITEONLY;
+
+        if( _dynamic == true )
+        {
+            Usage |= D3DUSAGE_DYNAMIC;
+        }
+
 		IDirect3DVertexBuffer9 * vb = NULL;
-		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * _vertexSize, D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC,
+		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * _vertexSize, Usage,
 			0, D3DPOOL_DEFAULT, &vb, NULL );
 
 		if( FAILED(hr) )
 		{
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createVertexBuffer created failed %d"
+                , hr
+                );
+
 			return 0;
 		}
 
@@ -2201,18 +2212,24 @@ namespace Menge
 	void DX9RenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
 	{
 		TMapVBInfo::iterator it_find = m_vertexBuffers.find( _vbHandle );
-		if( it_find != m_vertexBuffers.end() )
+		if( it_find == m_vertexBuffers.end() )
 		{
-            if( it_find->second.pVB )
-            {
-			    it_find->second.pVB->Release();
-            }
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::releaseVertexBuffer not found vb handle %d"
+                , _vbHandle
+                );
 
-			m_vertexBuffers.erase( it_find );
-		}
+            return;
+        }
+         
+        if( it_find->second.pVB )
+        {
+            it_find->second.pVB->Release();
+        }
+
+        m_vertexBuffers.erase( it_find );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle DX9RenderSystem::createIndexBuffer( size_t _indiciesNum )
+	IBHandle DX9RenderSystem::createIndexBuffer( size_t _indiciesNum, bool _dynamic )
 	{
         if( m_pD3DDevice == NULL )
         {
@@ -2222,12 +2239,23 @@ namespace Menge
             return 0;
         }
 
+        DWORD Usage = D3DUSAGE_WRITEONLY;
+
+        if( _dynamic == true )
+        {
+            Usage |= D3DUSAGE_DYNAMIC;
+        }
+
 		IDirect3DIndexBuffer9* ib = NULL;
-		HRESULT hr = m_pD3DDevice->CreateIndexBuffer( sizeof(uint16) * _indiciesNum, D3DUSAGE_WRITEONLY,
+		HRESULT hr = m_pD3DDevice->CreateIndexBuffer( sizeof(uint16) * _indiciesNum, Usage,
 			D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, NULL );
 
 		if( FAILED(hr) )
 		{
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createIndexBuffer created failed %d"
+                , hr
+                );
+
 			return 0;
 		}
 
@@ -2247,15 +2275,23 @@ namespace Menge
 	void DX9RenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
 	{
 		TMapIBInfo::iterator it_find = m_indexBuffers.find( _ibHandle );
-		if( it_find != m_indexBuffers.end() )
+		if( it_find == m_indexBuffers.end() )
 		{
-            if( it_find->second.pIB )
-            {
-			    it_find->second.pIB->Release();
-            }
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::releaseIndexBuffer not found ib handle %d"
+                , _ibHandle
+                );
 
-			m_indexBuffers.erase( it_find );
-		}
+            return;
+        }
+        
+        IBInfo & info = it_find->second;
+         
+        if( info.pIB )
+        {
+            info.pIB->Release();
+        }
+
+        m_indexBuffers.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
@@ -2275,6 +2311,11 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockVertexBuffer vertex buffer %d invalid %d"
+                , _vbHandle
+                , hr
+                );
+
 			return nullptr;
 		}
 
@@ -2287,6 +2328,10 @@ namespace Menge
 
         if( m_vertexBuffers.has( _vbHandle, &vbinfo ) == false )
         {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockVertexBuffer not found %d"
+                , _vbHandle
+                );
+
             return false;
         }
 
@@ -2303,6 +2348,10 @@ namespace Menge
 
         if( m_indexBuffers.has( _ibHandle, &ibinfo ) == false )
         {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockIndexBuffer not found %d"
+                , _ibHandle
+                );
+
             return nullptr;
         }
 
@@ -2313,7 +2362,8 @@ namespace Menge
 
         if( hr != D3D_OK )
         {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockIndexBuffer error %d"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockIndexBuffer %d error %d"
+                , _ibHandle
                 , hr
                 );
 
@@ -2331,6 +2381,10 @@ namespace Menge
 
         if( m_indexBuffers.has( _ibHandle, &ibinfo ) == false )
         {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockIndexBuffer not found %d"
+                , _ibHandle
+                );
+
             return nullptr;
         }
 
@@ -2340,7 +2394,8 @@ namespace Menge
 
         if( hr != D3D_OK )
         {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockIndexBuffer error %d"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockIndexBuffer %d error %d"
+                , _ibHandle
                 , hr
                 );
 
@@ -2365,24 +2420,27 @@ namespace Menge
 			return;
 		}
 
-		TMapVBInfo::const_iterator it_found = m_vertexBuffers.find(_vbHandle);
-
-		if( it_found == m_vertexBuffers.end() )
+        VBInfo * vbInfo;
+		if( m_vertexBuffers.has( _vbHandle, &vbInfo ) == false )
 		{
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setVertexBuffer not found %d"
+                , _vbHandle
+                );
+
 			return;
 		}
 
-		const VBInfo & vbInfo = it_found->second;
+        IDirect3DVertexBuffer9 * vb = vbInfo->pVB;
 
-        IDirect3DVertexBuffer9 * vb = vbInfo.pVB;
-
-		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vb, 0, vbInfo.vertexSize );
+		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vb, 0, vbInfo->vertexSize );
 
 		if( FAILED( hr ) )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::setVertexBuffer failed to SetStreamSource (hr:%p)"
 				, hr 
 				);
+
+            return;
 		}
 
         m_currentVB = vb;
@@ -2392,7 +2450,7 @@ namespace Menge
 	{
         (void) _baseVertexIndex;
         
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setIndexBuffer device not created"
                 );
@@ -2405,14 +2463,17 @@ namespace Menge
 			return;
 		}
 		
-		TMapIBInfo::const_iterator it_found = m_indexBuffers.find(_ibHandle);
-
-		if( it_found == m_indexBuffers.end() )
+        IBInfo * ibInfo;
+		if( m_indexBuffers.has( _ibHandle, &ibInfo ) == false )
 		{
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setIndexBuffer not found %d"
+                , _ibHandle
+                );
+
 			return;
 		}
 
-		IDirect3DIndexBuffer9* ib = it_found->second.pIB;
+		IDirect3DIndexBuffer9* ib = ibInfo->pIB;
 
 		HRESULT hr = m_pD3DDevice->SetIndices( ib );
 
@@ -2431,7 +2492,7 @@ namespace Menge
 	{
         (void)_baseVertexIndex;
 
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::drawIndexedPrimitive device not created"
                 );

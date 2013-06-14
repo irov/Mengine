@@ -1140,8 +1140,11 @@ namespace Menge
                 m_debugBox[i].uv2[1] = 0.f;
             }
 
-			RENDER_SERVICE(m_serviceProvider)
-				->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, m_debugBox, 5, LPT_LINE );
+			RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_debugMaterial, NULL, 0
+                , LPT_LINE
+                , m_debugBox
+                , 5 
+                );
 		}
 	}
 }

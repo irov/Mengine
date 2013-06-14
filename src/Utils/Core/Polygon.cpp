@@ -72,6 +72,98 @@ namespace Menge
 		}
 	}
 
+    bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result )
+    {
+		/* allocate and initialize list of Vertices in polygon */ 
+		size_t n = boost::geometry::num_points(_polygon);
+
+        --n; // for correct polygon
+
+        if( n < 3 )
+        {
+            return false;
+        }
+
+		size_t *V = new size_t[n];  /* we want a counter-clockwise polygon in V */ 
+
+        double area_polygon = boost::geometry::area( _polygon );
+
+		if( area_polygon < 0.0 )
+		{
+			for( size_t v=0; v<n; v++ )
+			{
+				V[v] = v;
+			}
+		}
+		else
+		{
+			for( size_t v=0; v<n; v++ ) 
+			{
+				V[v] = (n-1)-v;  
+			}
+		}
+
+		size_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
+		size_t count = 2 * nv;   /* error detection */ 
+
+        const Polygon::ring_type & countour = _polygon.outer();
+        
+		for( size_t m = 0, v = nv - 1; nv > 2; )
+		{
+			/* if we loop, it is probably a non-simple polygon */
+			if (0 == (count--))
+			{
+				//** Triangulate: ERROR - probable bad polygon!
+				return false;
+			}    /* three consecutive vertices in current polygon, <u,v,w> */
+
+			TVectorPoints::size_type u = v;
+			if( nv <= u ) 
+			{
+				u = 0;     /* previous */
+			}
+
+			v = u+1;
+
+			if( nv <= v )
+			{
+				v = 0;     /* new v    */
+			}
+
+			size_t w = v+1;
+			if (nv <= w) 
+			{
+				w = 0;     /* next     */  
+			}
+
+			if( detail::s_snip( countour, u, v, w, nv, V ) )
+			{
+				size_t a = V[u];
+				size_t b = V[v]; 
+				size_t c = V[w];
+                
+				_result.push_back( a );
+				_result.push_back( b );
+				_result.push_back( c );
+
+				m++; 
+
+                for( size_t s = v, t = v + 1; t < nv; s++, t++ ) 
+				{
+					V[s] = V[t];
+				}
+
+				nv--;
+
+				count = 2*nv;
+			}
+		}  
+
+		delete [] V;
+
+		return true;
+    }
+
 	bool triangulate_polygon(const Polygon & _polygon, TVectorPoints & _result)
 	{
 		/* allocate and initialize list of Vertices in polygon */ 

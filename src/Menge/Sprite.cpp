@@ -196,6 +196,77 @@ namespace	Menge
             mt::vec3f & wm_pos = m_verticesWM[i].pos;
             mt::mul_v3_m4( wm_pos, pos, wm);
         }
+
+        const Polygon::ring_type & ring = m_mask.outer();
+
+        if( ring.size() != 0 )
+        {
+            const Polygon::ring_type & polygon_ring = m_maskPolygon.outer();
+            size_t countPoints = polygon_ring.size() - 1;
+
+            m_maskVB = RENDER_SYSTEM(m_serviceProvider)
+                ->createVertexBuffer( countPoints, sizeof(Vertex2D), false );
+            
+            void * buffer = RENDER_SYSTEM(m_serviceProvider)
+                ->lockVertexBuffer( m_maskVB, 0, countPoints * sizeof(Vertex2D), LOCK_DISCARD );
+            
+            Vertex2D * vertex = (Vertex2D *)buffer;
+
+            const mt::vec4f & uv = m_resource->getUVImage();
+
+            float uv_width = uv.z - uv.x;
+            float uv_height = uv.w - uv.y;
+
+            float v_width = m_verticesLocal[2].x - m_verticesLocal[0].x;
+            float v_height = m_verticesLocal[2].y - m_verticesLocal[0].y;
+            
+            for( size_t
+                it = 0,
+                it_end = countPoints;
+            it != it_end;
+            ++it )
+            {
+                const mt::vec2f & v = polygon_ring[it];
+                
+                mt::vec3f v3(v.x, v.y, 0.f);
+                mt::mul_v3_m4( vertex[it].pos, v3, wm );
+
+                ColourValue color;
+                this->calcTotalColor(color);
+
+                uint32 argb = color.getAsARGB();
+
+                vertex[it].color = argb;
+
+                vertex[it].uv.x = uv.x + (v.x - m_verticesLocal[0].x) / v_width * uv_width;
+                vertex[it].uv.y = uv.y + (v.y - m_verticesLocal[0].y) / v_height * uv_height;
+
+                vertex[it].uv2 = vertex[it].uv;
+            }
+
+            RENDER_SYSTEM(m_serviceProvider)
+                ->unlockVertexBuffer( m_maskVB );
+
+            m_maskIB = RENDER_SYSTEM(m_serviceProvider)
+                ->createIndexBuffer( countPoints / 3, false );
+
+            uint16 * indexes = RENDER_SYSTEM(m_serviceProvider)
+                ->lockIndexBuffer( m_maskIB );
+            
+            for( TVectorIndices::size_type
+                it = 0,
+                it_end = m_maskIndices.size();
+            it != it_end;
+            ++it )
+            {
+                indexes[it] = m_maskIndices[it];
+            }
+
+            RENDER_SYSTEM(m_serviceProvider)
+                ->unlockIndexBuffer( m_maskIB );
+
+            //indexes
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Sprite::invalidateVertices_( unsigned char _invalidate )
@@ -463,7 +534,7 @@ namespace	Menge
 			size.x -= size.x * ( percent.x + percent.z );
 			size.y -= size.y * ( percent.y + percent.w );
 
-			if( m_centerAlign )
+			if( m_centerAlign == true )
 			{
 				mt::vec2f alignOffset = maxSize * -0.5f;
 
@@ -475,6 +546,30 @@ namespace	Menge
             m_verticesLocal[2] = mt::vec3f(visOffset.x + size.x, visOffset.y + size.y, 0.f);
             m_verticesLocal[3] = mt::vec3f(visOffset.x + 0.f, visOffset.y + size.y, 0.f);
 		}
+
+        const Polygon::ring_type & ring = m_mask.outer();
+
+        if( ring.size() != 0 )
+        {
+            //Box local(m_verticesLocal[0].to_vec2f(), m_verticesLocal[2].to_vec2f());
+            
+            Polygon local;
+            boost::geometry::append( local, m_verticesLocal[0].to_vec2f() );
+            boost::geometry::append( local, m_verticesLocal[1].to_vec2f() );
+            boost::geometry::append( local, m_verticesLocal[2].to_vec2f() );
+            boost::geometry::append( local, m_verticesLocal[3].to_vec2f() );
+            boost::geometry::correct( local );
+                        
+            std::deque<Polygon> output;
+            boost::geometry::intersection( local, m_mask, output );
+
+            m_maskPolygon = output[0];
+
+            if( triangulate_polygon_indices( m_maskPolygon, m_maskIndices ) == false )
+            {
+
+            }
+        }
 
 		if( m_invalidateVerticesLocal & ESVI_COLOR )
 		{
@@ -559,8 +654,6 @@ namespace	Menge
 			}
 		}
 
-        //m_resource = 0;
-
 		bool wrapX = m_resource->isWrapX();
 		bool wrapY = m_resource->isWrapY();
 
@@ -584,7 +677,7 @@ namespace	Menge
 		const Vertex2D * vertices = this->getVerticesWM_();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject2D( _camera, m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
+			->addRenderObject2D( _camera, m_material, m_textures, m_texturesNum, LPT_QUAD, vertices, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
@@ -713,4 +806,10 @@ namespace	Menge
 		m_isCustomSize = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+    void Sprite::setMask( const Polygon & _mask )
+    {
+        m_mask = _mask;
+
+        this->invalidateVertices_( ESVI_TRANSFORM );
+    }
 }

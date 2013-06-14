@@ -214,23 +214,16 @@ namespace Menge
 		TF_LINEAR,
 		TF_ANISOTROPIC,
 		TF_FLATCUBIC,
-		TF_GAUSSIANCUBIC,
-
-		TF_FORCE_DWORD = 0x7fffffff
+		TF_GAUSSIANCUBIC
 	};
 
     enum ELogicPrimitiveType
     {
         LPT_QUAD = 0,
-        //LPT_TRIANGLE,
-        LPT_LINE,
-        //LPT_RECTANGLE,
+        LPT_LINE = 1,
+        LPT_PRIMITIVE_COUNT = 2,
 
-        LPT_PRIMITIVE_COUNT,
-
-        LPT_MESH,
-
-        LPT_FORCE_DWORD = 0x7FFFFFFF
+        LPT_MESH = 3,
     };
 
     const unsigned int LOCK_READONLY = 0x00000010L;
@@ -280,7 +273,7 @@ namespace Menge
             , depthBufferWriteEnable(false)
             , alphaTestEnable(false)
             , alphaBlendEnable(false)
-            , filterMaterial(NULL)
+            , filterMaterial(nullptr)
         {
         }
 
@@ -339,8 +332,7 @@ namespace Menge
     };
 
     static const uint32 Vertex3D_declaration = VDECL_XYZ | VDECL_NORMAL | VDECL_DIFFUSE | VDECL_TEX1;
-
-    typedef std::vector<uint16> TVectorIndices;
+        
     typedef std::vector<Vertex2D> TVectorVertex2D;
     typedef std::vector<Vertex3D> TVectorVertex3D;
 
@@ -469,13 +461,13 @@ namespace Menge
 
 		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
 
-		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize ) = 0;
+		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
 		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
-		virtual IBHandle createIndexBuffer( size_t _indiciesNum ) = 0;
+		virtual IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual uint16* lockIndexBuffer(  IBHandle _ibHandle ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
@@ -570,19 +562,35 @@ namespace Menge
         //size_t megatextures;
     };
 
+    struct RenderMesh
+    {
+        const RenderCameraInterface * camera;
+        const RenderMaterial * material;
+        
+        const RenderTextureInterfacePtr * textures;
+        size_t texturesNum;
+
+        const Vertex2D * vertices;
+        size_t verticesNum;
+
+        const uint16 * indices;
+        size_t indicesNum;
+    };
+
 	class RenderServiceInterface
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("RenderService")
 
     public:
-        virtual bool initialize( size_t _maxQuadCount ) = 0;
+        virtual bool initialize( size_t _vertexCount ) = 0;
         virtual void finalize() = 0;
 
     public:
-        virtual void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum,
-            const Vertex2D * _vertices, size_t _verticesNum, 
-            ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 ) = 0;
+        virtual void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , ELogicPrimitiveType _type
+            , const Vertex2D * _vertices, size_t _verticesNum
+            , const uint16 * _indices = 0, size_t _indicesNum = 0 ) = 0;
 
     public:
         virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _width, size_t _height ) = 0;

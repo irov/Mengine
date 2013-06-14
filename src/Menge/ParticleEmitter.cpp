@@ -246,7 +246,7 @@ namespace	Menge
             Vertex2D * batch_vertices = m_vertices + batch.begin;
 
 			RENDER_SERVICE(m_serviceProvider)->
-				addRenderObject2D( _camera, batch.material, batch.texture, 1, batch_vertices, batch.size, LPT_QUAD );
+				addRenderObject2D( _camera, batch.material, batch.texture, 1, LPT_QUAD, batch_vertices, batch.size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

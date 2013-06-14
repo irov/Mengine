@@ -844,21 +844,21 @@ namespace Menge
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        Reference * s_getResourceReference( const ConstString& _nameResource )
+        ResourceReference * s_getResourceReference( const ConstString& _nameResource )
         {
-            Reference * reference = RESOURCE_SERVICE(m_serviceProvider)
+            ResourceReference * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceReference( _nameResource );
 
-            if(reference == NULL )
+            if( resource == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Error: (Menge.getResourceReference) not exist resource %s"
                     , _nameResource.c_str() 
                     );
 
-                return NULL;
+                return nullptr;
             }
 
-            return reference;
+            return resource;
         }
         //////////////////////////////////////////////////////////////////////////
         void directResourceRelease( const ConstString& _nameResource )
@@ -1828,7 +1828,7 @@ namespace Menge
             ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceMovie>( _resourceName );
 
-            if( resourceMovie == NULL )
+            if( resourceMovie == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("Mengine.getMovieDuration invalid movie resource '%s'"
                     , _resourceName.c_str()
@@ -2025,7 +2025,7 @@ namespace Menge
             };		
 
 
-            ResourceMovie* resource = RESOURCE_SERVICE(m_serviceProvider)
+            ResourceMovie * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceMovie>( _resourceName );
 
             if( resource == NULL )
@@ -2040,7 +2040,98 @@ namespace Menge
 
             resource->visitResourceMovie( &visitor );
 
+            resource->decrementReference();
+
             return py_dict_result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasMovieElement2( ResourceMovie * _resource, const ConstString & _slotName, const ConstString & _typeName )
+        {
+            const TVectorMovieLayers & layers = _resource->getLayers();
+
+            for( TVectorMovieLayers::const_iterator
+                it = layers.begin(),
+                it_end = layers.end();
+            it != it_end;
+            ++it )
+            {
+                const MovieLayer & layer = *it;
+
+                if( layer.layerType == CONST_STRING(m_serviceProvider, Movie) )
+                {
+                    if( s_hasMovieElement( layer.source, _slotName, _typeName ) == true )
+                    {
+                        return true;
+                    }
+                }
+
+                if( layer.layerType != _typeName )
+                {
+                    continue;
+                }
+
+                if( layer.name != _slotName )
+                {
+                    continue;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
+        {
+            ResourceMovie * resource = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceT<ResourceMovie>( _resourceName );
+
+            if( resource == nullptr )
+            {
+                return false;
+            }
+
+            bool result = s_hasMovieElement2( resource, _slotName, _typeName );
+
+            resource->decrementReference();
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasMovieSlot( const ConstString & _resourceName, const ConstString & _slotName )
+        {
+            bool result = s_hasMovieElement( _resourceName, _slotName, CONST_STRING(m_serviceProvider, MovieSlot) );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasMovieSubMovie( const ConstString & _resourceName, const ConstString & _subMovieName )
+        {
+            bool result = s_hasMovieElement( _resourceName, _subMovieName, CONST_STRING(m_serviceProvider, SubMovie) );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasMovieSocket( const ConstString & _resourceName, const ConstString & _socketName )
+        {
+            if( s_hasMovieElement( _resourceName, _socketName, CONST_STRING(m_serviceProvider, MovieSocketImage) ) == true )
+            {
+                return true;
+            }
+
+            if( s_hasMovieElement( _resourceName, _socketName, CONST_STRING(m_serviceProvider, MovieSocketShape) ) == true )
+            {
+                return true;
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasMovieEvent( const ConstString & _resourceName, const ConstString & _eventName )
+        {
+            bool result = s_hasMovieElement( _resourceName, _eventName, CONST_STRING(m_serviceProvider, MovieEvent) );
+
+            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_visitResourceEmitterContainer( const ConstString & _resourceName )
@@ -2063,10 +2154,10 @@ namespace Menge
                 TVectorConstString catchedNames;
             };
 
-            ResourceEmitterContainer* resource = RESOURCE_SERVICE(m_serviceProvider)
+            ResourceEmitterContainer * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceEmitterContainer>( _resourceName );
 
-            if( resource == NULL )
+            if( resource == nullptr )
             {
                 return pybind::ret_none();
             }
@@ -3218,6 +3309,11 @@ namespace Menge
             pybind::def_functor( "visitResourceEmitterContainer", nodeScriptMethod, &NodeScriptMethod::s_visitResourceEmitterContainer );
 
             pybind::def_functor( "getNullObjectsFromResourceVideo", nodeScriptMethod, &NodeScriptMethod::s_getNullObjectsFromResourceVideo );
+
+            pybind::def_functor( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::s_hasMovieSlot );
+            pybind::def_functor( "hasMovieSubMovie", nodeScriptMethod, &NodeScriptMethod::s_hasMovieSubMovie );
+            pybind::def_functor( "hasMovieSocket", nodeScriptMethod, &NodeScriptMethod::s_hasMovieSocket );
+            pybind::def_functor( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::s_hasMovieEvent );
 
             pybind::def_functor( "getMovieDuration", nodeScriptMethod, &NodeScriptMethod::s_getMovieDuration );
 

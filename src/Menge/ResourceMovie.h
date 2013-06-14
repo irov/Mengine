@@ -191,8 +191,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		ConstString m_pathMOV;
-
 		FilePath m_keyFramePackPath;
 		float m_frameDuration;
 		float m_duration;

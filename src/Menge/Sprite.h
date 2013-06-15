@@ -131,9 +131,9 @@ namespace Menge
         Vertex2D m_verticesWM[4];
         bool m_invalidateVerticesWM;
 
-        Polygon m_mask;
-        Polygon m_maskPolygon;
-        TVectorIndices m_maskIndices;
+        //Polygon m_mask;
+        //Polygon m_maskPolygon;
+        //TVectorIndices m_maskIndices;
 
         VBHandle m_maskVB;
         IBHandle m_maskIB;

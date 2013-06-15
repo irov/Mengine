@@ -2469,7 +2469,10 @@ namespace Menge
                     PyObject * py_string = pybind::list_getitem( _obj, it );
 
                     String key;
-                    pybind::extract_value( py_string, key );
+                    if( pybind::extract_value( py_string, key ) == false )
+                    {
+                        return false;
+                    }
 
                     _value.push_back( key );
 
@@ -2519,7 +2522,10 @@ namespace Menge
                     PyObject * py_string = pybind::list_getitem( _obj, it );
 
                     WString key;
-                    pybind::extract_value( py_string, key );
+                    if( pybind::extract_value( py_string, key ) == false )
+                    {
+                        return false;
+                    }
 
                     _value.push_back( key );
 

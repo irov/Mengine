@@ -16,9 +16,6 @@ namespace Menge
     class RenderServiceInterface;
 
 	class ResourceVideo;
-	//class ResourceSound;
-	class SoundEmitter;
-	class SoundSourceInterface;
 	class RenderTextureInterface;
 	
 	struct RenderMaterialGroup;
@@ -38,9 +35,6 @@ namespace Menge
 		void setVideoResource( const ConstString& _resource );
 		const ConstString & getVideoResource() const;
 
-		void setSoundResource( const ConstString& _resource );
-		const ConstString & getSoundResource() const;
-		
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
 
@@ -83,13 +77,10 @@ namespace Menge
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
-		ResourceVideo * m_resourceVideo;
-
-		ConstString m_resourceVideoName;
-		ConstString m_resourceSoundName;
+        ConstString m_resourceVideoName;
+		ResourceVideo * m_resourceVideo;		
 
 		RenderTextureInterfacePtr m_textures[1];
-		SoundEmitter* m_soundEmitter;
 		
 		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;	

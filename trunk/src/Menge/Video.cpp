@@ -3,15 +3,12 @@
 #	include "ResourceVideo.h"
 
 #	include "Interface/ResourceInterface.h"
-#	include "Interface/SoundSystemInterface.h"
 #	include "Interface/NodeInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/VideoCodecInterface.h"
 #	include "Interface/FileSystemInterface.h"
-
-#   include "SoundEmitter.h"
 
 #	include "Logger/Logger.h"
 
@@ -34,7 +31,6 @@ namespace Menge
 		, m_timing(0.f)
         , m_playIterator(0)
 		, m_blendAdd(false)
-        , m_soundEmitter(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,23 +56,6 @@ namespace Menge
 	const ConstString & Video::getVideoResource() const
 	{
 		return m_resourceVideoName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Video::setSoundResource( const ConstString& _resource )
-	{
-		if( m_resourceSoundName == _resource )
-		{
-			return;
-		}
-
-		m_resourceSoundName = _resource;
-
-		this->recompile();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Video::getSoundResource() const
-	{
-		return m_resourceSoundName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _current, float _timing )
@@ -172,26 +151,6 @@ namespace Menge
 
 		//m_material->textureStage[0].texture = m_resourceImage;
 
-		if( m_resourceSoundName.empty() == false )
-		{
-			m_soundEmitter = PROTOTYPE_SERVICE(m_serviceProvider)
-                ->generatePrototypeT<SoundEmitter>( CONST_STRING(m_serviceProvider, Node), CONST_STRING(m_serviceProvider, SoundEmitter) );
-			
-			m_soundEmitter->setSoundResource( m_resourceSoundName );
-
-			this->addChildren( m_soundEmitter );
-
-			if( m_soundEmitter->compile() == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' failed to compile sound resource '%s'"
-					, this->getName().c_str()
-					, m_resourceSoundName.c_str() 
-					);
-
-				return false;
-			}
-		}
-
 		this->updateUV_();
 		this->invalidateVertices();
 		this->invalidateBoundingBox();
@@ -235,17 +194,10 @@ namespace Menge
 			m_resourceVideo->decrementReference();
 			m_resourceVideo = 0;
 		}
-
-        m_soundEmitter = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )
 	{
-		if( m_soundEmitter && m_soundEmitter->isCompile() )
-		{
-			m_soundEmitter->stop();
-		}
-
 		m_needUpdate = false;
         m_needUpdate2 = false;
 
@@ -254,11 +206,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( size_t _enumerator )
 	{
-		if( m_soundEmitter && m_soundEmitter->isCompile() )
-		{
-			m_soundEmitter->stop();
-		}
-
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -269,6 +216,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_play( float _time )
 	{
+        (void)_time;
+
 		if( this->isActivate() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Video::_play: '%s' play not activate"
@@ -276,11 +225,6 @@ namespace Menge
 				);
 
 			return false;
-		}
-
-		if( m_soundEmitter && m_soundEmitter->isCompile() )
-		{
-			m_soundEmitter->play( _time );
 		}
 
         m_playIterator = this->getPlayCount();
@@ -411,11 +355,19 @@ namespace Menge
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 	
         bool needUpdate = false;
+
+        float frameTiming = dataInfo->frameTiming;
+
+        float frameRate = m_resourceVideo->getFrameRate();
+        if( frameRate > 0.f )
+        {
+            frameTiming = 1000.f / frameRate;
+        }
 		
-		while( m_timing >= dataInfo->frameTiming )
+		while( m_timing >= frameTiming )
 		{            
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( 0.f );
-            
+                       
             needUpdate = true;
 
 			if( state == VDRS_END_STREAM )
@@ -455,7 +407,7 @@ namespace Menge
 				continue;	
 			}
 
-            m_timing -= dataInfo->frameTiming;
+            m_timing -= frameTiming;
 		}
 		
 		return needUpdate;

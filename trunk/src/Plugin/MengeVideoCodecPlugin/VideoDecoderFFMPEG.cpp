@@ -244,7 +244,9 @@ namespace Menge
 		m_dataInfo.frameTiming = 1000.f / m_dataInfo.fps;
 
         int64_t len = m_formatContext->duration - m_formatContext->start_time;
-		m_dataInfo.duration = (len / AV_TIME_BASE) * 1000.0f;
+
+        double d_duration = (len * 1000.0) / double(AV_TIME_BASE);
+		m_dataInfo.duration = (float)d_duration;
 		
 		return true;
 	}

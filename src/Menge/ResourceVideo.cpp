@@ -20,12 +20,18 @@ namespace Menge
 	ResourceVideo::ResourceVideo()
 		: m_alpha(false)
         , m_noSeek(false)
+        , m_frameRate(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::~ResourceVideo()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceVideo::getFrameRate() const
+    {
+        return m_frameRate;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_loader( const Metabuf::Metadata * _meta )
 	{
@@ -38,6 +44,7 @@ namespace Menge
 
         metadata->get_File_Alpha( m_alpha );
         metadata->get_File_NoSeek( m_noSeek );
+        metadata->get_File_FrameRate( m_frameRate );
 
         return true;
 	}

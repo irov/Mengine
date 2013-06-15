@@ -20,6 +20,9 @@ namespace Menge
 		bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
+    public:
+        float getFrameRate() const;
+
 	public:
 		const FilePath & getFilePath() const;
 		const ConstString& getCodecType() const;
@@ -47,6 +50,8 @@ namespace Menge
         
         ConstString m_converter;
 		ConstString m_codec;
+
+        float m_frameRate;
 
         bool m_alpha;
         bool m_noSeek;

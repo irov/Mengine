@@ -3333,6 +3333,7 @@ namespace Metacode
                 , File_Alpha_successful(false)
                 , File_Codec_successful(false)
                 , File_Converter_successful(false)
+                , File_FrameRate_successful(false)
                 , File_NoSeek_successful(false)
             {
             }
@@ -3457,6 +3458,46 @@ namespace Metacode
                 (_self->*_method)( this->File_Converter );
             }
             
+            bool has_File_FrameRate() const
+            {
+                return File_FrameRate_successful;
+            }
+            
+            bool get_File_FrameRate( float & _value ) const
+            {
+                if( File_FrameRate_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_FrameRate;
+            
+                return true;
+            }
+            
+            bool swap_File_FrameRate( float & _value ) const
+            {
+                if( File_FrameRate_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_FrameRate);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_FrameRate( C * _self, M _method )
+            {
+                if( File_FrameRate_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_FrameRate );
+            }
+            
             bool has_File_NoSeek() const
             {
                 return File_NoSeek_successful;
@@ -3527,6 +3568,8 @@ namespace Metacode
             mutable Menge::ConstString File_Codec;
             bool File_Converter_successful;
             mutable Menge::ConstString File_Converter;
+            bool File_FrameRate_successful;
+            mutable float File_FrameRate;
             bool File_NoSeek_successful;
             mutable bool File_NoSeek;
             mutable Menge::ConstString File_Path;

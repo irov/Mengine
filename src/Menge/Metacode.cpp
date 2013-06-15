@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 21;
+        _needVersion = 22;
 
-        if( version != 21 )
+        if( version != 22 )
         {
             return false;
         }
@@ -2445,6 +2445,17 @@ namespace Metacode
                 }
     
                 this->File_Converter_successful = true;
+    
+                return true;
+            }break;
+        case 8:
+            {
+                if( this->read( _buff, _size, _read, this->File_FrameRate ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_FrameRate_successful = true;
     
                 return true;
             }break;

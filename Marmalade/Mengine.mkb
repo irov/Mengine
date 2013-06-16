@@ -34,8 +34,10 @@ includepaths
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/libjpeg"
+    
     "./Modified/ogg/include"
     "../dependencies/ogg/include"   
+    
     "../dependencies/vorbis/include"
     "../dependencies/dlmalloc"
     "../dependencies/utf8/source"
@@ -139,8 +141,7 @@ files
     [System/SilentSoundSystem]
     ("../src/System/SilentSoundSystem")	
 	"*.h"
-	"*.cpp"       
-    
+	"*.cpp"     
     
     [Utils/Archive]
 	("../src/Utils/Archive")	

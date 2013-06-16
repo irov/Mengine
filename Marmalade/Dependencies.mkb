@@ -39,6 +39,10 @@ includepaths
     "../dependencies/ogg/include"
     "../dependencies/vorbis/include"
     "../dependencies/dlmalloc"
+    
+    "./Modified/openalsoft"    
+    "../dependencies/openalsoft_Marmalade/include"
+    "../dependencies/openalsoft_Marmalade/OpenAL32/Include"    
 }
 
 
@@ -139,7 +143,26 @@ files
     jquant1.c
     jquant2.c
     jutils.c
-    jmemmgr.c    
+    jmemmgr.c
+    
+	[openalsoft_Marmalade]
+    ("../dependencies/openalsoft_Marmalade")
+	Alc/ALc.c
+	Alc/alcConfig.c
+	Alc/alcEcho.c
+	Alc/alcModulator.c
+	Alc/alcReverb.c
+	Alc/alcRing.c
+	Alc/alcThread.c
+	Alc/ALu.c
+	Alc/bs2b.c
+	Alc/mixer.c
+	Alc/null.c
+	Alc/panning.c
+	Alc/s3esoundaudio.c
+	Alc/s3eaudioaudio.c	
+    utils/openal-info.c	 
+    "OpenAL32/*.c"
     
     [vorbis]
     ("../dependencies/vorbis")
@@ -181,5 +204,5 @@ files
     [dlmalloc]
     ("../dependencies/dlmalloc")
     dlmalloc.h
-    dlmalloc.c    
+    dlmalloc.c
 }

@@ -154,7 +154,7 @@ namespace Menge
         return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32MappedInputStream::seek( size_t _pos )
+	bool Win32MappedInputStream::seek( size_t _pos )
 	{
         if( _pos < 0 )
         {
@@ -166,6 +166,8 @@ namespace Menge
         }
 
         m_pos = m_data + _pos;
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32MappedInputStream::tell() const

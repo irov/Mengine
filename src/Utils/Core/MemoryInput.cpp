@@ -63,7 +63,7 @@ namespace Menge
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryInput::seek( size_t _pos )
+	bool MemoryInput::seek( size_t _pos )
 	{
 		if( _pos < 0 )
 		{
@@ -75,6 +75,8 @@ namespace Menge
 		}
 
 		m_pos = m_data + _pos;
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryInput::size() const 

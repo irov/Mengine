@@ -82,6 +82,7 @@ namespace Menge
         void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
         void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
         void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
+        void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up ) override;
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
@@ -93,13 +94,13 @@ namespace Menge
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
         void setWorldMatrix( const mt::mat4f & _view ) override;
 
-		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
+		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize, bool _dynamic ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
 		void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
-		IBHandle createIndexBuffer( std::size_t _indiciesNum ) override;
+		IBHandle createIndexBuffer( std::size_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
 		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;

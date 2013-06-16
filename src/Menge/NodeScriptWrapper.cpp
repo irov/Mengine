@@ -2323,6 +2323,9 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2D );
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotShape );
+
         //SCRIPT_CLASS_WRAPPING( Light2D );
         //SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Sprite );
@@ -2349,7 +2352,6 @@ namespace Menge
         //SCRIPT_CLASS_WRAPPING( RenderMesh );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Window );
 
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
     }

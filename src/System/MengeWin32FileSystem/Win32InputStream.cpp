@@ -178,7 +178,7 @@ namespace Menge
         return readSize + tail;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32InputStream::seek( size_t _pos )
+	bool Win32InputStream::seek( size_t _pos )
 	{
         if( _pos >= m_reading - m_capacity && _pos < m_reading )
         {
@@ -198,7 +198,7 @@ namespace Menge
                     , dwError
                     );
 
-                return;
+                return false;
             }
 
             m_carriage = 0;
@@ -206,6 +206,8 @@ namespace Menge
 
             m_reading = dwPtr;
         }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32InputStream::tell() const

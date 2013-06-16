@@ -21,7 +21,7 @@ namespace Menge
         
 	public:
 		bool write( const void * _data, size_t _count ) override;
-		void flush() override;
+		bool flush() override;
 
     public:
         bool _destroy() override;

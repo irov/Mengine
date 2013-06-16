@@ -35,6 +35,7 @@ includepaths
 	"../src"
 	"../src/Utils"
 	"../src/MarmaladeApplication"
+    
 	"../dependencies"
 	"../dependencies/pugixml/src"
 	"../dependencies/pybind/include"
@@ -46,6 +47,10 @@ includepaths
     "../dependencies/libjpeg"
     "../dependencies/dlmalloc"
     "../dependencies/astralax"
+    
+    "./Modified/openalsoft"    
+    "../dependencies/openalsoft_Marmalade/include"
+    "../dependencies/openalsoft_Marmalade/OpenAL32/Include"    
 }
 
 library
@@ -87,6 +92,11 @@ files
     ("../src/System/MarmaladeRenderSystem")	
 	"*.h"
 	"*.cpp"
+    
+    [System/MarmaladeSoundSystem]
+    ("../src/System/MarmaladeSoundSystem")
+	"*.h"
+	"*.cpp"    
     
     [System/AstralaxParticleSystem]
     ("../src/System/AstralaxParticleSystem")	

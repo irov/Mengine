@@ -654,52 +654,52 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeSoundEngine_()
     {
-        //LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
+        LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
 
-        //SoundSystemInterface * soundSystem;
-        //if( createSoundSystem( &soundSystem ) == false )
-        //{
-        //    return false;
-        //}
+        SoundSystemInterface * soundSystem;
+        if( createSoundSystem( &soundSystem ) == false )
+        {
+            return false;
+        }
 
-        //if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
+        {
+            return false;
+        }
 
-        //if( soundSystem->initialize() == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound System"
-        //        );
+        if( soundSystem->initialize() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound System"
+                );
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //SoundServiceInterface * soundService;
-        //if( createSoundService( &soundService ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
-        //        );
+        SoundServiceInterface * soundService;
+        if( createSoundService( &soundService ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
+                );
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
+        {
+            return false;
+        }
 
-        //m_soundService = soundService;
+        m_soundService = soundService;
 
-        //if( m_soundService->initialize( false ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
-        //        );
+        if( m_soundService->initialize( false ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
+                );
 
-        //    m_serviceProvider->unregistryService( "SoundService" );
+            m_serviceProvider->unregistryService( "SoundService" );
 
-        //    return false;
-        //}
+            return false;
+        }
 
         return true;
     }
@@ -1041,10 +1041,13 @@ namespace Menge
         {
             return false;
         }
-
-        if( this->initializeSilentSoundEngine_() == false )
+                
+        if( this->initializeSoundEngine_() == false )
         {
-            return false;
+            if( this->initializeSilentSoundEngine_() == false )
+            {
+                return false;
+            }
         }
         
         if( this->initializeScriptEngine_() == false )
@@ -1067,10 +1070,10 @@ namespace Menge
             return false;
         }
 
-        //if( this->initializeAmplifierService_() == false )
-        //{
-        //    return false;
-        //}
+        if( this->initializeAmplifierService_() == false )
+        {
+            return false;
+        }
 
         if( this->initializeApplicationService_() == false )
         {

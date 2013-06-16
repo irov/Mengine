@@ -1,8 +1,7 @@
-#	include "OALSoundSystem.h"
-#	include "Interface/LogSystemInterface.h"
+#	include "MarmaladeSoundSystem.h"
 #	include "Config/Config.h"
 
-#	include "OALError.h"
+#	include "MarmaladeError.h"
 
 #	include "Logger/Logger.h"
 
@@ -11,7 +10,7 @@
 #	include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::OALSoundSystem );
+SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::MarmaladeSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -19,29 +18,29 @@ namespace Menge
 #	define MAX_SOUND_BUFFERS 16
 
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundSystem::OALSoundSystem()
+	MarmaladeSoundSystem::MarmaladeSoundSystem()
 		: m_serviceProvider(nullptr)
 		, m_context(nullptr)
 		, m_device(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundSystem::~OALSoundSystem()
+	MarmaladeSoundSystem::~MarmaladeSoundSystem()
 	{     
 
 	}
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void MarmaladeSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * OALSoundSystem::getServiceProvider() const
+    ServiceProviderInterface * MarmaladeSoundSystem::getServiceProvider() const
     {
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSystem::initialize()
+	bool MarmaladeSoundSystem::initialize()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting OpenAL Sound System..." );
 
@@ -52,6 +51,8 @@ namespace Menge
 		//	);
 				
 		// open default device
+        alcInit();
+		
 		m_device = alcOpenDevice( NULL );
 			
 		if( m_device == NULL )
@@ -138,7 +139,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSystem::finalize()
+    void MarmaladeSoundSystem::finalize()
     {
         if( m_device )
         {
@@ -159,7 +160,7 @@ namespace Menge
         delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::onTurnSound( bool _turn )
+	void MarmaladeSoundSystem::onTurnSound( bool _turn )
 	{
         (void)_turn;
 		//if( _turn == false )
@@ -180,10 +181,10 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
+	SoundSourceInterface* MarmaladeSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
-		OALSoundSource * soundSource = m_poolOALSoundSource.createObjectT();
+		MarmaladeSoundSource * soundSource = m_poolOALSoundSource.createObjectT();
 
         soundSource->initialize( m_serviceProvider, this );
         		
@@ -193,13 +194,13 @@ namespace Menge
 		return soundSource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
+	SoundBufferInterface* MarmaladeSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
-		OALSoundBufferBase * base = NULL;
+		MarmaladeSoundBufferBase * base = NULL;
 
         if( _isStream == false )
         {
-            OALSoundBuffer * buffer = m_poolOALSoundBuffer.createObjectT();
+            MarmaladeSoundBuffer * buffer = m_poolOALSoundBuffer.createObjectT();
             
             buffer->initialize( m_serviceProvider, this );
 
@@ -207,7 +208,7 @@ namespace Menge
         }
         else
         {
-            OALSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObjectT();
+            MarmaladeSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObjectT();
 
             buffer->initialize( m_serviceProvider, this );
 
@@ -227,42 +228,42 @@ namespace Menge
 		return base;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ALuint OALSoundSystem::genSourceId()
+	ALuint MarmaladeSoundSystem::genSourceId()
 	{
 		ALuint sourceId = 0;
 		alGenSources( 1, &sourceId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
 		return sourceId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
+	void MarmaladeSoundSystem::releaseSourceId( ALuint _sourceId )
 	{
 		alDeleteSources( 1, &_sourceId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ALuint OALSoundSystem::genBufferId()
+	ALuint MarmaladeSoundSystem::genBufferId()
 	{
 		ALuint bufferId = 0;
 		alGenBuffers( 1, &bufferId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
 		return bufferId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::releaseBufferId( ALuint _bufferId )
+	void MarmaladeSoundSystem::releaseBufferId( ALuint _bufferId )
 	{
 		alDeleteBuffers( 1, &_bufferId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::clearSourceId( ALuint _sourceId )
+	void MarmaladeSoundSystem::clearSourceId( ALuint _sourceId )
 	{
 		ALint process_count = 0;
 		// Получаем количество отработанных буферов
 		alGetSourcei( _sourceId, AL_BUFFERS_PROCESSED, &process_count );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
 		// Если таковые существуют то
 		while( process_count-- > 0 )
@@ -271,16 +272,16 @@ namespace Menge
 			ALuint buffer = 0;
 
 			alSourceUnqueueBuffers( _sourceId, 1, &buffer );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 
 		alSourceStop( _sourceId );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
 		ALint queued_count = 0;
 		// unqueue remaining buffers
 		alGetSourcei( _sourceId, AL_BUFFERS_QUEUED, &queued_count );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
 		while( queued_count-- > 0 )
 		{
@@ -288,18 +289,18 @@ namespace Menge
 			ALuint buffer = 0;
 
 			alSourceUnqueueBuffers( _sourceId, 1, &buffer );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 
 		ALint state;
 		do 
 		{			
 			alGetSourcei( _sourceId, AL_SOURCE_STATE, &state );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 		while( state == AL_PLAYING );
         
 		alSourcei( _sourceId, AL_BUFFER, 0 );
-        OAL_CHECK_ERROR(m_serviceProvider);
+        MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 	}
 }	// namespace Menge

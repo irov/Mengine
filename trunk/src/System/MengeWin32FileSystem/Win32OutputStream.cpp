@@ -78,9 +78,14 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32OutputStream::flush()
+	bool Win32OutputStream::flush()
 	{
-		::FlushFileBuffers( m_hFile );
+		if( ::FlushFileBuffers( m_hFile ) == FALSE )
+        {
+            return false;
+        }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

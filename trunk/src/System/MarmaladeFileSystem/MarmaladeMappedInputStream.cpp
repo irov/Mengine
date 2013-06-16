@@ -68,9 +68,11 @@ namespace Menge
         return read_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeMappedInputStream::seek( size_t _pos )
+    bool MarmaladeMappedInputStream::seek( size_t _pos )
     {
-        m_inputStream.seek( _pos );
+        bool result = m_inputStream.seek( _pos );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MarmaladeMappedInputStream::tell() const

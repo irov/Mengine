@@ -1,6 +1,6 @@
 #	include "MarmaladeInputStream.h"
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/MarmaladeLayerInterface.h"
 
 #   include "Utils/Logger/Logger.h"
 
@@ -29,17 +29,42 @@ namespace Menge
 	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{
         char filePath[260];
-        strcpy( filePath, _folder.c_str() );
-        strcat( filePath, _filename.c_str() );
+        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid concatenate '%s':'%s'"
+                , _folder
+                , _filename
+                );
+
+            return false;
+        }
 
         m_hFile = s3eFileOpen( filePath, "rb" );
 
+        if( m_hFile == NULL )
+        {
+            s3eFileError error = s3eFileGetError();
+
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileOpen %s:%s get error %d"
+                , _folder.c_str()
+                , _filename.c_str()
+                , error
+                );
+
+            return false;
+        }
+
         int32 s3e_size = s3eFileGetSize( m_hFile );
 
-        if( s3e_size < 0 )
+        if( s3e_size == -1 )
         {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open %s invalid get size"
-                , filePath
+            s3eFileError error = s3eFileGetError();
+
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileGetSize %s:%s get error %d"
+                , _folder.c_str()
+                , _filename.c_str()
+                , error
                 );
 
             return false;
@@ -68,9 +93,10 @@ namespace Menge
             uint32 s3e_count = static_cast<uint32>(_count);
             uint32 bytesRead = s3eFileRead( _buf, 1, s3e_count, m_hFile );
 
-            s3eFileError error = s3eFileGetError();
-            if( error != S3E_FILE_ERR_NONE )
+            if( bytesRead != s3e_count )
             {
+                s3eFileError error = s3eFileGetError();
+
                 LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read (%d:%d) size %d get error %d"
                     , bytesRead
                     , _count
@@ -98,12 +124,19 @@ namespace Menge
                 memcpy( _buf, m_buff + m_carriage, tail );
             }
 
+            s3eFileError error1 = s3eFileGetError();
+            if( error1 != S3E_FILE_ERR_NONE )
+            {
+                printf("!!!!");
+            }
+
             uint32 read_count = static_cast<uint32>( _count - tail );
             uint32 bytesRead = s3eFileRead( (char *)_buf + tail, 1, read_count, m_hFile );
 
-            s3eFileError error = s3eFileGetError();
-            if( error != S3E_FILE_ERR_NONE )
+            if( bytesRead != read_count )
             {
+                s3eFileError error = s3eFileGetError();
+
                 LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read error %d:%d size %d get error %d"
                     , bytesRead
                     , read_count
@@ -142,9 +175,10 @@ namespace Menge
 
         uint32 bytesRead = ::s3eFileRead( m_buff, 1, needRead, m_hFile );
 
-        s3eFileError error = s3eFileGetError();
-        if( error != S3E_FILE_ERR_NONE )
+        if( bytesRead != needRead )
         {
+            s3eFileError error = s3eFileGetError();
+
             LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read (%d:%d) size %d get error %d"
                 , bytesRead
                 , FILE_BUFFER_SIZE
@@ -167,7 +201,7 @@ namespace Menge
         return readSize + tail;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeInputStream::seek( size_t _pos )
+	bool MarmaladeInputStream::seek( size_t _pos )
 	{
         if( _pos >= m_reading - m_capacity && _pos < m_reading )
         {
@@ -175,7 +209,9 @@ namespace Menge
         }
         else
         {
-    		if( s3eFileSeek( m_hFile, static_cast<int32>(_pos), S3E_FILESEEK_SET ) != S3E_RESULT_SUCCESS )
+            s3eResult result = s3eFileSeek( m_hFile, static_cast<int32>(_pos), S3E_FILESEEK_SET );
+
+    		if( result != S3E_RESULT_SUCCESS )
             {
                 s3eFileError error = s3eFileGetError();
 
@@ -185,7 +221,7 @@ namespace Menge
                     , error
                     );
 
-                return;
+                return false;
             }
 
             m_carriage = 0;
@@ -193,6 +229,8 @@ namespace Menge
 
             m_reading = static_cast<uint32>(_pos);
         }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MarmaladeInputStream::tell() const

@@ -302,9 +302,9 @@ namespace Menge
         float xb = _viewport.begin.x;
         float yb = _viewport.end.y;
 
-        float height = m_resolution.getHeight();
+        size_t height = m_resolution.getHeight();
 
-        glViewport( (GLsizei)xb, (GLsizei)(height - yb), (GLsizei)w, (GLsizei)h );    
+        glViewport( (GLsizei)xb, height - (GLsizei)(yb), (GLsizei)w, (GLsizei)h );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
@@ -333,7 +333,7 @@ namespace Menge
         // To Do
     }
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle MarmaladeRenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize )
+	VBHandle MarmaladeRenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize, bool _dynamic )
 	{
 		GLuint bufId = 0;
 		glGenBuffers( 1, &bufId );
@@ -342,8 +342,15 @@ namespace Menge
 		MemoryRange memRange;
 		memRange.size = _verticesNum * _vertexSize;
 		memRange.pMem = new unsigned char[memRange.size];
+        
+        GLenum usage = GL_STATIC_DRAW;
+
+        if( _dynamic == true )
+        {
+            usage = GL_DYNAMIC_DRAW;
+        }
 		
-        glBufferData( GL_ARRAY_BUFFER, memRange.size, NULL, GL_DYNAMIC_DRAW );
+        glBufferData( GL_ARRAY_BUFFER, memRange.size, NULL, usage );
 		glBindBuffer( GL_ARRAY_BUFFER, m_currentVertexBuffer );
 		
         VBHandle vbHandle = static_cast<VBHandle>( bufId );
@@ -430,7 +437,7 @@ namespace Menge
         }		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle MarmaladeRenderSystem::createIndexBuffer( std::size_t _indiciesNum )
+	IBHandle MarmaladeRenderSystem::createIndexBuffer( std::size_t _indiciesNum, bool _dynamic )
 	{
 		GLuint bufId = 0;
 		glGenBuffers( 1, &bufId );
@@ -440,8 +447,15 @@ namespace Menge
         MemoryRange memRange;
 		memRange.size = _indiciesNum * sizeof( uint16 );
 		memRange.pMem = new unsigned char[memRange.size];
+
+        GLenum usage = GL_STATIC_DRAW;
+
+        if( _dynamic == true )
+        {
+            usage = GL_DYNAMIC_DRAW;
+        }
 		        
-        glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, GL_STATIC_DRAW );
+        glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_currentIndexBuffer );
 		
         IBHandle ibHandle = static_cast<IBHandle>( bufId );
@@ -1063,5 +1077,10 @@ namespace Menge
         mt::ident_m4( wm );
 
         mt::inv_m4( _viewMatrix, wm );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up )
+    {
+        mt::make_lookat_m4( _viewMatrix, _eye, _at, _up );
     }
 }	// namespace Menge

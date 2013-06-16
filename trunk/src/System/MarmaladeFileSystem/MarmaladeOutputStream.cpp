@@ -38,6 +38,19 @@ namespace Menge
 
         m_hFile = s3eFileOpen( filePath, "wb" );
 
+        if( m_hFile == NULL )
+        {
+            s3eFileError error = s3eFileGetError();
+
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::open %s:%s get error %d"
+                , _folder.c_str()
+                , _filename.c_str()
+                , error
+                );
+
+            return false;
+        }
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -54,14 +67,40 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeOutputStream::write( const void * _data, size_t _count )
 	{
-        uint32 bytesWritten = s3eFileWrite( _data, _count, 1, m_hFile );
+        uint32 bytesWritten = s3eFileWrite( _data, 1, _count, m_hFile );
+
+        if( bytesWritten != _count )
+        {
+            s3eFileError error = s3eFileGetError();
+            
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::write %d:%d get error %d"
+                , bytesWritten
+                , _count
+                , error
+                );
+
+            return false;        
+        }
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeOutputStream::flush()
+	bool MarmaladeOutputStream::flush()
 	{
-		s3eFileFlush( m_hFile );
+		s3eResult result = s3eFileFlush( m_hFile );
+
+        if( result != S3E_RESULT_SUCCESS )
+        {
+            s3eFileError error = s3eFileGetError();
+
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::flush get error %d"
+                , error
+                );
+
+            return false;
+        }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

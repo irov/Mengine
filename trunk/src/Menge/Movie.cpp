@@ -1834,11 +1834,20 @@ namespace Menge
         float frameDuration = m_resourceMovie->getFrameDuration();
         size_t frameCount = m_resourceMovie->getFrameCount();
 
+        const mt::vec2f & loopSegment = m_resourceMovie->getLoopSegment();
+
         if( m_intervalEnd > 0.f )
         {
             frameCount = (size_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f);
         }
-
+        else
+        {   
+            if( loopSegment.y > 0.f )
+            {
+                frameCount = (size_t)(loopSegment.y / frameDuration + 0.5f);
+            }
+        }
+        
         size_t lastFrame = m_currentFrame;
 
         bool needUpdate = false;
@@ -1871,7 +1880,10 @@ namespace Menge
                     else
                     {   
                         //this->setTiming( 0.f );
-                        this->setTiming( m_frameTiming );
+                        
+                        float beginTiming = m_frameTiming + loopSegment.x;
+
+                        this->setTiming( beginTiming );
 
                         lastFrame = m_currentFrame;
 

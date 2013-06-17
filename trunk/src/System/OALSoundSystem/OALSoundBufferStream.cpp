@@ -177,10 +177,6 @@ namespace Menge
 		OAL_CHECK_ERROR(m_serviceProvider);
 
 		this->setUpdating( true );
-
-		//m_threadID = new pthread_t;
-		// there is no need to check errors
-		//pthread_create( m_threadID, NULL, &OALSoundBufferStream::s_updateStream_, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::pause( ALenum _source )
@@ -313,7 +309,7 @@ namespace Menge
 
         unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
 
-        if ( bytesWritten == 0 )
+        if( bytesWritten == 0 )
         {
             _bytes = 0;
 

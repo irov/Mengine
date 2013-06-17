@@ -26,10 +26,11 @@ namespace Menge
 	ResourceMovie::ResourceMovie()
 		: m_frameDuration(0.f)
 		, m_duration(0.f)
+        , m_loopSegment(0.f, 0.f)
 		, m_size(0.f, 0.f)
-		, m_framePack(NULL)
+		, m_keyFramePack(NULL)
 		, m_maxLayerIndex(0)
-		, m_hasCamera3D(false)
+		, m_hasCamera3D(false)        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -61,6 +62,11 @@ namespace Menge
 	{
 		return m_size;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & ResourceMovie::getLoopSegment() const
+    {
+        return m_loopSegment;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorMovieLayers & ResourceMovie::getLayers() const
 	{
@@ -102,7 +108,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const
 	{
-		if( m_framePack->getLayerFrame( _layer.index, _index, _frame ) == false )
+		if( m_keyFramePack->getLayerFrame( _layer.index, _index, _frame ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getFrame %s invalid frame '%s' %d:%d"
                 , this->getName().c_str()
@@ -119,7 +125,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     const Polygon * ResourceMovie::getPolygon( size_t _index ) const
     {
-        const Polygon * polygon = m_framePack->getPolygon( _index );
+        const Polygon * polygon = m_keyFramePack->getPolygon( _index );
 
         return polygon;
     }
@@ -251,7 +257,8 @@ namespace Menge
         metadata->get_FrameDuration_Value( m_frameDuration );
         metadata->get_Width_Value( m_size.x );
         metadata->get_Height_Value( m_size.y );
-        
+        metadata->get_Loop_Segment( m_loopSegment );
+                
         metadata->swap_KeyFramesPackPath_Path( m_keyFramePackPath );
 
         m_layers.clear();
@@ -387,10 +394,10 @@ namespace Menge
 
 		const ConstString& category = this->getCategory();
 
-		m_framePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
+		m_keyFramePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
 			->getMovieFramePak( category, m_keyFramePackPath );
 
-		if ( m_framePack == NULL )
+		if ( m_keyFramePack == NULL )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
 				, this->getName().c_str()
@@ -498,10 +505,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::_release()
 	{
-		if( m_framePack != NULL )
+		if( m_keyFramePack != NULL )
 		{
 			MOVIEKEYFRAME_SERVICE(m_serviceProvider)
-				->releaseMovieFramePak( m_framePack );
+				->releaseMovieFramePak( m_keyFramePack );
 		}
 
 		ResourceReference::_release();
@@ -524,7 +531,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			const MovieLayerFrame & frames = m_framePack->getLayer( layer.index );
+			const MovieLayerFrame & frames = m_keyFramePack->getLayer( layer.index );
 
 			_visitor->visitLayer( layer, frames );
 		}

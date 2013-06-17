@@ -1484,8 +1484,8 @@ namespace Menge
         {
             LOGGER_WARNING(m_serviceProvider)("Setup Foreground Window...");
 
-            ShowWindow(m_hWnd, SW_MINIMIZE);
-            ShowWindow(m_hWnd, SW_RESTORE);
+            ::ShowWindow(m_hWnd, SW_MINIMIZE);
+            ::ShowWindow(m_hWnd, SW_RESTORE);
 
             //SetWindowPos(m_hWnd,hWndFgnd,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE);
             //SetWindowPos(hWndFgnd,m_hWnd,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
@@ -1502,6 +1502,10 @@ namespace Menge
 
             this->notifyWindowModeChanged( desktopResolution, true );
         }
+
+        ::SetForegroundWindow( m_hWnd );          // Slightly Higher Priority
+        ::SetFocus( m_hWnd );                     // Sets Keyboard Focus To The Window
+        ::UpdateWindow( m_hWnd );
 
 		return true;
 	}

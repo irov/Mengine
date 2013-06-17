@@ -1625,6 +1625,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 8:
+            {
+                if( this->read( _buff, _size, _read, this->Loop_Segment ) == false )
+                {
+                    return false;
+                }
+    
+                this->Loop_Segment_successful = true;
+    
+                return true;
+            }break;
         case 5:
             {
                 if( this->read( _buff, _size, _read, this->Width_Value ) == false )
@@ -1649,19 +1660,19 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 10:
+        case 11:
             {
                 includes_Meta_MovieCamera3D.reserve( _count );
                 return true;
                 break;
             }
-        case 8:
+        case 9:
             {
                 includes_Meta_MovieLayer2D.reserve( _count );
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 includes_Meta_MovieLayer3D.reserve( _count );
                 return true;
@@ -1680,7 +1691,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 10:
+        case 11:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
     
@@ -1692,7 +1703,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 8:
+        case 9:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
     
@@ -1704,7 +1715,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
     

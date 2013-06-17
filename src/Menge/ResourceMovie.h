@@ -163,6 +163,8 @@ namespace Menge
 
 		const mt::vec2f & getSize() const;
 
+        const mt::vec2f & getLoopSegment() const;
+
 	public:
 		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
 
@@ -190,12 +192,14 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-	protected:
-		FilePath m_keyFramePackPath;
+	protected:		
 		float m_frameDuration;
 		float m_duration;
+
+        mt::vec2f m_loopSegment;
 		
-		MovieFramePackInterface * m_framePack;
+        FilePath m_keyFramePackPath;
+		MovieFramePackInterface * m_keyFramePack;
 
 		size_t m_frameCount;
 

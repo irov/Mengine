@@ -2095,6 +2095,7 @@ namespace Metacode
                 , FrameDuration_Value_successful(false)
                 , Height_Value_successful(false)
                 , KeyFramesPackPath_Path_successful(false)
+                , Loop_Segment_successful(false)
                 , Width_Value_successful(false)
             {
             }
@@ -2257,6 +2258,46 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->KeyFramesPackPath_Path );
+            }
+            
+            bool has_Loop_Segment() const
+            {
+                return Loop_Segment_successful;
+            }
+            
+            bool get_Loop_Segment( mt::vec2f & _value ) const
+            {
+                if( Loop_Segment_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Loop_Segment;
+            
+                return true;
+            }
+            
+            bool swap_Loop_Segment( mt::vec2f & _value ) const
+            {
+                if( Loop_Segment_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Loop_Segment);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Loop_Segment( C * _self, M _method )
+            {
+                if( Loop_Segment_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Loop_Segment );
             }
             
             bool has_Width_Value() const
@@ -2823,6 +2864,8 @@ namespace Metacode
             mutable float Height_Value;
             bool KeyFramesPackPath_Path_successful;
             mutable Menge::ConstString KeyFramesPackPath_Path;
+            bool Loop_Segment_successful;
+            mutable mt::vec2f Loop_Segment;
             bool Width_Value_successful;
             mutable float Width_Value;
         public:

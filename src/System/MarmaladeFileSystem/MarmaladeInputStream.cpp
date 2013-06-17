@@ -124,12 +124,6 @@ namespace Menge
                 memcpy( _buf, m_buff + m_carriage, tail );
             }
 
-            s3eFileError error1 = s3eFileGetError();
-            if( error1 != S3E_FILE_ERR_NONE )
-            {
-                printf("!!!!");
-            }
-
             uint32 read_count = static_cast<uint32>( _count - tail );
             uint32 bytesRead = s3eFileRead( (char *)_buf + tail, 1, read_count, m_hFile );
 

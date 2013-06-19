@@ -35,10 +35,8 @@ IF(WIN32)
     SET(
      VIDEO_CODEC_STATIC_LIBS
      ${THIRDPARTY_DIR}/ffmpeg/lib/avcodec.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/avfilter.lib
      ${THIRDPARTY_DIR}/ffmpeg/lib/avformat.lib
      ${THIRDPARTY_DIR}/ffmpeg/lib/avutil.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/swresample.lib
      ${THIRDPARTY_DIR}/ffmpeg/lib/swscale.lib
      )
 ENDIF(WIN32)

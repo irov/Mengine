@@ -73,7 +73,7 @@ namespace Menge
         size_t stram_size = m_stream->size();
         size_t probe_size = 4096 > stram_size ? stram_size : 4096;
 
-         memset( filebuffer + probe_size, 0, FF_INPUT_BUFFER_PADDING_SIZE );
+        memset( filebuffer + probe_size, 0, FF_INPUT_BUFFER_PADDING_SIZE );
 
         m_stream->read( filebuffer, probe_size );
         m_stream->seek( SEEK_SET );
@@ -247,6 +247,8 @@ namespace Menge
 
         double d_duration = (len * 1000.0) / double(AV_TIME_BASE);
 		m_dataInfo.duration = (float)d_duration;
+
+        av_init_packet(&m_packet);
 		
 		return true;
 	}
@@ -298,6 +300,29 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////// 
 	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _pitch )
 	{
+        int isGotPicture;
+
+        int decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
+
+        if( decode_bite < 0 )
+        {
+            av_free_packet( &m_packet );
+
+            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: we don`t get a picture"
+                );
+
+            return VDRS_FAILURE;
+        }
+
+        m_pts = (float)m_packet.pts;
+
+        av_free_packet(&m_packet);
+
+        if( isGotPicture == 0 )
+        {
+            return 0;
+        }
+
 		int fill_error = avpicture_fill( &m_picture, _buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
 
@@ -333,48 +358,25 @@ namespace Menge
 	{		
         (void)_pts;
 
-		AVPacket packet;
-		av_init_packet(&packet);
+        av_free_packet(&m_packet);
+		av_init_packet(&m_packet);
         
-        if( av_read_frame( m_formatContext, &packet ) < 0 )
+        if( av_read_frame( m_formatContext, &m_packet ) < 0 )
         {
-            av_free_packet(&packet);
+            av_free_packet(&m_packet);
 
             return VDRS_END_STREAM;
         }
          
-        if( packet.stream_index != m_videoStreamId )
+        if( m_packet.stream_index != m_videoStreamId )
         {
-            av_free_packet(&packet);
+            av_free_packet(&m_packet);
 
             return VDRS_SKIP;
         }
 
-        int isGotPicture;
-            
-        int decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &packet );
-                        
-        if( decode_bite < 0 ) 
-        {
-            av_free_packet(&packet);
-
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: we don`t get a picture"
-                );
-
-            return VDRS_FAILURE;
-        }
-
-		m_pts = (float)packet.pts;
-		
-		av_free_packet(&packet);
-
-        if( isGotPicture == 0 )
-        {
-            return VDRS_SKIP;
-        }
-        
-		return VDRS_SUCCESS;	
-	}
+        return VDRS_SUCCESS;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
 	{

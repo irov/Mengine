@@ -409,7 +409,7 @@ namespace Menge
 
             m_timing -= frameTiming;
 		}
-		
+        	
 		return needUpdate;
 	}
 	////////////////////////////////////////////////////////////////////

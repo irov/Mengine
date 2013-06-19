@@ -6,6 +6,8 @@ src
     CRC32.h
     CRC32.cpp
     
+    Array.h
+    
     Polygon.h
     Polygon.cpp    
     

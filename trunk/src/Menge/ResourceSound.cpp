@@ -170,8 +170,6 @@ namespace Menge
                 , category.c_str()
                 , m_path.c_str() 
                 );
-
-            const_cast<ResourceSound *>(this)->m_isStreamable = true;
         }
 
         codec = nullptr;

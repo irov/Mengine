@@ -58,6 +58,7 @@ namespace Menge
 		AVCodecContext * m_codecContext;
 		AVCodec * m_codec;
 		
+        AVPacket m_packet;
 		AVFrame * m_frame; 
 		AVPicture m_picture;
 		AVIOContext * m_IOContext;

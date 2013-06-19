@@ -160,13 +160,6 @@ EXPORTS
     avpriv_flac_parse_streaminfo
     avpriv_h264_has_num_reorder_frames
     avpriv_lock_avformat
-    avpriv_mjpeg_bits_ac_chrominance DATA
-    avpriv_mjpeg_bits_ac_luminance DATA
-    avpriv_mjpeg_bits_dc_chrominance DATA
-    avpriv_mjpeg_bits_dc_luminance DATA
-    avpriv_mjpeg_val_ac_chrominance DATA
-    avpriv_mjpeg_val_ac_luminance DATA
-    avpriv_mjpeg_val_dc DATA
     avpriv_mpa_bitrate_tab DATA
     avpriv_mpa_decode_header
     avpriv_mpa_freq_tab DATA

@@ -14,8 +14,11 @@ LDFLAGS='-mwindows' ./configure \
 --disable-postproc \
 --disable-yasm \
 --disable-iconv \
---enable-bzlib \
---enable-zlib \
+--disable-avfilter \
+--disable-swresample \
+--disable-bsfs \
+--disable-bzlib \
+--disable-zlib \
 --enable-libvorbis \
 --enable-libvpx \
 --enable-swscale \

@@ -144,40 +144,22 @@ EXPORTS
     avpicture_free
     avpicture_get_size
     avpicture_layout
-    avpriv_aac_parse_header
-    avpriv_ac3_channel_layout_tab DATA
-    avpriv_ac3_parse_header
-    avpriv_adx_decode_header
     avpriv_align_put_bits
     avpriv_bprint_to_extradata
     avpriv_color_frame
     avpriv_copy_bits
     avpriv_copy_pce_data
-    avpriv_dca_sample_rates DATA
     avpriv_find_pix_fmt
-    avpriv_flac_is_extradata_valid
-    avpriv_flac_parse_block_header
-    avpriv_flac_parse_streaminfo
-    avpriv_h264_has_num_reorder_frames
     avpriv_lock_avformat
     avpriv_mpa_bitrate_tab DATA
-    avpriv_mpa_decode_header
     avpriv_mpa_freq_tab DATA
     avpriv_mpeg4audio_get_config
     avpriv_mpeg4audio_sample_rates DATA
-    avpriv_mpegaudio_decode_header
-    avpriv_mpv_find_start_code
     avpriv_put_string
-    avpriv_split_xiph_headers
-    avpriv_tak_parse_streaminfo
     avpriv_toupper4
     avpriv_unlock_avformat
-    avpriv_vorbis_parse_extradata
-    avpriv_vorbis_parse_frame
-    avpriv_vorbis_parse_reset
     avsubtitle_free
     dsputil_init
-    ff_dct_common_init
     ff_dsputil_init
     ff_faanidct
     ff_faanidct_add

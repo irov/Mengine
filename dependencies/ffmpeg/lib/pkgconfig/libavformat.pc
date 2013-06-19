@@ -10,5 +10,5 @@ Requires:
 Requires.private: libavcodec = 54.92.100
 Conflicts:
 Libs: -L${libdir} -lavformat 
-Libs.private: -lavicap32 -lws2_32 -lvorbisenc -lvorbis -logg -lm -lpsapi -ladvapi32 -lshell32
+Libs.private: -lvorbisenc -lvorbis -logg -lm -lpsapi -ladvapi32 -lshell32
 Cflags: -I${includedir}

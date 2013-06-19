@@ -278,6 +278,7 @@ EXPORTS
     av_xtea_crypt
     av_xtea_init
     avpriv_cga_font DATA
+    avpriv_emms_yasm DATA
     avpriv_evaluate_lls
     avpriv_float_dsp_init
     avpriv_init_lls
@@ -289,6 +290,21 @@ EXPORTS
     avutil_configuration
     avutil_license
     avutil_version
+    ff_cpu_cpuid DATA
+    ff_cpu_cpuid_test DATA
+    ff_cpu_xgetbv DATA
     ff_float_dsp_init_x86
     ff_get_cpu_flags_x86
     ff_log2_tab DATA
+    ff_scalarproduct_float_sse DATA
+    ff_vector_dmul_scalar_avx DATA
+    ff_vector_dmul_scalar_sse2 DATA
+    ff_vector_fmac_scalar_avx DATA
+    ff_vector_fmac_scalar_sse DATA
+    ff_vector_fmul_add_avx DATA
+    ff_vector_fmul_add_sse DATA
+    ff_vector_fmul_avx DATA
+    ff_vector_fmul_reverse_avx DATA
+    ff_vector_fmul_reverse_sse DATA
+    ff_vector_fmul_scalar_sse DATA
+    ff_vector_fmul_sse DATA

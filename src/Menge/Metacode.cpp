@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 22;
+        _needVersion = 23;
 
-        if( version != 22 )
+        if( version != 23 )
         {
             return false;
         }

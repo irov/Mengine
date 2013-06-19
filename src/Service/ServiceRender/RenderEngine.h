@@ -9,6 +9,7 @@
 #	include "Core/Resolution.h"
 #	include "Core/ConstString.h"
 #	include "Core/Pool.h"
+#	include "Core/Array.h"
 
 #   include "Factory/FactoryPool.h"
 
@@ -21,6 +22,16 @@
 #	include "Core/BinaryVector.h"
 
 //#	include "ColourValue.h"
+
+
+#   ifndef MENGINE_RENDER_OBJECTS_MAX
+#   define MENGINE_RENDER_OBJECTS_MAX 4000
+#   endif
+
+#   ifndef MENGINE_RENDER_PASS_MAX
+#   define MENGINE_RENDER_PASS_MAX 200
+#   endif
+
 
 namespace Menge
 {
@@ -58,17 +69,13 @@ namespace Menge
 		size_t baseVertexIndex;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<RenderObject> TVectorRenderObject;
-	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass
 	{
-		TVectorRenderObject::size_type beginRenderObject;
-		TVectorRenderObject::size_type countRenderObject;
+		size_t beginRenderObject;
+		size_t countRenderObject;
 
 		const RenderCameraInterface * camera;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<RenderPass> TVectorRenderPass;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine
 		: public RenderServiceInterface
@@ -308,11 +315,12 @@ namespace Menge
         
         int m_idEnumerator;
 
-        TVectorRenderObject m_renderObjects;
-        TVectorRenderPass m_renderPasses;
+        typedef Array<RenderObject, MENGINE_RENDER_OBJECTS_MAX> TArrayRenderObject;
+        TArrayRenderObject m_renderObjects;
 
-        RenderPass * m_currentRenderPass;
-               
+        typedef Array<RenderPass, MENGINE_RENDER_PASS_MAX> TArrayRenderPass;
+        TArrayRenderPass m_renderPasses;
+                      
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;

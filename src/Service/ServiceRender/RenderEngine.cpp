@@ -50,7 +50,6 @@ namespace Menge
         , m_maxIndexCount(0)
         , m_idEnumerator(0)
         , m_vbPos(0)
-        , m_currentRenderPass(nullptr)
         , m_depthBufferWriteEnable(false)
         , m_alphaBlendEnable(false)
         , m_alphaTestEnable(false)
@@ -1393,13 +1392,13 @@ namespace Menge
             return;
         }
 
-        for( TVectorRenderPass::const_iterator 
-            rit = m_renderPasses.begin(), 
-            rit_end = m_renderPasses.end();
-        rit != rit_end;
-        ++rit )
+        for( TArrayRenderPass::const_iterator
+            it = m_renderPasses.begin(), 
+            it_end = m_renderPasses.end();
+        it != it_end;
+        ++it )
         {
-            const RenderPass & renderPass = *rit;
+            const RenderPass & renderPass = *it;
 
             this->renderPass_( renderPass );
         }
@@ -1463,15 +1462,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::renderObjects_( const RenderPass & _renderPass )
     {
-        TVectorRenderObject::const_iterator it_begin = m_renderObjects.begin();
-        std::advance( it_begin, _renderPass.beginRenderObject );
-
-        TVectorRenderObject::const_iterator it_end = m_renderObjects.begin();
-        std::advance( it_end, _renderPass.beginRenderObject + _renderPass.countRenderObject );
+        TArrayRenderObject::const_iterator it_begin = m_renderObjects.advance( _renderPass.beginRenderObject );
+        TArrayRenderObject::const_iterator it_end = m_renderObjects.advance( _renderPass.beginRenderObject + _renderPass.countRenderObject );
 
         for( ;it_begin != it_end; ++it_begin )
         {
-            const RenderObject * renderObject = &(*it_begin);
+            const RenderObject * renderObject = it_begin;
 
             this->renderObject_( renderObject );
         }
@@ -1498,21 +1494,26 @@ namespace Menge
             return;
         }
 
+        if( m_renderObjects.full() == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render objects %d"
+                , MENGINE_RENDER_OBJECTS_MAX
+                );
+
+            return;
+        }
+
         if( m_currentRenderCamera != _camera )
         {
             m_currentRenderCamera = _camera;
 
-            RenderPass pass;
+            RenderPass & pass = m_renderPasses.emplace();
             pass.beginRenderObject = m_renderObjects.size();
             pass.countRenderObject = 0;
             pass.camera = m_currentRenderCamera;
-
-            m_renderPasses.push_back( pass );
-            m_currentRenderPass = &m_renderPasses.back();
         }
 
-        m_renderObjects.push_back( RenderObject() );
-        RenderObject & ro = m_renderObjects.back();
+        RenderObject & ro = m_renderObjects.emplace();
 
         ro.material = _material;
 
@@ -1573,7 +1574,8 @@ namespace Menge
             return;            
         }
 
-        ++m_currentRenderPass->countRenderObject;
+        RenderPass & rp = m_renderPasses.back();
+        ++rp.countRenderObject;
     }
     //////////////////////////////////////////////////////////////////////////
     VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, size_t _count )
@@ -1705,7 +1707,7 @@ namespace Menge
     {
         size_t vbPos = _offset;
 
-        for( TVectorRenderPass::iterator 
+        for( TArrayRenderPass::iterator 
             it = m_renderPasses.begin(), 
             it_end = m_renderPasses.end();
         it != it_end;
@@ -1770,7 +1772,7 @@ namespace Menge
 
         Vertex2D * vertexBuffer = static_cast<Vertex2D *>(vData);
 
-        for( TVectorRenderPass::iterator 
+        for( TArrayRenderPass::iterator 
             it = m_renderPasses.begin(), 
             it_end = m_renderPasses.end();
         it != it_end;
@@ -1832,15 +1834,12 @@ namespace Menge
         RenderObject* batchedRO = NULL;
         size_t verticesNum = _startVertexPos;
 
-        TVectorRenderObject::iterator it_begin = m_renderObjects.begin();
-        std::advance( it_begin, _renderPass->beginRenderObject );
-
-        TVectorRenderObject::iterator it_end = m_renderObjects.begin();
-        std::advance( it_end, _renderPass->beginRenderObject + _renderPass->countRenderObject );
+        TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
+        TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
 
         for( ; it_begin != it_end; ++it_begin )
         {
-            RenderObject * renderObject = &(*it_begin);
+            RenderObject * renderObject = it_begin;
 
             if( this->batchRenderObject_( renderObject, batchedRO, verticesNum ) == false )
             {
@@ -1878,15 +1877,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     size_t RenderEngine::insertRenderObjects_( RenderPass * _renderPass, Vertex2D * _vertexBuffer, size_t _offset )
     {
-        TVectorRenderObject::iterator it_begin = m_renderObjects.begin();
-        std::advance( it_begin, _renderPass->beginRenderObject );
-
-        TVectorRenderObject::iterator it_end = m_renderObjects.begin();
-        std::advance( it_end, _renderPass->beginRenderObject + _renderPass->countRenderObject );
+        TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
+        TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
 
         for( ; it_begin != it_end; ++it_begin )
         {
-            RenderObject * ro = &(*it_begin);
+            RenderObject * ro = it_begin;
 
             _offset = this->insertRenderObject_( ro, _vertexBuffer, _offset );			
         }
@@ -2177,9 +2173,6 @@ namespace Menge
         }
 
         std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
-
-        m_renderObjects.reserve(1000);
-        m_renderPasses.reserve(100);
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::enableTextureFiltering( bool _enable )

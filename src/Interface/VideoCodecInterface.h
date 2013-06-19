@@ -49,7 +49,7 @@ namespace Menge
 		virtual float getTiming() const = 0;
 
     public:
-		virtual EVideoDecoderReadState readNextFrame( float _pts ) = 0;		
+		virtual EVideoDecoderReadState readNextFrame( float _pts ) = 0;
 	};
 
     typedef IntrusivePtr<VideoDecoderInterface> VideoDecoderInterfacePtr;

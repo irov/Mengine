@@ -168,15 +168,6 @@ namespace Menge
             RENDER_SERVICE(m_serviceProvider)
                 ->addRenderObject2D( _camera, edge.material, edge.textures, edge.textureCount, LPT_QUAD, &vertices[i*4], 4 );
         }
-
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_LeftTop], &m_textures[ResourceWindow_LeftTop], 1, &vertices[1*4], 4, LPT_QUAD );
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_RightTop], &m_textures[ResourceWindow_RightTop], 1, &vertices[3*4], 4, LPT_QUAD );
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_RightBottom], &m_textures[ResourceWindow_RightBottom], 1, &vertices[5*4], 4, LPT_QUAD );
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_LeftBottom], &m_textures[ResourceWindow_LeftBottom], 1, &vertices[7*4], 4, LPT_QUAD );
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Top], &m_textures[ResourceWindow_Top], 1, &vertices[2*4], 4, LPT_QUAD );
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Bottom], &m_textures[ResourceWindow_Bottom], 1, &vertices[6*4], 4, LPT_QUAD );
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Right], &m_textures[ResourceWindow_Right], 1, &vertices[4*4], 4, LPT_QUAD );
-		//RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_material[ResourceWindow_Left], &m_textures[ResourceWindow_Left], 1, &vertices[8*4], 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )

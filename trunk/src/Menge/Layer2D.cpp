@@ -14,10 +14,6 @@
 
 #	include "Consts.h"
 
-#	include "Sprite.h"
-#	include "Animation.h"
-
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////

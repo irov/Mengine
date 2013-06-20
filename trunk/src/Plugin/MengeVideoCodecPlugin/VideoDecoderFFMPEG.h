@@ -37,6 +37,7 @@ namespace Menge
 
     public:
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
+        bool fillFrame( unsigned char* _buffer, unsigned int _pitch ) override;
 	
 	public:	
 		bool eof() override;

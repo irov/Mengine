@@ -43,12 +43,16 @@ namespace Menge
 
 		inline T * operator -> () const
 		{
-			return static_cast<T *>(this->current());
+            TLinked * linked = this->current();
+
+			return static_cast<T *>(linked);
 		}
 
 		inline T * operator * () const
 		{
-			return static_cast<T *>(this->current());
+            TLinked * linked = this->current();
+
+			return static_cast<T *>(linked);
 		}
 
 	protected:

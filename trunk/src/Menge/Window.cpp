@@ -38,7 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Window::Window()
 		: m_clientSize(100.f, 100.f)
-		, m_resource(nullptr)
+		, m_resourceWindow(nullptr)
 	{
 		for( size_t i = 0; i < ResourceWindow_Count; i++ )
 		{
@@ -64,14 +64,14 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourceWindow>( m_resourceName );
+		m_resourceWindow = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceT<ResourceWindow>( m_resourceWindowName );
 
-		if( m_resource == nullptr )
+		if( m_resourceWindow == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Window::_compile %s Error while compiling resources. Resource '%s' does not exist" 
 				, this->getName().c_str()
-				, m_resourceName.c_str() 
+				, m_resourceWindowName.c_str() 
 				);
 
 			return false;
@@ -79,7 +79,7 @@ namespace Menge
 
 		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			ResourceImage * image = m_resource->getResource( i );
+			ResourceImage * image = m_resourceWindow->getResource( i );
 
             if( image == nullptr )
             {
@@ -140,10 +140,10 @@ namespace Menge
             edge.textures[1] = nullptr;
 		}
 
-		if( m_resource != nullptr )
+		if( m_resourceWindow != nullptr )
 		{
-			m_resource->decrementReference();
-			m_resource = nullptr;
+			m_resourceWindow->decrementReference();
+			m_resourceWindow = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -176,12 +176,15 @@ namespace Menge
 
 		struct TQuad
 		{
-			mt::vec2f a,b,c,d;
+			mt::vec2f a;
+            mt::vec2f b;
+            mt::vec2f c;
+            mt::vec2f d;
 		};
 
 		TQuad quads[ResourceWindow_Count];
 
-		const mt::vec2f & offsetLeftTop = m_resource->getOffset(ResourceWindow_LeftTop);
+		const mt::vec2f & offsetLeftTop = m_resourceWindow->getOffset(ResourceWindow_LeftTop);
 
 		quads[ResourceWindow_LeftTop].a.x = offsetLeftTop.x;
 		quads[ResourceWindow_LeftTop].a.y = offsetLeftTop.y;
@@ -196,12 +199,12 @@ namespace Menge
 		quads[ResourceWindow_LeftTop].d.y = quads[ResourceWindow_LeftTop].c.y;
 
 		/////////////////////////////////////////////////////////////////
-		const mt::vec2f & offsetTop = m_resource->getOffset(ResourceWindow_Top);
+		const mt::vec2f & offsetTop = m_resourceWindow->getOffset(ResourceWindow_Top);
 		
 		quads[ResourceWindow_Top].a.x = quads[ResourceWindow_LeftTop].b.x;
 		quads[ResourceWindow_Top].a.y = offsetTop.y;
 		
-		const mt::vec2f & offsetRightTop = m_resource->getOffset(ResourceWindow_RightTop);
+		const mt::vec2f & offsetRightTop = m_resourceWindow->getOffset(ResourceWindow_RightTop);
 		float distance = m_clientSize.x - ( (m_edge[ResourceWindow_LeftTop].initialSize.x + offsetLeftTop.x) + (m_edge[ResourceWindow_RightTop].initialSize.x - offsetRightTop.x) );
 
 		quads[ResourceWindow_Top].b.x = quads[ResourceWindow_Top].a.x + distance;
@@ -228,12 +231,12 @@ namespace Menge
 		quads[ResourceWindow_RightTop].d.y = quads[ResourceWindow_RightTop].c.y;
 
 		/////////////////////////////////////////////////////////////////
-		const mt::vec2f & offsetRight = m_resource->getOffset(ResourceWindow_Right);
+		const mt::vec2f & offsetRight = m_resourceWindow->getOffset(ResourceWindow_Right);
 
 		quads[ResourceWindow_Right].b.x = m_clientSize.x + offsetRight.x;
 		quads[ResourceWindow_Right].b.y = quads[ResourceWindow_RightTop].d.y;
 		
-		const mt::vec2f & offsetRightBottom = m_resource->getOffset(ResourceWindow_RightBottom);
+		const mt::vec2f & offsetRightBottom = m_resourceWindow->getOffset(ResourceWindow_RightBottom);
 		float distanceRight = m_clientSize.y - ( (m_edge[ResourceWindow_RightTop].initialSize.y + offsetRightTop.y) + (m_edge[ResourceWindow_RightBottom].initialSize.y - offsetRightBottom.y) );
 
 		quads[ResourceWindow_Right].c.x = quads[ResourceWindow_Right].b.x;
@@ -261,12 +264,12 @@ namespace Menge
 		
 		/////////////////////////////////////////////////////////////////
 		
-		const mt::vec2f & offsetBottom = m_resource->getOffset(ResourceWindow_Bottom);
+		const mt::vec2f & offsetBottom = m_resourceWindow->getOffset(ResourceWindow_Bottom);
 
 		quads[ResourceWindow_Bottom].c.x = quads[ResourceWindow_RightBottom].a.x;
 		quads[ResourceWindow_Bottom].c.y =  m_clientSize.y + offsetBottom.y;
 
-		const mt::vec2f & offsetLeftBottom = m_resource->getOffset(ResourceWindow_LeftBottom);
+		const mt::vec2f & offsetLeftBottom = m_resourceWindow->getOffset(ResourceWindow_LeftBottom);
 		float distanceBottom = m_clientSize.x - ( (m_edge[ResourceWindow_LeftBottom].initialSize.x + offsetLeftBottom.x) + (m_edge[ResourceWindow_RightBottom].initialSize.x - offsetRightBottom.x) );
 
 		quads[ResourceWindow_Bottom].d.x = quads[ResourceWindow_Bottom].c.x - distanceBottom;
@@ -294,7 +297,7 @@ namespace Menge
 
 		/////////////////////////////////////////////////////////////////
 
-		const mt::vec2f & offsetLeft = m_resource->getOffset(ResourceWindow_Left);
+		const mt::vec2f & offsetLeft = m_resourceWindow->getOffset(ResourceWindow_Left);
 
 		quads[ResourceWindow_Left].d.x =  offsetLeft.x;
 		quads[ResourceWindow_Left].d.y = quads[ResourceWindow_LeftBottom].a.y;
@@ -321,7 +324,15 @@ namespace Menge
 
 		mt::vec2f uvs[ResourceWindow_Count];
 
-		uvs[0] = mt::vec2f( m_clientSize.x / m_edge[0].initialSize.x, m_clientSize.y / m_edge[0].initialSize.y );
+        if( this->hasBackground() == true )
+        {
+		    uvs[0] = mt::vec2f( m_clientSize.x / m_edge[0].initialSize.x, m_clientSize.y / m_edge[0].initialSize.y );
+        }
+        else
+        {
+            uvs[0] = mt::vec2f( 1.f, 1.f );
+        }
+
 		uvs[1] = mt::vec2f( 1.f, 1.f );
 		uvs[2] = mt::vec2f( m_clientSize.x / m_edge[2].initialSize.x, 1.f );
 		uvs[3] = mt::vec2f( 1.f, 1.f );
@@ -332,9 +343,8 @@ namespace Menge
 		uvs[8] = mt::vec2f( 1.f, m_clientSize.y / m_edge[8].initialSize.y );
 
 		const mt::mat4f& worldMatrix = this->getWorldMatrix();
-		mt::vec2f worldVertice;
 
-		for( int i = 0; i < ResourceWindow_Count; ++i )
+		for( size_t i = 0; i < ResourceWindow_Count; ++i )
 		{   
             mt::vec4f uv;
             
@@ -343,7 +353,7 @@ namespace Menge
             uv.z = 1.f;
             uv.w = 1.f;
 
-            ResourceImage * image = m_resource->getResource( i );
+            ResourceImage * image = m_resourceWindow->getResource( i );
 
             if( image != NULL )
             {
@@ -360,45 +370,37 @@ namespace Menge
 
             const TQuad & quad = quads[i];
 
-			mt::mul_v2_m4( worldVertice, quad.a, worldMatrix );
-			_vertices[i*4 + 0].pos.x = worldVertice.x;
-			_vertices[i*4 + 0].pos.y = worldVertice.y;
-			_vertices[i*4 + 0].pos.z = 0.f;
+            Vertex2D & v0 = _vertices[i * 4 + 0];
+            mt::mul_v3_m4( v0.pos, mt::vec3f( quad.a, 0.f), worldMatrix );
 			
-			_vertices[i*4 + 0].uv.x = uv.x;
-			_vertices[i*4 + 0].uv.y = uv.y;
-            _vertices[i*4 + 0].uv2.x = uv.x;
-            _vertices[i*4 + 0].uv2.y = uv.y;
+			v0.uv.x = uv.x;
+			v0.uv.y = uv.y;
+            v0.uv2.x = uv.x;
+            v0.uv2.y = uv.y;
 			
-			mt::mul_v2_m4( worldVertice, quad.b, worldMatrix );
-			_vertices[i*4 + 1].pos.x = worldVertice.x;
-			_vertices[i*4 + 1].pos.y = worldVertice.y;
-			_vertices[i*4 + 1].pos.z = 0.f;
+            Vertex2D & v1 = _vertices[i * 4 + 1];
+            mt::mul_v3_m4( v1.pos, mt::vec3f(quad.b, 0.f), worldMatrix );
 
-			_vertices[i*4 + 1].uv.x = uv.z;
-			_vertices[i*4 + 1].uv.y = uv.y;
-            _vertices[i*4 + 1].uv2.x = uv.z;
-            _vertices[i*4 + 1].uv2.y = uv.y;
+			v1.uv.x = uv.z;
+			v1.uv.y = uv.y;
+            v1.uv2.x = uv.z;
+            v1.uv2.y = uv.y;
 
-			mt::mul_v2_m4( worldVertice, quad.c, worldMatrix );
-			_vertices[i*4 + 2].pos.x = worldVertice.x;
-			_vertices[i*4 + 2].pos.y = worldVertice.y;
-			_vertices[i*4 + 2].pos.z = 0.f;
+            Vertex2D & v2 = _vertices[i * 4 + 2];
+            mt::mul_v3_m4( v2.pos, mt::vec3f(quad.c, 0.f), worldMatrix );
 
-			_vertices[i*4 + 2].uv.x = uv.z;
-			_vertices[i*4 + 2].uv.y = uv.w;
-            _vertices[i*4 + 2].uv2.x = uv.z;
-            _vertices[i*4 + 2].uv2.y = uv.w;
+			v2.uv.x = uv.z;
+			v2.uv.y = uv.w;
+            v2.uv2.x = uv.z;
+            v2.uv2.y = uv.w;
 			
-			mt::mul_v2_m4( worldVertice, quad.d, worldMatrix );
-			_vertices[i*4 + 3].pos.x = worldVertice.x;
-			_vertices[i*4 + 3].pos.y = worldVertice.y;
-			_vertices[i*4 + 3].pos.z = 0.f;
+            Vertex2D & v3 = _vertices[i * 4 + 3];
+            mt::mul_v3_m4( v3.pos, mt::vec3f(quad.d, 0.f), worldMatrix );
 
-			_vertices[i*4 + 3].uv.x = uv.x;
-			_vertices[i*4 + 3].uv.y = uv.w;
-            _vertices[i*4 + 3].uv2.x = uv.x;
-            _vertices[i*4 + 3].uv2.y = uv.w;
+			v3.uv.x = uv.x;
+			v3.uv.y = uv.w;
+            v3.uv2.x = uv.x;
+            v3.uv2.y = uv.w;
 		}
 
 		ColourValue color;
@@ -425,12 +427,14 @@ namespace Menge
 	void Window::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
+
 		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_invalidateColor()
 	{
 		Node::_invalidateColor();
+
 		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -447,14 +451,16 @@ namespace Menge
 
 		mt::vec2f clSize = _clientSize;
 
-		if( m_edge[ResourceWindow_Background].initialSize.x > 0.001f )
+        const WindowEdge & background = m_edge[ResourceWindow_Background];
+
+		if( background.initialSize.x > 0.001f )
 		{
-			clSize.x = ::ceilf( clSize.x / m_edge[ResourceWindow_Background].initialSize.x ) * m_edge[ResourceWindow_Background].initialSize.x;	
+			clSize.x = ::ceilf( clSize.x / background.initialSize.x ) * background.initialSize.x;	
 		}
 
-		if( m_edge[ResourceWindow_Background].initialSize.y > 0.001f )
+		if( background.initialSize.y > 0.001f )
 		{
-			clSize.y = ::ceilf( clSize.y / m_edge[ResourceWindow_Background].initialSize.y ) * m_edge[ResourceWindow_Background].initialSize.y;
+			clSize.y = ::ceilf( clSize.y / background.initialSize.y ) * background.initialSize.y;
 		}
 		
 		this->setClientSize( clSize );
@@ -533,12 +539,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setResourceWindow( const ConstString & _resourceName )
 	{
-		if( m_resourceName == _resourceName )
+		if( m_resourceWindowName == _resourceName )
 		{
 			return;
 		}
 
-		m_resourceName = _resourceName;
+		m_resourceWindowName = _resourceName;
 
         this->recompile();
 	}

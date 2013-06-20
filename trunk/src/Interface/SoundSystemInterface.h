@@ -151,7 +151,7 @@ namespace Menge
 		virtual void setPosMs( unsigned int _emitter, float _pos ) = 0;
 		virtual float getPosMs( unsigned int _emitter ) const = 0;
 		
-
+    public:
 		virtual void mute( bool _mute ) = 0;
 		virtual bool isMute() const = 0;
 

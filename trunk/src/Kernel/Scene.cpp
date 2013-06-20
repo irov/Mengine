@@ -15,8 +15,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
-		: m_mainLayer(0)
-		, m_parentScene(0)
+		: m_mainLayer(nullptr)
+		, m_parentScene(nullptr)
 		, m_offsetPosition(0.f, 0.f)
 	{
 	}
@@ -34,14 +34,14 @@ namespace Menge
 	{
         (void)_oldParent;        
 
-		if( _newParent == 0 )
+		if( _newParent == nullptr )
 		{
 			return;
 		}
 
 		m_parentScene = _newParent->getScene();
 
-		if( m_parentScene == 0 )
+		if( m_parentScene == nullptr )
 		{
 			return;
 		}
@@ -56,7 +56,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::isSubScene() const
 	{
-		return m_parentScene != 0;
+		return m_parentScene != nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Scene::getScene()
@@ -121,7 +121,7 @@ namespace Menge
 			{
 				Scene * subScene = dynamic_cast<Scene*>( *it );
 
-				if( subScene != 0 )
+				if( subScene != nullptr )
 				{
 					subScene->onAppMouseLeave();
 				}
@@ -146,7 +146,7 @@ namespace Menge
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
 
-				if( subScene != 0 )
+				if( subScene != nullptr )
 				{
 					subScene->onAppMouseEnter();
 				}
@@ -172,7 +172,7 @@ namespace Menge
 				Node * children = *it;
 				Scene * subScene = dynamic_cast<Scene *>(children);
 
-				if( subScene != 0 )
+				if( subScene != nullptr )
 				{
 					subScene->onFocus( _focus );
 				}

@@ -22,8 +22,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Video::Video()
 		: m_autoStart(false)
-		, m_needUpdate(false)
-        , m_needUpdate2(false)
 		, m_material(NULL)
 		, m_frameSize(0.f, 0.f)
 		, m_uv(0.f, 0.f, 1.f, 1.f)
@@ -31,6 +29,9 @@ namespace Menge
 		, m_timing(0.f)
         , m_playIterator(0)
 		, m_blendAdd(false)
+        , m_needUpdate(false)
+        , m_needUpdate2(false)
+        , m_needUpdate3(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -253,16 +254,17 @@ namespace Menge
 
 		if( m_needUpdate == true || m_needUpdate2 == true )
 		{
-            m_needUpdate = false;
-            m_needUpdate2 = false;
-
-            if( this->fillVideoBuffer_() == false )
+            if( this->fillVideoBuffer_( m_needUpdate3 ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("Video::_render %s invalid fill video buffer (%s)"
                     , this->getName().c_str()
                     , m_resourceVideoName.c_str()
                     );
-            }                
+            }
+
+            m_needUpdate = false;
+            m_needUpdate2 = false;
+            m_needUpdate3 = false;
 		}
         
 		const Vertex2D * vertices = this->getVertices();
@@ -369,6 +371,7 @@ namespace Menge
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( 0.f );
                        
             needUpdate = true;
+            m_needUpdate3 = true;
 
 			if( state == VDRS_END_STREAM )
 			{	
@@ -382,6 +385,11 @@ namespace Menge
 				{
                     float time = m_intervalStart + m_intervalBegin;
 
+                    if( time > frameTiming )
+                    {
+                        time -= frameTiming;
+                    }
+
                     if( m_videoDecoder->seek( time ) == false )
                     {
                         LOGGER_ERROR(m_serviceProvider)("Video::sync_ %s:%s invalid seek to %f"
@@ -390,6 +398,8 @@ namespace Menge
                             , time
                             );
                     }
+
+                    m_timing += frameTiming;
 				}
 			}
 			else if( state == VDRS_FAILURE )
@@ -399,11 +409,17 @@ namespace Menge
 					, _timing
 					, m_timing
 					);
+                
+                needUpdate = false;
+                m_needUpdate3 = false;
 
 				break;	
 			}
 			else if( state == VDRS_SKIP )
 			{
+                needUpdate = false;
+                m_needUpdate3 = false;
+
 				continue;	
 			}
 
@@ -434,22 +450,35 @@ namespace Menge
                 );
         }
 
-        //m_timing = fmod( seek_timing, dataInfo->frameTiming );
-
-        m_videoDecoder->readNextFrame( 0.f );
-
         m_timing = 0.f;
 
-        m_needUpdate2 = true;
+        m_needUpdate = this->sync_( dataInfo->frameTiming );
 
-        if( m_videoDecoder->seek( seek_timing ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Video::_setTiming %s:%s invalid seek to %f (double)"
-                , this->getName().c_str()
-                , m_resourceVideoName.c_str()
-                , seek_timing
-                );
-        }	
+        //m_timing = fmod( seek_timing, dataInfo->frameTiming );
+
+        //while( true, true )
+        //{
+        //    EVideoDecoderReadState state = m_videoDecoder->readNextFrame( 0.f );
+
+        //    if( state == VDRS_SKIP )
+        //    {
+        //        continue;
+        //    }
+
+        //    break;
+        //}              
+
+        m_needUpdate2 = true;
+        //m_needUpdate3 = true;
+
+        //if( m_videoDecoder->seek( seek_timing ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("Video::_setTiming %s:%s invalid seek to %f (double)"
+        //        , this->getName().c_str()
+        //        , m_resourceVideoName.c_str()
+        //        , seek_timing
+        //        );
+        //}	
     }
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
@@ -470,8 +499,18 @@ namespace Menge
 		this->_setTiming( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////
-	bool Video::fillVideoBuffer_()
+	bool Video::fillVideoBuffer_( bool _decodeFrame )
 	{
+        if( _decodeFrame == true )
+        {
+            unsigned int decode = m_videoDecoder->decode( 0, 0 );
+
+            if( decode == 0 )
+            {
+                return false;
+            }
+        }
+
 		Rect rect;
 		rect.left = 0;
 		rect.top = 0;
@@ -483,16 +522,11 @@ namespace Menge
         int pitch = 0;
 		unsigned char* lockRect = texture->lock( &pitch, rect, false );
 
-		unsigned int decode = m_videoDecoder->decode( lockRect, pitch );
-        
+        bool result = m_videoDecoder->fillFrame( lockRect, pitch );
+       
 		texture->unlock();
-
-        if( decode == 0 )
-        {
-            return false;
-        }
-
-		return true;
+                
+		return result;
 	}
 	////////////////////////////////////////////////////////////////////
 	bool Video::_interrupt( size_t _enumerator )

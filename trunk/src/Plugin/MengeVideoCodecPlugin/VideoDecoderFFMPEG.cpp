@@ -300,39 +300,43 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////// 
 	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _pitch )
 	{
-        int isGotPicture;
-
-        int decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
-
-        if( decode_bite < 0 )
+        int isGotPicture = 0;
+        int decode_bite = 0;
+        
+        while( isGotPicture == 0 )
         {
-            av_free_packet( &m_packet );
+            decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
 
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: we don`t get a picture"
-                );
+            if( decode_bite < 0 )
+            {
+                av_free_packet( &m_packet );
 
-            return VDRS_FAILURE;
+                LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode we don`t get a picture"
+                    );
+
+                return 0;
+            }
+
+            m_pts = (float)m_packet.pts;
         }
 
-        m_pts = (float)m_packet.pts;
+        av_free_packet( &m_packet );
 
-        av_free_packet(&m_packet);
-
-        if( isGotPicture == 0 )
-        {
-            return 0;
-        }
-
+        return decode_bite;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VideoDecoderFFMPEG::fillFrame( unsigned char* _buffer, unsigned int _pitch )
+    {
 		int fill_error = avpicture_fill( &m_picture, _buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
 
         if( fill_error < 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode avpicture_fill %d"
+            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::fillFrame avpicture_fill %d"
                 , fill_error
                 );
 
-            return 0;
+            return false;
         }
         
         m_picture.linesize[0] = _pitch;
@@ -346,12 +350,10 @@ namespace Menge
                 , scale_height
                 );
 
-            return 0;
+            return false;
         }
-		
-		size_t decoded = _pitch * m_codecContext->height;
         	
-		return decoded;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( float _pts )
@@ -381,14 +383,14 @@ namespace Menge
 	void VideoDecoderFFMPEG::clear_()
 	{
 		// Free the packet that was allocated by av_read_frame
-		if (m_frame != NULL)
+		if( m_frame != NULL )
 		{
 			av_free(m_frame);
 			m_frame = NULL;
 		}
 		     
 		//close codec
-		if (m_codecContext != NULL)
+		if( m_codecContext != NULL )
 		{
 			avcodec_close(m_codecContext);
             av_free(m_codecContext);
@@ -396,13 +398,13 @@ namespace Menge
 		}
 
 		// Close the video file
-		if (m_formatContext != NULL)
+		if( m_formatContext != NULL )
 		{
 			avformat_close_input(&m_formatContext);
 			m_formatContext = NULL;
 		}
 		
-		if (m_IOContext != NULL)
+		if( m_IOContext != NULL )
 		{
 			av_free(m_IOContext); 
 			m_IOContext = NULL;

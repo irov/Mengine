@@ -168,6 +168,7 @@ namespace Menge
 		, m_enableDebug(false)
 		, m_developmentMode(false)
         , m_noPluginMode(false)
+        , m_muteMode(false)
         , m_pluginMengeImageCodec(nullptr)
         , m_pluginMengeSoundCodec(nullptr)
         , m_fileLog(nullptr)
@@ -1111,6 +1112,11 @@ namespace Menge
             m_noPluginMode = true;
         }
 
+        if( Helper::s_hasOption( " -mute ", m_commandLine ) == true )
+        {
+            m_muteMode = true;
+        }
+
         String scriptInit;
         Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
 
@@ -1186,7 +1192,7 @@ namespace Menge
             return false;
         }
 
-        if( this->initializeSoundEngine_() == false )
+        if( m_muteMode == true || this->initializeSoundEngine_() == false )
         {
             if( this->initializeSilentSoundEngine_() == false )
             {

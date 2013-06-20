@@ -273,9 +273,27 @@ namespace Menge
             return size; 
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_removeRelationTransformation( Transformation3D * _transformation )
+        void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
         {
             _transformation->setRelationTransformation( NULL );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Transformation3D_setScale( Transformation3D * _transformation, const mt::vec3f & _scale )
+        {
+            if( _scale.x == 0.f || _scale.y == 0.f || _scale.z == 0.f )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
+                    , _scale.x
+                    , _scale.y
+                    , _scale.z
+                    );
+
+                pybind::throw_exception();
+
+                return;
+            }
+            
+            _transformation->setScale( _scale );
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getLocalPolygonCenter( HotSpot * _hs )
@@ -1336,6 +1354,18 @@ namespace Menge
         {
             if( _node->isActivate() == false )
             {
+                return 0;
+            }
+
+            if( _scale.x == 0.f || _scale.y == 0.f || _scale.z == 0.f )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Node::scaleTo %s scale xyz not zero! (%f %f %f)"
+                    , _node->getName().c_str()
+                    , _scale.x
+                    , _scale.y
+                    , _scale.z
+                    );
+
                 return 0;
             }
 
@@ -2606,7 +2636,7 @@ namespace Menge
             .def( "getCoordinate", &Transformation3D::getCoordinate )
             .def( "setOrigin", &Transformation3D::setOrigin )
             .def( "getOrigin", &Transformation3D::getOrigin )
-            .def( "setScale", &Transformation3D::setScale )
+            .def_proxy_static( "setScale", nodeScriptMethod, &NodeScriptMethod::Transformation3D_setScale )
             .def( "getScale", &Transformation3D::getScale )
             .def( "setRotateX", &Transformation3D::setRotateX )
             .def( "getRotateX", &Transformation3D::getRotateX )
@@ -2621,7 +2651,7 @@ namespace Menge
 
             .def( "resetTransformation", &Transformation3D::resetTransformation )
             .def( "setRelationTransformation", &Transformation3D::setRelationTransformation )
-            .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::s_removeRelationTransformation )
+            .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::Transformation3D_removeRelationTransformation )
 
             //.def( "setRotate", &Transformation3D::setAngle ) //depricated
             ;

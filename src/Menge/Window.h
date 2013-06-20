@@ -8,9 +8,6 @@
 
 namespace Menge
 {
-    class ResourceServiceInterface;
-    class RenderServiceInterface;
-
 	class Window
 		: public Node
 		, public FixedVertices<ResourceWindow_Count * 4>
@@ -44,13 +41,11 @@ namespace Menge
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
-		ConstString m_resourceName;
-		ResourceWindow* m_resource;
+		ConstString m_resourceWindowName;
+		ResourceWindow * m_resourceWindow;
 
 		mt::vec2f m_clientSize;
-	
-		bool m_hasBackGround;
-		
+			
         struct WindowEdge
         {
             mt::vec2f initialSize;

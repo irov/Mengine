@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Kernel/ResourceReference.h"
+
 #	include "ResourceImage.h"
 
 namespace Menge

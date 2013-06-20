@@ -208,7 +208,6 @@ namespace Menge
 
 		Viewport m_gameViewport;
 
-        bool m_soundMute;
 		bool m_particles;
 		bool m_mouseBounded;
 		bool m_focus;

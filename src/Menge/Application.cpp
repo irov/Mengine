@@ -150,7 +150,6 @@ namespace Menge
 	Application::Application()
 		: m_platform(nullptr)
 		, m_particles(true)
-		, m_soundMute(true)
 		, m_debugMask(0)
 		, m_phycisTiming(0.f)
 		, m_resetTiming(false)
@@ -270,12 +269,6 @@ namespace Menge
         if( exinit.run() == false )
         {
             return false;
-        }
-
-        if( m_soundMute == false )
-        {
-            SOUND_SERVICE(m_serviceProvider)
-                ->mute( true );
         }
 
         ScriptWrapper::constsWrap( m_serviceProvider );
@@ -908,12 +901,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
-		String::size_type idx_mute = _arguments.find( " -mute " );
-		if( idx_mute != String::npos )
-		{
-			m_soundMute = false;
-		}
-
 		String::size_type idx_particles = _arguments.find( " -particles " );
 		if( idx_particles != String::npos )
 		{

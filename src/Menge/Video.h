@@ -64,7 +64,7 @@ namespace Menge
 
 		bool sync_( float _timing );
 		bool compileDecoder_();
-        bool fillVideoBuffer_();
+        bool fillVideoBuffer_( bool _decodeFrame );
 
 	protected:
 		bool _play( float _time ) override;
@@ -96,5 +96,6 @@ namespace Menge
 		bool m_autoStart;
 		bool m_needUpdate;
         bool m_needUpdate2;
+        bool m_needUpdate3;
 	};
 }

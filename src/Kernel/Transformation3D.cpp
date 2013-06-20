@@ -252,11 +252,6 @@ namespace Menge
 			return;
 		}
 
-		if( m_scale.z == 0.f )
-		{
-			return;
-		}
-
 		m_scale = _scale;
 		
 		this->invalidateLocalMatrix();

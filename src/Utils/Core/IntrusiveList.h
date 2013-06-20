@@ -367,8 +367,8 @@ namespace Menge
 
 		inline size_t size() const
 		{
-            iterator it = this->begin();
-            iterator it_end = this->end();
+            const_iterator it = this->begin();
+            const_iterator it_end = this->end();
 			size_t count = intrusive_distance( it, it_end );
 
 			return count;

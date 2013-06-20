@@ -45,10 +45,8 @@ IF(MINGW)
     SET(
      VIDEO_CODEC_STATIC_LIBS
      ${THIRDPARTY_DIR}/ffmpeg/lib/libavcodec.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg/lib/libavfilter.dll.a
      ${THIRDPARTY_DIR}/ffmpeg/lib/libavformat.dll.a
      ${THIRDPARTY_DIR}/ffmpeg/lib/libavutil.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg/lib/libswresample.dll.a
      ${THIRDPARTY_DIR}/ffmpeg/lib/libswscale.dll.a
      )
 ENDIF(MINGW)

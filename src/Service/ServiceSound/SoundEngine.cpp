@@ -60,13 +60,14 @@ namespace Menge
 
             if( desc->taskSoundBufferUpdate != NULL )
             {
-                desc->taskSoundBufferUpdate->stop();
+                this->stopSoundBufferUpdate_( desc );
+                //desc->taskSoundBufferUpdate->stop();
 
-                THREAD_SERVICE(m_serviceProvider)
-                    ->joinTask( desc->taskSoundBufferUpdate );
+                //THREAD_SERVICE(m_serviceProvider)
+                //    ->joinTask( desc->taskSoundBufferUpdate );
 
-                desc->taskSoundBufferUpdate->destroy();
-                desc->taskSoundBufferUpdate = nullptr;
+                //desc->taskSoundBufferUpdate->destroy();
+                //desc->taskSoundBufferUpdate = nullptr;
             }
 
             desc->soundSourceInterface->stop();
@@ -373,7 +374,8 @@ namespace Menge
                             if( source->streamable == true && source->taskSoundBufferUpdate != nullptr )
                             {
                                 source->state = ESS_STOPPING;
-                                source->taskSoundBufferUpdate->stop();
+                                this->stopSoundBufferUpdate_( source );
+                                //source->taskSoundBufferUpdate->stop();
                             }
                             else
                             {
@@ -392,7 +394,8 @@ namespace Menge
                 {
                     if( source->streamable == true && source->taskSoundBufferUpdate != nullptr )
                     {
-                        source->taskSoundBufferUpdate->stop();
+                        this->stopSoundBufferUpdate_( source );
+                        //source->taskSoundBufferUpdate->stop();
                     }
                     else
                     {
@@ -409,7 +412,8 @@ namespace Menge
                 {
                     if( source->streamable == true && source->taskSoundBufferUpdate != nullptr )
                     {
-                        source->taskSoundBufferUpdate->stop();
+                        this->stopSoundBufferUpdate_( source );
+                        //source->taskSoundBufferUpdate->stop();
                     }
                     else
                     {

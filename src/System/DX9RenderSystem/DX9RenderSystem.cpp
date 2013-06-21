@@ -374,6 +374,7 @@ namespace Menge
         , m_hd3d9(NULL)
         , m_adapterToUse(D3DADAPTER_DEFAULT)
         , m_deviceType(D3DDEVTYPE_HAL)
+        , m_waitForVSync(false)
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
@@ -622,6 +623,7 @@ namespace Menge
 		m_windowResolution = _resolution;		
 
 		m_fullscreen = _fullscreen;
+        m_waitForVSync = _waitForVSync;
 
 		m_d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
 		m_d3dppW.Windowed         = TRUE;
@@ -633,17 +635,7 @@ namespace Menge
 
 		m_d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
-		m_d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
-
-        if( _waitForVSync == true )
-        {
-            m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-        }
-        else
-        {
-            m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-        }
-
+		m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		
 		// Set up Windowed presentation parameters
         D3DDISPLAYMODE Mode;
@@ -662,6 +654,9 @@ namespace Menge
 
 		m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
+
+
+
 		m_d3dppFS.MultiSampleType = D3DMULTISAMPLE_NONE;
         m_d3dppFS.Windowed = FALSE;
 
@@ -672,18 +667,13 @@ namespace Menge
 		m_d3dppFS.hDeviceWindow    = (HWND)_winHandle;
 
 		m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
-        if( _waitForVSync == true )
-        {
-            m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-        }
-        else
-        {
-            m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-        }
-		
+               
+        m_d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+        		
 		m_d3dppFS.EnableAutoDepthStencil = FALSE;
 		m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+
+        this->updateVSyncDPP_();
 		
 		if( _fullscreen == true )
 		{
@@ -3056,7 +3046,9 @@ namespace Menge
             return;
         }
 
-		m_d3dppFS.PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+        m_waitForVSync = _vSync;
+
+        this->updateVSyncDPP_();
 
 		if( this->restore_() == false )
         {
@@ -3064,6 +3056,20 @@ namespace Menge
                 );
         }
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::updateVSyncDPP_()
+    {
+        if( m_waitForVSync == true )
+        {
+            m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+            m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+        }
+        else
+        { 
+            m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+            m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{

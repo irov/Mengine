@@ -367,9 +367,9 @@ namespace Menge
 
 			for( size_t i = 0; i != size; ++i )
 			{
-				PyObject * py_point = pybind::list_getitem(_obj, i);
+				PyObject * py_point = pybind::list_getitem( _obj, i );
 
-				mt::vec2f point = pybind::extract<mt::vec2f>(py_point);
+				mt::vec2f point = pybind::extract<mt::vec2f>( py_point );
 
 				boost::geometry::append(*polygon, point);
 			}

@@ -246,7 +246,7 @@ namespace Menge
 
         if( hFind == INVALID_HANDLE_VALUE )
         {
-            printf("File invalid find ??? (%ls)\n"
+            LOGGER_ERROR(m_serviceProvider)("File invalid find ??? (%ls)\n"
                 , _path
                 );
         }
@@ -255,11 +255,13 @@ namespace Menge
 
         if( wcscmp( filename, wfd.cFileName ) != 0 )
         {
-            printf("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
+            LOGGER_ERROR(m_serviceProvider)("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
                 , _path
                 , filename
                 , wfd.cFileName
                 );
+
+            return INVALID_HANDLE_VALUE;
         }
 #endif
 

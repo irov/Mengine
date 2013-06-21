@@ -300,34 +300,44 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////// 
 	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _pitch )
 	{
-        int isGotPicture = 0;
-        int decode_bite = 0;
+        //int isGotPicture = 0;
+        //int decode_bite = 0;
         
-        while( isGotPicture == 0 )
-        {
-            decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
+        //while( isGotPicture == 0 )
+        //{
+        //    decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
 
-            if( decode_bite < 0 )
-            {
-                av_free_packet( &m_packet );
+        //    printf("VideoDecoderFFMPEG::decode %d\n"
+        //        , decode_bite
+        //        );
 
-                LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode we don`t get a picture"
-                    );
+        //    if( decode_bite == 0 )
+        //    {
+        //        break;
+        //    }
 
-                return 0;
-            }
+        //    if( decode_bite < 0 )
+        //    {
+        //        //av_free_packet( &m_packet );
 
-            m_pts = (float)m_packet.pts;
-        }
+        //        LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode we don`t get a picture"
+        //            );
 
-        av_free_packet( &m_packet );
+        //        return 0;
+        //    }            
+        //}
 
-        return decode_bite;
+        //av_free_packet( &m_packet );
+
+        //return decode_bite;
+
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VideoDecoderFFMPEG::fillFrame( unsigned char* _buffer, unsigned int _pitch )
     {
-		int fill_error = avpicture_fill( &m_picture, _buffer, (::PixelFormat) m_outputPixelFormat,
+        AVPicture picture;
+		int fill_error = avpicture_fill( &picture, _buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
 
         if( fill_error < 0 )
@@ -339,10 +349,10 @@ namespace Menge
             return false;
         }
         
-        m_picture.linesize[0] = _pitch;
+        picture.linesize[0] = _pitch;
 
 		int scale_height = sws_scale( m_imgConvertContext, m_frame->data, m_frame->linesize, 0, 
-			m_codecContext->height, m_picture.data, m_picture.linesize );
+			m_codecContext->height, picture.data, picture.linesize );
 
         if( scale_height < 0 )
         {
@@ -352,15 +362,14 @@ namespace Menge
 
             return false;
         }
-        	
+               	
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( float _pts )
 	{		
         (void)_pts;
-
-        av_free_packet(&m_packet);
+        
 		av_init_packet(&m_packet);
         
         if( av_read_frame( m_formatContext, &m_packet ) < 0 )
@@ -376,6 +385,30 @@ namespace Menge
 
             return VDRS_SKIP;
         }
+
+        m_pts = (float)m_packet.pts;
+
+        int isGotPicture = 0;        
+        int decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
+
+        if( isGotPicture == 0 )
+        {
+            av_free_packet(&m_packet);
+
+            return VDRS_SKIP;
+        }
+
+        if( decode_bite < 0 )
+        {
+            av_free_packet( &m_packet );
+
+            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode we don`t get a picture"
+                );
+
+            return VDRS_FAILURE;
+        }          
+
+        av_free_packet(&m_packet);
 
         return VDRS_SUCCESS;
     }

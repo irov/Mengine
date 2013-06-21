@@ -96,7 +96,6 @@ namespace Menge
 		{
 			return false;
 		}
-		//printf("%s  onActivate \n",m_name.c_str());
 
 		return true;
 	}
@@ -501,15 +500,15 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	bool Video::fillVideoBuffer_( bool _decodeFrame )
 	{
-        if( _decodeFrame == true )
-        {
-            unsigned int decode = m_videoDecoder->decode( 0, 0 );
+        //if( _decodeFrame == true )
+        //{
+        //    unsigned int decode = m_videoDecoder->decode( 0, 0 );
 
-            if( decode == 0 )
-            {
-                return false;
-            }
-        }
+        //    if( decode == 0 )
+        //    {
+        //        return false;
+        //    }
+        //}
 
 		Rect rect;
 		rect.left = 0;

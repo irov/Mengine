@@ -152,6 +152,7 @@ namespace Menge
 		void setSeparateAlphaBlendMode() override;
 
     protected:
+        void updateVSyncDPP_();
         bool resetDevice_();
 
     protected:
@@ -235,6 +236,7 @@ namespace Menge
         TFactoryDX9RenderTexture m_factoryDX9RenderTexture;
 		
 		bool m_syncReady;
+        bool m_waitForVSync;
 
         bool m_supportNPOT;
         bool m_supportL8;

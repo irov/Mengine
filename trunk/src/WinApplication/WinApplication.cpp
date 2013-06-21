@@ -36,7 +36,7 @@
 #	include <sstream>
 #	include <iomanip>
 
-//#	include <mhook.h>
+#   include <WinBase.h>
 
 #	include "StartupConfigLoader/StartupConfigLoader.h"
 
@@ -1635,14 +1635,14 @@ namespace Menge
 
 		while( m_running )
 		{
-            EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
-            
-            if( m_windowsType == EWT_VISTA )
-            {
-                aState = aState | ES_AWAYMODE_REQUIRED;
-            }
+            //EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
+            //
+            //if( m_windowsType == EWT_VISTA )
+            //{
+            //    aState = aState | ES_AWAYMODE_REQUIRED;
+            //}
 
-            SetThreadExecutionState(aState);
+            //SetThreadExecutionState(aState);
 
 			MSG  msg;
 			while( m_windowsLayer->peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
@@ -1654,7 +1654,7 @@ namespace Menge
 
 			float frameTime = m_winTimer->getDeltaTime();
 
-			bool updating = m_application->onUpdate();
+            bool updating = m_application->onUpdate();
 
 			if( updating == true )
 			{
@@ -1665,12 +1665,9 @@ namespace Menge
 				Sleep(100);
 			}
 
-			if( m_vsync == false )
+			if( m_vsync == false && m_maxfps == false )
 			{
-				if( m_maxfps == false )
-				{
-					m_fpsMonitor->monitor();
-				}
+                m_fpsMonitor->monitor();
 			}
 
             if( m_application->isFocus() == true )
@@ -1679,8 +1676,7 @@ namespace Menge
                 {
     				m_application->onFlush();
                 }
-			}           
-
+			}     
             //
 		}
 	}

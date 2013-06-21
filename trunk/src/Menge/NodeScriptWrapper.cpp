@@ -306,7 +306,9 @@ namespace Menge
 
             if( ring.empty() == true )
             {
-                return mt::vec2f(0.f, 0.f);
+                mt::vec2f empty(0.f, 0.f);
+
+                return empty;
             }
 
             for( Polygon::ring_type::const_iterator 

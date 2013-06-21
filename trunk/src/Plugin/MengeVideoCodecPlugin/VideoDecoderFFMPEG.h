@@ -1,9 +1,3 @@
-/*
- *	VideoDecoderFFMPEG.h
- *	Copyright 2011 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #ifndef INT64_C 
@@ -60,8 +54,7 @@ namespace Menge
 		AVCodec * m_codec;
 		
         AVPacket m_packet;
-		AVFrame * m_frame; 
-		AVPicture m_picture;
+		AVFrame * m_frame; 		
 		AVIOContext * m_IOContext;
 
 		SwsContext * m_imgConvertContext;

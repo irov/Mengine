@@ -627,7 +627,7 @@ namespace Menge
 
 		m_d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
 		m_d3dppW.Windowed         = TRUE;
-		m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+		//m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
 		m_d3dppW.BackBufferWidth  = m_windowResolution.getWidth();
 		m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
@@ -660,11 +660,11 @@ namespace Menge
 		m_d3dppFS.MultiSampleType = D3DMULTISAMPLE_NONE;
         m_d3dppFS.Windowed = FALSE;
 
-		m_d3dppFS.BackBufferWidth  = m_windowResolution.getWidth();
+		m_d3dppFS.BackBufferWidth = m_windowResolution.getWidth();
 		m_d3dppFS.BackBufferHeight = m_windowResolution.getHeight();
-		m_d3dppFS.BackBufferCount  = 1;
+		m_d3dppFS.BackBufferCount = 1;
 
-		m_d3dppFS.hDeviceWindow    = (HWND)_winHandle;
+		m_d3dppFS.hDeviceWindow = (HWND)_winHandle;
 
 		m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
                

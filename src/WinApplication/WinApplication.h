@@ -85,6 +85,11 @@ namespace Menge
 
 		bool openUrlInDefaultBrowser( const WString & _url ) override;
         bool cmd( const WString & _command ) override;
+
+        size_t getMemoryUsage() const override;
+
+        void * checkpointMemory() const override;
+        size_t diffMemory( void * _checkpoint ) const override;
 		
 		bool isSaverRunning() const;
 

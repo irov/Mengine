@@ -1,0 +1,23 @@
+#   pragma once
+
+#   include "ServiceInterface.h"
+
+namespace Menge
+{
+    class ProfilerServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE("ProfilerService")
+
+    public:
+        virtual bool initialize() = 0;
+
+        virtual void memoryBegin() = 0;
+        virtual size_t memoryEnd() = 0;
+
+        virtual size_t getMemoryUsage() const = 0;
+    };
+
+#   define PROFILER_SERVICE( serviceProvider )\
+    (Menge::Helper::getService<Menge::ProfilerServiceInterface>(serviceProvider))
+}

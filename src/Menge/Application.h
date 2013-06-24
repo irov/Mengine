@@ -37,6 +37,7 @@ namespace Menge
 	class FileLogger;
 
 	class Watchdog;
+    class ProfilerServiceInterface;
 
 	class ResourceCursor;
 
@@ -104,6 +105,7 @@ namespace Menge
 		bool initializeMovieKeyFrameManager_();
         bool initializePrototypeManager_();
         bool initializeWatchdog_();
+        bool initializeProfiler_();
 
 	public:
 		void setBaseDir( const FilePath & _dir );
@@ -251,6 +253,7 @@ namespace Menge
         PrototypeServiceInterface * m_prototypeService;
 
 		WatchdogInterface * m_watchdog;
+        ProfilerServiceInterface * m_profiler;
 
 		void parseArguments_( const String& _arguments );
 

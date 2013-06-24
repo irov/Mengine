@@ -31,7 +31,10 @@ namespace Menge
     public:
         bool time( time_t & _time ) const override;
 
-	private:
+    protected:
+        void close_();
+
+    protected:
         ServiceProviderInterface * m_serviceProvider;
 
 		HANDLE m_hFile;

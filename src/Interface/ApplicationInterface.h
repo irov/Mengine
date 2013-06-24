@@ -80,6 +80,11 @@ namespace Menge
 	public:
 		virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;
         virtual bool cmd( const WString & _command ) = 0;
+
+    public:
+        virtual size_t getMemoryUsage() const = 0;
+        virtual void * checkpointMemory() const = 0;
+        virtual size_t diffMemory( void * _checkpoint ) const = 0;
 	};
 
 #   define PLATFORM_SERVICE( serviceProvider )\

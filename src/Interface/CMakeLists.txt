@@ -41,6 +41,7 @@ src
     EventInterface.h
     WindowsLayerInterface.h
     ArchiveInterface.h
+    ProfilerInterface.h
     
 	dummy.cpp
 )

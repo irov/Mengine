@@ -20,16 +20,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32InputStream::~Win32InputStream()
 	{
-        if( m_hFile != INVALID_HANDLE_VALUE )
-        {
-            ::CloseHandle( m_hFile );
-            m_hFile = INVALID_HANDLE_VALUE;
-        }
+        this->close_();
 	}
     //////////////////////////////////////////////////////////////////////////
     void Win32InputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32InputStream::close_()
+    {
+        if( m_hFile != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_hFile );
+            m_hFile = INVALID_HANDLE_VALUE;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
 	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _filename )
@@ -66,8 +71,7 @@ namespace Menge
 
 		if( m_size == INVALID_FILE_SIZE )
 		{
-			::CloseHandle( m_hFile );
-			m_hFile = INVALID_HANDLE_VALUE;
+            this->close_();
 
             LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
                 , filePath

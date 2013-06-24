@@ -173,6 +173,9 @@ namespace Menge
                     , resource->getName().c_str()
                     , resource->getType().c_str()
                     );
+
+                LOGGER_WARNING(m_serviceProvider)("======================================================================");
+                LOGGER_WARNING(m_serviceProvider)("");
             }
         }
 

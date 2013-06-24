@@ -12,6 +12,7 @@ ADD_SUBDIRECTORY( ServiceScript )
 ADD_SUBDIRECTORY( ServiceSound )
 ADD_SUBDIRECTORY( ServiceThread )
 ADD_SUBDIRECTORY( ServiceArchive )
+ADD_SUBDIRECTORY( ServiceProfiler )
 
 
 if( WIN32 )

@@ -34,7 +34,6 @@ namespace Menge
 
 	public:
 		SoundBufferInterface * createSoundBuffer() const;
-        void releaseSoundBuffer( SoundBufferInterface * _soundBufer ) const;
 
 	protected:
 		bool _compile() override;

@@ -14,15 +14,13 @@ namespace Menge
 		: m_headMode(true)
 		, m_playing(false)
 		, m_volume(1.f)
+        , m_position(0.f, 0.f, 0.f)
 		, m_loop(false)
-		, m_soundBuffer(NULL)
-		, m_soundSystem(0)
+		, m_soundBuffer(nullptr)
+		, m_soundSystem(nullptr)
 		, m_sourceId(0)
 		, m_timing(0.f)
 	{
-		m_position[0] = 0.f;
-		m_position[1] = 0.f;
-		m_position[2] = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SilentSoundSource::~SilentSoundSource()
@@ -104,17 +102,14 @@ namespace Menge
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::setPosition( float _x, float _y, float _z )
+	void SilentSoundSource::setPosition( const mt::vec3f & _pos )
 	{
-        (void)_x;
-        (void)_y;
-        (void)_z;
-        //Enpty
+        m_position = _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const float * SilentSoundSource::getPosition() const 
+    const mt::vec3f & SilentSoundSource::getPosition() const 
 	{
-		return &(m_position[0]);
+		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::setLoop( bool _loop )
@@ -176,7 +171,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::loadBuffer( SoundBufferInterface* _soundBuffer )
+	void SilentSoundSource::setBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		this->unloadBuffer_();
 
@@ -185,12 +180,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::unloadBuffer_()
 	{
-		if( m_soundBuffer != NULL && m_playing == true )
+		if( m_soundBuffer != nullptr && m_playing == true )
 		{
 			this->stop();
 		}
 
-		m_soundBuffer = NULL;
+		m_soundBuffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::setHeadMode( bool _headMode )

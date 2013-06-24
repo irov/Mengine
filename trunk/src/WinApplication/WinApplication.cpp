@@ -1228,6 +1228,11 @@ namespace Menge
         {
             return false;
         }
+
+        LOGGER_WARNING(m_serviceProvider)( "initialize Application..." );
+        LOGGER_WARNING(m_serviceProvider)( "command: '%s'"
+            , m_commandLine.c_str()
+            );
                 
         if( m_application->setup( m_commandLine, m_settings.applicationSettings ) == false )
         {

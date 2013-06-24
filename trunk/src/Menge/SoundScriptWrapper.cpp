@@ -59,13 +59,17 @@ namespace	Menge
 				SOUND_SERVICE(m_serviceProvider)
 					->releaseSoundSource( m_sourceID );
 
-				if( m_resource != 0 )
-				{
-                    m_resource->releaseSoundBuffer( m_soundBuffer );
-
+				if( m_resource != nullptr )
+				{                    
 					m_resource->decrementReference();
-					m_resource = 0;
+					m_resource = nullptr;
 				}
+
+                if( m_soundBuffer != nullptr )
+                {
+                    m_soundBuffer->destroy();
+                    m_soundBuffer = nullptr;
+                }
 
 				delete this;
 			}
@@ -94,14 +98,14 @@ namespace	Menge
 			ResourceSound * resource = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceSound>( _resourceName );
 
-			if( resource == 0 )
+			if( resource == nullptr )
 			{
 				return 0;
 			}
 
 			SoundBufferInterface * soundBuffer = resource->createSoundBuffer();
 
-            if( soundBuffer == NULL )
+            if( soundBuffer == nullptr )
             {
                 return 0;
             }
@@ -113,14 +117,9 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				if( resource != NULL )
-				{
-                    resource->releaseSoundBuffer( soundBuffer );
-
-					resource->decrementReference();
-					resource = NULL;
-				}				
-
+                soundBuffer->destroy();
+                resource->decrementReference();
+                
 				return 0;
 			}
 
@@ -131,10 +130,16 @@ namespace	Menge
 
 			if( SOUND_SERVICE(m_serviceProvider)
 				->setSourceVolume( sourceID, volume ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid  %s"
+			{                
+				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid %s setSourceVolume %f"
 					, _resourceName.c_str()
+                    , volume
 					);
+
+                soundBuffer->destroy();
+                resource->decrementReference();
+
+                return 0;
 			}
 
 			SoundNodeListenerInterface * snlistener = 

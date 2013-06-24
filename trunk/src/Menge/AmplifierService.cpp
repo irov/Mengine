@@ -348,9 +348,7 @@ namespace Menge
 
         m_sourceID = 0;
 
-		SOUND_SERVICE(m_serviceProvider)
-            ->releaseSoundBuffer( m_buffer );	
-
+        m_buffer->destroy();
 		m_buffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////

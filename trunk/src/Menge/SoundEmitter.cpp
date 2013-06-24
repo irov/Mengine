@@ -14,8 +14,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
-		: m_resource(NULL)
-        , m_soundBuffer(NULL)
+		: m_resource(nullptr)
+        , m_soundBuffer(nullptr)
 		, m_sourceID(0)
 		, m_isHeadMode(false)
 		, m_onSoundPauseEvent(false)
@@ -64,7 +64,7 @@ namespace Menge
 
 		m_soundBuffer = m_resource->createSoundBuffer();
 
-        if( m_soundBuffer == NULL )
+        if( m_soundBuffer == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' sound buffer not create"
                 , this->getName().c_str() 
@@ -106,16 +106,17 @@ namespace Menge
 
 		m_sourceID = 0;
 
-		if( m_resource != NULL )
+		if( m_resource != nullptr )
 		{
-            if( m_soundBuffer != NULL )
-            {
-                m_resource->releaseSoundBuffer( m_soundBuffer );            
-            }
-
 			m_resource->decrementReference();
-			m_resource = NULL;
+			m_resource = nullptr;
 		}
+
+        if( m_soundBuffer != nullptr )
+        {
+            m_soundBuffer->destroy();            
+            m_soundBuffer = nullptr;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const ConstString& _name )
@@ -302,8 +303,17 @@ namespace Menge
 			return;
 		}
 
+        float lengthMs = SOUND_SERVICE(m_serviceProvider)
+            ->getLengthMs( m_sourceID );
+
+        float pos = _timing;
+        if( _timing > lengthMs )
+        {
+            pos = lengthMs;
+        }
+
 		SOUND_SERVICE(m_serviceProvider)
-			->setPosMs( m_sourceID, _timing );
+			->setPosMs( m_sourceID, pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

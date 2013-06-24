@@ -37,6 +37,7 @@
 #	include <iomanip>
 
 #   include <WinBase.h>
+#   include <Psapi.h>
 
 #	include "StartupConfigLoader/StartupConfigLoader.h"
 
@@ -383,9 +384,7 @@ namespace Menge
 
             return false;
         }
-
-        m_currentPath += MENGE_FOLDER_DELIM;
-
+        
         String utf8_currentPath;        
         if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
         {
@@ -2832,6 +2831,89 @@ namespace Menge
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t WinApplication::getMemoryUsage() const
+    {
+        HANDLE hProc = GetCurrentProcess();
+        PROCESS_MEMORY_COUNTERS info;
+        //info.cb = sizeof(info);
+        BOOL okay = GetProcessMemoryInfo(hProc, (PROCESS_MEMORY_COUNTERS*)&info, sizeof(info));
+
+        MEMORYSTATUSEX memInfo;
+        memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+        GlobalMemoryStatusEx(&memInfo);
+
+
+        //MEMORYSTATUS m;
+        //m.dwLength = sizeof(m);
+        //GlobalMemoryStatus(&m);
+
+        //MEMORYSTATUSEX
+
+        //int ret_total_ram = (int)(m.dwTotalPhys>>20);
+        //int ret_avail_ram = (int)(m.dwAvailPhys>>20);
+
+
+        //int ret_total_memory = (int)(m.dwTotalPhys>>20) + (int)(m.dwTotalVirtual>>20);
+        //int ret_avail_memory = (int)(m.dwAvailPhys>>20) + (int)(m.dwAvailVirtual>>20);
+
+        malloc(1);
+
+        _CrtMemState ms1;
+        _CrtMemCheckpoint(&ms1);        
+
+        //char b[200];
+        //new int;
+
+        //new float[25];
+
+        //std::string g("01234012340123401234");
+        //std::string g("0123401234");
+        //std::string g1("01234012340123401234");
+
+        //std::string g2;
+
+        //g2 = g + g1;
+
+        size_t s = sizeof(std::string);
+
+        _CrtMemState ms2;
+        _CrtMemCheckpoint(&ms2);
+
+        _CrtMemState diff;
+        _CrtMemDifference(&diff, &ms1, &ms2);
+
+        return info.WorkingSetSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void * WinApplication::checkpointMemory() const
+    {
+        _CrtMemState * ms = new _CrtMemState;
+        _CrtMemCheckpoint(ms);
+
+        return ms;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t WinApplication::diffMemory( void * _checkpoint ) const
+    {
+        _CrtMemState * ms1 = (_CrtMemState *)_checkpoint;
+
+        _CrtMemState ms2;
+        _CrtMemCheckpoint(&ms2);
+
+        _CrtMemState diff;
+        _CrtMemDifference(&diff, ms1, &ms2);
+
+        delete ms1;
+
+        size_t m = 0;
+        for( int i = 0; i != _MAX_BLOCKS; ++i )
+        {
+            m += diff.lSizes[i];
+        }
+
+        return m;
     }
     //////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

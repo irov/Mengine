@@ -7,6 +7,7 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/UnicodeInterface.h"
+#	include "Interface/ProfilerInterface.h"
 
 #	include "Metacode.h"
 
@@ -160,16 +161,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::apply()
 	{
-		for( TResourceDescs::iterator
+		for( TResourceDescs::const_iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
 		it != it_end;
 		++it )
 		{
-			if( RESOURCE_SERVICE(m_serviceProvider)->loadResource( *it ) == false )
+            //PROFILER_SERVICE(m_serviceProvider)
+            //    ->memoryBegin();
+
+            const ResourceDesc & desc = *it;
+
+			if( RESOURCE_SERVICE(m_serviceProvider)->loadResource( desc ) == false )
             {
                 return false;
             }
+
+            //size_t memory = PROFILER_SERVICE(m_serviceProvider)
+            //    ->memoryEnd();
+
+            //LOGGER_ERROR(m_serviceProvider)("resource desc %.04f -- %s"
+            //    , float(memory) / (1024.f)
+            //    , desc.path.c_str()                
+            //    );
 		}
 
 		for( TTextDescs::iterator

@@ -253,6 +253,28 @@ namespace Menge
 
         const WChar * filename = PathFindFileName( _path );
 
+        //WCHAR finalPath[MAX_PATH];
+        //GetFinalPathNameByHandle( handle, finalPath, MAX_PATH, VOLUME_NAME_DOS );
+
+        //WCHAR canonicalizePath[MAX_PATH];
+        //PathCanonicalize( canonicalizePath, finalPath );
+
+        //WCHAR currentDirectory[MAX_PATH];
+        //GetCurrentDirectory( MAX_PATH, currentDirectory );
+
+        //WCHAR relativePath[MAX_PATH];
+        //if( PathRelativePathTo( relativePath, currentDirectory, FILE_ATTRIBUTE_DIRECTORY, canonicalizePath, FILE_ATTRIBUTE_NORMAL ) == FALSE )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("File invalid relative path\nfrom: %ls\nto: %ls"
+        //        , currentDirectory
+        //        , canonicalizePath
+        //        );
+        //    
+        //    ::CloseHandle( handle );
+
+        //    return INVALID_HANDLE_VALUE;
+        //}
+
         if( wcscmp( filename, wfd.cFileName ) != 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
@@ -260,6 +282,8 @@ namespace Menge
                 , filename
                 , wfd.cFileName
                 );
+
+            ::CloseHandle( handle );
 
             return INVALID_HANDLE_VALUE;
         }
@@ -384,6 +408,7 @@ namespace Menge
         //GetShortPathName( buffer, shortpath, MAX_PATH );
 
         _path.assign( buffer );
+        _path += MENGE_FOLDER_DELIM;
 
         return true;
     }

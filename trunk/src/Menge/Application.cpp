@@ -34,6 +34,7 @@
 #   include "Interface/AccountInterface.h"
 
 #	include "Watchdog.h"
+#   include "Interface/ProfilerInterface.h"
 
 #	include "Player.h"
 #	include "Kernel/Scene.h"
@@ -138,6 +139,7 @@ SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
 SERVICE_EXTERN(AlphaChannelService, Menge::AlphaChannelServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
+SERVICE_EXTERN(ProfilerService, Menge::ProfilerServiceInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
 SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
@@ -184,6 +186,8 @@ namespace Menge
 		, m_FSAAQuality(0)
 		, m_textureFiltering(true)
         , m_windowModeCheck(false)
+        , m_watchdog(nullptr)
+        , m_profiler(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -265,6 +269,7 @@ namespace Menge
         exinit.add( &Application::initializeSceneManager_ );
         exinit.add( &Application::initializeTextManager_ );        
         exinit.add( &Application::initializeWatchdog_ );
+        exinit.add( &Application::initializeProfiler_ );
 
         if( exinit.run() == false )
         {
@@ -518,6 +523,25 @@ namespace Menge
         SERVICE_REGISTRY( m_serviceProvider, watchdog );
 
         m_watchdog = watchdog;
+
+        return true;    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::initializeProfiler_()
+    {
+        LOGGER_INFO(m_serviceProvider)( "Inititalizing ProfilerService..." );
+
+        ProfilerServiceInterface * profiler;
+        if( SERVICE_CREATE( ProfilerService, &profiler ) == false )
+        {
+            return false;
+        }
+
+        SERVICE_REGISTRY( m_serviceProvider, profiler );
+
+        profiler->initialize();
+
+        m_profiler = profiler;
 
         return true;    
     }

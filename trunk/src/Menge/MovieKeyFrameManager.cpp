@@ -35,7 +35,7 @@ namespace Menge
 	{
 		MovieFramePackInterface * framePak = this->createMovieFramePak_( _pak, _path );
 		 
-		if( framePak == NULL )
+		if( framePak == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "MovieKeyFrameManager: can`t load file category '%s' path '%s'"
 				, _pak.c_str()

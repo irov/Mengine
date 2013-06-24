@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 23;
+        _needVersion = 25;
 
-        if( version != 23 )
+        if( version != 25 )
         {
             return false;
         }
@@ -3107,17 +3107,6 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
-            {
-                if( this->read( _buff, _size, _read, this->Mask ) == false )
-                {
-                    return false;
-                }
-    
-                this->Mask_successful = true;
-    
-                return true;
-            }break;
         case 5:
             {
                 if( this->read( _buff, _size, _read, this->Opacity ) == false )
@@ -3311,17 +3300,6 @@ namespace Metacode
                 }
     
                 this->Count_successful = true;
-    
-                return true;
-            }break;
-        case 8:
-            {
-                if( this->read( _buff, _size, _read, this->Mask ) == false )
-                {
-                    return false;
-                }
-    
-                this->Mask_successful = true;
     
                 return true;
             }break;

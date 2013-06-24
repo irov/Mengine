@@ -87,7 +87,6 @@ namespace Menge
 		bool setSourceVolume( unsigned int _emitter, float _volume ) override;
 		float getSourceVolume( unsigned int _emitter ) const override;
 
-		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
 		void releaseSoundSource( unsigned int _sourceID ) override;
 
 		bool validSoundSource( unsigned int _sourceID ) const override;

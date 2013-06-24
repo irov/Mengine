@@ -115,7 +115,7 @@ namespace Menge
 
         if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, (void *)m_serviceProvider ) == false )
         {
-            if( _reimport == NULL )
+            if( _reimport == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid version read %d need %d"
                     , readVersion
@@ -328,7 +328,7 @@ namespace Menge
         FileGroupInterface * fileGroup = FILE_SERVICE(m_serviceProvider)
             ->getFileGroup( _pak );
 
-        if( fileGroup == NULL )
+        if( fileGroup == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid get file group %s (%s)"
                 , _pak.c_str()

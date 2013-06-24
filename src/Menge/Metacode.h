@@ -4315,7 +4315,6 @@ namespace Metacode
                     : Metabuf::Metadata()
                     , AnchorPoint_successful(false)
                     , Count_successful(false)
-                    , Mask_successful(false)
                     , Opacity_successful(false)
                     , Position_successful(false)
                     , Rotation_successful(false)
@@ -4402,46 +4401,6 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->Count );
-                }
-                
-                bool has_Mask() const
-                {
-                    return Mask_successful;
-                }
-                
-                bool get_Mask( Menge::Polygon & _value ) const
-                {
-                    if( Mask_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    _value = this->Mask;
-                
-                    return true;
-                }
-                
-                bool swap_Mask( Menge::Polygon & _value ) const
-                {
-                    if( Mask_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    std::swap( _value, this->Mask);
-                
-                    return true;
-                }
-                
-                template<class C, class M>
-                void method_Mask( C * _self, M _method ) const
-                {
-                    if( Mask_successful == false )
-                    {
-                        return;
-                    }
-                
-                    (_self->*_method)( this->Mask );
                 }
                 
                 bool has_Opacity() const
@@ -4656,8 +4615,6 @@ namespace Metacode
                 mutable mt::vec2f AnchorPoint;
                 bool Count_successful;
                 mutable size_t Count;
-                bool Mask_successful;
-                mutable Menge::Polygon Mask;
                 bool Opacity_successful;
                 mutable float Opacity;
                 bool Position_successful;
@@ -4810,7 +4767,6 @@ namespace Metacode
                     : Metabuf::Metadata()
                     , AnchorPoint_successful(false)
                     , Count_successful(false)
-                    , Mask_successful(false)
                     , Opacity_successful(false)
                     , Position_successful(false)
                     , Rotation_successful(false)
@@ -4897,46 +4853,6 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->Count );
-                }
-                
-                bool has_Mask() const
-                {
-                    return Mask_successful;
-                }
-                
-                bool get_Mask( Menge::Polygon & _value ) const
-                {
-                    if( Mask_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    _value = this->Mask;
-                
-                    return true;
-                }
-                
-                bool swap_Mask( Menge::Polygon & _value ) const
-                {
-                    if( Mask_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    std::swap( _value, this->Mask);
-                
-                    return true;
-                }
-                
-                template<class C, class M>
-                void method_Mask( C * _self, M _method ) const
-                {
-                    if( Mask_successful == false )
-                    {
-                        return;
-                    }
-                
-                    (_self->*_method)( this->Mask );
                 }
                 
                 bool has_Opacity() const
@@ -5151,8 +5067,6 @@ namespace Metacode
                 mutable mt::vec3f AnchorPoint;
                 bool Count_successful;
                 mutable size_t Count;
-                bool Mask_successful;
-                mutable Menge::Polygon Mask;
                 bool Opacity_successful;
                 mutable float Opacity;
                 bool Position_successful;

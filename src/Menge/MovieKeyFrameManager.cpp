@@ -138,21 +138,21 @@ namespace Menge
                 meta_frame2d.get_Count( count );
 				meta_frame2d.get_Volume( volume );
 
-                if( meta_frame2d.has_Mask() == true )
-                {
-                    Polygon polygon;
-                    meta_frame2d.get_Mask( polygon );
+                //if( meta_frame2d.has_Mask() == true )
+                //{
+                //    Polygon polygon;
+                //    meta_frame2d.get_Mask( polygon );
 
-                    boost::geometry::correct( polygon );
+                //    boost::geometry::correct( polygon );
 
-                    size_t index = pack->addPolygon( polygon );
+                //    size_t index = pack->addPolygon( polygon );
 
-                    frame.mask = index;
-                }
-                else
-                {
-                    frame.mask = mask;
-                }
+                //    frame.mask = index;
+                //}
+                //else
+                //{
+                //    frame.mask = mask;
+                //}
 
                 frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
                 frame.position = mt::vec3f(position2d, 0.f);
@@ -238,21 +238,21 @@ namespace Menge
                 meta_frame3d.get_Opacity( frame.opacity );
                 meta_frame3d.get_Count( count );
 
-                if( meta_frame3d.has_Mask() == true )
-                {
-                    Polygon polygon;
-                    meta_frame3d.get_Mask( polygon );
+                //if( meta_frame3d.has_Mask() == true )
+                //{
+                //    Polygon polygon;
+                //    meta_frame3d.get_Mask( polygon );
 
-                    boost::geometry::correct( polygon );
+                //    boost::geometry::correct( polygon );
 
-                    size_t index = pack->addPolygon( polygon );
+                //    size_t index = pack->addPolygon( polygon );
 
-                    frame.mask = index;
-                }
-                else
-                {
-                    frame.mask = mask;
-                }
+                //    frame.mask = index;
+                //}
+                //else
+                //{
+                //    frame.mask = mask;
+                //}
 				
 				frame.volume = 1.f;
 				meta_frame3d.get_Volume( frame.volume );

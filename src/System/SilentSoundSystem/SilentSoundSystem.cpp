@@ -60,7 +60,7 @@ namespace Menge
 		soundSource->initialize(this);
 		
 		soundSource->setHeadMode( _isHeadMode );
-		soundSource->loadBuffer( _sample );
+		soundSource->setBuffer( _sample );
 
 		return soundSource;
 	}

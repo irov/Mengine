@@ -175,10 +175,15 @@ namespace Menge
 	bool SoundDecoderOGGVorbis::seek( float _timing )
 	{
         double pos = (double)_timing;
-        int seek = ov_time_seek( &m_oggVorbisFile, pos );
+        int seek_err = ov_time_seek( &m_oggVorbisFile, pos );
 
-        if( seek != 0 )
+        if( seek_err != 0 )
         {
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f error %d"
+                , _timing
+                , seek_err
+                );
+
             return false;
         }
 
@@ -187,6 +192,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::timeTell()
 	{
+        double total = ov_time_total( &m_oggVorbisFile, -1 );
 		double pos = ov_time_tell( &m_oggVorbisFile );
 
         float float_pos = (float)pos;

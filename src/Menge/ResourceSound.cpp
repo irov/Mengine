@@ -199,7 +199,7 @@ namespace Menge
         SoundBufferInterface * soundBuffer = SOUND_SERVICE(m_serviceProvider)
             ->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
 
-        if( soundBuffer == 0 )
+        if( soundBuffer == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ResourceSound::createSoundBuffer: '%s' can't load sound '%s'"
                 , this->getName().c_str() 
@@ -211,12 +211,6 @@ namespace Menge
 
         return soundBuffer;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceSound::releaseSoundBuffer( SoundBufferInterface * _soundBufer ) const
-    {
-        SOUND_SERVICE(m_serviceProvider)
-            ->releaseSoundBuffer( _soundBufer );
-    }
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceSound::getDefaultVolume() const
 	{

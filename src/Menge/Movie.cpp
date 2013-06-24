@@ -229,39 +229,39 @@ namespace Menge
 			_node->setLocalAlpha( _frame.opacity );
 		}
 
-        if( _layer.isMask() == true && _frame.mask != INVALID_MASK )
-        {
-#   ifdef _DEBUG
-            if( dynamic_cast<Sprite *>( _node ) == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Masked but node is not Sprite %s:%s"
-                    , this->getName().c_str()
-                    , _layer.name.c_str()
-                    , _node->getName().c_str()
-                    , _node->getType().c_str()
-                    );
+//        if( _layer.isMask() == true && _frame.mask != INVALID_MASK )
+//        {
+//#   ifdef _DEBUG
+//            if( dynamic_cast<Sprite *>( _node ) == nullptr )
+//            {
+//                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Masked but node is not Sprite %s:%s"
+//                    , this->getName().c_str()
+//                    , _layer.name.c_str()
+//                    , _node->getName().c_str()
+//                    , _node->getType().c_str()
+//                    );
+//
+//                return;
+//            }
+//#   endif
 
-                return;
-            }
-#   endif
+            //Sprite * sprite = dynamic_cast<Sprite *>( _node );
 
-            Sprite * sprite = dynamic_cast<Sprite *>( _node );
+            //const Polygon * polygon = m_resourceMovie->getPolygon( _frame.mask );
 
-            const Polygon * polygon = m_resourceMovie->getPolygon( _frame.mask );
+            //if( polygon == nullptr )
+            //{
+            //    LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mask but polygon is Null %d"
+            //        , this->getName().c_str()
+            //        , _layer.name.c_str()
+            //        , _frame.mask
+            //        );
 
-            if( polygon == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mask but polygon is Null %d"
-                    , this->getName().c_str()
-                    , _layer.name.c_str()
-                    , _frame.mask
-                    );
+            //    return;
+            //}
 
-                return;
-            }
-
-            sprite->setMask( *polygon );
-        }
+            //sprite->setMask( *polygon );
+        //}
 
 		if( _layer.isAudio() == true )
 		{

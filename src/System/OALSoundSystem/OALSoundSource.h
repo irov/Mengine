@@ -1,11 +1,8 @@
 #   pragma once
 
 #	include "Interface/SoundSystemInterface.h"
-#ifdef __APPLE__
-#   include <OpenAL/al.h>
-#else
+
 #	include <AL/al.h>
-#endif
 
 namespace Menge
 {
@@ -31,8 +28,8 @@ namespace Menge
 		void setVolume( float _volume ) override;
 		float getVolume() const override;
 
-		void setPosition( float _x, float _y, float _z ) override;
-		const float * getPosition() const override;
+		void setPosition( const mt::vec3f & _pos ) override;
+		const mt::vec3f & getPosition() const override;
 
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
@@ -41,7 +38,7 @@ namespace Menge
 		float getPosMs() const override;
 		void setPosMs( float _posMs ) override;
 
-		void loadBuffer( SoundBufferInterface* _soundBuffer ) override;
+		void setBuffer( SoundBufferInterface* _soundBuffer ) override;
 		SoundBufferInterface* getSoundBuffer() const override;
 
 	public:
@@ -56,7 +53,7 @@ namespace Menge
         
         OALSoundSystem * m_soundSystem;
 
-		float m_position[3];
+        mt::vec3f m_position;
 		float m_volume;
 		void apply_( ALuint _source );
 

@@ -14,6 +14,7 @@ namespace Menge
 	OALSoundSource::OALSoundSource()
 		: m_serviceProvider(nullptr)         
         , m_soundSystem(nullptr)
+        , m_position(0.f, 0.f, 0.f)
 		, m_volume(1.f)
 		, m_sourceId(0)
 		, m_timing(0.f)
@@ -22,9 +23,6 @@ namespace Menge
         , m_playing(false)
         , m_loop(false)
 	{
-		m_position[0] = 0.0f;
-		m_position[1] = 0.0f;
-		m_position[2] = 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSource::~OALSoundSource()
@@ -40,7 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::play()
 	{
-		if( m_playing == true || m_soundBuffer == NULL )
+		if( m_playing == true || m_soundBuffer == nullptr )
 		{
 			return;
 		}
@@ -60,7 +58,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::pause()
 	{
-		if( m_playing == false || m_soundBuffer == NULL )
+		if( m_playing == false || m_soundBuffer == nullptr )
 		{
 			return;
 		}
@@ -79,6 +77,13 @@ namespace Menge
                 , m_sourceId
                 , m_playing
                 );
+        }
+
+        float total = m_soundBuffer->getTimeTotal();
+
+        if( timing > total )
+        {
+            return;
         }
 
         m_timing = timing;
@@ -134,22 +139,20 @@ namespace Menge
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::setPosition( float _x, float _y, float _z )
+    void OALSoundSource::setPosition( const mt::vec3f & _pos )
 	{
-		m_position[0] = _x;
-		m_position[1] = _y;
-		m_position[2] = _z;
+		m_position = _pos;
 
 		if( m_playing == true && m_sourceId != 0 )
 		{
-			alSourcefv( m_sourceId, AL_POSITION, &(m_position[0]) );
+			alSourcefv( m_sourceId, AL_POSITION, _pos.buff() );
 			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const float * OALSoundSource::getPosition() const 
+    const mt::vec3f & OALSoundSource::getPosition() const 
 	{
-		return &(m_position[0]);
+		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setLoop( bool _loop )
@@ -164,12 +167,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundSource::getLengthMs() const
 	{
-		if( m_soundBuffer != NULL )
+		if( m_soundBuffer == nullptr )
 		{
-			return m_soundBuffer->getTimeTotal() * 1000.f;
-		}
+            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::getLengthMs invalid sound buffer"
+                );
 
-		return 0.f;
+            return 0.f;
+        }
+
+        float time_sound = m_soundBuffer->getTimeTotal();
+        float time_sound_ms = time_sound * 1000.f;
+
+		return time_sound_ms;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundSource::getPosMs() const
@@ -208,10 +217,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setPosMs( float _posMs )
 	{
-        m_timing = _posMs * 0.001f;	
+        float posmc = _posMs * 0.001f;
+
+        float total = m_soundBuffer->getTimeTotal();
+
+        if( posmc > total )
+        {
+            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::setPosMs pos %f total %f"
+                , _posMs
+                , total
+                );
+
+            return;
+        }
+
+        m_timing = posmc;	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::loadBuffer( SoundBufferInterface* _soundBuffer )
+	void OALSoundSource::setBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		this->unloadBuffer_();
 
@@ -220,12 +243,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::unloadBuffer_()
 	{
-		if( m_soundBuffer != NULL && m_playing == true )
+		if( m_soundBuffer != nullptr && m_playing == true )
 		{
 			this->stop();
 		}
 
-		m_soundBuffer = NULL;
+		m_soundBuffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setHeadMode( bool _headMode )
@@ -263,7 +286,7 @@ namespace Menge
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
+		alSourcefv( _source, AL_POSITION, m_position.buff() );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_MIN_GAIN, 0.f );

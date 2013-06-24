@@ -273,17 +273,16 @@ namespace Menge
 		return sample;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
-	{
-        _soundBuffer->destroy();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundSource( unsigned int _sourceID )
 	{
 		TMapSoundSource::iterator it_find = m_soundSourceMap.find( _sourceID );
 		
 		if( it_find == m_soundSourceMap.end() )
 		{
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::releaseSoundSource not found %d"
+                , _sourceID
+                );
+
 			return;
 		}
 
@@ -820,6 +819,19 @@ namespace Menge
             return;
         }
 
+        float lengthMs = source->soundSourceInterface->getLengthMs();
+        
+        if( _pos > lengthMs )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs emitter %d pos %f length %f"
+                , _emitter
+                , _pos
+                , lengthMs
+                );
+
+            return;
+        }
+
         if( source->state == ESS_STOPPED || source->state == ESS_STOPPING )
         {
             source->soundSourceInterface->setPosMs( _pos );
@@ -827,7 +839,7 @@ namespace Menge
             return;
         }
         
-        bool hasBufferUpdate = source->taskSoundBufferUpdate != NULL;
+        bool hasBufferUpdate = source->taskSoundBufferUpdate != nullptr;
         
         if( hasBufferUpdate == true )
         {

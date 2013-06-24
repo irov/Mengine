@@ -10,6 +10,8 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
+#   include <Math/vec3.h>
+
 namespace Menge
 {
 	class SoundSourceInterface;
@@ -49,8 +51,8 @@ namespace Menge
 		virtual void setVolume( float _volume ) = 0;
 		virtual float getVolume() const = 0;
 
-		virtual void setPosition( float _x, float _y, float _z ) = 0;
-		virtual const float * getPosition() const = 0;
+		virtual void setPosition( const mt::vec3f & _pos ) = 0;
+		virtual const mt::vec3f & getPosition() const = 0;
 
 		virtual void setLoop( bool _loop ) = 0;
 		virtual bool getLoop() const = 0;
@@ -59,7 +61,7 @@ namespace Menge
 		virtual float getPosMs() const = 0;
 		virtual void setPosMs( float _posMs ) = 0;
 
-		virtual void loadBuffer( SoundBufferInterface* _soundBuffer ) = 0;
+		virtual void setBuffer( SoundBufferInterface* _soundBuffer ) = 0;
 		virtual SoundBufferInterface* getSoundBuffer() const = 0;
 	};
 
@@ -128,9 +130,7 @@ namespace Menge
 		virtual bool setSourceVolume( unsigned int _emitter, float _volume ) = 0;
 		virtual float getSourceVolume( unsigned int _emitter ) const = 0;
 
-		virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
 		virtual void releaseSoundSource( unsigned int _sourceID ) = 0;
-
 		virtual bool validSoundSource( unsigned int _sourceID ) const = 0;
 
 	public:

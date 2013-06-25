@@ -162,11 +162,11 @@ namespace Menge
 
         const SoundCodecDataInfo * dataInfo = codec->getCodecDataInfo();
 
-        if( dataInfo->time_total_secs > 0.5f && m_isStreamable == false )
+        if( dataInfo->length > 500.f && m_isStreamable == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > 0.5s)\nfile - %s:%s"
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > 500.0 ms)\nfile - %s:%s"
                 , m_name.c_str()
-                , dataInfo->time_total_secs
+                , dataInfo->length
                 , category.c_str()
                 , m_path.c_str() 
                 );

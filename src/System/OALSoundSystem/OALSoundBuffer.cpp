@@ -54,7 +54,7 @@ namespace Menge
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
-		m_time_total = dataInfo->time_total_secs;
+		m_time_total = dataInfo->length;
 		size_t size = dataInfo->size;
 
         //printf("OALSoundBuffer::load %.4f\n"
@@ -104,7 +104,8 @@ namespace Menge
 		alSourcei( _source, AL_BUFFER, m_alBufferId );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-		alSourcef( _source, AL_SEC_OFFSET, _pos );
+        float al_pos = _pos * 0.001f;
+		alSourcef( _source, AL_SEC_OFFSET, al_pos );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcePlay( _source );
@@ -131,13 +132,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::getTimePos( ALenum _source, float & _pos ) const
 	{
-		float pos = 0.f;
+		float al_pos = 0.f;
 
-		alGetSourcef( _source, AL_SEC_OFFSET, &pos );
+		alGetSourcef( _source, AL_SEC_OFFSET, &al_pos );
 		
         if( OAL_CHECK_ERROR(m_serviceProvider) == true )
         {
             return false;
+        }
+
+        float pos = al_pos * 1000.f;
+
+        float total = this->getTimeTotal();
+
+        if( pos > total )
+        {
+            pos = total;
         }
 
         _pos = pos;

@@ -31,7 +31,7 @@ namespace Menge
 
         int m_frequency;
         int m_channels;
-        float m_time_total;
+        float m_length;
         bool m_isStereo;        
 	};
 }

@@ -79,7 +79,7 @@ namespace Menge
 
 		//m_channels = dataInfo->channels;
         m_channels = 2;
-		m_time_total = dataInfo->time_total_secs;
+		m_time_total = dataInfo->length;
 
 		if (m_channels == 1)
 		{
@@ -144,7 +144,7 @@ namespace Menge
 		if( state != AL_STOPPED && state != AL_INITIAL )
 		{
             this->stop( m_sourceId );
-			//alSourceRewind( _source );            
+			//alSourceRewind( _source );
 		}
 				
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering

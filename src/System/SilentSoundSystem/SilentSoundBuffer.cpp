@@ -12,7 +12,7 @@ namespace Menge
         , m_pauseTime(0.f)
         , m_frequency(0)
         , m_channels(0)
-        , m_time_total(0.f)
+        , m_length(0.f)
         , m_isStereo(false)
 	{		
 	}
@@ -32,7 +32,7 @@ namespace Menge
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
-		m_time_total = dataInfo->time_total_secs;
+		m_length = dataInfo->length;
 		//size_t size = dataInfo->size;
 
 		if( m_channels == 1 )
@@ -95,7 +95,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     float SilentSoundBuffer::getTimeTotal() const
     {
-        return m_time_total;
+        return m_length;
     }
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

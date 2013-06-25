@@ -52,6 +52,8 @@ namespace Menge
 
 		this->apply_( m_sourceId );
 		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
+
+        m_timing = 0.f;
 	
 		m_playing = true;
 	}
@@ -77,13 +79,6 @@ namespace Menge
                 , m_sourceId
                 , m_playing
                 );
-        }
-
-        float total = m_soundBuffer->getTimeTotal();
-
-        if( timing > total )
-        {
-            return;
         }
 
         m_timing = timing;
@@ -176,9 +171,8 @@ namespace Menge
         }
 
         float time_sound = m_soundBuffer->getTimeTotal();
-        float time_sound_ms = time_sound * 1000.f;
 
-		return time_sound_ms;
+		return time_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundSource::getPosMs() const
@@ -190,7 +184,7 @@ namespace Menge
 
 		if( m_sourceId == 0 )
 		{
-			return m_timing * 1000.f;
+			return m_timing;
 		}
 			
 		float posms = 0.f;
@@ -209,15 +203,13 @@ namespace Menge
 		{ 
 			posms = m_timing;
 		}
-
-		posms *= 1000.f;
-		
+        		
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setPosMs( float _posMs )
 	{
-        float posmc = _posMs * 0.001f;
+        float posmc = _posMs;
 
         float total = m_soundBuffer->getTimeTotal();
 

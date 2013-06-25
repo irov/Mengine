@@ -125,7 +125,11 @@ namespace Menge
         m_dataInfo.size = size_pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
         m_dataInfo.channels = vorbisInfo->channels;
         m_dataInfo.frequency = vorbisInfo->rate;
-        m_dataInfo.time_total_secs = (float)ov_time_total( &m_oggVorbisFile, -1 );
+
+        double al_total = ov_time_total( &m_oggVorbisFile, -1 );
+        float total = (float)(al_total * 1000.0);
+
+        m_dataInfo.length = total;
 
         return true;
     }
@@ -173,9 +177,27 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundDecoderOGGVorbis::seek( float _timing )
-	{
-        double pos = (double)_timing;
-        int seek_err = ov_time_seek( &m_oggVorbisFile, pos );
+	{         
+        if( _timing > m_dataInfo.length )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f > total %f"
+                , _timing
+                , m_dataInfo.length
+                );
+
+            return false;
+        }
+
+        double al_pos = (double)(_timing * 0.001f);
+
+        double al_total = ov_time_total( &m_oggVorbisFile, -1 );
+
+        if( al_pos > al_total )
+        {
+            al_pos = al_total - 0.0001;
+        }
+
+        int seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
 
         if( seek_err != 0 )
         {
@@ -192,10 +214,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::timeTell()
 	{
-        double total = ov_time_total( &m_oggVorbisFile, -1 );
-		double pos = ov_time_tell( &m_oggVorbisFile );
-
-        float float_pos = (float)pos;
+        //double al_total = ov_time_total( &m_oggVorbisFile, -1 );
+		double al_pos = ov_time_tell( &m_oggVorbisFile );
+        
+        float float_pos = (float)(al_pos * 1000.f);
 
 		return float_pos;
 	}

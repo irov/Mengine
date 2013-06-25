@@ -31,7 +31,7 @@ namespace Menge
 		: m_resourceFont(nullptr)
 		, m_textSize(0.f, 0.f)
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
-		, m_alphaHeight(0.f)
+		, m_fontHeight(0.f)
 		, m_horizontAlign(ETFHA_NONE)
 		, m_verticalAlign(ETFVA_NONE)
 		, m_maxWidth(2048.f)
@@ -124,12 +124,8 @@ namespace Menge
             return false;
         }
 
-		m_alphaHeight = resourceGlyph->getAlphaHeight();
-
-		if( fabsf(m_lineOffset) < 0.0001f )
-		{
-			m_lineOffset = m_alphaHeight;
-		}
+		m_fontHeight = resourceGlyph->getFontHeight();
+        m_lineOffset = 0.f;
 
 		const RenderMaterialGroup * mg_sprite = RENDER_SERVICE(m_serviceProvider)
 			->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
@@ -188,7 +184,7 @@ namespace Menge
 			}break;
 		case ETFVA_CENTER:
 			{
-				offset.y = -m_alphaHeight * lines.size() / 2;
+				offset.y = -(m_fontHeight + m_lineOffset) * lines.size() / 2;
 			}break;
 		}
 
@@ -198,18 +194,16 @@ namespace Menge
 		it_line != it_line_end; 
 		++it_line )
 		{
-			float alignOffsetX;
-
 			const TextLine & line = *it_line;
 
-			this->updateAlignOffset_( line, alignOffsetX );
-			
+            float alignOffsetX = this->getHorizontAlignOffset_( line );
 			offset.x = alignOffsetX;
 
 			ARGB argb = _color.getAsARGB();
 
-			it_line->prepareRenderObject( offset, uv, argb, m_pixelsnap, _vertexData );
+			line.prepareRenderObject( offset, uv, argb, m_pixelsnap, _vertexData );
 
+            offset.y += m_fontHeight;
 			offset.y += m_lineOffset;
 		}
 	}
@@ -345,14 +339,14 @@ namespace Menge
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float TextField::getAlphaHeight() const
+	float TextField::getFontHeight() const
 	{
-		return m_alphaHeight;
+		return m_fontHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setAlphaHeight( float _height )
+	void TextField::setFontHeight( float _height )
 	{
-		m_alphaHeight = _height;
+		m_fontHeight = _height;
 
 		this->invalidateVertices_();
 	}
@@ -404,7 +398,7 @@ namespace Menge
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine(m_serviceProvider, m_alphaHeight, m_charOffset);
+			TextLine textLine(m_serviceProvider, m_fontHeight, m_charOffset);
 
 			textLine.initialize( m_resourceFont, *it );
 
@@ -419,14 +413,14 @@ namespace Menge
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
-					TextLine tl(m_serviceProvider, m_alphaHeight, m_charOffset);
+					TextLine tl(m_serviceProvider, m_fontHeight, m_charOffset);
 
 					String tl_string( newLine + space_delim + words.front() );
 					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
-						TextLine line(m_serviceProvider, m_alphaHeight, m_charOffset);
+						TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);
 
 						line.initialize( m_resourceFont, newLine );
 
@@ -443,7 +437,7 @@ namespace Menge
 					}
 				}
 
-				TextLine line(m_serviceProvider, m_alphaHeight, m_charOffset);				
+				TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);				
 				line.initialize( m_resourceFont, newLine );
 
 				m_lines.push_back( line );
@@ -465,7 +459,7 @@ namespace Menge
 		}
 
 		m_textSize.x = maxlen;
-		m_textSize.y = m_alphaHeight * m_lines.size();
+		m_textSize.y = m_fontHeight * m_lines.size();
 
 		this->invalidateVertices_();
 		this->invalidateBoundingBox();
@@ -529,27 +523,31 @@ namespace Menge
 		//}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateAlignOffset_( const TextLine & _line, float & _offsetX )
+	float TextField::getHorizontAlignOffset_( const TextLine & _line )
 	{
+        float offset = 0.f;
+
 		switch( m_horizontAlign )
 		{
 		case ETFHA_NONE:
 			{
-				_offsetX = 0.f;
+				offset = 0.f;
 			}break;
 		case ETFHA_CENTER:
 			{
-				_offsetX = -_line.getLength() * 0.5f;
+				offset = -_line.getLength() * 0.5f;
 			}break;
 		case ETFHA_RIGHT:
 			{
-				_offsetX = -_line.getLength();
+				offset = -_line.getLength();
 			}break;
 		case ETFHA_LEFT:
 			{
-				_offsetX = _line.getLength();
+				offset = _line.getLength();
 			}break;
 		}
+
+        return offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_invalidateColor()
@@ -589,7 +587,7 @@ namespace Menge
 
 		m_format.clear();
 
-		TextEntry textEntry = 
+		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
 
 		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
@@ -602,12 +600,7 @@ namespace Menge
 			this->setCharOffset( textEntry.charOffset );
 		}
 
-		if( fabsf(textEntry.lineOffset) < 0.0001f )
-		{
-			textEntry.lineOffset = m_lineOffset;
-		}
-		
-		if( fabsf(textEntry.lineOffset - m_lineOffset) > 0.0001f )
+		if( fabsf(textEntry.lineOffset) > 0.0001f && fabsf(textEntry.lineOffset - m_lineOffset) > 0.0001f )
 		{
 			this->setLineOffset( textEntry.lineOffset );
 		}
@@ -620,7 +613,9 @@ namespace Menge
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( m_key );
 		
-		return textEntry.text;
+        const String & text = textEntry.text;
+
+		return text;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number )
@@ -635,7 +630,7 @@ namespace Menge
 		m_format = _format;
 		m_number = _number;
 
-		TextEntry textEntry = 
+		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
 
 		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
@@ -643,17 +638,12 @@ namespace Menge
 			this->setResourceFont( textEntry.font );
 		}
 
-		if( textEntry.charOffset != 0.f && textEntry.charOffset != m_charOffset )
+		if( fabsf( textEntry.charOffset ) > 0.0001f && fabsf( textEntry.charOffset - m_charOffset ) > 0.0001f )
 		{
 			this->setCharOffset( textEntry.charOffset );
 		}
-
-		if( textEntry.lineOffset == 0.f )
-		{
-			textEntry.lineOffset = m_lineOffset;
-		}
-
-		if( textEntry.lineOffset != m_lineOffset )
+        
+		if( fabsf( textEntry.lineOffset ) > 0.0001f && fabsf( textEntry.lineOffset - m_lineOffset ) > 0.0001f )
 		{
 			this->setLineOffset( textEntry.lineOffset );
 		}

@@ -20,7 +20,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceGlyph );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceGlyph::ResourceGlyph()
-		: m_alphaHeight(0.f)
+		: m_fontHeight(0.f)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -62,9 +62,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceGlyph::getAlphaHeight() const
+	float ResourceGlyph::getFontHeight() const
 	{
-		return m_alphaHeight;
+		return m_fontHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceGlyph::_loader( const Metabuf::Metadata * _meta )
@@ -99,7 +99,7 @@ namespace Menge
             }
         }
 
-        m_alphaHeight = meta_font.get_height();
+        m_fontHeight = meta_font.get_height();
 
         const Metacode::Meta_Font::TVectorMeta_Char & includes_char = meta_font.get_IncludesChar();
 
@@ -144,7 +144,7 @@ namespace Menge
 		mt::vec4f uv(_rect.x, _rect.y, _rect.x + _rect.z, _rect.y + _rect.w);
 		mt::vec2f size(_rect.z, _rect.w);
 
-		float ratio = _width / m_alphaHeight;
+		float ratio = _width / m_fontHeight;
 
 		Glyph gl(uv, _offset, ratio, size);
 

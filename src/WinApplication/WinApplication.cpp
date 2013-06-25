@@ -2840,14 +2840,14 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     size_t WinApplication::getMemoryUsage() const
     {
-        HANDLE hProc = GetCurrentProcess();
-        PROCESS_MEMORY_COUNTERS info;
+        //HANDLE hProc = GetCurrentProcess();
+        //PROCESS_MEMORY_COUNTERS info;
         //info.cb = sizeof(info);
-        BOOL okay = GetProcessMemoryInfo(hProc, (PROCESS_MEMORY_COUNTERS*)&info, sizeof(info));
+        //BOOL okay = GetProcessMemoryInfo(hProc, (PROCESS_MEMORY_COUNTERS*)&info, sizeof(info));
 
-        MEMORYSTATUSEX memInfo;
-        memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-        GlobalMemoryStatusEx(&memInfo);
+        //MEMORYSTATUSEX memInfo;
+        //memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+        //GlobalMemoryStatusEx(&memInfo);
 
 
         //MEMORYSTATUS m;
@@ -2863,10 +2863,10 @@ namespace Menge
         //int ret_total_memory = (int)(m.dwTotalPhys>>20) + (int)(m.dwTotalVirtual>>20);
         //int ret_avail_memory = (int)(m.dwAvailPhys>>20) + (int)(m.dwAvailVirtual>>20);
 
-        malloc(1);
+        //malloc(1);
 
-        _CrtMemState ms1;
-        _CrtMemCheckpoint(&ms1);        
+        //_CrtMemState ms1;
+        //_CrtMemCheckpoint(&ms1);        
 
         //char b[200];
         //new int;
@@ -2881,27 +2881,34 @@ namespace Menge
 
         //g2 = g + g1;
 
-        size_t s = sizeof(std::string);
+        //size_t s = sizeof(std::string);
 
-        _CrtMemState ms2;
-        _CrtMemCheckpoint(&ms2);
+        //_CrtMemState ms2;
+        //_CrtMemCheckpoint(&ms2);
 
-        _CrtMemState diff;
-        _CrtMemDifference(&diff, &ms1, &ms2);
+        //_CrtMemState diff;
+        //_CrtMemDifference(&diff, &ms1, &ms2);
 
-        return info.WorkingSetSize;
+        //return info.WorkingSetSize;
+
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void * WinApplication::checkpointMemory() const
     {
+#   ifdef _DEBUG
         _CrtMemState * ms = new _CrtMemState;
         _CrtMemCheckpoint(ms);
 
         return ms;
+#   else
+        return nullptr;
+#   endif
     }
     //////////////////////////////////////////////////////////////////////////
     size_t WinApplication::diffMemory( void * _checkpoint ) const
     {
+#   ifdef _DEBUG
         _CrtMemState * ms1 = (_CrtMemState *)_checkpoint;
 
         _CrtMemState ms2;
@@ -2919,6 +2926,9 @@ namespace Menge
         }
 
         return m;
+#   else
+        return 0;
+#   endif
     }
     //////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

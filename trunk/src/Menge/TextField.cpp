@@ -180,20 +180,31 @@ namespace Menge
        
 		const mt::vec4f & uv = m_resourceFont->getTextureUV();
 
+		switch( m_verticalAlign )
+		{
+		case ETFVA_NONE:
+			{
+				offset.y = 0.f;
+			}break;
+		case ETFVA_CENTER:
+			{
+				offset.y = -m_alphaHeight * lines.size() / 2;
+			}break;
+		}
+
 		for( TListTextLine::const_iterator 
 			it_line = lines.begin(),
 			it_line_end = lines.end(); 
 		it_line != it_line_end; 
 		++it_line )
 		{
-			mt::vec2f alignOffset;
+			float alignOffsetX;
 
 			const TextLine & line = *it_line;
 
-			this->updateAlignOffset_( line, alignOffset );
+			this->updateAlignOffset_( line, alignOffsetX );
 			
-			offset.x = alignOffset.x;
-			offset.y += alignOffset.y;
+			offset.x = alignOffsetX;
 
 			ARGB argb = _color.getAsARGB();
 
@@ -518,37 +529,25 @@ namespace Menge
 		//}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateAlignOffset_( const TextLine & _line, mt::vec2f & _offset )
+	void TextField::updateAlignOffset_( const TextLine & _line, float & _offsetX )
 	{
 		switch( m_horizontAlign )
 		{
 		case ETFHA_NONE:
 			{
-				_offset.x = 0.f;
+				_offsetX = 0.f;
 			}break;
 		case ETFHA_CENTER:
 			{
-				_offset.x = -_line.getLength() * 0.5f;
+				_offsetX = -_line.getLength() * 0.5f;
 			}break;
 		case ETFHA_RIGHT:
 			{
-				_offset.x = -_line.getLength();
+				_offsetX = -_line.getLength();
 			}break;
 		case ETFHA_LEFT:
 			{
-				_offset.x = _line.getLength();
-			}break;
-		}
-
-		switch( m_verticalAlign )
-		{
-		case ETFVA_NONE:
-			{
-				_offset.y = 0.f;
-			}break;
-		case ETFVA_CENTER:
-			{
-				_offset.y = -m_alphaHeight * 0.5f;
+				_offsetX = _line.getLength();
 			}break;
 		}
 	}

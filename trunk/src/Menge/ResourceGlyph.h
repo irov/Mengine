@@ -24,7 +24,7 @@ namespace Menge
 		const Glyph * getGlyph( GlyphChar _id ) const;
 	
 	public:
-		float getAlphaHeight() const;
+		float getFontHeight() const;
 		
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -33,7 +33,7 @@ namespace Menge
 		Glyph & addGlyph_( GlyphChar _glyph, const mt::vec4f & _rect, const mt::vec2f & _offset, float _width );
 
 	protected:
-		float m_alphaHeight;
+		float m_fontHeight;
 
 		typedef BinaryVector<GlyphChar, Glyph, GlyphCharLess> TMapGlyph;
 		TMapGlyph m_glyphs;

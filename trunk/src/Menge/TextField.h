@@ -71,8 +71,8 @@ namespace Menge
 
 		void setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number );
 
-		void setAlphaHeight( float _height );
-		float getAlphaHeight() const;
+		void setFontHeight( float _height );
+		float getFontHeight() const;
 
 		void setOutlineColor( const ColourValue& _color );
 		const ColourValue& getOutlineColor() const;
@@ -136,7 +136,7 @@ namespace Menge
 		void _invalidateColor() override;
 
 	private:
-		void updateAlignOffset_( const TextLine & _line, float & _offsetX );
+		float getHorizontAlignOffset_( const TextLine & _line );
 
 	private:
 		void updateVertices_();
@@ -171,7 +171,7 @@ namespace Menge
 		String m_format;
 		size_t m_number;
 
-		float m_alphaHeight;		
+		float m_fontHeight;		
 		
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;

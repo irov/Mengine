@@ -12,7 +12,7 @@ namespace Menge
 	{
 		int frequency;
 		int channels;
-		float time_total_secs;
+		float length;
 	};
 
 	struct SoundCodecOptions

@@ -64,6 +64,7 @@ namespace Menge
 		if( m_sourceId != 0 )
 		{
 			m_timing = m_soundBuffer->getTimePos( m_sourceId );
+
 			m_soundBuffer->stop( m_sourceId );
 			m_soundSystem->releaseSourceId( m_sourceId );
 		}
@@ -124,17 +125,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SilentSoundSource::getLengthMs() const
 	{
-		if( m_soundBuffer != NULL )
+		if( m_soundBuffer == nullptr )
 		{
-			return m_soundBuffer->getTimeTotal() * 1000.0f;
+			return 0.f;
 		}
 
-		return 0.0f;
+        float ms = m_soundBuffer->getTimeTotal();
+
+		return ms;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SilentSoundSource::getPosMs() const
 	{
-		if( m_soundBuffer == NULL )
+		if( m_soundBuffer == nullptr )
 		{
 			return 0.f;
 		}
@@ -151,9 +154,7 @@ namespace Menge
 		{ 
 			posms = m_timing;
 		}
-
-		posms *= 1000.f;
-		
+        		
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -162,12 +163,12 @@ namespace Menge
 		if( m_playing == true )
 		{
 			this->stop();
-			m_timing = _posMs * 0.001f;
+			m_timing = _posMs;
 			this->play();
 		}
 		else
 		{
-			m_timing = _posMs * 0.001f;
+			m_timing = _posMs;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

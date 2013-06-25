@@ -90,7 +90,7 @@ namespace Menge
 
 			const ResourceGlyph * resourceGlyph = _resource->getResourceGlyph();
 
-			float initSize = resourceGlyph->getAlphaHeight();
+			float initSize = resourceGlyph->getFontHeight();
 			charData.size /= initSize;
 			
 			if( m_charsData.empty() == false )
@@ -152,11 +152,13 @@ namespace Menge
 		it_char != it_char_end; 
 		++it_char )
 		{
+            const CharData & data = *it_char;
+
 			for( int i = 0; i != 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
 				Vertex2D & renderVertex = _renderObject[renderObjectNum + i];
-				const mt::vec3f & charVertex = it_char->renderVertex[i];
+				const mt::vec3f & charVertex = data.renderVertex[i];
 				
 
                 if( _pixelsnap == true )
@@ -181,7 +183,7 @@ namespace Menge
                 renderVertex.uv2[1] = 0.f;
             }
 
-			const mt::vec4f & char_uv = it_char->uv;
+			const mt::vec4f & char_uv = data.uv;
 
 			mt::vec4f total_uv;
 			total_uv.x = _uv.x + (_uv.z - _uv.x) * char_uv.x;

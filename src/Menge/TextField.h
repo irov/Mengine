@@ -136,7 +136,7 @@ namespace Menge
 		void _invalidateColor() override;
 
 	private:
-		void updateAlignOffset_( const TextLine & _line, mt::vec2f & _offset );
+		void updateAlignOffset_( const TextLine & _line, float & _offsetX );
 
 	private:
 		void updateVertices_();

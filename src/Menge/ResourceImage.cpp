@@ -13,8 +13,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ResourceImage()
-        : m_texture(0)
-        , m_textureAlpha(0)
+        : m_texture(nullptr)
+        , m_textureAlpha(nullptr)
         , m_textureSize(0.f, 0.f)
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
@@ -122,9 +122,9 @@ namespace Menge
 		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
             ->createDecoderT<ImageDecoderInterfacePtr>( _codec, _file );
 
-		if( imageDecoder == 0 )
+		if( imageDecoder == nullptr )
 		{
-			return NULL;
+			return nullptr;
 		}
         
 		return imageDecoder;

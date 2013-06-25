@@ -280,7 +280,7 @@ namespace Menge
             return false;
         }
 
-        //size_t file_size = file->size();
+        size_t file_size = file->size();
 
         size_t load_crc32 = 0;
         if( file->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
@@ -304,17 +304,7 @@ namespace Menge
             return false;
         }
 
-        size_t load_compress_size = 0;
-        if( file->read( &load_compress_size, sizeof(load_compress_size) ) != sizeof(load_compress_size) )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (load compress size)"
-                , m_name.c_str()
-                , fullpath.c_str()
-                );
-
-            return false;
-        }
-        //size_t data_size = file_size - sizeof(load_crc32);
+        size_t load_compress_size = file_size - sizeof(load_crc32) - sizeof(load_data_size);
 
         TBlobject archive_blob(load_compress_size);
         file->read( &archive_blob[0], load_compress_size );
@@ -431,17 +421,7 @@ namespace Menge
 
             return false;
         }
-
-        if( file->write( &comress_size, sizeof(comress_size) ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'compress size' %s (not create)"
-                , m_name.c_str()
-                , _filename.c_str()
-                );
-
-            return false;
-        }
-        
+                
         if( file->write( &archive_blob[0], comress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'data' %s (not create)"

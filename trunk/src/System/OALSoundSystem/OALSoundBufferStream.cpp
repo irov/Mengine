@@ -79,7 +79,7 @@ namespace Menge
 
 		//m_channels = dataInfo->channels;
         m_channels = 2;
-		m_time_total = dataInfo->length;
+		m_length = dataInfo->length;
 
 		if (m_channels == 1)
 		{

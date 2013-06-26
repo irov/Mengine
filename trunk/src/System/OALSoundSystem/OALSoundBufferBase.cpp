@@ -9,7 +9,7 @@ namespace Menge
         : m_format(0)
         , m_frequency(0)
         , m_channels(0)
-        , m_time_total(0.f)
+        , m_length(0.f)
         , m_isStereo(false)
 	{
 	}
@@ -25,7 +25,8 @@ namespace Menge
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
-		m_time_total = dataInfo->length;
+		m_length = dataInfo->length;
+
 		if( m_channels == 1 )
 		{
 			m_format = AL_FORMAT_MONO16;
@@ -75,12 +76,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundBufferBase::getTimeTotal() const
 	{
-		return m_time_total;
+		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferBase::update()
 	{
-		// do nothing
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -1,8 +1,8 @@
 #	include "DX9RenderSystem.h"
 #	include "DX9Texture.h"
 #	include "DX9RenderTexture.h"
+#   include "DX9RenderShader.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 
 #	include <algorithm>
@@ -3035,6 +3035,19 @@ namespace Menge
 				);
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderShaderInterface * DX9RenderSystem::compileShader( const void * _code, size_t _len )
+    {
+        (void)_len;
+
+        LPDIRECT3DPIXELSHADER9 pixelShader;
+        
+        m_pD3DDevice->CreatePixelShader( (DWORD *)_code, &pixelShader );
+
+        DX9RenderShader * shader = new DX9RenderShader(pixelShader);
+
+        return shader;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setVSync( bool _vSync )
 	{

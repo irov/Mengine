@@ -233,7 +233,7 @@ namespace Menge
 
 	typedef size_t VBHandle; // Vertex Buffer Handle
 	typedef size_t IBHandle; // Index Buffer Handle
-
+    //////////////////////////////////////////////////////////////////////////
     struct RenderTextureStage
     {
         RenderTextureStage()
@@ -264,7 +264,7 @@ namespace Menge
 
         size_t texCoordIndex;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     struct RenderMaterial
     {
         RenderMaterial()
@@ -293,7 +293,7 @@ namespace Menge
             return filterMaterial;
         }
     };
-
+    //////////////////////////////////////////////////////////////////////////
     struct RenderMaterialGroup
     {
         RenderMaterial group[4];
@@ -304,7 +304,11 @@ namespace Menge
             return &group[_textureU + (_textureV * 2)];
         }
     };
-
+    //////////////////////////////////////////////////////////////////////////
+    class RenderShaderInterface
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
     const int VDECL_XYZ = 0x002;
     const int VDECL_XYZRHW = 0x004;
     const int VDECL_NORMAL = 0x010;
@@ -312,7 +316,7 @@ namespace Menge
     const int VDECL_SPECULAR = 0x080;
     const int VDECL_TEX1 = 0x100;
     const int VDECL_TEX2 = 0x200;
-
+    //////////////////////////////////////////////////////////////////////////
     struct Vertex2D
     {
         mt::vec3f pos;
@@ -320,9 +324,9 @@ namespace Menge
         mt::vec2f uv;
         mt::vec2f uv2;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1 | VDECL_TEX2;
-
+    //////////////////////////////////////////////////////////////////////////
     struct Vertex3D
     {
         float pos[3];
@@ -330,12 +334,12 @@ namespace Menge
         uint32 color;
         float uv[2];
     };
-
+    //////////////////////////////////////////////////////////////////////////
     static const uint32 Vertex3D_declaration = VDECL_XYZ | VDECL_NORMAL | VDECL_DIFFUSE | VDECL_TEX1;
-        
+    //////////////////////////////////////////////////////////////////////////
     typedef std::vector<Vertex2D> TVectorVertex2D;
     typedef std::vector<Vertex3D> TVectorVertex3D;
-
+    //////////////////////////////////////////////////////////////////////////
     class ApplyColor2D
     {
     public:
@@ -351,7 +355,7 @@ namespace Menge
     protected:
         uint32 m_argb;
     };
-
+    //////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
         : public FactorablePtr
 	{
@@ -366,17 +370,17 @@ namespace Menge
         virtual unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class RenderTextureInterface;
-
+    //////////////////////////////////////////////////////////////////////////
 	class RenderTextureInterfaceListener
 	{
 	public:
 		virtual void onRenderTextureRelease( const RenderTextureInterface * _texture ) = 0;
 	};
-	
+	//////////////////////////////////////////////////////////////////////////
 	class RenderTextureInterface
         : public FactorablePtr
 	{
@@ -474,6 +478,8 @@ namespace Menge
 		virtual void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) = 0;
 
 		virtual void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) = 0;
+
+        virtual RenderShaderInterface * compileShader( const void * _code, size_t _len ) = 0;
 
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
 			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) = 0;

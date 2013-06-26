@@ -8,6 +8,7 @@
 #   include "Utils/Core/BinaryVector.h"
 
 #	include <d3d9.h>
+#   include <D3DX9Shader.h>
 
 namespace Menge
 {
@@ -86,6 +87,8 @@ namespace Menge
 		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 
 		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
+
+        RenderShaderInterface * compileShader( const void * _code, size_t _len ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type
 			, size_t _baseVertexIndex

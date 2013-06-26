@@ -26,8 +26,6 @@
 
 #	include "resource.h"
 
-#	include "SimpleIni.h"
-
 #	include "Core/File.h"
 
 #	include <ctime>
@@ -1656,9 +1654,9 @@ namespace Menge
                 m_windowsLayer->dispatchMessage( &msg );
 			}
 
-			float frameTime = m_winTimer->getDeltaTime();
-
             bool updating = m_application->onUpdate();
+
+            float frameTime = m_winTimer->getDeltaTime();
 
 			if( updating == true )
 			{

@@ -81,7 +81,7 @@ namespace Menge
     }\
     void destroy##Name( Service * _service )\
     {\
-    delete _service;\
+    delete static_cast<Implement *>(_service);\
     }\
     }\
     struct __mengine_dummy{}
@@ -103,7 +103,7 @@ namespace Menge
     struct __mengine_extern_dummy_##Name{}
 
 #   define SERVICE_REGISTRY( Provider, Service )\
-    (Provider->registryService(Service->getServiceName(), Service))
+    Provider->registryService(Service->getServiceName(), Service)
 
 #   define SERVICE_CREATE( Name, Service )\
     create##Name( Service )

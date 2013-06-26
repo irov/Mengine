@@ -151,7 +151,7 @@ namespace Menge
 		, m_resetTiming(false)
 		, m_maxTiming(100.f)
         , m_mouseBounded(false)
-        , m_allowFullscreenSwitchShortcut(true)
+        , m_allowFullscreenSwitchShortcut(false)
         , m_game(nullptr)
         , m_focus(true)
         , m_update(true)				

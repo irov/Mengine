@@ -54,7 +54,7 @@ namespace Menge
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
-		m_time_total = dataInfo->length;
+		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
 
         //printf("OALSoundBuffer::load %.4f\n"

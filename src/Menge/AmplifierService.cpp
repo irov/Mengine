@@ -101,16 +101,17 @@ namespace Menge
 			return;
 		}
 
-		m_currentPlayList->setLooped1(_looped);
+		m_currentPlayList->setLooped1( _looped );
 
-		const TrackDesc * desc = m_currentPlayList->getTrackByIndex(_index);
+		const TrackDesc * desc = m_currentPlayList->getTrackByIndex( _index );
 		const ConstString & category = m_currentPlayList->getCategory();
 
-		m_currentPlayList->setTrack(_index);
+		m_currentPlayList->setTrack( _index );
 
 		this->prepareSound_( category, desc->path, desc->codec );
 
-		float musicVolume = SOUND_SERVICE(m_serviceProvider)->getMusicVolume();
+		float musicVolume = SOUND_SERVICE(m_serviceProvider)
+            ->getMusicVolume();
 
 		if( SOUND_SERVICE(m_serviceProvider)->setSourceVolume( m_sourceID, musicVolume ) == false )
 		{
@@ -220,7 +221,7 @@ namespace Menge
 			SOUND_SERVICE(m_serviceProvider)
                 ->stop( m_sourceID );
 
-			release_();
+			this->release_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -283,24 +284,24 @@ namespace Menge
 			return;
 		}
 
-		if( m_currentPlayList->getLooped() == false )
-		{
-			m_currentPlayList->next();
-			const TrackDesc * track = m_currentPlayList->getTrack();
+		//if( m_currentPlayList->getLooped() == false )
+		//{
+        m_currentPlayList->next();
+        const TrackDesc * track = m_currentPlayList->getTrack();
 
-			if( track )
-			{
-				const ConstString & category = m_currentPlayList->getCategory();
-				this->prepareSound_( category, track->path, track->codec );
-			}
+        if( track )
+        {
+            const ConstString & category = m_currentPlayList->getCategory();
+            this->prepareSound_( category, track->path, track->codec );
+        }
 
-			if( m_sourceID != 0 )
-			{
-				//Holder<SoundEngine>::get()
-				//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
-				this->play_();
-			}
-		}
+        if( m_sourceID != 0 )
+        {
+            //Holder<SoundEngine>::get()
+            //	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
+            this->play_();
+        }
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::listenSoundNodePaused()

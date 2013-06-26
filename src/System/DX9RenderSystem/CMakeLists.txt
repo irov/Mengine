@@ -9,6 +9,8 @@ src
 	DX9Texture.cpp
 	DX9RenderTexture.h
 	DX9RenderTexture.cpp
+    DX9RenderShader.h
+    DX9RenderShader.cpp
 )
 
 include_directories( 

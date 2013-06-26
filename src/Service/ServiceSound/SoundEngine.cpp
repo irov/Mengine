@@ -372,7 +372,7 @@ namespace Menge
                         {
                             if( source->streamable == true && source->taskSoundBufferUpdate != nullptr )
                             {
-                                source->state = ESS_STOPPING;
+                                source->state = ESS_STOPPED;
                                 this->stopSoundBufferUpdate_( source );
                                 //source->taskSoundBufferUpdate->stop();
                             }
@@ -831,6 +831,8 @@ namespace Menge
 
             return;
         }
+
+        source->timing = lengthMs - _pos;
 
         if( source->state == ESS_STOPPED || source->state == ESS_STOPPING )
         {

@@ -53,7 +53,7 @@ namespace Menge
 		this->apply_( m_sourceId );
 		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
 
-        m_timing = 0.f;
+        //m_timing = 0.f;
 	
 		m_playing = true;
 	}

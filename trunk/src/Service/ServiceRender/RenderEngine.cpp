@@ -2306,13 +2306,15 @@ namespace Menge
         const mt::vec3f & p2 = _v2.pos;
         const mt::vec3f & p3 = _v3.pos;
 
-        float a = mt::length_v3_v3( p1, p2 );
-        float b = mt::length_v3_v3( p2, p3 );
-        float c = mt::length_v3_v3( p3, p1 );
+        double a = (double)mt::length_v3_v3( p1, p2 );
+        double b = (double)mt::length_v3_v3( p2, p3 );
+        double c = (double)mt::length_v3_v3( p3, p1 );
 
-        double p = (a + b + c) * 0.5f;
+        double p = (a + b + c) * 0.5;
 
-        double S = sqrt( p * (p-a) * (p-b) * (p-c) );
+        double S2 = p * abs(p-a) * abs(p-b) * abs(p-c);
+
+        double S = sqrt( S2 );
 
         return S;
     }

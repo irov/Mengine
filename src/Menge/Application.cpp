@@ -32,9 +32,10 @@
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/AlphaChannelInterface.h"
 #   include "Interface/AccountInterface.h"
+#   include "Interface/ProfilerInterface.h"
 
 #	include "Watchdog.h"
-#   include "Interface/ProfilerInterface.h"
+
 
 #	include "Player.h"
 #	include "Kernel/Scene.h"
@@ -115,15 +116,8 @@
 
 #	include "ScriptWrapper.h"
 
-//extern "C"
-//{
-//	#	include <iniparser/src/iniparser.h>
-//}
-
-#	include <locale.h>
 #	include <ctime>
 #	include <sstream>
-#	include <iomanip>
 
 #	include "VersionInfo.h"
 
@@ -139,10 +133,10 @@ SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
 SERVICE_EXTERN(AlphaChannelService, Menge::AlphaChannelServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
-SERVICE_EXTERN(ProfilerService, Menge::ProfilerServiceInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
 SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
+SERVICE_EXTERN(ProfilerService, Menge::ProfilerServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////

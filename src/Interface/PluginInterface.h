@@ -2,8 +2,6 @@
 
 #	include "Interface/ServiceInterface.h"
 
-#	include "Config/Typedef.h"
-
 #	include <map>
 
 namespace Menge

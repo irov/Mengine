@@ -88,7 +88,8 @@ namespace Menge
 
 		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
 
-        RenderShaderInterface * compileShader( const void * _code, size_t _len ) override;
+        RenderShaderInterface * createShader( const void * _code, size_t _len ) override;
+        void setShader( RenderShaderInterface * _shader ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type
 			, size_t _baseVertexIndex

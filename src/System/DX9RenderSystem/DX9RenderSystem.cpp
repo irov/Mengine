@@ -3036,7 +3036,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    RenderShaderInterface * DX9RenderSystem::compileShader( const void * _code, size_t _len )
+    RenderShaderInterface * DX9RenderSystem::createShader( const void * _code, size_t _len )
     {
         (void)_len;
 
@@ -3044,9 +3044,18 @@ namespace Menge
         
         m_pD3DDevice->CreatePixelShader( (DWORD *)_code, &pixelShader );
 
-        DX9RenderShader * shader = new DX9RenderShader(pixelShader);
+        DX9RenderShader * dx9_shader = new DX9RenderShader(pixelShader);
 
-        return shader;
+        return dx9_shader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::setShader( RenderShaderInterface * _shader )
+    {
+        DX9RenderShader * dx9_shader = static_cast<DX9RenderShader *>(_shader);
+
+        LPDIRECT3DPIXELSHADER9 pixelShader = dx9_shader->getPixelShader();
+
+        m_pD3DDevice->SetPixelShader( pixelShader );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setVSync( bool _vSync )

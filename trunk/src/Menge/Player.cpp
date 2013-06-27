@@ -1024,6 +1024,14 @@ namespace Menge
 			String text = ss.str();
 
 			m_debugText->setText( text );
+
+            float gameViewportAspect;
+            Viewport gameViewport;
+
+            APPLICATION_SERVICE(m_serviceProvider)
+                ->getGameViewport( gameViewportAspect, gameViewport );
+
+            m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
 			m_debugText->render( m_camera2D, debugMask );
 		}
 //#	endif

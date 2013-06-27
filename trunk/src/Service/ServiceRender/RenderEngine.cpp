@@ -258,7 +258,7 @@ namespace Menge
 
             this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "ParticleBlend"), mt );
         }
-
+        
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
         m_defaultRenderTarget = Helper::stringizeString(m_serviceProvider, "Window");
@@ -1010,6 +1010,8 @@ namespace Menge
         //m_interface->clearFrameBuffer( FBT_COLOR );
         //m_interface->setRenderViewport( m_currentRenderViewport );
 
+        //RENDER_SYSTEM(m_serviceProvider)->setShader( m_shader );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1326,6 +1328,20 @@ namespace Menge
 
         RENDER_SYSTEM(m_serviceProvider)->setSrcBlendFactor( m_currentBlendSrc );
         RENDER_SYSTEM(m_serviceProvider)->setDstBlendFactor( m_currentBlendDst );
+
+        //InputStreamInterfacePtr shaderStream = FILE_SERVICE(m_serviceProvider)
+        //    ->openInputFile( ConstString::none(), Helper::stringizeString( m_serviceProvider, "shader.bin" ) );
+
+        //size_t shaderSize = shaderStream->size();
+
+        //char * shaderBuff = new char [shaderSize];
+
+        //shaderStream->read( shaderBuff, shaderSize );
+
+        //RenderShaderInterface * shader = RENDER_SYSTEM(m_serviceProvider)
+        //    ->createShader( shaderBuff, shaderSize );
+
+        //m_shader = shader;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )

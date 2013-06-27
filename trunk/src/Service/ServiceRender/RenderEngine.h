@@ -254,6 +254,8 @@ namespace Menge
 		bool m_layer3D;
 		mt::mat4f m_renderAreaProj;
 
+        RenderShaderInterface * m_shader;
+
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
 

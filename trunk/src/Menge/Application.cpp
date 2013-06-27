@@ -136,7 +136,7 @@ SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
 SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
-SERVICE_EXTERN(ProfilerService, Menge::ProfilerServiceInterface);
+//SERVICE_EXTERN(ProfilerService, Menge::ProfilerServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -523,19 +523,19 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeProfiler_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing ProfilerService..." );
+        //LOGGER_INFO(m_serviceProvider)( "Inititalizing ProfilerService..." );
 
-        ProfilerServiceInterface * profiler;
-        if( SERVICE_CREATE( ProfilerService, &profiler ) == false )
-        {
-            return false;
-        }
+        //ProfilerServiceInterface * profiler;
+        //if( SERVICE_CREATE( ProfilerService, &profiler ) == false )
+        //{
+        //    return false;
+        //}
 
-        SERVICE_REGISTRY( m_serviceProvider, profiler );
+        //SERVICE_REGISTRY( m_serviceProvider, profiler );
 
-        profiler->initialize();
+        //profiler->initialize();
 
-        m_profiler = profiler;
+        //m_profiler = profiler;
 
         return true;    
     }
@@ -1757,6 +1757,18 @@ namespace Menge
 	{
         float aspect = m_currentResolution.getAspectRatio();
 
+        if( m_fixedContentResolution == false )
+        {
+            _aspect = aspect;
+            
+            _viewport.begin.x = 0.f;
+            _viewport.begin.y = 0.f;
+            _viewport.end.x = (float)m_contentResolution.getWidth();
+            _viewport.end.y = (float)m_contentResolution.getHeight();
+
+            return;
+        }
+        
         Viewport aspectRatioViewport;
         float bestAspect;
 

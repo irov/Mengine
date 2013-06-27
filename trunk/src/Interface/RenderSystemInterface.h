@@ -479,7 +479,8 @@ namespace Menge
 
 		virtual void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) = 0;
 
-        virtual RenderShaderInterface * compileShader( const void * _code, size_t _len ) = 0;
+        virtual RenderShaderInterface * createShader( const void * _code, size_t _len ) = 0;
+        virtual void setShader( RenderShaderInterface * _shader ) = 0;
 
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
 			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) = 0;

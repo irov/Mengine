@@ -428,7 +428,7 @@ namespace Menge
         RENDER_SYSTEM(m_serviceProvider)
             ->changeWindowMode( m_windowResolution, m_fullscreen );
 
-        this->restoreRenderSystemStates_();
+        //this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::screenshot( const RenderTextureInterfacePtr & _texture, const mt::vec4f & _rect )
@@ -967,15 +967,19 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)("RenderEngine::onDeviceRestored"
             );
 
-        if( this->refillIndexBuffer2D_( m_maxPrimitiveVertices2D ) == false )
+        if( this->recreate2DBuffers_( m_maxIndexCount ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::onRenderSystemDeviceRestored invalid refill index buffer"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::onRenderSystemDeviceRestored invalid recreate buffers"
                 );
 
             return false;
         }
 
+        m_currentVBHandle = 0;
+        m_currentIBHandle = 0;
+
         this->restoreRenderSystemStates_();
+        this->prepare2D_();
 
         return true;
     }
@@ -1293,7 +1297,7 @@ namespace Menge
         RENDER_SYSTEM(m_serviceProvider)->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
         RENDER_SYSTEM(m_serviceProvider)->setLightingEnable( false );
 
-        LOGGER_WARNING(m_serviceProvider)("RenderEngine::restoreRenderSystemStates_ texture stages %d"
+        LOGGER_INFO(m_serviceProvider)("RenderEngine::restoreRenderSystemStates_ texture stages %d"
             , MENGE_MAX_TEXTURE_STAGES
             );
 
@@ -1523,6 +1527,15 @@ namespace Menge
         {
             m_currentRenderCamera = _camera;
 
+            if( m_renderPasses.full() == true )
+            {
+                LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render passes %d"
+                    , MENGINE_RENDER_PASS_MAX
+                    );
+
+                return;
+            }
+
             RenderPass & pass = m_renderPasses.emplace();
             pass.beginRenderObject = m_renderObjects.size();
             pass.countRenderObject = 0;
@@ -1670,7 +1683,7 @@ namespace Menge
             _handle
             , 0
             , _count * sizeof(Vertex2D)
-            , LOCK_DISCARD 
+            , 0 
             );
 
         if( vbuffer == nullptr )
@@ -1767,11 +1780,13 @@ namespace Menge
             vertexDataSize = vbPos;
         }
 
-        uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
+        //uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
+        //uint32 lockFlags = LOCK_DISCARD;
+        uint32 lockFlags = 0;
 
         void * vData = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
             m_vbHandle2D
-            , m_vbPos * sizeof(Vertex2D)
+            , 0
             , vertexDataSize * sizeof(Vertex2D)
             , lockFlags 
             );
@@ -2100,7 +2115,7 @@ namespace Menge
             return false;
         }
 
-        if( refillIndexBuffer2D_( m_maxPrimitiveVertices2D ) == false )
+        if( this->refillIndexBuffer2D_( m_maxPrimitiveVertices2D ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::recreate2DBuffers_: can't refill index buffer"
                 );

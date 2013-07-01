@@ -1637,6 +1637,8 @@ namespace Menge
 
 		while( m_running )
 		{
+            float frameTime = m_winTimer->getDeltaTime();
+
             //EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
             //
             //if( m_windowsType == EWT_VISTA )
@@ -1654,9 +1656,7 @@ namespace Menge
                 m_windowsLayer->dispatchMessage( &msg );
 			}
 
-            bool updating = m_application->onUpdate();
-
-            float frameTime = m_winTimer->getDeltaTime();
+            bool updating = m_application->onUpdate();            
 
 			if( updating == true )
 			{

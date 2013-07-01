@@ -1132,16 +1132,32 @@ namespace Menge
 
 		HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
 
-		if (hr == D3DERR_DEVICELOST)
+		if( hr == D3DERR_DEVICELOST )
 		{
             LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::beginScene: D3DERR_DEVICELOST"
                 );
 
+            while( true, true )
+            {
+                HRESULT result = m_pD3DDevice->TestCooperativeLevel();
+
+                if( result == D3DERR_DEVICENOTRESET )
+                {
+                    LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem::beginScene: TestCooperativeLevel D3DERR_DEVICENOTRESET"
+                        );
+
+                    if( this->resetDevice_() == false )
+                    {
+                        return false;
+                    }
+
+                    break;
+                }
+
+                Sleep(100);
+            }
+
             return false;
-            //if( this->resetDevice_() == false )
-            //{
-            //    return false;
-            //}
 		}
 		else if (hr == D3DERR_DEVICENOTRESET)
 		{
@@ -1474,12 +1490,6 @@ namespace Menge
 	bool DX9RenderSystem::initLost_()
 	{
 		// Store render target
-        if( m_screenSurf )
-		{
-            m_screenSurf->Release();
-            m_screenSurf = NULL;
-        }
-
 		HRESULT hr = m_pD3DDevice->GetRenderTarget( 0, &m_screenSurf );
 		if( FAILED( hr ) )
 		{
@@ -1498,7 +1508,7 @@ namespace Menge
 		//		);
 		//}
 		
-		this->createSyncTargets_();
+		//this->createSyncTargets_();
 
 		for( TMapVBInfo::iterator 
 			it = m_vertexBuffers.begin(), 
@@ -1853,44 +1863,44 @@ namespace Menge
 	{
 		HRESULT hr;
 
-		if( m_syncTargets[0] )
+		if( m_syncTargets[0] != nullptr )
 		{
 			m_syncTargets[0]->Release();
-			m_syncTargets[0] = 0;
+			m_syncTargets[0] = nullptr;
 		}
 		
-        if( m_syncTargets[1] )
+        if( m_syncTargets[1] != nullptr )
 		{
 			m_syncTargets[1]->Release();
-			m_syncTargets[1] = 0;
+			m_syncTargets[1] = nullptr;
 		}
 		
-        if( m_syncTemp )
+        if( m_syncTemp != nullptr )
 		{
 			m_syncTemp->Release();
-			m_syncTemp = 0;
+			m_syncTemp = nullptr;
 		}
 		
-        if( m_syncTempTex )
+        if( m_syncTempTex != nullptr )
 		{
 			m_syncTempTex->Release();
-			m_syncTempTex = 0;
+			m_syncTempTex = nullptr;
 		}
 
-		if( m_screenSurf )
+		if( m_screenSurf != nullptr )
         {
             m_screenSurf->Release();
-            m_screenSurf = NULL;
+            m_screenSurf = nullptr;
         }
 		//if(m_screenDepth) m_screenDepth->Release();
 
-        if( m_currentIB )
+        if( m_currentIB != nullptr )
         {
-            m_currentIB = NULL;
+            m_currentIB = nullptr;
 
-		    hr = m_pD3DDevice->SetIndices( NULL );
+		    hr = m_pD3DDevice->SetIndices( nullptr );
 
-            if( FAILED( hr ) )
+            if( FAILED( hr ) == true )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to SetIndices (hr:%p)"
                     , hr 
@@ -1898,13 +1908,13 @@ namespace Menge
             }            
         }
 
-        if( m_currentVB )
+        if( m_currentVB != nullptr )
         {
-            m_currentVB = NULL;
+            m_currentVB = nullptr;
 
-		    hr = m_pD3DDevice->SetStreamSource( 0, NULL, 0, 0 );
+		    hr = m_pD3DDevice->SetStreamSource( 0, nullptr, 0, 0 );
 
-		    if( FAILED( hr ) )
+		    if( FAILED( hr ) == true )
 		    {
     			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to SetStreamSource (hr:%p)"
 				    , hr 
@@ -1922,10 +1932,10 @@ namespace Menge
         {
             VBInfo & vb = it->second;
 
-            if( vb.pVB )
+            if( vb.pVB != nullptr )
             {
                 vb.pVB->Release();
-                vb.pVB = NULL;
+                vb.pVB = nullptr;
             }
         }
 
@@ -1938,16 +1948,16 @@ namespace Menge
 		{
             IBInfo & ib = it->second;
 
-            if( ib.pIB )
+            if( ib.pIB != nullptr )
             {
 			    ib.pIB->Release();
-                ib.pIB = NULL;
+                ib.pIB = nullptr;
             }
 		}
-
+        
 		hr = m_pD3DDevice->Reset( m_d3dpp );
 
-		if( FAILED( hr ) )
+		if( FAILED( hr ) == true )
 		{
             LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to reset device (hr:%p)"
                 , hr 
@@ -2072,7 +2082,7 @@ namespace Menge
 		{
             if( m_currentVB )
             {
-			    hr = m_pD3DDevice->SetStreamSource( 0, NULL, 0, 0 );
+			    hr = m_pD3DDevice->SetStreamSource( 0, nullptr, 0, 0 );
 
 			    if( FAILED( hr ) )
 			    {
@@ -2081,12 +2091,12 @@ namespace Menge
 					    );
 			    }
 
-                m_currentVB = NULL;
+                m_currentVB = nullptr;
             }
 
             if( m_currentIB )
             {
-                hr = m_pD3DDevice->SetIndices( NULL );
+                hr = m_pD3DDevice->SetIndices( nullptr );
 
                 if( FAILED( hr ) )
                 {
@@ -2129,13 +2139,13 @@ namespace Menge
             }
         }
 
-		if( m_pD3DDevice ) 
+		if( m_pD3DDevice == nullptr ) 
 		{ 
 			m_pD3DDevice->Release(); 
 			m_pD3DDevice = NULL; 
 		}
 
-		if( m_pD3D ) 
+		if( m_pD3D == nullptr ) 
 		{ 
 			m_pD3D->Release();
 			m_pD3D = NULL; 
@@ -2290,6 +2300,21 @@ namespace Menge
 
         if( m_vertexBuffers.has( _vbHandle, &vbinfo ) == false )
         {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockVertexBuffer not found %d"
+                , _vbHandle
+                );
+
+            return nullptr;
+        }
+
+        if( _offset + _size > vbinfo->length )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockVertexBuffer %d lock %d size %d"
+                , _vbHandle
+                , _offset + _size
+                , vbinfo->length
+                );
+
             return nullptr;
         }
 
@@ -2299,7 +2324,7 @@ namespace Menge
 
 		HRESULT hr = vb->Lock( _offset, _size, &lock, _flags );
 
-		if( FAILED( hr ) )
+		if( FAILED( hr ) == true )
 		{
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockVertexBuffer vertex buffer %d invalid %d"
                 , _vbHandle
@@ -2329,7 +2354,17 @@ namespace Menge
 
 		HRESULT hr = vb->Unlock();
 
-		return SUCCEEDED( hr );
+        if( FAILED( hr ) == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockVertexBuffer vertex buffer %d invalid %d"
+                , _vbHandle
+                , hr
+                );
+
+            return false;
+        }
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint16* DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle )
@@ -2350,7 +2385,7 @@ namespace Menge
 		void * lock = nullptr;
 		HRESULT hr = ib->Lock( 0, 0, &lock, 0 );
 
-        if( hr != D3D_OK )
+        if( FAILED( hr ) == true )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockIndexBuffer %d error %d"
                 , _ibHandle
@@ -2424,7 +2459,7 @@ namespace Menge
 
 		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vb, 0, vbInfo->vertexSize );
 
-		if( FAILED( hr ) )
+		if( FAILED( hr ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::setVertexBuffer failed to SetStreamSource (hr:%p)"
 				, hr 
@@ -2463,11 +2498,11 @@ namespace Menge
 			return;
 		}
 
-		IDirect3DIndexBuffer9* ib = ibInfo->pIB;
+		IDirect3DIndexBuffer9 * ib = ibInfo->pIB;
 
 		HRESULT hr = m_pD3DDevice->SetIndices( ib );
 
-		if( FAILED( hr ) )
+		if( FAILED( hr ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem failed to setIndexBuffer (hr:%p)"
 				, hr 
@@ -2503,7 +2538,7 @@ namespace Menge
 			, primCount 
             );
 
-		if( FAILED( hr ) )
+		if( FAILED( hr ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem failed to DrawIndexedPrimitive (hr:%p)"
 				, hr 

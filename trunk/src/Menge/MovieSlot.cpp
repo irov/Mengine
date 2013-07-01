@@ -20,7 +20,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            Node * node = *it;
+            const Node * node = *it;
 
             LOGGER_ERROR(m_serviceProvider)("MovieSlot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
                 , this->getName().c_str()

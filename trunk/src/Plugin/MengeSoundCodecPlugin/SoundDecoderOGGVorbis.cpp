@@ -1,11 +1,3 @@
-/*
- *	SoundDecoderOGGVorbis.cpp
- *
- *	Created by _Berserk_ on 18.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	include "SoundDecoderOGGVorbis.h"
 
 #	include "Interface/FileSystemInterface.h"
@@ -187,15 +179,8 @@ namespace Menge
 
             return false;
         }
-
+              
         double al_pos = (double)(_timing * 0.001f);
-
-        double al_total = ov_time_total( &m_oggVorbisFile, -1 );
-
-        if( al_pos > al_total )
-        {
-            al_pos = al_total - 0.0001;
-        }
 
         int seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
 
@@ -214,11 +199,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::timeTell()
 	{
-        //double al_total = ov_time_total( &m_oggVorbisFile, -1 );
+        double al_total = ov_time_total( &m_oggVorbisFile, -1 );
 		double al_pos = ov_time_tell( &m_oggVorbisFile );
-        
+
         float float_pos = (float)(al_pos * 1000.f);
 
+        if( float_pos > m_dataInfo.length )
+        {
+            float_pos = m_dataInfo.length;
+        }
+        
 		return float_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -202,11 +202,27 @@ namespace	Menge
 				return 0;
 			}
 
-			SOUND_SERVICE(m_serviceProvider)
-				->setPosMs( sourceID, _position );
+			if( SOUND_SERVICE(m_serviceProvider)
+				->setPosMs( sourceID, _position ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "soundPlayFromPosition: set pos '%s' '%f'"
+                    , _resourceName.c_str()
+                    , _position
+                    );
+
+                return 0;
+            }
 			
-			SOUND_SERVICE(m_serviceProvider)
-				->play( sourceID );
+			if( SOUND_SERVICE(m_serviceProvider)
+				->play( sourceID ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "soundPlayFromPosition: play '%s' '%f'"
+                    , _resourceName.c_str()
+                    , _position
+                    );
+
+                return 0;
+            }
 
 			return sourceID;
 		}

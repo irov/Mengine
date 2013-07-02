@@ -27,7 +27,7 @@ namespace Menge
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
 
-		void play( ALenum _source, bool _looped, float _pos ) override;
+		bool play( ALenum _source, bool _looped, float _pos ) override;
 		void pause( ALenum _source ) override;
 		void stop( ALenum _source ) override;
 		bool getTimePos( ALenum _source, float & _pos ) const override;

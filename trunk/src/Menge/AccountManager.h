@@ -37,10 +37,8 @@ namespace Menge
 		bool selectAccount( const WString& _accountID ) override;
 
 	public:
-		bool loadAccountsInfo() override;
-
-    protected:
-		bool saveAccountsInfo_();
+		bool loadAccounts() override;
+        bool saveAccounts() override;
 
 	public:
 		void setDefaultAccount( const WString & _accountID ) override;

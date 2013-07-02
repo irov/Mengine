@@ -183,6 +183,7 @@ namespace Menge
         ParticleServiceInterface * m_particleService;
         PhysicService2DInterface * m_physicService2D;
         RenderServiceInterface * m_renderService;
+        RenderTextureManagerInterface * m_renderTextureManager;
         SoundServiceInterface * m_soundService;
         ScriptServiceInterface * m_scriptService;
         PluginServiceInterface * m_pluginService;

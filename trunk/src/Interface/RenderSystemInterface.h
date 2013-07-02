@@ -273,7 +273,6 @@ namespace Menge
             , depthBufferWriteEnable(false)
             , alphaTestEnable(false)
             , alphaBlendEnable(false)
-            , filterMaterial(nullptr)
         {
         }
 
@@ -285,13 +284,6 @@ namespace Menge
         bool depthBufferWriteEnable;
         bool alphaTestEnable;
         bool alphaBlendEnable;
-
-        const RenderMaterial * filterMaterial;
-
-        const RenderMaterial * getFilterMaterial() const
-        {
-            return filterMaterial;
-        }
     };
     //////////////////////////////////////////////////////////////////////////
     struct RenderMaterialGroup
@@ -414,6 +406,52 @@ namespace Menge
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderTextureInterface> RenderTextureInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    struct RenderTextureDebugInfo
+    {
+        size_t textureMemory;
+        size_t textureCount;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class RenderTextureManagerInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE("RenderTextureManager")
+
+    public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
+        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _width, size_t _height ) = 0;
+
+    public:
+        virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format, size_t _textureWidth, size_t _textureHeight ) = 0;
+        //virtual RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) = 0;
+        virtual RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+
+        virtual RenderTextureInterfacePtr getTexture( const FilePath& _filename ) = 0;
+
+        virtual RenderTextureInterfacePtr getNullTexture() = 0;
+
+        virtual bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const = 0;
+
+    public:
+        //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
+        virtual void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
+
+        virtual void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) = 0;
+
+    public:
+        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const ConstString & _codecName, const FilePath & _filename ) = 0;
+
+    public:
+        virtual const RenderTextureDebugInfo & getDebugInfo() = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+#   define RENDERTEXTUREMANAGER_SERVICE( serviceProvider )\
+    (Menge::Helper::getService<Menge::RenderTextureManagerInterface>(serviceProvider))
 	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
 	{
@@ -560,8 +598,6 @@ namespace Menge
     {
         size_t frameCount;
         size_t dips;
-        size_t textureMemory;
-        size_t textureCount;
 
         double fillrate;
         size_t object;
@@ -600,9 +636,6 @@ namespace Menge
             , const uint16 * _indices = 0, size_t _indicesNum = 0 ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _width, size_t _height ) = 0;
-
-    public:
         virtual const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const = 0;
 
 	public:
@@ -620,16 +653,6 @@ namespace Menge
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual bool getVSync() const = 0;
 		virtual void setSeparateAlphaBlendMode() = 0;
-
-	public:
-		virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format, size_t _textureWidth, size_t _textureHeight ) = 0;
-		//virtual RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) = 0;
-        virtual RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
-		virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
-
-        virtual RenderTextureInterfacePtr getTexture( const FilePath& _filename ) = 0;
-
-        virtual bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const = 0;
 
     public:
         virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
@@ -656,19 +679,10 @@ namespace Menge
         virtual bool isWindowCreated() const = 0;
 
     public:
-        //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
-        virtual void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
-
-        virtual void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) = 0;
-
-    public:
         virtual const RenderDebugInfo & getDebugInfo() const = 0;
         virtual void resetFrameCount() = 0;
 
         virtual size_t getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format ) const = 0;
-        
-    public:
-        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
 	};
 
 #   define RENDER_SERVICE( serviceProvider )\

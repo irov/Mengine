@@ -943,7 +943,7 @@ namespace Menge
             ResourceImage * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceImage>( _resource );
 
-            if( resource == 0 )
+            if( resource == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Error: Image resource not getting '%s'"
                     , _resource.c_str() 
@@ -954,8 +954,8 @@ namespace Menge
 
             const RenderTextureInterfacePtr & texture = resource->getTexture();
 
-            RENDER_SERVICE(m_serviceProvider)
-                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), _filename );
+            RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
+                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), Helper::stringizeString(m_serviceProvider, "pngImage"), _filename );
         }
         //////////////////////////////////////////////////////////////////////////
         void setParticlesEnabled( bool _enabled )

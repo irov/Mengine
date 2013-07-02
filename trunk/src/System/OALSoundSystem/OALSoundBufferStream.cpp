@@ -131,9 +131,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferStream::play( ALenum _source, bool _looped, float _pos )
+	bool OALSoundBufferStream::play( ALenum _source, bool _looped, float _pos )
 	{
         (void)_looped;
+
+        if( _pos > m_length )
+        {
+            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::play pos %f > length %f"
+                , _pos
+                , m_length
+                );
+
+            return false;
+        }
 
 		m_sourceId = _source;
 
@@ -159,24 +169,26 @@ namespace Menge
                 , _pos
                 );
 
-            return;
+            return false;
         }
         
         unsigned int bytesWritten;
         if( this->bufferData_( m_alBufferId, bytesWritten ) == false )
         {
-            return;
+            return false;
         }
 
         if( this->bufferData_( m_alBufferId2, bytesWritten ) == false )
         {
-            return;
+            return false;
         }
         
 		alSourcePlay( m_sourceId );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
 		this->setUpdating( true );
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::pause( ALenum _source )
@@ -210,6 +222,16 @@ namespace Menge
         (void)_source;
 
         float timeTell = m_soundDecoder->timeTell();
+
+        if( timeTell > m_length )
+        {
+            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::getTimePos get tell %f > length %f"
+                , timeTell
+                , m_length
+                );
+
+            return false;
+        }
 
         _pos = timeTell;
 

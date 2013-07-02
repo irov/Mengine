@@ -705,8 +705,8 @@ namespace Menge
 	
 		void s_saveAccounts()
 		{
-			//ACCOUNT_SERVICE(m_serviceProvider)
-			//	->saveAccounts();
+            ACCOUNT_SERVICE(m_serviceProvider)
+                ->saveAccounts();
 		}
 
 		void s_saveAccountsInfo()

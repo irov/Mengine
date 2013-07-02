@@ -18,7 +18,7 @@ namespace Menge
 		void initialize( SilentSoundSystem * _soundSystem );
 
 	public:
-		void play() override;
+		bool play() override;
 		void pause() override;
 		void stop() override;
 		bool isPlaying() const override;
@@ -34,7 +34,7 @@ namespace Menge
 
 		float getLengthMs() const override;
 		float getPosMs() const override;
-		void setPosMs( float _posMs ) override;
+		bool setPosMs( float _posMs ) override;
 
 		void setBuffer( SoundBufferInterface* _soundBuffer ) override;
 		SoundBufferInterface* getSoundBuffer() const override;

@@ -248,6 +248,7 @@ namespace Menge
         this->registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
         this->registerEvent( EVENT_INITIALIZE, "onInitialize", _embed );
         this->registerEvent( EVENT_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources", _embed );
+        this->registerEvent( EVENT_ACCOUNT_FINALIZE, "onAccountFinalize", _embed );
         this->registerEvent( EVENT_FINALIZE, "onFinalize", _embed );
         this->registerEvent( EVENT_DESTROY, "onDestroy", _embed );
 
@@ -372,7 +373,7 @@ namespace Menge
 
         m_accountService->initialize( accountPath, m_accountLister );
 
-		if( m_accountService->loadAccountsInfo() == false )
+		if( m_accountService->loadAccounts() == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Game::initialize failed load accounts"
                 );
@@ -383,7 +384,7 @@ namespace Menge
 		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
             ->generatePrototypeT<Arrow>( CONST_STRING(m_serviceProvider, Arrow), CONST_STRING(m_serviceProvider, Default) );
 
-        if( m_defaultArrow == NULL )
+        if( m_defaultArrow == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Game::initialize failed create defaultArrow 'Default'"
                 );
@@ -401,6 +402,9 @@ namespace Menge
 
 		if( m_player->initialize( m_defaultArrow, contentResolution, currentResolution ) == false )
 		{
+            LOGGER_ERROR(m_serviceProvider)("Game::initialize failed initialize player"
+                );
+
 			return false;
 		}
 
@@ -435,6 +439,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalize()
 	{	
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACCOUNT_FINALIZE)( "()" );
+
         if( m_accountService != nullptr )
         {
             m_accountService->finalize();

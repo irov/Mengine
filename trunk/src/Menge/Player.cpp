@@ -989,8 +989,11 @@ namespace Menge
 //#	ifndef MENGE_MASTER_RELEASE
 		if( m_showDebugText == true )
 		{
-			const RenderDebugInfo & redi = 
+			const RenderDebugInfo & rdi = 
 				RENDER_SERVICE(m_serviceProvider)->getDebugInfo();
+
+            const RenderTextureDebugInfo & rtdi =
+                RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)->getDebugInfo();
 
 			//size_t particlesCount = 
 			//	Holder<ParticleEngine>::get()->getFrameParticlesCount();
@@ -1001,12 +1004,12 @@ namespace Menge
 			
 			ss << "FPS: " << m_fps << std::endl;
 
-            double sreenfillrate = redi.fillrate / double(m_contentResolution.getWidth() * m_contentResolution.getHeight());
+            double sreenfillrate = rdi.fillrate / double(m_contentResolution.getWidth() * m_contentResolution.getHeight());
 
-            ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << redi.object << " Triangle " << redi.triangle << ")" << std::endl;
-			ss << "DIP: " << redi.dips << std::endl;
-			ss << "Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << std::endl;
-			ss << "Texture Count: " << redi.textureCount << std::endl;
+            ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
+			ss << "DIP: " << rdi.dips << std::endl;
+			ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
+			ss << "Texture Count: " << rtdi.textureCount << std::endl;
 			ss << "Particles: " << particlesCount << std::endl;
 
             MousePickerSystemInterface * mousePickerSystem = 

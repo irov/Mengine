@@ -4,12 +4,12 @@ ADD_FILTER(
 src
     RenderEngine.h
 	RenderEngine.cpp	
-    Megatextures.h  
-    Megatextures.cpp
 	RenderTexture.h
 	RenderTexture.cpp
 	RenderSubTexture.h
 	RenderSubTexture.cpp
+    RenderTextureManager.h
+    RenderTextureManager.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

@@ -42,7 +42,7 @@ namespace Menge
         : public Factorable
 	{
 	public:
-		virtual void play() = 0;
+		virtual bool play() = 0;
 		virtual void pause() = 0;
 		virtual void stop() = 0;
 
@@ -59,7 +59,7 @@ namespace Menge
 
 		virtual float getLengthMs() const = 0;
 		virtual float getPosMs() const = 0;
-		virtual void setPosMs( float _posMs ) = 0;
+		virtual bool setPosMs( float _posMs ) = 0;
 
 		virtual void setBuffer( SoundBufferInterface* _soundBuffer ) = 0;
 		virtual SoundBufferInterface* getSoundBuffer() const = 0;
@@ -148,7 +148,7 @@ namespace Menge
 	public:
 		virtual float getLengthMs( unsigned int _emitter ) const = 0;
 		
-		virtual void setPosMs( unsigned int _emitter, float _pos ) = 0;
+		virtual bool setPosMs( unsigned int _emitter, float _pos ) = 0;
 		virtual float getPosMs( unsigned int _emitter ) const = 0;
 		
     public:

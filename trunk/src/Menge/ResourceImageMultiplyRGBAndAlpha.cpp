@@ -112,7 +112,7 @@ namespace Menge
             m_codecTypeAlpha = this->getCodec_( m_fileNameAlpha );
         }
         	
-        RenderTextureInterfacePtr textureAlpha = RENDER_SERVICE(m_serviceProvider)
+        RenderTextureInterfacePtr textureAlpha = RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
             ->loadTexture( category, m_fileNameAlpha, m_codecTypeAlpha, 0, 0 );
 
         if( textureAlpha == nullptr )

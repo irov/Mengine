@@ -44,7 +44,7 @@ namespace Menge
     }	
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::ScheduleManager()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
         , m_enumerator(0)
         , m_freeze(false)
     {
@@ -89,7 +89,7 @@ namespace Menge
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
-        if( event == NULL )
+        if( event == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::remove not found shedule '%d'"
                 , _id
@@ -174,7 +174,7 @@ namespace Menge
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
-        if( event == NULL )
+        if( event == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::freeze not found shedule '%d'"
                 , _id
@@ -190,7 +190,7 @@ namespace Menge
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
-        if( event == NULL )
+        if( event == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::isFreeze not found shedule '%d'"
                 , _id
@@ -220,7 +220,7 @@ namespace Menge
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
-        if( event == NULL )
+        if( event == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::time not found shedule '%d'"
                 , _id
@@ -241,7 +241,7 @@ namespace Menge
 
         if( it_find == m_schedules.end() )
         {
-            return NULL;
+            return nullptr;
         }
 
         return &*it_find;

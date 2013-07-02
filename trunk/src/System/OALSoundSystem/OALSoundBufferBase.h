@@ -22,7 +22,7 @@ namespace Menge
 	public:
 		virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder );
 
-		virtual void play( ALenum _source, bool _looped, float _pos );
+		virtual bool play( ALenum _source, bool _looped, float _pos );
 		virtual	void pause( ALenum _source );
 		virtual void stop( ALenum _source );
 		virtual bool getTimePos( ALenum _source, float & _pos ) const;

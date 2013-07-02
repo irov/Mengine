@@ -58,6 +58,7 @@ SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
 SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
+SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureManagerInterface);
 
 SERVICE_DUMMY(PhysicSystem2D, Menge::PhysicSystem2DInterface);
 SERVICE_DUMMY(PhysicService2D, Menge::PhysicService2DInterface);
@@ -797,7 +798,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
         
         RenderSystemInterface * renderSystem;
-        if( createRenderSystem( &renderSystem ) == false )
+        if( SERVICE_CREATE( RenderSystem, &renderSystem ) == false )
         {
             return false;
         }
@@ -816,7 +817,7 @@ namespace Menge
         }
 
         RenderServiceInterface * renderService;
-        if( createRenderService( &renderService ) == false )
+        if( SERVICE_CREATE( RenderService, &renderService ) == false )
         {
             return false;
         }
@@ -835,6 +836,19 @@ namespace Menge
 
             return false;
         }
+
+        RenderTextureManagerInterface * renderTextureManager;
+        if( SERVICE_CREATE( RenderTextureManager, &renderTextureManager) == false )
+        {
+            return false;
+        }
+
+        if( SERVICE_REGISTRY( m_serviceProvider, renderTextureManager ) == false )
+        {
+            return false;
+        }
+
+        m_renderTextureManager = renderTextureManager;
 
         return true;
     }
@@ -1744,8 +1758,10 @@ namespace Menge
         if( m_renderService != nullptr )
         {
             m_renderService->finalize();
+            m_renderTextureManager->finalize();
 
             SERVICE_DESTROY( RenderService, m_renderService );
+            SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
         }        
         
 		if( m_fileLog != nullptr )

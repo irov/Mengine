@@ -41,12 +41,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferBase::play( ALenum _source, bool _looped, float _pos )
+	bool OALSoundBufferBase::play( ALenum _source, bool _looped, float _pos )
 	{
         (void)_source;
         (void)_looped;
         (void)_pos;
 		// nothing to do
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferBase::pause( ALenum _source )

@@ -3,8 +3,6 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 
-#   include "RenderTexture.h"
-
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
 #	include "Core/ConstString.h"
@@ -80,7 +78,6 @@ namespace Menge
 	class RenderEngine
 		: public RenderServiceInterface
         , public RenderSystemListener
-        , public RenderTextureInterfaceListener
 	{
 	public:
 		RenderEngine();
@@ -97,9 +94,6 @@ namespace Menge
 	public:
 		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) override;
-
-	protected:
-		void createWhitePixelTexture_();
 
 	public:
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
@@ -127,23 +121,7 @@ namespace Menge
 		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const override;
 		void removeMaterialGroup( const ConstString & _name );
 
-
-    public:
-		bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const override;
-        RenderTextureInterfacePtr getTexture( const FilePath& _filename ) override;
-		
-    public:
-		RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format, size_t _textureWidth, size_t _textureHeight ) override;
-
-		RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-		//RenderTextureInterface * createMegatexture( size_t _width, size_t _height, PixelFormat _format );
-		//RenderTextureInterface * createSubTexture( const RenderTextureInterfacePtr & _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) override;
-		RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-		
-    protected:
-        void onRenderTextureRelease( const RenderTextureInterface * _texture ) override;
-
-
+        
     public:
 		void setRenderTargetTexture( const RenderTextureInterfacePtr & _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
@@ -151,20 +129,8 @@ namespace Menge
 
         void enableDebugMode( bool _enable ) override;
         
-    protected:
-		bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );
 		
-	public:
-		void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
-
-	public:
-		void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) override;
-
-        RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _width, size_t _height ) override;		
-					
     public:
-		bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const FilePath & _filename ) override;
-				
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
 		//void	setWorldMatrix( const mt::mat4f& _world );
@@ -203,9 +169,7 @@ namespace Menge
 
         size_t getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format ) const override;
 
-	private:
-		RenderPass * createRenderPass_();
-				
+	private:			
 		void disableTextureStage_( size_t _stage );
 
 		void setRenderSystemDefaults_( size_t _vertexCount );
@@ -213,6 +177,7 @@ namespace Menge
 		
 		void renderPasses_();
 		void renderPass_( const RenderPass & _renderPass );
+
 		void renderObjects_( const RenderPass & _renderPass );
 		void renderObject_( const RenderObject* _renderObject );
 
@@ -251,7 +216,6 @@ namespace Menge
 		ConstString m_currentRenderTarget;
         ConstString m_defaultRenderTarget;
 
-		bool m_layer3D;
 		mt::mat4f m_renderAreaProj;
 
         RenderShaderInterface * m_shader;
@@ -285,11 +249,6 @@ namespace Menge
 
 		const RenderCameraInterface * m_currentRenderCamera;
 
-		typedef BinaryVector<FilePath, RenderTextureInterface *> TMapTextures;
-		TMapTextures m_textures;
-
-		RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
-
 		RenderDebugInfo m_debugInfo;	    // debug info
 
 		//typedef Pool<RenderObject> TPoolRenderObject;
@@ -303,9 +262,6 @@ namespace Menge
 		size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
 		size_t m_primitiveCount[LPT_PRIMITIVE_COUNT];
 
-        typedef FactoryPool<RenderTexture, 128> TFactoryRenderTexture;
-        TFactoryRenderTexture m_factoryRenderTexture;
-
 		mutable size_t m_vbPos;
 
 		//mt::vec2f m_renderScale;
@@ -315,8 +271,6 @@ namespace Menge
 
 		uint32 m_currentVertexDeclaration;
         
-        int m_idEnumerator;
-
         typedef Array<RenderObject, MENGINE_RENDER_OBJECTS_MAX> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;
 

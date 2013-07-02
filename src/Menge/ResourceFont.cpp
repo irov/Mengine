@@ -130,7 +130,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		m_texture = RENDER_SERVICE(m_serviceProvider)
+		m_texture = RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
             ->loadTexture( category, m_imageFile, m_imageCodec, 0, 0 );
 
 		//m_texture = RenderEngine::get()
@@ -155,10 +155,10 @@ namespace Menge
 
 		if( m_outlineImageFile.empty() == false )
 		{
-			m_outline = RENDER_SERVICE(m_serviceProvider)
+			m_outline = RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
                 ->loadTexture( category, m_outlineImageFile, m_outlineImageCodec, 0, 0 );
 
-			if( m_outline == 0 )
+			if( m_outline == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "ResourceFont::_compile '%s' can't loaded outline image file '%s'"
 					, this->getName().c_str()

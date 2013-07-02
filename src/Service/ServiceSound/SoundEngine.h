@@ -106,7 +106,7 @@ namespace Menge
 	public:
 		float getLengthMs( unsigned int _emitter ) const override;
 		
-		void setPosMs( unsigned int _emitter, float _pos ) override;
+		bool setPosMs( unsigned int _emitter, float _pos ) override;
 		float getPosMs( unsigned int _emitter ) const override;
 
 		void mute( bool _mute ) override;

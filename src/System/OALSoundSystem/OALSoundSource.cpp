@@ -36,26 +36,37 @@ namespace Menge
         m_soundSystem = _soundSystem;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::play()
+	bool OALSoundSource::play()
 	{
-		if( m_playing == true || m_soundBuffer == nullptr )
+        if( m_playing == true )
+        {
+            return true;
+        }
+
+		if( m_soundBuffer == nullptr )
 		{
-			return;
+			return false;
 		}
 
 		m_sourceId = m_soundSystem->genSourceId();
 
 		if( m_sourceId == 0 )
 		{
-			return;
+			return false;
 		}
 
 		this->apply_( m_sourceId );
-		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
+		
+        if( m_soundBuffer->play( m_sourceId, m_loop, m_timing ) == false )
+        {
+            return false;
+        }
 
         //m_timing = 0.f;
 	
 		m_playing = true;
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::pause()
@@ -207,7 +218,7 @@ namespace Menge
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::setPosMs( float _posMs )
+	bool OALSoundSource::setPosMs( float _posMs )
 	{
         float posmc = _posMs;
 
@@ -220,10 +231,12 @@ namespace Menge
                 , total
                 );
 
-            return;
+            return false;
         }
 
         m_timing = posmc;	
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setBuffer( SoundBufferInterface* _soundBuffer )

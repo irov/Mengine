@@ -58,7 +58,8 @@ namespace Menge
         virtual bool selectAccount( const WString& _accountID ) = 0;
 
     public:
-        virtual bool loadAccountsInfo() = 0;
+        virtual bool loadAccounts() = 0;
+        virtual bool saveAccounts() = 0;
 
     public:
         virtual void setDefaultAccount( const WString & _accountID ) = 0;

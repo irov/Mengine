@@ -33,23 +33,25 @@ namespace Menge
 		m_soundSystem = _soundSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::play()
+	bool SilentSoundSource::play()
 	{
 		if( m_playing == true || m_soundBuffer == NULL )
 		{
-			return;
+			return false;
 		}
 
 		m_sourceId = m_soundSystem->genSourceId();
 
 		if( m_sourceId == 0 )
 		{
-			return;
+			return false;
 		}
 
 		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
 	
 		m_playing = true;
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::pause()
@@ -158,7 +160,7 @@ namespace Menge
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::setPosMs( float _posMs )
+	bool SilentSoundSource::setPosMs( float _posMs )
 	{
 		if( m_playing == true )
 		{
@@ -170,6 +172,8 @@ namespace Menge
 		{
 			m_timing = _posMs;
 		}
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::setBuffer( SoundBufferInterface* _soundBuffer )

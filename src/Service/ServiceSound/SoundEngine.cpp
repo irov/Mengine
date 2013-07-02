@@ -87,9 +87,15 @@ namespace Menge
 
 			if( source->state == ESS_PLAYING )
 			{
-				source->soundSourceInterface->play();
+				if( source->soundSourceInterface->play() == false )
+                {
+                    LOGGER_ERROR(m_serviceProvider)("SoundEngine::playSounds_ invalid play"
+                        );
 
-				if( source->streamable == true && source->taskSoundBufferUpdate == NULL )
+                    continue;
+                }
+
+				if( source->streamable == true && source->taskSoundBufferUpdate == nullptr )
 				{
                     this->playSoundBufferUpdate_( source );
 				}
@@ -442,7 +448,13 @@ namespace Menge
                     source->timing -= source->soundSourceInterface->getPosMs();
                     source->soundSourceInterface->stop();
 
-                    source->soundSourceInterface->play();
+                    if( source->soundSourceInterface->play() == false )
+                    {
+                        LOGGER_ERROR(m_serviceProvider)("SoundEngine::update ESS_NEED_RESTART invalid play"
+                            );
+
+                        continue;
+                    }
 
                     if( source->streamable == true )
                     {
@@ -543,7 +555,7 @@ namespace Menge
 		{
 		case ESS_STOPPED:
             {
-                if( source->taskSoundBufferUpdate != NULL )
+                if( source->taskSoundBufferUpdate != nullptr )
                 {
                     this->stopSoundBufferUpdate_( source );
                 }
@@ -553,7 +565,13 @@ namespace Menge
 
                 source->timing = length_ms - pos_ms;
 
-                source->soundSourceInterface->play();
+                if( source->soundSourceInterface->play() == false )
+                {
+                    LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play"
+                        );
+
+                    return false;
+                }
 
                 source->state = ESS_PLAYING;
 
@@ -791,7 +809,7 @@ namespace Menge
         return m_voiceVolume;
     }
     //////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setPosMs( unsigned int _emitter, float _pos )
+	bool SoundEngine::setPosMs( unsigned int _emitter, float _pos )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
@@ -800,23 +818,23 @@ namespace Menge
 				, _emitter
 				);
 
-			return;
+			return false;
 		}
 
-        if( source->soundSourceInterface == 0 )
+        if( source->soundSourceInterface == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine:setPosMs not setup source %d"
                 , _emitter
                 );
 
-            return;
+            return false;
         }
 
         float current_pos = source->soundSourceInterface->getPosMs();
 
         if( fabsf( current_pos - _pos ) < 0.0001f )
         {
-            return;
+            return true;
         }
 
         float lengthMs = source->soundSourceInterface->getLengthMs();
@@ -829,16 +847,19 @@ namespace Menge
                 , lengthMs
                 );
 
-            return;
+            return false;
         }
 
         source->timing = lengthMs - _pos;
 
         if( source->state == ESS_STOPPED || source->state == ESS_STOPPING )
         {
-            source->soundSourceInterface->setPosMs( _pos );
+            if( source->soundSourceInterface->setPosMs( _pos ) == false )
+            {
+                return false;
+            }
 
-            return;
+            return true;
         }
         
         bool hasBufferUpdate = source->taskSoundBufferUpdate != nullptr;
@@ -850,14 +871,25 @@ namespace Menge
 
         source->soundSourceInterface->pause();
         
-		source->soundSourceInterface->setPosMs( _pos );
+		if( source->soundSourceInterface->setPosMs( _pos ) == false )
+        {
+            return false;
+        }
 
-        source->soundSourceInterface->play();
+        if( source->soundSourceInterface->play() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs invalid play"
+                );
+
+            return false;
+        }
 
         if( hasBufferUpdate == true )				
         {
             this->playSoundBufferUpdate_( source );
         }
+
+        return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::stopSoundBufferUpdate_( SoundSourceDesc * _source )

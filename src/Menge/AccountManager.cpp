@@ -56,11 +56,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void AccountManager::finalize()
     {
+        LOGGER_WARNING(m_serviceProvider)("AccountManager::finalize save accounts"
+            );
+
         AccountInterface * lastAccount = m_currentAccount;
         this->unselectCurrentAccount_();
 
         m_currentAccount = lastAccount;
-        this->saveAccountsInfo_();
+
+        this->saveAccounts();
 
         m_currentAccount = nullptr;
 
@@ -71,7 +75,6 @@ namespace Menge
         ++it )
         {
             AccountInterface * account = it->second;
-            account->save();
 
             delete static_cast<Account *>(account);
         }
@@ -127,23 +130,6 @@ namespace Menge
         {
 		    m_accountListener->onCreateAccount( _accountID );
         }
-
-		const FilePath & folder = newAccount->getFolder();
-        
-        if( FILE_SERVICE(m_serviceProvider)
-            ->existDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
-        {
-		    if( FILE_SERVICE(m_serviceProvider)
-                ->createDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account '%ls' failed create directory '%s'"
-                    , _accountID.c_str() 
-                    , folder.c_str()
-                    );
-
-                return nullptr;
-            }
-        }
         
         m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
@@ -152,18 +138,18 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void AccountManager::unselectCurrentAccount_()
     {
-        if( m_currentAccount == NULL )
+        if( m_currentAccount == nullptr )
         {
             return;
         }
         
-        if( m_accountListener != NULL )
+        if( m_accountListener != nullptr )
         {
             const WString & name = m_currentAccount->getName();
             m_accountListener->onUnselectAccount( name );
         }        
 
-        m_currentAccount = NULL;
+        m_currentAccount = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     Account * AccountManager::newAccount_( const WString& _accountID )
@@ -181,6 +167,21 @@ namespace Menge
         }
 
         FilePath folder = Helper::stringizeString( m_serviceProvider, utf8_path );
+
+        if( FILE_SERVICE(m_serviceProvider)
+            ->existDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
+        {
+            if( FILE_SERVICE(m_serviceProvider)
+                ->createDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account '%ls' failed create directory '%s'"
+                    , _accountID.c_str() 
+                    , folder.c_str()
+                    );
+
+                return false;
+            }
+        }
 
         newAccount->setFolder( folder );
 
@@ -200,6 +201,8 @@ namespace Menge
 			return;
 		}
 
+        AccountInterface * account = it_find->second;
+
 		if( m_currentAccount )
 		{
 			const WString & name = m_currentAccount->getName();
@@ -210,12 +213,16 @@ namespace Menge
 			}
 		}
 
-		const FilePath & folder = it_find->second->getFolder();
+		const FilePath & folder = account->getFolder();
 
-		FILE_SERVICE(m_serviceProvider)
-            ->removeDirectory( CONST_STRING(m_serviceProvider, user), folder );
+        if( FILE_SERVICE(m_serviceProvider)
+            ->existDirectory( CONST_STRING(m_serviceProvider, user), folder ) == true )
+        {
+		    FILE_SERVICE(m_serviceProvider)
+                ->removeDirectory( CONST_STRING(m_serviceProvider, user), folder );
+        }
 
-		delete it_find->second;
+		delete static_cast<Account *>(account);
 
 		m_accounts.erase( it_find );
 
@@ -380,7 +387,7 @@ namespace Menge
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AccountManager::loadAccountsInfo()
+	bool AccountManager::loadAccounts()
 	{        
 		bool accountsExist = FILE_SERVICE(m_serviceProvider)
             ->existFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, nullptr );
@@ -537,7 +544,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AccountManager::saveAccountsInfo_()
+	bool AccountManager::saveAccounts()
 	{
 		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
@@ -580,6 +587,24 @@ namespace Menge
 		{
             IniUtil::writeIniSetting( m_serviceProvider, file, "Account", it->first );
 		}
+
+        for( TMapAccounts::iterator 
+            it = m_accounts.begin(), 
+            it_end = m_accounts.end();
+        it != it_end;
+        ++it )
+        {
+            AccountInterface * account = it->second;
+            if( account->save() == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::finalize invalid save account %ls:%s"
+                    , account->getName()
+                    , account->getFolder()
+                    );
+
+                return false;
+            }
+        }
 
         return true;
 	}

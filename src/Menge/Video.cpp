@@ -31,7 +31,6 @@ namespace Menge
 		, m_blendAdd(false)
         , m_needUpdate(false)
         , m_needUpdate2(false)
-        , m_needUpdate3(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -146,7 +145,7 @@ namespace Menge
         size_t width = (size_t)(m_frameSize.x + 0.5f);
         size_t height = (size_t)(m_frameSize.y + 0.5f);
 
-		m_textures[0] = RENDER_SERVICE(m_serviceProvider)
+		m_textures[0] = RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
             ->createDynamicTexture( width, height, channels, PF_UNKNOWN );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
@@ -253,7 +252,7 @@ namespace Menge
 
 		if( m_needUpdate == true || m_needUpdate2 == true )
 		{
-            if( this->fillVideoBuffer_( m_needUpdate3 ) == false )
+            if( this->fillVideoBuffer_() == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("Video::_render %s invalid fill video buffer (%s)"
                     , this->getName().c_str()
@@ -263,7 +262,6 @@ namespace Menge
 
             m_needUpdate = false;
             m_needUpdate2 = false;
-            m_needUpdate3 = false;
 		}
         
 		const Vertex2D * vertices = this->getVertices();
@@ -370,7 +368,6 @@ namespace Menge
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( 0.f );
                        
             needUpdate = true;
-            m_needUpdate3 = true;
 
 			if( state == VDRS_END_STREAM )
 			{	
@@ -410,14 +407,12 @@ namespace Menge
 					);
                 
                 needUpdate = false;
-                m_needUpdate3 = false;
 
 				break;	
 			}
 			else if( state == VDRS_SKIP )
 			{
                 needUpdate = false;
-                m_needUpdate3 = false;
 
 				continue;	
 			}
@@ -498,18 +493,8 @@ namespace Menge
 		this->_setTiming( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////
-	bool Video::fillVideoBuffer_( bool _decodeFrame )
+	bool Video::fillVideoBuffer_()
 	{
-        //if( _decodeFrame == true )
-        //{
-        //    unsigned int decode = m_videoDecoder->decode( 0, 0 );
-
-        //    if( decode == 0 )
-        //    {
-        //        return false;
-        //    }
-        //}
-
 		Rect rect;
 		rect.left = 0;
 		rect.top = 0;

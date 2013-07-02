@@ -83,7 +83,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::play( ALenum _source, bool _looped, float _pos )
+	bool OALSoundBuffer::play( ALenum _source, bool _looped, float _pos )
 	{
 		ALint state = 0;
 		alGetSourcei( _source, AL_SOURCE_STATE, &state );
@@ -110,6 +110,8 @@ namespace Menge
 
 		alSourcePlay( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::pause( ALenum _source )

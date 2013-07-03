@@ -1111,11 +1111,30 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t RenderEngine::batchRenderObjects_( RenderPass * _renderPass, size_t _startVertexPos )
+    {
+        RenderObject* batchedRO = NULL;
+        size_t verticesNum = _startVertexPos;
+
+        TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
+        TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
+
+        for( ; it_begin != it_end; ++it_begin )
+        {
+            RenderObject * renderObject = it_begin;
+
+            if( this->batchRenderObject_( renderObject, batchedRO, verticesNum ) == false )
+            {
+                batchedRO = renderObject;
+            }
+        }
+
+        return (verticesNum - _startVertexPos);
+    }
+    //////////////////////////////////////////////////////////////////////////
     inline static bool s_checkForBatch( const RenderObject * _prev, const RenderObject * _next )
     {
-        if( _prev->primitiveType == PT_LINESTRIP		// this primitives could'n be batched
-            || _prev->primitiveType == PT_TRIANGLESTRIP 
-            || _prev->primitiveType == PT_TRIANGLEFAN )
+        if( _prev->primitiveType != PT_TRIANGLELIST )
         {
             return false;
         }
@@ -1142,27 +1161,6 @@ namespace Menge
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t RenderEngine::batchRenderObjects_( RenderPass * _renderPass, size_t _startVertexPos )
-    {
-        RenderObject* batchedRO = NULL;
-        size_t verticesNum = _startVertexPos;
-
-        TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
-        TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
-
-        for( ; it_begin != it_end; ++it_begin )
-        {
-            RenderObject * renderObject = it_begin;
-
-            if( this->batchRenderObject_( renderObject, batchedRO, verticesNum ) == false )
-            {
-                batchedRO = renderObject;
-            }
-        }
-
-        return (verticesNum - _startVertexPos);
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::batchRenderObject_( RenderObject * _renderObject, RenderObject * _batchedObject, size_t & _verticesNum ) const

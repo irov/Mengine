@@ -154,8 +154,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     Account * AccountManager::newAccount_( const WString& _accountID )
     {
-        Account * newAccount = new Account(m_serviceProvider, _accountID);
-
         String utf8_path;
         if( Helper::unicodeToUtf8( m_serviceProvider, _accountID, utf8_path ) == false )
         {
@@ -179,9 +177,11 @@ namespace Menge
                     , folder.c_str()
                     );
 
-                return false;
+                return nullptr;
             }
         }
+
+        Account * newAccount = new Account(m_serviceProvider, _accountID);
 
         newAccount->setFolder( folder );
 
@@ -575,7 +575,7 @@ namespace Menge
         WString AccountEnumerator;
         Utils::unsignedToWString( m_playerEnumerator, AccountEnumerator );
 
-        IniUtil::writeIniSetting( m_serviceProvider, file, "AccountEnumerator", AccountEnumerator );        
+        IniUtil::writeIniSetting( m_serviceProvider, file, "AccountEnumerator", AccountEnumerator );
 
         IniUtil::writeIniSection( m_serviceProvider, file, "[ACCOUNTS]" );
 
@@ -595,11 +595,12 @@ namespace Menge
         ++it )
         {
             AccountInterface * account = it->second;
+
             if( account->save() == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("AccountManager::finalize invalid save account %ls:%s"
-                    , account->getName()
-                    , account->getFolder()
+                    , account->getName().c_str()
+                    , account->getFolder().c_str()
                     );
 
                 return false;

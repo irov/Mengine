@@ -140,10 +140,10 @@ namespace	Menge
 
 		m_interface->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 
-		const RenderMaterialGroup * mg_intensive = RENDER_SERVICE(m_serviceProvider)
+		const RenderMaterialGroup * mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
 
-		const RenderMaterialGroup * mg_nonintensive = RENDER_SERVICE(m_serviceProvider)
+		const RenderMaterialGroup * mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleBlend) );
 
 		m_materials[0] = mg_intensive->getMaterial( TAM_CLAMP, TAM_CLAMP );

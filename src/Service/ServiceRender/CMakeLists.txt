@@ -10,6 +10,8 @@ src
 	RenderSubTexture.cpp
     RenderTextureManager.h
     RenderTextureManager.cpp
+    RenderMaterialManager.h
+    RenderMaterialManager.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

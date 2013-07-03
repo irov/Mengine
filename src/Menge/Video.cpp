@@ -145,7 +145,7 @@ namespace Menge
         size_t width = (size_t)(m_frameSize.x + 0.5f);
         size_t height = (size_t)(m_frameSize.y + 0.5f);
 
-		m_textures[0] = RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
+		m_textures[0] = RENDERTEXTURE_SERVICE(m_serviceProvider)
             ->createDynamicTexture( width, height, channels, PF_UNKNOWN );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
@@ -544,12 +544,12 @@ namespace Menge
 	{
 		if ( this->isBlendAdd() == true )
 		{
-			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
                 ->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
 		}
 		else
 		{
-			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
                 ->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
 		}
 

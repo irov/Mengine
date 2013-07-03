@@ -301,6 +301,23 @@ namespace Menge
     {
     };
     //////////////////////////////////////////////////////////////////////////
+    class RenderMaterialServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE("RenderMaterialManager")
+
+    public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
+        virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _filename ) = 0;
+        virtual const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+#   define RENDERMATERIAL_SERVICE( serviceProvider )\
+    (Menge::Helper::getService<Menge::RenderMaterialServiceInterface>(serviceProvider))
+    //////////////////////////////////////////////////////////////////////////
     const int VDECL_XYZ = 0x002;
     const int VDECL_XYZRHW = 0x004;
     const int VDECL_NORMAL = 0x010;
@@ -413,7 +430,7 @@ namespace Menge
         size_t textureCount;
     };
     //////////////////////////////////////////////////////////////////////////
-    class RenderTextureManagerInterface
+    class RenderTextureServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE("RenderTextureManager")
@@ -432,9 +449,7 @@ namespace Menge
         virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 
         virtual RenderTextureInterfacePtr getTexture( const FilePath& _filename ) = 0;
-
-        virtual RenderTextureInterfacePtr getNullTexture() = 0;
-
+        
         virtual bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const = 0;
 
     public:
@@ -450,8 +465,8 @@ namespace Menge
         virtual const RenderTextureDebugInfo & getDebugInfo() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RENDERTEXTUREMANAGER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::RenderTextureManagerInterface>(serviceProvider))
+#   define RENDERTEXTURE_SERVICE( serviceProvider )\
+    (Menge::Helper::getService<Menge::RenderTextureServiceInterface>(serviceProvider))
 	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
 	{
@@ -634,9 +649,6 @@ namespace Menge
             , ELogicPrimitiveType _type
             , const Vertex2D * _vertices, size_t _verticesNum
             , const uint16 * _indices = 0, size_t _indicesNum = 0 ) = 0;
-
-    public:
-        virtual const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const = 0;
 
 	public:
 		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 

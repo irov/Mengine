@@ -13,7 +13,7 @@
 namespace Menge
 {
     class RenderTextureManager
-        : public RenderTextureManagerInterface
+        : public RenderTextureServiceInterface
         , public RenderTextureInterfaceListener
     {
     public:
@@ -38,8 +38,7 @@ namespace Menge
 
         RenderTextureInterfacePtr getTexture( const FilePath& _filename ) override;
 
-        RenderTextureInterfacePtr getNullTexture() override;
-
+    public:
         bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const override;
 
     public:
@@ -65,8 +64,6 @@ namespace Menge
 
         typedef BinaryVector<FilePath, RenderTextureInterface *> TMapTextures;
         TMapTextures m_textures;
-
-        RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
 
         typedef FactoryPool<RenderTexture, 128> TFactoryRenderTexture;
         TFactoryRenderTexture m_factoryRenderTexture;

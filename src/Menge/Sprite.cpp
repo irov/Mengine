@@ -606,21 +606,21 @@ namespace	Menge
             {
                 m_texturesNum = 2;
 
-                m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
                     ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor) );
             }
             else if( m_resource->isAlpha() == true || m_solid == false )
             {
                 m_texturesNum = 2;
 
-                m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
                     ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
             }
             else
             {
                 m_texturesNum = 1;
 
-                m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
                     ->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
             }
         }
@@ -628,14 +628,14 @@ namespace	Menge
 		{
 			m_texturesNum = 1;
 
-			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
 				->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
 		}
 		else if( m_disableTextureColor == true )
 		{
 			m_texturesNum = 1;
 
-			m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
 				->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
 		}
 		else
@@ -644,12 +644,12 @@ namespace	Menge
 
 			if( m_resource->isAlpha() == true || m_solid == false )
 			{
-				m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
 					->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
 			}
 			else
 			{
-				m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
 					->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
 			}
 		}
@@ -733,7 +733,7 @@ namespace	Menge
 			return;
 		}
 
-		m_materialGroup = RENDER_SERVICE(m_serviceProvider)
+		m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
 
 		this->invalidateVertices_( ESVI_MATERIAL );

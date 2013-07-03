@@ -176,15 +176,27 @@ namespace Menge
 		InputServiceInterface * m_inputService;
         UnicodeServiceInterface * m_unicodeService;
 		LogServiceInterface * m_logService;
+        
+        FileSystemInterface * m_fileSystem;
         FileServiceInterface * m_fileService;
+
         CodecServiceInterface * m_codecService;
         ArchiveServiceInterface * m_archiveService;
         ThreadServiceInterface * m_threadService;
+
+        ParticleSystemInterface * m_particleSystem;
         ParticleServiceInterface * m_particleService;
+
         PhysicService2DInterface * m_physicService2D;
+
+        RenderSystemInterface * m_renderSystem;
         RenderServiceInterface * m_renderService;
-        RenderTextureManagerInterface * m_renderTextureManager;
+        RenderTextureServiceInterface * m_renderTextureManager;
+        RenderMaterialServiceInterface * m_renderMaterialManager;
+
+        SoundSystemInterface * m_soundSystem;
         SoundServiceInterface * m_soundService;
+
         ScriptServiceInterface * m_scriptService;
         PluginServiceInterface * m_pluginService;
 

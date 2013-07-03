@@ -132,7 +132,7 @@ namespace Menge
 	RenderTextureInterfacePtr ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_( const ConstString& _pakName, const FilePath& _fileNameRGB, const FilePath& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const
 	{
         RenderTextureInterfacePtr texture_alpha;
-		if( RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
+		if( RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->hasTexture( _fileNameAlpha, &texture_alpha ) == true )
 		{
 			return texture_alpha;
@@ -192,7 +192,7 @@ namespace Menge
 
 		const ImageCodecDataInfo* dataInfoRGB = imageDecoderRGB->getCodecDataInfo();
 
-		RenderTextureInterfacePtr texture = RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->createTexture( dataInfoRGB->width, dataInfoRGB->height, 4, PF_UNKNOWN, dataInfoRGB->width, dataInfoRGB->height );
 
 		if( texture == nullptr )
@@ -259,12 +259,12 @@ namespace Menge
         //RENDER_SERVICE(m_serviceProvider)
         //    ->sweezleAlpha( texture, buffer, pitch );
 
-        RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
+        RENDERTEXTURE_SERVICE(m_serviceProvider)
             ->imageQuality( texture, buffer, pitch );
         
 		texture->unlock();
 		
-		RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
+		RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->cacheFileTexture( _fileNameAlpha, texture );
 
 		return texture;

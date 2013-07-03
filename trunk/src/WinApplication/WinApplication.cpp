@@ -58,7 +58,8 @@ SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
 SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
-SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureManagerInterface);
+SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureServiceInterface);
+SERVICE_EXTERN(RenderMaterialManager, Menge::RenderMaterialServiceInterface);
 
 SERVICE_DUMMY(PhysicSystem2D, Menge::PhysicSystem2DInterface);
 SERVICE_DUMMY(PhysicService2D, Menge::PhysicService2DInterface);
@@ -183,6 +184,8 @@ namespace Menge
         , m_particleService(nullptr)
         , m_physicService2D(nullptr)
         , m_renderService(nullptr)
+        , m_renderTextureManager(nullptr)
+        , m_renderMaterialManager(nullptr)
         , m_soundService(nullptr)
         , m_scriptService(nullptr)        
         , m_pluginService(nullptr)
@@ -346,6 +349,8 @@ namespace Menge
         {
             return false;
         }
+
+        m_fileSystem = fileSystem;
         
         FileServiceInterface * fileService;
         if( createFileService( &fileService ) == false )
@@ -720,6 +725,8 @@ namespace Menge
         {
             return false;
         }
+
+        m_particleSystem = particleSystem;
                 
         ParticleServiceInterface * particleService;
         if( createParticleService( &particleService ) == false )
@@ -816,6 +823,8 @@ namespace Menge
             return false;
         }
 
+        m_renderSystem = renderSystem;
+        
         RenderServiceInterface * renderService;
         if( SERVICE_CREATE( RenderService, &renderService ) == false )
         {
@@ -837,7 +846,7 @@ namespace Menge
             return false;
         }
 
-        RenderTextureManagerInterface * renderTextureManager;
+        RenderTextureServiceInterface * renderTextureManager;
         if( SERVICE_CREATE( RenderTextureManager, &renderTextureManager) == false )
         {
             return false;
@@ -849,6 +858,35 @@ namespace Menge
         }
 
         m_renderTextureManager = renderTextureManager;
+
+        if( m_renderTextureManager->initialize() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Texture Service"
+                );
+
+            return false;
+        }
+
+        RenderMaterialServiceInterface * renderMaterialManager;
+        if( SERVICE_CREATE( RenderMaterialManager, &renderMaterialManager ) == false )
+        {
+            return false;
+        }
+
+        if( SERVICE_REGISTRY( m_serviceProvider, renderMaterialManager ) == false )
+        {
+            return false;
+        }
+
+        m_renderMaterialManager = renderMaterialManager;
+
+        if( m_renderMaterialManager->initialize() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Material Service"
+                );
+
+            return false;
+        }
 
         return true;
     }
@@ -875,6 +913,8 @@ namespace Menge
 
             return false;
         }
+
+        m_soundSystem = soundSystem;
         
         SoundServiceInterface * soundService;
         if( createSoundService( &soundService ) == false )
@@ -1737,14 +1777,36 @@ namespace Menge
 
         SERVICE_DESTROY( InputService, m_inputService );
         SERVICE_DESTROY( UnicodeService, m_unicodeService );        
-        SERVICE_DESTROY( FileService, m_fileService );
+        
+        if( m_fileService != nullptr )
+        {            
+            SERVICE_DESTROY( FileService, m_fileService );
+        }
+
         SERVICE_DESTROY( CodecService, m_codecService );
         SERVICE_DESTROY( ThreadService, m_threadService );
-        SERVICE_DESTROY( ParticleService, m_particleService );
+
+        if( m_particleService != nullptr )
+        {
+            SERVICE_DESTROY( ParticleService, m_particleService );
+        }
+
+        if( m_particleSystem != nullptr )
+        {            
+            SERVICE_DESTROY( ParticleSystem, m_particleSystem );
+        }
         
         SERVICE_DESTROY( PhysicService2D, m_physicService2D );
         
-        SERVICE_DESTROY( SoundService, m_soundService );        
+        if( m_soundService != nullptr )
+        {
+            SERVICE_DESTROY( SoundService, m_soundService );        
+        }
+
+        if( m_soundSystem != nullptr )
+        {
+            SERVICE_DESTROY( SoundSystem, m_soundSystem );        
+        }
 
         SERVICE_DESTROY( Application, m_application );
 
@@ -1757,12 +1819,21 @@ namespace Menge
 
         if( m_renderService != nullptr )
         {
-            m_renderService->finalize();
+            m_renderMaterialManager->finalize();
             m_renderTextureManager->finalize();
+            m_renderService->finalize();
 
-            SERVICE_DESTROY( RenderService, m_renderService );
+            SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
             SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
+            SERVICE_DESTROY( RenderService, m_renderService );
         }        
+
+        if( m_renderSystem != nullptr )
+        {
+            m_renderSystem->finalize();
+
+            SERVICE_DESTROY( RenderSystem, m_renderSystem );
+        }
         
 		if( m_fileLog != nullptr )
 		{
@@ -1787,6 +1858,11 @@ namespace Menge
 		}
 
         SERVICE_DESTROY( LogService, m_logService );
+
+        if( m_fileSystem != nullptr )
+        {            
+            SERVICE_DESTROY( FileSystem, m_fileSystem );
+        }
         
 		if( m_alreadyRunningMonitor != nullptr )
 		{

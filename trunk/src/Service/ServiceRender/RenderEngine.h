@@ -117,11 +117,6 @@ namespace Menge
 	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
 
-		bool createMaterialGroup( const ConstString & _name, const RenderMaterial & _material );
-		const RenderMaterialGroup * getMaterialGroup( const ConstString & _name ) const override;
-		void removeMaterialGroup( const ConstString & _name );
-
-        
     public:
 		void setRenderTargetTexture( const RenderTextureInterfacePtr & _image, bool _clear ) override;
 		void clear( uint32 _color ) override;
@@ -193,11 +188,13 @@ namespace Menge
 
 		bool refillIndexBuffer2D_( size_t & _maxVertices );
 		bool recreate2DBuffers_( size_t _maxIndexCount );
-
-		
+        		
     private:
         void calcQuadSquare_( const Vertex2D * _vertex, size_t _vertexNum );
         void calcMeshSquare_( const Vertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum );
+
+    protected:
+        bool createNullTexture_();
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
@@ -217,6 +214,8 @@ namespace Menge
         ConstString m_defaultRenderTarget;
 
 		mt::mat4f m_renderAreaProj;
+        
+        RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
 
         RenderShaderInterface * m_shader;
 
@@ -251,21 +250,12 @@ namespace Menge
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
-		//typedef Pool<RenderObject> TPoolRenderObject;
-		//TPoolRenderObject m_renderObjectPool;
-
-		typedef BinaryVector<ConstString, RenderMaterialGroup *> TMapMaterialGroup;
-		TMapMaterialGroup m_mapMaterialGroup;
-
 		size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
 		size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
 		size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
 		size_t m_primitiveCount[LPT_PRIMITIVE_COUNT];
 
 		mutable size_t m_vbPos;
-
-		//mt::vec2f m_renderScale;
-		//mt::vec2f m_renderOffset;
 
 		Viewport m_renderViewport;
 

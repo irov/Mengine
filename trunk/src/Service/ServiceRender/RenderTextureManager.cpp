@@ -7,7 +7,7 @@
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureManagerInterface, Menge::RenderTextureManager );
+SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureServiceInterface, Menge::RenderTextureManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -25,8 +25,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureManager::RenderTextureManager()
-        : m_serviceProvider(nullptr)
-        , m_nullTexture(nullptr)
+        : m_serviceProvider(nullptr)        
         , m_textureEnumerator(0)
     {
     }
@@ -50,20 +49,11 @@ namespace Menge
         m_debugInfo.textureMemory = 0;
         m_debugInfo.textureCount = 0;
 
-        if( this->createNullTexture_() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::initialize invalid create null texture"
-                );
-
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::finalize()
-    {
-        m_nullTexture = nullptr;
+    {        
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const
@@ -95,11 +85,6 @@ namespace Menge
         RenderTextureInterface * texture = it_find->second;
 
         return texture;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::getNullTexture()
-    {
-        return m_nullTexture;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::createTexture( size_t _imageWidth, size_t _imageHeight, size_t _imageChannels, PixelFormat _imageFormat, size_t _textureWidth, size_t _textureHeight )
@@ -533,46 +518,6 @@ namespace Menge
                 image_data + height * _texturePitch,
                 image_data + height * _texturePitch );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::createNullTexture_()
-    {
-        size_t null_width = 4;
-        size_t null_height = 4;
-        size_t null_channels = 3;
-
-        m_nullTexture = this->createTexture( null_width, null_height, null_channels, PF_UNKNOWN, null_width, null_height );
-
-        if( m_nullTexture == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
-                , null_width
-                , null_height
-                );
-
-            return false;
-        }
-
-        Rect rect;
-        rect.left = 0;
-        rect.top = 0;
-        rect.right = null_width;
-        rect.bottom = null_height;
-
-        int pitch = 0;
-        unsigned char* textureData = m_nullTexture->lock( &pitch, rect, false );
-
-        for( size_t it = 0; it != null_height; ++it )
-        {
-            unsigned char null_color = 0xFF;
-            std::fill( textureData, textureData + pitch * it + null_width, null_color );
-        }
-
-        m_nullTexture->unlock();
-
-        this->cacheFileTexture( Helper::stringizeString(m_serviceProvider, "__null__"), m_nullTexture );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderTextureDebugInfo & RenderTextureManager::getDebugInfo()

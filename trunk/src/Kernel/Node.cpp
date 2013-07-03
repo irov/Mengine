@@ -679,7 +679,7 @@ namespace Menge
 	{
 		GlobalHandleAdapter::activateGlobalHandle();
 
-		const RenderMaterialGroup * mg_debug = RENDER_SERVICE(m_serviceProvider)
+		const RenderMaterialGroup * mg_debug = RENDERMATERIAL_SERVICE(m_serviceProvider)
             ->getMaterialGroup( Helper::stringizeString(m_serviceProvider, "Debug") );
 
 		m_debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );

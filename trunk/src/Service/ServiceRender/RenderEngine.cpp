@@ -44,6 +44,7 @@ namespace Menge
         //, m_megatextures(NULL)
         , m_debugMode(false)
         , m_currentMaterial(nullptr)
+        , m_nullTexture(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -54,9 +55,7 @@ namespace Menge
     void RenderEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        //m_renderSystem = RENDER_SYSTEM( m_serviceProvider );
-
+        
         RENDER_SYSTEM(m_serviceProvider)
             ->setRenderListener( this );
     }
@@ -78,177 +77,7 @@ namespace Menge
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
 
-        {
-            RenderMaterial mt;
 
-            mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            mt.textureStage[0].alphaOp = TOP_MODULATE;
-            mt.textureStage[0].colorOp = TOP_MODULATE;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "BlendSprite"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = false;
-            mt.alphaTestEnable = false;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            mt.textureStage[0].alphaOp = TOP_MODULATE;
-            mt.textureStage[0].colorOp = TOP_MODULATE;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "SolidSprite"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            mt.textureStage[0].alphaOp = TOP_MODULATE;
-            mt.textureStage[0].colorOp = TOP_SELECTARG1;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "Accumulator"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            RenderTextureStage & ts0 = mt.textureStage[0];
-
-            ts0.colorOp = TOP_MODULATE;
-            ts0.colorArg1 = TARG_TEXTURE;
-            ts0.colorArg2 = TARG_DIFFUSE;
-            ts0.alphaOp = TOP_SELECTARG1;
-            ts0.alphaArg1 = TARG_DIFFUSE;
-
-            RenderTextureStage & ts1 = mt.textureStage[1];
-
-            ts1.colorOp = TOP_SELECTARG1;
-            ts1.colorArg1 = TARG_CURRENT;
-            ts1.alphaOp = TOP_MODULATE;
-            ts1.alphaArg1 = TARG_TEXTURE;
-            ts1.alphaArg2 = TARG_CURRENT;
-            ts1.texCoordIndex = 1;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "ExternalAlpha"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            RenderTextureStage & ts0 = mt.textureStage[0];
-
-            ts0.colorOp = TOP_SELECTARG1;
-            ts0.colorArg1 = TARG_DIFFUSE;
-            //ts0.colorArg2 = TARG_DIFFUSE;
-            ts0.alphaOp = TOP_SELECTARG1;
-            ts0.alphaArg1 = TARG_DIFFUSE;
-
-            RenderTextureStage & ts1 = mt.textureStage[1];
-
-            ts1.colorOp = TOP_SELECTARG1;
-            ts1.colorArg1 = TARG_CURRENT;
-            ts1.alphaOp = TOP_MODULATE;
-            ts1.alphaArg1 = TARG_TEXTURE;
-            ts1.alphaArg2 = TARG_CURRENT;
-            ts1.texCoordIndex = 1;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "ExternalAlpha_OnlyColor"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            mt.textureStage[0].alphaOp = TOP_MODULATE;
-            mt.textureStage[0].colorOp = TOP_SELECTARG2;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "OnlyColor"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = false;
-            mt.alphaTestEnable = false;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            mt.textureStage[0].colorOp = TOP_SELECTARG2;
-            mt.textureStage[0].alphaOp = TOP_SELECTARG2;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "Debug"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = false;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE;
-
-            mt.textureStage[0].colorOp = TOP_MODULATE;
-            mt.textureStage[0].alphaOp = TOP_MODULATE;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "ParticleIntensive"), mt );
-        }
-
-        {
-            RenderMaterial mt;
-
-            mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = false;
-            mt.depthBufferWriteEnable = false;
-
-            mt.blendSrc = BF_SOURCE_ALPHA;
-            mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            mt.textureStage[0].colorOp = TOP_MODULATE;
-            mt.textureStage[0].alphaOp = TOP_MODULATE;
-
-            this->createMaterialGroup( Helper::stringizeString(m_serviceProvider, "ParticleBlend"), mt );
-        }
         
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
@@ -263,17 +92,8 @@ namespace Menge
         m_renderPasses.clear();
         //m_textures.clear();
 
-        for( TMapMaterialGroup::iterator
-            it = m_mapMaterialGroup.begin(),
-            it_end = m_mapMaterialGroup.end();
-        it != it_end;
-        ++it )
-        {
-            delete it->second;
-        }
-
-        m_mapMaterialGroup.clear();
-
+        m_nullTexture = nullptr;
+        
         RENDER_SYSTEM(m_serviceProvider)->releaseVertexBuffer( m_vbHandle2D );
         RENDER_SYSTEM(m_serviceProvider)->releaseIndexBuffer( m_vbHandle2D );
 
@@ -337,7 +157,14 @@ namespace Menge
             return false;
         }
 
+        if( this->createNullTexture_() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderWindow invalid create null texture"
+                );
 
+            return false;
+        }
+        
         //m_debugInfo.megatextures = 0;
 
         if( this->recreate2DBuffers_( m_maxIndexCount ) == false )
@@ -347,6 +174,48 @@ namespace Menge
 
         this->restoreRenderSystemStates_();
         this->prepare2D_();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool RenderEngine::createNullTexture_()
+    {
+        size_t null_width = 4;
+        size_t null_height = 4;
+        size_t null_channels = 3;
+
+        m_nullTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
+            ->createTexture( null_width, null_height, null_channels, PF_UNKNOWN, null_width, null_height );
+
+        if( m_nullTexture == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
+                , null_width
+                , null_height
+                );
+
+            return false;
+        }
+
+        Rect rect;
+        rect.left = 0;
+        rect.top = 0;
+        rect.right = null_width;
+        rect.bottom = null_height;
+
+        int pitch = 0;
+        unsigned char* textureData = m_nullTexture->lock( &pitch, rect, false );
+
+        for( size_t it = 0; it != null_height; ++it )
+        {
+            unsigned char null_color = 0xFF;
+            std::fill( textureData, textureData + pitch * it + null_width, null_color );
+        }
+
+        m_nullTexture->unlock();
+
+        RENDERTEXTURE_SERVICE(m_serviceProvider)
+            ->cacheFileTexture( Helper::stringizeString(m_serviceProvider, "__null__"), m_nullTexture );
 
         return true;
     }
@@ -388,103 +257,6 @@ namespace Menge
 
         RENDER_SYSTEM(m_serviceProvider)
             ->screenshot( image, _rect.buff() );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::createMaterialGroup( const ConstString & _name, const RenderMaterial & _material )
-    {
-        TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
-
-        if( it_found != m_mapMaterialGroup.end() )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createMaterialGroup: MaterialGroup '%s' is already created!"
-                , _name.c_str()
-                );
-
-            return false;
-        }
-
-        RenderMaterialGroup * materialGroup = new RenderMaterialGroup;
-
-        materialGroup->filter_group[0] = _material;
-        materialGroup->filter_group[0].textureStage[0].addressU = TAM_CLAMP;
-        materialGroup->filter_group[0].textureStage[0].addressV = TAM_CLAMP;
-        materialGroup->filter_group[0].textureStage[0].filter = TF_ANISOTROPIC;
-
-        materialGroup->filter_group[1] = _material;
-        materialGroup->filter_group[1].textureStage[0].addressU = TAM_WRAP;
-        materialGroup->filter_group[1].textureStage[0].addressV = TAM_CLAMP;
-        materialGroup->filter_group[1].textureStage[0].filter = TF_ANISOTROPIC;
-
-        materialGroup->filter_group[2] = _material;
-        materialGroup->filter_group[2].textureStage[0].addressU = TAM_CLAMP;
-        materialGroup->filter_group[2].textureStage[0].addressV = TAM_WRAP;
-        materialGroup->filter_group[2].textureStage[0].filter = TF_ANISOTROPIC;
-
-        materialGroup->filter_group[3] = _material;
-        materialGroup->filter_group[3].textureStage[0].addressU = TAM_WRAP;
-        materialGroup->filter_group[3].textureStage[0].addressV = TAM_WRAP;
-        materialGroup->filter_group[3].textureStage[0].filter = TF_ANISOTROPIC;
-
-        materialGroup->group[0] = _material;
-        materialGroup->group[0].textureStage[0].addressU = TAM_CLAMP;
-        materialGroup->group[0].textureStage[0].addressV = TAM_CLAMP;
-        materialGroup->group[0].textureStage[0].filter = TF_LINEAR;
-
-        materialGroup->group[1] = _material;
-        materialGroup->group[1].textureStage[0].addressU = TAM_WRAP;
-        materialGroup->group[1].textureStage[0].addressV = TAM_CLAMP;
-        materialGroup->group[1].textureStage[0].filter = TF_LINEAR;
-
-        materialGroup->group[2] = _material;
-        materialGroup->group[2].textureStage[0].addressU = TAM_CLAMP;
-        materialGroup->group[2].textureStage[0].addressV = TAM_WRAP;
-        materialGroup->group[2].textureStage[0].filter = TF_LINEAR;
-
-        materialGroup->group[3] = _material;
-        materialGroup->group[3].textureStage[0].addressU = TAM_WRAP;
-        materialGroup->group[3].textureStage[0].addressV = TAM_WRAP;
-        materialGroup->group[3].textureStage[0].filter = TF_LINEAR;
-
-
-        m_mapMaterialGroup.insert( std::make_pair(_name, materialGroup) );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialGroup * RenderEngine::getMaterialGroup( const ConstString & _name ) const
-    {
-        TMapMaterialGroup::const_iterator it_found = m_mapMaterialGroup.find( _name );
-
-        if( it_found == m_mapMaterialGroup.end() )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::getMaterialGroup: not exsist RenderMaterial '%s'"
-                , _name.c_str()
-                );
-
-            return nullptr;
-        }
-
-        RenderMaterialGroup * materialGroup = it_found->second;
-
-        return materialGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::removeMaterialGroup( const ConstString & _name )
-    {
-        TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
-
-        if( it_found == m_mapMaterialGroup.end() )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::removeMaterialGroup: not exsist RenderMaterial '%s'"
-                , _name.c_str()
-                );
-
-            return;
-        }
-
-        delete it_found->second;
-
-        m_mapMaterialGroup.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::onRenderSystemDeviceRestored()
@@ -605,8 +377,7 @@ namespace Menge
 
             if( texture == nullptr )
             {
-                RenderTextureInterfacePtr nullTexture = RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
-                    ->getNullTexture();
+                RenderTextureInterfacePtr nullTexture = m_nullTexture;
 
                 texture = nullTexture;
             }

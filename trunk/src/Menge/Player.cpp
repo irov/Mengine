@@ -993,7 +993,7 @@ namespace Menge
 				RENDER_SERVICE(m_serviceProvider)->getDebugInfo();
 
             const RenderTextureDebugInfo & rtdi =
-                RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)->getDebugInfo();
+                RENDERTEXTURE_SERVICE(m_serviceProvider)->getDebugInfo();
 
 			//size_t particlesCount = 
 			//	Holder<ParticleEngine>::get()->getFrameParticlesCount();

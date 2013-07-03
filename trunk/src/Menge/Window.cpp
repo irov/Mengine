@@ -99,7 +99,7 @@ namespace Menge
 
             if( textureAlpha == nullptr )
             {
-                const RenderMaterialGroup * materialGroup = RENDER_SERVICE(m_serviceProvider)
+                const RenderMaterialGroup * materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
                     ->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
 
 
@@ -111,7 +111,7 @@ namespace Menge
             }
             else
             {
-                const RenderMaterialGroup * materialGroup = RENDER_SERVICE(m_serviceProvider)
+                const RenderMaterialGroup * materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
                     ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
 
 

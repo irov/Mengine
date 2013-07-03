@@ -954,7 +954,7 @@ namespace Menge
 
             const RenderTextureInterfacePtr & texture = resource->getTexture();
 
-            RENDERTEXTUREMANAGER_SERVICE(m_serviceProvider)
+            RENDERTEXTURE_SERVICE(m_serviceProvider)
                 ->saveImage( texture, CONST_STRING(m_serviceProvider, user), Helper::stringizeString(m_serviceProvider, "pngImage"), _filename );
         }
         //////////////////////////////////////////////////////////////////////////

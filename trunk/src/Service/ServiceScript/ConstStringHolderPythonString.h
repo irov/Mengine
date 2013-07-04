@@ -7,7 +7,7 @@
 namespace Menge
 {
     class ConstStringHolderPythonString
-        : public ConstStringHolderT<char>
+        : public ConstStringHolder
     {
     public:
         ConstStringHolderPythonString();

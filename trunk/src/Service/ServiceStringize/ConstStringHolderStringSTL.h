@@ -2,10 +2,12 @@
 
 #   include "Core/ConstStringHolder.h"
 
+#   include "Config/Typedef.h"
+
 namespace Menge
 {
     class ConstStringHolderStringSTL
-        : public ConstStringHolderT<char>
+        : public ConstStringHolder
     {
     public:
         ConstStringHolderStringSTL();

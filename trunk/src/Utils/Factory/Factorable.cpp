@@ -17,7 +17,7 @@ namespace Menge
 #   ifdef _DEBUG
         if( m_destroy == false && m_factory != nullptr )
         {            
-            throw std::exception(); //Factorable delete!!!!!
+            throw FactorableException(); //Factorable delete!!!!!
         }
 #   endif
     }
@@ -32,7 +32,7 @@ namespace Menge
 #   ifdef _DEBUG
         if( m_destroy == true )
         {
-            throw std::exception();
+            throw FactorableException();
         }
 #   endif
 

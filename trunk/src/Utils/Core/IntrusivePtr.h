@@ -150,7 +150,7 @@ namespace Menge
 	}
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline bool operator == ( const IntrusivePtr<T> & _left, nullptr_t )
+    inline bool operator == ( const IntrusivePtr<T> & _left, void * )
     {
         T * ptr = _left.get();
 
@@ -158,7 +158,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T> 
-    inline bool operator != ( const IntrusivePtr<T> & _left, nullptr_t )
+    inline bool operator != ( const IntrusivePtr<T> & _left, void * )
     {
         T * ptr = _left.get();
 
@@ -166,7 +166,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T> 
-    inline bool operator == ( nullptr_t, const IntrusivePtr<T> & _right )
+    inline bool operator == ( void * , const IntrusivePtr<T> & _right )
     {
         T * ptr = intrusive_get<T *>(_right);
 
@@ -174,7 +174,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T> 
-    inline bool operator != ( nullptr_t, const IntrusivePtr<T> & _right )
+    inline bool operator != ( void * , const IntrusivePtr<T> & _right )
     {
         T * ptr = intrusive_get<T *>(_right);
 

@@ -1052,19 +1052,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Node::getWorldColor() const
 	{
-		if( m_parent == 0 )
+		if( m_parent == nullptr )
 		{
-			return Colorable::getLocalColor();
+            const ColourValue & localColor = Colorable::getLocalColor();
+
+			return localColor;
 		}
 
 		if( Colorable::isInvalidateColor() == false )
 		{
-			return Colorable::getRelationColor();
+            const ColourValue & relationColor = Colorable::getRelationColor();
+
+			return relationColor;
 		}
 
 		const ColourValue & parentColor = m_parent->getWorldColor();
 
-		return Colorable::updateRelationColor( parentColor );
+        const ColourValue & relationColor = Colorable::updateRelationColor( parentColor );
+
+		return relationColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::calcTotalColor( ColourValue & _color ) const
@@ -1075,6 +1081,18 @@ namespace Menge
 		const ColourValue & personalColour = this->getPersonalColor();		
 		_color *= personalColour;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Node::isSolidColor() const
+    {
+        const ColourValue & worldColour = this->getWorldColor();
+
+        float worldAlpha = worldColour.getA();
+        float personalAlpha = this->getPersonalAlpha();
+
+        bool solid = worldAlpha * personalAlpha == 1.f;
+
+        return solid;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visitResource( VisitorResource * _visitor )
 	{

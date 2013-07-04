@@ -264,13 +264,13 @@ namespace Menge
             m_needUpdate2 = false;
 		}
         
-		const Vertex2D * vertices = this->getVertices();
+		const RenderVertex2D * vertices = this->getVertices();
 
 		RENDER_SERVICE(m_serviceProvider)
             ->addRenderObject2D( _camera, m_material, m_textures, 1, LPT_QUAD, vertices, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
+	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices )
 	{
         (void)_invalidateVertices;
 
@@ -327,7 +327,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		const Vertex2D * vertcies = this->getVertices();
+		const RenderVertex2D * vertcies = this->getVertices();
 
 		mt::vec2f v( vertcies[0].pos[0], vertcies[0].pos[1] );
 		mt::reset( _boundingBox, v );

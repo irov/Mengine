@@ -42,7 +42,7 @@ namespace Menge
 			, const mt::vec4f & _uv
 			, unsigned int _argb
             , bool _pixelsnap
-			, TVectorVertex2D & _renderObject ) const;
+			, TVectorRenderVertex2D & _renderObject ) const;
 
     public:
 		float getLength() const;

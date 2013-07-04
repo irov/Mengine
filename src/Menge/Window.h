@@ -38,7 +38,7 @@ namespace Menge
 		void _invalidateColor() override;
 
 	protected:
-		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
+		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
 		ConstString m_resourceWindowName;

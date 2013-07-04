@@ -325,15 +325,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::updateCurrentFrame_()
 	{
-		if( m_resource != NULL )
+		if( m_resourceImage != nullptr )
 		{
-			m_resource->decrementReference();
-            m_resource = NULL;
+			m_resourceImage->decrementReference();
+            m_resourceImage = nullptr;
 		}
 
-		m_resourceName =  m_resourceAnimation->getSequenceResourceName( m_currentFrame );
-		m_resource =  m_resourceAnimation->getSequenceResource( m_currentFrame );
-		m_resource->incrementReference();
+		m_resourceImageName =  m_resourceAnimation->getSequenceResourceName( m_currentFrame );
+		m_resourceImage =  m_resourceAnimation->getSequenceResource( m_currentFrame );
+		m_resourceImage->incrementReference();
         	
 		if( Sprite::_compile() == false )
 		{

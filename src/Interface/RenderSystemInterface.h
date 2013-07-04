@@ -326,7 +326,7 @@ namespace Menge
     const int VDECL_TEX1 = 0x100;
     const int VDECL_TEX2 = 0x200;
     //////////////////////////////////////////////////////////////////////////
-    struct Vertex2D
+    struct RenderVertex2D
     {
         mt::vec3f pos;
         uint32 color;
@@ -336,7 +336,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1 | VDECL_TEX2;
     //////////////////////////////////////////////////////////////////////////
-    struct Vertex3D
+    struct RenderVertex3D
     {
         float pos[3];
         float n[3];
@@ -346,8 +346,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static const uint32 Vertex3D_declaration = VDECL_XYZ | VDECL_NORMAL | VDECL_DIFFUSE | VDECL_TEX1;
     //////////////////////////////////////////////////////////////////////////
-    typedef std::vector<Vertex2D> TVectorVertex2D;
-    typedef std::vector<Vertex3D> TVectorVertex3D;
+    typedef std::vector<RenderVertex2D> TVectorRenderVertex2D;
+    typedef std::vector<RenderVertex3D> TVectorRenderVertex3D;
     //////////////////////////////////////////////////////////////////////////
     class ApplyColor2D
     {
@@ -356,7 +356,7 @@ namespace Menge
             : m_argb( _argb )
         {
         }
-        void operator()( Vertex2D& _vtx )
+        void operator()( RenderVertex2D& _vtx )
         {
             _vtx.color = m_argb;
         }
@@ -628,7 +628,7 @@ namespace Menge
         const RenderTextureInterfacePtr * textures;
         size_t texturesNum;
 
-        const Vertex2D * vertices;
+        const RenderVertex2D * vertices;
         size_t verticesNum;
 
         const uint16 * indices;
@@ -647,7 +647,7 @@ namespace Menge
     public:
         virtual void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , ELogicPrimitiveType _type
-            , const Vertex2D * _vertices, size_t _verticesNum
+            , const RenderVertex2D * _vertices, size_t _verticesNum
             , const uint16 * _indices = 0, size_t _indicesNum = 0 ) = 0;
 
 	public:

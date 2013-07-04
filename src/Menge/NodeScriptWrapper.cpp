@@ -74,6 +74,7 @@
 #	include "Window.h"
 
 
+#	include "Kernel/Shape.h"
 #	include "Kernel/Entity.h"
 
 //#	include "DiscreteEntity.h"
@@ -1428,31 +1429,31 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec4f& _percent, PyObject* _cb )
+        size_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, PyObject* _cb )
         {
-            if( _sprite->isActivate() == false )
+            if( _shape->isActivate() == false )
             {
                 return 0;
             }
 
-            _sprite->stopAffectors( ETA_VISIBILITY );
+            _shape->stopAffectors( ETA_VISIBILITY );
 
             Affector* affector = 
                 NodeAffectorCreator::newNodeAffectorInterpolateLinear(
                 m_serviceProvider,
-                _cb, ETA_VISIBILITY, _sprite, &Sprite::setPercentVisibility
-                , _sprite->getPercentVisibility(), _percent, _time, 
+                _cb, ETA_VISIBILITY, _shape, &Sprite::setPercentVisibility
+                , _shape->getPercentVisibility(), _percent, _time, 
                 &mt::length_v4 
                 );
 
-            size_t id = _sprite->addAffector( affector );
+            size_t id = _shape->addAffector( affector );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void setPercentVisibilityStop( Sprite * _sprite )
+        void setPercentVisibilityStop( Shape * _shape )
         {
-            _sprite->stopAffectors( ETA_VISIBILITY );
+            _shape->stopAffectors( ETA_VISIBILITY );
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_filterTag( Node * _node, const ConstString & _tag )
@@ -3052,10 +3053,25 @@ namespace Menge
                     .def( "getResourceShape", &HotSpotShape::getResourceShapeName )
                     ;
 
-                pybind::interface_<Sprite, pybind::bases<Node> >("Sprite", false)
-                    //.def( "setImageIndex", &Sprite::setImageIndex )
-                    //.def( "getImageIndex", &Sprite::getImageIndex )
-                    //.def( "getImageCount", &Sprite::getImageCount )
+                pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
+                    .def( "setCenterAlign", &Shape::setCenterAlign )
+                    .def( "getCenterAlign", &Shape::getCenterAlign )
+                    .def( "setFlipX", &Shape::setFlipX )
+                    .def( "getFlipX", &Shape::getFlipX )
+                    .def( "setFlipY", &Shape::setFlipX )
+                    .def( "getFlipY", &Shape::getFlipY )
+                    .def( "setPercentVisibility", &Shape::setPercentVisibility )
+                    .def( "getPercentVisibility", &Shape::getPercentVisibility )
+                    .def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
+                    .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
+                    .def( "setTextureUVOffset", &Shape::setTextureUVOffset )
+                    .def( "getTextureUVOffset", &Shape::getTextureUVOffset )
+                    .def( "setTextureUVScale", &Shape::setTextureUVScale )
+                    .def( "getTextureUVScale", &Shape::getTextureUVScale )
+                    ;
+
+
+                pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
                     .def( "setImageResource", &Sprite::setImageResourceName )
                     .def( "getImageResource", &Sprite::getImageResourceName )
 
@@ -3064,25 +3080,12 @@ namespace Menge
                     .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalImageCenter )
                     .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
 
-                    //.def( "setScale", &Sprite::setScale )
-                    //.def( "getScale", &Sprite::getScale )
-                    .def( "setPercentVisibility", &Sprite::setPercentVisibility )
-                    .def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
-                    .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
-                    .def( "setFlipX", &Sprite::setFlipX )
-                    .def( "getFlipX", &Sprite::getFlipX )
-                    .def( "setFlipY", &Sprite::setFlipY )                    
-                    .def( "getFlipY", &Sprite::getFlipY )
                     .def( "disableTextureColor", &Sprite::disableTextureColor )
-                    .def( "setTextureMatrixOffset", &Sprite::setTextureMatrixOffset )
 
-                    .def( "setTextureUVOffset", &Sprite::setTextureUVOffset )
-                    .def( "getTextureUVOffset", &Sprite::getTextureUVOffset )
-                    .def( "setTextureUVScale", &Sprite::setTextureUVScale )
-                    .def( "getTextureUVScale", &Sprite::getTextureUVScale )
-
-                    .def( "setSpriteSize", &Sprite::setSpriteSize )
+                    .def_depricated( "setSpriteSize", &Sprite::setCustomSize, "use setCustomSize" )
+                    .def( "setCustomSize", &Sprite::setCustomSize )
                     ;
+
                 {
                     pybind::interface_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
                         .def( "setAnimationResource", &Animation::setAnimationResource )

@@ -36,7 +36,7 @@ namespace Menge
 	//struct Material;
 	class Camera;
 
-	struct Vertex2D;
+	struct RenderVertex2D;
 
 	struct ImageCodecDataInfo;
 
@@ -50,7 +50,7 @@ namespace Menge
 		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;
 
-		const Vertex2D * vertexData;
+		const RenderVertex2D * vertexData;
 		size_t verticesNum;
 
         const uint16 * indicesData;
@@ -101,17 +101,17 @@ namespace Menge
 	public:
 		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , ELogicPrimitiveType _type
-            , const Vertex2D * _vertices, size_t _verticesNum 
+            , const RenderVertex2D * _vertices, size_t _verticesNum 
 			, const uint16 * _indices = 0, size_t _indicesNum = 0 ) override;
 
 	public:
-		VBHandle createVertexBuffer( const Vertex2D * _vertexies, size_t _verticesNum );
+		VBHandle createVertexBuffer( const RenderVertex2D * _vertexies, size_t _verticesNum );
 		IBHandle createIndicesBuffer( const unsigned short * _buffer, size_t _count );
 
 		void releaseVertexBuffer( VBHandle _handle );
 		void releaseIndicesBuffer( IBHandle _handle );
 
-		bool updateVertexBuffer( VBHandle _handle, const Vertex2D * _vertexies, size_t _verticesNum );
+		bool updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _vertexies, size_t _verticesNum );
 		bool updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count );
 
 	public:
@@ -180,8 +180,8 @@ namespace Menge
 		bool makeBatches_( bool & _overflow );
 		size_t batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos );
 		bool batchRenderObject_( RenderObject * _renderObject, RenderObject * _batchedObject, size_t & _verticesNum ) const;
-		size_t insertRenderObjects_( RenderPass * _pass, Vertex2D * _vertexBuffer, size_t _offset );
-		size_t insertRenderObject_( RenderObject * _renderObject, Vertex2D * _vertexBuffer, size_t _offset ) const;
+		size_t insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, size_t _offset );
+		size_t insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, size_t _offset ) const;
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
@@ -190,8 +190,8 @@ namespace Menge
 		bool recreate2DBuffers_( size_t _maxIndexCount );
         		
     private:
-        void calcQuadSquare_( const Vertex2D * _vertex, size_t _vertexNum );
-        void calcMeshSquare_( const Vertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum );
+        void calcQuadSquare_( const RenderVertex2D * _vertex, size_t _vertexNum );
+        void calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum );
 
     protected:
         bool createNullTexture_();

@@ -22,6 +22,12 @@ GlobalHandleAdapter
 )
 
 ADD_FILTER(
+Shape
+	Shape.cpp
+	Shape.h
+)
+
+ADD_FILTER(
 Node
 	Node.cpp
 	Node.h
@@ -34,7 +40,7 @@ Layer
 )
 
 ADD_FILTER(
-Layer
+Scene
 	Scene.cpp
 	Scene.h
 )
@@ -136,7 +142,7 @@ Vertices
 )
 
 ADD_FILTER(
-src
+ThreadTask
 	ThreadTask.h
 	ThreadTask.cpp
 	ThreadTaskPacket.h

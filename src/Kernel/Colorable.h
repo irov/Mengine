@@ -25,7 +25,7 @@ namespace Menge
 	public:
 		inline bool isLocalTransparent() const;
 		inline bool isPersonalTransparent() const;
-
+        
 	protected:
 		inline const ColourValue & getRelationColor() const;
 
@@ -44,10 +44,9 @@ namespace Menge
 
 	protected:
 		ColourValue m_colorPersonal;
-
 		ColourValue m_colorLocal;		
 
-		mutable ColourValue m_colorWorld;
+		mutable ColourValue m_colorRelation;
 		mutable bool m_invalidateColor;
 
 		bool m_localTransparent;
@@ -66,7 +65,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Colorable::getRelationColor() const
 	{
-		return m_colorWorld;
+		return m_colorRelation;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Colorable::isInvalidateColor() const
@@ -81,7 +80,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline float Colorable::getPersonalAlpha() const
 	{
-		return m_colorPersonal.getA();
+        float alpha = m_colorPersonal.getA();
+
+		return alpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const ColourValue& Colorable::getLocalColor() const

@@ -1823,9 +1823,9 @@ namespace Menge
             m_renderTextureManager->finalize();
             m_renderService->finalize();
 
+            SERVICE_DESTROY( RenderService, m_renderService );
             SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
             SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
-            SERVICE_DESTROY( RenderService, m_renderService );
         }        
 
         if( m_renderSystem != nullptr )

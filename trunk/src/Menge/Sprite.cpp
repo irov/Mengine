@@ -289,7 +289,10 @@ namespace	Menge
         m_customSize = _size;
         m_isCustomSize = true;
 
-        this->updateResource_();
+        if( m_resourceImage != nullptr )
+        {
+            this->updateResource_();
+        }
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::disableTextureColor( bool _disable )

@@ -235,6 +235,11 @@ namespace	Menge
       //      }
       //  }
 
+        if( m_vertices == nullptr )
+        {
+            return;
+        }
+
 		for( TVectorBatchs::const_iterator
 			it = m_batchs.begin(),
 			it_end = m_batchs.end();

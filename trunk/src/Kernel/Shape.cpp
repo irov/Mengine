@@ -392,7 +392,7 @@ namespace Menge
 
         mt::vec2f size;
         size.x = m_size.x - m_size.x * ( percent.x + percent.z );
-        size.y = m_size.y - size.y * ( percent.y + percent.w );
+        size.y = m_size.y - m_size.y * ( percent.y + percent.w );
 
         if( m_centerAlign == true )
         {

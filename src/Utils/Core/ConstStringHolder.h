@@ -5,6 +5,8 @@
 
 #	include "Factory/Factorable.h"
 
+#   include <stddef.h>
+
 namespace Menge
 {
     class ConstStringHolder

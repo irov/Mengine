@@ -131,7 +131,7 @@ namespace Menge
 		, const mt::vec4f & _uv
 		, unsigned int _argb	
         , bool _pixelsnap
-		, TVectorVertex2D& _renderObject ) const
+		, TVectorRenderVertex2D& _renderObject ) const
 	{
 		if( m_invalidateTextLine == true )
 		{
@@ -157,7 +157,7 @@ namespace Menge
 			for( int i = 0; i != 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
-				Vertex2D & renderVertex = _renderObject[renderObjectNum + i];
+				RenderVertex2D & renderVertex = _renderObject[renderObjectNum + i];
 				const mt::vec3f & charVertex = data.renderVertex[i];
 				
 

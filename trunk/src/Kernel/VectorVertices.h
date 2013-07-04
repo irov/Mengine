@@ -12,7 +12,7 @@ namespace Menge
 		VectorVertices();
 
 	protected:
-		typedef std::vector<Vertex2D> TVectorVertex2D;
+		typedef std::vector<RenderVertex2D> TVectorVertex2D;
 
 	public:
 		inline TVectorVertex2D & getVertices();

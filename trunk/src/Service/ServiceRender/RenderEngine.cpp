@@ -584,7 +584,7 @@ namespace Menge
 
         RENDER_SYSTEM(m_serviceProvider)->setVertexBuffer( m_currentVBHandle );
         RENDER_SYSTEM(m_serviceProvider)->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
-        RENDER_SYSTEM(m_serviceProvider)->setVertexDeclaration( sizeof(Vertex2D), Vertex2D_declaration );
+        RENDER_SYSTEM(m_serviceProvider)->setVertexDeclaration( sizeof(RenderVertex2D), Vertex2D_declaration );
         RENDER_SYSTEM(m_serviceProvider)->setProjectionMatrix( projTransform );
         RENDER_SYSTEM(m_serviceProvider)->setModelViewMatrix( viewTransform );
         RENDER_SYSTEM(m_serviceProvider)->setWorldMatrix( worldTransform );
@@ -779,7 +779,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , ELogicPrimitiveType _type
-        , const Vertex2D * _vertices, size_t _verticesNum
+        , const RenderVertex2D * _vertices, size_t _verticesNum
         , const uint16 * _indices, size_t _indicesNum )
     {
         if( _camera == nullptr )
@@ -891,10 +891,10 @@ namespace Menge
         ++rp.countRenderObject;
     }
     //////////////////////////////////////////////////////////////////////////
-    VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, size_t _count )
+    VBHandle RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, size_t _count )
     {
         VBHandle vbHandle = RENDER_SYSTEM(m_serviceProvider)
-            ->createVertexBuffer( _count, sizeof(Vertex2D), true );
+            ->createVertexBuffer( _count, sizeof(RenderVertex2D), true );
 
         if( vbHandle == 0 )
         {
@@ -961,12 +961,12 @@ namespace Menge
             ->releaseIndexBuffer( _handle );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::updateVertexBuffer( VBHandle _handle, const Vertex2D * _buffer, size_t _count  )
+    bool RenderEngine::updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _buffer, size_t _count  )
     {
         void * vbuffer = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
             _handle
             , 0
-            , _count * sizeof(Vertex2D)
+            , _count * sizeof(RenderVertex2D)
             , 0 
             );
 
@@ -978,7 +978,7 @@ namespace Menge
             return false;
         }
 
-        std::copy( _buffer + 0, _buffer + _count, static_cast<Vertex2D*>(vbuffer) );
+        std::copy( _buffer + 0, _buffer + _count, static_cast<RenderVertex2D*>(vbuffer) );
 
         if( RENDER_SYSTEM(m_serviceProvider)->unlockVertexBuffer( _handle ) == false )
         {
@@ -1071,7 +1071,7 @@ namespace Menge
         void * vData = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
             m_vbHandle2D
             , 0
-            , vertexDataSize * sizeof(Vertex2D)
+            , vertexDataSize * sizeof(RenderVertex2D)
             , lockFlags 
             );
 
@@ -1085,7 +1085,7 @@ namespace Menge
 
         size_t offset = 0;
 
-        Vertex2D * vertexBuffer = static_cast<Vertex2D *>(vData);
+        RenderVertex2D * vertexBuffer = static_cast<RenderVertex2D *>(vData);
 
         for( TArrayRenderPass::iterator 
             it = m_renderPasses.begin(), 
@@ -1188,7 +1188,7 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t RenderEngine::insertRenderObjects_( RenderPass * _renderPass, Vertex2D * _vertexBuffer, size_t _offset )
+    size_t RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, size_t _offset )
     {
         TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
         TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
@@ -1203,7 +1203,7 @@ namespace Menge
         return _offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t RenderEngine::insertRenderObject_( RenderObject * _renderObject, Vertex2D * _vertexBuffer, size_t _offset ) const
+    size_t RenderEngine::insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, size_t _offset ) const
     {
         ELogicPrimitiveType type = _renderObject->logicPrimitiveType;
 
@@ -1231,9 +1231,9 @@ namespace Menge
         assert( _renderObject->startIndex + _renderObject->dipIndiciesNum <= m_maxIndexCount );
 
         //Vertex2D * vertexBuffer = _vertexBuffer + _offset * sizeof(Vertex2D)
-        Vertex2D * offsetVertexBuffer = _vertexBuffer + _offset;
+        RenderVertex2D * offsetVertexBuffer = _vertexBuffer + _offset;
         //std::copy( _renderObject->vertexData, _renderObject->vertexData + _renderObject->verticesNum, offsetVertexBuffer );
-        memcpy( offsetVertexBuffer, _renderObject->vertexData, _renderObject->verticesNum * sizeof(Vertex2D) );
+        memcpy( offsetVertexBuffer, _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) );
 
         m_vbPos += _renderObject->verticesNum;
         _offset += _renderObject->verticesNum;
@@ -1286,7 +1286,7 @@ namespace Menge
             m_currentVertexDeclaration = Vertex2D_declaration;
 
             RENDER_SYSTEM(m_serviceProvider)
-                ->setVertexDeclaration( sizeof(Vertex2D), m_currentVertexDeclaration );
+                ->setVertexDeclaration( sizeof(RenderVertex2D), m_currentVertexDeclaration );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1297,7 +1297,7 @@ namespace Menge
             m_currentVertexDeclaration = Vertex3D_declaration;
 
             RENDER_SYSTEM(m_serviceProvider)
-                ->setVertexDeclaration( sizeof(Vertex3D), m_currentVertexDeclaration );
+                ->setVertexDeclaration( sizeof(RenderVertex3D), m_currentVertexDeclaration );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1419,7 +1419,7 @@ namespace Menge
         }
 
         m_vbHandle2D = RENDER_SYSTEM(m_serviceProvider)
-            ->createVertexBuffer( m_maxPrimitiveVertices2D, sizeof(Vertex2D), true );
+            ->createVertexBuffer( m_maxPrimitiveVertices2D, sizeof(RenderVertex2D), true );
 
         if( m_vbHandle2D == 0 )
         {
@@ -1565,7 +1565,7 @@ namespace Menge
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    static double s_calcTriangleSquare( const Vertex2D & _v1, const Vertex2D & _v2, const Vertex2D & _v3 )
+    static double s_calcTriangleSquare( const RenderVertex2D & _v1, const RenderVertex2D & _v2, const RenderVertex2D & _v3 )
     {
         const mt::vec3f & p1 = _v1.pos;
         const mt::vec3f & p2 = _v2.pos;
@@ -1584,14 +1584,14 @@ namespace Menge
         return S;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::calcQuadSquare_( const Vertex2D * _vertex, size_t _num )
+    void RenderEngine::calcQuadSquare_( const RenderVertex2D * _vertex, size_t _num )
     {
         for( size_t i = 0; i != (_num / 4); ++i )
         {
-            const Vertex2D & v0 = _vertex[i + 0];
-            const Vertex2D & v1 = _vertex[i + 1];
-            const Vertex2D & v2 = _vertex[i + 2];
-            const Vertex2D & v3 = _vertex[i + 3];
+            const RenderVertex2D & v0 = _vertex[i + 0];
+            const RenderVertex2D & v1 = _vertex[i + 1];
+            const RenderVertex2D & v2 = _vertex[i + 2];
+            const RenderVertex2D & v3 = _vertex[i + 3];
 
             m_debugInfo.fillrate += s_calcTriangleSquare( v0, v1, v2 );
             m_debugInfo.fillrate += s_calcTriangleSquare( v0, v2, v3 );
@@ -1602,7 +1602,7 @@ namespace Menge
         m_debugInfo.object += 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::calcMeshSquare_( const Vertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum )
+    void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum )
     {
         for( size_t i = 0; i != (_indicesNum / 3); ++i )
         {

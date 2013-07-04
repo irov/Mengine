@@ -74,7 +74,7 @@ namespace Menge
 		bool _interrupt( size_t _enumerator ) override;
 
 	protected:
-		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
+		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
         ConstString m_resourceVideoName;

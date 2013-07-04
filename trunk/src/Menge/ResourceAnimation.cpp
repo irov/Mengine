@@ -68,7 +68,7 @@ namespace Menge
 			ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceImage>( sequence.resourceName );
 
-			if( resource == 0 )
+			if( resource == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "ResourceAnimation::_compile: '%s' Image resource not found resource '%s'"
 					, this->getName().c_str()
@@ -95,35 +95,43 @@ namespace Menge
 		++it )
 		{
 			AnimationSequence & sequence = *(it);
-
-			if( sequence.resource == NULL )
-			{
-				continue;
-			}
-			
+            		
 			sequence.resource->decrementReference();
-			sequence.resource = NULL;
+			sequence.resource = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceAnimation::getSequenceCount() const
 	{
-		return m_sequence.size();
+        size_t size = m_sequence.size();
+
+		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDelay( size_t _sequence ) const
+	float ResourceAnimation::getSequenceDelay( size_t _index ) const
 	{
-		return m_sequence[_sequence].delay;
+        const AnimationSequence & sequence = m_sequence[_index];
+
+        float delay = sequence.delay;
+
+		return delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceAnimation::getSequenceResourceName( size_t _sequence ) const
+	const ConstString & ResourceAnimation::getSequenceResourceName( size_t _index ) const
 	{
-		return m_sequence[_sequence].resourceName;
+        const AnimationSequence & sequence = m_sequence[_index];
+
+        const ConstString & resourceName = sequence.resourceName;
+
+		return resourceName;
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceAnimation::getLastFrameIndex() const
 	{
-		return m_sequence.size() - 1;	
+        size_t size = m_sequence.size();
+        size_t lastIndex = size - 1;
+
+		return lastIndex;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::setSequences( const TVectorAnimationSequence & _sequence )
@@ -136,9 +144,13 @@ namespace Menge
 		return m_sequence;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * ResourceAnimation::getSequenceResource( size_t _sequence ) const
+	ResourceImage * ResourceAnimation::getSequenceResource( size_t _index ) const
 	{
-		return m_sequence[_sequence].resource;
+        const AnimationSequence & sequence = m_sequence[_index];
+
+        ResourceImage * resource = sequence.resource;
+
+		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceAnimation::getSequenceDuration() const

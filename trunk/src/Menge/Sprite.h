@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Kernel/Node.h"
+#	include "Kernel/Shape.h"
 
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
@@ -11,10 +12,6 @@
 #	include "math/vec4.h"
 #	include "math/mat4.h"
 
-#   include "Core/Polygon.h"
-
-#	include <vector>
-
 namespace Menge
 {
 	class ResourceImage;
@@ -23,7 +20,7 @@ namespace Menge
 	struct RenderMaterialGroup;    
 	
 	class Sprite
-		: public Node
+		: public Shape
 	{
 	public:
 		Sprite();
@@ -37,33 +34,12 @@ namespace Menge
         ResourceImage * getImageResource() const;
         
     public:
-		void setCenterAlign( bool _centerAlign );
-		bool getCenterAlign() const;
-
-		void setFlipX( bool _flipX );
-		bool getFlipX() const;
-
-		void setFlipY( bool _flipY );		
-		bool getFlipY() const;
-
-		void setPercentVisibility( const mt::vec4f& _percent );
-		const mt::vec4f& getPercentVisibility() const;
-
 		void disableTextureColor( bool _disable );
 
-		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
-
-        void setTextureUVOffset( const mt::vec2f & _offset );
-        const mt::vec2f & getTextureUVOffset() const;
-
-        void setTextureUVScale( const mt::vec2f & _scale );
-        const mt::vec2f & getTextureUVScale() const;
-	
 		void setBlendAdd( bool _value );
 		bool isBlendAdd() const;
 
-		void setSpriteSize( const mt::vec2f& _size );
-        void setMask( const Polygon & _polygon );
+        void setCustomSize( const mt::vec2f & _size );
 
 	protected:
 		bool _compile() override;
@@ -71,81 +47,53 @@ namespace Menge
 
 		void _render( RenderCameraInterface * _camera ) override;
 
-		void _invalidateWorldMatrix() override;
-
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
-		void _invalidateColor() override;
+        void _invalidateColor() override;
 
     protected:
-        void invalidateVertices_( unsigned char _invalidate = 0xFF );
-		void updateVertices_();
+        void invalidateMaterial();
+        void updateMaterial();
+        const RenderMaterial * getMaterial();
 
     protected:
-        void invalidateVerticesWM_();
-        void updateVerticesWM_();
-
-    protected:
-        const Vertex2D * getVerticesWM_();
+        void updateResource_();
+		
         
-	protected:
-		void updateMaterial_();
-
 	protected:
 		bool compileResource_();
 
 	protected:
-		ResourceImage * m_resource;
+        ConstString m_resourceImageName;
+		ResourceImage * m_resourceImage;		
 
-		ConstString m_resourceName;
+        bool m_isCustomSize;
+        mt::vec2f m_customSize;
 
-        mt::vec2f m_spriteSize;
-		bool m_isCustomSize;
-
-		bool m_centerAlign;
-		bool m_flipX;
-		bool m_flipY;
-
-		bool m_blendAdd;
-		
+		bool m_blendAdd;		
 		bool m_solid;
-
-		mt::vec4f m_percentVisibility;
 
 		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;
+
+        bool m_invalidateMaterial;
 
 		bool m_disableTextureColor;
 		size_t m_texturesNum;
 		mt::vec2f m_textureMatrixOffset;
 
-        mt::vec2f m_textureUVOffset;
-        mt::vec2f m_textureUVScale;
-
 		RenderTextureInterfacePtr m_textures[2];
-
-        mt::vec3f m_verticesLocal[4];
-        unsigned char m_invalidateVerticesLocal;
-
-        mt::vec3f * m_verticesLocalMask;
-
-        Vertex2D m_verticesWM[4];
-        bool m_invalidateVerticesWM;
-
-        //Polygon m_mask;
-        //Polygon m_maskPolygon;
-        //TVectorIndices m_maskIndices;
 
         VBHandle m_maskVB;
         IBHandle m_maskIB;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const Vertex2D * Sprite::getVerticesWM_()
+    inline const RenderMaterial * Sprite::getMaterial()
     {
-        if( m_invalidateVerticesWM == true )
+        if( m_invalidateMaterial == true )
         {
-            this->updateVerticesWM_();
+            this->updateMaterial();
         }
 
-        return m_verticesWM;
+        return m_material;
     }
 }

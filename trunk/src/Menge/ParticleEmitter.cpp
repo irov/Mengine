@@ -243,7 +243,7 @@ namespace	Menge
 		{
 			const Batch & batch = *it;
 
-            Vertex2D * batch_vertices = m_vertices + batch.begin;
+            RenderVertex2D * batch_vertices = m_vertices + batch.begin;
 
 			RENDER_SERVICE(m_serviceProvider)->
 				addRenderObject2D( _camera, batch.material, batch.texture, 1, LPT_QUAD, batch_vertices, batch.size );
@@ -438,7 +438,7 @@ namespace	Menge
 			m_verticesCount = flush.particleCount * 4;
 
 			delete [] m_vertices;
-			m_vertices = new Vertex2D [m_verticesCount];
+			m_vertices = new RenderVertex2D [m_verticesCount];
 		}
 
 		//const mt::mat4f & wm = this->getWorldMatrix();
@@ -484,7 +484,7 @@ namespace	Menge
 					argb = cv.getAsARGB();
 				}
 
-				Vertex2D * vertice = &m_vertices[it * 4];
+				RenderVertex2D * vertice = &m_vertices[it * 4];
 
 				//mt::vec3f wm_pos0;
 				//mt::mul_v3_m4( wm_pos0, p.v[0] + relation_pos, wm);

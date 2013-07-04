@@ -963,7 +963,7 @@ namespace Menge
 		layer_sprite->setLocalColor( color );
 
 		const mt::vec2f& size = resource->getSize();
-		layer_sprite->setSpriteSize( size );
+		layer_sprite->setCustomSize( size );
 
         if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
         {

@@ -143,14 +143,14 @@ namespace Menge
 		void invalidateVertices_() const;
 
         void updateVerticesWM_();
-        void updateVertexDataWM_( TVectorVertex2D & _outVertex, const TVectorVertex2D & _fromVertex );
+        void updateVertexDataWM_( TVectorRenderVertex2D & _outVertex, const TVectorRenderVertex2D & _fromVertex );
 
         void invalidateVerticesWM_() const;
 
-		inline TVectorVertex2D & getOutlineVertices();
-		inline TVectorVertex2D & getTextVertices();
+		inline TVectorRenderVertex2D & getOutlineVertices();
+		inline TVectorRenderVertex2D & getTextVertices();
 
-		void updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData );
+		void updateVertexData_( const ColourValue & _color, TVectorRenderVertex2D& _vertexData );
 
 	private:
 		const TListTextLine & getTextLines() const;
@@ -193,11 +193,11 @@ namespace Menge
 		const RenderMaterial * m_materialText;
 		const RenderMaterial * m_materialOutline;
 
-		TVectorVertex2D m_vertexDataText;
-		TVectorVertex2D m_vertexDataOutline;
+		TVectorRenderVertex2D m_vertexDataText;
+		TVectorRenderVertex2D m_vertexDataOutline;
 
-        TVectorVertex2D m_vertexDataTextWM;
-        TVectorVertex2D m_vertexDataOutlineWM;
+        TVectorRenderVertex2D m_vertexDataTextWM;
+        TVectorRenderVertex2D m_vertexDataOutlineWM;
 
 		mutable bool m_invalidateVertices;
         mutable bool m_invalidateVerticesWM;
@@ -205,7 +205,7 @@ namespace Menge
 		mutable bool m_invalidateTextLines;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline TVectorVertex2D & TextField::getOutlineVertices()
+	inline TVectorRenderVertex2D & TextField::getOutlineVertices()
 	{
 		if( m_invalidateVerticesWM == true )
 		{
@@ -215,7 +215,7 @@ namespace Menge
 		return m_vertexDataOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TVectorVertex2D & TextField::getTextVertices()
+	inline TVectorRenderVertex2D & TextField::getTextVertices()
 	{
 		if( m_invalidateVerticesWM == true )
 		{

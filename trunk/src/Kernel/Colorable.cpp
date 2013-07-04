@@ -11,7 +11,7 @@ namespace Menge
 		, m_personalTransparent(false)
 		, m_colorPersonal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorLocal(1.0f, 1.0f, 1.0f, 1.0f)
-		, m_colorWorld(1.0f, 1.0f, 1.0f, 1.0f)
+		, m_colorRelation(1.0f, 1.0f, 1.0f, 1.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,10 +71,10 @@ namespace Menge
 	{
 		m_invalidateColor = false;
 
-		m_colorWorld = m_colorLocal;
-		m_colorWorld *= _parentColor;
+		m_colorRelation = m_colorLocal;
+		m_colorRelation *= _parentColor;
 
-		return m_colorWorld;
+		return m_colorRelation;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::invalidateColor()

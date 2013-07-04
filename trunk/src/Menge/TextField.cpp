@@ -166,7 +166,7 @@ namespace Menge
 		this->invalidateVerticesWM_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData )
+	void TextField::updateVertexData_( const ColourValue & _color, TVectorRenderVertex2D& _vertexData )
 	{
 		_vertexData.clear();
 
@@ -217,7 +217,7 @@ namespace Menge
 			this->renderOutline_( _camera );
 		}
 
-		TVectorVertex2D & textVertices = this->getTextVertices();
+		TVectorRenderVertex2D & textVertices = this->getTextVertices();
 		
         if( textVertices.empty() == true )
         {
@@ -243,7 +243,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( RenderCameraInterface * _camera )
 	{
-		TVectorVertex2D & outlineVertices = this->getOutlineVertices();
+		TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices();
 
 		if( outlineVertices.empty() == true )
 		{
@@ -774,14 +774,14 @@ namespace Menge
         this->updateVertexDataWM_( m_vertexDataOutlineWM, m_vertexDataOutline );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexDataWM_( TVectorVertex2D & _outVertex, const TVectorVertex2D & _fromVertex )
+    void TextField::updateVertexDataWM_( TVectorRenderVertex2D & _outVertex, const TVectorRenderVertex2D & _fromVertex )
     {
         _outVertex.assign( _fromVertex.begin(), _fromVertex.end() );
 
-        TVectorVertex2D::const_iterator it = _fromVertex.begin();
-        TVectorVertex2D::const_iterator it_end = _fromVertex.end();
+        TVectorRenderVertex2D::const_iterator it = _fromVertex.begin();
+        TVectorRenderVertex2D::const_iterator it_end = _fromVertex.end();
 
-        TVectorVertex2D::iterator it_w = _outVertex.begin();        
+        TVectorRenderVertex2D::iterator it_w = _outVertex.begin();        
 
         mt::mat4f wm = this->getWorldMatrix();
 
@@ -793,9 +793,9 @@ namespace Menge
 
         for( ; it != it_end; ++it, ++it_w )
         {
-            const Vertex2D & vertex = *it;
+            const RenderVertex2D & vertex = *it;
             
-            Vertex2D & vertex_w = *it_w;
+            RenderVertex2D & vertex_w = *it_w;
             
             mt::mul_v3_m4( vertex_w.pos, vertex.pos, wm );
         }

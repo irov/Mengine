@@ -32,9 +32,9 @@ namespace Menge
 
 	public:
 		size_t getSequenceCount() const;
-		float getSequenceDelay( size_t _sequence ) const;		
-		const ConstString& getSequenceResourceName( size_t _sequence ) const;
-		ResourceImage *  getSequenceResource( size_t _sequence ) const;
+		float getSequenceDelay( size_t _index ) const;		
+		const ConstString& getSequenceResourceName( size_t _index ) const;
+		ResourceImage *  getSequenceResource( size_t _index ) const;
 
 		size_t getLastFrameIndex() const;
 		float getSequenceDuration() const;

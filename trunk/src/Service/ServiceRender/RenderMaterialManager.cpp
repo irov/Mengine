@@ -222,6 +222,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _filename )
     {
+        (void)_pakName;
+        (void)_filename;
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////

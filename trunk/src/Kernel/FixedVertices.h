@@ -14,12 +14,12 @@ namespace Menge
 		}
 
 	public:
-		void setVertices( const Vertex2D * _vertices )
+		void setVertices( const RenderVertex2D * _vertices )
 		{
 			std::copy( _vertices, _vertices + VerticesCount, m_vertices );
 		}
 
-		inline const Vertex2D * getVertices()
+		inline const RenderVertex2D * getVertices()
 		{
 			if( m_invalidateVertices != 0 )
 			{
@@ -43,10 +43,10 @@ namespace Menge
 		}
 	
 	protected:
-		virtual void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) = 0;
+		virtual void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) = 0;
 
 	private:
-		Vertex2D m_vertices[VerticesCount];
+		RenderVertex2D m_vertices[VerticesCount];
 		unsigned char m_invalidateVertices;
 	};
 

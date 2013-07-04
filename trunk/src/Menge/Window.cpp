@@ -151,7 +151,7 @@ namespace Menge
 	{
 		Node::_render( _camera );
 
-		const Vertex2D * vertices = this->getVertices();
+		const RenderVertex2D * vertices = this->getVertices();
 
         if( this->hasBackground() == true )
         {
@@ -170,7 +170,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
+	void Window::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices )
 	{
         (void)_invalidateVertices;
 
@@ -370,7 +370,7 @@ namespace Menge
 
             const TQuad & quad = quads[i];
 
-            Vertex2D & v0 = _vertices[i * 4 + 0];
+            RenderVertex2D & v0 = _vertices[i * 4 + 0];
             mt::mul_v3_m4( v0.pos, mt::vec3f( quad.a, 0.f), worldMatrix );
 			
 			v0.uv.x = uv.x;
@@ -378,7 +378,7 @@ namespace Menge
             v0.uv2.x = uv.x;
             v0.uv2.y = uv.y;
 			
-            Vertex2D & v1 = _vertices[i * 4 + 1];
+            RenderVertex2D & v1 = _vertices[i * 4 + 1];
             mt::mul_v3_m4( v1.pos, mt::vec3f(quad.b, 0.f), worldMatrix );
 
 			v1.uv.x = uv.z;
@@ -386,7 +386,7 @@ namespace Menge
             v1.uv2.x = uv.z;
             v1.uv2.y = uv.y;
 
-            Vertex2D & v2 = _vertices[i * 4 + 2];
+            RenderVertex2D & v2 = _vertices[i * 4 + 2];
             mt::mul_v3_m4( v2.pos, mt::vec3f(quad.c, 0.f), worldMatrix );
 
 			v2.uv.x = uv.z;
@@ -394,7 +394,7 @@ namespace Menge
             v2.uv2.x = uv.z;
             v2.uv2.y = uv.w;
 			
-            Vertex2D & v3 = _vertices[i * 4 + 3];
+            RenderVertex2D & v3 = _vertices[i * 4 + 3];
             mt::mul_v3_m4( v3.pos, mt::vec3f(quad.d, 0.f), worldMatrix );
 
 			v3.uv.x = uv.x;
@@ -414,7 +414,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		const Vertex2D * vertices = this->getVertices();
+		const RenderVertex2D * vertices = this->getVertices();
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 

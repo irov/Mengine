@@ -118,6 +118,7 @@ namespace Menge
 	public:
 		const ColourValue & getWorldColor() const;
 		void calcTotalColor( ColourValue & _color ) const;
+        bool isSolidColor() const;
 
 	protected:
 		void _invalidateColor() override;
@@ -273,7 +274,7 @@ namespace Menge
 //#ifndef MENGE_MASTER_RELEASE
 	protected:
 		const RenderMaterial* m_debugMaterial;
-		Vertex2D m_debugBox[5];
+		RenderVertex2D m_debugBox[5];
 //#endif
 	};
 	//////////////////////////////////////////////////////////////////////////

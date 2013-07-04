@@ -126,13 +126,13 @@ namespace Menge
 		const RenderMaterial * m_materials[2]; //intensive and non intensive
 
 		//TVectorVertex2D m_vertices;
-		Vertex2D * m_vertices;
+		RenderVertex2D * m_vertices;
 		size_t m_verticesCount;
 
 		struct Batch
 		{
-			TVectorVertex2D::size_type begin;
-			TVectorVertex2D::size_type size;
+			TVectorRenderVertex2D::size_type begin;
+			TVectorRenderVertex2D::size_type size;
 			RenderTextureInterfacePtr texture[1];
 			const RenderMaterial * material;
 		};

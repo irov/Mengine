@@ -97,7 +97,7 @@ namespace Menge
         bool compilePolygon_();
 
     protected:
-		bool updateParticleVertex_( RenderCameraInterface * _camera );
+		bool updateParticleVertex_();
         void updateRelative_();
 
     protected:

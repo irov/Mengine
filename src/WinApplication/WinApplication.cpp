@@ -1886,7 +1886,8 @@ namespace Menge
 	void WinApplication::stop()
 	{
 		m_running = false;
-		if( m_hWnd != 0 )
+
+		if( m_hWnd != NULL )
 		{
 			CloseWindow( m_hWnd );
 		}

@@ -180,10 +180,13 @@ namespace Menge
 
         return ptr != nullptr;
     }
-	//////////////////////////////////////////////////////////////////////////
-	template<class T> 
-	inline bool operator < ( const IntrusivePtr<T> & _left, const IntrusivePtr<T> & _right )
-	{
-		return std::less<T *>()( _left.get(), _right.get() );
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//template<class T> 
+	//inline bool operator < ( const IntrusivePtr<T> & _left, const IntrusivePtr<T> & _right )
+	//{
+ //       T * left_ptr = _left.get();
+ //       T * left_ptr = _right.get();
+
+	//	return std::less<T *>()( _left.get(), _right.get() );
+	//}
 }

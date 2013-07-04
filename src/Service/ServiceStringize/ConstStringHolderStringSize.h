@@ -8,7 +8,7 @@ namespace Menge
 {
     template<size_t I_Size>
     class ConstStringHolderStringSize
-        : public ConstStringHolderT<char>
+        : public ConstStringHolder
     {
     public:
         void setValue( const char * _value, size_t _size )

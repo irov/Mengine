@@ -17,18 +17,8 @@ namespace Menge
         size_t getReference() const;
 
     protected:
-        friend inline void intrusive_ptr_add_ref( FactorablePtr * _ptr )
-        {
-            ++_ptr->m_reference;
-        }
-
-        friend inline void intrusive_ptr_release( FactorablePtr * _ptr )
-        {
-            if( --_ptr->m_reference == 0 )
-            {
-                _ptr->destroy();
-            }
-        }
+        friend void intrusive_ptr_add_ref( FactorablePtr * _ptr );
+        friend void intrusive_ptr_release( FactorablePtr * _ptr );
 
 #   ifdef _DEBUG
     protected:
@@ -38,4 +28,17 @@ namespace Menge
     protected:
         size_t m_reference;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline void intrusive_ptr_add_ref( FactorablePtr * _ptr )
+    {
+        ++_ptr->m_reference;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline void intrusive_ptr_release( FactorablePtr * _ptr )
+    {
+        if( --_ptr->m_reference == 0 )
+        {
+            _ptr->destroy();
+        }
+    }
 }

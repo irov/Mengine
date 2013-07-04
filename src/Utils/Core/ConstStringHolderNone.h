@@ -7,23 +7,16 @@
 namespace Menge
 {    
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        template<class T>
-        const T * cs_empty_str();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    template<class T>
     class ConstStringHolderNone
-        : public ConstStringHolderT<T>
+        : public ConstStringHolder
         , public Factory
     {
     public:
         ConstStringHolderNone()
-            : ConstStringHolderT<T>()
         {
-            const T * empty_str = Detail::cs_empty_str<T>();
-            this->setup(empty_str, 0);
+            const char * empty_str = "";
+
+            this->setup( empty_str, 0 );
 
             this->setFactory( this );
         }

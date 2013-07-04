@@ -15,7 +15,6 @@ namespace Menge
 
 	public:
 		virtual bool stringize( const char * _str, size_t _size, ConstString & _cstr ) = 0;
-        virtual bool stringizeW( const wchar_t * _str, size_t _size, ConstWString & _cstr ) = 0;
 	};
 
 
@@ -37,22 +36,6 @@ namespace Menge
         inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const String & _value )
         {
             ConstString cstr = stringizeStringSize( _serviceProvider, _value.c_str(), _value.size() );
-
-            return cstr;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        inline ConstWString stringizeWStringSize( ServiceProviderInterface * _serviceProvider, const wchar_t * _value, size_t _size )
-        {
-            ConstWString cstr;
-            STRINGIZE_SERVICE(_serviceProvider)
-                ->stringizeW( _value, _size, cstr );
-
-            return cstr;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        inline ConstWString stringizeWString( ServiceProviderInterface * _serviceProvider, const WString & _value )
-        {
-            ConstWString cstr = stringizeWStringSize( _serviceProvider, _value.c_str(), _value.size() );
 
             return cstr;
         }

@@ -24,7 +24,6 @@ namespace Menge
 
 	public:
 		bool stringize( const char * _str, size_t _size, ConstString & _cstr ) override;
-        bool stringizeW( const wchar_t * _str, size_t _size, ConstWString & _cstr ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -51,8 +50,5 @@ namespace Menge
 
         typedef FactoryPool<ConstStringHolderStringSTL, 32> FactoryPoolStringSTL;
         FactoryPoolStringSTL m_poolStringSTL;
-
-        typedef FactoryPool<ConstStringHolderWStringSTL, 32> FactoryPoolWStringSTL;
-        FactoryPoolWStringSTL m_poolWStringSTL;
 	};
 }

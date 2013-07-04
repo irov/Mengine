@@ -4,6 +4,10 @@ namespace Menge
 {
 	class Factory;
 
+    class FactorableException
+    {
+    };
+
 	class Factorable
 	{
 	public:

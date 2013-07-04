@@ -2042,43 +2042,43 @@ namespace Menge
 	{
 		HRESULT hr;
 
-		if( m_syncTargets[0] )
+		if( m_syncTargets[0] != nullptr )
 		{
 			m_syncTargets[0]->Release();
-			m_syncTargets[0] = NULL;
+			m_syncTargets[0] = nullptr;
 		}
 
-		if( m_syncTargets[1] )
+		if( m_syncTargets[1] != nullptr )
 		{
 			m_syncTargets[1]->Release();
-			m_syncTargets[1] = NULL;
+			m_syncTargets[1] = nullptr;
 		}
 
-		if( m_syncTemp )
+		if( m_syncTemp != nullptr )
 		{
 			m_syncTemp->Release();
-			m_syncTemp = NULL;
+			m_syncTemp = nullptr;
 		}
 
-		if( m_syncTempTex )
+		if( m_syncTempTex != nullptr )
 		{
 			m_syncTempTex->Release();
-			m_syncTempTex = NULL;
+			m_syncTempTex = nullptr;
 		}
 
-		if( m_screenSurf ) 
+		if( m_screenSurf != nullptr ) 
 		{ 
 			m_screenSurf->Release();
-			m_screenSurf = NULL; 
+			m_screenSurf = nullptr; 
 		}
 
-		if( m_screenDepth ) 
+		if( m_screenDepth != nullptr ) 
 		{ 
 			m_screenDepth->Release();
-			m_screenDepth = NULL; 
+			m_screenDepth = nullptr; 
 		}
 
-		if( m_pD3DDevice )
+		if( m_pD3DDevice != nullptr )
 		{
             if( m_currentVB )
             {
@@ -2105,7 +2105,7 @@ namespace Menge
                         );
                 }
 
-                m_currentIB = NULL;
+                m_currentIB = nullptr;
             }
 		}
 
@@ -2120,7 +2120,7 @@ namespace Menge
             if( vb.pVB )
             {
 			    vb.pVB->Release();
-                vb.pVB = NULL;
+                vb.pVB = nullptr;
             }
 		}
 
@@ -2135,20 +2135,20 @@ namespace Menge
             if( ib.pIB )
             {
                 ib.pIB->Release();
-                ib.pIB = NULL;
+                ib.pIB = nullptr;
             }
         }
 
-		if( m_pD3DDevice == nullptr ) 
+		if( m_pD3DDevice != nullptr ) 
 		{ 
 			m_pD3DDevice->Release(); 
-			m_pD3DDevice = NULL; 
+			m_pD3DDevice = nullptr; 
 		}
 
-		if( m_pD3D == nullptr ) 
+		if( m_pD3D != nullptr ) 
 		{ 
 			m_pD3D->Release();
-			m_pD3D = NULL; 
+			m_pD3D = nullptr; 
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -41,7 +41,7 @@ namespace Menge
 	struct ImageCodecDataInfo;
 
 	struct RenderObject
-	{
+    {
 		const RenderMaterial * material;
 
 		size_t textureStages;

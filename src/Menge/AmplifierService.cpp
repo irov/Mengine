@@ -17,9 +17,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AmplifierService::AmplifierService()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
         , m_sourceID(0)
-		, m_buffer(NULL)
+		, m_buffer(nullptr)
 		, m_currentPlayList(0)
 		, m_volume(1.f)
 		, m_volumeOverride(1.f)
@@ -317,7 +317,7 @@ namespace Menge
 		m_buffer = SOUND_SERVICE(m_serviceProvider)
             ->createSoundBufferFromFile( _pakName, _file, _codec, true );
 
-		if( m_buffer == 0 )
+		if( m_buffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "AmplifierService::prepareSound_: AmplifierService can't load sample '%s'"
 				, _file.c_str() 
@@ -349,8 +349,11 @@ namespace Menge
 
         m_sourceID = 0;
 
-        m_buffer->destroy();
-		m_buffer = NULL;
+        if( m_buffer != nullptr )
+        {
+            m_buffer->destroy();
+	    	m_buffer = nullptr;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& AmplifierService::getPlayTrack() const

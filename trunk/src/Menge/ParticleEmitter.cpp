@@ -225,15 +225,15 @@ namespace	Menge
 		//size_t maxParticleCount = PARTICLE_SERVICE(m_serviceProvider)
 			//->getMaxParticlesCount();
 
-        if( m_emitterChangeRendering == true || m_emitterChangeRenderingExtra == true )
-        {
-            m_emitterChangeRenderingExtra = false;
+      //  if( m_emitterChangeRendering == true || m_emitterChangeRenderingExtra == true )
+      //  {
+      //      m_emitterChangeRenderingExtra = false;
 
-		    if( this->updateParticleVertex_( _camera ) == false )
-            {
-                return;
-            }
-        }
+		    //if( this->updateParticleVertex_( _camera ) == false )
+      //      {
+      //          return;
+      //      }
+      //  }
 
 		for( TVectorBatchs::const_iterator
 			it = m_batchs.begin(),
@@ -385,12 +385,15 @@ namespace	Menge
 		}
 
 		m_emitterChangeRendering = m_interface->update( _timing );
+
+        if( this->updateParticleVertex_() == false )
+        {
+            return;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::updateParticleVertex_( RenderCameraInterface * _camera )
+	bool ParticleEmitter::updateParticleVertex_()
 	{
-        (void)_camera;
-
 		size_t partCount = 0;
 				
 		Node::_updateBoundingBox( m_localBoundingBox );
@@ -411,19 +414,20 @@ namespace	Menge
 
         //const mt::mat4f & viewMatrix = _camera->getViewMatrix();
 
-        mt::vec3f Eye(0,0,-840.f);
-        mt::vec3f At(0,0,0);        
-        mt::vec3f Up(0,1,0);
+        //mt::vec3f Eye(0,0,-840.f);
+        //mt::vec3f At(0,0,0);        
+        //mt::vec3f Up(0,1,0);
 
-        mt::vec3f zaxis = mt::norm_v3( At - Eye );
-        mt::vec3f xaxis = mt::norm_v3( mt::cross_v3_v3( Up, zaxis ) );
-        mt::vec3f yaxis = mt::cross_v3_v3( zaxis, xaxis );
+        //mt::vec3f zaxis = mt::norm_v3( At - Eye );
+        //mt::vec3f xaxis = mt::norm_v3( mt::cross_v3_v3( Up, zaxis ) );
+        //mt::vec3f yaxis = mt::cross_v3_v3( zaxis, xaxis );
 
         mt::mat4f viewMatrix;
-        viewMatrix.v0 = mt::vec4f(xaxis.x, yaxis.x, zaxis.x, 0);
-        viewMatrix.v1 = mt::vec4f(xaxis.y, yaxis.y, zaxis.y, 0);
-        viewMatrix.v2 = mt::vec4f(xaxis.z, yaxis.z, zaxis.z, 0);
-        viewMatrix.v3 = mt::vec4f(-mt::dot_v3_v3( xaxis, Eye ), -mt::dot_v3_v3( yaxis, Eye ),  -mt::dot_v3_v3(zaxis, Eye), 1);
+        mt::ident_m4(viewMatrix);
+        //viewMatrix.v0 = mt::vec4f(xaxis.x, yaxis.x, zaxis.x, 0);
+        //viewMatrix.v1 = mt::vec4f(xaxis.y, yaxis.y, zaxis.y, 0);
+        //viewMatrix.v2 = mt::vec4f(xaxis.z, yaxis.z, zaxis.z, 0);
+        //viewMatrix.v3 = mt::vec4f(-mt::dot_v3_v3( xaxis, Eye ), -mt::dot_v3_v3( yaxis, Eye ),  -mt::dot_v3_v3(zaxis, Eye), 1);
 
 		EmitterRenderFlush flush;
 

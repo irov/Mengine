@@ -28,7 +28,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::~OALSoundSystem()
 	{     
-
 	}
     //////////////////////////////////////////////////////////////////////////
     void OALSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -142,21 +141,19 @@ namespace Menge
     {
         if( m_device )
         {
-            alcMakeContextCurrent( NULL );
+            alcMakeContextCurrent( nullptr );
 
             if( m_context )
             {
                 alcDestroyContext( m_context );
-                m_context = NULL;
+                m_context = nullptr;
             }
 
 #   ifndef _DEBUG
             alcCloseDevice( m_device );
 #   endif
-            m_device = NULL;
+            m_device = nullptr;
         }
-        
-        delete this;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::onTurnSound( bool _turn )

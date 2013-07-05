@@ -384,7 +384,7 @@ namespace Menge
             //return _left->testPolygon( left_wm, right_poligon, right_wm );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_loadPlugin( const String & _pluginName )
+        bool s_loadPlugin( const WString & _pluginName )
         {
             PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
                 ->loadPlugin( _pluginName );
@@ -2167,26 +2167,28 @@ namespace Menge
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        typedef std::vector<ConstString> TVectorConstString;
+        //////////////////////////////////////////////////////////////////////////
+        class ResourceEmitterContainerVisitor
+            : public EmitterContainerInterface::EmitterContainerVisitor
+        {
+        public:
+            void visitEmitterName( const ConstString& _emitterName )
+            {
+                catchedNames.push_back( _emitterName );
+            }
+
+            void visitAtlas( const EmitterContainerInterface::EmitterAtlas & _atlas )
+            {
+                cathedAtlas.push_back( _atlas );
+            }
+
+            EmitterContainerInterface::TVectorAtlas cathedAtlas;                       
+            TVectorConstString catchedNames;
+        };
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_visitResourceEmitterContainer( const ConstString & _resourceName )
         {
-            class ResourceEmitterContainerVisitor:
-                public EmitterContainerInterface::EmitterContainerVisitor
-            {
-            public:
-                void visitEmitterName( const ConstString& _emitterName )
-                {
-                    catchedNames.push_back( _emitterName );
-                }
-
-                void visitAtlas( const EmitterContainerInterface::EmitterAtlas & _atlas )
-                {
-                    cathedAtlas.push_back( _atlas );
-                }
-
-                EmitterContainerInterface::TVectorAtlas cathedAtlas;
-                TVectorConstString catchedNames;
-            };
-
             ResourceEmitterContainer * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceEmitterContainer>( _resourceName );
 

@@ -1,4 +1,5 @@
 #	include "Config/Typedef.h"
+#   include "Config/Stringstream.h"
 
 #	include "ScriptWrapper.h"
 

@@ -15,6 +15,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeManager::~PrototypeManager()
 	{
+        for( TMapPrototypes::iterator
+            it = m_prototypes.begin(),
+            it_end = m_prototypes.end();
+        it != it_end;
+        ++it )
+        {
+            PrototypeGeneratorInterface * prototype = it->second;
+            prototype->destroy();
+        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void PrototypeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )

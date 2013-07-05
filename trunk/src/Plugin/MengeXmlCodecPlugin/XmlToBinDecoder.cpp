@@ -3,6 +3,8 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
+#   include "Config/Blobject.h"
+
 #	include "Utils/Logger/Logger.h"
 
 #	include "metabuf/Metabuf.hpp"
@@ -56,8 +58,8 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	XmlToBinDecoder::XmlToBinDecoder()
-        : m_serviceProvider(NULL)
-        , m_stream(NULL)
+        : m_serviceProvider(nullptr)
+        , m_stream(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -78,9 +80,9 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const XmlCodecDataInfo* XmlToBinDecoder::getCodecDataInfo() const
+	const XmlCodecDataInfo * XmlToBinDecoder::getCodecDataInfo() const
 	{
-		return 0;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlToBinDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )

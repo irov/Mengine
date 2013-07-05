@@ -3,6 +3,7 @@
 #	include "ServiceInterface.h"
 
 #	include "Config/Typedef.h"
+#	include "Config/String.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
@@ -50,6 +51,7 @@ namespace Menge
 
 		virtual void setCurrentModule( PyObject * _module ) = 0;
         virtual void addGlobalModule( const String & _name, PyObject * _module ) = 0;
+        virtual void removeGlobalModule( const String & _name ) = 0;
 
 		virtual PyObject * getModuleFunction( PyObject * _module, const char * _name ) = 0;
 

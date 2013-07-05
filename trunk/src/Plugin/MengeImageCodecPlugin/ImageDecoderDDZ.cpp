@@ -3,6 +3,8 @@
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
+#   include "Config/Blobject.h"
+
 #	include "Utils/Logger/Logger.h"
 
 namespace Menge

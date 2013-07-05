@@ -83,4 +83,102 @@ namespace Menge
         m_hash = s_make_hash( m_data );
         m_size = _size;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolder::combine( ConstStringHolder * _holder )
+    {
+        if( m_owner->m_reference > _holder->m_owner->m_reference )
+        {
+            this->combine_from( _holder, this );
+        }
+        else
+        {
+            this->combine_from( this, _holder );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////       
+    class ConstStringHolder::ForeachCombineOwner
+    {
+    public:
+        ForeachCombineOwner( ConstStringHolder * _out )
+            : m_out(_out)
+        {
+        }
+
+    public:
+        void operator () ( IntrusiveLinked<ConstStringHolder> * _linked ) const
+        {
+            ConstStringHolder * elem = static_cast<ConstStringHolder *>(_linked);
+
+            elem->combine_owner( m_out );
+        }
+
+    protected:
+        ConstStringHolder * m_out;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    class ConstStringHolder::ForeachCombineOther
+    {
+    public:
+        ForeachCombineOther( ConstStringHolder * _out )
+            : m_out(_out)
+        {
+        }
+
+    public:
+        void operator () ( IntrusiveLinked<ConstStringHolder> * _linked ) const
+        {
+            ConstStringHolder * elem = static_cast<ConstStringHolder *>(_linked);
+
+            elem->combine_other( m_out );
+        }
+
+    protected:
+        ConstStringHolder * m_out;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolder::combine_owner( ConstStringHolder * _out )
+    {
+        this->m_owner = _out->m_owner;
+        this->m_reference >>= 1;
+
+        _out->m_owner->m_reference += this->m_reference;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolder::combine_other( ConstStringHolder * _out )
+    {
+        this->m_owner->m_reference -= this->m_reference;
+        this->m_owner = _out->m_owner;
+
+        _out->m_owner->m_reference += this->m_reference;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolder::combine_from( ConstStringHolder * _from, ConstStringHolder * _out )
+    {
+        _from->m_owner->releaseString();
+
+        if( _from->unique() == true )
+        {
+            ForeachCombineOwner combineowner(_out);
+            _from->foreach_self( combineowner );
+        }
+        else
+        {
+            ConstStringHolder * from_owner = _from->m_owner;
+
+            ForeachCombineOther combineother(_out);
+            from_owner->foreach_other( combineother );
+
+            if( from_owner->m_reference == 0 )
+            {
+                from_owner->destroy();
+            }
+            else
+            {
+                ForeachCombineOwner combineowner(_out);
+                from_owner->foreach_self( combineowner );						
+            }
+        }
+
+        _from->linkall( _out );
+    }
 }

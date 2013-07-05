@@ -1,5 +1,8 @@
 #	include "ScriptWrapper.h"
 
+#   include "Config/String.h"
+#   include "Config/Stringstream.h"
+
 #	include "pybind/pybind.hpp"
 
 #	include "Core/Polygon.h"
@@ -29,8 +32,6 @@
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(pop) 
 #   endif
-
-#	include <sstream>
 
 namespace Menge
 {

@@ -2,6 +2,8 @@
 
 #   include "Interface/FileSystemInterface.h"
 
+#   include "Config/Blobject.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Core/Viewport.h"
@@ -46,12 +48,12 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		int fileSize = file->size();
 
-        TBlobject fileBuffer;
+        static TBlobject fileBuffer;
         fileBuffer.resize(fileSize);
 
 		file->read( &fileBuffer[0], fileSize );
@@ -61,13 +63,13 @@ namespace Menge
 		EmitterContainerInterface * container = PARTICLE_SYSTEM(m_serviceProvider)
             ->createEmitterContainerFromMemory( &fileBuffer[0] );
 
-		if( container == NULL )
+		if( container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEngine can't create emitter container '%s'"
 				, _filename.c_str() 
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		return container;

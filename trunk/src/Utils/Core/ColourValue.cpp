@@ -1,9 +1,9 @@
+#   include "ColourValue.h"
 
-#include "ColourValue.h"
+#   include <algorithm>
 
 namespace Menge
 {
-
 	const ColourValue ColourValue::ZERO = ColourValue(0.0,0.0,0.0,0.0);
 	const ColourValue ColourValue::Black = ColourValue(0.0,0.0,0.0,1.f);
 	const ColourValue ColourValue::White = ColourValue(1.0,1.0,1.0,1.f);

@@ -8,11 +8,7 @@ src
 	ScriptLogger.cpp
     ScriptModuleFinder.h
     ScriptModuleFinder.cpp
-    ScriptModuleLoaderCode.h
-    ScriptModuleLoaderCode.cpp
-    ScriptModuleLoaderSource.h
-    ScriptModuleLoaderSource.cpp
-    
+
     ConstStringHolderPythonString.h
     ConstStringHolderPythonString.cpp
 )

@@ -1,5 +1,7 @@
 #	include "ImageDecoderPNG.h"
 
+#   include "Config/Blobject.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Interface/FileSystemInterface.h"

@@ -8,16 +8,21 @@ namespace Menge
 		Reference();
 
 	public:
-		virtual unsigned int incrementReference();
-		virtual unsigned int decrementReference();
+		unsigned int incrementReference();
+		unsigned int decrementReference();
 
-		virtual unsigned int countReference();
+		unsigned int countReference();
 
-	public:
+	protected:
 		virtual bool _incrementZero();
 		virtual void _decrementZero();
 
 	protected:
 		unsigned int m_refcounter;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline unsigned int Reference::countReference()
+    {
+        return m_refcounter;
+    }
 }

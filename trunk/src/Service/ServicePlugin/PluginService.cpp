@@ -12,7 +12,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     PluginService::PluginService()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
         , m_dllCreatePluginName("dllCreatePlugin")
     {
     }
@@ -44,9 +44,9 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    PluginInterface * PluginService::loadPlugin( const String & _name )
+    PluginInterface * PluginService::loadPlugin( const WString & _name )
     {
-        LOGGER_INFO(m_serviceProvider)( "PluginService::loadPlugin get %s"
+        LOGGER_INFO(m_serviceProvider)( "PluginService::loadPlugin get %ls"
             , _name.c_str() 
             );
 
@@ -54,35 +54,32 @@ namespace Menge
 
         if( it_found == m_plugins.end() )
         {
-            LOGGER_INFO(m_serviceProvider)( "PluginService::loadPlugin load %s"
+            LOGGER_INFO(m_serviceProvider)( "PluginService::loadPlugin load %ls"
                 , _name.c_str() 
                 );
 
-            WString unicode_name;
-            Helper::utf8ToUnicode(m_serviceProvider, _name, unicode_name);
-
             DynamicLibraryInterface * dlib = WINDOWSLAYER_SERVICE(m_serviceProvider)
-                ->loadDynamicLibrary( unicode_name );
+                ->loadDynamicLibrary( _name );
 
-            if( dlib == NULL )
+            if( dlib == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %s plugin [invalid load]"
+                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [invalid load]"
                     , _name.c_str() 
                     );
 
-                return NULL;
+                return nullptr;
             }
 
             TDynamicLibraryFunction function_dllCreatePlugin =
                 dlib->getSymbol( m_dllCreatePluginName.c_str() );
 
-            if( function_dllCreatePlugin == NULL )
+            if( function_dllCreatePlugin == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %s plugin [dllCreatePlugin]"
+                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [dllCreatePlugin]"
                     , _name.c_str() 
                     );
 
-                return NULL;
+                return nullptr;
             }
 
             TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
@@ -90,29 +87,29 @@ namespace Menge
             PluginInterface * plugin;
             if( dllCreatePlugin( &plugin ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %s plugin [invalid create]"
+                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [invalid create]"
                     , _name.c_str() 
                     );
 
-                return NULL;
+                return nullptr;
             }
 
-            if( plugin == NULL )
+            if( plugin == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %s plugin [plugin is NULL]"
+                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [plugin is NULL]"
                     , _name.c_str() 
                     );
 
-                return NULL;
+                return nullptr;
             }
 
             if( plugin->initialize( m_serviceProvider ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %s plugin [invalid initialize]"
+                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [invalid initialize]"
                     , _name.c_str() 
                     );
 
-                return NULL;
+                return nullptr;
             }
             
             PluginDesc desc;
@@ -129,7 +126,7 @@ namespace Menge
         return plugin;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PluginService::unloadPlugin( const String & _name )
+    void PluginService::unloadPlugin( const WString & _name )
     {
         TMapPlugins::iterator it_found = m_plugins.find( _name );
 

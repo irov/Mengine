@@ -5,6 +5,10 @@
 
 #   include "Core/ConstString.h"
 
+#   include "Config/Blobject.h"
+
+#   include <map>
+
 namespace Menge
 {
     class AccountInterface

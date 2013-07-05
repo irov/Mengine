@@ -9,9 +9,19 @@
 namespace Menge
 {
 	class Consts
+        : public ServiceInterface
 	{
+        SERVICE_DECLARE("Consts")
+
 	public:
-		Consts( ServiceProviderInterface * _serviceProvider );
+		Consts();
+
+    public:
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+        ServiceProviderInterface * getServiceProvider() const override;
+
+    public:
+        bool initialize();
 
 	public:
 		ConstString c_dir;
@@ -100,11 +110,15 @@ namespace Menge
         ConstString c_DefaultAccountID;
         ConstString c_SelectAccountID;
         ConstString c_Account;
+
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
 	};
 
-    const Consts & getConsts( ServiceProviderInterface * _serviceProvider );
+#   define CONSTS_SERVICE( serviceProvider )\
+    (Menge::Helper::getService<Menge::Consts>(serviceProvider))
 }
 
 #	define CONST_STRING( ServiceProvider, String )\
-	(getConsts(ServiceProvider).c_##String)
+	(CONSTS_SERVICE(ServiceProvider)->c_##String)
 

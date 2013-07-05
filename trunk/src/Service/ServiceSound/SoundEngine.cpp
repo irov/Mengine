@@ -56,11 +56,11 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            SoundSourceDesc * desc = it->second;
+            SoundSourceDesc * source = it->second;
 
-            if( desc->taskSoundBufferUpdate != NULL )
+            if( source->taskSoundBufferUpdate != nullptr )
             {
-                this->stopSoundBufferUpdate_( desc );
+                this->stopSoundBufferUpdate_( source );
                 //desc->taskSoundBufferUpdate->stop();
 
                 //THREAD_SERVICE(m_serviceProvider)
@@ -70,9 +70,13 @@ namespace Menge
                 //desc->taskSoundBufferUpdate = nullptr;
             }
 
-            desc->soundSourceInterface->stop();
-            desc->soundSourceInterface->destroy();
+            source->soundSourceInterface->stop();
+            source->soundSourceInterface->destroy();
+
+            m_poolSoundSourceDesc.destroyT( source );
         }
+
+        m_soundSourceMap.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::playSounds_()

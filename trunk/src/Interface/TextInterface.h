@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#   include "Config/String.h"
+
 #   include "Core/ConstString.h"
 
 namespace Menge

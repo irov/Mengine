@@ -39,11 +39,11 @@ namespace	Menge
     static const size_t maxMeshCount = 100;
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::ParticleEmitter()
-		: m_interface(0)
-		, m_resource(0)
+		: m_interface(nullptr)
+		, m_resourceEmitterContainer(nullptr)
 		, m_startPosition(0.f)
         , m_randomMode(false)
-		, m_vertices(NULL)
+		, m_vertices(nullptr)
 		, m_verticesCount(0)
         , m_emitterRelative(false)
         , m_emitterPosition(0.f, 0.f, 0.f)
@@ -98,26 +98,26 @@ namespace	Menge
             return false;
         }
 
-		m_resource = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceEmitterContainer>( m_resourceName );
+		m_resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceT<ResourceEmitterContainer>( m_resourceEmitterContainerName );
 
-		if( m_resource == NULL )
+		if( m_resourceEmitterContainer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' can't open resource file '%s'"
 				, m_name.c_str()
-				, m_resourceName.c_str() 
+				, m_resourceEmitterContainerName.c_str() 
 				);
 
 			return false;
 		}
 		
-		EmitterContainerInterface * container = m_resource->getContainer();
+		EmitterContainerInterface * container = m_resourceEmitterContainer->getContainer();
 
-		if( container == NULL )
+		if( container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' can't open container file '%s'"
 				, m_name.c_str()
-				, m_resourceName.c_str() 
+				, m_resourceEmitterContainerName.c_str() 
 				);
 
 			return false;
@@ -125,11 +125,11 @@ namespace	Menge
 
 		m_interface = container->createEmitter( m_emitterName );
 
-		if( m_interface == 0 )
+		if( m_interface == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
 				, m_name.c_str()
-				, m_resourceName.c_str()
+				, m_resourceEmitterContainerName.c_str()
 				, m_emitterName.c_str() 
 				);
 
@@ -181,25 +181,24 @@ namespace	Menge
 	{
 		Node::_release();
 
-        if( m_resource != 0 )
+        if( m_resourceEmitterContainer != nullptr )
         {
-		    if( m_interface )
+		    if( m_interface != nullptr )
 		    {
 			    EmitterContainerInterface * container = 
-				    m_resource->getContainer();
+				    m_resourceEmitterContainer->getContainer();
 
 			    container->releaseEmitter( m_interface );
-
-			    m_interface = NULL;
+			    m_interface = nullptr;
 		    }
 
-			m_resource->decrementReference();
-			m_resource = NULL;
+			m_resourceEmitterContainer->decrementReference();
+			m_resourceEmitterContainer = nullptr;
 		}
 
-		delete [] m_vertices;
-        
-		m_vertices = NULL;
+		delete [] m_vertices;        
+		m_vertices = nullptr;
+
 		m_verticesCount = 0;
 
 		//m_images.clear();				
@@ -463,7 +462,7 @@ namespace	Menge
 		{
 			const ParticleMesh & mesh = s_meshes[it];
 
-			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
+			ResourceImageDefault * image = m_resourceEmitterContainer->getAtlasImage( mesh.texture );
 			RenderTextureInterfacePtr texture = image->getTexture();
 
 			const mt::vec4f & mesh_uv = texture->getUV();
@@ -642,12 +641,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setResource( const ConstString& _resourceName )
 	{
-		if( m_resourceName == _resourceName )
+		if( m_resourceEmitterContainerName == _resourceName )
 		{
 			return;
 		}
 
-		m_resourceName = _resourceName;
+		m_resourceEmitterContainerName = _resourceName;
 
 		this->recompile();
 	}
@@ -754,7 +753,7 @@ namespace	Menge
 		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceHIT>(m_emitterImageName);
 
-		if( resourceHIT == 0 )
+		if( resourceHIT == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't compile emitter hit %s"
 				, m_name.c_str()

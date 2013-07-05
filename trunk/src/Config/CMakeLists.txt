@@ -2,6 +2,9 @@ SET( MY_LIB_NAME Config )
 
 ADD_FILTER(
 src
+    Blobject.h
+    String.h
+    Stringstream.h
     Typedef.h
 	Config.h
 	cmake_dummy.cpp

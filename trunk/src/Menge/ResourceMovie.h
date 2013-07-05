@@ -177,9 +177,8 @@ namespace Menge
 
 	public:
 		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
-        const Polygon * getPolygon( size_t _index ) const;
 
-	public:
+    public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );
 
     protected:

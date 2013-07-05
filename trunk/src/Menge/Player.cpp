@@ -1,5 +1,7 @@
 #	include "Player.h"
 
+#   include "Config/Stringstream.h"
+
 #	include "NodeManager.h"
 
 #	include "Game.h"
@@ -34,7 +36,6 @@
 
 #   include "pybind/pybind.hpp"
 
-#	include <sstream>
 #   include <iomanip>
 
 namespace Menge

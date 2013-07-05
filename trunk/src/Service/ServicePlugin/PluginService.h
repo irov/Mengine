@@ -2,6 +2,8 @@
 
 #   include "Interface/PluginInterface.h"
 
+#   include <map>
+
 namespace Menge
 {
     class DynamicLibraryInterface;
@@ -18,8 +20,8 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        PluginInterface * loadPlugin( const String & _name ) override;
-        void unloadPlugin( const String & _name ) override;
+        PluginInterface * loadPlugin( const WString & _name ) override;
+        void unloadPlugin( const WString & _name ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -30,7 +32,7 @@ namespace Menge
             PluginInterface * plugin;
         };
 
-        typedef std::map<String, PluginDesc> TMapPlugins;
+        typedef std::map<WString, PluginDesc> TMapPlugins;
         TMapPlugins m_plugins;
 
         String m_dllCreatePluginName;

@@ -1,12 +1,12 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "Config/String.h"
+
 #	include "Core/ConstString.h"
 
 namespace Menge
 {	
-	typedef std::vector<ConstString> TVectorConstString;
-
 	namespace Utils
 	{
 		const String& emptyString();

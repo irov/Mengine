@@ -102,6 +102,8 @@ namespace Menge
         bool initializeNotificationService_();
         bool initializeThreadEngine_();
         bool initializeFileEngine_();
+        bool initializeUserDirectory_();
+        bool initializeLogFile_();
         bool initializeLogEngine_();
         bool initializeUnicodeEngine_();
         bool initializeParticleEngine_();
@@ -117,7 +119,7 @@ namespace Menge
         bool initializeArchiveService_();
 
     protected:
-        bool setupApplicationSetting_();
+        bool setupApplicationSetting_( StartupSettings & _settings );
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -140,8 +142,7 @@ namespace Menge
 		AlreadyRunningMonitor * m_alreadyRunningMonitor;
 
 		ApplicationInterface * m_application;
-        StartupSettings m_settings;
-
+        
         EWindowsType m_windowsType;
 
 		bool m_running;
@@ -182,6 +183,8 @@ namespace Menge
 
         CodecServiceInterface * m_codecService;
         ArchiveServiceInterface * m_archiveService;
+
+        ThreadSystemInterface * m_threadSystem;
         ThreadServiceInterface * m_threadService;
 
         ParticleSystemInterface * m_particleSystem;
@@ -193,6 +196,8 @@ namespace Menge
         RenderServiceInterface * m_renderService;
         RenderTextureServiceInterface * m_renderTextureManager;
         RenderMaterialServiceInterface * m_renderMaterialManager;
+
+        StringizeServiceInterface * m_stringizeService;
 
         SoundSystemInterface * m_soundSystem;
         SoundServiceInterface * m_soundService;

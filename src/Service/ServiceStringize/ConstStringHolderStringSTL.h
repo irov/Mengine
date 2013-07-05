@@ -3,6 +3,7 @@
 #   include "Core/ConstStringHolder.h"
 
 #   include "Config/Typedef.h"
+#   include "Config/String.h"
 
 namespace Menge
 {

@@ -46,7 +46,9 @@ namespace Menge
 		PyObject * importPrototype( const ConstString& _name, bool & _exist );
 
 		void setCurrentModule( PyObject * _module ) override;
+        
         void addGlobalModule( const String & _name, PyObject * _module ) override;
+        void removeGlobalModule( const String & _name ) override;
 
         void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes ) override;
 
@@ -87,8 +89,6 @@ namespace Menge
 
 		ScriptLogger * m_loger;
 		ScriptLoggerError * m_errorLogger;
-
-		PyObject * m_internalObjectFinder;
 
 		typedef BinaryVector<ConstString, PyObject *> TMapModules;
 		typedef BinaryVector<ConstString, TMapModules> TMapCategoryPrototypies;

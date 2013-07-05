@@ -47,6 +47,7 @@ namespace Menge
 		TBlobject m_bufferBin;
         TBlobject m_bufferCompress;
 
+        typedef std::vector<ConstString> TVectorConstString;
         TVectorConstString m_bufferConstString;
 	};
 }

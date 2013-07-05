@@ -1,14 +1,13 @@
 #	pragma once
 
-#	include "Core/IntrusiveList.h"
-#	include "Core/IntrusiveSlug.h"
-
 namespace Menge
 {
 	template<size_t TSizeType, size_t TChunkSize>
 	class TemplateChunk
-		: public IntrusiveLinked<TemplateChunk<TSizeType,TChunkSize> >
 	{
+    public:
+        typedef TemplateChunk<TSizeType, TChunkSize> TChunk;
+
 	public:
 		struct Block
 		{
@@ -17,7 +16,8 @@ namespace Menge
 		};
 
 	public:
-		TemplateChunk( Block ** _free )
+		TemplateChunk( Block ** _free, TChunk * _prev )
+            : prev(_prev)
 		{
 			for( Block * it = buffer_block, 
 				*it_end = buffer_block + TChunkSize; 
@@ -29,8 +29,15 @@ namespace Menge
 			}
 		}
 
-	public:
+    public:
+        TChunk * getPrev() const
+        {
+            return prev;
+        }
+
+    protected:
 		Block buffer_block[TChunkSize];
+        TemplateChunk<TSizeType, TChunkSize> * prev;
 	};
 
 	template<size_t TSizeType, size_t TChunkSize>
@@ -39,12 +46,10 @@ namespace Menge
 		typedef TemplateChunk<TSizeType, TChunkSize> TChunk;
 		typedef typename TChunk::Block TBlock;
 
-        typedef IntrusiveList<TChunk> TListChunks;
-        typedef IntrusiveSlug<TChunk> TSlugChunks;
-
     public:
         Pool()
-            : m_free(nullptr)
+            : m_chunk(nullptr)
+            , m_free(nullptr)
             , m_countBlock(0)
             , m_countChunk(0)
         {
@@ -52,11 +57,15 @@ namespace Menge
 
         ~Pool()
         {
-            for( TSlugChunks it(m_chunks); it.eof() == false; it.next_shuffle() )
+            TChunk * chunk = m_chunk;
+
+            while( chunk != nullptr )
             {
-                TChunk * chunk = *it;
+                TChunk * prev = chunk->getPrev();
 
                 delete chunk;
+
+                chunk = prev;
             }
         }
 
@@ -96,16 +105,15 @@ namespace Menge
 	protected:
 		void addChunk_()
 		{
-			TChunk * chunk = new TChunk( &m_free );
+			TChunk * chunk = new TChunk(&m_free, m_chunk);
 
-			m_chunks.push_back( chunk );
+            m_chunk = chunk;
 
             ++m_countChunk;
 		}
 
 	protected:
-		TListChunks m_chunks;
-
+		TChunk * m_chunk;
 		TBlock * m_free;
 
         size_t m_countBlock;

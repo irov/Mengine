@@ -1,6 +1,8 @@
 #	include "PickDecoderHIT.h"
 #   include "PickVerifyHIT.h"
 
+#   include "Config/Blobject.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Interface/FileSystemInterface.h"

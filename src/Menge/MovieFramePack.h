@@ -38,18 +38,8 @@ namespace Menge
 		void setLayerImmutableFrame( size_t _layerIndex, const MovieFrameSource & _frame );
 		void addLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame );
 			
-
-    public:
-        const Polygon * getPolygon( size_t _index ) const override;
-
-    public:
-        size_t addPolygon( const Polygon & _polygon );
-
 	protected:
 		size_t m_size;
 		TVectorMovieFrameLayer m_layers;
-
-        typedef std::vector<Polygon> TVectorPolygons;
-        TVectorPolygons m_polygons;
 	};
 }

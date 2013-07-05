@@ -4,7 +4,6 @@
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
-#   include "Core/Polygon.h"
 
 #   include "Math/vec3.h"
 
@@ -45,8 +44,6 @@ namespace Menge
     public:
         virtual bool hasLayer( size_t _layerIndex ) const = 0;
         virtual const MovieLayerFrame & getLayer( size_t _layerIndex ) const = 0;
-
-        virtual const Polygon * getPolygon( size_t _index ) const = 0;
 
     public:
         virtual bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const = 0;

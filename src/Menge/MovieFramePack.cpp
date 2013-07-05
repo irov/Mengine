@@ -146,45 +146,4 @@ namespace Menge
 		
 		return true;
 	}
-	///////////////////////////////////////////////////////////////////////
-    size_t MovieFramePack::addPolygon( const Polygon & _polygon )
-    {
-        for( TVectorPolygons::iterator
-            it = m_polygons.begin(),
-            it_end = m_polygons.end();
-        it != it_end;
-        ++it )
-        {
-            const Polygon & polygon = *it;
-
-            if( boost::geometry::equals( polygon, _polygon ) == false )
-            {
-                continue;
-            }
-            
-            size_t index = std::distance( m_polygons.begin(), it );
-
-            return index;
-        }
-
-        size_t new_index = m_polygons.size();
-
-        m_polygons.push_back( _polygon );
-
-        return new_index;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Polygon * MovieFramePack::getPolygon( size_t _index ) const
-    {
-        size_t count = m_polygons.size();
-
-        if( count <= _index )
-        {
-            return nullptr;
-        }
-
-        const Polygon & polygon = m_polygons[_index];
-
-        return &polygon;
-    }
 }

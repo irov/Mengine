@@ -104,8 +104,8 @@ namespace Menge
         void updateVertexWM_();
 
 	protected:
-		ResourceEmitterContainer * m_resource;
-		ConstString m_resourceName;
+		ResourceEmitterContainer * m_resourceEmitterContainer;
+		ConstString m_resourceEmitterContainerName;
 
 		ConstString m_emitterName;
 

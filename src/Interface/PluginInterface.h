@@ -2,7 +2,7 @@
 
 #	include "Interface/ServiceInterface.h"
 
-#	include <map>
+#   include "Config/String.h"
 
 namespace Menge
 {
@@ -23,8 +23,8 @@ namespace Menge
         SERVICE_DECLARE("PluginService")
 
     public:
-        virtual PluginInterface * loadPlugin( const String & _name ) = 0;
-        virtual void unloadPlugin( const String & _name ) = 0;
+        virtual PluginInterface * loadPlugin( const WString & _name ) = 0;
+        virtual void unloadPlugin( const WString & _name ) = 0;
     };
 
 #   define PLUGIN_SERVICE( serviceProvider )\

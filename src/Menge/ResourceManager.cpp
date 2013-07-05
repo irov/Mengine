@@ -39,6 +39,19 @@ namespace Menge
             const ResourceEntry & entry = it->second;
 
             ResourceReference * resource = entry.resource;
+
+            size_t refcount = resource->countReference();
+
+            while( refcount != 0 )
+            {
+                LOGGER_WARNING(m_serviceProvider)("ResourceManager::~ResourceManager resource %s refcount %d"
+                    , resource->getName().c_str()
+                    , refcount
+                    );
+
+                refcount = resource->decrementReference();
+            }
+
             resource->destroy();
         }
 	}

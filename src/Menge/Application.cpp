@@ -126,6 +126,7 @@
 #   include "Core/String.h"
 
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN(Consts, Menge::Consts);
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
 SERVICE_EXTERN(MovieKeyFrameService, Menge::MovieKeyFrameServiceInterface);
@@ -251,7 +252,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////	
 	bool Application::initialize()
-	{
+	{   
+        SERVICE_CREATE( Consts, &m_consts );
+        SERVICE_REGISTRY( m_serviceProvider, m_consts );
+
+        m_consts->initialize();
+
         ExecuteInitialize exinit( this );
 
         exinit.add( &Application::initializePrototypeManager_ );
@@ -1325,16 +1331,6 @@ namespace Menge
             m_nodeService->finalize();
         }
         
-		if( SOUND_SERVICE(m_serviceProvider) )
-		{
-			SOUND_SERVICE(m_serviceProvider)->finalize();
-		}
-        
-		if( THREAD_SERVICE(m_serviceProvider) )
-		{
-			THREAD_SERVICE(m_serviceProvider)->finalize();
-		}
-        
 		if( SCRIPT_SERVICE(m_serviceProvider) )
 		{
             ScriptWrapper::constsUnwrap( m_serviceProvider );            			
@@ -1345,14 +1341,20 @@ namespace Menge
         //delete m_paramManager;
         //destroyArrowService
 
+        SERVICE_DESTROY( ResourceService, m_resourceService );
+
         SERVICE_DESTROY( Watchdog, m_watchdog );
         SERVICE_DESTROY( LoaderService, m_loaderService );
         SERVICE_DESTROY( AmplifierService, m_amplifierService );
         SERVICE_DESTROY( TextService, m_textService );
         SERVICE_DESTROY( NodeService, m_nodeService );
-        SERVICE_DESTROY( MovieKeyFrameService, m_movieKeyFrameService );
         //m_eventService->destroy();
-        SERVICE_DESTROY( ResourceService, m_resourceService );
+        
+
+        SERVICE_DESTROY( MovieKeyFrameService, m_movieKeyFrameService );
+        SERVICE_DESTROY( PrototypeService, m_prototypeService );
+
+        SERVICE_DESTROY( Consts, m_consts );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const

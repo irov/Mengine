@@ -28,7 +28,7 @@ namespace Menge
 		, m_duration(0.f)
         , m_loopSegment(0.f, 0.f)
 		, m_size(0.f, 0.f)
-		, m_keyFramePack(NULL)
+		, m_keyFramePack(nullptr)
 		, m_maxLayerIndex(0)
 		, m_hasCamera3D(false)        
 	{
@@ -122,13 +122,6 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    const Polygon * ResourceMovie::getPolygon( size_t _index ) const
-    {
-        const Polygon * polygon = m_keyFramePack->getPolygon( _index );
-
-        return polygon;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const
 	{
@@ -203,12 +196,12 @@ namespace Menge
             return false;
         }
 
-        const ConstString& category = this->getCategory();
+        const ConstString & category = this->getCategory();
 
         MovieFramePackInterface * framePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
             ->getMovieFramePak( category, m_keyFramePackPath );
 
-        if( framePack == NULL )
+        if( framePack == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid get Key Frames Pack '%s'"
                 , this->getName().c_str()
@@ -397,7 +390,7 @@ namespace Menge
 		m_keyFramePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
 			->getMovieFramePak( category, m_keyFramePackPath );
 
-		if ( m_keyFramePack == NULL )
+		if ( m_keyFramePack == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
 				, this->getName().c_str()
@@ -505,7 +498,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::_release()
 	{
-		if( m_keyFramePack != NULL )
+		if( m_keyFramePack != nullptr )
 		{
 			MOVIEKEYFRAME_SERVICE(m_serviceProvider)
 				->releaseMovieFramePak( m_keyFramePack );

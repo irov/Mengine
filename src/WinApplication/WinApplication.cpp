@@ -1,4 +1,5 @@
 #	include "Config/Config.h"
+#	include "Config/Stringstream.h"
 
 #	include "WinApplication.h"
 #	include "Menge/Application.h"
@@ -174,20 +175,27 @@ namespace Menge
         , m_pluginMengeSoundCodec(nullptr)
         , m_fileLog(nullptr)
         , m_profilerMode(false)
+
         , m_inputService(nullptr)
         , m_unicodeService(nullptr)
         , m_logService(nullptr)
+        , m_fileSystem(nullptr)
         , m_fileService(nullptr)
         , m_codecService(nullptr)
         , m_archiveService(nullptr)
+        , m_threadSystem(nullptr)
         , m_threadService(nullptr)
+        , m_particleSystem(nullptr)
         , m_particleService(nullptr)
         , m_physicService2D(nullptr)
+        , m_renderSystem(nullptr)
         , m_renderService(nullptr)
         , m_renderTextureManager(nullptr)
         , m_renderMaterialManager(nullptr)
+        , m_stringizeService(nullptr)
+        , m_soundSystem(nullptr)
         , m_soundService(nullptr)
-        , m_scriptService(nullptr)        
+        , m_scriptService(nullptr)
         , m_pluginService(nullptr)
 	{
 	}
@@ -283,7 +291,15 @@ namespace Menge
             return false;
         }
 
-        threadSystem->initialize();
+        m_threadSystem = threadSystem;
+
+        if( m_threadSystem->initialize() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to initialize ThreadSystem"
+                );
+
+            return false;
+        }
 
         ThreadServiceInterface * threadService;
         if( createThreadService( &threadService ) == false )
@@ -424,15 +440,11 @@ namespace Menge
         }
 #   endif
 
-        if( this->setupApplicationSetting_() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to setup application %ls"
-                , m_currentPath.c_str()
-                );
-
-            return false;
-        }
-
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WinApplication::initializeUserDirectory_()
+    {
         //m_tempPath.clear();
         m_userPath.clear();
 
@@ -512,7 +524,12 @@ namespace Menge
 
             return false;
         }
-                
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool WinApplication::initializeLogFile_()
+    {
         std::time_t ctTime; 
         std::time(&ctTime);
         std::tm* sTime = std::localtime( &ctTime );
@@ -594,6 +611,8 @@ namespace Menge
         {
             return false;
         }
+
+        m_stringizeService = stringizeService;
 
         return true;
     }
@@ -1222,6 +1241,26 @@ namespace Menge
         {
             return false;
         }
+
+        StartupSettings settings;
+        if( this->setupApplicationSetting_( settings ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to setup application %ls"
+                , m_currentPath.c_str()
+                );
+
+            return false;
+        }
+
+        if( this->initializeUserDirectory_() == false )
+        {
+            return false;
+        }
+
+        if( this->initializeLogFile_() == false )
+        {
+            return false;
+        }
         
         if( this->initializeThreadEngine_() == false )
         {
@@ -1285,8 +1324,8 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)( "command: '%s'"
             , m_commandLine.c_str()
             );
-                
-        if( m_application->setup( m_commandLine, m_settings.applicationSettings ) == false )
+        
+        if( m_application->setup( m_commandLine, settings.applicationSettings ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application setup failed" 
                 );
@@ -1311,25 +1350,15 @@ namespace Menge
         if( m_noPluginMode == false )
         {
             for( TVectorWString::const_iterator
-                it = m_settings.plugins.begin(),
-                it_end = m_settings.plugins.end();
+                it = settings.plugins.begin(),
+                it_end = settings.plugins.end();
             it != it_end;
             ++it )
             {
                 const WString & pluginName = *it;
 
-                String utf8_pluginName;
-                if( Helper::unicodeToUtf8( m_serviceProvider, pluginName, utf8_pluginName ) == false )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("Application Failed to load plugin %ls invalid convert to utf8"
-                        , pluginName.c_str()
-                        ); 
-
-                    return false;
-                }
-
                 PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
-                    ->loadPlugin( utf8_pluginName );
+                    ->loadPlugin( pluginName );
 
                 if( plugin == NULL )
                 {
@@ -1342,25 +1371,15 @@ namespace Menge
             }
 
             for( TVectorWString::const_iterator
-                it = m_settings.devPlugins.begin(),
-                it_end = m_settings.devPlugins.end();
+                it = settings.devPlugins.begin(),
+                it_end = settings.devPlugins.end();
             it != it_end;
             ++it )
             {
                 const WString & pluginName = *it;
 
-                String utf8_pluginName;
-                if( Helper::unicodeToUtf8( m_serviceProvider, pluginName, utf8_pluginName ) == false )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("Application Failed to load dev plugin %ls invalid convert to utf8"
-                        , pluginName.c_str()
-                        ); 
-
-                    continue;
-                }
-
                 PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
-                    ->loadPlugin( utf8_pluginName );
+                    ->loadPlugin( pluginName );
 
                 if( plugin == NULL )
                 {
@@ -1376,14 +1395,14 @@ namespace Menge
 
         if( languagePack.empty() == true )
         {
-            languagePack = m_settings.defaultLocale;
+            languagePack = settings.defaultLocale;
         }
 
         LOGGER_WARNING(m_serviceProvider)("Locale %s"
             , languagePack.c_str()
             );
 
-        if( m_application->createGame( m_settings.personalityModule, Helper::stringizeString(m_serviceProvider, languagePack), m_settings.resourcePacks, m_settings.languagePacks ) == false )
+        if( m_application->createGame( settings.personalityModule, Helper::stringizeString(m_serviceProvider, languagePack), settings.resourcePacks, settings.languagePacks ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application create game failed"
                 );
@@ -1392,7 +1411,7 @@ namespace Menge
         }
 				
 		LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-			, m_settings.applicationSettings.platformName.c_str() 
+			, settings.applicationSettings.platformName.c_str() 
 			);
 		
 		const ConstString & projectTitle = m_application->getProjectTitle();
@@ -1405,7 +1424,7 @@ namespace Menge
                 );
         }
 
-        if( m_settings.alreadyRunning == true )
+        if( settings.alreadyRunning == true )
         {	
             m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
 
@@ -1489,7 +1508,7 @@ namespace Menge
 
         LOGGER_INFO(m_serviceProvider)( "Initializing Game data..." );
         
-        if( m_application->initializeGame( m_settings.appParams, scriptInit ) == false )
+        if( m_application->initializeGame( settings.appParams, scriptInit ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
                 );
@@ -1572,13 +1591,13 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool WinApplication::setupApplicationSetting_()
+    bool WinApplication::setupApplicationSetting_( StartupSettings & _settings )
     {
         StartupConfigLoader loader(m_serviceProvider);
 
         FilePath applicationPath = Helper::stringizeString( m_serviceProvider, "application.ini" );
 
-        if( loader.load( ConstString::none(), applicationPath, m_settings ) == false )
+        if( loader.load( ConstString::none(), applicationPath, _settings ) == false )
         {
             m_windowsLayer->messageBox( NULL 
                 , L"WinApplication::setupApplicationSetting_ invalid load startup config application.ini"
@@ -1589,8 +1608,8 @@ namespace Menge
             return false;
         }
 
-        m_projectName = m_settings.projectName;
-        m_companyName = m_settings.companyName;
+        m_projectName = _settings.projectName;
+        m_companyName = _settings.companyName;
         
         String platformName;
         Helper::s_getOption( " -platform:", m_commandLine, &platformName );
@@ -1600,7 +1619,7 @@ namespace Menge
             platformName = "WIN";
         }
 
-        m_settings.applicationSettings.platformName = Helper::stringizeString( m_serviceProvider, platformName );
+        _settings.applicationSettings.platformName = Helper::stringizeString( m_serviceProvider, platformName );
 
         String utf8_currentPath;
         if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
@@ -1614,7 +1633,7 @@ namespace Menge
             return false;
         }
 
-        m_settings.applicationSettings.baseDir = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
+        _settings.applicationSettings.baseDir = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
 
         if( m_projectName.empty() == true )
         {
@@ -1657,7 +1676,7 @@ namespace Menge
 
         if( m_maxfps == true )
         {
-            m_settings.applicationSettings.vsync = false;
+            _settings.applicationSettings.vsync = false;
         }
 
         m_winTimer = new WinTimer();
@@ -1775,7 +1794,13 @@ namespace Menge
             m_pluginMengeSoundCodec = nullptr;
         }
 
-        SERVICE_DESTROY( InputService, m_inputService );
+        if( m_inputService == nullptr )
+        {
+            m_inputService->finalize();
+
+            SERVICE_DESTROY( InputService, m_inputService );
+        }
+        
         SERVICE_DESTROY( UnicodeService, m_unicodeService );        
         
         if( m_fileService != nullptr )
@@ -1784,7 +1809,6 @@ namespace Menge
         }
 
         SERVICE_DESTROY( CodecService, m_codecService );
-        SERVICE_DESTROY( ThreadService, m_threadService );
 
         if( m_particleService != nullptr )
         {
@@ -1800,11 +1824,15 @@ namespace Menge
         
         if( m_soundService != nullptr )
         {
-            SERVICE_DESTROY( SoundService, m_soundService );        
+            m_soundService->finalize();
+
+            SERVICE_DESTROY( SoundService, m_soundService );
         }
 
         if( m_soundSystem != nullptr )
         {
+            m_soundSystem->finalize();
+
             SERVICE_DESTROY( SoundSystem, m_soundSystem );        
         }
 
@@ -1834,6 +1862,20 @@ namespace Menge
 
             SERVICE_DESTROY( RenderSystem, m_renderSystem );
         }
+
+        if( m_threadService != nullptr )
+        {
+            m_threadService->finalize();
+
+            SERVICE_DESTROY( ThreadService, m_threadService );
+        }        
+
+        if( m_threadSystem != nullptr )
+        {
+            m_threadSystem->finalize();
+
+            SERVICE_DESTROY( ThreadSystem, m_threadSystem );
+        }
         
 		if( m_fileLog != nullptr )
 		{
@@ -1862,6 +1904,11 @@ namespace Menge
         if( m_fileSystem != nullptr )
         {            
             SERVICE_DESTROY( FileSystem, m_fileSystem );
+        }
+
+        if( m_stringizeService != nullptr )
+        {
+            SERVICE_DESTROY( StringizeService, m_stringizeService );
         }
         
 		if( m_alreadyRunningMonitor != nullptr )

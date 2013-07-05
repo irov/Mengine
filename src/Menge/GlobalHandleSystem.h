@@ -2,7 +2,7 @@
 
 #	include "Interface/GlobalHandleSystemInterface.h"
 
-#	include <list>
+#	include <vector>
 
 namespace Menge
 {

@@ -7,6 +7,8 @@
 #   include "Interface/PrototypeManagerInterface.h"
 #   include "Interface/AmplifierServiceInterface.h"
 
+#   include "Consts.h"
+
 #	include "Core/ConstString.h"
 
 #	include "Logger/Logger.h"
@@ -251,6 +253,7 @@ namespace Menge
 		NodeServiceInterface * m_nodeService;
 		MovieKeyFrameServiceInterface * m_movieKeyFrameService;
         PrototypeServiceInterface * m_prototypeService;
+        Consts * m_consts;
 
 		WatchdogInterface * m_watchdog;
         ProfilerServiceInterface * m_profiler;

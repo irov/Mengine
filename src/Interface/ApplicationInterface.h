@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#   include "Config/String.h"
 
 #	include "Core/ConstString.h"
 #   include "Core/FilePath.h"
@@ -9,6 +10,8 @@
 #   include "Core/AspectRatioViewports.h"
 
 #	include "Interface/ServiceInterface.h"
+
+#   include <map>
 
 namespace Menge
 {

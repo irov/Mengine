@@ -1,8 +1,8 @@
 #	include "ScriptEngine.h"
 
 #   include "ScriptModuleFinder.h"
-#   include "ScriptModuleLoaderCode.h"
-#   include "ScriptModuleLoaderSource.h"
+//#   include "ScriptModuleLoaderCode.h"
+//#   include "ScriptModuleLoaderSource.h"
 
 #	include "ScriptLogger.h"
 
@@ -48,10 +48,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
-		: m_moduleMenge(0)
-		, m_loger(0)
-		, m_internalObjectFinder(0)
-        , m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
+        , m_moduleFinder(nullptr)
+        , m_moduleMenge(nullptr)
+		, m_loger(nullptr)
+        , m_errorLogger(nullptr)        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -123,17 +124,17 @@ namespace Menge
         //    .def("find_module", &ScriptZipFinder::find_module )
         //    ;
 
-        pybind::class_<ScriptModuleLoaderCode>("ScriptModuleLoaderCode", true)
-            .def("load_module", &ScriptModuleLoaderCode::load_module)
-            ;
+        //pybind::class_<ScriptModuleLoaderCode>("ScriptModuleLoaderCode", true)
+        //    .def("load_module", &ScriptModuleLoaderCode::load_module)
+        //    ;
 
-        pybind::class_<ScriptModuleLoaderSource>("ScriptModuleLoaderSource", true)
-            .def("load_module", &ScriptModuleLoaderSource::load_module)
-            ;
+        //pybind::class_<ScriptModuleLoaderSource>("ScriptModuleLoaderSource", true)
+        //    .def("load_module", &ScriptModuleLoaderSource::load_module)
+        //    ;
 
         pybind::class_<ScriptModuleFinder>("ScriptModuleFinder", true)
             .def("find_module", &ScriptModuleFinder::find_module )
-            .def("_find_and_load", &ScriptModuleFinder::_find_and_load)
+            .def("load_module", &ScriptModuleFinder::load_module)
             ;
         
         //pybind::class_<ScriptZipLoader>("ScriptZipLoader", true)
@@ -144,6 +145,8 @@ namespace Menge
        
         PyObject * py_moduleFinder = pybind::ptr( m_moduleFinder );
 
+        m_moduleFinder->setEmbbed( py_moduleFinder );
+
         pybind::_set_module_finder( py_moduleFinder );
         
         return true;
@@ -151,11 +154,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::finalize()
 	{
-		if( m_internalObjectFinder != NULL )
-		{
-			pybind::decref( m_internalObjectFinder );
-			m_internalObjectFinder = NULL;
-		}
+        this->removeGlobalModule( "Menge" );
 
 		for( TMapModules::iterator
 			it = m_modules.begin(),
@@ -163,10 +162,15 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			pybind::decref( it->second );
+            PyObject * module = it->second;
+            
+            //pybind::module_fini( module );			
 		}
 
 		m_modules.clear();
+                
+        //pybind::module_fini( m_moduleMenge );
+
 
 		for( TMapScriptWrapper::iterator 
 			it = m_scriptWrapper.begin(),
@@ -174,18 +178,21 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			it->second->destroy();
+            ScriptClassInterface * scriptClass = it->second;
+			
+            scriptClass->destroy();
 		}
 
 		m_scriptWrapper.clear();       
 
         delete m_loger;
         delete m_errorLogger;
+        delete m_moduleFinder;
 
         pybind::setStdOutHandle( NULL );
         pybind::setStdErrorHandle( NULL );
 
-		pybind::finalize();
+		pybind::finalize();        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )
@@ -284,6 +291,15 @@ namespace Menge
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
         pybind::dict_set( dir_bltin, _name.c_str(), _module );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptEngine::removeGlobalModule( const String & _name )
+    {
+        PyObject * builtins = pybind::get_builtins();
+
+        PyObject * dir_bltin = pybind::module_dict( builtins );
+
+        pybind::dict_remove( dir_bltin, _name.c_str() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptEngine::stringize( PyObject * _object, ConstString & _str )

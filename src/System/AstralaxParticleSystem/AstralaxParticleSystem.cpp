@@ -132,7 +132,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory"
                 );
 
-			return NULL;
+			return nullptr;
 		}
 		
 		AstralaxEmitterContainer * container = new AstralaxEmitterContainer();
@@ -167,7 +167,7 @@ namespace Menge
 	{
         (void)_viewMatrix;
 
-		if( _emitter == 0 )
+		if( _emitter == nullptr )
 		{
 			return false;
 		}

@@ -6,29 +6,9 @@
 
 #	include "Config.h"
 
-#	include <string>
-#	include <vector>
-#	include <map>
-#	include <list>
-#	include <iostream>
-#	include <cstring>
-#	include <cstdlib>
-#	include <sstream>
-//#	include <string.h>
-//#	include <iosfwd>
-
 namespace Menge
 {
-	typedef wchar_t WChar;
-	typedef char Char;
-
-    typedef std::string String;
-    typedef std::wstring WString;
-        
-    typedef std::stringstream Stringstream;
-    typedef std::wstringstream WStringstream;
-
-	typedef void* WindowHandle;
+	typedef void * WindowHandle;
     
 #   ifdef MENGE_COMPILER_MSVC
 	typedef unsigned __int64 uint64;
@@ -40,15 +20,5 @@ namespace Menge
 	typedef unsigned int uint32;
 	typedef unsigned short uint16;
 	typedef unsigned char uint8;
-#   endif
-	
-	typedef std::vector<unsigned char> TBlobject;
-    
-    typedef std::vector<Char> TVectorChar;
-	typedef std::vector<String> TVectorString;
-
-    typedef std::vector<WChar> TVectorWChar;
-	typedef std::vector<WString> TVectorWString;
-
-	typedef std::map<WString, WString> TMapWString;
+#   endif	   
 }

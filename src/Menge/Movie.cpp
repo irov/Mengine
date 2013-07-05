@@ -1368,7 +1368,7 @@ namespace Menge
 		m_resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceMovie>( m_resourceMovieName );
 
-		if( m_resourceMovie == 0 )
+		if( m_resourceMovie == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup resource '%s'"
 				, this->getName().c_str()

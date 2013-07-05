@@ -5,6 +5,7 @@
 #	include "Core/ConstString.h"
 
 #	include "Config/Typedef.h"
+#	include "Config/String.h"
 
 namespace Menge
 {

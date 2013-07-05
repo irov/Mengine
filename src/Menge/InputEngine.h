@@ -7,6 +7,8 @@
 
 #	include "Math/vec2.h"
 
+#   include <vector>
+
 namespace Menge
 {
     class NotificationServiceInterface;

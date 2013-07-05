@@ -3,6 +3,7 @@
 #   include "Interface/RenderSystemInterface.h"
 
 #	include "Config/Typedef.h"
+#	include "Config/String.h"
 
 #	include "Core/ColourValue.h"
 #	include "Core/GlyphChar.h"

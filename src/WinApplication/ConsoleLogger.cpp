@@ -5,6 +5,8 @@
 #	include <io.h>
 #	include <cstdio>
 
+#   include <iostream>
+
 typedef BOOL (WINAPI *PATTACHCONSOLE)(DWORD);
 
 namespace Menge
@@ -68,12 +70,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ConsoleLogger::createConsole()
 	{
-		PATTACHCONSOLE pAttachConsole = NULL;
-		HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
-		if( hKernel32 != NULL )
+		PATTACHCONSOLE pAttachConsole = nullptr;
+		
+        HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
+
+		if( hKernel32 != nullptr )
 		{
-			pAttachConsole = reinterpret_cast<PATTACHCONSOLE>( GetProcAddress( hKernel32, "AttachConsole" ) );
-			if( pAttachConsole == NULL )
+            FARPROC proc = GetProcAddress( hKernel32, "AttachConsole" );
+
+			pAttachConsole = reinterpret_cast<PATTACHCONSOLE>(proc);
+
+			if( pAttachConsole == nullptr )
 			{
 				FreeLibrary( hKernel32 );
 				return;
@@ -122,7 +129,7 @@ namespace Menge
 		// point to console as well
 		std::ios::sync_with_stdio();
 
-		if( hKernel32 != NULL )
+		if( hKernel32 != nullptr )
 		{
 			FreeLibrary( hKernel32 );
 		}

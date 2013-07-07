@@ -165,10 +165,7 @@ namespace Menge
 
         const mt::vec2f & getLoopSegment() const;
 
-	public:
-		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
-
-	public:
+    public:
 		const TVectorMovieLayers & getLayers() const;
 		const MovieLayerCamera3D & getCamera3D() const;
 
@@ -210,8 +207,5 @@ namespace Menge
 		MovieLayerCamera3D m_camera3D;
 
 		size_t m_maxLayerIndex;
-
-		typedef std::map<ConstString, MovieInternal> TMapInternals;
-		TMapInternals m_internals;
 	};
 }

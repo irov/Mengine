@@ -23,6 +23,7 @@
 #	include "Interface/PhysicSystem2DInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
+#   include "Interface/ResourceInterface.h"
 
 #   include "Interface/EventInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -31,6 +32,9 @@
 #   include "GlobalHandleSystem.h"
 #   include "ScheduleManager.h"
 #   include "TimingManager.h"
+
+#   include "Kernel/ResourceVisitor.h"
+#   include "Kernel/ResourceReference.h"
 
 #	include "Math/mat3.h"
 
@@ -59,7 +63,7 @@ namespace Menge
 		, m_time(0.f)
 		, m_fps(0)	
 //#	ifndef MENGE_MASTER_RELEASE
-		, m_showDebugText(false)
+		, m_showDebugText(0)
 		, m_debugText(NULL)
 //#	endif
 	{
@@ -445,13 +449,13 @@ namespace Menge
 
 		if( m_mousePickerSystem != nullptr )
 		{
-			delete m_mousePickerSystem;
+			delete static_cast<MousePickerSystem *>(m_mousePickerSystem);
 			m_mousePickerSystem = nullptr;
 		}
 
 		if( m_globalHandleSystem != nullptr )
 		{
-			delete m_globalHandleSystem;
+			delete static_cast<GlobalHandleSystem *>(m_globalHandleSystem);
 			m_globalHandleSystem = nullptr;
 		}
 
@@ -493,24 +497,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::initializeRenderResources()
 	{
-//#	ifndef MENGE_MASTER_RELEASE
 		m_debugText = NODE_SERVICE(m_serviceProvider)->
 			createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
 		m_debugText->setResourceFont( CONST_STRING(m_serviceProvider, ConsoleFont) );
 		m_debugText->enable();
-//#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::finalizeRenderResources()
 	{
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_debugText != NULL	 )
+		if( m_debugText != nullptr	 )
 		{
 			m_debugText->destroy();
-			m_debugText = NULL;
+			m_debugText = nullptr;
 		}
-#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
@@ -988,7 +988,7 @@ namespace Menge
 		}
 
 //#	ifndef MENGE_MASTER_RELEASE
-		if( m_showDebugText == true )
+		if( m_showDebugText != 0 )
 		{
 			const RenderDebugInfo & rdi = 
 				RENDER_SERVICE(m_serviceProvider)->getDebugInfo();
@@ -1013,18 +1013,106 @@ namespace Menge
 			ss << "Texture Count: " << rtdi.textureCount << std::endl;
 			ss << "Particles: " << particlesCount << std::endl;
 
+            class CompileResourceVisitor
+                : public ResourceVisitor
+            {
+            public:
+                CompileResourceVisitor()
+                    : m_count(0)
+                {
+                }
+
+            public:
+                size_t getCount() const
+                {
+                    return m_count;
+                }
+
+            protected:
+                void visit( ResourceReference * _resource )
+                {
+                    if( _resource->isCompile() == false )
+                    {
+                        return;
+                    }
+
+                    ++m_count;
+                }
+
+            protected:
+                size_t m_count;
+            };
+
+            CompileResourceVisitor crv;
+
+            RESOURCE_SERVICE(m_serviceProvider)
+                ->visitResources( &crv );
+
+            ss << "Resources: " << crv.getCount() << std::endl;
+
             MousePickerSystemInterface * mousePickerSystem = 
                 PLAYER_SERVICE(m_serviceProvider)->getMousePickerSystem();
 
 			ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
 
-			VisitorPlayerFactoryManager pfmv(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
+            if( m_showDebugText == 1 )
+            {
+			    VisitorPlayerFactoryManager pfmv(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
 
-			PROTOTYPE_SERVICE(m_serviceProvider)
-				->visitGenerators( &pfmv );
+			    PROTOTYPE_SERVICE(m_serviceProvider)
+				    ->visitGenerators( &pfmv );
 
-            ss << "Entities: " << Entity::s_enum << std::endl;
+                ss << "Entities: " << Entity::s_enum << std::endl;
+            }
 
+            if( m_showDebugText == 2 )
+            {
+                class MyVisitorClassTypeScope
+                    : public pybind::visitor_class_type_scope
+                {
+                public:
+                    MyVisitorClassTypeScope( Stringstream & _ss )
+                        : m_ss(_ss)
+                        , m_count(0)
+                    {
+                    }
+
+                protected:
+                    void operator = ( const MyVisitorClassTypeScope & )
+                    {
+                    }
+
+                protected:
+                    void visit_scope( pybind::class_type_scope * _scope ) override
+                    {   
+                        if( m_count % 3 == 0 )
+                        {
+                            m_ss << "Py: ";
+                        }
+                        
+                        m_ss << _scope->get_name() << " " << _scope->getRefcount();
+                        
+                        if( m_count % 3 != 2 )
+                        {
+                            m_ss << "        ";
+                        }
+                        else
+                        {
+                            m_ss << std::endl;
+                        }                        
+
+                        ++m_count;
+                    }
+
+                protected:                    
+                    Stringstream & m_ss;
+                    size_t m_count;
+                };
+
+                MyVisitorClassTypeScope mvcts(ss);
+                pybind::visit_class_type_scope(&mvcts);
+            }
+            
 			String text = ss.str();
 
 			m_debugText->setText( text );
@@ -1120,10 +1208,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::toggleDebugText()
 	{
-		m_showDebugText = !m_showDebugText;
+		++m_showDebugText;
+        m_showDebugText %= 3;
 
         RENDER_SERVICE(m_serviceProvider)
-            ->enableDebugMode( m_showDebugText );
+            ->enableDebugMode( m_showDebugText == 1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 //#	endif

@@ -48,13 +48,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderFFMPEG::VideoDecoderFFMPEG()
-		: m_formatContext(NULL)
-		, m_codecContext(NULL)
-		, m_codec(NULL)
-		, m_frame(NULL)
-		, m_IOContext(NULL)
-        , m_imgConvertContext(NULL)
-		, m_inputFormat(NULL)
+		: m_formatContext(nullptr)
+		, m_codecContext(nullptr)
+		, m_frame(nullptr)
+		, m_IOContext(nullptr)
+        , m_imgConvertContext(nullptr)
+		, m_inputFormat(nullptr)
 		, m_outputPixelFormat(PIX_FMT_RGBA)
 		, m_videoStreamId(-1)
 		, m_pts(0.0f)        
@@ -67,7 +66,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_initialize()
-	{
+	{   
         uint8_t filebuffer[4096 + FF_INPUT_BUFFER_PADDING_SIZE];
        
         size_t stram_size = m_stream->size();
@@ -80,7 +79,7 @@ namespace Menge
 
         AVProbeData pd;
         pd.filename = "";
-        pd.buf= (unsigned char *)filebuffer; 
+        pd.buf = (unsigned char *)filebuffer; 
         pd.buf_size = probe_size;
 
         m_inputFormat = av_probe_input_format( &pd, 1 );
@@ -92,7 +91,7 @@ namespace Menge
 
             return false;
         }
-			
+
         //m_bufferIO = new uint8_t[ m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE ];
 		memset( m_bufferIO + 4096, 0, FF_INPUT_BUFFER_PADDING_SIZE );
 
@@ -105,12 +104,13 @@ namespace Menge
 			, NULL //write callback
 			, SeekIOWrapper //seek callback
 			);
-		
+
 		//m_IOContext.is_streamed = 0;
+        //return true;
 
 		
 		m_formatContext = avformat_alloc_context();
-		
+
 		m_formatContext->pb = m_IOContext;
 
         int open_input_error = avformat_open_input( &m_formatContext, "", m_inputFormat, NULL );
@@ -123,7 +123,7 @@ namespace Menge
 
 			return false;
 		}
-		
+
 		int find_stream_info_error = avformat_find_stream_info( m_formatContext, NULL );
 
 		if( find_stream_info_error < 0 )
@@ -134,6 +134,7 @@ namespace Menge
 
 			return false; 
 		}
+
 		//av_dump_format(m_formatContext, 0, filename, 0);
 		
 		// Find the first video stream
@@ -154,33 +155,27 @@ namespace Menge
 			return false; // Didn't find a video stream
 		}
 		// Get a pointer to the codec context for the video stream
-		AVCodecID codec_id = m_formatContext->streams[m_videoStreamId]->codec->codec_id;
+        AVCodecContext * streamCodecContext = m_formatContext->streams[m_videoStreamId]->codec;
+		AVCodecID codec_id = streamCodecContext->codec_id;
 
 		// Find the decoder for the video stream
-		m_codec = avcodec_find_decoder( codec_id );
+		AVCodec * codec = avcodec_find_decoder( codec_id );
 
-        if( m_codec == NULL )
+        if( codec == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Unsupported codec! ");
 
             return false;
         }
+                
+        m_codecContext = streamCodecContext;
 
-        AVCodecContext * streamCodecContext = m_formatContext->streams[m_videoStreamId]->codec;
-
-        m_codecContext = avcodec_alloc_context3( m_codec );
-
-        if( avcodec_copy_context( m_codecContext, streamCodecContext ) != 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid copy codec context! ");
-
-            return false;
-        }
-
+        //m_codecContext = avcodec_alloc_context3( codec );
+                
         m_codecContext->thread_count = 1;
-				
+		
 		// Open codec
-        int error_open = avcodec_open2( m_codecContext, m_codec, NULL );
+        int error_open = avcodec_open2( m_codecContext, codec, NULL );
 		
         if( error_open < 0 )
 		{
@@ -189,11 +184,11 @@ namespace Menge
                 );
 
 			return false; //
-		}
+		}        
 		
 		m_frame = avcodec_alloc_frame();
 
-		if( m_frame == NULL )
+		if( m_frame == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: can not allocate  video frame"
                 );
@@ -248,8 +243,6 @@ namespace Menge
         double d_duration = (len * 1000.0) / double(AV_TIME_BASE);
 		m_dataInfo.duration = (float)d_duration;
 
-        av_init_packet(&m_packet);
-		
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -370,37 +363,38 @@ namespace Menge
 	{		
         (void)_pts;
         
-		av_init_packet(&m_packet);
+        AVPacket packet;
+		av_init_packet(&packet);
         
-        if( av_read_frame( m_formatContext, &m_packet ) < 0 )
+        if( av_read_frame( m_formatContext, &packet ) < 0 )
         {
-            av_free_packet(&m_packet);
+            av_free_packet(&packet);
 
             return VDRS_END_STREAM;
         }
          
-        if( m_packet.stream_index != m_videoStreamId )
+        if( packet.stream_index != m_videoStreamId )
         {
-            av_free_packet(&m_packet);
+            av_free_packet(&packet);
 
             return VDRS_SKIP;
         }
 
-        m_pts = (float)m_packet.pts;
+        m_pts = (float)packet.pts;
 
         int isGotPicture = 0;        
-        int decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
+        int decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &packet );
 
         if( isGotPicture == 0 )
         {
-            av_free_packet(&m_packet);
+            av_free_packet(&packet);
 
             return VDRS_SKIP;
         }
 
         if( decode_bite < 0 )
         {
-            av_free_packet( &m_packet );
+            av_free_packet( &packet );
 
             LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode we don`t get a picture"
                 );
@@ -408,45 +402,46 @@ namespace Menge
             return VDRS_FAILURE;
         }          
 
-        av_free_packet(&m_packet);
+        av_free_packet(&packet);
 
         return VDRS_SUCCESS;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
 	{
-		// Free the packet that was allocated by av_read_frame
-		if( m_frame != NULL )
+        //close codec
+        if( m_codecContext != nullptr )
+        {
+            avcodec_close(m_codecContext);
+            //av_free(m_codecContext);
+
+            m_codecContext = nullptr;
+        }
+
+        // Free the packet that was allocated by av_read_frame
+		if( m_frame != nullptr )
 		{
 			av_free(m_frame);
-			m_frame = NULL;
-		}
-		     
-		//close codec
-		if( m_codecContext != NULL )
-		{
-			avcodec_close(m_codecContext);
-            av_free(m_codecContext);
-			m_codecContext = NULL;
+			m_frame = nullptr;
 		}
 
 		// Close the video file
-		if( m_formatContext != NULL )
+		if( m_formatContext != nullptr )
 		{
 			avformat_close_input(&m_formatContext);
-			m_formatContext = NULL;
+			m_formatContext = nullptr;
 		}
 		
-		if( m_IOContext != NULL )
+		if( m_IOContext != nullptr )
 		{
 			av_free(m_IOContext); 
-			m_IOContext = NULL;
+			m_IOContext = nullptr;
 		}
 
-		if( m_imgConvertContext != NULL )
+		if( m_imgConvertContext != nullptr )
 		{
 			sws_freeContext( m_imgConvertContext );
-			m_imgConvertContext = NULL;
+			m_imgConvertContext = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -501,7 +496,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_invalidateOptions()
-	{
+	{            
+        if( m_codecContext == nullptr )
+        {
+            return false;
+        }
+
 		switch(m_options.pixelFormat)
 		{
 		case (Menge::PF_A8R8G8B8):
@@ -531,7 +531,7 @@ namespace Menge
             , NULL
             , NULL );
 
-		if( m_imgConvertContext == NULL )
+		if( m_imgConvertContext == nullptr )
 		{
             m_imgConvertContext = sws_getContext(
                 m_codecContext->width
@@ -546,7 +546,7 @@ namespace Menge
                 , NULL
                 , NULL );
 
-            if( m_imgConvertContext == NULL )
+            if( m_imgConvertContext == nullptr )
             {
     			LOGGER_ERROR(m_serviceProvider)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!"
                     );

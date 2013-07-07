@@ -96,7 +96,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _stream )
 	{
-        if( _stream == NULL )
+        if( _stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed _stream == NULL"
                 );
@@ -129,7 +129,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	bool FileGroupDirectory::openOutputFile( const FilePath & _filename, const OutputStreamInterfacePtr & _stream )
 	{
-        if( _stream == NULL )
+        if( _stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openOutputFile failed _stream == NULL"
                 );

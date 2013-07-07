@@ -1,4 +1,5 @@
 #	include "Application.h"
+#   include "Core/Allocator.h"
 
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
@@ -1320,13 +1321,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
-		if( m_game )
+		if( m_game != nullptr )
 		{
 			m_game->finalizeRenderResources();
 			m_game->finalize();
 		}
 
-        if( m_nodeService )
+        if( m_nodeService != nullptr )
         {
             m_nodeService->finalize();
         }

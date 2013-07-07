@@ -331,6 +331,7 @@ namespace Menge
 			return py_list;
 		}
 
+#	ifdef PYBIND_VISIT_OBJECTS
 		class MyObjectVisits
 			: public pybind::pybind_visit_objects
 		{
@@ -349,6 +350,7 @@ namespace Menge
 		protected:
 			PyObject * m_py_list;
 		};
+#	endif
 
 		PyObject * s_objects()
 		{

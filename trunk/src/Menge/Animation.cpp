@@ -188,7 +188,7 @@ namespace	Menge
 		m_resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
-		if( m_resourceAnimation == 0 )
+		if( m_resourceAnimation == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' no found resource with name '%s'"
 				, m_name.c_str()

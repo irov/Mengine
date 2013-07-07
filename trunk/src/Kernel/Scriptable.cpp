@@ -11,7 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::Scriptable()
-		: m_embed(0)
+		: m_embed(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -22,18 +22,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::unwrap()
 	{
-		if( m_embed )
+		if( m_embed != nullptr )
 		{
 			pybind::unwrap( m_embed );
             pybind::decref( m_embed );
 
-            m_embed = NULL;
+            m_embed = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::setEmbed( PyObject * _embed )
 	{
-		if( _embed == 0 )
+		if( _embed == nullptr )
 		{
 			return;
 		}
@@ -47,13 +47,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Scriptable::getEmbed()
 	{
-		if( m_embed == 0 )
+		if( m_embed == nullptr )
 		{
 			PyObject * embed = this->_embedded();
 
-			if( embed == 0 )
+			if( embed == nullptr )
 			{
-				return 0;
+				return nullptr;
 			}
 
 			this->setEmbed( embed );
@@ -74,6 +74,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scriptable::isEmbed() const
 	{
-		return m_embed != 0;
+		return m_embed != nullptr;
 	}
 }

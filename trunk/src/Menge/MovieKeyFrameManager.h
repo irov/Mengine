@@ -7,6 +7,8 @@
 #	include "Config/Typedef.h"
 #	include "Core/ConstString.h"
 
+#   include "Factory/FactoryPool.h"
+
 #	include <vector>
 
 namespace Menge
@@ -24,12 +26,14 @@ namespace Menge
 
 	public:
 		MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) override;
-		void releaseMovieFramePak( MovieFramePackInterface * _framePak ) override;
 
 	protected:
 		MovieFramePackInterface * createMovieFramePak_( const ConstString & _pak, const FilePath & _path );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;        
+        ServiceProviderInterface * m_serviceProvider;
+
+        typedef FactoryPool<MovieFramePack, 32> TFactoryPoolMovieFramePack;
+        TFactoryPoolMovieFramePack m_poolMovieFramePack;
 	};
 }

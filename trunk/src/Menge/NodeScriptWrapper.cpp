@@ -178,10 +178,12 @@ namespace Menge
                 PyObject * py_name = pybind::ptr( _name );
                 PyObject * py_hotspot = pybind::ptr( _hotspot );
 
-                PyObject * py_arg = pybind::list_new(0);
-                pybind::list_appenditem( py_arg, py_name );
-                pybind::list_appenditem( py_arg, py_hotspot );
+                PyObject * py_arg = pybind::list_new(2);
+
+                pybind::list_setitem( py_arg, 0, py_name );
                 pybind::decref( py_name );
+
+                pybind::list_setitem( py_arg, 1, py_hotspot );                
                 pybind::decref( py_hotspot );
 
                 pybind::list_appenditem( m_list, py_arg );
@@ -970,7 +972,7 @@ namespace Menge
             ResourceImageDefault* resImage = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceImageDefault>( _resourceName );
 
-            if( resImage == NULL )
+            if( resImage == nullptr )
             {
                 resImage = RESOURCE_SERVICE(m_serviceProvider)
                     ->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
@@ -1872,6 +1874,8 @@ namespace Menge
 
             float duration = resourceMovie->getDuration();
 
+            resourceMovie->decrementReference();
+
             return duration;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2061,7 +2065,7 @@ namespace Menge
             ResourceMovie * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceMovie>( _resourceName );
 
-            if( resource == NULL )
+            if( resource == nullptr )
             {
                 return pybind::ret_none();
             }
@@ -2238,6 +2242,8 @@ namespace Menge
             pybind::dict_set( py_dict_result, "Emitters", py_list_names );
             pybind::dict_set( py_dict_result, "Atlasses", py_list_atlas );
 
+            resource->decrementReference();
+
             return py_dict_result;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2266,8 +2272,10 @@ namespace Menge
                 : public ResourceVisitor
             {
             public:
-                ResourceVisitorGetAlreadyCompiled( PyObject * _cb )
-                    : m_cb(_cb)
+                ResourceVisitorGetAlreadyCompiled( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+                    : m_category(_category)
+                    , m_groupName(_groupName)
+                    , m_cb(_cb)
                 {
                     pybind::incref( m_cb );
                 }
@@ -2285,6 +2293,20 @@ namespace Menge
                         return;
                     }
 
+                    const ConstString & category = _resource->getCategory();
+
+                    if( category != m_category )
+                    {
+                        return;
+                    }
+
+                    const ConstString & group = _resource->getGroup();
+
+                    if( group != m_groupName )
+                    {
+                        return;
+                    }
+
                     PyObject * py_resource = pybind::ptr( _resource );
 
                     pybind::call( m_cb, "(O)", py_resource );
@@ -2293,13 +2315,16 @@ namespace Menge
                 }
 
             protected:
+                ConstString m_category;
+                ConstString m_groupName;
+
                 PyObject * m_cb;
             };
 
-            ResourceVisitorGetAlreadyCompiled rv_gac(_cb);
+            ResourceVisitorGetAlreadyCompiled rv_gac(_category, _groupName, _cb);
 
             RESOURCE_SERVICE(m_serviceProvider)
-                ->visitResources( _category, _groupName, &rv_gac );						
+                ->visitResources( &rv_gac );						
         }
         //////////////////////////////////////////////////////////////////////////
         void s_visitResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
@@ -2308,8 +2333,10 @@ namespace Menge
                 : public ResourceVisitor
             {
             public:
-                MyResourceVisitor( PyObject * _cb )
-                    : m_cb(_cb)
+                MyResourceVisitor( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+                    : m_category(_category)
+                    , m_groupName(_groupName)
+                    , m_cb(_cb)
                 {
                     pybind::incref( m_cb );
                 }
@@ -2322,6 +2349,20 @@ namespace Menge
             protected:
                 void visit( ResourceReference* _resource )
                 {
+                    const ConstString & category = _resource->getCategory();
+
+                    if( category != m_category )
+                    {
+                        return;
+                    }
+
+                    const ConstString & group = _resource->getGroup();
+
+                    if( group != m_groupName )
+                    {
+                        return;
+                    }
+
                     PyObject * py_resource = pybind::ptr( _resource );
 
                     pybind::call( m_cb, "(O)", py_resource );
@@ -2330,13 +2371,16 @@ namespace Menge
                 }
 
             protected:
+                ConstString m_category;
+                ConstString m_groupName;
+
                 PyObject * m_cb;
             };
 
-            MyResourceVisitor rv_gac(_cb);
+            MyResourceVisitor rv_gac(_category, _groupName, _cb);
 
             RESOURCE_SERVICE(m_serviceProvider)
-                ->visitResources( _category, _groupName, &rv_gac );						
+                ->visitResources( &rv_gac );						
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_validResource( const ConstString & _resourceName )

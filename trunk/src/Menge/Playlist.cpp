@@ -35,7 +35,7 @@ namespace Menge
         m_playlistResource = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceT<ResourcePlaylist>( _playlistResource );
 
-        if( m_playlistResource == NULL )
+        if( m_playlistResource == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Playlist::setPlaylistResource no found playlist with name '%s'"
                 , _playlistResource.c_str()

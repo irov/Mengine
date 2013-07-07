@@ -98,6 +98,7 @@ namespace Menge
 		_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
 		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
 #	endif
+
 		m_moduleMenge = this->initModule( "Menge" );
 
         this->addGlobalModule( "Menge", m_moduleMenge );
@@ -226,7 +227,7 @@ namespace Menge
 			ScriptEngine::handleException();
 		}
 
-		return 0;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const ConstString & _name )
@@ -238,7 +239,7 @@ namespace Menge
 			return it_find->second;
 		}
 
-		PyObject * module = 0;
+		PyObject * module = nullptr;
 		bool exist = false;
 
 		try
@@ -253,7 +254,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		if( exist == false )
@@ -262,16 +263,16 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
-		if( module == 0 )
+		if( module == nullptr )
 		{			
 			LOGGER_WARNING(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(script)"
 				, _name.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		m_modules.insert( std::make_pair( _name, module ) );
@@ -324,35 +325,35 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator )
 	{
-		if( _generator == 0 )
+		if( _generator == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.createEntity: can't create object '%s' (_generator == 0)"
 				, _type.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
 
 		PyObject * py_entity = pybind::ask( _generator, "()" );
 
-		if( py_entity == 0 )
+		if( py_entity == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.createEntity: can't create object '%s' (invalid create)"
 				, _type.c_str()
 				);
 
-			return 0;
+			return nullptr;
 		}
         
 		Entity * entity = pybind::extract<Entity *>( py_entity );
 
-        if( entity == 0 )
+        if( entity == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.createEntity: can't extract entity '%s' (invalid cast)"
                 , _type.c_str()
                 );
 
-            return 0;
+            return nullptr;
         }
 
         entity->setServiceProvider( m_serviceProvider );
@@ -387,7 +388,7 @@ namespace Menge
 
 		if( it_find == m_scriptWrapper.end() )
 		{
-			return 0;
+			return nullptr;
 		}
 
         ScriptClassInterface * scriptClass = it_find->second;

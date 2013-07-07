@@ -22,10 +22,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Video::Video()
 		: m_autoStart(false)
-		, m_material(NULL)
+		, m_material(nullptr)
 		, m_frameSize(0.f, 0.f)
 		, m_uv(0.f, 0.f, 1.f, 1.f)
-		, m_videoDecoder(NULL)
+		, m_videoDecoder(nullptr)
 		, m_timing(0.f)
         , m_playIterator(0)
 		, m_blendAdd(false)
@@ -106,10 +106,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
-		m_resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
+        m_resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceT<ResourceVideo>( m_resourceVideoName );
-
-		if( m_resourceVideo == 0 )
+        
+		if( m_resourceVideo == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' resource not found '%s'"
 				, this->getName().c_str()
@@ -165,7 +165,7 @@ namespace Menge
 	{
         m_videoDecoder = m_resourceVideo->createVideoDecoder();
 
-        if( m_videoDecoder == 0 )
+        if( m_videoDecoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Video::_compileDecoder '%s' can't create video decoder"
                 , this->getName().c_str()
@@ -188,10 +188,10 @@ namespace Menge
 
         m_videoDecoder = nullptr;
 
-        if( m_resourceVideo != 0 )
+        if( m_resourceVideo != nullptr )
 		{
 			m_resourceVideo->decrementReference();
-			m_resourceVideo = 0;
+			m_resourceVideo = nullptr;
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -490,6 +490,7 @@ namespace Menge
 	void Video::_setLastFrame()
 	{
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo(); 
+
 		this->_setTiming( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////

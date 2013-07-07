@@ -5,6 +5,8 @@
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
+#   include "Factory/Factorable.h"
+
 #   include "Math/vec3.h"
 
 #   include <vector>
@@ -40,6 +42,7 @@ namespace Menge
     typedef std::vector<MovieLayerFrame> TVectorMovieFrameLayer;
 
     class MovieFramePackInterface
+        : public Factorable
     {
     public:
         virtual bool hasLayer( size_t _layerIndex ) const = 0;
@@ -56,7 +59,6 @@ namespace Menge
 
     public:
         virtual MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) = 0;
-        virtual void releaseMovieFramePak( MovieFramePackInterface * _framePak ) = 0;
     };
 
 #   define MOVIEKEYFRAME_SERVICE( serviceProvider )\

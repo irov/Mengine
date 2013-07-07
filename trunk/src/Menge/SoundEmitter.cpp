@@ -52,7 +52,7 @@ namespace Menge
 		m_resource = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceSound>( m_resourceName );
 
-		if( m_resource == 0 )
+		if( m_resource == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' can't get resource '%s'"
 				, this->getName().c_str()

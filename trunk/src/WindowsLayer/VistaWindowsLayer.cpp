@@ -283,10 +283,13 @@ namespace Menge
                 , wfd.cFileName
                 );
 
+            ::FindClose( hFind );
             ::CloseHandle( handle );
 
             return INVALID_HANDLE_VALUE;
         }
+
+        ::FindClose( hFind );
 #endif
 
         return handle;

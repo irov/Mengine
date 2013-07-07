@@ -6,7 +6,7 @@ extern "C" {
 
 extern void PyMarshal_Init(void);
 extern void initimp(void);
-//extern void initgc(void);
+extern void initgc(void);
 extern void init_ast(void);
 extern void initunicodedata(void);
 extern void initmath(void);
@@ -35,7 +35,7 @@ struct _inittab _PyImport_Inittab[] = {
 	{"exceptions", NULL},
 
 	/* This lives in gcmodule.c */
-	//{"gc", initgc},
+	{"gc", initgc},
     
     {"cPickle", initcPickle},
     {"cStringIO", initcStringIO},

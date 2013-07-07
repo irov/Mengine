@@ -43,7 +43,7 @@ namespace Menge
         m_resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceT<ResourceHIT>( m_resourceHITName );
 
-        if( m_resourceHIT == NULL )
+        if( m_resourceHIT == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't get HIT resource '%s'"
                 , this->getName().c_str()

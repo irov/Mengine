@@ -2,6 +2,7 @@
 
 #   include <vector>
 #   include <algorithm>
+#   include <functional>
 
 namespace Menge
 {

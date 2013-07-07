@@ -775,6 +775,8 @@ namespace	Menge
                 , m_emitterImageName.c_str()
                 );
 
+            resourceHIT->decrementReference();
+
 			return false;
 		}
 				

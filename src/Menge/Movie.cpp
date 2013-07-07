@@ -44,11 +44,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
-		: m_resourceMovie(NULL)
+		: m_resourceMovie(nullptr)
 		, m_frameTiming(0.f)
         , m_playIterator(0)
 		, m_currentFrame(0)        
-		, m_renderCamera3D(0)
+		, m_renderCamera3D(nullptr)
         , m_parentMovie(false)
 	{
 	}
@@ -125,6 +125,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play( float _time )
 	{
+        //return false;
         (void)_time;
 
 		if( this->isActivate() == false )
@@ -327,6 +328,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * Movie::getMovieNode_( const MovieLayer & _layer ) const
 	{	
+        size_t size = m_nodies.size();
+        if( _layer.index >= size )
+        {
+            return nullptr;
+        }
+
         const Nodies & ns = m_nodies[_layer.index];
 
 		return ns.node;
@@ -375,6 +382,11 @@ namespace Menge
 			}
 
 			Node * node = this->getMovieNode_( layer );
+
+            if( node == nullptr )
+            {
+                continue;
+            }
 
 			Movie * movie = dynamic_cast<Movie *>(node);
 
@@ -431,6 +443,11 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
 			Movie * movie = dynamic_cast<Movie *>(node);
 
 			if( movie->hasMovieSlot( _name ) == false )
@@ -480,6 +497,11 @@ namespace Menge
             }
 
             Node * node = this->getMovieNode_( layer );
+
+            if( node == nullptr )
+            {
+                continue;
+            }
 
             Movie * movie = dynamic_cast<Movie *>(node);
 
@@ -536,6 +558,11 @@ namespace Menge
 
             Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
             Movie * movie = dynamic_cast<Movie *>(node);
 
             if( movie->hasSubMovie( _name ) == false )
@@ -553,7 +580,7 @@ namespace Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile"
+            LOGGER_ERROR(m_serviceProvider)("Movie.visitSockets %s invalid not compile"
                 , m_name.c_str()
                 );
 
@@ -589,6 +616,11 @@ namespace Menge
 
             Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
             Movie * movie = dynamic_cast<Movie *>(node);
 
             if( movie->visitSockets( _visitor ) == false )
@@ -604,8 +636,9 @@ namespace Menge
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile"
+            LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile %s"
                 , m_name.c_str()
+                , _name.c_str()
                 );
 
             return nullptr;
@@ -637,11 +670,16 @@ namespace Menge
 
             Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
             Movie * movie = dynamic_cast<Movie *>(node);
 
             HotSpot * socket = movie->getSocket( _name );
 
-            if( socket == NULL )
+            if( socket == nullptr )
             {
                 continue;
             }
@@ -691,6 +729,11 @@ namespace Menge
             }
 
             Node * node = this->getMovieNode_( layer );
+
+            if( node == nullptr )
+            {
+                continue;
+            }
 
             Movie * movie = dynamic_cast<Movie *>(node);
 
@@ -744,6 +787,11 @@ namespace Menge
 
             Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
             Movie * movie = dynamic_cast<Movie *>(node);
 
             if( movie->setMovieEvent( _name, _cb ) == true )
@@ -794,6 +842,11 @@ namespace Menge
             }
 
             Node * node = this->getMovieNode_( layer );
+
+            if( node == nullptr )
+            {
+                continue;
+            }
 
             Movie * movie = dynamic_cast<Movie *>(node);
 
@@ -1550,6 +1603,11 @@ namespace Menge
 			
 			Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
 			if( layer.isThreeD() == true )
 			{
 				node->setRenderCamera( m_renderCamera3D );
@@ -1593,6 +1651,11 @@ namespace Menge
 			const MovieLayer & layer = *it;
 
 			Node * node = this->getMovieNode_( layer );
+
+            if( node == nullptr )
+            {
+                continue;
+            }
                         
             MovieFrameSource frame;
             if( m_resourceMovie->getFrame( layer, 0, frame ) == false )
@@ -1637,6 +1700,11 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
 			if( layer.parent == 0 )
 			{
 				//this->addChildren( node );
@@ -1677,6 +1745,11 @@ namespace Menge
 			
 			Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 
 			if( animatable->isPlay() == true )
@@ -1716,6 +1789,11 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			
 			animatable->setTiming( 0.f );
@@ -1747,15 +1825,16 @@ namespace Menge
 		m_nodies.clear();
 
 		m_slots.clear();
-        m_events.clear();
+        m_subMovies.clear();
         m_sockets.clear();
+        m_events.clear();
 
 		this->destroyCamera3D_();
 
-		if( m_resourceMovie != 0 )
+		if( m_resourceMovie != nullptr )
 		{
 			m_resourceMovie->decrementReference();
-			m_resourceMovie = 0;
+			m_resourceMovie = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1986,6 +2065,11 @@ namespace Menge
             }
             
             Node * node = this->getMovieNode_( layer );
+            
+            if( node == nullptr )
+            {
+                continue;
+            }
 
             if( layer.isNode() == true )
             {
@@ -2228,6 +2312,11 @@ namespace Menge
 		
 			Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
 			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{
                 MovieFrameSource frame;
@@ -2286,6 +2375,11 @@ namespace Menge
             }
 
             Node * node = this->getMovieNode_( layer );			
+            
+            if( node == nullptr )
+            {
+                continue;
+            }
 
             if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
             {                
@@ -2368,6 +2462,11 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
+            if( node == nullptr )
+            {
+                continue;
+            }
+
 			if( m_currentFrame > indexIn )
 			{
 				node->localHide( true );
@@ -2410,7 +2509,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::destroyCamera3D_()
 	{
-		if( m_renderCamera3D == NULL )
+		if( m_renderCamera3D == nullptr )
 		{
 			return;
 		}
@@ -2445,6 +2544,11 @@ namespace Menge
 			}
 			
 			Node * node = this->getMovieNode_( layer );
+
+            if( node == nullptr )
+            {
+                continue;
+            }
 			
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setSpeedFactor( _factor );
@@ -2479,6 +2583,11 @@ namespace Menge
 			}
 			
 			Node * node = this->getMovieNode_( layer );
+            
+            if( node == nullptr )
+            {
+                continue;
+            }
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setReverse( _reverse );

@@ -191,7 +191,7 @@ namespace Menge
 		void toggleDebugText() override;
 
 	protected:
-		bool m_showDebugText;
+		size_t m_showDebugText;
 		TextField* m_debugText;
 //#	endif
 	};

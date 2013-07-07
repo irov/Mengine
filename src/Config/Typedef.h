@@ -6,6 +6,8 @@
 
 #	include "Config.h"
 
+#   include <stddef.h>
+
 namespace Menge
 {
 	typedef void * WindowHandle;

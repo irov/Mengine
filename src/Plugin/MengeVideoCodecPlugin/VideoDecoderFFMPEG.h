@@ -51,9 +51,7 @@ namespace Menge
 	protected:
 		AVFormatContext * m_formatContext;
 		AVCodecContext * m_codecContext;
-		AVCodec * m_codec;
-		
-        AVPacket m_packet;
+				
 		AVFrame * m_frame; 		
 		AVIOContext * m_IOContext;
 

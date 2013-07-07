@@ -54,7 +54,7 @@ namespace Menge
         void validationResources() const override;
 
 	public:
-		void visitResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const override;
+		void visitResources( ResourceVisitor * _visitor ) const override;
 			
 
 	public:

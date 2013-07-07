@@ -413,7 +413,7 @@ namespace Menge
 		return type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const
+	void ResourceManager::visitResources( ResourceVisitor * _visitor ) const
 	{
         for( TMapResource::const_iterator
             it = m_resources.begin(),
@@ -424,20 +424,6 @@ namespace Menge
             const ResourceEntry & entry = it->second;
 
             ResourceReference * resource = entry.resource;
-
-            const ConstString & category = resource->getCategory();
-
-            if( category != _category )
-            {
-                continue;
-            }
-
-            const ConstString & group = resource->getGroup();
-
-            if( group != _group )
-            {
-                continue;
-            }
 
             _visitor->visit( resource );
         }

@@ -3,11 +3,14 @@
 namespace Menge
 {
 	///////////////////////////////////////////////////////////////////////
-	MovieFramePack::MovieFramePack( size_t _size )
-		: m_size(_size)
-	{
-		m_layers.resize(m_size);
+	MovieFramePack::MovieFramePack()
+	{		
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MovieFramePack::initialize( size_t _size )
+    {
+        m_layers.resize( _size );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )
 	{

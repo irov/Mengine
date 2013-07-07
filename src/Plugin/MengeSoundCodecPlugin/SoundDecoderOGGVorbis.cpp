@@ -90,7 +90,8 @@ namespace Menge
 
         //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 2" );
         vorbis_info* vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
-        if( vorbisInfo == NULL )
+
+        if( vorbisInfo == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_initialize invalid ov_info"
                 );

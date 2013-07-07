@@ -15,7 +15,10 @@ namespace Menge
         : public MovieFramePackInterface
 	{
 	public:
-		MovieFramePack( size_t _size );
+		MovieFramePack();
+        
+    public:
+        void initialize( size_t _size );
 
 	public:
 		void initializeLayer( size_t _layerIndex, size_t _count, bool _immutable );
@@ -39,7 +42,6 @@ namespace Menge
 		void addLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame );
 			
 	protected:
-		size_t m_size;
 		TVectorMovieFrameLayer m_layers;
 	};
 }

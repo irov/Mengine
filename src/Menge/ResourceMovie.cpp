@@ -122,20 +122,6 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const
-	{
-		TMapInternals::const_iterator it_found = m_internals.find(_source);
-
-		if( it_found == m_internals.end() )
-		{
-			return false;
-		}
-
-		_internal = it_found->second;
-
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -227,16 +213,13 @@ namespace Menge
                     , layer.name.c_str()
                     );
 
-                MOVIEKEYFRAME_SERVICE(m_serviceProvider)
-                    ->releaseMovieFramePak( framePack );
+                framePack->destroy();
 
                 return false;
             }
         }
 
-
-        MOVIEKEYFRAME_SERVICE(m_serviceProvider)
-            ->releaseMovieFramePak( framePack );       
+        framePack->destroy();
 
         return true;
     }
@@ -357,11 +340,106 @@ namespace Menge
             m_hasCamera3D = true;
         }
 
+        for( TVectorMovieLayers::iterator
+            it = m_layers.begin(),
+            it_end = m_layers.end();
+        it != it_end;
+        ++it )
+        {
+            m_maxLayerIndex = std::max( m_maxLayerIndex, it->index );
+
+            if( it->layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+
+                it->parent = (size_t)-1;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieText) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, Image) )
+            {
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_MASK;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, Animation) )
+            {
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, Video) )
+            {
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, Sound) )
+            {
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
+            {
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, Movie) )
+            {
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, SubMovie) )
+            {
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+            {
+                it->state |= MOVIE_LAYER_NODE;
+            }
+            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
+            {
+                it->state |= MOVIE_LAYER_EXTRA;
+            }
+            else
+            {
+                LOGGER_ERROR(m_serviceProvider)("ResourceMovie: '%s' can't setup layer2d '%s' type '%s'"
+                    , this->getName().c_str()
+                    , it->source.c_str()
+                    , it->layerType.c_str()
+                    );
+
+                return false;
+            }
+
+            if( fabsf( it->in - 0.f ) < 0.0001f && fabsf( it->out - m_duration ) < 0.0001f )
+            {
+                it->loop = true;
+            }
+        }
+
+        m_frameCount = (size_t)((m_duration / m_frameDuration) + 0.5f) - 1;
+
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_compile()
 	{
+        //return false;
+
 		if( ResourceReference::_compile() == false )
 		{
 			return false;
@@ -400,99 +478,6 @@ namespace Menge
 			return false;
 		}
 
-		for( TVectorMovieLayers::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
-		{
-			m_maxLayerIndex = std::max( m_maxLayerIndex, it->index );
-															
-			if( it->layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
-			{
-                it->state |= MOVIE_LAYER_NODE;
-			}
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
-            {
-                it->state |= MOVIE_LAYER_NODE;
-
-                it->parent = (size_t)-1;
-            }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieText) )
-            {
-                it->state |= MOVIE_LAYER_NODE;
-            }
-			else if( it->layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
-			{
-                it->state |= MOVIE_LAYER_NODE;
-			}
-			else if( it->layerType == CONST_STRING(m_serviceProvider, Image) )
-			{
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_MASK;
-			}
-			else if( it->layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
-			{
-                it->state |= MOVIE_LAYER_NODE;
-			}
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
-            {
-                it->state |= MOVIE_LAYER_NODE;
-            }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
-            {
-                it->state |= MOVIE_LAYER_NODE;
-            }
-			else if( it->layerType == CONST_STRING(m_serviceProvider, Animation) )
-			{
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
-			}
-			else if( it->layerType == CONST_STRING(m_serviceProvider, Video) )
-			{
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
-			}
-			else if( it->layerType == CONST_STRING(m_serviceProvider, Sound) )
-			{
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
-			}
-			else if( it->layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
-			{
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
-			}
-			else if( it->layerType == CONST_STRING(m_serviceProvider, Movie) )
-			{
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
-			}
-            else if( it->layerType == CONST_STRING(m_serviceProvider, SubMovie) )
-            {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
-            }
-			else if( it->layerType == CONST_STRING(m_serviceProvider, MovieInternalObject) )
-			{
-                it->state |= MOVIE_LAYER_NODE;
-			}
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
-            {
-                it->state |= MOVIE_LAYER_EXTRA;
-            }
-			else
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie: '%s' can't setup layer2d '%s' type '%s'"
-					, this->getName().c_str()
-					, it->source.c_str()
-					, it->layerType.c_str()
-					);
-
-				return false;
-            }
-
-            if( fabsf( it->in - 0.f ) < 0.0001f && fabsf( it->out - m_duration ) < 0.0001f )
-            {
-                it->loop = true;
-            }
-		}
-		
-		m_frameCount = (size_t)((m_duration / m_frameDuration) + 0.5f) - 1;
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -500,8 +485,8 @@ namespace Menge
 	{
 		if( m_keyFramePack != nullptr )
 		{
-			MOVIEKEYFRAME_SERVICE(m_serviceProvider)
-				->releaseMovieFramePak( m_keyFramePack );
+            m_keyFramePack->destroy();
+            m_keyFramePack = nullptr;
 		}
 
 		ResourceReference::_release();
@@ -509,7 +494,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::visitResourceMovie( VisitorResourceMovie * _visitor )
 	{
-		if( isCompile() == false )
+		if( this->isCompile() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::visitResourceMovie not compile"
 				, m_name.c_str()

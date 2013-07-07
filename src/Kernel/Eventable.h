@@ -5,7 +5,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Core/ConstString.h"
-#	include "Utils/Core/BinaryVector.h"
+#	include "Core/BinaryVector.h"
 
 #	include "Kernel/EventEnum.h"
 

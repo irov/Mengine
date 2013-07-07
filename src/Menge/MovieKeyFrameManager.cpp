@@ -74,7 +74,9 @@ namespace Menge
 
         size_t maxIndex = keyFramesPack.get_MaxIndex();
 
-        MovieFramePack * pack = new MovieFramePack(maxIndex);
+        MovieFramePack * pack = m_poolMovieFramePack.createObjectT();
+
+        pack->initialize( maxIndex );
         
         const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D(); 
 
@@ -272,11 +274,6 @@ namespace Menge
         }
 
 		return pack;
-	}
-	////////////////////////////////////////////////////////////////////////////////
-	void MovieKeyFrameManager::releaseMovieFramePak( MovieFramePackInterface * _framePak )
-	{
-		delete static_cast<MovieFramePack *>(_framePak);
 	}
 	////////////////////////////////////////////////////////////////////////////////
 }

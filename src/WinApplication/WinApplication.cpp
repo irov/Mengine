@@ -1794,7 +1794,12 @@ namespace Menge
             m_pluginMengeSoundCodec = nullptr;
         }
 
-        if( m_inputService == nullptr )
+        if( m_pluginService != nullptr )
+        {
+            SERVICE_DESTROY( PluginService, m_pluginService );
+        }
+
+        if( m_inputService != nullptr )
         {
             m_inputService->finalize();
 

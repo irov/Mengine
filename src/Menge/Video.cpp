@@ -148,6 +148,8 @@ namespace Menge
 		m_textures[0] = RENDERTEXTURE_SERVICE(m_serviceProvider)
             ->createDynamicTexture( width, height, channels, PF_UNKNOWN );
 
+        m_textures[0]->setFileName( m_resourceVideoName );
+
 		//m_material->textureStage[0].texture = m_resourceImage;
 
 		this->updateUV_();

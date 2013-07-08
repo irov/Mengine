@@ -58,6 +58,7 @@ namespace Menge
 	{
 		if( m_hFile != nullptr )
 		{
+            s3eFileFlush( m_hFile );
 			s3eFileClose( m_hFile );
 			m_hFile = nullptr;
 		}

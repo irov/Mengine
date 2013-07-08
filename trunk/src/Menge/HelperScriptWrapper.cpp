@@ -364,6 +364,41 @@ namespace Menge
 			return py_list;
 		}
 
+        class MyVisitorRenderTexture
+            : public VisitorRenderTextureInterface
+        {
+        public:
+            MyVisitorRenderTexture( PyObject * _list )
+                : m_list(_list)
+            {
+            }
+
+        protected:
+            void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) override
+            {
+                const FilePath & filePath = _texture->getFileName();
+
+                PyObject * py_filePath = pybind::ptr( filePath );
+
+                pybind::list_appenditem( m_list, py_filePath );
+                pybind::decref( py_filePath );
+            }
+
+        protected:
+            PyObject * m_list;
+        };
+
+        PyObject * s_textures()
+        {
+            PyObject * py_list = pybind::list_new(0);
+
+            MyVisitorRenderTexture mvrt(py_list);
+            RENDERTEXTURE_SERVICE(m_serviceProvider)
+                ->visitTexture( &mvrt );
+
+            return py_list;
+        }
+
 		float s_watchdog( const String & _tag )
 		{
 			float watch = WATCHDOG( m_serviceProvider, _tag );
@@ -1178,6 +1213,7 @@ namespace Menge
 
 
 		pybind::def_functor( "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
+        pybind::def_functor( "textures", helperScriptMethod, &HelperScriptMethod::s_textures );
 		
 		pybind::def_functor( "watchdog", helperScriptMethod, &HelperScriptMethod::s_watchdog );
 

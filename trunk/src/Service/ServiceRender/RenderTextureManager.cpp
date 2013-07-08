@@ -298,6 +298,20 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderTextureManager::visitTexture( VisitorRenderTextureInterface * _visitor ) const
+    {
+        for( TMapTextures::const_iterator
+            it = m_textures.begin(),
+            it_end = m_textures.end();
+        it != it_end;
+        ++it )
+        {
+            const RenderTextureInterfacePtr & texture = it->second;
+
+            _visitor->visitRenderTexture( texture );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture )
     {
         _texture->setFileName( _filename );

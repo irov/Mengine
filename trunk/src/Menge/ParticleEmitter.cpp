@@ -201,6 +201,8 @@ namespace	Menge
 
 		m_verticesCount = 0;
 
+        m_batchs.clear();
+
 		//m_images.clear();				
 	}
 	//////////////////////////////////////////////////////////////////////////

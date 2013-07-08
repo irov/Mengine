@@ -19,7 +19,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceEmitterContainer );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceEmitterContainer::ResourceEmitterContainer()
-		: m_container(0)
+		: m_container(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ namespace Menge
 			ResourceImageDefault * image = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceImageDefault>( name );
 
-			if( image == NULL )
+			if( image == nullptr )
 			{
 				return false;
 			}
@@ -145,12 +145,12 @@ namespace Menge
 
 		m_atlasImages.clear();
 
-		if( m_container != 0 )
+		if( m_container != nullptr )
 		{
 			PARTICLE_SERVICE(m_serviceProvider)
 				->releaseEmitterContainer( m_container );
 
-			m_container = 0;
+			m_container = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

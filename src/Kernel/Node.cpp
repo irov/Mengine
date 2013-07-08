@@ -99,17 +99,14 @@ namespace Menge
 			return true;
 		}
 
-		if( this->isCompile() == false )
-		{
-			if( this->compile() == false )
-			{
-				//MENGE_LOG_INFO( "Error: activation of Node '%s' is failed, because compilation is failed\n"
-				//	, m_name.c_str() 
-				//	);
+        if( this->compile() == false )
+        {
+            //MENGE_LOG_INFO( "Error: activation of Node '%s' is failed, because compilation is failed\n"
+            //	, m_name.c_str() 
+            //	);
 
-                return false;
-			}
-		}
+            return false;
+        }
 
 		if( m_active == true )
 		{
@@ -211,10 +208,12 @@ namespace Menge
 	{
         this->setShallowGrave();
 
-		if( this->isActivate() == true )
-		{
-			this->deactivate();
-		}
+		//if( this->isActivate() == true )
+		//{
+		//	this->deactivate();
+		//}
+
+        this->release();
 
 		m_enable = false;
 
@@ -684,7 +683,7 @@ namespace Menge
 
 		m_debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
-		if( m_debugMaterial == NULL )
+		if( m_debugMaterial == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Node::_activate %s m_debugMaterial Debug not found"
 				, this->getName().c_str()

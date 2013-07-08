@@ -32,8 +32,9 @@ namespace Menge
 		const Glyph * getGlyph( GlyphChar _id ) const;
 
     public:
-		const RenderTextureInterfacePtr & getTexture() const;
-		const RenderTextureInterfacePtr & getTextureImage() const;
+		const RenderTextureInterfacePtr & getTextureFont() const;
+		const RenderTextureInterfacePtr & getTextureOutline() const;
+
 		const mt::vec4f&  getTextureUV() const;
 
 		const FilePath & getImagePath() const;
@@ -57,8 +58,8 @@ namespace Menge
 		ConstString m_resourceGlyphName;
 		ResourceGlyph * m_resourceGlyph;
 		
-		FilePath m_imageFile;
-		ConstString m_imageCodec;
+		FilePath m_fontImageFile;
+		ConstString m_fontImageCodec;
 
 		//String m_fontdefPath;
 
@@ -69,8 +70,8 @@ namespace Menge
 
 		mt::vec4f m_textureUV;
 
-		RenderTextureInterfacePtr m_texture;
-		RenderTextureInterfacePtr m_outline;
+		RenderTextureInterfacePtr m_textureFont;
+		RenderTextureInterfacePtr m_textureOutline;
 		mt::vec2f m_imageInvSize;
 
 		ColourValue m_color;

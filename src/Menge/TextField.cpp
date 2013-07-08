@@ -212,7 +212,7 @@ namespace Menge
 	{	
 		Node::_render( _camera );
 		
-		if( m_outline && m_resourceFont->getTextureImage() != NULL )
+		if( m_outline && m_resourceFont->getTextureOutline() != NULL )
 		{
 			this->renderOutline_( _camera );
 		}
@@ -235,7 +235,7 @@ namespace Menge
 			countOfVertices = m_maxCharCount * 4;
 		}
 		
-        const RenderTextureInterfacePtr & fontTexture = m_resourceFont->getTexture();
+        const RenderTextureInterfacePtr & fontTexture = m_resourceFont->getTextureFont();
 
         RENDER_SERVICE(m_serviceProvider)
             ->addRenderObject2D( _camera, m_materialText, &fontTexture, 1, LPT_QUAD, &(textVertices[0]), countOfVertices );
@@ -261,7 +261,7 @@ namespace Menge
 			countOfVertices = m_maxCharCount * 4;
 		}
 
-		const RenderTextureInterfacePtr & outlineTexture = m_resourceFont->getTextureImage();
+		const RenderTextureInterfacePtr & outlineTexture = m_resourceFont->getTextureOutline();
 
 		RENDER_SERVICE(m_serviceProvider)
 			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, 1, LPT_QUAD, &(outlineVertices[0]), countOfVertices );
@@ -815,7 +815,7 @@ namespace Menge
 
 		m_outlineColor.setA( color.getA() );
 
-		if( m_outline && m_resourceFont->getTextureImage() != NULL )
+		if( m_outline && m_resourceFont->getTextureOutline() != NULL )
 		{
 			this->updateVertexData_( m_outlineColor, m_vertexDataOutline );
 		}

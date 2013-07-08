@@ -32,26 +32,26 @@ namespace Menge
 		return m_resourceGlyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterfacePtr & ResourceFont::getTexture() const
+	const RenderTextureInterfacePtr & ResourceFont::getTextureFont() const
 	{
-		return m_texture;
+		return m_textureFont;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterfacePtr & ResourceFont::getTextureImage() const
+	const RenderTextureInterfacePtr & ResourceFont::getTextureOutline() const
 	{
-		return m_outline;
+		return m_textureOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setImagePath_( const FilePath& _path )
 	{
-		m_imageFile = _path;
+		m_fontImageFile = _path;
 
-		m_imageCodec = this->getCodec_( m_imageFile );
+		m_fontImageCodec = this->getCodec_( m_fontImageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath& ResourceFont::getImagePath() const
 	{
-		return m_imageFile;
+		return m_fontImageFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setOutlineImagePath_( const FilePath& _path )
@@ -106,11 +106,11 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceFont *>(_meta);
 
         metadata->swap_ResourceGlyph_Name( m_resourceGlyphName );
-        metadata->swap_Image_Path( m_imageFile );
+        metadata->swap_Image_Path( m_fontImageFile );
         
-        if( metadata->swap_Image_Codec( m_imageCodec ) == false )
+        if( metadata->swap_Image_Codec( m_fontImageCodec ) == false )
         {
-            m_imageCodec = this->getCodec_( m_imageFile );
+            m_fontImageCodec = this->getCodec_( m_fontImageFile );
         }
 
         if( metadata->swap_OutlineImage_Path( m_outlineImageFile ) == true )
@@ -130,24 +130,24 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		m_texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->loadTexture( category, m_imageFile, m_imageCodec, 0, 0 );
+		m_textureFont = RENDERTEXTURE_SERVICE(m_serviceProvider)
+            ->loadTexture( category, m_fontImageFile, m_fontImageCodec, 0, 0 );
 
 		//m_texture = RenderEngine::get()
 		//	->loadMegatexture( category, m_imageFile, m_imageCodec );
 
-		if( m_texture == nullptr )
+		if( m_textureFont == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceFont::_compile '%s' invalid loading font image '%s'"
 				, this->getName().c_str()
-				, m_imageFile.c_str() 
+				, m_fontImageFile.c_str() 
 				);
 
 			return false;
 		}
 
-		size_t width = m_texture->getWidth();
-		size_t height = m_texture->getHeight();
+		size_t width = m_textureFont->getWidth();
+		size_t height = m_textureFont->getHeight();
 
 		this->updateTextureUV_();
 
@@ -155,10 +155,10 @@ namespace Menge
 
 		if( m_outlineImageFile.empty() == false )
 		{
-			m_outline = RENDERTEXTURE_SERVICE(m_serviceProvider)
+			m_textureOutline = RENDERTEXTURE_SERVICE(m_serviceProvider)
                 ->loadTexture( category, m_outlineImageFile, m_outlineImageCodec, 0, 0 );
 
-			if( m_outline == nullptr )
+			if( m_textureOutline == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "ResourceFont::_compile '%s' can't loaded outline image file '%s'"
 					, this->getName().c_str()
@@ -210,11 +210,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::updateTextureUV_()
 	{
-		size_t width = m_texture->getWidth();
-		size_t height = m_texture->getHeight();
+		size_t width = m_textureFont->getWidth();
+		size_t height = m_textureFont->getHeight();
 
-		size_t hwHeight = m_texture->getHWHeight();
-		size_t hwWidth = m_texture->getHWWidth();
+		size_t hwHeight = m_textureFont->getHWHeight();
+		size_t hwWidth = m_textureFont->getHWWidth();
 
 		float scaleRight = float(width) / float(hwWidth);
 		float scaleBottom = float(height) / float(hwHeight);
@@ -227,13 +227,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		m_texture = nullptr;
-		m_outline = nullptr;
+		m_textureFont = nullptr;
+		m_textureOutline = nullptr;
 
-		if( m_resourceGlyph )
+		if( m_resourceGlyph != nullptr )
 		{			
 			m_resourceGlyph->decrementReference();
-			m_resourceGlyph = 0;
+			m_resourceGlyph = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

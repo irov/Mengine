@@ -189,7 +189,7 @@ namespace Menge
         soundSource->initialize( m_serviceProvider, this );
         		
 		soundSource->setHeadMode( _isHeadMode );
-		soundSource->loadBuffer( _sample );
+		soundSource->setSoundBuffer( _sample );
 
 		return soundSource;
 	}

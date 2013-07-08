@@ -19,7 +19,7 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem* _soundSystem );
 
 	public:
-		void play() override;
+		bool play() override;
 		void pause() override;
 		void stop() override;
 		bool isPlaying() const override;
@@ -27,17 +27,17 @@ namespace Menge
 		void setVolume( float _volume ) override;
 		float getVolume() const override;
 
-		void setPosition( float _x, float _y, float _z ) override;
-		const float * getPosition() const override;
+		void setPosition( const mt::vec3f & _pos ) override;
+		const mt::vec3f & getPosition() const override;
 
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
 
 		float getLengthMs() const override;
 		float getPosMs() const override;
-		void setPosMs( float _posMs ) override;
+		bool setPosMs( float _posMs ) override;
 
-		void loadBuffer( SoundBufferInterface* _soundBuffer ) override;
+		void setSoundBuffer( SoundBufferInterface* _soundBuffer ) override;
 		SoundBufferInterface* getSoundBuffer() const override;
 
 	public:
@@ -52,7 +52,7 @@ namespace Menge
         
         MarmaladeSoundSystem * m_soundSystem;
 
-		float m_position[3];
+        mt::vec3f m_position;
 		float m_volume;
 		void apply_( ALuint _source );
 

@@ -61,7 +61,7 @@ namespace Menge
 		virtual float getPosMs() const = 0;
 		virtual bool setPosMs( float _posMs ) = 0;
 
-		virtual void setBuffer( SoundBufferInterface* _soundBuffer ) = 0;
+		virtual void setSoundBuffer( SoundBufferInterface* _soundBuffer ) = 0;
 		virtual SoundBufferInterface* getSoundBuffer() const = 0;
 	};
 

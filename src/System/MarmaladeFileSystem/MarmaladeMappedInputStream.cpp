@@ -89,7 +89,7 @@ namespace Menge
         return size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeMappedInputStream::time( time_t & _time ) const
+    bool MarmaladeMappedInputStream::time( uint64 & _time ) const
     {
         if( m_inputStream.time( _time ) == false )
         {

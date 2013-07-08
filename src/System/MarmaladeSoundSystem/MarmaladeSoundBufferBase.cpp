@@ -25,7 +25,7 @@ namespace Menge
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
-		m_time_total = dataInfo->time_total_secs;
+		m_time_total = dataInfo->length;
 		if( m_channels == 1 )
 		{
 			m_format = AL_FORMAT_MONO16;

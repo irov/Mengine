@@ -38,24 +38,26 @@ namespace Menge
         m_soundSystem = _soundSystem;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::play()
+	bool MarmaladeSoundSource::play()
 	{
 		if( m_playing == true || m_soundBuffer == NULL )
 		{
-			return;
+			return true;
 		}
 
 		m_sourceId = m_soundSystem->genSourceId();
 
 		if( m_sourceId == 0 )
 		{
-			return;
+			return false;
 		}
 
 		this->apply_( m_sourceId );
 		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
 	
 		m_playing = true;
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::pause()
@@ -134,22 +136,20 @@ namespace Menge
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setPosition( float _x, float _y, float _z )
+	void MarmaladeSoundSource::setPosition( const mt::vec3f & _pos )
 	{
-		m_position[0] = _x;
-		m_position[1] = _y;
-		m_position[2] = _z;
+		m_position = _pos;
 
 		if( m_playing == true && m_sourceId != 0 )
 		{
-			alSourcefv( m_sourceId, AL_POSITION, &(m_position[0]) );
+			alSourcefv( m_sourceId, AL_POSITION, m_position.buff() );
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const float * MarmaladeSoundSource::getPosition() const 
+	const mt::vec3f & MarmaladeSoundSource::getPosition() const 
 	{
-		return &(m_position[0]);
+		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::setLoop( bool _loop )
@@ -206,12 +206,14 @@ namespace Menge
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setPosMs( float _posMs )
+	bool MarmaladeSoundSource::setPosMs( float _posMs )
 	{
         m_timing = _posMs * 0.001f;	
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::loadBuffer( SoundBufferInterface* _soundBuffer )
+	void MarmaladeSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		this->unloadBuffer_();
 

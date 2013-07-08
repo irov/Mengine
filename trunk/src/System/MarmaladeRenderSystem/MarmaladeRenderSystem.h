@@ -2,6 +2,8 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#   include "Config/String.h"
+
 #   include "MarmaladeTexture.h"
 
 #	include "Utils/Core/BinaryVector.h"
@@ -133,7 +135,12 @@ namespace Menge
 			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
         void setTextureStageTexCoordIndex( size_t _stage, size_t _index ) override;
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
-		// create texture
+		
+        RenderShaderInterface * createShader( const void * _code, size_t _len ) override;
+        void setShader( RenderShaderInterface * _shader ) override;
+        
+        
+        // create texture
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )

@@ -816,6 +816,15 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
+    RenderShaderInterface * MarmaladeRenderSystem::createShader( const void * _code, size_t _len )
+    {
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeRenderSystem::setShader( RenderShaderInterface * _shader )
+    {
+
+    }
     //////////////////////////////////////////////////////////////////////////
     PixelFormat MarmaladeRenderSystem::findFormatFromChannels_( size_t & _channels, PixelFormat _format ) const
     {

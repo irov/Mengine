@@ -85,6 +85,11 @@ namespace Menge
 
         bool isDevelopmentMode() const override;
 
+    public:
+        size_t getMemoryUsage() const override;
+        void * checkpointMemory() const override;
+        size_t diffMemory( void * _checkpoint ) const override;
+
     protected:
         bool initializeStringizeService_();
         bool initializeApplicationService_();

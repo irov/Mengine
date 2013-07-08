@@ -5,8 +5,6 @@
 #	include "Config/String.h"
 #   include "Core/FilePath.h"
 
-#   include "Config/String.h"
-
 #   ifndef MAX_PATH
 #   define MAX_PATH 260
 #   endif

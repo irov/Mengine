@@ -45,7 +45,7 @@ namespace Menge
 		const RenderMaterial * material;
 
 		size_t textureStages;
-		RenderTextureInterfacePtr textures[MENGE_MAX_TEXTURE_STAGES];
+		RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
 
 		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;

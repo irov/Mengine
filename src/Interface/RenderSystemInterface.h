@@ -430,6 +430,12 @@ namespace Menge
         size_t textureCount;
     };
     //////////////////////////////////////////////////////////////////////////
+    class VisitorRenderTextureInterface
+    {
+    public:
+        virtual void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class RenderTextureServiceInterface
         : public ServiceInterface
     {
@@ -460,6 +466,9 @@ namespace Menge
 
     public:
         virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const ConstString & _codecName, const FilePath & _filename ) = 0;
+
+    public:
+        virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;
 
     public:
         virtual const RenderTextureDebugInfo & getDebugInfo() = 0;

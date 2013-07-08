@@ -385,11 +385,11 @@ namespace Menge
 
         for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
         {
-            RenderTextureInterfacePtr texture = _renderObject->textures[stageId];
+            RenderTextureInterface * texture = _renderObject->textures[stageId];
 
             if( texture == nullptr )
             {
-                RenderTextureInterfacePtr nullTexture = m_nullTexture;
+                RenderTextureInterface * nullTexture = m_nullTexture.get();
 
                 texture = nullTexture;
             }
@@ -868,11 +868,11 @@ namespace Menge
         {
             if( _textures == nullptr )
             {
-                ro.textures[i] = 0;
+                ro.textures[i] = nullptr;
             }
             else
             {
-                ro.textures[i] = _textures[i];
+                ro.textures[i] = _textures[i].get();
             }		 
         }
 

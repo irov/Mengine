@@ -50,6 +50,9 @@ namespace Menge
         bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const ConstString & _codecName, const FilePath & _filename ) override;
 
     public:
+        void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;
+
+    public:
         const RenderTextureDebugInfo & getDebugInfo() override;
 
     protected:

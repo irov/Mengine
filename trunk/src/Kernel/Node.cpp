@@ -208,12 +208,9 @@ namespace Menge
 	{
         this->setShallowGrave();
 
-		//if( this->isActivate() == true )
-		//{
-		//	this->deactivate();
-		//}
+        this->deactivate();
 
-        this->release();
+        //this->release();
 
 		m_enable = false;
 

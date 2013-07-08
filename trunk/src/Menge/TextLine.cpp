@@ -64,7 +64,7 @@ namespace Menge
 				continue;
 			}
 
-			const RenderTextureInterfacePtr & image = _resource->getTexture();
+			const RenderTextureInterfacePtr & image = _resource->getTextureFont();
 					
 			CharData charData;
 

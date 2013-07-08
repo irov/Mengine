@@ -54,6 +54,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::finalize()
     {        
+        m_textures.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const

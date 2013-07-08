@@ -102,7 +102,10 @@ namespace Menge
 
 		if( size == 0 )
 		{
-			return true;
+            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::importBin_ invalid size (empty)"
+                );
+
+			return false;
 		}
 
         TBlobject::value_type header_buff[Metabuf::header_size];
@@ -117,7 +120,7 @@ namespace Menge
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid version read %d need %d"
+                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invalid version read %d need %d"
                     , readVersion
                     , needVersion
                     );
@@ -277,10 +280,10 @@ namespace Menge
 			return false;
 		}
 
-		time_t time_xml;
+		uint64 time_xml;
 		file_xml->time( time_xml );
 
-		time_t time_bin;
+		uint64 time_bin;
 		file_bin->time( time_bin );
 
         file_xml = nullptr;

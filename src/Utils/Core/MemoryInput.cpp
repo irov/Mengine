@@ -91,7 +91,7 @@ namespace Menge
 		return distance;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MemoryInput::time( time_t & _time ) const
+	bool MemoryInput::time( uint64 & _time ) const
 	{
         (void)_time;
 

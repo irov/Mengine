@@ -176,7 +176,7 @@ namespace Menge
                 return false;
             }
 
-            time_t fileTimeInput;
+            uint64 fileTimeInput;
             oldFile->time( fileTimeInput );
 
             oldFile = nullptr;
@@ -194,7 +194,7 @@ namespace Menge
                 return false;
             }
 
-            time_t fileTimeOutput;
+            uint64 fileTimeOutput;
             newFile->time( fileTimeOutput );
 
             newFile = nullptr;

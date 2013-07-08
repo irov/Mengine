@@ -17,3 +17,6 @@
 #   define PUGIXML_NO_XPATH
 
 #	define override
+
+typedef void * nullptr_t;
+#   define nullptr 0

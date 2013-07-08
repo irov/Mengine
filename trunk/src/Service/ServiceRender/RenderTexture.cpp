@@ -19,6 +19,7 @@ namespace Menge
 	RenderTexture::~RenderTexture()
 	{
         m_listener->onRenderTextureRelease( this );
+
         m_image = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////

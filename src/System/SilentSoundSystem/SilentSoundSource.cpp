@@ -176,7 +176,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::setBuffer( SoundBufferInterface* _soundBuffer )
+	void SilentSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		this->unloadBuffer_();
 

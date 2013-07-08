@@ -247,7 +247,7 @@ namespace Menge
 		return ((((time_t) a2) << 16) << 16) + (a1 << 16) + a0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32MappedInputStream::time( time_t & _time ) const
+	bool Win32MappedInputStream::time( uint64 & _time ) const
 	{
 		FILETIME creation;
 		FILETIME access;
@@ -264,7 +264,9 @@ namespace Menge
 			return false;
 		}
 
-		_time = s_FileTimeToUnixTime( &write );
+        time_t time = s_FileTimeToUnixTime( &write );
+
+		_time = (uint64)time;
 
 		return true;
 	}

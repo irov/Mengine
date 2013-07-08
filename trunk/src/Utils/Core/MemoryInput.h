@@ -22,7 +22,7 @@ namespace Menge
         size_t size() const override;
 
     public:
-		bool time( time_t & _time ) const override;
+		bool time( uint64 & _time ) const override;
 
 	protected:
 		unsigned char* m_data;

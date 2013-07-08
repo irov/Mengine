@@ -6,6 +6,7 @@
 #   include "Logger/Logger.h"
 
 #   include <stdio.h>
+#   include <string.h>
 
 namespace Menge
 {

@@ -81,7 +81,7 @@ namespace Menge
 		return distance;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MemoryProxyInput::time( time_t & _time ) const
+	bool MemoryProxyInput::time( uint64 & _time ) const
 	{
         (void)_time;
 

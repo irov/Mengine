@@ -20,7 +20,6 @@ src
 	PhysicSystem2DInterface.h
 	InputSystemInterface.h
 	MengineInterface.h
-	HardwareBufferInterface.h
 	SoundSystemInterface.h
 	TextureInterface.h
 	ThreadSystemInterface.h

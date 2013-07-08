@@ -12,12 +12,20 @@
 
 extern "C" // only required if using g++
 {
-    //////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+	//////////////////////////////////////////////////////////////////////////
+    bool initPluginMengeHotspotImageConverter( Menge::PluginInterface ** _plugin )
     {
         *_plugin = new Menge::HotspotImageConverterPlugin();
 
         return true;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+#ifdef MENGE_COMPILER_MSVC
+	__declspec(dllexport) 
+#endif
+	bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+    {
+        return initPluginMengeHotspotImageConverter( _plugin );
     }
 }
 //////////////////////////////////////////////////////////////////////////

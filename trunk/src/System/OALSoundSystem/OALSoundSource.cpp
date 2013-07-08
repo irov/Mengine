@@ -239,7 +239,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::setBuffer( SoundBufferInterface* _soundBuffer )
+	void OALSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		this->unloadBuffer_();
 

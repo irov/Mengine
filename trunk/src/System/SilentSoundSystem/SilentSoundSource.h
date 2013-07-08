@@ -36,7 +36,7 @@ namespace Menge
 		float getPosMs() const override;
 		bool setPosMs( float _posMs ) override;
 
-		void setBuffer( SoundBufferInterface* _soundBuffer ) override;
+		void setSoundBuffer( SoundBufferInterface* _soundBuffer ) override;
 		SoundBufferInterface* getSoundBuffer() const override;
 
 	public:

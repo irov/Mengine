@@ -2,6 +2,7 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#	include "Config/String.h"
 #   include "Core/FilePath.h"
 
 #   ifndef MAX_PATH

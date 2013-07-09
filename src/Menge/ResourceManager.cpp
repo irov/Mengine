@@ -40,6 +40,7 @@ namespace Menge
 
             ResourceReference * resource = entry.resource;
 
+#   ifdef MENGE_MASTER_RELEASE
             size_t refcount = resource->countReference();
 
             while( refcount != 0 )
@@ -51,6 +52,7 @@ namespace Menge
 
                 refcount = resource->decrementReference();
             }
+#   endif
 
             resource->destroy();
         }

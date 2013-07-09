@@ -214,7 +214,7 @@ namespace Menge
         fileService->initialize();
         
         PluginInterface * plugin_hit = PLUGIN_SERVICE(serviceProvider)
-            ->loadPlugin( "MengeXmlCodecPlugin.dll" );
+            ->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
         ConstString dev = Helper::stringizeString(serviceProvider, "dev");
 

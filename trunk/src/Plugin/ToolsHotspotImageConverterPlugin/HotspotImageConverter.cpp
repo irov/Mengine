@@ -224,7 +224,7 @@ namespace Menge
         plugin_image_codec->initialize( serviceProvider );
 
         PluginInterface * plugin_hit = PLUGIN_SERVICE(serviceProvider)
-            ->loadPlugin( "MengeHotspotImageConverterPlugin.dll" );
+            ->loadPlugin( L"MengeHotspotImageConverterPlugin.dll" );
 
         if( FILE_SERVICE(serviceProvider)
             ->mountFileGroup( Helper::stringizeString(serviceProvider, ""), ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )

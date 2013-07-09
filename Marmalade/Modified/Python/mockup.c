@@ -4,12 +4,14 @@ extern "C" {
 
 #   include "Python.h"
 
+#if defined _MSC_VER
     int _PyVerify_fd(int fd)
     {
         (void)fd;
 
         return 1;
     }
+#   endif
 
 #define IS_LITTLE_ENDIAN (int)*(unsigned char*)&one
     PyObject *
@@ -22,7 +24,7 @@ extern "C" {
     }
 
     PyObject *
-        _PyLong_FromSize_t(Py_ssize_t ival)
+        _PyLong_FromSize_t(size_t ival)
     {
         return PyLong_FromSsize_t(ival);
     }

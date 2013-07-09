@@ -1917,13 +1917,13 @@ namespace Menge
 
         if( m_intervalEnd > 0.f )
         {
-            frameCount = (size_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f);
+            frameCount = (size_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f) - 1;
         }
         else
         {   
             if( loopSegment.y > 0.f )
             {
-                frameCount = (size_t)(loopSegment.y / frameDuration + 0.5f);
+                frameCount = (size_t)(loopSegment.y / frameDuration + 0.5f) - 1;
             }
         }
         

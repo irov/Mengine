@@ -29,7 +29,7 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::addObserver( const String & _id, Observer * _observer )
+	void NotificationService::addObserver( size_t _id, Observer * _observer )
 	{
 		TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
@@ -45,7 +45,7 @@ namespace Menge
 		observers.push_back( _observer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::removeObserver( const String & _id, Observer * _observer )
+	void NotificationService::removeObserver( size_t _id, Observer * _observer )
 	{
 		TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
@@ -70,7 +70,7 @@ namespace Menge
 		observers.erase( it_observer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::visitObservers( const String & _id, VisitorObserver * _visitor )
+	void NotificationService::visitObservers( size_t _id, VisitorObserver * _visitor )
 	{
 		TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
@@ -96,10 +96,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::invalidObserver_( const String & _id )
+	void NotificationService::invalidObserver_( size_t _id )
 	{
 		LOGGER_ERROR(m_serviceProvider)("NotificationService: invalid observer %d"
-			, _id.c_str()
+			, _id
 			);
 	}
 }

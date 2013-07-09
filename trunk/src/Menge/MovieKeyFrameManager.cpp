@@ -90,7 +90,7 @@ namespace Menge
 
             size_t layerIndex = meta_frames2d.get_LayerIndex();
             
-            size_t count = (size_t)-1;
+            size_t count = 0;
             meta_frames2d.get_Count( count );
             
             bool immutable = false;

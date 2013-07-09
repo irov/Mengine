@@ -10,7 +10,9 @@
 #   include "Interface/PhysicSystem2DInterface.h"
 
 #   include "Interface/StringizeInterface.h"
-#   include "Interface/NotificationServiceInterace.h"
+
+#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificatorInterface.h"
 
 #   include "Interface/MousePickerSystemInterface.h"
 
@@ -894,7 +896,7 @@ namespace Menge
         m_game->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
-            ->notify( "CHANGE_WINDOW_RESOLUTION", m_fullscreen, m_currentResolution );
+            ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_fullscreen, m_currentResolution );
 			
 		return true;
 	}
@@ -1654,7 +1656,7 @@ namespace Menge
 		}
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
-			->notify( "CHANGE_WINDOW_RESOLUTION", m_fullscreen, m_currentResolution );
+			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_fullscreen, m_currentResolution );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void Application::screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect )

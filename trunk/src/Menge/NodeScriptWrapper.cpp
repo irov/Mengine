@@ -2027,7 +2027,7 @@ namespace Menge
                     {
                         for( size_t
                             it_frame = 0,
-                            it_frame_end = _frames.count;
+                            it_frame_end = _frames.frames.size();
                         it_frame != it_frame_end;
                         ++it_frame )
                         {

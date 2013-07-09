@@ -1,7 +1,8 @@
 #	include "InputEngine.h"
 #	include "Application.h"
 
-#	include "NotificationService.h"
+#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificatorInterface.h"
 
 #   include <algorithm>
 
@@ -37,8 +38,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize()
 	{
-		m_notifyChangeWindowResolution = 
-            NOTIFICATION_SERVICE(m_serviceProvider)->addObserverMethod( "CHANGE_WINDOW_RESOLUTION", this, &InputEngine::notifyChangeWindowResolution );
+		m_notifyChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
+            ->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &InputEngine::notifyChangeWindowResolution );
 
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), 0x00 );
 
@@ -59,7 +60,7 @@ namespace Menge
 	void InputEngine::finalize()
 	{
 		NOTIFICATION_SERVICE(m_serviceProvider)
-			->removeObserver( "CHANGE_WINDOW_RESOLUTION", m_notifyChangeWindowResolution );
+			->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_notifyChangeWindowResolution );
 
 		m_notifyChangeWindowResolution = 0;
 

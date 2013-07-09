@@ -2,8 +2,10 @@
 
 #   include "Interface/ServiceInterface.h"
 
-#   include "Interface/LogSystemInterface.h"
 #   include "Interface/CodecInterface.h"
+
+#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificatorInterface.h"
 
 #   include "Logger/Logger.h"
 #   include "Core/File.h"
@@ -12,7 +14,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference::ResourceReference()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -78,12 +80,20 @@ namespace Menge
         //    , this->getCategory().c_str()
         //    );
 
+#   ifndef MENGE_MASTER_RELEASE
+        NOTIFICATION_SERVICE(m_serviceProvider)
+            ->notify( NOTIFICATOR_RESOURCE_COMPILE, this );
+#   endif
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::_decrementZero()
 	{
 		this->release();
+
+        NOTIFICATION_SERVICE(m_serviceProvider)
+            ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
 	}
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceReference::getCodec_( const FilePath & _filename ) const

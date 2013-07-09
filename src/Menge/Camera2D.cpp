@@ -5,7 +5,8 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#	include "NotificationService.h"
+#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificatorInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -24,7 +25,7 @@ namespace	Menge
         Node::_activate();
 
 		m_notifyChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
-			->addObserverMethod( "CHANGE_WINDOW_RESOLUTION", this, &Camera2D::notifyChangeWindowResolution );
+			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &Camera2D::notifyChangeWindowResolution );
 
 		return true;
 	}
@@ -34,7 +35,7 @@ namespace	Menge
         Node::_deactivate();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
-			->removeObserver( "CHANGE_WINDOW_RESOLUTION", m_notifyChangeWindowResolution );
+			->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_notifyChangeWindowResolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_invalidateWorldMatrix()

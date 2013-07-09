@@ -2,8 +2,9 @@
 
 #	include "Interface/NotificationServiceInterace.h"
 
+#   include "Core/BinaryVector.h"
+
 #	include <vector>
-#	include <map>
 
 namespace Menge
 {
@@ -21,20 +22,20 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		void addObserver( const String & _id, Observer * _observer ) override;
-		void removeObserver( const String & _id, Observer * _observer ) override;
+		void addObserver( size_t _id, Observer * _observer ) override;
+		void removeObserver( size_t _id, Observer * _observer ) override;
 
-	protected:	
-		void visitObservers( const String & _id, VisitorObserver * _visitor ) override;
+	protected:
+		void visitObservers( size_t _id, VisitorObserver * _visitor ) override;
 		
 	protected:
-		void invalidObserver_( const String & _id );
+		void invalidObserver_( size_t _id );
 
 	protected:		
         ServiceProviderInterface * m_serviceProvider;
 
 		typedef std::vector<Observer *> TVectorObservers;
-		typedef std::map<String, TVectorObservers> TMapObservers;
-		TMapObservers m_mapObserves;		
-	};	
+		typedef BinaryVector<size_t, TVectorObservers> TMapObservers;
+		TMapObservers m_mapObserves;
+	};
 }

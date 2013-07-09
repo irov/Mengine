@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "Config/String.h"
 
 #	include "Interface/ServiceInterface.h"
 
@@ -232,15 +231,15 @@ namespace Menge
         SERVICE_DECLARE("NotificationService")
 
 	public:
-		virtual void addObserver( const String & _id, Observer * _observer ) = 0;
-		virtual void removeObserver( const String & _id, Observer * _observer ) = 0;
+		virtual void addObserver( size_t _id, Observer * _observer ) = 0;
+		virtual void removeObserver( size_t _id, Observer * _observer ) = 0;
 
 	protected:		
-		virtual void visitObservers( const String & _id, VisitorObserver * _visitor ) = 0;
+		virtual void visitObservers( size_t _id, VisitorObserver * _visitor ) = 0;
 		
 	public:
 		template<class C, class M>
-		inline Observer * addObserverMethod( const String & _id, C * _self, M _method )
+		inline Observer * addObserverMethod( size_t _id, C * _self, M _method )
 		{
 			Observer * observer = 
 				new GeneratorObserverMethod<M>(_self, _method);
@@ -251,7 +250,7 @@ namespace Menge
 		}
 
 	public:
-		inline void notify( const String & _id )
+		inline void notify( size_t _id )
 		{
 			VisitorObserverCall0 caller;
 
@@ -259,7 +258,7 @@ namespace Menge
 		}
 		
 		template<class P0>
-		inline void notify( const String & _id, P0 _p0 )
+		inline void notify( size_t _id, P0 _p0 )
 		{
 			VisitorObserverCall1<P0> caller(_p0);
 
@@ -267,7 +266,7 @@ namespace Menge
 		}
 
 		template<class P0, class P1>
-		inline void notify( const String & _id, P0 _p0, P1 _p1 )
+		inline void notify( size_t _id, P0 _p0, P1 _p1 )
 		{
 			VisitorObserverCall2<P0, P1> caller(_p0, _p1);
 

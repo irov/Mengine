@@ -28,6 +28,9 @@
 #   include "Interface/EventInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
+#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificatorInterface.h"
+
 #   include "MousePickerSystem.h"
 #   include "GlobalHandleSystem.h"
 #   include "ScheduleManager.h"
@@ -196,6 +199,62 @@ namespace Menge
 			pybind::decref( cb );
 		}
 	}
+    namespace
+    {
+        class PlayerResourceUselessCompile
+        {
+        public:
+            PlayerResourceUselessCompile( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
+                : m_serviceProvider(_serviceProvider)
+                , m_name(_name)
+            {
+                m_observerResourceCompile = NOTIFICATION_SERVICE(m_serviceProvider)
+                    ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
+
+                m_observerResourceRelease = NOTIFICATION_SERVICE(m_serviceProvider)
+                    ->addObserverMethod( NOTIFICATOR_RESOURCE_RELEASE, this, &PlayerResourceUselessCompile::resourceRelease );
+            }
+
+            ~PlayerResourceUselessCompile()
+            {
+                NOTIFICATION_SERVICE(m_serviceProvider)
+                    ->removeObserver( NOTIFICATOR_RESOURCE_COMPILE, m_observerResourceCompile );
+
+                NOTIFICATION_SERVICE(m_serviceProvider)
+                    ->removeObserver( NOTIFICATOR_RESOURCE_RELEASE, m_observerResourceRelease );
+            }
+
+        protected:
+            void resourceCompile( ResourceReference * _resource )
+            {
+                m_resources.push_back( _resource );
+            }
+
+            void resourceRelease( ResourceReference * _resource )
+            {
+                TVectorResourceDesc::iterator it_remove =
+                    std::remove( m_resources.begin(), m_resources.end(), _resource );
+                
+                LOGGER_ERROR(m_serviceProvider)("Scene %s Useless Compile %s:%s"
+                    , m_name.c_str()
+                    , _resource->getCategory().c_str()
+                    , _resource->getName().c_str()
+                    );
+
+                m_resources.erase( it_remove );
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+            ConstString m_name;
+
+            Observer * m_observerResourceCompile;
+            Observer * m_observerResourceRelease;
+
+            typedef std::vector<ResourceReference *> TVectorResourceDesc;
+            TVectorResourceDesc m_resources;
+        };
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Player::updateSwitchScene_()
 	{
@@ -232,7 +291,7 @@ namespace Menge
 		//m_globalHandleSystem->clear();
 
 		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == true )
-		{
+		{            
             oldScene->destroy();
 		}
 
@@ -281,7 +340,12 @@ namespace Menge
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
 
-        m_scene->enable();
+        {
+#   ifndef MENGE_MASTER_RELEASE
+            PlayerResourceUselessCompile unlessCompile(m_serviceProvider, m_switchSceneName );
+#   endif
+            m_scene->enable();
+        }
 
         if( m_arrow != nullptr )
         {

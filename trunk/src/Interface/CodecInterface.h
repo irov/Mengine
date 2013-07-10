@@ -6,10 +6,12 @@
 #	include "Interface/StreamInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
-#   include "Utils/Factory/FactorablePtr.h"
-#   include "Utils/Core/IntrusivePtr.h"
+#   include "Factory/FactorablePtr.h"
 
-#	include "Utils/Core/FilePath.h"
+#	include "Core/FilePath.h"
+
+#   include "stdex/intrusive_ptr.h"
+#   include "stdex/intrusive_algorithm.h"
 
 namespace Menge
 {
@@ -47,7 +49,7 @@ namespace Menge
 		virtual unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) = 0;
 	};
 
-    typedef IntrusivePtr<DecoderInterface> DecoderInterfacePtr;
+    typedef stdex::intrusive_ptr<DecoderInterface> DecoderInterfacePtr;
 
 	class DecoderFactoryInterface
 		: public CodecFactoryInterface
@@ -73,7 +75,7 @@ namespace Menge
         virtual OutputStreamInterfacePtr getStream() const = 0;
 	};
 
-    typedef IntrusivePtr<EncoderInterface> EncoderInterfacePtr;
+    typedef stdex::intrusive_ptr<EncoderInterface> EncoderInterfacePtr;
 
 	class EncoderFactoryInterface
 		: public CodecFactoryInterface
@@ -108,11 +110,7 @@ namespace Menge
         {
             DecoderInterfacePtr decoder = this->createDecoder( _type, _stream );
 
-#   ifdef _DEBUG
-            T t = intrusive_dynamic_cast<T>(decoder);
-#   else
-            T t = intrusive_static_cast<T>(decoder);
-#   endif
+            T t = stdex::intrusive_static_cast<T>(decoder);
 
             return t;
         }
@@ -126,10 +124,13 @@ namespace Menge
             EncoderInterfacePtr encoder = this->createEncoder( _type, _stream );
 
 #   ifdef _DEBUG
-            T t = intrusive_dynamic_cast<T>(encoder);
-#   else
-            T t = intrusive_static_cast<T>(encoder);
+            if( stdex::intrusive_dynamic_cast<T>(encoder) == nullptr )
+            {
+                return nullptr;
+            }
 #   endif
+
+            T t = stdex::intrusive_static_cast<T>(encoder);
 
             return t;
         }

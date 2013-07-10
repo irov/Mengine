@@ -67,12 +67,12 @@ namespace Menge
 		virtual const ImageCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
 
-    typedef IntrusivePtr<ImageDecoderInterface> ImageDecoderInterfacePtr;
+    typedef stdex::intrusive_ptr<ImageDecoderInterface> ImageDecoderInterfacePtr;
 
 	class ImageEncoderInterface
 		: public EncoderInterface
 	{
 	};
 
-    typedef IntrusivePtr<ImageEncoderInterface> ImageEncoderInterfacePtr;
+    typedef stdex::intrusive_ptr<ImageEncoderInterface> ImageEncoderInterfacePtr;
 }

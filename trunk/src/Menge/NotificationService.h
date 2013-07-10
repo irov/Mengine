@@ -2,7 +2,7 @@
 
 #	include "Interface/NotificationServiceInterace.h"
 
-#   include "Core/BinaryVector.h"
+#   include "stdex/binary_vector.h"
 
 #	include <vector>
 
@@ -35,7 +35,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		typedef std::vector<Observer *> TVectorObservers;
-		typedef BinaryVector<size_t, TVectorObservers> TMapObservers;
+		typedef stdex::binary_vector<size_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;
 	};
 }

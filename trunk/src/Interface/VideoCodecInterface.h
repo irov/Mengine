@@ -53,5 +53,5 @@ namespace Menge
         virtual bool fillFrame( unsigned char* _buffer, unsigned int _pitch ) = 0;
 	};
 
-    typedef IntrusivePtr<VideoDecoderInterface> VideoDecoderInterfacePtr;
+    typedef stdex::intrusive_ptr<VideoDecoderInterface> VideoDecoderInterfacePtr;
 }

@@ -1,6 +1,6 @@
 #   pragma once
 
-#   include "Core/ConstStringHolder.h"
+#   include "stdex/const_string_holder.h"
 
 #   include <memory.h>
 
@@ -8,7 +8,8 @@ namespace Menge
 {
     template<size_t I_Size>
     class ConstStringHolderStringSize
-        : public ConstStringHolder
+        : public stdex::const_string_holder
+        , public Factorable
     {
     public:
         void setValue( const char * _value, size_t _size )
@@ -23,6 +24,12 @@ namespace Menge
         void _releaseString() override
         {
             //Empty
+        }
+
+    protected:
+        void _destroyString() override
+        {
+            this->destroy();
         }
 
     protected:			

@@ -53,7 +53,7 @@ namespace Menge
     {
         (void)_filename;
 
-        MemoryProxyInput * memory = intrusive_get<MemoryProxyInput>(_stream);
+        MemoryProxyInput * memory = stdex::intrusive_get<MemoryProxyInput>(_stream);
 
         unsigned char* pMem = static_cast<unsigned char*>(m_memory);
 

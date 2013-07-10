@@ -204,9 +204,8 @@ namespace Menge
         class PlayerResourceUselessCompile
         {
         public:
-            PlayerResourceUselessCompile( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
+            PlayerResourceUselessCompile( ServiceProviderInterface * _serviceProvider )
                 : m_serviceProvider(_serviceProvider)
-                , m_name(_name)
             {
                 m_observerResourceCompile = NOTIFICATION_SERVICE(m_serviceProvider)
                     ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
@@ -233,10 +232,14 @@ namespace Menge
             void resourceRelease( ResourceReference * _resource )
             {
                 TVectorResourceDesc::iterator it_remove =
-                    std::remove( m_resources.begin(), m_resources.end(), _resource );
+                    std::find( m_resources.begin(), m_resources.end(), _resource );
+
+                if( it_remove == m_resources.end() )
+                {
+                    return;
+                }
                 
-                LOGGER_ERROR(m_serviceProvider)("Scene %s Useless Compile %s:%s"
-                    , m_name.c_str()
+                LOGGER_ERROR(m_serviceProvider)("Useless Compile %s:%s"
                     , _resource->getCategory().c_str()
                     , _resource->getName().c_str()
                     );
@@ -246,7 +249,6 @@ namespace Menge
 
         protected:
             ServiceProviderInterface * m_serviceProvider;
-            ConstString m_name;
 
             Observer * m_observerResourceCompile;
             Observer * m_observerResourceRelease;
@@ -342,7 +344,7 @@ namespace Menge
 
         {
 #   ifndef MENGE_MASTER_RELEASE
-            PlayerResourceUselessCompile unlessCompile(m_serviceProvider, m_switchSceneName );
+            PlayerResourceUselessCompile unlessCompile(m_serviceProvider);
 #   endif
             m_scene->enable();
         }

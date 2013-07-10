@@ -6,8 +6,6 @@ src
     CRC32.h
     CRC32.cpp
     
-    Array.h
-    
     Polygon.h
     Polygon.cpp    
     
@@ -19,11 +17,7 @@ src
 
 	ColourValue.h
 	ColourValue.cpp
-	Holder.h
-	Pool.h
-    
-    BinaryVector.h
-    
+        
     GlyphChar.h
     
     Ini.h
@@ -57,20 +51,6 @@ src
 	Rect.cpp
 	
     ConstString.h
-	ConstString.cpp
-    
-    ConstStringHolder.h
-    ConstStringHolder.cpp
-    
-    ConstStringHolderNone.h
-    ConstStringHolderNone.cpp
-    
-	IntrusivePtr.h
-	IntrusiveLinked.h
-	IntrusiveList.h
-	IntrusiveSlug.h
-	IntrusiveAlgorithm.h    
-    
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

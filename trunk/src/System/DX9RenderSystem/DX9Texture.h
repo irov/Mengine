@@ -41,5 +41,5 @@ namespace Menge
         PixelFormat m_hwPixelFormat;        
 	};
 
-    typedef IntrusivePtr<DX9Texture> DX9TexturePtr;
+    typedef stdex::intrusive_ptr<DX9Texture> DX9TexturePtr;
 }	// namespace Menge

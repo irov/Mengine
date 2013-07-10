@@ -1,6 +1,8 @@
 #	pragma once
 
-#   include "Utils/Factory/Factorable.h"
+#   include "Factory/Factorable.h"
+
+#   include "stdex/intrusive_ptr.h"
 
 #   include <stddef.h>
 

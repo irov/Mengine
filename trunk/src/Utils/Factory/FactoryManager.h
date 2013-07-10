@@ -3,7 +3,8 @@
 #   include "Interface/ServiceInterface.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -57,7 +58,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef BinaryVector<ConstString, Factory *> TMapFactory;
+        typedef stdex::binary_vector<ConstString, Factory *> TMapFactory;
 		TMapFactory m_factories;
 	};
 }

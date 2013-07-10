@@ -1,6 +1,8 @@
 #   pragma once
 
-#   include "Core/ConstStringHolder.h"
+#   include "stdex/const_string_holder.h"
+
+#   include "Factory/Factorable.h"
 
 #   include "Config/Typedef.h"
 #   include "Config/String.h"
@@ -8,7 +10,8 @@
 namespace Menge
 {
     class ConstStringHolderStringSTL
-        : public ConstStringHolder
+        : public stdex::const_string_holder
+        , public Factorable
     {
     public:
         ConstStringHolderStringSTL();
@@ -18,6 +21,7 @@ namespace Menge
 
     protected:
         void _releaseString() override;
+        void _destroyString() override;
 
     protected:
         String m_value;

@@ -2,7 +2,7 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "Core/BinaryVector.h"
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -32,7 +32,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef BinaryVector<ConstString, RenderMaterialGroup *> TMapMaterialGroup;
+        typedef stdex::binary_vector<ConstString, RenderMaterialGroup *> TMapMaterialGroup;
         TMapMaterialGroup m_mapMaterialGroup;
     };
 }

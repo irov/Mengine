@@ -5,7 +5,8 @@
 #	include "Config/Typedef.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 #	include "pybind/types.hpp"
 
@@ -60,7 +61,7 @@ namespace Menge
             PyObject * cb;
         };
 
-		typedef BinaryVector<ConstString, Setting> TMapSettings;
+		typedef stdex::binary_vector<ConstString, Setting> TMapSettings;
 		TMapSettings m_settings;
 	};
 }	// namespace Menge

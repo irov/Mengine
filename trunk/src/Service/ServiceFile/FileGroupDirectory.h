@@ -2,8 +2,6 @@
 
 #   include "Interface/FileSystemInterface.h"
 
-#	include "Core/Pool.h"
-
 namespace Menge
 {
 	class FileSystemInterface;

@@ -27,7 +27,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool StringizeService::stringize( const char * _str, size_t _size, ConstString & _cstr )
 	{
-        ConstStringHolder * stringHolder = nullptr;
+        stdex::const_string_holder * stringHolder = nullptr;
         
         if( _size < 16 )
         {

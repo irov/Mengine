@@ -10,7 +10,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolderPythonString::~ConstStringHolderPythonString()
     {
-        if( m_value )
+        if( m_value != nullptr )
         {
             pybind::decref( m_value );
         }
@@ -32,5 +32,10 @@ namespace Menge
     {
         pybind::decref( m_value );
         m_value = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolderPythonString::_destroyString()
+    {
+        this->destroy();
     }
 }

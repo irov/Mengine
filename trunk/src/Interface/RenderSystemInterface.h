@@ -14,6 +14,8 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
+#   include "stdex/intrusive_ptr.h"
+
 #	include "Math/mat4.h"
 
 #   ifndef MENGE_MAX_TEXTURE_STAGES
@@ -380,7 +382,7 @@ namespace Menge
 		virtual void unlock() = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;
+    typedef stdex::intrusive_ptr<RenderImageInterface> RenderImageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class RenderTextureInterface;
     //////////////////////////////////////////////////////////////////////////
@@ -422,7 +424,7 @@ namespace Menge
 		virtual size_t getMemoryUse() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderTextureInterface> RenderTextureInterfacePtr;
+    typedef stdex::intrusive_ptr<RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     struct RenderTextureDebugInfo
     {

@@ -1,13 +1,16 @@
 #   pragma once
 
-#   include "Core/ConstStringHolder.h"
+#   include "Factory/Factorable.h"
+
+#   include "stdex/const_string_holder.h"
 
 #   include <pybind/pybind.hpp>
 
 namespace Menge
 {
     class ConstStringHolderPythonString
-        : public ConstStringHolder
+        : public stdex::const_string_holder
+        , public Factorable
     {
     public:
         ConstStringHolderPythonString();
@@ -18,6 +21,7 @@ namespace Menge
 
     protected:
         void _releaseString() override;
+        void _destroyString() override;
 
     protected:			
         PyObject * m_value;

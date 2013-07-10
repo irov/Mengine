@@ -1375,15 +1375,29 @@ namespace Menge
 		if( resHeight > dresHeight )
 		{
 			size_t new_witdh = static_cast<size_t>( float(resHeight) * aspect + 0.5f );
+            size_t new_height = dresHeight;
+
+            if( new_witdh > dresWidth )
+            {
+                new_witdh = dresWidth;
+                new_height = static_cast<size_t>( float(dresWidth) / aspect + 0.5f );
+            }
 
 			_windowResolution.setWidth( new_witdh );			
-			_windowResolution.setHeight( dresHeight );
+			_windowResolution.setHeight( new_height );
 		}
 		else if( resWidth > dresWidth )
         {
+            size_t new_witdh = dresWidth;
             size_t new_height = static_cast<size_t>( float(resWidth) / aspect + 0.5f );
 
-            _windowResolution.setWidth( dresWidth );
+            if( new_height > dresHeight )
+            {
+                new_witdh = static_cast<size_t>( float(dresHeight) * aspect + 0.5f );
+                new_height = dresHeight;
+            }
+
+            _windowResolution.setWidth( new_witdh );
             _windowResolution.setHeight( new_height );
         }
         else

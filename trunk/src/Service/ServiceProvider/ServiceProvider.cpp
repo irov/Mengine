@@ -35,6 +35,11 @@ namespace Menge
 
             if( desc.service != nullptr )
             {
+                if( strcmp( desc.name, _name ) == 0 )
+                {
+                    desc.service = _service;
+                }
+
                 continue;
             }
 

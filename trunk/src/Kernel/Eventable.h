@@ -5,9 +5,10 @@
 #	include "Config/Typedef.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
 
 #	include "Kernel/EventEnum.h"
+
+#   include "stdex/binary_vector.h"
 
 #	include "pybind/types.hpp"
 
@@ -34,7 +35,7 @@ namespace Menge
 		void removeEvent_( EEventName _event );
 
 	private:
-		typedef BinaryVector<EEventName, PyObject *> TMapEvent;
+		typedef stdex::binary_vector<EEventName, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;
 	};
 

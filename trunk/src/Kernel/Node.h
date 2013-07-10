@@ -18,8 +18,9 @@
 #	include "Factory/Factorable.h"
 
 #	include "Core/Viewport.h"
-#	include "Core/IntrusiveList.h"
-#	include "Core/IntrusiveSlug.h"
+
+#   include "stdex/intrusive_list.h"
+#   include "stdex/intrusive_slug.h"
 
 namespace Menge
 {	
@@ -42,11 +43,11 @@ namespace Menge
 
 	class Node;
 
-	typedef IntrusiveList<Node> TListNodeChild;
-	typedef IntrusiveSlug<Node> TSlugChild;
+    typedef stdex::intrusive_list<Node> TListNodeChild;
+	typedef stdex::intrusive_slug<Node> TSlugChild;
 
 	class Node
-        : public IntrusiveLinked<Node>        
+        : public stdex::intrusive_linked<Node>
 		, public Factorable
 		, public Identity
 		, public Resource

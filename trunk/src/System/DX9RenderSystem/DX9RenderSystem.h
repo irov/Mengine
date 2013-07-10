@@ -5,7 +5,8 @@
 #   include "DX9RenderTexture.h"
 
 #   include "Utils/Factory/FactoryPool.h"
-#   include "Utils/Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 #	include <d3d9.h>
 #   include <D3DX9Shader.h>
@@ -223,12 +224,12 @@ namespace Menge
 		VBHandle m_vbHandleCounter;
 		IBHandle m_ibHandleCounter;
 
-		typedef BinaryVector<VBHandle, VBInfo> TMapVBInfo;
+		typedef stdex::binary_vector<VBHandle, VBInfo> TMapVBInfo;
 		TMapVBInfo m_vertexBuffers;
 
         IDirect3DVertexBuffer9 * m_currentVB;
 
-		typedef BinaryVector<VBHandle, IBInfo> TMapIBInfo;
+		typedef stdex::binary_vector<VBHandle, IBInfo> TMapIBInfo;
 		TMapIBInfo m_indexBuffers;
 
         IDirect3DIndexBuffer9 * m_currentIB;

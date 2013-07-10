@@ -6,10 +6,11 @@
 #   include "ThreadTaskSoundBufferUpdate.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
 #   include "Factory/FactoryPool.h"
 
 #	include	"math/vec3.h"
+
+#   include "stdex/binary_vector.h"
 
 #	include <vector>
 
@@ -146,10 +147,10 @@ namespace Menge
 			SoundDecoderInterfacePtr codec;
 		};
 
-        typedef TemplatePool<SoundSourceDesc, 32> TPoolSoundSourceDesc;
+        typedef stdex::template_pool<SoundSourceDesc, 32> TPoolSoundSourceDesc;
         TPoolSoundSourceDesc m_poolSoundSourceDesc;
 
-		typedef BinaryVector<unsigned int, SoundSourceDesc *> TMapSoundSource;
+		typedef stdex::binary_vector<unsigned int, SoundSourceDesc *> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
 
         typedef FactoryPool<ThreadTaskSoundBufferUpdate, 32> TPoolThreadTaskSoundBufferUpdate;

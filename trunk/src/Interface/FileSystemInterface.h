@@ -17,7 +17,7 @@ namespace Menge
 		virtual bool open( const FilePath & _folder, const FilePath & _filename ) = 0;
 	};
 
-    typedef IntrusivePtr<FileInputStreamInterface> FileInputStreamInterfacePtr;
+    typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
 
 	class MappedFileInputStreamInterface
 		: public FileInputStreamInterface
@@ -27,7 +27,7 @@ namespace Menge
         virtual void openInputMemory( const InputStreamInterfacePtr & _stream, const FilePath & _filename, size_t _offset, size_t _size ) = 0;
 	};
 
-    typedef IntrusivePtr<MappedFileInputStreamInterface> MappedFileInputStreamInterfacePtr;
+    typedef stdex::intrusive_ptr<MappedFileInputStreamInterface> MappedFileInputStreamInterfacePtr;
 	
 	class FileOutputStreamInterface
 		: public OutputStreamInterface
@@ -36,7 +36,7 @@ namespace Menge
 		virtual bool open( const FilePath & _folder, const FilePath & _filename ) = 0;
 	};
 
-    typedef IntrusivePtr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
+    typedef stdex::intrusive_ptr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
 	
 	class FileSystemInterface
         : public ServiceInterface

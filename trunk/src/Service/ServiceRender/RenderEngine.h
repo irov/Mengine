@@ -6,8 +6,8 @@
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
 #	include "Core/ConstString.h"
-#	include "Core/Pool.h"
-#	include "Core/Array.h"
+
+#   include "stdex/static_array.h"
 
 #   include "Factory/FactoryPool.h"
 
@@ -17,7 +17,8 @@
 #	include <vector>
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 //#	include "ColourValue.h"
 
@@ -261,10 +262,10 @@ namespace Menge
 
 		uint32 m_currentVertexDeclaration;
         
-        typedef Array<RenderObject, MENGINE_RENDER_OBJECTS_MAX> TArrayRenderObject;
+        typedef stdex::static_array<RenderObject, MENGINE_RENDER_OBJECTS_MAX> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;
 
-        typedef Array<RenderPass, MENGINE_RENDER_PASS_MAX> TArrayRenderPass;
+        typedef stdex::static_array<RenderPass, MENGINE_RENDER_PASS_MAX> TArrayRenderPass;
         TArrayRenderPass m_renderPasses;
                       
 		bool m_depthBufferWriteEnable;

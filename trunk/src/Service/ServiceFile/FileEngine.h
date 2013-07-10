@@ -4,8 +4,7 @@
 
 #	include "Factory/FactoryManager.h"
 
-#	include "Core/Pool.h"
-#   include "Core/BinaryVector.h"
+#   include "stdex/binary_vector.h"
 
 #	include <string>
 #	include <vector>
@@ -57,7 +56,7 @@ namespace Menge
 
         FactoryManager m_factoryFileGroup;
 
-		typedef BinaryVector<ConstString, FileGroupInterface *> TMapFileSystem;
+		typedef stdex::binary_vector<ConstString, FileGroupInterface *> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;
 	};
 }

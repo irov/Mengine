@@ -110,6 +110,7 @@ move svn-win32-1.6.6 svn
 svn\bin\svn checkout http://pugixml.googlecode.com/svn/trunk pugixml
 svn\bin\svn checkout https://svn.code.sf.net/p/pybind/code/trunk pybind
 svn\bin\svn checkout https://svn.code.sf.net/p/metabuf/code/trunk metabuf
+svn\bin\svn checkout https://svn.code.sf.net/p/stdex2/code/trunk stdex
 svn\bin\svn checkout http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
 :: svn\bin\svn checkout https://svn.code.sf.net/p/xxbind/code/trunk xxbind
 ::svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator

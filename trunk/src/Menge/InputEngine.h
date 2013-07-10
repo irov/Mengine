@@ -55,6 +55,9 @@ namespace Menge
 		void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 
 		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
+        void onMouseEnter( unsigned int _touchId, const mt::vec2f & _point ) override;
+        void onMouseLeave( unsigned int _touchId, const mt::vec2f & _point ) override;
+
 
 	protected:
 		void notifyChangeWindowResolution(  bool _fullscreen, Resolution _resolution );
@@ -69,7 +72,9 @@ namespace Menge
 			ET_KEY = 0,
 			ET_MOUSEBUTTON,
 			ET_MOUSEMOVE,
-			ET_MOUSEPOSITION
+			ET_MOUSEPOSITION,
+            ET_MOUSEENTER,
+            ET_MOUSELEAVE
 		};
 
 		struct KeyEventParams
@@ -113,10 +118,12 @@ namespace Menge
 		typedef std::vector<MousePositionParams> TVectorMousePositionParams;
 
     protected:
-		void keyEvent( const KeyEventParams& _keyEventParams );
-		void mouseButtonEvent( const MouseButtonParams& _mouseButtonParams );
-		void mouseMoveEvent( const MouseMoveParams& _mouseMoveParams );
-		void mousePositionEvent( const MousePositionParams& _mouseMoveParams );
+		void keyEvent( const KeyEventParams& _params );
+		void mouseButtonEvent( const MouseButtonParams& _params );
+		void mouseMoveEvent( const MouseMoveParams& _params );
+		void mousePositionEvent( const MousePositionParams& _params );
+        void mouseEnterEvent( const MousePositionParams& _params );
+        void mouseLeaveEvent( const MousePositionParams& _params );
 
 	protected:		
 		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local );

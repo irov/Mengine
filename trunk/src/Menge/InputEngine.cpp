@@ -112,6 +112,18 @@ namespace Menge
                     this->mousePositionEvent( params );
                     ++it_mousePositionParams;
                 }break;
+            case ET_MOUSEENTER:
+                {
+                    const MousePositionParams & params = (*it_mousePositionParams);
+                    this->mouseEnterEvent(params);
+                    ++it_mousePositionParams;
+                }break;
+            case ET_MOUSELEAVE:
+                {
+                    const MousePositionParams & params = (*it_mousePositionParams);
+                    this->mouseLeaveEvent(params);
+                    ++it_mousePositionParams;
+                }
             }
 		}
 
@@ -246,6 +258,20 @@ namespace Menge
 		MousePositionParams params = { _touchId, _point };
 		m_mousePositionEventParams.push_back( params );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void InputEngine::onMouseEnter( unsigned int _touchId, const mt::vec2f & _point )
+    {
+        m_eventsAdd.push_back( ET_MOUSEENTER );
+        MousePositionParams params = { _touchId, _point };
+        m_mousePositionEventParams.push_back( params );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputEngine::onMouseLeave( unsigned int _touchId, const mt::vec2f & _point )
+    {
+        m_eventsAdd.push_back( ET_MOUSELEAVE );
+        MousePositionParams params = { _touchId, _point };
+        m_mousePositionEventParams.push_back( params );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::keyEvent( const KeyEventParams& _params )
 	{
@@ -262,7 +288,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseButtonEvent( const MouseButtonParams& _params )
+	void InputEngine::mouseButtonEvent( const MouseButtonParams & _params )
 	{
 		m_mouseBuffer[ _params.button ] = _params.isDown;
 
@@ -287,6 +313,24 @@ namespace Menge
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void InputEngine::mouseEnterEvent( const MousePositionParams& _params )
+    {
+        mt::vec2f point;
+        this->applyCursorPosition_( _params.point, point );
+
+        APPLICATION_SERVICE(m_serviceProvider)
+            ->onAppMouseEnter( point );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void InputEngine::mouseLeaveEvent( const MousePositionParams& _params )
+    {
+        mt::vec2f point;
+        this->applyCursorPosition_( _params.point, point );
+
+        APPLICATION_SERVICE(m_serviceProvider)
+            ->onAppMouseLeave();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )
 	{

@@ -2236,9 +2236,13 @@ namespace Menge
 
 					mt::vec2f point;
 					this->getCursorPosition( point );
-					m_inputService->onMousePosition( 0, point );
 
-					m_application->onAppMouseLeave();
+                    if( m_inputService->isMouseButtonDown( 0 ) == 0 );
+                    {
+                        m_inputService->onMouseButtonEvent( 0, point, 0, false );
+                    }
+
+                    m_inputService->onMouseLeave( 0, point );
 				}
 
                 handle = true;
@@ -2256,7 +2260,7 @@ namespace Menge
 				{
 					m_cursorInArea = true;
 
-					m_application->onAppMouseEnter( point );
+                    m_inputService->onMouseEnter( 0, point );
 
 					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
 					BOOL track = _TrackMouseEvent( &mouseEvent );

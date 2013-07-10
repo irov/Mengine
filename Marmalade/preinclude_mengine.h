@@ -17,6 +17,7 @@
 #   define PUGIXML_NO_XPATH
 
 #	ifndef IW_DEBUG
+#		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.
 #		define MENGE_MASTER_RELEASE
 #	endif
 

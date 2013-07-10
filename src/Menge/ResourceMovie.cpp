@@ -264,7 +264,7 @@ namespace Menge
             ml.in = meta_layer2d.get_In();
             ml.out = meta_layer2d.get_Out();
             ml.startInterval = meta_layer2d.get_StartInterval();
-             
+
             meta_layer2d.get_PlayCount( ml.playCount );
 
             if( ml.in < 0.f )

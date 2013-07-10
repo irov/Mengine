@@ -2,8 +2,8 @@
 
 #	include "Kernel/AffectorType.h"
 
-#	include "Core/IntrusiveList.h"
-#   include "Core/IntrusiveSlug.h"
+#	include "stdex/intrusive_list.h"
+#   include "stdex/intrusive_slug.h"
 
 #	include "Math/vec3.h"
 
@@ -37,8 +37,9 @@ namespace Menge
         void updateAdd_();
 
 	protected:
-		typedef IntrusiveList<Affector> TVectorAffector;
-        typedef IntrusiveSlug<Affector> TSlugAffector;
+        typedef stdex::intrusive_list<Affector> TVectorAffector;
+        typedef stdex::intrusive_slug<Affector> TSlugAffector;
+
 		TVectorAffector m_affectorsToProcess;
 		TVectorAffector m_affectorsToAdd;
 

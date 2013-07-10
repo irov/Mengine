@@ -2,8 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-#   include "Utils/Factory/FactorablePtr.h"
-#   include "Utils/Core/IntrusivePtr.h"
+#   include "Factory/FactorablePtr.h"
 
 namespace Menge
 {
@@ -16,11 +15,11 @@ namespace Menge
 		virtual size_t tell() const = 0;
 		virtual size_t size() const = 0;
 
-	public:
+	public:  
 		virtual bool time( uint64 & _time ) const = 0;
 	};
 
-    typedef IntrusivePtr<InputStreamInterface> InputStreamInterfacePtr;
+    typedef stdex::intrusive_ptr<InputStreamInterface> InputStreamInterfacePtr;
 
 	class OutputStreamInterface
         : public FactorablePtr
@@ -30,5 +29,5 @@ namespace Menge
 		virtual bool flush() = 0;
 	};
 
-    typedef IntrusivePtr<OutputStreamInterface> OutputStreamInterfacePtr;
+    typedef stdex::intrusive_ptr<OutputStreamInterface> OutputStreamInterfacePtr;
 }

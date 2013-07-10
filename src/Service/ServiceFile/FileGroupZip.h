@@ -2,9 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Core/Pool.h"
-#   include "Core/BinaryVector.h"
-#   include "Core/BinarySet.h"
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -57,13 +55,7 @@ namespace Menge
 			uint16 compr_method;
 		};
 
-		typedef BinaryVector<FilePath, FileInfo> TMapFileInfo;
+		typedef stdex::binary_vector<FilePath, FileInfo> TMapFileInfo;
 		TMapFileInfo m_files;
-
-        //typedef BinarySet<FilePath> TMapFolder;
-        //TMapFolder m_folders;
-
-		//typedef Pool<MemoryFileInput, PoolPlacementPolicyNone> TFileInputPool;
-		//TFileInputPool m_fileInputPool;
 	};
 }	// namespace Menge

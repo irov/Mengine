@@ -21,4 +21,9 @@ namespace Menge
         String empty;
         m_value.swap(empty);
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolderStringSTL::_destroyString()
+    {
+        this->destroy();
+    }
 }

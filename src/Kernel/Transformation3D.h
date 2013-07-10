@@ -1,7 +1,7 @@
 #	pragma once
 
-#	include "Core/IntrusiveList.h"
-#	include "Core/IntrusiveSlug.h"
+#   include "stdex/intrusive_list.h"
+#   include "stdex/intrusive_slug.h"
 
 #	include "math/mat4.h"
 
@@ -9,11 +9,11 @@ namespace Menge
 {
     class Transformation3D;
 
-    typedef IntrusiveList<Transformation3D> TListTransformation3DChild;
-    typedef IntrusiveSlug<Transformation3D> TSlugTransformation3DChild;
+    typedef stdex::intrusive_list<Transformation3D> TListTransformation3DChild;
+    typedef stdex::intrusive_slug<Transformation3D> TSlugTransformation3DChild;
 
 	class Transformation3D
-        : public IntrusiveLinked<Transformation3D>
+        : public stdex::intrusive_linked<Transformation3D>
 	{
 	public:
 		Transformation3D();

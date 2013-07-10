@@ -3,7 +3,7 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
-#   include "Core/BinaryVector.h"
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -172,16 +172,16 @@ namespace Menge
 		typedef std::vector<Nodies> TVectorNodies;
 		TVectorNodies m_nodies;
 		
-		typedef BinaryVector<ConstString, Node *> TMapMovieSlots;
+		typedef stdex::binary_vector<ConstString, Node *> TMapMovieSlots;
 		TMapMovieSlots m_slots;
 
-        typedef BinaryVector<ConstString, Movie *> TMapSubMovies;
+        typedef stdex::binary_vector<ConstString, Movie *> TMapSubMovies;
         TMapSubMovies m_subMovies;
 
-        typedef BinaryVector<ConstString, HotSpot *> TMapSockets;
+        typedef stdex::binary_vector<ConstString, HotSpot *> TMapSockets;
         TMapSockets m_sockets;
 
-        typedef BinaryVector<ConstString, MovieEvent *> TMapMovieEvent;
+        typedef stdex::binary_vector<ConstString, MovieEvent *> TMapMovieEvent;
         TMapMovieEvent m_events;
 
 		float m_frameTiming;

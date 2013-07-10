@@ -68,10 +68,12 @@ namespace Menge
         {
             Entity * entity = this->createEntity( _type, _prototype, _generator );
 
-            if( dynamic_cast<T*>(entity) == NULL )
+#   ifdef _DEBUG
+            if( dynamic_cast<T*>(entity) == nullptr )
             {
-                return NULL;
+                return nullptr;
             }
+#   endif
 
             T * t = static_cast<T*>(entity);
 

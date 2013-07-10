@@ -46,16 +46,14 @@ namespace Menge
 
                 ServiceInterface * service = _serviceProvider->getService( serviceName );
 
-                if( service == nullptr )
+#   ifdef _DEBUG
+                if( dynamic_cast<T*>(service) == nullptr )
                 {
                     return nullptr;
                 }
-
-#   ifdef _DEBUG
-                s_service = dynamic_cast<T *>(service);
-#   else
-                s_service = static_cast<T *>(service);
 #   endif
+
+                s_service = static_cast<T *>(service);
             }
 
             return s_service;

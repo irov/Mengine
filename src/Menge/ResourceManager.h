@@ -4,7 +4,7 @@
 
 #	include "Config/Typedef.h"
 
-#   include "Utils/Core/BinaryVector.h"
+#   include "stdex/binary_vector.h"
 
 #	include <map>
 #	include <list>
@@ -67,7 +67,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
                 
-		typedef BinaryVector<ConstString, ResourceEntry> TMapResource;
+		typedef stdex::binary_vector<ConstString, ResourceEntry> TMapResource;
 		TMapResource m_resources;
         
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;

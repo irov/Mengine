@@ -5,14 +5,15 @@
 #	include "Kernel/Scriptable.h"
 
 #	include "Core/ValueInterpolator.h"
-#	include "Core/IntrusiveLinked.h"
+
+#   include "stdex/intrusive_linked.h"
 
 namespace Menge
 {
     class ServiceProviderInterface;
 
 	class Affector
-		: public IntrusiveLinked<Affector>
+        : public stdex::intrusive_linked<Affector>
 	{
 	public:
 		Affector( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type );

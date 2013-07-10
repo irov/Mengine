@@ -8,7 +8,7 @@
 
 #	include "pybind/pybind.hpp"
 
-#   include "Core/BinaryVector.h"
+#   include "stdex/binary_vector.h"
 
 #	include <list>
 #	include <cstdarg>
@@ -90,13 +90,13 @@ namespace Menge
 		ScriptLogger * m_loger;
 		ScriptLoggerError * m_errorLogger;
 
-		typedef BinaryVector<ConstString, PyObject *> TMapModules;
-		typedef BinaryVector<ConstString, TMapModules> TMapCategoryPrototypies;
+		typedef stdex::binary_vector<ConstString, PyObject *> TMapModules;
+		typedef stdex::binary_vector<ConstString, TMapModules> TMapCategoryPrototypies;
 		TMapCategoryPrototypies m_prototypies;
 
 		TMapModules m_modules;
 
-		typedef BinaryVector<ConstString, ScriptClassInterface *> TMapScriptWrapper;
+		typedef stdex::binary_vector<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef FactoryPool<ConstStringHolderPythonString, 256> FactoryPoolPythonString;

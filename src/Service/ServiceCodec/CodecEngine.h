@@ -3,7 +3,8 @@
 #	include "Interface/CodecInterface.h"
 
 #	include "Core/ConstString.h"
-#   include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -44,13 +45,13 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef BinaryVector<ConstString, DecoderFactoryInterface *> TMapDecoderSystem;
+		typedef stdex::binary_vector<ConstString, DecoderFactoryInterface *> TMapDecoderSystem;
 		TMapDecoderSystem m_mapDecoderSystem;
 
-		typedef BinaryVector<ConstString, EncoderFactoryInterface *> TMapEncoderSystem;
+		typedef stdex::binary_vector<ConstString, EncoderFactoryInterface *> TMapEncoderSystem;
 		TMapEncoderSystem m_mapEncoderSystem;
 
-		typedef BinaryVector<String, ConstString> TMapCodecTypes;
+		typedef stdex::binary_vector<String, ConstString> TMapCodecTypes;
 		TMapCodecTypes m_codecTypes;
 	};
 }

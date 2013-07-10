@@ -3,7 +3,8 @@
 #   include "Interface/PrototypeManagerInterface.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -54,7 +55,7 @@ namespace Menge
             }
         };
 
-        typedef BinaryVector<CategoryKey, PrototypeGeneratorInterface *, CategoryKeyLess> TMapPrototypes;        
+        typedef stdex::binary_vector<CategoryKey, PrototypeGeneratorInterface *, CategoryKeyLess> TMapPrototypes;        
 		TMapPrototypes m_prototypes;       
 	};
 }

@@ -5,7 +5,8 @@
 #	include "Math/vec4.h"
 
 #   include "Core/GlyphChar.h"
-#	include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -31,7 +32,7 @@ namespace Menge
 		float m_ratio;
 		mt::vec2f m_size;
 
-		typedef BinaryVector<GlyphChar, float, GlyphCharLess> TMapKerning;
+		typedef stdex::binary_vector<GlyphChar, float, GlyphCharLess> TMapKerning;
 		TMapKerning m_kernings;
 	};
 }

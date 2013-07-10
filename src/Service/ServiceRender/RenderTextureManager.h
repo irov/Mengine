@@ -6,7 +6,8 @@
 #   include "RenderTexture.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 #   include "Factory/FactoryPool.h"
 
@@ -65,7 +66,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef BinaryVector<FilePath, RenderTextureInterface *> TMapTextures;
+        typedef stdex::binary_vector<FilePath, RenderTextureInterface *> TMapTextures;
         TMapTextures m_textures;
 
         typedef FactoryPool<RenderTexture, 128> TFactoryRenderTexture;

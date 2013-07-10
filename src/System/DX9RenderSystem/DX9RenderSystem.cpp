@@ -779,7 +779,7 @@ namespace Menge
 			rect.bottom = m_windowResolution.getHeight();
 		}
 		
-		DX9TexturePtr dxTexture = intrusive_static_cast<DX9TexturePtr>( _image );
+        DX9TexturePtr dxTexture = stdex::intrusive_static_cast<DX9TexturePtr>( _image );
 				
 		LPDIRECT3DSURFACE9 renderTarget;
 		HRESULT hr;
@@ -1397,7 +1397,7 @@ namespace Menge
 		LPDIRECT3DSURFACE9 pSurf = NULL;
         LPDIRECT3DSURFACE9 pDepth = NULL;
 
-		DX8RenderTexturePtr renderTarget = intrusive_static_cast<DX8RenderTexturePtr>(_renderTarget);
+		DX8RenderTexturePtr renderTarget = stdex::intrusive_static_cast<DX8RenderTexturePtr>(_renderTarget);
 		//begin_scene_( m_currentRenderTarget );
 
 		if( renderTarget != m_curRenderTexture )
@@ -2548,7 +2548,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTexture( size_t _stage, const RenderImageInterfacePtr & _texture )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setTexture device not created"
                 );
@@ -2556,11 +2556,11 @@ namespace Menge
             return;
         }
 
-        IDirect3DTexture9 * d3dTexture = NULL;
+        IDirect3DTexture9 * d3dTexture = nullptr;
 
-        if( _texture != NULL )
+        if( _texture != nullptr )
         {
-            DX9TexturePtr t = intrusive_static_cast<DX9TexturePtr>(_texture);
+            DX9TexturePtr t = stdex::intrusive_static_cast<DX9TexturePtr>(_texture);
             d3dTexture = t->getDXTextureInterface();
         }
 		
@@ -2576,7 +2576,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setSrcBlendFactor( EBlendFactor _src )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setSrcBlendFactor device not created"
                 );
@@ -2598,7 +2598,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setDstBlendFactor( EBlendFactor _dst )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setDstBlendFactor device not created"
                 );
@@ -2620,7 +2620,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{	
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setTextureAddressing device not created"
                 );
@@ -2628,7 +2628,7 @@ namespace Menge
             return;
         }
 
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setTextureAddressing device not created"
                 );
@@ -2661,7 +2661,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureFactor( uint32 _color )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setTextureFactor device not created"
                 );
@@ -2681,7 +2681,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setCullMode( ECullMode _mode )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setCullMode device not created"
                 );
@@ -2701,7 +2701,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setDepthBufferTestEnable( bool _depthTest )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setDepthBufferTestEnable device not created"
                 );
@@ -2721,7 +2721,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setDepthBufferWriteEnable device not created"
                 );
@@ -2741,7 +2741,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setDepthBufferCmpFunc device not created"
                 );
@@ -2761,7 +2761,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setFillMode( EFillMode _mode )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setFillMode device not created"
                 );

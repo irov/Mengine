@@ -8,7 +8,8 @@
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
-#   include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -75,7 +76,7 @@ namespace Menge
             bool source;
         };
 
-        typedef BinaryVector<ConstString, ModulePathCache> TMapModulePath;
+        typedef stdex::binary_vector<ConstString, ModulePathCache> TMapModulePath;
         mutable TMapModulePath m_paths;
 
     protected:

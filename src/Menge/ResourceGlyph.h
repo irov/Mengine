@@ -4,7 +4,7 @@
 
 #	include "Glyph.h"
 
-#   include "Utils/Core/BinaryVector.h"
+#   include "stdex/binary_vector.h"
 
 #	include "Math/vec4.h"
 
@@ -35,7 +35,7 @@ namespace Menge
 	protected:
 		float m_fontHeight;
 
-		typedef BinaryVector<GlyphChar, Glyph, GlyphCharLess> TMapGlyph;
+		typedef stdex::binary_vector<GlyphChar, Glyph, GlyphCharLess> TMapGlyph;
 		TMapGlyph m_glyphs;
 	};
 }

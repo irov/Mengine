@@ -6,7 +6,7 @@
 
 #	include "Win32ThreadIdentity.h"
 
-#   include "Core/Pool.h"
+#   include "stdex/pool.h"
 
 namespace Menge
 {
@@ -31,7 +31,7 @@ namespace Menge
 		void sleep( unsigned int _ms ) override;
 	
 	protected:
-        typedef TemplatePool<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
+        typedef stdex::template_pool<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
         TPoolWin32ThreadIdentity m_poolWin32ThreadIdentity;
 
 		typedef std::vector<Win32ThreadIdentity *> TVectorPosixThreadIdentity;

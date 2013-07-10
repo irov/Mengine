@@ -27,5 +27,5 @@ namespace Menge
 		virtual const XmlCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
     
-    typedef IntrusivePtr<XmlDecoderInterface> XmlDecoderInterfacePtr;
+    typedef stdex::intrusive_ptr<XmlDecoderInterface> XmlDecoderInterfacePtr;
 }	

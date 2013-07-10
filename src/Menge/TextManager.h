@@ -3,7 +3,8 @@
 #   include "Interface/TextInterface.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 #	include "Config/Typedef.h"
 
@@ -36,7 +37,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef BinaryVector<ConstString, TextEntry> TMapTextEntry;
+		typedef stdex::binary_vector<ConstString, TextEntry> TMapTextEntry;
 		TMapTextEntry m_textMap;
 
 		ConstString m_defaultResourceFontName;

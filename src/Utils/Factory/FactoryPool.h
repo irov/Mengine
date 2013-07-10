@@ -2,7 +2,7 @@
 
 #	include "Factory/Factory.h"
 
-#	include "Core/Pool.h"
+#	include "stdex/pool.h"
 
 namespace Menge
 {
@@ -45,7 +45,7 @@ namespace Menge
 		}
 
 	protected:
-		typedef TemplatePool<T, Count> TTemplatePool;
+        typedef stdex::template_pool<T, Count> TTemplatePool;
 		TTemplatePool m_pool;
 	};
 }

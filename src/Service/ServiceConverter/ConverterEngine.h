@@ -3,7 +3,8 @@
 #	include "Interface/ConverterInterface.h"
 
 #	include "Core/ConstString.h"
-#   include "Core/BinaryVector.h"
+
+#   include "stdex/binary_vector.h"
 
 namespace Menge
 {
@@ -34,7 +35,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef BinaryVector<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
+		typedef stdex::binary_vector<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
 		TMapConverterSystem m_mapConverterSystem;
 	};
 }

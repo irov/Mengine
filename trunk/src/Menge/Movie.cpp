@@ -1452,10 +1452,10 @@ namespace Menge
 			
 			if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
 			{
-				if( this->createMovieSlot_( layer ) == false )
-				{
-					return false;
-				}
+                if( this->createMovieSlot_( layer ) == false )
+                {
+                    return false;
+                }
 			}
             else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
             {
@@ -1473,24 +1473,24 @@ namespace Menge
             }
 			else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
 			{
-				if( this->createMovieNullObject_( layer ) == false )
-				{
-					return false;
-				}
+                if( this->createMovieNullObject_( layer ) == false )
+                {
+                    return false;
+                }
 			}
 			else if( layer.layerType == CONST_STRING(m_serviceProvider, Image) )
 			{
-				if( this->createMovieImage_( layer ) == false )
-				{
-					return false;
-				}
+                if( this->createMovieImage_( layer ) == false )
+                {
+                    return false;
+                }
 			}
 			else if( layer.layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
 			{
-				if( this->createMovieImageSolid_( layer ) == false )
-				{
-					return false;
-				}
+                if( this->createMovieImageSolid_( layer ) == false )
+                {
+                    return false;
+                }
 			}
             else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
             {
@@ -1515,10 +1515,10 @@ namespace Menge
 			}
 			else if( layer.layerType == CONST_STRING(m_serviceProvider, Movie) )
 			{
-				if( this->createMovieMovie_( layer ) == false )
-				{
-					return false;
-				}
+                if( this->createMovieMovie_( layer ) == false )
+                {
+                    return false;
+                }
 			}
             else if( layer.layerType == CONST_STRING(m_serviceProvider, SubMovie) )
             {
@@ -1536,17 +1536,17 @@ namespace Menge
 			}
 			else if( layer.layerType == CONST_STRING(m_serviceProvider, Video) )
 			{
-				if( this->createMovieVideo_( layer ) == false )
-				{
-					return false;
-				}
+                if( this->createMovieVideo_( layer ) == false )
+                {
+                    return false;
+                }
 			}
 			else if( layer.layerType == CONST_STRING(m_serviceProvider, Sound) )
 			{
-				if( this->createMovieSound_( layer ) == false )
-				{
-					return false;
-				}
+                if( this->createMovieSound_( layer ) == false )
+                {
+                    return false;
+                }
 			}
 			else if( layer.layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
 			{

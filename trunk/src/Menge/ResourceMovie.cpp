@@ -438,8 +438,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_compile()
 	{
-        //return false;
-
 		if( ResourceReference::_compile() == false )
 		{
 			return false;

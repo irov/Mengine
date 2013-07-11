@@ -442,7 +442,7 @@ namespace Menge
 
 		if( m_imgConvertContext != nullptr )
 		{
-            if( m_imgConvertContextCache == false )
+            if( m_imgConvertContextCache == true )
             {
 			    sws_freeContext( m_imgConvertContext );
             }

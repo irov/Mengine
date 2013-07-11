@@ -163,6 +163,8 @@ namespace Menge
 			, _projectName
 			);
 
+        pybind::decref( py_xlsxExporter );
+
 		return true;
 	}
 }

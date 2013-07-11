@@ -53,6 +53,7 @@ namespace Menge
 		, m_frame(nullptr)
 		, m_IOContext(nullptr)
         , m_imgConvertContext(nullptr)
+        , m_imgConvertContextCache(true)
 		, m_inputFormat(nullptr)
 		, m_outputPixelFormat(PIX_FMT_RGBA)
 		, m_videoStreamId(-1)
@@ -67,10 +68,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_initialize()
 	{   
-        uint8_t filebuffer[4096 + FF_INPUT_BUFFER_PADDING_SIZE];
+        uint8_t filebuffer[VIDEO_FFMPEG_BUFFER_IO_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
        
         size_t stram_size = m_stream->size();
-        size_t probe_size = 4096 > stram_size ? stram_size : 4096;
+        size_t probe_size = VIDEO_FFMPEG_BUFFER_IO_SIZE > stram_size ? stram_size : VIDEO_FFMPEG_BUFFER_IO_SIZE;
 
         memset( filebuffer + probe_size, 0, FF_INPUT_BUFFER_PADDING_SIZE );
 
@@ -93,11 +94,11 @@ namespace Menge
         }
 
         //m_bufferIO = new uint8_t[ m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE ];
-		memset( m_bufferIO + 4096, 0, FF_INPUT_BUFFER_PADDING_SIZE );
+		memset( m_bufferIO + VIDEO_FFMPEG_BUFFER_IO_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE );
 
 		m_IOContext = avio_alloc_context(
 			 m_bufferIO //IO buffer
-			, 4096 //size of IO buffer
+			, VIDEO_FFMPEG_BUFFER_IO_SIZE //size of IO buffer
 			, 0 //write flag set to 0
 			, m_stream.get() //IO source - it will be send as opaque argument to IO callbacks
 			, ReadIOWrapper //read callback 
@@ -409,6 +410,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
 	{
+        if( m_IOContext != nullptr )
+        {
+            avio_flush(m_IOContext);
+            av_free(m_IOContext);
+            m_IOContext = nullptr;
+        }
+
         //close codec
         if( m_codecContext != nullptr )
         {
@@ -419,11 +427,11 @@ namespace Menge
         }
 
         // Free the packet that was allocated by av_read_frame
-		if( m_frame != nullptr )
-		{
-			av_free(m_frame);
-			m_frame = nullptr;
-		}
+        if( m_frame != nullptr )
+        {
+            avcodec_free_frame(&m_frame);
+            m_frame = nullptr;
+        }
 
 		// Close the video file
 		if( m_formatContext != nullptr )
@@ -431,16 +439,14 @@ namespace Menge
 			avformat_close_input(&m_formatContext);
 			m_formatContext = nullptr;
 		}
-		
-		if( m_IOContext != nullptr )
-		{
-			av_free(m_IOContext); 
-			m_IOContext = nullptr;
-		}
 
 		if( m_imgConvertContext != nullptr )
 		{
-			sws_freeContext( m_imgConvertContext );
+            if( m_imgConvertContextCache == false )
+            {
+			    sws_freeContext( m_imgConvertContext );
+            }
+
 			m_imgConvertContext = nullptr;
 		}
 	}
@@ -553,6 +559,8 @@ namespace Menge
 
                 return false;
             }
+
+            m_imgConvertContextCache = false;
 		}
 
 #   ifdef _DEBUG

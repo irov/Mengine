@@ -250,38 +250,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleFinder::load_module_source_( const ConstString & _module, const InputStreamInterfacePtr & _stream, PyObject * _packagePath )
     {
-        PyObject * module = pybind::module_init( _module.c_str() );
-
-        PyObject * dict = pybind::module_dict( module );
-
-        pybind::dict_set( dict, "__loader__", m_embbed );
-
-        if( _packagePath != NULL )
-        {
-            pybind::dict_set( dict, "__path__", _packagePath );
-            pybind::decref( _packagePath );
-        }
-
         PyObject * code = this->unmarshal_source_( _module, _stream );
 
-        if( code == NULL )
+        if( code == nullptr )
         {
-            pybind::decref( module );
-
-            return NULL;
+            return nullptr;
         }
 
-        pybind::incref( module );
-        module = pybind::module_execcode( _module.c_str(), code );
-        pybind::decref( module );
-
-        pybind::decref( code );
-
-        return module;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::load_module_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream, PyObject * _packagePath )
-    {
         PyObject * module = pybind::module_init( _module.c_str() );
 
         PyObject * dict = pybind::module_dict( module );
@@ -294,13 +269,32 @@ namespace Menge
             pybind::decref( _packagePath );
         }
 
+        module = pybind::module_execcode( _module.c_str(), code );
+
+        pybind::decref( code );
+
+        return module;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * ScriptModuleFinder::load_module_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream, PyObject * _packagePath )
+    {
         PyObject * code = this->unmarshal_code_( _module, _stream );
 
-        if( code == NULL )
+        if( code == nullptr )
         {
-            pybind::decref( module );
+            return nullptr;
+        }
 
-            return NULL;
+        PyObject * module = pybind::module_init( _module.c_str() );
+
+        PyObject * dict = pybind::module_dict( module );
+
+        pybind::dict_set( dict, "__loader__", m_embbed );
+
+        if( _packagePath != nullptr )
+        {
+            pybind::dict_set( dict, "__path__", _packagePath );
+            pybind::decref( _packagePath );
         }
 
         module = pybind::module_execcode( _module.c_str(), code );

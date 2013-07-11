@@ -2237,7 +2237,7 @@ namespace Menge
 					mt::vec2f point;
 					this->getCursorPosition( point );
 
-                    if( m_inputService->isMouseButtonDown( 0 ) == 0 );
+                    if( m_inputService->isMouseButtonDown( 0 ) == false )
                     {
                         m_inputService->onMouseButtonEvent( 0, point, 0, false );
                     }

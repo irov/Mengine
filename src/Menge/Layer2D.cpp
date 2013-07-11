@@ -21,7 +21,7 @@ namespace	Menge
 		: m_factorParallax(1.f, 1.f)
 		, m_viewport(0.f, 0.f, 0.f, 0.f)
 		, m_hasViewport(false)
-		, m_cameraViewport(0)
+		, m_cameraViewport(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ namespace	Menge
 	{
 		Node::_activate();
 
-		if( m_scene == 0 )
+		if( m_scene == nullptr )
 		{
 			return false;
 		}

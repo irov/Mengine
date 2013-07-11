@@ -52,7 +52,6 @@ endif(MSVC)
 
 if(WIN32)
     #ADD_SUBDIRECTORY( tinyxml )
-    ADD_SUBDIRECTORY( dlmalloc )
     ADD_SUBDIRECTORY( Python_2_7_5 )    
     ADD_SUBDIRECTORY( Python_3_3_1 )
 endif(WIN32)

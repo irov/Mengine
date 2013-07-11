@@ -14,6 +14,6 @@ ${SOURCE_DIR}/src/framing.c
 )
 
 include_directories(${SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
 add_library( ${PROJECT_NAME}_static STATIC ${ogg_sources} )

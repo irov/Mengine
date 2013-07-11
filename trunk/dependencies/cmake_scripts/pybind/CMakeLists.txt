@@ -33,7 +33,7 @@ add_definitions(-DPYBIND_PYTHON_VERSION=275)
 
 include_directories(${SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python275)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../dlmalloc)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
 IF(WIN32)
     include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python275/PC)

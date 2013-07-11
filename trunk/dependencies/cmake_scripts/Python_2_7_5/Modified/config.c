@@ -13,6 +13,7 @@ extern void initmath(void);
 //extern void initnt(void);
 extern void initcPickle(void);
 extern void initcStringIO(void);
+extern void init_weakref(void);
 
 struct _inittab _PyImport_Inittab[] = {
 
@@ -39,6 +40,7 @@ struct _inittab _PyImport_Inittab[] = {
     
     {"cPickle", initcPickle},
     {"cStringIO", initcStringIO},
+    {"_weakref", init_weakref},
     
 	/* Sentinel */
 	{0, 0}

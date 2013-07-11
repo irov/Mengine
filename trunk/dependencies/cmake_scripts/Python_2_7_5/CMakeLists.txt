@@ -75,6 +75,7 @@ add_python_module(binascii MOD_SRCS ${SOURCE_DIR}/Modules/binascii.c)
 add_python_module(unicodedata MOD_SRCS ${SOURCE_DIR}/Modules/unicodedata.c)
 add_python_module(cPickle MOD_SRCS ${SOURCE_DIR}/Modules/cPickle.c)
 add_python_module(cStringIO MOD_SRCS ${SOURCE_DIR}/Modules/cStringIO.c)
+add_python_module(cStringIO MOD_SRCS ${SOURCE_DIR}/Modules/_weakref.c)
 
 
 set( HAVE_CHROOT 0 )

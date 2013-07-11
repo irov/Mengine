@@ -88,8 +88,8 @@ namespace Menge
             ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
-                , _folder
-                , _filename
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;
@@ -115,8 +115,8 @@ namespace Menge
             ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::deleteFile invalid concatenate '%s':'%s'"
-                , _folder
-                , _filename
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;
@@ -142,8 +142,8 @@ namespace Menge
             ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
-                , _folder
-                , _filename
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;
@@ -169,8 +169,8 @@ namespace Menge
             ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
-                , _folder
-                , _filename
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;
@@ -191,8 +191,8 @@ namespace Menge
             ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
-                , _folder
-                , _filename
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;

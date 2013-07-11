@@ -33,8 +33,8 @@ namespace Menge
             ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid concatenate '%s':'%s'"
-                , _folder
-                , _filename
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;
@@ -131,7 +131,7 @@ namespace Menge
             {
                 s3eFileError error = s3eFileGetError();
 
-                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read error %d:%d size %d get error %d"
+                LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read error %d:%d size %d get error %d"
                     , bytesRead
                     , read_count
                     , m_size
@@ -173,7 +173,7 @@ namespace Menge
         {
             s3eFileError error = s3eFileGetError();
 
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read (%d:%d) size %d get error %d"
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read (%d:%d) size %d get error %d"
                 , bytesRead
                 , FILE_BUFFER_SIZE
                 , m_size
@@ -209,7 +209,7 @@ namespace Menge
             {
                 s3eFileError error = s3eFileGetError();
 
-                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d size %d get error %d"
+                LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::seek %d size %d get error %d"
                     , _pos
                     , m_size
                     , error

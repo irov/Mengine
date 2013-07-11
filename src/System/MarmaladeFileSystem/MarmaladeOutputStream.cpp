@@ -29,8 +29,8 @@ namespace Menge
             ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::open invalid concatenate '%s':'%s'"
-                , _folder
-                , _filename
+                , _folder.c_str()
+                , _filename.c_str()
                 );
 
             return false;

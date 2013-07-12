@@ -315,7 +315,8 @@ namespace Menge
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
 
-        m_currentRenderCamera = NULL;
+        m_currentRenderCamera = nullptr;
+        m_currentMaterial = nullptr;
 
         m_currentRenderTarget = m_defaultRenderTarget;
         m_renderTargetResolution = m_windowResolution;

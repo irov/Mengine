@@ -1244,7 +1244,7 @@ namespace Menge
 
 		bool immediatelyFlush = m_game->render();
 
-		if( m_console != NULL )
+		if( m_console != nullptr )
 		{
 			m_console->render();
 		}

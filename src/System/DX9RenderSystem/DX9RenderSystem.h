@@ -180,6 +180,8 @@ namespace Menge
 		IDirect3DSurface9 * m_screenSurf;
 		IDirect3DSurface9 *	m_screenDepth;
 
+        D3DCAPS9 m_caps;
+
 		D3DPRESENT_PARAMETERS m_d3dppW;
 		D3DPRESENT_PARAMETERS m_d3dppFS;
 
@@ -188,9 +190,9 @@ namespace Menge
 		D3DMATRIX m_matTexture;
 
 		// sync routines
-		IDirect3DSurface9 * m_syncTargets[2];
-		IDirect3DTexture9 *	m_syncTempTex;
-		IDirect3DSurface9 * m_syncTemp;
+		//IDirect3DSurface9 * m_syncTargets[2];
+		//IDirect3DTexture9 *	m_syncTempTex;
+		//IDirect3DSurface9 * m_syncTemp;
 		unsigned int m_frames;
 
     protected:
@@ -198,10 +200,11 @@ namespace Menge
 
 		bool initLost_();
 		
+        bool releaseResources_();
 		void release_();
 		bool restore_();
 
-		void createSyncTargets_();
+		//void createSyncTargets_();
 
 		HRESULT d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
 			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
@@ -227,12 +230,14 @@ namespace Menge
 		typedef stdex::binary_vector<VBHandle, VBInfo> TMapVBInfo;
 		TMapVBInfo m_vertexBuffers;
 
-        IDirect3DVertexBuffer9 * m_currentVB;
+        VBHandle m_currentVB;
 
 		typedef stdex::binary_vector<VBHandle, IBInfo> TMapIBInfo;
 		TMapIBInfo m_indexBuffers;
 
-        IDirect3DIndexBuffer9 * m_currentIB;
+        IBHandle m_currentIB;
+
+        IDirect3DTexture9 * m_currentTexture[8];
 
         typedef FactoryPool<DX9Texture, 128> TFactoryDX9Texture;
         TFactoryDX9Texture m_factoryDX9Texture;

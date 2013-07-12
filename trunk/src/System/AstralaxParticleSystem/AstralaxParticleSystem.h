@@ -2,9 +2,15 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
-#pragma warning(push, 0) 
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(push, 0) 
+#	endif 
+
 #	include "magic.h"
-#pragma warning(pop) 
+
+#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(pop) 
+#	endif
 
 #	include "AstralaxEmitter.h"
 

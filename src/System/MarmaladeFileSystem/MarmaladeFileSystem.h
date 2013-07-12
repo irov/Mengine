@@ -26,9 +26,6 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) ;
 		ServiceProviderInterface * getServiceProvider() const;
 
-    public:
-        bool initialize( ServiceProviderInterface * _serviceProvider ) override;
-
 	public:
 		FileInputStreamInterfacePtr createInputStream() override;
 		FileOutputStreamInterfacePtr createOutputStream() override;

@@ -46,13 +46,6 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeFileSystem::initialize( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterfacePtr MarmaladeFileSystem::createInputStream()
 	{
 		MarmaladeInputStream * inputStream = m_factoryInputStream.createObjectT();;

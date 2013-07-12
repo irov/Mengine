@@ -31,7 +31,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, TVectorEmitters _emitters )
+	void AstralaxEmitterContainer::addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters )
 	{
 		TMapEmitters::iterator it_found = m_emitters.find( _name );
 

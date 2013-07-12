@@ -34,15 +34,19 @@ namespace Menge
 
 		if( it_found == m_glyphs.end() )
 		{
+            size_t code = _id.getCode();
+
 			LOGGER_ERROR(m_serviceProvider)( "ResourceGlyph: Glyph code '%s:%d' not found"
 				, m_name.c_str()
-				, _id
+				, code
 				);
 
 			return nullptr;
 		}
 
-		return &it_found->second;
+        const Glyph & glyph = it_found->second;
+
+		return &glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceGlyph::hasGlyph( GlyphChar _id, const Glyph ** _glyph ) const

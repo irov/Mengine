@@ -11,6 +11,7 @@ namespace Menge
         , m_intervalBegin(0.f)
         , m_intervalEnd(-1.f)
         , m_playCount(1)
+        , m_scretch(1.f)
 		, m_play(false)
 		, m_loop(false)
 		, m_reverse(false)
@@ -127,6 +128,16 @@ namespace Menge
         (void)_value;
 		//Empty
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Animatable::setScretch( float _scretch )
+    {
+        m_scretch = _scretch;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Animatable::getScretch() const
+    {
+        return m_scretch;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animatable::play( float _time )
 	{

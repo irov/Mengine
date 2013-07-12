@@ -1119,6 +1119,7 @@ namespace Menge
 
 		layer_animation->setIntervalStart( _layer.startInterval );
         layer_animation->setPlayCount( _layer.playCount );
+        layer_animation->setScretch( _layer.scretch );
         //layer_animation->setLoop( _layer.loop );
 
         if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
@@ -1162,6 +1163,7 @@ namespace Menge
 		layer_movie->setIntervalStart( _layer.startInterval );
         
         layer_movie->setPlayCount( _layer.playCount );
+        layer_movie->setScretch( _layer.scretch );
         //layer_movie->setLoop( _layer.loop );
 
 		if( layer_movie->compile() == false )
@@ -1194,6 +1196,7 @@ namespace Menge
         layer_movie->setIntervalStart( _layer.startInterval );
 
         layer_movie->setPlayCount( _layer.playCount );
+        layer_movie->setScretch( _layer.scretch );
         //layer_movie->setLoop( _layer.loop );
 
         if( layer_movie->compile() == false )
@@ -1258,6 +1261,7 @@ namespace Menge
 
 		layer_video->setIntervalStart( _layer.startInterval );
         layer_video->setPlayCount( _layer.playCount );
+        layer_video->setScretch( _layer.scretch );
         //layer_video->setLoop( _layer.loop );
 
 		if( layer_video->compile() == false )
@@ -1299,7 +1303,9 @@ namespace Menge
 		layer_sound->setSoundResource( _layer.source );
         layer_sound->setName( _layer.name );
 		layer_sound->setIntervalStart( _layer.startInterval );
+
         layer_sound->setPlayCount( _layer.playCount );
+        layer_sound->setScretch( _layer.scretch );
         //layer_sound->setLoop( _layer.loop );
 
 		if( layer_sound->compile() == false )
@@ -1387,6 +1393,7 @@ namespace Menge
 
         layer_particles->setIntervalStart( _layer.startInterval );        
         layer_particles->setPlayCount( _layer.playCount );
+        layer_particles->setScretch( _layer.scretch );
         //layer_particles->setLoop( _layer.loop );
 
         if( layer_particles->compile() == false )
@@ -1894,7 +1901,8 @@ namespace Menge
 
         //float frameDuration = m_resourceMovie->getFrameDuration();
 
-		float realTiming = _timing * m_speedFactor;
+        float speedFactor = this->getSpeedFactor();
+		float realTiming = _timing * speedFactor;
 
 		m_frameTiming += realTiming;
         

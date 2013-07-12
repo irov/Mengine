@@ -2474,6 +2474,7 @@ namespace Metacode
                 Meta_MovieLayer2D()
                     : Metabuf::Metadata()
                     , PlayCount_successful(false)
+                    , Stretch_successful(false)
                 {
                 }
             public:
@@ -2645,6 +2646,46 @@ namespace Metacode
                     (_self->*_method)( this->StartInterval );
                 }
                 
+                bool has_Stretch() const
+                {
+                    return Stretch_successful;
+                }
+                
+                bool get_Stretch( float & _value ) const
+                {
+                    if( Stretch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Stretch;
+                
+                    return true;
+                }
+                
+                bool swap_Stretch( float & _value ) const
+                {
+                    if( Stretch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Stretch);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Stretch( C * _self, M _method ) const
+                {
+                    if( Stretch_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Stretch );
+                }
+                
                 const Menge::ConstString & get_Type() const
                 {
                     return this->Type;
@@ -2679,6 +2720,8 @@ namespace Metacode
                 mutable size_t PlayCount;
                 mutable Menge::ConstString Source;
                 mutable float StartInterval;
+                bool Stretch_successful;
+                mutable float Stretch;
                 mutable Menge::ConstString Type;
             };
             
@@ -2688,6 +2731,8 @@ namespace Metacode
             public:
                 Meta_MovieLayer3D()
                     : Metabuf::Metadata()
+                    , PlayCount_successful(false)
+                    , Stretch_successful(false)
                 {
                 }
             public:
@@ -2787,6 +2832,46 @@ namespace Metacode
                     (_self->*_method)( this->Parent );
                 }
                 
+                bool has_PlayCount() const
+                {
+                    return PlayCount_successful;
+                }
+                
+                bool get_PlayCount( size_t & _value ) const
+                {
+                    if( PlayCount_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->PlayCount;
+                
+                    return true;
+                }
+                
+                bool swap_PlayCount( size_t & _value ) const
+                {
+                    if( PlayCount_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->PlayCount);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_PlayCount( C * _self, M _method ) const
+                {
+                    if( PlayCount_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->PlayCount );
+                }
+                
                 const Menge::ConstString & get_Source() const
                 {
                     return this->Source;
@@ -2819,6 +2904,46 @@ namespace Metacode
                     (_self->*_method)( this->StartInterval );
                 }
                 
+                bool has_Stretch() const
+                {
+                    return Stretch_successful;
+                }
+                
+                bool get_Stretch( float & _value ) const
+                {
+                    if( Stretch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Stretch;
+                
+                    return true;
+                }
+                
+                bool swap_Stretch( float & _value ) const
+                {
+                    if( Stretch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Stretch);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Stretch( C * _self, M _method ) const
+                {
+                    if( Stretch_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Stretch );
+                }
+                
                 const Menge::ConstString & get_Type() const
                 {
                     return this->Type;
@@ -2849,8 +2974,12 @@ namespace Metacode
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 mutable size_t Parent;
+                bool PlayCount_successful;
+                mutable size_t PlayCount;
                 mutable Menge::ConstString Source;
                 mutable float StartInterval;
+                bool Stretch_successful;
+                mutable float Stretch;
                 mutable Menge::ConstString Type;
             };
             

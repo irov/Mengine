@@ -34,6 +34,7 @@ namespace Menge
 			: index((size_t)-1)
 			, parent(0)
             , playCount(1)
+            , scretch(1.f)
             , loop(false)
 			, in(0.f)
 			, out(0.f)
@@ -48,6 +49,7 @@ namespace Menge
 		size_t parent;
 
         size_t playCount;
+        float scretch;
         bool loop;
 
 		float in;

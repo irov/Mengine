@@ -37,6 +37,9 @@ namespace Menge
         void setPlayCount( size_t _count );
         size_t getPlayCount() const;
 
+        void setScretch( float _scretch );
+        float getScretch() const;
+
     protected:
         virtual void _setLoop( bool _value );
 		virtual void _setTiming( float _timing );
@@ -72,12 +75,13 @@ namespace Menge
 		
 		float m_playTime;
 
-		float m_speedFactor;
+		float m_speedFactor;        
 		float m_intervalStart;
         float m_intervalBegin;
         float m_intervalEnd;
-
+        
         size_t m_playCount;
+        float m_scretch;
 		
 		bool m_play;
 

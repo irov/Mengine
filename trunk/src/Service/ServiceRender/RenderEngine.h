@@ -135,6 +135,7 @@ namespace Menge
 		void endScene() override;
 		void swapBuffers() override;
 
+        void onRenderSystemDeviceLost() override;
 		bool onRenderSystemDeviceRestored() override;
 
 		void onWindowActive( bool _active );

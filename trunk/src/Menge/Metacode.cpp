@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 25;
+        _needVersion = 26;
 
-        if( version != 25 )
+        if( version != 26 )
         {
             return false;
         }
@@ -1918,6 +1918,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->Stretch ) == false )
+                {
+                    return false;
+                }
+    
+                this->Stretch_successful = true;
+    
+                return true;
+            }break;
         case 4:
             {
                 if( this->read( _buff, _size, _read, this->Type ) == false )
@@ -2017,6 +2028,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 10:
+            {
+                if( this->read( _buff, _size, _read, this->PlayCount ) == false )
+                {
+                    return false;
+                }
+    
+                this->PlayCount_successful = true;
+    
+                return true;
+            }break;
         case 3:
             {
                 if( this->read( _buff, _size, _read, this->Source ) == false )
@@ -2032,6 +2054,17 @@ namespace Metacode
                 {
                     return false;
                 }
+    
+                return true;
+            }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->Stretch ) == false )
+                {
+                    return false;
+                }
+    
+                this->Stretch_successful = true;
     
                 return true;
             }break;

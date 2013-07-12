@@ -273,9 +273,20 @@ namespace Menge
             ->screenshot( image, _rect.buff() );
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderEngine::onRenderSystemDeviceLost()
+    {
+        LOGGER_WARNING(m_serviceProvider)("RenderEngine::onRenderSystemDeviceLost"
+            );
+
+        m_currentVBHandle = 0;
+        m_currentIBHandle = 0;
+
+        std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::onRenderSystemDeviceRestored()
     {
-        LOGGER_WARNING(m_serviceProvider)("RenderEngine::onDeviceRestored"
+        LOGGER_WARNING(m_serviceProvider)("RenderEngine::onRenderSystemDeviceRestored"
             );
 
         if( this->recreate2DBuffers_( m_maxIndexCount ) == false )
@@ -285,12 +296,7 @@ namespace Menge
 
             return false;
         }
-
-        m_currentVBHandle = 0;
-        m_currentIBHandle = 0;
-
-        std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
-
+        
         this->restoreRenderSystemStates_();
         this->prepare2D_();
 

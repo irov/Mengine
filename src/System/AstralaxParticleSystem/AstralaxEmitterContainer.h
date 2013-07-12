@@ -26,7 +26,7 @@ namespace Menge
 		~AstralaxEmitterContainer();
 
 	public:
-		void addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, TVectorEmitters _emitters );
+		void addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters );
 		HM_EMITTER getEmitterId( const ConstString & _name ) const;
 		void releaseEmitterId( const ConstString & _name, HM_EMITTER _id );
 

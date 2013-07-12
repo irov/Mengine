@@ -10,29 +10,8 @@
 
 #	include <algorithm>
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool createFileSystem( Menge::FileSystemInterface ** _fileSystem )
-    {
-        if( _fileSystem == 0 )
-        {
-            return false;
-        }
-
-        *_fileSystem = new Menge::MarmaladeFileSystem;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void destroyFileSystem( Menge::FileSystemInterface * _fileSystem )
-    {
-        if( _fileSystem != 0 )
-        {
-            delete static_cast<Menge::MarmaladeFileSystem*>(_fileSystem);
-        }
-    }
-}
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( FileSystem, Menge::FileSystemInterface, Menge::MarmaladeFileSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -45,6 +24,16 @@ namespace Menge
 	MarmaladeFileSystem::~MarmaladeFileSystem()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeFileSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ServiceProviderInterface * MarmaladeFileSystem::getServiceProvider() const
+    {
+        return m_serviceProvider;
+    }
     //////////////////////////////////////////////////////////////////////////
 	FileInputStreamInterfacePtr MarmaladeFileSystem::createInputStream()
 	{
@@ -197,15 +186,5 @@ namespace Menge
         }
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeFileSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-
-	ServiceProviderInterface * MarmaladeFileSystem::getServiceProvider() const
-	{
-		return m_serviceProvider;
 	}
 }

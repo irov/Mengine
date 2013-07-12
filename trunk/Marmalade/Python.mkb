@@ -81,6 +81,7 @@ files
     _math.c
     cPickle.c
     cStringIO.c
+	_weakref.c
     
     ("../dependencies/Python/Objects")
     methodobject.c

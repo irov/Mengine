@@ -266,6 +266,7 @@ namespace Menge
             ml.startInterval = meta_layer2d.get_StartInterval();
 
             meta_layer2d.get_PlayCount( ml.playCount );
+            meta_layer2d.get_Stretch( ml.scretch );
 
             if( ml.in < 0.f )
             {
@@ -306,6 +307,9 @@ namespace Menge
             ml.in = meta_layer3d.get_In();
             ml.out = meta_layer3d.get_Out();
             ml.startInterval = meta_layer3d.get_StartInterval();
+
+            meta_layer3d.get_PlayCount( ml.playCount );
+            meta_layer3d.get_Stretch( ml.scretch );
 				
             if( ml.in < 0.f )
             {

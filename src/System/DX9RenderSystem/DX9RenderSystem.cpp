@@ -1095,44 +1095,34 @@ namespace Menge
 
 		HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
 
-		if( hr == D3DERR_DEVICELOST )
-		{
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::beginScene: D3DERR_DEVICELOST"
-                );
-
-            while( true, true )
-            {
-                HRESULT result = m_pD3DDevice->TestCooperativeLevel();
-
-                if( result == D3DERR_DEVICENOTRESET )
-                {
-                    LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem::beginScene: TestCooperativeLevel D3DERR_DEVICENOTRESET"
-                        );
-
-                    if( this->resetDevice_() == false )
-                    {
-                        return false;
-                    }
-
-                    break;
-                }
-
-                Sleep(100);
-            }
-
-            return false;
-		}
-		else if (hr == D3DERR_DEVICENOTRESET)
-		{
+        if( hr == D3DERR_DEVICENOTRESET )
+        {
             LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem::beginScene: D3DERR_DEVICENOTRESET"
                 );
 
             if( this->resetDevice_() == false )
             {
+                ::Sleep(50);
+
                 return false;
             }
+        }
+        else if( FAILED(hr) )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::beginScene: invalid TestCooperativeLevel %d"
+                , hr
+                );
+
+            if( this->releaseResources_() == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ release resources"
+                    );
+
+                return false;
+            }
+  
+            return false;
 		}
-		//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, 0, 0, 0), 0, 0 );
 		
         Viewport clear_viewport;
 
@@ -1196,9 +1186,21 @@ namespace Menge
             return;
         }
 
-		HRESULT hr = m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
+        HRESULT cooperativeLevel = m_pD3DDevice->TestCooperativeLevel();
 
-		if( FAILED( hr ) )
+        if( cooperativeLevel == D3DERR_DEVICELOST || 
+            cooperativeLevel == D3DERR_DEVICENOTRESET )
+        {
+            return;
+        }
+
+		HRESULT hr = m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
+        
+        if( hr == D3DERR_DEVICELOST )
+        {
+            this->releaseResources_();
+        }
+        else if( FAILED( hr ) )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Error: D3D8 failed to swap buffers" );
 		}
@@ -1452,6 +1454,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::initLost_()
 	{
+        if( m_pD3DDevice == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::initLost_ device not created"
+                );
+
+            return false;
+        }
+
 		// Store render target
 		HRESULT hr = m_pD3DDevice->GetRenderTarget( 0, &m_screenSurf );
 		if( FAILED( hr ) )
@@ -1525,11 +1535,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX9RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::d3dCreateTexture_ device not created (%d:%d)"
-                , Width
-                , Height
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::d3dCreateTexture_ device not created"
                 );
 
             return D3DERR_INVALIDDEVICE;
@@ -1544,6 +1552,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::clear_( DWORD _color )
 	{
+        if( m_pD3DDevice == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::clear_ device not created"
+                );
+
+            return;
+        }
+
 		//pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 		HRESULT	 hr;
 		if( m_curRenderTexture != NULL )
@@ -1644,7 +1660,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _view )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setWorldMatrix device not created"
                 );
@@ -1909,6 +1925,11 @@ namespace Menge
             m_currentTexture[i] = nullptr;
         }        
 
+        if( m_listener != nullptr )
+        {
+            m_listener->onRenderSystemDeviceLost();
+        }
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -1932,7 +1953,11 @@ namespace Menge
         
 		HRESULT hr = m_pD3DDevice->Reset( m_d3dpp );
 
-		if( FAILED( hr ) == true )
+        if (hr == D3DERR_DEVICELOST)
+        {
+            return false;
+        }
+        else if( FAILED( hr ) == true )
 		{
             LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to reset device (hr:%p)"
                 , hr 
@@ -1950,12 +1975,15 @@ namespace Menge
 		}
 
 		//if(procGfxRestoreFunc) return procGfxRestoreFunc();
-		if( this->onRestoreDevice_() == false )
+        if( m_listener != nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::restore_ invalid onRestoreDevice"
-                );
+            if( m_listener->onRenderSystemDeviceRestored() == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::restore_ invalid onRenderSystemDeviceRestored"
+                    );
 
-            return false;
+                return false;
+            }
         }
 
 		return true;
@@ -1990,20 +2018,6 @@ namespace Menge
 			m_pD3D->Release();
 			m_pD3D = nullptr; 
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::onRestoreDevice_()
-	{
-		// restoring render targets
-		if( m_listener != nullptr )
-		{
-			if( m_listener->onRenderSystemDeviceRestored() == false )
-            {
-                return false;
-            }
-		}
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle DX9RenderSystem::createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic )

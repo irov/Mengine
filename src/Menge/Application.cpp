@@ -1264,7 +1264,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onFlush()
 	{
-		RENDER_SERVICE(m_serviceProvider)->swapBuffers();
+		RENDER_SERVICE(m_serviceProvider)
+            ->swapBuffers();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()

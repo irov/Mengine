@@ -493,6 +493,7 @@ namespace Menge
 	class RenderSystemListener        
 	{
 	public:
+        virtual void onRenderSystemDeviceLost() = 0;
 		virtual bool onRenderSystemDeviceRestored() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

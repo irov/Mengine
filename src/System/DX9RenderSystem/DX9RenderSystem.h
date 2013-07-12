@@ -46,7 +46,6 @@ namespace Menge
     protected:
 		void clear_( DWORD _color );
 		bool supportNPOT_() const;
-		bool onRestoreDevice_();
 
 	public:
 		bool initialize() override;

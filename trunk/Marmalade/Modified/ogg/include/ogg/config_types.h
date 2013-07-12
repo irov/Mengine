@@ -1,8 +1,6 @@
 #ifndef _CONFIG_TYPES_H
 #define _CONFIG_TYPES_H
 
-#   include <dlmalloc.h>
-
 #define _ogg_malloc  dlmalloc
 #define _ogg_calloc  dlcalloc
 #define _ogg_realloc dlrealloc

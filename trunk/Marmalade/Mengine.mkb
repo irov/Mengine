@@ -39,14 +39,16 @@ includepaths
     "../dependencies/ogg/include"   
     
     "../dependencies/vorbis/include"
-    "../dependencies/dlmalloc"
-    "../dependencies/utf8/source"
+
+    "../dependencies/stdex/include"
+	"../dependencies/utf8/source"
 }
 
 files
 {
     [Config]
-	("../src/Config")	
+	"preinclude_mengine.h"
+	("../src/Config")
 	"*.h"
     
     [Interface]
@@ -72,6 +74,16 @@ files
     ("../src/Plugin/MengeSoundCodecPlugin")	
 	"*.h"
 	"*.cpp"    
+
+    [Plugin/MengeXmlCodecPlugin]
+    ("../src/Plugin/MengeXmlCodecPlugin")	
+	"*.cpp"
+	"*.h"
+
+    [Plugin/MengeHotspotImageConverterPlugin]
+    ("../src/Plugin/MengeHotspotImageConverterPlugin")	
+	"*.cpp"
+	"*.h"
     
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	
@@ -177,4 +189,8 @@ files
 	("../src/Utils/Math")	
 	"*.h"
     "*.cpp" 
+
+	[stdex]
+    ("../dependencies/stdex/src")
+    "*.cpp"
 }

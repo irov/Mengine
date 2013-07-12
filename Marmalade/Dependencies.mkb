@@ -137,4 +137,11 @@ files
     ("../dependencies/pugixml")
     src/pugixml.hpp
     src/pugixml.cpp    
+    
+    [stdex]
+    ("../dependencies/stdex")
+    src/allocator.cpp
+    src/const_string.cpp
+    src/const_string_holder.cpp
+    src/const_string_holder_none.cpp
 }

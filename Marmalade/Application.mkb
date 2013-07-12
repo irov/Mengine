@@ -45,7 +45,7 @@ includepaths
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/libjpeg"
-    "../dependencies/dlmalloc"
+    "../dependencies/stdex/include"
     "../dependencies/astralax"
     
     "./Modified/openalsoft"    
@@ -93,10 +93,10 @@ files
 	"*.h"
 	"*.cpp"
     
-    [System/MarmaladeSoundSystem]
-    ("../src/System/MarmaladeSoundSystem")
-	"*.h"
-	"*.cpp"    
+#    [System/MarmaladeSoundSystem]
+#    ("../src/System/MarmaladeSoundSystem")
+#	"*.h"
+#	"*.cpp"    
     
     [System/AstralaxParticleSystem]
     ("../src/System/AstralaxParticleSystem")	

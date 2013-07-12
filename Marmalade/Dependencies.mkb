@@ -35,10 +35,9 @@ includepaths
     
     "../dependencies/simpleini"
     "../dependencies/zlib"
-    "../dependencies/libjpeg"
     "../dependencies/ogg/include"
     "../dependencies/vorbis/include"
-    "../dependencies/dlmalloc"
+    "../dependencies/stdex/include"
     
     "./Modified/openalsoft"    
     "../dependencies/openalsoft_Marmalade/include"
@@ -56,6 +55,11 @@ files
 	("../dependencies/metabuf/metabuf")	
 	"*.hpp"
 	"*.cpp"
+	
+	[Xml2Metabuf]
+	("../dependencies/metabuf/xml2metabuf")
+	"*.cpp"
+	"*.hpp" 
     
     [pybind]
 	("../dependencies/pybind")	    
@@ -97,73 +101,6 @@ files
     uncompr.c
     zutil.c
        
-    [libJPEG]
-    ("../dependencies/libjpeg")    
-    jaricom.c
-    jcapimin.c
-    jcapistd.c
-    jcarith.c
-    jccoefct.c
-    jccolor.c
-    jcdctmgr.c
-    jchuff.c
-    jcinit.c
-    jcmainct.c
-    jcmarker.c
-    jcmaster.c
-    jcomapi.c
-    jcparam.c
-    jcprepct.c
-    jcsample.c
-    jctrans.c
-    jdapimin.c
-    jdapistd.c
-    jdarith.c
-    jdatadst.c
-    jdatasrc.c
-    jdcoefct.c
-    jdcolor.c
-    jddctmgr.c
-    jdhuff.c
-    jdinput.c
-    jdmainct.c
-    jdmarker.c
-    jdmaster.c
-    jdmerge.c
-    jdpostct.c
-    jdsample.c
-    jdtrans.c
-    jerror.c
-    jfdctflt.c
-    jfdctfst.c
-    jfdctint.c
-    jidctflt.c
-    jidctfst.c
-    jidctint.c
-    jquant1.c
-    jquant2.c
-    jutils.c
-    jmemmgr.c
-    
-	[openalsoft_Marmalade]
-    ("../dependencies/openalsoft_Marmalade")
-	Alc/ALc.c
-	Alc/alcConfig.c
-	Alc/alcEcho.c
-	Alc/alcModulator.c
-	Alc/alcReverb.c
-	Alc/alcRing.c
-	Alc/alcThread.c
-	Alc/ALu.c
-	Alc/bs2b.c
-	Alc/mixer.c
-	Alc/null.c
-	Alc/panning.c
-	Alc/s3esoundaudio.c
-	Alc/s3eaudioaudio.c	
-    utils/openal-info.c	 
-    "OpenAL32/*.c"
-    
     [vorbis]
     ("../dependencies/vorbis")
     lib/analysis.c
@@ -200,9 +137,4 @@ files
     ("../dependencies/pugixml")
     src/pugixml.hpp
     src/pugixml.cpp    
-    
-    [dlmalloc]
-    ("../dependencies/dlmalloc")
-    dlmalloc.h
-    dlmalloc.c
 }

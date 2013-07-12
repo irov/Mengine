@@ -1,10 +1,12 @@
 #ifndef _CONFIG_TYPES_H
 #define _CONFIG_TYPES_H
 
-#define _ogg_malloc  dlmalloc
-#define _ogg_calloc  dlcalloc
-#define _ogg_realloc dlrealloc
-#define _ogg_free    dlfree
+#   include "stdex\allocator.h"
+
+#define _ogg_malloc  (stdex_malloc)
+#define _ogg_calloc  (stdex_calloc)
+#define _ogg_realloc (stdex_realloc)
+#define _ogg_free    (stdex_free)
 
 #ifdef __cplusplus
 extern "C" {

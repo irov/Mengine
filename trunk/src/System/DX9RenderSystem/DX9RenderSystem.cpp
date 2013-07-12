@@ -309,63 +309,22 @@ namespace Menge
 			_mtx->_41 = _mtx->_42 = _mtx->_43 = 0.0f;
 		_mtx->_11 = _mtx->_22 = _mtx->_33 = _mtx->_44 = 1.0f;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//static D3DFORMAT s_findMatchingZFormat( IDirect3D8* _pD3D8, UINT _adapter, D3DDEVTYPE _devtype, D3DFORMAT _bbufferfmt, bool _stencil )
-	//{
-	//	if( _pD3D8 == 0 )
-	//	{
-	//		return static_cast<D3DFORMAT>( 0 );
-	//	}
-
-	//	int fmtID = s_format_id_( _bbufferfmt );
-	//	if( fmtID == 0 )
-	//	{
-	//		return static_cast<D3DFORMAT>( 0 );
-	//	}
-
-	//	const D3DFORMAT *pFormatList;
-	//	if( fmtID > 3 )	// 32bit
-	//	{
-	//		pFormatList = _stencil ? D32SFormats : D32Formats;
-	//	}
-	//	else
-	//	{
-	//		pFormatList = _stencil ? D16SFormats : D16Formats;
-	//	}
-
-	//	while( *pFormatList != 0 )
-	//	{
-	//		// Does this depth format exist on this card, and can it be used in conjunction with the specified rendertarget format?
-	//		if( SUCCEEDED( _pD3D8->CheckDeviceFormat( _adapter, _devtype, _bbufferfmt, 
-	//			D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
-	//		{
-	//			if ( SUCCEEDED( _pD3D8->CheckDepthStencilMatch( 
-	//				_adapter, _devtype,	_bbufferfmt, _bbufferfmt, *pFormatList ) ) )
-	//			{
-	//				break;
-	//			}
-	//		}
-	//		pFormatList++;
-	//	}
-
-	//	return *pFormatList;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderSystem::DX9RenderSystem()
-		: m_serviceProvider(NULL)
-		, m_pD3D(NULL)
-		, m_pD3DDevice(NULL)
+		: m_serviceProvider(nullptr)
+		, m_pD3D(nullptr)
+		, m_pD3DDevice(nullptr)
 		, m_inRender(false)
-		, m_curRenderTexture(NULL)
-		, m_syncTemp(NULL)
-		, m_syncTempTex(NULL)
-		, m_screenSurf(NULL)
-		, m_screenDepth(NULL)
+		, m_curRenderTexture(nullptr)
+		//, m_syncTemp(nullptr)
+		//, m_syncTempTex(nullptr)
+		, m_screenSurf(nullptr)
+		, m_screenDepth(nullptr)
 		, m_vbHandleCounter(0)
 		, m_ibHandleCounter(0)
-		, m_currentIB(NULL)
-        , m_currentVB(NULL)
-		, m_listener(NULL)
+		, m_currentIB(0)
+        , m_currentVB(0)
+		, m_listener(nullptr)
 		, m_supportNPOT(false)
         , m_supportL8(false)
         , m_supportA8(false)
@@ -375,9 +334,14 @@ namespace Menge
         , m_adapterToUse(D3DADAPTER_DEFAULT)
         , m_deviceType(D3DDEVTYPE_HAL)
         , m_waitForVSync(false)
+        //, m_currentTexture(nullptr)
 	{
-		m_syncTargets[0] = NULL;
-		m_syncTargets[1] = NULL;
+		//m_syncTargets[0] = NULL;
+		//m_syncTargets[1] = NULL;
+        for( size_t i = 0; i != 8; ++i )
+        {
+            m_currentTexture[i] = nullptr;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderSystem::~DX9RenderSystem()
@@ -428,7 +392,7 @@ namespace Menge
 
 		m_pD3D = pDirect3DCreate9( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 
-		if( m_pD3D == NULL )
+		if( m_pD3D == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Can't create D3D interface" 
                 );
@@ -535,11 +499,9 @@ namespace Menge
 
 		s_matIdent_( &m_matTexture );
 
-		D3DCAPS9 caps;
-		m_pD3D->GetDeviceCaps( m_adapterToUse, m_deviceType, &caps );
+		m_pD3D->GetDeviceCaps( m_adapterToUse, m_deviceType, &m_caps );
 
-		if( ( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 )
-			/*|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )*/ )
+		if( (m_caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )			
 		{
 			m_supportNPOT = true;
 		}
@@ -1090,6 +1052,7 @@ namespace Menge
         if( m_fullscreen == false )
         {
             hr = m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode);
+
             if( FAILED( hr ) || Mode.Format==D3DFMT_UNKNOWN) 
             {
                 LOGGER_ERROR(m_serviceProvider)( "Can't determine desktop video mode"
@@ -1402,7 +1365,7 @@ namespace Menge
 
 		if( renderTarget != m_curRenderTexture )
 		{
-			if( renderTarget != NULL )
+			if( renderTarget != nullptr )
 			{
 				IDirect3DTexture9 * dxTexture = renderTarget->getDXTextureInterface();
                 dxTexture->GetSurfaceLevel( 0, &pSurf );
@@ -1639,7 +1602,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureMatrix( size_t _stage, const float* _texture )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setTextureMatrix device not created"
                 );
@@ -1648,7 +1611,7 @@ namespace Menge
         }
 
 		HRESULT hr;
-		if( _texture != NULL )
+		if( _texture != nullptr )
 		{
 			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
 			if( FAILED( hr ) )
@@ -1856,72 +1819,57 @@ namespace Menge
 
 		pSrcSurface->UnlockRect();
 		pDestSurface->UnlockRect();
+
 		return S_OK;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::restore_()
-	{
-		HRESULT hr;
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderSystem::releaseResources_()
+    {
+        if( m_pD3DDevice == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ m_pD3DDevice is null"
+                );
 
-		if( m_syncTargets[0] != nullptr )
-		{
-			m_syncTargets[0]->Release();
-			m_syncTargets[0] = nullptr;
-		}
-		
-        if( m_syncTargets[1] != nullptr )
-		{
-			m_syncTargets[1]->Release();
-			m_syncTargets[1] = nullptr;
-		}
-		
-        if( m_syncTemp != nullptr )
-		{
-			m_syncTemp->Release();
-			m_syncTemp = nullptr;
-		}
-		
-        if( m_syncTempTex != nullptr )
-		{
-			m_syncTempTex->Release();
-			m_syncTempTex = nullptr;
-		}
+            return false;
+        }
 
-		if( m_screenSurf != nullptr )
+        HRESULT hr;
+
+        if( m_screenSurf != nullptr )
         {
             m_screenSurf->Release();
             m_screenSurf = nullptr;
         }
-		//if(m_screenDepth) m_screenDepth->Release();
+        //if(m_screenDepth) m_screenDepth->Release();
 
-        if( m_currentIB != nullptr )
+        if( m_currentIB != 0 )
         {
-            m_currentIB = nullptr;
+            m_currentIB = 0;
 
-		    hr = m_pD3DDevice->SetIndices( nullptr );
+            hr = m_pD3DDevice->SetIndices( nullptr );
 
             if( FAILED( hr ) == true )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to SetIndices (hr:%p)"
                     , hr 
                     );
-            }            
+            }
         }
 
-        if( m_currentVB != nullptr )
+        if( m_currentVB != 0 )
         {
-            m_currentVB = nullptr;
+            m_currentVB = 0;
 
-		    hr = m_pD3DDevice->SetStreamSource( 0, nullptr, 0, 0 );
+            hr = m_pD3DDevice->SetStreamSource( 0, nullptr, 0, 0 );
 
-		    if( FAILED( hr ) == true )
-		    {
-    			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to SetStreamSource (hr:%p)"
-				    , hr 
-				    );
+            if( FAILED( hr ) == true )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to SetStreamSource (hr:%p)"
+                    , hr 
+                    );
 
                 return false;
-		    }            
+            }            
         }
 
         for( TMapVBInfo::iterator 
@@ -1940,22 +1888,49 @@ namespace Menge
         }
 
 
-		for( TMapIBInfo::iterator 
+        for( TMapIBInfo::iterator 
             it = m_indexBuffers.begin(), 
-			it_end = m_indexBuffers.end();
-		it != it_end;
-		++it )
-		{
+            it_end = m_indexBuffers.end();
+        it != it_end;
+        ++it )
+        {
             IBInfo & ib = it->second;
 
             if( ib.pIB != nullptr )
             {
-			    ib.pIB->Release();
+                ib.pIB->Release();
                 ib.pIB = nullptr;
             }
-		}
+        }
+
+        for( size_t i = 0; i != m_caps.MaxSimultaneousTextures; ++i )
+        {
+            m_pD3DDevice->SetTexture( i, nullptr );
+            m_currentTexture[i] = nullptr;
+        }        
+
+        return true;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool DX9RenderSystem::restore_()
+	{
+        if( m_pD3DDevice == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ m_pD3DDevice is null"
+                );
+
+            return false;
+        }
+
+        if( this->releaseResources_() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ release resources"
+                );
+
+            return false;
+        }
         
-		hr = m_pD3DDevice->Reset( m_d3dpp );
+		HRESULT hr = m_pD3DDevice->Reset( m_d3dpp );
 
 		if( FAILED( hr ) == true )
 		{
@@ -1986,157 +1961,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::createSyncTargets_()
-	{
-		// sync surfaces
-		D3DFORMAT fmt = D3DFMT_X8R8G8B8;
-		UINT w = 2;
-		UINT d = 1;
-		m_syncReady = false;
-		//D3DXCheckTextureRequirements( pD3DDevice, &w, &w, &d, D3DUSAGE_RENDERTARGET, &fmt, D3DPOOL_DEFAULT );
-
-		HRESULT hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, 0, TRUE, &(m_syncTargets[0]), NULL );
-		if( FAILED( hr ) )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%p)"
-				, hr 
-				);
-
-			return;
-		}
-
-		hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, 0, TRUE, &(m_syncTargets[1]), NULL );
-		if( FAILED( hr ) )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%p)"
-				, hr 
-				);
-
-			return;
-		}
-
-		hr = m_pD3DDevice->CreateTexture( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex, NULL );
-		if( FAILED( hr ) )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::init_lost_ failed to d3dCreateTexture_ (hr:%p)"
-				, hr 
-				);
-
-			return;
-		}
-
-		hr = m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
-		if( FAILED( hr ) )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::init_lost_ failed to GetSurfaceLevel (hr:%p)"
-				, hr 
-				);
-
-			return;
-		}
-
-		m_syncReady = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::release_()
 	{
-		HRESULT hr;
-
-		if( m_syncTargets[0] != nullptr )
-		{
-			m_syncTargets[0]->Release();
-			m_syncTargets[0] = nullptr;
-		}
-
-		if( m_syncTargets[1] != nullptr )
-		{
-			m_syncTargets[1]->Release();
-			m_syncTargets[1] = nullptr;
-		}
-
-		if( m_syncTemp != nullptr )
-		{
-			m_syncTemp->Release();
-			m_syncTemp = nullptr;
-		}
-
-		if( m_syncTempTex != nullptr )
-		{
-			m_syncTempTex->Release();
-			m_syncTempTex = nullptr;
-		}
-
-		if( m_screenSurf != nullptr ) 
-		{ 
-			m_screenSurf->Release();
-			m_screenSurf = nullptr; 
-		}
-
-		if( m_screenDepth != nullptr ) 
-		{ 
-			m_screenDepth->Release();
-			m_screenDepth = nullptr; 
-		}
-
-		if( m_pD3DDevice != nullptr )
-		{
-            if( m_currentVB )
-            {
-			    hr = m_pD3DDevice->SetStreamSource( 0, nullptr, 0, 0 );
-
-			    if( FAILED( hr ) )
-			    {
-				    LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to SetStreamSource (hr:%p)"
-					    , hr 
-					    );
-			    }
-
-                m_currentVB = nullptr;
-            }
-
-            if( m_currentIB )
-            {
-                hr = m_pD3DDevice->SetIndices( nullptr );
-
-                if( FAILED( hr ) )
-                {
-                    LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to SetIndices (hr:%p)"
-                        , hr 
-                        );
-                }
-
-                m_currentIB = nullptr;
-            }
-		}
-
-		for( TMapVBInfo::iterator 
-            it = m_vertexBuffers.begin(), 
-			it_end = m_vertexBuffers.end();
-		it != it_end;
-		++it )
-		{
-            VBInfo & vb = it->second;
-
-            if( vb.pVB )
-            {
-			    vb.pVB->Release();
-                vb.pVB = nullptr;
-            }
-		}
-
-        for( TMapIBInfo::iterator 
-            it = m_indexBuffers.begin(), 
-            it_end = m_indexBuffers.end();
-        it != it_end;
-        ++it )
+        if( m_pD3DDevice == nullptr )
         {
-            IBInfo & ib = it->second;
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::release_ m_pD3DDevice is null"
+                );
 
-            if( ib.pIB )
-            {
-                ib.pIB->Release();
-                ib.pIB = nullptr;
-            }
+            return;
+        }
+
+		if( this->releaseResources_() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::release_ invalid release resource"
+                );
+
+            return;
         }
 
 		if( m_pD3DDevice != nullptr ) 
@@ -2155,7 +1995,7 @@ namespace Menge
 	bool DX9RenderSystem::onRestoreDevice_()
 	{
 		// restoring render targets
-		if( m_listener != NULL )
+		if( m_listener != nullptr )
 		{
 			if( m_listener->onRenderSystemDeviceRestored() == false )
             {
@@ -2468,7 +2308,7 @@ namespace Menge
             return;
 		}
 
-        m_currentVB = vb;
+        m_currentVB = _vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex )
@@ -2509,7 +2349,7 @@ namespace Menge
 				);
 		}
 
-        m_currentIB = ib;
+        m_currentIB = _ibHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
@@ -2556,15 +2396,17 @@ namespace Menge
             return;
         }
 
-        IDirect3DTexture9 * d3dTexture = nullptr;
+        m_currentTexture[_stage] = nullptr;
 
         if( _texture != nullptr )
         {
             DX9TexturePtr t = stdex::intrusive_static_cast<DX9TexturePtr>(_texture);
-            d3dTexture = t->getDXTextureInterface();
+            m_currentTexture[_stage] = t->getDXTextureInterface();
         }
+
+        IDirect3DTexture9 * texture = m_currentTexture[_stage];
 		
-		HRESULT hr = m_pD3DDevice->SetTexture( _stage, d3dTexture );
+		HRESULT hr = m_pD3DDevice->SetTexture( _stage, texture );
 
 		if( FAILED( hr ) )
 		{

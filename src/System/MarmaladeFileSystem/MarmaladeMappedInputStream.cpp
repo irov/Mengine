@@ -33,7 +33,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeMappedInputStream::openInputMemory( const InputStreamInterfacePtr & _stream, const FilePath & _filename, size_t _offset, size_t _size )
     {
-        MemoryInput * memory = intrusive_get<MemoryInput>(_stream);
+        MemoryInput * memory = stdex::intrusive_get<MemoryInput>(_stream);
 
         void * buffer = memory->newMemory( _size );
 

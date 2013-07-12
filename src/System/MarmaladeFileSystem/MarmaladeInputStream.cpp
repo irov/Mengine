@@ -183,7 +183,7 @@ namespace Menge
             return 0;
         }
 
-        uint32 readSize = (std::min)( static_cast<uint32>(_count - tail), bytesRead );
+        uint32 readSize = (std::min)( static_cast<uint32>(_count - tail), needRead );
 
         memcpy( (char *)_buf + tail, m_buff, readSize );
 

@@ -6,8 +6,9 @@
 
 #   include "MarmaladeTexture.h"
 
-#	include "Utils/Core/BinaryVector.h"
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryPool.h"
+
+#   include "stdex/binary_vector.h"
 
 #   include "IwGL.h"
 #   include "s3e.h"
@@ -211,11 +212,11 @@ namespace Menge
 			size_t offset;
 		};
 
-		typedef BinaryVector<VBHandle, MemoryRange> TMapVBufferMemory;
+        typedef stdex::binary_vector<VBHandle, MemoryRange> TMapVBufferMemory;
 		TMapVBufferMemory m_vBuffersMemory;
 		TMapVBufferMemory m_vBuffersLocks;
 		
-		typedef BinaryVector<IBHandle, MemoryRange> TMapIBufferMemory;
+		typedef stdex::binary_vector<IBHandle, MemoryRange> TMapIBufferMemory;
 		TMapIBufferMemory m_iBuffersMemory;
 		TMapIBufferMemory m_iBuffersLocks;
 

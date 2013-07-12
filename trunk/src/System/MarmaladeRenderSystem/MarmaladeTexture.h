@@ -72,5 +72,5 @@ namespace Menge
 		unsigned char* m_lock;
 	};
 
-    typedef IntrusivePtr<MarmaladeTexture> OGLTexturePtr;
+    typedef stdex::intrusive_ptr<MarmaladeTexture> OGLTexturePtr;
 }	// namespace Menge

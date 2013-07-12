@@ -595,7 +595,7 @@ namespace Menge
 
         if( _texture != nullptr )
         {
-            MarmaladeTexture * texture = intrusive_get<MarmaladeTexture>(_texture);
+            MarmaladeTexture * texture = stdex::intrusive_get<MarmaladeTexture>(_texture);
             
             tStage.texture = texture->getUId();
             tStage.wrapS = texture->getWrapS();

@@ -112,7 +112,6 @@
 #	include "ResourceCursorICO.h"
 #	include "ResourceCursorSystem.h"
 #	include "ResourceInternalObject.h"
-#   include "ResourceExternal.h"
 
 #	include "Interface/UnicodeInterface.h"
 
@@ -738,7 +737,6 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceCursorSystem );
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceInternalObject );
-        RESOURCE_FACTORY( m_serviceProvider, ResourceExternal );
 
 #	undef RESOURCE_FACTORY
 

@@ -172,7 +172,7 @@ namespace Menge
 
             const ResourceDesc & desc = *it;
 
-			if( RESOURCE_SERVICE(m_serviceProvider)->loadResource( desc ) == false )
+			if( RESOURCE_SERVICE(m_serviceProvider)->loadResource( desc.pakName, desc.path ) == false )
             {
                 return false;
             }

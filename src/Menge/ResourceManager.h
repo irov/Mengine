@@ -32,7 +32,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool loadResource( const ResourceDesc & _desc ) override;
+		bool loadResource( const ConstString & _pakName, const ConstString & _path ) override;
 		
 	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;

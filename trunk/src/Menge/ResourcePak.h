@@ -9,6 +9,17 @@
 
 namespace Menge
 {
+    struct ResourceDesc
+    {
+        ConstString pakName;
+        ConstString pakType;
+
+        FilePath pakPath;
+
+        FilePath path;
+        bool script;
+    };
+
 	class ResourcePak
 	{
 	public:

@@ -68,25 +68,25 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const ResourceDesc & _desc )
+	bool ResourceManager::loadResource( const ConstString & _pakName, const ConstString & _path )
 	{
 		Metacode::Meta_DataBlock datablock;
 
 		bool exist = false;
-		if( LOADER_SERVICE(m_serviceProvider)->load( _desc.pakName, _desc.path, &datablock, exist ) == false )
+		if( LOADER_SERVICE(m_serviceProvider)->load( _pakName, _path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "ResourceManager::loadResource: resource '%s:%s' not found"
-					, _desc.pakName.c_str()
-					, _desc.path.c_str()
+					, _pakName.c_str()
+					, _path.c_str()
 					);
 			}
 			else
 			{
 				LOGGER_ERROR(m_serviceProvider)( "ResourceManager::loadResource: Invalid parse resource '%s:%s'"
-                    , _desc.pakName.c_str()
-                    , _desc.path.c_str()
+                    , _pakName.c_str()
+                    , _path.c_str()
 					);
 			}
 
@@ -95,6 +95,31 @@ namespace Menge
 
         ConstString groupName;
         datablock.swap_Name( groupName );
+
+        const Metacode::Meta_DataBlock::TVectorMeta_Include & includes_include = datablock.get_IncludesInclude();
+
+        for( Metacode::Meta_DataBlock::TVectorMeta_Include::const_iterator
+            it = includes_include.begin(),
+            it_end = includes_include.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_DataBlock::Meta_Include & meta_include = *it;
+
+            const ConstString & path = meta_include.get_Path();
+
+            if( this->loadResource( _pakName, path ) == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource load %s:%s resource invalid load include %s"
+                    , _pakName.c_str()
+                    , _path.c_str()
+                    , path.c_str()
+                    );
+
+                return false;
+            }
+        }
+
 
         const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
 
@@ -122,7 +147,7 @@ namespace Menge
                 LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: already exist resource name '%s' in group '%s' category '%s' ('%s')"
                     , name.c_str()
                     , groupName.c_str()
-                    , _desc.pakName.c_str()
+                    , _pakName.c_str()
                     , resource_category.c_str()
                     );
 
@@ -131,12 +156,12 @@ namespace Menge
 #   endif
 
             ResourceReference * resource = 
-                this->createResource( _desc.pakName, groupName, name, type );
+                this->createResource( _pakName, groupName, name, type );
 
             if( resource == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: invalid create resource %s:%s name %s type %s"
-                    , _desc.pakName.c_str()
+                    , _pakName.c_str()
                     , groupName.c_str()
                     , name.c_str()
                     , type.c_str()

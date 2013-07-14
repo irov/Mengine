@@ -52,6 +52,42 @@ namespace Metacode
         bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
         bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
     public:
+        class Meta_Include
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_Include()
+                : Metabuf::Metadata()
+            {
+            }
+        public:
+            const Menge::ConstString & get_Path() const
+            {
+                return this->Path;
+            }
+            
+            void swap_Path( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Path);
+            }
+            
+            template<class C, class M>
+            void method_Path( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString Path;
+        };
+        
         class Meta_Resource
             : public Metabuf::Metadata
         { 
@@ -179,7 +215,7 @@ namespace Metacode
         protected:
         protected:
         public:
-            typedef Metabuf::Array<Meta_Sequence> TVectorMeta_Sequence;
+            typedef stdex::auto_array<Meta_Sequence> TVectorMeta_Sequence;
         
             const TVectorMeta_Sequence & get_IncludesSequence() const
             {
@@ -324,22 +360,6 @@ namespace Metacode
             {
             }
         public:
-            const Menge::ConstString & get_External_Name() const
-            {
-                return this->External_Name;
-            }
-            
-            void swap_External_Name( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->External_Name);
-            }
-            
-            template<class C, class M>
-            void method_External_Name( C * _self, M _method )
-            {
-                (_self->*_method)( this->External_Name );
-            }
-            
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
             bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
@@ -348,7 +368,6 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString External_Name;
         };
         
         class Meta_ResourceFont
@@ -2998,7 +3017,7 @@ namespace Metacode
             bool Width_Value_successful;
             mutable float Width_Value;
         public:
-            typedef Metabuf::Array<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;
+            typedef stdex::auto_array<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;
         
             const TVectorMeta_MovieCamera3D & get_IncludesMovieCamera3D() const
             {
@@ -3008,7 +3027,7 @@ namespace Metacode
         protected:
             TVectorMeta_MovieCamera3D includes_Meta_MovieCamera3D;
         public:
-            typedef Metabuf::Array<Meta_MovieLayer2D> TVectorMeta_MovieLayer2D;
+            typedef stdex::auto_array<Meta_MovieLayer2D> TVectorMeta_MovieLayer2D;
         
             const TVectorMeta_MovieLayer2D & get_IncludesMovieLayer2D() const
             {
@@ -3018,7 +3037,7 @@ namespace Metacode
         protected:
             TVectorMeta_MovieLayer2D includes_Meta_MovieLayer2D;
         public:
-            typedef Metabuf::Array<Meta_MovieLayer3D> TVectorMeta_MovieLayer3D;
+            typedef stdex::auto_array<Meta_MovieLayer3D> TVectorMeta_MovieLayer3D;
         
             const TVectorMeta_MovieLayer3D & get_IncludesMovieLayer3D() const
             {
@@ -3223,7 +3242,7 @@ namespace Metacode
             protected:
             protected:
             public:
-                typedef Metabuf::Array<Meta_Track> TVectorMeta_Track;
+                typedef stdex::auto_array<Meta_Track> TVectorMeta_Track;
             
                 const TVectorMeta_Track & get_IncludesTrack() const
                 {
@@ -3241,7 +3260,7 @@ namespace Metacode
             bool Shuffle_Value_successful;
             mutable bool Shuffle_Value;
         public:
-            typedef Metabuf::Array<Meta_Tracks> TVectorMeta_Tracks;
+            typedef stdex::auto_array<Meta_Tracks> TVectorMeta_Tracks;
         
             const TVectorMeta_Tracks & get_IncludesTracks() const
             {
@@ -4085,7 +4104,17 @@ namespace Metacode
     protected:
         mutable Menge::ConstString Name;
     public:
-        typedef Metabuf::Array<Meta_Resource *> TVectorMeta_Resource;
+        typedef stdex::auto_array<Meta_Include> TVectorMeta_Include;
+    
+        const TVectorMeta_Include & get_IncludesInclude() const
+        {
+            return this->includes_Meta_Include;
+        }
+    
+    protected:
+        TVectorMeta_Include includes_Meta_Include;
+    public:
+        typedef stdex::auto_array<Meta_Resource *> TVectorMeta_Resource;
     
         const TVectorMeta_Resource & get_IncludesResource() const
         {
@@ -4266,7 +4295,7 @@ namespace Metacode
             mutable mt::vec4f rect;
             mutable float width;
         public:
-            typedef Metabuf::Array<Meta_Kerning> TVectorMeta_Kerning;
+            typedef stdex::auto_array<Meta_Kerning> TVectorMeta_Kerning;
         
             const TVectorMeta_Kerning & get_IncludesKerning() const
             {
@@ -4281,7 +4310,7 @@ namespace Metacode
     protected:
         mutable float height;
     public:
-        typedef Metabuf::Array<Meta_Char> TVectorMeta_Char;
+        typedef stdex::auto_array<Meta_Char> TVectorMeta_Char;
     
         const TVectorMeta_Char & get_IncludesChar() const
         {
@@ -4764,7 +4793,7 @@ namespace Metacode
             mutable bool Immutable;
             mutable size_t LayerIndex;
         public:
-            typedef Metabuf::Array<Meta_KeyFrame2D> TVectorMeta_KeyFrame2D;
+            typedef stdex::auto_array<Meta_KeyFrame2D> TVectorMeta_KeyFrame2D;
         
             const TVectorMeta_KeyFrame2D & get_IncludesKeyFrame2D() const
             {
@@ -5216,7 +5245,7 @@ namespace Metacode
             mutable bool Immutable;
             mutable size_t LayerIndex;
         public:
-            typedef Metabuf::Array<Meta_KeyFrame3D> TVectorMeta_KeyFrame3D;
+            typedef stdex::auto_array<Meta_KeyFrame3D> TVectorMeta_KeyFrame3D;
         
             const TVectorMeta_KeyFrame3D & get_IncludesKeyFrame3D() const
             {
@@ -5231,7 +5260,7 @@ namespace Metacode
     protected:
         mutable size_t MaxIndex;
     public:
-        typedef Metabuf::Array<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
+        typedef stdex::auto_array<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
     
         const TVectorMeta_KeyFrames2D & get_IncludesKeyFrames2D() const
         {
@@ -5241,7 +5270,7 @@ namespace Metacode
     protected:
         TVectorMeta_KeyFrames2D includes_Meta_KeyFrames2D;
     public:
-        typedef Metabuf::Array<Meta_KeyFrames3D> TVectorMeta_KeyFrames3D;
+        typedef stdex::auto_array<Meta_KeyFrames3D> TVectorMeta_KeyFrames3D;
     
         const TVectorMeta_KeyFrames3D & get_IncludesKeyFrames3D() const
         {
@@ -5321,7 +5350,7 @@ namespace Metacode
         protected:
         protected:
         public:
-            typedef Metabuf::Array<Meta_Resource> TVectorMeta_Resource;
+            typedef stdex::auto_array<Meta_Resource> TVectorMeta_Resource;
         
             const TVectorMeta_Resource & get_IncludesResource() const
             {
@@ -5422,7 +5451,7 @@ namespace Metacode
         protected:
         protected:
         public:
-            typedef Metabuf::Array<Meta_Text> TVectorMeta_Text;
+            typedef stdex::auto_array<Meta_Text> TVectorMeta_Text;
         
             const TVectorMeta_Text & get_IncludesText() const
             {
@@ -5436,7 +5465,7 @@ namespace Metacode
     protected:
     protected:
     public:
-        typedef Metabuf::Array<Meta_Resources> TVectorMeta_Resources;
+        typedef stdex::auto_array<Meta_Resources> TVectorMeta_Resources;
     
         const TVectorMeta_Resources & get_IncludesResources() const
         {
@@ -5446,7 +5475,7 @@ namespace Metacode
     protected:
         TVectorMeta_Resources includes_Meta_Resources;
     public:
-        typedef Metabuf::Array<Meta_Scripts> TVectorMeta_Scripts;
+        typedef stdex::auto_array<Meta_Scripts> TVectorMeta_Scripts;
     
         const TVectorMeta_Scripts & get_IncludesScripts() const
         {
@@ -5456,7 +5485,7 @@ namespace Metacode
     protected:
         TVectorMeta_Scripts includes_Meta_Scripts;
     public:
-        typedef Metabuf::Array<Meta_Texts> TVectorMeta_Texts;
+        typedef stdex::auto_array<Meta_Texts> TVectorMeta_Texts;
     
         const TVectorMeta_Texts & get_IncludesTexts() const
         {
@@ -5693,7 +5722,7 @@ namespace Metacode
     protected:
     protected:
     public:
-        typedef Metabuf::Array<Meta_Text> TVectorMeta_Text;
+        typedef stdex::auto_array<Meta_Text> TVectorMeta_Text;
     
         const TVectorMeta_Text & get_IncludesText() const
         {

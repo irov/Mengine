@@ -11,17 +11,6 @@
 
 namespace Menge
 {
-    struct ResourceDesc
-    {
-        ConstString pakName;
-        ConstString pakType;
-
-        FilePath pakPath;
-
-        FilePath path;
-        bool script;
-    };
-
     class ResourceManagerListener
     {
     public:
@@ -38,7 +27,7 @@ namespace Menge
         SERVICE_DECLARE("ResourceService")
 
     public:
-        virtual bool loadResource( const ResourceDesc & _desc ) = 0;
+        virtual bool loadResource( const ConstString & _pakName, const ConstString & _path ) = 0;
 
     public:
         virtual ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;

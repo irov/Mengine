@@ -229,13 +229,6 @@ Resource\\\\EmitterContainer
 )
 
 ADD_FILTER(
-Resource\\\\External
-	ResourceExternal.cpp
-	ResourceExternal.h
-)
-
-
-ADD_FILTER(
 Resource\\\\Font
 	ResourceFont.cpp
 	ResourceFont.h

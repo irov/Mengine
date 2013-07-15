@@ -41,21 +41,21 @@ namespace Menge
 		this->registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setVideoResource( const ConstString& _resource )
+	void Video::setResourceVideo( ResourceVideo * _resourceVideo )
 	{
-		if( m_resourceVideoName == _resource )
+		if( m_resourceVideo == _resourceVideo )
 		{
 			return;
 		}
 
-		m_resourceVideoName = _resource;
+		m_resourceVideo = _resourceVideo;
 
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Video::getVideoResource() const
+	ResourceVideo * Video::getResourceVideo() const
 	{
-		return m_resourceVideoName;
+		return m_resourceVideo;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _current, float _timing )
@@ -106,18 +106,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
-        m_resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourceVideo>( m_resourceVideoName );
-        
 		if( m_resourceVideo == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' resource not found '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' resource is null"
 				, this->getName().c_str()
-				, m_resourceVideoName.c_str() 
 				);	
 
 			return false;
 		}
+
+        if( m_resourceVideo->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' resource '%s' is not compile"
+                , this->getName().c_str()
+                , m_resourceVideo->getName().c_str()
+                );	
+
+            return false;
+        }
 
 		this->updateMaterial_();
 
@@ -125,7 +131,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Video::_compile %s can`t create video decoder '%s'"
 				, this->getName().c_str()
-				, m_resourceVideoName.c_str() 
+				, m_resourceVideo->getName().c_str() 
 				);	
 
 			return false;
@@ -148,7 +154,9 @@ namespace Menge
 		m_textures[0] = RENDERTEXTURE_SERVICE(m_serviceProvider)
             ->createDynamicTexture( width, height, channels, PF_UNKNOWN );
 
-        m_textures[0]->setFileName( m_resourceVideoName );
+        const ConstString & resourceVideoName = m_resourceVideo->getName();
+
+        m_textures[0]->setFileName( resourceVideoName );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
 
@@ -193,7 +201,6 @@ namespace Menge
         if( m_resourceVideo != nullptr )
 		{
 			m_resourceVideo->decrementReference();
-			m_resourceVideo = nullptr;
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -258,7 +265,7 @@ namespace Menge
             {
                 LOGGER_ERROR(m_serviceProvider)("Video::_render %s invalid fill video buffer (%s)"
                     , this->getName().c_str()
-                    , m_resourceVideoName.c_str()
+                    , m_resourceVideo->getName().c_str()
                     );
             }
 
@@ -392,7 +399,7 @@ namespace Menge
                     {
                         LOGGER_ERROR(m_serviceProvider)("Video::sync_ %s:%s invalid seek to %f"
                             , this->getName().c_str()
-                            , m_resourceVideoName.c_str()
+                            , m_resourceVideo->getName().c_str()
                             , time
                             );
                     }
@@ -427,7 +434,15 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
 	{
-		//float current_timing = m_videoDecoder->getTiming();
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Video::_setTiming %s not compile"
+                , this->getName().c_str()
+                );
+
+            return;
+        }
+		
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		float seek_timing = _timing;
@@ -441,7 +456,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("Video::_setTiming %s:%s invalid seek to %f"
                 , this->getName().c_str()
-                , m_resourceVideoName.c_str()
+                , m_resourceVideo->getName().c_str()
                 , seek_timing
                 );
         }

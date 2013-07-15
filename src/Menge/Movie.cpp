@@ -9,6 +9,7 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceImageSolid.h"
 #   include "ResourceHIT.h"
+#   include "ResourceVideo.h"
 
 #   include "Interface/ApplicationInterface.h"
 
@@ -1353,7 +1354,10 @@ namespace Menge
 		Video * layer_video = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Video>( CONST_STRING(m_serviceProvider, Video) );
 
-		layer_video->setVideoResource( _layer.source );
+        ResourceVideo * resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceVideo>( _layer.source );
+
+		layer_video->setResourceVideo( resourceVideo );
         layer_video->setName( _layer.name );
 
 		layer_video->setIntervalStart( _layer.startInterval );

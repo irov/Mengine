@@ -32,8 +32,8 @@ namespace Menge
 		virtual void pause();
 		
 	public:
-		void setVideoResource( const ConstString& _resource );
-		const ConstString & getVideoResource() const;
+		void setResourceVideo( ResourceVideo * _resourceVideo );
+		ResourceVideo * getResourceVideo() const;
 
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
@@ -77,7 +77,6 @@ namespace Menge
 		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
-        ConstString m_resourceVideoName;
 		ResourceVideo * m_resourceVideo;		
 
 		RenderTextureInterfacePtr m_textures[1];

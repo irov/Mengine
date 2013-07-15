@@ -258,6 +258,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NODE_GETSETRESOURCE_DECLARE( Movie, ResourceMovie, Movie::setResourceMovie, Movie::getResourceMovie );
         //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( Video, ResourceVideo, Video::setResourceVideo, Video::getResourceVideo );
+        //////////////////////////////////////////////////////////////////////////
         PyObject * movie_getSockets( Movie * _movie )
         {
             PyObject * py_list = pybind::list_new(0);
@@ -3318,9 +3320,10 @@ namespace Menge
                 pybind::interface_<MovieInternalObject, pybind::bases<Node> >("MovieInternalObject", false)
                     ;				
 
-                pybind::interface_<Video, pybind::bases<Node , Animatable> >("Video", false)
+                pybind::interface_<Video, pybind::bases<Node , Animatable> >("Video", false)                    
+                    .def_proxy_static( "setResourceVideo", nodeScriptMethod, &NodeScriptMethod::Video_setResource )
+                    .def_proxy_static( "getResourceVideo", nodeScriptMethod, &NodeScriptMethod::Video_getResource )
                     .def( "pause",&Video::pause )
-                    .def( "setVideoResource", &Video::setVideoResource )
                     ;
 
                 pybind::interface_<Window, pybind::bases<Node> >("Window", false)

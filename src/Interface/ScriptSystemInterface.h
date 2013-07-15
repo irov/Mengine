@@ -20,13 +20,14 @@ extern "C"
 
 namespace Menge
 {	    
-    class Node;
+    class Scriptable;
+
     class Entity;
 
     class ScriptClassInterface
     {
     public:
-        virtual PyObject * wrap( Node * _node ) = 0;
+        virtual PyObject * wrap( Scriptable * _node ) = 0;
 
     public:
         virtual void destroy() = 0;
@@ -43,7 +44,7 @@ namespace Menge
 
 	public:
         virtual void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) = 0;
-        virtual PyObject * wrap( Node * _node ) = 0;
+        virtual PyObject * wrap( const ConstString & _type, Scriptable * _node ) = 0;
 
 		virtual void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes ) = 0;
 

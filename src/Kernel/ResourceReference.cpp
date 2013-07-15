@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#	include "Interface/ScriptSystemInterface.h"
+
 #   include "Interface/CodecInterface.h"
 
 #	include "Interface/NotificationServiceInterace.h"
@@ -95,6 +97,16 @@ namespace Menge
         NOTIFICATION_SERVICE(m_serviceProvider)
             ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    PyObject * ResourceReference::_embedded()
+    { 
+        const ConstString & type = this->getType();
+
+        PyObject * embedding = SCRIPT_SERVICE(m_serviceProvider)
+            ->wrap( type, this );
+
+        return embedding;
+    }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceReference::getCodec_( const FilePath & _filename ) const
     {

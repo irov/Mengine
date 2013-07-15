@@ -26,7 +26,7 @@ namespace Menge
 	class Arrow;
     
 	class Game
-		: public GameServiceInterface		
+		: public GameServiceInterface
 		, public Eventable
 	{
 	public:

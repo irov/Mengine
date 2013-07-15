@@ -65,7 +65,7 @@ namespace Menge
 
 	public:
 		void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) override;
-		PyObject * wrap( Node * _node ) override;
+		PyObject * wrap( const ConstString & _type, Scriptable * _node ) override;
 		
 	public:
 		bool hasModuleFunction( PyObject * _module, const char * _name );

@@ -61,6 +61,23 @@ namespace Menge
 
         virtual ResourceReference * getResourceReference( const ConstString& _name ) const = 0;
 
+        template<class T>
+        T * getResourceReferenceT( const ConstString& _name ) const
+        {
+            ResourceReference * resource = this->getResourceReference( _name );
+
+#   ifdef _DEBUG
+            if( dynamic_cast<T*>(resource) == nullptr )
+            {
+                return nullptr;
+            }
+#   endif
+
+            T * t = static_cast<T*>(resource);
+
+            return t;
+        }
+
         virtual bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const = 0;
         virtual bool validResource( const ConstString& _name ) const = 0;
 

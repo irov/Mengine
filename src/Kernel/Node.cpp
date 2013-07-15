@@ -885,8 +885,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Node::_embedded()
 	{ 
+        const ConstString & type = this->getType();
+
 		PyObject * embedding = SCRIPT_SERVICE(m_serviceProvider)
-			->wrap( this );
+			->wrap( type, this );
 
 		return embedding;
 	}
@@ -934,6 +936,20 @@ namespace Menge
 	{
 		return this->isActivate();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    Eventable * Node::getGlobalHandleEventable()
+    {
+        Eventable * eventable = static_cast<Eventable *>(this);
+
+        return eventable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Scriptable * Node::getGlobalHandleScriptable()
+    {
+        Scriptable * scriptable = static_cast<Scriptable *>(this);
+
+        return scriptable;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer * _layer )
 	{

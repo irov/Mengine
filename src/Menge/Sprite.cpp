@@ -56,37 +56,24 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::compileResource_()
 	{
-		if( m_resourceImage != nullptr )
-		{
-			if( m_resourceImage->compile() == false )
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		if( m_resourceImageName.empty() == true )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "Sprite.compileResource_: '%s' Image resource empty"
-				, m_name.c_str() 
-				);
-
-			return false;
-		}
-
-		m_resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceImage>( m_resourceImageName );
-
 		if( m_resourceImage == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Sprite: '%s' Image resource not found resource '%s'"
-				, m_name.c_str()
-				, m_resourceImageName.c_str() 
-				);
+            LOGGER_ERROR(m_serviceProvider)( "Sprite::compileResource_ '%s' image resource null"
+                , m_name.c_str() 
+                );
 
-			return false;
-		}
+            return false;
+        }
+
+        if( m_resourceImage->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Sprite::compileResource_ '%s' image resource %s not compile"
+                , m_name.c_str() 
+                , m_resourceImage->getName().c_str()
+                );
+
+            return false;
+        }
 
 		return true;
 	}
@@ -98,7 +85,6 @@ namespace	Menge
 		if( m_resourceImage != nullptr )
 		{
 			m_resourceImage->decrementReference();
-			m_resourceImage = nullptr;
 		}
 
         m_textures[0] = nullptr;
@@ -107,26 +93,21 @@ namespace	Menge
 		m_materialGroup = nullptr;
 		m_material = nullptr;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageResourceName( const ConstString& _name )
-	{
-		if( m_resourceImageName == _name )
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    void Sprite::setImageResource( ResourceImage * _resourceImage )
+    {
+        if( m_resourceImage == _resourceImage )
+        {
+            return;
+        }
 
-		m_resourceImageName = _name;
+        m_resourceImage = _resourceImage;
 
-		this->recompile();
+        this->recompile();
 
-		//this->invalidateVertices_();
-		this->invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Sprite::getImageResourceName() const
-	{
-		return m_resourceImageName;
-	}
+        //this->invalidateVertices_();
+        this->invalidateBoundingBox();
+    }
     //////////////////////////////////////////////////////////////////////////
     ResourceImage * Sprite::getImageResource() const
     {

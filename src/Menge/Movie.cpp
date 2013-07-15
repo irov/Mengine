@@ -955,7 +955,10 @@ namespace Menge
 		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
 
-		layer_sprite->setImageResourceName( _layer.source );
+        ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceImage>( _layer.source );
+
+		layer_sprite->setImageResource( resourceImage );
 
         layer_sprite->setName( _layer.name );
 
@@ -1008,7 +1011,10 @@ namespace Menge
 		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
 
-		layer_sprite->setImageResourceName( CONST_STRING(m_serviceProvider, WhitePixel) );
+        ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceImage>( CONST_STRING(m_serviceProvider, WhitePixel) );
+
+		layer_sprite->setImageResource( resourceImage );
 
         layer_sprite->setName( _layer.name );
 

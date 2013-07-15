@@ -59,8 +59,8 @@ namespace Menge
 		, public Colorable
 		, public Affectorable
         , public Visitable
-		, virtual public Scriptable
-		, virtual public Eventable
+        , public Eventable
+		, public Scriptable
 	{
         DECLARE_VISITABLE();
 
@@ -112,6 +112,8 @@ namespace Menge
 
 	protected:
 		bool isEnableGlobalHandle() const override;
+        Eventable * getGlobalHandleEventable() override;
+        Scriptable * getGlobalHandleScriptable() override;
 
 	public:
 		void getCameraPosition( RenderCameraInterface * _camera, mt::vec2f & _position );

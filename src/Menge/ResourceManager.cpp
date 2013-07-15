@@ -373,14 +373,14 @@ namespace Menge
 
 		const ResourceEntry & entry = it_find->second;
 
-		if( entry.isLocked == true )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' is LOCK!"
-				, _name.c_str()
-				);
+        if( entry.isLocked == true )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' is LOCK!"
+                , _name.c_str()
+                );
 
-			return nullptr;
-		}
+            return nullptr;
+        }
 		
 		ResourceReference * resource = entry.resource;
 

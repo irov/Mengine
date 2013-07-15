@@ -172,6 +172,7 @@ namespace Menge
 		, m_countThreads(2)
 		, m_mouseEnter(false)
 		, m_developmentMode(false)
+        , m_nofullscreenMode(false)
         , m_resourceCheck(true)
 		, m_cursorResource(nullptr)
 		, m_fixedContentResolution(false)
@@ -837,7 +838,9 @@ namespace Menge
         //    m_fullscreen = true;
         //}
 
-		if( m_fullscreen == true )
+        bool fullscreen = this->getFullscreenMode();
+
+		if( fullscreen == true )
 		{
             Resolution desktopResolution;
             m_platform->getDesktopResolution( desktopResolution );
@@ -854,7 +857,7 @@ namespace Menge
 		LOGGER_WARNING(m_serviceProvider)( "Application::createRenderWindow current resolution %d %d %s"			
 			, m_currentResolution.getWidth()
 			, m_currentResolution.getHeight()
-            , m_fullscreen ? "Fullscreen" : "Window"
+            , fullscreen ? "Fullscreen" : "Window"
 			);
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
@@ -866,7 +869,7 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
-		m_createRenderWindow = RENDER_SERVICE(m_serviceProvider)->createRenderWindow( m_currentResolution, m_contentResolution, m_renderViewport, m_bits, m_fullscreen,
+		m_createRenderWindow = RENDER_SERVICE(m_serviceProvider)->createRenderWindow( m_currentResolution, m_contentResolution, m_renderViewport, m_bits, fullscreen,
 														_renderWindowHandle, m_FSAAType, m_FSAAQuality );
 
 		if( m_createRenderWindow == false )
@@ -877,7 +880,7 @@ namespace Menge
 			return false;
 		}
 		
-		if( m_fullscreen == true )
+		if( fullscreen == true )
 		{
 			m_platform->notifyCursorClipping( m_renderViewport );
 		}
@@ -894,7 +897,7 @@ namespace Menge
         m_game->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
-            ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_fullscreen, m_currentResolution );
+            ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 			
 		return true;
 	}
@@ -941,6 +944,12 @@ namespace Menge
         if( idx_noresourcecheck != String::npos )
         {
             m_resourceCheck = false;
+        }
+
+        String::size_type idx_nofullscreen = _arguments.find( " -nofullscreen " );
+        if( idx_nofullscreen != String::npos )
+        {
+            m_nofullscreenMode = true;
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1413,7 +1422,10 @@ namespace Menge
 	void Application::setMouseBounded( bool _bounded )
 	{
 		m_mouseBounded = _bounded;
-		if( m_fullscreen == false )	// don't override fullscreen behavior
+
+        bool fullscreen = this->getFullscreenMode();
+
+		if( fullscreen == false )	// don't override fullscreen behavior
 		{
 			if( m_mouseBounded == true )
 			{
@@ -1604,12 +1616,15 @@ namespace Menge
 
         this->invalidateWindow_();
 
-        m_game->onFullscreen( m_currentResolution, m_fullscreen );
+        bool fullscreen = this->getFullscreenMode();        
+        m_game->onFullscreen( m_currentResolution, fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::invalidateWindow_()
     {
-		if( m_fullscreen == true )
+        bool fullscreen = this->getFullscreenMode();
+
+		if( fullscreen == true )
 		{
             Resolution desktopResolution;
             m_platform->getDesktopResolution( desktopResolution );
@@ -1622,14 +1637,14 @@ namespace Menge
 		}
 
         LOGGER_WARNING(m_serviceProvider)( "Application::invalidateWindow_ %d Current Resolution %d %d"
-            , m_fullscreen
+            , fullscreen
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
             );
         
 		RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
 
-		m_platform->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
+		m_platform->notifyWindowModeChanged( m_currentResolution, fullscreen );
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
@@ -1641,7 +1656,7 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
-		if( m_fullscreen == true )
+		if( fullscreen == true )
 		{
 			m_platform->notifyCursorClipping( m_renderViewport );
 		}
@@ -1652,7 +1667,7 @@ namespace Menge
 		}
 	
 		RENDER_SERVICE(m_serviceProvider)
-            ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, m_fullscreen );
+            ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
 		
 		if( !m_mouseBounded && RENDER_SERVICE(m_serviceProvider)->isWindowCreated() )
 		{
@@ -1669,7 +1684,7 @@ namespace Menge
 		}
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
-			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_fullscreen, m_currentResolution );
+			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void Application::screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect )
@@ -1689,6 +1704,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{
+        if( m_nofullscreenMode == true )
+        {
+            return false;
+        }
+
 		return m_fullscreen;
 	}
 	//////////////////////////////////////////////////////////////////////////

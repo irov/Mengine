@@ -26,11 +26,8 @@ namespace Menge
 		Sprite();
 		~Sprite();
 
-	public:
-		void setImageResourceName( const ConstString& _name );
-		const ConstString& getImageResourceName() const;
-
     public:
+        void setImageResource( ResourceImage * _resourceImage );
         ResourceImage * getImageResource() const;
         
     public:
@@ -63,13 +60,12 @@ namespace Menge
 		bool compileResource_();
 
 	protected:
-        ConstString m_resourceImageName;
-		ResourceImage * m_resourceImage;		
+		ResourceImage * m_resourceImage;
 
         bool m_isCustomSize;
         mt::vec2f m_customSize;
 
-		bool m_blendAdd;		
+		bool m_blendAdd;
 		bool m_solid;
 
 		const RenderMaterialGroup * m_materialGroup;

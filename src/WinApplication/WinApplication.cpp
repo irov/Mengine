@@ -1852,20 +1852,46 @@ namespace Menge
 
         if( m_renderService != nullptr )
         {
-            m_renderMaterialManager->finalize();
-            m_renderTextureManager->finalize();
             m_renderService->finalize();
+        }
 
-            SERVICE_DESTROY( RenderService, m_renderService );
-            SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
-            SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
-        }        
+        if( m_renderMaterialManager != nullptr )
+        {
+            m_renderMaterialManager->finalize();
+        }
+
+        if( m_renderTextureManager != nullptr )
+        {
+            m_renderTextureManager->finalize();
+        }
 
         if( m_renderSystem != nullptr )
         {
             m_renderSystem->finalize();
+        }
 
+        if( m_renderService != nullptr )
+        {
+            SERVICE_DESTROY( RenderService, m_renderService );
+            m_renderService = nullptr;
+        }
+
+        if( m_renderMaterialManager != nullptr )
+        {
+            SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
+            m_renderMaterialManager = nullptr;
+        }
+
+        if( m_renderTextureManager != nullptr )
+        {
+            SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
+            m_renderTextureManager = nullptr;
+        }        
+
+        if( m_renderSystem != nullptr )
+        {
             SERVICE_DESTROY( RenderSystem, m_renderSystem );
+            m_renderSystem = nullptr;
         }
 
         if( m_threadService != nullptr )
@@ -1873,6 +1899,7 @@ namespace Menge
             m_threadService->finalize();
 
             SERVICE_DESTROY( ThreadService, m_threadService );
+            m_threadService = nullptr;
         }        
 
         if( m_threadSystem != nullptr )
@@ -1880,6 +1907,7 @@ namespace Menge
             m_threadSystem->finalize();
 
             SERVICE_DESTROY( ThreadSystem, m_threadSystem );
+            m_threadSystem = nullptr;
         }
         
 		if( m_fileLog != nullptr )
@@ -1909,11 +1937,13 @@ namespace Menge
         if( m_fileSystem != nullptr )
         {            
             SERVICE_DESTROY( FileSystem, m_fileSystem );
+            m_fileSystem = nullptr;
         }
 
         if( m_stringizeService != nullptr )
         {
             SERVICE_DESTROY( StringizeService, m_stringizeService );
+            m_stringizeService = nullptr;
         }
         
 		if( m_alreadyRunningMonitor != nullptr )

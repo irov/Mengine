@@ -50,18 +50,23 @@ namespace Menge
 		, m_currentFrame(0)        
 		, m_renderCamera3D(nullptr)
         , m_parentMovie(false)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::setResourceMovieName( const ConstString & _resourceName )
-	{
-		m_resourceMovieName = _resourceName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Movie::getResourceMovieName() const
+        , m_invalidateNodes(true)
 	{	
-		return m_resourceMovieName;
-	}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie::setResourceMovie( ResourceMovie * _resourceMovie )
+    {
+        if( m_resourceMovie == _resourceMovie )
+        {
+            return;
+        }
+
+        m_resourceMovie = _resourceMovie;
+
+        m_invalidateNodes = true;
+
+        this->recompile();        
+    }
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie * Movie::getResourceMovie() const
     {
@@ -896,6 +901,178 @@ namespace Menge
 
 		return py_object;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie::createLayers_()
+    {
+        size_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
+
+        Nodies ns;
+        ns.child = false;
+        ns.node = 0;
+        m_nodies.resize( maxLayerIndex + 1, ns );
+
+        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+        for( TVectorMovieLayers::const_iterator
+            it = layers.begin(),
+            it_end = layers.end();
+        it != it_end;
+        ++it )
+        {
+            const MovieLayer & layer = *it;
+
+            if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
+            {
+                if( this->createMovieSlot_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
+            {
+                if( this->createMovieSceneEffect_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieText) )
+            {
+                if( this->createMovieText_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
+            {
+                if( this->createMovieNullObject_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, Image) )
+            {
+                if( this->createMovieImage_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
+            {
+                if( this->createMovieImageSolid_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+            {
+                if( this->createMovieSocketImage_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+            {
+                if( this->createMovieSocketShape_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, Animation) )
+            {
+                if( this->createMovieAnimation_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, Movie) )
+            {
+                if( this->createMovieMovie_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, SubMovie) )
+            {
+                if( this->createMovieSubMovie_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+            {				
+                if( this->createMovieInternalObject_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, Video) )
+            {
+                if( this->createMovieVideo_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, Sound) )
+            {
+                if( this->createMovieSound_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
+            {
+                if( this->createMovieEmitterContainer_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
+            {
+                if( this->createMovieEvent_( layer ) == false )
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer_node '%s' type '%s'"
+                    , m_name.c_str()
+                    , layer.source.c_str()
+                    , layer.layerType.c_str()
+                    );
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie::releaseLayers_()
+    {
+        for( TVectorNodies::const_iterator 
+            it = m_nodies.begin(),
+            it_end = m_nodies.end();
+        it != it_end;
+        ++it )
+        {
+            const Nodies & ns = *it;
+
+            if( ns.node == nullptr )
+            {
+                continue;
+            }
+
+            ns.node->destroy();
+        }
+
+        m_nodies.clear();
+
+        m_slots.clear();
+        m_subMovies.clear();
+        m_sockets.clear();
+        m_events.clear();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
 	{
@@ -962,18 +1139,6 @@ namespace Menge
 
         layer_sprite->setName( _layer.name );
 
-		if( layer_sprite->compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile sprite '%s'"
-				, m_name.c_str()
-				, _layer.name.c_str()
-				);
-
-			layer_sprite->destroy();
-
-			return false;
-		}
-
 		if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
 			layer_sprite->setBlendAdd( true );
@@ -1036,18 +1201,6 @@ namespace Menge
                 );
         }
 
-		if( layer_sprite->compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile sprite '%s'"
-				, m_name.c_str()
-				, _layer.name.c_str()
-				);
-
-			layer_sprite->destroy();
-
-			return false;
-		}
-
 		layer_sprite->localHide( true );
 
 		this->addMovieNode_( _layer, layer_sprite );
@@ -1063,18 +1216,6 @@ namespace Menge
         layer_hotspotimage->setResourceHITName( _layer.source );
 
         layer_hotspotimage->setName( _layer.name );
-
-        if( layer_hotspotimage->compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile HotSpotImage '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-
-            layer_hotspotimage->destroy();
-
-            return false;
-        }
 
         layer_hotspotimage->localHide( true );
 
@@ -1093,18 +1234,6 @@ namespace Menge
         layer_hotspotshape->setResourceShapeName( _layer.source );
 
         layer_hotspotshape->setName( _layer.name );
-
-        if( layer_hotspotshape->compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile HotSpotShape '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-
-            layer_hotspotshape->destroy();
-
-            return false;
-        }
 
         layer_hotspotshape->localHide( true );
 
@@ -1140,18 +1269,6 @@ namespace Menge
                 );
         }
 
-		if( layer_animation->compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile animation '%s'"
-				, m_name.c_str()
-				, _layer.name.c_str()
-				);
-
-			layer_animation->destroy();
-
-			return false;
-		}
-
 		layer_animation->localHide( true );
 
 		this->addMovieNode_( _layer, layer_animation );
@@ -1164,25 +1281,16 @@ namespace Menge
 		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
 
-		layer_movie->setResourceMovieName( _layer.source );				
+        ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceMovie>( _layer.source );
+
+		layer_movie->setResourceMovie( resourceMovie );
 		
 		layer_movie->setIntervalStart( _layer.startInterval );
         
         layer_movie->setPlayCount( _layer.playCount );
         layer_movie->setScretch( _layer.scretch );
         //layer_movie->setLoop( _layer.loop );
-
-		if( layer_movie->compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile movie '%s'"
-				, m_name.c_str()
-				, _layer.name.c_str()
-				);
-
-			layer_movie->destroy();
-
-			return false;
-		}
 
 		layer_movie->localHide( true );
 		layer_movie->setParentMovie( true );
@@ -1196,26 +1304,17 @@ namespace Menge
     {
         Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
+        
+        ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceMovie>( _layer.source );
 
-        layer_movie->setResourceMovieName( _layer.source );				
+        layer_movie->setResourceMovie( resourceMovie );
 
         layer_movie->setIntervalStart( _layer.startInterval );
 
         layer_movie->setPlayCount( _layer.playCount );
         layer_movie->setScretch( _layer.scretch );
         //layer_movie->setLoop( _layer.loop );
-
-        if( layer_movie->compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile movie '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-
-            layer_movie->destroy();
-
-            return false;
-        }
 
         layer_movie->localHide( true );
         layer_movie->setParentMovie( true );
@@ -1238,18 +1337,6 @@ namespace Menge
 
 		movie_internal->setInternalObject( py_object );
 
-		if( movie_internal->compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile InternalObject '%s'"
-				, m_name.c_str()
-				, _layer.name.c_str()
-				);
-
-			movie_internal->destroy();
-
-			return false;
-		}
-
 		movie_internal->localHide(true);
 
 		this->addMovieNode_( _layer, movie_internal );
@@ -1270,18 +1357,6 @@ namespace Menge
         layer_video->setScretch( _layer.scretch );
         //layer_video->setLoop( _layer.loop );
 
-		if( layer_video->compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile video '%s'"
-				, m_name.c_str()
-				, _layer.name.c_str()
-				);
-
-			layer_video->destroy();
-
-			return false;
-		}
-		
 		if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
 			layer_video->setBlendAdd( true );
@@ -1314,18 +1389,6 @@ namespace Menge
         layer_sound->setScretch( _layer.scretch );
         //layer_sound->setLoop( _layer.loop );
 
-		if( layer_sound->compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile sound '%s'"
-				, m_name.c_str()
-				, _layer.name.c_str()
-				);
-
-			layer_sound->destroy();
-
-			return false;
-		}
-
 		layer_sound->localHide( true );
 
 		this->addMovieNode_( _layer, layer_sound );
@@ -1341,18 +1404,6 @@ namespace Menge
         layer_text->setName( _layer.name );
         layer_text->setTextByKey( _layer.name ); //Name = TextID
 
-        if( layer_text->compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile text '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-
-            layer_text->destroy();
-
-            return false;
-        }
-
         layer_text->localHide( true );
 
         this->addMovieNode_( _layer, layer_text );
@@ -1367,18 +1418,6 @@ namespace Menge
 
         layer_event->setName( _layer.name );
         layer_event->setResourceMovie( m_resourceMovie );
-
-        if( layer_event->compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile event '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-
-            layer_event->destroy();
-
-            return false;
-        }
 
         layer_event->localHide( true );
 
@@ -1402,18 +1441,6 @@ namespace Menge
         layer_particles->setScretch( _layer.scretch );
         //layer_particles->setLoop( _layer.loop );
 
-        if( layer_particles->compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile ParticleEmitter '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-
-            layer_particles->destroy();
-
-            return false;
-        }
-
 		layer_particles->setLoop( true );
 		layer_particles->setEmitterTranslateWithParticle( true );
 
@@ -1431,161 +1458,42 @@ namespace Menge
 			return false;
 		}
 
-		m_resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceMovie>( m_resourceMovieName );
-
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup resource '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup resource"
 				, this->getName().c_str()
-				, m_resourceMovieName.c_str()
 				);
 
 			return false;
 		}
 
-		size_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
+        if( m_resourceMovie->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Movie::_compile '%s' movie resource %s not compile"
+                , m_name.c_str() 
+                , m_resourceMovie->getName().c_str()
+                );
 
-        Nodies ns;
-        ns.child = false;
-        ns.node = 0;
-		m_nodies.resize( maxLayerIndex + 1, ns );
+            return false;
+        }
 
 		this->createCamera3D_();
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		if( m_invalidateNodes == true )
+        {
+            this->releaseLayers_();
+            
+            if( this->createLayers_() == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer"
+                    , m_name.c_str()
+                    );
 
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-			
-			if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
-			{
-                if( this->createMovieSlot_( layer ) == false )
-                {
-                    return false;
-                }
-			}
-            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
-            {
-                if( this->createMovieSceneEffect_( layer ) == false )
-                {
-                    return false;
-                }
+                return false;
             }
-            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieText) )
-            {
-                if( this->createMovieText_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-			else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
-			{
-                if( this->createMovieNullObject_( layer ) == false )
-                {
-                    return false;
-                }
-			}
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, Image) )
-			{
-                if( this->createMovieImage_( layer ) == false )
-                {
-                    return false;
-                }
-			}
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
-			{
-                if( this->createMovieImageSolid_( layer ) == false )
-                {
-                    return false;
-                }
-			}
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
-            {
-                if( this->createMovieSocketImage_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
-            {
-                if( this->createMovieSocketShape_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, Animation) )
-			{
-				if( this->createMovieAnimation_( layer ) == false )
-				{
-					return false;
-				}
-			}
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, Movie) )
-			{
-                if( this->createMovieMovie_( layer ) == false )
-                {
-                    return false;
-                }
-			}
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, SubMovie) )
-            {
-                if( this->createMovieSubMovie_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieInternalObject) )
-			{				
-				if( this->createMovieInternalObject_( layer ) == false )
-				{
-					return false;
-				}
-			}
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, Video) )
-			{
-                if( this->createMovieVideo_( layer ) == false )
-                {
-                    return false;
-                }
-			}
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, Sound) )
-			{
-                if( this->createMovieSound_( layer ) == false )
-                {
-                    return false;
-                }
-			}
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
-			{
-				if( this->createMovieEmitterContainer_( layer ) == false )
-				{
-					return false;
-				}
-			}
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
-            {
-                if( this->createMovieEvent_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-			else
-			{
-				LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer_node '%s' type '%s'"
-					, m_name.c_str()
-					, layer.source.c_str()
-					, layer.layerType.c_str()
-					);
 
-				return false;
-			}
-		}
+            m_invalidateNodes = false;
+        }
 
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
@@ -1601,6 +1509,21 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Movie::_release()
+    {	
+        this->removeParent_();
+
+        //const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+        //this->releaseLayers_();
+
+        this->destroyCamera3D_();
+
+        if( m_resourceMovie != nullptr )
+        {
+            m_resourceMovie->decrementReference();
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCamera_()
 	{
@@ -1810,44 +1733,6 @@ namespace Menge
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			
 			animatable->setTiming( 0.f );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::_release()
-	{	
-		this->removeParent_();
-
-		//const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorNodies::const_iterator 
-			it = m_nodies.begin(),
-			it_end = m_nodies.end();
-		it != it_end;
-		++it )
-		{
-			const Nodies & ns = *it;
-
-			if( ns.node == 0 )
-			{
-				continue;
-			}
-
-			ns.node->destroy();
-		}
-
-		m_nodies.clear();
-
-		m_slots.clear();
-        m_subMovies.clear();
-        m_sockets.clear();
-        m_events.clear();
-
-		this->destroyCamera3D_();
-
-		if( m_resourceMovie != nullptr )
-		{
-			m_resourceMovie->decrementReference();
-			m_resourceMovie = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

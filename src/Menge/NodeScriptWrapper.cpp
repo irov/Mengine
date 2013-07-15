@@ -199,6 +199,42 @@ namespace Menge
             PyObject * m_list;
         };
         //////////////////////////////////////////////////////////////////////////
+        void movie_setResourceMovie( Movie * _movie, const ConstString & _resourceMovie )
+        {
+            ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceReferenceT<ResourceMovie>(_resourceMovie);
+
+            if( resourceMovie == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)("movie_setResourceMovie %s not found resource %s"
+                    , _movie->getName().c_str()
+                    , _resourceMovie.c_str()
+                    );
+
+                return;
+            }
+
+            _movie->setResourceMovie( resourceMovie );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const ConstString & movie_getResourceMovie( Movie * _movie )
+        {
+            ResourceMovie * resourceMovie = _movie->getResourceMovie();
+
+            if( resourceMovie == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)("movie_getResourceMovie %s resource is null"
+                    , _movie->getName().c_str()
+                    );
+
+                return ConstString::none();
+            }
+
+            const ConstString & name = resourceMovie->getName();
+
+            return name;
+        }
+        //////////////////////////////////////////////////////////////////////////
         PyObject * movie_getSockets( Movie * _movie )
         {
             PyObject * py_list = pybind::list_new(0);
@@ -1116,7 +1152,7 @@ namespace Menge
             return imageCenter;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Sprite_setImageResource( Sprite * _sprite, const ConstString & _resourceName )
+        void sprite_setImageResource( Sprite * _sprite, const ConstString & _resourceName )
         {
             ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceReferenceT<ResourceImage>( _resourceName );
@@ -1124,7 +1160,7 @@ namespace Menge
             _sprite->setImageResource( resourceImage );
         }
         //////////////////////////////////////////////////////////////////////////
-        const ConstString & Sprite_getImageResource( Sprite * _sprite )
+        const ConstString & sprite_getImageResource( Sprite * _sprite )
         {
             ResourceImage * resourceImage = _sprite->getImageResource();
 
@@ -3175,8 +3211,8 @@ namespace Menge
 
 
                 pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
-                    .def_proxy_static( "setImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_setImageResource )
-                    .def_proxy_static( "getImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_getImageResource )
+                    .def_proxy_static( "setImageResource", nodeScriptMethod, &NodeScriptMethod::sprite_setImageResource )
+                    .def_proxy_static( "getImageResource", nodeScriptMethod, &NodeScriptMethod::sprite_getImageResource )
 
                     .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
                     
@@ -3256,9 +3292,10 @@ namespace Menge
                 //	;
 
                 pybind::interface_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
+                    .def_proxy_static( "setResourceMovie", nodeScriptMethod, &NodeScriptMethod::movie_setResourceMovie )
+                    .def_proxy_static( "getResourceMovie", nodeScriptMethod, &NodeScriptMethod::movie_getResourceMovie )
                     .def( "setReverse", &Movie::setReverse )
-                    .def( "getReverse", &Movie::getReverse )
-                    .def( "setResourceMovie", &Movie::setResourceMovieName )					
+                    .def( "getReverse", &Movie::getReverse )		
                     .def( "getMovieSlot", &Movie::getMovieSlot )
                     .def( "hasMovieSlot", &Movie::hasMovieSlot )
                     .def( "getSubMovie", &Movie::getSubMovie )

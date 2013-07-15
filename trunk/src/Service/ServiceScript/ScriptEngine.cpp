@@ -380,25 +380,22 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////|
-	PyObject * ScriptEngine::wrap( Node * _node )
+	PyObject * ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
 	{
-		const ConstString& type = _node->getType();
-
-		TMapScriptWrapper::iterator it_find = m_scriptWrapper.find( type );
+		TMapScriptWrapper::iterator it_find = m_scriptWrapper.find( _type );
 
 		if( it_find == m_scriptWrapper.end() )
 		{
+            LOGGER_ERROR(m_serviceProvider)("ScriptEngine::wrap not found type %s"
+                , _type.c_str()
+                );
+
 			return nullptr;
 		}
 
         ScriptClassInterface * scriptClass = it_find->second;
 
-		PyObject * embedded = scriptClass->wrap( _node );
-		//}
-		//catch (...)
-		//{
-		//ScriptEngine::handleException();
-		//}			
+		PyObject * embedded = scriptClass->wrap( _scriptable );
 
 		return embedded;
 	}

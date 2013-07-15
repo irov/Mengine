@@ -37,7 +37,7 @@ namespace Menge
 		}
 
 	protected:
-		PyObject * wrap( Node * _node ) override
+		PyObject * wrap( Scriptable * _node ) override
 		{
 #   ifdef _DEBUG
 			if( dynamic_cast<T *>( _node ) == nullptr )

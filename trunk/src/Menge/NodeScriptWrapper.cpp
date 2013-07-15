@@ -28,6 +28,12 @@
 #   include "Interface/ResourceInterface.h"
 
 #	include "ResourceMovie.h"
+#	include "ResourceAnimation.h"
+#	include "ResourceVideo.h"
+#	include "ResourceSound.h"
+#   include "ResourceImageSolid.h"
+#   include "ResourceEmitterContainer.h"
+
 //#	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
 #	include "ResourceTestPick.h"
@@ -62,6 +68,8 @@
 #	include "Layer2D.h"
 #	include "Layer2DPhysic.h"
 #	include "Layer2DTexture.h"
+
+#   include "ResourceImage.h"
 
 //#	include "RigidBody2D.h"
 
@@ -871,7 +879,7 @@ namespace Menge
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Error: (Menge.getResourceReference) not exist resource %s"
+                LOGGER_ERROR(m_serviceProvider)( "Menge.getResourceReference: not exist resource %s"
                     , _nameResource.c_str() 
                     );
 
@@ -1078,33 +1086,23 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getImageSize( Sprite * _sprite )
         {
-            ResourceImage * resource = _sprite->getImageResource();
+            ResourceImage * resourceImage = _sprite->getImageResource();
 
             mt::vec2f size;
 
-            if( resource != NULL )
+            if( resourceImage == nullptr )
             {
-                size = resource->getSize();
+                size.x = 0.f;
+                size.y = 0.f;
+
+                return size;
             }
-            else
-            {
-                const ConstString & resourceName = _sprite->getImageResourceName();
+            
+            resourceImage->incrementReference();
 
-                ResourceImage * resource = RESOURCE_SERVICE(m_serviceProvider)
-                    ->getResourceT<ResourceImage>( resourceName );
+            size = resourceImage->getSize();
 
-                if( resource == nullptr )
-                {
-                    size.x = 0.f;
-                    size.y = 0.f;
-
-                    return size;
-                }
-
-                size = resource->getSize();
-
-                resource->decrementReference();
-            }
+            resourceImage->decrementReference();
             
             return size;
         }
@@ -1116,6 +1114,28 @@ namespace Menge
             mt::vec2f imageCenter(imageSize.x * 0.5f, imageSize.y * 0.5f);
 
             return imageCenter;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Sprite_setImageResource( Sprite * _sprite, const ConstString & _resourceName )
+        {
+            ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceReferenceT<ResourceImage>( _resourceName );
+
+            _sprite->setImageResource( resourceImage );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const ConstString & Sprite_getImageResource( Sprite * _sprite )
+        {
+            ResourceImage * resourceImage = _sprite->getImageResource();
+
+            if( resourceImage == nullptr )
+            {
+                return ConstString::none();
+            }
+
+            const ConstString & name = resourceImage->getName();
+
+            return name;
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getWorldImageCenter( Sprite * _sprite )
@@ -2362,6 +2382,11 @@ namespace Menge
 
                     PyObject * py_resource = pybind::ptr( _resource );
 
+                    if( py_resource == nullptr )
+                    {
+                        return;
+                    }
+
                     pybind::call( m_cb, "(O)", py_resource );
 
                     pybind::decref( py_resource );
@@ -2430,6 +2455,17 @@ namespace Menge
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
+
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceReference );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImage );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageDefault );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceAnimation );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceVideo );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceSound );
+
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSolid );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceEmitterContainer );
     }
 
     struct extract_String_type
@@ -2730,10 +2766,34 @@ namespace Menge
             .def( "countReference", &Reference::countReference )
             ;
 
-        pybind::interface_<ResourceReference, pybind::bases<Resource, Identity, Reference> >("ResourceReference")
+        pybind::interface_<ResourceReference, pybind::bases<Resource, Identity, Reference> >("ResourceReference", false)
             .def( "getCategory", &ResourceReference::getCategory )
             .def( "getGroup", &ResourceReference::getGroup )
             ;
+
+        pybind::interface_<ResourceImage, pybind::bases<ResourceReference> >("ResourceImage", false)
+            ;
+
+        pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage> >("ResourceImageDefault", false)
+            ;
+
+        pybind::interface_<ResourceMovie, pybind::bases<ResourceReference> >("ResourceMovie", false)
+            ;            
+
+        pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)
+            ;            
+
+        pybind::interface_<ResourceVideo, pybind::bases<ResourceReference> >("ResourceVideo", false)
+            ;            
+        
+        pybind::interface_<ResourceSound, pybind::bases<ResourceReference> >("ResourceSound", false)
+            ;            
+
+        pybind::interface_<ResourceImageSolid, pybind::bases<ResourceReference> >("ResourceImageSolid", false)
+            ;            
+        
+        pybind::interface_<ResourceEmitterContainer, pybind::bases<ResourceReference> >("ResourceEmitterContainer", false)
+            ;           
 
         pybind::interface_<Renderable>("Renderable")
             .def( "hide", &Renderable::hide )
@@ -3115,8 +3175,8 @@ namespace Menge
 
 
                 pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
-                    .def( "setImageResource", &Sprite::setImageResourceName )
-                    .def( "getImageResource", &Sprite::getImageResourceName )
+                    .def_proxy_static( "setImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_setImageResource )
+                    .def_proxy_static( "getImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_getImageResource )
 
                     .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
                     

@@ -335,7 +335,6 @@ namespace	Menge
             m_resourceImage = nullptr;
 		}
 
-		m_resourceImageName =  m_resourceAnimation->getSequenceResourceName( m_currentFrame );
 		m_resourceImage =  m_resourceAnimation->getSequenceResource( m_currentFrame );
 		m_resourceImage->incrementReference();
         	

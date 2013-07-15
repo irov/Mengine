@@ -13,8 +13,6 @@ namespace Menge
 	class GlobalHandleAdapter
 		: public GlobalMouseHandler
 		, public GlobalKeyHandler
-		, virtual public Eventable
-		, virtual public Scriptable
 	{
 	public:
 		GlobalHandleAdapter();
@@ -48,6 +46,10 @@ namespace Menge
 
 	protected:
 		virtual bool isEnableGlobalHandle() const = 0;
+
+    protected:
+        virtual Eventable * getGlobalHandleEventable() = 0;
+        virtual Scriptable * getGlobalHandleScriptable() = 0;
 
     protected:
         GlobalHandleSystemInterface * getGlobalHandleSystem() const;

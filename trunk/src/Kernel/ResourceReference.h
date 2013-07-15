@@ -6,6 +6,8 @@
 #	include "Identity.h"
 #	include "Reference.h"
 
+#	include "Scriptable.h"
+
 #	include "ResourceDeclare.h"
 
 #	include "Factory/Factorable.h"
@@ -29,6 +31,7 @@ namespace Menge
 		, public Identity
 		, public Reference
 		, public Loadable
+        , public Scriptable
 	{
 	public:
 		ResourceReference();
@@ -65,6 +68,9 @@ namespace Menge
 	protected:
 		bool _incrementZero() override;
 		void _decrementZero() override;
+
+    protected:
+        PyObject * _embedded() override;
 
     protected:
         const ConstString & getCodec_( const FilePath & _filename ) const;

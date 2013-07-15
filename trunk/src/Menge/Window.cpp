@@ -12,7 +12,7 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    const ETextureAddressMode c_WindowAddressModeU[ResourceWindow_Count] =
+    const ETextureAddressMode c_WindowAddressModeU[ResourceWindow_Count] =    
     { TAM_WRAP //ResourceWindow_Background
     , TAM_CLAMP //ResourceWindow_LeftTop
     , TAM_WRAP //ResourceWindow_Top
@@ -64,20 +64,26 @@ namespace Menge
 			return false;
 		}
 
-		m_resourceWindow = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourceWindow>( m_resourceWindowName );
-
 		if( m_resourceWindow == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Window::_compile %s Error while compiling resources. Resource '%s' does not exist" 
+			LOGGER_ERROR(m_serviceProvider)( "Window::_compile '%s' resource is null" 
 				, this->getName().c_str()
-				, m_resourceWindowName.c_str() 
 				);
 
 			return false;
 		}
 
-		for( int i = 0; i < ResourceWindow_Count; i++ )
+        if( m_resourceWindow->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Window::_compile '%s' resource '%s' invalid compile" 
+                , this->getName().c_str()
+                , m_resourceWindow->getName().c_str()
+                );
+
+            return false;
+        }
+
+		for( size_t i = 0; i < ResourceWindow_Count; ++i )
 		{
 			ResourceImage * image = m_resourceWindow->getResource( i );
 
@@ -143,7 +149,6 @@ namespace Menge
 		if( m_resourceWindow != nullptr )
 		{
 			m_resourceWindow->decrementReference();
-			m_resourceWindow = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -537,17 +542,22 @@ namespace Menge
 									static_cast<int>( _tiles.y ) * m_edge[ResourceWindow_Background].initialSize.y ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::setResourceWindow( const ConstString & _resourceName )
+	void Window::setResourceWindow( ResourceWindow * _resourceWindow )
 	{
-		if( m_resourceWindowName == _resourceName )
+		if( m_resourceWindow == _resourceWindow )
 		{
 			return;
 		}
 
-		m_resourceWindowName = _resourceName;
+		m_resourceWindow = _resourceWindow;
 
         this->recompile();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceWindow * Window::getResourceWindow() const
+    {
+        return m_resourceWindow;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Window::hasBackground() const
 	{

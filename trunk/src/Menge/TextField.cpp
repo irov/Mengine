@@ -78,47 +78,43 @@ namespace Menge
 			return false;
 		}
 
-		if( m_resourceFontName.empty() == true )
-		{
-			m_resourceFontName = TEXT_SERVICE(m_serviceProvider)
-				->getDefaultResourceFontName();
-
-			if( m_resourceFontName.empty() == true )
-			{
-				return false;
-			}
-		}
-
-		m_resourceFont = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceFont>( m_resourceFontName );
-
 		if( m_resourceFont == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' can't find resource '%s'"
-				, this->getName().c_str()
-				, m_resourceFontName.c_str() 
-				);
+            const ConstString & resourceFontName = TEXT_SERVICE(m_serviceProvider)
+                ->getDefaultResourceFontName();
 
-			return false;
+            ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceReferenceT<ResourceFont>(resourceFontName);
+
+            if( resourceFont == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' resource is null"
+                    , this->getName().c_str()
+                    );
+
+                return false;
+            }
+
+            m_resourceFont = resourceFont;
 		}
 
-		if( m_resourceFont->isCompile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' can't compile resource '%s'"
-				, this->getName().c_str()
-				, m_resourceFontName.c_str() 
-				);
+        if( m_resourceFont->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' resource '%s' is not compile"
+                , this->getName().c_str()
+                , m_resourceFont->getName().c_str()
+                );
 
-			return false;
-		}
-	
+            return false;
+        }
+
 		const ResourceGlyph * resourceGlyph = m_resourceFont->getResourceGlyph();
 
         if( resourceGlyph == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s':'%s' can't get resource glyph"
                 , this->getName().c_str()
-                , m_resourceFontName.c_str() 
+                , m_resourceFont->getName().c_str() 
                 );
 
             return false;
@@ -145,7 +141,6 @@ namespace Menge
 		if( m_resourceFont != nullptr )
 		{
 			m_resourceFont->decrementReference();
-			m_resourceFont = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -272,7 +267,7 @@ namespace Menge
 		if (this->isCompile() == false)
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::getCharCount '%s' not compile"
-				, m_resourceFontName.c_str()
+				, m_name.c_str()
 				);
 
 			return 0;
@@ -360,9 +355,8 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getTextLength '%s':'%s' not compile"
+			LOGGER_ERROR(m_serviceProvider)("TextField::getTextLength '%s' not compile"
                 , this->getName().c_str()
-				, m_resourceFontName.c_str()
 				);
 
 			return m_textSize;
@@ -477,21 +471,21 @@ namespace Menge
 		return m_lineOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setResourceFont( const ConstString& _resName )
+	void TextField::setResourceFont( ResourceFont * _resourceFont )
 	{
-		if( m_resourceFontName == _resName )
+		if( m_resourceFont == _resourceFont )
 		{
 			return;
 		}
 		
-		m_resourceFontName = _resName;
+		m_resourceFont = _resourceFont;
 
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextField::getResourceFont() const
+	ResourceFont * TextField::getResourceFont() const
 	{
-		return m_resourceFontName;
+		return m_resourceFont;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -590,9 +584,17 @@ namespace Menge
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
 
-		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
-		{
-			this->setResourceFont( textEntry.font );
+        
+
+		if( textEntry.font.empty() == false )
+        {
+            ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceReferenceT<ResourceFont>( textEntry.font );
+
+            if( resourceFont != m_resourceFont )
+            {
+                this->setResourceFont( resourceFont );
+            }
 		}
 
 		if( fabsf(textEntry.charOffset) > 0.0001f && fabsf(textEntry.charOffset - m_charOffset) > 0.0001f )
@@ -633,10 +635,16 @@ namespace Menge
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
 
-		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
-		{
-			this->setResourceFont( textEntry.font );
-		}
+        if( textEntry.font.empty() == false )
+        {
+            ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceReferenceT<ResourceFont>( textEntry.font );
+
+            if( resourceFont != m_resourceFont )
+            {
+                this->setResourceFont( resourceFont );
+            }
+        }
 
 		if( fabsf( textEntry.charOffset ) > 0.0001f && fabsf( textEntry.charOffset - m_charOffset ) > 0.0001f )
 		{

@@ -97,27 +97,32 @@ namespace	Menge
         {
             return false;
         }
-
-		m_resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceEmitterContainer>( m_resourceEmitterContainerName );
-
+        		
 		if( m_resourceEmitterContainer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' can't open resource file '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' resource is null"
 				, m_name.c_str()
-				, m_resourceEmitterContainerName.c_str() 
 				);
 
 			return false;
 		}
-		
+
+        if( m_resourceEmitterContainer->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' resource '%s' not compile"
+                , m_name.c_str()
+                , m_resourceEmitterContainer->getName().c_str()
+                );
+
+            return false;
+        }
 		EmitterContainerInterface * container = m_resourceEmitterContainer->getContainer();
 
 		if( container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' can't open container file '%s'"
 				, m_name.c_str()
-				, m_resourceEmitterContainerName.c_str() 
+				, m_resourceEmitterContainer->getName().c_str() 
 				);
 
 			return false;
@@ -129,7 +134,7 @@ namespace	Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
 				, m_name.c_str()
-				, m_resourceEmitterContainerName.c_str()
+				, m_resourceEmitterContainer->getName().c_str()
 				, m_emitterName.c_str() 
 				);
 
@@ -193,7 +198,6 @@ namespace	Menge
 		    }
 
 			m_resourceEmitterContainer->decrementReference();
-			m_resourceEmitterContainer = nullptr;
 		}
 
 		delete [] m_vertices;        
@@ -641,17 +645,22 @@ namespace	Menge
 		m_interface->restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setResource( const ConstString& _resourceName )
+	void ParticleEmitter::setResourceEmitterContainer( ResourceEmitterContainer * _resourceEmitterContainer )
 	{
-		if( m_resourceEmitterContainerName == _resourceName )
+		if( m_resourceEmitterContainer == _resourceEmitterContainer )
 		{
 			return;
 		}
 
-		m_resourceEmitterContainerName = _resourceName;
+		m_resourceEmitterContainer = _resourceEmitterContainer;
 
 		this->recompile();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceEmitterContainer * ParticleEmitter::getResourceEmitterContainer() const
+    {
+        return m_resourceEmitterContainer;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitter( const ConstString& _emitterName )
 	{

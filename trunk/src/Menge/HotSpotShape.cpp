@@ -30,23 +30,20 @@ namespace Menge
             return false;
         }
 
-        if( m_resourceShapeName.empty() == true )
+        if( m_resourceShape == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotSpotShape::_compile: '%s' can't set Shape resource"
+            LOGGER_ERROR(m_serviceProvider)( "HotSpotShape::_compile: '%s' resource is null"
                 , this->getName().c_str()
                 );
 
             return false;
         }
 
-        m_resourceShape = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourceShape>( m_resourceShapeName );
-
-        if( m_resourceShape == nullptr )
+        if( m_resourceShape->incrementReference() == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotSpotShape::_compile: '%s' can't get HIT resource '%s'"
+            LOGGER_ERROR(m_serviceProvider)( "HotSpotShape::_compile: '%s' resource '%s' not compile"
                 , this->getName().c_str()
-                , m_resourceShapeName.c_str()
+                , m_resourceShape->getName().c_str()
                 );
 
             return false;
@@ -64,7 +61,6 @@ namespace Menge
         if( m_resourceShape != nullptr )
         {
             m_resourceShape->decrementReference();
-            m_resourceShape = nullptr;
         }
 
         HotSpot::_release();
@@ -100,20 +96,20 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceShape * HotSpotShape::getResourseShape() const
+    void HotSpotShape::setResourceShape( ResourceShape * _resourceShape )
     {
-        return m_resourceShape;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpotShape::setResourceShapeName( const ConstString& _resourceName )
-    {
-        m_resourceShapeName = _resourceName;
+        if( m_resourceShape == _resourceShape )
+        {
+            return;
+        }
+
+        m_resourceShape = _resourceShape;
 
         this->recompile();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & HotSpotShape::getResourceShapeName() const
+    ResourceShape * HotSpotShape::getResourceShape() const
     {
-        return m_resourceShapeName;
+        return m_resourceShape;
     }
 }	// namespace Menge

@@ -59,7 +59,10 @@ namespace Menge
         void removeEmitterPolygon();
 	
 		void onParticleEmitterStopped() override;
-		void setResource( const ConstString& _resourceName );
+
+        void setResourceEmitterContainer( ResourceEmitterContainer * _resourceEmitterContainer );
+        ResourceEmitterContainer * getResourceEmitterContainer() const;
+
 		void setEmitter( const ConstString& _emitterName ); 
 
 		float getDuration() const;
@@ -105,7 +108,6 @@ namespace Menge
 
 	protected:
 		ResourceEmitterContainer * m_resourceEmitterContainer;
-		ConstString m_resourceEmitterContainerName;
 
 		ConstString m_emitterName;
 

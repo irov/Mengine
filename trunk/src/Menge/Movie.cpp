@@ -8,6 +8,7 @@
 #	include "ResourceInternalObject.h"
 #	include "ResourceAnimation.h"
 #	include "ResourceImageSolid.h"
+#   include "ResourceHIT.h"
 
 #   include "Interface/ApplicationInterface.h"
 
@@ -1135,7 +1136,7 @@ namespace Menge
         ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceImage>( _layer.source );
 
-		layer_sprite->setImageResource( resourceImage );
+		layer_sprite->setResourceImage( resourceImage );
 
         layer_sprite->setName( _layer.name );
 
@@ -1179,7 +1180,7 @@ namespace Menge
         ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceImage>( CONST_STRING(m_serviceProvider, WhitePixel) );
 
-		layer_sprite->setImageResource( resourceImage );
+		layer_sprite->setResourceImage( resourceImage );
 
         layer_sprite->setName( _layer.name );
 
@@ -1213,7 +1214,10 @@ namespace Menge
         HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, HotSpotImage) );
 
-        layer_hotspotimage->setResourceHITName( _layer.source );
+        ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceHIT>( _layer.source );
+
+        layer_hotspotimage->setResourceHIT( resourceHIT );
 
         layer_hotspotimage->setName( _layer.name );
 

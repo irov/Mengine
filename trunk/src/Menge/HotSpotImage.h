@@ -25,19 +25,14 @@ namespace Menge
         size_t getHeight() const;
 
 	public:
-		ResourceHIT * getResourseHIT() const;
-
-    public:
-        void setResourceHITName( const ConstString& _resourceName );
-        const ConstString & getResourceHITName() const;
+        void setResourceHIT( ResourceHIT * _resourceHIT );
+		ResourceHIT * getResourceHIT() const;
 
     protected:
 		bool _compile() override;
 		void _release() override;
 
-	private:
-        ConstString m_resourceHITName;
-
+	protected:
         ResourceHIT * m_resourceHIT;
 
 		float m_alphaTest;		

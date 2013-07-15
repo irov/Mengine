@@ -31,23 +31,20 @@ namespace Menge
 			return false;
 		}
 
-        if( m_resourceHITName.empty() == true )
+        if( m_resourceHIT == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't set HIT resource"
+            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' resource is null"
                 , this->getName().c_str()
                 );
 
             return false;
         }
 
-        m_resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourceHIT>( m_resourceHITName );
-
-        if( m_resourceHIT == nullptr )
+        if( m_resourceHIT->incrementReference() == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't get HIT resource '%s'"
+            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
                 , this->getName().c_str()
-                , m_resourceHITName.c_str()
+                , m_resourceHIT->getName().c_str()
                 );
 
             return false;
@@ -73,7 +70,6 @@ namespace Menge
 		if( m_resourceHIT != nullptr )
 		{
 			m_resourceHIT->decrementReference();
-			m_resourceHIT = nullptr;
 		}
 
 		HotSpot::_release();
@@ -134,23 +130,23 @@ namespace Menge
 
 		return result;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceHIT * HotSpotImage::getResourseHIT() const
-	{
-		return m_resourceHIT;
-	}
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotImage::setResourceHITName( const ConstString& _resourceName )
+    void HotSpotImage::setResourceHIT( ResourceHIT * _resourceHIT )
     {
-        m_resourceHITName = _resourceName;
+        if( m_resourceHIT == _resourceHIT )
+        {
+            return;
+        }
+
+        m_resourceHIT = _resourceHIT;
 
         this->recompile();
     }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & HotSpotImage::getResourceHITName() const
-    {
-        return m_resourceHITName;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	ResourceHIT * HotSpotImage::getResourceHIT() const
+	{
+		return m_resourceHIT;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )
 	{

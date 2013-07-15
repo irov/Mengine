@@ -199,41 +199,64 @@ namespace Menge
             PyObject * m_list;
         };
         //////////////////////////////////////////////////////////////////////////
-        void movie_setResourceMovie( Movie * _movie, const ConstString & _resourceMovie )
+        template<class T, class R, class M>
+        void Template_setResource( T * _node, const ConstString & _resourceName, M _method )
         {
-            ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceReferenceT<ResourceMovie>(_resourceMovie);
+            R * resource = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceReferenceT<R>(_resourceName);
 
-            if( resourceMovie == nullptr )
+            if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("movie_setResourceMovie %s not found resource %s"
-                    , _movie->getName().c_str()
-                    , _resourceMovie.c_str()
+                LOGGER_ERROR(m_serviceProvider)("%s_setResource %s not found resource %s"
+                    , _node->getType().c_str()
+                    , _node->getName().c_str()
+                    , _resourceName.c_str()
                     );
 
                 return;
             }
 
-            _movie->setResourceMovie( resourceMovie );
+            (_node->*_method)( resource );
         }
         //////////////////////////////////////////////////////////////////////////
-        const ConstString & movie_getResourceMovie( Movie * _movie )
+        template<class T, class R, class M>
+        const ConstString &  Template_getResource( T * _node, M _method )
         {
-            ResourceMovie * resourceMovie = _movie->getResourceMovie();
+            R * resource = (_node->*_method)();
 
-            if( resourceMovie == nullptr )
+            if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("movie_getResourceMovie %s resource is null"
-                    , _movie->getName().c_str()
+                LOGGER_ERROR(m_serviceProvider)("%s_getResource %s resource is null"
+                    , _node->getType().c_str()
+                    , _node->getName().c_str()
                     );
 
                 return ConstString::none();
             }
 
-            const ConstString & name = resourceMovie->getName();
+            const ConstString & name = resource->getName();
 
             return name;
         }
+
+        //////////////////////////////////////////////////////////////////////////
+#   define NODE_GETSETRESOURCE_DECLARE( NodeType, ResourceType, SetMethod, GetMethod )\
+    void NodeType##_setResource( NodeType * _node, const ConstString & _resourceName )\
+        {\
+        Template_setResource<NodeType, ResourceType>( _node, _resourceName, &SetMethod );\
+        }\
+        const ConstString & NodeType##_getResource( NodeType * _node )\
+        {\
+        const ConstString & name = Template_getResource<NodeType, ResourceType>( _node, &GetMethod );\
+        \
+        return name;\
+        }
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( Sprite, ResourceImage, Sprite::setResourceImage, Sprite::getResourceImage );
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( HotSpotImage, ResourceHIT, HotSpotImage::setResourceHIT, HotSpotImage::getResourceHIT );
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( Movie, ResourceMovie, Movie::setResourceMovie, Movie::getResourceMovie );
         //////////////////////////////////////////////////////////////////////////
         PyObject * movie_getSockets( Movie * _movie )
         {
@@ -849,7 +872,7 @@ namespace Menge
                 return mt::vec2f(0.f,0.f);
             }
 
-            ResourceHIT * resourceHIT = _hotspotImage->getResourseHIT();
+            ResourceHIT * resourceHIT = _hotspotImage->getResourceHIT();
 
             mt::vec2f size;
             size.x = (float)resourceHIT->getWidth();
@@ -1122,7 +1145,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getImageSize( Sprite * _sprite )
         {
-            ResourceImage * resourceImage = _sprite->getImageResource();
+            ResourceImage * resourceImage = _sprite->getResourceImage();
 
             mt::vec2f size;
 
@@ -1150,28 +1173,6 @@ namespace Menge
             mt::vec2f imageCenter(imageSize.x * 0.5f, imageSize.y * 0.5f);
 
             return imageCenter;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void sprite_setImageResource( Sprite * _sprite, const ConstString & _resourceName )
-        {
-            ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceReferenceT<ResourceImage>( _resourceName );
-
-            _sprite->setImageResource( resourceImage );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const ConstString & sprite_getImageResource( Sprite * _sprite )
-        {
-            ResourceImage * resourceImage = _sprite->getImageResource();
-
-            if( resourceImage == nullptr )
-            {
-                return ConstString::none();
-            }
-
-            const ConstString & name = resourceImage->getName();
-
-            return name;
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getWorldImageCenter( Sprite * _sprite )
@@ -3179,8 +3180,8 @@ namespace Menge
                     ;
 
                 pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
-                    .def( "setResourceHIT", &HotSpotImage::setResourceHITName )
-                    .def( "getResourceHIT", &HotSpotImage::getResourceHITName )
+                    .def_proxy_static( "setResourceHIT", nodeScriptMethod, &NodeScriptMethod::HotSpotImage_setResource )
+                    .def_proxy_static( "getResourceHIT", nodeScriptMethod, &NodeScriptMethod::HotSpotImage_getResource )        
                     .def( "setAlphaTest", &HotSpotImage::setAlphaTest )
                     .def( "getAlphaTest", &HotSpotImage::getAlphaTest )
                     .def( "getWidth", &HotSpotImage::getWidth )
@@ -3211,8 +3212,8 @@ namespace Menge
 
 
                 pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
-                    .def_proxy_static( "setImageResource", nodeScriptMethod, &NodeScriptMethod::sprite_setImageResource )
-                    .def_proxy_static( "getImageResource", nodeScriptMethod, &NodeScriptMethod::sprite_getImageResource )
+                    .def_proxy_static( "setImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_setResource )
+                    .def_proxy_static( "getImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_getResource )
 
                     .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
                     
@@ -3292,8 +3293,8 @@ namespace Menge
                 //	;
 
                 pybind::interface_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
-                    .def_proxy_static( "setResourceMovie", nodeScriptMethod, &NodeScriptMethod::movie_setResourceMovie )
-                    .def_proxy_static( "getResourceMovie", nodeScriptMethod, &NodeScriptMethod::movie_getResourceMovie )
+                    .def_proxy_static( "setResourceMovie", nodeScriptMethod, &NodeScriptMethod::Movie_setResource )
+                    .def_proxy_static( "getResourceMovie", nodeScriptMethod, &NodeScriptMethod::Movie_getResource )
                     .def( "setReverse", &Movie::setReverse )
                     .def( "getReverse", &Movie::getReverse )		
                     .def( "getMovieSlot", &Movie::getMovieSlot )

@@ -94,7 +94,7 @@ namespace	Menge
 		m_material = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Sprite::setImageResource( ResourceImage * _resourceImage )
+    void Sprite::setResourceImage( ResourceImage * _resourceImage )
     {
         if( m_resourceImage == _resourceImage )
         {
@@ -109,7 +109,7 @@ namespace	Menge
         this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceImage * Sprite::getImageResource() const
+    ResourceImage * Sprite::getResourceImage() const
     {
         return m_resourceImage;
     }

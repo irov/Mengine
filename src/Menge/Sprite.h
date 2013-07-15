@@ -27,8 +27,8 @@ namespace Menge
 		~Sprite();
 
     public:
-        void setImageResource( ResourceImage * _resourceImage );
-        ResourceImage * getImageResource() const;
+        void setResourceImage( ResourceImage * _resourceImage );
+        ResourceImage * getResourceImage() const;
         
     public:
 		void disableTextureColor( bool _disable );

@@ -31,11 +31,8 @@ namespace Menge
 	public:
 		Movie();
 
-	public:
-		void setResourceMovieName( const ConstString & _resourceName );
-		const ConstString & getResourceMovieName() const;
-
     public:
+        void setResourceMovie( ResourceMovie * _resourceMovie );
         ResourceMovie * getResourceMovie() const;
 		
 	public:
@@ -119,9 +116,13 @@ namespace Menge
 
 		void updateCamera_();
 		void stopAnimation_();
-
+        
 	private:
 		PyObject * findInternalObject_( const ConstString & _resource ) const;
+
+    protected:
+        bool createLayers_();
+        void releaseLayers_();
 
 	protected:
 		bool createMovieSlot_( const MovieLayer & _layer );
@@ -157,8 +158,6 @@ namespace Menge
 		void destroyCamera3D_();
 		
 	protected:
-		ConstString m_resourceMovieName;
-		
 		ResourceMovie * m_resourceMovie;
 
 		Camera3D * m_renderCamera3D;
@@ -189,5 +188,7 @@ namespace Menge
 		size_t m_currentFrame;
         
 		bool m_parentMovie;
+
+        bool m_invalidateNodes;
 	};
 }

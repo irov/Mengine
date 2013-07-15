@@ -38,7 +38,9 @@ namespace Menge
 
 		float getLengthMs() const;
 
-		void setSoundResource( const ConstString& _name );
+    public:
+		void setResourceSound( ResourceSound * _resourceSound );
+        ResourceSound * getResourceSound() const;
 
     protected:
 		void listenSoundNodePaused() override;
@@ -55,12 +57,10 @@ namespace Menge
 		void _setLoop( bool _value ) override;
 
 	private:
-		ResourceSound * m_resource;
+		ResourceSound * m_resourceSound;
 
         SoundBufferInterface * m_soundBuffer;
-
-		ConstString m_resourceName;
-
+        
 		unsigned int m_sourceID;
 
 		bool m_isHeadMode;

@@ -83,8 +83,8 @@ namespace Menge
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
 
-		void setResourceFont( const ConstString& _resName );
-		const ConstString & getResourceFont() const;
+		void setResourceFont( ResourceFont * _resourceFont );
+		ResourceFont * getResourceFont() const;
 
 		void setNoneAlign();
 		bool isNoneAlign() const;
@@ -162,8 +162,8 @@ namespace Menge
 
 	private:
 		ResourceFont * m_resourceFont;
-		ConstString m_resourceFontName;
-		ConstString m_key;
+
+        ConstString m_key;
 
 		ColourValue m_outlineColor;
 

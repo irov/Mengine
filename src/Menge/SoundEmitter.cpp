@@ -14,7 +14,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
-		: m_resource(nullptr)
+		: m_resourceSound(nullptr)
         , m_soundBuffer(nullptr)
 		, m_sourceID(0)
 		, m_isHeadMode(false)
@@ -49,20 +49,26 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceSound>( m_resourceName );
-
-		if( m_resource == nullptr )
+		if( m_resourceSound == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' can't get resource '%s'"
-				, this->getName().c_str()
-				, m_resourceName.c_str()
+			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' resource is null"
+				, this->getName().c_str()				
 				);
 
 			return false;
 		}
 
-		m_soundBuffer = m_resource->createSoundBuffer();
+        if( m_resourceSound->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' resource '%s' not compile"
+                , this->getName().c_str()
+                , m_resourceSound->getName().c_str()
+                );
+
+            return false;
+        }
+
+		m_soundBuffer = m_resourceSound->createSoundBuffer();
 
         if( m_soundBuffer == nullptr )
         {
@@ -73,7 +79,7 @@ namespace Menge
             return false;
         }
 
-		bool streamable = m_resource->isStreamable();
+		bool streamable = m_resourceSound->isStreamable();
 
 		m_sourceID = SOUND_SERVICE(m_serviceProvider)
 			->createSoundSource( m_isHeadMode, m_soundBuffer, EST_SOUND, streamable );
@@ -93,7 +99,7 @@ namespace Menge
 		SOUND_SERVICE(m_serviceProvider)
 			->setLoop( m_sourceID, m_loop );
 
-		float volume = m_resource->getDefaultVolume();
+		float volume = m_resourceSound->getDefaultVolume();
 		this->setVolume( volume );
 
 		return true;
@@ -106,10 +112,9 @@ namespace Menge
 
 		m_sourceID = 0;
 
-		if( m_resource != nullptr )
+		if( m_resourceSound != nullptr )
 		{
-			m_resource->decrementReference();
-			m_resource = nullptr;
+			m_resourceSound->decrementReference();			
 		}
 
         if( m_soundBuffer != nullptr )
@@ -119,17 +124,22 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setSoundResource( const ConstString& _name )
+	void SoundEmitter::setResourceSound( ResourceSound * _resourceSound )
 	{
-		if( m_resourceName == _name )
+		if( m_resourceSound == _resourceSound )
 		{
 			return;
 		}
 
-		m_resourceName = _name;
+		m_resourceSound = _resourceSound;
 
 		this->recompile();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceSound * SoundEmitter::getResourceSound() const
+    {
+        return m_resourceSound;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenSoundNodePaused()
 	{
@@ -161,15 +171,14 @@ namespace Menge
 		{
 			return false;
 		}
-
-
+        
 		if( SOUND_SERVICE(m_serviceProvider)
 			->play( m_sourceID ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_play %s invalid play [%d] resource %s"
                 , this->getName().c_str()
                 , m_sourceID
-                , m_resourceName.c_str()
+                , m_resourceSound->getName().c_str()
                 );
 
             return false;
@@ -238,7 +247,7 @@ namespace Menge
 			->setSourceVolume( m_sourceID, m_volume ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::setVolume invalid %s:%d %f"
-				, m_resourceName.c_str()
+				, m_resourceSound->getName().c_str()
                 , m_sourceID
                 , m_volume
 				);

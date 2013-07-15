@@ -16,7 +16,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
-		: m_resourceAnimation(0)
+		: m_resourceAnimation(nullptr)
 		, m_frameTiming(0.f)
 		, m_currentFrame(0)
         , m_playIterator(0)
@@ -30,21 +30,21 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimationResource( const ConstString& _resource )
+	void Animation::setResourceAnimation( ResourceAnimation * _resourceAnimation )
 	{
-		if( m_resourceAnimationName == _resource ) 
+		if( m_resourceAnimation == _resourceAnimation ) 
 		{
 			return;
 		}
 
-		m_resourceAnimationName = _resource;
+		m_resourceAnimation = _resourceAnimation;
 
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Animation::getAnimationResource() const
+	ResourceAnimation * Animation::getResourceAnimation() const
 	{
-		return m_resourceAnimationName;
+		return m_resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( float _current, float _timing )
@@ -146,21 +146,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()
 	{
-		if( m_resourceAnimationName.empty() == true )
-		{
-			return false;
-		}
-        
-		if( m_resourceAnimation == NULL )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' Image resource not getting '%s'"
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
-				);
-
-			return false;
-		}
-
         this->setTiming( 0.f );
 			
 		if( Sprite::_activate() == false )
@@ -180,27 +165,24 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_compile()
 	{
-		if( m_resourceAnimationName.empty() == true )
-		{	
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' no set resource name"
-				, m_name.c_str()
-				);
-
-			return false;
-		}
-		
-		m_resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
-
 		if( m_resourceAnimation == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' no found resource with name '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Animation::_compile: '%s' resource is null"
 				, m_name.c_str()
-				, m_resourceAnimationName.c_str() 
 				);
 
 			return false;
 		}
+
+        if( m_resourceAnimation->incrementReference() == 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "Animation::_compile: '%s' resource '%s' is not compile"
+                , m_name.c_str()
+                , m_resourceAnimation->getName().c_str()
+                );
+
+            return false;
+        }
 
 		return true;
 	}
@@ -209,10 +191,9 @@ namespace	Menge
 	{
 		Sprite::_release();
 
-		if( m_resourceAnimation != 0 )
+		if( m_resourceAnimation != nullptr )
 		{
 			m_resourceAnimation->decrementReference();
-			m_resourceAnimation = 0;
 		}
 
 		m_play = false;
@@ -365,24 +346,24 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameCount: '%s' not compiled resource '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameCount: '%s' not compiled resource"
 				, m_name.c_str()
-				, m_resourceAnimationName.c_str()
 				);
 
 			return 0;
 		}
 
-		return m_resourceAnimation->getSequenceCount();
+        size_t count = m_resourceAnimation->getSequenceCount();
+
+		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Animation::getFrameDelay( size_t  _frame ) const
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameDelay: '%s' not compiled resource '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameDelay: '%s' not compiled resource"
 				, m_name.c_str()
-				, m_resourceAnimationName.c_str()
 				);
 
 			return 0.f;

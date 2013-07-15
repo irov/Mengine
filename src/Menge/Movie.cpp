@@ -10,6 +10,9 @@
 #	include "ResourceImageSolid.h"
 #   include "ResourceHIT.h"
 #   include "ResourceVideo.h"
+#   include "ResourceSound.h"
+#   include "ResourceShape.h"
+#   include "ResourceEmitterContainer.h"
 
 #   include "Interface/ApplicationInterface.h"
 
@@ -1236,7 +1239,10 @@ namespace Menge
         HotSpotShape * layer_hotspotshape = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<HotSpotShape>( CONST_STRING(m_serviceProvider, HotSpotShape) );
 
-        layer_hotspotshape->setResourceShapeName( _layer.source );
+        ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceShape>( _layer.source );
+
+        layer_hotspotshape->setResourceShape( resourceShape );
 
         layer_hotspotshape->setName( _layer.name );
 
@@ -1254,7 +1260,10 @@ namespace Menge
 		Animation * layer_animation = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Animation>( CONST_STRING(m_serviceProvider, Animation) );
 
-		layer_animation->setAnimationResource( _layer.source );
+        ResourceAnimation * resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceAnimation>( _layer.source );
+
+		layer_animation->setResourceAnimation( resourceAnimation );
         layer_animation->setName( _layer.name );
 
 		layer_animation->setIntervalStart( _layer.startInterval );
@@ -1389,7 +1398,10 @@ namespace Menge
 		SoundEmitter * layer_sound = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<SoundEmitter>( CONST_STRING(m_serviceProvider, SoundEmitter) );
 
-		layer_sound->setSoundResource( _layer.source );
+        ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceSound>( _layer.source );
+
+		layer_sound->setResourceSound( resourceSound );
         layer_sound->setName( _layer.name );
 		layer_sound->setIntervalStart( _layer.startInterval );
 
@@ -1440,8 +1452,11 @@ namespace Menge
 	{
 		ParticleEmitter * layer_particles = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<ParticleEmitter>( CONST_STRING(m_serviceProvider, ParticleEmitter) );
+        
+        ResourceEmitterContainer * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceEmitterContainer>( _layer.source );
 
-		layer_particles->setResource( _layer.source );
+		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
         layer_particles->setName( _layer.name );
 
         layer_particles->setIntervalStart( _layer.startInterval );        

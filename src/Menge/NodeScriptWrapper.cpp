@@ -33,11 +33,13 @@
 #	include "ResourceSound.h"
 #   include "ResourceImageSolid.h"
 #   include "ResourceEmitterContainer.h"
+#   include "ResourceFont.h"
 
 //#	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
 #	include "ResourceTestPick.h"
 #	include "ResourceHIT.h"
+#	include "ResourceShape.h"
 #	include "ResourceEmitterContainer.h"
 
 #	include "Player.h"
@@ -254,11 +256,23 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NODE_GETSETRESOURCE_DECLARE( Sprite, ResourceImage, Sprite::setResourceImage, Sprite::getResourceImage );
         //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( Animation, ResourceAnimation, Animation::setResourceAnimation, Animation::getResourceAnimation );
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( HotSpotShape, ResourceShape, HotSpotShape::setResourceShape, HotSpotShape::getResourceShape );
+        //////////////////////////////////////////////////////////////////////////
         NODE_GETSETRESOURCE_DECLARE( HotSpotImage, ResourceHIT, HotSpotImage::setResourceHIT, HotSpotImage::getResourceHIT );
         //////////////////////////////////////////////////////////////////////////
         NODE_GETSETRESOURCE_DECLARE( Movie, ResourceMovie, Movie::setResourceMovie, Movie::getResourceMovie );
         //////////////////////////////////////////////////////////////////////////
         NODE_GETSETRESOURCE_DECLARE( Video, ResourceVideo, Video::setResourceVideo, Video::getResourceVideo );
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( SoundEmitter, ResourceSound, SoundEmitter::setResourceSound, SoundEmitter::getResourceSound );
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( TextField, ResourceFont, TextField::setResourceFont, TextField::getResourceFont );
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( Window, ResourceWindow, Window::setResourceWindow, Window::getResourceWindow );
+        //////////////////////////////////////////////////////////////////////////
+        NODE_GETSETRESOURCE_DECLARE( ParticleEmitter, ResourceEmitterContainer, ParticleEmitter::setResourceEmitterContainer, ParticleEmitter::getResourceEmitterContainer );
         //////////////////////////////////////////////////////////////////////////
         PyObject * movie_getSockets( Movie * _movie )
         {
@@ -2034,6 +2048,14 @@ namespace Menge
             return val;
         }
         //////////////////////////////////////////////////////////////////////////
+        ConstString s_getDefaultResourceFontName()
+        {
+            const ConstString & defaultResourceFontName = TEXT_SERVICE(m_serviceProvider)
+                ->getDefaultResourceFontName();
+
+            return defaultResourceFontName;
+        }
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
         {			
             class ResourceMovieVisitorNullLayers
@@ -2505,6 +2527,10 @@ namespace Menge
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSolid );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceEmitterContainer );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceShape );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );    
+        
     }
 
     struct extract_String_type
@@ -2834,6 +2860,15 @@ namespace Menge
         pybind::interface_<ResourceEmitterContainer, pybind::bases<ResourceReference> >("ResourceEmitterContainer", false)
             ;           
 
+        pybind::interface_<ResourceShape, pybind::bases<ResourceReference> >("ResourceShape", false)
+            ;                   
+
+        pybind::interface_<ResourceFont, pybind::bases<ResourceReference> >("ResourceFont", false)
+            ;                   
+        
+        pybind::interface_<ResourceWindow, pybind::bases<ResourceReference> >("ResourceWindow", false)
+            ;    
+
         pybind::interface_<Renderable>("Renderable")
             .def( "hide", &Renderable::hide )
             .def( "isHide", &Renderable::isHide )
@@ -3052,14 +3087,15 @@ namespace Menge
 
             {
                 pybind::interface_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
+                    .def_proxy_static( "setResourceEmitterContainer", nodeScriptMethod, &NodeScriptMethod::ParticleEmitter_setResource )
+                    .def_proxy_static( "getResourceEmitterContainer", nodeScriptMethod, &NodeScriptMethod::ParticleEmitter_getResource ) 
                     .def( "playFromPosition", &ParticleEmitter::playFromPosition )
                     .def( "pause", &ParticleEmitter::pause )
                     .def( "restart", &ParticleEmitter::restart )
                     .def( "setLoop", &ParticleEmitter::setLoop )
                     .def( "getLoop", &ParticleEmitter::getLoop )
                     //.def( "interrupt", &ParticleEmitter::interrupt )
-                    .def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
-                    .def( "setResource", &ParticleEmitter::setResource )
+                    .def( "setLeftBorder", &ParticleEmitter::setLeftBorder )                    
                     .def( "setEmitter", &ParticleEmitter::setEmitter )
                     .def( "setEmitterTranslateWithParticle", &ParticleEmitter::setEmitterTranslateWithParticle )
                     .def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
@@ -3079,14 +3115,17 @@ namespace Menge
                     ;
 
                 pybind::interface_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
+                    .def_proxy_static( "setResourceSound", nodeScriptMethod, &NodeScriptMethod::SoundEmitter_setResource )
+                    .def_proxy_static( "getResourceSound", nodeScriptMethod, &NodeScriptMethod::SoundEmitter_getResource )  
                     .def( "setVolume", &SoundEmitter::setVolume )
                     .def( "getVolume", &SoundEmitter::getVolume )
                     .def( "setLoop", &SoundEmitter::setLoop )
                     .def( "isLooping", &SoundEmitter::getLoop )
-                    .def( "setSoundResource", &SoundEmitter::setSoundResource )
                     ;
 
                 pybind::interface_<TextField, pybind::bases<Node> >("TextField", false)
+                    .def_proxy_static( "setResourceFont", nodeScriptMethod, &NodeScriptMethod::TextField_setResource )
+                    .def_proxy_static( "getResourceFont", nodeScriptMethod, &NodeScriptMethod::TextField_getResource )  
                     .def_proxy_static( "setText", nodeScriptMethod, &NodeScriptMethod::textfield_setText )
                     .def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
                     .def_depricated( "setHeight", &TextField::setFontHeight, "use setFontHeight" )
@@ -3104,8 +3143,7 @@ namespace Menge
                     .def( "setMaxLen", &TextField::setMaxLen )
                     .def( "getLineOffset", &TextField::getLineOffset )
                     .def( "setLineOffset", &TextField::setLineOffset )
-                    .def( "setResourceFont", &TextField::setResourceFont )
-                    .def( "getResourceFont", &TextField::getResourceFont )
+
 
                     .def( "setNoneAlign", &TextField::setNoneAlign )
                     .def( "isNoneAlign", &TextField::isNoneAlign )
@@ -3191,8 +3229,8 @@ namespace Menge
                     ;
 
                 pybind::interface_<HotSpotShape, pybind::bases<HotSpot> >("HotSpotShape", false)
-                    .def( "setResourceShape", &HotSpotShape::setResourceShapeName )
-                    .def( "getResourceShape", &HotSpotShape::getResourceShapeName )
+                    .def_proxy_static( "setResourceShape", nodeScriptMethod, &NodeScriptMethod::HotSpotShape_setResource )
+                    .def_proxy_static( "getResourceShape", nodeScriptMethod, &NodeScriptMethod::HotSpotShape_getResource )
                     ;
 
                 pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
@@ -3230,8 +3268,8 @@ namespace Menge
 
                 {
                     pybind::interface_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
-                        .def( "setAnimationResource", &Animation::setAnimationResource )
-                        .def( "getAnimationResource", &Animation::getAnimationResource )
+                        .def_proxy_static( "setAnimationResource", nodeScriptMethod, &NodeScriptMethod::Animation_setResource )
+                        .def_proxy_static( "getAnimationResource", nodeScriptMethod, &NodeScriptMethod::Animation_getResource )
                         .def( "getFrameCount", &Animation::getFrameCount )
                         .def( "getFrameDelay", &Animation::getFrameDelay )
                         .def( "setCurrentFrame", &Animation::setCurrentFrame )
@@ -3327,13 +3365,14 @@ namespace Menge
                     ;
 
                 pybind::interface_<Window, pybind::bases<Node> >("Window", false)
+                    .def_proxy_static( "setResourceWindow", nodeScriptMethod, &NodeScriptMethod::Window_setResource )
+                    .def_proxy_static( "getResourceWindow", nodeScriptMethod, &NodeScriptMethod::Window_getResource )
                     .def( "setClientSize", &Window::setClientSize )
                     .def( "setClientSizeClip", &Window::setClientSizeClip )
                     .def( "setClientSizeInTiles", &Window::setClientSizeInTiles )
                     .def( "getClientSize", &Window::getClientSize )
                     .def( "getWindowSize", &Window::getWindowSize )
                     .def( "getTileSize", &Window::getTileSize )
-                    .def( "setResourceWindow", &Window::setResourceWindow )
                     ;
 
             }		
@@ -3515,6 +3554,8 @@ namespace Menge
             
             pybind::def_functor( "hasGameParam", nodeScriptMethod, &NodeScriptMethod::s_hasGameParam );
             pybind::def_functor( "openUrlInDefaultBrowser", nodeScriptMethod, &NodeScriptMethod::s_openUrlInDefaultBrowser );
+
+            pybind::def_functor( "getDefaultResourceFontName", nodeScriptMethod, &NodeScriptMethod::s_getDefaultResourceFontName );
         }
     }
 }

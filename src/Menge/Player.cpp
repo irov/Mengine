@@ -31,6 +31,8 @@
 #	include "Interface/NotificationServiceInterace.h"
 #	include "Interface/NotificatorInterface.h"
 
+#   include "ResourceFont.h"
+
 #   include "MousePickerSystem.h"
 #   include "GlobalHandleSystem.h"
 #   include "ScheduleManager.h"
@@ -568,7 +570,10 @@ namespace Menge
 		m_debugText = NODE_SERVICE(m_serviceProvider)->
 			createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
-		m_debugText->setResourceFont( CONST_STRING(m_serviceProvider, ConsoleFont) );
+        ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceFont>(CONST_STRING(m_serviceProvider, ConsoleFont));
+
+		m_debugText->setResourceFont( resourceFont );
 		m_debugText->enable();
 	}
 	//////////////////////////////////////////////////////////////////////////

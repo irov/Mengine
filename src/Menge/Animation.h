@@ -17,8 +17,8 @@ namespace Menge
 		~Animation();
 
 	public:
-		void setAnimationResource( const ConstString& _resource );
-		const ConstString& getAnimationResource() const;
+		void setResourceAnimation( ResourceAnimation * _resourceAnimation );
+		ResourceAnimation * getResourceAnimation() const;
 
 		size_t getFrameCount() const;
 		float getFrameDelay( size_t  _frame ) const;
@@ -60,7 +60,6 @@ namespace Menge
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;
-		ConstString m_resourceAnimationName;
 
 		float m_frameTiming;
 

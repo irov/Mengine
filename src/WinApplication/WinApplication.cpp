@@ -169,7 +169,7 @@ namespace Menge
 		, m_cursor(nullptr)
 		, m_enableDebug(false)
 		, m_developmentMode(false)
-        , m_noPluginMode(false)
+        , m_noDevPluginsMode(false)
         , m_muteMode(false)
         , m_pluginMengeImageCodec(nullptr)
         , m_pluginMengeSoundCodec(nullptr)
@@ -1177,9 +1177,9 @@ namespace Menge
             m_profilerMode = true;
         }
 
-        if( Helper::s_hasOption( " -noplugin ", m_commandLine ) == true )
+        if( Helper::s_hasOption( " -nodevplugins ", m_commandLine ) == true )
         {
-            m_noPluginMode = true;
+            m_noDevPluginsMode = true;
         }
 
         if( Helper::s_hasOption( " -mute ", m_commandLine ) == true )
@@ -1346,30 +1346,30 @@ namespace Menge
             initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
             m_pluginMengeSoundCodec->initialize( m_serviceProvider );
         }
-
-        if( m_noPluginMode == false )
+        
+        for( TVectorWString::const_iterator
+            it = settings.plugins.begin(),
+            it_end = settings.plugins.end();
+        it != it_end;
+        ++it )
         {
-            for( TVectorWString::const_iterator
-                it = settings.plugins.begin(),
-                it_end = settings.plugins.end();
-            it != it_end;
-            ++it )
+            const WString & pluginName = *it;
+
+            PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
+                ->loadPlugin( pluginName );
+
+            if( plugin == nullptr )
             {
-                const WString & pluginName = *it;
+                LOGGER_ERROR(m_serviceProvider)("Application Failed to load plugin %ls"
+                    , pluginName.c_str()
+                    ); 
 
-                PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
-                    ->loadPlugin( pluginName );
-
-                if( plugin == NULL )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("Application Failed to load plugin %ls"
-                        , pluginName.c_str()
-                        ); 
-
-                    return false;
-                }
+                return false;
             }
+        }
 
+        if( m_noDevPluginsMode == false )
+        {
             for( TVectorWString::const_iterator
                 it = settings.devPlugins.begin(),
                 it_end = settings.devPlugins.end();
@@ -1381,7 +1381,7 @@ namespace Menge
                 PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
                     ->loadPlugin( pluginName );
 
-                if( plugin == NULL )
+                if( plugin == nullptr )
                 {
                     LOGGER_WARNING(m_serviceProvider)("Application Failed to load dev plugin %ls"
                         , pluginName.c_str()

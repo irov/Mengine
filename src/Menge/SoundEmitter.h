@@ -5,12 +5,12 @@
 #	include "Kernel/Animatable.h"
 #	include "Kernel/Soundable.h"
 
+#   include "ResourceSound.h"
+
 #	include "Interface/SoundSystemInterface.h"
 
 namespace Menge
 {
-	class ResourceSound;
-
 	class SoundEmitter
 		: public Node
 		, public Animatable
@@ -57,7 +57,7 @@ namespace Menge
 		void _setLoop( bool _value ) override;
 
 	private:
-		ResourceSound * m_resourceSound;
+		ResourceHolder<ResourceSound> m_resourceSound;
 
         SoundBufferInterface * m_soundBuffer;
         

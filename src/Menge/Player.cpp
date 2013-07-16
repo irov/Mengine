@@ -1163,7 +1163,7 @@ namespace Menge
                             m_ss << "Py: ";
                         }
                         
-                        m_ss << _scope->get_name() << " " << _scope->getRefcount();
+                        m_ss << _scope->get_name() << " " << _scope->getObjectCount();
                         
                         if( m_count % 3 != 2 )
                         {

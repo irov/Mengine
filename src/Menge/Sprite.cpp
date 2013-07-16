@@ -17,8 +17,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_resourceImage(nullptr)
-		, m_materialGroup(nullptr)
+		: m_materialGroup(nullptr)
 		, m_material(nullptr)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
@@ -65,7 +64,7 @@ namespace	Menge
             return false;
         }
 
-        if( m_resourceImage->incrementReference() == 0 )
+        if( m_resourceImage.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Sprite::compileResource_ '%s' image resource %s not compile"
                 , m_name.c_str() 
@@ -82,10 +81,7 @@ namespace	Menge
 	{
 		Node::_release();
 
-		if( m_resourceImage != nullptr )
-		{
-			m_resourceImage->decrementReference();
-		}
+        m_resourceImage.release();
 
         m_textures[0] = nullptr;
         m_textures[1] = nullptr;
@@ -111,7 +107,9 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceImage * Sprite::getResourceImage() const
     {
-        return m_resourceImage;
+        ResourceImage * resourceImage = m_resourceImage.reference();
+
+        return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
     void Sprite::updateResource_()
@@ -270,10 +268,7 @@ namespace	Menge
         m_customSize = _size;
         m_isCustomSize = true;
 
-        if( m_resourceImage != nullptr )
-        {
-            this->updateResource_();
-        }
+        this->recompile();
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::disableTextureColor( bool _disable )

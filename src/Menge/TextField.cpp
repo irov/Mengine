@@ -28,8 +28,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
-		: m_resourceFont(nullptr)
-		, m_textSize(0.f, 0.f)
+		: m_textSize(0.f, 0.f)
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
 		, m_fontHeight(0.f)
 		, m_horizontAlign(ETFHA_NONE)
@@ -78,8 +77,8 @@ namespace Menge
 			return false;
 		}
 
-		if( m_resourceFont == nullptr )
-		{
+        if( m_resourceFont == nullptr )
+        {
             const ConstString & resourceFontName = TEXT_SERVICE(m_serviceProvider)
                 ->getDefaultResourceFontName();
 
@@ -96,9 +95,9 @@ namespace Menge
             }
 
             m_resourceFont = resourceFont;
-		}
+        }
 
-        if( m_resourceFont->incrementReference() == 0 )
+        if( m_resourceFont.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' resource '%s' is not compile"
                 , this->getName().c_str()
@@ -138,10 +137,7 @@ namespace Menge
 	{
 		Node::_release();
 
-		if( m_resourceFont != nullptr )
-		{
-			m_resourceFont->decrementReference();
-		}
+        m_resourceFont.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TListTextLine & TextField::getTextLines() const
@@ -386,6 +382,8 @@ namespace Menge
 		//lines = Utils::split( _text, "\n\\n" );
 		Utils::split( lines, m_text, false, "\n" );
 
+        ResourceFont * resourceFont = m_resourceFont.get();
+
 		for(TVectorString::iterator 
 			it = lines.begin(),
 			it_end = lines.end(); 
@@ -394,7 +392,8 @@ namespace Menge
 		{
 			TextLine textLine(m_serviceProvider, m_fontHeight, m_charOffset);
 
-			textLine.initialize( m_resourceFont, *it );
+            
+			textLine.initialize( resourceFont, *it );
 
 			float textLength = textLine.getLength();
 
@@ -410,13 +409,14 @@ namespace Menge
 					TextLine tl(m_serviceProvider, m_fontHeight, m_charOffset);
 
 					String tl_string( newLine + space_delim + words.front() );
-					tl.initialize( m_resourceFont, tl_string );
+
+					tl.initialize( resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
 						TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);
 
-						line.initialize( m_resourceFont, newLine );
+						line.initialize( resourceFont, newLine );
 
 						m_lines.push_back( line );
 
@@ -432,7 +432,7 @@ namespace Menge
 				}
 
 				TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);				
-				line.initialize( m_resourceFont, newLine );
+				line.initialize( resourceFont, newLine );
 
 				m_lines.push_back( line );
 			}
@@ -485,7 +485,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont * TextField::getResourceFont() const
 	{
-		return m_resourceFont;
+        ResourceFont * resourceFont = m_resourceFont.reference();
+
+		return resourceFont;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -591,7 +593,7 @@ namespace Menge
             ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceReferenceT<ResourceFont>( textEntry.font );
 
-            if( resourceFont != m_resourceFont )
+            if( m_resourceFont != resourceFont )
             {
                 this->setResourceFont( resourceFont );
             }
@@ -640,7 +642,7 @@ namespace Menge
             ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceReferenceT<ResourceFont>( textEntry.font );
 
-            if( resourceFont != m_resourceFont )
+            if( m_resourceFont != resourceFont )
             {
                 this->setResourceFont( resourceFont );
             }

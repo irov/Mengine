@@ -226,7 +226,7 @@ namespace Menge
 
 		bool m_enableDebug;
 		bool m_developmentMode;
-        bool m_noPluginMode;
+        bool m_noDevPluginsMode;
         bool m_profilerMode;
         bool m_muteMode;
 

@@ -15,8 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::HotSpotImage()
-		: m_resourceHIT(nullptr)
-        , m_alphaTest(0.f)
+		: m_alphaTest(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,7 +39,7 @@ namespace Menge
             return false;
         }
 
-        if( m_resourceHIT->incrementReference() == 0 )
+        if( m_resourceHIT.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
                 , this->getName().c_str()
@@ -67,10 +66,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_release()
 	{
-		if( m_resourceHIT != nullptr )
-		{
-			m_resourceHIT->decrementReference();
-		}
+        m_resourceHIT.release();
 
 		HotSpot::_release();
 	}
@@ -145,7 +141,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHIT * HotSpotImage::getResourceHIT() const
 	{
-		return m_resourceHIT;
+        ResourceHIT * resourceHIT = m_resourceHIT.reference();
+
+		return resourceHIT;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )

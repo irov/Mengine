@@ -819,6 +819,27 @@ namespace Menge
             return;
         }
 
+        if( _textures == nullptr && _texturesNum != 0 )
+        {
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D _textures == NULL"
+                );
+
+            return;
+        }
+
+        for( size_t i = 0; i != _texturesNum; ++i )
+        {
+            const RenderTextureInterfacePtr & texture = _textures[i];
+
+            if( texture == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D _texture %d is null"
+                    );
+
+                return;
+            }
+        }
+
         if( m_renderObjects.full() == true )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render objects %d"
@@ -875,14 +896,7 @@ namespace Menge
 
         for( size_t i = 0; i != _texturesNum; ++i )
         {
-            if( _textures == nullptr )
-            {
-                ro.textures[i] = nullptr;
-            }
-            else
-            {
-                ro.textures[i] = _textures[i].get();
-            }		 
+            ro.textures[i] = _textures[i].get(); 
         }
 
         switch( _type )

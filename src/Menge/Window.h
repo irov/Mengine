@@ -5,7 +5,6 @@
 
 #	include "ResourceWindow.h"
 
-
 namespace Menge
 {
 	class Window
@@ -42,7 +41,7 @@ namespace Menge
 		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
-		ResourceWindow * m_resourceWindow;
+		ResourceHolder<ResourceWindow> m_resourceWindow;
 
 		mt::vec2f m_clientSize;
 			

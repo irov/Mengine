@@ -1,14 +1,15 @@
 #	pragma once
 
-#	include "Loadable.h"
+#	include "Kernel/Loadable.h"
 
-#	include "Resource.h"
-#	include "Identity.h"
-#	include "Reference.h"
+#	include "Kernel/Resource.h"
+#	include "Kernel/Identity.h"
+#	include "Kernel/Reference.h"
 
-#	include "Scriptable.h"
+#	include "Kernel/Scriptable.h"
 
-#	include "ResourceDeclare.h"
+#	include "Kernel/ResourceDeclare.h"
+#	include "Kernel/ResourceHolder.h"
 
 #	include "Factory/Factorable.h"
 #	include "Factory/Factory.h"

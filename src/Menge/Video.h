@@ -7,6 +7,8 @@
 #	include "Kernel/Animatable.h"
 #	include "Kernel/FixedVertices.h"
 
+#   include "ResourceVideo.h"
+
 namespace Menge
 {
     class FileServiceInterface;
@@ -15,7 +17,6 @@ namespace Menge
     class NodeServiceInterface;
     class RenderServiceInterface;
 
-	class ResourceVideo;
 	class RenderTextureInterface;
 	
 	struct RenderMaterialGroup;
@@ -77,7 +78,7 @@ namespace Menge
 		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
-		ResourceVideo * m_resourceVideo;		
+		ResourceHolder<ResourceVideo> m_resourceVideo;
 
 		RenderTextureInterfacePtr m_textures[1];
 		

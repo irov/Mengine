@@ -42,6 +42,10 @@
 #	include "ResourceShape.h"
 #	include "ResourceEmitterContainer.h"
 
+#   include "ResourceImageMultiplyRGBAndAlpha.h"
+#   include "ResourceImageCombineRGBAndAlpha.h"
+#   include "ResourceImageSubstract.h"
+
 #	include "Player.h"
 
 #   include "Interface/ApplicationInterface.h"
@@ -1167,6 +1171,10 @@ namespace Menge
 
             if( resourceImage == nullptr )
             {
+                LOGGER_ERROR(m_serviceProvider)("s_getImageSize sprite %s not setup resource"
+                    , _sprite->getName().c_str()
+                    );
+
                 size.x = 0.f;
                 size.y = 0.f;
 
@@ -2529,8 +2537,10 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceEmitterContainer );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceShape );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );    
-        
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageMultiplyRGBAndAlpha );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageCombineRGBAndAlpha );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstract );
     }
 
     struct extract_String_type
@@ -2868,6 +2878,15 @@ namespace Menge
         
         pybind::interface_<ResourceWindow, pybind::bases<ResourceReference> >("ResourceWindow", false)
             ;    
+
+        pybind::interface_<ResourceImageMultiplyRGBAndAlpha, pybind::bases<ResourceReference> >("ResourceImageMultiplyRGBAndAlpha", false)
+            ;
+
+        pybind::interface_<ResourceImageCombineRGBAndAlpha, pybind::bases<ResourceReference> >("ResourceImageCombineRGBAndAlpha", false)
+            ;
+
+        pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceReference> >("ResourceImageSubstract", false)
+            ;        
 
         pybind::interface_<Renderable>("Renderable")
             .def( "hide", &Renderable::hide )

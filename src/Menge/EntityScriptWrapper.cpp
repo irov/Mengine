@@ -218,7 +218,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Scene );
 	}
     //////////////////////////////////////////////////////////////////////////
-    static void * superclass_new_Entity( pybind::class_type_scope * _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
+    static void * superclass_new_Entity( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
     {
         (void)_obj;
         (void)_args;
@@ -233,7 +233,7 @@ namespace Menge
         return entity;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * superclass_new_Arrow( pybind::class_type_scope * _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
+    static void * superclass_new_Arrow( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
     {
         (void)_obj;
         (void)_args;
@@ -248,7 +248,7 @@ namespace Menge
         return arrow;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * superclass_new_Scene( pybind::class_type_scope * _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
+    static void * superclass_new_Scene( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
     {
         (void)_obj;
         (void)_args;
@@ -263,7 +263,7 @@ namespace Menge
         return scene;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void superclass_dealloc_only_python( pybind::class_type_scope * _scope, void * _impl )
+    static void superclass_dealloc_only_python( const pybind::class_type_scope_ptr & _scope, void * _impl )
     {
         (void)_scope;
         (void)_impl;

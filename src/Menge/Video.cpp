@@ -55,7 +55,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo * Video::getResourceVideo() const
 	{
-		return m_resourceVideo;
+        ResourceVideo * resourceVideo = m_resourceVideo.reference();
+
+		return resourceVideo;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _current, float _timing )
@@ -115,7 +117,7 @@ namespace Menge
 			return false;
 		}
 
-        if( m_resourceVideo->incrementReference() == 0 )
+        if( m_resourceVideo.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' resource '%s' is not compile"
                 , this->getName().c_str()
@@ -198,10 +200,7 @@ namespace Menge
 
         m_videoDecoder = nullptr;
 
-        if( m_resourceVideo != nullptr )
-		{
-			m_resourceVideo->decrementReference();
-		}
+        m_resourceVideo.release();
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )

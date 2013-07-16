@@ -129,6 +129,8 @@ Resource
 	Resource.h
     ResourceReference.cpp
     ResourceReference.h
+    ResourceHolder.cpp
+    ResourceHolder.h
 	ResourceDeclare.h
 	ResourceImplement.h
 	ResourceVisitor.h

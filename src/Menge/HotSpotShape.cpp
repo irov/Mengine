@@ -15,7 +15,6 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpotShape::HotSpotShape()
-        : m_resourceShape(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -39,7 +38,7 @@ namespace Menge
             return false;
         }
 
-        if( m_resourceShape->incrementReference() == 0 )
+        if( m_resourceShape.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotSpotShape::_compile: '%s' resource '%s' not compile"
                 , this->getName().c_str()
@@ -58,10 +57,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void HotSpotShape::_release()
     {
-        if( m_resourceShape != nullptr )
-        {
-            m_resourceShape->decrementReference();
-        }
+        m_resourceShape.release();
 
         HotSpot::_release();
     }
@@ -110,6 +106,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceShape * HotSpotShape::getResourceShape() const
     {
-        return m_resourceShape;
+        ResourceShape * resourceShape = m_resourceShape.reference();
+
+        return resourceShape;
     }
 }	// namespace Menge

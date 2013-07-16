@@ -2,10 +2,10 @@
 
 #	include "HotSpot.h"
 
+#   include "ResourceShape.h"
+
 namespace Menge
 {
-    class ResourceShape;
-
     class HotSpotShape
         : public HotSpot
     {
@@ -26,6 +26,6 @@ namespace Menge
         void _release() override;
 
     private:
-        ResourceShape * m_resourceShape;
+        ResourceHolder<ResourceShape> m_resourceShape;
     };
 }	// namespace Menge

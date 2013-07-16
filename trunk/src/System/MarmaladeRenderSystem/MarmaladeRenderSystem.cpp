@@ -280,16 +280,6 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeRenderSystem::getTexelOffsetX() const 
-	{
-		return 0.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeRenderSystem::getTexelOffsetY() const 
-	{
-		return 0.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
 	{
         //NOT SUPPORT!

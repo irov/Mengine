@@ -29,7 +29,7 @@ namespace Menge
 		PixelFormat getHWPixelFormat() const override;
 
 	public:
-		void destroy() override;
+		bool _destroy() override;
 
 	public: 
 		bool isRenderTarget() const;

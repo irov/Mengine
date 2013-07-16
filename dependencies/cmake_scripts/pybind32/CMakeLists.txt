@@ -24,12 +24,17 @@ ${SOURCE_DIR}/src/type_cast.cpp
 
 if(NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
+    ADD_DEFINITIONS(-D"nullptr=0")
+    ADD_DEFINITIONS(-D"nullptr_t=void*")    
 endif(NOT MSVC)
 
 add_definitions(-DPy_BUILD_CORE)
 add_definitions(-DPYBIND_PYTHON_VERSION=320)
 
-include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32)
+include_directories(${SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python32)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
+
 
 IF(WIN32)
     include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32/PC)

@@ -4,10 +4,10 @@
 
 #	include "Kernel/Animatable.h"
 
+#   include "ResourceAnimation.h"
+
 namespace Menge
 {
-	class ResourceAnimation;
-
 	class Animation
 		: public Sprite
 		, public Animatable
@@ -56,10 +56,10 @@ namespace Menge
 
 	protected:
 		size_t getFrame_( float _timing, float & _delthaTiming ) const;
-		bool updateCurrentFrame_();
+		void updateCurrentFrame_();
 
 	protected:
-		ResourceAnimation * m_resourceAnimation;
+		ResourceHolder<ResourceAnimation> m_resourceAnimation;
 
 		float m_frameTiming;
 

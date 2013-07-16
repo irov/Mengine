@@ -16,8 +16,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
-		: m_resourceAnimation(nullptr)
-		, m_frameTiming(0.f)
+		: m_frameTiming(0.f)
 		, m_currentFrame(0)
         , m_playIterator(0)
 		, m_onEndFrameTick(false)
@@ -44,7 +43,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation * Animation::getResourceAnimation() const
 	{
-		return m_resourceAnimation;
+        ResourceAnimation * resourceAnimation = m_resourceAnimation.reference();
+
+		return resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( float _current, float _timing )
@@ -174,7 +175,7 @@ namespace	Menge
 			return false;
 		}
 
-        if( m_resourceAnimation->incrementReference() == 0 )
+        if( m_resourceAnimation.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Animation::_compile: '%s' resource '%s' is not compile"
                 , m_name.c_str()
@@ -191,10 +192,7 @@ namespace	Menge
 	{
 		Sprite::_release();
 
-		if( m_resourceAnimation != nullptr )
-		{
-			m_resourceAnimation->decrementReference();
-		}
+        m_resourceAnimation.release();
 
 		m_play = false;
 	}
@@ -308,23 +306,19 @@ namespace	Menge
 		return count - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animation::updateCurrentFrame_()
+	void Animation::updateCurrentFrame_()
 	{
-		if( m_resourceImage != nullptr )
-		{
-			m_resourceImage->decrementReference();
-            m_resourceImage = nullptr;
-		}
+        m_resourceImage.release();
 
-		m_resourceImage =  m_resourceAnimation->getSequenceResource( m_currentFrame );
-		m_resourceImage->incrementReference();
+		m_resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
         	
 		if( Sprite::_compile() == false )
 		{
-			return false;
+			LOGGER_ERROR(m_serviceProvider)("Animation::updateCurrentFrame_ '%s' invalid compile %d frame"
+                , this->getName().c_str()
+                , m_currentFrame
+                );
 		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setEventListener( PyObject * _listener )

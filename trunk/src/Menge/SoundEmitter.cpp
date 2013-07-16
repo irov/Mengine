@@ -14,8 +14,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
-		: m_resourceSound(nullptr)
-        , m_soundBuffer(nullptr)
+		: m_soundBuffer(nullptr)
 		, m_sourceID(0)
 		, m_isHeadMode(false)
 		, m_onSoundPauseEvent(false)
@@ -58,7 +57,7 @@ namespace Menge
 			return false;
 		}
 
-        if( m_resourceSound->incrementReference() == 0 )
+        if( m_resourceSound.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' resource '%s' not compile"
                 , this->getName().c_str()
@@ -112,10 +111,7 @@ namespace Menge
 
 		m_sourceID = 0;
 
-		if( m_resourceSound != nullptr )
-		{
-			m_resourceSound->decrementReference();			
-		}
+        m_resourceSound.release();
 
         if( m_soundBuffer != nullptr )
         {
@@ -138,7 +134,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceSound * SoundEmitter::getResourceSound() const
     {
-        return m_resourceSound;
+        ResourceSound * resourceSound = m_resourceSound.reference();
+
+        return resourceSound;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenSoundNodePaused()

@@ -11,8 +11,8 @@ namespace Menge
 	struct AnimationSequence
 	{
 		AnimationSequence()
-			: resource(NULL)
-			, delay(0.0f)
+			: resource(nullptr)
+			, delay(0.f)
 		{}
 		
 		ResourceImage * resource;
@@ -34,7 +34,7 @@ namespace Menge
 		size_t getSequenceCount() const;
 		float getSequenceDelay( size_t _index ) const;		
 		const ConstString& getSequenceResourceName( size_t _index ) const;
-		ResourceImage *  getSequenceResource( size_t _index ) const;
+		ResourceImage * getSequenceResource( size_t _index ) const;
 
 		size_t getLastFrameIndex() const;
 		float getSequenceDuration() const;

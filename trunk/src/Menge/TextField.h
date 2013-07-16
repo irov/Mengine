@@ -8,6 +8,8 @@
 #	include "Core/ValueInterpolator.h"
 #	include "Core/ConstString.h"
 
+#   include "ResourceFont.h"
+
 #	include "TextLine.h"
 
 #	include "Math/vec4.h"
@@ -16,9 +18,6 @@
 
 namespace Menge
 {
-	class ResourceFont;
-	class ResourceImage;
-
 	struct RenderMaterial;
 
 	//! TextField - класс для отрисовки шрифта. 
@@ -56,6 +55,10 @@ namespace Menge
 		TextField();
 		~TextField();
 
+    public:
+        void setResourceFont( ResourceFont * _resourceFont );
+        ResourceFont * getResourceFont() const;
+
 	public:
 		void setMaxLen( float _len );
 		float getMaxLen() const;
@@ -64,8 +67,7 @@ namespace Menge
 		const String& getText() const;
 
 		const String & getDefaultText() const;
-
-
+        
 		void setTextByKey( const ConstString& _key );
 		const ConstString & getTextKey() const;
 
@@ -82,9 +84,6 @@ namespace Menge
 
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
-
-		void setResourceFont( ResourceFont * _resourceFont );
-		ResourceFont * getResourceFont() const;
 
 		void setNoneAlign();
 		bool isNoneAlign() const;
@@ -161,7 +160,7 @@ namespace Menge
 		void updateTextLines_() const;
 
 	private:
-		ResourceFont * m_resourceFont;
+        ResourceHolder<ResourceFont> m_resourceFont;
 
         ConstString m_key;
 

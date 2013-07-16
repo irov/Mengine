@@ -3,6 +3,8 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
+#   include "ResourceEmitterContainer.h"
+
 #	include "../Interface/RenderSystemInterface.h"
 #	include "../Interface/ParticleSystemInterface.h"
 
@@ -14,7 +16,6 @@
 
 namespace Menge
 {
-	class ResourceEmitterContainer;
 	class EmitterInterface;
 	class ResourceImage;
 	class ResourceImageDefault;
@@ -107,7 +108,7 @@ namespace Menge
         void updateVertexWM_();
 
 	protected:
-		ResourceEmitterContainer * m_resourceEmitterContainer;
+		ResourceHolder<ResourceEmitterContainer> m_resourceEmitterContainer;
 
 		ConstString m_emitterName;
 

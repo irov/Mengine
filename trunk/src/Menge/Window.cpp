@@ -38,7 +38,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Window::Window()
 		: m_clientSize(100.f, 100.f)
-		, m_resourceWindow(nullptr)
 	{
 		for( size_t i = 0; i < ResourceWindow_Count; i++ )
 		{
@@ -73,7 +72,7 @@ namespace Menge
 			return false;
 		}
 
-        if( m_resourceWindow->incrementReference() == 0 )
+        if( m_resourceWindow.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Window::_compile '%s' resource '%s' invalid compile" 
                 , this->getName().c_str()
@@ -146,10 +145,7 @@ namespace Menge
             edge.textures[1] = nullptr;
 		}
 
-		if( m_resourceWindow != nullptr )
-		{
-			m_resourceWindow->decrementReference();
-		}
+        m_resourceWindow.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_render( RenderCameraInterface * _camera )
@@ -349,7 +345,7 @@ namespace Menge
 
 		const mt::mat4f& worldMatrix = this->getWorldMatrix();
 
-		for( size_t i = 0; i < ResourceWindow_Count; ++i )
+		for( size_t i = 0; i != ResourceWindow_Count; ++i )
 		{   
             mt::vec4f uv;
             
@@ -423,7 +419,7 @@ namespace Menge
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
-		for( int i = 1; i != 4; ++i )
+		for( size_t i = 1; i != 4; ++i )
 		{
 			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
 		}
@@ -556,7 +552,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceWindow * Window::getResourceWindow() const
     {
-        return m_resourceWindow;
+        ResourceWindow * resourceWindow = m_resourceWindow.reference();
+
+        return resourceWindow;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Window::hasBackground() const

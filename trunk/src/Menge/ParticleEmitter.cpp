@@ -40,7 +40,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::ParticleEmitter()
 		: m_interface(nullptr)
-		, m_resourceEmitterContainer(nullptr)
 		, m_startPosition(0.f)
         , m_randomMode(false)
 		, m_vertices(nullptr)
@@ -107,7 +106,7 @@ namespace	Menge
 			return false;
 		}
 
-        if( m_resourceEmitterContainer->incrementReference() == 0 )
+        if( m_resourceEmitterContainer.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' resource '%s' not compile"
                 , m_name.c_str()
@@ -186,19 +185,16 @@ namespace	Menge
 	{
 		Node::_release();
 
-        if( m_resourceEmitterContainer != nullptr )
+        if( m_interface != nullptr )
         {
-		    if( m_interface != nullptr )
-		    {
-			    EmitterContainerInterface * container = 
-				    m_resourceEmitterContainer->getContainer();
+            EmitterContainerInterface * container = 
+                m_resourceEmitterContainer->getContainer();
 
-			    container->releaseEmitter( m_interface );
-			    m_interface = nullptr;
-		    }
+            container->releaseEmitter( m_interface );
+            m_interface = nullptr;
+        }
 
-			m_resourceEmitterContainer->decrementReference();
-		}
+        m_resourceEmitterContainer.release();
 
 		delete [] m_vertices;        
 		m_vertices = nullptr;
@@ -659,7 +655,9 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceEmitterContainer * ParticleEmitter::getResourceEmitterContainer() const
     {
-        return m_resourceEmitterContainer;
+        ResourceEmitterContainer * resourceEmitterContainer = m_resourceEmitterContainer.reference();
+
+        return resourceEmitterContainer;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitter( const ConstString& _emitterName )

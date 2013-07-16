@@ -3,6 +3,8 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Shape.h"
 
+#   include "ResourceImage.h"
+
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
 
@@ -14,8 +16,6 @@
 
 namespace Menge
 {
-	class ResourceImage;
-	
 	struct RenderMaterial;
 	struct RenderMaterialGroup;    
 	
@@ -60,7 +60,7 @@ namespace Menge
 		bool compileResource_();
 
 	protected:
-		ResourceImage * m_resourceImage;
+		ResourceHolder<ResourceImage> m_resourceImage;
 
         bool m_isCustomSize;
         mt::vec2f m_customSize;

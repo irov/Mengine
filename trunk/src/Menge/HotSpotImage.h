@@ -2,10 +2,10 @@
 
 #	include "HotSpot.h"
 
+#   include "ResourceHIT.h"
+
 namespace Menge
 {
-	class ResourceHIT;
-
 	class HotSpotImage
 		: public HotSpot
 	{
@@ -33,7 +33,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-        ResourceHIT * m_resourceHIT;
+        ResourceHolder<ResourceHIT> m_resourceHIT;
 
 		float m_alphaTest;		
 	};

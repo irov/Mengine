@@ -3,6 +3,8 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
+#   include "ResourceMovie.h"
+
 #   include "stdex/binary_vector.h"
 
 namespace Menge
@@ -15,8 +17,6 @@ namespace Menge
 
 	struct MovieLayer;
 	struct MovieFrameSource;    
-
-	class ResourceMovie;
 
     class VisitorMovieSocket
     {
@@ -158,7 +158,7 @@ namespace Menge
 		void destroyCamera3D_();
 		
 	protected:
-		ResourceMovie * m_resourceMovie;
+		ResourceHolder<ResourceMovie> m_resourceMovie;
 
 		Camera3D * m_renderCamera3D;
 

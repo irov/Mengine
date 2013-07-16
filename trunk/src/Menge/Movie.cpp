@@ -49,8 +49,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
-		: m_resourceMovie(nullptr)
-		, m_frameTiming(0.f)
+		: m_frameTiming(0.f)
         , m_playIterator(0)
 		, m_currentFrame(0)        
 		, m_renderCamera3D(nullptr)
@@ -70,12 +69,14 @@ namespace Menge
 
         m_invalidateNodes = true;
 
-        this->recompile();        
+        this->recompile();
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie * Movie::getResourceMovie() const
     {
-        return m_resourceMovie;
+        ResourceMovie * resourceMovie = m_resourceMovie.reference();
+
+        return resourceMovie;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setParentMovie( bool _value )
@@ -1437,8 +1438,10 @@ namespace Menge
             ->createNodeT<MovieEvent>( CONST_STRING(m_serviceProvider, MovieEvent) );
 
         layer_event->setName( _layer.name );
-        layer_event->setResourceMovie( m_resourceMovie );
 
+        ResourceMovie * resourceMovie = m_resourceMovie.reference();
+
+        layer_event->setResourceMovie( resourceMovie );
         layer_event->localHide( true );
 
         m_events.insert( std::make_pair(_layer.name, layer_event) );
@@ -1490,7 +1493,7 @@ namespace Menge
 			return false;
 		}
 
-        if( m_resourceMovie->incrementReference() == 0 )
+        if( m_resourceMovie.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Movie::_compile '%s' movie resource %s not compile"
                 , m_name.c_str() 
@@ -1542,10 +1545,7 @@ namespace Menge
 
         this->destroyCamera3D_();
 
-        if( m_resourceMovie != nullptr )
-        {
-            m_resourceMovie->decrementReference();
-        }
+        m_resourceMovie.release();
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCamera_()

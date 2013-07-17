@@ -28,4 +28,5 @@ typedef void * nullptr_t;
 #		ifndef override
 #			define override
 #		endif
+#	include <stddef.h>
 #	endif

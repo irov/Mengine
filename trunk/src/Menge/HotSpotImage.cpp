@@ -141,9 +141,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHIT * HotSpotImage::getResourceHIT() const
 	{
-        ResourceHIT * resourceHIT = m_resourceHIT.reference();
-
-		return resourceHIT;
+		return m_resourceHIT;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )

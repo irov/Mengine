@@ -74,9 +74,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie * Movie::getResourceMovie() const
     {
-        ResourceMovie * resourceMovie = m_resourceMovie.reference();
-
-        return resourceMovie;
+        return m_resourceMovie;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setParentMovie( bool _value )
@@ -1439,9 +1437,7 @@ namespace Menge
 
         layer_event->setName( _layer.name );
 
-        ResourceMovie * resourceMovie = m_resourceMovie.reference();
-
-        layer_event->setResourceMovie( resourceMovie );
+        layer_event->setResourceMovie( m_resourceMovie );
         layer_event->localHide( true );
 
         m_events.insert( std::make_pair(_layer.name, layer_event) );

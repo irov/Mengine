@@ -106,8 +106,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceShape * HotSpotShape::getResourceShape() const
     {
-        ResourceShape * resourceShape = m_resourceShape.reference();
-
-        return resourceShape;
+        return m_resourceShape;
     }
 }	// namespace Menge

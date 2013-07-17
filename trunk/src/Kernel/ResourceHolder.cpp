@@ -6,16 +6,14 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceHolderBase::ResourceHolderBase()
-        : m_reference(nullptr)
-        , m_resource(nullptr)
+        : m_resource(nullptr)
+        , m_compile(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHolderBase::compile()
     {
-        m_resource = m_reference;
-
-        if( m_resource == nullptr )
+        if( this->empty() == true )
         {
             return false;
         }
@@ -25,27 +23,30 @@ namespace Menge
             return false;
         }
 
+        m_compile = true;
+
         return true;             
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceHolderBase::release()
     {
-        if( m_resource != nullptr )
+        if( m_compile == true )
         {
             m_resource->decrementReference();
-            m_resource = nullptr;
         }
+
+        m_compile = false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHolderBase::empty() const
     {
-        return m_reference == nullptr;
+        return m_resource == nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceHolderBase::setReference( ResourceReference * _resource )
+    void ResourceHolderBase::setResource( ResourceReference * _resource )
     {
         this->release();
 
-        m_reference = _resource;
+        m_resource = _resource;
     }
 }

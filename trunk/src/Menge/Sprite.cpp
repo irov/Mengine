@@ -106,10 +106,8 @@ namespace	Menge
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceImage * Sprite::getResourceImage() const
-    {
-        ResourceImage * resourceImage = m_resourceImage.reference();
-
-        return resourceImage;
+    {        
+        return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
     void Sprite::updateResource_()

@@ -655,9 +655,7 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceEmitterContainer * ParticleEmitter::getResourceEmitterContainer() const
     {
-        ResourceEmitterContainer * resourceEmitterContainer = m_resourceEmitterContainer.reference();
-
-        return resourceEmitterContainer;
+        return m_resourceEmitterContainer;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitter( const ConstString& _emitterName )

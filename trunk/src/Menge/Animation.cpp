@@ -43,9 +43,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation * Animation::getResourceAnimation() const
 	{
-        ResourceAnimation * resourceAnimation = m_resourceAnimation.reference();
-
-		return resourceAnimation;
+		return m_resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( float _current, float _timing )

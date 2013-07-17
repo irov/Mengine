@@ -55,9 +55,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo * Video::getResourceVideo() const
 	{
-        ResourceVideo * resourceVideo = m_resourceVideo.reference();
-
-		return resourceVideo;
+		return m_resourceVideo;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _current, float _timing )

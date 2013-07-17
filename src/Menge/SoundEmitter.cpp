@@ -134,9 +134,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceSound * SoundEmitter::getResourceSound() const
     {
-        ResourceSound * resourceSound = m_resourceSound.reference();
-
-        return resourceSound;
+        return m_resourceSound;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenSoundNodePaused()

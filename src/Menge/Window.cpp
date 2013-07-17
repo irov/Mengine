@@ -552,9 +552,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ResourceWindow * Window::getResourceWindow() const
     {
-        ResourceWindow * resourceWindow = m_resourceWindow.reference();
-
-        return resourceWindow;
+        return m_resourceWindow;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Window::hasBackground() const

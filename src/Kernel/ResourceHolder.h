@@ -17,11 +17,16 @@ namespace Menge
         bool empty() const;
 
     protected:
-        void setReference( ResourceReference * _resource );
+        void setResource( ResourceReference * _resource );
+        
+        inline ResourceReference * getResource() const
+        {
+            return m_resource;
+        }
 
     protected:
-        ResourceReference * m_reference;
         ResourceReference * m_resource;
+        bool m_compile;
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
@@ -31,28 +36,16 @@ namespace Menge
     public:
         T * get() const
         {
+            ResourceReference * resource = this->getResource();
+
 #   ifdef _DEBUG
-            if( dynamic_cast<T *>(m_resource) == nullptr )
+            if( dynamic_cast<T *>(resource) == nullptr )
             {
                 return nullptr;
             }
 #   endif
 
-            T * t = static_cast<T *>(m_resource);
-
-            return t;
-        }
-
-        T * reference() const
-        {
-#   ifdef _DEBUG
-            if( dynamic_cast<T *>(m_reference) == nullptr )
-            {
-                return nullptr;
-            }
-#   endif
-
-            T * t = static_cast<T *>(m_reference);
+            T * t = static_cast<T *>(resource);
 
             return t;
         }
@@ -60,7 +53,7 @@ namespace Menge
     public:
         ResourceHolder<T> & operator = ( T * _resource )
         {
-            this->setReference( _resource );
+            this->setResource( _resource );
 
             return *this;
         }
@@ -73,16 +66,16 @@ namespace Menge
             return t;
         }
 
-        //operator T * () const
-        //{
-        //    T * t = this->get();
+        operator T * () const
+        {
+            T * t = this->get();
 
-        //    return t;
-        //}
+            return t;
+        }
 
         bool operator == ( T * _resource ) const
         {
-            T * t = this->reference();
+            T * t = this->get();
 
             bool result = (t == _resource);
 
@@ -91,7 +84,7 @@ namespace Menge
 
         bool operator != ( T * _resource ) const
         {
-            T * t = this->reference();
+            T * t = this->get();
 
             bool result = (t != _resource);
 

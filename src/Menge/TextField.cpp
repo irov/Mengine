@@ -382,8 +382,6 @@ namespace Menge
 		//lines = Utils::split( _text, "\n\\n" );
 		Utils::split( lines, m_text, false, "\n" );
 
-        ResourceFont * resourceFont = m_resourceFont.get();
-
 		for(TVectorString::iterator 
 			it = lines.begin(),
 			it_end = lines.end(); 
@@ -393,7 +391,7 @@ namespace Menge
 			TextLine textLine(m_serviceProvider, m_fontHeight, m_charOffset);
 
             
-			textLine.initialize( resourceFont, *it );
+			textLine.initialize( m_resourceFont, *it );
 
 			float textLength = textLine.getLength();
 
@@ -410,13 +408,13 @@ namespace Menge
 
 					String tl_string( newLine + space_delim + words.front() );
 
-					tl.initialize( resourceFont, tl_string );
+					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
 						TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);
 
-						line.initialize( resourceFont, newLine );
+						line.initialize( m_resourceFont, newLine );
 
 						m_lines.push_back( line );
 
@@ -432,7 +430,7 @@ namespace Menge
 				}
 
 				TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);				
-				line.initialize( resourceFont, newLine );
+				line.initialize( m_resourceFont, newLine );
 
 				m_lines.push_back( line );
 			}
@@ -485,9 +483,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont * TextField::getResourceFont() const
 	{
-        ResourceFont * resourceFont = m_resourceFont.reference();
-
-		return resourceFont;
+		return m_resourceFont;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )

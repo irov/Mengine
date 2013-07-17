@@ -524,7 +524,7 @@ namespace Menge
 			return node;
 		}
 
-		return 0;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Node::findTag( const ConstString & _tag ) const
@@ -537,7 +537,7 @@ namespace Menge
 			return *it_found;
 		}
 
-		return 0;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Node::_findChildren( const ConstString & _name, bool _recursion ) const
@@ -545,7 +545,7 @@ namespace Menge
         (void)_name;
         (void)_recursion;
 
-		return 0;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::hasChildren( const ConstString & _name, bool _recursive ) const
@@ -807,7 +807,7 @@ namespace Menge
 
 		RenderCameraInterface * renderCamera = _camera;
 
-		if( m_renderCamera != NULL )
+		if( m_renderCamera != nullptr )
 		{
 			renderCamera = m_renderCamera;
 		}
@@ -902,7 +902,7 @@ namespace Menge
 	{
         (void)_args;
 
-		if( _kwds == 0 )
+		if( _kwds == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Node %s setEventListener wait kwds"
 				, m_name.c_str() 
@@ -913,12 +913,14 @@ namespace Menge
 		
 		this->_setEventListener( _kwds );
 		
-		return pybind::ret_none();
+        PyObject * py_none = pybind::ret_none();
+
+		return py_none;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeEventListener()
 	{
-		this->_setEventListener( 0 );		
+		this->_setEventListener( nullptr );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setEventListener( PyObject * _listener )
@@ -934,7 +936,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isEnableGlobalHandle() const
 	{
-		return this->isActivate();
+        bool active = this->isActivate();
+
+		return active;
 	}
     //////////////////////////////////////////////////////////////////////////
     Eventable * Node::getGlobalHandleEventable()
@@ -970,9 +974,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Node::getScene()
 	{
-		if( m_layer == 0 )
+		if( m_layer == nullptr )
 		{
-			return 0;
+			return nullptr;
 		}
 
 		return m_layer->getScene();
@@ -980,7 +984,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::getCameraPosition( RenderCameraInterface * _camera, mt::vec2f & _position )
 	{
-        if( m_layer == NULL )
+        if( m_layer == nullptr )
         {
             const mt::vec3f & pos = this->getWorldPosition();
 

@@ -2410,12 +2410,17 @@ namespace Menge
             return;
         }
 
-        m_currentTexture[_stage] = nullptr;
+        RenderImageInterface * image = _texture.get();
 
-        if( _texture != nullptr )
+        if( image != nullptr )
         {
-            DX9TexturePtr t = stdex::intrusive_static_cast<DX9TexturePtr>(_texture);
+            DX9Texture * t = static_cast<DX9Texture *>(image);
+
             m_currentTexture[_stage] = t->getDXTextureInterface();
+        }
+        else
+        {
+            m_currentTexture[_stage] = nullptr;
         }
 
         IDirect3DTexture9 * texture = m_currentTexture[_stage];

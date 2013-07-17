@@ -51,7 +51,7 @@ namespace Menge
         m_hwRect.bottom = m_image->getHWHeight();
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr RenderTexture::getImage() const
+	const RenderImageInterfacePtr & RenderTexture::getImage() const
 	{
 		return m_image;
 	}

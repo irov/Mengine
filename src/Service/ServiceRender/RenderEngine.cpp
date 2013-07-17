@@ -267,7 +267,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::screenshot( const RenderTextureInterfacePtr & _texture, const mt::vec4f & _rect )
     {
-        RenderImageInterfacePtr image = _texture->getImage();
+        const RenderImageInterfacePtr & image = _texture->getImage();
 
         RENDER_SYSTEM(m_serviceProvider)
             ->screenshot( image, _rect.buff() );
@@ -408,7 +408,7 @@ namespace Menge
             if( texture_id != m_currentTexturesID[stageId] || m_currentTexturesID[stageId] != 0 )
             {
                 m_currentTexturesID[stageId] = texture_id;
-                RenderImageInterfacePtr image = texture->getImage();
+                const RenderImageInterfacePtr & image = texture->getImage();
 
                 RENDER_SYSTEM(m_serviceProvider)
                     ->setTexture( stageId, image );
@@ -1181,8 +1181,8 @@ namespace Menge
 
         for( size_t i = 0; i != _prev->textureStages; ++i )
         {
-            RenderImageInterfacePtr prevImage = _prev->textures[i]->getImage();
-            RenderImageInterfacePtr nextImage = _next->textures[i]->getImage();
+            const RenderImageInterfacePtr & prevImage = _prev->textures[i]->getImage();
+            const RenderImageInterfacePtr & nextImage = _next->textures[i]->getImage();
 
             if( prevImage != nextImage )
             {
@@ -1576,7 +1576,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::setRenderTargetTexture( const RenderTextureInterfacePtr & _texture, bool _clear )
     {
-        RenderImageInterfacePtr image = _texture->getImage();
+        const RenderImageInterfacePtr & image = _texture->getImage();
 
         RENDER_SYSTEM(m_serviceProvider)
             ->setRenderTarget( image, _clear );

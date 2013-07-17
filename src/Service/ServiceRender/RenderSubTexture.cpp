@@ -41,9 +41,9 @@ namespace Menge
         m_uv.w = float(m_hwRect.bottom) / float(texture_height);
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr RenderSubTexture::getImage() const
+	const RenderImageInterfacePtr & RenderSubTexture::getImage() const
 	{
-        RenderImageInterfacePtr image = m_texture->getImage();
+        const RenderImageInterfacePtr & image = m_texture->getImage();
 
 		return image;
 	}

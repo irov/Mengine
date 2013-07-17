@@ -396,7 +396,7 @@ namespace Menge
         : public FactorablePtr
 	{
 	public:
-		virtual RenderImageInterfacePtr getImage() const = 0;
+		virtual const RenderImageInterfacePtr & getImage() const = 0;
                 		
 		virtual size_t getId() const = 0;
 

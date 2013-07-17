@@ -31,7 +31,7 @@ namespace Menge
             , RenderTextureInterfaceListener * _listener );		
 		
 	public:
-		RenderImageInterfacePtr getImage() const override;
+		const RenderImageInterfacePtr & getImage() const override;
 
 		size_t getId() const override;
 

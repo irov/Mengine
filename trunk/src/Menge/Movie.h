@@ -188,7 +188,5 @@ namespace Menge
 		size_t m_currentFrame;
         
 		bool m_parentMovie;
-
-        bool m_invalidateNodes;
 	};
 }

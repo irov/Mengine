@@ -54,7 +54,6 @@ namespace Menge
 		, m_currentFrame(0)        
 		, m_renderCamera3D(nullptr)
         , m_parentMovie(false)
-        , m_invalidateNodes(true)
 	{	
     }
     //////////////////////////////////////////////////////////////////////////
@@ -67,9 +66,23 @@ namespace Menge
 
         m_resourceMovie = _resourceMovie;
 
-        m_invalidateNodes = true;
+        this->releaseLayers_();
 
-        this->recompile();
+        if( m_resourceMovie != nullptr )
+        {
+            if( this->createLayers_() == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("Movie.setResourceMovie: '%s' can't create layer '%s'"
+                    , m_name.c_str()
+                    , m_resourceMovie->getName().c_str()
+                    );
+
+                m_resourceMovie = nullptr;
+                return;
+            }            
+        }  
+
+        this->recompile();      
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie * Movie::getResourceMovie() const
@@ -357,7 +370,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * Movie::getMovieSlot( const ConstString & _name ) const
 	{
-		if( this->isCompile() == false )
+		if( m_resourceMovie == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieSlot %s invalid not compile"
 				, m_name.c_str()
@@ -419,7 +432,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::hasMovieSlot( const ConstString & _name ) const
 	{
-		if( this->isCompile() == false )
+		if( m_resourceMovie == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieSlot %s invalid not compile"
 				, m_name.c_str()
@@ -472,7 +485,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     Movie * Movie::getSubMovie( const ConstString & _name ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie::getSubMovie %s invalid not compile"
                 , m_name.c_str()
@@ -534,7 +547,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie::hasSubMovie( const ConstString & _name ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie.hasSubMovie %s invalid not compile"
                 , m_name.c_str()
@@ -587,7 +600,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie::visitSockets( VisitorMovieSocket * _visitor ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie.visitSockets %s invalid not compile"
                 , m_name.c_str()
@@ -643,7 +656,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     HotSpot * Movie::getSocket( const ConstString & _name ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile %s"
                 , m_name.c_str()
@@ -706,7 +719,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie::hasSocket( const ConstString & _name ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie.hasSocket %s invalid not compile"
                 , m_name.c_str()
@@ -759,7 +772,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie::setMovieEvent( const ConstString & _name, PyObject * _cb ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie.setMovieEvent %s invalid not compile"
                 , m_name.c_str()
@@ -819,7 +832,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie::hasMovieEvent( const ConstString & _name ) const
     {
-        if( this->isCompile() == false )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieEvent %s invalid not compile"
                 , m_name.c_str()
@@ -1049,6 +1062,8 @@ namespace Menge
             }
         }
 
+        this->createCamera3D_();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1076,6 +1091,8 @@ namespace Menge
         m_subMovies.clear();
         m_sockets.clear();
         m_events.clear();
+
+        this->destroyCamera3D_();
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
@@ -1498,25 +1515,7 @@ namespace Menge
 
             return false;
         }
-
-		this->createCamera3D_();
-
-		if( m_invalidateNodes == true )
-        {
-            this->releaseLayers_();
-            
-            if( this->createLayers_() == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer"
-                    , m_name.c_str()
-                    );
-
-                return false;
-            }
-
-            m_invalidateNodes = false;
-        }
-
+        
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
@@ -1538,8 +1537,6 @@ namespace Menge
 
         //const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
         //this->releaseLayers_();
-
-        this->destroyCamera3D_();
 
         m_resourceMovie.release();
     }

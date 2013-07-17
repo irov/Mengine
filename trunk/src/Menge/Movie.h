@@ -12,6 +12,7 @@ namespace Menge
 	class Camera3D;
     class MovieNodeExtra;
     class MovieEvent;
+    class MovieSceneEffect;
 
     class HotSpot;
 
@@ -182,6 +183,9 @@ namespace Menge
 
         typedef stdex::binary_vector<ConstString, MovieEvent *> TMapMovieEvent;
         TMapMovieEvent m_events;
+
+        typedef stdex::binary_vector<ConstString, MovieSceneEffect *> TMapSceneEffects;
+        TMapSceneEffects m_sceneEffects;
 
 		float m_frameTiming;
         size_t m_playIterator;

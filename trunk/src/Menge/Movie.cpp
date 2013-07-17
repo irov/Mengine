@@ -1091,6 +1091,7 @@ namespace Menge
         m_subMovies.clear();
         m_sockets.clear();
         m_events.clear();
+        m_sceneEffects.clear();
 
         this->destroyCamera3D_();
     }
@@ -1122,12 +1123,10 @@ namespace Menge
 
         sceneeffect_slot->setName( _layer.name );
 
-        Layer * layer = this->getLayer();
-
-        sceneeffect_slot->setPropagateNode( layer );
-
         //layer_slot->enable();
         sceneeffect_slot->localHide( true );
+
+        m_sceneEffects.insert( std::make_pair(_layer.name, sceneeffect_slot) );
 
         this->addMovieNode_( _layer, sceneeffect_slot );
 
@@ -1519,6 +1518,19 @@ namespace Menge
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
+        Layer * layer = this->getLayer();
+
+        for( TMapSceneEffects::iterator
+            it = m_sceneEffects.begin(),
+            it_end = m_sceneEffects.end();
+        it != it_end;
+        ++it )
+        {
+            MovieSceneEffect * sceneEffect = it->second;
+
+            sceneEffect->setPropagateNode( layer );
+        }
+
 		if( this->setupParent_() == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't setup layer parents"
@@ -1621,7 +1633,7 @@ namespace Menge
 			{
 				Node * node_parent = this->getMovieParent_( layer );
 
-				if( node_parent == NULL )
+				if( node_parent == nullptr )
 				{
 					LOGGER_ERROR(m_serviceProvider)("Movie::updateParent_ %s invalid parent node %d"
 						, this->getName().c_str()

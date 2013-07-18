@@ -14,9 +14,8 @@ set( metabuf_sources
     ${SOURCE_DIR}/metabuf/Metabuf.cpp
     )
     
-include_directories( ${SOURCE_DIR}
-                     ${THIRDPARTY_DIR}/stdex/include
-                     )
+include_directories(${SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)                     
 
 add_library( metabuf_static STATIC ${metabuf_sources} )
 

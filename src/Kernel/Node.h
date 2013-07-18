@@ -13,8 +13,6 @@
 #	include "Kernel/Affectorable.h"
 #	include "Kernel/Visitable.h"
 
-#   include "Kernel/NodeVisitor.h"
-
 #	include "Core/ValueInterpolator.h"
 
 #	include "Factory/Factorable.h"

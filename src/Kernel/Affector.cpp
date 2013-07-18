@@ -13,6 +13,7 @@ namespace Menge
 		: m_serviceProvider(_serviceProvider)
         , m_cb(_cb)
 		, m_type(_type)	
+        , m_id(0)
 	{
 		pybind::incref( m_cb );
 	}
@@ -26,6 +27,7 @@ namespace Menge
 	{
 		m_id = _id;
 	}
+    //////////////////////////////////////////////////////////////////////////
     size_t Affector::getId() const
     {
         return m_id;
@@ -53,7 +55,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affector::call( Scriptable * _scriptable, bool _isEnd )
 	{
-		if( m_cb == 0 )
+		if( m_cb == nullptr )
 		{
 			return;
 		}
@@ -65,8 +67,5 @@ namespace Menge
 
         SCRIPT_SERVICE(m_serviceProvider)
             ->callFunction(m_cb, "(OiO)", _scriptable->getEmbed(), m_id, pybind::get_bool(_isEnd) );
-        //EVENT_SERVICE(m_serviceProvider)
-            //->addEventFormat( EVENT_AFFECTOR_END, m_cb, "(OiO)", _scriptable->getEmbed(), m_id, pybind::get_bool(_isEnd) );
-        //pybind::call( m_cb, "(OiO)", _scriptable->getEmbed(), m_id, pybind::get_bool(_isEnd) );
 	}
 }	// namespace Menge

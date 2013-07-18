@@ -306,8 +306,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::updateCurrentFrame_()
 	{
-        m_resourceImage.release();
-
+        Sprite::_release();
+        
 		m_resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
         	
 		if( Sprite::_compile() == false )

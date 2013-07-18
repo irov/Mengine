@@ -654,7 +654,7 @@ namespace Menge
 
 		this->_update( _current, _timing );
 
-		Affectorable::update( _current, _timing );
+		Affectorable::updateAffectors( _current, _timing );
 		
 		this->updateChild_( _current, _timing );
 

@@ -6,14 +6,14 @@
 
 #	include "Core/ValueInterpolator.h"
 
-#   include "stdex/intrusive_linked.h"
+#   include "stdex/intrusive_slug_linked.h"
 
 namespace Menge
 {
     class ServiceProviderInterface;
 
 	class Affector
-        : public stdex::intrusive_linked<Affector>
+        : public stdex::intrusive_slug_linked<Affector>
 	{
 	public:
 		Affector( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type );
@@ -37,14 +37,14 @@ namespace Menge
 	protected:
 		void call( Scriptable * _scriptable, bool _isEnd );
 
-	protected:
+    protected:
         ServiceProviderInterface * m_serviceProvider;
 		PyObject * m_cb;
 
 		EAffectorType m_type;
 		size_t m_id;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	template<class C, class M>
 	class MemeberAffector
 		: public Affector

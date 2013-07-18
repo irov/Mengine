@@ -20,7 +20,7 @@ namespace Menge
 
     protected:
         friend void intrusive_ptr_add_ref( FactorablePtr * _ptr );
-        friend void intrusive_ptr_release( FactorablePtr * _ptr );
+        friend void intrusive_ptr_dec_ref( FactorablePtr * _ptr );
 
 #   ifdef _DEBUG
     protected:
@@ -36,7 +36,7 @@ namespace Menge
         ++_ptr->m_reference;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void intrusive_ptr_release( FactorablePtr * _ptr )
+    inline void intrusive_ptr_dec_ref( FactorablePtr * _ptr )
     {
         if( --_ptr->m_reference == 0 )
         {

@@ -13,13 +13,15 @@
 #	include "Kernel/Affectorable.h"
 #	include "Kernel/Visitable.h"
 
+#   include "Kernel/NodeVisitor.h"
+
 #	include "Core/ValueInterpolator.h"
 
 #	include "Factory/Factorable.h"
 
 #	include "Core/Viewport.h"
 
-#   include "stdex/intrusive_list.h"
+#   include "stdex/intrusive_slug_list.h"
 #   include "stdex/intrusive_slug.h"
 
 namespace Menge
@@ -43,11 +45,11 @@ namespace Menge
 
 	class Node;
 
-    typedef stdex::intrusive_list<Node> TListNodeChild;
+    typedef stdex::intrusive_slug_list<Node> TListNodeChild;
 	typedef stdex::intrusive_slug<Node> TSlugChild;
 
 	class Node
-        : public stdex::intrusive_linked<Node>
+        : public stdex::intrusive_slug_linked<Node>
 		, public Factorable
 		, public Identity
 		, public Resource

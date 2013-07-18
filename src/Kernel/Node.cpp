@@ -447,8 +447,8 @@ namespace Menge
     {
         this->_removeChildren( _node );
 
-        _node->setParent_( NULL );
-        _node->setLayer( NULL );
+        _node->setParent_( nullptr );
+        _node->setLayer( nullptr );
 
         this->eraseChildren_( _node );
     }

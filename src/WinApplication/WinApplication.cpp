@@ -260,7 +260,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Notification Service..." );
         
         NotificationServiceInterface * notificationService;
-        if( createNotificationService( &notificationService ) == false )
+        if( SERVICE_CREATE( NotificationService, &notificationService ) == false )
         {
             return false;
         }
@@ -269,6 +269,8 @@ namespace Menge
         {
             return false;
         }
+
+        m_notificationService = notificationService;
 
         return true;
     }
@@ -710,6 +712,8 @@ namespace Menge
         {
             return false;
         }
+
+        m_unicodeSystem = unicodeSystem;
         
         UnicodeServiceInterface * unicodeService;
         if( createUnicodeService( &unicodeService ) == false )
@@ -1075,7 +1079,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
         
         ConverterServiceInterface * converterService;
-        if( createConverterService( &converterService ) == false )
+        if( SERVICE_CREATE( ConverterService, &converterService ) == false )
         {
             return false;
         }
@@ -1084,6 +1088,8 @@ namespace Menge
         {
             return false;
         }
+
+        m_converterService = converterService;
 
         return true;
     }
@@ -1807,6 +1813,7 @@ namespace Menge
         }
         
         SERVICE_DESTROY( UnicodeService, m_unicodeService );        
+        SERVICE_DESTROY( UnicodeSystem, m_unicodeSystem );
         
         if( m_fileService != nullptr )
         {            
@@ -1848,6 +1855,11 @@ namespace Menge
             m_scriptService->finalize();
 
             SERVICE_DESTROY( ScriptService, m_scriptService );
+        }
+
+        if( m_converterService != nullptr )
+        {
+            SERVICE_DESTROY( ConverterService, m_converterService );
         }
 
         if( m_renderService != nullptr )
@@ -1909,6 +1921,12 @@ namespace Menge
             SERVICE_DESTROY( ThreadSystem, m_threadSystem );
             m_threadSystem = nullptr;
         }
+
+        if( m_notificationService != nullptr )
+        {
+            SERVICE_DESTROY(NotificationService, m_notificationService);
+            m_notificationService = nullptr;
+        }
         
 		if( m_fileLog != nullptr )
 		{
@@ -1961,6 +1979,7 @@ namespace Menge
 		}
 
         SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
+        m_serviceProvider = nullptr;
 
 		//::timeEndPeriod( 1 );
 	}

@@ -175,7 +175,10 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		InputServiceInterface * m_inputService;
+        
+        UnicodeSystemInterface * m_unicodeSystem;
         UnicodeServiceInterface * m_unicodeService;
+
 		LogServiceInterface * m_logService;
         
         FileSystemInterface * m_fileSystem;
@@ -198,6 +201,9 @@ namespace Menge
         RenderMaterialServiceInterface * m_renderMaterialManager;
 
         StringizeServiceInterface * m_stringizeService;
+
+        ConverterServiceInterface * m_converterService;
+        NotificationServiceInterface * m_notificationService;
 
         SoundSystemInterface * m_soundSystem;
         SoundServiceInterface * m_soundService;

@@ -1062,6 +1062,27 @@ namespace Menge
             }
         }
 
+        for( TVectorNodies::reverse_iterator
+            it = m_nodies.rbegin(),
+            it_end = m_nodies.rend();
+        it != it_end;
+        ++it )
+        {
+            const Nodies & ns = *it;
+
+            if( ns.node == NULL )
+            {
+                continue;
+            }
+
+            if( ns.child == false )
+            {
+                continue;
+            }
+
+            this->addChildren( ns.node );
+        }
+
         this->createCamera3D_();
 
         return true;
@@ -1581,27 +1602,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupParent_()
 	{
-        for( TVectorNodies::reverse_iterator
-            it = m_nodies.rbegin(),
-            it_end = m_nodies.rend();
-        it != it_end;
-        ++it )
-        {
-            const Nodies & ns = *it;
-
-            if( ns.node == NULL )
-            {
-                continue;
-            }
-
-            if( ns.child == false )
-            {
-                continue;
-            }
-
-            this->addChildren( ns.node );
-        }
-
         //float frameDuration = m_resourceMovie->getFrameDuration();
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();

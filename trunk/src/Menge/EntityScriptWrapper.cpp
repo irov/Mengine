@@ -68,7 +68,7 @@ namespace Menge
                 return true;
             }
 
-        protected:
+        public:
             void destroy() override
             {
                 delete this;
@@ -126,6 +126,8 @@ namespace Menge
 
             if( generator->initialize() == false )
             {
+                generator->destroy();
+
                 return false;
             }
 

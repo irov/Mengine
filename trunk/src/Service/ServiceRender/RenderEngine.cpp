@@ -1639,6 +1639,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum )
     {
+        (void)_verteNum;
+
         for( size_t i = 0; i != (_indicesNum / 3); ++i )
         {
             uint16 i0 = _indices[i + 0];

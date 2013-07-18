@@ -58,15 +58,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void PNGAPI s_cleanup( png_structp _png_ptr )
 	{
-		if( _png_ptr != NULL )
+		if( _png_ptr != nullptr )
 		{
 			png_destroy_read_struct( &_png_ptr, 0, (png_infopp)0 );
-			_png_ptr = NULL;
+			_png_ptr = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
-		: m_png_ptr(NULL)
+		: m_png_ptr(nullptr)
 		, m_row_bytes(0)
 	{
 	}
@@ -109,7 +109,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPNG::initialize Can't create info structure" 
                 );
 
-            png_destroy_write_struct(&m_png_ptr, NULL);
+            png_destroy_write_struct(&m_png_ptr, nullptr);
 
             return false;
         }
@@ -141,19 +141,17 @@ namespace Menge
 
         png_get_IHDR( m_png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, NULL, NULL );
 
-        png_set_interlace_handling( m_png_ptr );
-        //if( interlace_method != PNG_INTERLACE_NONE )
+        //png_set_interlace_handling( m_png_ptr );
+        if( interlace_method != PNG_INTERLACE_NONE )
         {
-            //LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize PNG is interlacing (Engine not support to read this png format)"
-            //    );
+            LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize PNG is interlacing (Engine not support to read this png format)"
+                );
 
 
 
-            //png_destroy_info_struct( m_png_ptr, &info_ptr );
-
-            //png_read_image
-
-            //return false;
+            png_destroy_info_struct( m_png_ptr, &info_ptr );
+               
+            return false;
         }
 
         switch( color_type )
@@ -294,7 +292,7 @@ namespace Menge
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, buff, NULL );
+					png_read_row( m_png_ptr, buff, nullptr );
 
 					for( size_t j = 0; j != m_row_bytes; ++j )
 					{
@@ -312,7 +310,7 @@ namespace Menge
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, buff, NULL );
+					png_read_row( m_png_ptr, buff, nullptr );
 
 					for( size_t j = 0; j != m_row_bytes; ++j )
 					{
@@ -342,7 +340,7 @@ namespace Menge
 
                 for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
-                    png_read_row( m_png_ptr, buff, NULL );
+                    png_read_row( m_png_ptr, buff, nullptr );
 
                     for( size_t j = 0; j != m_row_bytes; ++j )
                     {
@@ -363,7 +361,7 @@ namespace Menge
 
                 for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
-                    png_read_row( m_png_ptr, buff, NULL );
+                    png_read_row( m_png_ptr, buff, nullptr );
 
                     size_t row = m_row_bytes / 3;
                     for( size_t j = 0; j < row; ++j )
@@ -383,7 +381,7 @@ namespace Menge
 
                 for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
-                    png_read_row( m_png_ptr, bufferCursor, NULL );
+                    png_read_row( m_png_ptr, bufferCursor, nullptr );
 
                     bufferCursor += m_options.pitch;
                 }
@@ -399,9 +397,9 @@ namespace Menge
             }
 		}
 
-		png_read_end(m_png_ptr, 0);
+		png_read_end(m_png_ptr, nullptr);
 
-		png_destroy_read_struct(&m_png_ptr, 0, 0);
+		png_destroy_read_struct(&m_png_ptr, nullptr, nullptr);
 
 		return _bufferSize;
 	}

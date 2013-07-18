@@ -24,11 +24,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAffectors( EAffectorType _type )
 	{
-        for( TVectorAffector::iterator
-            it = m_affectors.begin(),
-            it_end = m_affectors.end();
-        it != it_end;
-        ++it )
+        for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
         {
             Affector * affector = *it;
 
@@ -36,22 +32,22 @@ namespace Menge
             {
                 affector->unlink();
                 affector->stop();
+
+                delete affector;
             }
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAllAffectors()
 	{
-        for( TVectorAffector::iterator
-            it = m_affectors.begin(),
-            it_end = m_affectors.end();
-        it != it_end;
-        ++it )
+        for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
         {
             Affector * affector = *it;
 
             affector->unlink();
 			affector->stop();
+
+            delete affector;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,11 +55,7 @@ namespace Menge
 	{
         (void)_current;
 
-        for( TVectorAffector::iterator
-            it = m_affectors.begin(),
-            it_end = m_affectors.end();
-        it != it_end;
-        ++it )
+        for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
         {
             Affector * affector = *it;
             
@@ -73,6 +65,8 @@ namespace Menge
 			{
                 affector->unlink();
                 affector->complete();
+
+                delete affector;
 			}
 		}
 	}

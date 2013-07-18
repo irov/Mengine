@@ -4,6 +4,7 @@
 #   include "Kernel/Affector.h"
 
 #	include "stdex/intrusive_slug_list.h"
+#	include "stdex/intrusive_slug.h"
 
 #	include "Math/vec3.h"
 
@@ -35,7 +36,9 @@ namespace Menge
         void updateAdd_();
 
 	protected:
-        typedef stdex::intrusive_slug_list<Affector> TVectorAffector;
+        typedef stdex::intrusive_slug<Affector> TSlugAffector;
+
+        typedef stdex::intrusive_slug_list<Affector> TVectorAffector;        
 		TVectorAffector m_affectors;
 
 		float m_angularSpeed;

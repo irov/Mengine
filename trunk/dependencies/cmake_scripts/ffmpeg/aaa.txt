@@ -50,8 +50,10 @@ LDFLAGS='-mwindows' ./configure \
 --enable-mmx \
 --enable-sse \
 --arch=x86 \
+--cpu=i686 \
 --target-os=mingw32 \
 --disable-debug
+
 
 LDFLAGS='-mwindows' ./configure \
 --target=x86-win32-gcc \

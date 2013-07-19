@@ -1984,6 +1984,11 @@ namespace Menge
             m_winTimer = nullptr;
 		}
 
+        if( m_windowsLayer != nullptr )
+        {
+            delete m_windowsLayer;
+        }
+
         SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
         m_serviceProvider = nullptr;
 

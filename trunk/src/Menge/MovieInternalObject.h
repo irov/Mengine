@@ -2,6 +2,8 @@
 
 #	include "Kernel/Node.h"
 
+#   include "ResourceInternalObject.h"
+
 namespace Menge
 {
 	class Movie;
@@ -17,25 +19,26 @@ namespace Menge
 		void setMovie( Movie * _movie );
 		Movie * getMovie() const;
 
-		void setInternalObject( PyObject * _internalObject );
-		PyObject * getInternalObject() const;
+		void setResourceInternalObject( ResourceInternalObject * _resource );
+		ResourceInternalObject * getResourceInternalObject() const;
 
 	protected:
+        bool _compile() override;
+        void _release() override;
+
 		bool _activate() override;
 		void _deactivate() override;
-
+        
 	protected:
 		bool _destroy() override;
 		
 	protected:
-		//void _invalidateWorldMatrix() override;
-		//void _invalidateColor() override;
-
-	protected:
 		void _localHide( bool _hide ) override;
 
 	protected:
-		Movie * m_movie;
+        ResourceHolder<ResourceInternalObject> m_resourceInternalObject;
+        Movie * m_movie;
+
 		PyObject * m_internalObject;
 	};
 }

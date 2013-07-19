@@ -5,7 +5,6 @@
 #	include "ResourceMovie.h"
 
 #	include "ResourceImageDefault.h"
-#	include "ResourceInternalObject.h"
 #	include "ResourceAnimation.h"
 #	include "ResourceImageSolid.h"
 #   include "ResourceHIT.h"
@@ -880,44 +879,6 @@ namespace Menge
 
         return false;
     }
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * Movie::findInternalObject_( const ConstString & _resource ) const
-	{
-		ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceInternalObject>( _resource );
-
-		if( resourceInternalObject == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't find internal resource '%s'"
-				, m_name.c_str()
-				, _resource.c_str()
-				);
-
-			return nullptr;
-		}
-
-		const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
-		const ConstString & internalName = resourceInternalObject->getInternalName();		
-		
-		PyObject * py_object = nullptr;
-
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOVIE_GET_INTERNAL)( py_object, (PyObject*)0, "(ss)", internalGroup.c_str(), internalName.c_str() );
-
-		resourceInternalObject->decrementReference();
-
-		if( py_object == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't find internal object '%s:%s'"
-				, m_name.c_str()
-				, internalGroup.c_str()
-				, internalName.c_str()				
-				);
-
-			return nullptr;
-		}
-
-		return py_object;
-	}
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createLayers_()
     {
@@ -1113,6 +1074,7 @@ namespace Menge
         m_sockets.clear();
         m_events.clear();
         m_sceneEffects.clear();
+        m_internals.clear();
 
         this->destroyCamera3D_();
     }
@@ -1331,6 +1293,8 @@ namespace Menge
 		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
 
+        layer_movie->setName( _layer.name );
+
         ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceMovie>( _layer.source );
 
@@ -1354,6 +1318,8 @@ namespace Menge
     {
         Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
+
+        layer_movie->setName( _layer.name );
         
         ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceMovie>( _layer.source );
@@ -1381,13 +1347,17 @@ namespace Menge
 		MovieInternalObject * movie_internal = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<MovieInternalObject>( CONST_STRING(m_serviceProvider, MovieInternalObject) );
 
+        movie_internal->setName( _layer.name );
+
+        ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceT<ResourceInternalObject>( _layer.source );
+
 		movie_internal->setMovie( this );
-
-		PyObject * py_object = this->findInternalObject_( _layer.source );
-
-		movie_internal->setInternalObject( py_object );
+        movie_internal->setResourceInternalObject( resourceInternalObject );
 
 		movie_internal->localHide(true);
+
+        m_internals.insert( std::make_pair(_layer.name, movie_internal) );
 
 		this->addMovieNode_( _layer, movie_internal );
 

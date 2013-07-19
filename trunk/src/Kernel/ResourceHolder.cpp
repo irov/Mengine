@@ -13,7 +13,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHolderBase::compile()
     {
-        if( this->empty() == true )
+        if( m_resource == nullptr )
         {
             return false;
         }
@@ -36,11 +36,6 @@ namespace Menge
         }
 
         m_compile = false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceHolderBase::empty() const
-    {
-        return m_resource == nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceHolderBase::setResource( ResourceReference * _resource )

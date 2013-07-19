@@ -17,15 +17,14 @@ EXPORTS
     av_get_frame_filename
     av_get_output_timestamp
     av_get_packet
-    av_gettime@LIBAVFORMAT_54
     av_guess_codec
     av_guess_format
+    av_guess_frame_rate
     av_guess_sample_aspect_ratio
     av_hex_dump
     av_hex_dump_log
     av_iformat_next
     av_index_search_timestamp
-    av_interleave_packet_per_dts
     av_interleaved_write_frame
     av_match_ext
     av_new_program
@@ -47,6 +46,8 @@ EXPORTS
     av_sdp_create
     av_seek_frame
     av_set_pts_info
+    av_stream_get_r_frame_rate
+    av_stream_set_r_frame_rate
     av_url_split
     av_write_frame
     av_write_trailer

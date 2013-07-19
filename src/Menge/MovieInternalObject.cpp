@@ -2,21 +2,21 @@
 
 #	include "Movie.h"
 
+#   include "Logger/Logger.h"
+
 #	include <pybind/pybind.hpp>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MovieInternalObject::MovieInternalObject()
-		: m_internalObject(NULL)
-		, m_movie(NULL)
+		: m_movie(nullptr)
+		, m_internalObject(nullptr)
 	{
-
 	}
-	////
+	//////////////////////////////////////////////////////////////////////////
 	MovieInternalObject::~MovieInternalObject()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::setMovie( Movie * _movie )
@@ -29,17 +29,68 @@ namespace Menge
 		return m_movie;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieInternalObject::setInternalObject( PyObject * _internalObject )
+	void MovieInternalObject::setResourceInternalObject( ResourceInternalObject * _resourceInternalObject )
 	{
-		m_internalObject = _internalObject;
-
-		pybind::incref( m_internalObject );
+        m_resourceInternalObject = _resourceInternalObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * MovieInternalObject::getInternalObject() const
+	ResourceInternalObject * MovieInternalObject::getResourceInternalObject() const
 	{
-		return m_internalObject;
+		return m_resourceInternalObject;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool MovieInternalObject::_compile()
+    {
+        if( m_resourceInternalObject == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource not setup"
+                , m_name.c_str()
+                );
+            
+            return false;
+        }
+
+        if( m_resourceInternalObject.compile() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource '%s' not compile"
+                , m_name.c_str()
+                , m_resourceInternalObject->getName().c_str()
+                );
+
+            return false;
+        }
+
+        const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
+        const ConstString & internalName = m_resourceInternalObject->getInternalName();		
+
+        PyObject * py_object = nullptr;
+
+        EVENTABLE_ASK(m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL)( py_object, (PyObject*)0, "(ss)", internalGroup.c_str(), internalName.c_str() );
+
+        if( py_object == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource '%s' can't find internal object '%s:%s'"
+                , m_name.c_str()
+                , m_resourceInternalObject->getName().c_str()
+                , internalGroup.c_str()
+                , internalName.c_str()				
+                );
+
+            return false;
+        }
+
+        m_internalObject = py_object;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieInternalObject::_release()
+    {
+        m_resourceInternalObject.release();
+
+        pybind::decref( m_internalObject );
+        m_internalObject = nullptr;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieInternalObject::_activate()
 	{
@@ -48,7 +99,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_internalObject != NULL )
+		if( m_internalObject != nullptr )
 		{
 			PyObject * py_obj = this->getEmbed();
 		
@@ -62,7 +113,7 @@ namespace Menge
 	{
 		Node::_deactivate();
 				
-		if( m_internalObject != NULL )
+		if( m_internalObject != nullptr )
 		{
 			PyObject * py_obj = this->getEmbed();
 
@@ -82,49 +133,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )
 	{
-		if( m_internalObject != NULL )
+		if( m_internalObject != nullptr )
 		{
 			PyObject * py_obj = this->getEmbed();
 
 			EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OOO)", py_obj, m_internalObject, pybind::get_bool(_hide) );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////		
-	//void MovieInternalObject::_invalidateWorldMatrix()
-	//{
-	//	this->_invalidateWorldMatrix();
-
-	//	const mt::vec3f & anchorPoint = this->getOrigin();
-	//	const mt::vec3f & position = this->getLocalPosition();
-	//	const mt::vec3f & scale = this->getScale();
-	//	const mt::vec3f & rotation = this->getRotation();
-
-	//	PyObject * py_anchorPoint = pybind::ptr(anchorPoint);
-	//	PyObject * py_position = pybind::ptr(position);
-	//	PyObject * py_scale = pybind::ptr(scale);
-	//	PyObject * py_rotation = pybind::ptr(rotation);
-
-	//	m_movie->callEvent( EVENT_MOVIE_APPLY_INTERNAL_TRANSFORMATION, "(OOOOO)", m_internalObject, py_anchorPoint, py_position, py_scale, py_rotation );
-
-	//	pybind::decref(py_anchorPoint);
-	//	pybind::decref(py_position);
-	//	pybind::decref(py_scale);
-	//	pybind::decref(py_rotation);
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//void MovieInternalObject::_invalidateColor()
-	//{
-	//	this->_invalidateColor();
-
-	//	ColourValue colour;
-	//	this->calcTotalColor( colour );
-
-	//	float opacity = colour.getA();
-
-	//	PyObject * py_opacity = pybind::ptr(opacity);
-
-	//	m_movie->callEvent( EVENT_MOVIE_APPLY_INTERNAL_OPACITY, "(OO)", m_internalObject, py_opacity );
-
-	//	pybind::decref(py_opacity);
-	//}
 }

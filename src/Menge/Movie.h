@@ -13,6 +13,7 @@ namespace Menge
     class MovieNodeExtra;
     class MovieEvent;
     class MovieSceneEffect;
+    class MovieInternalObject;
 
     class HotSpot;
 
@@ -117,9 +118,6 @@ namespace Menge
 
 		void updateCamera_();
 		void stopAnimation_();
-        
-	private:
-		PyObject * findInternalObject_( const ConstString & _resource ) const;
 
     protected:
         bool createLayers_();
@@ -186,6 +184,9 @@ namespace Menge
 
         typedef stdex::binary_vector<ConstString, MovieSceneEffect *> TMapSceneEffects;
         TMapSceneEffects m_sceneEffects;
+
+        typedef stdex::binary_vector<ConstString, MovieInternalObject *> TMapInternalObjects;
+        TMapInternalObjects m_internals;
 
 		float m_frameTiming;
         size_t m_playIterator;

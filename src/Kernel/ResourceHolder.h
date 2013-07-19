@@ -13,9 +13,6 @@ namespace Menge
         bool compile();
         void release();
 
-    public:
-        bool empty() const;
-
     protected:
         void setResource( ResourceReference * _resource );
         

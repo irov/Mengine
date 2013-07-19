@@ -72,11 +72,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_compile()
 	{
-		if( Node::_compile() == false )
-		{
-			return false;
-		}
-
         if( m_resourceFont == nullptr )
         {
             const ConstString & resourceFontName = TEXT_SERVICE(m_serviceProvider)
@@ -135,8 +130,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
-		Node::_release();
-
         m_resourceFont.release();
 	}
 	//////////////////////////////////////////////////////////////////////////

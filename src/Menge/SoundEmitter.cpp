@@ -43,11 +43,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_compile()
 	{
-		if( Node::_compile() == false )
-		{
-			return false;
-		}
-
 		if( m_resourceSound == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' resource is null"

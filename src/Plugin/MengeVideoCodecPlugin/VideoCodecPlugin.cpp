@@ -46,7 +46,7 @@ namespace Menge
     {
         (void)_impl;
 
-        if( _level > AV_LOG_WARNING )
+        if( _level > AV_LOG_ERROR )
         {
             return;
         }
@@ -55,7 +55,7 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	VideoCodecPlugin::VideoCodecPlugin()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

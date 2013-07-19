@@ -35,11 +35,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()
 	{
-		if( Node::_compile() == false )
-		{
-			return false;
-		}
-
 		if( this->compileResource_() == false )
 		{
 			return false;
@@ -79,8 +74,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
 	{
-		Node::_release();
-
         m_resourceImage.release();
 
         m_textures[0] = nullptr;

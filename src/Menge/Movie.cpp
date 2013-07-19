@@ -1482,11 +1482,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_compile()
 	{
-		if( Node::_compile() == false )
-		{
-			return false;
-		}
-
 		if( m_resourceMovie == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup resource"

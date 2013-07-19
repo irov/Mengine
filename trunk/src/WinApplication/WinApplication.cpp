@@ -1963,6 +1963,12 @@ namespace Menge
             SERVICE_DESTROY( StringizeService, m_stringizeService );
             m_stringizeService = nullptr;
         }
+
+        if( m_archiveService != nullptr )
+        {
+            SERVICE_DESTROY( ArchiveService, m_archiveService );
+            m_archiveService = nullptr;
+        }
         
 		if( m_alreadyRunningMonitor != nullptr )
 		{

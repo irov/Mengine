@@ -54,10 +54,9 @@ namespace Menge
 		, m_IOContext(nullptr)
         , m_imgConvertContext(nullptr)
         , m_imgConvertContextCache(true)
-		, m_inputFormat(nullptr)
 		, m_outputPixelFormat(PIX_FMT_RGBA)
 		, m_videoStreamId(-1)
-		, m_pts(0.0f)        
+		, m_pts(0.f)        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -67,11 +66,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_initialize()
-	{   
-        uint8_t filebuffer[VIDEO_FFMPEG_BUFFER_IO_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+	{
+        const int probe_buffer_io_size = 32;
+
+        uint8_t filebuffer[probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE];
        
         size_t stram_size = m_stream->size();
-        size_t probe_size = VIDEO_FFMPEG_BUFFER_IO_SIZE > stram_size ? stram_size : VIDEO_FFMPEG_BUFFER_IO_SIZE;
+        size_t probe_size = probe_buffer_io_size > stram_size ? stram_size : probe_buffer_io_size;
 
         memset( filebuffer + probe_size, 0, FF_INPUT_BUFFER_PADDING_SIZE );
 
@@ -83,9 +84,10 @@ namespace Menge
         pd.buf = (unsigned char *)filebuffer; 
         pd.buf_size = probe_size;
 
-        m_inputFormat = av_probe_input_format( &pd, 1 );
-
-        if( m_inputFormat == NULL )
+        int score = 0;
+        AVInputFormat * inputFormat = av_probe_input_format2( &pd, 1, &score );
+        
+        if( inputFormat == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: av_probe_input_format failed "
                 );
@@ -113,8 +115,8 @@ namespace Menge
 		m_formatContext = avformat_alloc_context();
 
 		m_formatContext->pb = m_IOContext;
-
-        int open_input_error = avformat_open_input( &m_formatContext, "", m_inputFormat, NULL );
+        
+        int open_input_error = avformat_open_input( &m_formatContext, "", inputFormat, NULL );
 
 		if( open_input_error < 0 )
 		{

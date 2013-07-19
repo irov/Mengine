@@ -86,11 +86,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_compile()
 	{
-		if( Node::_compile() == false )
-		{
-			return false;
-		}
-
         ////// it`s not very pretty
         if( m_emitterName.empty() == true )
         {
@@ -183,8 +178,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
-		Node::_release();
-
         if( m_interface != nullptr )
         {
             EmitterContainerInterface * container = 

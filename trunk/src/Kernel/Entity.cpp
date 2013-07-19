@@ -58,11 +58,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-		if( Node::_compile() == false )
-		{
-			return false;
-		}
-
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_COMPILE)("()");
 		
 		return true;
@@ -70,8 +65,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
-		Node::_release();
-
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////

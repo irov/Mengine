@@ -59,8 +59,6 @@ namespace Menge
 
 		SwsContext * m_imgConvertContext;
         bool m_imgConvertContextCache;
-				
-		AVInputFormat * m_inputFormat;
 		
 		int m_outputPixelFormat;
 

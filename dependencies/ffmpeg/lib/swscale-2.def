@@ -21,6 +21,7 @@ EXPORTS
     sws_getIdentityVec
     sws_get_class
     sws_init_context
+    sws_isSupportedEndiannessConversion
     sws_isSupportedInput
     sws_isSupportedOutput
     sws_normalizeVec

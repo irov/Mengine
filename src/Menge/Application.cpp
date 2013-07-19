@@ -126,6 +126,8 @@
 
 #   include "Core/String.h"
 
+#   include "stdex/allocator.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN(Consts, Menge::Consts);
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
@@ -1048,6 +1050,11 @@ namespace Menge
 				
                 player->toggleDebugText();
 			}
+
+            if( _key == KC_F3 && _isDown == true )
+            {
+                stdex_memoryinfo();
+            }
 		}
 
 //#	endif

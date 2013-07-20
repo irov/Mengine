@@ -5,4 +5,4 @@
 namespace Menge
 {
     typedef stdex::const_string ConstString;
-}
+} 

@@ -147,6 +147,9 @@ namespace Menge
 
 		m_sourceId = _source;
 
+        alSourceRewind( m_sourceId );
+        alSourcei( m_sourceId, AL_BUFFER, 0 );
+
 		ALint state = 0;
 		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR(m_serviceProvider);
@@ -182,7 +185,7 @@ namespace Menge
         {
             return false;
         }
-        
+                
 		alSourcePlay( m_sourceId );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
@@ -247,6 +250,12 @@ namespace Menge
 
         bool is_end = false;
 
+        //// Check the status of the Source.  If it is not playing, then playback was completed,
+        //// or the Source was starved of audio data, and needs to be restarted.
+        int state;
+        alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
+        OAL_CHECK_ERROR(m_serviceProvider);
+
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
         OAL_CHECK_ERROR(m_serviceProvider);
 
@@ -302,12 +311,6 @@ namespace Menge
         //        }
         //    }
         //}
-
-		//// Check the status of the Source.  If it is not playing, then playback was completed,
-		//// or the Source was starved of audio data, and needs to be restarted.
-		int state;
-		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-        OAL_CHECK_ERROR(m_serviceProvider);
 
 		if( state != AL_PLAYING && processed == 0 )
 		{

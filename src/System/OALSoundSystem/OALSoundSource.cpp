@@ -268,7 +268,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::apply_( ALuint _source )
 	{
-		if( m_headMode )
+		if( m_headMode == true )
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
 			OAL_CHECK_ERROR(m_serviceProvider);
@@ -286,6 +286,9 @@ namespace Menge
 
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.f );
 			OAL_CHECK_ERROR(m_serviceProvider);
+
+            alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
+            OAL_CHECK_ERROR(m_serviceProvider);
 		}
 
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
@@ -293,6 +296,9 @@ namespace Menge
 
 		alSourcefv( _source, AL_POSITION, m_position.buff() );
 		OAL_CHECK_ERROR(m_serviceProvider);
+
+        alSource3f( _source, AL_VELOCITY, 0.0, 0.0, 0.0);
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_MIN_GAIN, 0.f );
 		OAL_CHECK_ERROR(m_serviceProvider);

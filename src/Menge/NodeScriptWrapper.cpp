@@ -41,6 +41,7 @@
 #	include "ResourceHIT.h"
 #	include "ResourceShape.h"
 #	include "ResourceEmitterContainer.h"
+#	include "ResourceInternalObject.h"
 
 #   include "ResourceImageMultiplyRGBAndAlpha.h"
 #   include "ResourceImageCombineRGBAndAlpha.h"
@@ -277,6 +278,7 @@ namespace Menge
         NODE_GETSETRESOURCE_DECLARE( Window, ResourceWindow, Window::setResourceWindow, Window::getResourceWindow );
         //////////////////////////////////////////////////////////////////////////
         NODE_GETSETRESOURCE_DECLARE( ParticleEmitter, ResourceEmitterContainer, ParticleEmitter::setResourceEmitterContainer, ParticleEmitter::getResourceEmitterContainer );
+        
         //////////////////////////////////////////////////////////////////////////
         PyObject * movie_getSockets( Movie * _movie )
         {
@@ -2541,6 +2543,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageMultiplyRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageCombineRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstract );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
     }
 
     struct extract_String_type
@@ -2869,6 +2872,9 @@ namespace Menge
         
         pybind::interface_<ResourceEmitterContainer, pybind::bases<ResourceReference> >("ResourceEmitterContainer", false)
             ;           
+
+        pybind::interface_<ResourceInternalObject, pybind::bases<ResourceReference> >("ResourceInternalObject", false)
+            ;                   
 
         pybind::interface_<ResourceShape, pybind::bases<ResourceReference> >("ResourceShape", false)
             ;                   

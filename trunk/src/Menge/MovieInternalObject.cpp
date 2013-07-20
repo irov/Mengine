@@ -80,6 +80,7 @@ namespace Menge
         }
 
         m_internalObject = py_object;
+        pybind::incref( m_internalObject );
 
         return true;
     }

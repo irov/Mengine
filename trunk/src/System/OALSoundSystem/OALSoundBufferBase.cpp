@@ -36,7 +36,7 @@ namespace Menge
 		{
 			m_format = AL_FORMAT_STEREO16;
 			m_isStereo = true;
-		}
+		}   
 
 		return true;
 	}

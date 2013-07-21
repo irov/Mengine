@@ -19,17 +19,17 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Node::Node()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
         , m_active(false)
 		, m_enable(true)
 		, m_freeze(false)
 		, m_rendering(false)
-		, m_parent(0)
-		, m_layer(0)
+		, m_parent(nullptr)
+		, m_layer(nullptr)
 		, m_cameraRevision(0)
-		, m_renderCamera(0)
+		, m_renderCamera(nullptr)
 		, m_shallowGrave(0)
-		, m_debugMaterial(NULL)
+		, m_debugMaterial(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -239,6 +239,13 @@ namespace Menge
 			return nullptr;
 		}
 
+        LOGGER_INFO(m_serviceProvider)("ResourceManager::createResource category %s group %s name %s type %s"
+            , _category.c_str()
+            , _group.c_str()
+            , _name.c_str()
+            , _type.c_str()
+            );
+
 		resource->setCategory( _category );
 		resource->setGroup( _group );
 		resource->setName( _name );		

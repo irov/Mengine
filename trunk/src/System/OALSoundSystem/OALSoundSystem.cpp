@@ -271,7 +271,7 @@ namespace Menge
 			OAL_CHECK_ERROR(m_serviceProvider);
 		}
 
-		alSourceStop( _sourceId );
+		alSourceStop( _sourceId );        
         OAL_CHECK_ERROR(m_serviceProvider);
 
 		ALint queued_count = 0;
@@ -296,6 +296,9 @@ namespace Menge
 		}
 		while( state == AL_PLAYING );
         
+        alSourceRewind( _sourceId );
+        OAL_CHECK_ERROR(m_serviceProvider);
+
 		alSourcei( _sourceId, AL_BUFFER, 0 );
         OAL_CHECK_ERROR(m_serviceProvider);
 	}

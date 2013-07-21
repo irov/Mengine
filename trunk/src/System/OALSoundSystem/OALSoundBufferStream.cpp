@@ -22,45 +22,65 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferStream::OALSoundBufferStream()
 		: m_soundDecoder(nullptr)
-		, m_alBufferId2(0)
-		, m_bufferSize(0)
 		, m_sourceId(0)
 		, m_updating(false)
-        //, m_dataBuffer(NULL)
 	{
+        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        {
+            m_alBuffersId[i] = 0;
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferStream::~OALSoundBufferStream()
 	{
-		if( m_alBufferId2 != 0 )
-		{
-			m_soundSystem->releaseBufferId( m_alBufferId2 );
-			m_alBufferId2 = 0;
-		}
+        this->removeBuffers_();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundBufferStream::removeBuffers_()
+    {
+        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        {
+            ALuint id = m_alBuffersId[i];
+
+            if( id != 0 )
+            {
+                m_soundSystem->releaseBufferId( id );
+            }
+
+            m_alBuffersId[i] = 0;
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
-		m_alBufferId = m_soundSystem->genBufferId();
+        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        {
+            ALuint id = m_soundSystem->genBufferId();
 
-		if( m_alBufferId == 0 )
-		{
-			// TODO: report in case of error
-            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid gen first buffer ID"
-                );
+            if( id == 0 )
+            {
+                // TODO: report in case of error
+                LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid gen %d buffer ID"
+                    , i
+                    );
 
-			return false;
-		}
+                this->removeBuffers_();
 
-		m_alBufferId2 = m_soundSystem->genBufferId();
-		if( m_alBufferId2 == 0 )
-		{
-			// TODO: report in case of error
-            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid gen second buffer ID"
-                );
+                return false;
+            }
 
-			return false;
-		}
+            m_alBuffersId[i] = id;
+        }
+
+		//m_alBufferId2 = m_soundSystem->genBufferId();
+		//if( m_alBufferId2 == 0 )
+		//{
+		//	// TODO: report in case of error
+  //          LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid gen second buffer ID"
+  //              );
+
+		//	return false;
+		//}
 
 		m_soundDecoder = _soundDecoder;
 
@@ -81,40 +101,40 @@ namespace Menge
         m_channels = 2;
 		m_length = dataInfo->length;
 
-		if (m_channels == 1)
+		if( m_channels == 1 )
 		{
 			m_format = AL_FORMAT_MONO16;
 			// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
-			m_bufferSize = m_frequency >> 1;
+			//m_bufferSize = m_frequency >> 1;
 			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			m_bufferSize -= (m_bufferSize % 2);
+			//m_bufferSize -= (m_bufferSize % 2);
             m_isStereo = false;
 		}
 		else if (m_channels == 2)
 		{
 			m_format = AL_FORMAT_STEREO16;
 			// Set BufferSize to 250ms (Frequency * 4 (16bit stereo) divided by 4 (quarter of a second))
-			m_bufferSize = m_frequency;
+			//m_bufferSize = m_frequency;
 			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			m_bufferSize -= (m_bufferSize % 4);
+			//m_bufferSize -= (m_bufferSize % 4);
 			m_isStereo = true;
 		}
 		else if (m_channels == 4)
 		{
 			m_format = alGetEnumValue("AL_FORMAT_QUAD16");
 			// Set BufferSize to 250ms (Frequency * 8 (16bit 4-channel) divided by 4 (quarter of a second))
-			m_bufferSize = m_frequency * 2;
+			//m_bufferSize = m_frequency * 2;
 			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			m_bufferSize -= (m_bufferSize % 8);
+			//m_bufferSize -= (m_bufferSize % 8);
 			m_isStereo = true;
 		}
 		else if (m_channels == 6)
 		{
 			m_format = alGetEnumValue("AL_FORMAT_51CHN16");
 			// Set BufferSize to 250ms (Frequency * 12 (16bit 6-channel) divided by 4 (quarter of a second))
-			m_bufferSize = m_frequency * 3;
+			//m_bufferSize = m_frequency * 3;
 			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			m_bufferSize -= (m_bufferSize % 12);
+			//m_bufferSize -= (m_bufferSize % 12);
 			m_isStereo = true;
 		}
         else
@@ -175,15 +195,15 @@ namespace Menge
             return false;
         }
         
-        unsigned int bytesWritten;
-        if( this->bufferData_( m_alBufferId, bytesWritten ) == false )
+        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
-            return false;
-        }
+            ALuint id = m_alBuffersId[i];
 
-        if( this->bufferData_( m_alBufferId2, bytesWritten ) == false )
-        {
-            return false;
+            unsigned int bytesWritten;
+            if( this->bufferData_( id, bytesWritten ) == false )
+            {
+                return false;
+            }
         }
                 
 		alSourcePlay( m_sourceId );
@@ -256,11 +276,11 @@ namespace Menge
         alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
         OAL_CHECK_ERROR(m_serviceProvider);
 
-		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
-        OAL_CHECK_ERROR(m_serviceProvider);
+		//alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
+  //      OAL_CHECK_ERROR(m_serviceProvider);
 
-        int queuedBuffers;
-        alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
+        //int queuedBuffers;
+        //alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
 
 		// Получаем количество отработанных буферов
         int processed = 0;
@@ -281,7 +301,7 @@ namespace Menge
                 continue;
             }
 
-            if( bytesWritten < m_bufferSize )
+            if( bytesWritten < OPENAL_STREAM_BUFFER_SIZE )
             {
                 is_end = true;
             }
@@ -330,9 +350,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, unsigned int & _bytes  )
     {
-        unsigned char * dataBuffer = (unsigned char*)alloca(m_bufferSize);
+        char dataBuffer[OPENAL_STREAM_BUFFER_SIZE];
 
-        unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, m_bufferSize );
+        unsigned int bytesWritten = m_soundDecoder->decode( (unsigned char *)dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
 
         if( bytesWritten == 0 )
         {
@@ -340,7 +360,7 @@ namespace Menge
 
             return true;
         }
-
+        
         alBufferData( _alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
         
         if( OAL_CHECK_ERROR(m_serviceProvider) == true )

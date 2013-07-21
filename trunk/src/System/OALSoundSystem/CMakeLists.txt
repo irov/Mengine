@@ -16,8 +16,9 @@ src
 	OALError.h	
 )
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openalsoft/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openalsoft/include/al )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openalsoft/OpenAL32/include )
+
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

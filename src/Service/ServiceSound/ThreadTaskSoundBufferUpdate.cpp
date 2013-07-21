@@ -44,7 +44,7 @@ namespace Menge
             if( m_running == true )
             {
 			    THREAD_SERVICE(m_serviceProvider)
-				    ->sleep( 5 );
+				    ->sleep( 10 );
             }
 		}
 

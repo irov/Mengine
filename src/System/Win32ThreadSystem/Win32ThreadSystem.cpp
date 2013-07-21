@@ -75,7 +75,7 @@ namespace Menge
 
             return nullptr;
         }
-
+           
         Win32ThreadIdentity * identity = m_poolWin32ThreadIdentity.createT();
         identity->setHandle( handle );
 

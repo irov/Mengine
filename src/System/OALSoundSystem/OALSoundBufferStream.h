@@ -1,17 +1,13 @@
-/*
- *	OALSoundBufferStream.h
- *
- *	Created by _Berserk_ on 19.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "OALSoundBuffer.h"
 
 namespace Menge
 {
+
+#   define OPENAL_STREAM_BUFFER_COUNT 4
+#   define OPENAL_STREAM_BUFFER_SIZE (48000)
+
 	class OALSoundBufferStream
 		: public OALSoundBuffer
 	{
@@ -33,11 +29,12 @@ namespace Menge
 
     protected:
         bool bufferData_( ALuint _alBufferId, unsigned int & _bytes );
+
+        void removeBuffers_();
 		
 	private:
 		SoundDecoderInterfacePtr m_soundDecoder;
-		ALuint m_alBufferId2;
-		size_t m_bufferSize;
+		ALuint m_alBuffersId[OPENAL_STREAM_BUFFER_COUNT];
 
 		ALuint m_sourceId;
 		bool m_updating;

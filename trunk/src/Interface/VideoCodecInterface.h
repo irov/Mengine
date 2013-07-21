@@ -50,7 +50,7 @@ namespace Menge
 
     public:
 		virtual EVideoDecoderReadState readNextFrame( float _pts ) = 0;
-        virtual bool fillFrame( unsigned char* _buffer, unsigned int _pitch ) = 0;
+        virtual bool fillFrame( void * _buffer, size_t _pitch ) = 0;
 	};
 
     typedef stdex::intrusive_ptr<VideoDecoderInterface> VideoDecoderInterfacePtr;

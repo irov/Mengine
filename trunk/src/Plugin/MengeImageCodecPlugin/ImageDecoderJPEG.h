@@ -21,7 +21,7 @@ namespace Menge
 		bool _initialize() override;
 
     protected:
-		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
+		size_t decode( void * _buffer, size_t _bufferSize ) override;
         
 	private:
 		int getQuality( jpeg_decompress_struct* _jpegObject );

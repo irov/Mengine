@@ -301,7 +301,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ImageDecoderJPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	size_t ImageDecoderJPEG::decode( void * _buffer, size_t _bufferSize )
 	{
         if( _bufferSize != m_options.pitch * m_dataInfo.height )
         {
@@ -335,10 +335,10 @@ namespace Menge
         {
             if( m_options.channels == 4 )
             {
-                unsigned char * rgb_buffer = _buffer;
+                JSAMPARRAY rgb_buffer = (JSAMPARRAY)_buffer;
                 while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_options.pitch) ) 
                 {
-                    jpeg_read_scanlines( m_jpegObject, &rgb_buffer, 1 );
+                    jpeg_read_scanlines( m_jpegObject, rgb_buffer, 1 );
 
                     // Assume put_scanline_someplace wants a pointer and sample count.
                     rgb_buffer += m_options.pitch;
@@ -347,7 +347,7 @@ namespace Menge
 
                 if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
                 {
-                    unsigned char * alpha_buffer = _buffer;
+                    JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
                     for( size_t j = 0; j < m_dataInfo.height; ++j )
                     {
                         for( size_t i = 0; i < m_dataInfo.width; i += 4 )
@@ -368,13 +368,15 @@ namespace Menge
                 return 0;
             }
         }
+
+        size_t readSize = m_options.pitch * m_dataInfo.height;
 		
-		return m_options.pitch * m_dataInfo.height;
+		return readSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int ImageDecoderJPEG::getQuality( jpeg_decompress_struct* _jpegObject )
 	{
-		if( _jpegObject->quant_tbl_ptrs[0] == NULL )
+		if( _jpegObject->quant_tbl_ptrs[0] == nullptr )
 		{
 			return 100;
 		}

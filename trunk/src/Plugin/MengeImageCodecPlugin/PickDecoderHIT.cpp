@@ -66,7 +66,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int PickDecoderHIT::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	size_t PickDecoderHIT::decode( void * _buffer, size_t _bufferSize )
 	{	        
         static TBlobject compressBuffer;
         compressBuffer.resize( m_mipmapcompresssize );
@@ -83,7 +83,7 @@ namespace Menge
 
         size_t destLen;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress(_buffer, _bufferSize, destLen, &compressBuffer[0], m_mipmapcompresssize ) == false )
+            ->uncompress( _buffer, _bufferSize, destLen, &compressBuffer[0], m_mipmapcompresssize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid uncompress"
                 );

@@ -27,7 +27,7 @@ namespace Menge
 		const XmlCodecDataInfo * getCodecDataInfo() const override;
 
 	public:		
-		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
+		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

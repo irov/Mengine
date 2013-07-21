@@ -93,7 +93,7 @@ namespace Menge
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////
-	unsigned int XmlToBinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	size_t XmlToBinDecoder::decode( void * _buffer, size_t _bufferSize )
 	{
         (void)_buffer;
         (void)_bufferSize;

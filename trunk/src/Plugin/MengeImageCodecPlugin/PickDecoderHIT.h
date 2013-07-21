@@ -15,7 +15,7 @@ namespace Menge
         bool _initialize() override;
 
     public:
-        unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
+        size_t decode( void * _buffer, size_t _bufferSize ) override;
 
     private:
         void cleanup_();

@@ -106,7 +106,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ImageDecoderDDZ::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	size_t ImageDecoderDDZ::decode( void * _buffer, size_t _bufferSize )
 	{
         (void)_bufferSize;
 

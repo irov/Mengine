@@ -61,9 +61,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ImageEncoderPNG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t ImageEncoderPNG::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
+
 		png_infop info_ptr;
 		png_uint_32 width = (png_uint_32)dataInfo->width;
 		png_uint_32 height = (png_uint_32)dataInfo->height;
@@ -87,6 +88,7 @@ namespace Menge
 		{
 			// if we get here, we had a problem reading the file
 			png_destroy_info_struct( m_png_ptr, &info_ptr );
+
 			return 0;
 		}
 
@@ -134,10 +136,13 @@ namespace Menge
 		//}
 		//else
 		//{
+
+        png_const_bytep png_buffer = (png_const_bytep)_buffer;
+
         for( png_uint_32 k = 0; k < height; ++k) 
         {
-            png_write_row( m_png_ptr, _buffer );
-            _buffer += pitch;
+            png_write_row( m_png_ptr, png_buffer );
+            png_buffer += pitch;
         }
 		//}
 		// It is REQUIRED to call this to finish writing the rest of the file
@@ -146,7 +151,9 @@ namespace Menge
 
 		png_destroy_info_struct( m_png_ptr, &info_ptr );
 
-		return pitch * height;
+        size_t writeBytes = pitch * height;
+
+		return writeBytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageEncoderPNG::_initialize()

@@ -294,7 +294,7 @@ namespace Menge
         return true;
     }
 	////////////////////////////////////////////////////////////////////////// 
-	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _pitch )
+	size_t VideoDecoderFFMPEG::decode( void * _buffer, size_t _pitch )
 	{
         //int isGotPicture = 0;
         //int decode_bite = 0;
@@ -330,10 +330,12 @@ namespace Menge
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoderFFMPEG::fillFrame( unsigned char* _buffer, unsigned int _pitch )
+    bool VideoDecoderFFMPEG::fillFrame( void * _buffer, size_t _pitch )
     {
+        uint8_t * ffmpeg_buffer = (uint8_t *)_buffer;
+
         AVPicture picture;
-		int fill_error = avpicture_fill( &picture, _buffer, (::PixelFormat) m_outputPixelFormat,
+		int fill_error = avpicture_fill( &picture, ffmpeg_buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
 
         if( fill_error < 0 )

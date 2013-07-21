@@ -19,9 +19,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int PickEncoderHIT::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t PickEncoderHIT::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
-		const PickCodecDataInfo* dataInfo = static_cast<const PickCodecDataInfo*>( _bufferDataInfo );
+		const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo*>( _bufferDataInfo );
 
         m_stream->write( &hit_magic, sizeof(hit_magic) );
         m_stream->write( &hit_version, sizeof(hit_version) );
@@ -36,7 +36,8 @@ namespace Menge
         TBlobject::value_type * compressBuffer = new TBlobject::value_type[compressSize2];
 
         size_t compressSize;
-        if( ARCHIVE_SERVICE(m_serviceProvider)->compress( compressBuffer, compressSize2, compressSize, _buffer, dataInfo->mipmapsize ) == false )
+        if( ARCHIVE_SERVICE(m_serviceProvider)
+            ->compress( compressBuffer, compressSize2, compressSize, _buffer, dataInfo->mipmapsize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid compress"
                 );

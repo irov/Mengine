@@ -46,7 +46,7 @@ namespace Menge
 		virtual const CodecDataInfo* getCodecDataInfo() const = 0;		
 
     public:
-		virtual unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) = 0;
+		virtual size_t decode( void * _buffer, size_t _bufferSize ) = 0;
 	};
 
     typedef stdex::intrusive_ptr<DecoderInterface> DecoderInterfacePtr;
@@ -69,7 +69,7 @@ namespace Menge
         virtual bool setOptions( CodecOptions * _options ) = 0;
 
 	public:
-		virtual unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) = 0;
+		virtual size_t encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getStream() const = 0;

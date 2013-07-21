@@ -17,7 +17,7 @@ namespace Menge
 		bool _initialize() override;
 
 	public:
-		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
+		size_t encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
 	private:
 		png_structp m_png_ptr;

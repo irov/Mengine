@@ -215,7 +215,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ImageDecoderPNG::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	size_t ImageDecoderPNG::decode( void * _buffer, size_t _bufferSize )
 	{	
         if( _bufferSize != m_options.pitch * m_dataInfo.height )
         {
@@ -228,7 +228,6 @@ namespace Menge
             return 0;
         }
 
-
         if (setjmp(png_jmpbuf(m_png_ptr)))  
         {
             LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPNG::decode" );
@@ -239,13 +238,14 @@ namespace Menge
             return 0;
         }
 
-        static TBlobject s_row_buffer;
+        typedef std::vector<png_byte> TPNGBytes;
+        static TPNGBytes s_row_buffer;
 
 		if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
 			if( m_dataInfo.channels == 1 && m_options.channels == 1 )
 			{
-                unsigned char * bufferCursor = _buffer;
+                png_bytep bufferCursor = (png_bytep)_buffer;
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, bufferCursor, NULL );
@@ -257,7 +257,7 @@ namespace Menge
 			{
 				s_row_buffer.resize( m_row_bytes );
                 TBlobject::value_type * buff = &s_row_buffer[0];
-                unsigned char * bufferCursor = _buffer;
+                png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
@@ -288,7 +288,7 @@ namespace Menge
 			{
                 s_row_buffer.resize( m_row_bytes );
 				TBlobject::value_type * buff = &s_row_buffer[0];
-				unsigned char * bufferCursor = _buffer;
+				png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
@@ -306,7 +306,7 @@ namespace Menge
 			{
                 s_row_buffer.resize( m_row_bytes );
                 TBlobject::value_type * buff = &s_row_buffer[0];
-                unsigned char * bufferCursor = _buffer;
+                png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
@@ -336,7 +336,7 @@ namespace Menge
             {
                 s_row_buffer.resize( m_row_bytes );
                 TBlobject::value_type * buff = &s_row_buffer[0];
-                unsigned char * bufferCursor = _buffer;
+                png_bytep bufferCursor = (png_bytep)_buffer;
 
                 for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
@@ -357,7 +357,7 @@ namespace Menge
 			{                 
                 s_row_buffer.resize( m_row_bytes );
                 TBlobject::value_type * buff = &s_row_buffer[0];
-                unsigned char * bufferCursor = _buffer;
+                png_bytep bufferCursor = (png_bytep)_buffer;
 
                 for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
@@ -377,7 +377,7 @@ namespace Menge
             }
             else if( m_dataInfo.channels == m_options.channels )
             {
-                unsigned char * bufferCursor = _buffer;
+                png_bytep bufferCursor = (png_bytep)_buffer;
 
                 for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {

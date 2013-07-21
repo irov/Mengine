@@ -32,8 +32,8 @@ namespace Menge
 		bool _initialize() override;
 
     public:
-		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
-        bool fillFrame( unsigned char* _buffer, unsigned int _pitch ) override;
+		size_t decode( void * _buffer, size_t _bufferSize ) override;
+        bool fillFrame( void * _buffer, size_t _pitch ) override;
 	
 	public:	
 		bool eof() override;

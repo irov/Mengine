@@ -160,7 +160,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ImageEncoderJPEG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t ImageEncoderJPEG::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
 		
@@ -177,13 +177,15 @@ namespace Menge
 
 		jpeg_start_compress( m_jpegObject, TRUE);
 
+        JSAMPROW jpeg_buffer = (JSAMPROW)_buffer;
+
 		JSAMPROW row_pointer[1];	// pointer to JSAMPLE row[s]
 		while (m_jpegObject->next_scanline < m_jpegObject->image_height) 
 		{
 			// jpeg_write_scanlines expects an array of pointers to scanlines.
 			// Here the array is only one element long, but you could pass
 			// more than one scanline at a time if that's more convenient.
-			row_pointer[0] = & _buffer[m_jpegObject->next_scanline * pitch];
+			row_pointer[0] = &jpeg_buffer[m_jpegObject->next_scanline * pitch];
 			(void) jpeg_write_scanlines( m_jpegObject, row_pointer, 1);
 		}
 

@@ -127,15 +127,15 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int SoundDecoderOGGVorbis::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	size_t SoundDecoderOGGVorbis::decode( void * _buffer, size_t _bufferSize )
 	{
-		unsigned long bytesDone = 0;
-        unsigned long bytesReading = _bufferSize;
+		long bytesDone = 0;
+        long bytesReading = _bufferSize;
         
 		while( true, true )
 		{            
             int current_section = 0;
-            unsigned char * readBuffer = _buffer + bytesDone;
+            char * readBuffer = (char *)_buffer + bytesDone;
             long decodeSize = ov_read( &m_oggVorbisFile, (char *)readBuffer, bytesReading, 0, 2, 1, &current_section );
 
             if( decodeSize < 0 )

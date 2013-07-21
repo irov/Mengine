@@ -36,11 +36,14 @@ namespace Menge
         return size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::compress( unsigned char * _buffer, size_t _bufferSize, size_t & _compressSize, const unsigned char * _source, size_t _sourceSize )
+    bool ArchiveService::compress( void * _distance, size_t _bufferSize, size_t & _compressSize, const void * _source, size_t _sourceSize )
     {
         uLongf compressSize = _bufferSize;
 
-        int zerr = ::compress( _buffer, &compressSize, _source, _sourceSize );
+        Bytef * z_dst_buffer = (Bytef *)_distance;
+        Bytef * z_src_buffer = (Bytef *)_source;
+
+        int zerr = ::compress( z_dst_buffer, &compressSize, z_src_buffer, _sourceSize );
 
         if( zerr != Z_OK )
         {
@@ -56,10 +59,14 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::uncompress( unsigned char * _buffer, size_t _bufferSize, size_t & _uncompressSize, const unsigned char * _source, size_t _sourceSize )
+    bool ArchiveService::uncompress( void * _distance, size_t _bufferSize, size_t & _uncompressSize, const void * _source, size_t _sourceSize )
     {
         uLongf destLen = _bufferSize;
-        int zerr = ::uncompress( _buffer, &destLen, _source, _sourceSize );
+
+        Bytef * z_dst_buffer = (Bytef *)_distance;
+        Bytef * z_src_buffer = (Bytef *)_source;
+
+        int zerr = ::uncompress( z_dst_buffer, &destLen, z_src_buffer, _sourceSize );
 
         if( zerr != Z_OK )
         {

@@ -27,7 +27,7 @@ namespace Menge
 		bool _initialize() override;
 
 	public:
-		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
+		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 		bool seek( float _timing ) override;
 		float timeTell() override;

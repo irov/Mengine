@@ -150,18 +150,15 @@ namespace Menge
         if( m_device )
         {
             alcMakeContextCurrent( nullptr );
-            OAL_CHECK_ERROR(m_serviceProvider);
-
+            
             if( m_context )
             {
-                alcDestroyContext( m_context );
-                OAL_CHECK_ERROR(m_serviceProvider);
+                alcDestroyContext( m_context );                
                 m_context = nullptr;
             }
 
 #   ifndef _DEBUG
             alcCloseDevice( m_device );
-            OAL_CHECK_ERROR(m_serviceProvider);
 #   endif
             m_device = nullptr;
         }
@@ -170,22 +167,22 @@ namespace Menge
 	void OALSoundSystem::onTurnSound( bool _turn )
 	{
         (void)_turn;
-        if( _turn == false )
-        {
-            alcMakeContextCurrent( NULL );
-            //OAL_CHECK_ERROR(m_serviceProvider);
+        //if( _turn == false )
+        //{
+        //    alcMakeContextCurrent( NULL );
+        //    //OAL_CHECK_ERROR(m_serviceProvider);
 
-            alcSuspendContext( m_context );
-            //OAL_CHECK_ERROR(m_serviceProvider);
-        }
-        else
-        {
-            alcMakeContextCurrent( m_context );
-            //OAL_CHECK_ERROR(m_serviceProvider);
+        //    alcSuspendContext( m_context );
+        //    //OAL_CHECK_ERROR(m_serviceProvider);
+        //}
+        //else
+        //{
+        //    alcMakeContextCurrent( m_context );
+        //    //OAL_CHECK_ERROR(m_serviceProvider);
 
-            alcProcessContext( m_context );
-            //OAL_CHECK_ERROR(m_serviceProvider);
-        }
+        //    alcProcessContext( m_context );
+        //    //OAL_CHECK_ERROR(m_serviceProvider);
+        //}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )

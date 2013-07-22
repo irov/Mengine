@@ -237,35 +237,35 @@ namespace Menge
 		SOUND_SERVICE(m_serviceProvider)
             ->pause( m_sourceID );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::onTurnSound( bool _turn )
-	{
-        if( m_turn == _turn )
-        {
-            return;
-        }
+	////////////////////////////////////////////////////////////////////////////
+	//void AmplifierService::onTurnSound( bool _turn )
+	//{
+ //       if( m_turn == _turn )
+ //       {
+ //           return;
+ //       }
 
-        m_turn = _turn;
+ //       m_turn = _turn;
 
-		if( _turn == false )
-		{
-			if( m_sourceID == 0)
-			{
-				return;
-			}
+	//	if( _turn == false )
+	//	{
+	//		if( m_sourceID == 0)
+	//		{
+	//			return;
+	//		}
 
-			m_currentSoundPosition = this->getPosMs();
-			
-			this->stop();
-		}
-		else
-		{
-			//this->playMs_( m_currentSoundPosition );			
-			this->play();
+	//		m_currentSoundPosition = this->getPosMs();
+	//		
+	//		this->stop();
+	//	}
+	//	else
+	//	{
+	//		//this->playMs_( m_currentSoundPosition );			
+	//		this->play();
 
-			this->setPosMs( m_currentSoundPosition );
-		}
-	}
+	//		this->setPosMs( m_currentSoundPosition );
+	//	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::resume()
 	{

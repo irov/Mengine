@@ -267,25 +267,6 @@ namespace Menge
             video_error = true;
         }
 
-        if( m_options.noSeek == false )
-        {
-            this->seek( m_dataInfo.frameTiming );
-            this->readNextFrame( 0.f );
-
-            if( fabsf(m_pts - m_dataInfo.frameTiming) > m_dataInfo.frameTiming )
-            {
-                LOGGER_ERROR(m_serviceProvider)("=============================================================");
-                LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f:%f (need one)"
-                    , m_dataInfo.frameTiming
-                    , m_pts
-                    );
-
-                video_error = true;                 
-            }
-
-            this->seek( 0.f );
-        }
-
         if( video_error == true )
         {
             return false;
@@ -364,10 +345,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( float _pts )
+	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( float & _pts )
 	{		
-        (void)_pts;
-        
         AVPacket packet;
 		av_init_packet(&packet);
         
@@ -408,6 +387,8 @@ namespace Menge
         }          
 
         av_free_packet(&packet);
+        
+        _pts = m_pts;
 
         return VDRS_SUCCESS;
     }

@@ -21,13 +21,14 @@ namespace Menge
         , m_soundBuffer(nullptr)
         , m_headMode(true)
         , m_playing(false)
+        , m_pausing(false)
         , m_loop(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSource::~OALSoundSource()
 	{
-		this->stop();
+		this->releaseSourceId_();
 	}
     //////////////////////////////////////////////////////////////////////////
     void OALSoundSource::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem* _soundSystem )
@@ -48,20 +49,27 @@ namespace Menge
 			return false;
 		}
 
-		m_sourceId = m_soundSystem->genSourceId();
-
-		if( m_sourceId == 0 )
-		{
-			return false;
-		}
-
-		this->apply_( m_sourceId );
-		
-        if( m_soundBuffer->play( m_sourceId, m_loop, m_timing ) == false )
+        if( m_pausing == false )
         {
-            return false;
-        }
+            m_sourceId = m_soundSystem->genSourceId();
 
+            if( m_sourceId == 0 )
+            {
+                return false;
+            }
+
+            this->apply_( m_sourceId );
+
+            if( m_soundBuffer->play( m_sourceId, m_loop, m_timing ) == false )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            m_soundBuffer->resume( m_sourceId );
+        }
+        
         //m_timing = 0.f;
 	
 		m_playing = true;
@@ -71,17 +79,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::pause()
 	{
-		if( m_playing == false || m_soundBuffer == nullptr )
+		if( m_playing == false )
 		{
 			return;
 		}
 
-		m_playing = false;
-
-		if( m_sourceId == 0 )
-		{
+        if( m_soundBuffer == nullptr )
+        {
             return;
         }
+        
+        if( m_sourceId == 0 )
+        {
+            return;
+        }
+
+		m_playing = false;
+        m_pausing = true;
+
          
         float timing = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
@@ -94,11 +109,11 @@ namespace Menge
 
         m_timing = timing;
 
-        ALuint sourceId = m_sourceId;
-        m_sourceId = 0;
+        //ALuint sourceId = m_sourceId;
+        //m_sourceId = 0;
 
-        m_soundBuffer->stop( sourceId );
-        m_soundSystem->releaseSourceId( sourceId );
+        m_soundBuffer->pause( m_sourceId );
+        //m_soundSystem->releaseSourceId( sourceId );        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::stop()
@@ -109,17 +124,9 @@ namespace Menge
 		}
 
 		m_playing = false;
+        m_pausing = false;
 
-		if( m_sourceId != 0 )
-		{
-            ALuint sourceId = m_sourceId;
-            m_sourceId = 0;
-
-			m_soundBuffer->stop( sourceId );
-// 			alSourceRewind( m_sourceId );
-// 			OAL_CHECK_ERROR();
-			m_soundSystem->releaseSourceId( sourceId );
-		}
+        this->releaseSourceId_();
 
 		m_timing = 0.f;
 	}
@@ -136,7 +143,7 @@ namespace Menge
         if( m_playing == true && m_sourceId != 0 )
 		{
 			alSourcef( m_sourceId, AL_GAIN, m_volume );
-			OAL_CHECK_ERROR(m_serviceProvider);
+			//OAL_CHECK_ERROR(m_serviceProvider);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -255,6 +262,20 @@ namespace Menge
 
 		m_soundBuffer = nullptr;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSource::releaseSourceId_()
+    {
+        if( m_sourceId != 0 )
+        {
+            ALuint sourceId = m_sourceId;
+            m_sourceId = 0;
+
+            m_soundBuffer->stop( sourceId );
+            // 			alSourceRewind( m_sourceId );
+            // 			OAL_CHECK_ERROR();
+            m_soundSystem->releaseSourceId( sourceId );
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setHeadMode( bool _headMode )
 	{
@@ -305,6 +326,9 @@ namespace Menge
 
 		alSourcef( _source, AL_MAX_GAIN, 1.f );
 		OAL_CHECK_ERROR(m_serviceProvider);
+
+        alSourcef( _source, AL_PITCH, 1.0);
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_GAIN, m_volume );
 		OAL_CHECK_ERROR(m_serviceProvider);

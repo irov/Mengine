@@ -49,7 +49,7 @@ namespace Menge
 		virtual float getTiming() const = 0;
 
     public:
-		virtual EVideoDecoderReadState readNextFrame( float _pts ) = 0;
+		virtual EVideoDecoderReadState readNextFrame( float & _pts ) = 0;
         virtual bool fillFrame( void * _buffer, size_t _pitch ) = 0;
 	};
 

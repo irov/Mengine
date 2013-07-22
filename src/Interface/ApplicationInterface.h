@@ -107,7 +107,7 @@ namespace Menge
 		
 		size_t bits;
 		bool fullscreen;
-		bool vsync;
+		bool vsync;        
 
         bool windowModeCheck;
         bool fixedContentResolution;

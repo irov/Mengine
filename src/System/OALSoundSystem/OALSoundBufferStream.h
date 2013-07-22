@@ -5,8 +5,8 @@
 namespace Menge
 {
 
-#   define OPENAL_STREAM_BUFFER_COUNT 4
-#   define OPENAL_STREAM_BUFFER_SIZE (48000)
+#   define OPENAL_STREAM_BUFFER_COUNT 2
+#   define OPENAL_STREAM_BUFFER_SIZE (44100)
 
 	class OALSoundBufferStream
 		: public OALSoundBuffer
@@ -20,6 +20,7 @@ namespace Menge
 
 	public:
 		bool play( ALenum _source, bool _looped, float _pos ) override;
+        bool resume( ALenum _source ) override;
 		void pause( ALenum _source ) override;
 		void stop( ALenum _source ) override;
 		bool getTimePos( ALenum _source, float & _pos ) const override;

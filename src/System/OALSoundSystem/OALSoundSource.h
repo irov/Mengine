@@ -47,6 +47,7 @@ namespace Menge
 
     protected:
         void unloadBuffer_();
+        void releaseSourceId_();
 
     private:
         ServiceProviderInterface * m_serviceProvider;
@@ -64,6 +65,7 @@ namespace Menge
 
         bool m_headMode;
         bool m_playing;
+        bool m_pausing;
         bool m_loop;
 	};
 }	// namespace Menge

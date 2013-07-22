@@ -133,10 +133,11 @@ namespace Menge
         gameInputStream = nullptr;
 
 		_settings.alreadyRunning = false;
+        _settings.maxfps = true;
 
 		_settings.applicationSettings.fixedContentResolution = true;
 		_settings.applicationSettings.windowModeCheck = false;
-		_settings.applicationSettings.fullscreen = true;
+		_settings.applicationSettings.fullscreen = true;        
 		_settings.applicationSettings.vsync = true;
 
 		IniUtil::getIniValue( ini, "Project", "Name", _settings.projectName, m_serviceProvider );
@@ -151,6 +152,7 @@ namespace Menge
 		IniUtil::getIniValue( ini, "Window", "Size", _settings.applicationSettings.windowResolution, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Window", "Bits", _settings.applicationSettings.bits, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Window", "Fullscreen", _settings.applicationSettings.fullscreen, m_serviceProvider );
+        IniUtil::getIniValue( ini, "Window", "MaxFPS", _settings.maxfps, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Window", "VSync", _settings.applicationSettings.vsync, m_serviceProvider );
 
         IniUtil::getIniValue( ini, "Game", "AspectRatioViewport", _settings.applicationSettings.aspectRatioViewports, m_serviceProvider );

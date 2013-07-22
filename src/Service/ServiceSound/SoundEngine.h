@@ -124,7 +124,8 @@ namespace Menge
 
     protected:
         void playSounds_();
-        void stopSounds_();
+        void pauseSounds_();
+        void stopSounds_();        
         void updateVolume_();
 
     protected:

@@ -48,9 +48,6 @@ namespace Menge
 		ALuint genBufferId();
 		void releaseBufferId( ALuint _bufferId );
 
-	public:
-		void clearSourceId( ALuint _sourceId );
-
 	private:
 		ServiceProviderInterface * m_serviceProvider;
 

@@ -155,7 +155,7 @@ namespace Menge
 		, m_hInstance(NULL)
 		, m_loggerConsole(nullptr)
 		, m_application(nullptr)
-		, m_fpsMonitor(0)
+		, m_fpsMonitor(nullptr)
 		, m_alreadyRunningMonitor(0)
 		, m_lastMouseX(0)
 		, m_lastMouseY(0)
@@ -1674,6 +1674,8 @@ namespace Menge
         //	std::transform( languagePack.begin(), languagePack.end(), 
         //		languagePack.begin(), std::ptr_fun( &::tolower ) );
         //}
+
+        m_maxfps = _settings.maxfps;
 
         if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
         {

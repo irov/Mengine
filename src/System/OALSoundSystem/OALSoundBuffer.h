@@ -20,14 +20,18 @@ namespace Menge
 	public:
 		OALSoundBuffer();
 		~OALSoundBuffer();
-
+        
     public:
         void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
+
+    public:
+        void update() override;
 
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
 
 		bool play( ALenum _source, bool _looped, float _pos ) override;
+        bool resume( ALenum _source ) override;
 		void pause( ALenum _source ) override;
 		void stop( ALenum _source ) override;
 		bool getTimePos( ALenum _source, float & _pos ) const override;

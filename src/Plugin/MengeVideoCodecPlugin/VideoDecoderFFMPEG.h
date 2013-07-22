@@ -42,7 +42,7 @@ namespace Menge
 		bool seek( float _timing ) override;
 
 	public:		
-		EVideoDecoderReadState readNextFrame( float _pts ) override;
+		EVideoDecoderReadState readNextFrame( float & _pts ) override;
 
     protected:
         bool _invalidateOptions() override;

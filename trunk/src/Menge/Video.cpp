@@ -371,7 +371,8 @@ namespace Menge
 		
 		while( m_timing >= frameTiming )
 		{            
-			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( 0.f );
+            float pts;
+			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );
                        
             needUpdate = true;
 

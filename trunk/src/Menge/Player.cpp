@@ -1158,6 +1158,13 @@ namespace Menge
                 protected:
                     void visit_scope( pybind::class_type_scope * _scope ) override
                     {   
+                        size_t count = _scope->getObjectCount();
+
+                        if( count == 0 )
+                        {
+                            return;
+                        }
+
                         if( m_count % 3 == 0 )
                         {
                             m_ss << "Py: ";

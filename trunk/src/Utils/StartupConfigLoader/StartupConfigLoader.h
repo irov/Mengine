@@ -27,6 +27,7 @@ namespace Menge
 		TVectorResourcePackDesc resourcePacks;
 		TVectorResourcePackDesc languagePacks;
 
+        bool maxfps;
         bool alreadyRunning;
 	};
 

@@ -75,6 +75,8 @@ namespace Menge
 
             return nullptr;
         }
+
+        SetThreadPriority( handle, THREAD_PRIORITY_HIGHEST );
            
         Win32ThreadIdentity * identity = m_poolWin32ThreadIdentity.createT();
         identity->setHandle( handle );

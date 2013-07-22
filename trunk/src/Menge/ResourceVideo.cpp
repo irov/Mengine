@@ -97,6 +97,38 @@ namespace Menge
             return false;
         }
 
+        if( m_noSeek == false )
+        {
+            const VideoCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+            decoder->seek( dataInfo->frameTiming );
+            
+            float pts;
+            EVideoDecoderReadState state = decoder->readNextFrame( pts );
+            if( state != VDRS_SUCCESS )
+            {
+                LOGGER_ERROR(m_serviceProvider)("=============================================================");
+                LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid read next frame %f:%f (state %d)"
+                    , dataInfo->frameTiming
+                    , pts
+                    , state
+                    );
+            }
+
+            if( fabsf(pts - dataInfo->frameTiming) > dataInfo->frameTiming )
+            {
+                LOGGER_ERROR(m_serviceProvider)("=============================================================");
+                LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f:%f (need one)"
+                    , dataInfo->frameTiming
+                    , pts
+                    );
+
+                return false;
+            }
+
+            decoder->seek( 0.f );
+        }
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////

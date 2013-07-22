@@ -518,10 +518,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onTurnSound( bool _turn )
 	{
-		if( AMPLIFIER_SERVICE(m_serviceProvider) )
-		{
-			AMPLIFIER_SERVICE(m_serviceProvider)->onTurnSound( _turn );
-		}
+		//if( AMPLIFIER_SERVICE(m_serviceProvider) )
+		//{
+		//	AMPLIFIER_SERVICE(m_serviceProvider)->onTurnSound( _turn );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFocus( bool _focus )

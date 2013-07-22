@@ -43,7 +43,7 @@ namespace	Menge
 
 		size_t getNumTracks() const override;
 
-		void onTurnSound( bool _turn ) override;
+		//void onTurnSound( bool _turn ) override;
 		
 		void setPosMs( float _posMs ) override;
 		float getPosMs() const override;

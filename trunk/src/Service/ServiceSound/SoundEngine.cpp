@@ -106,6 +106,38 @@ namespace Menge
 			}
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void SoundEngine::pauseSounds_()
+    {
+        for( TMapSoundSource::iterator 
+            it = m_soundSourceMap.begin(),	
+            it_end = m_soundSourceMap.end();
+        it != it_end;
+        ++it )
+        {
+            SoundSourceDesc * source = it->second;
+
+            switch( source->state )
+            {
+            case ESS_PLAYING:
+                {
+                    if( source->taskSoundBufferUpdate != nullptr )
+                    {
+                        this->stopSoundBufferUpdate_( source );
+                    }
+
+                    source->soundSourceInterface->pause();
+                }
+            case ESS_STOPPING:
+                {
+                    if( source->taskSoundBufferUpdate != nullptr )
+                    {
+                        this->stopSoundBufferUpdate_( source );
+                    }
+                }
+            }
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::stopSounds_()
 	{
@@ -126,7 +158,7 @@ namespace Menge
                         this->stopSoundBufferUpdate_( source );
                     }
 
-                    source->soundSourceInterface->pause();
+                    source->soundSourceInterface->stop();
                 }
             case ESS_STOPPING:
                 {
@@ -149,7 +181,7 @@ namespace Menge
 		}
 		else
 		{
-			this->stopSounds_();
+			this->pauseSounds_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -880,18 +912,18 @@ namespace Menge
             return false;
         }
 
-        if( source->soundSourceInterface->play() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs invalid play"
-                );
+        //if( source->soundSourceInterface->play() == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs invalid play"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( hasBufferUpdate == true )				
-        {
-            this->playSoundBufferUpdate_( source );
-        }
+        //if( hasBufferUpdate == true )				
+        //{
+        //    this->playSoundBufferUpdate_( source );
+        //}
 
         return true;
 	}

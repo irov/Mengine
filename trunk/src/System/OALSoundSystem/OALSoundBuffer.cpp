@@ -38,6 +38,11 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
         m_soundSystem = _soundSystem;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundBuffer::update()
+    {
+        //Empty
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
@@ -57,12 +62,14 @@ namespace Menge
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
 
-        //printf("OALSoundBuffer::load %.4f\n"
-        //    , float(size) / 1024.f
-        //    );
+//        printf("OALSoundBuffer::load %.4f %d\n"
+//            , float(size) / 1024.f
+//            , m_frequency
+//            );
 
-		unsigned char* buffer = new unsigned char[ size /*+ fixed_sound_buffer_size*/ ];
-		unsigned int decode_size = _soundDecoder->decode( buffer, size );
+		char* buffer = new char[ size /*+ fixed_sound_buffer_size*/ ];
+		size_t decode_size = _soundDecoder->decode( buffer, size );
+        decode_size -= decode_size % 4;
 
 		if( m_channels == 1 )
 		{
@@ -102,8 +109,8 @@ namespace Menge
 		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-		alSourcei( _source, AL_BUFFER, m_alBufferId );
-		OAL_CHECK_ERROR(m_serviceProvider);
+        alSourcei( _source, AL_BUFFER, m_alBufferId );
+        OAL_CHECK_ERROR(m_serviceProvider);
 
         float al_pos = _pos * 0.001f;
 		alSourcef( _source, AL_SEC_OFFSET, al_pos );
@@ -114,21 +121,31 @@ namespace Menge
 
         return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool OALSoundBuffer::resume( ALenum _source )
+    {
+        alSourcePlay( _source );
+        OAL_CHECK_ERROR(m_serviceProvider);
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::pause( ALenum _source )
 	{
 		alSourcePause( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-		OAL_CHECK_ERROR(m_serviceProvider);
+		//alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
+		//OAL_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::stop( ALenum _source )
-	{
-		//alSourceStop( _source );
+	{		
         alSourceRewind( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
+
+        alSourceStop( _source );
+        OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR(m_serviceProvider);

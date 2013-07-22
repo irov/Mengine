@@ -1,11 +1,3 @@
-/*
- *	OALSoundBufferStream.cpp
- *
- *	Created by _Berserk_ on 19.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	include "OALSoundBufferStream.h"
 #	include "OALSoundSystem.h"
 
@@ -167,9 +159,6 @@ namespace Menge
 
 		m_sourceId = _source;
 
-        alSourceRewind( m_sourceId );
-        alSourcei( m_sourceId, AL_BUFFER, 0 );
-
 		ALint state = 0;
 		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR(m_serviceProvider);
@@ -213,21 +202,67 @@ namespace Menge
 
         return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool OALSoundBufferStream::resume( ALenum _source )
+    {
+        alSourcePlay( m_sourceId );
+        OAL_CHECK_ERROR(m_serviceProvider);
+
+        this->setUpdating( true );
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::pause( ALenum _source )
 	{
 		this->setUpdating( false );
-
-        m_soundSystem->clearSourceId( _source );
+        
+        alSourcePause( _source );
+        OAL_CHECK_ERROR(m_serviceProvider);
+        //m_soundSystem->clearSourceId( _source );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::stop( ALenum _source )
 	{
 		this->setUpdating( false );
 
-		m_soundSystem->clearSourceId( _source );
-		
-		m_soundDecoder->seek( 0.0f );
+        ALint process_count = 0;
+        // Получаем количество отработанных буферов
+        alGetSourcei( _source, AL_BUFFERS_PROCESSED, &process_count );
+        OAL_CHECK_ERROR(m_serviceProvider);
+
+        // Если таковые существуют то
+        while( process_count-- > 0 )
+        {
+            // Исключаем их из очереди
+            ALuint buffer = 0;
+
+            alSourceUnqueueBuffers( _source, 1, &buffer );
+            OAL_CHECK_ERROR(m_serviceProvider);
+        }
+
+        alSourceStop( _source );        
+        OAL_CHECK_ERROR(m_serviceProvider);
+
+        ALint queued_count = 0;
+        // unqueue remaining buffers
+        alGetSourcei( _source, AL_BUFFERS_QUEUED, &queued_count );
+        OAL_CHECK_ERROR(m_serviceProvider);
+
+        while( queued_count-- > 0 )
+        {
+            // Исключаем их из очереди
+            ALuint buffer = 0;
+
+            alSourceUnqueueBuffers( _source, 1, &buffer );
+            OAL_CHECK_ERROR(m_serviceProvider);
+        }
+
+        alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
+        
+        alSourceRewind( _source );
+        OAL_CHECK_ERROR(m_serviceProvider);
+		//m_soundDecoder->seek( 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::setUpdating( bool _updating )
@@ -283,11 +318,11 @@ namespace Menge
         //alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
 
 		// Получаем количество отработанных буферов
-        int processed = 0;
+        ALint processed = 0;
 		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
         OAL_CHECK_ERROR(m_serviceProvider);
                        
-		for( int curr_processed = 0; curr_processed != processed; ++curr_processed )
+		for( ALint curr_processed = 0; curr_processed != processed; ++curr_processed )
 		{
 			// Исключаем их из очереди
             ALuint buffer;
@@ -306,31 +341,6 @@ namespace Menge
                 is_end = true;
             }
 		}
-
-        //int state;
-        //alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-        //OAL_CHECK_ERROR();
-
-        //int queuedBuffers1;
-        //alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers1 );
-
-        //if( processed == 0 && queuedBuffers == 0 )
-        //{
-        //    this->stop( m_sourceId );
-        //}
-        //else
-        //{
-        //    if( state == AL_STOPPED )
-        //    {
-        //        int queuedBuffers;
-        //        alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
-
-        //        if( queuedBuffers != 0 )
-        //        {
-        //            alSourcePlay( m_sourceId );
-        //        }
-        //    }
-        //}
 
 		if( state != AL_PLAYING && processed == 0 )
 		{
@@ -353,14 +363,15 @@ namespace Menge
         char dataBuffer[OPENAL_STREAM_BUFFER_SIZE];
 
         unsigned int bytesWritten = m_soundDecoder->decode( (unsigned char *)dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
+        bytesWritten -= bytesWritten % 4;
 
-        if( bytesWritten == 0 )
+        if( bytesWritten <= 0 )
         {
             _bytes = 0;
 
             return true;
         }
-        
+             
         alBufferData( _alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
         
         if( OAL_CHECK_ERROR(m_serviceProvider) == true )

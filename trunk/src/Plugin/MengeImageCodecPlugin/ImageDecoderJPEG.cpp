@@ -335,10 +335,10 @@ namespace Menge
         {
             if( m_options.channels == 4 )
             {
-                JSAMPARRAY rgb_buffer = (JSAMPARRAY)_buffer;
+                JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
                 while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_options.pitch) ) 
                 {
-                    jpeg_read_scanlines( m_jpegObject, rgb_buffer, 1 );
+                    jpeg_read_scanlines( m_jpegObject, &rgb_buffer, 1 );
 
                     // Assume put_scanline_someplace wants a pointer and sample count.
                     rgb_buffer += m_options.pitch;

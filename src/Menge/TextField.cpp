@@ -812,7 +812,7 @@ namespace Menge
 		const ColourValue & font_color = m_resourceFont->getColor();
 		color *= font_color;
 
-		m_outlineColor.setA( color.getA() );
+		m_outlineColor.setA( m_outlineColor.getA() * color.getA() );
 
 		if( m_outline && m_resourceFont->getTextureOutline() != NULL )
 		{

@@ -211,7 +211,7 @@ namespace Menge
 			this->updateVerticesWM_();
 		}
 
-		return m_vertexDataOutline;
+		return m_vertexDataOutlineWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline TVectorRenderVertex2D & TextField::getTextVertices()

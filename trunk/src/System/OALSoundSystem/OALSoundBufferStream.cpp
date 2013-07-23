@@ -362,8 +362,8 @@ namespace Menge
     {
         char dataBuffer[OPENAL_STREAM_BUFFER_SIZE];
 
-        unsigned int bytesWritten = m_soundDecoder->decode( (unsigned char *)dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
-        bytesWritten -= bytesWritten % 4;
+        unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
+        //bytesWritten -= bytesWritten % 4;
 
         if( bytesWritten <= 0 )
         {

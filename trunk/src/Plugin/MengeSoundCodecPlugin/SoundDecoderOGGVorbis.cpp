@@ -30,6 +30,8 @@ namespace Menge
 		case SEEK_END:
 			offset += stream->size();
 			break;
+        default:
+            return 1;
 		}
 
         size_t int_offset = (size_t)offset;
@@ -77,7 +79,9 @@ namespace Menge
         vorbisCallbacks.close_func = s_closeOgg;
 
         //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 1" );
-        int opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, NULL, 0, vorbisCallbacks );
+        InputStreamInterface * streamInterface = m_stream.get();
+
+        int opcall_err = ov_open_callbacks( streamInterface, &m_oggVorbisFile, NULL, 0, vorbisCallbacks );
         
         if( opcall_err < 0 )
         {
@@ -136,7 +140,7 @@ namespace Menge
 		{            
             int current_section = 0;
             char * readBuffer = (char *)_buffer + bytesDone;
-            long decodeSize = ov_read( &m_oggVorbisFile, (char *)readBuffer, bytesReading, 0, 2, 1, &current_section );
+            long decodeSize = ov_read( &m_oggVorbisFile, readBuffer, bytesReading, 0, 2, 1, &current_section );
 
             if( decodeSize < 0 )
             {
@@ -184,7 +188,6 @@ namespace Menge
         double al_pos = (double)(_timing * 0.001f);
 
         int seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
-
         if( seek_err != 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f error %d"

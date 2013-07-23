@@ -23,7 +23,7 @@ namespace Menge
 		, m_currentPlayList(0)
 		, m_volume(1.f)
 		, m_volumeOverride(1.f)
-		, m_playing(false)
+		, m_play(false)
         , m_turn(true)
 		, m_currentSoundPosition(0.f)
 	{
@@ -84,14 +84,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::resetPlayList()
 	{	
-		m_currentPlayList = NULL;
+        this->stop();
 
-        m_currentPlaylistName.clear();
+		m_currentPlayList = nullptr;
 
-		if( m_sourceID != 0 )
-		{
-			SOUND_SERVICE(m_serviceProvider)->stop( m_sourceID );
-		}
+        m_currentPlaylistName.clear();        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::playTrack( const ConstString& _playlistResource, int _index, bool _looped )
@@ -122,12 +119,12 @@ namespace Menge
 
 		SOUND_SERVICE(m_serviceProvider)->play( m_sourceID );
 		
-		m_playing = true;
+		m_play = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t AmplifierService::getNumTracks() const
 	{
-		if(m_currentPlayList == NULL)
+		if( m_currentPlayList == nullptr )
 		{
 			return 0;
 		}
@@ -155,7 +152,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::play()
 	{
-        if( m_playing == true )
+        if( m_play == true )
         {
             return;
         }
@@ -179,7 +176,7 @@ namespace Menge
 
 		const TrackDesc * track = m_currentPlayList->getTrack();
 
-		if( track == 0 )
+		if( track == nullptr )
 		{
 			return false;
 		}
@@ -199,7 +196,7 @@ namespace Menge
 	{
 		SOUND_SERVICE(m_serviceProvider)->play( m_sourceID );
 
-		m_playing = true;
+		m_play = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::shuffle( const ConstString & _playlist )
@@ -232,40 +229,11 @@ namespace Menge
 			return;
 		}
 
-		m_playing = false;
+		m_play = false;
 
 		SOUND_SERVICE(m_serviceProvider)
             ->pause( m_sourceID );
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void AmplifierService::onTurnSound( bool _turn )
-	//{
- //       if( m_turn == _turn )
- //       {
- //           return;
- //       }
-
- //       m_turn = _turn;
-
-	//	if( _turn == false )
-	//	{
-	//		if( m_sourceID == 0)
-	//		{
-	//			return;
-	//		}
-
-	//		m_currentSoundPosition = this->getPosMs();
-	//		
-	//		this->stop();
-	//	}
-	//	else
-	//	{
-	//		//this->playMs_( m_currentSoundPosition );			
-	//		this->play();
-
-	//		this->setPosMs( m_currentSoundPosition );
-	//	}
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::resume()
 	{
@@ -274,12 +242,15 @@ namespace Menge
 			return;
 		}
 
-		this->play_();
+        m_play = true;
+
+        SOUND_SERVICE(m_serviceProvider)
+            ->play( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::listenSoundNodeStopped()
 	{
-		if( m_playing == false )
+		if( m_play == false )
 		{
 			return;
 		}

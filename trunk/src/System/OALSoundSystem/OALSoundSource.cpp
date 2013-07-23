@@ -73,6 +73,7 @@ namespace Menge
         //m_timing = 0.f;
 	
 		m_playing = true;
+        m_pausing = false;
 
         return true;
 	}

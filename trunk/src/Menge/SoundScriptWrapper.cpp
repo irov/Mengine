@@ -351,6 +351,18 @@ namespace	Menge
 			AMPLIFIER_SERVICE(m_serviceProvider)
 				->stop();
 		}
+        //////////////////////////////////////////////////////////////////////////
+        void musicPause()
+        {
+            AMPLIFIER_SERVICE(m_serviceProvider)
+                ->pause();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void musicResume()
+        {
+            AMPLIFIER_SERVICE(m_serviceProvider)
+                ->resume();
+        }
 		//////////////////////////////////////////////////////////////////////////
 		void musicShuffle( const ConstString & _list )
 		{
@@ -439,6 +451,8 @@ namespace	Menge
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
 		pybind::def_functor( "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
 		pybind::def_functor( "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
+        pybind::def_functor( "musicPause", soundScriptMethod, &SoundScriptMethod::musicPause );
+        pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );        
 		pybind::def_functor( "musicShuffle", soundScriptMethod, &SoundScriptMethod::musicShuffle );
 		pybind::def_functor( "musicGetPlaying", soundScriptMethod, &SoundScriptMethod::s_musicGetPlaying );
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::s_musicSetVolume );

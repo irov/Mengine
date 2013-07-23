@@ -1090,16 +1090,33 @@ namespace Menge
                 ->getMouseBounded();
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_setMousePosition( size_t _touchId, const mt::vec2f & _pos )
+        void s_pushMouseMove( size_t _touchId, const mt::vec2f & _pos )
         {
+            const mt::vec2f & cp = INPUT_SERVICE(m_serviceProvider)
+                ->getCursorPosition();
+
+            mt::vec2f mp = _pos - cp;
+
+            mt::vec2f vmp;
             INPUT_SERVICE(m_serviceProvider)
-                ->onMousePosition( _touchId, _pos );
+                ->calcCursorUnviewport( mp, vmp );
+
+            mt::vec2f vpos;
+            INPUT_SERVICE(m_serviceProvider)
+                ->calcCursorUnviewport( _pos, vpos );
+
+            INPUT_SERVICE(m_serviceProvider)
+                ->onMouseMove( _touchId, vpos, vmp.x, vmp.y, 0 );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_setMouseButtonEvent( size_t _touchId, const mt::vec2f & _pos, size_t _button, bool _isDown )
+        void s_pushMouseButtonEvent( size_t _touchId, const mt::vec2f & _pos, size_t _button, bool _isDown )
         {
+            mt::vec2f vpos;
             INPUT_SERVICE(m_serviceProvider)
-                ->onMouseButtonEvent( _touchId, _pos, _button, _isDown );
+                ->calcCursorUnviewport( _pos, vpos );
+
+            INPUT_SERVICE(m_serviceProvider)
+                ->onMouseButtonEvent( _touchId, vpos, _button, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
@@ -3595,8 +3612,8 @@ namespace Menge
             pybind::def_functor( "getDefaultResourceFontName", nodeScriptMethod, &NodeScriptMethod::s_getDefaultResourceFontName );
 
 
-            pybind::def_functor( "setMousePosition", nodeScriptMethod, &NodeScriptMethod::s_setMousePosition );
-            pybind::def_functor( "setMouseButtonEvent", nodeScriptMethod, &NodeScriptMethod::s_setMouseButtonEvent );
+            pybind::def_functor( "pushMouseMove", nodeScriptMethod, &NodeScriptMethod::s_pushMouseMove );
+            pybind::def_functor( "pushMouseButtonEvent", nodeScriptMethod, &NodeScriptMethod::s_pushMouseButtonEvent );
         }
     }
 }

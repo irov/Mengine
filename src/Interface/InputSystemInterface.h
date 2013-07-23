@@ -300,6 +300,7 @@ namespace Menge
 
         virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
 		virtual const mt::vec2f & getCursorPosition() const = 0;
+        virtual void calcCursorUnviewport( const mt::vec2f & _point, mt::vec2f & _result ) const = 0;
 		virtual bool validCursorPosition( const mt::vec2f & _point ) const = 0;
 
 		virtual void addMousePositionProvider( InputMousePositionProvider * _provider ) = 0;

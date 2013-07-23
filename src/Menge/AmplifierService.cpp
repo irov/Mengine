@@ -211,7 +211,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::stop()
 	{
-		m_playing = false;
+		m_play = false;
 
 		if( m_sourceID != 0 )
 		{

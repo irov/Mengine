@@ -585,7 +585,7 @@ namespace Menge
                 pybind::incref( m_pyObject );
             }
 
-            PyObjectScheduleListener()
+            ~PyObjectScheduleListener()
             {
                 pybind::decref( m_pyObject );
             }

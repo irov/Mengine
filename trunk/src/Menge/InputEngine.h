@@ -42,6 +42,7 @@ namespace Menge
 
         void setCursorPosition( const mt::vec2f & _point ) override;
 		const mt::vec2f & getCursorPosition() const override;
+        void calcCursorUnviewport( const mt::vec2f & _point, mt::vec2f & _result ) const override;
 		bool validCursorPosition( const mt::vec2f & _point ) const override;
 
 		void addMousePositionProvider( InputMousePositionProvider * _provider ) override;

@@ -76,8 +76,7 @@ namespace Menge
 		TVectorMousePositionParams::iterator it_mousePositionParams = m_mousePositionEventParams.begin();
 
         m_events = m_eventsAdd;
-        m_eventsAdd.clear();
-
+        
 		for( TVectorEventType::const_iterator 
 			it = m_events.begin(), 
 			it_end = m_events.end();
@@ -128,6 +127,8 @@ namespace Menge
 		}
 
 		m_events.clear();
+        m_eventsAdd.clear();
+
 		m_keyEventParams.clear();
 		m_mouseButtonEventParams.clear();
 		m_mouseMoveEventParams.clear();
@@ -209,6 +210,22 @@ namespace Menge
 	{
 		return m_cursorPosition;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void InputEngine::calcCursorUnviewport( const mt::vec2f & _point, mt::vec2f & _result ) const
+    {
+        mt::vec2f cp;
+            
+        cp.x = _point.x - m_inputOffset.x;
+        cp.y = _point.y - m_inputOffset.y;
+
+        cp.x /= m_inputScale.x;
+        cp.y /= m_inputScale.y;
+
+        cp.x += m_inputViewport.begin.x;
+        cp.y += m_inputViewport.begin.y;
+
+        _result = cp;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::addMousePositionProvider( InputMousePositionProvider * _provider )
 	{

@@ -589,6 +589,7 @@ namespace Menge
 
 		switch( source->state )
 		{
+        case ESS_PAUSED:
 		case ESS_STOPPED:
             {
                 if( source->taskSoundBufferUpdate != nullptr )
@@ -616,9 +617,6 @@ namespace Menge
                     this->playSoundBufferUpdate_( source );
                 }
             }break;
-		case ESS_PAUSED:
-			source->state = ESS_PAUSE_PLAY;
-			break;
 		case ESS_STOPPING:
 			source->state = ESS_NEED_RESTART;
 			break;
@@ -905,25 +903,33 @@ namespace Menge
             this->stopSoundBufferUpdate_( source );
         }
 
-        source->soundSourceInterface->pause();
+        bool playing = source->soundSourceInterface->isPlaying();
+        
+        if( playing == true )
+        {
+            source->soundSourceInterface->pause();
+        }
         
 		if( source->soundSourceInterface->setPosMs( _pos ) == false )
         {
             return false;
         }
 
-        //if( source->soundSourceInterface->play() == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs invalid play"
-        //        );
+        if( playing == true )
+        {
+            if( source->soundSourceInterface->play() == false )
+            {
+                LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs invalid play"
+                    );
 
-        //    return false;
-        //}
+                return false;
+            }
+        }
 
-        //if( hasBufferUpdate == true )				
-        //{
-        //    this->playSoundBufferUpdate_( source );
-        //}
+        if( hasBufferUpdate == true )				
+        {
+            this->playSoundBufferUpdate_( source );
+        }
 
         return true;
 	}

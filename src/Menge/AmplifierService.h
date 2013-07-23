@@ -65,7 +65,7 @@ namespace	Menge
 		unsigned int m_sourceID;
 		SoundBufferInterface * m_buffer;
 
-		bool m_playing;
+		bool m_play;
 		bool m_needRefocus;
         bool m_turn;
 

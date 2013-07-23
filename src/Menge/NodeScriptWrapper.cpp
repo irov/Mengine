@@ -1090,6 +1090,18 @@ namespace Menge
                 ->getMouseBounded();
         }
         //////////////////////////////////////////////////////////////////////////
+        void s_setMousePosition( size_t _touchId, const mt::vec2f & _pos )
+        {
+            INPUT_SERVICE(m_serviceProvider)
+                ->onMousePosition( _touchId, _pos );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_setMouseButtonEvent( size_t _touchId, const mt::vec2f & _pos, size_t _button, bool _isDown )
+        {
+            INPUT_SERVICE(m_serviceProvider)
+                ->onMouseButtonEvent( _touchId, _pos, _button, _isDown );
+        }
+        //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
             const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
@@ -3581,6 +3593,10 @@ namespace Menge
             pybind::def_functor( "openUrlInDefaultBrowser", nodeScriptMethod, &NodeScriptMethod::s_openUrlInDefaultBrowser );
 
             pybind::def_functor( "getDefaultResourceFontName", nodeScriptMethod, &NodeScriptMethod::s_getDefaultResourceFontName );
+
+
+            pybind::def_functor( "setMousePosition", nodeScriptMethod, &NodeScriptMethod::s_setMousePosition );
+            pybind::def_functor( "setMouseButtonEvent", nodeScriptMethod, &NodeScriptMethod::s_setMouseButtonEvent );
         }
     }
 }

@@ -4,7 +4,6 @@
 
 namespace Menge
 {
-
 #   define OPENAL_STREAM_BUFFER_COUNT 2
 #   define OPENAL_STREAM_BUFFER_SIZE (44100)
 

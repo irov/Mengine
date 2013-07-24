@@ -1747,9 +1747,8 @@ namespace Menge
     {
         if( m_game == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("Application::onUserEvent %s:%s game not create"
-                , _event
-                , _params
+            LOGGER_ERROR(m_serviceProvider)("Application::onUserEvent %s game not create"
+                , _event.c_str()
                 );
 
             return false;

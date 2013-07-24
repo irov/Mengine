@@ -68,6 +68,8 @@ namespace Menge
         virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
         virtual bool onClose() = 0;
 
+        virtual void onUserEvent( const ConstString & _event, const TMapParams & _params ) = 0;
+
         virtual void onTurnSound( bool _turn ) = 0;
     };
 

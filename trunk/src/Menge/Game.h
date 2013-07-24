@@ -92,6 +92,8 @@ namespace Menge
         void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
 		bool onClose() override;
 
+        void onUserEvent( const ConstString & _event, const TMapParams & _params ) override;
+
 		void onTurnSound( bool _turn ) override;
 
 	public:
@@ -136,8 +138,6 @@ namespace Menge
 		ConstString m_languagePak;
 		ConstString m_platformName;
 				
-		bool m_personalityHasOnClose;
-        
 		TMapParams m_params;
 
 	protected:

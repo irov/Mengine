@@ -165,7 +165,9 @@ namespace Menge
             memcpy( _buf, m_buff + m_carriage, tail );
         }
 
-        uint32 needRead = (m_reading + FILE_BUFFER_SIZE > m_size) ? _count: FILE_BUFFER_SIZE;
+        //uint32 needRead = (m_reading + FILE_BUFFER_SIZE > m_size) ? _count: FILE_BUFFER_SIZE;
+		// Fixes libpng issue, when buffer size is requested to be read when we have less bytes in file remaining.
+        uint32 needRead = (m_reading + FILE_BUFFER_SIZE > m_size) ? std::min(_count, m_size - m_reading) : FILE_BUFFER_SIZE;
 
         uint32 bytesRead = ::s3eFileRead( m_buff, 1, needRead, m_hFile );
 

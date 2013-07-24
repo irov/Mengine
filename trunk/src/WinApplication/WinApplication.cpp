@@ -3000,14 +3000,14 @@ namespace Menge
 
         WString params = L"/c start " + _url;
 
-        STARTUPINFO      startup_info;
-        memset (& startup_info, 0, sizeof(startup_info));
+        STARTUPINFO startup_info;
+        memset( &startup_info, 0, sizeof(startup_info) );
         startup_info.cb = sizeof (startup_info);
         startup_info.wShowWindow = SW_HIDE;
         startup_info.dwFlags |= STARTF_USESHOWWINDOW;
 
         PROCESS_INFORMATION process_info;
-        memset (& process_info, 0, sizeof(process_info));
+        memset( &process_info, 0, sizeof(process_info) );
 
         BOOL result = ::CreateProcess (
             cmd_path,          // path

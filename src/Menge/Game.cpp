@@ -42,7 +42,6 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_developmentMode(false)
 		, m_hasWindowPanel(true)
-		, m_personalityHasOnClose(false)
 		, m_player(nullptr)
 		, m_accountLister(nullptr)
 		, m_accountService(nullptr)
@@ -261,7 +260,8 @@ namespace Menge
 
         this->registerEvent( EVENT_CURSOR_MODE, "onCursorMode", _embed );
 
-        this->registerEvent( EVENT_CLOSE, "onCloseWindow", _embed, &m_personalityHasOnClose );
+        this->registerEvent( EVENT_USER, "onUserEvent", _embed );
+        this->registerEvent( EVENT_CLOSE, "onCloseWindow", _embed );
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * Game::getEmbed() const
@@ -518,6 +518,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onTurnSound( bool _turn )
 	{
+        (void)_turn;
 		//if( AMPLIFIER_SERVICE(m_serviceProvider) )
 		//{
 		//	AMPLIFIER_SERVICE(m_serviceProvider)->onTurnSound( _turn );
@@ -577,13 +578,15 @@ namespace Menge
 	{
 		bool needQuit = true;
 
-		if( m_personalityHasOnClose == true )
-		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_CLOSE)( needQuit, true, "()" );
-		}
-
+        EVENTABLE_ASK(m_serviceProvider, this, EVENT_CLOSE)( needQuit, true, "()" );
+	
 		return needQuit;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Game::onUserEvent( const ConstString & _event, const TMapParams & _params )
+    {
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_USER)( "(OO)", pybind::ptr(_event), pybind::ptr(_params) );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadLocalePaksByName_( const ConstString & _locale, const ConstString & _platform )
 	{

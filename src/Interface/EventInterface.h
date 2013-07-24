@@ -47,6 +47,7 @@ namespace Menge
         EVENT_COLOR_STOP,
         EVENT_VIDEO_END,
         EVENT_FOCUS,
+        EVENT_USER,
         EVENT_CLOSE,
         EVENT_PREPARATION,
         EVENT_ACTIVATE,

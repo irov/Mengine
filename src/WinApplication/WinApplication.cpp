@@ -2984,6 +2984,13 @@ namespace Menge
     {
         return m_developmentMode;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void WinApplication::onEvent( const ConstString & _event, const TMapParams & _params )
+    {
+        (void)_event;
+        (void)_params;
+        //Empty
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::openUrlInDefaultBrowser( const WString & _url )
 	{

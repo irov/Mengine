@@ -1742,6 +1742,23 @@ namespace Menge
 			}
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::onUserEvent( const ConstString & _event, const TMapParams & _params )
+    {
+        if( m_game == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)("Application::onUserEvent %s:%s game not create"
+                , _event
+                , _params
+                );
+
+            return false;
+        }
+
+        m_game->onUserEvent( _event, _params );
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectTitle() const
 	{

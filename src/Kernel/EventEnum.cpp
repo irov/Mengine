@@ -44,6 +44,7 @@ namespace Menge
 		"onColorStop",
 		"onVideoEnd",
 		"onFocus",
+        "EVENT_USER",
 		"onClose",
 		"EVENT_PREPARATION",
 		"EVENT_ACTIVATE",

@@ -1119,6 +1119,12 @@ namespace Menge
                 ->onMouseButtonEvent( _touchId, vpos, _button, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
+        void s_platformEvent( const ConstString & _event, const TMapParams & _params )
+        {
+            PLATFORM_SERVICE(m_serviceProvider)
+                ->onEvent( _event, _params );
+        }
+        //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
             const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
@@ -3614,6 +3620,8 @@ namespace Menge
 
             pybind::def_functor( "pushMouseMove", nodeScriptMethod, &NodeScriptMethod::s_pushMouseMove );
             pybind::def_functor( "pushMouseButtonEvent", nodeScriptMethod, &NodeScriptMethod::s_pushMouseButtonEvent );
+
+            pybind::def_functor( "platformEvent", nodeScriptMethod, &NodeScriptMethod::s_platformEvent );
         }
     }
 }

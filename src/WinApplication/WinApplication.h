@@ -83,6 +83,10 @@ namespace Menge
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
 
+    public:
+        void onEvent( const ConstString & _event, const TMapParams & _params ) override;
+
+    public:
 		bool openUrlInDefaultBrowser( const WString & _url ) override;
         bool cmd( const WString & _command ) override;
 

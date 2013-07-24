@@ -147,6 +147,8 @@ namespace Menge
 		
 		void onPaint() override;
 
+        bool onUserEvent( const ConstString & _event, const TMapParams & _params ) override;
+
 	public:
 		void setParticlesEnabled( bool _enabled ) override;
 		bool getParticlesEnabled() const override;

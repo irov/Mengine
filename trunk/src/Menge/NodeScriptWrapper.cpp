@@ -2813,7 +2813,7 @@ namespace Menge
 
                     pybind::decref( py_key );
 
-                    PyObject * py_value = pybind::tuple_getitem( py_item, 0 );
+                    PyObject * py_value = pybind::tuple_getitem( py_item, 1 );
 
                     WString value;
                     if( pybind::extract_value( py_value, value ) == false )

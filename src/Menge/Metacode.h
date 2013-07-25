@@ -2494,6 +2494,7 @@ namespace Metacode
                     : Metabuf::Metadata()
                     , PlayCount_successful(false)
                     , Stretch_successful(false)
+                    , TimeRemap_successful(false)
                 {
                 }
             public:
@@ -2705,6 +2706,46 @@ namespace Metacode
                     (_self->*_method)( this->Stretch );
                 }
                 
+                bool has_TimeRemap() const
+                {
+                    return TimeRemap_successful;
+                }
+                
+                bool get_TimeRemap( bool & _value ) const
+                {
+                    if( TimeRemap_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->TimeRemap;
+                
+                    return true;
+                }
+                
+                bool swap_TimeRemap( bool & _value ) const
+                {
+                    if( TimeRemap_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->TimeRemap);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_TimeRemap( C * _self, M _method ) const
+                {
+                    if( TimeRemap_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->TimeRemap );
+                }
+                
                 const Menge::ConstString & get_Type() const
                 {
                     return this->Type;
@@ -2741,6 +2782,8 @@ namespace Metacode
                 mutable float StartInterval;
                 bool Stretch_successful;
                 mutable float Stretch;
+                bool TimeRemap_successful;
+                mutable bool TimeRemap;
                 mutable Menge::ConstString Type;
             };
             
@@ -2752,6 +2795,7 @@ namespace Metacode
                     : Metabuf::Metadata()
                     , PlayCount_successful(false)
                     , Stretch_successful(false)
+                    , TimeRemap_successful(false)
                 {
                 }
             public:
@@ -2963,6 +3007,46 @@ namespace Metacode
                     (_self->*_method)( this->Stretch );
                 }
                 
+                bool has_TimeRemap() const
+                {
+                    return TimeRemap_successful;
+                }
+                
+                bool get_TimeRemap( bool & _value ) const
+                {
+                    if( TimeRemap_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->TimeRemap;
+                
+                    return true;
+                }
+                
+                bool swap_TimeRemap( bool & _value ) const
+                {
+                    if( TimeRemap_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->TimeRemap);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_TimeRemap( C * _self, M _method ) const
+                {
+                    if( TimeRemap_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->TimeRemap );
+                }
+                
                 const Menge::ConstString & get_Type() const
                 {
                     return this->Type;
@@ -2999,6 +3083,8 @@ namespace Metacode
                 mutable float StartInterval;
                 bool Stretch_successful;
                 mutable float Stretch;
+                bool TimeRemap_successful;
+                mutable bool TimeRemap;
                 mutable Menge::ConstString Type;
             };
             
@@ -5256,6 +5342,76 @@ namespace Metacode
             TVectorMeta_KeyFrame3D includes_Meta_KeyFrame3D;
         };
         
+        class Meta_TimeRemap
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_TimeRemap()
+                : Metabuf::Metadata()
+            {
+            }
+        public:
+            const size_t & get_Count() const
+            {
+                return this->Count;
+            }
+            
+            void swap_Count( size_t & _value ) const
+            {
+                std::swap( _value, this->Count);
+            }
+            
+            template<class C, class M>
+            void method_Count( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Count );
+            }
+            
+            const size_t & get_LayerIndex() const
+            {
+                return this->LayerIndex;
+            }
+            
+            void swap_LayerIndex( size_t & _value ) const
+            {
+                std::swap( _value, this->LayerIndex);
+            }
+            
+            template<class C, class M>
+            void method_LayerIndex( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->LayerIndex );
+            }
+            
+            const Menge::Floats & get_Time() const
+            {
+                return this->Time;
+            }
+            
+            void swap_Time( Menge::Floats & _value ) const
+            {
+                std::swap( _value, this->Time);
+            }
+            
+            template<class C, class M>
+            void method_Time( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Time );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable size_t Count;
+            mutable size_t LayerIndex;
+            mutable Menge::Floats Time;
+        };
+        
     protected:
     protected:
         mutable size_t MaxIndex;
@@ -5279,6 +5435,16 @@ namespace Metacode
     
     protected:
         TVectorMeta_KeyFrames3D includes_Meta_KeyFrames3D;
+    public:
+        typedef stdex::auto_array<Meta_TimeRemap> TVectorMeta_TimeRemap;
+    
+        const TVectorMeta_TimeRemap & get_IncludesTimeRemap() const
+        {
+            return this->includes_Meta_TimeRemap;
+        }
+    
+    protected:
+        TVectorMeta_TimeRemap includes_Meta_TimeRemap;
     };
     
     class Meta_Pak

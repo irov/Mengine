@@ -291,7 +291,7 @@ namespace Menge
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-        pybind::dict_set( dir_bltin, _name.c_str(), _module );
+        pybind::dict_setstring( dir_bltin, _name.c_str(), _module );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::removeGlobalModule( const String & _name )

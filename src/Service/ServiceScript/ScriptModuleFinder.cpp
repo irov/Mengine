@@ -261,11 +261,11 @@ namespace Menge
 
         PyObject * dict = pybind::module_dict( module );
 
-        pybind::dict_set( dict, "__loader__", m_embbed );
+        pybind::dict_setstring( dict, "__loader__", m_embbed );
 
         if( _packagePath != nullptr )
         {
-            pybind::dict_set( dict, "__path__", _packagePath );
+            pybind::dict_setstring( dict, "__path__", _packagePath );
             pybind::decref( _packagePath );
         }
 
@@ -289,11 +289,11 @@ namespace Menge
 
         PyObject * dict = pybind::module_dict( module );
 
-        pybind::dict_set( dict, "__loader__", m_embbed );
+        pybind::dict_setstring( dict, "__loader__", m_embbed );
 
         if( _packagePath != nullptr )
         {
-            pybind::dict_set( dict, "__path__", _packagePath );
+            pybind::dict_setstring( dict, "__path__", _packagePath );
             pybind::decref( _packagePath );
         }
 

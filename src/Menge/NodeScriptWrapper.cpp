@@ -2788,7 +2788,7 @@ namespace Menge
         }
     };
 
-    struct extract_TVectorTMapParams_type
+    struct extract_TMapParams_type
         : public pybind::type_cast_result<TMapParams>
     {
         bool apply( PyObject * _obj, TMapParams & _value ) override
@@ -2875,6 +2875,7 @@ namespace Menge
         pybind::registration_type_cast<TBlobject>( new extract_TBlobject_type );
         pybind::registration_type_cast<TVectorString>( new extract_TVectorString_type );
         pybind::registration_type_cast<TVectorWString>( new extract_TVectorWString_type );
+        pybind::registration_type_cast<TMapParams>( new extract_TMapParams_type );
 
         classWrapping( _serviceProvider );
 

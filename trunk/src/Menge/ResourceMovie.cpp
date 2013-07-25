@@ -265,6 +265,7 @@ namespace Menge
             ml.out = meta_layer2d.get_Out();
             ml.startInterval = meta_layer2d.get_StartInterval();
 
+            meta_layer2d.get_TimeRemap( ml.timeRemap );
             meta_layer2d.get_PlayCount( ml.playCount );
             meta_layer2d.get_Stretch( ml.scretch );
 
@@ -308,6 +309,7 @@ namespace Menge
             ml.out = meta_layer3d.get_Out();
             ml.startInterval = meta_layer3d.get_StartInterval();
 
+            meta_layer3d.get_TimeRemap( ml.timeRemap );
             meta_layer3d.get_PlayCount( ml.playCount );
             meta_layer3d.get_Stretch( ml.scretch );
 				

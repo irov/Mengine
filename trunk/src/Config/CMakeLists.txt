@@ -6,6 +6,7 @@ src
     String.h
     Stringstream.h
     Typedef.h
+    Floats.h
 	Config.h
 	cmake_dummy.cpp
 )

@@ -2136,13 +2136,13 @@ namespace Menge
                             PyObject * py_dict_frame = pybind::dict_new();
 
                             PyObject * py_pos = pybind::ptr( frame_source.position );
-                            pybind::dict_set( py_dict_frame, "position", py_pos );
+                            pybind::dict_setstring( py_dict_frame, "position", py_pos );
                             pybind::decref( py_pos );
 
                             float frameTime = _layer.in + it_frame * m_frameDuration;
 
                             PyObject * py_time = pybind::ptr( frameTime );
-                            pybind::dict_set( py_dict_frame, "time", py_time );
+                            pybind::dict_setstring( py_dict_frame, "time", py_time );
                             pybind::decref( py_time );
 
                             pybind::list_appenditem( py_list_frames, py_dict_frame );
@@ -2160,13 +2160,13 @@ namespace Menge
                             PyObject * py_dict_frame = pybind::dict_new();
 
                             PyObject * py_pos = pybind::ptr( _frames.source.position );
-                            pybind::dict_set( py_dict_frame, "position", py_pos );
+                            pybind::dict_setstring( py_dict_frame, "position", py_pos );
                             pybind::decref( py_pos );
 
                             float frameTime = _layer.in + it_frame * m_frameDuration;
 
                             PyObject * py_time = pybind::ptr( frameTime );
-                            pybind::dict_set( py_dict_frame, "time", py_time );
+                            pybind::dict_setstring( py_dict_frame, "time", py_time );
                             pybind::decref( py_time );
 
                             pybind::list_appenditem( py_list_frames, py_dict_frame );
@@ -2174,7 +2174,7 @@ namespace Menge
                         }
                     }
 
-                    pybind::dict_set( m_dictResult, _layer.name.c_str(), py_list_frames );
+                    pybind::dict_setstring( m_dictResult, _layer.name.c_str(), py_list_frames );
                     pybind::decref( py_list_frames );
                 }
 
@@ -2354,7 +2354,7 @@ namespace Menge
                 PyObject * py_node_file = pybind::ptr( (*it).file );
                 //PyObject * py_node_path = pybind::ptr((*it).path);
 
-                pybind::dict_set( py_dict, "file", py_node_file );
+                pybind::dict_setstring( py_dict, "file", py_node_file );
                 //pybind::dict_set(py_dict,"path",py_node_path);
 
                 pybind::decref( py_node_file );
@@ -2362,8 +2362,8 @@ namespace Menge
                 pybind::list_appenditem( py_list_atlas, py_dict );
             }
 
-            pybind::dict_set( py_dict_result, "Emitters", py_list_names );
-            pybind::dict_set( py_dict_result, "Atlasses", py_list_atlas );
+            pybind::dict_setstring( py_dict_result, "Emitters", py_list_names );
+            pybind::dict_setstring( py_dict_result, "Atlasses", py_list_atlas );
 
             resource->decrementReference();
 
@@ -2785,6 +2785,84 @@ namespace Menge
             }
 
             return py_value;
+        }
+    };
+
+    struct extract_TVectorTMapParams_type
+        : public pybind::type_cast_result<TMapParams>
+    {
+        bool apply( PyObject * _obj, TMapParams & _value ) override
+        {
+            if( pybind::dict_check( _obj ) == true )
+            {
+                PyObject * py_items = pybind::dict_items( _obj );
+
+                size_t size = pybind::list_size( py_items );
+
+                for( size_t it = 0; it != size; ++it )
+                {
+                    PyObject * py_item = pybind::list_getitem( py_items, it );
+
+                    PyObject * py_key = pybind::tuple_getitem( py_item, 0 );
+
+                    ConstString key;
+                    if( pybind::extract_value( py_key, key ) == false )
+                    {
+                        return false;
+                    }
+
+                    pybind::decref( py_key );
+
+                    PyObject * py_value = pybind::tuple_getitem( py_item, 0 );
+
+                    WString value;
+                    if( pybind::extract_value( py_value, value ) == false )
+                    {
+                        return false;
+                    }
+
+                    pybind::decref( py_value );
+
+                    _value.insert( std::make_pair( key, value ) );
+
+                    pybind::decref( py_item );
+                }
+
+                pybind::decref( py_items );
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        PyObject * wrap( pybind::type_cast_result<TMapParams>::TCastRef _value ) override
+        {
+            PyObject * py_dict = pybind::dict_new();
+
+            for( TMapParams::const_iterator
+                it = _value.begin(),
+                it_end = _value.end();
+            it != it_end;
+            ++it )
+            {
+                const ConstString & key = it->first;
+                
+                PyObject * py_key = pybind::ptr( key );
+
+                const WString & value = it->second;
+
+                PyObject * py_value = pybind::ptr( value );
+
+                pybind::dict_set( py_dict, py_key, py_value );
+
+                pybind::decref( py_key );
+                pybind::decref( py_value );
+            }
+            
+            return py_dict;
         }
     };
 

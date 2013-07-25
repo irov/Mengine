@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 29;
+        _needVersion = 30;
 
-        if( version != 29 )
+        if( version != 30 )
         {
             return false;
         }
@@ -2038,7 +2038,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 11:
             {
                 if( this->read( _buff, _size, _read, this->PlayCount ) == false )
                 {
@@ -2067,7 +2067,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 12:
             {
                 if( this->read( _buff, _size, _read, this->Stretch ) == false )
                 {
@@ -2075,6 +2075,17 @@ namespace Metacode
                 }
     
                 this->Stretch_successful = true;
+    
+                return true;
+            }break;
+        case 10:
+            {
+                if( this->read( _buff, _size, _read, this->TimeRemap ) == false )
+                {
+                    return false;
+                }
+    
+                this->TimeRemap_successful = true;
     
                 return true;
             }break;
@@ -2181,7 +2192,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 11:
             {
                 if( this->read( _buff, _size, _read, this->PlayCount ) == false )
                 {
@@ -2210,7 +2221,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 12:
             {
                 if( this->read( _buff, _size, _read, this->Stretch ) == false )
                 {
@@ -2218,6 +2229,17 @@ namespace Metacode
                 }
     
                 this->Stretch_successful = true;
+    
+                return true;
+            }break;
+        case 10:
+            {
+                if( this->read( _buff, _size, _read, this->TimeRemap ) == false )
+                {
+                    return false;
+                }
+    
+                this->TimeRemap_successful = true;
     
                 return true;
             }break;
@@ -3171,15 +3193,21 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 3:
             {
                 includes_Meta_KeyFrames2D.reserve( _count );
                 return true;
                 break;
             }
-        case 3:
+        case 4:
             {
                 includes_Meta_KeyFrames3D.reserve( _count );
+                return true;
+                break;
+            }
+        case 2:
+            {
+                includes_Meta_TimeRemap.reserve( _count );
                 return true;
                 break;
             }
@@ -3192,7 +3220,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 3:
             {
                 Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.emplace_back();
     
@@ -3204,9 +3232,21 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 3:
+        case 4:
             {
                 Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.emplace_back();
+    
+                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+                break;
+            }
+        case 2:
+            {
+                Meta_KeyFramesPack::Meta_TimeRemap & metadata = includes_Meta_TimeRemap.emplace_back();
     
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
@@ -3630,6 +3670,73 @@ namespace Metacode
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_generators;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    {
+        switch( _id )
+        {
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->Count ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 1:
+            {
+                if( this->read( _buff, _size, _read, this->LayerIndex ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->Time ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    {
+        (void)_includes;
+        (void)_count;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_includes;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
     {
         (void)_buff;
         (void)_size;

@@ -9,6 +9,7 @@
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
+#   include "Config/Floats.h"
 
 #   include "Math/vec2.h"
 #   include "Math/vec3.h"

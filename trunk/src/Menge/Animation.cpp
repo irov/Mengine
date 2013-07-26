@@ -293,7 +293,7 @@ namespace	Menge
 
 			_timing -= delay;
 
-			if( _timing <= 0.f )
+			if( _timing < 0.f )
 			{
 				_delthaTiming = _timing + delay;
 

@@ -10,6 +10,7 @@ namespace Menge
     void MovieFramePack::initialize( size_t _size )
     {
         m_layers.resize( _size );
+        m_timeremap.resize( _size );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )
@@ -56,6 +57,11 @@ namespace Menge
 
 		frameSource.push_back( _frame );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void MovieFramePack::addLayerTimeRemap( size_t _layerIndex, const MovieLayerTimeRemap & _timeremap )
+    {
+        m_timeremap[_layerIndex - 1] = _timeremap;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerImmutableFrame( size_t _layerIndex, MovieFrameSource & _frame ) const
 	{
@@ -143,4 +149,15 @@ namespace Menge
 		
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool MovieFramePack::getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const
+    {
+        const MovieLayerTimeRemap & timeremap = m_timeremap[_layerIndex - 1];
+
+        float time = timeremap.times[_frameIndex];
+
+        _time = time;
+
+        return true;
+    }
 }

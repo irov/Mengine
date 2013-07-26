@@ -251,40 +251,6 @@ namespace Menge
 			_node->setLocalAlpha( _frame.opacity );
 		}
 
-//        if( _layer.isMask() == true && _frame.mask != INVALID_MASK )
-//        {
-//#   ifdef _DEBUG
-//            if( dynamic_cast<Sprite *>( _node ) == nullptr )
-//            {
-//                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Masked but node is not Sprite %s:%s"
-//                    , this->getName().c_str()
-//                    , _layer.name.c_str()
-//                    , _node->getName().c_str()
-//                    , _node->getType().c_str()
-//                    );
-//
-//                return;
-//            }
-//#   endif
-
-            //Sprite * sprite = dynamic_cast<Sprite *>( _node );
-
-            //const Polygon * polygon = m_resourceMovie->getPolygon( _frame.mask );
-
-            //if( polygon == nullptr )
-            //{
-            //    LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mask but polygon is Null %d"
-            //        , this->getName().c_str()
-            //        , _layer.name.c_str()
-            //        , _frame.mask
-            //        );
-
-            //    return;
-            //}
-
-            //sprite->setMask( *polygon );
-        //}
-
 		if( _layer.isAudio() == true )
 		{
 #   ifdef _DEBUG
@@ -1681,21 +1647,13 @@ namespace Menge
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-			if( animatable->isPlay() == true )
-			{
-				//printf("Movie %s stop[end] animatable %s\n"
-				//	, m_name.c_str()
-				//	, node->getName().c_str()
-				//	);
-
-				animatable->stop();
-
-				//float movie_timing = this->getTiming();
-
-				//float animatable_timing = movie_timing - layer.in;
-
-				//animatable->setTiming( animatable_timing );
-			}
+            if( layer.timeRemap == false )
+            {
+                if( animatable->isPlay() == true )
+                {
+                    animatable->stop();
+                }
+            }
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2009,37 +1967,32 @@ namespace Menge
             {
                 Animatable * animatable = dynamic_cast<Animatable *>(_node);
 
-                if( animatable->isPlay() == true )
+                if( _layer.timeRemap == false )
                 {
-                    animatable->stop();
+                    if( animatable->isPlay() == true )
+                    {
+                        animatable->stop();
+                    }
+
+                    size_t frame = _endFrame - indexIn;
+                    float timing = frame * frameDuration;
+
+                    animatable->setTiming( timing );
+
+
+                    float movieTiming = this->getTiming();
+                    animatable->play( movieTiming );
                 }
-                //else
-                //{
+                else
+                {
+                    float timing;
+                    if( m_resourceMovie->getTimeRemap( _layer, _endFrame - indexIn, timing ) == false )
+                    {
+                        return;
+                    }
 
-                //}
-
-                size_t frame = _endFrame - indexIn;
-                float timing = frame * frameDuration;
-
-                animatable->setTiming( timing );
-
-                //float playTime = this->getPlayTime();
-
-
-
-                //float animatablePlayTime = playTime + movieTiming;
-
-                //float movieTiming = _endFrame * frameDuration;
-
-                //animatable->play( playTime + movieTiming );
-
-                float movieTiming = this->getTiming();
-                animatable->play( movieTiming );
-
-                //printf("Movie play %f %s\n"
-                //    , _time
-                //    , node->getName().c_str()
-                //    );
+                    animatable->setTiming( timing );
+                }
             }
         }
         else if( _endFrame >= indexOut && _beginFrame >= indexIn && _beginFrame < indexOut )
@@ -2051,12 +2004,25 @@ namespace Menge
             {
                 Animatable * animatable = dynamic_cast<Animatable *>(_node);
 
-                if( animatable->isPlay() == true )
+                if( _layer.timeRemap == false )
                 {
-                    animatable->stop();
+                    if( animatable->isPlay() == true )
+                    {
+                        animatable->stop();
 
-                    ///Test TestTestTestTest
-                    float timing = (indexOut - indexIn) * frameDuration;                        
+                        ///Test TestTestTestTest
+                        float timing = (indexOut - indexIn) * frameDuration;                        
+                        animatable->setTiming( timing );
+                    }
+                }
+                else
+                {
+                    float timing;
+                    if( m_resourceMovie->getTimeRemap( _layer, indexOut - indexIn, timing ) == false )
+                    {
+                        return;
+                    }
+
                     animatable->setTiming( timing );
                 }
             }
@@ -2070,6 +2036,25 @@ namespace Menge
             }
 
             this->updateFrameNode_( _layer, _node, frame );
+
+            if( _layer.isAnimatable() == true )
+            {
+                Animatable * animatable = dynamic_cast<Animatable *>(_node);
+
+                if( _layer.timeRemap == false )
+                {
+                }
+                else
+                {
+                    float timing;
+                    if( m_resourceMovie->getTimeRemap( _layer, _endFrame - indexIn, timing ) == false )
+                    {
+                        return;
+                    }
+
+                    animatable->setTiming( timing );
+                }
+            }
         }			
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -2210,24 +2195,37 @@ namespace Menge
             }
 
 			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
-			{
+			{            
                 MovieFrameSource frame;
-				if( m_resourceMovie->getFrame( layer, m_currentFrame - indexIn, frame ) == false )
-				{
-					continue;
-				}
-	
-				node->localHide(false);
-
-				if( layer.isAnimatable() == true )
-				{
-					Animatable * animatable = dynamic_cast<Animatable *>(node);
-
-					float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-					animatable->setTiming( timing );
-				}
+                if( m_resourceMovie->getFrame( layer, m_currentFrame - indexIn, frame ) == false )
+                {
+                    continue;
+                }
 
                 this->updateFrameNode_( layer, node, frame );
+
+                node->localHide(false);
+
+                if( layer.isAnimatable() == true )
+                {
+                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+                
+                    if( layer.timeRemap == false )
+                    {
+                        float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
+                        animatable->setTiming( timing );
+                    }
+                    else
+                    {
+                        float timing;
+                        if( m_resourceMovie->getTimeRemap( layer, m_currentFrame - indexIn, timing ) == false )
+                        {
+                            continue;
+                        }
+
+                        animatable->setTiming( timing );
+                    }
+                }
 			}
             else
             {
@@ -2291,17 +2289,30 @@ namespace Menge
                 {
                     Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-                    if( animatable->isPlay() == true )
+                    if( layer.timeRemap == false )
                     {
-                        animatable->stop();
+                        if( animatable->isPlay() == true )
+                        {
+                            animatable->stop();
+                        }
+
+                        float timing = layerFrame * frameDuration;
+
+                        animatable->setTiming( timing );
+
+                        float movieTiming = this->getTiming();
+                        animatable->play( movieTiming );
                     }
+                    else
+                    {
+                        float timing;
+                        if( m_resourceMovie->getTimeRemap( layer, layerFrame, timing ) == false )
+                        {
+                            continue;
+                        }
 
-                    float timing = layerFrame * frameDuration;
-
-                    animatable->setTiming( timing );
-
-                    float movieTiming = this->getTiming();
-                    animatable->play( movieTiming );
+                        animatable->setTiming( timing );
+                    }
                 }
             }
             else
@@ -2313,12 +2324,25 @@ namespace Menge
                 {
                     Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-                    if( animatable->isPlay() == true )
+                    if( layer.timeRemap == false )
                     {
-                        animatable->stop();
+                        if( animatable->isPlay() == true )
+                        {
+                            animatable->stop();
 
-                        ///Test TestTestTestTest
-                        float timing = (indexOut - indexIn) * frameDuration;                        
+                            ///Test TestTestTestTest
+                            float timing = (indexOut - indexIn) * frameDuration;                        
+                            animatable->setTiming( timing );
+                        }
+                    }
+                    else
+                    {
+                        float timing;
+                        if( m_resourceMovie->getTimeRemap( layer, indexOut - indexIn, timing ) == false )
+                        {
+                            continue;
+                        }
+
                         animatable->setTiming( timing );
                     }
                 }

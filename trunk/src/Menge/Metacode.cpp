@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 30;
+        _needVersion = 31;
 
-        if( version != 30 )
+        if( version != 31 )
         {
             return false;
         }
@@ -3684,15 +3684,6 @@ namespace Metacode
     {
         switch( _id )
         {
-        case 2:
-            {
-                if( this->read( _buff, _size, _read, this->Count ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->LayerIndex ) == false )
@@ -3702,7 +3693,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 2:
             {
                 if( this->read( _buff, _size, _read, this->Time ) == false )
                 {

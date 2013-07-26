@@ -25,6 +25,7 @@ namespace Metabuf
     void archive_read( ArchiveReader & ar, Menge::ColourValue & _value, void * _userData );
     void archive_read( ArchiveReader & ar, Menge::GlyphChar & _value, void * _userData );
     void archive_read( ArchiveReader & ar, Menge::Polygon & _value, void * _userData );
+    void archive_read( ArchiveReader & ar, Menge::Floats & _value, void * _userData );
     void archive_read( ArchiveReader & ar, mt::vec2f & _value, void * _userData );
     void archive_read( ArchiveReader & ar, mt::vec3f & _value, void * _userData );
     void archive_read( ArchiveReader & ar, mt::vec4f & _value, void * _userData );    

@@ -123,6 +123,23 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
+    bool ResourceMovie::getTimeRemap( const MovieLayer & _layer, size_t _index, float & _time ) const
+    {
+        if( m_keyFramePack->getLayerTimeRemap( _layer.index, _index, _time ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getFrame %s invalid frame '%s' %d:%d"
+                , this->getName().c_str()
+                , _layer.name.c_str()
+                , _layer.index
+                , _index
+                );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     namespace
     {
         class FindResourceMovieValidParent

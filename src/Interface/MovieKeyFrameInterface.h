@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#   include "Config/Floats.h"
+
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
@@ -36,7 +38,10 @@ namespace Menge
         bool immutable;
     };
 
-    typedef std::vector<MovieLayerFrame> TVectorMovieFrameLayer;
+    struct MovieLayerTimeRemap
+    {
+        Floats times;
+    };
 
     class MovieFramePackInterface
         : public Factorable
@@ -47,6 +52,9 @@ namespace Menge
 
     public:
         virtual bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const = 0;
+
+    public:
+        virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;
     };
 
     class MovieKeyFrameServiceInterface

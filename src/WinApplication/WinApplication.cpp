@@ -197,6 +197,7 @@ namespace Menge
         , m_soundService(nullptr)
         , m_scriptService(nullptr)
         , m_pluginService(nullptr)
+        , m_converterService(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1300,7 +1301,7 @@ namespace Menge
         {
             return false;
         }
-        
+                
         if( this->initializeCodecEngine_() == false )
         {
             return false;

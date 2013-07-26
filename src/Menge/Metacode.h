@@ -5351,22 +5351,6 @@ namespace Metacode
             {
             }
         public:
-            const size_t & get_Count() const
-            {
-                return this->Count;
-            }
-            
-            void swap_Count( size_t & _value ) const
-            {
-                std::swap( _value, this->Count);
-            }
-            
-            template<class C, class M>
-            void method_Count( C * _self, M _method ) const
-            {
-                (_self->*_method)( this->Count );
-            }
-            
             const size_t & get_LayerIndex() const
             {
                 return this->LayerIndex;
@@ -5407,7 +5391,6 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable size_t Count;
             mutable size_t LayerIndex;
             mutable Menge::Floats Time;
         };

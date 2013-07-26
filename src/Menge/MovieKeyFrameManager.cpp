@@ -77,6 +77,28 @@ namespace Menge
         MovieFramePack * pack = m_poolMovieFramePack.createObjectT();
 
         pack->initialize( maxIndex );
+
+        const Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_IncludesTimeRemap();
+
+        for( Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap::const_iterator 
+            it = includes_timeremaps.begin(),
+            it_end = includes_timeremaps.end();
+        it != it_end;
+        ++it )
+        {
+            const Metacode::Meta_KeyFramesPack::Meta_TimeRemap & meta_timeremap = *it;
+
+            size_t layerIndex = meta_timeremap.get_LayerIndex();
+
+            const Floats & floats = meta_timeremap.get_Time();
+
+            MovieLayerTimeRemap timeremap;
+
+            timeremap.times = floats;
+
+            pack->addLayerTimeRemap( layerIndex, timeremap );
+        }
+
         
         const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D(); 
 

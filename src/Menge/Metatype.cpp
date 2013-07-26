@@ -137,6 +137,18 @@ namespace Metabuf
             boost::geometry::append( _value, v );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( ArchiveReader & ar, Menge::Floats & _value, void * _userData )
+    {
+        (void)_userData;
+
+        size_t count;
+        ar.readSize(count);
+
+        _value.resize( count );
+
+        ar.readCount( &_value[0], count );
+    }
 	//////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, mt::vec2f & _value, void * _userData )
 	{

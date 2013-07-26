@@ -179,6 +179,8 @@ namespace Menge
 	public:
 		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
 
+        bool getTimeRemap( const MovieLayer & _layer, size_t _index, float & _time ) const;
+
     public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );
 

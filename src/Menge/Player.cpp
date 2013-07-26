@@ -65,13 +65,13 @@ namespace Menge
 		, m_destroyOldScene(false)
 		, m_restartScene(false)
 		, m_arrowHided(false)
-		, m_changeSceneCb(NULL)
-		, m_removeSceneCb(NULL)
+		, m_changeSceneCb(nullptr)
+		, m_removeSceneCb(nullptr)
 		, m_time(0.f)
 		, m_fps(0)	
 //#	ifndef MENGE_MASTER_RELEASE
 		, m_showDebugText(0)
-		, m_debugText(NULL)
+		, m_debugText(nullptr)
 //#	endif
 	{
 	}
@@ -211,6 +211,15 @@ namespace Menge
             PlayerResourceUselessCompile( ServiceProviderInterface * _serviceProvider )
                 : m_serviceProvider(_serviceProvider)
             {
+            }
+
+            ~PlayerResourceUselessCompile()
+            {
+            }
+
+        public:
+            void begin()
+            {
                 m_observerResourceCompile = NOTIFICATION_SERVICE(m_serviceProvider)
                     ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
 
@@ -218,7 +227,7 @@ namespace Menge
                     ->addObserverMethod( NOTIFICATOR_RESOURCE_RELEASE, this, &PlayerResourceUselessCompile::resourceRelease );
             }
 
-            ~PlayerResourceUselessCompile()
+            void end()
             {
                 NOTIFICATION_SERVICE(m_serviceProvider)
                     ->removeObserver( NOTIFICATOR_RESOURCE_COMPILE, m_observerResourceCompile );
@@ -346,12 +355,16 @@ namespace Menge
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
 
-        {
 #   ifndef MENGE_MASTER_RELEASE
-            PlayerResourceUselessCompile unlessCompile(m_serviceProvider);
+        PlayerResourceUselessCompile unlessCompile(m_serviceProvider);
+        unlessCompile.begin();
 #   endif
-            m_scene->enable();
-        }
+
+        m_scene->enable();
+
+#   ifndef MENGE_MASTER_RELEASE
+        unlessCompile.end();
+#   endif
 
         if( m_arrow != nullptr )
         {
@@ -461,7 +474,7 @@ namespace Menge
 		m_contentResolution = _contentResolution;
 		m_currentResolution = _currentResolution;
 
-		if( _arrow == 0 )
+		if( _arrow == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Player::init default arrow not found"
                 );

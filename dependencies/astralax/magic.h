@@ -19,6 +19,8 @@ extern "C" {
 typedef int HM_FILE;
 typedef int HM_EMITTER;
 typedef int HM_IMPORT;
+typedef int HM_OBSTACLE;
+typedef int HM_WIND;
 
 #define MAGIC_PI 3.1415926535897932384626433832795028841971693993751058209
 
@@ -841,11 +843,27 @@ int Magic_SetKey(HM_EMITTER hmEmitter, int type, MAGIC_KEY* key, int index);
 
 // eng: Converts UTF16 string into UTF8
 // rus: Конвертирует строку типа UTF16 в строку типа UTF8
-const char* Magic_UTF16to8(const short* str);
+const unsigned char* Magic_UTF16to8(const unsigned short* str);
 
 // eng: Converts UTF8 string into UTF16
 // rus: Конвертирует строку типа UTF8 в строку типа UTF16
-const short* Magic_UTF8to16(const char* str);
+const unsigned short* Magic_UTF8to16(const unsigned char* str);
+
+// eng: Converts UTF32 string into UTF8
+// rus: Конвертирует строку типа UTF32 в строку типа UTF8
+const unsigned char* Magic_UTF32to8(const unsigned long* str);
+
+// eng: Converts UTF8 string into UTF32
+// rus: Конвертирует строку типа UTF8 в строку типа UTF32
+const unsigned long* Magic_UTF8to32(const unsigned char* str);
+
+// eng: Converts UTF32 string into UTF16
+// rus: Конвертирует строку типа UTF32 в строку типа UTF16
+const unsigned short* Magic_UTF32to16(const unsigned long* str);
+
+// eng: Converts UTF16 string into UTF32
+// rus: Конвертирует строку типа UTF16 в строку типа UTF32
+const unsigned long* Magic_UTF16to32(const unsigned short* str);
 
 // --------------------------------------------------------------------------------------
 
@@ -926,7 +944,7 @@ void Magic_DestroyAll();
 
 
 // Возвращает заданный в Magic Particles темп, используемый для анимации эмиттера
-float Magic_GetUpdateTemp(HM_EMITTER hmEmitter);
+float Magic_GetUpdateSpeed(HM_EMITTER hmEmitter);
 
 struct MAGIC_RECT
 {
@@ -937,7 +955,7 @@ struct MAGIC_RECT
 };
 
 // Возвращает положение фоновой картинки
-int Magic_GetBackgroundRect(HM_EMITTER hmEmitter, MAGIC_RECT* rect);
+float Magic_GetBackgroundRect(HM_EMITTER hmEmitter, MAGIC_RECT* rect);
 
 //#define MAGIC_BEAM
 #define MAGIC_ADDITIONAL_TYPE_NORMAL	0
@@ -945,6 +963,283 @@ int Magic_GetBackgroundRect(HM_EMITTER hmEmitter, MAGIC_RECT* rect);
 #define MAGIC_ADDITIONAL_TYPE_BEAM		2
 
 //#define MAGIC_MATERIAL
+
+
+#define MAGIC_VARIABLE_BOOL		0
+#define MAGIC_VARIABLE_INT		1
+#define MAGIC_VARIABLE_FLOAT	2
+#define MAGIC_VARIABLE_STRING	3
+#define MAGIC_VARIABLE_DIAGRAM	4
+
+struct MAGIC_VARIABLE
+{
+	const char* name;
+	int type;
+	char value[8];
+};
+
+int Magic_GetEmitterVariableCount(HM_EMITTER hmEmitter);
+int Magic_GetEmitterVariable(HM_EMITTER hmEmitter, int index, MAGIC_VARIABLE* variable);
+
+int Magic_GetParticlesTypeVariableCount();
+int Magic_GetParticlesTypeVariable(int index, MAGIC_VARIABLE* variable);
+
+
+
+
+typedef unsigned int HM_PARTICLE;
+
+#define MAGIC_EVENT_CREATION	0
+#define MAGIC_EVENT_DESTRUCTION	1
+#define MAGIC_EVENT_EXISTENCE	2
+#define MAGIC_EVENT_COLLISION	3
+#define MAGIC_EVENT_MAGNET		4
+#define MAGIC_EVENT_WIND		5
+
+#define MAGIC_ACTION_EVENT				0
+#define MAGIC_ACTION_DESTRUCTION		1
+#define MAGIC_ACTION_DETACHING			2
+#define MAGIC_ACTION_FACTOR				3
+#define MAGIC_ACTION_PARTICLE			4
+#define MAGIC_ACTION_MAGNET_PARTICLE	5
+
+#define MAGIC_ACTION_DIRECTION_DISABLED	0
+#define MAGIC_ACTION_DIRECTION_MOVEMENT	1
+#define MAGIC_ACTION_DIRECTION_REBOUND	2
+
+#define MAGIC_MAGNET_POINT_ANY				0
+#define MAGIC_MAGNET_POINT_DIRECTION		1
+#define MAGIC_MAGNET_POINT_ANTI_DIRECTION	2
+
+struct MAGIC_ACTION
+{
+	int event;
+	int HM;
+	int action;
+	float factor;
+
+	int magnet_particles_type;
+	int magnet_direction;
+	int magnet_distance;
+	float magnet_strength1;
+	float magnet_strength2;
+
+	int particles_type;
+	int direction;
+	float angle;
+	float size;
+	float velocity;
+	float weight;
+	float spin;
+	float angular_velocity;
+	float motion_rand;
+	float visibility;
+};
+
+// Возвращает количество действий
+int Magic_GetActionCount();
+// Возвращает действие
+int Magic_GetAction(int index, MAGIC_ACTION* action);
+// Создает новое действие
+int Magic_CreateAction(MAGIC_ACTION* action);
+// Удаляет указанное действие
+int Magic_DestroyAction(int index);
+
+struct MAGIC_EVENT
+{
+	int event;
+	HM_PARTICLE hmParticle;
+	MAGIC_POSITION position1;
+	MAGIC_POSITION position2;
+	MAGIC_POSITION reflection;
+};
+
+struct MAGIC_SEGMENT
+{
+	MAGIC_POSITION vertex1;
+	MAGIC_POSITION vertex2;
+};
+
+// Формы препятствия
+#if defined(EXE) || defined(SCREENSAVER) || (!defined(MAGIC_3D))
+#define MAGIC_OBSTACLE_CIRCLE		0	// окружность (2D)
+#define MAGIC_OBSTACLE_SEGMENT		1	// отрезок (2D)
+#endif
+#ifdef MAGIC_3D
+#define MAGIC_OBSTACLE_SPHERE		2	// сфера (3D)
+#define MAGIC_OBSTACLE_TRIANGLE		3	// треугольник (3D)
+#endif
+
+struct MAGIC_OBSTACLE
+{
+	int type;
+	float radius;
+	int count;
+	#if defined(EXE) || defined(SCREENSAVER)
+	void* primitives;
+	#else
+	#ifdef MAGIC_3D
+	MAGIC_TRIANGLE* primitives;
+	#else
+	MAGIC_SEGMENT* primitives;
+	#endif
+	#endif
+};
+
+struct MAGIC_WIND
+{
+	MAGIC_POSITION direction;
+	float velocity;
+};
+
+#define MAGIC_TYPE_OBSTACLE		0
+#define MAGIC_TYPE_WIND			1
+#define MAGIC_TYPE_MAGNET		2
+
+// Возвращает для захваченного типа частиц количество прицепленных физ. объектов указанного типа
+int Magic_GetAttachedPhysicObjectsCount(int type);
+// Возвращает для захваченного типа частиц все прицепленные физ. объекты указанного типа
+int Magic_GetAttachedPhysicObjects(int type, int* HMs);
+
+// eng: Returns the coordinates of the obstacle
+// rus: Возвращает координаты препятствия
+int Magic_GetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
+
+// eng: Sets the coordinates of the obstacle
+// ru: Устанавливает координаты препятствия
+int Magic_SetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
+
+
+// Выгрузка всех эмиттеров
+void Magic_UnloadAllEmitters();
+
+// Создание препятствия
+HM_OBSTACLE Magic_CreateObstacle(MAGIC_OBSTACLE* data, MAGIC_POSITION* position, int cell);
+
+// Создание ветра
+HM_WIND Magic_CreateWind(MAGIC_WIND* data);
+
+// Удаление физ.объекта указанного типа
+int Magic_DestroyPhysicObject(int type, int HM);
+// Удаление всех физ. объектов указанного типа
+int Magic_DestroyAllPhysicObjects(int type);
+
+// Дублирование физ. объекта указанного типа
+int Magic_DuplicatePhysicObject(int type, int HM);
+
+// Возвращает информацию о ветре
+int Magic_GetWindData(HM_WIND hmWind, MAGIC_WIND* data);
+// Устанавливает информацию о ветре
+int Magic_SetWindData(HM_WIND hmWind, MAGIC_WIND* data);
+
+// Возвращает информацию о препятствии
+int Magic_GetObstacleData(HM_OBSTACLE hmObstacle, MAGIC_OBSTACLE* data);
+// Устанавливает информацию о препятствии
+int Magic_SetObstacleData(HM_OBSTACLE hmObstacle, MAGIC_OBSTACLE* data, int cell);
+
+// Возвращает очередное событие
+int Magic_GetNextEvent(MAGIC_EVENT* evt);
+
+// Отсоединение частицы
+void Magic_ParticleDetaching(HM_PARTICLE hmParticle);
+
+// Уничтожение частицы
+void Magic_ParticleDestruction(HM_PARTICLE hmParticle);
+
+// Установка пользовательских данных для частицы
+void Magic_ParticleSetData(HM_PARTICLE hmParticle, void* data);
+// Возвращает пользовательские данные для частицы
+void* Magic_ParticleGetData(HM_PARTICLE hmParticle);
+
+// Возвращает абсолютную координату частицы
+void Magic_ParticleGetPosition(HM_PARTICLE hmParticle, MAGIC_POSITION* pos);
+// Устанавливает абсолютную координату частицы
+void Magic_ParticleSetPosition(HM_PARTICLE hmParticle, MAGIC_POSITION* pos);
+
+#define MAGIC_PROPERTY_ANGLE			0
+#define MAGIC_PROPERTY_SIZE				1
+#define MAGIC_PROPERTY_VELOCITY			2
+#define MAGIC_PROPERTY_WEIGHT			3
+#define MAGIC_PROPERTY_SPIN				4
+#define MAGIC_PROPERTY_ANGULAR_VELOCITY	5
+#define MAGIC_PROPERTY_MOTION_RAND		6
+#define MAGIC_PROPERTY_VISIBILITY		7
+
+// Устанавливает указанное свойство частицы
+void Magic_ParticleSetProperty(HM_PARTICLE hmParticle, int property, float value);
+// Устанавливает список свойств частицы
+void Magic_ParticleSetProperties(HM_PARTICLE hmParticle, int count, int* properties, float* values);
+// Возвращает указанное свойство частицы
+float Magic_ParticleGetProperty(HM_PARTICLE hmParticle, int property);
+// Возвращает список свойств частицы
+void Magic_ParticleGetProperties(HM_PARTICLE hmParticle, int count, int* properties, float* values);
+
+// Возвращает физический радиус частицы
+float Magic_ParticleGetRadius(HM_PARTICLE hmParticle);
+
+// Заполняет структуру MAGIC_ACTION данными по умолчанию
+void MAGIC_ACTION_Identity(MAGIC_ACTION* action);
+
+#ifndef MAGIC_3D
+// Корректирует позицию 2D-эмиттера под размеры сцены из позиции в редакторе
+int Magic_CorrectEmitterPosition(HM_EMITTER hmEmitter, int scene_width, int scene_height);
+#endif
+
+#ifdef MAGIC_3D
+
+#define MAGIC_pXpYpZ	0
+#define MAGIC_pYpXpZ	1
+#define MAGIC_pZpXpY	2
+#define MAGIC_pXpZpY	3
+#define MAGIC_pYpZpX	4
+#define MAGIC_pZpYpX	5
+#define MAGIC_nXpYpZ	6
+#define MAGIC_pYnXpZ	7
+#define MAGIC_pZnXpY	8
+#define MAGIC_nXpZpY	9
+#define MAGIC_pYpZnX	10
+#define MAGIC_pZpYnX	11
+#define MAGIC_pXnYpZ	12
+#define MAGIC_nYpXpZ	13
+#define MAGIC_pZpXnY	14
+#define MAGIC_pXpZnY	15
+#define MAGIC_nYpZpX	16
+#define MAGIC_pZnYpX	17
+#define MAGIC_pXpYnZ	18
+#define MAGIC_pYpXnZ	19
+#define MAGIC_nZpXpY	20
+#define MAGIC_pXnZpY	21
+#define MAGIC_pYnZpX	22
+#define MAGIC_nZpYpX	23
+#define MAGIC_nXnYpZ	24
+#define MAGIC_nYnXpZ	25
+#define MAGIC_pZnXnY	26
+#define MAGIC_nXpZnY	27
+#define MAGIC_nYpZnX	28
+#define MAGIC_pZnYnX	29
+#define MAGIC_nXpYnZ	30
+#define MAGIC_pYnXnZ	31
+#define MAGIC_nZnXpY	32
+#define MAGIC_nXnZpY	33
+#define MAGIC_pYnZnX	34
+#define MAGIC_nZpYnX	35
+#define MAGIC_pXnYnZ	36
+#define MAGIC_nYpXnZ	37
+#define MAGIC_nZpXnY	38
+#define MAGIC_pXnZnY	39
+#define MAGIC_nYnZpX	40
+#define MAGIC_nZnYpX	41
+#define MAGIC_nXnYnZ	42
+#define MAGIC_nYnXnZ	43
+#define MAGIC_nZnXnY	44
+#define MAGIC_nXnZnY	45
+#define MAGIC_nYnZnX	46
+#define MAGIC_nZnYnX	47
+
+int Magic_SetAxis(int axis_index);
+int Magic_GetAxis();
+
+#endif
 
 #ifdef __cplusplus
 }

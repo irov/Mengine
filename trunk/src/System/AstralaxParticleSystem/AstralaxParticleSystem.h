@@ -17,8 +17,6 @@
 #	pragma warning(pop) 
 #	endif
 
-#	define ASTRALAX_PARTICLE_MAX_TEXTURES 20
-
 namespace Menge
 {
 	class AstralaxParticleSystem 

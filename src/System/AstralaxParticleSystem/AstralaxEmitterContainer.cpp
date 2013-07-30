@@ -1,10 +1,12 @@
 #	include "AstralaxEmitterContainer.h"
-#	include "AstralaxEmitter.h"
+
 #	include "Utils/Core/String.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer::AstralaxEmitterContainer()
+        : m_serviceProvider(nullptr)
 	{
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -30,6 +32,13 @@ namespace Menge
 			}
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxEmitterContainer::initialize( ServiceProviderInterface * _serviceProvider )
+    {
+        m_serviceProvider = _serviceProvider;
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitterContainer::addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters )
 	{
@@ -107,38 +116,38 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::addAtlas( const EmitterAtlas & _atlas )
+	void AstralaxEmitterContainer::addAtlas( const ParticleEmitterAtlas & _atlas )
 	{
 		m_atlas.push_back( _atlas );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const EmitterContainerInterface::TVectorAtlas & AstralaxEmitterContainer::getAtlas() const
+	const TVectorParticleEmitterAtlas & AstralaxEmitterContainer::getAtlas() const
 	{
 		return m_atlas;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterInterface * AstralaxEmitterContainer::createEmitter( const ConstString & _name )
+	ParticleEmitterInterface * AstralaxEmitterContainer::createEmitter( const ConstString & _name )
 	{
 		HM_EMITTER id = this->getEmitterId( _name );
 
 		if( id == 0 )
 		{
-			return NULL;
+			return nullptr;
 		}
 
-		AstralaxEmitter * emitter = new AstralaxEmitter( this, id, _name );
+		AstralaxEmitter * emitter = m_factoryPoolAstralaxEmitter.createObjectT();
 
-        if( emitter->initialize() == false )
+        if( emitter->initialize( m_serviceProvider, this, id, _name ) == false )
         {
-            delete emitter;
+            emitter->destroy();
 
-            return NULL;
+            return nullptr;
         }
 
 		return emitter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::releaseEmitter( EmitterInterface * _emitter )
+	void AstralaxEmitterContainer::releaseEmitter( ParticleEmitterInterface * _emitter )
 	{
 		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>(_emitter);
 
@@ -148,10 +157,10 @@ namespace Menge
 
 		container->releaseEmitterId( name, id );
 
-		delete emitter;
+		emitter->destroy();
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::visitContainer( EmitterContainerVisitor * visitor )
+	void AstralaxEmitterContainer::visitContainer( ParticleEmitterContainerVisitor * visitor )
 	{
 		for( TMapEmitters::iterator 
 			it = m_emitters.begin(), 
@@ -162,7 +171,7 @@ namespace Menge
 			visitor->visitEmitterName( it->first );
 		}
 
-		for (TVectorAtlas::iterator
+		for (TVectorParticleEmitterAtlas::iterator
 			it = m_atlas.begin(),
 			it_end = m_atlas.end();
 		it != it_end;

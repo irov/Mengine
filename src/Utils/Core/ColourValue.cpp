@@ -4,13 +4,6 @@
 
 namespace Menge
 {
-	const ColourValue ColourValue::ZERO = ColourValue(0.0,0.0,0.0,0.0);
-	const ColourValue ColourValue::Black = ColourValue(0.0,0.0,0.0,1.f);
-	const ColourValue ColourValue::White = ColourValue(1.0,1.0,1.0,1.f);
-	const ColourValue ColourValue::Red = ColourValue(1.0,0.0,0.0,1.f);
-	const ColourValue ColourValue::Green = ColourValue(0.0,1.0,0.0,1.f);
-	const ColourValue ColourValue::Blue = ColourValue(0.0,0.0,1.0,1.f);
-
 	//////////////////////////////////////////////////////////////////////////
 	RGBA ColourValue::getAsRGBA() const
 	{
@@ -150,7 +143,7 @@ namespace Menge
 		// Alpha
 		a = (val32 & 0xFF) / 255.0f;
 		
-		invalidate();
+		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -212,7 +205,7 @@ namespace Menge
 		// Alpha
 		a = (val32 & 0xFF) / 255.0f;
 
-		invalidate();
+		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -238,10 +231,10 @@ namespace Menge
 		// Red
 		r = (val32 & 0xFF) / 255.0f;
 
-		invalidate();
+		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ColourValue::operator==( const ColourValue& _rhs ) const
+	bool ColourValue::operator == ( const ColourValue& _rhs ) const
 	{
 		return (r == _rhs.r &&
 			g == _rhs.g &&
@@ -249,120 +242,37 @@ namespace Menge
 			a == _rhs.a);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ColourValue::operator!=( const ColourValue& _rhs ) const
+	bool ColourValue::operator != ( const ColourValue& _rhs ) const
 	{
 		return !(*this == _rhs);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ColourValue::setHSB( float _hue, float _saturation, float _brightness )
-	{
-		// wrap hue
-		if ( _hue > 1.0f)
-		{ 
-			_hue -= (int)_hue;
-		}
-		else if (_hue < 0.0f)
-		{
-			_hue += (int)_hue + 1;
-		}
-		// clamp saturation / brightness
-		_saturation = (std::min)(_saturation, (float)1.0);
-		_saturation = (std::max)(_saturation, (float)0.0);
-		_brightness = (std::min)(_brightness, (float)1.0);
-		_brightness = (std::max)(_brightness, (float)0.0);
-
-		if (_brightness == 0.0f)
-		{   
-			// early exit, this has to be black
-			r = g = b = 0.0f;
-			return;
-		}
-
-		if (_saturation == 0.0f)
-		{   
-			// early exit, this has to be grey
-
-			r = g = b = _brightness;
-			return;
-		}
-
-
-		float hueDomain  = _hue * 6.0f;
-		if (hueDomain >= 6.0f)
-		{
-			// wrap around, and allow mathematical errors
-			hueDomain = 0.0f;
-		}
-		unsigned short domain = (unsigned short)hueDomain;
-		float f1 = _brightness * (1 - _saturation);
-		float f2 = _brightness * (1 - _saturation * (hueDomain - domain));
-		float f3 = _brightness * (1 - _saturation * (1 - (hueDomain - domain)));
-
-		switch (domain)
-		{
-		case 0:
-			// red domain; green ascends
-			r = _brightness;
-			g = f3;
-			b = f1;
-			break;
-		case 1:
-			// yellow domain; red descends
-			r = f2;
-			g = _brightness;
-			b = f1;
-			break;
-		case 2:
-			// green domain; blue ascends
-			r = f1;
-			g = _brightness;
-			b = f3;
-			break;
-		case 3:
-			// cyan domain; green descends
-			r = f1;
-			g = f2;
-			b = _brightness;
-			break;
-		case 4:
-			// blue domain; red ascends
-			r = f3;
-			g = f1;
-			b = _brightness;
-			break;
-		case 5:
-			// magenta domain; blue descends
-			r = _brightness;
-			g = f1;
-			b = f2;
-			break;
-		}
-
-		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setA( const float _a )
 	{
 		a = _a;
-		invalidate();
+		
+        this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setR( const float _r )
 	{
 		r = _r;
-		invalidate();
+
+		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setG( const float _g )
 	{
 		g = _g;
-		invalidate();
+
+		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setB( const float _b )
 	{
 		b = _b;
-		invalidate();
+
+		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

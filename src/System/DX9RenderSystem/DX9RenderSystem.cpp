@@ -2221,7 +2221,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint16* DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle )
+	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags )
 	{
         IBInfo * ibinfo;
 
@@ -2237,7 +2237,7 @@ namespace Menge
         IDirect3DIndexBuffer9 * ib = ibinfo->pIB;
         
 		void * lock = nullptr;
-		HRESULT hr = ib->Lock( 0, 0, &lock, 0 );
+		HRESULT hr = ib->Lock( _offset, _size, &lock, _flags );
 
         if( FAILED( hr ) == true )
         {
@@ -2248,10 +2248,8 @@ namespace Menge
 
             return nullptr;
         }
-        
-        uint16 * uint16_lock = static_cast<uint16 *>(lock);
 
-		return uint16_lock;
+		return lock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )

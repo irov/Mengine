@@ -1,11 +1,3 @@
-/*
- *	ImageEncoderJPEG.h
- *
- *	Created by _Berserk_ on 16.4.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
 #	include "Interface/ImageCodecInterface.h"
@@ -26,13 +18,11 @@ extern "C"
 
 namespace Menge
 {
-	typedef struct tagErrorManager 
+	struct EncoderJPEGErrorManager
 	{
-		/// "public" fields
-		struct jpeg_error_mgr pub;
-		/// for return to caller
+		jpeg_error_mgr pub;
 		jmp_buf setjmp_buffer;
-	} ErrorManager;
+	};
 
 	class ImageEncoderJPEG
 		: public ImageEncoder
@@ -48,7 +38,7 @@ namespace Menge
 		size_t encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
 	private:
-		jpeg_compress_struct* m_jpegObject;
-		tagErrorManager* m_errorMgr;
+		jpeg_compress_struct * m_jpegObject;
+		EncoderJPEGErrorManager * m_errorMgr;
 	};
 }	// namespace Menge

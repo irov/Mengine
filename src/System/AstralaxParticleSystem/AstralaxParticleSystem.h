@@ -2,6 +2,11 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#	include "AstralaxEmitterContainer.h"
+#	include "AstralaxEmitter.h"
+
+#   include "Factory/FactoryPool.h"
+
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #	endif 
@@ -11,8 +16,6 @@
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(pop) 
 #	endif
-
-#	include "AstralaxEmitter.h"
 
 #	define ASTRALAX_PARTICLE_MAX_TEXTURES 20
 
@@ -30,11 +33,11 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		EmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) override;
-		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) override;
+		ParticleEmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) override;
+		void releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface ) override;
 
 	public:	
-		bool flushParticles( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush ) override;
+		bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
 
 	protected:
 		void fillParticles_( ParticleVertices * _particles, size_t _offset, int _count );
@@ -43,5 +46,8 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
+
+        typedef FactoryPool<AstralaxEmitterContainer, 16> TFactoryPoolAstralaxEmitterContainer;
+        TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
 	};
 }

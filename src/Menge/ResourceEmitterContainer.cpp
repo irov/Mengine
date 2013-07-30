@@ -70,9 +70,9 @@ namespace Menge
 			return false;
 		}
 		
-		const EmitterContainerInterface::TVectorAtlas & atlas = m_container->getAtlas();
+		const TVectorParticleEmitterAtlas & atlas = m_container->getAtlas();
 		
-		for( EmitterContainerInterface::TVectorAtlas::const_iterator
+		for( TVectorParticleEmitterAtlas::const_iterator
 			it = atlas.begin(),
 			it_end = atlas.end();
 		it != it_end;
@@ -159,7 +159,7 @@ namespace Menge
 		return m_atlasImages[_atlasId];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * ResourceEmitterContainer::getContainer() const
+	ParticleEmitterContainerInterface * ResourceEmitterContainer::getContainer() const
 	{
 		return m_container;
 	}

@@ -691,7 +691,7 @@ namespace Menge
 
 		ApplyColor2D applyColor( 0xFF00FF00 );
 
-		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
+		std::for_each( m_vertexDebugBox, m_vertexDebugBox + 4, applyColor );
 
 		return true;
 	}
@@ -1147,37 +1147,37 @@ namespace Menge
 			mt::box2f bbox;
 			this->getBoundingBox( bbox );
 			
-			m_debugBox[0].pos[0] = bbox.minimum.x;
-			m_debugBox[0].pos[1] = bbox.minimum.y;
+			m_vertexDebugBox[0].pos.x = bbox.minimum.x;
+			m_vertexDebugBox[0].pos.y = bbox.minimum.y;
 
-			m_debugBox[1].pos[0] = bbox.maximum.x;
-			m_debugBox[1].pos[1] = bbox.minimum.y;
+			m_vertexDebugBox[1].pos.x = bbox.maximum.x;
+			m_vertexDebugBox[1].pos.y = bbox.minimum.y;
 	
 
-			m_debugBox[2].pos[0] = bbox.maximum.x;
-			m_debugBox[2].pos[1] = bbox.maximum.y;
+			m_vertexDebugBox[2].pos.x = bbox.maximum.x;
+			m_vertexDebugBox[2].pos.y = bbox.maximum.y;
 
-			m_debugBox[3].pos[0] = bbox.minimum.x;
-			m_debugBox[3].pos[1] = bbox.maximum.y;
+			m_vertexDebugBox[3].pos.x = bbox.minimum.x;
+			m_vertexDebugBox[3].pos.y = bbox.maximum.y;
 
-
-			m_debugBox[4].pos[0] = bbox.minimum.x;
-			m_debugBox[4].pos[1] = bbox.minimum.y;
+            m_vertexDebugBox[4].pos.x = bbox.minimum.x;
+            m_vertexDebugBox[4].pos.y = bbox.minimum.y;
 
             for( size_t i = 0; i != 5; ++i )
             {
-			    m_debugBox[i].pos[2] = 0.f;
-                m_debugBox[i].color = 0xFFFFFFFF;
-                m_debugBox[i].uv[0] = 0.f;
-                m_debugBox[i].uv[1] = 0.f;
-                m_debugBox[i].uv2[0] = 0.f;
-                m_debugBox[i].uv2[1] = 0.f;
+			    m_vertexDebugBox[i].pos.z = 0.f;
+
+                m_vertexDebugBox[i].color = 0xFFFFFFFF;
+                m_vertexDebugBox[i].uv.x = 0.f;
+                m_vertexDebugBox[i].uv.y = 0.f;
+                m_vertexDebugBox[i].uv2.x = 0.f;
+                m_vertexDebugBox[i].uv2.y = 0.f;
             }
 
-			RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_debugMaterial, NULL, 0
-                , LPT_LINE
-                , m_debugBox
-                , 5 
+            
+			RENDER_SERVICE(m_serviceProvider)->addRenderLine( _camera, m_debugMaterial, nullptr, 0
+                , m_vertexDebugBox
+                , 5
                 );
 		}
 	}

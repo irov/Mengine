@@ -8,6 +8,8 @@
 #	include "Math/vec3.h"
 #	include "Math/mat4.h"
 
+#   include "Core/Polygon.h"
+
 #	include <vector>
 #	include <map>
 
@@ -31,7 +33,7 @@ namespace Menge
 	struct MovieLayer
 	{
 		MovieLayer()
-			: index((size_t)-1)
+			: index(movie_layer_parent_none)
 			, parent(0)
             , timeRemap(false)
             , playCount(1)
@@ -50,6 +52,7 @@ namespace Menge
 		size_t parent;
 
         bool timeRemap;
+        Polygon maskPolygon;
         size_t playCount;        
         float scretch;
         bool loop;

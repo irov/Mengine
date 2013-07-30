@@ -208,21 +208,21 @@ namespace Menge
             return;
         }
 
-		size_t countOfVertices;
+		size_t countOfVertex;
 		
 		if( m_maxCharCount == -1 )
 		{
-			countOfVertices = textVertices.size();
+			countOfVertex = textVertices.size();
 		}
 		else
 		{
-			countOfVertices = m_maxCharCount * 4;
+			countOfVertex = m_maxCharCount * 4;
 		}
 		
         const RenderTextureInterfacePtr & fontTexture = m_resourceFont->getTextureFont();
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderObject2D( _camera, m_materialText, &fontTexture, 1, LPT_QUAD, &(textVertices[0]), countOfVertices );
+            ->addRenderQuad( _camera, m_materialText, &fontTexture, 1, &(textVertices[0]), countOfVertex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( RenderCameraInterface * _camera )
@@ -234,21 +234,21 @@ namespace Menge
 			return;
 		}
 
-		size_t countOfVertices;
+		size_t countOfVertex;
 
 		if( m_maxCharCount == -1 )
 		{
-			countOfVertices = outlineVertices.size();
+			countOfVertex = outlineVertices.size();
 		}
 		else
 		{
-			countOfVertices = m_maxCharCount * 4;
+			countOfVertex = m_maxCharCount * 4;
 		}
 
 		const RenderTextureInterfacePtr & outlineTexture = m_resourceFont->getTextureOutline();
 
-		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject2D( _camera, m_materialOutline, &outlineTexture, 1, LPT_QUAD, &(outlineVertices[0]), countOfVertices );
+        RENDER_SERVICE(m_serviceProvider)
+            ->addRenderQuad( _camera, m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), countOfVertex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const

@@ -155,6 +155,7 @@ namespace Menge
 		HWND m_hWnd;
 		bool m_hasWindowPanel;
 		bool m_cursorInArea;
+        bool m_clickOutArea;
 		HCURSOR m_cursor;
 		
 		typedef std::map<WString, HCURSOR> TMapCursors;

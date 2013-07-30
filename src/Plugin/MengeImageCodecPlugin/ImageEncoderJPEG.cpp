@@ -18,9 +18,8 @@ namespace Menge
 		JOCTET * buffer;
 	} DestinationManager;
 
-	typedef DestinationManager*		menge_dst_ptr;
-	typedef ErrorManager*		menge_error_ptr;
-
+	typedef DestinationManager * menge_dst_ptr;
+	typedef EncoderJPEGErrorManager * menge_error_ptr;
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
 	{
@@ -199,7 +198,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageEncoderJPEG::_initialize()
 	{
-		m_errorMgr = new tagErrorManager;
+		m_errorMgr = new EncoderJPEGErrorManager;
 		m_jpegObject = new jpeg_compress_struct;
 
 		// step 1: allocate and initialize JPEG compression object

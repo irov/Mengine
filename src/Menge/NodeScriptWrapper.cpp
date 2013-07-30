@@ -1141,14 +1141,12 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void s_enableTextureFiltering( bool _enable )
         {
-            RENDER_SERVICE(m_serviceProvider)
-                ->enableTextureFiltering( _enable );
+            (void)_enable;
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_isTextureFilteringEnabled()
         {
-            return RENDER_SERVICE(m_serviceProvider)
-                ->isTextureFilteringEnabled();
+            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_existText( const ConstString & _key )
@@ -2297,7 +2295,7 @@ namespace Menge
         typedef std::vector<ConstString> TVectorConstString;
         //////////////////////////////////////////////////////////////////////////
         class ResourceEmitterContainerVisitor
-            : public EmitterContainerInterface::EmitterContainerVisitor
+            : public ParticleEmitterContainerVisitor
         {
         public:
             void visitEmitterName( const ConstString& _emitterName )
@@ -2305,12 +2303,12 @@ namespace Menge
                 catchedNames.push_back( _emitterName );
             }
 
-            void visitAtlas( const EmitterContainerInterface::EmitterAtlas & _atlas )
+            void visitAtlas( const ParticleEmitterAtlas & _atlas )
             {
                 cathedAtlas.push_back( _atlas );
             }
 
-            EmitterContainerInterface::TVectorAtlas cathedAtlas;                       
+            TVectorParticleEmitterAtlas cathedAtlas;                       
             TVectorConstString catchedNames;
         };
         //////////////////////////////////////////////////////////////////////////
@@ -2330,7 +2328,7 @@ namespace Menge
             PyObject * py_list_atlas = pybind::list_new(0);
 
             ResourceEmitterContainerVisitor visitor;
-            EmitterContainerInterface * container = resource->getContainer();
+            ParticleEmitterContainerInterface * container = resource->getContainer();
             container->visitContainer( &visitor );
 
             for( TVectorConstString::const_iterator
@@ -2344,7 +2342,7 @@ namespace Menge
                 pybind::decref( py_node );
             }
 
-            for( EmitterContainerInterface::TVectorAtlas::const_iterator
+            for( TVectorParticleEmitterAtlas::const_iterator
                 it = visitor.cathedAtlas.begin(),
                 it_end = visitor.cathedAtlas.end();
             it != it_end;

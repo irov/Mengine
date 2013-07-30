@@ -1,23 +1,4 @@
-/*
- *	ImageDecoderJPEG.cpp
- *
- *	Created by _Berserk_ on 22.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	include "ImageDecoderJPEG.h"
-
-extern "C" 
-{
-	#	define XMD_H
-	#	undef FAR
-
-	#	include <setjmp.h>
-	#	include "jinclude.h"
-	#	include "jpeglib.h"
-	#	include "jerror.h"
-}
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Utils/Logger/Logger.h"
@@ -26,13 +7,6 @@ extern "C"
 
 namespace Menge
 {
-	typedef struct tagErrorManager {
-		/// "public" fields
-		struct jpeg_error_mgr pub;
-		/// for return to caller
-		jmp_buf setjmp_buffer;
-	} ErrorManager;
-
 	typedef struct tagSourceManager {
 		/// public fields
 		struct jpeg_source_mgr pub;
@@ -44,9 +18,8 @@ namespace Menge
 		boolean start_of_file;
 	} SourceManager;
 
-	typedef SourceManager*		menge_src_ptr;
-	typedef ErrorManager*		menge_error_ptr;
-
+	typedef SourceManager *	menge_src_ptr;
+    typedef DecoderJPEGErrorManager * menge_error_ptr;
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
 	{
@@ -233,70 +206,54 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::ImageDecoderJPEG()
-		: m_jpegObject(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::~ImageDecoderJPEG()
 	{
-		if( m_jpegObject != NULL )
-		{
-			// skip all rows
-			m_jpegObject->output_scanline = m_jpegObject->output_height;
-			jpeg_finish_decompress( m_jpegObject );
-			jpeg_destroy_decompress( m_jpegObject );
-			delete m_jpegObject;
-			m_jpegObject = NULL;
-		}
-
-		if( m_errorMgr != NULL )
-		{
-			delete m_errorMgr;
-			m_errorMgr = NULL;
-		}
+		// skip all rows
+        m_jpegObject.output_scanline = m_jpegObject.output_height;
+        jpeg_finish_decompress( &m_jpegObject );
+        jpeg_destroy_decompress( &m_jpegObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderJPEG::_initialize()
 	{
-		m_errorMgr = new tagErrorManager;
-		m_jpegObject = new jpeg_decompress_struct;
-
 		// step 1: allocate and initialize JPEG decompression object
-		m_jpegObject->err = jpeg_std_error(&m_errorMgr->pub);
-		m_jpegObject->client_data = this;
+		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
+		m_jpegObject.client_data = this;
 
-		m_errorMgr->pub.error_exit     = s_jpegErrorExit;
-		m_errorMgr->pub.output_message = s_jpegOutputMessage;
+		m_errorMgr.pub.error_exit = s_jpegErrorExit;
+		m_errorMgr.pub.output_message = s_jpegOutputMessage;
 
-		if( setjmp( m_errorMgr->setjmp_buffer ) ) 
+		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
 		{
 			// If we get here, the JPEG code has signaled an error.
 			// We need to clean up the JPEG object and return.
-			jpeg_destroy_decompress( m_jpegObject );
-			delete m_jpegObject;
-			m_jpegObject = NULL;
-			return false;
+			jpeg_destroy_decompress( &m_jpegObject );
+
+            return false;
 		}
 
-		jpeg_create_decompress( m_jpegObject );
+		jpeg_create_decompress( &m_jpegObject );
 
 		// step 2a: specify data source (eg, a handle)
-		jpeg_menge_src( m_jpegObject, m_stream.get() );
+		jpeg_menge_src( &m_jpegObject, m_stream.get() );
 
 		// step 3: read handle parameters with jpeg_read_header()
-		jpeg_read_header( m_jpegObject, TRUE );
+		jpeg_read_header( &m_jpegObject, TRUE );
 
 		m_dataInfo.depth = 1;
 		m_dataInfo.mipmaps = 0;
-		m_dataInfo.width = m_jpegObject->image_width;
-		m_dataInfo.height = m_jpegObject->image_height;
-		m_dataInfo.quality = getQuality( m_jpegObject );
+		m_dataInfo.width = m_jpegObject.image_width;
+		m_dataInfo.height = m_jpegObject.image_height;
+		m_dataInfo.quality = getQuality( &m_jpegObject );
 		
-        int numComponents = m_jpegObject->num_components;
+        int numComponents = m_jpegObject.num_components;
 		m_dataInfo.channels = numComponents;
 		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * numComponents;
 
-		jpeg_start_decompress( m_jpegObject );
+		jpeg_start_decompress( &m_jpegObject );
 
 		return true;
 	}
@@ -336,9 +293,9 @@ namespace Menge
             if( m_options.channels == 4 )
             {
                 JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
-                while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_options.pitch) ) 
+                while( (m_jpegObject.output_scanline < m_jpegObject.output_height) && (_bufferSize >= m_options.pitch) ) 
                 {
-                    jpeg_read_scanlines( m_jpegObject, &rgb_buffer, 1 );
+                    jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
 
                     // Assume put_scanline_someplace wants a pointer and sample count.
                     rgb_buffer += m_options.pitch;

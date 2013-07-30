@@ -2492,6 +2492,7 @@ namespace Metacode
             public:
                 Meta_MovieLayer2D()
                     : Metabuf::Metadata()
+                    , MaskPolygon_successful(false)
                     , PlayCount_successful(false)
                     , Stretch_successful(false)
                     , TimeRemap_successful(false)
@@ -2544,6 +2545,46 @@ namespace Metacode
                 void method_Index( C * _self, M _method ) const
                 {
                     (_self->*_method)( this->Index );
+                }
+                
+                bool has_MaskPolygon() const
+                {
+                    return MaskPolygon_successful;
+                }
+                
+                bool get_MaskPolygon( Menge::Polygon & _value ) const
+                {
+                    if( MaskPolygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->MaskPolygon;
+                
+                    return true;
+                }
+                
+                bool swap_MaskPolygon( Menge::Polygon & _value ) const
+                {
+                    if( MaskPolygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->MaskPolygon);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_MaskPolygon( C * _self, M _method ) const
+                {
+                    if( MaskPolygon_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->MaskPolygon );
                 }
                 
                 const Menge::ConstString & get_Name() const
@@ -2773,6 +2814,8 @@ namespace Metacode
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable size_t Index;
+                bool MaskPolygon_successful;
+                mutable Menge::Polygon MaskPolygon;
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 mutable size_t Parent;
@@ -2793,6 +2836,7 @@ namespace Metacode
             public:
                 Meta_MovieLayer3D()
                     : Metabuf::Metadata()
+                    , MaskPolygon_successful(false)
                     , PlayCount_successful(false)
                     , Stretch_successful(false)
                     , TimeRemap_successful(false)
@@ -2845,6 +2889,46 @@ namespace Metacode
                 void method_Index( C * _self, M _method ) const
                 {
                     (_self->*_method)( this->Index );
+                }
+                
+                bool has_MaskPolygon() const
+                {
+                    return MaskPolygon_successful;
+                }
+                
+                bool get_MaskPolygon( Menge::Polygon & _value ) const
+                {
+                    if( MaskPolygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->MaskPolygon;
+                
+                    return true;
+                }
+                
+                bool swap_MaskPolygon( Menge::Polygon & _value ) const
+                {
+                    if( MaskPolygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->MaskPolygon);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_MaskPolygon( C * _self, M _method ) const
+                {
+                    if( MaskPolygon_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->MaskPolygon );
                 }
                 
                 const Menge::ConstString & get_Name() const
@@ -3074,6 +3158,8 @@ namespace Metacode
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable size_t Index;
+                bool MaskPolygon_successful;
+                mutable Menge::Polygon MaskPolygon;
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 mutable size_t Parent;

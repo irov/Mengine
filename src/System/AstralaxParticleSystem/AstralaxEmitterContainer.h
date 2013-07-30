@@ -2,6 +2,10 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#	include "AstralaxEmitter.h"
+
+#   include "Factory/FactoryPool.h"
+
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #	endif 
@@ -19,11 +23,14 @@ namespace Menge
 	typedef std::vector<HM_EMITTER> TVectorEmitters;
 
 	class AstralaxEmitterContainer
-		: public EmitterContainerInterface
+		: public ParticleEmitterContainerInterface
 	{
 	public:
 		AstralaxEmitterContainer();
 		~AstralaxEmitterContainer();
+
+    public:
+        bool initialize( ServiceProviderInterface * _serviceProvider ) override;
 
 	public:
 		void addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters );
@@ -31,13 +38,15 @@ namespace Menge
 		void releaseEmitterId( const ConstString & _name, HM_EMITTER _id );
 
 	public:
-		void addAtlas( const EmitterAtlas & _atlas );
-		void visitContainer( EmitterContainerVisitor * visitor ) override;
-		const TVectorAtlas & getAtlas() const override;
-		EmitterInterface * createEmitter( const ConstString & _name ) override;
-		void releaseEmitter( EmitterInterface * _emitter );
+		void addAtlas( const ParticleEmitterAtlas & _atlas );
+		void visitContainer( ParticleEmitterContainerVisitor * visitor ) override;
+		const TVectorParticleEmitterAtlas & getAtlas() const override;
+		ParticleEmitterInterface * createEmitter( const ConstString & _name ) override;
+		void releaseEmitter( ParticleEmitterInterface * _emitter );
 		
 	private:
+        ServiceProviderInterface * m_serviceProvider;
+
         struct EmitterPool
         {
             HM_EMITTER id;
@@ -47,9 +56,12 @@ namespace Menge
             bool dublicate;
         };
 
+        typedef FactoryPool<AstralaxEmitter, 16> TFactoryPoolAstralaxEmitter;
+        TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
+
 		typedef std::map<ConstString, EmitterPool> TMapEmitters;		
 		TMapEmitters m_emitters;
 
-		TVectorAtlas m_atlas;
+		TVectorParticleEmitterAtlas m_atlas;
 	};
 }

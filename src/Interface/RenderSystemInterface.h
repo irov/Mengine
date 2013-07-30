@@ -219,15 +219,6 @@ namespace Menge
 		TF_GAUSSIANCUBIC
 	};
 
-    enum ELogicPrimitiveType
-    {
-        LPT_QUAD = 0,
-        LPT_LINE = 1,
-        LPT_PRIMITIVE_COUNT = 2,
-
-        LPT_MESH = 3,
-    };
-
     const unsigned int LOCK_READONLY = 0x00000010L;
     const unsigned int LOCK_DISCARD = 0x00002000L;
     const unsigned int LOCK_NOOVERWRITE = 0x00001000L;
@@ -338,18 +329,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1 | VDECL_TEX2;
     //////////////////////////////////////////////////////////////////////////
-    struct RenderVertex3D
-    {
-        float pos[3];
-        float n[3];
-        uint32 color;
-        float uv[2];
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static const uint32 Vertex3D_declaration = VDECL_XYZ | VDECL_NORMAL | VDECL_DIFFUSE | VDECL_TEX1;
-    //////////////////////////////////////////////////////////////////////////
     typedef std::vector<RenderVertex2D> TVectorRenderVertex2D;
-    typedef std::vector<RenderVertex3D> TVectorRenderVertex3D;
     //////////////////////////////////////////////////////////////////////////
     class ApplyColor2D
     {
@@ -532,13 +512,13 @@ namespace Menge
 
 		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
+		virtual void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
 		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
 		virtual IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual uint16* lockIndexBuffer(  IBHandle _ibHandle ) = 0;
+		virtual void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) = 0;
 
@@ -653,14 +633,20 @@ namespace Menge
         SERVICE_DECLARE("RenderService")
 
     public:
-        virtual bool initialize( size_t _vertexCount ) = 0;
+        virtual bool initialize( size_t _maxVertexCount, size_t _maxIndexCount ) = 0;
         virtual void finalize() = 0;
 
     public:
-        virtual void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
-            , ELogicPrimitiveType _type
+        virtual void addRenderObject( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , EPrimitiveType _type
             , const RenderVertex2D * _vertices, size_t _verticesNum
-            , const uint16 * _indices = 0, size_t _indicesNum = 0 ) = 0;
+            , const uint16 * _indices, size_t _indicesNum ) = 0;
+
+        virtual void addRenderQuad( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum            
+            , const RenderVertex2D * _vertices, size_t _count ) = 0;
+
+        virtual void addRenderLine( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , const RenderVertex2D * _vertices, size_t _count ) = 0;
 
 	public:
 		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
@@ -691,11 +677,7 @@ namespace Menge
 	public:
 		virtual void setRenderTargetTexture( const RenderTextureInterfacePtr & _texture, bool _clear ) = 0;
 
-    public:
-        virtual void enableTextureFiltering( bool _enable ) = 0;
-        virtual bool isTextureFilteringEnabled() const = 0;
-        
-    public:
+   public:
         virtual void enableDebugMode( bool _enable ) = 0;
 
     public:

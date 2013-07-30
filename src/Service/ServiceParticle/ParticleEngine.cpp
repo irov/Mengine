@@ -36,7 +36,7 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
+	ParticleEmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
 	{
 		InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _fileSystemName, _filename );
@@ -60,7 +60,7 @@ namespace Menge
 
 		file = nullptr;
 
-		EmitterContainerInterface * container = PARTICLE_SYSTEM(m_serviceProvider)
+		ParticleEmitterContainerInterface * container = PARTICLE_SYSTEM(m_serviceProvider)
             ->createEmitterContainerFromMemory( &fileBuffer[0] );
 
 		if( container == nullptr )
@@ -75,7 +75,7 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushEmitter( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush )
+	bool ParticleEngine::flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
 		if( PARTICLE_SYSTEM(m_serviceProvider)->flushParticles( _viewMatrix, _emitter, _meshes, _particles, _particlesLimit, _flush ) == false )
         {
@@ -85,7 +85,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )
+	void ParticleEngine::releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface )
 	{
 		PARTICLE_SYSTEM(m_serviceProvider)
             ->releaseEmitterContainer( _containerInterface );

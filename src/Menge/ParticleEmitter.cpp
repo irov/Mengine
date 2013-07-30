@@ -110,7 +110,7 @@ namespace	Menge
 
             return false;
         }
-		EmitterContainerInterface * container = m_resourceEmitterContainer->getContainer();
+		ParticleEmitterContainerInterface * container = m_resourceEmitterContainer->getContainer();
 
 		if( container == nullptr )
 		{
@@ -180,7 +180,7 @@ namespace	Menge
 	{
         if( m_interface != nullptr )
         {
-            EmitterContainerInterface * container = 
+            ParticleEmitterContainerInterface * container = 
                 m_resourceEmitterContainer->getContainer();
 
             container->releaseEmitter( m_interface );
@@ -216,19 +216,6 @@ namespace	Menge
 			return;
 		}
 
-		//size_t maxParticleCount = PARTICLE_SERVICE(m_serviceProvider)
-			//->getMaxParticlesCount();
-
-      //  if( m_emitterChangeRendering == true || m_emitterChangeRenderingExtra == true )
-      //  {
-      //      m_emitterChangeRenderingExtra = false;
-
-		    //if( this->updateParticleVertex_( _camera ) == false )
-      //      {
-      //          return;
-      //      }
-      //  }
-
         if( m_vertices == nullptr )
         {
             return;
@@ -244,8 +231,13 @@ namespace	Menge
 
             RenderVertex2D * batch_vertices = m_vertices + batch.begin;
 
-			RENDER_SERVICE(m_serviceProvider)->
-				addRenderObject2D( _camera, batch.material, batch.texture, 1, LPT_QUAD, batch_vertices, batch.size );
+            if( batch.begin + batch.size > m_verticesCount )
+            {
+                return;
+            }
+
+            RENDER_SERVICE(m_serviceProvider)->
+                addRenderQuad( _camera, batch.material, batch.texture, 1, batch_vertices, batch.size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -428,7 +420,7 @@ namespace	Menge
         //viewMatrix.v2 = mt::vec4f(xaxis.z, yaxis.z, zaxis.z, 0);
         //viewMatrix.v3 = mt::vec4f(-mt::dot_v3_v3( xaxis, Eye ), -mt::dot_v3_v3( yaxis, Eye ),  -mt::dot_v3_v3(zaxis, Eye), 1);
 
-		EmitterRenderFlush flush;
+		ParticleEmitterRenderFlush flush;
 
 		if( PARTICLE_SERVICE(m_serviceProvider)
 			->flushEmitter( viewMatrix, m_interface, s_meshes, s_particles, maxParticleCount, flush ) == false )
@@ -472,7 +464,7 @@ namespace	Menge
 
 				uint32 argb;
 
-				if( color.isIdentity() )
+				if( color.isIdentity() == true )
 				{
 					argb = p.color;
 				}
@@ -489,9 +481,6 @@ namespace	Menge
 
 				RenderVertex2D * vertice = &m_vertices[it * 4];
 
-				//mt::vec3f wm_pos0;
-				//mt::mul_v3_m4( wm_pos0, p.v[0] + relation_pos, wm);
-
                 const mt::vec3f & wm_pos0 = p.v[0];
 
                 vertice[0].pos[0] = wm_pos0.x;
@@ -501,9 +490,6 @@ namespace	Menge
 
 				vertice[0].color = argb;
 
-                //mt::vec3f wm_pos1;
-                //mt::mul_v3_m4( wm_pos1, p.v[1] + relation_pos, wm);
-
                 const mt::vec3f & wm_pos1 = p.v[1];
 
                 vertice[1].pos[0] = wm_pos1.x;
@@ -511,10 +497,7 @@ namespace	Menge
 				vertice[1].pos[2] = wm_pos1.z;
 
                 vertice[1].color = argb;
-
-                //mt::vec3f wm_pos2;
-                //mt::mul_v3_m4( wm_pos2, p.v[2] + relation_pos, wm);
-				
+		
                 const mt::vec3f & wm_pos2 = p.v[2];
 
 				vertice[2].pos[0] = wm_pos2.x;
@@ -523,14 +506,11 @@ namespace	Menge
 
 				vertice[2].color = argb;
 
-                //mt::vec3f wm_pos3;
-                //mt::mul_v3_m4( wm_pos3, p.v[3] + relation_pos, wm);
-
                 const mt::vec3f & wm_pos3 = p.v[3];
 
                 vertice[3].pos[0] = wm_pos3.x;
                 vertice[3].pos[1] = wm_pos3.y;
-				vertice[3].pos[2] = wm_pos3.z;				
+				vertice[3].pos[2] = wm_pos3.z;
 
 				vertice[3].color = argb;
 				

@@ -219,8 +219,7 @@ namespace	Menge
             return;
         }
 
-        RENDER_SERVICE(m_serviceProvider)->addRenderObject2D( _camera, m_debugMaterial, NULL, 0
-            , LPT_LINE
+        RENDER_SERVICE(m_serviceProvider)->addRenderLine( _camera, m_debugMaterial, NULL, 0
             , &(vertices[0])
             , vertices.size()
             );

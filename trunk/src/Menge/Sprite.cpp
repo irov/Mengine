@@ -227,7 +227,7 @@ namespace	Menge
         const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject2D( _camera, material, m_textures, m_texturesNum, LPT_QUAD, vertices, 4 );
+			->addRenderQuad( _camera, material, m_textures, m_texturesNum, vertices, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

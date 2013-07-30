@@ -4,7 +4,6 @@
 
 #	include "HotspotMousePickerAdapter.h"
 
-#	include "Kernel/VectorVertices.h"
 #	include "Core/Polygon.h"
 
 namespace Menge
@@ -13,7 +12,6 @@ namespace Menge
 
 	class HotSpot
 		: public Node
-		, public VectorVertices
 	{
 	public:
 		HotSpot();
@@ -65,15 +63,18 @@ namespace Menge
 //#	ifndef MENGE_MASTER_RELEASE
 	protected:
 		void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
-		void _invalidateWorldMatrix() override;
 
-	private:
-		void _updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate ) override;
+    private:
+		void updateVertices_();
 
 	protected:
 		uint32 m_debugColor;
 
         HotspotMousePickerAdapter m_mousePickerAdapter;
+
+        TVectorRenderVertex2D m_vertexDebugPolygon;
+        TVectorIndices m_indicesDebugPolygon;
+                
 //#	endif
 	};
 }

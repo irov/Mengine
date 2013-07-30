@@ -152,6 +152,7 @@ namespace Menge
 		, m_windowClassName(L"MengeWnd")
 		, m_hWnd(0)
 		, m_cursorInArea(false)
+        , m_clickOutArea(false)
 		, m_hInstance(NULL)
 		, m_loggerConsole(nullptr)
 		, m_application(nullptr)
@@ -862,7 +863,7 @@ namespace Menge
 
         m_renderService = renderService;
 
-        if( m_renderService->initialize( 32000 ) == false )
+        if( m_renderService->initialize( 32000, 48000 ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Engine"
                 );
@@ -2300,13 +2301,13 @@ namespace Menge
 					mt::vec2f point;
 					this->getCursorPosition( point );
 
-                    if( m_inputService->isMouseButtonDown( 0 ) == false )
-                    {
-                        m_inputService->onMouseButtonEvent( 0, point, 0, false );
-                    }
-
                     m_inputService->onMouseLeave( 0, point );
 				}
+
+                if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
+                {
+                    m_clickOutArea = true;
+                }
 
                 handle = true;
                 _result = FALSE;
@@ -2335,6 +2336,16 @@ namespace Menge
                             );
                     }
 				}
+
+                if( m_clickOutArea == true )
+                {
+                    m_clickOutArea = false;
+
+                    if( (GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
+                    {
+                        m_inputService->onMouseButtonEvent( 0, point, 0, false );
+                    }                    
+                }
 
 				int x = (int)(short)LOWORD(lParam);
 				int y = (int)(short)HIWORD(lParam);

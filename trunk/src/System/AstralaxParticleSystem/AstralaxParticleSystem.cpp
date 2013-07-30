@@ -1,5 +1,4 @@
 #	include "AstralaxParticleSystem.h"
-#	include "AstralaxEmitterContainer.h"
 
 #   include "Interface/StringizeInterface.h"
 
@@ -123,7 +122,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( const void * _buffer )
+	ParticleEmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( const void * _buffer )
 	{
 		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(_buffer) );
 
@@ -135,8 +134,15 @@ namespace Menge
 			return nullptr;
 		}
 		
-		AstralaxEmitterContainer * container = new AstralaxEmitterContainer();
-					
+		AstralaxEmitterContainer * container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
+		
+        if( container->initialize( m_serviceProvider ) == false )
+        {
+            container->destroy();
+
+            return nullptr;
+        }
+
 		//Load emitters from root folder
 		this->loadEmittersFolder( "//", file, container );
 		
@@ -150,7 +156,7 @@ namespace Menge
 				continue;
 			}
 
-			EmitterContainerInterface::EmitterAtlas atlas;
+			ParticleEmitterAtlas atlas;
 
             atlas.file = Helper::stringizeString( m_serviceProvider, magicAtlas.file );
 			//atlas.path = magicAtlas.path;
@@ -163,9 +169,12 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem::flushParticles( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush )
+	bool AstralaxParticleSystem::flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
         (void)_viewMatrix;
+
+        _flush.particleCount = 0;
+        _flush.meshCount = 0;
 
 		if( _emitter == nullptr )
 		{
@@ -201,9 +210,6 @@ namespace Menge
 			return false;
 		}
 
-		_flush.particleCount = 0;
-		_flush.meshCount = 0;
-
 		if( _particlesLimit <= (size_t)rendering.count )
 		{
 			return false;
@@ -211,18 +217,18 @@ namespace Menge
 
 		while( rendering.count != 0 )
 		{
-			ParticleMesh & mesh = _meshes[_flush.meshCount];
+            if( _particlesLimit <= _flush.particleCount + rendering.count )
+            {
+                return false;
+            }
+                        
+            ParticleMesh & mesh = _meshes[_flush.meshCount];
 
 			mesh.begin = _flush.particleCount;
 			mesh.size = rendering.count;
 			mesh.texture = rendering.texture_id;
 			mesh.intense = rendering.intense;
 
-			if( _particlesLimit <= _flush.particleCount )
-			{
-				return false;
-			}
-			
 			this->fillParticles_( _particles, _flush.particleCount, rendering.count );
 
 			_flush.particleCount += rendering.count;
@@ -294,9 +300,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )
+	void AstralaxParticleSystem::releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface )
 	{
-		delete static_cast<AstralaxEmitterContainer*>( _containerInterface );
+        _containerInterface->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

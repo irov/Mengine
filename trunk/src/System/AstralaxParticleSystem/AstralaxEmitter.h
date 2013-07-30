@@ -20,14 +20,14 @@ namespace Menge
 	class AstralaxEmitterContainer;
 
 	class AstralaxEmitter 
-		: public EmitterInterface
+		: public ParticleEmitterInterface
 	{
 	public:
-		AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const ConstString & _name );
+		AstralaxEmitter();
 		~AstralaxEmitter();
 
     public:
-        bool initialize();
+        bool initialize( ServiceProviderInterface * _serviceProvider, AstralaxEmitterContainer * _container, HM_EMITTER _id, const ConstString & _name );
 
 	public:
 		const ConstString & getName() const override;
@@ -92,6 +92,7 @@ namespace Menge
         bool setupBasePosition_();
 		
 	protected:
+        ServiceProviderInterface * m_serviceProvider; 
 		AstralaxEmitterContainer * m_container;
 
 		HM_EMITTER m_id;

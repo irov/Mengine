@@ -16,7 +16,7 @@
 
 namespace Menge
 {
-	class EmitterInterface;
+	class ParticleEmitterInterface;
 	class ResourceImage;
 	class ResourceImageDefault;
 	struct RenderMaterial;
@@ -114,7 +114,7 @@ namespace Menge
 
 		ConstString m_emitterImageName;
 
-		EmitterInterface * m_interface;
+		ParticleEmitterInterface * m_interface;
 
         Polygon m_polygon;
 

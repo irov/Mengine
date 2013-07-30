@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 31;
+        _needVersion = 32;
 
-        if( version != 31 )
+        if( version != 32 )
         {
             return false;
         }
@@ -2011,6 +2011,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->MaskPolygon ) == false )
+                {
+                    return false;
+                }
+    
+                this->MaskPolygon_successful = true;
+    
+                return true;
+            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Name ) == false )
@@ -2038,7 +2049,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 12:
             {
                 if( this->read( _buff, _size, _read, this->PlayCount ) == false )
                 {
@@ -2067,7 +2078,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 12:
+        case 13:
             {
                 if( this->read( _buff, _size, _read, this->Stretch ) == false )
                 {
@@ -2165,6 +2176,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->MaskPolygon ) == false )
+                {
+                    return false;
+                }
+    
+                this->MaskPolygon_successful = true;
+    
+                return true;
+            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Name ) == false )
@@ -2192,7 +2214,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 12:
             {
                 if( this->read( _buff, _size, _read, this->PlayCount ) == false )
                 {
@@ -2221,7 +2243,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 12:
+        case 13:
             {
                 if( this->read( _buff, _size, _read, this->Stretch ) == false )
                 {

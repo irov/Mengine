@@ -24,15 +24,15 @@ namespace Menge
         void update() override;
 
 	public:
-		EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) override;
-		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
+		ParticleEmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) override;
+		void releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface );
 
 		//EmitterInterface * createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container );
 		//void releaseEmitter( EmitterInterface * _emitter );
 
-		bool flushEmitter( const mt::mat4f & _viewMatrix, EmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, EmitterRenderFlush & _flush ) override; 
+		bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override; 
 
-		void getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos );
+		void getEmitterPosition( ParticleEmitterInterface * _emitter, mt::vec2f & _pos );
 				
 		size_t getMaxParticlesCount() const override;
 		void setMaxParticlesCount( size_t _count );

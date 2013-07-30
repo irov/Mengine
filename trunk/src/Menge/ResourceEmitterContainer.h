@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class EmitterContainerInterface;
+	class ParticleEmitterContainerInterface;
 	class ResourceImageDefault;
 
 	//! ResourceEmitterContainer - ресурс-файл контейнера эмиттеров, который заполняется из формата *.ptc от Astralax. ptc содержит только имена текстур, поэтому необходимо задавать в какой директории они находятся.
@@ -34,7 +34,7 @@ namespace Menge
 		const FilePath& getFolderPath() const;
 		
 	public:
-		EmitterContainerInterface * getContainer() const;
+		ParticleEmitterContainerInterface * getContainer() const;
 
 	public:
 		ResourceImageDefault* getAtlasImage( size_t _atlasId );
@@ -53,7 +53,7 @@ namespace Menge
 		FilePath m_filename;
 		FilePath m_folder;
 		
-		EmitterContainerInterface * m_container;
+		ParticleEmitterContainerInterface * m_container;
 
 		typedef std::vector<ResourceImageDefault *> TVectorAtlasImages;
 		TVectorAtlasImages m_atlasImages;

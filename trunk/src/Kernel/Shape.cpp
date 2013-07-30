@@ -183,6 +183,13 @@ namespace Menge
         return m_textureUVScale;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Shape::setMaskPolygon( const Polygon & _polygon )
+    {
+        m_maskPolygon = _polygon;
+
+        this->invalidateVertices();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Shape::_invalidateWorldMatrix()
     {
         Node::_invalidateWorldMatrix();
@@ -461,5 +468,60 @@ namespace Menge
             mt::vec3f & wm_pos = m_verticesWM[i].pos;
             mt::mul_v3_m4( wm_pos, pos, wm);
         }
+
+        //size_t numPoints = boost::geometry::num_points( m_maskPolygon );
+
+        //if( numPoints != 0 )
+        //{
+        //    m_maskPolygonWM.clear();
+        //    polygon_wm( m_maskPolygonWM, m_maskPolygon, wm );
+
+        //    Polygon local;
+        //    boost::geometry::append( local, m_verticesWM[0].pos.to_vec2f() );
+        //    boost::geometry::append( local, m_verticesWM[1].pos.to_vec2f() );
+        //    boost::geometry::append( local, m_verticesWM[2].pos.to_vec2f() );
+        //    boost::geometry::append( local, m_verticesWM[3].pos.to_vec2f() );
+        //    boost::geometry::correct( local );
+
+        //    std::deque<Polygon> output;
+        //    boost::geometry::intersection( local, m_maskPolygonWM, output );
+
+        //    m_maskPolygonIntersection = output[0];
+
+        //    bool result = triangulate_polygon_indices( m_maskPolygonIntersection, m_maskPolygonIndices );
+
+
+        //    size_t polygonIntersectionCount = boost::geometry::num_points(m_maskPolygonIntersection);
+
+        //    const Polygon::ring_type & ring = m_maskPolygonIntersection.outer();
+
+        //    mt::vec2f u_dir = m_verticesWM[2].pos.to_vec2f() - m_verticesWM[0].pos.to_vec2f();
+        //    mt::vec2f v_dir = m_verticesWM[3].pos.to_vec2f() - m_verticesWM[1].pos.to_vec2f();
+
+        //    for( size_t i = 0; i != polygonIntersectionCount; ++i )
+        //    {
+        //        const mt::vec2f & point = ring[i];
+        //        
+        //        m_maskPolygonVertex[i].pos.x = point.x;
+        //        m_maskPolygonVertex[i].pos.y = point.y;
+        //        m_maskPolygonVertex[i].pos.z = 0.f;
+        //        //_vertices[i].pos[3] = 1.f;
+
+        //        m_vertexDebugPolygon[i].color = m_debugColor;
+
+        //        mt::vec2f p_dir = point - m_verticesWM[0].pos;
+        //        float u_adapt = mt::dot_v2_v2(u_dir, p_dir);                
+        //        float v_adapt = mt::dot_v2_v2(v_dir, p_dir);
+
+        //        mt::vec2f u_vec = m_verticesWM[1].uv - m_verticesWM[0].uv;
+        //        mt::vec2f v_vec = m_verticesWM[3].uv - m_verticesWM[0].uv;
+
+        //        m_maskPolygonVertex[i].uv.x = u_adapt * u_vec;
+        //        m_maskPolygonVertex[i].uv.y = v_adapt * v_vec;
+
+        //        m_maskPolygonVertex[i].uv2[0] = 0.f;
+        //        m_maskPolygonVertex[i].uv2[1] = 0.f;
+        //    }
+        //}
     }
 }

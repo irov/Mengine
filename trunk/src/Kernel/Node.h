@@ -277,7 +277,7 @@ namespace Menge
 //#ifndef MENGE_MASTER_RELEASE
 	protected:
 		const RenderMaterial* m_debugMaterial;
-		RenderVertex2D m_debugBox[5];
+		RenderVertex2D m_vertexDebugBox[5];
 //#endif
 	};
 	//////////////////////////////////////////////////////////////////////////

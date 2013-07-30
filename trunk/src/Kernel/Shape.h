@@ -4,6 +4,8 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
+#   include "Core/Polygon.h"
+
 #	include "math/mat3.h"
 #	include "math/vec4.h"
 #	include "math/mat4.h"
@@ -59,6 +61,9 @@ namespace Menge
         const mt::vec2f & getTextureUVScale() const;
 
     protected:
+        void setMaskPolygon( const Polygon & _polygon );
+
+    protected:
         void _invalidateColor() override;
         void _invalidateWorldMatrix() override;
 
@@ -93,6 +98,13 @@ namespace Menge
         bool m_flipY;
         
         mt::vec4f m_percentVisibility;
+
+        Polygon m_maskPolygon;
+        Polygon m_maskPolygonWM;
+        Polygon m_maskPolygonIntersection;
+
+        TVectorRenderVertex2D m_maskPolygonVertex;
+        TVectorIndices m_maskPolygonIndices;
         
         mt::vec2f m_textureUVOffset;
         mt::vec2f m_textureUVScale;
@@ -102,6 +114,8 @@ namespace Menge
 
         RenderVertex2D m_verticesWM[4];
         bool m_invalidateVerticesWM;
+
+        uint16 m_indices[6];
 
         bool m_invalidateVerticesColor;
     };

@@ -4,32 +4,14 @@
 
 namespace Menge
 {
-
 	typedef uint32 RGBA;
 	typedef uint32 ARGB;
 	typedef uint32 ABGR;
 	typedef uint32 BGRA;
 
-	//Class representing colour.
-	//@remarks
-	//Colour is represented as 4 components, each of which is a
-	//floating-point value from 0.0 to 1.0.
-	//@par
-	//The 3 'normal' colour components are red, green and blue, a higher
-	//number indicating greater amounts of that component in the colour.
-	//The forth component is the 'alpha' value, which represents
-	//transparency. In this case, 0.0 is completely transparent and 1.0 is
-	//fully opaque.
 	class ColourValue
 	{
 	public:
-		static const ColourValue ZERO;
-		static const ColourValue Black;
-		static const ColourValue White;
-		static const ColourValue Red;
-		static const ColourValue Green;
-		static const ColourValue Blue;
-
 		ColourValue() 
 			: r(1.f)
 			, g(1.f)
@@ -325,12 +307,6 @@ namespace Menge
 			return 1.0f;
 		}
 
-		//Set a colour value from Hue, Saturation and Brightness.
-		//@param hue Hue value, scaled to the [0,1] range as opposed to the 0-360
-		//@param saturation Saturation level, [0,1]
-		//@param brightness Brightness level, [0,1]
-		void setHSB( float _hue, float _saturation, float _brightness );
-
 		inline float getA() const;
 		inline float getR() const;
 		inline float getG() const;
@@ -389,7 +365,7 @@ namespace Menge
 	{
 		if( m_invalidateARGB == true )
 		{
-			updateARGB();
+			this->updateARGB();
 		}
 
 		return m_argb;

@@ -893,9 +893,6 @@ namespace Menge
 
 		//m_renderEngine->setRenderViewport( renderViewport );
 
-		RENDER_SERVICE(m_serviceProvider)
-            ->enableTextureFiltering( m_textureFiltering );
-
         m_game->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)

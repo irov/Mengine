@@ -6,10 +6,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AstralaxEmitter::AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const ConstString & _name )
-		: m_id(_id)
-		, m_container(_container)
-		, m_name(_name)
+	AstralaxEmitter::AstralaxEmitter()
+		: m_serviceProvider(nullptr)
+        , m_container(nullptr)
+        , m_id(0)
 		, m_start(false)
 		, m_leftBorder(0.f)
 		, m_rightBorder(0.f)
@@ -28,8 +28,13 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::initialize()
+    bool AstralaxEmitter::initialize( ServiceProviderInterface * _serviceProvider, AstralaxEmitterContainer * _container, HM_EMITTER _id, const ConstString & _name )
     {
+        m_serviceProvider = _serviceProvider;
+        m_container = _container;
+        m_id = _id;
+        m_name = _name;
+
         m_typesCount = Magic_GetParticlesTypeCount( m_id );
 
         if( m_typesCount >= 20 )
@@ -63,8 +68,15 @@ namespace Menge
     bool AstralaxEmitter::setupBasePosition_()
     {
         MAGIC_RECT rect;
-        if( Magic_GetBackgroundRect( m_id, &rect ) != MAGIC_SUCCESS )
+        float backgroundScale = Magic_GetBackgroundRect( m_id, &rect );
+
+        if( fabsf( backgroundScale - 1.f ) > 0.0001f )
         {
+            LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
+                , m_name.c_str()
+                , backgroundScale
+                );
+
             return false;
         }
 
@@ -221,7 +233,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter::getLoop() const
 	{
-		return Magic_GetLoopMode( m_id ) == 1;
+        int loopMode = Magic_GetLoopMode( m_id );
+
+		return loopMode == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::interrupt()
@@ -481,7 +495,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float AstralaxEmitter::getUpdateTemp() const
 	{
-		float tempScale = Magic_GetUpdateTemp( m_id );
+		float tempScale = Magic_GetUpdateSpeed( m_id );
 
         return tempScale;
 	}

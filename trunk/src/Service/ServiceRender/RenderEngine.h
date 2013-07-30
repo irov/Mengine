@@ -31,6 +31,14 @@
 #   define MENGINE_RENDER_PASS_MAX 200
 #   endif
 
+#   ifndef MENGINE_RENDER_INDICES_QUAD
+#   define MENGINE_RENDER_INDICES_QUAD 12000
+#   endif
+
+#   ifndef MENGINE_RENDER_INDICES_LINE
+#   define MENGINE_RENDER_INDICES_LINE 4000
+#   endif
+
 
 namespace Menge
 {
@@ -48,7 +56,6 @@ namespace Menge
 		size_t textureStages;
 		RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
 
-		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;
 
 		const RenderVertex2D * vertexData;
@@ -60,8 +67,8 @@ namespace Menge
 		size_t minIndex;
 		size_t startIndex;
 
-		size_t dipIndiciesNum;
-		size_t dipVerticesNum;
+        size_t dipVerticesNum;
+        size_t dipIndiciesNum;        
 
 		IBHandle ibHandle;
         VBHandle vbHandle;
@@ -89,7 +96,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize( size_t _vertexCount ) override;
+		bool initialize( size_t _maxVertexCount, size_t _maxIndexCount ) override;
 		void finalize() override;
 
 	public:
@@ -100,10 +107,16 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject2D( const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
-            , ELogicPrimitiveType _type
+		void addRenderObject( const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , EPrimitiveType _type
             , const RenderVertex2D * _vertices, size_t _verticesNum 
-			, const uint16 * _indices = 0, size_t _indicesNum = 0 ) override;
+			, const uint16 * _indices, size_t _indicesNum ) override;
+
+        void addRenderQuad( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
+
+        void addRenderLine( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
 
 	public:
 		VBHandle createVertexBuffer( const RenderVertex2D * _vertexies, size_t _verticesNum );
@@ -113,7 +126,7 @@ namespace Menge
 		void releaseIndicesBuffer( IBHandle _handle );
 
 		bool updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _vertexies, size_t _verticesNum );
-		bool updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count );
+		bool updateIndicesBuffer( IBHandle _handle, const uint16 * _buffer, size_t _count );
 
 	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
@@ -156,8 +169,6 @@ namespace Menge
 
 		const RenderDebugInfo & getDebugInfo() const override;
 		void resetFrameCount() override;
-		void enableTextureFiltering( bool _enable ) override;
-		bool isTextureFilteringEnabled() const override;
 
 		bool isResolutionAppropriate() const;
 
@@ -169,7 +180,7 @@ namespace Menge
 	private:			
 		void disableTextureStage_( size_t _stage );
 
-		void setRenderSystemDefaults_( size_t _vertexCount );
+		void setRenderSystemDefaults_();
 		void restoreRenderSystemStates_();
 		
 		void renderPasses_();
@@ -178,18 +189,18 @@ namespace Menge
 		void renderObjects_( const RenderPass & _renderPass );
 		void renderObject_( const RenderObject* _renderObject );
 
-		size_t makeBatch_( size_t _offset );
-		bool makeBatches_( bool & _overflow );
-		size_t batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos );
-		bool batchRenderObject_( RenderObject * _renderObject, RenderObject * _batchedObject, size_t & _verticesNum ) const;
-		size_t insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, size_t _offset );
-		size_t insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, size_t _offset ) const;
+        bool makeBatches_();
+		void makeBatch_( size_t & _vbSize, size_t & _ibSize );		
+		void batchRenderObjects_( RenderPass * _pass, size_t & _vbSize, size_t & _ibSize );
+		void batchRenderObject_( RenderObject * _renderObject, RenderObject ** _batchedObject, size_t & _vbSize, size_t & _ibSize ) const;
+		
+        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer );
+        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const;
 		void flushRender_();
 		void prepare2D_();
-		void prepare3D_();
 
-		bool refillIndexBuffer2D_( size_t & _maxVertices );
-		bool recreate2DBuffers_( size_t _maxIndexCount );
+		bool recreate2DBuffers_();
         		
     private:
         void calcQuadSquare_( const RenderVertex2D * _vertex, size_t _vertexNum );
@@ -200,8 +211,6 @@ namespace Menge
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
-
-		size_t m_primitiveVertexCount;
 
 		bool m_windowCreated;
 		bool m_vsync;
@@ -230,7 +239,7 @@ namespace Menge
 		typedef std::vector<IBHandle> TVectorIndexBuffer;
 		TVectorIndexBuffer m_indexBuffer;
 
-		size_t m_maxPrimitiveVertices2D;
+		size_t m_maxVertexCount;
 		size_t m_maxIndexCount;
 		
 		VBHandle m_currentVBHandle;
@@ -252,12 +261,8 @@ namespace Menge
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
-		size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
-		size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
-		size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
-		size_t m_primitiveCount[LPT_PRIMITIVE_COUNT];
-
-		mutable size_t m_vbPos;
+		uint16 m_indicesQuad[MENGINE_RENDER_INDICES_QUAD];
+        uint16 m_indicesLine[MENGINE_RENDER_INDICES_LINE];
 
 		Viewport m_renderViewport;
 
@@ -272,7 +277,6 @@ namespace Menge
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;
-		bool m_textureFiltering;
 
         bool m_debugMode;
 	};

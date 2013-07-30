@@ -64,8 +64,6 @@ namespace	Menge
     void HotSpot::setDebugColor( uint32 _color )
     {
         m_debugColor = _color;
-
-        VectorVertices::invalidateVertices();
     }
     //////////////////////////////////////////////////////////////////////////
     uint32 HotSpot::getDebugColor() const
@@ -77,14 +75,14 @@ namespace	Menge
 	{
 		boost::geometry::append( m_polygon, _p );
 
-		invalidateBoundingBox();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
 		m_polygon.clear();
 
-		invalidateBoundingBox();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( PyObject * _listener )
@@ -108,8 +106,7 @@ namespace	Menge
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)( "()" );
 
-//#	ifndef MENGE_MASTER_RELEASE
-		if( m_enable )
+		if( m_enable == true )
 		{
 			m_debugColor = 0xA0FFFFFF;
 		}
@@ -117,9 +114,6 @@ namespace	Menge
 		{
 			m_debugColor = 0x20FFFFFF;
 		}
-
-		VectorVertices::invalidateVertices();
-//#	endif
 
 		return true;
 	}
@@ -130,63 +124,10 @@ namespace	Menge
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
 
-//#	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0x00000000;
-		VectorVertices::invalidateVertices();
-//#	endif
 		
 		Node::_deactivate();
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _p, const mt::mat4f& _screenTransform )
-	//{
-	//	RenderCameraInterface * camera = PLAYER_SERVICE(m_serviceProvider)
-	//		->getCamera2D();
-
-	//	const Viewport & viewport = camera->getViewport();
-
-	//	//const mt::vec2f & direction = this->getWorldDirection();
-	//	//const mt::vec2f & position = this->getScreenPosition();
-
-	//	mt::box2f myBBox;
-	//	this->getBoundingBox( myBBox );
-
-	//	if( m_layer != 0 )
-	//	{
-	//		if( m_layer->testBoundingBox( viewport, myBBox, mt::box2f( _p, _p ) ) == false )
-	//		{
-	//			return false;
-	//		}
-
-	//		if( m_layer->testPoint( camera, this, _p ) == false )
-	//		{
-	//			return false;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if( mt::is_intersect( myBBox, mt::box2f( _p, _p ) ) == false )
-	//		{
-	//			return false;
-	//		}
-
-	//		const mt::mat4f & wm = getWorldMatrix();
-	//		
-	//		mt::vec2f wmp;
-	//		mt::mul_v2_m4( wmp, _p, wm );
-
-	//		Polygon point_polygon;
-	//		boost::geometry::append(point_polygon, wmp);
-
-	//		//bool result = mt::is_point_inside_polygon_wm( m_polygon, _p, wm );
-	//		bool result = boost::geometry::intersects( m_polygon, point_polygon );
-
-	//		return result;
-	//	}
-
-	//	//bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
-	//	return true;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
@@ -313,7 +254,6 @@ namespace	Menge
 
 		return intersect;
 	}
-//#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
@@ -322,22 +262,21 @@ namespace	Menge
 			return;
 		}
 
-		VectorVertices::invalidateVertices();
+		this->updateVertices_();
 
-		VectorVertices::TVectorVertex2D & vertices = this->getVertices();
-
-		if( vertices.empty() )
+		if( m_vertexDebugPolygon.empty() == true )
 		{
 			return;
 		}
 
-		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject2D( _camera, m_debugMaterial, NULL, 0, LPT_LINE, &(vertices[0]), vertices.size() );
+		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _camera, m_debugMaterial, NULL, 0
+            , &m_vertexDebugPolygon[0], m_vertexDebugPolygon.size()
+            );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )
+	void HotSpot::updateVertices_()
 	{
-        (void)_invalidate;
+        m_vertexDebugPolygon.clear();        
 
 		size_t numpoints = boost::geometry::num_points(m_polygon);
 
@@ -346,43 +285,35 @@ namespace	Menge
 			return;
 		}
 
-		_vertices.resize( numpoints + 1 );
+		m_vertexDebugPolygon.resize( numpoints + 1 );
 
 		const mt::mat4f & worldMat = this->getWorldMatrix();
 
 		const Polygon::ring_type & ring = m_polygon.outer();
 
-		for( size_t i = 0; i < numpoints; ++i )
+		for( size_t i = 0; i != numpoints; ++i )
 		{
 			mt::vec2f trP;
 			mt::mul_v2_m4( trP, ring[i], worldMat );
 
-			_vertices[i].pos[0] = trP.x;
-			_vertices[i].pos[1] = trP.y;
-			_vertices[i].pos[2] = 0.f;
+			m_vertexDebugPolygon[i].pos[0] = trP.x;
+			m_vertexDebugPolygon[i].pos[1] = trP.y;
+			m_vertexDebugPolygon[i].pos[2] = 0.f;
 			//_vertices[i].pos[3] = 1.f;
 
-			_vertices[i].color = m_debugColor;
+			m_vertexDebugPolygon[i].color = m_debugColor;
 
-            _vertices[i].uv[0] = 0.f;
-            _vertices[i].uv[1] = 0.f;
+            m_vertexDebugPolygon[i].uv[0] = 0.f;
+            m_vertexDebugPolygon[i].uv[1] = 0.f;
 
-            _vertices[i].uv2[0] = 0.f;
-            _vertices[i].uv2[1] = 0.f;
+            m_vertexDebugPolygon[i].uv2[0] = 0.f;
+            m_vertexDebugPolygon[i].uv2[1] = 0.f;
 		}
 
-		if( _vertices.size() > 1 )
+		if( m_vertexDebugPolygon.size() > 2 )
 		{
-			std::copy( _vertices.begin(), _vertices.begin() + 1, _vertices.end() - 1 );
+			std::copy( m_vertexDebugPolygon.begin(), m_vertexDebugPolygon.begin() + 1, m_vertexDebugPolygon.end() - 1 );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
-
-		VectorVertices::invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
 //#	endif
 }

@@ -61,9 +61,6 @@ namespace Menge
         const mt::vec2f & getTextureUVScale() const;
 
     protected:
-        void setMaskPolygon( const Polygon & _polygon );
-
-    protected:
         void _invalidateColor() override;
         void _invalidateWorldMatrix() override;
 
@@ -99,10 +96,6 @@ namespace Menge
         
         mt::vec4f m_percentVisibility;
 
-        Polygon m_maskPolygon;
-        Polygon m_maskPolygonWM;
-        Polygon m_maskPolygonIntersection;
-
         TVectorRenderVertex2D m_maskPolygonVertex;
         TVectorIndices m_maskPolygonIndices;
         
@@ -114,8 +107,6 @@ namespace Menge
 
         RenderVertex2D m_verticesWM[4];
         bool m_invalidateVerticesWM;
-
-        uint16 m_indices[6];
 
         bool m_invalidateVerticesColor;
     };

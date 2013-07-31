@@ -361,15 +361,15 @@ namespace Menge
 
         this->execReg_();
 
-		bool handle = false;
+		bool handle = false;        
 
-		for( TPickerTrapRef::reverse_iterator
-			it = m_process.rbegin(),
-			it_end = m_process.rend();
+		for( TPickerTrapRef::size_type
+			it = m_process.size(),
+			it_end = 0;
 		it != it_end;
-		++it)
+		--it)
 		{
-			PickerTrapState * state = *it;
+			PickerTrapState * state = m_process[it - 1];
 
 			if( state->dead == true )
 			{

@@ -905,6 +905,9 @@ namespace Menge
 
         ro.baseVertexIndex = 0;
 
+        ro.dipVerticesNum = 0;
+        ro.dipIndiciesNum = 0;
+
         for( size_t i = 0; i != _texturesNum; ++i )
         {
             ro.textures[i] = _textures[i].get(); 
@@ -1255,16 +1258,15 @@ namespace Menge
             prevObject->dipVerticesNum += _renderObject->verticesNum;
             prevObject->dipIndiciesNum += _renderObject->indicesNum;
             
-            _renderObject->material = 0;
             _renderObject->dipVerticesNum = 0;
-            _renderObject->dipIndiciesNum = 0;
-
-            *_batchedObject = _renderObject;
+            _renderObject->dipIndiciesNum = 0;            
         }
         else
         {
             _renderObject->dipVerticesNum = _renderObject->verticesNum;
             _renderObject->dipIndiciesNum = _renderObject->indicesNum;  
+
+            *_batchedObject = _renderObject;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1314,10 +1316,12 @@ namespace Menge
 
         while( src != src_end )
         {
-            *src++ = *dst++ + _vbPos;
+            *src = *dst + _vbPos;
+            ++src;
+            ++dst;
         }
 
-        _renderObject->baseVertexIndex = 0;
+        //_renderObject->baseVertexIndex = 0;
 
         _vbPos += _renderObject->verticesNum;
         _ibPos += _renderObject->indicesNum;

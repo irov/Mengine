@@ -2327,8 +2327,9 @@ namespace Menge
             PyObject * py_list_names = pybind::list_new(0);
             PyObject * py_list_atlas = pybind::list_new(0);
 
+            const ParticleEmitterContainerInterfacePtr & container = resource->getContainer();
+
             ResourceEmitterContainerVisitor visitor;
-            ParticleEmitterContainerInterface * container = resource->getContainer();
             container->visitContainer( &visitor );
 
             for( TVectorConstString::const_iterator

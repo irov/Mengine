@@ -110,7 +110,7 @@ namespace	Menge
 
             return false;
         }
-		ParticleEmitterContainerInterface * container = m_resourceEmitterContainer->getContainer();
+		const ParticleEmitterContainerInterfacePtr & container = m_resourceEmitterContainer->getContainer();
 
 		if( container == nullptr )
 		{
@@ -180,7 +180,7 @@ namespace	Menge
 	{
         if( m_interface != nullptr )
         {
-            ParticleEmitterContainerInterface * container = 
+            const ParticleEmitterContainerInterfacePtr & container = 
                 m_resourceEmitterContainer->getContainer();
 
             container->releaseEmitter( m_interface );
@@ -449,8 +449,7 @@ namespace	Menge
 		{
 			const ParticleMesh & mesh = s_meshes[it];
 
-			ResourceImageDefault * image = m_resourceEmitterContainer->getAtlasImage( mesh.texture );
-			RenderTextureInterfacePtr texture = image->getTexture();
+			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( mesh.texture );
 
 			const mt::vec4f & mesh_uv = texture->getUV();
 

@@ -30,7 +30,10 @@ namespace Menge
 		~AstralaxEmitterContainer();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider ) override;
+        bool initialize( const ConstString & _name, ServiceProviderInterface * _serviceProvider ) override;
+
+    public:
+        bool isValid() const override;
 
 	public:
 		void addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters );
@@ -39,13 +42,18 @@ namespace Menge
 
 	public:
 		void addAtlas( const ParticleEmitterAtlas & _atlas );
+
+    public:
 		void visitContainer( ParticleEmitterContainerVisitor * visitor ) override;
 		const TVectorParticleEmitterAtlas & getAtlas() const override;
+
+    public:
 		ParticleEmitterInterface * createEmitter( const ConstString & _name ) override;
 		void releaseEmitter( ParticleEmitterInterface * _emitter );
 		
 	private:
         ServiceProviderInterface * m_serviceProvider;
+        ConstString m_name;
 
         struct EmitterPool
         {
@@ -57,7 +65,7 @@ namespace Menge
         };
 
         typedef FactoryPool<AstralaxEmitter, 16> TFactoryPoolAstralaxEmitter;
-        TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
+        mutable TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
 
 		typedef std::map<ConstString, EmitterPool> TMapEmitters;		
 		TMapEmitters m_emitters;

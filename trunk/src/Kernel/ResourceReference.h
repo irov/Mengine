@@ -73,9 +73,6 @@ namespace Menge
     protected:
         PyObject * _embedded() override;
 
-    protected:
-        const ConstString & getCodec_( const FilePath & _filename ) const;
-
 	protected:
         ServiceProviderInterface * m_serviceProvider;
         

@@ -36,7 +36,7 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
+	ParticleEmitterContainerInterfacePtr ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
 	{
 		InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _fileSystemName, _filename );
@@ -60,8 +60,8 @@ namespace Menge
 
 		file = nullptr;
 
-		ParticleEmitterContainerInterface * container = PARTICLE_SYSTEM(m_serviceProvider)
-            ->createEmitterContainerFromMemory( &fileBuffer[0] );
+		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(m_serviceProvider)
+            ->createEmitterContainerFromMemory( _filename, &fileBuffer[0] );
 
 		if( container == nullptr )
 		{
@@ -83,12 +83,6 @@ namespace Menge
         }
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface )
-	{
-		PARTICLE_SYSTEM(m_serviceProvider)
-            ->releaseEmitterContainer( _containerInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ParticleEngine::getMaxParticlesCount() const

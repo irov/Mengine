@@ -107,11 +107,4 @@ namespace Menge
 
         return embedding;
     }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceReference::getCodec_( const FilePath & _filename ) const
-    {
-        const ConstString & codecType = CODEC_SERVICE(m_serviceProvider)->findCodecType( _filename );
-
-        return codecType;
-    }
 }

@@ -97,7 +97,8 @@ namespace Menge
 
         if( m_codecTypeRGB.empty() == true )
         {
-            m_codecTypeRGB = this->getCodec_( m_fileNameRGB );
+            m_codecTypeRGB = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_fileNameRGB );
         }
         
         if( this->loadImageFrame_( category, m_fileNameRGB, m_codecTypeRGB ) == false )
@@ -109,7 +110,8 @@ namespace Menge
 
         if( m_codecTypeAlpha.empty() == true )
         {
-            m_codecTypeAlpha = this->getCodec_( m_fileNameAlpha );
+            m_codecTypeAlpha = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_fileNameAlpha );
         }
         	
         RenderTextureInterfacePtr textureAlpha = RENDERTEXTURE_SERVICE(m_serviceProvider)

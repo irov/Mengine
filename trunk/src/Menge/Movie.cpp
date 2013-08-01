@@ -2027,7 +2027,7 @@ namespace Menge
                 }
             }
         }
-        else if( _beginFrame > indexIn && _endFrame >= indexIn && _endFrame < indexOut )
+        else if( _beginFrame >= indexIn && _endFrame >= indexIn && _endFrame < indexOut )
         {
             MovieFrameSource frame;
             if( m_resourceMovie->getFrame( _layer, _endFrame - indexIn, frame ) == false )

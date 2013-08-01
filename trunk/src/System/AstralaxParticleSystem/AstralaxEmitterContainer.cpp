@@ -1,6 +1,8 @@
 #	include "AstralaxEmitterContainer.h"
 
-#	include "Utils/Core/String.h"
+#   include "Logger/Logger.h"
+
+#	include "Core/String.h"
 
 namespace Menge
 {
@@ -33,9 +35,44 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::initialize( ServiceProviderInterface * _serviceProvider )
+    bool AstralaxEmitterContainer::initialize( const ConstString & _name, ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
+        m_name = _name;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxEmitterContainer::isValid() const
+    {
+        for( TMapEmitters::const_iterator
+            it = m_emitters.begin(),
+            it_end = m_emitters.end();
+        it != it_end;
+        ++it )
+        {
+            const ConstString & emitterName = it->first;
+
+            const EmitterPool & emitter = it->second;
+
+            HM_EMITTER id = Magic_DuplicateEmitter( emitter.id );
+
+            MAGIC_RECT rect;
+            float backgroundScale = Magic_GetBackgroundRect( id, &rect );
+
+            if( fabsf( backgroundScale - 1.f ) > 0.0001f )
+            {
+                LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::isValid %s emitter %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
+                    , m_name.c_str()
+                    , emitterName.c_str()
+                    , backgroundScale
+                    );
+
+                return false;
+            }
+
+            Magic_UnloadEmitter( id );
+        }
 
         return true;
     }
@@ -111,7 +148,6 @@ namespace Menge
 		}
 		else
 		{
-
 			it->second.emitters.push_back( _id );
 		}
 	}

@@ -79,12 +79,13 @@ namespace Menge
         m_wrapX = false;
         m_wrapY = false;
         
-        metadata->swap_File_Path( m_fileName );        
+        metadata->swap_File_Path( m_fileName );
         metadata->swap_File_Codec( m_codecType );
 
         if( m_codecType.empty() == true )
         {
-            m_codecType = this->getCodec_( m_fileName );
+            m_codecType = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_fileName );
         }
 
         metadata->get_File_UV( m_uv );
@@ -104,7 +105,8 @@ namespace Menge
 
 		if( m_codecType.empty() == true )
 		{
-			m_codecType = this->getCodec_( m_fileName );
+            m_codecType = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_fileName );
 		}
 			
 		if( this->loadImageFrame_( category, m_fileName, m_codecType ) == false )
@@ -118,7 +120,9 @@ namespace Menge
 	void ResourceImageDefault::setImagePath( const FilePath& _imagePath )
 	{
         m_fileName = _imagePath;
-        m_codecType = this->getCodec_(_imagePath);
+
+        m_codecType = CODEC_SERVICE(m_serviceProvider)
+            ->findCodecType( _imagePath );
 
         m_texture = NULL;
         m_uv = mt::vec4f(0.f,0.f,1.f,1.f);

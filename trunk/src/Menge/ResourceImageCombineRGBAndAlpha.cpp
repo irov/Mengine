@@ -95,12 +95,14 @@ namespace Menge
 	{			
         if( m_codecTypeAlpha.empty() == true )
         {
-            m_codecTypeAlpha = this->getCodec_( m_fileNameAlpha );
+            m_codecTypeAlpha = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_fileNameAlpha );
         }
 
         if( m_codecTypeRGB.empty() == true )
         {
-            m_codecTypeRGB = this->getCodec_( m_fileNameRGB );
+            m_codecTypeRGB = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_fileNameRGB );
         }
 
 		const ConstString & category = this->getCategory();

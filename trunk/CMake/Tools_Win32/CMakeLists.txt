@@ -70,3 +70,5 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plu
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsHotspotImageConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsHotspotImageConverterPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsXmlCodecPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsPNGAlphaSpreadingPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsPNGAlphaSpreadingPlugin )
+
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools/polygon2shape ${CMAKE_TEMP_DIR}/Tools/polygon2shape )

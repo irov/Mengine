@@ -53,6 +53,80 @@ namespace Menge
 
         return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceEmitterContainer::_isValid() const
+    {
+        const ConstString & category = this->getCategory();
+
+        ParticleEmitterContainerInterfacePtr container = PARTICLE_SERVICE(m_serviceProvider)
+            ->createEmitterContainerFromFile( category, m_filename );
+
+        if( container == nullptr )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't create container file '%s'"
+                , m_name.c_str()
+                , m_filename.c_str() 
+                );
+
+            return false;
+        }
+
+        const TVectorParticleEmitterAtlas & atlas = container->getAtlas();
+
+        for( TVectorParticleEmitterAtlas::const_iterator
+            it = atlas.begin(),
+            it_end = atlas.end();
+        it != it_end;
+        ++it )
+        {            
+            const FilePath & filename = it->file;
+
+            ConstString filepath = this->makeTexturePath_( filename );
+
+            const ConstString & category = this->getCategory();
+
+            InputStreamInterfacePtr stream = 
+                FILE_SERVICE(m_serviceProvider)->openInputFile( category, filepath );
+
+            if( stream == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't create texture '%s'"
+                    , m_name.c_str()
+                    , filepath.c_str() 
+                    );
+
+                return false;
+            }
+
+            const ConstString & codecType = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( filepath );
+
+            ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+                ->createDecoderT<ImageDecoderInterfacePtr>( codecType, stream );
+
+            if( imageDecoder == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't create decoder '%s'"
+                    , m_name.c_str()
+                    , codecType.c_str() 
+                    );
+
+                return false;
+            }
+        }
+
+        if( container->isValid() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't valid container '%s'"
+                , m_name.c_str()
+                , m_filename.c_str() 
+                );
+
+            return false;
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{
@@ -63,7 +137,8 @@ namespace Menge
 
 		if( m_container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Image can't create container file '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_compile %s can't create container file '%s'"
+                , m_name.c_str()
 				, m_filename.c_str() 
 				);
 
@@ -78,42 +153,29 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const FilePath & filepath = it->file;
+			const FilePath & filename = it->file;
 
-			//String fullname = m_folder + MENGE_FOLDER_DELIM + it->file;
-            static String cache_name;
-            cache_name.assign( m_name.c_str(), m_name.size() );
-            cache_name.append( filepath.c_str(), filepath.size() );
+            ConstString filepath = this->makeTexturePath_( filename );
 
-			ConstString name = Helper::stringizeString( m_serviceProvider, cache_name );
+            const ConstString & category = this->getCategory();
 
-			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResource( name, nullptr ) == false )
-			{				
-                static String cache_path;
-                cache_path.assign( m_folder.c_str(), m_folder.size() );
-                cache_path += MENGE_FOLDER_RESOURCE_DELIM;
-                cache_path.append( filepath.c_str(), filepath.size() );
+            const ConstString & codecType = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( filepath );
 
-                FilePath filepath = Helper::stringizeString( m_serviceProvider, cache_path );
+            RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
+                ->loadTexture( category, filepath, codecType, 0, 0 );
 
-				this->createResource_( name, filepath );
-			}
-			
-			ResourceImageDefault * image = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImageDefault>( name );
+            if( texture == nullptr )
+            {
+                LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_compile %s can't create texture '%s'"
+                    , m_name.c_str()
+                    , filepath.c_str() 
+                    );
 
-			if( image == nullptr )
-			{
-				return false;
-			}
+                return false;
+            }
 
-			m_atlasImages.push_back( image );
-		}
-
-		if( atlas.empty() == true )
-		{
-			return false;
+			m_atlasRenderTextures.push_back( texture );
 		}
 
 		return true;
@@ -129,37 +191,34 @@ namespace Menge
 
 		image->setImagePath( _path );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ConstString ResourceEmitterContainer::makeTexturePath_( const FilePath & _filepath ) const
+    {        
+        static String cache_path;
+        cache_path.assign( m_folder.c_str(), m_folder.size() );
+        cache_path += MENGE_FOLDER_RESOURCE_DELIM;
+        cache_path.append( _filepath.c_str(), _filepath.size() );
+
+        ConstString name = Helper::stringizeString( m_serviceProvider, cache_path );
+
+        return name;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::_release()
 	{
-		for( TVectorAtlasImages::iterator
-			it = m_atlasImages.begin(),
-			it_end = m_atlasImages.end();
-		it != it_end;
-		++it)
-		{
-			ResourceImageDefault * resourceImageDefault = (*it);
+		m_atlasRenderTextures.clear();
 
-			resourceImageDefault->decrementReference();
-		}
-
-		m_atlasImages.clear();
-
-		if( m_container != nullptr )
-		{
-			PARTICLE_SERVICE(m_serviceProvider)
-				->releaseEmitterContainer( m_container );
-
-			m_container = nullptr;
-		}
+		m_container = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault* ResourceEmitterContainer::getAtlasImage( size_t _atlasId )
+	const RenderTextureInterfacePtr & ResourceEmitterContainer::getAtlasTexture( size_t _atlasId )
 	{
-		return m_atlasImages[_atlasId];
+        const RenderTextureInterfacePtr & texture = m_atlasRenderTextures[_atlasId];
+
+		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterface * ResourceEmitterContainer::getContainer() const
+	const ParticleEmitterContainerInterfacePtr & ResourceEmitterContainer::getContainer() const
 	{
 		return m_container;
 	}

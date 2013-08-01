@@ -67,7 +67,8 @@ namespace Menge
 
         if( m_codec.empty() == true )
         {
-            m_codec = this->getCodec_( m_path );
+            m_codec = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_path );
         }
 
         if( m_codec.empty() == true )

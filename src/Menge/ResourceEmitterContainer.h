@@ -1,22 +1,17 @@
 #	pragma once
 
+#   include "Interface/RenderSystemInterface.h"
+#   include "Interface/ParticleSystemInterface.h"
+
 #	include "Kernel/ResourceReference.h"
+
 #	include "Utils/Core/Polygon.h"
+
 #	include <map>
 
 namespace Menge
 {
-	class ParticleEmitterContainerInterface;
 	class ResourceImageDefault;
-
-	//! ResourceEmitterContainer - ресурс-файл контейнера эмиттеров, который заполняется из формата *.ptc от Astralax. ptc содержит только имена текстур, поэтому необходимо задавать в какой директории они находятся.
-
-    /*! xml - файл имеет следующую структуру:
-	* <Resource Name = "имя_ресурса" Type = "ResourceEmitterContainer" >
-	*	<File Path = "имя_файла"/>
-	*	<Folder Path = "папка_с_текстурами_партиклов"/>
-	* </Resource>
-	*/
 
 	class ResourceEmitterContainer
 		: public ResourceReference
@@ -34,10 +29,10 @@ namespace Menge
 		const FilePath& getFolderPath() const;
 		
 	public:
-		ParticleEmitterContainerInterface * getContainer() const;
+		const ParticleEmitterContainerInterfacePtr & getContainer() const;
 
 	public:
-		ResourceImageDefault* getAtlasImage( size_t _atlasId );
+		const RenderTextureInterfacePtr & getAtlasTexture( size_t _atlasId );
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -46,16 +41,22 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+    protected:
+        bool _isValid() const override;
+
 	protected:
 		void createResource_( const ConstString & _fullname, const FilePath & _path );
+
+    protected:
+        ConstString makeTexturePath_( const FilePath & _filepath ) const;
 
 	private:
 		FilePath m_filename;
 		FilePath m_folder;
 		
-		ParticleEmitterContainerInterface * m_container;
+		ParticleEmitterContainerInterfacePtr m_container;
 
-		typedef std::vector<ResourceImageDefault *> TVectorAtlasImages;
-		TVectorAtlasImages m_atlasImages;
+		typedef std::vector<RenderTextureInterfacePtr> TVectorAtlasRenderTextures;
+		TVectorAtlasRenderTextures m_atlasRenderTextures;
 	};
 }

@@ -8,6 +8,7 @@
 #   include "Core/FilePath.h"
 
 #   include "Factory/Factorable.h"
+#   include "Factory/FactorablePtr.h"
 
 #	include "Math/vec2.h"
 #	include "Math/box2.h"
@@ -116,17 +117,24 @@ namespace Menge
     };
 	
 	class ParticleEmitterContainerInterface
-        : public Factorable
+        : public FactorablePtr
 	{
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider ) = 0;
-			
+        virtual bool initialize( const ConstString & _name, ServiceProviderInterface * _serviceProvider ) = 0;
+		
+    public:
+        virtual bool isValid() const = 0;
+
 	public:
 		virtual const TVectorParticleEmitterAtlas & getAtlas() const = 0;
 		virtual void visitContainer( ParticleEmitterContainerVisitor * visitor ) = 0;
+
+    public:
 		virtual ParticleEmitterInterface * createEmitter( const ConstString & _name ) = 0;
 		virtual void releaseEmitter( ParticleEmitterInterface * _emitter ) = 0;
 	};
+
+    typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface> ParticleEmitterContainerInterfacePtr;
 
 	struct ParticleEmitterRenderFlush
 	{
@@ -140,8 +148,7 @@ namespace Menge
         SERVICE_DECLARE("ParticleSystem")
 
 	public:
-		virtual ParticleEmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) = 0;
-		virtual void releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface ) = 0;
+		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const void * _buffer ) = 0;
 		
 	public:
         virtual bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
@@ -159,8 +166,7 @@ namespace Menge
         virtual bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
         virtual size_t renderParticlesCount( size_t _count ) = 0;
 
-        virtual ParticleEmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
-        virtual void releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface ) = 0;
+        virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
 
     public:
         virtual size_t getMaxParticlesCount() const = 0;

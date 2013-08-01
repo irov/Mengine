@@ -31,8 +31,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		ParticleEmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) override;
-		void releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface ) override;
+		ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const void * _buffer ) override;
 
 	public:	
 		bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;

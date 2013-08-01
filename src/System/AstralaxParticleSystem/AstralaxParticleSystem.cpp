@@ -122,7 +122,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( const void * _buffer )
+	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const ConstString & _name, const void * _buffer )
 	{
 		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(_buffer) );
 
@@ -136,7 +136,7 @@ namespace Menge
 		
 		AstralaxEmitterContainer * container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
 		
-        if( container->initialize( m_serviceProvider ) == false )
+        if( container->initialize( _name, m_serviceProvider ) == false )
         {
             container->destroy();
 
@@ -299,10 +299,4 @@ namespace Menge
 			rp.color = vertexes.color;
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem::releaseEmitterContainer( ParticleEmitterContainerInterface* _containerInterface )
-	{
-        _containerInterface->destroy();
-	}
-	//////////////////////////////////////////////////////////////////////////
 }

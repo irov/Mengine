@@ -128,12 +128,6 @@ namespace Menge
 		return m_container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
-	//{
-	//	assert( !"deprecated" );
-	//	//Magic_GetRect( m_id, &left, &top, &right, &bottom );
-	//}
-	//////////////////////////////////////////////////////////////////////////
 	static mt::box2f s_getEmitterBBox( HM_EMITTER _emitter )
 	{
 		mt::box2f box( mt::vec2f (0.f, 0.f), mt::vec2f(0.f, 0.f) );

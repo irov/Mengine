@@ -71,7 +71,8 @@ namespace Menge
 
                 if( meta_track.swap_Codec( desc.codec ) == false )
                 {
-                    desc.codec = this->getCodec_( desc.path );
+                    desc.codec = CODEC_SERVICE(m_serviceProvider)
+                        ->findCodecType( desc.path );
                 }
 
                 m_tracks.push_back( desc );

@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont()
 		: m_textureRatio(1.0f)
-		, m_resourceGlyph(NULL)
+		, m_resourceGlyph(nullptr)
 		, m_textureUV(0, 0, 1.f, 1.f)
 	{
 	}
@@ -46,7 +46,8 @@ namespace Menge
 	{
 		m_fontImageFile = _path;
 
-		m_fontImageCodec = this->getCodec_( m_fontImageFile );
+        m_fontImageCodec = CODEC_SERVICE(m_serviceProvider)
+            ->findCodecType( m_fontImageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath& ResourceFont::getImagePath() const
@@ -58,7 +59,8 @@ namespace Menge
 	{
 		m_outlineImageFile = _path;
 
-		m_outlineImageCodec = this->getCodec_( m_outlineImageFile );
+        m_outlineImageCodec = CODEC_SERVICE(m_serviceProvider)
+            ->findCodecType( m_outlineImageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath& ResourceFont::getOutlineImagePath() const
@@ -110,14 +112,16 @@ namespace Menge
         
         if( metadata->swap_Image_Codec( m_fontImageCodec ) == false )
         {
-            m_fontImageCodec = this->getCodec_( m_fontImageFile );
+            m_fontImageCodec = CODEC_SERVICE(m_serviceProvider)
+                ->findCodecType( m_fontImageFile );
         }
 
         if( metadata->swap_OutlineImage_Path( m_outlineImageFile ) == true )
         {
             if( metadata->swap_OutlineImage_Codec( m_outlineImageCodec ) == false )
             {
-                m_outlineImageCodec = this->getCodec_( m_outlineImageFile );
+                m_outlineImageCodec = CODEC_SERVICE(m_serviceProvider)
+                    ->findCodecType( m_outlineImageFile );
             }
         }
 

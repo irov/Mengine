@@ -125,7 +125,8 @@ namespace Menge
         }
 
         // init the IO
-        png_set_read_fn( m_png_ptr, m_stream.get(), s_readProc );
+        InputStreamInterface * stream = m_stream.get();
+        png_set_read_fn( m_png_ptr, stream, s_readProc );
 
         // because we have already read the signature...
         png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );

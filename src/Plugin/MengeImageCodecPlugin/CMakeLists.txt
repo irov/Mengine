@@ -32,10 +32,9 @@ src
     
     PickEncoderHIT.cpp
     PickEncoderHIT.h
-    
-
-#   ImageDecoderWEBP.h
-#   ImageDecoderWEBP.cpp
+   
+    ImageDecoderWEBP.h
+    ImageDecoderWEBP.cpp
 )
 
 INCLUDE_DIRECTORIES( 
@@ -45,6 +44,7 @@ INCLUDE_DIRECTORIES(
         ${THIRDPARTY_DIR}/zlib
         ${THIRDPARTY_DIR}/libpng
         ${THIRDPARTY_DIR}/libjpeg
+        ${THIRDPARTY_DIR}/libwebp/src
 					
         #${THIRDPARTY_DIR}/libWEBP/Include
         #${THIRDPARTY_DIR}/libWEBPLL
@@ -71,6 +71,7 @@ SET( APPLICATION_LIBS
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}webp_static${MENGINE_LIB_SUFFIX}
     Logger
     Core
     Codec

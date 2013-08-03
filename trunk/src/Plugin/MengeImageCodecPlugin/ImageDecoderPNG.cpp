@@ -335,46 +335,29 @@ namespace Menge
 		{
             if( m_dataInfo.channels == 1 && m_options.channels == 4 )
             {
-                s_row_buffer.resize( m_row_bytes );
-                TBlobject::value_type * buff = &s_row_buffer[0];
                 png_bytep bufferCursor = (png_bytep)_buffer;
 
                 for( size_t i = 0; i != m_dataInfo.height; ++i )
                 {
-                    png_read_row( m_png_ptr, buff, nullptr );
-
-                    for( size_t j = 0; j != m_row_bytes; ++j )
-                    {
-                        bufferCursor[j*4 + 0] = 255;
-                        bufferCursor[j*4 + 1] = 255;
-                        bufferCursor[j*4 + 2] = 255;
-                        bufferCursor[j*4 + 3] = buff[j];
-                    }
-
-                    bufferCursor += m_options.pitch * 4;
-                }
-            }
-    		else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
-			{                 
-                s_row_buffer.resize( m_row_bytes );
-                TBlobject::value_type * buff = &s_row_buffer[0];
-                png_bytep bufferCursor = (png_bytep)_buffer;
-
-                for( size_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, buff, nullptr );
-
-                    size_t row = m_row_bytes / 3;
-                    for( size_t j = 0; j < row; ++j )
-                    {
-                        bufferCursor[j*4 + 0] = buff[j*3 + 0];
-                        bufferCursor[j*4 + 1] = buff[j*3 + 1];
-                        bufferCursor[j*4 + 2] = buff[j*3 + 2];
-                        bufferCursor[j*4 + 3] = 255;
-                    }
+                    png_read_row( m_png_ptr, bufferCursor, nullptr );
 
                     bufferCursor += m_options.pitch;
                 }
+
+                this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+            }
+    		else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+			{           
+                png_bytep bufferCursor = (png_bytep)_buffer;
+
+                for( size_t i = 0; i != m_dataInfo.height; ++i )
+                {
+                    png_read_row( m_png_ptr, bufferCursor, nullptr );
+
+                    bufferCursor += m_options.pitch;
+                }
+
+                this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
             }
             else if( m_dataInfo.channels == m_options.channels )
             {

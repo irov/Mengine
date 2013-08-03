@@ -73,4 +73,38 @@ namespace Menge
 	{
 		return &m_dataInfo;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ImageDecoder::sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch )
+    {
+        unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
+
+        for( size_t h = _height - 1; h != -1; --h )
+        {
+            size_t hp = h * _pitch;
+
+            for( size_t w = _width - 1; w != -1; --w )
+            {
+                sweezle_buffer[hp + w * 4 + 3] = sweezle_buffer[hp + w];
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageDecoder::sweezleAlpha3( size_t _width, size_t _height, void * _buffer, size_t _pitch )
+    {
+        unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
+
+        for( size_t h = _height - 1; h != -1; --h )
+        {
+            size_t hp = h * _pitch;
+
+            for( size_t w = _width - 1; w != -1; --w )
+            {
+                sweezle_buffer[hp + w * 4 + 0] = sweezle_buffer[hp + w * 3 + 0];
+                sweezle_buffer[hp + w * 4 + 1] = sweezle_buffer[hp + w * 3 + 1];
+                sweezle_buffer[hp + w * 4 + 2] = sweezle_buffer[hp + w * 3 + 2];
+                sweezle_buffer[hp + w * 4 + 3] = 255;
+            }
+        }
+    }
+
 }

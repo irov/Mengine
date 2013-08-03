@@ -30,6 +30,10 @@ namespace Menge
 		const ImageCodecDataInfo * getCodecDataInfo() const override;
 
     protected:
+        void sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch );
+        void sweezleAlpha3( size_t _width, size_t _height, void * _buffer, size_t _pitch );
+
+    protected:
         ServiceProviderInterface * m_serviceProvider;
         InputStreamInterfacePtr m_stream;
 

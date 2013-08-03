@@ -214,7 +214,7 @@ namespace Menge
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("%s_setResource %s not found resource %s"
+                LOGGER_WARNING(m_serviceProvider)("%s_setResource %s not found resource %s"
                     , _node->getType().c_str()
                     , _node->getName().c_str()
                     , _resourceName.c_str()
@@ -233,7 +233,7 @@ namespace Menge
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("%s_getResource %s resource is null"
+                LOGGER_WARNING(m_serviceProvider)("%s_getResource %s resource is null"
                     , _node->getType().c_str()
                     , _node->getName().c_str()
                     );

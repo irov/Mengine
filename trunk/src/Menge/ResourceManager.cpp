@@ -410,7 +410,7 @@ namespace Menge
 
 		if( it_find == m_resources.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
+			LOGGER_WARNING(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
 				, _name.c_str()
 				);
 

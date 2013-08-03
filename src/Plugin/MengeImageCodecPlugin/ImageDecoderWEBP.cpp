@@ -38,7 +38,7 @@ namespace Menge
         }
 		
         size_t channels;
-		if( m_features.has_alpha == false )
+		if( m_features.has_alpha == 0 )
 		{	
 			channels = 3;
 		}
@@ -64,19 +64,36 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderWEBP::decode( void * _buffer, size_t _bufferSize )
-	{					
+	{				
+        uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
+
         if( m_features.has_alpha == false )
         {
-            if( WebPDecodeBGRInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), (uint8_t*)_buffer, _bufferSize, m_options.pitch ) == nullptr )
+            if( m_dataInfo.channels == 3 && m_options.channels == 4 )
             {
-                return 0;
+                if( WebPDecodeBGRInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+                {
+                    return 0;
+                }
+
+                this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
+            }
+            else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
+            {
+                if( WebPDecodeBGRInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+                {
+                    return 0;
+                }
             }
         }
         else
         {
-            if( WebPDecodeBGRAInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), (uint8_t*)_buffer, _bufferSize, m_options.pitch ) == nullptr )
+            if( m_dataInfo.channels == 4 && m_options.channels == 4 )
             {
-                return 0;
+                if( WebPDecodeBGRAInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+                {
+                    return 0;
+                }
             }
         }
         

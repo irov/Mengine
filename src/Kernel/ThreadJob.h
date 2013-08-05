@@ -26,6 +26,7 @@ namespace Menge
         {
             ThreadWorkerInterface * worker;
             bool stop;
+            bool dead;
         };
 		
     public:
@@ -48,7 +49,5 @@ namespace Menge
         typedef std::vector<WorkerDesc> TVectorWorkers; 
         TVectorWorkers m_workers;
         TVectorWorkers m_workersAdd;
-
-        bool m_updating;
 	};
 }

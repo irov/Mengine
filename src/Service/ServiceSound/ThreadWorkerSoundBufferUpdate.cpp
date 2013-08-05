@@ -1,4 +1,4 @@
-#	include "ThreadTaskSoundBufferUpdate.h"
+#	include "ThreadWorkerSoundBufferUpdate.h"
 
 #   include "Interface/ThreadSystemInterface.h"
 

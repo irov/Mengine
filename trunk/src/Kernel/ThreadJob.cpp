@@ -23,16 +23,14 @@ namespace Menge
             ThreadWorkerInterface * m_worker;
         };
         //////////////////////////////////////////////////////////////////////////
-        struct FWorkerDone
+        struct FWorkerDead
         {
             bool operator ()( const ThreadJob::WorkerDesc & _desc ) const
             {
-                if( _desc.stop == false )
+                if( _desc.dead == false )
                 {
                     return false;
                 }
-
-                _desc.worker->onDone();
 
                 return true;
             }
@@ -43,7 +41,6 @@ namespace Menge
         : m_serviceProvider(nullptr)
         , m_sleep(0)
         , m_mutex(nullptr)
-        , m_updating(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -71,6 +68,7 @@ namespace Menge
 
         desc.worker = _worker;
         desc.stop = false;
+        desc.dead = false;
 
         m_mutex->lock();
         m_workersAdd.push_back( desc );
@@ -112,8 +110,6 @@ namespace Menge
             m_workersAdd.clear();
             m_mutex->unlock();
 
-            m_updating = true;
-
             for( TVectorWorkers::size_type
                 it = 0,
                 it_end = m_workers.size();
@@ -135,7 +131,10 @@ namespace Menge
                 m_mutex->unlock();
             }
 
-            m_updating = false;
+            m_mutex->lock();
+            TVectorWorkers::iterator it_erase = std::remove_if( m_workers.begin(), m_workers.end(), FWorkerDead());
+            m_workers.erase( it_erase, m_workers.end() );
+            m_mutex->unlock();
 
             THREAD_SERVICE(m_serviceProvider)
                 ->sleep( m_sleep );
@@ -146,12 +145,26 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void ThreadJob::_onUpdate()
     {
-        if( m_updating == false )
+        m_mutex->lock();
+
+        for( TVectorWorkers::iterator
+            it = m_workers.begin(),
+            it_end = m_workers.end();
+        it != it_end;
+        ++it )
         {
-            m_mutex->lock();
-            TVectorWorkers::iterator it_erase = std::remove_if( m_workers.begin(), m_workers.end(), FWorkerDone());
-            m_workers.erase( it_erase, m_workers.end() );
-            m_mutex->unlock();
+            WorkerDesc & desc = *it;
+
+            if( desc.stop == false || desc.dead == true )
+            {
+                continue;
+            }
+
+            desc.dead = true;
+
+            desc.worker->onDone();                
         }
+
+        m_mutex->unlock();
     }
 }

@@ -293,13 +293,14 @@ namespace Menge
             if( m_options.channels == 4 )
             {
                 JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
-                while( (m_jpegObject.output_scanline < m_jpegObject.output_height) && (_bufferSize >= m_options.pitch) ) 
+                size_t bufferSize = _bufferSize;
+                while( (m_jpegObject.output_scanline < m_jpegObject.output_height) && (bufferSize >= m_options.pitch) ) 
                 {
                     jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
 
                     // Assume put_scanline_someplace wants a pointer and sample count.
                     rgb_buffer += m_options.pitch;
-                    _bufferSize -= m_options.pitch;
+                    bufferSize -= m_options.pitch;
                 }
 
                 if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
@@ -307,9 +308,9 @@ namespace Menge
                     JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
                     for( size_t j = 0; j != m_dataInfo.height; ++j )
                     {
-                        for( size_t i = 0; i != m_dataInfo.width; i += 4 )
+                        for( size_t i = 0; i != m_dataInfo.width; ++i )
                         {
-                            alpha_buffer[i + 3] = 255; // alpha
+                            alpha_buffer[i * 4 + 3] = 255; // alpha
                         }
 
                         alpha_buffer += m_options.pitch;

@@ -13,7 +13,9 @@ namespace Menge
 		Win32ThreadIdentity();
 
 	public:
-        void setHandle( HANDLE _handle );
+        void initialize( HANDLE _handle );
+
+    public:
 		HANDLE getHandle() const;
 
 	protected:

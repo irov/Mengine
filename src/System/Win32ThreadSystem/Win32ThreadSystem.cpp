@@ -61,7 +61,7 @@ namespace Menge
         return 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentity * Win32ThreadSystem::createThread( ThreadListener * _thread )
+	ThreadIdentity * Win32ThreadSystem::createThread( ThreadListener * _thread, int _priority )
 	{
         HANDLE handle = CreateThread( NULL, 0, &s_tread_job, (LPVOID)_thread, 0, NULL);
 
@@ -76,10 +76,24 @@ namespace Menge
             return nullptr;
         }
 
-        SetThreadPriority( handle, THREAD_PRIORITY_HIGHEST );
+        switch( _priority )
+        {   
+        case -2:
+            SetThreadPriority( handle, THREAD_PRIORITY_LOWEST );
+        case -1:
+            SetThreadPriority( handle, THREAD_PRIORITY_BELOW_NORMAL );
+        case 0:
+            SetThreadPriority( handle, THREAD_PRIORITY_NORMAL );
+        case 1:
+            SetThreadPriority( handle, THREAD_PRIORITY_ABOVE_NORMAL );
+        case 2:
+            SetThreadPriority( handle, THREAD_PRIORITY_HIGHEST );
+        case 3:
+            SetThreadPriority( handle, THREAD_PRIORITY_TIME_CRITICAL );
+        }        
            
         Win32ThreadIdentity * identity = m_poolWin32ThreadIdentity.createT();
-        identity->setHandle( handle );
+        identity->initialize( handle );
 
         m_threadIdentities.push_back( identity );
 		
@@ -104,6 +118,16 @@ namespace Menge
         m_poolWin32ThreadIdentity.destroyT( identity );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadMutexInterface * Win32ThreadSystem::createMutex()
+    {
+        HANDLE mutex_handle = CreateMutex( NULL, FALSE, NULL );
+
+        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createT();
+        mutex->initialize( mutex_handle );
+
+        return mutex;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::sleep( unsigned int _ms )

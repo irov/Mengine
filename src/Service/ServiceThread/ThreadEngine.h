@@ -35,7 +35,7 @@ namespace Menge
         bool isTaskOnProgress( ThreadTaskInterface * _task ) const;
 
     public:
-        bool addTask( ThreadTaskInterface * _task ) override;
+        bool addTask( ThreadTaskInterface * _task, int _priority ) override;
         bool joinTask( ThreadTaskInterface * _task ) override;
         bool cancelTask( ThreadTaskInterface * _task ) override;
 
@@ -44,6 +44,9 @@ namespace Menge
 
     public:
         void update() override;
+
+    public:
+        ThreadMutexInterface * createMutex() override;
 
     public:
         void sleep( unsigned int _ms ) override;

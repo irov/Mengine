@@ -43,6 +43,11 @@ namespace Menge
 	{
         m_silent = _silent;
 
+        m_threadSoundBufferUpdate.initialize( m_serviceProvider, 50 );
+
+        THREAD_SERVICE(m_serviceProvider)
+            ->addTask( &m_threadSoundBufferUpdate, 0 );        
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -77,6 +82,9 @@ namespace Menge
         }
 
         m_soundSourceMap.clear();
+
+        THREAD_SERVICE(m_serviceProvider)
+            ->joinTask( &m_threadSoundBufferUpdate );  
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::playSounds_()
@@ -497,10 +505,10 @@ namespace Menge
                         this->playSoundBufferUpdate_( source );
                     }
 
-                    if( source->listener != nullptr )
-                    {
-                        m_stopListeners.push_back( source->listener );
-                    }
+                    //if( source->listener != nullptr )
+                    //{
+                    //    m_stopListeners.push_back( source->listener );
+                    //}
                 }break;
 			}
 		}
@@ -936,24 +944,21 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::stopSoundBufferUpdate_( SoundSourceDesc * _source )
     {
-        _source->taskSoundBufferUpdate->stop();
-
-        THREAD_SERVICE(m_serviceProvider)
-            ->joinTask( _source->taskSoundBufferUpdate );
-
-        _source->taskSoundBufferUpdate->destroy();
+        m_threadSoundBufferUpdate.removeWorker( _source->taskSoundBufferUpdate );
+                
         _source->taskSoundBufferUpdate = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::playSoundBufferUpdate_( SoundSourceDesc * _source )
     {
         _source->taskSoundBufferUpdate = 
-            m_poolThreadTaskSoundBufferUpdate.createObjectT();
+            m_poolWorkerTaskSoundBufferUpdate.createObjectT();
 
-        _source->taskSoundBufferUpdate->initialize( m_serviceProvider, _source );
+        SoundBufferInterface * soundBuffer = _source->soundSourceInterface->getSoundBuffer();
 
-        THREAD_SERVICE(m_serviceProvider)
-            ->addTask( _source->taskSoundBufferUpdate );
+        _source->taskSoundBufferUpdate->initialize( m_serviceProvider, soundBuffer );
+
+        m_threadSoundBufferUpdate.addWorker( _source->taskSoundBufferUpdate );
     }
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getPosMs( unsigned int _emitter ) const

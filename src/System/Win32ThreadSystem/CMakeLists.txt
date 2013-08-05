@@ -6,6 +6,8 @@ src
 	Win32ThreadSystem.h
 	Win32ThreadIdentity.cpp
     Win32ThreadIdentity.h
+    Win32ThreadMutex.h
+    Win32ThreadMutex.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

@@ -48,6 +48,14 @@ namespace Menge
 	{
 	};
 
+    class ThreadMutexInterface
+        : public Factorable
+    {
+    public:
+        virtual bool lock() = 0;
+        virtual void unlock() = 0;
+    };
+
 	class ThreadSystemInterface
         : public ServiceInterface
 	{
@@ -58,9 +66,11 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual ThreadIdentity * createThread( ThreadListener * _listener ) = 0;
+		virtual ThreadIdentity * createThread( ThreadListener * _listener, int _priority ) = 0;
 		virtual bool joinThread( ThreadIdentity * _thread ) = 0;
 		virtual void sleep( unsigned int _ms ) = 0;
+
+        virtual ThreadMutexInterface * createMutex() = 0;
 	};
 
 #   define THREAD_SYSTEM( serviceProvider )\
@@ -79,9 +89,12 @@ namespace Menge
         virtual void update() = 0;
 
     public:
-        virtual bool addTask( ThreadTaskInterface * _task ) = 0;
+        virtual bool addTask( ThreadTaskInterface * _task, int _priority ) = 0;
         virtual bool joinTask( ThreadTaskInterface * _task ) = 0;
         virtual bool cancelTask( ThreadTaskInterface * _task ) = 0;
+
+    public:
+        virtual ThreadMutexInterface * createMutex() = 0;
 
     public:
         virtual void sleep( unsigned int _ms ) = 0;

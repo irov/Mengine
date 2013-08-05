@@ -18,7 +18,7 @@ namespace Menge
 	{
 	public:
 		ThreadTask();
-		virtual ~ThreadTask();
+		~ThreadTask();
 		
 	public:	
 		bool isComplete() const override;

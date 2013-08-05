@@ -147,6 +147,8 @@ ADD_FILTER(
 ThreadTask
 	ThreadTask.h
 	ThreadTask.cpp
+    ThreadJob.h
+    ThreadJob.cpp
 	ThreadTaskPacket.h
 	ThreadTaskPacket.cpp
 )

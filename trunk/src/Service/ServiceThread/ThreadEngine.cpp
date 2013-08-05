@@ -85,7 +85,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::addTask( ThreadTaskInterface * _task )
+	bool ThreadEngine::addTask( ThreadTaskInterface * _task, int _priority )
 	{
         if( m_taskThread.size() == m_threadCount )
         {
@@ -106,7 +106,8 @@ namespace Menge
             return false;
         }
 
-        ThreadIdentity * threadIdentity = THREAD_SYSTEM(m_serviceProvider)->createThread( _task );
+        ThreadIdentity * threadIdentity = THREAD_SYSTEM(m_serviceProvider)
+            ->createThread( _task, _priority );
 
         if( threadIdentity == nullptr )
         {
@@ -138,7 +139,7 @@ namespace Menge
 		{
 			ThreadTaskInterface * task = *it;
 		
-			this->addTask( task );
+			this->addTask( task, 0 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -287,6 +288,14 @@ namespace Menge
 
 		return nullptr;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadMutexInterface * ThreadEngine::createMutex()
+    {
+        ThreadMutexInterface * mutex = THREAD_SYSTEM(m_serviceProvider)
+            ->createMutex();
+
+        return mutex;
+    }
     //////////////////////////////////////////////////////////////////////////
     void ThreadEngine::sleep( unsigned int _ms )
     {

@@ -4,8 +4,8 @@ ADD_FILTER(
 src
 	SoundEngine.h
 	SoundEngine.cpp
-    ThreadTaskSoundBufferUpdate.h
-    ThreadTaskSoundBufferUpdate.cpp
+    ThreadWorkerSoundBufferUpdate.h
+    ThreadWorkerSoundBufferUpdate.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

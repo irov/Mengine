@@ -3,7 +3,8 @@
 #   include "Interface/StreamInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
-#   include "ThreadTaskSoundBufferUpdate.h"
+#   include "Kernel/ThreadJob.h"
+#   include "ThreadWorkerSoundBufferUpdate.h"
 
 #	include "Core/ConstString.h"
 #   include "Factory/FactoryPool.h"
@@ -30,9 +31,9 @@ namespace Menge
 
 	struct SoundSourceDesc
 	{
-		SoundSourceInterface* soundSourceInterface;
-		SoundNodeListenerInterface* listener;
-		ThreadTaskSoundBufferUpdate* taskSoundBufferUpdate;
+		SoundSourceInterface * soundSourceInterface;
+		SoundNodeListenerInterface * listener;
+		ThreadWorkerSoundBufferUpdate * taskSoundBufferUpdate;
 
 		float timing;
 		float volume;
@@ -154,8 +155,10 @@ namespace Menge
 		typedef stdex::binary_vector<unsigned int, SoundSourceDesc *> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
 
-        typedef FactoryPool<ThreadTaskSoundBufferUpdate, 32> TPoolThreadTaskSoundBufferUpdate;
-        TPoolThreadTaskSoundBufferUpdate m_poolThreadTaskSoundBufferUpdate;
+        ThreadJob m_threadSoundBufferUpdate;
+
+        typedef FactoryPool<ThreadWorkerSoundBufferUpdate, 32> TPoolWorkerTaskSoundBufferUpdate;
+        TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;
 
 		typedef std::vector<SoundNodeListenerInterface*> TVectorSourceListener;
 		TVectorSourceListener m_stopListeners;

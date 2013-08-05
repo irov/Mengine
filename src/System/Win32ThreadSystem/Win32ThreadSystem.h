@@ -7,6 +7,8 @@
 #	include "Win32ThreadIdentity.h"
 #	include "Win32ThreadMutex.h"
 
+#   include "Factory/FactoryPool.h"
+
 #   include "stdex/pool.h"
 
 namespace Menge
@@ -38,7 +40,7 @@ namespace Menge
         typedef stdex::template_pool<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
         TPoolWin32ThreadIdentity m_poolWin32ThreadIdentity;
 
-        typedef stdex::template_pool<Win32ThreadMutex, 16> TPoolWin32ThreadMutex;
+        typedef FactoryPool<Win32ThreadMutex, 16> TPoolWin32ThreadMutex;
         TPoolWin32ThreadMutex m_poolWin32ThreadMutex;
 
 		typedef std::vector<Win32ThreadIdentity *> TVectorPosixThreadIdentity;

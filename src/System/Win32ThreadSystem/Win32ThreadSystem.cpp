@@ -124,7 +124,7 @@ namespace Menge
     {
         HANDLE mutex_handle = CreateMutex( NULL, FALSE, NULL );
 
-        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createT();
+        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createObjectT();
         mutex->initialize( mutex_handle );
 
         return mutex;

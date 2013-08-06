@@ -175,7 +175,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = false;
+            mt.alphaTestEnable = true;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;
@@ -191,7 +191,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = false;
+            mt.alphaTestEnable = true;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;

@@ -542,7 +542,7 @@ namespace Menge
                 );
         }
 
-        bool supportDXT1 = supportTextureFormat( PF_DXT1 );
+        bool supportDXT1 = this->supportTextureFormat( PF_DXT1 );
 
         if( supportDXT1 == false )
         {
@@ -551,7 +551,7 @@ namespace Menge
 
             return false;
         }
-
+        
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -1529,6 +1529,12 @@ namespace Menge
 		//}
 
         //this->clear_( 0 );
+
+        if( m_caps.AlphaCmpCaps & D3DPCMPCAPS_GREATEREQUAL )
+        {
+            m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF, (DWORD)0x00000001 );
+            m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+        }
 
 		return true;
 	}

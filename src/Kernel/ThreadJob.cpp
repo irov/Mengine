@@ -116,14 +116,14 @@ namespace Menge
             it != it_end;
             ++it )
             {
+                m_mutex->lock();
                 WorkerDesc & desc = m_workers[it];
 
                 if( desc.stop == true )
                 {
                     continue;
                 }
-
-                m_mutex->lock();
+                
                 if( desc.worker->onWork() == false )
                 {
                     desc.stop = true;

@@ -1864,18 +1864,18 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        class PyGlobalMouseButtonHandler
+        class PyGlobalMouseHandlerButton
             : public GlobalMouseHandler
         {
         public:
-            PyGlobalMouseButtonHandler( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+            PyGlobalMouseHandlerButton( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
                 : m_serviceProvider(_serviceProvider)
                 , m_cb(_cb)
             {
                 pybind::incref( m_cb );
             }
 
-            ~PyGlobalMouseButtonHandler()
+            ~PyGlobalMouseHandlerButton()
             {
                 pybind::decref( m_cb );
                 m_cb = nullptr;
@@ -1943,7 +1943,96 @@ namespace Menge
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-            size_t id = globalHandleSystem->addGlobalMouseEventable( new PyGlobalMouseButtonHandler(m_serviceProvider, _cb) );
+            PyGlobalMouseHandlerButton * handler = new PyGlobalMouseHandlerButton(m_serviceProvider, _cb);
+
+            size_t id = globalHandleSystem->addGlobalMouseEventable( handler );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PyGlobalMouseHandlerButtonEnd
+            : public GlobalMouseHandler
+        {
+        public:
+            PyGlobalMouseHandlerButtonEnd( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+                : m_serviceProvider(_serviceProvider)
+                , m_cb(_cb)
+            {
+                pybind::incref( m_cb );
+            }
+
+            ~PyGlobalMouseHandlerButtonEnd()
+            {
+                pybind::decref( m_cb );
+                m_cb = nullptr;
+            }
+
+        protected:
+            void handleGlobalMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override
+            {
+                (void)_touchId;
+                (void)_point;
+                (void)_button;
+                (void)_isDown;
+                //Empty
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override
+            {
+                (void)_touchId;
+                (void)_point;
+                (void)_button;
+                (void)_isDown;
+                //Empty
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override
+            {
+                (void)_point;
+
+                PyObject * py_handler = m_cb;
+
+                pybind::incref( py_handler );
+
+                PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
+                    ->askFunction( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+
+                if( pybind::is_none(py_result) == false )
+                {
+                    LOGGER_ERROR(m_serviceProvider)("Game::handleGlobalMouseButtonEventEnd handlersMouseButton %s return value %s not None"
+                        , pybind::object_repr( py_handler )                        
+                        , pybind::object_repr( py_result )
+                        );
+                }
+
+                pybind::decref( py_result );
+                pybind::decref( py_handler );
+                //Empty
+            }
+            //////////////////////////////////////////////////////////////////////////
+            void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override
+            {
+                (void)_touchId;
+                (void)_point;
+                (void)_x;
+                (void)_y;
+                (void)_whell;
+                //Empty
+            }
+
+        protected:
+            ServiceProviderInterface * m_serviceProvider;
+            PyObject * m_cb;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        size_t s_addMouseButtonHandlerEnd( PyObject * _cb )
+        {
+            GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
+                ->getGlobalHandleSystem();
+
+            PyGlobalMouseHandlerButtonEnd * handler = new PyGlobalMouseHandlerButtonEnd(m_serviceProvider, _cb);
+
+            size_t id = globalHandleSystem->addGlobalMouseEventable( handler );
 
             return id;
         }
@@ -1955,7 +2044,7 @@ namespace Menge
 
             GlobalMouseHandler * handler = globalHandleSystem->removeGlobalMouseEventable( _id );
 
-            PyGlobalMouseButtonHandler * py_handler = dynamic_cast<PyGlobalMouseButtonHandler *>(handler);
+            PyGlobalMouseHandlerButton * py_handler = dynamic_cast<PyGlobalMouseHandlerButton *>(handler);
 
             if( py_handler == nullptr )
             {
@@ -3642,6 +3731,7 @@ namespace Menge
             pybind::def_functor( "removeMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseMoveHandler );
 
             pybind::def_functor( "addMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandler );
+            pybind::def_functor( "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
             pybind::def_functor( "removeMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseButtonHandler );
 
             pybind::def_functor( "visitChild", nodeScriptMethod, &NodeScriptMethod::s_visitChild );

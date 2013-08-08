@@ -316,7 +316,7 @@ namespace Menge
         uint8_t * ffmpeg_buffer = (uint8_t *)_buffer;
 
         AVPicture picture;
-		int fill_error = avpicture_fill( &picture, ffmpeg_buffer, (::PixelFormat) m_outputPixelFormat,
+        int fill_error = avpicture_fill( &picture, ffmpeg_buffer, (::PixelFormat) m_outputPixelFormat,
 			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
 
         if( fill_error < 0 )
@@ -327,7 +327,7 @@ namespace Menge
 
             return false;
         }
-        
+
         picture.linesize[0] = _pitch;
 
 		int scale_height = sws_scale( m_imgConvertContext, m_frame->data, m_frame->linesize, 0, 
@@ -395,6 +395,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
 	{
+        if( m_imgConvertContext != nullptr )
+        {
+            if( m_imgConvertContextCache == true )
+            {
+                sws_freeContext( m_imgConvertContext );
+            }
+
+            m_imgConvertContext = nullptr;
+        }
+
         if( m_IOContext != nullptr )
         {
             avio_flush(m_IOContext);
@@ -423,16 +433,6 @@ namespace Menge
 		{
 			avformat_close_input(&m_formatContext);
 			m_formatContext = nullptr;
-		}
-
-		if( m_imgConvertContext != nullptr )
-		{
-            if( m_imgConvertContextCache == true )
-            {
-			    sws_freeContext( m_imgConvertContext );
-            }
-
-			m_imgConvertContext = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

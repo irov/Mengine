@@ -27,15 +27,19 @@ namespace Menge
         m_soundBuffer = _soundBuffer;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadWorkerSoundBufferUpdate::onWork()
+	bool ThreadWorkerSoundBufferUpdate::onWork( size_t _id )
  	{
+        (void)_id;
+
         m_soundBuffer->update();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadWorkerSoundBufferUpdate::onDone()
+	void ThreadWorkerSoundBufferUpdate::onDone( size_t _id )
 	{
+        (void)_id;
+
         this->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////

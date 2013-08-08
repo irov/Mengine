@@ -1572,7 +1572,7 @@ namespace Menge
         if( hWndFgnd != m_hWnd )
         {
             LOGGER_WARNING(m_serviceProvider)("Setup Foreground Window...");
-
+                        
             ::ShowWindow(m_hWnd, SW_MINIMIZE);
             ::ShowWindow(m_hWnd, SW_RESTORE);
 

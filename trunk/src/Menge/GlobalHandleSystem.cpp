@@ -177,13 +177,24 @@ namespace Menge
 		desc.handler = _handler;
 		desc.dead = false;
 
-		m_globalMouseHandler.push_back( desc );
+		m_globalMouseHandlerAdd.push_back( desc );
 
         return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GlobalMouseHandler * GlobalHandleSystem::removeGlobalMouseEventable( size_t _id )
 	{
+        TVectorGlobalMouseHandler::iterator it_found_add = std::find_if( m_globalMouseHandlerAdd.begin(), m_globalMouseHandlerAdd.end(), FFindMouseHandler(_id) );
+
+        if( it_found_add != m_globalMouseHandlerAdd.end() )
+        {
+            GlobalMouseHandler * handler = it_found_add->handler;
+
+            m_globalMouseHandlerAdd.erase( it_found_add );
+
+            return handler;
+        }
+
         TVectorGlobalMouseHandler::iterator it_found = std::find_if( m_globalMouseHandler.begin(), m_globalMouseHandler.end(), FFindMouseHandler(_id) );
 
         if( it_found == m_globalMouseHandler.end() )
@@ -192,7 +203,7 @@ namespace Menge
                 , _id
                 );
 
-            return NULL;
+            return nullptr;
         }
         
 		it_found->dead = true;
@@ -239,6 +250,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::update()
 	{
+        m_globalMouseHandler.insert( m_globalMouseHandler.begin(), m_globalMouseHandlerAdd.begin(), m_globalMouseHandlerAdd.end() );
+        m_globalMouseHandlerAdd.clear();
+
         if( m_globalMouseHandler.empty() == false )
         {
             TVectorGlobalMouseHandler::iterator it_mouse_erase = std::remove_if( m_globalMouseHandler.begin(), m_globalMouseHandler.end(), FDeadMouseHandler());

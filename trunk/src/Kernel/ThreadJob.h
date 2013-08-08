@@ -2,7 +2,7 @@
 
 #	include "Kernel/ThreadTask.h"
 
-#   include <vector>
+#   include <list>
 
 namespace Menge 
 {
@@ -10,8 +10,8 @@ namespace Menge
         : public Factorable
     {
     public:
-        virtual bool onWork() = 0;
-        virtual void onDone() = 0;
+        virtual bool onWork( size_t _id ) = 0;
+        virtual void onDone( size_t _id ) = 0;
     };
 
 	class ThreadJob
@@ -26,8 +26,6 @@ namespace Menge
         {
             ThreadWorkerInterface * worker;
             size_t id;
-            bool stop;
-            bool dead;
         };
 		
     public:
@@ -45,13 +43,18 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
         size_t m_sleep;
 
-        ThreadMutexInterface * m_mutex;
         ThreadMutexInterface * m_mutexAdd;
+        ThreadMutexInterface * m_mutexRemove;
+        ThreadMutexInterface * m_mutexComplete;        
 
         size_t m_enumerator;
 
-        typedef std::vector<WorkerDesc> TVectorWorkers; 
-        TVectorWorkers m_workers;
-        TVectorWorkers m_workersAdd;
+        typedef std::list<WorkerDesc> TWorkers; 
+        TWorkers m_workers;
+        TWorkers m_workersAdd;        
+        TWorkers m_workersComplete;
+
+        typedef std::list<size_t> TRemoveWorkers; 
+        TRemoveWorkers m_workersRemove;
 	};
 }

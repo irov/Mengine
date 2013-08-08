@@ -66,7 +66,7 @@ namespace Menge
         virtual void onFocus( bool _focus ) = 0;
         virtual void onFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
-        virtual void onRenderViewport( const Viewport & _viewport ) = 0;
+        virtual void onRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual bool onClose() = 0;
 
         virtual void onUserEvent( const ConstString & _event, const TMapParams & _params ) = 0;

@@ -21,8 +21,8 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider, SoundBufferInterface * _soundSource );
 
 	public:
-		bool onWork() override;
-		void onDone() override;
+		bool onWork( size_t _id ) override;
+		void onDone( size_t _id ) override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

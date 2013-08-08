@@ -882,14 +882,17 @@ namespace Menge
 			return false;
 		}
 		
-		if( fullscreen == true )
-		{
-			m_platform->notifyCursorClipping( m_renderViewport );
-		}
-		else
-		{
-			m_platform->notifyCursorUnClipping();
-		}
+        if( m_mouseBounded == true )
+        {
+            if( fullscreen == true )
+            {
+                m_platform->notifyCursorClipping( m_renderViewport );
+            }
+            else
+            {
+                m_platform->notifyCursorUnClipping();
+            }
+        }
 
 		//m_renderEngine->setRenderViewport( renderViewport );
 
@@ -1433,7 +1436,7 @@ namespace Menge
 		{
 			if( m_mouseBounded == true )
 			{
-				m_platform->notifyCursorClipping( m_gameViewport );
+				m_platform->notifyCursorClipping( m_renderViewport );
 			}
 			else
 			{
@@ -1689,6 +1692,11 @@ namespace Menge
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
 			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
+
+        if( m_game != nullptr )
+        {
+            m_game->onRenderViewport( m_renderViewport );
+        }
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void Application::screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect )

@@ -232,6 +232,7 @@ namespace Menge
 
         this->registerEvent( EVENT_FULLSCREEN, "onFullscreen", _embed );
         this->registerEvent( EVENT_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution", _embed );
+        this->registerEvent( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
 
         this->registerEvent( EVENT_KEY, "onHandleKeyEvent", _embed );
         this->registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
@@ -572,6 +573,11 @@ namespace Menge
         m_player->onFixedContentResolution( _resolution, _fixed );
 
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_FIXED_CONTENT_RESOLUTION)( "(O)", pybind::get_bool(_fixed) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::onRenderViewport( const Viewport & _viewport )
+    {
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_RENDER_VIEWPORT)( "(O)", pybind::ptr(_viewport) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()

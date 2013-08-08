@@ -25,6 +25,7 @@ namespace Menge
         struct WorkerDesc
         {
             ThreadWorkerInterface * worker;
+            size_t id;
             bool stop;
             bool dead;
         };
@@ -33,8 +34,8 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider, size_t _sleep );
 
     public:
-        void addWorker( ThreadWorkerInterface * _worker );
-        void removeWorker( ThreadWorkerInterface * _worker );
+        size_t addWorker( ThreadWorkerInterface * _worker );
+        void removeWorker( size_t _id );
 
     protected:
         bool _onMain() override;
@@ -45,6 +46,9 @@ namespace Menge
         size_t m_sleep;
 
         ThreadMutexInterface * m_mutex;
+        ThreadMutexInterface * m_mutexAdd;
+
+        size_t m_enumerator;
 
         typedef std::vector<WorkerDesc> TVectorWorkers; 
         TVectorWorkers m_workers;

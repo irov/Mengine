@@ -8,6 +8,7 @@ namespace Menge
 		"EVENT_DESTROY",
 		"EVENT_FULLSCREEN",
         "EVENT_FIXED_CONTENT_RESOLUTION",
+        "EVENT_RENDER_VIEWPORT",
 		"onAnimationEnd",
 		"onFrameEnd",
 		"onFrameTick",

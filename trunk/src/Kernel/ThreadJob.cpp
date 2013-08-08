@@ -41,6 +41,8 @@ namespace Menge
         : m_serviceProvider(nullptr)
         , m_sleep(0)
         , m_mutex(nullptr)
+        , m_mutexAdd(nullptr)
+        , m_enumerator(0)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -51,6 +53,12 @@ namespace Menge
             m_mutex->destroy();
             m_mutex = nullptr;
         }
+
+        if( m_mutexAdd != nullptr )
+        {
+            m_mutexAdd->destroy();
+            m_mutexAdd = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////        
     void ThreadJob::initialize( ServiceProviderInterface * _serviceProvider, size_t _sleep )
@@ -60,25 +68,32 @@ namespace Menge
 
         m_mutex = THREAD_SERVICE(m_serviceProvider)
             ->createMutex();
+
+        m_mutexAdd = THREAD_SERVICE(m_serviceProvider)
+            ->createMutex();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadJob::addWorker( ThreadWorkerInterface * _worker )
+    size_t ThreadJob::addWorker( ThreadWorkerInterface * _worker )
     {
         WorkerDesc desc;
 
         desc.worker = _worker;
+
+        desc.id = ++m_enumerator;
+
         desc.stop = false;
         desc.dead = false;
 
-        m_mutex->lock();
+        m_mutexAdd->lock();
         m_workersAdd.push_back( desc );
-        m_mutex->unlock();
+        m_mutexAdd->unlock();
+
+        return desc.id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadJob::removeWorker( ThreadWorkerInterface * _worker )
+    void ThreadJob::removeWorker( size_t _id )
     {
-        m_mutex->lock();
-        
+        m_mutex->lock();        
         for( TVectorWorkers::iterator
             it = m_workers.begin(),
             it_end = m_workers.end();
@@ -87,28 +102,48 @@ namespace Menge
         {
             WorkerDesc & desc = *it;
 
-            if( desc.worker != _worker )
+            if( desc.id != _id )
             {
                 continue;
             }
 
             desc.stop = true;
+            break;
         }
-        
-        TVectorWorkers::iterator it_erase = std::remove_if( m_workersAdd.begin(), m_workersAdd.end(), FWorkerFind(_worker));
-        m_workersAdd.erase( it_erase, m_workersAdd.end() );
-
         m_mutex->unlock();
+        
+        m_mutexAdd->lock();
+        for( TVectorWorkers::iterator
+            it = m_workersAdd.begin(),
+            it_end = m_workersAdd.end();
+        it != it_end;
+        ++it )
+        {
+            WorkerDesc & desc = *it;
+
+            if( desc.id != _id )
+            {
+                continue;
+            }
+
+            desc.stop = true;
+            break;
+        }
+        m_mutexAdd->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::_onMain()
     {
         while( this->isInterrupt() == false )
-        {
+        {            
+            m_mutexAdd->lock();
+
             m_mutex->lock();
             m_workers.insert( m_workers.end(), m_workersAdd.begin(), m_workersAdd.end() );
-            m_workersAdd.clear();
             m_mutex->unlock();
+
+            m_workersAdd.clear();
+            m_mutexAdd->unlock();            
 
             for( TVectorWorkers::size_type
                 it = 0,

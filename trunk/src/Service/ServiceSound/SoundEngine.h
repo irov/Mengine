@@ -34,6 +34,7 @@ namespace Menge
 		SoundSourceInterface * soundSourceInterface;
 		SoundNodeListenerInterface * listener;
 		ThreadWorkerSoundBufferUpdate * taskSoundBufferUpdate;
+        size_t taskSoundBufferUpdateId;
 
 		float timing;
 		float volume;

@@ -224,6 +224,7 @@ namespace Menge
 		source->soundSourceInterface = sourceInterface;
 		source->listener = nullptr;
 		source->taskSoundBufferUpdate = nullptr;
+        source->taskSoundBufferUpdateId = 0;
 		
         source->timing = 0.f;
 		source->volume = 1.f;
@@ -944,9 +945,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::stopSoundBufferUpdate_( SoundSourceDesc * _source )
     {
-        m_threadSoundBufferUpdate.removeWorker( _source->taskSoundBufferUpdate );
-                
+        m_threadSoundBufferUpdate.removeWorker( _source->taskSoundBufferUpdateId );
+
         _source->taskSoundBufferUpdate = nullptr;
+        _source->taskSoundBufferUpdateId = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::playSoundBufferUpdate_( SoundSourceDesc * _source )
@@ -958,7 +960,7 @@ namespace Menge
 
         _source->taskSoundBufferUpdate->initialize( m_serviceProvider, soundBuffer );
 
-        m_threadSoundBufferUpdate.addWorker( _source->taskSoundBufferUpdate );
+        _source->taskSoundBufferUpdateId = m_threadSoundBufferUpdate.addWorker( _source->taskSoundBufferUpdate );
     }
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getPosMs( unsigned int _emitter ) const

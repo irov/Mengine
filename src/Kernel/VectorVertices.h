@@ -16,7 +16,7 @@ namespace Menge
 
 	public:
 		inline TVectorVertex2D & getVertices();
-		inline void invalidateVertices( unsigned char _invalidate = 0xFF );
+		inline void invalidateVertices( unsigned char _invalidate = 0xFE );
 
 	protected:
 		void updateVertices_();

@@ -443,11 +443,20 @@ namespace Menge
 		
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
+        float frameTiming = dataInfo->frameTiming;
+
+        float frameRate = m_resourceVideo->getFrameRate();
+
+        if( frameRate > 0.f )
+        {
+            frameTiming = 1000.f / frameRate;
+        }
+
 		float seek_timing = _timing;
 
-		if( seek_timing >= dataInfo->frameTiming )
+		if( seek_timing >= frameTiming )
 		{		
-			seek_timing -= dataInfo->frameTiming;
+			seek_timing -= frameTiming;
 		}
 		
 		if( m_videoDecoder->seek( seek_timing ) == false )
@@ -461,7 +470,7 @@ namespace Menge
 
         m_timing = 0.f;
 
-        m_needUpdate = this->sync_( dataInfo->frameTiming );
+        m_needUpdate = this->sync_( frameTiming );
 
         //m_timing = fmod( seek_timing, dataInfo->frameTiming );
 

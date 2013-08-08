@@ -56,7 +56,7 @@ namespace Menge
             ->unregisterDecoder( Helper::stringizeString(m_serviceProvider, "xml2bin") );
 
         m_xml2bin->destroy();
-        m_xml2bin = NULL;
+        m_xml2bin = nullptr;
 
 		delete this;
 	}

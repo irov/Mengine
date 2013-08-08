@@ -53,6 +53,7 @@ namespace Menge
         		
 		typedef std::vector<GlobalMouseHandleDesc> TVectorGlobalMouseHandler;
 		TVectorGlobalMouseHandler m_globalMouseHandler;
+        TVectorGlobalMouseHandler m_globalMouseHandlerAdd;
 
 		typedef std::vector<GlobalKeyHandleDesc> TVectorGlobalKeyHandler;
 		TVectorGlobalKeyHandler m_globalKeyHandler;

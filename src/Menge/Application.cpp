@@ -1695,7 +1695,7 @@ namespace Menge
 
         if( m_game != nullptr )
         {
-            m_game->onRenderViewport( m_renderViewport );
+            m_game->onRenderViewport( m_renderViewport, m_contentResolution );
         }
 	}
 	////////////////////////////////////////////////////////////////////////////

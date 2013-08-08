@@ -69,7 +69,7 @@ namespace Menge
 		TPickerTrapState m_pickerTrapState;
 
 		typedef std::vector<PickerTrapState *> TPickerTrapRef;
-		TPickerTrapRef m_registration;
+		TPickerTrapRef m_processAdd;
 		TPickerTrapRef m_process;
 		//TVectorPickerTrapState::iterator m_trapIterator;
 

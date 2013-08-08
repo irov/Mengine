@@ -464,6 +464,7 @@ namespace Menge
 		if( m_player != nullptr )
 		{
 			m_player->finalize();
+
 			delete m_player;
 			m_player = nullptr;
 		}
@@ -575,9 +576,9 @@ namespace Menge
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_FIXED_CONTENT_RESOLUTION)( "(O)", pybind::get_bool(_fixed) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::onRenderViewport( const Viewport & _viewport )
+    void Game::onRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_RENDER_VIEWPORT)( "(O)", pybind::ptr(_viewport) );
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_RENDER_VIEWPORT)( "(OO)", pybind::ptr(_viewport), pybind::ptr(_contentResolution) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()

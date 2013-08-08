@@ -137,12 +137,12 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::clearRenderViewport_()
     {	
-        if( m_cameraViewport != NULL )
+        if( m_cameraViewport != nullptr )
         {
 		    m_cameraViewport->destroy();
-		    m_cameraViewport = NULL;
+		    m_cameraViewport = nullptr;
         }
 
-		this->setRenderCamera( NULL );
+		this->setRenderCamera( nullptr );
 	}
 }

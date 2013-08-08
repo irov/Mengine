@@ -2431,6 +2431,7 @@ namespace Menge
 		}
 
 		m_renderCamera3D->destroy();
+        m_renderCamera3D = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setSpeedFactor( float _factor )

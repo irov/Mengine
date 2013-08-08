@@ -90,7 +90,7 @@ namespace Menge
 		void onFocus( bool _focus ) override;
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
         void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
-        void onRenderViewport( const Viewport & _viewport ) override;
+        void onRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
 		bool onClose() override;
 
         void onUserEvent( const ConstString & _event, const TMapParams & _params ) override;

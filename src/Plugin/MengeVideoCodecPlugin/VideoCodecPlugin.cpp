@@ -51,6 +51,10 @@ namespace Menge
             return;
         }
 
+        printf("VideoCodecPlugin::s_ffmpeg_log %d\n"
+            , _level
+            );
+
         vprintf( _format, _args );
     }
 	//////////////////////////////////////////////////////////////////////////

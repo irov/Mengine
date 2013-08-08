@@ -82,7 +82,7 @@ namespace Menge
 		m_pickerTrapState.push_back( state );
 		PickerTrapState & refState = m_pickerTrapState.back();
 
-		m_registration.push_back( &refState );
+		m_processAdd.push_back( &refState );
 
 		return &refState;
 	}
@@ -95,15 +95,17 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			if( it->id == _ref->id )
+            PickerTrapState & state = *it;
+
+			if( state.id == _ref->id )
 			{
-				it->dead = true;
+				state.dead = true;
 				//it->picked = false;
 
-				if( it->picked == true )
+				if( state.picked == true )
 				{
-					it->picked = false;
-					it->trap->onMouseLeave();
+					state.picked = false;
+					state.trap->onMouseLeave();
 				}
 
 				break;
@@ -111,8 +113,8 @@ namespace Menge
 		}
 
 		for( TPickerTrapRef::iterator
-			it = m_registration.begin(),
-			it_end = m_registration.end();
+			it = m_processAdd.begin(),
+			it_end = m_processAdd.end();
 		it != it_end;
 		++it)
 		{
@@ -120,7 +122,7 @@ namespace Menge
 
 			if( state->id == _ref->id )
 			{
-				m_registration.erase( it );
+				m_processAdd.erase( it );
 
 				break;
 			}
@@ -337,11 +339,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::execReg_()
 	{
-		this->updateDead_();
-
-		m_process.insert( m_process.end(), m_registration.begin(), m_registration.end() );
-
-		m_registration.clear();
+		m_process.insert( m_process.end(), m_processAdd.begin(), m_processAdd.end() );
+		m_processAdd.clear();
 
 		return true;
 	}
@@ -401,8 +400,6 @@ namespace Menge
 				}
 			}
 		}		
-
-        this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()

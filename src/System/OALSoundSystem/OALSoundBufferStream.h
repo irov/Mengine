@@ -37,6 +37,7 @@ namespace Menge
 		ALuint m_alBuffersId[OPENAL_STREAM_BUFFER_COUNT];
 
 		ALuint m_sourceId;
+        bool m_loop;
 		bool m_updating;
 
 	private:

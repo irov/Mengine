@@ -145,7 +145,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::play( ALenum _source, bool _looped, float _pos )
 	{
-        (void)_looped;
+		m_sourceId = _source;
+        m_loop = _looped;
 
         if( _pos > m_length )
         {
@@ -156,8 +157,6 @@ namespace Menge
 
             return false;
         }
-
-		m_sourceId = _source;
 
 		ALint state = 0;
 		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
@@ -365,7 +364,7 @@ namespace Menge
         unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
         //bytesWritten -= bytesWritten % 4;
 
-        if( bytesWritten <= 0 )
+        if( bytesWritten == 0 )
         {
             _bytes = 0;
 

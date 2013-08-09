@@ -895,23 +895,13 @@ namespace Menge
 
         source->timing = lengthMs - _pos;
 
-        if( source->state == ESS_STOPPED || source->state == ESS_STOPPING )
-        {
-            if( source->soundSourceInterface->setPosMs( _pos ) == false )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        
         bool hasBufferUpdate = source->taskSoundBufferUpdate != nullptr;
-        
+
         if( hasBufferUpdate == true )
         {
             this->stopSoundBufferUpdate_( source );
         }
-
+        
         bool playing = source->soundSourceInterface->isPlaying();
         
         if( playing == true )

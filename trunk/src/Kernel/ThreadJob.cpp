@@ -77,7 +77,7 @@ namespace Menge
         {
             WorkerDesc & desc = *it;
 
-            if( std::find( m_workersRemove.begin(), m_workersRemove.end(), desc.id ) == m_workersRemove.end() )
+            if( desc.id != _id )
             {
                 continue;
             }
@@ -97,8 +97,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ThreadJob::_onMain()
     {
-        return true;
-
         while( this->isInterrupt() == false )
         {   
             m_mutexRemove->lock();
@@ -154,7 +152,10 @@ namespace Menge
                         ++it;
                     }
                 }
-
+                else
+                {
+                    ++it;
+                }
                 m_mutexRemove->unlock();
             }
 

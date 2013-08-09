@@ -144,7 +144,7 @@ namespace Menge
             {
                 const ConstString & resource_category = has_resource->getCategory();
 
-                LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: already exist resource name '%s' in group '%s' category '%s' ('%s')"
+                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: already exist resource name '%s' in group '%s' category '%s' ('%s')"
                     , name.c_str()
                     , groupName.c_str()
                     , _pakName.c_str()

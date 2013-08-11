@@ -4,6 +4,9 @@
 
 #	include "Kernel/Scriptable.h"
 
+#   include "Factory/Factorable.h"
+#   include "Factory/FactoryPool.h"
+
 #	include "Core/ValueInterpolator.h"
 
 #   include "stdex/intrusive_slug_linked.h"
@@ -14,10 +17,14 @@ namespace Menge
 
 	class Affector
         : public stdex::intrusive_slug_linked<Affector>
+        , public Factorable
 	{
 	public:
-		Affector( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type );
+		Affector();
 		virtual ~Affector();
+
+    public:
+        void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type );
 
 	public:
 		void setId( size_t _id );
@@ -50,12 +57,19 @@ namespace Menge
 		: public Affector
 	{
 	public:
-		MemeberAffector( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method )
-			: Affector(_serviceProvider, _cb, _type)
-			, m_self(_self)
-			, m_method(_method)
+        MemeberAffector()
+            : m_self(nullptr)
+            , m_method(nullptr)
 		{
 		}
+
+        void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method )
+        {
+            Affector::initialize( _serviceProvider, _cb, _type );
+
+            m_self = _self;
+            m_method = _method;
+        }
 
 		template<class T>
 		void update( T _value )
@@ -78,17 +92,11 @@ namespace Menge
 		C * m_self;
 		M m_method;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T, template<class> class Accumulator>
 	class MemberAffectorAccumulate
 		: public MemeberAffector<C,M>
 	{
-	public:
-		MemberAffectorAccumulate( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method )
-			: MemeberAffector<C,M>(_serviceProvider, _cb, _type, _self, _method)
-		{
-		}
-
 	protected:
 		bool affect( float _timing ) override
 		{
@@ -115,17 +123,11 @@ namespace Menge
 	protected:
 		Accumulator<T> m_accumulator;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T, template<class> class Interpolator>
 	class MemberAffectorInterpolate
 		: public MemeberAffector<C,M>
 	{
-	public:
-		MemberAffectorInterpolate( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method )
-			: MemeberAffector<C,M>(_serviceProvider, _cb, _type, _self, _method)
-		{
-		}
-
 	protected:
 		bool affect( float _timing ) override
 		{
@@ -152,19 +154,19 @@ namespace Menge
 	protected:
 		Interpolator<T> m_interpolator;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T>
 	class MemberAffectorAccumulateLinear
 		: public MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>
 	{
 	public:
 		template<class ABS>
-		MemberAffectorAccumulateLinear<C,M,T>( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method
+		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method
 			, T _start, T _dir, float _speed, ABS _abs)
-			: MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>(_serviceProvider, _cb, _type, _self, _method)
 		{
+            MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
-		}
+		}        
 	};
 
 	template<class C, class M, class T>
@@ -173,136 +175,197 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		MemberAffectorInterpolateLinear<C,M,T>( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method
-										, T _start, T _end, float _time, ABS _abs)
-			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>(_serviceProvider, _cb, _type, _self, _method)
+		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+            , C * _self, M _method
+            , T _start, T _end, float _time, ABS _abs)
 		{
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::m_interpolator.start( _start, _end, _time, _abs );
 		}
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T>
 	class MemberAffectorInterpolateQuadratic
 		: public MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>
 	{
 	public:
 		template< typename ABS >
-		MemberAffectorInterpolateQuadratic( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
-			, T _start, T _end, T _v0
-			, float _time
-			, ABS _abs )
-			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>(_serviceProvider, _cb, _type, _self, _method)
+			, T _start, T _end, T _v0, float _time, ABS _abs )
 		{
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::m_interpolator.start( _start, _end, _v0, _time, _abs );
 		}
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T>
 	class MemberAffectorInterpolateQuadraticBezier
 		: public MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>
 	{
 	public:
 		template<class ABS>
-		MemberAffectorInterpolateQuadraticBezier<C,M,T>( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
 			, T _start, T _end, T _v0
 			, float _time, ABS _abs)
-			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>(_serviceProvider, _cb, _type, _self, _method)
 		{
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>::m_interpolator.start( _start, _end, _v0, _time, _abs );
 		}
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class T>
 	class MemberAffectorInterpolateCubicBezier
 		: public MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>
 	{
 	public:
 		template<class ABS>
-		MemberAffectorInterpolateCubicBezier<C,M,T>( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
 			, T _start, T _end, T _v0, T _v1
 			, float _time, ABS _abs)
-			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>(_serviceProvider, _cb, _type, _self, _method)
 		{
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::m_interpolator.start( _start, _end, _v0, _v1, _time, _abs );
 		}
 	};
-
-//MemberAffectorInterpolateCubic
-
+    //////////////////////////////////////////////////////////////////////////
 	namespace NodeAffectorCreator
 	{
-		template<class C, class M, class T, class ABS>
-		Affector * newNodeAffectorAccumulateLinear( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type
-			, C * _self, M _method
-			, T _pos, T _dir, float _speed, ABS _abs )
-		{
+        template<class C, class M, class T>
+        class NodeAffectorCreatorAccumulateLinear
+        {
+        public:
             typedef MemberAffectorAccumulateLinear<C, M, T> AffectorType;
 
-            //Factory * AFFECTOR_SERVICE(_serviceProvider)
-            //    ->getFactory();
+        public:
+            template<class ABS>
+            Affector * create( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type
+                , C * _self, M _method
+                , T _pos, T _dir, float _speed, ABS _abs )
+            {
+                AffectorType * affector = m_factory.createObjectT();
 
-            //Factorable * factorable = Factory->createObject();
+                affector->initialize(_serviceProvider, _cb, _type
+                    , _self, _method
+                    , _pos, _dir, _speed
+                    , _abs );
 
-			return new AffectorType(_serviceProvider, _cb, _type
-				, _self, _method
-				, _pos, _dir, _speed
-				, _abs );
-		}
+                return affector;
+            }
 
-		template<class C, class M, class T, class ABS>
-		Affector * newNodeAffectorInterpolateLinear( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
-			, C * _self, M _method
-			, T _start, T _end, float _time, ABS _abs )
-		{
+            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            TFactoryAffector m_factory;
+        };
+        //////////////////////////////////////////////////////////////////////////
+		template<class C, class M, class T>
+        class NodeAffectorCreatorInterpolateLinear
+        {
+        public:
             typedef MemberAffectorInterpolateLinear<C, M, T> AffectorType;
 
-            return new AffectorType(_serviceProvider, _cb, _type
-				, _self, _method
-				, _start, _end, _time
-				, _abs );
-		}
+        public:
+            template<class ABS>
+            Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+                , C * _self, M _method
+                , T _start, T _end, float _time, ABS _abs )
+            {
+                AffectorType * affector = m_factory.createObjectT();
 
-		template<class C, class M, class T, class ABS>
-		Affector * newNodeAffectorInterpolateQuadratic( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
-			, C * _self, M _method
-			, T _start, T _end, T _v0, float _time, ABS _abs )
-		{
+                affector->initialize(_serviceProvider, _cb, _type
+                    , _self, _method
+                    , _start, _end, _time
+                    , _abs );
+
+                return affector;
+            }
+
+        protected:
+            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            TFactoryAffector m_factory;
+        };
+        //////////////////////////////////////////////////////////////////////////
+		template<class C, class M, class T>
+        class NodeAffectorCreatorInterpolateQuadratic
+        {
+        public:
             typedef MemberAffectorInterpolateQuadratic<C, M, T> AffectorType;
 
-			return new AffectorType(_serviceProvider, _cb, _type
-				, _self, _method
-				, _start, _end, _v0, _time
-				, _abs );
-		}
+        public:
+            template<class ABS>
+		    Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+			    , C * _self, M _method
+			    , T _start, T _end, T _v0, float _time, ABS _abs )
+		    {
+                AffectorType * affector = m_factory.createObjectT();
 
-		template<class C, class M, class T, class ABS>
-		Affector * newNodeAffectorInterpolateQuadraticBezier( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
-			, C * _self, M _method
-			, T _start, T _end, T _v0, float _time, ABS _abs )
-		{
+                affector->initialize(_serviceProvider, _cb, _type
+                    , _self, _method
+                    , _start, _end, _v0, _time
+                    , _abs );
+
+                return affector;
+		    }
+
+        protected:
+            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            TFactoryAffector m_factory;
+        };
+        //////////////////////////////////////////////////////////////////////////
+		template<class C, class M, class T>
+        class NodeAffectorCreatorInterpolateQuadraticBezier
+        {
+        public:
             typedef MemberAffectorInterpolateQuadraticBezier<C, M, T> AffectorType;
 
-			return new AffectorType(_serviceProvider, _cb, _type
-				, _self, _method
-				, _start, _end, _v0, _time
-				, _abs );
-		}
+        public:
+            template<class ABS>
+		    Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+			    , C * _self, M _method
+			    , T _start, T _end, T _v0, float _time, ABS _abs )
+		    {
+                AffectorType * affector = m_factory.createObjectT();
 
-		template<class C, class M, class T, class ABS>
-		Affector * newNodeAffectorInterpolateCubicBezier( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
-			, C * _self, M _method
-			, T _start, T _end, T _v0, T _v1, float _time, ABS _abs )
-		{
+                affector->initialize(_serviceProvider, _cb, _type
+                    , _self, _method
+                    , _start, _end, _v0, _time
+                    , _abs );
+
+                return affector;
+		    }
+
+        protected:
+            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            TFactoryAffector m_factory;
+        };
+        //////////////////////////////////////////////////////////////////////////
+		template<class C, class M, class T>
+        class NodeAffectorCreatorInterpolateCubicBezier
+        {
+        public:
             typedef MemberAffectorInterpolateCubicBezier<C, M, T> AffectorType;
 
-			return new AffectorType(_serviceProvider, _cb, _type
-				, _self, _method
-				, _start, _end, _v0, _v1, _time
-				, _abs );
-		}
+        public:
+            template<class ABS>
+            Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+                , C * _self, M _method
+                , T _start, T _end, T _v0, T _v1, float _time, ABS _abs )
+            {
+                AffectorType * affector = m_factory.createObjectT();
 
+                affector->initialize(_serviceProvider, _cb, _type
+                    , _self, _method
+                    , _start, _end, _v0, _v1, _time
+                    , _abs );
+
+                return affector;
+            }
+
+        protected:
+            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            TFactoryAffector m_factory;
+        };
+        //////////////////////////////////////////////////////////////////////////
 	}
 }	// namespace Menge

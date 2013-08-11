@@ -1,4 +1,3 @@
-
 #	include "ScriptWrapper.h"
 
 #   include "Interface/ApplicationInterface.h"
@@ -1266,6 +1265,8 @@ namespace Menge
             _node->setLinearSpeed( mt::zero_v3 );
         }
         //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
+        //////////////////////////////////////////////////////////////////////////
         size_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, PyObject* _cb )
         {
             if( _node->isActivate() == false )
@@ -1275,10 +1276,8 @@ namespace Menge
 
             moveStop( _node );
 
-            Affector * affector = 
-                NodeAffectorCreator::newNodeAffectorAccumulateLinear(
-                m_serviceProvider,
-                _cb, ETA_POSITION, _node, &Node::setLocalPosition
+            Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( m_serviceProvider
+                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _dir, _speed, &mt::length_v3
                 );
 
@@ -1289,6 +1288,7 @@ namespace Menge
 
             return id;
         }
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
         size_t moveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
         {
@@ -1300,9 +1300,8 @@ namespace Menge
             moveStop( _node );
 
             Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-                m_serviceProvider,
-                _cb, ETA_POSITION, _node, &Node::setLocalPosition
+                m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
+                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, _time
                 , &mt::length_v3 
                 );
@@ -1318,6 +1317,8 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
+        //////////////////////////////////////////////////////////////////////////
         size_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
         {
             if( _node->isActivate() == false )
@@ -1329,10 +1330,8 @@ namespace Menge
 
             moveStop( _node );
 
-            Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-                m_serviceProvider,
-                _cb, ETA_POSITION, _node, &Node::setLocalPosition
+            Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( m_serviceProvider
+                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, linearSpeed, _time
                 , &mt::length_v3
                 );
@@ -1341,6 +1340,8 @@ namespace Menge
 
             return id;
         }
+        //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadraticBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadraticBezier;
         //////////////////////////////////////////////////////////////////////////
         size_t bezier2To( Node * _node
             , float _time
@@ -1355,10 +1356,8 @@ namespace Menge
 
             moveStop( _node );
 
-            Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateQuadraticBezier(
-                m_serviceProvider,
-                _cb, ETA_POSITION, _node, &Node::setLocalPosition
+            Affector* affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( m_serviceProvider
+                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point1, _point2, _time
                 , &mt::length_v3
                 );
@@ -1367,6 +1366,8 @@ namespace Menge
 
             return id;
         }
+        //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateCubicBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateCubicBezier;
         //////////////////////////////////////////////////////////////////////////
         size_t bezier3To( Node * _node
             , float _time
@@ -1383,9 +1384,8 @@ namespace Menge
             moveStop( _node );
 
             Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateCubicBezier(
-                m_serviceProvider,
-                _cb, ETA_POSITION, _node, &Node::setLocalPosition
+                m_nodeAffectorCreatorInterpolateCubicBezier.create( m_serviceProvider
+                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point1, _point2, _point3, _time
                 , &mt::length_v3
                 );
@@ -1400,6 +1400,8 @@ namespace Menge
             _node->stopAffectors( ETA_ANGLE );
             _node->setAngularSpeed(0.f);
         }
+        //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( float ), float> m_odeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
         size_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
         {
@@ -1416,10 +1418,8 @@ namespace Menge
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
-            Affector* affector =
-                NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-                m_serviceProvider,
-                _cb, ETA_ANGLE, _node, &Node::setRotateX
+            Affector* affector = m_odeAffectorCreatorInterpolateLinear.create( m_serviceProvider
+                , _cb, ETA_ANGLE, _node, &Node::setRotateX
                 , correct_angle_from, correct_angle_to, _time
                 , &fabsf 
                 );				
@@ -1432,6 +1432,8 @@ namespace Menge
 
             return id;
         }
+        //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( float ), float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
         size_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
         {
@@ -1451,9 +1453,8 @@ namespace Menge
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
             Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-                m_serviceProvider,
-                _cb, ETA_ANGLE, _node, &Node::setRotateX
+                m_nodeAffectorCreatorInterpolateQuadraticFloat.create( m_serviceProvider
+                , _cb, ETA_ANGLE, _node, &Node::setRotateX
                 , correct_angle_from, correct_angle_to, angularSpeed, _time
                 , &fabsf
                 );				
@@ -1489,10 +1490,8 @@ namespace Menge
 
             scaleStop( _node );
 
-            Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-                m_serviceProvider,
-                _cb, ETA_SCALE, _node, &Node::setScale
+            Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
+                , _cb, ETA_SCALE, _node, &Node::setScale
                 , _node->getScale(), _scale, _time
                 , &mt::length_v3
                 );
@@ -1507,6 +1506,8 @@ namespace Menge
             _node->stopAffectors( ETA_COLOR );
         }
         //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( const ColourValue &), ColourValue> m_nodeAffectorCreatorInterpolateLinearColour;
+        //////////////////////////////////////////////////////////////////////////
         size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
         {
             if( _node->isActivate() == false )
@@ -1517,11 +1518,10 @@ namespace Menge
             colorStop( _node );
 
             Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-                m_serviceProvider,
-                _cb, ETA_COLOR, _node, &Colorable::setLocalColor
-                , _node->getLocalColor(), _color, _time, 
-                &ColourValue::length_color
+                m_nodeAffectorCreatorInterpolateLinearColour.create( m_serviceProvider
+                , _cb, ETA_COLOR, _node, &Colorable::setLocalColor
+                , _node->getLocalColor(), _color, _time
+                , &ColourValue::length_color
                 );
 
             size_t id = _node->addAffector( affector );
@@ -1544,6 +1544,8 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Shape, void (Shape::*)( const mt::vec4f & ), mt::vec4f> m_NodeAffectorCreatorInterpolateLinearVec4;
+        //////////////////////////////////////////////////////////////////////////
         size_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, PyObject* _cb )
         {
             if( _shape->isActivate() == false )
@@ -1553,12 +1555,10 @@ namespace Menge
 
             _shape->stopAffectors( ETA_VISIBILITY );
 
-            Affector* affector = 
-                NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-                m_serviceProvider,
-                _cb, ETA_VISIBILITY, _shape, &Sprite::setPercentVisibility
-                , _shape->getPercentVisibility(), _percent, _time, 
-                &mt::length_v4 
+            Affector* affector = m_NodeAffectorCreatorInterpolateLinearVec4.create( m_serviceProvider
+                , _cb, ETA_VISIBILITY, _shape, &Shape::setPercentVisibility
+                , _shape->getPercentVisibility(), _percent, _time
+                , &mt::length_v4 
                 );
 
             size_t id = _shape->addAffector( affector );
@@ -1668,9 +1668,8 @@ namespace Menge
             : public Affector
         {
         public:
-            AffectorScript( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type )
-                : Affector(_serviceProvider, _cb, _type)
-                , m_stop(false)
+            AffectorScript()                
+                : m_stop(false)
             {
             }
 
@@ -1722,7 +1721,9 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         Affector * createAffector( PyObject * _cb )
         {
-            Affector * affector = new AffectorScript( m_serviceProvider, _cb, ETA_SCRIPT );
+            Affector * affector = new AffectorScript();
+            
+            affector->initialize( m_serviceProvider, _cb, ETA_SCRIPT );
 
             return affector;
         }

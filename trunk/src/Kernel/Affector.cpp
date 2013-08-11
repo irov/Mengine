@@ -9,19 +9,30 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Affector::Affector( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type )
-		: m_serviceProvider(_serviceProvider)
-        , m_cb(_cb)
-		, m_type(_type)	
+	Affector::Affector()
+		: m_serviceProvider(nullptr)
+        , m_cb(nullptr)
+		, m_type(ETA_POSITION)	
         , m_id(0)
 	{
-		pybind::incref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Affector::~Affector()
 	{
-		pybind::decref( m_cb );
+        if( m_cb != nullptr )
+        {
+		    pybind::decref( m_cb );
+        }
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Affector::initialize( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type )
+    {
+        m_serviceProvider = _serviceProvider;
+        m_cb = _cb;
+        m_type = _type;
+
+        pybind::incref( m_cb );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Affector::setId( size_t _id )
 	{

@@ -33,7 +33,7 @@ namespace Menge
                 affector->unlink();
                 affector->stop();
 
-                delete affector;
+                affector->destroy();
             }
         }
 	}
@@ -47,7 +47,7 @@ namespace Menge
             affector->unlink();
 			affector->stop();
 
-            delete affector;
+            affector->destroy();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ namespace Menge
                 affector->unlink();
                 affector->complete();
 
-                delete affector;
+                affector->destroy();
 			}
 		}
 	}

@@ -785,7 +785,7 @@ namespace Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_TIMING_FACTOR)( "(f)", m_timingFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const WString & Game::getParam( const ConstString & _paramName )
+	const WString & Game::getParam( const ConstString & _paramName ) const
 	{
 		TMapParams::const_iterator it_find = m_params.find( _paramName );
 

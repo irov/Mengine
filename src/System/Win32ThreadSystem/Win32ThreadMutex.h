@@ -13,13 +13,17 @@ namespace Menge
         Win32ThreadMutex();
         
     public:
-        void initialize( HANDLE _mutex );
+        void initialize( ServiceProviderInterface * _serviceProvider );
 
     protected:
-        bool lock() override;
+        void lock() override;
         void unlock() override;
 
     protected:
-        HANDLE m_mutex;
+        bool _destroy() override;
+
+    protected:
+        ServiceProviderInterface * m_serviceProvider;
+        CRITICAL_SECTION m_cs;
     };
 }

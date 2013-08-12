@@ -52,7 +52,7 @@ namespace Menge
         : public Factorable
     {
     public:
-        virtual bool lock() = 0;
+        virtual void lock() = 0;
         virtual void unlock() = 0;
     };
 

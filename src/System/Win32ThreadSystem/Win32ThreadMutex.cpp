@@ -4,29 +4,31 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadMutex::Win32ThreadMutex()
-        : m_mutex(0)
+        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadMutex::initialize( HANDLE _mutex )
+    void Win32ThreadMutex::initialize( ServiceProviderInterface * _serviceProvider )
     {
-        m_mutex = _mutex;
+        m_serviceProvider = _serviceProvider;
+        
+        InitializeCriticalSection( &m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadMutex::lock()
+    void Win32ThreadMutex::lock()
     {
-        DWORD result = WaitForSingleObject( m_mutex, 0 );
-
-        if( result != WAIT_OBJECT_0 )
-        {
-            return false;
-        }
-
-        return true;
+        EnterCriticalSection( &m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::unlock()
     {
-        ReleaseMutex( m_mutex );
+        LeaveCriticalSection( &m_cs );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32ThreadMutex::_destroy()
+    {
+        DeleteCriticalSection( &m_cs );
+
+        return true;
     }
 }

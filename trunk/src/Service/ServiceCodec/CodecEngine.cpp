@@ -16,7 +16,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	CodecEngine::CodecEngine()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ namespace Menge
                 , _type.c_str()
                 );
 
-			return 0;
+			return nullptr;
 		}
 
         DecoderFactoryInterface * decoderFactory = it_find->second;
@@ -90,7 +90,7 @@ namespace Menge
 
         if( it_find == m_mapEncoderSystem.end() )
         {
-            return 0;
+            return nullptr;
         }
 
         EncoderFactoryInterface * encoderSystem = it_find->second;
@@ -104,7 +104,7 @@ namespace Menge
 
         if( encoder->initialize( m_serviceProvider, _stream ) == false )
         {
-            return 0;
+            return nullptr;
         }
 
         return encoder;
@@ -146,7 +146,7 @@ namespace Menge
 
             const char * dot_find = strrchr( str, '.' );
 
-            if( dot_find == NULL )
+            if( dot_find == nullptr )
             {
                 continue;
             }

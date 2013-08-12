@@ -215,13 +215,9 @@ namespace Menge
 		m_player->tick( timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::render()
+	void Game::render()
 	{
 		m_player->render();
-
-		bool changed = m_player->isChangedScene();
-
-        return changed;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setEmbed( PyObject * _embed )

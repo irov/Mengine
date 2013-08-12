@@ -1131,11 +1131,14 @@ namespace Menge
         clear_viewport.end.x = (float)m_windowResolution.getWidth();
         clear_viewport.end.y = (float)m_windowResolution.getHeight();
         
-        this->setViewport( clear_viewport );
+        if( m_viewport.equalViewport( clear_viewport ) == false )
+        {
+            this->setViewport( clear_viewport );
 
-        this->clear_( 0 );
+            this->clear_( 0 );
 
-        this->setViewport( m_viewport );
+            this->setViewport( m_viewport );
+        }
         
         hr = m_pD3DDevice->BeginScene();
         

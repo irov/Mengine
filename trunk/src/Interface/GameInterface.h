@@ -29,7 +29,7 @@ namespace Menge
     public:
         virtual bool update() = 0;
         virtual void tick( float _timing ) = 0;
-        virtual bool render() = 0;
+        virtual void render() = 0;
 
     public:
         virtual PlayerServiceInterface * getPlayer() const = 0;

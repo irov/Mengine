@@ -122,10 +122,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterface * Win32ThreadSystem::createMutex()
     {
-        HANDLE mutex_handle = CreateMutex( NULL, FALSE, NULL );
-
         Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createObjectT();
-        mutex->initialize( mutex_handle );
+        mutex->initialize( m_serviceProvider );
 
         return mutex;
     }

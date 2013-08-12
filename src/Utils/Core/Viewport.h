@@ -16,6 +16,8 @@ namespace Menge
 		void initialize( const mt::vec2f & _begin, const mt::vec2f & _end );
 
 	public:
+        inline bool equalViewport( const Viewport & _vp ) const;
+
 		inline bool testPoint( const mt::vec2f & _point ) const;
 		inline bool testBBox( const mt::box2f& _bbox ) const;
 		inline bool testRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
@@ -41,6 +43,20 @@ namespace Menge
 		mt::vec2f end;
 	};
 	//////////////////////////////////////////////////////////////////////////
+    bool Viewport::equalViewport( const Viewport & _vp ) const
+    {
+        if( begin != _vp.begin )
+        {
+            return false;
+        }
+
+        if( end != _vp.end )
+        {
+            return false;
+        }
+
+        return true;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Viewport::testPoint( const mt::vec2f & _point ) const
 	{

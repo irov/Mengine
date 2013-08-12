@@ -54,7 +54,7 @@ namespace Menge
 		void tick( float _timing ) override;
 
     public:
-		bool render() override;
+		void render() override;
 
     public:
         bool run( const String& _scriptInitParams ) override;

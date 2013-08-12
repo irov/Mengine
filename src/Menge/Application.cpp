@@ -1256,7 +1256,7 @@ namespace Menge
 			return false;
 		}
 
-		bool immediatelyFlush = m_game->render();
+		m_game->render();
 
 		if( m_console != nullptr )
 		{
@@ -1265,13 +1265,6 @@ namespace Menge
 		//Holder<Console>::get()->render();
 
 		RENDER_SERVICE(m_serviceProvider)->endScene();
-
-		if( immediatelyFlush == true )
-		{
-			this->onFlush();
-
-			return false;
-		}
 
 		return true;
 	}

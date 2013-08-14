@@ -162,7 +162,7 @@ namespace Menge
 	public:
 		template<class ABS>
 		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method
-			, T _start, T _dir, float _speed, ABS _abs)
+			, const T & _start, const T & _dir, float _speed, ABS _abs)
 		{
             MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
@@ -177,7 +177,7 @@ namespace Menge
 		template<class ABS>
 		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
             , C * _self, M _method
-            , T _start, T _end, float _time, ABS _abs)
+            , const T & _start, const T & _end, float _time, ABS _abs)
 		{
             MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::m_interpolator.start( _start, _end, _time, _abs );
@@ -192,7 +192,7 @@ namespace Menge
 		template< typename ABS >
 		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
-			, T _start, T _end, T _v0, float _time, ABS _abs )
+			, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		{
             MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::initialize( _serviceProvider, _cb, _type, _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::m_interpolator.start( _start, _end, _v0, _time, _abs );
@@ -207,7 +207,7 @@ namespace Menge
 		template<class ABS>
 		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
-			, T _start, T _end, T _v0
+			, const T & _start, const T & _end, const T & _v0
 			, float _time, ABS _abs)
 		{
             MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>::initialize( _serviceProvider, _cb, _type, _self, _method );
@@ -223,7 +223,7 @@ namespace Menge
 		template<class ABS>
 		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
-			, T _start, T _end, T _v0, T _v1
+			, const T & _start, const T & _end, const T & _v0, const T & _v1
 			, float _time, ABS _abs)
 		{
             MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::initialize( _serviceProvider, _cb, _type, _self, _method );
@@ -243,7 +243,7 @@ namespace Menge
             template<class ABS>
             Affector * create( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type
                 , C * _self, M _method
-                , T _pos, T _dir, float _speed, ABS _abs )
+                , const T & _pos, const T & _dir, float _speed, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObjectT();
 
@@ -269,7 +269,7 @@ namespace Menge
             template<class ABS>
             Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
                 , C * _self, M _method
-                , T _start, T _end, float _time, ABS _abs )
+                , const T & _start, const T & _end, float _time, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObjectT();
 
@@ -296,7 +296,7 @@ namespace Menge
             template<class ABS>
 		    Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			    , C * _self, M _method
-			    , T _start, T _end, T _v0, float _time, ABS _abs )
+			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
                 AffectorType * affector = m_factory.createObjectT();
 
@@ -323,7 +323,7 @@ namespace Menge
             template<class ABS>
 		    Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
 			    , C * _self, M _method
-			    , T _start, T _end, T _v0, float _time, ABS _abs )
+			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
                 AffectorType * affector = m_factory.createObjectT();
 
@@ -350,7 +350,7 @@ namespace Menge
             template<class ABS>
             Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
                 , C * _self, M _method
-                , T _start, T _end, T _v0, T _v1, float _time, ABS _abs )
+                , const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObjectT();
 

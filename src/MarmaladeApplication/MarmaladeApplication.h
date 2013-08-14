@@ -85,6 +85,8 @@ namespace Menge
 
         bool isDevelopmentMode() const override;
 
+        void onEvent( const ConstString & _event, const TMapParams & _params );
+
     public:
         size_t getMemoryUsage() const override;
         void * checkpointMemory() const override;

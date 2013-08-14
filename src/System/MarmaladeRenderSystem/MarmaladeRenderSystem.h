@@ -102,7 +102,7 @@ namespace Menge
 
 		IBHandle createIndexBuffer( std::size_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
+		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 
@@ -207,6 +207,7 @@ namespace Menge
 			unsigned char* pMem;
 			size_t size;
 			size_t offset;
+            uint32 flags;
 		};
 
         typedef stdex::binary_vector<VBHandle, MemoryRange> TMapVBufferMemory;

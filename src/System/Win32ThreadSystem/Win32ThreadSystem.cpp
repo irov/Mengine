@@ -93,7 +93,7 @@ namespace Menge
         }        
            
         Win32ThreadIdentity * identity = m_poolWin32ThreadIdentity.createT();
-        identity->initialize( handle );
+        identity->initialize( handle, _thread );
 
         m_threadIdentities.push_back( identity );
 		
@@ -114,6 +114,9 @@ namespace Menge
             std::remove( m_threadIdentities.begin(), m_threadIdentities.end(), identity )
             , m_threadIdentities.end() 
             );
+
+        ThreadListener * listener = identity->getListener();
+        listener->join();
     
         m_poolWin32ThreadIdentity.destroyT( identity );
 

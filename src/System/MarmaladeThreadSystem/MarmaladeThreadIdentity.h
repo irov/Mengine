@@ -10,7 +10,10 @@ namespace Menge
 		: public ThreadIdentity
 	{
 	public:
-		MarmaladeThreadIdentity( s3eThread * _thread );
+		MarmaladeThreadIdentity();
+
+    public:
+        void initialize( s3eThread * _thread );
 
 	public:
 		s3eThread * getThread() const;

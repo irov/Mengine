@@ -78,13 +78,13 @@ namespace Menge
     {
         unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
 
-        for( size_t h = _height - 1; h != -1; --h )
+        for( size_t h = _height; h != 0; --h )
         {
-            size_t hp = h * _pitch;
+            size_t hp = (h - 1) * _pitch;
 
-            for( size_t w = _width - 1; w != -1; --w )
+            for( size_t w = _width; w != 0; --w )
             {
-                sweezle_buffer[hp + w * 4 + 3] = sweezle_buffer[hp + w];
+                sweezle_buffer[hp + (w - 1) * 4 + 3] = sweezle_buffer[hp + (w - 1)];
             }
         }
     }
@@ -93,16 +93,19 @@ namespace Menge
     {
         unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
 
-        for( size_t h = _height - 1; h != -1; --h )
+        for( size_t h = _height; h != 0; --h )
         {
-            size_t hp = h * _pitch;
+            size_t hp = (h - 1) * _pitch;
 
-            for( size_t w = _width - 1; w != -1; --w )
+            for( size_t w = _width; w != 0; --w )
             {
-                sweezle_buffer[hp + w * 4 + 0] = sweezle_buffer[hp + w * 3 + 0];
-                sweezle_buffer[hp + w * 4 + 1] = sweezle_buffer[hp + w * 3 + 1];
-                sweezle_buffer[hp + w * 4 + 2] = sweezle_buffer[hp + w * 3 + 2];
-                sweezle_buffer[hp + w * 4 + 3] = 255;
+                unsigned char * sweezle_buffer_rgba = sweezle_buffer + hp + (w - 1) * 4;
+                unsigned char * sweezle_buffer_rgb = sweezle_buffer + hp + (w - 1) * 3;
+
+                sweezle_buffer_rgba[0] = sweezle_buffer_rgb[0];
+                sweezle_buffer_rgba[1] = sweezle_buffer_rgb[1];
+                sweezle_buffer_rgba[2] = sweezle_buffer_rgb[2];
+                sweezle_buffer_rgba[3] = 255;
             }
         }
     }

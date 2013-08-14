@@ -1,6 +1,6 @@
 #	include "OALError.h"
 
-#   include <al.h>
+#   include "al/al.h"
 
 #	include "Logger/Logger.h"
 

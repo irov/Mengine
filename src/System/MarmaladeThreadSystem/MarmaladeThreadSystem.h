@@ -2,7 +2,14 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
+#	include "MarmaladeThreadIdentity.h"
+#   include "MarmaladeThreadMutex.h"
+
 #   include "s3eThread.h"
+
+#   include "Factory/FactoryPool.h"
+
+#   include "stdex/pool.h"
 
 namespace Menge
 {
@@ -26,11 +33,20 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ThreadIdentity * createThread( ThreadListener * _listener ) override;
+		ThreadIdentity * createThread( ThreadListener * _listener, int _priority ) override;
 		bool joinThread( ThreadIdentity * _thread ) override;
 		void sleep( unsigned int _ms ) override;
+
+    public:
+        ThreadMutexInterface * createMutex() override;
 	
 	protected:
+        typedef stdex::template_pool<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;
+        TPoolMarmaladeThreadIdentity m_poolWin32ThreadIdentity;
+
+        typedef FactoryPool<MarmaladeThreadMutex, 16> TPoolMarmaladeThreadMutex;
+        TPoolMarmaladeThreadMutex m_poolMarmaladeThreadMutex;
+
 		typedef std::vector<MarmaladeThreadIdentity *> TVectorPosixThreadIdentity;
 		TVectorPosixThreadIdentity m_threadIdentities;
 

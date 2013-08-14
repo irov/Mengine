@@ -8,8 +8,8 @@
 
 #   include "Utils/Factory/FactoryPool.h"
 
-#	include <al.h>
-#	include <alc.h>
+#	include "al/al.h"
+#	include "al/alc.h"
 
 namespace Menge
 {

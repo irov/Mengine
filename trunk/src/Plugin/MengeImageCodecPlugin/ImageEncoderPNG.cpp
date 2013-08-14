@@ -137,7 +137,7 @@ namespace Menge
 		//else
 		//{
 
-        png_const_bytep png_buffer = (png_const_bytep)_buffer;
+        png_bytep png_buffer = (png_bytep)_buffer;
 
         for( png_uint_32 k = 0; k < height; ++k) 
         {

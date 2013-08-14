@@ -641,7 +641,7 @@ namespace Menge
 
         m_renderService = renderService;
 
-        if( m_renderService->initialize( 8000 ) == false )
+        if( m_renderService->initialize( 32000, 48000 ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeRenderEngine_ Failed to initialize Render Engine"
                 );
@@ -654,52 +654,52 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeSoundEngine_()
     {
-        //LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
+        LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
 
-        //SoundSystemInterface * soundSystem;
-        //if( SERVICE_CREATE( SoundSystem, &soundSystem ) == false )
-        //{
-        //    return false;
-        //}
+        SoundSystemInterface * soundSystem;
+        if( SERVICE_CREATE( SoundSystem, &soundSystem ) == false )
+        {
+            return false;
+        }
 
-        //if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
+        {
+            return false;
+        }
 
-        //if( soundSystem->initialize() == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound System"
-        //        );
+        if( soundSystem->initialize() == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound System"
+                );
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //SoundServiceInterface * soundService;
-        //if( createSoundService( &soundService ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
-        //        );
+        SoundServiceInterface * soundService;
+        if( createSoundService( &soundService ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
+                );
 
-        //    return false;
-        //}
+            return false;
+        }
 
-        //if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
-        //{
-        //    return false;
-        //}
+        if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
+        {
+            return false;
+        }
 
-        //m_soundService = soundService;
+        m_soundService = soundService;
 
-        //if( m_soundService->initialize( false ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
-        //        );
+        if( m_soundService->initialize( false ) == false )
+        {
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
+                );
 
-        //    m_serviceProvider->unregistryService( "SoundService" );
+            m_serviceProvider->unregistryService( "SoundService" );
 
-        //    return false;
-        //}
+            return false;
+        }
 
         return true;
     }
@@ -1210,7 +1210,7 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::cmd( const WString & _command ) override
+    bool MarmaladeApplication::cmd( const WString & _command )
     {
         return false;
     }
@@ -1292,6 +1292,11 @@ namespace Menge
     bool MarmaladeApplication::isDevelopmentMode() const
     {
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeApplication::onEvent( const ConstString & _event, const TMapParams & _params )
+    {
+
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MarmaladeApplication::getMemoryUsage() const

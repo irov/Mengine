@@ -1,7 +1,8 @@
 #	include "MarmaladeThreadSystem.h"
-#	include "MarmaladeThreadIdentity.h"
 
 #	include "Logger/Logger.h"
+
+#   include <unistd.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY(ThreadSystem, Menge::ThreadSystemInterface, Menge::MarmaladeThreadSystem);
@@ -63,8 +64,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadSystem::finalize()
 	{
-
-
 		for(TVectorPosixThreadIdentity::iterator
 			it = m_threadIdentities.begin(),
 			it_end = m_threadIdentities.end();
@@ -78,7 +77,7 @@ namespace Menge
 		m_threadIdentities.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentity * MarmaladeThreadSystem::createThread( ThreadListener * _thread )
+	ThreadIdentity * MarmaladeThreadSystem::createThread( ThreadListener * _thread, int _priority )
 	{
         s3eThread * thread = s3eThreadCreate( &Detail::s_tread_job, _thread, NULL );
 
@@ -88,10 +87,12 @@ namespace Menge
                 , s3eThreadGetErrorString()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 		
-		MarmaladeThreadIdentity * identity = new MarmaladeThreadIdentity(thread);
+		MarmaladeThreadIdentity * identity = m_poolWin32ThreadIdentity.createT(); 
+        identity->initialize( thread );
+        
 		m_threadIdentities.push_back( identity );
 	
 		return identity;
@@ -103,7 +104,7 @@ namespace Menge
 
 		s3eThread * thread = identity->getThread();
 
-		ThreadListener * listener = NULL;
+		ThreadListener * listener = nullptr;
 		s3eResult result = s3eThreadJoin( thread, (void**)&listener );
 
 		if( result == S3E_RESULT_ERROR )
@@ -122,6 +123,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadSystem::sleep( unsigned int _ms )
 	{
+        ::usleep( _ms * 1000 );
 	}
 	//////////////////////////////////////////////////////////////////////////
+    ThreadMutexInterface * MarmaladeThreadSystem::createMutex()
+    {
+        MarmaladeThreadMutex * mutex = m_poolMarmaladeThreadMutex.createObjectT();
+        mutex->initialize( m_serviceProvider );
+
+        return mutex;
+    }
 }

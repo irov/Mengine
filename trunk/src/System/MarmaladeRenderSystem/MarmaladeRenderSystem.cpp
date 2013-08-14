@@ -474,7 +474,7 @@ namespace Menge
 		glDeleteBuffers( 1, &bufId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint16 * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle )
+	void * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags )
 	{
 		TMapIBufferMemory::iterator it_find = m_iBuffersMemory.find( _ibHandle );
 
@@ -483,7 +483,7 @@ namespace Menge
 			return nullptr;
 		}
 		
-        MemoryRange memRange = { it_find->second.pMem, it_find->second.size, 0 };
+        MemoryRange memRange = { it_find->second.pMem, _size, _offset, _flags };
 		m_iBuffersLocks.insert( std::make_pair( _ibHandle, memRange ) );
 		
         uint16 * mem = reinterpret_cast<uint16 *>(memRange.pMem);

@@ -49,6 +49,8 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)("OpenAL device specifier [%s]\n"
             , str                
             );
+
+        //alcInit();
 				
         m_device = alcOpenDevice( nullptr );
 		//m_device = alcOpenDevice( "Generic Software" );        

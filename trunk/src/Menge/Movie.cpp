@@ -284,6 +284,8 @@ namespace Menge
 			return;
 		}
 
+        m_playIterator = this->getPlayCount();
+
 		this->setTiming( 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////

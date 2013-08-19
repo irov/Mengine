@@ -9,7 +9,7 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-	int ReadIOWrapper(void * _opaque, uint8_t *_bufer, int bufferSize)
+	static int ReadIOWrapper(void * _opaque, uint8_t *_bufer, int bufferSize)
 	{
 		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
 
@@ -18,7 +18,7 @@ namespace Menge
         return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int64_t SeekIOWrapper(void *_opaque, int64_t _offset, int _whence)
+	static int64_t SeekIOWrapper(void *_opaque, int64_t _offset, int _whence)
 	{
 		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
 		
@@ -56,7 +56,8 @@ namespace Menge
         , m_imgConvertContextCache(true)
 		, m_outputPixelFormat(PIX_FMT_RGBA)
 		, m_videoStreamId(-1)
-		, m_pts(0.f)        
+		, m_pts(0.f)
+        , m_pitch(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -229,9 +230,9 @@ namespace Menge
 		m_dataInfo.frameWidth = m_codecContext->width;
 
         double fps = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
-		m_dataInfo.fps = (float)fps;
+		m_dataInfo.fps = (size_t)fps;
 
-		if( int(m_dataInfo.fps) == 0 )
+		if( m_dataInfo.fps == 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Frame rate "
                 );
@@ -239,7 +240,7 @@ namespace Menge
 			return false; 
 		}
 		
-		m_dataInfo.frameTiming = 1000.f / m_dataInfo.fps;
+		m_dataInfo.frameTiming = 1000.f / float(m_dataInfo.fps);
 
         int64_t len = m_formatContext->duration - m_formatContext->start_time;
 
@@ -275,63 +276,27 @@ namespace Menge
         return true;
     }
 	////////////////////////////////////////////////////////////////////////// 
-	size_t VideoDecoderFFMPEG::decode( void * _buffer, size_t _pitch )
+	size_t VideoDecoderFFMPEG::decode( void * _buffer, size_t _bufferSize )
 	{
-        //int isGotPicture = 0;
-        //int decode_bite = 0;
-        
-        //while( isGotPicture == 0 )
-        //{
-        //    decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &m_packet );
-
-        //    printf("VideoDecoderFFMPEG::decode %d\n"
-        //        , decode_bite
-        //        );
-
-        //    if( decode_bite == 0 )
-        //    {
-        //        break;
-        //    }
-
-        //    if( decode_bite < 0 )
-        //    {
-        //        //av_free_packet( &m_packet );
-
-        //        LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode we don`t get a picture"
-        //            );
-
-        //        return 0;
-        //    }            
-        //}
-
-        //av_free_packet( &m_packet );
-
-        //return decode_bite;
-
-        return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoderFFMPEG::fillFrame( void * _buffer, size_t _pitch )
-    {
         uint8_t * ffmpeg_buffer = (uint8_t *)_buffer;
 
         AVPicture picture;
         int fill_error = avpicture_fill( &picture, ffmpeg_buffer, (::PixelFormat) m_outputPixelFormat,
-			m_dataInfo.frameWidth, m_dataInfo.frameHeight );
+            m_dataInfo.frameWidth, m_dataInfo.frameHeight );
 
         if( fill_error < 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::fillFrame avpicture_fill %d"
+            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode avpicture_fill %d"
                 , fill_error
                 );
 
-            return false;
+            return 0;
         }
 
-        picture.linesize[0] = _pitch;
+        picture.linesize[0] = m_pitch;
 
-		int scale_height = sws_scale( m_imgConvertContext, m_frame->data, m_frame->linesize, 0, 
-			m_codecContext->height, picture.data, picture.linesize );
+        int scale_height = sws_scale( m_imgConvertContext, m_frame->data, m_frame->linesize, 0, 
+            m_codecContext->height, picture.data, picture.linesize );
 
         if( scale_height < 0 )
         {
@@ -339,11 +304,11 @@ namespace Menge
                 , scale_height
                 );
 
-            return false;
+            return 0;
         }
-               	
-		return true;
-	}
+
+        return _bufferSize;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( float & _pts )
 	{		
@@ -475,6 +440,11 @@ namespace Menge
 
 		return true;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void VideoDecoderFFMPEG::setPitch( size_t _pitch )
+    {
+        m_pitch = _pitch;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::eof()
 	{

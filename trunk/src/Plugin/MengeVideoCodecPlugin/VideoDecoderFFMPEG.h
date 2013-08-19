@@ -33,13 +33,16 @@ namespace Menge
 
     public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
-        bool fillFrame( void * _buffer, size_t _pitch ) override;
 	
 	public:	
 		bool eof() override;
 		//int sync( float _timing ) override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;
+
+
+    public:
+        void setPitch( size_t _pitch ) override;
 
 	public:		
 		EVideoDecoderReadState readNextFrame( float & _pts ) override;
@@ -67,6 +70,8 @@ namespace Menge
 		
 		//float m_timing;
 		float m_pts;
+
+        size_t m_pitch;
 		
 	private:
 		void clear_();

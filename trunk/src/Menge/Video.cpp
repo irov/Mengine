@@ -244,10 +244,12 @@ namespace Menge
         (void)_time;
         (void)_enumerator;
 
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
+
+        m_playIterator = this->getPlayCount();
 
 		return true;
 	}
@@ -440,6 +442,8 @@ namespace Menge
 
             return;
         }
+
+        m_playIterator = this->getPlayCount();
 		
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
@@ -531,7 +535,8 @@ namespace Menge
         int pitch = 0;
 		unsigned char* lockRect = texture->lock( &pitch, rect, false );
 
-        bool result = m_videoDecoder->fillFrame( lockRect, pitch );
+		m_videoDecoder->setPitch( pitch );
+        bool result = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
        
 		texture->unlock();
                 

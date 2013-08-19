@@ -230,9 +230,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( this->loadRGBData_( buffer, pitch, imageDecoderRGB ) == false )
+        if( this->loadAlphaData_( buffer, pitch, imageDecoderAlpha ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load rgb data '%s'"
+            LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load alpha data '%s'"
                 , this->getName().c_str()
                 , _fileNameAlpha.c_str() 
                 );
@@ -244,9 +244,9 @@ namespace Menge
             return nullptr;
         }
 
-        if( this->loadAlphaData_( buffer, pitch, imageDecoderAlpha ) == false )
+		if( this->loadRGBData_( buffer, pitch, imageDecoderRGB ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load alpha data '%s'"
+            LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load rgb data '%s'"
                 , this->getName().c_str()
                 , _fileNameAlpha.c_str() 
                 );

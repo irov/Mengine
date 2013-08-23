@@ -35,6 +35,11 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void TextManager::initialize( size_t _size )
+	{
+		m_textMap.reserve(_size);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
 	{
 		TMapTextEntry::iterator it_find = m_textMap.find( _key );

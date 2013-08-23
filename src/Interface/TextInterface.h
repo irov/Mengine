@@ -22,7 +22,7 @@ namespace Menge
         SERVICE_DECLARE("TextService")
 
     public:
-		virtual void initialize( size_t _size ) {};
+		virtual void initialize( size_t _size ) = 0;
         virtual void addTextEntry( const ConstString& _key, const TextEntry& _entry ) = 0;
         virtual const TextEntry & getTextEntry( const ConstString& _key ) const = 0;
         virtual bool existText( const ConstString& _key, const TextEntry ** _entry ) const = 0;

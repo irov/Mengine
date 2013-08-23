@@ -8,6 +8,9 @@
 #ifndef MAGIC_PARTICLES_LIBRARY
 #define MAGIC_PARTICLES_LIBRARY
 
+#pragma warning (disable: 4068)
+#pragma anon_unions
+
 #include <math.h>
 
 #ifdef __cplusplus
@@ -72,7 +75,7 @@ struct MAGIC_PARTICLE
 	float size;
 	float size_factor;
 	float angle;
-	unsigned long color;
+	unsigned int color;
 	unsigned int frame;
 };
 
@@ -161,7 +164,7 @@ struct MAGIC_PARTICLE_VERTEXES
 	MAGIC_POSITION vertex4;
 	float u4,v4;
 
-	unsigned long color;
+	unsigned int color;
 };
 
 // eng: MAGIC_RENDERING - structure taking part in emitter visualization
@@ -851,19 +854,19 @@ const unsigned short* Magic_UTF8to16(const unsigned char* str);
 
 // eng: Converts UTF32 string into UTF8
 // rus: Конвертирует строку типа UTF32 в строку типа UTF8
-const unsigned char* Magic_UTF32to8(const unsigned long* str);
+const unsigned char* Magic_UTF32to8(const unsigned int* str);
 
 // eng: Converts UTF8 string into UTF32
 // rus: Конвертирует строку типа UTF8 в строку типа UTF32
-const unsigned long* Magic_UTF8to32(const unsigned char* str);
+const unsigned int* Magic_UTF8to32(const unsigned char* str);
 
 // eng: Converts UTF32 string into UTF16
 // rus: Конвертирует строку типа UTF32 в строку типа UTF16
-const unsigned short* Magic_UTF32to16(const unsigned long* str);
+const unsigned short* Magic_UTF32to16(const unsigned int* str);
 
 // eng: Converts UTF16 string into UTF32
 // rus: Конвертирует строку типа UTF16 в строку типа UTF32
-const unsigned long* Magic_UTF16to32(const unsigned short* str);
+const unsigned int* Magic_UTF16to32(const unsigned short* str);
 
 // --------------------------------------------------------------------------------------
 
@@ -1108,7 +1111,6 @@ int Magic_GetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
 // eng: Sets the coordinates of the obstacle
 // ru: Устанавливает координаты препятствия
 int Magic_SetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
-
 
 // Выгрузка всех эмиттеров
 void Magic_UnloadAllEmitters();

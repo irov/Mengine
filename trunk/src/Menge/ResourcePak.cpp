@@ -209,7 +209,7 @@ namespace Menge
         InputStreamInterfacePtr xml_text = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( _pakName, _path );
 
-        if( xml_text == NULL )
+        if( xml_text == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource invalid open file %s:%s"
                 , _pakName.c_str()

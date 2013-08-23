@@ -51,7 +51,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		int fileSize = file->size();
+		size_t fileSize = file->size();
 
         static TBlobject fileBuffer;
         fileBuffer.resize(fileSize);

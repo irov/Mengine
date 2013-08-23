@@ -153,13 +153,18 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool FileEngine::hasFileGroup( const ConstString& _fileSystemName ) const
+    bool FileEngine::hasFileGroup( const ConstString& _fileSystemName, FileGroupInterface ** _fileGroup ) const
     {
         TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 
         if( it_find == m_fileSystemMap.end() )
         {
             return false;
+        }
+
+        if( _fileGroup != nullptr )
+        {
+            *_fileGroup = it_find->second;
         }
 
         return true;

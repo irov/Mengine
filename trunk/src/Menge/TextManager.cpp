@@ -42,26 +42,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
 	{
-		TMapTextEntry::iterator it_find = m_textMap.find( _key );
-		if( it_find != m_textMap.end() )
+		TextEntry * textEntry = nullptr;
+		if( m_textMap.has( _key, &textEntry ) == true )
 		{
 			LOGGER_INFO(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s"
 				, _key.c_str()
 				);
 
-			it_find->second = _entry;
+			*textEntry = _entry;
 
             return;
 		}
 
-        m_textMap.insert( std::make_pair( _key, _entry ) );		
+        m_textMap.insert( _key, _entry );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TextEntry & TextManager::getTextEntry( const ConstString& _key ) const
 	{
-		TMapTextEntry::const_iterator it_find = m_textMap.find( _key );
-		
-		if( it_find == m_textMap.end() )
+		const TextEntry * textEntry = nullptr;
+		if( m_textMap.has( _key, &textEntry ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
@@ -74,26 +73,16 @@ namespace Menge
 			return emptyEntry;
 		}
 
-        const TextEntry & entry = it_find->second;
+        const TextEntry & entry = *textEntry;
         
         return entry;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existText( const ConstString& _key, const TextEntry ** _entry ) const
 	{
-		TMapTextEntry::const_iterator it_find = m_textMap.find( _key );
+		bool result = m_textMap.has( _key, _entry );
 
-        if( it_find == m_textMap.end() )
-        {
-            return false;
-        }
-
-        if( _entry != NULL )
-        {
-            *_entry = &it_find->second;
-        }
-
-		return true;
+		return result;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::setDefaultResourceFontName( const ConstString & _fontName )

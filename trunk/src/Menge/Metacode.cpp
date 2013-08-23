@@ -47,7 +47,7 @@ namespace Metacode
         unsigned int size;
         ar.readSize( size );
 
-        const char * value = ar.current_buff<const char *>();
+        const char * value = ar.current_buff<char>();
         ar.skip( size );
 
         _stringSize = size;

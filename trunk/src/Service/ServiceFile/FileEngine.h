@@ -33,7 +33,7 @@ namespace Menge
 		void unmountFileGroup( const ConstString& _fileSystemName ) override;
 
     public:
-        bool hasFileGroup( const ConstString& _fileSystemName ) const override;
+        bool hasFileGroup( const ConstString& _fileSystemName, FileGroupInterface ** _fileGroup ) const override;
         FileGroupInterface * getFileGroup( const ConstString& _fileSystemName ) const override;
         
     public:

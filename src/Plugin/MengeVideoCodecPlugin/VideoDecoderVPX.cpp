@@ -27,10 +27,10 @@ namespace Menge
         unsigned int  val;
         const unsigned char *mem = (const unsigned char *)vmem;
 
-        val = mem[3] << 24;
-        val |= mem[2] << 16;
-        val |= mem[1] << 8;
-        val |= mem[0];
+        val = mem[0] << 24;
+        val |= mem[1] << 16;
+        val |= mem[2] << 8;
+        val |= mem[3];
 
         return val;
     }

@@ -1510,6 +1510,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
         {
+
             if( _node->isActivate() == false )
             {
                 return 0;

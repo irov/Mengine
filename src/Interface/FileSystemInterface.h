@@ -105,7 +105,7 @@ namespace Menge
         virtual void unmountFileGroup( const ConstString& _fileSystemName ) = 0;
 
     public:
-        virtual bool hasFileGroup( const ConstString& _fileSystemName ) const = 0;
+        virtual bool hasFileGroup( const ConstString& _fileSystemName, FileGroupInterface ** _fileGroup ) const = 0;
         virtual FileGroupInterface * getFileGroup( const ConstString& _fileSystemName ) const = 0;
 
 	public:

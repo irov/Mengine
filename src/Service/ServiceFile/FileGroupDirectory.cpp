@@ -81,7 +81,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::existFile( const FilePath& _filename )
 	{
-		bool exist = FILE_SYSTEM(m_serviceProvider)->existFile( m_path, _filename );
+		bool exist = FILE_SYSTEM(m_serviceProvider)
+            ->existFile( m_path, _filename );
 
         return exist;
 	}

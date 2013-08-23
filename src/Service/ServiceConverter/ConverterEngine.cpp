@@ -108,7 +108,7 @@ namespace Menge
         options.inputFileName = _in;
 
         if( FILE_SERVICE(m_serviceProvider)
-            ->hasFileGroup( _category ) == false )
+            ->hasFileGroup( _category, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert: can't get file system '%s' for converter '%s'"
                 , _category.c_str()

@@ -26,6 +26,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
+		void initialize( size_t _size ) override;
 		const TextEntry & getTextEntry( const ConstString& _key ) const override;
 
 		bool existText( const ConstString& _key, const TextEntry ** _entry ) const override;

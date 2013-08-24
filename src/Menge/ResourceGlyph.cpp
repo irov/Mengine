@@ -29,10 +29,9 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	const Glyph * ResourceGlyph::getGlyph( GlyphChar _id ) const
-	{
-		TMapGlyph::const_iterator it_found = m_glyphs.find( _id );
-
-		if( it_found == m_glyphs.end() )
+	{		
+		const Glyph * glyph = nullptr;
+		if( m_glyphs.has( _id, &glyph ) == false )
 		{
             size_t code = _id.getCode();
 
@@ -44,9 +43,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        const Glyph & glyph = it_found->second;
-
-		return &glyph;
+		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceGlyph::hasGlyph( GlyphChar _id, const Glyph ** _glyph ) const
@@ -60,7 +57,9 @@ namespace Menge
 
         if( _glyph )
         {
-            *_glyph = &it_found->second;
+			const Glyph & glyph = m_glyphs.get_value( it_found );
+
+            *_glyph = &glyph;
         }
 
 		return true;
@@ -152,8 +151,10 @@ namespace Menge
 
 		Glyph gl(uv, _offset, ratio, size);
 
-		TMapGlyph::iterator it_insert = m_glyphs.insert( std::make_pair( _glyph, gl ) ).first;
+		TMapGlyph::iterator it_insert = m_glyphs.insert( _glyph, gl ).first;
 		
-		return it_insert->second;
+		Glyph & glyph = m_glyphs.get_value( it_insert );
+
+		return glyph;
 	}
 }

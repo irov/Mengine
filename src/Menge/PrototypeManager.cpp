@@ -42,7 +42,12 @@ namespace Menge
         key.category = _category;
         key.prototype = _prototype;
 
-        m_prototypes.replace( std::make_pair( key, _generator) ); //replace
+		TMapPrototypes::insert_type insert_it = m_prototypes.insert( key, _generator );
+
+		if( insert_it.second == false )
+		{
+			m_prototypes.set_value( insert_it.first, _generator );
+		}
 
         LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"
             , _category.c_str()
@@ -75,7 +80,7 @@ namespace Menge
 
         if( _generator != nullptr )
         {
-            *_generator = it_found->second;
+            *_generator = m_prototypes.get_value( it_found );
         }
 
 		return true;

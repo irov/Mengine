@@ -1060,7 +1060,7 @@ namespace Menge
 		layer_slot->localHide( true );
         
 
-		m_slots.insert( std::make_pair(_layer.name, layer_slot) );
+		m_slots.insert( _layer.name, layer_slot );
 
 		this->addMovieNode_( _layer, layer_slot );
 		
@@ -1077,7 +1077,7 @@ namespace Menge
         //layer_slot->enable();
         sceneeffect_slot->localHide( true );
 
-        m_sceneEffects.insert( std::make_pair(_layer.name, sceneeffect_slot) );
+        m_sceneEffects.insert( _layer.name, sceneeffect_slot );
 
         this->addMovieNode_( _layer, sceneeffect_slot );
 
@@ -1193,7 +1193,7 @@ namespace Menge
 
         layer_hotspotimage->localHide( true );
 
-        m_sockets.insert( std::make_pair(_layer.name, layer_hotspotimage) );
+        m_sockets.insert( _layer.name, layer_hotspotimage );
 
         this->addMovieNode_( _layer, layer_hotspotimage );
 
@@ -1214,7 +1214,7 @@ namespace Menge
 
         layer_hotspotshape->localHide( true );
 
-        m_sockets.insert( std::make_pair(_layer.name, layer_hotspotshape) );
+        m_sockets.insert( _layer.name, layer_hotspotshape );
 
         this->addMovieNode_( _layer, layer_hotspotshape );
 
@@ -1303,7 +1303,7 @@ namespace Menge
         layer_movie->localHide( true );
         layer_movie->setParentMovie( true );
 
-        m_subMovies.insert( std::make_pair(_layer.name, layer_movie) );
+        m_subMovies.insert( _layer.name, layer_movie );
 
         this->addMovieNode_( _layer, layer_movie );
 
@@ -1325,7 +1325,7 @@ namespace Menge
 
 		movie_internal->localHide(true);
 
-        m_internals.insert( std::make_pair(_layer.name, movie_internal) );
+        m_internals.insert( _layer.name, movie_internal );
 
 		this->addMovieNode_( _layer, movie_internal );
 
@@ -1415,7 +1415,7 @@ namespace Menge
         layer_event->setResourceMovie( m_resourceMovie );
         layer_event->localHide( true );
 
-        m_events.insert( std::make_pair(_layer.name, layer_event) );
+        m_events.insert( _layer.name, layer_event );
 
         this->addMovieNode_( _layer, layer_event );
 

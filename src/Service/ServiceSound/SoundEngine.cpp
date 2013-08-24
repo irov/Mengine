@@ -61,7 +61,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            SoundSourceDesc * source = it->second;
+            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
             if( source->taskSoundBufferUpdate != nullptr )
             {
@@ -95,7 +95,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = it->second;
+            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
 			if( source->state == ESS_PLAYING )
 			{
@@ -123,7 +123,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            SoundSourceDesc * source = it->second;
+            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
             switch( source->state )
             {
@@ -155,7 +155,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = it->second;
+            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
 			switch( source->state )
             {
@@ -236,7 +236,7 @@ namespace Menge
 		source->looped = false;
 
 		TMapSoundSource::iterator it_insert = 
-            m_soundSourceMap.insert( std::make_pair( soundId, source ) ).first;
+            m_soundSourceMap.insert( soundId, source ).first;
         
         this->updateSourceVolume_( source, 1.f );
 
@@ -337,7 +337,7 @@ namespace Menge
 			return;
 		}
 
-        SoundSourceDesc * source = it_find->second;
+        SoundSourceDesc * source = m_soundSourceMap.get_value( it_find );
 
         if( source->taskSoundBufferUpdate != nullptr )
         {
@@ -401,7 +401,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			SoundSourceDesc * source = it->second;
+			SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
 			switch( source->state )
 			{
@@ -558,30 +558,16 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SoundEngine::getSoundSourceDesc_( unsigned int _emitterId, SoundSourceDesc ** _desc )
     {
-        TMapSoundSource::iterator it_find = m_soundSourceMap.find( _emitterId );
+        bool result = m_soundSourceMap.has( _emitterId, _desc );
 
-        if( it_find == m_soundSourceMap.end() )
-        {
-            return false;
-        }
-
-        *_desc = it_find->second;
-
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundEngine::getSoundSourceDesc_( unsigned int _emitterId, const SoundSourceDesc ** _desc ) const
     {
-        TMapSoundSource::const_iterator it_find = m_soundSourceMap.find( _emitterId );
+		bool result = m_soundSourceMap.has( _emitterId, _desc );
 
-        if( it_find == m_soundSourceMap.end() )
-        {
-            return false;
-        }
-
-        *_desc = it_find->second;
-
-        return true;
+		return result;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::play( unsigned int _emitter )

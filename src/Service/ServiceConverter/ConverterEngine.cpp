@@ -11,7 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ConverterEngine::ConverterEngine()
-        : m_serviceProvider(0)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ namespace Menge
             , _type.c_str()
             );
 
-		m_mapConverterSystem.insert( std::make_pair(_type, _interface) );
+		m_mapConverterSystem.insert( _type, _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConverterEngine::unregisterConverter( const ConstString& _type )
@@ -61,19 +61,20 @@ namespace Menge
                 , _type.c_str()
                 );
 
-			return 0;
+			return nullptr;
 		}
 
-		ConverterInterface * decoder = 
-			it_find->second->createConverter();
+		ConverterFactoryInterface * converter = m_mapConverterSystem.get_value( it_find );
 
-		if( decoder == 0 )
+		ConverterInterface * decoder = converter->createConverter();
+
+		if( decoder == nullptr )
 		{
             LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter invalid create converter %s"
                 , _type.c_str()
                 );
 
-			return 0;
+			return nullptr;
 		}
 
 		if( decoder->initialize() == false )
@@ -84,7 +85,7 @@ namespace Menge
 
 			decoder->destroy();
 
-			return 0;
+			return nullptr;
 		}
 
 		return decoder;

@@ -50,20 +50,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Glyph::addKerning( GlyphChar _char, float _kerning )
 	{		
-		m_kernings.insert( std::make_pair( _char, _kerning ) );
+		m_kernings.insert( _char, _kerning );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Glyph::getKerning( GlyphChar _char ) const
 	{
-		TMapKerning::const_iterator it_found = m_kernings.find( _char );
-
-		if( it_found == m_kernings.end() )
+		const float * kerning;
+		if( m_kernings.has( _char, &kerning ) == false )
 		{
 			return 0.f;
 		}
 
-		float kerning = it_found->second;
-
-		return kerning;
+		return *kerning;
 	}
 }

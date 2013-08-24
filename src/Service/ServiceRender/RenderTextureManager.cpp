@@ -59,19 +59,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const
     {
-        TMapTextures::const_iterator it_find = m_textures.find( _filename );
+		RenderTextureInterface * texture;
+		bool result = m_textures.has( _filename, &texture );
 
-        if( it_find == m_textures.end() )
-        {
-            return false;
-        }
+		if( _texture != nullptr )
+		{
+			*_texture = texture;
+		}
 
-        if( _texture != nullptr )
-        {
-            *_texture = it_find->second;
-        }
-
-        return true;
+		return result;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath& _filename )
@@ -318,7 +314,7 @@ namespace Menge
         _texture->setFileName( _filename );
 
         RenderTextureInterface * texture_ptr = _texture.get();
-        m_textures.insert( std::make_pair(_filename, texture_ptr) );
+        m_textures.insert( _filename, texture_ptr );
 
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s %d:%d"
             , _filename.c_str()

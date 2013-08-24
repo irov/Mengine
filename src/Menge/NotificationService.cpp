@@ -37,28 +37,25 @@ namespace Menge
 		{
 			TVectorObservers new_observers;
 
-			it_find = m_mapObserves.insert( std::make_pair(_id, new_observers) ).first;
+			it_find = m_mapObserves.insert( _id, new_observers ).first;
 		}
 
-		TVectorObservers & observers = it_find->second;
+		TVectorObservers & observers = m_mapObserves.get_value( it_find );
 
 		observers.push_back( _observer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::removeObserver( size_t _id, Observer * _observer )
 	{
-		TMapObservers::iterator it_find = m_mapObserves.find( _id );
-
-		if( it_find == m_mapObserves.end() )
+		TVectorObservers * observers;
+		if( m_mapObserves.has( _id, &observers ) == false )
 		{
 			return;
 		}
 
-		TVectorObservers & observers = it_find->second;
+		TVectorObservers::iterator it_observer = std::find( observers->begin(), observers->end(), _observer );
 
-		TVectorObservers::iterator it_observer = std::find( observers.begin(), observers.end(), _observer );
-
-		if( it_observer == observers.end() )
+		if( it_observer == observers->end() )
 		{
 			return;
 		}
@@ -67,23 +64,20 @@ namespace Menge
 
 		delete observer;
 
-		observers.erase( it_observer );
+		observers->erase( it_observer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::visitObservers( size_t _id, VisitorObserver * _visitor )
 	{
-		TMapObservers::iterator it_find = m_mapObserves.find( _id );
-
-		if( it_find == m_mapObserves.end() )
+		TVectorObservers * observers;
+		if( m_mapObserves.has( _id, &observers ) == false )
 		{
 			return;
 		}
-
-		TVectorObservers & observers = it_find->second;
 		
 		for( TVectorObservers::iterator
-			it = observers.begin(),
-			it_end = observers.end();
+			it = observers->begin(),
+			it_end = observers->end();
 		it != it_end;
 		++it )
 		{

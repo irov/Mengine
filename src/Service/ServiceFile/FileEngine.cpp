@@ -105,7 +105,7 @@ namespace Menge
 			return false;
 		}
 
-		m_fileSystemMap.insert( std::make_pair( _fileSystemName, fs ) );
+		m_fileSystemMap.insert( _fileSystemName, fs );
 
 		return true;
 	}
@@ -155,35 +155,22 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool FileEngine::hasFileGroup( const ConstString& _fileSystemName, FileGroupInterface ** _fileGroup ) const
     {
-        TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		bool result = m_fileSystemMap.has( _fileSystemName, _fileGroup );
 
-        if( it_find == m_fileSystemMap.end() )
-        {
-            return false;
-        }
-
-        if( _fileGroup != nullptr )
-        {
-            *_fileGroup = it_find->second;
-        }
-
-        return true;
+		return result;
     }
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupInterface * FileEngine::getFileGroup( const ConstString& _fileSystemName ) const
 	{
-		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
-
-		if( it_find == m_fileSystemMap.end() )
+		FileGroupInterface * fileSystem;
+		if( m_fileSystemMap.has( _fileSystemName, &fileSystem ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Error: (FileEngine::createInputFile) FileSystem '%s' not mount"
 				, _fileSystemName.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
-
-		FileGroupInterface * fileSystem = it_find->second;
 
 		return fileSystem;
 	}

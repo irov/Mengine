@@ -214,7 +214,8 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            delete it->second;
+			RenderMaterialGroup * materialGroup = m_mapMaterialGroup.get_value(it);
+            delete materialGroup;
         }
 
         m_mapMaterialGroup.clear();
@@ -230,27 +231,22 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialGroup * RenderMaterialManager::getMaterialGroup( const ConstString & _name ) const
     {
-        TMapMaterialGroup::const_iterator it_found = m_mapMaterialGroup.find( _name );
-
-        if( it_found == m_mapMaterialGroup.end() )
+        const RenderMaterialGroup * materialGroup = nullptr;
+        if( m_mapMaterialGroup.has( _name, &materialGroup ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::getMaterialGroup: not exsist RenderMaterial '%s'"
                 , _name.c_str()
                 );
 
             return nullptr;
-        }
-
-        RenderMaterialGroup * materialGroup = it_found->second;
+        }        
 
         return materialGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::createMaterialGroup( const ConstString & _name, const RenderMaterial & _material )
     {
-        TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
-
-        if( it_found != m_mapMaterialGroup.end() )
+        if( m_mapMaterialGroup.exist( _name ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::createMaterialGroup: MaterialGroup '%s' is already created!"
                 , _name.c_str()
@@ -349,16 +345,16 @@ namespace Menge
             stage.filter = TF_LINEAR;
         }        
 
-        m_mapMaterialGroup.insert( std::make_pair(_name, materialGroup) );
+        m_mapMaterialGroup.insert( _name, materialGroup );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialManager::removeMaterialGroup( const ConstString & _name )
     {
-        TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
+        RenderMaterialGroup * materialGroup = nullptr;
 
-        if( it_found == m_mapMaterialGroup.end() )
+        if( m_mapMaterialGroup.has( _name, &materialGroup ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::removeMaterialGroup: not exsist RenderMaterial '%s'"
                 , _name.c_str()
@@ -367,8 +363,8 @@ namespace Menge
             return;
         }
 
-        delete it_found->second;
+        delete materialGroup;
 
-        m_mapMaterialGroup.erase( it_found );
+        m_mapMaterialGroup.erase( _name );
     }
 }

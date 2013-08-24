@@ -204,6 +204,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool OALSoundBufferStream::resume( ALenum _source )
     {
+		(void)_source;
+
         alSourcePlay( m_sourceId );
         OAL_CHECK_ERROR(m_serviceProvider);
 

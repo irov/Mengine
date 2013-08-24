@@ -36,7 +36,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerDecoder( const ConstString& _type, DecoderFactoryInterface * _interface )
 	{
-		m_mapDecoderSystem.insert( std::make_pair(_type, _interface) );
+		m_mapDecoderSystem.insert( _type, _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::unregisterDecoder( const ConstString& _type )
@@ -46,7 +46,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerEncoder( const ConstString& _type, EncoderFactoryInterface * _interface )
 	{
-		m_mapEncoderSystem.insert( std::make_pair(_type, _interface) );
+		m_mapEncoderSystem.insert( _type, _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::unregisterEncoder( const ConstString& _type )
@@ -56,18 +56,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream )
 	{
-		TMapDecoderSystem::iterator it_find = m_mapDecoderSystem.find( _type );
-		
-		if( it_find == m_mapDecoderSystem.end() )
+		DecoderFactoryInterface * decoderFactory = nullptr;
+		if( m_mapDecoderSystem.has( _type, &decoderFactory ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("CodecEngine::createDecoder not found codec %s"
                 , _type.c_str()
                 );
 
 			return nullptr;
-		}
-
-        DecoderFactoryInterface * decoderFactory = it_find->second;
+		}        
 
 		DecoderInterfacePtr decoder = decoderFactory->createDecoder();
 
@@ -86,14 +83,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     EncoderInterfacePtr CodecEngine::createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
     {
-        TMapEncoderSystem::iterator it_find = m_mapEncoderSystem.find( _type );
-
-        if( it_find == m_mapEncoderSystem.end() )
+		EncoderFactoryInterface * encoderSystem = nullptr;
+        if( m_mapEncoderSystem.has( _type, &encoderSystem ) == false )
         {
+			LOGGER_ERROR(m_serviceProvider)("CodecEngine::createEncoder not found codec %s"
+				, _type.c_str()
+				);
+
             return nullptr;
         }
-
-        EncoderFactoryInterface * encoderSystem = it_find->second;
 
         EncoderInterfacePtr encoder = encoderSystem->createEncoder();
 
@@ -112,11 +110,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool CodecEngine::registerCodecExt( const String & _ext, const ConstString & _codecType )
 	{
-		TMapCodecTypes::iterator it_find = m_codecTypes.find( _ext );
+		TMapCodecTypes::insert_type insert_ret = m_codecTypes.insert( _ext, _codecType );
 
-		if( it_find != m_codecTypes.end() )
+		if( insert_ret.second == false )
 		{
-            const ConstString & alredyCodec = it_find->second;
+			const ConstString & alredyCodec = m_codecTypes.get_value( insert_ret.first );
 
 			LOGGER_ERROR(m_serviceProvider)("CodecEngine::registerCodecExt '%s' '%s' alredy registry in '%s'"
 				, _ext.c_str()
@@ -126,8 +124,6 @@ namespace Menge
 
 			return false;
 		}
-
-		m_codecTypes.insert( std::make_pair(_ext, _codecType) );
 
 		return true;
 	}
@@ -140,7 +136,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const String & ext = it->first;
+            const String & ext = m_codecTypes.get_key( it );
 
             const char * str = _path.c_str();
 
@@ -156,7 +152,7 @@ namespace Menge
                 continue;
             }
 
-            const ConstString & codecType = it->second;
+            const ConstString & codecType = m_codecTypes.get_value( it );
             
             return codecType;
         }

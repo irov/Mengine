@@ -157,16 +157,16 @@ namespace Menge
 	{
         this->removeGlobalModule( "Menge" );
 
-		for( TMapModules::iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
-		{
-            PyObject * module = it->second;
-            
-            //pybind::module_fini( module );			
-		}
+		//for( TMapModules::iterator
+		//	it = m_modules.begin(),
+		//	it_end = m_modules.end();
+		//it != it_end;
+		//++it )
+		//{
+  //          //PyObject * module = m_modules.get_value(it);
+  //          
+  //          //pybind::module_fini( module );			
+		//}
 
 		m_modules.clear();
                 
@@ -179,7 +179,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            ScriptClassInterface * scriptClass = it->second;
+            ScriptClassInterface * scriptClass = m_scriptWrapper.get_value(it);
 			
             scriptClass->destroy();
 		}
@@ -232,11 +232,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const ConstString & _name )
 	{
-		TMapModules::iterator it_find = m_modules.find( _name );
+		PyObject * obj;
 
-		if( it_find != m_modules.end() )
+		if( m_modules.has( _name, &obj ) == true )
 		{
-			return it_find->second;
+			return obj;
 		}
 
 		PyObject * module = nullptr;
@@ -275,7 +275,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		m_modules.insert( std::make_pair( _name, module ) );
+		m_modules.insert( _name, module );
 
 		return module;
 	}
@@ -372,28 +372,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper )
 	{
-		TMapScriptWrapper::iterator it_find = m_scriptWrapper.find( _type );
-
-		if( it_find == m_scriptWrapper.end() )
-		{
-			m_scriptWrapper.insert( std::make_pair( _type, _wrapper ) );
-		}
+		m_scriptWrapper.insert( _type, _wrapper );
 	}
 	//////////////////////////////////////////////////////////////////////////|
 	PyObject * ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
 	{
-		TMapScriptWrapper::iterator it_find = m_scriptWrapper.find( _type );
-
-		if( it_find == m_scriptWrapper.end() )
+		ScriptClassInterface * scriptClass = nullptr;
+		if( m_scriptWrapper.has( _type, &scriptClass ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("ScriptEngine::wrap not found type %s"
                 , _type.c_str()
                 );
 
 			return nullptr;
-		}
-
-        ScriptClassInterface * scriptClass = it_find->second;
+		}        
 
 		PyObject * embedded = scriptClass->wrap( _scriptable );
 

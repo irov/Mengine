@@ -212,7 +212,7 @@ namespace Menge
             fi.unz_size = header.uncompressedSize;
             fi.compr_method = header.compressionMethod;            			
                         
-			m_files.insert( std::make_pair( fileName, fi ) );
+			m_files.insert( fileName, fi );
 			
 			Utils::skip( zipMappedFile.get(), header.compressedSize );
 		}
@@ -265,16 +265,13 @@ namespace Menge
 			return false;
 		}
 
-		TMapFileInfo::iterator it_find = m_files.find( _filename );
-
-		if( it_find == m_files.end() )
+		const FileInfo * fi = nullptr;
+		if( m_files.has( _filename, &fi ) == false )
 		{
 			return false;
 		}
 
-        const FileInfo & fi = it_find->second;
-
-        m_zipMappedFile->openInputMemory( _stream, _filename, fi.seek_pos, fi.file_size );
+        m_zipMappedFile->openInputMemory( _stream, _filename, fi->seek_pos, fi->file_size );
 
 		return true;
 	}

@@ -71,30 +71,27 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleFinder::load_module( const ConstString & _module )
     {   
-        TMapModulePath::iterator it_found = m_paths.find( _module );
+		ModulePathCache * pathCache = nullptr;
+        if( m_paths.has( _module, &pathCache ) == false )
+        {
+            return nullptr;
+        }        
 
-        if( it_found == m_paths.end() )
+        InputStreamInterfacePtr stream = pathCache->fileGroup->createInputFile();
+
+        if( pathCache->fileGroup->openInputFile( pathCache->path, stream ) == false )
         {
             return nullptr;
         }
 
-        ModulePathCache & pathCache = it_found->second;
-
-        InputStreamInterfacePtr stream = pathCache.fileGroup->createInputFile();
-
-        if( pathCache.fileGroup->openInputFile( pathCache.path, stream ) == false )
+        if( pathCache->source == true )
         {
-            return nullptr;
-        }
-
-        if( pathCache.source == true )
-        {
-            PyObject * module = this->load_module_source_( _module, stream, pathCache.packagePath );
+            PyObject * module = this->load_module_source_( _module, stream, pathCache->packagePath );
 
             return module;
         }
 
-        PyObject * module = this->load_module_code_( _module, stream, pathCache.packagePath );
+        PyObject * module = this->load_module_code_( _module, stream, pathCache->packagePath );
 
         return module;        
     }
@@ -239,9 +236,11 @@ namespace Menge
                 mpc.fileGroup = fileGroup;
                 mpc.path = cs_modulePath;
 
-                TMapModulePath::iterator it_insert = m_paths.insert( std::make_pair(_module, mpc) ).first;
+                TMapModulePath::iterator it_insert = m_paths.insert( _module, mpc ).first;
 
-                return &it_insert->second;
+				ModulePathCache & pathCache = m_paths.get_value( it_insert );
+
+                return &pathCache;
             }
         }
 

@@ -66,9 +66,9 @@ namespace Menge
         m_maxVertexCount = _maxVertexCount;
         m_maxIndexCount = _maxIndexCount;        
 
-        for( size_t i = 0; i != MENGINE_RENDER_INDICES_QUAD; i += 6 )
+        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_QUAD; i += 6 )
         {   
-            size_t vertexOffset = i / 6 * 4;
+            uint16 vertexOffset = i / 6 * 4;
 
             m_indicesQuad[i + 0] = vertexOffset + 0;
             m_indicesQuad[i + 1] = vertexOffset + 3;
@@ -78,7 +78,7 @@ namespace Menge
             m_indicesQuad[i + 5] = vertexOffset + 2;
         }
 
-        for( size_t i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
+        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
         {
             m_indicesLine[i] = i;
         }
@@ -1316,7 +1316,7 @@ namespace Menge
 
         while( src != src_end )
         {
-            *src = *dst + _vbPos;
+            *src = *dst + (uint16)_vbPos;
             ++src;
             ++dst;
         }

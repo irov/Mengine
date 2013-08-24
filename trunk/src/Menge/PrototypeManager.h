@@ -55,7 +55,7 @@ namespace Menge
             }
         };
 
-        typedef stdex::binary_vector<CategoryKey, PrototypeGeneratorInterface *, CategoryKeyLess> TMapPrototypes;        
+        typedef stdex::binary_vector<CategoryKey, PrototypeGeneratorInterface *, CategoryKeyLess> TMapPrototypes;
 		TMapPrototypes m_prototypes;       
 	};
 }

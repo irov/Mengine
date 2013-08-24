@@ -22,7 +22,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			delete it->second;
+			Factory * factory = m_factories.get_value(it);
+
+			delete factory;
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -33,7 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::registerFactory( const ConstString & _type, Factory * _factory )
 	{
-		m_factories.insert( std::make_pair(_type, _factory) );
+		m_factories.insert( _type, _factory );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::unregisterFactory( const ConstString & _type )
@@ -42,9 +44,11 @@ namespace Menge
 
 		if( it_found != m_factories.end() )
 		{
-			delete it_found->second;
+			Factory * factory = m_factories.get_value(it_found);
 
-			m_factories.erase( _type );
+			delete factory;
+
+			m_factories.erase( it_found );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,7 +77,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        Factory * factory = it_found->second;
+        Factory * factory = m_factories.get_value(it_found);
 
 		Factorable * object = factory->createObject();
 
@@ -97,7 +101,10 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			_visit->visit( it->first, it->second );
+			const ConstString & key = m_factories.get_key( it );
+			Factory * factory = m_factories.get_value( it );
+
+			_visit->visit( key, factory );
 		}
 	}
 }

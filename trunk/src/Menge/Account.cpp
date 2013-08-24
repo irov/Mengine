@@ -34,7 +34,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            Setting & st = it->second;
+            Setting & st = m_settings.get_value( it );
 
 			pybind::decref( st.cb );
 		}
@@ -82,14 +82,13 @@ namespace Menge
         st.value = _defaultValue;
         st.cb = _applyFunc;
         
-        m_settings.insert( std::make_pair(_setting, st) );
+        m_settings.insert( _setting, st );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::changeSetting( const ConstString & _setting, const WString& _value )
 	{
-		TMapSettings::iterator it = m_settings.find( _setting );
-		
-		if( it == m_settings.end() )
+		Setting * st = nullptr;		
+		if( m_settings.has( _setting, &st ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Account::changeSetting account %ls setting '%s' does not exist. Can't change"
                 , m_name.c_str()
@@ -99,23 +98,20 @@ namespace Menge
 			return;
 		}
 
-        Setting & st = it->second;
+		st->value = _value;
 
-		st.value = _value;
-
-		if( pybind::is_none( st.cb ) == false )
+		if( pybind::is_none( st->cb ) == false )
 		{
-			pybind::call( st.cb, "(O)"
+			pybind::call( st->cb, "(O)"
                 , pybind::ptr(_value)
                 );
-		}		
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Account::getSetting( const ConstString & _setting ) const
 	{
-		TMapSettings::const_iterator it = m_settings.find( _setting );
-		
-		if( it == m_settings.end() )
+		const Setting * st;
+		if( m_settings.has( _setting, &st ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Account::getSetting account '%ls' setting '%s' does not exist. Can't get"
                 , m_name.c_str()
@@ -125,21 +121,14 @@ namespace Menge
 			return Utils::emptyWString();
 		}
 
-        const Setting & st = it->second;
-
-		return st.value;
+		return st->value;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool Account::hasSetting( const ConstString & _setting ) const
     {
-        TMapSettings::const_iterator it = m_settings.find( _setting );
+		bool result = m_settings.exist( _setting );
 
-        if( it == m_settings.end() )
-        {
-            return false;
-        }
-
-        return true;
+        return result;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::load()
@@ -186,9 +175,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            const ConstString & key = it->first;
-
-            Setting & st = it->second;
+            const ConstString & key = m_settings.get_key(it);
+            Setting & st = m_settings.get_value(it);
 
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value, m_serviceProvider ) == false )
             {
@@ -227,9 +215,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            const ConstString & key = it->first;
-
-            const Setting & st = it->second;
+            const ConstString & key = m_settings.get_key(it);
+            const Setting & st = m_settings.get_value(it);
 
             IniUtil::writeIniSetting( m_serviceProvider, file, key.c_str(), st.value );
 		}
@@ -245,7 +232,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            Setting & st = it->second;
+            Setting & st = m_settings.get_value(it);
            
 			if( pybind::is_none(st.cb) == true )
 			{

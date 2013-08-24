@@ -36,7 +36,7 @@ namespace Menge
         it != it_end;
         ++it)
         {
-            const ResourceEntry & entry = it->second;
+            const ResourceEntry & entry = m_resources.get_value(it);
 
             ResourceReference * resource = entry.resource;
 
@@ -205,7 +205,9 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const ResourceReference * resource = it->second.resource;
+            const ResourceEntry & entry = m_resources.get_value( it );
+
+			const ResourceReference * resource = entry.resource;
 
             if( resource->isValid() == false )
             {
@@ -254,40 +256,36 @@ namespace Menge
 		entry.resource = resource;
 		entry.isLocked = false;
 
-        m_resources.insert( std::make_pair(_name, entry) );
+        m_resources.insert( _name, entry );
         
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::hasResource( const ConstString& _name, ResourceReference ** _resource ) const
 	{
-		TMapResource::const_iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		ResourceEntry * entry;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return false;
 		}
-
-        if( _resource != nullptr )
-        {
-            *_resource = it_find->second.resource;
-        }
+		
+		if( _resource == nullptr )
+		{
+			*_resource = entry->resource;
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::validResourceType( const ConstString& _name, const ConstString& _type ) const
 	{
-		TMapResource::const_iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		const ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return false;
 		}
 
-		const ResourceEntry & entry = it_find->second;
-
-		const ConstString & resourceType = entry.resource->getType();
+		const ConstString & resourceType = entry->resource->getType();
 
 		if( resourceType != _type )
 		{
@@ -299,16 +297,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::validResource( const ConstString & _name ) const
 	{
-		TMapResource::const_iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		const ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return false;
 		}
 
-		const ResourceEntry & entry = it_find->second;
-
-		ResourceReference * resource = entry.resource;
+		ResourceReference * resource = entry->resource;
 
 		bool valid = resource->isValid();
 
@@ -317,16 +312,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::lockResource( const ConstString& _name )
 	{
-		TMapResource::iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return false;
 		}
 
-		ResourceEntry & entry = it_find->second;
-
-		if( entry.isLocked == true )
+		if( entry->isLocked == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceManager getResource: resource '%s' is alredy LOCK!"
 				, _name.c_str()
@@ -335,23 +327,20 @@ namespace Menge
 			return false;
 		}
 
-		entry.isLocked = true;
+		entry->isLocked = true;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::unlockResource( const ConstString& _name )
 	{
-		TMapResource::iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return false;
 		}
 
-		ResourceEntry & entry = it_find->second;
-
-		if( entry.isLocked == false )
+		if( entry->isLocked == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceManager getResource: resource '%s' is alredy UNLOCK!"
 				, _name.c_str()
@@ -360,16 +349,15 @@ namespace Menge
 			return false;
 		}
 
-		entry.isLocked = false;
+		entry->isLocked = false;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name ) const
 	{
-		TMapResource::const_iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		const ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' does not exist"
 				, _name.c_str()
@@ -378,9 +366,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		const ResourceEntry & entry = it_find->second;
-
-        if( entry.isLocked == true )
+        if( entry->isLocked == true )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' is LOCK!"
                 , _name.c_str()
@@ -389,7 +375,7 @@ namespace Menge
             return nullptr;
         }
 		
-		ResourceReference * resource = entry.resource;
+		ResourceReference * resource = entry->resource;
 
 		if( resource->incrementReference() == 0 )
 		{
@@ -406,9 +392,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResourceReference( const ConstString& _name ) const
 	{
-		TMapResource::const_iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		const ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			LOGGER_WARNING(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
 				, _name.c_str()
@@ -416,31 +401,26 @@ namespace Menge
 
 			return nullptr;
 		}
-
-		const ResourceEntry & entry = it_find->second;
 		
-        if( entry.isLocked == true )
+        if( entry->isLocked == true )
 		{
 			return nullptr;
 		}
 		
-		ResourceReference * resource = entry.resource;
+		ResourceReference * resource = entry->resource;
 
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceManager::getResourceType( const ConstString & _name ) const
 	{
-		TMapResource::const_iterator it_found = m_resources.find( _name );
-
-		if( it_found == m_resources.end() )
+		const ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return ConstString::none();
 		}
 
-		const ResourceEntry & entry = it_found->second;
-
-		ResourceReference * resource = entry.resource;
+		ResourceReference * resource = entry->resource;
 
 		const ConstString & type = resource->getType();
 
@@ -455,7 +435,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const ResourceEntry & entry = it->second;
+            const ResourceEntry & entry = m_resources.get_value( it );
 
             ResourceReference * resource = entry.resource;
 
@@ -465,16 +445,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const ConstString& _name )
 	{
-		TMapResource::iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		const ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return false;
 		}
-
-		const ResourceEntry & entry = it_find->second;
-
-		ResourceReference * ref = entry.resource;
+		
+		ResourceReference * ref = entry->resource;
 
 		ref->incrementReference();
 
@@ -483,16 +460,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceRelease( const ConstString& _name )
 	{
-		TMapResource::iterator it_find = m_resources.find( _name );
-
-		if( it_find == m_resources.end() )
+		const ResourceEntry * entry = nullptr;
+		if( m_resources.has( _name, &entry ) == false )
 		{
 			return;
 		}
 
-		const ResourceEntry & entry = it_find->second;
-
-		ResourceReference * ref = entry.resource;
+		ResourceReference * ref = entry->resource;
 
 		ref->decrementReference();
 	}
@@ -510,7 +484,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const ResourceEntry & entry = it->second;
+			const ResourceEntry & entry = m_resources.get_value(it);
 
 			ResourceReference * resource = entry.resource;
 

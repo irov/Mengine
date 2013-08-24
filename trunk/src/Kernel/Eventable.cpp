@@ -189,12 +189,15 @@ namespace Menge
 
 		if( it_find == m_mapEvent.end() )
 		{
-			m_mapEvent.insert(std::make_pair( _event, ev ));
+			m_mapEvent.insert( _event, ev );
 		}
 		else
 		{
-			pybind::decref( it_find->second );
-			it_find->second = ev;
+			PyObject * obj = m_mapEvent.get_value( it_find );
+
+			pybind::decref( obj );
+
+			m_mapEvent.set_value( it_find, ev );
 		}
 
 		return true;

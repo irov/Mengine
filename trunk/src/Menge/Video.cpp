@@ -536,11 +536,11 @@ namespace Menge
 		unsigned char* lockRect = texture->lock( &pitch, rect, false );
 
 		m_videoDecoder->setPitch( pitch );
-        bool result = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
+        size_t count = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
        
 		texture->unlock();
                 
-		return result;
+		return count != 0;
 	}
 	////////////////////////////////////////////////////////////////////
 	bool Video::_interrupt( size_t _enumerator )

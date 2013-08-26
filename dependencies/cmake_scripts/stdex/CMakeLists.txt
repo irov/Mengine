@@ -10,6 +10,7 @@ ${SOURCE_DIR}/src/allocator.cpp
 ${SOURCE_DIR}/src/const_string.cpp
 ${SOURCE_DIR}/src/const_string_holder.cpp
 ${SOURCE_DIR}/src/const_string_holder_none.cpp
+${SOURCE_DIR}/src/xml_sax_parser.cpp
 )
 
 include_directories( ${SOURCE_DIR}/include )

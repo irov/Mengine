@@ -111,10 +111,11 @@ namespace Menge
                 , m_resourceFont->getName().c_str() 
                 );
 
-            return false;
-        }
+			return false;
+		}
 
 		m_fontHeight = resourceGlyph->getFontHeight();
+		m_lineOffset = 0.f;
 
 		const RenderMaterialGroup * mg_sprite = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
@@ -573,9 +574,7 @@ namespace Menge
 
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
-
-        
-
+		
 		if( textEntry.font.empty() == false )
         {
             ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)

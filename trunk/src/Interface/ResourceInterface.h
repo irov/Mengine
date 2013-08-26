@@ -26,6 +26,9 @@ namespace Menge
     {
         SERVICE_DECLARE("ResourceService")
 
+	public:
+		virtual bool initialize( size_t _reserved ) = 0;
+
     public:
         virtual bool loadResource( const ConstString & _pakName, const ConstString & _path ) = 0;
 

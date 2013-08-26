@@ -314,6 +314,8 @@ ADD_FILTER(
 Manager\\\\Text
 	TextManager.cpp
 	TextManager.h
+    TextLocalePak.cpp
+    TextLocalePak.h
 )
 
 ADD_FILTER(

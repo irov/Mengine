@@ -25,11 +25,18 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool StringizeService::stringize( const char * _str, size_t _size, ConstString & _cstr )
+	bool StringizeService::stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr )
 	{
         stdex::const_string_holder * stringHolder = nullptr;
         
-        if( _size < 16 )
+		if( _external == true )
+		{
+			ConstStringHolderStringExternal * string = m_poolStringExternal.createObjectT();
+			string->setValue( _str, _size );
+
+			stringHolder = string;
+		}
+        else if( _size < 16 )
         {
             ConstStringHolderString16 * string = m_poolString16.createObjectT();
             string->setValue( _str, _size );

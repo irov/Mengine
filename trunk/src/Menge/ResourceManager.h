@@ -32,6 +32,9 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
+		bool initialize( size_t _reserved ) override;
+
+	public:
 		bool loadResource( const ConstString & _pakName, const ConstString & _path ) override;
 		
 	public:

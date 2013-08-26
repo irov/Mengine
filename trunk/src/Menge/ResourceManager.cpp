@@ -68,6 +68,13 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::initialize( size_t _reserved )
+	{
+		m_resources.reserve( _reserved );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const ConstString & _pakName, const ConstString & _path )
 	{
 		Metacode::Meta_DataBlock datablock;

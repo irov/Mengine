@@ -58,7 +58,7 @@ namespace Menge
             size_t len = strlen(ini_value);
 
             if( STRINGIZE_SERVICE(_serviceProvider)
-                ->stringize( ini_value, len, _value ) == false )
+                ->stringize( ini_value, len, false, _value ) == false )
             {
                 return false;
             }
@@ -221,7 +221,7 @@ namespace Menge
 
                 ConstString c_key;
                 if( STRINGIZE_SERVICE(_serviceProvider)
-                    ->stringize( key, len, c_key ) == false )
+                    ->stringize( key, len, false, c_key ) == false )
                 {
                     return false;
                 }

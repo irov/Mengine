@@ -4,6 +4,7 @@ ADD_FILTER(
 src
 	StringizeService.h
 	StringizeService.cpp
+    ConstStringHolderStringExternal.h
     ConstStringHolderStringSTL.h
     ConstStringHolderStringSTL.cpp    
     ConstStringHolderWStringSTL.h

@@ -5,12 +5,13 @@
 #   include "Config/String.h"
 
 #   include "Core/ConstString.h"
+#   include "Core/FilePath.h"
 
 namespace Menge
 {
     struct TextEntry
     {
-        String text;
+        const char * text;
         ConstString font;
         float charOffset;
         float lineOffset;
@@ -22,8 +23,12 @@ namespace Menge
         SERVICE_DECLARE("TextService")
 
     public:
-		virtual void initialize( size_t _size ) = 0;
-        virtual void addTextEntry( const ConstString& _key, const TextEntry& _entry ) = 0;
+		virtual bool initialize( size_t _size ) = 0;
+
+	public:
+		virtual bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+
+	public:        
         virtual const TextEntry & getTextEntry( const ConstString& _key ) const = 0;
         virtual bool existText( const ConstString& _key, const TextEntry ** _entry ) const = 0;
 

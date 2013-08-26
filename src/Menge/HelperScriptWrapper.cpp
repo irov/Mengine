@@ -86,31 +86,7 @@ namespace Menge
         {
             return pybind::detail::is_class( _obj );
         }
-
-        bool s_addText( const ConstString & _id, const WString & _text, const ConstString & _font, float _charOffset, float _lineOffset )
-        {
-            TextEntry te;                                   
-
-            if( Helper::unicodeToUtf8( m_serviceProvider, _text, te.text ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Menge.addText %s text %ls not convert to utf8"
-                    , _id.c_str()
-                    , _text.c_str()
-                    );
-
-                return false;
-            }
-
-            te.font = _font;
-            te.charOffset = _charOffset;
-            te.lineOffset = _lineOffset;
-
-            TEXT_SERVICE(m_serviceProvider)
-                ->addTextEntry( _id, te );
-
-            return true;
-        }
-        
+		
         const ConstString & s_getLanguagePack()
         {
             const ConstString & languagePack = GAME_SERVICE(m_serviceProvider)
@@ -879,7 +855,7 @@ namespace Menge
             {
                 LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid text key %s convert %s to unicode"
                     , _key.c_str()
-                    , entry.text.c_str()                    
+                    , entry.text
                     );
 
                 pybind::throw_exception();
@@ -898,7 +874,7 @@ namespace Menge
 			//Application::get()
 				//->utf8Count( entry.text, count );
 
-            size_t count = entry.text.size();
+            size_t count = strlen( entry.text );
 
 			return count;
 		}
@@ -1234,7 +1210,6 @@ namespace Menge
         pybind::def_function( "getrefcount", &pybind::refcount );
         pybind::def_function( "is_wrap", &pybind::is_wrap );
 
-        pybind::def_functor( "addText", helperScriptMethod, &HelperScriptMethod::s_addText );
         pybind::def_functor( "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );
 
         pybind::def_functor( "isValidWindowMode", helperScriptMethod, &HelperScriptMethod::s_isValidWindowMode );

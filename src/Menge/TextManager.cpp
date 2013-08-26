@@ -5,8 +5,11 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "Logger/Logger.h"
+
+#	include <stdex/xml_sax_parser.h>
 
 #   include <stdio.h>
 
@@ -18,6 +21,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::TextManager()
         : m_serviceProvider(nullptr)
+		, m_xml_buffer(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -35,9 +39,154 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::initialize( size_t _size )
+	bool TextManager::initialize( size_t _size )
 	{
 		m_textMap.reserve(_size);
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class TextManagerSaxCallback
+		{
+		public:
+			TextManagerSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+				: m_serviceProvider(_serviceProvider)
+				, m_textManager(_textManager)
+				, m_pakName(_pakName)
+				, m_path(_path)
+			{
+			}
+
+		protected:
+			void operator = ( const TextManagerSaxCallback & )
+			{
+			}
+
+		public:
+			void callback_begin_node( const char * _node )
+			{
+				(void)_node;
+			}
+
+			void callback_node_attributes( const char * _node, size_t _count, const char ** _keys, const char ** _values )
+			{
+				if( strcmp( _node, "Text" ) != 0 )
+				{
+					return;
+				}
+
+				ConstString text_key;
+
+				TextEntry textEntry;
+
+				textEntry.charOffset = 0.f;
+				textEntry.lineOffset = 0.f;
+				
+				for( size_t i = 0; i != _count; ++i )
+				{
+					const char * key = _keys[i];
+					const char * value = _values[i];
+
+					if( strcmp(key, "Key") == 0 )
+					{
+						size_t value_size = strlen( value );
+						text_key = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+					}
+					else if( strcmp(key, "Value" ) == 0 )
+					{
+						textEntry.text = value;
+					}
+					else if( strcmp(key, "Font" ) == 0 )
+					{
+						size_t value_size = strlen( value );
+						ConstString font = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+
+						textEntry.font = font;
+					}
+					else if( strcmp(key, "CharOffset" ) == 0 )
+					{
+						float charOffset = 0.f;
+						if( sscanf( value, "%f", &charOffset ) != 1 )
+						{
+							LOGGER_WARNING(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s charOffset %s"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, value
+								);
+						}
+
+						textEntry.charOffset = charOffset;
+					}
+					else if( strcmp(key, "LineOffset" ) == 0 )
+					{
+						float lineOffset = 0.f;
+						if( sscanf( value, "%f", &lineOffset ) != 1 )
+						{
+							LOGGER_WARNING(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, value
+								);
+						}
+
+						textEntry.lineOffset = lineOffset;
+					}					
+				}
+
+				m_textManager->addTextEntry( text_key, textEntry );
+			}
+
+			void callback_end_node( const char * _node )
+			{
+				(void)_node;
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			TextManager * m_textManager;
+
+			const ConstString & m_pakName;
+			const FilePath & m_path;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	{
+		(void)_locale;
+
+		InputStreamInterfacePtr xml_text = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _pakName, _path );
+
+		if( xml_text == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource invalid open file %s:%s"
+				, _pakName.c_str()
+				, _path.c_str()
+				);
+
+			return false;
+		}
+
+		size_t xml_buffer_size = xml_text->size();
+		
+		delete [] m_xml_buffer;
+		m_xml_buffer = new char[xml_buffer_size];
+
+		xml_text->read( m_xml_buffer, xml_buffer_size );
+
+		xml_text = nullptr;
+
+		TextManagerSaxCallback tmsc(m_serviceProvider, this, _pakName, _path);
+		if( stdex::xml_sax_parse( m_xml_buffer, tmsc ) == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
@@ -67,6 +216,7 @@ namespace Menge
 				);
 
 			static TextEntry emptyEntry;
+			emptyEntry.text = "__NONE__";
 			emptyEntry.charOffset = 0.f;
 			emptyEntry.lineOffset = 0.f;
 

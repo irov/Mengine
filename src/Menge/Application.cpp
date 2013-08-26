@@ -743,6 +743,8 @@ namespace Menge
 
 #	undef RESOURCE_FACTORY
 
+		m_resourceService->initialize( 8000 );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -762,6 +764,8 @@ namespace Menge
         {
             return false;
         }
+
+		m_textService->initialize( 3000 );
 		
 		return true;
 	}

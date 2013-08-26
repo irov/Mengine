@@ -10,10 +10,6 @@
 
 namespace Menge
 {
-    class UnicodeServiceInterface;
-    class LogServiceInterface;
-    class FileServiceInterface;
-
 	class TextManager
         : public TextServiceInterface
 	{
@@ -26,17 +22,26 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-		void initialize( size_t _size ) override;
+		bool initialize( size_t _size ) override;
+		
+	public:
+		bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+
+	public:
 		const TextEntry & getTextEntry( const ConstString& _key ) const override;
 
 		bool existText( const ConstString& _key, const TextEntry ** _entry ) const override;
-		void addTextEntry( const ConstString& _key, const TextEntry& _entry ) override;
-
+		
 		void setDefaultResourceFontName( const ConstString & _fontName ) override;
 		const ConstString & getDefaultResourceFontName() const override;
 
+	public:
+		void addTextEntry( const ConstString& _key, const TextEntry& _entry );
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		char * m_xml_buffer;
 
 		typedef stdex::binary_vector<ConstString, TextEntry> TMapTextEntry;
 		TMapTextEntry m_textMap;

@@ -26,6 +26,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::~TextManager()
 	{
+		for( TVectorPaks::iterator
+			it = m_paks.begin(),
+			it_end = m_paks.end();
+		it != it_end;
+		++it )
+		{
+			TextLocalePak * pak = *it;
+
+			delete pak;
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void TextManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -88,24 +98,24 @@ namespace Menge
 					const char * key = _keys[i];
 					const char * value = _values[i];
 
-					if( strcmp(key, "Key") == 0 )
+					if( strcmp( key, "Key") == 0 )
 					{
 						size_t value_size = strlen( value );
 						text_key = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
 					}
-					else if( strcmp(key, "Value" ) == 0 )
+					else if( strcmp( key, "Value" ) == 0 )
 					{
 						size_t value_size = strlen( value );
 						textEntry.text = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
 					}
-					else if( strcmp(key, "Font" ) == 0 )
+					else if( strcmp( key, "Font" ) == 0 )
 					{
 						size_t value_size = strlen( value );
 						ConstString font = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
 
 						textEntry.font = font;
 					}
-					else if( strcmp(key, "CharOffset" ) == 0 )
+					else if( strcmp( key, "CharOffset" ) == 0 )
 					{
 						float charOffset = 0.f;
 						if( sscanf( value, "%f", &charOffset ) != 1 )
@@ -120,7 +130,7 @@ namespace Menge
 
 						textEntry.charOffset = charOffset;
 					}
-					else if( strcmp(key, "LineOffset" ) == 0 )
+					else if( strcmp( key, "LineOffset" ) == 0 )
 					{
 						float lineOffset = 0.f;
 						if( sscanf( value, "%f", &lineOffset ) != 1 )

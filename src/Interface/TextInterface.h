@@ -11,7 +11,7 @@ namespace Menge
 {
     struct TextEntry
     {
-        const char * text;
+        ConstString text;
         ConstString font;
         float charOffset;
         float lineOffset;

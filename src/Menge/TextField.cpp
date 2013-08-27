@@ -40,12 +40,11 @@ namespace Menge
 		, m_lineOffset(0.f)
 		, m_outline(true)
 		, m_pixelsnap(true)
-		, m_materialText(NULL)
-		, m_materialOutline(NULL)
+		, m_materialText(nullptr)
+		, m_materialOutline(nullptr)
 		, m_invalidateVertices(true)
         , m_invalidateVerticesWM(true)
 		, m_invalidateTextLines(true)
-		, m_number(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -311,18 +310,6 @@ namespace Menge
 		return m_outlineColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setText( const String & _text )
-	{
-		if( m_text == _text )
-		{
-			return;
-		}
-
-		m_text = _text;
-		
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	float TextField::getFontHeight() const
 	{
 		return m_fontHeight;
@@ -333,11 +320,6 @@ namespace Menge
 		m_fontHeight = _height;
 
 		this->invalidateVertices_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& TextField::getText() const
-	{
-		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getTextSize() const
@@ -372,7 +354,6 @@ namespace Menge
 
 		TVectorString lines;
 
-		//lines = Utils::split( _text, "\n\\n" );
 		Utils::split( lines, m_text, false, "\n" );
 
 		for(TVectorString::iterator 
@@ -558,7 +539,22 @@ namespace Menge
 	{
 		m_maxCharCount = _maxCharCount;
 
-        this->invalidateTextLines();
+        this->invalidateTextLines();	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setText( const String & _text )
+	{
+		m_text = _text;
+
+		m_format.clear();
+		m_key.clear();
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & TextField::getText() const
+	{
+		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKey( const ConstString& _key )
@@ -571,6 +567,7 @@ namespace Menge
 		m_key = _key;
 
 		m_format.clear();
+		m_text.clear();
 
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
@@ -596,20 +593,12 @@ namespace Menge
 			this->setLineOffset( textEntry.lineOffset );
 		}
 
-		this->setText( textEntry.text );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const char * TextField::getDefaultText() const
-	{
-		const TextEntry & textEntry = 
-			TEXT_SERVICE(m_serviceProvider)->getTextEntry( m_key );
-		
-        const char * text = textEntry.text;
+		m_text.assign( textEntry.text.c_str(), textEntry.text.size() );
 
-		return text;
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number )
+	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, const String & _arg )
 	{
 		if( _key.empty() == true )
 		{
@@ -619,7 +608,7 @@ namespace Menge
 		m_key = _key;
 
 		m_format = _format;
-		m_number = _number;
+		m_formatArg = _arg;
 
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
@@ -644,10 +633,10 @@ namespace Menge
 		{
 			this->setLineOffset( textEntry.lineOffset );
 		}
-        
-		String format_text = (StringFormat(m_format) % textEntry.text % m_number).str();
 
-		this->setText( format_text );
+		m_text = (StringFormat(m_format) % textEntry.text.c_str() % m_formatArg).str();
+
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getTextKey() const

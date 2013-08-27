@@ -2,6 +2,8 @@
 
 #   include "Interface/TextInterface.h"
 
+#	include "TextLocalePak.h"
+
 #	include "Core/ConstString.h"
 
 #   include "stdex/binary_vector.h"
@@ -40,11 +42,12 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-
-		char * m_xml_buffer;
-
+		
 		typedef stdex::binary_vector<ConstString, TextEntry> TMapTextEntry;
-		TMapTextEntry m_textMap;
+		TMapTextEntry m_texts;
+
+		typedef std::vector<TextLocalePak *> TVectorPaks;
+		TVectorPaks m_paks;
 
 		ConstString m_defaultResourceFontName;
 	};

@@ -1779,11 +1779,7 @@ namespace Menge
             return ConstString::none();
 		}
 
-        const String & text = entry->text;
-
-        m_projectTitleCache = Helper::stringizeString( m_serviceProvider, text );
-
-		return m_projectTitleCache;
+		return entry->text;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectCodename() const

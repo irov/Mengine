@@ -21,7 +21,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::TextManager()
         : m_serviceProvider(nullptr)
-		, m_xml_buffer(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,7 +40,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::initialize( size_t _size )
 	{
-		m_textMap.reserve(_size);
+		m_texts.reserve(_size);
 
 		return true;
 	}
@@ -96,7 +95,8 @@ namespace Menge
 					}
 					else if( strcmp(key, "Value" ) == 0 )
 					{
-						textEntry.text = value;
+						size_t value_size = strlen( value );
+						textEntry.text = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
 					}
 					else if( strcmp(key, "Font" ) == 0 )
 					{
@@ -156,32 +156,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
-		(void)_locale;
+		TextLocalePak * pak = new TextLocalePak();
 
-		InputStreamInterfacePtr xml_text = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _path );
-
-		if( xml_text == nullptr )
+		if( pak->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource invalid open file %s:%s"
-				, _pakName.c_str()
-				, _path.c_str()
-				);
+			delete pak;
 
 			return false;
 		}
-
-		size_t xml_buffer_size = xml_text->size();
 		
-		delete [] m_xml_buffer;
-		m_xml_buffer = new char[xml_buffer_size];
+		m_paks.push_back( pak );
 
-		xml_text->read( m_xml_buffer, xml_buffer_size );
-
-		xml_text = nullptr;
+		char * xml_buff = pak->getXmlBuffer();
 
 		TextManagerSaxCallback tmsc(m_serviceProvider, this, _pakName, _path);
-		if( stdex::xml_sax_parse( m_xml_buffer, tmsc ) == false )
+		if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
 		{
 			return false;
 		}
@@ -192,7 +181,7 @@ namespace Menge
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
 	{
 		TextEntry * textEntry = nullptr;
-		if( m_textMap.has( _key, &textEntry ) == true )
+		if( m_texts.has( _key, &textEntry ) == true )
 		{
 			LOGGER_INFO(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s"
 				, _key.c_str()
@@ -203,20 +192,19 @@ namespace Menge
             return;
 		}
 
-        m_textMap.insert( _key, _entry );		
+        m_texts.insert( _key, _entry );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TextEntry & TextManager::getTextEntry( const ConstString& _key ) const
 	{
 		const TextEntry * textEntry = nullptr;
-		if( m_textMap.has( _key, &textEntry ) == false )
+		if( m_texts.has( _key, &textEntry ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
 				);
 
 			static TextEntry emptyEntry;
-			emptyEntry.text = "__NONE__";
 			emptyEntry.charOffset = 0.f;
 			emptyEntry.lineOffset = 0.f;
 
@@ -230,7 +218,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existText( const ConstString& _key, const TextEntry ** _entry ) const
 	{
-		bool result = m_textMap.has( _key, _entry );
+		bool result = m_texts.has( _key, _entry );
 
 		return result;		
 	}

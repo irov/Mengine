@@ -3355,8 +3355,8 @@ namespace Menge
                 pybind::interface_<TextField, pybind::bases<Node> >("TextField", false)
                     .def_proxy_static( "setResourceFont", nodeScriptMethod, &NodeScriptMethod::TextField_setResource )
                     .def_proxy_static( "getResourceFont", nodeScriptMethod, &NodeScriptMethod::TextField_getResource )  
-                    .def_proxy_static( "setText", nodeScriptMethod, &NodeScriptMethod::textfield_setText )
-                    .def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
+					.def_proxy_static( "setText", nodeScriptMethod, &NodeScriptMethod::textfield_setText )
+					.def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
                     .def_depricated( "setHeight", &TextField::setFontHeight, "use setFontHeight" )
                     .def_depricated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )
                     .def_depricated( "setAlphaHeight", &TextField::setFontHeight, "use setFontHeight" )
@@ -3390,7 +3390,6 @@ namespace Menge
 
                     .def( "getCharOffset", &TextField::getCharOffset )
                     .def( "setCharOffset", &TextField::setCharOffset )
-                    .def( "getDefaultText", &TextField::getDefaultText )
                     .def( "setTextByKey", &TextField::setTextByKey )
                     .def( "setTextByKeyFormat", &TextField::setTextByKeyFormat )					
                     .def( "getTextKey", &TextField::getTextKey )

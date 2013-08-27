@@ -599,12 +599,12 @@ namespace Menge
 		this->setText( textEntry.text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & TextField::getDefaultText() const
+	const char * TextField::getDefaultText() const
 	{
 		const TextEntry & textEntry = 
 			TEXT_SERVICE(m_serviceProvider)->getTextEntry( m_key );
 		
-        const String & text = textEntry.text;
+        const char * text = textEntry.text;
 
 		return text;
 	}

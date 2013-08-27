@@ -66,7 +66,7 @@ namespace Menge
 		void setText( const String& _text );
 		const String& getText() const;
 
-		const String & getDefaultText() const;
+		const char * getDefaultText() const;
         
 		void setTextByKey( const ConstString& _key );
 		const ConstString & getTextKey() const;

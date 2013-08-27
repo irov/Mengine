@@ -16,6 +16,8 @@
 #   define PUGIXML_NO_STL
 #   define PUGIXML_NO_XPATH
 
+#   define WEBP_REFERENCE_IMPLEMENTATION
+
 typedef void * nullptr_t;
 #   define nullptr 0
 

@@ -97,6 +97,11 @@ files
 #    ("../src/System/MarmaladeSoundSystem")
 #	"*.h"
 #	"*.cpp"    
+
+    [System/OALSoundSystem]
+    ("../src/System/OALSoundSystem")
+	"*.h"
+	"*.cpp"    
     
     [System/AstralaxParticleSystem]
     ("../src/System/AstralaxParticleSystem")	

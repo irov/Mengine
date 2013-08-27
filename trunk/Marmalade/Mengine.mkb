@@ -34,6 +34,7 @@ includepaths
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/libjpeg"
+    "../dependencies/libwebp/src"
     
     "./Modified/ogg/include"
     "../dependencies/ogg/include"   

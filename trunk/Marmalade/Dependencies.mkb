@@ -100,6 +100,39 @@ files
     trees.c
     uncompr.c
     zutil.c
+    
+    [webp]
+    ("../dependencies/libwebp/src")
+    dec/alpha.c
+    dec/buffer.c
+    dec/frame.c
+    dec/idec.c
+    dec/io.c
+    dec/layer.c
+    dec/quant.c
+    dec/tree.c
+    dec/vp8.c
+    dec/vp8l.c
+    dec/webp.c    
+    
+    dsp/cpu.c
+    dsp/dec.c
+    #dsp/dec_neon.c
+    #dsp/dec_sse2.c
+    dsp/lossless.c
+    dsp/upsampling.c
+    #dsp/upsampling_neon.c
+    #dsp/upsampling_sse2.c
+    dsp/yuv.c
+
+    utils/bit_reader.c
+    utils/color_cache.c
+    utils/filters.c
+    utils/huffman.c
+    utils/quant_levels_dec.c
+    utils/rescaler.c
+    utils/thread.c
+    utils/utils.c
        
     [vorbis]
     ("../dependencies/vorbis")
@@ -144,4 +177,27 @@ files
     src/const_string.cpp
     src/const_string_holder.cpp
     src/const_string_holder_none.cpp
+    
+	
+	["../dependencies/openalsoft_Marmalade"]
+    (../dependencies/openalsoft_Marmalade/Alc)
+	ALc.c
+	alcConfig.c
+	alcEcho.c
+	alcModulator.c
+	alcReverb.c
+	alcRing.c
+	alcThread.c
+	ALu.c
+	bs2b.c
+	mixer.c
+	null.c
+	panning.c
+	s3esoundaudio.c
+	s3eaudioaudio.c
+	wave.c             
+	(../dependencies/openalsoft_Marmalade/OpenAL32)
+	"*.c"
+	(../dependencies/openalsoft_Marmalade/utils)
+	"*.c"
 }

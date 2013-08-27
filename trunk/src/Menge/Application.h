@@ -265,8 +265,6 @@ namespace Menge
 		FilePath m_baseDir;
 		
 		ResourceCursor * m_cursorResource;
-		
-        mutable ConstString m_projectTitleCache;
 
 		ConstString m_platformName;
 		ConstString m_projectCodename;

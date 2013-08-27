@@ -851,7 +851,7 @@ namespace Menge
 				->getTextEntry( _key );
 
             WString unicode;
-            if( Helper::utf8ToUnicode(m_serviceProvider, entry.text, unicode ) == false )
+            if( Helper::utf8ToUnicodeSize(m_serviceProvider, entry.text.c_str(), entry.text.size(), unicode ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid text key %s convert %s to unicode"
                     , _key.c_str()
@@ -869,12 +869,7 @@ namespace Menge
 			const TextEntry & entry = TEXT_SERVICE(m_serviceProvider)
 				->getTextEntry( _key );
 
-			//size_t count;
-
-			//Application::get()
-				//->utf8Count( entry.text, count );
-
-            size_t count = strlen( entry.text );
+			size_t count = entry.text.size();
 
 			return count;
 		}

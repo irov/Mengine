@@ -544,6 +544,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const String & _text )
 	{
+		if( m_text == _text )
+		{
+			return;
+		}
+
 		m_text = _text;
 
 		m_format.clear();

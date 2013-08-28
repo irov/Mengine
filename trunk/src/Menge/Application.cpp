@@ -1057,7 +1057,32 @@ namespace Menge
 
             if( _key == KC_F3 && _isDown == true )
             {
-                stdex_memoryinfo();
+				stdex_memory_info_t mi[25];
+                size_t count = stdex_memoryinfo( mi, 25 );
+
+				size_t total_now = 0;
+				size_t total_max = 0;
+
+				for( size_t i = 0; i != count; ++i )
+				{
+					const stdex_memory_info_t & m = mi[i];
+
+					total_now += m.block_size * m.block_count;
+					total_max += m.block_size * m.block_total * m.chunk_count;
+
+					printf("block %d:%d %d alloc %d:%d\n"
+						, m.block_size
+						, m.chunk_count
+						, m.block_count
+						, m.block_size * m.block_count
+						, m.block_size * m.block_total * m.chunk_count 
+						);
+				}
+
+				float total_now_mb = float(total_now / (1024.f * 1024.f));
+				float total_max_mb = float(total_max / (1024.f * 1024.f));
+				printf("-------------------------------------\n");
+				printf("total %.3f:%.3f\n", total_now_mb, total_max_mb);
             }
 		}
 

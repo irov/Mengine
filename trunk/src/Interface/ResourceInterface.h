@@ -87,6 +87,7 @@ namespace Menge
         virtual bool validResourceType( const ConstString& _name, const ConstString& _type ) const = 0;
 
         virtual void visitResources( ResourceVisitor * _visitor ) const = 0;
+		virtual void visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const = 0;
 
     public:
         virtual void validationResources() const = 0; 

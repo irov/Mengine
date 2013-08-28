@@ -264,6 +264,24 @@ namespace Menge
 		entry.isLocked = false;
 
         m_resources.insert( _name, entry );
+
+		CategoryGroupKey key;
+		key.category = _category;
+		key.group = _group;
+
+		TVectorResources * resources;
+		if( m_resourcesCache.has( key, &resources ) == false )
+		{
+			TVectorResources resources;
+			resources.reserve( 100 );
+			resources.push_back( resource );
+
+			m_resourcesCache.insert( key, resources );
+		}
+		else
+		{
+			resources->push_back( resource );
+		}
         
 		return resource;
 	}
@@ -450,6 +468,30 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const
+	{		
+		CategoryGroupKey key;
+		key.category = _category;
+		key.group = _group;
+
+		TVectorResources * resources;
+		if( m_resourcesCache.has( key, &resources ) == false )
+		{
+			return;
+		}
+
+		for( TVectorResources::const_iterator
+			it = resources->begin(),
+			it_end = resources->end();
+		it != it_end;
+		++it )
+		{
+			ResourceReference * resource = *it;
+
+			_visitor->visit( resource );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const ConstString& _name )
 	{
 		const ResourceEntry * entry = nullptr;
@@ -510,8 +552,10 @@ namespace Menge
 			unsigned int memoryUse = resource->memoryUse();
             float memoryUseMb = float(memoryUse)/(1024.f*1024.f);
 
+			const ConstString & name = m_resources.get_key(it);
+
             LOGGER_ERROR(m_serviceProvider)("--> %s : count - %u memory - %f"
-                , it->first.c_str()
+                , name.c_str()
                 , count
                 , memoryUseMb
                 );

@@ -72,7 +72,6 @@ namespace Menge
 
 		RenderTextureInterfacePtr m_textureFont;
 		RenderTextureInterfacePtr m_textureOutline;
-		mt::vec2f m_imageInvSize;
 
 		ColourValue m_color;
 	};

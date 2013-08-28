@@ -58,6 +58,7 @@ namespace Menge
 
 	public:
 		void visitResources( ResourceVisitor * _visitor ) const override;
+		void visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const override;
 			
 
 	public:
@@ -72,6 +73,34 @@ namespace Menge
                 
 		typedef stdex::binary_vector<ConstString, ResourceEntry> TMapResource;
 		TMapResource m_resources;
+
+
+		struct CategoryGroupKey
+		{
+			ConstString category;
+			ConstString group;
+		};
+
+		struct CategoryGroupLess
+		{
+			bool operator () ( const CategoryGroupKey & _left, const CategoryGroupKey & _right ) const
+			{
+				if( _left.category < _right.category )
+				{
+					return true;
+				}
+				else if( _left.category == _right.category )
+				{
+					return _left.group < _right.group;
+				}
+
+				return false;
+			}
+		};
+
+		typedef std::vector<ResourceReference *> TVectorResources;
+		typedef stdex::binary_vector<CategoryGroupKey, TVectorResources, CategoryGroupLess> TMapResourceCache;
+		TMapResourceCache m_resourcesCache;
         
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;

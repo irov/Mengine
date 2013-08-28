@@ -252,7 +252,8 @@ namespace Menge
                     return;
                 }
                 
-                LOGGER_ERROR(m_serviceProvider)("Useless Compile %s:%s"
+                LOGGER_ERROR(m_serviceProvider)("Useless Compile %s %s:%s"
+					, _resource->getType().c_str()
                     , _resource->getCategory().c_str()
                     , _resource->getName().c_str()
                     );

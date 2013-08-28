@@ -2485,10 +2485,8 @@ namespace Menge
                 : public ResourceVisitor
             {
             public:
-                ResourceVisitorGetAlreadyCompiled( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
-                    : m_category(_category)
-                    , m_groupName(_groupName)
-                    , m_cb(_cb)
+                ResourceVisitorGetAlreadyCompiled( PyObject * _cb )
+                    : m_cb(_cb)
                 {
                     pybind::incref( m_cb );
                 }
@@ -2506,20 +2504,6 @@ namespace Menge
                         return;
                     }
 
-                    const ConstString & category = _resource->getCategory();
-
-                    if( category != m_category )
-                    {
-                        return;
-                    }
-
-                    const ConstString & group = _resource->getGroup();
-
-                    if( group != m_groupName )
-                    {
-                        return;
-                    }
-
                     PyObject * py_resource = pybind::ptr( _resource );
 
                     pybind::call( m_cb, "(O)", py_resource );
@@ -2528,16 +2512,13 @@ namespace Menge
                 }
 
             protected:
-                ConstString m_category;
-                ConstString m_groupName;
-
                 PyObject * m_cb;
             };
 
-            ResourceVisitorGetAlreadyCompiled rv_gac(_category, _groupName, _cb);
+            ResourceVisitorGetAlreadyCompiled rv_gac(_cb);
 
             RESOURCE_SERVICE(m_serviceProvider)
-                ->visitResources( &rv_gac );						
+                ->visitGroupResources( _category, _groupName, &rv_gac );						
         }
         //////////////////////////////////////////////////////////////////////////
         void s_visitResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )

@@ -95,7 +95,7 @@ namespace Menge
     {
         ConverterInterface * converter = this->createConverter( _converter );
 
-        if ( converter == NULL )
+        if ( converter == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert: can't create converter '%s'"
                 , _converter.c_str()
@@ -167,7 +167,7 @@ namespace Menge
             InputStreamInterfacePtr oldFile = FILE_SERVICE(m_serviceProvider)
                 ->openInputFile( options.pakName, options.inputFileName );
 
-            if( oldFile == NULL )
+            if( oldFile == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert '%s' can't open input file '%s' (time)"
                     , _converter.c_str()
@@ -185,7 +185,7 @@ namespace Menge
             InputStreamInterfacePtr newFile = FILE_SERVICE(m_serviceProvider)
                 ->openInputFile( options.pakName, options.outputFileName );
 
-            if( newFile == NULL )
+            if( newFile == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert '%s' can't open output file '%s' (time)"
                     , _converter.c_str()

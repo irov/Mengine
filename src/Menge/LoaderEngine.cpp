@@ -187,7 +187,7 @@ namespace Menge
             size_t stringSize;
             const char * str = Metacode::readString( &m_bufferBin[0], bin_size, read_size, stringSize, (void *)m_serviceProvider );
 
-            if( str == NULL )
+            if( str == nullptr )
             {
                 return false;
             }

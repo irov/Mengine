@@ -84,14 +84,16 @@ namespace Menge
             return nullptr;
         }
 
+		PyObject * module = nullptr;
+
         if( pathCache->source == true )
         {
-            PyObject * module = this->load_module_source_( _module, stream, pathCache->packagePath );
-
-            return module;
+            module = this->load_module_source_( _module, stream, pathCache->packagePath );
         }
-
-        PyObject * module = this->load_module_code_( _module, stream, pathCache->packagePath );
+		else
+		{
+			module = this->load_module_code_( _module, stream, pathCache->packagePath );
+		}
 
         return module;        
     }

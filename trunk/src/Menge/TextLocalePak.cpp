@@ -42,7 +42,8 @@ namespace Menge
 		size_t xml_buffer_size = xml_text->size();
 
 		delete [] m_xml_buffer;
-		m_xml_buffer = new char[xml_buffer_size];
+		m_xml_buffer = new char[xml_buffer_size + 1];
+		m_xml_buffer[xml_buffer_size] = '\0';
 
 		xml_text->read( m_xml_buffer, xml_buffer_size );
 

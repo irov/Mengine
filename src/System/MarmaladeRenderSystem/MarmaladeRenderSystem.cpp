@@ -126,6 +126,12 @@ namespace Menge
 	    case Menge::PF_A8:
 		    return GL_ALPHA;
 		    //return GL_LUMINANCE;
+		case Menge::PF_ETC1:
+			return GL_ETC1_RGB8_OES;
+		case Menge::PF_PVRTC4_RGB:
+			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+		case Menge::PF_PVRTC4_RGBA:
+			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
 	    default:;
 	    }
 	    return 0;
@@ -140,6 +146,12 @@ namespace Menge
 		    return GL_RGBA;
 	    case Menge::PF_A8:
 		    return GL_ALPHA;
+		case Menge::PF_ETC1:
+			return GL_ETC1_RGB8_OES;
+		case Menge::PF_PVRTC4_RGB:
+			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
+		case Menge::PF_PVRTC4_RGBA:
+			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
 	    default:;
 	    }
 	    return 0;
@@ -579,12 +591,14 @@ namespace Menge
 
             glActiveTexture(GL_TEXTURE0 + i);
             glEnable(GL_TEXTURE_2D);
+
+			glBindTexture(GL_TEXTURE_2D, textureStage.texture);
+
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter );
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter );
 
-            glBindTexture(GL_TEXTURE_2D, textureStage.texture);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
                         
             glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp);
@@ -886,6 +900,14 @@ namespace Menge
 		GLint textureFormat = s_toGLColorFormat( hwFormat );
 		GLint textureType = s_getGLColorDataType( hwFormat );
 		GLint texturePitch = _width * hwChannels;
+
+		if( hwFormat == Menge::PF_ETC1 || 
+			hwFormat == Menge::PF_PVRTC4_RGB || 
+			hwFormat == Menge::PF_PVRTC4_RGBA )
+		{
+			GLuint size = (_width * _height) >> 1;
+			texturePitch = size / _height;
+		}
 
         MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 

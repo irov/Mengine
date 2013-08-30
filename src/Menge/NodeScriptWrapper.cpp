@@ -3392,8 +3392,10 @@ namespace Menge
 
 
                 pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
-                    .def( "setImageResource", &Sprite::setResourceImage )
-                    .def( "getImageResource", &Sprite::getResourceImage )
+                    .def_depricated( "setImageResource", &Sprite::setResourceImage, "Use setResourceImage" )
+                    .def_depricated( "getImageResource", &Sprite::getResourceImage, "Use getResourceImage" )
+					.def( "getResourceImage", &Sprite::setResourceImage )
+					.def( "getResourceImage", &Sprite::getResourceImage )
 
                     .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
                     

@@ -191,8 +191,6 @@ namespace Menge
 
         Resolution m_resolution;
 
-		String m_ext;
-
 		bool m_supportNPOT;
 
 		GLuint m_currentVertexBuffer;

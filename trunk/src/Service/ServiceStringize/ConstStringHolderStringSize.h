@@ -14,7 +14,7 @@ namespace Menge
 		const char * initialize( const char * _value, size_t _size )
 		{
 			memcpy( m_buff, _value, _size );
-			m_buff[_size] = 0;
+			m_buff[_size] = '\0';
 
 			return m_buff;
 		}
@@ -27,6 +27,12 @@ namespace Menge
         : public stdex::const_string_holder
         , public Factorable
     {
+	public:
+		ConstStringHolderStringSize()
+			: m_store(nullptr)
+		{
+		}
+
 	public:
         void setValue( Factorable * _store, const char * _value, size_t _size )
         {			

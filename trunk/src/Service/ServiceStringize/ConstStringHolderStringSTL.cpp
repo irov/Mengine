@@ -1,29 +1,39 @@
 #   include "ConstStringHolderStringSTL.h"
 
+#   include <memory.h>
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolderStringSTL::ConstStringHolderStringSTL()
+		: m_buff(nullptr)
     {    
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderStringSTL::setValue( const char * _value, size_t _size )
     {
-        m_value.assign( _value, _size );
+		m_buff = new char[_size + 1];
 
-        const char * data = m_value.c_str();
+		memcpy( m_buff, _value, _size );
+		m_buff[_size] = '\0';
 
-        this->setup( data, _size );
+        this->setup( m_buff, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderStringSTL::_releaseString()
     {
-        String empty;
-        m_value.swap(empty);
+        delete [] m_buff;
+		m_buff = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderStringSTL::_destroyString()
     {
+		if( m_buff == nullptr )
+		{
+			delete [] m_buff;
+			m_buff = nullptr;
+		}
+
         this->destroy();
     }
 }

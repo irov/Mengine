@@ -2967,6 +2967,15 @@ namespace Menge
         pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage> >("ResourceImageDefault", false)
             ;
 
+		pybind::interface_<ResourceImageMultiplyRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageMultiplyRGBAndAlpha", false)
+			;
+
+		pybind::interface_<ResourceImageCombineRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageCombineRGBAndAlpha", false)
+			;
+
+		pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceImage> >("ResourceImageSubstract", false)
+			;
+
         pybind::interface_<ResourceMovie, pybind::bases<ResourceReference> >("ResourceMovie", false)
 			.def("getDuration", &ResourceMovie::getDuration)
             ;        
@@ -2997,15 +3006,6 @@ namespace Menge
         
         pybind::interface_<ResourceWindow, pybind::bases<ResourceReference> >("ResourceWindow", false)
             ;    
-
-        pybind::interface_<ResourceImageMultiplyRGBAndAlpha, pybind::bases<ResourceReference> >("ResourceImageMultiplyRGBAndAlpha", false)
-            ;
-
-        pybind::interface_<ResourceImageCombineRGBAndAlpha, pybind::bases<ResourceReference> >("ResourceImageCombineRGBAndAlpha", false)
-            ;
-
-        pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceReference> >("ResourceImageSubstract", false)
-            ;        
 
 		pybind::interface_<ResourceHIT, pybind::bases<ResourceReference> >("ResourceHIT", false)
 			;        		

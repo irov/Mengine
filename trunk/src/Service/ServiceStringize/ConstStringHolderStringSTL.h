@@ -24,6 +24,6 @@ namespace Menge
         void _destroyString() override;
 
     protected:
-        String m_value;
+		char * m_buff;
     };
 }

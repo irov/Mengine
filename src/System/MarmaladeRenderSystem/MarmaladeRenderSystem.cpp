@@ -344,7 +344,7 @@ namespace Menge
 		glBindBuffer( GL_ARRAY_BUFFER, m_currentVertexBuffer );
 		
         VBHandle vbHandle = static_cast<VBHandle>( bufId );
-		m_vBuffersMemory.insert( std::make_pair( vbHandle, memRange ) );
+		m_vBuffersMemory.insert( vbHandle, memRange );
 		
         return vbHandle;
 	}
@@ -355,7 +355,9 @@ namespace Menge
 		
         if( it_find != m_vBuffersMemory.end() )
 		{
-			delete[] it_find->second.pMem;
+			const MemoryRange & range = m_vBuffersMemory.get_value( it_find );
+			delete [] range.pMem;
+
 			m_vBuffersMemory.erase( it_find );
 		}
 		
@@ -375,12 +377,14 @@ namespace Menge
 		
         if( it_find == m_vBuffersMemory.end() )
 		{
-			return NULL;
+			return nullptr;
 		}
+
+		const MemoryRange & range = m_vBuffersMemory.get_value( it_find );
 		
-        MemoryRange memRange = { it_find->second.pMem, _size, _offset };
+        MemoryRange memRange = { range.pMem, _size, _offset };
 		
-        m_vBuffersLocks.insert( std::make_pair( _vbHandle, memRange ) );
+        m_vBuffersLocks.insert( _vbHandle, memRange );
 		
         void * mem = static_cast<void *>(memRange.pMem + _offset);
 
@@ -402,7 +406,7 @@ namespace Menge
 		    glBindBuffer( GL_ARRAY_BUFFER, bufId );
         }
 		
-        MemoryRange& memRange = it_find->second;
+        const MemoryRange & memRange = m_vBuffersLocks.get_value( it_find );
 
 		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem + memRange.offset );
         
@@ -449,7 +453,7 @@ namespace Menge
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_currentIndexBuffer );
 		
         IBHandle ibHandle = static_cast<IBHandle>( bufId );
-		m_iBuffersMemory.insert( std::make_pair( ibHandle, memRange ) );
+		m_iBuffersMemory.insert( ibHandle, memRange );
 
 		return ibHandle;
 	}
@@ -460,7 +464,9 @@ namespace Menge
 		
         if( it_find != m_iBuffersMemory.end() )
 		{
-			delete[] it_find->second.pMem;
+			const MemoryRange & range = m_iBuffersMemory.get_value( it_find );
+			delete [] range.pMem;
+
 			m_iBuffersMemory.erase( it_find );
 		}
 		
@@ -483,8 +489,10 @@ namespace Menge
 			return nullptr;
 		}
 		
-        MemoryRange memRange = { it_find->second.pMem, _size, _offset, _flags };
-		m_iBuffersLocks.insert( std::make_pair( _ibHandle, memRange ) );
+		const MemoryRange & range = m_iBuffersMemory.get_value( it_find );
+
+        MemoryRange memRange = { range.pMem, _size, _offset, _flags };
+		m_iBuffersLocks.insert( _ibHandle, memRange );
 		
         uint16 * mem = reinterpret_cast<uint16 *>(memRange.pMem);
 
@@ -507,7 +515,7 @@ namespace Menge
 		    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
         }
 
-		MemoryRange& memRange = it_find->second;
+		const MemoryRange & memRange = m_iBuffersMemory.get_value( it_find );
 		
 		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem + memRange.offset );
 

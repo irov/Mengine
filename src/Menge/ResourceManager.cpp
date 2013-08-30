@@ -263,7 +263,7 @@ namespace Menge
 		entry.resource = resource;
 		entry.isLocked = false;
 
-        m_resources.insert( _name, entry );
+        m_resources.insert( entry );
 
 		CategoryGroupKey key;
 		key.category = _category;

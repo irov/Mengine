@@ -205,80 +205,6 @@ namespace Menge
             PyObject * m_list;
         };
         //////////////////////////////////////////////////////////////////////////
-        template<class T, class R, class M>
-        void Template_setResource( T * _node, const ConstString & _resourceName, M _method )
-        {
-            R * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceReferenceT<R>(_resourceName);
-
-            if( resource == nullptr )
-            {
-                LOGGER_WARNING(m_serviceProvider)("%s_setResource %s not found resource %s"
-                    , _node->getType().c_str()
-                    , _node->getName().c_str()
-                    , _resourceName.c_str()
-                    );
-
-                return;
-            }
-
-            (_node->*_method)( resource );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        template<class T, class R, class M>
-        const ConstString &  Template_getResource( T * _node, M _method )
-        {
-            R * resource = (_node->*_method)();
-
-            if( resource == nullptr )
-            {
-                LOGGER_WARNING(m_serviceProvider)("%s_getResource %s resource is null"
-                    , _node->getType().c_str()
-                    , _node->getName().c_str()
-                    );
-
-                return ConstString::none();
-            }
-
-            const ConstString & name = resource->getName();
-
-            return name;
-        }
-
-        //////////////////////////////////////////////////////////////////////////
-#   define NODE_GETSETRESOURCE_DECLARE( NodeType, ResourceType, SetMethod, GetMethod )\
-    void NodeType##_setResource( NodeType * _node, const ConstString & _resourceName )\
-        {\
-        Template_setResource<NodeType, ResourceType>( _node, _resourceName, &SetMethod );\
-        }\
-        const ConstString & NodeType##_getResource( NodeType * _node )\
-        {\
-        const ConstString & name = Template_getResource<NodeType, ResourceType>( _node, &GetMethod );\
-        \
-        return name;\
-        }
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( Sprite, ResourceImage, Sprite::setResourceImage, Sprite::getResourceImage );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( Animation, ResourceAnimation, Animation::setResourceAnimation, Animation::getResourceAnimation );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( HotSpotShape, ResourceShape, HotSpotShape::setResourceShape, HotSpotShape::getResourceShape );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( HotSpotImage, ResourceHIT, HotSpotImage::setResourceHIT, HotSpotImage::getResourceHIT );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( Movie, ResourceMovie, Movie::setResourceMovie, Movie::getResourceMovie );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( Video, ResourceVideo, Video::setResourceVideo, Video::getResourceVideo );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( SoundEmitter, ResourceSound, SoundEmitter::setResourceSound, SoundEmitter::getResourceSound );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( TextField, ResourceFont, TextField::setResourceFont, TextField::getResourceFont );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( Window, ResourceWindow, Window::setResourceWindow, Window::getResourceWindow );
-        //////////////////////////////////////////////////////////////////////////
-        NODE_GETSETRESOURCE_DECLARE( ParticleEmitter, ResourceEmitterContainer, ParticleEmitter::setResourceEmitterContainer, ParticleEmitter::getResourceEmitterContainer );
-        
-        //////////////////////////////////////////////////////////////////////////
         PyObject * movie_getSockets( Movie * _movie )
         {
             PyObject * py_list = pybind::list_new(0);
@@ -2650,6 +2576,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageCombineRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstract );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
     }
 
     struct extract_String_type
@@ -3041,7 +2968,8 @@ namespace Menge
             ;
 
         pybind::interface_<ResourceMovie, pybind::bases<ResourceReference> >("ResourceMovie", false)
-            ;            
+			.def("getDuration", &ResourceMovie::getDuration)
+            ;        
 
         pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)
             ;            
@@ -3078,6 +3006,9 @@ namespace Menge
 
         pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceReference> >("ResourceImageSubstract", false)
             ;        
+
+		pybind::interface_<ResourceHIT, pybind::bases<ResourceReference> >("ResourceHIT", false)
+			;        		
 
         pybind::interface_<Renderable>("Renderable")
             .def( "hide", &Renderable::hide )
@@ -3297,8 +3228,8 @@ namespace Menge
 
             {
                 pybind::interface_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
-                    .def_proxy_static( "setResourceEmitterContainer", nodeScriptMethod, &NodeScriptMethod::ParticleEmitter_setResource )
-                    .def_proxy_static( "getResourceEmitterContainer", nodeScriptMethod, &NodeScriptMethod::ParticleEmitter_getResource ) 
+					.def( "setResourceEmitterContainer", &ParticleEmitter::setResourceEmitterContainer )
+					.def( "getResourceEmitterContainer", &ParticleEmitter::getResourceEmitterContainer )
                     .def( "playFromPosition", &ParticleEmitter::playFromPosition )
                     .def( "pause", &ParticleEmitter::pause )
                     .def( "restart", &ParticleEmitter::restart )
@@ -3325,8 +3256,8 @@ namespace Menge
                     ;
 
                 pybind::interface_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
-                    .def_proxy_static( "setResourceSound", nodeScriptMethod, &NodeScriptMethod::SoundEmitter_setResource )
-                    .def_proxy_static( "getResourceSound", nodeScriptMethod, &NodeScriptMethod::SoundEmitter_getResource )  
+					.def( "setResourceSound", &SoundEmitter::setResourceSound )
+					.def( "getResourceSound", &SoundEmitter::getResourceSound )
                     .def( "setVolume", &SoundEmitter::setVolume )
                     .def( "getVolume", &SoundEmitter::getVolume )
                     .def( "setLoop", &SoundEmitter::setLoop )
@@ -3334,8 +3265,8 @@ namespace Menge
                     ;
 
                 pybind::interface_<TextField, pybind::bases<Node> >("TextField", false)
-                    .def_proxy_static( "setResourceFont", nodeScriptMethod, &NodeScriptMethod::TextField_setResource )
-                    .def_proxy_static( "getResourceFont", nodeScriptMethod, &NodeScriptMethod::TextField_getResource )  
+					.def( "setResourceFont", &TextField::setResourceFont )
+                    .def( "getResourceFont", &TextField::getResourceFont )  
 					.def_proxy_static( "setText", nodeScriptMethod, &NodeScriptMethod::textfield_setText )
 					.def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
                     .def_depricated( "setHeight", &TextField::setFontHeight, "use setFontHeight" )
@@ -3429,8 +3360,8 @@ namespace Menge
                     ;
 
                 pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
-                    .def_proxy_static( "setResourceHIT", nodeScriptMethod, &NodeScriptMethod::HotSpotImage_setResource )
-                    .def_proxy_static( "getResourceHIT", nodeScriptMethod, &NodeScriptMethod::HotSpotImage_getResource )        
+                    .def( "setResourceHIT", &HotSpotImage::setResourceHIT )
+                    .def( "getResourceHIT", &HotSpotImage::getResourceHIT )        
                     .def( "setAlphaTest", &HotSpotImage::setAlphaTest )
                     .def( "getAlphaTest", &HotSpotImage::getAlphaTest )
                     .def( "getWidth", &HotSpotImage::getWidth )
@@ -3438,8 +3369,8 @@ namespace Menge
                     ;
 
                 pybind::interface_<HotSpotShape, pybind::bases<HotSpot> >("HotSpotShape", false)
-                    .def_proxy_static( "setResourceShape", nodeScriptMethod, &NodeScriptMethod::HotSpotShape_setResource )
-                    .def_proxy_static( "getResourceShape", nodeScriptMethod, &NodeScriptMethod::HotSpotShape_getResource )
+                    .def( "setResourceShape", &HotSpotShape::setResourceShape )
+                    .def( "getResourceShape", &HotSpotShape::getResourceShape )
                     ;
 
                 pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
@@ -3461,8 +3392,8 @@ namespace Menge
 
 
                 pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
-                    .def_proxy_static( "setImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_setResource )
-                    .def_proxy_static( "getImageResource", nodeScriptMethod, &NodeScriptMethod::Sprite_getResource )
+                    .def( "setImageResource", &Sprite::setResourceImage )
+                    .def( "getImageResource", &Sprite::getResourceImage )
 
                     .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
                     
@@ -3477,8 +3408,8 @@ namespace Menge
 
                 {
                     pybind::interface_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
-                        .def_proxy_static( "setAnimationResource", nodeScriptMethod, &NodeScriptMethod::Animation_setResource )
-                        .def_proxy_static( "getAnimationResource", nodeScriptMethod, &NodeScriptMethod::Animation_getResource )
+                        .def( "setAnimationResource", &Animation::setResourceAnimation )
+                        .def( "getAnimationResource", &Animation::getResourceAnimation )
                         .def( "getFrameCount", &Animation::getFrameCount )
                         .def( "getFrameDelay", &Animation::getFrameDelay )
                         .def( "setCurrentFrame", &Animation::setCurrentFrame )
@@ -3542,8 +3473,8 @@ namespace Menge
                 //	;
 
                 pybind::interface_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
-                    .def_proxy_static( "setResourceMovie", nodeScriptMethod, &NodeScriptMethod::Movie_setResource )
-                    .def_proxy_static( "getResourceMovie", nodeScriptMethod, &NodeScriptMethod::Movie_getResource )
+                    .def( "setResourceMovie", &Movie::setResourceMovie )
+                    .def( "getResourceMovie", &Movie::getResourceMovie )
                     .def( "setReverse", &Movie::setReverse )
                     .def( "getReverse", &Movie::getReverse )		
                     .def( "getMovieSlot", &Movie::getMovieSlot )
@@ -3568,14 +3499,14 @@ namespace Menge
                     ;				
 
                 pybind::interface_<Video, pybind::bases<Node , Animatable> >("Video", false)                    
-                    .def_proxy_static( "setResourceVideo", nodeScriptMethod, &NodeScriptMethod::Video_setResource )
-                    .def_proxy_static( "getResourceVideo", nodeScriptMethod, &NodeScriptMethod::Video_getResource )
+                    .def( "setResourceVideo", &Video::setResourceVideo )
+                    .def( "getResourceVideo", &Video::getResourceVideo )
                     .def( "pause",&Video::pause )
                     ;
 
                 pybind::interface_<Window, pybind::bases<Node> >("Window", false)
-                    .def_proxy_static( "setResourceWindow", nodeScriptMethod, &NodeScriptMethod::Window_setResource )
-                    .def_proxy_static( "getResourceWindow", nodeScriptMethod, &NodeScriptMethod::Window_getResource )
+                    .def( "setResourceWindow", &Window::setResourceWindow )
+                    .def( "getResourceWindow", &Window::getResourceWindow )
                     .def( "setClientSize", &Window::setClientSize )
                     .def( "setClientSizeClip", &Window::setClientSizeClip )
                     .def( "setClientSizeInTiles", &Window::setClientSizeInTiles )

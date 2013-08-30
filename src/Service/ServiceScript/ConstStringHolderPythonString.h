@@ -14,8 +14,7 @@ namespace Menge
     {
     public:
         ConstStringHolderPythonString();
-        ~ConstStringHolderPythonString();
-
+        
     public:
         void setPythonObject( PyObject * _value );
 

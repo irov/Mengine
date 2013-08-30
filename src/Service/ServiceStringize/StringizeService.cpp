@@ -36,41 +36,51 @@ namespace Menge
 
 			stringHolder = string;
 		}
-        else if( _size < 16 )
-        {
-            ConstStringHolderString16 * string = m_poolString16.createObjectT();
-            string->setValue( _str, _size );
+		else if( _size < 16 )
+		{
+			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
+			StringSizeBuffer16 * buffer = m_poolString16.createObjectT();
+			const char * store_value = buffer->initialize( _str, _size );
+			string->setValue( buffer, store_value, _size );
 
-            stringHolder = string;
-        }
-        else if( _size < 32 )
-        {
-            ConstStringHolderString32 * string = m_poolString32.createObjectT();
-            string->setValue( _str, _size );
+			stringHolder = string;
+		}
+		else if( _size < 32 )
+		{
+			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
+			StringSizeBuffer32 * buffer = m_poolString32.createObjectT();
+			const char * store_value = buffer->initialize( _str, _size );
+			string->setValue( buffer, store_value, _size );
 
-            stringHolder = string;
-        }
-        else if( _size < 64 )
-        {
-            ConstStringHolderString64 * string = m_poolString64.createObjectT();
-            string->setValue( _str, _size );
+			stringHolder = string;
+		}
+		else if( _size < 64 )
+		{
+			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
+			StringSizeBuffer64 * buffer = m_poolString64.createObjectT();
+			const char * store_value = buffer->initialize( _str, _size );
+			string->setValue( buffer, store_value, _size );
 
-            stringHolder = string;
-        }
-        else if( _size < 128 )
-        {
-            ConstStringHolderString128 * string = m_poolString128.createObjectT();
-            string->setValue( _str, _size );
+			stringHolder = string;
+		}
+		else if( _size < 128 )
+		{
+			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
+			StringSizeBuffer128 * buffer = m_poolString128.createObjectT();
+			const char * store_value = buffer->initialize( _str, _size );
+			string->setValue( buffer, store_value, _size );
 
-            stringHolder = string;
-        }
-        else if( _size < 256 )
-        {
-            ConstStringHolderString256 * string = m_poolString256.createObjectT();
-            string->setValue( _str, _size );
+			stringHolder = string;
+		}
+		else if( _size < 256 )
+		{
+			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
+			StringSizeBuffer256 * buffer = m_poolString256.createObjectT();
+			const char * store_value = buffer->initialize( _str, _size );
+			string->setValue( buffer, store_value, _size );
 
-            stringHolder = string;
-        }
+			stringHolder = string;
+		}
         else
         {
             ConstStringHolderStringSTL * stringSTL = m_poolStringSTL.createObjectT();

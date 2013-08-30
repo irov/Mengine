@@ -6,33 +6,55 @@
 
 namespace Menge
 {
-    template<size_t I_Size>
+	template<size_t Size> 
+	class StringSizeBuffer
+		: public Factorable
+	{
+	public:
+		const char * initialize( const char * _value, size_t _size )
+		{
+			memcpy( m_buff, _value, _size );
+			m_buff[_size] = 0;
+
+			return m_buff;
+		}
+
+	protected:
+		char m_buff[Size];
+	};
+
     class ConstStringHolderStringSize
         : public stdex::const_string_holder
         , public Factorable
     {
-    public:
-        void setValue( const char * _value, size_t _size )
-        {
-            memcpy( m_value, _value, _size );
-            m_value[_size] = 0;
+	public:
+        void setValue( Factorable * _store, const char * _value, size_t _size )
+        {			
+			m_store = _store;
 
-            this->setup( m_value, _size );
+            this->setup( _value, _size );
         }
 
     protected:
         void _releaseString() override
         {
-            //Empty
+			m_store->destroy();
+			m_store = nullptr;
         }
 
     protected:
         void _destroyString() override
         {
+			if( m_store != nullptr )
+			{
+				m_store->destroy();
+				m_store = nullptr;
+			}
+
             this->destroy();
         }
 
     protected:			
-        char m_value[I_Size];
+        Factorable * m_store;
     };
 }

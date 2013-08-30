@@ -215,6 +215,7 @@ namespace Menge
         ++it )
         {
 			RenderMaterialGroup * materialGroup = m_mapMaterialGroup.get_value(it);
+
             delete materialGroup;
         }
 

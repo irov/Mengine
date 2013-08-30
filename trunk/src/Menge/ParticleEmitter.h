@@ -21,7 +21,6 @@ namespace Menge
 	class ResourceImageDefault;
 	struct RenderMaterial;
 	
-
 	class ParticleEmitter
 		: public Node
 		, public ParticleEmitterListenerInterface

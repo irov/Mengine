@@ -29,25 +29,28 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef ConstStringHolderStringSize<256> ConstStringHolderString256;
-        typedef FactoryPool<ConstStringHolderString256, 128> FactoryPoolString256;
+        typedef StringSizeBuffer<256> StringSizeBuffer256;
+        typedef FactoryPool<StringSizeBuffer256, 128> FactoryPoolString256;
         FactoryPoolString256 m_poolString256;
 
-        typedef ConstStringHolderStringSize<128> ConstStringHolderString128;
-        typedef FactoryPool<ConstStringHolderString128, 128> FactoryPoolString128;
+        typedef StringSizeBuffer<128> StringSizeBuffer128;
+        typedef FactoryPool<StringSizeBuffer128, 128> FactoryPoolString128;
         FactoryPoolString128 m_poolString128;
 
-        typedef ConstStringHolderStringSize<64> ConstStringHolderString64;
-        typedef FactoryPool<ConstStringHolderString64, 128> FactoryPoolString64;
+        typedef StringSizeBuffer<64> StringSizeBuffer64;
+        typedef FactoryPool<StringSizeBuffer64, 128> FactoryPoolString64;
         FactoryPoolString64 m_poolString64;
 
-        typedef ConstStringHolderStringSize<32> ConstStringHolderString32;
-        typedef FactoryPool<ConstStringHolderString32, 128> FactoryPoolString32;
+        typedef StringSizeBuffer<32> StringSizeBuffer32;
+        typedef FactoryPool<StringSizeBuffer32, 128> FactoryPoolString32;
         FactoryPoolString32 m_poolString32;
 
-        typedef ConstStringHolderStringSize<16> ConstStringHolderString16;
-        typedef FactoryPool<ConstStringHolderString16, 128> FactoryPoolString16;
+        typedef StringSizeBuffer<16> StringSizeBuffer16;
+        typedef FactoryPool<StringSizeBuffer16, 128> FactoryPoolString16;
         FactoryPoolString16 m_poolString16;
+
+		typedef FactoryPool<ConstStringHolderStringSize, 512> FactoryConstStringHolderStringSize;
+		FactoryConstStringHolderStringSize m_poolStringSize;
 
         typedef FactoryPool<ConstStringHolderStringSTL, 32> FactoryPoolStringSTL;
         FactoryPoolStringSTL m_poolStringSTL;

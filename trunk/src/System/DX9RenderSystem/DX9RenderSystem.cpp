@@ -2088,6 +2088,7 @@ namespace Menge
         if( vb->pVB )
         {
             vb->pVB->Release();
+			vb->pVB = nullptr;
         }
 
         m_vertexBuffers.erase( _vbHandle );
@@ -2151,6 +2152,7 @@ namespace Menge
         if( info->pIB )
         {
             info->pIB->Release();
+			info->pIB = nullptr;
         }
 
         m_indexBuffers.erase( _ibHandle );

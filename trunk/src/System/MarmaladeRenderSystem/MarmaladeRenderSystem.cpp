@@ -329,9 +329,13 @@ namespace Menge
 		glGenBuffers( 1, &bufId );
 		glBindBuffer( GL_ARRAY_BUFFER, bufId );
         
+		size_t size = _verticesNum * _vertexSize;
+
 		MemoryRange memRange;
-		memRange.size = _verticesNum * _vertexSize;
-		memRange.pMem = new unsigned char[memRange.size];
+		memRange.pMem = new unsigned char[size];
+		memRange.size = size;
+		memRange.offset = 0;		
+		memRange.flags = 0;
         
         GLenum usage = GL_STATIC_DRAW;
 
@@ -382,7 +386,11 @@ namespace Menge
 
 		const MemoryRange & range = m_vBuffersMemory.get_value( it_find );
 		
-        MemoryRange memRange = { range.pMem, _size, _offset };
+        MemoryRange memRange;
+		memRange.pMem = range.pMem;
+		memRange.size = _size;
+		memRange.offset = _offset;
+		memRange.flags = _flags;
 		
         m_vBuffersLocks.insert( _vbHandle, memRange );
 		
@@ -438,9 +446,13 @@ namespace Menge
 
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		
+		size_t size = _indiciesNum * sizeof( uint16 );
+
         MemoryRange memRange;
-		memRange.size = _indiciesNum * sizeof( uint16 );
-		memRange.pMem = new unsigned char[memRange.size];
+		memRange.pMem = new unsigned char[size];
+		memRange.size = size;		
+		memRange.offset = 0;
+		memRange.flags = 0;
 
         GLenum usage = GL_STATIC_DRAW;
 
@@ -491,7 +503,12 @@ namespace Menge
 		
 		const MemoryRange & range = m_iBuffersMemory.get_value( it_find );
 
-        MemoryRange memRange = { range.pMem, _size, _offset, _flags };
+        MemoryRange memRange;
+		memRange.pMem = range.pMem;
+		memRange.size = _size;
+		memRange.offset = _offset;
+		memRange.flags = _flags;
+
 		m_iBuffersLocks.insert( _ibHandle, memRange );
 		
         uint16 * mem = reinterpret_cast<uint16 *>(memRange.pMem);

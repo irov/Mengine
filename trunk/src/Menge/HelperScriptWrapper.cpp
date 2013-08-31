@@ -855,7 +855,7 @@ namespace Menge
             {
                 LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid text key %s convert %s to unicode"
                     , _key.c_str()
-                    , entry.text
+                    , entry.text.c_str()
                     );
 
                 pybind::throw_exception();

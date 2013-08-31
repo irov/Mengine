@@ -346,7 +346,7 @@ namespace Menge
 		MemoryRange memRange;
 		memRange.pMem = new unsigned char[size];
 		memRange.size = size;
-		memRange.offset = 0;		
+		memRange.offset = 0;
 		memRange.flags = 0;
         
         GLenum usage = GL_STATIC_DRAW;
@@ -427,8 +427,8 @@ namespace Menge
         }
 		
         const MemoryRange & memRange = m_vBuffersLocks.get_value( it_find );
-
-		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem + memRange.offset );
+		
+		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
         
         if( m_currentVertexBuffer != bufId )
         {
@@ -462,7 +462,7 @@ namespace Menge
 
         MemoryRange memRange;
 		memRange.pMem = new unsigned char[size];
-		memRange.size = size;		
+		memRange.size = size;
 		memRange.offset = 0;
 		memRange.flags = 0;
 
@@ -544,9 +544,9 @@ namespace Menge
 		    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
         }
 
-		const MemoryRange & memRange = m_iBuffersMemory.get_value( it_find );
+		const MemoryRange & memRange = m_iBuffersLocks.get_value( it_find );
 		
-		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem + memRange.offset );
+		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
 
         if( m_currentIndexBuffer != bufId )
 		{

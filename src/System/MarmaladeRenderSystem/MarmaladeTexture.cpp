@@ -79,7 +79,17 @@ namespace Menge
 
         glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
 
-		glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, m_lock );
+		if( m_internalFormat == GL_ETC1_RGB8_OES || 
+			m_internalFormat == GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG || 
+			m_internalFormat == GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG )
+		{
+			GLuint size = (m_hwWidth * m_hwHeight) >> 1;
+			glCompressedTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, size, m_lock);
+		}	
+		else 
+		{
+			glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, m_lock );
+		}
 
 		delete [] m_lock;
 		m_lock = NULL;

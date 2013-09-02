@@ -91,7 +91,8 @@ namespace Menge
         }
 
         // create the chunk manage structure
-        m_png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING, (png_voidp)this, s_handlerError, s_handlerWarning );
+		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
+        m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, s_handlerError, s_handlerWarning );
 
         if( m_png_ptr == 0 )
         {

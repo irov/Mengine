@@ -94,13 +94,13 @@ namespace Menge
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
         void setWorldMatrix( const mt::mat4f & _view ) override;
 
-		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize, bool _dynamic ) override;
+		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
 		void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
-		IBHandle createIndexBuffer( std::size_t _indiciesNum, bool _dynamic ) override;
+		IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
 		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
@@ -108,11 +108,11 @@ namespace Menge
 
 		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
 
-		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) override;
+		void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
+			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) override;
 
-		void setTexture( std::size_t _stage, const RenderImageInterfacePtr & _texture ) override;
-		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
+		void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) override;
+		void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32 _color ) override;
 		void setSrcBlendFactor( EBlendFactor _src ) override;
 		void setDstBlendFactor( EBlendFactor _dst ) override;
@@ -148,7 +148,7 @@ namespace Menge
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		// RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
+		// RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
 		// удаления изображения
         
         RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;

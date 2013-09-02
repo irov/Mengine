@@ -53,9 +53,6 @@ namespace Menge
 		void _setEventListener( PyObject * _listener ) override;
 
 	protected:
-		void addPoint_( const mt::vec2f & _p );
-
-	protected:
 		Polygon m_polygon;
 		Polygon m_polygonWM;
 		Polygon m_polygonScreen;

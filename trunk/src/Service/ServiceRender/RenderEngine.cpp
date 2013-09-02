@@ -1063,7 +1063,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count )
+    bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const uint16 * _buffer, size_t _count )
     {
         void * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( _handle, 0, _count, 0 );
 

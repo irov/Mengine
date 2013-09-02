@@ -235,7 +235,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystem::~MarmaladeRenderSystem()
 	{
-		//releaseWindowContext( m_windowContext );
 	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -348,7 +347,7 @@ namespace Menge
         // To Do
     }
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle MarmaladeRenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize, bool _dynamic )
+	VBHandle MarmaladeRenderSystem::createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic )
 	{
 		size_t size = _verticesNum * _vertexSize;
 
@@ -367,9 +366,9 @@ namespace Menge
 
 		GLuint bufId = 0;
 		glGenBuffers( 1, &bufId );
-		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 
-        glBufferData( GL_ARRAY_BUFFER, memRange.size, NULL, usage );
+		glBindBuffer( GL_ARRAY_BUFFER, bufId );
+		glBufferData( GL_ARRAY_BUFFER, memRange.size, NULL, usage );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		
         VBHandle vbHandle = static_cast<VBHandle>( bufId );
@@ -443,7 +442,7 @@ namespace Menge
 
 		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );        
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
 		m_vBuffersLocks.erase( it_find );
 
@@ -462,7 +461,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle MarmaladeRenderSystem::createIndexBuffer( std::size_t _indiciesNum, bool _dynamic )
+	IBHandle MarmaladeRenderSystem::createIndexBuffer( size_t _indiciesNum, bool _dynamic )
 	{
 		size_t size = _indiciesNum * sizeof( uint16 );
 
@@ -481,9 +480,10 @@ namespace Menge
 
 		GLuint bufId = 0;
 		glGenBuffers( 1, &bufId );
-		
+
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
-        glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
+
+		glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 		
         IBHandle ibHandle = static_cast<IBHandle>( bufId );
@@ -552,10 +552,9 @@ namespace Menge
 		const MemoryRange & memRange = m_iBuffersLocks.get_value( it_find );
 
 		GLuint bufId = static_cast<GLuint>( _ibHandle );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
-		//glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, memRange.pMem, GL_DYNAMIC_DRAW );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 		
 		m_iBuffersLocks.erase( it_find );
@@ -581,51 +580,51 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
-		std::size_t _baseVertexIndex,  std::size_t _minIndex, 
-		std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount )
+		size_t _baseVertexIndex,  size_t _minIndex, 
+		size_t _verticesNum, size_t _startIndex, size_t _indexCount )
 	{
-        for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
-        {
-            const TextureStage & textureStage = m_textureStage[i];
+		for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			const TextureStage & textureStage = m_textureStage[i];
 
-            if( textureStage.enabled == false )
-            {
-                glActiveTexture(GL_TEXTURE0 + i);
-                glDisable(GL_TEXTURE_2D);
-                break;
-            }
+			if( textureStage.enabled == false )
+			{
+				glActiveTexture(GL_TEXTURE0 + i);
+				glDisable(GL_TEXTURE_2D);
+				break;
+			}
 
-            glActiveTexture(GL_TEXTURE0 + i);
-            glEnable(GL_TEXTURE_2D);
+			glActiveTexture(GL_TEXTURE0 + i);
+			glEnable(GL_TEXTURE_2D);
 
 			glBindTexture(GL_TEXTURE_2D, textureStage.texture);
 
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter );
 
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-                        
-            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, textureStage.colorArg1);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, textureStage.colorArg2);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-            
-            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureStage.alphaOp);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, textureStage.alphaArg1);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, textureStage.alphaArg2);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);            
-        }
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, textureStage.colorArg1);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, textureStage.colorArg2);
+			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+
+			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureStage.alphaOp);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, textureStage.alphaArg1);
+			glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, textureStage.alphaArg2);
+			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+		}
 
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glEnableClientState( GL_COLOR_ARRAY );
 		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 		glBindBuffer( GL_ARRAY_BUFFER, (GLuint)m_currentVertexBuffer );
-				
+		
 		glVertexPointer( 3, GL_FLOAT, 32, 0 );
 		glColorPointer( 4, GL_UNSIGNED_BYTE, 32,  reinterpret_cast<const GLvoid *>( 12 ) );        
 		
@@ -637,23 +636,25 @@ namespace Menge
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, (GLuint)m_currentIndexBuffer );
 
 		gl_check_error();
-
+		
         GLenum mode = s_toGLPrimitiveMode[ _type ];
-		glDrawElements( GL_LINE_STRIP, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ) );		
+		const uint16 * baseIndex = 0;
+		const uint16 * offsetIndex = baseIndex + _startIndex;
+		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) );
 
 		gl_check_error();
 		
+		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		glDisableClientState( GL_COLOR_ARRAY ); 
 		glDisableClientState( GL_VERTEX_ARRAY );
 
-		glBindBuffer( GL_ARRAY_BUFFER, 0 );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-
 		gl_check_error();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTexture( std::size_t _stage, const RenderImageInterfacePtr & _texture )
+	void MarmaladeRenderSystem::setTexture( size_t _stage, const RenderImageInterfacePtr & _texture )
 	{        
         TextureStage & tStage = m_textureStage[_stage];
 
@@ -673,7 +674,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void MarmaladeRenderSystem::setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
         GLenum modeUGL = s_toGLAddressMode[ _modeU ];
         GLenum modeVGL = s_toGLAddressMode[ _modeV ];
@@ -922,9 +923,9 @@ namespace Menge
         return hwFormat;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( std::size_t _width, std::size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-        std::size_t hwChannels = _channels;
+        size_t hwChannels = _channels;
 
         PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
 

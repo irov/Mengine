@@ -55,6 +55,8 @@ SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
 SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
+SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureServiceInterface);
+SERVICE_EXTERN(RenderMaterialManager, Menge::RenderMaterialServiceInterface);
 
 SERVICE_EXTERN(PhysicSystem2D, Menge::PhysicSystem2DInterface);
 SERVICE_EXTERN(PhysicService2D, Menge::PhysicService2DInterface);
@@ -648,6 +650,48 @@ namespace Menge
 
             return false;
         }
+
+		RenderTextureServiceInterface * renderTextureManager;
+		if( SERVICE_CREATE( RenderTextureManager, &renderTextureManager) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, renderTextureManager ) == false )
+		{
+			return false;
+		}
+
+		m_renderTextureManager = renderTextureManager;
+
+		if( m_renderTextureManager->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Texture Service"
+				);
+
+			return false;
+		}
+
+		RenderMaterialServiceInterface * renderMaterialManager;
+		if( SERVICE_CREATE( RenderMaterialManager, &renderMaterialManager ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, renderMaterialManager ) == false )
+		{
+			return false;
+		}
+
+		m_renderMaterialManager = renderMaterialManager;
+
+		if( m_renderMaterialManager->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Material Service"
+				);
+
+			return false;
+		}
 
         return true;
     }

@@ -71,13 +71,6 @@ namespace	Menge
         return m_debugColor;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::addPoint_( const mt::vec2f & _p )
-	{
-		boost::geometry::append( m_polygon, _p );
-
-		this->invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
 		m_polygon.clear();
@@ -285,7 +278,7 @@ namespace	Menge
 			return;
 		}
 
-		m_vertexDebugPolygon.resize( numpoints + 1 );
+		m_vertexDebugPolygon.resize( numpoints );
 
 		const mt::mat4f & worldMat = this->getWorldMatrix();
 
@@ -308,11 +301,6 @@ namespace	Menge
 
             m_vertexDebugPolygon[i].uv2[0] = 0.f;
             m_vertexDebugPolygon[i].uv2[1] = 0.f;
-		}
-
-		if( m_vertexDebugPolygon.size() > 2 )
-		{
-			std::copy( m_vertexDebugPolygon.begin(), m_vertexDebugPolygon.begin() + 1, m_vertexDebugPolygon.end() - 1 );
 		}
 	}
 //#	endif

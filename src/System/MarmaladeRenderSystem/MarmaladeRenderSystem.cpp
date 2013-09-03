@@ -230,6 +230,8 @@ namespace Menge
 		, m_activeTextureStage(0)
 		, m_activeTexture(0)
 		, m_activeRenderTarget(NULL)
+		, m_VBHandleGenerator(0)
+		, m_IBHandleGenerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -370,8 +372,10 @@ namespace Menge
 		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		glBufferData( GL_ARRAY_BUFFER, memRange.size, NULL, usage );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+
+		memRange.bufId = bufId;
 		
-        VBHandle vbHandle = static_cast<VBHandle>( bufId );
+        VBHandle vbHandle = ++m_VBHandleGenerator;
 		m_vBuffersMemory.insert( vbHandle, memRange );
 
 		gl_check_error();
@@ -381,44 +385,39 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
 	{
-		TMapVBufferMemory::iterator it_find = m_vBuffersMemory.find( _vbHandle );
-		
-        if( it_find != m_vBuffersMemory.end() )
+		MemoryRange * range;
+		if( m_vBuffersMemory.has( _vbHandle, &range) == false )
 		{
-			const MemoryRange & range = m_vBuffersMemory.get_value( it_find );
-			delete [] range.pMem;
-
-			m_vBuffersMemory.erase( it_find );
+			return;
 		}
 		
-        GLuint bufId = (GLuint)( _vbHandle );
+		delete [] range->pMem;
+
+		glDeleteBuffers( 1, &range->bufId );
+		gl_check_error();
 		
-        if( bufId == m_currentVertexBuffer )
+        if( _vbHandle == m_currentVertexBuffer )
 		{
 			m_currentVertexBuffer = 0;
 		}
-		
-        glDeleteBuffers( 1, &bufId );
 
-		gl_check_error();
+		m_vBuffersMemory.erase( _vbHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * MarmaladeRenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
 	{
-		TMapVBufferMemory::iterator it_find = m_vBuffersMemory.find( _vbHandle );
-		
-        if( it_find == m_vBuffersMemory.end() )
+		MemoryRange * range;
+		if( m_vBuffersMemory.has( _vbHandle, &range) == false )
 		{
 			return nullptr;
 		}
 
-		const MemoryRange & range = m_vBuffersMemory.get_value( it_find );
-		
         MemoryRange memRange;
-		memRange.pMem = range.pMem + _offset;
+		memRange.pMem = range->pMem + _offset;
 		memRange.size = _size;
 		memRange.offset = _offset;
 		memRange.flags = _flags;
+		memRange.bufId = range->bufId;
 		
         m_vBuffersLocks.insert( _vbHandle, memRange );
 		
@@ -429,36 +428,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
 	{
-		TMapVBufferMemory::iterator it_find = m_vBuffersLocks.find( _vbHandle );
-		
-        if( it_find == m_vBuffersLocks.end() )
+		MemoryRange * range;
+		if( m_vBuffersLocks.has( _vbHandle, &range) == false )
 		{
 			return false;
 		}
 	
-		GLuint bufId = static_cast<GLuint>( _vbHandle );
-
-		const MemoryRange & memRange = m_vBuffersLocks.get_value( it_find );
-
-		glBindBuffer( GL_ARRAY_BUFFER, bufId );
-		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );        
+		glBindBuffer( GL_ARRAY_BUFFER, range->bufId );
+		glBufferSubData( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem );        
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
-		m_vBuffersLocks.erase( it_find );
-
 		gl_check_error();
+
+		m_vBuffersLocks.erase( _vbHandle );		
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setVertexBuffer( VBHandle _vbHandle )
 	{
-		GLuint bufId = static_cast<GLuint>( _vbHandle );
-
-        if( m_currentVertexBuffer != bufId )
-        {		    
-            m_currentVertexBuffer = bufId;
-        }
+		m_currentVertexBuffer = _vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	IBHandle MarmaladeRenderSystem::createIndexBuffer( size_t _indiciesNum, bool _dynamic )
@@ -485,53 +474,50 @@ namespace Menge
 
 		glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-		
-        IBHandle ibHandle = static_cast<IBHandle>( bufId );
-		m_iBuffersMemory.insert( ibHandle, memRange );
 
 		gl_check_error();
 
+		memRange.bufId = bufId;
+		
+		IBHandle ibHandle = ++m_IBHandleGenerator;
+		m_iBuffersMemory.insert( ibHandle, memRange );
+		
 		return ibHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
 	{
-		TMapIBufferMemory::iterator it_find = m_iBuffersMemory.find( _ibHandle );
-		
-        if( it_find != m_iBuffersMemory.end() )
+		MemoryRange * range;
+		if( m_iBuffersMemory.has( _ibHandle, &range) == false )
 		{
-			const MemoryRange & range = m_iBuffersMemory.get_value( it_find );
-			delete [] range.pMem;
-
-			m_iBuffersMemory.erase( it_find );
+			return;
 		}
-		
-        GLuint bufId = (GLuint)( _ibHandle );
-		
-        if( bufId == m_currentIndexBuffer )
+
+		delete [] range->pMem;
+		glDeleteBuffers( 1, &range->bufId );
+
+        if( _ibHandle == m_currentIndexBuffer )
 		{
 			m_currentIndexBuffer = 0;
 		}
 
-		glDeleteBuffers( 1, &bufId );
+		m_iBuffersMemory.erase( _ibHandle );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags )
 	{
-		TMapIBufferMemory::iterator it_find = m_iBuffersMemory.find( _ibHandle );
-
-		if( it_find == m_iBuffersMemory.end() )
+		MemoryRange * range;
+		if( m_iBuffersMemory.has( _ibHandle, &range) == false )
 		{
 			return nullptr;
 		}
 		
-		const MemoryRange & range = m_iBuffersMemory.get_value( it_find );
-
         MemoryRange memRange;
-		memRange.pMem = range.pMem + _offset;
+		memRange.pMem = range->pMem + _offset;
 		memRange.size = _size;
 		memRange.offset = _offset;
 		memRange.flags = _flags;
+		memRange.bufId = range->bufId;
 
 		m_iBuffersLocks.insert( _ibHandle, memRange );
 		
@@ -542,36 +528,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
 	{
-		TMapIBufferMemory::iterator it_find = m_iBuffersLocks.find( _ibHandle );
-		
-        if( it_find == m_iBuffersLocks.end() )
+		MemoryRange * range;
+		if( m_iBuffersLocks.has( _ibHandle, &range) == false )
 		{
-			return false;
+			return nullptr;
 		}
 		
-		const MemoryRange & memRange = m_iBuffersLocks.get_value( it_find );
-
-		GLuint bufId = static_cast<GLuint>( _ibHandle );
-
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
-		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, range->bufId );
+		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-		
-		m_iBuffersLocks.erase( it_find );
 
 		gl_check_error();
+		
+		m_iBuffersLocks.erase( _ibHandle );		
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex )
 	{
-		GLuint bufId = static_cast<GLuint>( _ibHandle );
-
-        if( m_currentIndexBuffer != bufId )
-        {		 
-            m_currentIndexBuffer = bufId;
-        }		
+		m_currentIndexBuffer = _ibHandle;        
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setVertexDeclaration( size_t _vertexSize, uint32 _declaration )
@@ -619,23 +595,34 @@ namespace Menge
 			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
 		}
 
+		MemoryRange * vb_range;
+		if( m_vBuffersMemory.has( m_currentVertexBuffer, &vb_range ) == false )
+		{
+			return;
+		}
+
+		MemoryRange * ib_range;
+		if( m_iBuffersMemory.has( m_currentIndexBuffer, &ib_range ) == false )
+		{
+			return;
+		}
+		
+		glBindBuffer( GL_ARRAY_BUFFER, vb_range->bufId );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId );
+
+		gl_check_error();
+
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glEnableClientState( GL_COLOR_ARRAY );
 		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-		glBindBuffer( GL_ARRAY_BUFFER, (GLuint)m_currentVertexBuffer );
-		
 		glVertexPointer( 3, GL_FLOAT, 32, 0 );
 		glColorPointer( 4, GL_UNSIGNED_BYTE, 32,  reinterpret_cast<const GLvoid *>( 12 ) );        
-		
+
 		glClientActiveTexture( GL_TEXTURE0 );
 		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) );
 		glClientActiveTexture( GL_TEXTURE1 );
 		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) );
-
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, (GLuint)m_currentIndexBuffer );
-
-		gl_check_error();
 		
         GLenum mode = s_toGLPrimitiveMode[ _type ];
 		const uint16 * baseIndex = 0;
@@ -644,12 +631,12 @@ namespace Menge
 
 		gl_check_error();
 		
-		glBindBuffer( GL_ARRAY_BUFFER, 0 );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		glDisableClientState( GL_COLOR_ARRAY ); 
 		glDisableClientState( GL_VERTEX_ARRAY );
+		
+		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
 		gl_check_error();
 	}

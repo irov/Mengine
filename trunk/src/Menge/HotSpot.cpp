@@ -88,14 +88,14 @@ namespace	Menge
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::_activate()
+	void HotSpot::activatePicker_()
 	{
-		if( Node::_activate() == false )
+		if( m_mousePickerAdapter.isActivePicker() == true )
 		{
-			return false;
+			return;
 		}
 
-        m_mousePickerAdapter.activatePicker();
+		m_mousePickerAdapter.activatePicker();
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)( "()" );
 
@@ -107,17 +107,55 @@ namespace	Menge
 		{
 			m_debugColor = 0x20FFFFFF;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::deactivatePicker_()
+	{
+		if( m_mousePickerAdapter.isActivePicker() == false )
+		{
+			return;
+		}
+
+		m_mousePickerAdapter.deactivatePicker();
+
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
+
+		m_debugColor = 0x00000000;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_localHide( bool _value )
+	{
+		if( _value == true )
+		{
+			this->deactivatePicker_();
+		}
+		else
+		{
+			if( this->isActivate() == true )
+			{
+				this->activatePicker_();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::_activate()
+	{
+		if( Node::_activate() == false )
+		{
+			return false;
+		}
+
+		if( this->isLocalHide() == false )
+		{
+			this->activatePicker_();
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		m_mousePickerAdapter.deactivatePicker();
-
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
-
-		m_debugColor = 0x00000000;
+		this->deactivatePicker_();
 		
 		Node::_deactivate();
 	}

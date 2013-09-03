@@ -1520,9 +1520,12 @@ namespace Menge
 
         double p = (a + b + c) * 0.5;
 
-        double S2 = p * abs(p-a) * abs(p-b) * abs(p-c);
-
-        double S = sqrt( S2 );
+		double sq_p = sqrt(p);
+		double sq_pa = sqrt(abs(p - a));
+		double sq_pb = sqrt(abs(p - b));
+		double sq_pc = sqrt(abs(p - c));
+		
+        double S = sq_p * sq_pa * sq_pb * sq_pc;
 
         return S;
     }
@@ -1531,10 +1534,10 @@ namespace Menge
     {
         for( size_t i = 0; i != (_num / 4); ++i )
         {
-            const RenderVertex2D & v0 = _vertex[i + 0];
-            const RenderVertex2D & v1 = _vertex[i + 1];
-            const RenderVertex2D & v2 = _vertex[i + 2];
-            const RenderVertex2D & v3 = _vertex[i + 3];
+            const RenderVertex2D & v0 = _vertex[i*4 + 0];
+            const RenderVertex2D & v1 = _vertex[i*4 + 1];
+            const RenderVertex2D & v2 = _vertex[i*4 + 2];
+            const RenderVertex2D & v3 = _vertex[i*4 + 3];
 
             m_debugInfo.fillrate += s_calcTriangleSquare( v0, v1, v2 );
             m_debugInfo.fillrate += s_calcTriangleSquare( v0, v2, v3 );

@@ -53,6 +53,13 @@ namespace Menge
 		void _setEventListener( PyObject * _listener ) override;
 
 	protected:
+		void _localHide( bool _value ) override;
+
+	protected:
+		void activatePicker_();
+		void deactivatePicker_();
+
+	protected:
 		Polygon m_polygon;
 		Polygon m_polygonWM;
 		Polygon m_polygonScreen;

@@ -66,6 +66,12 @@ namespace Menge
         MousePickerSystemInterface * mousePickerSystem = this->getMousePickerSystem();
 			
         mousePickerSystem->unregTrap( m_picker );
+		m_picker = nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MousePickerAdapter::isActivePicker() const
+	{
+		return m_picker != nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::updatePicker()

@@ -206,7 +206,12 @@ namespace Menge
 			size_t size;
 			size_t offset;
             uint32 flags;
+
+			GLuint bufId;
 		};
+
+		VBHandle m_VBHandleGenerator;
+		IBHandle m_IBHandleGenerator;
 
         typedef stdex::binary_vector<VBHandle, MemoryRange> TMapVBufferMemory;
 		TMapVBufferMemory m_vBuffersMemory;

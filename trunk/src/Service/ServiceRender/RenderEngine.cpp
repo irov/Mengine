@@ -78,9 +78,10 @@ namespace Menge
             m_indicesQuad[i + 5] = vertexOffset + 2;
         }
 
-        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
+        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_LINE; i += 2 )
         {
-            m_indicesLine[i] = i;
+            m_indicesLine[i + 0] = i / 2 + 0;
+			m_indicesLine[i + 1] = i / 2 + 1;
         }
 
         this->setRenderSystemDefaults_();
@@ -934,33 +935,37 @@ namespace Menge
         , const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , const RenderVertex2D * _vertices, size_t _verticesNum )
     {
-        if( _verticesNum * 6 >= MENGINE_RENDER_INDICES_QUAD * 4 )
+		size_t indeciesNum = (_verticesNum / 4) * 6;
+
+        if( indeciesNum >= MENGINE_RENDER_INDICES_QUAD )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderQuad count %d > max count %d"
-                , _verticesNum
-                , MENGINE_RENDER_INDICES_QUAD / 6 * 4
+                , indeciesNum
+                , MENGINE_RENDER_INDICES_QUAD
                 );
 
             return;
         }
 
-        this->addRenderObject( _camera, _material, _textures, _texturesNum, PT_TRIANGLELIST, _vertices, _verticesNum, m_indicesQuad, (_verticesNum / 4) * 6 );
+        this->addRenderObject( _camera, _material, _textures, _texturesNum, PT_TRIANGLELIST, _vertices, _verticesNum, m_indicesQuad, indeciesNum );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderLine( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , const RenderVertex2D * _vertices, size_t _verticesNum )
     {
-        if( _verticesNum >= MENGINE_RENDER_INDICES_LINE )
+		size_t indeciesNum = (_verticesNum - 1) * 2;
+
+        if( indeciesNum >= MENGINE_RENDER_INDICES_LINE )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderLine count %d > max count %d"
-                , _verticesNum
+                , indeciesNum
                 , MENGINE_RENDER_INDICES_LINE
                 );
 
             return;
         }
 
-        this->addRenderObject( _camera, _material, _textures, _texturesNum, PT_LINESTRIP, _vertices, _verticesNum, m_indicesLine, _verticesNum );
+        this->addRenderObject( _camera, _material, _textures, _texturesNum, PT_LINELIST, _vertices, _verticesNum, m_indicesLine, indeciesNum );
     }
     //////////////////////////////////////////////////////////////////////////
     VBHandle RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, size_t _count )
@@ -1202,7 +1207,10 @@ namespace Menge
 
         RenderObject * batchedRO = &(*it_begin);
 
-        batchedRO->dipVerticesNum = batchedRO->verticesNum;
+		_vbSize += batchedRO->verticesNum;
+		_ibSize += batchedRO->indicesNum;
+		
+		batchedRO->dipVerticesNum = batchedRO->verticesNum;
         batchedRO->dipIndiciesNum = batchedRO->indicesNum;
 
         ++it_begin;

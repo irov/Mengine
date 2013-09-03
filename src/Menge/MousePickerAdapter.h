@@ -26,6 +26,7 @@ namespace Menge
 	public:
 		void activatePicker();
 		void deactivatePicker();
+		bool isActivePicker() const;
 
 	public:
 		void updatePicker();

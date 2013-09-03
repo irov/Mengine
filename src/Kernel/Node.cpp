@@ -840,7 +840,10 @@ namespace Menge
 
         if( _debugMask != 0 )
         {
-            this->_debugRender( _camera, _debugMask );
+			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+			{
+				this->_debugRender( _camera, _debugMask );
+			}
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

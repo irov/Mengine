@@ -3361,7 +3361,7 @@ namespace Menge
 
                 pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
                     .def( "setResourceHIT", &HotSpotImage::setResourceHIT )
-                    .def( "getResourceHIT", &HotSpotImage::getResourceHIT )        
+                    .def( "getResourceHIT", &HotSpotImage::getResourceHIT )
                     .def( "setAlphaTest", &HotSpotImage::setAlphaTest )
                     .def( "getAlphaTest", &HotSpotImage::getAlphaTest )
                     .def( "getWidth", &HotSpotImage::getWidth )

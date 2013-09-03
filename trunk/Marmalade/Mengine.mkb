@@ -190,8 +190,4 @@ files
 	("../src/Utils/Math")	
 	"*.h"
     "*.cpp" 
-
-	[stdex]
-    ("../dependencies/stdex/src")
-    "*.cpp"
 }

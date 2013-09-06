@@ -34,6 +34,13 @@ namespace Menge
         return m_serviceProvider;             
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool LoaderEngine::initialize( const ConstString & _protocolPath )
+	{
+		m_protocolPath = _protocolPath;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist )
 	{
         LOGGER_INFO(m_serviceProvider)( "LoaderEngine::load pak '%s:%s'"
@@ -325,7 +332,7 @@ namespace Menge
 		}
 
 		XmlCodecOptions options;
-        options.pathProtocol = Helper::stringizeString( m_serviceProvider, "protocol.xml" );
+        options.pathProtocol = m_protocolPath;
 
 
         FileGroupInterface * fileGroup = FILE_SERVICE(m_serviceProvider)

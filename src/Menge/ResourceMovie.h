@@ -192,6 +192,7 @@ namespace Menge
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
+		bool _convert() override;
 
 	protected:
 		bool _compile() override;
@@ -204,6 +205,8 @@ namespace Menge
         mt::vec2f m_loopSegment;
 		
         FilePath m_keyFramePackPath;
+		ConstString m_codecType;
+
 		MovieFramePackInterface * m_keyFramePack;
 
 		size_t m_frameCount;

@@ -2,6 +2,7 @@
 #	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/ResourceInterface.h"
+#	include "Interface/ConverterInterface.h"
 
 #	include "ResourceImageDefault.h"
 
@@ -30,7 +31,7 @@ namespace Menge
 		, m_size(0.f, 0.f)
 		, m_keyFramePack(nullptr)
 		, m_maxLayerIndex(0)
-		, m_hasCamera3D(false)        
+		, m_hasCamera3D(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -243,6 +244,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_loader( const Metabuf::Metadata * _meta )
 	{
+		m_codecType = CONST_STRING(m_serviceProvider, binMovie);		
+
         const Metacode::Meta_DataBlock::Meta_ResourceMovie * metadata
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
 
@@ -253,6 +256,7 @@ namespace Menge
         metadata->get_Loop_Segment( m_loopSegment );
                 
         metadata->swap_KeyFramesPackPath_Path( m_keyFramePackPath );
+		metadata->swap_KeyFramesPackPath_Codec( m_codecType );
 
         m_layers.clear();
 
@@ -459,6 +463,36 @@ namespace Menge
         m_frameCount = (size_t)((m_duration / m_frameDuration) + 0.5f) - 1;
 
         return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::_convert()
+	{
+		if( m_keyFramePackPath.empty() == true )
+		{
+			return false;
+		}
+
+		//perform convertation if we need
+		if( m_codecType == CONST_STRING(m_serviceProvider, binMovie) )
+		{
+			const ConstString & category = this->getCategory();
+
+			if( CONVERTER_SERVICE(m_serviceProvider)
+				->convert( CONST_STRING(m_serviceProvider, binToAekMovie), category, m_keyFramePackPath, m_keyFramePackPath ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::convert: '%s' can't convert '%s':'%s'"
+					, this->getName().c_str() 
+					, m_keyFramePackPath.c_str()
+					, CONST_STRING(m_serviceProvider, binToAekMovie).c_str()
+					);
+
+				return false;
+			}
+
+			m_codecType = CONST_STRING(m_serviceProvider, aekMovie);
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_compile()

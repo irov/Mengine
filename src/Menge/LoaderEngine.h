@@ -25,6 +25,9 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
+		bool initialize( const ConstString & _protocolPath ) override;
+
+	public:
 		bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) override;
 
 	public:
@@ -43,6 +46,8 @@ namespace Menge
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		ConstString m_protocolPath;
 
 		TBlobject m_bufferBin;
         TBlobject m_bufferCompress;

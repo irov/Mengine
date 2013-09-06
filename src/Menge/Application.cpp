@@ -473,6 +473,11 @@ namespace Menge
 
         SERVICE_REGISTRY( m_serviceProvider, loaderService );
 
+		if( loaderService->initialize( Helper::stringizeString(m_serviceProvider, "protocol.xml") ) == false )
+		{
+			return false;
+		}
+
         m_loaderService = loaderService;
 
 		return true;
@@ -488,8 +493,13 @@ namespace Menge
         {
             return false;
         }
-		
+
         SERVICE_REGISTRY( m_serviceProvider, movieKeyFrameService );
+
+		if( movieKeyFrameService->initialize() == false )
+		{
+			return false;
+		}
 
         m_movieKeyFrameService = movieKeyFrameService;
 
@@ -1390,7 +1400,9 @@ namespace Menge
         //m_eventService->destroy();
         
 
+		m_movieKeyFrameService->finalize();
         SERVICE_DESTROY( MovieKeyFrameService, m_movieKeyFrameService );
+
         SERVICE_DESTROY( PrototypeService, m_prototypeService );
 
         SERVICE_DESTROY( Consts, m_consts );

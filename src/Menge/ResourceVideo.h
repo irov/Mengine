@@ -49,7 +49,7 @@ namespace Menge
 		FilePath m_path;
         
         ConstString m_converter;
-		ConstString m_codec;
+		ConstString m_codecType;
 
         float m_frameRate;
 

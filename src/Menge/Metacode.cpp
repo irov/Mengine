@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 32;
+        _needVersion = 33;
 
-        if( version != 32 )
+        if( version != 33 )
         {
             return false;
         }
@@ -1755,6 +1755,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 8:
+            {
+                if( this->read( _buff, _size, _read, this->KeyFramesPackPath_Codec ) == false )
+                {
+                    return false;
+                }
+    
+                this->KeyFramesPackPath_Codec_successful = true;
+    
+                return true;
+            }break;
         case 7:
             {
                 if( this->read( _buff, _size, _read, this->KeyFramesPackPath_Path ) == false )
@@ -1766,7 +1777,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->Loop_Segment ) == false )
                 {
@@ -1802,19 +1813,19 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 11:
+        case 12:
             {
                 includes_Meta_MovieCamera3D.reserve( _count );
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 includes_Meta_MovieLayer2D.reserve( _count );
                 return true;
                 break;
             }
-        case 10:
+        case 11:
             {
                 includes_Meta_MovieLayer3D.reserve( _count );
                 return true;
@@ -1834,7 +1845,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 11:
+        case 12:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
     
@@ -1846,7 +1857,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
     
@@ -1858,7 +1869,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 10:
+        case 11:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
     

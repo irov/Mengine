@@ -25,7 +25,6 @@ namespace Menge
         mt::vec3f scale;
         float opacity;
         float volume;
-        size_t mask;
     };
 
     typedef std::vector<MovieFrameSource> TVectorMovieFrameSource;
@@ -61,6 +60,10 @@ namespace Menge
         : public ServiceInterface
     {
         SERVICE_DECLARE("MovieKeyFrameService")
+
+	public:
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
 
     public:
         virtual MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) = 0;

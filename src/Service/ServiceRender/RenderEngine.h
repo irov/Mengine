@@ -190,7 +190,7 @@ namespace Menge
 		void renderObject_( const RenderObject* _renderObject );
 
         bool makeBatches_();
-		void makeBatch_( size_t & _vbSize, size_t & _ibSize );		
+		void batchRenderPasses_( size_t & _vbSize, size_t & _ibSize );		
 		void batchRenderObjects_( RenderPass * _pass, size_t & _vbSize, size_t & _ibSize );
 		void batchRenderObject_( RenderObject * _renderObject, RenderObject ** _batchedObject, size_t & _vbSize, size_t & _ibSize ) const;
 		

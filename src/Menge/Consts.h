@@ -111,6 +111,10 @@ namespace Menge
         ConstString c_SelectAccountID;
         ConstString c_Account;
 
+		ConstString c_binMovie;
+		ConstString c_aekMovie;
+		ConstString c_binToAekMovie;
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
 	};

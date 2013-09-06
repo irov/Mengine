@@ -2,8 +2,6 @@
 
 #	include "Archive.hpp"
 
-#	include <string>
-
 namespace Menge
 {
 	class ArchiveRead
@@ -26,6 +24,13 @@ namespace Menge
 		{
 			Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(&_t);
 			this->readBuffer( buff, sizeof(T) );
+		}
+
+		template<class T>
+		inline void readPODs( T * _t, size_t _count )
+		{
+			Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(_t);
+			this->readBuffer( buff, _count * sizeof(T) );
 		}
 
 		inline void readBuffer( Archive::value_type * _begin, size_t _size )

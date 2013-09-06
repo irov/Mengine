@@ -2113,6 +2113,7 @@ namespace Metacode
                 , Duration_Value_successful(false)
                 , FrameDuration_Value_successful(false)
                 , Height_Value_successful(false)
+                , KeyFramesPackPath_Codec_successful(false)
                 , KeyFramesPackPath_Path_successful(false)
                 , Loop_Segment_successful(false)
                 , Width_Value_successful(false)
@@ -2237,6 +2238,46 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->Height_Value );
+            }
+            
+            bool has_KeyFramesPackPath_Codec() const
+            {
+                return KeyFramesPackPath_Codec_successful;
+            }
+            
+            bool get_KeyFramesPackPath_Codec( Menge::ConstString & _value ) const
+            {
+                if( KeyFramesPackPath_Codec_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->KeyFramesPackPath_Codec;
+            
+                return true;
+            }
+            
+            bool swap_KeyFramesPackPath_Codec( Menge::ConstString & _value ) const
+            {
+                if( KeyFramesPackPath_Codec_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->KeyFramesPackPath_Codec);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_KeyFramesPackPath_Codec( C * _self, M _method )
+            {
+                if( KeyFramesPackPath_Codec_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->KeyFramesPackPath_Codec );
             }
             
             bool has_KeyFramesPackPath_Path() const
@@ -3182,6 +3223,8 @@ namespace Metacode
             mutable float FrameDuration_Value;
             bool Height_Value_successful;
             mutable float Height_Value;
+            bool KeyFramesPackPath_Codec_successful;
+            mutable Menge::ConstString KeyFramesPackPath_Codec;
             bool KeyFramesPackPath_Path_successful;
             mutable Menge::ConstString KeyFramesPackPath_Path;
             bool Loop_Segment_successful;

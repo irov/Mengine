@@ -1093,7 +1093,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeBatch_( size_t & _vbSize, size_t & _ibSize )
+    void RenderEngine::batchRenderPasses_( size_t & _vbSize, size_t & _ibSize )
     {
         for( TArrayRenderPass::iterator 
             it = m_renderPasses.begin(), 
@@ -1111,7 +1111,7 @@ namespace Menge
     {		
         size_t vbSize = 0;
         size_t ibSize = 0;
-        this->makeBatch_( vbSize, ibSize );
+        this->batchRenderPasses_( vbSize, ibSize );
 
         if( vbSize == 0 )	// nothing to render
         {

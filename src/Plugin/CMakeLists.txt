@@ -6,7 +6,7 @@ if(WIN32)
     
     if(MSVC)        
         ADD_SUBDIRECTORY( MengeVideoConverterPlugin )
-        ADD_SUBDIRECTORY( MengeSoundConverterPlugin )
+        ADD_SUBDIRECTORY( MengeSoundConverterPlugin )        
         ADD_SUBDIRECTORY( MengeHotspotImageConverterPlugin )
         ADD_SUBDIRECTORY( MengeParticleConverterPlugin )
         #ADD_SUBDIRECTORY( MengeVideoCodecPlugin )

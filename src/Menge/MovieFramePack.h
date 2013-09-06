@@ -47,9 +47,15 @@ namespace Menge
 	public:
 		void setLayerImmutableFrame( size_t _layerIndex, const MovieFrameSource & _frame );
 		void addLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame );
+		TVectorMovieFrameSource & mutableLayerFrames( size_t _layerIndex );
 
     public:
         void addLayerTimeRemap( size_t _layerIndex, const MovieLayerTimeRemap & _timeremap );
+		MovieLayerTimeRemap & mutableLayerTimeRemap( size_t _layerIndex );
+
+	public:
+		const TVectorMovieFrameLayer & getLayers() const;
+		const TVectorMovieLayerTimeRemap & getTimeremap() const;
 			
 	protected:
 		TVectorMovieFrameLayer m_layers;

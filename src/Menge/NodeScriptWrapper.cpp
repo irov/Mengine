@@ -3064,6 +3064,7 @@ namespace Menge
             .def( "isActivate", &Node::isActivate )
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
+			.def( "isRenderable", &Node::isRenderable )
             .def( "addChildren", &Node::addChildren )
             .def( "addChildrenFront", &Node::addChildrenFront )
             .def( "addChildrenAfter", &Node::addChildrenAfter )

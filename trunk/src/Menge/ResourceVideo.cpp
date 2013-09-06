@@ -39,7 +39,7 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceVideo *>(_meta);
 
         metadata->swap_File_Path( m_path );
-        metadata->swap_File_Codec( m_codec );
+        metadata->swap_File_Codec( m_codecType );
         metadata->swap_File_Converter( m_converter );        
 
         metadata->get_File_Alpha( m_alpha );
@@ -65,13 +65,13 @@ namespace Menge
             }
         }
 
-        if( m_codec.empty() == true )
+        if( m_codecType.empty() == true )
         {
-            m_codec = CODEC_SERVICE(m_serviceProvider)
+            m_codecType = CODEC_SERVICE(m_serviceProvider)
                 ->findCodecType( m_path );
         }
 
-        if( m_codec.empty() == true )
+        if( m_codecType.empty() == true )
         {
             LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::_convert %s you must determine codec for file '%s'"
                 , this->getName().c_str()
@@ -179,7 +179,7 @@ namespace Menge
         }
 
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<VideoDecoderInterfacePtr>( m_codec, videoStream );
+            ->createDecoderT<VideoDecoderInterfacePtr>( m_codecType, videoStream );
 
         if( videoDecoder == nullptr )
         {
@@ -229,7 +229,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& ResourceVideo::getCodecType() const
 	{
-		return m_codec;
+		return m_codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

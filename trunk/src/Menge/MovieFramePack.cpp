@@ -57,11 +57,25 @@ namespace Menge
 
 		frameSource.push_back( _frame );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	TVectorMovieFrameSource & MovieFramePack::mutableLayerFrames( size_t _layerIndex )
+	{
+		MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
+
+		return frameLayer.frames;
+	}
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::addLayerTimeRemap( size_t _layerIndex, const MovieLayerTimeRemap & _timeremap )
     {
         m_timeremap[_layerIndex - 1] = _timeremap;
     }
+	//////////////////////////////////////////////////////////////////////////
+	MovieLayerTimeRemap & MovieFramePack::mutableLayerTimeRemap( size_t _layerIndex )
+	{
+		MovieLayerTimeRemap & timeremap = m_timeremap[_layerIndex - 1];
+
+		return timeremap;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerImmutableFrame( size_t _layerIndex, MovieFrameSource & _frame ) const
 	{
@@ -160,4 +174,15 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	const TVectorMovieFrameLayer & MovieFramePack::getLayers() const
+	{
+		return m_layers;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TVectorMovieLayerTimeRemap & MovieFramePack::getTimeremap() const
+	{
+		return m_timeremap;
+	}
+
 }

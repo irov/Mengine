@@ -108,6 +108,10 @@ namespace Menge
         c_DefaultAccountID = Helper::stringizeString(m_serviceProvider, "DefaultAccountID");
         c_SelectAccountID = Helper::stringizeString(m_serviceProvider, "SelectAccountID");
         c_Account = Helper::stringizeString(m_serviceProvider, "Account");
+		c_binMovie = Helper::stringizeString(m_serviceProvider, "binMovie");
+		c_aekMovie = Helper::stringizeString(m_serviceProvider, "aekMovie");
+		c_binToAekMovie = Helper::stringizeString(m_serviceProvider, "binToAekMovie");
+		
 
         return true;
     }

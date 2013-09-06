@@ -6,6 +6,8 @@ src
 	Archive.hpp
 	ArchiveRead.hpp
 	ArchiveRead.cpp
+	ArchiveWrite.hpp
+	ArchiveWrite.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

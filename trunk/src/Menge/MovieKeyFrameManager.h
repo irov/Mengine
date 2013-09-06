@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/MovieKeyFrameInterface.h"
+#   include "Interface/ConverterInterface.h"
 
 #	include "MovieFramePack.h"
 
@@ -25,6 +26,10 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
+		bool initialize() override;
+		void finalize() override;
+
+	public:
 		MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) override;
 
 	protected:
@@ -32,6 +37,8 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		ConverterFactoryInterface * m_movieKeyConverter;
 
         typedef FactoryPool<MovieFramePack, 32> TFactoryPoolMovieFramePack;
         TFactoryPoolMovieFramePack m_poolMovieFramePack;

@@ -23,7 +23,6 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////////////////
 	MovieKeyFrameManager::MovieKeyFrameManager()
         : m_serviceProvider(nullptr)
-		, m_movieKeyConverter(nullptr)
 	{
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,20 +42,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieKeyFrameManager::initialize()
 	{
-		m_movieKeyConverter = new ConverterFactory<MovieKeyConverter>(m_serviceProvider, CONST_STRING(m_serviceProvider, binToAekMovie));
-
-		CONVERTER_SERVICE(m_serviceProvider)
-			->registerConverter( CONST_STRING(m_serviceProvider, binToAekMovie), m_movieKeyConverter );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieKeyFrameManager::finalize()
 	{
-		CONVERTER_SERVICE(m_serviceProvider)
-			->unregisterConverter( CONST_STRING(m_serviceProvider, binToAekMovie) );
-
-		delete m_movieKeyConverter;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////
 	MovieFramePackInterface * MovieKeyFrameManager::getMovieFramePak( const ConstString & _pak, const FilePath & _path )

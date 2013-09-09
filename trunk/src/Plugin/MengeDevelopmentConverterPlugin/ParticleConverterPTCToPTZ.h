@@ -1,11 +1,11 @@
 #	pragma once
 
-#	include "SoundConverter.h"
+#	include "DevelopmentConverter.h"
 
 namespace Menge
 {
 	class ParticleConverterPTCToPTZ
-		: public ParticleConverter
+		: public DevelopmentConverter
 	{
 	public:
 		ParticleConverterPTCToPTZ( ServiceProviderInterface * _serviceProvider );
@@ -15,15 +15,9 @@ namespace Menge
 		bool initialize() override;
 
     public:
-        const String & getConvertExt() const override;
-
-    public:
 		bool convert() override;
         	
 	private:
 		bool convert_( const FilePath & _input, const FilePath & _output );
-
-    protected:
-        String m_convertExt;
     };
 }	// namespace Menge

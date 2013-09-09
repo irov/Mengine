@@ -245,7 +245,7 @@ namespace Menge
 		SERVICE_REGISTRY( serviceProvider, loaderService );
 
 		PluginInterface * plugin_hit = PLUGIN_SERVICE(serviceProvider)
-			->loadPlugin( L"MengeHotspotImageConverterPlugin.dll" );
+			->loadPlugin( L"MengeDevelopmentConverterPlugin.dll" );
 
 		PluginInterface * plugin_xml = PLUGIN_SERVICE(serviceProvider)
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
@@ -263,11 +263,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		ConverterFactoryInterface * movieKeyConverter = new ConverterFactory<MovieKeyConverter>(serviceProvider, Helper::stringizeString(serviceProvider, "binToAekMovie"));
-
-		CONVERTER_SERVICE(serviceProvider)
-			->registerConverter( Helper::stringizeString(serviceProvider, "binToAekMovie"), movieKeyConverter );
 
 		return true;
 	}

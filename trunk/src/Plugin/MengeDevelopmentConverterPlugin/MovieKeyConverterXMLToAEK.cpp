@@ -1,9 +1,10 @@
-#   include "MovieKeyConverter.h"
+#   include "MovieKeyConverterXMLToAEK.h"
 
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/ArchiveInterface.h"
+#	include "Interface/StringizeInterface.h"
 
-#	include "Metacode.h"
+#	include "Metacode/Metacode.h"
 
 #	include "Archive/ArchiveWrite.hpp"
 
@@ -12,38 +13,23 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MovieKeyConverter::MovieKeyConverter( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
+	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK( ServiceProviderInterface * _serviceProvider )
+		: DevelopmentConverter(_serviceProvider)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MovieKeyConverter::~MovieKeyConverter()
+	MovieKeyConverterXMLToAEK::~MovieKeyConverterXMLToAEK()
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverter::initialize()
+	bool MovieKeyConverterXMLToAEK::initialize()
 	{
 		m_convertExt = ".aek";
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & MovieKeyConverter::getConvertExt() const
-	{
-		return m_convertExt;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MovieKeyConverter::setOptions( ConverterOptions * _options )
-	{
-		m_options = *(_options);
-	}
-    //////////////////////////////////////////////////////////////////////////
-	void MovieKeyConverter::destroy()
-	{
-		delete this;
-	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverter::convert()
+	bool MovieKeyConverterXMLToAEK::convert()
 	{
 		MovieFramePack movieFramePack;
 		if( this->loadFramePak_( movieFramePack ) == false )
@@ -59,13 +45,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverter::loadFramePak_( MovieFramePack & _movieFramePack )
+	bool MovieKeyConverterXMLToAEK::loadFramePak_( MovieFramePack & _movieFramePack )
 	{
 		bool exist = false;
 
 		Metacode::Meta_KeyFramesPack keyFramesPack;
 
-		if( LOADER_SERVICE(m_serviceProvider)->load( m_options.pakName, m_options.inputFileName, &keyFramesPack, exist ) == false )
+		String binPath( m_options.inputFileName.c_str(), m_options.inputFileName.size() );
+
+		String::size_type size = binPath.size();
+		binPath[size-3] = L'b';
+		binPath[size-2] = L'i';
+		binPath[size-1] = L'n';
+
+		FilePath path_bin = Helper::stringizeString( m_serviceProvider, binPath );
+
+		if( LOADER_SERVICE(m_serviceProvider)->load( m_options.pakName, path_bin, &keyFramesPack, exist ) == false )
 		{
 			if( exist == false )
 			{
@@ -332,7 +327,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverter::writeFramePak_( MovieFramePack & _movieFramePack )
+	bool MovieKeyConverterXMLToAEK::writeFramePak_( MovieFramePack & _movieFramePack )
 	{
 		TBlobject binary_aek;
 

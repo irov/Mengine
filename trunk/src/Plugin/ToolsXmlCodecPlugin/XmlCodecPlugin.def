@@ -1,2 +1,0 @@
-LIBRARY		"ToolsXmlCodecPlugin"
-EXPORTS 	PyInit_ToolsXmlCodecPlugin 	@2

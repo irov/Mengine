@@ -3,6 +3,7 @@
 
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/ConverterInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "ResourceImageDefault.h"
 
@@ -477,13 +478,24 @@ namespace Menge
 		{
 			const ConstString & category = this->getCategory();
 
+			ConstString binToAekMovie = Helper::stringizeString(m_serviceProvider, "binToAekMovie");
+
+			String framePackPath( m_keyFramePackPath.c_str(), m_keyFramePackPath.size() );
+
+			String::size_type size = framePackPath.size();
+			framePackPath[size-3] = L'x';
+			framePackPath[size-2] = L'm';
+			framePackPath[size-1] = L'l';
+
+			FilePath path_xml = Helper::stringizeString( m_serviceProvider, framePackPath );
+
 			if( CONVERTER_SERVICE(m_serviceProvider)
-				->convert( CONST_STRING(m_serviceProvider, binToAekMovie), category, m_keyFramePackPath, m_keyFramePackPath ) == false )
+				->convert( binToAekMovie, category, path_xml, m_keyFramePackPath ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::convert: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, m_keyFramePackPath.c_str()
-					, CONST_STRING(m_serviceProvider, binToAekMovie).c_str()
+					, binToAekMovie.c_str()
 					);
 
 				return false;

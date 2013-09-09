@@ -1,5 +1,4 @@
 #	include "MovieKeyFrameManager.h"
-#	include "MovieKeyConverter.h"
 
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/ArchiveInterface.h"
@@ -13,7 +12,7 @@
 
 #   include "Codec/ConverterFactory.h"
 
-#	include "Metacode.h"
+#	include "Metacode/Metacode.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MovieKeyFrameService, Menge::MovieKeyFrameServiceInterface, Menge::MovieKeyFrameManager );

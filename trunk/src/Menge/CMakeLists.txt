@@ -292,8 +292,6 @@ ADD_FILTER(
 Manager\\\\MovieKeyFrame
 	MovieKeyFrameManager.h
 	MovieKeyFrameManager.cpp	
-    MovieKeyConverter.h
-    MovieKeyConverter.cpp
     MovieFramePack.h
     MovieFramePack.cpp
 )

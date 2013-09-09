@@ -45,16 +45,36 @@ namespace Menge
 		Helper::unicodeToUtf8( serviceProvider, _aekPath, utf8_aekPath );
 
 		LOADER_SERVICE(serviceProvider)
-			->setProtocolPath( Helper::stringizeString(serviceProvider, utf8_protocolPath) );
+			->initialize( Helper::stringizeString( serviceProvider, utf8_protocolPath ) );
+		
+		String framePackPath( utf8_xmlPath.c_str(), utf8_xmlPath.size() );
+
+		String::size_type size = framePackPath.size();
+		framePackPath[size-3] = L'x';
+		framePackPath[size-2] = L'm';
+		framePackPath[size-1] = L'l';
+
+		FilePath path_xml = Helper::stringizeString( serviceProvider, framePackPath );
 
 		ConverterOptions options;
-
+		   
 		options.pakName = ConstString::none();
-		options.inputFileName = Helper::stringizeString(serviceProvider, utf8_xmlPath);
+		options.inputFileName = path_xml;
 		options.outputFileName = Helper::stringizeString(serviceProvider, utf8_aekPath);
 		
 		ConverterInterface * converter = CONVERTER_SERVICE(serviceProvider)
 			->createConverter( Helper::stringizeString(serviceProvider, "binToAekMovie") );
+
+		if( converter == nullptr )
+		{
+			LOGGER_ERROR(serviceProvider)( "writeAek can't create convert '%s'\nfrom: %s\nto: %s\n"
+				, "binToAekMovie"
+				, options.inputFileName.c_str()
+				, options.outputFileName.c_str()
+				);
+
+			return false;
+		}
 
 		converter->setOptions( &options );
 		

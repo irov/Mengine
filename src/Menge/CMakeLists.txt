@@ -56,12 +56,6 @@ Engine\\\\Script
 )
 
 ADD_FILTER(
-Engine\\\\Loader
-	LoaderEngine.cpp
-	LoaderEngine.h
-)
-
-ADD_FILTER(
 Arrow
 	Arrow.cpp
 	Arrow.h
@@ -87,14 +81,6 @@ MousePickerTrap
 	MousePickerSystem.h
 	MousePickerAdapter.cpp
 	MousePickerAdapter.h
-)
-
-ADD_FILTER(
-Metacode
-	Metacode.cpp
-	Metacode.h
-    Metatype.cpp
-    Metatype.h    
 )
 
 SOURCE_GROUP( Object2D )
@@ -416,6 +402,7 @@ SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  ${MY_LIB_NAME} 
  Kernel
+ Metacode
 )
 
 SET( APPLICATION_DEPENDENCIES
@@ -427,8 +414,7 @@ SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
-    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
-    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}metabuf_static${MENGINE_LIB_SUFFIX}    
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}    
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}pugixml_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
     )

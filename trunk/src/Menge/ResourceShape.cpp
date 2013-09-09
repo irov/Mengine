@@ -1,8 +1,6 @@
 #   include "ResourceShape.h"
 #   include "Kernel/ResourceImplement.h"
 
-#   include "Metacode.h"
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////

@@ -393,6 +393,7 @@ namespace Menge
 		}
 
 		_node->invalidateWorldMatrix();
+		_node->invalidateColor();
 
 		this->_addChildren( _node );
 

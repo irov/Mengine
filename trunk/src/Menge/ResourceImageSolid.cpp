@@ -5,8 +5,6 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#	include "Metacode.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

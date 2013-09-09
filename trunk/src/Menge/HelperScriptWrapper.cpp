@@ -111,6 +111,11 @@ namespace Menge
             return utf8;
         }
 
+		void s_debug()
+		{
+			printf("debug!");
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -1212,5 +1217,7 @@ namespace Menge
         pybind::def_functor( "utf8ToUnicode", helperScriptMethod, &HelperScriptMethod::s_utf8ToUnicode );
         pybind::def_functor( "unicodeToUtf8", helperScriptMethod, &HelperScriptMethod::s_unicodeToUtf8 );
         pybind::def_functor( "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
+
+		pybind::def_functor( "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
 	}
 }

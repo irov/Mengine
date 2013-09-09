@@ -8,8 +8,6 @@
 
 #   include "Logger/Logger.h"
 
-#   include "Metacode.h"
-
 #	include "Core/ConstString.h"
 #	include "Core/String.h"
 

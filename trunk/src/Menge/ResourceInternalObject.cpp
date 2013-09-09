@@ -1,8 +1,6 @@
 #	include "ResourceInternalObject.h"
 #	include "Kernel/ResourceImplement.h"
 
-#	include "Metacode.h"
-
 #	include "Interface/ScriptSystemInterface.h"
 
 #	include "Kernel/Scriptable.h"

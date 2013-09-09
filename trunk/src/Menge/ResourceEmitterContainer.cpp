@@ -3,8 +3,6 @@
 
 #	include "ResourceImageDefault.h"
 
-#	include "Metacode.h"
-
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/StringizeInterface.h"

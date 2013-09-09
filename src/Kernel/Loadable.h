@@ -1,9 +1,6 @@
 #	pragma once
 
-namespace Metabuf
-{
-    class Metadata;
-}
+#	include "Metacode/Metacode.h"
 
 namespace Menge
 {

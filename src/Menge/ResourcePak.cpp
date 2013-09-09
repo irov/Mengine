@@ -9,7 +9,7 @@
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/ProfilerInterface.h"
 
-#	include "Metacode.h"
+#	include "Metacode/Metacode.h"
 
 #   include "Logger/Logger.h"
 

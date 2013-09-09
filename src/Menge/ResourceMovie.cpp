@@ -7,7 +7,6 @@
 
 #	include "ResourceImageDefault.h"
 
-#	include "Metacode.h"
 #	include "Consts.h"
 
 #	include "Core/Stream.h"

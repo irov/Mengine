@@ -10,8 +10,6 @@
 
 #	include <cstdio>
 
-#	include "Metacode.h"
-
 #	include "Core/ConstString.h"
 #	include "Core/String.h"
 

@@ -4,8 +4,6 @@
 #	include "ResourceImage.h"
 #	include "ResourceGlyph.h"
 
-#	include "Metacode.h"
-
 #	include "Interface/ResourceInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 

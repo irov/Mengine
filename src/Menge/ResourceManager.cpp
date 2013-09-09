@@ -9,8 +9,6 @@
 
 #   include "Consts.h"
 
-#	include "Metacode.h"
-
 #	include "Logger/Logger.h"
 
 #	include "Kernel/ResourceVisitor.h"

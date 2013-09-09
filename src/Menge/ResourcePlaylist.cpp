@@ -4,8 +4,6 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 
-#	include "Metacode.h"
-
 #	include "Logger/Logger.h"
 
 #	include "Core/String.h"

@@ -4,8 +4,6 @@
 
 #   include "Kernel/EventEnum.h"
 
-#	include "pybind/pybind.hpp"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -19,19 +17,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Affector::~Affector()
 	{
-        if( m_cb != nullptr )
-        {
-		    pybind::decref( m_cb );
-        }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Affector::initialize( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type )
+    void Affector::initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type )
     {
         m_serviceProvider = _serviceProvider;
         m_cb = _cb;
         m_type = _type;
-
-        pybind::incref( m_cb );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Affector::setId( size_t _id )
@@ -44,39 +36,18 @@ namespace Menge
         return m_id;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setType( EAffectorType _type )
-	{
-		m_type = _type;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	EAffectorType Affector::getType() const
 	{
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setCb( PyObject * _cb )
-	{
-		m_cb = _cb;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * Affector::getCb() const
+	AffectorCallback * Affector::getCb() const
 	{
 		return m_cb;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::call( Scriptable * _scriptable, bool _isEnd )
+	void Affector::call( bool _isEnd )
 	{
-		if( m_cb == nullptr )
-		{
-			return;
-		}
-
-		if( pybind::is_none(m_cb) == true )
-		{
-			return;
-		}
-
-        SCRIPT_SERVICE(m_serviceProvider)
-            ->callFunction(m_cb, "(OiO)", _scriptable->getEmbed(), m_id, pybind::get_bool(_isEnd) );
+		m_cb->onAffectorEnd( m_id, _isEnd );
 	}
 }	// namespace Menge

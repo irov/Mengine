@@ -2,6 +2,7 @@
 
 #	include "Interface/AmplifierServiceInterface.h"
 #	include "Interface/ResourceInterface.h"
+#	include "Interface/PlayerInterface.h"
 
 #	include "SoundEmitter.h"
 #	include "ResourceSound.h"
@@ -275,13 +276,13 @@ namespace	Menge
 		void s_soundSetVolume( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->setSoundVolume( _volume );
+				->setSoundVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float s_soundGetVolume()
 		{
 			float volume = SOUND_SERVICE(m_serviceProvider)
-				->getSoundVolume();
+				->getSoundVolume( CONST_STRING(m_serviceProvider, Generic) );
 
             return volume;
 		}
@@ -289,13 +290,13 @@ namespace	Menge
 		void s_commonSetVolume( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->setCommonVolume( _volume );
+				->setCommonVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float commonGetVolume()
 		{
 			return SOUND_SERVICE(m_serviceProvider)
-				->getCommonVolume();
+				->getCommonVolume( CONST_STRING(m_serviceProvider, Generic) );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void musicPlayList( const ConstString & _list )
@@ -325,25 +326,25 @@ namespace	Menge
 		void musicSetVolume( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
-				->setMusicVolume( _volume );
+				->setMusicVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		float musicGetVolume()
 		{
 			return SOUND_SERVICE(m_serviceProvider)
-				->getMusicVolume();
+				->getMusicVolume( CONST_STRING(m_serviceProvider, Generic) );
 		}
         //////////////////////////////////////////////////////////////////////////
         void voiceSetVolume( float _volume )
         {
             SOUND_SERVICE(m_serviceProvider)
-                ->setVoiceVolume( _volume );
+                ->setVoiceVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
         }
         //////////////////////////////////////////////////////////////////////////
         float voiceGetVolume()
         {
             return SOUND_SERVICE(m_serviceProvider)
-                ->getVoiceVolume();
+                ->getVoiceVolume( CONST_STRING(m_serviceProvider, Generic) );
         }
 		//////////////////////////////////////////////////////////////////////////
 		void musicStop()
@@ -384,14 +385,121 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		float s_musicGetPosMs()
 		{
-			return AMPLIFIER_SERVICE(m_serviceProvider)
+			float posMs = AMPLIFIER_SERVICE(m_serviceProvider)
 				->getPosMs();
+
+			return posMs;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_musicSetPosMs( float _posMs )
 		{
 			AMPLIFIER_SERVICE(m_serviceProvider)
 				->setPosMs( _posMs );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void ___musicFadeIn( float _volume )
+		{
+			SOUND_SERVICE(m_serviceProvider)
+				->setMusicVolume( CONST_STRING(m_serviceProvider, Fade), _volume );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class MusicAffectorCallback
+			: public AffectorCallback
+		{
+		public:
+			MusicAffectorCallback()
+				: m_serviceProvider(nullptr)
+				, m_cb(nullptr)
+			{
+			}
+
+			~MusicAffectorCallback()
+			{
+				if( m_cb != nullptr )
+				{
+					pybind::decref( m_cb );
+					m_cb = nullptr;
+				}
+			}
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+			{
+				m_serviceProvider = _serviceProvider;
+				m_cb = _cb;
+
+				pybind::incref( m_cb );
+			}
+
+		protected:
+			void onAffectorEnd( size_t _id, bool _isEnd ) override
+			{
+				if( m_cb == nullptr )
+				{
+					return;
+				}
+
+				if( pybind::is_none(m_cb) == true )
+				{
+					return;
+				}
+				
+				SCRIPT_SERVICE(m_serviceProvider)
+					->callFunction(m_cb, "(iO)", _id, pybind::get_bool(_isEnd) );
+
+				this->destroy();
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			PyObject * m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPool<MusicAffectorCallback, 4> m_factoryMusicAffectorCallback;
+		//////////////////////////////////////////////////////////////////////////
+		MusicAffectorCallback * createMusicAffectorCallback( PyObject * _cb )
+		{
+			MusicAffectorCallback * callback = m_factoryMusicAffectorCallback.createObjectT();
+
+			callback->initialize( m_serviceProvider, _cb );
+
+			return callback; 
+		}
+		//////////////////////////////////////////////////////////////////////////		
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(float), float> m_affectorCreatorMusic;
+		//////////////////////////////////////////////////////////////////////////
+		void s_musicFadeIn( float _time, PyObject * _cb )
+		{
+			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
+
+			Affector* affector = 
+				m_affectorCreatorMusic.create( m_serviceProvider
+				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFadeIn
+				, 1.f, 0.f, _time
+				, &fabsf
+				);
+
+			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
+				->getAffectorable();
+
+			affectorable->addAffector( affector );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_musicFadeOut( float _time, PyObject * _cb )
+		{
+			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
+
+			Affector* affector = 
+				m_affectorCreatorMusic.create( m_serviceProvider
+				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFadeIn
+				, 0.f, 1.f, _time
+				, &fabsf
+				);
+
+			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
+				->getAffectorable();
+
+			affectorable->addAffector( affector );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundMute( bool _mute )
@@ -458,6 +566,8 @@ namespace	Menge
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::s_musicSetVolume );
 		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
 		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );
+		pybind::def_functor( "musicFadeIn", soundScriptMethod, &SoundScriptMethod::s_musicFadeIn );
+		pybind::def_functor( "musicFadeOut", soundScriptMethod, &SoundScriptMethod::s_musicFadeOut );
 
 
         pybind::def_functor( "voicePlay", soundScriptMethod, &SoundScriptMethod::s_voicePlay );

@@ -114,17 +114,17 @@ namespace Menge
 		virtual SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
 
 	public:
-		virtual void setSoundVolume( float _volume ) = 0;
-		virtual float getSoundVolume() const = 0;
+		virtual void setSoundVolume( const ConstString & _type, float _volume ) = 0;
+		virtual float getSoundVolume( const ConstString & _type ) const = 0;
 
-		virtual void setCommonVolume( float _volume ) = 0;
-		virtual float getCommonVolume() const = 0;
+		virtual void setCommonVolume( const ConstString & _type, float _volume ) = 0;
+		virtual float getCommonVolume( const ConstString & _type ) const = 0;
 
-		virtual void setMusicVolume( float _volume ) = 0;
-		virtual float getMusicVolume() const = 0;
+		virtual void setMusicVolume( const ConstString & _type, float _volume ) = 0;
+		virtual float getMusicVolume( const ConstString & _type ) const = 0;
 
-        virtual void setVoiceVolume( float _volume ) = 0;
-        virtual float getVoiceVolume() const = 0;
+        virtual void setVoiceVolume( const ConstString & _type, float _volume ) = 0;
+        virtual float getVoiceVolume( const ConstString & _type ) const = 0;
 
     public:
 		virtual bool setSourceVolume( unsigned int _emitter, float _volume ) = 0;

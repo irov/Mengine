@@ -69,6 +69,8 @@ namespace Menge
 		, m_removeSceneCb(nullptr)
 		, m_time(0.f)
 		, m_fps(0)	
+		, m_affectorable(nullptr)
+		, m_affectorableGlobal(nullptr)
 //#	ifndef MENGE_MASTER_RELEASE
 		, m_showDebugText(0)
 		, m_debugText(nullptr)
@@ -171,6 +173,7 @@ namespace Menge
 
 			m_scheduleManager->removeAll();
 			m_timingManager->removeAll(false);
+			m_affectorable->stopAllAffectors();
 
 			m_mousePickerSystem->clear();
 			m_globalHandleSystem->clear();
@@ -294,6 +297,7 @@ namespace Menge
 
 		m_scheduleManager->removeAll();
 		m_timingManager->removeAll(false);
+		m_affectorable->stopAllAffectors();
 
 		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == false )
 		{
@@ -455,6 +459,16 @@ namespace Menge
         return m_timingManagerGlobal;
     }
 	//////////////////////////////////////////////////////////////////////////
+	Affectorable * Player::getAffectorable() const
+	{
+		return m_affectorable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Affectorable * Player::getAffectorableGlobal() const
+	{
+		return m_affectorableGlobal;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Player::initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution )
 	{
 		m_mousePickerSystem = new MousePickerSystem(m_serviceProvider);
@@ -471,6 +485,9 @@ namespace Menge
 
         m_timingManagerGlobal = m_factoryTimingManager.createObjectT();
         m_timingManager->initialize(m_serviceProvider);
+
+		m_affectorable = new Affectorable;
+		m_affectorableGlobal = new Affectorable;
 
 		m_contentResolution = _contentResolution;
 		m_currentResolution = _currentResolution;
@@ -566,6 +583,18 @@ namespace Menge
             m_timingManagerGlobal->destroy();
             m_timingManagerGlobal = nullptr;
         }
+
+		if( m_affectorable != nullptr )
+		{
+			delete m_affectorable;
+			m_affectorable = nullptr;
+		}
+
+		if( m_affectorableGlobal != nullptr )
+		{
+			delete m_affectorableGlobal;
+			m_affectorableGlobal = nullptr;
+		}
 
 		for( TVectorJoins::iterator
 			it = m_joins.begin(),
@@ -752,6 +781,16 @@ namespace Menge
 		if( m_scheduleManagerGlobal != nullptr )
 		{
 			m_scheduleManagerGlobal->update( gameTime, _timing );
+		}
+
+		if( m_affectorable != nullptr )
+		{
+			m_affectorable->updateAffectors( gameTime, _timing );
+		}
+
+		if( m_affectorableGlobal != nullptr )
+		{
+			m_affectorableGlobal->updateAffectors( gameTime, _timing );
 		}
 
 		m_timingManager->update( gameTime, _timing );

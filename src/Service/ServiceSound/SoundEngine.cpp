@@ -14,10 +14,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine()
 		: m_serviceProvider(nullptr)
-		, m_soundVolume(1.f)
-		, m_commonVolume(1.f)
-		, m_musicVolume(1.f)
-        , m_voiceVolume(1.f)
 		, m_muted(false)
 		, m_turn(false)
         , m_enumerator(0)
@@ -259,15 +255,30 @@ namespace Menge
             {
             case EST_SOUND:
                 {
-                    sourceInterface->setVolume( m_commonVolume * m_soundVolume * _volume );
+					float mixVolume = 1.f;
+					mixVolume *= m_commonVolume.mixVolume();
+					mixVolume *= m_soundVolume.mixVolume();
+					mixVolume *= _volume;
+
+                    sourceInterface->setVolume( mixVolume );
                 }break;
             case EST_MUSIC:
                 {
-                    sourceInterface->setVolume( m_commonVolume * m_musicVolume * _volume );
+					float mixVolume = 1.f;
+					mixVolume *= m_commonVolume.mixVolume();
+					mixVolume *= m_musicVolume.mixVolume();
+					mixVolume *= _volume;
+
+                    sourceInterface->setVolume( mixVolume );
                 }break;
             case EST_VOICE:
                 {
-                    sourceInterface->setVolume( m_commonVolume * m_voiceVolume * _volume );
+					float mixVolume = 1.f;
+					mixVolume *= m_commonVolume.mixVolume();
+					mixVolume *= m_voiceVolume.mixVolume();
+					mixVolume *= _volume;
+
+					sourceInterface->setVolume( mixVolume );
                 }break;
             }
         }
@@ -364,28 +375,60 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSoundVolume( float _volume )
+	void SoundEngine::setSoundVolume( const ConstString & _type, float _volume )
 	{
-		m_soundVolume = _volume;
+		m_soundVolume.setVolume( _type, _volume );
 
 		this->updateVolume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getSoundVolume() const
+	float SoundEngine::getSoundVolume( const ConstString & _type ) const
 	{
-		return m_soundVolume;
+		float volume = m_soundVolume.getVolume( _type );
+
+		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	void SoundEngine::setCommonVolume( float _volume )
+	void SoundEngine::setCommonVolume( const ConstString & _type, float _volume )
 	{
-		m_commonVolume = _volume;
+		m_commonVolume.setVolume( _type, _volume );
 
 		this->updateVolume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getCommonVolume() const
+	float SoundEngine::getCommonVolume( const ConstString & _type ) const
 	{
-		return m_commonVolume;
+		float volume = m_commonVolume.getVolume( _type );
+
+		return volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setMusicVolume( const ConstString & _type, float _volume )
+	{
+		m_musicVolume.setVolume( _type, _volume );
+
+		this->updateVolume_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getMusicVolume( const ConstString & _type ) const
+	{
+		float volume = m_musicVolume.getVolume( _type );
+
+		return volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setVoiceVolume( const ConstString & _type, float _volume )
+	{
+		m_voiceVolume.setVolume( _type, _volume );
+
+		this->updateVolume_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getVoiceVolume( const ConstString & _type ) const
+	{
+		float volume = m_voiceVolume.getVolume( _type );
+
+		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
@@ -813,30 +856,6 @@ namespace Menge
 		
 		return ms;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setMusicVolume( float _volume )
-	{
-		m_musicVolume = _volume;
-
-		this->updateVolume_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getMusicVolume() const
-	{
-		return m_musicVolume;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void SoundEngine::setVoiceVolume( float _volume )
-    {
-        m_voiceVolume = _volume;
-
-        this->updateVolume_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float SoundEngine::getVoiceVolume() const
-    {
-        return m_voiceVolume;
-    }
     //////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setPosMs( unsigned int _emitter, float _pos )
 	{

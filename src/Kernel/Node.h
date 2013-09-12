@@ -189,9 +189,6 @@ namespace Menge
 		virtual void _deactivate();
 		virtual void _afterDeactivate();
 
-	public:
-		
-
 	protected:
 		void _invalidateWorldMatrix() override;
 		//void _invalidateBoundingBox() override;

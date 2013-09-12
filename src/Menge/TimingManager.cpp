@@ -45,7 +45,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TimingManager::TimingManager()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
         , m_enumerator(0)
 		, m_freeze(false)
 	{

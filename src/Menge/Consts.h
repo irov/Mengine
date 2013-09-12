@@ -115,6 +115,9 @@ namespace Menge
 		ConstString c_aekMovie;
 		ConstString c_binToAekMovie;
 
+		ConstString c_Generic;
+		ConstString c_Fade;
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
 	};

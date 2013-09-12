@@ -1190,6 +1190,74 @@ namespace Menge
             _node->stopAffectors( ETA_POSITION );
             _node->setLinearSpeed( mt::zero_v3 );
         }
+		//////////////////////////////////////////////////////////////////////////
+		class NodeAffectorCallback
+			: public AffectorCallback
+		{
+		public:
+			NodeAffectorCallback()
+				: m_serviceProvider(nullptr)
+				, m_scriptable(nullptr)
+				, m_cb(nullptr)
+			{
+			}
+
+			~NodeAffectorCallback()
+			{
+				if( m_cb != nullptr )
+				{
+					pybind::decref( m_cb );
+					m_cb = nullptr;
+				}
+			}
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, PyObject * _cb )
+			{
+				m_serviceProvider = _serviceProvider;
+				m_scriptable = _scriptable;
+				m_cb = _cb;
+
+				pybind::incref( m_cb );
+			}
+
+		protected:
+			void onAffectorEnd( size_t _id, bool _isEnd ) override
+			{
+				if( m_cb == nullptr )
+				{
+					return;
+				}
+
+				if( pybind::is_none(m_cb) == true )
+				{
+					return;
+				}
+
+				PyObject * embed = m_scriptable->getEmbed();
+
+				SCRIPT_SERVICE(m_serviceProvider)
+					->callFunction(m_cb, "(OiO)", embed, _id, pybind::get_bool(_isEnd) );
+
+				this->destroy();
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			Scriptable * m_scriptable;
+			PyObject * m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPool<NodeAffectorCallback, 4> m_factoryNodeAffectorCallback;
+		//////////////////////////////////////////////////////////////////////////
+		NodeAffectorCallback * createNodeAffectorCallback( Scriptable * _scriptable, PyObject * _cb )
+		{
+			NodeAffectorCallback * callback = m_factoryNodeAffectorCallback.createObjectT();
+
+			callback->initialize( m_serviceProvider, _scriptable, _cb );
+
+			return callback; 
+		}
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
@@ -1202,8 +1270,10 @@ namespace Menge
 
             moveStop( _node );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );			
+
             Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( m_serviceProvider
-                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
+                , callback, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _dir, _speed, &mt::length_v3
                 );
 
@@ -1225,9 +1295,11 @@ namespace Menge
 
             moveStop( _node );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
-                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
+                , callback, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, _time
                 , &mt::length_v3 
                 );
@@ -1256,8 +1328,10 @@ namespace Menge
 
             moveStop( _node );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( m_serviceProvider
-                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
+                , callback, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, linearSpeed, _time
                 , &mt::length_v3
                 );
@@ -1282,8 +1356,10 @@ namespace Menge
 
             moveStop( _node );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( m_serviceProvider
-                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
+                , callback, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point1, _point2, _time
                 , &mt::length_v3
                 );
@@ -1309,9 +1385,11 @@ namespace Menge
 
             moveStop( _node );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateCubicBezier.create( m_serviceProvider
-                , _cb, ETA_POSITION, _node, &Node::setLocalPosition
+                , callback, ETA_POSITION, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point1, _point2, _point3, _time
                 , &mt::length_v3
                 );
@@ -1344,8 +1422,10 @@ namespace Menge
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = m_odeAffectorCreatorInterpolateLinear.create( m_serviceProvider
-                , _cb, ETA_ANGLE, _node, &Node::setRotateX
+                , callback, ETA_ANGLE, _node, &Node::setRotateX
                 , correct_angle_from, correct_angle_to, _time
                 , &fabsf 
                 );				
@@ -1378,9 +1458,11 @@ namespace Menge
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( m_serviceProvider
-                , _cb, ETA_ANGLE, _node, &Node::setRotateX
+                , callback, ETA_ANGLE, _node, &Node::setRotateX
                 , correct_angle_from, correct_angle_to, angularSpeed, _time
                 , &fabsf
                 );				
@@ -1416,8 +1498,10 @@ namespace Menge
 
             scaleStop( _node );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
-                , _cb, ETA_SCALE, _node, &Node::setScale
+                , callback, ETA_SCALE, _node, &Node::setScale
                 , _node->getScale(), _scale, _time
                 , &mt::length_v3
                 );
@@ -1444,9 +1528,11 @@ namespace Menge
 
             colorStop( _node );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateLinearColour.create( m_serviceProvider
-                , _cb, ETA_COLOR, _node, &Colorable::setLocalColor
+                , callback, ETA_COLOR, _node, &Colorable::setLocalColor
                 , _node->getLocalColor(), _color, _time
                 , &ColourValue::length_color
                 );
@@ -1482,8 +1568,10 @@ namespace Menge
 
             _shape->stopAffectors( ETA_VISIBILITY );
 
+			NodeAffectorCallback * callback = createNodeAffectorCallback( _shape, _cb );
+
             Affector* affector = m_NodeAffectorCreatorInterpolateLinearVec4.create( m_serviceProvider
-                , _cb, ETA_VISIBILITY, _shape, &Shape::setPercentVisibility
+                , callback, ETA_VISIBILITY, _shape, &Shape::setPercentVisibility
                 , _shape->getPercentVisibility(), _percent, _time
                 , &mt::length_v4 
                 );
@@ -1589,70 +1677,6 @@ namespace Menge
                 ->getCamera2D();
 
             return renderCamera2D;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class AffectorScript
-            : public Affector
-        {
-        public:
-            AffectorScript()                
-                : m_stop(false)
-            {
-            }
-
-            ~AffectorScript()
-            {
-            }
-
-        public:
-            bool affect( float _timing ) override
-            {
-                if( m_stop == true )
-                {
-                    return true;
-                }
-
-                PyObject * py_result = pybind::ask( m_cb, "(f)", _timing );
-
-                if( py_result == NULL )
-                {
-                    return false;
-                }
-
-                if( pybind::bool_check(py_result) == false )
-                {
-                    return false;
-                }
-
-                if( pybind::is_true(py_result) == true )
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            void complete() override
-            {
-                //To Do
-            };
-
-            void stop() override
-            {
-                m_stop = true;
-            }
-
-        public:
-            bool m_stop;		
-        };
-        //////////////////////////////////////////////////////////////////////////
-        Affector * createAffector( PyObject * _cb )
-        {
-            Affector * affector = new AffectorScript();
-            
-            affector->initialize( m_serviceProvider, _cb, ETA_SCRIPT );
-
-            return affector;
         }
         //////////////////////////////////////////////////////////////////////////
         void showKeyboard()
@@ -3631,8 +3655,6 @@ namespace Menge
 
             pybind::def_functor( "testHotspot", nodeScriptMethod, &NodeScriptMethod::s_testHotspot);
             pybind::def_functor( "polygon_wm", nodeScriptMethod, &NodeScriptMethod::s_polygon_wm);
-
-            pybind::def_functor( "createAffector", nodeScriptMethod, &NodeScriptMethod::createAffector );			
 
             pybind::def_functor( "showKeyboard", nodeScriptMethod, &NodeScriptMethod::showKeyboard );			
             pybind::def_functor( "hideKeyboard", nodeScriptMethod, &NodeScriptMethod::hideKeyboard );

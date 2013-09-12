@@ -99,31 +99,55 @@ namespace Menge
         if( m_noSeek == false )
         {
             const VideoCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
-
-            decoder->seek( dataInfo->frameTiming );
+			
+			for( float pts = 0.f; pts < dataInfo->duration; pts += dataInfo->frameTiming )
+			{
+				decoder->seek( pts );
             
-            float pts;
-            EVideoDecoderReadState state = decoder->readNextFrame( pts );
-            if( state != VDRS_SUCCESS )
-            {
-                LOGGER_ERROR(m_serviceProvider)("=============================================================");
-                LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid read next frame %f:%f (state %d)"
-                    , dataInfo->frameTiming
-                    , pts
-                    , state
-                    );
-            }
+				float current_pts;
+				EVideoDecoderReadState state = VDRS_FAILURE;
+				
+				while( true, true )
+				{
+					state = decoder->readNextFrame( current_pts );
 
-            if( fabsf(pts - dataInfo->frameTiming) > dataInfo->frameTiming )
-            {
-                LOGGER_ERROR(m_serviceProvider)("=============================================================");
-                LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f:%f (need one)"
-                    , dataInfo->frameTiming
-                    , pts
-                    );
+					if( state == VDRS_SKIP )
+					{
+						continue;
+					}
 
-                return false;
-            }
+					break;
+				}
+
+				if( state == VDRS_END_STREAM )
+				{
+					break;
+				}
+
+				if( state == VDRS_FAILURE )
+				{
+					LOGGER_ERROR(m_serviceProvider)("=============================================================");
+					LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid read next frame %f:%f (state %d)"
+						, dataInfo->frameTiming
+						, current_pts
+						, state
+						);
+
+					return false;
+				}
+
+				if( fabsf(current_pts - pts) > dataInfo->frameTiming )
+				{
+					LOGGER_ERROR(m_serviceProvider)("=============================================================");
+					LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f %f:%f (need one)"
+						, dataInfo->frameTiming
+						, pts
+						, current_pts
+						);
+
+					return false;
+				}
+			}
 
             decoder->seek( 0.f );
         }

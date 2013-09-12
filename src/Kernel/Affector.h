@@ -15,6 +15,13 @@ namespace Menge
 {
     class ServiceProviderInterface;
 
+	class AffectorCallback
+		: public Factorable
+	{
+	public:
+		virtual void onAffectorEnd( size_t _id, bool _isEnd ) = 0;
+	};
+
 	class Affector
         : public stdex::intrusive_slug_linked<Affector>
         , public Factorable
@@ -24,17 +31,15 @@ namespace Menge
 		virtual ~Affector();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type );
+        void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type );
 
 	public:
 		void setId( size_t _id );
-        size_t getId() const;
+		size_t getId() const;
 
-		void setType( EAffectorType _type );
+	public:
 		EAffectorType getType() const;
-
-		void setCb( PyObject * _cb );
-		PyObject * getCb() const;
+		AffectorCallback * getCb() const;
 
 	public:
 		virtual bool affect( float _timing ) = 0;
@@ -42,11 +47,11 @@ namespace Menge
 		virtual void stop() = 0;
 
 	protected:
-		void call( Scriptable * _scriptable, bool _isEnd );
+		void call( bool _isEnd );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-		PyObject * m_cb;
+		AffectorCallback * m_cb;
 
 		EAffectorType m_type;
 		size_t m_id;
@@ -63,7 +68,7 @@ namespace Menge
 		{
 		}
 
-        void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method )
+        void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type, C * _self, M _method )
         {
             Affector::initialize( _serviceProvider, _cb, _type );
 
@@ -79,14 +84,8 @@ namespace Menge
 
         void complete() override
         {
-            this->call_self( true );
+            this->call( true );
         }
-
-    protected:
-		void call_self( bool _isEnd )
-		{
-			this->call( m_self, _isEnd );
-		}
 
 	protected:
 		C * m_self;
@@ -117,7 +116,7 @@ namespace Menge
 		{
 			m_accumulator.stop();
 
-			this->call_self( false );
+			this->call( false );
 		}
 
 	protected:
@@ -148,7 +147,7 @@ namespace Menge
 		{
 			m_interpolator.stop();
 
-			this->call_self( false );
+			this->call( false );
 		}
 
 	protected:
@@ -161,7 +160,7 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type, C * _self, M _method
+		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type, C * _self, M _method
 			, const T & _start, const T & _dir, float _speed, ABS _abs)
 		{
             MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::initialize( _serviceProvider, _cb, _type, _self, _method );
@@ -175,7 +174,7 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
             , C * _self, M _method
             , const T & _start, const T & _end, float _time, ABS _abs)
 		{
@@ -190,7 +189,7 @@ namespace Menge
 	{
 	public:
 		template< typename ABS >
-		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
 			, C * _self, M _method
 			, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		{
@@ -205,7 +204,7 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
 			, C * _self, M _method
 			, const T & _start, const T & _end, const T & _v0
 			, float _time, ABS _abs)
@@ -221,7 +220,7 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
 			, C * _self, M _method
 			, const T & _start, const T & _end, const T & _v0, const T & _v1
 			, float _time, ABS _abs)
@@ -241,7 +240,7 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, PyObject * _cb, EAffectorType _type
+            Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
                 , C * _self, M _method
                 , const T & _pos, const T & _dir, float _speed, ABS _abs )
             {
@@ -267,7 +266,7 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+            Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
                 , C * _self, M _method
                 , const T & _start, const T & _end, float _time, ABS _abs )
             {
@@ -294,7 +293,7 @@ namespace Menge
 
         public:
             template<class ABS>
-		    Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		    Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
@@ -321,7 +320,7 @@ namespace Menge
 
         public:
             template<class ABS>
-		    Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+		    Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
@@ -348,7 +347,7 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, PyObject* _cb, EAffectorType _type
+            Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
                 , C * _self, M _method
                 , const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs )
             {

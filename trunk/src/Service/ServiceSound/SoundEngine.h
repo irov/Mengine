@@ -3,6 +3,8 @@
 #   include "Interface/StreamInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
+#	include "MixerVolume.h"
+
 #   include "Kernel/ThreadJob.h"
 #   include "ThreadWorkerSoundBufferUpdate.h"
 
@@ -75,18 +77,19 @@ namespace Menge
 		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream ) override;  
 
     public:
-		void setSoundVolume( float _volume ) override;
-		float getSoundVolume() const override;
+		void setSoundVolume( const ConstString & _type, float _volume ) override;
+		float getSoundVolume( const ConstString & _type ) const override;
 
-		void setCommonVolume( float _volume ) override;
-		float getCommonVolume() const override;
+		void setCommonVolume( const ConstString & _type, float _volume ) override;
+		float getCommonVolume( const ConstString & _type ) const override;
 
-		void setMusicVolume( float _volume ) override;
-		float getMusicVolume() const override;
+		void setMusicVolume( const ConstString & _type, float _volume ) override;
+		float getMusicVolume( const ConstString & _type ) const override;
 
-        void setVoiceVolume( float _volume ) override;
-        float getVoiceVolume() const override;
+        void setVoiceVolume( const ConstString & _type, float _volume ) override;
+        float getVoiceVolume( const ConstString & _type ) const override;
 
+	public:
 		bool setSourceVolume( unsigned int _emitter, float _volume ) override;
 		float getSourceVolume( unsigned int _emitter ) const override;
 
@@ -137,10 +140,10 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        float m_commonVolume;
-		float m_soundVolume;		
-		float m_musicVolume;
-        float m_voiceVolume;
+        MixerVolume m_commonVolume;
+		MixerVolume m_soundVolume;
+		MixerVolume m_musicVolume;
+        MixerVolume m_voiceVolume;
 
         unsigned int m_enumerator;
 

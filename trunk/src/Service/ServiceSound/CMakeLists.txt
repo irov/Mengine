@@ -4,6 +4,8 @@ ADD_FILTER(
 src
 	SoundEngine.h
 	SoundEngine.cpp
+    MixerVolume.h
+    MixerVolume.cpp
     ThreadWorkerSoundBufferUpdate.h
     ThreadWorkerSoundBufferUpdate.cpp
 )

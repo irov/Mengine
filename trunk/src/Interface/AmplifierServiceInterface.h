@@ -25,8 +25,9 @@ namespace Menge
 		virtual void stop() = 0;
 		virtual void pause() = 0;
 		virtual void resume() = 0;
-		
-		virtual void setVolume( float _value ) = 0;		
+				
+		virtual void setVolume( float _value ) = 0;
+		virtual float getVolume() const = 0;
 		
 		//virtual void onTurnSound( bool _turn ) = 0;
 

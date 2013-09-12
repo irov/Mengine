@@ -80,6 +80,9 @@ namespace Menge
 		TimingManagerInterface * getTimingManager() const override;
         TimingManagerInterface * getTimingManagerGlobal() const override;
 
+		Affectorable * getAffectorable() const override;
+		Affectorable * getAffectorableGlobal() const override;
+
 	public:
 		void setCamera2D( Camera2D * _camera) override;
 		Camera2D * getCamera2D() const override;
@@ -164,6 +167,9 @@ namespace Menge
         TimingManagerInterface * m_timingManagerGlobal;
 
         FactoryDefault<TimingManager> m_factoryTimingManager;
+
+		Affectorable * m_affectorable;
+		Affectorable * m_affectorableGlobal;
 
 		bool m_arrowHided;
 		

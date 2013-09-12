@@ -16,6 +16,7 @@ namespace Menge
     class Scene;
     class Arrow;
     class Camera2D;
+	class Affectorable;
 
     typedef std::vector<Node *> TVectorNode;
     
@@ -51,6 +52,10 @@ namespace Menge
         virtual TimingManagerInterface * getTimingManager() const = 0;
         virtual TimingManagerInterface * getTimingManagerGlobal() const = 0;
 
+	public:
+		virtual Affectorable * getAffectorable() const = 0;
+		virtual Affectorable * getAffectorableGlobal() const = 0;
+		
     public:
         virtual Join * addJoin( Node * _left, Node * _right, const mt::vec2f & _offset ) = 0;
         virtual void removeJoin( Join * _join ) = 0;

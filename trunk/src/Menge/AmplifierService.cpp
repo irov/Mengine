@@ -4,6 +4,8 @@
 
 #   include "Logger/Logger.h"
 
+#	include "Consts.h"
+
 #	include "Playlist.h"
 
 #	include "ResourcePlaylist.h"
@@ -20,7 +22,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
         , m_sourceID(0)
 		, m_buffer(nullptr)
-		, m_currentPlayList(0)
+		, m_currentPlayList(nullptr)
 		, m_volume(1.f)
 		, m_volumeOverride(1.f)
 		, m_play(false)
@@ -58,7 +60,7 @@ namespace Menge
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
-		if ( it == m_mapPlayLists.end() )
+		if( it == m_mapPlayLists.end() )
 		{			
 			Playlist * playlist = new Playlist( m_serviceProvider );
 
@@ -108,7 +110,7 @@ namespace Menge
 		this->prepareSound_( category, desc->path, desc->codec );
 
 		float musicVolume = SOUND_SERVICE(m_serviceProvider)
-            ->getMusicVolume();
+            ->getMusicVolume( CONST_STRING(m_serviceProvider, Generic) );
 
 		if( SOUND_SERVICE(m_serviceProvider)->setSourceVolume( m_sourceID, musicVolume ) == false )
 		{
@@ -336,7 +338,15 @@ namespace Menge
 	{
 		//m_volumeOverride = m_volume;
 		SOUND_SERVICE(m_serviceProvider)
-            ->setMusicVolume( _volume );
+            ->setMusicVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float AmplifierService::getVolume() const
+	{
+		float volume = SOUND_SERVICE(m_serviceProvider)
+			->getMusicVolume( CONST_STRING(m_serviceProvider, Generic) );
+
+		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float AmplifierService::getPosMs() const

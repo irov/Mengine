@@ -417,6 +417,11 @@ namespace Menge
             return false;
         }
 
+		if( fabsf(m_pts - _timing) < m_dataInfo.frameTiming * 0.5f )
+		{
+			return true;
+		}
+
         //int64_t minTime = (int64_t)(_timing - m_dataInfo.frameTiming);
         //int64_t maxTime = (int64_t)(_timing + m_dataInfo.frameTiming);
         int64_t needTime = (int64_t)(_timing);
@@ -435,6 +440,8 @@ namespace Menge
 
             return false;
         }
+
+		m_pts = _timing;
 
         avcodec_flush_buffers( m_codecContext );
 

@@ -40,6 +40,7 @@ namespace	Menge
 		const ConstString& getPlayTrack() const override;
 				
 		void setVolume( float _value ) override;
+		float getVolume() const override;
 
 		size_t getNumTracks() const override;
 

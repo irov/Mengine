@@ -42,6 +42,7 @@ src
     WindowsLayerInterface.h
     ArchiveInterface.h
     ProfilerInterface.h
+    AffectorManagerInterface.h
     
 	dummy.cpp
 )

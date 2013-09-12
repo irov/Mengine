@@ -47,6 +47,9 @@ INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/boost )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Utils ${CMAKE_TEMP_DIR}/Utils )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Kernel ${CMAKE_TEMP_DIR}/Kernel )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Metacode ${CMAKE_TEMP_DIR}/Metacode )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Menge ${CMAKE_TEMP_DIR}/Menge )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/WindowsLayer ${CMAKE_TEMP_DIR}/WindowsLayer )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/MengeWin32FileSystem ${CMAKE_TEMP_DIR}/System/MengeWin32FileSystem )
@@ -62,13 +65,8 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceLog ${CMAKE_TEMP_DIR}/Service/Ser
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServicePlugin ${CMAKE_TEMP_DIR}/Service/ServicePlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceUnicode ${CMAKE_TEMP_DIR}/Service/ServiceUnicode )
 
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeHotspotImageConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeHotspotImageConverterPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeDevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeDevelopmentConverterPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeImageCodecPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeXmlCodecPlugin )
 
-
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsHotspotImageConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsHotspotImageConverterPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsXmlCodecPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsPNGAlphaSpreadingPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsPNGAlphaSpreadingPlugin )
-
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools/polygon2shape ${CMAKE_TEMP_DIR}/Tools/polygon2shape )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsBuilderPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsBuilderPlugin )

@@ -136,7 +136,7 @@ namespace Menge
 					return false;
 				}
 
-				if( fabsf(current_pts - pts) > dataInfo->frameTiming )
+				if( fabsf(current_pts - pts) > dataInfo->frameTiming * 2.f )
 				{
 					LOGGER_ERROR(m_serviceProvider)("=============================================================");
 					LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f %f:%f (need one)"

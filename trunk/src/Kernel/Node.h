@@ -23,15 +23,11 @@
 #   include "stdex/intrusive_slug.h"
 
 namespace Menge
-{	
-	class Visitor;
-	
+{		
 	class Layer;
 	class Scene;
 
 	struct RenderMaterial;
-
-	class Affector;
 
 	class ResourceReference;
 
@@ -300,7 +296,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::hasParent() const
 	{
-		return m_parent != 0;
+		return m_parent != nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isRenderable() const

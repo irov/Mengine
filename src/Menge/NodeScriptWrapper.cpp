@@ -3103,6 +3103,7 @@ namespace Menge
             .def( "hasChildren", &Node::hasChildren )
             .def( "update", &Node::update )
             .def( "getParent", &Node::getParent )
+			.def( "hasParent", &Node::hasParent )
             .def( "getScene", &Node::getScene )
             .def( "getLayer", &Node::getLayer )
             .def_native( "setEventListener", &Node::setEventListener )

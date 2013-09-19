@@ -63,12 +63,11 @@ namespace Menge
 		Magic_SetCurrentFolder(_file, _path );
 		
 		MAGIC_FIND_DATA find;
-		const char* magicName = Magic_FindFirst(_file, &find, MAGIC_FOLDER | MAGIC_EMITTER);
+		const char* magicName = Magic_FindFirst( _file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
 		
 		while( magicName )
 		{
-			//if animated folder or emitter
-			if ( find.animate == 1 )
+			if( find.animate == 1 )
 			{
 				if( this->loadEmitter( magicName, _file, _container ) == false )
                 {
@@ -78,7 +77,6 @@ namespace Menge
                         );
                 }
 			}
-			//if folder
 			else
 			{		
 				this->loadEmittersFolder( magicName, _file, _container );
@@ -205,12 +203,7 @@ namespace Menge
 #   endif
 
 		MAGIC_RENDERING rendering;
-		if( Magic_CreateFirstRenderedParticlesList(id, &rendering) == MAGIC_ERROR )
-		{
-			return false;
-		}
-
-		if( _particlesLimit <= (size_t)rendering.count )
+		if( Magic_CreateFirstRenderedParticlesList( id, &rendering ) == MAGIC_ERROR )
 		{
 			return false;
 		}
@@ -229,21 +222,21 @@ namespace Menge
 			mesh.texture = rendering.texture_id;
 			mesh.intense = rendering.intense;
 
-			this->fillParticles_( _particles, _flush.particleCount, rendering.count );
+			this->fillParticles_( _particles, _flush.particleCount, mesh.size );
 
 			_flush.particleCount += rendering.count;
 			++_flush.meshCount;
 
-			Magic_CreateNextRenderedParticlesList(&rendering);
+			Magic_CreateNextRenderedParticlesList( &rendering );
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem::fillParticles_( ParticleVertices * _particles, size_t _offset, int _count )
+	void AstralaxParticleSystem::fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count )
 	{
 		//_particles.resize(_offset + _count);
-        for( int i = 0; i != _count; ++i )
+        for( size_t i = 0; i != _count; ++i )
 		{
             MAGIC_PARTICLE_VERTEXES vertexes;
 			Magic_GetNextParticleVertexes( &vertexes );

@@ -1847,7 +1847,7 @@ namespace Menge
 
                 if( pybind::is_none(py_result) == false )
                 {
-                    LOGGER_ERROR(m_serviceProvider)("Game::handleMouseButtonEvent handlersMouseButton %s return value %s not None"
+                    LOGGER_ERROR(m_serviceProvider)("handleMouseButtonEvent handlersMouseButton %s return value %s not None"
                         , pybind::object_repr( py_handler )                        
                         , pybind::object_repr( py_result )
                         );
@@ -1951,7 +1951,7 @@ namespace Menge
 
                 if( pybind::is_none(py_result) == false )
                 {
-                    LOGGER_ERROR(m_serviceProvider)("Game::handleGlobalMouseButtonEventEnd handlersMouseButton %s return value %s not None"
+                    LOGGER_ERROR(m_serviceProvider)("handleGlobalMouseButtonEventEnd handlersMouseButton %s return value %s not None"
                         , pybind::object_repr( py_handler )                        
                         , pybind::object_repr( py_result )
                         );
@@ -2011,6 +2011,88 @@ namespace Menge
 
             return true;
         }
+		//////////////////////////////////////////////////////////////////////////
+		class PyGlobalKeyHandler
+			: public GlobalKeyHandler
+		{
+		public:
+			PyGlobalKeyHandler( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+				: m_serviceProvider(_serviceProvider)
+				, m_cb(_cb)
+			{
+				pybind::incref( m_cb );
+			}
+
+			~PyGlobalKeyHandler()
+			{
+				pybind::decref( m_cb );
+				m_cb = nullptr;
+			}
+
+		protected:
+			void handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override
+			{				
+				(void)_point;
+
+				PyObject * py_handler = m_cb;
+
+				pybind::incref( py_handler );
+
+				PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
+					->askFunction( py_handler, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
+
+				if( pybind::is_none(py_result) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("handleGlobalKeyEvent handlersMouseButton %s return value %s not None"
+						, pybind::object_repr( py_handler )                        
+						, pybind::object_repr( py_result )
+						);
+				}
+
+				pybind::decref( py_result );
+				pybind::decref( py_handler );
+				//Empty
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			PyObject * m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		size_t s_addKeyHandler( PyObject * _cb )
+		{
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
+				->getGlobalHandleSystem();
+
+			PyGlobalKeyHandler * handler = new PyGlobalKeyHandler(m_serviceProvider, _cb);
+
+			size_t id = globalHandleSystem->addGlobalKeyEventable( handler );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_removeKeyHandler( size_t _id )
+		{
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
+				->getGlobalHandleSystem();
+
+			GlobalKeyHandler * handler = globalHandleSystem->removeGlobalKeyEventable( _id );
+
+			PyGlobalKeyHandler * py_handler = dynamic_cast<PyGlobalKeyHandler *>(handler);
+
+			if( py_handler == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("removeKeyHandler %d handler invalid PyGlobalKeyHandler"
+					, _id
+					);
+
+				return false;
+			}
+
+			delete py_handler;
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         float s_getMovieDuration( const ConstString & _resourceName )
         {
@@ -3672,6 +3754,9 @@ namespace Menge
             pybind::def_functor( "addMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandler );
             pybind::def_functor( "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
             pybind::def_functor( "removeMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseButtonHandler );
+
+			pybind::def_functor( "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
+			pybind::def_functor( "removeKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_removeKeyHandler );
 
             pybind::def_functor( "visitChild", nodeScriptMethod, &NodeScriptMethod::s_visitChild );
 

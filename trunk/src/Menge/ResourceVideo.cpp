@@ -100,7 +100,7 @@ namespace Menge
         {
             const VideoCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 			
-			for( float pts = 0.f; pts < dataInfo->duration; pts += dataInfo->frameTiming )
+			for( float pts = 0.f; pts < 200.f; pts += dataInfo->frameTiming )
 			{
 				decoder->seek( pts );
             

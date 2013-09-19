@@ -37,7 +37,7 @@ namespace Menge
 		bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
 
 	protected:
-		void fillParticles_( ParticleVertices * _particles, size_t _offset, int _count );
+		void fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count );
 		bool loadEmitter( const char * _magicName, HM_FILE _file, AstralaxEmitterContainer * _container );
 		void loadEmittersFolder( const char * _path, HM_FILE _file, AstralaxEmitterContainer * _container );
 

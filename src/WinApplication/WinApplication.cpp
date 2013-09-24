@@ -2705,7 +2705,7 @@ namespace Menge
 
 		if( m_fpsMonitor )
 		{
-            if( m_active )
+            if( m_active == true )
             {
     			m_fpsMonitor->setFrameTime( s_activeFrameTime );
             }

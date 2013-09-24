@@ -381,9 +381,10 @@ namespace Menge
 			{
 				if( state->picked == false )
 				{
-					handle = trap->onMouseEnter( _point );
+					state->picked = true;
 
-					state->picked = true;					
+					handle = trap->onMouseEnter( _point );
+									
 					state->handle = handle;
 				}
 				else

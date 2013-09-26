@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 33;
+        _needVersion = 35;
 
-        if( version != 33 )
+        if( version != 35 )
         {
             return false;
         }
@@ -119,7 +119,7 @@ namespace Metacode
     {
         switch( _generators )
         {
-        case 15:
+        case 16:
             {
                 Meta_DataBlock::Meta_ResourceAnimation * metadata = new Meta_DataBlock::Meta_ResourceAnimation ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -134,7 +134,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 9:
+        case 10:
             {
                 Meta_DataBlock::Meta_ResourceCursorICO * metadata = new Meta_DataBlock::Meta_ResourceCursorICO ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -149,9 +149,24 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 8:
+        case 9:
             {
                 Meta_DataBlock::Meta_ResourceCursorSystem * metadata = new Meta_DataBlock::Meta_ResourceCursorSystem ();
+                if( metadata->parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    delete metadata;
+    
+                    return false;
+                }
+    
+                includes_Meta_Resource.push_back(metadata);
+    
+                return true;
+                break;
+            }
+        case 6:
+            {
+                Meta_DataBlock::Meta_ResourceEmitter * metadata = new Meta_DataBlock::Meta_ResourceEmitter ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
                 {
                     delete metadata;
@@ -179,7 +194,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 23:
+        case 24:
             {
                 Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -194,7 +209,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 6:
+        case 7:
             {
                 Meta_DataBlock::Meta_ResourceFont * metadata = new Meta_DataBlock::Meta_ResourceFont ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -209,7 +224,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 7:
+        case 8:
             {
                 Meta_DataBlock::Meta_ResourceGlyph * metadata = new Meta_DataBlock::Meta_ResourceGlyph ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -224,7 +239,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 16:
+        case 17:
             {
                 Meta_DataBlock::Meta_ResourceHIT * metadata = new Meta_DataBlock::Meta_ResourceHIT ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -239,7 +254,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 19:
+        case 20:
             {
                 Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -269,7 +284,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 20:
+        case 21:
             {
                 Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -284,7 +299,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 17:
+        case 18:
             {
                 Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -299,7 +314,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 21:
+        case 22:
             {
                 Meta_DataBlock::Meta_ResourceImageSubstract * metadata = new Meta_DataBlock::Meta_ResourceImageSubstract ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -314,7 +329,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 18:
+        case 19:
             {
                 Meta_DataBlock::Meta_ResourceInternalObject * metadata = new Meta_DataBlock::Meta_ResourceInternalObject ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -329,7 +344,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 13:
+        case 14:
             {
                 Meta_DataBlock::Meta_ResourceMovie * metadata = new Meta_DataBlock::Meta_ResourceMovie ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -344,7 +359,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 11:
+        case 12:
             {
                 Meta_DataBlock::Meta_ResourcePlaylist * metadata = new Meta_DataBlock::Meta_ResourcePlaylist ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -359,7 +374,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 22:
+        case 23:
             {
                 Meta_DataBlock::Meta_ResourceShape * metadata = new Meta_DataBlock::Meta_ResourceShape ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -374,7 +389,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 10:
+        case 11:
             {
                 Meta_DataBlock::Meta_ResourceSound * metadata = new Meta_DataBlock::Meta_ResourceSound ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -389,7 +404,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 14:
+        case 15:
             {
                 Meta_DataBlock::Meta_ResourceVideo * metadata = new Meta_DataBlock::Meta_ResourceVideo ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -404,7 +419,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 12:
+        case 13:
             {
                 Meta_DataBlock::Meta_ResourceWindow * metadata = new Meta_DataBlock::Meta_ResourceWindow ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -754,6 +769,88 @@ namespace Metacode
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceEmitter::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->Container_Name ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 4:
+            {
+                if( this->read( _buff, _size, _read, this->Emitter_Name ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 5:
+            {
+                if( this->read( _buff, _size, _read, this->EmitterRelative_Value ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 6:
+            {
+                if( this->read( _buff, _size, _read, this->Offset_Value ) == false )
+                {
+                    return false;
+                }
+    
+                this->Offset_Value_successful = true;
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceEmitter::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    {
+        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceEmitter::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceEmitter::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {

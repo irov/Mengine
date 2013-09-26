@@ -212,6 +212,8 @@ ADD_FILTER(
 Resource\\\\EmitterContainer
 	ResourceEmitterContainer.cpp
 	ResourceEmitterContainer.h
+	ResourceEmitter.cpp
+	ResourceEmitter.h
 )
 
 ADD_FILTER(

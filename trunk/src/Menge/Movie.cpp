@@ -12,6 +12,7 @@
 #   include "ResourceSound.h"
 #   include "ResourceShape.h"
 #   include "ResourceEmitterContainer.h"
+#	include "ResourceEmitter.h"
 
 #   include "Interface/ApplicationInterface.h"
 
@@ -308,6 +309,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node )
 	{		
+		if( _layer.in < 0.0001f )
+		{
+			_node->localHide( false );
+		}
+		else
+		{
+			_node->localHide( true );
+		}
+
         Nodies ns;
         ns.node = _node;
         ns.child = (_layer.parent != movie_layer_parent_none);
@@ -967,7 +977,7 @@ namespace Menge
             }
             else if( layer.layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
             {
-                if( this->createMovieEmitterContainer_( layer ) == false )
+                if( this->createMovieParticleEmitter_( layer ) == false )
                 {
                     return false;
                 }
@@ -1056,10 +1066,6 @@ namespace Menge
 
         layer_slot->setMovieName( m_name );
 
-		//layer_slot->enable();
-		layer_slot->localHide( true );
-        
-
 		m_slots.insert( _layer.name, layer_slot );
 
 		this->addMovieNode_( _layer, layer_slot );
@@ -1074,9 +1080,6 @@ namespace Menge
 
         sceneeffect_slot->setName( _layer.name );
 
-        //layer_slot->enable();
-        sceneeffect_slot->localHide( true );
-
         m_sceneEffects.insert( _layer.name, sceneeffect_slot );
 
         this->addMovieNode_( _layer, sceneeffect_slot );
@@ -1090,8 +1093,6 @@ namespace Menge
 			->createNodeT<Node>( CONST_STRING(m_serviceProvider, Node) );
 
         layer_slot->setName( _layer.name );
-
-		layer_slot->localHide( true );
 
 		this->addMovieNode_( _layer, layer_slot );
 
@@ -1121,8 +1122,6 @@ namespace Menge
 				, _layer.name.c_str()
 				);
 		}
-
-		layer_sprite->localHide( true );
 
 		this->addMovieNode_( _layer, layer_sprite );
 
@@ -1172,8 +1171,6 @@ namespace Menge
                 );
         }
 
-		layer_sprite->localHide( true );
-
 		this->addMovieNode_( _layer, layer_sprite );
 
 		return true;
@@ -1191,10 +1188,8 @@ namespace Menge
 
         layer_hotspotimage->setName( _layer.name );
 
-        layer_hotspotimage->localHide( true );
-
         m_sockets.insert( _layer.name, layer_hotspotimage );
-
+		
         this->addMovieNode_( _layer, layer_hotspotimage );
 
         return true;
@@ -1211,8 +1206,6 @@ namespace Menge
         layer_hotspotshape->setResourceShape( resourceShape );
 
         layer_hotspotshape->setName( _layer.name );
-
-        layer_hotspotshape->localHide( true );
 
         m_sockets.insert( _layer.name, layer_hotspotshape );
 
@@ -1249,8 +1242,6 @@ namespace Menge
                 );
         }
 
-		layer_animation->localHide( true );
-
 		this->addMovieNode_( _layer, layer_animation );
 
 		return true;
@@ -1274,7 +1265,6 @@ namespace Menge
         layer_movie->setScretch( _layer.scretch );
         //layer_movie->setLoop( _layer.loop );
 
-		layer_movie->localHide( true );
 		layer_movie->setParentMovie( true );
 
 		this->addMovieNode_( _layer, layer_movie );
@@ -1300,7 +1290,6 @@ namespace Menge
         layer_movie->setScretch( _layer.scretch );
         //layer_movie->setLoop( _layer.loop );
 
-        layer_movie->localHide( true );
         layer_movie->setParentMovie( true );
 
         m_subMovies.insert( _layer.name, layer_movie );
@@ -1322,8 +1311,6 @@ namespace Menge
 
 		movie_internal->setMovie( this );
         movie_internal->setResourceInternalObject( resourceInternalObject );
-
-		movie_internal->localHide(true);
 
         m_internals.insert( _layer.name, movie_internal );
 
@@ -1360,8 +1347,6 @@ namespace Menge
 				);
 		}
 
-		layer_video->localHide(true);
-
 		this->addMovieNode_( _layer, layer_video );
 
 		return true;
@@ -1383,8 +1368,6 @@ namespace Menge
         layer_sound->setScretch( _layer.scretch );
         //layer_sound->setLoop( _layer.loop );
 
-		layer_sound->localHide( true );
-
 		this->addMovieNode_( _layer, layer_sound );
 
 		return true;
@@ -1397,8 +1380,6 @@ namespace Menge
 
         layer_text->setName( _layer.name );
         layer_text->setTextByKey( _layer.name ); //Name = TextID
-
-        layer_text->localHide( true );
 
         this->addMovieNode_( _layer, layer_text );
 
@@ -1413,7 +1394,6 @@ namespace Menge
         layer_event->setName( _layer.name );
 
         layer_event->setResourceMovie( m_resourceMovie );
-        layer_event->localHide( true );
 
         m_events.insert( _layer.name, layer_event );
 
@@ -1422,26 +1402,44 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieEmitterContainer_( const MovieLayer & _layer )
+	bool Movie::createMovieParticleEmitter_( const MovieLayer & _layer )
 	{
 		ParticleEmitter * layer_particles = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<ParticleEmitter>( CONST_STRING(m_serviceProvider, ParticleEmitter) );
         
-        ResourceEmitterContainer * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceEmitterContainer>( _layer.source );
+        ResourceEmitter * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
+            ->getResourceReferenceT<ResourceEmitter>( _layer.source );
+
+		const ConstString & container = resourceEmitter->getContainer();
+
+		ResourceEmitterContainer * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceEmitterContainer>( container );
 
 		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
         layer_particles->setName( _layer.name );
 
-        layer_particles->setIntervalStart( _layer.startInterval );        
+        //layer_particles->setIntervalStart( _layer.startInterval );        
         layer_particles->setPlayCount( _layer.playCount );
         layer_particles->setScretch( _layer.scretch );
         //layer_particles->setLoop( _layer.loop );
 
 		layer_particles->setLoop( true );
-		layer_particles->setEmitterTranslateWithParticle( true );
 
-		layer_particles->localHide( true );
+		bool relative = resourceEmitter->getEmitterRelative();
+		layer_particles->setEmitterRelative( relative );
+		layer_particles->setEmitterTranslateWithParticle( relative );
+
+		const ConstString & emitterName = resourceEmitter->getEmitterName();
+		layer_particles->setEmitter( emitterName );
+
+		const mt::vec2f & offset = resourceEmitter->getOffset();
+
+		mt::vec3f position;
+		position.x = offset.x;
+		position.y = offset.y;
+		position.z = 0.f;
+
+		layer_particles->setEmitterPosition( position );
 
 		this->addMovieNode_( _layer, layer_particles );
 

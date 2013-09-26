@@ -84,6 +84,7 @@
 //#	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
 #	include "ResourceEmitterContainer.h"
+#	include "ResourceEmitter.h"
 #	include "ResourceFont.h"
 #	include "ResourceGlyph.h"
 
@@ -728,6 +729,7 @@ namespace Menge
 
 #   ifdef MENGE_PARTICLES
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
+		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
 #   endif
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceFont );

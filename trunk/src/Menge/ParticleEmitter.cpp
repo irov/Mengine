@@ -171,7 +171,10 @@ namespace	Menge
             }
         }
 
-        this->updateRelative_();
+		if( m_emitterRelative == true )
+		{
+			m_interface->setPosition( m_emitterPosition );
+		}
         
 		return true;		
 	}
@@ -667,33 +670,29 @@ namespace	Menge
 
 		m_interface->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter::updateRelative_()
-    {
-        if( m_emitterRelative == true )
-        {
-            m_emitterPosition.x = 0.f;
-            m_emitterPosition.y = 0.f;
-            m_emitterPosition.z = 0.f;
-        }
-        else
-        {
-            m_interface->getBasePosition( m_emitterPosition );
-        }
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setEmitterPosition( const mt::vec3f & _position )
+	{
+		m_emitterPosition = _position;
 
-        this->invalidateWorldMatrix();
-    }
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
+		m_interface->setPosition( m_emitterPosition );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterRelative( bool _relative )
 	{
         m_emitterRelative = _relative;
 
-        if( this->isCompile() == false )
-        {
-            return;
-        }
+		if( this->isCompile() == false )
+		{
+			return;
+		}
 
-        this->updateRelative_();
+		m_interface->setPosition( m_emitterPosition );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setStartPosition( float _pos )

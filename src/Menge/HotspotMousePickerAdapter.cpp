@@ -20,6 +20,11 @@ namespace Menge
         m_hotspot = _hotspot;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	HotSpot * HotspotMousePickerAdapter::getHotspot() const
+	{
+		return m_hotspot;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool HotspotMousePickerAdapter::pick( const mt::vec2f& _point, Arrow * _arrow )
 	{
         Layer * layer = m_hotspot->getLayer();

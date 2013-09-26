@@ -45,6 +45,7 @@ namespace Menge
 		void playFromPosition( float _pos );
 
 		void setEmitterTranslateWithParticle( bool _with );
+		void setEmitterPosition( const mt::vec3f & _position );
 		void setEmitterRelative( bool _relative );
 		void setStartPosition( float _pos );
         		

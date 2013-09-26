@@ -377,7 +377,10 @@ namespace Menge
 
 			MousePickerTrapInterface * trap = state->trap;
 
-			if( ( handle == false || m_handleValue == false ) && m_block == false && trap->isPickerActive() == true && trap->pick( _point, m_arrow ) == true )
+			bool pickerActive = trap->isPickerActive();
+			bool picked = trap->pick( _point, m_arrow );
+
+			if( ( handle == false || m_handleValue == false ) && m_block == false && pickerActive == true && picked == true )
 			{
 				if( state->picked == false )
 				{

@@ -139,7 +139,7 @@ namespace Menge
 		bool createMovieSound_( const MovieLayer & _layer );
         bool createMovieText_( const MovieLayer & _layer );  
         bool createMovieEvent_( const MovieLayer & _layer );
-		bool createMovieEmitterContainer_( const MovieLayer & _layer );
+		bool createMovieParticleEmitter_( const MovieLayer & _layer );
 
 
 	protected:

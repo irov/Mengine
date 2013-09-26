@@ -14,6 +14,7 @@ namespace Menge
 
     public:
         void setHotspot( HotSpot * _hotspot );
+		HotSpot * getHotspot() const;
 
     public:
         bool pick( const mt::vec2f& _point, Arrow * _arrow ) override;

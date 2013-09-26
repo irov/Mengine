@@ -298,6 +298,119 @@ namespace Metacode
             mutable Menge::ConstString File_Path;
         };
         
+        class Meta_ResourceEmitter
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceEmitter()
+                : Meta_Resource()
+                , Offset_Value_successful(false)
+            {
+            }
+        public:
+            const Menge::ConstString & get_Container_Name() const
+            {
+                return this->Container_Name;
+            }
+            
+            void swap_Container_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Container_Name);
+            }
+            
+            template<class C, class M>
+            void method_Container_Name( C * _self, M _method )
+            {
+                (_self->*_method)( this->Container_Name );
+            }
+            
+            const Menge::ConstString & get_Emitter_Name() const
+            {
+                return this->Emitter_Name;
+            }
+            
+            void swap_Emitter_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Emitter_Name);
+            }
+            
+            template<class C, class M>
+            void method_Emitter_Name( C * _self, M _method )
+            {
+                (_self->*_method)( this->Emitter_Name );
+            }
+            
+            const bool & get_EmitterRelative_Value() const
+            {
+                return this->EmitterRelative_Value;
+            }
+            
+            void swap_EmitterRelative_Value( bool & _value ) const
+            {
+                std::swap(_value, this->EmitterRelative_Value);
+            }
+            
+            template<class C, class M>
+            void method_EmitterRelative_Value( C * _self, M _method )
+            {
+                (_self->*_method)( this->EmitterRelative_Value );
+            }
+            
+            bool has_Offset_Value() const
+            {
+                return Offset_Value_successful;
+            }
+            
+            bool get_Offset_Value( mt::vec2f & _value ) const
+            {
+                if( Offset_Value_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Offset_Value;
+            
+                return true;
+            }
+            
+            bool swap_Offset_Value( mt::vec2f & _value ) const
+            {
+                if( Offset_Value_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Offset_Value);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Offset_Value( C * _self, M _method )
+            {
+                if( Offset_Value_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Offset_Value );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString Container_Name;
+            mutable Menge::ConstString Emitter_Name;
+            mutable bool EmitterRelative_Value;
+            bool Offset_Value_successful;
+            mutable mt::vec2f Offset_Value;
+        };
+        
         class Meta_ResourceEmitterContainer
             : public Meta_Resource
         { 

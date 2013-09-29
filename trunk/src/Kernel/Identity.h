@@ -17,18 +17,10 @@ namespace Menge
 
         void setType( const ConstString & _type );
         inline const ConstString & getType() const;
-
-		void setTag( const ConstString & _tag );
-		inline const ConstString & getTag() const;
-
-		size_t getUniqueId() const;
-
+		
 	protected:
 		ConstString m_name;
 		ConstString m_type;
-		ConstString m_tag;
-
-		size_t m_uniqueId;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & Identity::getName()const
@@ -39,10 +31,5 @@ namespace Menge
 	inline const ConstString & Identity::getType() const
 	{
 		return m_type;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & Identity::getTag() const
-	{
-		return m_tag;
 	}
 }

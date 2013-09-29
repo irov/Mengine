@@ -486,11 +486,8 @@ namespace Menge
 			}
 
         private:
-            FFindChild & operator = ( const FFindChild & _child )
-            {
-                (void)_child;
-
-                return *this;
+            void operator = ( const FFindChild & )
+            {               
             }
 
 		protected:
@@ -515,7 +512,9 @@ namespace Menge
 
 		if( it_found != m_child.end() )
 		{
-			return *it_found;
+			Node * children = *it_found;
+
+			return children;
 		}
 
 		if( _recursion == true )
@@ -538,19 +537,6 @@ namespace Menge
 		if( Node * node = this->_findChildren( _name, _recursion ) )
 		{
 			return node;
-		}
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * Node::findTag( const ConstString & _tag ) const
-	{
-		TListNodeChild::const_iterator it_found =
-			s_node_find_child( m_child, &Identity::getTag, _tag );
-
-		if( it_found != m_child.end() )
-		{
-			return *it_found;
 		}
 
 		return nullptr;

@@ -352,15 +352,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren_( TListNodeChild::iterator _insert, Node * _node )
 	{
-		/*if( this->isChildren( _node, false ) )
-		{
-			//MENGE_LOG_ERROR( "Node '%s' type '%s' addChildren failed '%s' because type '%s' is already exist"
-			//, this->getName().c_str()
-			//, this->getType().c_str()
-			//, _node->getName().c_str()
-			//, _node->getType().c_str() );
-			return false;
-		}*/
+		//if( this->isChildren( _node, false ) )
+		//{
+		//	//MENGE_LOG_ERROR( "Node '%s' type '%s' addChildren failed '%s' because type '%s' is already exist"
+		//	//, this->getName().c_str()
+		//	//, this->getType().c_str()
+		//	//, _node->getName().c_str()
+		//	//, _node->getType().c_str() );
+		//	return false;
+		//}
+
 		Node * parent = _node->getParent();
 
         _node->setShallowGrave();
@@ -415,7 +416,19 @@ namespace Menge
 		m_child.erase( it_node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TListNodeChild & Node::getChild() const
+	void Node::visitChild( Visitor * _visitor )
+	{
+		this->visit( _visitor );
+
+		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+		{
+			Node * children = (*it);
+
+			children->visitChild( _visitor );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TListNodeChild & Node::getChild()
 	{
 		return m_child;
 	}
@@ -439,7 +452,7 @@ namespace Menge
         if( parent != this )
         {
             return;
-        }    
+        }
 
         this->removeChildren_( _node );
 	}
@@ -454,7 +467,7 @@ namespace Menge
         this->eraseChildren_( _node );
     }
 	//////////////////////////////////////////////////////////////////////////
-	namespace Impl
+	namespace
 	{
 		template<class M>
 		class FFindChild
@@ -486,7 +499,7 @@ namespace Menge
 		};
 
 		template<class C, class M>
-		typename C::const_iterator find_child( const C & _child, M _method, const ConstString & _name )
+		static typename C::const_iterator s_node_find_child( const C & _child, M _method, const ConstString & _name )
 		{
 			typename C::const_iterator it_found =
 				intrusive_find_if( _child.begin(), _child.end(), FFindChild<M>( _method, _name) );
@@ -498,7 +511,7 @@ namespace Menge
 	Node * Node::findChildren( const ConstString & _name, bool _recursion ) const
 	{
 		TListNodeChild::const_iterator it_found =
-			Impl::find_child( m_child, &Identity::getName, _name );
+			s_node_find_child( m_child, &Identity::getName, _name );
 
 		if( it_found != m_child.end() )
 		{
@@ -513,7 +526,9 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				if( Node * node = (*it)->findChildren( _name, true ) )
+				Node * children = (*it);
+
+				if( Node * node = children->findChildren( _name, true ) )
 				{
 					return node;
 				}
@@ -531,7 +546,7 @@ namespace Menge
 	Node * Node::findTag( const ConstString & _tag ) const
 	{
 		TListNodeChild::const_iterator it_found =
-			Impl::find_child( m_child, &Identity::getTag, _tag );
+			s_node_find_child( m_child, &Identity::getTag, _tag );
 
 		if( it_found != m_child.end() )
 		{
@@ -552,7 +567,7 @@ namespace Menge
 	bool Node::hasChildren( const ConstString & _name, bool _recursive ) const
 	{
 		TListNodeChild::const_iterator it_found =
-			Impl::find_child( m_child, &Identity::getName, _name );
+			s_node_find_child( m_child, &Identity::getName, _name );
 
 		if( it_found != m_child.end() )
 		{
@@ -567,7 +582,8 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				if( (*it)->hasChildren( _name, true ) == true )
+				Node * children = (*it);
+				if( children->hasChildren( _name, true ) == true )
 				{
 					return true;
 				}

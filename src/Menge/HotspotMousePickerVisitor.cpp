@@ -7,6 +7,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
     HotspotMousePickerVisitor::HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow )
         : m_layerspaceHotspot(_layerspaceHotspot)
         , m_camera(_camera)
@@ -15,6 +16,7 @@ namespace Menge
         , m_result(false)
     {
     }
+	//////////////////////////////////////////////////////////////////////////
     bool HotspotMousePickerVisitor::test( Layer * _layer )
     {
         _layer->visit( this );

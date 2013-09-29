@@ -163,9 +163,9 @@ namespace Menge
 	{
 		m_removeScene = false;
 
-		if( m_scene != NULL )
+		if( m_scene != nullptr )
 		{
-			if( m_arrow )
+			if( m_arrow != nullptr )
 			{
 				m_arrow->removeFromParent();
 				m_arrow->disable();
@@ -175,7 +175,6 @@ namespace Menge
 			m_timingManager->removeAll(false);
 			m_affectorable->stopAllAffectors();
 
-			m_mousePickerSystem->clear();
 			m_globalHandleSystem->clear();
 
             NODE_SERVICE(m_serviceProvider)
@@ -194,13 +193,18 @@ namespace Menge
 
 			m_joins.clear();
 
-			m_scene = NULL;
+			m_scene = nullptr;
 		}
 
-		if( m_removeSceneCb != NULL )
+		if( m_mousePickerSystem != nullptr )
+		{
+			m_mousePickerSystem->setScene( nullptr );
+		}
+
+		if( m_removeSceneCb != nullptr )
 		{
 			PyObject * cb = m_removeSceneCb;
-			m_removeSceneCb = NULL;
+			m_removeSceneCb = nullptr;
 
 			pybind::call( cb, "()" );
 			pybind::decref( cb );
@@ -307,11 +311,10 @@ namespace Menge
 		NODE_SERVICE(m_serviceProvider)
             ->clearHomeless();
 
-		m_mousePickerSystem->clear();
 		//m_globalHandleSystem->clear();
 
 		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == true )
-		{            
+		{
             oldScene->destroy();
 		}
 
@@ -351,6 +354,11 @@ namespace Menge
 			}
 
 			return;
+		}
+
+		if( m_mousePickerSystem != nullptr )
+		{
+			m_mousePickerSystem->setScene( m_scene );
 		}
 
 		if( cb != nullptr )
@@ -805,30 +813,7 @@ namespace Menge
 
 		if( m_mousePickerSystem )
 		{
-			m_mousePickerSystem->beginTrap();
-		}		
-
-		if( m_mousePickerSystem )
-		{
-            mt::vec2f mouse_pos;
-            //const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-            //    ->getCursorPosition();
-            //if( m_arrow )
-            //{
-            //    const mt::vec3f & arrow_pos = m_arrow->getLocalPosition();
-            //    mouse_pos.x = arrow_pos.x;
-            //    mouse_pos.y = arrow_pos.y;
-            //}
-            //else
-            //{
-            const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-                ->getCursorPosition();
-
-            mouse_pos.x = pos.x;
-            mouse_pos.y = pos.y;
-            //}
-
-			m_mousePickerSystem->update( mouse_pos );
+			m_mousePickerSystem->update();
 		}
 
 		if( m_globalHandleSystem )

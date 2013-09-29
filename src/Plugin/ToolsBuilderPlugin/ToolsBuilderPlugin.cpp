@@ -20,8 +20,6 @@
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
 #	include "Codec/ConverterFactory.h"
-#	include "Menge/MovieKeyConverter.h"
-
 
 #   include "Logger\Logger.h"
 

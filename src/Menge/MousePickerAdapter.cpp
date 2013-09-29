@@ -49,6 +49,11 @@ namespace Menge
 		return m_defaultHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PickerTrapState * MousePickerAdapter::getPicker() const
+	{
+		return m_picker;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()
 	{
         MousePickerSystemInterface * mousePickerSystem = this->getMousePickerSystem();
@@ -72,18 +77,6 @@ namespace Menge
 	bool MousePickerAdapter::isActivePicker() const
 	{
 		return m_picker != nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MousePickerAdapter::updatePicker()
-	{
-		if( m_picker == nullptr )
-		{
-			return;
-		}
-        
-		MousePickerSystemInterface * mousePickerSystem = this->getMousePickerSystem();
-			
-        mousePickerSystem->updateTrap( m_picker );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::onMouseLeave()

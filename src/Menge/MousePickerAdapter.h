@@ -24,12 +24,12 @@ namespace Menge
         bool getDefaultHandle() const;
 
 	public:
+		PickerTrapState * getPicker() const override;
+
+	public:
 		void activatePicker();
 		void deactivatePicker();
 		bool isActivePicker() const;
-
-	public:
-		void updatePicker();
 
 	protected:
         bool onMouseEnter( const mt::vec2f & _point ) override;

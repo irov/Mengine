@@ -12,9 +12,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MovieSlot::_destroy()
     {
-        const TListNodeChild & child = this->getChild();
+        TListNodeChild & child = this->getChild();
 
-        for( TListNodeChild::const_iterator
+        for( TListNodeChild::iterator
             it = child.begin(),
             it_end = child.end();
         it != it_end;

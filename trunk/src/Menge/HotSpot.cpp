@@ -60,6 +60,11 @@ namespace	Menge
 
         return handle;
     }
+	//////////////////////////////////////////////////////////////////////////
+	MousePickerTrapInterface * HotSpot::getPickerTrap()
+	{
+		return &m_mousePickerAdapter;
+	}
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::setDebugColor( uint32 _color )
     {
@@ -191,13 +196,6 @@ namespace	Menge
 
 			mt::add_internal_point( _boundingBox, wmp );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_update( float _current, float _timing )
-	{
-		Node::_update( _current, _timing );
-
-		m_mousePickerAdapter.updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::mat4f& _transform, const Polygon & _screenPoly, const mt::mat4f& _screenTransform )

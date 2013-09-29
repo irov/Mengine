@@ -138,13 +138,13 @@ namespace Menge
 		
 		void destroyAllChild();
 
-		const TListNodeChild & getChild() const;
+		TListNodeChild & getChild();
 
 		Node * findChildren( const ConstString & _name, bool _recursion ) const;
 		Node * findTag( const ConstString & _tag ) const;
 		bool hasChildren( const ConstString & _name, bool _recursive ) const;
 		bool emptyChild() const;
-    
+
     protected:
         void removeChildren_( Node * _node );
 
@@ -160,13 +160,16 @@ namespace Menge
 	protected:
 		Node * m_parent;
 
-		TListNodeChild m_child;		
+		TListNodeChild m_child;
 
 	private:
 		bool addChildren_( TListNodeChild::iterator _insert, Node * _node );
 
 		void insertChildren_( TListNodeChild::iterator _insert, Node * _node );
 		void eraseChildren_( Node * _node );
+
+	public:
+		void visitChild( Visitor * _visitor );
 
 	protected:
 		bool _destroy() override;
@@ -258,16 +261,16 @@ namespace Menge
 	protected:
 		size_t m_cameraRevision;
 
-    protected:
-        void setShallowGrave(); //Shallow Grave prevents any damage from killing the targetted hero. 
-        void removeShallowGrave();
-        
-        bool isShallowGrave() const;
+	public:
+		void setShallowGrave(); //Shallow Grave prevents any damage from killing the targetted hero. 
+		void removeShallowGrave();
+
+		bool isShallowGrave() const;
 
 	protected:
 		int m_shallowGrave;
 
-//#ifndef MENGE_MASTER_RELEASE
+		//#ifndef MENGE_MASTER_RELEASE
 	protected:
 		const RenderMaterial* m_debugMaterial;
 		RenderVertex2D m_vertexDebugBox[5];

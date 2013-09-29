@@ -8,7 +8,17 @@
 namespace Menge
 {
     class Arrow;
+	class Scene;
     class Eventable;
+
+	struct PickerTrapState
+	{
+		class MousePickerTrapInterface * trap;
+		size_t id;
+		bool picked;
+		bool handle;
+		bool dead;
+	};
 
     class MousePickerTrapInterface
         : public InputSystemHandler
@@ -21,6 +31,7 @@ namespace Menge
         virtual void onMouseLeave() = 0;
 
     public:
+		virtual PickerTrapState * getPicker() const = 0;
         virtual PyObject * getPickerEmbed() = 0;
 
     public:
@@ -32,15 +43,6 @@ namespace Menge
 
     typedef std::vector<MousePickerTrapInterface *> TVectorPickerTraps;
 
-    struct PickerTrapState
-    {
-        MousePickerTrapInterface * trap;
-        size_t id;
-        bool picked;
-        bool handle;
-        bool dead;
-    };
-
     class MousePickerSystemInterface
         : public InputSystemHandler
     {
@@ -50,9 +52,10 @@ namespace Menge
 
     public:
         virtual void setArrow( Arrow * _arrow ) = 0;
+		virtual void setScene( Scene * _scene ) = 0;
 
     public:
-        virtual void update( const mt::vec2f& _point ) = 0;
+        virtual void update() = 0;
         virtual void clear() = 0;
 
     public:
@@ -61,10 +64,6 @@ namespace Menge
     public:
         virtual PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) = 0;
         virtual void unregTrap( PickerTrapState * _id ) = 0;
-
-    public:
-        virtual void beginTrap() = 0;
-        virtual void updateTrap( PickerTrapState * _id ) = 0;
 
     public:
         virtual size_t getPickerTrapCount() const = 0;

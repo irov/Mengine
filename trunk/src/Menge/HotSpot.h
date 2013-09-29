@@ -13,6 +13,8 @@ namespace Menge
 	class HotSpot
 		: public Node
 	{
+		DECLARE_VISITABLE();
+
 	public:
 		HotSpot();
 		~HotSpot();
@@ -27,6 +29,9 @@ namespace Menge
     public:
         void setDefaultHandle( bool _handle );
         bool getDefaultHandle() const;
+
+	public:
+		MousePickerTrapInterface * getPickerTrap();
 		    
 	public:
 		virtual bool testArrow( const mt::mat4f& _transform, Arrow * _arrow, const mt::mat4f& _screenTransform );
@@ -46,7 +51,6 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		void _update( float _current, float _timing ) override;
 
 		//void _invalidateBoundingBox() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;

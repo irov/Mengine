@@ -1,11 +1,11 @@
 #	pragma once
 
-#	include "Entity.h"
+#	include "Kernel/Entity.h"
 //#	include "Reference.h"
 
-#	include "Scriptable.h"
+#	include "Kernel/Scriptable.h"
 
-#	include "Layer.h"
+#	include "Kernel/Layer.h"
 
 #	include "math/vec3.h"
 #	include "math/vec4.h"
@@ -19,7 +19,6 @@ namespace Menge
 
 	class Scene
 		: public Entity
-		//, public Reference
 	{
 	public:
 		Scene();

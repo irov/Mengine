@@ -1590,9 +1590,9 @@ namespace Menge
         {
             PyObject * py_filter = pybind::list_new(0);
 
-            const TListNodeChild & child = _node->getChild();
+            TListNodeChild & child = _node->getChild();
 
-            for( TListNodeChild::const_iterator
+            for( TListNodeChild::iterator
                 it = child.begin(),
                 it_end = child.end();
             it != it_end;
@@ -2494,9 +2494,9 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void s_visitChild( Node * _node, PyObject * _cb )
         {
-            const TListNodeChild & child = _node->getChild();
+            TListNodeChild & child = _node->getChild();
 
-            for( TListNodeChild::const_iterator
+            for( TListNodeChild::iterator
                 it = child.begin(),
                 it_end = child.end();
             it != it_end;

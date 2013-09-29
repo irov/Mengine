@@ -29,6 +29,11 @@ namespace Menge
 			{
 			}
 
+		protected:
+			void operator = ( const PickerVisitor & )
+			{
+			}
+
 		public:
 			void visit( Node * _node )
 			{

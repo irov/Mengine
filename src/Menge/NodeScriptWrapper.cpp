@@ -1586,36 +1586,6 @@ namespace Menge
             _shape->stopAffectors( ETA_VISIBILITY );
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_filterTag( Node * _node, const ConstString & _tag )
-        {
-            PyObject * py_filter = pybind::list_new(0);
-
-            TListNodeChild & child = _node->getChild();
-
-            for( TListNodeChild::iterator
-                it = child.begin(),
-                it_end = child.end();
-            it != it_end;
-            ++it )
-            {
-                Node * children = *it;
-
-                const ConstString & tag = children->getTag();
-
-                if( _tag != tag )
-                {
-                    continue;
-                }
-
-                PyObject * py_embedding = it->getEmbed();
-
-                pybind::list_appenditem( py_filter, py_embedding );
-
-            }
-
-            return py_filter;			
-        }
-        //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getCameraPosition( Node * _node, RenderCameraInterface * _renderCamera )
         {
             mt::vec2f position;
@@ -3000,9 +2970,6 @@ namespace Menge
             .def( "setName", &Identity::setName )
             .def( "getName", &Identity::getName )
             .def( "getType", &Identity::getType )
-            .def( "setTag", &Identity::setTag )
-            .def( "getTag", &Identity::getTag )
-            .def( "getUniqueId", &Identity::getUniqueId )
             ;
 
         pybind::interface_<Transformation3D>("Transformation3D")
@@ -3178,9 +3145,7 @@ namespace Menge
             .def( "removeAllChild", &Node::removeAllChild )
             .def( "removeFromParent", &Node::removeFromParent )
             //.def_static( "getChild", &ScriptMethod::s_getChild )
-            .def( "findChildren", &Node::findChildren )
-            .def( "findTag", &Node::findTag )
-            .def_proxy_static( "filterTag", nodeScriptMethod, &NodeScriptMethod::s_filterTag )
+            .def( "findChildren", &Node::findChildren )            
             .def( "emptyChild", &Node::emptyChild )
             .def( "hasChildren", &Node::hasChildren )
             .def( "update", &Node::update )

@@ -1958,6 +1958,93 @@ namespace Menge
 
             return id;
         }
+		//////////////////////////////////////////////////////////////////////////
+		class PyGlobalMouseHandlerButtonBegin
+			: public GlobalMouseHandler
+		{
+		public:
+			PyGlobalMouseHandlerButtonBegin( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+				: m_serviceProvider(_serviceProvider)
+				, m_cb(_cb)
+			{
+				pybind::incref( m_cb );
+			}
+
+			~PyGlobalMouseHandlerButtonBegin()
+			{
+				pybind::decref( m_cb );
+				m_cb = nullptr;
+			}
+
+		protected:
+			void handleGlobalMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override
+			{
+				(void)_touchId;
+				(void)_point;
+				(void)_button;
+				(void)_isDown;
+				//Empty
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override
+			{
+				(void)_point;
+
+				PyObject * py_handler = m_cb;
+
+				pybind::incref( py_handler );
+
+				PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
+					->askFunction( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+
+				if( pybind::is_none(py_result) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("handleGlobalMouseButtonEventBegin handlersMouseButton %s return value %s not None"
+						, pybind::object_repr( py_handler )                        
+						, pybind::object_repr( py_result )
+						);
+				}
+
+				pybind::decref( py_result );
+				pybind::decref( py_handler );
+				//Empty
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override
+			{
+				(void)_touchId;
+				(void)_point;
+				(void)_button;
+				(void)_isDown;
+				//Empty
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override
+			{
+				(void)_touchId;
+				(void)_point;
+				(void)_x;
+				(void)_y;
+				(void)_whell;
+				//Empty
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			PyObject * m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		size_t s_addMouseButtonHandlerBegin( PyObject * _cb )
+		{
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
+				->getGlobalHandleSystem();
+
+			PyGlobalMouseHandlerButtonBegin * handler = new PyGlobalMouseHandlerButtonBegin(m_serviceProvider, _cb);
+
+			size_t id = globalHandleSystem->addGlobalMouseEventable( handler );
+
+			return id;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool s_removeMouseButtonHandler( size_t _id )
         {
@@ -2192,7 +2279,7 @@ namespace Menge
             return defaultResourceFontName;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getNullObjectsFromResourceVideo( const ConstString & _resourceName )
+        PyObject * s_getNullObjectsFromResourceVideo( ResourceMovie * _resource )
         {			
             class ResourceMovieVisitorNullLayers
                 : public VisitorResourceMovie
@@ -2275,23 +2362,17 @@ namespace Menge
                 float m_frameDuration;
             };		
 
-
-            ResourceMovie * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceMovie>( _resourceName );
-
-            if( resource == nullptr )
+            if( _resource == nullptr )
             {
                 return pybind::ret_none();
             }
 
             PyObject * py_dict_result = pybind::dict_new();
 
-            float frameTime = resource->getFrameDuration();
+            float frameTime = _resource->getFrameDuration();
             ResourceMovieVisitorNullLayers visitor(m_serviceProvider, py_dict_result, frameTime);
 
-            resource->visitResourceMovie( &visitor );
-
-            resource->decrementReference();
+            _resource->visitResourceMovie( &visitor );
 
             return py_dict_result;
         }
@@ -3717,6 +3798,8 @@ namespace Menge
             pybind::def_functor( "removeMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseMoveHandler );
 
             pybind::def_functor( "addMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandler );
+			
+			pybind::def_functor( "addMouseButtonHandlerBegin", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerBegin );
             pybind::def_functor( "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
             pybind::def_functor( "removeMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseButtonHandler );
 

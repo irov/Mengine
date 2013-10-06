@@ -46,20 +46,18 @@ namespace Menge
 
         const ALCchar* str = alcGetString( nullptr, ALC_DEVICE_SPECIFIER );
         
-        LOGGER_WARNING(m_serviceProvider)("OpenAL device specifier [%s]\n"
-            , str                
+        LOGGER_WARNING(m_serviceProvider)("OpenAL device specifier [%s]"
+            , str
             );
 
         //alcInit();
 				
         m_device = alcOpenDevice( nullptr );
-		//m_device = alcOpenDevice( "Generic Software" );        
 			
 		if( m_device == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
 
-			//m_device = alcOpenDevice( "Generic Software" );
             m_device = alcOpenDevice( "Generic Software" );
 
             OAL_CHECK_ERROR(m_serviceProvider);
@@ -81,7 +79,6 @@ namespace Menge
 		}
 
 		m_context = alcCreateContext( m_device, nullptr );
-        //OAL_CHECK_ERROR(m_serviceProvider);
 
 		if( m_context == nullptr )
 		{
@@ -114,23 +111,26 @@ namespace Menge
         }
         		
 
-		LOGGER_INFO(m_serviceProvider)( "OpenAL driver properties" );
+		LOGGER_WARNING(m_serviceProvider)( "OpenAL driver properties" );
 
-		LOGGER_INFO(m_serviceProvider)( "Version: " );
-		LOGGER_INFO(m_serviceProvider)( alGetString( AL_VERSION ) );
+		LOGGER_WARNING(m_serviceProvider)( "Version: %s"
+			, alGetString( AL_VERSION ) 
+			);
 
-		LOGGER_INFO(m_serviceProvider)( "Vendor: " );
-		LOGGER_INFO(m_serviceProvider)( alGetString( AL_VENDOR ) );
+		LOGGER_WARNING(m_serviceProvider)( "Vendor: %s"
+			, alGetString( AL_VENDOR ) 
+			);
 
-		LOGGER_INFO(m_serviceProvider)( "Renderer: " );
-		LOGGER_INFO(m_serviceProvider)( alGetString( AL_RENDERER ) );
-
+		LOGGER_WARNING(m_serviceProvider)( "Renderer: %s"
+			, alGetString( AL_RENDERER ) 
+			);
+	
 		if( alcIsExtensionPresent( nullptr, "ALC_ENUMERATION_EXT" ) == AL_TRUE )
 		{
-			LOGGER_INFO(m_serviceProvider)( "Device Specifier: " );
-			LOGGER_INFO(m_serviceProvider)( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+			LOGGER_WARNING(m_serviceProvider)( "Device Specifier: %s"
+				, alcGetString( m_device, ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER )
+				);
 		}
-		//LOG( alGetString( AL_EXTENSIONS ) );
 
 		float lposition[] = { 0.0f, 0.0f, 0.0f };
 		alListenerfv( AL_POSITION, lposition );

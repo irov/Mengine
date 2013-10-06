@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "ServiceInterface.h"
+#	include "Interface/ServiceInterface.h"
 
 #   include "Interface/ServiceInterface.h"
 
@@ -502,7 +502,7 @@ namespace Menge
     public:
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
-		virtual void screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) = 0;
+		virtual bool screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) = 0;
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;

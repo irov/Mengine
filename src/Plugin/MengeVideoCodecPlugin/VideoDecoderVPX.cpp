@@ -224,7 +224,7 @@ namespace Menge
             return VDRS_END_STREAM;
         }
 
-        int frame_sz = mem_get_le32( frame_hdr );
+        unsigned int frame_sz = mem_get_le32( frame_hdr );
         
         delete [] m_frame;
         m_frame = new unsigned char [frame_sz];

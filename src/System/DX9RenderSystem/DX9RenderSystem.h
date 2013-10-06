@@ -67,7 +67,7 @@ namespace Menge
 		void clear( uint32 _color ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
-		void screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) override;
+		bool screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
@@ -205,10 +205,10 @@ namespace Menge
 
 		//void createSyncTargets_();
 
-		HRESULT d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
+		bool d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
 			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
 
-		HRESULT loadSurfaceFromSurface_( LPDIRECT3DSURFACE9 pDestSurface, CONST RECT * pDestRect,
+		bool loadSurfaceFromSurface_( LPDIRECT3DSURFACE9 pDestSurface, CONST RECT * pDestRect,
 			LPDIRECT3DSURFACE9 pSrcSurface, CONST RECT * pSrcRect );
 
 		bool m_inRender;

@@ -69,6 +69,21 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_isPicked( const PickerTrapState * _state )
+	{
+		if( _state->picked == false )
+		{
+			return false;
+		}
+
+		if( _state->trap->isPickerActive() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
         , m_enumerator(0)
@@ -215,7 +230,7 @@ namespace Menge
 				continue;
 			}
 			
-			if( MousePickerSystem::isPicked( state ) == true )
+			if( s_isPicked( state ) == true )
 			{
 				MousePickerTrapInterface * trap = state->trap;
 
@@ -255,7 +270,7 @@ namespace Menge
 				continue;
 			}
 			
-			if( MousePickerSystem::isPicked( state ) == true )
+			if( s_isPicked( state ) == true )
 			{
 				MousePickerTrapInterface * trap = state->trap;
 
@@ -295,7 +310,7 @@ namespace Menge
 				continue;
 			}
 
-			if( MousePickerSystem::isPicked( state ) == true )
+			if( s_isPicked( state ) == true )
 			{
 				MousePickerTrapInterface * trap = state->trap;
 
@@ -335,7 +350,7 @@ namespace Menge
 				continue;
 			}
 
-			if( MousePickerSystem::isPicked( state ) == true )
+			if( s_isPicked( state ) == true )
 			{
 				MousePickerTrapInterface * trap = state->trap;
 
@@ -375,7 +390,7 @@ namespace Menge
 				continue;
 			}
 						
-			if( MousePickerSystem::isPicked( state ) == true )
+			if( s_isPicked( state ) == true )
 			{
 				MousePickerTrapInterface * trap = state->trap;
 
@@ -517,21 +532,6 @@ namespace Menge
 				++it;
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::isPicked( const PickerTrapState * _state )
-	{
-		if( _state->picked == false )
-		{
-			return false;
-		}
-
-		if( _state->trap->isPickerActive() == false )
-		{
-			return false;
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MousePickerSystem::getPickerTrapCount() const

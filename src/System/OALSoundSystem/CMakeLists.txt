@@ -36,7 +36,7 @@ IF(WIN32)
         SET( APPLICATION_LIBS
         ${APPLICATION_LIBS}
         WS2_32.lib
-        ${THIRDPARTY_DIR}/DirectX/DX8/lib/dxguid.lib
+        ${THIRDPARTY_DIR}/DirectX/DX9/lib/dxguid.lib
         )
 
     IF(MINGW)

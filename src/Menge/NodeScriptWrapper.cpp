@@ -2329,7 +2329,7 @@ namespace Menge
                     }
                     else
                     {
-                        for( size_t
+                        for( TVectorMovieFrameSource::size_type
                             it_frame = 0,
                             it_frame_end = _frames.frames.size();
                         it_frame != it_frame_end;

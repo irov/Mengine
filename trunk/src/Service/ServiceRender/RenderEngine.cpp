@@ -1118,7 +1118,7 @@ namespace Menge
             return true;
         }
 
-        if( vbSize > m_maxVertexCount )
+        if( vbSize >= m_maxVertexCount )
         {
             LOGGER_WARNING(m_serviceProvider)("RenderEngine::makeBatches_: vertex buffer overflow"
                 );
@@ -1126,7 +1126,7 @@ namespace Menge
             return false;
         }
 
-        if( ibSize > m_maxIndexCount )
+        if( ibSize >= m_maxIndexCount )
         {
             LOGGER_WARNING(m_serviceProvider)("RenderEngine::makeBatches_: indecies buffer overflow"
                 );
@@ -1174,7 +1174,9 @@ namespace Menge
 
         uint16 * indeciesBuffer = static_cast<uint16 *>(ibData);
 
-        this->insertRenderPasses_( vertexBuffer, indeciesBuffer );
+		size_t vbInsertSize;
+		size_t ibInsertSize;
+        this->insertRenderPasses_( vertexBuffer, indeciesBuffer, vbInsertSize, ibInsertSize );
 
         if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( m_ibHandle2D ) == false )
         {
@@ -1278,7 +1280,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer )
+    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbSize, size_t & _ibSize )
     {
         size_t vbPos = 0;
         size_t ibPos = 0;
@@ -1293,6 +1295,9 @@ namespace Menge
 
             this->insertRenderObjects_( pass, _vertexBuffer, _indeciesBuffer, vbPos, ibPos );
         }
+
+		_vbSize = vbPos;
+		_ibSize = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos )

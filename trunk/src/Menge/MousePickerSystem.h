@@ -65,8 +65,5 @@ namespace Menge
 
 		typedef std::list<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;
-
-	protected:
-		static bool MousePickerSystem::isPicked( const PickerTrapState * _state );
 	};
 }

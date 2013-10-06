@@ -1,4 +1,3 @@
-
 set( MY_LIB_NAME DX9RenderSystem )
 
 ADD_FILTER(
@@ -11,11 +10,14 @@ src
 	DX9RenderTexture.cpp
     DX9RenderShader.h
     DX9RenderShader.cpp
+    DX9ErrorHelper.h
+    DX9ErrorHelper.cpp
 )
 
-include_directories( 
-${Mengine_SOURCE_DIR}/Utils
-${THIRDPARTY_DIR}/DirectX/DX9/Include )
+INCLUDE_DIRECTORIES( 
+    ${Mengine_SOURCE_DIR}/Utils
+    ${THIRDPARTY_DIR}/DirectX/DX9/Include 
+    )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
@@ -29,12 +31,17 @@ SET( APPLICATION_DEPENDENCIES
  PARENT_SCOPE
 )
 
-SET( APPLICATION_LIBS
- ${APPLICATION_LIBS}
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
  PARENT_SCOPE
 )
 
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}  
+ ${THIRDPARTY_DIR}/DirectX/dx9/lib/DxErr.lib
+)
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}  
  PARENT_SCOPE
 )

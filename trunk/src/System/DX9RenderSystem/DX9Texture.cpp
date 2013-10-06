@@ -1,12 +1,13 @@
 #	include "DX9Texture.h"
 
-#	include "Interface/ImageCodecInterface.h"
+#	include "DX9ErrorHelper.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9Texture::DX9Texture()
-		: m_d3dInterface(nullptr)
+		: m_serviceProvider(nullptr)
+		, m_d3dInterface(nullptr)
         , m_hwWidth(0)
         , m_hwHeight(0)
         , m_hwChannels(0)
@@ -16,15 +17,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX9Texture::~DX9Texture()
 	{
-        if( m_d3dInterface )
+        if( m_d3dInterface != nullptr )
         {
             m_d3dInterface->Release();
             m_d3dInterface = nullptr;
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9Texture::initialize( IDirect3DTexture9 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9Texture::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
     {
+		m_serviceProvider = _serviceProvider;
         m_d3dInterface = _d3dInterface;
 
         m_hwWidth = _hwWidth;
@@ -42,7 +44,7 @@ namespace Menge
 		}
 		else 
 		{
-			flags=0;
+			flags = 0;
 		}
 
 		RECT rect;
@@ -52,19 +54,21 @@ namespace Menge
 		rect.right = _rect.right;
 
 		D3DLOCKED_RECT TRect;
-		HRESULT hr = m_d3dInterface->LockRect(0, &TRect, &rect, flags);
-		if(FAILED( hr ))
+		IF_DXCALL( m_serviceProvider, m_d3dInterface, LockRect, (0, &TRect, &rect, flags) )
 		{
 			return nullptr;
 		}
 
 		*_pitch = TRect.Pitch;
-		return (unsigned char *)TRect.pBits;
+
+		unsigned char * bits = static_cast<unsigned char *>(TRect.pBits);
+
+		return bits;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9Texture::unlock()
 	{
-		m_d3dInterface->UnlockRect(0);
+		DXCALL( m_serviceProvider, m_d3dInterface ,UnlockRect, (0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	IDirect3DTexture9 * DX9Texture::getDXTextureInterface() const

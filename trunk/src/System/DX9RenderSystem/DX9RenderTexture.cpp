@@ -4,14 +4,14 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderTexture::DX9RenderTexture()
-		: m_depthInterface(NULL)
+		: m_depthInterface(nullptr)
 		, m_dirty(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderTexture::~DX9RenderTexture()
 	{
-        if( m_depthInterface )
+        if( m_depthInterface != nullptr )
         {
             m_depthInterface->Release();
             m_depthInterface = nullptr;

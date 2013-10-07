@@ -327,7 +327,7 @@ namespace Menge
         mt::vec2f uv2;
     };
     //////////////////////////////////////////////////////////////////////////
-    static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1 | VDECL_TEX2;
+    static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
     //////////////////////////////////////////////////////////////////////////
     typedef std::vector<RenderVertex2D> TVectorRenderVertex2D;
     //////////////////////////////////////////////////////////////////////////

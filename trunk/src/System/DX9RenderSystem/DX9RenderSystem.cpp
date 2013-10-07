@@ -366,9 +366,9 @@ namespace Menge
 	{
 		m_frames = 0;
 
-		m_hd3d9 = ::LoadLibraryA( "d3d9.dll" );
+		m_hd3d9 = ::LoadLibrary( L"d3d9.dll" );
 
-		if( m_hd3d9 == NULL )
+		if( m_hd3d9 == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Failed to load d3d9.dll"
                 );
@@ -819,8 +819,6 @@ namespace Menge
 		}
 		
         DX9TexturePtr dxTexture = stdex::intrusive_static_cast<DX9TexturePtr>( _image );
-				
-		D3DSURFACE_DESC rtDesc;
 		
 		LPDIRECT3DSURFACE9 renderTarget;
 		IF_DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderTarget, ( 0, &renderTarget ) )
@@ -833,6 +831,7 @@ namespace Menge
 			return false;
 		}
 
+		D3DSURFACE_DESC rtDesc;
 		renderTarget->GetDesc( &rtDesc );
 
 		LPDIRECT3DSURFACE9 offscreenSurface;
@@ -919,7 +918,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setModelViewMatrix( const mt::mat4f & _modelview )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setModelViewMatrix device not created"
                 );

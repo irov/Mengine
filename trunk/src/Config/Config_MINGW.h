@@ -12,11 +12,7 @@
 // Static Library
 #	define MENGE_STATIC_LIB
 
-#   if !defined(FORCEINLINE)
-#       define FORCEINLINE __inline
-#   else
-#       define FORCEINLINE __inline
-#   endif
+#   define FORCEINLINE __forceinline
 
 //	exclude all dev stuff
 

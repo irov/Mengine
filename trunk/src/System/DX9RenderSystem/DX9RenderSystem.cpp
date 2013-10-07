@@ -314,7 +314,6 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_pD3D(nullptr)
 		, m_pD3DDevice(nullptr)
-		, m_inRender(false)
 		, m_curRenderTexture(nullptr)
 		//, m_syncTemp(nullptr)
 		//, m_syncTempTex(nullptr)
@@ -575,7 +574,7 @@ namespace Menge
 
             return false;
         }
-        
+		
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -589,6 +588,62 @@ namespace Menge
             m_hd3d9 = NULL;
         }
     }
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::refreshRenderStates_()
+	{
+#	define REFRESH_RENDER_STATE(STATE)\
+	DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderState, (STATE, &m_renderStates[STATE]) );
+
+		REFRESH_RENDER_STATE(D3DRS_SRCBLEND);
+		REFRESH_RENDER_STATE(D3DRS_DESTBLEND);
+		REFRESH_RENDER_STATE(D3DRS_CULLMODE);
+		REFRESH_RENDER_STATE(D3DRS_ZENABLE);
+		REFRESH_RENDER_STATE(D3DRS_ZWRITEENABLE);
+		REFRESH_RENDER_STATE(D3DRS_ZFUNC);
+		REFRESH_RENDER_STATE(D3DRS_FILLMODE);
+		REFRESH_RENDER_STATE(D3DRS_COLORWRITEENABLE);
+		REFRESH_RENDER_STATE(D3DRS_SHADEMODE);
+		REFRESH_RENDER_STATE(D3DRS_ALPHATESTENABLE);
+		REFRESH_RENDER_STATE(D3DRS_ALPHABLENDENABLE);
+		REFRESH_RENDER_STATE(D3DRS_ALPHAFUNC);
+		REFRESH_RENDER_STATE(D3DRS_ALPHAREF);
+		REFRESH_RENDER_STATE(D3DRS_LIGHTING);
+		REFRESH_RENDER_STATE(D3DRS_ZENABLE);
+
+#	undef REFRESH_RENDER_STATE
+
+#	define REFRESH_TEXTURE_STAGE_STATE(STATE)\
+	DXCALL( m_serviceProvider, m_pD3DDevice, GetTextureStageState, (stage, STATE, &m_textureStageStates[stage][STATE]) );
+
+		for( DWORD stage = 0; stage != MENGE_MAX_TEXTURE_STAGES; ++stage )
+		{
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_COLOROP);
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_COLORARG1);
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_COLORARG2);
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_ALPHAOP);
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_ALPHAARG1);
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_ALPHAARG2);
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_TEXCOORDINDEX);	
+			REFRESH_TEXTURE_STAGE_STATE(D3DTSS_TEXTURETRANSFORMFLAGS);
+		}
+
+#	undef REFRESH_TEXTURE_STAGE_STATE
+
+
+#	define REFRESH_SAMPLER_STATE(STATE)\
+	DXCALL( m_serviceProvider, m_pD3DDevice, GetSamplerState, (stage, STATE, &m_samplerStates[stage][STATE]) );
+		
+		for( DWORD stage = 0; stage != MENGE_MAX_TEXTURE_STAGES; ++stage )
+		{
+			REFRESH_SAMPLER_STATE(D3DSAMP_ADDRESSU);
+			REFRESH_SAMPLER_STATE(D3DSAMP_ADDRESSV);
+			REFRESH_SAMPLER_STATE(D3DSAMP_MAGFILTER);
+			REFRESH_SAMPLER_STATE(D3DSAMP_MINFILTER);
+			REFRESH_SAMPLER_STATE(D3DSAMP_MIPFILTER);
+		}
+
+#	undef REFRESH_SAMPLER_STATE			
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, int _bits, 
 		bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
@@ -1152,8 +1207,6 @@ namespace Menge
 			return false;
 		}
 
-		m_inRender = true;
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1171,8 +1224,6 @@ namespace Menge
 		//syncCPU_();
 		
 		DXCALL( m_serviceProvider, m_pD3DDevice, EndScene, () );
-
-		m_inRender = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::swapBuffers()
@@ -1260,8 +1311,8 @@ namespace Menge
 		VP.Width = (int)::floorf( width + 0.5f );
 		VP.Height = (int)::floorf( height + 0.5f );
 
-		VP.MinZ = -1000.f;
-		VP.MaxZ = 1000.f;
+		VP.MinZ = 0.f;
+		VP.MaxZ = 1.f;
 
         size_t resolutionWidth = m_windowResolution.getWidth();
         size_t resolutionHeight = m_windowResolution.getHeight();
@@ -1283,8 +1334,8 @@ namespace Menge
             VP_Zero.Y = 0;
             VP_Zero.Width = 0;
             VP_Zero.Height = 0;
-            VP_Zero.MinZ = -1000.f;
-            VP_Zero.MaxZ = 1000.f;
+            VP_Zero.MinZ = 0.f;
+            VP_Zero.MaxZ = 1.f;
 
             DXCALL( m_serviceProvider, m_pD3DDevice, SetViewport, (&VP_Zero) );
 
@@ -1509,18 +1560,20 @@ namespace Menge
 
         //this->clear_( 0 );
 
-        if( m_caps.AlphaCmpCaps & D3DPCMPCAPS_GREATEREQUAL )
-        {
-            IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAREF, (DWORD)0x00000001 ) )
-			{
-				return false;
-			}
+   //     if( m_caps.AlphaCmpCaps & D3DPCMPCAPS_GREATEREQUAL )
+   //     {
+   //         IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAREF, (DWORD)0x00000001 ) )
+			//{
+			//	return false;
+			//}
 
-            IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL ) )
-			{
-				return false;
-			}
-        }
+   //         IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL ) )
+			//{
+			//	return false;
+			//}
+   //     }
+
+		this->refreshRenderStates_();
 
 		return true;
 	}
@@ -1606,9 +1659,16 @@ namespace Menge
 
 		if( _texture != nullptr )
 		{
-			IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 ) )
+			DWORD state = D3DTTFF_COUNT2;
+
+			if( m_textureStageStates[_stage][D3DTSS_TEXTURETRANSFORMFLAGS] != state )
 			{
-				return;
+				m_textureStageStates[_stage][D3DTSS_TEXTURETRANSFORMFLAGS] = state;
+	
+				IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, state ) )
+				{
+					return;
+				}
 			}
 
 			D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>( static_cast<DWORD>( D3DTS_TEXTURE0 ) + _stage );
@@ -1619,9 +1679,16 @@ namespace Menge
 		}
 		else
 		{
-			IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE ) )
+			DWORD state = D3DTTFF_DISABLE;
+
+			if( m_textureStageStates[_stage][D3DTSS_TEXTURETRANSFORMFLAGS] != state )
 			{
-				return;
+				m_textureStageStates[_stage][D3DTSS_TEXTURETRANSFORMFLAGS] = state;
+
+				IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, state ) )
+				{
+					return;
+				}
 			}
 		}
 	}
@@ -1989,7 +2056,7 @@ namespace Menge
         }
 
 		IDirect3DVertexBuffer9 * vb = nullptr;
-		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, 0, D3DPOOL_DEFAULT, &vb, NULL ) )
+		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, Vertex2D_declaration, D3DPOOL_DEFAULT, &vb, NULL ) )
 		{
 			return 0;
 		}
@@ -1998,7 +2065,7 @@ namespace Menge
 		vbInfo.length = _verticesNum * _vertexSize;
 		vbInfo.vertexSize = _vertexSize;
 		vbInfo.usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-		vbInfo.fvf = 0;
+		vbInfo.fvf = Vertex2D_declaration;
 		vbInfo.pool = D3DPOOL_DEFAULT;
 		vbInfo.pVB = vb;
 		
@@ -2341,6 +2408,13 @@ namespace Menge
 
 		DWORD factor = s_toD3DBlend( _src );
 
+		if( m_renderStates[D3DRS_SRCBLEND] == factor )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_SRCBLEND] = factor;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_SRCBLEND, factor ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2355,6 +2429,13 @@ namespace Menge
         }
 
 		DWORD factor = s_toD3DBlend( _dst );
+
+		if( m_renderStates[D3DRS_DESTBLEND] == factor )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_DESTBLEND] = factor;
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_DESTBLEND, factor ) );
 	}
@@ -2377,11 +2458,23 @@ namespace Menge
             return;
         }
 
-		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );		
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, D3DSAMP_ADDRESSU, adrU ) );
+		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );	
+
+		if( m_samplerStates[_stage][D3DSAMP_ADDRESSU] != adrU )
+		{
+			m_samplerStates[_stage][D3DSAMP_ADDRESSU] = adrU;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, D3DSAMP_ADDRESSU, adrU ) );
+		}
 
         D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, D3DSAMP_ADDRESSV, adrV ) );
+
+		if( m_samplerStates[_stage][D3DSAMP_ADDRESSV] != adrV )
+		{
+			m_samplerStates[_stage][D3DSAMP_ADDRESSV] = adrV;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, D3DSAMP_ADDRESSV, adrV ) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureFactor( uint32 _color )
@@ -2394,7 +2487,16 @@ namespace Menge
             return;
         }
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_TEXTUREFACTOR, _color ) );
+		DWORD color = _color;
+
+		if( m_renderStates[D3DRS_TEXTUREFACTOR] == color )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_TEXTUREFACTOR] = color;
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_TEXTUREFACTOR, color ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setCullMode( ECullMode _mode )
@@ -2408,6 +2510,14 @@ namespace Menge
         }
 
 		D3DCULL mode = s_toD3DCullMode( _mode );
+
+		if( m_renderStates[D3DRS_CULLMODE] == mode )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_CULLMODE] = mode;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_CULLMODE, mode ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2422,6 +2532,14 @@ namespace Menge
         }
 
 		D3DZBUFFERTYPE test = _depthTest ? D3DZB_TRUE : D3DZB_FALSE;
+
+		if( m_renderStates[D3DRS_ZENABLE] == test )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_ZENABLE] = test;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ZENABLE, test ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2436,6 +2554,14 @@ namespace Menge
         }
 
 		DWORD dWrite = _depthWrite ? TRUE : FALSE;
+
+		if( m_renderStates[D3DRS_ZWRITEENABLE] == dWrite )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_ZWRITEENABLE] = dWrite;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ZWRITEENABLE, dWrite ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2450,6 +2576,14 @@ namespace Menge
         }
 
 		D3DCMPFUNC func = s_toD3DCmpFunc( _depthFunction );
+
+		if( m_renderStates[D3DRS_ZFUNC] == func )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_ZFUNC] = func;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ZFUNC, func ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2464,6 +2598,14 @@ namespace Menge
         }
 
 		D3DFILLMODE mode = s_toD3DFillMode( _mode );
+
+		if( m_renderStates[D3DRS_FILLMODE] == mode )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_FILLMODE] = mode;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_FILLMODE, mode ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2499,6 +2641,13 @@ namespace Menge
 			value |= D3DCOLORWRITEENABLE_ALPHA;
 		}
 
+		if( m_renderStates[D3DRS_COLORWRITEENABLE] == value )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_COLORWRITEENABLE] = value;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_COLORWRITEENABLE, value ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2513,6 +2662,14 @@ namespace Menge
         }
 
 		D3DSHADEMODE mode = s_toD3DShadeMode( _sType );
+
+		if( m_renderStates[D3DRS_SHADEMODE] == mode )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_SHADEMODE] = mode;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_SHADEMODE, mode ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2527,6 +2684,14 @@ namespace Menge
         }
 
 		DWORD alphaTest = _alphaTest ? TRUE : FALSE;
+
+		if( m_renderStates[D3DRS_ALPHATESTENABLE] == alphaTest )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_ALPHATESTENABLE] = alphaTest;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHATESTENABLE, alphaTest ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2541,6 +2706,14 @@ namespace Menge
         }
 
 		DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
+
+		if( m_renderStates[D3DRS_ALPHABLENDENABLE] == alphaBlend )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_ALPHABLENDENABLE] = alphaBlend;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHABLENDENABLE, alphaBlend ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2555,10 +2728,22 @@ namespace Menge
         }
 
 		D3DCMPFUNC func = s_toD3DCmpFunc( _alphaFunc );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAFUNC, func ) );
+
+		if( m_renderStates[D3DRS_ALPHAFUNC] != func )
+		{
+			m_renderStates[D3DRS_ALPHAFUNC] = func;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAFUNC, func ) );
+		}
 
 		DWORD alpha = _alpha;
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAREF, alpha ) );
+
+		if( m_renderStates[D3DRS_ALPHAREF] != alpha )
+		{
+			m_renderStates[D3DRS_ALPHAREF] = alpha;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAREF, alpha ) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setLightingEnable( bool _light )
@@ -2572,6 +2757,14 @@ namespace Menge
         }
 
 		DWORD value = _light ? TRUE : FALSE;
+
+		if( m_renderStates[D3DRS_LIGHTING] == value )
+		{
+			return;
+		}
+
+		m_renderStates[D3DRS_LIGHTING] = value;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_LIGHTING, value ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2586,13 +2779,28 @@ namespace Menge
         }
 				
 		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_COLOROP, colorOp ) );
+		if( m_textureStageStates[_stage][D3DTSS_COLOROP] != colorOp )
+		{
+			m_textureStageStates[_stage][D3DTSS_COLOROP] = colorOp;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_COLOROP, colorOp ) );
+		}
 
 		DWORD arg1 = s_toD3DTextureArg( _arg1 );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_COLORARG1, arg1 ) );
+		if( m_textureStageStates[_stage][D3DTSS_COLORARG1] != arg1 )
+		{
+			m_textureStageStates[_stage][D3DTSS_COLORARG1] = arg1;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_COLORARG1, arg1 ) );
+		}
 
 		DWORD arg2 = s_toD3DTextureArg( _arg2 );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_COLORARG2, arg2 ) );
+		if( m_textureStageStates[_stage][D3DTSS_COLORARG2] != arg2 )
+		{
+			m_textureStageStates[_stage][D3DTSS_COLORARG2] = arg2;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_COLORARG2, arg2 ) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
@@ -2606,13 +2814,28 @@ namespace Menge
         }
 
 		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_ALPHAOP, alphaOp ) );
+		if( m_textureStageStates[_stage][D3DTSS_ALPHAOP] != alphaOp )
+		{
+			m_textureStageStates[_stage][D3DTSS_ALPHAOP] = alphaOp;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_ALPHAOP, alphaOp ) );
+		}
 
 		DWORD arg1 = s_toD3DTextureArg( _arg1 );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_ALPHAARG1, arg1 ) );
+		if( m_textureStageStates[_stage][D3DTSS_ALPHAARG1] != arg1 )
+		{
+			m_textureStageStates[_stage][D3DTSS_ALPHAARG1] = arg1;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_ALPHAARG1, arg1 ) );
+		}
 
 		DWORD arg2 = s_toD3DTextureArg( _arg2 );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_ALPHAARG2, arg2 ) );
+		if( m_textureStageStates[_stage][D3DTSS_ALPHAARG2] != arg2 )
+		{
+			m_textureStageStates[_stage][D3DTSS_ALPHAARG2] = arg2;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_ALPHAARG2, arg2 ) );
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureStageTexCoordIndex( size_t _stage, size_t _index )
@@ -2625,12 +2848,21 @@ namespace Menge
             return;
         }
 		
-        DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXCOORDINDEX, _index ) );
+		DWORD index = _index;
+
+		if( m_textureStageStates[_stage][D3DTSS_TEXCOORDINDEX] == index )
+		{
+			return;
+		}
+
+		m_textureStageStates[_stage][D3DTSS_TEXCOORDINDEX] = index;
+		
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXCOORDINDEX, index ) );		
     }
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setTextureStageFilter device not created"
                 );
@@ -2641,6 +2873,13 @@ namespace Menge
 		D3DSAMPLERSTATETYPE textureFilterType = s_toD3DTextureFilterType( _filterType );
 		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
 
+		if( m_samplerStates[_stage][textureFilterType] == textureFilter )
+		{
+			return;
+		}
+
+		m_samplerStates[_stage][textureFilterType] = textureFilter;
+
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, textureFilterType, textureFilter ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2648,7 +2887,7 @@ namespace Menge
 	{
         (void)_vertexSize;
 
-        if( m_pD3DDevice == NULL )
+        if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setVertexDeclaration device not created"
                 );

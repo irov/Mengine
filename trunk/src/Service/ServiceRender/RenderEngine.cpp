@@ -387,8 +387,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::renderObject_( const RenderObject* _renderObject )
     {
-        if( _renderObject->dipVerticesNum == 0 
-            || _renderObject->dipIndiciesNum == 0 )
+        if( _renderObject->dipIndiciesNum == 0 )
         {
             return;
         }
@@ -904,6 +903,8 @@ namespace Menge
         ro.indicesData = _indices;
         ro.indicesNum = _indicesNum;
 
+		ro.minIndex = 0;
+		ro.startIndex = 0;
         ro.baseVertexIndex = 0;
 
         ro.dipVerticesNum = 0;
@@ -1314,7 +1315,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const
-    {        
+    {   
         _renderObject->startIndex = _ibPos;
         _renderObject->minIndex = _vbPos;
         

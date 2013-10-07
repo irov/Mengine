@@ -211,7 +211,12 @@ namespace Menge
 		bool loadSurfaceFromSurface_( LPDIRECT3DSURFACE9 pDestSurface, CONST RECT * pDestRect,
 			LPDIRECT3DSURFACE9 pSrcSurface, CONST RECT * pSrcRect );
 
-		bool m_inRender;
+		void refreshRenderStates_();
+
+	protected:
+		DWORD m_renderStates[256];
+		DWORD m_textureStageStates[MENGE_MAX_TEXTURE_STAGES][64];
+		DWORD m_samplerStates[MENGE_MAX_TEXTURE_STAGES][16];
 
 		DX8RenderTexturePtr m_curRenderTexture;
 

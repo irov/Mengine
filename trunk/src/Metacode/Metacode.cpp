@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 35;
+        _needVersion = 36;
 
-        if( version != 35 )
+        if( version != 36 )
         {
             return false;
         }
@@ -53,6 +53,28 @@ namespace Metacode
         _stringSize = size;
 
         return value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_DataBlock()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::~Meta_DataBlock()
+    {
+        for( TVectorMeta_Resource::const_iterator
+            it = includes_Meta_Resource.begin(),
+            it_end = includes_Meta_Resource.end();
+        it != it_end;
+        ++it )
+        {
+            delete *it;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::getId() const
+    {
+        return 1;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -439,6 +461,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_Include::Meta_Include()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_Include::getId() const
+    {
+        return 2;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_Include::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -486,6 +518,16 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_Resource::Meta_Resource()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_Resource::getId() const
+    {
+        return 3;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_Resource::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -544,6 +586,16 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceAnimation::Meta_ResourceAnimation()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceAnimation::getId() const
+    {
+        return 16;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceAnimation::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -614,6 +666,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::Meta_Sequence()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::getId() const
+    {
+        return 3;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -672,6 +734,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceCursorICO::Meta_ResourceCursorICO()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceCursorICO::getId() const
+    {
+        return 10;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceCursorICO::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -725,6 +797,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceCursorSystem::Meta_ResourceCursorSystem()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceCursorSystem::getId() const
+    {
+        return 9;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -776,6 +858,17 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceEmitter::Meta_ResourceEmitter()
+        : Meta_Resource()
+        , Offset_Value_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceEmitter::getId() const
+    {
+        return 6;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceEmitter::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -860,6 +953,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceEmitterContainer::Meta_ResourceEmitterContainer()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceEmitterContainer::getId() const
+    {
+        return 5;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceEmitterContainer::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -922,6 +1025,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceExternal::Meta_ResourceExternal()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceExternal::getId() const
+    {
+        return 24;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceExternal::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -961,6 +1074,20 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceFont::Meta_ResourceFont()
+        : Meta_Resource()
+        , Color_Value_successful(false)
+        , Image_Codec_successful(false)
+        , OutlineImage_Codec_successful(false)
+        , OutlineImage_Path_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceFont::getId() const
+    {
+        return 7;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceFont::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -1069,6 +1196,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceGlyph::Meta_ResourceGlyph()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceGlyph::getId() const
+    {
+        return 8;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceGlyph::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -1120,6 +1257,18 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceHIT::Meta_ResourceHIT()
+        : Meta_Resource()
+        , File_Codec_successful(false)
+        , File_Converter_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceHIT::getId() const
+    {
+        return 17;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceHIT::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -1195,6 +1344,24 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::Meta_ResourceImageCombineRGBAndAlpha()
+        : Meta_Resource()
+        , File_Alpha_successful(false)
+        , File_CodecAlpha_successful(false)
+        , File_CodecRGB_successful(false)
+        , File_PathAlpha_successful(false)
+        , File_PathRGB_successful(false)
+        , File_UV_successful(false)
+        , File_WrapX_successful(false)
+        , File_WrapY_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::getId() const
+    {
+        return 20;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -1327,6 +1494,24 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceImageDefault::Meta_ResourceImageDefault()
+        : Meta_Resource()
+        , File_Alpha_successful(false)
+        , File_Codec_successful(false)
+        , File_MaxSize_successful(false)
+        , File_Rotate_successful(false)
+        , File_TextureSize_successful(false)
+        , File_UV_successful(false)
+        , File_WrapX_successful(false)
+        , File_WrapY_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceImageDefault::getId() const
+    {
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageDefault::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -1470,6 +1655,24 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::Meta_ResourceImageMultiplyRGBAndAlpha()
+        : Meta_Resource()
+        , File_WrapX_successful(false)
+        , File_WrapY_successful(false)
+        , FileAlpha_Codec_successful(false)
+        , FileAlpha_Path_successful(false)
+        , FileAlpha_UV_successful(false)
+        , FileRGB_Codec_successful(false)
+        , FileRGB_Path_successful(false)
+        , FileRGB_UV_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::getId() const
+    {
+        return 21;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -1602,6 +1805,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceImageSolid::Meta_ResourceImageSolid()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceImageSolid::getId() const
+    {
+        return 18;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageSolid::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -1662,6 +1875,18 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceImageSubstract::Meta_ResourceImageSubstract()
+        : Meta_Resource()
+        , Image_Alpha_successful(false)
+        , Image_Rotate_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceImageSubstract::getId() const
+    {
+        return 22;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -1748,6 +1973,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceInternalObject::Meta_ResourceInternalObject()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceInternalObject::getId() const
+    {
+        return 19;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceInternalObject::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -1808,6 +2043,23 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceMovie::Meta_ResourceMovie()
+        : Meta_Resource()
+        , Duration_Value_successful(false)
+        , FrameDuration_Value_successful(false)
+        , Height_Value_successful(false)
+        , KeyFramesPackPath_Codec_successful(false)
+        , KeyFramesPackPath_Path_successful(false)
+        , Loop_Segment_successful(false)
+        , Width_Value_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceMovie::getId() const
+    {
+        return 14;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -1994,6 +2246,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::Meta_MovieCamera3D()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
+    {
+        return 12;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -2086,6 +2348,20 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
+        : Metabuf::Metadata()
+        , MaskPolygon_successful(false)
+        , PlayCount_successful(false)
+        , Stretch_successful(false)
+        , TimeRemap_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
+    {
+        return 10;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2253,6 +2529,20 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
+        : Metabuf::Metadata()
+        , MaskPolygon_successful(false)
+        , PlayCount_successful(false)
+        , Stretch_successful(false)
+        , TimeRemap_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
+    {
+        return 11;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -2418,6 +2708,18 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourcePlaylist::Meta_ResourcePlaylist()
+        : Meta_Resource()
+        , Loop_Value_successful(false)
+        , Shuffle_Value_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::getId() const
+    {
+        return 12;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourcePlaylist::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -2511,6 +2813,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Tracks()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::getId() const
+    {
+        return 5;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         (void)_buff;
@@ -2567,6 +2879,17 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::Meta_Track()
+        : Metabuf::Metadata()
+        , Codec_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::getId() const
+    {
+        return 1;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2629,6 +2952,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceShape::Meta_ResourceShape()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceShape::getId() const
+    {
+        return 23;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
@@ -2680,6 +3013,20 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceSound::Meta_ResourceSound()
+        : Meta_Resource()
+        , DefaultVolume_Value_successful(false)
+        , File_Codec_successful(false)
+        , File_Converter_successful(false)
+        , IsStreamable_Value_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceSound::getId() const
+    {
+        return 11;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceSound::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2777,6 +3124,21 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceVideo::Meta_ResourceVideo()
+        : Meta_Resource()
+        , File_Alpha_successful(false)
+        , File_Codec_successful(false)
+        , File_Converter_successful(false)
+        , File_FrameRate_successful(false)
+        , File_NoSeek_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceVideo::getId() const
+    {
+        return 15;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceVideo::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2885,6 +3247,17 @@ namespace Metacode
         }
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceWindow::Meta_ResourceWindow()
+        : Meta_Resource()
+        , WindowBackground_ResourceImageName_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_DataBlock::Meta_ResourceWindow::getId() const
+    {
+        return 13;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceWindow::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -3086,6 +3459,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_Font::Meta_Font()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Font::getId() const
+    {
+        return 3;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_Font::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -3149,6 +3532,16 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_Font::Meta_Char::Meta_Char()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Font::Meta_Char::getId() const
+    {
+        return 2;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Font::Meta_Char::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -3243,6 +3636,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_Font::Meta_Char::Meta_Kerning::Meta_Kerning()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Font::Meta_Char::Meta_Kerning::getId() const
+    {
+        return 5;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_Font::Meta_Char::Meta_Kerning::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -3299,6 +3702,16 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_KeyFramesPack()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::getId() const
+    {
+        return 5;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -3402,6 +3815,18 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrames2D()
+        : Metabuf::Metadata()
+        , Count_successful(false)
+        , Immutable_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::Meta_KeyFrames2D::getId() const
+    {
+        return 3;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -3487,6 +3912,23 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::Meta_KeyFrame2D()
+        : Metabuf::Metadata()
+        , AnchorPoint_successful(false)
+        , Count_successful(false)
+        , Opacity_successful(false)
+        , Position_successful(false)
+        , Rotation_successful(false)
+        , Scale_successful(false)
+        , Volume_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::getId() const
+    {
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -3606,6 +4048,18 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrames3D()
+        : Metabuf::Metadata()
+        , Count_successful(false)
+        , Immutable_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::Meta_KeyFrames3D::getId() const
+    {
+        return 4;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -3691,6 +4145,23 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::Meta_KeyFrame3D()
+        : Metabuf::Metadata()
+        , AnchorPoint_successful(false)
+        , Count_successful(false)
+        , Opacity_successful(false)
+        , Position_successful(false)
+        , Rotation_successful(false)
+        , Scale_successful(false)
+        , Volume_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::getId() const
+    {
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -3810,6 +4281,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_TimeRemap::Meta_TimeRemap()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::Meta_TimeRemap::getId() const
+    {
+        return 2;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_TimeRemap::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -3866,6 +4347,16 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Pak()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Pak::getId() const
+    {
+        return 2;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Pak::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -3962,6 +4453,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Resources::Meta_Resources()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Pak::Meta_Resources::getId() const
+    {
+        return 2;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_Pak::Meta_Resources::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         (void)_buff;
@@ -4020,6 +4521,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Resources::Meta_Resource::Meta_Resource()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Pak::Meta_Resources::Meta_Resource::getId() const
+    {
+        return 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_Pak::Meta_Resources::Meta_Resource::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -4069,6 +4580,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Scripts::Meta_Scripts()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Pak::Meta_Scripts::getId() const
+    {
+        return 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_Pak::Meta_Scripts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -4116,6 +4637,16 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Texts::Meta_Texts()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Pak::Meta_Texts::getId() const
+    {
+        return 3;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Pak::Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -4176,6 +4707,16 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Texts::Meta_Text::Meta_Text()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Pak::Meta_Texts::Meta_Text::getId() const
+    {
+        return 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Meta_Pak::Meta_Texts::Meta_Text::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
     {
         switch( _id )
@@ -4223,6 +4764,16 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_Texts::Meta_Texts()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Texts::getId() const
+    {
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -4281,6 +4832,20 @@ namespace Metacode
     
     
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_Texts::Meta_Text::Meta_Text()
+        : Metabuf::Metadata()
+        , CharOffset_successful(false)
+        , Font_successful(false)
+        , LineOffset_successful(false)
+        , Value_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_Texts::Meta_Text::getId() const
+    {
+        return 1;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Texts::Meta_Text::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )

@@ -69,7 +69,7 @@ namespace Menge
             return false;
         }
         
-        WString buffer = L"ffmpeg -loglevel error -y -i \"" + unicode_input + L"\" -codec:v libvpx -f webm -b:v 500k -qmin 2 -qmax 51 -threads 4 \"" + unicode_output + L"\"";
+        WString buffer = L"ffmpeg -loglevel error -y -i \"" + unicode_input + L"\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + unicode_output + L"\"";
 		
 		LOGGER_INFO(m_serviceProvider)( "VideoConverterFFMPEGToWEBM:: conferting file '%ls' to '%ls'\n%ls"
 			, unicode_input.c_str()

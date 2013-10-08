@@ -114,7 +114,6 @@ namespace Menge
 		}
 
 		m_fontHeight = resourceGlyph->getFontHeight();
-		m_lineOffset = 0.f;
 
 		const RenderMaterialGroup * mg_sprite = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );

@@ -176,7 +176,7 @@ namespace Menge
         size_t read_size = 0;
 
         size_t stringCount;
-        if( Metacode::readStrings( &m_bufferBin[0], bin_size, read_size, stringCount, (void *)m_serviceProvider ) == false )
+        if( Metacode::readStrings( buffer, bin_size, read_size, stringCount, (void *)m_serviceProvider ) == false )
         {
             return false;
         }
@@ -190,7 +190,7 @@ namespace Menge
         ++it )
         {
             size_t stringSize;
-            const char * str = Metacode::readString( &m_bufferBin[0], bin_size, read_size, stringSize, (void *)m_serviceProvider );
+            const char * str = Metacode::readString( buffer, bin_size, read_size, stringSize, (void *)m_serviceProvider );
 
             if( str == nullptr )
             {
@@ -200,7 +200,7 @@ namespace Menge
             *it = Helper::stringizeStringSize(m_serviceProvider, str, stringSize);
         }
 
-        if( _metadata->parse( &m_bufferBin[0], bin_size, read_size, (void *)this ) == false )
+        if( _metadata->parseRoot( buffer, bin_size, read_size, (void *)this ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid parse (error)"
                 );

@@ -27,6 +27,8 @@ namespace Menge
 		m_notifyChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
 			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &Camera3D::notifyChangeWindowResolution );
 
+		this->invalidateMatrix_();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -140,8 +142,8 @@ namespace Menge
 		float height = 2.f * 1.f * tangent;
 		float width = height * m_cameraAspect;
 
-		float projection_factor_x = width / gameViewportWidth; 
-		float projection_factor_y = height / gameViewportHeight;
+		float projection_factor_x = width / float(contentResolutionWidth);
+		float projection_factor_y = height / float(contentResolutionHeight);
 
 		Viewport projectViewport;
         

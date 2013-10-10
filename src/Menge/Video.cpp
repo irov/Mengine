@@ -27,7 +27,6 @@ namespace Menge
 		, m_uv(0.f, 0.f, 1.f, 1.f)
 		, m_videoDecoder(nullptr)
 		, m_timing(0.f)
-        , m_playIterator(0)
 		, m_blendAdd(false)
         , m_needUpdate(false)
         , m_needUpdate2(false)

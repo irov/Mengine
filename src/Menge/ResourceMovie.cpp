@@ -107,6 +107,15 @@ namespace Menge
 		//}
 	//}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::isFrameImmutable( const MovieLayer & _layer ) const
+	{
+		const MovieLayerFrame & layer = m_keyFramePack->getLayer( _layer.index );
+
+		bool immutable = layer.immutable;
+
+		return immutable;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const
 	{
 		if( m_keyFramePack->getLayerFrame( _layer.index, _index, _frame ) == false )
@@ -536,7 +545,7 @@ namespace Menge
 		m_keyFramePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
 			->getMovieFramePak( category, m_keyFramePackPath );
 
-		if ( m_keyFramePack == nullptr )
+		if( m_keyFramePack == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
 				, this->getName().c_str()
@@ -544,6 +553,18 @@ namespace Menge
 				);
 
 			return false;
+		}
+
+		for( TVectorMovieLayers::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			MovieLayer & layer = *it;
+
+			const MovieLayerFrame & frame = m_keyFramePack->getLayer( layer.index );
+			layer.immutable = frame.immutable;
 		}
 
 		return true;

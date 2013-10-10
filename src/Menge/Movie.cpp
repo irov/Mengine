@@ -47,10 +47,36 @@
 
 namespace Menge
 {
+	////////////////////////////////////////////////////////////////////////
+	namespace Helper
+	{
+		//////////////////////////////////////////////////////////////////////////
+		static void s_linerp( float & _out, float _in1, float _in2, float _scale )
+		{
+			_out = _in1 + ( _in2 - _in1 ) * _scale; 
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_linerp_f3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale )
+		{
+			s_linerp(_out.x, _in1.x, _in2.x, _scale);
+			s_linerp(_out.y, _in1.y, _in2.y, _scale);
+			s_linerp(_out.z, _in1.z, _in2.z, _scale);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_interpolateFrameSource( MovieFrameSource & _frame, const MovieFrameSource & _frame1, const MovieFrameSource & _frame2, float _scale )
+		{
+			s_linerp_f3( _frame.anchorPoint, _frame1.anchorPoint, _frame2.anchorPoint, _scale );
+			s_linerp_f3( _frame.position, _frame1.position, _frame2.position, _scale );
+			s_linerp_f3( _frame.rotation, _frame1.rotation, _frame2.rotation, _scale );
+			s_linerp_f3( _frame.scale, _frame1.scale, _frame2.scale, _scale );
+
+			s_linerp( _frame.opacity, _frame1.opacity, _frame2.opacity, _scale );
+			s_linerp( _frame.volume, _frame1.volume, _frame2.volume, _scale );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_frameTiming(0.f)
-        , m_playIterator(0)
 		, m_currentFrame(0)        
 		, m_renderCamera3D(nullptr)
         , m_parentMovie(false)
@@ -154,6 +180,11 @@ namespace Menge
 		{
 			return false;
 		}
+
+		//printf("Movie::_play %s %f\n"
+		//	, this->getName().c_str()
+		//	, _time
+		//	);
 
         //if( m_resourceMovieName == "MovieCutScene_CutScene1"
         //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
@@ -1779,7 +1810,7 @@ namespace Menge
         
         size_t lastFrame = m_currentFrame;
 
-        bool needUpdate = false;
+        //bool needUpdate = true;
 
         if( m_currentFrame != frameCount )
         {
@@ -1789,13 +1820,13 @@ namespace Menge
 
                 ++m_currentFrame;
 
-                needUpdate = true;
+                //needUpdate = true;
 
                 if ( m_currentFrame == frameCount )
                 {
                     this->updateForwardFrame_( _time, lastFrame, frameCount );
 
-                    needUpdate = false;
+                    //needUpdate = false;
 
                     if( this->getLoop() == false && --m_playIterator == 0 )
                     {
@@ -1804,7 +1835,7 @@ namespace Menge
 
                         this->end();
 
-                        break;
+                        return;
                     }
                     else
                     {   
@@ -1818,26 +1849,30 @@ namespace Menge
 
                         this->updateAnimatablePlay_();
 
-                        needUpdate = false;
+                        //needUpdate = false;
                     }
                 }	
             }
         }
         else
         {
+			this->updateForwardFrame_( _time, lastFrame, frameCount );
+
             this->end();
+
+			return;
         }
 
-        if( needUpdate == true )
-        {
+        //if( needUpdate == true )
+        //{
             //printf("Movie::update %s %d:%d\n"
             //    , this->getName().c_str()
             //    , lastFrame
             //    , m_currentFrame
             //    );
 
-            this->updateForwardFrame_( _time, lastFrame, m_currentFrame );
-        }
+			this->updateForwardFrame_( _time, lastFrame, m_currentFrame );
+        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie::updateBackward_()
@@ -1953,11 +1988,34 @@ namespace Menge
 
         if( _beginFrame < indexIn && _endFrame >= indexIn && _endFrame < indexOut )
         {
-            MovieFrameSource frame;
-            if( m_resourceMovie->getFrame( _layer, _endFrame - indexIn, frame ) == false )
-            {
-                return;
-            }
+			size_t frameId = _endFrame - indexIn;
+
+			MovieFrameSource frame;
+			if( _endFrame + 1 < indexOut && _layer.immutable == false )
+			{
+				MovieFrameSource frame1;
+				if( m_resourceMovie->getFrame( _layer, frameId, frame1 ) == false )
+				{
+					return;
+				}
+
+				MovieFrameSource frame2;
+				if( m_resourceMovie->getFrame( _layer, frameId + 1, frame2 ) == false )
+				{
+					return;
+				}
+
+				float t = m_frameTiming / frameDuration;
+
+				Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
+			}
+			else
+			{
+	            if( m_resourceMovie->getFrame( _layer, frameId, frame ) == false )
+		        {
+			        return;
+				}
+			}
 
             this->updateFrameNode_( _layer, _node, frame );
 
@@ -2029,12 +2087,35 @@ namespace Menge
         }
         else if( _beginFrame >= indexIn && _endFrame >= indexIn && _endFrame < indexOut )
         {
-            MovieFrameSource frame;
-            if( m_resourceMovie->getFrame( _layer, _endFrame - indexIn, frame ) == false )
-            {
-                return;
-            }
+			size_t frameId = _endFrame - indexIn;
 
+			MovieFrameSource frame;
+			if( _endFrame + 1 < indexOut && _layer.immutable == false )
+			{
+				MovieFrameSource frame1;
+				if( m_resourceMovie->getFrame( _layer, frameId, frame1 ) == false )
+				{
+					return;
+				}
+
+				MovieFrameSource frame2;
+				if( m_resourceMovie->getFrame( _layer, frameId + 1, frame2 ) == false )
+				{
+					return;
+				}
+
+				float t = m_frameTiming / frameDuration;
+
+				Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
+			}
+			else
+			{
+				if( m_resourceMovie->getFrame( _layer, frameId, frame ) == false )
+				{
+					return;
+				}
+			}
+			
             this->updateFrameNode_( _layer, _node, frame );
 
             if( _layer.isAnimatable() == true )
@@ -2196,11 +2277,34 @@ namespace Menge
 
 			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{            
-                MovieFrameSource frame;
-                if( m_resourceMovie->getFrame( layer, m_currentFrame - indexIn, frame ) == false )
-                {
-                    continue;
-                }
+				size_t frameId = m_currentFrame - indexIn;
+				
+				MovieFrameSource frame;
+				if( m_currentFrame + 1 < indexOut && layer.immutable == false)
+				{
+					MovieFrameSource frame1;
+					if( m_resourceMovie->getFrame( layer, frameId, frame1 ) == false )
+					{
+						return;
+					}
+
+					MovieFrameSource frame2;
+					if( m_resourceMovie->getFrame( layer, frameId + 1, frame2 ) == false )
+					{
+						return;
+					}
+
+					float t = m_frameTiming / frameDuration;
+
+					Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
+				}
+				else
+				{
+					if( m_resourceMovie->getFrame( layer, frameId, frame ) == false )
+					{
+						return;
+					}
+				}
 
                 this->updateFrameNode_( layer, node, frame );
 
@@ -2273,13 +2377,34 @@ namespace Menge
 
             if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
             {                
-                size_t layerFrame = m_currentFrame - indexIn;
+                size_t frameId = m_currentFrame - indexIn;
 
-                MovieFrameSource frame;
-                if( m_resourceMovie->getFrame( layer, layerFrame, frame ) == false )
-                {
-                    return;
-                }
+				MovieFrameSource frame;
+				if( m_currentFrame + 1 < indexOut && layer.immutable == false )
+				{
+					MovieFrameSource frame1;
+					if( m_resourceMovie->getFrame( layer, frameId, frame1 ) == false )
+					{
+						return;
+					}
+
+					MovieFrameSource frame2;
+					if( m_resourceMovie->getFrame( layer, frameId + 1, frame2 ) == false )
+					{
+						return;
+					}
+
+					float t = m_frameTiming / frameDuration;
+
+					Helper::s_interpolateFrameSource( frame, frame1, frame2, t );
+				}
+				else
+				{
+					if( m_resourceMovie->getFrame( layer, frameId, frame ) == false )
+					{
+						return;
+					}
+				}
 
                 this->updateFrameNode_( layer, node, frame );
 
@@ -2296,7 +2421,7 @@ namespace Menge
                             animatable->stop();
                         }
 
-                        float timing = layerFrame * frameDuration;
+                        float timing = frameId * frameDuration;
 
                         animatable->setTiming( timing );
 
@@ -2306,7 +2431,7 @@ namespace Menge
                     else
                     {
                         float timing;
-                        if( m_resourceMovie->getTimeRemap( layer, layerFrame, timing ) == false )
+                        if( m_resourceMovie->getTimeRemap( layer, frameId, timing ) == false )
                         {
                             continue;
                         }
@@ -2317,6 +2442,8 @@ namespace Menge
             }
             else
             {
+				size_t frameId = indexOut - indexIn;
+
                 //printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
                 node->localHide( true );
 
@@ -2331,14 +2458,14 @@ namespace Menge
                             animatable->stop();
 
                             ///Test TestTestTestTest
-                            float timing = (indexOut - indexIn) * frameDuration;                        
+                            float timing = frameId * frameDuration;
                             animatable->setTiming( timing );
                         }
                     }
                     else
                     {
                         float timing;
-                        if( m_resourceMovie->getTimeRemap( layer, indexOut - indexIn, timing ) == false )
+                        if( m_resourceMovie->getTimeRemap( layer, frameId, timing ) == false )
                         {
                             continue;
                         }
@@ -2346,7 +2473,7 @@ namespace Menge
                         animatable->setTiming( timing );
                     }
                 }
-            }			
+            }
         }
     }
 	//////////////////////////////////////////////////////////////////////////

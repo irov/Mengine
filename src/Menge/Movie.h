@@ -110,7 +110,7 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		void updateFrameNode_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );	
+		void updateFrameNode_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );
 
 	private:
 		bool setupParent_();
@@ -189,7 +189,6 @@ namespace Menge
         TMapInternalObjects m_internals;
 
 		float m_frameTiming;
-        size_t m_playIterator;
 		size_t m_currentFrame;
         
 		bool m_parentMovie;

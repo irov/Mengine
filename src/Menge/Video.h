@@ -89,8 +89,7 @@ namespace Menge
 		mt::vec2f m_frameSize;
 		mt::vec4f m_uv;
 
-		float m_timing;
-        size_t m_playIterator;
+		float m_timing;        
 
 		bool m_blendAdd;
 		bool m_autoStart;

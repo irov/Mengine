@@ -28,7 +28,7 @@
 SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
 
 SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
-
+ 
 SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
 SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
 

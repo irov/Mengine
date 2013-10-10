@@ -43,6 +43,7 @@ namespace Menge
 			, out(0.f)
 			, startInterval(0.f)
             , state(0)
+			, immutable(false)
 		{
 		}
 
@@ -69,7 +70,9 @@ namespace Menge
 
 		ConstString source;
 
-		ConstString layerType;        
+		ConstString layerType;
+
+		bool immutable;
 
         bool isNode() const
         {
@@ -180,6 +183,7 @@ namespace Menge
 		bool hasCamera3D() const;
 
 	public:
+		bool isFrameImmutable( const MovieLayer & _layer ) const;
 		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
 
         bool getTimeRemap( const MovieLayer & _layer, size_t _index, float & _time ) const;

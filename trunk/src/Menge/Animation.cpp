@@ -18,7 +18,6 @@ namespace	Menge
 	Animation::Animation()
 		: m_frameTiming(0.f)
 		, m_currentFrame(0)
-        , m_playIterator(0)
 		, m_onEndFrameTick(false)
 		, m_onEndFrameEvent(false)
 		, m_onEndAnimationEvent(false)

@@ -37,6 +37,8 @@ namespace Menge
         void setPlayCount( size_t _count );
         size_t getPlayCount() const;
 
+		size_t getPlayIterator() const;
+
         void setScretch( float _scretch );
         float getScretch() const;
 
@@ -81,6 +83,7 @@ namespace Menge
         float m_intervalEnd;
         
         size_t m_playCount;
+		size_t m_playIterator;
         float m_scretch;
 		
 		bool m_play;

@@ -525,6 +525,16 @@ namespace Menge
 			return false;
 		}
 
+		if( m_caps.MaxSimultaneousTextures < MENGE_MAX_TEXTURE_STAGES )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Render dont't support %d texture stages (%d support)"
+				, MENGE_MAX_TEXTURE_STAGES
+				, m_caps.MaxSimultaneousTextures
+				);
+
+			return false;
+		}
+
 		if( (m_caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )			
 		{
 			m_supportNPOT = true;
@@ -1932,10 +1942,14 @@ namespace Menge
             }
         }
 
-        for( size_t i = 0; i != m_caps.MaxSimultaneousTextures; ++i )
+        for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, ( i, nullptr ) )
 			{
+				LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::releaseResources_ texture %d not reset"
+					, i
+					);
+
 				return false;
 			}
 

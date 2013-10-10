@@ -11,6 +11,7 @@ namespace Menge
         , m_intervalBegin(0.f)
         , m_intervalEnd(-1.f)
         , m_playCount(1)
+		, m_playIterator(0)
         , m_scretch(1.f)
 		, m_play(false)
 		, m_loop(false)
@@ -122,6 +123,11 @@ namespace Menge
     {
         return m_playCount;
     }
+	//////////////////////////////////////////////////////////////////////////
+	size_t Animatable::getPlayIterator() const
+	{
+		return m_playIterator;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setReverse( bool _value )
 	{

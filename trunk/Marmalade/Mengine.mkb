@@ -190,4 +190,9 @@ files
 	("../src/Utils/Math")	
 	"*.h"
     "*.cpp" 
+
+	[Metacode]
+    ("../src/Metacode")
+    "*.h"
+	"*.cpp"
 }

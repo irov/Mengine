@@ -306,9 +306,11 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
+	bool MarmaladeRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
 	{
         //NOT SUPPORT!
+		
+		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::setViewport( const Viewport & _viewport )

@@ -42,6 +42,8 @@
 
 #	include "Consts.h"
 
+#	include "Math/angle.h"
+
 #	include "pybind/system.hpp"
 #	include "pybind/extract.hpp"
 
@@ -53,7 +55,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void s_linerp( float & _out, float _in1, float _in2, float _scale )
 		{
-			_out = _in1 + ( _in2 - _in1 ) * _scale; 
+			_out = _in1 + ( _in2 - _in1 ) * _scale;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_linerp_f3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale )
@@ -67,7 +69,14 @@ namespace Menge
 		{
 			s_linerp_f3( _frame.anchorPoint, _frame1.anchorPoint, _frame2.anchorPoint, _scale );
 			s_linerp_f3( _frame.position, _frame1.position, _frame2.position, _scale );
-			s_linerp_f3( _frame.rotation, _frame1.rotation, _frame2.rotation, _scale );
+
+			mt::vec3f correct_rotate_from;
+			mt::vec3f correct_rotate_to;
+			mt::angle_correct_interpolate_from_to( _frame1.rotation.x, _frame2.rotation.x, correct_rotate_from.x, correct_rotate_to.x );
+			mt::angle_correct_interpolate_from_to( _frame1.rotation.y, _frame2.rotation.y, correct_rotate_from.y, correct_rotate_to.y );
+			mt::angle_correct_interpolate_from_to( _frame1.rotation.z, _frame2.rotation.z, correct_rotate_from.z, correct_rotate_to.z );
+
+			s_linerp_f3( _frame.rotation, correct_rotate_from, correct_rotate_to, _scale );
 			s_linerp_f3( _frame.scale, _frame1.scale, _frame2.scale, _scale );
 
 			s_linerp( _frame.opacity, _frame1.opacity, _frame2.opacity, _scale );

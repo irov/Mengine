@@ -81,10 +81,12 @@ files
 	"*.cpp"
 	"*.h"
 
-    [Plugin/MengeHotspotImageConverterPlugin]
-    ("../src/Plugin/MengeHotspotImageConverterPlugin")	
-	"*.cpp"
-	"*.h"
+    [Plugin/MengeDevelopmentConverterPlugin]
+    ("../src/Plugin/MengeDevelopmentConverterPlugin")	
+	"HotspotImageConverterPNGToHIT.*"
+	"MovieKeyConverterXMLToAEK.*"
+	"DevelopmentConverter.*"
+	"DevelopmentConverterPlugin.*"
     
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	

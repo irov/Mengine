@@ -41,7 +41,7 @@ namespace Menge
             return false;
         }
 
-        const ConstString & pakPath = fileGroup->getPath();            
+        const ConstString & pakPath = fileGroup->getPath();
 
         String full_input = pakPath.c_str();
         full_input += m_options.inputFileName.c_str();
@@ -71,7 +71,7 @@ namespace Menge
         
         WString buffer = L"ffmpeg -loglevel error -y -i \"" + unicode_input + L"\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + unicode_output + L"\"";
 		
-		LOGGER_WARNING(m_serviceProvider)( "VideoConverterFFMPEGToWEBM:: conferting file '%ls' to '%ls'\n%ls"
+		LOGGER_WARNING(m_serviceProvider)( "VideoConverterFFMPEGToWEBM:: converting file '%ls' to '%ls'\n%ls"
 			, unicode_input.c_str()
 			, unicode_output.c_str()
             , buffer.c_str()

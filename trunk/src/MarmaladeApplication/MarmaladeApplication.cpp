@@ -86,6 +86,7 @@ extern "C" // only required if using g++
     //////////////////////////////////////////////////////////////////////////
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
 }
 
 namespace Menge
@@ -365,6 +366,19 @@ namespace Menge
 
             m_logService->registerLogger( m_fileLog );
         }
+
+#	ifndef MENGE_MASTER_RELEASE
+		ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
+		// mount root		
+		if( m_fileService->mountFileGroup( c_dev, ConstString::none(), ConstString::none(), c_dir, false ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
+				, m_currentPath.c_str()
+				);
+
+			return false;
+		}
+#   endif
 
         return true;
     }
@@ -1129,20 +1143,20 @@ namespace Menge
             return false;
         }
         
-        if( m_application->setup( m_commandLine, m_settings.applicationSettings ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Application setup failed" 
-                );
-
-            return false;
-        }
-        
         //const WString & projectTitle = m_application->getProjectTitle();
 
         //const char * versionInfo = Application::getVersionInfo();
         //LOGGER_INFO(m_serviceProvider)( "SVN Revision: %s"
         //	, versionInfo
         //	);
+
+		
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Xml Codec..." );
+
+			initPluginMengeXmlCodec( &m_pluginMengeXmlCodec );
+			m_pluginMengeXmlCodec->initialize( m_serviceProvider );
+		}
 
         {
             LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
@@ -1157,6 +1171,14 @@ namespace Menge
             initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
             m_pluginMengeSoundCodec->initialize( m_serviceProvider );
         }
+
+		if( m_application->setup( m_commandLine, m_settings.applicationSettings ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Application setup failed" 
+				);
+
+			return false;
+		}
 
         String languagePack = m_settings.defaultLocale;
 

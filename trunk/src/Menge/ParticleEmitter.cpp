@@ -110,6 +110,7 @@ namespace	Menge
 
             return false;
         }
+
 		const ParticleEmitterContainerInterfacePtr & container = m_resourceEmitterContainer->getContainer();
 
 		if( container == nullptr )
@@ -171,11 +172,11 @@ namespace	Menge
             }
         }
 
-		if( m_emitterRelative == true )
+		if( m_interface->isBackground() == false )
 		{
 			m_interface->setPosition( m_emitterPosition );
 		}
-        
+
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -680,19 +681,17 @@ namespace	Menge
 			return;
 		}
 
-		m_interface->setPosition( m_emitterPosition );
+		if( m_interface->isBackground() == false )
+		{
+			m_interface->setPosition( m_emitterPosition );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterRelative( bool _relative )
 	{
         m_emitterRelative = _relative;
 
-		if( this->isCompile() == false )
-		{
-			return;
-		}
-
-		m_interface->setPosition( m_emitterPosition );
+		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setStartPosition( float _pos )

@@ -1465,9 +1465,11 @@ namespace Menge
 
 		layer_particles->setLoop( true );
 
-		bool relative = resourceEmitter->getEmitterRelative();
-		layer_particles->setEmitterRelative( relative );
-		layer_particles->setEmitterTranslateWithParticle( relative );
+		if( resourceEmitter->getEmitterRelative() == true )
+		{
+			layer_particles->setEmitterRelative( true );
+			layer_particles->setEmitterTranslateWithParticle( true );
+		}
 
 		const ConstString & emitterName = resourceEmitter->getEmitterName();
 		layer_particles->setEmitter( emitterName );

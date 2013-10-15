@@ -148,7 +148,6 @@ namespace Menge
 		Viewport projectViewport;
         
         projectViewport = gameViewport;
-
         projectViewport.centerize( mt::vec2f(contentResolutionWidth * 0.5f, contentResolutionHeight * 0.5f) );
 
         projectViewport.begin.x *= projection_factor_x;

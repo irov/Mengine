@@ -161,6 +161,7 @@ namespace Menge
         MarmaladeTimer m_timer;
         MarmaladeInput m_input;
 
+		PluginInterface * m_pluginMengeXmlCodec;
         PluginInterface * m_pluginMengeImageCodec;
         PluginInterface * m_pluginMengeSoundCodec;
     };

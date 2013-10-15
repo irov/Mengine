@@ -67,7 +67,8 @@ namespace Menge
 		virtual void interrupt() = 0;
 
 	public:
-		virtual void getBoundingBox( mt::box2f& _box ) const = 0;
+		virtual bool isBackground() const = 0;
+		virtual void getBoundingBox( mt::box2f& _box ) const = 0;		
 		virtual void setLeftBorder( float _leftBorder ) = 0;
 		
 		virtual float getLeftBorder() const = 0;

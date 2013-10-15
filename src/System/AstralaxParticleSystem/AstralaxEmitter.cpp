@@ -21,6 +21,7 @@ namespace Menge
 		, m_angle(0.f)
 		, m_tempScale(1)
         , m_basePosition(0.f, 0.f, 0.f)
+		, m_background(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,6 +94,8 @@ namespace Menge
 #endif
 
             Magic_SetEmitterPosition( m_id, &pos );
+
+			m_background = false;
         }
         else
         {
@@ -113,6 +116,8 @@ namespace Menge
 #else
             m_basePosition.z = 0.f;
 #endif            
+
+			m_background = true;
         }
 
         return true;
@@ -506,4 +511,8 @@ namespace Menge
 		return mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter::isBackground() const
+	{
+		return m_background;
+	}
 }

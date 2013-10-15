@@ -3397,6 +3397,7 @@ namespace Menge
                     .def( "setEmitter", &ParticleEmitter::setEmitter )
                     .def( "setEmitterTranslateWithParticle", &ParticleEmitter::setEmitterTranslateWithParticle )
                     .def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
+					.def( "setEmitterPosition", &ParticleEmitter::setEmitterPosition )
                     .def( "setEmitterImage", &ParticleEmitter::setEmitterImage )
                     .def( "removeEmitterImage", &ParticleEmitter::removeEmitterImage )
                     .def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )

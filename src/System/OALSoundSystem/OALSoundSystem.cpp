@@ -44,13 +44,15 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting OpenAL Sound System..." );
 
+#	ifdef MENGINE_MARMALADE
+		alcInit();
+#	endif
+		
         const ALCchar* str = alcGetString( nullptr, ALC_DEVICE_SPECIFIER );
         
         LOGGER_WARNING(m_serviceProvider)("OpenAL device specifier [%s]"
             , str
             );
-
-        //alcInit();
 				
         m_device = alcOpenDevice( nullptr );
 			

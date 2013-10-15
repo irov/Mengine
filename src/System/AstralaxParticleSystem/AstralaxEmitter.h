@@ -53,6 +53,8 @@ namespace Menge
 		void setRandomMode( bool _randomMode ) override;
 		bool getRandomMode() const override;
 
+		bool isBackground() const override;
+
 	public:
 		void interrupt() override;
 
@@ -97,6 +99,7 @@ namespace Menge
 
 		HM_EMITTER m_id;
         mt::vec3f m_basePosition;
+		bool m_background;
 
 		ConstString m_name;
 		double m_tempScale;

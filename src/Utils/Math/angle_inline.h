@@ -63,7 +63,9 @@ namespace mt
 		float correct_angle_to;
 		mt::angle_correct_interpolate_from_to( _angle1, _angle2, correct_angle_from, correct_angle_to );
 
-		return correct_angle_to - correct_angle_from;
+		float length = correct_angle_to - correct_angle_from;
+
+		return length;
 	}
 
 	MATH_FUNCTION_INLINE float angle_norm360(float _angle)
@@ -72,6 +74,7 @@ namespace mt
 		{
 			_angle -= floorf( _angle / 360.f ) * 360.f;
 		}
+
 		return _angle;
 	}
 
@@ -79,9 +82,9 @@ namespace mt
 	{
 		_angle = angle_norm360(_angle);
 
-		if (_angle > 180.0f) 
+		if (_angle > 180.f) 
 		{
-			_angle -= 360.0f;
+			_angle -= 360.f;
 		}
 
 		return _angle;
@@ -94,14 +97,14 @@ namespace mt
 
 	MATH_FUNCTION_INLINE float acos32(float _x)
 	{
-		if (_x <= -1.0f) 
+		if (_x <= -1.f) 
 		{
 			return mt::m_pi;
 		}
 
-		if (_x >= 1.0f) 
+		if (_x >= 1.f) 
 		{
-			return 0.0f;
+			return 0.f;
 		}
 
 		return ::acosf(_x);
@@ -143,6 +146,6 @@ namespace mt
 		float delta = mt::angle_delta_deg(_max,_min);
 		float delta1 = mt::angle_delta_deg(_angle,_min);
 
-		return ((delta >= delta1) && (delta1 >= 0));
+		return ((delta >= delta1) && (delta1 >= 0.f));
 	}
 }

@@ -71,7 +71,7 @@ namespace Menge
 
         WString buffer = L"ffmpeg.exe -loglevel error -y -i \""  + unicode_input + L"\" -strict experimental   -acodec vorbis -aq 100 \"" + unicode_output + L"\"";
 		
-		LOGGER_WARNING(m_serviceProvider)( "SoundDecoderConverterFFMPEGToOGG:: conferting file '%ls' to '%ls'"
+		LOGGER_WARNING(m_serviceProvider)( "SoundDecoderConverterFFMPEGToOGG:: converting file '%ls' to '%ls'"
 			, unicode_input.c_str()
 			, unicode_output.c_str()
 			);

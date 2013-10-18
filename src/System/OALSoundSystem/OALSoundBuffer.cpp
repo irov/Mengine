@@ -151,6 +151,19 @@ namespace Menge
 		OAL_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool OALSoundBuffer::setTimePos( ALenum _source, float _pos ) const
+	{
+		float al_pos = _pos * 0.001f;
+		alSourcef( _source, AL_SEC_OFFSET, al_pos );
+		
+		if( OAL_CHECK_ERROR(m_serviceProvider) == true )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::getTimePos( ALenum _source, float & _pos ) const
 	{
 		float al_pos = 0.f;

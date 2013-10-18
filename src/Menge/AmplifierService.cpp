@@ -22,7 +22,6 @@ namespace Menge
 		: m_serviceProvider(nullptr)
         , m_sourceID(0)
 		, m_buffer(nullptr)
-		, m_currentPlayList(nullptr)
 		, m_volume(1.f)
 		, m_volumeOverride(1.f)
 		, m_play(false)
@@ -84,44 +83,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::resetPlayList()
-	{	
-        this->stop();
-
-		m_currentPlayList = nullptr;
-
-        m_currentPlaylistName.clear();        
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::playTrack( const ConstString& _playlistResource, int _index, bool _looped )
+	bool AmplifierService::playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped )
 	{
 		if( this->loadPlayList_( _playlistResource ) == false )
 		{
-			return;
+			return false;
 		}
 
 		m_currentPlayList->setLooped1( _looped );
-
-		const TrackDesc * desc = m_currentPlayList->getTrackByIndex( _index );
-		const ConstString & category = m_currentPlayList->getCategory();
-
 		m_currentPlayList->setTrack( _index );
 
-		this->prepareSound_( category, desc->path, desc->codec );
-
-		float musicVolume = SOUND_SERVICE(m_serviceProvider)
-            ->getMusicVolume( CONST_STRING(m_serviceProvider, Generic) );
-
-		if( SOUND_SERVICE(m_serviceProvider)->setSourceVolume( m_sourceID, musicVolume ) == false )
+		if( this->play2_( _pos ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AmplifierService::playTrack invalid set source volume %ls"
-				, desc->path.c_str()
-				);
+			return false;
 		}
 
-		SOUND_SERVICE(m_serviceProvider)->play( m_sourceID );
-		
-		m_play = true;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t AmplifierService::getNumTracks() const
@@ -136,40 +113,39 @@ namespace Menge
 		return numTracks;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::playAllTracks( const ConstString& _playlistResource )
+	size_t AmplifierService::getCurrentTrack() const
 	{
-		if( this->loadPlayList_(_playlistResource) == false )
+		if( m_currentPlayList == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AmplifierService: no found playlist with name '%s'"
-				, _playlistResource.c_str()
-				);
-
-			return;
+			return 0;
 		}
 
-		m_currentPlayList->first();
+		size_t index = m_currentPlayList->currentTrackIndex();
 
-		this->play();
+		return index;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::play()
+	bool AmplifierService::play2_( float _pos )
 	{
         if( m_play == true )
         {
-            return;
+            return true;
         }
 
-		//Holder<SoundEngine>::get()
-		//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
-		if( this->preparePlay_() == false )
+		if( this->preparePlay_( _pos ) == false )
 		{
-			return;
+			return false;
 		}
 
-		this->play_();
+		if( this->play_() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AmplifierService::preparePlay_()
+	bool AmplifierService::preparePlay_( float _pos )
 	{
 		if( m_currentPlayList == nullptr )
 		{
@@ -184,7 +160,10 @@ namespace Menge
 		}
 
 		const ConstString & category = m_currentPlayList->getCategory();
-		this->prepareSound_( category, track->path, track->codec );
+		if( this->prepareSound_( category, track->path, track->codec, _pos ) == false )
+		{
+			return false;
+		}
 
 		if( m_sourceID == 0 )
 		{
@@ -194,11 +173,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::play_()
+	bool AmplifierService::play_()
 	{
-		SOUND_SERVICE(m_serviceProvider)->play( m_sourceID );
+		if( SOUND_SERVICE(m_serviceProvider)->play( m_sourceID ) == false )
+		{
+			return false;
+		}
 
 		m_play = true;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::shuffle( const ConstString & _playlist )
@@ -262,10 +246,14 @@ namespace Menge
         m_currentPlayList->next();
         const TrackDesc * track = m_currentPlayList->getTrack();
 
-        if( track )
+        if( track != nullptr )
         {
             const ConstString & category = m_currentPlayList->getCategory();
-            this->prepareSound_( category, track->path, track->codec );
+            
+			if( this->prepareSound_( category, track->path, track->codec, 0.f ) == false )
+			{
+				return;
+			}
         }
 
         if( m_sourceID != 0 )
@@ -282,7 +270,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec )
+	bool AmplifierService::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos )
 	{
 		this->stop();
 		//_release();
@@ -296,7 +284,7 @@ namespace Menge
 				, _file.c_str() 
 				);
 
-			return;			
+			return false;			
 		}
 
 		m_sourceID = SOUND_SERVICE(m_serviceProvider)
@@ -308,11 +296,24 @@ namespace Menge
 				, _file.c_str()
 				);
 
-			return;
+			return false;
+		}
+
+		if( SOUND_SERVICE(m_serviceProvider)
+			->setPosMs( m_sourceID, _pos ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "AmplifierService::prepareSound_: AmplifierService can't set sound '%s' pos '%f'"
+				, _file.c_str()
+				, _pos
+				);
+
+			return false;
 		}
 		
 		SOUND_SERVICE(m_serviceProvider)
             ->setSourceListener( m_sourceID, this );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::release_()

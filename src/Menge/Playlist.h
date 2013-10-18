@@ -40,7 +40,8 @@ namespace	Menge
 		
 		const TrackDesc * getTrack() const;
         
-		size_t	numTracks() const;
+		size_t currentTrackIndex() const;
+		size_t numTracks() const;
 		const TrackDesc * getTrackByIndex( size_t _index );
 
 		void setTrack(size_t _index);
@@ -53,7 +54,7 @@ namespace	Menge
 		ResourcePlaylist * m_playlistResource;
 
 		TVectorTrackDesc m_tracks;
-		TVectorTrackDesc::iterator	m_track;
+		size_t m_trackIndex;
 		
 		bool m_loop;
 

@@ -276,6 +276,15 @@ namespace Menge
 		return m_updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool OALSoundBufferStream::setTimePos( ALenum _source, float _pos ) const
+	{
+		(void)_source;
+
+		bool result = m_soundDecoder->seek( _pos );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::getTimePos( ALenum _source, float & _pos ) const
 	{
         (void)_source;

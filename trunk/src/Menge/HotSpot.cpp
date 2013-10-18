@@ -61,6 +61,20 @@ namespace	Menge
         return handle;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::isMousePickerOver() const
+	{
+		if( m_mousePickerAdapter.isActivePicker() == false )
+		{
+			return false;
+		}
+
+		PickerTrapState * trap = m_mousePickerAdapter.getPicker();
+
+		bool picked = trap->picked;
+
+		return picked;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrapInterface * HotSpot::getPickerTrap()
 	{
 		return &m_mousePickerAdapter;
@@ -150,12 +164,15 @@ namespace	Menge
 			return false;
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_afterActivate()
+	{
 		if( this->isLocalHide() == false )
 		{
 			this->activatePicker_();
 		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()

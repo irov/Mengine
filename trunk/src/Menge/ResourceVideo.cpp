@@ -228,6 +228,11 @@ namespace Menge
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {
+			LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't setup options for file '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				);
+
             return nullptr;
         }
 

@@ -299,23 +299,13 @@ namespace	Menge
 				->getCommonVolume( CONST_STRING(m_serviceProvider, Generic) );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void musicPlayList( const ConstString & _list )
+		void musicPlayTrack( const ConstString & _list, size_t _index, float _pos, bool _isLooped )
 		{
 			AMPLIFIER_SERVICE(m_serviceProvider)
-				->playAllTracks( _list );
+				->playTrack( _list, _index, _pos, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void resetPlayList( )
-		{
-			AMPLIFIER_SERVICE(m_serviceProvider)
-				->resetPlayList();
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void musicPlayTrack( const ConstString & _list, int _index, bool _isLooped )
-		{
-			AMPLIFIER_SERVICE(m_serviceProvider)
-				->playTrack( _list, _index, _isLooped );
-		}
+
 		//////////////////////////////////////////////////////////////////////////
 		size_t musicGetNumTracks()
 		{
@@ -375,6 +365,12 @@ namespace	Menge
 		{
 			return AMPLIFIER_SERVICE(m_serviceProvider)
 				->getPlayTrack();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		size_t s_musicGetPlayingTrackIndex()
+		{
+			return AMPLIFIER_SERVICE(m_serviceProvider)
+				->getCurrentTrack();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_musicSetVolume( float _volume )
@@ -468,7 +464,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////		
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(float), float> m_affectorCreatorMusic;
 		//////////////////////////////////////////////////////////////////////////
-		void s_musicFadeIn( float _time, PyObject * _cb )
+		size_t s_musicFadeIn( float _time, PyObject * _cb )
 		{
 			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
 
@@ -482,10 +478,12 @@ namespace	Menge
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
 				->getAffectorable();
 
-			affectorable->addAffector( affector );
+			size_t id = affectorable->addAffector( affector );
+
+			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_musicFadeOut( float _time, PyObject * _cb )
+		size_t s_musicFadeOut( float _time, PyObject * _cb )
 		{
 			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
 
@@ -499,7 +497,9 @@ namespace	Menge
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
 				->getAffectorable();
 
-			affectorable->addAffector( affector );
+			size_t id = affectorable->addAffector( affector );
+
+			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_soundMute( bool _mute )
@@ -552,8 +552,6 @@ namespace	Menge
 		pybind::def_functor( "soundGetPosition", soundScriptMethod, &SoundScriptMethod::s_soundGetPosMs );
 		pybind::def_functor( "soundSetPosition", soundScriptMethod, &SoundScriptMethod::s_soundSetPosMs );
 				
-		pybind::def_functor( "musicPlayList", soundScriptMethod, &SoundScriptMethod::musicPlayList );
-		pybind::def_functor( "resetPlayList", soundScriptMethod, &SoundScriptMethod::resetPlayList );
 		pybind::def_functor( "musicPlayTrack", soundScriptMethod, &SoundScriptMethod::musicPlayTrack );
 		pybind::def_functor( "musicGetNumTracks", soundScriptMethod, &SoundScriptMethod::musicGetNumTracks );
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
@@ -563,6 +561,7 @@ namespace	Menge
         pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );        
 		pybind::def_functor( "musicShuffle", soundScriptMethod, &SoundScriptMethod::musicShuffle );
 		pybind::def_functor( "musicGetPlaying", soundScriptMethod, &SoundScriptMethod::s_musicGetPlaying );
+		pybind::def_functor( "musicGetPlayingTrackIndex", soundScriptMethod, &SoundScriptMethod::s_musicGetPlayingTrackIndex );		
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::s_musicSetVolume );
 		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
 		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );

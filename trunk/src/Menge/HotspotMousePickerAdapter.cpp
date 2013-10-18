@@ -91,11 +91,6 @@ namespace Menge
             return false;
         }
 
-        if( m_hotspot->isActivate() == false )
-        {
-            return false;
-        }
-
         return true;
 	}
 }

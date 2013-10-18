@@ -267,6 +267,26 @@ namespace Menge
 
             video_error = true;
         }
+		
+		
+		if( m_codecContext->codec_id == AV_CODEC_ID_VP6A || 
+			m_codecContext->codec_id == AV_CODEC_ID_VP6F ||
+			m_codecContext->codec_id == AV_CODEC_ID_VP6 )
+		{
+			if( m_codecContext->width % 16 != 0 || 
+				m_codecContext->height % 16 != 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)("=============================================================");
+				LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode invalid width height mod 16! %d:%d need"
+					, m_codecContext->width
+					, m_codecContext->height
+					, m_codecContext->width / 16 * 16
+					, m_codecContext->height / 16 * 16
+					);
+
+				video_error = true;
+			}
+		}
 
         if( video_error == true )
         {

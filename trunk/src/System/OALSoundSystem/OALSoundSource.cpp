@@ -242,7 +242,21 @@ namespace Menge
             return false;
         }
 
-        m_timing = posmc;	
+        m_timing = posmc;
+
+		if( m_playing == true || m_pausing == true )
+		{
+			if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("OALSoundSource::setPosMs invalid set time pos %d time %f (play %d)"
+					, m_sourceId
+					, posmc
+					, m_playing
+					);
+
+				return false;
+			}
+		}
 
         return true;
 	}

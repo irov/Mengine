@@ -34,6 +34,9 @@ namespace Menge
         bool resume( ALenum _source ) override;
 		void pause( ALenum _source ) override;
 		void stop( ALenum _source ) override;
+
+	public:
+		bool setTimePos( ALenum _source, float _pos ) const override;
 		bool getTimePos( ALenum _source, float & _pos ) const override;
 
 	protected:

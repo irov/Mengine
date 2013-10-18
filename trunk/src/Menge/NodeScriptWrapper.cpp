@@ -3512,6 +3512,7 @@ namespace Menge
                     .def( "setPolygon", &HotSpot::setPolygon )
                     .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                     .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
+					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )
                     .def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalPolygonCenter )
                     .def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygonCenter )
                     .def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygon )

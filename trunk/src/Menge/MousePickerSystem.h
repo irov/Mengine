@@ -31,8 +31,10 @@ namespace Menge
 		void pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) override;
 		
 	public:
-		PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) override;
+		PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) override;		
 		void unregTrap( PickerTrapState * _id ) override;
+
+		void updateTrap() override;
 
 	public:
 		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;

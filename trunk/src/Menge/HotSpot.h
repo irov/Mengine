@@ -31,6 +31,9 @@ namespace Menge
         bool getDefaultHandle() const;
 
 	public:
+		bool isMousePickerOver() const;
+
+	public:
 		MousePickerTrapInterface * getPickerTrap();
 		    
 	public:
@@ -50,6 +53,7 @@ namespace Menge
 
 	protected:
 		bool _activate() override;
+		void _afterActivate() override;
 		void _deactivate() override;
 
 		//void _invalidateBoundingBox() override;

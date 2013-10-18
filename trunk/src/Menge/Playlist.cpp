@@ -18,6 +18,7 @@ namespace Menge
 		, m_playlistResource(NULL)    
 		, m_oneTrackPlayed(false)
 		, m_oneTrackLooped(false)
+		, m_trackIndex(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -81,7 +82,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::isEnded() const
 	{
-		return m_track == m_tracks.end() && m_loop == false;
+		return m_trackIndex == m_tracks.size() && m_loop == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::next()
@@ -91,26 +92,28 @@ namespace Menge
 			return;
 		}
 
-		if ( ++m_track == m_tracks.end() && m_loop == true )
+		if ( ++m_trackIndex == m_tracks.size() && m_loop == true )
 		{
-			m_track = m_tracks.begin();
+			m_trackIndex = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::first()
 	{
-		m_track = m_tracks.begin();
+		m_trackIndex = 0;
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TrackDesc * Playlist::getTrack() const
 	{
-		if( m_track == m_tracks.end() )
+		if( m_trackIndex == m_tracks.size() )
 		{
 			return 0;
 		}
 
-		return &*m_track;
+		const TrackDesc & desc = m_tracks[m_trackIndex];
+
+		return &desc;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
@@ -122,20 +125,41 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::previous()
 	{
-		if( m_track == m_tracks.begin() )
+		if( m_trackIndex == 0 )
 		{
-			m_track = m_tracks.end();
+			if( m_tracks.empty() == true )
+			{
+				m_trackIndex = 0;
+			}
+			else
+			{
+				m_trackIndex = m_tracks.size() - 1;
+			}
 		}
-
-		--m_track;
+		else
+		{
+			--m_trackIndex;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::last()
 	{
-		m_track = m_tracks.end() - 1;
+		if( m_tracks.empty() == true )
+		{
+			m_trackIndex = 0;
+		}
+		else
+		{
+			m_trackIndex = m_tracks.size() - 1;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t	 Playlist::numTracks() const
+	size_t Playlist::currentTrackIndex() const
+	{
+		return m_trackIndex;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t Playlist::numTracks() const
 	{
 		return m_tracks.size();
 	}
@@ -158,8 +182,7 @@ namespace Menge
 		}
 		else
 		{
-			m_track = m_tracks.begin();
-			std::advance( m_track, _index );
+			m_trackIndex = _index;
 			m_oneTrackPlayed = true;
 		}
 	}

@@ -142,10 +142,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{
-		const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-			->getCursorPosition();
+		//const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
+		//	->getCursorPosition();
 
-		this->proccesTraps_( pos );
+		//this->proccesTraps_( pos );
 
 		this->updateDead_();
 	}
@@ -170,12 +170,15 @@ namespace Menge
 		m_pickerTrapState.push_back( state );
 		PickerTrapState & refState = m_pickerTrapState.back();
 		
+		return &refState;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::updateTrap()
+	{
 		const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
 			->getCursorPosition();
 
 		this->proccesTraps_( pos );
-
-		return &refState;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::unregTrap( PickerTrapState * _ref )

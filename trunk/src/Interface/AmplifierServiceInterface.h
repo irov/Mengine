@@ -12,16 +12,14 @@ namespace Menge
         SERVICE_DECLARE("AmplifierService")
 
 	public:
-		virtual void playTrack( const ConstString& _playlistResource, int _index, bool _looped ) = 0;
-		virtual void playAllTracks( const ConstString& _playlistResource ) = 0;
-		virtual void resetPlayList() = 0;
+		virtual bool playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped ) = 0;		
 		
-		virtual const ConstString& getPlayTrack() const = 0;
+		virtual const ConstString & getPlayTrack() const = 0;
+		virtual size_t getCurrentTrack() const = 0;
 		virtual size_t getNumTracks() const = 0;
 
 		virtual void shuffle( const ConstString& _playlist ) = 0;
 
-		virtual void play() = 0;
 		virtual void stop() = 0;
 		virtual void pause() = 0;
 		virtual void resume() = 0;

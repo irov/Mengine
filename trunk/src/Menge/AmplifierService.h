@@ -27,12 +27,9 @@ namespace	Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-        void playTrack( const ConstString& _playlistResource, int _index, bool _looped ) override;
-		void playAllTracks( const ConstString& _playlistResource ) override;
-		void resetPlayList() override;
+        bool playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped ) override;
 		void shuffle( const ConstString& _playlist ) override;
-
-		void play() override;
+				
 		void stop() override;
 		void pause() override;
 		void resume() override;
@@ -41,8 +38,9 @@ namespace	Menge
 				
 		void setVolume( float _value ) override;
 		float getVolume() const override;
-
+		
 		size_t getNumTracks() const override;
+		size_t getCurrentTrack() const override;
 
 		//void onTurnSound( bool _turn ) override;
 		
@@ -57,7 +55,6 @@ namespace	Menge
 		float m_currentSoundPosition;
 		
 		typedef	std::map<ConstString, Playlist *> TMapPlayList;
-
 		TMapPlayList m_mapPlayLists;
 
 		ConstString	m_currentPlaylistName;
@@ -77,9 +74,11 @@ namespace	Menge
 
     protected:
 		void release_();	
-		void prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec );
+		bool prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos );
 		bool loadPlayList_( const ConstString& _playlistResource );
-		bool preparePlay_();
-		void play_();
+		bool preparePlay_( float _pos );
+
+		bool play2_( float _pos );
+		bool play_();
 	};
 }

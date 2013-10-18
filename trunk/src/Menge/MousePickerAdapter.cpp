@@ -64,6 +64,8 @@ namespace Menge
 		}
 
 		m_picker = mousePickerSystem->regTrap( this );
+
+		mousePickerSystem->updateTrap();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::deactivatePicker()

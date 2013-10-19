@@ -305,8 +305,6 @@ namespace	Menge
 				->playTrack( _list, _index, _pos, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
-
-		//////////////////////////////////////////////////////////////////////////
 		size_t musicGetNumTracks()
 		{
 			return AMPLIFIER_SERVICE(m_serviceProvider)
@@ -393,7 +391,7 @@ namespace	Menge
 				->setPosMs( _posMs );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void ___musicFadeIn( float _volume )
+		void ___musicFade( float _volume )
 		{
 			SOUND_SERVICE(m_serviceProvider)
 				->setMusicVolume( CONST_STRING(m_serviceProvider, Fade), _volume );
@@ -470,7 +468,7 @@ namespace	Menge
 
 			Affector* affector = 
 				m_affectorCreatorMusic.create( m_serviceProvider
-				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFadeIn
+				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFade
 				, 1.f, 0.f, _time
 				, &fabsf
 				);
@@ -489,7 +487,7 @@ namespace	Menge
 
 			Affector* affector = 
 				m_affectorCreatorMusic.create( m_serviceProvider
-				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFadeIn
+				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFade
 				, 0.f, 1.f, _time
 				, &fabsf
 				);

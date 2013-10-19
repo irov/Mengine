@@ -73,12 +73,16 @@ namespace Menge
 		float speedFactor = this->getSpeedFactor();
 		float timing = _timing * speedFactor;
 
+		float scretch = this->getScretch();
+
+		float totalTiming = timing / scretch;
+
 		//Node::_update( _current, timing );
 		//localHide(false);
 		//printf("%f %s\n",_timing,m_name.c_str());
 
 		//printf("%f %s\n",_timing,m_name.c_str());
-		m_needUpdate = this->sync_( timing );
+		m_needUpdate = this->sync_( totalTiming );
 
         //printf("Video._update %f %s %d %d\n"
         //    , timing

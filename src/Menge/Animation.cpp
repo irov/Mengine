@@ -61,20 +61,18 @@ namespace	Menge
 		size_t frameCount = m_resourceAnimation->getSequenceCount();
 
 		float speedFactor = this->getSpeedFactor();
-		m_frameTiming += _timing * speedFactor;
+		float scretch = this->getScretch();
+		m_frameTiming += _timing * speedFactor / scretch;
 
 		float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-        float scretch = this->getScretch();
-
-        float totalFrameDelay = frameDelay * scretch;
-
+        
 		size_t lastFrame = m_currentFrame;
 
         if( m_currentFrame != frameCount )
         {
-            while( m_frameTiming >= totalFrameDelay )
+            while( m_frameTiming >= frameDelay )
             {
-                m_frameTiming -= totalFrameDelay;
+                m_frameTiming -= frameDelay;
 
                 if( m_onEndFrameEvent == true )
                 {
@@ -120,8 +118,7 @@ namespace	Menge
                     lastFrame = m_currentFrame;
                 }
 
-                float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-                totalFrameDelay = frameDelay * scretch;
+                frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );                
             }
         }
 

@@ -129,25 +129,40 @@ namespace Menge
 			{
 				const Metacode::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
 
-				const Menge::Polygon & polygon = meta_shape.get_Polygon();
-
-				Polygon imagePolygon;
+				Menge::Polygon polygon = meta_shape.get_Polygon();
+				boost::geometry::correct( polygon );
+								
 				mt::vec2f v0(0.f, 0.f);
 				mt::vec2f v1(width, 0.f);
 				mt::vec2f v2(width, height);
 				mt::vec2f v3(0.f, height);
 
+				Polygon imagePolygon;
 				boost::geometry::append( imagePolygon, v0 );
 				boost::geometry::append( imagePolygon, v1 );
 				boost::geometry::append( imagePolygon, v2 );
-				boost::geometry::append( imagePolygon, v3 );
+				boost::geometry::append( imagePolygon, v3 );							
+				boost::geometry::correct( imagePolygon );
 				
 				std::deque<Menge::Polygon> output;
-				boost::geometry::intersection( imagePolygon, polygon, output );
+				boost::geometry::intersection( polygon, imagePolygon, output );
+				
+				if( output.empty() == true )
+				{
+					MovieFrameShape shape;	
+					shape.vertexCount = 0;
+					shape.indexCount = 0;
 
-				const Menge::Polygon & shape_vertex = output[0];
+					shapes.shapes.push_back( shape );
 
-				size_t shapeVertexCount = boost::geometry::num_points( shape_vertex );
+					continue;
+				}
+
+				Menge::Polygon shape_vertex = output[0];
+
+				boost::geometry::correct( shape_vertex );
+
+				size_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
 
 				if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
 				{
@@ -179,8 +194,10 @@ namespace Menge
 				{
 					mt::vec3f & pos = shape.pos[i];
 
-					pos.x = shape_vertex.outer()[i].x;
-					pos.y = shape_vertex.outer()[i].y;
+					const mt::vec2f & shape_pos = shape_vertex.outer()[i];
+
+					pos.x = shape_pos.x;
+					pos.y = shape_pos.y;
 					pos.z = 0.f;
 
 					mt::vec2f & uv = shape.uv[i];

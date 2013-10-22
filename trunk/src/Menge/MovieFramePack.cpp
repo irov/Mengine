@@ -11,6 +11,7 @@ namespace Menge
     {
         m_layers.resize( _size );
         m_timeremap.resize( _size );
+		m_shapes.resize( _size );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )

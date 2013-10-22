@@ -409,8 +409,16 @@ namespace Menge
 
 		unsigned int argb = color.getAsARGB();
 
-		ApplyColor2D applyColor( argb );
-		std::for_each( _vertices, _vertices + ResourceWindow_Count * 4, applyColor );
+		for( RenderVertex2D
+			*it = _vertices,
+			*it_end = _vertices + ResourceWindow_Count * 4;
+		it != it_end;
+		++it )
+		{
+			RenderVertex2D & vtx = *it;
+
+			vtx.color = argb;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )

@@ -13,8 +13,6 @@
 
 #	include "pybind/pybind.hpp"
 
-#	include <algorithm>
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -692,9 +690,16 @@ namespace Menge
 			return false;
 		}
 
-		ApplyColor2D applyColor( 0xFF00FF00 );
+		for( RenderVertex2D
+			*it = m_vertexDebugBox,
+			*it_end = m_vertexDebugBox + 4;
+		it != it_end;
+		++it )
+		{
+			RenderVertex2D & vtx = *it;
 
-		std::for_each( m_vertexDebugBox, m_vertexDebugBox + 4, applyColor );
+			vtx.color = 0xFF00FF00;
+		}
 
 		return true;
 	}

@@ -20,6 +20,7 @@
 #	include "Camera3D.h"
 
 #	include "Sprite.h"
+#	include "Mesh.h"
 #	include "Animation.h"
 #	include "Video.h"
 #   include "TextField.h"
@@ -271,25 +272,54 @@ namespace Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, const MovieFrameSource & _frame )
+	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, size_t _frameId, bool _interpolate )
 	{
+		MovieFrameSource frame;
+		if( _interpolate == true && _layer.immutable == false )
+		{
+			MovieFrameSource frame1;
+			if( m_resourceMovie->getFrame( _layer, _frameId, frame1 ) == false )
+			{
+				return false;
+			}
+
+			MovieFrameSource frame2;
+			if( m_resourceMovie->getFrame( _layer, _frameId + 1, frame2 ) == false )
+			{
+				return false;
+			}
+
+			float frameDuration = m_resourceMovie->getFrameDuration();
+
+			float t = m_frameTiming / frameDuration;
+
+			Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
+		}
+		else
+		{
+			if( m_resourceMovie->getFrame( _layer, _frameId, frame ) == false )
+			{
+				return false;
+			}
+		}
+
         const mt::vec3f coordinate(0.f, 0.f, 0.f);
 
 		_node->setTransformation( 
-			_frame.position, 
-			_frame.anchorPoint, 
+			frame.position, 
+			frame.anchorPoint, 
             coordinate,
-			_frame.scale, 
-			_frame.rotation 
+			frame.scale, 
+			frame.rotation 
 			);
 		
 		if( _layer.isMovie() == false )
 		{
-			_node->setPersonalAlpha( _frame.opacity );
+			_node->setPersonalAlpha( frame.opacity );
 		}
 		else
 		{
-			_node->setLocalAlpha( _frame.opacity );
+			_node->setLocalAlpha( frame.opacity );
 		}
 
 		if( _layer.isAudio() == true )
@@ -304,14 +334,40 @@ namespace Menge
                     , _node->getType().c_str()
                     );
 
-                return;
+                return false;
             }
 #   endif
 
 			Soundable * sounding = dynamic_cast<Soundable *>( _node );
 
-			sounding->setVolume( _frame.volume );
+			sounding->setVolume( frame.volume );
 		}
+
+		if( _layer.isMesh() == true )
+		{
+#   ifdef _DEBUG
+			if( dynamic_cast<Mesh *>( _node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mesh but node is not Mesh %s:%s"
+					, this->getName().c_str()
+					, _layer.name.c_str()
+					, _node->getName().c_str()
+					, _node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
+
+			Mesh * mesh = dynamic_cast<Mesh *>( _node );
+
+			const MovieFrameShape * shape;
+			m_resourceMovie->getShape(_layer, _frameId, &shape );
+
+			mesh->setVerticies( shape->pos, shape->uv, shape->vertexCount, shape->indecies, shape->indexCount );
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setFirstFrame()
@@ -947,10 +1003,20 @@ namespace Menge
             }
             else if( layer.layerType == CONST_STRING(m_serviceProvider, Image) )
             {
-                if( this->createMovieImage_( layer ) == false )
-                {
-                    return false;
-                }
+				if( layer.shape == false )
+				{
+					if( this->createMovieImage_( layer ) == false )
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if( this->createMovieMesh_( layer ) == false )
+					{
+						return false;
+					}
+				}
             }
             else if( layer.layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
             {
@@ -1164,6 +1230,35 @@ namespace Menge
 		}
 
 		this->addMovieNode_( _layer, layer_sprite );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieMesh_( const MovieLayer & _layer )
+	{
+		Mesh * layer_mesh = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Mesh>( CONST_STRING(m_serviceProvider, Mesh) );
+
+		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceImage>( _layer.source );
+
+		layer_mesh->setResourceImage( resourceImage );
+
+		layer_mesh->setName( _layer.name );
+
+		if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
+		{
+			layer_mesh->setBlendAdd( true );
+		}
+		else if( _layer.blendingMode != CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie: '%s'  sprite  blending mode not supported '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				);
+		}
+
+		this->addMovieNode_( _layer, layer_mesh );
 
 		return true;
 	}
@@ -1593,14 +1688,8 @@ namespace Menge
             {
                 continue;
             }
-                        
-            MovieFrameSource frame;
-            if( m_resourceMovie->getFrame( layer, 0, frame ) == false )
-            {
-                return false;
-            }
-
-            this->updateFrameNode_( layer, node, frame );
+             
+            this->updateFrameNode_( layer, node, 0, false );
                  
             if( layer.parent != 0 && layer.parent != movie_layer_parent_none )
 			{
@@ -2001,34 +2090,7 @@ namespace Menge
         {
 			size_t frameId = _endFrame - indexIn;
 
-			MovieFrameSource frame;
-			if( _endFrame + 1 < indexOut && _layer.immutable == false )
-			{
-				MovieFrameSource frame1;
-				if( m_resourceMovie->getFrame( _layer, frameId, frame1 ) == false )
-				{
-					return;
-				}
-
-				MovieFrameSource frame2;
-				if( m_resourceMovie->getFrame( _layer, frameId + 1, frame2 ) == false )
-				{
-					return;
-				}
-
-				float t = m_frameTiming / frameDuration;
-
-				Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
-			}
-			else
-			{
-	            if( m_resourceMovie->getFrame( _layer, frameId, frame ) == false )
-		        {
-			        return;
-				}
-			}
-
-            this->updateFrameNode_( _layer, _node, frame );
+            this->updateFrameNode_( _layer, _node, frameId, _endFrame + 1 < indexOut );
 
             _node->localHide( false );
 
@@ -2099,35 +2161,8 @@ namespace Menge
         else if( _beginFrame >= indexIn && _endFrame >= indexIn && _endFrame < indexOut )
         {
 			size_t frameId = _endFrame - indexIn;
-
-			MovieFrameSource frame;
-			if( _endFrame + 1 < indexOut && _layer.immutable == false )
-			{
-				MovieFrameSource frame1;
-				if( m_resourceMovie->getFrame( _layer, frameId, frame1 ) == false )
-				{
-					return;
-				}
-
-				MovieFrameSource frame2;
-				if( m_resourceMovie->getFrame( _layer, frameId + 1, frame2 ) == false )
-				{
-					return;
-				}
-
-				float t = m_frameTiming / frameDuration;
-
-				Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
-			}
-			else
-			{
-				if( m_resourceMovie->getFrame( _layer, frameId, frame ) == false )
-				{
-					return;
-				}
-			}
-			
-            this->updateFrameNode_( _layer, _node, frame );
+		
+            this->updateFrameNode_( _layer, _node, frameId, _endFrame + 1 < indexOut );
 
             if( _layer.isAnimatable() == true )
             {
@@ -2184,13 +2219,8 @@ namespace Menge
 
             if( _beginFrame >= indexOut && _endFrame <= indexOut && _endFrame > indexIn )
             {
-                MovieFrameSource frame;
-                if( m_resourceMovie->getFrame( layer, _endFrame - indexIn, frame ) == false )
-                {
-                    continue;
-                }
-
-                this->updateFrameNode_( layer, node, frame );
+				size_t frameId = _endFrame - indexIn;
+                this->updateFrameNode_( layer, node, frameId, false );
 
                 node->localHide(false);
 
@@ -2232,13 +2262,9 @@ namespace Menge
             }
             else if( _beginFrame < indexOut && _endFrame <= indexOut && _endFrame > indexIn )
             {
-                MovieFrameSource frame;
-                if( m_resourceMovie->getFrame( layer, _endFrame - indexIn, frame ) == false )
-                {
-                    continue;
-                }
+				size_t frameId = _endFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frame );
+                this->updateFrameNode_( layer, node, frameId, false );
             }			
         }
     }
@@ -2289,35 +2315,8 @@ namespace Menge
 			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{            
 				size_t frameId = m_currentFrame - indexIn;
-				
-				MovieFrameSource frame;
-				if( m_currentFrame + 1 < indexOut && layer.immutable == false)
-				{
-					MovieFrameSource frame1;
-					if( m_resourceMovie->getFrame( layer, frameId, frame1 ) == false )
-					{
-						return;
-					}
 
-					MovieFrameSource frame2;
-					if( m_resourceMovie->getFrame( layer, frameId + 1, frame2 ) == false )
-					{
-						return;
-					}
-
-					float t = m_frameTiming / frameDuration;
-
-					Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
-				}
-				else
-				{
-					if( m_resourceMovie->getFrame( layer, frameId, frame ) == false )
-					{
-						return;
-					}
-				}
-
-                this->updateFrameNode_( layer, node, frame );
+                this->updateFrameNode_( layer, node, frameId, m_currentFrame + 1 < indexOut );
 
                 node->localHide(false);
 
@@ -2390,34 +2389,7 @@ namespace Menge
             {                
                 size_t frameId = m_currentFrame - indexIn;
 
-				MovieFrameSource frame;
-				if( m_currentFrame + 1 < indexOut && layer.immutable == false )
-				{
-					MovieFrameSource frame1;
-					if( m_resourceMovie->getFrame( layer, frameId, frame1 ) == false )
-					{
-						return;
-					}
-
-					MovieFrameSource frame2;
-					if( m_resourceMovie->getFrame( layer, frameId + 1, frame2 ) == false )
-					{
-						return;
-					}
-
-					float t = m_frameTiming / frameDuration;
-
-					Helper::s_interpolateFrameSource( frame, frame1, frame2, t );
-				}
-				else
-				{
-					if( m_resourceMovie->getFrame( layer, frameId, frame ) == false )
-					{
-						return;
-					}
-				}
-
-                this->updateFrameNode_( layer, node, frame );
+                this->updateFrameNode_( layer, node, frameId, m_currentFrame + 1 < indexOut );
 
                 node->localHide( false );
 

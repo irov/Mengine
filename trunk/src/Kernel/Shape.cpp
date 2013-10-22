@@ -432,8 +432,16 @@ namespace Menge
 
         uint32 argb = color.getAsARGB();
 
-        ApplyColor2D applyColor( argb );
-        std::for_each( m_verticesWM, m_verticesWM + 4, applyColor );
+		for( RenderVertex2D
+			*it = m_verticesWM,
+			*it_end = m_verticesWM + 4;
+		it != it_end;
+		++it )
+		{
+			RenderVertex2D & vtx = *it;
+
+			vtx.color = argb;
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void Shape::_invalidateColor()

@@ -73,6 +73,7 @@ namespace Menge
 		ConstString c_CreateTarget;
 		ConstString c_CreateTexture;
 		ConstString c_Sprite;
+		ConstString c_Mesh;
 		ConstString c_Animation;
 		ConstString c_Camera2D;
 		ConstString c_Camera3D;

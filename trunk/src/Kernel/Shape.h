@@ -77,7 +77,7 @@ namespace Menge
         void updateVerticesColor();
 
     protected:
-        const RenderVertex2D * getVerticesWM();
+        inline const RenderVertex2D * getVerticesWM();
 
     private:
         bool m_textureWrapX;

@@ -210,7 +210,13 @@ namespace Menge
             }
         }
 
-        if ( converter->convert() == false )
+		LOGGER_WARNING(m_serviceProvider)( "ConverterEngine::convert '%s'\nfrom: %s\nto: %s\n"
+			, _converter.c_str()
+			, options.inputFileName.c_str()
+			, options.outputFileName.c_str()
+			);
+
+        if( converter->convert() == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
                 , _converter.c_str()
@@ -222,12 +228,6 @@ namespace Menge
 
             return false;
         }
-
-        LOGGER_WARNING(m_serviceProvider)( "ConverterEngine::convert '%s'\nfrom: %s\nto: %s\n"
-            , _converter.c_str()
-            , options.inputFileName.c_str()
-            , options.outputFileName.c_str()
-            );
         
         _out = options.outputFileName;
         

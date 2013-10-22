@@ -76,6 +76,7 @@ namespace Menge
         INIT_CONST( CreateTarget );
         INIT_CONST( CreateTexture );
         INIT_CONST( Sprite );
+		INIT_CONST( Mesh );
         INIT_CONST( Animation );
         INIT_CONST( Camera2D );
         INIT_CONST( Camera3D );

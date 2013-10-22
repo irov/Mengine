@@ -110,7 +110,7 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		void updateFrameNode_( const MovieLayer & layer, Node * _node, const MovieFrameSource & _frame );
+		bool updateFrameNode_( const MovieLayer & layer, Node * _node, size_t _frameId, bool _interpolate );
 
 	private:
 		bool setupParent_();
@@ -128,6 +128,7 @@ namespace Menge
         bool createMovieSceneEffect_( const MovieLayer & _layer );        
 		bool createMovieNullObject_( const MovieLayer & _layer );
 		bool createMovieImage_( const MovieLayer & _layer );
+		bool createMovieMesh_( const MovieLayer & _layer );
 		bool createMovieImageSolid_( const MovieLayer & _layer );
         bool createMovieSocketImage_( const MovieLayer & _layer );
         bool createMovieSocketShape_( const MovieLayer & _layer );

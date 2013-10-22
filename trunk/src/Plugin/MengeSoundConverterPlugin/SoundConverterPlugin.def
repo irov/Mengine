@@ -1,2 +1,0 @@
-LIBRARY		"MengeSoundCodecPlugin"
-EXPORTS 	dllCreatePlugin 	@1

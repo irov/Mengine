@@ -2644,46 +2644,6 @@ namespace Metacode
                     (_self->*_method)( this->Index );
                 }
                 
-                bool has_MaskPolygon() const
-                {
-                    return MaskPolygon_successful;
-                }
-                
-                bool get_MaskPolygon( Menge::Polygon & _value ) const
-                {
-                    if( MaskPolygon_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    _value = this->MaskPolygon;
-                
-                    return true;
-                }
-                
-                bool swap_MaskPolygon( Menge::Polygon & _value ) const
-                {
-                    if( MaskPolygon_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    std::swap( _value, this->MaskPolygon);
-                
-                    return true;
-                }
-                
-                template<class C, class M>
-                void method_MaskPolygon( C * _self, M _method ) const
-                {
-                    if( MaskPolygon_successful == false )
-                    {
-                        return;
-                    }
-                
-                    (_self->*_method)( this->MaskPolygon );
-                }
-                
                 const Menge::ConstString & get_Name() const
                 {
                     return this->Name;
@@ -2770,6 +2730,46 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->PlayCount );
+                }
+                
+                bool has_Shape() const
+                {
+                    return Shape_successful;
+                }
+                
+                bool get_Shape( bool & _value ) const
+                {
+                    if( Shape_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Shape;
+                
+                    return true;
+                }
+                
+                bool swap_Shape( bool & _value ) const
+                {
+                    if( Shape_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Shape);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Shape( C * _self, M _method ) const
+                {
+                    if( Shape_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Shape );
                 }
                 
                 const Menge::ConstString & get_Source() const
@@ -2911,13 +2911,13 @@ namespace Metacode
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable size_t Index;
-                bool MaskPolygon_successful;
-                mutable Menge::Polygon MaskPolygon;
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 mutable size_t Parent;
                 bool PlayCount_successful;
                 mutable size_t PlayCount;
+                bool Shape_successful;
+                mutable bool Shape;
                 mutable Menge::ConstString Source;
                 mutable float StartInterval;
                 bool Stretch_successful;
@@ -2984,46 +2984,6 @@ namespace Metacode
                     (_self->*_method)( this->Index );
                 }
                 
-                bool has_MaskPolygon() const
-                {
-                    return MaskPolygon_successful;
-                }
-                
-                bool get_MaskPolygon( Menge::Polygon & _value ) const
-                {
-                    if( MaskPolygon_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    _value = this->MaskPolygon;
-                
-                    return true;
-                }
-                
-                bool swap_MaskPolygon( Menge::Polygon & _value ) const
-                {
-                    if( MaskPolygon_successful == false )
-                    {
-                        return false;
-                    }
-                
-                    std::swap( _value, this->MaskPolygon);
-                
-                    return true;
-                }
-                
-                template<class C, class M>
-                void method_MaskPolygon( C * _self, M _method ) const
-                {
-                    if( MaskPolygon_successful == false )
-                    {
-                        return;
-                    }
-                
-                    (_self->*_method)( this->MaskPolygon );
-                }
-                
                 const Menge::ConstString & get_Name() const
                 {
                     return this->Name;
@@ -3110,6 +3070,46 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->PlayCount );
+                }
+                
+                bool has_Shape() const
+                {
+                    return Shape_successful;
+                }
+                
+                bool get_Shape( bool & _value ) const
+                {
+                    if( Shape_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Shape;
+                
+                    return true;
+                }
+                
+                bool swap_Shape( bool & _value ) const
+                {
+                    if( Shape_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Shape);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Shape( C * _self, M _method ) const
+                {
+                    if( Shape_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Shape );
                 }
                 
                 const Menge::ConstString & get_Source() const
@@ -3251,13 +3251,13 @@ namespace Metacode
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable size_t Index;
-                bool MaskPolygon_successful;
-                mutable Menge::Polygon MaskPolygon;
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 mutable size_t Parent;
                 bool PlayCount_successful;
                 mutable size_t PlayCount;
+                bool Shape_successful;
+                mutable bool Shape;
                 mutable Menge::ConstString Source;
                 mutable float StartInterval;
                 bool Stretch_successful;
@@ -4606,6 +4606,206 @@ namespace Metacode
         bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
         bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
     public:
+        class Meta_ImageShape
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_ImageShape();
+        
+        public:
+            unsigned int getId() const override;
+        public:
+            bool has_Count() const
+            {
+                return Count_successful;
+            }
+            
+            bool get_Count( size_t & _value ) const
+            {
+                if( Count_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Count;
+            
+                return true;
+            }
+            
+            bool swap_Count( size_t & _value ) const
+            {
+                if( Count_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Count);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Count( C * _self, M _method ) const
+            {
+                if( Count_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Count );
+            }
+            
+            const float & get_Height() const
+            {
+                return this->Height;
+            }
+            
+            void swap_Height( float & _value ) const
+            {
+                std::swap( _value, this->Height);
+            }
+            
+            template<class C, class M>
+            void method_Height( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Height );
+            }
+            
+            bool has_Immutable() const
+            {
+                return Immutable_successful;
+            }
+            
+            bool get_Immutable( bool & _value ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Immutable;
+            
+                return true;
+            }
+            
+            bool swap_Immutable( bool & _value ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Immutable);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Immutable( C * _self, M _method ) const
+            {
+                if( Immutable_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Immutable );
+            }
+            
+            const size_t & get_LayerIndex() const
+            {
+                return this->LayerIndex;
+            }
+            
+            void swap_LayerIndex( size_t & _value ) const
+            {
+                std::swap( _value, this->LayerIndex);
+            }
+            
+            template<class C, class M>
+            void method_LayerIndex( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->LayerIndex );
+            }
+            
+            const float & get_Width() const
+            {
+                return this->Width;
+            }
+            
+            void swap_Width( float & _value ) const
+            {
+                std::swap( _value, this->Width);
+            }
+            
+            template<class C, class M>
+            void method_Width( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Width );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+        public:
+            class Meta_Shape
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_Shape();
+            
+            public:
+                unsigned int getId() const override;
+            public:
+                const Menge::Polygon & get_Polygon() const
+                {
+                    return this->Polygon;
+                }
+                
+                void swap_Polygon( Menge::Polygon & _value ) const
+                {
+                    std::swap( _value, this->Polygon);
+                }
+                
+                template<class C, class M>
+                void method_Polygon( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->Polygon );
+                }
+                
+            protected:
+                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+                bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+            public:
+            protected:
+            protected:
+                mutable Menge::Polygon Polygon;
+            };
+            
+        protected:
+        protected:
+            bool Count_successful;
+            mutable size_t Count;
+            mutable float Height;
+            bool Immutable_successful;
+            mutable bool Immutable;
+            mutable size_t LayerIndex;
+            mutable float Width;
+        public:
+            typedef stdex::auto_array<Meta_Shape> TVectorMeta_Shape;
+        
+            const TVectorMeta_Shape & get_IncludesShape() const
+            {
+                return this->includes_Meta_Shape;
+            }
+        
+        protected:
+            TVectorMeta_Shape includes_Meta_Shape;
+        };
+        
         class Meta_KeyFrames2D
             : public Metabuf::Metadata
         { 
@@ -5548,6 +5748,16 @@ namespace Metacode
     protected:
     protected:
         mutable size_t MaxIndex;
+    public:
+        typedef stdex::auto_array<Meta_ImageShape> TVectorMeta_ImageShape;
+    
+        const TVectorMeta_ImageShape & get_IncludesImageShape() const
+        {
+            return this->includes_Meta_ImageShape;
+        }
+    
+    protected:
+        TVectorMeta_ImageShape includes_Meta_ImageShape;
     public:
         typedef stdex::auto_array<Meta_KeyFrames2D> TVectorMeta_KeyFrames2D;
     

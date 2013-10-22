@@ -331,22 +331,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     typedef std::vector<RenderVertex2D> TVectorRenderVertex2D;
     //////////////////////////////////////////////////////////////////////////
-    class ApplyColor2D
-    {
-    public:
-        ApplyColor2D( uint32 _argb )
-            : m_argb( _argb )
-        {
-        }
-        void operator()( RenderVertex2D& _vtx )
-        {
-            _vtx.color = m_argb;
-        }
-
-    protected:
-        uint32 m_argb;
-    };
-    //////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
         : public FactorablePtr
 	{

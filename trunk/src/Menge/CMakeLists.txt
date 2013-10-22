@@ -126,6 +126,12 @@ Object2D\\\\Sprite
 )
 
 ADD_FILTER(
+Object2D\\\\Mesh
+	Mesh.cpp
+	Mesh.h
+)
+
+ADD_FILTER(
 Object2D\\\\Movie
 	Movie.cpp
 	Movie.h	

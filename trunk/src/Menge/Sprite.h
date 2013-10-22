@@ -50,7 +50,7 @@ namespace Menge
     protected:
         void invalidateMaterial();
         void updateMaterial();
-        const RenderMaterial * getMaterial();
+        inline const RenderMaterial * getMaterial();
 
     protected:
         void updateResource_();
@@ -74,13 +74,9 @@ namespace Menge
         bool m_invalidateMaterial;
 
 		bool m_disableTextureColor;
+		
 		size_t m_texturesNum;
-		mt::vec2f m_textureMatrixOffset;
-
 		RenderTextureInterfacePtr m_textures[2];
-
-        VBHandle m_maskVB;
-        IBHandle m_maskIB;
     };
     //////////////////////////////////////////////////////////////////////////
     inline const RenderMaterial * Sprite::getMaterial()

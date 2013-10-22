@@ -325,8 +325,17 @@ namespace Menge
 		this->calcTotalColor(color);
 
 		uint32 argb = color.getAsARGB();
-		ApplyColor2D applyColor( argb );
-		std::for_each( _vertices, _vertices + 4, applyColor );
+
+		for( RenderVertex2D
+			*it = _vertices,
+			*it_end = _vertices + 4;
+		it != it_end;
+		++it )
+		{
+			RenderVertex2D & vtx = *it;
+
+			vtx.color = argb;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateWorldMatrix()

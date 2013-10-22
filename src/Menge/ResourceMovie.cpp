@@ -84,29 +84,6 @@ namespace Menge
 		return m_camera3D;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//namespace Helper
-	//{
-		////////////////////////////////////////////////////////////////////////////
-		//static void s_linerp( float & _out, float _in1, float _in2, float _scale )
-		//{
-		//	_out = _in1 + ( _in2 - _in1 ) * _scale; 
-		//}
-		////////////////////////////////////////////////////////////////////////////
-		//static void s_linerp_v2( mt::vec2f & _out, const mt::vec2f & _in1, const mt::vec2f & _in2, float _scale )
-		//{
-		//	s_linerp(_out.x, _in1.x, _in2.x, _scale);
-		//	s_linerp(_out.y, _in1.y, _in2.y, _scale);
-		//}
-		////////////////////////////////////////////////////////////////////////////
-		//static void s_linerp_f4( float * _out, const float * _frame1, const float * _frame2, float _scale )
-		//{
-		//	s_linerp(_out[0], _frame1[0], _frame2[0], _scale);
-		//	s_linerp(_out[1], _frame1[1], _frame2[1], _scale);
-		//	s_linerp(_out[2], _frame1[2], _frame2[2], _scale);
-		//	s_linerp(_out[3], _frame1[3], _frame2[3], _scale);
-		//}
-	//}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::isFrameImmutable( const MovieLayer & _layer ) const
 	{
 		const MovieLayerFrame & layer = m_keyFramePack->getLayer( _layer.index );
@@ -149,6 +126,23 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::getShape( const MovieLayer & _layer, size_t _index, const MovieFrameShape ** _shape ) const
+	{
+		if( m_keyFramePack->getLayerShape( _layer.index, _index, _shape ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getShape %s invalid frame '%s' %d:%d"
+				, this->getName().c_str()
+				, _layer.name.c_str()
+				, _layer.index
+				, _index
+				);
+
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -296,7 +290,7 @@ namespace Menge
             ml.startInterval = meta_layer2d.get_StartInterval();
 
             meta_layer2d.get_TimeRemap( ml.timeRemap );
-            meta_layer2d.get_MaskPolygon( ml.maskPolygon );
+            meta_layer2d.get_Shape( ml.shape );
             meta_layer2d.get_PlayCount( ml.playCount );
             meta_layer2d.get_Stretch( ml.scretch );
 
@@ -341,7 +335,7 @@ namespace Menge
             ml.startInterval = meta_layer3d.get_StartInterval();
 
             meta_layer3d.get_TimeRemap( ml.timeRemap );
-            meta_layer3d.get_MaskPolygon( ml.maskPolygon );
+            meta_layer3d.get_Shape( ml.shape );
             meta_layer3d.get_PlayCount( ml.playCount );
             meta_layer3d.get_Stretch( ml.scretch );
 				
@@ -405,8 +399,13 @@ namespace Menge
                 it->state |= MOVIE_LAYER_NODE;
             }
             else if( it->layerType == CONST_STRING(m_serviceProvider, Image) )
-            {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_MASK;
+            {				
+                it->state |= MOVIE_LAYER_NODE;
+				
+				if( it->shape == true )
+				{
+					it->state |= MOVIE_LAYER_MESH;
+				}
             }
             else if( it->layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
             {

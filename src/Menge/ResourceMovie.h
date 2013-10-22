@@ -26,7 +26,7 @@ namespace Menge
     const size_t MOVIE_LAYER_EVENT = 0x0020;
     const size_t MOVIE_LAYER_EXTRA = 0x0040;
     const size_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
-    const size_t MOVIE_LAYER_MASK = 0x0100;
+    const size_t MOVIE_LAYER_MESH = 0x0100;
 	
     const size_t movie_layer_parent_none = (size_t)-1;
 
@@ -36,6 +36,7 @@ namespace Menge
 			: index(movie_layer_parent_none)
 			, parent(0)
             , timeRemap(false)
+			, shape(false)
             , playCount(1)
             , scretch(1.f)
             , loop(false)
@@ -53,7 +54,7 @@ namespace Menge
 		size_t parent;
 
         bool timeRemap;
-        Polygon maskPolygon;
+        bool shape;
         size_t playCount;        
         float scretch;
         bool loop;
@@ -89,9 +90,9 @@ namespace Menge
             return (state & MOVIE_LAYER_MOVIE) > 0;
         }
 
-        bool isMask() const
+        bool isMesh() const
         {
-            return (state & MOVIE_LAYER_MASK) > 0;
+            return (state & MOVIE_LAYER_MESH) > 0;
         }
 
 		bool isThreeD() const
@@ -187,6 +188,7 @@ namespace Menge
 		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
 
         bool getTimeRemap( const MovieLayer & _layer, size_t _index, float & _time ) const;
+		bool getShape( const MovieLayer & _layer, size_t _index, const MovieFrameShape ** _shape ) const;
 
     public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );

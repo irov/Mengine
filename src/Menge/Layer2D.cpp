@@ -110,15 +110,24 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::createRenderViewport_()
     {
-        if( m_cameraViewport == NULL )
+        if( m_cameraViewport == nullptr )
         {
             m_cameraViewport = NODE_SERVICE(m_serviceProvider)
-                ->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );            
+				->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
 
-            this->addChildren( m_cameraViewport );
-        }
+			if( m_cameraViewport == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Layer2D::createRenderViewport_ %s invalid create Camera2D"
+					, this->getName().c_str()
+					);
 
-        m_cameraViewport->setViewport( m_viewport );       
+				return;
+			}
+
+			this->addChildren( m_cameraViewport );
+		}
+
+        m_cameraViewport->setViewport( m_viewport );
 
         this->setRenderCamera( m_cameraViewport );
     }

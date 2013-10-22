@@ -52,7 +52,7 @@ namespace Menge
 		 
 		if( framePak == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "MovieKeyFrameManager: can`t load file category '%s' path '%s'"
+			LOGGER_ERROR(m_serviceProvider)( "MovieKeyFrameManager: can`t load frame pak category '%s' path '%s'"
 				, _pak.c_str()
 				, _path.c_str()
 				);
@@ -75,6 +75,33 @@ namespace Menge
 
 		size_t binary_aek_header;
 		input_stream->read( &binary_aek_header, sizeof(binary_aek_header) );
+
+		if( binary_aek_header != 0xAEAEBABE )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "MovieKeyFrameManager::createMovieFramePak_: aek invalid header category '%s' path '%s'"
+				, _pak.c_str()
+				, _path.c_str()
+				);
+
+			return nullptr;
+		}
+
+		size_t binary_aek_version_valid = 2;
+
+		size_t binary_aek_version;
+		input_stream->read( &binary_aek_version, sizeof(binary_aek_version) );
+
+		if( binary_aek_version != binary_aek_version_valid )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "MovieKeyFrameManager::createMovieFramePak_: aek invalid version %d:%d category '%s' path '%s'"
+				, binary_aek_version
+				, binary_aek_version_valid
+				, _pak.c_str()
+				, _path.c_str()
+				);
+
+			return nullptr;
+		}
 
 		size_t binary_aek_size;
 		input_stream->read( &binary_aek_size, sizeof(binary_aek_size) );
@@ -155,275 +182,36 @@ namespace Menge
 			}
 		}
 
-		//bool exist = false;
-		//
-		//Metacode::Meta_KeyFramesPack keyFramesPack;
+		size_t layers_shapes_size;
+		ar >> layers_shapes_size;
 
-  //      if( LOADER_SERVICE(m_serviceProvider)->load( _pak, _path, &keyFramesPack, exist ) == false )
-  //      {
-  //          if( exist == false )
-  //          {
-  //              LOGGER_ERROR(m_serviceProvider)( "MovieKeyFrameManager: KeyFramesFile '%s' not found"
-  //                  , _path.c_str()
-  //                  );
-  //          }
-  //          else
-  //          {
-  //              LOGGER_ERROR(m_serviceProvider)( "MovieKeyFrameManager: KeyFramesFile invalid parse '%s' "
-  //                  , _path.c_str()
-  //                  );
-  //          }
+		for( size_t it_layer = 0; it_layer != layers_shapes_size; ++it_layer )
+		{
+			size_t shapes_size;
+			ar >> shapes_size;
 
-  //          return nullptr;
-  //      }
+			if( shapes_size > 0 )
+			{
+				MovieLayerShapes & shapes = pack->mutableLayerShape( it_layer + 1 );
+				shapes.shapes.resize( shapes_size );
 
-  //      size_t maxIndex = keyFramesPack.get_MaxIndex();
+				for( size_t it_shapes = 0; it_shapes != shapes_size; ++it_shapes )
+				{
+					MovieFrameShape & shape = shapes.shapes[it_shapes];
 
-  //      MovieFramePack * pack = m_poolMovieFramePack.createObjectT();
+					ar >> shape.vertexCount;
 
-  //      pack->initialize( maxIndex );
+					if( shape.vertexCount > 0 )
+					{
+						ar.readPODs( shape.pos, shape.vertexCount );
+						ar.readPODs( shape.uv, shape.vertexCount );
 
-  //      const Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_IncludesTimeRemap();
-
-  //      for( Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap::const_iterator 
-  //          it = includes_timeremaps.begin(),
-  //          it_end = includes_timeremaps.end();
-  //      it != it_end;
-  //      ++it )
-  //      {
-  //          const Metacode::Meta_KeyFramesPack::Meta_TimeRemap & meta_timeremap = *it;
-
-  //          size_t layerIndex = meta_timeremap.get_LayerIndex();
-
-  //          const Floats & floats = meta_timeremap.get_Time();
-
-  //          MovieLayerTimeRemap timeremap;
-
-  //          timeremap.times = floats;
-
-  //          pack->addLayerTimeRemap( layerIndex, timeremap );
-  //      }
-
-  //      
-  //      const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D(); 
-
-  //      for( Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D::const_iterator
-  //          it = includes_frames2d.begin(),
-  //          it_end = includes_frames2d.end();
-  //      it != it_end;
-  //      ++it )
-  //      {
-  //          const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D & meta_frames2d = *it;
-
-  //          size_t layerIndex = meta_frames2d.get_LayerIndex();
-  //          
-  //          size_t count = 0;
-  //          meta_frames2d.get_Count( count );
-  //          
-  //          bool immutable = false;
-  //          meta_frames2d.get_Immutable( immutable );
-
-  //          pack->initializeLayer( layerIndex, count, immutable );
-
-		//	if( immutable == true )
-		//	{
-		//		const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
-
-		//		for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D::const_iterator
-		//			it = includes_frame2d.begin(),
-		//			it_end = includes_frame2d.end();
-		//		it != it_end;
-		//		++it )
-		//		{
-		//			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it;
-
-		//			mt::vec2f anchorPoint2d;
-		//			mt::vec2f position2d;
-		//			mt::vec2f scale2d;
-		//			float angle;
-		//			float opacity = 1.f;
-
-		//			size_t count = 1;
-
-		//			float volume = 1.f;
-
-		//			meta_frame2d.get_AnchorPoint( anchorPoint2d );
-		//			meta_frame2d.get_Position( position2d );
-		//			meta_frame2d.get_Scale( scale2d );
-		//			meta_frame2d.get_Rotation( angle );
-		//			meta_frame2d.get_Opacity( opacity );
-		//			meta_frame2d.get_Count( count );
-		//			meta_frame2d.get_Volume( volume );
-
-		//			MovieFrameSource frame;
-
-		//			frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
-		//			frame.position = mt::vec3f(position2d, 0.f);
-		//			frame.scale = mt::vec3f(scale2d, 1.f);
-		//			frame.opacity = opacity;
-		//			frame.volume = volume;
-
-		//			frame.rotation.x = -angle;
-		//			frame.rotation.y = 0.f;
-		//			frame.rotation.z = 0.f;
-
-		//			pack->setLayerImmutableFrame( layerIndex, frame );
-		//		}
-		//	}
-		//	else
-		//	{
-		//		MovieFrameSource frame;
-		//		bool frameLast = false;
-		//
-		//		const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
-
-		//		for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D::const_iterator
-		//			it = includes_frame2d.begin(),
-		//			it_end = includes_frame2d.end();
-		//		it != it_end;
-		//		++it )
-		//		{
-		//			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it;
-
-		//			size_t count = 1;
-		//			
-		//			mt::vec2f anchorPoint2d;
-		//			mt::vec2f position2d;
-		//			mt::vec2f scale2d;
-
-		//			float angle;
-
-		//			float volume = 1.f;
-
-		//			if( frameLast == true )
-		//			{
-		//				angle = -frame.rotation.x;
-
-		//				anchorPoint2d = frame.anchorPoint.to_vec2f();
-		//				position2d = frame.position.to_vec2f();
-		//				scale2d = frame.scale.to_vec2f();
-		//				volume = frame.volume;
-		//			}
-		//			else
-		//			{
-		//				frameLast = true;
-		//			}					
-
-		//			meta_frame2d.get_AnchorPoint( anchorPoint2d );
-		//			meta_frame2d.get_Position( position2d );
-		//			meta_frame2d.get_Scale( scale2d );
-		//			meta_frame2d.get_Rotation( angle );
-		//			meta_frame2d.get_Opacity( frame.opacity );
-		//			meta_frame2d.get_Count( count );
-		//			meta_frame2d.get_Volume( volume );
-
-		//			frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
-		//			frame.position = mt::vec3f(position2d, 0.f);
-		//			frame.scale = mt::vec3f(scale2d, 1.f);
-
-		//			frame.volume = volume;
-
-		//			frame.rotation.x = -angle;
-		//			frame.rotation.y = 0.f;
-		//			frame.rotation.z = 0.f;
-
-		//			for( size_t i = 0; i != count; ++i )
-		//			{
-		//				pack->addLayerFrame( layerIndex, frame );
-		//			}
-		//		}
-		//	}
-		//}
-
-    //    const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames3D & includes_frames3d = keyFramesPack.get_IncludesKeyFrames3D(); 
-
-    //    for( Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames3D::const_iterator
-    //        it = includes_frames3d.begin(),
-    //        it_end = includes_frames3d.end();
-    //    it != it_end;
-    //    ++it )
-    //    {
-    //        const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D & meta_frames3d = *it;
-
-    //        size_t layerIndex = meta_frames3d.get_LayerIndex();
-
-    //        size_t count = 0;
-    //        meta_frames3d.get_Count( count );
-
-    //        bool immutable = false;
-    //        meta_frames3d.get_Immutable( immutable );
-
-    //        pack->initializeLayer( layerIndex, count, immutable );
-
-    //        const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
-
-    //        for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D::const_iterator
-    //            it = includes_frame3d.begin(),
-    //            it_end = includes_frame3d.end();
-    //        it != it_end;
-    //        ++it )
-    //        {
-    //            const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it;
-
-    //            size_t count = 1;
-
-    //            mt::vec3f anchorPoint;
-    //            mt::vec3f rotation;
-    //            mt::vec3f position;
-    //            mt::vec3f scale;
-
-    //            MovieFrameSource frame;
-
-    //            float volume = 1.f;
-
-    //            if( pack->getLayerFrameLast( layerIndex, frame ) == true )
-    //            {
-    //                anchorPoint = frame.anchorPoint;
-    //                position = frame.position;
-    //                rotation = frame.rotation;
-    //                scale = frame.scale;
-    //                volume = frame.volume;
-    //            }
-
-    //            meta_frame3d.get_AnchorPoint( frame.anchorPoint );
-    //            meta_frame3d.get_Position( frame.position );
-    //            meta_frame3d.get_Rotation( frame.rotation );
-    //            meta_frame3d.get_Scale( frame.scale );                
-    //            meta_frame3d.get_Opacity( frame.opacity );
-    //            meta_frame3d.get_Count( count );
-
-    //            //if( meta_frame3d.has_Mask() == true )
-    //            //{
-    //            //    Polygon polygon;
-    //            //    meta_frame3d.get_Mask( polygon );
-
-    //            //    boost::geometry::correct( polygon );
-
-    //            //    size_t index = pack->addPolygon( polygon );
-
-    //            //    frame.mask = index;
-    //            //}
-    //            //else
-    //            //{
-    //            //    frame.mask = mask;
-    //            //}
-				//
-				//frame.volume = 1.f;
-				//meta_frame3d.get_Volume( frame.volume );
-
-    //            if( pack->isLayerImmutable( layerIndex ) == false )
-    //            {
-    //                for( size_t i = 0; i != count; ++i )
-    //                {
-    //                    pack->addLayerFrame( layerIndex, frame );
-    //                }
-    //            }
-    //            else
-    //            {
-    //                pack->setLayerImmutableFrame( layerIndex, frame );
-    //            }
-    //        }
-    //    }
+						ar >> shape.indexCount;
+						ar.readPODs( shape.indecies, shape.indexCount );
+					}
+				}
+			}
+		}
 
 		return pack;
 	}

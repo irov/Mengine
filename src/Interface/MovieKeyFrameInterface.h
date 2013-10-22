@@ -42,6 +42,26 @@ namespace Menge
         Floats times;
     };
 
+#	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 16
+#	define MENGINE_MOVIE_SHAPE_MAX_INDECIES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
+
+	struct MovieFrameShape
+	{
+		mt::vec3f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
+		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
+		uint16 indecies[MENGINE_MOVIE_SHAPE_MAX_INDECIES];
+
+		size_t vertexCount;
+		size_t indexCount;
+	};
+
+	typedef std::vector<MovieFrameShape> TVectorMovieFrameShapes;
+
+	struct MovieLayerShapes
+	{
+		TVectorMovieFrameShapes shapes;
+	};
+
     class MovieFramePackInterface
         : public Factorable
     {
@@ -54,7 +74,10 @@ namespace Menge
 
     public:
         virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;
-    };
+
+	public:
+		virtual bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
+	};
 
     class MovieKeyFrameServiceInterface
         : public ServiceInterface

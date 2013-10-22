@@ -77,6 +77,18 @@ namespace Menge
 		return timeremap;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MovieFramePack::addLayerShape( size_t _layerIndex, const MovieLayerShapes & _shapes )
+	{
+		m_shapes[_layerIndex - 1] = _shapes;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MovieLayerShapes & MovieFramePack::mutableLayerShape( size_t _layerIndex )
+	{
+		MovieLayerShapes & shapes = m_shapes[_layerIndex - 1];
+
+		return shapes;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerImmutableFrame( size_t _layerIndex, MovieFrameSource & _frame ) const
 	{
 		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
@@ -175,6 +187,17 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool MovieFramePack::getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const
+	{
+		const MovieLayerShapes & shapes = m_shapes[_layerIndex - 1];
+
+		const MovieFrameShape & shape = shapes.shapes[_frameIndex];
+
+		*_shape = &shape;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const TVectorMovieFrameLayer & MovieFramePack::getLayers() const
 	{
 		return m_layers;
@@ -184,5 +207,9 @@ namespace Menge
 	{
 		return m_timeremap;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
+	const TVectorMovieLayerShapes & MovieFramePack::getShapes() const
+	{
+		return m_shapes;
+	}
 }

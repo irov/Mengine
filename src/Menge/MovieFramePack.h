@@ -13,6 +13,7 @@ namespace Menge
 {
     typedef std::vector<MovieLayerFrame> TVectorMovieFrameLayer;
     typedef std::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
+	typedef std::vector<MovieLayerShapes> TVectorMovieLayerShapes;
 
 	class MovieFramePack
         : public MovieFramePackInterface
@@ -36,6 +37,9 @@ namespace Menge
     public:
         bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const override;
 
+	public:
+		bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const override;
+
     public:
         bool getLayerFrameLast( size_t _layerIndex, MovieFrameSource & _frame ) const;
 		bool getLayerImmutableFrame( size_t _layerIndex, MovieFrameSource & _frame ) const;
@@ -54,11 +58,17 @@ namespace Menge
 		MovieLayerTimeRemap & mutableLayerTimeRemap( size_t _layerIndex );
 
 	public:
+		void addLayerShape( size_t _layerIndex, const MovieLayerShapes & _shapes );
+		MovieLayerShapes & mutableLayerShape( size_t _layerIndex );
+
+	public:
 		const TVectorMovieFrameLayer & getLayers() const;
 		const TVectorMovieLayerTimeRemap & getTimeremap() const;
+		const TVectorMovieLayerShapes & getShapes() const;
 			
 	protected:
 		TVectorMovieFrameLayer m_layers;
         TVectorMovieLayerTimeRemap m_timeremap;
+		TVectorMovieLayerShapes m_shapes;
 	};
 }

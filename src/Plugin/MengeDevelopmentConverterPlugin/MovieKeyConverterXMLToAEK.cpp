@@ -103,6 +103,103 @@ namespace Menge
 			_movieFramePack.addLayerTimeRemap( layerIndex, timeremap );
 		}
 
+		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_IncludesImageShape();
+
+		for( Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape::const_iterator 
+			it = includes_imageshapes.begin(),
+			it_end = includes_imageshapes.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
+
+			size_t layerIndex = meta_imageshape.get_LayerIndex();
+			float width = meta_imageshape.get_Width();
+			float height = meta_imageshape.get_Height();
+
+			MovieLayerShapes shapes;
+
+			const Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape & includes_shapes = meta_imageshape.get_IncludesShape();
+
+			for( Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape::const_iterator
+				it_shape = includes_shapes.begin(),
+				it_shape_end = includes_shapes.end();
+			it_shape != it_shape_end;
+			++it_shape )
+			{
+				const Metacode::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
+
+				const Menge::Polygon & polygon = meta_shape.get_Polygon();
+
+				Polygon imagePolygon;
+				mt::vec2f v0(0.f, 0.f);
+				mt::vec2f v1(width, 0.f);
+				mt::vec2f v2(width, height);
+				mt::vec2f v3(0.f, height);
+
+				boost::geometry::append( imagePolygon, v0 );
+				boost::geometry::append( imagePolygon, v1 );
+				boost::geometry::append( imagePolygon, v2 );
+				boost::geometry::append( imagePolygon, v3 );
+				
+				std::deque<Menge::Polygon> output;
+				boost::geometry::intersection( imagePolygon, polygon, output );
+
+				const Menge::Polygon & shape_vertex = output[0];
+
+				size_t shapeVertexCount = boost::geometry::num_points( shape_vertex );
+
+				if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
+				{
+					return false;
+				}
+
+				Menge::TVectorIndices shape_indices;
+
+				if( Menge::triangulate_polygon_indices( shape_vertex, shape_indices ) == false )
+				{
+					printf("triangulate failed\n"
+						);
+
+					return false;
+				}
+
+				size_t shapeIndicesCount = shape_indices.size();
+
+				if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDECIES )
+				{
+					return false;
+				}
+
+				MovieFrameShape shape;
+				shape.vertexCount = shapeVertexCount;
+				shape.indexCount = shapeIndicesCount;
+
+				for( size_t i = 0; i != shapeVertexCount; ++i )
+				{
+					mt::vec3f & pos = shape.pos[i];
+
+					pos.x = shape_vertex.outer()[i].x;
+					pos.y = shape_vertex.outer()[i].y;
+					pos.z = 0.f;
+
+					mt::vec2f & uv = shape.uv[i];
+					uv.x = pos.x / width;
+					uv.y = pos.y / height;
+				}
+
+				for( size_t i = 0; i != shapeIndicesCount; ++i )
+				{
+					uint16 & indices = shape.indecies[i];
+
+					indices = shape_indices[i];
+				}							
+
+				shapes.shapes.push_back( shape );
+			}
+
+			_movieFramePack.addLayerShape( layerIndex, shapes );
+		}
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D(); 
 
@@ -390,6 +487,44 @@ namespace Menge
 			}
 		}
 
+		const TVectorMovieLayerShapes & layers_shapes = _movieFramePack.getShapes();
+
+		size_t layers_shapes_size = layers_shapes.size();
+		aw << layers_shapes_size;
+
+		for( TVectorMovieLayerShapes::const_iterator
+			it = layers_shapes.begin(),
+			it_end = layers_shapes.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayerShapes & shapes = *it;
+
+			size_t shapes_size = shapes.shapes.size();
+			aw << shapes_size;
+
+			for( TVectorMovieFrameShapes::const_iterator
+				it_shape = shapes.shapes.begin(),
+				it_shape_end = shapes.shapes.end();
+			it_shape != it_shape_end;
+			++it_shape )
+			{
+				const MovieFrameShape & shape = *it_shape;
+
+				aw << shape.vertexCount;
+
+				if( shape.vertexCount > 0 )
+				{
+					aw.writePODs( shape.pos, shape.vertexCount );
+					aw.writePODs( shape.uv, shape.vertexCount );
+
+					aw << shape.indexCount;
+
+					aw.writePODs( shape.indecies, shape.indexCount );
+				}
+			}
+		}
+
 		size_t binary_aek_size = binary_aek.size();
 		
 		size_t compress_bound = ARCHIVE_SERVICE(m_serviceProvider)
@@ -415,6 +550,9 @@ namespace Menge
 
 		size_t binary_aek_header = 0xAEAEBABE;
 		output_stream->write( &binary_aek_header, sizeof(binary_aek_header) );
+
+		size_t binary_aek_version = 2;
+		output_stream->write( &binary_aek_version, sizeof(binary_aek_version) );
 
 		output_stream->write( &binary_aek_size, sizeof(binary_aek_size) );
 		output_stream->write( &compress_size, sizeof(compress_size) );

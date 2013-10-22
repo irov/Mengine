@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 36;
+        _needVersion = 37;
 
-        if( version != 36 )
+        if( version != 37 )
         {
             return false;
         }
@@ -2352,8 +2352,8 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
         : Metabuf::Metadata()
-        , MaskPolygon_successful(false)
         , PlayCount_successful(false)
+        , Shape_successful(false)
         , Stretch_successful(false)
         , TimeRemap_successful(false)
     {
@@ -2395,17 +2395,6 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
-            {
-                if( this->read( _buff, _size, _read, this->MaskPolygon ) == false )
-                {
-                    return false;
-                }
-    
-                this->MaskPolygon_successful = true;
-    
-                return true;
-            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Name ) == false )
@@ -2441,6 +2430,17 @@ namespace Metacode
                 }
     
                 this->PlayCount_successful = true;
+    
+                return true;
+            }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->Shape ) == false )
+                {
+                    return false;
+                }
+    
+                this->Shape_successful = true;
     
                 return true;
             }break;
@@ -2531,8 +2531,8 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
         : Metabuf::Metadata()
-        , MaskPolygon_successful(false)
         , PlayCount_successful(false)
+        , Shape_successful(false)
         , Stretch_successful(false)
         , TimeRemap_successful(false)
     {
@@ -2574,17 +2574,6 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
-            {
-                if( this->read( _buff, _size, _read, this->MaskPolygon ) == false )
-                {
-                    return false;
-                }
-    
-                this->MaskPolygon_successful = true;
-    
-                return true;
-            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Name ) == false )
@@ -2620,6 +2609,17 @@ namespace Metacode
                 }
     
                 this->PlayCount_successful = true;
+    
+                return true;
+            }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->Shape ) == false )
+                {
+                    return false;
+                }
+    
+                this->Shape_successful = true;
     
                 return true;
             }break;
@@ -3738,11 +3738,17 @@ namespace Metacode
         {
         case 3:
             {
-                includes_Meta_KeyFrames2D.reserve( _count );
+                includes_Meta_ImageShape.reserve( _count );
                 return true;
                 break;
             }
         case 4:
+            {
+                includes_Meta_KeyFrames2D.reserve( _count );
+                return true;
+                break;
+            }
+        case 5:
             {
                 includes_Meta_KeyFrames3D.reserve( _count );
                 return true;
@@ -3765,7 +3771,7 @@ namespace Metacode
         {
         case 3:
             {
-                Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.emplace_back();
+                Meta_KeyFramesPack::Meta_ImageShape & metadata = includes_Meta_ImageShape.emplace_back();
     
                 if( metadata.parse( _buff, _size, _read, m_userData ) == false )
                 {
@@ -3776,6 +3782,18 @@ namespace Metacode
                 break;
             }
         case 4:
+            {
+                Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.emplace_back();
+    
+                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+                break;
+            }
+        case 5:
             {
                 Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.emplace_back();
     
@@ -3815,6 +3833,182 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_ImageShape::Meta_ImageShape()
+        : Metabuf::Metadata()
+        , Count_successful(false)
+        , Immutable_successful(false)
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::Meta_ImageShape::getId() const
+    {
+        return 3;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    {
+        switch( _id )
+        {
+        case 5:
+            {
+                if( this->read( _buff, _size, _read, this->Count ) == false )
+                {
+                    return false;
+                }
+    
+                this->Count_successful = true;
+    
+                return true;
+            }break;
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->Height ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 4:
+            {
+                if( this->read( _buff, _size, _read, this->Immutable ) == false )
+                {
+                    return false;
+                }
+    
+                this->Immutable_successful = true;
+    
+                return true;
+            }break;
+        case 1:
+            {
+                if( this->read( _buff, _size, _read, this->LayerIndex ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->Width ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    {
+        switch( _includes )
+        {
+        case 6:
+            {
+                includes_Meta_Shape.reserve( _count );
+                return true;
+                break;
+            }
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    {
+        switch( _includes )
+        {
+        case 6:
+            {
+                Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata = includes_Meta_Shape.emplace_back();
+    
+                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+                break;
+            }
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_generators;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::Meta_Shape()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    unsigned int Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::getId() const
+    {
+        return 6;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    {
+        switch( _id )
+        {
+        case 1:
+            {
+                if( this->read( _buff, _size, _read, this->Polygon ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    {
+        (void)_includes;
+        (void)_count;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_includes;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_generators;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrames2D()
         : Metabuf::Metadata()
         , Count_successful(false)
@@ -3824,7 +4018,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_KeyFramesPack::Meta_KeyFrames2D::getId() const
     {
-        return 3;
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -4057,7 +4251,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_KeyFramesPack::Meta_KeyFrames3D::getId() const
     {
-        return 4;
+        return 5;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )

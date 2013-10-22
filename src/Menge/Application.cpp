@@ -58,6 +58,7 @@
 #	include "Point.h"
 #	include "SoundEmitter.h"
 #	include "Sprite.h"
+#	include "Mesh.h"
 #	include "TextField.h"
 #	include "TileMap.h"
 #	include "Track.h"
@@ -435,6 +436,7 @@ namespace Menge
 		//NODE_FACTORY( PhysicalBody2D );
 		NODE_FACTORY( m_serviceProvider, SoundEmitter );
 		NODE_FACTORY( m_serviceProvider, Sprite );
+		NODE_FACTORY( m_serviceProvider, Mesh );
 		NODE_FACTORY( m_serviceProvider, TextField );
 		//NODE_FACTORY( TileMap );
 		//NODE_FACTORY( Track );

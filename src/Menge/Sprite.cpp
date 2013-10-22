@@ -236,7 +236,7 @@ namespace	Menge
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
-		for( int i = 1; i != 4; ++i )
+		for( size_t i = 1; i != 4; ++i )
 		{
 			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
 		}
@@ -250,6 +250,8 @@ namespace	Menge
 
         if( m_solid != solid )
         {
+			m_solid = solid;
+
             this->invalidateMaterial();
         }
     }

@@ -70,7 +70,7 @@ namespace Menge
 
 		if( input_stream == nullptr )
 		{
-			return false;
+			return nullptr;
 		}
 
 		size_t binary_aek_header;
@@ -121,7 +121,7 @@ namespace Menge
 		if( ARCHIVE_SERVICE(m_serviceProvider)
 			->uncompress( &binary_aek[0], binary_aek_size, uncompressSize, &compress[0], compress_size ) == false )
 		{
-			return false;
+			return nullptr;
 		}
 
 		ArchiveRead ar(binary_aek.begin(), binary_aek.end());

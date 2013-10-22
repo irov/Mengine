@@ -141,7 +141,7 @@ namespace Menge
 				boost::geometry::append( imagePolygon, v0 );
 				boost::geometry::append( imagePolygon, v1 );
 				boost::geometry::append( imagePolygon, v2 );
-				boost::geometry::append( imagePolygon, v3 );							
+				boost::geometry::append( imagePolygon, v3 );
 				boost::geometry::correct( imagePolygon );
 				
 				std::deque<Menge::Polygon> output;
@@ -149,7 +149,7 @@ namespace Menge
 				
 				if( output.empty() == true )
 				{
-					MovieFrameShape shape;	
+					MovieFrameShape shape;
 					shape.vertexCount = 0;
 					shape.indexCount = 0;
 

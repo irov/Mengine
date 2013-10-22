@@ -198,7 +198,7 @@ namespace Menge
 				for( size_t it_shapes = 0; it_shapes != shapes_size; ++it_shapes )
 				{
 					MovieFrameShape & shape = shapes.shapes[it_shapes];
-
+					
 					ar >> shape.vertexCount;
 
 					if( shape.vertexCount > 0 )
@@ -208,6 +208,10 @@ namespace Menge
 
 						ar >> shape.indexCount;
 						ar.readPODs( shape.indecies, shape.indexCount );
+					}
+					else
+					{
+						shape.indexCount = 0;
 					}
 				}
 			}

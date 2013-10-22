@@ -31,7 +31,7 @@ namespace Menge
 		, m_vertexCount(0)
 		, m_indicesCount(0)
 		, m_textureUVOffset(0.f, 0.f)
-		, m_textureUVScale(0.f, 0.f)
+		, m_textureUVScale(1.f, 1.f)
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -278,6 +278,9 @@ namespace Menge
 	{
 		m_invalidateVerticesLocal = false;
 
+		const mt::vec4f & image_uv = m_resourceImage->getUVImage();
+		const mt::vec4f & image_uvAlpha = m_resourceImage->getUVAlpha();
+
 		if( m_uvRotate == false )
 		{
 			// RGB(A)
@@ -286,8 +289,11 @@ namespace Menge
 				{
 					const mt::vec2f & uv = m_uvLocal[i];
 
-					m_verticesWM[i].uv.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
+					float u = image_uv.x + (image_uv.z - image_uv.x) * uv.x;
+					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.y;
+
+					m_verticesWM[i].uv.x = u * m_textureUVScale.x + m_textureUVOffset.x;
+					m_verticesWM[i].uv.y = v * m_textureUVScale.y + m_textureUVOffset.y;
 				}
 			}
 
@@ -298,8 +304,11 @@ namespace Menge
 				{
 					const mt::vec2f & uv = m_uvLocal[i];
 
-					m_verticesWM[i].uv2.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv2.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
+					float u = image_uvAlpha.x + (image_uvAlpha.z - image_uvAlpha.x) * uv.x;
+					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.y;
+
+					m_verticesWM[i].uv2.x = u * m_textureUVScale.x + m_textureUVOffset.x;
+					m_verticesWM[i].uv2.y = v * m_textureUVScale.y + m_textureUVOffset.y;
 				}
 			}
 		}
@@ -311,8 +320,11 @@ namespace Menge
 				{
 					const mt::vec2f & uv = m_uvLocal[i];
 
-					m_verticesWM[i].uv.x = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv.y = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
+					float u = image_uv.x + (image_uv.z - image_uv.x) * uv.y;
+					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.x;
+
+					m_verticesWM[i].uv.x = u * m_textureUVScale.x + m_textureUVOffset.x;
+					m_verticesWM[i].uv.y = v * m_textureUVScale.y + m_textureUVOffset.y;
 				}
 			}
 
@@ -323,8 +335,11 @@ namespace Menge
 				{
 					const mt::vec2f & uv = m_uvLocal[i];
 
-					m_verticesWM[i].uv2.x = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv2.y = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
+					float u = image_uvAlpha.x + (image_uvAlpha.z - image_uvAlpha.x) * uv.y;
+					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.x;
+
+					m_verticesWM[i].uv2.x = u * m_textureUVScale.x + m_textureUVOffset.x;
+					m_verticesWM[i].uv2.y = v * m_textureUVScale.y + m_textureUVOffset.y;
 				}
 			}
 		}
@@ -392,15 +407,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16 * _indicies, size_t _countIndex )
 	{
-		memcpy( m_verticesLocal, _position, _countVertex );
-		memcpy( m_uvLocal, _uv, _countVertex );
+		memcpy( m_verticesLocal, _position, sizeof(mt::vec3f) * _countVertex );
+		memcpy( m_uvLocal, _uv, sizeof(mt::vec2f) * _countVertex );
 
-		memcpy( m_indices, _indicies, _countIndex );
+		memcpy( m_indices, _indicies, sizeof(uint16) * _countIndex );
 
 		m_vertexCount = _countVertex;
 		m_indicesCount = _countIndex;
 
-		this->invalidateWorldMatrix();
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh::updateVerticesWM()

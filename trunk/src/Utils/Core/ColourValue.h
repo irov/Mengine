@@ -13,10 +13,10 @@ namespace Menge
 	{
 	public:
 		ColourValue() 
-			: r(1.f)
-			, g(1.f)
-			, b(1.f)
-			, a(1.f)
+			: m_r(1.f)
+			, m_g(1.f)
+			, m_b(1.f)
+			, m_a(1.f)
 			, m_argb(0xFFFFFFFF)
             , m_invalidateARGB(false)        
 			, m_identity(true)
@@ -24,10 +24,10 @@ namespace Menge
 		}
 
 		explicit ColourValue( float _r, float _g, float _b, float _a ) 
-			: r(_r)
-			, g(_g)
-			, b(_b)
-			, a(_a)
+			: m_r(_r)
+			, m_g(_g)
+			, m_b(_b)
+			, m_a(_a)
 			, m_invalidateARGB(true)
 			, m_identity(false)
 		{ 
@@ -38,269 +38,137 @@ namespace Menge
 			this->setAsARGB( _argb );
 		}
 
-		ColourValue( const ColourValue& _copy )
-			: r(_copy.r)
-			, g(_copy.g)
-			, b(_copy.b)
-			, a(_copy.a)
+		ColourValue( const ColourValue & _copy )
+			: m_r(_copy.m_r)
+			, m_g(_copy.m_g)
+			, m_b(_copy.m_b)
+			, m_a(_copy.m_a)
 			, m_argb(_copy.m_argb)        
 			, m_invalidateARGB(_copy.m_invalidateARGB)
 			, m_identity(_copy.m_identity)
 		{
 		}
 
-		const ColourValue& operator=( const ColourValue& _other )
+		const ColourValue & operator = ( const ColourValue & _other )
 		{
-			r = _other.r;
-			g = _other.g;
-			b = _other.b;
-			a = _other.a;
+			m_r = _other.m_r;
+			m_g = _other.m_g;
+			m_b = _other.m_b;
+			m_a = _other.m_a;
+
 			m_invalidateARGB = _other.m_invalidateARGB;
 			m_argb = _other.m_argb;
 			m_identity = _other.m_identity;
+
 			return *this;
-		}
+		}				
+		
+	public:
+		void setRGBA( float _r, float _g, float _b, float _a );
 
-		bool operator==(const ColourValue& _rhs) const;
-		bool operator!=(const ColourValue& _rhs) const;
-
-		// Retrieves colour as RGBA.
+		void setAsRGBA( const RGBA _val );
 		RGBA getAsRGBA() const;
-
-		// Retrieves colour as ARGB.
+		
+		void setAsARGB( const ARGB _val );
 		inline ARGB getAsARGB() const;
-		void updateARGB() const;
-
-		// Retrieves colour as BGRA.
+		
+		void setAsBGRA( const BGRA _val );
 		BGRA getAsBGRA() const;
-
-		// Retrieves colours as ABGR
+		
+		void setAsABGR( const ABGR _val );
 		ABGR getAsABGR() const;
 
-		// Sets colour as RGBA.
-		void setAsRGBA( const RGBA _val );
-
-		// Sets colour as ARGB.
-		void setAsARGB( const ARGB _val );
-
-		// Sets colour as BGRA.
-		void setAsBGRA( const BGRA _val );
-
-		// Sets colour as ABGR.
-		void setAsABGR( const ABGR _val );
-
-		// Clamps colour value to the range [0, 1].
-		void saturate()
+	public:
+		bool operator == ( const ColourValue & _rhs ) const
 		{
-			if (r < 0)
-				r = 0;
-			else if (r > 1)
-				r = 1;
+			ARGB self_argb = this->getAsARGB();
+			ARGB other_argb = _rhs.getAsARGB();
 
-			if (g < 0)
-				g = 0;
-			else if (g > 1)
-				g = 1;
-
-			if (b < 0)
-				b = 0;
-			else if (b > 1)
-				b = 1;
-
-			if (a < 0)
-				a = 0;
-			else if (a > 1)
-				a = 1;
-
-			m_invalidateARGB = true;
-			m_identity = false;
+			return self_argb == other_argb;
 		}
 
-		//As saturate, except that this colour value is unaffected and
-		//the saturated colour value is returned as a copy.
-		ColourValue saturateCopy() const
+		bool operator != ( const ColourValue & _rhs ) const
 		{
-			ColourValue ret = *this;
-			ret.saturate();
-			return ret;
+			return !(*this == _rhs);
 		}
 
-		/// Array accessor operator
-		inline float operator [] ( const size_t _i ) const
+		inline void operator *= ( const ColourValue & _rhs )
 		{
-			return *(&r+_i);
-		}
-
-		/// Pointer accessor for direct copying
-		inline const float* ptr() const
-		{
-			return &r;
-		}
-
-		// arithmetic operations
-		inline ColourValue operator + ( const ColourValue& _rkVector ) const
-		{
-			ColourValue kSum(0);
-
-			kSum.r = r + _rkVector.r;
-			kSum.g = g + _rkVector.g;
-			kSum.b = b + _rkVector.b;
-			kSum.a = a + _rkVector.a;
-
-			return kSum;
-		}
-
-		inline ColourValue operator - ( const ColourValue& _rkVector ) const
-		{
-			ColourValue kDiff(0);
-
-			kDiff.r = r - _rkVector.r;
-			kDiff.g = g - _rkVector.g;
-			kDiff.b = b - _rkVector.b;
-			kDiff.a = a - _rkVector.a;
-
-			return kDiff;
-		}
-
-		inline ColourValue operator * ( const float _fScalar ) const
-		{
-			ColourValue kProd(0);
-
-			kProd.r = _fScalar*r;
-			kProd.g = _fScalar*g;
-			kProd.b = _fScalar*b;
-			kProd.a = _fScalar*a;
-
-			return kProd;
-		}
-
-		inline ColourValue operator * ( const ColourValue& _rhs ) const
-		{
-			if( m_identity )
-			{
-				return _rhs;
-			}
-
-			ColourValue kProd(0);
-
-			kProd.r = _rhs.r * r;
-			kProd.g = _rhs.g * g;
-			kProd.b = _rhs.b * b;
-			kProd.a = _rhs.a * a;
-
-			return kProd;
-		}
-
-		inline ColourValue operator / ( const ColourValue& _rhs ) const
-		{
-			if( _rhs.m_identity )
-			{
-				return *this;
-			}
-
-			ColourValue kProd(0);
-
-			kProd.r = _rhs.r / r;
-			kProd.g = _rhs.g / g;
-			kProd.b = _rhs.b / b;
-			kProd.a = _rhs.a / a;
-
-			return kProd;
-		}
-
-		inline ColourValue operator / ( const float _fScalar ) const
-		{
-			ColourValue kDiv(0);
-
-			float fInv = 1.0f / _fScalar;
-			kDiv.r = r * fInv;
-			kDiv.g = g * fInv;
-			kDiv.b = b * fInv;
-			kDiv.a = a * fInv;
-
-			return kDiv;
-		}
-
-		inline friend ColourValue operator * ( const float _fScalar, const ColourValue& _rkVector )
-		{
-			ColourValue kProd(0);
-
-			kProd.r = _fScalar * _rkVector.r;
-			kProd.g = _fScalar * _rkVector.g;
-			kProd.b = _fScalar * _rkVector.b;
-			kProd.a = _fScalar * _rkVector.a;
-
-			return kProd;
-		}
-
-		inline void operator *= ( const ColourValue& _rhs )
-		{
-			if( _rhs.m_identity )
+			if( _rhs.m_identity == true )
 			{
 				return;
 			}
 
-			r *= _rhs.r;
-			g *= _rhs.g;
-			b *= _rhs.b;
-			a *= _rhs.a;
+			m_r *= _rhs.m_r;
+			m_g *= _rhs.m_g;
+			m_b *= _rhs.m_b;
+			m_a *= _rhs.m_a;
 
 			this->invalidate();
 		}
 
-		// arithmetic updates
-		inline ColourValue& operator += ( const ColourValue& _rkVector )
+		inline ColourValue operator + ( const ColourValue& _rkVector ) const
 		{
-			r += _rkVector.r;
-			g += _rkVector.g;
-			b += _rkVector.b;
-			a += _rkVector.a;
+			ColourValue value;
 
-			this->invalidate();
+			value.m_r = m_r + _rkVector.m_r;
+			value.m_g = m_g + _rkVector.m_g;
+			value.m_b = m_b + _rkVector.m_b;
+			value.m_a = m_a + _rkVector.m_a;
 
-			return *this;
+			value.invalidate();
+			
+			return value;
 		}
 
-		inline ColourValue& operator -= ( const ColourValue& _rkVector )
+		inline ColourValue operator - ( const ColourValue & _rkVector ) const
 		{
-			r -= _rkVector.r;
-			g -= _rkVector.g;
-			b -= _rkVector.b;
-			a -= _rkVector.a;
+			ColourValue value;
 
-			this->invalidate();
+			value.m_r = m_r - _rkVector.m_r;
+			value.m_g = m_g - _rkVector.m_g;
+			value.m_b = m_b - _rkVector.m_b;
+			value.m_a = m_a - _rkVector.m_a;
 
-			return *this;
+			value.invalidate();
+
+			return value;
 		}
 
-		inline ColourValue& operator *= ( const float _fScalar )
+		inline ColourValue operator * ( const float _fScalar ) const
 		{
-			r *= _fScalar;
-			g *= _fScalar;
-			b *= _fScalar;
-			a *= _fScalar;
+			ColourValue value;
 
-			this->invalidate();
+			value.m_r = m_r * _fScalar;
+			value.m_g = m_g * _fScalar;
+			value.m_b = m_b * _fScalar;
+			value.m_a = m_a * _fScalar;
 
-			return *this;
+			value.invalidate();
+
+			return value;
 		}
 
-		inline ColourValue& operator /= ( const float _fScalar )
+		inline ColourValue operator * ( const ColourValue & _rhs ) const
 		{
-			float fInv = 1.0f / _fScalar;
+			if( m_identity == true )
+			{
+				return _rhs;
+			}
 
-			r *= fInv;
-			g *= fInv;
-			b *= fInv;
-			a *= fInv;
+			ColourValue value;
 
-			this->invalidate();
+			value.m_r = m_r * _rhs.m_r;
+			value.m_g = m_g * _rhs.m_g;
+			value.m_b = m_b * _rhs.m_b;
+			value.m_a = m_a * _rhs.m_a;
 
-			return *this;
+			value.invalidate();
+
+			return value;
 		}
 
-		//////////////////////////////////////////////////////////////////////////
-		inline static float length_color( const ColourValue& _rColor )
+		inline static float length_color( const ColourValue & _rColor )
 		{
             (void)_rColor;
 
@@ -318,36 +186,41 @@ namespace Menge
 		void setB( const float _b );
 
 		inline bool isIdentity() const;
-		inline void invalidate() const;
 
-	public:
-		float r,g,b,a;
+	protected:		
+		inline void invalidate() const;
+		void updateARGB() const;
+
+	protected:
+		float m_r;
+		float m_g;
+		float m_b;
+		float m_a;
 
 		mutable ARGB m_argb;
 				
 		mutable bool m_invalidateARGB;
 		mutable bool m_identity;
 	};
-
 	//////////////////////////////////////////////////////////////////////////
 	inline float ColourValue::getA() const
 	{
-		return a;
+		return m_a;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float ColourValue::getR() const
 	{
-		return r;
+		return m_r;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float ColourValue::getG() const
 	{
-		return g;
+		return m_g;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float ColourValue::getB() const
 	{
-		return b;
+		return m_b;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool ColourValue::isIdentity() const

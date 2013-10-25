@@ -1367,8 +1367,8 @@ namespace Menge
 
         if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
         {
-            layer_animation->setBlendAdd( true );
-        }
+			layer_animation->setBlendAdd( true );
+		}
         else if( _layer.blendingMode != CONST_STRING(m_serviceProvider, BlendingModeNormal) )
         {
             LOGGER_ERROR(m_serviceProvider)("Movie: '%s' blending mode not supported '%s'"

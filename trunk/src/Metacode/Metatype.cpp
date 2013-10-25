@@ -84,25 +84,23 @@ namespace Metabuf
     {
         (void)_userData;
 
-        float rgba[4];
-        ar.readPOD( rgba[0] );
-        ar.readPOD( rgba[1] );
-        ar.readPOD( rgba[2] );
-        ar.readPOD( rgba[3] );
+        float r;
+		float g;
+		float b;
+		float a;
+        ar.readPOD( r );
+        ar.readPOD( g );
+        ar.readPOD( b );
+        ar.readPOD( a );
 
         float coef = 1.f / 255.f;
 
-        rgba[0] *= coef;
-        rgba[1] *= coef;
-        rgba[2] *= coef;
-        rgba[3] *= coef;
+        r *= coef;
+        g *= coef;
+        b *= coef;
+        a *= coef;
 
-        _value.setR( rgba[0] );
-        _value.setG( rgba[1] );
-        _value.setB( rgba[2] );
-        _value.setA( rgba[3] );
-
-        _value.invalidate();
+        _value.setRGBA( r, g, b, a );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, Menge::GlyphChar & _value, void * _userData )

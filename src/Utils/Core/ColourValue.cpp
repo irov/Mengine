@@ -5,58 +5,16 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RGBA ColourValue::getAsRGBA() const
-	{
-		uint8 val8;
-		uint32 val32 = 0;
-
-		// Convert to 32bit pattern
-		// (RGBA = 8888)
-
-		// Red
-		val8 = static_cast<uint8>(r * 255);
-		val32 = val8 << 24;
-
-		// Green
-		val8 = static_cast<uint8>(g * 255);
-		val32 += val8 << 16;
-
-		// Blue
-		val8 = static_cast<uint8>(b * 255);
-		val32 += val8 << 8;
-
-		// Alpha
-		val8 = static_cast<uint8>(a * 255);
-		val32 += val8;
-
-		return val32;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::updateARGB() const
 	{
 		m_invalidateARGB = false;
 
-		uint8 val8;
-		m_argb = 0;
+		uint8 a8 = static_cast<uint8>(m_a * 255);
+		uint8 r8 = static_cast<uint8>(m_r * 255);
+		uint8 g8 = static_cast<uint8>(m_g * 255);
+		uint8 b8 = static_cast<uint8>(m_b * 255);
 
-		// Convert to 32bit pattern
-		// (ARGB = 8888)
-
-		// Alpha
-		val8 = static_cast<uint8>(a * 255);
-		m_argb += val8 << 24;
-
-		// Red
-		val8 = static_cast<uint8>(r * 255);
-		m_argb += val8 << 16;
-
-		// Green
-		val8 = static_cast<uint8>(g * 255);
-		m_argb += val8 << 8;
-
-		// Blue
-		val8 = static_cast<uint8>(b * 255);
-		m_argb += val8;
+		m_argb = (a8 << 24) + (r8 << 16) + (g8 << 8) + b8;
 
 		if( m_argb == 0xFFFFFFFF )
 		{
@@ -64,84 +22,80 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	RGBA ColourValue::getAsRGBA() const
+	{
+		uint8 a8 = static_cast<uint8>(m_a * 255);
+		uint8 r8 = static_cast<uint8>(m_r * 255);
+		uint8 g8 = static_cast<uint8>(m_g * 255);
+		uint8 b8 = static_cast<uint8>(m_b * 255);
+
+		uint32 val32 = (r8 << 24) + (g8 << 16) + (b8 << 8) + a8;
+
+		return val32;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	BGRA ColourValue::getAsBGRA() const
 	{
-		uint8 val8;
-		uint32 val32 = 0;
+		uint8 a8 = static_cast<uint8>(m_a * 255);
+		uint8 r8 = static_cast<uint8>(m_r * 255);
+		uint8 g8 = static_cast<uint8>(m_g * 255);
+		uint8 b8 = static_cast<uint8>(m_b * 255);
 
-		// Convert to 32bit pattern
-		// (ARGB = 8888)
-
-		// Blue
-		val8 = static_cast<uint8>(b * 255);
-		val32 = val8 << 24;
-
-		// Green
-		val8 = static_cast<uint8>(g * 255);
-		val32 += val8 << 16;
-
-		// Red
-		val8 = static_cast<uint8>(r * 255);
-		val32 += val8 << 8;
-
-		// Alpha
-		val8 = static_cast<uint8>(a * 255);
-		val32 += val8;
-
+		uint32 val32 = (b8 << 24) + (g8 << 16) + (r8 << 8) + a8;
 
 		return val32;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ABGR ColourValue::getAsABGR(void) const
 	{
-		uint8 val8;
-		uint32 val32 = 0;
+		uint8 a8 = static_cast<uint8>(m_a * 255);
+		uint8 r8 = static_cast<uint8>(m_r * 255);
+		uint8 g8 = static_cast<uint8>(m_g * 255);
+		uint8 b8 = static_cast<uint8>(m_b * 255);
 
-		// Convert to 32bit pattern
-		// (ABRG = 8888)
-
-		// Alpha
-		val8 = static_cast<uint8>(a * 255);
-		val32 = val8 << 24;
-
-		// Blue
-		val8 = static_cast<uint8>(b * 255);
-		val32 += val8 << 16;
-
-		// Green
-		val8 = static_cast<uint8>(g * 255);
-		val32 += val8 << 8;
-
-		// Red
-		val8 = static_cast<uint8>(r * 255);
-		val32 += val8;
-
+		uint32 val32 = (a8 << 24) + (b8 << 16) + (g8 << 8) + r8;
 
 		return val32;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ColourValue::setRGBA( float _r, float _g, float _b, float _a )
+	{
+		m_r = _r;
+		m_g = _g;
+		m_b = _b;
+		m_a = _a;
+
+		this->invalidate();
+	}
+	//////////////////////////////////////////////////////////////////////////	
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
 	void ColourValue::setAsABGR( const ABGR _val )
 #else
 	void ColourValue::setAsRGBA( const RGBA _val )
 #endif
 	{
-		uint32 val32 = _val;
+		m_argb = _val;
 
-		// Convert from 32bit pattern
-		// (RGBA = 8888)
+		if( m_argb == 0xFFFFFFFF )
+		{
+			m_invalidateARGB = false;
+			m_identity = true;
 
-		// Red
-		r = ((val32 >> 24) & 0xFF) / 255.0f;
+			m_r = 1.f;
+			m_g = 1.f;
+			m_b = 1.f;
+			m_a = 1.f;
+		}
+		else
+		{
+			m_invalidateARGB = false;
+			m_identity = false;
 
-		// Green
-		g = ((val32 >> 16) & 0xFF) / 255.0f;
-
-		// Blue
-		b = ((val32 >> 8) & 0xFF) / 255.0f;
-
-		// Alpha
-		a = (val32 & 0xFF) / 255.0f;
+			m_r = ((m_argb >> 24) & 0xFF) / 255.0f;
+			m_g = ((m_argb >> 16) & 0xFF) / 255.0f;
+			m_b = ((m_argb >> 8) & 0xFF) / 255.0f;
+			m_a = (m_argb & 0xFF) / 255.0f;
+		}
 		
 		this->invalidate();
 	}
@@ -159,26 +113,20 @@ namespace Menge
 			m_invalidateARGB = false;
 			m_identity = true;
 
-			r = g = b = a = 1.f;
+			m_r = 1.f;
+			m_g = 1.f;
+			m_b = 1.f;
+			m_a = 1.f;
 		}
 		else
 		{
 			m_invalidateARGB = false;
 			m_identity = false;
-			// Convert from 32bit pattern
-			// (ARGB = 8888)
 
-			// Alpha
-			a = ((m_argb >> 24) & 0xFF) / 255.0f;
-
-			// Red
-			r = ((m_argb >> 16) & 0xFF) / 255.0f;
-
-			// Green
-			g = ((m_argb >> 8) & 0xFF) / 255.0f;
-
-			// Blue
-			b = (m_argb & 0xFF) / 255.0f;			
+			m_a = ((m_argb >> 24) & 0xFF) / 255.f;
+			m_r = ((m_argb >> 16) & 0xFF) / 255.f;
+			m_g = ((m_argb >> 8) & 0xFF) / 255.f;
+			m_b = (m_argb & 0xFF) / 255.f;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -188,22 +136,28 @@ namespace Menge
 	void ColourValue::setAsBGRA( const BGRA _val )
 #endif
 	{
-		uint32 val32 = _val;
+		m_argb = _val;
 
-		// Convert from 32bit pattern
-		// (ARGB = 8888)
+		if( m_argb == 0xFFFFFFFF )
+		{
+			m_invalidateARGB = false;
+			m_identity = true;
 
-		// Blue
-		b = ((val32 >> 24) & 0xFF) / 255.0f;
+			m_r = 1.f;
+			m_g = 1.f;
+			m_b = 1.f;
+			m_a = 1.f;
+		}
+		else
+		{
+			m_invalidateARGB = false;
+			m_identity = false;
 
-		// Green
-		g = ((val32 >> 16) & 0xFF) / 255.0f;
-
-		// Red
-		r = ((val32 >> 8) & 0xFF) / 255.0f;
-
-		// Alpha
-		a = (val32 & 0xFF) / 255.0f;
+			m_b = ((m_argb >> 24) & 0xFF) / 255.f;
+			m_g = ((m_argb >> 16) & 0xFF) / 255.f;
+			m_r = ((m_argb >> 8) & 0xFF) / 255.f;
+			m_a = (m_argb & 0xFF) / 255.f;
+		}
 
 		this->invalidate();
 	}
@@ -214,63 +168,56 @@ namespace Menge
 	void ColourValue::setAsABGR( const ABGR _val )
 #endif
 	{
-		uint32 val32 = _val;
+		m_argb = _val;
 
-		// Convert from 32bit pattern
-		// (ABGR = 8888)
+		if( m_argb == 0xFFFFFFFF )
+		{
+			m_invalidateARGB = false;
+			m_identity = true;
 
-		// Alpha
-		a = ((val32 >> 24) & 0xFF) / 255.0f;
+			m_r = 1.f;
+			m_g = 1.f;
+			m_b = 1.f;
+			m_a = 1.f;
+		}
+		else
+		{
+			m_invalidateARGB = false;
+			m_identity = false;
 
-		// Blue
-		b = ((val32 >> 16) & 0xFF) / 255.0f;
-
-		// Green
-		g = ((val32 >> 8) & 0xFF) / 255.0f;
-
-		// Red
-		r = (val32 & 0xFF) / 255.0f;
+			m_a = ((m_argb >> 24) & 0xFF) / 255.f;
+			m_b = ((m_argb >> 16) & 0xFF) / 255.f;
+			m_g = ((m_argb >> 8) & 0xFF) / 255.f;
+			m_r = (m_argb & 0xFF) / 255.f;
+		}
 
 		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ColourValue::operator == ( const ColourValue& _rhs ) const
-	{
-		return (r == _rhs.r &&
-			g == _rhs.g &&
-			b == _rhs.b &&
-			a == _rhs.a);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ColourValue::operator != ( const ColourValue& _rhs ) const
-	{
-		return !(*this == _rhs);
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setA( const float _a )
 	{
-		a = _a;
+		m_a = _a;
 		
         this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setR( const float _r )
 	{
-		r = _r;
+		m_r = _r;
 
 		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setG( const float _g )
 	{
-		g = _g;
+		m_g = _g;
 
 		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setB( const float _b )
 	{
-		b = _b;
+		m_b = _b;
 
 		this->invalidate();
 	}

@@ -408,12 +408,12 @@ namespace Menge
 				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
 				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
 
-				impl->r = pybind::extract<float>(i0);
-				impl->g = pybind::extract<float>(i1);
-				impl->b = pybind::extract<float>(i2);
-				impl->a = pybind::extract<float>(i3);
+				float r = pybind::extract<float>(i0);
+				float g = pybind::extract<float>(i1);
+				float b = pybind::extract<float>(i2);
+				float a = pybind::extract<float>(i3);
 
-				impl->invalidate();
+				impl->setRGBA( r, g, b, a );
 
 				return true;
 			}
@@ -431,10 +431,12 @@ namespace Menge
 				PyObject * i2 = pybind::list_getitem( _obj, 2 );
 				PyObject * i3 = pybind::list_getitem( _obj, 3 );
 
-				impl->r = pybind::extract<float>(i0);
-				impl->g = pybind::extract<float>(i1);
-				impl->b = pybind::extract<float>(i2);
-				impl->a = pybind::extract<float>(i3);
+				float r = pybind::extract<float>(i0);
+				float g = pybind::extract<float>(i1);
+				float b = pybind::extract<float>(i2);
+				float a = pybind::extract<float>(i3);
+
+				impl->setRGBA( r, g, b, a );
 
 				return true;
 			}

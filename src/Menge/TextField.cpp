@@ -39,7 +39,7 @@ namespace Menge
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
 		, m_outline(true)
-		, m_pixelsnap(true)
+		, m_pixelsnap(false)
 		, m_materialText(nullptr)
 		, m_materialOutline(nullptr)
 		, m_invalidateVertices(true)
@@ -775,11 +775,11 @@ namespace Menge
 
         mt::mat4f wm = this->getWorldMatrix();
 
-        if( m_pixelsnap == true )
-        {
-            wm.v3.x = floorf( wm.v3.x + 0.5f );
-            wm.v3.y = floorf( wm.v3.y + 0.5f );
-        }
+		if( m_pixelsnap == true )
+		{
+			wm.v3.x = floorf( wm.v3.x + 0.5f );
+			wm.v3.y = floorf( wm.v3.y + 0.5f );
+		}
 
         for( ; it != it_end; ++it, ++it_w )
         {

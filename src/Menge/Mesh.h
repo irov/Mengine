@@ -16,7 +16,7 @@
 namespace Menge
 {
 	struct RenderMaterial;
-	struct RenderMaterialGroup;    
+	struct RenderMaterialGroup;
 	
 	class Mesh
 		: public Node

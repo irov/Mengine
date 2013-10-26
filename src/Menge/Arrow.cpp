@@ -247,18 +247,17 @@ namespace	Menge
             mt::vec2f trP;
             mt::mul_v2_m4( trP, ring[i], worldMat );
 
-            _vertices[i].pos[0] = trP.x;
-            _vertices[i].pos[1] = trP.y;
-            _vertices[i].pos[2] = 0.f;
-            //_vertices[i].pos[3] = 1.f;
+            _vertices[i].pos.x = trP.x;
+            _vertices[i].pos.y = trP.y;
+            _vertices[i].pos.z = 0.f;
 
             _vertices[i].color = 0x8080FFFF;
 
-            _vertices[i].uv[0] = 0.f;
-            _vertices[i].uv[1] = 0.f;
+            _vertices[i].uv.x = 0.f;
+            _vertices[i].uv.y = 0.f;
 
-            _vertices[i].uv2[0] = 0.f;
-            _vertices[i].uv2[1] = 0.f;
+            _vertices[i].uv2.x = 0.f;
+            _vertices[i].uv2.y = 0.f;
         }
 
         if( _vertices.size() > 1 )

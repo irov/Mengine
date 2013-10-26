@@ -1517,6 +1517,13 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( const ColourValue &), ColourValue> m_nodeAffectorCreatorInterpolateLinearColour;
+		//////////////////////////////////////////////////////////////////////////		
+		inline static float s_length_color( const ColourValue & _rColor )
+		{
+			(void)_rColor;
+
+			return 1.0f;
+		}
         //////////////////////////////////////////////////////////////////////////
         size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
         {
@@ -1534,7 +1541,7 @@ namespace Menge
                 m_nodeAffectorCreatorInterpolateLinearColour.create( m_serviceProvider
                 , callback, ETA_COLOR, _node, &Colorable::setLocalColor
                 , _node->getLocalColor(), _color, _time
-                , &ColourValue::length_color
+                , &s_length_color
                 );
 
             size_t id = _node->addAffector( affector );

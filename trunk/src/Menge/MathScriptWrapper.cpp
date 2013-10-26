@@ -413,7 +413,7 @@ namespace Menge
 				float b = pybind::extract<float>(i2);
 				float a = pybind::extract<float>(i3);
 
-				impl->setRGBA( r, g, b, a );
+				impl->setARGB( a, r, g, b );
 
 				return true;
 			}
@@ -436,7 +436,7 @@ namespace Menge
 				float b = pybind::extract<float>(i2);
 				float a = pybind::extract<float>(i3);
 
-				impl->setRGBA( r, g, b, a );
+				impl->setARGB( a, r, g, b );
 
 				return true;
 			}

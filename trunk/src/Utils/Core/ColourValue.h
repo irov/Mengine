@@ -18,7 +18,7 @@ namespace Menge
 			, m_b(1.f)
 			, m_a(1.f)
 			, m_argb(0xFFFFFFFF)
-            , m_invalidateARGB(false)        
+			, m_invalidateARGB(false)        
 			, m_identity(true)
 		{ 
 		}
@@ -62,21 +62,13 @@ namespace Menge
 
 			return *this;
 		}				
-		
-	public:
-		void setRGBA( float _r, float _g, float _b, float _a );
 
-		void setAsRGBA( const RGBA _val );
-		RGBA getAsRGBA() const;
-		
+	public:
+		void setARGB( float _a, float _r, float _g, float _b );
+
+	public:
 		void setAsARGB( const ARGB _val );
 		inline ARGB getAsARGB() const;
-		
-		void setAsBGRA( const BGRA _val );
-		BGRA getAsBGRA() const;
-		
-		void setAsABGR( const ABGR _val );
-		ABGR getAsABGR() const;
 
 	public:
 		bool operator == ( const ColourValue & _rhs ) const
@@ -99,10 +91,11 @@ namespace Menge
 				return;
 			}
 
+			m_a *= _rhs.m_a;
 			m_r *= _rhs.m_r;
 			m_g *= _rhs.m_g;
 			m_b *= _rhs.m_b;
-			m_a *= _rhs.m_a;
+
 
 			this->invalidate();
 		}
@@ -111,13 +104,13 @@ namespace Menge
 		{
 			ColourValue value;
 
+			value.m_a = m_a + _rkVector.m_a;
 			value.m_r = m_r + _rkVector.m_r;
 			value.m_g = m_g + _rkVector.m_g;
-			value.m_b = m_b + _rkVector.m_b;
-			value.m_a = m_a + _rkVector.m_a;
+			value.m_b = m_b + _rkVector.m_b;			
 
 			value.invalidate();
-			
+
 			return value;
 		}
 
@@ -125,10 +118,10 @@ namespace Menge
 		{
 			ColourValue value;
 
+			value.m_a = m_a - _rkVector.m_a;
 			value.m_r = m_r - _rkVector.m_r;
 			value.m_g = m_g - _rkVector.m_g;
-			value.m_b = m_b - _rkVector.m_b;
-			value.m_a = m_a - _rkVector.m_a;
+			value.m_b = m_b - _rkVector.m_b;			
 
 			value.invalidate();
 
@@ -139,10 +132,10 @@ namespace Menge
 		{
 			ColourValue value;
 
+			value.m_a = m_a * _fScalar;
 			value.m_r = m_r * _fScalar;
 			value.m_g = m_g * _fScalar;
-			value.m_b = m_b * _fScalar;
-			value.m_a = m_a * _fScalar;
+			value.m_b = m_b * _fScalar;			
 
 			value.invalidate();
 
@@ -158,33 +151,30 @@ namespace Menge
 
 			ColourValue value;
 
+			value.m_a = m_a * _rhs.m_a;
 			value.m_r = m_r * _rhs.m_r;
 			value.m_g = m_g * _rhs.m_g;
-			value.m_b = m_b * _rhs.m_b;
-			value.m_a = m_a * _rhs.m_a;
+			value.m_b = m_b * _rhs.m_b;			
 
 			value.invalidate();
 
 			return value;
 		}
 
-		inline static float length_color( const ColourValue & _rColor )
-		{
-            (void)_rColor;
-
-			return 1.0f;
-		}
-
+	public:
+		void setA( const float _a );
 		inline float getA() const;
+
+		void setR( const float _r );
 		inline float getR() const;
+
+		void setG( const float _g );
 		inline float getG() const;
+
+		void setB( const float _b );
 		inline float getB() const;
 
-		void setA( const float _a );
-		void setR( const float _r );
-		void setG( const float _g );
-		void setB( const float _b );
-
+	public:
 		inline bool isIdentity() const;
 
 	protected:		
@@ -192,13 +182,13 @@ namespace Menge
 		void updateARGB() const;
 
 	protected:
+		float m_a;
 		float m_r;
 		float m_g;
 		float m_b;
-		float m_a;
 
 		mutable ARGB m_argb;
-				
+
 		mutable bool m_invalidateARGB;
 		mutable bool m_identity;
 	};

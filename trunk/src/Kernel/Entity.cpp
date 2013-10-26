@@ -76,11 +76,11 @@ namespace Menge
 		this->registerEvent( EVENT_DESTROY, "onDestroy", _embed );
 		
 		this->registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
-		this->registerEvent( EVENT_ACTIVATE, "onActivate", _embed );        
+		this->registerEvent( EVENT_ACTIVATE, "onActivate", _embed );
         this->registerEvent( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", _embed );
 		this->registerEvent( EVENT_DEACTIVATE, "onDeactivate", _embed );
 		this->registerEvent( EVENT_COMPILE, "onCompile", _embed );
-		this->registerEvent( EVENT_RELEASE, "onRelease", _embed );		
+		this->registerEvent( EVENT_RELEASE, "onRelease", _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()

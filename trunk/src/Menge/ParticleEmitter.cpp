@@ -486,34 +486,33 @@ namespace	Menge
 
                 const mt::vec3f & wm_pos0 = p.v[0];
 
-                vertice[0].pos[0] = wm_pos0.x;
-                vertice[0].pos[1] = wm_pos0.y;
-				vertice[0].pos[2] = wm_pos0.z;
-
+                vertice[0].pos.x = wm_pos0.x;
+                vertice[0].pos.y = wm_pos0.y;
+				vertice[0].pos.z = wm_pos0.z;
 
 				vertice[0].color = argb;
 
                 const mt::vec3f & wm_pos1 = p.v[1];
 
-                vertice[1].pos[0] = wm_pos1.x;
-                vertice[1].pos[1] = wm_pos1.y;
-				vertice[1].pos[2] = wm_pos1.z;
+                vertice[1].pos.x = wm_pos1.x;
+                vertice[1].pos.y = wm_pos1.y;
+				vertice[1].pos.z = wm_pos1.z;
 
                 vertice[1].color = argb;
 		
                 const mt::vec3f & wm_pos2 = p.v[2];
 
-				vertice[2].pos[0] = wm_pos2.x;
-				vertice[2].pos[1] = wm_pos2.y;
-				vertice[2].pos[2] = wm_pos2.z;
+				vertice[2].pos.x = wm_pos2.x;
+				vertice[2].pos.y = wm_pos2.y;
+				vertice[2].pos.z = wm_pos2.z;
 
 				vertice[2].color = argb;
 
                 const mt::vec3f & wm_pos3 = p.v[3];
 
-                vertice[3].pos[0] = wm_pos3.x;
-                vertice[3].pos[1] = wm_pos3.y;
-				vertice[3].pos[2] = wm_pos3.z;
+                vertice[3].pos.x = wm_pos3.x;
+                vertice[3].pos.y = wm_pos3.y;
+				vertice[3].pos.z = wm_pos3.z;
 
 				vertice[3].color = argb;
 				

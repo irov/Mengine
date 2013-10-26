@@ -100,7 +100,7 @@ namespace Metabuf
         b *= coef;
         a *= coef;
 
-        _value.setRGBA( r, g, b, a );
+        _value.setARGB( a, r, g, b );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, Menge::GlyphChar & _value, void * _userData )

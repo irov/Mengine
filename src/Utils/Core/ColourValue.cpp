@@ -20,12 +20,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ColourValue::setARGB( float _r, float _g, float _b, float _a )
+	void ColourValue::setARGB( float _a, float _r, float _g, float _b )
 	{
+		m_a = _a;
 		m_r = _r;
 		m_g = _g;
 		m_b = _b;
-		m_a = _a;
 
 		this->invalidate();
 	}
@@ -52,7 +52,8 @@ namespace Menge
 		m_g = ((m_argb >> 8) & 0xFF) / 255.f;
 		m_b = (m_argb & 0xFF) / 255.f;
 
-		this->invalidate();
+		m_invalidateARGB = false;
+		m_identity = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setA( const float _a )

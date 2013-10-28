@@ -3,6 +3,7 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/StringizeInterface.h"
+#	include "Interface/PlatformInterface.h"
 
 #   include "Logger/Logger.h"
 
@@ -12,7 +13,7 @@ SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureServiceInterface, Men
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static Menge::uint32 s_firstPO2From( Menge::uint32 n )
+    static Menge::uint32 s_firstPOW2From( Menge::uint32 n )
     {
         --n;            
         n |= n >> 16;
@@ -25,8 +26,10 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureManager::RenderTextureManager()
-        : m_serviceProvider(nullptr)        
+        : m_serviceProvider(nullptr)
         , m_textureEnumerator(0)
+		, m_supportA8(false)
+		, m_supportR8G8B8(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -49,7 +52,13 @@ namespace Menge
         m_debugInfo.textureMemory = 0;
         m_debugInfo.textureCount = 0;
 
-        return true;
+		m_supportA8 = RENDER_SYSTEM(m_serviceProvider)
+			->supportTextureFormat( PF_A8 );
+
+		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
+			->supportTextureFormat( PF_R8G8B8 );
+		
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::finalize()
@@ -84,25 +93,23 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::createTexture( size_t _imageWidth, size_t _imageHeight, size_t _imageChannels, PixelFormat _imageFormat, size_t _textureWidth, size_t _textureHeight )
+    RenderTextureInterfacePtr RenderTextureManager::createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
     {
-        std::size_t pow2_width = _imageWidth;
-        std::size_t pow2_height = _imageHeight;
+		size_t HWWidth = _width;
+		size_t HWHeight = _height;
+		size_t HWChannels = _channels;
+		PixelFormat HWFormat = _format;
 
-        if( ( _imageWidth & ( _imageWidth - 1 ) ) != 0 || ( _imageHeight & ( _imageHeight - 1 ) ) != 0 )
-        {
-            pow2_width = s_firstPO2From( _imageWidth );
-            pow2_height = s_firstPO2From( _imageHeight );
-        }
+		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWFormat );
 
-        RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
-            ->createImage( pow2_width, pow2_height, _imageChannels, _imageFormat );
+		RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
+			->createImage( HWWidth, HWHeight, HWChannels, HWFormat );
 
         if( image == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
-                , pow2_width
-                , pow2_height
+                , HWWidth
+                , HWHeight
                 );
 
             return nullptr;
@@ -111,13 +118,9 @@ namespace Menge
         size_t id = ++m_textureEnumerator;
 
         RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( m_serviceProvider, image, _textureWidth, _textureHeight, _imageChannels, id, this );
+        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id, this );
 
         size_t memroy_size = texture->getMemoryUse();
-
-        size_t HWWidth = texture->getHWWidth();
-        size_t HWHeight = texture->getHWHeight();
-        PixelFormat HWPixelFormat = texture->getHWPixelFormat();
 
         m_debugInfo.textureMemory += memroy_size;
         ++m_debugInfo.textureCount;
@@ -125,7 +128,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::createTexture creating texture %dx%d %d memory %d:%d"
             , HWWidth
             , HWHeight
-            , HWPixelFormat
+            , HWFormat
             , memroy_size
             , m_debugInfo.textureMemory
             );
@@ -135,24 +138,22 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
     {
-        std::size_t pow2_width = _width;
-        std::size_t pow2_height = _height;
+		size_t HWWidth = _width;
+		size_t HWHeight = _height;
+		size_t HWChannels = _channels;
+		PixelFormat HWFormat = _format;
 
-        if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
-        {
-            pow2_width = s_firstPO2From( _width );
-            pow2_height = s_firstPO2From( _height );
-        }
+		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWFormat );
 
         RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
-            ->createDynamicImage( pow2_width, pow2_height, _channels, _format );
+            ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWFormat );
 
         if( image == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createDynamicTexture couldn't create image %dx%d channels %d"
-                , pow2_width
-                , pow2_height
-                , _channels
+                , HWWidth
+                , HWHeight
+                , HWChannels
                 );
 
             return nullptr;
@@ -169,9 +170,9 @@ namespace Menge
         ++m_debugInfo.textureCount;
 
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::createDynamicTexture creating dynamic texture %dx%d channels %d use memory %d:%d"
-            , pow2_width
-            , pow2_height
-            , _channels 
+            , HWWidth
+            , HWHeight
+            , HWChannels 
             , memroy_size
             , m_debugInfo.textureMemory
             );
@@ -181,30 +182,26 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
     {
-        std::size_t pow2_width = _width;
-        std::size_t pow2_height = _height;
+		size_t HWWidth = _width;
+		size_t HWHeight = _height;
+		size_t HWChannels = _channels;
+		PixelFormat HWFormat = _format;
 
-        if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
-        {
-            pow2_width = s_firstPO2From( _width );
-            pow2_height = s_firstPO2From( _height );
-        }
+		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWFormat );
 
         RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
-            ->createRenderTargetImage( pow2_width, pow2_height, _channels, _format );
+            ->createRenderTargetImage( HWWidth, HWHeight, HWChannels, HWFormat );
 
         if( image == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTargetTexture %dx%d %d"
-                , pow2_width
-                , pow2_height 
-                , _channels
+                , HWWidth
+                , HWHeight 
+                , HWChannels
                 );
 
             return nullptr;
         }
-
-        //printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
         size_t id = ++m_textureEnumerator;
 
@@ -217,9 +214,9 @@ namespace Menge
         ++m_debugInfo.textureCount;
 
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::createRenderTargetTexture creating render target texture %dx%d %d memory %d:%d"
-            , pow2_width
-            , pow2_height 
-            , _channels 
+            , HWWidth
+            , HWHeight 
+            , HWChannels 
             , memroy_size
             , m_debugInfo.textureMemory
             );
@@ -323,7 +320,7 @@ namespace Menge
             );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec, size_t _width, size_t _height )
+    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec )
     {
         TMapTextures::iterator it_find = m_textures.find( _filename );
 
@@ -362,14 +359,11 @@ namespace Menge
 
         BEGIN_WATCHDOG(m_serviceProvider, "texture create");
 
-        size_t image_width = _width > dataInfo->width? _width: dataInfo->width;
-        size_t image_height = _height > dataInfo->height? _height: dataInfo->height;
+        size_t image_width = dataInfo->width;
+        size_t image_height = dataInfo->height;
         size_t image_channels = dataInfo->channels;
 
-        size_t texture_width = dataInfo->width;
-        size_t texture_height = dataInfo->height;
-
-        RenderTextureInterfacePtr texture = this->createTexture( image_width, image_height, image_channels, dataInfo->format, texture_width, texture_height );
+        RenderTextureInterfacePtr texture = this->createTexture( image_width, image_height, image_channels, dataInfo->format );
 
         END_WATCHDOG(m_serviceProvider, "texture create")("texture create %s"
             , _filename.c_str()
@@ -404,6 +398,50 @@ namespace Menge
 
         return texture;
     }
+	//////////////////////////////////////////////////////////////////////////	
+	void RenderTextureManager::updateImageParams_( size_t & _width, size_t & _height, size_t & _channels, PixelFormat & _format ) const
+	{
+		if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+		{
+			_width = s_firstPOW2From( _width );
+			_height = s_firstPOW2From( _height );
+		}
+
+		switch( _format )
+		{
+		case PF_UNKNOWN:
+			{
+				if( _channels == 1 )
+				{
+					if( m_supportA8 == true )
+					{
+						_format = PF_A8;
+					}
+					else
+					{
+						_format = PF_X8R8G8B8;
+						_channels = 4;
+					}
+				}
+				else if( _channels == 3 )
+				{
+					if( m_supportR8G8B8 == true )
+					{
+						_format = PF_R8G8B8;
+					}
+					else
+					{
+						_format = PF_X8R8G8B8;
+						_channels = 4;
+					}
+				}
+				else if( _channels == 4 )
+				{
+					_format = PF_A8R8G8B8;
+				}
+			}break;
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::onRenderTextureRelease( const RenderTextureInterface * _texture )
     {
@@ -446,11 +484,7 @@ namespace Menge
         options.channels = _texture->getHWChannels();
         options.pitch = pitch;
 
-        //options.flags |= DF_CUSTOM_PITCH;
-
         _imageDecoder->setOptions( &options );
-
-        //bool result = this->loadBufferImageData( textureBuffer, pitch, hwPixelFormat, _imageDecoder );
 
         const ImageCodecDataInfo * data = _imageDecoder->getCodecDataInfo();
 
@@ -480,8 +514,7 @@ namespace Menge
         END_WATCHDOG(m_serviceProvider, "texture unlock")("texture unlock %.4f %s"
             , _texture->getFileName().c_str()
             );
-
-
+		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -492,8 +525,7 @@ namespace Menge
 
         size_t hwWidth = _texture->getHWWidth();
         size_t hwHeight = _texture->getHWHeight();
-
-
+		
         // copy pixels on the edge for better image quality
         if( hwWidth > width )
         {

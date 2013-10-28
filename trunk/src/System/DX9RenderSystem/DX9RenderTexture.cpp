@@ -40,7 +40,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderTexture::setTexInterface( IDirect3DTexture9 * _d3dInterface )
 	{
-		m_d3dInterface = _d3dInterface;
+		m_d3dTexture = _d3dInterface;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderTexture::setDepthInterface( IDirect3DSurface9 * _d3dInterface )

@@ -7,7 +7,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX9Texture::DX9Texture()
 		: m_serviceProvider(nullptr)
-		, m_d3dInterface(nullptr)
+		, m_d3dTexture(nullptr)
+		, m_mode(ERIM_NORMAL)
         , m_hwWidth(0)
         , m_hwHeight(0)
         , m_hwChannels(0)
@@ -17,17 +18,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX9Texture::~DX9Texture()
 	{
-        if( m_d3dInterface != nullptr )
+        if( m_d3dTexture != nullptr )
         {
-            m_d3dInterface->Release();
-            m_d3dInterface = nullptr;
+            m_d3dTexture->Release();
+            m_d3dTexture = nullptr;
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9Texture::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9Texture::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
     {
 		m_serviceProvider = _serviceProvider;
-        m_d3dInterface = _d3dInterface;
+        m_d3dTexture = _d3dInterface;
+
+		m_mode = _mode;
 
         m_hwWidth = _hwWidth;
         m_hwHeight = _hwHeight;
@@ -54,7 +57,7 @@ namespace Menge
 		rect.right = _rect.right;
 
 		D3DLOCKED_RECT TRect;
-		IF_DXCALL( m_serviceProvider, m_d3dInterface, LockRect, (0, &TRect, &rect, flags) )
+		IF_DXCALL( m_serviceProvider, m_d3dTexture, LockRect, (0, &TRect, &rect, flags) )
 		{
 			return nullptr;
 		}
@@ -68,12 +71,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9Texture::unlock()
 	{
-		DXCALL( m_serviceProvider, m_d3dInterface ,UnlockRect, (0) );
+		DXCALL( m_serviceProvider, m_d3dTexture ,UnlockRect, (0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	IDirect3DTexture9 * DX9Texture::getDXTextureInterface() const
 	{
-		return m_d3dInterface;
+		return m_d3dTexture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ERenderImageMode DX9Texture::getMode() const
+	{
+		return m_mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t DX9Texture::getHWWidth() const

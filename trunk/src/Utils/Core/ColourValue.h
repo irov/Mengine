@@ -114,7 +114,7 @@ namespace Menge
 			float a = m_a - _rkVector.m_a;
 			float r = m_r - _rkVector.m_r;
 			float g = m_g - _rkVector.m_g;
-			float b = m_b - _rkVector.m_b;			
+			float b = m_b - _rkVector.m_b;
 
 			return ColourValue(a, r, g, b);
 		}
@@ -124,7 +124,7 @@ namespace Menge
 			float a = m_a * _fScalar;
 			float r = m_r * _fScalar;
 			float g = m_g * _fScalar;
-			float b = m_b * _fScalar;			
+			float b = m_b * _fScalar;
 
 			return ColourValue(a, r, g, b);
 		}

@@ -14,10 +14,13 @@ namespace Menge
         ~DX9Texture();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat );
+        void initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat );
 
 	public:
 		IDirect3DTexture9 * getDXTextureInterface() const;		
+
+	public:
+		ERenderImageMode getMode() const override;
 
 	public:
 		size_t getHWWidth() const override;
@@ -33,13 +36,15 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		IDirect3DTexture9 * m_d3dInterface;
+		IDirect3DTexture9 * m_d3dTexture;
+
+		ERenderImageMode m_mode;
 
 		size_t m_hwWidth;
 		size_t m_hwHeight;
         size_t m_hwChannels;
 
-        PixelFormat m_hwPixelFormat;        
+        PixelFormat m_hwPixelFormat;
 	};
 
     typedef stdex::intrusive_ptr<DX9Texture> DX9TexturePtr;

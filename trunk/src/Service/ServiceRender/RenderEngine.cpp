@@ -212,7 +212,7 @@ namespace Menge
         size_t null_channels = 3;
 
         m_nullTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->createTexture( null_width, null_height, null_channels, PF_UNKNOWN, null_width, null_height );
+            ->createTexture( null_width, null_height, null_channels, PF_UNKNOWN );
 
         if( m_nullTexture == nullptr )
         {

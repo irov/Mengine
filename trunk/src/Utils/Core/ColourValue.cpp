@@ -54,10 +54,17 @@ namespace Menge
 			return;
 		}
 
+#   ifdef MENGE_RENDER_GL
+		m_a = ((m_argb >> 24) & 0xFF) / 255.f;
+		m_b = ((m_argb >> 16) & 0xFF) / 255.f;
+		m_g = ((m_argb >> 8) & 0xFF) / 255.f;
+		m_r = (m_argb & 0xFF) / 255.f;
+#	else // MENGE_RENDER_GL
 		m_a = ((m_argb >> 24) & 0xFF) / 255.f;
 		m_r = ((m_argb >> 16) & 0xFF) / 255.f;
 		m_g = ((m_argb >> 8) & 0xFF) / 255.f;
 		m_b = (m_argb & 0xFF) / 255.f;
+#	endif // MENGE_RENDER_GL
 
 		m_invalidateARGB = false;
 		m_identity = false;

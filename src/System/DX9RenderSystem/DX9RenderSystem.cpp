@@ -324,10 +324,6 @@ namespace Menge
 		, m_currentIB(0)
         , m_currentVB(0)
 		, m_listener(nullptr)
-		, m_supportNPOT(false)
-        , m_supportL8(false)
-        , m_supportA8(false)
-		, m_supportR8G8B8(false)
 		, m_syncReady(false)
         , m_hd3d9(NULL)
         , m_adapterToUse(D3DADAPTER_DEFAULT)
@@ -534,57 +530,7 @@ namespace Menge
 
 			return false;
 		}
-
-		if( (m_caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )			
-		{
-			m_supportNPOT = true;
-		}
-		else
-		{
-			m_supportNPOT = false;			
-		}
-
-        if( m_supportNPOT == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Render don't support D3DPTEXTURECAPS_POW2" );
-        }
-		
-        m_supportL8 = this->supportTextureFormat( PF_L8 );
-
-        if( m_supportL8 == false )
-        {
-            LOGGER_WARNING(m_serviceProvider)( "Render don't support PF_L8" 
-                );
-        }
-
-        m_supportA8 = this->supportTextureFormat( PF_A8 );
-
-        if( m_supportA8 == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_A8" 
-                );
-
-            return false;
-        }
-
-		m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
-
-        if( m_supportR8G8B8 == false )
-        {
-            LOGGER_WARNING(m_serviceProvider)( "Render don't support PF_R8G8B8" 
-                );
-        }
-
-        bool supportDXT1 = this->supportTextureFormat( PF_DXT1 );
-
-        if( supportDXT1 == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Render don't support PF_DXT1" 
-                );
-
-            return false;
-        }
-		
+			
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -940,67 +886,17 @@ namespace Menge
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() ) );
 	}
-    //////////////////////////////////////////////////////////////////////////
-    PixelFormat DX9RenderSystem::findFormatFromChannels_( size_t & _channels, PixelFormat _format ) const
-    {
-        PixelFormat hwFormat = PF_UNKNOWN;
-
-        switch( _format )
-        {
-        case PF_UNKNOWN:
-            {
-                if( _channels == 1 )
-                {
-                    if( m_supportA8 == true )
-                    {
-                        hwFormat = PF_A8;
-                    }
-                    else
-                    {
-                        hwFormat = PF_X8R8G8B8;
-                        _channels = 4;
-                    }
-                }
-                else if( _channels == 3 )
-                {
-                    if( m_supportR8G8B8 == true )
-                    {
-                        hwFormat = PF_R8G8B8;
-                    }
-                    else
-                    {
-                        hwFormat = PF_X8R8G8B8;
-                        _channels = 4;
-                    }
-                }
-                else if( _channels == 4 )
-                {
-                    hwFormat = PF_A8R8G8B8;
-                }
-            }break;
-        default:
-            {
-                hwFormat = _format;
-            }break;
-        }
-
-        return hwFormat;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-        size_t hwChannels = _channels;
-
-        PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
-
 		IDirect3DTexture9 * dxTextureInterface = nullptr;
         
-		if( this->d3dCreateTexture_( _width, _height, 1, 0,	hwFormat, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
+		if( this->d3dCreateTexture_( _width, _height, 1, 0,	_format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createImage: can't create texture %dx%d %d"
 				, _width
 				, _height
-				, hwFormat
+				, _format
                 );
 
 			return nullptr;
@@ -1013,13 +909,13 @@ namespace Menge
 		}
 
 		DX9Texture * dxTexture = m_factoryDX9Texture.createObjectT();
-        dxTexture->initialize( m_serviceProvider, dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat );
+        dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_NORMAL, texDesc.Width, texDesc.Height, _channels, _format );
 
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createImage: texture created %dx%d %d:%d"
 			, texDesc.Width
 			, texDesc.Height
 			, texDesc.Format
-            , hwChannels
+            , _channels
 			);
 
 		return dxTexture;
@@ -1027,18 +923,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-        size_t hwChannels = _channels;
-
-        PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
-
 		IDirect3DTexture9* dxTextureInterface = nullptr;
 
-		if( d3dCreateTexture_( _width, _height, 1, 0, hwFormat, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
+		if( d3dCreateTexture_( _width, _height, 1, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createDynamicImage: can't create texture %dx%d %d"
 				, _width
 				, _height
-				, hwFormat
+				, _format
 				);
 
 			return nullptr;
@@ -1051,13 +943,13 @@ namespace Menge
 		}
 
         DX9Texture * dxTexture = m_factoryDX9Texture.createObjectT();
-        dxTexture->initialize( m_serviceProvider, dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat );		
+        dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_DYNAMIC, texDesc.Width, texDesc.Height, _channels, _format );		
         
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
 			, texDesc.Width
 			, texDesc.Height
 			, texDesc.Format
-            , hwChannels
+            , _channels
 			);
 
 		return dxTexture;
@@ -1065,17 +957,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-        size_t hwChannels = _channels;
-
-        PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
-
 		IDirect3DTexture9 * dxTextureInterface = nullptr;		
-		if( this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, hwFormat, D3DPOOL_DEFAULT, &dxTextureInterface ) == false )
+		if( this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, _format, D3DPOOL_DEFAULT, &dxTextureInterface ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createRenderTargetImage: can't  create render texture %dx%d %d"
 				, _width
 				, _height
-				, hwFormat
+				, _format
 				);
 
 			return nullptr;
@@ -1087,7 +975,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createRenderTargetImage: can't get surface level %dx%d %d"
                 , _width
                 , _height
-                , hwFormat
+                , _format
                 );
 
 			return nullptr;
@@ -1101,7 +989,7 @@ namespace Menge
 
 		DX9RenderTexture* dxTexture = m_factoryDX9RenderTexture.createObjectT();
 
-        dxTexture->initialize( m_serviceProvider, dxTextureInterface, texDesc.Width, texDesc.Height, hwChannels, hwFormat );
+        dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_RENDER_TARGET, texDesc.Width, texDesc.Height, _channels, _format );
         dxTexture->setSurface( dxSurfaceInterface );
 
         LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createRenderTargetImage: texture created %dx%d %d"
@@ -1488,12 +1376,6 @@ namespace Menge
 	void DX9RenderSystem::onWindowClose()
 	{
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::supportNPOT_() const
-	{
-		return m_supportNPOT;
-		//return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::syncCPU_()

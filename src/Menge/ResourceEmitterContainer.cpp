@@ -160,7 +160,7 @@ namespace Menge
                 ->findCodecType( filepath );
 
             RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-                ->loadTexture( category, filepath, codecType, 0, 0 );
+                ->loadTexture( category, filepath, codecType );
 
             if( texture == nullptr )
             {

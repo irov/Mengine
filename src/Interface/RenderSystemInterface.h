@@ -330,10 +330,20 @@ namespace Menge
     static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
     //////////////////////////////////////////////////////////////////////////
     typedef std::vector<RenderVertex2D> TVectorRenderVertex2D;
+	//////////////////////////////////////////////////////////////////////////
+	enum ERenderImageMode
+	{
+		ERIM_NORMAL,
+		ERIM_DYNAMIC,
+		ERIM_RENDER_TARGET
+	};
     //////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
         : public FactorablePtr
 	{
+	public:
+		virtual ERenderImageMode getMode() const = 0;
+
     public:
         virtual size_t getHWWidth() const = 0;
         virtual size_t getHWHeight() const = 0;
@@ -412,11 +422,10 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec, size_t _width, size_t _height ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format, size_t _textureWidth, size_t _textureHeight ) = 0;
-        //virtual RenderTextureInterface * createSubTexture( RenderTextureInterface * _texture, const Rect & _rect, RenderTextureInterfaceListener * _listener ) = 0;
+        virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
         virtual RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
         virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 

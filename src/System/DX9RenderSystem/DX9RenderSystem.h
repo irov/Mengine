@@ -46,7 +46,6 @@ namespace Menge
 
     protected:
 		void clear_( DWORD _color );
-		bool supportNPOT_() const;
 
 	public:
 		bool initialize() override;
@@ -160,8 +159,7 @@ namespace Menge
         void updateVSyncDPP_();
         bool resetDevice_();
 
-    protected:
-        PixelFormat findFormatFromChannels_( size_t & _channels, PixelFormat _format ) const;
+    protected:        
         void fixNPOTSupport_( size_t & _width, size_t & _height ) const;
 
 	private:
@@ -252,10 +250,5 @@ namespace Menge
 		
 		bool m_syncReady;
         bool m_waitForVSync;
-
-        bool m_supportNPOT;
-        bool m_supportL8;
-        bool m_supportA8;
-        bool m_supportR8G8B8;
 	};
 }	// namespace Menge

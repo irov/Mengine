@@ -193,7 +193,7 @@ namespace Menge
 		const ImageCodecDataInfo* dataInfoRGB = imageDecoderRGB->getCodecDataInfo();
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->createTexture( dataInfoRGB->width, dataInfoRGB->height, 4, PF_UNKNOWN, dataInfoRGB->width, dataInfoRGB->height );
+			->createTexture( dataInfoRGB->width, dataInfoRGB->height, 4, PF_UNKNOWN );
 
 		if( texture == nullptr )
 		{

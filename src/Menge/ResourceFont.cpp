@@ -133,7 +133,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		m_textureFont = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->loadTexture( category, m_fontImageFile, m_fontImageCodec, 0, 0 );
+            ->loadTexture( category, m_fontImageFile, m_fontImageCodec );
 
 		//m_texture = RenderEngine::get()
 		//	->loadMegatexture( category, m_imageFile, m_imageCodec );
@@ -158,7 +158,7 @@ namespace Menge
 		if( m_outlineImageFile.empty() == false )
 		{
 			m_textureOutline = RENDERTEXTURE_SERVICE(m_serviceProvider)
-                ->loadTexture( category, m_outlineImageFile, m_outlineImageCodec, 0, 0 );
+                ->loadTexture( category, m_outlineImageFile, m_outlineImageCodec );
 
 			if( m_textureOutline == nullptr )
 			{

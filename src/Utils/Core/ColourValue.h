@@ -23,11 +23,11 @@ namespace Menge
 		{ 
 		}
 
-		explicit ColourValue( float _r, float _g, float _b, float _a ) 
-			: m_r(_r)
+		explicit ColourValue( float _a, float _r, float _g, float _b ) 
+			: m_a(_a)
+			, m_r(_r)
 			, m_g(_g)
-			, m_b(_b)
-			, m_a(_a)
+			, m_b(_b)			
 			, m_invalidateARGB(true)
 			, m_identity(false)
 		{ 
@@ -39,10 +39,10 @@ namespace Menge
 		}
 
 		ColourValue( const ColourValue & _copy )
-			: m_r(_copy.m_r)
+			: m_a(_copy.m_a)
+			, m_r(_copy.m_r)
 			, m_g(_copy.m_g)
-			, m_b(_copy.m_b)
-			, m_a(_copy.m_a)
+			, m_b(_copy.m_b)			
 			, m_argb(_copy.m_argb)        
 			, m_invalidateARGB(_copy.m_invalidateARGB)
 			, m_identity(_copy.m_identity)
@@ -51,10 +51,10 @@ namespace Menge
 
 		const ColourValue & operator = ( const ColourValue & _other )
 		{
+			m_a = _other.m_a;
 			m_r = _other.m_r;
 			m_g = _other.m_g;
-			m_b = _other.m_b;
-			m_a = _other.m_a;
+			m_b = _other.m_b;			
 
 			m_invalidateARGB = _other.m_invalidateARGB;
 			m_argb = _other.m_argb;
@@ -96,50 +96,37 @@ namespace Menge
 			m_g *= _rhs.m_g;
 			m_b *= _rhs.m_b;
 
-
 			this->invalidate();
 		}
 
 		inline ColourValue operator + ( const ColourValue& _rkVector ) const
-		{
-			ColourValue value;
-
-			value.m_a = m_a + _rkVector.m_a;
-			value.m_r = m_r + _rkVector.m_r;
-			value.m_g = m_g + _rkVector.m_g;
-			value.m_b = m_b + _rkVector.m_b;			
-
-			value.invalidate();
-
-			return value;
+		{	
+			float a = m_a + _rkVector.m_a;
+			float r = m_r + _rkVector.m_r;
+			float g = m_g + _rkVector.m_g;
+			float b = m_b + _rkVector.m_b;		
+			
+			return ColourValue(a, r, g, b);
 		}
 
 		inline ColourValue operator - ( const ColourValue & _rkVector ) const
 		{
-			ColourValue value;
+			float a = m_a - _rkVector.m_a;
+			float r = m_r - _rkVector.m_r;
+			float g = m_g - _rkVector.m_g;
+			float b = m_b - _rkVector.m_b;			
 
-			value.m_a = m_a - _rkVector.m_a;
-			value.m_r = m_r - _rkVector.m_r;
-			value.m_g = m_g - _rkVector.m_g;
-			value.m_b = m_b - _rkVector.m_b;			
-
-			value.invalidate();
-
-			return value;
+			return ColourValue(a, r, g, b);
 		}
 
 		inline ColourValue operator * ( const float _fScalar ) const
 		{
-			ColourValue value;
+			float a = m_a * _fScalar;
+			float r = m_r * _fScalar;
+			float g = m_g * _fScalar;
+			float b = m_b * _fScalar;			
 
-			value.m_a = m_a * _fScalar;
-			value.m_r = m_r * _fScalar;
-			value.m_g = m_g * _fScalar;
-			value.m_b = m_b * _fScalar;			
-
-			value.invalidate();
-
-			return value;
+			return ColourValue(a, r, g, b);
 		}
 
 		inline ColourValue operator * ( const ColourValue & _rhs ) const
@@ -149,16 +136,12 @@ namespace Menge
 				return _rhs;
 			}
 
-			ColourValue value;
+			float a = m_a * _rhs.m_a;
+			float r = m_r * _rhs.m_r;
+			float g = m_g * _rhs.m_g;
+			float b = m_b * _rhs.m_b;			
 
-			value.m_a = m_a * _rhs.m_a;
-			value.m_r = m_r * _rhs.m_r;
-			value.m_g = m_g * _rhs.m_g;
-			value.m_b = m_b * _rhs.m_b;			
-
-			value.invalidate();
-
-			return value;
+			return ColourValue(a, r, g, b);
 		}
 
 	public:

@@ -34,3 +34,5 @@ typedef void * nullptr_t;
 #			define override
 #		endif
 #	endif
+
+#   define MENGE_RENDER_GL

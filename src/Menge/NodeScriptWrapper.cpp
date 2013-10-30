@@ -1076,7 +1076,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_existText( const ConstString & _key )
         {
-            bool exist = TEXT_SERVICE(m_serviceProvider)->existText( _key, NULL );
+            bool exist = TEXT_SERVICE(m_serviceProvider)
+				->existText( _key, nullptr );
 
             return exist;
         }

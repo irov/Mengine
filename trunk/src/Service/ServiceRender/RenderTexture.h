@@ -45,12 +45,6 @@ namespace Menge
 
 		void unlock() const override;
 
-		size_t getHWWidth() const override;
-		size_t getHWHeight() const override;
-        size_t getHWChannels() const override;
-		
-        PixelFormat getHWPixelFormat() const override;
-
 		size_t getMemoryUse() const override;
 
 	protected:

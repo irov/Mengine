@@ -388,13 +388,7 @@ namespace Menge
 
 		virtual unsigned char* lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
 		virtual void unlock() const = 0;
-
-		virtual size_t getHWWidth() const = 0;
-		virtual size_t getHWHeight() const = 0;
-        virtual size_t getHWChannels() const = 0;
-
-		virtual PixelFormat getHWPixelFormat() const = 0;				
-
+		
 		virtual size_t getMemoryUse() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////

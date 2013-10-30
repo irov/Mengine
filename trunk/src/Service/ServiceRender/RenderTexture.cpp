@@ -88,10 +88,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getMemoryUse() const
 	{
-		size_t HWWidth = this->getHWWidth();
-		size_t HWHeight = this->getHWHeight();
+		size_t HWWidth = m_image->getHWWidth();
+		size_t HWHeight = m_image->getHWHeight();
 
-		PixelFormat HWFormat = this->getHWPixelFormat();
+		PixelFormat HWFormat = m_image->getHWPixelFormat();
 
 		size_t memroy_size = RENDER_SERVICE(m_serviceProvider)
             ->getMemorySize( HWWidth, HWHeight, 1, HWFormat );
@@ -109,34 +109,6 @@ namespace Menge
 	void RenderTexture::unlock() const
 	{
 		m_image->unlock();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::getHWWidth() const
-	{
-        size_t width = m_image->getHWWidth();
-
-		return width;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::getHWHeight() const
-	{
-        size_t height = m_image->getHWHeight();
-        
-		return height;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    size_t RenderTexture::getHWChannels() const
-    {
-        size_t channels = m_image->getHWChannels();
-
-        return channels;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	Menge::PixelFormat RenderTexture::getHWPixelFormat() const
-	{
-        Menge::PixelFormat format = m_image->getHWPixelFormat();
-
-		return format;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getRect() const

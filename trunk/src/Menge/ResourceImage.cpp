@@ -39,8 +39,10 @@ namespace Menge
 
 		const Rect & rect = texture->getRect();
 
-        float hwWidth = (float)texture->getHWWidth();
-        float hwHeight = (float)texture->getHWHeight();
+		const RenderImageInterfacePtr & image = texture->getImage();
+
+        float hwWidth = (float)image->getHWWidth();
+        float hwHeight = (float)image->getHWHeight();
 
         m_uv_scale.x = float(rect.left) / hwWidth;
         m_uv_scale.y = float(rect.top) / hwHeight;

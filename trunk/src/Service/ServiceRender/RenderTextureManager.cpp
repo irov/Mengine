@@ -313,10 +313,12 @@ namespace Menge
         RenderTextureInterface * texture_ptr = _texture.get();
         m_textures.insert( _filename, texture_ptr );
 
+		const RenderImageInterfacePtr & image = _texture->getImage();
+
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s %d:%d"
             , _filename.c_str()
-            , _texture->getHWWidth()
-            , _texture->getHWHeight()
+            , image->getHWWidth()
+            , image->getHWHeight()
             );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -451,9 +453,11 @@ namespace Menge
 
         size_t memroy_size = _texture->getMemoryUse();
 
-        size_t HWWidth = _texture->getHWWidth();
-        size_t HWHeight = _texture->getHWHeight();
-        PixelFormat HWPixelFormat = _texture->getHWPixelFormat();
+		const RenderImageInterfacePtr & image = _texture->getImage(); 
+
+        size_t HWWidth = image->getHWWidth();
+        size_t HWHeight = image->getHWHeight();
+        PixelFormat HWPixelFormat = image->getHWPixelFormat();
 
         m_debugInfo.textureMemory -= memroy_size;
         --m_debugInfo.textureCount;
@@ -481,7 +485,9 @@ namespace Menge
 
         ImageCodecOptions options;
 
-        options.channels = _texture->getHWChannels();
+		const RenderImageInterfacePtr & image = _texture->getImage();
+
+        options.channels = image->getHWChannels();
         options.pitch = pitch;
 
         _imageDecoder->setOptions( &options );
@@ -523,8 +529,11 @@ namespace Menge
         size_t width = _texture->getWidth();
         size_t height = _texture->getHeight();
 
-        size_t hwWidth = _texture->getHWWidth();
-        size_t hwHeight = _texture->getHWHeight();
+
+		const RenderImageInterfacePtr & image = _texture->getImage(); 
+
+        size_t hwWidth = image->getHWWidth();
+        size_t hwHeight = image->getHWHeight();
 		
         // copy pixels on the edge for better image quality
         if( hwWidth > width )
@@ -534,14 +543,14 @@ namespace Menge
                 , hwWidth
                 );
 
-            unsigned char* image_data = _textureBuffer;
+            unsigned char * image_data = _textureBuffer;
             unsigned int pixel_size = _texturePitch / hwWidth;
 
             for( size_t j = 0; j != height; ++j )
             {
-                std::copy( image_data + (width - 1) * pixel_size,
-                    image_data + width * pixel_size,
-                    image_data + width * pixel_size );
+                std::copy( image_data + (width - 1) * pixel_size
+					, image_data + width * pixel_size
+					, image_data + width * pixel_size );
 
 
                 image_data += _texturePitch;
@@ -555,11 +564,11 @@ namespace Menge
                 , hwHeight
                 );
 
-            unsigned char* image_data = _textureBuffer;
+            unsigned char * image_data = _textureBuffer;
 
-            std::copy( image_data + (height - 1) * _texturePitch,
-                image_data + height * _texturePitch,
-                image_data + height * _texturePitch );
+            std::copy( image_data + (height - 1) * _texturePitch
+				, image_data + height * _texturePitch
+				, image_data + height * _texturePitch );
         }
     }
     //////////////////////////////////////////////////////////////////////////

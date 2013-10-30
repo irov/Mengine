@@ -52,10 +52,6 @@ namespace Menge
 		unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
 		void unlock() const override;
 
-		size_t getHWWidth() const override;
-		size_t getHWHeight() const override;
-		PixelFormat getHWPixelFormat() const override;
-
 	protected:
 		RenderTextureInterfacePtr m_texture;
 		Rect m_rect;

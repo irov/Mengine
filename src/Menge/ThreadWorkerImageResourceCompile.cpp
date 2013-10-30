@@ -52,7 +52,9 @@ namespace Menge
 
 		ImageCodecOptions options;
 
-		options.channels = m_texture->getHWChannels();
+		const RenderImageInterfacePtr & image = m_texture->getImage();
+
+		options.channels = image->getHWChannels();
 		options.pitch = m_texturePitch;
 
 		m_imageDecoder->setOptions( &options );

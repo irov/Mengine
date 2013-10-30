@@ -215,8 +215,10 @@ namespace Menge
 		size_t width = m_textureFont->getWidth();
 		size_t height = m_textureFont->getHeight();
 
-		size_t hwHeight = m_textureFont->getHWHeight();
-		size_t hwWidth = m_textureFont->getHWWidth();
+		const RenderImageInterfacePtr & image = m_textureFont->getImage();
+
+		size_t hwHeight = image->getHWHeight();
+		size_t hwWidth = image->getHWWidth();
 
 		float scaleRight = float(width) / float(hwWidth);
 		float scaleBottom = float(height) / float(hwHeight);

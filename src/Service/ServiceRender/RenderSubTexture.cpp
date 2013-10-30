@@ -122,25 +122,4 @@ namespace Menge
 	{
 		m_texture->unlock();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderSubTexture::getHWWidth() const
-	{
-        size_t width = m_texture->getHWWidth();
-
-		return width;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderSubTexture::getHWHeight() const
-	{
-        size_t height = m_texture->getHWHeight();
-
-		return height;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PixelFormat RenderSubTexture::getHWPixelFormat() const
-	{
-        PixelFormat format = m_texture->getHWPixelFormat();
-
-		return format;
-	}
 }	// namespace Menge

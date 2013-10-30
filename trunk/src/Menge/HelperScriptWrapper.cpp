@@ -850,6 +850,14 @@ namespace Menge
 				->setParticlesEnabled( _enable );
 		}
 
+		bool s_hasTextByKey( const ConstString& _key )
+		{
+			bool value = TEXT_SERVICE(m_serviceProvider)
+				->existText( _key, nullptr );
+
+			return value;
+		}
+
 		WString s_getTextByKey( const ConstString& _key )
 		{
 			const TextEntry & entry = TEXT_SERVICE(m_serviceProvider)
@@ -1168,6 +1176,8 @@ namespace Menge
 		//pybind::def_function( "unicode", &ScriptHelper::s_unicode );
 		//pybind::def_function( "ansi", &ScriptHelper::s_ansi );
 
+		
+		pybind::def_functor( "hasTextByKey", helperScriptMethod, &HelperScriptMethod::s_hasTextByKey );
 		pybind::def_functor( "getTextByKey", helperScriptMethod, &HelperScriptMethod::s_getTextByKey );
 		pybind::def_functor( "getTextCharCountByKey", helperScriptMethod, &HelperScriptMethod::s_getTextCharCountByKey );
 		

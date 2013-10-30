@@ -20,6 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AmplifierService::AmplifierService()
 		: m_serviceProvider(nullptr)
+		, m_currentPlayList(nullptr)
         , m_sourceID(0)
 		, m_buffer(nullptr)
 		, m_volume(1.f)

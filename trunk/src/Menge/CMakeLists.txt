@@ -180,6 +180,12 @@ Object2D\\\\HotSpotShape
 )
 
 ADD_FILTER(
+Prefetcher
+    ThreadWorkerImageResourceCompile.h
+    ThreadWorkerImageResourceCompile.cpp
+)
+
+ADD_FILTER(
 Player
 	Player.cpp
 	Player.h

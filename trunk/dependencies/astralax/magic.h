@@ -8,27 +8,27 @@
 #ifndef MAGIC_PARTICLES_LIBRARY
 #define MAGIC_PARTICLES_LIBRARY
 
-#pragma warning (disable: 4068)
-#pragma anon_unions
-
-#include <math.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-//#define MAGIC_PTF
+#ifdef __ARMCC_VERSION
+#pragma anon_unions
+#endif
 
 typedef int HM_FILE;
 typedef int HM_EMITTER;
 typedef int HM_IMPORT;
 typedef int HM_OBSTACLE;
 typedef int HM_WIND;
+typedef unsigned int HM_PARTICLE;
+typedef int HM_STREAM;
+
 
 #define MAGIC_PI 3.1415926535897932384626433832795028841971693993751058209
 
 // eng: MAGIC_POSITION - structure to define coordinates
-// rus: MAGIC_POSITION - структура для хранения координат
+// rus: MAGIC_POSITION - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РєРѕРѕСЂРґРёРЅР°С‚
 struct MAGIC_POSITION
 {
 	float x;
@@ -39,7 +39,7 @@ struct MAGIC_POSITION
 };
 
 // eng: MAGIC_DIRECTION - structure to define direction
-// rus: MAGIC_DIRECTION - структура для хранения направления
+// rus: MAGIC_DIRECTION - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РЅР°РїСЂР°РІР»РµРЅРёСЏ
 struct MAGIC_DIRECTION
 {
 	#ifdef MAGIC_3D
@@ -50,17 +50,17 @@ struct MAGIC_DIRECTION
 };
 
 // eng: MAGIC_FIND_DATA - structure that is used in searching emitters and directories
-// rus: MAGIC_FIND_DATA - cтруктура для перебора папок и эмиттеров в текущей папке
+// rus: MAGIC_FIND_DATA - cС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РїРµСЂРµР±РѕСЂР° РїР°РїРѕРє Рё СЌРјРёС‚С‚РµСЂРѕРІ РІ С‚РµРєСѓС‰РµР№ РїР°РїРєРµ
 struct MAGIC_FIND_DATA
 {
-	// результат
+	// СЂРµР·СѓР»СЊС‚Р°С‚
 	int type;
 	const char* name;
 	int animate;
 
 	int mode;
 
-	// дополнительные данные
+	// РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РґР°РЅРЅС‹Рµ
 	void* folder;
 	int index;
 };
@@ -68,7 +68,7 @@ struct MAGIC_FIND_DATA
 #define MAGIC_EMITTER	2
 
 // eng: MAGIC_PARTICLE - particle structure, containing its properties
-// rus: MAGIC_PARTICLE- структура частицы, описывающая ее характеристики. 
+// rus: MAGIC_PARTICLE - СЃС‚СЂСѓРєС‚СѓСЂР° С‡Р°СЃС‚РёС†С‹, РѕРїРёСЃС‹РІР°СЋС‰Р°СЏ РµРµ С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё.
 struct MAGIC_PARTICLE
 {
 	MAGIC_POSITION position;
@@ -80,7 +80,7 @@ struct MAGIC_PARTICLE
 };
 
 // eng: MAGIC_TEXTURE - structure, containing texture frame-file information
-// rus: MAGIC_TEXTURE - структура, хранящая информацию о текстуре
+// rus: MAGIC_TEXTURE - СЃС‚СЂСѓРєС‚СѓСЂР°, С…СЂР°РЅСЏС‰Р°СЏ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С‚РµРєСЃС‚СѓСЂРµ
 struct MAGIC_TEXTURE
 {
 	unsigned int length;
@@ -111,7 +111,7 @@ struct MAGIC_TEXTURE
 };
 
 // eng: MAGIC_ATLAS - structure, containing information on frame file locations within the textural atlas
-// rus: MAGIC_ATLAS - структура, хранящая информацию о расположении файл-кадров на текстурном атласе
+// rus: MAGIC_ATLAS - СЃС‚СЂСѓРєС‚СѓСЂР°, С…СЂР°РЅСЏС‰Р°СЏ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРё С„Р°Р№Р»-РєР°РґСЂРѕРІ РЅР° С‚РµРєСЃС‚СѓСЂРЅРѕРј Р°С‚Р»Р°СЃРµ
 struct MAGIC_ATLAS
 {
 	int width;
@@ -120,8 +120,8 @@ struct MAGIC_ATLAS
 	MAGIC_TEXTURE** textures;
 };
 
-// eng: MAGIC_STATIC_ATLAS - structure, containing information of static textural atlas 
-// rus: MAGIC_STATIC_ATLAS - структура, хранящая информацию о статическом текстурном атласе
+// eng: MAGIC_STATIC_ATLAS - structure, containing information of static textural atlas
+// rus: MAGIC_STATIC_ATLAS - СЃС‚СЂСѓРєС‚СѓСЂР°, С…СЂР°РЅСЏС‰Р°СЏ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃС‚Р°С‚РёС‡РµСЃРєРѕРј С‚РµРєСЃС‚СѓСЂРЅРѕРј Р°С‚Р»Р°СЃРµ
 struct MAGIC_STATIC_ATLAS
 {
 	const char* file;
@@ -130,7 +130,7 @@ struct MAGIC_STATIC_ATLAS
 };
 
 // eng: MAGIC_CHANGE_ATLAS - structure, containing information on changes in textural atlas
-// rus: MAGIC_CHANGE_ATLAS - структура, хранящая информацию об изменении в текстурном атласе
+// rus: MAGIC_CHANGE_ATLAS - СЃС‚СЂСѓРєС‚СѓСЂР°, С…СЂР°РЅСЏС‰Р°СЏ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёР·РјРµРЅРµРЅРёРё РІ С‚РµРєСЃС‚СѓСЂРЅРѕРј Р°С‚Р»Р°СЃРµ
 struct MAGIC_CHANGE_ATLAS
 {
 	int type;
@@ -149,7 +149,7 @@ struct MAGIC_CHANGE_ATLAS
 #define MAGIC_CHANGE_ATLAS_CLEAN	3
 
 // eng: MAGIC_PARTICLE_VERTEXES - structure, containing particle's vertex coordinates information
-// rus: MAGIC_PARTICLE_VERTEXES - структура, хранящая информацию о координатах вершин частицы
+// rus: MAGIC_PARTICLE_VERTEXES - СЃС‚СЂСѓРєС‚СѓСЂР°, С…СЂР°РЅСЏС‰Р°СЏ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРѕРѕСЂРґРёРЅР°С‚Р°С… РІРµСЂС€РёРЅ С‡Р°СЃС‚РёС†С‹
 struct MAGIC_PARTICLE_VERTEXES
 {
 	MAGIC_POSITION vertex1;
@@ -168,23 +168,23 @@ struct MAGIC_PARTICLE_VERTEXES
 };
 
 // eng: MAGIC_RENDERING - structure taking part in emitter visualization
-// rus: MAGIC_RENDERING - структура, участвующая в процессе визуализации эмиттера
+// rus: MAGIC_RENDERING - СЃС‚СЂСѓРєС‚СѓСЂР°, СѓС‡Р°СЃС‚РІСѓСЋС‰Р°СЏ РІ РїСЂРѕС†РµСЃСЃРµ РІРёР·СѓР°Р»РёР·Р°С†РёРё СЌРјРёС‚С‚РµСЂР°
 struct MAGIC_RENDERING
 {
 	int count;
 	unsigned int texture_id;
-	bool intense;	
+	bool intense;
 };
 
 // eng: MAGIC_KEY - structure, that allows modifying keys on a Timeline
-// rus: MAGIC_KEY - структура, позволяющая модифицировать ключи на Шкале времени
+// rus: MAGIC_KEY - СЃС‚СЂСѓРєС‚СѓСЂР°, РїРѕР·РІРѕР»СЏСЋС‰Р°СЏ РјРѕРґРёС„РёС†РёСЂРѕРІР°С‚СЊ РєР»СЋС‡Рё РЅР° РЁРєР°Р»Рµ РІСЂРµРјРµРЅРё
 struct MAGIC_KEY
 {
 	double time;
 
 	MAGIC_POSITION position;
 	MAGIC_POSITION s1,s2;
-	
+
 	float scale;
 
 	int number;
@@ -197,34 +197,8 @@ struct MAGIC_KEY
 #define MAGIC_KEY_DIRECTION	2
 #define MAGIC_KEY_OPACITY	3
 
-// eng: MAGIC_MATRIX - structure describing the matrix
-// rus: MAGIC_MATRIX - структура, описывающая матрицу
-struct MAGIC_MATRIX
-{
-	union
-	{
-		struct
-		{
-			float _11, _12, _13, _14;
-			float _21, _22, _23, _24;
-			float _31, _32, _33, _34;
-			float _41, _42, _43, _44;
-		};
-		float m[4][4];
-	};
-};
-
-// eng: MAGIC_TRIANGLE - structure to define a triangle
-// rus: MAGIC_TRIANGLE - структура для хранения треугольника
-struct MAGIC_TRIANGLE
-{
-	MAGIC_POSITION vertex1;
-	MAGIC_POSITION vertex2;
-	MAGIC_POSITION vertex3;
-};
-
 // eng: MAGIC_TAIL - structure for constructing "tail" from particles
-// rus: MAGIC_TAIL - структура для построения "хвоста" из частиц
+// rus: MAGIC_TAIL - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ "С…РІРѕСЃС‚Р°" РёР· С‡Р°СЃС‚РёС†
 struct MAGIC_TAIL
 {
 	int existing_particles;
@@ -246,8 +220,52 @@ struct MAGIC_TAIL
 #define MAGIC_TAIL_EXISTING_PARTICLES_NOMOVE		3
 #define MAGIC_TAIL_EXISTING_PARTICLES_MOVE_DEFAULT	4
 
+// eng: MAGIC_MATRIX - structure describing the matrix
+// rus: MAGIC_MATRIX - СЃС‚СЂСѓРєС‚СѓСЂР°, РѕРїРёСЃС‹РІР°СЋС‰Р°СЏ РјР°С‚СЂРёС†Сѓ
+struct MAGIC_MATRIX
+{
+	union
+	{
+		struct
+		{
+			float _11, _12, _13, _14;
+			float _21, _22, _23, _24;
+			float _31, _32, _33, _34;
+			float _41, _42, _43, _44;
+		};
+		float m[4][4];
+	};
+};
+
+// eng: MAGIC_TRIANGLE - structure to define a triangle
+// rus: MAGIC_TRIANGLE - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ С‚СЂРµСѓРіРѕР»СЊРЅРёРєР°
+struct MAGIC_TRIANGLE
+{
+	MAGIC_POSITION vertex1;
+	MAGIC_POSITION vertex2;
+	MAGIC_POSITION vertex3;
+};
+
+// eng: MAGIC_SEGMENT - structure to store line segment coordinates.
+// rus: MAGIC_SEGMENT - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РєРѕРѕСЂРґРёРЅР°С‚ РѕС‚СЂРµР·РєР°.
+struct MAGIC_SEGMENT
+{
+	MAGIC_POSITION vertex1;
+	MAGIC_POSITION vertex2;
+};
+
+// eng: MAGIC_RECT - structure to store rectangle
+// rus: MAGIC_RECT - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРєР°
+struct MAGIC_RECT
+{
+	int left;
+	int top;
+	int right;
+	int bottom;
+};
+
 // eng: MAGIC_BBOX - structure to define Bounds Box
-// rus: MAGIC_BBOX - структура для хранения Bounds Box
+// rus: MAGIC_BBOX - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРµРЅРёСЏ Bounds Box
 struct MAGIC_BBOX
 {
 	MAGIC_POSITION corner1;
@@ -255,7 +273,7 @@ struct MAGIC_BBOX
 };
 
 // eng: MAGIC_BIRTH - structure to restrict the region of "birth" fo new particles
-// rus: MAGIC_BIRTH - структура для ограничения области "рождения" новых частиц
+// rus: MAGIC_BIRTH - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РѕРіСЂР°РЅРёС‡РµРЅРёСЏ РѕР±Р»Р°СЃС‚Рё "СЂРѕР¶РґРµРЅРёСЏ" РЅРѕРІС‹С… С‡Р°СЃС‚РёС†
 struct MAGIC_BIRTH
 {
 	int type;
@@ -271,7 +289,7 @@ struct MAGIC_BIRTH
 #define MAGIC_BIRTH_SPHERE			4
 
 // eng: MAGIC_ORIENTATION - structure for storing particles type orientation
-// rus: MAGIC_ORIENTATION - структура для храниения ориентации типа частиц
+// rus: MAGIC_ORIENTATION - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ С…СЂР°РЅРёРµРЅРёСЏ РѕСЂРёРµРЅС‚Р°С†РёРё С‚РёРїР° С‡Р°СЃС‚РёС†
 struct MAGIC_ORIENTATION
 {
 	int orientation;
@@ -287,6 +305,113 @@ struct MAGIC_ORIENTATION
 #define MAGIC_ORIENTATION_CAMERA_Z		7
 #define MAGIC_ORIENTATION_CAMERA_AXIS	8
 #define MAGIC_ORIENTATION_DIRECTION		9
+
+// eng: MAGIC_VARIABLE - structure for variables
+// rus: MAGIC_VARIABLE - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РїРµСЂРµРјРµРЅРЅС‹С…
+struct MAGIC_VARIABLE
+{
+	const char* name;
+	int type;
+	char value[8];
+};
+#define MAGIC_VARIABLE_BOOL		0
+#define MAGIC_VARIABLE_INT		1
+#define MAGIC_VARIABLE_FLOAT	2
+#define MAGIC_VARIABLE_STRING	3
+#define MAGIC_VARIABLE_DIAGRAM	4
+
+// eng: MAGIC_ACTION - structure for actions
+// rus: MAGIC_ACTION - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РґРµР№СЃС‚РІРёР№
+struct MAGIC_ACTION
+{
+	int event;
+	int HM;
+	int action;
+	float factor;
+
+	int magnet_particles_type;
+	int magnet_direction;
+	int magnet_distance;
+	float magnet_strength1;
+	float magnet_strength2;
+
+	int particles_type;
+	int direction;
+	float angle;
+	float size;
+	float velocity;
+	float weight;
+	float spin;
+	float angular_velocity;
+	float motion_rand;
+	float visibility;
+};
+#define MAGIC_EVENT_CREATION					0
+#define MAGIC_EVENT_DESTRUCTION					1
+#define MAGIC_EVENT_EXISTENCE					2
+#define MAGIC_EVENT_COLLISION					3
+#define MAGIC_EVENT_MAGNET						4
+#define MAGIC_EVENT_WIND						5
+
+#define MAGIC_ACTION_EVENT						0
+#define MAGIC_ACTION_DESTRUCTION				1
+#define MAGIC_ACTION_DETACHING					2
+#define MAGIC_ACTION_FACTOR						3
+#define MAGIC_ACTION_PARTICLE					4
+#define MAGIC_ACTION_MAGNET_PARTICLE			5
+
+#define MAGIC_ACTION_DIRECTION_DISABLED			0
+#define MAGIC_ACTION_DIRECTION_MOVEMENT			1
+#define MAGIC_ACTION_DIRECTION_REBOUND			2
+
+#define MAGIC_MAGNET_POINT_ANY					0
+#define MAGIC_MAGNET_POINT_DIRECTION			1
+#define MAGIC_MAGNET_POINT_OPPOSITE_DIRECTION	2
+
+// eng: MAGIC_EVENT - structure to get event information
+// rus: MAGIC_EVENT - СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ СЃРѕР±С‹С‚РёРё
+struct MAGIC_EVENT
+{
+	int event;
+	HM_PARTICLE hmParticle;
+	MAGIC_POSITION position1;
+	MAGIC_POSITION position2;
+	MAGIC_POSITION reflection;
+};
+
+// eng: MAGIC_OBSTACLE - structure defining the shape of obstacle
+// rus: MAGIC_OBSTACLE - СЃС‚СЂСѓРєС‚СѓСЂР°, РєРѕС‚РѕСЂР°СЏ РѕРїРёСЃС‹РІР°РµС‚ С„РѕСЂРјСѓ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
+struct MAGIC_OBSTACLE
+{
+	int type;
+	float radius;
+	int count;
+	#if defined(EXE) || defined(SCREENSAVER)
+	void* primitives;
+	#else
+	#ifdef MAGIC_3D
+	MAGIC_TRIANGLE* primitives;
+	#else
+	MAGIC_SEGMENT* primitives;
+	#endif
+	#endif
+};
+#if defined(EXE) || defined(SCREENSAVER) || (!defined(MAGIC_3D))
+#define MAGIC_OBSTACLE_CIRCLE		0	// circle/РѕРєСЂСѓР¶РЅРѕСЃС‚СЊ (2D)
+#define MAGIC_OBSTACLE_SEGMENT		1	// segment/РѕС‚СЂРµР·РѕРє (2D)
+#endif
+#ifdef MAGIC_3D
+#define MAGIC_OBSTACLE_SPHERE		2	// sphere/СЃС„РµСЂР° (3D)
+#define MAGIC_OBSTACLE_TRIANGLE		3	// triangle/С‚СЂРµСѓРіРѕР»СЊРЅРёРє (3D)
+#endif
+
+// eng: MAGIC_WIND - structure that defines wind
+// rus: MAGIC_WIND - СЃС‚СЂСѓРєС‚СѓСЂР°, РєРѕС‚РѕСЂР°СЏ РѕРїРёСЃС‹РІР°РµС‚ РІРµС‚РµСЂ
+struct MAGIC_WIND
+{
+	MAGIC_POSITION direction;
+	float velocity;
+};
 
 
 
@@ -329,834 +454,9 @@ struct MAGIC_ORIENTATION
 #define MAGIC_SORT_CAMERA_NEAR	3
 #define MAGIC_SORT_CAMERA_FAR	4
 
-
-// eng: Loads the ptc-file from the path specified
-// rus: Загружает ptc-файл по указанному пути
-HM_FILE Magic_OpenFile(const char* file_name);
-
-// eng: Loads the ptc-file image from the memory
-// rus: Открытие образа ptc-файла из памяти
-HM_FILE Magic_OpenFileInMemory(const char* buffer);
-
-// eng: Closes the file, opened earlier by use of Magic_OpenFile or Magic_OpenFileInMemory
-// rus: Закрывает файл, открытый ранее через Magic_OpenFile или Magic_OpenFileInMemory
-int Magic_CloseFile(HM_FILE hmFile);
-
-// eng: Closing all the opened files
-// rus: Закрытие всех открытых файлов
-void Magic_CloseAllFiles();
-
-// eng: Returns the current folder path
-// rus: Возвращает полный путь к текущей папке
-const char* Magic_GetCurrentFolder(HM_FILE hmFile);
-
-// eng: Sets the new current folder
-// rus: Установить новый путь к текущей папке
-int Magic_SetCurrentFolder(HM_FILE hmFile, const char* path);
-
-// eng: Searches for the first folder or emitter within the current folder and returns the type of the object found
-// rus: Ищет первую папку или первый эмиттер в текущей папке и возвращает имя и тип найденного объекта
-const char* Magic_FindFirst(HM_FILE hmFile,MAGIC_FIND_DATA* data,int mode);
-
-// eng: Searches for the next folder or emitter within the current folder and returns the type of the object found
-// rus: Ищет очередную папку или очередной эмиттер в текущей папке и возвращает имя и тип найденного объекта
-const char* Magic_FindNext(HM_FILE hmFile, MAGIC_FIND_DATA* data);
-
-// eng: Returns the name of the file that was opened through the Magic_OpenFile
-// rus: Возвращает имя файла, открытого через Magic_OpenFile
-const char* Magic_GetFileName(HM_FILE hmFile);
-
-// eng: Returns the flag indicating that textures are stored within the file
-// rus: Возвращает признак того, что файл содержит текстуры
-bool Magic_HasTextures(HM_FILE hmFile);
-
-// eng: Returns the number of static textural atlases attached to specified file
-// rus: Возвращает количество статических текстурных атласов, прикрепленных к указанному файлу
-int Magic_GetStaticAtlasCount(HM_FILE hmFile);
-
-// eng: Returns information on static textural atlas attached to specified file
-// rus: Возвращает информацию о статическом текстурном атласе, прикрепленному к указанному файлу
-int Magic_GetStaticAtlas(HM_FILE hmFile, int index, MAGIC_STATIC_ATLAS* atlas);
-
-// --------------------------------------------------------------------------------
-
-// eng: Creates the emitter object and loads its data
-// rus: Создает эмиттер и загружает в него данные
-HM_EMITTER Magic_LoadEmitter(HM_FILE hmFile, const char* name);
-
-// eng: Gets the copy of the emitter
-// rus: Дублирует эмиттер
-HM_EMITTER Magic_DuplicateEmitter(HM_EMITTER hmEmitter);
-
-// eng: Unloads the emitter data and destroys it
-// rus: Выгружает данные из эмиттера и уничтожает его
-int Magic_UnloadEmitter(HM_EMITTER hmEitter);
-
-// eng: Processes the emitter. Creates, displaces and removes the particles
-// rus: Осуществляет обработку эмиттера: создает, перемещает и уничтожает частицы
-bool Magic_Update(HM_EMITTER hmEmitter, double time);
-
-// eng: Stops the emitter
-// rus: Останавливает работу эмиттера
-int Magic_Stop(HM_EMITTER hmEmitter);
-
-// eng: Restarts the emitter from the beginning
-// rus: Перезапускает эмиттер с нулевой позиции
-int Magic_Restart(HM_EMITTER hmEmitter);
-
-// eng: Returns the flag showing that emitter is in interrupted mode
-// rus: Возврашает признак того, что эмиттер прерывается
-bool Magic_IsInterrupt(HM_EMITTER hmEmitter);
-
-// eng: Interrupts/Starts emitter work
-// rus: Прерывает или запускает работу эмиттера
-int Magic_SetInterrupt(HM_EMITTER hmEmitter, bool interrupt);
-
-// eng: Returns the Magic Particles (Dev) time increment, used for the animation
-// rus: Возвращает заданное в Magic Particles приращение времени, используемое для анимации эмиттера
-double Magic_GetUpdateTime(HM_EMITTER hmEmitter);
-
-// eng: Returns current animation position
-// rus: Возвращает текущую позицию анимации
-double Magic_GetPosition(HM_EMITTER hmEmitter);
-
-// eng: Sets the current animation position
-// rus: Устанавливает текущую позицию анимации
-int Magic_SetPosition(HM_EMITTER hmEmitter,double position);
-
-// eng: Returns animation duration
-// rus: Возвращает продолжительность анимации
-double Magic_GetDuration(HM_EMITTER hmEmitter);
-
-// eng: Returns the left position of the visibility range
-// rus: Возвращает левую позицию интервала видимости
-double Magic_GetInterval1(HM_EMITTER hmEmitter);
-
-// eng: Sets the left position of the visibility range
-// rus: Устанавливает левую позицию интервала видимости
-int Magic_SetInterval1(HM_EMITTER hmEmitter,double position);
-
-// eng: Returns the right position of the visibility range
-// rus: Возвращает правую позицию интервала видимости
-double Magic_GetInterval2(HM_EMITTER hmEmitter);
-
-// eng: Sets the right position of the visibility range
-// rus: Устанавливает правую позицию интервала видимости
-int Magic_SetInterval2(HM_EMITTER hmEmitter,double position);
-
-// eng: Figures out if the current animation position is within the visibility range
-// rus: Определяет, попадает ли текущая позиция анимации в интервал видимости
-bool Magic_InInterval(HM_EMITTER hmEmitter);
-
-// eng: Sets the animation position at the left position of visibility range
-// rus: Устанавливает эмиттер на первую границу интервала видимости
-int Magic_EmitterToInterval1(HM_EMITTER hmEmitter, float speed_factor, const char* file);
-
-// eng: Returns the flag of the animation of emitter that begins not from 0 position
-// rus: Возвращает признак того, что анимация эмиттера начинается не с начала
-bool Magic_IsInterval1(HM_EMITTER hmEmitter);
-
-// eng: Copying the particles array into emitter from the file
-// rus: Копирование пространства частиц в эмиттер из файла. 
-int Magic_LoadArrayFromFile(HM_EMITTER hmEmitter, const char* file);
-
-// eng: Copying the particles array from the emitter into the file
-// rus: Копирование пространства частиц эмиттера в файл
-int Magic_SaveArrayToFile(HM_EMITTER hmEmitter, const char* file);
-
-// eng: Returns the particle positions interpolation usage flag
-// rus: Возвращает признак режима интерполяции эмиттера
-bool Magic_IsInterpolationMode(HM_EMITTER hmEmitter);
-
-// eng: Sets/resets the particle positions interpolation usage flag
-// rus: Включает/отключает режим интреполяции положения частиц
-int Magic_SetInterpolationMode(HM_EMITTER hmEmitter,bool mode);
-
-// eng: Returns the flag of stability/randomness of the emitter behaviour
-// rus: Возвращает признак стабильности/случайности поведения эмиттера
-bool Magic_IsRandomMode(HM_EMITTER hmEmitter);
-
-// eng: Sets the flag of stability/randomness of the emitter behaviour
-// rus: Устанавливает признак стабильности/случайности поведения эмиттера
-int Magic_SetRandomMode(HM_EMITTER hmEmitter,bool mode);
-
-// eng: Returns the emitter behaviour mode at the end of the animation
-// rus: Возвращает режим поведения эмиттера после окончания анимации
-int Magic_GetLoopMode(HM_EMITTER hmEmitter);
-
-// eng: Sets the emitter behaviour mode at the end of the animation
-// rus: Устанавливает режим поведения эмиттера после окончания анимации
-int Magic_SetLoopMode(HM_EMITTER hmEmitter,int mode);
-
-// eng: Returns the color management mode
-// rus: Возвращает режим управления цветом частиц
-int Magic_GetColorMode(HM_EMITTER hmEmitter);
-
-// eng: Sets the color management mode
-// rus: Устанавливает режим управления цветом частиц
-int Magic_SetColorMode(HM_EMITTER hmEmitter,int mode);
-
-// eng: Returns the user defined tint
-// rus: Возвращает оттенок пользователя
-int Magic_GetTint(HM_EMITTER hmEmitter);
-
-// eng: Sets the user defined tint
-// rus: Устанавливает оттенок пользователя
-int Magic_SetTint(HM_EMITTER hmEmitter,int tint);
-
-// eng: Returns the user defined tint strength
-// rus: Возвращает силу оттенка пользователя
-float Magic_GetTintStrength(HM_EMITTER hmEmitter);
-
-// eng: Sets the user defined tint strength
-// rus: Устанавливает силу оттенка пользователя
-int Magic_SetTintStrength(HM_EMITTER hmEmitter,float tint_strength);
-
-// eng: Returns the emitter scale
-// rus: Возвращает масштаб эмиттера
-float Magic_GetScale(HM_EMITTER hmEmitter);
-
-// eng: Sets the emitter scale
-// rus: Устанавливает масштаб эмиттера
-int Magic_SetScale(HM_EMITTER hmEmitter, float scale);
-
-// eng: Sets the user data
-// rus: Устанавливает пользовательские данные
-int Magic_SetData(HM_EMITTER hmEmitter, int data);
-
-// eng: Returns the user data
-// rus: Возвращает пользовательские данные
-int Magic_GetData(HM_EMITTER hmEmitter);
-
-// rus: Возвращает область рождения частиц
-int Magic_GetBirthPlace(HM_EMITTER hmEmitter,MAGIC_BIRTH* place);
-
-// rus: Устанавливает область рождения частиц
-int Magic_SetBirthPlace(HM_EMITTER hmEmitter,MAGIC_BIRTH* place);
-
-// eng: Returns the name of the emitter
-// rus: Возвращает имя эмиттера
-const char* Magic_GetEmitterName(HM_EMITTER hmEmitter);
-
-// eng: Returns the shape of the emitter itself or the shape of the emitter for the specified particles type
-// rus: Возвращает форму эмиттера или форму эмиттера для указанного типа частиц
-int Magic_GetEmitterType(HM_EMITTER hmEmitter,int index);
-
-// eng: Returns the ID of emitter
-// rus: Возвращает идентификатор эмиттера
-unsigned int Magic_GetEmitterID(HM_EMITTER hmEmitter);
-
-#ifdef MAGIC_3D
-
-// eng: Returns the flag indicating that emitter emits only 3D-particles
-// rus: Возвращает признак того, что эмиттер излучает только 3D-частицы
-bool Magic_Is3d(HM_EMITTER hmEmitter);
-
-// eng: Returns the default matrix of emitter that was set using the Magic Particles (Dev). 
-// rus: Возвращает матрицу вида, которая была установлена для эмиттера в Magic Particles
-int Magic_GetViewMatrixDefault(HM_EMITTER hmEmitter,MAGIC_MATRIX* matrix,float distance_scale);
-
-#endif
-
-// eng: Returns coordinates of the emitter
-// rus: Возвращает координаты эмиттера
-int Magic_GetEmitterPosition(HM_EMITTER hmEmitter,MAGIC_POSITION* pos);
-
-// eng: Sets the coordinates of the emitter
-// rus: Устанавливает координаты эмиттера
-int Magic_SetEmitterPosition(HM_EMITTER hmEmitter,MAGIC_POSITION* pos);
-
-// eng: Sets the emitter position. "Tail" from particles is formed between old and new position
-// rus: Устанавливает координаты эмиттера. Между старой и новой позицией эмиттера образуется "хвост" из частиц
-int Magic_SetEmitterPositionWithTail(HM_EMITTER hmEmitter,MAGIC_POSITION* pos);
-
-// eng: Returns the mode of the emitter coordinates
-// rus: Возвращает режим координат эмиттера
-bool Magic_GetEmitterPositionMode(HM_EMITTER hmEmitter);
-
-// eng: Sets the mode of the emitter coordinates
-// rus: Устанавливает режим координат эмиттера
-int Magic_SetEmitterPositionMode(HM_EMITTER hmEmitter,bool mode);
-
-// eng: Moves particles
-// rus: Перемещает частицы
-int Magic_MoveEmitterParticles(HM_EMITTER hmEmitter,MAGIC_POSITION* offset);
-
-// eng: Returns emitter direction
-// rus: Возвращает направление эмиттера
-int Magic_GetEmitterDirection(HM_EMITTER hmEmitter,MAGIC_DIRECTION* direction);
-
-// eng: Sets the direction of the emitter
-// rus: Устанавливает направление эмиттера
-int Magic_SetEmitterDirection(HM_EMITTER hmEmitter,MAGIC_DIRECTION* direction);
-
-// eng: Gets the emitter's direction mode
-// rus: Возвращает режим вращения эмиттера
-bool Magic_GetEmitterDirectionMode(HM_EMITTER hmEmitter);
-
-// eng: Sets emitter's rotation mode
-// rus: Устанавливает режим вращения эмиттера
-int Magic_SetEmitterDirectionMode(HM_EMITTER hmEmitter,bool mode);
-
-// eng: Rotates particles
-// rus: Вращает частицы
-int Magic_RotateEmitterParticles(HM_EMITTER hmEmitter, MAGIC_DIRECTION* offset);
-
-// eng: Returns the animate folder flag
-// rus: Возвращает признак анимированной папки
-bool Magic_IsFolder(HM_EMITTER hmEmitter);
-
-// eng: Returns the number of emitters contained in animate folder. 1 is returned for emitter
-// rus: Возвращает количество эмиттеров внутри эмиттера
-int Magic_GetEmitterCount(HM_EMITTER hmEmitter);
-
-// eng: Returns the specified emitter from animate folder. Returns itself for emitter
-// rus: Возвращает дескриптор эмиттера внутри эмиттера
-HM_EMITTER Magic_GetEmitter(HM_EMITTER hmEmitter,int index);
-
-// eng: Creates the first portion of particles for emitter visualization and returns information on visualization settings. 
-// rus: Создает первую порцию частиц для визуализации эмиттера и возвращает информацию о настройках визуализации
-int Magic_CreateFirstRenderedParticlesList(HM_EMITTER hmEmitter, MAGIC_RENDERING* rendering);
-
-// eng: Creates the next portion of particles for emitter visualization and returns information on visualization settings
-// rus: Создает очередную порцию частиц для визуализации эмиттера и возвращает информацию о настройках визуализации
-void Magic_CreateNextRenderedParticlesList(MAGIC_RENDERING* rendering);
-
-// eng: Returns the MAGIC_PARTICLE_VERTEXES structure, containing the coordinates of the visualization rectangle vertice
-// rus: Возвращает информацию о вершинах очередной частицы для её визуализации
-int Magic_GetNextParticleVertexes(MAGIC_PARTICLE_VERTEXES* vertexes);
-
-// eng: Returns particles sorting mode
-// rus: Возвращает режим сортировки частиц
-int Magic_GetSortingMode(HM_EMITTER hmEmitter);
-
-// eng: Sets particles sorting mode
-// rus: Устанавливает режим сортировки частиц
-int Magic_SetSortingMode(HM_EMITTER hmEmitter, int mode);
-
-#ifdef MAGIC_3D
-
-// eng: Returns the view matrix that is set for API
-// rus: Возвращает матрицу вида, установленную для API
-void Magic_GetViewMatrix(MAGIC_MATRIX* matrix);
-
-// eng: Sets the view matrix for API
-// rus: Устанавливает матрицу вида для API
-void Magic_SetViewMatrix(MAGIC_MATRIX* matrix);
-
-#endif
-
-// eng: Returnes Bounds Box
-// rus: Возвращает BBox
-int Magic_GetBBox(HM_EMITTER hmEmitter,MAGIC_BBOX* bbox);
-
-// eng: Returns Bounds Box recalculation period
-// rus: Возвращает период перерасчета Bounds Box
-int Magic_GetBBoxPeriod(HM_EMITTER hmEmitter);
-
-// eng: Sets Bounds Box recalculation period
-// rus: Устанавливает период перерасчета Bounds Box
-int Magic_SetBBoxPeriod(HM_EMITTER hmEmitter,int period);
-
-// eng: Forces Bounds Box recalculation
-// rus: Принудительно пересчитывает Bounds Box
-int Magic_RecalcBBox(HM_EMITTER hmEmitter);
-
-// --------------------------------------------------------------------------------
-
-// eng: Returns the name of the particles type
-// rus: Возвращает имя типа частиц
-const char* Magic_GetParticlesTypeName(HM_EMITTER hmEmitter, int index);
-
-// eng: Returns the number particles type contained in emitter
-// rus: Возвращает количество типов частиц внутри эмиттера
-int Magic_GetParticlesTypeCount(HM_EMITTER hmEmitter);
-
-// eng: Locks the specified particles type for the further processing
-// rus: Захватывает для дальнейшей обработки указанный тип частиц
-int Magic_LockParticlesType(HM_EMITTER hmEmitter, int index);
-
-// eng: Releases previously locked particles type
-// rus: Освобождает захваченный ранее тип частиц
-int Magic_UnlockParticlesType();
-
-// eng: Returns the number of textural frame-files in locked particles type
-// rus: Возвращает количество текстурных файл-кадров в захваченном типе частиц
-int Magic_GetTextureCount();
-
-// eng: Returns MAGIC_TEXTURE structure containing the specified frame-file information
-// rus: Возвращает структуру   с информацией об указанном файл-кадре
-int Magic_GetTexture(int index, MAGIC_TEXTURE* texture);
-
-// eng: Sets texture coordinates for specified frame-file
-// rus: Устанавливает текстурные координаты для указанного файл-кадра
-int Magic_SetTextureUV(int index, float left, float top, float right, float bottom);
-
-// eng: Returns the number used as a user resources texture identificator
-// rus: Возвращает число, которое предназанчено для идентификации текстуры в ресурсах пользователя
-unsigned int Magic_GetTextureID();
-
-// eng: Sets the number used as a user resources texture identificator
-// rus: Устанавливает число, которое предназанчено для идентификации текстуры в ресурсах пользователя
-int Magic_SetTextureID(unsigned int id);
-
-// eng: Returns the Intensity flag
-// rus: Возвращает признак Интентивность
-bool Magic_IsIntensive();
-
-#ifdef MAGIC_3D
-
-// eng: Returns particle type orientation for 3D-emitters
-// rus: Возвращает ориентацию типа частиц для 3D-эмиттеров
-int Magic_GetOrientation(MAGIC_ORIENTATION* orientation);
-
-// eng: Sets particle type orientation for 3D-emitters
-// rus: Устанавливает ориентацию типа частиц для 3D-эмиттеров
-int Magic_SetOrientation(MAGIC_ORIENTATION* orientation);
-
-#endif
-
-// eng: Returns "tail" properties
-// rus: Возвращает свойства "хвоста"
-int Magic_GetTailProperties(MAGIC_TAIL* tail);
-
-// eng: Sets "tail" properties
-// rus: Устанавливает свойства "хвоста"
-int Magic_SetTailProperties(MAGIC_TAIL* tail);
-
-// eng: Returns the next particle. Is used to go through all the existing particles
-// rus: Возвращает информацию об очередной частице. Используется для перебора всех существующих частиц
-int Magic_GetNextParticle(MAGIC_PARTICLE* particle);
-
-// eng: Changes the position of the particle that is got by Magic_GetNextParticle
-// rus: Изменяет координаты частицы, полученной через Magic_GetNextParticle
-void Magic_MoveParticle(MAGIC_POSITION* offset);
-
-// eng: Rotates the particle that was obtained by Magic_GetNextParticle around the emitter
-// rus: Вращает частицу полученную через Magic_GetNextParticle вокруг эмиттера
-void Magic_RotateParticle(MAGIC_DIRECTION* offset);
-
-// --------------------------------------------------------------------------
-
-// eng: Sets the mode of atlas
-// rus: Устанавливает режим работы атласа
-void Magic_SetCleverModeForAtlas(bool clever);
-
-// eng: Returns the mode of atlas
-// rus: Возвращает режим работы атласа
-bool Magic_IsCleverModeForAtlas();
-
-// eng: Returns the information on next change in textural atlas
-// rus: Возвращает информацию об очередном изменении в текстурном атласе
-int Magic_GetNextAtlasChange(MAGIC_CHANGE_ATLAS* change);
-
-// eng: Creates textural atlases for all loaded emitters
-// rus: Создает текстурные атласы для всех загруженных эмиттеров
-float Magic_CreateAtlases(int width,int height,int step,float scale_step);
-
-// eng: Creates textural atlases for specified emitters
-// rus: Создает текстурные атласы для указанных эмиттеров
-float Magic_CreateAtlasesForEmitters(int width,int height,int count, HM_EMITTER* emitters,int step,float scale_step);
-
-// eng: Sets up the initial scale for atlas creation
-// rus: Устанавливает стартовый масштаб для постороения атласа
-void Magic_SetStartingScaleForAtlas(float scale);
-
-// eng: Returns the initial scale for atlas creation
-// rus: Возвращает стартовый масштаб для постороения атласа
-float Magic_GetStartingScaleForAtlas();
-
-// eng: Returns the number of textural atlases
-// rus: Возвращает количество атласов
-int Magic_GetAtlasCount();
-
-// eng: Returns the textural atlas specified
-// rus: Возвращает указанный текстурный атлас
-int Magic_GetAtlas(int index, MAGIC_ATLAS* atlas);
-
-// --------------------------------------------------------------------------
-
-// eng: Figures out if the diagram is managable
-// rus: Определяет, доступен ли указанный график
-bool Magic_IsDiagramEnabled(HM_EMITTER hmEmitter,int type_index, int diagram_index);
-
-// eng: Returns the specified diagram factor
-// rus: Возвращает множитель для указанного графика
-float Magic_GetDiagramFactor(HM_EMITTER hmEmitter,int type_index, int diagram_index);
-
-// eng: Sets the specified diagram factor
-// rus: Устанавливает множитель для указанного графика
-int Magic_SetDiagramFactor(HM_EMITTER hmEmitter,int type_index, int diagram_index, float factor);
-
-// eng: Returns the factor for emitter form diagram
-// rus: Возвращает множитель для графика формы эмиттера
-float Magic_GetDiagramEmitterFactor(HM_EMITTER hmEmitter, int type_index, bool line);
-
-// eng: Sets the factor for emitter form diagram
-// rus: Устанавливает множитель для графика формы эмиттера
-int Magic_SetDiagramEmitterFactor(HM_EMITTER hmEmitter, int type_index, bool line, float factor);
-
-// eng: Returns the offset for the specified diagram
-// rus: Возвращает смещение для указанного графика
-float Magic_GetDiagramAddition(HM_EMITTER hmEmitter,int type_index, int diagram_index);
-
-// eng: Sets the offset for the specified diagram
-// rus: Устанавливает смещение для указанного графика
-int Magic_SetDiagramAddition(HM_EMITTER hmEmitter,int type_index, int diagram_index, float addition);
-
-// eng: Returns the offset for emitter form diagram
-// rus: Возвращает смещение для графика формы эмиттера
-float Magic_GetDiagramEmitterAddition(HM_EMITTER hmEmitter, int type_index, bool line);
-
-// eng: Sets the offset for emitter form diagram
-// rus: Устанавливает смещение для графика формы эмиттера
-int Magic_SetDiagramEmitterAddition(HM_EMITTER hmEmitter, int type_index, bool line, float addition);
-
-// eng: Allows substituting a graphical pattern which is used to generate particles of "Image" and "Text" formed emitters
-// rus: Позволяет заменить графический образ, по которому происходит генерация частиц у эмиттеров типа "Картинка" и "Текст"
-int Magic_ChangeImage(HM_EMITTER hmEmitter, int type_index, int width, int height, unsigned char* data, int bytes_per_pixel);
-
-// eng: Allows changing the triangle based model by which particle generation occurs in "Model" formed emitters
-// rus: Позволяет заменить модель из треугольников, по которой происходит генерация частиц у эмиттера типа "Модель"
-int Magic_ChangeModel(HM_EMITTER hmEmitter, int type_index, int count, MAGIC_TRIANGLE* triangles);
-
-// --------------------------------------------------------------------------------------
-
-// eng: Creates a new key on a Timeline
-// rus: Создает новый ключ указанного типа на Шкале времени
-int Magic_CreateKey(HM_EMITTER hmEmitter, int type, MAGIC_KEY* key);
-
-// eng: Deletes the specified key of desired type from Timeline
-// rus: Удаляет выбранный ключ указанного типа со Шкалы времени
-int Magic_DeleteKey(HM_EMITTER hmEmitter, int type, int index);
-
-// eng: Returns the number of keys of specified type from Timeline
-// rus: Возвращает количество ключей указанного типа на Шкале времени
-int Magic_GetKeyCount(HM_EMITTER hmEmitter, int type);
-
-// eng: Returns information for the key of specified type
-// rus: Возвращает информацию о ключе указанного типа
-int Magic_GetKey(HM_EMITTER hmEmitter, int type, MAGIC_KEY* key, int index);
-
-// eng: Sets the new data for the key of specified type
-// rus: Устанавливает новые данные для ключа указанного типа
-int Magic_SetKey(HM_EMITTER hmEmitter, int type, MAGIC_KEY* key, int index);
-
-// --------------------------------------------------------------------------------------
-
-// eng: Converts UTF16 string into UTF8
-// rus: Конвертирует строку типа UTF16 в строку типа UTF8
-const unsigned char* Magic_UTF16to8(const unsigned short* str);
-
-// eng: Converts UTF8 string into UTF16
-// rus: Конвертирует строку типа UTF8 в строку типа UTF16
-const unsigned short* Magic_UTF8to16(const unsigned char* str);
-
-// eng: Converts UTF32 string into UTF8
-// rus: Конвертирует строку типа UTF32 в строку типа UTF8
-const unsigned char* Magic_UTF32to8(const unsigned int* str);
-
-// eng: Converts UTF8 string into UTF32
-// rus: Конвертирует строку типа UTF8 в строку типа UTF32
-const unsigned int* Magic_UTF8to32(const unsigned char* str);
-
-// eng: Converts UTF32 string into UTF16
-// rus: Конвертирует строку типа UTF32 в строку типа UTF16
-const unsigned short* Magic_UTF32to16(const unsigned int* str);
-
-// eng: Converts UTF16 string into UTF32
-// rus: Конвертирует строку типа UTF16 в строку типа UTF32
-const unsigned int* Magic_UTF16to32(const unsigned short* str);
-
-// --------------------------------------------------------------------------------------
-
-typedef int HM_STREAM;
-
-
-#define MAGIC_STREAM_READ		0
-#define MAGIC_STREAM_WRITE		1
-#define MAGIC_STREAM_ADD		2
-
-
-// Открытие потока из файла
-// Параметр file_name - путь к файлу в формате UTF8.
-// Параметр mode:
-// mode=MAGIC_STREAM_READ - поток открывается на чтение. Позиция потока устанавливается на начало.
-// mode=MAGIC_STREAM_WRITE - поток открывается на запись. Если файл отсутствовал, то он создается пустым, если файл существовал, то он очищается.
-// mode=MAGIC_STREAM_ADD - поток открывается на запись. Позиция потока устанавливается на конец файла. Если файл отсутствовал, то он создается.
-// Возвращает ижентификатор потока или 0
-int Magic_StreamOpenFile(const char* file_name, int mode);
-
-// Открытие потока из памяти
-// Параметр address - адрес буфера потока памяти.
-// Параметр length - размер буфера потока в байтах.
-// Параметр mode:
-// mode=MAGIC_STREAM_READ - поток открывается на чтение. Позиция потока устанавливается на начало. address задает начало потока. length - размер потока. Если length=0, то размер потока не определен, но читать из него можно.
-// mode=MAGIC_STREAM_WRITE - поток открывается на запись. В памяти создается пустой поток. Параметры address и length не имеют значения (должны быть равны 0).
-// mode=MAGIC_STREAM_ADD - поток открывается на запись. При этом снимается копия с области памяти address с размером length. Эта копия работает независимо внутри API, позволяя дописывать байты. Позиция потока устанавливается на конец.
-// Возвращает ижентификатор потока или 0
-int Magic_StreamOpenMemory(const char* address, unsigned int length, int mode);
-
-// Закрытие потока
-// Поток, созданный из файла закрывает этот файл, но не удаляет его, а поток сделаный в памяти уничтожает все свои данные.
-int Magic_StreamClose(HM_STREAM hmStream);
-
-// Закрытие всех существующих потоков
-void Magic_StreamCloseAll();
-
-// Возвращает размер потока
-unsigned int Magic_StreamGetLength(HM_STREAM hmStream);
-
-// Возвращает текущую позицию в потоке
-unsigned int Magic_StreamGetPosition(HM_STREAM hmStream);
-
-// Устанавливает позицию в потоке. Работает только для режима MAGIC_STREAM_READ
-int Magic_StreamSetPosition(HM_STREAM hmStream, unsigned int position);
-
-// Записывает в поток байты в указанном количестве
-int Magic_StreamWrite(HM_STREAM hmStream, const char* data, unsigned int count);
-
-// Читает из потока байты в указанном количестве
-int Magic_StreamRead(HM_STREAM hmStream, char* data, unsigned int count);
-
-// Возвращает режим работы потока MAGIC_STREAM_READ, MAGIC_STREAM_WRITE, MAGIC_STREAM_ADD
-int Magic_StreamGetMode(HM_STREAM hmStream);
-
-// Устанавливает режим работы потока MAGIC_STREAM_READ, MAGIC_STREAM_WRITE, MAGIC_STREAM_ADD
-int Magic_StreamSetMode(HM_STREAM hmStream, int mode);
-
-// Возвращает имя файла потока или NULL. Можно использовать, чтобы отличить поток из файла и поток из памяти
-const char* Magic_StreamGetFileName(HM_STREAM hmStream);
-
-// Открытие ptc-файла. Аналогичен функциям Magic_OpenFile/Magic_OpenFileInMemory
-int Magic_OpenStream(HM_STREAM hmStream);
-
-// Копирование пространства частиц эмиттера в поток
-int Magic_SaveArrayToStream(HM_EMITTER hmEmitter, HM_STREAM hmStream);
-
-// Замена пространства частиц эмиттера ранее созданной копией из потока
-int Magic_LoadArrayFromStream(HM_EMITTER hmEmitter, HM_STREAM hmStream);
-
-// Устанавливает эмиттер на первую границу интервала видимости. Если hmStream не равен 0, то происходит работа в потоком:
-// Если размер потока равен 0, то в этот поток сохраняются данные о частицах через Magic_SaveArrayToStream
-// Если размер потока не равен 0, то из этого потока извлекаются данные о частицах через Magic_LoadArrayFromStream
-int Magic_EmitterToInterval1_Stream(HM_EMITTER hmEmitter, float speed_factor, HM_STREAM hmStream);
-
-// Удаление всех данных библиотеки
-void Magic_DestroyAll();
-
-
-// Возвращает заданный в Magic Particles темп, используемый для анимации эмиттера
-float Magic_GetUpdateSpeed(HM_EMITTER hmEmitter);
-
-struct MAGIC_RECT
-{
-	int left;
-	int top;
-	int right;
-	int bottom;
-};
-
-// Возвращает положение фоновой картинки
-float Magic_GetBackgroundRect(HM_EMITTER hmEmitter, MAGIC_RECT* rect);
-
-//#define MAGIC_BEAM
-#define MAGIC_ADDITIONAL_TYPE_NORMAL	0
-#define MAGIC_ADDITIONAL_TYPE_TRAIL		1
-#define MAGIC_ADDITIONAL_TYPE_BEAM		2
-
-//#define MAGIC_MATERIAL
-
-
-#define MAGIC_VARIABLE_BOOL		0
-#define MAGIC_VARIABLE_INT		1
-#define MAGIC_VARIABLE_FLOAT	2
-#define MAGIC_VARIABLE_STRING	3
-#define MAGIC_VARIABLE_DIAGRAM	4
-
-struct MAGIC_VARIABLE
-{
-	const char* name;
-	int type;
-	char value[8];
-};
-
-int Magic_GetEmitterVariableCount(HM_EMITTER hmEmitter);
-int Magic_GetEmitterVariable(HM_EMITTER hmEmitter, int index, MAGIC_VARIABLE* variable);
-
-int Magic_GetParticlesTypeVariableCount();
-int Magic_GetParticlesTypeVariable(int index, MAGIC_VARIABLE* variable);
-
-
-
-
-typedef unsigned int HM_PARTICLE;
-
-#define MAGIC_EVENT_CREATION	0
-#define MAGIC_EVENT_DESTRUCTION	1
-#define MAGIC_EVENT_EXISTENCE	2
-#define MAGIC_EVENT_COLLISION	3
-#define MAGIC_EVENT_MAGNET		4
-#define MAGIC_EVENT_WIND		5
-
-#define MAGIC_ACTION_EVENT				0
-#define MAGIC_ACTION_DESTRUCTION		1
-#define MAGIC_ACTION_DETACHING			2
-#define MAGIC_ACTION_FACTOR				3
-#define MAGIC_ACTION_PARTICLE			4
-#define MAGIC_ACTION_MAGNET_PARTICLE	5
-
-#define MAGIC_ACTION_DIRECTION_DISABLED	0
-#define MAGIC_ACTION_DIRECTION_MOVEMENT	1
-#define MAGIC_ACTION_DIRECTION_REBOUND	2
-
-#define MAGIC_MAGNET_POINT_ANY				0
-#define MAGIC_MAGNET_POINT_DIRECTION		1
-#define MAGIC_MAGNET_POINT_ANTI_DIRECTION	2
-
-struct MAGIC_ACTION
-{
-	int event;
-	int HM;
-	int action;
-	float factor;
-
-	int magnet_particles_type;
-	int magnet_direction;
-	int magnet_distance;
-	float magnet_strength1;
-	float magnet_strength2;
-
-	int particles_type;
-	int direction;
-	float angle;
-	float size;
-	float velocity;
-	float weight;
-	float spin;
-	float angular_velocity;
-	float motion_rand;
-	float visibility;
-};
-
-// Возвращает количество действий
-int Magic_GetActionCount();
-// Возвращает действие
-int Magic_GetAction(int index, MAGIC_ACTION* action);
-// Создает новое действие
-int Magic_CreateAction(MAGIC_ACTION* action);
-// Удаляет указанное действие
-int Magic_DestroyAction(int index);
-
-struct MAGIC_EVENT
-{
-	int event;
-	HM_PARTICLE hmParticle;
-	MAGIC_POSITION position1;
-	MAGIC_POSITION position2;
-	MAGIC_POSITION reflection;
-};
-
-struct MAGIC_SEGMENT
-{
-	MAGIC_POSITION vertex1;
-	MAGIC_POSITION vertex2;
-};
-
-// Формы препятствия
-#if defined(EXE) || defined(SCREENSAVER) || (!defined(MAGIC_3D))
-#define MAGIC_OBSTACLE_CIRCLE		0	// окружность (2D)
-#define MAGIC_OBSTACLE_SEGMENT		1	// отрезок (2D)
-#endif
-#ifdef MAGIC_3D
-#define MAGIC_OBSTACLE_SPHERE		2	// сфера (3D)
-#define MAGIC_OBSTACLE_TRIANGLE		3	// треугольник (3D)
-#endif
-
-struct MAGIC_OBSTACLE
-{
-	int type;
-	float radius;
-	int count;
-	#if defined(EXE) || defined(SCREENSAVER)
-	void* primitives;
-	#else
-	#ifdef MAGIC_3D
-	MAGIC_TRIANGLE* primitives;
-	#else
-	MAGIC_SEGMENT* primitives;
-	#endif
-	#endif
-};
-
-struct MAGIC_WIND
-{
-	MAGIC_POSITION direction;
-	float velocity;
-};
-
 #define MAGIC_TYPE_OBSTACLE		0
 #define MAGIC_TYPE_WIND			1
 #define MAGIC_TYPE_MAGNET		2
-
-// Возвращает для захваченного типа частиц количество прицепленных физ. объектов указанного типа
-int Magic_GetAttachedPhysicObjectsCount(int type);
-// Возвращает для захваченного типа частиц все прицепленные физ. объекты указанного типа
-int Magic_GetAttachedPhysicObjects(int type, int* HMs);
-
-// eng: Returns the coordinates of the obstacle
-// rus: Возвращает координаты препятствия
-int Magic_GetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
-
-// eng: Sets the coordinates of the obstacle
-// ru: Устанавливает координаты препятствия
-int Magic_SetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
-
-// Выгрузка всех эмиттеров
-void Magic_UnloadAllEmitters();
-
-// Создание препятствия
-HM_OBSTACLE Magic_CreateObstacle(MAGIC_OBSTACLE* data, MAGIC_POSITION* position, int cell);
-
-// Создание ветра
-HM_WIND Magic_CreateWind(MAGIC_WIND* data);
-
-// Удаление физ.объекта указанного типа
-int Magic_DestroyPhysicObject(int type, int HM);
-// Удаление всех физ. объектов указанного типа
-int Magic_DestroyAllPhysicObjects(int type);
-
-// Дублирование физ. объекта указанного типа
-int Magic_DuplicatePhysicObject(int type, int HM);
-
-// Возвращает информацию о ветре
-int Magic_GetWindData(HM_WIND hmWind, MAGIC_WIND* data);
-// Устанавливает информацию о ветре
-int Magic_SetWindData(HM_WIND hmWind, MAGIC_WIND* data);
-
-// Возвращает информацию о препятствии
-int Magic_GetObstacleData(HM_OBSTACLE hmObstacle, MAGIC_OBSTACLE* data);
-// Устанавливает информацию о препятствии
-int Magic_SetObstacleData(HM_OBSTACLE hmObstacle, MAGIC_OBSTACLE* data, int cell);
-
-// Возвращает очередное событие
-int Magic_GetNextEvent(MAGIC_EVENT* evt);
-
-// Отсоединение частицы
-void Magic_ParticleDetaching(HM_PARTICLE hmParticle);
-
-// Уничтожение частицы
-void Magic_ParticleDestruction(HM_PARTICLE hmParticle);
-
-// Установка пользовательских данных для частицы
-void Magic_ParticleSetData(HM_PARTICLE hmParticle, void* data);
-// Возвращает пользовательские данные для частицы
-void* Magic_ParticleGetData(HM_PARTICLE hmParticle);
-
-// Возвращает абсолютную координату частицы
-void Magic_ParticleGetPosition(HM_PARTICLE hmParticle, MAGIC_POSITION* pos);
-// Устанавливает абсолютную координату частицы
-void Magic_ParticleSetPosition(HM_PARTICLE hmParticle, MAGIC_POSITION* pos);
 
 #define MAGIC_PROPERTY_ANGLE			0
 #define MAGIC_PROPERTY_SIZE				1
@@ -1167,25 +467,9 @@ void Magic_ParticleSetPosition(HM_PARTICLE hmParticle, MAGIC_POSITION* pos);
 #define MAGIC_PROPERTY_MOTION_RAND		6
 #define MAGIC_PROPERTY_VISIBILITY		7
 
-// Устанавливает указанное свойство частицы
-void Magic_ParticleSetProperty(HM_PARTICLE hmParticle, int property, float value);
-// Устанавливает список свойств частицы
-void Magic_ParticleSetProperties(HM_PARTICLE hmParticle, int count, int* properties, float* values);
-// Возвращает указанное свойство частицы
-float Magic_ParticleGetProperty(HM_PARTICLE hmParticle, int property);
-// Возвращает список свойств частицы
-void Magic_ParticleGetProperties(HM_PARTICLE hmParticle, int count, int* properties, float* values);
-
-// Возвращает физический радиус частицы
-float Magic_ParticleGetRadius(HM_PARTICLE hmParticle);
-
-// Заполняет структуру MAGIC_ACTION данными по умолчанию
-void MAGIC_ACTION_Identity(MAGIC_ACTION* action);
-
-#ifndef MAGIC_3D
-// Корректирует позицию 2D-эмиттера под размеры сцены из позиции в редакторе
-int Magic_CorrectEmitterPosition(HM_EMITTER hmEmitter, int scene_width, int scene_height);
-#endif
+#define MAGIC_STREAM_READ		0
+#define MAGIC_STREAM_WRITE		1
+#define MAGIC_STREAM_ADD		2
 
 #ifdef MAGIC_3D
 
@@ -1238,10 +522,793 @@ int Magic_CorrectEmitterPosition(HM_EMITTER hmEmitter, int scene_width, int scen
 #define MAGIC_nYnZnX	46
 #define MAGIC_nZnYnX	47
 
-int Magic_SetAxis(int axis_index);
-int Magic_GetAxis();
+#else
+
+#define MAGIC_pXpY		0
+#define MAGIC_pYpX		1
+#define MAGIC_nXpY		2
+#define MAGIC_pYnX		3
+#define MAGIC_pXnY		4
+#define MAGIC_nYpX		5
+#define MAGIC_nXnY		6
+#define MAGIC_nYnX		7
 
 #endif
+
+// --------------------------------------------------------------------------------------
+
+#ifdef MAGIC_3D
+
+// eng: Returns the view matrix that is set for API
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ РІРёРґР°, СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅСѓСЋ РґР»СЏ API
+void Magic_GetViewMatrix(MAGIC_MATRIX* matrix);
+
+// eng: Sets the view matrix for API
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РјР°С‚СЂРёС†Сѓ РІРёРґР° РґР»СЏ API
+void Magic_SetViewMatrix(MAGIC_MATRIX* matrix);
+
+#endif
+
+// eng: Returns the direction of coordinate axes
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅР°РїСЂР°РІР»РµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚РЅС‹С… РѕСЃРµР№
+int Magic_GetAxis();
+
+// eng: Sets the direction of coordinate axes
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅР°РїСЂР°РІР»РµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚РЅС‹С… РѕСЃРµР№
+int Magic_SetAxis(int axis_index);
+
+// eng: Converts UTF8 string into UTF16
+// rus: РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF8 РІ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF16
+const unsigned short* Magic_UTF8to16(const unsigned char* str);
+
+// eng: Converts UTF8 string into UTF32
+// rus: РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF8 РІ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF32
+const unsigned int* Magic_UTF8to32(const unsigned char* str);
+
+// eng: Converts UTF16 string into UTF8
+// rus: РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF16 РІ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF8
+const unsigned char* Magic_UTF16to8(const unsigned short* str);
+
+// eng: Converts UTF16 string into UTF32
+// rus: РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF16 РІ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF32
+const unsigned int* Magic_UTF16to32(const unsigned short* str);
+
+// eng: Converts UTF32 string into UTF8
+// rus: РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF32 РІ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF8
+const unsigned char* Magic_UTF32to8(const unsigned int* str);
+
+// eng: Converts UTF32 string into UTF16
+// rus: РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF32 РІ СЃС‚СЂРѕРєСѓ С‚РёРїР° UTF16
+const unsigned short* Magic_UTF32to16(const unsigned int* str);
+
+// eng: Populates MAGIC_ACTION structure with default values
+// rus: Р—Р°РїРѕР»РЅСЏРµС‚ СЃС‚СЂСѓРєС‚СѓСЂСѓ MAGIC_ACTION Р·РЅР°С‡РµРЅРёСЏРјРё РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+void MAGIC_ACTION_Identity(MAGIC_ACTION* action);
+
+// --------------------------------------------------------------------------------------
+
+// eng: Loads the ptc-file from the path specified
+// rus: Р—Р°РіСЂСѓР¶Р°РµС‚ ptc-С„Р°Р№Р» РїРѕ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РїСѓС‚Рё
+HM_FILE Magic_OpenFile(const char* file_name);
+
+// eng: Loads the ptc-file image from the memory
+// rus: РћС‚РєСЂС‹С‚РёРµ РѕР±СЂР°Р·Р° ptc-С„Р°Р№Р»Р° РёР· РїР°РјСЏС‚Рё
+HM_FILE Magic_OpenFileInMemory(const char* buffer);
+
+// eng: Loads the ptc-file from the stream
+// rus: Р—Р°РіСЂСѓР¶Р°РµС‚ ptc-С„Р°Р№Р» РёР· СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїРѕС‚РѕРєР°
+int Magic_OpenStream(HM_STREAM hmStream);
+
+// eng: Closes the file, opened earlier by use of Magic_OpenFile, Magic_OpenFileInMemory or Magic_OpenStream
+// rus: Р—Р°РєСЂС‹РІР°РµС‚ С„Р°Р№Р», РѕС‚РєСЂС‹С‚С‹Р№ СЂР°РЅРµРµ С‡РµСЂРµР· Magic_OpenFile, Magic_OpenFileInMemory РёР»Рё Magic_OpenStream
+int Magic_CloseFile(HM_FILE hmFile);
+
+// eng: Closing all the opened files
+// rus: Р—Р°РєСЂС‹С‚РёРµ РІСЃРµС… РѕС‚РєСЂС‹С‚С‹С… С„Р°Р№Р»РѕРІ
+void Magic_CloseAllFiles();
+
+// eng: Returns the current folder path
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С‚РµРєСѓС‰РµР№ РїР°РїРєРµ
+const char* Magic_GetCurrentFolder(HM_FILE hmFile);
+
+// eng: Sets the new current folder
+// rus: РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РЅРѕРІС‹Р№ РїСѓС‚СЊ Рє С‚РµРєСѓС‰РµР№ РїР°РїРєРµ
+int Magic_SetCurrentFolder(HM_FILE hmFile, const char* path);
+
+// eng: Searches for the first folder or emitter within the current folder and returns the type of the object found
+// rus: РС‰РµС‚ РїРµСЂРІСѓСЋ РїР°РїРєСѓ РёР»Рё РїРµСЂРІС‹Р№ СЌРјРёС‚С‚РµСЂ РІ С‚РµРєСѓС‰РµР№ РїР°РїРєРµ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ Рё С‚РёРї РЅР°Р№РґРµРЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+const char* Magic_FindFirst(HM_FILE hmFile,MAGIC_FIND_DATA* data,int mode);
+
+// eng: Searches for the next folder or emitter within the current folder and returns the type of the object found
+// rus: РС‰РµС‚ РѕС‡РµСЂРµРґРЅСѓСЋ РїР°РїРєСѓ РёР»Рё РѕС‡РµСЂРµРґРЅРѕР№ СЌРјРёС‚С‚РµСЂ РІ С‚РµРєСѓС‰РµР№ РїР°РїРєРµ Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ Рё С‚РёРї РЅР°Р№РґРµРЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+const char* Magic_FindNext(HM_FILE hmFile, MAGIC_FIND_DATA* data);
+
+// eng: Returns the name of the file that was opened through the Magic_OpenFile
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ С„Р°Р№Р»Р°, РѕС‚РєСЂС‹С‚РѕРіРѕ С‡РµСЂРµР· Magic_OpenFile
+const char* Magic_GetFileName(HM_FILE hmFile);
+
+// eng: Returns the flag indicating that textures are stored within the file
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє С‚РѕРіРѕ, С‡С‚Рѕ С„Р°Р№Р» СЃРѕРґРµСЂР¶РёС‚ С‚РµРєСЃС‚СѓСЂС‹
+bool Magic_HasTextures(HM_FILE hmFile);
+
+// eng: Returns the number of static textural atlases attached to specified file
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚Р°С‚РёС‡РµСЃРєРёС… С‚РµРєСЃС‚СѓСЂРЅС‹С… Р°С‚Р»Р°СЃРѕРІ, РїСЂРёРєСЂРµРїР»РµРЅРЅС‹С… Рє СѓРєР°Р·Р°РЅРЅРѕРјСѓ С„Р°Р№Р»Сѓ
+int Magic_GetStaticAtlasCount(HM_FILE hmFile);
+
+// eng: Returns information on static textural atlas attached to specified file
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃС‚Р°С‚РёС‡РµСЃРєРѕРј С‚РµРєСЃС‚СѓСЂРЅРѕРј Р°С‚Р»Р°СЃРµ, РїСЂРёРєСЂРµРїР»РµРЅРЅРѕРјСѓ Рє СѓРєР°Р·Р°РЅРЅРѕРјСѓ С„Р°Р№Р»Сѓ
+int Magic_GetStaticAtlas(HM_FILE hmFile, int index, MAGIC_STATIC_ATLAS* atlas);
+
+// --------------------------------------------------------------------------------
+
+// eng: Creates the emitter object and loads its data
+// rus: РЎРѕР·РґР°РµС‚ СЌРјРёС‚С‚РµСЂ Рё Р·Р°РіСЂСѓР¶Р°РµС‚ РІ РЅРµРіРѕ РґР°РЅРЅС‹Рµ
+HM_EMITTER Magic_LoadEmitter(HM_FILE hmFile, const char* name);
+
+// eng: Gets the copy of the emitter
+// rus: Р”СѓР±Р»РёСЂСѓРµС‚ СЌРјРёС‚С‚РµСЂ
+HM_EMITTER Magic_DuplicateEmitter(HM_EMITTER hmEmitter);
+
+// eng: Unloads the emitter data and destroys it
+// rus: Р’С‹РіСЂСѓР¶Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· СЌРјРёС‚С‚РµСЂР° Рё СѓРЅРёС‡С‚РѕР¶Р°РµС‚ РµРіРѕ
+int Magic_UnloadEmitter(HM_EMITTER hmEitter);
+
+// eng: Unloads all loaded emitters
+// rus: Р’С‹РіСЂСѓР¶Р°РµС‚ РІСЃРµ Р·Р°РіСЂСѓР¶РµРЅРЅС‹Рµ СЌРјРёС‚С‚РµСЂС‹
+void Magic_UnloadAllEmitters();
+
+// eng: Processes the emitter. Creates, displaces and removes the particles
+// rus: РћСЃСѓС‰РµСЃС‚РІР»СЏРµС‚ РѕР±СЂР°Р±РѕС‚РєСѓ СЌРјРёС‚С‚РµСЂР°: СЃРѕР·РґР°РµС‚, РїРµСЂРµРјРµС‰Р°РµС‚ Рё СѓРЅРёС‡С‚РѕР¶Р°РµС‚ С‡Р°СЃС‚РёС†С‹
+bool Magic_Update(HM_EMITTER hmEmitter, double time);
+
+// eng: Stops the emitter
+// rus: РћСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂР°Р±РѕС‚Сѓ СЌРјРёС‚С‚РµСЂР°
+int Magic_Stop(HM_EMITTER hmEmitter);
+
+// eng: Restarts the emitter from the beginning
+// rus: РџРµСЂРµР·Р°РїСѓСЃРєР°РµС‚ СЌРјРёС‚С‚РµСЂ СЃ РЅСѓР»РµРІРѕР№ РїРѕР·РёС†РёРё
+int Magic_Restart(HM_EMITTER hmEmitter);
+
+// eng: Returns the flag showing that emitter is in interrupted mode
+// rus: Р’РѕР·РІСЂР°С€Р°РµС‚ РїСЂРёР·РЅР°Рє С‚РѕРіРѕ, С‡С‚Рѕ СЌРјРёС‚С‚РµСЂ РїСЂРµСЂС‹РІР°РµС‚СЃСЏ
+bool Magic_IsInterrupt(HM_EMITTER hmEmitter);
+
+// eng: Interrupts/Starts emitter work
+// rus: РџСЂРµСЂС‹РІР°РµС‚ РёР»Рё Р·Р°РїСѓСЃРєР°РµС‚ СЂР°Р±РѕС‚Сѓ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetInterrupt(HM_EMITTER hmEmitter, bool interrupt);
+
+// eng: Returns the Magic Particles (Dev) time increment, used for the animation
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РґР°РЅРЅРѕРµ РІ Magic Particles РїСЂРёСЂР°С‰РµРЅРёРµ РІСЂРµРјРµРЅРё, РёСЃРїРѕР»СЊР·СѓРµРјРѕРµ РґР»СЏ Р°РЅРёРјР°С†РёРё СЌРјРёС‚С‚РµСЂР°
+double Magic_GetUpdateTime(HM_EMITTER hmEmitter);
+
+// eng: Returns current animation position
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰СѓСЋ РїРѕР·РёС†РёСЋ Р°РЅРёРјР°С†РёРё
+double Magic_GetPosition(HM_EMITTER hmEmitter);
+
+// eng: Sets the current animation position
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С‚РµРєСѓС‰СѓСЋ РїРѕР·РёС†РёСЋ Р°РЅРёРјР°С†РёРё
+int Magic_SetPosition(HM_EMITTER hmEmitter,double position);
+
+// eng: Returns animation duration
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРѕРґРѕР»Р¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ Р°РЅРёРјР°С†РёРё
+double Magic_GetDuration(HM_EMITTER hmEmitter);
+
+// eng: Returns the left position of the visibility range
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ Р»РµРІСѓСЋ РїРѕР·РёС†РёСЋ РёРЅС‚РµСЂРІР°Р»Р° РІРёРґРёРјРѕСЃС‚Рё
+double Magic_GetInterval1(HM_EMITTER hmEmitter);
+
+// eng: Sets the left position of the visibility range
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ Р»РµРІСѓСЋ РїРѕР·РёС†РёСЋ РёРЅС‚РµСЂРІР°Р»Р° РІРёРґРёРјРѕСЃС‚Рё
+int Magic_SetInterval1(HM_EMITTER hmEmitter,double position);
+
+// eng: Returns the right position of the visibility range
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂР°РІСѓСЋ РїРѕР·РёС†РёСЋ РёРЅС‚РµСЂРІР°Р»Р° РІРёРґРёРјРѕСЃС‚Рё
+double Magic_GetInterval2(HM_EMITTER hmEmitter);
+
+// eng: Sets the right position of the visibility range
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїСЂР°РІСѓСЋ РїРѕР·РёС†РёСЋ РёРЅС‚РµСЂРІР°Р»Р° РІРёРґРёРјРѕСЃС‚Рё
+int Magic_SetInterval2(HM_EMITTER hmEmitter,double position);
+
+// eng: Figures out if the current animation position is within the visibility range
+// rus: РћРїСЂРµРґРµР»СЏРµС‚, РїРѕРїР°РґР°РµС‚ Р»Рё С‚РµРєСѓС‰Р°СЏ РїРѕР·РёС†РёСЏ Р°РЅРёРјР°С†РёРё РІ РёРЅС‚РµСЂРІР°Р» РІРёРґРёРјРѕСЃС‚Рё
+bool Magic_InInterval(HM_EMITTER hmEmitter);
+
+// eng: Sets the animation position at the left position of visibility range
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЌРјРёС‚С‚РµСЂ РЅР° РїРµСЂРІСѓСЋ РіСЂР°РЅРёС†Сѓ РёРЅС‚РµСЂРІР°Р»Р° РІРёРґРёРјРѕСЃС‚Рё
+int Magic_EmitterToInterval1(HM_EMITTER hmEmitter, float speed_factor, const char* file);
+
+// eng: Returns the flag of the animation of emitter that begins not from 0 position
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє С‚РѕРіРѕ, С‡С‚Рѕ Р°РЅРёРјР°С†РёСЏ СЌРјРёС‚С‚РµСЂР° РЅР°С‡РёРЅР°РµС‚СЃСЏ РЅРµ СЃ РЅР°С‡Р°Р»Р°
+bool Magic_IsInterval1(HM_EMITTER hmEmitter);
+
+// eng: Copying the particles array into emitter from the file
+// rus: РљРѕРїРёСЂРѕРІР°РЅРёРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° С‡Р°СЃС‚РёС† РІ СЌРјРёС‚С‚РµСЂ РёР· С„Р°Р№Р»Р°.
+int Magic_LoadArrayFromFile(HM_EMITTER hmEmitter, const char* file);
+
+// eng: Copying the particles array from the emitter into the file
+// rus: РљРѕРїРёСЂРѕРІР°РЅРёРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° С‡Р°СЃС‚РёС† СЌРјРёС‚С‚РµСЂР° РІ С„Р°Р№Р»
+int Magic_SaveArrayToFile(HM_EMITTER hmEmitter, const char* file);
+
+// eng: Returns the particle positions interpolation usage flag
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє СЂРµР¶РёРјР° РёРЅС‚РµСЂРїРѕР»СЏС†РёРё СЌРјРёС‚С‚РµСЂР°
+bool Magic_IsInterpolationMode(HM_EMITTER hmEmitter);
+
+// eng: Sets/resets the particle positions interpolation usage flag
+// rus: Р’РєР»СЋС‡Р°РµС‚/РѕС‚РєР»СЋС‡Р°РµС‚ СЂРµР¶РёРј РёРЅС‚СЂРµРїРѕР»СЏС†РёРё РїРѕР»РѕР¶РµРЅРёСЏ С‡Р°СЃС‚РёС†
+int Magic_SetInterpolationMode(HM_EMITTER hmEmitter,bool mode);
+
+// eng: Returns the flag of stability/randomness of the emitter behaviour
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє СЃС‚Р°Р±РёР»СЊРЅРѕСЃС‚Рё/СЃР»СѓС‡Р°Р№РЅРѕСЃС‚Рё РїРѕРІРµРґРµРЅРёСЏ СЌРјРёС‚С‚РµСЂР°
+bool Magic_IsRandomMode(HM_EMITTER hmEmitter);
+
+// eng: Sets the flag of stability/randomness of the emitter behaviour
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїСЂРёР·РЅР°Рє СЃС‚Р°Р±РёР»СЊРЅРѕСЃС‚Рё/СЃР»СѓС‡Р°Р№РЅРѕСЃС‚Рё РїРѕРІРµРґРµРЅРёСЏ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetRandomMode(HM_EMITTER hmEmitter,bool mode);
+
+// eng: Returns the emitter behaviour mode at the end of the animation
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР¶РёРј РїРѕРІРµРґРµРЅРёСЏ СЌРјРёС‚С‚РµСЂР° РїРѕСЃР»Рµ РѕРєРѕРЅС‡Р°РЅРёСЏ Р°РЅРёРјР°С†РёРё
+int Magic_GetLoopMode(HM_EMITTER hmEmitter);
+
+// eng: Sets the emitter behaviour mode at the end of the animation
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂРµР¶РёРј РїРѕРІРµРґРµРЅРёСЏ СЌРјРёС‚С‚РµСЂР° РїРѕСЃР»Рµ РѕРєРѕРЅС‡Р°РЅРёСЏ Р°РЅРёРјР°С†РёРё
+int Magic_SetLoopMode(HM_EMITTER hmEmitter,int mode);
+
+// eng: Returns the color management mode
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР¶РёРј СѓРїСЂР°РІР»РµРЅРёСЏ С†РІРµС‚РѕРј С‡Р°СЃС‚РёС†
+int Magic_GetColorMode(HM_EMITTER hmEmitter);
+
+// eng: Sets the color management mode
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂРµР¶РёРј СѓРїСЂР°РІР»РµРЅРёСЏ С†РІРµС‚РѕРј С‡Р°СЃС‚РёС†
+int Magic_SetColorMode(HM_EMITTER hmEmitter,int mode);
+
+// eng: Returns the user defined tint
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕС‚С‚РµРЅРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+int Magic_GetTint(HM_EMITTER hmEmitter);
+
+// eng: Sets the user defined tint
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РѕС‚С‚РµРЅРѕРє РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+int Magic_SetTint(HM_EMITTER hmEmitter,int tint);
+
+// eng: Returns the user defined tint strength
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРёР»Сѓ РѕС‚С‚РµРЅРєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+float Magic_GetTintStrength(HM_EMITTER hmEmitter);
+
+// eng: Sets the user defined tint strength
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРёР»Сѓ РѕС‚С‚РµРЅРєР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+int Magic_SetTintStrength(HM_EMITTER hmEmitter,float tint_strength);
+
+// eng: Returns the emitter scale
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РјР°СЃС€С‚Р°Р± СЌРјРёС‚С‚РµСЂР°
+float Magic_GetScale(HM_EMITTER hmEmitter);
+
+// eng: Sets the emitter scale
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РјР°СЃС€С‚Р°Р± СЌРјРёС‚С‚РµСЂР°
+int Magic_SetScale(HM_EMITTER hmEmitter, float scale);
+
+// eng: Sets the user data
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ
+int Magic_SetData(HM_EMITTER hmEmitter, int data);
+
+// eng: Returns the user data
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ
+int Magic_GetData(HM_EMITTER hmEmitter);
+
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕР±Р»Р°СЃС‚СЊ СЂРѕР¶РґРµРЅРёСЏ С‡Р°СЃС‚РёС†
+int Magic_GetBirthPlace(HM_EMITTER hmEmitter,MAGIC_BIRTH* place);
+
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РѕР±Р»Р°СЃС‚СЊ СЂРѕР¶РґРµРЅРёСЏ С‡Р°СЃС‚РёС†
+int Magic_SetBirthPlace(HM_EMITTER hmEmitter,MAGIC_BIRTH* place);
+
+// eng: Returns the name of the emitter
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ СЌРјРёС‚С‚РµСЂР°
+const char* Magic_GetEmitterName(HM_EMITTER hmEmitter);
+
+// eng: Returns the shape of the emitter itself or the shape of the emitter for the specified particles type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ С„РѕСЂРјСѓ СЌРјРёС‚С‚РµСЂР° РёР»Рё С„РѕСЂРјСѓ СЌРјРёС‚С‚РµСЂР° РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР° С‡Р°СЃС‚РёС†
+int Magic_GetEmitterType(HM_EMITTER hmEmitter,int index);
+
+// eng: Returns the ID of emitter
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЌРјРёС‚С‚РµСЂР°
+unsigned int Magic_GetEmitterID(HM_EMITTER hmEmitter);
+
+// eng: Returns the value of "Speed" that was set in Magic Particles (Dev)
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ Р·Р°РґР°РЅРЅРѕРµ РІ Magic Particles (Dev) Р·РЅР°С‡РµРЅРёРµ "РєРѕСЌС„С„РёС†РёРµРЅС‚ С‚РµРјРїР°"
+float Magic_GetUpdateSpeed(HM_EMITTER hmEmitter);
+
+// eng: Returns information about background image of emitter
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С„РѕРЅРѕРІРѕРј РёР·РѕР±СЂР°Р¶РµРЅРёРё СЌРјРёС‚С‚РµСЂР°
+float Magic_GetBackgroundRect(HM_EMITTER hmEmitter, MAGIC_RECT* rect);
+
+#ifdef MAGIC_3D
+
+// eng: Returns the flag indicating that emitter emits only 3D-particles
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє С‚РѕРіРѕ, С‡С‚Рѕ СЌРјРёС‚С‚РµСЂ РёР·Р»СѓС‡Р°РµС‚ С‚РѕР»СЊРєРѕ 3D-С‡Р°СЃС‚РёС†С‹
+bool Magic_Is3d(HM_EMITTER hmEmitter);
+
+// eng: Returns the default matrix of emitter that was set using the Magic Particles (Dev).
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ РІРёРґР°, РєРѕС‚РѕСЂР°СЏ Р±С‹Р»Р° СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РґР»СЏ СЌРјРёС‚С‚РµСЂР° РІ Magic Particles
+int Magic_GetViewMatrixDefault(HM_EMITTER hmEmitter,MAGIC_MATRIX* matrix,float distance_scale);
+
+#else
+
+// eng: Transforms coordinates of 2D-emitter from Magic Particles (Dev) into scene coordinates
+// rus: РџСЂРµРѕР±СЂР°Р·СѓРµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ 2D-СЌРјРёС‚С‚РµСЂР° РёР· Magic Particles (Dev) РІ РєРѕРѕСЂРґРёРЅР°С‚С‹ СЃС†РµРЅС‹
+int Magic_CorrectEmitterPosition(HM_EMITTER hmEmitter, int scene_width, int scene_height);
+#endif
+
+// eng: Returns coordinates of the emitter
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ СЌРјРёС‚С‚РµСЂР°
+int Magic_GetEmitterPosition(HM_EMITTER hmEmitter,MAGIC_POSITION* pos);
+
+// eng: Sets the coordinates of the emitter
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetEmitterPosition(HM_EMITTER hmEmitter,MAGIC_POSITION* pos);
+
+// eng: Sets the emitter position. "Tail" from particles is formed between old and new position
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ СЌРјРёС‚С‚РµСЂР°. РњРµР¶РґСѓ СЃС‚Р°СЂРѕР№ Рё РЅРѕРІРѕР№ РїРѕР·РёС†РёРµР№ СЌРјРёС‚С‚РµСЂР° РѕР±СЂР°Р·СѓРµС‚СЃСЏ "С…РІРѕСЃС‚" РёР· С‡Р°СЃС‚РёС†
+int Magic_SetEmitterPositionWithTail(HM_EMITTER hmEmitter,MAGIC_POSITION* pos);
+
+// eng: Returns the mode of the emitter coordinates
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР¶РёРј РєРѕРѕСЂРґРёРЅР°С‚ СЌРјРёС‚С‚РµСЂР°
+bool Magic_GetEmitterPositionMode(HM_EMITTER hmEmitter);
+
+// eng: Sets the mode of the emitter coordinates
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂРµР¶РёРј РєРѕРѕСЂРґРёРЅР°С‚ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetEmitterPositionMode(HM_EMITTER hmEmitter,bool mode);
+
+// eng: Moves particles
+// rus: РџРµСЂРµРјРµС‰Р°РµС‚ С‡Р°СЃС‚РёС†С‹
+int Magic_MoveEmitterParticles(HM_EMITTER hmEmitter,MAGIC_POSITION* offset);
+
+// eng: Returns emitter direction
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅР°РїСЂР°РІР»РµРЅРёРµ СЌРјРёС‚С‚РµСЂР°
+int Magic_GetEmitterDirection(HM_EMITTER hmEmitter,MAGIC_DIRECTION* direction);
+
+// eng: Sets the direction of the emitter
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅР°РїСЂР°РІР»РµРЅРёРµ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetEmitterDirection(HM_EMITTER hmEmitter,MAGIC_DIRECTION* direction);
+
+// eng: Gets the emitter's direction mode
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР¶РёРј РІСЂР°С‰РµРЅРёСЏ СЌРјРёС‚С‚РµСЂР°
+bool Magic_GetEmitterDirectionMode(HM_EMITTER hmEmitter);
+
+// eng: Sets emitter's rotation mode
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂРµР¶РёРј РІСЂР°С‰РµРЅРёСЏ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetEmitterDirectionMode(HM_EMITTER hmEmitter,bool mode);
+
+// eng: Rotates particles
+// rus: Р’СЂР°С‰Р°РµС‚ С‡Р°СЃС‚РёС†С‹
+int Magic_RotateEmitterParticles(HM_EMITTER hmEmitter, MAGIC_DIRECTION* offset);
+
+// eng: Returns the animate folder flag
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє Р°РЅРёРјРёСЂРѕРІР°РЅРЅРѕР№ РїР°РїРєРё
+bool Magic_IsFolder(HM_EMITTER hmEmitter);
+
+// eng: Returns the number of emitters contained in animate folder. 1 is returned for emitter
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ СЌРјРёС‚С‚РµСЂРѕРІ РІРЅСѓС‚СЂРё СЌРјРёС‚С‚РµСЂР°
+int Magic_GetEmitterCount(HM_EMITTER hmEmitter);
+
+// eng: Returns the specified emitter from animate folder. Returns itself for emitter
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РґРµСЃРєСЂРёРїС‚РѕСЂ СЌРјРёС‚С‚РµСЂР° РІРЅСѓС‚СЂРё СЌРјРёС‚С‚РµСЂР°
+HM_EMITTER Magic_GetEmitter(HM_EMITTER hmEmitter,int index);
+
+// eng: Creates the first portion of particles for emitter visualization and returns information on visualization settings.
+// rus: РЎРѕР·РґР°РµС‚ РїРµСЂРІСѓСЋ РїРѕСЂС†РёСЋ С‡Р°СЃС‚РёС† РґР»СЏ РІРёР·СѓР°Р»РёР·Р°С†РёРё СЌРјРёС‚С‚РµСЂР° Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РЅР°СЃС‚СЂРѕР№РєР°С… РІРёР·СѓР°Р»РёР·Р°С†РёРё
+int Magic_CreateFirstRenderedParticlesList(HM_EMITTER hmEmitter, MAGIC_RENDERING* rendering);
+
+// eng: Creates the next portion of particles for emitter visualization and returns information on visualization settings
+// rus: РЎРѕР·РґР°РµС‚ РѕС‡РµСЂРµРґРЅСѓСЋ РїРѕСЂС†РёСЋ С‡Р°СЃС‚РёС† РґР»СЏ РІРёР·СѓР°Р»РёР·Р°С†РёРё СЌРјРёС‚С‚РµСЂР° Рё РІРѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РЅР°СЃС‚СЂРѕР№РєР°С… РІРёР·СѓР°Р»РёР·Р°С†РёРё
+void Magic_CreateNextRenderedParticlesList(MAGIC_RENDERING* rendering);
+
+// eng: Returns the MAGIC_PARTICLE_VERTEXES structure, containing the coordinates of the visualization rectangle vertice
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІРµСЂС€РёРЅР°С… РѕС‡РµСЂРµРґРЅРѕР№ С‡Р°СЃС‚РёС†С‹ РґР»СЏ РµС‘ РІРёР·СѓР°Р»РёР·Р°С†РёРё
+int Magic_GetNextParticleVertexes(MAGIC_PARTICLE_VERTEXES* vertexes);
+
+// eng: Returns particles sorting mode
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР¶РёРј СЃРѕСЂС‚РёСЂРѕРІРєРё С‡Р°СЃС‚РёС†
+int Magic_GetSortingMode(HM_EMITTER hmEmitter);
+
+// eng: Sets particles sorting mode
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂРµР¶РёРј СЃРѕСЂС‚РёСЂРѕРІРєРё С‡Р°СЃС‚РёС†
+int Magic_SetSortingMode(HM_EMITTER hmEmitter, int mode);
+
+// eng: Returnes Bounds Box
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ BBox
+int Magic_GetBBox(HM_EMITTER hmEmitter,MAGIC_BBOX* bbox);
+
+// eng: Returns Bounds Box recalculation period
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРµСЂРёРѕРґ РїРµСЂРµСЂР°СЃС‡РµС‚Р° Bounds Box
+int Magic_GetBBoxPeriod(HM_EMITTER hmEmitter);
+
+// eng: Sets Bounds Box recalculation period
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїРµСЂРёРѕРґ РїРµСЂРµСЂР°СЃС‡РµС‚Р° Bounds Box
+int Magic_SetBBoxPeriod(HM_EMITTER hmEmitter,int period);
+
+// eng: Forces Bounds Box recalculation
+// rus: РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РїРµСЂРµСЃС‡РёС‚С‹РІР°РµС‚ Bounds Box
+int Magic_RecalcBBox(HM_EMITTER hmEmitter);
+
+// eng: Returns the count of user defined variables of emitter or animated folder
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёС… РїРµСЂРµРјРµРЅРЅС‹С… РІРЅСѓС‚СЂРё СЌРјРёС‚С‚РµСЂР° РёР»Рё Р°РЅРёРјРёСЂРѕРІР°РЅРЅРѕР№ РїР°РїРєРё
+int Magic_GetEmitterVariableCount(HM_EMITTER hmEmitter);
+
+// eng: Returns information about user defined variable of emitter or animated folder
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕР№ РїРµСЂРµРјРµРЅРЅРѕР№ РёР· СЌРјРёС‚С‚РµСЂР° РёР»Рё Р°РЅРёРјРёСЂРѕРІР°РЅРЅРѕР№ РїР°РїРєРё
+int Magic_GetEmitterVariable(HM_EMITTER hmEmitter, int index, MAGIC_VARIABLE* variable);
+
+// --------------------------------------------------------------------------------
+
+// eng: Returns the name of the particles type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ С‚РёРїР° С‡Р°СЃС‚РёС†
+const char* Magic_GetParticlesTypeName(HM_EMITTER hmEmitter, int index);
+
+// eng: Returns the number particles type contained in emitter
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РёРїРѕРІ С‡Р°СЃС‚РёС† РІРЅСѓС‚СЂРё СЌРјРёС‚С‚РµСЂР°
+int Magic_GetParticlesTypeCount(HM_EMITTER hmEmitter);
+
+// eng: Locks the specified particles type for the further processing
+// rus: Р—Р°С…РІР°С‚С‹РІР°РµС‚ РґР»СЏ РґР°Р»СЊРЅРµР№С€РµР№ РѕР±СЂР°Р±РѕС‚РєРё СѓРєР°Р·Р°РЅРЅС‹Р№ С‚РёРї С‡Р°СЃС‚РёС†
+int Magic_LockParticlesType(HM_EMITTER hmEmitter, int index);
+
+// eng: Releases previously locked particles type
+// rus: РћСЃРІРѕР±РѕР¶РґР°РµС‚ Р·Р°С…РІР°С‡РµРЅРЅС‹Р№ СЂР°РЅРµРµ С‚РёРї С‡Р°СЃС‚РёС†
+int Magic_UnlockParticlesType();
+
+// eng: Returns the number of textural frame-files in locked particles type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂРЅС‹С… С„Р°Р№Р»-РєР°РґСЂРѕРІ РІ Р·Р°С…РІР°С‡РµРЅРЅРѕРј С‚РёРїРµ С‡Р°СЃС‚РёС†
+int Magic_GetTextureCount();
+
+// eng: Returns MAGIC_TEXTURE structure containing the specified frame-file information
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂСѓРєС‚СѓСЂСѓ   СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ РѕР± СѓРєР°Р·Р°РЅРЅРѕРј С„Р°Р№Р»-РєР°РґСЂРµ
+int Magic_GetTexture(int index, MAGIC_TEXTURE* texture);
+
+// eng: Sets texture coordinates for specified frame-file
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С‚РµРєСЃС‚СѓСЂРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С„Р°Р№Р»-РєР°РґСЂР°
+int Magic_SetTextureUV(int index, float left, float top, float right, float bottom);
+
+// eng: Returns the number used as a user resources texture identificator
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ С‡РёСЃР»Рѕ, РєРѕС‚РѕСЂРѕРµ РїСЂРµРґРЅР°Р·Р°РЅС‡РµРЅРѕ РґР»СЏ РёРґРµРЅС‚РёС„РёРєР°С†РёРё С‚РµРєСЃС‚СѓСЂС‹ РІ СЂРµСЃСѓСЂСЃР°С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+unsigned int Magic_GetTextureID();
+
+// eng: Sets the number used as a user resources texture identificator
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ С‡РёСЃР»Рѕ, РєРѕС‚РѕСЂРѕРµ РїСЂРµРґРЅР°Р·Р°РЅС‡РµРЅРѕ РґР»СЏ РёРґРµРЅС‚РёС„РёРєР°С†РёРё С‚РµРєСЃС‚СѓСЂС‹ РІ СЂРµСЃСѓСЂСЃР°С… РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+int Magic_SetTextureID(unsigned int id);
+
+// eng: Returns the Intensity flag
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїСЂРёР·РЅР°Рє РРЅС‚РµРЅС‚РёРІРЅРѕСЃС‚СЊ
+bool Magic_IsIntensive();
+
+#ifdef MAGIC_3D
+
+// eng: Returns particle type orientation for 3D-emitters
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РѕСЂРёРµРЅС‚Р°С†РёСЋ С‚РёРїР° С‡Р°СЃС‚РёС† РґР»СЏ 3D-СЌРјРёС‚С‚РµСЂРѕРІ
+int Magic_GetOrientation(MAGIC_ORIENTATION* orientation);
+
+// eng: Sets particle type orientation for 3D-emitters
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РѕСЂРёРµРЅС‚Р°С†РёСЋ С‚РёРїР° С‡Р°СЃС‚РёС† РґР»СЏ 3D-СЌРјРёС‚С‚РµСЂРѕРІ
+int Magic_SetOrientation(MAGIC_ORIENTATION* orientation);
+
+#endif
+
+// eng: Returns "tail" properties
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРІРѕР№СЃС‚РІР° "С…РІРѕСЃС‚Р°"
+int Magic_GetTailProperties(MAGIC_TAIL* tail);
+
+// eng: Sets "tail" properties
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРІРѕР№СЃС‚РІР° "С…РІРѕСЃС‚Р°"
+int Magic_SetTailProperties(MAGIC_TAIL* tail);
+
+// eng: Returns the next particle. Is used to go through all the existing particles
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РѕС‡РµСЂРµРґРЅРѕР№ С‡Р°СЃС‚РёС†Рµ. РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РїРµСЂРµР±РѕСЂР° РІСЃРµС… СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС… С‡Р°СЃС‚РёС†
+int Magic_GetNextParticle(MAGIC_PARTICLE* particle);
+
+// eng: Changes the position of the particle that is got by Magic_GetNextParticle
+// rus: РР·РјРµРЅСЏРµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ С‡Р°СЃС‚РёС†С‹, РїРѕР»СѓС‡РµРЅРЅРѕР№ С‡РµСЂРµР· Magic_GetNextParticle
+void Magic_MoveParticle(MAGIC_POSITION* offset);
+
+// eng: Rotates the particle that was obtained by Magic_GetNextParticle around the emitter
+// rus: Р’СЂР°С‰Р°РµС‚ С‡Р°СЃС‚РёС†Сѓ РїРѕР»СѓС‡РµРЅРЅСѓСЋ С‡РµСЂРµР· Magic_GetNextParticle РІРѕРєСЂСѓРі СЌРјРёС‚С‚РµСЂР°
+void Magic_RotateParticle(MAGIC_DIRECTION* offset);
+
+// eng: Returns count of user defined variables of particles type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёС… РїРµСЂРµРјРµРЅРЅС‹С… РІРЅСѓС‚СЂРё С‚РёРїР° С‡Р°СЃС‚РёС†
+int Magic_GetParticlesTypeVariableCount();
+
+// eng: Returns information about user defined variable of particles type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕР№ РїРµСЂРµРјРµРЅРЅРѕР№ РёР· С‚РёРїР° С‡Р°СЃС‚РёС†
+int Magic_GetParticlesTypeVariable(int index, MAGIC_VARIABLE* variable);
+
+// eng: Returns the count of actions
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РґРµР№СЃС‚РІРёР№
+int Magic_GetActionCount();
+
+// eng: Returns MAGIC_VARIABLE structure that contains action information
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂСѓРєС‚СѓСЂСѓ MAGIC_ACTION СЃ РёРЅС„РѕСЂРјР°С†РёРµР№ РѕР± СѓРєР°Р·Р°РЅРЅРѕРј РґРµР№СЃС‚РІРёРё
+int Magic_GetAction(int index, MAGIC_ACTION* action);
+
+// eng: Creates new action
+// rus: РЎРѕР·РґР°РµС‚ РЅРѕРІРѕРµ РґРµР№СЃС‚РІРёРµ
+int Magic_CreateAction(MAGIC_ACTION* action);
+
+// eng: Deletes specified action
+// rus: РЈРґР°Р»СЏРµС‚ СѓРєР°Р·Р°РЅРЅРѕРµ РґРµР№СЃС‚РІРёРµ
+int Magic_DestroyAction(int index);
+
+// eng: Returns count of attached physical objects of specified type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРёСЃРѕРµРґРёРЅРµРЅРЅС‹С… С„РёР·РёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°
+int Magic_GetAttachedPhysicObjectsCount(int type);
+
+// eng: Returns list of attached physical objects of specified type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РїСЂРёСЃРѕРµРґРёРЅРµРЅРЅС‹С… С„РёР·РёС‡РµСЃРєРёС… РѕР±СЉРµРєС‚РѕРІ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°
+int Magic_GetAttachedPhysicObjects(int type, int* HMs);
+
+// --------------------------------------------------------------------------
+
+// eng: Sets the mode of atlas
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂРµР¶РёРј СЂР°Р±РѕС‚С‹ Р°С‚Р»Р°СЃР°
+void Magic_SetCleverModeForAtlas(bool clever);
+
+// eng: Returns the mode of atlas
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂРµР¶РёРј СЂР°Р±РѕС‚С‹ Р°С‚Р»Р°СЃР°
+bool Magic_IsCleverModeForAtlas();
+
+// eng: Returns the information on next change in textural atlas
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РѕС‡РµСЂРµРґРЅРѕРј РёР·РјРµРЅРµРЅРёРё РІ С‚РµРєСЃС‚СѓСЂРЅРѕРј Р°С‚Р»Р°СЃРµ
+int Magic_GetNextAtlasChange(MAGIC_CHANGE_ATLAS* change);
+
+// eng: Creates textural atlases for all loaded emitters
+// rus: РЎРѕР·РґР°РµС‚ С‚РµРєСЃС‚СѓСЂРЅС‹Рµ Р°С‚Р»Р°СЃС‹ РґР»СЏ РІСЃРµС… Р·Р°РіСЂСѓР¶РµРЅРЅС‹С… СЌРјРёС‚С‚РµСЂРѕРІ
+float Magic_CreateAtlases(int width,int height,int step,float scale_step);
+
+// eng: Creates textural atlases for specified emitters
+// rus: РЎРѕР·РґР°РµС‚ С‚РµРєСЃС‚СѓСЂРЅС‹Рµ Р°С‚Р»Р°СЃС‹ РґР»СЏ СѓРєР°Р·Р°РЅРЅС‹С… СЌРјРёС‚С‚РµСЂРѕРІ
+float Magic_CreateAtlasesForEmitters(int width,int height,int count, HM_EMITTER* emitters,int step,float scale_step);
+
+// eng: Sets up the initial scale for atlas creation
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃС‚Р°СЂС‚РѕРІС‹Р№ РјР°СЃС€С‚Р°Р± РґР»СЏ РїРѕСЃС‚РѕСЂРѕРµРЅРёСЏ Р°С‚Р»Р°СЃР°
+void Magic_SetStartingScaleForAtlas(float scale);
+
+// eng: Returns the initial scale for atlas creation
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚Р°СЂС‚РѕРІС‹Р№ РјР°СЃС€С‚Р°Р± РґР»СЏ РїРѕСЃС‚РѕСЂРѕРµРЅРёСЏ Р°С‚Р»Р°СЃР°
+float Magic_GetStartingScaleForAtlas();
+
+// eng: Returns the number of textural atlases
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ Р°С‚Р»Р°СЃРѕРІ
+int Magic_GetAtlasCount();
+
+// eng: Returns the textural atlas specified
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СѓРєР°Р·Р°РЅРЅС‹Р№ С‚РµРєСЃС‚СѓСЂРЅС‹Р№ Р°С‚Р»Р°СЃ
+int Magic_GetAtlas(int index, MAGIC_ATLAS* atlas);
+
+// --------------------------------------------------------------------------
+
+// eng: Figures out if the diagram is managable
+// rus: РћРїСЂРµРґРµР»СЏРµС‚, РґРѕСЃС‚СѓРїРµРЅ Р»Рё СѓРєР°Р·Р°РЅРЅС‹Р№ РіСЂР°С„РёРє
+bool Magic_IsDiagramEnabled(HM_EMITTER hmEmitter,int type_index, int diagram_index);
+
+// eng: Returns the specified diagram factor
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РјРЅРѕР¶РёС‚РµР»СЊ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РіСЂР°С„РёРєР°
+float Magic_GetDiagramFactor(HM_EMITTER hmEmitter,int type_index, int diagram_index);
+
+// eng: Sets the specified diagram factor
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РјРЅРѕР¶РёС‚РµР»СЊ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РіСЂР°С„РёРєР°
+int Magic_SetDiagramFactor(HM_EMITTER hmEmitter,int type_index, int diagram_index, float factor);
+
+// eng: Returns the factor for emitter form diagram
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РјРЅРѕР¶РёС‚РµР»СЊ РґР»СЏ РіСЂР°С„РёРєР° С„РѕСЂРјС‹ СЌРјРёС‚С‚РµСЂР°
+float Magic_GetDiagramEmitterFactor(HM_EMITTER hmEmitter, int type_index, bool line);
+
+// eng: Sets the factor for emitter form diagram
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РјРЅРѕР¶РёС‚РµР»СЊ РґР»СЏ РіСЂР°С„РёРєР° С„РѕСЂРјС‹ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetDiagramEmitterFactor(HM_EMITTER hmEmitter, int type_index, bool line, float factor);
+
+// eng: Returns the offset for the specified diagram
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРјРµС‰РµРЅРёРµ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РіСЂР°С„РёРєР°
+float Magic_GetDiagramAddition(HM_EMITTER hmEmitter,int type_index, int diagram_index);
+
+// eng: Sets the offset for the specified diagram
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРјРµС‰РµРЅРёРµ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РіСЂР°С„РёРєР°
+int Magic_SetDiagramAddition(HM_EMITTER hmEmitter,int type_index, int diagram_index, float addition);
+
+// eng: Returns the offset for emitter form diagram
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРјРµС‰РµРЅРёРµ РґР»СЏ РіСЂР°С„РёРєР° С„РѕСЂРјС‹ СЌРјРёС‚С‚РµСЂР°
+float Magic_GetDiagramEmitterAddition(HM_EMITTER hmEmitter, int type_index, bool line);
+
+// eng: Sets the offset for emitter form diagram
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРјРµС‰РµРЅРёРµ РґР»СЏ РіСЂР°С„РёРєР° С„РѕСЂРјС‹ СЌРјРёС‚С‚РµСЂР°
+int Magic_SetDiagramEmitterAddition(HM_EMITTER hmEmitter, int type_index, bool line, float addition);
+
+// eng: Allows substituting a graphical pattern which is used to generate particles of "Image" and "Text" formed emitters
+// rus: РџРѕР·РІРѕР»СЏРµС‚ Р·Р°РјРµРЅРёС‚СЊ РіСЂР°С„РёС‡РµСЃРєРёР№ РѕР±СЂР°Р·, РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РїСЂРѕРёСЃС…РѕРґРёС‚ РіРµРЅРµСЂР°С†РёСЏ С‡Р°СЃС‚РёС† Сѓ СЌРјРёС‚С‚РµСЂРѕРІ С‚РёРїР° "РљР°СЂС‚РёРЅРєР°" Рё "РўРµРєСЃС‚"
+int Magic_ChangeImage(HM_EMITTER hmEmitter, int type_index, int width, int height, unsigned char* data, int bytes_per_pixel);
+
+// eng: Allows changing the triangle based model by which particle generation occurs in "Model" formed emitters
+// rus: РџРѕР·РІРѕР»СЏРµС‚ Р·Р°РјРµРЅРёС‚СЊ РјРѕРґРµР»СЊ РёР· С‚СЂРµСѓРіРѕР»СЊРЅРёРєРѕРІ, РїРѕ РєРѕС‚РѕСЂРѕР№ РїСЂРѕРёСЃС…РѕРґРёС‚ РіРµРЅРµСЂР°С†РёСЏ С‡Р°СЃС‚РёС† Сѓ СЌРјРёС‚С‚РµСЂР° С‚РёРїР° "РњРѕРґРµР»СЊ"
+int Magic_ChangeModel(HM_EMITTER hmEmitter, int type_index, int count, MAGIC_TRIANGLE* triangles);
+
+// --------------------------------------------------------------------------------------
+
+// eng: Creates a new key on a Timeline
+// rus: РЎРѕР·РґР°РµС‚ РЅРѕРІС‹Р№ РєР»СЋС‡ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР° РЅР° РЁРєР°Р»Рµ РІСЂРµРјРµРЅРё
+int Magic_CreateKey(HM_EMITTER hmEmitter, int type, MAGIC_KEY* key);
+
+// eng: Deletes the specified key of desired type from Timeline
+// rus: РЈРґР°Р»СЏРµС‚ РІС‹Р±СЂР°РЅРЅС‹Р№ РєР»СЋС‡ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР° СЃРѕ РЁРєР°Р»С‹ РІСЂРµРјРµРЅРё
+int Magic_DeleteKey(HM_EMITTER hmEmitter, int type, int index);
+
+// eng: Returns the number of keys of specified type from Timeline
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РєР»СЋС‡РµР№ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР° РЅР° РЁРєР°Р»Рµ РІСЂРµРјРµРЅРё
+int Magic_GetKeyCount(HM_EMITTER hmEmitter, int type);
+
+// eng: Returns information for the key of specified type
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєР»СЋС‡Рµ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°
+int Magic_GetKey(HM_EMITTER hmEmitter, int type, MAGIC_KEY* key, int index);
+
+// eng: Sets the new data for the key of specified type
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРѕРІС‹Рµ РґР°РЅРЅС‹Рµ РґР»СЏ РєР»СЋС‡Р° СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°
+int Magic_SetKey(HM_EMITTER hmEmitter, int type, MAGIC_KEY* key, int index);
+
+// --------------------------------------------------------------------------------------
+
+// eng: Creates obstacle
+// rus: РЎРѕР·РґР°РµС‚ РїСЂРµРїСЏС‚СЃС‚РІРёРµ
+HM_OBSTACLE Magic_CreateObstacle(MAGIC_OBSTACLE* data, MAGIC_POSITION* position, int cell);
+
+// eng: Returns information about shape of obstacle
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ С„РѕСЂРјРµ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
+int Magic_GetObstacleData(HM_OBSTACLE hmObstacle, MAGIC_OBSTACLE* data);
+
+// eng: Sets new shape of obstacle
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРѕРІСѓСЋ С„РѕСЂРјСѓ РґР»СЏ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
+int Magic_SetObstacleData(HM_OBSTACLE hmObstacle, MAGIC_OBSTACLE* data, int cell);
+
+// eng: Returns position of obstacle
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР·РёС†РёСЋ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
+int Magic_GetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
+
+// eng: Sets new position of obstacle
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРѕРІСѓСЋ РїРѕР·РёС†РёСЋ РґР»СЏ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ
+int Magic_SetObstaclePosition(HM_OBSTACLE hmObstacle,MAGIC_POSITION* pos);
+
+// eng: Creates wind
+// rus: РЎРѕР·РґР°РµС‚ РІРµС‚РµСЂ
+HM_WIND Magic_CreateWind(MAGIC_WIND* data);
+
+// eng: Returns information about wind
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РІРµС‚СЂРµ
+int Magic_GetWindData(HM_WIND hmWind, MAGIC_WIND* data);
+
+// eng: Sets new properties for wind
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРѕРІС‹Рµ СЃРІРѕР№СЃС‚РІР° РґР»СЏ РІРµС‚СЂР°
+int Magic_SetWindData(HM_WIND hmWind, MAGIC_WIND* data);
+
+// eng: Deletes obstacle or wind
+// rus: РЈРЅРёС‡С‚РѕР¶Р°РµС‚ РїСЂРµРїСЏС‚СЃС‚РІРёРµ РёР»Рё РІРµС‚РµСЂ
+int Magic_DestroyPhysicObject(int type, int HM);
+
+// eng: Deletes all obstacles and winds
+// rus: РЈРЅРёС‡С‚РѕР¶Р°РµС‚ РІСЃРµ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ РёР»Рё РІРµС‚СЂС‹
+int Magic_DestroyAllPhysicObjects(int type);
+
+// eng: Duplicates specified obstacle or wind
+// rus: РЎРЅРёРјР°РµС‚ РєРѕРїРёСЋ СЃ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїСЂРµРїСЏС‚СЃС‚РІРёСЏ РёР»Рё РІРµС‚СЂР°
+int Magic_DuplicatePhysicObject(int type, int HM);
+
+// --------------------------------------------------------------------------------------
+
+// eng: Returns information about subsequent event
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РѕС‡РµСЂРµРґРЅРѕРј СЃРѕР±С‹С‚РёРё
+int Magic_GetNextEvent(MAGIC_EVENT* evt);
+
+// eng: Returns user data of particle
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ С‡Р°СЃС‚РёС†С‹
+void* Magic_ParticleGetData(HM_PARTICLE hmParticle);
+
+// eng: Sets user data of particle
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ С‡Р°СЃС‚РёС†С‹
+void Magic_ParticleSetData(HM_PARTICLE hmParticle, void* data);
+
+// eng: Returns scene coordinates of particle
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ С‡Р°СЃС‚РёС†С‹ РЅР° СЃС†РµРЅРµ
+void Magic_ParticleGetPosition(HM_PARTICLE hmParticle, MAGIC_POSITION* pos);
+
+// eng: Sets coordinates of particle
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ С‡Р°СЃС‚РёС†С‹
+void Magic_ParticleSetPosition(HM_PARTICLE hmParticle, MAGIC_POSITION* pos);
+
+// eng: Returns specified property of particle
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СѓРєР°Р·Р°РЅРЅРѕРµ СЃРІРѕР№СЃС‚РІРѕ С‡Р°СЃС‚РёС†С‹
+float Magic_ParticleGetProperty(HM_PARTICLE hmParticle, int property);
+
+// eng: Sets specified property of particle
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРєР°Р·Р°РЅРЅРѕРµ СЃРІРѕР№СЃС‚РІРѕ С‡Р°СЃС‚РёС†С‹
+void Magic_ParticleSetProperty(HM_PARTICLE hmParticle, int property, float value);
+
+// eng: Returns several specified properties of particle
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅРµСЃРєРѕР»СЊРєРѕ СѓРєР°Р·Р°РЅРЅС‹С… СЃРІРѕР№СЃС‚РІ С‡Р°СЃС‚РёС†С‹
+void Magic_ParticleGetProperties(HM_PARTICLE hmParticle, int count, int* properties, float* values);
+
+// eng: Sets several specified properties of particle
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРµСЃРєРѕР»СЊРєРѕ СѓРєР°Р·Р°РЅРЅС‹С… СЃРІРѕР№СЃС‚РІ С‡Р°СЃС‚РёС†С‹
+void Magic_ParticleSetProperties(HM_PARTICLE hmParticle, int count, int* properties, float* values);
+
+// eng: Returns physical radius of particle
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ С„РёР·РёС‡РµСЃРєРёР№ СЂР°РґРёСѓСЃ С‡Р°СЃС‚РёС†С‹
+float Magic_ParticleGetRadius(HM_PARTICLE hmParticle);
+
+// eng: Detaches particle from emitter
+// rus: РћС‚СЃРѕРµРґРёРЅСЏРµС‚ С‡Р°СЃС‚РёС†Сѓ РѕС‚ СЌРјРёС‚С‚РµСЂР°
+void Magic_ParticleDetaching(HM_PARTICLE hmParticle);
+
+// eng: Deletes particle
+// rus: РЈРЅРёС‡С‚РѕР¶Р°РµС‚ С‡Р°СЃС‚РёС†Сѓ
+void Magic_ParticleDestruction(HM_PARTICLE hmParticle);
+
+// --------------------------------------------------------------------------------------
+
+// eng: Opens stream from file
+// rus: РћС‚РєСЂС‹РІР°РµС‚ РїРѕС‚РѕРє РёР· С„Р°Р№Р»Р°
+int Magic_StreamOpenFile(const char* file_name, int mode);
+
+// eng: Opens stream in memory
+// rus: РћС‚РєСЂС‹РІР°РµС‚ РїРѕС‚РѕРє РІ РїР°РјСЏС‚Рё
+int Magic_StreamOpenMemory(const char* address, unsigned int length, int mode);
+
+// eng: Closes stream that was previously opened by Magic_StreamOpenFile or Magic_StreamOpenMemory
+// rus: Р—Р°РєСЂС‹РІР°РµС‚ РїРѕС‚РѕРє, РѕС‚РєСЂС‹С‚С‹Р№ СЂР°РЅРµРµ С‡РµСЂРµР· Magic_StreamOpenFile РёР»Рё Magic_StreamOpenMemory
+int Magic_StreamClose(HM_STREAM hmStream);
+
+// eng: Closing all opened streams
+// rus: Р—Р°РєСЂС‹С‚РёРµ РІСЃРµС… РѕС‚РєСЂС‹С‚С‹С… РїРѕС‚РѕРє
+void Magic_StreamCloseAll();
+
+// eng: Returns the length of stream
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°Р·РјРµСЂ РїРѕС‚РѕРєР°
+unsigned int Magic_StreamGetLength(HM_STREAM hmStream);
+
+// eng: Returns current stream position
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰СѓСЋ РїРѕР·РёС†РёСЋ РІ РїРѕС‚РѕРєРµ
+unsigned int Magic_StreamGetPosition(HM_STREAM hmStream);
+
+// eng: Sets the position of stream that was opened in read only mode
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїРѕР·РёС†РёСЋ РїРѕС‚РѕРєР°, РѕС‚РєСЂС‹С‚РѕРіРѕ РІ СЂРµР¶РёРјРµ С‡С‚РµРЅРёСЏ
+int Magic_StreamSetPosition(HM_STREAM hmStream, unsigned int position);
+
+// eng: Returns current stream mode
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ С‚РµРєСѓС‰РёР№ СЂРµР¶РёРј РїРѕС‚РѕРєР°
+int Magic_StreamGetMode(HM_STREAM hmStream);
+
+// eng: Sets new stream mode
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРѕРІС‹Р№ СЂРµР¶РёРј РїРѕС‚РѕРєР°
+int Magic_StreamSetMode(HM_STREAM hmStream, int mode);
+
+// eng: Returns file name of stream opened from file
+// rus: Р’РѕР·РІСЂР°С‰Р°РµС‚ РёРјСЏ С„Р°Р№Р»Р° РґР»СЏ РїРѕС‚РѕРєР°, РѕС‚РєСЂС‹С‚РѕРіРѕ РёР· С„Р°Р№Р»Р°
+const char* Magic_StreamGetFileName(HM_STREAM hmStream);
+
+// eng: Reads specified number of bytes from stream
+// rus: Р§РёС‚Р°РµС‚ РёР· РїРѕС‚РѕРєР° СѓРєР°Р·Р°РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р±Р°Р№С‚
+int Magic_StreamRead(HM_STREAM hmStream, char* data, unsigned int count);
+
+// eng: Writes specified number of bytes into stream
+// rus: РЎРѕС…СЂР°РЅСЏРµС‚ РІ РїРѕС‚РѕРє СѓРєР°Р·Р°РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р±Р°Р№С‚
+int Magic_StreamWrite(HM_STREAM hmStream, const char* data, unsigned int count);
+
+// eng: Copying particle space from stream into emitter
+// rus: РљРѕРїРёСЂРѕРІР°РЅРёРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° С‡Р°СЃС‚РёС† РІ СЌРјРёС‚С‚РµСЂ РёР· РїРѕС‚РѕРєР°
+int Magic_LoadArrayFromStream(HM_EMITTER hmEmitter, HM_STREAM hmStream);
+
+// eng: Copying particle space from emitter into stream
+// rus: РљРѕРїРёСЂРѕРІР°РЅРёРµ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР° С‡Р°СЃС‚РёС† РёР· СЌРјРёС‚С‚РµСЂР° Р° РїРѕС‚РѕРє
+int Magic_SaveArrayToStream(HM_EMITTER hmEmitter, HM_STREAM hmStream);
+
+// eng: Sets emitter animation position to left position of visibility range
+// rus: РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РїРѕР·РёС†РёСЋ Р°РЅРёРјР°С†РёРё СЌРјРёС‚С‚РµСЂР° РЅР° Р»РµРІСѓСЋ РїРѕР·РёС†РёСЋ РёРЅС‚РµСЂРІР°Р»Р° РІРёРґРёРјРѕСЃС‚Рё
+int Magic_EmitterToInterval1_Stream(HM_EMITTER hmEmitter, float speed_factor, HM_STREAM hmStream);
+
+// --------------------------------------------------------------------------------------
+
+void Magic_DestroyAll();
 
 #ifdef __cplusplus
 }

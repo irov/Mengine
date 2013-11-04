@@ -77,13 +77,13 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters )
+	bool AstralaxEmitterContainer::addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters )
 	{
 		TMapEmitters::iterator it_found = m_emitters.find( _name );
 
 		if( it_found != m_emitters.end() )
 		{
-			return;
+			return false;
 		}
 
 		EmitterPool pool;
@@ -91,9 +91,11 @@ namespace Menge
         pool.id = _id;
         pool.pos = _pos;
 		pool.emitters = _emitters;
-		pool.dublicate = _emitters.size() == 0;
+		pool.dublicate = (_emitters.empty() == true);
 
 		m_emitters.insert( std::make_pair( _name, pool ) );
+
+		return true;			 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HM_EMITTER AstralaxEmitterContainer::getEmitterId( const ConstString & _name ) const
@@ -187,12 +189,7 @@ namespace Menge
 	{
 		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>(_emitter);
 
-		const ConstString & name = emitter->getName();
-		HM_EMITTER id = emitter->getId();
-		AstralaxEmitterContainer * container = emitter->getContainer();
-
-		container->releaseEmitterId( name, id );
-
+		emitter->finalize();
 		emitter->destroy();
 	}
 	////////////////////////////////////////////////////////////////////////////

@@ -176,8 +176,6 @@ namespace Menge
 		bool getFixedContentResolution() const override;
 
 	public:
-		static const char* getVersionInfo();
-
 		void enableDebug( bool _enable );
         		
 		void updateNotification();

@@ -44,9 +44,6 @@ namespace Menge
     protected:
         bool _isValid() const override;
 
-	protected:
-		void createResource_( const ConstString & _fullname, const FilePath & _path );
-
     protected:
         ConstString makeTexturePath_( const FilePath & _filepath ) const;
 

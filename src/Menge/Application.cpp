@@ -122,8 +122,6 @@
 #	include <ctime>
 #	include <sstream>
 
-#	include "VersionInfo.h"
-
 #	include "Config/Config.h"
 
 #   include "Core/String.h"
@@ -1890,11 +1888,6 @@ namespace Menge
 	const Resolution & Application::getWindowResolution() const
 	{
 		return m_windowResolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const char* Application::getVersionInfo()
-	{
-		return s_versionInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getVSync() const

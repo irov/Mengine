@@ -2,6 +2,8 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#   include "Config/Blobject.h"
+
 #	include	"math/vec3.h"
 #	include "math/mat3.h"
 
@@ -41,5 +43,7 @@ namespace Menge
 
 		size_t m_maxParticlesNum;
 		size_t m_renderParticleNum;
+
+		TBlobject m_fileBuffer;
 	};
 };

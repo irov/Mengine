@@ -1,5 +1,5 @@
 #	include "AstralaxEmitter.h"
-#	include <assert.h>
+#	include "AstralaxEmitterContainer.h"
 
 #	include <Utils/Logger/Logger.h>
 
@@ -65,6 +65,14 @@ namespace Menge
                
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::finalize()
+	{
+		m_container->releaseEmitterId( m_name, m_id );
+
+		m_container = nullptr;
+		m_id = 0;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::setupBasePosition_()
     {
@@ -288,8 +296,8 @@ namespace Menge
 		while( m_total_rate >= m_rate )
 		{
 			m_total_rate -= m_rate;
+
 			restart = Magic_Update( m_id, m_rate );
-			//bool restart = Magic_Update( m_id, _timing );
 
             if( restart == false )
             {
@@ -313,6 +321,33 @@ namespace Menge
 	HM_EMITTER AstralaxEmitter::getId() const
 	{
 		return m_id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter::inInterval() const
+	{
+		if( m_id == 0 )
+		{
+			return false;				 
+		}
+
+		bool result = Magic_InInterval( m_id );
+		
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter::createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering )
+	{
+		if( m_id == 0 )
+		{
+			return false;				 
+		}
+		
+		if( Magic_CreateFirstRenderedParticlesList( m_id, _rendering ) != MAGIC_SUCCESS )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setEmitterTranslateWithParticle( bool _value )

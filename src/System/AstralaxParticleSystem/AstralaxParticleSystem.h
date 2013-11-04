@@ -2,6 +2,8 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#	include "Config/String.h"
+
 #	include "AstralaxEmitterContainer.h"
 #	include "AstralaxEmitter.h"
 
@@ -46,5 +48,8 @@ namespace Menge
 
         typedef FactoryPool<AstralaxEmitterContainer, 16> TFactoryPoolAstralaxEmitterContainer;
         TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
+
+		String m_loadEmitterCacheFullname;
+		String m_loadEmitterCacheName;
 	};
 }

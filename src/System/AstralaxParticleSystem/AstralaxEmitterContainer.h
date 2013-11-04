@@ -36,7 +36,7 @@ namespace Menge
         bool isValid() const override;
 
 	public:
-		void addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters );
+		bool addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters );
 		HM_EMITTER getEmitterId( const ConstString & _name ) const;
 		void releaseEmitterId( const ConstString & _name, HM_EMITTER _id );
 

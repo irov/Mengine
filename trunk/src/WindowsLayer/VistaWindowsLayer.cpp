@@ -62,29 +62,26 @@ namespace Menge
             return m_windowsType;
         }
 
-        m_windowsType = EWT_NT; 
-        OSVERSIONINFOEX osvi;
-        ::ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+        OSVERSIONINFO osvi;
+        ::ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
 
-        osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-        if( ::GetVersionEx((LPOSVERSIONINFO)&osvi) == 0)
+        osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+        if( ::GetVersionEx((LPOSVERSIONINFO)&osvi) == TRUE )
+		{
+			if( osvi.dwMajorVersion >= 6 )
+			{
+				m_windowsType = EWT_VISTA;
+			}
+			else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) // let's check Win95, 98, *AND* ME.
+			{
+				m_windowsType = EWT_98;
+			}
+		}
+		else
         {
-            osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-            if ( ::GetVersionEx((LPOSVERSIONINFO)&osvi) == 0)
-            {
-                return m_windowsType;
-            }
+			m_windowsType = EWT_NT;
         }
-
-        if( osvi.dwMajorVersion >= 6 )
-        {
-            m_windowsType = EWT_VISTA;
-        }
-        else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) // let's check Win95, 98, *AND* ME.
-        {
-            m_windowsType = EWT_98;
-        }
-
+		
         return m_windowsType;
     }
     //////////////////////////////////////////////////////////////////////////

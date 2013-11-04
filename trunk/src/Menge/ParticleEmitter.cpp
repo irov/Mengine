@@ -47,8 +47,6 @@ namespace	Menge
         , m_emitterRelative(false)
         , m_emitterPosition(0.f, 0.f, 0.f)
         , m_emitterTranslateWithParticle(true)
-        , m_emitterChangeRendering(true)
-        , m_emitterChangeRenderingExtra(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -70,9 +68,6 @@ namespace	Menge
 		{
 			return false;
 		}
-
-        m_emitterChangeRendering = true;
-        m_emitterChangeRenderingExtra = true;
         
 		return true;
 	}
@@ -204,7 +199,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_render( RenderCameraInterface * _camera )
-	{
+	{		
 		Node::_render( _camera );
 
 		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
@@ -224,7 +219,7 @@ namespace	Menge
         {
             return;
         }
-
+		
 		for( TVectorBatchs::const_iterator
 			it = m_batchs.begin(),
 			it_end = m_batchs.end();
@@ -262,9 +257,6 @@ namespace	Menge
 			m_interface->update( m_startPosition );
 		}
 
-        m_emitterChangeRenderingExtra = true;
-		//ParticleEmitter::_update( 0.f, m_startPosition );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -281,8 +273,6 @@ namespace	Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_RESTART)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 
 		m_interface->restart();
-
-		m_emitterChangeRenderingExtra = true;
 
 		return true;
 	}
@@ -379,12 +369,12 @@ namespace	Menge
 			_timing -= deltha;
 		}
 
-		m_emitterChangeRendering = m_interface->update( _timing );
+		m_interface->update( _timing );
 
-        if( this->updateParticleVertex_() == false )
-        {
-            return;
-        }
+		if( this->updateParticleVertex_() == false )
+		{
+			return;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::updateParticleVertex_()
@@ -855,13 +845,6 @@ namespace	Menge
             m_interface->setPosition( wm_pos );
         }
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter::_invalidateColor()
-    {
-		Node::_invalidateColor();
-
-        m_emitterChangeRenderingExtra = true;
-    }
 	/////////////////////////////////////////////////////////////////////////
 	float ParticleEmitter::getDuration() const
 	{

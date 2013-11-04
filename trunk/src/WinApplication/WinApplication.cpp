@@ -1720,7 +1720,7 @@ namespace Menge
 
 		while( m_running )
 		{
-            float frameTime = m_winTimer->getDeltaTime();
+			float frameTime = m_winTimer->getDeltaTime();
 
             //EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
             //

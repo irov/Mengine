@@ -65,7 +65,7 @@ namespace Menge
 	{
         HANDLE handle = CreateThread( NULL, 0, &s_tread_job, (LPVOID)_thread, 0, NULL);
 
-        if( handle == NULL )
+		if( handle == NULL )
         {
             DWORD error_code = GetLastError();
 

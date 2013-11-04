@@ -15,7 +15,7 @@ namespace Menge
 	Playlist::Playlist( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
         , m_loop(false)
-		, m_playlistResource(NULL)    
+		, m_playlistResource(nullptr)    
 		, m_oneTrackPlayed(false)
 		, m_oneTrackLooped(false)
 		, m_trackIndex(0)
@@ -24,10 +24,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::~Playlist()
 	{
-		if( m_playlistResource != NULL )
+		if( m_playlistResource != nullptr )
 		{
 			m_playlistResource->decrementReference();
-			m_playlistResource = NULL;
+			m_playlistResource = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,6 +50,7 @@ namespace Menge
 		const TVectorTrackDesc & tracks = m_playlistResource->getTracks();
 
 		m_tracks.assign( tracks.begin(), tracks.end() );
+		m_trackIndex = 0;
 
 		bool is_looped = m_playlistResource->getLoop();
 		

@@ -19,6 +19,7 @@ namespace Menge
 		, m_wrapT(0)
 		, m_minFilter(0)
 		, m_magFilter(0)
+		, m_mode(ERIM_NORMAL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -26,7 +27,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeTexture::initialize( GLuint _uid, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
+    void MarmaladeTexture::initialize( GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
     {
         m_uid = _uid;
         m_hwWidth = _width;
@@ -38,7 +39,13 @@ namespace Menge
         m_format = _format;
         m_type = _type;
         m_isRenderTarget = _isRenderTarget;
+		m_mode = _mode;
     }
+	//////////////////////////////////////////////////////////////////////////
+	ERenderImageMode MarmaladeTexture::getMode() const
+	{
+		return m_mode;
+	}
     //////////////////////////////////////////////////////////////////////////
     size_t MarmaladeTexture::getHWWidth() const 
     {

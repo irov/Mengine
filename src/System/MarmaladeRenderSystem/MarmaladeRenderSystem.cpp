@@ -938,6 +938,7 @@ namespace Menge
 
 		texture->initialize( 
             tuid
+			, ERIM_NORMAL
             , _width
             , _height
             , hwChannels

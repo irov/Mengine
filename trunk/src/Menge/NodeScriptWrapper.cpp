@@ -2974,8 +2974,6 @@ namespace Menge
                         return false;
                     }
 
-                    pybind::decref( py_key );
-
                     PyObject * py_value = pybind::tuple_getitem( py_item, 1 );
 
                     WString value;
@@ -2984,11 +2982,7 @@ namespace Menge
                         return false;
                     }
 
-                    pybind::decref( py_value );
-
                     _value.insert( std::make_pair( key, value ) );
-
-                    pybind::decref( py_item );
                 }
 
                 pybind::decref( py_items );

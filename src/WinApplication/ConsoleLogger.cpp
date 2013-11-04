@@ -14,9 +14,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ConsoleLogger::ConsoleLogger( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
-        , m_createConsole(false)
 		, m_verboseLevel(LM_INFO)
-        , m_verboseFlag(0xFFFFFFFF)
+		, m_verboseFlag(0xFFFFFFFF)
+		, m_createConsole(false)
+		, m_ConsoleHandle(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -142,7 +143,10 @@ namespace Menge
         (void)_flag;
 
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-		::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo);
+		if( ::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo) == FALSE )
+		{
+			return;
+		}
 
 		WORD textColor;
 		switch(_level)

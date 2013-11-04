@@ -94,7 +94,6 @@ namespace Menge
 
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 		void _invalidateWorldMatrix() override;
-        void _invalidateColor() override;
 
 	private:
 		bool compileEmitterImage_();
@@ -144,7 +143,5 @@ namespace Menge
 		TVectorBatchs m_batchs;
 
 		bool m_emitterTranslateWithParticle;
-        bool m_emitterChangeRendering;
-        bool m_emitterChangeRenderingExtra;
 	};
 }

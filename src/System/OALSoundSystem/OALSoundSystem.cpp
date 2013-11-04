@@ -127,13 +127,6 @@ namespace Menge
 			, alGetString( AL_RENDERER ) 
 			);
 	
-		if( alcIsExtensionPresent( nullptr, "ALC_ENUMERATION_EXT" ) == AL_TRUE )
-		{
-			LOGGER_WARNING(m_serviceProvider)( "Device Specifier: %s"
-				, alcGetString( m_device, ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER )
-				);
-		}
-
 		float lposition[] = { 0.0f, 0.0f, 0.0f };
 		alListenerfv( AL_POSITION, lposition );
         OAL_CHECK_ERROR(m_serviceProvider);

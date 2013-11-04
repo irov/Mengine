@@ -406,6 +406,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16 * _indicies, size_t _countIndex )
 	{
+		if( _countVertex >= 16 || _countIndex >= 42 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Mesh::setVerticies _countVertex %d >= 16 or _countIndex %d >= 42"
+				, _countVertex
+				, _countIndex
+				);
+
+			return;
+		}
+
 		memcpy( m_verticesLocal, _position, sizeof(mt::vec3f) * _countVertex );
 		memcpy( m_uvLocal, _uv, sizeof(mt::vec2f) * _countVertex );
 

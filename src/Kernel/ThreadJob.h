@@ -20,13 +20,6 @@ namespace Menge
 	public:
 		ThreadJob();
 		~ThreadJob();
-
-    public:
-        struct WorkerDesc
-        {
-            ThreadWorkerInterface * worker;
-            size_t id;
-        };
 		
     public:
         void initialize( ServiceProviderInterface * _serviceProvider, size_t _sleep );
@@ -38,6 +31,17 @@ namespace Menge
     protected:
         bool _onMain() override;
         void _onUpdate() override;
+
+	protected:
+		bool check_remove( size_t _id );
+
+	public:
+		struct WorkerDesc
+		{
+			ThreadWorkerInterface * worker;
+			size_t id;
+			bool done;
+		};
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -53,8 +57,6 @@ namespace Menge
         TWorkers m_workers;
         TWorkers m_workersAdd;        
         TWorkers m_workersComplete;
-
-        typedef std::list<size_t> TRemoveWorkers; 
-        TRemoveWorkers m_workersRemove;
+		TWorkers m_workersRemove;
 	};
 }

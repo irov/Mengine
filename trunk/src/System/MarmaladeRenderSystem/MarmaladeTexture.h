@@ -15,13 +15,15 @@ namespace Menge
 		~MarmaladeTexture();
 
     public:
-        void initialize( GLuint _uid, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
+        void initialize( GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
 
 	public:
         unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
 		void unlock() override;
 	
 	public:
+		ERenderImageMode getMode() const override;
+
 		size_t getHWWidth() const override;
 		size_t getHWHeight() const override;
         size_t getHWChannels() const override;
@@ -52,6 +54,8 @@ namespace Menge
 		bool m_isRenderTarget;
 		
 		PixelFormat m_hwPixelFormat;
+
+		ERenderImageMode m_mode;
 
 		size_t m_hwWidth;
 		size_t m_hwHeight;

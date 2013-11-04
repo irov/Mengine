@@ -517,23 +517,23 @@ namespace	Menge
 				uv[3].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[3].x;
 				uv[3].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[3].y;
 
-				vertice[0].uv[0] = uv[0].x;
-				vertice[0].uv[1] = uv[0].y;
-				vertice[1].uv[0] = uv[1].x;
-				vertice[1].uv[1] = uv[1].y;
-				vertice[2].uv[0] = uv[2].x;
-				vertice[2].uv[1] = uv[2].y;
-				vertice[3].uv[0] = uv[3].x;
-				vertice[3].uv[1] = uv[3].y;
+				vertice[0].uv.x = uv[0].x;
+				vertice[0].uv.y = uv[0].y;
+				vertice[1].uv.x = uv[1].x;
+				vertice[1].uv.y = uv[1].y;
+				vertice[2].uv.x = uv[2].x;
+				vertice[2].uv.y = uv[2].y;
+				vertice[3].uv.x = uv[3].x;
+				vertice[3].uv.y = uv[3].y;
 
-                vertice[0].uv2[0] = 0.f;
-                vertice[0].uv2[1] = 0.f;
-                vertice[1].uv2[0] = 0.f;
-                vertice[1].uv2[1] = 0.f;
-                vertice[2].uv2[0] = 0.f;
-                vertice[2].uv2[1] = 0.f;
-                vertice[3].uv2[0] = 0.f;
-                vertice[3].uv2[1] = 0.f;
+                vertice[0].uv2.x = 0.f;
+                vertice[0].uv2.y = 0.f;
+                vertice[1].uv2.x = 0.f;
+                vertice[1].uv2.y = 0.f;
+                vertice[2].uv2.x = 0.f;
+                vertice[2].uv2.y = 0.f;
+                vertice[3].uv2.x = 0.f;
+                vertice[3].uv2.y = 0.f;
 			}
 
 			++partCount;

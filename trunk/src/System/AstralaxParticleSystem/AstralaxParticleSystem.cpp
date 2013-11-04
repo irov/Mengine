@@ -89,11 +89,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem::loadEmitter( const char * _magicName, HM_FILE _file, AstralaxEmitterContainer * _container )
-	{
-		static String fullname;
-        static String name;
-
-        fullname = _magicName;
+	{		
+        m_loadEmitterCacheFullname = _magicName;
 		
         HM_EMITTER id = Magic_LoadEmitter( _file, _magicName );
 
@@ -101,21 +98,30 @@ namespace Menge
         {
             return false;
         }
-
+		
         MAGIC_POSITION pos;
         Magic_GetEmitterPosition( id, &pos );
 
-        size_t count = s_getCountTag( fullname, name );
+        size_t count = s_getCountTag( m_loadEmitterCacheFullname, m_loadEmitterCacheName );
 
 		TVectorEmitters emitters;
 		for( size_t i = 0; i != count; ++i )
 		{
-            HM_EMITTER duplicated_id = Magic_LoadEmitter( _file, _magicName );
-			
+			HM_EMITTER duplicated_id = Magic_LoadEmitter( _file, _magicName );
+
 			emitters.push_back( duplicated_id );
 		}
 
-		_container->addEmitterIds( Helper::stringizeString(m_serviceProvider, name), id, pos, emitters );
+		if( _container->addEmitterIds( Helper::stringizeString(m_serviceProvider, m_loadEmitterCacheName), id, pos, emitters ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmitter alredy add %s"
+				, m_loadEmitterCacheName.c_str()
+				);
+
+			Magic_UnloadEmitter( id );
+
+			return false;
+		}
 
         return true;
 	}
@@ -126,26 +132,26 @@ namespace Menge
 
 		if( file == 0 )
 		{
-            LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory"
-                );
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory"
+				);
 
 			return nullptr;
 		}
-		
+
 		AstralaxEmitterContainer * container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
-		
-        if( container->initialize( _name, m_serviceProvider ) == false )
-        {
+
+		if( container->initialize( _name, m_serviceProvider ) == false )
+		{
 			container->destroy();
 
 			Magic_CloseFile( file );
 
-            return nullptr;
-        }
+			return nullptr;
+		}
 
 		//Load emitters from root folder
 		this->loadEmittersFolder( "//", file, container );
-		
+
 		int atlasCount = Magic_GetStaticAtlasCount( file );
 
 		for( int i = 0; i != atlasCount; ++i )
@@ -158,9 +164,9 @@ namespace Menge
 
 			ParticleEmitterAtlas atlas;
 
-            atlas.file = Helper::stringizeString( m_serviceProvider, magicAtlas.file );
+			atlas.file = Helper::stringizeString( m_serviceProvider, magicAtlas.file );
 			//atlas.path = magicAtlas.path;
-	
+
 			container->addAtlas( atlas );
 		}
 
@@ -182,30 +188,14 @@ namespace Menge
 		}
 
 		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
-		HM_EMITTER id = emitter->getId();
 
-		if( Magic_InInterval( id ) == false )
+		if( emitter->inInterval() == false )
 		{
 			return false;
 		}
 
-        MAGIC_POSITION pos;
-        Magic_GetEmitterPosition( id, &pos );
-
-#   ifdef MAGIC_3D
-        Magic_SetViewMatrix( (MAGIC_MATRIX *)&_viewMatrix );
-
-        MAGIC_ORIENTATION orientation;
-        orientation.orientation = MAGIC_ORIENTATION_AXIS;
-        orientation.x = 0.f;
-        orientation.y = 0.f;
-        orientation.z = 1.f;
-
-        Magic_SetOrientation( &orientation );
-#   endif
-
 		MAGIC_RENDERING rendering;
-		if( Magic_CreateFirstRenderedParticlesList( id, &rendering ) == MAGIC_ERROR )
+		if( emitter->createFirstRenderedParticlesList( &rendering ) == false )
 		{
 			return false;
 		}

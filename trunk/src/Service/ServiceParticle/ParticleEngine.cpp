@@ -40,7 +40,7 @@ namespace Menge
 	{
 		InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( _fileSystemName, _filename );
-
+		
 		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEngine %s can't open file %s"				
@@ -53,15 +53,16 @@ namespace Menge
 
 		size_t fileSize = file->size();
 
-        static TBlobject fileBuffer;
-        fileBuffer.resize(fileSize);
+        m_fileBuffer.resize(fileSize);
 
-		file->read( &fileBuffer[0], fileSize );
+		unsigned char * buffer = &m_fileBuffer[0];
+
+		file->read( buffer, fileSize );
 
 		file = nullptr;
 
 		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(m_serviceProvider)
-            ->createEmitterContainerFromMemory( _filename, &fileBuffer[0] );
+            ->createEmitterContainerFromMemory( _filename, buffer );
 
 		if( container == nullptr )
 		{

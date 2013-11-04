@@ -76,24 +76,6 @@ namespace Menge
         {
         }
     
-    public:
-        PyObject * s_createConstString( PyObject * _str )
-        {       
-            ConstString cstr;
-
-            if( SCRIPT_SERVICE(m_serviceProvider)
-                ->stringize( _str, cstr ) == false )
-            {
-                pybind::throw_exception();
-
-                return pybind::ret_none();
-            }
-
-            PyObject * py_obj = pybind::ptr( cstr );
-
-            return py_obj;
-        }
-
     protected:
         ServiceProviderInterface * m_serviceProvider;
     };
@@ -133,8 +115,6 @@ namespace Menge
 
         constScriptMethod = new ConstsScriptMethod(_serviceProvider);
         	
-        pybind::def_functor( "createConstString", constScriptMethod, &ConstsScriptMethod::s_createConstString );
-
         PyObject * module = pybind::get_currentmodule();
 
         pybind::interface_<ConstsScriptMethod>("ConstsScriptMethod")

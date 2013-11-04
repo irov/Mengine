@@ -28,6 +28,7 @@ namespace Menge
 
     public:
         bool initialize( ServiceProviderInterface * _serviceProvider, AstralaxEmitterContainer * _container, HM_EMITTER _id, const ConstString & _name );
+		void finalize();
 
 	public:
 		const ConstString & getName() const override;
@@ -86,6 +87,9 @@ namespace Menge
 
 	public:
 		HM_EMITTER getId() const;
+
+		bool inInterval() const;
+		bool createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering );
 
     public:
 		float getUpdateTemp() const;

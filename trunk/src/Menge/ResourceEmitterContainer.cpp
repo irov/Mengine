@@ -177,17 +177,6 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::createResource_( const ConstString & _fullname, const FilePath & _path )
-	{
-		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-
-		ResourceImageDefault * image = RESOURCE_SERVICE(m_serviceProvider)
-			->createResourceT<ResourceImageDefault>( category, group, _fullname, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
-
-		image->setImagePath( _path );
-	}
     //////////////////////////////////////////////////////////////////////////
     ConstString ResourceEmitterContainer::makeTexturePath_( const FilePath & _filepath ) const
     {        

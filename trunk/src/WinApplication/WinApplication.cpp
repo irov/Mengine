@@ -585,8 +585,6 @@ namespace Menge
                 );
         }
 
-        const char * version_info = Application::getVersionInfo();
-
         WString logPath;
         logPath += m_userPath;
         logPath += unicode_logFilename;
@@ -598,7 +596,7 @@ namespace Menge
         dumpPath += date;
         dumpPath += L".dmp";
 
-        CriticalErrorsMonitor::run( version_info, logPath, dumpPath );
+        CriticalErrorsMonitor::run( logPath, dumpPath );
 
         return true;
     }
@@ -1502,11 +1500,6 @@ namespace Menge
 			, mem_st.dwAvailPhys / 1024L
 			, mem_st.dwTotalPageFile / 1024L
 			, mem_st.dwAvailPageFile / 1024L 
-			);
-
-		const char * versionInfo = Application::getVersionInfo();
-		LOGGER_INFO(m_serviceProvider)( "SVN Revision: %s"
-			, versionInfo
 			);
 
         m_cursors[L"IDC_ARROW"] = LoadCursor( NULL, IDC_ARROW );

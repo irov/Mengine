@@ -119,7 +119,7 @@ namespace Menge
 
 			if( desc.done == true )
 			{
-				return false;
+				continue;
 			}
 
 			if( desc.id == _id )

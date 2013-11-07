@@ -283,27 +283,31 @@ namespace Menge
 		m_total_rate += _timing;
         m_time += _timing;
 
-        if( m_total_rate < m_rate )
-        {
-            bool oldFirstUpdate = m_firstUpdate;
-            m_firstUpdate = false;
+        //if( m_total_rate < m_rate )
+        //{
+        //    bool oldFirstUpdate = m_firstUpdate;
+        //    m_firstUpdate = false;
 
-            return oldFirstUpdate;
-        }
+        //    return oldFirstUpdate;
+        //}
 
-        bool restart = true;
+		bool restart = Magic_Update( m_id, m_total_rate );
+		m_total_rate = 0.f;
 
-		while( m_total_rate >= m_rate )
-		{
-			m_total_rate -= m_rate;
+		//bool restart = true;
+		//while( m_total_rate >= m_rate )
+		//{
+		//	m_total_rate -= m_rate;
 
-			restart = Magic_Update( m_id, m_rate );
+		//	test();
+		//	restart = Magic_Update( m_id, m_rate );
+		//	test();
 
-            if( restart == false )
-            {
-                break;
-            }
-		}
+  //          if( restart == false )
+  //          {
+  //              break;
+  //          }
+		//}
 
         if( restart == false )
         { 

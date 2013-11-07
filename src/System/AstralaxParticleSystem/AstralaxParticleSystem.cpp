@@ -60,12 +60,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleSystem::loadEmittersFolder( const char * _path, HM_FILE _file, AstralaxEmitterContainer * _container )
 	{
-		Magic_SetCurrentFolder(_file, _path );
+		Magic_SetCurrentFolder( _file, _path );
 		
 		MAGIC_FIND_DATA find;
 		const char* magicName = Magic_FindFirst( _file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
 		
-		while( magicName )
+		while( magicName != nullptr )
 		{
 			if( find.animate == 1 )
 			{
@@ -85,7 +85,7 @@ namespace Menge
 			magicName = Magic_FindNext( _file, &find );
 		}
 			
-		Magic_SetCurrentFolder(_file, "..");
+		Magic_SetCurrentFolder( _file, ".." );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem::loadEmitter( const char * _magicName, HM_FILE _file, AstralaxEmitterContainer * _container )

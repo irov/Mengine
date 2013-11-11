@@ -15,14 +15,19 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateColor()
     {
-        const ColourValue & local_colour = this->getLocalColor();
+        //const ColourValue & local_colour = this->getLocalColor();
 
-        m_propagate->setLocalColor( local_colour );
+        //m_propagate->setLocalColor( local_colour );
 
-        const ColourValue & personal_colour = this->getPersonalColor();
+        //const ColourValue & personal_colour = this->getPersonalColor();
 
-        m_propagate->setPersonalColor( personal_colour );
-    }
+        //m_propagate->setPersonalColor( personal_colour );
+
+
+		const ColourValue & personal_colour = this->getPersonalColor();
+
+		m_propagate->setLocalColor( personal_colour );	
+	}
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateWorldMatrix()
     {

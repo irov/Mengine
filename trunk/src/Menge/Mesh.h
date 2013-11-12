@@ -18,6 +18,9 @@ namespace Menge
 	struct RenderMaterial;
 	struct RenderMaterialGroup;
 	
+#	define MENGINE_MESH_MAX_VERTEX 32
+#	define MENGINE_MESH_MAX_INDECIES ((MENGINE_MESH_MAX_VERTEX - 2) * 3)
+
 	class Mesh
 		: public Node
 	{
@@ -100,16 +103,16 @@ namespace Menge
 		size_t m_texturesNum;
 		RenderTextureInterfacePtr m_textures[2];
 
-		mt::vec3f m_verticesLocal[16];
+		mt::vec3f m_verticesLocal[MENGINE_MESH_MAX_VERTEX];
 		bool m_invalidateVerticesLocal;
 
-		mt::vec2f m_uvLocal[16];
+		mt::vec2f m_uvLocal[MENGINE_MESH_MAX_VERTEX];
 		bool m_invalidateUVLocal;
 
-		RenderVertex2D m_verticesWM[16];
+		RenderVertex2D m_verticesWM[MENGINE_MESH_MAX_VERTEX];
 		bool m_invalidateVerticesWM;
 
-		uint16 m_indices[42];
+		uint16 m_indices[MENGINE_MESH_MAX_INDECIES];
 
 		size_t m_vertexCount;
 		size_t m_indicesCount;

@@ -42,7 +42,7 @@ namespace Menge
         Floats times;
     };
 
-#	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 16
+#	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 32
 #	define MENGINE_MOVIE_SHAPE_MAX_INDECIES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
 
 	struct MovieFrameShape

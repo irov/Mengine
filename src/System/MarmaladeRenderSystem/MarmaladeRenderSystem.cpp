@@ -8,10 +8,6 @@
 
 #   include "Logger/Logger.h"
 
-#ifdef MENGE_RENDER_GXGL
-#	include "IwGx.h"
-#endif
-
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
@@ -257,9 +253,6 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Initializing OpenGL RenderSystem..." );
 
-#ifdef MENGE_RENDER_GXGL
-		IwGxInit();
-#endif
         if( IwGLInit() == false )
         {
             return false;
@@ -271,10 +264,6 @@ namespace Menge
     void MarmaladeRenderSystem::finalize()
     {
 		IwGLTerminate();
-
-#ifdef MENGE_RENDER_GXGL
-		IwGxTerminate();
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::setRenderListener( RenderSystemListener * _listener )

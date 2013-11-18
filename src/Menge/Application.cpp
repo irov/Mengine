@@ -1920,11 +1920,11 @@ namespace Menge
 	{
 		if( m_invalidateVsync == true )
 		{
-			if( RENDER_SERVICE(m_serviceProvider) != NULL )
+			if( RENDER_SERVICE(m_serviceProvider) != nullptr )
 			{
 				RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
-
 			}
+
 			m_platform->notifyVsyncChanged( m_vsync );
 			m_invalidateVsync = false;
 		}
@@ -1940,12 +1940,12 @@ namespace Menge
 	{
 		m_cursorMode = _mode;
 
-		if( m_game != NULL )
+		if( m_game != nullptr )
 		{
 			m_game->setCursorMode( m_cursorMode );
 		}
 
-		if( m_cursorMode == true && m_cursorResource != NULL )
+		if( m_cursorMode == true && m_cursorResource != nullptr )
 		{
 			const FilePath & cursorName = m_cursorResource->getPath();
 
@@ -1965,7 +1965,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setCursorIcon( const ConstString & _resourceName )
 	{
-		if( m_cursorResource != NULL )
+		if( m_cursorResource != nullptr )
 		{
 			m_cursorResource->release();
 		}
@@ -1973,7 +1973,7 @@ namespace Menge
 		m_cursorResource = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceCursor>(_resourceName);
 
-		if( m_cursorResource == NULL )
+		if( m_cursorResource == nullptr )
 		{
             LOGGER_ERROR(m_serviceProvider)( "Application::setCursorIcon: can't find resource cursor %s"
                 , _resourceName.c_str()

@@ -35,7 +35,7 @@ namespace Menge
 		const RenderTextureInterfacePtr & getTextureFont() const;
 		const RenderTextureInterfacePtr & getTextureOutline() const;
 
-		const mt::vec4f&  getTextureUV() const;
+		const mt::vec4f & getTextureUV() const;
 
 		const FilePath & getImagePath() const;
 		const FilePath & getOutlineImagePath() const;

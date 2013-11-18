@@ -183,23 +183,9 @@ namespace Menge
 		m_resourceGlyph = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceGlyph>( m_resourceGlyphName );
 
-		if( m_resourceGlyph == 0 )
+		if( m_resourceGlyph == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceFont::_compile '%s' can't get resource glyph '%s'"
-				, this->getName().c_str()
-				, m_resourceGlyphName.c_str()
-				);
-
-			return false;
-		}
-
-        GlyphChar gc_A;
-        gc_A.setCode('A');
-		const Glyph * glyph = m_resourceGlyph->getGlyph(gc_A);
-	
-		if( glyph == 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceFont::_compile: '%s' can't get from glyph '%s' - 'A'"
 				, this->getName().c_str()
 				, m_resourceGlyphName.c_str()
 				);

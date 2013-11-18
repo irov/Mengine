@@ -54,16 +54,18 @@ namespace Menge
 			return;
 		}
 
+		const float rgba_255 = 1.f / 255.f;
+
 #   ifdef MENGE_RENDER_GL
-		m_a = ((m_argb >> 24) & 0xFF) / 255.f;
-		m_b = ((m_argb >> 16) & 0xFF) / 255.f;
-		m_g = ((m_argb >> 8) & 0xFF) / 255.f;
-		m_r = (m_argb & 0xFF) / 255.f;
+		m_a = ((m_argb >> 24) & 0xFF) * rgba_255;
+		m_b = ((m_argb >> 16) & 0xFF) * rgba_255;
+		m_g = ((m_argb >> 8) & 0xFF) * rgba_255;
+		m_r = (m_argb & 0xFF) * rgba_255;
 #	else // MENGE_RENDER_GL
-		m_a = ((m_argb >> 24) & 0xFF) / 255.f;
-		m_r = ((m_argb >> 16) & 0xFF) / 255.f;
-		m_g = ((m_argb >> 8) & 0xFF) / 255.f;
-		m_b = (m_argb & 0xFF) / 255.f;
+		m_a = ((m_argb >> 24) & 0xFF) * rgba_255;
+		m_r = ((m_argb >> 16) & 0xFF) * rgba_255;
+		m_g = ((m_argb >> 8) & 0xFF) * rgba_255;
+		m_b = (m_argb & 0xFF) * rgba_255;
 #	endif // MENGE_RENDER_GL
 
 		m_invalidateARGB = false;

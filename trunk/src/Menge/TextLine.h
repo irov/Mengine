@@ -47,7 +47,6 @@ namespace Menge
 
     public:
 		float getLength() const;
-		float getWidth() const;
 		int getCharsDataSize() const;
 
 	private:

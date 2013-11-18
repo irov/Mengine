@@ -166,7 +166,7 @@ namespace Menge
 			}break;
 		case ETFVA_CENTER:
 			{
-				offset.y = -(m_fontHeight + m_lineOffset) * lines.size() / 2;
+				offset.y = -(m_fontHeight + m_lineOffset) * lines.size() * 0.5f;
 			}break;
 		}
 
@@ -318,7 +318,7 @@ namespace Menge
 	{
 		m_fontHeight = _height;
 
-		this->invalidateVertices_();
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getTextSize() const
@@ -434,7 +434,7 @@ namespace Menge
 	{
 		m_lineOffset = _offset;
 
-        this->invalidateVertices_();
+        this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getLineOffset() const

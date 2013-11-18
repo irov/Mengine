@@ -408,9 +408,11 @@ namespace Menge
 	{
 		if( _countVertex >= MENGINE_MESH_MAX_VERTEX || _countIndex >= MENGINE_MESH_MAX_INDECIES )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Mesh::setVerticies _countVertex %d >= 16 or _countIndex %d >= 42"
+			LOGGER_ERROR(m_serviceProvider)("Mesh::setVerticies _countVertex %d >= %d or _countIndex %d >= %d"
 				, _countVertex
+				, MENGINE_MESH_MAX_VERTEX
 				, _countIndex
+				, MENGINE_MESH_MAX_INDECIES
 				);
 
 			return;

@@ -54,7 +54,7 @@ namespace Menge
             glyphChar.setCode( code );
 
             const Glyph * glyph;
-			if ( _resource->hasGlyph( glyphChar, &glyph ) == false )
+			if( _resource->hasGlyph( glyphChar, &glyph ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "TextLine for resource %s invalid glyph %d"
 					, _resource->getName().c_str()
@@ -216,17 +216,19 @@ namespace Menge
 		it_char != it_char_end; 
 		++it_char )
 		{
-			float width = floorf( it_char->ratio * m_height );
+			CharData & cd = *it_char;
 
-			mt::vec2f size = it_char->size;
+			float width = cd.ratio * m_height;
 
-			mt::vec2f offset = _offset + it_char->offset;
+			mt::vec2f size = cd.size;
+
+			mt::vec2f offset = _offset + cd.offset;
 			mt::vec3f v3_offset(offset.x, offset.y, 0.f);
 			
-            it_char->renderVertex[0] = v3_offset;
-			it_char->renderVertex[1] = v3_offset + mt::vec3f(size.x, 0.0f, 0.f);
-			it_char->renderVertex[2] = v3_offset + mt::vec3f(size.x, size.y, 0.f);
-			it_char->renderVertex[3] = v3_offset + mt::vec3f(0.0f, size.y, 0.f);
+            cd.renderVertex[0] = v3_offset;
+			cd.renderVertex[1] = v3_offset + mt::vec3f(size.x, 0.0f, 0.f);
+			cd.renderVertex[2] = v3_offset + mt::vec3f(size.x, size.y, 0.f);
+			cd.renderVertex[3] = v3_offset + mt::vec3f(0.0f, size.y, 0.f);
 
 			_offset.x += width + m_charOffset;
 		}

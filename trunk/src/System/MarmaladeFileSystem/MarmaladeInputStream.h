@@ -39,6 +39,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		s3eFile * m_hFile;
+		Menge::FilePath m_path;
 		
         size_t m_size;
 

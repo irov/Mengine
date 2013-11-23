@@ -1,6 +1,7 @@
 #	include "MarmaladeInputStream.h"
 
 #	include "Interface/MarmaladeLayerInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #   include "Utils/Logger/Logger.h"
 
@@ -71,6 +72,7 @@ namespace Menge
         }
 
         m_size = (size_t)s3e_size;
+		m_path = Helper::stringizeString( m_serviceProvider, filePath );
 
 		return true;
 	}
@@ -243,6 +245,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeInputStream::time( uint64 & _time ) const
 	{
+		if (m_hFile)
+		{
+			uint64 res = s3eFileGetFileInt(m_path.c_str(), S3E_FILE_MODIFIED_DATE);
+			if (res != (uint64)-1)
+			{
+				_time = res;
+				return true;
+			}
+		}
         return false;
 	}
 }	// namespace Menge

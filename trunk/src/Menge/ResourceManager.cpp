@@ -40,16 +40,18 @@ namespace Menge
 
 #   ifdef MENGE_MASTER_RELEASE
             size_t refcount = resource->countReference();
+            if ( refcount != 0 )
+			{
+				LOGGER_WARNING(m_serviceProvider)("ResourceManager::~ResourceManager resource %s refcount %d"
+					, resource->getName().c_str()
+					, refcount
+					);
 
-            while( refcount != 0 )
-            {
-                LOGGER_WARNING(m_serviceProvider)("ResourceManager::~ResourceManager resource %s refcount %d"
-                    , resource->getName().c_str()
-                    , refcount
-                    );
-
-                refcount = resource->decrementReference();
-            }
+				while( refcount != 0 )
+				{
+					refcount = resource->decrementReference();
+				}
+			}
 #   endif
 
             resource->destroy();

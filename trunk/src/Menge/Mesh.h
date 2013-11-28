@@ -43,9 +43,6 @@ namespace Menge
 		void setTextureUVScale( const mt::vec2f & _scale );
 		const mt::vec2f & getTextureUVScale() const;
 
-		void setUVRotate( bool _rotate );
-		bool getUVRotate() const;
-
 	public:
 		void setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16 * _indicies, size_t _countIndex );
 
@@ -53,7 +50,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		void _render( RenderCameraInterface * _camera ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
         void _invalidateColor() override;
@@ -90,7 +87,6 @@ namespace Menge
 
 		bool m_blendAdd;
 		bool m_solid;
-		bool m_uvRotate;
 
 		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;

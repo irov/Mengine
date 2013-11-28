@@ -10,6 +10,7 @@
 #	include "Kernel/Scene.h"
 #	include "Kernel/Join.h"
 
+#	include "RenderViewport.h"
 #	include "Camera2D.h"
 #	include "Consts.h"
 
@@ -59,7 +60,8 @@ namespace Menge
 		, m_arrow(nullptr)
 		, m_scheduleManager(nullptr)
 		, m_scheduleManagerGlobal(nullptr)
-		, m_camera2D(nullptr)
+		, m_renderCamera(nullptr)
+		, m_renderViewport(nullptr)
 		, m_switchScene(false)
 		, m_removeScene(false)
 		, m_destroyOldScene(false)
@@ -71,10 +73,10 @@ namespace Menge
 		, m_fps(0)	
 		, m_affectorable(nullptr)
 		, m_affectorableGlobal(nullptr)
-//#	ifndef MENGE_MASTER_RELEASE
 		, m_showDebugText(0)
 		, m_debugText(nullptr)
-//#	endif
+		, m_camera2D(nullptr)
+		, m_viewport2D(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -421,9 +423,6 @@ namespace Menge
 			{
 				m_arrow->enable();
 			}
-
-			m_arrow->setContentResolution( m_contentResolution );
-			m_arrow->setCurrentResolution( m_currentResolution );
 		}
 
         if( m_mousePickerSystem != nullptr )
@@ -508,24 +507,33 @@ namespace Menge
 			return false;
 		}
 
+		this->setArrow( _arrow );
+
 		float crx = float( m_contentResolution.getWidth() );
 		float cry = float( m_contentResolution.getHeight() );
+		Viewport vp(0.f, 0.f, crx, cry);
 
-		Camera2D * camera = NODE_SERVICE(m_serviceProvider)
+		m_camera2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
 
-		camera->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
-
-		Viewport vp(0.f, 0.f, crx, cry);
-		camera->setViewport( vp );
+		m_camera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
+				
+		m_camera2D->setRenderport( vp );
 
 		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
 		//camera->setLocalPosition(vp_pos);
 
-		camera->enable();
+		m_camera2D->enable();
+		this->setRenderCamera( m_camera2D );
 
-		this->setCamera2D( camera );
-		this->setArrow( _arrow );
+		m_viewport2D = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
+		
+		m_viewport2D->setViewport( vp );
+
+		m_viewport2D->enable();
+
+		this->setRenderViewport( m_viewport2D );
 
 		return true;
 	}
@@ -554,6 +562,12 @@ namespace Menge
         {
             m_camera2D->destroy();
 			m_camera2D = nullptr;
+		}
+
+		if( m_viewport2D != nullptr )
+		{
+			m_viewport2D->destroy();
+			m_viewport2D = nullptr;
 		}
 
 		if( m_mousePickerSystem != nullptr )
@@ -983,14 +997,29 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCamera2D( Camera2D * _camera)
+	void Player::setRenderCamera( RenderCameraInterface * _camera)
 	{
-		m_camera2D = _camera;
+		m_renderCamera = _camera;
+
+		if( m_mousePickerSystem != nullptr )
+		{
+			m_mousePickerSystem->setRenderCamera( m_renderCamera );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera2D * Player::getCamera2D() const
+	const RenderCameraInterface * Player::getRenderCamera() const
 	{
-		return m_camera2D;
+		return m_renderCamera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::setRenderViewport( RenderViewportInterface * _renderViewport )
+	{
+		m_renderViewport = _renderViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderViewportInterface * Player::getRenderViewport() const 
+	{
+		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCamera2DPosition( const mt::vec2f & _pos )
@@ -1078,9 +1107,9 @@ namespace Menge
         unsigned int debugMask = APPLICATION_SERVICE(m_serviceProvider)
             ->getDebugMask();
 
-		if( m_scene != NULL )
+		if( m_scene != nullptr )
 		{
-			m_scene->render( m_camera2D, debugMask );
+			m_scene->render( m_renderViewport, m_renderCamera, debugMask );
 		}
 
 		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
@@ -1095,7 +1124,7 @@ namespace Menge
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{
-			m_arrow->render( m_camera2D, debugMask );
+			m_arrow->render( m_renderViewport, m_renderCamera, debugMask );
 		}
 
 //#	ifndef MENGE_MASTER_RELEASE
@@ -1242,7 +1271,7 @@ namespace Menge
                 ->getGameViewport( gameViewportAspect, gameViewport );
 
             m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
-			m_debugText->render( m_camera2D, debugMask );
+			m_debugText->render( m_renderViewport, m_renderCamera, debugMask );
 		}
 //#	endif
 		//m_renderCamera2D->setLocalPosition( pos );
@@ -1301,17 +1330,6 @@ namespace Menge
     void Player::invalidateResolution_( const Resolution & _resolution )
     {
         m_currentResolution = _resolution;
-
-        if( m_camera2D != nullptr )
-        {
-            //mt::vec2f size;
-            //size.x = float(m_contentResolution.getWidth());
-            //size.y = float(m_contentResolution.getHeight());
-
-            //m_renderCamera2D->setViewport( size );
-
-            m_arrow->setCurrentResolution( m_currentResolution );
-        }
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )

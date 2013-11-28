@@ -21,7 +21,6 @@ namespace Menge
 		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
-		, m_uvRotate(false)
         , m_invalidateMaterial(true)
 		, m_invalidateVerticesLocal(true)
 		, m_invalidateUVLocal(true)
@@ -190,9 +189,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::_render( RenderCameraInterface * _camera )
+	void Mesh::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-		Node::_render( _camera );
+		Node::_render( _viewport, _camera );
 
 		if( m_vertexCount == 0 )
 		{
@@ -203,7 +202,7 @@ namespace Menge
         const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_indices, m_indicesCount );
+			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_indices, m_indicesCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -242,18 +241,6 @@ namespace Menge
 		return m_textureUVScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::setUVRotate( bool _rotate )
-	{
-		m_uvRotate = _rotate;
-
-		this->invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Mesh::getUVRotate() const
-	{
-		return m_uvRotate;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Mesh::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
@@ -279,8 +266,9 @@ namespace Menge
 
 		const mt::vec4f & image_uv = m_resourceImage->getUVImage();
 		const mt::vec4f & image_uvAlpha = m_resourceImage->getUVAlpha();
+		bool uvRotate = m_resourceImage->isUVRotate();
 
-		if( m_uvRotate == false )
+		if( uvRotate == false )
 		{
 			// RGB(A)
 			{
@@ -319,7 +307,7 @@ namespace Menge
 				{
 					const mt::vec2f & uv = m_uvLocal[i];
 
-					float u = image_uv.x + (image_uv.z - image_uv.x) * uv.y;
+					float u = image_uv.z - (image_uv.z - image_uv.x) * uv.y;
 					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.x;
 
 					m_verticesWM[i].uv.x = u * m_textureUVScale.x + m_textureUVOffset.x;
@@ -334,7 +322,7 @@ namespace Menge
 				{
 					const mt::vec2f & uv = m_uvLocal[i];
 
-					float u = image_uvAlpha.x + (image_uvAlpha.z - image_uvAlpha.x) * uv.y;
+					float u = image_uvAlpha.z - (image_uvAlpha.z - image_uvAlpha.x) * uv.y;
 					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.x;
 
 					m_verticesWM[i].uv2.x = u * m_textureUVScale.x + m_textureUVOffset.x;
@@ -427,6 +415,7 @@ namespace Menge
 		m_indicesCount = _countIndex;
 
 		this->invalidateVertices();
+		this->invalidateVerticesColor();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh::updateVerticesWM()

@@ -47,7 +47,6 @@ namespace Menge
 
         return true;
     }
-
     //////////////////////////////////////////////////////////////////////////
     static PyObject * s_ConstString_repr( PyObject * _obj, ConstString * _cs )
     {
@@ -57,7 +56,6 @@ namespace Menge
 
         return pybind::ptr( str_repr );
     }
-
     //////////////////////////////////////////////////////////////////////////
     static size_t s_ConstString_hash( PyObject * _obj, ConstString * _cs )
     {

@@ -355,7 +355,7 @@ namespace Menge
         (void)_resolution;
 
 		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
-            ->getContentResolution();		
+            ->getContentResolution();
 
 		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
             ->getRenderViewport();
@@ -370,7 +370,7 @@ namespace Menge
 		m_dimentions.y = float(contentResolutionHeight);
 
         float gameViewportAspect;
-        Viewport gameViewport; 
+        Viewport gameViewport;
 
         APPLICATION_SERVICE(m_serviceProvider)
             ->getGameViewport( gameViewportAspect, gameViewport );

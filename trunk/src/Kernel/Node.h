@@ -85,26 +85,31 @@ namespace Menge
 		Layer * m_layer;
 
 	public:
-		void render( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 		inline bool isRenderable() const;
+		
+	public:
+		void setRenderViewport( const RenderViewportInterface * _viewport );
+		const RenderViewportInterface * getRenderViewport() const;
 
 	public:
-		void setRenderCamera( RenderCameraInterface * _camera );
-		RenderCameraInterface * getRenderCamera() const;
+		void setRenderCamera( const RenderCameraInterface * _camera );
+		const RenderCameraInterface * getRenderCamera() const;
 
 	protected:
 		void _hide( bool _value ) override;
 			
 //#	ifndef MENGE_MASTER_RELEASE
 	protected:
-		void _debugRender( RenderCameraInterface* _camera, unsigned int _debugMask ) override;
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, unsigned int _debugMask ) override;
 //#	endif
 
 	protected:
-		RenderCameraInterface * m_renderCamera;
+		const RenderViewportInterface * m_renderViewport;
+		const RenderCameraInterface * m_renderCamera;
 
 	protected:
-		void renderChild( RenderCameraInterface * _camera, unsigned int _debugMask );
+		void renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask );
 
 	protected:
 		bool isEnableGlobalHandle() const override;
@@ -112,7 +117,7 @@ namespace Menge
         Scriptable * getGlobalHandleScriptable() override;
 
 	public:
-		void getCameraPosition( RenderCameraInterface * _camera, mt::vec2f & _position );
+		void getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position );
 		
 	public:
 		const ColourValue & getWorldColor() const;
@@ -268,12 +273,6 @@ namespace Menge
 
 	protected:
 		int m_shallowGrave;
-
-		//#ifndef MENGE_MASTER_RELEASE
-	protected:
-		const RenderMaterial* m_debugMaterial;
-		RenderVertex2D m_vertexDebugBox[5];
-//#endif
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isActivate() const

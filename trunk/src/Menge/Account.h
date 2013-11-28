@@ -21,7 +21,7 @@ namespace Menge
         : public AccountInterface
 	{		
 	public:
-		Account( ServiceProviderInterface * _serviceProvider, const WString & _name );
+		Account( ServiceProviderInterface * _serviceProvider, const WString & _name, size_t _projectVersion );
 		~Account();
         
     public:
@@ -51,6 +51,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		WString m_name;
+		size_t m_projectVersion;
 
         FilePath m_folder;
         FilePath m_settingsPath;

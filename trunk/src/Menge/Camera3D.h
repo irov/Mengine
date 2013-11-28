@@ -20,18 +20,18 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-
-	public:
-		void setViewport( const Viewport & _viewport );
-
+		
 	public:
         void setCameraPosition( const mt::vec3f & _pos );
 		void setCameraInterest( const mt::vec3f & _pos );
 		void setCameraFOV( float _fov );
 		void setCameraAspect( float _aspect );
 
-	public:
-		const Viewport & getViewport() const override;
+	//public:
+	//	void setRenderport( const Viewport & _renderport );
+	//	const Viewport & getRenderport() const;
+
+	public:		
 		const mt::mat4f & getProjectionMatrix() const override;
 		const mt::mat4f & getViewMatrix() const override;
 
@@ -48,16 +48,15 @@ namespace Menge
 		void notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution );
 		
 	protected:
-		Viewport m_viewport;
-
         mt::vec3f m_cameraPosition;
 		mt::vec3f m_cameraInterest;
 		float m_cameraFOV;
 		float m_cameraAspect;
 
+		//Viewport m_renderport;
+
 		Observer * m_notifyChangeWindowResolution;
 
-		mutable Viewport m_viewportWM;
 		mutable mt::mat4f m_viewMatrixWM;
 		mutable mt::mat4f m_projectionMatrixWM;
 		

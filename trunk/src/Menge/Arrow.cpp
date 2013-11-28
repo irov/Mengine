@@ -12,23 +12,11 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
-		: m_offsetClick(0.f, 0.f)
-		, m_invalidateClickMatrix(true)
-		, m_hided(false)
+		: m_arrowType(EAT_POINT)
+		, m_pointClick(0.f, 0.f)		
 		, m_radius(0.f)
+		, m_hided(false)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
-	{
-		m_offsetClick = _offsetClick;
-
-		this->invalidateClickMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Arrow::getOffsetClick() const
-	{
-		return m_offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Arrow::getScene()
@@ -39,18 +27,21 @@ namespace	Menge
 		return scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Arrow::_compile()
+	EArrowType Arrow::getArrowType() const
 	{
-		size_t num_points = boost::geometry::num_points(m_polygon);
-		if( num_points == 0 )
-		{
-			Polygon polygon;
-			boost::geometry::append( polygon, mt::vec2f(0.f,0.f) );
+		return m_arrowType;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::setPointClick( const mt::vec2f & _offsetClick )
+	{
+		m_arrowType = EAT_POINT;
 
-			this->setPolygon( polygon );			
-		}		
-		
-		return true;
+		m_pointClick = _offsetClick;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Arrow::getPointClick() const
+	{
+		return m_pointClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
@@ -91,22 +82,11 @@ namespace	Menge
 		this->setLocalPosition( v3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::addPoint_( const mt::vec2f & _v )
-	{
-		boost::geometry::append( m_polygon, _v );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setPolygon( const Polygon & _polygon )
 	{
-		m_polygon = _polygon;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::removePolygon()
-	{
-		Polygon polygon;
-		boost::geometry::append( polygon, mt::vec2f(0.f,0.f) );
+		m_arrowType = EAT_POLYGON;
 
-		this->setPolygon( polygon );		
+		m_polygon = _polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Polygon & Arrow::getPolygon() const
@@ -116,6 +96,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setRadius( float _radius )
 	{
+		m_arrowType = EAT_RADIUS;
+
 		m_radius = _radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -142,63 +124,10 @@ namespace	Menge
 		Node::hide( _value );
 		m_hided = _value;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setContentResolution( const Resolution & _resolution )
-	{
-		m_contentResolution = _resolution;
-
-		this->invalidateClickMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setCurrentResolution( const Resolution & _resolution )
-	{
-		m_currentResolution = _resolution;
-
-		this->invalidateClickMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f & Arrow::getClickMatrix()
-	{
-		if( m_invalidateClickMatrix == true )
-		{
-			this->updateClickMatrix_();
-		}
-
-		return m_clickMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Arrow::getClickPosition()
-	{
-		const mt::mat3f & cm = this->getClickMatrix();
-
-		return cm.v2.to_vec2f();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::updateClickMatrix_()
-	{
-		m_invalidateClickMatrix = false;
-
-		mt::ident_m3( m_clickMatrix );
-		mt::translate_m3( m_clickMatrix, m_clickMatrix, m_offsetClick );
-
-		mt::vec2f resolutionScale = m_contentResolution.getScale( m_currentResolution );
-
-		mt::vec3f scale;
-		scale.x = resolutionScale.x;
-		scale.y = resolutionScale.y;
-		scale.z = 1.f;
-        
-		mt::scale_m3( m_clickMatrix, scale );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::invalidateClickMatrix_()
-	{
-		m_invalidateClickMatrix = true;
-	}
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
+    void Arrow::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
     {
-        if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) <= 0 )
+        if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
         {
             return;
         }
@@ -209,67 +138,62 @@ namespace	Menge
         {
             return;
         }
+		
+		size_t vertexCount = numpoints * 2;
 
-        VectorVertices::invalidateVertices();
+		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+			->getDebugRenderVertex2D( vertexCount );
 
-        VectorVertices::TVectorVertex2D & vertices = this->getVertices();
+		if( vertices == nullptr )
+		{
+			return;
+		}
 
-        if( vertices.empty() )
-        {
-            return;
-        }
+		const mt::mat4f & worldMat = this->getWorldMatrix();
 
-        RENDER_SERVICE(m_serviceProvider)->addRenderLine( _camera, m_debugMaterial, NULL, 0
-            , &(vertices[0])
-            , vertices.size()
+		const Polygon::ring_type & ring = m_polygon.outer();
+
+		for( size_t i = 0; i != numpoints; ++i )
+		{
+			size_t j = (i + 1) % numpoints;
+
+			mt::vec2f trP0;
+			mt::mul_v2_m4( trP0, ring[i], worldMat );
+
+			RenderVertex2D & v0 = vertices[i*2+0];
+
+			v0.pos.x = trP0.x;
+			v0.pos.y = trP0.y;
+			v0.pos.z = 0.f;
+
+			v0.color = 0x8080FFFF;
+			v0.uv.x = 0.f;
+			v0.uv.y = 0.f;
+			v0.uv2.x = 0.f;
+			v0.uv2.y = 0.f;
+
+			mt::vec2f trP1;
+			mt::mul_v2_m4( trP1, ring[j], worldMat );
+
+			RenderVertex2D & v1 = vertices[i*2+1];
+
+			v1.pos.x = trP1.x;
+			v1.pos.y = trP1.y;
+			v1.pos.z = 0.f;
+
+			v1.color = 0x8080FFFF;
+			v1.uv.x = 0.f;
+			v1.uv.y = 0.f;
+			v1.uv2.x = 0.f;
+			v1.uv2.y = 0.f;
+		}
+
+		const RenderMaterial * debugMaterial = RENDER_SERVICE(m_serviceProvider)
+			->getDebugMaterial();
+
+        RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial, nullptr, 0
+            , vertices
+            , vertexCount
             );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )
-    {
-        (void)_invalidate;
-
-        size_t numpoints = boost::geometry::num_points(m_polygon);
-
-        if( numpoints == 0 )
-        {
-            return;
-        }
-
-        _vertices.resize( numpoints + 1 );
-
-        const mt::mat4f & worldMat = this->getWorldMatrix();
-
-        const Polygon::ring_type & ring = m_polygon.outer();
-
-        for( size_t i = 0; i < numpoints; ++i )
-        {
-            mt::vec2f trP;
-            mt::mul_v2_m4( trP, ring[i], worldMat );
-
-            _vertices[i].pos.x = trP.x;
-            _vertices[i].pos.y = trP.y;
-            _vertices[i].pos.z = 0.f;
-
-            _vertices[i].color = 0x8080FFFF;
-
-            _vertices[i].uv.x = 0.f;
-            _vertices[i].uv.y = 0.f;
-
-            _vertices[i].uv2.x = 0.f;
-            _vertices[i].uv2.y = 0.f;
-        }
-
-        if( _vertices.size() > 1 )
-        {
-            std::copy( _vertices.begin(), _vertices.begin() + 1, _vertices.end() - 1 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::_invalidateWorldMatrix()
-    {
-        Node::_invalidateWorldMatrix();
-
-        VectorVertices::invalidateVertices();
     }
 }

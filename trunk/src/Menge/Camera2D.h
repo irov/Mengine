@@ -6,8 +6,6 @@
 
 #	include "Core/Viewport.h"
 
-//#	include "Math/mat4.h"
-
 namespace Menge
 {
 	class Scene;
@@ -27,10 +25,10 @@ namespace Menge
 		void _deactivate() override;
 
 	public:
-		void setViewport( const Viewport & _viewport );
+		void setRenderport( const Viewport & _viewport );
+		const Viewport & getRenderport() const;
 
 	public:
-		const Viewport & getViewport() const override;
 		const mt::mat4f & getProjectionMatrix() const override;
 		const mt::mat4f & getViewMatrix() const override;
 
@@ -42,9 +40,11 @@ namespace Menge
 		
 	protected:
 		void invalidateMatrix_();
+		void invalidateViewport_();
 
 	protected:
 		void updateMatrix_() const;
+		void updateProjectionMatrix_() const;
 
 	protected:
 		void notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution );
@@ -52,15 +52,15 @@ namespace Menge
 	protected:
 		size_t m_cameraRevision;
 
-		Viewport m_viewport;
+		Viewport m_renderport;
 
-		Observer * m_notifyChangeWindowResolution;
+		Observer * m_observerChangeWindowResolution;
 
-		mutable Viewport m_viewportWM;
-		mutable mt::mat4f m_viewMatrixWM;
-		mutable mt::mat4f m_projectionMatrixWM;
+		mutable mt::mat4f m_viewMatrix;
+		mutable mt::mat4f m_projectionMatrix;
 
-		mutable bool m_invalidateMatrix;		
+		mutable bool m_invalidateProjectionMatrix;
+		mutable bool m_invalidateMatrix;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline size_t Camera2D::getCameraRevision() const
@@ -71,5 +71,10 @@ namespace Menge
 	inline void Camera2D::invalidateMatrix_()
 	{
 		m_invalidateMatrix = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void Camera2D::invalidateViewport_()
+	{
+		m_invalidateProjectionMatrix = true;
 	}
 }

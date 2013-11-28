@@ -99,10 +99,17 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const
+	void Layer::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const
 	{
 		const mt::vec3f & wp = _node->getWorldPosition();
-		_screen = wp.to_vec2f() - _viewport.begin; //maybe need add??
+
+		const mt::mat4f & vm = _camera->getViewMatrix();
+
+		mt::vec3f sc;
+		mt::mul_m4_v3( sc, vm, wp );
+
+		_screen.x = sc.x;
+		_screen.y = sc.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )

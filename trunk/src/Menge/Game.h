@@ -38,7 +38,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const TMapParams & _params ) override;
+        bool initialize( const FilePath & _accountPath, size_t _projectVersion, const TMapParams & _params ) override;
         void finalize() override;
 
     public:

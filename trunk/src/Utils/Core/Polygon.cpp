@@ -275,6 +275,22 @@ namespace Menge
 			boost::geometry::append( _out, v );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void polygon_transpose( Polygon & _out, const Polygon & _polygon, const mt::vec2f & _pos )
+	{
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		for( Polygon::ring_type::const_iterator
+			it = ring.begin(),
+			it_end = ring.end();
+		it != it_end;
+		++it )
+		{
+			mt::vec2f v;
+			mt::add_v2_v2( v, *it, _pos );
+			boost::geometry::append( _out, v );
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     bool polygon_to_box2f( mt::box2f & _box2f, const Polygon & _polygon )
     {

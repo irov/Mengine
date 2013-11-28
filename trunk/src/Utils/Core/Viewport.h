@@ -37,6 +37,7 @@ namespace Menge
 	public:
 		void getSize( mt::vec2f & _size ) const;
 		void centerize( const mt::vec2f & _center );
+		void getCenter( mt::vec2f & _point ) const;
 		
 	public:
 		mt::vec2f begin;
@@ -75,7 +76,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Viewport::testBBox( const mt::box2f& _bbox ) const
 	{
-		return testRectangle( _bbox.minimum, _bbox.maximum );
+		return this->testRectangle( _bbox.minimum, _bbox.maximum );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Viewport::existRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const
@@ -85,6 +86,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Viewport::existBBox( const mt::box2f& _bbox ) const
 	{
-		return existRectangle( _bbox.minimum, _bbox.maximum ); 
+		return this->existRectangle( _bbox.minimum, _bbox.maximum ); 
 	}
 }

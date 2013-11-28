@@ -70,6 +70,7 @@
 //#	include "CapsuleController.h"
 //#	include "Skeleton.h"
 #	include "Camera2D.h"
+#	include "CameraTarget2D.h"
 
 #	include "Layer2D.h"
 #	include "Layer2DPhysic.h"
@@ -830,8 +831,12 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f& s_getCamera2DPosition()
         {
-            return PLAYER_SERVICE(m_serviceProvider)
-                ->getCamera2D()->getViewport().begin;
+			const RenderViewportInterface * rv = PLAYER_SERVICE(m_serviceProvider)
+				->getRenderViewport();
+
+			const Viewport & vp = rv->getViewport();
+
+            return vp.begin;
         }
         //////////////////////////////////////////////////////////////////////////
         size_t s_Animatable_play( Animatable * _animatable )
@@ -1049,6 +1054,14 @@ namespace Menge
             PLATFORM_SERVICE(m_serviceProvider)
                 ->onEvent( _event, _params );
         }
+		//////////////////////////////////////////////////////////////////////////
+		const ConstString & s_getProjectCodename()
+		{
+			const ConstString & codename = APPLICATION_SERVICE(m_serviceProvider)
+				->getProjectCodename();
+
+			return codename;
+		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
@@ -1060,8 +1073,14 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_isInViewport( const mt::vec2f & _pos )
         {
-            return PLAYER_SERVICE(m_serviceProvider)
-                ->getCamera2D()->getViewport().testPoint( _pos );
+			const RenderViewportInterface * renderViewport = PLAYER_SERVICE(m_serviceProvider)
+				->getRenderViewport();
+
+			const Viewport & vp = renderViewport->getViewport();
+
+			bool test = vp.testPoint( _pos );
+
+            return test;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_enableTextureFiltering( bool _enable )
@@ -1594,10 +1613,10 @@ namespace Menge
             _shape->stopAffectors( ETA_VISIBILITY );
         }
         //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_getCameraPosition( Node * _node, RenderCameraInterface * _renderCamera )
+        mt::vec2f s_getCameraPosition( Node * _node, const RenderCameraInterface * _renderCamera )
         {
             mt::vec2f position;
-            _node->getCameraPosition( _renderCamera, position );
+            _node->getScreenPosition( _renderCamera, position );
             
             return position;
         }
@@ -1649,12 +1668,12 @@ namespace Menge
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
-        Camera2D * s_getRenderCamera2D()
+        const RenderCameraInterface * s_getRenderCamera2D()
         {
-            Camera2D * renderCamera2D = PLAYER_SERVICE(m_serviceProvider)
-                ->getCamera2D();
+            const RenderCameraInterface * renderCamera = PLAYER_SERVICE(m_serviceProvider)
+                ->getRenderCamera();
 
-            return renderCamera2D;
+            return renderCamera;
         }
         //////////////////////////////////////////////////////////////////////////
         void showKeyboard()
@@ -2722,6 +2741,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Window );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraTarget2D );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceReference );
@@ -3279,15 +3299,19 @@ namespace Menge
             ;
 
         pybind::interface_<RenderCameraInterface>("RenderCameraInterface")
-            .def( "getViewport", &RenderCameraInterface::getViewport )
+            //.def( "getViewport", &RenderCameraInterface::getViewport )
             ;
 
         pybind::interface_<Camera2D, pybind::bases<Node, RenderCameraInterface> >("Camera2D", false)
-            .def( "setViewport", &Camera2D::setViewport )			
-            //.def( "setRenderport", &Camera2D::setRenderport )
-            //.def( "getRenderport", &Camera2D::getRenderport )
             .def( "setRenderTarget", &Camera2D::setRenderTarget )
             ;		
+
+		pybind::interface_<CameraTarget2D, pybind::bases<Node> >("CameraTarget2D", false)
+			.def( "setCamera2D", &CameraTarget2D::setCamera2D )
+			.def( "getCamera2D", &CameraTarget2D::getCamera2D )
+			.def( "setSpeed", &CameraTarget2D::setSpeed )
+			.def( "getSpeed", &CameraTarget2D::getSpeed )
+			;
 
         //pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
         //	.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
@@ -3869,6 +3893,8 @@ namespace Menge
             pybind::def_functor( "pushMouseButtonEvent", nodeScriptMethod, &NodeScriptMethod::s_pushMouseButtonEvent );
 
             pybind::def_functor( "platformEvent", nodeScriptMethod, &NodeScriptMethod::s_platformEvent );
+
+			pybind::def_functor( "getProjectCodename", nodeScriptMethod, &NodeScriptMethod::s_getProjectCodename );
         }
     }
 }

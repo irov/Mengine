@@ -190,13 +190,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( RenderCameraInterface * _camera )
+	void TextField::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{	
-		Node::_render( _camera );
+		Node::_render( _viewport, _camera );
 		
 		if( m_outline && m_resourceFont->getTextureOutline() != NULL )
 		{
-			this->renderOutline_( _camera );
+			this->renderOutline_( _viewport, _camera );
 		}
 
 		TVectorRenderVertex2D & textVertices = this->getTextVertices();
@@ -206,24 +206,24 @@ namespace Menge
             return;
         }
 
-		size_t countOfVertex;
+		size_t countVertex;
 		
 		if( m_maxCharCount == -1 )
 		{
-			countOfVertex = textVertices.size();
+			countVertex = textVertices.size();
 		}
 		else
 		{
-			countOfVertex = m_maxCharCount * 4;
+			countVertex = m_maxCharCount * 4;
 		}
 		
         const RenderTextureInterfacePtr & fontTexture = m_resourceFont->getTextureFont();
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _camera, m_materialText, &fontTexture, 1, &(textVertices[0]), countOfVertex );
+            ->addRenderQuad( _viewport, _camera, m_materialText, &fontTexture, 1, &(textVertices[0]), countVertex );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderOutline_( RenderCameraInterface * _camera )
+	void TextField::renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
 		TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices();
 
@@ -232,21 +232,21 @@ namespace Menge
 			return;
 		}
 
-		size_t countOfVertex;
+		size_t countVertex;
 
 		if( m_maxCharCount == -1 )
 		{
-			countOfVertex = outlineVertices.size();
+			countVertex = outlineVertices.size();
 		}
 		else
 		{
-			countOfVertex = m_maxCharCount * 4;
+			countVertex = m_maxCharCount * 4;
 		}
 
 		const RenderTextureInterfacePtr & outlineTexture = m_resourceFont->getTextureOutline();
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _camera, m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), countOfVertex );
+            ->addRenderQuad( _viewport, _camera, m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), countVertex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const

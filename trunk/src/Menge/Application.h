@@ -167,6 +167,7 @@ namespace Menge
 
 		const ConstString & getProjectTitle() const override;
 		const ConstString & getProjectCodename() const override;
+		size_t getProjectVersion() const override;
 
 	public:
 		const Resolution & getWindowResolution() const;
@@ -266,6 +267,7 @@ namespace Menge
 
 		ConstString m_platformName;
 		ConstString m_projectCodename;
+		size_t m_projectVersion;
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;

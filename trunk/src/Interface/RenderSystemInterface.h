@@ -446,12 +446,17 @@ namespace Menge
 #   define RENDERTEXTURE_SERVICE( serviceProvider )\
     (Menge::Helper::getService<Menge::RenderTextureServiceInterface>(serviceProvider))
 	//////////////////////////////////////////////////////////////////////////
+	class RenderViewportInterface
+	{
+	public:
+		virtual const Viewport & getViewport() const = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
 	{
 	public:
 		virtual const mt::mat4f & getProjectionMatrix() const = 0;
 		virtual const mt::mat4f & getViewMatrix() const = 0;
-		virtual const Viewport & getViewport() const = 0;
 
 	public:
 		virtual const ConstString & getRenderTarget() const = 0;
@@ -624,16 +629,21 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual void addRenderObject( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+        virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , EPrimitiveType _type
             , const RenderVertex2D * _vertices, size_t _verticesNum
             , const uint16 * _indices, size_t _indicesNum ) = 0;
 
-        virtual void addRenderQuad( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum            
-            , const RenderVertex2D * _vertices, size_t _count ) = 0;
+        virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum            
+            , const RenderVertex2D * _vertices, size_t _verticesNum ) = 0;
 
-        virtual void addRenderLine( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
-            , const RenderVertex2D * _vertices, size_t _count ) = 0;
+        virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+            , const RenderVertex2D * _vertices, size_t _verticesNum ) = 0;
+
+	public:
+		virtual void setDebugMaterial( const RenderMaterial * _debugMaterial ) = 0;
+		virtual const RenderMaterial * getDebugMaterial() const = 0;
+		virtual RenderVertex2D * getDebugRenderVertex2D( size_t _count ) = 0;
 
 	public:
 		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 

@@ -346,7 +346,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const TMapParams & _params )
+	bool Game::initialize( const FilePath & _accountPath, size_t _projectVersion, const TMapParams & _params )
 	{
 		m_params = _params;
 
@@ -357,18 +357,19 @@ namespace Menge
             return false;
         }
 
-		if( createAccountService( &m_accountService ) == false )
+		if( SERVICE_CREATE( AccountService, &m_accountService ) == false )
         {
             return false;
         }
 		
-        SERVICE_REGISTRY( m_serviceProvider, m_accountService );
+        if( SERVICE_REGISTRY( m_serviceProvider, m_accountService ) == false )
+		{
+			return false;
+		}
 
         m_accountLister = new ApplicationAccountManagerListener(m_serviceProvider, this);
-
-        FilePath accountPath = Helper::stringizeString( m_serviceProvider, "accounts.ini" );
-
-        m_accountService->initialize( accountPath, m_accountLister );
+		
+        m_accountService->initialize( _accountPath, _projectVersion, m_accountLister );
 
 		if( m_accountService->loadAccounts() == false )
         {

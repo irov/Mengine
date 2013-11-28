@@ -32,6 +32,7 @@ namespace Menge
         , m_currentBaseVertexIndex(0)
         , m_currentTextureStages(0)
         , m_currentRenderCamera(nullptr)        
+		, m_currentRenderViewport(nullptr)
         , m_currentVertexDeclaration(0)
         , m_maxVertexCount(0)
         , m_maxIndexCount(0)
@@ -41,6 +42,7 @@ namespace Menge
 	    , m_debugMode(false)
         , m_currentMaterial(nullptr)
         , m_nullTexture(nullptr)
+		, m_debugMaterial(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,10 +80,9 @@ namespace Menge
             m_indicesQuad[i + 5] = vertexOffset + 2;
         }
 
-        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_LINE; i += 2 )
+        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
         {
-            m_indicesLine[i + 0] = i / 2 + 0;
-			m_indicesLine[i + 1] = i / 2 + 1;
+            m_indicesLine[i] = i;
         }
 
         this->setRenderSystemDefaults_();
@@ -329,16 +330,17 @@ namespace Menge
     {		
         m_renderPasses.clear();
         m_renderObjects.clear();
+		m_debugRenderVertex2D.clear();
 
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
 
         m_currentRenderCamera = nullptr;
+		m_currentRenderViewport = nullptr;
         m_currentMaterial = nullptr;
 
         m_currentRenderTarget = m_defaultRenderTarget;
-        m_renderTargetResolution = m_windowResolution;
 
         if( RENDER_SYSTEM(m_serviceProvider)->beginScene() == false )
         {
@@ -740,6 +742,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::renderPass_( const RenderPass & _renderPass )
     {
+		const Viewport & viewport = _renderPass.viewport->getViewport();
+
         const RenderCameraInterface * camera = _renderPass.camera;
 
         const ConstString& renderTarget = camera->getRenderTarget();
@@ -747,31 +751,32 @@ namespace Menge
         if( renderTarget != m_currentRenderTarget && renderTarget.empty() == false )
         {
             m_currentRenderTarget = renderTarget;
-            RENDER_SYSTEM(m_serviceProvider)->setRenderTarget( NULL, true );
 
-            m_renderTargetResolution = m_windowResolution;
+            RENDER_SYSTEM(m_serviceProvider)
+				->setRenderTarget( nullptr, true );
         }
+		
+		float renderWidth = m_renderViewport.getWidth();
+		float renderHeight = m_renderViewport.getHeight();
+						
+		//float viewportWidth = viewport.getWidth();
+		//float viewportHeight = viewport.getHeight();
 
-        const Viewport & viewport = camera->getViewport();
+		size_t contentWidth = m_contentResolution.getWidth();
+		size_t contentHeight = m_contentResolution.getHeight();
 
-        float windowWidth = (float)m_windowResolution.getWidth();
-        float windowHeight = (float)m_windowResolution.getHeight();
+		//float scale_width = renderWidth / viewportWidth;
+		//float scale_height = renderHeight / viewportHeight;
 
-        Viewport renderViewport;
+		float scale_width = renderWidth / float(contentWidth);
+		float scale_height = renderHeight / float(contentHeight);
 
-        renderViewport.begin.x = viewport.begin.x / windowWidth;
-        renderViewport.begin.y = viewport.begin.y / windowHeight;
-        renderViewport.end.x = viewport.end.x / windowWidth;
-        renderViewport.end.y = viewport.end.y / windowHeight;
-
-        float renderWidth = m_renderViewport.getWidth();
-        float renderHeight = m_renderViewport.getHeight();
-
-        renderViewport.begin.x *= renderWidth;
-        renderViewport.begin.y *= renderHeight;
-        renderViewport.end.x *= renderWidth;
-        renderViewport.end.y *= renderHeight;
-
+		Viewport renderViewport;
+        renderViewport.begin.x = viewport.begin.x * scale_width;
+        renderViewport.begin.y = viewport.begin.y * scale_height;
+        renderViewport.end.x = viewport.end.x * scale_width;
+        renderViewport.end.y = viewport.end.y * scale_height;
+		        
         renderViewport.begin += m_renderViewport.begin;
         renderViewport.end += m_renderViewport.begin;
 
@@ -807,12 +812,20 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderObject( const RenderCameraInterface * _camera, const RenderMaterial* _material
+    void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
         , const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , EPrimitiveType _type
         , const RenderVertex2D * _vertices, size_t _verticesNum
         , const uint16 * _indices, size_t _indicesNum )
     {
+		if( _viewport == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D viewport == NULL"
+				);
+
+			return;
+		}
+
         if( _camera == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D camera == NULL"
@@ -869,9 +882,10 @@ namespace Menge
             return;
         }
 
-        if( m_currentRenderCamera != _camera )
+        if( m_currentRenderCamera != _camera || m_currentRenderViewport != _viewport )
         {
             m_currentRenderCamera = _camera;
+			m_currentRenderViewport = _viewport;
 
             if( m_renderPasses.full() == true )
             {
@@ -885,7 +899,8 @@ namespace Menge
             RenderPass & pass = m_renderPasses.emplace();
             pass.beginRenderObject = m_renderObjects.size();
             pass.countRenderObject = 0;
-            pass.camera = m_currentRenderCamera;
+			pass.viewport = m_currentRenderViewport;
+            pass.camera = m_currentRenderCamera;			
         }
 
         RenderObject & ro = m_renderObjects.emplace();
@@ -932,7 +947,7 @@ namespace Menge
         ++rp.countRenderObject;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderQuad( const RenderCameraInterface * _camera, const RenderMaterial* _material
+    void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
         , const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , const RenderVertex2D * _vertices, size_t _verticesNum )
     {
@@ -948,13 +963,13 @@ namespace Menge
             return;
         }
 
-        this->addRenderObject( _camera, _material, _textures, _texturesNum, PT_TRIANGLELIST, _vertices, _verticesNum, m_indicesQuad, indeciesNum );
+        this->addRenderObject( _viewport, _camera, _material, _textures, _texturesNum, PT_TRIANGLELIST, _vertices, _verticesNum, m_indicesQuad, indeciesNum );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderLine( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+    void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , const RenderVertex2D * _vertices, size_t _verticesNum )
     {
-		size_t indeciesNum = (_verticesNum - 1) * 2;
+		size_t indeciesNum = _verticesNum;
 
         if( indeciesNum >= MENGINE_RENDER_INDICES_LINE )
         {
@@ -965,9 +980,31 @@ namespace Menge
 
             return;
         }
-
-        this->addRenderObject( _camera, _material, _textures, _texturesNum, PT_LINELIST, _vertices, _verticesNum, m_indicesLine, indeciesNum );
+		
+        this->addRenderObject( _viewport, _camera, _material, _textures, _texturesNum, PT_LINELIST, _vertices, _verticesNum, m_indicesLine, indeciesNum );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setDebugMaterial( const RenderMaterial * _debugMaterial )
+	{
+		m_debugMaterial = _debugMaterial;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderMaterial * RenderEngine::getDebugMaterial() const
+	{
+		return m_debugMaterial;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )
+	{
+		if( m_debugRenderVertex2D.size() + _count > m_debugRenderVertex2D.capacity() )
+		{
+			return nullptr;
+		}
+
+		RenderVertex2D * vertices = m_debugRenderVertex2D.emplace_count( _count );
+
+		return vertices;
+	}
     //////////////////////////////////////////////////////////////////////////
     VBHandle RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, size_t _count )
     {
@@ -1454,11 +1491,6 @@ namespace Menge
         }
 
         std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::isResolutionAppropriate() const
-    {
-        return m_renderTargetResolution == m_contentResolution;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::setVSync( bool _vSync )

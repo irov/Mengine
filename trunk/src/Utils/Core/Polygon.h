@@ -79,7 +79,9 @@ namespace Menge
 
     bool triangulate_polygon( const Polygon & _polygon, TVectorPoints & _result );
     bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result );
-
+	
     void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm );
+	void polygon_transpose( Polygon & _out, const Polygon & _polygon, const mt::vec2f & _pos );
+
     bool polygon_to_box2f( mt::box2f & _box2f, const Polygon & _polygon );
 }

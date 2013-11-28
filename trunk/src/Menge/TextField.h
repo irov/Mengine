@@ -117,10 +117,10 @@ namespace Menge
 		int getCharCount() const;
 
 	protected:
-		void _render( RenderCameraInterface * _camera ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
 	private:
-		void renderOutline_( RenderCameraInterface * _camera );
+		void renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
 
 	protected:	
 		bool _activate() override;

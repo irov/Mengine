@@ -198,9 +198,9 @@ namespace	Menge
 		//m_images.clear();				
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_render( RenderCameraInterface * _camera )
+	void ParticleEmitter::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{		
-		Node::_render( _camera );
+		Node::_render( _viewport, _camera );
 
 		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
 			->getParticlesEnabled();
@@ -236,7 +236,7 @@ namespace	Menge
             }
 
             RENDER_SERVICE(m_serviceProvider)->
-                addRenderQuad( _camera, batch.material, batch.texture, 1, batch_vertices, batch.size );
+                addRenderQuad( _viewport, _camera, batch.material, batch.texture, 1, batch_vertices, batch.size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

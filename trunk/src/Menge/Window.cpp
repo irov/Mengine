@@ -148,9 +148,9 @@ namespace Menge
         m_resourceWindow.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_render( RenderCameraInterface * _camera )
+	void Window::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-		Node::_render( _camera );
+		Node::_render( _viewport, _camera );
 
 		const RenderVertex2D * vertices = this->getVertices();
 
@@ -159,7 +159,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _camera, edge.material, edge.textures, edge.textureCount, &vertices[0*4], 4 );
+                ->addRenderQuad( _viewport, _camera, edge.material, edge.textures, edge.textureCount, &vertices[0*4], 4 );
         }
 
         for( size_t i = 1; i != ResourceWindow_Count; ++i )
@@ -167,7 +167,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[i];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _camera, edge.material, edge.textures, edge.textureCount, &vertices[i*4], 4 );
+                ->addRenderQuad( _viewport, _camera, edge.material, edge.textures, edge.textureCount, &vertices[i*4], 4 );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

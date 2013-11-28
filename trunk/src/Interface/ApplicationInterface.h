@@ -20,6 +20,7 @@ namespace Menge
 
 		ConstString platformName;
 		ConstString projectCodename;
+		size_t projectVersion;
 
 		Resolution contentResolution;
         Resolution windowResolution;
@@ -98,6 +99,7 @@ namespace Menge
 	public:
 		virtual const ConstString & getProjectTitle() const = 0;
 		virtual const ConstString & getProjectCodename() const = 0;
+		virtual size_t getProjectVersion() const = 0;
 
 	public:
 		virtual void setFullscreenMode( bool _fullscreen ) = 0;

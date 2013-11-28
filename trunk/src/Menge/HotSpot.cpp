@@ -2,6 +2,7 @@
 
 #	include "Interface/MousePickerSystemInterface.h"
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "Player.h"
 
@@ -150,7 +151,22 @@ namespace	Menge
 		}
 		else
 		{
-			if( this->isActivate() == true )
+			if( this->isActivate() == true || this->isFreeze() == false )
+			{
+				this->activatePicker_();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_freeze( bool _value )
+	{
+		if( _value == true )
+		{
+			this->deactivatePicker_();
+		}
+		else
+		{
+			if( this->isActivate() == true || this->isLocalHide() == false )
 			{
 				this->activatePicker_();
 			}
@@ -169,7 +185,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_afterActivate()
 	{
-		if( this->isLocalHide() == false )
+		if( this->isLocalHide() == false || this->isFreeze() == false )
 		{
 			this->activatePicker_();
 		}
@@ -214,115 +230,90 @@ namespace	Menge
 			mt::add_internal_point( _boundingBox, wmp );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPolygon( const mt::mat4f& _transform, const Polygon & _screenPoly, const mt::mat4f& _screenTransform )
-	{
-		m_polygonWM.clear();
-		polygon_wm( m_polygonWM, m_polygon, _transform );
-
-        mt::box2f bb;
-        if( polygon_to_box2f( bb, m_polygonWM ) == false )
-        {
-            return false;
-        }
-
-        m_polygonScreen.clear();
-        polygon_wm( m_polygonScreen, _screenPoly, _screenTransform );
-
-        mt::box2f bb_screen;
-        if( polygon_to_box2f( bb_screen, m_polygonScreen ) == false )
-        {
-            return false;
-        }
-
-        if( mt::is_intersect( bb, bb_screen ) == false )
-        {
-            return false;
-        }
-
-		bool intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
-        
-		return intersect;
-	}
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _p, const mt::mat4f& _screenTransform )
+    bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _point )
     {
-        m_polygonWM.clear();
-        polygon_wm( m_polygonWM, m_polygon, _transform );
+        static Polygon polygonWM;
+		polygonWM.clear();
+
+		const mt::mat4f & wm = this->getWorldMatrix();
+				
+		polygon_wm( polygonWM, m_polygon, wm );				
+		
+		static Polygon polygonWMVM;
+		polygonWMVM.clear();
+
+        polygon_wm( polygonWMVM, polygonWM, _transform );
 
         mt::box2f bb;
-        if( polygon_to_box2f( bb, m_polygonWM ) == false )
+        if( polygon_to_box2f( bb, polygonWMVM ) == false )
         {
             return false;
         }
-
-        mt::vec2f wmp;
-        mt::mul_v2_m4( wmp, _p, _screenTransform );
         
-        if( mt::is_intersect( bb, wmp ) == false )
+        if( mt::is_intersect( bb, _point ) == false )
         {
             return false;
         }
 
-        m_polygonScreen.clear();
-        boost::geometry::append(m_polygonScreen, wmp);
+        static Polygon polygonScreen;
+		polygonScreen.clear();
+        boost::geometry::append( polygonScreen, _point );
 
-        bool intersect = boost::geometry::intersects( m_polygonWM, m_polygonScreen );
+        bool intersect = boost::geometry::intersects( polygonWMVM, polygonScreen );
 
         return intersect;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testArrow( const mt::mat4f& _transform, Arrow * _arrow, const mt::mat4f& _screenTransform )
+	bool HotSpot::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
 	{
-		float radius = _arrow->getRadius();
+        (void)_radius;                
 
-		if( radius < 0.0001f )
-		{
-			const Polygon & screenPoly = _arrow->getPolygon();
-
-			bool result = this->testPolygon( _transform, screenPoly, _screenTransform );
-
-			return result;
-		}
-		
-		bool result = this->testRadius( _transform, radius, _screenTransform );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform )
-	{
-        (void)_radius;
-                
-        mt::vec2f point(0.f, 0.f);
-
-        bool intersect = this->testPoint( _transform, point, _screenTransform );
+        bool intersect = this->testPoint( _transform, _point );
 
 		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
+	bool HotSpot::testPolygon( const mt::mat4f& _transform, const mt::vec2f & _point, const Polygon & _screenPoly )
 	{
-		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) <= 0 )
+		static Polygon polygonWM;
+		polygonWM.clear();
+
+		polygon_wm( polygonWM, m_polygon, _transform );
+
+		mt::box2f bb;
+		if( polygon_to_box2f( bb, polygonWM ) == false )
 		{
-			return;
+			return false;
 		}
 
-		this->updateVertices_();
+		static Polygon polygonScreen;
+		polygonScreen.clear();
 
-		if( m_vertexDebugPolygon.empty() == true )
+		polygon_transpose( polygonScreen, _screenPoly, _point );
+
+		mt::box2f bb_screen;
+		if( polygon_to_box2f( bb_screen, polygonScreen ) == false )
 		{
-			return;
+			return false;
 		}
 
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _camera, m_debugMaterial, NULL, 0
-            , &m_vertexDebugPolygon[0], m_vertexDebugPolygon.size()
-            );
+		if( mt::is_intersect( bb, bb_screen ) == false )
+		{
+			return false;
+		}
+
+		bool intersect = boost::geometry::intersects( polygonWM, polygonScreen );
+
+		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::updateVertices_()
+	void HotSpot::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
-        m_vertexDebugPolygon.clear();        
+		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
+		{
+			return;
+		}
 
 		size_t numpoints = boost::geometry::num_points(m_polygon);
 
@@ -331,7 +322,10 @@ namespace	Menge
 			return;
 		}
 
-		m_vertexDebugPolygon.resize( numpoints );
+		size_t vertexCount = numpoints * 2;
+
+		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+			->getDebugRenderVertex2D( vertexCount );
 
 		const mt::mat4f & worldMat = this->getWorldMatrix();
 
@@ -339,22 +333,46 @@ namespace	Menge
 
 		for( size_t i = 0; i != numpoints; ++i )
 		{
-			mt::vec2f trP;
-			mt::mul_v2_m4( trP, ring[i], worldMat );
+			size_t j = (i + 1) % numpoints;
 
-			m_vertexDebugPolygon[i].pos[0] = trP.x;
-			m_vertexDebugPolygon[i].pos[1] = trP.y;
-			m_vertexDebugPolygon[i].pos[2] = 0.f;
-			//_vertices[i].pos[3] = 1.f;
+			mt::vec2f trP0;
+			mt::mul_v2_m4( trP0, ring[i], worldMat );
 
-			m_vertexDebugPolygon[i].color = m_debugColor;
+			RenderVertex2D & v0 = vertices[i*2+0];
 
-            m_vertexDebugPolygon[i].uv[0] = 0.f;
-            m_vertexDebugPolygon[i].uv[1] = 0.f;
+			v0.pos.x = trP0.x;
+			v0.pos.y = trP0.y;
+			v0.pos.z = 0.f;
 
-            m_vertexDebugPolygon[i].uv2[0] = 0.f;
-            m_vertexDebugPolygon[i].uv2[1] = 0.f;
+			v0.color = m_debugColor;
+			v0.uv.x = 0.f;
+			v0.uv.y = 0.f;
+			v0.uv2.x = 0.f;
+			v0.uv2.y = 0.f;
+
+			mt::vec2f trP1;
+			mt::mul_v2_m4( trP1, ring[j], worldMat );
+
+			RenderVertex2D & v1 = vertices[i*2+1];
+
+			v1.pos.x = trP1.x;
+			v1.pos.y = trP1.y;
+			v1.pos.z = 0.f;
+
+			v1.color = m_debugColor;
+			v1.uv.x = 0.f;
+			v1.uv.y = 0.f;
+			v1.uv2.x = 0.f;
+			v1.uv2.y = 0.f;
 		}
+
+		const RenderMaterial * debugMaterial = RENDER_SERVICE(m_serviceProvider)
+			->getDebugMaterial();
+
+		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial, NULL, 0
+            , vertices
+			, vertexCount
+            );
 	}
 //#	endif
 }

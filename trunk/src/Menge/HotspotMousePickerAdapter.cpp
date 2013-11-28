@@ -25,8 +25,13 @@ namespace Menge
 		return m_hotspot;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotspotMousePickerAdapter::pick( const mt::vec2f& _point, Arrow * _arrow )
+	bool HotspotMousePickerAdapter::pick( const mt::vec2f& _point, const RenderCameraInterface * _camera, Arrow * _arrow )
 	{
+		if( m_hotspot->isActivate() == false )
+		{
+			return false;
+		}
+
         Layer * layer = m_hotspot->getLayer();
 
         if( layer == nullptr )
@@ -34,10 +39,7 @@ namespace Menge
             return false;
         }
 
-        Camera2D * camera = PLAYER_SERVICE(m_serviceProvider)
-            ->getCamera2D();
-
-        HotspotMousePickerVisitor mp(m_hotspot, camera, _point, _arrow);
+        HotspotMousePickerVisitor mp(m_hotspot, _camera, _point, _arrow);
 
         bool result = mp.test( layer );
 
@@ -83,14 +85,4 @@ namespace Menge
 
         return eventable;
     }
-    //////////////////////////////////////////////////////////////////////////
-	bool HotspotMousePickerAdapter::isPickerActive() const
-	{
-        if( m_hotspot->isFreeze() == true )
-        {
-            return false;
-        }
-
-        return true;
-	}
 }

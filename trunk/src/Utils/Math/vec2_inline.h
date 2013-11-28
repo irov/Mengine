@@ -111,19 +111,25 @@ namespace mt
 
 	MATH_FUNCTION_INLINE float length_v2(const vec2f& _a)
 	{
-		return _a.length();
+		float length = _a.length();
+
+		return length;
 	}
 	
 	MATH_FUNCTION_INLINE float sqrlength_v2_v2(const vec2f& _a, const vec2f& _b)
 	{
 		vec2f c = _a - _b;
-		return c.sqrlength();
+		float sqrlength = c.sqrlength();
+
+		return sqrlength;
 	}
 
 	MATH_FUNCTION_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b)
 	{
 		vec2f c = _a - _b;
-		return c.length();
+		float length = c.length();
+
+		return length;
 	}
 
 	MATH_FUNCTION_INLINE bool cmp_v2_v2(const vec2f& _a, const vec2f& _b, float eps)

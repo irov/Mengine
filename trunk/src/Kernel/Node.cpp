@@ -26,8 +26,8 @@ namespace Menge
 		, m_layer(nullptr)
 		, m_cameraRevision(0)
 		, m_renderCamera(nullptr)
+		, m_renderViewport(nullptr)
 		, m_shallowGrave(0)
-		, m_debugMaterial(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -676,31 +676,6 @@ namespace Menge
 	{
 		GlobalHandleAdapter::activateGlobalHandle();
 
-		const RenderMaterialGroup * mg_debug = RENDERMATERIAL_SERVICE(m_serviceProvider)
-            ->getMaterialGroup( Helper::stringizeString(m_serviceProvider, "Debug") );
-
-		m_debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );
-
-		if( m_debugMaterial == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Node::_activate %s m_debugMaterial Debug not found"
-				, this->getName().c_str()
-				);
-
-			return false;
-		}
-
-		for( RenderVertex2D
-			*it = m_vertexDebugBox,
-			*it_end = m_vertexDebugBox + 4;
-		it != it_end;
-		++it )
-		{
-			RenderVertex2D & vtx = *it;
-
-			vtx.color = 0xFF00FF00;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -715,8 +690,6 @@ namespace Menge
 		//Affectorable::clear();
 
 		GlobalHandleAdapter::deactivateGlobalHandle();
-
-		m_debugMaterial = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_afterDeactivate()
@@ -806,14 +779,21 @@ namespace Menge
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Node::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		if( this->isRenderable() == false )
 		{
 			return;
 		}
 
-		RenderCameraInterface * renderCamera = _camera;
+		const RenderViewportInterface * renderViewport = _viewport;
+
+		if( m_renderViewport != nullptr )
+		{
+			renderViewport = m_renderViewport;
+		}
+
+		const RenderCameraInterface * renderCamera = _camera;
 
 		if( m_renderCamera != nullptr )
 		{
@@ -839,10 +819,10 @@ namespace Menge
 		{
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_render( renderCamera );
+				this->_render( renderViewport, renderCamera );
 			}
 
-			this->renderChild( renderCamera, _debugMask );
+			this->renderChild_( renderViewport, renderCamera, _debugMask );
 		}
 		//}
 
@@ -850,17 +830,27 @@ namespace Menge
         {
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_debugRender( _camera, _debugMask );
+				this->_debugRender( renderViewport, renderCamera, _debugMask );
 			}
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setRenderCamera( RenderCameraInterface * _camera )
+	void Node::setRenderViewport( const RenderViewportInterface * _viewport )
+	{
+		m_renderViewport = _viewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderViewportInterface * Node::getRenderViewport() const
+	{
+		return m_renderViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::setRenderCamera( const RenderCameraInterface * _camera )
 	{
 		m_renderCamera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderCameraInterface * Node::getRenderCamera() const
+	const RenderCameraInterface * Node::getRenderCamera() const
 	{
 		return m_renderCamera;
 	}
@@ -872,13 +862,13 @@ namespace Menge
 		this->updateRendering_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild( RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
 		{
             Node * node = (*it);
 
-			node->render( _camera, _debugMask );
+			node->render( _viewport, _camera, _debugMask );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -993,19 +983,18 @@ namespace Menge
 		return m_layer->getScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::getCameraPosition( RenderCameraInterface * _camera, mt::vec2f & _position )
+	void Node::getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position )
 	{
         if( m_layer == nullptr )
         {
             const mt::vec3f & pos = this->getWorldPosition();
 
-            _position = pos.to_vec2f();
+            _position.x = pos.x;
+			_position.y = pos.y;
         }
         else
         {
-			const Viewport & viewport = _camera->getViewport();
-
-			m_layer->calcScreenPosition( _position, viewport, this );
+			m_layer->calcScreenPosition( _position, _camera, this );
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////
@@ -1151,45 +1140,70 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Node::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, unsigned int _debugMask )
 	{
-		if( _debugMask & MENGE_DEBUG_NODES )
+		if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
 		{
-			mt::box2f bbox;
-			this->getBoundingBox( bbox );
-			
-			m_vertexDebugBox[0].pos.x = bbox.minimum.x;
-			m_vertexDebugBox[0].pos.y = bbox.minimum.y;
-
-			m_vertexDebugBox[1].pos.x = bbox.maximum.x;
-			m_vertexDebugBox[1].pos.y = bbox.minimum.y;
-	
-
-			m_vertexDebugBox[2].pos.x = bbox.maximum.x;
-			m_vertexDebugBox[2].pos.y = bbox.maximum.y;
-
-			m_vertexDebugBox[3].pos.x = bbox.minimum.x;
-			m_vertexDebugBox[3].pos.y = bbox.maximum.y;
-
-            m_vertexDebugBox[4].pos.x = bbox.minimum.x;
-            m_vertexDebugBox[4].pos.y = bbox.minimum.y;
-
-            for( size_t i = 0; i != 5; ++i )
-            {
-			    m_vertexDebugBox[i].pos.z = 0.f;
-
-                m_vertexDebugBox[i].color = 0xFFFFFFFF;
-                m_vertexDebugBox[i].uv.x = 0.f;
-                m_vertexDebugBox[i].uv.y = 0.f;
-                m_vertexDebugBox[i].uv2.x = 0.f;
-                m_vertexDebugBox[i].uv2.y = 0.f;
-            }
-
-            
-			RENDER_SERVICE(m_serviceProvider)->addRenderLine( _camera, m_debugMaterial, nullptr, 0
-                , m_vertexDebugBox
-                , 5
-                );
+			return;
 		}
+
+		RenderVertex2D * vertexDebugBox = RENDER_SERVICE(m_serviceProvider)
+			->getDebugRenderVertex2D( 4 * 2 );
+
+		if( vertexDebugBox == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Node::_debugRender %s debug vertex overflow"
+				, this->getName().c_str()
+				);
+
+			return;
+		}
+
+		mt::box2f bbox;
+		this->getBoundingBox( bbox );
+			
+		vertexDebugBox[0].pos.x = bbox.minimum.x;
+		vertexDebugBox[0].pos.y = bbox.minimum.y;
+
+		vertexDebugBox[1].pos.x = bbox.maximum.x;
+		vertexDebugBox[1].pos.y = bbox.minimum.y;
+
+		vertexDebugBox[2].pos.x = bbox.maximum.x;
+		vertexDebugBox[2].pos.y = bbox.minimum.y;
+
+		vertexDebugBox[3].pos.x = bbox.maximum.x;
+		vertexDebugBox[3].pos.y = bbox.maximum.y;
+
+		vertexDebugBox[4].pos.x = bbox.maximum.x;
+		vertexDebugBox[4].pos.y = bbox.maximum.y;
+
+		vertexDebugBox[5].pos.x = bbox.minimum.x;
+		vertexDebugBox[5].pos.y = bbox.maximum.y;
+
+		vertexDebugBox[6].pos.x = bbox.minimum.x;
+		vertexDebugBox[6].pos.y = bbox.maximum.y;
+
+		vertexDebugBox[7].pos.x = bbox.minimum.x;
+		vertexDebugBox[7].pos.y = bbox.minimum.y;
+
+
+		for( size_t i = 0; i != 8; ++i )
+		{
+			vertexDebugBox[i].pos.z = 0.f;
+
+			vertexDebugBox[i].color = 0xFF00FF00;
+			vertexDebugBox[i].uv.x = 0.f;
+			vertexDebugBox[i].uv.y = 0.f;
+			vertexDebugBox[i].uv2.x = 0.f;
+			vertexDebugBox[i].uv2.y = 0.f;
+		}
+
+		const RenderMaterial * debugMaterial = RENDER_SERVICE(m_serviceProvider)
+			->getDebugMaterial();
+		
+		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial, nullptr, 0
+			, vertexDebugBox
+			, 8
+			);
 	}
 }

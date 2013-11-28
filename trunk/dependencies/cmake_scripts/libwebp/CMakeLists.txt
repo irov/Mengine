@@ -42,6 +42,7 @@ set(sources
     ${SOURCE_DIR}/src/utils/utils.c
 )
 
+add_definitions(-DHAVE_CONFIG_H)
 
 # NOW BUILD OUR TARGET
 include_directories(${SOURCE_DIR} ${ZLIB_INCLUDE_DIR})

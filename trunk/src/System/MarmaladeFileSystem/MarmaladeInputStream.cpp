@@ -29,17 +29,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{
-        char filePath[260];
-        if( MARMALADELAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid concatenate '%s':'%s'"
-                , _folder.c_str()
-                , _filename.c_str()
-                );
+		m_folder = _folder;
+		m_filename = _filename;
 
-            return false;
-        }
+		char filePath[MAX_PATH];
+		if( this->makeFilePath_( filePath ) == false )
+		{
+			return false;
+		}
 
         m_hFile = s3eFileOpen( filePath, "rb" );
 
@@ -48,8 +45,8 @@ namespace Menge
             s3eFileError error = s3eFileGetError();
 
             LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileOpen %s:%s get error %d"
-                , _folder.c_str()
-                , _filename.c_str()
+                , m_folder.c_str()
+                , m_filename.c_str()
                 , error
                 );
 
@@ -63,8 +60,8 @@ namespace Menge
             s3eFileError error = s3eFileGetError();
 
             LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileGetSize %s:%s get error %d"
-                , _folder.c_str()
-                , _filename.c_str()
+                , m_folder.c_str()
+                , m_filename.c_str()
                 , error
                 );
 
@@ -72,7 +69,6 @@ namespace Menge
         }
 
         m_size = (size_t)s3e_size;
-		m_path = Helper::stringizeString( m_serviceProvider, filePath );
 
 		return true;
 	}
@@ -245,15 +241,50 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeInputStream::time( uint64 & _time ) const
 	{
-		if (m_hFile)
+		if( m_hFile == nullptr )
 		{
-			uint64 res = s3eFileGetFileInt(m_path.c_str(), S3E_FILE_MODIFIED_DATE);
-			if (res != (uint64)-1)
-			{
-				_time = res;
-				return true;
-			}
+			return false;
 		}
-        return false;
+
+		char filePath[MAX_PATH];
+		if( this->makeFilePath_( filePath ) == false )
+		{
+			return false;
+		}
+
+		uint64 res = s3eFileGetFileInt( filePath, S3E_FILE_MODIFIED_DATE );
+		
+		if( res == (uint64)-1 )
+		{
+			s3eFileError err = s3eFileGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid get file modified '%s':'%s' - '%d'"
+				, m_folder.c_str()
+				, m_filename.c_str()
+				, err
+				);
+
+			return false;
+		}
+		
+		_time = res;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeInputStream::makeFilePath_( char * _filePath ) const
+	{
+		if( MARMALADELAYER_SERVICE(m_serviceProvider)
+			->concatenateFilePath( m_folder, m_filename, _filePath, MAX_PATH ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::makeFullPath_ invalid concatenate '%s':'%s'"
+				, m_folder.c_str()
+				, m_filename.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
 	}
 }	// namespace Menge

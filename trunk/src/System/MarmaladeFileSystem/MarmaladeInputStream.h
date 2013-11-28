@@ -35,11 +35,15 @@ namespace Menge
     public:
         bool _destroy() override;
 
+	public:
+		bool makeFilePath_( char * _fullPath ) const;
+
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
 		s3eFile * m_hFile;
-		Menge::FilePath m_path;
+		Menge::FilePath m_folder;
+		Menge::FilePath m_filename;
 		
         size_t m_size;
 

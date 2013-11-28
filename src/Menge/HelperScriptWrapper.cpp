@@ -155,19 +155,19 @@ namespace Menge
 			return mt::rand( a );
 		}
 
-		int mt_randf( float a )
+		float mt_randf( float a )
 		{	
-			return (int)mt::randf( a );
+			return mt::randf( a );
 		}
 
 		int mt_range_rand( int a, int b )
 		{	
 			return mt::range_rand( a, b );
 		}
-
-		int mt_range_randf( float a, float b )
+		
+		float mt_range_randf( float a, float b )
 		{	
-			return (int)mt::range_randf( a, b );
+			return mt::range_randf( a, b );
 		}
 
 		float mt_sqrtf( float a )
@@ -1108,7 +1108,7 @@ namespace Menge
 		pybind::def_functor( "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
 		pybind::def_functor( "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
 		pybind::def_functor( "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
-		
+			
 		pybind::def_functor( "sqrtf", helperScriptMethod, &HelperScriptMethod::mt_sqrtf );
 		pybind::def_functor( "absf", helperScriptMethod, &HelperScriptMethod::mt_absf );
 		pybind::def_functor( "cosf", helperScriptMethod, &HelperScriptMethod::mt_cosf );
@@ -1211,6 +1211,9 @@ namespace Menge
 
         pybind::def_function( "length_v2_v2", &mt::length_v2_v2 );
         pybind::def_function( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
+		
+		pybind::def_function( "length_v3_v3", &mt::length_v3_v3 );
+		pybind::def_function( "sqrlength_v3_v3", &mt::sqrlength_v3_v3 );
         
         pybind::def_function( "signed_angle", &mt::signed_angle );
         pybind::def_function( "angle_length", &mt::angle_length );

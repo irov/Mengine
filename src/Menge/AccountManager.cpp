@@ -46,9 +46,10 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountManager::initialize( const FilePath & _accountsPath, AccountServiceListener * _listener )
+    bool AccountManager::initialize( const FilePath & _accountsPath, size_t _projectVersion, AccountServiceListener * _listener )
     {
         m_accountsPath = _accountsPath;
+		m_projectVersion = _projectVersion;
         m_accountListener = _listener;
 
         return true;
@@ -181,7 +182,7 @@ namespace Menge
             }
         }
 
-        Account * newAccount = new Account(m_serviceProvider, _accountID);
+        Account * newAccount = new Account(m_serviceProvider, _accountID, m_projectVersion);
 
         newAccount->setFolder( folder );
 

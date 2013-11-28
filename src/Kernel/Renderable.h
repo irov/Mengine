@@ -12,11 +12,11 @@ namespace Menge
 		Renderable();
 
 	public:
-		virtual void render( RenderCameraInterface * _camera, unsigned int _debugMask ) = 0;
+		virtual void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) = 0;
 
 	public:
-		virtual void _render( RenderCameraInterface * _camera );
-		virtual void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask );
+		virtual void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
+		virtual void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask );
 
 	public:
 		virtual void hide( bool _value );

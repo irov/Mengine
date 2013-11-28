@@ -910,6 +910,13 @@ namespace Menge
 
             return false;
         }
+		
+		const RenderMaterialGroup * mg_debug = 
+			m_renderMaterialManager->getMaterialGroup( Helper::stringizeString(m_serviceProvider, "Debug") );
+
+		const RenderMaterial * debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );
+
+		m_renderService->setDebugMaterial( debugMaterial );
 
         return true;
     }

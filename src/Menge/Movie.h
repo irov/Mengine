@@ -10,6 +10,8 @@
 namespace Menge
 {
 	class Camera3D;
+	class RenderViewport;
+
     class MovieNodeExtra;
     class MovieEvent;
     class MovieSceneEffect;
@@ -161,6 +163,7 @@ namespace Menge
 		ResourceHolder<ResourceMovie> m_resourceMovie;
 
 		Camera3D * m_renderCamera3D;
+		RenderViewport * m_renderViewport;
 
         struct Nodies
         {

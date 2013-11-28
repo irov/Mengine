@@ -90,7 +90,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _current, float _timing ) override;
-		void _render( RenderCameraInterface * _camera ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 		void _invalidateWorldMatrix() override;

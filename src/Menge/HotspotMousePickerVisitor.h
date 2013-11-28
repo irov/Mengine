@@ -15,7 +15,7 @@ namespace Menge
         , public ConcreteVisitor<Layer2D>
     {
     public:
-        HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow );
+        HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow );
 
     public:
         bool test( Layer * _layer );
@@ -24,8 +24,8 @@ namespace Menge
         void accept( Layer2D * _visited ) override;
 
     protected:
-        HotSpot * m_layerspaceHotspot;
-        RenderCameraInterface * m_camera;
+        HotSpot * m_hotspot;
+        const RenderCameraInterface * m_camera;
         mt::vec2f m_point;
         Arrow * m_arrow;
 

@@ -62,36 +62,6 @@ namespace Menge
         HotSpot::_release();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotShape::testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform )
-    {
-        if( this->isActivate() == false )
-        {
-            return false;
-        }
-
-        if( HotSpot::testPolygon( _transform, _screenPoly, _screenTransform ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpotShape::testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform )
-    {
-        if( this->isActivate() == false )
-        {
-            return false;
-        }
-
-        if( HotSpot::testRadius( _transform, _radius, _screenTransform ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void HotSpotShape::setResourceShape( ResourceShape * _resourceShape )
     {
         if( m_resourceShape == _resourceShape )

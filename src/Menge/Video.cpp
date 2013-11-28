@@ -257,9 +257,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_render( RenderCameraInterface * _camera )
+	void Video::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-		Node::_render( _camera );
+		Node::_render( _viewport, _camera );
 
 		if( m_needUpdate == true || m_needUpdate2 == true )
 		{
@@ -278,7 +278,7 @@ namespace Menge
 		const RenderVertex2D * vertices = this->getVertices();
 
 		RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _camera, m_material, m_textures, 1, vertices, 4 );
+            ->addRenderQuad( _viewport, _camera, m_material, m_textures, 1, vertices, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices )

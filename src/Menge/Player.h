@@ -25,6 +25,7 @@ namespace Menge
 	class Node;
 	class Join;
 
+	class RenderViewport;
 	class Camera2D;
 
 	class MousePickerSystemInterface;
@@ -84,8 +85,12 @@ namespace Menge
 		Affectorable * getAffectorableGlobal() const override;
 
 	public:
-		void setCamera2D( Camera2D * _camera) override;
-		Camera2D * getCamera2D() const override;
+		void setRenderCamera( RenderCameraInterface * _camera) override;
+		const RenderCameraInterface * getRenderCamera() const override;
+
+	public:
+		void setRenderViewport( RenderViewportInterface * _renderViewport ) override;
+		const RenderViewportInterface * getRenderViewport() const override;
 
     public:
 		void setCamera2DPosition( const mt::vec2f & _pos );
@@ -154,6 +159,10 @@ namespace Menge
 		Arrow * m_arrow;
 		
 		Camera2D * m_camera2D;
+		RenderViewport * m_viewport2D;
+		
+		RenderCameraInterface * m_renderCamera;
+		RenderViewportInterface * m_renderViewport;
 
         MousePickerSystemInterface * m_mousePickerSystem;
         GlobalHandleSystemInterface * m_globalHandleSystem;

@@ -37,12 +37,9 @@ namespace Menge
 		MousePickerTrapInterface * getPickerTrap();
 		    
 	public:
-		virtual bool testArrow( const mt::mat4f& _transform, Arrow * _arrow, const mt::mat4f& _screenTransform );
-
-	public:
-		virtual bool testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform );
-		virtual bool testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform );
-		virtual bool testPoint( const mt::mat4f& _transform, const mt::vec2f & _p, const mt::mat4f& _screenTransform );
+		virtual bool testPoint( const mt::mat4f& _transform, const mt::vec2f & _point );
+		virtual bool testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius );
+		virtual bool testPolygon( const mt::mat4f& _transform, const mt::vec2f & _point, const Polygon & _polygon );
 
     public:        
         void setDebugColor( uint32 _color );
@@ -62,6 +59,7 @@ namespace Menge
 
 	protected:
 		void _localHide( bool _value ) override;
+		void _freeze( bool _value ) override;
 
 	protected:
 		void activatePicker_();
@@ -69,24 +67,13 @@ namespace Menge
 
 	protected:
 		Polygon m_polygon;
-		Polygon m_polygonWM;
-		Polygon m_polygonScreen;
-
-//#	ifndef MENGE_MASTER_RELEASE
-	protected:
-		void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
-
-    private:
-		void updateVertices_();
 
 	protected:
-		uint32 m_debugColor;
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 
+	protected:
         HotspotMousePickerAdapter m_mousePickerAdapter;
 
-        TVectorRenderVertex2D m_vertexDebugPolygon;
-        TVectorIndices m_indicesDebugPolygon;
-                
-//#	endif
+		uint32 m_debugColor;
 	};
 }

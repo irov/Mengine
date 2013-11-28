@@ -128,7 +128,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_render( RenderCameraInterface * _camera )
+	void Animation::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
 		//printf("Animation::_render %s %d %f\n"
 		//	, m_name.c_str()
@@ -136,7 +136,7 @@ namespace	Menge
 		//	, this->getTiming()
 		//	);
 
-		Sprite::_render( _camera );
+		Sprite::_render( _viewport, _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()

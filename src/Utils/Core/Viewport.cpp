@@ -62,6 +62,11 @@ namespace Menge
 		_size.y = h;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Viewport::getCenter( mt::vec2f & _point ) const
+	{
+		_point = (begin + end) * 0.5f;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Viewport::centerize( const mt::vec2f & _center )
 	{
 		begin -= _center;

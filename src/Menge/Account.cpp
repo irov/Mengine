@@ -20,8 +20,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Account::Account( ServiceProviderInterface * _serviceProvider, const WString & _name )
+	Account::Account( ServiceProviderInterface * _serviceProvider, const WString & _name, size_t _projectVersion )
 		: m_serviceProvider(_serviceProvider)
+		, m_projectVersion(_projectVersion)
         , m_name(_name)
 	{
 	}
@@ -143,8 +144,8 @@ namespace Menge
             return false;
         }
 
-		InputStreamInterfacePtr file = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
+		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
 
         if( file == nullptr )
         {
@@ -168,6 +169,29 @@ namespace Menge
 		}
 
         file = nullptr;
+
+		String projectVersion_s;
+		if( IniUtil::getIniValue( ini, "PROJECT", "VERSION", projectVersion_s, m_serviceProvider ) == false )
+		{
+			return false;
+		}
+
+		size_t projectVersion;
+		if( Utils::stringToUnsigned( projectVersion_s, projectVersion ) == false )
+		{
+			return false;
+		}
+
+		if( m_projectVersion != projectVersion )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Account::load account '%ls' failed invalid project version '%d' need '%d'"
+				, m_name.c_str()
+				, projectVersion
+				, m_projectVersion
+				);
+
+			return false;
+		}
 
 		for( TMapSettings::iterator 
 			it = m_settings.begin(), 
@@ -206,6 +230,16 @@ namespace Menge
 
 			return false;
 		}
+
+		IniUtil::writeIniSection( m_serviceProvider, file, "[PROJECT]" );
+
+		WString projectVersion_s;
+		if( Utils::unsignedToWString( m_projectVersion, projectVersion_s ) == false )
+		{
+			return false;
+		}
+
+		IniUtil::writeIniSetting( m_serviceProvider, file, "VERSION", projectVersion_s );
         
         IniUtil::writeIniSection( m_serviceProvider, file, "[SETTINGS]" );
         

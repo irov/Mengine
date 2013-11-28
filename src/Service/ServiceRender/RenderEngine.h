@@ -39,6 +39,11 @@
 #   define MENGINE_RENDER_INDICES_LINE 4000
 #   endif
 
+#	ifndef MENGINE_RENDER_DEBUG_VERTEX_MAX
+#   define MENGINE_RENDER_DEBUG_VERTEX_MAX 1024
+#   endif
+
+
 
 namespace Menge
 {
@@ -68,7 +73,7 @@ namespace Menge
 		size_t startIndex;
 
         size_t dipVerticesNum;
-        size_t dipIndiciesNum;        
+        size_t dipIndiciesNum;
 
 		IBHandle ibHandle;
         VBHandle vbHandle;
@@ -80,6 +85,7 @@ namespace Menge
 		size_t beginRenderObject;
 		size_t countRenderObject;
 
+		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -107,16 +113,21 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject( const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , EPrimitiveType _type
             , const RenderVertex2D * _vertices, size_t _verticesNum 
 			, const uint16 * _indices, size_t _indicesNum ) override;
 
-        void addRenderQuad( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+        void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
 
-        void addRenderLine( const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+        void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
+
+	public:
+		void setDebugMaterial( const RenderMaterial * _debugMaterial ) override;
+		const RenderMaterial * getDebugMaterial() const override;
+		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
 
 	public:
 		VBHandle createVertexBuffer( const RenderVertex2D * _vertexies, size_t _verticesNum );
@@ -170,8 +181,6 @@ namespace Menge
 		const RenderDebugInfo & getDebugInfo() const override;
 		void resetFrameCount() override;
 
-		bool isResolutionAppropriate() const;
-
 		void setVSync( bool _vSync ) override;
 		bool getVSync() const override;
 
@@ -217,8 +226,6 @@ namespace Menge
 		Resolution m_windowResolution;
 		bool m_fullscreen;
 		
-		Resolution m_renderTargetResolution;
-
 		Resolution m_contentResolution;
 		
 		ConstString m_currentRenderTarget;
@@ -257,7 +264,8 @@ namespace Menge
         EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
 
-		const RenderCameraInterface * m_currentRenderCamera;
+		const RenderViewportInterface * m_currentRenderViewport;
+		const RenderCameraInterface * m_currentRenderCamera;		
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
@@ -273,6 +281,11 @@ namespace Menge
 
         typedef stdex::static_array<RenderPass, MENGINE_RENDER_PASS_MAX> TArrayRenderPass;
         TArrayRenderPass m_renderPasses;
+
+		typedef stdex::static_array<RenderVertex2D, MENGINE_RENDER_DEBUG_VERTEX_MAX> TArrayRenderVertex2D;
+		TArrayRenderVertex2D m_debugRenderVertex2D;
+
+		const RenderMaterial * m_debugMaterial;
                       
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;

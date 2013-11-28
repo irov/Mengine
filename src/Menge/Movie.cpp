@@ -18,6 +18,7 @@
 
 #	include "Kernel/Layer.h"
 #	include "Camera3D.h"
+#	include "RenderViewport.h"
 
 #	include "Sprite.h"
 #	include "Mesh.h"
@@ -89,6 +90,7 @@ namespace Menge
 		: m_frameTiming(0.f)
 		, m_currentFrame(0)        
 		, m_renderCamera3D(nullptr)
+		, m_renderViewport(nullptr)
         , m_parentMovie(false)
 	{	
     }
@@ -273,7 +275,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, size_t _frameId, bool _interpolate )
-	{
+	{		
 		MovieFrameSource frame;
 		if( _interpolate == true && _layer.immutable == false )
 		{
@@ -338,7 +340,7 @@ namespace Menge
             }
 #   endif
 
-			Soundable * sounding = dynamic_cast<Soundable *>( _node );
+			SoundEmitter * sounding = static_cast<SoundEmitter *>( _node );
 
 			sounding->setVolume( frame.volume );
 		}
@@ -359,7 +361,7 @@ namespace Menge
 			}
 #   endif
 
-			Mesh * mesh = dynamic_cast<Mesh *>( _node );
+			Mesh * mesh = static_cast<Mesh *>( _node );
 
 			const MovieFrameShape * shape;
 			m_resourceMovie->getShape(_layer, _frameId, &shape );
@@ -1664,6 +1666,7 @@ namespace Menge
 			if( layer.isThreeD() == true )
 			{
 				node->setRenderCamera( m_renderCamera3D );
+				node->setRenderViewport( m_renderViewport );
 			}
 		}
 	}
@@ -2090,7 +2093,7 @@ namespace Menge
         {
 			size_t frameId = _endFrame - indexIn;
 
-            this->updateFrameNode_( _layer, _node, frameId, _endFrame + 1 < indexOut );
+            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut );
 
             _node->localHide( false );
 
@@ -2162,7 +2165,7 @@ namespace Menge
         {
 			size_t frameId = _endFrame - indexIn;
 		
-            this->updateFrameNode_( _layer, _node, frameId, _endFrame + 1 < indexOut );
+            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut );
 
             if( _layer.isAnimatable() == true )
             {
@@ -2316,7 +2319,7 @@ namespace Menge
 			{            
 				size_t frameId = m_currentFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frameId, m_currentFrame + 1 < indexOut );
+                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut );
 
                 node->localHide(false);
 
@@ -2389,7 +2392,7 @@ namespace Menge
             {                
                 size_t frameId = m_currentFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frameId, m_currentFrame + 1 < indexOut );
+                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut );
 
                 node->localHide( false );
 
@@ -2520,28 +2523,39 @@ namespace Menge
 		m_renderCamera3D->setCameraFOV( camera3D.cameraFOV );
 		m_renderCamera3D->setCameraAspect( camera3D.cameraAspect );
 
-        Viewport vp;
+		//m_renderCamera3D->setRenderport( vp );
+
+		this->addChildren( m_renderCamera3D );
+
+		m_renderViewport = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
+
+		Viewport vp;
 		vp.begin.x = 0.f;
 		vp.begin.y = 0.f;
 
-        vp.end.x = camera3D.width;
-        vp.end.y = camera3D.height;
+		vp.end.x = camera3D.width;
+		vp.end.y = camera3D.height;
 
-		m_renderCamera3D->setViewport( vp );
-
-		this->addChildren( m_renderCamera3D );
-        //m_renderCamera3D->setRelationTransformation( NULL );
+		m_renderViewport->setViewport( vp );
+        
+		this->addChildren( m_renderViewport );
+		//m_renderCamera3D->setRelationTransformation( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::destroyCamera3D_()
 	{
-		if( m_renderCamera3D == nullptr )
+		if( m_renderCamera3D != nullptr )
 		{
-			return;
+			m_renderCamera3D->destroy();
+			m_renderCamera3D = nullptr;
 		}
 
-		m_renderCamera3D->destroy();
-        m_renderCamera3D = nullptr;
+		if( m_renderViewport != nullptr )
+		{
+			m_renderViewport->destroy();
+			m_renderViewport = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setSpeedFactor( float _factor )

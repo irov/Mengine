@@ -15,7 +15,6 @@ namespace Menge
     class Node;
     class Scene;
     class Arrow;
-    class Camera2D;
 	class Affectorable;
 
     typedef std::vector<Node *> TVectorNode;
@@ -37,8 +36,12 @@ namespace Menge
         virtual Arrow * getArrow() const = 0;
 
     public:
-        virtual void setCamera2D( Camera2D * _camera) = 0;
-        virtual Camera2D * getCamera2D() const = 0;
+        virtual void setRenderCamera( RenderCameraInterface * _camera) = 0;
+        virtual const RenderCameraInterface * getRenderCamera() const = 0;
+
+	public:
+		virtual void setRenderViewport( RenderViewportInterface * _renderViewport ) = 0;
+		virtual const RenderViewportInterface * getRenderViewport() const = 0;
         
     public:
         virtual MousePickerSystemInterface * getMousePickerSystem() const = 0;

@@ -15,9 +15,7 @@ namespace Menge
 	//public:
 		//bool testHotSpot( RenderCameraInterface * _camera, HotSpot * _hotspot );
 
-//#	ifndef MENGE_MASTER_RELEASE
 	protected:
-		void _debugRender( RenderCameraInterface * _camera, unsigned int _debugMask ) override;
-//#	endif
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 	};
 }

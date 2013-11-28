@@ -263,7 +263,7 @@ namespace Menge
 					mt::vec2f anchorPoint2d;
 					mt::vec2f position2d;
 					mt::vec2f scale2d;
-					float angle;
+					float angle = 0.f;
 					float opacity = 1.f;
 
 					size_t count = 1;
@@ -310,11 +310,11 @@ namespace Menge
 
 					size_t count = 1;
 
-					mt::vec2f anchorPoint2d;
-					mt::vec2f position2d;
-					mt::vec2f scale2d;
+					mt::vec2f anchorPoint2d(0.f, 0.f);
+					mt::vec2f position2d(0.f, 0.f);
+					mt::vec2f scale2d(1.f, 1.f);
 
-					float angle;
+					float angle = 0.f;
 
 					float volume = 1.f;
 
@@ -390,10 +390,10 @@ namespace Menge
 
 				size_t count = 1;
 				
-				mt::vec3f anchorPoint;
-				mt::vec3f rotation;
-				mt::vec3f position;
-				mt::vec3f scale;
+				mt::vec3f anchorPoint(0.f, 0.f, 0.f);
+				mt::vec3f rotation(0.f, 0.f, 0.f);
+				mt::vec3f position(0.f, 0.f, 0.f);
+				mt::vec3f scale(1.f, 1.f, 1.f);
 
 				MovieFrameSource frame;
 

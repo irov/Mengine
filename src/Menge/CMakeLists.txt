@@ -22,12 +22,16 @@ ADD_FILTER(
 Camera
 	Camera2D.cpp
 	Camera2D.h
+	CameraTarget2D.cpp
+	CameraTarget2D.h
 	Camera3D.cpp
 	Camera3D.h
 	Frustum.cpp
 	Frustum.h
 	Camera.h
 	Camera.cpp
+    RenderViewport.h
+    RenderViewport.cpp
 )
 
 SOURCE_GROUP( Engine )

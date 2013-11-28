@@ -71,7 +71,9 @@
 #	include "Video.h"
 #	include "Layer2D.h"
 #	include "Layer2DLoop.h"
+#	include "RenderViewport.h"
 #	include "Camera2D.h"
+#	include "CameraTarget2D.h"
 #	include "Camera3D.h"
 #	include "Layer2DAccumulator.h"
 #	include "Layer3D.h"
@@ -187,6 +189,7 @@ namespace Menge
         , m_windowModeCheck(false)
         , m_watchdog(nullptr)
         , m_profiler(nullptr)
+		, m_projectVersion(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -294,6 +297,7 @@ namespace Menge
     {
         m_platformName = _setting.platformName;
         m_projectCodename = _setting.projectCodename;
+		m_projectVersion = _setting.projectVersion;
 
         m_contentResolution = _setting.contentResolution;
         m_fixedContentResolution = _setting.fixedContentResolution;
@@ -452,7 +456,9 @@ namespace Menge
 		//NODE_FACTORY( Layer2DTexture );
 		//NODE_FACTORY( LayerScene );
 		//NODE_FACTORY( RenderMesh );
+		NODE_FACTORY( m_serviceProvider, RenderViewport );
 		NODE_FACTORY( m_serviceProvider, Camera2D );
+		NODE_FACTORY( m_serviceProvider, CameraTarget2D );
 		NODE_FACTORY( m_serviceProvider, Camera3D );
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( m_serviceProvider, Window );
@@ -922,7 +928,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeGame( const TMapParams & _params, const String & _scriptInitParams )
 	{
-		if( m_game->initialize( _params ) == false )
+		FilePath accountPath = Helper::stringizeString( m_serviceProvider, "accounts.ini" );
+
+		if( m_game->initialize( accountPath, m_projectVersion, _params ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::initGame invalid initialize"
 				);
@@ -1824,6 +1832,11 @@ namespace Menge
 	const ConstString & Application::getProjectCodename() const
 	{
 		return m_projectCodename;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t Application::getProjectVersion() const
+	{
+		return m_projectVersion;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getContentResolution() const

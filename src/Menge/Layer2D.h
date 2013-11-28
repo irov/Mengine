@@ -6,6 +6,7 @@
 namespace Menge
 {
 	class Camera2D;
+	class RenderViewport;
 
 	class Layer2D
 		: public Layer
@@ -33,7 +34,7 @@ namespace Menge
 	public:
 		mt::vec2f cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point );
 
-		virtual void calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const override;
+		virtual void calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const override;
 
     protected:
         bool _activate() override;
@@ -47,7 +48,8 @@ namespace Menge
 
 		Viewport m_viewport;
 		
-		Camera2D * m_cameraViewport;
+		Camera2D * m_camera2D;
+		RenderViewport * m_renderViewport;
 		//Viewport m_viewportWM;
 		//mt::mat4f m_viewMatrix;
 		//mt::mat4f m_projectionMatrix;

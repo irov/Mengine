@@ -70,6 +70,11 @@ namespace Menge
 
 			charData.code = glyphChar;	
 
+			mt::ident_v3( charData.renderVertex[0] );
+			mt::ident_v3( charData.renderVertex[1] );
+			mt::ident_v3( charData.renderVertex[2] );
+			mt::ident_v3( charData.renderVertex[3] );
+
 			charData.uv = glyph->getUV();
 
 			mt::vec2f imageInvSize;

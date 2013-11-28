@@ -8,7 +8,9 @@
 #	include <vector>
 
 namespace Menge
-{
+{	
+	typedef std::vector<PickerTrapState *> TVectorPickerTrapStates;
+	
 	class MousePickerSystem
 		: public MousePickerSystemInterface
 	{
@@ -22,13 +24,14 @@ namespace Menge
 	public:
 		void setArrow( Arrow * _arrow ) override;
 		void setScene( Scene * _scene ) override;
+		void setRenderCamera( const RenderCameraInterface * _camera ) override;
 
 	public:
 		void update() override;
 		void clear() override;
 
     public:
-		void pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) override;
+		bool pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) override;
 		
 	public:
 		PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) override;		
@@ -51,7 +54,7 @@ namespace Menge
 		size_t getPickerTrapCount() const override;
 
 	private:
-		void proccesTraps_( const mt::vec2f & _point );
+		bool proccesTraps_( const mt::vec2f & _point, TVectorPickerTrapStates & _states );
 		void updateDead_();
 
 	private:
@@ -64,6 +67,7 @@ namespace Menge
 
 		Arrow * m_arrow;
 		Scene * m_scene;
+		const RenderCameraInterface * m_camera;
 
 		typedef std::list<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;

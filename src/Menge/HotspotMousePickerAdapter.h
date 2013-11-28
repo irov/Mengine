@@ -17,7 +17,7 @@ namespace Menge
 		HotSpot * getHotspot() const;
 
     public:
-        bool pick( const mt::vec2f& _point, Arrow * _arrow ) override;
+        bool pick( const mt::vec2f& _point, const RenderCameraInterface * _camera, Arrow * _arrow ) override;
 
     public:
         bool onMouseEnter( const mt::vec2f & _point ) override;
@@ -27,10 +27,7 @@ namespace Menge
         PyObject * getPickerEmbed() override;
 
     public:
-        Eventable * getPickerEventable() override;
-
-    public:
-        bool isPickerActive() const override;    
+        Eventable * getPickerEventable() override;  
 
 	protected:       
 		HotSpot * m_hotspot;

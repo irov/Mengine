@@ -79,6 +79,7 @@ namespace Menge
 		INIT_CONST( Mesh );
         INIT_CONST( Animation );
         INIT_CONST( Camera2D );
+		INIT_CONST( RenderViewport );
         INIT_CONST( Camera3D );
         INIT_CONST( TextField );
         INIT_CONST( ConsoleFont );

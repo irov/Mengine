@@ -219,15 +219,15 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( RenderCameraInterface * _camera )
+	void Sprite::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-		Node::_render( _camera );
+		Node::_render( _viewport, _camera );
 		
 		const RenderVertex2D * vertices = this->getVerticesWM();
         const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _camera, material, m_textures, m_texturesNum, vertices, 4 );
+			->addRenderQuad( _viewport, _camera, material, m_textures, m_texturesNum, vertices, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

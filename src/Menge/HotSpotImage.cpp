@@ -71,58 +71,20 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPolygon( const mt::mat4f& _transform, const Polygon& _screenPoly, const mt::mat4f& _screenTransform )
+	bool HotSpotImage::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
 	{
-		if( this->isActivate() == false )
-		{
-			return false;
-		}
-
-		if( HotSpot::testPolygon( _transform, _screenPoly, _screenTransform ) == false )
-		{
-			return false;
-		}
-
-		const Polygon::ring_type & ring = _screenPoly.outer();
-
-		if( ring.size() != 1 )
-		{
-			return true;
-		}
-
-		const mt::vec2f & ring_point = ring[0];
-
-		mt::vec2f point;
-		mt::mul_v2_m4( point, ring_point, _screenTransform );
+		const mt::mat4f & wm = this->getWorldMatrix();
 
 		mt::mat4f invWM;
-		mt::inv_m4( invWM, _transform );
+		mt::inv_m4( invWM, wm );
 
-		mt::vec2f pointIn;
-		mt::mul_v2_m4( pointIn, point, invWM );
+		mt::vec2f pointIn1;
+		mt::mul_v2_m4( pointIn1, _point, invWM );
 
-		bool result = m_resourceHIT->testPoint( pointIn, m_alphaTest );
+		mt::vec2f pointIn2;
+		mt::mul_v2_m4( pointIn2, _point, _transform );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testRadius( const mt::mat4f& _transform, float _radius, const mt::mat4f& _screenTransform )
-	{
-		if( this->isActivate() == false )
-		{
-			return false;
-		}
-		
-		mt::vec2f point;
-		mt::mul_v2_m4( point, mt::vec2f(0.f, 0.f), _screenTransform );
-
-		mt::mat4f invWM;
-		mt::inv_m4( invWM, _transform );
-
-		mt::vec2f pointIn;
-		mt::mul_v2_m4( pointIn, point, invWM );
-
-		bool result = m_resourceHIT->testRadius( pointIn, _radius, m_alphaTest );
+		bool result = m_resourceHIT->testRadius( pointIn2, _radius, m_alphaTest );
 
 		return result;
 	}

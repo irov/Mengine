@@ -88,7 +88,7 @@ namespace mt
 
 	MATH_METHOD_INLINE float vec3f::length()	const
 	{
-		float sqrlen = sqrlength();
+		float sqrlen = this->sqrlength();
         float len = sqrtf(sqrlen);
 
 		return len;
@@ -127,6 +127,14 @@ namespace mt
         float len = c.length();
 
 		return len;
+	}
+
+	MATH_FUNCTION_INLINE float sqrlength_v3_v3(const vec3f& _a, const vec3f& _b)
+	{
+		vec3f c = _a - _b;
+		float sqrlength = c.sqrlength();
+
+		return sqrlength;
 	}
 
 	MATH_FUNCTION_INLINE float length_v3(const vec3f& _a)

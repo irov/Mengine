@@ -488,8 +488,6 @@ namespace mt
 
 		_out.v2.x = (_left + _right) / (_left - _right);
 		_out.v2.y = (_top + _bottom) / (_bottom - _top);
-		//_out.v2.x = 0.f;
-		//_out.v2.y = 0.f;
 		_out.v2.z = (_far) / (_far - _near);
 		_out.v2.w = 1.f;
 

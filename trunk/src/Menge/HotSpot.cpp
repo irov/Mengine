@@ -246,19 +246,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
 	{
-		static Polygon polygonPick;
-		polygonPick.clear();
+		(void)_radius;
+		//static Polygon polygonPick;
+		//polygonPick.clear();
 
-		float half_radius = _radius * 0.5f;
-		boost::geometry::append( polygonPick, mt::vec2f(-half_radius, -half_radius) );
-		boost::geometry::append( polygonPick, mt::vec2f(half_radius, -half_radius) );
-		boost::geometry::append( polygonPick, mt::vec2f(half_radius, half_radius) );
-		boost::geometry::append( polygonPick, mt::vec2f(-half_radius, half_radius) );
-		
-		boost::geometry::correct( polygonPick );
+		//float half_radius = _radius * 0.5f;
+		//boost::geometry::append( polygonPick, mt::vec2f(-half_radius, -half_radius) );
+		//boost::geometry::append( polygonPick, mt::vec2f(half_radius, -half_radius) );
+		//boost::geometry::append( polygonPick, mt::vec2f(half_radius, half_radius) );
+		//boost::geometry::append( polygonPick, mt::vec2f(-half_radius, half_radius) );
+		//
+		//boost::geometry::correct( polygonPick );
 
-		bool intersect = this->testPolygon( _transform, _point, polygonPick );
-		//bool intersect = this->testPoint( _transform, _point );
+		//bool intersect = this->testPolygon( _transform, _point, polygonPick );
+		bool intersect = this->testPoint( _transform, _point );
 
 		return intersect;
 	}

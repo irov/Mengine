@@ -996,6 +996,13 @@ namespace Menge
                     return false;
                 }
             }
+			else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			{
+				if( this->createMovieTextCenter_( layer ) == false )
+				{
+					return false;
+				}
+			}
             else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
             {
                 if( this->createMovieNullObject_( layer ) == false )
@@ -1522,6 +1529,20 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieTextCenter_( const MovieLayer & _layer )
+	{
+		TextField * layer_text = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
+
+		layer_text->setName( _layer.name );
+		layer_text->setTextByKey( _layer.name ); //Name = TextID
+		layer_text->setCenterAlign();
+
+		this->addMovieNode_( _layer, layer_text );
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieEvent_( const MovieLayer & _layer )
     {

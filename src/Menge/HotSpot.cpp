@@ -233,43 +233,32 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _point )
     {
-        static Polygon polygonWM;
-		polygonWM.clear();
+		static Polygon polygonPick;
+		polygonPick.clear();
 
-		const mt::mat4f & wm = this->getWorldMatrix();
-				
-		polygon_wm( polygonWM, m_polygon, wm );				
-		
-		static Polygon polygonWMVM;
-		polygonWMVM.clear();
+		mt::vec2f v(0.f, 0.f); 
+		boost::geometry::append( polygonPick, v );
 
-        polygon_wm( polygonWMVM, polygonWM, _transform );
-
-        mt::box2f bb;
-        if( polygon_to_box2f( bb, polygonWMVM ) == false )
-        {
-            return false;
-        }
-        
-        if( mt::is_intersect( bb, _point ) == false )
-        {
-            return false;
-        }
-
-        static Polygon polygonScreen;
-		polygonScreen.clear();
-        boost::geometry::append( polygonScreen, _point );
-
-        bool intersect = boost::geometry::intersects( polygonWMVM, polygonScreen );
+		bool intersect = this->testPolygon( _transform, _point, polygonPick );
 
         return intersect;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
 	{
-        (void)_radius;                
+		static Polygon polygonPick;
+		polygonPick.clear();
 
-        bool intersect = this->testPoint( _transform, _point );
+		float half_radius = _radius * 0.5f;
+		boost::geometry::append( polygonPick, mt::vec2f(-half_radius, -half_radius) );
+		boost::geometry::append( polygonPick, mt::vec2f(half_radius, -half_radius) );
+		boost::geometry::append( polygonPick, mt::vec2f(half_radius, half_radius) );
+		boost::geometry::append( polygonPick, mt::vec2f(-half_radius, half_radius) );
+		
+		boost::geometry::correct( polygonPick );
+
+		bool intersect = this->testPolygon( _transform, _point, polygonPick );
+		//bool intersect = this->testPoint( _transform, _point );
 
 		return intersect;
 	}
@@ -279,10 +268,17 @@ namespace	Menge
 		static Polygon polygonWM;
 		polygonWM.clear();
 
-		polygon_wm( polygonWM, m_polygon, _transform );
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		polygon_wm( polygonWM, m_polygon, wm );				
+
+		static Polygon polygonWMVM;
+		polygonWMVM.clear();
+
+		polygon_wm( polygonWMVM, polygonWM, _transform );
 
 		mt::box2f bb;
-		if( polygon_to_box2f( bb, polygonWM ) == false )
+		if( polygon_to_box2f( bb, polygonWMVM ) == false )
 		{
 			return false;
 		}

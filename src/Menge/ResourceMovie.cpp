@@ -394,6 +394,10 @@ namespace Menge
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
+			else if( it->layerType == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			{
+				it->state |= MOVIE_LAYER_NODE;
+			}
             else if( it->layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
             {
                 it->state |= MOVIE_LAYER_NODE;

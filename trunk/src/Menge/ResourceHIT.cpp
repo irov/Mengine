@@ -18,7 +18,7 @@ namespace Menge
 		: m_width(0)
 		, m_height(0)
         , m_mipmaplevel(0)
-		, m_mipmap(NULL)
+		, m_mipmap(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ namespace Menge
         InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( category, m_path );
 
-        if( stream == NULL )
+        if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' not found"
                 , this->getName().c_str()
@@ -133,7 +133,7 @@ namespace Menge
         PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
             ->createDecoderT<PickDecoderInterfacePtr>( m_codec, stream );
 
-        if( decoder == 0 )
+        if( decoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
                 , this->getName().c_str()
@@ -279,7 +279,7 @@ namespace Menge
 
         unsigned char * alphaBuffer = this->getHitBuffer_( level );
 
-        if( alphaBuffer == NULL )
+        if( alphaBuffer == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::testRadius %s hit file %s invalid get level buffer %d:%d"
                 , this->getName().c_str()
@@ -339,7 +339,7 @@ namespace Menge
                 , m_mipmaplevel
                 );
 
-            return NULL;
+            return nullptr;
         }
         
         return m_mipmap + bufferOffset;

@@ -82,7 +82,7 @@ namespace Menge
 		mt::mul_v2_m4( pointIn1, _point, invWM );
 
 		mt::vec2f pointIn2;
-		mt::mul_v2_m4( pointIn2, _point, _transform );
+		mt::mul_v2_m4( pointIn2, pointIn1, _transform );
 
 		bool result = m_resourceHIT->testRadius( pointIn2, _radius, m_alphaTest );
 

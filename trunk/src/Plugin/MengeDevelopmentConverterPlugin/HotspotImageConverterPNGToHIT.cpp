@@ -35,7 +35,7 @@ namespace Menge
         InputStreamInterfacePtr input_stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( m_options.pakName, m_options.inputFileName );
 
-        if( input_stream == 0 )
+        if( input_stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image file '%s' was not found"
                 , m_options.inputFileName.c_str() 
@@ -93,26 +93,26 @@ namespace Menge
         OutputStreamInterfacePtr output_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( m_options.pakName, m_options.outputFileName );
 
-        if( output_stream == NULL )
+        if( output_stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
                 , m_options.outputFileName.c_str() 
                 , m_options.pakName.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
             ->createEncoderT<PickEncoderInterfacePtr>(Helper::stringizeString(m_serviceProvider, "hitPick"), output_stream);
         
-        if( encoder == NULL )
+        if( encoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
                 , m_options.outputFileName.c_str() 
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         PickCodecDataInfo di;
@@ -173,7 +173,7 @@ namespace Menge
         ++it )
         {
             size_t prev_width = mipmap_width >> (it - 1);
-            //size_t prev_height = mipmap_height >> (it - 1);
+            size_t prev_height = mipmap_height >> (it - 1);
 
             size_t cur_width = mipmap_width >> it;
             size_t cur_height = mipmap_height >> it;
@@ -199,6 +199,42 @@ namespace Menge
                     unsigned char b1 = (std::max)( v2, v3 );
 
                     unsigned char b_max = (std::max)( b0, b1 );
+
+					if( i == (cur_width - 1) && (prev_width % 2) == 1 )
+					{
+						size_t i4 = (i * 2 + 2) + (j * 2 + 0) * prev_width;
+						size_t i5 = (i * 2 + 2) + (j * 2 + 1) * prev_width;
+
+						unsigned char v4 = prev_buff[i4];
+						unsigned char v5 = prev_buff[i5];
+
+						unsigned char b3 = (std::max)( v4, v5 );
+
+						b_max = (std::max)( b_max, b3 );
+					}
+
+					if( j == (cur_height - 1) && (prev_height % 2) == 1 )
+					{
+						size_t i4 = (i * 2 + 0) + (j * 2 + 2) * prev_width;
+						size_t i5 = (i * 2 + 1) + (j * 2 + 2) * prev_width;
+
+						unsigned char v4 = prev_buff[i4];
+						unsigned char v5 = prev_buff[i5];
+
+						unsigned char b3 = (std::max)( v4, v5 );
+
+						b_max = (std::max)( b_max, b3 );
+					}
+
+					if( i == (cur_width - 1) && (prev_width % 2) == 1 && 
+						j == (cur_height - 1) && (prev_height % 2) == 1 )
+					{
+						size_t i4 = (i * 2 + 2) + (j * 2 + 2) * prev_width;
+
+						unsigned char v4 = prev_buff[i4];
+
+						b_max = (std::max)( b_max, v4 );
+					}
 
                     cur_buff[ i + j * cur_width ] = b_max;
                 }

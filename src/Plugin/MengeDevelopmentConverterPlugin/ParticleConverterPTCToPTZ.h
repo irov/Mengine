@@ -8,7 +8,7 @@ namespace Menge
 		: public DevelopmentConverter
 	{
 	public:
-		ParticleConverterPTCToPTZ( ServiceProviderInterface * _serviceProvider );
+		ParticleConverterPTCToPTZ();
 		~ParticleConverterPTCToPTZ();
 
 	public:

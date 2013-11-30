@@ -98,8 +98,9 @@ namespace Menge
             const ConstString & codecType = CODEC_SERVICE(m_serviceProvider)
                 ->findCodecType( filepath );
 
+			bool version;
             ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-                ->createDecoderT<ImageDecoderInterfacePtr>( codecType, stream );
+                ->createDecoderT<ImageDecoderInterfacePtr>( codecType, stream, version );
 
             if( imageDecoder == nullptr )
             {

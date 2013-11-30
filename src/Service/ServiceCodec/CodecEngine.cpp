@@ -54,7 +54,7 @@ namespace Menge
 		m_mapEncoderSystem.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream )
+	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream, bool & _version )
 	{
 		DecoderFactoryInterface * decoderFactory = nullptr;
 		if( m_mapDecoderSystem.has( _type, &decoderFactory ) == false )
@@ -72,8 +72,8 @@ namespace Menge
 		{
 			return nullptr;
 		}
-
-		if( decoder->initialize( m_serviceProvider, _stream ) == false )
+		
+		if( decoder->initialize( _stream, _version ) == false )
 		{
 			return nullptr;
 		}

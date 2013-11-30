@@ -118,8 +118,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderInterfacePtr ResourceImage::createDecoder_(  const InputStreamInterfacePtr & _file, const ConstString& _codec ) const
 	{
+		bool version;
 		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( _codec, _file );
+            ->createDecoderT<ImageDecoderInterfacePtr>( _codec, _file, version );
 
 		if( imageDecoder == nullptr )
 		{

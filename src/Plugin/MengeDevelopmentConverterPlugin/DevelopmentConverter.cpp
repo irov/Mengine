@@ -3,13 +3,23 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DevelopmentConverter::DevelopmentConverter( ServiceProviderInterface * _serviceProvider )
-        : m_serviceProvider(_serviceProvider)
+	DevelopmentConverter::DevelopmentConverter()
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DevelopmentConverter::~DevelopmentConverter()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DevelopmentConverter::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * DevelopmentConverter::getServiceProvider() const
+	{
+		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & DevelopmentConverter::getConvertExt() const
@@ -21,10 +31,13 @@ namespace Menge
 	{
 		m_options = *(_options);
 	} 
-	////////////////////////////////////////////////////////
-	void DevelopmentConverter::destroy()
+	//////////////////////////////////////////////////////////////////////////
+	bool DevelopmentConverter::validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const
 	{
-		delete this;
+		(void)_pakName;
+		(void)_fileName;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

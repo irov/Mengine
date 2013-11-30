@@ -10,8 +10,12 @@ namespace Menge
         : public ConverterInterface
 	{
 	public:
-		DevelopmentConverter( ServiceProviderInterface * _serviceProvider );
-		virtual ~DevelopmentConverter();
+		DevelopmentConverter();
+		~DevelopmentConverter();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		const String & getConvertExt() const override;
@@ -19,8 +23,8 @@ namespace Menge
 	public:
 		void setOptions( ConverterOptions * _options ) override;
 
-    public:
-		void destroy() override;
+	public:
+		bool validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

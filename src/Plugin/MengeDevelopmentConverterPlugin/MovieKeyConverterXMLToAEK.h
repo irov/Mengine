@@ -14,7 +14,7 @@ namespace Menge
         : public DevelopmentConverter
 	{
 	public:
-		MovieKeyConverterXMLToAEK( ServiceProviderInterface * _serviceProvider );
+		MovieKeyConverterXMLToAEK();
 		~MovieKeyConverterXMLToAEK();
 
 	public:

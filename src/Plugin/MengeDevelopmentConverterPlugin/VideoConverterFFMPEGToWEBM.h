@@ -13,7 +13,7 @@ namespace Menge
 		: public DevelopmentConverter
 	{
 	public:
-		VideoConverterFFMPEGToWEBM( ServiceProviderInterface * _serviceProvider );
+		VideoConverterFFMPEGToWEBM();
 		~VideoConverterFFMPEGToWEBM();
 
 	public:

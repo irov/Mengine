@@ -316,10 +316,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin )
 	{
+		bool version;
 		XmlDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "xml2bin"), 0 );
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "xml2bin"), 0, version );
 
-		if( decoder == NULL )
+		if( decoder == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%s"
 				, _pak.c_str()
@@ -331,8 +332,7 @@ namespace Menge
 
 		XmlCodecOptions options;
         options.pathProtocol = m_protocolPath;
-
-
+		
         FileGroupInterface * fileGroup = FILE_SERVICE(m_serviceProvider)
             ->getFileGroup( _pak );
 

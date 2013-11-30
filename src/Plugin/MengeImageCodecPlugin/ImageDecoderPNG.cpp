@@ -76,7 +76,7 @@ namespace Menge
 		s_cleanup( m_png_ptr );
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoderPNG::_initialize()
+    bool ImageDecoderPNG::_initialize( bool & _version )
     {
         // check for png signature
         unsigned char png_check[PNG_BYTES_TO_CHECK];
@@ -94,7 +94,7 @@ namespace Menge
 		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
         m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, s_handlerError, s_handlerWarning );
 
-        if( m_png_ptr == 0 )
+        if( m_png_ptr == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPNG::initialize Can't create read structure" 
                 );
@@ -105,7 +105,7 @@ namespace Menge
         // create the info structure
         png_infop info_ptr = png_create_info_struct( m_png_ptr );
 
-        if( info_ptr == 0 ) 
+        if( info_ptr == nullptr ) 
         {
             LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPNG::initialize Can't create info structure" 
                 );
@@ -148,9 +148,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize PNG is interlacing (Engine not support to read this png format)"
                 );
-
-
-
+			
             png_destroy_info_struct( m_png_ptr, &info_ptr );
                
             return false;

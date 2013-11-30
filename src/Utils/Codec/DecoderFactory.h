@@ -26,7 +26,9 @@ namespace Menge
     protected:
         DecoderInterfacePtr createDecoder() override
         {	
-            T * decoder = m_factory.createObjectT();
+            DecoderInterface * decoder = m_factory.createObjectT();
+
+			decoder->setServiceProvider( m_serviceProvider );
 
             return decoder;
         }
@@ -45,7 +47,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
         ConstString m_name;
 
-        typedef FactoryPool<T, 8> TFacrotyDecoder;
-        TFacrotyDecoder m_factory;
+        typedef FactoryPool<T, 8> TFactoryDecoder;
+        TFactoryDecoder m_factory;
     };
 }

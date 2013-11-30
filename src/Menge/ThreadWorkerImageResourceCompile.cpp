@@ -26,8 +26,9 @@ namespace Menge
 		void * buffer = memory->newMemory( streamSize );
 		stream->read( buffer, streamSize );
 		
+		bool version;
 		m_imageDecoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( _codecType, memory );
+			->createDecoderT<ImageDecoderInterfacePtr>( _codecType, memory, version );
 
 		const ImageCodecDataInfo* dataInfo = m_imageDecoder->getCodecDataInfo();
 

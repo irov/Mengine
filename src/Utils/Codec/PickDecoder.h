@@ -10,14 +10,15 @@ namespace Menge
 	public:
 		PickDecoder();
 
-    public:
-        ServiceProviderInterface * getServiceProvider() const;
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream ) override;
+        bool initialize( const InputStreamInterfacePtr & _stream, bool & _version ) override;
 
     protected:
-        virtual bool _initialize();
+        virtual bool _initialize( bool & _version );
 
     public:
         bool setOptions( CodecOptions * _options ) override;
@@ -25,8 +26,8 @@ namespace Menge
     protected:
         virtual bool _invalidateOptions();
 
-    public:
-        InputStreamInterfacePtr getStream() const override;
+    public:		
+        const InputStreamInterfacePtr & getStream() const override;
 		const PickCodecDataInfo * getCodecDataInfo() const override;
 
 	protected:

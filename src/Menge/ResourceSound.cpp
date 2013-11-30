@@ -145,8 +145,9 @@ namespace Menge
             return false;
         }
 
+		bool version;
         SoundDecoderInterfacePtr codec = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<SoundDecoderInterfacePtr>( m_codec, stream );
+            ->createDecoderT<SoundDecoderInterfacePtr>( m_codec, stream, version );
 
         if( codec == nullptr )
         {

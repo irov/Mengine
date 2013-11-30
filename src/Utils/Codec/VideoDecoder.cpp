@@ -8,24 +8,32 @@ namespace Menge
         , m_stream(nullptr)
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * VideoDecoder::getServiceProvider() const
     {
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )
-    {
-        m_serviceProvider = _serviceProvider;
+    bool VideoDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
+    {        
         m_stream = _stream;
-                
-        bool result = this->_initialize();
+
+		_version = true;
+
+        bool result = this->_initialize( _version );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::_initialize()
+    bool VideoDecoder::_initialize( bool & _version )
     {
+		(void)_version;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,7 +54,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr VideoDecoder::getStream() const
+    const InputStreamInterfacePtr & VideoDecoder::getStream() const
     {
         return m_stream;
     }

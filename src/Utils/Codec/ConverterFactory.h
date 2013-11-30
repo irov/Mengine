@@ -4,6 +4,8 @@
 
 #   include "Core/ConstString.h"
 
+#   include "Factory/FactoryPool.h"
+
 namespace Menge
 {
     template<class T>
@@ -22,9 +24,13 @@ namespace Menge
         }
 
     protected:
-        ConverterInterface * createConverter() override
-        {				
-            return new T(m_serviceProvider);
+        ConverterInterfacePtr createConverter() override
+        {
+			ConverterInterface * converter = m_factory.createObjectT();
+
+			converter->setServiceProvider( m_serviceProvider );
+
+            return converter;
         }
 
         const ConstString & getName() const override
@@ -39,7 +45,10 @@ namespace Menge
         }
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
+        ServiceProviderInterface * m_serviceProvider;		
         ConstString m_name;
+
+		typedef FactoryPool<T, 8> TFactoryConverter;
+		TFactoryConverter m_factory;
     };
 }

@@ -35,15 +35,19 @@ namespace Menge
 	class DecoderInterface
         : public FactorablePtr
 	{
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream ) = 0;
+        virtual bool initialize( const InputStreamInterfacePtr & _stream, bool & _version ) = 0;
 
     public:
         virtual bool setOptions( CodecOptions * _options ) = 0;
 
 	public:
-        virtual InputStreamInterfacePtr getStream() const = 0;
-		virtual const CodecDataInfo* getCodecDataInfo() const = 0;		
+        virtual const InputStreamInterfacePtr & getStream() const = 0;
+		virtual const CodecDataInfo* getCodecDataInfo() const = 0;
 
     public:
 		virtual size_t decode( void * _buffer, size_t _bufferSize ) = 0;
@@ -103,12 +107,19 @@ namespace Menge
 		virtual void unregisterEncoder( const ConstString& _type ) = 0;
 
     public:
-		virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const InputStreamInterfacePtr & _stream ) = 0; 
+		virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const InputStreamInterfacePtr & _stream, bool & _version ) = 0; 
 
         template<class T>
-        T createDecoderT( const ConstString& _type, const InputStreamInterfacePtr & _stream )
+        T createDecoderT( const ConstString& _type, const InputStreamInterfacePtr & _stream, bool & _version )
         {
-            DecoderInterfacePtr decoder = this->createDecoder( _type, _stream );
+            DecoderInterfacePtr decoder = this->createDecoder( _type, _stream, _version );
+
+#   ifdef _DEBUG
+			if( stdex::intrusive_dynamic_cast<T>(decoder) == nullptr )
+			{
+				return nullptr;
+			}
+#   endif
 
             T t = stdex::intrusive_static_cast<T>(decoder);
 

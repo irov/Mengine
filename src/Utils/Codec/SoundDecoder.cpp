@@ -9,23 +9,29 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
+	void SoundDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * SoundDecoder::getServiceProvider() const
     {
         return m_serviceProvider;
-    }
+    }	
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )
+    bool SoundDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
     {
-        m_serviceProvider = _serviceProvider;
         m_stream = _stream;
 
-        bool result = this->_initialize();
+        bool result = this->_initialize( _version );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoder::_initialize()
+    bool SoundDecoder::_initialize( bool & _version )
     {
+		(void)_version;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,7 +52,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SoundDecoder::getStream() const
+    const InputStreamInterfacePtr & SoundDecoder::getStream() const
     {
         return m_stream;
     }

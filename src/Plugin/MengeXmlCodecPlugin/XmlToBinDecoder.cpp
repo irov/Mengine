@@ -62,13 +62,18 @@ namespace Menge
         , m_stream(nullptr)
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void XmlToBinDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * XmlToBinDecoder::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * XmlToBinDecoder::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr XmlToBinDecoder::getStream() const
+    const InputStreamInterfacePtr & XmlToBinDecoder::getStream() const
     {
         return m_stream;
     }
@@ -85,10 +90,11 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlToBinDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )
+	bool XmlToBinDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
 	{
-        m_serviceProvider = _serviceProvider;
         m_stream = _stream;
+
+		_version = true;
 
 		return true;
 	}

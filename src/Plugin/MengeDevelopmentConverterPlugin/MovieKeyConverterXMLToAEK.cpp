@@ -13,8 +13,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK( ServiceProviderInterface * _serviceProvider )
-		: DevelopmentConverter(_serviceProvider)
+	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -71,6 +71,24 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool HotSpotImage::testPoint( const mt::mat4f& _transform, const mt::vec2f & _point )
+	{
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		mt::mat4f invWM;
+		mt::inv_m4( invWM, wm );
+
+		mt::vec2f pointIn1;
+		mt::mul_v2_m4( pointIn1, _point, invWM );
+
+		mt::vec2f pointIn2;
+		mt::mul_v2_m4( pointIn2, pointIn1, _transform );
+
+		bool result = m_resourceHIT->testPoint( pointIn2, m_alphaTest );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();

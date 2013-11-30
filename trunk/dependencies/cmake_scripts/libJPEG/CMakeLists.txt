@@ -8,13 +8,13 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libjpeg )
 #configure_file( ${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
 
 IF(WIN32)
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx.h ${SOURCE_DIR}/jmorecfg.h COPYONLY )
 ELSE(WIN32)
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${SOURCE_DIR}/jmorecfg.h COPYONLY )
 ENDIF(WIN32)
 
 
-configure_file(${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY )
 
 # OUR SOURCES
 set( jpeg_sources

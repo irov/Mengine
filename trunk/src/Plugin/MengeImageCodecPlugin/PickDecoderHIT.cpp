@@ -20,7 +20,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoderHIT::_initialize()
+    bool PickDecoderHIT::_initialize( bool & _version )
     {
         size_t magic;
 
@@ -33,9 +33,8 @@ namespace Menge
 
             return false;
         }
-
-        size_t version;
-
+		       
+		size_t version;
         m_stream->read( &version, sizeof(version) );
 
         if( version != hit_version )
@@ -44,6 +43,8 @@ namespace Menge
                 , version
                 , hit_version
                 );
+
+			_version = false;
 
             return false;
         }
@@ -60,7 +61,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid m_mipmapcompresssize is 0 (hit file incorupt)"
                 );
 
-            return 0;
+            return false;
         }
 
         return true;

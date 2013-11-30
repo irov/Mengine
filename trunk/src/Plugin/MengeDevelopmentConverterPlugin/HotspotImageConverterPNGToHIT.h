@@ -8,11 +8,14 @@ namespace Menge
 		: public DevelopmentConverter
 	{
 	public:
-		HotspotImageConverterPNGToHIT( ServiceProviderInterface * _serviceProvider );
+		HotspotImageConverterPNGToHIT();
 		~HotspotImageConverterPNGToHIT();
 
 	public:
 		bool initialize() override;
+
+	public:
+		bool validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const override;
 
     public:
 		bool convert() override;

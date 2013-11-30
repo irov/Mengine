@@ -217,8 +217,10 @@ namespace Menge
         jpeg_destroy_decompress( &m_jpegObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderJPEG::_initialize()
+	bool ImageDecoderJPEG::_initialize( bool & _version )
 	{
+		(void)_version;
+
 		// step 1: allocate and initialize JPEG decompression object
 		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
 		m_jpegObject.client_data = this;

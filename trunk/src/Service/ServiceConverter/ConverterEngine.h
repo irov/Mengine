@@ -27,7 +27,7 @@ namespace Menge
 		void registerConverter( const ConstString& _type, ConverterFactoryInterface * _interface ) override;
 		void unregisterConverter( const ConstString& _type ) override;
 
-		ConverterInterface * createConverter( const ConstString & _type ) override; 
+		ConverterInterfacePtr createConverter( const ConstString & _type ) override; 
 
     public:
         bool convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out ) override;

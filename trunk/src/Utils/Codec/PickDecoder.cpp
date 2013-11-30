@@ -4,9 +4,14 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PickDecoder::PickDecoder()
-        : m_serviceProvider(NULL)
-        , m_stream(NULL)
+        : m_serviceProvider(nullptr)
+        , m_stream(nullptr)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PickDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * PickDecoder::getServiceProvider() const
@@ -14,24 +19,27 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )
+    bool PickDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
     {
-        m_serviceProvider = _serviceProvider;
         m_stream = _stream;
 
-        bool result = this->_initialize();
+		_version = true;
+
+        bool result = this->_initialize( _version );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoder::_initialize()
+    bool PickDecoder::_initialize( bool & _version )
     {
+		(void)_version;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PickDecoder::setOptions( CodecOptions * _options )
     {
-        if( _options != NULL )
+        if( _options != nullptr )
         {
             m_options = *static_cast<PickCodecOptions *>(_options);
         }
@@ -46,7 +54,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr PickDecoder::getStream() const
+    const InputStreamInterfacePtr & PickDecoder::getStream() const
     {
         return m_stream;
     }

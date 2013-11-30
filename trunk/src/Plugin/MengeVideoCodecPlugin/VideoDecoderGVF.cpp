@@ -10,7 +10,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderGVF::VideoDecoderGVF()
-		: m_pts(0.f)        
+		: m_pts(0.f)
         , m_frame(0)
         , m_pitch(0)
     {
@@ -20,10 +20,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderGVF::_initialize()
+	bool VideoDecoderGVF::_initialize( bool & _version )
 	{
+		(void)_version;
+
+		size_t magic;
+		m_stream->read( &magic, sizeof(magic) );
+		
+		size_t version;
+		m_stream->read( &version, sizeof(version) );
+
         m_stream->read( &m_header, sizeof(m_header) );
-        
+		        
         m_offsets.resize( (m_header.count + 1) );
         m_stream->read( &m_offsets[0], (m_header.count + 1) * sizeof(TVectorOffsets::value_type) );
 

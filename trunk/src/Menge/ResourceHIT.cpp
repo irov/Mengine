@@ -130,8 +130,9 @@ namespace Menge
             return false;
         }
 
+		bool version;
         PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<PickDecoderInterfacePtr>( m_codec, stream );
+            ->createDecoderT<PickDecoderInterfacePtr>( m_codec, stream, version );
 
         if( decoder == nullptr )
         {
@@ -141,7 +142,7 @@ namespace Menge
                 , m_codec.c_str()
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();

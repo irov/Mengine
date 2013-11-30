@@ -29,13 +29,13 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ConverterEngine::registerConverter( const ConstString& _type, ConverterFactoryInterface * _interface )
+	void ConverterEngine::registerConverter( const ConstString & _type, ConverterFactoryInterface * _factory )
 	{
         LOGGER_INFO(m_serviceProvider)("ConverterEngine::registerConverter add converter %s"
             , _type.c_str()
             );
 
-		m_mapConverterSystem.insert( _type, _interface );
+		m_mapConverterSystem.insert( _type, _factory );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConverterEngine::unregisterConverter( const ConstString& _type )
@@ -47,7 +47,7 @@ namespace Menge
 		m_mapConverterSystem.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConverterInterface * ConverterEngine::createConverter( const ConstString & _type )
+	ConverterInterfacePtr ConverterEngine::createConverter( const ConstString & _type )
 	{
         LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter %s"
             , _type.c_str()
@@ -64,11 +64,11 @@ namespace Menge
 			return nullptr;
 		}
 
-		ConverterFactoryInterface * converter = m_mapConverterSystem.get_value( it_find );
+		ConverterFactoryInterface * factory = m_mapConverterSystem.get_value( it_find );
 
-		ConverterInterface * decoder = converter->createConverter();
+		ConverterInterfacePtr converter = factory->createConverter();
 
-		if( decoder == nullptr )
+		if( converter == nullptr )
 		{
             LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter invalid create converter %s"
                 , _type.c_str()
@@ -77,23 +77,21 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( decoder->initialize() == false )
+		if( converter->initialize() == false )
 		{
             LOGGER_INFO(m_serviceProvider)("ConverterEngine::createConverter invalid initialize converter %s"
                 , _type.c_str()
                 );
 
-			decoder->destroy();
-
 			return nullptr;
 		}
 
-		return decoder;
+		return converter;
 	}
 	//////////////////////////////////////////////////////////////////////////
     bool ConverterEngine::convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out )
     {
-        ConverterInterface * converter = this->createConverter( _converter );
+        ConverterInterfacePtr converter = this->createConverter( _converter );
 
         if ( converter == nullptr )
         {
@@ -121,7 +119,7 @@ namespace Menge
 
         static String cache_path;
         cache_path.assign( _in.c_str(), _in.size() );
-                
+
         static String outputFile;
         String::size_type pointPos = cache_path.find_last_of( '.' );
         outputFile = cache_path.substr( 0 , pointPos );
@@ -136,8 +134,6 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert input file is empty"
                 );
 
-            converter->destroy();
-
             return false;
         }
 
@@ -146,13 +142,11 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert output file is empty"
                 );
             
-            converter->destroy();
-
             return false;
         }
 
         if( FILE_SERVICE(m_serviceProvider)
-            ->existFile( options.pakName, options.inputFileName, NULL ) == false )
+            ->existFile( options.pakName, options.inputFileName, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert: input file '%s' not found"
                 , options.inputFileName.c_str()
@@ -162,7 +156,7 @@ namespace Menge
         }
 
         if( FILE_SERVICE(m_serviceProvider)
-            ->existFile( options.pakName, options.outputFileName, NULL ) == true )
+            ->existFile( options.pakName, options.outputFileName, nullptr ) == true )
         {			
             InputStreamInterfacePtr oldFile = FILE_SERVICE(m_serviceProvider)
                 ->openInputFile( options.pakName, options.inputFileName );
@@ -204,9 +198,14 @@ namespace Menge
             {
                 _out = options.outputFileName;
 
-                converter->destroy();
+				if( converter->validateVersion( _category, _out ) == true )
+				{
+	                return true;
+				}
 
-                return true;
+				LOGGER_WARNING(m_serviceProvider)( "ConverterEngine::convert invalid version '%s'"
+					, options.outputFileName.c_str()
+					);
             }
         }
 
@@ -224,14 +223,10 @@ namespace Menge
                 , options.outputFileName.c_str()
                 );
 
-            converter->destroy();
-
             return false;
         }
         
         _out = options.outputFileName;
-        
-        converter->destroy();
 
         return true;
     }

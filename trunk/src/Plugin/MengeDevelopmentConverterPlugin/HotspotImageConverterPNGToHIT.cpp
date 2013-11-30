@@ -14,8 +14,7 @@
 namespace Menge
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	HotspotImageConverterPNGToHIT::HotspotImageConverterPNGToHIT( ServiceProviderInterface * _serviceProvider )
-		: DevelopmentConverter(_serviceProvider)
+	HotspotImageConverterPNGToHIT::HotspotImageConverterPNGToHIT()
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +28,38 @@ namespace Menge
 
         return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotspotImageConverterPNGToHIT::validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const
+	{
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _pakName, _fileName );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s:%s' was not found"
+				, _pakName.c_str()
+				, _fileName.c_str()
+				);
+
+			return false;
+		}
+
+		bool version;
+		DecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
+			->createDecoder( Helper::stringizeString(m_serviceProvider, "hitPick"), stream, version );
+
+		if( decoder == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: decoder hitPick not found for '%s:%s'"
+				, _pakName.c_str()
+				, _fileName.c_str()
+				);
+
+			return false;
+		}
+
+		return version;
+	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool HotspotImageConverterPNGToHIT::convert()
 	{
@@ -41,12 +72,12 @@ namespace Menge
                 , m_options.inputFileName.c_str() 
                 );
 
-            return NULL;
+            return false;
         }
 
-
+		bool version;
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "pngImage"), input_stream );
+            ->createDecoderT<ImageDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "pngImage"), input_stream, version );
 
         if( imageDecoder == nullptr )
         {

@@ -15,7 +15,7 @@ namespace Menge
 		~ImageDecoderWEBP();
 
 	public:
-		bool _initialize() override;
+		bool _initialize( bool & _version ) override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;

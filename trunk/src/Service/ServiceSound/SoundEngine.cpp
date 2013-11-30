@@ -301,8 +301,9 @@ namespace Menge
             return nullptr;
         }
 
+		bool version;
 		desc.codec = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, desc.stream );
+            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, desc.stream, version );
 		
     	if( desc.codec == nullptr )
 		{

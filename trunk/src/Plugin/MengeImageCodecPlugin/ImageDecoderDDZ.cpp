@@ -38,8 +38,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderDDZ::_initialize()
+	bool ImageDecoderDDZ::_initialize( bool & _version )
 	{		
+		(void)_version;
+
         size_t file_size = m_stream->size();
 
         if( file_size == 0 )

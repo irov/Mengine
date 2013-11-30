@@ -10,25 +10,31 @@ namespace Menge
         , m_stream(nullptr)
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * ImageDecoder::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ImageDecoder::getServiceProvider() const
+    bool ImageDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
     {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream )
-    {
-        m_serviceProvider = _serviceProvider;
         m_stream = _stream;
+
+		_version = true;
         
-        bool result = this->_initialize();
+        bool result = this->_initialize( _version );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoder::setOptions( CodecOptions * _options )
     {
-        if( _options != NULL )
+        if( _options != nullptr )
         {
             m_options = *static_cast<ImageCodecOptions *>(_options);
         }
@@ -59,12 +65,14 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::_initialize()
+    bool ImageDecoder::_initialize( bool & _version )
     {
+		(void)_version;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr ImageDecoder::getStream() const
+    const InputStreamInterfacePtr & ImageDecoder::getStream() const
     {
         return m_stream;
     }

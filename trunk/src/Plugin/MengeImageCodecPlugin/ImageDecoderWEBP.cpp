@@ -21,16 +21,22 @@ namespace Menge
     typedef std::vector<uint8_t> TVectorWEBPBuffer;
     static TVectorWEBPBuffer s_WEBPBuffer;
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderWEBP::_initialize()
+	bool ImageDecoderWEBP::_initialize( bool & _version )
 	{
+		(void)_version;
+
 		size_t dataSize = m_stream->size();
 				
 		//We must write all data into buffer in initialise because WebP Mux can not determine alpha data in small chunk
 		//m_dataBuffer = new uint8_t [m_dataSize];
         s_WEBPBuffer.resize( dataSize );
-		m_stream->read( &s_WEBPBuffer[0], s_WEBPBuffer.size() );
+
+		uint8_t * buffer = &s_WEBPBuffer[0];
+		size_t bufferSize = s_WEBPBuffer.size();
+
+		m_stream->read( buffer, bufferSize );
 		
-        VP8StatusCode status = WebPGetFeatures( &s_WEBPBuffer[0], s_WEBPBuffer.size(), &m_features );
+        VP8StatusCode status = WebPGetFeatures( buffer, bufferSize, &m_features );
 
         if( status != VP8_STATUS_OK )
         {

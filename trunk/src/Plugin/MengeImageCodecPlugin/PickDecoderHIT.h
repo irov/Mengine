@@ -12,9 +12,9 @@ namespace Menge
         ~PickDecoderHIT();
 
     public:
-        bool _initialize() override;
+        bool _initialize( bool & _version ) override;
 
-    public:
+	public:
         size_t decode( void * _buffer, size_t _bufferSize ) override;
 
     private:

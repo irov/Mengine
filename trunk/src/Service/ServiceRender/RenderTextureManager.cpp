@@ -345,8 +345,9 @@ namespace Menge
             return nullptr;
         }	
 
+		bool version;
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( _codec, stream );
+            ->createDecoderT<ImageDecoderInterfacePtr>( _codec, stream, version );
 
         if( imageDecoder == nullptr )
         {

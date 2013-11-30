@@ -11,14 +11,15 @@ namespace Menge
 	public:
 		XmlToBinDecoder();
 	
-    public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream ) override;
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        ServiceProviderInterface * getServiceProvider() const;
+        bool initialize( const InputStreamInterfacePtr & _stream, bool & _version ) override;
 
     protected:
-        InputStreamInterfacePtr getStream() const override;
+        const InputStreamInterfacePtr & getStream() const override;
 
 	public:
 		bool setOptions( CodecOptions * _options ) override;

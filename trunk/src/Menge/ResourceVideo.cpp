@@ -200,8 +200,9 @@ namespace Menge
             return nullptr;
         }
 
+		bool version;
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<VideoDecoderInterfacePtr>( m_codecType, videoStream );
+            ->createDecoderT<VideoDecoderInterfacePtr>( m_codecType, videoStream, version );
 
         if( videoDecoder == nullptr )
         {

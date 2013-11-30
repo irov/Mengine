@@ -13,7 +13,7 @@ namespace Menge
 		: public DevelopmentConverter
 	{
 	public:
-		SoundConverterFFMPEGToOGG( ServiceProviderInterface * _serviceProvider );
+		SoundConverterFFMPEGToOGG();
 		~SoundConverterFFMPEGToOGG();
 
 	public:

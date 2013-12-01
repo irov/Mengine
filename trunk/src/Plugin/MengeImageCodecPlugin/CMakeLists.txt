@@ -16,7 +16,6 @@ src
 	ImageDecoderPNG.h
     ImageDecoderDDZ.cpp
     ImageDecoderDDZ.h
-    DDSHeader.h
 	#ImageDecoderCombinerRGBAndAlpha.cpp
     #ImageDecoderCombinerRGBAndAlpha.h
 
@@ -35,6 +34,12 @@ src
    
     ImageDecoderWEBP.h
     ImageDecoderWEBP.cpp
+    
+    ImageDecoderPVRTZ.h
+    ImageDecoderPVRTZ.cpp
+    
+    ImageDecoderETZ1.h
+    ImageDecoderETZ1.cpp
 )
 
 INCLUDE_DIRECTORIES( 

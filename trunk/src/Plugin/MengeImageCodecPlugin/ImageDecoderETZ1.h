@@ -1,24 +1,24 @@
-#	pragma once
+#pragma once
 
 #	include "Codec/ImageDecoder.h"
 
 namespace Menge
 {
-	class ImageDecoderDDZ
+	class ImageDecoderETZ1 
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderDDZ();
-		~ImageDecoderDDZ();
+		ImageDecoderETZ1();
+		~ImageDecoderETZ1();
 
 	public:
 		bool _initialize( bool & _version ) override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
-	
-	private:       
-        size_t m_uncompress_size;
-        size_t m_compress_size;
+
+	private:
+		size_t m_uncompress_size;		
+		size_t m_compress_size;
 	};
-}	// namespace Menge
+}

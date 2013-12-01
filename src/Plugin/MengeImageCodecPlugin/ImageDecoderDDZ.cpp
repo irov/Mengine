@@ -5,12 +5,65 @@
 
 #   include "Config/Blobject.h"
 
-#	include "Utils/Logger/Logger.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	static const uint32_t DDS_MAGIC = 0x20534444;
+
+	static const uint32_t DDSD_CAPS = 0x00000001;
+	static const uint32_t DDSD_HEIGHT = 0x00000002;
+	static const uint32_t DDSD_WIDTH = 0x00000004;
+	static const uint32_t DDSD_PITCH = 0x00000008;
+	static const uint32_t DDSD_PIXELFORMAT = 0x00001000;
+	static const uint32_t DDSD_MIPMAPCOUNT = 0x00020000;
+	static const uint32_t DDSD_LINEARSIZE = 0x00080000;
+	static const uint32_t DDSD_DEPTH = 0x00800000;
+
+	//
+	// DDPIXELFORMAT flags
+	//
+	static const uint32_t DDPF_ALPHAPIXELS = 0x00000001l;
+	static const uint32_t DDPF_FOURCC = 0x00000004l;        // Compressed formats
+	static const uint32_t DDPF_RGB = 0x00000040l;        // Uncompressed formats
+	static const uint32_t DDPF_ALPHA = 0x00000002l;
+	static const uint32_t DDPF_COMPRESSED = 0x00000080l;
+	static const uint32_t DDPF_LUMINANCE = 0x00020000l;
+	static const uint32_t DDPF_BUMPLUMINANCE = 0x00040000l;        // L,U,V
+	static const uint32_t DDPF_BUMPDUDV = 0x00080000l;        // U,V
+
+#pragma pack( push, 1 )
+	struct DDS_PIXELFORMAT {
+		uint32_t dwSize;
+		uint32_t dwFlags;
+		uint32_t dwFourCC;
+		uint32_t dwRGBBitCount;
+		uint32_t dwRBitMask;
+		uint32_t dwGBitMask;
+		uint32_t dwBBitMask;
+		uint32_t dwABitMask;
+	};
+
+	typedef struct {
+		uint32_t           dwSize;
+		uint32_t           dwFlags;
+		uint32_t           dwHeight;
+		uint32_t           dwWidth;
+		uint32_t           dwPitchOrLinearSize;
+		uint32_t           dwDepth;
+		uint32_t           dwMipMapCount;
+		uint32_t           dwReserved1[11];
+		DDS_PIXELFORMAT	 ddspf;
+		uint32_t           dwSurfaceFlags;
+		uint32_t           dwCubemapFlags;
+		uint32_t           dwReserved2[3];
+	} DDS_HEADER;
+#pragma pack(pop)
+
+#   define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
     //////////////////////////////////////////////////////////////////////////
-    static PixelFormat s_convertFourCCFormat(uint32 fourcc)
+    static PixelFormat s_convertFourCCFormat(uint32_t fourcc)
     {
         // convert dxt pixel format
         switch(fourcc)
@@ -31,6 +84,8 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderDDZ::ImageDecoderDDZ()
+		: m_uncompress_size(0)
+		, m_compress_size(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -42,20 +97,10 @@ namespace Menge
 	{		
 		(void)_version;
 
-        size_t file_size = m_stream->size();
-
-        if( file_size == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::_initialize file zero size"
-                );
-
-            return false;
-        }
-
-        m_stream->read( &m_dds_size, sizeof(m_dds_size) );
+        m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
         m_stream->read( &m_compress_size, sizeof(m_compress_size) );
 
-        uint32 magic;
+        uint32_t magic;
         m_stream->read( &magic, sizeof(magic) );
 
         if( magic != DDS_MAGIC )
@@ -66,10 +111,11 @@ namespace Menge
             return false;
         }
         
-        m_stream->read( &m_header, sizeof(m_header) );
+		DDS_HEADER header;
+        m_stream->read( &header, sizeof(header) );
         
 		//Check valid structure sizes
-		if( m_header.dwSize != 124 && m_header.ddspf.dwSize != 32)
+		if( header.dwSize != 124 && header.ddspf.dwSize != 32)
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ImageDecoderDDS::initialize invalid dds file header" 
                 );
@@ -77,22 +123,22 @@ namespace Menge
 			return false;
 		}
 
-		if( (m_header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && m_header.dwMipMapCount > 0 )
+		if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
 		{
 			LOGGER_WARNING(m_serviceProvider)( "ImageDecoderDDS::initialize dds file has mipmaps" 
                 );                        
 		}
 
-		m_dataInfo.depth = m_header.dwDepth;
-		m_dataInfo.mipmaps = m_header.dwMipMapCount;
-		m_dataInfo.width = m_header.dwWidth;
-		m_dataInfo.height = m_header.dwHeight;
+		m_dataInfo.depth = header.dwDepth;
+		m_dataInfo.mipmaps = header.dwMipMapCount;
+		m_dataInfo.width = header.dwWidth;
+		m_dataInfo.height = header.dwHeight;
         m_dataInfo.channels = 3;
 		m_dataInfo.flags = 0;
 		
         //bool decompressDXT = false;
         
-        if( (m_header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
+        if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
         {
             LOGGER_ERROR(m_serviceProvider)( "ImageDecoderDDS::initialize dds file no compress" 
                 );
@@ -100,7 +146,7 @@ namespace Menge
             return false;
         }
 
-        m_dataInfo.format = s_convertFourCCFormat( m_header.ddspf.dwFourCC );
+        m_dataInfo.format = s_convertFourCCFormat( header.ddspf.dwFourCC );
 
         m_dataInfo.size = RENDER_SERVICE(m_serviceProvider)
             ->getMemorySize( m_dataInfo.width, m_dataInfo.height, 1, m_dataInfo.format );
@@ -112,15 +158,16 @@ namespace Menge
 	{
         (void)_bufferSize;
 
-        static TBlobject compress_buf;
+        static TBlobject s_compress_cache;
 
-        compress_buf.resize( m_compress_size );
+        s_compress_cache.resize( m_compress_size );
+		TBlobject::value_type * compress_buffer = &s_compress_cache[0];
 
-        m_stream->read( &compress_buf[0], m_compress_size );
+        m_stream->read( compress_buffer, m_compress_size );
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( _buffer, m_dds_size, uncompress_size, &compress_buf[0], m_compress_size ) == false )
+            ->uncompress( _buffer, m_uncompress_size, uncompress_size, compress_buffer, m_compress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::decode uncompress failed"
                 );

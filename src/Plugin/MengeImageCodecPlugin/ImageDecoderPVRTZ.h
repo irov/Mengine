@@ -4,21 +4,21 @@
 
 namespace Menge
 {
-	class ImageDecoderDDZ
-		: public ImageDecoder
+	class ImageDecoderPVRTZ 
+		: public Menge::ImageDecoder
 	{
 	public:
-		ImageDecoderDDZ();
-		~ImageDecoderDDZ();
+		ImageDecoderPVRTZ();
+		~ImageDecoderPVRTZ();
 
 	public:
 		bool _initialize( bool & _version ) override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
-	
-	private:       
-        size_t m_uncompress_size;
-        size_t m_compress_size;
+
+	private:
+		size_t m_uncompress_size;
+		size_t m_compress_size;
 	};
-}	// namespace Menge
+}

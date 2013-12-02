@@ -18,7 +18,7 @@ namespace Metacode
         ~Meta_DataBlock();
     
     public:
-        unsigned int getId() const override;
+        size_t getId() const override;
     public:
         const Menge::ConstString & get_Name() const
         {
@@ -49,7 +49,7 @@ namespace Metacode
             Meta_Include();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_Path() const
             {
@@ -85,7 +85,7 @@ namespace Metacode
             Meta_Resource();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_Name() const
             {
@@ -138,7 +138,7 @@ namespace Metacode
             Meta_ResourceAnimation();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
@@ -153,7 +153,7 @@ namespace Metacode
                 Meta_Sequence();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const float & get_Delay() const
                 {
@@ -220,7 +220,7 @@ namespace Metacode
             Meta_ResourceCursorICO();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_File_Path() const
             {
@@ -256,7 +256,7 @@ namespace Metacode
             Meta_ResourceCursorSystem();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_File_Path() const
             {
@@ -292,7 +292,7 @@ namespace Metacode
             Meta_ResourceEmitter();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_Container_Name() const
             {
@@ -404,7 +404,7 @@ namespace Metacode
             Meta_ResourceEmitterContainer();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_File_Path() const
             {
@@ -457,7 +457,7 @@ namespace Metacode
             Meta_ResourceExternal();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
@@ -476,7 +476,7 @@ namespace Metacode
             Meta_ResourceFont();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_Color_Value() const
             {
@@ -697,7 +697,7 @@ namespace Metacode
             Meta_ResourceGlyph();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_GlyphPath_Path() const
             {
@@ -733,7 +733,7 @@ namespace Metacode
             Meta_ResourceHIT();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_File_Codec() const
             {
@@ -853,7 +853,7 @@ namespace Metacode
             Meta_ResourceImageCombineRGBAndAlpha();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_File_Alpha() const
             {
@@ -1208,7 +1208,7 @@ namespace Metacode
             Meta_ResourceImageDefault();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_File_Alpha() const
             {
@@ -1580,7 +1580,7 @@ namespace Metacode
             Meta_ResourceImageMultiplyRGBAndAlpha();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_File_WrapX() const
             {
@@ -1935,7 +1935,7 @@ namespace Metacode
             Meta_ResourceImageSolid();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ColourValue & get_Color_Value() const
             {
@@ -1988,7 +1988,7 @@ namespace Metacode
             Meta_ResourceImageSubstract();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_Image_Alpha() const
             {
@@ -2125,7 +2125,7 @@ namespace Metacode
             Meta_ResourceInternalObject();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_Internal_Group() const
             {
@@ -2178,7 +2178,7 @@ namespace Metacode
             Meta_ResourceMovie();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_Duration_Value() const
             {
@@ -2473,7 +2473,7 @@ namespace Metacode
                 Meta_MovieCamera3D();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const float & get_CameraAspect() const
                 {
@@ -2594,7 +2594,7 @@ namespace Metacode
                 Meta_MovieLayer2D();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const Menge::ConstString & get_BlendingMode() const
                 {
@@ -2934,7 +2934,7 @@ namespace Metacode
                 Meta_MovieLayer3D();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const Menge::ConstString & get_BlendingMode() const
                 {
@@ -3322,7 +3322,7 @@ namespace Metacode
             Meta_ResourcePlaylist();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_Loop_Value() const
             {
@@ -3417,7 +3417,7 @@ namespace Metacode
                 Meta_Tracks();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
             protected:
                 bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
@@ -3432,7 +3432,7 @@ namespace Metacode
                     Meta_Track();
                 
                 public:
-                    unsigned int getId() const override;
+                    size_t getId() const override;
                 public:
                     bool has_Codec() const
                     {
@@ -3542,7 +3542,7 @@ namespace Metacode
             Meta_ResourceShape();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::Polygon & get_Polygon_Value() const
             {
@@ -3578,7 +3578,7 @@ namespace Metacode
             Meta_ResourceSound();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_DefaultVolume_Value() const
             {
@@ -3782,7 +3782,7 @@ namespace Metacode
             Meta_ResourceVideo();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_File_Alpha() const
             {
@@ -4028,7 +4028,7 @@ namespace Metacode
             Meta_ResourceWindow();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_WindowBackground_ResourceImageName() const
             {
@@ -4386,7 +4386,7 @@ namespace Metacode
         Meta_Font();
     
     public:
-        unsigned int getId() const override;
+        size_t getId() const override;
     public:
         const float & get_height() const
         {
@@ -4404,6 +4404,22 @@ namespace Metacode
             (_self->*_method)( this->height );
         }
         
+        const float & get_size() const
+        {
+            return this->size;
+        }
+        
+        void swap_size( float & _value ) const
+        {
+            std::swap( _value, this->size);
+        }
+        
+        template<class C, class M>
+        void method_size( C * _self, M _method ) const
+        {
+            (_self->*_method)( this->size );
+        }
+        
     protected:
         bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
         bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
@@ -4417,7 +4433,7 @@ namespace Metacode
             Meta_Char();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::GlyphChar & get_code() const
             {
@@ -4496,7 +4512,7 @@ namespace Metacode
                 Meta_Kerning();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const float & get_advance() const
                 {
@@ -4563,6 +4579,7 @@ namespace Metacode
     protected:
     protected:
         mutable float height;
+        mutable float size;
     public:
         typedef stdex::auto_array<Meta_Char> TVectorMeta_Char;
     
@@ -4582,7 +4599,7 @@ namespace Metacode
         Meta_KeyFramesPack();
     
     public:
-        unsigned int getId() const override;
+        size_t getId() const override;
     public:
         const size_t & get_MaxIndex() const
         {
@@ -4613,7 +4630,7 @@ namespace Metacode
             Meta_ImageShape();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_Count() const
             {
@@ -4756,7 +4773,7 @@ namespace Metacode
                 Meta_Shape();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const Menge::Polygon & get_Polygon() const
                 {
@@ -4813,7 +4830,7 @@ namespace Metacode
             Meta_KeyFrames2D();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_Count() const
             {
@@ -4924,7 +4941,7 @@ namespace Metacode
                 Meta_KeyFrame2D();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 bool has_AnchorPoint() const
                 {
@@ -5256,7 +5273,7 @@ namespace Metacode
             Meta_KeyFrames3D();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_Count() const
             {
@@ -5367,7 +5384,7 @@ namespace Metacode
                 Meta_KeyFrame3D();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 bool has_AnchorPoint() const
                 {
@@ -5699,7 +5716,7 @@ namespace Metacode
             Meta_TimeRemap();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const size_t & get_LayerIndex() const
             {
@@ -5797,7 +5814,7 @@ namespace Metacode
         Meta_Pak();
     
     public:
-        unsigned int getId() const override;
+        size_t getId() const override;
     public:
     protected:
         bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
@@ -5812,7 +5829,7 @@ namespace Metacode
             Meta_Resources();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
@@ -5827,7 +5844,7 @@ namespace Metacode
                 Meta_Resource();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const Menge::ConstString & get_Path() const
                 {
@@ -5877,7 +5894,7 @@ namespace Metacode
             Meta_Scripts();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             const Menge::ConstString & get_Path() const
             {
@@ -5913,7 +5930,7 @@ namespace Metacode
             Meta_Texts();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
@@ -5928,7 +5945,7 @@ namespace Metacode
                 Meta_Text();
             
             public:
-                unsigned int getId() const override;
+                size_t getId() const override;
             public:
                 const Menge::ConstString & get_Path() const
                 {
@@ -6012,7 +6029,7 @@ namespace Metacode
         Meta_Texts();
     
     public:
-        unsigned int getId() const override;
+        size_t getId() const override;
     public:
     protected:
         bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
@@ -6027,7 +6044,7 @@ namespace Metacode
             Meta_Text();
         
         public:
-            unsigned int getId() const override;
+            size_t getId() const override;
         public:
             bool has_CharOffset() const
             {

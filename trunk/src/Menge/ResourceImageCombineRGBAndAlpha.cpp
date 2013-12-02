@@ -149,7 +149,7 @@ namespace Menge
 				, _fileNameRGB.c_str()
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
 		ImageDecoderInterfacePtr imageDecoderRGB = this->createDecoder_( streamRGB, _codecRGB );
@@ -216,7 +216,7 @@ namespace Menge
 		int pitch = 0;
 		unsigned char * buffer = texture->lock( &pitch, rect, false );
 		
-		if( buffer == NULL )
+		if( buffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t lock buffer '%s'"
 				, this->getName().c_str()

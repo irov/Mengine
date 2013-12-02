@@ -123,7 +123,7 @@ namespace Menge
         m_codecType = CODEC_SERVICE(m_serviceProvider)
             ->findCodecType( _imagePath );
 
-        m_texture = NULL;
+        m_texture = nullptr;
         m_uv = mt::vec4f(0.f,0.f,1.f,1.f);
 		m_isAlpha = true;
         m_isUVRotate = false;

@@ -61,44 +61,6 @@ namespace Menge
 		Node::setLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
-	{
-		mt::box2f convertBox = _screenspaceBox;
-		convertBox.minimum += _viewport.begin;
-		convertBox.maximum += _viewport.begin;
-
-		bool result = mt::is_intersect( _layerspaceBox, convertBox );
-		
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testPoint( RenderCameraInterface * _camera, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const
-	{
-        (void)_camera;
-        (void)_layerspaceHotspot;
-        (void)_point;
-
-		//const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
-		//const mt::vec2f & posA = _layerspaceHotspot->getCameraPosition(_camera2D);
-
-		//const Polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
-
-		//mt::mat3f worldMatrixA;
-		//mt::set_m3_from_axes( worldMatrixA, mt::vec3f(dirA,1), mt::vec3f(mt::perp(dirA),1), mt::vec3f(posA,1) );
-
-		//Polygon layerspacePolygon_wm;
-		//polygon_wm( layerspacePolygon_wm, layerspacePolygon, worldMatrixA );
-
-		//Polygon polygon_point;
-		//boost::geometry::append(polygon_point, _point);
-
-		//bool is_intersect = boost::geometry::intersects(layerspacePolygon_wm, polygon_point);
-
-		//return is_intersect;
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const
 	{
 		const mt::vec3f & wp = _node->getWorldPosition();

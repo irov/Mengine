@@ -42,6 +42,7 @@ namespace Menge
 		DECL_CONST( Arrow );
 		DECL_CONST( Scene );
         DECL_CONST( Layer2D );
+		DECL_CONST( Layer2DParallax );
         DECL_CONST( HotSpot );
         DECL_CONST( HotSpotImage );
         DECL_CONST( HotSpotShape );

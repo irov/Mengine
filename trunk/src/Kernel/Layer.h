@@ -36,10 +36,6 @@ namespace Menge
 	public:
 		void setLayer( Layer * _layer ) override;
 
-	public:
-		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
-		virtual bool testPoint( RenderCameraInterface * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const;
-
     protected:
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 

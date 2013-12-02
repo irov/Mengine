@@ -5,8 +5,6 @@
 #	include "Camera2D.h"
 #	include "RenderViewport.h"
 
-#	include "Player.h"
-
 #	include "Interface/NodeInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/PhysicSystem2DInterface.h"
@@ -19,21 +17,10 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
-		: m_factorParallax(1.f, 1.f)
-		, m_viewport(0.f, 0.f, 0.f, 0.f)
+		: m_viewport(0.f, 0.f, 0.f, 0.f)
 		, m_hasViewport(false)
 		, m_renderViewport(nullptr)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
-	{
-		m_factorParallax = _factor;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Layer2D::getParallaxFactor() const
-	{
-		return m_factorParallax;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_activate()
@@ -72,21 +59,7 @@ namespace	Menge
 	{
 		const Viewport & viewport = _camera2D->getRenderport();
 
-		Viewport vp = viewport;
-		vp.begin.x *= m_factorParallax.x;
-		vp.begin.y *= m_factorParallax.y;
-
-		return _point + vp.begin;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer2D::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
-	{
-		Viewport vp = _viewport;
-		vp.parallax( m_factorParallax );
-
-		bool result = Layer::testBoundingBox( _viewport, _layerspaceBox, _screenspaceBox );
-
-		return result;
+		return _point + viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node * _node ) const

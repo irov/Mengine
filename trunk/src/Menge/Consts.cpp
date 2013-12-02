@@ -42,6 +42,7 @@ namespace Menge
         INIT_CONST( Arrow );
         INIT_CONST( Scene );
         INIT_CONST( Layer2D );
+		INIT_CONST( Layer2DParallax );
         INIT_CONST( HotSpot );
         INIT_CONST( HotSpotImage );
         INIT_CONST( HotSpotShape );

@@ -368,6 +368,8 @@ ADD_FILTER(
 Scene\\\\Layer2D
 	Layer2D.cpp
 	Layer2D.h
+	Layer2DParallax.cpp
+	Layer2DParallax.h
 )
 
 ADD_FILTER(

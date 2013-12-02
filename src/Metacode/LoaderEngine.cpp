@@ -318,7 +318,7 @@ namespace Menge
 	{
 		bool version;
 		XmlDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "xml2bin"), 0, version );
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "xml2bin"), nullptr, version );
 
 		if( decoder == nullptr )
 		{

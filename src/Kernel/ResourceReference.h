@@ -21,9 +21,6 @@ namespace Menge
 {
     class ServiceProviderInterface;
 
-    class LogServiceInterface;
-    class CodecServiceInterface;
-
 	class ResourceVisitor;
 	
 	class ResourceReference

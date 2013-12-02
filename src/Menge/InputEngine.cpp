@@ -255,7 +255,7 @@ namespace Menge
 		m_keyEventParams.push_back( params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
+	void InputEngine::onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		m_eventsAdd.push_back( ET_MOUSEBUTTON );
 		MouseButtonParams params = { _touchId, _point, _button, _isDown };

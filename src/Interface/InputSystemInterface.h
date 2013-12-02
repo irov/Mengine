@@ -310,7 +310,7 @@ namespace Menge
 		virtual void onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
 
 	public:
-		virtual void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) = 0;
+		virtual void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
 		virtual void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;
         virtual void onMouseEnter( unsigned int _touchId, const mt::vec2f & _point ) = 0;

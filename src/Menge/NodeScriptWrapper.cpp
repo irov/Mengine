@@ -1040,7 +1040,7 @@ namespace Menge
                 ->onMouseMove( _touchId, vpos, vmp.x, vmp.y, 0 );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_pushMouseButtonEvent( size_t _touchId, const mt::vec2f & _pos, size_t _button, bool _isDown )
+        void s_pushMouseButtonEvent( size_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
         {
             mt::vec2f vpos;
             INPUT_SERVICE(m_serviceProvider)

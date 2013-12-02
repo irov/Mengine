@@ -72,7 +72,7 @@ namespace Metacode
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::getId() const
+    size_t Meta_DataBlock::getId() const
     {
         return 1;
     }
@@ -466,7 +466,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_Include::getId() const
+    size_t Meta_DataBlock::Meta_Include::getId() const
     {
         return 2;
     }
@@ -525,7 +525,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_Resource::getId() const
+    size_t Meta_DataBlock::Meta_Resource::getId() const
     {
         return 3;
     }
@@ -593,7 +593,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceAnimation::getId() const
+    size_t Meta_DataBlock::Meta_ResourceAnimation::getId() const
     {
         return 16;
     }
@@ -671,7 +671,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::getId() const
+    size_t Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::getId() const
     {
         return 3;
     }
@@ -739,7 +739,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceCursorICO::getId() const
+    size_t Meta_DataBlock::Meta_ResourceCursorICO::getId() const
     {
         return 10;
     }
@@ -802,7 +802,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceCursorSystem::getId() const
+    size_t Meta_DataBlock::Meta_ResourceCursorSystem::getId() const
     {
         return 9;
     }
@@ -866,7 +866,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceEmitter::getId() const
+    size_t Meta_DataBlock::Meta_ResourceEmitter::getId() const
     {
         return 6;
     }
@@ -958,7 +958,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceEmitterContainer::getId() const
+    size_t Meta_DataBlock::Meta_ResourceEmitterContainer::getId() const
     {
         return 5;
     }
@@ -1030,7 +1030,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceExternal::getId() const
+    size_t Meta_DataBlock::Meta_ResourceExternal::getId() const
     {
         return 24;
     }
@@ -1085,7 +1085,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceFont::getId() const
+    size_t Meta_DataBlock::Meta_ResourceFont::getId() const
     {
         return 7;
     }
@@ -1201,7 +1201,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceGlyph::getId() const
+    size_t Meta_DataBlock::Meta_ResourceGlyph::getId() const
     {
         return 8;
     }
@@ -1266,7 +1266,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceHIT::getId() const
+    size_t Meta_DataBlock::Meta_ResourceHIT::getId() const
     {
         return 17;
     }
@@ -1359,7 +1359,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::getId() const
+    size_t Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::getId() const
     {
         return 20;
     }
@@ -1509,7 +1509,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageDefault::getId() const
+    size_t Meta_DataBlock::Meta_ResourceImageDefault::getId() const
     {
         return 4;
     }
@@ -1668,7 +1668,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::getId() const
+    size_t Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::getId() const
     {
         return 21;
     }
@@ -1810,7 +1810,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageSolid::getId() const
+    size_t Meta_DataBlock::Meta_ResourceImageSolid::getId() const
     {
         return 18;
     }
@@ -1884,7 +1884,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageSubstract::getId() const
+    size_t Meta_DataBlock::Meta_ResourceImageSubstract::getId() const
     {
         return 22;
     }
@@ -1978,7 +1978,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceInternalObject::getId() const
+    size_t Meta_DataBlock::Meta_ResourceInternalObject::getId() const
     {
         return 19;
     }
@@ -2057,7 +2057,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::getId() const
+    size_t Meta_DataBlock::Meta_ResourceMovie::getId() const
     {
         return 14;
     }
@@ -2251,7 +2251,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
+    size_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
     {
         return 12;
     }
@@ -2359,7 +2359,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
+    size_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
     {
         return 10;
     }
@@ -2538,7 +2538,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
+    size_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
     {
         return 11;
     }
@@ -2715,7 +2715,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::getId() const
+    size_t Meta_DataBlock::Meta_ResourcePlaylist::getId() const
     {
         return 12;
     }
@@ -2818,7 +2818,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::getId() const
+    size_t Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::getId() const
     {
         return 5;
     }
@@ -2887,7 +2887,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::getId() const
+    size_t Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::getId() const
     {
         return 1;
     }
@@ -2957,7 +2957,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceShape::getId() const
+    size_t Meta_DataBlock::Meta_ResourceShape::getId() const
     {
         return 23;
     }
@@ -3024,7 +3024,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceSound::getId() const
+    size_t Meta_DataBlock::Meta_ResourceSound::getId() const
     {
         return 11;
     }
@@ -3136,7 +3136,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceVideo::getId() const
+    size_t Meta_DataBlock::Meta_ResourceVideo::getId() const
     {
         return 15;
     }
@@ -3255,7 +3255,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceWindow::getId() const
+    size_t Meta_DataBlock::Meta_ResourceWindow::getId() const
     {
         return 13;
     }
@@ -3464,7 +3464,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Font::getId() const
+    size_t Meta_Font::getId() const
     {
         return 3;
     }
@@ -3482,6 +3482,15 @@ namespace Metacode
     
                 return true;
             }break;
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->size ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
         }
     
         return false;
@@ -3491,7 +3500,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 3:
             {
                 includes_Meta_Char.reserve( _count );
                 return true;
@@ -3506,7 +3515,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 2:
+        case 3:
             {
                 Meta_Font::Meta_Char & metadata = includes_Meta_Char.emplace_back();
     
@@ -3539,9 +3548,9 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Font::Meta_Char::getId() const
+    size_t Meta_Font::Meta_Char::getId() const
     {
-        return 2;
+        return 3;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Font::Meta_Char::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -3641,7 +3650,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Font::Meta_Char::Meta_Kerning::getId() const
+    size_t Meta_Font::Meta_Char::Meta_Kerning::getId() const
     {
         return 5;
     }
@@ -3709,7 +3718,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::getId() const
+    size_t Meta_KeyFramesPack::getId() const
     {
         return 5;
     }
@@ -3840,7 +3849,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_ImageShape::getId() const
+    size_t Meta_KeyFramesPack::Meta_ImageShape::getId() const
     {
         return 3;
     }
@@ -3955,7 +3964,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::getId() const
+    size_t Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::getId() const
     {
         return 6;
     }
@@ -4016,7 +4025,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames2D::getId() const
+    size_t Meta_KeyFramesPack::Meta_KeyFrames2D::getId() const
     {
         return 4;
     }
@@ -4120,7 +4129,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::getId() const
+    size_t Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::getId() const
     {
         return 4;
     }
@@ -4249,7 +4258,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames3D::getId() const
+    size_t Meta_KeyFramesPack::Meta_KeyFrames3D::getId() const
     {
         return 5;
     }
@@ -4353,7 +4362,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::getId() const
+    size_t Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::getId() const
     {
         return 4;
     }
@@ -4480,7 +4489,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_TimeRemap::getId() const
+    size_t Meta_KeyFramesPack::Meta_TimeRemap::getId() const
     {
         return 2;
     }
@@ -4548,7 +4557,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::getId() const
+    size_t Meta_Pak::getId() const
     {
         return 2;
     }
@@ -4652,7 +4661,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Resources::getId() const
+    size_t Meta_Pak::Meta_Resources::getId() const
     {
         return 2;
     }
@@ -4720,7 +4729,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Resources::Meta_Resource::getId() const
+    size_t Meta_Pak::Meta_Resources::Meta_Resource::getId() const
     {
         return 1;
     }
@@ -4779,7 +4788,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Scripts::getId() const
+    size_t Meta_Pak::Meta_Scripts::getId() const
     {
         return 1;
     }
@@ -4838,7 +4847,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Texts::getId() const
+    size_t Meta_Pak::Meta_Texts::getId() const
     {
         return 3;
     }
@@ -4906,7 +4915,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Texts::Meta_Text::getId() const
+    size_t Meta_Pak::Meta_Texts::Meta_Text::getId() const
     {
         return 1;
     }
@@ -4965,7 +4974,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Texts::getId() const
+    size_t Meta_Texts::getId() const
     {
         return 4;
     }
@@ -5037,7 +5046,7 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Texts::Meta_Text::getId() const
+    size_t Meta_Texts::Meta_Text::getId() const
     {
         return 1;
     }

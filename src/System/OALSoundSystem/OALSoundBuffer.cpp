@@ -1,11 +1,3 @@
-/*
- *	OALSoundBuffer.cpp
- *
- *	Created by _Berserk_ on 17.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
-
 #	include "OALSoundBuffer.h"
 #	include "OALSoundSystem.h"
 

@@ -13,7 +13,9 @@ if( WIN32 )
 	ADD_SUBDIRECTORY( MengeWin32FileSystem )
     ADD_SUBDIRECTORY( Win32UnicodeSystem )
     ADD_SUBDIRECTORY( Win32ThreadSystem )
-elseif( APPLE )	
+endif( WIN32 )
+    
+if( APPLE )	
 	IF(${MENGINE_TARGET} STREQUAL "MACOS")
 		#ADD_SUBDIRECTORY( MengeMacOSFileSystem )
 		ADD_SUBDIRECTORY( PosixFileSystem )
@@ -28,9 +30,11 @@ if( WIN32 )
 		#ADD_SUBDIRECTORY( OGLRenderSystem )
 	#endif( MENGE_DX9 )
     ADD_SUBDIRECTORY( DX9RenderSystem )
-else( WIN32 )
-	ADD_SUBDIRECTORY( OGLRenderSystem )
 endif( WIN32 )
+
+if( APPLE )	
+	ADD_SUBDIRECTORY( OGLRenderSystem )
+endif( APPLE )
 
 
 SET( APPLICATION_DEPENDENCIES

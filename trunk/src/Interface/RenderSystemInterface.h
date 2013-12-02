@@ -322,12 +322,12 @@ namespace Menge
     struct RenderVertex2D
     {
         mt::vec3f pos;
-        uint32 color;
+        uint32_t color;
         mt::vec2f uv;
         mt::vec2f uv2;
     };
     //////////////////////////////////////////////////////////////////////////
-    static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
+    static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
     //////////////////////////////////////////////////////////////////////////
     typedef std::vector<RenderVertex2D> TVectorRenderVertex2D;
 	//////////////////////////////////////////////////////////////////////////
@@ -504,17 +504,17 @@ namespace Menge
 
 		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
+		virtual void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32_t _flags ) = 0;
 		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
 		virtual IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
+		virtual void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32_t _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) = 0;
 
-		virtual void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) = 0;
+		virtual void setVertexDeclaration( size_t _vertexSize, uint32_t _declaration ) = 0;
 
         virtual RenderShaderInterface * createShader( const void * _code, size_t _len ) = 0;
         virtual void setShader( RenderShaderInterface * _shader ) = 0;
@@ -524,7 +524,7 @@ namespace Menge
 
 		virtual void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
 		virtual void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
-		virtual void setTextureFactor( uint32 _color ) = 0;
+		virtual void setTextureFactor( uint32_t _color ) = 0;
 		virtual void setSrcBlendFactor( EBlendFactor _src ) = 0;
 		virtual void setDstBlendFactor( EBlendFactor _dst ) = 0;
 		virtual void setCullMode( ECullMode _mode ) = 0;
@@ -536,7 +536,7 @@ namespace Menge
 		virtual void setShadeType( EShadeType _sType ) = 0;
 		virtual void setAlphaTestEnable( bool _alphaTest ) = 0;
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
-		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) = 0;
+		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) = 0;
 		virtual void setLightingEnable( bool _light ) = 0;
 		virtual void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
@@ -565,10 +565,10 @@ namespace Menge
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
-		virtual void clearFrameBuffer( uint32 _frameBufferTypes
-											, uint32 _color = 0
+		virtual void clearFrameBuffer( uint32_t _frameBufferTypes
+											, uint32_t _color = 0
 											, float _depth = 1.0f
-											, uint16 _stencil = 0 ) = 0;
+											, uint16_t _stencil = 0 ) = 0;
 
 		virtual void setViewport( const Viewport & _viewport ) = 0;
 
@@ -583,7 +583,7 @@ namespace Menge
 		virtual void onWindowClose() = 0;
 
 		virtual void setVSync( bool _vSync ) = 0;
-		virtual void clear( uint32 _color ) = 0;
+		virtual void clear( uint32_t _color ) = 0;
 
         virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
 
@@ -615,7 +615,7 @@ namespace Menge
         const RenderVertex2D * vertices;
         size_t verticesNum;
 
-        const uint16 * indices;
+        const uint16_t * indices;
         size_t indicesNum;
     };
 
@@ -632,7 +632,7 @@ namespace Menge
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , EPrimitiveType _type
             , const RenderVertex2D * _vertices, size_t _verticesNum
-            , const uint16 * _indices, size_t _indicesNum ) = 0;
+            , const uint16_t * _indices, size_t _indicesNum ) = 0;
 
         virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum            
             , const RenderVertex2D * _vertices, size_t _verticesNum ) = 0;
@@ -652,7 +652,7 @@ namespace Menge
 		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) = 0;
 
 	public:
-		virtual void clear( uint32 _color ) = 0;
+		virtual void clear( uint32_t _color ) = 0;
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;

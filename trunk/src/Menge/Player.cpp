@@ -526,6 +526,19 @@ namespace Menge
 		m_camera2D->enable();
 		this->setRenderCamera( m_camera2D );
 
+
+		m_arrowCamera2D = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
+
+		m_arrowCamera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
+
+		m_arrowCamera2D->setRenderport( vp );
+
+		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
+		//camera->setLocalPosition(vp_pos);
+
+		m_arrowCamera2D->enable();
+
 		m_viewport2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
 		
@@ -562,6 +575,12 @@ namespace Menge
         {
             m_camera2D->destroy();
 			m_camera2D = nullptr;
+		}
+
+		if( m_arrowCamera2D != nullptr )
+		{
+			m_arrowCamera2D->destroy();
+			m_arrowCamera2D = nullptr;
 		}
 
 		if( m_viewport2D != nullptr )
@@ -781,6 +800,11 @@ namespace Menge
 		if( m_camera2D != nullptr )
 		{
 			m_camera2D->update( gameTime, _timing );
+		}
+
+		if( m_arrowCamera2D != nullptr )
+		{
+			m_arrowCamera2D->update( gameTime, _timing );
 		}
 
 		if( m_arrow != nullptr )
@@ -1022,15 +1046,6 @@ namespace Menge
 		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCamera2DPosition( const mt::vec2f & _pos )
-	{
-		if( m_camera2D != nullptr )
-		{
-			mt::vec3f v3_pos(_pos, 0.f);
-			m_camera2D->setLocalPosition( v3_pos );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	float Player::getTime() const
 	{
 		return m_time;
@@ -1124,7 +1139,7 @@ namespace Menge
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{
-			m_arrow->render( m_renderViewport, m_renderCamera, debugMask );
+			m_arrow->render( m_renderViewport, m_arrowCamera2D, debugMask );
 		}
 
 //#	ifndef MENGE_MASTER_RELEASE

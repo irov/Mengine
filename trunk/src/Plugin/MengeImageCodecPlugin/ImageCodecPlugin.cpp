@@ -9,8 +9,11 @@
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderWEBP.h"
 #	include "ImageDecoderDDZ.h"
+#	include "ImageDecoderPVRTZ.h"
+#	include "ImageDecoderETZ1.h"
 
 #	include "ImageEncoderPNG.h"
+
 //#   include "ImageDecoderCombinerRGBAndAlpha.h"
 //#	include "VideoDecoderFFMPEG.h"
 //#	include "VideoDecoderOGGTheora.h"
@@ -59,6 +62,9 @@ namespace Menge
         //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ddsImage")) );
         m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ddzImage")) );
         m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "webpImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pvrtzImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "etz1Image")) );
+		
 
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logService) );

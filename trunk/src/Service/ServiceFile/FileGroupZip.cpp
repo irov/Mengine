@@ -17,17 +17,17 @@ namespace Menge
 {
 	struct ZipCentralDirectoryFileHeader
 	{
-		uint16 versionNeeded;
-		uint16 generalPurposeFlag;
-		uint16 compressionMethod;
-		uint16 lastModTime;
-		uint16 lastModDate;
-		uint32 crc32;
-		uint32 compressedSize;
-		uint32 uncompressedSize;
-		uint16 fileNameLen;
-		uint16 extraFieldLen;
-        uint16 commentLen;
+		uint16_t versionNeeded;
+		uint16_t generalPurposeFlag;
+		uint16_t compressionMethod;
+		uint16_t lastModTime;
+		uint16_t lastModDate;
+		uint32_t crc32;
+		uint32_t compressedSize;
+		uint32_t uncompressedSize;
+		uint16_t fileNameLen;
+		uint16_t extraFieldLen;
+        uint16_t commentLen;
 	};
     //////////////////////////////////////////////////////////////////////////
     static int get_int( unsigned char * _buff )
@@ -175,15 +175,15 @@ namespace Menge
 
             zipMappedFile->seek( header_offset + 42 );
             
-            uint32 localFileHeaderOffset; 
+            uint32_t localFileHeaderOffset; 
             zipMappedFile->read( &localFileHeaderOffset, sizeof(localFileHeaderOffset) );
 
-            uint32 fileOffset = localFileHeaderOffset + 30 + header.fileNameLen + header.extraFieldLen;
+            uint32_t fileOffset = localFileHeaderOffset + 30 + header.fileNameLen + header.extraFieldLen;
 
             zipMappedFile->seek( header_offset + 46 );
             zipMappedFile->read( &fileNameBuffer, header.fileNameLen );
 
-            uint32 header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
+            uint32_t header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
             header_offset += header_size;
 
             if( header.compressedSize == 0 ) // if folder

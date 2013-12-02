@@ -42,8 +42,8 @@ namespace Menge
 		virtual bool testPolygon( const mt::mat4f& _transform, const mt::vec2f & _point, const Polygon & _polygon );
 
     public:        
-        void setDebugColor( uint32 _color );
-        uint32 getDebugColor() const;
+        void setDebugColor( uint32_t _color );
+        uint32_t getDebugColor() const;
 
 	public:
 		void clearPoints();
@@ -74,6 +74,6 @@ namespace Menge
 	protected:
         HotspotMousePickerAdapter m_mousePickerAdapter;
 
-		uint32 m_debugColor;
+		uint32_t m_debugColor;
 	};
 }

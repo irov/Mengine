@@ -80,7 +80,7 @@ namespace Menge
 		virtual void sleep() = 0;
 		virtual void wakeUp() = 0;
 		virtual const mt::box2f&  getBoundingBox( ) = 0;
-		virtual void updateFilterData( uint16 _categoryBits, uint16 _collisionMask, signed short _groupIndex ) = 0;
+		virtual void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, signed short _groupIndex ) = 0;
 		virtual void update() = 0;
 		virtual void dump() = 0;
 	};

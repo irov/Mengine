@@ -44,7 +44,7 @@ namespace Menge
 		const mt::vec2f & getTextureUVScale() const;
 
 	public:
-		void setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16 * _indicies, size_t _countIndex );
+		void setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex );
 
 	protected:
 		bool _compile() override;
@@ -108,7 +108,7 @@ namespace Menge
 		RenderVertex2D m_verticesWM[MENGINE_MESH_MAX_VERTEX];
 		bool m_invalidateVerticesWM;
 
-		uint16 m_indices[MENGINE_MESH_MAX_INDECIES];
+		uint16_t m_indices[MENGINE_MESH_MAX_INDECIES];
 
 		size_t m_vertexCount;
 		size_t m_indicesCount;

@@ -68,9 +68,9 @@ namespace Menge
         m_maxVertexCount = _maxVertexCount;
         m_maxIndexCount = _maxIndexCount;        
 
-        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_QUAD; i += 6 )
+        for( uint16_t i = 0; i != MENGINE_RENDER_INDICES_QUAD; i += 6 )
         {   
-            uint16 vertexOffset = i / 6 * 4;
+            uint16_t vertexOffset = i / 6 * 4;
 
             m_indicesQuad[i + 0] = vertexOffset + 0;
             m_indicesQuad[i + 1] = vertexOffset + 3;
@@ -80,7 +80,7 @@ namespace Menge
             m_indicesQuad[i + 5] = vertexOffset + 2;
         }
 
-        for( uint16 i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
+        for( uint16_t i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
         {
             m_indicesLine[i] = i;
         }
@@ -816,7 +816,7 @@ namespace Menge
         , const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , EPrimitiveType _type
         , const RenderVertex2D * _vertices, size_t _verticesNum
-        , const uint16 * _indices, size_t _indicesNum )
+        , const uint16_t * _indices, size_t _indicesNum )
     {
 		if( _viewport == nullptr )
 		{
@@ -1023,7 +1023,7 @@ namespace Menge
         return vbHandle;
     }
     //////////////////////////////////////////////////////////////////////////
-    IBHandle RenderEngine::createIndicesBuffer( const uint16 * _buffer, size_t _count )
+    IBHandle RenderEngine::createIndicesBuffer( const uint16_t * _buffer, size_t _count )
     {
         IBHandle ibHandle = RENDER_SYSTEM(m_serviceProvider)
             ->createIndexBuffer( _count, false );
@@ -1106,7 +1106,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const uint16 * _buffer, size_t _count )
+    bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const uint16_t * _buffer, size_t _count )
     {
         void * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( _handle, 0, _count, 0 );
 
@@ -1118,7 +1118,7 @@ namespace Menge
             return false;
         }
 
-        std::copy( _buffer + 0, _buffer + _count, static_cast<uint16*>(ibuffer) );
+        std::copy( _buffer + 0, _buffer + _count, static_cast<uint16_t*>(ibuffer) );
 
         if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( _handle ) == false )
         {
@@ -1172,7 +1172,7 @@ namespace Menge
             return false;
         }
 
-        uint32 vbLockFlags = LOCK_DISCARD;
+        uint32_t vbLockFlags = LOCK_DISCARD;
         //uint32 vbLockFlags = 0;
 
         void * vbData = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
@@ -1192,13 +1192,13 @@ namespace Menge
                 
         RenderVertex2D * vertexBuffer = static_cast<RenderVertex2D *>(vbData);
 
-        uint32 ibLockFlags = LOCK_DISCARD;
+        uint32_t ibLockFlags = LOCK_DISCARD;
         //uint32 ibLockFlags = 0;
 
         void * ibData = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
             m_ibHandle2D
             , 0
-            , ibSize * sizeof(uint16)
+            , ibSize * sizeof(uint16_t)
             , ibLockFlags 
             );
 
@@ -1210,7 +1210,7 @@ namespace Menge
             return false;
         }
 
-        uint16 * indeciesBuffer = static_cast<uint16 *>(ibData);
+        uint16_t * indeciesBuffer = static_cast<uint16_t *>(ibData);
 
 		size_t vbInsertSize;
 		size_t ibInsertSize;
@@ -1318,7 +1318,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbSize, size_t & _ibSize )
+    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbSize, size_t & _ibSize )
     {
         size_t vbPos = 0;
         size_t ibPos = 0;
@@ -1338,7 +1338,7 @@ namespace Menge
 		_ibSize = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos )
+    void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos )
     {
         TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
         TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
@@ -1351,7 +1351,7 @@ namespace Menge
         }        
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const
+    void RenderEngine::insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const
     {   
         _renderObject->startIndex = _ibPos;
         _renderObject->minIndex = _vbPos;
@@ -1359,15 +1359,15 @@ namespace Menge
         RenderVertex2D * offsetVertexBuffer = _vertexBuffer + _vbPos;
         memcpy( offsetVertexBuffer, _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) );
         
-        uint16 * offsetIndeciesBuffer = _indeciesBuffer + _ibPos;
+        uint16_t * offsetIndeciesBuffer = _indeciesBuffer + _ibPos;
         
-        uint16 * src = offsetIndeciesBuffer;
-        uint16 * src_end = offsetIndeciesBuffer + _renderObject->indicesNum;
-        const uint16 * dst = _renderObject->indicesData;
+        uint16_t * src = offsetIndeciesBuffer;
+        uint16_t * src_end = offsetIndeciesBuffer + _renderObject->indicesNum;
+        const uint16_t * dst = _renderObject->indicesData;
 
         while( src != src_end )
         {
-            *src = *dst + (uint16)_vbPos;
+            *src = *dst + (uint16_t)_vbPos;
             ++src;
             ++dst;
         }
@@ -1514,7 +1514,7 @@ namespace Menge
         return m_vsync;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::clear( uint32 _color )
+    void RenderEngine::clear( uint32_t _color )
     {
         RENDER_SYSTEM(m_serviceProvider)
             ->clear( _color );
@@ -1586,15 +1586,15 @@ namespace Menge
         m_debugInfo.object += 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum )
+    void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16_t * _indices, size_t _indicesNum )
     {
         (void)_verteNum;
 
         for( size_t i = 0; i != (_indicesNum / 3); ++i )
         {
-            uint16 i0 = _indices[i + 0];
-            uint16 i1 = _indices[i + 1];
-            uint16 i2 = _indices[i + 2];
+            uint16_t i0 = _indices[i + 0];
+            uint16_t i1 = _indices[i + 1];
+            uint16_t i2 = _indices[i + 2];
 
             m_debugInfo.fillrate += s_calcTriangleSquare( _vertex[i0], _vertex[i1], _vertex[i2] );
 

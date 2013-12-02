@@ -120,6 +120,8 @@ namespace Menge
 		INIT_CONST( Generic );
 		INIT_CONST( Fade );
 
+#	undef INIT_CONST
+
         return true;
     }
 }

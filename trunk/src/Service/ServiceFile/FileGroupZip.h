@@ -52,7 +52,7 @@ namespace Menge
 			size_t seek_pos;
 			size_t file_size;
 			size_t unz_size;
-			uint16 compr_method;
+			uint16_t compr_method;
 		};
 
 		typedef stdex::binary_vector<FilePath, FileInfo> TMapFileInfo;

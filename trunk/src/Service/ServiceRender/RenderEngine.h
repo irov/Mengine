@@ -40,7 +40,7 @@
 #   endif
 
 #	ifndef MENGINE_RENDER_DEBUG_VERTEX_MAX
-#   define MENGINE_RENDER_DEBUG_VERTEX_MAX 1024
+#   define MENGINE_RENDER_DEBUG_VERTEX_MAX 2048
 #   endif
 
 
@@ -66,7 +66,7 @@ namespace Menge
 		const RenderVertex2D * vertexData;
 		size_t verticesNum;
 
-        const uint16 * indicesData;
+        const uint16_t * indicesData;
         size_t indicesNum;
 
 		size_t minIndex;
@@ -116,7 +116,7 @@ namespace Menge
 		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , EPrimitiveType _type
             , const RenderVertex2D * _vertices, size_t _verticesNum 
-			, const uint16 * _indices, size_t _indicesNum ) override;
+			, const uint16_t * _indices, size_t _indicesNum ) override;
 
         void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
             , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
@@ -137,14 +137,14 @@ namespace Menge
 		void releaseIndicesBuffer( IBHandle _handle );
 
 		bool updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _vertexies, size_t _verticesNum );
-		bool updateIndicesBuffer( IBHandle _handle, const uint16 * _buffer, size_t _count );
+		bool updateIndicesBuffer( IBHandle _handle, const uint16_t * _buffer, size_t _count );
 
 	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
 
     public:
 		void setRenderTargetTexture( const RenderTextureInterfacePtr & _image, bool _clear ) override;
-		void clear( uint32 _color ) override;
+		void clear( uint32_t _color ) override;
 		void setSeparateAlphaBlendMode() override;
 
         void enableDebugMode( bool _enable ) override;
@@ -203,9 +203,9 @@ namespace Menge
 		void batchRenderObjects_( RenderPass * _pass, size_t & _vbSize, size_t & _ibSize );
 		void batchRenderObject_( RenderObject * _renderObject, RenderObject ** _batchedObject, size_t & _vbSize, size_t & _ibSize ) const;
 		
-        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbSize, size_t & _ibSize );
-        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos );
-		void insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16 * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const;
+        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbSize, size_t & _ibSize );
+        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const;
 		void flushRender_();
 		void prepare2D_();
 
@@ -213,7 +213,7 @@ namespace Menge
         		
     private:
         void calcQuadSquare_( const RenderVertex2D * _vertex, size_t _vertexNum );
-        void calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16 * _indices, size_t _indicesNum );
+        void calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16_t * _indices, size_t _indicesNum );
 
     protected:
         bool createNullTexture_();
@@ -269,12 +269,12 @@ namespace Menge
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
-		uint16 m_indicesQuad[MENGINE_RENDER_INDICES_QUAD];
-        uint16 m_indicesLine[MENGINE_RENDER_INDICES_LINE];
+		uint16_t m_indicesQuad[MENGINE_RENDER_INDICES_QUAD];
+        uint16_t m_indicesLine[MENGINE_RENDER_INDICES_LINE];
 
 		Viewport m_renderViewport;
 
-		uint32 m_currentVertexDeclaration;
+		uint32_t m_currentVertexDeclaration;
         
         typedef stdex::static_array<RenderObject, MENGINE_RENDER_OBJECTS_MAX> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;

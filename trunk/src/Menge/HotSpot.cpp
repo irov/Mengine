@@ -81,12 +81,12 @@ namespace	Menge
 		return &m_mousePickerAdapter;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::setDebugColor( uint32 _color )
+    void HotSpot::setDebugColor( uint32_t _color )
     {
         m_debugColor = _color;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32 HotSpot::getDebugColor() const
+    uint32_t HotSpot::getDebugColor() const
     {
         return m_debugColor;
     }
@@ -238,6 +238,7 @@ namespace	Menge
 
 		mt::vec2f v(0.f, 0.f); 
 		boost::geometry::append( polygonPick, v );
+		boost::geometry::correct( polygonPick );
 
 		bool intersect = this->testPolygon( _transform, _point, polygonPick );
 
@@ -300,7 +301,7 @@ namespace	Menge
 			return false;
 		}
 
-		bool intersect = boost::geometry::intersects( polygonWM, polygonScreen );
+		bool intersect = boost::geometry::intersects( polygonWMVM, polygonScreen );
 
 		return intersect;
 	}
@@ -323,6 +324,11 @@ namespace	Menge
 
 		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 			->getDebugRenderVertex2D( vertexCount );
+
+		if( vertices == nullptr )
+		{
+			return;
+		}
 
 		const mt::mat4f & worldMat = this->getWorldMatrix();
 

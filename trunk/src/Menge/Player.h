@@ -93,9 +93,6 @@ namespace Menge
 		const RenderViewportInterface * getRenderViewport() const override;
 
     public:
-		void setCamera2DPosition( const mt::vec2f & _pos );
-
-    public:
 		void initializeRenderResources();
 		void finalizeRenderResources();
 
@@ -160,6 +157,8 @@ namespace Menge
 		
 		Camera2D * m_camera2D;
 		RenderViewport * m_viewport2D;
+
+		Camera2D * m_arrowCamera2D;
 		
 		RenderCameraInterface * m_renderCamera;
 		RenderViewportInterface * m_renderViewport;

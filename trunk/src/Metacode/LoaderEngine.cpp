@@ -285,10 +285,10 @@ namespace Menge
 			return false;
 		}
 
-		uint64 time_xml;
+		uint64_t time_xml;
 		file_xml->time( time_xml );
 
-		uint64 time_bin;
+		uint64_t time_bin;
 		file_bin->time( time_bin );
 
         file_xml = nullptr;

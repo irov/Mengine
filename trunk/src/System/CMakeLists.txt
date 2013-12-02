@@ -20,7 +20,7 @@ if( APPLE )
 		#ADD_SUBDIRECTORY( MengeMacOSFileSystem )
 		ADD_SUBDIRECTORY( PosixFileSystem )
 	ENDIF(${MENGINE_TARGET} STREQUAL "MACOS")
-endif( WIN32 )
+endif( APPLE )
 
 if( WIN32 )
 	#if( MENGE_DX9 )

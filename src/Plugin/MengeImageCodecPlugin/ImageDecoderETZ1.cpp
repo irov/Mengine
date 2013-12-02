@@ -1,4 +1,4 @@
-#include "ImageDecoderETZ1.h"
+#	include "ImageDecoderETZ1.h"
 
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
@@ -6,6 +6,8 @@
 #	include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
+
+#	include <string.h>
 
 namespace Menge
 {

@@ -200,7 +200,7 @@ namespace Menge
 
 		const mt::mat4f & localMatrix = this->getLocalMatrix();
 
-		if( m_relationTransformation == 0 )
+		if( m_relationTransformation == nullptr )
 		{
 			m_worldMatrix = localMatrix;
 		}

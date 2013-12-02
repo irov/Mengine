@@ -73,6 +73,7 @@
 #	include "CameraTarget2D.h"
 
 #	include "Layer2D.h"
+#	include "Layer2DParallax.h"
 #	include "Layer2DPhysic.h"
 #	include "Layer2DTexture.h"
 
@@ -290,7 +291,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
         {
-            _transformation->setRelationTransformation( NULL );
+            _transformation->setRelationTransformation( nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_setScale( Transformation3D * _transformation, const mt::vec3f & _scale )
@@ -2709,6 +2710,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Node );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2D );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DParallax );
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
@@ -3507,14 +3509,18 @@ namespace Menge
                     .def( "isMain", &Layer::isMain )
                     .def( "setSize", &Layer::setSize )
                     .def( "getSize", &Layer::getSize )
-                    ;
+					;
 
-                pybind::interface_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
-                    .def( "setParallaxFactor", &Layer2D::setParallaxFactor )
-                    .def( "getParallaxFactor", &Layer2D::getParallaxFactor )
-                    .def( "setRenderViewport", &Layer2D::setRenderViewport )
-                    .def( "removeRenderViewport", &Layer2D::removeRenderViewport )
-                    .def( "cameraToLocal", &Layer2D::cameraToLocal )
+				pybind::interface_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
+					.def( "setRenderViewport", &Layer2D::setRenderViewport )
+					.def( "removeRenderViewport", &Layer2D::removeRenderViewport )
+					.def( "cameraToLocal", &Layer2D::cameraToLocal )
+					;
+
+                pybind::interface_<Layer2DParallax, pybind::bases<Layer> >("Layer2DParallax", false)
+                    .def( "setParallaxFactor", &Layer2DParallax::setParallaxFactor )
+                    .def( "getParallaxFactor", &Layer2DParallax::getParallaxFactor )
+                    .def( "cameraToLocal", &Layer2DParallax::cameraToLocal )
                     ;
 
                 //pybind::interface_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false)

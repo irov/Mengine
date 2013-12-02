@@ -38,8 +38,6 @@ SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/iPad_Simulator${CMAKE_BUILD_
 # implementation
 
 ADD_DEFINITIONS(-D"override = /* */")
-ADD_DEFINITIONS(-D"nullptr=0")
-ADD_DEFINITIONS(-D"nullptr_t=void*")
 ADD_DEFINITIONS(-D"MENGINE_CONFIG=Config_IPAD_Simulator.h")
 ADD_DEFINITIONS(-DMENGE_MASTER_RELEASE)
 

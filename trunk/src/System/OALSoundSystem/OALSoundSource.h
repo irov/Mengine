@@ -2,7 +2,7 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include "al/al.h"
+#	include <al.h>
 
 namespace Menge
 {

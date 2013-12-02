@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     bool HotspotMousePickerAdapter::onMouseEnter( const mt::vec2f & _point )
     {
-        uint32 color = m_hotspot->getDebugColor();
+        uint32_t color = m_hotspot->getDebugColor();
 
         color &= 0xFF000000;
         color |= 0x00FF0000;
@@ -62,7 +62,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void HotspotMousePickerAdapter::onMouseLeave()
     {
-        uint32 color = m_hotspot->getDebugColor();
+        uint32_t color = m_hotspot->getDebugColor();
 
         color &= 0xFF000000;
         color |= 0x00FFFFFF;

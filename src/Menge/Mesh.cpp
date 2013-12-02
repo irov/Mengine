@@ -360,7 +360,7 @@ namespace Menge
 		ColourValue color;
 		this->calcTotalColor(color);
 
-		uint32 argb = color.getAsARGB();
+		uint32_t argb = color.getAsARGB();
 
 		for( RenderVertex2D
 			*it = m_verticesWM,
@@ -392,7 +392,7 @@ namespace Menge
 		return m_blendAdd;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16 * _indicies, size_t _countIndex )
+	void Mesh::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex )
 	{
 		if( _countVertex >= MENGINE_MESH_MAX_VERTEX || _countIndex >= MENGINE_MESH_MAX_INDECIES )
 		{
@@ -409,7 +409,7 @@ namespace Menge
 		memcpy( m_verticesLocal, _position, sizeof(mt::vec3f) * _countVertex );
 		memcpy( m_uvLocal, _uv, sizeof(mt::vec2f) * _countVertex );
 
-		memcpy( m_indices, _indicies, sizeof(uint16) * _countIndex );
+		memcpy( m_indices, _indicies, sizeof(uint16_t) * _countIndex );
 
 		m_vertexCount = _countVertex;
 		m_indicesCount = _countIndex;

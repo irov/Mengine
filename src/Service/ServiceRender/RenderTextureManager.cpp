@@ -13,7 +13,7 @@ SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureServiceInterface, Men
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static Menge::uint32 s_firstPOW2From( Menge::uint32 n )
+    static uint32_t s_firstPOW2From( uint32_t n )
     {
         --n;            
         n |= n >> 16;

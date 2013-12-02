@@ -49,7 +49,7 @@ namespace Menge
 	{
 		mt::vec3f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		uint16 indecies[MENGINE_MOVIE_SHAPE_MAX_INDECIES];
+		uint16_t indecies[MENGINE_MOVIE_SHAPE_MAX_INDECIES];
 
 		size_t vertexCount;
 		size_t indexCount;

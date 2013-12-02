@@ -24,6 +24,7 @@ namespace Menge
         bool initialize();
 
 	public:
+
 #	define DECL_CONST( Const ) ConstString c_##Const
 
 		DECL_CONST( dir );
@@ -122,6 +123,8 @@ namespace Menge
 
 		DECL_CONST( Generic );
 		DECL_CONST( Fade );
+
+#	undef DECL_CONST
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

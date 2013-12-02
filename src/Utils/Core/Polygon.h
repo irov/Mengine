@@ -72,7 +72,7 @@ namespace boost
 namespace Menge
 {
     typedef std::vector<mt::vec2f> TVectorPoints;
-    typedef std::vector<uint16> TVectorIndices;
+    typedef std::vector<uint16_t> TVectorIndices;
 
     typedef boost::geometry::model::polygon<mt::vec2f> Polygon;
     typedef boost::geometry::model::box<mt::vec2f> Box;

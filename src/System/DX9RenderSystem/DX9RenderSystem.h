@@ -64,7 +64,7 @@ namespace Menge
         void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up ) override;
 
-		void clear( uint32 _color ) override;
+		void clear( uint32_t _color ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		bool screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) override;
@@ -76,17 +76,17 @@ namespace Menge
 
 		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) override;
+		void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32_t _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
 		IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags ) override;
+		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32_t _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 
-		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
+		void setVertexDeclaration( size_t _vertexSize, uint32_t _declaration ) override;
 
         RenderShaderInterface * createShader( const void * _code, size_t _len ) override;
         void setShader( RenderShaderInterface * _shader ) override;
@@ -100,7 +100,7 @@ namespace Menge
 
 		void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
-		void setTextureFactor( uint32 _color ) override;
+		void setTextureFactor( uint32_t _color ) override;
 
 		void setSrcBlendFactor( EBlendFactor _src ) override;
 		void setDstBlendFactor( EBlendFactor _dst ) override;
@@ -116,7 +116,7 @@ namespace Menge
 		void setShadeType( EShadeType _sType ) override;
 		void setAlphaTestEnable( bool _alphaTest ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
-		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) override;
+		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;
 
 		void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
@@ -140,7 +140,7 @@ namespace Menge
 		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;
-		void clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color = 0, float _depth = 1.0f, uint16 _stencil = 0 ) override;
+		void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color = 0, float _depth = 1.0f, uint16_t _stencil = 0 ) override;
 
 		void setViewport( const Viewport & _viewport ) override;
 

@@ -1155,7 +1155,7 @@ namespace Menge
 		++m_frames;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color, float _depth, uint16 _stencil )
+	void DX9RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint16_t _stencil )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1672,8 +1672,8 @@ namespace Menge
 				{
 					for( UINT j = 0; j != srcWidth; ++j )
 					{
-						uint16 color = *reinterpret_cast<uint16*>( srcdata + j*2 );
-						uint32* dstColor = reinterpret_cast<uint32*>( dstdata + j*4 );
+						uint16_t color = *reinterpret_cast<uint16_t*>( srcdata + j*2 );
+						uint32_t* dstColor = reinterpret_cast<uint32_t*>( dstdata + j*4 );
 						*dstColor = 0xFF000000 | ((color & 0xF800) << 8) |
 							((color & 0x07E0) << 5) | ((color & 0x001F) << 3);
 					}
@@ -1704,27 +1704,27 @@ namespace Menge
 			UINT dstRowSkip = dstLockedRect.Pitch / channels - dstWidth;
 			// sx_48,sy_48 represent current position in source
 			// using 16/48-bit fixed precision, incremented by steps
-			uint64 stepx = ((uint64)srcWidth << 48) / dstWidth;
-			uint64 stepy = ((uint64)srcHeight << 48) / dstHeight;
+			uint64_t stepx = ((uint64_t)srcWidth << 48) / dstWidth;
+			uint64_t stepy = ((uint64_t)srcHeight << 48) / dstHeight;
 
 			// bottom 28 bits of temp are 16/12 bit fixed precision, used to
 			// adjust a source coordinate backwards by half a pixel so that the
 			// integer bits represent the first sample (eg, sx1) and the
 			// fractional bits are the blend weight of the second sample
-			uint64 temp;
+			uint64_t temp;
 
-			uint64 sy_48 = (stepy >> 1) - 1;
+			uint64_t sy_48 = (stepy >> 1) - 1;
 			for (unsigned int y = (unsigned int)dstRect.top; y < (unsigned int)dstRect.bottom; y++, sy_48+=stepy )
 			{
 				temp = sy_48 >> 36;
 				temp = (temp > 0x800)? temp - 0x800: 0;
-				uint64 syf = temp & 0xFFF;
+				uint64_t syf = temp & 0xFFF;
 				unsigned int sy1 = temp >> 12;
 				unsigned int sy2 = (std::min<unsigned int>)(sy1+1, srcRect.bottom-srcRect.top-1);
 				unsigned int syoff1 = sy1 * srcRowPitch;
 				unsigned int syoff2 = sy2 * srcRowPitch;
 
-				uint64 sx_48 = (stepx >> 1) - 1;
+				uint64_t sx_48 = (stepx >> 1) - 1;
 				for (unsigned int x = (unsigned int)dstRect.left; x < (unsigned int)dstRect.right; x++, sx_48+=stepx)
 				{
 					temp = sx_48 >> 36;
@@ -2009,13 +2009,13 @@ namespace Menge
         }
 
 		IDirect3DIndexBuffer9 * ib = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(uint16) * _indiciesNum, Usage, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, NULL ) )
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(uint16_t) * _indiciesNum, Usage, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, NULL ) )
 		{
 			return 0;
 		}
 
 		IBInfo ibInfo;
-		ibInfo.length = sizeof(uint16) * _indiciesNum;
+		ibInfo.length = sizeof(uint16_t) * _indiciesNum;
 		ibInfo.usage = D3DUSAGE_WRITEONLY;
 		ibInfo.format = D3DFMT_INDEX16;
 		ibInfo.pool = D3DPOOL_DEFAULT;
@@ -2048,7 +2048,7 @@ namespace Menge
         m_indexBuffers.erase( _ibHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
+	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32_t _flags )
 	{
         VBInfo * vbinfo = nullptr;
         if( m_vertexBuffers.has( _vbHandle, &vbinfo ) == false )
@@ -2114,7 +2114,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags )
+	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32_t _flags )
 	{
         IBInfo * ibinfo;
 
@@ -2372,7 +2372,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureFactor( uint32 _color )
+	void DX9RenderSystem::setTextureFactor( uint32_t _color )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -2612,7 +2612,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHABLENDENABLE, alphaBlend ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha )
+	void DX9RenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -2778,7 +2778,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, textureFilterType, textureFilter ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setVertexDeclaration( size_t _vertexSize, uint32 _declaration )
+	void DX9RenderSystem::setVertexDeclaration( size_t _vertexSize, uint32_t _declaration )
 	{
         (void)_vertexSize;
 
@@ -2935,7 +2935,7 @@ namespace Menge
         mt::make_lookat_m4( _viewMatrix, _eye, _at, _up );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::clear( uint32 _color )
+	void DX9RenderSystem::clear( uint32_t _color )
 	{
 		this->clear_( _color );
 	}

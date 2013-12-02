@@ -8,15 +8,15 @@ namespace Menge
 		m_invalidateARGB = false;
 
 #   ifdef MENGE_RENDER_GL
-		uint8 a8 = static_cast<uint8>(m_a * 255.f);
-		uint8 b8 = static_cast<uint8>(m_r * 255.f);
-		uint8 g8 = static_cast<uint8>(m_g * 255.f);
-		uint8 r8 = static_cast<uint8>(m_b * 255.f);
+		uint8_t a8 = static_cast<uint8_t>(m_a * 255.f);
+		uint8_t b8 = static_cast<uint8_t>(m_r * 255.f);
+		uint8_t g8 = static_cast<uint8_t>(m_g * 255.f);
+		uint8_t r8 = static_cast<uint8_t>(m_b * 255.f);
 #	else // MENGE_RENDER_GL
-		uint8 a8 = static_cast<uint8>(m_a * 255.f);
-		uint8 r8 = static_cast<uint8>(m_r * 255.f);
-		uint8 g8 = static_cast<uint8>(m_g * 255.f);
-		uint8 b8 = static_cast<uint8>(m_b * 255.f);
+		uint8_t a8 = static_cast<uint8_t>(m_a * 255.f);
+		uint8_t r8 = static_cast<uint8_t>(m_r * 255.f);
+		uint8_t g8 = static_cast<uint8_t>(m_g * 255.f);
+		uint8_t b8 = static_cast<uint8_t>(m_b * 255.f);
 #	endif // MENGE_RENDER_GL
 
 		m_argb = (a8 << 24) + (r8 << 16) + (g8 << 8) + b8;

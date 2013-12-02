@@ -455,7 +455,7 @@ namespace	Menge
 			{
 				const ParticleVertices & p = s_particles[it];
 
-				uint32 argb;
+				uint32_t argb;
 
 				if( color.isIdentity() == true )
 				{

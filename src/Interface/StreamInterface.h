@@ -16,7 +16,7 @@ namespace Menge
 		virtual size_t size() const = 0;
 
 	public:  
-		virtual bool time( uint64 & _time ) const = 0;
+		virtual bool time( uint64_t & _time ) const = 0;
 	};
 
     typedef stdex::intrusive_ptr<InputStreamInterface> InputStreamInterfacePtr;

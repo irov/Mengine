@@ -12,7 +12,7 @@ namespace Metabuf
 	{
         (void)_userData;
 
-		size_t size;
+		unsigned int size;
 		ar.readSize( size );
 
         if( size == 0 )
@@ -31,7 +31,7 @@ namespace Metabuf
 	{
         Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 
-		size_t index;
+		unsigned int index;
 		ar.readSize( index );
 
         _value = loader->getCacheConstString( index );
@@ -39,7 +39,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, Menge::WChar & _value, void * _userData )
     {   
-        size_t size;
+        unsigned int size;
         ar.readSize( size );
 
         char utf8[32];
@@ -107,7 +107,7 @@ namespace Metabuf
     {
         (void)_userData;
 
-        size_t code;
+        unsigned int code;
         ar.readPOD( code );
 
         _value.setCode( code );
@@ -117,7 +117,7 @@ namespace Metabuf
     {
         (void)_userData;
 
-        size_t count;
+        unsigned int count;
         ar.readSize(count);
 
         if( count % 2 != 0 )
@@ -140,7 +140,7 @@ namespace Metabuf
     {
         (void)_userData;
 
-        size_t count;
+        unsigned int count;
         ar.readSize(count);
 
         _value.resize( count );

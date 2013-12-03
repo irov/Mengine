@@ -1788,17 +1788,22 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isAnimatable() == false )
-			{
-				continue;
-			}
-			
 			Node * node = this->getMovieNode_( layer );
 
             if( node == nullptr )
             {
                 continue;
             }
+
+			if( layer.switcher == true )
+			{
+				node->localHide( true );
+			}
+
+			if( layer.isAnimatable() == false )
+			{
+				continue;
+			}
 
 			Animatable * animatable = dynamic_cast<Animatable *>(node);
 
@@ -2342,7 +2347,14 @@ namespace Menge
 
                 this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut );
 
-                node->localHide(false);
+				if( layer.switcher == true && m_currentFrame + 1 == indexOut )
+				{
+					node->localHide(true);
+				}
+				else
+				{
+					node->localHide(false);
+				}
 
                 if( layer.isAnimatable() == true )
                 {

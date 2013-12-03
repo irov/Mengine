@@ -293,6 +293,7 @@ namespace Menge
             meta_layer2d.get_Shape( ml.shape );
             meta_layer2d.get_PlayCount( ml.playCount );
             meta_layer2d.get_Stretch( ml.scretch );
+			meta_layer2d.get_Switch( ml.switcher );
 
             if( ml.in < 0.f )
             {
@@ -338,6 +339,7 @@ namespace Menge
             meta_layer3d.get_Shape( ml.shape );
             meta_layer3d.get_PlayCount( ml.playCount );
             meta_layer3d.get_Stretch( ml.scretch );
+			meta_layer3d.get_Switch( ml.switcher );
 				
             if( ml.in < 0.f )
             {

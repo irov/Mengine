@@ -40,7 +40,7 @@ namespace Menge
 
         m_hFile = s3eFileOpen( filePath, "rb" );
 
-        if( m_hFile == NULL )
+        if( m_hFile == nullptr )
         {
             s3eFileError error = s3eFileGetError();
 

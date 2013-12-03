@@ -21,9 +21,6 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 	protected:
-        WebPBitstreamFeatures m_features;
-
-	private:
-		void cleanup_();		
+        WebPBitstreamFeatures m_features;		
 	};
 }	// namespace Menge

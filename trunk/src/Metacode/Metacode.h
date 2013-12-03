@@ -2844,6 +2844,46 @@ namespace Metacode
                     (_self->*_method)( this->Stretch );
                 }
                 
+                bool has_Switch() const
+                {
+                    return Switch_successful;
+                }
+                
+                bool get_Switch( bool & _value ) const
+                {
+                    if( Switch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Switch;
+                
+                    return true;
+                }
+                
+                bool swap_Switch( bool & _value ) const
+                {
+                    if( Switch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Switch);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Switch( C * _self, M _method ) const
+                {
+                    if( Switch_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Switch );
+                }
+                
                 bool has_TimeRemap() const
                 {
                     return TimeRemap_successful;
@@ -2922,6 +2962,8 @@ namespace Metacode
                 mutable float StartInterval;
                 bool Stretch_successful;
                 mutable float Stretch;
+                bool Switch_successful;
+                mutable bool Switch;
                 bool TimeRemap_successful;
                 mutable bool TimeRemap;
                 mutable Menge::ConstString Type;
@@ -3184,6 +3226,46 @@ namespace Metacode
                     (_self->*_method)( this->Stretch );
                 }
                 
+                bool has_Switch() const
+                {
+                    return Switch_successful;
+                }
+                
+                bool get_Switch( bool & _value ) const
+                {
+                    if( Switch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Switch;
+                
+                    return true;
+                }
+                
+                bool swap_Switch( bool & _value ) const
+                {
+                    if( Switch_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Switch);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Switch( C * _self, M _method ) const
+                {
+                    if( Switch_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Switch );
+                }
+                
                 bool has_TimeRemap() const
                 {
                     return TimeRemap_successful;
@@ -3262,6 +3344,8 @@ namespace Metacode
                 mutable float StartInterval;
                 bool Stretch_successful;
                 mutable float Stretch;
+                bool Switch_successful;
+                mutable bool Switch;
                 bool TimeRemap_successful;
                 mutable bool TimeRemap;
                 mutable Menge::ConstString Type;
@@ -4404,22 +4488,6 @@ namespace Metacode
             (_self->*_method)( this->height );
         }
         
-        const float & get_size() const
-        {
-            return this->size;
-        }
-        
-        void swap_size( float & _value ) const
-        {
-            std::swap( _value, this->size);
-        }
-        
-        template<class C, class M>
-        void method_size( C * _self, M _method ) const
-        {
-            (_self->*_method)( this->size );
-        }
-        
     protected:
         bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
         bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
@@ -4579,7 +4647,6 @@ namespace Metacode
     protected:
     protected:
         mutable float height;
-        mutable float size;
     public:
         typedef stdex::auto_array<Meta_Char> TVectorMeta_Char;
     

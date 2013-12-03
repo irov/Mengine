@@ -35,4 +35,4 @@ typedef void * nullptr_t;
 #		endif
 #	endif
 
-#   define MENGE_RENDER_GL
+#   define MENGE_RENDER_TEXTURE_RGBA

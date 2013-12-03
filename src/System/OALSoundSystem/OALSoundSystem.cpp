@@ -197,7 +197,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface* OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
-		OALSoundBufferBase * base = NULL;
+		OALSoundBufferBase * base = nullptr;
 
         if( _isStream == false )
         {

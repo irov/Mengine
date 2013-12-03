@@ -11,11 +11,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderWEBP::~ImageDecoderWEBP()
 	{
-		this->cleanup_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderWEBP::cleanup_()
-	{
 	}
     //////////////////////////////////////////////////////////////////////////
     typedef std::vector<uint8_t> TVectorWEBPBuffer;
@@ -73,6 +68,7 @@ namespace Menge
 	{				
         uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
 
+#	ifndef MENGE_RENDER_TEXTURE_RGBA
         if( m_features.has_alpha == false )
         {
             if( m_dataInfo.channels == 3 && m_options.channels == 4 )
@@ -102,6 +98,37 @@ namespace Menge
                 }
             }
         }
+#	else
+		if( m_features.has_alpha == false )
+		{
+			if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+			{
+				if( WebPDecodeRGBInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+				{
+					return 0;
+				}
+
+				this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
+			}
+			else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
+			{
+				if( WebPDecodeRGBInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+				{
+					return 0;
+				}
+			}
+		}
+		else
+		{
+			if( m_dataInfo.channels == 4 && m_options.channels == 4 )
+			{
+				if( WebPDecodeRGBAInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+				{
+					return 0;
+				}
+			}
+		}
+#	endif
         
         return _bufferSize;
 	}

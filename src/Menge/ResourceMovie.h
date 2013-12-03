@@ -45,6 +45,7 @@ namespace Menge
 			, startInterval(0.f)
             , state(0)
 			, immutable(false)
+			, switcher(false)
 		{
 		}
 
@@ -58,6 +59,7 @@ namespace Menge
         size_t playCount;        
         float scretch;
         bool loop;
+		bool switcher;
 
 		float in;
 		float out;

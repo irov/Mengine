@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 37;
+        _needVersion = 38;
 
-        if( version != 37 )
+        if( version != 38 )
         {
             return false;
         }
@@ -2355,6 +2355,7 @@ namespace Metacode
         , PlayCount_successful(false)
         , Shape_successful(false)
         , Stretch_successful(false)
+        , Switch_successful(false)
         , TimeRemap_successful(false)
     {
     }
@@ -2473,6 +2474,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 14:
+            {
+                if( this->read( _buff, _size, _read, this->Switch ) == false )
+                {
+                    return false;
+                }
+    
+                this->Switch_successful = true;
+    
+                return true;
+            }break;
         case 10:
             {
                 if( this->read( _buff, _size, _read, this->TimeRemap ) == false )
@@ -2534,6 +2546,7 @@ namespace Metacode
         , PlayCount_successful(false)
         , Shape_successful(false)
         , Stretch_successful(false)
+        , Switch_successful(false)
         , TimeRemap_successful(false)
     {
     }
@@ -2649,6 +2662,17 @@ namespace Metacode
                 }
     
                 this->Stretch_successful = true;
+    
+                return true;
+            }break;
+        case 14:
+            {
+                if( this->read( _buff, _size, _read, this->Switch ) == false )
+                {
+                    return false;
+                }
+    
+                this->Switch_successful = true;
     
                 return true;
             }break;
@@ -3482,15 +3506,6 @@ namespace Metacode
     
                 return true;
             }break;
-        case 2:
-            {
-                if( this->read( _buff, _size, _read, this->size ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
         }
     
         return false;
@@ -3500,7 +3515,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 3:
+        case 2:
             {
                 includes_Meta_Char.reserve( _count );
                 return true;
@@ -3515,7 +3530,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 3:
+        case 2:
             {
                 Meta_Font::Meta_Char & metadata = includes_Meta_Char.emplace_back();
     
@@ -3550,7 +3565,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_Font::Meta_Char::getId() const
     {
-        return 3;
+        return 2;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Font::Meta_Char::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )

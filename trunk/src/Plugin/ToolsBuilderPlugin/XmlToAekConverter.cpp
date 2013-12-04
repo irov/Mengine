@@ -62,7 +62,7 @@ namespace Menge
 		options.inputFileName = path_xml;
 		options.outputFileName = Helper::stringizeString(serviceProvider, utf8_aekPath);
 		
-		ConverterInterface * converter = CONVERTER_SERVICE(serviceProvider)
+		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
 			->createConverter( Helper::stringizeString(serviceProvider, "binToAekMovie") );
 
 		if( converter == nullptr )
@@ -85,14 +85,10 @@ namespace Menge
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
 				);
-
-			converter->destroy();
-
+			
 			return false;
 		}
-
-		converter->destroy();
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

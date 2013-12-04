@@ -159,6 +159,10 @@ namespace Menge
 #   endif
             m_device = nullptr;
         }
+
+#	ifdef MENGINE_MARMALADE
+		alcDeinit();
+#	endif
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::onTurnSound( bool _turn )

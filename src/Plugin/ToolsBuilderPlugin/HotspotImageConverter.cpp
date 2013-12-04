@@ -39,24 +39,23 @@ namespace Menge
 
             PyErr_SetString( PyToolException, error );
 
-            return NULL;
+            return nullptr;
         }
 
-        ConverterInterface * converter = CONVERTER_SERVICE(serviceProvider)
+        ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
             ->createConverter(Helper::stringizeString(serviceProvider, "png2hit"));
 
-        if( converter == NULL )
+        if( converter == nullptr )
         {
             LOGGER_ERROR(serviceProvider)("Converter png2hit not create!"
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         ConverterOptions options; 
         options.pakName = Helper::stringizeString(serviceProvider, "");
-        
-        
+                
         String utf8_inputFileName;
         Helper::unicodeToUtf8(serviceProvider, pngPath, utf8_inputFileName);
 
@@ -70,13 +69,9 @@ namespace Menge
 
         if( converter->convert() == false )
         {
-            converter->destroy();
- 
-            return NULL;
+            return nullptr;
         }
-
-        converter->destroy();
-        
+		        
         Py_RETURN_NONE;
     } 
 }  

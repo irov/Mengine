@@ -69,10 +69,11 @@ namespace Menge
 
         ConstString codec = Helper::stringizeString(serviceProvider, "pngImage");
 
+		bool version;
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( codec, input_stream );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codec, input_stream, version );
 
-        if( imageDecoder == 0 )
+        if( imageDecoder == nullptr )
         {
             char error[512];
             sprintf( error, "spreadingPngAlpha not found decoder for file '%s'"
@@ -81,7 +82,7 @@ namespace Menge
 
             PyErr_SetString( PyToolException, error );
 
-            return NULL;
+            return nullptr;
         }
 
         const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
@@ -114,7 +115,7 @@ namespace Menge
 
             PyErr_SetString( PyToolException, error );
 
-            return NULL;
+            return nullptr;
         }
 
         for( int i = 0; i != height; ++i)
@@ -199,7 +200,7 @@ namespace Menge
 
             PyErr_SetString( PyToolException, error );
 
-            return NULL;
+            return nullptr;
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(serviceProvider)
@@ -216,7 +217,7 @@ namespace Menge
 
             PyErr_SetString( PyToolException, error );
 
-            return NULL;
+            return nullptr;
         }
 
         ImageCodecOptions encode_options;		
@@ -250,7 +251,7 @@ namespace Menge
 
             PyErr_SetString( PyToolException, error );
 
-            return NULL;
+            return nullptr;
         }
 
         delete [] textureBuffer;

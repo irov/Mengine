@@ -41,10 +41,11 @@ namespace Menge
         String utf8_binPath;
         Helper::unicodeToUtf8( serviceProvider, _binPath, utf8_binPath );
 
+		bool version;
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE(serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(serviceProvider, "xml2bin"), 0 );
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(serviceProvider, "xml2bin"), nullptr, version );
 
-        if( decoder == NULL )
+        if( decoder == nullptr )
         {
             LOGGER_ERROR(serviceProvider)("writeBin invalid create decoder xml2bin for %s"
                 , utf8_xmlPath.c_str()
@@ -92,7 +93,7 @@ namespace Menge
             LOGGER_ERROR(serviceProvider)("writeBin: error parse args"
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
@@ -100,7 +101,7 @@ namespace Menge
             LOGGER_ERROR(serviceProvider)("writeBin: error write bin"
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         Py_RETURN_NONE;

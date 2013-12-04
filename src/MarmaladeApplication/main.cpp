@@ -29,11 +29,11 @@ static void * _s3eReallocFn(void *item, int size)
 
 int main()
 {
-    _callback.m_Free = &_s3eFreeFn;
-    _callback.m_Malloc = &_s3eMallocFn;
-    _callback.m_Realloc = &_s3eReallocFn;
-    s3eMemoryGetUserMemMgr(&_oldCallback);
-    s3eMemorySetUserMemMgr(&_callback);
+    //_callback.m_Free = &_s3eFreeFn;
+    //_callback.m_Malloc = &_s3eMallocFn;
+    //_callback.m_Realloc = &_s3eReallocFn;
+    //s3eMemoryGetUserMemMgr(&_oldCallback);
+    //s3eMemorySetUserMemMgr(&_callback);
 
     char commandLine[256] = {0};
     //if( s3eConfigGetString( "MENGINE", "CommandLine", commandLine ) == S3E_RESULT_ERROR )

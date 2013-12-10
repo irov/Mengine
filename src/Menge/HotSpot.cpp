@@ -160,6 +160,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_freeze( bool _value )
 	{
+		Node::_freeze( _value );
+
 		if( _value == true )
 		{
 			this->deactivatePicker_();

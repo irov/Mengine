@@ -35,9 +35,6 @@ namespace Menge
     public:
         void _destroy() override;
 
-	public:
-		bool makeFilePath_( char * _fullPath ) const;
-
 	private:
         ServiceProviderInterface * m_serviceProvider;
 

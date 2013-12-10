@@ -54,7 +54,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeOutputStream::_destroy()
+	void MarmaladeOutputStream::_destroy()
 	{
 		if( m_hFile != nullptr )
 		{
@@ -62,8 +62,6 @@ namespace Menge
 			s3eFileClose( m_hFile );
 			m_hFile = nullptr;
 		}
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeOutputStream::write( const void * _data, size_t _count )

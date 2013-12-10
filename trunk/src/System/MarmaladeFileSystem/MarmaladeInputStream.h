@@ -21,7 +21,7 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool open( const FilePath & _folder, const FilePath& _filename ) override;
+		bool open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) override;
 		
 	public:
 		size_t read( void* _buf, size_t _count ) override;
@@ -33,7 +33,7 @@ namespace Menge
         bool time( uint64 & _time ) const override;
 
     public:
-        bool _destroy() override;
+        void _destroy() override;
 
 	public:
 		bool makeFilePath_( char * _fullPath ) const;

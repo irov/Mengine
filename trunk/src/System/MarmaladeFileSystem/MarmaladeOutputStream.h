@@ -24,7 +24,7 @@ namespace Menge
 		bool flush() override;
 
     public:
-        bool _destroy() override;
+        void _destroy() override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

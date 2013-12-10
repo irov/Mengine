@@ -27,7 +27,7 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath& _filename )
+	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
 	{
 		m_folder = _folder;
 		m_filename = _filename;
@@ -73,15 +73,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::_destroy()
+	void MarmaladeInputStream::_destroy()
 	{
 		if( m_hFile != nullptr )
 		{
 			s3eFileClose( m_hFile );
 			m_hFile = nullptr;
 		}
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MarmaladeInputStream::read( void* _buf, size_t _count )

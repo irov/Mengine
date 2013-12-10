@@ -35,7 +35,7 @@ namespace Menge
         bool time( uint64 & _time ) const override;
 
     public:
-        bool _destroy() override;
+        void _destroy() override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

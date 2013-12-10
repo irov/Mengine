@@ -51,14 +51,9 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeMappedInputStream::_destroy()
+    void MarmaladeMappedInputStream::_destroy()
     {
-        if( m_inputStream._destroy() == false )
-        {
-            return false;
-        }
-
-        return true;
+        m_inputStream._destroy();
     }
     //////////////////////////////////////////////////////////////////////////
     size_t MarmaladeMappedInputStream::read( void* _buf, size_t _count )

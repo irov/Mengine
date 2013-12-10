@@ -102,11 +102,9 @@ namespace Menge
 		m_lock = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeTexture::_destroy()
+	void MarmaladeTexture::_destroy()
 	{
 		glDeleteTextures( 1, &m_uid );
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeTexture::isRenderTarget() const

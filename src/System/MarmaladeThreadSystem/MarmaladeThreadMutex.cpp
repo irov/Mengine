@@ -26,10 +26,8 @@ namespace Menge
         s3eThreadLockRelease( m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeThreadMutex::_destroy()
+    void MarmaladeThreadMutex::_destroy()
     {
         s3eThreadLockDestroy( m_cs );
-
-        return true;
     }
 }

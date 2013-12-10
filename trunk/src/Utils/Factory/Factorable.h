@@ -19,10 +19,10 @@ namespace Menge
 		inline Factory * getFactory() const;
 
 	public:
-		void destroy();
+		virtual void destroy();
 
 	protected:
-		virtual bool _destroy();
+		virtual void _destroy();
 
 #   ifdef _DEBUG
     protected:

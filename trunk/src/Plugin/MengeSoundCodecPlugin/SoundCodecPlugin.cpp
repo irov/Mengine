@@ -31,7 +31,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundCodecPlugin::SoundCodecPlugin()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,9 @@ namespace Menge
 		m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "oggSound")) );
         m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvSound")) );
 		
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "ogg", Helper::stringizeString(m_serviceProvider, "oggSound") );
+
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
 			it_end = m_decoders.end();
@@ -69,8 +72,6 @@ namespace Menge
 
 			CODEC_SERVICE(m_serviceProvider)
                 ->unregisterDecoder( name );
-
-			(*it)->destroy();
 		}
 
 		delete this;

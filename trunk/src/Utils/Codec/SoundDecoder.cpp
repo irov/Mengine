@@ -18,25 +18,23 @@ namespace Menge
         return m_serviceProvider;
     }	
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
+    bool SoundDecoder::initialize( const InputStreamInterfacePtr & _stream )
     {
         m_stream = _stream;
 
-        bool result = this->_initialize( _version );
+        bool status = this->_initialize();
 
-        return result;
+        return status;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoder::_initialize( bool & _version )
+    bool SoundDecoder::_initialize()
     {
-		(void)_version;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoder::setOptions( CodecOptions * _options )
     {
-        if( _options != NULL )
+        if( _options != nullptr )
         {
             m_options = *static_cast<SoundCodecOptions *>(_options);
         }

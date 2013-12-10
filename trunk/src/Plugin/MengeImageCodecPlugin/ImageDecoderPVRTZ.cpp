@@ -93,10 +93,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderPVRTZ::_initialize( bool & _version )
+	bool ImageDecoderPVRTZ::_initialize()
 	{
-		(void)_version;
-
 		m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
 		m_stream->read( &m_compress_size, sizeof(m_compress_size) );
 

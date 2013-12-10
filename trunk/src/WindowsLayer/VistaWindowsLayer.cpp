@@ -521,12 +521,13 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::concatenateFilePath( const FilePath & _folder, const FilePath & _filename, WChar * _filePath, size_t _capacity )
+    bool VistaWindowsLayer::concatenateFilePath( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, WChar * _filePath, size_t _capacity )
     {        
         size_t folderSize = _folder.size();
-        size_t fileNameSize = _filename.size();
+		size_t dirSize = _dir.size();
+        size_t fileNameSize = _filenamelen;
                         
-        size_t filePathSize = folderSize + fileNameSize;
+        size_t filePathSize = folderSize + dirSize + fileNameSize;
         
         if( filePathSize >= MAX_PATH )
         {
@@ -534,8 +535,9 @@ namespace Menge
         }
 
         Char filePath[MAX_PATH];
-        memcpy(filePath, _folder.c_str(), folderSize);        
-        memcpy(filePath + folderSize, _filename.c_str(), fileNameSize );
+        memcpy(filePath, _folder.c_str(), folderSize);
+		memcpy(filePath + folderSize, _dir.c_str(), dirSize);
+        memcpy(filePath + folderSize + dirSize, _filename, fileNameSize );
 
         filePath[filePathSize] = L'\0';
         filePathSize += 1; //Null

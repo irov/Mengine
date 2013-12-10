@@ -11,7 +11,7 @@ namespace Menge
         void setMovieName( const ConstString & _movieName );
 
     protected:
-        bool _destroy() override;
+        void _destroy() override;
 
     protected:
         void _localHide( bool _value ) override;

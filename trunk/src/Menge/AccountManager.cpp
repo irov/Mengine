@@ -391,7 +391,7 @@ namespace Menge
 	bool AccountManager::loadAccounts()
 	{        
 		bool accountsExist = FILE_SERVICE(m_serviceProvider)
-            ->existFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, nullptr );
+            ->existFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, nullptr, 0, nullptr );
 
 		if( accountsExist == false )
 		{

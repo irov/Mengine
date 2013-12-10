@@ -22,11 +22,11 @@ namespace Menge
         const ConstString & getType() const override;
 
 	public:
-		bool existFile( const FilePath& _filename ) override;
+		bool existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const override;
 
     public:
 		InputStreamInterfacePtr createInputFile() override;
-		bool openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _file ) override;
+		bool openInputFile( const FilePath& _dir, const char * _filename, size_t _filenamelen, const InputStreamInterfacePtr & _file ) override;
 		
     public:
 		OutputStreamInterfacePtr createOutputFile() override;        

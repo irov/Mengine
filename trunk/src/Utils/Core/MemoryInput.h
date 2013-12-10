@@ -31,6 +31,8 @@ namespace Menge
 
 		size_t m_size;
 	};
+
+	typedef stdex::intrusive_ptr<MemoryInput> MemoryInputPtr;
 }	// namespace Menge
 
 

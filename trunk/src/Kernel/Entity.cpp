@@ -88,20 +88,18 @@ namespace Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_CREATE)("()");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Entity::_destroy()
+	void Entity::destroy()
 	{
         if( this->isShallowGrave() == true )
         {
             NODE_SERVICE(m_serviceProvider)
                 ->addHomeless( this );
 
-            return false;
+            return;
         }
 
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_DESTROY)("()");
 
-        bool result = Node::_destroy();
-
-		return result;
+        Factorable::destroy();
 	}
 }

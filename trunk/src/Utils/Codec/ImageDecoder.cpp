@@ -21,16 +21,19 @@ namespace Menge
 		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
+    bool ImageDecoder::initialize( const InputStreamInterfacePtr & _stream )
     {
         m_stream = _stream;
-
-		_version = true;
         
-        bool result = this->_initialize( _version );
+        bool status = this->_initialize();
 
-        return result;
+        return status;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoder::_initialize()
+	{
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoder::setOptions( CodecOptions * _options )
     {
@@ -62,13 +65,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoder::_invalidateOptions()
     {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::_initialize( bool & _version )
-    {
-		(void)_version;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

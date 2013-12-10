@@ -29,7 +29,7 @@ namespace Menge
 		~ImageDecoderJPEG();
 
     protected:
-		bool _initialize( bool & _version ) override;
+		bool _initialize() override;
 
     protected:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;

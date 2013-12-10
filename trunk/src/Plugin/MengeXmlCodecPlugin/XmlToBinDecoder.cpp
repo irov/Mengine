@@ -90,11 +90,9 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlToBinDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
+	bool XmlToBinDecoder::initialize( const InputStreamInterfacePtr & _stream )
 	{
         m_stream = _stream;
-
-		_version = true;
 
 		return true;
 	}

@@ -1,6 +1,6 @@
 #   pragma once
 
-#   include "Interface/ApplicationInterface.h"
+#   include "Interface/PlatformInterface.h"
 
 #   include "s3eTimer.h"
 

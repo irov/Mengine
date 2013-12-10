@@ -53,11 +53,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
-        if( m_embed )
-        {
-            pybind::decref( m_embed );
-            m_embed = NULL;
-        }
+		pybind::decref( m_embed );
+		m_embed = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setServiceProvider( ServiceProviderInterface * _serviceProvider )

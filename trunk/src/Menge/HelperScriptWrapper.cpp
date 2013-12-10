@@ -125,7 +125,6 @@ namespace Menge
                 ->getCurrentResolution();
 
             mt::vec2f adapt_pos;
-
             adapt_pos.x = _pos.x / contentResolution.getWidth() * currentResolution.getWidth();
             adapt_pos.y = _pos.y / contentResolution.getHeight() * currentResolution.getHeight();
 
@@ -940,6 +939,7 @@ namespace Menge
 		    ~TimingInterpolatorLinearVector()
 		    {
 			    pybind::decref(m_cb);
+				m_cb = nullptr;
 		    }
 
 	    protected:
@@ -1017,7 +1017,8 @@ namespace Menge
 
 		    ~TimingInterpolatorLinearFloat()
 		    {
-			    pybind::decref(m_cb);
+			    pybind::decref( m_cb );
+				m_cb = nullptr;
 		    }
 
 	    protected:

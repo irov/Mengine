@@ -26,17 +26,17 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		void registerDecoder( const ConstString& _type, DecoderFactoryInterface * _interface ) override;
+		void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory ) override;
 		void unregisterDecoder( const ConstString& _type ) override;
 
-		void registerEncoder( const ConstString& _type, EncoderFactoryInterface * _interface ) override;
+		void registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory ) override;
 		void unregisterEncoder( const ConstString& _type ) override;
 	
     public:
-		DecoderInterfacePtr createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream, bool & _version ) override;
+		DecoderInterfacePtr createDecoder( const ConstString& _type ) override;
 
 	public:
-		EncoderInterfacePtr createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) override;
+		EncoderInterfacePtr createEncoder( const ConstString& _type ) override;
 
     public:
         bool registerCodecExt( const String & _ext, const ConstString & _codecType ) override;
@@ -45,10 +45,10 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef stdex::binary_vector<ConstString, DecoderFactoryInterface *> TMapDecoderSystem;
+		typedef stdex::binary_vector<ConstString, DecoderFactoryInterfacePtr> TMapDecoderSystem;
 		TMapDecoderSystem m_mapDecoderSystem;
 
-		typedef stdex::binary_vector<ConstString, EncoderFactoryInterface *> TMapEncoderSystem;
+		typedef stdex::binary_vector<ConstString, EncoderFactoryInterfacePtr> TMapEncoderSystem;
 		TMapEncoderSystem m_mapEncoderSystem;
 
 		typedef stdex::binary_vector<String, ConstString> TMapCodecTypes;

@@ -17,10 +17,10 @@ namespace Menge
 		Glyph( const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size );
 
 	public:
-		const mt::vec4f & getUV() const;
-		const mt::vec2f & getOffset() const;
-		float getRatio() const;
-		const mt::vec2f & getSize() const;
+		inline const mt::vec4f & getUV() const;
+		inline const mt::vec2f & getOffset() const;
+		inline float getRatio() const;
+		inline const mt::vec2f & getSize() const;
 
 	public:
 		void addKerning( GlyphChar _char, float _kerning );
@@ -35,4 +35,24 @@ namespace Menge
 		typedef stdex::binary_vector<GlyphChar, float, GlyphCharLess> TMapKerning;
 		TMapKerning m_kernings;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec4f & Glyph::getUV() const
+	{
+		return m_uv;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & Glyph::getOffset() const
+	{
+		return m_offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Glyph::getRatio() const
+	{
+		return m_ratio;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & Glyph::getSize() const
+	{
+		return m_size;
+	}
 }

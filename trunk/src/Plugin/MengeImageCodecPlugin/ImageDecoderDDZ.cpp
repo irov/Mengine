@@ -93,10 +93,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderDDZ::_initialize( bool & _version )
+	bool ImageDecoderDDZ::_initialize()
 	{		
-		(void)_version;
-
         m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
         m_stream->read( &m_compress_size, sizeof(m_compress_size) );
 
@@ -127,6 +125,8 @@ namespace Menge
 		{
 			LOGGER_WARNING(m_serviceProvider)( "ImageDecoderDDS::initialize dds file has mipmaps" 
                 );                        
+
+			return false;				 
 		}
 
 		m_dataInfo.depth = header.dwDepth;

@@ -14,7 +14,7 @@ namespace Menge
 		~ImageDecoderPNG();
 
 	public:
-		bool _initialize( bool & _version ) override;
+		bool _initialize() override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;

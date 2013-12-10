@@ -169,9 +169,9 @@ namespace Menge
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    TimerInterface * MarmaladeApplication::getTimer( void ) const
+    TimerInterface * MarmaladeApplication::getTimer() const
     {
-        return NULL;
+        return m_timer;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeApplicationService_()
@@ -1027,8 +1027,6 @@ namespace Menge
         setlocale( LC_CTYPE, "" );
         //::timeBeginPeriod( 1 );
 
-        m_timer.initialize();
-
         String scriptInit;
         Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
 
@@ -1044,6 +1042,13 @@ namespace Menge
         {
             return false;
         }
+
+		m_timer = new MarmaladeTimer;
+		m_timer->initialize();
+
+		m_input = new MarmaladeInput;
+		m_input->setServiceProvider( m_serviceProvider );
+		m_input->initialize();
 
         if( this->initializeStringizeService_() == false )
         {
@@ -1225,10 +1230,7 @@ namespace Menge
             return;
         }
 
-        m_input.setServiceProvider( m_serviceProvider );
-        m_input.initialize();
-
-        m_timer.reset();
+        m_timer->reset();
         
         while( true )
         {
@@ -1249,11 +1251,11 @@ namespace Menge
                 rendered = m_application->onRender();
             }
 
-            m_input.update();
+            m_input->update();
             
             bool updating = m_application->onUpdate();
 
-            float frameTime = m_timer.getDeltaTime();
+            float frameTime = m_timer->getDeltaTime();
 
             if( updating == true )
             {                
@@ -1264,7 +1266,7 @@ namespace Menge
                 //Sleep?
             }
 
-            if( rendered )
+            if( rendered == true )
             {
                 m_application->onFlush();
             }
@@ -1283,7 +1285,17 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::finalize()
     {
-        
+		if( m_timer != nullptr )
+		{
+			delete m_timer;
+			m_timer = nullptr;
+		}
+
+		if( m_input != nullptr )
+		{
+			delete m_input;
+			m_input = nullptr;
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::stop()
@@ -1318,12 +1330,18 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::showKeyboard()
     {
-        m_input.showKeyboard( true );
+		if( m_input != nullptr )
+		{
+			m_input->showKeyboard( true );
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::hideKeyboard()
     {
-        m_input.showKeyboard( false );
+		if( m_input != nullptr )
+		{
+			m_input->showKeyboard( false );
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )

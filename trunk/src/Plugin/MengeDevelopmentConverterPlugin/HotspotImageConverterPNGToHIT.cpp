@@ -44,13 +44,12 @@ namespace Menge
 			return false;
 		}
 
-		bool version;
-		DecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoder( Helper::stringizeString(m_serviceProvider, "hitPick"), stream, version );
+		PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
+			->createDecoderT<PickDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "hitPick") );
 
 		if( decoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: decoder hitPick not found for '%s:%s'"
+			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::validateVersion: decoder hitPick not found for '%s:%s'"
 				, _pakName.c_str()
 				, _fileName.c_str()
 				);
@@ -58,7 +57,9 @@ namespace Menge
 			return false;
 		}
 
-		return version;
+		bool status = decoder->initialize( stream );
+
+		return status;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool HotspotImageConverterPNGToHIT::convert()
@@ -75,9 +76,8 @@ namespace Menge
             return false;
         }
 
-		bool version;
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "pngImage"), input_stream, version );
+            ->createDecoderT<ImageDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "pngImage") );
 
         if( imageDecoder == nullptr )
         {
@@ -87,6 +87,15 @@ namespace Menge
 
             return nullptr;
         }
+
+		if( imageDecoder->initialize( input_stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image initialize for file '%s' was not found"
+				, m_options.inputFileName.c_str() 
+				);
+
+			return nullptr;
+		}
 
         const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
 
@@ -135,16 +144,25 @@ namespace Menge
         }
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
-            ->createEncoderT<PickEncoderInterfacePtr>(Helper::stringizeString(m_serviceProvider, "hitPick"), output_stream);
+            ->createEncoderT<PickEncoderInterfacePtr>(Helper::stringizeString(m_serviceProvider, "hitPick") );
         
         if( encoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
                 , m_options.outputFileName.c_str() 
                 );
-
+			
             return nullptr;
         }
+
+		if( encoder->initialize( output_stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not initialize (createEncoder hitPick)"
+				, m_options.outputFileName.c_str() 
+				);
+
+			return nullptr;
+		}
 
         PickCodecDataInfo di;
 

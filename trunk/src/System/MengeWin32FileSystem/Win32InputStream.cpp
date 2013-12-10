@@ -37,15 +37,15 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _filename )
+	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
 	{
         WChar filePath[MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( _folder, _dir, _filename, _filenamelen, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folder.c_str()
-                , _filename.c_str()
+                , _dir.c_str()
                 );
 
             return false;

@@ -328,6 +328,11 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void Application::addModule( ModuleInterface * _module )
+	{
+		m_modules.push_back( _module );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PlatformInterface * Application::getPlatform() const
 	{
 		return m_platform;
@@ -386,6 +391,7 @@ namespace Menge
             ServiceProviderInterface * m_serviceProvider;
 
             typedef FactoryPool<Type, Count> TNodeFactory;
+			//typedef FactoryDefault<Type> TNodeFactory;
             TNodeFactory m_factory;
         };
     }
@@ -1283,6 +1289,17 @@ namespace Menge
 
 		m_game->tick( timing );
 
+		for( TVectorModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			ModuleInterface * module = *it;
+
+			module->update( timing );
+		}
+
 		if( SOUND_SERVICE(m_serviceProvider) )
 		{
 			SOUND_SERVICE(m_serviceProvider)->update( timing );
@@ -1308,6 +1325,17 @@ namespace Menge
 		}
 
 		m_game->render();
+
+		for( TVectorModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			ModuleInterface * module = *it;
+
+			module->render();
+		}
 
 		if( m_console != nullptr )
 		{

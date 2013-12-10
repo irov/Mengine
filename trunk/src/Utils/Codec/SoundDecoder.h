@@ -15,10 +15,10 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const InputStreamInterfacePtr & _stream, bool & _version ) override;
+        bool initialize( const InputStreamInterfacePtr & _stream ) override;
 
     protected:
-        virtual bool _initialize( bool & _version );
+        virtual bool _initialize();
 
     public:
         bool setOptions( CodecOptions * _options ) override;

@@ -19,21 +19,17 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
+    bool PickDecoder::initialize( const InputStreamInterfacePtr & _stream )
     {
         m_stream = _stream;
 
-		_version = true;
+        bool status = this->_initialize();
 
-        bool result = this->_initialize( _version );
-
-        return result;
+        return status;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoder::_initialize( bool & _version )
-    {
-		(void)_version;
-
+    bool PickDecoder::_initialize()
+    {		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

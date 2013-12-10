@@ -25,10 +25,8 @@ namespace Menge
         LeaveCriticalSection( &m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadMutex::_destroy()
+    void Win32ThreadMutex::_destroy()
     {
         DeleteCriticalSection( &m_cs );
-
-        return true;
     }
 }

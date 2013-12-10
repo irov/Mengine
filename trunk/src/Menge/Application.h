@@ -69,6 +69,9 @@ namespace Menge
         bool setup( const String& _args, const ApplicationSettings & _setting ) override;
 		
 	public:
+		void addModule( ModuleInterface * _module ) override;
+
+	public:
 		const FilePath & getBaseDir() const override;
 
 	public:
@@ -202,8 +205,11 @@ namespace Menge
 
 		ConsoleInterface * m_console;
 
-		typedef std::map<String, DynamicLibraryInterface*> TDynamicLibraries;
+		typedef std::map<String, DynamicLibraryInterface *> TDynamicLibraries;
 		TDynamicLibraries m_dynamicLibraries;
+
+		typedef std::vector<ModuleInterface *> TVectorModules;
+		TVectorModules m_modules;
 
 		GameServiceInterface * m_game;
 

@@ -44,28 +44,13 @@ namespace Menge
             virtual ~PythonPrototypeGenerator()
             {
                 pybind::decref( m_module );
+				m_module = nullptr;
             }
 
         public:
             PyObject * getModule() const
             {
                 return m_module;
-            }
-
-        public:
-            bool initialize()
-            {
-                if( pybind::type_initialize( m_module ) == false )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type initialize"
-                        , m_category.c_str()
-                        , m_prototype.c_str()
-                        );
-
-                    return false;
-                }
-
-                return true;
             }
 
         public:
@@ -96,8 +81,20 @@ namespace Menge
                 (void)_category;
                 (void)_prototype;
 
+				PyObject * py_type = pybind::ask( m_module, "(O)", pybind::ptr(_prototype) );
+
+				if( pybind::type_initialize( py_type ) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type initialize"
+						, m_category.c_str()
+						, m_prototype.c_str()
+						);
+
+					return false;
+				}
+
                 Entity * entity = SCRIPT_SERVICE(m_serviceProvider)
-                    ->createEntityT<Entity>( CONST_STRING(m_serviceProvider, Entity), m_prototype, m_module );
+                    ->createEntityT<Entity>( CONST_STRING(m_serviceProvider, Entity), m_prototype, py_type );
 
                 if( entity == nullptr )
                 {
@@ -119,17 +116,10 @@ namespace Menge
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        bool s_addPrototype( const ConstString & _category, const ConstString & _prototype, PyObject * _module )
+        bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, PyObject * _module )
         {
             EntityPrototypeGenerator * generator = 
                 new EntityPrototypeGenerator(m_serviceProvider, _category, _prototype, _module);
-
-            if( generator->initialize() == false )
-            {
-                generator->destroy();
-
-                return false;
-            }
 
             PROTOTYPE_SERVICE(m_serviceProvider)
                 ->addPrototype( _category, _prototype, generator );
@@ -137,23 +127,23 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addEntityPrototype( const ConstString & _prototype, PyObject * _module )
+        bool s_addEntityPrototypeFinder( const ConstString & _prototype, PyObject * _module )
         {
-            bool result = s_addPrototype( CONST_STRING(m_serviceProvider, Entity), _prototype, _module );
+            bool result = s_addPrototypeFinder( CONST_STRING(m_serviceProvider, Entity), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addScenePrototype( const ConstString & _prototype, PyObject * _module )
+        bool s_addScenePrototypeFinder( const ConstString & _prototype, PyObject * _module )
         {
-            bool result = s_addPrototype( CONST_STRING(m_serviceProvider, Scene), _prototype, _module );
+            bool result = s_addPrototypeFinder( CONST_STRING(m_serviceProvider, Scene), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addArrowPrototype( const ConstString & _prototype, PyObject * _module )
+        bool s_addArrowPrototypeFinder( const ConstString & _prototype, PyObject * _module )
         {
-            bool result = s_addPrototype( CONST_STRING(m_serviceProvider, Arrow), _prototype, _module );
+            bool result = s_addPrototypeFinder( CONST_STRING(m_serviceProvider, Arrow), _prototype, _module );
 
             return result;
         }
@@ -305,9 +295,9 @@ namespace Menge
 
         EntityScriptMethod * entityScriptMethod = new EntityScriptMethod(_serviceProvider);
 
-        pybind::def_functor( "addEntityPrototype", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototype );
-        pybind::def_functor( "addScenePrototype", entityScriptMethod, &EntityScriptMethod::s_addScenePrototype );
-        pybind::def_functor( "addArrowPrototype", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototype );
+        pybind::def_functor( "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
+        pybind::def_functor( "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
+        pybind::def_functor( "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
 		pybind::def_functor( "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
         pybind::def_functor( "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 		//pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );

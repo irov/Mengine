@@ -33,8 +33,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	XmlCodecPlugin::XmlCodecPlugin()
-		: m_serviceProvider(NULL)
-		, m_xml2bin(0)
+		: m_serviceProvider(nullptr)
+		, m_xml2bin(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,6 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
             ->unregisterDecoder( Helper::stringizeString(m_serviceProvider, "xml2bin") );
 
-        m_xml2bin->destroy();
         m_xml2bin = nullptr;
 
 		delete this;

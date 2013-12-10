@@ -24,6 +24,8 @@ namespace Menge
         {
             T * encoder = m_factory.createObjectT();
 
+			encoder->setServiceProvider( m_serviceProvider );
+
             return encoder;
         }
 
@@ -32,11 +34,11 @@ namespace Menge
             return m_name;
         }
 
-    protected:
-        void destroy() override
-        {
-            delete this;
-        }
+	protected:
+		void destroy() override
+		{
+			delete this;
+		}
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

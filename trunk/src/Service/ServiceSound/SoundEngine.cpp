@@ -301,9 +301,8 @@ namespace Menge
             return nullptr;
         }
 
-		bool version;
 		desc.codec = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, desc.stream, version );
+            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType );
 		
     	if( desc.codec == nullptr )
 		{
@@ -315,7 +314,17 @@ namespace Menge
 			return nullptr;
 		}
 
-		SoundBufferInterface* sample = SOUND_SYSTEM(m_serviceProvider)
+		if( desc.codec->initialize( desc.stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "SoundEngine::createSoundBufferFromFile: Can't initialize sound decoder for file %s:%s"
+				, _pakName.c_str()
+				, _filename.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		SoundBufferInterface * sample = SOUND_SYSTEM(m_serviceProvider)
             ->createSoundBuffer( desc.codec, _isStream );
 
         if( sample == nullptr )

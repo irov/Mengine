@@ -130,9 +130,8 @@ namespace Menge
             return false;
         }
 
-		bool version;
         PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<PickDecoderInterfacePtr>( m_codec, stream, version );
+            ->createDecoderT<PickDecoderInterfacePtr>( m_codec );
 
         if( decoder == nullptr )
         {
@@ -144,6 +143,17 @@ namespace Menge
 
             return nullptr;
         }
+
+		if( decoder->initialize( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				, m_codec.c_str()
+				);
+
+			return nullptr;
+		}
 
         const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
@@ -181,7 +191,7 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         bool exist = FILE_SERVICE(m_serviceProvider)
-            ->existFile( category, m_path, NULL );
+            ->existFile( category, m_path, nullptr, 0, nullptr );
 
         if( exist == false )
         {

@@ -104,8 +104,6 @@ namespace Menge
 			const ConstString & name = (*it)->getName();
 
 			CODEC_SERVICE(m_serviceProvider)->unregisterDecoder( name );
-
-			(*it)->destroy();
 		}
 
 		delete this;

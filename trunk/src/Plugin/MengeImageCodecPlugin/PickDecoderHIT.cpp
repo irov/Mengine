@@ -20,7 +20,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoderHIT::_initialize( bool & _version )
+    bool PickDecoderHIT::_initialize()
     {
         size_t magic;
 
@@ -43,9 +43,7 @@ namespace Menge
                 , version
                 , hit_version
                 );
-
-			_version = false;
-
+			
             return false;
         }
 

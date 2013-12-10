@@ -5,6 +5,7 @@
 
 #	include "Logger/Logger.h"
 
+#	include "Core/FilePath.h"
 #	include "Core/String.h"
 #   include "Core/File.h"
 
@@ -104,7 +105,7 @@ namespace Menge
             return false;
         }
         
-        if( zipMappedFile->open( ConstString::none(), m_path ) == false )
+        if( zipMappedFile->open( ConstString::none(), m_path, nullptr, 0 ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize can't open zip file data %s"
                 , m_path.c_str()
@@ -239,15 +240,94 @@ namespace Menge
         return m_type;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::existFile( const FilePath& _filename )
+	class FileGroupZip_FinderValueFiles
 	{
-		TMapFileInfo::iterator it_find = m_files.find( _filename );
+	public:
+		FileGroupZip_FinderValueFiles( const FilePath& _dir, const char * _filename, size_t _filenamelen )
+			: m_dir(_dir)
+			, m_filename(_filename)
+			, m_filenamelen(_filenamelen)
+		{
+		}
 
-		if( it_find == m_files.end() )
+	protected:
+		void operator = ( const FileGroupZip_FinderValueFiles & )
+		{
+		}
+
+	public:
+		const FilePath & m_dir;
+		const char * m_filename;
+		size_t m_filenamelen;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	class FileGroupZip_FinderPredFiles
+	{
+	public:
+		bool operator() ( const FileGroupZip::TMapFileInfo::binary_value_store_type & _store, const FileGroupZip_FinderValueFiles & _key ) const
+		{
+			const char * store_key_0 = _store.key.c_str();
+			int less_0 = strncmp( store_key_0, _key.m_dir.c_str(), _key.m_dir.size() );
+
+			if( less_0 < 0 )
+			{
+				return true;
+			}
+			else if( less_0 > 0 )
+			{
+				return false;
+			}
+
+			if( _store.key.size() <= _key.m_dir.size() )
+			{
+				return false;
+			}
+
+			const char * store_key_1 = _store.key.c_str();
+
+			int less_1 = strncmp( store_key_1 + _key.m_dir.size(), _key.m_filename, _key.m_filenamelen );
+			
+			if( less_1 < 0 )
+			{
+				return true;
+			}
+
+			return false;
+		}
+	};
+	//////////////////////////////////////////////////////////////////////////
+	FileGroupZip::TMapFileInfo::const_iterator FileGroupZip::findDirFile_( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
+	{
+		const TMapFileInfo::buffer_type & buffer = m_files.get_buffer_();
+
+		FileGroupZip_FinderValueFiles key(_dir, _filename, _filenamelen);
+
+		TMapFileInfo::const_iterator it_lower_bound = std::lower_bound( buffer.begin(), buffer.end(), key, FileGroupZip_FinderPredFiles() );		
+
+		TMapFileInfo::const_iterator it_end = buffer.end();
+
+		if( it_lower_bound == it_end )
+		{
+			return it_end;
+		}
+
+		if( FileGroupZip_FinderPredFiles()( *it_lower_bound, key ) == false )
+		{
+			return it_end;
+		}
+
+		return it_lower_bound;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileGroupZip::existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
+	{
+		TMapFileInfo::const_iterator it_lower_bound = this->findDirFile_( _dir, _filename, _filenamelen );
+
+		if( it_lower_bound == m_files.end() )
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -258,20 +338,23 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _stream )
+	bool FileGroupZip::openInputFile( const FilePath& _dir, const char * _filename, size_t _filenamelen, const InputStreamInterfacePtr & _stream )
 	{
 		if( _stream == nullptr )
 		{
 			return false;
 		}
 
-		const FileInfo * fi = nullptr;
-		if( m_files.has( _filename, &fi ) == false )
+		TMapFileInfo::const_iterator it_lower_bound = this->findDirFile_( _dir, _filename, _filenamelen );
+
+		if( it_lower_bound == m_files.end() )
 		{
 			return false;
 		}
 
-        m_zipMappedFile->openInputMemory( _stream, _filename, fi->seek_pos, fi->file_size );
+		const FileInfo & fi = m_files.get_value( it_lower_bound );
+
+		m_zipMappedFile->openInputMemory( _stream, fi.seek_pos, fi.file_size );
 
 		return true;
 	}

@@ -79,10 +79,10 @@ namespace Menge
         return m_type;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::existFile( const FilePath& _filename )
+	bool FileGroupDirectory::existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
 	{
 		bool exist = FILE_SYSTEM(m_serviceProvider)
-            ->existFile( m_path, _filename );
+            ->existFile( m_path, _dir, _filename, _filenamelen );
 
         return exist;
 	}
@@ -95,7 +95,7 @@ namespace Menge
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::openInputFile( const FilePath& _filename, const InputStreamInterfacePtr & _stream )
+	bool FileGroupDirectory::openInputFile( const FilePath& _dir, const char * _filename, size_t _filenamelen, const InputStreamInterfacePtr & _stream )
 	{
         if( _stream == nullptr )
         {
@@ -107,11 +107,11 @@ namespace Menge
 
         FileInputStreamInterfacePtr file = stdex::intrusive_static_cast<FileInputStreamInterfacePtr>(_stream);
 
-		if( file->open( m_path, _filename ) == false )
+		if( file->open( m_path, _dir, _filename, _filenamelen ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed open file '%s':'%s'"
                 , m_path.c_str()
-                , _filename.c_str()
+                , _dir
                 );
 
             return false;

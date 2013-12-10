@@ -15,6 +15,9 @@ namespace Menge
 		FactorablePtr();
 		~FactorablePtr();
 
+	private:
+		void destroy() override;
+
     public:
         size_t getReference() const;
 

@@ -7,15 +7,19 @@ namespace Menge
         : m_serviceProvider(nullptr)
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageEncoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * ImageEncoder::getServiceProvider() const
     {
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageEncoder::initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream )
+    bool ImageEncoder::initialize( const OutputStreamInterfacePtr & _stream )
     {
-        m_serviceProvider = _serviceProvider;
         m_stream = _stream;
 
         bool result = this->_initialize();

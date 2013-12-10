@@ -158,8 +158,8 @@ namespace Menge
 
         String m_commandLine;
 
-        MarmaladeTimer m_timer;
-        MarmaladeInput m_input;
+        MarmaladeTimer * m_timer;
+        MarmaladeInput * m_input;
 
 		PluginInterface * m_pluginMengeXmlCodec;
         PluginInterface * m_pluginMengeImageCodec;

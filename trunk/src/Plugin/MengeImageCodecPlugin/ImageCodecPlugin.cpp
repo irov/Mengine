@@ -64,6 +64,15 @@ namespace Menge
         m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "webpImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pvrtzImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "etz1Image")) );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "png", Helper::stringizeString(m_serviceProvider, "pngImage") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "jpg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "jpeg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
 		
 
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
@@ -82,6 +91,9 @@ namespace Menge
 
         m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "hitPick")) );     
 		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pngImage")) );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "hit", Helper::stringizeString(m_serviceProvider, "hitPick") );
 
 		//VideoDecoderOGGTheora::createCoefTables_();
 
@@ -125,8 +137,6 @@ namespace Menge
 
 			CODEC_SERVICE(m_serviceProvider)
                 ->unregisterDecoder( name );
-
-			(*it)->destroy();
 		}
 
 		// Encoders
@@ -140,8 +150,6 @@ namespace Menge
 
 			CODEC_SERVICE(m_serviceProvider)
                 ->unregisterEncoder( name );
-
-			(*it)->destroy();
 		}
 
 		delete this;

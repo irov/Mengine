@@ -142,8 +142,6 @@ namespace Menge
 
 		if( container->initialize( _name, m_serviceProvider ) == false )
 		{
-			container->destroy();
-
 			Magic_CloseFile( file );
 
 			return nullptr;

@@ -69,9 +69,8 @@ namespace Menge
 
         ConstString codec = Helper::stringizeString(serviceProvider, "pngImage");
 
-		bool version;
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( codec, input_stream, version );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codec );
 
         if( imageDecoder == nullptr )
         {
@@ -84,6 +83,18 @@ namespace Menge
 
             return nullptr;
         }
+
+		if( imageDecoder->initialize( input_stream ) == false )
+		{
+			char error[512];
+			sprintf( error, "spreadingPngAlpha not initialize decoder for file '%s'"
+				, inputFileName.c_str()
+				);
+
+			PyErr_SetString( PyToolException, error );
+
+			return nullptr;
+		}
 
         const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
 
@@ -204,9 +215,9 @@ namespace Menge
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(serviceProvider)
-            ->createEncoderT<ImageEncoderInterfacePtr>( codec, output_stream );
+            ->createEncoderT<ImageEncoderInterfacePtr>( codec );
 
-        if( imageEncoder == 0 )
+        if( imageEncoder == nullptr )
         {
             delete [] textureBuffer;
 
@@ -219,6 +230,20 @@ namespace Menge
 
             return nullptr;
         }
+
+		if( imageEncoder->initialize( output_stream ) == false )
+		{
+			delete [] textureBuffer;
+
+			char error[512];
+			sprintf( error, "spreadingPngAlpha not found encoder for file '%s'"
+				, outputFileName.c_str()
+				);
+
+			PyErr_SetString( PyToolException, error );
+
+			return nullptr;
+		}
 
         ImageCodecOptions encode_options;		
 
@@ -238,8 +263,7 @@ namespace Menge
         encode_dataInfo.size = 0;	// we don't need this
 
         unsigned int bytesWritten = imageEncoder->encode( textureBuffer, &encode_dataInfo );
-
-
+		
         if( bytesWritten == 0 )
         {
             delete [] textureBuffer;

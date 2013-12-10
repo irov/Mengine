@@ -247,7 +247,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::createMaterialGroup( const ConstString & _name, const RenderMaterial & _material )
     {
-        if( m_mapMaterialGroup.exist( _name ) == false )
+        if( m_mapMaterialGroup.exist( _name ) == true )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::createMaterialGroup: MaterialGroup '%s' is already created!"
                 , _name.c_str()

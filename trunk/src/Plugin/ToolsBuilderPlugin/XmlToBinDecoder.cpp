@@ -41,9 +41,8 @@ namespace Menge
         String utf8_binPath;
         Helper::unicodeToUtf8( serviceProvider, _binPath, utf8_binPath );
 
-		bool version;
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE(serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(serviceProvider, "xml2bin"), nullptr, version );
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(serviceProvider, "xml2bin") );
 
         if( decoder == nullptr )
         {
@@ -53,6 +52,15 @@ namespace Menge
 
             return false;
         }
+
+		if( decoder->initialize( nullptr ) == false )
+		{
+			LOGGER_ERROR(serviceProvider)("writeBin invalid initialize decoder xml2bin for %s"
+				, utf8_xmlPath.c_str()
+				);
+
+			return false;
+		}
 
         XmlCodecOptions options;
         options.pathProtocol = Helper::stringizeString( serviceProvider, utf8_protocolPath );

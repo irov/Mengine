@@ -165,7 +165,7 @@ namespace Menge
 
 				if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
 				{
-					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ vertex overflow %d (max $d)"
+					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ vertex overflow %d (max %d)"
 						, shapeVertexCount
 						, MENGINE_MOVIE_SHAPE_MAX_VERTEX
 						);

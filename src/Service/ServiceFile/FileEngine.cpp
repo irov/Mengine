@@ -130,7 +130,7 @@ namespace Menge
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const ConstString& _fileSystemName, const FilePath & _filename, FileGroupInterface ** _group ) const
+	bool FileEngine::existFile( const ConstString& _fileSystemName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterface ** _group ) const
 	{
 		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -140,7 +140,7 @@ namespace Menge
 		
 		FileGroupInterface * fileGroup = it_find->second;
 
-		if( fileGroup->existFile( _filename ) == false )
+		if( fileGroup->existFile( _dir, _filename, _filenamelen ) == false )
         {
             return false;
         }
@@ -199,7 +199,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( group->openInputFile( _filename, file ) == false )
+		if( group->openInputFile( _filename, nullptr, 0, file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't open input file '%s' '%s'"
 				, _fileSystemName.c_str()
@@ -263,7 +263,7 @@ namespace Menge
             return nullptr;
         }
 
-        if( mappedFile->open( _foldername, _filename ) == false )
+        if( mappedFile->open( _foldername, _filename, nullptr, 0 ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedInputStream can't open output file '%s'"
                 , _filename.c_str()

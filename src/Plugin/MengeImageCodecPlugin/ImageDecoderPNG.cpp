@@ -76,7 +76,7 @@ namespace Menge
 		s_cleanup( m_png_ptr );
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoderPNG::_initialize( bool & _version )
+    bool ImageDecoderPNG::_initialize()
     {
         // check for png signature
         unsigned char png_check[PNG_BYTES_TO_CHECK];
@@ -158,10 +158,9 @@ namespace Menge
         {
         case PNG_COLOR_TYPE_RGB:
         case PNG_COLOR_TYPE_RGB_ALPHA:
-#   ifdef WIN32
+#   ifndef MENGE_RENDER_TEXTURE_RGBA
             png_set_bgr(m_png_ptr);
 #   endif
-
             break;
 
         case PNG_COLOR_TYPE_GRAY:

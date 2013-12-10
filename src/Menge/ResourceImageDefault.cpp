@@ -37,29 +37,33 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		bool exist = FILE_SERVICE(m_serviceProvider)
-			->existFile( category, m_fileName, NULL );
+			->existFile( category, m_fileName, nullptr, 0, nullptr );
 				
 		if( exist == false )
 		{
 			return false;
 		}
         
-        InputStreamInterfacePtr stream = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_fileName );
+        InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( category, m_fileName );
 
         if( stream == nullptr )
         {
             return false;
         }	
                 
-		bool version;
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType, stream, version );
+            ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType );
 
         if( imageDecoder == nullptr )
         {
             return false;
         }
+
+		if( imageDecoder->initialize( stream ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}

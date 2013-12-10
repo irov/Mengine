@@ -5,6 +5,7 @@
 
 #	include "Core/ConstString.h"
 #   include "Core/FilePath.h"
+#	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
 
 #	include "Interface/ServiceInterface.h"

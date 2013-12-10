@@ -34,9 +34,9 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::registerDecoder( const ConstString& _type, DecoderFactoryInterface * _interface )
+	void CodecEngine::registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory )
 	{
-		m_mapDecoderSystem.insert( _type, _interface );
+		m_mapDecoderSystem.insert( _type, _factory );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::unregisterDecoder( const ConstString& _type )
@@ -44,9 +44,9 @@ namespace Menge
 		m_mapDecoderSystem.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::registerEncoder( const ConstString& _type, EncoderFactoryInterface * _interface )
+	void CodecEngine::registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory )
 	{
-		m_mapEncoderSystem.insert( _type, _interface );
+		m_mapEncoderSystem.insert( _type, _factory );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::unregisterEncoder( const ConstString& _type )
@@ -54,10 +54,10 @@ namespace Menge
 		m_mapEncoderSystem.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type, const InputStreamInterfacePtr & _stream, bool & _version )
+	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type )
 	{
-		DecoderFactoryInterface * decoderFactory = nullptr;
-		if( m_mapDecoderSystem.has( _type, &decoderFactory ) == false )
+		DecoderFactoryInterfacePtr decoderFactory;
+		if( m_mapDecoderSystem.has_copy( _type, decoderFactory ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("CodecEngine::createDecoder not found codec %s"
                 , _type.c_str()
@@ -68,23 +68,13 @@ namespace Menge
 
 		DecoderInterfacePtr decoder = decoderFactory->createDecoder();
 
-		if( decoder == nullptr )
-		{
-			return nullptr;
-		}
-		
-		if( decoder->initialize( _stream, _version ) == false )
-		{
-			return nullptr;
-		}
-
 		return decoder;
 	}
     //////////////////////////////////////////////////////////////////////////
-    EncoderInterfacePtr CodecEngine::createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
+    EncoderInterfacePtr CodecEngine::createEncoder( const ConstString& _type )
     {
-		EncoderFactoryInterface * encoderSystem = nullptr;
-        if( m_mapEncoderSystem.has( _type, &encoderSystem ) == false )
+		EncoderFactoryInterfacePtr encoderSystem;
+        if( m_mapEncoderSystem.has_copy( _type, encoderSystem ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("CodecEngine::createEncoder not found codec %s"
 				, _type.c_str()
@@ -94,16 +84,6 @@ namespace Menge
         }
 
         EncoderInterfacePtr encoder = encoderSystem->createEncoder();
-
-        if( encoder == nullptr )
-        {
-            return nullptr;
-        }
-
-        if( encoder->initialize( m_serviceProvider, _stream ) == false )
-        {
-            return nullptr;
-        }
 
         return encoder;
     }

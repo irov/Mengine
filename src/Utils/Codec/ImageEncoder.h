@@ -11,10 +11,11 @@ namespace Menge
 		ImageEncoder();
 
     public:
-        ServiceProviderInterface * getServiceProvider() const;
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream ) override;
+        bool initialize( const OutputStreamInterfacePtr & _stream ) override;
 
     protected:
         virtual bool _initialize();

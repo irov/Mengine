@@ -27,10 +27,11 @@ namespace Menge
 	class CodecServiceInterface;
 
 	class CodecFactoryInterface
+		: public FactorablePtr
 	{
-	public:
-        virtual void destroy() = 0;
 	};
+
+	typedef stdex::intrusive_ptr<CodecFactoryInterface> CodecFactoryInterfacePtr;
 
 	class DecoderInterface
         : public FactorablePtr
@@ -40,7 +41,7 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
-        virtual bool initialize( const InputStreamInterfacePtr & _stream, bool & _version ) = 0;
+        virtual bool initialize( const InputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool setOptions( CodecOptions * _options ) = 0;
@@ -63,11 +64,17 @@ namespace Menge
         virtual const ConstString & getName() const = 0;
 	};
 
+	typedef stdex::intrusive_ptr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;
+
 	class EncoderInterface
         : public FactorablePtr
 	{
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual bool initialize( const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool setOptions( CodecOptions * _options ) = 0;
@@ -89,6 +96,8 @@ namespace Menge
         virtual const ConstString & getName() const = 0;
 	};
 
+	typedef stdex::intrusive_ptr<EncoderFactoryInterface> EncoderFactoryInterfacePtr;
+
 	enum ECodecTargetFormat
 	{
 		ECTF_Texture
@@ -97,22 +106,22 @@ namespace Menge
 	class CodecServiceInterface
 		: public ServiceInterface
 	{
-        SERVICE_DECLARE("CodecService")    
+        SERVICE_DECLARE("CodecService")
 
 	public:
-		virtual void registerDecoder( const ConstString& _type, DecoderFactoryInterface * _interface ) = 0;
+		virtual void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _interface ) = 0;
 		virtual void unregisterDecoder( const ConstString& _type ) = 0;
 		
-		virtual void registerEncoder( const ConstString& _type, EncoderFactoryInterface * _interface ) = 0;
+		virtual void registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _interface ) = 0;
 		virtual void unregisterEncoder( const ConstString& _type ) = 0;
 
     public:
-		virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const InputStreamInterfacePtr & _stream, bool & _version ) = 0; 
+		virtual DecoderInterfacePtr createDecoder( const ConstString & _type ) = 0; 
 
         template<class T>
-        T createDecoderT( const ConstString& _type, const InputStreamInterfacePtr & _stream, bool & _version )
+        T createDecoderT( const ConstString& _type )
         {
-            DecoderInterfacePtr decoder = this->createDecoder( _type, _stream, _version );
+            DecoderInterfacePtr decoder = this->createDecoder( _type );
 
 #   ifdef _DEBUG
 			if( stdex::intrusive_dynamic_cast<T>(decoder) == nullptr )
@@ -127,12 +136,12 @@ namespace Menge
         }
 
     public:
-        virtual EncoderInterfacePtr createEncoder( const ConstString& _type, const OutputStreamInterfacePtr & stream ) = 0;
+        virtual EncoderInterfacePtr createEncoder( const ConstString& _type ) = 0;
 
         template<class T>
-        T createEncoderT( const ConstString& _type, const OutputStreamInterfacePtr & _stream )
+        T createEncoderT( const ConstString& _type )
         {
-            EncoderInterfacePtr encoder = this->createEncoder( _type, _stream );
+            EncoderInterfacePtr encoder = this->createEncoder( _type );
 
 #   ifdef _DEBUG
             if( stdex::intrusive_dynamic_cast<T>(encoder) == nullptr )

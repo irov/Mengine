@@ -57,7 +57,7 @@ namespace Menge
                 const ConstString & category = this->getCategory();
 
                 if( FILE_SERVICE(m_serviceProvider)
-                    ->existFile( category, desc.path, NULL ) == false )
+                    ->existFile( category, desc.path, nullptr, 0, nullptr ) == false )
                 {
                     LOGGER_ERROR(m_serviceProvider)( "ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
                         , this->getName().c_str()

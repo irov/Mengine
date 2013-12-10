@@ -50,6 +50,7 @@ SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
 SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
 
 SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
+SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
 
 SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
 SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
@@ -89,6 +90,8 @@ extern "C" // only required if using g++
     //////////////////////////////////////////////////////////////////////////
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
+
+	extern bool initModulePathFinder( Menge::ModuleInterface ** _module );
 }
 
 namespace Menge
@@ -150,7 +153,7 @@ namespace Menge
 		: m_running(true)
 		, m_active(false)
 		, m_windowClassName(L"MengeWnd")
-		, m_hWnd(0)
+		, m_hWnd(NULL)
 		, m_cursorInArea(false)
         , m_clickOutArea(false)
 		, m_hInstance(NULL)
@@ -199,6 +202,7 @@ namespace Menge
         , m_scriptService(nullptr)
         , m_pluginService(nullptr)
         , m_converterService(nullptr)
+		, m_moduleService(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1052,6 +1056,26 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::initializeModuleEngine_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Initializing Module Service..." );
+
+		ModuleServiceInterface * moduleService;
+		if( createModuleService( &moduleService ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, moduleService ) == false )
+		{
+			return false;
+		}
+
+		m_moduleService = moduleService;
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool WinApplication::initializeCodecEngine_()
     {
@@ -1069,15 +1093,7 @@ namespace Menge
         }
 
         m_codecService = codecService;
-
-        m_codecService->registerCodecExt( "png", Helper::stringizeString(m_serviceProvider, "pngImage") );
-        m_codecService->registerCodecExt( "jpg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
-        m_codecService->registerCodecExt( "jpeg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
-
-        m_codecService->registerCodecExt( "ogg", Helper::stringizeString(m_serviceProvider, "oggSound") );
-        m_codecService->registerCodecExt( "hit", Helper::stringizeString(m_serviceProvider, "hitPick") );
-
-
+		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1359,7 +1375,7 @@ namespace Menge
             initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
             m_pluginMengeSoundCodec->initialize( m_serviceProvider );
         }
-        
+		        
         for( TVectorWString::const_iterator
             it = settings.plugins.begin(),
             it_end = settings.plugins.end();
@@ -1375,7 +1391,7 @@ namespace Menge
             {
                 LOGGER_ERROR(m_serviceProvider)("Application Failed to load plugin %ls"
                     , pluginName.c_str()
-                    ); 
+                    );
 
                 return false;
             }
@@ -1402,6 +1418,25 @@ namespace Menge
                 }
             }
         }
+
+		for( TVectorString::const_iterator
+			it = settings.modules.begin(),
+			it_end = settings.modules.end();
+		it != it_end;
+		++it )
+		{
+			const String & moduleName = *it;
+
+			if( MODULE_SERVICE(m_serviceProvider)
+				->runModule( Helper::stringizeString(m_serviceProvider, moduleName) ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Application Failed to run module %s"
+					, moduleName.c_str()
+					);
+
+				return false;
+			}
+		}
 
         String languagePack;
         Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
@@ -1807,42 +1842,59 @@ namespace Menge
         if( m_pluginService != nullptr )
         {
             SERVICE_DESTROY( PluginService, m_pluginService );
+			m_pluginService = nullptr;
         }
+
+		if( m_moduleService != nullptr )
+		{
+			SERVICE_DESTROY( ModuleService, m_moduleService );
+			m_moduleService = nullptr;
+		}
 
         if( m_inputService != nullptr )
         {
             m_inputService->finalize();
 
             SERVICE_DESTROY( InputService, m_inputService );
+			m_inputService = nullptr;
         }
         
         SERVICE_DESTROY( UnicodeService, m_unicodeService );        
+		m_unicodeService = nullptr;
+
         SERVICE_DESTROY( UnicodeSystem, m_unicodeSystem );
+		m_unicodeSystem = nullptr;
         
         if( m_fileService != nullptr )
         {            
             SERVICE_DESTROY( FileService, m_fileService );
+			m_fileService = nullptr;
         }
 
         SERVICE_DESTROY( CodecService, m_codecService );
+		m_codecService = nullptr;
 
         if( m_particleService != nullptr )
         {
             SERVICE_DESTROY( ParticleService, m_particleService );
+			m_particleService = nullptr;
         }
 
         if( m_particleSystem != nullptr )
         {            
             SERVICE_DESTROY( ParticleSystem, m_particleSystem );
+			m_particleSystem = nullptr;
         }
         
         SERVICE_DESTROY( PhysicService2D, m_physicService2D );
+		m_physicService2D = nullptr;
         
         if( m_soundService != nullptr )
         {
             m_soundService->finalize();
 
             SERVICE_DESTROY( SoundService, m_soundService );
+			m_soundService = nullptr;
         }
 
         if( m_soundSystem != nullptr )
@@ -1850,20 +1902,24 @@ namespace Menge
             m_soundSystem->finalize();
 
             SERVICE_DESTROY( SoundSystem, m_soundSystem );        
+			m_soundSystem = nullptr;
         }
 
         SERVICE_DESTROY( Application, m_application );
+		m_application = nullptr;
 
         if( m_scriptService != nullptr )
         {
             m_scriptService->finalize();
 
             SERVICE_DESTROY( ScriptService, m_scriptService );
+			m_scriptService = nullptr;
         }
 
         if( m_converterService != nullptr )
         {
             SERVICE_DESTROY( ConverterService, m_converterService );
+			m_converterService = nullptr;
         }
 
         if( m_renderService != nullptr )
@@ -1984,13 +2040,14 @@ namespace Menge
 
 		if( m_winTimer != nullptr )
 		{
-			delete static_cast<WinTimer*>(m_winTimer);
+			delete m_winTimer;
             m_winTimer = nullptr;
 		}
 
         if( m_windowsLayer != nullptr )
         {
             delete m_windowsLayer;
+			m_windowsLayer = nullptr;
         }
 
         SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
@@ -2006,6 +2063,7 @@ namespace Menge
 		if( m_hWnd != NULL )
 		{
 			CloseWindow( m_hWnd );
+			m_hWnd = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

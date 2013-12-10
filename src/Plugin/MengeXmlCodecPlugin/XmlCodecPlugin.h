@@ -20,6 +20,6 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		DecoderFactoryInterface * m_xml2bin;
+		DecoderFactoryInterfacePtr m_xml2bin;
 	};
 }

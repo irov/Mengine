@@ -4,6 +4,8 @@
 #	include "Interface/ResourceInterface.h"
 
 #   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryDefault.h"
+
 #   include "ConstStringHolderPythonString.h"
 
 #	include "pybind/pybind.hpp"
@@ -100,6 +102,7 @@ namespace Menge
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef FactoryPool<ConstStringHolderPythonString, 256> FactoryPoolPythonString;
+		//typedef FactoryDefault<ConstStringHolderPythonString> FactoryPoolPythonString;
         FactoryPoolPythonString m_poolPythonString;
 	};
 }

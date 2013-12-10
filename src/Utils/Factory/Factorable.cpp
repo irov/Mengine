@@ -5,7 +5,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()
-	    : m_factory(0)
+	    : m_factory(nullptr)
 #   ifdef _DEBUG
         , m_destroy(false)
 #   endif
@@ -36,18 +36,15 @@ namespace Menge
         }
 #   endif
 
-        if( this->_destroy() == false )
-        {
-            return;
-        }
+        this->_destroy();
 
 #   ifdef _DEBUG
-        m_destroy = true;
+		m_destroy = true;
 
-        this->_checkDestroy();
+		this->_checkDestroy();
 #   endif
 
-        m_factory->destroyObject( this );
+		m_factory->destroyObject( this );
     }
 #   ifdef _DEBUG
     //////////////////////////////////////////////////////////////////////////
@@ -57,8 +54,7 @@ namespace Menge
     }
 #   endif
     //////////////////////////////////////////////////////////////////////////
-    bool Factorable::_destroy()
+    void Factorable::_destroy()
     {
-	    return true;
     }
 }

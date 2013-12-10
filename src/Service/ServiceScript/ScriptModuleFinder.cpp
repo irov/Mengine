@@ -77,12 +77,21 @@ namespace Menge
             return nullptr;
         }        
 
-        InputStreamInterfacePtr stream = pathCache->fileGroup->createInputFile();
+        //InputStreamInterfacePtr stream = pathCache->fileGroup->createInputFile();
 
-        if( pathCache->fileGroup->openInputFile( pathCache->path, stream ) == false )
-        {
-            return nullptr;
-        }
+		//m_fullModulePathCache.assign( pathCache->path.c_str(), pathCache->path.size() );
+		//m_fullModulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
+		//m_fullModulePathCache += pathCache->module;
+
+		//ConstString cs_modulePath = Helper::stringizeString(m_serviceProvider, m_fullModulePathCache);
+
+        //if( pathCache->fileGroup->openInputFile( pathCache->path, stream ) == false )
+        //{
+        //    return nullptr;
+        //}
+
+		InputStreamInterfacePtr stream = pathCache->stream;
+		pathCache->stream = nullptr;
 
 		PyObject * module = nullptr;
 
@@ -98,13 +107,15 @@ namespace Menge
         return module;        
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::convertDotToSlash_( const ConstString & _module )
+    size_t ScriptModuleFinder::convertDotToSlash_( char * _cache, const ConstString & _module )
     {
-        m_modulePathCache.assign( _module.c_str(), _module.size() );
+		const char * module_str = _module.c_str();
+		size_t module_size = _module.size();
+		memcpy( _cache, module_str, module_size );
 
-        for( String::iterator 
-            it = m_modulePathCache.begin(),
-            it_end = m_modulePathCache.end();
+        for( char
+            *it = _cache,
+            *it_end = _cache + module_size;
         it != it_end;
         ++it )
         {
@@ -113,15 +124,20 @@ namespace Menge
                 *it = MENGE_FOLDER_RESOURCE_DELIM;
             }
         }
+
+		return module_size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::find_module_source_( const ConstString & _module )
     {
-        this->convertDotToSlash_( _module );
+		char modulePathCache[MAX_PATH];
+        size_t modulePathCacheLen = this->convertDotToSlash_( modulePathCache, _module );
 
-        m_modulePathCache += ".py";
+		memcpy( modulePathCache + modulePathCacheLen, ".py", 4 );
         
-        ModulePathCache * pathCache_module = this->findModule_( _module, m_modulePathCache );
+		//ConstString modulePath = Helper::stringizeString( m_serviceProvider, m_modulePathCache );
+
+        ModulePathCache * pathCache_module = this->findModule_( _module, modulePathCache, modulePathCacheLen + 3 );
 
         if( pathCache_module != nullptr )
         {
@@ -130,38 +146,38 @@ namespace Menge
 
             return true;
         }
+		else
+		{
+			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
+			memcpy( modulePathCache + modulePathCacheLen + 1, "__init__.py", 12 );
 
-        m_modulePathCache.erase( m_modulePathCache.size() - 3, 3 );
+			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 12 );
 
-        m_modulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
+			if( pathCache_package == nullptr )
+			{
+				return false;
+			}
 
-        m_modulePathCache += "__init__";
-        m_modulePathCache += ".py";
-        
-        ModulePathCache * pathCache_package = this->findModule_( _module, m_modulePathCache );
+			//PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
+			PyObject * py_fullpath = pybind::ptr( _module );
 
-        if( pathCache_package == nullptr )
-        {
-            return false;
-        }
+			pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
+			pybind::decref( py_fullpath );
 
-        PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
-
-        pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
-        pybind::decref( py_fullpath );
-
-        pathCache_package->source = true;
+			pathCache_package->source = true;
+		}
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::find_module_code_( const ConstString & _module )
     {
-        this->convertDotToSlash_( _module );
+		char modulePathCache[MAX_PATH];
+        size_t modulePathCacheLen = this->convertDotToSlash_( modulePathCache, _module );
 
-        m_modulePathCache += ".pyz";
+		memcpy( modulePathCache + modulePathCacheLen, ".pyz", 5 );
 
-        ModulePathCache * pathCache_module = this->findModule_( _module, m_modulePathCache );
+        ModulePathCache * pathCache_module = this->findModule_( _module, modulePathCache, modulePathCacheLen + 4 );
 
         if( pathCache_module != nullptr )
         {
@@ -170,32 +186,31 @@ namespace Menge
 
             return true;
         }
-         
-        m_modulePathCache.erase( m_modulePathCache.size() - 4, 4 );
+		else
+		{
+			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
+			memcpy( modulePathCache + modulePathCacheLen + 1, "__init__.pyz", 13 );
 
-        m_modulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
+			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 13 );
 
-        m_modulePathCache += "__init__";
-        m_modulePathCache += ".pyz";
+			if( pathCache_package == nullptr )
+			{
+				return false;
+			}
 
-        ModulePathCache * pathCache_package = this->findModule_( _module, m_modulePathCache );
+			//PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
+			PyObject * py_fullpath = pybind::ptr( _module );
 
-        if( pathCache_package == nullptr )
-        {
-            return false;
-        }
+			pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
+			pybind::decref( py_fullpath );
 
-        PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
-
-        pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
-        pybind::decref( py_fullpath );
-
-        pathCache_package->source = false;
+			pathCache_package->source = false;
+		}
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ScriptModuleFinder::ModulePathCache * ScriptModuleFinder::findModule_( const ConstString & _module, const String & _modulePath ) const
+    ScriptModuleFinder::ModulePathCache * ScriptModuleFinder::findModule_( const ConstString & _module, const char * _modulePath, size_t _modulePathLen ) const
     {
         FileServiceInterface * fileService = FILE_SERVICE(m_serviceProvider);
                 
@@ -215,29 +230,37 @@ namespace Menge
             {
                 const FilePath & path = *it_path;
                                 
-                m_fullModulePathCache.assign( path.c_str(), path.size() );
-                m_fullModulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
-                m_fullModulePathCache += _modulePath;
-
-                ConstString cs_modulePath = Helper::stringizeString(m_serviceProvider, m_fullModulePathCache);
-                
                 FileGroupInterface * fileGroup;
-                if( fileService->existFile( mp.pak, cs_modulePath, &fileGroup ) == false )
+                if( fileService->existFile( mp.pak, path, _modulePath, _modulePathLen, &fileGroup ) == false )
                 {
                     continue;
                 }
 
-                InputStreamInterfacePtr stream = fileGroup->createInputFile();
+				InputStreamInterfacePtr stream = fileGroup->createInputFile();
 
-                if( stream == nullptr )
-                {
-                    return nullptr;
-                }
+				if( fileGroup->openInputFile( path, _modulePath, _modulePathLen, stream ) == false )
+				{
+					return nullptr;
+				}
 
                 ModulePathCache mpc;
-                mpc.fileGroup = fileGroup;
-                mpc.path = cs_modulePath;
+                mpc.stream = stream;
 
+				//m_fullModulePathCache.assign( path.c_str(), path.size() );
+				//m_fullModulePathCache += _modulePath;
+
+				//ConstString cs_modulePath = Helper::stringizeString(m_serviceProvider, m_fullModulePathCache);
+
+                //mpc.path = cs_modulePath;
+
+				//InputStreamInterfacePtr stream = pathCache->fileGroup->createInputFile();
+
+				//m_fullModulePathCache.assign( pathCache->path.c_str(), pathCache->path.size() );
+				//m_fullModulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
+				//m_fullModulePathCache += pathCache->module;
+
+				//ConstString cs_modulePath = Helper::stringizeString(m_serviceProvider, m_fullModulePathCache);
+				
                 TMapModulePath::iterator it_insert = m_paths.insert( _module, mpc ).first;
 
 				ModulePathCache & pathCache = m_paths.get_value( it_insert );

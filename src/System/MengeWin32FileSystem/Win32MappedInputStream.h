@@ -21,10 +21,10 @@ namespace Menge
 
     public:
         InputStreamInterfacePtr createInputMemory() override;
-        void openInputMemory( const InputStreamInterfacePtr & _stream, const FilePath & _filename, size_t _offset, size_t _size ) override;
+        void openInputMemory( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) override;
 
 	public:
-		bool open( const FilePath & _folder, const FilePath& _filename ) override;		
+		bool open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) override;
 
 	public:
 		size_t read( void* _buf, size_t _count ) override;

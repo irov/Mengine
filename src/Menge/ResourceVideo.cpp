@@ -200,9 +200,8 @@ namespace Menge
             return nullptr;
         }
 
-		bool version;
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<VideoDecoderInterfacePtr>( m_codecType, videoStream, version );
+            ->createDecoderT<VideoDecoderInterfacePtr>( m_codecType );
 
         if( videoDecoder == nullptr )
         {
@@ -213,6 +212,16 @@ namespace Menge
 
             return nullptr;
         }
+
+		if( videoDecoder->initialize( videoStream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't initialize video decoder for file '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				);
+
+			return nullptr;
+		}
 
         VideoCodecOptions videoCodecOptions;
 

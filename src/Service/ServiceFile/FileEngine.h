@@ -37,8 +37,9 @@ namespace Menge
         FileGroupInterface * getFileGroup( const ConstString& _fileSystemName ) const override;
         
     public:
-		bool existFile( const ConstString& _fileSystemName, const FilePath& _filename, FileGroupInterface ** _group ) const override;
-		
+		bool existFile( const ConstString& _fileSystemName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterface ** _group ) const override;
+
+	public:
 		InputStreamInterfacePtr openInputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
 		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
         

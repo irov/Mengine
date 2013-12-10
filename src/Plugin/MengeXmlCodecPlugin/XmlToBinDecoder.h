@@ -16,7 +16,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const InputStreamInterfacePtr & _stream, bool & _version ) override;
+        bool initialize( const InputStreamInterfacePtr & _stream ) override;
 
     protected:
         const InputStreamInterfacePtr & getStream() const override;

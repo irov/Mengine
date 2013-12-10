@@ -30,7 +30,7 @@ namespace Menge
 		void _deactivate() override;
         
 	protected:
-		bool _destroy() override;
+		void _destroy() override;
 		
 	protected:
 		void _localHide( bool _hide ) override;

@@ -175,8 +175,11 @@ namespace Menge
 	public:
 		void visitChild( Visitor * _visitor );
 
+	public:
+		void destroy() override;
+
 	protected:
-		bool _destroy() override;
+		void _destroy() override;
 	
 	public:
 		bool activate();

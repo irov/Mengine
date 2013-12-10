@@ -32,5 +32,5 @@ namespace Menge
     WATCHDOG(serviceProvider, tag)
 
 #   define END_WATCHDOG( serviceProvider, tag )\
-    LOGGER_WATCHDOG(serviceProvider)("(%.4f)", WATCHDOG(m_serviceProvider, "texture create"))    
+    LOGGER_WATCHDOG(serviceProvider)("(%.4f)", WATCHDOG(m_serviceProvider, "texture create"))
 }

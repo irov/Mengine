@@ -31,8 +31,9 @@ namespace Menge
 		
         bool _compile() override;
 		void _release() override;
-				
-		bool _destroy() override;
+			
+	public:
+		void destroy() override;
 
 	protected:
 		void _embedding( PyObject * _embed ) override;

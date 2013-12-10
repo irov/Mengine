@@ -98,9 +98,8 @@ namespace Menge
             const ConstString & codecType = CODEC_SERVICE(m_serviceProvider)
                 ->findCodecType( filepath );
 
-			bool version;
             ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-                ->createDecoderT<ImageDecoderInterfacePtr>( codecType, stream, version );
+                ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
             if( imageDecoder == nullptr )
             {
@@ -111,6 +110,16 @@ namespace Menge
 
                 return false;
             }
+
+			if( imageDecoder->initialize( stream ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't initialize decoder '%s'"
+					, m_name.c_str()
+					, codecType.c_str() 
+					);
+
+				return false;
+			}
         }
 
         if( container->isValid() == false )

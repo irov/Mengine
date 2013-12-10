@@ -20,7 +20,7 @@ namespace Menge
         void unlock() override;
 
     protected:
-        bool _destroy() override;
+        void _destroy() override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

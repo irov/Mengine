@@ -19,14 +19,14 @@ namespace Menge
         {
         }
 
-        virtual ~DecoderFactory()
+        ~DecoderFactory()
         {
         }
 
     protected:
         DecoderInterfacePtr createDecoder() override
         {	
-            DecoderInterface * decoder = m_factory.createObjectT();
+            T * decoder = m_factory.createObjectT();
 
 			decoder->setServiceProvider( m_serviceProvider );
 
@@ -38,10 +38,11 @@ namespace Menge
             return m_name;
         }
 
-        void destroy() override
-        {
-            delete this;
-        }
+	protected:
+		void destroy() override
+		{
+			delete this;
+		}
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

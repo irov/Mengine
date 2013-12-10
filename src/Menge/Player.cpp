@@ -391,13 +391,9 @@ namespace Menge
 		if( cb != nullptr )
 		{
 			pybind::call( cb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
-		}
-	
-		if( cb != nullptr )
-		{
 			pybind::decref( cb );
 		}
-
+	
         m_switchSceneName.clear();
 
 		return;
@@ -559,18 +555,12 @@ namespace Menge
             m_scene = nullptr;
         }
 
-        if( m_removeSceneCb != nullptr )
-        {
-            pybind::decref(m_removeSceneCb);
-            m_removeSceneCb = nullptr;
-        }
-
-        if( m_changeSceneCb != nullptr )
-        {
-            pybind::decref(m_changeSceneCb);
-            m_changeSceneCb = nullptr;
-        }
-
+		pybind::decref(m_removeSceneCb);
+		m_removeSceneCb = nullptr;
+        
+		pybind::decref(m_changeSceneCb);
+		m_changeSceneCb = nullptr;
+        
         if( m_camera2D != nullptr )
         {
             m_camera2D->destroy();

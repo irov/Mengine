@@ -19,21 +19,17 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::initialize( const InputStreamInterfacePtr & _stream, bool & _version )
+    bool VideoDecoder::initialize( const InputStreamInterfacePtr & _stream )
     {        
         m_stream = _stream;
 
-		_version = true;
+        bool status = this->_initialize();
 
-        bool result = this->_initialize( _version );
-
-        return result;
+        return status;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::_initialize( bool & _version )
+    bool VideoDecoder::_initialize()
     {
-		(void)_version;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

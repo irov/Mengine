@@ -11,6 +11,7 @@
 
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/PlatformInterface.h"
+#	include "Interface/ModuleInterface.h"
 
 namespace Menge
 {
@@ -66,6 +67,9 @@ namespace Menge
 
 		virtual const FilePath & getBaseDir() const = 0;
 		
+	public:
+		virtual void addModule( ModuleInterface * _module ) = 0;
+
 	public:
 		virtual PlatformInterface * getPlatform() const = 0;
 

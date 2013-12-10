@@ -7,10 +7,19 @@ namespace Menge
         : m_serviceProvider(nullptr)
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool PickEncoder::initialize( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream )
+	//////////////////////////////////////////////////////////////////////////
+	void PickEncoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * PickEncoder::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+    bool PickEncoder::initialize( const OutputStreamInterfacePtr & _stream )
     {
-        m_serviceProvider = _serviceProvider;
         m_stream = _stream;
 
         bool result = this->_initialize();

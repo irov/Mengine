@@ -161,6 +161,7 @@ namespace Menge
 		IniUtil::getIniAllSettings( ini, "Params", _settings.appParams, m_serviceProvider );
 
 		IniUtil::getIniValue( ini, "Plugins", "Name", _settings.plugins, m_serviceProvider );
+		IniUtil::getIniValue( ini, "Modules", "Name", _settings.modules, m_serviceProvider );
         IniUtil::getIniValue( ini, "DevPlugins", "Name", _settings.devPlugins, m_serviceProvider );
         
 		return true;

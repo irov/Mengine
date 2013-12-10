@@ -20,10 +20,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderGVF::_initialize( bool & _version )
+	bool VideoDecoderGVF::_initialize()
 	{
-		(void)_version;
-
 		size_t magic;
 		m_stream->read( &magic, sizeof(magic) );
 		

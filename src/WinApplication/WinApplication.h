@@ -116,6 +116,7 @@ namespace Menge
         bool initializeSoundEngine_();
         bool initializeSilentSoundEngine_();
         bool initializeScriptEngine_();
+		bool initializeModuleEngine_();
         bool initializeCodecEngine_();
         bool initializeConverterEngine_();
         bool initializeInputEngine_();
@@ -215,6 +216,7 @@ namespace Menge
 
         ScriptServiceInterface * m_scriptService;
         PluginServiceInterface * m_pluginService;
+		ModuleServiceInterface * m_moduleService;
 
 		FileLogger * m_fileLog;
 

@@ -6,32 +6,24 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     MovieEvent::MovieEvent()
-        : m_cb(NULL)
-        , m_resourceMovie(NULL)
+        : m_cb(nullptr)
+        , m_resourceMovie(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
     MovieEvent::~MovieEvent()
     {
-        if( m_cb != NULL )
-        {
-            pybind::decref( m_cb );
-        }
-    }
+		pybind::decref( m_cb );
+		m_cb = nullptr;
+	}
     //////////////////////////////////////////////////////////////////////////
     void MovieEvent::setEvent( PyObject * _cb )
     {
-        if( m_cb != NULL )
-        {
-            pybind::decref( m_cb );
-        }
-
+		pybind::decref( m_cb );
+  
         m_cb = _cb;
 
-        if( m_cb != NULL )
-        {
-            pybind::incref( m_cb );
-        }
+		pybind::incref( m_cb );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieEvent::setResourceMovie( ResourceMovie * _resourceMovie )
@@ -43,7 +35,7 @@ namespace Menge
     {
         (void)_time;
 
-        if( m_cb == NULL )
+        if( m_cb == nullptr )
         {
             return;
         }

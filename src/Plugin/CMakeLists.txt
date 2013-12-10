@@ -1,6 +1,8 @@
 ADD_SUBDIRECTORY( MengeImageCodecPlugin )
 ADD_SUBDIRECTORY( MengeSoundCodecPlugin )
 
+ADD_SUBDIRECTORY( MengePathFinderPlugin )
+
 if(WIN32)    
 	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     

@@ -8,11 +8,17 @@ namespace Menge
 	class FactoryDefault
 		: public Factory
 	{
+	public:
+		FactoryDefault()
+			: m_count(0)
+		{
+		}
+
     public:
         T * createObjectT()
         {
             Factorable * obj = this->createObject();
-
+			
             return static_cast<T *>(obj);
         }
 
@@ -21,13 +27,20 @@ namespace Menge
 		{
 			T * t = new T();
 
+			++m_count;
+
 			return t;
 		}
 
         void _destroyObject( Factorable * _obj ) override
 		{
 			delete static_cast<T *>(_obj);
+
+			--m_count;
 		}
+
+	protected:
+		size_t m_count;
 	};
 
 	namespace Helper

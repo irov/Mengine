@@ -89,8 +89,8 @@ namespace Menge
     {
         m_resourceInternalObject.release();
 
-        pybind::decref( m_internalObject );
-        m_internalObject = nullptr;
+		pybind::decref( m_internalObject );
+		m_internalObject = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieInternalObject::_activate()
@@ -122,14 +122,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieInternalObject::_destroy()
+	void MovieInternalObject::_destroy()
 	{		
 		pybind::decref( m_internalObject );
 		m_internalObject = nullptr;
-
-		bool result = Node::_destroy();
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )

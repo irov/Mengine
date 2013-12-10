@@ -134,7 +134,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::load()
 	{
-        if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, nullptr ) == false )
+        if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, nullptr, 0, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Account::load account '%ls' settings not found '%s'"
                 , m_name.c_str()

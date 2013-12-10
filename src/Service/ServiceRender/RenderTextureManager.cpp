@@ -240,9 +240,9 @@ namespace Menge
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE(m_serviceProvider)
-            ->createEncoderT<ImageEncoderInterfacePtr>( _codecName, stream );
+            ->createEncoderT<ImageEncoderInterfacePtr>( _codecName );
 
-        if( imageEncoder == 0 )
+        if( imageEncoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : can't create encoder for filename '%s'"
                 , _filename.c_str() 
@@ -250,6 +250,15 @@ namespace Menge
 
             return false;
         }
+
+		if( imageEncoder->initialize( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : can't initialize encoder for filename '%s'"
+				, _filename.c_str() 
+				);
+
+			return false;
+		}
 
         ImageCodecDataInfo dataInfo;
         //dataInfo.format = _image->getHWPixelFormat();
@@ -345,9 +354,8 @@ namespace Menge
             return nullptr;
         }	
 
-		bool version;
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( _codec, stream, version );
+            ->createDecoderT<ImageDecoderInterfacePtr>( _codec );
 
         if( imageDecoder == nullptr )
         {
@@ -357,6 +365,15 @@ namespace Menge
 
             return nullptr;
         }
+
+		if( imageDecoder->initialize( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image decoder for file '%s' was not initialize"
+				, _filename.c_str() 
+				);
+
+			return nullptr;
+		}
 
         const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
 
@@ -518,7 +535,7 @@ namespace Menge
 
         _texture->unlock();
 
-        END_WATCHDOG(m_serviceProvider, "texture unlock")("texture unlock %.4f %s"
+        END_WATCHDOG(m_serviceProvider, "texture unlock")("texture unlock %s"
             , _texture->getFileName().c_str()
             );
 		

@@ -61,9 +61,9 @@ namespace Menge
     {
         (void)_obj;
 
-        size_t hash = _cs->hash();
-
-        return hash;
+		size_t hash = pybind::_get_string_hash( _cs->c_str(), _cs->size() );
+			
+		return hash;
     }
     //////////////////////////////////////////////////////////////////////////
     class ConstsScriptMethod

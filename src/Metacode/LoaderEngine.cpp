@@ -235,9 +235,9 @@ namespace Menge
         
         FilePath path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
 
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, path_xml, NULL ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, path_xml, nullptr, 0, nullptr ) == false )
 		{
-			if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, NULL ) == false )
+			if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr, 0, nullptr ) == false )
 			{
 				_exist = false;
 
@@ -259,7 +259,7 @@ namespace Menge
 
 		_exist = true;
 
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, NULL ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr, 0, nullptr ) == false )
 		{
 			if( this->makeBin_( _pak, path_xml, _path ) == false )
 			{
@@ -316,13 +316,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin )
 	{
-		bool version;
 		XmlDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "xml2bin"), nullptr, version );
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "xml2bin") );
 
 		if( decoder == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%s"
+				, _pak.c_str()
+				, _pathXml.c_str()
+				);
+
+			return false;
+		}
+
+		if( decoder->initialize( nullptr ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s:%s"
 				, _pak.c_str()
 				, _pathXml.c_str()
 				);

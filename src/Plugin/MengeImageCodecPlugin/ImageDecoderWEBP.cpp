@@ -16,10 +16,8 @@ namespace Menge
     typedef std::vector<uint8_t> TVectorWEBPBuffer;
     static TVectorWEBPBuffer s_WEBPBuffer;
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderWEBP::_initialize( bool & _version )
+	bool ImageDecoderWEBP::_initialize()
 	{
-		(void)_version;
-
 		size_t dataSize = m_stream->size();
 				
 		//We must write all data into buffer in initialise because WebP Mux can not determine alpha data in small chunk

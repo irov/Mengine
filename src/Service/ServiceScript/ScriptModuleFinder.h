@@ -48,7 +48,7 @@ namespace Menge
         PyObject * unmarshal_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream );
 
     protected:
-        void convertDotToSlash_( const ConstString & _module );
+        size_t convertDotToSlash_( char * _cache, const ConstString & _module );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -64,13 +64,9 @@ namespace Menge
         typedef std::vector<ModulePathes> TVectorModulePathes;
         TVectorModulePathes m_modulePaths;
 
-        mutable String m_modulePathCache;
-        mutable String m_fullModulePathCache;
-
         struct ModulePathCache
         {
-            FileGroupInterface * fileGroup;
-            ConstString path;
+            InputStreamInterfacePtr stream;
 
             PyObject * packagePath;
             bool source;
@@ -80,6 +76,6 @@ namespace Menge
         mutable TMapModulePath m_paths;
 
     protected:
-        ModulePathCache * findModule_( const ConstString & _module, const String & _modulePath ) const;
+        ModulePathCache * findModule_( const ConstString & _module, const char * _modulePath, size_t _modulePathLen ) const;
     };
 }

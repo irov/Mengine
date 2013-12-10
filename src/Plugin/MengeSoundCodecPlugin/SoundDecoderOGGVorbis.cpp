@@ -67,10 +67,8 @@ namespace Menge
 		ov_clear( &m_oggVorbisFile );
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoderOGGVorbis::_initialize( bool & _version )
+    bool SoundDecoderOGGVorbis::_initialize()
     {
-		(void)_version;
-
         // callbacks used to read the file
         ov_callbacks vorbisCallbacks;
 

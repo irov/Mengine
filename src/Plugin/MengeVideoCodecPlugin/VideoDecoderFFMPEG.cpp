@@ -66,10 +66,8 @@ namespace Menge
 		this->clear_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::_initialize( bool & _version )
+	bool VideoDecoderFFMPEG::_initialize()
 	{
-		(void)_version;
-
         const int probe_buffer_io_size = 512;
 
         uint8_t filebuffer[probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE];

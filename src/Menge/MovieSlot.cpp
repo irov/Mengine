@@ -10,7 +10,7 @@ namespace Menge
         m_movieName = _movieName;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieSlot::_destroy()
+    void MovieSlot::_destroy()
     {
         TListNodeChild & child = this->getChild();
 
@@ -32,10 +32,6 @@ namespace Menge
         }
 
         this->removeAllChild();
-
-        bool result = Node::_destroy();
-
-        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_localHide( bool _value )

@@ -20,15 +20,24 @@ namespace Menge
 		InputStreamInterfacePtr stream = 
 			FILE_SERVICE(m_serviceProvider)->openInputFile( _category, _file );
 
-		MemoryInput * memory = new MemoryInput();
+		MemoryInputPtr memory = new MemoryInput();
 
 		size_t streamSize = stream->size();
 		void * buffer = memory->newMemory( streamSize );
 		stream->read( buffer, streamSize );
 		
-		bool version;
 		m_imageDecoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( _codecType, memory, version );
+			->createDecoderT<ImageDecoderInterfacePtr>( _codecType );
+		
+		if( m_imageDecoder == nullptr )
+		{
+			return false;
+		}
+
+		if( m_imageDecoder->initialize( memory ) == false )
+		{
+			return false;
+		}
 
 		const ImageCodecDataInfo* dataInfo = m_imageDecoder->getCodecDataInfo();
 

@@ -145,9 +145,8 @@ namespace Menge
             return false;
         }
 
-		bool version;
         SoundDecoderInterfacePtr codec = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<SoundDecoderInterfacePtr>( m_codec, stream, version );
+            ->createDecoderT<SoundDecoderInterfacePtr>( m_codec );
 
         if( codec == nullptr )
         {
@@ -159,6 +158,17 @@ namespace Menge
 
             return false;
         }
+
+		if( codec->initialize( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "SoundEngine::_isValid: %s can't initialize sound decoder for file %s:%s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_path.c_str() 
+				);
+
+			return false;
+		}
 
         const SoundCodecDataInfo * dataInfo = codec->getCodecDataInfo();
 

@@ -69,16 +69,21 @@ namespace Menge
         return m_shallowGrave > 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::_destroy()
+	void Node::destroy()
 	{
 		if( this->isShallowGrave() == true )
 		{
-            NODE_SERVICE(m_serviceProvider)
-                ->addHomeless( this );
+			NODE_SERVICE(m_serviceProvider)
+				->addHomeless( this );
 
-			return false;
+			return;
 		}
 
+		Factorable::destroy();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_destroy()
+	{
         this->release();
 
         this->destroyAllChild();
@@ -86,8 +91,6 @@ namespace Menge
         this->removeFromParent();
 
         this->unwrap();
-        
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()

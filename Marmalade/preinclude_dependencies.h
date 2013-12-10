@@ -18,6 +18,8 @@
 
 #   define WEBP_REFERENCE_IMPLEMENTATION
 
+#   define STDEX_UNSUPPOT_NULLPTR_T
+
 typedef void * nullptr_t;
 #   define nullptr 0
 

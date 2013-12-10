@@ -12,12 +12,12 @@ namespace Menge
 		uint8_t b8 = static_cast<uint8_t>(m_r * 255.f);
 		uint8_t g8 = static_cast<uint8_t>(m_g * 255.f);
 		uint8_t r8 = static_cast<uint8_t>(m_b * 255.f);
-#	else // MENGE_RENDER_GL
+#	else // MENGE_RENDER_TEXTURE_RGBA
 		uint8_t a8 = static_cast<uint8_t>(m_a * 255.f);
 		uint8_t r8 = static_cast<uint8_t>(m_r * 255.f);
 		uint8_t g8 = static_cast<uint8_t>(m_g * 255.f);
 		uint8_t b8 = static_cast<uint8_t>(m_b * 255.f);
-#	endif // MENGE_RENDER_GL
+#	endif // MENGE_RENDER_TEXTURE_RGBA
 
 		m_argb = (a8 << 24) + (r8 << 16) + (g8 << 8) + b8;
 
@@ -61,12 +61,12 @@ namespace Menge
 		m_b = ((m_argb >> 16) & 0xFF) * rgba_255;
 		m_g = ((m_argb >> 8) & 0xFF) * rgba_255;
 		m_r = (m_argb & 0xFF) * rgba_255;
-#	else // MENGE_RENDER_GL
+#	else // MENGE_RENDER_TEXTURE_RGBA
 		m_a = ((m_argb >> 24) & 0xFF) * rgba_255;
 		m_r = ((m_argb >> 16) & 0xFF) * rgba_255;
 		m_g = ((m_argb >> 8) & 0xFF) * rgba_255;
 		m_b = (m_argb & 0xFF) * rgba_255;
-#	endif // MENGE_RENDER_GL
+#	endif // MENGE_RENDER_TEXTURE_RGBA
 
 		m_invalidateARGB = false;
 		m_identity = false;

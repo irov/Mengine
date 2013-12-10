@@ -383,7 +383,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist )
 	{
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, NULL ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr, 0, nullptr ) == false )
 		{
 			_exist = false;
 

@@ -111,7 +111,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed open file '%s':'%s'"
                 , m_path.c_str()
-                , _dir
+                , _dir.c_str()
                 );
 
             return false;

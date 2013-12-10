@@ -90,7 +90,7 @@ namespace Menge
 						, m_prototype.c_str()
 						);
 
-					return false;
+					return nullptr;
 				}
 
                 Entity * entity = SCRIPT_SERVICE(m_serviceProvider)

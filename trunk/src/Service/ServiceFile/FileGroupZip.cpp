@@ -9,6 +9,7 @@
 #	include "Core/String.h"
 #   include "Core/File.h"
 
+#	include <string.h>
 #   include <stdio.h>
 
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
@@ -267,7 +268,10 @@ namespace Menge
 		bool operator() ( const FileGroupZip::TMapFileInfo::binary_value_store_type & _store, const FileGroupZip_FinderValueFiles & _key ) const
 		{
 			const char * store_key_0 = _store.key.c_str();
-			int less_0 = strncmp( store_key_0, _key.m_dir.c_str(), _key.m_dir.size() );
+			size_t store_key_size = _store.key.size();
+			const char * key_dir = _key.m_dir.c_str();
+			size_t key_dir_size = _key.m_dir.size();
+			int less_0 = memcmp( store_key_0, key_dir, key_dir_size );
 
 			if( less_0 < 0 )
 			{
@@ -278,14 +282,14 @@ namespace Menge
 				return false;
 			}
 
-			if( _store.key.size() <= _key.m_dir.size() )
+			if( store_key_size <= key_dir_size )
 			{
 				return false;
 			}
 
-			const char * store_key_1 = _store.key.c_str();
+			const char * store_key_1 = store_key_0 + key_dir_size;
 
-			int less_1 = strncmp( store_key_1 + _key.m_dir.size(), _key.m_filename, _key.m_filenamelen );
+			int less_1 = memcmp( store_key_1, _key.m_filename, _key.m_filenamelen );
 			
 			if( less_1 < 0 )
 			{

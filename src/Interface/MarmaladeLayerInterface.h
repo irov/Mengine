@@ -18,7 +18,7 @@ namespace Menge
         SERVICE_DECLARE("MarmaladeLayerService")
 
     public:
-        virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _filename, Char * _filePath, size_t _capacity ) = 0;
+        virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, Char * _filePath, size_t _capacity ) = 0;
     };
 
 #   define MARMALADELAYER_SERVICE( serviceProvider )\

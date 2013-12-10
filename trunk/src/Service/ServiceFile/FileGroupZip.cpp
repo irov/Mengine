@@ -244,10 +244,9 @@ namespace Menge
 	class FileGroupZip_FinderValueFiles
 	{
 	public:
-		FileGroupZip_FinderValueFiles( const FilePath& _dir, const char * _filename, size_t _filenamelen )
-			: m_dir(_dir)
-			, m_filename(_filename)
-			, m_filenamelen(_filenamelen)
+		FileGroupZip_FinderValueFiles( const char * _filename, size_t _hash )
+			: m_filename(_filename)
+			, m_hash(_hash)
 		{
 		}
 
@@ -257,9 +256,8 @@ namespace Menge
 		}
 
 	public:
-		const FilePath & m_dir;
 		const char * m_filename;
-		size_t m_filenamelen;
+		size_t m_hash;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class FileGroupZip_FinderPredFiles
@@ -267,60 +265,65 @@ namespace Menge
 	public:
 		bool operator() ( const FileGroupZip::TMapFileInfo::binary_value_store_type & _store, const FileGroupZip_FinderValueFiles & _key ) const
 		{
-			const char * store_key_0 = _store.key.c_str();
-			size_t store_key_size = _store.key.size();
-			const char * key_dir = _key.m_dir.c_str();
-			size_t key_dir_size = _key.m_dir.size();
-			int less_0 = memcmp( store_key_0, key_dir, key_dir_size );
+			size_t store_hash = _store.key.hash();
+			size_t key_hash = _key.m_hash;
 
-			if( less_0 < 0 )
+			if( store_hash < key_hash )
 			{
 				return true;
 			}
-			else if( less_0 > 0 )
+
+			if( store_hash > key_hash )
 			{
 				return false;
 			}
 
-			if( store_key_size <= key_dir_size )
-			{
-				return false;
-			}
-
-			const char * store_key_1 = store_key_0 + key_dir_size;
-
-			int less_1 = memcmp( store_key_1, _key.m_filename, _key.m_filenamelen );
+			const char * store_str = _store.key.c_str();
 			
-			if( less_1 < 0 )
-			{
-				return true;
-			}
+			int res = strcmp( store_str, _key.m_filename );
 
-			return false;
+			return res < 0;
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupZip::TMapFileInfo::const_iterator FileGroupZip::findDirFile_( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
 	{
-		const TMapFileInfo::buffer_type & buffer = m_files.get_buffer_();
+		char filename[MAX_PATH];
 
-		FileGroupZip_FinderValueFiles key(_dir, _filename, _filenamelen);
+		const char * dir_str = _dir.c_str();
+		size_t dir_size = _dir.size();
+		
+		memcpy( filename, dir_str, dir_size );
+		memcpy( filename + dir_size, _filename, _filenamelen );
 
-		TMapFileInfo::const_iterator it_lower_bound = std::lower_bound( buffer.begin(), buffer.end(), key, FileGroupZip_FinderPredFiles() );		
+		filename[ dir_size + _filenamelen ] = 0;
 
-		TMapFileInfo::const_iterator it_end = buffer.end();
+		ConstString c_path = Helper::stringizeStringSize(m_serviceProvider, filename, dir_size + _filenamelen );		
 
-		if( it_lower_bound == it_end )
-		{
-			return it_end;
-		}
+		TMapFileInfo::const_iterator it_found = m_files.find( c_path );
+				
+		return it_found;
+		//size_t hash = stdex::const_string_make_hash( filename );
 
-		if( FileGroupZip_FinderPredFiles()( *it_lower_bound, key ) == false )
-		{
-			return it_end;
-		}
+		//const TMapFileInfo::buffer_type & buffer = m_files.get_buffer_();
 
-		return it_lower_bound;
+		//FileGroupZip_FinderValueFiles key(filename, hash);
+
+		//TMapFileInfo::const_iterator it_lower_bound = std::lower_bound( buffer.begin(), buffer.end(), key, FileGroupZip_FinderPredFiles() );		
+
+		//TMapFileInfo::const_iterator it_end = buffer.end();
+
+		//if( it_lower_bound == it_end )
+		//{
+		//	return it_end;
+		//}
+
+		//if( FileGroupZip_FinderPredFiles()( *it_lower_bound, key ) == true )
+		//{
+		//	return it_end;
+		//}
+
+		//return it_lower_bound;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const

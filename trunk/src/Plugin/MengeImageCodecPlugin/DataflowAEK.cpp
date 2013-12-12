@@ -133,13 +133,15 @@ namespace Menge
 			size_t times_size;
 			ar >> times_size;
 
-			if( times_size > 0 )
+			if( times_size == 0 )
 			{
-				MovieLayerTimeRemap & timeremap = pack->mutableLayerTimeRemap( it_layer + 1 );
-				timeremap.times.resize( times_size );
-
-				ar.readPODs( &timeremap.times[0], times_size );
+				continue;
 			}
+			
+			MovieLayerTimeRemap & timeremap = pack->mutableLayerTimeRemap( it_layer + 1 );
+			timeremap.times.resize( times_size );
+
+			ar.readPODs( &timeremap.times[0], times_size );
 		}
 
 		for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
@@ -147,29 +149,31 @@ namespace Menge
 			size_t shapes_size;
 			ar >> shapes_size;
 
-			if( shapes_size > 0 )
+			if( shapes_size == 0 )
 			{
-				MovieLayerShapes & shapes = pack->mutableLayerShape( it_layer + 1 );
-				shapes.shapes.resize( shapes_size );
+				continue;
+			}
+			
+			MovieLayerShapes & shapes = pack->mutableLayerShape( it_layer + 1 );
+			shapes.shapes.resize( shapes_size );
 
-				for( size_t it_shapes = 0; it_shapes != shapes_size; ++it_shapes )
+			for( size_t it_shapes = 0; it_shapes != shapes_size; ++it_shapes )
+			{
+				MovieFrameShape & shape = shapes.shapes[it_shapes];
+
+				ar >> shape.vertexCount;
+
+				if( shape.vertexCount > 0 )
 				{
-					MovieFrameShape & shape = shapes.shapes[it_shapes];
+					ar.readPODs( shape.pos, shape.vertexCount );
+					ar.readPODs( shape.uv, shape.vertexCount );
 
-					ar >> shape.vertexCount;
-
-					if( shape.vertexCount > 0 )
-					{
-						ar.readPODs( shape.pos, shape.vertexCount );
-						ar.readPODs( shape.uv, shape.vertexCount );
-
-						ar >> shape.indexCount;
-						ar.readPODs( shape.indecies, shape.indexCount );
-					}
-					else
-					{
-						shape.indexCount = 0;
-					}
+					ar >> shape.indexCount;
+					ar.readPODs( shape.indecies, shape.indexCount );
+				}
+				else
+				{
+					shape.indexCount = 0;
 				}
 			}
 		}

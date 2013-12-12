@@ -6,9 +6,6 @@
 #	include "Config/Blobject.h"
 #	include "Core/ConstString.h"
 
-#	include "Menge/MovieFramePack.h"
-
-
 namespace Menge
 {
 	class MovieKeyConverterXMLToAEK

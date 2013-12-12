@@ -525,10 +525,8 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer & layer = *it;
-
-			const MovieLayerFrame & frames = m_keyFramePack->getLayer( layer.index );
-
-			_visitor->visitLayer( layer, frames );
+			
+			_visitor->visitLayer( m_keyFramePack, layer );
 		}
 	}
 }

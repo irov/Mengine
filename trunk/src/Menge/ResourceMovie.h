@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include "Kernel/ResourceReference.h"
+#	include "Interface/MovieKeyFrameInterface.h"
 
-#	include "MovieFramePack.h"
+#	include "Kernel/ResourceReference.h"
 
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
@@ -153,7 +153,7 @@ namespace Menge
 	class VisitorResourceMovie
 	{
 	public:
-		virtual void visitLayer( const MovieLayer & _layer, const MovieLayerFrame & _frames ) = 0;
+		virtual void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) = 0;
 	};
 
 	class ResourceMovie
@@ -188,9 +188,6 @@ namespace Menge
 
     public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );
-
-	protected:
-		bool loadFramePack_( MovieFramePack & _framePack );
 
     protected:
         bool _isValid() const override;

@@ -81,8 +81,6 @@ namespace Menge
 
 			CONVERTER_SERVICE(m_serviceProvider)
                 ->unregisterConverter( name );
-
-			converter->destroy();
 		}
 
 		delete this;

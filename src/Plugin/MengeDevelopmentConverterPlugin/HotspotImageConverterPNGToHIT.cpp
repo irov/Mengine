@@ -29,35 +29,17 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotspotImageConverterPNGToHIT::validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const
+	bool HotspotImageConverterPNGToHIT::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _fileName );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s:%s' was not found"
-				, _pakName.c_str()
-				, _fileName.c_str()
-				);
-
-			return false;
-		}
-
 		PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
 			->createDecoderT<PickDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "hitPick") );
 
 		if( decoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::validateVersion: decoder hitPick not found for '%s:%s'"
-				, _pakName.c_str()
-				, _fileName.c_str()
-				);
-
 			return false;
 		}
 
-		bool status = decoder->initialize( stream );
+		bool status = decoder->initialize( _stream );
 
 		return status;
 	}

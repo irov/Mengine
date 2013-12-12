@@ -37,7 +37,7 @@ namespace Menge
 		virtual const String & getConvertExt() const = 0;
 
     public:
-		virtual bool validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const = 0;
+		virtual bool validateVersion( const InputStreamInterfacePtr & _stream ) const = 0;
 
 	public:
 		virtual bool convert() = 0;

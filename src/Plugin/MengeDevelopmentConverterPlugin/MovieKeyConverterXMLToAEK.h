@@ -3,6 +3,7 @@
 #   include "DevelopmentConverter.h"
 
 #	include "Config/Typedef.h"
+#	include "Config/Blobject.h"
 #	include "Core/ConstString.h"
 
 #	include "Menge/MovieFramePack.h"
@@ -23,8 +24,11 @@ namespace Menge
 	public:
 		bool convert() override;
 
+	public:
+		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
+
 	protected:
-		bool loadFramePak_( MovieFramePack & _movieFramePack );
-		bool writeFramePak_( MovieFramePack & _movieFramePack );	
+		bool loadFramePak_( TBlobject & _buffer );
+		bool writeFramePak_( const TBlobject & _buffer );
 	};
 }

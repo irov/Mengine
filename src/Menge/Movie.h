@@ -130,7 +130,7 @@ namespace Menge
         bool createMovieSceneEffect_( const MovieLayer & _layer );        
 		bool createMovieNullObject_( const MovieLayer & _layer );
 		bool createMovieImage_( const MovieLayer & _layer );
-		bool createMovieMesh_( const MovieLayer & _layer );
+		bool createMovieMesh2D_( const MovieLayer & _layer );
 		bool createMovieImageSolid_( const MovieLayer & _layer );
         bool createMovieSocketImage_( const MovieLayer & _layer );
         bool createMovieSocketShape_( const MovieLayer & _layer );
@@ -169,7 +169,7 @@ namespace Menge
         struct Nodies
         {
             bool child;
-            Node * node;            
+            Node * node;
         };
 
 		typedef std::vector<Nodies> TVectorNodies;

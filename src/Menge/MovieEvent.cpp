@@ -55,8 +55,10 @@ namespace Menge
 
         if( _beginFrame <= indexIn && _endFrame >= indexIn )
         {
+			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
             MovieFrameSource frame;
-            if( m_resourceMovie->getFrame( _layer, indexIn, frame ) == false )
+            if( framePack->getLayerFrame( _layer.index, indexIn, frame ) == false )
             {
                 return;
             }

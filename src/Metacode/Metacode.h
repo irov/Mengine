@@ -2340,6 +2340,46 @@ namespace Metacode
                 (_self->*_method)( this->KeyFramesPackPath_Codec );
             }
             
+            bool has_KeyFramesPackPath_Converter() const
+            {
+                return KeyFramesPackPath_Converter_successful;
+            }
+            
+            bool get_KeyFramesPackPath_Converter( Menge::ConstString & _value ) const
+            {
+                if( KeyFramesPackPath_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->KeyFramesPackPath_Converter;
+            
+                return true;
+            }
+            
+            bool swap_KeyFramesPackPath_Converter( Menge::ConstString & _value ) const
+            {
+                if( KeyFramesPackPath_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->KeyFramesPackPath_Converter);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_KeyFramesPackPath_Converter( C * _self, M _method )
+            {
+                if( KeyFramesPackPath_Converter_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->KeyFramesPackPath_Converter );
+            }
+            
             bool has_KeyFramesPackPath_Path() const
             {
                 return KeyFramesPackPath_Path_successful;
@@ -3361,6 +3401,8 @@ namespace Metacode
             mutable float Height_Value;
             bool KeyFramesPackPath_Codec_successful;
             mutable Menge::ConstString KeyFramesPackPath_Codec;
+            bool KeyFramesPackPath_Converter_successful;
+            mutable Menge::ConstString KeyFramesPackPath_Converter;
             bool KeyFramesPackPath_Path_successful;
             mutable Menge::ConstString KeyFramesPackPath_Path;
             bool Loop_Segment_successful;

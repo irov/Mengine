@@ -40,9 +40,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		bool convert_();
-
-	protected:
 		FilePath m_path;
 
 		ConstString m_codec;

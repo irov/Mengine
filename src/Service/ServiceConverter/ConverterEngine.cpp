@@ -192,13 +192,11 @@ namespace Menge
             uint64_t fileTimeOutput;
             newFile->time( fileTimeOutput );
 
-            newFile = nullptr;
-
             if( fileTimeInput <= fileTimeOutput )
             {
                 _out = options.outputFileName;
 
-				if( converter->validateVersion( _category, _out ) == true )
+				if( converter->validateVersion( newFile ) == true )
 				{
 	                return true;
 				}

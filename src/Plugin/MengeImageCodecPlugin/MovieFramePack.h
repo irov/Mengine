@@ -1,22 +1,21 @@
 #	pragma once
 
-#   include "Interface/MovieKeyFrameInterface.h"
+#	include "Interface/MovieKeyFrameInterface.h"
+
+#	include "Config/Floats.h"
 
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
 
 #	include <vector>
 
+#	include <stdint.h>
 #	include <memory.h>
 
 namespace Menge
-{
-    typedef std::vector<MovieLayerFrame> TVectorMovieFrameLayer;
-    typedef std::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
-	typedef std::vector<MovieLayerShapes> TVectorMovieLayerShapes;
-
+{       
 	class MovieFramePack
-        : public MovieFramePackInterface
+		: public MovieFramePackInterface
 	{
 	public:
 		MovieFramePack();
@@ -62,13 +61,28 @@ namespace Menge
 		MovieLayerShapes & mutableLayerShape( size_t _layerIndex );
 
 	public:
-		const TVectorMovieFrameLayer & getLayers() const;
-		const TVectorMovieLayerTimeRemap & getTimeremap() const;
-		const TVectorMovieLayerShapes & getShapes() const;
+		inline const TVectorMovieFrameLayer & getLayers() const;
+		inline const TVectorMovieLayerTimeRemap & getTimeremap() const;
+		inline const TVectorMovieLayerShapes & getShapes() const;
 			
 	protected:
 		TVectorMovieFrameLayer m_layers;
         TVectorMovieLayerTimeRemap m_timeremap;
 		TVectorMovieLayerShapes m_shapes;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const TVectorMovieFrameLayer & MovieFramePack::getLayers() const
+	{
+		return m_layers;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const TVectorMovieLayerTimeRemap & MovieFramePack::getTimeremap() const
+	{
+		return m_timeremap;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const TVectorMovieLayerShapes & MovieFramePack::getShapes() const
+	{
+		return m_shapes;
+	}
 }

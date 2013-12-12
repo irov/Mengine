@@ -57,60 +57,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_convert()
     {
-        if( m_path.empty() == true )
-        {
-            return false;
-        }
+		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codec );
 
-        if( m_converter.empty() == false )
-        {
-            if( this->convert_() == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file convert '%s' not found"
-                    , this->getName().c_str()
-                    , m_converter.c_str()
-                    );
-
-                return false;
-            }
-        }
-
-        if( m_codec.empty() == true )
-        {
-            m_codec = CODEC_SERVICE(m_serviceProvider)
-                ->findCodecType( m_path );
-        }
-
-        if( m_codec.empty() == true )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceHIT: '%s' you must determine codec for file '%s'"
-                , this->getName().c_str()
-                , m_path.c_str()
-                );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceHIT::convert_()
-    {
-        const ConstString & category = this->getCategory();
-
-        if( CONVERTER_SERVICE(m_serviceProvider)
-            ->convert( m_converter, category, m_path, m_path ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceHIT::convert: '%s' can't convert '%s':'%s'"
-                , this->getName().c_str() 
-                , m_path.c_str()
-                , m_converter.c_str()
-                );
-
-            return false;
-        }
-
-        return true;
+        return result;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHIT::_compile()

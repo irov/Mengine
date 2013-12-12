@@ -41,10 +41,7 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-
-    protected:
-        bool convert_();
-		
+			
 	protected:
 		FilePath m_path;
         

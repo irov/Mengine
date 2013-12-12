@@ -16,8 +16,6 @@
 
 namespace Menge
 {
-	class MovieFramePack;
-
     const size_t MOVIE_LAYER_NODE = 0x0001;
     const size_t MOVIE_LAYER_ANIMATABLE = 0x0002;
     const size_t MOVIE_LAYER_MOVIE = 0x0004;
@@ -26,7 +24,7 @@ namespace Menge
     const size_t MOVIE_LAYER_EVENT = 0x0020;
     const size_t MOVIE_LAYER_EXTRA = 0x0040;
     const size_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
-    const size_t MOVIE_LAYER_MESH = 0x0100;
+    const size_t MOVIE_LAYER_MESH_2D = 0x0100;
 	
     const size_t movie_layer_parent_none = (size_t)-1;
 
@@ -92,9 +90,9 @@ namespace Menge
             return (state & MOVIE_LAYER_MOVIE) > 0;
         }
 
-        bool isMesh() const
+        bool isMesh2D() const
         {
-            return (state & MOVIE_LAYER_MESH) > 0;
+            return (state & MOVIE_LAYER_MESH_2D) > 0;
         }
 
 		bool isThreeD() const
@@ -186,14 +184,13 @@ namespace Menge
 		bool hasCamera3D() const;
 
 	public:
-		bool isFrameImmutable( const MovieLayer & _layer ) const;
-		bool getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const;
-
-        bool getTimeRemap( const MovieLayer & _layer, size_t _index, float & _time ) const;
-		bool getShape( const MovieLayer & _layer, size_t _index, const MovieFrameShape ** _shape ) const;
+		inline const MovieFramePackInterfacePtr & getFramePack() const;
 
     public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );
+
+	protected:
+		bool loadFramePack_( MovieFramePack & _framePack );
 
     protected:
         bool _isValid() const override;
@@ -212,10 +209,11 @@ namespace Menge
 
         mt::vec2f m_loopSegment;
 		
-        FilePath m_keyFramePackPath;
+        FilePath m_path;
 		ConstString m_codecType;
+		ConstString m_converter;
 
-		MovieFramePackInterface * m_keyFramePack;
+		MovieFramePackInterfacePtr m_keyFramePack;
 
 		size_t m_frameCount;
 
@@ -228,4 +226,9 @@ namespace Menge
 
 		size_t m_maxLayerIndex;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const MovieFramePackInterfacePtr & ResourceMovie::getFramePack() const
+	{
+		return m_keyFramePack;
+	}
 }

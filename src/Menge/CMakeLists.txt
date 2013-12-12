@@ -130,9 +130,15 @@ Object2D\\\\Sprite
 )
 
 ADD_FILTER(
-Object2D\\\\Mesh
-	Mesh.cpp
-	Mesh.h
+Object2D\\\\Mesh2D
+	Mesh2D.cpp
+	Mesh2D.h
+)
+
+ADD_FILTER(
+Object2D\\\\Model3D
+	Model3D.cpp
+	Model3D.h
 )
 
 ADD_FILTER(
@@ -304,14 +310,6 @@ ADD_FILTER(
 Manager\\\\Resource
 	ResourceManager.cpp
 	ResourceManager.h
-)
-
-ADD_FILTER(
-Manager\\\\MovieKeyFrame
-	MovieKeyFrameManager.h
-	MovieKeyFrameManager.cpp	
-    MovieFramePack.h
-    MovieFramePack.cpp
 )
 
 ADD_FILTER(

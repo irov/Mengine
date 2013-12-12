@@ -32,10 +32,9 @@ namespace Menge
 		m_options = *(_options);
 	} 
 	//////////////////////////////////////////////////////////////////////////
-	bool DevelopmentConverter::validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const
+	bool DevelopmentConverter::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
-		(void)_pakName;
-		(void)_fileName;
+		(void)_stream;
 
 		return true;
 	}

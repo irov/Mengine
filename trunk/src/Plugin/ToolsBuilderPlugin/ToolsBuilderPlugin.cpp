@@ -9,6 +9,7 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/CodecInterface.h"
+#	include "Interface/DataInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/PluginInterface.h"
@@ -35,6 +36,7 @@ SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
 SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
 SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
+SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
@@ -178,6 +180,17 @@ namespace Menge
 		}
 
 		if( SERVICE_REGISTRY(serviceProvider, codecService) == false )
+		{
+			return false;
+		}
+
+		DataServiceInterface * dataService;
+		if( createDataService( &dataService ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY(serviceProvider, dataService) == false )
 		{
 			return false;
 		}

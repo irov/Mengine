@@ -1,6 +1,6 @@
 #   pragma once
 
-#   include "Interface/ServiceInterface.h"
+#   include "Interface/DataInterface.h"
 
 #   include "Config/Floats.h"
 
@@ -15,7 +15,7 @@
 
 namespace Menge
 {
-    const size_t INVALID_MASK = (size_t)-1;
+	const size_t DATAFLOW_VERSION_AEK = 3;
 
     struct MovieFrameSource
     {
@@ -37,10 +37,14 @@ namespace Menge
         bool immutable;
     };
 
+	typedef std::vector<MovieLayerFrame> TVectorMovieFrameLayer;
+
     struct MovieLayerTimeRemap
     {
         Floats times;
     };
+
+	typedef std::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
 
 #	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 32
 #	define MENGINE_MOVIE_SHAPE_MAX_INDECIES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
@@ -62,36 +66,24 @@ namespace Menge
 		TVectorMovieFrameShapes shapes;
 	};
 
-    class MovieFramePackInterface
-        : public Factorable
-    {
-    public:
-        virtual bool hasLayer( size_t _layerIndex ) const = 0;
-        virtual const MovieLayerFrame & getLayer( size_t _layerIndex ) const = 0;
+	typedef std::vector<MovieLayerShapes> TVectorMovieLayerShapes;
 
-    public:
-        virtual bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const = 0;
+	class MovieFramePackInterface
+		: public DataInterface
+	{
+	public:
+		virtual bool hasLayer( size_t _layerIndex ) const = 0;
+		virtual const MovieLayerFrame & getLayer( size_t _layerIndex ) const = 0;
 
-    public:
-        virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;
+	public:
+		virtual bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const = 0;
+
+	public:
+		virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;
 
 	public:
 		virtual bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
 	};
 
-    class MovieKeyFrameServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE("MovieKeyFrameService")
-
-	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
-    public:
-        virtual MovieFramePackInterface * getMovieFramePak( const ConstString & _pak, const FilePath & _path ) = 0;
-    };
-
-#   define MOVIEKEYFRAME_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::MovieKeyFrameServiceInterface>(serviceProvider))
+	typedef stdex::intrusive_ptr<MovieFramePackInterface> MovieFramePackInterfacePtr;
 }

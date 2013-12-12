@@ -13,11 +13,12 @@ src
     ImageDecoder.h
     ImageDecoder.cpp
     ImageEncoder.cpp
-    ImageEncoder.h    
-    
+    ImageEncoder.h        
+
     DecoderFactory.h
     EncoderFactory.h    
     ConverterFactory.h
+    DataflowFactory.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

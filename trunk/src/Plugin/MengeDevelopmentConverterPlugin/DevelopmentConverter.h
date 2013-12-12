@@ -24,7 +24,7 @@ namespace Menge
 		void setOptions( ConverterOptions * _options ) override;
 
 	public:
-		bool validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const override;
+		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

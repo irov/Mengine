@@ -58,7 +58,7 @@
 #	include "Point.h"
 #	include "SoundEmitter.h"
 #	include "Sprite.h"
-#	include "Mesh.h"
+#	include "Mesh2D.h"
 #	include "TextField.h"
 #	include "TileMap.h"
 #	include "Track.h"
@@ -135,7 +135,6 @@
 SERVICE_EXTERN(Consts, Menge::Consts);
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
-SERVICE_EXTERN(MovieKeyFrameService, Menge::MovieKeyFrameServiceInterface);
 SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
 SERVICE_EXTERN(AlphaChannelService, Menge::AlphaChannelServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
@@ -272,7 +271,6 @@ namespace Menge
         exinit.add( &Application::initializeNodeManager_ );        
         exinit.add( &Application::initializeAmplifierService_ );
         exinit.add( &Application::initializeLoaderEngine_ );
-        exinit.add( &Application::initializeMovieKeyFrameManager_ );
         exinit.add( &Application::initializeResourceManager_ );
         exinit.add( &Application::initializeSceneManager_ );
         exinit.add( &Application::initializeTextManager_ );        
@@ -445,7 +443,7 @@ namespace Menge
 		//NODE_FACTORY( PhysicalBody2D );
 		NODE_FACTORY( m_serviceProvider, SoundEmitter );
 		NODE_FACTORY( m_serviceProvider, Sprite );
-		NODE_FACTORY( m_serviceProvider, Mesh );
+		NODE_FACTORY( m_serviceProvider, Mesh2D );
 		NODE_FACTORY( m_serviceProvider, TextField );
 		//NODE_FACTORY( TileMap );
 		//NODE_FACTORY( Track );
@@ -494,29 +492,6 @@ namespace Menge
 		}
 
         m_loaderService = loaderService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeMovieKeyFrameManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing MovieKeyFrameManager..." );
-		
-		MovieKeyFrameServiceInterface * movieKeyFrameService;
-
-        if( SERVICE_CREATE( MovieKeyFrameService, &movieKeyFrameService ) == false )
-        {
-            return false;
-        }
-
-        SERVICE_REGISTRY( m_serviceProvider, movieKeyFrameService );
-
-		if( movieKeyFrameService->initialize() == false )
-		{
-			return false;
-		}
-
-        m_movieKeyFrameService = movieKeyFrameService;
 
 		return true;
 	}
@@ -1439,11 +1414,7 @@ namespace Menge
         SERVICE_DESTROY( NodeService, m_nodeService );
         //m_eventService->destroy();
         
-
-		m_movieKeyFrameService->finalize();
-        SERVICE_DESTROY( MovieKeyFrameService, m_movieKeyFrameService );
-
-        SERVICE_DESTROY( PrototypeService, m_prototypeService );
+		SERVICE_DESTROY( PrototypeService, m_prototypeService );
 
         SERVICE_DESTROY( Consts, m_consts );
 	}

@@ -3542,6 +3542,8 @@ namespace Menge
                     .def( "clearPoints", &HotSpot::clearPoints )
                     .def( "getPolygon", &HotSpot::getPolygon )
                     .def( "setPolygon", &HotSpot::setPolygon )
+					.def( "setOutward", &HotSpot::setOutward )
+					.def( "getOutward", &HotSpot::getOutward )
                     .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                     .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
 					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )

@@ -22,8 +22,11 @@
 #   include "PickDecoderHIT.h"
 #   include "PickEncoderHIT.h"
 
+#	include "DataflowAEK.h"
+
 #   include "Codec/DecoderFactory.h"
 #   include "Codec/EncoderFactory.h"
+#   include "Codec/DataflowFactory.h"
 
 #	include "Core/File.h"
 
@@ -52,6 +55,12 @@ extern "C" // only required if using g++
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	ImageCodecPlugin::ImageCodecPlugin()
+		: m_serviceProvider(nullptr)
+		, m_factoryAEK(nullptr)
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
@@ -122,6 +131,15 @@ namespace Menge
                 ->registerEncoder( name, (*it) );
 		}
 
+		m_factoryAEK = new DataflowFactory<DataflowAEK>(m_serviceProvider);
+		DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
+
+		DATA_SERVICE(m_serviceProvider)
+			->registerDataflow( Helper::stringizeString(m_serviceProvider, "aekMovie"), aek );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "aek", Helper::stringizeString(m_serviceProvider, "aekMovie") );
+
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -151,6 +169,9 @@ namespace Menge
 			CODEC_SERVICE(m_serviceProvider)
                 ->unregisterEncoder( name );
 		}
+
+		DATA_SERVICE(m_serviceProvider)
+			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "aekMovie") );
 
 		delete this;
 	}

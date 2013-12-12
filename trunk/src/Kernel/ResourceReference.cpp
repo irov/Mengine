@@ -5,6 +5,7 @@
 #	include "Interface/ScriptSystemInterface.h"
 
 #   include "Interface/CodecInterface.h"
+#   include "Interface/ConverterInterface.h"
 
 #	include "Interface/NotificationServiceInterace.h"
 #	include "Interface/NotificatorInterface.h"
@@ -71,6 +72,47 @@ namespace Menge
         //Empty
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceReference::convertDefault_( const ConstString & _converter, const ConstString & _path, ConstString & _out, ConstString & _codecType )
+	{
+		if( _path.empty() == true )
+		{
+			return false;
+		}
+
+		if ( _converter.empty() == false )
+		{
+			if( CONVERTER_SERVICE(m_serviceProvider)
+				->convert( _converter, m_category, _path, _out ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceReference::convertDefault_: '%s' can't convert '%s':'%s'"
+					, this->getName().c_str() 
+					, _path.c_str()
+					, _converter.c_str()
+					);
+
+				return false;
+			}
+		}
+
+		if( _codecType.empty() == true )
+		{
+			_codecType = CODEC_SERVICE(m_serviceProvider)
+				->findCodecType( _path );
+		}
+
+		if( _codecType.empty() == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "ResourceReference::convertDefault_: '%s' you must determine codec for file '%s'"
+				, this->getName().c_str()
+				, _path.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceReference::_incrementZero()
 	{

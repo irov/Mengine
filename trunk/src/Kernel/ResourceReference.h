@@ -60,6 +60,9 @@ namespace Menge
     protected:
         virtual bool _convert();
 
+	protected:
+		bool convertDefault_( const ConstString & _converter, const ConstString & _path, ConstString & _out, ConstString & _codecType );
+
 	public:
 		virtual void accept( ResourceVisitor * _visitor ) = 0;
 

@@ -83,6 +83,7 @@ SERVICE_EXTERN(SoundService, Menge::SoundServiceInterface);
 SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
+SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
 extern "C" // only required if using g++
@@ -1096,6 +1097,29 @@ namespace Menge
 		
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::initializeDataManager_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Data Manager..." );
+
+		DataServiceInterface * dataService;
+
+		if( SERVICE_CREATE( DataService, &dataService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, dataService );
+
+		if( dataService->initialize() == false )
+		{
+			return false;
+		}
+
+		m_dataService = dataService;
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool WinApplication::initializeConverterEngine_()
     {
@@ -1328,6 +1352,11 @@ namespace Menge
         {
             return false;
         }
+
+		if( this->initializeDataManager_() == false )
+		{
+			return false;
+		}
 
         if( this->initializeConverterEngine_() == false )
         {
@@ -1838,6 +1867,12 @@ namespace Menge
             m_pluginMengeSoundCodec->destroy();
             m_pluginMengeSoundCodec = nullptr;
         }
+
+		if( m_dataService != nullptr )
+		{
+			m_dataService->finalize();
+			SERVICE_DESTROY( DataService, m_dataService );
+		}
 
         if( m_pluginService != nullptr )
         {

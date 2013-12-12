@@ -29,7 +29,6 @@ namespace Menge
 		, m_duration(0.f)
         , m_loopSegment(0.f, 0.f)
 		, m_size(0.f, 0.f)
-		, m_keyFramePack(nullptr)
 		, m_maxLayerIndex(0)
 		, m_hasCamera3D(false)
 	{
@@ -83,66 +82,6 @@ namespace Menge
 	{
 		return m_camera3D;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::isFrameImmutable( const MovieLayer & _layer ) const
-	{
-		const MovieLayerFrame & layer = m_keyFramePack->getLayer( _layer.index );
-
-		bool immutable = layer.immutable;
-
-		return immutable;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame( const MovieLayer & _layer, size_t _index, MovieFrameSource & _frame ) const
-	{
-		if( m_keyFramePack->getLayerFrame( _layer.index, _index, _frame ) == false )
-		{
-            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getFrame %s invalid frame '%s' %d:%d"
-                , this->getName().c_str()
-                , _layer.name.c_str()
-                , _layer.index
-                , _index                
-                );
-
-			return false;
-		}
-
-		return true;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie::getTimeRemap( const MovieLayer & _layer, size_t _index, float & _time ) const
-    {
-        if( m_keyFramePack->getLayerTimeRemap( _layer.index, _index, _time ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getFrame %s invalid frame '%s' %d:%d"
-                , this->getName().c_str()
-                , _layer.name.c_str()
-                , _layer.index
-                , _index
-                );
-
-            return false;
-        }
-
-        return true;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getShape( const MovieLayer & _layer, size_t _index, const MovieFrameShape ** _shape ) const
-	{
-		if( m_keyFramePack->getLayerShape( _layer.index, _index, _shape ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getShape %s invalid frame '%s' %d:%d"
-				, this->getName().c_str()
-				, _layer.name.c_str()
-				, _layer.index
-				, _index
-				);
-
-			return false;
-		}
-
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -194,7 +133,7 @@ namespace Menge
             }
         }
 
-        if( m_keyFramePackPath.empty() == true )
+        if( m_path.empty() == true )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
@@ -203,21 +142,29 @@ namespace Menge
             return false;
         }
 
-        const ConstString & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
-        MovieFramePackInterface * framePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
-            ->getMovieFramePak( category, m_keyFramePackPath );
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( category, m_path );
 
-        if( framePack == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid get Key Frames Pack '%s'"
-                , this->getName().c_str()
-                , m_keyFramePackPath.c_str()
-                );
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid open file '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				);
 
-            return false;
-        }
+			return false;
+		}
 
+		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)
+			->dataflowT<MovieFramePackInterfacePtr>( m_codecType, stream );
+
+		if( framePack == nullptr )
+		{
+			return false;
+		}
+				
         for( TVectorMovieLayers::const_iterator
             it = m_layers.begin(),
             it_end = m_layers.end();
@@ -234,21 +181,15 @@ namespace Menge
                     , layer.name.c_str()
                     );
 
-                framePack->destroy();
-
                 return false;
             }
         }
-
-        framePack->destroy();
 
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_loader( const Metabuf::Metadata * _meta )
 	{
-		m_codecType = CONST_STRING(m_serviceProvider, binMovie);		
-
         const Metacode::Meta_DataBlock::Meta_ResourceMovie * metadata
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
 
@@ -258,8 +199,15 @@ namespace Menge
         metadata->get_Height_Value( m_size.y );
         metadata->get_Loop_Segment( m_loopSegment );
                 
-        metadata->swap_KeyFramesPackPath_Path( m_keyFramePackPath );
+        metadata->swap_KeyFramesPackPath_Path( m_path );
 		metadata->swap_KeyFramesPackPath_Codec( m_codecType );
+		metadata->swap_KeyFramesPackPath_Converter( m_converter );
+
+		//FIX THIS
+		if( m_codecType.empty() == true )
+		{
+			m_converter = CONST_STRING(m_serviceProvider, binToAekMovie);
+		}
 
         m_layers.clear();
 
@@ -410,7 +358,7 @@ namespace Menge
 				
 				if( it->shape == true )
 				{
-					it->state |= MOVIE_LAYER_MESH;
+					it->state |= MOVIE_LAYER_MESH_2D;
 				}
             }
             else if( it->layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
@@ -481,43 +429,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_convert()
 	{
-		if( m_keyFramePackPath.empty() == true )
-		{
-			return false;
-		}
+		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
 
-		//perform convertation if we need
-		if( m_codecType == CONST_STRING(m_serviceProvider, binMovie) )
-		{
-			const ConstString & category = this->getCategory();
-
-			ConstString binToAekMovie = Helper::stringizeString(m_serviceProvider, "binToAekMovie");
-
-			String framePackPath( m_keyFramePackPath.c_str(), m_keyFramePackPath.size() );
-
-			String::size_type size = framePackPath.size();
-			framePackPath[size-3] = L'x';
-			framePackPath[size-2] = L'm';
-			framePackPath[size-1] = L'l';
-
-			FilePath path_xml = Helper::stringizeString( m_serviceProvider, framePackPath );
-
-			if( CONVERTER_SERVICE(m_serviceProvider)
-				->convert( binToAekMovie, category, path_xml, m_keyFramePackPath ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::convert: '%s' can't convert '%s':'%s'"
-					, this->getName().c_str() 
-					, m_keyFramePackPath.c_str()
-					, binToAekMovie.c_str()
-					);
-
-				return false;
-			}
-
-			m_codecType = CONST_STRING(m_serviceProvider, aekMovie);
-		}
-
-		return true;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_compile()
@@ -536,7 +450,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_keyFramePackPath.empty() == true )
+		if( m_path.empty() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t have Key Frames Pack Path"
 				, this->getName().c_str()
@@ -547,14 +461,27 @@ namespace Menge
 
 		const ConstString& category = this->getCategory();
 
-		m_keyFramePack = MOVIEKEYFRAME_SERVICE(m_serviceProvider)
-			->getMovieFramePak( category, m_keyFramePackPath );
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( category, m_path );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t open Frames Pack '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				);
+
+			return false;
+		}
+
+		m_keyFramePack = DATA_SERVICE(m_serviceProvider)
+			->dataflowT<MovieFramePackInterfacePtr>( m_codecType, stream );
 
 		if( m_keyFramePack == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
 				, this->getName().c_str()
-				, m_keyFramePackPath.c_str()
+				, m_path.c_str()
 				);
 
 			return false;
@@ -577,11 +504,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::_release()
 	{
-		if( m_keyFramePack != nullptr )
-		{
-            m_keyFramePack->destroy();
-            m_keyFramePack = nullptr;
-		}
+		m_keyFramePack = nullptr;
 
 		ResourceReference::_release();
 	}
@@ -608,5 +531,4 @@ namespace Menge
 			_visitor->visitLayer( layer, frames );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

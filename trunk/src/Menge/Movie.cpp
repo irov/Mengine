@@ -21,7 +21,7 @@
 #	include "RenderViewport.h"
 
 #	include "Sprite.h"
-#	include "Mesh.h"
+#	include "Mesh2D.h"
 #	include "Animation.h"
 #	include "Video.h"
 #   include "TextField.h"
@@ -275,18 +275,20 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, size_t _frameId, bool _interpolate )
-	{		
+	{	
+		const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
 		MovieFrameSource frame;
 		if( _interpolate == true && _layer.immutable == false )
 		{
 			MovieFrameSource frame1;
-			if( m_resourceMovie->getFrame( _layer, _frameId, frame1 ) == false )
+			if( framePack->getLayerFrame( _layer.index, _frameId, frame1 ) == false )
 			{
 				return false;
 			}
 
 			MovieFrameSource frame2;
-			if( m_resourceMovie->getFrame( _layer, _frameId + 1, frame2 ) == false )
+			if( framePack->getLayerFrame( _layer.index, _frameId + 1, frame2 ) == false )
 			{
 				return false;
 			}
@@ -299,7 +301,7 @@ namespace Menge
 		}
 		else
 		{
-			if( m_resourceMovie->getFrame( _layer, _frameId, frame ) == false )
+			if( framePack->getLayerFrame( _layer.index, _frameId, frame ) == false )
 			{
 				return false;
 			}
@@ -345,12 +347,12 @@ namespace Menge
 			sounding->setVolume( frame.volume );
 		}
 
-		if( _layer.isMesh() == true )
+		if( _layer.isMesh2D() == true )
 		{
 #   ifdef _DEBUG
-			if( dynamic_cast<Mesh *>( _node ) == nullptr )
+			if( dynamic_cast<Mesh2D *>( _node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mesh but node is not Mesh %s:%s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
 					, this->getName().c_str()
 					, _layer.name.c_str()
 					, _node->getName().c_str()
@@ -361,12 +363,12 @@ namespace Menge
 			}
 #   endif
 
-			Mesh * mesh = static_cast<Mesh *>( _node );
+			Mesh2D * mesh2D = static_cast<Mesh2D *>( _node );
 
 			const MovieFrameShape * shape;
-			m_resourceMovie->getShape(_layer, _frameId, &shape );
+			framePack->getLayerShape( _layer.index, _frameId, &shape );
 
-			mesh->setVerticies( shape->pos, shape->uv, shape->vertexCount, shape->indecies, shape->indexCount );
+			mesh2D->setVerticies( shape->pos, shape->uv, shape->vertexCount, shape->indecies, shape->indexCount );
 		}
 
 		return true;
@@ -1021,7 +1023,7 @@ namespace Menge
 				}
 				else
 				{
-					if( this->createMovieMesh_( layer ) == false )
+					if( this->createMovieMesh2D_( layer ) == false )
 					{
 						return false;
 					}
@@ -1243,10 +1245,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieMesh_( const MovieLayer & _layer )
+	bool Movie::createMovieMesh2D_( const MovieLayer & _layer )
 	{
-		Mesh * layer_mesh = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Mesh>( CONST_STRING(m_serviceProvider, Mesh) );
+		Mesh2D * layer_mesh = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Mesh2D>( CONST_STRING(m_serviceProvider, Mesh2D) );
 
 		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceImage>( _layer.source );
@@ -2145,8 +2147,10 @@ namespace Menge
                 }
                 else
                 {
+					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
                     float timing;
-                    if( m_resourceMovie->getTimeRemap( _layer, _endFrame - indexIn, timing ) == false )
+                    if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
                     {
                         return;
                     }
@@ -2177,8 +2181,10 @@ namespace Menge
                 }
                 else
                 {
+					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
                     float timing;
-                    if( m_resourceMovie->getTimeRemap( _layer, indexOut - indexIn, timing ) == false )
+                    if( framePack->getLayerTimeRemap( _layer.index, indexOut - indexIn, timing ) == false )
                     {
                         return;
                     }
@@ -2202,8 +2208,10 @@ namespace Menge
                 }
                 else
                 {
+					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
                     float timing;
-                    if( m_resourceMovie->getTimeRemap( _layer, _endFrame - indexIn, timing ) == false )
+                    if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
                     {
                         return;
                     }
@@ -2367,8 +2375,10 @@ namespace Menge
                     }
                     else
                     {
+						const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
                         float timing;
-                        if( m_resourceMovie->getTimeRemap( layer, m_currentFrame - indexIn, timing ) == false )
+                        if( framePack->getLayerTimeRemap( layer.index, m_currentFrame - indexIn, timing ) == false )
                         {
                             continue;
                         }
@@ -2449,8 +2459,10 @@ namespace Menge
                     }
                     else
                     {
+						const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
                         float timing;
-                        if( m_resourceMovie->getTimeRemap( layer, frameId, timing ) == false )
+                        if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
                         {
                             continue;
                         }
@@ -2483,8 +2495,10 @@ namespace Menge
                     }
                     else
                     {
+						const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
                         float timing;
-                        if( m_resourceMovie->getTimeRemap( layer, frameId, timing ) == false )
+                        if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
                         {
                             continue;
                         }

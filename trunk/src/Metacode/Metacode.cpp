@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 38;
+        _needVersion = 39;
 
-        if( version != 38 )
+        if( version != 39 )
         {
             return false;
         }
@@ -2051,6 +2051,7 @@ namespace Metacode
         , FrameDuration_Value_successful(false)
         , Height_Value_successful(false)
         , KeyFramesPackPath_Codec_successful(false)
+        , KeyFramesPackPath_Converter_successful(false)
         , KeyFramesPackPath_Path_successful(false)
         , Loop_Segment_successful(false)
         , Width_Value_successful(false)
@@ -2115,6 +2116,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 9:
+            {
+                if( this->read( _buff, _size, _read, this->KeyFramesPackPath_Converter ) == false )
+                {
+                    return false;
+                }
+    
+                this->KeyFramesPackPath_Converter_successful = true;
+    
+                return true;
+            }break;
         case 7:
             {
                 if( this->read( _buff, _size, _read, this->KeyFramesPackPath_Path ) == false )
@@ -2126,7 +2138,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->Loop_Segment ) == false )
                 {
@@ -2162,19 +2174,19 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 12:
+        case 13:
             {
                 includes_Meta_MovieCamera3D.reserve( _count );
                 return true;
                 break;
             }
-        case 10:
+        case 11:
             {
                 includes_Meta_MovieLayer2D.reserve( _count );
                 return true;
                 break;
             }
-        case 11:
+        case 12:
             {
                 includes_Meta_MovieLayer3D.reserve( _count );
                 return true;
@@ -2194,7 +2206,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 12:
+        case 13:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
     
@@ -2206,7 +2218,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 10:
+        case 11:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
     
@@ -2218,7 +2230,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 11:
+        case 12:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
     
@@ -2253,7 +2265,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
     {
-        return 12;
+        return 13;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2362,7 +2374,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
     {
-        return 10;
+        return 11;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2553,7 +2565,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
     {
-        return 11;
+        return 12;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )

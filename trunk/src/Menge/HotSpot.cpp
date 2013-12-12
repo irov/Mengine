@@ -22,6 +22,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
 		: m_debugColor(0x80FFFFFF)
+		, m_outward(false)
 	{
         m_mousePickerAdapter.setHotspot( this );
         m_mousePickerAdapter.setDefaultHandle( true );
@@ -48,6 +49,16 @@ namespace	Menge
 	const Polygon & HotSpot::getPolygon() const
 	{
 		return m_polygon;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::setOutward( bool _value )
+	{
+		m_outward = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::getOutward() const
+	{
+		return m_outward;
 	}
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::setDefaultHandle( bool _handle )
@@ -305,7 +316,7 @@ namespace	Menge
 
 		bool intersect = boost::geometry::intersects( polygonWMVM, polygonScreen );
 
-		return intersect;
+		return intersect != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

@@ -1,4 +1,4 @@
-#	include "Mesh.h" 
+#	include "Model3D.h" 
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
@@ -15,141 +15,139 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Mesh::Mesh()
+	Model3D::Model3D()
 		: m_materialGroup(nullptr)
 		, m_material(nullptr)
 		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
-        , m_invalidateMaterial(true)
+		, m_invalidateMaterial(true)
 		, m_invalidateVerticesLocal(true)
 		, m_invalidateUVLocal(true)
 		, m_invalidateVerticesWM(true)
 		, m_invalidateVerticesColor(true)
 		, m_vertexCount(0)
 		, m_indicesCount(0)
-		, m_textureUVOffset(0.f, 0.f)
-		, m_textureUVScale(1.f, 1.f)
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Mesh::~Mesh()
+	Model3D::~Model3D()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Mesh::_compile()
+	bool Model3D::_compile()
 	{
 		if( this->compileResource_() == false )
 		{
 			return false;
 		}
 
-        this->updateResource_();
-        
-        this->invalidateMaterial();
+		this->updateResource_();
+
+		this->invalidateMaterial();
 		this->invalidateBoundingBox();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Mesh::compileResource_()
+	bool Model3D::compileResource_()
 	{
 		if( m_resourceImage == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource null"
-                , m_name.c_str() 
-                );
+			LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource null"
+				, m_name.c_str() 
+				);
 
-            return false;
-        }
+			return false;
+		}
 
-        if( m_resourceImage.compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource %s not compile"
-                , m_name.c_str() 
-                , m_resourceImage->getName().c_str()
-                );
+		if( m_resourceImage.compile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource %s not compile"
+				, m_name.c_str() 
+				, m_resourceImage->getName().c_str()
+				);
 
-            return false;
-        }
+			return false;
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::_release()
+	void Model3D::_release()
 	{
-        m_resourceImage.release();
+		m_resourceImage.release();
 
-        m_textures[0] = nullptr;
-        m_textures[1] = nullptr;
-		
+		m_textures[0] = nullptr;
+		m_textures[1] = nullptr;
+
 		m_materialGroup = nullptr;
 		m_material = nullptr;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Mesh::setResourceImage( ResourceImage * _resourceImage )
-    {
-        if( m_resourceImage == _resourceImage )
-        {
-            return;
-        }
-
-        m_resourceImage = _resourceImage;
-
-        this->recompile();
-
-        //this->invalidateVertices_();
-        this->invalidateBoundingBox();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ResourceImage * Mesh::getResourceImage() const
-    {        
-        return m_resourceImage;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Mesh::updateResource_()
-    {
-        //bool uvRotate = m_resourceImage->isUVRotate();
-        //this->setUVRotate( uvRotate );
-
-        //const mt::vec4f & uv = m_resourceImage->getUVImage();
-        //this->setUV( uv );
-
-        //const mt::vec4f & uvAlpha = m_resourceImage->getUVAlpha();
-        //this->setUV2( uvAlpha );
-
-        m_textures[0] = m_resourceImage->getTexture();
-        m_textures[1] = m_resourceImage->getTextureAlpha();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Mesh::invalidateMaterial()
-    {
-        m_invalidateMaterial = true;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::updateMaterial()
+	void Model3D::setResourceImage( ResourceImage * _resourceImage )
 	{
-        m_invalidateMaterial = false;
+		if( m_resourceImage == _resourceImage )
+		{
+			return;
+		}
 
-        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
+		m_resourceImage = _resourceImage;
 
-        if( textureAlpha != nullptr )
-        {
-            if( m_resourceImage->isAlpha() == true || m_solid == false )
-            {
-                m_texturesNum = 2;
+		this->recompile();
 
-                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
-            }
-            else
-            {
-                m_texturesNum = 1;
+		//this->invalidateVertices_();
+		this->invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage * Model3D::getResourceImage() const
+	{        
+		return m_resourceImage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::updateResource_()
+	{
+		//bool uvRotate = m_resourceImage->isUVRotate();
+		//this->setUVRotate( uvRotate );
 
-                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
-            }
-        }
+		//const mt::vec4f & uv = m_resourceImage->getUVImage();
+		//this->setUV( uv );
+
+		//const mt::vec4f & uvAlpha = m_resourceImage->getUVAlpha();
+		//this->setUV2( uvAlpha );
+
+		m_textures[0] = m_resourceImage->getTexture();
+		m_textures[1] = m_resourceImage->getTextureAlpha();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::invalidateMaterial()
+	{
+		m_invalidateMaterial = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::updateMaterial()
+	{
+		m_invalidateMaterial = false;
+
+		const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
+
+		if( textureAlpha != nullptr )
+		{
+			if( m_resourceImage->isAlpha() == true || m_solid == false )
+			{
+				m_texturesNum = 2;
+
+				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
+			}
+			else
+			{
+				m_texturesNum = 1;
+
+				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+			}
+		}
 		else if( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
@@ -189,7 +187,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Model3D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
 		Node::_render( _viewport, _camera );
 
@@ -199,13 +197,13 @@ namespace Menge
 		}
 
 		const RenderVertex2D * vertices = this->getVerticesWM();
-        const RenderMaterial * material = this->getMaterial();
+		const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
 			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_indices, m_indicesCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::_updateBoundingBox( mt::box2f & _boundingBox )
+	void Model3D::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
@@ -217,50 +215,26 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::setTextureUVOffset( const mt::vec2f & _offset )
-	{
-		m_textureUVOffset = _offset;
-
-		this->invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Mesh::getTextureUVOffset() const
-	{
-		return m_textureUVOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh::setTextureUVScale( const mt::vec2f & _scale )
-	{
-		m_textureUVScale = _scale;
-
-		this->invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Mesh::getTextureUVScale() const
-	{
-		return m_textureUVScale;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh::_invalidateWorldMatrix()
+	void Model3D::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
 
 		this->invalidateVerticesWM();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::invalidateVertices()
+	void Model3D::invalidateVertices()
 	{
 		m_invalidateVerticesLocal = true;
 
 		this->invalidateVerticesWM();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::invalidateVerticesWM()
+	void Model3D::invalidateVerticesWM()
 	{
 		m_invalidateVerticesWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::updateVertices()
+	void Model3D::updateVertices()
 	{
 		m_invalidateVerticesLocal = false;
 
@@ -279,8 +253,8 @@ namespace Menge
 					float u = image_uv.x + (image_uv.z - image_uv.x) * uv.x;
 					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.y;
 
-					m_verticesWM[i].uv.x = u * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv.y = v * m_textureUVScale.y + m_textureUVOffset.y;
+					m_verticesWM[i].uv.x = u;
+					m_verticesWM[i].uv.y = v;
 				}
 			}
 
@@ -294,8 +268,8 @@ namespace Menge
 					float u = image_uvAlpha.x + (image_uvAlpha.z - image_uvAlpha.x) * uv.x;
 					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.y;
 
-					m_verticesWM[i].uv2.x = u * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv2.y = v * m_textureUVScale.y + m_textureUVOffset.y;
+					m_verticesWM[i].uv2.x = u;
+					m_verticesWM[i].uv2.y = v;
 				}
 			}
 		}
@@ -310,8 +284,8 @@ namespace Menge
 					float u = image_uv.z - (image_uv.z - image_uv.x) * uv.y;
 					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.x;
 
-					m_verticesWM[i].uv.x = u * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv.y = v * m_textureUVScale.y + m_textureUVOffset.y;
+					m_verticesWM[i].uv.x = u;
+					m_verticesWM[i].uv.y = v;
 				}
 			}
 
@@ -325,35 +299,35 @@ namespace Menge
 					float u = image_uvAlpha.z - (image_uvAlpha.z - image_uvAlpha.x) * uv.y;
 					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.x;
 
-					m_verticesWM[i].uv2.x = u * m_textureUVScale.x + m_textureUVOffset.x;
-					m_verticesWM[i].uv2.y = v * m_textureUVScale.y + m_textureUVOffset.y;
+					m_verticesWM[i].uv2.x = u;
+					m_verticesWM[i].uv2.y = v;
 				}
 			}
 		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Mesh::_invalidateColor()
-    {
-        Node::_invalidateColor();
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_invalidateColor()
+	{
+		Node::_invalidateColor();
 
 		this->invalidateVerticesColor();
 
-        bool solid = this->isSolidColor();
+		bool solid = this->isSolidColor();
 
-        if( m_solid != solid )
-        {
+		if( m_solid != solid )
+		{
 			m_solid = solid;
 
-            this->invalidateMaterial();
-        }
-    }
+			this->invalidateMaterial();
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::invalidateVerticesColor()
+	void Model3D::invalidateVerticesColor()
 	{
 		m_invalidateVerticesColor = true;                
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::updateVerticesColor()
+	void Model3D::updateVerticesColor()
 	{
 		m_invalidateVerticesColor = false;
 
@@ -369,13 +343,12 @@ namespace Menge
 		++it )
 		{
 			RenderVertex2D & vtx = *it;
-			
+
 			vtx.color = argb;
 		}
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::setBlendAdd( bool _value )
+	void Model3D::setBlendAdd( bool _value )
 	{
 		if( m_blendAdd == _value )
 		{
@@ -387,20 +360,20 @@ namespace Menge
 		this->invalidateMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Mesh::isBlendAdd() const
+	bool Model3D::isBlendAdd() const
 	{
 		return m_blendAdd;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex )
+	void Model3D::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex )
 	{
-		if( _countVertex >= MENGINE_MESH_MAX_VERTEX || _countIndex >= MENGINE_MESH_MAX_INDECIES )
+		if( _countVertex >= MENGINE_MODEL_MAX_VERTEX || _countIndex >= MENGINE_MODEL_MAX_INDECIES )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Mesh::setVerticies _countVertex %d >= %d or _countIndex %d >= %d"
 				, _countVertex
-				, MENGINE_MESH_MAX_VERTEX
+				, MENGINE_MODEL_MAX_VERTEX
 				, _countIndex
-				, MENGINE_MESH_MAX_INDECIES
+				, MENGINE_MODEL_MAX_INDECIES
 				);
 
 			return;
@@ -418,7 +391,7 @@ namespace Menge
 		this->invalidateVerticesColor();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh::updateVerticesWM()
+	void Model3D::updateVerticesWM()
 	{
 		m_invalidateVerticesWM = false;
 

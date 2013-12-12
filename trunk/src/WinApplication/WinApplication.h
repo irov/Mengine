@@ -14,6 +14,7 @@
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/CodecInterface.h"
+#   include "Interface/DataInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/PluginInterface.h"
@@ -118,6 +119,7 @@ namespace Menge
         bool initializeScriptEngine_();
 		bool initializeModuleEngine_();
         bool initializeCodecEngine_();
+		bool initializeDataManager_();
         bool initializeConverterEngine_();
         bool initializeInputEngine_();
         bool initializePluginService_();
@@ -217,6 +219,7 @@ namespace Menge
         ScriptServiceInterface * m_scriptService;
         PluginServiceInterface * m_pluginService;
 		ModuleServiceInterface * m_moduleService;
+		DataServiceInterface * m_dataService;
 
 		FileLogger * m_fileLog;
 

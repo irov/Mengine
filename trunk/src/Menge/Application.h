@@ -25,8 +25,7 @@ namespace Menge
     class ResourceServiceInterface;
     class AlphaChannelServiceInterface;
     class TextServiceInterface;
-    class NodeServiceInterface;
-    class MovieKeyFrameServiceInterface;
+    class NodeServiceInterface;    
 
     class WatchdogInterface;
 
@@ -107,7 +106,7 @@ namespace Menge
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
-		bool initializeMovieKeyFrameManager_();
+		bool initializeDataManager_();
         bool initializePrototypeManager_();
         bool initializeWatchdog_();
         bool initializeProfiler_();
@@ -257,8 +256,7 @@ namespace Menge
 		ResourceServiceInterface * m_resourceService;
         AmplifierServiceInterface * m_amplifierService;
 		TextServiceInterface* m_textService;
-		NodeServiceInterface * m_nodeService;
-		MovieKeyFrameServiceInterface * m_movieKeyFrameService;
+		NodeServiceInterface * m_nodeService;		
         PrototypeServiceInterface * m_prototypeService;
         Consts * m_consts;
 

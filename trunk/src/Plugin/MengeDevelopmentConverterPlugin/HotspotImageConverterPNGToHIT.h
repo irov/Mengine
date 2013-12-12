@@ -15,7 +15,7 @@ namespace Menge
 		bool initialize() override;
 
 	public:
-		bool validateVersion( const ConstString & _pakName, const FilePath & _fileName ) const override;
+		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
     public:
 		bool convert() override;

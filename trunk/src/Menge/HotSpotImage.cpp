@@ -86,7 +86,7 @@ namespace Menge
 
 		bool result = m_resourceHIT->testPoint( pointIn2, m_alphaTest );
 
-		return result;
+		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
@@ -104,7 +104,7 @@ namespace Menge
 
 		bool result = m_resourceHIT->testRadius( pointIn2, _radius, m_alphaTest );
 
-		return result;
+		return result != m_outward;
 	}
     //////////////////////////////////////////////////////////////////////////
     void HotSpotImage::setResourceHIT( ResourceHIT * _resourceHIT )

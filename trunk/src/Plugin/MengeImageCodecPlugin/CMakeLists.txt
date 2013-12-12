@@ -40,6 +40,13 @@ src
     
     ImageDecoderETZ1.h
     ImageDecoderETZ1.cpp
+    
+    DataflowAEK.h
+    DataflowAEK.cpp
+    MovieFramePack.h
+    MovieFramePack.cpp
+    
+    
 )
 
 INCLUDE_DIRECTORIES( 

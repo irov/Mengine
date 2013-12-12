@@ -45,7 +45,6 @@ namespace Menge
         unsigned char * getBuffer() const override;
 
     protected:
-        bool convert_();
         unsigned char * getHitBuffer_( size_t _level ) const;
 
     protected:

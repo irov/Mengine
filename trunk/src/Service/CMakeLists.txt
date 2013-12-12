@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY( ServiceCodec )
+ADD_SUBDIRECTORY( ServiceData )
 ADD_SUBDIRECTORY( ServiceModule )
 ADD_SUBDIRECTORY( ServiceLog )
 ADD_SUBDIRECTORY( ServiceFile )

@@ -26,6 +26,10 @@ namespace Menge
 		void setPolygon( const Polygon & _polygon );
 		const Polygon & getPolygon() const;
 
+	public:
+		void setOutward( bool _value );
+		bool getOutward() const;
+
     public:
         void setDefaultHandle( bool _handle );
         bool getDefaultHandle() const;
@@ -73,6 +77,8 @@ namespace Menge
 
 	protected:
         HotspotMousePickerAdapter m_mousePickerAdapter;
+
+		bool m_outward;
 
 		uint32_t m_debugColor;
 	};

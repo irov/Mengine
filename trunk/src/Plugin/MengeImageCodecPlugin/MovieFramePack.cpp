@@ -198,19 +198,4 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorMovieFrameLayer & MovieFramePack::getLayers() const
-	{
-		return m_layers;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorMovieLayerTimeRemap & MovieFramePack::getTimeremap() const
-	{
-		return m_timeremap;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorMovieLayerShapes & MovieFramePack::getShapes() const
-	{
-		return m_shapes;
-	}
 }

@@ -4,6 +4,8 @@ project(metabuf)
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../metabuf )
 
+configure_file(Metaconfig.hpp ${SOURCE_DIR}/metabuf/Metaconfig.hpp COPYONLY)
+
 if(NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
     ADD_DEFINITIONS(-D"nullptr=0")
@@ -15,7 +17,7 @@ set( metabuf_sources
     )
     
 include_directories(${SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)                     
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)         
 
 add_library( metabuf_static STATIC ${metabuf_sources} )
 

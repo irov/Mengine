@@ -429,9 +429,52 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_convert()
 	{
-		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
+		//bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
 
-		return result;
+		if( m_path.empty() == true )
+		{
+			return false;
+		}
+
+		if( m_converter.empty() == false )
+		{
+			String xml_path = m_path.c_str();
+			xml_path[ xml_path.size() - 3 ] = 'x';
+			xml_path[ xml_path.size() - 2 ] = 'm';
+			xml_path[ xml_path.size() - 1 ] = 'l';
+
+			ConstString c_xml_path = Helper::stringizeString(m_serviceProvider, xml_path);
+
+			if( CONVERTER_SERVICE(m_serviceProvider)
+				->convert( m_converter, m_category, c_xml_path, m_path ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::_convert: '%s' can't convert '%s':'%s'"
+					, this->getName().c_str() 
+					, c_xml_path.c_str()
+					, m_converter.c_str()
+					);
+
+				return false;
+			}
+		}
+
+		if( m_codecType.empty() == true )
+		{
+			m_codecType = CODEC_SERVICE(m_serviceProvider)
+				->findCodecType( m_path );
+		}
+
+		if( m_codecType.empty() == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_compile()

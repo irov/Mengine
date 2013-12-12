@@ -72,6 +72,7 @@ namespace Menge
 
 		_stream->read( &compress[0], compress_size );
 
+		m_cacheBinary.clear();
 		m_cacheBinary.resize(binary_aek_size);
 
 		TBlobject::value_type * cacheBinaryBuffer = &m_cacheBinary[0];

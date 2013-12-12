@@ -382,20 +382,8 @@ namespace Menge
 			}
 		}
 
-		TVectorMovieFrameShapes shapes;
-		shapes.resize( maxIndex );
-
-		for( TVectorMovieFrameShapes::iterator
-			it = shapes.begin(),
-			it_end = shapes.end();
-		it != it_end;
-		++it )
-		{
-			MovieFrameShape & shape = *it;
-
-			shape.vertexCount = 0;
-			shape.indexCount = 0;
-		}
+		TVectorMovieLayerShapes layerShapes;
+		layerShapes.resize( maxIndex );
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_IncludesImageShape();
 
@@ -445,7 +433,7 @@ namespace Menge
 					shape.vertexCount = 0;
 					shape.indexCount = 0;
 
-					shapes[layerIndex - 1] = shape;
+					layerShapes[layerIndex - 1].shapes.push_back(shape);
 
 					continue;
 				}
@@ -514,28 +502,40 @@ namespace Menge
 					indices = shape_indices[i];
 				}							
 
-				shapes[layerIndex - 1] = shape;
+				layerShapes[layerIndex - 1].shapes.push_back(shape);
 			}
 		}
 
-		for( TVectorMovieFrameShapes::const_iterator
-			it = shapes.begin(),
-			it_end = shapes.end();
+		for( TVectorMovieLayerShapes::const_iterator
+			it = layerShapes.begin(),
+			it_end = layerShapes.end();
 		it != it_end;
 		++it )
 		{
-			const MovieFrameShape & shape = *it;
+			const MovieLayerShapes & layerShape = *it;
 
-			aw << shape.vertexCount;
+			size_t shapes_size = layerShape.shapes.size();
+			aw << shapes_size;
 
-			if( shape.vertexCount > 0 )
+			for( TVectorMovieFrameShapes::const_iterator
+				it_shape = layerShape.shapes.begin(),
+				it_shape_end = layerShape.shapes.end();
+			it_shape != it_shape_end;
+			++it_shape )
 			{
-				aw.writePODs( shape.pos, shape.vertexCount );
-				aw.writePODs( shape.uv, shape.vertexCount );
+				const MovieFrameShape & shape = *it_shape;
+								
+				aw << shape.vertexCount;
 
-				aw << shape.indexCount;
+				if( shape.vertexCount > 0 )
+				{
+					aw.writePODs( shape.pos, shape.vertexCount );
+					aw.writePODs( shape.uv, shape.vertexCount );
 
-				aw.writePODs( shape.indecies, shape.indexCount );
+					aw << shape.indexCount;
+
+					aw.writePODs( shape.indecies, shape.indexCount );
+				}
 			}
 		}
 

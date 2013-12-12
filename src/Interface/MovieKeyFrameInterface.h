@@ -15,7 +15,7 @@
 
 namespace Menge
 {
-	const size_t DATAFLOW_VERSION_AEK = 3;
+	const size_t DATAFLOW_VERSION_AEK = 4;
 
     struct MovieFrameSource
     {

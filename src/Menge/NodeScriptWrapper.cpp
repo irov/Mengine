@@ -2320,7 +2320,7 @@ namespace Menge
                 {}
 
             protected:
-                void visitLayer( const MovieLayer & _layer, const MovieLayerFrame & _frames ) override
+                void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) override
                 {
                     if( _layer.source != CONST_STRING(m_serviceProvider, MovieSlot) )
                     {
@@ -2329,15 +2329,17 @@ namespace Menge
 
                     PyObject * py_list_frames = pybind::list_new(0);
 
-                    if( _frames.immutable == false )
+					const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
+
+                    if( frames.immutable == false )
                     {
                         for( TVectorMovieFrameSource::size_type
                             it_frame = 0,
-                            it_frame_end = _frames.frames.size();
+                            it_frame_end = frames.frames.size();
                         it_frame != it_frame_end;
                         ++it_frame )
                         {
-                            const MovieFrameSource & frame_source = _frames.frames[it_frame];
+                            const MovieFrameSource & frame_source = frames.frames[it_frame];
 
                             PyObject * py_dict_frame = pybind::dict_new();
 
@@ -2359,13 +2361,13 @@ namespace Menge
                     {
                         for( TVectorMovieFrameSource::size_type
                             it_frame = 0,
-                            it_frame_end = _frames.frames.size();
+                            it_frame_end = frames.frames.size();
                         it_frame != it_frame_end;
                         ++it_frame )
                         {
                             PyObject * py_dict_frame = pybind::dict_new();
 
-                            PyObject * py_pos = pybind::ptr( _frames.source.position );
+                            PyObject * py_pos = pybind::ptr( frames.source.position );
                             pybind::dict_setstring( py_dict_frame, "position", py_pos );
                             pybind::decref( py_pos );
 

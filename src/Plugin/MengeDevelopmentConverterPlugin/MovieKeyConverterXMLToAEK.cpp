@@ -3,6 +3,7 @@
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/MovieKeyFrameInterface.h"
 
 #	include "Metacode/Metacode.h"
 

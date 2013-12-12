@@ -8,13 +8,11 @@
 namespace Menge
 {
     class ScheduleListener
+		: public Factorable
     {
     public:
         virtual void onScheduleComplete( size_t _id ) = 0;
         virtual void onScheduleStop( size_t _id ) = 0;
-
-    public:
-        virtual void destroyScheduleListener() const = 0;
     };
 
     class ScheduleManagerInterface

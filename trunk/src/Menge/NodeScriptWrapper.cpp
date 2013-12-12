@@ -505,17 +505,25 @@ namespace Menge
             : public ScheduleListener
         {
         public:
-            PyObjectScheduleListener( ServiceProviderInterface * _serviceProvider, PyObject * _pyObject )
-                : m_serviceProvider(_serviceProvider)
-                , m_pyObject(_pyObject)
+            PyObjectScheduleListener()
+                : m_serviceProvider(nullptr)
+                , m_pyObject(nullptr)
             {
-                pybind::incref( m_pyObject );
             }
 
             ~PyObjectScheduleListener()
             {
                 pybind::decref( m_pyObject );
             }
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _pyObject )
+			{
+				m_serviceProvider = _serviceProvider;
+				m_pyObject = _pyObject;
+
+				pybind::incref( m_pyObject );
+			}
 
         protected:
             void onScheduleComplete( size_t _id ) override
@@ -535,22 +543,21 @@ namespace Menge
             }
 
         protected:
-            void destroyScheduleListener() const override
-            {
-                delete this;
-            }
-
-        protected:
             ServiceProviderInterface * m_serviceProvider;
             PyObject * m_pyObject;
         };
+		//////////////////////////////////////////////////////////////////////////
+		typedef FactoryPool<PyObjectScheduleListener, 8> TFactoryPyObjectScheduleListener;
+		TFactoryPyObjectScheduleListener m_factoryPyObjectScheduleListener;
         //////////////////////////////////////////////////////////////////////////
         size_t schedule( float _timing, PyObject * _script )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
-            ScheduleListener * sl = new PyObjectScheduleListener(m_serviceProvider, _script);
+            PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
+
+			sl->initialize( m_serviceProvider, _script );
 
             size_t id = sm->schedule( _timing, sl );
 
@@ -620,7 +627,9 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
-            ScheduleListener * sl = new PyObjectScheduleListener(m_serviceProvider, _script);
+			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
+
+			sl->initialize( m_serviceProvider, _script );
 
             size_t id = sm->schedule( _timing, sl );
 

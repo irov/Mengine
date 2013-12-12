@@ -36,7 +36,7 @@ namespace Menge
                     return false;
                 }
                  
-                _event.listener->destroyScheduleListener();
+                _event.listener->destroy();
 
                 return true;
             }
@@ -61,7 +61,7 @@ namespace Menge
         {
             ScheduleListener * listener = it->listener;
 
-            listener->destroyScheduleListener();
+            listener->destroy();
         }
     }
     //////////////////////////////////////////////////////////////////////////

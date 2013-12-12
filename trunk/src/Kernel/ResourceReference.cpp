@@ -80,7 +80,7 @@ namespace Menge
 			return false;
 		}
 
-		if ( _converter.empty() == false )
+		if( _converter.empty() == false )
 		{
 			if( CONVERTER_SERVICE(m_serviceProvider)
 				->convert( _converter, m_category, _path, _out ) == false )

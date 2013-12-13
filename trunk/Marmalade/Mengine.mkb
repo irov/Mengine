@@ -92,6 +92,11 @@ files
     ("../src/Service/ServiceCodec")	
 	"*.h"
 	"*.cpp"    
+    
+    [Service/ServiceData]
+    ("../src/Service/ServiceData")	
+	"*.h"
+	"*.cpp"
 
     [Service/ServiceConverter]
     ("../src/Service/ServiceConverter")	

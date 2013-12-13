@@ -206,7 +206,7 @@ namespace Menge
 		//FIX THIS
 		if( m_codecType.empty() == true )
 		{
-			m_converter = CONST_STRING(m_serviceProvider, binToAekMovie);
+			m_converter = CONST_STRING(m_serviceProvider, xmlToAekMovie);
 		}
 
         m_layers.clear();
@@ -438,6 +438,7 @@ namespace Menge
 
 		if( m_converter.empty() == false )
 		{
+			//FIX THIS
 			String xml_path = m_path.c_str();
 			xml_path[ xml_path.size() - 3 ] = 'x';
 			xml_path[ xml_path.size() - 2 ] = 'm';

@@ -116,7 +116,7 @@ namespace Menge
         INIT_CONST( Account );
 		INIT_CONST( binMovie );
 		INIT_CONST( aekMovie );
-		INIT_CONST( binToAekMovie );
+		INIT_CONST( xmlToAekMovie );
 		
 		INIT_CONST( Generic );
 		INIT_CONST( Fade );

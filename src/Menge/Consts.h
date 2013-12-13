@@ -120,7 +120,7 @@ namespace Menge
 
 		DECL_CONST( binMovie );
 		DECL_CONST( aekMovie );
-		DECL_CONST( binToAekMovie );
+		DECL_CONST( xmlToAekMovie );
 
 		DECL_CONST( Generic );
 		DECL_CONST( Fade );

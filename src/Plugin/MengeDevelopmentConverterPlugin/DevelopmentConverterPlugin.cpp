@@ -48,7 +48,7 @@ namespace Menge
 		m_converters.push_back( new ConverterFactory<HotspotImageConverterPNGToHIT>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "png2hit")) );
 		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegToOggSound")) );
 		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegToWebM")) );
-		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "binToAekMovie")) );
+		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "xmlToAekMovie")) );
 		
 		for( TVectorHotspotImageConverters::iterator
 			it = m_converters.begin(),

@@ -30,17 +30,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream )
 	{
-		if( _stream == nullptr )
-		{
-			return nullptr;
-		}
-
 		size_t binary_aek_header;
 		_stream->read( &binary_aek_header, sizeof(binary_aek_header) );
 
 		if( binary_aek_header != 0xAEAEBABE )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid header"
+			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid magic header"
 				);
 
 			return nullptr;

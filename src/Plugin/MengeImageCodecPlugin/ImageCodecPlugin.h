@@ -28,5 +28,6 @@ namespace Menge
 		TVectorEncoders m_encoders;
 
 		DataflowFactoryInterfacePtr m_factoryAEK;
+		DataflowFactoryInterfacePtr m_factoryMDL;
 	};
 }

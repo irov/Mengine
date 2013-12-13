@@ -23,6 +23,7 @@
 #   include "PickEncoderHIT.h"
 
 #	include "DataflowAEK.h"
+#	include "DataflowMDL.h"
 
 #   include "Codec/DecoderFactory.h"
 #   include "Codec/EncoderFactory.h"
@@ -140,6 +141,15 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "aek", Helper::stringizeString(m_serviceProvider, "aekMovie") );
 
+		m_factoryMDL = new DataflowFactory<DataflowMDL>(m_serviceProvider);
+		DataflowInterfacePtr mdl = m_factoryMDL->createDataflow();
+
+		DATA_SERVICE(m_serviceProvider)
+			->registerDataflow( Helper::stringizeString(m_serviceProvider, "mdl3D"), mdl );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "mdl", Helper::stringizeString(m_serviceProvider, "mdl3D") );
+
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -172,6 +182,9 @@ namespace Menge
 
 		DATA_SERVICE(m_serviceProvider)
 			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "aekMovie") );
+
+		DATA_SERVICE(m_serviceProvider)
+			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "mdl3D") );
 
 		delete this;
 	}

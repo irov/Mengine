@@ -45,6 +45,12 @@ src
     DataflowAEK.cpp
     MovieFramePack.h
     MovieFramePack.cpp
+
+    DataflowMDL.h
+    DataflowMDL.cpp
+    Model3DPack.h
+    Model3DPack.cpp
+    
     
     
 )

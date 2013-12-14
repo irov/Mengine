@@ -113,9 +113,9 @@ namespace Menge
 		for( size_t i = 0; i != frameCount; ++i )
 		{
 			Model3DFrame & frame = pack->mutableFrame( i );
-
+						
 			ar >> frame.cameraPos;
-			ar >> frame.cameraDir;
+			ar >> frame.cameraDir;	
 			ar >> frame.cameraUp;
 
 			ar.readPODs( frame.pos, vertexCount );

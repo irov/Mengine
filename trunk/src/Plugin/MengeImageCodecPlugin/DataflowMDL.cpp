@@ -116,6 +116,7 @@ namespace Menge
 
 			ar >> frame.cameraPos;
 			ar >> frame.cameraDir;
+			ar >> frame.cameraUp;
 
 			ar.readPODs( frame.pos, vertexCount );
 			ar.readPODs( frame.uv, vertexCount );

@@ -64,6 +64,13 @@ namespace Menge
 		this->invalidateMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraUp( const mt::vec3f & _up )
+	{
+		m_cameraUp = _up;
+
+		this->invalidateMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setCameraFOV( float _fov )
 	{
 		m_cameraFOV = _fov;

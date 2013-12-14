@@ -519,6 +519,7 @@ namespace Menge
 
 		m_camera->setCameraPosition( m_frame->cameraPos );
 		m_camera->setCameraDir( m_frame->cameraDir );
+		m_camera->setCameraUp( m_frame->cameraUp );
 
 		this->invalidateVertices();
 	}

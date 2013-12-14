@@ -25,6 +25,7 @@ namespace Menge
 	{
 		mt::vec3f cameraPos;
 		mt::vec3f cameraDir;
+		mt::vec3f cameraUp;
 
 		mt::vec3f pos[MENGINE_MODEL_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MODEL_MAX_VERTEX];

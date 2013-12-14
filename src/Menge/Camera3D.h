@@ -24,6 +24,7 @@ namespace Menge
 	public:
         void setCameraPosition( const mt::vec3f & _pos );
 		void setCameraDir( const mt::vec3f & _dir );
+		void setCameraUp( const mt::vec3f & _up );
 		void setCameraFOV( float _fov );
 		void setCameraAspect( float _aspect );
 

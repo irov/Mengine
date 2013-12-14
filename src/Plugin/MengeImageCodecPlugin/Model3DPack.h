@@ -22,6 +22,7 @@ namespace Menge
         
 	public:
 		void initialize( size_t _frameCount, size_t _vertexCount, size_t _indeciesCount, float _frameDelay );
+		void setCamera( float _fov, float _aspect );
 
 		Model3DFrame & mutableFrame( size_t _frameId );
 
@@ -29,17 +30,22 @@ namespace Menge
 		size_t getFrameCount() const override;
 		size_t getVertexCount() const override;
 		size_t getIndicesCount() const override;
+		float getCameraFOV() const override;
+		float getCameraAspect() const override;
 
 	public:
 		float getFrameDelay() const override;
 
 	public:
-		const Model3DFrame & getFrame( size_t _frameId ) const override;
+		const Model3DFrame * getFrame( size_t _frameId ) const override;
 		
 	protected:
 		size_t m_frameCount;
 		size_t m_vertexCount;
-		size_t m_indeciesCount;
+		size_t m_indicesCount;
+
+		float m_cameraFOV;
+		float m_cameraAspect;
 
 		float m_frameDelay;
 

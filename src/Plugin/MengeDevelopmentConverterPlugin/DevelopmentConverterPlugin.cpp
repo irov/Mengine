@@ -8,6 +8,7 @@
 #	include "SoundConverterFFMPEGToOGG.h"
 #	include "VideoConverterFFMPEGToWEBM.h"
 #	include "MovieKeyConverterXMLToAEK.h"
+#	include "ModelConverterMDLToMDZ.h"
 
 #   include "Logger/Logger.h"
 
@@ -49,6 +50,8 @@ namespace Menge
 		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegToOggSound")) );
 		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegToWebM")) );
 		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "xmlToAekMovie")) );
+		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "mdlToMdzModel")) );
+		
 		
 		for( TVectorHotspotImageConverters::iterator
 			it = m_converters.begin(),

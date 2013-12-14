@@ -165,7 +165,7 @@ namespace Menge
 					ar.readPODs( shape.uv, shape.vertexCount );
 
 					ar >> shape.indexCount;
-					ar.readPODs( shape.indecies, shape.indexCount );
+					ar.readPODs( shape.indices, shape.indexCount );
 				}
 				else
 				{

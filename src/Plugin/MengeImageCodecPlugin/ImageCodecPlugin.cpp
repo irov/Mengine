@@ -145,10 +145,10 @@ namespace Menge
 		DataflowInterfacePtr mdl = m_factoryMDL->createDataflow();
 
 		DATA_SERVICE(m_serviceProvider)
-			->registerDataflow( Helper::stringizeString(m_serviceProvider, "mdl3D"), mdl );
+			->registerDataflow( Helper::stringizeString(m_serviceProvider, "mdzModel"), mdl );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "mdl", Helper::stringizeString(m_serviceProvider, "mdl3D") );
+			->registerCodecExt( "mdz", Helper::stringizeString(m_serviceProvider, "mdzModel") );
 
         return true;
 	}
@@ -184,7 +184,7 @@ namespace Menge
 			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "aekMovie") );
 
 		DATA_SERVICE(m_serviceProvider)
-			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "mdl3D") );
+			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "mdzModel") );
 
 		delete this;
 	}

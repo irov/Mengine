@@ -1,14 +1,16 @@
 #	pragma once
 
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/Model3DInterface.h"
+
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
 #   include "ResourceImage.h"
+#	include "ResourceModel3D.h"
 
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
-
-#	include "../Interface/RenderSystemInterface.h"
 
 #	include "Camera3D.h"
 
@@ -21,9 +23,6 @@ namespace Menge
 	struct RenderMaterial;
 	struct RenderMaterialGroup;
 
-#	define MENGINE_MODEL_MAX_VERTEX 32
-#	define MENGINE_MODEL_MAX_INDECIES ((MENGINE_MODEL_MAX_VERTEX - 2) * 3)
-
 	class Model3D
 		: public Node
 		, public Animatable
@@ -33,22 +32,45 @@ namespace Menge
 		~Model3D();
 
 	public:
-		void setResourceImage( ResourceImage * _resourceImage );
-		ResourceImage * getResourceImage() const;
+		void setResourceModel3D( ResourceModel3D * _resourceImage );
+		ResourceModel3D * getResourceModel3D() const;
 
 	public:
 		void setBlendAdd( bool _value );
 		bool isBlendAdd() const;
 
-	public:
-		void setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex );
+	protected:
+		void _setTiming( float _timming ) override;
+		float _getTiming() const override;
+
+		void _setFirstFrame() override;
+		void _setLastFrame() override;
+
+		void _setReverse( bool _value ) override;
+
+	protected:
+		bool _play( float _time ) override;
+		bool _restart( float _time, size_t _enumerator ) override;
+		void _stop( size_t _enumerator ) override;
+		void _end( size_t _enumerator ) override;
+		bool _interrupt( size_t _enumerator ) override;
+
+	protected:
+		size_t getFrame_( float _timing, float & _delthaTiming ) const;
+		void updateCurrentFrame_();
+		void setCurrentFrame_( size_t _frame );
+
+	protected:
+		void _update( float _current, float _timing ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
+
+		bool _activate() override;
+		void _deactivate() override;
 
 	protected:
 		bool _compile() override;
 		void _release() override;
-
-		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
-
+				
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
 		void _invalidateWorldMatrix() override;
@@ -79,8 +101,11 @@ namespace Menge
 	protected:
 		inline const RenderVertex2D * getVerticesWM();
 
-	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
+	protected:		
+		ResourceHolder<ResourceModel3D> m_resourceModel;
+
+		float m_frameTiming;
+		size_t m_currentFrame;
 
 		bool m_blendAdd;
 		bool m_solid;
@@ -95,16 +120,11 @@ namespace Menge
 
 		Camera3D * m_camera;
 
-		mt::vec3f m_verticesLocal[MENGINE_MODEL_MAX_VERTEX];
+		const Model3DFrame * m_frame;
 		bool m_invalidateVerticesLocal;
-
-		mt::vec2f m_uvLocal[MENGINE_MODEL_MAX_VERTEX];
-		bool m_invalidateUVLocal;
 
 		RenderVertex2D m_verticesWM[MENGINE_MODEL_MAX_VERTEX];
 		bool m_invalidateVerticesWM;
-
-		uint16_t m_indices[MENGINE_MODEL_MAX_INDECIES];
 
 		size_t m_vertexCount;
 		size_t m_indicesCount;

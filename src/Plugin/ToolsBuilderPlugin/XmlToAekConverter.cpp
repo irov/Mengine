@@ -63,12 +63,12 @@ namespace Menge
 		options.outputFileName = Helper::stringizeString(serviceProvider, utf8_aekPath);
 		
 		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
-			->createConverter( Helper::stringizeString(serviceProvider, "binToAekMovie") );
+			->createConverter( Helper::stringizeString(serviceProvider, "xmlToAekMovie") );
 
 		if( converter == nullptr )
 		{
 			LOGGER_ERROR(serviceProvider)( "writeAek can't create convert '%s'\nfrom: %s\nto: %s\n"
-				, "binToAekMovie"
+				, "xmlToAekMovie"
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
 				);
@@ -81,7 +81,7 @@ namespace Menge
 		if( converter->convert() == false )
 		{
 			LOGGER_ERROR(serviceProvider)( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
-				, Helper::stringizeString(serviceProvider, "binToAekMovie").c_str()
+				, Helper::stringizeString(serviceProvider, "xmlToAekMovie").c_str()
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
 				);

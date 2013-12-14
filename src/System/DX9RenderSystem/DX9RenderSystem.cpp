@@ -2930,9 +2930,9 @@ namespace Menge
         mt::inv_m4( _viewMatrix, wm );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up )
+    void DX9RenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up )
     {
-        mt::make_lookat_m4( _viewMatrix, _eye, _at, _up );
+        mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::clear( uint32_t _color )

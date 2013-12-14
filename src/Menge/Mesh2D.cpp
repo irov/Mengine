@@ -21,9 +21,9 @@ namespace Menge
 		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
+		, m_shape(nullptr)
         , m_invalidateMaterial(true)
 		, m_invalidateVerticesLocal(true)
-		, m_invalidateUVLocal(true)
 		, m_invalidateVerticesWM(true)
 		, m_invalidateVerticesColor(true)
 		, m_vertexCount(0)
@@ -200,7 +200,7 @@ namespace Menge
         const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_indices, m_indicesCount );
+			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_shape->indices, m_indicesCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -248,7 +248,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_shape->uv[i];
 
 					float u = image_uv.x + (image_uv.z - image_uv.x) * uv.x;
 					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.y;
@@ -263,7 +263,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_shape->uv[i];
 
 					float u = image_uvAlpha.x + (image_uvAlpha.z - image_uvAlpha.x) * uv.x;
 					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.y;
@@ -279,7 +279,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_shape->uv[i];
 
 					float u = image_uv.z - (image_uv.z - image_uv.x) * uv.y;
 					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.x;
@@ -294,7 +294,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_shape->uv[i];
 
 					float u = image_uvAlpha.z - (image_uvAlpha.z - image_uvAlpha.x) * uv.y;
 					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.x;
@@ -366,27 +366,12 @@ namespace Menge
 		return m_blendAdd;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex )
+	void Mesh2D::setFrameShape( const MovieFrameShape * _shape )
 	{
-		if( _countVertex >= MENGINE_MESH_MAX_VERTEX || _countIndex >= MENGINE_MESH_MAX_INDECIES )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Mesh::setVerticies _countVertex %d >= %d or _countIndex %d >= %d"
-				, _countVertex
-				, MENGINE_MESH_MAX_VERTEX
-				, _countIndex
-				, MENGINE_MESH_MAX_INDECIES
-				);
+		m_shape = _shape;
 
-			return;
-		}
-
-		memcpy( m_verticesLocal, _position, sizeof(mt::vec3f) * _countVertex );
-		memcpy( m_uvLocal, _uv, sizeof(mt::vec2f) * _countVertex );
-
-		memcpy( m_indices, _indicies, sizeof(uint16_t) * _countIndex );
-
-		m_vertexCount = _countVertex;
-		m_indicesCount = _countIndex;
+		m_vertexCount = m_shape->vertexCount;
+		m_indicesCount = m_shape->indexCount;
 
 		this->invalidateVertices();
 		this->invalidateVerticesColor();
@@ -405,7 +390,7 @@ namespace Menge
 
 		for( size_t i = 0; i != m_vertexCount; ++i )
 		{
-			const mt::vec3f & pos = m_verticesLocal[i];
+			const mt::vec3f & pos = m_shape->pos[i];
 
 			mt::vec3f & wm_pos = m_verticesWM[i].pos;
 			mt::mul_v3_m4( wm_pos, pos, wm);

@@ -67,7 +67,7 @@
 #	include "MovieSceneEffect.h"
 #	include "MovieInternalObject.h"
 #   include "MovieEvent.h"
-#	include "Model.h"
+#	include "Model3D.h"
 #	include "Video.h"
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
@@ -107,7 +107,7 @@
 #	include "ResourceSound.h"
 #	include "ResourceTileMap.h"
 #	include "ResourceTileSet.h"
-#	include "ResourceModel.h"
+#	include "ResourceModel3D.h"
 //#	include "ResourceMeshMS3D.h"
 //#	include "ResourceMeshNoise.h"
 #	include "ResourceMaterial.h"
@@ -452,6 +452,8 @@ namespace Menge
         NODE_FACTORY( m_serviceProvider, MovieSceneEffect );
 		NODE_FACTORY( m_serviceProvider, MovieInternalObject );
         NODE_FACTORY( m_serviceProvider, MovieEvent );
+
+		NODE_FACTORY( m_serviceProvider, Model3D );
 		//NODE_FACTORY( Model );
 		NODE_FACTORY( m_serviceProvider, Video );
 		NODE_FACTORY( m_serviceProvider, Layer2D );
@@ -729,6 +731,7 @@ namespace Menge
         RESOURCE_FACTORY( m_serviceProvider, ResourceImageMultiplyRGBAndAlpha );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageSolid );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceMovie );
+		RESOURCE_FACTORY( m_serviceProvider, ResourceModel3D );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceVideo );
 		RESOURCE_FACTORY( m_serviceProvider, ResourcePlaylist );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceSound );
@@ -969,7 +972,6 @@ namespace Menge
 			m_console->proccessInput( _key, _char, _isDown );
 		}
 
-//#	ifndef MENGE_MASTER_RELEASE
 		if( m_developmentMode == true )
 		{
 			if( _key == KC_F6 && _isDown )
@@ -1088,8 +1090,6 @@ namespace Menge
 				printf("total %.3f:%.3f\n", total_now_mb, total_max_mb);
             }
 		}
-
-//#	endif
 
 		return m_game->handleKeyEvent( _point, _key, _char, _isDown );
 	}

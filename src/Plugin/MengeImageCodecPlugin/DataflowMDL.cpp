@@ -33,7 +33,7 @@ namespace Menge
 		size_t magic_header;
 		_stream->read( &magic_header, sizeof(magic_header) );
 
-		if( magic_header != 0x3D3DBABE )
+		if( magic_header != DATAFLOW_MAGIC_MDL )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "DataflowMDL::load: mdl invalid magic header"
 				);
@@ -87,21 +87,28 @@ namespace Menge
 
 		ar.begin();
 
-		size_t frameCount;
+		uint32_t frameCount;
 		ar >> frameCount;
 
-		size_t vertexCount;
+		uint32_t vertexCount;
 		ar >> vertexCount;
 
-		size_t indeciesCount;
-		ar >> indeciesCount;
+		uint32_t indicesCount;
+		ar >> indicesCount;
 
 		float frameDelay;
 		ar >> frameDelay;
 
+		float cameraFOV;
+		ar >> cameraFOV;
+
+		float cameraAspect;
+		ar >> cameraAspect;
+
 		Model3DPack * pack = m_poolModel3DPack.createObjectT();
 
-		pack->initialize( frameCount, vertexCount, indeciesCount, frameDelay );
+		pack->initialize( frameCount, vertexCount, indicesCount, frameDelay );
+		pack->setCamera( cameraFOV, cameraAspect );
 		
 		for( size_t i = 0; i != frameCount; ++i )
 		{
@@ -113,7 +120,7 @@ namespace Menge
 			ar.readPODs( frame.pos, vertexCount );
 			ar.readPODs( frame.uv, vertexCount );
 
-			ar.readPODs( frame.indecies, indeciesCount );
+			ar.readPODs( frame.indecies, indicesCount );
 		}
 
 		return pack;

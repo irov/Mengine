@@ -176,7 +176,7 @@ namespace Menge
 		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
 		void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf ) override;
 		void makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport ) override;
-        void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up ) override;
+        void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up ) override;
 
 		const RenderDebugInfo & getDebugInfo() const override;
 		void resetFrameCount() override;
@@ -203,9 +203,9 @@ namespace Menge
 		void batchRenderObjects_( RenderPass * _pass, size_t & _vbSize, size_t & _ibSize );
 		void batchRenderObject_( RenderObject * _renderObject, RenderObject ** _batchedObject, size_t & _vbSize, size_t & _ibSize ) const;
 		
-        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbSize, size_t & _ibSize );
-        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos );
-		void insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const;
+        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbSize, size_t & _ibSize );
+        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos ) const;
 		void flushRender_();
 		void prepare2D_();
 

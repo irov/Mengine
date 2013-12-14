@@ -43,6 +43,7 @@ namespace Menge
 		virtual size_t getIndicesCount() const = 0;
 		virtual float getCameraFOV() const = 0;
 		virtual float getCameraAspect() const = 0;
+		virtual float getCameraRightSign() const = 0;
 
 	public:
 		virtual float getFrameDelay() const = 0;

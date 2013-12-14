@@ -10,6 +10,7 @@ namespace Menge
 		, m_frameDelay(0.f)
 		, m_cameraFOV(0.f)
 		, m_cameraAspect(0.f)
+		, m_cameraRightSign(1.f)
 	{		
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -24,10 +25,11 @@ namespace Menge
         m_model3DFrames.resize( _frameCount );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Model3DPack::setCamera( float _fov, float _aspect )
+	void Model3DPack::setCamera( float _fov, float _aspect, float _rightSign )
 	{
 		m_cameraFOV = _fov;
 		m_cameraAspect = _aspect;
+		m_cameraRightSign = _rightSign;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Model3DFrame & Model3DPack::mutableFrame( size_t _frameId )
@@ -60,6 +62,11 @@ namespace Menge
 	float Model3DPack::getCameraAspect() const
 	{
 		return m_cameraAspect;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Model3DPack::getCameraRightSign() const
+	{
+		return m_cameraRightSign;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Model3DPack::getFrameDelay() const

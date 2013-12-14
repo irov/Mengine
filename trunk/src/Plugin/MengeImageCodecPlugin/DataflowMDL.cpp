@@ -105,10 +105,13 @@ namespace Menge
 		float cameraAspect;
 		ar >> cameraAspect;
 
+		float cameraRightSign;
+		ar >> cameraRightSign;
+
 		Model3DPack * pack = m_poolModel3DPack.createObjectT();
 
 		pack->initialize( frameCount, vertexCount, indicesCount, frameDelay );
-		pack->setCamera( cameraFOV, cameraAspect );
+		pack->setCamera( cameraFOV, cameraAspect, cameraRightSign );
 		
 		for( size_t i = 0; i != frameCount; ++i )
 		{

@@ -466,11 +466,11 @@ namespace Menge
 
 				size_t shapeIndicesCount = shape_indices.size();
 
-				if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDECIES )
+				if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 				{
 					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ index overflow %d (max $d)"
 						, shapeIndicesCount
-						, MENGINE_MOVIE_SHAPE_MAX_INDECIES
+						, MENGINE_MOVIE_SHAPE_MAX_INDICES
 						);
 
 					return false;
@@ -497,7 +497,7 @@ namespace Menge
 
 				for( size_t i = 0; i != shapeIndicesCount; ++i )
 				{
-					uint16_t & indices = shape.indecies[i];
+					uint16_t & indices = shape.indices[i];
 
 					indices = shape_indices[i];
 				}							
@@ -534,7 +534,7 @@ namespace Menge
 
 					aw << shape.indexCount;
 
-					aw.writePODs( shape.indecies, shape.indexCount );
+					aw.writePODs( shape.indices, shape.indexCount );
 				}
 			}
 		}

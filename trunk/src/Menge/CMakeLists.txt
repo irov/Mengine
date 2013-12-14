@@ -210,6 +210,12 @@ Resource\\\\Movie
 )
 
 ADD_FILTER(
+Resource\\\\Model3D
+	ResourceModel3D.cpp
+	ResourceModel3D.h
+)
+
+ADD_FILTER(
 Resource\\\\InternalObject
 	ResourceInternalObject.cpp
 	ResourceInternalObject.h

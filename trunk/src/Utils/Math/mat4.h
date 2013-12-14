@@ -114,7 +114,7 @@ namespace mt
 	MATH_FUNCTION_INLINE void make_scale_m4( mat4f & _out, float _x, float _y, float _z );
 	MATH_FUNCTION_INLINE void make_translation_m4( mat4f & _out, float _x, float _y, float _z );
 
-	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at, const vec3f & _up );
+	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up );
 
 	MATH_FUNCTION_INLINE void project_m4( vec3f & _out, const vec3f & _vertex, float _width, float _height, const mat4f & _projection, const mat4f & _view, const mat4f & _world );
 }

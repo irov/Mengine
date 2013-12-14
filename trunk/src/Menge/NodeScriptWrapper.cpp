@@ -28,6 +28,7 @@
 
 #	include "ResourceMovie.h"
 #	include "ResourceAnimation.h"
+#	include "ResourceModel3D.h"
 #	include "ResourceVideo.h"
 #	include "ResourceSound.h"
 #   include "ResourceImageSolid.h"
@@ -55,6 +56,7 @@
 #   include "MovieSlot.h"
 #	include "MovieInternalObject.h"
 #	include "Animation.h"
+#	include "Model3D.h"
 #	include "HotSpot.h"
 #	include "HotSpotImage.h"
 #   include "HotSpotShape.h"
@@ -2738,6 +2740,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieSlot );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Model3D );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
         //SCRIPT_CLASS_WRAPPING( TilePolygon );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Video );
@@ -2762,6 +2765,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageDefault );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceAnimation );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceModel3D );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceVideo );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceSound );
 
@@ -3171,6 +3175,9 @@ namespace Menge
 
         pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)
             ;            
+
+		pybind::interface_<ResourceModel3D, pybind::bases<ResourceReference> >("ResourceModel3D", false)
+			;
 
         pybind::interface_<ResourceVideo, pybind::bases<ResourceReference> >("ResourceVideo", false)
             ;            
@@ -3622,6 +3629,13 @@ namespace Menge
                         .def( "getCurrentFrame", &Animation::getCurrentFrame )
                         ;
                 }
+
+				{
+					pybind::interface_<Model3D, pybind::bases<Node, Animatable> >("Model3D", false)
+						.def( "setResourceModel3D", &Model3D::setResourceModel3D )
+						.def( "getResourceModel3D", &Model3D::getResourceModel3D )
+						;
+				}
 
                 //pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
                 //	.def( "applyForce", &RigidBody2D::applyForce )

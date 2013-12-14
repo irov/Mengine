@@ -93,6 +93,7 @@ SET( APPLICATION_LIBS
     Logger
     Core
     Codec
+    Archive
     )
 
 SET( APPLICATION_LIB_PATHS

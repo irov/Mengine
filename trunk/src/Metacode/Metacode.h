@@ -2171,6 +2171,143 @@ namespace Metacode
             mutable Menge::ConstString Internal_Name;
         };
         
+        class Meta_ResourceModel3D
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceModel3D();
+        
+        public:
+            unsigned int getId() const override;
+        public:
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
+            }
+            
+            bool get_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Converter;
+            
+                return true;
+            }
+            
+            bool swap_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Converter);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Converter( C * _self, M _method )
+            {
+                if( File_Converter_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Converter );
+            }
+            
+            bool has_File_Dataflow() const
+            {
+                return File_Dataflow_successful;
+            }
+            
+            bool get_File_Dataflow( Menge::ConstString & _value ) const
+            {
+                if( File_Dataflow_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Dataflow;
+            
+                return true;
+            }
+            
+            bool swap_File_Dataflow( Menge::ConstString & _value ) const
+            {
+                if( File_Dataflow_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Dataflow);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Dataflow( C * _self, M _method )
+            {
+                if( File_Dataflow_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Dataflow );
+            }
+            
+            const Menge::ConstString & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+            template<class C, class M>
+            void method_File_Path( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_Path );
+            }
+            
+            const Menge::ConstString & get_Image_Resource() const
+            {
+                return this->Image_Resource;
+            }
+            
+            void swap_Image_Resource( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Image_Resource);
+            }
+            
+            template<class C, class M>
+            void method_Image_Resource( C * _self, M _method )
+            {
+                (_self->*_method)( this->Image_Resource );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+        public:
+        protected:
+        protected:
+            bool File_Converter_successful;
+            mutable Menge::ConstString File_Converter;
+            bool File_Dataflow_successful;
+            mutable Menge::ConstString File_Dataflow;
+            mutable Menge::ConstString File_Path;
+            mutable Menge::ConstString Image_Resource;
+        };
+        
         class Meta_ResourceMovie
             : public Meta_Resource
         { 

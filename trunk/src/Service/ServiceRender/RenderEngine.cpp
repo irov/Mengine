@@ -705,10 +705,10 @@ namespace Menge
             ->makeViewMatrixFromViewport( _viewMatrix, _viewport );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up )
+    void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up )
     {
         RENDER_SYSTEM(m_serviceProvider)
-            ->makeViewMatrixLookAt( _viewMatrix, _eye, _at, _up );
+            ->makeViewMatrixLookAt( _viewMatrix, _eye, _dir, _up );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderDebugInfo& RenderEngine::getDebugInfo() const
@@ -951,37 +951,37 @@ namespace Menge
         , const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , const RenderVertex2D * _vertices, size_t _verticesNum )
     {
-		size_t indeciesNum = (_verticesNum / 4) * 6;
+		size_t indicesNum = (_verticesNum / 4) * 6;
 
-        if( indeciesNum >= MENGINE_RENDER_INDICES_QUAD )
+        if( indicesNum >= MENGINE_RENDER_INDICES_QUAD )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderQuad count %d > max count %d"
-                , indeciesNum
+                , indicesNum
                 , MENGINE_RENDER_INDICES_QUAD
                 );
 
             return;
         }
 
-        this->addRenderObject( _viewport, _camera, _material, _textures, _texturesNum, PT_TRIANGLELIST, _vertices, _verticesNum, m_indicesQuad, indeciesNum );
+        this->addRenderObject( _viewport, _camera, _material, _textures, _texturesNum, PT_TRIANGLELIST, _vertices, _verticesNum, m_indicesQuad, indicesNum );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
         , const RenderVertex2D * _vertices, size_t _verticesNum )
     {
-		size_t indeciesNum = _verticesNum;
+		size_t indicesNum = _verticesNum;
 
-        if( indeciesNum >= MENGINE_RENDER_INDICES_LINE )
+        if( indicesNum >= MENGINE_RENDER_INDICES_LINE )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderLine count %d > max count %d"
-                , indeciesNum
+                , indicesNum
                 , MENGINE_RENDER_INDICES_LINE
                 );
 
             return;
         }
 		
-        this->addRenderObject( _viewport, _camera, _material, _textures, _texturesNum, PT_LINELIST, _vertices, _verticesNum, m_indicesLine, indeciesNum );
+        this->addRenderObject( _viewport, _camera, _material, _textures, _texturesNum, PT_LINELIST, _vertices, _verticesNum, m_indicesLine, indicesNum );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setDebugMaterial( const RenderMaterial * _debugMaterial )
@@ -1166,7 +1166,7 @@ namespace Menge
 
         if( ibSize >= m_maxIndexCount )
         {
-            LOGGER_WARNING(m_serviceProvider)("RenderEngine::makeBatches_: indecies buffer overflow"
+            LOGGER_WARNING(m_serviceProvider)("RenderEngine::makeBatches_: indices buffer overflow"
                 );
 
             return false;
@@ -1204,17 +1204,17 @@ namespace Menge
 
         if( ibData == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to lock indecies buffer"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to lock indices buffer"
                 );
 
             return false;
         }
 
-        uint16_t * indeciesBuffer = static_cast<uint16_t *>(ibData);
+        uint16_t * indicesBuffer = static_cast<uint16_t *>(ibData);
 
 		size_t vbInsertSize;
 		size_t ibInsertSize;
-        this->insertRenderPasses_( vertexBuffer, indeciesBuffer, vbInsertSize, ibInsertSize );
+        this->insertRenderPasses_( vertexBuffer, indicesBuffer, vbInsertSize, ibInsertSize );
 
         if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( m_ibHandle2D ) == false )
         {
@@ -1318,7 +1318,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbSize, size_t & _ibSize )
+    void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbSize, size_t & _ibSize )
     {
         size_t vbPos = 0;
         size_t ibPos = 0;
@@ -1331,14 +1331,14 @@ namespace Menge
         {
             RenderPass * pass = &(*it);
 
-            this->insertRenderObjects_( pass, _vertexBuffer, _indeciesBuffer, vbPos, ibPos );
+            this->insertRenderObjects_( pass, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
         }
 
 		_vbSize = vbPos;
 		_ibSize = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos )
+    void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
     {
         TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
         TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
@@ -1347,11 +1347,11 @@ namespace Menge
         {
             RenderObject * ro = it_begin;
 
-            this->insertRenderObject_( ro, _vertexBuffer, _indeciesBuffer, _vbPos, _ibPos );            
+            this->insertRenderObject_( ro, _vertexBuffer, _indicesBuffer, _vbPos, _ibPos );            
         }        
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indeciesBuffer, size_t & _vbPos, size_t & _ibPos ) const
+    void RenderEngine::insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos ) const
     {   
         _renderObject->startIndex = _ibPos;
         _renderObject->minIndex = _vbPos;
@@ -1359,10 +1359,10 @@ namespace Menge
         RenderVertex2D * offsetVertexBuffer = _vertexBuffer + _vbPos;
         memcpy( offsetVertexBuffer, _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) );
         
-        uint16_t * offsetIndeciesBuffer = _indeciesBuffer + _ibPos;
+        uint16_t * offsetIndicesBuffer = _indicesBuffer + _ibPos;
         
-        uint16_t * src = offsetIndeciesBuffer;
-        uint16_t * src_end = offsetIndeciesBuffer + _renderObject->indicesNum;
+        uint16_t * src = offsetIndicesBuffer;
+        uint16_t * src_end = offsetIndicesBuffer + _renderObject->indicesNum;
         const uint16_t * dst = _renderObject->indicesData;
 
         while( src != src_end )

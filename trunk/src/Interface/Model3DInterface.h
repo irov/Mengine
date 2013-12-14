@@ -15,19 +15,20 @@
 
 namespace Menge
 {
-	const size_t DATAFLOW_VERSION_MDL = 1;
+	const uint32_t DATAFLOW_MAGIC_MDL = 0x3D3DBABE;
+	const uint32_t DATAFLOW_VERSION_MDL = 1;
 
-#	define MENGINE_MOVIE_MODEL_MAX_VERTEX 64
-#	define MENGINE_MOVIE_MODEL_MAX_INDECIES ((MENGINE_MOVIE_MODEL_MAX_VERTEX - 2) * 3)
+#	define MENGINE_MODEL_MAX_VERTEX 64
+#	define MENGINE_MODEL_MAX_INDICES ((MENGINE_MODEL_MAX_VERTEX - 2) * 3)
 
 	struct Model3DFrame
 	{
-		mt::vec3f cameraPos; 
+		mt::vec3f cameraPos;
 		mt::vec3f cameraDir;
 
-		mt::vec3f pos[MENGINE_MOVIE_MODEL_MAX_VERTEX];
-		mt::vec2f uv[MENGINE_MOVIE_MODEL_MAX_VERTEX];
-		uint16_t indecies[MENGINE_MOVIE_MODEL_MAX_INDECIES];
+		mt::vec3f pos[MENGINE_MODEL_MAX_VERTEX];
+		mt::vec2f uv[MENGINE_MODEL_MAX_VERTEX];
+		uint16_t indecies[MENGINE_MODEL_MAX_INDICES];
 	};
 
 	typedef std::vector<Model3DFrame> TVectorModel3DFrames;
@@ -39,12 +40,14 @@ namespace Menge
 		virtual size_t getFrameCount() const = 0;
 		virtual size_t getVertexCount() const = 0;
 		virtual size_t getIndicesCount() const = 0;
+		virtual float getCameraFOV() const = 0;
+		virtual float getCameraAspect() const = 0;
 
 	public:
 		virtual float getFrameDelay() const = 0;
 
 	public:
-		virtual const Model3DFrame & getFrame( size_t _frameId ) const = 0; 
+		virtual const Model3DFrame * getFrame( size_t _frameId ) const = 0; 
 	};
 
 	typedef stdex::intrusive_ptr<Model3DInterface> Model3DInterfacePtr;

@@ -776,14 +776,10 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 
-	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at, const vec3f & _up )
+	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up )
 	{
-		//zaxis = normal(At - Eye)
-		vec3f look;
-		sub_v3_v3( look, _at, _eye );
-	
 		vec3f zaxis;
-		norm_v3( zaxis, look );
+		norm_v3( zaxis, _dir );
 
 		//xaxis = normal(cross(Up, zaxis))
 		vec3f xaxis;

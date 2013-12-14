@@ -1,5 +1,8 @@
 #	pragma once
 
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/MovieKeyFrameInterface.h"
+
 #	include "Kernel/Node.h"
 
 #   include "ResourceImage.h"
@@ -7,7 +10,6 @@
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
 
-#	include "../Interface/RenderSystemInterface.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
@@ -18,9 +20,6 @@ namespace Menge
 	struct RenderMaterial;
 	struct RenderMaterialGroup;
 	
-#	define MENGINE_MESH_MAX_VERTEX 32
-#	define MENGINE_MESH_MAX_INDECIES ((MENGINE_MESH_MAX_VERTEX - 2) * 3)
-
 	class Mesh2D
 		: public Node
 	{
@@ -37,7 +36,7 @@ namespace Menge
 		bool isBlendAdd() const;
 
 	public:
-		void setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex );
+		void setFrameShape( const MovieFrameShape * _shape );
 
 	protected:
 		bool _compile() override;
@@ -89,16 +88,11 @@ namespace Menge
 		size_t m_texturesNum;
 		RenderTextureInterfacePtr m_textures[2];
 
-		mt::vec3f m_verticesLocal[MENGINE_MESH_MAX_VERTEX];
+		const MovieFrameShape * m_shape;
 		bool m_invalidateVerticesLocal;
 
-		mt::vec2f m_uvLocal[MENGINE_MESH_MAX_VERTEX];
-		bool m_invalidateUVLocal;
-
-		RenderVertex2D m_verticesWM[MENGINE_MESH_MAX_VERTEX];
+		RenderVertex2D m_verticesWM[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		bool m_invalidateVerticesWM;
-
-		uint16_t m_indices[MENGINE_MESH_MAX_INDECIES];
 
 		size_t m_vertexCount;
 		size_t m_indicesCount;

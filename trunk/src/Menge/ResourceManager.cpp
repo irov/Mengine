@@ -178,7 +178,7 @@ namespace Menge
                 return false;
             }
 
-            if( resource->_loader( meta_resource ) == false )
+            if( resource->loader( meta_resource ) == false )
             {
                 LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid load"
                     , name.c_str()
@@ -188,6 +188,7 @@ namespace Menge
                 continue;
             }
             
+#	ifndef MENGE_MASTER_RELEASE
             if( resource->convert() == false )
             {
                 LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid convert"
@@ -197,6 +198,7 @@ namespace Menge
 
                 continue;
             }
+#	endif
         }
 
         return true;

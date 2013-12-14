@@ -47,13 +47,13 @@ namespace Menge
 	typedef std::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
 
 #	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 32
-#	define MENGINE_MOVIE_SHAPE_MAX_INDECIES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
+#	define MENGINE_MOVIE_SHAPE_MAX_INDICES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
 
 	struct MovieFrameShape
 	{
 		mt::vec3f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		uint16_t indecies[MENGINE_MOVIE_SHAPE_MAX_INDECIES];
+		uint16_t indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
 
 		size_t vertexCount;
 		size_t indexCount;

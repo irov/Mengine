@@ -2,8 +2,9 @@
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
+#	include "Interface/NodeInterface.h"
 
-#	include "ResourceImage.h"
+#	include "Camera3D.h"
 
 #	include "Consts.h"
 
@@ -21,13 +22,15 @@ namespace Menge
 		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
+		, m_frame(nullptr)
 		, m_invalidateMaterial(true)
 		, m_invalidateVerticesLocal(true)
-		, m_invalidateUVLocal(true)
 		, m_invalidateVerticesWM(true)
 		, m_invalidateVerticesColor(true)
 		, m_vertexCount(0)
 		, m_indicesCount(0)
+		, m_frameTiming(0)
+		, m_currentFrame(0)
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,57 +55,85 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::compileResource_()
 	{
-		if( m_resourceImage == nullptr )
+		if( m_resourceModel == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource null"
+			LOGGER_ERROR(m_serviceProvider)( "Model3D::compileResource_ '%s' image resource null"
 				, m_name.c_str() 
 				);
 
 			return false;
 		}
 
-		if( m_resourceImage.compile() == false )
+		if( m_resourceModel.compile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource %s not compile"
+			LOGGER_ERROR(m_serviceProvider)( "Model3D::compileResource_ '%s' model resource %s not compile"
 				, m_name.c_str() 
-				, m_resourceImage->getName().c_str()
+				, m_resourceModel->getName().c_str()
 				);
 
 			return false;
 		}
+
+		const Model3DInterfacePtr & model = m_resourceModel->getModel();
+
+		m_camera = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Camera3D>( CONST_STRING(m_serviceProvider, Camera3D) );
+
+		const ConstString & name = this->getName();
+		m_camera->setName( name );
+
+		float cameraFOV = model->getCameraFOV();
+		float cameraAspect = model->getCameraAspect();
+
+		m_camera->setCameraFOV( cameraFOV );
+		m_camera->setCameraAspect( cameraAspect );
+
+		this->addChildren( m_camera );
+		this->setRenderCamera( m_camera );
+
+		m_vertexCount = model->getVertexCount();
+		m_indicesCount = model->getIndicesCount();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::_release()
 	{
-		m_resourceImage.release();
+		m_resourceModel.release();
+
+		if( m_camera != nullptr )
+		{
+			m_camera->destroy();
+			m_camera = nullptr;
+		}
 
 		m_textures[0] = nullptr;
 		m_textures[1] = nullptr;
 
 		m_materialGroup = nullptr;
 		m_material = nullptr;
+
+		m_frame = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::setResourceImage( ResourceImage * _resourceImage )
+	void Model3D::setResourceModel3D( ResourceModel3D * _resourceModel )
 	{
-		if( m_resourceImage == _resourceImage )
+		if( m_resourceModel == _resourceModel )
 		{
 			return;
 		}
 
-		m_resourceImage = _resourceImage;
+		m_resourceModel = _resourceModel;
 
 		this->recompile();
 
-		//this->invalidateVertices_();
+		this->invalidateVertices();
 		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * Model3D::getResourceImage() const
-	{        
-		return m_resourceImage;
+	ResourceModel3D * Model3D::getResourceModel3D() const
+	{
+		return m_resourceModel;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::updateResource_()
@@ -116,8 +147,10 @@ namespace Menge
 		//const mt::vec4f & uvAlpha = m_resourceImage->getUVAlpha();
 		//this->setUV2( uvAlpha );
 
-		m_textures[0] = m_resourceImage->getTexture();
-		m_textures[1] = m_resourceImage->getTextureAlpha();
+		const ResourceImage * resourceImage =  m_resourceModel->getResourceImage();
+
+		m_textures[0] = resourceImage->getTexture();
+		m_textures[1] = resourceImage->getTextureAlpha();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::invalidateMaterial()
@@ -129,11 +162,13 @@ namespace Menge
 	{
 		m_invalidateMaterial = false;
 
-		const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
+		const ResourceImage * resourceImage =  m_resourceModel->getResourceImage();
+
+		const RenderTextureInterfacePtr & textureAlpha = resourceImage->getTextureAlpha();
 
 		if( textureAlpha != nullptr )
 		{
-			if( m_resourceImage->isAlpha() == true || m_solid == false )
+			if( resourceImage->isAlpha() == true || m_solid == false )
 			{
 				m_texturesNum = 2;
 
@@ -159,7 +194,7 @@ namespace Menge
 		{
 			m_texturesNum = 1;
 
-			if( m_resourceImage->isAlpha() == true || m_solid == false )
+			if( resourceImage->isAlpha() == true || m_solid == false )
 			{
 				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
 					->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
@@ -171,8 +206,8 @@ namespace Menge
 			}
 		}
 
-		bool wrapX = m_resourceImage->isWrapX();
-		bool wrapY = m_resourceImage->isWrapY();
+		bool wrapX = resourceImage->isWrapX();
+		bool wrapY = resourceImage->isWrapY();
 
 		ETextureAddressMode textureU = wrapX ? TAM_WRAP : TAM_CLAMP;
 		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
@@ -191,7 +226,7 @@ namespace Menge
 	{
 		Node::_render( _viewport, _camera );
 
-		if( m_vertexCount == 0 )
+		if( m_frame == nullptr )
 		{
 			return;
 		}
@@ -200,7 +235,26 @@ namespace Menge
 		const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_indices, m_indicesCount );
+			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_frame->indecies, m_indicesCount );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Model3D::_activate()
+	{
+		this->setTiming( 0.f );
+
+		if( Node::_activate() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_deactivate()
+	{
+		this->stop();
+
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -238,9 +292,11 @@ namespace Menge
 	{
 		m_invalidateVerticesLocal = false;
 
-		const mt::vec4f & image_uv = m_resourceImage->getUVImage();
-		const mt::vec4f & image_uvAlpha = m_resourceImage->getUVAlpha();
-		bool uvRotate = m_resourceImage->isUVRotate();
+		const ResourceImage * resourceImage =  m_resourceModel->getResourceImage();
+
+		const mt::vec4f & image_uv = resourceImage->getUVImage();
+		const mt::vec4f & image_uvAlpha = resourceImage->getUVAlpha();
+		bool uvRotate = resourceImage->isUVRotate();
 
 		if( uvRotate == false )
 		{
@@ -248,7 +304,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_frame->uv[i];
 
 					float u = image_uv.x + (image_uv.z - image_uv.x) * uv.x;
 					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.y;
@@ -263,7 +319,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_frame->uv[i];
 
 					float u = image_uvAlpha.x + (image_uvAlpha.z - image_uvAlpha.x) * uv.x;
 					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.y;
@@ -279,7 +335,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_frame->uv[i];
 
 					float u = image_uv.z - (image_uv.z - image_uv.x) * uv.y;
 					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.x;
@@ -294,7 +350,7 @@ namespace Menge
 			{
 				for( size_t i = 0; i != m_vertexCount; ++i )
 				{
-					const mt::vec2f & uv = m_uvLocal[i];
+					const mt::vec2f & uv = m_frame->uv[i];
 
 					float u = image_uvAlpha.z - (image_uvAlpha.z - image_uvAlpha.x) * uv.y;
 					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.x;
@@ -365,32 +421,6 @@ namespace Menge
 		return m_blendAdd;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::setVerticies( const mt::vec3f * _position, const mt::vec2f * _uv, size_t _countVertex, const uint16_t * _indicies, size_t _countIndex )
-	{
-		if( _countVertex >= MENGINE_MODEL_MAX_VERTEX || _countIndex >= MENGINE_MODEL_MAX_INDECIES )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Mesh::setVerticies _countVertex %d >= %d or _countIndex %d >= %d"
-				, _countVertex
-				, MENGINE_MODEL_MAX_VERTEX
-				, _countIndex
-				, MENGINE_MODEL_MAX_INDECIES
-				);
-
-			return;
-		}
-
-		memcpy( m_verticesLocal, _position, sizeof(mt::vec3f) * _countVertex );
-		memcpy( m_uvLocal, _uv, sizeof(mt::vec2f) * _countVertex );
-
-		memcpy( m_indices, _indicies, sizeof(uint16_t) * _countIndex );
-
-		m_vertexCount = _countVertex;
-		m_indicesCount = _countIndex;
-
-		this->invalidateVertices();
-		this->invalidateVerticesColor();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Model3D::updateVerticesWM()
 	{
 		m_invalidateVerticesWM = false;
@@ -404,10 +434,309 @@ namespace Menge
 
 		for( size_t i = 0; i != m_vertexCount; ++i )
 		{
-			const mt::vec3f & pos = m_verticesLocal[i];
+			const mt::vec3f & pos = m_frame->pos[i];
 
 			mt::vec3f & wm_pos = m_verticesWM[i].pos;
 			mt::mul_v3_m4( wm_pos, pos, wm);
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_update( float _current, float _timing )
+	{
+		if( this->isPlay() == false )
+		{
+			return; 
+		}
+
+		if( m_playTime > _current )
+		{
+			float deltha = m_playTime - _current;
+			_timing -= deltha;
+		}
+
+		const Model3DInterfacePtr & model = m_resourceModel->getModel();
+
+		size_t frameCount = model->getFrameCount();
+		float frameDelay = model->getFrameDelay();
+		
+		float speedFactor = this->getSpeedFactor();
+		float scretch = this->getScretch();
+		m_frameTiming += _timing * speedFactor / scretch;
+		
+		size_t lastFrame = m_currentFrame;
+
+		if( m_currentFrame != frameCount )
+		{
+			while( m_frameTiming >= frameDelay )
+			{
+				m_frameTiming -= frameDelay;
+
+				++m_currentFrame;
+
+				if( m_currentFrame == frameCount )
+				{
+					if( this->getLoop() == true )
+					{
+						this->setTiming( m_frameTiming );                                   
+					}
+					else
+					{
+						if( --m_playIterator == 0 )
+						{
+							m_currentFrame = frameCount - 1;
+							this->updateCurrentFrame_();
+
+							m_frameTiming = 0.f;
+
+							lastFrame = m_currentFrame;
+
+							this->end();
+
+							break;
+						}
+						else
+						{
+							this->setTiming( m_frameTiming );
+						}					
+					}
+
+					lastFrame = m_currentFrame;
+				}           
+			}
+		}
+
+		if( lastFrame != m_currentFrame )
+		{
+			this->updateCurrentFrame_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::updateCurrentFrame_()
+	{
+		const Model3DInterfacePtr & model = m_resourceModel->getModel();
+
+		m_frame = model->getFrame( m_currentFrame );
+
+		m_camera->setCameraPosition( m_frame->cameraPos );
+		m_camera->setCameraDir( m_frame->cameraDir );
+
+		this->invalidateVertices();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Model3D::_play( float _time )
+	{
+		(void)_time;
+
+		if( this->isActivate() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Model3D: '%s' play not activate"
+				, getName().c_str()
+				);
+
+			return false;
+		}
+
+		m_playIterator = this->getPlayCount();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Model3D::_restart( float _time, size_t _enumerator )
+	{
+		(void)_time;
+		(void)_enumerator;
+
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+
+		m_playIterator = this->getPlayCount();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_stop( size_t _enumerator )
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' stop not activate"
+				, getName().c_str()
+				);
+
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_end( size_t _enumerator )
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' end not activate"
+				, getName().c_str()
+				);
+
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t Model3D::getFrame_( float _timing, float & _delthaTiming ) const
+	{
+		if( _timing <= 0.f )
+		{
+			_delthaTiming = _timing;
+
+			return 0;
+		}
+
+		const Model3DInterfacePtr & model = m_resourceModel->getModel();
+
+		size_t frameCount = model->getFrameCount();
+		float frameDelay = model->getFrameDelay();
+
+		float duration = frameCount * frameDelay;
+
+		if( _timing >= duration )
+		{
+			_timing -= floorf( _timing / duration ) * duration;
+
+			if( fabsf(_timing) < 0.0001f )
+			{
+				_delthaTiming = 0.f;
+
+				return 0;
+			}
+		}
+		
+		for( size_t frame = 0; frame != frameCount; ++frame )
+		{
+			_timing -= frameDelay;
+
+			if( _timing < 0.f )
+			{
+				_delthaTiming = _timing + frameDelay;
+
+				return frame;
+			}
+		}
+
+		return frameCount - 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_setFirstFrame()
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation._setFirstFrame: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		size_t firstFrame = 0;
+
+		this->setCurrentFrame_( firstFrame );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::setCurrentFrame_( size_t _frame )
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Model3D.setCurrentFrame: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		const Model3DInterfacePtr & model = m_resourceModel->getModel();
+
+		size_t frameCount = model->getFrameCount();
+				
+		if( _frame >= frameCount )	
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Model3D.setCurrentFrame: '%s' _frame(%d) >= frameCount(%d)"
+				, m_name.c_str()
+				, _frame
+				, frameCount
+				);
+
+			return;
+		}
+
+		m_currentFrame = _frame;
+		m_frameTiming = 0.f;
+
+		this->updateCurrentFrame_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_setLastFrame()
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation._setLastFrame: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		const Model3DInterfacePtr & model = m_resourceModel->getModel();
+
+		size_t frameCount = model->getFrameCount();
+
+		size_t lastFrame = frameCount - 1;
+
+		this->setCurrentFrame_( lastFrame );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_setReverse( bool _value )
+	{
+		(void)_value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model3D::_setTiming( float _timing )
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation._setTiming: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		m_currentFrame = this->getFrame_( _timing, m_frameTiming );
+
+		this->updateCurrentFrame_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Model3D::_getTiming() const
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "Animation._getTiming: '%s' not activate"
+				, m_name.c_str()
+				);
+
+			return 0.f;
+		}
+
+		const Model3DInterfacePtr & model = m_resourceModel->getModel();
+
+		float frameDelay = model->getFrameDelay();
+
+		float timing = m_currentFrame * frameDelay + m_frameTiming;
+
+		return timing; 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Model3D::_interrupt( size_t _enumerator )
+	{
+		(void)_enumerator;
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

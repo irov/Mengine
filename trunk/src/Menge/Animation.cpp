@@ -282,7 +282,7 @@ namespace	Menge
 		}
 
 		size_t count = m_resourceAnimation->getSequenceCount();
-				 
+
 		for( size_t frame = 0; frame != count; ++frame )
 		{
 			float delay = m_resourceAnimation->getSequenceDelay( frame );
@@ -296,7 +296,7 @@ namespace	Menge
 				return frame;
 			}
 		}
-		
+
 		return count - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////

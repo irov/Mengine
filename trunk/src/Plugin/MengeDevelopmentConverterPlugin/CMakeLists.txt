@@ -18,6 +18,8 @@ src
 	ParticleConverterPTCToPTZ.h    
     MovieKeyConverterXMLToAEK.cpp
     MovieKeyConverterXMLToAEK.h
+    ModelConverterMDLToMDZ.cpp
+    ModelConverterMDLToMDZ.h
 )
 
 INCLUDE_DIRECTORIES(

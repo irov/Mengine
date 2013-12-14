@@ -14,7 +14,8 @@ namespace Menge
 		: m_invalidateMatrix(true)
 		, m_notifyChangeWindowResolution(nullptr)
         , m_cameraPosition(0.f, 0.f, 0.f)
-        , m_cameraInterest(0.f, 0.f, 0.f)
+        , m_cameraDir(1.f, 0.f, 0.f)
+		, m_cameraUp(0.f, 1.f, 0.f)
         , m_cameraFOV(0.f)
         , m_cameraAspect(0.f)
 	{
@@ -56,9 +57,9 @@ namespace Menge
         this->invalidateMatrix_();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::setCameraInterest( const mt::vec3f & _pos )
+	void Camera3D::setCameraDir( const mt::vec3f & _dir )
 	{
-		m_cameraInterest = _pos;
+		m_cameraDir = _dir;
 
 		this->invalidateMatrix_();
 	}
@@ -98,11 +99,14 @@ namespace Menge
         mt::vec3f wm_position;
         mt::mul_v3_m4(wm_position, m_cameraPosition, wm);
 
-        mt::vec3f wm_interest;
-        mt::mul_v3_m4(wm_interest, m_cameraInterest, wm);
+        mt::vec3f wm_direction;
+        mt::mul_v3_m4_r(wm_direction, m_cameraDir, wm);
+
+		mt::vec3f wm_up;
+		mt::mul_v3_m4_r(wm_up, m_cameraUp, wm);
         
         RENDER_SERVICE(m_serviceProvider)
-            ->makeViewMatrixLookAt( m_viewMatrixWM, wm_position, wm_interest, mt::vec3f(0.f, 1.f, 0.f) );
+            ->makeViewMatrixLookAt( m_viewMatrixWM, wm_position, wm_direction, wm_up );
 
 		float tangent = tanf(m_cameraFOV * 0.5f);
 		float height = 2.f * 1.f * tangent;

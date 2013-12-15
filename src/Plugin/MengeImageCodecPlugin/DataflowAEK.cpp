@@ -1,8 +1,9 @@
 #	include "DataflowAEK.h"
 
 #	include "Interface/ArchiveInterface.h"
+#	include "Interface/CacheInterface.h"
 
-#	include "Archive/ArchiveRead.hpp"
+#	include "Core/BlobjectRead.h"
 
 #	include "Logger/Logger.h"
 
@@ -56,26 +57,27 @@ namespace Menge
 			return nullptr;
 		}
 
-		size_t binary_aek_size;
-		_stream->read( &binary_aek_size, sizeof(binary_aek_size) );
+		size_t binary_size;
+		_stream->read( &binary_size, sizeof(binary_size) );
 
 		size_t compress_size;
 		_stream->read( &compress_size, sizeof(compress_size) );
 
-		static TBlobject compress;
-		compress.resize(compress_size);
+		CacheBufferInterfacePtr compress_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( compress_size );
 
-		_stream->read( &compress[0], compress_size );
+		TBlobject::value_type * compress_memory = compress_buffer->getMemory();
 
-		m_cacheBinary.clear();
-		m_cacheBinary.resize(binary_aek_size);
+		_stream->read( compress_memory, compress_size );
 
-		TBlobject::value_type * cacheBinaryBuffer = &m_cacheBinary[0];
-		TBlobject::value_type * compressBuffer = &compress[0];
+		CacheBufferInterfacePtr binary_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( binary_size );
+
+		TBlobject::value_type * binary_memory = binary_buffer->getMemory();
 
 		size_t uncompressSize = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->uncompress( cacheBinaryBuffer, binary_aek_size, uncompressSize, compressBuffer, compress_size ) == false )
+			->uncompress( binary_memory, binary_size, uncompressSize, compress_memory, compress_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid uncompress"
 				);
@@ -83,9 +85,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ArchiveRead ar(m_cacheBinary.begin(), m_cacheBinary.end());
-
-		ar.begin();
+		BlobjectRead ar(binary_memory, binary_size);
 
 		size_t maxIndex;
 		ar >> maxIndex;

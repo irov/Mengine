@@ -18,7 +18,7 @@ namespace Menge
 	const uint32_t DATAFLOW_MAGIC_MDL = 0x3D3DBABE;
 	const uint32_t DATAFLOW_VERSION_MDL = 1;
 
-#	define MENGINE_MODEL_MAX_VERTEX 64
+#	define MENGINE_MODEL_MAX_VERTEX 1024
 #	define MENGINE_MODEL_MAX_INDICES ((MENGINE_MODEL_MAX_VERTEX - 2) * 3)
 
 	struct Model3DFrame

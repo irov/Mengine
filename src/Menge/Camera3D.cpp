@@ -16,6 +16,7 @@ namespace Menge
         , m_cameraPosition(0.f, 0.f, 0.f)
         , m_cameraDir(1.f, 0.f, 0.f)
 		, m_cameraUp(0.f, 1.f, 0.f)
+		, m_cameraRightSign(1.f)
         , m_cameraFOV(0.f)
         , m_cameraAspect(0.f)
 	{
@@ -84,6 +85,11 @@ namespace Menge
 
 		this->invalidateMatrix_();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraRightSign( float _rightSign )
+	{
+		m_cameraRightSign = _rightSign;
+	}
 	////////////////////////////////////////////////////////////////////////////
 	//void Camera3D::setRenderport( const Viewport & _renderport )
 	//{
@@ -113,7 +119,7 @@ namespace Menge
 		mt::mul_v3_m4_r(wm_up, m_cameraUp, wm);
         
         RENDER_SERVICE(m_serviceProvider)
-            ->makeViewMatrixLookAt( m_viewMatrixWM, wm_position, wm_direction, wm_up );
+            ->makeViewMatrixLookAt( m_viewMatrixWM, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
 		float tangent = tanf(m_cameraFOV * 0.5f);
 		float height = 2.f * 1.f * tangent;

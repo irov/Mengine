@@ -4,6 +4,8 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ModuleInterface.h"
 
+#	include "Factory/FactoryDefault.h"
+
 extern "C" // only required if using g++
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -26,6 +28,37 @@ extern "C" // only required if using g++
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	class PathFinderFactoryInterface
+		: public ModuleFactoryInterface
+	{
+	public:
+		PathFinderFactoryInterface( ServiceProviderInterface * _serviceProvider )
+			: m_serviceProvider(_serviceProvider)
+		{
+		}
+
+	public:
+		ModuleInterfacePtr createModule() override
+		{
+			ModulePathFinder * modulePathFinder = m_factory.createObjectT();
+			modulePathFinder->setServiceProvider( m_serviceProvider );
+
+			return modulePathFinder;
+		}
+
+	protected:
+		void destroy() override
+		{
+			delete this;
+		}
+
+	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
+		typedef FactoryDefault<ModulePathFinder> TFactoryModulePathFinder;
+		TFactoryModulePathFinder m_factory;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	PluginPathFinder::PluginPathFinder()
 		: m_serviceProvider(nullptr)
 	{
@@ -35,19 +68,20 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 
-		m_modulePathFinder = new ModulePathFinder;
-		m_modulePathFinder->setServiceProvider( m_serviceProvider );
+		m_factoryModulePathFinder = new PathFinderFactoryInterface(m_serviceProvider);
 		
-		//MODULE_SERVICE(m_serviceProvider)
-			//->addModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder"), m_modulePathFinder );
+		MODULE_SERVICE(m_serviceProvider)
+			->registerModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PluginPathFinder::destroy()
 	{
-		//MODULE_SERVICE(m_serviceProvider)
-			//->removeModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder") );
+		MODULE_SERVICE(m_serviceProvider)
+			->unregisterModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder") );
+
+		m_factoryModulePathFinder = nullptr;
 
 		delete this;
 	}

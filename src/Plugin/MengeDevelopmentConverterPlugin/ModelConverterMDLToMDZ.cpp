@@ -5,6 +5,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
+#   include "Interface/CacheInterface.h"
 
 #	include "Logger/Logger.h"
 #   include "Core/FilePath.h"
@@ -54,10 +55,12 @@ namespace Menge
 
         size_t data_size = input->size();
 
-        static TBlobject s_buffer;
-        s_buffer.resize( data_size );
+		CacheBufferInterfacePtr data_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( data_size );
+        
+		TBlobject::value_type * data_memory = data_buffer->getMemory();
 
-        input->read( &s_buffer[0], data_size );
+        input->read( data_memory, data_size );
 
         size_t archive_size = ARCHIVE_SERVICE(m_serviceProvider)
             ->compressBound( data_size );
@@ -72,11 +75,14 @@ namespace Menge
             return false;
         }
 
-        TBlobject archive_blob(archive_size);
+		CacheBufferInterfacePtr archive_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( archive_size );
 
+		TBlobject::value_type * archive_memory = archive_buffer->getMemory();
+		
         size_t comress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( &archive_blob[0], archive_size, comress_size, &s_buffer[0], data_size ) == false )
+            ->compress( archive_memory, archive_size, comress_size, data_memory, data_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "ParticleConverterPTCToPTZ::convert_: %s invalid compress"
                 , m_options.inputFileName.c_str()
@@ -92,7 +98,7 @@ namespace Menge
 		output->write( &DATAFLOW_VERSION_MDL, sizeof(DATAFLOW_VERSION_MDL) );
         output->write( &data_size, sizeof(data_size) );
         output->write( &comress_size, sizeof(comress_size) );
-        output->write( &archive_blob[0], comress_size );
+        output->write( archive_memory, comress_size );
 
         return true;
 	}

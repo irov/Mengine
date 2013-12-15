@@ -27,6 +27,7 @@ namespace Menge
 		void setCameraUp( const mt::vec3f & _up );
 		void setCameraFOV( float _fov );
 		void setCameraAspect( float _aspect );
+		void setCameraRightSign( float _rightSign );
 
 	//public:
 	//	void setRenderport( const Viewport & _renderport );
@@ -55,6 +56,7 @@ namespace Menge
 
 		float m_cameraFOV;
 		float m_cameraAspect;
+		float m_cameraRightSign;
 
 		//Viewport m_renderport;
 

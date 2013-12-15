@@ -84,9 +84,11 @@ namespace Menge
 
 		float cameraFOV = model->getCameraFOV();
 		float cameraAspect = model->getCameraAspect();
+		float cameraRightSign = model->getCameraRightSign();
 
 		m_camera->setCameraFOV( cameraFOV );
 		m_camera->setCameraAspect( cameraAspect );
+		m_camera->setCameraRightSign( cameraRightSign );
 
 		this->addChildren( m_camera );
 		this->setRenderCamera( m_camera );

@@ -635,7 +635,7 @@ namespace Menge
 		{
 			Node * node = *it;
 
-			(*it)->_freeze( _value );
+			node->_freeze( _value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,7 @@
 #   include "Interface/LogSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/ArchiveInterface.h"
+#   include "Interface/CacheInterface.h"
 #   include "Interface/ThreadSystemInterface.h"
 #   include "Interface/PhysicSystem2DInterface.h"
 #   include "Interface/RenderSystemInterface.h"
@@ -120,6 +121,7 @@ namespace Menge
 		bool initializeModuleEngine_();
         bool initializeCodecEngine_();
 		bool initializeDataManager_();
+		bool initializeCacheManager_();
         bool initializeConverterEngine_();
         bool initializeInputEngine_();
         bool initializePluginService_();
@@ -220,6 +222,7 @@ namespace Menge
         PluginServiceInterface * m_pluginService;
 		ModuleServiceInterface * m_moduleService;
 		DataServiceInterface * m_dataService;
+		CacheServiceInterface * m_cacheService;
 
 		FileLogger * m_fileLog;
 
@@ -248,5 +251,6 @@ namespace Menge
 
         PluginInterface * m_pluginMengeImageCodec;
         PluginInterface * m_pluginMengeSoundCodec;
+		PluginInterface * m_pluginPluginPathFinder;
 	};
 }	// namespace Menge

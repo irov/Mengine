@@ -36,7 +36,7 @@ src
 	
 	MemoryInput.h
 	MemoryInput.cpp
-    
+        
 	MemoryProxyInput.h
 	MemoryProxyInput.cpp
 	
@@ -51,6 +51,8 @@ src
 	Rect.cpp
 	
     ConstString.h
+    
+    BlobjectRead.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

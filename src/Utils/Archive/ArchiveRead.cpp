@@ -8,8 +8,8 @@ namespace Menge
 	ArchiveRead::ArchiveRead( Archive::const_iterator _begin, Archive::const_iterator _end )
 		: m_begin(_begin)
 		, m_end(_end)
+		, m_seek(_begin)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::begin()

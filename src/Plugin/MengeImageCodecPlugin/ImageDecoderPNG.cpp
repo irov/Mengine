@@ -4,7 +4,8 @@
 
 #	include "Logger/Logger.h"
 
-#	include "Interface/FileSystemInterface.h"
+//#	include "Interface/InputSystemInterface.h"
+#	include "Interface/CacheInterface.h"
 
 #	define PNG_BYTES_TO_CHECK 8
 
@@ -237,9 +238,6 @@ namespace Menge
             return 0;
         }
 
-        typedef std::vector<png_byte> TPNGBytes;
-        static TPNGBytes s_row_buffer;
-
 		if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
 			if( m_dataInfo.channels == 1 && m_options.channels == 1 )
@@ -254,18 +252,21 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
 			{
-				s_row_buffer.resize( m_row_bytes );
-                TBlobject::value_type * buff = &s_row_buffer[0];
+				CacheBufferInterfacePtr row_buffer = CACHE_SERVICE(m_serviceProvider)
+					->lockBuffer( m_row_bytes );
+
+				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
+
                 png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, buff, NULL );
+					png_read_row( m_png_ptr, row_memory, nullptr );
 
 					size_t row_alpha = m_row_bytes / 4;
 					for( size_t j = 0; j < row_alpha; ++j )
 					{
-						bufferCursor[j] = buff[j*4+3];
+						bufferCursor[j] = row_memory[j*4+3];
 					}
 
 					bufferCursor += m_options.pitch;
@@ -285,17 +286,20 @@ namespace Menge
 		{				
 			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
 			{
-                s_row_buffer.resize( m_row_bytes );
-				TBlobject::value_type * buff = &s_row_buffer[0];
+				CacheBufferInterfacePtr row_buffer = CACHE_SERVICE(m_serviceProvider)
+					->lockBuffer( m_row_bytes );
+
+				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
+
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, buff, nullptr );
+					png_read_row( m_png_ptr, row_memory, nullptr );
 
 					for( size_t j = 0; j != m_row_bytes; ++j )
 					{
-						bufferCursor[j*4+3] = buff[j];
+						bufferCursor[j*4+3] = row_memory[j];
 					}
 
 					bufferCursor += m_options.pitch;
@@ -303,17 +307,20 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-                s_row_buffer.resize( m_row_bytes );
-                TBlobject::value_type * buff = &s_row_buffer[0];
+				CacheBufferInterfacePtr row_buffer = CACHE_SERVICE(m_serviceProvider)
+					->lockBuffer( m_row_bytes );
+
+				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
+
                 png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, buff, nullptr );
+					png_read_row( m_png_ptr, row_memory, nullptr );
 
 					for( size_t j = 0; j != m_row_bytes; ++j )
 					{
-						bufferCursor[j*4+3] = buff[j*4+3];
+						bufferCursor[j*4+3] = row_memory[j*4+3];
 					}
 
 					bufferCursor += m_options.pitch;

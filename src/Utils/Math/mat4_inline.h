@@ -776,8 +776,11 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 
-	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up )
+	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up, float _sign )
 	{
+		vec3f yaxis;
+		norm_v3( yaxis, _up );
+
 		vec3f zaxis;
 		norm_v3( zaxis, _dir );
 
@@ -785,9 +788,11 @@ namespace mt
 		vec3f xaxis;
 		cross_v3_v3_norm( xaxis, _up, zaxis );
 
+		xaxis *= _sign;
+
 		//yaxis = cross(zaxis, xaxis)
-		vec3f yaxis;
-		cross_v3_v3( yaxis, zaxis, xaxis );
+		//vec3f yaxis;
+		//cross_v3_v3( yaxis, zaxis, xaxis );
 
 		//xaxis.x           yaxis.x           zaxis.x          0
 		//xaxis.y           yaxis.y           zaxis.y          0

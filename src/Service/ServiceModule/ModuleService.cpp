@@ -58,9 +58,7 @@ namespace Menge
 		const ModuleFactoryInterfacePtr & factory = it_found->second;
 
 		ModuleInterfacePtr module = factory->createModule();
-
-		module->setServiceProvider( m_serviceProvider );
-
+		
 		if( module->initialize() == false )
 		{
 			return false;

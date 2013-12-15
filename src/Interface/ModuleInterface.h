@@ -32,7 +32,6 @@ namespace Menge
 	{
 	public:
 		virtual ModuleInterfacePtr createModule() = 0;
-		virtual const ConstString & getName() const = 0;
 	};
 
 	typedef stdex::intrusive_ptr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;

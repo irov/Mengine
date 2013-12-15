@@ -705,10 +705,10 @@ namespace Menge
             ->makeViewMatrixFromViewport( _viewMatrix, _viewport );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up )
+    void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
     {
         RENDER_SYSTEM(m_serviceProvider)
-            ->makeViewMatrixLookAt( _viewMatrix, _eye, _dir, _up );
+            ->makeViewMatrixLookAt( _viewMatrix, _eye, _dir, _up, _sign );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderDebugInfo& RenderEngine::getDebugInfo() const

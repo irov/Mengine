@@ -8,6 +8,7 @@ src
 	ScriptSystemInterface.h
 	CodecInterface.h
     DataInterface.h
+    CacheInterface.h
     PlatformInterface.h
 	XmlCodecInterface.h
 	ImageCodecInterface.h
@@ -45,7 +46,7 @@ src
     WindowsLayerInterface.h
     ArchiveInterface.h
     ProfilerInterface.h
-    Model3DInterface.h
+    Model3DInterface.h    
     
 	dummy.cpp
 )

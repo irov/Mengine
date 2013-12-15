@@ -84,6 +84,7 @@ SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
+SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
 SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
 extern "C" // only required if using g++
@@ -92,7 +93,7 @@ extern "C" // only required if using g++
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
 
-	extern bool initModulePathFinder( Menge::ModuleInterface ** _module );
+	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
 }
 
 namespace Menge
@@ -1120,6 +1121,29 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::initializeCacheManager_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Cache Manager..." );
+
+		CacheServiceInterface * cacheService;
+
+		if( SERVICE_CREATE( CacheService, &cacheService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, cacheService );
+
+		if( cacheService->initialize() == false )
+		{
+			return false;
+		}
+
+		m_cacheService = cacheService;
+
+		return true;
+	}	
     //////////////////////////////////////////////////////////////////////////
     bool WinApplication::initializeConverterEngine_()
     {
@@ -1347,6 +1371,11 @@ namespace Menge
         {
             return false;
         }
+
+		if( this->initializeModuleEngine_() == false )
+		{
+			return false;
+		}
                 
         if( this->initializeCodecEngine_() == false )
         {
@@ -1354,6 +1383,11 @@ namespace Menge
         }
 
 		if( this->initializeDataManager_() == false )
+		{
+			return false;
+		}
+
+		if( this->initializeCacheManager_() == false )
 		{
 			return false;
 		}
@@ -1404,6 +1438,13 @@ namespace Menge
             initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
             m_pluginMengeSoundCodec->initialize( m_serviceProvider );
         }
+
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );
+
+			initPluginPathFinder( &m_pluginPluginPathFinder );
+			m_pluginPluginPathFinder->initialize( m_serviceProvider );
+		}
 		        
         for( TVectorWString::const_iterator
             it = settings.plugins.begin(),
@@ -1872,6 +1913,12 @@ namespace Menge
 		{
 			m_dataService->finalize();
 			SERVICE_DESTROY( DataService, m_dataService );
+		}
+
+		if( m_cacheService != nullptr )
+		{
+			m_cacheService->finalize();
+			SERVICE_DESTROY( CacheService, m_cacheService );
 		}
 
         if( m_pluginService != nullptr )

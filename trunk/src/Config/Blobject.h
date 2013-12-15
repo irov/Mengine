@@ -2,7 +2,9 @@
 
 #   include <vector>
 
+#	include <stdint.h>
+
 namespace Menge
 {
-    typedef std::vector<unsigned char> TBlobject;
+    typedef std::vector<uint8_t> TBlobject;
 }

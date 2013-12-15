@@ -5,6 +5,7 @@
 
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/ArchiveInterface.h"
+#	include "Interface/CacheInterface.h"
 
 
 #   include "Config/Blobject.h"
@@ -332,20 +333,20 @@ namespace Menge
     {
         size_t file_size = _stream->size();
 
-        typedef std::vector<char> TVectorChar; 
-        static TVectorChar buf;
+		CacheBufferInterfacePtr source_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( file_size + 2 );
 
-        buf.resize( file_size + 2 );
+		char * source_memory = source_buffer->getMemoryT<char>();
 
         if( file_size > 0 )
         {
-            _stream->read( &buf[0], file_size );
+            _stream->read( source_memory, file_size );
         }
 
-        buf[file_size] = '\n';
-        buf[file_size + 1] = '\0';
+        source_memory[file_size] = '\n';
+        source_memory[file_size + 1] = '\0';
 
-        PyObject * code = pybind::code_compile_file( &buf[0], _module.c_str() );
+        PyObject * code = pybind::code_compile_file( source_memory, _module.c_str() );
 
         if( code == nullptr )
         {
@@ -381,19 +382,21 @@ namespace Menge
         size_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-        static TBlobject compress_buf;
+		CacheBufferInterfacePtr compress_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( compress_size );
 
-        compress_buf.resize( compress_size );
+		TBlobject::value_type * compress_memory = compress_buffer->getMemory();
 
-        _stream->read( &compress_buf[0], compress_size );
+		_stream->read( compress_memory, compress_size );
+		
+		CacheBufferInterfacePtr code_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( code_size );
 
-        static TBlobject code_buf;
-
-        code_buf.resize( code_size );
+		TBlobject::value_type * code_memory = code_buffer->getMemory();
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( &code_buf[0], code_size, uncompress_size, &compress_buf[0], compress_size ) == false )
+            ->uncompress( code_memory, code_size, uncompress_size, compress_memory, compress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScriptModuleFinder::unmarshal_code_ uncompress failed"
                 );
@@ -401,7 +404,7 @@ namespace Menge
             return nullptr;
         }
                 
-        long file_magic = get_int( &code_buf[0] );
+        long file_magic = get_int( &code_memory[0] );
         long py_magic = pybind::marshal_magic_number();
 
         if( file_magic != py_magic )
@@ -409,7 +412,7 @@ namespace Menge
             return nullptr;
         }
 
-        PyObject * code = pybind::marshal_get_object( (char *)&code_buf[0] + 8, uncompress_size - 8 );
+        PyObject * code = pybind::marshal_get_object( (char *)code_memory + 8, uncompress_size - 8 );
 
         if( code == nullptr )
         {

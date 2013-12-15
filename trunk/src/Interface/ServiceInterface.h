@@ -9,6 +9,16 @@ namespace Menge
 {
     class ServiceProviderInterface;
 
+	class ServiceNotFoundException
+	{
+	};
+
+	template<class T>
+	class ServiceNotFoundExceptionT
+		: public ServiceNotFoundException
+	{
+	};
+
 	class ServiceInterface
 	{
     public:
@@ -49,7 +59,7 @@ namespace Menge
 #   ifdef _DEBUG
                 if( dynamic_cast<T*>(service) == nullptr )
                 {
-                    return nullptr;
+					throw ServiceNotFoundExceptionT<T>();
                 }
 #   endif
 

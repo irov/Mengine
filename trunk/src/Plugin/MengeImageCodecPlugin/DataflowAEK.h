@@ -27,8 +27,6 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
-		
-		TBlobject m_cacheBinary;
 
 		typedef FactoryPool<MovieFramePack, 32> TFactoryPoolMovieFramePack;
 		TFactoryPoolMovieFramePack m_poolMovieFramePack;

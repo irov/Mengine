@@ -19,6 +19,6 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		ModulePathFinder * m_modulePathFinder;
+		ModuleFactoryInterfacePtr m_factoryModulePathFinder;
 	};
 }

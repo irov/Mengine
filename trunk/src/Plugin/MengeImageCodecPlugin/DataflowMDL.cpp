@@ -1,8 +1,9 @@
 #	include "DataflowMDL.h"
 
 #	include "Interface/ArchiveInterface.h"
+#	include "Interface/CacheInterface.h"
 
-#	include "Archive/ArchiveRead.hpp"
+#	include "Core/BlobjectRead.h"
 
 #	include "Logger/Logger.h"
 
@@ -62,20 +63,21 @@ namespace Menge
 		size_t compress_size;
 		_stream->read( &compress_size, sizeof(compress_size) );
 
-		static TBlobject compress;
-		compress.resize(compress_size);
+		CacheBufferInterfacePtr compress_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( compress_size );
 
-		_stream->read( &compress[0], compress_size );
+		TBlobject::value_type * compress_memory = compress_buffer->getMemory();
 
-		m_cacheBinary.clear();
-		m_cacheBinary.resize(binary_size);
+		_stream->read( compress_memory, compress_size );
 
-		TBlobject::value_type * cacheBinaryBuffer = &m_cacheBinary[0];
-		TBlobject::value_type * compressBuffer = &compress[0];
+		CacheBufferInterfacePtr binary_buffer = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( binary_size );
+
+		TBlobject::value_type * binary_memory = binary_buffer->getMemory();
 
 		size_t uncompressSize = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->uncompress( cacheBinaryBuffer, binary_size, uncompressSize, compressBuffer, compress_size ) == false )
+			->uncompress( binary_memory, binary_size, uncompressSize, compress_memory, compress_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid uncompress"
 				);
@@ -83,10 +85,8 @@ namespace Menge
 			return nullptr;
 		}
 
-		ArchiveRead ar(m_cacheBinary.begin(), m_cacheBinary.end());
-
-		ar.begin();
-
+		BlobjectRead ar(binary_memory, binary_size);
+		
 		uint32_t frameCount;
 		ar >> frameCount;
 
@@ -102,16 +102,32 @@ namespace Menge
 		float cameraFOV;
 		ar >> cameraFOV;
 
-		float cameraAspect;
-		ar >> cameraAspect;
+		float cameraWidth;
+		ar >> cameraWidth;
+
+		float cameraHeight;
+		ar >> cameraHeight;
 
 		float cameraRightSign;
 		ar >> cameraRightSign;
 
+		if( vertexCount > MENGINE_MODEL_MAX_VERTEX ||
+			indicesCount > MENGINE_MODEL_MAX_INDICES )
+		{
+			LOGGER_ERROR(m_serviceProvider)( "DataflowMDL::load: mdl overflow vertex %d:%d indices %d:%d"
+				, vertexCount
+				, MENGINE_MODEL_MAX_VERTEX
+				, indicesCount
+				, MENGINE_MODEL_MAX_INDICES
+				);
+
+			return nullptr;
+		}
+
 		Model3DPack * pack = m_poolModel3DPack.createObjectT();
 
 		pack->initialize( frameCount, vertexCount, indicesCount, frameDelay );
-		pack->setCamera( cameraFOV, cameraAspect, cameraRightSign );
+		pack->setCamera( cameraFOV, cameraWidth / cameraHeight, cameraRightSign );
 		
 		for( size_t i = 0; i != frameCount; ++i )
 		{

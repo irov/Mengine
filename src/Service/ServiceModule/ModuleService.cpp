@@ -39,15 +39,44 @@ namespace Menge
 		m_moduleFactory.erase( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FModuleFinder
+		{
+		public:
+			FModuleFinder( const ConstString & _name )
+				: m_name(_name)
+			{			
+			}
+
+		public:
+			bool operator() ( const ModuleInterfacePtr & _module )
+			{
+				const ConstString & moduleName = _module->getName();
+
+				return m_name == moduleName;
+			}
+
+		protected:
+			const ConstString & m_name;
+
+		private:
+			void operator = ( const FModuleFinder & )
+			{
+			}
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ModuleService::runModule( const ConstString & _name )
 	{
-		TMapModules::iterator it_module_found = m_modules.find( _name );
+		TVectorModules::iterator it_exist = 
+			std::find_if( m_modules.begin(), m_modules.end(), FModuleFinder(_name) );
 
-		if( it_module_found != m_modules.end() )
+		if( it_exist != m_modules.end() )
 		{
 			return false;
 		}
-
+				
 		TMapModuleFactory::iterator it_found = m_moduleFactory.find( _name );
 
 		if( it_found == m_moduleFactory.end() )
@@ -64,24 +93,53 @@ namespace Menge
 			return false;
 		}
 
-		m_modules[_name] = module;
+		m_modules.push_back( module );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::stopModule( const ConstString & _name )
 	{
-		TMapModules::iterator it_found = m_modules.find( _name );
+		TVectorModules::iterator it_found = 
+			std::find_if( m_modules.begin(), m_modules.end(), FModuleFinder(_name) );
 
 		if( it_found == m_modules.end() )
 		{
 			return;
 		}
 
-		const ModuleInterfacePtr & module = it_found->second;
+		const ModuleInterfacePtr & module = *it_found;
 
 		module->finalize();
 		
 		m_modules.erase( it_found );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleService::update( float _time, float _timing )
+	{
+		for( TVectorModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			const ModuleInterfacePtr & module = *it;
+
+			module->update( _time, _timing );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModuleService::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	{
+		for( TVectorModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			const ModuleInterfacePtr & module = *it;
+
+			module->render( _viewport, _camera );
+		}
 	}
 }

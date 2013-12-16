@@ -5,7 +5,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap::PathFinderMap()
 		: m_cachePointUse(0)
-		, m_unitSize(0.f)
+		, m_unitSize(20.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -232,12 +232,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_wavePathTriangle( const Poly2Tri::Triangle * _triangle )
 	{
-		if( _triangle == nullptr )
-		{
-			return;
-		}
-
-		if( _triangle->IsInterior() == false )
+		if( _triangle == nullptr || _triangle->IsInterior() == false )
 		{
 			return;
 		}
@@ -388,7 +383,7 @@ namespace Menge
 		Poly2Tri::Point * p_from1 = _from->GetPoint( 1 );
 		Poly2Tri::Point * p_from2 = _from->GetPoint( 2 );
 
-		Poly2Tri::Point * p_min = s_findMinimal( p_from0, p_from1, p_from2 );
+		//Poly2Tri::Point * p_min = s_findMinimal( p_from0, p_from1, p_from2 );
 
 		Poly2Tri::Triangle * tr_neihgbor0 = _from->GetNeighbor( 0 );
 		Poly2Tri::Triangle * tr_neihgbor1 = _from->GetNeighbor( 1 );
@@ -482,8 +477,9 @@ namespace Menge
 		s_wavePathTriangle( n2 );
 
 		TVectorPathPoint path;
-
 		s_slitherPath( nullptr, tr_from, tr_to, path );
+
+
 		
 		return true;
 	}

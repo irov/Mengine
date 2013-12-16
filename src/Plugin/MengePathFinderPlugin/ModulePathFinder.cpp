@@ -46,6 +46,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ModulePathFinder::setName( const ConstString & _name )
+	{
+		m_name = _name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ModulePathFinder::getName() const
+	{
+		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap * ModulePathFinder::createMap()
 	{
 		PathFinderMap * map = new PathFinderMap;
@@ -55,12 +65,13 @@ namespace Menge
 		return map;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::update( float _timing )
+	void ModulePathFinder::update( float _time, float _timing )
 	{
+		(void)_time;
 		(void)_timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::render()
+	void ModulePathFinder::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
 		//const Poly2Tri::TVectorTriangle & triangles = m_cdt->GetTriangles();
 

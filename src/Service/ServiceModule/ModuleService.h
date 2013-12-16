@@ -25,13 +25,17 @@ namespace Menge
 		bool runModule( const ConstString & _name ) override;
 		void stopModule( const ConstString & _name ) override;
 
+	public:
+		void update( float _time, float _timing ) override;
+		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
 		typedef std::map<ConstString, ModuleFactoryInterfacePtr> TMapModuleFactory;
         TMapModuleFactory m_moduleFactory;
 
-		typedef std::map<ConstString, ModuleInterfacePtr> TMapModules;
-		TMapModules m_modules;
+		typedef std::vector<ModuleInterfacePtr> TVectorModules;
+		TVectorModules m_modules;
     };
 }

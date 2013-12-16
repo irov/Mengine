@@ -832,6 +832,9 @@ namespace Menge
 		m_timingManager->update( gameTime, _timing );
         m_timingManagerGlobal->update( gameTime, _timing );
 
+		MODULE_SERVICE(m_serviceProvider)
+			->update( gameTime, _timing );
+
 		m_time += _timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1126,6 +1129,9 @@ namespace Menge
 		//const mt::mat4f & arrow_pm = m_renderCamera2D->getProjectionMatrix();
 
 		//renderEngine->newRenderPass( m_renderCamera2D );
+
+		MODULE_SERVICE(m_serviceProvider)
+			->render( m_renderViewport, m_renderCamera );
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{

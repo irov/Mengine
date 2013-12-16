@@ -68,9 +68,6 @@ namespace Menge
 		virtual const FilePath & getBaseDir() const = 0;
 		
 	public:
-		virtual void addModule( ModuleInterface * _module ) = 0;
-
-	public:
 		virtual PlatformInterface * getPlatform() const = 0;
 
 	public:

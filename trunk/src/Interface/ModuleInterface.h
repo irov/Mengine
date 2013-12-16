@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 #	include "Core/ConstString.h"
@@ -19,10 +20,14 @@ namespace Menge
 	public:
 		virtual bool initialize() = 0;
 		virtual void finalize() = 0;
-		
+
 	public:
-		virtual void update( float _timing ) = 0;
-		virtual void render() = 0;
+		virtual void setName( const ConstString & _name ) = 0;
+		virtual const ConstString & getName() const = 0;
+
+	public:
+		virtual void update( float _time, float _timing ) = 0;
+		virtual void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) = 0;
 	};
 
 	typedef stdex::intrusive_ptr<ModuleInterface> ModuleInterfacePtr;
@@ -48,6 +53,10 @@ namespace Menge
 	public:
 		virtual bool runModule( const ConstString & _name ) = 0;
 		virtual void stopModule( const ConstString & _name ) = 0;
+
+	public:
+		virtual void update( float _time, float _timing ) = 0;
+		virtual void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) = 0;
 	};
 
 #   define MODULE_SERVICE( serviceProvider )\

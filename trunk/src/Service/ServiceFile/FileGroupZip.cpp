@@ -32,7 +32,7 @@ namespace Menge
         uint16_t commentLen;
 	};
     //////////////////////////////////////////////////////////////////////////
-    static int get_int( unsigned char * _buff )
+    static int s_get_int( unsigned char * _buff )
     {
         int x;
         x =  (int)_buff[0];
@@ -52,13 +52,13 @@ namespace Menge
     //    return x;
     //}
     //////////////////////////////////////////////////////////////////////////
-    static int read_int( const MappedFileInputStreamInterfacePtr & _stream )
+    static int s_read_int( const MappedFileInputStreamInterfacePtr & _stream )
     {
         unsigned char buff[4];
 
         _stream->read( buff, 4 );
 
-        int value = get_int( buff );
+        int value = s_get_int( buff );
 
         return value;
     }
@@ -133,7 +133,7 @@ namespace Menge
             return false;
         }
 
-        if( get_int(endof_central_dir) != 0x06054B50 )
+        if( s_get_int(endof_central_dir) != 0x06054B50 )
         {
             LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize bad 'End of Central Dir' signature zip %s"
                 , _path.c_str()
@@ -142,8 +142,8 @@ namespace Menge
             return false;
         }
 
-        int header_size = get_int(endof_central_dir + 12);
-        int header_offset = get_int(endof_central_dir + 16);
+        int header_size = s_get_int(endof_central_dir + 12);
+        int header_offset = s_get_int(endof_central_dir + 16);
         int arc_offset = header_position - header_offset - header_size;
         
         header_offset += arc_offset;
@@ -154,7 +154,7 @@ namespace Menge
 		{
             zipMappedFile->seek( header_offset );
 
-			int signature = read_int( zipMappedFile );
+			int signature = s_read_int( zipMappedFile );
 
 			if( signature != 0x02014B50 )
 			{

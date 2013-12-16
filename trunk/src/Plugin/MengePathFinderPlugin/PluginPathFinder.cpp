@@ -32,8 +32,9 @@ namespace Menge
 		: public ModuleFactoryInterface
 	{
 	public:
-		PathFinderFactoryInterface( ServiceProviderInterface * _serviceProvider )
+		PathFinderFactoryInterface( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
 			: m_serviceProvider(_serviceProvider)
+			, m_name(_name)
 		{
 		}
 
@@ -42,6 +43,7 @@ namespace Menge
 		{
 			ModulePathFinder * modulePathFinder = m_factory.createObjectT();
 			modulePathFinder->setServiceProvider( m_serviceProvider );
+			modulePathFinder->setName( m_name );
 
 			return modulePathFinder;
 		}
@@ -54,6 +56,7 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
+		ConstString m_name;
 
 		typedef FactoryDefault<ModulePathFinder> TFactoryModulePathFinder;
 		TFactoryModulePathFinder m_factory;
@@ -68,7 +71,7 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 
-		m_factoryModulePathFinder = new PathFinderFactoryInterface(m_serviceProvider);
+		m_factoryModulePathFinder = new PathFinderFactoryInterface(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ModulePathFinder"));
 		
 		MODULE_SERVICE(m_serviceProvider)
 			->registerModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );

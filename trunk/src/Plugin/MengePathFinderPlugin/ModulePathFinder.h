@@ -23,15 +23,19 @@ namespace Menge
 		bool initialize() override;
 		void finalize() override;
 
+		void setName( const ConstString & _name ) override;
+		const ConstString & getName() const override;
+
 	public:
 		PathFinderMap * createMap();
 
 	public:
-		void update( float _timing ) override;
-		void render() override;
+		void update( float _time, float _timing ) override;
+		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 		
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
+		ConstString m_name;
 
 		typedef std::vector<PathFinderMap *> TPathFinderMaps;
 		TPathFinderMaps m_maps;

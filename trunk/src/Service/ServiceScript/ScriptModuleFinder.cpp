@@ -15,7 +15,7 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static int get_int( unsigned char * _buff )
+    static int s_get_int( unsigned char * _buff )
     {
         int x;
         x =  (int)_buff[0];
@@ -404,7 +404,7 @@ namespace Menge
             return nullptr;
         }
                 
-        long file_magic = get_int( &code_memory[0] );
+        long file_magic = s_get_int( &code_memory[0] );
         long py_magic = pybind::marshal_magic_number();
 
         if( file_magic != py_magic )

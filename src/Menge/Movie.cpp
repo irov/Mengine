@@ -1587,7 +1587,7 @@ namespace Menge
 
 		if( resourceEmitter->getEmitterRelative() == true )
 		{
-			layer_particles->setEmitterRelative( true );
+			//layer_particles->setEmitterRelative( true );
 			layer_particles->setEmitterTranslateWithParticle( true );
 		}
 

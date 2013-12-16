@@ -8,8 +8,6 @@
 
 namespace Menge
 {
-	typedef std::vector<Poly2Tri::Point *> TVectorPathPoint;
-
 	class PathFinderMap
 	{
 	public:
@@ -26,6 +24,7 @@ namespace Menge
 	public:
 		bool generateMap();
 
+	public:
 		bool findPath( const mt::vec2f & _from, const mt::vec2f & _to );
 
 	protected:

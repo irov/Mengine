@@ -338,6 +338,105 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static Poly2Tri::Point * s_findMinimalTriangle( Poly2Tri::Triangle * _tr )
+	{
+		if( _tr == nullptr || _tr->IsInterior() == false )
+		{
+			return nullptr;
+		}
+
+		Poly2Tri::Point * p0 = _tr->GetPoint( 0 );
+		Poly2Tri::Point * p1 = _tr->GetPoint( 1 );
+		Poly2Tri::Point * p2 = _tr->GetPoint( 2 );
+
+		if( p0->weight < p1->weight )
+		{
+			if( p0->weight < p2->weight )
+			{
+				return p0;
+			}
+			else
+			{
+				return p2;
+			}
+		}
+		else
+		{
+			if( p1->weight < p2->weight )
+			{
+				return p1;
+			}
+			else
+			{
+				return p2;
+			}
+		}
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_slitherPath( const Poly2Tri::Triangle * _from, const Poly2Tri::Triangle * _to, TVectorPathPoint & _path )
+	{
+		if( _from == _to )
+		{
+			return;
+		}
+
+		Poly2Tri::Point * p_from0 = _from->GetPoint( 0 );
+		Poly2Tri::Point * p_from1 = _from->GetPoint( 1 );
+		Poly2Tri::Point * p_from2 = _from->GetPoint( 2 );
+
+		Poly2Tri::Point * p_min = s_findMinimal( p_from0, p_from1, p_from2 );
+
+		Poly2Tri::Triangle * tr_neihgbor0 = _from->GetNeighbor( 0 );
+		Poly2Tri::Triangle * tr_neihgbor1 = _from->GetNeighbor( 1 );
+		Poly2Tri::Triangle * tr_neihgbor2 = _from->GetNeighbor( 2 );
+
+		Poly2Tri::Point * p0_min = s_findMinimalTriangle( tr_neihgbor0 );
+		Poly2Tri::Point * p1_min = s_findMinimalTriangle( tr_neihgbor1 );
+		Poly2Tri::Point * p2_min = s_findMinimalTriangle( tr_neihgbor2 );
+
+		//float wp_min = p_min->weight;
+
+		float w0_min = p0_min ? p0_min->weight : 1024.f * 1024.f;
+		float w1_min = p1_min ? p1_min->weight : 1024.f * 1024.f;
+		float w2_min = p2_min ? p2_min->weight : 1024.f * 1024.f;
+
+		if( w0_min <= w1_min && w0_min <= w2_min )
+		{
+			if( p0_min == nullptr )
+			{
+				return;
+			}
+
+			_path.push_back( p0_min );
+
+			s_slitherPath( tr_neihgbor0, _to, _path );
+		}
+		else if( w1_min <= w0_min && w1_min <= w2_min )
+		{
+			if( p1_min == nullptr )
+			{
+				return;
+			}
+			
+			_path.push_back( p1_min );
+
+			s_slitherPath( tr_neihgbor1, _to, _path );
+		}
+		else if( w2_min <= w0_min && w2_min <= w1_min )
+		{
+			if( p2_min == nullptr )
+			{
+				return;
+			}
+
+			_path.push_back( p2_min );
+
+			s_slitherPath( tr_neihgbor2, _to, _path );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
 		const Poly2Tri::TVectorTriangle & triangles = m_sweepContext.GetTriangles();
@@ -370,15 +469,11 @@ namespace Menge
 		s_wavePathTriangle( n0 );
 		s_wavePathTriangle( n1 );
 		s_wavePathTriangle( n2 );
-		//s_wavePathPoint( _to.x, _to.y, 0.f, p_to1, triangles );
-		//s_wavePathPoint( _to.x, _to.y, 0.f, p_to2, triangles );
 
-		Poly2Tri::Point * p_from0 = tr_from->GetPoint( 0 );
-		Poly2Tri::Point * p_from1 = tr_from->GetPoint( 1 );
-		Poly2Tri::Point * p_from2 = tr_from->GetPoint( 2 );
+		TVectorPathPoint path;
 
-		Poly2Tri::Point * p_min = s_findMinimal( p_from0, p_from1, p_from2 );
-
+		s_slitherPath( tr_from, tr_to, path );
+		
 		return true;
 	}
 }

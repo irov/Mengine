@@ -39,7 +39,7 @@ namespace	Menge
     static const size_t maxMeshCount = 100;
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::ParticleEmitter()
-		: m_interface(nullptr)
+		: m_emitter(nullptr)
 		, m_startPosition(0.f)
         , m_randomMode(false)
 		, m_vertices(nullptr)
@@ -118,9 +118,9 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface = container->createEmitter( m_emitterName );
+		m_emitter = container->createEmitter( m_emitterName );
 
-		if( m_interface == nullptr )
+		if( m_emitter == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
 				, m_name.c_str()
@@ -131,9 +131,9 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface->setListener( this );
+		m_emitter->setListener( this );
 
-		m_interface->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+		m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 
 		const RenderMaterialGroup * mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
@@ -152,10 +152,10 @@ namespace	Menge
 			}
 		}
 
-        m_interface->setRandomMode( m_randomMode );
+        m_emitter->setRandomMode( m_randomMode );
 
         bool loop = this->getLoop();
-        m_interface->setLoop( loop );
+        m_emitter->setLoop( loop );
 
         size_t polygon_count = boost::geometry::num_points( m_polygon );
 
@@ -167,9 +167,9 @@ namespace	Menge
             }
         }
 
-		if( m_interface->isBackground() == false )
+		if( m_emitter->isBackground() == false )
 		{
-			m_interface->setPosition( m_emitterPosition );
+			m_emitter->setPosition( m_emitterPosition );
 		}
 
 		return true;		
@@ -177,13 +177,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
-        if( m_interface != nullptr )
+        if( m_emitter != nullptr )
         {
             const ParticleEmitterContainerInterfacePtr & container = 
                 m_resourceEmitterContainer->getContainer();
 
-            container->releaseEmitter( m_interface );
-            m_interface = nullptr;
+            container->releaseEmitter( m_emitter );
+            m_emitter = nullptr;
         }
 
         m_resourceEmitterContainer.release();
@@ -249,12 +249,12 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface->play();
+		m_emitter->play();
 
 		//TODO!???
 		if( m_startPosition > 0.f )
 		{
-			m_interface->update( m_startPosition );
+			m_emitter->update( m_startPosition );
 		}
 
 		return true;
@@ -272,7 +272,7 @@ namespace	Menge
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_RESTART)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 
-		m_interface->restart();
+		m_emitter->restart();
 
 		return true;
 	}
@@ -284,7 +284,7 @@ namespace	Menge
 			return;
 		}
 
-		m_interface->pause();
+		m_emitter->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_stop( size_t _enumerator )
@@ -294,7 +294,7 @@ namespace	Menge
 			return;
 		}
 
-		m_interface->stop();
+		m_emitter->stop();
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
@@ -311,7 +311,7 @@ namespace	Menge
 			return;
 		}
 
-		m_interface->setLoop( _value );
+		m_emitter->setLoop( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_interrupt( size_t _enumerator )
@@ -327,7 +327,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface->interrupt();
+		m_emitter->interrupt();
 
 		//this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 
@@ -345,7 +345,7 @@ namespace	Menge
 			return;
 		}
 
-		return m_interface->setLeftBorder( _leftBorder );
+		return m_emitter->setLeftBorder( _leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_update( float _current, float _timing )
@@ -369,7 +369,7 @@ namespace	Menge
 			_timing -= deltha;
 		}
 
-		m_interface->update( _timing );
+		m_emitter->update( _timing );
 
 		if( this->updateParticleVertex_() == false )
 		{
@@ -417,7 +417,7 @@ namespace	Menge
 		ParticleEmitterRenderFlush flush;
 
 		if( PARTICLE_SERVICE(m_serviceProvider)
-			->flushEmitter( viewMatrix, m_interface, s_meshes, s_particles, maxParticleCount, flush ) == false )
+			->flushEmitter( viewMatrix, m_emitter, s_meshes, s_particles, maxParticleCount, flush ) == false )
 		{
 			return false;
 		}
@@ -603,7 +603,7 @@ namespace	Menge
 			return;
 		}
 
-		m_interface->restart();
+		m_emitter->restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setResourceEmitterContainer( ResourceEmitterContainer * _resourceEmitterContainer )
@@ -642,7 +642,7 @@ namespace	Menge
 			return;
 		}
 
-		m_interface->seek( _pos );
+		m_emitter->seek( _pos );
 		//m_interface->setLeftBorder( _pos );
 		//m_interface->restart();
 		//m_interface->play();
@@ -658,7 +658,7 @@ namespace	Menge
 			return;
 		}
 
-		m_interface->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+		m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterPosition( const mt::vec3f & _position )
@@ -670,9 +670,9 @@ namespace	Menge
 			return;
 		}
 
-		if( m_interface->isBackground() == false )
+		if( m_emitter->isBackground() == false )
 		{
-			m_interface->setPosition( m_emitterPosition );
+			m_emitter->setPosition( m_emitterPosition );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -711,7 +711,7 @@ namespace	Menge
             return;
         }
 
-        m_interface->changeEmitterImage( 0, 0, 0, 1 );
+        m_emitter->changeEmitterImage( 0, 0, 0, 1 );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::compileEmitterImage_()
@@ -734,7 +734,7 @@ namespace	Menge
 
         unsigned char * alphaBuffer = resourceHIT->getBuffer();
         
-		if( m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false)
+		if( m_emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false)
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::setEmitterImage %s changeEmitterImage Error image %s"
                 , m_name.c_str()
@@ -801,7 +801,7 @@ namespace	Menge
         float * triangles_ptr = points.front().buff();
         size_t triangles_size = points.size() / 3;
 
-        if( m_interface->changeEmitterModel( triangles_ptr, triangles_size ) == false)
+        if( m_emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false)
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
 				, m_name.c_str()
@@ -822,7 +822,7 @@ namespace	Menge
             return;
         }
 
-        m_interface->changeEmitterModel( NULL, 0 );
+        m_emitter->changeEmitterModel( NULL, 0 );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )
@@ -842,7 +842,7 @@ namespace	Menge
         {
             const mt::vec3f & wm_pos = this->getWorldPosition();
 
-            m_interface->setPosition( wm_pos );
+            m_emitter->setPosition( wm_pos );
         }
 	}
 	/////////////////////////////////////////////////////////////////////////
@@ -857,7 +857,7 @@ namespace	Menge
             return 0.f;
         }
 
-        float duration = m_interface->getDuration();
+        float duration = m_emitter->getDuration();
 
 		return duration;
 	}
@@ -873,7 +873,7 @@ namespace	Menge
             return 0.f;
         }
 
-        float leftBoard = m_interface->getLeftBorder();
+        float leftBoard = m_emitter->getLeftBorder();
 
 		return leftBoard;
 	}
@@ -889,7 +889,7 @@ namespace	Menge
             return 0.f;
         }
 
-        float rightBoard = m_interface->getRightBorder();
+        float rightBoard = m_emitter->getRightBorder();
 
 		return rightBoard;
 	}
@@ -912,7 +912,7 @@ namespace	Menge
             return box;
         }
 
-		m_interface->getBoundingBox( box );
+		m_emitter->getBoundingBox( box );
 
 		return box;
 	}
@@ -930,7 +930,7 @@ namespace	Menge
             return pos;
         }
 
-		m_interface->getPosition( pos );
+		m_emitter->getPosition( pos );
 
 		return pos;
 	}
@@ -944,7 +944,7 @@ namespace	Menge
             return;
         }
 
-		m_interface->setRandomMode( _randomMode );
+		m_emitter->setRandomMode( _randomMode );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::getRandomMode() const

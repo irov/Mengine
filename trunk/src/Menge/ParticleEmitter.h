@@ -113,7 +113,7 @@ namespace Menge
 
 		ConstString m_emitterImageName;
 
-		ParticleEmitterInterface * m_interface;
+		ParticleEmitterInterface * m_emitter;
 
         Polygon m_polygon;
 

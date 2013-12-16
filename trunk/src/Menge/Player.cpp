@@ -1133,13 +1133,14 @@ namespace Menge
 		}
 
 //#	ifndef MENGE_MASTER_RELEASE
+
 		if( m_showDebugText != 0 )
-		{
+		{			
 			const RenderDebugInfo & rdi = 
 				RENDER_SERVICE(m_serviceProvider)->getDebugInfo();
 
-            const RenderTextureDebugInfo & rtdi =
-                RENDERTEXTURE_SERVICE(m_serviceProvider)->getDebugInfo();
+			const RenderTextureDebugInfo & rtdi =
+				RENDERTEXTURE_SERVICE(m_serviceProvider)->getDebugInfo();
 
 			//size_t particlesCount = 
 			//	Holder<ParticleEngine>::get()->getFrameParticlesCount();
@@ -1147,60 +1148,63 @@ namespace Menge
 			size_t particlesCount = 0;
 
 			Stringstream ss;
-			
+
 			ss << "FPS: " << m_fps << std::endl;
 
-            double sreenfillrate = rdi.fillrate / double(m_contentResolution.getWidth() * m_contentResolution.getHeight());
+			if( m_showDebugText > 1 )
+			{
+				double sreenfillrate = rdi.fillrate / double(m_contentResolution.getWidth() * m_contentResolution.getHeight());
 
-            ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
-			ss << "DIP: " << rdi.dips << std::endl;
-			ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
-			ss << "Texture Count: " << rtdi.textureCount << std::endl;
-			ss << "Particles: " << particlesCount << std::endl;
+				ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
+				ss << "DIP: " << rdi.dips << std::endl;
+				ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
+				ss << "Texture Count: " << rtdi.textureCount << std::endl;
+				ss << "Particles: " << particlesCount << std::endl;
 
-            class CompileResourceVisitor
-                : public ResourceVisitor
-            {
-            public:
-                CompileResourceVisitor()
-                    : m_count(0)
-                {
-                }
+				class CompileResourceVisitor
+					: public ResourceVisitor
+				{
+				public:
+					CompileResourceVisitor()
+						: m_count(0)
+					{
+					}
 
-            public:
-                size_t getCount() const
-                {
-                    return m_count;
-                }
+				public:
+					size_t getCount() const
+					{
+						return m_count;
+					}
 
-            protected:
-                void visit( ResourceReference * _resource )
-                {
-                    if( _resource->isCompile() == false )
-                    {
-                        return;
-                    }
+				protected:
+					void visit( ResourceReference * _resource )
+					{
+						if( _resource->isCompile() == false )
+						{
+							return;
+						}
 
-                    ++m_count;
-                }
+						++m_count;
+					}
 
-            protected:
-                size_t m_count;
-            };
+				protected:
+					size_t m_count;
+				};
 
-            CompileResourceVisitor crv;
+				CompileResourceVisitor crv;
 
-            RESOURCE_SERVICE(m_serviceProvider)
-                ->visitResources( &crv );
+				RESOURCE_SERVICE(m_serviceProvider)
+					->visitResources( &crv );
 
-            ss << "Resources: " << crv.getCount() << std::endl;
+				ss << "Resources: " << crv.getCount() << std::endl;
 
-            MousePickerSystemInterface * mousePickerSystem = 
-                PLAYER_SERVICE(m_serviceProvider)->getMousePickerSystem();
+				MousePickerSystemInterface * mousePickerSystem = 
+					PLAYER_SERVICE(m_serviceProvider)->getMousePickerSystem();
 
-			ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
+				ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
+			}
 
-            if( m_showDebugText == 1 )
+            if( m_showDebugText == 2 )
             {
 			    VisitorPlayerFactoryManager pfmv(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
 
@@ -1209,8 +1213,7 @@ namespace Menge
 
                 ss << "Entities: " << Entity::s_enum << std::endl;
             }
-
-            if( m_showDebugText == 2 )
+			else if( m_showDebugText == 3 )
             {
                 class MyVisitorClassTypeScope
                     : public pybind::visitor_class_type_scope
@@ -1350,7 +1353,7 @@ namespace Menge
 	void Player::toggleDebugText()
 	{
 		++m_showDebugText;
-        m_showDebugText %= 3;
+        m_showDebugText %= 4;
 
         RENDER_SERVICE(m_serviceProvider)
             ->enableDebugMode( m_showDebugText == 1 );

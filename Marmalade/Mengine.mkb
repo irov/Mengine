@@ -98,6 +98,11 @@ files
 	"*.h"
 	"*.cpp"
 
+    [Service/ServiceCache]
+    ("../src/Service/ServiceCache")	
+	"*.h"
+	"*.cpp"
+
     [Service/ServiceConverter]
     ("../src/Service/ServiceConverter")	
 	"*.h"

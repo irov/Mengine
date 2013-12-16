@@ -1139,8 +1139,8 @@ namespace Menge
         mt::inv_m4( _viewMatrix, wm );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _at, const mt::vec3f & _up )
+    void MarmaladeRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
     {
-        mt::make_lookat_m4( _viewMatrix, _eye, _at, _up );
+        mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
     }
 }	// namespace Menge

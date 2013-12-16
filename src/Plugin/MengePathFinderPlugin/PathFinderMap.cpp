@@ -375,7 +375,9 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_slitherPath( const Poly2Tri::Triangle * _from, const Poly2Tri::Triangle * _to, TVectorPathPoint & _path )
+	typedef std::vector<Poly2Tri::Point *> TVectorPathPoint;
+	//////////////////////////////////////////////////////////////////////////
+	static void s_slitherPath( Poly2Tri::Point * _pt, const Poly2Tri::Triangle * _from, const Poly2Tri::Triangle * _to, TVectorPathPoint & _path )
 	{
 		if( _from == _to )
 		{
@@ -408,10 +410,13 @@ namespace Menge
 			{
 				return;
 			}
+			
+			if( _pt != p0_min )
+			{
+				_path.push_back( p0_min );
+			}
 
-			_path.push_back( p0_min );
-
-			s_slitherPath( tr_neihgbor0, _to, _path );
+			s_slitherPath( p0_min, tr_neihgbor0, _to, _path );
 		}
 		else if( w1_min <= w0_min && w1_min <= w2_min )
 		{
@@ -420,9 +425,12 @@ namespace Menge
 				return;
 			}
 			
-			_path.push_back( p1_min );
+			if( _pt != p1_min )
+			{
+				_path.push_back( p1_min );
+			}
 
-			s_slitherPath( tr_neihgbor1, _to, _path );
+			s_slitherPath( p1_min, tr_neihgbor1, _to, _path );
 		}
 		else if( w2_min <= w0_min && w2_min <= w1_min )
 		{
@@ -431,9 +439,12 @@ namespace Menge
 				return;
 			}
 
-			_path.push_back( p2_min );
+			if( _pt != p2_min )
+			{
+				_path.push_back( p2_min );
+			}
 
-			s_slitherPath( tr_neihgbor2, _to, _path );
+			s_slitherPath( p2_min, tr_neihgbor2, _to, _path );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -472,7 +483,7 @@ namespace Menge
 
 		TVectorPathPoint path;
 
-		s_slitherPath( tr_from, tr_to, path );
+		s_slitherPath( nullptr, tr_from, tr_to, path );
 		
 		return true;
 	}

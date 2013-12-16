@@ -35,7 +35,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
+            mt.alphaTestEnable = false;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;
@@ -67,7 +67,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
+            mt.alphaTestEnable = false;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;
@@ -83,7 +83,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
+            mt.alphaTestEnable = false;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;
@@ -113,7 +113,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
+            mt.alphaTestEnable = false;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;
@@ -143,7 +143,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
+            mt.alphaTestEnable = false;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;
@@ -175,7 +175,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
+            mt.alphaTestEnable = false;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;
@@ -191,7 +191,7 @@ namespace Menge
             RenderMaterial mt;
 
             mt.alphaBlendEnable = true;
-            mt.alphaTestEnable = true;
+            mt.alphaTestEnable = false;
             mt.depthBufferWriteEnable = false;
 
             mt.blendSrc = BF_SOURCE_ALPHA;

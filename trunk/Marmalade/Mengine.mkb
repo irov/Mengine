@@ -102,6 +102,11 @@ files
     ("../src/Service/ServiceCache")	
 	"*.h"
 	"*.cpp"
+    
+    [Service/ServiceModule]
+    ("../src/Service/ServiceModule")	
+	"*.h"
+	"*.cpp"
 
     [Service/ServiceConverter]
     ("../src/Service/ServiceConverter")	

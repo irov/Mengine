@@ -207,32 +207,6 @@ namespace Menge
 		//this->injectTasks_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class FThreadTaskComplete
-		{
-		public:
-			bool operator () ( ThreadTaskHandle & taskThread ) const
-			{			
-				ThreadTaskInterface * task = taskThread.task;
-
-				task->update();
-
-				if( task->isComplete() == true )
-				{
-					return false;
-				}
-
-				if( task->isInterrupt() == true )
-				{
-					return false;
-				}
-
-				return true;
-			}
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::testComplete_()
 	{
 		if( m_taskThread.empty() == true )
@@ -240,18 +214,15 @@ namespace Menge
 			return;
 		}
 		
-		TVectorThreadTaskHandle::iterator it_remove = 
-			std::partition( m_taskThread.begin(), m_taskThread.end(), FThreadTaskComplete());
-
 		for( TVectorThreadTaskHandle::iterator 
-			it = it_remove,
+			it = m_taskThread.begin(),
 			it_end = m_taskThread.end();
 		it != it_end;
-		++it )
+		/*++it*/ )
 		{
-			ThreadTaskHandle & taskThread = *it;
+			ThreadTaskInterface * task = it->task;
 
-			ThreadTaskInterface * task = taskThread.task;
+			task->update();
 
 			if( task->isInterrupt() == true )
 			{
@@ -261,9 +232,15 @@ namespace Menge
 			{
 				task->onComplete();
 			}
-		}
+			else
+			{
+				++it;
 
-		m_taskThread.erase( it_remove, m_taskThread.end() );
+				continue;
+			}
+
+			it = m_taskThread.erase( it );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentity * ThreadEngine::getThreadIdentity_( ThreadTaskInterface * _task )

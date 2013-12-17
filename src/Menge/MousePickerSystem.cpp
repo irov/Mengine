@@ -75,6 +75,7 @@ namespace Menge
 		, m_arrow(nullptr)
 		, m_scene(nullptr)
 		, m_camera(nullptr)
+		, m_pickerTrapCount(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -106,6 +107,8 @@ namespace Menge
 	bool MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
 	{
 		TVectorPickerTrapStates states;
+		states.reserve(m_pickerTrapCount);
+
 		if( this->proccesTraps_( _point, states ) == false )
 		{
 			return false;
@@ -165,6 +168,8 @@ namespace Menge
 
 		m_pickerTrapState.push_back( state );
 		PickerTrapState & refState = m_pickerTrapState.back();
+
+		++m_pickerTrapCount;
 		
 		return &refState;
 	}
@@ -175,6 +180,8 @@ namespace Menge
 			->getCursorPosition();
 
 		TVectorPickerTrapStates states;
+		states.reserve(m_pickerTrapCount);
+
 		this->proccesTraps_( pos, states );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -206,15 +213,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		TVectorPickerTrapStates states;
-		if( this->proccesTraps_( _point, states ) == false )
+		m_states.clear();
+		if( this->proccesTraps_( _point, m_states ) == false )
 		{
 			return false;
 		}
 
 		for( TVectorPickerTrapStates::reverse_iterator
-			it = states.rbegin(),
-			it_end = states.rend();
+			it = m_states.rbegin(),
+			it_end = m_states.rend();
 		it != it_end;
 		++it )
 		{
@@ -240,15 +247,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		TVectorPickerTrapStates states;
-		if( this->proccesTraps_( _point, states ) == false )
+		m_states.clear();
+		if( this->proccesTraps_( _point, m_states ) == false )
 		{
 			return false;
 		}
 
 		for( TVectorPickerTrapStates::reverse_iterator
-			it = states.rbegin(),
-			it_end = states.rend();
+			it = m_states.rbegin(),
+			it_end = m_states.rend();
 		it != it_end;
 		++it )
 		{
@@ -279,15 +286,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		TVectorPickerTrapStates states;
-		if( this->proccesTraps_( _point, states ) == false )
+		m_states.clear();
+		if( this->proccesTraps_( _point, m_states ) == false )
 		{
 			return false;
 		}
 
 		for( TVectorPickerTrapStates::reverse_iterator
-			it = states.rbegin(),
-			it_end = states.rend();
+			it = m_states.rbegin(),
+			it_end = m_states.rend();
 		it != it_end;
 		++it )
 		{
@@ -319,15 +326,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		TVectorPickerTrapStates states;
-		if( this->proccesTraps_( _point, states ) == false )
+		m_states.clear();
+		if( this->proccesTraps_( _point, m_states ) == false )
 		{
 			return false;
 		}
 
 		for( TVectorPickerTrapStates::reverse_iterator
-			it = states.rbegin(),
-			it_end = states.rend();
+			it = m_states.rbegin(),
+			it_end = m_states.rend();
 		it != it_end;
 		++it )
 		{
@@ -358,15 +365,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
-		TVectorPickerTrapStates states;
-		if( this->proccesTraps_( _point, states ) == false )
+		m_states.clear();
+		if( this->proccesTraps_( _point, m_states ) == false )
 		{
 			return false;
 		}
 
 		for( TVectorPickerTrapStates::reverse_iterator
-			it = states.rbegin(),
-			it_end = states.rend();
+			it = m_states.rbegin(),
+			it_end = m_states.rend();
 		it != it_end;
 		++it )
 		{
@@ -397,8 +404,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::handleMouseEnter( const mt::vec2f & _point )
 	{
-		TVectorPickerTrapStates states;
-		this->proccesTraps_( _point, states );
+		m_states.clear();
+		this->proccesTraps_( _point, m_states );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::handleMouseLeave()
@@ -413,13 +420,14 @@ namespace Menge
 			return;
 		}
 
-		TVectorPickerTrapStates states;
-		PickerVisitor pv(states);
+		m_states.clear();
+		PickerVisitor pv(m_states);
+
 		pv.visit( m_scene );
 
 		for( TVectorPickerTrapStates::reverse_iterator
-			it = states.rbegin(),
-			it_end = states.rend();
+			it = m_states.rbegin(),
+			it_end = m_states.rend();
 		it != it_end;
 		++it )
 		{
@@ -521,8 +529,10 @@ namespace Menge
 			it != m_pickerTrapState.end(); )
 		{
 			if( it->dead == true )
-			{
+			{				
 				it = m_pickerTrapState.erase( it );
+
+				--m_pickerTrapCount;
 			}
 			else
 			{

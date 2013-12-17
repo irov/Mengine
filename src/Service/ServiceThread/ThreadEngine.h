@@ -2,6 +2,8 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
+#	include <list>
+
 namespace Menge
 {
     class LogServiceInterface;
@@ -63,7 +65,7 @@ namespace Menge
 
         size_t m_threadCount;
         
-        typedef std::vector<ThreadTaskHandle> TVectorThreadTaskHandle;
+        typedef std::list<ThreadTaskHandle> TVectorThreadTaskHandle;
         TVectorThreadTaskHandle m_taskThread;
 	};
 }	// namespace Menge

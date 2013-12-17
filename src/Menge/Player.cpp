@@ -1362,7 +1362,7 @@ namespace Menge
         m_showDebugText %= 4;
 
         RENDER_SERVICE(m_serviceProvider)
-            ->enableDebugMode( m_showDebugText == 1 );
+            ->enableDebugMode( m_showDebugText > 1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 //#	endif

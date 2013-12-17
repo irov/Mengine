@@ -8,31 +8,21 @@ namespace Menge
 	ThreadJob::ThreadJob()
 		: m_serviceProvider(nullptr)
 		, m_sleep(0)
-		, m_mutexAdd(nullptr)
-		, m_mutexRemove(nullptr)
-		, m_mutexComplete(nullptr)
 		, m_enumerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadJob::~ThreadJob()
 	{
-		if( m_mutexAdd != nullptr )
+		for( size_t i = 0; i != 32; ++i )
 		{
-			m_mutexAdd->destroy();
-			m_mutexAdd = nullptr;
-		}
+			WorkerDesc & desc = m_workers[i];
 
-		if( m_mutexRemove != nullptr )
-		{
-			m_mutexRemove->destroy();
-			m_mutexRemove = nullptr;
-		}
-
-		if( m_mutexComplete != nullptr )
-		{
-			m_mutexComplete->destroy();
-			m_mutexComplete = nullptr;
+			if( desc.mutex != nullptr )
+			{
+				desc.mutex->destroy();
+				desc.mutex = nullptr;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////        
@@ -41,175 +31,91 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 		m_sleep = _sleep;
 
-		m_mutexAdd = THREAD_SERVICE(m_serviceProvider)
-			->createMutex();
+		for( size_t i = 0; i != 32; ++i )
+		{
+			WorkerDesc & desc = m_workers[i];
 
-		m_mutexRemove = THREAD_SERVICE(m_serviceProvider)
-			->createMutex();
+			
+			desc.mutex = THREAD_SERVICE(m_serviceProvider)
+				->createMutex();
 
-		m_mutexComplete = THREAD_SERVICE(m_serviceProvider)
-			->createMutex();
+			desc.worker = nullptr;
+			desc.id = 0;
+			desc.status = ETS_FREE;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ThreadJob::addWorker( ThreadWorkerInterface * _worker )
 	{
-		WorkerDesc desc;
+		for( size_t i = 0; i != 32; ++i )
+		{
+			WorkerDesc & desc = m_workers[i];
 
-		desc.worker = _worker;
+			if( desc.status != ETS_FREE )
+			{
+				continue;
+			}
 
-		desc.id = ++m_enumerator;
-		desc.done = false;
+			desc.mutex->lock();
 
-		m_mutexAdd->lock();
-		m_workersAdd.push_back( desc );
-		m_mutexAdd->unlock();
+			desc.worker = _worker;
+			desc.id = ++m_enumerator;
+			desc.status = ETS_WORK;
 
-		return desc.id;
+			desc.mutex->unlock();
+
+			return desc.id;
+		}
+
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::removeWorker( size_t _id )
 	{
-		m_mutexAdd->lock();
-		for( TWorkers::iterator
-			it = m_workersAdd.begin(),
-			it_end = m_workersAdd.end();
-		it != it_end;
-		++it )
+		for( size_t i = 0; i != 32; ++i )
 		{
-			WorkerDesc & desc = *it;
+			WorkerDesc & desc = m_workers[i];
 
 			if( desc.id != _id )
 			{
 				continue;
 			}
 
-			if( desc.done == true )
-			{
-				break;
-			}
+			desc.mutex->lock();
+			ThreadWorkerInterface * worker = desc.worker;
+			
+			desc.id = 0;
+			desc.worker = nullptr;
+			desc.status = ETS_FREE;
+			
+			worker->onDone( _id );
 
-			desc.done = true;
-			desc.worker->onDone( desc.id );			
-
-			m_workersAdd.erase( it );
-
+			desc.mutex->unlock();
+			
 			break;
 		}
-		m_mutexAdd->unlock();
-
-		WorkerDesc desk;
-		desk.worker = nullptr;
-		desk.id = _id;
-		desk.done = false;
-
-		m_mutexRemove->lock();
-		m_workersRemove.push_back( desk );
-		m_mutexRemove->unlock();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadJob::check_remove( size_t _id )
-	{
-		for( TWorkers::iterator
-			it = m_workersRemove.begin(),
-			it_end = m_workersRemove.end();
-		it != it_end;
-		++it )
-		{
-			WorkerDesc & desc = *it;
-
-			if( desc.done == true )
-			{
-				continue;
-			}
-
-			if( desc.id == _id )
-			{
-				desc.done = true;
-
-				return true;
-			}
-		}
-
-		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadJob::_onMain()
 	{
 		while( this->isInterrupt() == false )
 		{   
-			m_mutexAdd->lock();
-			for( TWorkers::iterator
-				it = m_workersAdd.begin(),
-				it_end = m_workersAdd.end();
-			it != it_end;
-			++it)
+			for( size_t i = 0; i != 32; ++i )
 			{
-				WorkerDesc & desc = *it;
+				WorkerDesc & desc = m_workers[i];
 
-				if( desc.done == true )
+				desc.mutex->lock();
+
+				if( desc.status == ETS_WORK )
 				{
-					continue;
+					if( desc.worker->onWork( desc.id ) == false )
+					{
+						desc.status = ETS_DONE;
+					}
 				}
 
-				WorkerDesc desc_work;
-				desc_work.worker = desc.worker;
-				desc_work.id = desc.id;
-				desc_work.done = false;
-
-				m_workers.push_back( desc_work );
-
-				desc.done = true;
+				desc.mutex->unlock();	
 			}
-			m_mutexAdd->unlock();
-
-			for( TWorkers::iterator
-				it = m_workers.begin(),
-				it_end = m_workers.end();
-			it != it_end;)
-			{
-				WorkerDesc & desc = *it;
-
-				m_mutexRemove->lock();
-				bool skip = this->check_remove( desc.id );				
-
-				if( skip == true || desc.worker->onWork( desc.id ) == false )
-				{
-					WorkerDesc desc_complete;
-					desc_complete.worker = desc.worker;
-					desc_complete.id = desc.id;
-					desc_complete.done = false;
-
-					m_mutexComplete->lock();
-					m_workersComplete.push_back( desc_complete );
-					m_mutexComplete->unlock();
-
-					it = m_workers.erase( it );
-				}
-				else
-				{
-					++it;
-				}
-				m_mutexRemove->unlock();
-			}            
-
-			m_mutexComplete->lock();
-			for( TWorkers::iterator
-				it = m_workersComplete.begin(),
-				it_end = m_workersComplete.end();
-			it != it_end;)
-			{
-				WorkerDesc & desc = *it;
-
-				if( desc.done == true )
-				{
-					it = m_workersComplete.erase( it );
-				}
-				else
-				{
-					++it;
-				}
-			}
-			m_mutexComplete->unlock();
 
 			THREAD_SERVICE(m_serviceProvider)
 				->sleep( m_sleep );
@@ -220,61 +126,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::_onUpdate()
 	{
-		m_mutexComplete->lock();
-		for( TWorkers::iterator
-			it = m_workersComplete.begin(),
-			it_end = m_workersComplete.end();
-		it != it_end;
-		++it )
+		for( size_t i = 0; i != 32; ++i )
 		{
-			WorkerDesc & desc = *it;
+			WorkerDesc & desc = m_workers[i];
 
-			if( desc.done == true )
+			if( desc.status != ETS_DONE )
 			{
 				continue;
 			}
 
-			desc.worker->onDone( desc.id );
-			desc.done = true;
+			desc.mutex->lock();
+			ThreadWorkerInterface * worker = desc.worker; 
+			size_t id = desc.id;
+			
+			desc.worker = nullptr;
+			desc.id = 0;
+			desc.status = ETS_FREE;
+
+			worker->onDone( id );
+			desc.mutex->unlock();
 		}
-		m_mutexComplete->unlock();
-
-		m_mutexAdd->lock();
-		for( TWorkers::iterator
-			it = m_workersAdd.begin(),
-			it_end = m_workersAdd.end();
-		it != it_end;)
-		{
-			WorkerDesc & desc = *it;
-
-			if( desc.done == true )
-			{
-				it = m_workersAdd.erase( it );
-			}
-			else
-			{
-				++it;
-			}
-		}
-		m_mutexAdd->unlock();
-
-		m_mutexRemove->lock();
-		for( TWorkers::iterator
-			it = m_workersRemove.begin(),
-			it_end = m_workersRemove.end();
-		it != it_end;)
-		{
-			WorkerDesc & desc = *it;
-
-			if( desc.done == true )
-			{
-				it = m_workersRemove.erase( it );
-			}
-			else
-			{
-				++it;
-			}
-		}
-		m_mutexRemove->unlock();
 	}
 }

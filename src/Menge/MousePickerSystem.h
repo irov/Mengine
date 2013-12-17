@@ -71,5 +71,9 @@ namespace Menge
 
 		typedef std::list<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;
+
+		TVectorPickerTrapStates m_states;
+
+		size_t m_pickerTrapCount;
 	};
 }

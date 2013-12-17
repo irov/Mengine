@@ -20,7 +20,7 @@
 #	include "Core/Viewport.h"
 
 #   include "stdex/intrusive_slug_list_size.h"
-#   include "stdex/intrusive_slug_size.h"
+#   include "stdex/intrusive_slug.h"
 
 namespace Menge
 {		
@@ -40,7 +40,7 @@ namespace Menge
 	class Node;
 
     typedef stdex::intrusive_slug_list_size<Node> TListNodeChild;
-	typedef stdex::intrusive_slug_size<Node> TSlugChild;
+	typedef stdex::intrusive_slug<TListNodeChild> TSlugChild;
 
 	class Node
         : public stdex::intrusive_slug_linked<Node>

@@ -8,6 +8,8 @@ ModulePathFinder
 	ModulePathFinder.h
 	PathFinderMap.cpp
 	PathFinderMap.h
+    PathFinderWay.cpp
+    PathFinderWay.h
 )
 
 INCLUDE_DIRECTORIES(    

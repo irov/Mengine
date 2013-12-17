@@ -14,6 +14,13 @@ namespace Menge
 		virtual void onDone( size_t _id ) = 0;
 	};
 
+	enum EThreadStatus
+	{
+		ETS_WORK,
+		ETS_DONE,
+		ETS_FREE
+	};
+
 	class ThreadJob
 		: public ThreadTask
 	{
@@ -38,25 +45,19 @@ namespace Menge
 	public:
 		struct WorkerDesc
 		{
-			ThreadWorkerInterface * worker;
+			ThreadMutexInterface * mutex;
+
+			ThreadWorkerInterface * worker;			
 			size_t id;
-			bool done;
+			EThreadStatus status;
 		};
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 		size_t m_sleep;
-
-		ThreadMutexInterface * m_mutexAdd;
-		ThreadMutexInterface * m_mutexRemove;
-		ThreadMutexInterface * m_mutexComplete;        
-
+  
 		size_t m_enumerator;
-
-		typedef std::list<WorkerDesc> TWorkers; 
-		TWorkers m_workers;
-		TWorkers m_workersAdd;        
-		TWorkers m_workersComplete;
-		TWorkers m_workersRemove;
+		
+		WorkerDesc m_workers[32];
 	};
 }

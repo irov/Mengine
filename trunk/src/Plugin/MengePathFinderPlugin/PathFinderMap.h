@@ -2,6 +2,8 @@
 
 #	include "Interface/ModuleInterface.h"
 
+#	include "PathFinderWay.h"
+
 #	include "Core/Polygon.h"
 
 #	include "poly2tri.h"
@@ -11,7 +13,7 @@ namespace Menge
 	class PathFinderMap
 	{
 	public:
-		PathFinderMap();
+		PathFinderMap( ServiceProviderInterface * _serviceProvider );
 		~PathFinderMap();
 
 	public:
@@ -25,12 +27,17 @@ namespace Menge
 		bool generateMap();
 
 	public:
-		bool findPath( const mt::vec2f & _from, const mt::vec2f & _to );
+		PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to );
+
+	public:
+		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
 
 	protected:
 		bool testHoles_( size_t _index, const Polygon & _polygon ) const;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		Polygon m_mapPolygon;
 		float m_unitSize;
 
@@ -42,5 +49,8 @@ namespace Menge
 		size_t m_cachePointUse;
 
 		Poly2Tri::SweepContext m_sweepContext;
+
+		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
+		TVectorPathFinderWay m_pathFinderWays;
 	};
 }

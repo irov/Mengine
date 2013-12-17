@@ -1,10 +1,12 @@
 #	include "PathFinderMap.h"
+#	include "PathFinderWay.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderMap::PathFinderMap()
-		: m_cachePointUse(0)
+	PathFinderMap::PathFinderMap( ServiceProviderInterface * _serviceProvider )
+		: m_serviceProvider(_serviceProvider)
+		, m_cachePointUse(0)
 		, m_unitSize(20.f)
 	{
 	}
@@ -36,7 +38,7 @@ namespace Menge
 
 		--numpoints;
 
-		const Polygon::ring_type & ring = _big.outer();
+		Polygon::ring_type & ring = _big.outer();
 
 		for( size_t i = 0; i != numpoints; ++i )
 		{
@@ -61,6 +63,9 @@ namespace Menge
 			mt::norm_v2( d_norm, d );
 
 			d_norm *= _radius;
+
+			mt::vec2f & p_new = ring[i];
+			p_new += d_norm;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -305,34 +310,6 @@ namespace Menge
 		s_wavePathTriangle( n2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static Poly2Tri::Point * s_findMinimal( Poly2Tri::Point * _p0, Poly2Tri::Point * _p1, Poly2Tri::Point * _p2)
-	{
-		if( _p0->weight < _p1->weight )
-		{
-			if( _p0->weight < _p2->weight )
-			{
-				return _p0;
-			}
-			else
-			{
-				return _p2;
-			}
-		}
-		else
-		{
-			if( _p1->weight < _p2->weight )
-			{
-				return _p1;
-			}
-			else
-			{
-				return _p2;
-			}
-		}
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	static Poly2Tri::Point * s_findMinimalTriangle( Poly2Tri::Triangle * _tr )
 	{
 		if( _tr == nullptr || _tr->IsInterior() == false )
@@ -370,20 +347,12 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<Poly2Tri::Point *> TVectorPathPoint;
-	//////////////////////////////////////////////////////////////////////////
 	static void s_slitherPath( Poly2Tri::Point * _pt, const Poly2Tri::Triangle * _from, const Poly2Tri::Triangle * _to, TVectorPathPoint & _path )
 	{
 		if( _from == _to )
 		{
 			return;
 		}
-
-		Poly2Tri::Point * p_from0 = _from->GetPoint( 0 );
-		Poly2Tri::Point * p_from1 = _from->GetPoint( 1 );
-		Poly2Tri::Point * p_from2 = _from->GetPoint( 2 );
-
-		//Poly2Tri::Point * p_min = s_findMinimal( p_from0, p_from1, p_from2 );
 
 		Poly2Tri::Triangle * tr_neihgbor0 = _from->GetNeighbor( 0 );
 		Poly2Tri::Triangle * tr_neihgbor1 = _from->GetNeighbor( 1 );
@@ -392,8 +361,6 @@ namespace Menge
 		Poly2Tri::Point * p0_min = s_findMinimalTriangle( tr_neihgbor0 );
 		Poly2Tri::Point * p1_min = s_findMinimalTriangle( tr_neihgbor1 );
 		Poly2Tri::Point * p2_min = s_findMinimalTriangle( tr_neihgbor2 );
-
-		//float wp_min = p_min->weight;
 
 		float w0_min = p0_min ? p0_min->weight : 1024.f * 1024.f;
 		float w1_min = p1_min ? p1_min->weight : 1024.f * 1024.f;
@@ -443,7 +410,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
+	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
 		const Poly2Tri::TVectorTriangle & triangles = m_sweepContext.GetTriangles();
 
@@ -452,7 +419,7 @@ namespace Menge
 
 		if( tr_to == nullptr || tr_to->IsInterior() == false || tr_from == nullptr || tr_from->IsInterior() == false )
 		{
-			return false;
+			return nullptr;
 		}
 		
 		for( size_t i = 0; i != m_cachePointUse; ++i )
@@ -479,8 +446,152 @@ namespace Menge
 		TVectorPathPoint path;
 		s_slitherPath( nullptr, tr_from, tr_to, path );
 
+		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
 
+		way->initialize( _from, _to, path );
 		
-		return true;
+		m_pathFinderWays.push_back( way );
+
+		return way;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	{
+		const Poly2Tri::TVectorTriangle & triangles = m_sweepContext.GetTriangles();
+
+		for( Poly2Tri::TVectorTriangle::const_iterator
+			it = triangles.begin(),
+			it_end = triangles.end();
+		it != it_end;
+		++it )
+		{
+			Poly2Tri::Triangle * tr = *it;
+
+			const Poly2Tri::Point * p0 = tr->GetPoint(0);
+			const Poly2Tri::Point * p1 = tr->GetPoint(1);
+			const Poly2Tri::Point * p2 = tr->GetPoint(2);
+
+			RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+				->getDebugRenderVertex2D( 3 * 2 );
+
+			vertices[0].pos.x = p0->x;
+			vertices[0].pos.y = p0->y;
+			vertices[0].pos.z = 0.f;
+
+			vertices[1].pos.x = p1->x;
+			vertices[1].pos.y = p1->y;
+			vertices[1].pos.z = 0.f;
+
+
+			vertices[2].pos.x = p1->x;
+			vertices[2].pos.y = p1->y;
+			vertices[2].pos.z = 0.f;
+
+			vertices[3].pos.x = p2->x;
+			vertices[3].pos.y = p2->y;
+			vertices[3].pos.z = 0.f;
+
+
+			vertices[4].pos.x = p2->x;
+			vertices[4].pos.y = p2->y;
+			vertices[4].pos.z = 0.f;
+
+			vertices[5].pos.x = p0->x;
+			vertices[5].pos.y = p0->y;
+			vertices[5].pos.z = 0.f;
+
+			for( size_t i = 0; i != 6; ++i )
+			{
+				vertices[i].color = 0xffffffff;
+				vertices[i].uv.x = 0.f;
+				vertices[i].uv.y = 0.f;
+				vertices[i].uv2.x = 0.f;
+				vertices[i].uv2.y = 0.f;
+			}
+
+			const RenderMaterial * material = RENDER_SERVICE(m_serviceProvider)
+				->getDebugMaterial();
+
+			RENDER_SERVICE(m_serviceProvider)
+				->addRenderLine( _viewport, _camera, material, nullptr, 0, vertices, 6 );
+		}
+
+		for( THoles::iterator
+			it = m_holes.begin(),
+			it_end = m_holes.end();
+		it != it_end;
+		++it )
+		{
+			const Polygon & polygon = it->second;
+
+			size_t numpoints = boost::geometry::num_points(polygon);
+
+			if( numpoints == 0 )
+			{
+				continue;
+			}
+
+			size_t vertexCount = numpoints * 2;
+
+			RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+				->getDebugRenderVertex2D( vertexCount );
+
+			if( vertices == nullptr )
+			{
+				return;
+			}
+
+			const Polygon::ring_type & ring = polygon.outer();
+
+			for( size_t i = 0; i != numpoints; ++i )
+			{
+				size_t j = (i + 1) % numpoints;
+
+				mt::vec2f trP0 = ring[i];
+				RenderVertex2D & v0 = vertices[i*2+0];
+
+				v0.pos.x = trP0.x;
+				v0.pos.y = trP0.y;
+				v0.pos.z = 0.f;
+
+				v0.color = 0xFF00FFFF;
+				v0.uv.x = 0.f;
+				v0.uv.y = 0.f;
+				v0.uv2.x = 0.f;
+				v0.uv2.y = 0.f;
+
+				mt::vec2f trP1 = ring[j];
+				RenderVertex2D & v1 = vertices[i*2+1];
+
+				v1.pos.x = trP1.x;
+				v1.pos.y = trP1.y;
+				v1.pos.z = 0.f;
+
+				v1.color = 0xFF00FFFF;
+				v1.uv.x = 0.f;
+				v1.uv.y = 0.f;
+				v1.uv2.x = 0.f;
+				v1.uv2.y = 0.f;
+			}
+
+			const RenderMaterial * debugMaterial = RENDER_SERVICE(m_serviceProvider)
+				->getDebugMaterial();
+
+			RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial, nullptr, 0
+				, vertices
+				, vertexCount
+				);
+		}
+
+		for( TVectorPathFinderWay::iterator
+			it = m_pathFinderWays.begin(),
+			it_end = m_pathFinderWays.end();
+		it != it_end;
+		++it )
+		{
+			PathFinderWay * way = *it;
+
+			way->render( _viewport, _camera );
+		}
 	}
 }

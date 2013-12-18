@@ -11,6 +11,8 @@
 
 #	include <stdex/xml_sax_parser.h>
 
+#	include <utf8.h>
+
 #   include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -106,7 +108,33 @@ namespace Menge
 					else if( strcmp( key, "Value" ) == 0 )
 					{
 						size_t value_size = strlen( value );
-						textEntry.text = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+
+						const char * value_end = value + value_size;
+						const char * value_valid = utf8::find_invalid( value, value_end );
+
+						if( value_valid != value_end )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read text |%s| invalid utf8 char |%s|"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, value
+								, value_valid
+								);
+
+							std::string str(value, value_size);
+							std::string temp;
+							utf8::replace_invalid(str.begin(), str.end(), back_inserter(temp));
+
+							LOGGER_ERROR(m_serviceProvider)("replace to |%s|"
+								, temp.c_str()
+								);
+
+							textEntry.text = Helper::stringizeString( m_serviceProvider, temp );
+						}
+						else
+						{
+							textEntry.text = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+						}
 					}
 					else if( strcmp( key, "Font" ) == 0 )
 					{
@@ -120,7 +148,7 @@ namespace Menge
 						float charOffset = 0.f;
 						if( sscanf( value, "%f", &charOffset ) != 1 )
 						{
-							LOGGER_WARNING(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s charOffset %s"
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s charOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -135,7 +163,7 @@ namespace Menge
 						float lineOffset = 0.f;
 						if( sscanf( value, "%f", &lineOffset ) != 1 )
 						{
-							LOGGER_WARNING(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()

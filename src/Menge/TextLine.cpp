@@ -37,13 +37,33 @@ namespace Menge
         //const char * text_it = text_str;
         //const char * text_end = text_str + text_len + 1;
 
+		const RenderTextureInterfacePtr & image = _resource->getTextureFont();
+
+		float inv_image_width = 1.f / (float)image->getWidth();
+		float inv_image_height = 1.f / (float)image->getHeight();
+
+		const ResourceGlyph * resourceGlyph = _resource->getResourceGlyph();
+		float initSize = 1.f / resourceGlyph->getFontHeight();
+
 		for( const char
             *text_it = text_str,
             *text_end = text_str + text_len + 1;
         text_it != text_end;
         )
-		{				
-            size_t code = utf8::next(text_it, text_end);
+		{			
+			size_t code = 0;
+			utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+			
+			if( err != utf8::internal::UTF8_OK )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "TextLine for resource %s invalid glyph |%s| err code %d"
+					, _resource->getName().c_str()
+					, text_it
+					, err
+					);
+
+				continue;
+			}
 
             if( code == 0 )
             {
@@ -64,7 +84,7 @@ namespace Menge
 				continue;
 			}
 
-			const RenderTextureInterfacePtr & image = _resource->getTextureFont();
+			
 					
 			CharData charData;
 
@@ -77,14 +97,10 @@ namespace Menge
 
 			charData.uv = glyph->getUV();
 
-			mt::vec2f imageInvSize;
-			imageInvSize.x = 1.f / (float)image->getWidth();
-			imageInvSize.y = 1.f / (float)image->getHeight();
-
-			charData.uv.x *= imageInvSize.x;
-			charData.uv.y *= imageInvSize.y;
-			charData.uv.z *= imageInvSize.x;
-			charData.uv.w *= imageInvSize.y;
+			charData.uv.x *= inv_image_width;
+			charData.uv.y *= inv_image_height;
+			charData.uv.z *= inv_image_width;
+			charData.uv.w *= inv_image_height;
 
 			charData.ratio = glyph->getRatio();
 			charData.offset = glyph->getOffset();
@@ -93,22 +109,25 @@ namespace Menge
 			
 			charData.size *= m_height;
 
-			const ResourceGlyph * resourceGlyph = _resource->getResourceGlyph();
+			
 
-			float initSize = resourceGlyph->getFontHeight();
-			charData.size /= initSize;
+			
+			charData.size *= initSize;
 			
 			if( m_charsData.empty() == false )
 			{
 				const CharData & prevChar = m_charsData.back();
 
                 GlyphChar prev_code = prevChar.code;
-				const Glyph * prevGlyph = _resource->getGlyph( prev_code );
 
-                GlyphChar curr_code = charData.code;
-				float kerning = prevGlyph->getKerning( curr_code );
+				const Glyph * prevGlyph; 				
+				if( _resource->hasGlyph( prev_code, &prevGlyph ) == true )
+				{
+	                GlyphChar curr_code = charData.code;
+					float kerning = prevGlyph->getKerning( curr_code );
 
-				totalKerning += kerning;
+					totalKerning += kerning;
+				}
 			}
 
 			charData.offset.x += totalKerning;

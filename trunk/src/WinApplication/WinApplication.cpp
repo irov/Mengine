@@ -2398,7 +2398,7 @@ namespace Menge
 
 					::SetCursor( m_cursor );
 
-					if( m_clipingCursor == TRUE )
+					if( m_clipingCursor != FALSE )
 					{
 						::ClipCursor( &m_clipingCursorRect );
 					}
@@ -2824,7 +2824,7 @@ namespace Menge
 
 		m_active = _active;
 
-		if( m_clipingCursor == TRUE )
+		if( m_clipingCursor != FALSE )
 		{
 			::ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
 		}
@@ -3094,7 +3094,7 @@ namespace Menge
 
 		WChar * extention = fileName + (fn_len - 4);
 
-		if( wcscpy( extention, L".scr" ) == 0 )
+		if( wcscmp( extention, L".scr" ) == 0 )
 		{
 			return true;
 		}

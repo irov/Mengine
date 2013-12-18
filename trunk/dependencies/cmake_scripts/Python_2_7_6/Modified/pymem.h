@@ -2,15 +2,15 @@
 #define Py_PYMEM_H
 
 #include "pyport.h"
-//#include "stdex/allocator.h"
+#include "stdex/allocator.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#	define stdex_malloc malloc
-#	define stdex_realloc realloc
-#	define stdex_free free
+//#	define stdex_malloc malloc
+//#	define stdex_realloc realloc
+//#	define stdex_free free
 
 PyAPI_FUNC(void *) PyMem_Malloc(size_t);
 PyAPI_FUNC(void *) PyMem_Realloc(void *, size_t);

@@ -24,6 +24,7 @@ set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 #ADD_SUBDIRECTORY( libvpx )
 ADD_SUBDIRECTORY( stdex )
 ADD_SUBDIRECTORY( zlib )
+ADD_SUBDIRECTORY( poly2tri )
 #ADD_SUBDIRECTORY( icu )
 
 #ADD_SUBDIRECTORY( Box2D )
@@ -33,6 +34,7 @@ ADD_SUBDIRECTORY( libPNG )
 ADD_SUBDIRECTORY( libwebp )
 
 ADD_SUBDIRECTORY( pybind )
+
 
 #if(MSVC)
 #    ADD_SUBDIRECTORY( xxbind )    
@@ -54,7 +56,8 @@ endif(MSVC)
 
 if(WIN32)
     #ADD_SUBDIRECTORY( tinyxml )
-    ADD_SUBDIRECTORY( Python_2_7_5 )    
+    #ADD_SUBDIRECTORY( Python_2_7_5 )
+    ADD_SUBDIRECTORY( Python_2_7_6 )
     ADD_SUBDIRECTORY( Python_3_3_1 )
 endif(WIN32)
 

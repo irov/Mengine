@@ -231,8 +231,7 @@ namespace Menge
         source->streamable = _streamable;
 		source->looped = false;
 
-		TMapSoundSource::iterator it_insert = 
-            m_soundSourceMap.insert( soundId, source ).first;
+		m_soundSourceMap.insert( soundId, source );
         
         this->updateSourceVolume_( source, 1.f );
 

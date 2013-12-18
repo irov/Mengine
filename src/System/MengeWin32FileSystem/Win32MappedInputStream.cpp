@@ -154,11 +154,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32MappedInputStream::seek( size_t _pos )
 	{
-        if( _pos < 0 )
-        {
-            _pos = 0;
-        }
-        else if( _pos > m_size )
+        if( _pos > m_size )
         {
             _pos = m_size;
         }

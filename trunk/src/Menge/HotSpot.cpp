@@ -22,6 +22,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
 		: m_debugColor(0x80FFFFFF)
+		, m_invalidatePolygonWM(true)
 		, m_outward(false)
 	{
         m_mousePickerAdapter.setHotspot( this );
@@ -44,6 +45,7 @@ namespace	Menge
 		boost::geometry::correct( m_polygon );
 
 		this->invalidateBoundingBox();
+		this->invalidatePolygonWM();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Polygon & HotSpot::getPolygon() const
@@ -117,6 +119,27 @@ namespace	Menge
 
 		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_invalidateWorldMatrix()
+	{
+		Node::_invalidateWorldMatrix();
+
+		this->invalidatePolygonWM();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::invalidatePolygonWM()
+	{
+		m_invalidatePolygonWM = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::updatePolygonWM_()
+	{
+		m_invalidatePolygonWM = false;
+
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		polygon_wm( m_polygonWM, m_polygon, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::activatePicker_()
@@ -246,14 +269,26 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _point )
     {
-		static Polygon polygonPick;
-		polygonPick.clear();
+		const Polygon & polygonWM = this->getPolygonWM();
 
-		mt::vec2f v(0.f, 0.f); 
-		boost::geometry::append( polygonPick, v );
-		boost::geometry::correct( polygonPick );
+		polygon_wm( m_polygonWMVM, polygonWM, _transform );
 
-		bool intersect = this->testPolygon( _transform, _point, polygonPick );
+		mt::box2f bb;
+		if( polygon_to_box2f( bb, m_polygonWMVM ) == false )
+		{
+			return false;
+		}
+
+		if( mt::is_intersect( bb, _point ) == false )
+		{
+			return false;
+		}
+
+		GeometryPoint p(_point.x, _point.y);
+
+		bool intersect = boost::geometry::intersects( m_polygonWMVM, p );
+
+		return intersect != m_outward;
 
         return intersect;
     }
@@ -261,18 +296,7 @@ namespace	Menge
 	bool HotSpot::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
 	{
 		(void)_radius;
-		//static Polygon polygonPick;
-		//polygonPick.clear();
 
-		//float half_radius = _radius * 0.5f;
-		//boost::geometry::append( polygonPick, mt::vec2f(-half_radius, -half_radius) );
-		//boost::geometry::append( polygonPick, mt::vec2f(half_radius, -half_radius) );
-		//boost::geometry::append( polygonPick, mt::vec2f(half_radius, half_radius) );
-		//boost::geometry::append( polygonPick, mt::vec2f(-half_radius, half_radius) );
-		//
-		//boost::geometry::correct( polygonPick );
-
-		//bool intersect = this->testPolygon( _transform, _point, polygonPick );
 		bool intersect = this->testPoint( _transform, _point );
 
 		return intersect;
@@ -280,31 +304,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::mat4f& _transform, const mt::vec2f & _point, const Polygon & _screenPoly )
 	{
-		static Polygon polygonWM;
-		polygonWM.clear();
+		const Polygon & polygonWM = this->getPolygonWM();
 
-		const mt::mat4f & wm = this->getWorldMatrix();
-
-		polygon_wm( polygonWM, m_polygon, wm );				
-
-		static Polygon polygonWMVM;
-		polygonWMVM.clear();
-
-		polygon_wm( polygonWMVM, polygonWM, _transform );
+		polygon_wm_and_transpose( m_polygonWMVM, polygonWM, _transform, -_point );
 
 		mt::box2f bb;
-		if( polygon_to_box2f( bb, polygonWMVM ) == false )
+		if( polygon_to_box2f( bb, m_polygonWMVM ) == false )
 		{
 			return false;
 		}
 
-		static Polygon polygonScreen;
-		polygonScreen.clear();
-
-		polygon_transpose( polygonScreen, _screenPoly, _point );
-
 		mt::box2f bb_screen;
-		if( polygon_to_box2f( bb_screen, polygonScreen ) == false )
+		if( polygon_to_box2f( bb_screen, _screenPoly ) == false )
 		{
 			return false;
 		}
@@ -314,7 +325,7 @@ namespace	Menge
 			return false;
 		}
 
-		bool intersect = boost::geometry::intersects( polygonWMVM, polygonScreen );
+		bool intersect = boost::geometry::intersects( m_polygonWMVM, _screenPoly );
 
 		return intersect != m_outward;
 	}

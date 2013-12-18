@@ -61,6 +61,14 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setEventListener( PyObject * _listener ) override;
 
+		void _invalidateWorldMatrix() override;
+
+	protected:
+		void invalidatePolygonWM();
+		void updatePolygonWM_();
+
+		inline const Polygon & getPolygonWM();
+
 	protected:
 		void _localHide( bool _value ) override;
 		void _freeze( bool _value ) override;
@@ -70,16 +78,28 @@ namespace Menge
 		void deactivatePicker_();
 
 	protected:
-		Polygon m_polygon;
-
-	protected:
 		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 
 	protected:
         HotspotMousePickerAdapter m_mousePickerAdapter;
 
-		bool m_outward;
+		Polygon m_polygon;
+		Polygon m_polygonWM;
+		Polygon m_polygonWMVM;
 
 		uint32_t m_debugColor;
+
+		bool m_outward;
+		bool m_invalidatePolygonWM;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const Polygon & HotSpot::getPolygonWM()
+	{
+		if( m_invalidatePolygonWM == true )
+		{
+			this->updatePolygonWM_();
+		}
+
+		return m_polygonWM;
+	}
 }

@@ -262,6 +262,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm )
 	{
+		_out.clear();
+
 		const Polygon::ring_type & ring = _polygon.outer();
 
 		for( Polygon::ring_type::const_iterator
@@ -276,8 +278,30 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void polygon_wm_and_transpose( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm, const mt::vec2f & _pos )
+	{
+		_out.clear();
+
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		for( Polygon::ring_type::const_iterator
+			it = ring.begin(),
+			it_end = ring.end();
+		it != it_end;
+		++it )
+		{
+			mt::vec2f v;
+			mt::mul_v2_m4(v, *it, _wm);
+			v += _pos;
+
+			boost::geometry::append( _out, v );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void polygon_transpose( Polygon & _out, const Polygon & _polygon, const mt::vec2f & _pos )
 	{
+		_out.clear();
+
 		const Polygon::ring_type & ring = _polygon.outer();
 
 		for( Polygon::ring_type::const_iterator

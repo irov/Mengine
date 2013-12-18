@@ -15,6 +15,7 @@
 #	include <boost/geometry/core/tag.hpp> 
 #	include <boost/geometry/geometries/polygon.hpp>
 #	include <boost/geometry/geometries/box.hpp>
+#	include <boost/geometry/geometries/point_xy.hpp>
 
 #	include <boost/geometry/strategies/agnostic/point_in_poly_winding.hpp>
 
@@ -74,6 +75,7 @@ namespace Menge
     typedef std::vector<mt::vec2f> TVectorPoints;
     typedef std::vector<uint16_t> TVectorIndices;
 
+	typedef boost::geometry::model::d2::point_xy<float> GeometryPoint;
     typedef boost::geometry::model::polygon<mt::vec2f> Polygon;
     typedef boost::geometry::model::box<mt::vec2f> Box;
 
@@ -81,6 +83,7 @@ namespace Menge
     bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result );
 	
     void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm );
+	void polygon_wm_and_transpose( Polygon & _out, const Polygon & _polygon, const mt::mat4f & _wm, const mt::vec2f & _pos );
 	void polygon_transpose( Polygon & _out, const Polygon & _polygon, const mt::vec2f & _pos );
 
     bool polygon_to_box2f( mt::box2f & _box2f, const Polygon & _polygon );

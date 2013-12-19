@@ -14,7 +14,7 @@ namespace Menge
 	class SoundEmitter
 		: public Node
 		, public Animatable
-		, public SoundNodeListenerInterface
+		, public SoundListenerInterface
 		, public Soundable
 	{
 	public:
@@ -24,9 +24,9 @@ namespace Menge
 	protected:
 		bool _play( float _time ) override;
 		bool _restart( float _time, size_t _enumerator ) override;
-		void _stop( size_t _enumerator ) override;
-		void _end( size_t _enumerator ) override;
-		bool _interrupt( size_t _enumerator ) override;
+		void _stop( size_t _id ) override;
+		void _end( size_t _id ) override;
+		bool _interrupt( size_t _id ) override;
 		void _setTiming( float _timing ) override;
 
     protected:
@@ -43,8 +43,8 @@ namespace Menge
         ResourceSound * getResourceSound() const;
 
     protected:
-		void listenSoundNodePaused() override;
-		void listenSoundNodeStopped() override;
+		void onSoundPause( size_t _soundId ) override;
+		void onSoundStop( size_t _soundId ) override;
 		
 	protected:
 		bool _activate() override;
@@ -61,7 +61,7 @@ namespace Menge
 
         SoundBufferInterface * m_soundBuffer;
         
-		unsigned int m_sourceID;
+		size_t m_sourceID;
 
 		bool m_isHeadMode;
 

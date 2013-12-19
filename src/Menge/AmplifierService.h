@@ -16,7 +16,7 @@ namespace	Menge
 
 	class AmplifierService
 		: public AmplifierServiceInterface
-		, public SoundNodeListenerInterface	
+		, public SoundListenerInterface	
 	{
 	public:
 		AmplifierService();
@@ -60,7 +60,7 @@ namespace	Menge
 		ConstString	m_currentPlaylistName;
 		Playlist * m_currentPlayList;
 
-		unsigned int m_sourceID;
+		size_t m_sourceID;
 		SoundBufferInterface * m_buffer;
 
 		bool m_play;
@@ -68,8 +68,8 @@ namespace	Menge
         bool m_turn;
 
     protected:
-		void listenSoundNodePaused() override;
-		void listenSoundNodeStopped() override;
+		void onSoundPause( size_t _id ) override;
+		void onSoundStop( size_t _id ) override;
 
 
     protected:

@@ -26,10 +26,10 @@ namespace	Menge
     public:
 		//////////////////////////////////////////////////////////////////////////
 		class MySoundNodeListenerInterface
-			: public SoundNodeListenerInterface
+			: public SoundListenerInterface
 		{
 		public:
-			MySoundNodeListenerInterface( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, unsigned int _sourceID, SoundBufferInterface * _soundBuffer, PyObject * _cb )
+			MySoundNodeListenerInterface( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, size_t _sourceID, SoundBufferInterface * _soundBuffer, PyObject * _cb )
 				: m_serviceProvider(_serviceProvider)
                 , m_resource(_resource)
 				, m_sourceID(_sourceID)
@@ -45,14 +45,14 @@ namespace	Menge
 			}
 
 		protected:
-			void listenSoundNodePaused() override
+			void onSoundPause( size_t _id ) override
 			{
 				//Empty
 			}
 
-			void listenSoundNodeStopped() override
+			void onSoundStop( size_t _id ) override
 			{				
-				if( m_cb != NULL && pybind::is_none( m_cb ) == false )
+				if( m_cb != nullptr && pybind::is_none( m_cb ) == false )
 				{
 					pybind::call( m_cb, "(i)", m_sourceID );
 				}
@@ -78,7 +78,7 @@ namespace	Menge
 		protected:
             ServiceProviderInterface * m_serviceProvider;
             ResourceSound * m_resource;
-			unsigned int m_sourceID;	
+			size_t m_sourceID;	
             SoundBufferInterface * m_soundBuffer;
 			PyObject * m_cb;
 		};
@@ -94,7 +94,7 @@ namespace	Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		unsigned int s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, PyObject * _cb )
+		size_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, PyObject * _cb )
 		{
 			ResourceSound * resource = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceSound>( _resourceName );
@@ -113,7 +113,7 @@ namespace	Menge
 
 			bool streamable = resource->isStreamable();
 
-			unsigned int sourceID = SOUND_SERVICE(m_serviceProvider)
+			size_t sourceID = SOUND_SERVICE(m_serviceProvider)
                 ->createSoundSource( true, soundBuffer, _type, streamable );
 
 			if( sourceID == 0 )
@@ -143,7 +143,7 @@ namespace	Menge
                 return 0;
 			}
 
-			SoundNodeListenerInterface * snlistener = 
+			SoundListenerInterface * snlistener = 
 				new MySoundNodeListenerInterface( m_serviceProvider, resource, sourceID, soundBuffer, _cb );
 
 			SOUND_SERVICE(m_serviceProvider)
@@ -152,9 +152,9 @@ namespace	Menge
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		size_t s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
 		{
-			unsigned int sourceID = s_createSoundSource( _resourceName, _loop, EST_SOUND, _cb );
+			size_t sourceID = s_createSoundSource( _resourceName, _loop, EST_SOUND, _cb );
 
 			if( sourceID == 0 )
 			{
@@ -171,9 +171,9 @@ namespace	Menge
 			return sourceID;
 		}
         //////////////////////////////////////////////////////////////////////////
-        unsigned int s_voicePlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		size_t s_voicePlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
         {
-            unsigned int sourceID = s_createSoundSource( _resourceName, _loop, EST_VOICE, _cb );
+            size_t sourceID = s_createSoundSource( _resourceName, _loop, EST_VOICE, _cb );
 
             if( sourceID == 0 )
             {
@@ -190,9 +190,9 @@ namespace	Menge
             return sourceID;
         }
 		//////////////////////////////////////////////////////////////////////////
-		unsigned int s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, PyObject * _cb )
+		size_t s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, PyObject * _cb )
 		{
-			unsigned int sourceID = s_createSoundSource(_resourceName, _loop, EST_SOUND, _cb);
+			size_t sourceID = s_createSoundSource(_resourceName, _loop, EST_SOUND, _cb);
 
 			if( sourceID == 0 )
 			{

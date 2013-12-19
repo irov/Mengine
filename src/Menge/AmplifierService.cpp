@@ -235,7 +235,7 @@ namespace Menge
             ->play( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::listenSoundNodeStopped()
+	void AmplifierService::onSoundStop( size_t _id )
 	{
 		if( m_play == false )
 		{
@@ -266,7 +266,7 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::listenSoundNodePaused()
+	void AmplifierService::onSoundPause( size_t _id )
 	{
 
 	}

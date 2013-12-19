@@ -4,6 +4,10 @@
 
 #   include <list>
 
+#	ifndef MENGINE_THREAD_JOB_WORK_COUNT
+#	define MENGINE_THREAD_JOB_WORK_COUNT 32
+#	endif
+
 namespace Menge 
 {
 	class ThreadWorkerInterface
@@ -58,6 +62,6 @@ namespace Menge
   
 		size_t m_enumerator;
 		
-		WorkerDesc m_workers[32];
+		WorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 	};
 }

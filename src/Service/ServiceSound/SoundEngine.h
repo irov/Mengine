@@ -21,22 +21,20 @@ namespace Menge
 {
 	enum ESoundSourceState
 	{
-		ESS_STOPPED = 0,	    // currently stopped
-		ESS_STOP_PLAY = 1,		// currently stopped, but need play
-		ESS_PLAYING = 2,		// currently playing
-		ESS_STOPPING = 3,		// currently playing, but need stop
-		ESS_PAUSED = 4,			// currently paused
-		ESS_PAUSING = 5,		// currently playing, but need pause
-		ESS_PAUSE_PLAY = 6,		// currently paused, but need play
-		ESS_NEED_RESTART = 7	// currently playing, but need restart
+		ESS_STOP = 0,	    // currently stopped
+		ESS_PLAY = 2,		// currently playing
+		ESS_PAUSE = 4,			// currently paused
 	};
 
 	struct SoundSourceDesc
 	{
-		SoundSourceInterface * soundSourceInterface;
-		SoundNodeListenerInterface * listener;
-		ThreadWorkerSoundBufferUpdate * taskSoundBufferUpdate;
-        size_t taskSoundBufferUpdateId;
+		size_t soundId;
+
+		SoundSourceInterface * source;
+		SoundListenerInterface * listener;
+
+		ThreadWorkerSoundBufferUpdate * worker;
+        size_t bufferId;
 
 		float timing;
 		float volume;
@@ -46,6 +44,7 @@ namespace Menge
 
         bool streamable;
 		bool looped;
+		bool turn;
 	};
 
 	class SoundEngine
@@ -71,7 +70,7 @@ namespace Menge
         void onTurnSound( bool _turn ) override;
 
     public:
-		unsigned int createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable ) override;
+		size_t createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable ) override;
 
     public:
 		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream ) override;  
@@ -90,30 +89,30 @@ namespace Menge
         float getVoiceVolume( const ConstString & _type ) const override;
 
 	public:
-		bool setSourceVolume( unsigned int _emitter, float _volume ) override;
-		float getSourceVolume( unsigned int _emitter ) const override;
+		bool setSourceVolume( size_t _emitter, float _volume ) override;
+		float getSourceVolume( size_t _emitter ) const override;
 
-		void releaseSoundSource( unsigned int _sourceID ) override;
+		void releaseSoundSource( size_t _sourceID ) override;
 
-		bool validSoundSource( unsigned int _sourceID ) const override;
+		bool validSoundSource( size_t _sourceID ) const override;
 		
 	public:
-		bool play( unsigned int _emitter ) override;
-		bool pause( unsigned int _emitter ) override;
-		bool stop( unsigned int _emitter ) override;
+		bool play( size_t _emitter ) override;
+		bool pause( size_t _emitter ) override;
+		bool stop( size_t _emitter ) override;
 
 	public:
-		void setLoop( unsigned int _emitter, bool _looped ) override;
-		bool getLoop( unsigned int _emitter ) const override;
+		void setLoop( size_t _emitter, bool _looped ) override;
+		bool getLoop( size_t _emitter ) const override;
 
 	public:
-		void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener ) override;
+		void setSourceListener( size_t _emitter, SoundListenerInterface* _listener ) override;
 		
 	public:
-		float getLengthMs( unsigned int _emitter ) const override;
+		float getLengthMs( size_t _emitter ) const override;
 		
-		bool setPosMs( unsigned int _emitter, float _pos ) override;
-		float getPosMs( unsigned int _emitter ) const override;
+		bool setPosMs( size_t _emitter, float _pos ) override;
+		float getPosMs( size_t _emitter ) const override;
 
 		void mute( bool _mute ) override;
 		bool isMute() const override;
@@ -124,8 +123,8 @@ namespace Menge
         void updateSourceVolume_( SoundSourceDesc * _source, float _volume );
 
     protected:
-        bool getSoundSourceDesc_( unsigned int _emitterId, SoundSourceDesc ** _desc );
-        bool getSoundSourceDesc_( unsigned int _emitterId, const SoundSourceDesc ** _desc ) const;
+        bool getSoundSourceDesc_( size_t _emitterId, SoundSourceDesc ** _desc );
+        bool getSoundSourceDesc_( size_t _emitterId, const SoundSourceDesc ** _desc ) const;
 
     protected:
         void playSounds_();
@@ -145,7 +144,7 @@ namespace Menge
 		MixerVolume m_musicVolume;
         MixerVolume m_voiceVolume;
 
-        unsigned int m_enumerator;
+        size_t m_enumerator;
 
 		struct SoundDesc
 		{
@@ -156,17 +155,13 @@ namespace Menge
         typedef stdex::template_pool<SoundSourceDesc, 32> TPoolSoundSourceDesc;
         TPoolSoundSourceDesc m_poolSoundSourceDesc;
 
-		typedef stdex::binary_vector<unsigned int, SoundSourceDesc *> TMapSoundSource;
+		typedef stdex::binary_vector<size_t, SoundSourceDesc *> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
-
+		
         ThreadJob m_threadSoundBufferUpdate;
 
         typedef FactoryPool<ThreadWorkerSoundBufferUpdate, 32> TPoolWorkerTaskSoundBufferUpdate;
         TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;
-
-		typedef std::vector<SoundNodeListenerInterface*> TVectorSourceListener;
-		TVectorSourceListener m_stopListeners;
-		TVectorSourceListener m_pauseListeners;
 
         bool m_silent;
 		bool m_muted;

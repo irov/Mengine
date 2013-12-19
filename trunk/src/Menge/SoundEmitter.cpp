@@ -132,7 +132,7 @@ namespace Menge
         return m_resourceSound;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenSoundNodePaused()
+	void SoundEmitter::onSoundPause( size_t _soundId )
 	{
 		if( m_onSoundPauseEvent == true )
 		{
@@ -140,13 +140,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenSoundNodeStopped()
+	void SoundEmitter::onSoundStop( size_t _soundId )
 	{
-		if( m_onSoundStopEvent )
-		{
-			this->end();
-			//this->callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
-		}
+		this->end();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_play( float _time )
@@ -186,17 +182,6 @@ namespace Menge
 
 		return false;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void SoundEmitter::pause()
-	//{
-	//	m_playing = false;
-	//	if( m_sourceID != 0 )
-	//	{
-	//		SoundEngine::get()
-	//			->pause( m_sourceID );
-	//	}
-	//	return;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_stop( size_t _enumerator )
 	{

@@ -14,7 +14,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadJob::~ThreadJob()
 	{
-		for( size_t i = 0; i != 32; ++i )
+		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			WorkerDesc & desc = m_workers[i];
 
@@ -31,10 +31,9 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 		m_sleep = _sleep;
 
-		for( size_t i = 0; i != 32; ++i )
+		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			WorkerDesc & desc = m_workers[i];
-
 			
 			desc.mutex = THREAD_SERVICE(m_serviceProvider)
 				->createMutex();
@@ -52,7 +51,7 @@ namespace Menge
 			return 0;
 		}
 
-		for( size_t i = 0; i != 32; ++i )
+		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			WorkerDesc & desc = m_workers[i];
 
@@ -72,7 +71,8 @@ namespace Menge
 			return desc.id;
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("ThreadJob::addWorker overworkers!!"
+		LOGGER_ERROR(m_serviceProvider)("ThreadJob::addWorker overworkers more %d"
+			, MENGINE_THREAD_JOB_WORK_COUNT
 			);
 
 		return 0;
@@ -85,7 +85,7 @@ namespace Menge
 			return;
 		}
 
-		for( size_t i = 0; i != 32; ++i )
+		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			WorkerDesc & desc = m_workers[i];
 
@@ -113,7 +113,7 @@ namespace Menge
 	{
 		while( this->isInterrupt() == false )
 		{   
-			for( size_t i = 0; i != 32; ++i )
+			for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 			{
 				WorkerDesc & desc = m_workers[i];
 
@@ -126,7 +126,7 @@ namespace Menge
 				if( desc.worker->onWork( desc.id ) == false )
 				{
 					desc.status = ETS_DONE;
-				}				
+				}
 				desc.mutex->unlock();	
 			}
 
@@ -139,7 +139,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::_onUpdate()
 	{
-		for( size_t i = 0; i != 32; ++i )
+		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			WorkerDesc & desc = m_workers[i];
 

@@ -24,11 +24,11 @@ namespace Menge
         EST_VOICE
     };
 
-	class SoundNodeListenerInterface
+	class SoundListenerInterface
 	{
 	public:
-		virtual void listenSoundNodePaused() = 0;
-		virtual void listenSoundNodeStopped() = 0;
+		virtual void onSoundPause( size_t _id ) = 0;
+		virtual void onSoundStop( size_t _id ) = 0;
 	};
 
 	class SoundBufferInterface
@@ -85,7 +85,7 @@ namespace Menge
 
     public:
 		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) = 0;
-		virtual SoundBufferInterface* createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
+		virtual SoundBufferInterface * createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
 	};
 
 #   define SOUND_SYSTEM( serviceProvider )\
@@ -108,7 +108,7 @@ namespace Menge
 		virtual void onTurnSound( bool _turn ) = 0;
 
 	public:
-		virtual unsigned int createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable ) = 0;
+		virtual size_t createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable ) = 0;
 
     public:
 		virtual SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
@@ -127,29 +127,29 @@ namespace Menge
         virtual float getVoiceVolume( const ConstString & _type ) const = 0;
 
     public:
-		virtual bool setSourceVolume( unsigned int _emitter, float _volume ) = 0;
-		virtual float getSourceVolume( unsigned int _emitter ) const = 0;
+		virtual bool setSourceVolume( size_t _emitter, float _volume ) = 0;
+		virtual float getSourceVolume( size_t _emitter ) const = 0;
 
-		virtual void releaseSoundSource( unsigned int _sourceID ) = 0;
-		virtual bool validSoundSource( unsigned int _sourceID ) const = 0;
-
-	public:
-		virtual void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener ) = 0;
+		virtual void releaseSoundSource( size_t _sourceID ) = 0;
+		virtual bool validSoundSource( size_t _sourceID ) const = 0;
 
 	public:
-		virtual bool play( unsigned int _emitter ) = 0;
-		virtual bool pause( unsigned int _emitter ) = 0;
-		virtual bool stop( unsigned int _emitter ) = 0;
+		virtual void setSourceListener( size_t _emitter, SoundListenerInterface* _listener ) = 0;
 
 	public:
-		virtual void setLoop( unsigned int _emitter, bool _looped ) = 0;
-		virtual bool getLoop( unsigned int _emitter ) const = 0;
+		virtual bool play( size_t _emitter ) = 0;
+		virtual bool pause( size_t _emitter ) = 0;
+		virtual bool stop( size_t _emitter ) = 0;
 
 	public:
-		virtual float getLengthMs( unsigned int _emitter ) const = 0;
+		virtual void setLoop( size_t _emitter, bool _looped ) = 0;
+		virtual bool getLoop( size_t _emitter ) const = 0;
+
+	public:
+		virtual float getLengthMs( size_t _emitter ) const = 0;
 		
-		virtual bool setPosMs( unsigned int _emitter, float _pos ) = 0;
-		virtual float getPosMs( unsigned int _emitter ) const = 0;
+		virtual bool setPosMs( size_t _emitter, float _pos ) = 0;
+		virtual float getPosMs( size_t _emitter ) const = 0;
 		
     public:
 		virtual void mute( bool _mute ) = 0;

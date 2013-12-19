@@ -53,7 +53,7 @@ namespace Menge
 
 		m_textureBuffer = m_texture->lock( &m_texturePitch, rect, false );
 
-		if( m_textureBuffer == NULL )
+		if( m_textureBuffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ThreadWorkerImageResourceCompile::initialize Invalid lock");
 

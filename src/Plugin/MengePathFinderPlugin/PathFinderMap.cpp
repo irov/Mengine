@@ -347,6 +347,8 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	typedef std::vector<Poly2Tri::Point *> TVectorPathPoint;
+	//////////////////////////////////////////////////////////////////////////
 	static void s_slitherPath( Poly2Tri::Point * _pt, const Poly2Tri::Triangle * _from, const Poly2Tri::Triangle * _to, TVectorPathPoint & _path )
 	{
 		if( _from == _to )
@@ -410,6 +412,94 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void s_pathToWay( const mt::vec2f & _from, const mt::vec2f & _to, TVectorWayPoint & _ways, const TVectorPathPoint & _path )
+	{
+		size_t pathCount = _path.size();
+		_ways.reserve( pathCount + 2 );
+
+		_ways.push_back( _from );
+
+		for( size_t i = 0; i != pathCount; ++i )
+		{
+			Poly2Tri::Point * point = _path[i];
+			_ways.push_back( mt::vec2f(point->x, point->y) );
+		}
+
+		_ways.push_back( _to );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways )
+	{
+		size_t wayCount = _ways.size();
+		
+		if( wayCount == 0 )
+		{
+			return;
+		}
+
+		const mt::vec2f & pf = _ways.front();
+
+		_fileter.push_back( pf );
+
+		for( size_t i = 0; i != wayCount - 2; )
+		{
+			const mt::vec2f & p0 = _ways[i + 0];
+
+			for( size_t j = i + 2; j != wayCount; ++j )
+			{
+				const mt::vec2f & p1 = _ways[j];
+
+				mt::vec2f dir;
+				mt::norm_v2( dir, p1 - p0 );
+
+				mt::vec2f perp;
+				mt::perp_left_v2( perp, dir );
+
+				perp *= m_unitSize * 0.5f;
+
+				Polygon way_polygon;
+				boost::geometry::append( way_polygon, p0 + perp );
+				boost::geometry::append( way_polygon, p1 + perp );
+				boost::geometry::append( way_polygon, p1 - perp );
+				boost::geometry::append( way_polygon, p0 - perp );
+
+				boost::geometry::correct( way_polygon );
+
+				bool intersects = false;
+
+				for( THoles::iterator
+					it = m_holes.begin(),
+					it_end = m_holes.end();
+				it != it_end;
+				++it )
+				{
+					const Polygon & hole = it->second;
+
+					if( boost::geometry::intersects( hole, way_polygon ) == true )
+					{
+						intersects = true;
+						break;
+					}
+				}
+
+				i = j - 1;
+
+				if( intersects == true )
+				{
+					const mt::vec2f & p2 = _ways[i];
+
+					_fileter.push_back( p2 );
+
+					break;
+				}
+			}
+		}
+
+		const mt::vec2f & pb = _ways.back();
+
+		_fileter.push_back( pb );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
 		const Poly2Tri::TVectorTriangle & triangles = m_sweepContext.GetTriangles();
@@ -446,9 +536,17 @@ namespace Menge
 		TVectorPathPoint path;
 		s_slitherPath( nullptr, tr_from, tr_to, path );
 
+		TVectorWayPoint wayPoints;
+		s_pathToWay( _from, _to, wayPoints, path );
+						
+		TVectorWayPoint wayPointsFilters;
+
+		this->filterWayPoints_( wayPointsFilters, wayPoints );
+		
+
 		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
 
-		way->initialize( _from, _to, path );
+		way->initialize( _from, _to, wayPointsFilters );
 		
 		m_pathFinderWays.push_back( way );
 

@@ -50,7 +50,8 @@ namespace Menge
         const char * text_it = _value;
         const char * text_end = _value + len + 1;
         
-        size_t code = utf8::next(text_it, text_end);
+        size_t code;
+		utf8::internal::validate_next( text_it, text_end, code );
 
         _metabuf->write( code );
 

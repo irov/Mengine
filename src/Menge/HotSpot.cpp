@@ -289,8 +289,6 @@ namespace	Menge
 		bool intersect = boost::geometry::intersects( m_polygonWMVM, p );
 
 		return intersect != m_outward;
-
-        return intersect;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )

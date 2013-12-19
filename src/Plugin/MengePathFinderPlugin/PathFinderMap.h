@@ -34,6 +34,7 @@ namespace Menge
 
 	protected:
 		bool testHoles_( size_t _index, const Polygon & _polygon ) const;
+		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

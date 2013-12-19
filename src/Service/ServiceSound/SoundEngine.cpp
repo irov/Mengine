@@ -416,7 +416,7 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::update( float _timing )
+	namespace
 	{
 		struct SoundListenerStopDesc
 		{
@@ -425,6 +425,10 @@ namespace Menge
 		};
 
 		typedef std::vector<SoundListenerStopDesc> TVectorSoundListeners;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::update( float _timing )
+	{
 		TVectorSoundListeners m_listeners;
 
 		for( TMapSoundSource::iterator 

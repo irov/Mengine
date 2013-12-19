@@ -9,8 +9,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<Poly2Tri::Point *> TVectorPathPoint;
-	//////////////////////////////////////////////////////////////////////////
 	typedef std::vector<mt::vec2f> TVectorWayPoint;
 	//////////////////////////////////////////////////////////////////////////
 	class PathFinderWay
@@ -20,7 +18,7 @@ namespace Menge
 		~PathFinderWay();
 
 	public:
-		void initialize( const mt::vec2f & _from, const mt::vec2f & _to, const TVectorPathPoint & _path );
+		void initialize( const mt::vec2f & _from, const mt::vec2f & _to, const TVectorWayPoint & _way );
 
 	public:
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
@@ -31,7 +29,7 @@ namespace Menge
 		mt::vec2f m_from;
 		mt::vec2f m_to;
 
-		TVectorWayPoint m_wayPoint;
+		TVectorWayPoint m_way;
 	};
 }
 

@@ -15,7 +15,7 @@
 
 namespace Menge
 {
-	const size_t DATAFLOW_VERSION_AEK = 6;
+	const size_t DATAFLOW_VERSION_AEK = 9;
 
     struct MovieFrameSource
     {
@@ -27,12 +27,26 @@ namespace Menge
         float volume;
     };
 
-    typedef std::vector<MovieFrameSource> TVectorMovieFrameSource;
-
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT		= 0x00000001;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_POSITION			= 0x00000002;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION			= 0x00000004;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_SCALE			= 0x00000008;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_OPACITY			= 0x00000010;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_VOLUME			= 0x00000020;
+	
     struct MovieLayerFrame
     {
-        TVectorMovieFrameSource frames;
+		size_t count;		
+		
+		mt::vec3f * anchorPoint;
+		mt::vec3f * position;
+		mt::vec3f * rotation;
+		mt::vec3f * scale;
+		float * opacity;
+		float * volume;
 
+		size_t immutable_mask;
+		
         MovieFrameSource source;
         bool immutable;
     };
@@ -77,6 +91,7 @@ namespace Menge
 
 	public:
 		virtual bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const = 0;
+		virtual bool getLayerFrameInterpolate( size_t _layerIndex, size_t _frameIndex, float _t, MovieFrameSource & _frame ) const = 0;
 
 	public:
 		virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;

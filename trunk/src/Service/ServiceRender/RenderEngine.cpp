@@ -1216,6 +1216,26 @@ namespace Menge
 		size_t ibInsertSize;
         this->insertRenderPasses_( vertexBuffer, indicesBuffer, vbInsertSize, ibInsertSize );
 
+		if( vbInsertSize != vbSize )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Error: failed to insert vertex buffer %d:%d"
+				, vbInsertSize
+				, vbSize
+				);
+
+			return false;
+		}
+
+		if( ibInsertSize != ibSize )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Error: failed to insert indices buffer %d:%d"
+				, ibInsertSize
+				, ibSize
+				);
+
+			return false;
+		}
+
         if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( m_ibHandle2D ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Error: failed to unlock indices buffer"

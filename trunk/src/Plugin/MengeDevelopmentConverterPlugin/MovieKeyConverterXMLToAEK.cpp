@@ -14,6 +14,19 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	typedef std::vector<MovieFrameSource> TVectorMovieFrameSource;
+	//////////////////////////////////////////////////////////////////////////
+	struct ConverterMovieLayerFrame
+	{
+		TVectorMovieFrameSource frames;
+		size_t count;
+
+		MovieFrameSource source;
+		bool immutable;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef std::vector<ConverterMovieLayerFrame> TVectorConverterMovieFrameLayer;
+	//////////////////////////////////////////////////////////////////////////
 	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK()
 	{
 	}
@@ -99,18 +112,19 @@ namespace Menge
 
 		aw << maxIndex;
 
-		TVectorMovieFrameLayer frameLayers;
+		TVectorConverterMovieFrameLayer frameLayers;
 		frameLayers.resize( maxIndex );
 
-		for( TVectorMovieFrameLayer::iterator
+		for( TVectorConverterMovieFrameLayer::iterator
 			it = frameLayers.begin(),
 			it_end = frameLayers.end();
 		it != it_end;
 		++it )
 		{
-			MovieLayerFrame & layerFrame = *it;
+			ConverterMovieLayerFrame & layer = *it;
 
-			layerFrame.immutable = false;
+			layer.count = 0;
+			layer.immutable = false;
 		}
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D();
@@ -125,10 +139,7 @@ namespace Menge
 
 			size_t layerIndex = meta_frames2d.get_LayerIndex();
 
-			MovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
-
-			size_t count = 0;
-			meta_frames2d.get_Count( count );
+			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
 
 			bool immutable = false;
 			meta_frames2d.get_Immutable( immutable );
@@ -178,10 +189,16 @@ namespace Menge
 					frame.rotation.z = 0.f;
 
 					frameLayer.source = frame;
+					frameLayer.count = count;
 				}
 			}
 			else
 			{
+				size_t count = 0;
+				meta_frames2d.get_Count( count );
+
+				frameLayer.count = count;
+
 				MovieFrameSource frame;
 				bool frameLast = false;
 
@@ -257,10 +274,12 @@ namespace Menge
 
 			size_t layerIndex = meta_frames3d.get_LayerIndex();
 
-			MovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
+			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
 
 			size_t count = 0;
 			meta_frames3d.get_Count( count );
+
+			frameLayer.count = count;
 
 			bool immutable = false;
 			meta_frames3d.get_Immutable( immutable );
@@ -301,19 +320,26 @@ namespace Menge
 				else
 				{
 					frameLayer.source = frame;
+					frameLayer.count = count;
 				}
 			}
 		}
 
-		for( TVectorMovieFrameLayer::const_iterator
+		for( TVectorConverterMovieFrameLayer::const_iterator
 			it = frameLayers.begin(),
 			it_end = frameLayers.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayerFrame & frame = (*it);
+			const ConverterMovieLayerFrame & frame = (*it);
 
 			aw << frame.immutable;
+			aw << frame.count;
+
+			if( frame.count == 0 )
+			{
+				continue;
+			}
 
 			if( frame.immutable == true )
 			{
@@ -323,27 +349,54 @@ namespace Menge
 			{
 				const TVectorMovieFrameSource & frames = frame.frames;
 
-				size_t frames_size = frames.size();
-				aw << frames_size;
-
-				if( frames_size > 0 )
-				{
-					aw.writePODs( &frames[0], frames_size );
+#	define WRITE_FRAME_SOURCE( Type, Member )\
+				{ \
+					Type value = frames[0].Member; \
+					\
+					bool value_immutable = true; \
+					for( size_t i = 1; i != frame.count; ++i ) \
+					{ \
+						const MovieFrameSource & source = frames[i]; \
+						\
+						if( source.Member == value ) \
+						{ \
+							continue; \
+						} \
+						\
+						value_immutable = false; \
+						break; \
+					} \
+					\
+					aw << value_immutable; \
+					\
+					if( value_immutable == true ) \
+					{ \
+						aw << value; \
+					} \
+					else \
+					{ \
+						for( size_t i = 0; i != frame.count; ++i ) \
+						{ \
+							const MovieFrameSource & source = frames[i]; \
+							\
+							aw << source.Member; \
+						} \
+					} \
 				}
+
+				WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
+				WRITE_FRAME_SOURCE( mt::vec3f, position );
+				WRITE_FRAME_SOURCE( mt::vec3f, rotation );
+				WRITE_FRAME_SOURCE( mt::vec3f, scale );
+				WRITE_FRAME_SOURCE( float, opacity );
+				WRITE_FRAME_SOURCE( float, volume );
+				
+#	undef WRITE_FRAME_SOURCE
 			}
 		}
 
 		TVectorMovieLayerTimeRemap remaps;
 		remaps.resize( maxIndex );
-
-		//for( TVectorMovieLayerTimeRemap::iterator
-		//	it = remaps.begin(),
-		//	it_end = remaps.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	MovieLayerTimeRemap & layerFrame = *it;
-		//}
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_IncludesTimeRemap();
 

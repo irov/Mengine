@@ -51,40 +51,6 @@
 
 namespace Menge
 {
-	////////////////////////////////////////////////////////////////////////
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		static void s_linerp( float & _out, float _in1, float _in2, float _scale )
-		{
-			_out = _in1 + ( _in2 - _in1 ) * _scale;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_linerp_f3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale )
-		{
-			s_linerp(_out.x, _in1.x, _in2.x, _scale);
-			s_linerp(_out.y, _in1.y, _in2.y, _scale);
-			s_linerp(_out.z, _in1.z, _in2.z, _scale);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_interpolateFrameSource( MovieFrameSource & _frame, const MovieFrameSource & _frame1, const MovieFrameSource & _frame2, float _scale )
-		{
-			s_linerp_f3( _frame.anchorPoint, _frame1.anchorPoint, _frame2.anchorPoint, _scale );
-			s_linerp_f3( _frame.position, _frame1.position, _frame2.position, _scale );
-
-			mt::vec3f correct_rotate_from;
-			mt::vec3f correct_rotate_to;
-			mt::angle_correct_interpolate_from_to( _frame1.rotation.x, _frame2.rotation.x, correct_rotate_from.x, correct_rotate_to.x );
-			mt::angle_correct_interpolate_from_to( _frame1.rotation.y, _frame2.rotation.y, correct_rotate_from.y, correct_rotate_to.y );
-			mt::angle_correct_interpolate_from_to( _frame1.rotation.z, _frame2.rotation.z, correct_rotate_from.z, correct_rotate_to.z );
-
-			s_linerp_f3( _frame.rotation, correct_rotate_from, correct_rotate_to, _scale );
-			s_linerp_f3( _frame.scale, _frame1.scale, _frame2.scale, _scale );
-
-			s_linerp( _frame.opacity, _frame1.opacity, _frame2.opacity, _scale );
-			s_linerp( _frame.volume, _frame1.volume, _frame2.volume, _scale );
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_frameTiming(0.f)
@@ -281,23 +247,14 @@ namespace Menge
 		MovieFrameSource frame;
 		if( _interpolate == true && _layer.immutable == false )
 		{
-			MovieFrameSource frame1;
-			if( framePack->getLayerFrame( _layer.index, _frameId, frame1 ) == false )
-			{
-				return false;
-			}
-
-			MovieFrameSource frame2;
-			if( framePack->getLayerFrame( _layer.index, _frameId + 1, frame2 ) == false )
-			{
-				return false;
-			}
-
 			float frameDuration = m_resourceMovie->getFrameDuration();
 
 			float t = m_frameTiming / frameDuration;
 
-			Helper::s_interpolateFrameSource(frame, frame1, frame2, t );
+			if( framePack->getLayerFrameInterpolate( _layer.index, _frameId, t, frame ) == false )
+			{
+				return false;
+			}
 		}
 		else
 		{

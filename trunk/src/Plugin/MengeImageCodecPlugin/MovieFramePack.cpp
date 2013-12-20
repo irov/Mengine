@@ -1,10 +1,31 @@
 #	include "MovieFramePack.h"
 
+#	include "Math/angle.h"
+
 namespace Menge
 {
 	///////////////////////////////////////////////////////////////////////
 	MovieFramePack::MovieFramePack()
 	{		
+	}
+	///////////////////////////////////////////////////////////////////////
+	MovieFramePack::~MovieFramePack()
+	{
+		for( TVectorMovieFrameLayer::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			MovieLayerFrame & layer = *it;
+
+			delete layer.anchorPoint;
+			delete layer.position;
+			delete layer.rotation;
+			delete layer.scale;
+			delete layer.opacity;
+			delete layer.volume;
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initialize( size_t _size )
@@ -14,16 +35,23 @@ namespace Menge
 		m_shapes.resize( _size );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )
+	MovieLayerFrame & MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )
 	{
-		MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
+		MovieLayerFrame & layer = m_layers[_layerIndex - 1];
 
-		frameLayer.immutable = _immutable;
+		layer.count = _count;
+		layer.immutable = _immutable;
 
-		if( frameLayer.immutable == false )
-		{
-			frameLayer.frames.reserve( _count );
-		}
+		layer.anchorPoint = nullptr;
+		layer.position = nullptr;
+		layer.rotation = nullptr;
+		layer.scale = nullptr;
+		layer.opacity = nullptr;
+		layer.volume = nullptr;
+		
+		layer.immutable_mask = 0;
+
+		return layer;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool MovieFramePack::hasLayer( size_t _layerIndex ) const
@@ -41,29 +69,6 @@ namespace Menge
 		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
 
 		return frameLayer;
-	}
-	///////////////////////////////////////////////////////////////////////
-	void MovieFramePack::setLayerImmutableFrame( size_t _layerIndex, const MovieFrameSource & _frame )
-	{
-		MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-		
-		frameLayer.source = _frame;
-	}
-	///////////////////////////////////////////////////////////////////////
-	void MovieFramePack::addLayerFrame( size_t _layerIndex, const MovieFrameSource & _frame )
-	{
-		MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-		
-		TVectorMovieFrameSource & frameSource = frameLayer.frames;
-
-		frameSource.push_back( _frame );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TVectorMovieFrameSource & MovieFramePack::mutableLayerFrames( size_t _layerIndex )
-	{
-		MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-
-		return frameLayer.frames;
 	}
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::addLayerTimeRemap( size_t _layerIndex, const MovieLayerTimeRemap & _timeremap )
@@ -89,65 +94,6 @@ namespace Menge
 
 		return shapes;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::getLayerImmutableFrame( size_t _layerIndex, MovieFrameSource & _frame ) const
-	{
-		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-
-		if( frameLayer.immutable == false )
-		{
-			return false;
-		}
-
-		_frame = frameLayer.source;
-
-		return true;
-	}
-	///////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::getLayerFrameLast( size_t _layerIndex, MovieFrameSource & _frame ) const
-	{
-		if( this->isLayerImmutable( _layerIndex ) == true )
-		{
-            return false;
-        }
-		
-        const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-
-        if( frameLayer.frames.empty() == true )
-        {
-            return false;
-        }
-
-        size_t lastIndex = frameLayer.frames.size() - 1;
-
-        if( this->getLayerFrame( _layerIndex, lastIndex, _frame ) == false )
-        {
-            return false;
-        }
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::isLayerEmpty( size_t _layerIndex ) const
-	{
-		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-
-		if( frameLayer.immutable == true )
-		{
-            return false;
-        }
-
-		return frameLayer.frames.empty() == true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::isLayerImmutable( size_t _layerIndex ) const
-	{
-		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
-		
-		bool immutable = frameLayer.immutable;
-
-		return immutable;
-	}
 	///////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const
 	{
@@ -156,24 +102,133 @@ namespace Menge
             return false;
         }
 
-		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
+		const MovieLayerFrame & layer = m_layers[_layerIndex - 1];
 
-		if( frameLayer.immutable == false )
+		if( _frameIndex >= layer.count )
 		{
-			const TVectorMovieFrameSource & frameSource = frameLayer.frames;
+			return false;
+		}
 
-            if( _frameIndex >= frameSource.size() )
-            {
-                return false;
-            }
+		if( layer.immutable == true )
+		{
+			_frame = layer.source;
+
+			return true;
+		}
 		
-			_frame =  frameSource[_frameIndex];
+#	define MOVIE_FRAME_SETUP( Member, Mask )\
+		if( layer.immutable_mask & Mask ) \
+		{ \
+			_frame.Member = layer.source.Member; \
+		} \
+		else \
+		{ \
+			_frame.Member = layer.Member[_frameIndex]; \
+		}
+		
+		MOVIE_FRAME_SETUP( anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
+		MOVIE_FRAME_SETUP( position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
+		MOVIE_FRAME_SETUP( rotation, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION );
+		MOVIE_FRAME_SETUP( scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
+		MOVIE_FRAME_SETUP( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
+		MOVIE_FRAME_SETUP( volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
+		
+#	undef MOVIE_FRAME_SETUP
+				
+		return true;
+	}
+	////////////////////////////////////////////////////////////////////////
+	namespace Helper
+	{
+		//////////////////////////////////////////////////////////////////////////
+		static void s_linerp( float & _out, float _in1, float _in2, float _scale )
+		{
+			_out = _in1 + ( _in2 - _in1 ) * _scale;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_linerp_f3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale )
+		{
+			s_linerp(_out.x, _in1.x, _in2.x, _scale);
+			s_linerp(_out.y, _in1.y, _in2.y, _scale);
+			s_linerp(_out.z, _in1.z, _in2.z, _scale);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MovieFramePack::getLayerFrameInterpolate( size_t _layerIndex, size_t _frameIndex, float _t, MovieFrameSource & _frame ) const
+	{
+		if( (_layerIndex - 1) >= m_layers.size() )
+		{
+			return false;
+		}
+
+		const MovieLayerFrame & layer = m_layers[_layerIndex - 1];
+
+		if( _frameIndex + 1 >= layer.count )
+		{
+			return false;
+		}
+
+		if( layer.immutable == true )
+		{
+			_frame = layer.source;
+
+			return true;
+		}
+
+#	define MOVIE_FRAME_SETUP_F3( Member, Mask )\
+		if( layer.immutable_mask & Mask ) \
+		{ \
+			_frame.Member = layer.source.Member; \
+		} \
+		else \
+		{ \
+			const mt::vec3f & value0 = layer.Member[ _frameIndex + 0 ]; \
+			const mt::vec3f & value1 = layer.Member[ _frameIndex + 1 ]; \
+			\
+			Helper::s_linerp_f3( _frame.Member, value0, value1, _t ); \
+		}
+
+		MOVIE_FRAME_SETUP_F3( anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
+		MOVIE_FRAME_SETUP_F3( position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
+		//MOVIE_FRAME_SETUP( rotation, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION );
+		MOVIE_FRAME_SETUP_F3( scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
+
+#	undef MOVIE_FRAME_SETUP_F3
+
+#	define MOVIE_FRAME_SETUP_F1( Member, Mask )\
+		if( layer.immutable_mask & Mask ) \
+		{ \
+			_frame.Member = layer.source.Member; \
+		} \
+		else \
+		{ \
+			float value0 = layer.Member[ _frameIndex + 0 ]; \
+			float value1 = layer.Member[ _frameIndex + 1 ]; \
+			\
+			Helper::s_linerp( _frame.Member, value0, value1, _t ); \
+		}
+
+		MOVIE_FRAME_SETUP_F1( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
+		MOVIE_FRAME_SETUP_F1( volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
+
+		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION )
+		{
+			_frame.rotation = layer.source.rotation;
 		}
 		else
 		{
-			_frame = frameLayer.source;
-		}
+			const mt::vec3f & value0 = layer.rotation[ _frameIndex + 0 ];
+			const mt::vec3f & value1 = layer.rotation[ _frameIndex + 1 ];
 		
+			mt::vec3f correct_rotate_from;
+			mt::vec3f correct_rotate_to;
+			mt::angle_correct_interpolate_from_to( value0.x, value1.x, correct_rotate_from.x, correct_rotate_to.x );
+			mt::angle_correct_interpolate_from_to( value0.y, value1.y, correct_rotate_from.y, correct_rotate_to.y );
+			mt::angle_correct_interpolate_from_to( value0.z, value1.z, correct_rotate_from.z, correct_rotate_to.z );
+
+			Helper::s_linerp_f3( _frame.rotation, correct_rotate_from, correct_rotate_to, _t );
+		}
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////

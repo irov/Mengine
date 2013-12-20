@@ -99,29 +99,47 @@ namespace Menge
 			bool immutable;
 			ar >> immutable;
 
+			size_t frames_size;
+			ar >> frames_size;
+						
+			MovieLayerFrame & frame = pack->initializeLayer( it_layer + 1, frames_size, immutable );
+
+			if( frames_size == 0 )
+			{
+				continue;
+			}
+
 			if( immutable == true )
 			{
-				MovieFrameSource frame;
-				ar >> frame;
-
-				pack->initializeLayer( it_layer + 1, 0, true );
-				pack->setLayerImmutableFrame( it_layer + 1, frame );
+				ar >> frame.source;
 			}
 			else
 			{
-				size_t frames_size;
-				ar >> frames_size;
-
-				pack->initializeLayer( it_layer + 1, frames_size, false );
-
-				if( frames_size > 0 )
-				{
-					TVectorMovieFrameSource & frames = pack->mutableLayerFrames( it_layer + 1 );
-					frames.resize(frames_size);
-
-					ar.readPODs( &frames[0], frames_size );
+#	define READ_FRAME_SOURCE( Type, Member, Mask )\
+				{ \
+					bool value_immutable; \
+					ar >> value_immutable; \
+					if( value_immutable == true ) \
+					{ \
+						ar >> frame.source.Member; \
+						frame.immutable_mask |= Mask; \
+					} \
+					else \
+					{ \
+						frame.Member = new Type [frames_size]; \
+						ar.readPODs( frame.Member, frames_size );\
+					} \
 				}
-			}
+			
+				READ_FRAME_SOURCE( mt::vec3f, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
+				READ_FRAME_SOURCE( mt::vec3f, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
+				READ_FRAME_SOURCE( mt::vec3f, rotation, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION );
+				READ_FRAME_SOURCE( mt::vec3f, scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
+				READ_FRAME_SOURCE( float, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
+				READ_FRAME_SOURCE( float, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
+
+#	undef READ_FRAME_SOURCE
+			}	
 		}
 
 		for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )

@@ -620,15 +620,112 @@ namespace mt
 		_out[2][3] = -_out[2][3];
 	}
 
+	static inline float cosf_fast( float x )
+	{
+		if( x < -6.28318531f || x > 6.28318531f )
+		{
+			return cosf( x );
+		}
+
+		x += 1.57079632f;
+
+		if( x >  3.14159265f )
+		{
+			x -= 6.28318531f;
+		}
+
+		float cos;
+
+		if( x < 0.f )
+		{
+			cos = 1.27323954f * x + 0.405284735f * x * x;
+
+			if( cos < 0.f )
+			{
+				cos = 0.225f * (cos * -cos - cos) + cos;
+			}
+			else
+			{
+				cos = 0.225f * (cos * cos - cos) + cos;
+			}
+		}
+		else
+		{
+			cos = 1.27323954f * x - 0.405284735f * x * x;
+
+			if( cos < 0.f )
+			{
+				cos = 0.225f * (cos * -cos - cos) + cos;
+			}
+			else
+			{
+				cos = 0.225f * (cos * cos - cos) + cos;
+			}
+		}
+
+		return cos;
+	}
+
+	static inline float sinf_fast( float x )
+	{
+		if( x < -6.28318531f || x > 6.28318531f )
+		{
+			return sinf( x );
+		}
+
+		if (x < -3.14159265f)
+		{
+			x += 6.28318531f;
+		}
+		else
+		{
+			if( x >  3.14159265f )
+			{
+				x -= 6.28318531f;
+			}
+		}
+
+		float sin;
+
+		if( x < 0.f )
+		{
+			sin = 1.27323954f * x + 0.405284735f * x * x;
+
+			if( sin < 0.f )
+			{
+				sin = 0.225f * (sin * -sin - sin) + sin;
+			}
+			else
+			{
+				sin = 0.225f * (sin * sin - sin) + sin;
+			}
+		}
+		else
+		{
+			sin = 1.27323954f * x - 0.405284735f * x * x;
+
+			if( sin < 0.f )
+			{
+				sin = 0.225f * (sin * -sin - sin) + sin;
+			}
+			else
+			{
+				sin = 0.225f * (sin * sin - sin) + sin;
+			}
+		}
+
+		return sin;
+	}
+
 	MATH_FUNCTION_INLINE void make_rotate_m4(mat4f & _out, float _x, float _y, float _z)
 	{
-		float ca = cosf(_x);
-		float cb = cosf(_y);
-		float cy = cosf(_z);
+		float ca = cosf_fast( _x );
+		float cb = cosf_fast( _y );
+		float cy = cosf_fast( _z );
 
-		float sa = sinf(_x);
-		float sb = sinf(_y);
-		float sy = sinf(_z);
+		float sa = sinf_fast( _x );
+		float sb = sinf_fast( _y );
+		float sy = sinf_fast( _z );
 
 		_out.v0.x = ca * cb;
 		_out.v0.y = ca * sb * sy - sa * cy;

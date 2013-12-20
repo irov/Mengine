@@ -2340,11 +2340,16 @@ namespace Menge
                         return;
                     }
 
+					if( _framePack->hasLayer( _layer.index ) == false )
+					{
+						return;
+					}
+
                     PyObject * py_list_frames = pybind::list_new(0);
 
 					const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
 
-					for( size_t i = 0; frames.count; ++i )
+					for( size_t i = 0; i != frames.count; ++i )
 					{
 						MovieFrameSource frame_source; 
 						_framePack->getLayerFrame( _layer.index, i, frame_source );

@@ -995,18 +995,20 @@ namespace Menge
                 ->setParticlesEnabled( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const FilePath& _filename )
+        bool s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const FilePath& _filename )
         {
-            ResourceImageDefault* resImage = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceImageDefault>( _resourceName );
+            if( RESOURCE_SERVICE(m_serviceProvider)
+                ->hasResource( _resourceName, nullptr ) == true )
+			{
+				return false;
+			}
 
-            if( resImage == nullptr )
-            {
-                resImage = RESOURCE_SERVICE(m_serviceProvider)
-                    ->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
-            }
+			ResourceImageDefault * resImage = RESOURCE_SERVICE(m_serviceProvider)
+				->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
 
             resImage->setImagePath( _filename );
+
+			return true;
         }
         //////////////////////////////////////////////////////////////////////////
         void minimizeWindow()

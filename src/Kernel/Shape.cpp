@@ -432,16 +432,11 @@ namespace Menge
 
         uint32_t argb = color.getAsARGB();
 
-		for( RenderVertex2D
-			*it = m_verticesWM,
-			*it_end = m_verticesWM + 4;
-		it != it_end;
-		++it )
-		{
-			RenderVertex2D & vtx = *it;
 
-			vtx.color = argb;
-		}
+		m_verticesWM[0].color = argb;
+		m_verticesWM[1].color = argb;
+		m_verticesWM[2].color = argb;
+		m_verticesWM[3].color = argb;
     }
     //////////////////////////////////////////////////////////////////////////
     void Shape::_invalidateColor()

@@ -2342,56 +2342,26 @@ namespace Menge
 
 					const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
 
-                    if( frames.immutable == false )
-                    {
-                        for( TVectorMovieFrameSource::size_type
-                            it_frame = 0,
-                            it_frame_end = frames.frames.size();
-                        it_frame != it_frame_end;
-                        ++it_frame )
-                        {
-                            const MovieFrameSource & frame_source = frames.frames[it_frame];
+					for( size_t i = 0; frames.count; ++i )
+					{
+						MovieFrameSource frame_source; 
+						_framePack->getLayerFrame( _layer.index, i, frame_source );
 
-                            PyObject * py_dict_frame = pybind::dict_new();
+						PyObject * py_dict_frame = pybind::dict_new();
 
-                            PyObject * py_pos = pybind::ptr( frame_source.position );
-                            pybind::dict_setstring( py_dict_frame, "position", py_pos );
-                            pybind::decref( py_pos );
+						PyObject * py_pos = pybind::ptr( frame_source.position );
+						pybind::dict_setstring( py_dict_frame, "position", py_pos );
+						pybind::decref( py_pos );
 
-                            float frameTime = _layer.in + it_frame * m_frameDuration;
+						float frameTime = _layer.in + i * m_frameDuration;
 
-                            PyObject * py_time = pybind::ptr( frameTime );
-                            pybind::dict_setstring( py_dict_frame, "time", py_time );
-                            pybind::decref( py_time );
+						PyObject * py_time = pybind::ptr( frameTime );
+						pybind::dict_setstring( py_dict_frame, "time", py_time );
+						pybind::decref( py_time );
 
-                            pybind::list_appenditem( py_list_frames, py_dict_frame );
-                            pybind::decref( py_dict_frame );
-                        }
-                    }
-                    else
-                    {
-                        for( TVectorMovieFrameSource::size_type
-                            it_frame = 0,
-                            it_frame_end = frames.frames.size();
-                        it_frame != it_frame_end;
-                        ++it_frame )
-                        {
-                            PyObject * py_dict_frame = pybind::dict_new();
-
-                            PyObject * py_pos = pybind::ptr( frames.source.position );
-                            pybind::dict_setstring( py_dict_frame, "position", py_pos );
-                            pybind::decref( py_pos );
-
-                            float frameTime = _layer.in + it_frame * m_frameDuration;
-
-                            PyObject * py_time = pybind::ptr( frameTime );
-                            pybind::dict_setstring( py_dict_frame, "time", py_time );
-                            pybind::decref( py_time );
-
-                            pybind::list_appenditem( py_list_frames, py_dict_frame );
-                            pybind::decref( py_dict_frame );
-                        }
-                    }
+						pybind::list_appenditem( py_list_frames, py_dict_frame );
+						pybind::decref( py_dict_frame );
+					}
 
                     pybind::dict_setstring( m_dictResult, _layer.name.c_str(), py_list_frames );
                     pybind::decref( py_list_frames );

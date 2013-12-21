@@ -146,21 +146,27 @@ namespace Menge
             const ConstString & type = meta_resource->get_Type();
 
 #   ifdef _DEBUG
-            ResourceReference * has_resource = nullptr;
-            if( this->hasResource( name, &has_resource ) == true )
-            {
-                const ConstString & resource_category = has_resource->getCategory();
+			ResourceReference * has_resource = nullptr;
+			if( this->hasResource( name, &has_resource ) == true )
+			{
+				const ConstString & resource_category = has_resource->getCategory();
 
-                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')"
-                    , _path.c_str()
+				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')"
+					, _path.c_str()
 					, name.c_str()
-                    , groupName.c_str()
-                    , _pakName.c_str()
-                    , resource_category.c_str()
-                    );
+					, groupName.c_str()
+					, _pakName.c_str()
+					, resource_category.c_str()
+					);
 
-                return nullptr;
-            }
+				LOGGER_ERROR(m_serviceProvider)("has resource category '%s' group '%s' name '%s'"
+					, has_resource->getCategory().c_str()
+					, has_resource->getGroup().c_str()
+					, has_resource->getName().c_str()
+					);
+
+				//return nullptr;
+			}
 #   endif
 
             ResourceReference * resource = 

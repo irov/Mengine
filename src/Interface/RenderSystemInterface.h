@@ -601,6 +601,7 @@ namespace Menge
         double fillrate;
         size_t object;
         size_t triangle;
+		size_t smartBatch;
         //size_t megatextures;
     };
 

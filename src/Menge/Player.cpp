@@ -1163,10 +1163,14 @@ namespace Menge
 
 				ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
 				ss << "DIP: " << rdi.dips << std::endl;
+				ss << "Smart Batch: " << rdi.smartBatch << std::endl;
 				ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
 				ss << "Texture Count: " << rtdi.textureCount << std::endl;
 				ss << "Particles: " << particlesCount << std::endl;
+			}
 
+			if( m_showDebugText == 2 )
+			{
 				class CompileResourceVisitor
 					: public ResourceVisitor
 				{
@@ -1209,8 +1213,7 @@ namespace Menge
 
 				ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
 			}
-
-            if( m_showDebugText == 2 )
+			else if( m_showDebugText == 3 )
             {
 			    VisitorPlayerFactoryManager pfmv(m_serviceProvider, CONST_STRING(m_serviceProvider, Node), ss);
 
@@ -1219,7 +1222,7 @@ namespace Menge
 
                 ss << "Entities: " << Entity::s_enum << std::endl;
             }
-			else if( m_showDebugText == 3 )
+			else if( m_showDebugText == 4 )
             {
                 class MyVisitorClassTypeScope
                     : public pybind::visitor_class_type_scope

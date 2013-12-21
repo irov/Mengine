@@ -205,7 +205,7 @@ namespace Menge
 		
         void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbSize, size_t & _ibSize );
         void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
-		void insertRenderObject_( RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos ) const;
+		void insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t _vbPos, size_t _ibPos ) const;
 		void flushRender_();
 		void prepare2D_();
 
@@ -239,6 +239,9 @@ namespace Menge
 
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
+
+		size_t m_renderVertexCount;
+		size_t m_renderIndicesCount;
 
 		typedef std::vector<VBHandle> TVectorVertexBuffer;
 		TVectorVertexBuffer m_vertexBuffer;

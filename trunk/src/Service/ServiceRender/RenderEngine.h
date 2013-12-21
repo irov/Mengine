@@ -130,6 +130,9 @@ namespace Menge
 		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
 
 	public:
+		void setBatchMode( ERenderBatchMode _mode ) override;
+
+	public:
 		VBHandle createVertexBuffer( const RenderVertex2D * _vertexies, size_t _verticesNum );
 		IBHandle createIndicesBuffer( const unsigned short * _buffer, size_t _count );
 
@@ -199,10 +202,7 @@ namespace Menge
 		void renderObject_( const RenderObject* _renderObject );
 
         bool makeBatches_();
-		void batchRenderPasses_( size_t & _vbSize, size_t & _ibSize );		
-		void batchRenderObjects_( RenderPass * _pass, size_t & _vbSize, size_t & _ibSize );
-		void batchRenderObject_( RenderObject * _renderObject, RenderObject ** _batchedObject, size_t & _vbSize, size_t & _ibSize ) const;
-		
+
         void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbSize, size_t & _ibSize );
         void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
 		void insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t _vbPos, size_t _ibPos ) const;
@@ -242,6 +242,8 @@ namespace Menge
 
 		size_t m_renderVertexCount;
 		size_t m_renderIndicesCount;
+
+		ERenderBatchMode m_batchMode;
 
 		typedef std::vector<VBHandle> TVectorVertexBuffer;
 		TVectorVertexBuffer m_vertexBuffer;

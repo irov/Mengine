@@ -620,6 +620,13 @@ namespace Menge
         size_t indicesNum;
     };
 
+	enum ERenderBatchMode
+	{
+		ERBM_NONE,
+		ERBM_NORMAL,
+		ERBM_SMART
+	};
+
 	class RenderServiceInterface
 		: public ServiceInterface
 	{
@@ -645,6 +652,9 @@ namespace Menge
 		virtual void setDebugMaterial( const RenderMaterial * _debugMaterial ) = 0;
 		virtual const RenderMaterial * getDebugMaterial() const = 0;
 		virtual RenderVertex2D * getDebugRenderVertex2D( size_t _count ) = 0;
+
+	public:
+		virtual void setBatchMode( ERenderBatchMode _mode ) = 0;
 
 	public:
 		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 

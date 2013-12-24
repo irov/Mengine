@@ -50,7 +50,7 @@ namespace Menge
     protected:
         void invalidateMaterial();
         void updateMaterial();
-        inline const RenderMaterial * getMaterial();
+        inline const RenderMaterialInterfacePtr & getMaterial();
 
     protected:
         void updateResource_();
@@ -68,7 +68,7 @@ namespace Menge
 		bool m_blendAdd;
 		bool m_solid;
 
-		const RenderMaterial * m_material;
+		RenderMaterialInterfacePtr m_material;
 
         bool m_invalidateMaterial;
 
@@ -78,7 +78,7 @@ namespace Menge
 		RenderTextureInterfacePtr m_textures[2];
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderMaterial * Sprite::getMaterial()
+    inline const RenderMaterialInterfacePtr & Sprite::getMaterial()
     {
         if( m_invalidateMaterial == true )
         {

@@ -2,6 +2,8 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
+#	include "RenderMaterial.h"
+
 #	include "Factory/FactoryPool.h"
 
 #   include "stdex/binary_vector.h"
@@ -15,16 +17,9 @@ namespace Menge
 		RenderStage stage[4];
 	};
 	//////////////////////////////////////////////////////////////////////////
-	struct RenderMaterialGroup
-		: public Factorable
-	{
-		size_t refcount;
-
-		RenderMaterial material;
-	};
-	//////////////////////////////////////////////////////////////////////////
     class RenderMaterialManager
         : public RenderMaterialServiceInterface
+		, public RenderMaterialDestroyListener
     {
     public:
         RenderMaterialManager();
@@ -42,14 +37,15 @@ namespace Menge
         bool loadMaterials( const ConstString& _pakName, const FilePath& _filename ) override;
 
 	public:
-		const RenderMaterial * getMaterial( const ConstString & _name
+		RenderMaterialInterfacePtr getMaterial( const ConstString & _name
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType
 			, size_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) override;        
-
-		void releaseMaterial( const RenderMaterial * _material ) override;
+		
+	protected:
+		void onRenderMaterialDestroy( RenderMaterial * _material ) override;
 
     protected:
         bool createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );
@@ -65,10 +61,10 @@ namespace Menge
 		typedef FactoryPool<RenderStageGroup, 256> TFactoryRenderStage; 
 		TFactoryRenderStage m_factoryStage;
 
-		typedef std::vector<RenderMaterialGroup *> TVectorRenderMaterial;
+		typedef std::vector<RenderMaterial *> TVectorRenderMaterial;
 		TVectorRenderMaterial m_materials;
 
-		typedef FactoryPool<RenderMaterialGroup, 256> TFactoryRenderMaterial; 
+		typedef FactoryPool<RenderMaterial, 256> TFactoryRenderMaterial; 
 		TFactoryRenderMaterial m_factoryMaterial;
     };
 }

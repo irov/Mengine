@@ -328,16 +328,12 @@ namespace Menge
 		bool alphaBlendEnable;
 	};
     //////////////////////////////////////////////////////////////////////////
-    struct RenderMaterial
+    class RenderMaterialInterface
+		: public FactorablePtr
     {
-		size_t id;
-		EPrimitiveType primitiveType;
-		
-		size_t textureCount;
-		const RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
-		
-		const RenderStage * stage;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderShaderInterface
     {
@@ -356,14 +352,12 @@ namespace Menge
         virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _filename ) = 0;
 
 	public:
-		virtual const RenderMaterial * getMaterial( const ConstString & _name
+		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _name
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType
 			, size_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) = 0;
-
-		virtual void releaseMaterial( const RenderMaterial * _material ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
@@ -600,21 +594,6 @@ namespace Menge
         //size_t megatextures;
     };
 
-    struct RenderMesh
-    {
-        const RenderCameraInterface * camera;
-        const RenderMaterial * material;
-        
-        const RenderTextureInterfacePtr * textures;
-        size_t texturesNum;
-
-        const RenderVertex2D * vertices;
-        size_t verticesNum;
-
-        const uint16_t * indices;
-        size_t indicesNum;
-    };
-
 	enum ERenderBatchMode
 	{
 		ERBM_NONE,
@@ -632,19 +611,19 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
+        virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, size_t _verticesNum
             , const uint16_t * _indices, size_t _indicesNum ) = 0;
 
-        virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
+        virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, size_t _verticesNum ) = 0;
 
-        virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
+        virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, size_t _verticesNum ) = 0;
 
 	public:
-		virtual void setDebugMaterial( const RenderMaterial * _debugMaterial ) = 0;
-		virtual const RenderMaterial * getDebugMaterial() const = 0;
+		virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;
+		virtual const RenderMaterialInterfacePtr & getDebugMaterial() const = 0;
 		virtual RenderVertex2D * getDebugRenderVertex2D( size_t _count ) = 0;
 
 	public:

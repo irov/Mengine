@@ -48,7 +48,7 @@ namespace Menge
         struct WindowEdge
         {
             mt::vec2f initialSize;
-            const RenderMaterial * material;
+            RenderMaterialInterfacePtr material;
 
             size_t textureCount;
             RenderTextureInterfacePtr textures[2];

@@ -3,6 +3,8 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 
+#	include "RenderMaterial.h"
+
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
 #	include "Core/ConstString.h"
@@ -56,7 +58,7 @@ namespace Menge
 
 	struct RenderObject
     {
-		const RenderMaterial * material;
+		RenderMaterialPtr material;
 				
 		const RenderVertex2D * vertexData;
 		size_t verticesNum;
@@ -108,19 +110,19 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial * _material            
+		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material            
             , const RenderVertex2D * _vertices, size_t _verticesNum 
 			, const uint16_t * _indices, size_t _indicesNum ) override;
 
-        void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
+        void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
 			, const RenderVertex2D * _vertices, size_t _verticesNum ) override;
 
-        void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
+        void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
 
 	public:
-		void setDebugMaterial( const RenderMaterial * _debugMaterial ) override;
-		const RenderMaterial * getDebugMaterial() const override;
+		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
+		const RenderMaterialInterfacePtr & getDebugMaterial() const override;
 		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
 
 	public:
@@ -191,10 +193,10 @@ namespace Menge
 		void restoreRenderSystemStates_();
 		
 		void renderPasses_();
-		void renderPass_( const RenderPass & _renderPass );
+		void renderPass_( RenderPass & _renderPass );
 
-		void renderObjects_( const RenderPass & _renderPass );
-		void renderObject_( const RenderObject* _renderObject );
+		void renderObjects_( RenderPass & _renderPass );
+		void renderObject_( RenderObject* _renderObject );
 
         bool makeBatches_();
 
@@ -214,7 +216,8 @@ namespace Menge
         bool createNullTexture_();
 
 	protected:
-		void updateMaterial_( const RenderMaterial * _material );
+		void updateTexture_( size_t _stageId, const RenderTextureInterfacePtr & _texture );
+		void updateMaterial_( const RenderMaterialPtr & _material );
 		void updateStage_( const RenderStage * _stage );
 
 	private:
@@ -291,7 +294,7 @@ namespace Menge
 		typedef stdex::static_array<RenderVertex2D, MENGINE_RENDER_DEBUG_VERTEX_MAX> TArrayRenderVertex2D;
 		TArrayRenderVertex2D m_debugRenderVertex2D;
 
-		const RenderMaterial * m_debugMaterial;
+		RenderMaterialInterfacePtr m_debugMaterial;
                       
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;

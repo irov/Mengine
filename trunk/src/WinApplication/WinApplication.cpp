@@ -917,7 +917,7 @@ namespace Menge
             return false;
         }
 		
-		const RenderMaterial * debugMaterial = m_renderMaterialManager
+		RenderMaterialInterfacePtr debugMaterial = m_renderMaterialManager
 			->getMaterial( Helper::stringizeString(m_serviceProvider, "Debug"), false, false, PT_LINELIST, 0, nullptr );
 
 		m_renderService->setDebugMaterial( debugMaterial );

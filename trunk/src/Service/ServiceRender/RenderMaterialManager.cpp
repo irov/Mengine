@@ -232,33 +232,32 @@ namespace Menge
         return false;
     }
 	//////////////////////////////////////////////////////////////////////////
-	template<class T>
 	static bool s_equalMaterial( const RenderMaterial * _material		
 		, EPrimitiveType _primitiveType
 		, size_t _textureCount 
-		, const T * _textures
+		, const RenderTextureInterfacePtr * _textures
 		, const RenderStage * _stage
 		)
 	{
-		if( _material->primitiveType != _primitiveType )
+		if( _material->getPrimitiveType() != _primitiveType )
 		{
 			return false;
 		}
 
-		if( _material->textureCount != _textureCount )
+		if( _material->getTextureCount() != _textureCount )
 		{
 			return false;
 		}
 
 		for( size_t i = 0; i != _textureCount; ++i )
 		{
-			if( _material->textures[i] != _textures[i] )
+			if( _material->getTexture(i) != _textures[i] )
 			{
 				return false;
 			}
 		}
 
-		if( _material->stage != _stage )
+		if( _material->getStage() != _stage )
 		{
 			return false;
 		}
@@ -266,7 +265,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-	const RenderMaterial * RenderMaterialManager::getMaterial( const ConstString & _name
+	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _name
 		, bool _wrapU
 		, bool _wrapV
 		, EPrimitiveType _primitiveType
@@ -287,43 +286,28 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			RenderMaterialGroup * materialGroup = *it;
-
-			RenderMaterial * material = &materialGroup->material;
+			RenderMaterial * material = *it;
 
 			if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, stage ) == false )
 			{
 				continue;
 			}
 
-			++materialGroup->refcount;
-
 			return material;
 		}
 
-		RenderMaterialGroup * materialGroup = m_factoryMaterial.createObjectT();
+		RenderMaterial * material = m_factoryMaterial.createObjectT();
 
-		materialGroup->refcount = 1;
+		material->initialize( this, ++m_materialEnumerator, _primitiveType, stage );
 
-		RenderMaterial * material = &materialGroup->material;
-
-		material->id = ++m_materialEnumerator;
-		material->primitiveType = _primitiveType;
-		material->textureCount = _textureCount;
-
-		for( size_t i = 0; i != _textureCount; ++i )
-		{
-			material->textures[i] = _textures[i].get();
-		}
-
-		material->stage = stage;
-
-		m_materials.push_back( materialGroup );
+		material->setTexture( _textureCount, _textures );
+		
+		m_materials.push_back( material );
 
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterialManager::releaseMaterial( const RenderMaterial * _material )
+	void RenderMaterialManager::onRenderMaterialDestroy( RenderMaterial * _material )
 	{
 		if( _material == nullptr )
 		{
@@ -339,24 +323,15 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			RenderMaterialGroup * materialGroup = *it;
+			RenderMaterial * material = *it;
 
-			RenderMaterial * material = &materialGroup->material;
-
-			if( s_equalMaterial( material, _material->primitiveType, _material->textureCount, _material->textures, _material->stage ) == false )
+			if( s_equalMaterial( material, _material->getPrimitiveType(), _material->getTextureCount(), _material->getTextures(), _material->getStage() ) == false )
 			{
 				continue;
 			}
-
-			--materialGroup->refcount;
-
-			if( materialGroup->refcount == 0 )
-			{
-				*it = m_materials.back();
-				m_materials.pop_back();
-
-				materialGroup->destroy();
-			}
+			
+			*it = m_materials.back();
+			m_materials.pop_back();
 			
 			return;
 		}
@@ -376,9 +351,15 @@ namespace Menge
 		RenderStageGroup * stageGroup = m_factoryStage.createObjectT();
 
 		stageGroup->stage[0] = _stage;
+		stageGroup->stage[1] = _stage;
+		stageGroup->stage[2] = _stage;
+		stageGroup->stage[3] = _stage;
 
 		for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
+			stageGroup->stage[0].textureStage[i].addressU = TAM_CLAMP;
+			stageGroup->stage[0].textureStage[i].addressV = TAM_CLAMP;
+
 			stageGroup->stage[1].textureStage[i].addressU = TAM_WRAP;
 			stageGroup->stage[1].textureStage[i].addressV = TAM_CLAMP;
 

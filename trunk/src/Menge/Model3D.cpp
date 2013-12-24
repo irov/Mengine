@@ -111,14 +111,7 @@ namespace Menge
 		m_textures[0] = nullptr;
 		m_textures[1] = nullptr;
 
-		if( m_material != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_material );
-
-			m_material = nullptr;
-		}
-
+		m_material = nullptr;
 		m_frame = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -212,14 +205,6 @@ namespace Menge
 		bool wrapU = resourceImage->isWrapU();
 		bool wrapV = resourceImage->isWrapV();
 
-		if( m_material != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_material );
-
-			m_material = nullptr;
-		}
-
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
 
@@ -241,7 +226,7 @@ namespace Menge
 		}
 
 		const RenderVertex2D * vertices = this->getVerticesWM();
-		const RenderMaterial * material = this->getMaterial();
+		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
 			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount );

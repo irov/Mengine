@@ -78,13 +78,7 @@ namespace	Menge
         m_textures[0] = nullptr;
         m_textures[1] = nullptr;
 		
-		if( m_material != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_material );
-
-			m_material = nullptr;
-		}
+		m_material = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Sprite::setResourceImage( ResourceImage * _resourceImage )
@@ -205,14 +199,6 @@ namespace	Menge
 		bool wrapU = m_resourceImage->isWrapU();
 		bool wrapV = m_resourceImage->isWrapV();
 
-		if( m_material != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_material );
-
-			m_material = nullptr;
-		}
-
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
 
@@ -229,7 +215,7 @@ namespace	Menge
 		Node::_render( _viewport, _camera );
 		
 		const RenderVertex2D * vertices = this->getVerticesWM();
-        const RenderMaterial * material = this->getMaterial();
+        const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
 			->addRenderQuad( _viewport, _camera, material, vertices, 4 );

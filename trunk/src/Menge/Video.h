@@ -80,14 +80,14 @@ namespace Menge
 		void invalidateMaterial_();
 		void updateMaterial_();
 
-		inline const RenderMaterial * getMaterial();
+		inline const RenderMaterialInterfacePtr & getMaterial();
 
 	protected:
 		ResourceHolder<ResourceVideo> m_resourceVideo;
 
 		RenderTextureInterfacePtr m_textures[1];
 		
-		const RenderMaterial * m_material;
+		RenderMaterialInterfacePtr m_material;
 		bool m_invalidateMaterial;
 
 		VideoDecoderInterfacePtr m_videoDecoder;
@@ -102,7 +102,7 @@ namespace Menge
         bool m_needUpdate2;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterial * Video::getMaterial()
+	inline const RenderMaterialInterfacePtr & Video::getMaterial()
 	{
 		if( m_invalidateMaterial == true )
 		{

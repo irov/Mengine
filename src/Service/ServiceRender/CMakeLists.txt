@@ -10,6 +10,8 @@ src
 	RenderSubTexture.cpp
     RenderTextureManager.h
     RenderTextureManager.cpp
+    RenderMaterial.h
+    RenderMaterial.cpp
     RenderMaterialManager.h
     RenderMaterialManager.cpp
 )

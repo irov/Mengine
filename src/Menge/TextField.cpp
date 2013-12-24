@@ -115,22 +115,6 @@ namespace Menge
 
 		m_fontHeight = resourceGlyph->getFontHeight();
 
-		if( m_materialText != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_materialText );
-
-			m_materialText = nullptr;
-		}
-
-		if( m_materialOutline != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_materialOutline );
-
-			m_materialOutline = nullptr;
-		}
-
 		const RenderTextureInterfacePtr & textureFont = m_resourceFont->getTextureFont();
 
 		m_materialText = RENDERMATERIAL_SERVICE(m_serviceProvider)
@@ -143,6 +127,10 @@ namespace Menge
 			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
 				->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureOutline );
 		}
+		else
+		{
+			m_materialOutline = nullptr;
+		}
 
 		this->invalidateTextLines();
 
@@ -153,21 +141,8 @@ namespace Menge
 	{
         m_resourceFont.release();
 
-		if( m_materialText != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_materialText );
-
-			m_materialText = nullptr;
-		}
-
-		if( m_materialOutline != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_materialOutline );
-
-			m_materialOutline = nullptr;
-		}
+		m_materialText = nullptr;
+		m_materialOutline = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TListTextLine & TextField::getTextLines() const

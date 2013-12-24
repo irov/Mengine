@@ -203,13 +203,7 @@ namespace Menge
 
 		m_videoDecoder = nullptr;
 
-		if( m_material != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_material );
-
-			m_material = nullptr;
-		}
+		m_material = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )
@@ -285,7 +279,7 @@ namespace Menge
         
 		const RenderVertex2D * vertices = this->getVertices();
 
-		const RenderMaterial * material = this->getMaterial(); 
+		const RenderMaterialInterfacePtr & material = this->getMaterial(); 
 
 		RENDER_SERVICE(m_serviceProvider)
             ->addRenderQuad( _viewport, _camera, material, vertices, 4 );
@@ -611,14 +605,6 @@ namespace Menge
 		else
 		{
 			stageName = CONST_STRING(m_serviceProvider, BlendSprite);
-		}
-
-		if( m_material != nullptr )
-		{
-			RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->releaseMaterial( m_material );
-
-			m_material = nullptr;
 		}
 
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)

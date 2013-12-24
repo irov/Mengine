@@ -78,7 +78,7 @@ namespace Menge
 	protected:
 		void invalidateMaterial();
 		void updateMaterial();
-		inline const RenderMaterial * getMaterial();
+		inline const RenderMaterialInterfacePtr & getMaterial();
 
 	protected:
 		void updateResource_();
@@ -110,7 +110,7 @@ namespace Menge
 		bool m_blendAdd;
 		bool m_solid;
 
-		const RenderMaterial * m_material;
+		RenderMaterialInterfacePtr m_material;
 		bool m_invalidateMaterial;
 
 		size_t m_texturesNum;
@@ -130,7 +130,7 @@ namespace Menge
 		bool m_invalidateVerticesColor;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterial * Model3D::getMaterial()
+	inline const RenderMaterialInterfacePtr & Model3D::getMaterial()
 	{
 		if( m_invalidateMaterial == true )
 		{

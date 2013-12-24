@@ -188,8 +188,8 @@ namespace Menge
 				
 		mutable TListTextLine m_lines;
 
-		const RenderMaterial * m_materialText;
-		const RenderMaterial * m_materialOutline;
+		RenderMaterialInterfacePtr m_materialText;
+		RenderMaterialInterfacePtr m_materialOutline;
 
 		TVectorRenderVertex2D m_vertexDataText;
 		TVectorRenderVertex2D m_vertexDataOutline;

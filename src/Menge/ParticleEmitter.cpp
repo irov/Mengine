@@ -196,21 +196,8 @@ namespace	Menge
 		
 		for( size_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
 		{
-			const RenderMaterial * mg_intensive = m_materials[i * 2 + 0];
-
-			if( mg_intensive != nullptr )
-			{
-				RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->releaseMaterial( mg_intensive );
-			}
-
-			const RenderMaterial * mg_nonintensive = m_materials[i * 2 + 1];
-
-			if( mg_nonintensive != nullptr )
-			{
-				RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->releaseMaterial( mg_nonintensive );
-			}
+			m_materials[i * 2 + 0] = nullptr;
+			m_materials[i * 2 + 1] = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -629,33 +616,14 @@ namespace	Menge
 			return;
 		}
 
-		for( size_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
-		{
-			const RenderMaterial * mg_intensive = m_materials[i * 2 + 0];
-			
-			if( mg_intensive != nullptr )
-			{
-				RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->releaseMaterial( mg_intensive );
-			}
-
-			const RenderMaterial * mg_nonintensive = m_materials[i * 2 + 1];
-
-			if( mg_nonintensive != nullptr )
-			{
-				RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->releaseMaterial( mg_nonintensive );
-			}
-		}
-
 		for( size_t i = 0; i != textureCount; ++i )
 		{
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( i );
 
-			const RenderMaterial * mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			const RenderMaterialInterfacePtr & mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
 				->getMaterial( CONST_STRING(m_serviceProvider, ParticleIntensive), false, false, PT_TRIANGLELIST, 1, &texture );
 
-			const RenderMaterial * mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			const RenderMaterialInterfacePtr & mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
 				->getMaterial( CONST_STRING(m_serviceProvider, ParticleBlend), false, false, PT_TRIANGLELIST, 1, &texture );
 
 			m_materials[i*2 + 0] = mg_intensive;

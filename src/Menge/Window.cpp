@@ -120,14 +120,6 @@ namespace Menge
 			bool wrapU = c_WindowWrapU[i];
 			bool wrapV = c_WindowWrapV[i];
 
-			if( edge.material != nullptr )
-			{
-				RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->releaseMaterial( edge.material );
-
-				edge.material = nullptr;
-			}
-
 			edge.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
 				->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, edge.textureCount, edge.textures );
 		}
@@ -144,15 +136,9 @@ namespace Menge
 		{
             WindowEdge & edge = m_edge[i];
 
-			if( edge.material != nullptr )
-			{
-				RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->releaseMaterial( edge.material );
+			edge.material = nullptr;
 
-				edge.material = nullptr;
-			}
-
-            edge.textures[0] = nullptr;
+			edge.textures[0] = nullptr;
             edge.textures[1] = nullptr;
 		}
 

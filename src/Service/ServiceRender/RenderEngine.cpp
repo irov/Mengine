@@ -106,6 +106,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::finalize()
 	{   
+		for( TArrayRenderObject::iterator
+			it = m_renderObjects.begin(),
+			it_end = m_renderObjects.end();
+		it != it_end;
+		++it )
+		{
+			RenderObject & ro = *it;
+
+			ro.material = nullptr;
+		}
+
 		m_renderObjects.clear();
 		m_renderPasses.clear();
 		//m_textures.clear();
@@ -142,6 +153,8 @@ namespace Menge
 		}
 
 		m_indexBuffer.clear();
+
+
 
 		//delete m_megatextures;
 	}
@@ -489,63 +502,72 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::updateMaterial_( const RenderMaterial * _material )
+	void RenderEngine::updateTexture_( size_t _stageId, const RenderTextureInterfacePtr & _texture )
+	{
+		size_t texture_id = _texture->getId();
+		size_t current_texture_id = m_currentTexturesID[_stageId];
+
+		if( texture_id != current_texture_id || current_texture_id != 0 )
+		{
+			m_currentTexturesID[_stageId] = texture_id;
+
+			const RenderImageInterfacePtr & image = _texture->getImage();
+
+			RENDER_SYSTEM(m_serviceProvider)
+				->setTexture( _stageId, image );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::updateMaterial_( const RenderMaterialPtr & _material )
 	{		
-		if( m_currentMaterialId == _material->id )
+		size_t materialId = _material->getId();
+
+		if( m_currentMaterialId == materialId )
 		{
 			return;
 		}
 
-		m_currentMaterialId = _material->id;
+		m_currentMaterialId = materialId;
 
-		if( m_currentTextureStages > _material->textureCount )
+		size_t textureCount = _material->getTextureCount();
+
+		if( m_currentTextureStages > textureCount )
 		{
-			for( size_t stageId = _material->textureCount; stageId != m_currentTextureStages; ++stageId )
+			for( size_t stageId = textureCount; stageId != m_currentTextureStages; ++stageId )
 			{
 				this->disableTextureStage_( stageId );
 			}
 		}
 
-		m_currentTextureStages = _material->textureCount;
+		m_currentTextureStages = textureCount;
 
 		for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
-			const RenderTextureInterface * texture = _material->textures[stageId];
+			const RenderTextureInterfacePtr & texture = _material->getTexture( stageId );
 
 			if( texture == nullptr )
 			{
-				const RenderTextureInterface * nullTexture = m_nullTexture.get();
-
-				texture = nullTexture;
+				this->updateTexture_( stageId, m_nullTexture );
 			}
-
-			size_t texture_id = texture->getId();
-			size_t current_texture_id = m_currentTexturesID[stageId];
-
-			if( texture_id != current_texture_id || current_texture_id != 0 )
+			else
 			{
-				m_currentTexturesID[stageId] = texture_id;
-
-				const RenderImageInterfacePtr & image = texture->getImage();
-
-				RENDER_SYSTEM(m_serviceProvider)
-					->setTexture( stageId, image );
+				this->updateTexture_( stageId, texture );
 			}
 		}
 
-		const RenderStage * stage = _material->stage;
+		const RenderStage * stage = _material->getStage();
 
 		this->updateStage_( stage );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject_( const RenderObject* _renderObject )
+	void RenderEngine::renderObject_( RenderObject* _renderObject )
 	{
 		if( _renderObject->dipVerticesNum == 0 )
 		{
 			return;
 		}
 
-		const RenderMaterial * material = _renderObject->material;
+		const RenderMaterialPtr & material = _renderObject->material;
 
 		this->updateMaterial_( material );		
 
@@ -567,14 +589,18 @@ namespace Menge
 				->setVertexBuffer( m_currentVBHandle );
 		}
 
+		EPrimitiveType primitiveType = material->getPrimitiveType();
+
 		RENDER_SYSTEM(m_serviceProvider)->drawIndexedPrimitive( 
-			material->primitiveType,
+			primitiveType,
 			_renderObject->baseVertexIndex, 
 			_renderObject->minIndex,
 			_renderObject->dipVerticesNum, 
 			_renderObject->startIndex, 
 			_renderObject->dipIndiciesNum 
 			);
+
+		_renderObject->material = nullptr;
 
 		++m_debugInfo.dips;
 	}
@@ -740,19 +766,19 @@ namespace Menge
 			return;
 		}
 
-		for( TArrayRenderPass::const_iterator
+		for( TArrayRenderPass::iterator
 			it = m_renderPasses.begin(), 
 			it_end = m_renderPasses.end();
 		it != it_end;
 		++it )
 		{
-			const RenderPass & renderPass = *it;
+			RenderPass & renderPass = *it;
 
 			this->renderPass_( renderPass );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderPass_( const RenderPass & _renderPass )
+	void RenderEngine::renderPass_( RenderPass & _renderPass )
 	{
 		const RenderCameraInterface * camera = _renderPass.camera;
 
@@ -811,20 +837,20 @@ namespace Menge
 		this->renderObjects_( _renderPass );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObjects_( const RenderPass & _renderPass )
+	void RenderEngine::renderObjects_( RenderPass & _renderPass )
 	{
-		TArrayRenderObject::const_iterator it_begin = m_renderObjects.advance( _renderPass.beginRenderObject );
-		TArrayRenderObject::const_iterator it_end = m_renderObjects.advance( _renderPass.beginRenderObject + _renderPass.countRenderObject );
+		TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass.beginRenderObject );
+		TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass.beginRenderObject + _renderPass.countRenderObject );
 
 		for( ;it_begin != it_end; ++it_begin )
 		{
-			const RenderObject * renderObject = it_begin;
+			RenderObject * renderObject = it_begin;
 
 			this->renderObject_( renderObject );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material        
+	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
 		, const RenderVertex2D * _vertices, size_t _verticesNum
 		, const uint16_t * _indices, size_t _indicesNum )
 	{
@@ -914,7 +940,9 @@ namespace Menge
 
 		if( m_debugMode == true )
 		{
-			switch( _material->primitiveType )
+			EPrimitiveType primitiveType = ro.material->getPrimitiveType();
+
+			switch( primitiveType )
 			{
 			case PT_TRIANGLELIST:
 				{
@@ -930,7 +958,7 @@ namespace Menge
 		m_renderIndicesCount += _indicesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material        
+	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, size_t _verticesNum )
 	{
 		size_t indicesNum = (_verticesNum / 4) * 6;
@@ -945,19 +973,10 @@ namespace Menge
 			return;
 		}
 
-		if( _material->primitiveType != PT_TRIANGLELIST )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderQuad invalid primitiveType %d"
-				, _material->primitiveType
-				);
-
-			return;
-		}
-
 		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesQuad, indicesNum );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
+	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, size_t _verticesNum )
 	{
 		size_t indicesNum = _verticesNum;
@@ -972,24 +991,15 @@ namespace Menge
 			return;
 		}
 
-		if( _material->primitiveType != PT_LINELIST )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderLine invalid primitiveType %d"
-				, _material->primitiveType
-				);
-
-			return;
-		}
-
 		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesLine, indicesNum );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setDebugMaterial( const RenderMaterial * _debugMaterial )
+	void RenderEngine::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
 	{
 		m_debugMaterial = _debugMaterial;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderMaterial * RenderEngine::getDebugMaterial() const
+	const RenderMaterialInterfacePtr & RenderEngine::getDebugMaterial() const
 	{
 		return m_debugMaterial;
 	}
@@ -1334,7 +1344,7 @@ namespace Menge
 							continue;
 						}
 
-						if( ro->material->id != ro_bath_begin->material->id )
+						if( ro->material != ro_bath_begin->material )
 						{
 							break;
 						}
@@ -1376,7 +1386,7 @@ namespace Menge
 							continue;
 						}
 						
-						if( ro->material->id == ro_bath_begin->material->id )
+						if( ro->material == ro_bath_begin->material )
 						{					
 							if( it_batch_end != it_batch_begin )
 							{			

@@ -73,7 +73,7 @@ namespace Menge
 		const RenderMaterial * debugMaterial = RENDER_SERVICE(m_serviceProvider)
 			->getDebugMaterial();
 
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial, nullptr, 0
+		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
 			, vertices
 			, vertexCount
 			);

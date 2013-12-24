@@ -110,9 +110,7 @@ namespace Menge
 		bool m_blendAdd;
 		bool m_solid;
 
-		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;
-
 		bool m_invalidateMaterial;
 
 		size_t m_texturesNum;

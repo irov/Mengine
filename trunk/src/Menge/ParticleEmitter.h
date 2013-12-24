@@ -14,6 +14,8 @@
 
 #	include <vector>
 
+#	define MENGINE_PARTICLE_MAX_ATLAS_TEXTURE 8
+
 namespace Menge
 {
 	class ParticleEmitterInterface;
@@ -107,6 +109,13 @@ namespace Menge
         void updateVertexWM_();
 
 	protected:
+		void updateMaterial_();
+		void invalidateMaterial_();
+
+	protected:
+		inline const RenderMaterial * getMaterial( size_t _index );
+
+	protected:
 		ResourceHolder<ResourceEmitterContainer> m_resourceEmitterContainer;
 
 		ConstString m_emitterName;
@@ -125,7 +134,8 @@ namespace Menge
 
 		float m_startPosition;
 
-		const RenderMaterial * m_materials[2]; //intensive and non intensive
+		const RenderMaterial * m_materials[ MENGINE_PARTICLE_MAX_ATLAS_TEXTURE * 2 ]; //intensive and non intensive
+		bool m_invalidateMaterial;
 
 		//TVectorVertex2D m_vertices;
 		RenderVertex2D * m_vertices;
@@ -135,7 +145,6 @@ namespace Menge
 		{
 			TVectorRenderVertex2D::size_type begin;
 			TVectorRenderVertex2D::size_type size;
-			RenderTextureInterfacePtr texture[1];
 			const RenderMaterial * material;
 		};
 
@@ -144,4 +153,16 @@ namespace Menge
 
 		bool m_emitterTranslateWithParticle;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const RenderMaterial * ParticleEmitter::getMaterial( size_t _index )
+	{
+		if( m_invalidateMaterial == true )
+		{
+			this->updateMaterial_();
+		}
+
+		const RenderMaterial * material = m_materials[_index];
+
+		return material;
+	}
 }

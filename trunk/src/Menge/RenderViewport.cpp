@@ -4,7 +4,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderViewport::RenderViewport()
-		: m_invalidateViewport(false)
+		: m_invalidateViewport(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -13,16 +13,6 @@ namespace Menge
 		m_viewport = _viewport;
 
 		this->invalidateViewport_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport & RenderViewport::getViewport() const
-	{
-		if( m_invalidateViewport == true )
-		{
-			this->updateViewport_();
-		}
-
-		return m_viewportWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderViewport::_invalidateWorldMatrix()

@@ -1163,7 +1163,11 @@ namespace Menge
 
 				ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
 				ss << "DIP: " << rdi.dips << std::endl;
-				ss << "Smart Batch: " << rdi.smartBatch << std::endl;
+
+				ERenderBatchMode mode = RENDER_SERVICE(m_serviceProvider)
+					->getBatchMode();
+
+				ss << "Smart Batch: " << mode << " " << rdi.batch <<  std::endl;
 				ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
 				ss << "Texture Count: " << rtdi.textureCount << std::endl;
 				ss << "Particles: " << particlesCount << std::endl;

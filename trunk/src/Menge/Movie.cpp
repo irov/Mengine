@@ -2534,6 +2534,8 @@ namespace Menge
 		m_renderViewport = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
 
+		m_renderViewport->setName( name );
+
 		Viewport vp;
 		vp.begin.x = 0.f;
 		vp.begin.y = 0.f;

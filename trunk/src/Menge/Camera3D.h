@@ -72,4 +72,24 @@ namespace Menge
 	{
 		m_invalidateMatrix = true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera3D::getProjectionMatrix() const
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_projectionMatrixWM;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera3D::getViewMatrix() const
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_viewMatrixWM;
+	}
 }

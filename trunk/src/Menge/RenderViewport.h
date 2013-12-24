@@ -43,4 +43,14 @@ namespace Menge
 	{
 		m_invalidateViewport = true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const Viewport & RenderViewport::getViewport() const
+	{
+		if( m_invalidateViewport == true )
+		{
+			this->updateViewport_();
+		}
+
+		return m_viewportWM;
+	}
 }

@@ -79,8 +79,8 @@ namespace Menge
         m_size = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_isUVRotate = false;
-        m_wrapX = false;
-        m_wrapY = false;
+        m_wrapU = false;
+        m_wrapV = false;
         
         metadata->swap_File_Path( m_fileName );
         metadata->swap_File_Codec( m_codecType );
@@ -94,8 +94,8 @@ namespace Menge
         metadata->get_File_UV( m_uv );
         metadata->get_File_Alpha( m_isAlpha );
         metadata->get_File_Rotate( m_isUVRotate );
-        metadata->get_File_WrapX( m_wrapX );
-        metadata->get_File_WrapY( m_wrapY );        
+        metadata->get_File_WrapX( m_wrapU );
+        metadata->get_File_WrapY( m_wrapV );        
         metadata->get_File_TextureSize( m_textureSize );
         metadata->get_File_MaxSize( m_maxSize );
 
@@ -131,8 +131,8 @@ namespace Menge
         m_uv = mt::vec4f(0.f,0.f,1.f,1.f);
 		m_isAlpha = true;
         m_isUVRotate = false;
-		m_wrapX = false;
-		m_wrapY = false;
+		m_wrapU = false;
+		m_wrapV = false;
 	}
 	/////////////////////////////////////////////////////////////////////////
 }

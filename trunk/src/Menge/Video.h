@@ -60,8 +60,7 @@ namespace Menge
 		void _invalidateColor() override;
 		
     protected:
-		void updateUV_();
-		void updateMaterial_();
+		void updateUV_();		
 
 		bool sync_( float _timing );
 		bool compileDecoder_();
@@ -78,12 +77,18 @@ namespace Menge
 		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
+		void invalidateMaterial_();
+		void updateMaterial_();
+
+		inline const RenderMaterial * getMaterial();
+
+	protected:
 		ResourceHolder<ResourceVideo> m_resourceVideo;
 
 		RenderTextureInterfacePtr m_textures[1];
 		
-		const RenderMaterialGroup * m_materialGroup;
-		const RenderMaterial * m_material;	
+		const RenderMaterial * m_material;
+		bool m_invalidateMaterial;
 
 		VideoDecoderInterfacePtr m_videoDecoder;
 		mt::vec2f m_frameSize;
@@ -96,4 +101,14 @@ namespace Menge
 		bool m_needUpdate;
         bool m_needUpdate2;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const RenderMaterial * Video::getMaterial()
+	{
+		if( m_invalidateMaterial == true )
+		{
+			this->updateMaterial_(); 
+		}
+
+		return m_material;
+	}
 }

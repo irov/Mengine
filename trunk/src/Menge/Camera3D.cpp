@@ -89,6 +89,8 @@ namespace Menge
 	void Camera3D::setCameraRightSign( float _rightSign )
 	{
 		m_cameraRightSign = _rightSign;
+
+		this->invalidateMatrix_();
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void Camera3D::setRenderport( const Viewport & _renderport )
@@ -105,7 +107,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::updateMatrix_() const
 	{
-		//m_invalidateMatrix = false;
+		m_invalidateMatrix = false;
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -151,26 +153,6 @@ namespace Menge
 
         RENDER_SERVICE(m_serviceProvider)
             ->makeProjectionFrustum( m_projectionMatrixWM, projectViewport, 1.f, 10000.f );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera3D::getProjectionMatrix() const
-	{
-		if( m_invalidateMatrix == true )
-		{
-			this->updateMatrix_();
-		}
-
-		return m_projectionMatrixWM;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera3D::getViewMatrix() const
-	{
-		if( m_invalidateMatrix == true )
-		{
-			this->updateMatrix_();
-		}
-
-		return m_viewMatrixWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

@@ -72,8 +72,8 @@ namespace Menge
         m_maxSize = mt::vec2f(0.f, 0.f);
         m_size = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
-        m_wrapX = false;  
-        m_wrapY = false;
+        m_wrapU = false;  
+        m_wrapV = false;
 
         metadata->swap_File_PathAlpha( m_fileNameAlpha );
         metadata->swap_File_CodecAlpha( m_codecTypeAlpha );
@@ -83,8 +83,8 @@ namespace Menge
 
         metadata->get_File_UV( m_uv );
         metadata->get_File_Alpha( m_isAlpha );
-        metadata->get_File_WrapX( m_wrapX );
-        metadata->get_File_WrapY( m_wrapY );
+        metadata->get_File_WrapX( m_wrapU );
+        metadata->get_File_WrapY( m_wrapV );
 
         return true;
 	}

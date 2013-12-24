@@ -286,6 +286,8 @@ namespace Menge
 
 			frameLayer.immutable = immutable;
 
+			MovieFrameSource frame;			
+
 			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
 
 			for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D::const_iterator
@@ -298,8 +300,6 @@ namespace Menge
 
 				size_t count = 1;
 				
-				MovieFrameSource frame;
-
 				meta_frame3d.get_AnchorPoint( frame.anchorPoint );
 				meta_frame3d.get_Position( frame.position );
 				meta_frame3d.get_Rotation( frame.rotation );

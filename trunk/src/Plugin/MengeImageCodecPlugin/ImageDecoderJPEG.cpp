@@ -290,7 +290,7 @@ namespace Menge
 		}
         else
         {
-            if( m_options.channels == 4 )
+            if( m_options.channels == 4 || m_options.channels == 3 )
             {
                 JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
                 size_t bufferSize = _bufferSize;
@@ -303,7 +303,7 @@ namespace Menge
                     bufferSize -= m_options.pitch;
                 }
 
-                if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
+                if( m_options.channels == 4 && (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
                 {
                     JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
                     for( size_t j = 0; j != m_dataInfo.height; ++j )

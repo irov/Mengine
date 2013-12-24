@@ -214,6 +214,13 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceEmitterContainer::getAtlasTextureCount() const
+	{
+		size_t count = m_atlasRenderTextures.size();
+
+		return count;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ParticleEmitterContainerInterfacePtr & ResourceEmitterContainer::getContainer() const
 	{
 		return m_container;

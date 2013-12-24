@@ -30,6 +30,7 @@ namespace Menge
 		, m_blendAdd(false)
         , m_needUpdate(false)
         , m_needUpdate2(false)
+		, m_invalidateMaterial(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -128,8 +129,6 @@ namespace Menge
             return false;
         }
 
-		this->updateMaterial_();
-
 		if ( this->compileDecoder_() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Video::_compile %s can`t create video decoder '%s'"
@@ -164,6 +163,7 @@ namespace Menge
 		//m_material->textureStage[0].texture = m_resourceImage;
 
 		this->updateUV_();
+		this->invalidateMaterial_();
 		this->invalidateVertices();
 		this->invalidateBoundingBox();
 
@@ -197,11 +197,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_release()
 	{
-        m_textures[0] = nullptr;
-
-        m_videoDecoder = nullptr;
-
         m_resourceVideo.release();
+
+		m_textures[0] = nullptr;
+
+		m_videoDecoder = nullptr;
+
+		if( m_material != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_material );
+
+			m_material = nullptr;
+		}
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )
@@ -277,8 +285,10 @@ namespace Menge
         
 		const RenderVertex2D * vertices = this->getVertices();
 
+		const RenderMaterial * material = this->getMaterial(); 
+
 		RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, m_material, m_textures, 1, vertices, 4 );
+            ->addRenderQuad( _viewport, _camera, material, vertices, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices )
@@ -583,21 +593,36 @@ namespace Menge
 		m_uv.z = scaleLeft + (scaleRight - scaleLeft);
 		m_uv.w = scaleTop + (scaleBottom - scaleTop);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::invalidateMaterial_()
+	{
+		m_invalidateMaterial = true;
+	}
 	////////////////////////////////////////////////////////////////////
 	void Video::updateMaterial_()
 	{
+		m_invalidateMaterial = false;
+
+		ConstString stageName; 
 		if ( this->isBlendAdd() == true )
 		{
-			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                ->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
+			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 		}
 		else
 		{
-			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                ->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+			stageName = CONST_STRING(m_serviceProvider, BlendSprite);
 		}
 
-		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		if( m_material != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_material );
+
+			m_material = nullptr;
+		}
+
+		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getMaterial( stageName, false, false, PT_TRIANGLELIST, 1, m_textures );
 	}
 	////////////////////////////////////////////////////////////////////
 	void Video::setBlendAdd( bool _blendAdd )
@@ -609,7 +634,7 @@ namespace Menge
 
 		m_blendAdd = _blendAdd;
 
-		this->updateMaterial_();
+		this->invalidateMaterial_();
 	}
 	////////////////////////////////////////////////////////////////////
 	bool Video::isBlendAdd() const

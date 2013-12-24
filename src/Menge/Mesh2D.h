@@ -53,8 +53,6 @@ namespace Menge
         void updateMaterial();
         inline const RenderMaterial * getMaterial();
 
-    protected:
-        void updateResource_();
 		        
 	protected:
 		bool compileResource_();
@@ -80,7 +78,6 @@ namespace Menge
 		bool m_blendAdd;
 		bool m_solid;
 
-		const RenderMaterialGroup * m_materialGroup;
 		const RenderMaterial * m_material;
 
         bool m_invalidateMaterial;

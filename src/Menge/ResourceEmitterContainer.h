@@ -33,6 +33,7 @@ namespace Menge
 
 	public:
 		const RenderTextureInterfacePtr & getAtlasTexture( size_t _atlasId );
+		size_t getAtlasTextureCount() const;
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

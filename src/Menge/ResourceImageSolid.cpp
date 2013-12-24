@@ -41,8 +41,8 @@ namespace Menge
         m_textureSize = m_size;
         m_uv = mt::vec4f(0.f,0.f,1.f,1.f);
         m_isAlpha = false;
-        m_wrapX = true;
-        m_wrapY = true;
+        m_wrapU = true;
+        m_wrapV = true;
 
         m_texture = nullptr;
 

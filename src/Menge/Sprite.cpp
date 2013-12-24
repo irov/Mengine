@@ -17,8 +17,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_materialGroup(nullptr)
-		, m_material(nullptr)
+		: m_material(nullptr)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
 		, m_blendAdd(false)
@@ -79,8 +78,13 @@ namespace	Menge
         m_textures[0] = nullptr;
         m_textures[1] = nullptr;
 		
-		m_materialGroup = nullptr;
-		m_material = nullptr;
+		if( m_material != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_material );
+
+			m_material = nullptr;
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void Sprite::setResourceImage( ResourceImage * _resourceImage )
@@ -105,10 +109,10 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     void Sprite::updateResource_()
     {
-        bool wrapX = m_resourceImage->isWrapX();
+        bool wrapX = m_resourceImage->isWrapU();
         this->setTextureWrapX( wrapX );
 
-        bool wrapY = m_resourceImage->isWrapY();
+        bool wrapY = m_resourceImage->isWrapV();
         this->setTextureWrapY( wrapY );
 
         if( m_isCustomSize == false )
@@ -149,43 +153,40 @@ namespace	Menge
 
         const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
 
+		ConstString stageName;
+
         if( textureAlpha != nullptr )
         {
             if( m_disableTextureColor == true )
             {
                 m_texturesNum = 2;
 
-                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor) );
+                stageName = CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor);
             }
             else if( m_resourceImage->isAlpha() == true || m_solid == false )
             {
                 m_texturesNum = 2;
 
-                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
+                stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
             }
             else
             {
                 m_texturesNum = 1;
 
-                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+                stageName = CONST_STRING(m_serviceProvider, SolidSprite);
             }
         }
 		else if( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
 
-			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
+			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 		}
 		else if( m_disableTextureColor == true )
 		{
 			m_texturesNum = 1;
 
-			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
+			stageName = CONST_STRING(m_serviceProvider, OnlyColor);
 		}
 		else
 		{
@@ -193,23 +194,27 @@ namespace	Menge
 
 			if( m_resourceImage->isAlpha() == true || m_solid == false )
 			{
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+				stageName = CONST_STRING(m_serviceProvider, BlendSprite);
 			}
 			else
 			{
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
 			}
 		}
 
-		bool wrapX = m_resourceImage->isWrapX();
-		bool wrapY = m_resourceImage->isWrapY();
+		bool wrapU = m_resourceImage->isWrapU();
+		bool wrapV = m_resourceImage->isWrapV();
 
-		ETextureAddressMode textureU = wrapX ? TAM_WRAP : TAM_CLAMP;
-		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
+		if( m_material != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_material );
 
-		m_material = m_materialGroup->getMaterial( textureU, textureV );
+			m_material = nullptr;
+		}
+
+		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
 
 		if( m_material == nullptr )
 		{
@@ -227,7 +232,7 @@ namespace	Menge
         const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, m_textures, m_texturesNum, vertices, 4 );
+			->addRenderQuad( _viewport, _camera, material, vertices, 4 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -277,9 +282,6 @@ namespace	Menge
 		{
 			return;
 		}
-
-		m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterialGroup( CONST_STRING(m_serviceProvider, OnlyColor) );
 
         this->invalidateMaterial();
 	}

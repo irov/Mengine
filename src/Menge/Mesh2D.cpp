@@ -16,8 +16,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Mesh2D::Mesh2D()
-		: m_materialGroup(nullptr)
-		, m_material(nullptr)
+		: m_material(nullptr)
 		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
@@ -41,9 +40,7 @@ namespace Menge
 		{
 			return false;
 		}
-
-        this->updateResource_();
-        
+      
         this->invalidateMaterial();
 		this->invalidateBoundingBox();
 
@@ -81,7 +78,9 @@ namespace Menge
         m_textures[0] = nullptr;
         m_textures[1] = nullptr;
 		
-		m_materialGroup = nullptr;
+		RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->releaseMaterial( m_material );
+
 		m_material = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -105,21 +104,6 @@ namespace Menge
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Mesh2D::updateResource_()
-    {
-        //bool uvRotate = m_resourceImage->isUVRotate();
-        //this->setUVRotate( uvRotate );
-
-        //const mt::vec4f & uv = m_resourceImage->getUVImage();
-        //this->setUV( uv );
-
-        //const mt::vec4f & uvAlpha = m_resourceImage->getUVAlpha();
-        //this->setUV2( uvAlpha );
-
-        m_textures[0] = m_resourceImage->getTexture();
-        m_textures[1] = m_resourceImage->getTextureAlpha();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Mesh2D::invalidateMaterial()
     {
         m_invalidateMaterial = true;
@@ -129,7 +113,12 @@ namespace Menge
 	{
         m_invalidateMaterial = false;
 
+		m_textures[0] = m_resourceImage->getTexture();
+		m_textures[1] = m_resourceImage->getTextureAlpha();
+		
         const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
+
+		ConstString stageName;
 
         if( textureAlpha != nullptr )
         {
@@ -137,23 +126,20 @@ namespace Menge
             {
                 m_texturesNum = 2;
 
-                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
+				stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
             }
             else
             {
                 m_texturesNum = 1;
-
-                m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+				
+				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
             }
         }
 		else if( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
 
-			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
+			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 		}
 		else
 		{
@@ -161,23 +147,27 @@ namespace Menge
 
 			if( m_resourceImage->isAlpha() == true || m_solid == false )
 			{
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+				stageName = CONST_STRING(m_serviceProvider, BlendSprite);
 			}
 			else
 			{
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
 			}
 		}
 
-		bool wrapX = m_resourceImage->isWrapX();
-		bool wrapY = m_resourceImage->isWrapY();
+		bool wrapU = m_resourceImage->isWrapU();
+		bool wrapV = m_resourceImage->isWrapV();
 
-		ETextureAddressMode textureU = wrapX ? TAM_WRAP : TAM_CLAMP;
-		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
+		if( m_material != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_material );
 
-		m_material = m_materialGroup->getMaterial( textureU, textureV );
+			m_material = nullptr;
+		}
+
+		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
 
 		if( m_material == nullptr )
 		{
@@ -200,7 +190,7 @@ namespace Menge
         const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_shape->indices, m_indicesCount );
+			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox )

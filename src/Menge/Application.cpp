@@ -1050,9 +1050,33 @@ namespace Menge
 
 			if( _key == KC_F11 && _isDown )
 			{
-                PlayerServiceInterface * player = m_game->getPlayer();
-				
-                player->toggleDebugText();
+                PLAYER_SERVICE(m_serviceProvider)
+					->toggleDebugText();
+			}
+
+			if( _key == KC_0 && _isDown )
+			{
+				static size_t batchMode = RENDER_SERVICE(m_serviceProvider)
+					->getBatchMode();
+
+				++batchMode;
+
+				ERenderBatchMode mode;
+				switch(batchMode %3)
+				{
+				case 0:
+					mode = ERBM_NONE;
+					break;
+				case 1:
+					mode = ERBM_NORMAL;
+					break;
+				case 2:
+					mode = ERBM_SMART;
+					break;
+				}
+
+				RENDER_SERVICE(m_serviceProvider)
+					->setBatchMode( mode );
 			}
 
             if( _key == KC_F3 && _isDown == true )

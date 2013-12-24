@@ -72,11 +72,11 @@ namespace Menge
         m_maxSize = mt::vec2f(0.f, 0.f);
         m_size = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
-        m_wrapX = false;
-        m_wrapY = false;
+        m_wrapU = false;
+        m_wrapV = false;
 
-        metadata->get_File_WrapX( m_wrapX );
-        metadata->get_File_WrapY( m_wrapY );
+        metadata->get_File_WrapX( m_wrapU );
+        metadata->get_File_WrapY( m_wrapV );
 
         metadata->swap_FileRGB_Path( m_fileNameRGB );
         metadata->swap_FileRGB_Codec( m_codecTypeRGB );

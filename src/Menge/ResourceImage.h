@@ -27,8 +27,8 @@ namespace Menge
         inline const mt::vec4f & getUVAlpha() const;
 
 		inline bool isAlpha() const;
-        inline bool isWrapX() const;
-        inline bool isWrapY() const;
+        inline bool isWrapU() const;
+        inline bool isWrapV() const;
         inline bool isUVRotate() const;
     
     public:
@@ -64,8 +64,8 @@ namespace Menge
         bool m_isAlpha;
         bool m_isUVRotate;
 
-        bool m_wrapX;
-        bool m_wrapY;        
+        bool m_wrapU;
+        bool m_wrapV;        
 	};
     //////////////////////////////////////////////////////////////////////////
     inline const mt::vec2f & ResourceImage::getTextureSize() const
@@ -122,13 +122,13 @@ namespace Menge
         return m_isUVRotate;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isWrapX() const
+    inline bool ResourceImage::isWrapU() const
     {
-        return m_wrapX;
+        return m_wrapU;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isWrapY() const
+    inline bool ResourceImage::isWrapV() const
     {
-        return m_wrapY;
+        return m_wrapV;
     }
 }

@@ -17,8 +17,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Model3D::Model3D()
-		: m_materialGroup(nullptr)
-		, m_material(nullptr)
+		: m_material(nullptr)
 		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
@@ -112,8 +111,13 @@ namespace Menge
 		m_textures[0] = nullptr;
 		m_textures[1] = nullptr;
 
-		m_materialGroup = nullptr;
-		m_material = nullptr;
+		if( m_material != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_material );
+
+			m_material = nullptr;
+		}
 
 		m_frame = nullptr;
 	}
@@ -168,29 +172,28 @@ namespace Menge
 
 		const RenderTextureInterfacePtr & textureAlpha = resourceImage->getTextureAlpha();
 
+		ConstString stageName;
+
 		if( textureAlpha != nullptr )
 		{
 			if( resourceImage->isAlpha() == true || m_solid == false )
 			{
 				m_texturesNum = 2;
 
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
+				stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
 			}
 			else
 			{
 				m_texturesNum = 1;
 
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
 			}
 		}
 		else if( m_blendAdd == true )
 		{
 			m_texturesNum = 1;
 
-			m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
+			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 		}
 		else
 		{
@@ -198,23 +201,27 @@ namespace Menge
 
 			if( resourceImage->isAlpha() == true || m_solid == false )
 			{
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+				stageName = CONST_STRING(m_serviceProvider, BlendSprite);
 			}
 			else
 			{
-				m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
+				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
 			}
 		}
 
-		bool wrapX = resourceImage->isWrapX();
-		bool wrapY = resourceImage->isWrapY();
+		bool wrapU = resourceImage->isWrapU();
+		bool wrapV = resourceImage->isWrapV();
 
-		ETextureAddressMode textureU = wrapX ? TAM_WRAP : TAM_CLAMP;
-		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
+		if( m_material != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_material );
 
-		m_material = m_materialGroup->getMaterial( textureU, textureV );
+			m_material = nullptr;
+		}
+
+		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
 
 		if( m_material == nullptr )
 		{
@@ -237,7 +244,7 @@ namespace Menge
 		const RenderMaterial * material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, m_textures, m_texturesNum, PT_TRIANGLELIST, vertices, m_vertexCount, m_frame->indecies, m_indicesCount );
+			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::_activate()
@@ -561,6 +568,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::_stop( size_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( this->isCompile() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' stop not activate"
@@ -573,6 +582,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::_end( size_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( this->isCompile() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' end not activate"

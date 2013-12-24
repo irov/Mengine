@@ -47,7 +47,13 @@ namespace	Menge
         , m_emitterRelative(false)
         , m_emitterPosition(0.f, 0.f, 0.f)
         , m_emitterTranslateWithParticle(true)
+		, m_invalidateMaterial(true)
 	{
+		for( size_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
+		{
+			m_materials[i * 2 + 0] = nullptr;
+			m_materials[i * 2 + 1] = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::~ParticleEmitter()
@@ -135,15 +141,6 @@ namespace	Menge
 
 		m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 
-		const RenderMaterialGroup * mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleIntensive) );
-
-		const RenderMaterialGroup * mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterialGroup( CONST_STRING(m_serviceProvider, ParticleBlend) );
-
-		m_materials[0] = mg_intensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
-		m_materials[1] = mg_nonintensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
-
 		if( m_emitterImageName.empty() == false )
 		{
 			if( this->compileEmitterImage_() == false )
@@ -172,6 +169,8 @@ namespace	Menge
 			m_emitter->setPosition( m_emitterPosition );
 		}
 
+		this->invalidateMaterial_();
+
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -194,8 +193,25 @@ namespace	Menge
 		m_verticesCount = 0;
 
         m_batchs.clear();
+		
+		for( size_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
+		{
+			const RenderMaterial * mg_intensive = m_materials[i * 2 + 0];
 
-		//m_images.clear();				
+			if( mg_intensive != nullptr )
+			{
+				RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->releaseMaterial( mg_intensive );
+			}
+
+			const RenderMaterial * mg_nonintensive = m_materials[i * 2 + 1];
+
+			if( mg_nonintensive != nullptr )
+			{
+				RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->releaseMaterial( mg_nonintensive );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -235,8 +251,8 @@ namespace	Menge
                 return;
             }
 
-            RENDER_SERVICE(m_serviceProvider)->
-                addRenderQuad( _viewport, _camera, batch.material, batch.texture, 1, batch_vertices, batch.size );
+            RENDER_SERVICE(m_serviceProvider)
+				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -541,8 +557,8 @@ namespace	Menge
 			Batch batch;
 			batch.begin = mesh.begin * 4;
 			batch.size = mesh.size * 4;
-			batch.texture[0] = texture;
-			batch.material = mesh.intense ? m_materials[0] : m_materials[1];
+			
+			batch.material = this->getMaterial( mesh.texture * 2 + (mesh.intense ? 0 : 1) );
 
 			m_batchs.push_back( batch );
 		}
@@ -590,6 +606,62 @@ namespace	Menge
             }
         }
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::invalidateMaterial_()
+	{
+		m_invalidateMaterial = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::updateMaterial_()
+	{
+		m_invalidateMaterial = false;
+
+		size_t textureCount = m_resourceEmitterContainer->getAtlasTextureCount();
+
+		if( textureCount > MENGINE_PARTICLE_MAX_ATLAS_TEXTURE )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::updateMaterial_ %s particle resource %s max atlas texture %d"
+				, this->getName().c_str()
+				, m_resourceEmitterContainer->getName().c_str()
+				, MENGINE_PARTICLE_MAX_ATLAS_TEXTURE
+				);
+
+			return;
+		}
+
+		for( size_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
+		{
+			const RenderMaterial * mg_intensive = m_materials[i * 2 + 0];
+			
+			if( mg_intensive != nullptr )
+			{
+				RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->releaseMaterial( mg_intensive );
+			}
+
+			const RenderMaterial * mg_nonintensive = m_materials[i * 2 + 1];
+
+			if( mg_nonintensive != nullptr )
+			{
+				RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->releaseMaterial( mg_nonintensive );
+			}
+		}
+
+		for( size_t i = 0; i != textureCount; ++i )
+		{
+			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( i );
+
+			const RenderMaterial * mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->getMaterial( CONST_STRING(m_serviceProvider, ParticleIntensive), false, false, PT_TRIANGLELIST, 1, &texture );
+
+			const RenderMaterial * mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->getMaterial( CONST_STRING(m_serviceProvider, ParticleBlend), false, false, PT_TRIANGLELIST, 1, &texture );
+
+			m_materials[i*2 + 0] = mg_intensive;
+			m_materials[i*2 + 1] = mg_nonintensive;
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::onParticleEmitterStopped()
 	{

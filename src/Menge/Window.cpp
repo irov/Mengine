@@ -12,28 +12,28 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    const ETextureAddressMode c_WindowAddressModeU[ResourceWindow_Count] =    
-    { TAM_WRAP //ResourceWindow_Background
-    , TAM_CLAMP //ResourceWindow_LeftTop
-    , TAM_WRAP //ResourceWindow_Top
-    , TAM_CLAMP //ResourceWindow_RightTop
-    , TAM_CLAMP //ResourceWindow_Right
-    , TAM_CLAMP //ResourceWindow_RightBottom
-    , TAM_WRAP //ResourceWindow_Bottom
-    , TAM_CLAMP //ResourceWindow_LeftBottom
-    , TAM_CLAMP //ResourceWindow_Left
+    const bool c_WindowWrapU[ResourceWindow_Count] =    
+    { true //ResourceWindow_Background
+    , false //ResourceWindow_LeftTop
+    , true //ResourceWindow_Top
+    , false //ResourceWindow_RightTop
+    , false //ResourceWindow_Right
+    , false //ResourceWindow_RightBottom
+    , true //ResourceWindow_Bottom
+    , false //ResourceWindow_LeftBottom
+    , false //ResourceWindow_Left
     };
     //////////////////////////////////////////////////////////////////////////
-    const ETextureAddressMode c_WindowAddressModeV[ResourceWindow_Count] =
-    { TAM_WRAP //ResourceWindow_Background
-    , TAM_CLAMP //ResourceWindow_LeftTop
-    , TAM_CLAMP //ResourceWindow_Top
-    , TAM_CLAMP //ResourceWindow_RightTop
-    , TAM_WRAP //ResourceWindow_Right
-    , TAM_CLAMP //ResourceWindow_RightBottom
-    , TAM_CLAMP //ResourceWindow_Bottom
-    , TAM_CLAMP //ResourceWindow_LeftBottom
-    , TAM_WRAP //ResourceWindow_Left
+    const bool c_WindowWrapV[ResourceWindow_Count] =
+    { true //ResourceWindow_Background
+    , false //ResourceWindow_LeftTop
+    , false //ResourceWindow_Top
+    , false //ResourceWindow_RightTop
+    , true //ResourceWindow_Right
+    , false //ResourceWindow_RightBottom
+    , false //ResourceWindow_Bottom
+    , false //ResourceWindow_LeftBottom
+    , true //ResourceWindow_Left
     };
 	//////////////////////////////////////////////////////////////////////////
 	Window::Window()
@@ -102,30 +102,34 @@ namespace Menge
             edge.textures[0] = texture;
             edge.textures[1] = textureAlpha;
 
+			ConstString stageName;
+
             if( textureAlpha == nullptr )
             {
-                const RenderMaterialGroup * materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
-
-
-                ETextureAddressMode U = c_WindowAddressModeU[i];
-                ETextureAddressMode V = c_WindowAddressModeV[i];
-                edge.material = materialGroup->getMaterial( U, V );
-
+                stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+				
                 edge.textureCount = 1;
             }
             else
             {
-                const RenderMaterialGroup * materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-                    ->getMaterialGroup( CONST_STRING(m_serviceProvider, ExternalAlpha) );
-
-
-                ETextureAddressMode U = c_WindowAddressModeU[i];
-                ETextureAddressMode V = c_WindowAddressModeV[i];
-                edge.material = materialGroup->getMaterial( U, V );
+                stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
 
                 edge.textureCount = 2;
             }            
+
+			bool wrapU = c_WindowWrapU[i];
+			bool wrapV = c_WindowWrapV[i];
+
+			if( edge.material != nullptr )
+			{
+				RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->releaseMaterial( edge.material );
+
+				edge.material = nullptr;
+			}
+
+			edge.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, edge.textureCount, edge.textures );
 		}
 
 		this->invalidateVertices();
@@ -140,7 +144,14 @@ namespace Menge
 		{
             WindowEdge & edge = m_edge[i];
 
-			edge.material = nullptr;
+			if( edge.material != nullptr )
+			{
+				RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->releaseMaterial( edge.material );
+
+				edge.material = nullptr;
+			}
+
             edge.textures[0] = nullptr;
             edge.textures[1] = nullptr;
 		}
@@ -159,7 +170,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _viewport, _camera, edge.material, edge.textures, edge.textureCount, &vertices[0*4], 4 );
+                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[0*4], 4 );
         }
 
         for( size_t i = 1; i != ResourceWindow_Count; ++i )
@@ -167,7 +178,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[i];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _viewport, _camera, edge.material, edge.textures, edge.textureCount, &vertices[i*4], 4 );
+                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[i*4], 4 );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

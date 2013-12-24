@@ -57,12 +57,7 @@ namespace Menge
 	struct RenderObject
     {
 		const RenderMaterial * material;
-
-		size_t textureStages;
-		RenderTextureInterface * textures[MENGE_MAX_TEXTURE_STAGES];
-
-		EPrimitiveType primitiveType;
-
+				
 		const RenderVertex2D * vertexData;
 		size_t verticesNum;
 
@@ -113,15 +108,14 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial * _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
-            , EPrimitiveType _type
+		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial * _material            
             , const RenderVertex2D * _vertices, size_t _verticesNum 
 			, const uint16_t * _indices, size_t _indicesNum ) override;
 
-        void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
-            , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
+        void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
+			, const RenderVertex2D * _vertices, size_t _verticesNum ) override;
 
-        void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material, const RenderTextureInterfacePtr * _textures, size_t _texturesNum
+        void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterial* _material
             , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
 
 	public:
@@ -131,6 +125,7 @@ namespace Menge
 
 	public:
 		void setBatchMode( ERenderBatchMode _mode ) override;
+		ERenderBatchMode getBatchMode() const override;
 
 	public:
 		VBHandle createVertexBuffer( const RenderVertex2D * _vertexies, size_t _verticesNum );
@@ -218,6 +213,10 @@ namespace Menge
     protected:
         bool createNullTexture_();
 
+	protected:
+		void updateMaterial_( const RenderMaterial * _material );
+		void updateStage_( const RenderStage * _stage );
+
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
@@ -253,7 +252,7 @@ namespace Menge
 
 		size_t m_maxVertexCount;
 		size_t m_maxIndexCount;
-		
+						
 		VBHandle m_currentVBHandle;
 		VBHandle m_currentIBHandle;
 
@@ -261,8 +260,10 @@ namespace Menge
 
 		size_t m_currentTextureStages;
 		RenderTextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
-
-		const RenderMaterial * m_currentMaterial;
+		
+		size_t m_currentMaterialId;
+		const RenderStage * m_currentStage;
+		
 
 		size_t m_currentTexturesID[MENGE_MAX_TEXTURE_STAGES];
 

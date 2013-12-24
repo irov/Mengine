@@ -30,8 +30,8 @@ namespace Menge
         m_size = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_isUVRotate = false;
-        m_wrapX = false;
-        m_wrapY = false;
+        m_wrapU = false;
+        m_wrapV = false;
 
         metadata->swap_Image_Name( m_resourceImageName );
         m_uv = metadata->get_Image_UV();
@@ -82,8 +82,8 @@ namespace Menge
         m_uv_scale = m_resourceImage->getUVScale();
         m_uv_alpha = m_uv;
         
-        m_wrapX = false;
-        m_wrapY = false;
+        m_wrapU = false;
+        m_wrapV = false;
 
         if( m_isUVRotate == true )
         {

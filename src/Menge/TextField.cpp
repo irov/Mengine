@@ -115,11 +115,34 @@ namespace Menge
 
 		m_fontHeight = resourceGlyph->getFontHeight();
 
-		const RenderMaterialGroup * mg_sprite = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterialGroup( CONST_STRING(m_serviceProvider, BlendSprite) );
+		if( m_materialText != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_materialText );
 
-		m_materialText = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
-		m_materialOutline = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+			m_materialText = nullptr;
+		}
+
+		if( m_materialOutline != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_materialOutline );
+
+			m_materialOutline = nullptr;
+		}
+
+		const RenderTextureInterfacePtr & textureFont = m_resourceFont->getTextureFont();
+
+		m_materialText = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureFont );
+
+		const RenderTextureInterfacePtr & textureOutline = m_resourceFont->getTextureOutline();
+
+		if( textureOutline != nullptr )
+		{
+			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureOutline );
+		}
 
 		this->invalidateTextLines();
 
@@ -129,6 +152,22 @@ namespace Menge
 	void TextField::_release()
 	{
         m_resourceFont.release();
+
+		if( m_materialText != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_materialText );
+
+			m_materialText = nullptr;
+		}
+
+		if( m_materialOutline != nullptr )
+		{
+			RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->releaseMaterial( m_materialOutline );
+
+			m_materialOutline = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TListTextLine & TextField::getTextLines() const
@@ -194,7 +233,7 @@ namespace Menge
 	{	
 		Node::_render( _viewport, _camera );
 		
-		if( m_outline && m_resourceFont->getTextureOutline() != NULL )
+		if( m_outline && m_resourceFont->getTextureOutline() != nullptr )
 		{
 			this->renderOutline_( _viewport, _camera );
 		}
@@ -216,11 +255,9 @@ namespace Menge
 		{
 			countVertex = m_maxCharCount * 4;
 		}
-		
-        const RenderTextureInterfacePtr & fontTexture = m_resourceFont->getTextureFont();
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, m_materialText, &fontTexture, 1, &(textVertices[0]), countVertex );
+            ->addRenderQuad( _viewport, _camera, m_materialText, &(textVertices[0]), countVertex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -243,10 +280,8 @@ namespace Menge
 			countVertex = m_maxCharCount * 4;
 		}
 
-		const RenderTextureInterfacePtr & outlineTexture = m_resourceFont->getTextureOutline();
-
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), countVertex );
+            ->addRenderQuad( _viewport, _camera, m_materialOutline, &(outlineVertices[0]), countVertex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const

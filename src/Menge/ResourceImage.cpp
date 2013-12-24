@@ -24,8 +24,8 @@ namespace Menge
         , m_uv_alpha(0.f, 0.f, 0.f, 0.f)
         , m_isAlpha(false)
         , m_isUVRotate(false)
-        , m_wrapX(false)
-        , m_wrapY(false)        
+        , m_wrapU(false)
+        , m_wrapV(false)        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

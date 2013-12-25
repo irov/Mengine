@@ -25,6 +25,8 @@ namespace Menge
 		inline bool existBBox( const mt::box2f& _bbox ) const;
 		inline bool existRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
 
+		inline void toBBox( mt::box2f & _box ) const;
+
 	public:
 		void parallax( const mt::vec2f & _factor );
 
@@ -87,5 +89,10 @@ namespace Menge
 	inline bool Viewport::existBBox( const mt::box2f& _bbox ) const
 	{
 		return this->existRectangle( _bbox.minimum, _bbox.maximum ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void Viewport::toBBox( mt::box2f & _box ) const
+	{
+		mt::set_box_from_min_max( _box, begin, end );
 	}
 }

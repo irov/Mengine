@@ -600,6 +600,18 @@ namespace Menge
 			_renderObject->dipIndiciesNum 
 			);
 
+		//if( _renderObject->material->getTextureCount() > 0 )
+		//{
+		//	printf("DIP %d %s\n"
+		//		, _renderObject->material->getId()
+		//		, _renderObject->material->getTexture(0)->getFileName().c_str()
+		//		);
+		//}
+		//else
+		//{
+		//	printf("DIP debug!\n");
+		//}
+
 		_renderObject->material = nullptr;
 
 		++m_debugInfo.dips;
@@ -1283,14 +1295,23 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline static void s_updateBoxRenderObject( mt::box2f & _bx, const RenderObject * _ro )
+	inline static bool s_intersectBoxRenderObject( const mt::box2f & _bx, const RenderObject * _ro )
 	{
-		for( size_t i = 0; i != _ro->verticesNum; ++i )
+		mt::box2f lbx;
+
+		const RenderVertex2D & v0 = _ro->vertexData[0];
+		mt::reset( lbx, v0.pos.x, v0.pos.y );
+
+		for( size_t i = 1; i != _ro->verticesNum; ++i )
 		{
 			const RenderVertex2D & v = _ro->vertexData[i];
 
-			mt::add_internal_point( _bx, v.pos.x, v.pos.y );
+			mt::add_internal_point( lbx, v.pos.x, v.pos.y );
 		}
+
+		bool intersect = mt::is_intersect( lbx, _bx );
+
+		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
@@ -1374,9 +1395,6 @@ namespace Menge
 					TArrayRenderObject::iterator it_batch_begin = it_begin;
 					++it_batch_begin;			
 
-					mt::box2f bx;
-					bool bx_initialize = false;
-
 					for( ; it_batch_begin != it_end; ++it_batch_begin )
 					{
 						RenderObject * ro_bath_begin = it_batch_begin;
@@ -1390,6 +1408,15 @@ namespace Menge
 						{					
 							if( it_batch_end != it_batch_begin )
 							{			
+								mt::box2f bx_batch;
+								s_setupBoxRenderObject( bx_batch, ro_bath_begin );
+
+								//if( mt::is_intersect( bx_batch, bx ) == true )
+								//{
+								//	break;
+								//}
+								
+								bool intersect = false;
 								for( TArrayRenderObject::iterator it_batch = it_batch_end; it_batch != it_batch_begin; ++it_batch )
 								{
 									RenderObject * ro_bath = it_batch;
@@ -1399,27 +1426,16 @@ namespace Menge
 										continue;
 									}
 
-									if( bx_initialize == false )
+									if( s_intersectBoxRenderObject( bx_batch, ro_bath ) == true )
 									{
-										bx_initialize = true;
-
-										s_setupBoxRenderObject( bx, ro_bath );
-									}
-									else
-									{
-										s_updateBoxRenderObject( bx, ro_bath );
-									}
-								}
-
-								if( bx_initialize == true )
-								{
-									mt::box2f bx_batch;
-									s_setupBoxRenderObject( bx_batch, ro_bath_begin );
-
-									if( mt::is_intersect( bx_batch, bx ) == true )
-									{
+										intersect = true;
 										break;
 									}
+								}
+								
+								if( intersect == true )
+								{
+									break;
 								}
 							}
 							

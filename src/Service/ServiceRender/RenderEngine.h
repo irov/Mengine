@@ -75,6 +75,8 @@ namespace Menge
 		IBHandle ibHandle;
         VBHandle vbHandle;
 		size_t baseVertexIndex;
+
+		mt::box2f bb;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass

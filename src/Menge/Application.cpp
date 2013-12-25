@@ -1778,7 +1778,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onPaint()
 	{
-		if( /*m_focus == true &&*/ RENDER_SERVICE(m_serviceProvider) && m_game && m_createRenderWindow == true )
+		if( m_focus == false && RENDER_SERVICE(m_serviceProvider) && m_game && m_createRenderWindow == true )
 		{
 			if( RENDER_SERVICE(m_serviceProvider)->beginScene() == true )
 			{

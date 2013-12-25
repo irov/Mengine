@@ -862,6 +862,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	inline static void s_setupBoxRenderObject( mt::box2f & _bx, const RenderObject * _ro )
+	{
+		const RenderVertex2D & v0 = _ro->vertexData[0];
+		mt::reset( _bx, v0.pos.x, v0.pos.y );
+
+		for( size_t i = 1; i != _ro->verticesNum; ++i )
+		{
+			const RenderVertex2D & v = _ro->vertexData[i];
+
+			mt::add_internal_point( _bx, v.pos.x, v.pos.y );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
 		, const RenderVertex2D * _vertices, size_t _verticesNum
 		, const uint16_t * _indices, size_t _indicesNum )
@@ -949,6 +962,8 @@ namespace Menge
 
 		ro.dipVerticesNum = 0;
 		ro.dipIndiciesNum = 0;
+
+		s_setupBoxRenderObject( ro.bb, &ro );
 
 		if( m_debugMode == true )
 		{
@@ -1223,7 +1238,7 @@ namespace Menge
 		size_t ibInsertSize;
 		this->insertRenderPasses_( vertexBuffer, indicesBuffer, vbInsertSize, ibInsertSize );
 
-		if( vbInsertSize != m_renderVertexCount )
+		if( vbInsertSize > m_renderVertexCount )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Error: failed to insert vertex buffer %d:%d"
 				, vbInsertSize
@@ -1233,7 +1248,7 @@ namespace Menge
 			return false;
 		}
 
-		if( ibInsertSize != m_renderIndicesCount )
+		if( ibInsertSize > m_renderIndicesCount )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Error: failed to insert indices buffer %d:%d"
 				, ibInsertSize
@@ -1282,19 +1297,6 @@ namespace Menge
 		_ibSize = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline static void s_setupBoxRenderObject( mt::box2f & _bx, const RenderObject * _ro )
-	{
-		const RenderVertex2D & v0 = _ro->vertexData[0];
-		mt::reset( _bx, v0.pos.x, v0.pos.y );
-
-		for( size_t i = 1; i != _ro->verticesNum; ++i )
-		{
-			const RenderVertex2D & v = _ro->vertexData[i];
-
-			mt::add_internal_point( _bx, v.pos.x, v.pos.y );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	inline static bool s_intersectBoxRenderObject( const mt::box2f & _bx, const RenderObject * _ro )
 	{
 		mt::box2f lbx;
@@ -1314,14 +1316,29 @@ namespace Menge
 		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool s_testRenderObject_( const RenderObject * _ro, const mt::box2f & _bb )
+	{
+		return mt::is_intersect( _ro->bb, _bb );		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
 	{
-		TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
-		TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
-
 		size_t vbPos = _vbPos;
 		size_t ibPos = _ibPos;
 
+		const Viewport & vp = _renderPass->viewport->getViewport();
+		
+		const mt::mat4f & vm = _renderPass->camera->getViewMatrix();
+		Viewport vp_vm;
+		mt::mul_v2_m4( vp_vm.begin, vp.begin, vm );
+		mt::mul_v2_m4( vp_vm.end, vp.end, vm );
+		
+		mt::box2f bb_vp;
+		vp_vm.toBBox(bb_vp);
+
+		TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
+		TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
+				
 		for( ; it_begin != it_end; ++it_begin )
 		{
 			RenderObject * ro = it_begin;
@@ -1330,12 +1347,22 @@ namespace Menge
 			{
 				continue;
 			}
+			
+			if( s_testRenderObject_( ro, bb_vp ) == false )
+			{
+				ro->dipVerticesNum = 0;
+				ro->dipIndiciesNum = 0;
+				ro->verticesNum = 0;
+				ro->indicesNum = 0;
+
+				continue;
+			}
 
 			ro->startIndex = ibPos;
 			ro->minIndex = vbPos;
 
 			this->insertRenderObject_( ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
-
+			
 			ro->dipVerticesNum = ro->verticesNum;
 			ro->dipIndiciesNum = ro->indicesNum;
 
@@ -1370,8 +1397,18 @@ namespace Menge
 							break;
 						}
 
-						this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+						if( s_testRenderObject_( ro_bath_begin, bb_vp ) == false )
+						{
+							ro_bath_begin->dipVerticesNum = 0;
+							ro_bath_begin->dipIndiciesNum = 0;
+							ro_bath_begin->verticesNum = 0;
+							ro_bath_begin->indicesNum = 0;
 
+							continue;
+						}
+
+						this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+							
 						ro->dipVerticesNum += ro_bath_begin->verticesNum;
 						ro->dipIndiciesNum += ro_bath_begin->indicesNum;
 
@@ -1403,13 +1440,23 @@ namespace Menge
 						{
 							continue;
 						}
+
+						if( s_testRenderObject_( ro_bath_begin, bb_vp ) == false )
+						{
+							ro_bath_begin->dipVerticesNum = 0;
+							ro_bath_begin->dipIndiciesNum = 0;
+							ro_bath_begin->verticesNum = 0;
+							ro_bath_begin->indicesNum = 0;
+
+							continue;
+						}
 						
 						if( ro->material == ro_bath_begin->material )
 						{					
 							if( it_batch_end != it_batch_begin )
-							{			
-								mt::box2f bx_batch;
-								s_setupBoxRenderObject( bx_batch, ro_bath_begin );
+							{	
+								//mt::box2f bx_batch;
+								//s_setupBoxRenderObject( bx_batch, ro_bath_begin );
 
 								//if( mt::is_intersect( bx_batch, bx ) == true )
 								//{
@@ -1426,7 +1473,7 @@ namespace Menge
 										continue;
 									}
 
-									if( s_intersectBoxRenderObject( bx_batch, ro_bath ) == true )
+									if( s_testRenderObject_( ro_bath, ro_bath_begin->bb ) == true )
 									{
 										intersect = true;
 										break;

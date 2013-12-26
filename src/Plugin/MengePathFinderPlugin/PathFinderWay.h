@@ -23,6 +23,10 @@ namespace Menge
 	public:
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
 
+	public:
+		inline size_t getWayPointCount() const;
+		inline const mt::vec2f & getWayPoint( size_t _index ) const;
+
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
@@ -31,5 +35,20 @@ namespace Menge
 
 		TVectorWayPoint m_way;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline size_t PathFinderWay::getWayPointCount() const
+	{
+		size_t size = m_way.size();
+
+		return size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & PathFinderWay::getWayPoint( size_t _index ) const
+	{
+		const mt::vec2f & p = m_way[_index];
+
+		return p;
+	}
+
 }
 

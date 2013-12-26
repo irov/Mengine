@@ -34,12 +34,14 @@ namespace Menge
 	{
 		pybind::interface_<PathFinderMap>("PathFinderMap")
 			.def( "setMap", &PathFinderMap::setMap )
-			.def( "addHole", &PathFinderMap::addHole )
+			.def( "addObstacle", &PathFinderMap::addObstacle )
 			.def( "generateMap", &PathFinderMap::generateMap )
 			.def( "findPath", &PathFinderMap::findPath )
 			;
 
 		pybind::interface_<PathFinderWay>("PathFinderWay")
+			.def( "getWayPointCount", &PathFinderWay::getWayPointCount )
+			.def( "getWayPoint", &PathFinderWay::getWayPoint )
 			;
 
 		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );	

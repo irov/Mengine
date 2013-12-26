@@ -6,6 +6,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap::PathFinderMap( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
+		, m_obstacleEnumerator(0)
 		, m_cachePointUse(0)
 		, m_unitSize(20.f)
 	{
@@ -69,43 +70,61 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderMap::addHole( size_t _index, const Polygon & _polygon )
-	{
+	size_t PathFinderMap::addObstacle( const Polygon & _polygon )
+	{		
 		Polygon big_polygon = _polygon;
 		boost::geometry::correct( big_polygon );
 
 		s_enlargePolygonFromLow( big_polygon, m_unitSize );		
 
-		if( this->testHoles_( _index, big_polygon ) == true )
+		if( this->testHoles_( big_polygon ) == true )
 		{
-			return false;
+			return 0;
 		}
 
-		m_bigHoles[_index] = big_polygon;
+		size_t id = ++m_obstacleEnumerator;
 
-		Polygon low_polygon = _polygon;
-		boost::geometry::correct( low_polygon );
-		m_holes[_index] = low_polygon;
+		Obstacle obstacle;
+		obstacle.id = id;
 
-		return true;
+		obstacle.hole = _polygon;
+		boost::geometry::correct( obstacle.hole );
+
+		obstacle.bigHole = big_polygon;
+
+		m_obstales.push_back( obstacle );
+
+		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderMap::testHoles_( size_t _index, const Polygon & _polygon ) const
+	void PathFinderMap::removeObstacle( size_t _id )
 	{
-		for( THoles::const_iterator
-			it = m_bigHoles.begin(),
-			it_end = m_bigHoles.end();
+		for( TObstacles::const_iterator
+			it = m_obstales.begin(),
+			it_end = m_obstales.end();
 		it != it_end;
 		++it )
 		{
-			size_t hole_index = it->first;
-
-			if( hole_index == _index )
+			if( it->id != _id )
 			{
 				continue;
 			}
 
-			const Polygon & p = it->second;
+			m_obstales.erase( it );
+
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::testHoles_( const Polygon & _polygon ) const
+	{
+		for( TObstacles::const_iterator
+			it = m_obstales.begin(),
+			it_end = m_obstales.end();
+		it != it_end;
+		++it )
+		{
+			const Polygon & p = it->bigHole;
 
 			bool intersect = boost::geometry::intersects( p, _polygon );
 
@@ -165,13 +184,13 @@ namespace Menge
 
 		m_sweepContext.setPoint( mapPoints );
 
-		for( THoles::const_iterator
-			it = m_bigHoles.begin(),
-			it_end = m_bigHoles.end();
+		for( TObstacles::const_iterator
+			it = m_obstales.begin(),
+			it_end = m_obstales.end();
 		it != it_end;
 		++it )
 		{
-			const Polygon & p = it->second;
+			const Polygon & p = it->bigHole;
 
 			Poly2Tri::TVectorPoint holePoint;
 			s_makePolyPointFromPolygon( m_cachePoint, m_cachePointUse, p, holePoint );
@@ -467,13 +486,13 @@ namespace Menge
 
 				bool intersects = false;
 
-				for( THoles::iterator
-					it = m_holes.begin(),
-					it_end = m_holes.end();
+				for( TObstacles::iterator
+					it = m_obstales.begin(),
+					it_end = m_obstales.end();
 				it != it_end;
 				++it )
 				{
-					const Polygon & hole = it->second;
+					const Polygon & hole = it->hole;
 
 					if( boost::geometry::intersects( hole, way_polygon ) == true )
 					{
@@ -614,13 +633,13 @@ namespace Menge
 				->addRenderLine( _viewport, _camera, material, vertices, 6, nullptr );
 		}
 
-		for( THoles::iterator
-			it = m_holes.begin(),
-			it_end = m_holes.end();
+		for( TObstacles::iterator
+			it = m_obstales.begin(),
+			it_end = m_obstales.end();
 		it != it_end;
 		++it )
 		{
-			const Polygon & polygon = it->second;
+			const Polygon & polygon = it->hole;
 
 			size_t numpoints = boost::geometry::num_points(polygon);
 

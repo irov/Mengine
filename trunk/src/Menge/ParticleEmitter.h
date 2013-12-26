@@ -107,6 +107,7 @@ namespace Menge
 
     protected:
         void updateVertexWM_();
+		void updateBB_();
 
 	protected:
 		void updateMaterial_();
@@ -146,6 +147,8 @@ namespace Menge
 			TVectorRenderVertex2D::size_type begin;
 			TVectorRenderVertex2D::size_type size;
 			RenderMaterialInterfacePtr material;
+
+			mt::box2f bb;
 		};
 
 		typedef std::vector<Batch> TVectorBatchs;

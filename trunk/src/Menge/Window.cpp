@@ -156,7 +156,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[0*4], 4 );
+                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[0*4], 4, nullptr );
         }
 
         for( size_t i = 1; i != ResourceWindow_Count; ++i )
@@ -164,7 +164,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[i];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[i*4], 4 );
+                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[i*4], 4, nullptr );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

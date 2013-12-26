@@ -232,7 +232,7 @@ namespace Menge
 		}
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, m_materialText, &(textVertices[0]), countVertex );
+            ->addRenderQuad( _viewport, _camera, m_materialText, &(textVertices[0]), countVertex, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -256,7 +256,7 @@ namespace Menge
 		}
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, m_materialOutline, &(outlineVertices[0]), countVertex );
+            ->addRenderQuad( _viewport, _camera, m_materialOutline, &(outlineVertices[0]), countVertex, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const

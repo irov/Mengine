@@ -32,6 +32,8 @@
 
 #   include "pybind/pybind.hpp"
 
+#	include "Core/RenderUtil.h"
+
 namespace	Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -239,7 +241,7 @@ namespace	Menge
             }
 
             RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size );
+				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size, &batch.bb );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -555,6 +557,8 @@ namespace	Menge
             this->updateVertexWM_();
         }
 
+		this->updateBB_();
+
 		PARTICLE_SERVICE(m_serviceProvider)
 			->renderParticlesCount( partCount );
 
@@ -590,9 +594,23 @@ namespace	Menge
                 mt::mul_v3_m4( wm_pos, pos, wm);
 
                 pos = wm_pos;
-            }
+            }			
         }
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::updateBB_()
+	{
+		for( TVectorBatchs::iterator
+			it = m_batchs.begin(),
+			it_end = m_batchs.end();
+		it != it_end;
+		++it )
+		{
+			Batch & batch = *it;
+
+			Helper::makeRenderBoundingBox( batch.bb, m_vertices + batch.begin, batch.size );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::invalidateMaterial_()
 	{

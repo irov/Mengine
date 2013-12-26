@@ -613,13 +613,16 @@ namespace Menge
     public:
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, size_t _verticesNum
-            , const uint16_t * _indices, size_t _indicesNum ) = 0;
+            , const uint16_t * _indices, size_t _indicesNum
+			, const mt::box2f * _bb ) = 0;
 
         virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, size_t _verticesNum ) = 0;
+            , const RenderVertex2D * _vertices, size_t _verticesNum
+			, const mt::box2f * _bb ) = 0;
 
         virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, size_t _verticesNum ) = 0;
+            , const RenderVertex2D * _vertices, size_t _verticesNum
+			, const mt::box2f * _bb ) = 0;
 
 	public:
 		virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;

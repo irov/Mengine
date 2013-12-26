@@ -53,6 +53,8 @@ src
     ConstString.h
     
     BlobjectRead.h
+    
+    RenderUtil.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

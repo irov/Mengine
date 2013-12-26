@@ -179,7 +179,7 @@ namespace Menge
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount );
+			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox )

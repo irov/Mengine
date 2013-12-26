@@ -282,7 +282,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial(); 
 
 		RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, material, vertices, 4 );
+            ->addRenderQuad( _viewport, _camera, material, vertices, 4, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices )

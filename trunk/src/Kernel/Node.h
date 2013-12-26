@@ -99,10 +99,11 @@ namespace Menge
 	protected:
 		void _hide( bool _value ) override;
 			
-//#	ifndef MENGE_MASTER_RELEASE
 	protected:
 		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, unsigned int _debugMask ) override;
-//#	endif
+	
+	protected:
+		void updateRenderBoundingBox_( mt::box2f & _bb, const RenderVertex2D * _vertices, size_t _verticesCount );
 
 	protected:
 		const RenderViewportInterface * m_renderViewport;

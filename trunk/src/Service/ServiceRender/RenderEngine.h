@@ -86,6 +86,8 @@ namespace Menge
 
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
+
+		mt::box2f bb;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine
@@ -114,13 +116,19 @@ namespace Menge
 	public:
 		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material            
             , const RenderVertex2D * _vertices, size_t _verticesNum 
-			, const uint16_t * _indices, size_t _indicesNum ) override;
+			, const uint16_t * _indices, size_t _indicesNum 
+			, const mt::box2f * _bb ) override;
 
         void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-			, const RenderVertex2D * _vertices, size_t _verticesNum ) override;
+			, const RenderVertex2D * _vertices, size_t _verticesNum 
+			, const mt::box2f * _bb ) override;
 
         void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, size_t _verticesNum ) override;
+            , const RenderVertex2D * _vertices, size_t _verticesNum
+			, const mt::box2f * _bb ) override;
+		
+	protected:
+		void addRenderPass_();
 
 	public:
 		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;

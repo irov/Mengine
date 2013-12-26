@@ -218,7 +218,7 @@ namespace	Menge
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, vertices, 4 );
+			->addRenderQuad( _viewport, _camera, material, vertices, 4, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

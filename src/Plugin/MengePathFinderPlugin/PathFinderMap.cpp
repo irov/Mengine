@@ -611,7 +611,7 @@ namespace Menge
 				->getDebugMaterial();
 
 			RENDER_SERVICE(m_serviceProvider)
-				->addRenderLine( _viewport, _camera, material, vertices, 6 );
+				->addRenderLine( _viewport, _camera, material, vertices, 6, nullptr );
 		}
 
 		for( THoles::iterator
@@ -678,6 +678,7 @@ namespace Menge
 			RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
 				, vertices
 				, vertexCount
+				, nullptr
 				);
 		}
 

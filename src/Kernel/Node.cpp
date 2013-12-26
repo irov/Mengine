@@ -1204,6 +1204,12 @@ namespace Menge
 		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
 			, vertexDebugBox
 			, 8
+			, nullptr
 			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::updateRenderBoundingBox_( mt::box2f & _bb, const RenderVertex2D * _vertices, size_t _verticesCount )
+	{
+
 	}
 }

@@ -397,6 +397,7 @@ namespace	Menge
 		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
             , vertices
 			, vertexCount
+			, nullptr
             );
 	}
 //#	endif

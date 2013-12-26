@@ -1,17 +1,18 @@
 #	include "RenderEngine.h"
 
-#	include "Logger/Logger.h"
-
 #	include "Interface/CodecInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 #   include "Interface/FileSystemInterface.h"
+#   include "Interface/WatchdogInterface.h"
 
 #	include "RenderSubTexture.h"
 
 //#	include "Megatextures.h"
 
-#   include "Interface/WatchdogInterface.h"
+#	include "Core/RenderUtil.h"
+
+#	include "Logger/Logger.h"
 
 #   include <memory.h>
 
@@ -875,9 +876,32 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::addRenderPass_()
+	{
+		RenderPass & pass = m_renderPasses.emplace();
+		pass.beginRenderObject = m_renderObjects.size();
+		pass.countRenderObject = 0;
+		pass.viewport = m_currentRenderViewport;
+		pass.camera = m_currentRenderCamera;
+
+		const Viewport & vp = pass.viewport->getViewport();
+
+		const mt::mat4f & vm = pass.camera->getViewMatrix();
+
+		Viewport vp_vm;
+		mt::mul_v2_m4( vp_vm.begin, vp.begin, vm );
+		mt::mul_v2_m4( vp_vm.end, vp.end, vm );
+
+		mt::box2f bb_vp;
+		vp_vm.toBBox(bb_vp);
+
+		pass.bb = bb_vp;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
 		, const RenderVertex2D * _vertices, size_t _verticesNum
-		, const uint16_t * _indices, size_t _indicesNum )
+		, const uint16_t * _indices, size_t _indicesNum
+		, const mt::box2f * _bb )
 	{
 		if( _viewport == nullptr )
 		{
@@ -924,9 +948,6 @@ namespace Menge
 
 		if( m_currentRenderCamera != _camera || m_currentRenderViewport != _viewport )
 		{
-			m_currentRenderCamera = _camera;
-			m_currentRenderViewport = _viewport;
-
 			if( m_renderPasses.full() == true )
 			{
 				LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render passes %d"
@@ -936,12 +957,31 @@ namespace Menge
 				return;
 			}
 
-			RenderPass & pass = m_renderPasses.emplace();
-			pass.beginRenderObject = m_renderObjects.size();
-			pass.countRenderObject = 0;
-			pass.viewport = m_currentRenderViewport;
-			pass.camera = m_currentRenderCamera;			
+			m_currentRenderCamera = _camera;
+			m_currentRenderViewport = _viewport;
+
+			this->addRenderPass_();
 		}
+
+		RenderPass & rp = m_renderPasses.back();
+
+		mt::box2f bb;
+
+		if( _bb != nullptr )
+		{
+			bb = *_bb;
+		}
+		else
+		{
+			Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
+		}
+
+		if( mt::is_intersect( rp.bb, bb ) == false )
+		{
+			return;
+		}
+
+		++rp.countRenderObject;
 
 		RenderObject & ro = m_renderObjects.emplace();
 
@@ -963,7 +1003,7 @@ namespace Menge
 		ro.dipVerticesNum = 0;
 		ro.dipIndiciesNum = 0;
 
-		s_setupBoxRenderObject( ro.bb, &ro );
+		ro.bb = bb;
 
 		if( m_debugMode == true )
 		{
@@ -978,15 +1018,13 @@ namespace Menge
 			}
 		}
 
-		RenderPass & rp = m_renderPasses.back();
-		++rp.countRenderObject;
-
 		m_renderVertexCount += _verticesNum;
 		m_renderIndicesCount += _indicesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-		, const RenderVertex2D * _vertices, size_t _verticesNum )
+		, const RenderVertex2D * _vertices, size_t _verticesNum
+		, const mt::box2f * _bb )
 	{
 		size_t indicesNum = (_verticesNum / 4) * 6;
 
@@ -1000,11 +1038,12 @@ namespace Menge
 			return;
 		}
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesQuad, indicesNum );
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesQuad, indicesNum, _bb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-		, const RenderVertex2D * _vertices, size_t _verticesNum )
+		, const RenderVertex2D * _vertices, size_t _verticesNum
+		, const mt::box2f * _bb )
 	{
 		size_t indicesNum = _verticesNum;
 
@@ -1018,7 +1057,7 @@ namespace Menge
 			return;
 		}
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesLine, indicesNum );
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesLine, indicesNum, _bb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
@@ -1326,16 +1365,6 @@ namespace Menge
 		size_t vbPos = _vbPos;
 		size_t ibPos = _ibPos;
 
-		const Viewport & vp = _renderPass->viewport->getViewport();
-		
-		const mt::mat4f & vm = _renderPass->camera->getViewMatrix();
-		Viewport vp_vm;
-		mt::mul_v2_m4( vp_vm.begin, vp.begin, vm );
-		mt::mul_v2_m4( vp_vm.end, vp.end, vm );
-		
-		mt::box2f bb_vp;
-		vp_vm.toBBox(bb_vp);
-
 		TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
 		TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
 				
@@ -1348,16 +1377,6 @@ namespace Menge
 				continue;
 			}
 			
-			if( s_testRenderObject_( ro, bb_vp ) == false )
-			{
-				ro->dipVerticesNum = 0;
-				ro->dipIndiciesNum = 0;
-				ro->verticesNum = 0;
-				ro->indicesNum = 0;
-
-				continue;
-			}
-
 			ro->startIndex = ibPos;
 			ro->minIndex = vbPos;
 
@@ -1397,16 +1416,6 @@ namespace Menge
 							break;
 						}
 
-						if( s_testRenderObject_( ro_bath_begin, bb_vp ) == false )
-						{
-							ro_bath_begin->dipVerticesNum = 0;
-							ro_bath_begin->dipIndiciesNum = 0;
-							ro_bath_begin->verticesNum = 0;
-							ro_bath_begin->indicesNum = 0;
-
-							continue;
-						}
-
 						this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
 							
 						ro->dipVerticesNum += ro_bath_begin->verticesNum;
@@ -1440,17 +1449,7 @@ namespace Menge
 						{
 							continue;
 						}
-
-						if( s_testRenderObject_( ro_bath_begin, bb_vp ) == false )
-						{
-							ro_bath_begin->dipVerticesNum = 0;
-							ro_bath_begin->dipIndiciesNum = 0;
-							ro_bath_begin->verticesNum = 0;
-							ro_bath_begin->indicesNum = 0;
-
-							continue;
-						}
-						
+			
 						if( ro->material == ro_bath_begin->material )
 						{					
 							if( it_batch_end != it_batch_begin )

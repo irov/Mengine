@@ -38,7 +38,7 @@ namespace Menge
 
 	protected:
 		virtual bool _checkVisibility( const Viewport & _viewport ) = 0;
-
+		
 	protected:
 		bool m_hide;
 		bool m_localHide;

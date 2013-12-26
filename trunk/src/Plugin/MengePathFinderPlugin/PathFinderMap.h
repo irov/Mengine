@@ -8,6 +8,8 @@
 
 #	include "poly2tri.h"
 
+#	include <list>
+
 namespace Menge
 {
 	class PathFinderMap
@@ -21,7 +23,8 @@ namespace Menge
 		void setUnitSize( float _size );
 
 	public:
-		bool addHole( size_t _index, const Polygon & _polygon );
+		size_t addObstacle( const Polygon & _polygon );
+		void removeObstacle( size_t _id );
 		
 	public:
 		bool generateMap();
@@ -33,7 +36,7 @@ namespace Menge
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
 
 	protected:
-		bool testHoles_( size_t _index, const Polygon & _polygon ) const;
+		bool testHoles_( const Polygon & _polygon ) const;
 		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
 
 	protected:
@@ -42,9 +45,18 @@ namespace Menge
 		Polygon m_mapPolygon;
 		float m_unitSize;
 
-		typedef std::map<size_t, Polygon> THoles;
-		THoles m_holes;
-		THoles m_bigHoles;
+		struct Obstacle
+		{
+			size_t id;
+
+			Polygon hole;
+			Polygon bigHole;
+		};
+
+		size_t m_obstacleEnumerator;
+
+		typedef std::list<Obstacle> TObstacles;
+		TObstacles m_obstales;
 
 		Poly2Tri::Point m_cachePoint[1024];
 		size_t m_cachePointUse;

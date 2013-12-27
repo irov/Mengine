@@ -86,6 +86,7 @@ namespace Menge
 		
 		void onAppMouseLeave() override;
 		void onAppMouseEnter( const mt::vec2f & _point ) override;
+		void onAppMousePosition( const mt::vec2f & _point ) override;
 
 		void onFocus( bool _focus ) override;
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;

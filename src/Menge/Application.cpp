@@ -1129,7 +1129,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _dx, float _dy, int _whell )
 	{
-		if( INPUT_SERVICE(m_serviceProvider)->validCursorPosition( _point ) == false )
+		if( INPUT_SERVICE(m_serviceProvider)
+			->validCursorPosition( _point ) == false )
 		{
 			m_mouseEnter = false;
 
@@ -1142,6 +1143,24 @@ namespace Menge
 		}
 
 		return m_game->handleMouseMove( _touchId, _point, _dx, _dy, _whell );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onMousePosition( unsigned int _touchId, const mt::vec2f & _point )
+	{
+		if( INPUT_SERVICE(m_serviceProvider)
+			->validCursorPosition( _point ) == false )
+		{
+			m_mouseEnter = false;
+
+			return;
+		}
+
+		if( m_mouseEnter == false )
+		{
+			this->onAppMouseEnter( _point );
+		}
+
+		m_game->onAppMouseEnter( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onAppMouseLeave()

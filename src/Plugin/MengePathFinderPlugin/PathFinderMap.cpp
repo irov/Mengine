@@ -99,7 +99,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::removeObstacle( size_t _id )
 	{
-		for( TObstacles::const_iterator
+		for( TObstacles::iterator
 			it = m_obstales.begin(),
 			it_end = m_obstales.end();
 		it != it_end;

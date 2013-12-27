@@ -74,6 +74,8 @@ namespace Menge
 			
         mousePickerSystem->unregTrap( m_picker );
 		m_picker = nullptr;
+
+		mousePickerSystem->updateTrap();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerAdapter::isActivePicker() const

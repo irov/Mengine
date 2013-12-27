@@ -329,6 +329,9 @@ namespace Menge
 	{
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
+
+		APPLICATION_SERVICE(m_serviceProvider)
+			->onMousePosition( _params.touchId, point );
 	}
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::mouseEnterEvent( const MousePositionParams& _params )

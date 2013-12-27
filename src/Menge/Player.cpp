@@ -1316,19 +1316,22 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::onAppMouseEnter( const mt::vec2f & _point )
+	void Player::onAppMouseEnter()
 	{
-		if( m_arrow )
+		if( m_arrow != nullptr )
 		{
 			m_arrow->onAppMouseEnter();
 		}
 
-		if( m_scene && m_scene->isActivate() )
+		if( m_scene != nullptr && m_scene->isActivate() )
 		{
 			m_scene->onAppMouseEnter();
 		}
-
-		if( m_mousePickerSystem )
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::onAppMousePosition( const mt::vec2f & _point )
+	{
+		if( m_mousePickerSystem != nullptr )
 		{
 			m_mousePickerSystem->handleMouseEnter( _point );
 		}

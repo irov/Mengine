@@ -19,6 +19,7 @@ namespace Menge
 	Node::Node()
 		: m_serviceProvider(nullptr)
         , m_active(false)
+		, m_afterActive(false)
 		, m_enable(true)
 		, m_freeze(false)
 		, m_rendering(false)
@@ -134,6 +135,8 @@ namespace Menge
 	
 		this->_afterActivate();
 
+		m_afterActive = true;
+
 		//if( m_active == false )
 		//{
 		//	MENGE_LOG_INFO( "Error: activation of Node '%s' is failed\n"
@@ -156,6 +159,8 @@ namespace Menge
         this->setShallowGrave();
 
 		m_cameraRevision = 0;
+
+		m_afterActive = false;
 
 		this->_deactivate();
 

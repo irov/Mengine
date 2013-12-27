@@ -200,6 +200,9 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+	protected:
+		bool isThreeDNode( size_t _index );
+
 	protected:		
 		float m_frameDuration;
 		float m_duration;

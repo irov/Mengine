@@ -329,8 +329,8 @@ namespace Menge
         ++it )
         {
             m_maxLayerIndex = std::max( m_maxLayerIndex, it->index );
-
-            if( it->layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
+            
+			if( it->layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
@@ -422,9 +422,52 @@ namespace Menge
             }
         }
 
+		for( TVectorMovieLayers::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			if( this->isThreeDNode( it->index ) == true )
+			{
+				it->state |= MOVIE_LAYER_THREED;
+			}
+		}
+
         m_frameCount = (size_t)((m_duration / m_frameDuration) + 0.5f) - 1;
 
         return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::isThreeDNode( size_t _index )
+	{
+		for( TVectorMovieLayers::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			if( it->index != _index )
+			{
+				continue;
+			}
+
+			if( it->isThreeD() == true )
+			{
+				return true;
+			}
+
+			if( it->parent == 0 || it->parent == -1 )
+			{
+				return false;
+			}
+
+			bool threeD = this->isThreeDNode( it->parent );
+
+			return threeD;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_convert()

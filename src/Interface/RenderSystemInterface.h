@@ -448,7 +448,13 @@ namespace Menge
 		virtual const mt::mat4f & getViewMatrix() const = 0;
 
 	public:
+		virtual const Viewport & getRenderport() const = 0;
+
+	public:
 		virtual const ConstString & getRenderTarget() const = 0;
+
+	public:
+		virtual bool isOrthogonalProjection() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemListener        

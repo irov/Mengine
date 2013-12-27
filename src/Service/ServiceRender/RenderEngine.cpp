@@ -884,18 +884,22 @@ namespace Menge
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;
 
-		const Viewport & vp = pass.viewport->getViewport();
+		const Viewport & rp = pass.camera->getRenderport();
 
 		const mt::mat4f & vm = pass.camera->getViewMatrix();
 
-		Viewport vp_vm;
-		mt::mul_v2_m4( vp_vm.begin, vp.begin, vm );
-		mt::mul_v2_m4( vp_vm.end, vp.end, vm );
+		mt::mat4f inv_vm;
+		mt::inv_m4( inv_vm, vm );
+
+		Viewport rp_vm;
+		mt::mul_v2_m4( rp_vm.begin, rp.begin, inv_vm );
+		mt::mul_v2_m4( rp_vm.end, rp.end, inv_vm );
 
 		mt::box2f bb_vp;
-		vp_vm.toBBox(bb_vp);
+		rp_vm.toBBox(bb_vp);
 
 		pass.bb = bb_vp;
+		pass.orthogonalProjection = pass.camera->isOrthogonalProjection();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
@@ -967,18 +971,21 @@ namespace Menge
 
 		mt::box2f bb;
 
-		if( _bb != nullptr )
+		if( rp.orthogonalProjection == true )
 		{
-			bb = *_bb;
-		}
-		else
-		{
-			Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
-		}
+			if( _bb != nullptr )
+			{
+				bb = *_bb;
+			}
+			else
+			{
+				Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
+			}
 
-		if( mt::is_intersect( rp.bb, bb ) == false )
-		{
-			return;
+			if( mt::is_intersect( rp.bb, bb ) == false )
+			{
+				return;
+			}
 		}
 
 		++rp.countRenderObject;
@@ -1360,6 +1367,129 @@ namespace Menge
 		return mt::is_intersect( _ro->bb, _bb );		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
+	{
+		size_t vbPos = _vbPos;
+		size_t ibPos = _ibPos;
+
+		TArrayRenderObject::iterator it_batch_begin = _begin;
+		++it_batch_begin;
+
+		for( ; it_batch_begin != _end; ++it_batch_begin )
+		{
+			RenderObject * ro_bath_begin = it_batch_begin;
+
+			if( ro_bath_begin->verticesNum == 0 )
+			{
+				continue;
+			}
+
+			if( _ro->material != ro_bath_begin->material )
+			{
+				break;
+			}
+
+			this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+
+			_ro->dipVerticesNum += ro_bath_begin->verticesNum;
+			_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
+
+			ro_bath_begin->dipVerticesNum = 0;
+			ro_bath_begin->dipIndiciesNum = 0;
+
+			vbPos += ro_bath_begin->verticesNum;
+			ibPos += ro_bath_begin->indicesNum;
+
+			ro_bath_begin->verticesNum = 0;
+			ro_bath_begin->indicesNum = 0;
+
+			++m_debugInfo.batch;
+		}
+
+		_vbPos = vbPos;
+		_ibPos = ibPos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
+	{
+		size_t vbPos = _vbPos;
+		size_t ibPos = _ibPos;
+
+		TArrayRenderObject::iterator it_batch_end = _begin;
+		++it_batch_end;
+
+		TArrayRenderObject::iterator it_batch_begin = _begin;
+		++it_batch_begin;			
+
+		for( ; it_batch_begin != _end; ++it_batch_begin )
+		{
+			RenderObject * ro_bath_begin = it_batch_begin;
+
+			if( ro_bath_begin->verticesNum == 0 )
+			{
+				continue;
+			}
+
+			if( _ro->material == ro_bath_begin->material )
+			{					
+				if( it_batch_end != it_batch_begin )
+				{	
+					//mt::box2f bx_batch;
+					//s_setupBoxRenderObject( bx_batch, ro_bath_begin );
+
+					//if( mt::is_intersect( bx_batch, bx ) == true )
+					//{
+					//	break;
+					//}
+
+					bool intersect = false;
+					for( TArrayRenderObject::iterator it_batch = it_batch_end; it_batch != it_batch_begin; ++it_batch )
+					{
+						RenderObject * ro_bath = it_batch;
+
+						if( ro_bath->verticesNum == 0 )
+						{
+							continue;
+						}
+
+						if( s_testRenderObject_( ro_bath, ro_bath_begin->bb ) == true )
+						{
+							intersect = true;
+							break;
+						}
+					}
+
+					if( intersect == true )
+					{
+						break;
+					}
+				}
+
+				it_batch_end = it_batch_begin;
+				++it_batch_end;
+
+				this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+
+				_ro->dipVerticesNum += ro_bath_begin->verticesNum;
+				_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
+
+				ro_bath_begin->dipVerticesNum = 0;
+				ro_bath_begin->dipIndiciesNum = 0;
+
+				vbPos += ro_bath_begin->verticesNum;
+				ibPos += ro_bath_begin->indicesNum;
+
+				ro_bath_begin->verticesNum = 0;
+				ro_bath_begin->indicesNum = 0;
+
+				++m_debugInfo.batch;
+			}
+		}
+
+		_vbPos = vbPos;
+		_ibPos = ibPos;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
 	{
 		size_t vbPos = _vbPos;
@@ -1391,123 +1521,24 @@ namespace Menge
 			ro->verticesNum = 0;
 			ro->indicesNum = 0;
 
-			switch( m_batchMode )
+			if( _renderPass->orthogonalProjection == false )
 			{
-			case ERBM_NONE:
+				if( m_batchMode != ERBM_NONE )
 				{
-
-				}break;
-			case ERBM_NORMAL:
-				{
-					TArrayRenderObject::iterator it_batch_begin = it_begin;
-					++it_batch_begin;			
-
-					for( ; it_batch_begin != it_end; ++it_batch_begin )
-					{
-						RenderObject * ro_bath_begin = it_batch_begin;
-
-						if( ro_bath_begin->verticesNum == 0 )
-						{
-							continue;
-						}
-
-						if( ro->material != ro_bath_begin->material )
-						{
-							break;
-						}
-
-						this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
-							
-						ro->dipVerticesNum += ro_bath_begin->verticesNum;
-						ro->dipIndiciesNum += ro_bath_begin->indicesNum;
-
-						ro_bath_begin->dipVerticesNum = 0;
-						ro_bath_begin->dipIndiciesNum = 0;
-
-						vbPos += ro_bath_begin->verticesNum;
-						ibPos += ro_bath_begin->indicesNum;
-
-						ro_bath_begin->verticesNum = 0;
-						ro_bath_begin->indicesNum = 0;
-
-						++m_debugInfo.batch;
-					}
-				}break;
-			case ERBM_SMART:
-				{
-					TArrayRenderObject::iterator it_batch_end = it_begin;
-					++it_batch_end;
-
-					TArrayRenderObject::iterator it_batch_begin = it_begin;
-					++it_batch_begin;			
-
-					for( ; it_batch_begin != it_end; ++it_batch_begin )
-					{
-						RenderObject * ro_bath_begin = it_batch_begin;
-
-						if( ro_bath_begin->verticesNum == 0 )
-						{
-							continue;
-						}
-			
-						if( ro->material == ro_bath_begin->material )
-						{					
-							if( it_batch_end != it_batch_begin )
-							{	
-								//mt::box2f bx_batch;
-								//s_setupBoxRenderObject( bx_batch, ro_bath_begin );
-
-								//if( mt::is_intersect( bx_batch, bx ) == true )
-								//{
-								//	break;
-								//}
-								
-								bool intersect = false;
-								for( TArrayRenderObject::iterator it_batch = it_batch_end; it_batch != it_batch_begin; ++it_batch )
-								{
-									RenderObject * ro_bath = it_batch;
-
-									if( ro_bath->verticesNum == 0 )
-									{
-										continue;
-									}
-
-									if( s_testRenderObject_( ro_bath, ro_bath_begin->bb ) == true )
-									{
-										intersect = true;
-										break;
-									}
-								}
-								
-								if( intersect == true )
-								{
-									break;
-								}
-							}
-							
-							it_batch_end = it_batch_begin;
-							++it_batch_end;
-
-							this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
-
-							ro->dipVerticesNum += ro_bath_begin->verticesNum;
-							ro->dipIndiciesNum += ro_bath_begin->indicesNum;
-
-							ro_bath_begin->dipVerticesNum = 0;
-							ro_bath_begin->dipIndiciesNum = 0;
-
-							vbPos += ro_bath_begin->verticesNum;
-							ibPos += ro_bath_begin->indicesNum;
-
-							ro_bath_begin->verticesNum = 0;
-							ro_bath_begin->indicesNum = 0;
-
-							++m_debugInfo.batch;
-						}
-					}
-
-				}break;
+					this->batchRenderObjectNormal_( it_begin, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+				}
 			}
+			else
+			{
+				if( m_batchMode == ERBM_NORMAL )
+				{
+					this->batchRenderObjectNormal_( it_begin, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+				}
+				else if( m_batchMode == ERBM_SMART )
+				{
+					this->batchRenderObjectSmart_( it_begin, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+				}
+			}			
 		}
 
 		_vbPos = vbPos;

@@ -87,6 +87,7 @@ namespace Menge
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
 
+		bool orthogonalProjection;
 		mt::box2f bb;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -311,5 +312,9 @@ namespace Menge
 		bool m_alphaTestEnable;
 
         bool m_debugMode;
+
+	protected:
+		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
 	};
 }

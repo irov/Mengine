@@ -2527,7 +2527,14 @@ namespace Menge
 		m_renderCamera3D->setCameraFOV( camera3D.cameraFOV );
 		m_renderCamera3D->setCameraAspect( camera3D.cameraAspect );
 
-		//m_renderCamera3D->setRenderport( vp );
+		Viewport rp;
+		rp.begin.x = 0.f;
+		rp.begin.y = 0.f;
+
+		rp.end.x = camera3D.width;
+		rp.end.y = camera3D.height;
+
+		m_renderCamera3D->setRenderport( rp );
 
 		this->addChildren( m_renderCamera3D );
 

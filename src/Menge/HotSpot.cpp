@@ -21,7 +21,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-		: m_debugColor(0x80FFFFFF)
+		: m_debugColor(0x00000000)
 		, m_invalidatePolygonWM(true)
 		, m_outward(false)
 	{
@@ -94,14 +94,14 @@ namespace	Menge
 		return &m_mousePickerAdapter;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::setDebugColor( uint32_t _color )
+    void HotSpot::onPickerEnter()
     {
-        m_debugColor = _color;
+		m_debugColor = 0xFFFF0000;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t HotSpot::getDebugColor() const
+    void HotSpot::onPickerLeave()
     {
-        return m_debugColor;
+		m_debugColor = 0xFF00FFFF;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
@@ -149,18 +149,11 @@ namespace	Menge
 			return;
 		}
 
+		m_debugColor = 0xFFFFFFFF;
+
 		m_mousePickerAdapter.activatePicker();
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)( "()" );
-
-		//if( m_enable == true )
-		{
-			m_debugColor = 0xA0FFFFFF;
-		}
-		//else
-		//{
-		//	m_debugColor = 0x20FFFFFF;
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::deactivatePicker_()
@@ -172,9 +165,9 @@ namespace	Menge
 
 		m_mousePickerAdapter.deactivatePicker();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
-
 		m_debugColor = 0x00000000;
+
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_localHide( bool _value )
@@ -331,6 +324,11 @@ namespace	Menge
 	void HotSpot::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
+		{
+			return;
+		}
+
+		if( m_debugColor == 0x00000000 )
 		{
 			return;
 		}

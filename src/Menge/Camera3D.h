@@ -29,13 +29,16 @@ namespace Menge
 		void setCameraAspect( float _aspect );
 		void setCameraRightSign( float _rightSign );
 
-	//public:
-	//	void setRenderport( const Viewport & _renderport );
-	//	const Viewport & getRenderport() const;
+	public:
+		void setRenderport( const Viewport & _renderport );
+		const Viewport & getRenderport() const override;
 
 	public:		
 		const mt::mat4f & getProjectionMatrix() const override;
 		const mt::mat4f & getViewMatrix() const override;
+
+	public:
+		bool isOrthogonalProjection() const override;
 
 	protected:
 		void _invalidateWorldMatrix() override;
@@ -58,7 +61,7 @@ namespace Menge
 		float m_cameraAspect;
 		float m_cameraRightSign;
 
-		//Viewport m_renderport;
+		Viewport m_renderport;
 
 		Observer * m_notifyChangeWindowResolution;
 
@@ -91,5 +94,10 @@ namespace Menge
 		}
 
 		return m_viewMatrixWM;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Camera3D::isOrthogonalProjection() const
+	{
+		return false;
 	}
 }

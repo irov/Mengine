@@ -1394,6 +1394,8 @@ namespace Menge
 			_ro->dipVerticesNum += ro_bath_begin->verticesNum;
 			_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
 
+			ro_bath_begin->material = nullptr;
+
 			ro_bath_begin->dipVerticesNum = 0;
 			ro_bath_begin->dipIndiciesNum = 0;
 
@@ -1472,6 +1474,8 @@ namespace Menge
 
 				_ro->dipVerticesNum += ro_bath_begin->verticesNum;
 				_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
+
+				ro_bath_begin->material = nullptr;
 
 				ro_bath_begin->dipVerticesNum = 0;
 				ro_bath_begin->dipIndiciesNum = 0;

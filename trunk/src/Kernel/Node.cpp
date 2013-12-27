@@ -133,9 +133,9 @@ namespace Menge
 			children->activate();
 		}
 	
-		this->_afterActivate();
-
 		m_afterActive = true;
+
+		this->_afterActivate();		
 
 		//if( m_active == false )
 		//{
@@ -160,9 +160,9 @@ namespace Menge
 
 		m_cameraRevision = 0;
 
-		m_afterActive = false;
-
 		this->_deactivate();
+
+		m_afterActive = false;
 
 		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
 		{

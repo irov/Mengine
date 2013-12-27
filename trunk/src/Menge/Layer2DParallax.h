@@ -42,12 +42,27 @@ namespace Menge
 			return m_vm;
 		}
 
+		const Viewport & getRenderport() const override
+		{
+			const Viewport & renderport = this->getRenderport();
+
+			return renderport;
+		}
+
 	protected:
 		const ConstString & getRenderTarget() const override
 		{
 			const ConstString & rt = m_camera->getRenderTarget();
 
 			return rt;
+		}
+
+	protected:
+		bool isOrthogonalProjection() const override
+		{
+			bool orthogonal = m_camera->isOrthogonalProjection();
+
+			return orthogonal;
 		}
 
 	protected:

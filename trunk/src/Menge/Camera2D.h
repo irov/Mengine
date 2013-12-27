@@ -26,11 +26,16 @@ namespace Menge
 
 	public:
 		void setRenderport( const Viewport & _viewport );
-		const Viewport & getRenderport() const;
+
+	public:
+		const Viewport & getRenderport() const override;
 
 	public:
 		const mt::mat4f & getProjectionMatrix() const override;
 		const mt::mat4f & getViewMatrix() const override;
+
+	public:
+		bool isOrthogonalProjection() const override;
 
 	public:
 		inline size_t getCameraRevision() const;
@@ -76,5 +81,10 @@ namespace Menge
 	inline void Camera2D::invalidateViewport_()
 	{
 		m_invalidateProjectionMatrix = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Camera2D::isOrthogonalProjection() const
+	{
+		return true;
 	}
 }

@@ -62,6 +62,7 @@ namespace Menge
 
         virtual void onAppMouseLeave() = 0;
         virtual void onAppMouseEnter( const mt::vec2f & _point ) = 0;
+		virtual void onAppMousePosition( const mt::vec2f & _point ) = 0;
 
         virtual void onFocus( bool _focus ) = 0;
         virtual void onFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;

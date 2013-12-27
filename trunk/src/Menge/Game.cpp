@@ -181,11 +181,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onAppMouseEnter( const mt::vec2f & _point )
 	{
-		PyObject * py_point = pybind::ptr(_point);
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( "(O)", py_point );
-		pybind::decref(py_point);
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( "(ff)", _point.x, _point.y );
 
-		m_player->onAppMouseEnter( _point );
+		m_player->onAppMouseEnter();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::onAppMousePosition( const mt::vec2f & _point )
+	{
+		m_player->onAppMousePosition( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::update()

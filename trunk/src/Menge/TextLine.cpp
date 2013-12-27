@@ -187,24 +187,24 @@ namespace Menge
 
                 if( _pixelsnap == true )
                 {
-                    renderVertex.pos[0] = floorf( charVertex.x + 0.5f );
-                    renderVertex.pos[1] = floorf( charVertex.y + 0.5f );
+                    renderVertex.pos.x = floorf( charVertex.x + 0.5f );
+                    renderVertex.pos.y = floorf( charVertex.y + 0.5f );
                 }
                 else
                 {
-                    renderVertex.pos[0] = charVertex.x;
-                    renderVertex.pos[1] = charVertex.y;
+                    renderVertex.pos.x = charVertex.x;
+                    renderVertex.pos.y = charVertex.y;
                 }                
 
-				renderVertex.pos[2] = charVertex.z;
+				renderVertex.pos.z = charVertex.z;
 
 				renderVertex.color = _argb;
 
-                renderVertex.uv[0] = 0.f;
-                renderVertex.uv[1] = 0.f;
+                renderVertex.uv.x = 0.f;
+                renderVertex.uv.y = 0.f;
 
-                renderVertex.uv2[0] = 0.f;
-                renderVertex.uv2[1] = 0.f;
+                renderVertex.uv2.x = 0.f;
+                renderVertex.uv2.y = 0.f;
             }
 
 			const mt::vec4f & char_uv = data.uv;
@@ -215,14 +215,14 @@ namespace Menge
 			total_uv.z = _uv.x + (_uv.z - _uv.x) * char_uv.z;
 			total_uv.w = _uv.y + (_uv.w - _uv.y) * char_uv.w;
 
-			_renderObject[renderObjectNum + 0].uv[0] = total_uv.x;
-			_renderObject[renderObjectNum + 0].uv[1] = total_uv.y;
-			_renderObject[renderObjectNum + 1].uv[0] = total_uv.z;
-			_renderObject[renderObjectNum + 1].uv[1] = total_uv.y;
-			_renderObject[renderObjectNum + 2].uv[0] = total_uv.z;
-			_renderObject[renderObjectNum + 2].uv[1] = total_uv.w;
-			_renderObject[renderObjectNum + 3].uv[0] = total_uv.x;
-			_renderObject[renderObjectNum + 3].uv[1] = total_uv.w;
+			_renderObject[renderObjectNum + 0].uv.x = total_uv.x;
+			_renderObject[renderObjectNum + 0].uv.y = total_uv.y;
+			_renderObject[renderObjectNum + 1].uv.x = total_uv.z;
+			_renderObject[renderObjectNum + 1].uv.y = total_uv.y;
+			_renderObject[renderObjectNum + 2].uv.x = total_uv.z;
+			_renderObject[renderObjectNum + 2].uv.y = total_uv.w;
+			_renderObject[renderObjectNum + 3].uv.x = total_uv.x;
+			_renderObject[renderObjectNum + 3].uv.y = total_uv.w;
 
 			renderObjectNum += 4;
 		}

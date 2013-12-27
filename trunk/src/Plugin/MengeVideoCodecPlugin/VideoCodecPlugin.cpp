@@ -2,7 +2,7 @@
 
 #   include "VideoDecoderFFMPEG.h"
 #   include "VideoDecoderGVF.h"
-//#   include "VideoDecoderVPX.h"
+#   include "VideoDecoderVPX.h"
 
 #	include "Core/File.h"
 

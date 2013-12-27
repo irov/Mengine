@@ -1083,7 +1083,7 @@ namespace Menge
         {
             const Nodies & ns = *it;
 
-            if( ns.node == NULL )
+            if( ns.node == nullptr )
             {
                 continue;
             }

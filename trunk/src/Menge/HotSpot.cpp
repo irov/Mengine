@@ -153,14 +153,14 @@ namespace	Menge
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)( "()" );
 
-		if( m_enable == true )
+		//if( m_enable == true )
 		{
 			m_debugColor = 0xA0FFFFFF;
 		}
-		else
-		{
-			m_debugColor = 0x20FFFFFF;
-		}
+		//else
+		//{
+		//	m_debugColor = 0x20FFFFFF;
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::deactivatePicker_()
@@ -185,7 +185,7 @@ namespace	Menge
 		}
 		else
 		{
-			if( this->isActivate() == true || this->isFreeze() == false )
+			if( this->isAfterActive() == true || this->isFreeze() == false )
 			{
 				this->activatePicker_();
 			}
@@ -202,7 +202,7 @@ namespace	Menge
 		}
 		else
 		{
-			if( this->isActivate() == true || this->isLocalHide() == false )
+			if( this->isAfterActive() == true || this->isLocalHide() == false )
 			{
 				this->activatePicker_();
 			}
@@ -215,7 +215,7 @@ namespace	Menge
 		{
 			return false;
 		}
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

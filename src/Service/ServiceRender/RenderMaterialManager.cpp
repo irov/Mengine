@@ -265,7 +265,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _name
+	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _stageName
 		, bool _wrapU
 		, bool _wrapV
 		, EPrimitiveType _primitiveType
@@ -273,7 +273,7 @@ namespace Menge
 		, const RenderTextureInterfacePtr * _textures )
 	{
 		const RenderStageGroup * stageGroup;
-		if( m_stages.has( _name, &stageGroup ) == false )
+		if( m_stages.has( _stageName, &stageGroup ) == false )
 		{
 			return nullptr;
 		}
@@ -298,7 +298,8 @@ namespace Menge
 
 		RenderMaterial * material = m_factoryMaterial.createObjectT();
 
-		material->initialize( this, ++m_materialEnumerator, _primitiveType, stage );
+		size_t id = ++m_materialEnumerator;
+		material->initialize( this, id, _primitiveType, stage );
 
 		material->setTexture( _textureCount, _textures );
 		

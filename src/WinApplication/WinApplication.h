@@ -117,15 +117,16 @@ namespace Menge
         bool initializeRenderEngine_();
         bool initializeSoundEngine_();
         bool initializeSilentSoundEngine_();
-        bool initializeScriptEngine_();
-		bool initializeModuleEngine_();
-        bool initializeCodecEngine_();
-		bool initializeDataManager_();
-		bool initializeCacheManager_();
+        bool initializeScriptEngine_();		
         bool initializeConverterEngine_();
+		bool initializeCodecEngine_();
         bool initializeInputEngine_();
         bool initializePluginService_();
         bool initializeArchiveService_();
+		bool initializeModuleEngine_();		
+		bool initializeDataManager_();
+		bool initializeCacheManager_();
+
 
     protected:
         bool setupApplicationSetting_( StartupSettings & _settings );

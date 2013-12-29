@@ -35,19 +35,19 @@ int main()
     //s3eMemoryGetUserMemMgr(&_oldCallback);
     //s3eMemorySetUserMemMgr(&_callback);
 
-    char commandLine[256] = {0};
-    //if( s3eConfigGetString( "MENGINE", "CommandLine", commandLine ) == S3E_RESULT_ERROR )
-    //{
-    //    printf("s3eConfigGetString %s:%s return error %s"
-    //        , "Mengine"
-    //        , "CommandLine"
-    //        , s3eConfigGetErrorString()
-    //        );
-    //}
+    char commandLine[S3E_CONFIG_STRING_MAX] = {0};
+    if( s3eConfigGetString( "MENGINE", "CommandLine", commandLine ) == S3E_RESULT_ERROR )
+    {
+		printf("s3eConfigGetString %s:%s return error %s"
+			, "MENGINE"
+			, "CommandLine"
+			, s3eConfigGetErrorString()
+			);
+	}
 
     Menge::MarmaladeApplication marApplication;
 
-    if( marApplication.initialize(commandLine) == false )
+    if( marApplication.initialize( commandLine ) == false )
     {
         return 0;
     }

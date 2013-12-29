@@ -1494,25 +1494,22 @@ namespace Menge
 			ro->verticesNum = 0;
 			ro->indicesNum = 0;
 
-			if( _renderPass->orthogonalProjection == false )
+			switch( m_batchMode )
 			{
-				if( m_batchMode != ERBM_NONE )
+			case ERBM_NORMAL:
 				{
 					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
-				}
-			}
-			else
-			{
-				if( m_batchMode == ERBM_NORMAL )
+				}break;
+			case ERBM_SMART:
 				{
 					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
-				}
-				else if( m_batchMode == ERBM_SMART )
-				{
-					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
-					this->batchRenderObjectSmart_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
-				}
-			}			
+
+					if( _renderPass->orthogonalProjection == true )
+					{
+						this->batchRenderObjectSmart_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+					}
+				}break;
+			}	
 		}
 
 		_vbPos = vbPos;

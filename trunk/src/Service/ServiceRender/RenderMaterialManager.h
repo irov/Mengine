@@ -37,7 +37,7 @@ namespace Menge
         bool loadMaterials( const ConstString& _pakName, const FilePath& _filename ) override;
 
 	public:
-		RenderMaterialInterfacePtr getMaterial( const ConstString & _name
+		RenderMaterialInterfacePtr getMaterial( const ConstString & _stageName
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType

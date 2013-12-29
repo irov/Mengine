@@ -16,7 +16,8 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool concatenateFilePath( const FilePath & _folder, const FilePath & _filename, Char * _filePath, size_t _capacity ) override;
+        //bool concatenateFilePath( const FilePath & _folder, const FilePath & _filename, Char * _filePath, size_t _capacity ) override;
+		bool concatenateFilePath( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, Char * _filePath, size_t _capacity ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

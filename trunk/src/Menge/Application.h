@@ -103,7 +103,6 @@ namespace Menge
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
-		bool initializeDataManager_();
         bool initializePrototypeManager_();
         bool initializeWatchdog_();
         bool initializeProfiler_();

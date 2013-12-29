@@ -80,6 +80,10 @@ SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
+SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
+SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
+SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
+
 
 extern "C" // only required if using g++
 {
@@ -151,6 +155,9 @@ namespace Menge
         , m_fileService(nullptr)
         , m_inputService(nullptr)
         , m_marmaladeLayer(nullptr)
+		, m_moduleService(nullptr)
+		, m_dataService(nullptr)
+		, m_cacheService(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -839,6 +846,72 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::initializeModuleEngine_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Initializing Module Service..." );
+
+		ModuleServiceInterface * moduleService;
+		if( SERVICE_CREATE( ModuleService, &moduleService ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, moduleService ) == false )
+		{
+			return false;
+		}
+
+		m_moduleService = moduleService;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::initializeDataManager_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Data Manager..." );
+
+		DataServiceInterface * dataService;
+
+		if( SERVICE_CREATE( DataService, &dataService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, dataService );
+
+		if( dataService->initialize() == false )
+		{
+			return false;
+		}
+
+		m_dataService = dataService;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::initializeCacheManager_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Cache Manager..." );
+
+		CacheServiceInterface * cacheService;
+
+		if( SERVICE_CREATE( CacheService, &cacheService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, cacheService );
+
+		if( cacheService->initialize() == false )
+		{
+			return false;
+		}
+
+		m_cacheService = cacheService;
+
+		return true;
+	}	
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeCodecEngine_()
     {
@@ -856,15 +929,7 @@ namespace Menge
         }
 
         m_codecService = codecService;
-
-        m_codecService->registerCodecExt( "png", Helper::stringizeString(m_serviceProvider, "pngImage") );
-        m_codecService->registerCodecExt( "jpg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
-        m_codecService->registerCodecExt( "jpeg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
-
-        m_codecService->registerCodecExt( "ogg", Helper::stringizeString(m_serviceProvider, "oggSound") );
-        m_codecService->registerCodecExt( "hit", Helper::stringizeString(m_serviceProvider, "hitPick") );
-
-
+		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1017,7 +1082,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::getMaxClientResolution( Resolution & _resolution ) const
     {
+		int32 width = s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
+		int32 height = s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
 
+		_resolution.setWidth( width );
+		_resolution.setHeight( height );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initialize( const String & _commandLine )
@@ -1117,6 +1186,21 @@ namespace Menge
         {
             return false;
         }
+
+		if( this->initializeModuleEngine_() == false )
+		{
+			return false;
+		}
+
+		if( this->initializeDataManager_() == false )
+		{
+			return false;
+		}
+
+		if( this->initializeCacheManager_() == false )
+		{
+			return false;
+		}
 
         if( this->initializeCodecEngine_() == false )
         {
@@ -1231,6 +1315,8 @@ namespace Menge
         }
 
         m_timer->reset();
+
+		m_application->onTurnSound( true );
         
         while( true )
         {

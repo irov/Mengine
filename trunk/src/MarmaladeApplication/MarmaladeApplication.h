@@ -18,6 +18,9 @@
 #   include "Interface/PluginInterface.h"
 #	include "Interface/ArchiveInterface.h"
 #   include "Interface/MarmaladeLayerInterface.h"
+#	include "Interface/ModuleInterface.h"
+#	include "Interface/DataInterface.h"
+#	include "Interface/CacheInterface.h"
 
 #   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
 
@@ -114,6 +117,10 @@ namespace Menge
         bool initializeAmplifierService_();
         bool initializePluginService_();
         bool initializeArchiveService_();
+		bool initializeModuleEngine_();		
+		bool initializeDataManager_();
+		bool initializeCacheManager_();
+
 
     protected:
         bool setupApplicationSetting_();
@@ -151,6 +158,10 @@ namespace Menge
         AmplifierServiceInterface * m_amplifierService;
         PluginServiceInterface * m_pluginService;
         ArchiveServiceInterface * m_archiveService;
+		ModuleServiceInterface * m_moduleService;
+		DataServiceInterface * m_dataService;
+		CacheServiceInterface * m_cacheService;
+
 
         MarmaladeLayerInterface * m_marmaladeLayer; 
 

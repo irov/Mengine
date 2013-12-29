@@ -352,7 +352,7 @@ namespace Menge
         virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _filename ) = 0;
 
 	public:
-		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _name
+		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _stageName
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType

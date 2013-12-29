@@ -153,46 +153,45 @@ namespace	Menge
         {
             if( m_disableTextureColor == true )
             {
-                m_texturesNum = 2;
+				m_texturesNum = 2;
 
                 stageName = CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor);
             }
             else if( m_resourceImage->isAlpha() == true || m_solid == false )
-            {
-                m_texturesNum = 2;
+            {   
+				m_texturesNum = 2;
 
                 stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
             }
             else
-            {
-                m_texturesNum = 1;
+            {   
+				m_texturesNum = 1;
 
                 stageName = CONST_STRING(m_serviceProvider, SolidSprite);
             }
         }
-		else if( m_blendAdd == true )
+		else 
 		{
 			m_texturesNum = 1;
 
-			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
-		}
-		else if( m_disableTextureColor == true )
-		{
-			m_texturesNum = 1;
-
-			stageName = CONST_STRING(m_serviceProvider, OnlyColor);
-		}
-		else
-		{
-			m_texturesNum = 1;
-
-			if( m_resourceImage->isAlpha() == true || m_solid == false )
+			if( m_blendAdd == true )
 			{
-				stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+				stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
+			}
+			else if( m_disableTextureColor == true )
+			{
+				stageName = CONST_STRING(m_serviceProvider, OnlyColor);
 			}
 			else
 			{
-				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+				if( m_resourceImage->isAlpha() == true || m_solid == false )
+				{
+					stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+				}
+				else
+				{
+					stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+				}
 			}
 		}
 
@@ -280,6 +279,11 @@ namespace	Menge
 		}
 
 		m_blendAdd = _value;
+
+		if( this->isCompile() == false )
+		{
+			return;
+		}
 
 		this->invalidateMaterial();
 	}

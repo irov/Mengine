@@ -41,6 +41,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MovieInternalObject::_compile()
     {
+		if( m_movie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' movie not setup"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
         if( m_resourceInternalObject == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource not setup"
@@ -81,6 +90,11 @@ namespace Menge
 
         m_internalObject = py_object;
         pybind::incref( m_internalObject );
+
+		PyObject * py_obj = this->getEmbed();
+
+		bool localHide = this->isLocalHide();
+		EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OOO)", py_obj, m_internalObject, pybind::get_bool(localHide) );
 
         return true;
     }
@@ -130,6 +144,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )
 	{
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
 		if( m_internalObject != nullptr )
 		{
 			PyObject * py_obj = this->getEmbed();

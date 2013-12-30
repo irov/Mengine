@@ -60,6 +60,7 @@
 #	include "HotSpot.h"
 #	include "HotSpotImage.h"
 #   include "HotSpotShape.h"
+#	include "Landscape2D.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
 #	include "Arrow.h"
@@ -2719,6 +2720,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Model3D );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Landscape2D );
         //SCRIPT_CLASS_WRAPPING( TilePolygon );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Video );
         //SCRIPT_CLASS_WRAPPING( FFCamera3D );
@@ -2859,37 +2861,93 @@ namespace Menge
         }
     };
 
-    struct extract_TVectorString_type
-        : public pybind::type_cast_result<TVectorString>
-    {
-        bool apply( PyObject * _obj, TVectorString & _value ) override
-        {
-            if( pybind::list_check( _obj ) == true )
-            {
-                size_t size = pybind::list_size( _obj );
+	// my
+	typedef std::vector<ResourceImage *> TResourceImage;
 
-                for( size_t it = 0; it != size; ++it )
-                {
-                    PyObject * py_string = pybind::list_getitem( _obj, it );
+	struct extract_TResourceImage_type
+		: public pybind::type_cast_result<TResourceImage>
+	{
+		bool apply( PyObject * _obj, TResourceImage & _value ) override
+		{
+			if( pybind::list_check( _obj ) == true )
+			{
+				size_t size = pybind::list_size( _obj );
 
-                    String key;
-                    if( pybind::extract_value( py_string, key ) == false )
-                    {
-                        return false;
-                    }
+				for( size_t it = 0; it != size; ++it )
+				{
+					PyObject * py_resource_image = pybind::list_getitem( _obj, it );
 
-                    _value.push_back( key );
+					ResourceImage* key;
+					if( pybind::extract_value( py_resource_image, key ) == false )
+					{
+						return false;
+					}
 
-                    pybind::decref( py_string );
-                }
-            }
-            else
-            {
-                return false;
-            }
+					_value.push_back( key );
 
-            return true;
-        }
+					pybind::decref( py_resource_image );
+				}
+			}
+			else
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		PyObject * wrap( pybind::type_cast_result<TResourceImage>::TCastRef _value ) override
+		{
+			PyObject * py_value = pybind::list_new(0);
+
+			for( TResourceImage::const_iterator
+				it = _value.begin(),
+				it_end = _value.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_resource_image = pybind::ptr( *it );
+
+				pybind::list_appenditem( py_value, py_resource_image );
+
+				pybind::decref( py_resource_image );
+			}
+
+			return py_value;
+		}
+	};//
+
+	struct extract_TVectorString_type
+		: public pybind::type_cast_result<TVectorString>
+	{
+		bool apply( PyObject * _obj, TVectorString & _value ) override
+		{
+			if( pybind::list_check( _obj ) == true )
+			{
+				size_t size = pybind::list_size( _obj );
+
+				for( size_t it = 0; it != size; ++it )
+				{
+					PyObject * py_string = pybind::list_getitem( _obj, it );
+
+					String key;
+					if( pybind::extract_value( py_string, key ) == false )
+					{
+						return false;
+					}
+
+					_value.push_back( key );
+
+					pybind::decref( py_string );
+				}
+			}
+			else
+			{
+				return false;
+			}
+
+			return true;
+		}
 
         PyObject * wrap( pybind::type_cast_result<TVectorString>::TCastRef _value ) override
         {
@@ -3045,6 +3103,7 @@ namespace Menge
         pybind::registration_type_cast<WString>( new extract_WString_type );
         pybind::registration_type_cast<TBlobject>( new extract_TBlobject_type );
         pybind::registration_type_cast<TVectorString>( new extract_TVectorString_type );
+		pybind::registration_type_cast<TResourceImage>( new extract_TResourceImage_type ); //
         pybind::registration_type_cast<TVectorWString>( new extract_TVectorWString_type );
         pybind::registration_type_cast<TMapParams>( new extract_TMapParams_type );
 
@@ -3561,22 +3620,26 @@ namespace Menge
                     .def( "getResourceShape", &HotSpotShape::getResourceShape )
                     ;
 
-                pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
-                    .def( "setCenterAlign", &Shape::setCenterAlign )
-                    .def( "getCenterAlign", &Shape::getCenterAlign )
-                    .def( "setFlipX", &Shape::setFlipX )
-                    .def( "getFlipX", &Shape::getFlipX )
-                    .def( "setFlipY", &Shape::setFlipX )
-                    .def( "getFlipY", &Shape::getFlipY )
-                    .def( "setPercentVisibility", &Shape::setPercentVisibility )
-                    .def( "getPercentVisibility", &Shape::getPercentVisibility )
-                    .def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
-                    .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
-                    .def( "setTextureUVOffset", &Shape::setTextureUVOffset )
-                    .def( "getTextureUVOffset", &Shape::getTextureUVOffset )
-                    .def( "setTextureUVScale", &Shape::setTextureUVScale )
-                    .def( "getTextureUVScale", &Shape::getTextureUVScale )
-                    ;
+				pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
+					.def( "setCenterAlign", &Shape::setCenterAlign )
+					.def( "getCenterAlign", &Shape::getCenterAlign )
+					.def( "setFlipX", &Shape::setFlipX )
+					.def( "getFlipX", &Shape::getFlipX )
+					.def( "setFlipY", &Shape::setFlipX )
+					.def( "getFlipY", &Shape::getFlipY )
+					.def( "setPercentVisibility", &Shape::setPercentVisibility )
+					.def( "getPercentVisibility", &Shape::getPercentVisibility )
+					.def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
+					.def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
+					.def( "setTextureUVOffset", &Shape::setTextureUVOffset )
+					.def( "getTextureUVOffset", &Shape::getTextureUVOffset )
+					.def( "setTextureUVScale", &Shape::setTextureUVScale )
+					.def( "getTextureUVScale", &Shape::getTextureUVScale )
+					;
+
+				pybind::interface_<Landscape2D, pybind::bases<Node> >("Landscape2D", false)
+					.def( "setBackParts", &Landscape2D::setBackParts )
+					;
 
 
                 pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)

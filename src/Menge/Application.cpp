@@ -84,6 +84,7 @@
 #	include "Layer2DTexture.h"
 #	include "PhysicalBody2D.h"
 #	include "Layer2DPhysic.h"
+#	include "Landscape2D.h"
 // All Resource type
 //#	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
@@ -452,6 +453,7 @@ namespace Menge
 		//NODE_FACTORY( Model );
 		NODE_FACTORY( m_serviceProvider, Video );
 		NODE_FACTORY( m_serviceProvider, Layer2D );
+		NODE_FACTORY( m_serviceProvider, Landscape2D );
 		NODE_FACTORY( m_serviceProvider, Layer2DParallax );
 		//NODE_FACTORY( m_serviceProvider, Layer2DPhysic );
 		//NODE_FACTORY( Layer2DLoop );

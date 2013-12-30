@@ -136,9 +136,6 @@ Object2D\\\\Landscape2D
 )
 
 ADD_FILTER(
-Object2D\\\\Mesh
-	Mesh.cpp
-	Mesh.h
 Object2D\\\\Mesh2D
 	Mesh2D.cpp
 	Mesh2D.h

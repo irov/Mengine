@@ -16,7 +16,7 @@
 
 namespace Menge
 {
-	typedef std::vector<ResourceImage *> TVResourceImage;
+	typedef std::vector<ResourceImage *> TVectorResourceImage;
 
 	struct RenderMaterial;
 	struct RenderMaterialGroup;    
@@ -29,73 +29,50 @@ namespace Menge
 		~Landscape2D();
 
 	public:
-		void setBackParts( const TVResourceImage &_resourceImage, int countX, int countY);
+		void setBackParts( const TVectorResourceImage & _images, size_t countX, size_t countY );
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
-		void _render( RenderCameraInterface * _camera ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
     protected:
 		void _invalidateWorldMatrix() override;
 		void invalidateVerticesWM();
-		void updateVerticesWM();
+		void updateVerticesWM_();
 
-        void invalidateMaterial();
-        void updateMaterial();
-        inline const RenderMaterial * getMaterial();
 		inline const RenderVertex2D * getVerticesWM();
 	
-    protected:
-        void updateResource_();
 		       
 	protected:
 		bool compileResources_();
 
 	protected:
-		std::vector<ResourceImage *>  m_resourceImage; 
+		TVectorResourceImage m_images;
 
-		const RenderMaterialGroup * m_materialGroup;
-		const RenderMaterial * m_material;
+		size_t m_countX;
+		size_t m_countY;		
 
-        bool m_invalidateMaterial;
+		struct Element
+		{
+			ResourceImage * resource;
+			RenderMaterialInterfacePtr material;
+		};
 
-		size_t m_texturesNum;
-
-		std::vector<RenderTextureInterfacePtr> m_textures;
-
-		std::vector<RenderVertex2D> m_verticesWM;
-
-		int m_countX;
-		int m_countY;
-
-	private:
+		typedef std::vector<Element> TVectorElements;
+		TVectorElements m_elements;
+				
+		TVectorRenderVertex2D m_verticesWM;
 		bool m_invalidateVerticesWM;
     };
-
-    //////////////////////////////////////////////////////////////////////////
-    inline const RenderMaterial * Landscape2D::getMaterial()
-    {
-        if( m_invalidateMaterial == true )
-        {
-            this->updateMaterial();
-        }
-
-        return m_material;
-    }
-
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderVertex2D * Landscape2D::getVerticesWM()
 	{
 		if( m_invalidateVerticesWM == true )
 		{
-			this->updateVerticesWM();
-			this->updateVerticesWM();
+			this->updateVerticesWM_();
 		}
-
-		mt::vec3f pos(200.f,100.f,0.f);
-		this->setLocalPosition( pos ); // !!!!
 
 		return &m_verticesWM[0];
 	}

@@ -17,223 +17,224 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Landscape2D::Landscape2D()
-		: m_materialGroup(nullptr)
-		, m_material(nullptr)
-		, m_texturesNum(0)
-        , m_invalidateMaterial(true)
+		: m_countX(0)
+		, m_countY(0)
 		, m_invalidateVerticesWM(true)
 	{ 
-
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	Landscape2D::~Landscape2D()
 	{
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	bool Landscape2D::_compile()
 	{
-		if( this->compileResources_() == false )
+		if( m_images.empty() == true )
 		{
-			return false;
-		}
-        
-        this->invalidateMaterial();
-		
-		return true;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	bool Landscape2D::compileResources_()
-	{
-		int m_resourceImage_size = m_resourceImage.size();
-		if( m_resourceImage_size == 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)( "Landscape2D::compileResources_ '%s' image list size = 0"
+			LOGGER_ERROR(m_serviceProvider)( "Landscape2D::compileResources_ '%s' images is empty"
 				, m_name.c_str() 
 				);
 
 			return false;
 		}
 
-		for(int i=0;i<m_resourceImage_size;i++)
+		size_t imageSize = m_images.size();
+		m_elements.reserve( imageSize );
+
+		for( TVectorResourceImage::iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+		it != it_end;
+		++it )
 		{
-			if( m_resourceImage[i]->compile() == false )
+			ResourceImage * image = *it;
+
+			Element el;
+			el.resource = image;
+
+			if( el.resource->compile() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Sprite::compileResources_ '%s' image resource %s not compile"
+				LOGGER_ERROR(m_serviceProvider)( "Landscape2D::compileResources_ '%s' image resource %s not compile"
 					, m_name.c_str() 
-					, m_resourceImage[i]->getName().c_str()
+					, el.resource->getName().c_str()
 					);
 
 				return false;
 			}
 
-			m_textures.push_back(m_resourceImage[i]->getTexture());
+			const RenderTextureInterfacePtr & texture = el.resource->getTexture();
+
+			el.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->getMaterial( CONST_STRING(m_serviceProvider, SolidSprite), false, false, PT_TRIANGLELIST, 1, &texture );
+
+			if( el.material == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)( "Landscape2D::compileResources_ '%s' invalid get material"
+					, m_name.c_str() 
+					);
+
+				return false;
+			}
+
+			m_elements.push_back( el );
 		}
 
 		return true;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::_release()
 	{
-		int m_resourceImage_size = m_resourceImage.size();
-		for(int i=0;i<m_resourceImage_size;i++)
+		for( TVectorElements::iterator
+			it = m_elements.begin(),
+			it_end = m_elements.end();
+		it != it_end;
+		++it )
 		{
-			m_resourceImage[i]->release();
-			m_textures[i]=nullptr;
+			Element & el = *it;
+			
+			el.resource->release();
+			el.material = nullptr;
 		}
 
 		m_verticesWM.clear();
-
-		m_materialGroup = nullptr;
-		m_material = nullptr;
 	}
-
-    //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::invalidateMaterial()
-    {
-        m_invalidateMaterial = true;
-    }
-
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::updateMaterial()
+	void Landscape2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-        m_invalidateMaterial = false;
-
-		m_texturesNum = 1;
-
-		m_materialGroup = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterialGroup( CONST_STRING(m_serviceProvider, SolidSprite) );
-
-		ETextureAddressMode textureU = TAM_CLAMP;
-		ETextureAddressMode textureV = TAM_CLAMP;
-
-		m_material = m_materialGroup->getMaterial( textureU, textureV );
-
-		if( m_material == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Landscape2D::updateMaterial_ %s m_material is NULL"
-				, this->getName().c_str()
-				);
-		}
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::_render( RenderCameraInterface * _camera )
-	{
-		Node::_render( _camera );
+		Node::_render( _viewport, _camera );
 		
-        const RenderMaterial * material = this->getMaterial();
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
-		for(int i=0, index=0;i<m_textures.size();i++,index+=4)
+		size_t verticesOffset = 0;
+
+		for( TVectorElements::iterator
+			it = m_elements.begin(),
+			it_end = m_elements.end();
+		it != it_end;
+		++it )
 		{
+			Element & el = *it;
+
 			RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _camera, material, &m_textures[i], m_texturesNum, &vertices[index], 4 );		
+				->addRenderQuad( _viewport, _camera, el.material, vertices + verticesOffset, 4, nullptr );
+
+			verticesOffset += 4;
 		}
 	}
-
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::setBackParts( const TVResourceImage  &_resourceImage, int _countX, int _countY)
+	void Landscape2D::setBackParts( const TVectorResourceImage & _images, size_t _countX, size_t _countY)
 	{
 		m_countX = _countX;
 		m_countY = _countY;
-	    m_resourceImage = _resourceImage;
+
+		m_images = _images;
+
+		this->recompile();
 	}
-
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::invalidateVerticesWM()
+	void Landscape2D::updateVerticesWM_()
 	{
-		m_invalidateVerticesWM = true;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::updateVerticesWM()
-	{
-		size_t length = m_resourceImage.size()*4;
-		m_verticesWM.resize(length);
-
-		const mt::mat4f & wm = this->getWorldMatrix();
-
 		m_invalidateVerticesWM = false;
 
-		for(int y=0; y<m_countY; y++)
+		size_t length = m_elements.size() * 4;
+		m_verticesWM.resize( length );
+
+		const mt::mat4f & wm = this->getWorldMatrix();
+		
+		float x_offset = 0.f;
+		float y_offset = 0.f;
+		size_t index_offset = 0;
+
+		size_t vertexOffset = 0;
+
+		for( TVectorElements::iterator
+			it = m_elements.begin(),
+			it_end = m_elements.end();
+		it != it_end;
+		++it )
 		{
-			for(int x=0; x<m_countX; x++)
-			{	
-				int ri = y * m_countX + x; 
-				const mt::vec4f & uv = m_resourceImage[ri]->getUVImage();
-				mt::vec2f sz = m_resourceImage[ri]->getMaxSize();
+			Element & el = *it;
+
+			const mt::vec4f & uv = el.resource->getUVImage();
+			const mt::vec2f & sz = el.resource->getMaxSize();
 
 				// left-upper
-				RenderVertex2D vertex1;
-				vertex1.color=0xffffffff;
-				vertex1.uv.x =uv.x;
-				vertex1.uv.y =uv.y;
-				vertex1.uv2.x=0.0f;
-				vertex1.uv2.y=0.0f;
+			RenderVertex2D v1;
+			v1.color = 0xffffffff;
+			v1.uv.x = uv.x;
+			v1.uv.y = uv.y;
+			v1.uv2.x = 0.f;
+			v1.uv2.y = 0.f;
 
-				mt::vec3f p1;
-				p1.x = x * sz.x;
-				p1.y = y * sz.y;
-				p1.z = 0.0f;
-				mt::mul_v3_m4( vertex1.pos, p1, wm );
+			mt::vec3f p1;
+			p1.x = x_offset;
+			p1.y = y_offset;
+			p1.z = 0.f;
 
-				m_verticesWM[ri*4]=vertex1;
+			mt::mul_v3_m4( v1.pos, p1, wm );
 
-				// right-upper		
-				RenderVertex2D vertex2;
-				vertex2.color=0xffffffff;
-				vertex2.uv.x =uv.z;
-				vertex2.uv.y =uv.y;
-				vertex2.uv2.x=0.0f;
-				vertex2.uv2.y=0.0f;
+			m_verticesWM[vertexOffset + 0] = v1;
 
-				mt::vec3f p2;
-				p2.x = (x+1) * sz.x;
-				p2.y = y * sz.y;
-				p2.z = 0.0f;
-				mt::mul_v3_m4( vertex2.pos, p2, wm );
+			// right-upper
+			RenderVertex2D v2;
+			v2.color = 0xffffffff;
+			v2.uv.x = uv.z;
+			v2.uv.y = uv.y;
+			v2.uv2.x = 0.f;
+			v2.uv2.y = 0.f;
 
-				m_verticesWM[(ri*4)+1]=vertex2;
+			mt::vec3f p2;
+			p2.x = x_offset + sz.x;
+			p2.y = y_offset;
+			p2.z = 0.f;
+			mt::mul_v3_m4( v2.pos, p2, wm );
+
+			m_verticesWM[vertexOffset + 1] = v2;
 
 				// right-down
-				RenderVertex2D vertex3;
-				vertex3.color=0xffffffff;
-				vertex3.uv.x =uv.z;
-				vertex3.uv.y =uv.w;
-				vertex3.uv2.x=0.0f;
-				vertex3.uv2.y=0.0f;
+			RenderVertex2D v3;
+			v3.color = 0xffffffff;
+			v3.uv.x = uv.z;
+			v3.uv.y = uv.w;
+			v3.uv2.x = 0.f;
+			v3.uv2.y = 0.f;
 
-				mt::vec3f p3;
-				p3.x = (x+1) * sz.x;
-				p3.y = (y+1) * sz.y;
-				p3.z = 0.0f;
-				mt::mul_v3_m4( vertex3.pos, p3, wm );
+			mt::vec3f p3;
+			p3.x = x_offset + sz.x;
+			p3.y = y_offset + sz.y;
+			p3.z = 0.f;
+			mt::mul_v3_m4( v3.pos, p3, wm );
 
-				m_verticesWM[(ri*4)+2]=vertex3;
+			m_verticesWM[vertexOffset + 2] = v3;
 
-				// left-down
-				RenderVertex2D vertex4;
-				vertex4.color=0xffffffff;
-				vertex4.uv.x =uv.x;
-				vertex4.uv.y =uv.w;
-				vertex4.uv2.x=0.0f;
-				vertex4.uv2.y=0.0f;
+			// left-down
+			RenderVertex2D v4;
+			v4.color = 0xffffffff;
+			v4.uv.x = uv.x;
+			v4.uv.y = uv.w;
+			v4.uv2.x = 0.f;
+			v4.uv2.y = 0.f;
 
-				mt::vec3f p4;
-				p4.x = x* sz.x;
-				p4.y = (y+1) * sz.y;
-				p4.z = 0.0f;
-				mt::mul_v3_m4( vertex4.pos, p4, wm );
+			mt::vec3f p4;
+			p4.x = x_offset;
+			p4.y = y_offset + sz.y;
+			p4.z = 0.f;
+			mt::mul_v3_m4( v4.pos, p4, wm );
 
-				m_verticesWM[(ri*4)+3]=vertex4;
+			m_verticesWM[vertexOffset + 3] = v4;
+
+			vertexOffset += 4;
+
+			x_offset += sz.x;
+
+			++index_offset;
+			if( (index_offset % m_countX) == 0 )
+			{
+				x_offset = 0.f;
+				y_offset += sz.y;
 			}
 		}	
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::_invalidateWorldMatrix()
 	{

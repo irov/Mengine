@@ -2,38 +2,38 @@
 
 namespace Menge
 {
-    class GlyphChar
+    class GlyphCode
     {
     public:
-        GlyphChar()
-            : m_utf8((size_t)-1)
+        GlyphCode()
+            : m_utf8((uint32_t)-1)
         {
         }
 
     public:
-        inline void setCode( size_t _code );       
-        inline size_t getCode() const;
+        inline void setCode( uint32_t _code );       
+        inline uint32_t getCode() const;
 
     protected:
-        size_t m_utf8;
+        uint32_t m_utf8;
     };
 	//////////////////////////////////////////////////////////////////////////
-	inline void GlyphChar::setCode( size_t _code )
+	inline void GlyphCode::setCode( uint32_t _code )
 	{
 		m_utf8 = _code;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline size_t GlyphChar::getCode() const
+	inline uint32_t GlyphCode::getCode() const
 	{
 		return m_utf8;
 	}
 	//////////////////////////////////////////////////////////////////////////
     struct GlyphCharLess
     {
-        inline bool operator()( const GlyphChar & _left, const GlyphChar & _right ) const
+        inline bool operator()( const GlyphCode & _left, const GlyphCode & _right ) const
         {
-            size_t lid = _left.getCode();
-            size_t rid = _right.getCode();
+            uint32_t lid = _left.getCode();
+            uint32_t rid = _right.getCode();
 
             return lid < rid;
         }

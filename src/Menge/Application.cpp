@@ -90,8 +90,6 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
-#	include "ResourceFont.h"
-#	include "ResourceGlyph.h"
 
 #	include "ResourceImageSolid.h"
 #	include "ResourceImageDefault.h"
@@ -720,7 +718,8 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
 #   endif
 
-		RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
+		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
+		//RESOURCE_FACTORY( m_serviceProvider, ResourceGlyph );
 		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageDefault );
         RESOURCE_FACTORY( m_serviceProvider, ResourceImageSubstract );
@@ -731,8 +730,7 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceModel3D );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceVideo );
 		RESOURCE_FACTORY( m_serviceProvider, ResourcePlaylist );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceSound );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceGlyph );
+		RESOURCE_FACTORY( m_serviceProvider, ResourceSound );		
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceWindow );
         RESOURCE_FACTORY( m_serviceProvider, ResourceHIT );
@@ -1834,18 +1832,20 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("Application::getProjectTitle not initialize textManager"
 				);
 
-			return ConstString::none();
+			return Utils::emptyConstString();
 		}
 
         ConstString key = Helper::stringizeString(m_serviceProvider, "APPLICATION_TITLE");
 
-        const TextEntry * entry = nullptr;
+        const TextEntryInterface * entry = nullptr;
 		if( TEXT_SERVICE(m_serviceProvider)->existText( key, &entry ) == false )
 		{
-            return ConstString::none();
+            return Utils::emptyConstString();
 		}
 
-		return entry->text;
+		const ConstString & text = entry->getText();
+
+		return text;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectCodename() const

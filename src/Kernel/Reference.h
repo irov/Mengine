@@ -8,20 +8,20 @@ namespace Menge
 		Reference();
 
 	public:
-		unsigned int incrementReference();
-		unsigned int decrementReference();
+		size_t incrementReference();
+		size_t decrementReference();
 
-		unsigned int countReference();
+		size_t countReference() const;
 
 	protected:
 		virtual bool _incrementZero();
 		virtual void _decrementZero();
 
 	protected:
-		unsigned int m_refcounter;
+		size_t m_refcounter;
 	};
     //////////////////////////////////////////////////////////////////////////
-    inline unsigned int Reference::countReference()
+    inline size_t Reference::countReference() const
     {
         return m_refcounter;
     }

@@ -859,15 +859,26 @@ namespace Menge
 
 		WString s_getTextByKey( const ConstString& _key )
 		{
-			const TextEntry & entry = TEXT_SERVICE(m_serviceProvider)
-				->getTextEntry( _key );
+			const TextEntryInterface * entry;
+				
+			if( TEXT_SERVICE(m_serviceProvider)
+				->existText( _key, &entry ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid get key %s"
+					, _key.c_str()
+					);
+
+				pybind::throw_exception();
+			}
+
+			const ConstString & text = entry->getText();
 
             WString unicode;
-            if( Helper::utf8ToUnicodeSize(m_serviceProvider, entry.text.c_str(), entry.text.size(), unicode ) == false )
+            if( Helper::utf8ToUnicodeSize(m_serviceProvider, text.c_str(), text.size(), unicode ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid text key %s convert %s to unicode"
                     , _key.c_str()
-                    , entry.text.c_str()
+                    , text.c_str()
                     );
 
                 pybind::throw_exception();
@@ -878,10 +889,21 @@ namespace Menge
 
 		size_t s_getTextCharCountByKey( const ConstString& _key )
 		{
-			const TextEntry & entry = TEXT_SERVICE(m_serviceProvider)
-				->getTextEntry( _key );
+			const TextEntryInterface * entry;
 
-			size_t count = entry.text.size();
+			if( TEXT_SERVICE(m_serviceProvider)
+				->existText( _key, &entry ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Menge.getTextCharCountByKey invalid get key %s"
+					, _key.c_str()
+					);
+
+				pybind::throw_exception();
+			}
+
+			const ConstString & text = entry->getText();
+
+			size_t count = text.size();
 
 			return count;
 		}

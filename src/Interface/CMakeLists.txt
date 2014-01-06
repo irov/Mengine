@@ -19,6 +19,7 @@ src
 	FileSystemInterface.h
 	RenderSystemInterface.h
 	PhysicSystemInterface.h
+    TextInterface.h
 	StreamInterface.h
 	LogSystemInterface.h
 	ApplicationInterface.h

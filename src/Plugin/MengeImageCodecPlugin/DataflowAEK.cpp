@@ -139,7 +139,7 @@ namespace Menge
 				READ_FRAME_SOURCE( float, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
 
 #	undef READ_FRAME_SOURCE
-			}	
+			}
 		}
 
 		for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )

@@ -1,20 +1,21 @@
 #	pragma once
 
-#	include "Kernel/ResourceReference.h"
+#	include "Interface/TextInterface.h"
 
-#	include "Math/vec4.h"
+#	include "Factory/Factorable.h"
 
-#   include "Core/GlyphChar.h"
-
-#   include "stdex/binary_vector.h"
+#	include "stdex/binary_vector.h"
 
 namespace Menge
 {
-	class Glyph
+	class TextGlyphChar
+		: public Factorable
 	{
 	public:
-        Glyph();
-		Glyph( const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size );
+		TextGlyphChar();
+		
+	public:
+		void initialize( const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size );
 
 	public:
 		inline const mt::vec4f & getUV() const;
@@ -23,8 +24,8 @@ namespace Menge
 		inline const mt::vec2f & getSize() const;
 
 	public:
-		void addKerning( GlyphChar _char, float _kerning );
-		float getKerning( GlyphChar _char ) const;
+		void addKerning( GlyphCode _char, float _kerning );
+		float getKerning( GlyphCode _char ) const;
 
 	protected:
 		mt::vec4f m_uv;
@@ -32,26 +33,26 @@ namespace Menge
 		float m_ratio;
 		mt::vec2f m_size;
 
-		typedef stdex::binary_vector<GlyphChar, float, GlyphCharLess> TMapKerning;
+		typedef stdex::binary_vector<GlyphCode, float, GlyphCharLess> TMapKerning;
 		TMapKerning m_kernings;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec4f & Glyph::getUV() const
+	inline const mt::vec4f & TextGlyphChar::getUV() const
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec2f & Glyph::getOffset() const
+	inline const mt::vec2f & TextGlyphChar::getOffset() const
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Glyph::getRatio() const
+	inline float TextGlyphChar::getRatio() const
 	{
 		return m_ratio;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::vec2f & Glyph::getSize() const
+	inline const mt::vec2f & TextGlyphChar::getSize() const
 	{
 		return m_size;
 	}

@@ -8,8 +8,6 @@
 #	include "Core/ValueInterpolator.h"
 #	include "Core/ConstString.h"
 
-#   include "ResourceFont.h"
-
 #	include "TextLine.h"
 
 #	include "Math/vec4.h"
@@ -18,20 +16,6 @@
 
 namespace Menge
 {
-	struct RenderMaterial;
-
-	//! TextField - класс для отрисовки шрифта. 
-
-	/*! xml - файл имеет следующую структуру:
-	* <Node Name = "имя_ноды" Type = "TextField">
-	*  <Font Name = "имя_ресура_шрифта"/>
-	*  <Text Value = "отображаемый_текст"/>
-	*  <Color Value = "цвет"/>
-	*  <Height Value = "высота глифа"/>
-	*  <CenterAlign Value = "1/0"/>
-	* </Node>
-	*/
-
 	enum ETextFieldHorizontAlign
 	{
 		ETFHA_NONE = 0,
@@ -46,7 +30,7 @@ namespace Menge
 		ETFVA_CENTER = 1,
 	};
 
-	typedef std::list<TextLine> TListTextLine;
+	typedef std::vector<TextLine> TVectorTextLine;
 
 	class TextField
 		: public Node
@@ -55,34 +39,46 @@ namespace Menge
 		TextField();
 		~TextField();
 
-    public:
-        void setResourceFont( ResourceFont * _resourceFont );
-        ResourceFont * getResourceFont() const;
-
 	public:
 		void setMaxLen( float _len );
 		float getMaxLen() const;
 
+	public:
 		void setText( const String & _text );
 		const String & getText() const;
 		
-		void setTextByKey( const ConstString& _key );
-		const ConstString & getTextKey() const;
+		void setTextID( const ConstString& _key );
+		const ConstString & getTextID() const;
 
 		void setTextByKeyFormat( const ConstString& _key, const String & _format, const String & _arg );
 
-		void setFontHeight( float _height );
+	protected:
+		void clearTextParams_();
+
+	public:
+		void setFontName( const ConstString & _name );
+		const ConstString & getFontName() const;
+
+	public:
 		float getFontHeight() const;
 
-		void setOutlineColor( const ColourValue& _color );
-		const ColourValue& getOutlineColor() const;
-
+	public:
+		void setFontColor( const ColourValue & _color );
+		const ColourValue& getFontColor() const;
+		
 		void enableOutline( bool _value );
 		bool isOutline() const;
 
+		void setOutlineColor( const ColourValue & _color );
+		const ColourValue& getOutlineColor() const;
+				
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
 
+		void setCharOffset( float _offset );
+		float getCharOffset() const;
+
+	public:
 		void setNoneAlign();
 		bool isNoneAlign() const;
 
@@ -101,11 +97,8 @@ namespace Menge
 		void setVerticalCenterAlign();
 		bool isVerticalCenterAlign() const;
 		
-		int getMaxCharCount() const;
+		size_t getMaxCharCount() const;
 		void setMaxCharCount( int _maxCharCount );
-
-		void setCharOffset( float _offset );
-		float getCharOffset() const;
 
 		void setPixelsnap( bool _pixelsnap );
 		bool getPixelsnap() const;
@@ -119,7 +112,7 @@ namespace Menge
 	protected:
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
-	private:
+	protected:
 		void renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
 
 	protected:	
@@ -132,10 +125,10 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
 
-	private:
+	protected:
 		float getHorizontAlignOffset_( const TextLine & _line );
 
-	private:
+	protected:
 		void updateVertices_();
 		void invalidateVertices_() const;
 
@@ -149,47 +142,76 @@ namespace Menge
 
 		void updateVertexData_( const ColourValue & _color, TVectorRenderVertex2D& _vertexData );
 
-	private:
-		const TListTextLine & getTextLines() const;
+	protected:
+		const TVectorTextLine & getTextLines() const;
 
 		void invalidateTextLines() const;
 		inline bool isInvalidateTextLines() const;
 		
 		void updateTextLines_() const;
 
-	private:
-        ResourceHolder<ResourceFont> m_resourceFont;
+	protected:
+		inline TextFontInterface * getFont() const;
+		inline void invalidateFont();
+		void updateFont_() const;
 
+	protected:
+		mutable TextFontInterface * m_font;
+		mutable bool m_invalidateFont;
+
+	protected:
+		inline const RenderMaterialInterfacePtr & getMaterialFont();
+		inline const RenderMaterialInterfacePtr & getMaterialOutline();
+				
+	protected:
+		mutable RenderMaterialInterfacePtr m_materialFont;
+		mutable RenderMaterialInterfacePtr m_materialOutline;
+
+	protected:
+		TextFontInterface * getDefaultFont_() const;
+
+		const ConstString & calcFontName() const;
+		float calcLineOffset() const;
+		float calcCharOffset() const;
+
+		const ColourValue & calcColorFont() const;
+		const ColourValue & calcColorOutline() const;
+
+	protected:
         ConstString m_key;
 
-		ColourValue m_outlineColor;
+		const TextEntryInterface * m_textEntry;
 
 		String m_text;
 
 		String m_format;
 		String m_formatArg;
-
-		float m_fontHeight;		
-		
+				
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;
 
 		float m_maxWidth;
+
+		ConstString m_fontName;
+
+		float m_lineOffset;
 		float m_charOffset;
-		int m_maxCharCount;
+
+		ColourValue m_colorFont;
+		ColourValue m_colorOutline;
+
+		size_t m_fontParams;
+		
+		size_t m_maxCharCount;
 
 		mutable int m_charCount;
 		mutable mt::vec2f m_textSize;
 
 		bool m_outline;
 		bool m_pixelsnap;
-
-		float m_lineOffset;
 				
-		mutable TListTextLine m_lines;
-
-		RenderMaterialInterfacePtr m_materialText;
-		RenderMaterialInterfacePtr m_materialOutline;
+				
+		mutable TVectorTextLine m_lines;
 
 		TVectorRenderVertex2D m_vertexDataText;
 		TVectorRenderVertex2D m_vertexDataOutline;
@@ -226,5 +248,40 @@ namespace Menge
 	inline bool TextField::isInvalidateTextLines() const
 	{
 		return m_invalidateTextLines;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline TextFontInterface * TextField::getFont() const
+	{
+		if( m_invalidateFont == true )
+		{
+			this->updateFont_();
+		}
+
+		return m_font;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void TextField::invalidateFont()
+	{
+		m_invalidateFont = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const RenderMaterialInterfacePtr & TextField::getMaterialFont()
+	{
+		if( m_invalidateFont == true )
+		{
+			this->updateFont_();
+		}
+
+		return m_materialFont;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const RenderMaterialInterfacePtr & TextField::getMaterialOutline()
+	{
+		if( m_invalidateFont == true )
+		{
+			this->updateFont_();
+		}
+
+		return m_materialOutline;
 	}
 }

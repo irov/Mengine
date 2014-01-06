@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/RenderSystemInterface.h"
+#	include "Interface/TextInterface.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
@@ -15,11 +16,9 @@
 
 namespace Menge
 {
-	class ResourceFont;
-	
 	struct CharData
 	{
-		GlyphChar code;
+		GlyphCode code;
 		mt::vec3f renderVertex[4];
 		mt::vec4f uv;
 		mt::vec2f offset;
@@ -35,7 +34,7 @@ namespace Menge
 		TextLine( ServiceProviderInterface * _serviceProvider, float _height, float _charOffset );
 
 	public:
-		void initialize( const ResourceFont * _resource, const String& _text );
+		void initialize( const TextFontInterface * _font, const String& _text );
 
 	public:
 		void prepareRenderObject(

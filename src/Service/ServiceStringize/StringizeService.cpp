@@ -29,6 +29,11 @@ namespace Menge
 	{
         stdex::const_string_holder * stringHolder = nullptr;
         
+		if( _size == (size_t)-1 )
+		{
+			_size = strlen(_str);
+		}
+
 		if( _external == true )
 		{
 			ConstStringHolderStringExternal * string = m_poolStringExternal.createObjectT();

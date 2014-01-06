@@ -546,7 +546,7 @@ namespace Menge
 
 			ResourceReference * resource = entry.resource;
 
-			unsigned int count = resource->countReference();
+			size_t count = resource->countReference();
 
 			if( count == 0 )
 			{
@@ -558,7 +558,7 @@ namespace Menge
 				continue;
 			}
 
-			unsigned int memoryUse = resource->memoryUse();
+			size_t memoryUse = resource->memoryUse();
             float memoryUseMb = float(memoryUse)/(1024.f*1024.f);
 
 			const ConstString & name = m_resources.get_key(it);

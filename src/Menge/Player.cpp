@@ -1,5 +1,18 @@
 #	include "Player.h"
 
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/PhysicSystem2DInterface.h"
+#   include "Interface/ScriptSystemInterface.h"
+#   include "Interface/ParticleSystemInterface.h"
+#   include "Interface/ResourceInterface.h"
+
+#   include "Interface/EventInterface.h"
+#	include "Interface/UnicodeInterface.h"
+
+#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificatorInterface.h"
+#	include "Interface/StringizeInterface.h"
+
 #   include "Config/Stringstream.h"
 
 #	include "NodeManager.h"
@@ -19,20 +32,6 @@
 #	include "Logger/Logger.h"
 
 #	include "TextField.h"
-
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/PhysicSystem2DInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/ResourceInterface.h"
-
-#   include "Interface/EventInterface.h"
-#	include "Interface/UnicodeInterface.h"
-
-#	include "Interface/NotificationServiceInterace.h"
-#	include "Interface/NotificatorInterface.h"
-
-#   include "ResourceFont.h"
 
 #   include "MousePickerSystem.h"
 #   include "GlobalHandleSystem.h"
@@ -644,10 +643,7 @@ namespace Menge
 		m_debugText = NODE_SERVICE(m_serviceProvider)->
 			createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
-        ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceFont>(CONST_STRING(m_serviceProvider, ConsoleFont));
-
-		m_debugText->setResourceFont( resourceFont );
+		m_debugText->setFontName( CONST_STRING(m_serviceProvider, ConsoleFont) );
 		m_debugText->enable();
 	}
 	//////////////////////////////////////////////////////////////////////////

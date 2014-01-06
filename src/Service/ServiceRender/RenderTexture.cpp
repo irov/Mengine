@@ -49,6 +49,15 @@ namespace Menge
         m_hwRect.top = 0;
         m_hwRect.right = m_image->getHWWidth();
         m_hwRect.bottom = m_image->getHWHeight();
+
+		m_uv.x = 0.f;
+		m_uv.y = 0.f;
+
+		float scaleU = float(m_rect.right) / float(m_hwRect.right);
+		float scaleV = float(m_rect.bottom) / float(m_hwRect.bottom);
+
+		m_uv.z = scaleU;
+		m_uv.w = scaleV;
     }
 	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterfacePtr & RenderTexture::getImage() const

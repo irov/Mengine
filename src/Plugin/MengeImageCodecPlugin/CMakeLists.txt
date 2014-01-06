@@ -16,6 +16,12 @@ src
 	ImageDecoderPNG.h
     ImageDecoderDDZ.cpp
     ImageDecoderDDZ.h
+    
+    ImageDecoderPVRTC.cpp
+    ImageDecoderPVRTC.h
+    
+    ImageDecoderETC1.cpp
+    ImageDecoderETC1.h    
 	#ImageDecoderCombinerRGBAndAlpha.cpp
     #ImageDecoderCombinerRGBAndAlpha.h
 

@@ -9,17 +9,6 @@
 
 namespace Menge
 {
-    struct ResourceDesc
-    {
-        ConstString pakName;
-        ConstString pakType;
-
-        FilePath pakPath;
-
-        FilePath path;
-        bool script;
-    };
-
 	class ResourcePak
 	{
 	public:
@@ -45,18 +34,17 @@ namespace Menge
 		void addResource_( const FilePath & _path );
         void addText_( const FilePath & _path );
 		void addScriptPath_( const FilePath & _path );
+		void addFontPath_( const FilePath & _font );
 
     protected:
         bool loadText_( const ConstString & _pakName, const FilePath & _path );
+		bool loadFont_( const ConstString & _pakName, const FilePath & _path );
 				
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::vector<ResourceDesc> TResourceDescs;
-		TResourceDescs m_resourcesDesc;
-
-		typedef std::vector<ResourceDesc> TTextDescs;
-		TTextDescs m_textsDesc;
+		TVectorFilePath m_resourcesDesc;
+		TVectorFilePath m_textsDesc;
 		
 		ConstString m_name;
 		ConstString m_type;
@@ -69,6 +57,7 @@ namespace Menge
 		FilePath m_path;
 
 		TVectorFilePath m_pathScripts;
+		TVectorFilePath m_pathFonts;
 
         bool m_preload;
 	};

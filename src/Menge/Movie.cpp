@@ -1482,7 +1482,7 @@ namespace Menge
             ->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
         layer_text->setName( _layer.name );
-        layer_text->setTextByKey( _layer.name ); //Name = TextID
+        layer_text->setTextID( _layer.name ); //Name = TextID
 
         this->addMovieNode_( _layer, layer_text );
 
@@ -1495,7 +1495,7 @@ namespace Menge
 			->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
 		layer_text->setName( _layer.name );
-		layer_text->setTextByKey( _layer.name ); //Name = TextID
+		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setCenterAlign();
 
 		this->addMovieNode_( _layer, layer_text );

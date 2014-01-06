@@ -499,7 +499,8 @@ namespace Menge
 
 				if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
 				{
-					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ vertex overflow %d (max %d)"
+					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
+						, layerIndex
 						, shapeVertexCount
 						, MENGINE_MOVIE_SHAPE_MAX_VERTEX
 						);
@@ -511,7 +512,8 @@ namespace Menge
 
 				if( Menge::triangulate_polygon_indices( shape_vertex, shape_indices ) == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ invalid triangulate"
+					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d invalid triangulate"
+						, layerIndex
 						);
 
 					return false;
@@ -521,7 +523,8 @@ namespace Menge
 
 				if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 				{
-					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ index overflow %d (max $d)"
+					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
+						, layerIndex
 						, shapeIndicesCount
 						, MENGINE_MOVIE_SHAPE_MAX_INDICES
 						);

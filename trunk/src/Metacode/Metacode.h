@@ -469,263 +469,6 @@ namespace Metacode
         protected:
         };
         
-        class Meta_ResourceFont
-            : public Meta_Resource
-        { 
-        public:
-            Meta_ResourceFont();
-        
-        public:
-            unsigned int getId() const override;
-        public:
-            bool has_Color_Value() const
-            {
-                return Color_Value_successful;
-            }
-            
-            bool get_Color_Value( Menge::ColourValue & _value ) const
-            {
-                if( Color_Value_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Color_Value;
-            
-                return true;
-            }
-            
-            bool swap_Color_Value( Menge::ColourValue & _value ) const
-            {
-                if( Color_Value_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->Color_Value);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_Color_Value( C * _self, M _method )
-            {
-                if( Color_Value_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->Color_Value );
-            }
-            
-            bool has_Image_Codec() const
-            {
-                return Image_Codec_successful;
-            }
-            
-            bool get_Image_Codec( Menge::ConstString & _value ) const
-            {
-                if( Image_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Image_Codec;
-            
-                return true;
-            }
-            
-            bool swap_Image_Codec( Menge::ConstString & _value ) const
-            {
-                if( Image_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->Image_Codec);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_Image_Codec( C * _self, M _method )
-            {
-                if( Image_Codec_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->Image_Codec );
-            }
-            
-            const Menge::ConstString & get_Image_Path() const
-            {
-                return this->Image_Path;
-            }
-            
-            void swap_Image_Path( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->Image_Path);
-            }
-            
-            template<class C, class M>
-            void method_Image_Path( C * _self, M _method )
-            {
-                (_self->*_method)( this->Image_Path );
-            }
-            
-            bool has_OutlineImage_Codec() const
-            {
-                return OutlineImage_Codec_successful;
-            }
-            
-            bool get_OutlineImage_Codec( Menge::ConstString & _value ) const
-            {
-                if( OutlineImage_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->OutlineImage_Codec;
-            
-                return true;
-            }
-            
-            bool swap_OutlineImage_Codec( Menge::ConstString & _value ) const
-            {
-                if( OutlineImage_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->OutlineImage_Codec);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_OutlineImage_Codec( C * _self, M _method )
-            {
-                if( OutlineImage_Codec_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->OutlineImage_Codec );
-            }
-            
-            bool has_OutlineImage_Path() const
-            {
-                return OutlineImage_Path_successful;
-            }
-            
-            bool get_OutlineImage_Path( Menge::ConstString & _value ) const
-            {
-                if( OutlineImage_Path_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->OutlineImage_Path;
-            
-                return true;
-            }
-            
-            bool swap_OutlineImage_Path( Menge::ConstString & _value ) const
-            {
-                if( OutlineImage_Path_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->OutlineImage_Path);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_OutlineImage_Path( C * _self, M _method )
-            {
-                if( OutlineImage_Path_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->OutlineImage_Path );
-            }
-            
-            const Menge::ConstString & get_ResourceGlyph_Name() const
-            {
-                return this->ResourceGlyph_Name;
-            }
-            
-            void swap_ResourceGlyph_Name( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->ResourceGlyph_Name);
-            }
-            
-            template<class C, class M>
-            void method_ResourceGlyph_Name( C * _self, M _method )
-            {
-                (_self->*_method)( this->ResourceGlyph_Name );
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
-            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
-        public:
-        protected:
-        protected:
-            bool Color_Value_successful;
-            mutable Menge::ColourValue Color_Value;
-            bool Image_Codec_successful;
-            mutable Menge::ConstString Image_Codec;
-            mutable Menge::ConstString Image_Path;
-            bool OutlineImage_Codec_successful;
-            mutable Menge::ConstString OutlineImage_Codec;
-            bool OutlineImage_Path_successful;
-            mutable Menge::ConstString OutlineImage_Path;
-            mutable Menge::ConstString ResourceGlyph_Name;
-        };
-        
-        class Meta_ResourceGlyph
-            : public Meta_Resource
-        { 
-        public:
-            Meta_ResourceGlyph();
-        
-        public:
-            unsigned int getId() const override;
-        public:
-            const Menge::ConstString & get_GlyphPath_Path() const
-            {
-                return this->GlyphPath_Path;
-            }
-            
-            void swap_GlyphPath_Path( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->GlyphPath_Path);
-            }
-            
-            template<class C, class M>
-            void method_GlyphPath_Path( C * _self, M _method )
-            {
-                (_self->*_method)( this->GlyphPath_Path );
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
-            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
-        public:
-        protected:
-        protected:
-            mutable Menge::ConstString GlyphPath_Path;
-        };
-        
         class Meta_ResourceHIT
             : public Meta_Resource
         { 
@@ -4682,12 +4425,12 @@ namespace Metacode
         public:
             unsigned int getId() const override;
         public:
-            const Menge::GlyphChar & get_code() const
+            const Menge::GlyphCode & get_code() const
             {
                 return this->code;
             }
             
-            void swap_code( Menge::GlyphChar & _value ) const
+            void swap_code( Menge::GlyphCode & _value ) const
             {
                 std::swap( _value, this->code);
             }
@@ -4777,12 +4520,12 @@ namespace Metacode
                     (_self->*_method)( this->advance );
                 }
                 
-                const Menge::GlyphChar & get_id() const
+                const Menge::GlyphCode & get_id() const
                 {
                     return this->id;
                 }
                 
-                void swap_id( Menge::GlyphChar & _value ) const
+                void swap_id( Menge::GlyphCode & _value ) const
                 {
                     std::swap( _value, this->id);
                 }
@@ -4802,12 +4545,12 @@ namespace Metacode
             protected:
             protected:
                 mutable float advance;
-                mutable Menge::GlyphChar id;
+                mutable Menge::GlyphCode id;
             };
             
         protected:
         protected:
-            mutable Menge::GlyphChar code;
+            mutable Menge::GlyphCode code;
             mutable mt::vec2f offset;
             mutable mt::vec4f rect;
             mutable float width;
@@ -6068,6 +5811,42 @@ namespace Metacode
         bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
         bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
     public:
+        class Meta_Fonts
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_Fonts();
+        
+        public:
+            unsigned int getId() const override;
+        public:
+            const Menge::ConstString & get_Path() const
+            {
+                return this->Path;
+            }
+            
+            void swap_Path( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Path);
+            }
+            
+            template<class C, class M>
+            void method_Path( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id ) override;
+            bool _preparationIncludes( unsigned int _includes, unsigned int _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString Path;
+        };
+        
         class Meta_Resources
             : public Metabuf::Metadata
         { 
@@ -6236,6 +6015,16 @@ namespace Metacode
         
     protected:
     protected:
+    public:
+        typedef stdex::auto_array<Meta_Fonts> TVectorMeta_Fonts;
+    
+        const TVectorMeta_Fonts & get_IncludesFonts() const
+        {
+            return this->includes_Meta_Fonts;
+        }
+    
+    protected:
+        TVectorMeta_Fonts includes_Meta_Fonts;
     public:
         typedef stdex::auto_array<Meta_Resources> TVectorMeta_Resources;
     

@@ -24,6 +24,11 @@ namespace Menge
 			return empty;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		const ConstString& emptyConstString()
+		{
+			return ConstString::none();
+		}
+		//////////////////////////////////////////////////////////////////////////
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
 		{
 			// Pre-allocate some space for performance

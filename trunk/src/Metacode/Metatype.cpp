@@ -103,7 +103,7 @@ namespace Metabuf
         _value.setARGB( a, r, g, b );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::GlyphChar & _value, void * _userData )
+    void archive_read( ArchiveReader & ar, Menge::GlyphCode & _value, void * _userData )
     {
         (void)_userData;
 

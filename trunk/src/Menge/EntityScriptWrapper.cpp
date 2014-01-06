@@ -83,6 +83,16 @@ namespace Menge
 
 				PyObject * py_type = pybind::ask( m_module, "(O)", pybind::ptr(_prototype) );
 
+				if( py_type == nullptr )
+				{
+					LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type create"
+						, m_category.c_str()
+						, m_prototype.c_str()
+						);
+
+					return nullptr;
+				}
+
 				if( pybind::type_initialize( py_type ) == false )
 				{
 					LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type initialize"

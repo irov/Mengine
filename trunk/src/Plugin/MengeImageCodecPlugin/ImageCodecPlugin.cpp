@@ -9,6 +9,8 @@
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderWEBP.h"
 #	include "ImageDecoderDDZ.h"
+#	include "ImageDecoderPVRTC.h"
+#	include "ImageDecoderETC1.h"
 #	include "ImageDecoderPVRTZ.h"
 #	include "ImageDecoderETZ1.h"
 
@@ -74,15 +76,32 @@ namespace Menge
         m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "webpImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pvrtzImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "etz1Image")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pvrImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "etcImage")) );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "png", Helper::stringizeString(m_serviceProvider, "pngImage") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "PNG", Helper::stringizeString(m_serviceProvider, "pngImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "jpg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "jpeg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "pvz", Helper::stringizeString(m_serviceProvider, "pvrtzImage") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "etz", Helper::stringizeString(m_serviceProvider, "etz1Image") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "pvr", Helper::stringizeString(m_serviceProvider, "pvrImage") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "etc", Helper::stringizeString(m_serviceProvider, "etcImage") );
 		
 
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );

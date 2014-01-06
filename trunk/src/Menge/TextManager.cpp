@@ -1,11 +1,13 @@
 #	include "TextManager.h"
 
-#	include "Core/String.h"
-
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
+
+#	include "Core/String.h"
+#	include "Core/Ini.h"
+#	include "Core/IniUtil.h"
 
 #	include "Logger/Logger.h"
 
@@ -90,10 +92,17 @@ namespace Menge
 
 				ConstString text_key;
 
-				TextEntry textEntry;
 
-				textEntry.charOffset = 0.f;
-				textEntry.lineOffset = 0.f;
+				ConstString text;
+				ConstString font;
+				
+				float charOffset = 0.f;
+				float lineOffset = 0.f;
+
+				ColourValue colorFont;
+				ColourValue colorOutline;
+
+				size_t params;
 				
 				for( size_t i = 0; i != _count; ++i )
 				{
@@ -102,8 +111,7 @@ namespace Menge
 
 					if( strcmp( key, "Key") == 0 )
 					{
-						size_t value_size = strlen( value );
-						text_key = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+						text_key = Helper::stringizeStringExternal( m_serviceProvider, value, -1 );
 					}
 					else if( strcmp( key, "Value" ) == 0 )
 					{
@@ -129,19 +137,20 @@ namespace Menge
 								, temp.c_str()
 								);
 
-							textEntry.text = Helper::stringizeString( m_serviceProvider, temp );
+							text = Helper::stringizeString( m_serviceProvider, temp );
 						}
 						else
 						{
-							textEntry.text = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+							text = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
 						}
 					}
 					else if( strcmp( key, "Font" ) == 0 )
 					{
-						size_t value_size = strlen( value );
-						ConstString font = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+						ConstString font = Helper::stringizeStringExternal( m_serviceProvider, value, -1 );
 
-						textEntry.font = font;
+						font = font;
+
+						params |= EFP_FONT;
 					}
 					else if( strcmp( key, "CharOffset" ) == 0 )
 					{
@@ -156,7 +165,9 @@ namespace Menge
 								);
 						}
 
-						textEntry.charOffset = charOffset;
+						charOffset = charOffset;
+
+						params |= EFP_CHAR_OFFSET;
 					}
 					else if( strcmp( key, "LineOffset" ) == 0 )
 					{
@@ -171,11 +182,53 @@ namespace Menge
 								);
 						}
 
-						textEntry.lineOffset = lineOffset;
-					}					
+						lineOffset = lineOffset;
+
+						params |= EFP_LINE_OFFSET;
+					}			
+					else if( strcmp( key, "Color" ) == 0 )
+					{
+						float r;
+						float g;
+						float b;
+						float a;
+						if( sscanf( value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, value
+								);
+						}
+
+						colorFont.setARGB(a, r, g, b);
+
+						params |= EFP_COLOR_FONT;
+					}	
+					else if( strcmp( key, "ColorOutline" ) == 0 )
+					{
+						float r;
+						float g;
+						float b;
+						float a;
+						if( sscanf( value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, value
+								);
+						}
+
+						colorOutline.setARGB(a, r, g, b);
+
+						params |= EFP_COLOR_OUTLINE;
+					}
 				}
 
-				m_textManager->addTextEntry( text_key, textEntry );
+				m_textManager->addTextEntry( text_key, text, font, colorFont, colorOutline, lineOffset, charOffset, params );
 			}
 
 			void callback_end_node( const char * _node )
@@ -216,24 +269,130 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
+	bool TextManager::loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
-		TextEntry * textEntry = nullptr;
-		if( m_texts.has( _key, &textEntry ) == true )
+		InputStreamInterfacePtr stream = 
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _path );
+
+		if( stream == nullptr )
 		{
-			LOGGER_INFO(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s"
-				, _key.c_str()
+			LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts Invalid open settings %s"
+				, _path.c_str()
 				);
 
-			*textEntry = _entry;
+			return false;
+		}
 
+		Ini ini(m_serviceProvider);
+		if( ini.load( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts Invalid load settings %s"
+				, _path.c_str()
+				);
+
+			return false;
+		}
+
+		TVectorConstString fonts;
+		IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts, m_serviceProvider );
+
+		for( TVectorConstString::const_iterator
+			it = fonts.begin(),
+			it_end = fonts.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & fontName = *it;
+
+			TextFont * font = m_factoryTextFont.createObjectT();
+
+			font->setServiceProvider( m_serviceProvider );
+			font->setName( fontName );
+
+			FilePath glyphPath;
+			IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider );
+
+			const TextGlyph * glyph = this->loadGlyph_( _locale, _pakName, glyphPath );
+
+			font->setGlyph( glyph );
+
+			FilePath pathImage;
+			IniUtil::getIniValue( ini, fontName.c_str(), "Image", pathImage, m_serviceProvider );
+
+			FilePath pathOutline;
+			IniUtil::getIniValue( ini, fontName.c_str(), "Outline", pathOutline, m_serviceProvider );
+
+			font->setTexturePath( _pakName, pathImage, pathOutline );
+
+			ColourValue colour;
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "Color", colour, m_serviceProvider ) == true )
+			{
+				font->setColourFont( colour );
+			}
+
+			ColourValue colourOutline;
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "Color", colourOutline, m_serviceProvider ) == true )
+			{
+				font->setColourOutline( colourOutline );
+			}
+
+			float lineOffset;
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "LineOffset", lineOffset, m_serviceProvider ) == true )
+			{
+				font->setLineOffset( lineOffset );
+			}
+
+			float charOffset;
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "CharOffset", charOffset, m_serviceProvider ) == true )
+			{
+				font->setCharOffset( charOffset );
+			}						
+
+			m_fonts.insert( fontName, font );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TextGlyph * TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	{
+		const TextGlyph * glyph_has;
+
+		if( m_glyphs.has( _path, &glyph_has ) == true )
+		{
+			return glyph_has;
+		}
+
+		TextGlyph * glyph = m_factoryTextGlyph.createObjectT();
+
+		glyph->initialize( m_serviceProvider, _locale, _pakName, _path );
+
+		return glyph;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params )
+	{
+		const TextEntry * textEntry_has;
+		if( m_texts.has( _key, &textEntry_has ) == true )
+		{
+			const ConstString & text = textEntry_has->getText();
+
+			LOGGER_INFO(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s with text '%s'"
+				, _key.c_str()
+				, text.c_str()
+				);
+			
             return;
 		}
 
-        m_texts.insert( _key, _entry );		
+		TextEntry * textEntry = m_factoryTextEntry.createObjectT();
+
+		textEntry->initialize( _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
+
+        m_texts.insert( _key, textEntry );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextEntry & TextManager::getTextEntry( const ConstString& _key ) const
+	const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
 	{
 		const TextEntry * textEntry = nullptr;
 		if( m_texts.has( _key, &textEntry ) == false )
@@ -242,23 +401,60 @@ namespace Menge
 				, _key.c_str() 
 				);
 
-			static TextEntry emptyEntry;
-			emptyEntry.charOffset = 0.f;
-			emptyEntry.lineOffset = 0.f;
-
-			return emptyEntry;
+			return nullptr;
 		}
-
-        const TextEntry & entry = *textEntry;
         
-        return entry;
+        return textEntry;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::existText( const ConstString& _key, const TextEntry ** _entry ) const
+	bool TextManager::existText( const ConstString& _key, const TextEntryInterface ** _entry ) const
 	{
-		bool result = m_texts.has( _key, _entry );
+		const TextEntry * textEntry;
+		bool result = m_texts.has( _key, &textEntry );
+
+		if( _entry != nullptr )
+		{
+			*_entry = static_cast<const TextEntryInterface *>(textEntry);
+		}
 
 		return result;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::existFont( const ConstString & _name ) const
+	{		
+		bool result = m_fonts.exist( _name );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TextFontInterface * TextManager::getFont( const ConstString & _name )
+	{		
+		TextFont * font_has;
+		bool result = m_fonts.has( _name, &font_has );
+
+		if( result == false )
+		{
+			return nullptr;
+		}
+
+		if( font_has->incrementReference() == 0 )
+		{
+			return nullptr;
+		}
+
+		return font_has;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextManager::releaseFont( TextFontInterface * _font )
+	{
+		if( _font == nullptr )
+		{
+			return;
+		}
+
+		TextFont * font = static_cast<TextFont *>(_font);
+
+		font->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::setDefaultResourceFontName( const ConstString & _fontName )

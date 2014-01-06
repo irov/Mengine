@@ -33,7 +33,6 @@
 #	include "ResourceSound.h"
 #   include "ResourceImageSolid.h"
 #   include "ResourceEmitterContainer.h"
-#   include "ResourceFont.h"
 
 //#	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
@@ -2751,7 +2750,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSolid );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceEmitterContainer );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceShape );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
+        //SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageMultiplyRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageCombineRGBAndAlpha );
@@ -3233,9 +3232,6 @@ namespace Menge
         pybind::interface_<ResourceShape, pybind::bases<ResourceReference> >("ResourceShape", false)
             ;                   
 
-        pybind::interface_<ResourceFont, pybind::bases<ResourceReference> >("ResourceFont", false)
-            ;                   
-        
         pybind::interface_<ResourceWindow, pybind::bases<ResourceReference> >("ResourceWindow", false)
             ;    
 
@@ -3505,26 +3501,31 @@ namespace Menge
                     ;
 
                 pybind::interface_<TextField, pybind::bases<Node> >("TextField", false)
-					.def( "setResourceFont", &TextField::setResourceFont )
-                    .def( "getResourceFont", &TextField::getResourceFont )  
 					.def_proxy_static( "setText", nodeScriptMethod, &NodeScriptMethod::textfield_setText )
 					.def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
-                    .def_depricated( "setHeight", &TextField::setFontHeight, "use setFontHeight" )
                     .def_depricated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )
-                    .def_depricated( "setAlphaHeight", &TextField::setFontHeight, "use setFontHeight" )
                     .def_depricated( "getAlphaHeight", &TextField::getFontHeight, "use getFontHeight" )
-                    .def( "setFontHeight", &TextField::setFontHeight )
                     .def( "getFontHeight", &TextField::getFontHeight )
-                    .def( "setOutlineColor", &TextField::setOutlineColor )
-                    .def( "getOutlineColor", &TextField::getOutlineColor )
-                    .def( "enableOutline", &TextField::enableOutline )
-                    .def( "isOutline", &TextField::isOutline )
-                    .def_depricated( "getLength", &TextField::getTextSize, "use getTextSize" )
-                    .def( "getTextSize", &TextField::getTextSize )
-                    .def( "setMaxLen", &TextField::setMaxLen )
-                    .def( "getLineOffset", &TextField::getLineOffset )
-                    .def( "setLineOffset", &TextField::setLineOffset )
+					.def( "setFontName", &TextField::setFontName )
+					.def( "getFontName", &TextField::getFontName )
 
+
+					.def( "enableOutline", &TextField::enableOutline )
+					.def( "isOutline", &TextField::isOutline )
+					.def( "setOutlineColor", &TextField::setOutlineColor )
+                    .def( "getOutlineColor", &TextField::getOutlineColor )
+					.def( "setFontColor", &TextField::setFontColor )
+					.def( "getFontColor", &TextField::getFontColor )
+
+					.def( "setLineOffset", &TextField::setLineOffset )
+					.def( "getLineOffset", &TextField::getLineOffset )
+
+					.def( "setCharOffset", &TextField::setCharOffset )
+					.def( "getCharOffset", &TextField::getCharOffset )
+                    
+					.def_depricated( "getLength", &TextField::getTextSize, "use getTextSize" )
+                    .def( "getTextSize", &TextField::getTextSize )
+                    .def( "setMaxLen", &TextField::setMaxLen )                    
 
                     .def( "setNoneAlign", &TextField::setNoneAlign )
                     .def( "isNoneAlign", &TextField::isNoneAlign )
@@ -3539,12 +3540,10 @@ namespace Menge
                     .def( "isVerticalNoneAlign", &TextField::isVerticalNoneAlign )
                     .def( "setVerticalCenterAlign", &TextField::setVerticalCenterAlign )
                     .def( "isVerticalCenterAlign", &TextField::isVerticalCenterAlign )
-
-                    .def( "getCharOffset", &TextField::getCharOffset )
-                    .def( "setCharOffset", &TextField::setCharOffset )
-                    .def( "setTextByKey", &TextField::setTextByKey )
+					
+                    .def( "setTextByKey", &TextField::setTextID )
                     .def( "setTextByKeyFormat", &TextField::setTextByKeyFormat )					
-                    .def( "getTextKey", &TextField::getTextKey )
+                    .def( "getTextKey", &TextField::getTextID )
 
                     .def( "setPixelsnap", &TextField::setPixelsnap )
                     .def( "getPixelsnap", &TextField::getPixelsnap )

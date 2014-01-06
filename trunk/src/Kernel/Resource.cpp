@@ -41,7 +41,7 @@ namespace Menge
 		this->_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int Resource::memoryUse() const
+	size_t Resource::memoryUse() const
 	{
 		return 0;
 	}

@@ -1,10 +1,5 @@
 #	include "TextLine.h"
 
-#	include "ResourceFont.h"
-#	include "ResourceGlyph.h"
-
-#	include "Glyph.h"
-
 #	include "Interface/RenderSystemInterface.h"
 
 #	include "Logger/Logger.h"
@@ -18,13 +13,13 @@ namespace Menge
 		: m_serviceProvider(_serviceProvider)
         , m_charOffset(_charOffset)
 		, m_height(_height)
-		, m_length(0)
+		, m_length(0.f)
 		, m_invalidateTextLine(true)
-		, m_offset(0)
+		, m_offset(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::initialize( const ResourceFont * _resource, const String& _text )
+	void TextLine::initialize( const TextFontInterface * _font, const String& _text )
 	{
 		WString::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );
@@ -37,13 +32,12 @@ namespace Menge
         //const char * text_it = text_str;
         //const char * text_end = text_str + text_len + 1;
 
-		const RenderTextureInterfacePtr & image = _resource->getTextureFont();
+		const RenderTextureInterfacePtr & image = _font->getTextureFont();
 
 		float inv_image_width = 1.f / (float)image->getWidth();
 		float inv_image_height = 1.f / (float)image->getHeight();
 
-		const ResourceGlyph * resourceGlyph = _resource->getResourceGlyph();
-		float initSize = 1.f / resourceGlyph->getFontHeight();
+		float initSize = 1.f / m_height;
 
 		for( const char
             *text_it = text_str,
@@ -57,7 +51,7 @@ namespace Menge
 			if( err != utf8::internal::UTF8_OK )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "TextLine for resource %s invalid glyph |%s| err code %d"
-					, _resource->getName().c_str()
+					, _font->getName().c_str()
 					, text_it
 					, err
 					);
@@ -70,21 +64,26 @@ namespace Menge
                 continue;
             }
 
-            GlyphChar glyphChar;
-            glyphChar.setCode( code );
+			GlyphCode glyphChar;
+			glyphChar.setCode( code );
 
-            const Glyph * glyph;
-			if( _resource->hasGlyph( glyphChar, &glyph ) == false )
+			size_t code_next = 0;
+			const char * text_it_next = text_it + 1;
+			utf8::internal::validate_next( text_it_next, text_end, code_next );
+
+            GlyphCode glyphCharNext;
+            glyphCharNext.setCode( code_next );
+
+			Glyph glyph;
+			if( _font->getGlyph( glyphChar, glyphCharNext, &glyph ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "TextLine for resource %s invalid glyph %d"
-					, _resource->getName().c_str()
+					, _font->getName().c_str()
 					, code
 					);
 
 				continue;
-			}
-
-			
+			}			
 					
 			CharData charData;
 
@@ -95,41 +94,24 @@ namespace Menge
 			mt::ident_v3( charData.renderVertex[2] );
 			mt::ident_v3( charData.renderVertex[3] );
 
-			charData.uv = glyph->getUV();
+			charData.uv = glyph.uv;
 
 			charData.uv.x *= inv_image_width;
 			charData.uv.y *= inv_image_height;
 			charData.uv.z *= inv_image_width;
 			charData.uv.w *= inv_image_height;
 
-			charData.ratio = glyph->getRatio();
-			charData.offset = glyph->getOffset();
+			charData.ratio = glyph.ratio;
+			charData.offset = glyph.offset;
 			
-			charData.size = glyph->getSize();
+			charData.size = glyph.size;
 			
 			charData.size *= m_height;
-
-			
-
 			
 			charData.size *= initSize;
+
+			totalKerning += glyph.kerning;
 			
-			if( m_charsData.empty() == false )
-			{
-				const CharData & prevChar = m_charsData.back();
-
-                GlyphChar prev_code = prevChar.code;
-
-				const Glyph * prevGlyph; 				
-				if( _resource->hasGlyph( prev_code, &prevGlyph ) == true )
-				{
-	                GlyphChar curr_code = charData.code;
-					float kerning = prevGlyph->getKerning( curr_code );
-
-					totalKerning += kerning;
-				}
-			}
-
 			charData.offset.x += totalKerning;
 			m_charsData.push_back( charData );
 
@@ -161,10 +143,6 @@ namespace Menge
 		{
 			this->updateRenderLine_( _offset );
 		}
-
-		//_renderObject->vertices.clear();
-		//_renderObject->passes[0].indicies.clear();
-		//_renderObject->material.color = ;
 
 		size_t renderObjectNum = _renderObject.size();
 
@@ -249,7 +227,7 @@ namespace Menge
 			mt::vec2f offset = _offset + cd.offset;
 			mt::vec3f v3_offset(offset.x, offset.y, 0.f);
 			
-            cd.renderVertex[0] = v3_offset;
+            cd.renderVertex[0] = v3_offset + mt::vec3f(0.f, 0.0f, 0.f);;
 			cd.renderVertex[1] = v3_offset + mt::vec3f(size.x, 0.0f, 0.f);
 			cd.renderVertex[2] = v3_offset + mt::vec3f(size.x, size.y, 0.f);
 			cd.renderVertex[3] = v3_offset + mt::vec3f(0.0f, size.y, 0.f);

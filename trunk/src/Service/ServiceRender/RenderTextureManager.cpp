@@ -331,7 +331,7 @@ namespace Menge
             );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString& _codec )
+    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codec )
     {
         TMapTextures::iterator it_find = m_textures.find( _filename );
 

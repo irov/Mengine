@@ -105,6 +105,19 @@ namespace Menge
 			scripts.method_Path( this, &ResourcePak::addScriptPath_ );
 		}
 
+		const Metacode::Meta_Pak::TVectorMeta_Fonts & includes_fonts = pak.get_IncludesFonts();
+
+		for( Metacode::Meta_Pak::TVectorMeta_Fonts::const_iterator
+			it = includes_fonts.begin(),
+			it_end = includes_fonts.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_Pak::Meta_Fonts & fonts = *it;
+
+			fonts.method_Path( this, &ResourcePak::addFontPath_ );
+		}
+
 		const Metacode::Meta_Pak::TVectorMeta_Resources & includes_resources = pak.get_IncludesResources();
 
 		for( Metacode::Meta_Pak::TVectorMeta_Resources::const_iterator
@@ -161,7 +174,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::apply()
 	{
-		for( TResourceDescs::const_iterator
+		for( TVectorFilePath::const_iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
 		it != it_end;
@@ -170,9 +183,9 @@ namespace Menge
             //PROFILER_SERVICE(m_serviceProvider)
             //    ->memoryBegin();
 
-            const ResourceDesc & desc = *it;
+            const ConstString & path = *it;
 
-			if( RESOURCE_SERVICE(m_serviceProvider)->loadResource( desc.pakName, desc.path ) == false )
+			if( RESOURCE_SERVICE(m_serviceProvider)->loadResource( m_name, path ) == false )
             {
                 return false;
             }
@@ -186,16 +199,29 @@ namespace Menge
             //    );
 		}
 
-		for( TTextDescs::iterator
+		for( TVectorFilePath::iterator
+			it = m_pathFonts.begin(),
+			it_end = m_pathFonts.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & path = *it;
+
+			if( this->loadFont_( m_name, path ) == false )
+			{
+				return false;
+			}
+		}
+
+		for( TVectorFilePath::iterator
 			it = m_textsDesc.begin(),
 			it_end = m_textsDesc.end();
 		it != it_end;
 		++it )
 		{
-            const ConstString & pakName = it->pakName;
-            const FilePath & path = it->path;
+            const FilePath & path = *it;
 
-			if( this->loadText_( pakName, path ) == false )
+			if( this->loadText_( m_name, path ) == false )
             {
                 return false;
             }
@@ -212,30 +238,31 @@ namespace Menge
         return result;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourcePak::loadFont_( const ConstString & _pakName, const FilePath & _path )
+	{
+		bool result = TEXT_SERVICE(m_serviceProvider)
+			->loadFonts( m_locale, _pakName, _path );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const FilePath & _path )
 	{
-		ResourceDesc desc;
-		desc.pakName = m_name;
-		desc.pakPath = m_path;
-		desc.pakType = m_type;
-		desc.path = _path;
-
-		m_resourcesDesc.push_back( desc );
+		m_resourcesDesc.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addText_( const FilePath & _path )
 	{
-		ResourceDesc desc;
-		desc.pakName = m_name;
-		desc.pakPath = m_path;
-		desc.pakType = m_type;
-		desc.path = _path;
-
-		m_textsDesc.push_back( desc );
+		m_textsDesc.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addScriptPath_( const FilePath & _path )
 	{
 		m_pathScripts.push_back( _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::addFontPath_( const FilePath & _font )
+	{
+		m_pathFonts.push_back( _font );
 	}
 }

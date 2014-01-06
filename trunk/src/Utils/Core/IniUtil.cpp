@@ -93,6 +93,42 @@ namespace Menge
 
             return true;
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, ColourValue & _value, ServiceProviderInterface * _serviceProvider )
+		{
+			const Char * ini_value = _ini.getSettingValue( _section, _key );
+
+			if( ini_value == nullptr )
+			{
+				return false;
+			}
+
+			float r;
+			float g;
+			float b;
+			float a;
+			if( sscanf( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+			{
+				LOGGER_ERROR(_serviceProvider)("getIniValue section %s key %s value %s invalid parse ColourValue"
+					, _section
+					, _key
+					, ini_value
+					);
+
+				return false;
+			}
+
+			float coef = 1.f / 255.f;
+
+			r *= coef;
+			g *= coef;
+			b *= coef;
+			a *= coef;
+
+			_value.setARGB( a, r, g, b );
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, bool & _value, ServiceProviderInterface * _serviceProvider )
         {
@@ -138,6 +174,28 @@ namespace Menge
 
             return true;
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, float & _value, ServiceProviderInterface * _serviceProvider )
+		{
+			(void)_serviceProvider;
+
+			const Char * ini_value = _ini.getSettingValue( _section, _key );
+
+			if( ini_value == nullptr )
+			{
+				return false;
+			}
+
+			float tmp_value;
+			if( sscanf( ini_value, "%f", &tmp_value ) != 1 )
+			{
+				return false;
+			}
+
+			_value = tmp_value;
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, TVectorString & _values, ServiceProviderInterface * _serviceProvider )
         {
@@ -154,6 +212,25 @@ namespace Menge
 
             return true;
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, TVectorConstString & _values, ServiceProviderInterface * _serviceProvider )
+		{
+			(void)_serviceProvider;
+
+			size_t count = _ini.countSettingValues( _section, _key );
+
+			for( size_t index = 0; index != count; ++index )
+			{
+				const char * value = _ini.getSettingValues( _section, _key, index );
+
+				size_t value_len = strlen( value );
+				ConstString cs = Helper::stringizeStringSize( _serviceProvider, value, value_len );
+
+				_values.push_back( cs );
+			}
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const Ini & _ini, const Char * _section, const Char * _key, TVectorWString & _values, ServiceProviderInterface * _serviceProvider )
         {

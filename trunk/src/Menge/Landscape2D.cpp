@@ -236,6 +236,11 @@ namespace	Menge
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Landscape2D::invalidateVerticesWM()
+	{
+		m_invalidateVerticesWM = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();

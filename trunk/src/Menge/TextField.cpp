@@ -6,9 +6,6 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/TextInterface.h"
 
-#	include "ResourceFont.h"
-#	include "ResourceGlyph.h"
-
 #	include "Consts.h"
 
 #	include "Logger/Logger.h"
@@ -29,18 +26,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_textSize(0.f, 0.f)
-		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
-		, m_fontHeight(0.f)
+		, m_textEntry(nullptr)
+		, m_font(nullptr)
+		, m_invalidateFont(true)
+		, m_fontParams(EFP_NONE)
 		, m_horizontAlign(ETFHA_NONE)
 		, m_verticalAlign(ETFVA_NONE)
 		, m_maxWidth(2048.f)
-		, m_maxCharCount(-1)
+		, m_maxCharCount((size_t)-1)
 		, m_charCount(0)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
 		, m_outline(true)
-		, m_pixelsnap(false)
-		, m_materialText(nullptr)
+		, m_pixelsnap(true)
+		, m_materialFont(nullptr)
 		, m_materialOutline(nullptr)
 		, m_invalidateVertices(true)
         , m_invalidateVerticesWM(true)
@@ -71,81 +70,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_compile()
 	{
-        if( m_resourceFont == nullptr )
-        {
-            const ConstString & resourceFontName = TEXT_SERVICE(m_serviceProvider)
-                ->getDefaultResourceFontName();
-
-            ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceReferenceT<ResourceFont>(resourceFontName);
-
-            if( resourceFont == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' resource is null"
-                    , this->getName().c_str()
-                    );
-
-                return false;
-            }
-
-            m_resourceFont = resourceFont;
-        }
-
-        if( m_resourceFont.compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s' resource '%s' is not compile"
-                , this->getName().c_str()
-                , m_resourceFont->getName().c_str()
-                );
-
-            return false;
-        }
-
-		const ResourceGlyph * resourceGlyph = m_resourceFont->getResourceGlyph();
-
-        if( resourceGlyph == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "TextField::_compile '%s':'%s' can't get resource glyph"
-                , this->getName().c_str()
-                , m_resourceFont->getName().c_str() 
-                );
-
-			return false;
-		}
-
-		m_fontHeight = resourceGlyph->getFontHeight();
-
-		const RenderTextureInterfacePtr & textureFont = m_resourceFont->getTextureFont();
-
-		m_materialText = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureFont );
-
-		const RenderTextureInterfacePtr & textureOutline = m_resourceFont->getTextureOutline();
-
-		if( textureOutline != nullptr )
-		{
-			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureOutline );
-		}
-		else
-		{
-			m_materialOutline = nullptr;
-		}
-
-		this->invalidateTextLines();
-
+		this->invalidateFont();
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
-        m_resourceFont.release();
+		TEXT_SERVICE(m_serviceProvider)
+			->releaseFont( m_font );
 
-		m_materialText = nullptr;
+        m_font = nullptr;
+
+		m_materialFont = nullptr;
 		m_materialOutline = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TListTextLine & TextField::getTextLines() const
+	const TVectorTextLine & TextField::getTextLines() const
 	{
 		if( this->isInvalidateTextLines() == true )
 		{
@@ -168,9 +109,21 @@ namespace Menge
 
 		mt::vec2f offset = mt::zero_v2;
 
-		const TListTextLine & lines = this->getTextLines();
+		const TVectorTextLine & lines = this->getTextLines();
        
-		const mt::vec4f & uv = m_resourceFont->getTextureUV();
+		TextFontInterface * font = this->getFont();
+
+		if( font == nullptr )
+		{
+			return;
+		}
+
+		float fontHeght = font->getFontHeight();
+		RenderTextureInterfacePtr textureFont = font->getTextureFont();
+		
+		const mt::vec4f & uv = textureFont->getUV();
+
+		float lineOffset = this->calcLineOffset();
 
 		switch( m_verticalAlign )
 		{
@@ -180,14 +133,14 @@ namespace Menge
 			}break;
 		case ETFVA_CENTER:
 			{
-				offset.y = -(m_fontHeight + m_lineOffset) * lines.size() * 0.5f;
+				offset.y = -(fontHeght + lineOffset) * lines.size() * 0.5f;
 			}break;
 		}
 
-		for( TListTextLine::const_iterator 
+		for( TVectorTextLine::const_iterator
 			it_line = lines.begin(),
-			it_line_end = lines.end(); 
-		it_line != it_line_end; 
+			it_line_end = lines.end();
+		it_line != it_line_end;
 		++it_line )
 		{
 			const TextLine & line = *it_line;
@@ -199,18 +152,22 @@ namespace Menge
 
 			line.prepareRenderObject( offset, uv, argb, m_pixelsnap, _vertexData );
 
-            offset.y += m_fontHeight;
-			offset.y += m_lineOffset;
+            offset.y += fontHeght;
+			offset.y += lineOffset;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{	
 		Node::_render( _viewport, _camera );
-		
-		if( m_outline && m_resourceFont->getTextureOutline() != nullptr )
+
+		this->renderOutline_( _viewport, _camera );
+
+		const RenderMaterialInterfacePtr & material = this->getMaterialFont();
+
+		if( material == nullptr )
 		{
-			this->renderOutline_( _viewport, _camera );
+			return;
 		}
 
 		TVectorRenderVertex2D & textVertices = this->getTextVertices();
@@ -222,7 +179,7 @@ namespace Menge
 
 		size_t countVertex;
 		
-		if( m_maxCharCount == -1 )
+		if( m_maxCharCount == (size_t)-1 )
 		{
 			countVertex = textVertices.size();
 		}
@@ -231,12 +188,26 @@ namespace Menge
 			countVertex = m_maxCharCount * 4;
 		}
 
+		TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
+
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, m_materialText, &(textVertices[0]), countVertex, nullptr );
+            ->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
+		if( m_outline == false )
+		{
+			return;
+		}
+
+		const RenderMaterialInterfacePtr & material = this->getMaterialOutline();
+
+		if( material == nullptr )
+		{
+			return;
+		}
+
 		TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices();
 
 		if( outlineVertices.empty() == true )
@@ -246,7 +217,7 @@ namespace Menge
 
 		size_t countVertex;
 
-		if( m_maxCharCount == -1 )
+		if( m_maxCharCount == (size_t)-1 )
 		{
 			countVertex = outlineVertices.size();
 		}
@@ -255,8 +226,10 @@ namespace Menge
 			countVertex = m_maxCharCount * 4;
 		}
 
+		TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
+
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, m_materialOutline, &(outlineVertices[0]), countVertex, nullptr );
+            ->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getCharCount() const
@@ -278,30 +251,6 @@ namespace Menge
 		return m_charCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float TextField::getCharOffset() const
-	{
-		return m_charOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setOutlineColor( const ColourValue& _color )
-	{
-		m_outlineColor = _color;
-
-        this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::enableOutline( bool _value )
-	{
-		m_outline = _value;
-
-        this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isOutline() const
-	{
-		return m_outline;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::setMaxLen( float _len )
 	{
 		m_maxWidth = _len;
@@ -314,21 +263,100 @@ namespace Menge
 		return m_maxWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ColourValue& TextField::getOutlineColor() const
-	{
-		return m_outlineColor;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	float TextField::getFontHeight() const
 	{
-		return m_fontHeight;
+		TextFontInterface * font = this->getFont();
+
+		if( font == nullptr )
+		{
+			return 0.f;
+		}
+
+		float fontHeight = font->getFontHeight();
+
+		return fontHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setFontHeight( float _height )
+	void TextField::setFontName( const ConstString & _name )
 	{
-		m_fontHeight = _height;
+		m_fontName = _name;
+		
+		m_fontParams |= EFP_FONT;
 
 		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & TextField::getFontName() const
+	{
+		return m_fontName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setFontColor( const ColourValue & _color )
+	{
+		m_colorFont = _color;
+
+		m_fontParams |= EFP_COLOR_FONT;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue& TextField::getFontColor() const
+	{
+		return m_colorFont;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::enableOutline( bool _value )
+	{
+		m_outline = _value;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isOutline() const
+	{
+		return m_outline;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setOutlineColor( const ColourValue & _color )
+	{
+		m_colorOutline = _color;
+
+		m_fontParams |= EFP_COLOR_OUTLINE;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue& TextField::getOutlineColor() const
+	{
+		return m_colorOutline;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setLineOffset( float _offset )
+	{
+		m_lineOffset = _offset;
+
+		m_fontParams |= EFP_LINE_OFFSET;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::getLineOffset() const
+	{
+		return m_lineOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setCharOffset( float _offset )
+	{
+		m_charOffset = _offset;
+
+		m_fontParams |= EFP_CHAR_OFFSET;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::getCharOffset() const
+	{
+		return m_charOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getTextSize() const
@@ -362,19 +390,28 @@ namespace Menge
         String space_delim = " ";
 
 		TVectorString lines;
-
 		Utils::split( lines, m_text, false, "\n" );
 
+		TextFontInterface * font = this->getFont();
+
+		if( font == nullptr )
+		{
+			return;
+		}
+
+		float fontHeight = font->getFontHeight();
+
+		float charOffset = this->calcLineOffset();
+		
 		for(TVectorString::iterator 
 			it = lines.begin(),
 			it_end = lines.end(); 
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine(m_serviceProvider, m_fontHeight, m_charOffset);
-
-            
-			textLine.initialize( m_resourceFont, *it );
+			TextLine textLine(m_serviceProvider, fontHeight, charOffset);
+			            
+			textLine.initialize( font, *it );
 
 			float textLength = textLine.getLength();
 
@@ -387,17 +424,17 @@ namespace Menge
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
-					TextLine tl(m_serviceProvider, m_fontHeight, m_charOffset);
+					TextLine tl(m_serviceProvider, fontHeight, charOffset);
 
 					String tl_string( newLine + space_delim + words.front() );
 
-					tl.initialize( m_resourceFont, tl_string );
+					tl.initialize( font, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
-						TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);
+						TextLine line(m_serviceProvider, fontHeight, charOffset);
 
-						line.initialize( m_resourceFont, newLine );
+						line.initialize( font, newLine );
 
 						m_lines.push_back( line );
 
@@ -412,8 +449,8 @@ namespace Menge
 					}
 				}
 
-				TextLine line(m_serviceProvider, m_fontHeight, m_charOffset);				
-				line.initialize( m_resourceFont, newLine );
+				TextLine line(m_serviceProvider, fontHeight, charOffset);				
+				line.initialize( font, newLine );
 
 				m_lines.push_back( line );
 			}
@@ -423,7 +460,7 @@ namespace Menge
 			}
 		}
 
-		for(TListTextLine::iterator 
+		for(TVectorTextLine::iterator 
 			it = m_lines.begin(),
 			it_end = m_lines.end(); 
 		it != it_end;
@@ -434,39 +471,312 @@ namespace Menge
 		}
 
 		m_textSize.x = maxlen;
-		m_textSize.y = m_fontHeight * m_lines.size();
+		m_textSize.y = fontHeight * m_lines.size();
 
 		this->invalidateVertices_();
 		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setLineOffset( float _offset )
+	void TextField::updateFont_() const
 	{
-		m_lineOffset = _offset;
+		m_invalidateFont = false;
 
-        this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float TextField::getLineOffset() const
-	{
-		return m_lineOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setResourceFont( ResourceFont * _resourceFont )
-	{
-		if( m_resourceFont == _resourceFont )
+		ConstString fontName = this->calcFontName();
+
+		if( fontName.empty() == true )
+		{
+			fontName = TEXT_SERVICE(m_serviceProvider)
+				->getDefaultResourceFontName();
+		}
+
+		if( m_font != nullptr )
+		{
+			const ConstString & currentFontName = m_font->getName();
+
+			if( fontName == currentFontName )
+			{
+				return;
+			}
+			else
+			{
+				TEXT_SERVICE(m_serviceProvider)
+					->releaseFont( m_font );
+				m_font = nullptr;
+
+				m_materialFont = nullptr;
+				m_materialOutline = nullptr;
+			}
+		}
+
+		if( fontName.empty() == true )
 		{
 			return;
 		}
-		
-		m_resourceFont = _resourceFont;
 
-		this->recompile();
+		m_font = TEXT_SERVICE(m_serviceProvider)
+			->getFont( fontName );
+
+		if( m_font == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::updateFont_ '%s' can't found font '%s'"
+				, this->getName().c_str()
+				, fontName.c_str()
+				);
+
+			return;
+		}
+		
+		const RenderTextureInterfacePtr & textureFont = m_font->getTextureFont();
+
+		m_materialFont = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureFont );
+
+		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
+
+		if( textureOutline != nullptr )
+		{
+			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureOutline );
+		}
+		else
+		{
+			m_materialOutline = nullptr;
+		}
+
+		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceFont * TextField::getResourceFont() const
+	const ConstString & TextField::calcFontName() const
 	{
-		return m_resourceFont;
+		if( m_textEntry != nullptr )
+		{
+			size_t params = m_textEntry->getFontParams();
+
+			if( params & EFP_FONT )
+			{
+				const ConstString & fontName = m_textEntry->getFont();
+
+				return fontName;
+			}
+		}
+
+		return m_fontName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TextFontInterface * TextField::getDefaultFont_() const
+	{
+		const ConstString & fontName = TEXT_SERVICE(m_serviceProvider)
+			->getDefaultResourceFontName();
+
+		if( fontName.empty() == true )
+		{
+			return nullptr;
+		}
+
+		TextFontInterface * font = TEXT_SERVICE(m_serviceProvider)
+			->getFont( fontName );
+
+		return font;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::calcLineOffset() const
+	{
+		if( m_textEntry != nullptr )
+		{
+			size_t params = m_textEntry->getFontParams();
+
+			if( params & EFP_LINE_OFFSET )
+			{
+				float value = m_textEntry->getLineOffset();
+
+				return value;
+			}
+		}
+
+		TextFontInterface * font = this->getFont();
+
+		if( font != nullptr )
+		{
+			size_t params = font->getFontParams();
+
+			if( params & EFP_LINE_OFFSET )
+			{
+				float value = font->getLineOffset();
+
+				return value;
+			}
+		}
+
+		if( m_fontParams & EFP_LINE_OFFSET )
+		{
+			return m_lineOffset;
+		}
+
+		TextFontInterface * fontDefault = this->getDefaultFont_();
+
+		if( fontDefault != nullptr )
+		{
+			size_t params = fontDefault->getFontParams();
+
+			if( params & EFP_LINE_OFFSET )
+			{
+				float value = fontDefault->getLineOffset();
+
+				return value;
+			}
+		}
+
+		return m_lineOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::calcCharOffset() const
+	{
+		if( m_textEntry != nullptr )
+		{
+			size_t params = m_textEntry->getFontParams();
+
+			if( params & EFP_CHAR_OFFSET )
+			{
+				float value = m_textEntry->getCharOffset();
+
+				return value;
+			}
+		}
+
+		TextFontInterface * font = this->getFont();
+
+		if( font != nullptr )
+		{
+			size_t params = font->getFontParams();
+
+			if( params & EFP_CHAR_OFFSET )
+			{
+				float value = font->getCharOffset();
+
+				return value;
+			}
+		}
+
+		if( m_fontParams & EFP_CHAR_OFFSET )
+		{
+			return m_charOffset;
+		}
+
+		TextFontInterface * fontDefault = this->getDefaultFont_();
+
+		if( fontDefault != nullptr )
+		{
+			size_t params = fontDefault->getFontParams();
+
+			if( params & EFP_CHAR_OFFSET )
+			{
+				float value = fontDefault->getLineOffset();
+
+				return value;
+			}
+		}
+
+		return m_charOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue & TextField::calcColorFont() const
+	{
+		if( m_textEntry != nullptr )
+		{
+			size_t params = m_textEntry->getFontParams();
+
+			if( params & EFP_COLOR_FONT )
+			{
+				const ColourValue & value = m_textEntry->getColorFont();
+
+				return value;
+			}
+		}
+
+		TextFontInterface * font = this->getFont();
+
+		if( font != nullptr )
+		{
+			size_t params = font->getFontParams();
+
+			if( params & EFP_COLOR_FONT )
+			{
+				const ColourValue & value = font->getColorFont();
+
+				return value;
+			}
+		}
+
+		if( m_fontParams & EFP_COLOR_FONT )
+		{
+			return m_colorFont;
+		}
+
+		TextFontInterface * fontDefault = this->getDefaultFont_();
+
+		if( fontDefault != nullptr )
+		{
+			size_t params = fontDefault->getFontParams();
+
+			if( params & EFP_COLOR_FONT )
+			{
+				const ColourValue & value = fontDefault->getColorFont();
+
+				return value;
+			}
+		}
+
+		return m_colorFont;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue & TextField::calcColorOutline() const
+	{
+		if( m_textEntry != nullptr )
+		{
+			size_t params = m_textEntry->getFontParams();
+
+			if( params & EFP_COLOR_OUTLINE )
+			{
+				const ColourValue & value = m_textEntry->getColorOutline();
+
+				return value;
+			}
+		}
+
+		TextFontInterface * font = this->getFont();
+
+		if( font != nullptr )
+		{
+			size_t params = font->getFontParams();
+
+			if( params & EFP_COLOR_OUTLINE )
+			{
+				const ColourValue & value = font->getColorOutline();
+
+				return value;
+			}
+		}
+
+		if( m_fontParams & EFP_COLOR_OUTLINE )
+		{
+			return m_colorOutline;
+		}
+
+		TextFontInterface * fontDefault = this->getDefaultFont_();
+
+		if( fontDefault != nullptr )
+		{
+			size_t params = fontDefault->getFontParams();
+
+			if( params & EFP_COLOR_OUTLINE )
+			{
+				const ColourValue & value = fontDefault->getColorOutline();
+
+				return value;
+			}
+		}
+
+		return m_colorOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -532,14 +842,7 @@ namespace Menge
 		this->invalidateVertices_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setCharOffset( float _offset )
-	{
-		m_charOffset = _offset;
-
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int TextField::getMaxCharCount() const
+	size_t TextField::getMaxCharCount() const
 	{
 		return m_maxCharCount;
 	}
@@ -551,19 +854,29 @@ namespace Menge
         this->invalidateTextLines();	
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::clearTextParams_()
+	{
+		m_key.clear();
+		m_text.clear();
+		m_format.clear();		
+		m_formatArg.clear();
+
+		m_textEntry = nullptr;
+
+		this->invalidateFont();
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const String & _text )
 	{
 		if( m_text == _text )
 		{
 			return;
 		}
+		
+		this->clearTextParams_();
 
 		m_text = _text;
-
-		m_format.clear();
-		m_key.clear();
-
-		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & TextField::getText() const
@@ -571,45 +884,33 @@ namespace Menge
 		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextByKey( const ConstString& _key )
+	void TextField::setTextID( const ConstString& _key )
 	{
 		if( _key.empty() == true )
 		{
 			return;
 		}
 
+		this->clearTextParams_();
+
 		m_key = _key;
 
-		m_format.clear();
-		m_text.clear();
+		m_textEntry = TEXT_SERVICE(m_serviceProvider)
+			->getTextEntry( m_key );
 
-		const TextEntry & textEntry = 
-			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
+		if( m_textEntry == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::setTextID '%s' can't find text ID '%s'"
+				, this->getName().c_str()
+				, m_key.c_str()
+				);
+
+			return;
+		}
+
+		const ConstString & keyText = m_textEntry->getText();
 		
-		if( textEntry.font.empty() == false )
-        {
-            ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceReferenceT<ResourceFont>( textEntry.font );
-
-            if( m_resourceFont != resourceFont )
-            {
-                this->setResourceFont( resourceFont );
-            }
-		}
-
-		if( fabsf(textEntry.charOffset) > 0.0001f && fabsf(textEntry.charOffset - m_charOffset) > 0.0001f )
-		{
-			this->setCharOffset( textEntry.charOffset );
-		}
-
-		if( fabsf(textEntry.lineOffset) > 0.0001f && fabsf(textEntry.lineOffset - m_lineOffset) > 0.0001f )
-		{
-			this->setLineOffset( textEntry.lineOffset );
-		}
-
-		m_text.assign( textEntry.text.c_str(), textEntry.text.size() );
-
-		this->invalidateTextLines();
+		m_text = keyText.c_str();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, const String & _arg )
@@ -619,41 +920,32 @@ namespace Menge
 			return;
 		}
 
+		this->clearTextParams_();
+
 		m_key = _key;
 
 		m_format = _format;
 		m_formatArg = _arg;
 
-		const TextEntry & textEntry = 
-			TEXT_SERVICE(m_serviceProvider)->getTextEntry( _key );
+		m_textEntry = TEXT_SERVICE(m_serviceProvider)
+			->getTextEntry( _key );
 
-        if( textEntry.font.empty() == false )
-        {
-            ResourceFont * resourceFont = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceReferenceT<ResourceFont>( textEntry.font );
-
-            if( m_resourceFont != resourceFont )
-            {
-                this->setResourceFont( resourceFont );
-            }
-        }
-
-		if( fabsf( textEntry.charOffset ) > 0.0001f && fabsf( textEntry.charOffset - m_charOffset ) > 0.0001f )
+		if( m_textEntry == nullptr )
 		{
-			this->setCharOffset( textEntry.charOffset );
-		}
-        
-		if( fabsf( textEntry.lineOffset ) > 0.0001f && fabsf( textEntry.lineOffset - m_lineOffset ) > 0.0001f )
-		{
-			this->setLineOffset( textEntry.lineOffset );
+			LOGGER_ERROR(m_serviceProvider)("TextField::setTextID '%s' can't find text ID '%s'"
+				, this->getName().c_str()
+				, m_key.c_str()
+				);
+
+			return;
 		}
 
-		m_text = (StringFormat(m_format) % textEntry.text.c_str() % m_formatArg).str();
+		const ConstString & keyText = m_textEntry->getText();
 
-		this->invalidateTextLines();
+		m_text = (StringFormat(m_format) % keyText.c_str() % m_formatArg).str();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextField::getTextKey() const
+	const ConstString & TextField::getTextID() const
 	{
 		return m_key;
 	}
@@ -805,21 +1097,25 @@ namespace Menge
 	{
 		m_invalidateVertices = false;
 
-		ColourValue color;
-		this->calcTotalColor( color );
-		//unsigned int argb = color.getAsARGB();
+		ColourValue colorFont;
+		this->calcTotalColor( colorFont );
+		
+		const ColourValue & paramsColorFont = this->calcColorFont(); 
+		colorFont *= paramsColorFont;
+		
+		this->updateVertexData_( colorFont, m_vertexDataText );
 
-		//m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
-		const ColourValue & font_color = m_resourceFont->getColor();
-		color *= font_color;
+		TextFontInterface * font = this->getFont();
 
-		m_outlineColor.setA( m_outlineColor.getA() * color.getA() );
-
-		if( m_outline && m_resourceFont->getTextureOutline() != NULL )
+		if( m_outline && font->getTextureOutline() != nullptr )
 		{
-			this->updateVertexData_( m_outlineColor, m_vertexDataOutline );
-		}
+			ColourValue colorOutline;
+			this->calcTotalColor( colorOutline );
+			
+			const ColourValue & paramsColorOutline = this->calcColorOutline();
+			colorOutline *= paramsColorOutline;
 
-		this->updateVertexData_( color, m_vertexDataText );
+			this->updateVertexData_( colorOutline, m_vertexDataOutline );
+		}		
 	}
 }

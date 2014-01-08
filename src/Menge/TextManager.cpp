@@ -146,9 +146,7 @@ namespace Menge
 					}
 					else if( strcmp( key, "Font" ) == 0 )
 					{
-						ConstString font = Helper::stringizeStringExternal( m_serviceProvider, value, -1 );
-
-						font = font;
+						font = Helper::stringizeStringExternal( m_serviceProvider, value, -1 );
 
 						params |= EFP_FONT;
 					}

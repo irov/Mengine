@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include <Config/Typedef.h>
+
 namespace Menge
 {
 	class Resource

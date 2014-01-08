@@ -111,7 +111,7 @@ namespace Menge
 
 					if( strcmp( key, "Key") == 0 )
 					{
-						text_key = Helper::stringizeStringExternal( m_serviceProvider, value, -1 );
+						text_key = Helper::stringizeStringExternal( m_serviceProvider, value, (size_t)-1 );
 					}
 					else if( strcmp( key, "Value" ) == 0 )
 					{
@@ -146,7 +146,7 @@ namespace Menge
 					}
 					else if( strcmp( key, "Font" ) == 0 )
 					{
-						font = Helper::stringizeStringExternal( m_serviceProvider, value, -1 );
+						font = Helper::stringizeStringExternal( m_serviceProvider, value, (size_t)-1 );
 
 						params |= EFP_FONT;
 					}

@@ -168,8 +168,6 @@ namespace Menge
 		mutable RenderMaterialInterfacePtr m_materialOutline;
 
 	protected:
-		TextFontInterface * getDefaultFont_() const;
-
 		const ConstString & calcFontName() const;
 		float calcLineOffset() const;
 		float calcCharOffset() const;

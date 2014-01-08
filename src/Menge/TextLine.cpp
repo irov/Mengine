@@ -9,10 +9,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TextLine::TextLine( ServiceProviderInterface * _serviceProvider, float _height, float _charOffset )
+	TextLine::TextLine( ServiceProviderInterface * _serviceProvider, float _charOffset )
 		: m_serviceProvider(_serviceProvider)
         , m_charOffset(_charOffset)
-		, m_height(_height)
 		, m_length(0.f)
 		, m_invalidateTextLine(true)
 		, m_offset(0.f)
@@ -34,10 +33,11 @@ namespace Menge
 
 		const RenderTextureInterfacePtr & image = _font->getTextureFont();
 
-		float inv_image_width = 1.f / (float)image->getWidth();
-		float inv_image_height = 1.f / (float)image->getHeight();
+		float image_width = (float)image->getWidth();
+		float image_height = (float)image->getHeight();
 
-		float initSize = 1.f / m_height;
+		float inv_image_width = 1.f / image_width;
+		float inv_image_height = 1.f / image_height;
 
 		for( const char
             *text_it = text_str,
@@ -101,23 +101,17 @@ namespace Menge
 			charData.uv.z *= inv_image_width;
 			charData.uv.w *= inv_image_height;
 
-			charData.ratio = glyph.ratio;
+			charData.advance = glyph.advance;
 			charData.offset = glyph.offset;
 			
 			charData.size = glyph.size;
 			
-			charData.size *= m_height;
-			
-			charData.size *= initSize;
-
 			totalKerning += glyph.kerning;
 			
 			charData.offset.x += totalKerning;
 			m_charsData.push_back( charData );
 
-			float height = m_height;
-			float width = floorf( charData.ratio * height );
-			m_length += width + m_charOffset;
+			m_length += charData.advance + m_charOffset;
 		}
 
 		m_length -= m_charOffset;
@@ -156,9 +150,8 @@ namespace Menge
 		{
             const CharData & data = *it_char;
 
-			for( int i = 0; i != 4; ++i )
+			for( size_t i = 0; i != 4; ++i )
 			{
-				//_renderObject->vertices.push_back( TVertex() );
 				RenderVertex2D & renderVertex = _renderObject[renderObjectNum + i];
 				const mt::vec3f & charVertex = data.renderVertex[i];
 				
@@ -177,9 +170,6 @@ namespace Menge
 				renderVertex.pos.z = charVertex.z;
 
 				renderVertex.color = _argb;
-
-                renderVertex.uv.x = 0.f;
-                renderVertex.uv.y = 0.f;
 
                 renderVertex.uv2.x = 0.f;
                 renderVertex.uv2.y = 0.f;
@@ -220,8 +210,6 @@ namespace Menge
 		{
 			CharData & cd = *it_char;
 
-			float width = cd.ratio * m_height;
-
 			mt::vec2f size = cd.size;
 
 			mt::vec2f offset = _offset + cd.offset;
@@ -232,7 +220,7 @@ namespace Menge
 			cd.renderVertex[2] = v3_offset + mt::vec3f(size.x, size.y, 0.f);
 			cd.renderVertex[3] = v3_offset + mt::vec3f(0.0f, size.y, 0.f);
 
-			_offset.x += width + m_charOffset;
+			_offset.x += cd.advance + m_charOffset;
 		}
 
 		m_offset = _offset.x;

@@ -6,7 +6,7 @@ namespace Menge
 	TextEntry::TextEntry()
 		: m_lineOffset(0.f)
 		, m_charOffset(0.f)
-		, m_params(0)
+		, m_params(EFP_NONE)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

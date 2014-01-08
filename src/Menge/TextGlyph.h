@@ -35,7 +35,7 @@ namespace Menge
 		const TextGlyphChar * getGlyphChar( GlyphCode _code ) const;
 
 	public:
-		TextGlyphChar * addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size );
+		TextGlyphChar * addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

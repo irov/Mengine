@@ -20,7 +20,7 @@ namespace Menge
 	public:
 		inline const mt::vec4f & getUV() const;
 		inline const mt::vec2f & getOffset() const;
-		inline float getRatio() const;
+		inline float getAdvance() const;
 		inline const mt::vec2f & getSize() const;
 
 	public:
@@ -30,7 +30,7 @@ namespace Menge
 	protected:
 		mt::vec4f m_uv;
 		mt::vec2f m_offset;
-		float m_ratio;
+		float m_advance;
 		mt::vec2f m_size;
 
 		typedef stdex::binary_vector<GlyphCode, float, GlyphCharLess> TMapKerning;
@@ -47,9 +47,9 @@ namespace Menge
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float TextGlyphChar::getRatio() const
+	inline float TextGlyphChar::getAdvance() const
 	{
-		return m_ratio;
+		return m_advance;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::vec2f & TextGlyphChar::getSize() const

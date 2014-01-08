@@ -74,6 +74,7 @@ namespace Menge
 				, m_textGlyph(_textGlyph)
 				, m_pakName(_pakName)
 				, m_path(_path)
+				, m_valid(false)
 			{
 			}
 
@@ -89,8 +90,24 @@ namespace Menge
 			}
 
 			void callback_node_attributes( const char * _node, size_t _count, const char ** _keys, const char ** _values )
-			{
-				if( strcmp( _node, "description" ) == 0 )
+			{				
+				if( strcmp( _node, "font" ) == 0 )
+				{
+					for( size_t i = 0; i != _count; ++i )
+					{
+						const char * key = _keys[i];
+						const char * value = _values[i];
+
+						if( strcmp( key, "type" ) == 0 )
+						{
+							if( strcmp( value, "GHL" ) == 0 )
+							{
+								m_valid = true;
+							}
+						}
+					}
+				}
+				else if( strcmp( _node, "description" ) == 0 )
 				{
 					for( size_t i = 0; i != _count; ++i )
 					{
@@ -218,9 +235,6 @@ namespace Menge
 					mt::vec4f uv(rect.x, rect.y, rect.x + rect.z, rect.y + rect.w);
 					mt::vec2f size(rect.z, rect.w);
 
-					float ascender = m_textGlyph->getAscender();
-					float ratio = advance / ascender;
-
 					uint32_t cp = 0;
 					size_t code_length = strlen(id);
 					utf8::internal::utf_error err_code = utf8::internal::validate_next( id, id + code_length, cp );
@@ -237,9 +251,10 @@ namespace Menge
 					GlyphCode glyphCode;
 					glyphCode.setCode( cp );
 
+					float ascender = m_textGlyph->getAscender();
 					offset.y = ascender - offset.y;
 
-					m_glyphChar = m_textGlyph->addGlyphChar( glyphCode, uv, offset, ratio, size );
+					m_glyphChar = m_textGlyph->addGlyphChar( glyphCode, uv, offset, advance, size );
 				}
 				else if( strcmp( _node, "kerning" ) == 0 )
 				{	
@@ -292,6 +307,12 @@ namespace Menge
 				(void)_node;
 			}
 
+		public:
+			bool isValid() const
+			{
+				return m_valid;
+			}
+
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			TextGlyph * m_textGlyph;
@@ -300,6 +321,8 @@ namespace Menge
 
 			const ConstString & m_pakName;
 			const FilePath & m_path;
+
+			bool m_valid;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -342,6 +365,16 @@ namespace Menge
 			return false;
 		}
 
+		if( tmsc.isValid() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize invalid glyph format %s:%s"
+				, _pakName.c_str()
+				, _path.c_str()
+				);
+
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -353,7 +386,7 @@ namespace Menge
 		return ch;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextGlyphChar * TextGlyph::addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size )
+	TextGlyphChar * TextGlyph::addGlyphChar( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size )
 	{
 		if( m_chars.exist( _code ) == true )
 		{
@@ -366,7 +399,7 @@ namespace Menge
 
 		TextGlyphChar * glyphChar = m_factoryTextGlyphChar.createObjectT();
 
-		glyphChar->initialize( _uv, _offset, _ratio, _size );
+		glyphChar->initialize( _uv, _offset, _advance, _size );
 
 		m_chars.insert( _code, glyphChar );
 

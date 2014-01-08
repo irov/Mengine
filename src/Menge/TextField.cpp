@@ -560,23 +560,15 @@ namespace Menge
 			}
 		}
 
-		return m_fontName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TextFontInterface * TextField::getDefaultFont_() const
-	{
-		const ConstString & fontName = TEXT_SERVICE(m_serviceProvider)
-			->getDefaultResourceFontName();
-
-		if( fontName.empty() == true )
+		if( m_fontName.empty() == true )
 		{
-			return nullptr;
+			const ConstString & fontName = TEXT_SERVICE(m_serviceProvider)
+				->getDefaultResourceFontName();
+
+			return fontName;
 		}
 
-		TextFontInterface * font = TEXT_SERVICE(m_serviceProvider)
-			->getFont( fontName );
-
-		return font;
+		return m_fontName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::calcLineOffset() const
@@ -593,6 +585,11 @@ namespace Menge
 			}
 		}
 
+		if( m_fontParams & EFP_LINE_OFFSET )
+		{
+			return m_lineOffset;
+		}
+
 		TextFontInterface * font = this->getFont();
 
 		if( font != nullptr )
@@ -602,25 +599,6 @@ namespace Menge
 			if( params & EFP_LINE_OFFSET )
 			{
 				float value = font->getLineOffset();
-
-				return value;
-			}
-		}
-
-		if( m_fontParams & EFP_LINE_OFFSET )
-		{
-			return m_lineOffset;
-		}
-
-		TextFontInterface * fontDefault = this->getDefaultFont_();
-
-		if( fontDefault != nullptr )
-		{
-			size_t params = fontDefault->getFontParams();
-
-			if( params & EFP_LINE_OFFSET )
-			{
-				float value = fontDefault->getLineOffset();
 
 				return value;
 			}
@@ -643,6 +621,11 @@ namespace Menge
 			}
 		}
 
+		if( m_fontParams & EFP_CHAR_OFFSET )
+		{
+			return m_charOffset;
+		}
+
 		TextFontInterface * font = this->getFont();
 
 		if( font != nullptr )
@@ -652,25 +635,6 @@ namespace Menge
 			if( params & EFP_CHAR_OFFSET )
 			{
 				float value = font->getCharOffset();
-
-				return value;
-			}
-		}
-
-		if( m_fontParams & EFP_CHAR_OFFSET )
-		{
-			return m_charOffset;
-		}
-
-		TextFontInterface * fontDefault = this->getDefaultFont_();
-
-		if( fontDefault != nullptr )
-		{
-			size_t params = fontDefault->getFontParams();
-
-			if( params & EFP_CHAR_OFFSET )
-			{
-				float value = fontDefault->getCharOffset();
 
 				return value;
 			}
@@ -693,6 +657,11 @@ namespace Menge
 			}
 		}
 
+		if( m_fontParams & EFP_COLOR_FONT )
+		{
+			return m_colorFont;
+		}
+
 		TextFontInterface * font = this->getFont();
 
 		if( font != nullptr )
@@ -702,25 +671,6 @@ namespace Menge
 			if( params & EFP_COLOR_FONT )
 			{
 				const ColourValue & value = font->getColorFont();
-
-				return value;
-			}
-		}
-
-		if( m_fontParams & EFP_COLOR_FONT )
-		{
-			return m_colorFont;
-		}
-
-		TextFontInterface * fontDefault = this->getDefaultFont_();
-
-		if( fontDefault != nullptr )
-		{
-			size_t params = fontDefault->getFontParams();
-
-			if( params & EFP_COLOR_FONT )
-			{
-				const ColourValue & value = fontDefault->getColorFont();
 
 				return value;
 			}
@@ -743,6 +693,11 @@ namespace Menge
 			}
 		}
 
+		if( m_fontParams & EFP_COLOR_OUTLINE )
+		{
+			return m_colorOutline;
+		}
+
 		TextFontInterface * font = this->getFont();
 
 		if( font != nullptr )
@@ -752,25 +707,6 @@ namespace Menge
 			if( params & EFP_COLOR_OUTLINE )
 			{
 				const ColourValue & value = font->getColorOutline();
-
-				return value;
-			}
-		}
-
-		if( m_fontParams & EFP_COLOR_OUTLINE )
-		{
-			return m_colorOutline;
-		}
-
-		TextFontInterface * fontDefault = this->getDefaultFont_();
-
-		if( fontDefault != nullptr )
-		{
-			size_t params = fontDefault->getFontParams();
-
-			if( params & EFP_COLOR_OUTLINE )
-			{
-				const ColourValue & value = fontDefault->getColorOutline();
 
 				return value;
 			}

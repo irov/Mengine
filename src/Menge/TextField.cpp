@@ -37,7 +37,7 @@ namespace Menge
 		, m_charCount(0)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
-		, m_outline(true)
+		, m_outline(false)
 		, m_pixelsnap(true)
 		, m_materialFont(nullptr)
 		, m_materialOutline(nullptr)

@@ -322,14 +322,14 @@ namespace Menge
 
 			font->setTexturePath( _pakName, pathImage, pathOutline );
 
-			ColourValue colour;
-			if( IniUtil::getIniValue( ini, fontName.c_str(), "Color", colour, m_serviceProvider ) == true )
+			ColourValue colourFont;
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "ColorFont", colourFont, m_serviceProvider ) == true )
 			{
-				font->setColourFont( colour );
+				font->setColourFont( colourFont );
 			}
 
 			ColourValue colourOutline;
-			if( IniUtil::getIniValue( ini, fontName.c_str(), "Color", colourOutline, m_serviceProvider ) == true )
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "ColorOutline", colourOutline, m_serviceProvider ) == true )
 			{
 				font->setColourOutline( colourOutline );
 			}

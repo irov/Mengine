@@ -28,7 +28,7 @@ namespace Menge
 	{
 		mt::vec4f uv;
 		mt::vec2f offset;
-		float ratio;
+		float advance;
 		mt::vec2f size;
 
 		float kerning;

@@ -107,7 +107,7 @@ namespace Menge
 		const mt::vec2f& getTextSize() const;
 
     public:
-		int getCharCount() const;
+		size_t getCharCount() const;
 
 	protected:
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
@@ -204,7 +204,7 @@ namespace Menge
 		
 		size_t m_maxCharCount;
 
-		mutable int m_charCount;
+		mutable size_t m_charCount;
 		mutable mt::vec2f m_textSize;
 
 		bool m_outline;

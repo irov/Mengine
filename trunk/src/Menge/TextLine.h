@@ -23,7 +23,7 @@ namespace Menge
 		mt::vec4f uv;
 		mt::vec2f offset;
 		mt::vec2f size;
-		float ratio;
+		float advance;
 	};
 
 	typedef std::vector<CharData> TVectorCharData;
@@ -31,7 +31,7 @@ namespace Menge
 	class TextLine
 	{
 	public:
-		TextLine( ServiceProviderInterface * _serviceProvider, float _height, float _charOffset );
+		TextLine( ServiceProviderInterface * _serviceProvider, float _charOffset );
 
 	public:
 		void initialize( const TextFontInterface * _font, const String& _text );
@@ -54,7 +54,6 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		float m_height;	
 		float m_length;
 
 		mutable float m_charOffset;

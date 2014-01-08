@@ -31,7 +31,7 @@ namespace Menge
 	{
 		m_glyph = _glyph;
 
-		m_height = m_glyph->getAscender();
+		m_height = m_glyph->getHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextFont::setTexturePath( const ConstString & _category, const FilePath & _pathFontImage, const FilePath & _pathOutlineImage )
@@ -80,7 +80,7 @@ namespace Menge
 
 		_glyph->uv = ch->getUV();
 		_glyph->offset = ch->getOffset();
-		_glyph->ratio = ch->getRatio();
+		_glyph->advance = ch->getAdvance();
 		_glyph->size = ch->getSize();		
 		_glyph->kerning = ch->getKerning( _next );
 

@@ -107,8 +107,6 @@ namespace Menge
 	{
 		_vertexData.clear();
 
-		mt::vec2f offset = mt::zero_v2;
-
 		const TVectorTextLine & lines = this->getTextLines();
        
 		TextFontInterface * font = this->getFont();
@@ -119,12 +117,13 @@ namespace Menge
 		}
 
 		float fontHeght = font->getFontHeight();
-		RenderTextureInterfacePtr textureFont = font->getTextureFont();
+		const RenderTextureInterfacePtr & textureFont = font->getTextureFont();
 		
 		const mt::vec4f & uv = textureFont->getUV();
 
 		float lineOffset = this->calcLineOffset();
 
+		mt::vec2f offset(0.f, 0.f);
 		switch( m_verticalAlign )
 		{
 		case ETFVA_NONE:
@@ -232,7 +231,7 @@ namespace Menge
             ->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int TextField::getCharCount() const
+	size_t TextField::getCharCount() const
 	{
 		if (this->isCompile() == false)
 		{
@@ -385,8 +384,6 @@ namespace Menge
 		m_lines.clear();
 		m_charCount = 0;
 
-		float maxlen = 0.f;
-        
         String space_delim = " ";
 
 		TVectorString lines;
@@ -399,8 +396,6 @@ namespace Menge
 			return;
 		}
 
-		float fontHeight = font->getFontHeight();
-
 		float charOffset = this->calcCharOffset();
 		
 		for(TVectorString::iterator 
@@ -409,7 +404,7 @@ namespace Menge
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine(m_serviceProvider, fontHeight, charOffset);
+			TextLine textLine(m_serviceProvider, charOffset);
 			            
 			textLine.initialize( font, *it );
 
@@ -424,7 +419,7 @@ namespace Menge
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
-					TextLine tl(m_serviceProvider, fontHeight, charOffset);
+					TextLine tl(m_serviceProvider,  charOffset);
 
 					String tl_string( newLine + space_delim + words.front() );
 
@@ -432,7 +427,7 @@ namespace Menge
 
 					if( tl.getLength() > m_maxWidth )
 					{
-						TextLine line(m_serviceProvider, fontHeight, charOffset);
+						TextLine line(m_serviceProvider, charOffset);
 
 						line.initialize( font, newLine );
 
@@ -449,7 +444,7 @@ namespace Menge
 					}
 				}
 
-				TextLine line(m_serviceProvider, fontHeight, charOffset);				
+				TextLine line(m_serviceProvider, charOffset);				
 				line.initialize( font, newLine );
 
 				m_lines.push_back( line );
@@ -459,6 +454,8 @@ namespace Menge
 				m_lines.push_back( textLine );
 			}
 		}
+
+		float maxlen = 0.f;
 
 		for(TVectorTextLine::iterator 
 			it = m_lines.begin(),
@@ -471,7 +468,10 @@ namespace Menge
 		}
 
 		m_textSize.x = maxlen;
-		m_textSize.y = fontHeight * m_lines.size();
+
+		float fontHeight = font->getFontHeight();
+		float lineOffset = this->calcLineOffset();
+		m_textSize.y = ( fontHeight + lineOffset ) * m_lines.size();
 
 		this->invalidateVertices_();
 		this->invalidateBoundingBox();
@@ -1097,24 +1097,25 @@ namespace Menge
 	{
 		m_invalidateVertices = false;
 
-		ColourValue colorFont;
-		this->calcTotalColor( colorFont );
+		ColourValue colorNode;
+		this->calcTotalColor( colorNode );
 		
+		ColourValue colorFont;
+
 		const ColourValue & paramsColorFont = this->calcColorFont(); 
-		colorFont *= paramsColorFont;
+		colorFont = colorNode * paramsColorFont;
 		
 		this->updateVertexData_( colorFont, m_vertexDataText );
 
 		TextFontInterface * font = this->getFont();
 
 		if( m_outline && font->getTextureOutline() != nullptr )
-		{
+		{			
 			ColourValue colorOutline;
-			this->calcTotalColor( colorOutline );
-			
-			const ColourValue & paramsColorOutline = this->calcColorOutline();
-			colorOutline *= paramsColorOutline;
 
+			const ColourValue & paramsColorOutline = this->calcColorOutline();
+			colorOutline = colorNode * paramsColorOutline;
+			
 			this->updateVertexData_( colorOutline, m_vertexDataOutline );
 		}		
 	}

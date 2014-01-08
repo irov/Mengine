@@ -401,7 +401,7 @@ namespace Menge
 
 		float fontHeight = font->getFontHeight();
 
-		float charOffset = this->calcLineOffset();
+		float charOffset = this->calcCharOffset();
 		
 		for(TVectorString::iterator 
 			it = lines.begin(),
@@ -670,7 +670,7 @@ namespace Menge
 
 			if( params & EFP_CHAR_OFFSET )
 			{
-				float value = fontDefault->getLineOffset();
+				float value = fontDefault->getCharOffset();
 
 				return value;
 			}

@@ -102,7 +102,7 @@ namespace Menge
 				ColourValue colorFont;
 				ColourValue colorOutline;
 
-				size_t params;
+				size_t params = 0;
 				
 				for( size_t i = 0; i != _count; ++i )
 				{

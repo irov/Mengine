@@ -321,7 +321,7 @@ namespace Menge
 			FilePath glyphPath;
 			if( IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s dont setup Glyph"
+				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s don't setup Glyph"
 					, _pakName.c_str()
 					, _path.c_str()
 					, fontName.c_str()
@@ -331,6 +331,18 @@ namespace Menge
 			}
 
 			const TextGlyph * glyph = this->loadGlyph_( _locale, _pakName, glyphPath );
+
+			if( glyph == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s don't load Glyph %s"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					, glyphPath.c_str()
+					);
+
+				return false;
+			}
 
 			font->setGlyph( glyph );
 
@@ -392,7 +404,12 @@ namespace Menge
 
 		TextGlyph * glyph = m_factoryTextGlyph.createObjectT();
 
-		glyph->initialize( m_serviceProvider, _locale, _pakName, _path );
+		if( glyph->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
+		{
+			glyph->destroy();
+
+			return nullptr;
+		}
 
 		return glyph;
 	}

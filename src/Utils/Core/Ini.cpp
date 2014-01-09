@@ -159,6 +159,23 @@ namespace Menge
 
         return false;
     }    
+	//////////////////////////////////////////////////////////////////////////
+	bool Ini::hasSection( const char * _section ) const
+	{
+		for( size_t index = 0; index != m_settingsCount; ++index )
+		{
+			const Setting & setting = m_settings[index];
+
+			if( strcmp( setting.section, _section ) != 0 )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     const char * Ini::getSettingValue( const char * _section, const char * _key ) const
     {

@@ -14,6 +14,9 @@ namespace Menge
 
     public:
         bool load( const InputStreamInterfacePtr & _input );
+		
+	public:
+		bool hasSection( const char * _section ) const;
 
     public:
         const char * getSettingValue( const char * _section, const char * _key ) const;

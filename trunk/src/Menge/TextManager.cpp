@@ -302,20 +302,49 @@ namespace Menge
 		{
 			const ConstString & fontName = *it;
 
+			if( ini.hasSection( fontName.c_str() ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s section for FONT %s"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					);
+
+				return false;
+			}
+
 			TextFont * font = m_factoryTextFont.createObjectT();
 
 			font->setServiceProvider( m_serviceProvider );
 			font->setName( fontName );
 
 			FilePath glyphPath;
-			IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider );
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s dont setup Glyph"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					);
+
+				return false;
+			}
 
 			const TextGlyph * glyph = this->loadGlyph_( _locale, _pakName, glyphPath );
 
 			font->setGlyph( glyph );
 
 			FilePath pathImage;
-			IniUtil::getIniValue( ini, fontName.c_str(), "Image", pathImage, m_serviceProvider );
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "Image", pathImage, m_serviceProvider ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s dont setup Image"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					);
+
+				return false;
+			}
 
 			FilePath pathOutline;
 			IniUtil::getIniValue( ini, fontName.c_str(), "Outline", pathOutline, m_serviceProvider );

@@ -11,7 +11,6 @@ namespace Menge
 {
 	class TextEntry
 		: public TextEntryInterface
-		, public Factorable
 	{
 	public:
 		TextEntry();
@@ -44,4 +43,6 @@ namespace Menge
 
 		size_t m_params;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<TextEntry> TextEntryPtr;
 }

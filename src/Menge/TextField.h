@@ -151,12 +151,12 @@ namespace Menge
 		void updateTextLines_() const;
 
 	protected:
-		inline TextFontInterface * getFont() const;
+		inline const TextFontInterfacePtr & getFont() const;
 		inline void invalidateFont();
 		void updateFont_() const;
 
 	protected:
-		mutable TextFontInterface * m_font;
+		mutable TextFontInterfacePtr m_font;
 		mutable bool m_invalidateFont;
 
 	protected:
@@ -178,7 +178,7 @@ namespace Menge
 	protected:
         ConstString m_key;
 
-		const TextEntryInterface * m_textEntry;
+		TextEntryInterfacePtr m_textEntry;
 
 		String m_text;
 
@@ -248,7 +248,7 @@ namespace Menge
 		return m_invalidateTextLines;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TextFontInterface * TextField::getFont() const
+	inline const TextFontInterfacePtr & TextField::getFont() const
 	{
 		if( m_invalidateFont == true )
 		{

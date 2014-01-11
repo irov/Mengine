@@ -27,7 +27,7 @@ namespace Menge
 		m_name = _name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextFont::setGlyph( const TextGlyph * _glyph )
+	void TextFont::setGlyph( const TextGlyphPtr & _glyph )
 	{
 		m_glyph = _glyph;
 

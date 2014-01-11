@@ -315,22 +315,6 @@ Manager\\\\Resource
 )
 
 ADD_FILTER(
-Manager\\\\Text
-	TextManager.cpp
-	TextManager.h
-    TextEntry.cpp
-    TextEntry.h
-    TextFont.cpp
-    TextFont.h
-    TextGlyph.cpp
-    TextGlyph.h
-    TextGlyphChar.cpp
-    TextGlyphChar.h
-    TextLocalePak.cpp
-    TextLocalePak.h
-)
-
-ADD_FILTER(
 Manager\\\\Schedule
 	ScheduleManager.cpp
 	ScheduleManager.h

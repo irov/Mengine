@@ -35,41 +35,40 @@ namespace Menge
 		bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		bool existText( const ConstString & _key, const TextEntryInterface ** _entry ) const override;
-		const TextEntryInterface * getTextEntry( const ConstString& _key ) const override;
+		bool existText( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
+		TextEntryInterfacePtr getTextEntry( const ConstString& _key ) const override;
 		
 	public:
 		bool existFont( const ConstString & _name ) const override;
 
-		TextFontInterface * getFont( const ConstString & _name ) override;
-		void releaseFont( TextFontInterface * _font ) override;
+		TextFontInterfacePtr getFont( const ConstString & _name ) override;
+		void releaseFont( const TextFontInterfacePtr & _font ) override;
 		
 	public:
-		void setDefaultResourceFontName( const ConstString & _fontName ) override;
-		const ConstString & getDefaultResourceFontName() const override;
+		const ConstString & getDefaultFontName() const override;
 
 	public:
 		void addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params );
 
 	protected:
-		const TextGlyph * loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path );
+		TextGlyphPtr loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
 		
-		typedef stdex::binary_vector<ConstString, TextEntry *> TMapTextEntry;
+		typedef stdex::binary_vector<ConstString, TextEntryPtr> TMapTextEntry;
 		TMapTextEntry m_texts;
 
-		typedef stdex::binary_vector<ConstString, TextFont *> TMapTextFont;
+		typedef stdex::binary_vector<ConstString, TextFontPtr> TMapTextFont;
 		TMapTextFont m_fonts;
 
-		typedef stdex::binary_vector<ConstString, TextGlyph *> TMapTextGlyph;
+		typedef stdex::binary_vector<ConstString, TextGlyphPtr> TMapTextGlyph;
 		TMapTextGlyph m_glyphs;
 
-		typedef std::vector<TextLocalePak *> TVectorPaks;
+		typedef std::vector<TextLocalePakPtr> TVectorPaks;
 		TVectorPaks m_paks;
 		
-		ConstString m_defaultResourceFontName;
+		ConstString m_defaultFontName;
 
 		typedef FactoryPool<TextEntry, 512> TFactoryTextEntry;
 		TFactoryTextEntry m_factoryTextEntry;
@@ -79,5 +78,8 @@ namespace Menge
 
 		typedef FactoryPool<TextGlyph, 16> TFactoryTextGlyph;
 		TFactoryTextGlyph m_factoryTextGlyph;
+
+		typedef FactoryPool<TextLocalePak, 4> TFactoryTextLocalePak;
+		TFactoryTextLocalePak m_factoryTextLocalePak;
 	};
 }

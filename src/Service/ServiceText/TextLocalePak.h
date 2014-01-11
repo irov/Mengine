@@ -3,9 +3,12 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
+#	include "Factory/FactorablePtr.h"
+
 namespace Menge
 {
 	class TextLocalePak
+			: public FactorablePtr
 	{
 	public:
 		TextLocalePak();
@@ -23,4 +26,6 @@ namespace Menge
 		ConstString m_locale;
 		char * m_xml_buffer;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<TextLocalePak> TextLocalePakPtr;
 }

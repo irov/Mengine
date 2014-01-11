@@ -29,7 +29,7 @@ namespace Menge
 			return size;
 		}
 		
-		int offset;
+		size_t offset;
 		
 		if( _offset < 0 )
 		{

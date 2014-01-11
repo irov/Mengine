@@ -15,6 +15,7 @@ namespace Menge
 	{
 	public:
 		ResourceImage();
+		~ResourceImage();
 			
 	public:        
         inline const mt::vec2f & getTextureSize() const;

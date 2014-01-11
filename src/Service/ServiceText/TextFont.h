@@ -11,7 +11,6 @@ namespace Menge
 {
 	class TextFont
 		: public TextFontInterface
-		, public Factorable
 		, public Resource
 		, public Reference
 	{
@@ -22,7 +21,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 		void setName( const ConstString & _name );
 		
-		void setGlyph( const TextGlyph * _glyph );
+		void setGlyph( const TextGlyphPtr & _glyph );
 		void setTexturePath( const ConstString & _category, const FilePath & _pathFontImage, const FilePath & _pathOutlineImage );
 		void setColourFont( const ColourValue & _colour );
 		void setColourOutline( const ColourValue & _colour );
@@ -63,7 +62,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		const TextGlyph * m_glyph;
+		TextGlyphPtr m_glyph;
 
 		ConstString m_name;
 		float m_height;
@@ -83,6 +82,8 @@ namespace Menge
 		RenderTextureInterfacePtr m_textureFont;
 		RenderTextureInterfacePtr m_textureOutline;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<TextFont> TextFontPtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderTextureInterfacePtr & TextFont::getTextureFont() const
 	{

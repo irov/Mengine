@@ -1281,6 +1281,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear )
 	{
+		(void)_renderTarget;
+		(void)_clear;
   //      if( m_pD3DDevice == nullptr )
   //      {
   //          LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setRenderTarget device not created"

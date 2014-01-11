@@ -29,6 +29,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ResourceImage::~ResourceImage()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::prepareImageFrame_( const RenderTextureInterfacePtr & texture )
 	{
 		float width = (float)texture->getWidth();

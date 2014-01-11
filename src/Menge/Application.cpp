@@ -165,6 +165,7 @@ namespace Menge
 		, m_resourceService(nullptr)
 		, m_textService(nullptr)
         , m_nodeService(nullptr)
+		, m_prototypeService(nullptr)
         , m_amplifierService(nullptr)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
@@ -752,7 +753,7 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "initialize Text Manager..." );
 
         TextServiceInterface * textService;
-        if( createTextService( &textService ) == false )
+        if( SERVICE_CREATE( TextService, &textService ) == false )
         {
             return false;
         }
@@ -1061,7 +1062,7 @@ namespace Menge
 
 				++batchMode;
 
-				ERenderBatchMode mode;
+				ERenderBatchMode mode = ERBM_NONE;
 				switch(batchMode %3)
 				{
 				case 0:
@@ -1147,6 +1148,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onMousePosition( unsigned int _touchId, const mt::vec2f & _point )
 	{
+		(void)_touchId;
+
 		if( INPUT_SERVICE(m_serviceProvider)
 			->validCursorPosition( _point ) == false )
 		{
@@ -1837,7 +1840,7 @@ namespace Menge
 
         ConstString key = Helper::stringizeString(m_serviceProvider, "APPLICATION_TITLE");
 
-        const TextEntryInterface * entry = nullptr;
+        TextEntryInterfacePtr entry;
 		if( TEXT_SERVICE(m_serviceProvider)->existText( key, &entry ) == false )
 		{
             return Utils::emptyConstString();

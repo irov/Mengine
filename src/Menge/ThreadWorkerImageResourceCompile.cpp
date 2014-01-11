@@ -74,6 +74,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadWorkerImageResourceCompile::onWork( size_t _id )
 	{
+		(void)_id;
+
 		const ImageCodecDataInfo * data = m_imageDecoder->getCodecDataInfo();
 
 		unsigned int bufferSize = m_texturePitch * data->height;
@@ -91,6 +93,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadWorkerImageResourceCompile::onDone( size_t _id )
 	{
+		(void)_id;
+
 		m_texture->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////

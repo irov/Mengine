@@ -18,7 +18,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::initialize( const TextFontInterface * _font, const String& _text )
+	void TextLine::initialize( const TextFontInterfacePtr & _font, const String& _text )
 	{
 		WString::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );

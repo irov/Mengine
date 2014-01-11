@@ -34,7 +34,7 @@ namespace Menge
 		TextLine( ServiceProviderInterface * _serviceProvider, float _charOffset );
 
 	public:
-		void initialize( const TextFontInterface * _font, const String& _text );
+		void initialize( const TextFontInterfacePtr & _font, const String& _text );
 
 	public:
 		void prepareRenderObject(

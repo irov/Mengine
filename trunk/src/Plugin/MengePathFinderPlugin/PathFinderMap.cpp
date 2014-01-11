@@ -363,7 +363,7 @@ namespace Menge
 			}
 		}
 
-		return nullptr;
+		//return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	typedef std::vector<Poly2Tri::Point *> TVectorPathPoint;

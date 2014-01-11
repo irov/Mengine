@@ -36,12 +36,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CameraTarget2D::_update( float _current, float _timing )
 	{
+		(void)_current;
+
 		if( m_camera == nullptr )
 		{
 			return;
 		}
-
-		const mt::vec3f & camera_wp = m_camera->getWorldPosition();
 
 		const mt::mat4f & camera_wm = m_camera->getWorldMatrix();
 		const Viewport & camera_vp = m_camera->getRenderport();

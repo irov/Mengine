@@ -142,9 +142,9 @@ namespace Menge
 				size_t b = V[v]; 
 				size_t c = V[w];
                 
-				_result.push_back( a );
-				_result.push_back( b );
-				_result.push_back( c );
+				_result.push_back( (uint16_t)a );
+				_result.push_back( (uint16_t)b );
+				_result.push_back( (uint16_t)c );
 
 				m++; 
 

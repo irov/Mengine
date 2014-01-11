@@ -4,13 +4,13 @@
 
 #	include "TextGlyphChar.h"
 
-#	include "Factory/Factorable.h"
+#	include "Factory/FactorablePtr.h"
 #	include "Factory/FactoryPool.h"
 
 namespace Menge
 {
 	class TextGlyph
-		: public Factorable
+		: public FactorablePtr
 	{
 	public:
 		TextGlyph();
@@ -54,4 +54,6 @@ namespace Menge
 		typedef FactoryPool<TextGlyphChar, 256> TFactoryTextGlyphChar;
 		TFactoryTextGlyphChar m_factoryTextGlyphChar;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<TextGlyph> TextGlyphPtr;
 }

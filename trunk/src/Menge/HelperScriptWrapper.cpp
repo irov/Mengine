@@ -22,6 +22,7 @@
 #   include "Interface/UnicodeInterface.h"
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/TextInterface.h"
 
 #	include "ResourceAnimation.h"
 //#	include "ResourceSequence.h"
@@ -34,8 +35,6 @@
 #	include <ctime>
 #	include <sstream>
 #	include <iomanip>
-
-#	include "TextManager.h"
 
 #	include "ThreadTaskLoadPak.h"
 
@@ -859,8 +858,7 @@ namespace Menge
 
 		WString s_getTextByKey( const ConstString& _key )
 		{
-			const TextEntryInterface * entry;
-				
+			TextEntryInterfacePtr entry;				
 			if( TEXT_SERVICE(m_serviceProvider)
 				->existText( _key, &entry ) == false )
 			{
@@ -889,7 +887,7 @@ namespace Menge
 
 		size_t s_getTextCharCountByKey( const ConstString& _key )
 		{
-			const TextEntryInterface * entry;
+			TextEntryInterfacePtr entry;
 
 			if( TEXT_SERVICE(m_serviceProvider)
 				->existText( _key, &entry ) == false )

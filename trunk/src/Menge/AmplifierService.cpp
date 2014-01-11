@@ -237,6 +237,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::onSoundStop( size_t _id )
 	{
+		(void)_id;
+
 		if( m_play == false )
 		{
 			return;
@@ -268,7 +270,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AmplifierService::onSoundPause( size_t _id )
 	{
-
+		(void)_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AmplifierService::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos )

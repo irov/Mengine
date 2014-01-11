@@ -134,6 +134,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::onSoundPause( size_t _soundId )
 	{
+		(void)_soundId;
+
 		if( m_onSoundPauseEvent == true )
 		{
             EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_PAUSE )( "(O)", this->getEmbed() );
@@ -142,6 +144,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::onSoundStop( size_t _soundId )
 	{
+		(void)_soundId;
+
 		this->end();
 	}
 	//////////////////////////////////////////////////////////////////////////

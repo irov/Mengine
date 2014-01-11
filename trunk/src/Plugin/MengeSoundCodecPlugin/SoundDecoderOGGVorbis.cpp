@@ -203,7 +203,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::timeTell()
 	{
-        double al_total = ov_time_total( &m_oggVorbisFile, -1 );
+        //double al_total = ov_time_total( &m_oggVorbisFile, -1 );
 		double al_pos = ov_time_tell( &m_oggVorbisFile );
 
         float float_pos = (float)(al_pos * 1000.f);

@@ -26,8 +26,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_textSize(0.f, 0.f)
-		, m_textEntry(nullptr)
-		, m_font(nullptr)
 		, m_invalidateFont(true)
 		, m_fontParams(EFP_NONE)
 		, m_horizontAlign(ETFHA_NONE)
@@ -109,7 +107,7 @@ namespace Menge
 
 		const TVectorTextLine & lines = this->getTextLines();
        
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font == nullptr )
 		{
@@ -264,7 +262,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getFontHeight() const
 	{
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font == nullptr )
 		{
@@ -389,7 +387,7 @@ namespace Menge
 		TVectorString lines;
 		Utils::split( lines, m_text, false, "\n" );
 
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font == nullptr )
 		{
@@ -486,7 +484,7 @@ namespace Menge
 		if( fontName.empty() == true )
 		{
 			fontName = TEXT_SERVICE(m_serviceProvider)
-				->getDefaultResourceFontName();
+				->getDefaultFontName();
 		}
 
 		if( m_font != nullptr )
@@ -563,7 +561,7 @@ namespace Menge
 		if( m_fontName.empty() == true )
 		{
 			const ConstString & fontName = TEXT_SERVICE(m_serviceProvider)
-				->getDefaultResourceFontName();
+				->getDefaultFontName();
 
 			return fontName;
 		}
@@ -590,7 +588,7 @@ namespace Menge
 			return m_lineOffset;
 		}
 
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font != nullptr )
 		{
@@ -626,7 +624,7 @@ namespace Menge
 			return m_charOffset;
 		}
 
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font != nullptr )
 		{
@@ -662,7 +660,7 @@ namespace Menge
 			return m_colorFont;
 		}
 
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font != nullptr )
 		{
@@ -698,7 +696,7 @@ namespace Menge
 			return m_colorOutline;
 		}
 
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font != nullptr )
 		{
@@ -1043,7 +1041,7 @@ namespace Menge
 		
 		this->updateVertexData_( colorFont, m_vertexDataText );
 
-		TextFontInterface * font = this->getFont();
+		const TextFontInterfacePtr & font = this->getFont();
 
 		if( m_outline && font->getTextureOutline() != nullptr )
 		{			

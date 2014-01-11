@@ -47,11 +47,14 @@ namespace	Menge
 		protected:
 			void onSoundPause( size_t _id ) override
 			{
+				(void)_id;
 				//Empty
 			}
 
 			void onSoundStop( size_t _id ) override
-			{				
+			{	
+				(void)_id;
+
 				if( m_cb != nullptr && pybind::is_none( m_cb ) == false )
 				{
 					pybind::call( m_cb, "(i)", m_sourceID );

@@ -10,6 +10,8 @@
 #   include "Core/GlyphChar.h"
 #   include "Core/ColourValue.h"
 
+#   include "Factory/FactorablePtr.h"
+
 #	include "Math/vec4.h"
 
 namespace Menge
@@ -35,6 +37,7 @@ namespace Menge
 	};
 
 	class TextFontInterface
+		: public FactorablePtr
 	{
 	public:
 		virtual const ConstString & getName() const = 0;
@@ -59,7 +62,10 @@ namespace Menge
 		virtual const RenderTextureInterfacePtr & getTextureOutline() const = 0;
 	};
 
+	typedef stdex::intrusive_ptr<TextFontInterface> TextFontInterfacePtr;
+
 	class TextEntryInterface
+		: public FactorablePtr
 	{
 	public:
 		virtual const ConstString & getText() const = 0;
@@ -75,6 +81,8 @@ namespace Menge
 		virtual size_t getFontParams() const = 0;
 	};
 
+	typedef stdex::intrusive_ptr<TextEntryInterface> TextEntryInterfacePtr;
+
 	class TextServiceInterface
 		: public ServiceInterface
 	{
@@ -88,18 +96,17 @@ namespace Menge
 		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual bool existText( const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
-		virtual const TextEntryInterface * getTextEntry( const ConstString& _key ) const = 0;        
+		virtual bool existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const = 0;
+		virtual TextEntryInterfacePtr getTextEntry( const ConstString& _key ) const = 0;        
 
 	public:
 		virtual bool existFont( const ConstString & _name ) const = 0;
 
-		virtual TextFontInterface * getFont( const ConstString & _name ) = 0;
-		virtual void releaseFont( TextFontInterface * _font ) = 0;
+		virtual TextFontInterfacePtr getFont( const ConstString & _name ) = 0;
+		virtual void releaseFont( const TextFontInterfacePtr & _font ) = 0;
 
 	public:
-		virtual void setDefaultResourceFontName( const ConstString & _fontName ) = 0;
-		virtual const ConstString & getDefaultResourceFontName() const = 0;
+		virtual const ConstString & getDefaultFontName() const = 0;
 	};
 
 #   define TEXT_SERVICE( serviceProvider )\

@@ -1212,9 +1212,4 @@ namespace Menge
 			, nullptr
 			);
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::updateRenderBoundingBox_( mt::box2f & _bb, const RenderVertex2D * _vertices, size_t _verticesCount )
-	{
-
-	}
 }

@@ -30,16 +30,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::~TextManager()
 	{
-		for( TVectorPaks::iterator
-			it = m_paks.begin(),
-			it_end = m_paks.end();
-		it != it_end;
-		++it )
-		{
-			TextLocalePak * pak = *it;
-
-			delete pak;
-		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void TextManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -54,7 +44,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::initialize( size_t _size )
 	{
-		m_texts.reserve(_size);
+		m_texts.reserve( _size );
 
 		return true;
 	}
@@ -245,12 +235,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
-		TextLocalePak * pak = new TextLocalePak();
+		TextLocalePakPtr pak = m_factoryTextLocalePak.createObjectT();
 
 		if( pak->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
 		{
-			delete pak;
-
 			return false;
 		}
 		
@@ -330,7 +318,7 @@ namespace Menge
 				return false;
 			}
 
-			const TextGlyph * glyph = this->loadGlyph_( _locale, _pakName, glyphPath );
+			TextGlyphPtr glyph = this->loadGlyph_( _locale, _pakName, glyphPath );
 
 			if( glyph == nullptr )
 			{
@@ -390,24 +378,27 @@ namespace Menge
 			m_fonts.insert( fontName, font );
 		}
 
+		ConstString defaultFontName;
+		if( IniUtil::getIniValue( ini, "GAME_FONTS", "Default", defaultFontName, m_serviceProvider ) == true )
+		{
+			m_defaultFontName = defaultFontName;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextGlyph * TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
-		const TextGlyph * glyph_has;
-
-		if( m_glyphs.has( _path, &glyph_has ) == true )
+		TextGlyphPtr glyph_has;
+		if( m_glyphs.has_copy( _path, glyph_has ) == true )
 		{
 			return glyph_has;
 		}
 
-		TextGlyph * glyph = m_factoryTextGlyph.createObjectT();
+		TextGlyphPtr glyph = m_factoryTextGlyph.createObjectT();
 
 		if( glyph->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
 		{
-			glyph->destroy();
-
 			return nullptr;
 		}
 
@@ -416,8 +407,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params )
 	{
-		const TextEntry * textEntry_has;
-		if( m_texts.has( _key, &textEntry_has ) == true )
+		TextEntryPtr textEntry_has;
+		if( m_texts.has_copy( _key, textEntry_has ) == true )
 		{
 			const ConstString & text = textEntry_has->getText();
 
@@ -429,17 +420,17 @@ namespace Menge
             return;
 		}
 
-		TextEntry * textEntry = m_factoryTextEntry.createObjectT();
+		TextEntryPtr textEntry = m_factoryTextEntry.createObjectT();
 
 		textEntry->initialize( _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
 
         m_texts.insert( _key, textEntry );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
+	TextEntryInterfacePtr TextManager::getTextEntry( const ConstString& _key ) const
 	{
-		const TextEntry * textEntry = nullptr;
-		if( m_texts.has( _key, &textEntry ) == false )
+		TextEntryPtr textEntry;
+		if( m_texts.has_copy( _key, textEntry ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
@@ -451,14 +442,14 @@ namespace Menge
         return textEntry;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::existText( const ConstString& _key, const TextEntryInterface ** _entry ) const
+	bool TextManager::existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
 	{
-		const TextEntry * textEntry;
-		bool result = m_texts.has( _key, &textEntry );
+		TextEntryPtr textEntry;
+		bool result = m_texts.has_copy( _key, textEntry );
 
 		if( _entry != nullptr )
 		{
-			*_entry = static_cast<const TextEntryInterface *>(textEntry);
+			*_entry = stdex::intrusive_static_cast<TextEntryInterfacePtr>(textEntry);
 		}
 
 		return result;		
@@ -471,10 +462,10 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextFontInterface * TextManager::getFont( const ConstString & _name )
+	TextFontInterfacePtr TextManager::getFont( const ConstString & _name )
 	{		
-		TextFont * font_has;
-		bool result = m_fonts.has( _name, &font_has );
+		TextFontPtr font_has;
+		bool result = m_fonts.has_copy( _name, font_has );
 
 		if( result == false )
 		{
@@ -489,25 +480,20 @@ namespace Menge
 		return font_has;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::releaseFont( TextFontInterface * _font )
+	void TextManager::releaseFont( const TextFontInterfacePtr & _font )
 	{
 		if( _font == nullptr )
 		{
 			return;
 		}
 
-		TextFont * font = static_cast<TextFont *>(_font);
+		TextFontPtr font = stdex::intrusive_static_cast<TextFontPtr>(_font);
 
 		font->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::setDefaultResourceFontName( const ConstString & _fontName )
+	const ConstString & TextManager::getDefaultFontName() const
 	{
-		m_defaultResourceFontName = _fontName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextManager::getDefaultResourceFontName() const
-	{
-		return m_defaultResourceFontName;
+		return m_defaultFontName;
 	}
 }

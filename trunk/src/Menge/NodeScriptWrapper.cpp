@@ -1714,12 +1714,6 @@ namespace Menge
                 ->removeCurrentScene( _cb );
         }
         //////////////////////////////////////////////////////////////////////////
-        void setDefaultResourceFontName( const ConstString & _fontName )
-        {
-            TEXT_SERVICE(m_serviceProvider)
-                ->setDefaultResourceFontName( _fontName );
-        }
-        //////////////////////////////////////////////////////////////////////////
         class PyGlobalMouseMoveHandler
             : public GlobalMouseHandler
         {
@@ -2315,7 +2309,7 @@ namespace Menge
         ConstString s_getDefaultResourceFontName()
         {
             const ConstString & defaultResourceFontName = TEXT_SERVICE(m_serviceProvider)
-                ->getDefaultResourceFontName();
+                ->getDefaultFontName();
 
             return defaultResourceFontName;
         }
@@ -3894,8 +3888,6 @@ namespace Menge
             pybind::def_functor( "hasResource", nodeScriptMethod, &NodeScriptMethod::hasResource );
 
             pybind::def_functor( "removeCurrentScene", nodeScriptMethod, &NodeScriptMethod::removeCurrentScene );
-
-            pybind::def_functor( "setDefaultResourceFontName", nodeScriptMethod, &NodeScriptMethod::setDefaultResourceFontName );
 
             pybind::def_functor( "addMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseMoveHandler );
             pybind::def_functor( "removeMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseMoveHandler );

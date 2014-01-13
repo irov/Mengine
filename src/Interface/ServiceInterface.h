@@ -117,5 +117,5 @@ namespace Menge
     create##Name( Service )
 
 #   define SERVICE_DESTROY( Name, Service )\
-    destroy##Name( Service )
+	{destroy##Name( Service ); Service = nullptr;}
 }

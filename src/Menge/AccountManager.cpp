@@ -356,7 +356,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Account * AccountManager::loadAccount_( const WString& _accountID )
 	{
-		Account* account = this->newAccount_( _accountID );
+		Account * account = this->newAccount_( _accountID );
 
         if( account == nullptr )
         {
@@ -371,7 +371,7 @@ namespace Menge
         {
             m_currentAccount = account;
             m_accountListener->onCreateAccount( _accountID );
-            m_currentAccount = NULL;
+            m_currentAccount = nullptr;
         }
 
         if( account->load() == false )

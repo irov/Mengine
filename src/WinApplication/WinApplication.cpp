@@ -1886,6 +1886,7 @@ namespace Menge
 		if( m_fpsMonitor != nullptr )
 		{
 			m_fpsMonitor->finalize();
+
 			delete m_fpsMonitor;
 			m_fpsMonitor = nullptr;
 		}
@@ -1991,10 +1992,7 @@ namespace Menge
         if( m_scriptService != nullptr )
         {
             m_scriptService->finalize();
-
-            SERVICE_DESTROY( ScriptService, m_scriptService );
-			m_scriptService = nullptr;
-        }
+		}
 
         if( m_converterService != nullptr )
         {
@@ -2067,6 +2065,18 @@ namespace Menge
             SERVICE_DESTROY(NotificationService, m_notificationService);
             m_notificationService = nullptr;
         }
+
+		if( m_scriptService != nullptr )
+		{
+			SERVICE_DESTROY( ScriptService, m_scriptService );
+			m_scriptService = nullptr;
+		}
+
+		if( m_stringizeService != nullptr )
+		{
+			SERVICE_DESTROY( StringizeService, m_stringizeService );
+			m_stringizeService = nullptr;
+		}
         
 		if( m_fileLog != nullptr )
 		{
@@ -2096,12 +2106,6 @@ namespace Menge
         {            
             SERVICE_DESTROY( FileSystem, m_fileSystem );
             m_fileSystem = nullptr;
-        }
-
-        if( m_stringizeService != nullptr )
-        {
-            SERVICE_DESTROY( StringizeService, m_stringizeService );
-            m_stringizeService = nullptr;
         }
 
         if( m_archiveService != nullptr )

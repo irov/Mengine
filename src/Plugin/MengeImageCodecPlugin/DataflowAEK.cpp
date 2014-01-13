@@ -155,7 +155,8 @@ namespace Menge
 			MovieLayerTimeRemap & timeremap = pack->mutableLayerTimeRemap( it_layer + 1 );
 			timeremap.times.resize( times_size );
 
-			ar.readPODs( &timeremap.times[0], times_size );
+			float * times_buff = &timeremap.times[0];
+			ar.readPODs( times_buff, times_size );
 		}
 
 		for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )

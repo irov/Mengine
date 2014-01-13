@@ -6,6 +6,7 @@
 #   include "Interface/GameInterface.h"
 #	include "Interface/ApplicationInterface.h"
 #   include "Interface/InputSystemInterface.h"
+#	include "Interface/AccountInterface.h"
 
 #	include "Account.h"
 
@@ -15,7 +16,25 @@
 
 namespace Menge
 {
-	class AccountServiceListener;
+	class Game;
+
+	class ApplicationAccountManagerListener
+		: public AccountServiceListener
+	{
+	public:
+		ApplicationAccountManagerListener( ServiceProviderInterface * _serviceProvider, Game * _game );
+
+	protected:
+		void onCreateAccount( const WString & _accountID ) override;
+		void onDeleteAccount( const WString & _accountID ) override;
+		void onSelectAccount( const WString & _accountID ) override;
+		void onUnselectAccount( const WString & _accountID ) override;
+
+	protected:
+		ServiceProviderInterface * m_serviceProvider;
+		Game * m_game;
+	};
+	
 	class AccountServiceInterface;
 
 	class Player;
@@ -116,7 +135,7 @@ namespace Menge
 
 		Player* m_player;
 
-		AccountServiceListener * m_accountLister; 
+		ApplicationAccountManagerListener * m_accountLister; 
 		AccountServiceInterface * m_accountService;
 
 		bool m_developmentMode;

@@ -38,6 +38,32 @@ SERVICE_FACTORY( GameService, Menge::GameServiceInterface, Menge::Game );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	ApplicationAccountManagerListener::ApplicationAccountManagerListener( ServiceProviderInterface * _serviceProvider, Game * _game )
+		: m_serviceProvider(_serviceProvider)
+		, m_game(_game)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ApplicationAccountManagerListener::onCreateAccount( const WString & _accountID )
+	{
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ApplicationAccountManagerListener::onDeleteAccount( const WString & _accountID )
+	{
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( "(u)", _accountID.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ApplicationAccountManagerListener::onSelectAccount( const WString & _accountID )
+	{
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( "(u)", _accountID.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ApplicationAccountManagerListener::onUnselectAccount( const WString & _accountID )
+	{
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( "(u)", _accountID.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
 		: m_serviceProvider(nullptr)
 		, m_developmentMode(false)
@@ -307,45 +333,6 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class ApplicationAccountManagerListener
-			: public AccountServiceListener
-		{
-		public:
-			ApplicationAccountManagerListener( ServiceProviderInterface * _serviceProvider, Game * _game )
-                : m_serviceProvider(_serviceProvider)
-				, m_game(_game)
-			{
-			}
-
-		protected:
-			void onCreateAccount( const WString & _accountID ) override
-			{
-				EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
-			}
-
-            void onDeleteAccount( const WString & _accountID ) override
-            {
-                EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( "(u)", _accountID.c_str() );
-            }
-
-			void onSelectAccount( const WString & _accountID ) override
-			{
-				EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( "(u)", _accountID.c_str() );
-			}
-
-            void onUnselectAccount( const WString & _accountID ) override
-            {
-                EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( "(u)", _accountID.c_str() );
-            }
-
-		protected:
-            ServiceProviderInterface * m_serviceProvider;
-			Game * m_game;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Game::initialize( const FilePath & _accountPath, size_t _projectVersion, const TMapParams & _params )
 	{
 		m_params = _params;
@@ -454,7 +441,7 @@ namespace Menge
 
         if( m_accountLister != nullptr )
         {
-            delete static_cast<ApplicationAccountManagerListener*>(m_accountLister);
+            delete m_accountLister;
             m_accountLister = nullptr;
         }
 
@@ -467,15 +454,16 @@ namespace Menge
 		}
 
 		this->destroyArrow();
-		
-		//delete m_lightSystem;        
+		      
 		for( TVectorResourcePak::iterator
 			it = m_resourcePaks.begin(),
 			it_end = m_resourcePaks.end();
 		it != it_end;
 		++it )
 		{
-			delete *it;
+			ResourcePak * pak = *it;
+
+			delete pak;
 		}
 
 		m_resourcePaks.clear();
@@ -486,7 +474,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			delete *it;
+			ResourcePak * pak = *it;
+
+			delete pak;
 		}
 
 		m_languagePaks.clear();

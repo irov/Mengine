@@ -33,11 +33,6 @@
 
 #	include "TextField.h"
 
-#   include "MousePickerSystem.h"
-#   include "GlobalHandleSystem.h"
-#   include "ScheduleManager.h"
-#   include "TimingManager.h"
-
 #   include "Kernel/ResourceVisitor.h"
 #   include "Kernel/ResourceReference.h"
 
@@ -189,7 +184,9 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				delete (*it);
+				Join * join = *it;
+
+				delete join;
 			}
 
 			m_joins.clear();
@@ -325,7 +322,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			delete (*it);
+			Join * join = *it;
+
+			delete join;
 		}
 
 		m_joins.clear();
@@ -580,13 +579,13 @@ namespace Menge
 
 		if( m_mousePickerSystem != nullptr )
 		{
-			delete static_cast<MousePickerSystem *>(m_mousePickerSystem);
+			delete m_mousePickerSystem;
 			m_mousePickerSystem = nullptr;
 		}
 
 		if( m_globalHandleSystem != nullptr )
 		{
-			delete static_cast<GlobalHandleSystem *>(m_globalHandleSystem);
+			delete m_globalHandleSystem;
 			m_globalHandleSystem = nullptr;
 		}
 
@@ -632,7 +631,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			delete (*it);
+			Join * join = *it;
+			delete join;
 		}
 
 		m_joins.clear();
@@ -1060,7 +1060,7 @@ namespace Menge
         }
 
 	protected:
-		void visit( const ConstString & _category, const ConstString & _type, PrototypeGeneratorInterface * _generator ) override
+		void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
 		{
             if( m_category != _category )
             {

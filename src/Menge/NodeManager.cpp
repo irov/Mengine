@@ -42,11 +42,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void NodeManager::finalize()
     {
-        if( m_homeless )
+        if( m_homeless != nullptr )
         {
             Node * homeless = m_homeless;
             m_homeless = nullptr;
-
+			
             homeless->destroyAllChild();
             delete homeless;            
         }

@@ -14,6 +14,7 @@ namespace Menge
 	{
 	public:
 		TextGlyph();
+		~TextGlyph();
 
 	public:
 		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path );

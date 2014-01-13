@@ -17,8 +17,6 @@
 
 #	include "Consts.h"
 
-#   include "pugixml.hpp"
-
 #   include <stdio.h>
 
 namespace Menge

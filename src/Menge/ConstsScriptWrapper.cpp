@@ -158,6 +158,7 @@ namespace Menge
         (void)_serviceProvider;
 
         delete constScriptMethod;
+		constScriptMethod = nullptr;
 
         PyObject * module = pybind::get_currentmodule();
 

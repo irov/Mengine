@@ -65,6 +65,8 @@ namespace Menge
             ConstString m_prototype;
             PyObject * m_module;
         };
+		//////////////////////////////////////////////////////////////////////////
+		typedef stdex::intrusive_ptr<PythonPrototypeGenerator> PythonPrototypeGeneratorPtr;
         //////////////////////////////////////////////////////////////////////////
         class EntityPrototypeGenerator
             : public PythonPrototypeGenerator
@@ -184,9 +186,9 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_importEntity( const ConstString & _prototype )
         {
-            PrototypeGeneratorInterface * generator = nullptr;
+            PrototypeGeneratorInterfacePtr generator;
             if( PROTOTYPE_SERVICE(m_serviceProvider)
-                ->hasPrototype( CONST_STRING(m_serviceProvider, Entity), _prototype, &generator ) == false )
+                ->hasPrototype( CONST_STRING(m_serviceProvider, Entity), _prototype, generator ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)( "Error: can't import Entity '%s'"
                     , _prototype.c_str()
@@ -195,8 +197,8 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            PythonPrototypeGenerator * pythonGenerator = 
-                dynamic_cast<PythonPrototypeGenerator *>(generator);
+            PythonPrototypeGeneratorPtr pythonGenerator = 
+				stdex::intrusive_dynamic_cast<PythonPrototypeGeneratorPtr>(generator);
 
             if( pythonGenerator == nullptr )
             {

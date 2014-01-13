@@ -9,7 +9,7 @@ namespace Menge
 	class Observer
 	{
 	public:
-		virtual ~Observer(){};
+		virtual void destroy() = 0;
 	};
 
 	template<class M>
@@ -56,6 +56,12 @@ namespace Menge
 			: ObserverMethod0<C, void (C::*)()>(_self, _method)
 		{
 		}
+
+	protected:
+		void destroy() override
+		{
+			delete this;
+		}
 	};
 
 	template<class P0>
@@ -97,6 +103,12 @@ namespace Menge
 			: ObserverMethod1<C, void (C::*)(P0), P0>(_self, _method)
 		{
 		}
+
+	protected:
+		void destroy() override
+		{
+			delete this;
+		}
 	};
 
 	template<class P0, class P1>
@@ -137,6 +149,12 @@ namespace Menge
 		GeneratorObserverMethod( C * _self, void (C::*_method)(P0, P1) )
 			: ObserverMethod2<C, void (C::*)(P0, P1), P0, P1>(_self, _method)
 		{
+		}
+
+	protected:
+		void destroy() override
+		{
+			delete this;
 		}
 	};
 	

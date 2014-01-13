@@ -50,7 +50,8 @@ namespace Menge
 	void ResourceCursorICO::_release()
 	{
 		delete [] m_buffer;
-		m_buffer = 0;
+		m_buffer = nullptr;
+
 		m_bufferSize = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////

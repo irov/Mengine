@@ -27,8 +27,6 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
-		
-		TBlobject m_cacheBinary;
 
 		typedef FactoryPool<Model3DPack, 32> TFactoryPoolModel3DPack;
 		TFactoryPoolModel3DPack m_poolModel3DPack;

@@ -19,12 +19,12 @@ namespace Menge
 		{
 			MovieLayerFrame & layer = *it;
 
-			delete layer.anchorPoint;
-			delete layer.position;
-			delete layer.rotation;
-			delete layer.scale;
-			delete layer.opacity;
-			delete layer.volume;
+			delete [] layer.anchorPoint;
+			delete [] layer.position;
+			delete [] layer.rotation;
+			delete [] layer.scale;
+			delete [] layer.opacity;
+			delete [] layer.volume;
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -42,7 +42,9 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			delete it->second;
+			Playlist * playlist = it->second;
+			
+			delete playlist;
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

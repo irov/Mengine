@@ -139,23 +139,25 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderJPEG::ImageEncoderJPEG()
-		: m_errorMgr(NULL)
-		, m_jpegObject(NULL)
+		: m_errorMgr(nullptr)
+		, m_jpegObject(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderJPEG::~ImageEncoderJPEG()
 	{
-		if( m_jpegObject != NULL )
+		if( m_jpegObject != nullptr )
 		{
 			jpeg_destroy_compress( m_jpegObject );
+
 			delete m_jpegObject;
-			m_jpegObject = NULL;
+			m_jpegObject = nullptr;
 		}
-		if( m_errorMgr != NULL )
+
+		if( m_errorMgr != nullptr )
 		{
 			delete m_errorMgr;
-			m_errorMgr = NULL;
+			m_errorMgr = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -213,8 +215,10 @@ namespace Menge
 			// If we get here, the JPEG code has signaled an error.
 			// We need to clean up the JPEG object and return.
 			jpeg_destroy_compress( m_jpegObject );
+
 			delete m_jpegObject;
-			m_jpegObject = NULL;
+			m_jpegObject = nullptr;
+
 			return false;
 		}
 

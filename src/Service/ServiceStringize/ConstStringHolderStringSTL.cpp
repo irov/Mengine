@@ -28,11 +28,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderStringSTL::_destroyString()
     {
-		if( m_buff == nullptr )
-		{
-			delete [] m_buff;
-			m_buff = nullptr;
-		}
+		delete [] m_buff;
+		m_buff = nullptr;
 
         this->destroy();
     }

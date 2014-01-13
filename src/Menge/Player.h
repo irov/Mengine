@@ -11,8 +11,11 @@
 
 #	include "pybind/types.hpp"
 
-#   include "TimingManager.h"
+#   include "MousePickerSystem.h"
+#   include "GlobalHandleSystem.h"
 #   include "ScheduleManager.h"
+#   include "TimingManager.h"
+
 
 namespace Menge
 {	
@@ -164,8 +167,8 @@ namespace Menge
 		RenderCameraInterface * m_renderCamera;
 		RenderViewportInterface * m_renderViewport;
 
-        MousePickerSystemInterface * m_mousePickerSystem;
-        GlobalHandleSystemInterface * m_globalHandleSystem;
+        MousePickerSystem * m_mousePickerSystem;
+        GlobalHandleSystem * m_globalHandleSystem;
 
 		ScheduleManagerInterface * m_scheduleManager;
 		ScheduleManagerInterface * m_scheduleManagerGlobal;

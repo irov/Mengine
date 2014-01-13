@@ -16,6 +16,7 @@ namespace Menge
 	{
 	public:
 		TextFont();
+		~TextFont();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );

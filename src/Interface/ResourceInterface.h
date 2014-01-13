@@ -11,12 +11,12 @@
 
 namespace Menge
 {
-    class ResourceManagerListener
-    {
-    public:
-        virtual void onResourceLoaded( const ConstString& _name ) = 0;
-        virtual void onResourceUnLoaded( const ConstString& _name ) = 0;
-    };
+    //class ResourceManagerListener
+    //{
+    //public:
+    //    virtual void onResourceLoaded( const ConstString& _name ) = 0;
+    //    virtual void onResourceUnLoaded( const ConstString& _name ) = 0;
+    //};
 
     class ResourceReference;
     class ResourceVisitor;

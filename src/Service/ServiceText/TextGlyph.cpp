@@ -24,6 +24,21 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	TextGlyph::~TextGlyph()
+	{
+		for( TMapGlyphChar::iterator
+			it = m_chars.begin(),
+			it_end = m_chars.end();
+		it != it_end;
+		++it )
+		{
+			 TextGlyphChar * glyph_char = m_chars.get_value( it );
+			 glyph_char->destroy();
+		}
+
+		m_chars.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextGlyph::setSize( float _size )
 	{
 		m_size = _size;
@@ -380,9 +395,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const TextGlyphChar * TextGlyph::getGlyphChar( GlyphCode _code ) const
 	{
-		const TextGlyphChar * ch = nullptr;
+		TextGlyphChar * ch = nullptr;
 		m_chars.has( _code, &ch );
-		
+
 		return ch;
 	}
 	//////////////////////////////////////////////////////////////////////////

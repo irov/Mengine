@@ -15,15 +15,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeManager::~PrototypeManager()
 	{
-        for( TMapPrototypes::iterator
-            it = m_prototypes.begin(),
-            it_end = m_prototypes.end();
-        it != it_end;
-        ++it )
-        {
-            PrototypeGeneratorInterface * prototype = it->second;
-            prototype->destroy();
-        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void PrototypeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -36,7 +27,7 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterface * _generator )
+	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
 	{
         CategoryKey key;
         key.category = _category;
@@ -57,7 +48,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrototypeManager::hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterface ** _generator ) const
+	bool PrototypeManager::hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const
 	{
         CategoryKey prototype_key;
         prototype_key.category = _category;
@@ -78,10 +69,7 @@ namespace Menge
             }
 		}
 
-        if( _generator != nullptr )
-        {
-            *_generator = m_prototypes.get_value( it_found );
-        }
+        _generator = m_prototypes.get_value( it_found );
 
 		return true;
 	}
@@ -92,8 +80,8 @@ namespace Menge
         key.category = _category;
         key.prototype = _prototype;
 
-        PrototypeGeneratorInterface * generator = nullptr;
-        if( this->hasPrototype( _category, _prototype, &generator ) == false )
+        PrototypeGeneratorInterfacePtr generator;
+        if( this->hasPrototype( _category, _prototype, generator ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PrototypeManager::generatePrototype prototype %s:%s not found"
                 , _category.c_str()
@@ -116,8 +104,8 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const CategoryKey & keys = it->first;
-            PrototypeGeneratorInterface * generator = it->second;
+            const CategoryKey & keys = m_prototypes.get_key( it );
+            const PrototypeGeneratorInterfacePtr & generator = m_prototypes.get_value( it );
 
             _visitor->visit( keys.category, keys.prototype, generator );
         }

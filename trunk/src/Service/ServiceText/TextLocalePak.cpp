@@ -19,6 +19,7 @@ namespace Menge
 	TextLocalePak::~TextLocalePak()
 	{
 		delete [] m_xml_buffer;
+		m_xml_buffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextLocalePak::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
@@ -41,7 +42,6 @@ namespace Menge
 
 		size_t xml_buffer_size = xml_text->size();
 
-		delete [] m_xml_buffer;
 		m_xml_buffer = new char[xml_buffer_size + 1];
 		m_xml_buffer[xml_buffer_size] = '\0';
 

@@ -432,6 +432,8 @@ namespace	Menge
 			m_verticesCount = flush.particleCount * 4;
 
 			delete [] m_vertices;
+			m_vertices = nullptr;
+
 			m_vertices = new RenderVertex2D [m_verticesCount];
 		}
 

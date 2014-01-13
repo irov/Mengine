@@ -62,9 +62,6 @@ namespace Menge
 		{
 			delete this;
 		}
-
-    protected:
-        ScriptClassExtract<T> * m_extract;
 	};
 }
 

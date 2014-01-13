@@ -38,16 +38,12 @@ namespace	Menge
 		{
 			return false;
 		}
-
-		this->createRenderViewport_();
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DParallax::_deactivate()
 	{
-		this->removeRenderViewport_();
-
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -84,20 +80,10 @@ namespace	Menge
 		_screen.y = sp.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DParallax::createRenderViewport_()
-	{
-		m_proxyCamera2D = new ProxyCameraParallax;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2DParallax::removeRenderViewport_()
-	{
-		delete m_proxyCamera2D;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer2DParallax::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
-		m_proxyCamera2D->setup( _camera, m_parallax );
+		m_proxyCamera2D.setup( _camera, m_parallax );
 
-		Layer::render( _viewport, m_proxyCamera2D, _debugMask );
+		Layer::render( _viewport, &m_proxyCamera2D, _debugMask );
 	}
 }

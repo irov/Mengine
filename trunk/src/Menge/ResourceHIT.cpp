@@ -133,6 +133,7 @@ namespace Menge
 	void ResourceHIT::_release()
 	{
         delete [] m_mipmap;
+		m_mipmap = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_isValid() const

@@ -28,6 +28,7 @@ namespace Menge
     void DynamicLibrary::destroy()
 	{
 		::FreeLibrary( m_hInstance );
+		m_hInstance = NULL;
 
         delete this;
 	}

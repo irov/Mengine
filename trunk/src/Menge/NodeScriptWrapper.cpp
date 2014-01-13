@@ -871,9 +871,9 @@ namespace Menge
             Node * node = NODE_SERVICE(m_serviceProvider)
                 ->createNode( _type );
 
-            if( node == NULL )
+            if( node == nullptr )
             {
-                return NULL;
+                return nullptr;
             }
 
             NODE_SERVICE(m_serviceProvider)

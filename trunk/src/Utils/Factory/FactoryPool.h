@@ -17,6 +17,14 @@ namespace Menge
 
         ~FactoryPool()
         {
+#	ifdef _DEBUG
+			if( m_pool.empty() == false )
+			{
+				printf("FactoryPool remove object but pool is not empty!!! %s\n"
+					, typeid(this).name()
+					);
+			}
+#	endif
         }
 
 	public:

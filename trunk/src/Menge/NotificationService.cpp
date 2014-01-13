@@ -61,8 +61,7 @@ namespace Menge
 		}
 
 		Observer * observer = *it_observer;
-
-		delete observer;
+		observer->destroy();
 
 		observers->erase( it_observer );
 	}

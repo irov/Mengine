@@ -46,6 +46,8 @@ namespace Menge
 
 			delete [] memory.buffer;
 		}
+
+		m_memories.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CacheBufferInterfacePtr CacheManager::lockBuffer( size_t _size )

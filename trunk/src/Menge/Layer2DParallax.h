@@ -44,7 +44,7 @@ namespace Menge
 
 		const Viewport & getRenderport() const override
 		{
-			const Viewport & renderport = this->getRenderport();
+			const Viewport & renderport = m_camera->getRenderport();
 
 			return renderport;
 		}
@@ -106,6 +106,6 @@ namespace Menge
 	protected:
 		mt::vec2f m_parallax;
 
-		ProxyCameraParallax * m_proxyCamera2D;
+		ProxyCameraParallax m_proxyCamera2D;
 	};
 }

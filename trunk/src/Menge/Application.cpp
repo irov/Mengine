@@ -346,9 +346,6 @@ namespace Menge
         protected:
             Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
             {
-                (void)_category;
-                (void)_prototype;
-
                 Node * node = m_factory.createObjectT();
 
                 if( node == nullptr )
@@ -361,9 +358,8 @@ namespace Menge
                     return nullptr;
                 }
 
-                node->setType( _prototype );
-
-                node->setServiceProvider( m_serviceProvider );
+				node->setServiceProvider( m_serviceProvider );
+                node->setType( _prototype );                
 
                 return node;
             }
@@ -384,7 +380,6 @@ namespace Menge
             ServiceProviderInterface * m_serviceProvider;
 
             typedef FactoryPool<Type, Count> TNodeFactory;
-			//typedef FactoryDefault<Type> TNodeFactory;
             TNodeFactory m_factory;
         };
     }
@@ -477,7 +472,7 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Initializing Loader Engine..." );
 
 		LoaderServiceInterface * loaderService;
-        if( createLoaderService( &loaderService ) == false )
+        if( SERVICE_CREATE( LoaderService, &loaderService ) == false )
         {
             return false;
         }
@@ -622,7 +617,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Amplifier Service..." );
 
         AmplifierServiceInterface * amplifierService;
-        if( createAmplifierService( &amplifierService ) == false )
+        if( SERVICE_CREATE( AmplifierService, &amplifierService ) == false )
         {
             return false;
         }
@@ -652,9 +647,6 @@ namespace Menge
         protected:
             Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
             {
-                (void)_category;
-                (void)_prototype;
-
                 ResourceReference * resource = m_factory.createObjectT();
 
                 if( resource == nullptr )
@@ -667,9 +659,8 @@ namespace Menge
                     return nullptr;
                 }
 
-                resource->setType( _prototype );
-
-                resource->setServiceProvider( m_serviceProvider );
+				resource->setServiceProvider( m_serviceProvider );
+                resource->setType( _prototype );                
 
                 return resource;
             }
@@ -816,6 +807,15 @@ namespace Menge
         {
             return false;
         }
+
+		const ConstString & defaultFontName = TEXT_SERVICE(m_serviceProvider)
+			->getDefaultFontName();
+
+		if( defaultFontName.empty() == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextService not setup default font name!"
+				);
+		}
 
         if( m_developmentMode == true && m_resourceCheck == true )
         {
@@ -1421,9 +1421,6 @@ namespace Menge
 
         SERVICE_DESTROY( GameService, m_game );
 
-        //delete m_paramManager;
-        //destroyArrowService
-
         SERVICE_DESTROY( ResourceService, m_resourceService );
 
         SERVICE_DESTROY( Watchdog, m_watchdog );
@@ -1431,7 +1428,6 @@ namespace Menge
         SERVICE_DESTROY( AmplifierService, m_amplifierService );
         SERVICE_DESTROY( TextService, m_textService );
         SERVICE_DESTROY( NodeService, m_nodeService );
-        //m_eventService->destroy();
         
 		SERVICE_DESTROY( PrototypeService, m_prototypeService );
 

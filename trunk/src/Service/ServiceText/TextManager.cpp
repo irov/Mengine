@@ -30,6 +30,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::~TextManager()
 	{
+		m_texts.clear();
+		m_fonts.clear();
+		m_glyphs.clear();
+		m_paks.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
     void TextManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )

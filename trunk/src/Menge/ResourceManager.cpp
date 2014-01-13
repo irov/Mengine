@@ -28,6 +28,8 @@ namespace Menge
 	{		
         //_dumpResources();
 
+		m_resourcesCache.clear();
+
         for( TMapResource::const_iterator
             it = m_resources.begin(),
             it_end = m_resources.end();

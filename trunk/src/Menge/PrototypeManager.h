@@ -20,8 +20,8 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool addPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterface * _generator ) override;
-		bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterface ** _generator ) const override;
+		bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
+		bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const override;
 
     public:
         Factorable * generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
@@ -55,7 +55,7 @@ namespace Menge
             }
         };
 
-        typedef stdex::binary_vector<CategoryKey, PrototypeGeneratorInterface *, CategoryKeyLess> TMapPrototypes;
+        typedef stdex::binary_vector<CategoryKey, PrototypeGeneratorInterfacePtr, CategoryKeyLess> TMapPrototypes;
 		TMapPrototypes m_prototypes;       
 	};
 }

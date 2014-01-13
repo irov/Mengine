@@ -112,8 +112,5 @@ namespace Menge
 		typedef std::vector<ResourceReference *> TVectorResources;
 		typedef stdex::binary_vector<CategoryGroupKey, TVectorResources, CategoryGroupLess> TMapResourceCache;
 		TMapResourceCache m_resourcesCache;
-        
-		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
-		TListResourceManagerListener m_listeners;
 	};
 }

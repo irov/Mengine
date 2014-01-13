@@ -25,22 +25,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-void Mengine_alloc(size_t)
-{
-
-}
-
-void Mengine_realloc(void *, size_t)
-{
-
-}
-
-void Mengine_free(void *)
-{
-
-}
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Menge::ScriptServiceInterface, Menge::ScriptEngine );
 //////////////////////////////////////////////////////////////////////////
@@ -187,13 +171,18 @@ namespace Menge
 		m_scriptWrapper.clear();       
 
         delete m_loger;
+		m_loger = nullptr;
+
         delete m_errorLogger;
+		m_errorLogger = nullptr;
+
         delete m_moduleFinder;
+		m_moduleFinder = nullptr;
 
-        pybind::setStdOutHandle( NULL );
-        pybind::setStdErrorHandle( NULL );
+        pybind::setStdOutHandle( nullptr );
+        pybind::setStdErrorHandle( nullptr );
 
-		pybind::finalize();        
+		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )

@@ -102,7 +102,6 @@ namespace Menge
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef FactoryPool<ConstStringHolderPythonString, 256> FactoryPoolPythonString;
-		//typedef FactoryDefault<ConstStringHolderPythonString> FactoryPoolPythonString;
         FactoryPoolPythonString m_poolPythonString;
 	};
 }

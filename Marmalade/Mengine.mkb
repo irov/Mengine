@@ -166,7 +166,12 @@ files
     [Service/ServiceUnicode]
     ("../src/Service/ServiceUnicode")	
 	"*.h"
-	"*.cpp"        
+	"*.cpp"   
+
+    [Service/ServiceText]
+    ("../src/Service/ServiceText")	
+	"*.h"
+	"*.cpp"    	
 
     [System/SilentSoundSystem]
     ("../src/System/SilentSoundSystem")	

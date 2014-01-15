@@ -4,6 +4,10 @@
 
 #	include "stdex/pool.h"
 
+#	ifdef _DEBUG
+#	include <typeinfo>
+#	endif
+
 namespace Menge
 {
 	template<class T, size_t Count>

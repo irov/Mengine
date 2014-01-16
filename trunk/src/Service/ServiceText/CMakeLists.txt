@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME Service2Text2 )
+SET( MY_LIB_NAME ServiceText )
 
 ADD_FILTER(
 src

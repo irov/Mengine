@@ -68,9 +68,6 @@ namespace Menge
 		virtual const FilePath & getBaseDir() const = 0;
 		
 	public:
-		virtual PlatformInterface * getPlatform() const = 0;
-
-	public:
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
 
 	public:

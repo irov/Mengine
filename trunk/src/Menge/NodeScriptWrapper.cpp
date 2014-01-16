@@ -2298,10 +2298,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_openUrlInDefaultBrowser( const WString & _url )
         {
-            PlatformInterface * platform = APPLICATION_SERVICE(m_serviceProvider)
-                ->getPlatform();
-
-            bool val = platform->openUrlInDefaultBrowser( _url );
+            bool val = PLATFORM_SERVICE(m_serviceProvider)->openUrlInDefaultBrowser( _url );
 
             return val;
         }

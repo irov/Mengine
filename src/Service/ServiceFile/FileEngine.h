@@ -12,7 +12,6 @@ namespace Menge
 
 	class FileEngine
 		: public FileServiceInterface
-		, public FactoryManager
 	{
 	public:
 		FileEngine();

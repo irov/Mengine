@@ -50,22 +50,21 @@ namespace Menge
             return false;
         }
 	
-		PlatformInterface * platform = APPLICATION_SERVICE(m_serviceProvider)
-            ->getPlatform();
-
 		//Py_IgnoreEnvironmentFlag = 1;
 		//Py_VerboseFlag = 1;
 		//Py_NoUserSiteDirectory = 1;
 		//Py_NoSiteFlag = 1;
 
-        String currentPath = platform->getCurrentPath();
+        String currentPath = PLATFORM_SERVICE(m_serviceProvider)
+			->getCurrentPath();
 
         {
             String exportPath = currentPath + "XlsxExport\\";
 
             char utf8_shortpath[MAX_PATH * 2];
 
-            size_t utf8_shortpath_len = platform->getShortPathName( exportPath, utf8_shortpath, MAX_PATH * 2 );
+            size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
+				->getShortPathName( exportPath, utf8_shortpath, MAX_PATH * 2 );
 
             wchar_t unicode_shortpath[MAX_PATH];
 
@@ -107,7 +106,8 @@ namespace Menge
         {
             char utf8_shortpath[MAX_PATH * 2];
 
-            size_t utf8_shortpath_len = platform->getShortPathName( stdPath, utf8_shortpath, MAX_PATH * 2 );
+            size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
+				->getShortPathName( stdPath, utf8_shortpath, MAX_PATH * 2 );
 
             wchar_t unicode_shortpath[MAX_PATH];
 

@@ -115,8 +115,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
-		: m_platform(nullptr)
-		, m_particles(true)
+		: m_particles(true)
 		, m_debugMask(0)
 		, m_phycisTiming(0.f)
 		, m_resetTiming(false)
@@ -166,8 +165,6 @@ namespace Menge
     void Application::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        m_platform = PLATFORM_SERVICE(m_serviceProvider);
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * Application::getServiceProvider() const
@@ -291,11 +288,6 @@ namespace Menge
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	PlatformInterface * Application::getPlatform() const
-	{
-		return m_platform;
-	}
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -815,7 +807,8 @@ namespace Menge
 		if( fullscreen == true )
 		{
             Resolution desktopResolution;
-            m_platform->getDesktopResolution( desktopResolution );
+            PLATFORM_SERVICE(m_serviceProvider)
+				->getDesktopResolution( desktopResolution );
 
             m_currentResolution = desktopResolution;
 		}
@@ -856,11 +849,13 @@ namespace Menge
         {
             if( fullscreen == true )
             {
-                m_platform->notifyCursorClipping( m_renderViewport );
+                PLATFORM_SERVICE(m_serviceProvider)
+					->notifyCursorClipping( m_renderViewport );
             }
             else
             {
-                m_platform->notifyCursorUnClipping();
+                PLATFORM_SERVICE(m_serviceProvider)
+					->notifyCursorUnClipping();
             }
         }
 
@@ -1154,9 +1149,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
 	{
-		m_platform->stop();
+		PLATFORM_SERVICE(m_serviceProvider)
+			->stop();
 		
-		RENDER_SERVICE(m_serviceProvider)->onWindowClose();
+		RENDER_SERVICE(m_serviceProvider)
+			->onWindowClose();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticlesEnabled( bool _enabled )
@@ -1220,7 +1217,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
 	{
-		m_platform->minimizeWindow();
+		PLATFORM_SERVICE(m_serviceProvider)
+			->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onUpdate()
@@ -1403,7 +1401,8 @@ namespace Menge
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const
 	{
 		Resolution dres;
-        m_platform->getMaxClientResolution( dres );
+        PLATFORM_SERVICE(m_serviceProvider)
+			->getMaxClientResolution( dres );
 
 		float aspect = m_windowResolution.getAspectRatio();
 
@@ -1462,11 +1461,13 @@ namespace Menge
 		{
 			if( m_mouseBounded == true )
 			{
-				m_platform->notifyCursorClipping( m_renderViewport );
+				PLATFORM_SERVICE(m_serviceProvider)
+					->notifyCursorClipping( m_renderViewport );
 			}
 			else
 			{
-				m_platform->notifyCursorUnClipping();
+				PLATFORM_SERVICE(m_serviceProvider)
+					->notifyCursorUnClipping();
 			}
 		}
 	}
@@ -1660,7 +1661,8 @@ namespace Menge
 		if( fullscreen == true )
 		{
             Resolution desktopResolution;
-            m_platform->getDesktopResolution( desktopResolution );
+            PLATFORM_SERVICE(m_serviceProvider)
+				->getDesktopResolution( desktopResolution );
 
             m_currentResolution = desktopResolution;
 		}
@@ -1675,9 +1677,11 @@ namespace Menge
             , m_currentResolution.getHeight()
             );
         
-		RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
+		RENDER_SERVICE(m_serviceProvider)
+			->setVSync( m_vsync );
 
-		m_platform->notifyWindowModeChanged( m_currentResolution, fullscreen );
+		PLATFORM_SERVICE(m_serviceProvider)
+			->notifyWindowModeChanged( m_currentResolution, fullscreen );
 
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
@@ -1691,7 +1695,8 @@ namespace Menge
 
 		if( fullscreen == true )
 		{
-			m_platform->notifyCursorClipping( m_renderViewport );
+			PLATFORM_SERVICE(m_serviceProvider)
+				->notifyCursorClipping( m_renderViewport );
 		}
 		else
 		{
@@ -1922,13 +1927,17 @@ namespace Menge
 				RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
 			}
 
-			m_platform->notifyVsyncChanged( m_vsync );
+			PLATFORM_SERVICE(m_serviceProvider)
+				->notifyVsyncChanged( m_vsync );
+
 			m_invalidateVsync = false;
 		}
 
 		if( m_invalidateCursorMode == true )
 		{
-			m_platform->notifyCursorModeChanged( m_cursorMode );
+			PLATFORM_SERVICE(m_serviceProvider)
+				->notifyCursorModeChanged( m_cursorMode );
+
 			m_invalidateCursorMode = false;
 		}
 	}
@@ -1949,7 +1958,8 @@ namespace Menge
 			size_t cursorBufferSize;
 			void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
 
-			m_platform->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
+			PLATFORM_SERVICE(m_serviceProvider)
+				->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
 		}
 
 		m_invalidateCursorMode = true;
@@ -1989,7 +1999,8 @@ namespace Menge
 		size_t cursorBufferSize;
 		void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
 
-		m_platform->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
+		PLATFORM_SERVICE(m_serviceProvider)
+			->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void Application::setAsScreensaver( bool _set )
@@ -1999,12 +2010,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::showKeyboard()
 	{
-		m_platform->showKeyboard();
+		PLATFORM_SERVICE(m_serviceProvider)
+			->showKeyboard();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::hideKeyboard()
 	{
-		m_platform->hideKeyboard();
+		PLATFORM_SERVICE(m_serviceProvider)
+			->hideKeyboard();
 	}
 }
 

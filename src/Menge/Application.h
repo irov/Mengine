@@ -76,9 +76,6 @@ namespace Menge
 		const FilePath & getBaseDir() const override;
 
 	public:
-		PlatformInterface * getPlatform() const override;
-
-	public:
 		bool getAllowFullscreenSwitchShortcut() const override;
         	
 	public:
@@ -203,8 +200,6 @@ namespace Menge
         void invalidateWindow_();
 
 	protected:
-		PlatformInterface * m_platform;
-
 		ConsoleInterface * m_console;
 
 		typedef std::map<String, DynamicLibraryInterface *> TDynamicLibraries;

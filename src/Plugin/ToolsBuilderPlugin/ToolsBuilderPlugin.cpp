@@ -61,13 +61,13 @@ namespace Menge
 
 	static bool initialize()
 	{
-		if( createServiceProvider( &serviceProvider ) == false )
+		if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
 		{
 			return false;
 		}
 
 		UnicodeSystemInterface * unicodeSystem;
-		if( createUnicodeSystem( &unicodeSystem ) == false )
+		if( SERVICE_CREATE( UnicodeSystem, &unicodeSystem ) == false )
 		{
 			return false;
 		}
@@ -78,7 +78,7 @@ namespace Menge
 		}
 
 		UnicodeServiceInterface * unicodeService;
-		if( createUnicodeService( &unicodeService ) == false )
+		if( SERVICE_CREATE( UnicodeService, &unicodeService ) == false )
 		{
 			return false;
 		}
@@ -89,7 +89,7 @@ namespace Menge
 		}
 
 		StringizeServiceInterface * stringizeService;
-		if( createStringizeService( &stringizeService ) == false )
+		if( SERVICE_CREATE( StringizeService, &stringizeService ) == false )
 		{
 			return false;
 		}
@@ -100,7 +100,7 @@ namespace Menge
 		}
 
 		ArchiveServiceInterface * archiveService;
-		if( createArchiveService( &archiveService ) == false )
+		if( SERVICE_CREATE( ArchiveService, &archiveService ) == false )
 		{
 			return false;
 		}
@@ -111,7 +111,7 @@ namespace Menge
 		}
 
 		LogServiceInterface * logService;
-		if( createLogService( &logService ) == false )
+		if( SERVICE_CREATE( LogService, &logService ) == false )
 		{
 			return false;
 		}
@@ -165,7 +165,7 @@ namespace Menge
 		}
 
 		ConverterServiceInterface * converterService;
-		if( createConverterService( &converterService ) == false )
+		if( SERVICE_CREATE( ConverterService, &converterService ) == false )
 		{
 			return false;
 		}
@@ -176,7 +176,7 @@ namespace Menge
 		}
 
 		CodecServiceInterface * codecService;
-		if( createCodecService( &codecService ) == false )
+		if( SERVICE_CREATE( CodecService, &codecService ) == false )
 		{
 			return false;
 		}
@@ -187,7 +187,7 @@ namespace Menge
 		}
 
 		DataServiceInterface * dataService;
-		if( createDataService( &dataService ) == false )
+		if( SERVICE_CREATE( DataService, &dataService ) == false )
 		{
 			return false;
 		}
@@ -198,7 +198,7 @@ namespace Menge
 		}
 				
 		CacheServiceInterface * cacheService;
-		if( createCacheService( &cacheService ) == false )
+		if( SERVICE_CREATE( CacheService, &cacheService ) == false )
 		{
 			return false;
 		}
@@ -209,7 +209,7 @@ namespace Menge
 		}
 
 		PluginServiceInterface * pluginService;
-		if( createPluginService( &pluginService ) == false )
+		if( SERVICE_CREATE( PluginService, &pluginService ) == false )
 		{
 			return false;
 		}
@@ -227,7 +227,7 @@ namespace Menge
 		}
 
 		FileSystemInterface * fileSystem;
-		if( createFileSystem( &fileSystem ) == false )
+		if( SERVICE_CREATE( FileSystem, &fileSystem ) == false )
 		{
 			return false;
 		}
@@ -238,7 +238,7 @@ namespace Menge
 		}
 
 		FileServiceInterface * fileService;
-		if( createFileService( &fileService ) == false )
+		if( SERVICE_CREATE( FileService, &fileService ) == false )
 		{
 			return false;
 		}

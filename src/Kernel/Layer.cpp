@@ -65,7 +65,7 @@ namespace Menge
 	{
 		const mt::vec3f & wp = _node->getWorldPosition();
 
-		const mt::mat4f & vm = _camera->getViewMatrix();
+		const mt::mat4f & vm = _camera->getCameraViewMatrix();
 
 		mt::vec3f sc;
 		mt::mul_m4_v3( sc, vm, wp );

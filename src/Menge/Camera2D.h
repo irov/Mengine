@@ -28,11 +28,12 @@ namespace Menge
 		void setRenderport( const Viewport & _viewport );
 
 	public:
-		const Viewport & getRenderport() const override;
+		const Viewport & getCameraRenderport() const override;
 
 	public:
-		const mt::mat4f & getProjectionMatrix() const override;
-		const mt::mat4f & getViewMatrix() const override;
+		const mt::mat4f & getCameraWorldMatrix() const override;
+		const mt::mat4f & getCameraProjectionMatrix() const override;
+		const mt::mat4f & getCameraViewMatrix() const override;
 
 	public:
 		bool isOrthogonalProjection() const override;
@@ -61,6 +62,8 @@ namespace Menge
 
 		Observer * m_observerChangeWindowResolution;
 
+		mt::mat4f m_worldMatrix;
+		
 		mutable mt::mat4f m_viewMatrix;
 		mutable mt::mat4f m_projectionMatrix;
 

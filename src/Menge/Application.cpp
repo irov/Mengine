@@ -1,40 +1,8 @@
 #	include "Application.h"
 
-#   include "Interface/InputSystemInterface.h"
-#   include "Interface/RenderSystemInterface.h"
-#	include "Interface/SoundSystemInterface.h"
-
-#   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/EventInterface.h"
-#   include "Interface/PhysicSystem2DInterface.h"
-
-#   include "Interface/StringizeInterface.h"
-
-#	include "Interface/NotificationServiceInterace.h"
-#	include "Interface/NotificatorInterface.h"
-
-#   include "Interface/MousePickerSystemInterface.h"
-
-//#	include "LightSystem.h"
-#   include "Consts.h"
-
 #	include "Game.h"
 
 #	include "Logger/Logger.h"
-
-#	include "Interface/LoaderInterface.h"
-#	include "Interface/NodeInterface.h"
-#	include "Interface/TextInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
-#	include "Interface/CodecInterface.h"
-
-#   include "Interface/ConverterInterface.h"
-
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/AlphaChannelInterface.h"
-#   include "Interface/AccountInterface.h"
-#   include "Interface/ProfilerInterface.h"
 
 #	include "Watchdog.h"
 
@@ -132,16 +100,14 @@
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN(Consts, Menge::Consts);
+SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
 SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
-SERVICE_EXTERN(AlphaChannelService, Menge::AlphaChannelServiceInterface);
-SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
 SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
-//SERVICE_EXTERN(ProfilerService, Menge::ProfilerServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -387,7 +353,7 @@ namespace Menge
 	bool Application::initializeNodeManager_()
 	{	
 		NodeServiceInterface * nodeService;
-        if( createNodeService( &nodeService ) == false )
+        if( SERVICE_CREATE( NodeService, &nodeService ) == false )
         {
             return false;
         }
@@ -690,7 +656,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Resource Manager..." );
 
         ResourceServiceInterface * resourceService;
-        if( createResourceService( &resourceService ) == false )
+        if( SERVICE_CREATE( ResourceService, &resourceService ) == false )
         {
             return false;
         }

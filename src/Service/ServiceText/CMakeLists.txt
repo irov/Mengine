@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME ServiceText )
+SET( MY_LIB_NAME Service2Text2 )
 
 ADD_FILTER(
 src
@@ -21,7 +21,6 @@ ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
-    ${THIRDPARTY_DIR}/pugixml/src
     ${THIRDPARTY_DIR}/utf8/source
     ) 
 

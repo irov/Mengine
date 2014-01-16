@@ -156,8 +156,6 @@ namespace Menge
 		, m_active(false)
 		, m_windowClassName(L"MengeWnd")
 		, m_hWnd(NULL)
-		, m_cursorInArea(false)
-        , m_clickOutArea(false)
 		, m_hInstance(NULL)
 		, m_loggerConsole(nullptr)
 		, m_application(nullptr)
@@ -240,7 +238,7 @@ namespace Menge
     bool WinApplication::initializeApplicationService_()
     {   
         ApplicationInterface * application;
-        if( createApplication( &application ) == false )
+        if( SERVICE_CREATE( Application, &application ) == false )
         {
             return false;
         }
@@ -288,7 +286,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
         
         ThreadSystemInterface * threadSystem;
-        if( createThreadSystem( &threadSystem ) == false )
+        if( SERVICE_CREATE( ThreadSystem, &threadSystem ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
                 );
@@ -312,7 +310,7 @@ namespace Menge
         }
 
         ThreadServiceInterface * threadService;
-        if( createThreadService( &threadService ) == false )
+        if( SERVICE_CREATE( ThreadService, &threadService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
                 );
@@ -340,7 +338,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
 
         ArchiveServiceInterface * archiveService;
-        if( createArchiveService( &archiveService ) == false )
+        if( SERVICE_CREATE( ArchiveService, &archiveService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeArchiveService_ failed to create ArchiveService"
                 );
@@ -363,7 +361,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
         
         FileSystemInterface * fileSystem;
-        if( createFileSystem( &fileSystem ) == false )
+        if( SERVICE_CREATE( FileSystem, &fileSystem ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileSystem"
                 );
@@ -379,7 +377,7 @@ namespace Menge
         m_fileSystem = fileSystem;
         
         FileServiceInterface * fileService;
-        if( createFileService( &fileService ) == false )
+        if( SERVICE_CREATE( FileService, &fileService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileService"
                 );
@@ -610,7 +608,7 @@ namespace Menge
     bool WinApplication::initializeStringizeService_()
     {
         StringizeServiceInterface * stringizeService;
-        if( createStringizeService( &stringizeService ) == false )
+        if( SERVICE_CREATE( StringizeService, &stringizeService ) == false )
         {
             return false;
         }
@@ -628,7 +626,7 @@ namespace Menge
     bool WinApplication::initializeLogEngine_()
     {
         LogServiceInterface * logService;
-        if( createLogService( &logService ) == false )
+        if( SERVICE_CREATE( LogService, &logService ) == false )
         {
             return false;
         }
@@ -709,7 +707,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Unicode Service..." );
         
         UnicodeSystemInterface * unicodeSystem;
-        if( createUnicodeSystem( &unicodeSystem ) == false )
+        if( SERVICE_CREATE( UnicodeSystem, &unicodeSystem ) == false )
         {
             return false;
         }
@@ -722,7 +720,7 @@ namespace Menge
         m_unicodeSystem = unicodeSystem;
         
         UnicodeServiceInterface * unicodeService;
-        if( createUnicodeService( &unicodeService ) == false )
+        if( SERVICE_CREATE( UnicodeService, &unicodeService ) == false )
         {
             return false;
         }
@@ -742,7 +740,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
         
         ParticleSystemInterface * particleSystem;
-        if( createParticleSystem( &particleSystem ) == false )
+        if( SERVICE_CREATE( ParticleSystem, &particleSystem ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
                 );
@@ -758,7 +756,7 @@ namespace Menge
         m_particleSystem = particleSystem;
                 
         ParticleServiceInterface * particleService;
-        if( createParticleService( &particleService ) == false )
+        if( SERVICE_CREATE( ParticleService, &particleService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine_ Failed to initialize ParticleService"
                 );
@@ -780,51 +778,51 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Physics2D Service..." );
         
-        PhysicSystem2DInterface * physicSystem2D;
-        if( SERVICE_CREATE( PhysicSystem2D, &physicSystem2D ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
-                );
+		PhysicSystem2DInterface * physicSystem2D;
+		if( SERVICE_CREATE( PhysicSystem2D, &physicSystem2D ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
+				);
 
-            return false;
-        }
+			return false;
+		}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, physicSystem2D ) == false )
-        {
-            return false;
-        }
+		if( SERVICE_REGISTRY( m_serviceProvider, physicSystem2D ) == false )
+		{
+			return false;
+		}
 
-        if( physicSystem2D->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize Physics System 2D"
-                );
+		if( physicSystem2D->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize Physics System 2D"
+				);
 
-            return false;
-        }
-        
-        PhysicService2DInterface * physicService2D;
-        if( SERVICE_CREATE( PhysicService2D, &physicService2D ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to create Physic Service 2D"
-                );
+			return false;
+		}
 
-            return false;
-        }
+		PhysicService2DInterface * physicService2D;
+		if( SERVICE_CREATE( PhysicService2D, &physicService2D ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to create Physic Service 2D"
+				);
 
-        if( SERVICE_REGISTRY( m_serviceProvider, physicService2D ) == false )
-        {
-            return false;
-        }
+			return false;
+		}
 
-        m_physicService2D = physicService2D;
+		if( SERVICE_REGISTRY( m_serviceProvider, physicService2D ) == false )
+		{
+			return false;
+		}
 
-        if( m_physicService2D->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize Physics Service 2D"
-                );
+		m_physicService2D = physicService2D;
 
-            return false;
-        }
+		if( m_physicService2D->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize Physics Service 2D"
+				);
+
+			return false;
+		}
         
         return true;
     }
@@ -930,7 +928,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
 
         SoundSystemInterface * soundSystem;
-        if( createSoundSystem( &soundSystem ) == false )
+        if( SERVICE_CREATE( SoundSystem, &soundSystem ) == false )
         {
             return false;
         }
@@ -951,7 +949,7 @@ namespace Menge
         m_soundSystem = soundSystem;
         
         SoundServiceInterface * soundService;
-        if( createSoundService( &soundService ) == false )
+        if( SERVICE_CREATE( SoundService, &soundService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSoundEngine_ Failed to create Sound Engine"
                 );
@@ -984,7 +982,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Silent Sound Service..." );
 
         SoundSystemInterface * soundSystem;
-        if( createSilentSoundSystem( &soundSystem ) == false )
+        if( SERVICE_CREATE( SilentSoundSystem, &soundSystem ) == false )
         {
             return false;
         }
@@ -1003,7 +1001,7 @@ namespace Menge
         }
 
         SoundServiceInterface * soundService;
-        if( createSoundService( &soundService ) == false )
+        if( SERVICE_CREATE( SoundService, &soundService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Application::initializeSilentSoundEngine_ Failed to create Sound Engine"
                 );
@@ -1034,7 +1032,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Script Service..." );
 
         ScriptServiceInterface * scriptService;
-        if( createScriptService( &scriptService ) == false )
+        if( SERVICE_CREATE( ScriptService, &scriptService ) == false )
         {
             return false;
         }
@@ -1062,7 +1060,7 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Initializing Module Service..." );
 
 		ModuleServiceInterface * moduleService;
-		if( createModuleService( &moduleService ) == false )
+		if( SERVICE_CREATE( ModuleService, &moduleService ) == false )
 		{
 			return false;
 		}
@@ -1082,7 +1080,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
 
         CodecServiceInterface * codecService;
-        if( createCodecService( &codecService ) == false )
+        if( SERVICE_CREATE( CodecService, &codecService ) == false )
         {
             return false;
         }
@@ -1168,7 +1166,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Input Service..." );
 
         InputServiceInterface * inputService;
-        if( createInputService( &inputService ) == false )
+        if( SERVICE_CREATE( InputService, &inputService ) == false )
         {
             return false;
         }
@@ -1203,7 +1201,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
 
         PluginServiceInterface * pluginService;
-        if( createPluginService( &pluginService ) == false )
+        if( SERVICE_CREATE( PluginService, &pluginService ) == false )
         {
             return false;
         }
@@ -1266,7 +1264,7 @@ namespace Menge
         Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
 
         ServiceProviderInterface * serviceProvider;
-        if( createServiceProvider( &serviceProvider ) == false )
+        if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
         {
             return false;
         }
@@ -2436,21 +2434,6 @@ namespace Menge
 		case WM_NCMOUSEMOVE:
 		case WM_MOUSELEAVE:
 			{
-				if( m_cursorInArea == true )
-				{
-					m_cursorInArea = false;
-
-					mt::vec2f point;
-					this->getCursorPosition( point );
-
-                    m_inputService->onMouseLeave( 0, point );
-				}
-
-                if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
-                {
-                    m_clickOutArea = true;
-                }
-
                 handle = true;
                 _result = FALSE;
 			}break;
@@ -2458,63 +2441,60 @@ namespace Menge
 		case WM_MOUSEMOVE:
 			{
                 //::SetFocus( m_hWnd );
+				int x = (int)(short)LOWORD(lParam);
+				int y = (int)(short)HIWORD(lParam);
+
+				RECT area;
+				GetClientRect( m_hWnd, &area );
 
 				mt::vec2f point;
 				this->getCursorPosition( point );
 
-				if( m_cursorInArea == false )
+				if( (x < area.left) || (x > area.right) || (y < area.top) || (y > area.bottom) )
 				{
-					m_cursorInArea = true;
+					ReleaseCapture();
 
-                    m_inputService->onMouseEnter( 0, point );
+					if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
+					{
+						m_inputService->onMouseButtonEvent( 0, point, 0, false );
+					}
 
-					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
-					BOOL track = _TrackMouseEvent( &mouseEvent );
+					m_inputService->onMouseLeave( 0, point );
+				}
+				else 
+				{
+					if( GetCapture() != m_hWnd )
+					{
+						SetCapture( m_hWnd );
 
-                    if( track == FALSE )
-                    {
-                        LOGGER_ERROR(m_serviceProvider)("_TrackMouseEvent sizeof(TRACKMOUSEEVENT), TME_LEAVE, %d, HOVER_DEFAULT"
-                            , m_hWnd
-                            );
-                    }
+						m_inputService->onMouseEnter( 0, point );
+					}
+
+					int dx = x - m_lastMouseX;
+					int dy = y - m_lastMouseY;
+
+					if( dx == 0 && dy == 0 )
+					{
+						break;
+					}
+
+					float fdx = (float)dx;
+					float fdy = (float)dy;
+
+					const Resolution & contentResolution = m_application->getContentResolution();
+					mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
+
+					float fdx_scale = fdx * resolutionScale.x;
+					float fdy_scale = fdy * resolutionScale.y;
+
+					m_inputService->onMouseMove( 0, point, fdx_scale, fdy_scale, 0 );
+
+					m_lastMouseX = x;
+					m_lastMouseY = y;
 				}
 
-                if( m_clickOutArea == true )
-                {
-                    m_clickOutArea = false;
-
-                    if( (GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
-                    {
-                        m_inputService->onMouseButtonEvent( 0, point, 0, false );
-                    }                    
-                }
-
-				int x = (int)(short)LOWORD(lParam);
-				int y = (int)(short)HIWORD(lParam);
-				int dx = x - m_lastMouseX;
-				int dy = y - m_lastMouseY;
-
-				if( dx == 0 && dy == 0 )
-				{
-					break;
-				}
-
-                float fdx = (float)dx;
-                float fdy = (float)dy;
-
-                const Resolution & contentResolution = m_application->getContentResolution();
-                mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
-                
-                float fdx_scale = fdx * resolutionScale.x;
-                float fdy_scale = fdy * resolutionScale.y;
-
-				m_inputService->onMouseMove( 0, point, fdx_scale, fdy_scale, 0 );
-
-				m_lastMouseX = x;
-				m_lastMouseY = y;
-
-                handle = true;
-                _result = FALSE;
+				handle = true;
+				_result = FALSE;
 			}break;
 		case WM_MOUSEWHEEL:
 			{

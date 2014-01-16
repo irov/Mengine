@@ -31,11 +31,14 @@ namespace Menge
 
 	public:
 		void setRenderport( const Viewport & _renderport );
-		const Viewport & getRenderport() const override;
+
+	public:
+		const Viewport & getCameraRenderport() const override;
 
 	public:		
-		const mt::mat4f & getProjectionMatrix() const override;
-		const mt::mat4f & getViewMatrix() const override;
+		const mt::mat4f & getCameraWorldMatrix() const override;
+		const mt::mat4f & getCameraProjectionMatrix() const override;
+		const mt::mat4f & getCameraViewMatrix() const override;
 
 	public:
 		bool isOrthogonalProjection() const override;
@@ -65,6 +68,8 @@ namespace Menge
 
 		Observer * m_notifyChangeWindowResolution;
 
+		mt::mat4f m_worldMatrix;
+
 		mutable mt::mat4f m_viewMatrixWM;
 		mutable mt::mat4f m_projectionMatrixWM;
 		
@@ -76,7 +81,12 @@ namespace Menge
 		m_invalidateMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat4f & Camera3D::getProjectionMatrix() const
+	inline const mt::mat4f & Camera3D::getCameraWorldMatrix() const
+	{
+		return m_worldMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera3D::getCameraProjectionMatrix() const
 	{
 		if( m_invalidateMatrix == true )
 		{
@@ -86,7 +96,7 @@ namespace Menge
 		return m_projectionMatrixWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat4f & Camera3D::getViewMatrix() const
+	inline const mt::mat4f & Camera3D::getCameraViewMatrix() const
 	{
 		if( m_invalidateMatrix == true )
 		{

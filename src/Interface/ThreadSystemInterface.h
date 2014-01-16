@@ -34,8 +34,8 @@ namespace Menge
         virtual bool onRun() = 0;
         virtual void onCancel() = 0;
         virtual void onComplete() = 0;
-        virtual void onUpdate() = 0;
-        virtual void onInterrupt() = 0;
+		virtual void onUpdate() = 0;
+		virtual void onInterrupt() = 0;
 
     public:
         virtual void cancel() = 0;

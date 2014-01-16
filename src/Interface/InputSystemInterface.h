@@ -239,13 +239,6 @@ namespace Menge
         KC_MAX_CODE    = 0xFF
 	};
 
-	enum KeyModifier
-	{
-		KM_CTRL = 0,
-		KM_SHIFT,
-		KM_ALT
-	};
-
 	class InputSystemHandler
 	{
 	public:
@@ -293,7 +286,6 @@ namespace Menge
 
 	public:
 		virtual bool isKeyDown( KeyCode _keyCode ) = 0;
-		virtual bool isModifierDown( KeyModifier _modifier ) = 0;
 
 		virtual bool isAnyMouseButtonDown() const = 0;
 		virtual bool isMouseButtonDown( int _button ) const = 0;

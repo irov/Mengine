@@ -70,15 +70,20 @@ namespace Menge
         }
     }
 
-#   define SERVICE_DECLARE( NAME )\
+#	define SERVICE_NAME_CREATE( Name )\
+	serviceCreate##Name
+
+#	define SERVICE_NAME_DESTROY( Name )\
+	serviceDestroy##Name
+
+
+#   define SERVICE_DECLARE( Name )\
     public:\
-        inline static const char * getServiceName(){ return NAME; };\
+        inline static const char * getServiceName(){ return Name; };\
     protected:
 
 #   define SERVICE_FACTORY( Name, Service, Implement )\
-    extern "C"\
-    {\
-    bool create##Name( Service ** _service )\
+    bool SERVICE_NAME_CREATE(Name)( Service ** _service )\
     {\
     if( _service == nullptr )\
     {\
@@ -87,35 +92,28 @@ namespace Menge
     *_service = new Implement();\
     return true;\
     }\
-    void destroy##Name( Service * _service )\
+    void SERVICE_NAME_DESTROY(Name)( Service * _service )\
     {\
     delete static_cast<Implement *>(_service);\
     }\
-    }\
-    struct __mengine_dummy{}
+	struct __mengine_dummy_factory##Name{}
 
 #   define SERVICE_EXTERN( Name, Service )\
-    extern "C"\
-    {\
-    extern bool create##Name( Service ** );\
-    extern void destroy##Name( Service * );\
-    }\
-    struct __mengine_extern_dummy_##Name{}
+    extern bool SERVICE_NAME_CREATE(Name)( Service ** );\
+    extern void SERVICE_NAME_DESTROY(Name)( Service * );\
+    struct __mengine_dummy_extern_##Name{}
 
 #   define SERVICE_DUMMY( Name, Service )\
-    extern "C"\
-    {\
-    bool create##Name( Service ** ){return false;};\
-    void destroy##Name( Service * ){};\
-    }\
-    struct __mengine_extern_dummy_##Name{}
+    bool SERVICE_NAME_CREATE(Name)( Service ** ){return false;};\
+    void SERVICE_NAME_DESTROY(Name)( Service * ){};\
+    struct __mengine_dummy_extern_##Name{}
 
 #   define SERVICE_REGISTRY( Provider, Service )\
-    Provider->registryService(Service->getServiceName(), Service)
+    Provider->registryService( Service->getServiceName(), Service )
 
 #   define SERVICE_CREATE( Name, Service )\
-    create##Name( Service )
+    SERVICE_NAME_CREATE(Name)( Service )
 
 #   define SERVICE_DESTROY( Name, Service )\
-	{destroy##Name( Service ); Service = nullptr;}
+	SERVICE_NAME_DESTROY(Name)( Service )
 }

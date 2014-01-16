@@ -140,24 +140,6 @@ namespace Menge
 		return m_keyBuffer[ static_cast<int>( _keyCode ) ] == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isModifierDown( KeyModifier _modifier )
-	{
-		bool isDown = false;
-		switch( _modifier )
-		{
-		case KM_CTRL:
-			isDown = isKeyDown( KC_LCONTROL ) || isKeyDown( KC_RCONTROL );
-			break;
-		case KM_SHIFT:
-			isDown = isKeyDown( KC_LSHIFT ) || isKeyDown( KC_RSHIFT );
-			break;
-		case KM_ALT:
-			isDown = isKeyDown( KC_LMENU ) || isKeyDown( KC_RMENU );
-			break;
-		}
-		return isDown;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAnyMouseButtonDown() const
 	{
 		return m_mouseBuffer[0] || m_mouseBuffer[1] || m_mouseBuffer[2];

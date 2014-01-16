@@ -20,6 +20,7 @@ namespace Menge
         , m_cameraFOV(0.f)
         , m_cameraAspect(0.f)
 	{
+		mt::ident_m4( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera3D::_activate()
@@ -100,7 +101,7 @@ namespace Menge
 		//this->invalidateMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Camera3D::getRenderport() const
+	const Viewport & Camera3D::getCameraRenderport() const
 	{
 		return m_renderport;
 	}

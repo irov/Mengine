@@ -3567,7 +3567,6 @@ namespace Menge
                 pybind::interface_<Layer2DParallax, pybind::bases<Layer> >("Layer2DParallax", false)
                     .def( "setParallaxFactor", &Layer2DParallax::setParallaxFactor )
                     .def( "getParallaxFactor", &Layer2DParallax::getParallaxFactor )
-                    .def( "cameraToLocal", &Layer2DParallax::cameraToLocal )
                     ;
 
                 //pybind::interface_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false)

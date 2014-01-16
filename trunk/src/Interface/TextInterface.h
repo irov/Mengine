@@ -3,8 +3,6 @@
 #   include "Interface/ServiceInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 
-#   include "Config/String.h"
-
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 #   include "Core/GlyphChar.h"

@@ -51,7 +51,7 @@ namespace Menge
 
         //bool result = _layerspaceHotspot->testPolygon( lwm, screenPoly, click_wm );
 
-		const mt::mat4f & vm = m_camera->getViewMatrix();
+		const mt::mat4f & vm = m_camera->getCameraViewMatrix();
 
 		EArrowType arrowType = m_arrow->getArrowType();
 

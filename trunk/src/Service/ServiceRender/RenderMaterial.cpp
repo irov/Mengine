@@ -1,5 +1,7 @@
 #	include "RenderMaterial.h"
 
+#	include "Interface/TextInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

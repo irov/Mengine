@@ -837,12 +837,17 @@ namespace Menge
 		RENDER_SYSTEM(m_serviceProvider)
 			->setViewport( renderViewport );
 
-		const mt::mat4f & viewMatrix = camera->getViewMatrix();
+		const mt::mat4f & worldMatrix = camera->getCameraWorldMatrix();
+
+		RENDER_SYSTEM(m_serviceProvider)
+			->setWorldMatrix( worldMatrix );
+
+		const mt::mat4f & viewMatrix = camera->getCameraViewMatrix();
 
 		RENDER_SYSTEM(m_serviceProvider)
 			->setModelViewMatrix( viewMatrix );
 
-		const mt::mat4f & projectionMatrix = camera->getProjectionMatrix();
+		const mt::mat4f & projectionMatrix = camera->getCameraProjectionMatrix();
 
 		RENDER_SYSTEM(m_serviceProvider)
 			->setProjectionMatrix( projectionMatrix );
@@ -884,9 +889,9 @@ namespace Menge
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;
 
-		const Viewport & rp = pass.camera->getRenderport();
+		const Viewport & rp = pass.camera->getCameraRenderport();
 
-		const mt::mat4f & vm = pass.camera->getViewMatrix();
+		const mt::mat4f & vm = pass.camera->getCameraViewMatrix();
 
 		mt::mat4f inv_vm;
 		mt::inv_m4( inv_vm, vm );

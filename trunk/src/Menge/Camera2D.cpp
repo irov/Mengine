@@ -19,6 +19,7 @@ namespace	Menge
 		, m_invalidateMatrix(true)
 		, m_invalidateProjectionMatrix(true)
 	{
+		mt::ident_m4(m_worldMatrix);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::_activate()
@@ -58,7 +59,7 @@ namespace	Menge
 		this->invalidateViewport_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Camera2D::getRenderport() const
+	const Viewport & Camera2D::getCameraRenderport() const
 	{
 		return m_renderport;
 	}
@@ -107,7 +108,12 @@ namespace	Menge
 			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, -1000.0f, 1000.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera2D::getProjectionMatrix() const
+	const mt::mat4f & Camera2D::getCameraWorldMatrix() const
+	{
+		return m_worldMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat4f & Camera2D::getCameraProjectionMatrix() const
 	{
 		if( m_invalidateProjectionMatrix == true )
 		{
@@ -117,7 +123,7 @@ namespace	Menge
 		return m_projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera2D::getViewMatrix() const
+	const mt::mat4f & Camera2D::getCameraViewMatrix() const
 	{
 		if( m_invalidateMatrix == true )
 		{

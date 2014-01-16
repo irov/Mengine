@@ -1,14 +1,46 @@
 #	pragma once
 
-#	include "Core/Resolution.h"
-#	include "Core/Viewport.h"
-
 #	include "Interface/ApplicationInterface.h"
+
 #   include "Interface/PrototypeManagerInterface.h"
 #   include "Interface/AmplifierServiceInterface.h"
+#	include "Interface/TextInterface.h"
+
+#   include "Interface/InputSystemInterface.h"
+#   include "Interface/RenderSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
+
+#   include "Interface/ParticleSystemInterface.h"
+#   include "Interface/ScriptSystemInterface.h"
+#   include "Interface/EventInterface.h"
+#   include "Interface/PhysicSystem2DInterface.h"
+
+#   include "Interface/StringizeInterface.h"
+
+#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificatorInterface.h"
+
+#   include "Interface/MousePickerSystemInterface.h"
+
+#	include "Interface/LoaderInterface.h"
+#	include "Interface/NodeInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
+#	include "Interface/CodecInterface.h"
+
+#   include "Interface/ConverterInterface.h"
+
+#   include "Interface/ResourceInterface.h"
+#   include "Interface/AlphaChannelInterface.h"
+#   include "Interface/AccountInterface.h"
+#   include "Interface/ProfilerInterface.h"
+
+#   include "Interface/GameInterface.h"
+#   include "Interface/WatchdogInterface.h"
 
 #   include "Consts.h"
 
+#	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
 #	include "Core/ConstString.h"
 
 #	include "Logger/Logger.h"
@@ -19,34 +51,7 @@
 
 namespace Menge
 {
-	class ServiceProvider;
-
-    class LoaderServiceInterface;
-    class ResourceServiceInterface;
-    class AlphaChannelServiceInterface;
-    class TextServiceInterface;
-    class NodeServiceInterface;    
-
-    class WatchdogInterface;
-
-	class FileOutputStreamInterface;
-	class GameServiceInterface;
-	class ResourceManager;
-	class CodecEngine;
-	class TextManager;
-	class NodeManager;
-	class FileLogger;
-
-	class Watchdog;
-    class ProfilerServiceInterface;
-
 	class ResourceCursor;
-
-	class PluginInterface;
-
-	class UnicodeServiceInterface;
-
-	class RenderTextureInterface;
 
 	class Application 
 		: public ApplicationInterface

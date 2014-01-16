@@ -44,7 +44,7 @@ namespace Menge
 		}
 
 		const mt::mat4f & camera_wm = m_camera->getWorldMatrix();
-		const Viewport & camera_vp = m_camera->getRenderport();
+		const Viewport & camera_vp = m_camera->getCameraRenderport();
 		
 		Viewport camera_vpwm;
 		mt::mul_v2_m4( camera_vpwm.begin, camera_vp.begin, camera_wm );

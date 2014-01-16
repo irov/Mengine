@@ -57,7 +57,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2D::cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point )
 	{
-		const Viewport & viewport = _camera2D->getRenderport();
+		const Viewport & viewport = _camera2D->getCameraRenderport();
 
 		return _point + viewport.begin;
 	}
@@ -74,7 +74,7 @@ namespace	Menge
 
 		const mt::vec3f & wp = _node->getWorldPosition();
 
-		const mt::mat4f & vm = _camera->getViewMatrix();
+		const mt::mat4f & vm = _camera->getCameraViewMatrix();
 
 		mt::vec3f sp;
 		mt::mul_m4_v3( sp, vm, wp );

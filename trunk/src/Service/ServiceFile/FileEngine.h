@@ -6,9 +6,6 @@
 
 #   include "stdex/binary_vector.h"
 
-#	include <string>
-#	include <vector>
-
 namespace Menge
 {
 	class FileGroupInterface;

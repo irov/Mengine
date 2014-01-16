@@ -411,9 +411,9 @@ ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
- ${MY_LIB_NAME} 
+ ${MY_LIB_NAME}  
  Kernel
- Metacode
+ Metacode 
  ServiceText
 )
 

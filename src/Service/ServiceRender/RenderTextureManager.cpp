@@ -194,7 +194,7 @@ namespace Menge
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTargetTexture %dx%d %d"
+            LOGGER_ERROR(m_serviceProvider)( "RenderTextureManager::createRenderTargetTexture couldn't create RenderTargetTexture %dx%d %d"
                 , HWWidth
                 , HWHeight 
                 , HWChannels

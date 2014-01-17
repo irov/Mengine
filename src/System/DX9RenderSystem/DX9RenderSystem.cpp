@@ -1149,7 +1149,7 @@ namespace Menge
         }
         else if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: D3D8 failed to swap buffers" );
+			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::swapBuffers failed to swap buffers" );
 		}
 
 		++m_frames;
@@ -1874,7 +1874,7 @@ namespace Menge
         }
         else if( FAILED( hr ) == true )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "Error: DX9RenderSystem::restore failed to reset device (hr:%p)"
+            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::restore_ failed to reset device (hr:%p)"
                 , hr 
                 );
 

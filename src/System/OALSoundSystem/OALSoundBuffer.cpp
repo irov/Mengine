@@ -42,8 +42,6 @@ namespace Menge
 
 		if( m_alBufferId == 0 )
 		{
-			// TODO: report in case of error
-			//printf( "Error: %s\n", alGetString( error ) );
 			return false;
 		}
 
@@ -53,11 +51,6 @@ namespace Menge
 		m_channels = dataInfo->channels;
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
-
-//        printf("OALSoundBuffer::load %.4f %d\n"
-//            , float(size) / 1024.f
-//            , m_frequency
-//            );
 
 		char* buffer = new char[ size /*+ fixed_sound_buffer_size*/ ];
 		size_t decode_size = _soundDecoder->decode( buffer, size );

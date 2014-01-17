@@ -254,6 +254,9 @@ namespace Menge
             IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
 
+			//IniUtil::getIniValue( ini, resourcePack.c_str(), "Text", pack.texts, m_serviceProvider );
+			//IniUtil::getIniValue( ini, resourcePack.c_str(), "Font", pack.fonts, m_serviceProvider );
+			
 			_settings.languagePacks.push_back( pack );
 		}
 

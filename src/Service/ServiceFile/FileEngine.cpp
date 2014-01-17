@@ -112,7 +112,7 @@ namespace Menge
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: (FileEngine::unmountFileSystem) FileSystem with name '%s' not mount"
+			LOGGER_ERROR(m_serviceProvider)( "FileEngine::unmountFileGroup '%s' not mount"
 				, _fileSystemName.c_str() 
 				);
 
@@ -162,7 +162,7 @@ namespace Menge
 		FileGroupInterface * fileSystem;
 		if( m_fileSystemMap.has( _fileSystemName, &fileSystem ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Error: (FileEngine::createInputFile) FileSystem '%s' not mount"
+			LOGGER_ERROR(m_serviceProvider)( "FileEngine::getFileGroup '%s' not mount"
 				, _fileSystemName.c_str()
 				);
 

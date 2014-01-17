@@ -96,7 +96,7 @@ namespace Menge
             return false;
         }
 
-        bool state = _task->onRun();
+        bool state = _task->run();
 
         if( state == false )
         {
@@ -143,19 +143,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::joinTask( ThreadTaskInterface * _task )
+	void ThreadEngine::joinTask( ThreadTaskInterface * _task )
 	{
 		if( this->isTaskOnProgress( _task ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadEngine.joinTask: Requested task not exist"
-                );
-
-			return false;
+			return;
 		}
 
 		this->joinTask_( _task );
-
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::joinTask_( ThreadTaskInterface * _task )
@@ -169,6 +164,8 @@ namespace Menge
 
 			return false;
 		}
+
+		_task->cancel();
 
 		if( THREAD_SYSTEM(m_serviceProvider)
             ->joinThread( threadIdentity ) == false )
@@ -184,21 +181,14 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::cancelTask( ThreadTaskInterface * _task )
+	void ThreadEngine::cancelTask( ThreadTaskInterface * _task )
 	{
 		if( this->isTaskOnProgress( _task ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadEngine.cancelTask: Requested task  not exist"
-                );
-
-			return false;
+			return;
 		}
 
 		_task->cancel();
-
-		this->joinTask_( _task );
-
-        return true;
 	}
 	///////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::update()
@@ -221,25 +211,15 @@ namespace Menge
 		/*++it*/ )
 		{
 			ThreadTaskInterface * task = it->task;
-
-			task->update();
-
-			if( task->isInterrupt() == true )
+			
+			if( task->update() == false )
 			{
-				task->onInterrupt();
-			}
-			else if( task->isComplete() == true )
-			{
-				task->onComplete();
+				++it;
 			}
 			else
 			{
-				++it;
-
-				continue;
+				it = m_taskThread.erase( it );
 			}
-
-			it = m_taskThread.erase( it );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

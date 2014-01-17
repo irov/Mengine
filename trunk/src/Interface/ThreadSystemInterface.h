@@ -6,43 +6,22 @@
 
 #	include "Config/Typedef.h"
 
-#   include <vector>
-
 namespace Menge
 {
 	class ServiceProviderInterface;
 
-	class ThreadListener
-	{
-	public:
-		virtual bool main() = 0;
-		virtual void join() = 0;
-	};
-
     class ThreadTaskInterface
         : public Factorable
-        , public ThreadListener
     {
-    public:	
-        virtual bool isComplete() const = 0;
-        virtual bool isInterrupt() const = 0;
-
     public:
-        virtual bool onMain() = 0;
+		virtual void main() = 0;
+		virtual void join() = 0;
 
-    public:
-        virtual bool onRun() = 0;
-        virtual void onCancel() = 0;
-        virtual void onComplete() = 0;
-		virtual void onUpdate() = 0;
-		virtual void onInterrupt() = 0;
-
-    public:
+	public:
+		virtual bool run() = 0;
         virtual void cancel() = 0;
-        virtual void update() = 0;
+        virtual bool update() = 0;
     };
-
-    typedef std::vector<ThreadTaskInterface *> TVectorThreadTask;
 
 	class ThreadIdentity
 	{
@@ -66,7 +45,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual ThreadIdentity * createThread( ThreadListener * _listener, int _priority ) = 0;
+		virtual ThreadIdentity * createThread( ThreadTaskInterface * _listener, int _priority ) = 0;
 		virtual bool joinThread( ThreadIdentity * _thread ) = 0;
 		virtual void sleep( unsigned int _ms ) = 0;
 
@@ -90,8 +69,8 @@ namespace Menge
 
     public:
         virtual bool addTask( ThreadTaskInterface * _task, int _priority ) = 0;
-        virtual bool joinTask( ThreadTaskInterface * _task ) = 0;
-        virtual bool cancelTask( ThreadTaskInterface * _task ) = 0;
+        virtual void joinTask( ThreadTaskInterface * _task ) = 0;
+        virtual void cancelTask( ThreadTaskInterface * _task ) = 0;
 
     public:
         virtual ThreadMutexInterface * createMutex() = 0;

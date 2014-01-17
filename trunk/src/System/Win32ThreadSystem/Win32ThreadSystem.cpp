@@ -54,14 +54,14 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static DWORD WINAPI s_tread_job( LPVOID _userData )
     {
-        ThreadListener * threadListener = static_cast<ThreadListener*>(_userData);
+        ThreadTaskInterface * threadListener = static_cast<ThreadTaskInterface*>(_userData);
 
         threadListener->main();
 
         return 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentity * Win32ThreadSystem::createThread( ThreadListener * _thread, int _priority )
+	ThreadIdentity * Win32ThreadSystem::createThread( ThreadTaskInterface * _thread, int _priority )
 	{
         HANDLE handle = CreateThread( NULL, 0, &s_tread_job, (LPVOID)_thread, 0, NULL);
 
@@ -115,7 +115,7 @@ namespace Menge
             , m_threadIdentities.end() 
             );
 
-        ThreadListener * listener = identity->getListener();
+        ThreadTaskInterface * listener = identity->getListener();
         listener->join();
     
         m_poolWin32ThreadIdentity.destroyT( identity );
@@ -133,7 +133,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::sleep( unsigned int _ms )
 	{
-		Sleep( _ms );
+		::Sleep( _ms );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -70,7 +70,7 @@ namespace Menge
         m_soundSourceMap.clear();
 
         THREAD_SERVICE(m_serviceProvider)
-            ->cancelTask( &m_threadSoundBufferUpdate );  
+            ->joinTask( &m_threadSoundBufferUpdate );  
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::playSounds_()

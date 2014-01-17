@@ -11,6 +11,8 @@
 
 #   include "stdex/pool.h"
 
+#	include <vector>
+
 namespace Menge
 {
 	class Win32ThreadSystem
@@ -29,7 +31,7 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ThreadIdentity * createThread( ThreadListener * _listener, int _priority ) override;
+		ThreadIdentity * createThread( ThreadTaskInterface * _listener, int _priority ) override;
 		bool joinThread( ThreadIdentity * _thread ) override;
 
         ThreadMutexInterface * createMutex() override;

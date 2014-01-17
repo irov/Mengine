@@ -38,8 +38,8 @@ namespace Menge
 
     public:
         bool addTask( ThreadTaskInterface * _task, int _priority ) override;
-        bool joinTask( ThreadTaskInterface * _task ) override;
-        bool cancelTask( ThreadTaskInterface * _task ) override;
+        void joinTask( ThreadTaskInterface * _task ) override;
+        void cancelTask( ThreadTaskInterface * _task ) override;
 
     public:
         void addTaskPacket( ThreadTaskPacket * _taskPacket );

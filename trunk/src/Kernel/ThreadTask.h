@@ -21,37 +21,32 @@ namespace Menge
 		~ThreadTask();
 		
 	public:	
-		bool isComplete() const override;
-		bool isInterrupt() const override;
+		bool isComplete() const;
+		bool isCancel() const;
 
 	public:
-		bool main() override;
+		void main() override;
         void join() override;
+
+	public:
+		bool run() override;
 		void cancel() override;
-		void update() override;
-
-	public:
-		bool onMain() override;
-	
-	public:
-		bool onRun() override;
-		void onCancel() override;
-		void onComplete() override;
-		void onUpdate() override;
-		void onInterrupt() override;
-
+		bool update() override;
+				
 	protected:
 		virtual bool _onMain();
+		virtual void _onJoin();
 
 	protected:
 		virtual bool _onRun();
-		virtual void _onComplete();
 		virtual void _onCancel();
 		virtual void _onUpdate();
-		virtual void _onInterrupt();
 
+		virtual void _onComplete( bool _successful );
+		
 	protected:
-		bool m_complete;
-		bool m_interrupt;
+		volatile bool m_complete;
+		volatile bool m_successful;
+		volatile bool m_cancel;
 	};
 }

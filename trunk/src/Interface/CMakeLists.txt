@@ -29,7 +29,7 @@ src
 	SoundSystemInterface.h
 	TextureInterface.h
 	ThreadSystemInterface.h
-	HTTPSystemInterface.h
+	HttpSystemInterface.h
 	ConverterInterface.h
 	StringizeInterface.h
     GameInterface.h

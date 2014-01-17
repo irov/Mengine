@@ -79,13 +79,15 @@ SERVICE_EXTERN(SoundSystem, Menge::SoundSystemInterface);
 SERVICE_EXTERN(SilentSoundSystem, Menge::SoundSystemInterface);
 SERVICE_EXTERN(SoundService, Menge::SoundServiceInterface);
 
+SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
 SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
-SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
+
+SERVICE_EXTERN(HttpSystem, Menge::HttpSystemInterface);
 
 extern "C" // only required if using g++
 {
@@ -1143,6 +1145,29 @@ namespace Menge
 		return true;
 	}	
 	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::initializeHttpService_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Http Service..." );
+
+		HttpSystemInterface * cacheSystem;
+
+		if( SERVICE_CREATE( HttpSystem, &cacheSystem ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, cacheSystem );
+
+		if( cacheSystem->initialize() == false )
+		{
+			return false;
+		}
+
+		m_cacheSystem = cacheSystem;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeConverterEngine_()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
@@ -1381,6 +1406,11 @@ namespace Menge
 		}
 
 		if( this->initializeDataManager_() == false )
+		{
+			return false;
+		}
+
+		if( this->initializeHttpService_() == false )
 		{
 			return false;
 		}
@@ -2089,19 +2119,6 @@ namespace Menge
 			m_fileLog = nullptr;
 		}
 
-		if( m_loggerConsole != nullptr )
-		{
-			if( m_logService )
-			{
-				m_logService->unregisterLogger( m_loggerConsole );
-			}
-
-			delete m_loggerConsole;
-			m_loggerConsole = nullptr;
-		}
-
-		SERVICE_DESTROY( LogService, m_logService );
-
 		if( m_fileSystem != nullptr )
 		{            
 			SERVICE_DESTROY( FileSystem, m_fileSystem );
@@ -2133,6 +2150,19 @@ namespace Menge
 			delete m_windowsLayer;
 			m_windowsLayer = nullptr;
 		}
+
+		if( m_loggerConsole != nullptr )
+		{
+			if( m_logService )
+			{
+				m_logService->unregisterLogger( m_loggerConsole );
+			}
+
+			delete m_loggerConsole;
+			m_loggerConsole = nullptr;
+		}
+
+		SERVICE_DESTROY( LogService, m_logService );
 
 		SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
 		m_serviceProvider = nullptr;

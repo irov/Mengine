@@ -1291,7 +1291,7 @@ namespace Menge
 
 		if( vbInsertSize > m_renderVertexCount )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Error: failed to insert vertex buffer %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to insert vertex buffer %d:%d"
 				, vbInsertSize
 				, m_renderVertexCount
 				);
@@ -1301,7 +1301,7 @@ namespace Menge
 
 		if( ibInsertSize > m_renderIndicesCount )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Error: failed to insert indices buffer %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to insert indices buffer %d:%d"
 				, ibInsertSize
 				, m_renderIndicesCount
 				);
@@ -1311,7 +1311,7 @@ namespace Menge
 
 		if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( m_ibHandle2D ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Error: failed to unlock indices buffer"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to unlock indices buffer"
 				);
 
 			return false;
@@ -1319,7 +1319,7 @@ namespace Menge
 
 		if( RENDER_SYSTEM(m_serviceProvider)->unlockVertexBuffer( m_vbHandle2D ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Error: failed to unlock vertex buffer"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to unlock vertex buffer"
 				);
 
 			return false;

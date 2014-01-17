@@ -12,7 +12,16 @@ namespace Menge
 	class ResourcePak
 	{
 	public:
-		ResourcePak( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const ConstString & _type, const ConstString & _locale, const ConstString & _platform, const FilePath & _filename, const FilePath & _path, bool _preload, const FilePath & _baseDir );
+		ResourcePak( ServiceProviderInterface * _serviceProvider
+			, const FilePath & _baseDir
+			, const ConstString & _name
+			, const ConstString & _type
+			, const ConstString & _locale
+			, const ConstString & _platform
+			, const FilePath & _filename
+			, const FilePath & _path
+			, bool _preload
+			);
 
 	public:
 		bool isPreload() const;
@@ -26,13 +35,17 @@ namespace Menge
 	public:
 		bool load();
 		bool apply();
+		
+	protected:
+		bool mountFileGroup_();
+		bool loadPak_();
 
 	protected:
 		void addModulePath_( const String & _path );
 
 	protected:
 		void addResource_( const FilePath & _path );
-        void addText_( const FilePath & _path );
+        void addTextPath_( const FilePath & _path );
 		void addScriptPath_( const FilePath & _path );
 		void addFontPath_( const FilePath & _font );
 
@@ -44,8 +57,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		TVectorFilePath m_resourcesDesc;
-		TVectorFilePath m_textsDesc;
-		
+				
 		ConstString m_name;
 		ConstString m_type;
 		ConstString m_locale;
@@ -58,6 +70,7 @@ namespace Menge
 
 		TVectorFilePath m_pathScripts;
 		TVectorFilePath m_pathFonts;
+		TVectorFilePath m_pathTexts;
 
         bool m_preload;
 	};

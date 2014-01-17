@@ -46,6 +46,15 @@ namespace Menge
             , _path.c_str()
             );
 
+		if( _path.empty() == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invalid open bin '%s' path is empty"
+				, _pak.c_str()
+				);
+
+			return false;
+		}
+
 		InputStreamInterfacePtr file_bin;
 		if( this->openBin_( _pak, _path, file_bin, _exist ) == false )
 		{

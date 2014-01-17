@@ -634,6 +634,7 @@ namespace Menge
 
 			ResourcePak * pack = new ResourcePak( 
                 m_serviceProvider
+				, m_baseDir
                 , desc.name
                 , desc.type
                 , desc.locale
@@ -641,7 +642,7 @@ namespace Menge
                 , desc.description
                 , desc.path
                 , desc.preload
-                , m_baseDir ); 
+				); 
             
 			m_resourcePaks.push_back( pack );
 		}
@@ -663,6 +664,7 @@ namespace Menge
 
 			ResourcePak * pack = new ResourcePak(
                 m_serviceProvider
+				, m_baseDir
                 , desc.name
                 , desc.type
                 , desc.locale
@@ -670,7 +672,7 @@ namespace Menge
                 , desc.description
                 , desc.path
                 , desc.preload
-                , m_baseDir ); 
+				);
 
 			m_languagePaks.push_back( pack );
 		}

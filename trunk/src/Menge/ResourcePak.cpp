@@ -22,7 +22,16 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePak::ResourcePak( ServiceProviderInterface * _serviceProvider, const ConstString & _name, const ConstString & _type, const ConstString & _locale, const ConstString & _platform, const FilePath & _filename, const FilePath & _path, bool _preload, const FilePath & _baseDir )
+	ResourcePak::ResourcePak( ServiceProviderInterface * _serviceProvider
+		, const FilePath & _baseDir
+		, const ConstString & _name
+		, const ConstString & _type
+		, const ConstString & _locale
+		, const ConstString & _platform
+		, const FilePath & _filename
+		, const FilePath & _path
+		, bool _preload		
+		)
 		: m_serviceProvider(_serviceProvider)
         , m_name(_name)
 		, m_type(_type)
@@ -62,15 +71,45 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{		
+		if( this->mountFileGroup_() == false )
+		{
+			return false;
+		}
+
+		if( this->loadPak_() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourcePak::mountFileGroup_()
+	{
+		if( m_path.empty() == true )
+		{
+			return true;
+		}
+		
 		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_baseDir, m_path, m_type, false ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load failed to mount pak '%s' path '%s':'%s'"
 				, m_name.c_str()
 				, m_baseDir.c_str()
-                , m_path.c_str()
+				, m_path.c_str()
 				);
 
 			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourcePak::loadPak_()
+	{
+		if( m_filename.empty() == true )
+		{
+			return true;
 		}
 
 		Metacode::Meta_Pak pak;
@@ -87,8 +126,7 @@ namespace Menge
 			return false;
 		}
 
-        m_resourcesDesc.reserve( 32 );
-        m_textsDesc.reserve( 8 );
+        m_resourcesDesc.reserve( 32 );        
 
 		const Metacode::Meta_Pak::TVectorMeta_Scripts & includes_scripts = pak.get_IncludesScripts();
 
@@ -160,7 +198,7 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it;
 
-                meta_text.method_Path( this, &ResourcePak::addText_ );
+                meta_text.method_Path( this, &ResourcePak::addTextPath_ );
 			}
 		}
 
@@ -212,8 +250,8 @@ namespace Menge
 		}
 
 		for( TVectorFilePath::iterator
-			it = m_textsDesc.begin(),
-			it_end = m_textsDesc.end();
+			it = m_pathTexts.begin(),
+			it_end = m_pathTexts.end();
 		it != it_end;
 		++it )
 		{
@@ -249,9 +287,9 @@ namespace Menge
 		m_resourcesDesc.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addText_( const FilePath & _path )
+	void ResourcePak::addTextPath_( const FilePath & _path )
 	{
-		m_textsDesc.push_back( _path );
+		m_pathTexts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addScriptPath_( const FilePath & _path )

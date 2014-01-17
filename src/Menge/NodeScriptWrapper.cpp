@@ -5,6 +5,7 @@
 
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/NodeInterface.h"
+#	include "Interface/HttpSystemInterface.h"
 
 #	include "Kernel/ThreadTask.h"
 #	include "Kernel/Scene.h"
@@ -1075,6 +1076,51 @@ namespace Menge
 				->getProjectCodename();
 
 			return codename;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_sleep( size_t _time )
+		{
+			THREAD_SYSTEM(m_serviceProvider)
+				->sleep( _time );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PyHttpDownloadAssetReceiver
+			: public HttpDownloadAssetReceiver
+		{
+		public:
+			PyHttpDownloadAssetReceiver( PyObject * _cb )
+				: m_cb(_cb)
+			{
+				pybind::incref( m_cb );
+			}
+
+			~PyHttpDownloadAssetReceiver()
+			{
+				pybind::decref( m_cb );
+			}
+
+		protected:
+			void onDownloadAssetComplete( size_t _id, bool _successful ) override
+			{
+				pybind::call( m_cb, "iO", _id, pybind::get_bool(_successful) );
+			}
+
+		protected:
+			PyObject * m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		size_t s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, PyObject * _cb )
+		{
+			size_t id = HTTP_SYSTEM(m_serviceProvider)
+				->downloadAsset( _url, _category, _filepath, new PyHttpDownloadAssetReceiver(_cb) );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_cancelDownloadAsset( size_t _id )
+		{
+			HTTP_SYSTEM(m_serviceProvider)
+				->cancelAsset( _id );
 		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
@@ -3955,6 +4001,11 @@ namespace Menge
             pybind::def_functor( "platformEvent", nodeScriptMethod, &NodeScriptMethod::s_platformEvent );
 
 			pybind::def_functor( "getProjectCodename", nodeScriptMethod, &NodeScriptMethod::s_getProjectCodename );
+
+			pybind::def_functor( "sleep", nodeScriptMethod, &NodeScriptMethod::s_sleep );
+
+			pybind::def_functor( "downloadAsset", nodeScriptMethod, &NodeScriptMethod::s_downloadAsset );
+			pybind::def_functor( "cancelDownloadAsset", nodeScriptMethod, &NodeScriptMethod::s_cancelDownloadAsset );
         }
     }
 }

@@ -6,6 +6,8 @@
 
 namespace Menge
 {
+	typedef std::vector<ThreadTaskInterface *> TVectorThreadTask;
+
 	class ThreadTaskPacket;
 
 	class ThreadTaskPacketListener

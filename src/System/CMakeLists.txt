@@ -13,6 +13,7 @@ if( WIN32 )
 	ADD_SUBDIRECTORY( MengeWin32FileSystem )
     ADD_SUBDIRECTORY( Win32UnicodeSystem )
     ADD_SUBDIRECTORY( Win32ThreadSystem )
+    ADD_SUBDIRECTORY( CurlHttpSystem )
 endif( WIN32 )
     
 if( APPLE )	

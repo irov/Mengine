@@ -111,7 +111,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadJob::_onMain()
 	{
-		while( this->isInterrupt() == false )
+		while( this->isCancel() == false )
 		{   
 			for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 			{

@@ -20,6 +20,7 @@
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/PluginInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
+#	include "Interface/HttpSystemInterface.h"
 
 
 #   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
@@ -126,6 +127,7 @@ namespace Menge
 		bool initializeModuleEngine_();		
 		bool initializeDataManager_();
 		bool initializeCacheManager_();
+		bool initializeHttpService_();
 
 
 	protected:
@@ -224,6 +226,7 @@ namespace Menge
 		ModuleServiceInterface * m_moduleService;
 		DataServiceInterface * m_dataService;
 		CacheServiceInterface * m_cacheService;
+		HttpSystemInterface * m_cacheSystem;
 
 		FileLogger * m_fileLog;
 

@@ -13,15 +13,15 @@ namespace Menge
 		Win32ThreadIdentity();
 
 	public:
-        void initialize( HANDLE _handle, ThreadListener * _thread );
+        void initialize( HANDLE _handle, ThreadTaskInterface * _thread );
 
     public:
 		HANDLE getHandle() const;
-        ThreadListener * getListener() const;
+        ThreadTaskInterface * getListener() const;
 
 	protected:
 		HANDLE m_handle;
 
-        ThreadListener * m_thread;
+        ThreadTaskInterface * m_thread;
 	};
 }

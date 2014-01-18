@@ -754,13 +754,28 @@ namespace Menge
 
 		m_game->setLanguagePack( _language );
 
-		if( m_game->loadConfigPaks( _resourcePacks, _languagePacks ) == false )
+		for( TVectorResourcePackDesc::const_iterator
+			it = _resourcePacks.begin(),
+			it_end = _resourcePacks.end();
+		it != it_end;
+		++it )
 		{
-			return false;
+			const ResourcePackDesc & desc = *it;
+
+			m_game->addResourcePak( desc );
 		}
 
-		//m_game->registerResources( m_baseDir );
+		for( TVectorResourcePackDesc::const_iterator
+			it = _languagePacks.begin(),
+			it_end = _languagePacks.end();
+		it != it_end;
+		++it )
+		{
+			const ResourcePackDesc & desc = *it;
 
+			m_game->addLanguagePak( desc );
+		}
+						
 		if( m_game->applyConfigPaks() == false )
         {
             return false;

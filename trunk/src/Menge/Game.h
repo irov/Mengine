@@ -84,7 +84,13 @@ namespace Menge
 
 		bool loadPersonality( const ConstString & _module ) override;
 		
-		bool loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
+		void addResourcePak( const ResourcePackDesc & _desc ) override;
+		void addLanguagePak( const ResourcePackDesc & _desc ) override;
+
+	public:
+		bool loadResourcePak( const FilePath & _baseDir, const ResourcePackDesc & _desc ) override;
+
+	public:
 		bool applyConfigPaks() override;
 
 		void setLanguagePack( const ConstString& _packName ) override;

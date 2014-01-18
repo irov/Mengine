@@ -219,7 +219,7 @@ namespace Menge
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.description, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.filename, m_serviceProvider );
             IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );			
 
@@ -250,7 +250,7 @@ namespace Menge
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.description, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.filename, m_serviceProvider );
             IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
 

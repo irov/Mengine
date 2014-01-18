@@ -221,7 +221,8 @@ namespace Menge
 
             const ConstString & path = *it;
 
-			if( RESOURCE_SERVICE(m_serviceProvider)->loadResource( m_name, path ) == false )
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->loadResource( m_name, path ) == false )
             {
                 return false;
             }

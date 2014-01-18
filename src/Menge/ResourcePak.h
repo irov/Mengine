@@ -18,7 +18,7 @@ namespace Menge
 			, const ConstString & _type
 			, const ConstString & _locale
 			, const ConstString & _platform
-			, const FilePath & _filename
+			, const FilePath & _descriptionPath
 			, const FilePath & _path
 			, bool _preload
 			);
@@ -63,7 +63,7 @@ namespace Menge
 		ConstString m_locale;
 
 		ConstString m_platform;		
-		FilePath m_filename;
+		FilePath m_descriptionPath;
 
         FilePath m_baseDir;
 		FilePath m_path;

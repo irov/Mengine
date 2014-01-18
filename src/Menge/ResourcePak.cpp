@@ -28,7 +28,7 @@ namespace Menge
 		, const ConstString & _type
 		, const ConstString & _locale
 		, const ConstString & _platform
-		, const FilePath & _filename
+		, const FilePath & _descriptionPath
 		, const FilePath & _path
 		, bool _preload		
 		)
@@ -37,7 +37,7 @@ namespace Menge
 		, m_type(_type)
 		, m_locale(_locale)
 		, m_platform(_platform)
-		, m_filename(_filename)
+		, m_descriptionPath(_descriptionPath)
 		, m_path(_path)
 		, m_preload(_preload)
 		, m_baseDir(_baseDir)
@@ -107,7 +107,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::loadPak_()
 	{
-		if( m_filename.empty() == true )
+		if( m_descriptionPath.empty() == true )
 		{
 			return true;
 		}
@@ -115,12 +115,12 @@ namespace Menge
 		Metacode::Meta_Pak pak;
 
 		bool exist = false;
-		if( LOADER_SERVICE(m_serviceProvider)->load( m_name, m_filename, &pak, exist ) == false )
+		if( LOADER_SERVICE(m_serviceProvider)->load( m_name, m_descriptionPath, &pak, exist ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load Invalid resource file '%s:%s' '%s'"
 				, m_path.c_str()
 				, m_name.c_str()
-				, m_filename.c_str()
+				, m_descriptionPath.c_str()
 				);
 
 			return false;

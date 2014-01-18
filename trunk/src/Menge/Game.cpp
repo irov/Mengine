@@ -631,7 +631,7 @@ namespace Menge
 			, _desc.type
 			, _desc.locale
 			, _desc.platform
-			, _desc.filename
+			, _desc.descriptionPath
 			, _desc.path
 			, _desc.preload
 			); 
@@ -655,7 +655,7 @@ namespace Menge
 			, _desc.type
 			, _desc.locale
 			, _desc.platform
-			, _desc.filename
+			, _desc.descriptionPath
 			, _desc.path
 			, _desc.preload
 			);
@@ -672,7 +672,7 @@ namespace Menge
 			, _desc.type
 			, _desc.locale
 			, _desc.platform
-			, _desc.filename
+			, _desc.descriptionPath
 			, _desc.path
 			, _desc.preload
 			);
@@ -692,7 +692,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::applyConfigPaks()
 	{
-		m_paks.insert( m_paks.begin(), m_resourcePaks.begin(), m_resourcePaks.end() );
+		for( TVectorResourcePak::iterator 
+			it = m_resourcePaks.begin(),
+			it_end = m_resourcePaks.end();
+		it != it_end;
+		++it )
+		{
+			ResourcePak * pak = *it;
+
+			const ConstString & pakPlatform = pak->getPlatfrom();
+
+			if( pakPlatform.empty() == false && pakPlatform != m_platformName )
+			{
+				continue;
+			}
+
+			m_paks.push_back( pak );
+		}
 
 		if( this->loadLocalePaksByName_( m_languagePak, m_platformName ) == false )			
 		{

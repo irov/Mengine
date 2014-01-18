@@ -1125,11 +1125,9 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_loadResourcePak( const ConstString & _fileGroup
 			, const ConstString & _name
-			, const ConstString & _type
-			, const ConstString & _locale
-			, const ConstString & _platform
-			, const FilePath & _filename
-			, const FilePath & _path 
+			, const ConstString & _type			
+			, const FilePath & _path
+			, const FilePath & _descriptionPath
 			)
 		{
 			FileGroupInterface * fileGroup;
@@ -1147,11 +1145,8 @@ namespace Menge
 			desc.name = _name;
 			desc.type = _type;
 
-			desc.locale = _locale;
-			desc.platform = _platform;
-
 			desc.path = _path;
-			desc.filename = _filename;
+			desc.descriptionPath = _descriptionPath;
 
 			const ConstString & basePath = fileGroup->getPath();
 

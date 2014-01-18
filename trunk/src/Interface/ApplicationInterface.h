@@ -45,7 +45,7 @@ namespace Menge
 		ConstString platform;
 
         FilePath path;
-		FilePath filename;
+		FilePath descriptionPath;
 
         bool dev;
 		bool preload;

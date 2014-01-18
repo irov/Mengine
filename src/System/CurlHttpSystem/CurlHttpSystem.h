@@ -35,7 +35,7 @@ namespace Menge
 		struct DownloadAssetDesc
 		{
 			size_t id;
-			ThreadTask * task;
+			ThreadTaskPtr task;
 			HttpDownloadAssetReceiver * receiver;
 		};
 

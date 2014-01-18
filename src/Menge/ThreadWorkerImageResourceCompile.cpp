@@ -103,4 +103,9 @@ namespace Menge
 		m_imageDecoder = nullptr;
 		m_texture = nullptr;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadWorkerImageResourceCompile::destroy()
+	{
+		delete this;
+	}
 }

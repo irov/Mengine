@@ -25,8 +25,13 @@ namespace Menge
 		void onDone( size_t _id ) override;
 
 	protected:
+		void destroy() override;
+
+	protected:
         ServiceProviderInterface * m_serviceProvider;
 
 		SoundBufferInterface * m_soundBuffer;
 	};
+
+	typedef stdex::intrusive_ptr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;
 }	// namespace Menge

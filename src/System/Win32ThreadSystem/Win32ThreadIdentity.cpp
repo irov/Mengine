@@ -9,7 +9,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadIdentity::initialize( HANDLE _handle, ThreadTaskInterface * _thread )
+    void Win32ThreadIdentity::initialize( HANDLE _handle, const ThreadTaskInterfacePtr & _thread )
     {
         m_handle = _handle;
         m_thread = _thread;
@@ -20,7 +20,7 @@ namespace Menge
 		return m_handle;
 	}
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskInterface * Win32ThreadIdentity::getListener() const
+    const ThreadTaskInterfacePtr & Win32ThreadIdentity::getListener() const
     {
         return m_thread;
     }

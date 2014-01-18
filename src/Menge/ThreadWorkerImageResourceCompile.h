@@ -26,6 +26,9 @@ namespace Menge
 		void onDone( size_t _id ) override;
 
 	protected:
+		void destroy() override;
+
+	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
 		ImageDecoderInterfacePtr m_imageDecoder;

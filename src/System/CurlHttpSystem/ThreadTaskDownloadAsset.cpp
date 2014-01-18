@@ -121,4 +121,9 @@ namespace Menge
 
 		m_receiver->onDownloadAssetComplete( m_id, _successful );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadTaskDownloadAsset::destroy()
+	{
+		delete this;
+	}
 }

@@ -39,8 +39,10 @@ namespace Menge
 	void ThreadWorkerSoundBufferUpdate::onDone( size_t _id )
 	{
         (void)_id;
-
-        this->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ThreadWorkerSoundBufferUpdate::destroy()
+	{
+		delete this;
+	}
 }	// namespace Menge

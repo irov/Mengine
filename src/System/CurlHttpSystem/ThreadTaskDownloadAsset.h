@@ -23,6 +23,9 @@ namespace Menge
 		void _onComplete( bool _successful ) override;
 
 	protected:
+		void destroy() override;
+
+	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
 		String m_url;

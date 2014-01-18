@@ -13,15 +13,17 @@ namespace Menge
 		Win32ThreadIdentity();
 
 	public:
-        void initialize( HANDLE _handle, ThreadTaskInterface * _thread );
+        void initialize( HANDLE _handle, const ThreadTaskInterfacePtr & _thread );
 
     public:
 		HANDLE getHandle() const;
-        ThreadTaskInterface * getListener() const;
-
+        const ThreadTaskInterfacePtr & getListener() const;
+		
 	protected:
 		HANDLE m_handle;
 
-        ThreadTaskInterface * m_thread;
+        ThreadTaskInterfacePtr m_thread;
 	};
+
+	typedef stdex::intrusive_ptr<Win32ThreadIdentity> Win32ThreadIdentityPtr;
 }

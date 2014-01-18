@@ -18,11 +18,7 @@ namespace Menge
 		{
 			WorkerDesc & desc = m_workers[i];
 
-			if( desc.mutex != nullptr )
-			{
-				desc.mutex->destroy();
-				desc.mutex = nullptr;
-			}
+			desc.mutex = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////        
@@ -44,7 +40,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ThreadJob::addWorker( ThreadWorkerInterface * _worker )
+	size_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
 	{
 		if( _worker == nullptr )
 		{
@@ -95,7 +91,7 @@ namespace Menge
 			}
 
 			desc.mutex->lock();
-			ThreadWorkerInterface * worker = desc.worker;
+			const ThreadWorkerInterfacePtr & worker = desc.worker;
 			
 			desc.id = 0;
 			desc.worker = nullptr;
@@ -149,7 +145,7 @@ namespace Menge
 			}
 
 			desc.mutex->lock();
-			ThreadWorkerInterface * worker = desc.worker; 
+			const ThreadWorkerInterfacePtr & worker = desc.worker; 
 			size_t id = desc.id;
 			
 			desc.worker = nullptr;
@@ -159,5 +155,10 @@ namespace Menge
 			worker->onDone( id );
 			desc.mutex->unlock();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadJob::destroy()
+	{
+		delete this;
 	}
 }

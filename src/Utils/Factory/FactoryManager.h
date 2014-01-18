@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#	include "Factory/Factorable.h"
+
 #	include "Core/ConstString.h"
 
 #   include "stdex/binary_vector.h"

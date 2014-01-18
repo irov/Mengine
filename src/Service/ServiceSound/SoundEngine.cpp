@@ -39,10 +39,11 @@ namespace Menge
 	{
         m_silent = _silent;
 
-        m_threadSoundBufferUpdate.initialize( m_serviceProvider, 50 );
+        m_threadSoundBufferUpdate = new ThreadJob();
+		m_threadSoundBufferUpdate->initialize( m_serviceProvider, 50 );
 
         THREAD_SERVICE(m_serviceProvider)
-            ->addTask( &m_threadSoundBufferUpdate, 0 );        
+            ->addTask( m_threadSoundBufferUpdate, 0 );
 
 		return true;
 	}
@@ -70,7 +71,9 @@ namespace Menge
         m_soundSourceMap.clear();
 
         THREAD_SERVICE(m_serviceProvider)
-            ->joinTask( &m_threadSoundBufferUpdate );  
+            ->joinTask( m_threadSoundBufferUpdate );  
+
+		m_threadSoundBufferUpdate = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::playSounds_()
@@ -830,7 +833,7 @@ namespace Menge
 			return;
 		}
 
-        m_threadSoundBufferUpdate.removeWorker( _source->bufferId );
+        m_threadSoundBufferUpdate->removeWorker( _source->bufferId );
 
         _source->worker = nullptr;
         _source->bufferId = 0;
@@ -858,7 +861,7 @@ namespace Menge
 
         _source->worker->initialize( m_serviceProvider, soundBuffer );
 
-        _source->bufferId = m_threadSoundBufferUpdate.addWorker( _source->worker );
+        _source->bufferId = m_threadSoundBufferUpdate->addWorker( _source->worker );
     }
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getPosMs( size_t _emitter ) const

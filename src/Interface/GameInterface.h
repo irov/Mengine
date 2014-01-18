@@ -46,11 +46,17 @@ namespace Menge
         virtual bool hasParam( const ConstString & _paramName ) const = 0;
 
     public:
+		virtual void addResourcePak( const ResourcePackDesc & _desc ) = 0;
+		virtual void addLanguagePak( const ResourcePackDesc & _desc ) = 0;
+
+	public:
+		virtual bool loadResourcePak( const FilePath & _baseDir, const ResourcePackDesc & _desc ) = 0;
+
+	public:
         virtual void setLanguagePack( const ConstString& _packName ) = 0;
         virtual const ConstString & getLanguagePack() const = 0;
 
     public:
-        virtual bool loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
         virtual bool applyConfigPaks() = 0;
 
     public:

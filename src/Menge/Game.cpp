@@ -615,70 +615,83 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadConfigPaks( const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack )
+	void Game::addResourcePak( const ResourcePackDesc & _desc )
 	{
-		for( TVectorResourcePackDesc::const_iterator
-			it = _resourcePack.begin(),
-			it_end = _resourcePack.end();
-		it != it_end;
-		++it )
-		{
-			const ResourcePackDesc & desc = *it;
-
 #   ifdef MENGE_MASTER_RELEASE
-            if( desc.dev == true )
-            {
-                continue;
-            }
+		if( _desc.dev == true )
+		{
+			return;
+		}
 #   endif
 
-			ResourcePak * pack = new ResourcePak( 
-                m_serviceProvider
-				, m_baseDir
-                , desc.name
-                , desc.type
-                , desc.locale
-                , desc.platform
-                , desc.description
-                , desc.path
-                , desc.preload
-				); 
-            
-			m_resourcePaks.push_back( pack );
-		}
+		ResourcePak * pack = new ResourcePak( 
+			m_serviceProvider
+			, m_baseDir
+			, _desc.name
+			, _desc.type
+			, _desc.locale
+			, _desc.platform
+			, _desc.filename
+			, _desc.path
+			, _desc.preload
+			); 
 
-		for( TVectorResourcePackDesc::const_iterator
-			it = _languagePack.begin(),
-			it_end = _languagePack.end();
-		it != it_end;
-		++it )
-		{
-			const ResourcePackDesc & desc = *it;
-
+		m_resourcePaks.push_back( pack );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::addLanguagePak( const ResourcePackDesc & _desc )
+	{
 #   ifdef MENGE_MASTER_RELEASE
-            if( desc.dev == true )
-            {
-                continue;
-            }
+		if( _desc.dev == true )
+		{
+			continue;
+		}
 #   endif
 
-			ResourcePak * pack = new ResourcePak(
-                m_serviceProvider
-				, m_baseDir
-                , desc.name
-                , desc.type
-                , desc.locale
-                , desc.platform
-                , desc.description
-                , desc.path
-                , desc.preload
-				);
+		ResourcePak * pack = new ResourcePak(
+			m_serviceProvider
+			, m_baseDir
+			, _desc.name
+			, _desc.type
+			, _desc.locale
+			, _desc.platform
+			, _desc.filename
+			, _desc.path
+			, _desc.preload
+			);
 
-			m_languagePaks.push_back( pack );
+		m_languagePaks.push_back( pack );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::loadResourcePak( const FilePath & _baseDir, const ResourcePackDesc & _desc )
+	{
+		ResourcePak * pack = new ResourcePak(
+			m_serviceProvider
+			, _baseDir
+			, _desc.name
+			, _desc.type
+			, _desc.locale
+			, _desc.platform
+			, _desc.filename
+			, _desc.path
+			, _desc.preload
+			);
+
+		if( pack->load() == false )
+		{
+			return false;
 		}
-		//m_resourcePaks = _resourcePack;
-		//m_languagePaks = _languagePack;
 
+		if( pack->apply() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::applyConfigPaks()
+	{
 		m_paks.insert( m_paks.begin(), m_resourcePaks.begin(), m_resourcePaks.end() );
 
 		if( this->loadLocalePaksByName_( m_languagePak, m_platformName ) == false )			
@@ -720,11 +733,6 @@ namespace Menge
 			}
 		}
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::applyConfigPaks()
-	{
 		for( TVectorResourcePak::iterator 
 			it = m_paks.begin(), 
 			it_end = m_paks.end();

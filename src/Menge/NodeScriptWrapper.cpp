@@ -1122,6 +1122,44 @@ namespace Menge
 			HTTP_SYSTEM(m_serviceProvider)
 				->cancelAsset( _id );
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_loadResourcePak( const ConstString & _fileGroup
+			, const ConstString & _name
+			, const ConstString & _type
+			, const ConstString & _locale
+			, const ConstString & _platform
+			, const FilePath & _filename
+			, const FilePath & _path 
+			)
+		{
+			FileGroupInterface * fileGroup;
+			if( FILE_SERVICE(m_serviceProvider)
+				->hasFileGroup( _fileGroup, &fileGroup ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Menge.loadResourcePak invalid found file group %s"
+					, _fileGroup.c_str()
+					);
+
+				return false;
+			}
+
+			ResourcePackDesc desc;
+			desc.name = _name;
+			desc.type = _type;
+
+			desc.locale = _locale;
+			desc.platform = _platform;
+
+			desc.path = _path;
+			desc.filename = _filename;
+
+			const ConstString & basePath = fileGroup->getPath();
+
+			bool result = GAME_SERVICE(m_serviceProvider)
+				->loadResourcePak( basePath, desc );
+
+			return result;
+		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
@@ -4006,6 +4044,8 @@ namespace Menge
 
 			pybind::def_functor( "downloadAsset", nodeScriptMethod, &NodeScriptMethod::s_downloadAsset );
 			pybind::def_functor( "cancelDownloadAsset", nodeScriptMethod, &NodeScriptMethod::s_cancelDownloadAsset );
+
+			pybind::def_functor( "loadResourcePak", nodeScriptMethod, &NodeScriptMethod::s_loadResourcePak );
         }
     }
 }

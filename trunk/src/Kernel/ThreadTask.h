@@ -4,15 +4,6 @@
 
 namespace Menge 
 {
-	class ThreadTask;
-
-	class ThreadTaskListener
-	{
-	public:
-		virtual void onTaskRun( ThreadTask * _task ) = 0;
-		virtual void onTaskComplete( ThreadTask * _task ) = 0;
-	};
-
 	class ThreadTask
 		: public ThreadTaskInterface
 	{
@@ -49,4 +40,6 @@ namespace Menge
 		volatile bool m_successful;
 		volatile bool m_cancel;
 	};
+
+	typedef stdex::intrusive_ptr<ThreadTask> ThreadTaskPtr;
 }

@@ -1,5 +1,7 @@
 #   pragma once
 
+#	include "Factory/Factorable.h"
+
 #   include "stdex/const_string_holder.h"
 
 namespace Menge

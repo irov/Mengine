@@ -33,7 +33,7 @@ namespace Menge
 		SoundSourceInterface * source;
 		SoundListenerInterface * listener;
 
-		ThreadWorkerSoundBufferUpdate * worker;
+		ThreadWorkerSoundBufferUpdatePtr worker;
         size_t bufferId;
 
 		float timing;
@@ -158,7 +158,7 @@ namespace Menge
 		typedef stdex::binary_vector<size_t, SoundSourceDesc *> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
 		
-        ThreadJob m_threadSoundBufferUpdate;
+        ThreadJobPtr m_threadSoundBufferUpdate;
 
         typedef FactoryPool<ThreadWorkerSoundBufferUpdate, 32> TPoolWorkerTaskSoundBufferUpdate;
         TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;

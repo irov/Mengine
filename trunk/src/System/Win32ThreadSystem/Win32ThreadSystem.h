@@ -31,21 +31,21 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ThreadIdentity * createThread( ThreadTaskInterface * _listener, int _priority ) override;
-		bool joinThread( ThreadIdentity * _thread ) override;
+		ThreadIdentityPtr createThread( const ThreadTaskInterfacePtr & _listener, int _priority ) override;
+		bool joinThread( const ThreadIdentityPtr & _thread ) override;
 
-        ThreadMutexInterface * createMutex() override;
+        ThreadMutexInterfacePtr createMutex() override;
 
 		void sleep( unsigned int _ms ) override;
 	
 	protected:
-        typedef stdex::template_pool<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
+        typedef FactoryPool<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
         TPoolWin32ThreadIdentity m_poolWin32ThreadIdentity;
 
         typedef FactoryPool<Win32ThreadMutex, 16> TPoolWin32ThreadMutex;
         TPoolWin32ThreadMutex m_poolWin32ThreadMutex;
 
-		typedef std::vector<Win32ThreadIdentity *> TVectorPosixThreadIdentity;
+		typedef std::vector<Win32ThreadIdentityPtr> TVectorPosixThreadIdentity;
 		TVectorPosixThreadIdentity m_threadIdentities;
 
 		ServiceProviderInterface * m_serviceProvider;

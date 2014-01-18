@@ -4,14 +4,14 @@
 
 #	include "Utils/Factory/Factorable.h"
 
-#	include "Config/Typedef.h"
+#	include "Factory/FactorablePtr.h"
 
 namespace Menge
 {
 	class ServiceProviderInterface;
 
     class ThreadTaskInterface
-        : public Factorable
+        : public FactorablePtr
     {
     public:
 		virtual void main() = 0;
@@ -23,17 +23,24 @@ namespace Menge
         virtual bool update() = 0;
     };
 
+	typedef stdex::intrusive_ptr<ThreadTaskInterface> ThreadTaskInterfacePtr;
+
 	class ThreadIdentity
+		: public FactorablePtr
 	{
 	};
 
+	typedef stdex::intrusive_ptr<ThreadIdentity> ThreadIdentityPtr;
+
     class ThreadMutexInterface
-        : public Factorable
+        : public FactorablePtr
     {
     public:
         virtual void lock() = 0;
         virtual void unlock() = 0;
     };
+
+	typedef stdex::intrusive_ptr<ThreadMutexInterface> ThreadMutexInterfacePtr;
 
 	class ThreadSystemInterface
         : public ServiceInterface
@@ -45,11 +52,11 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual ThreadIdentity * createThread( ThreadTaskInterface * _listener, int _priority ) = 0;
-		virtual bool joinThread( ThreadIdentity * _thread ) = 0;
+		virtual ThreadIdentityPtr createThread( const ThreadTaskInterfacePtr & _listener, int _priority ) = 0;
+		virtual bool joinThread( const ThreadIdentityPtr & _thread ) = 0;
 		virtual void sleep( unsigned int _ms ) = 0;
 
-        virtual ThreadMutexInterface * createMutex() = 0;
+        virtual ThreadMutexInterfacePtr createMutex() = 0;
 	};
 
 #   define THREAD_SYSTEM( serviceProvider )\
@@ -68,12 +75,12 @@ namespace Menge
         virtual void update() = 0;
 
     public:
-        virtual bool addTask( ThreadTaskInterface * _task, int _priority ) = 0;
-        virtual void joinTask( ThreadTaskInterface * _task ) = 0;
-        virtual void cancelTask( ThreadTaskInterface * _task ) = 0;
+        virtual bool addTask( const ThreadTaskInterfacePtr & _task, int _priority ) = 0;
+        virtual void joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
+        virtual void cancelTask( const ThreadTaskInterfacePtr & _task ) = 0;
 
     public:
-        virtual ThreadMutexInterface * createMutex() = 0;
+        virtual ThreadMutexInterfacePtr createMutex() = 0;
 
     public:
         virtual void sleep( unsigned int _ms ) = 0;

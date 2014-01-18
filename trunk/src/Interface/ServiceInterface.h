@@ -2,9 +2,6 @@
 
 #	include "Config/Typedef.h"
 
-#   include "Utils/Factory/Factory.h"
-#   include "Utils/Factory/Factorable.h"
-
 namespace Menge
 {
     class ServiceProviderInterface;

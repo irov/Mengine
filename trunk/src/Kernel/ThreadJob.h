@@ -11,12 +11,14 @@
 namespace Menge 
 {
 	class ThreadWorkerInterface
-		: public Factorable
+		: public FactorablePtr
 	{
 	public:
 		virtual bool onWork( size_t _id ) = 0;
 		virtual void onDone( size_t _id ) = 0;
 	};
+
+	typedef stdex::intrusive_ptr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;
 
 	enum EThreadStatus
 	{
@@ -36,7 +38,7 @@ namespace Menge
 		void initialize( ServiceProviderInterface * _serviceProvider, size_t _sleep );
 
 	public:
-		size_t addWorker( ThreadWorkerInterface * _worker );
+		size_t addWorker( const ThreadWorkerInterfacePtr &_worker );
 		void removeWorker( size_t _id );
 
 	protected:
@@ -44,14 +46,18 @@ namespace Menge
 		void _onUpdate() override;
 
 	protected:
+		void destroy() override;
+
+	protected:
 		bool check_remove( size_t _id );
 
 	public:
 		struct WorkerDesc
 		{
-			ThreadMutexInterface * mutex;
+			ThreadMutexInterfacePtr mutex;
 
-			ThreadWorkerInterface * worker;			
+			ThreadWorkerInterfacePtr worker;
+
 			size_t id;
 			EThreadStatus status;
 		};
@@ -64,4 +70,6 @@ namespace Menge
 		
 		WorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 	};
+
+	typedef stdex::intrusive_ptr<ThreadJob> ThreadJobPtr;
 }

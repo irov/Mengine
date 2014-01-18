@@ -1,20 +1,17 @@
 #	pragma once
 
+#	include "Kernel/ThreadTask.h"
+
 #	include "Interface/ThreadSystemInterface.h"
 
 #	include <list>
 
 namespace Menge
-{
-    class LogServiceInterface;
-
-    class ThreadTask;
-    class ThreadTaskPacket;
-
+{    
     struct ThreadTaskHandle
     {
-        ThreadTaskInterface * task;
-        ThreadIdentity * identity;
+        ThreadTaskInterfacePtr task;
+        ThreadIdentityPtr identity;
     };
 
 	class ThreadEngine
@@ -34,31 +31,28 @@ namespace Menge
 
     public:
         size_t taskInProgress() const;
-        bool isTaskOnProgress( ThreadTaskInterface * _task ) const;
+        bool isTaskOnProgress( const ThreadTaskInterfacePtr & _task ) const;
 
     public:
-        bool addTask( ThreadTaskInterface * _task, int _priority ) override;
-        void joinTask( ThreadTaskInterface * _task ) override;
-        void cancelTask( ThreadTaskInterface * _task ) override;
+        bool addTask( const ThreadTaskInterfacePtr & _task, int _priority ) override;
+        void joinTask( const ThreadTaskInterfacePtr & _task ) override;
+        void cancelTask( const ThreadTaskInterfacePtr & _task ) override;
 
-    public:
-        void addTaskPacket( ThreadTaskPacket * _taskPacket );
-
-    public:
+	public:
         void update() override;
 
     public:
-        ThreadMutexInterface * createMutex() override;
+        ThreadMutexInterfacePtr createMutex() override;
 
     public:
         void sleep( unsigned int _ms ) override;
 
     protected:
         void testComplete_();
-        bool joinTask_( ThreadTaskInterface * _task );
+        bool joinTask_( const ThreadTaskInterfacePtr & _task );
 
     protected:
-        ThreadIdentity * getThreadIdentity_( ThreadTaskInterface * _task );
+        bool getThreadIdentity_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity );
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

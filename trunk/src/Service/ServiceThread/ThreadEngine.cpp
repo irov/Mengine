@@ -50,9 +50,9 @@ namespace Menge
 		{
 			ThreadTaskHandle & taskThread = *it;
 
-			ThreadTaskInterface * task = taskThread.task;
+			const ThreadTaskInterfacePtr & task = taskThread.task;
 
-			this->joinTask_(task);
+			this->joinTask_( task );
 		}
 
 		m_taskThread.clear();
@@ -65,7 +65,7 @@ namespace Menge
 		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::isTaskOnProgress( ThreadTaskInterface * _task ) const
+	bool ThreadEngine::isTaskOnProgress( const ThreadTaskInterfacePtr & _task ) const
 	{
 		for( TVectorThreadTaskHandle::const_iterator 
 			it = m_taskThread.begin(),
@@ -74,7 +74,7 @@ namespace Menge
 		++it )
 		{
 			const ThreadTaskHandle & taskThread = *it;
-			const ThreadTaskInterface * task = taskThread.task;
+			const ThreadTaskInterfacePtr & task = taskThread.task;
 			
 			if( _task == task )
 			{
@@ -85,7 +85,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::addTask( ThreadTaskInterface * _task, int _priority )
+	bool ThreadEngine::addTask( const ThreadTaskInterfacePtr & _task, int _priority )
 	{
         if( m_taskThread.size() == m_threadCount )
         {
@@ -106,7 +106,7 @@ namespace Menge
             return false;
         }
 
-        ThreadIdentity * threadIdentity = THREAD_SYSTEM(m_serviceProvider)
+        ThreadIdentityPtr threadIdentity = THREAD_SYSTEM(m_serviceProvider)
             ->createThread( _task, _priority );
 
         if( threadIdentity == nullptr )
@@ -127,23 +127,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::addTaskPacket( ThreadTaskPacket * _taskPacket )
-	{
-		const TVectorThreadTask & tasks = _taskPacket->getTasks();
-
-		for( TVectorThreadTask::const_iterator
-			it = tasks.begin(),
-			it_end = tasks.end();
-		it != it_end;
-		++it )
-		{
-			ThreadTaskInterface * task = *it;
-		
-			this->addTask( task, 0 );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::joinTask( ThreadTaskInterface * _task )
+	void ThreadEngine::joinTask( const ThreadTaskInterfacePtr & _task )
 	{
 		if( this->isTaskOnProgress( _task ) == false )
 		{
@@ -153,11 +137,10 @@ namespace Menge
 		this->joinTask_( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::joinTask_( ThreadTaskInterface * _task )
+	bool ThreadEngine::joinTask_( const ThreadTaskInterfacePtr & _task )
 	{
-		ThreadIdentity * threadIdentity = this->getThreadIdentity_( _task );
-
-		if( threadIdentity == nullptr )
+		ThreadIdentityPtr threadIdentity;
+		if( this->getThreadIdentity_( _task, threadIdentity ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("ThreadEngine::joinTask_: threadIdentity is null"
                 );
@@ -181,7 +164,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::cancelTask( ThreadTaskInterface * _task )
+	void ThreadEngine::cancelTask( const ThreadTaskInterfacePtr & _task )
 	{
 		if( this->isTaskOnProgress( _task ) == false )
 		{
@@ -210,7 +193,7 @@ namespace Menge
 		it != it_end;
 		/*++it*/ )
 		{
-			ThreadTaskInterface * task = it->task;
+			const ThreadTaskInterfacePtr & task = it->task;
 			
 			if( task->update() == false )
 			{
@@ -223,7 +206,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentity * ThreadEngine::getThreadIdentity_( ThreadTaskInterface * _task )
+	bool ThreadEngine::getThreadIdentity_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity )
 	{
 		for( TVectorThreadTaskHandle::iterator 
 			it = m_taskThread.begin(),
@@ -238,17 +221,17 @@ namespace Menge
 				continue;
 			}
 
-			ThreadIdentity * threadIdentity = taskThread.identity;
+			_identity = taskThread.identity;
 
-			return threadIdentity;
+			return true;
 		}
 
-		return nullptr;
+		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterface * ThreadEngine::createMutex()
+    ThreadMutexInterfacePtr ThreadEngine::createMutex()
     {
-        ThreadMutexInterface * mutex = THREAD_SYSTEM(m_serviceProvider)
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM(m_serviceProvider)
             ->createMutex();
 
         return mutex;

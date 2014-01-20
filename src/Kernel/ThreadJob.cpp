@@ -91,7 +91,8 @@ namespace Menge
 			}
 
 			desc.mutex->lock();
-			const ThreadWorkerInterfacePtr & worker = desc.worker;
+
+			ThreadWorkerInterfacePtr worker = desc.worker;
 			
 			desc.id = 0;
 			desc.worker = nullptr;
@@ -145,7 +146,7 @@ namespace Menge
 			}
 
 			desc.mutex->lock();
-			const ThreadWorkerInterfacePtr & worker = desc.worker; 
+			ThreadWorkerInterfacePtr worker = desc.worker; 
 			size_t id = desc.id;
 			
 			desc.worker = nullptr;

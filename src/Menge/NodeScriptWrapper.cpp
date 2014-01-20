@@ -5,6 +5,7 @@
 
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/NodeInterface.h"
+#   include "Interface/CacheInterface.h"
 #	include "Interface/HttpSystemInterface.h"
 
 #	include "Kernel/ThreadTask.h"
@@ -102,7 +103,7 @@
 #	include "Logger/Logger.h"
 
 #   include "Interface/RenderSystemInterface.h"
-#   include "Interface/PhysicSystem2DInterface.h"
+#   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/TimingManagerInterface.h"
 
 #	include "Kernel/Identity.h"
@@ -150,6 +151,8 @@
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(pop) 
 #   endif
+
+#	include <stdex/xml_sax_parser.h>
 
 namespace Menge
 {
@@ -1154,6 +1157,95 @@ namespace Menge
 				->loadResourcePak( basePath, desc );
 
 			return result;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_existFile( const ConstString & _fileGroup, const FilePath & _path )
+		{
+			bool result = FILE_SERVICE(m_serviceProvider)
+				->existFile( _fileGroup, _path, nullptr, 0, nullptr );
+
+			return result;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PythonSaxCallback
+		{
+		public:
+			PythonSaxCallback( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+				: m_serviceProvider(_serviceProvider)
+				, m_cb(_cb)
+			{
+			}
+
+		protected:
+			void operator = ( const PythonSaxCallback & )
+			{
+			}
+
+		public:
+			void callback_begin_node( const char * _node )
+			{
+				pybind::call_method( m_cb, "begin", "(s)", _node );
+			}
+
+			void callback_node_attributes( const char * _node, size_t _count, const char ** _keys, const char ** _values )
+			{
+				PyObject * py_attr = pybind::dict_new();
+				
+				for( size_t i = 0; i != _count; ++i )
+				{
+					const char * key = _keys[i];
+					const char * value = _values[i];
+
+					PyObject * py_key = pybind::string_from_char( key );
+					PyObject * py_value = pybind::string_from_char( value );
+
+					pybind::dict_set( py_attr, py_key, py_value );
+
+					pybind::decref( py_key );
+					pybind::decref( py_value );
+				}
+
+				pybind::call_method( m_cb, "attr", "(O)", py_attr );
+
+				pybind::decref( py_attr );
+			}
+
+			void callback_end_node( const char * _node )
+			{
+				pybind::call_method( m_cb, "end", "()" );
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			PyObject * m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		bool s_parseXml( const ConstString & _fileGroup, const FilePath & _path, PyObject * _cb )
+		{
+			InputStreamInterfacePtr stream = 
+				FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _path );
+
+			if( stream == nullptr )
+			{
+				return false;
+			}
+
+			size_t size = stream->size();
+
+			CacheBufferInterfacePtr cacheBuffer = CACHE_SERVICE(m_serviceProvider)
+				->lockBuffer( size + 1 );
+
+			TBlobject::value_type * memory = cacheBuffer->getMemory();
+			stream->read( memory, size );
+			memory[size] = 0;
+			
+			PythonSaxCallback pysc(m_serviceProvider, _cb);
+			if( stdex::xml_sax_parse( (char *)memory, pysc ) == false )
+			{
+				return false;
+			}
+
+			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
@@ -4041,6 +4133,9 @@ namespace Menge
 			pybind::def_functor( "cancelDownloadAsset", nodeScriptMethod, &NodeScriptMethod::s_cancelDownloadAsset );
 
 			pybind::def_functor( "loadResourcePak", nodeScriptMethod, &NodeScriptMethod::s_loadResourcePak );
+			
+			pybind::def_functor( "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
+			pybind::def_functor( "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
         }
     }
 }

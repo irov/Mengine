@@ -66,6 +66,7 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
+		virtual const ConstString & getKey() const = 0;
 		virtual const ConstString & getText() const = 0;
 
 	public:

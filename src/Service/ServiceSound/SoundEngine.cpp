@@ -758,7 +758,7 @@ namespace Menge
                 , _emitter
                 );
 
-            return false;
+			return false;
         }
 
         float current_pos = source->source->getPosMs();
@@ -854,8 +854,9 @@ namespace Menge
 			return;
 		}
 
-        _source->worker = 
-            m_poolWorkerTaskSoundBufferUpdate.createObjectT();
+		ThreadWorkerSoundBufferUpdatePtr worker = m_poolWorkerTaskSoundBufferUpdate.createObjectT();
+
+        _source->worker = worker;
 
         SoundBufferInterface * soundBuffer = _source->source->getSoundBuffer();
 
@@ -876,7 +877,7 @@ namespace Menge
 			return 0.f;
 		}
 
-		if( source->source == 0 )
+		if( source->source == nullptr )
 		{
 			return 0.f;
 		}

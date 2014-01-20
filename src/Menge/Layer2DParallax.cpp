@@ -6,7 +6,6 @@
 
 #	include "Interface/NodeInterface.h"
 #   include "Interface/RenderSystemInterface.h"
-#   include "Interface/PhysicSystem2DInterface.h"
 
 #	include "Logger/Logger.h"
 

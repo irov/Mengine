@@ -13,7 +13,7 @@
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/EventInterface.h"
-#   include "Interface/PhysicSystem2DInterface.h"
+#   include "Interface/PhysicSystemInterface.h"
 
 #   include "Interface/StringizeInterface.h"
 

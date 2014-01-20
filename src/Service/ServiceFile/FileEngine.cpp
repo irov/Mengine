@@ -59,12 +59,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::mountFileGroup( const ConstString& _fileSystemName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create )
 	{
-        LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%s':'%s' _type '%s'"
-                       , _fileSystemName.c_str() 
-                       , _folder.c_str()
-                       , _path.c_str()
-                       , _type.c_str()
-                       );
+		LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%s':'%s' _type '%s'"
+			, _fileSystemName.c_str() 
+			, _folder.c_str()
+			, _path.c_str()
+			, _type.c_str()
+			);
         
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )

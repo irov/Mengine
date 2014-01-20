@@ -9,7 +9,7 @@
 #   include "Interface/ArchiveInterface.h"
 #   include "Interface/CacheInterface.h"
 #   include "Interface/ThreadSystemInterface.h"
-#   include "Interface/PhysicSystem2DInterface.h"
+#   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/SoundSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
@@ -206,7 +206,7 @@ namespace Menge
 		ParticleSystemInterface * m_particleSystem;
 		ParticleServiceInterface * m_particleService;
 
-		PhysicService2DInterface * m_physicService2D;
+		PhysicSystemInterface * m_physicSystem;
 
 		RenderSystemInterface * m_renderSystem;
 		RenderServiceInterface * m_renderService;

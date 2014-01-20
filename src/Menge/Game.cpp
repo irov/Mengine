@@ -644,7 +644,7 @@ namespace Menge
 #   ifdef MENGE_MASTER_RELEASE
 		if( _desc.dev == true )
 		{
-			continue;
+			return;
 		}
 #   endif
 

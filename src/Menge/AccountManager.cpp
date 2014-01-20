@@ -29,6 +29,7 @@ namespace Menge
         , m_accountListener(nullptr)
 		, m_currentAccount(nullptr)
 		, m_playerEnumerator(0)
+		, m_projectVersion(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

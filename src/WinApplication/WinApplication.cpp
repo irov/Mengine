@@ -63,8 +63,7 @@ SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
 SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureServiceInterface);
 SERVICE_EXTERN(RenderMaterialManager, Menge::RenderMaterialServiceInterface);
 
-SERVICE_DUMMY(PhysicSystem2D, Menge::PhysicSystem2DInterface);
-SERVICE_DUMMY(PhysicService2D, Menge::PhysicService2DInterface);
+SERVICE_DUMMY(PhysicSystem, Menge::PhysicSystemInterface);
 
 SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
 SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
@@ -195,7 +194,7 @@ namespace Menge
 		, m_threadService(nullptr)
 		, m_particleSystem(nullptr)
 		, m_particleService(nullptr)
-		, m_physicService2D(nullptr)
+		, m_physicSystem(nullptr)
 		, m_renderSystem(nullptr)
 		, m_renderService(nullptr)
 		, m_renderTextureManager(nullptr)
@@ -782,8 +781,8 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Inititalizing Physics2D Service..." );
 
-		PhysicSystem2DInterface * physicSystem2D;
-		if( SERVICE_CREATE( PhysicSystem2D, &physicSystem2D ) == false )
+		PhysicSystemInterface * physicSystem;
+		if( SERVICE_CREATE( PhysicSystem, &physicSystem ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
 				);
@@ -791,12 +790,12 @@ namespace Menge
 			return false;
 		}
 
-		if( SERVICE_REGISTRY( m_serviceProvider, physicSystem2D ) == false )
+		if( SERVICE_REGISTRY( m_serviceProvider, physicSystem ) == false )
 		{
 			return false;
 		}
 
-		if( physicSystem2D->initialize() == false )
+		if( physicSystem->initialize() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize Physics System 2D"
 				);
@@ -804,29 +803,7 @@ namespace Menge
 			return false;
 		}
 
-		PhysicService2DInterface * physicService2D;
-		if( SERVICE_CREATE( PhysicService2D, &physicService2D ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to create Physic Service 2D"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, physicService2D ) == false )
-		{
-			return false;
-		}
-
-		m_physicService2D = physicService2D;
-
-		if( m_physicService2D->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize Physics Service 2D"
-				);
-
-			return false;
-		}
+		m_physicSystem = physicSystem;
 
 		return true;
 	}
@@ -1997,8 +1974,8 @@ namespace Menge
 			m_particleSystem = nullptr;
 		}
 
-		SERVICE_DESTROY( PhysicService2D, m_physicService2D );
-		m_physicService2D = nullptr;
+		SERVICE_DESTROY( PhysicSystem, m_physicSystem );
+		m_physicSystem = nullptr;
 
 		if( m_soundService != nullptr )
 		{

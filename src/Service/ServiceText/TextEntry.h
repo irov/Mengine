@@ -16,9 +16,10 @@ namespace Menge
 		TextEntry();
 
 	public:
-		void initialize( const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params );
+		void initialize( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params );
 
 	public:
+		const ConstString & getKey() const override;
 		const ConstString & getText() const override;
 
 	public:
@@ -32,7 +33,9 @@ namespace Menge
 		size_t getFontParams() const override;
 
 	protected:
+		ConstString m_key;
 		ConstString m_text;
+
 		ConstString m_font;
 
 		ColourValue m_colorFont;

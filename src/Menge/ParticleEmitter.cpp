@@ -76,6 +76,8 @@ namespace	Menge
 		{
 			return false;
 		}
+
+		this->invalidateWorldMatrix();
         
 		return true;
 	}

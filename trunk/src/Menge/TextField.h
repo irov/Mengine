@@ -180,10 +180,11 @@ namespace Menge
 
 		TextEntryInterfacePtr m_textEntry;
 
-		String m_text;
+		String m_localText;				
+		String m_localTextFormat;
+		String m_localTextFormatArg;
 
-		String m_format;
-		String m_formatArg;
+		mutable String m_cacheText;
 				
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;

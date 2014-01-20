@@ -10,7 +10,7 @@ namespace Menge
         : public FactorablePtr
 	{
 	public:
-		virtual size_t read( void* _buf, size_t _count ) = 0;
+		virtual size_t read( void* _buf, size_t _size ) = 0;
 		virtual bool seek( size_t _pos ) = 0;
 		virtual size_t tell() const = 0;
 		virtual size_t size() const = 0;

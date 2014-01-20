@@ -176,7 +176,7 @@ namespace Menge
 			return false;
 		}
 
-		size_t projectVersion;
+		size_t projectVersion = 0;
 		if( Utils::stringToUnsigned( projectVersion_s, projectVersion ) == false )
 		{
 			return false;

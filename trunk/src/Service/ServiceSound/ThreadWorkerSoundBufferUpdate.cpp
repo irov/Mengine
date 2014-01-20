@@ -40,9 +40,4 @@ namespace Menge
 	{
         (void)_id;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadWorkerSoundBufferUpdate::destroy()
-	{
-		delete this;
-	}
 }	// namespace Menge

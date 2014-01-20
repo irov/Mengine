@@ -2,7 +2,6 @@
 
 #	include "Interface/ScriptSystemInterface.h"
 
-#	include "Interface/PhysicSystem2DInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/NodeInterface.h"

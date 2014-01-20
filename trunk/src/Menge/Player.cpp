@@ -1,7 +1,6 @@
 #	include "Player.h"
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Interface/PhysicSystem2DInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/ResourceInterface.h"

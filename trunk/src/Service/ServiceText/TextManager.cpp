@@ -426,7 +426,7 @@ namespace Menge
 
 		TextEntryPtr textEntry = m_factoryTextEntry.createObjectT();
 
-		textEntry->initialize( _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
+		textEntry->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
 
         m_texts.insert( _key, textEntry );
 	}

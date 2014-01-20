@@ -384,8 +384,35 @@ namespace Menge
 
         String space_delim = " ";
 
+		if( m_localTextFormat.empty() == false )
+		{
+			if( m_textEntry == nullptr )
+			{
+				return;
+			}
+
+			const ConstString & keyText = m_textEntry->getText();
+
+			m_cacheText = (StringFormat(m_localTextFormat) % keyText.c_str() % m_localTextFormatArg).str();
+		}
+		else if( m_localText.empty() == false )
+		{
+			m_cacheText = m_localText;
+		}
+		else
+		{
+			if( m_textEntry == nullptr )
+			{
+				return;
+			}
+
+			const ConstString & keyText = m_textEntry->getText();
+
+			m_cacheText = keyText.c_str();
+		}
+
 		TVectorString lines;
-		Utils::split( lines, m_text, false, "\n" );
+		Utils::split( lines, m_cacheText, false, "\n" );
 
 		const TextFontInterfacePtr & font = this->getFont();
 
@@ -790,98 +817,117 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::clearTextParams_()
 	{
-		m_key.clear();
-		m_text.clear();
-		m_format.clear();		
-		m_formatArg.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setText( const String & _text )
+	{
+		if( _text.empty() == true )
+		{
+			m_localText.clear();
+		}
+		else
+		{
+			m_localTextFormat.clear();
+			m_localTextFormatArg.clear();
 
-		m_textEntry = nullptr;
+			if( m_localText == _text )
+			{
+				return;
+			}
+
+			m_localText = _text;
+		}
 
 		this->invalidateFont();
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setText( const String & _text )
-	{
-		if( m_text == _text )
-		{
-			return;
-		}
-		
-		this->clearTextParams_();
-
-		m_text = _text;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & TextField::getText() const
-	{
-		return m_text;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextID( const ConstString& _key )
-	{
-		if( _key.empty() == true )
-		{
-			return;
-		}
-
-		this->clearTextParams_();
-
-		m_key = _key;
-
+	{	
+		m_localTextFormat.clear();
+		m_localTextFormatArg.clear();
+		
 		m_textEntry = TEXT_SERVICE(m_serviceProvider)
-			->getTextEntry( m_key );
+			->getTextEntry( _key );
 
+		this->invalidateFont();
+		this->invalidateTextLines();
+		
 		if( m_textEntry == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::setTextID '%s' can't find text ID '%s'"
 				, this->getName().c_str()
-				, m_key.c_str()
+				, _key.c_str()
 				);
 
 			return;
 		}
-
-		const ConstString & keyText = m_textEntry->getText();
-		
-		m_text = keyText.c_str();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, const String & _arg )
 	{
-		if( _key.empty() == true )
-		{
-			return;
-		}
-
-		this->clearTextParams_();
-
-		m_key = _key;
-
-		m_format = _format;
-		m_formatArg = _arg;
+		m_localTextFormat = _format;
+		m_localTextFormatArg = _arg;
 
 		m_textEntry = TEXT_SERVICE(m_serviceProvider)
 			->getTextEntry( _key );
+
+		this->invalidateFont();
+		this->invalidateTextLines();
 
 		if( m_textEntry == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::setTextID '%s' can't find text ID '%s'"
 				, this->getName().c_str()
-				, m_key.c_str()
+				, _key.c_str()
 				);
 
 			return;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & TextField::getText() const
+	{
+		if( m_localTextFormat.empty() == true )
+		{
+			if( m_textEntry == nullptr )
+			{
+				return m_localText;
+			}
 
-		const ConstString & keyText = m_textEntry->getText();
+			const ConstString & keyText = m_textEntry->getText();
 
-		m_text = (StringFormat(m_format) % keyText.c_str() % m_formatArg).str();
+			m_cacheText = (StringFormat(m_localTextFormat) % keyText.c_str() % m_localTextFormatArg).str();
+		}
+		else if( m_localText.empty() == false )
+		{
+			return m_localText;
+		}
+		else 
+		{
+			if( m_textEntry == nullptr )
+			{
+				return m_localText;
+			}
+
+			const ConstString & keyText = m_textEntry->getText();
+
+			m_cacheText = keyText.c_str();
+		}
+
+		return m_cacheText;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getTextID() const
 	{
-		return m_key;
+		if( m_textEntry == nullptr )
+		{
+			return ConstString::none();
+		}
+
+		const ConstString & key = m_textEntry->getKey();
+
+		return key;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setVerticalNoneAlign()

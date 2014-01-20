@@ -166,14 +166,64 @@ namespace Menge
         }
 
     public:
+		//////////////////////////////////////////////////////////////////////////
+		void textfield_setTextFormatArg( TextField * _textField, const WString & _arg )
+		{
+			String utf8_arg;
+			Helper::unicodeToUtf8( m_serviceProvider, _arg, utf8_arg );
+			
+			_textField->setTextFormatArg( utf8_arg );
+		}
         //////////////////////////////////////////////////////////////////////////
-        void textfield_setText( TextField * _textField, const WString & _unicode )
+        void textfield_setTextFormatArgs( TextField * _textField, const TVectorWString & _args )
         {
-            String utf8;
-            Helper::unicodeToUtf8( m_serviceProvider, _unicode, utf8 );
+            TVectorString cs_args;
 
-            _textField->setText( utf8 );
+			size_t args_count = _args.size();
+			cs_args.reserve( args_count );
+			
+			for( TVectorWString::const_iterator
+				it = _args.begin(),
+				it_end = _args.end();
+			it != it_end;
+			++it )
+			{
+				const WString & ws_arg = *it;
+
+				String utf8_arg;
+			    Helper::unicodeToUtf8( m_serviceProvider, ws_arg, utf8_arg );
+
+				cs_args.push_back( utf8_arg );
+			}
+
+            _textField->setTextFormatArgs( cs_args );
         }
+		//////////////////////////////////////////////////////////////////////////
+		TVectorWString textfield_getTextFormatArgs( TextField * _textField )
+		{
+			TVectorWString ws_args;
+
+			const TVectorString & str_args = _textField->getTextFormatArgs();
+
+			size_t args_count = str_args.size();
+			ws_args.reserve( args_count );
+
+			for( TVectorString::const_iterator
+				it = str_args.begin(),
+				it_end = str_args.end();
+			it != it_end;
+			++it )
+			{
+				const String & str_arg = *it;
+
+				WString unicode;
+				Helper::utf8ToUnicode( m_serviceProvider, str_arg, unicode );
+								
+				ws_args.push_back( unicode );
+			}
+
+			return ws_args;
+		}
         //////////////////////////////////////////////////////////////////////////
         WString textfield_getText( TextField * _textField )
         {
@@ -3083,7 +3133,24 @@ namespace Menge
 	{
 		bool apply( PyObject * _obj, TVectorString & _value ) override
 		{
-			if( pybind::list_check( _obj ) == true )
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				size_t size = pybind::tuple_size( _obj );
+
+				for( size_t it = 0; it != size; ++it )
+				{
+					PyObject * py_string = pybind::tuple_getitem( _obj, it );
+
+					String key;
+					if( pybind::extract_value( py_string, key ) == false )
+					{
+						return false;
+					}
+
+					_value.push_back( key );
+				}
+			}
+			else if( pybind::list_check( _obj ) == true )
 			{
 				size_t size = pybind::list_size( _obj );
 
@@ -3136,7 +3203,24 @@ namespace Menge
     {
         bool apply( PyObject * _obj, TVectorWString & _value ) override
         {
-            if( pybind::list_check( _obj ) == true )
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				size_t size = pybind::tuple_size( _obj );
+
+				for( size_t it = 0; it != size; ++it )
+				{
+					PyObject * py_string = pybind::tuple_getitem( _obj, it );
+
+					WString key;
+					if( pybind::extract_value( py_string, key ) == false )
+					{
+						return false;
+					}
+
+					_value.push_back( key );
+				}
+			}
+            else if( pybind::list_check( _obj ) == true )
             {
                 size_t size = pybind::list_size( _obj );
 
@@ -3663,8 +3747,17 @@ namespace Menge
                     ;
 
                 pybind::interface_<TextField, pybind::bases<Node> >("TextField", false)
-					.def_proxy_static( "setText", nodeScriptMethod, &NodeScriptMethod::textfield_setText )
+					.def_depricated( "setTextByKey", &TextField::setTextID, "use setTextID" )
+					.def( "setTextID", &TextField::setTextID )
+					.def( "removeTextID", &TextField::removeTextID )
+					.def_proxy_static( "setTextFormatArg", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArg )
+					.def_proxy_static( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArgs )
+					.def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_getTextFormatArgs )					
+					.def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
+					.def_depricated( "getTextKey", &TextField::getTextID, "use getTextID" )
+					.def( "getTextID", &TextField::getTextID )
 					.def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
+
                     .def_depricated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )
                     .def_depricated( "getAlphaHeight", &TextField::getFontHeight, "use getFontHeight" )
                     .def( "getFontHeight", &TextField::getFontHeight )
@@ -3703,10 +3796,6 @@ namespace Menge
                     .def( "setVerticalCenterAlign", &TextField::setVerticalCenterAlign )
                     .def( "isVerticalCenterAlign", &TextField::isVerticalCenterAlign )
 					
-                    .def( "setTextByKey", &TextField::setTextID )
-                    .def( "setTextByKeyFormat", &TextField::setTextByKeyFormat )					
-                    .def( "getTextKey", &TextField::getTextID )
-
                     .def( "setPixelsnap", &TextField::setPixelsnap )
                     .def( "getPixelsnap", &TextField::getPixelsnap )
 

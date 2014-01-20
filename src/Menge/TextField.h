@@ -31,7 +31,7 @@ namespace Menge
 	};
 
 	typedef std::vector<TextLine> TVectorTextLine;
-
+	
 	class TextField
 		: public Node
 	{
@@ -44,16 +44,18 @@ namespace Menge
 		float getMaxLen() const;
 
 	public:
-		void setText( const String & _text );
-		const String & getText() const;
-		
 		void setTextID( const ConstString& _key );
+		void removeTextID();
+
 		const ConstString & getTextID() const;
 
-		void setTextByKeyFormat( const ConstString& _key, const String & _format, const String & _arg );
-
-	protected:
-		void clearTextParams_();
+		void setTextFormatArg( const String & _arg );
+		void setTextFormatArgs( const TVectorString & _args );
+		void removeTextFormatArgs();
+		const TVectorString & getTextFormatArgs() const;
+		
+	public:
+		const String & getText() const;
 
 	public:
 		void setFontName( const ConstString & _name );
@@ -176,14 +178,9 @@ namespace Menge
 		const ColourValue & calcColorOutline() const;
 
 	protected:
-        ConstString m_key;
-
-		TextEntryInterfacePtr m_textEntry;
-
-		String m_localText;				
-		String m_localTextFormat;
-		String m_localTextFormatArg;
-
+        TextEntryInterfacePtr m_textEntry;
+		TVectorString m_textFormatArgs;
+		
 		mutable String m_cacheText;
 				
 		ETextFieldHorizontAlign m_horizontAlign;

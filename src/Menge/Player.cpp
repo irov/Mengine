@@ -642,7 +642,8 @@ namespace Menge
 		m_debugText = NODE_SERVICE(m_serviceProvider)->
 			createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
-		m_debugText->setFontName( CONST_STRING(m_serviceProvider, ConsoleFont) );
+		m_debugText->setFontName( Helper::stringizeString(m_serviceProvider, "ConsoleFont") );
+		m_debugText->setTextID( Helper::stringizeString(m_serviceProvider, "ID_TEXT_CONSOLE") );
 		m_debugText->enable();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1278,7 +1279,7 @@ namespace Menge
             
 			String text = ss.str();
 
-			m_debugText->setText( text );
+			m_debugText->setTextFormatArg( text );
 
             float gameViewportAspect;
             Viewport gameViewport;

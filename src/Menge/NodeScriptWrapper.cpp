@@ -166,37 +166,41 @@ namespace Menge
         }
 
     public:
-		//////////////////////////////////////////////////////////////////////////
-		void textfield_setTextFormatArg( TextField * _textField, const WString & _arg )
-		{
-			String utf8_arg;
-			Helper::unicodeToUtf8( m_serviceProvider, _arg, utf8_arg );
-			
-			_textField->setTextFormatArg( utf8_arg );
-		}
         //////////////////////////////////////////////////////////////////////////
-        void textfield_setTextFormatArgs( TextField * _textField, const TVectorWString & _args )
+        PyObject * textfield_setTextFormatArgs( TextField * _textField, PyObject * _args, PyObject * _kwds )
         {
-            TVectorString cs_args;
+			TVectorWString ws_args;
+			if( pybind::extract_value( _args, ws_args ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextField.setTextFormatArgs %s invalid get tuple unicode from args"
+					, _textField->getName().c_str()
+					);
 
-			size_t args_count = _args.size();
+				return pybind::ret_none();
+			}
+						
+			size_t args_count = ws_args.size();
+
+			TVectorString cs_args;
 			cs_args.reserve( args_count );
-			
+
 			for( TVectorWString::const_iterator
-				it = _args.begin(),
-				it_end = _args.end();
+				it = ws_args.begin(),
+				it_end = ws_args.end();
 			it != it_end;
 			++it )
 			{
 				const WString & ws_arg = *it;
 
 				String utf8_arg;
-			    Helper::unicodeToUtf8( m_serviceProvider, ws_arg, utf8_arg );
+				Helper::unicodeToUtf8( m_serviceProvider, ws_arg, utf8_arg );
 
 				cs_args.push_back( utf8_arg );
 			}
 
-            _textField->setTextFormatArgs( cs_args );
+			_textField->setTextFormatArgs( cs_args );
+
+			return pybind::ret_none();
         }
 		//////////////////////////////////////////////////////////////////////////
 		TVectorWString textfield_getTextFormatArgs( TextField * _textField )
@@ -3750,8 +3754,7 @@ namespace Menge
 					.def_depricated( "setTextByKey", &TextField::setTextID, "use setTextID" )
 					.def( "setTextID", &TextField::setTextID )
 					.def( "removeTextID", &TextField::removeTextID )
-					.def_proxy_static( "setTextFormatArg", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArg )
-					.def_proxy_static( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArgs )
+					.def_proxy_native( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArgs )
 					.def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_getTextFormatArgs )					
 					.def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
 					.def_depricated( "getTextKey", &TextField::getTextID, "use getTextID" )

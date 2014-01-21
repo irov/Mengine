@@ -1279,7 +1279,9 @@ namespace Menge
             
 			String text = ss.str();
 
-			m_debugText->setTextFormatArg( text );
+			TVectorString args;
+			args.push_back( text );
+			m_debugText->setTextFormatArgs( args );
 
             float gameViewportAspect;
             Viewport gameViewport;

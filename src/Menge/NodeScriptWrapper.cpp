@@ -169,35 +169,55 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         PyObject * textfield_setTextFormatArgs( TextField * _textField, PyObject * _args, PyObject * _kwds )
         {
-			TVectorWString ws_args;
-			if( pybind::extract_value( _args, ws_args ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("TextField.setTextFormatArgs %s invalid get tuple unicode from args"
-					, _textField->getName().c_str()
-					);
-
-				return pybind::ret_none();
-			}
-						
-			size_t args_count = ws_args.size();
+			size_t args_count = pybind::tuple_size( _args );
 
 			TVectorString cs_args;
 			cs_args.reserve( args_count );
 
-			for( TVectorWString::const_iterator
-				it = ws_args.begin(),
-				it_end = ws_args.end();
-			it != it_end;
-			++it )
+			for( size_t it = 0; it != args_count; ++it )
 			{
-				const WString & ws_arg = *it;
+				PyObject * py_string = pybind::tuple_getitem( _args, it );
 
-				String utf8_arg;
-				Helper::unicodeToUtf8( m_serviceProvider, ws_arg, utf8_arg );
+				if( pybind::string_check( py_string ) == true )
+				{
+					String key;
+					if( pybind::extract_value( py_string, key ) == false )
+					{
+						return nullptr;
+					}
 
-				cs_args.push_back( utf8_arg );
+					cs_args.push_back( key );
+				}
+				else if( pybind::unicode_check( py_string ) == true )
+				{
+					WString key;
+					if( pybind::extract_value( py_string, key ) == false )
+					{
+						return nullptr;
+					}
+
+					String utf8_arg;
+					Helper::unicodeToUtf8( m_serviceProvider, key, utf8_arg );
+
+					cs_args.push_back( utf8_arg );
+				}
+				else
+				{
+					const char * value = pybind::object_str( py_string );
+
+					if( value == nullptr )
+					{
+						LOGGER_ERROR(m_serviceProvider)("textfield_setTextFormatArgs %s not suport arg %s"
+							, pybind::object_repr( py_string )
+							);
+
+						return nullptr;							 
+					}
+
+					cs_args.push_back( String(value) );
+				}
 			}
-
+						
 			_textField->setTextFormatArgs( cs_args );
 
 			return pybind::ret_none();

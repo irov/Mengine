@@ -390,7 +390,7 @@ namespace Menge
 		{
 			return;
 		}
-
+				
 		const String & text = this->getText();
 
 		TVectorString lines;
@@ -406,7 +406,13 @@ namespace Menge
 		{
 			TextLine textLine(m_serviceProvider, charOffset);
 			            
-			textLine.initialize( font, *it );
+			if( textLine.initialize( font, *it ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+					, this->getName().c_str()
+					, m_textEntry->getKey().c_str()
+					);
+			}
 
 			float textLength = textLine.getLength();
 
@@ -423,13 +429,27 @@ namespace Menge
 
 					String tl_string( newLine + space_delim + words.front() );
 
-					tl.initialize( font, tl_string );
+					if( tl.initialize( font, tl_string ) == false )
+					{
+						LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+							, this->getName().c_str()
+							, m_textEntry->getKey().c_str()
+							);
+					}
 
-					if( tl.getLength() > m_maxWidth )
+					float length = tl.getLength();
+
+					if( length > m_maxWidth )
 					{
 						TextLine line(m_serviceProvider, charOffset);
 
-						line.initialize( font, newLine );
+						if( line.initialize( font, newLine ) == false )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+								, this->getName().c_str()
+								, m_textEntry->getKey().c_str()
+								);
+						}
 
 						m_lines.push_back( line );
 
@@ -445,7 +465,13 @@ namespace Menge
 				}
 
 				TextLine line(m_serviceProvider, charOffset);				
-				line.initialize( font, newLine );
+				if( line.initialize( font, newLine ) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+						, this->getName().c_str()
+						, m_textEntry->getKey().c_str()
+						);
+				}
 
 				m_lines.push_back( line );
 			}

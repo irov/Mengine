@@ -18,7 +18,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::initialize( const TextFontInterfacePtr & _font, const String& _text )
+	bool TextLine::initialize( const TextFontInterfacePtr & _font, const String& _text )
 	{
 		WString::size_type text_size = _text.length();
 		m_charsData.reserve( text_size );
@@ -39,6 +39,8 @@ namespace Menge
 		float inv_image_width = 1.f / image_width;
 		float inv_image_height = 1.f / image_height;
 
+		bool successful = true;
+
 		for( const char
             *text_it = text_str,
             *text_end = text_str + text_len + 1;
@@ -56,7 +58,7 @@ namespace Menge
 					, err
 					);
 
-				continue;
+				successful = false;
 			}
 
             if( code == 0 )
@@ -82,7 +84,7 @@ namespace Menge
 					, code
 					);
 
-				continue;
+				successful = false;
 			}			
 					
 			CharData charData;
@@ -115,6 +117,8 @@ namespace Menge
 		}
 
 		m_length -= m_charOffset;
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextLine::getCharsDataSize() const

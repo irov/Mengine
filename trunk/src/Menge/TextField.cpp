@@ -792,6 +792,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextID( const ConstString& _key )
 	{	
+		m_textFormatArgs.clear();
+
 		if( m_textEntry != nullptr )
 		{
 			const ConstString & textKey = m_textEntry->getKey();
@@ -840,17 +842,17 @@ namespace Menge
 		return key;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextFormatArg( const String & _arg )
-	{
-		m_textFormatArgs.clear();
-		m_textFormatArgs.push_back( _arg );
-
-		this->invalidateFont();
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextFormatArgs( const TVectorString & _args )
 	{
+		if( m_textEntry == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::setTextFormatArgs %s not set TextID. Please first setup TextID"
+				, this->getName().c_str()
+				);
+
+			return;
+		}
+
 		m_textFormatArgs = _args;
 
 		this->invalidateFont();
@@ -881,19 +883,34 @@ namespace Menge
 			return Utils::emptyString();
 		}
 
-		const ConstString & keyText = m_textEntry->getText();
+		const ConstString & textValue = m_textEntry->getText();
 
-		StringFormat format(keyText.c_str());
+		StringFormat format(textValue.c_str());
 
-		for( TVectorString::const_iterator
-			it = m_textFormatArgs.begin(),
-			it_end = m_textFormatArgs.end();
-		it != it_end;
-		++it )
+		try
 		{
-			const String & arg = *it;
+			for( TVectorString::const_iterator
+				it = m_textFormatArgs.begin(),
+				it_end = m_textFormatArgs.end();
+			it != it_end;
+			++it )
+			{
+				const String & arg = *it;
 
-			format = format % arg;
+				format = format % arg;
+			}
+		}
+		catch( const boost::io::too_many_args & _ex )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::getText %s TextID %s text %s invalid setup args %d error %s"
+				, this->getName().c_str()
+				, m_textEntry->getKey().c_str()
+				, textValue.c_str()
+				, m_textFormatArgs.size()
+				, _ex.what()
+				);
+
+			return m_cacheText;
 		}
 
 		m_cacheText = format.str();

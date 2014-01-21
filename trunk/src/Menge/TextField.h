@@ -49,7 +49,6 @@ namespace Menge
 
 		const ConstString & getTextID() const;
 
-		void setTextFormatArg( const String & _arg );
 		void setTextFormatArgs( const TVectorString & _args );
 		void removeTextFormatArgs();
 		const TVectorString & getTextFormatArgs() const;

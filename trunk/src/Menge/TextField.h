@@ -49,12 +49,15 @@ namespace Menge
 
 		const ConstString & getTextID() const;
 
-		void setTextFormatArgs( const TVectorString & _args );
+		bool setTextFormatArgs( const TVectorString & _args );
 		void removeTextFormatArgs();
 		const TVectorString & getTextFormatArgs() const;
 		
 	public:
 		const String & getText() const;
+
+	protected:
+		bool updateTextCache_() const;
 
 	public:
 		void setFontName( const ConstString & _name );

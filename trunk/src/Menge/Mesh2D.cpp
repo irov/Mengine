@@ -51,7 +51,7 @@ namespace Menge
 	{
 		if( m_resourceImage == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource null"
+            LOGGER_ERROR(m_serviceProvider)("Mesh::compileResource_ '%s' image resource null"
                 , m_name.c_str() 
                 );
 
@@ -60,7 +60,7 @@ namespace Menge
 
         if( m_resourceImage.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Mesh::compileResource_ '%s' image resource %s not compile"
+            LOGGER_ERROR(m_serviceProvider)("Mesh::compileResource_ '%s' image resource %s not compile"
                 , m_name.c_str() 
                 , m_resourceImage->getName().c_str()
                 );

@@ -51,7 +51,7 @@ namespace Menge
 
         if( input_stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image file '%s' was not found"
+            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: Image file '%s' was not found"
                 , m_options.inputFileName.c_str() 
                 );
 
@@ -63,7 +63,7 @@ namespace Menge
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
+            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
                 , m_options.inputFileName.c_str() 
                 );
 
@@ -72,7 +72,7 @@ namespace Menge
 
 		if( imageDecoder->initialize( input_stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: Image initialize for file '%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: Image initialize for file '%s' was not found"
 				, m_options.inputFileName.c_str() 
 				);
 
@@ -117,7 +117,7 @@ namespace Menge
 
         if( output_stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
+            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
                 , m_options.outputFileName.c_str() 
                 , m_options.pakName.c_str()
                 );
@@ -130,7 +130,7 @@ namespace Menge
         
         if( encoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
+            LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
                 , m_options.outputFileName.c_str() 
                 );
 			
@@ -139,7 +139,7 @@ namespace Menge
 
 		if( encoder->initialize( output_stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not initialize (createEncoder hitPick)"
+			LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not initialize (createEncoder hitPick)"
 				, m_options.outputFileName.c_str() 
 				);
 

@@ -52,7 +52,7 @@ bool ImageDecoderETC1::_initialize()
 
 	if(strcmp(m_etc1_ptr.tag, "PKM 10"))
 	{
-		LOGGER_ERROR(m_serviceProvider)( "ImageDecoderETC1::initialize Bad or not ETC1 file" );
+		LOGGER_ERROR(m_serviceProvider)("ImageDecoderETC1::initialize Bad or not ETC1 file" );
 		return false;
 	}
 	char * buffer = reinterpret_cast<char *>(&m_etc1_ptr);

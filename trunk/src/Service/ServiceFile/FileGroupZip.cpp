@@ -99,7 +99,7 @@ namespace Menge
 
         if( zipMappedFile == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize can't create mapped input stream for path %s"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize can't create mapped input stream for path %s"
                 , m_path.c_str()
                 );
 
@@ -108,7 +108,7 @@ namespace Menge
         
         if( zipMappedFile->open( ConstString::none(), m_path, nullptr, 0 ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize can't open zip file data %s"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize can't open zip file data %s"
                 , m_path.c_str()
                 );
 
@@ -126,7 +126,7 @@ namespace Menge
 
         if( zipMappedFile->read( endof_central_dir, 22 ) != 22 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize invalid zip format %s"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize invalid zip format %s"
                 , _path.c_str()
                 );
 
@@ -135,7 +135,7 @@ namespace Menge
 
         if( s_get_int(endof_central_dir) != 0x06054B50 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize bad 'End of Central Dir' signature zip %s"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize bad 'End of Central Dir' signature zip %s"
                 , _path.c_str()
                 );
 
@@ -199,7 +199,7 @@ namespace Menge
                         						
 			if( header.compressionMethod != 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "FileSystemZip::initialize compressed %d file '%s'"
+				LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize compressed %d file '%s'"
                     , header.compressionMethod
 					, fileName.c_str() 
 					);

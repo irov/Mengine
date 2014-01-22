@@ -60,7 +60,7 @@ namespace Menge
 
         if( container == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't create container file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't create container file '%s'"
                 , m_name.c_str()
                 , m_filename.c_str() 
                 );
@@ -87,7 +87,7 @@ namespace Menge
 
             if( stream == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't create texture '%s'"
+                LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't create texture '%s'"
                     , m_name.c_str()
                     , filepath.c_str() 
                     );
@@ -103,7 +103,7 @@ namespace Menge
 
             if( imageDecoder == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't create decoder '%s'"
+                LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't create decoder '%s'"
                     , m_name.c_str()
                     , codecType.c_str() 
                     );
@@ -113,7 +113,7 @@ namespace Menge
 
 			if( imageDecoder->initialize( stream ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't initialize decoder '%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't initialize decoder '%s'"
 					, m_name.c_str()
 					, codecType.c_str() 
 					);
@@ -124,7 +124,7 @@ namespace Menge
 
         if( container->isValid() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_isValid %s can't valid container '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't valid container '%s'"
                 , m_name.c_str()
                 , m_filename.c_str() 
                 );
@@ -144,7 +144,7 @@ namespace Menge
 
 		if( m_container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_compile %s can't create container file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_compile %s can't create container file '%s'"
                 , m_name.c_str()
 				, m_filename.c_str() 
 				);
@@ -174,7 +174,7 @@ namespace Menge
 
             if( texture == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "ResourceEmitterContainer::_compile %s can't create texture '%s'"
+                LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_compile %s can't create texture '%s'"
                     , m_name.c_str()
                     , filepath.c_str() 
                     );

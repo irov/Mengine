@@ -59,7 +59,7 @@ namespace Menge
                 if( FILE_SERVICE(m_serviceProvider)
                     ->existFile( category, desc.path, nullptr, 0, nullptr ) == false )
                 {
-                    LOGGER_ERROR(m_serviceProvider)( "ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
+                    LOGGER_ERROR(m_serviceProvider)("ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
                         , this->getName().c_str()
                         , desc.path.c_str() 
                         );

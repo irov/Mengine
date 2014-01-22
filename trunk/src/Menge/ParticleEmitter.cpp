@@ -99,7 +99,7 @@ namespace	Menge
         		
 		if( m_resourceEmitterContainer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' resource is null"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -108,7 +108,7 @@ namespace	Menge
 
         if( m_resourceEmitterContainer.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' resource '%s' not compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' resource '%s' not compile"
                 , m_name.c_str()
                 , m_resourceEmitterContainer->getName().c_str()
                 );
@@ -120,7 +120,7 @@ namespace	Menge
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_compile '%s' can't open container file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' can't open container file '%s'"
 				, m_name.c_str()
 				, m_resourceEmitterContainer->getName().c_str() 
 				);
@@ -132,7 +132,7 @@ namespace	Menge
 
 		if( m_emitter == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
 				, m_name.c_str()
 				, m_resourceEmitterContainer->getName().c_str()
 				, m_emitterName.c_str() 
@@ -327,7 +327,7 @@ namespace	Menge
 
 		if( this->isCompile() == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::_interrupt '%s' can't compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_interrupt '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -345,7 +345,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::setLeftBorder '%s' can't compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::setLeftBorder '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -783,7 +783,7 @@ namespace	Menge
 
 		if( resourceHIT == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter '%s' can't compile emitter hit %s"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter '%s' can't compile emitter hit %s"
 				, m_name.c_str()
 				, m_emitterImageName.c_str()
 				);
@@ -912,7 +912,7 @@ namespace	Menge
 	{
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getDuration '%s' can't compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getDuration '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -928,7 +928,7 @@ namespace	Menge
 	{
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getLeftBorder '%s' can't compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getLeftBorder '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -944,7 +944,7 @@ namespace	Menge
 	{
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getRightBorder '%s' can't compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getRightBorder '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -967,7 +967,7 @@ namespace	Menge
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getEmitterBoundingBox '%s' can't compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getEmitterBoundingBox '%s' can't compile"
                 , m_name.c_str()
                 );
 
@@ -985,7 +985,7 @@ namespace	Menge
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleEmitter::getEmitterPosition '%s' can't compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getEmitterPosition '%s' can't compile"
                 , m_name.c_str()
                 );
 

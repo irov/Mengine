@@ -107,7 +107,7 @@ namespace Menge
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createTexture_ couldn't create image %dx%d"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTexture_ couldn't create image %dx%d"
                 , HWWidth
                 , HWHeight
                 );
@@ -150,7 +150,7 @@ namespace Menge
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::createDynamicTexture couldn't create image %dx%d channels %d"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createDynamicTexture couldn't create image %dx%d channels %d"
                 , HWWidth
                 , HWHeight
                 , HWChannels
@@ -194,7 +194,7 @@ namespace Menge
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderTextureManager::createRenderTargetTexture couldn't create RenderTargetTexture %dx%d %d"
+            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createRenderTargetTexture couldn't create RenderTargetTexture %dx%d %d"
                 , HWWidth
                 , HWHeight 
                 , HWChannels
@@ -231,7 +231,7 @@ namespace Menge
 
         if( stream == NULL )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : can't create file '%s' '%s'"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create file '%s' '%s'"
                 , _fileSystemName.c_str()
                 , _filename.c_str() 
                 );
@@ -244,7 +244,7 @@ namespace Menge
 
         if( imageEncoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : can't create encoder for filename '%s'"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create encoder for filename '%s'"
                 , _filename.c_str() 
                 );
 
@@ -253,7 +253,7 @@ namespace Menge
 
 		if( imageEncoder->initialize( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : can't initialize encoder for filename '%s'"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't initialize encoder for filename '%s'"
 				, _filename.c_str() 
 				);
 
@@ -292,7 +292,7 @@ namespace Menge
 
         if( bytesWritten == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::saveImage : Error while encoding image data"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : Error while encoding image data"
                 );
 
             return false;
@@ -347,7 +347,7 @@ namespace Menge
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image file '%s' was not found"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: Image file '%s' was not found"
                 , _filename.c_str() 
                 );
 
@@ -359,7 +359,7 @@ namespace Menge
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image decoder for file '%s' was not found"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: Image decoder for file '%s' was not found"
                 , _filename.c_str() 
                 );
 
@@ -368,7 +368,7 @@ namespace Menge
 
 		if( imageDecoder->initialize( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: Image decoder for file '%s' was not initialize"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: Image decoder for file '%s' was not initialize"
 				, _filename.c_str() 
 				);
 
@@ -391,7 +391,7 @@ namespace Menge
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: invalid create texture %d:%d channels %d format %d for file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: invalid create texture %d:%d channels %d format %d for file '%s'"
                 , image_width
                 , image_height
                 , image_channels
@@ -406,7 +406,7 @@ namespace Menge
 
         if( this->loadTextureRectImageData( texture, rect, imageDecoder ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "RenderEngine::loadTexture: decode texture for file '%s:%s' error"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: decode texture for file '%s:%s' error"
                 , _pakName.c_str()
                 , _filename.c_str() 
                 );

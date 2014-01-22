@@ -56,7 +56,7 @@ namespace Menge
 	{
 		if( m_resourceModel == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Model3D::compileResource_ '%s' image resource null"
+			LOGGER_ERROR(m_serviceProvider)("Model3D::compileResource_ '%s' image resource null"
 				, m_name.c_str() 
 				);
 
@@ -65,7 +65,7 @@ namespace Menge
 
 		if( m_resourceModel.compile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Model3D::compileResource_ '%s' model resource %s not compile"
+			LOGGER_ERROR(m_serviceProvider)("Model3D::compileResource_ '%s' model resource %s not compile"
 				, m_name.c_str() 
 				, m_resourceModel->getName().c_str()
 				);
@@ -524,7 +524,7 @@ namespace Menge
 
 		if( this->isActivate() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Model3D: '%s' play not activate"
+			LOGGER_ERROR(m_serviceProvider)("Model3D: '%s' play not activate"
 				, getName().c_str()
 				);
 
@@ -557,7 +557,7 @@ namespace Menge
 
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' stop not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' stop not activate"
 				, getName().c_str()
 				);
 
@@ -571,7 +571,7 @@ namespace Menge
 
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' end not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' end not activate"
 				, getName().c_str()
 				);
 
@@ -626,7 +626,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation._setFirstFrame: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation._setFirstFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -642,7 +642,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Model3D.setCurrentFrame: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Model3D.setCurrentFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -655,7 +655,7 @@ namespace Menge
 				
 		if( _frame >= frameCount )	
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Model3D.setCurrentFrame: '%s' _frame(%d) >= frameCount(%d)"
+			LOGGER_ERROR(m_serviceProvider)("Model3D.setCurrentFrame: '%s' _frame(%d) >= frameCount(%d)"
 				, m_name.c_str()
 				, _frame
 				, frameCount
@@ -674,7 +674,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation._setLastFrame: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation._setLastFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -699,7 +699,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation._setTiming: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation._setTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -715,7 +715,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation._getTiming: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation._getTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 

@@ -31,6 +31,18 @@ namespace Menge
             char msg [] = "LoggerOperator::operator invalid message :(\n";
             this->logMessage( msg, sizeof(msg) );
 
+			size = _snprintf( str, 2048 - 1, "%s", _message );
+
+			if( size < 0 )
+			{
+				return *this;
+			}
+
+			str[size] = '\n';
+			str[size + 1] = 0;	
+
+			this->logMessage( _message, size + 1 );
+
             return *this;
         }
         

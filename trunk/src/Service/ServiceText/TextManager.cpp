@@ -438,7 +438,7 @@ namespace Menge
 				WString ws_text;
 				Helper::utf8ToUnicode( m_serviceProvider, text, ws_text );
 
-				LOGGER_ERROR(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s with text '%ls'"
+				LOGGER_ERROR(m_serviceProvider)("TextManager::addTextEntry: duplicate key found %s with text '%ls'"
 					, _key.c_str()
 					, ws_text.c_str()
 					);
@@ -463,7 +463,7 @@ namespace Menge
 		TextEntryPtr textEntry;
 		if( m_texts.has_copy( _key, textEntry ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
+			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
 				);
 

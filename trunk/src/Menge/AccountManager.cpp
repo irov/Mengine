@@ -106,7 +106,7 @@ namespace Menge
 
 		if( it_find != m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account with ID '%ls' already exist. Account not created"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%ls' already exist. Account not created"
 				, _accountID.c_str() 
 				);
 
@@ -119,7 +119,7 @@ namespace Menge
 
         if( newAccount == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account with ID '%ls' invalid create. Account not created"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account with ID '%ls' invalid create. Account not created"
                 , _accountID.c_str() 
                 );
 
@@ -159,7 +159,7 @@ namespace Menge
         String utf8_path;
         if( Helper::unicodeToUtf8( m_serviceProvider, _accountID, utf8_path ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::newAccount_ can't convert accountID '%ls' to utf8"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::newAccount_ can't convert accountID '%ls' to utf8"
                 , _accountID.c_str() 
                 );
 
@@ -174,7 +174,7 @@ namespace Menge
             if( FILE_SERVICE(m_serviceProvider)
                 ->createDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "AccountManager::createAccount_: Account '%ls' failed create directory '%s'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::createAccount_: Account '%ls' failed create directory '%s'"
                     , _accountID.c_str() 
                     , folder.c_str()
                     );
@@ -196,7 +196,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AccountManager::deleteAccount Can't delete account '%ls'. There is no account with such ID"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::deleteAccount Can't delete account '%ls'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 
@@ -240,7 +240,7 @@ namespace Menge
 
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AccountManager::selectAccount Can't select account '%ls'. There is no account with such ID"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::selectAccount Can't select account '%ls'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
 			
@@ -269,7 +269,7 @@ namespace Menge
 		
         //if( account->load() == false )
         //{
-        //    LOGGER_ERROR(m_serviceProvider)( "AccountManager::selectAccount Can't select account '%ls'. account not load"
+        //    LOGGER_ERROR(m_serviceProvider)("AccountManager::selectAccount Can't select account '%ls'. account not load"
         //        , _accountID.c_str() 
         //        );
 
@@ -304,7 +304,7 @@ namespace Menge
 		
 		if( it_find == m_accounts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AccountManager::getAccount account with ID '%ls' not found"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::getAccount account with ID '%ls' not found"
 				, _accountID.c_str() 
 				);
 
@@ -408,7 +408,7 @@ namespace Menge
 
         if( file == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts open accounts failed '%s'"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts open accounts failed '%s'"
                 , m_accountsPath.c_str()
                 );
 
@@ -418,7 +418,7 @@ namespace Menge
         Ini ini(m_serviceProvider);
 		if( ini.load( file ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts parsing accounts failed '%s'"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts parsing accounts failed '%s'"
 				, m_accountsPath.c_str()
 				);
 
@@ -432,7 +432,7 @@ namespace Menge
 		//config.getSettingUInt( L"SETTINGS", L"AccountCount", playerCount );
         if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator, m_serviceProvider ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts get AccountEnumerator failed '%s'"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts get AccountEnumerator failed '%s'"
                 , m_accountsPath.c_str()
                 );
 
@@ -476,7 +476,7 @@ namespace Menge
 
             if( account == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccountsInfo invalid load account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccountsInfo invalid load account '%ls'"
                     , name.c_str()
                     );
 
@@ -496,7 +496,7 @@ namespace Menge
 
 			if( this->selectAccount( selectAccountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts invalid set select account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set select account '%ls'"
                     , selectAccountID.c_str()
                     );
 
@@ -511,7 +511,7 @@ namespace Menge
 
             if( this->selectAccount( m_defaultAccountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts invalid set default account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set default account '%ls'"
                     , m_defaultAccountID.c_str()
                     );
 
@@ -528,7 +528,7 @@ namespace Menge
 
             if( this->selectAccount( accountID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts invalid set valid account '%ls'"
+                LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set valid account '%ls'"
                     , accountID.c_str()
                     );
 
@@ -537,7 +537,7 @@ namespace Menge
         }
         else
         {
-            LOGGER_ERROR(m_serviceProvider)( "AccountManager::loadAccounts invalid set any accounts"
+            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set any accounts"
                 );
 
             return false;
@@ -553,7 +553,7 @@ namespace Menge
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AccountManager::saveAccountsInfo can't open file for writing. Accounts '%s' settings not saved"
+			LOGGER_ERROR(m_serviceProvider)("AccountManager::saveAccountsInfo can't open file for writing. Accounts '%s' settings not saved"
 				, m_accountsPath.c_str()
 				);
 

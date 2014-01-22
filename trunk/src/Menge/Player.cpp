@@ -341,7 +341,7 @@ namespace Menge
 
 		if( m_scene == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Player::updateChangeScene scene not found %s"
+			LOGGER_ERROR(m_serviceProvider)("Player::updateChangeScene scene not found %s"
 				, m_switchSceneName.c_str() 
 				);
 

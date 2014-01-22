@@ -36,7 +36,7 @@ namespace Menge
 
 		if( magic_header != DATAFLOW_MAGIC_MDL )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowMDL::load: mdl invalid magic header"
+			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: mdl invalid magic header"
 				);
 
 			return nullptr;
@@ -49,7 +49,7 @@ namespace Menge
 
 		if( version != version_valid )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowMDL::load: mdl invalid version %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: mdl invalid version %d:%d"
 				, version
 				, version_valid
 				);
@@ -79,7 +79,7 @@ namespace Menge
 		if( ARCHIVE_SERVICE(m_serviceProvider)
 			->uncompress( binary_memory, binary_size, uncompressSize, compress_memory, compress_size ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid uncompress"
+			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);
 
 			return nullptr;
@@ -114,7 +114,7 @@ namespace Menge
 		if( vertexCount > MENGINE_MODEL_MAX_VERTEX ||
 			indicesCount > MENGINE_MODEL_MAX_INDICES )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowMDL::load: mdl overflow vertex %d:%d indices %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: mdl overflow vertex %d:%d indices %d:%d"
 				, vertexCount
 				, MENGINE_MODEL_MAX_VERTEX
 				, indicesCount

@@ -110,7 +110,7 @@ namespace Menge
 
                 if( entity == nullptr )
                 {
-                    LOGGER_ERROR(m_serviceProvider)( "EntityPrototypeGenerator can't generate %s %s"
+                    LOGGER_ERROR(m_serviceProvider)("EntityPrototypeGenerator can't generate %s %s"
                         , m_category.c_str()
                         , m_prototype.c_str()
                         );
@@ -167,7 +167,7 @@ namespace Menge
 
 			if( entity == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Error: can't create Entity '%s'"
+				LOGGER_ERROR(m_serviceProvider)("Error: can't create Entity '%s'"
 					, _prototype.c_str()
 					);
 
@@ -190,7 +190,7 @@ namespace Menge
             if( PROTOTYPE_SERVICE(m_serviceProvider)
                 ->hasPrototype( CONST_STRING(m_serviceProvider, Entity), _prototype, generator ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Error: can't import Entity '%s'"
+                LOGGER_ERROR(m_serviceProvider)("Error: can't import Entity '%s'"
                     , _prototype.c_str()
                     );
 

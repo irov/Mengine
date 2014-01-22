@@ -73,7 +73,7 @@ namespace Menge
             if( UNICODE_SERVICE(m_serviceProvider)
                 ->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MAX_PATH, &unicode_shortpath_len ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.updateModulePath_: invalid filepath '%s'"
+                LOGGER_ERROR(m_serviceProvider)("ScriptEngine.updateModulePath_: invalid filepath '%s'"
                     , exportPath.c_str()
                     );
 
@@ -116,7 +116,7 @@ namespace Menge
             if( UNICODE_SERVICE(m_serviceProvider)
                 ->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MAX_PATH, &unicode_shortpath_len ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.updateModulePath_: invalid filepath '%s'"
+                LOGGER_ERROR(m_serviceProvider)("ScriptEngine.updateModulePath_: invalid filepath '%s'"
                     , stdPath.c_str()
                     );
 

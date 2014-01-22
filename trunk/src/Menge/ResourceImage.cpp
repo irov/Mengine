@@ -104,7 +104,7 @@ namespace Menge
 
 		if( texture == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceImage::loadImageFrame_: '%s' can't load image file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImage::loadImageFrame_: '%s' can't load image file '%s'"
 				, this->getName().c_str()
 				, _fileName.c_str()
 				);

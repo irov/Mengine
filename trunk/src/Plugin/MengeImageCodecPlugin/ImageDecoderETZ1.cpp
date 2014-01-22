@@ -43,7 +43,7 @@ namespace Menge
 
 		if( strncmp( header.tag, "PKM 10", 6 ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ImageDecoderETC1::initialize header not ETC1 file"				
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderETC1::initialize header not ETC1 file"				
 				);
 
 			return false;

@@ -69,7 +69,7 @@ namespace Menge
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::mountFileSystem FileSystem with name '%s' is already mount\n"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem FileSystem with name '%s' is already mount\n"
 				"Remount would be performed"
 				, _fileSystemName.c_str() 
 				);
@@ -81,7 +81,7 @@ namespace Menge
 
 		if( fs == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s':'%s'"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s':'%s'"
                 , _fileSystemName.c_str()
                 , _type.c_str()
                 , _folder.c_str()
@@ -93,7 +93,7 @@ namespace Menge
 
 		if( fs->initialize( m_serviceProvider, _folder, _path, _type, _create ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::mountFileSystem can't initialize FileSystem for object '%s'"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't initialize FileSystem for object '%s'"
 				, _path.c_str() 
 				);
 
@@ -112,7 +112,7 @@ namespace Menge
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::unmountFileGroup '%s' not mount"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::unmountFileGroup '%s' not mount"
 				, _fileSystemName.c_str() 
 				);
 
@@ -162,7 +162,7 @@ namespace Menge
 		FileGroupInterface * fileSystem;
 		if( m_fileSystemMap.has( _fileSystemName, &fileSystem ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::getFileGroup '%s' not mount"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::getFileGroup '%s' not mount"
 				, _fileSystemName.c_str()
 				);
 
@@ -296,7 +296,7 @@ namespace Menge
 
         if( group == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::createDirectory '%s' not mount"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::createDirectory '%s' not mount"
 				, _fileSystemName.c_str() 
 				);
 
@@ -317,7 +317,7 @@ namespace Menge
 
 		if( group == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::removeDirectory '%s' not mount"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::removeDirectory '%s' not mount"
 				, _fileSystemName.c_str() 
 				);
 
@@ -338,7 +338,7 @@ namespace Menge
 
         if( group == NULL )
         {
-			LOGGER_ERROR(m_serviceProvider)( "FileEngine::removeFile '%s' not mount"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::removeFile '%s' not mount"
 				, _fileSystemName.c_str() 
 				);
 

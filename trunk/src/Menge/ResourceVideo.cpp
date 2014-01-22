@@ -60,7 +60,7 @@ namespace Menge
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::isValid '%s' can't create decoder '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceVideo::isValid '%s' can't create decoder '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
                 );
@@ -145,7 +145,7 @@ namespace Menge
 
         if( videoStream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't open video file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder '%s' can't open video file '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
                 );
@@ -158,7 +158,7 @@ namespace Menge
 
         if( videoDecoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't create video decoder for file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder '%s' can't create video decoder for file '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
                 );
@@ -168,7 +168,7 @@ namespace Menge
 
 		if( videoDecoder->initialize( videoStream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't initialize video decoder for file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder '%s' can't initialize video decoder for file '%s'"
 				, this->getName().c_str()
 				, m_path.c_str()
 				);
@@ -191,7 +191,7 @@ namespace Menge
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)( "ResourceVideo::createVideDecoder '%s' can't setup options for file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder '%s' can't setup options for file '%s'"
 				, this->getName().c_str()
 				, m_path.c_str()
 				);

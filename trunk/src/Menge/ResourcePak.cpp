@@ -93,7 +93,7 @@ namespace Menge
 		
 		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_baseDir, m_path, m_type, false ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load failed to mount pak '%s' path '%s':'%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourcePak::load failed to mount pak '%s' path '%s':'%s'"
 				, m_name.c_str()
 				, m_baseDir.c_str()
 				, m_path.c_str()
@@ -117,7 +117,7 @@ namespace Menge
 		bool exist = false;
 		if( LOADER_SERVICE(m_serviceProvider)->load( m_name, m_descriptionPath, &pak, exist ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourcePak::load Invalid resource file '%s:%s' '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourcePak::load Invalid resource file '%s:%s' '%s'"
 				, m_path.c_str()
 				, m_name.c_str()
 				, m_descriptionPath.c_str()

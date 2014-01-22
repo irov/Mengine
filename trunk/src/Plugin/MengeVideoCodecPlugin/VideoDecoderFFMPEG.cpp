@@ -121,7 +121,7 @@ namespace Menge
 
 		if( open_input_error < 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "VideoDecoderFFMPEG:: Couldn't open stream %d"
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Couldn't open stream %d"
                 , open_input_error
                 );
 
@@ -132,7 +132,7 @@ namespace Menge
 
 		if( find_stream_info_error < 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "VideoDecoderFFMPEG:: Couldn't find stream information %d"
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Couldn't find stream information %d"
                 , find_stream_info_error
                 );
 
@@ -536,7 +536,7 @@ namespace Menge
 
             if( m_imgConvertContext == nullptr )
             {
-    			LOGGER_ERROR(m_serviceProvider)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!"
+    			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::Cannot initialize the conversion context!"
                     );
 
                 return false;

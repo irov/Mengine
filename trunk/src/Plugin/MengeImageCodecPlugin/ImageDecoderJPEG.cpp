@@ -262,7 +262,7 @@ namespace Menge
 	{
         if( _bufferSize != m_options.pitch * m_dataInfo.height )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ImageDecoderJPEG::decode error, invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
+            LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode error, invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
                 , _bufferSize
                 , m_options.pitch 
                 , m_dataInfo.height
@@ -281,7 +281,7 @@ namespace Menge
             }
             else
             {
-                LOGGER_ERROR(m_serviceProvider)( "ImageDecoderJPEG::decode DF_READ_ALPHA_ONLY m_options.channels %d != 4"
+                LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DF_READ_ALPHA_ONLY m_options.channels %d != 4"
                     , m_options.channels
                     );
 
@@ -319,7 +319,7 @@ namespace Menge
             }
             else
             {
-                LOGGER_ERROR(m_serviceProvider)( "ImageDecoderJPEG::decode DEFAULT m_options.channels %d != 4"
+                LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DEFAULT m_options.channels %d != 4"
                     , m_options.channels
                     );
 

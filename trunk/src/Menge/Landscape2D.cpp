@@ -31,7 +31,7 @@ namespace	Menge
 	{
 		if( m_images.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Landscape2D::compileResources_ '%s' images is empty"
+			LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' images is empty"
 				, m_name.c_str() 
 				);
 
@@ -54,7 +54,7 @@ namespace	Menge
 
 			if( el.resource->compile() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Landscape2D::compileResources_ '%s' image resource %s not compile"
+				LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' image resource %s not compile"
 					, m_name.c_str() 
 					, el.resource->getName().c_str()
 					);
@@ -69,7 +69,7 @@ namespace	Menge
 
 			if( el.material == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Landscape2D::compileResources_ '%s' invalid get material"
+				LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' invalid get material"
 					, m_name.c_str() 
 					);
 

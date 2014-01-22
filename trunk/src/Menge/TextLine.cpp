@@ -52,7 +52,7 @@ namespace Menge
 			
 			if( err != utf8::internal::UTF8_OK )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "TextLine for fontName %s invalid glyph |%s| err code %d"
+				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph |%s| err code %d"
 					, _font->getName().c_str()
 					, text_it
 					, err
@@ -79,7 +79,7 @@ namespace Menge
 			Glyph glyph;
 			if( _font->getGlyph( glyphChar, glyphCharNext, &glyph ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "TextLine for fontName %s invalid glyph %d"
+				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph %d"
 					, _font->getName().c_str()
 					, code
 					);

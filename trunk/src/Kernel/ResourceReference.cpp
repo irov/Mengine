@@ -85,7 +85,7 @@ namespace Menge
 			if( CONVERTER_SERVICE(m_serviceProvider)
 				->convert( _converter, m_category, _path, _out ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceReference::convertDefault_: '%s' can't convert '%s':'%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceReference::convertDefault_: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, _path.c_str()
 					, _converter.c_str()
@@ -103,7 +103,7 @@ namespace Menge
 
 		if( _codecType.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceReference::convertDefault_: '%s' you must determine codec for file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceReference::convertDefault_: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
 				, _path.c_str()
 				);

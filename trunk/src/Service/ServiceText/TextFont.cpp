@@ -136,7 +136,7 @@ namespace Menge
 
 		if( m_textureFont == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "TextFont::_compile '%s' invalid loading font image '%s'"
+			LOGGER_ERROR(m_serviceProvider)("TextFont::_compile '%s' invalid loading font image '%s'"
 				, m_name.c_str()
 				, m_pathFontImage.c_str() 
 				);
@@ -154,7 +154,7 @@ namespace Menge
 
 			if( m_textureOutline == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "TextFont::_compile '%s' can't loaded outline image file '%s'"
+				LOGGER_ERROR(m_serviceProvider)("TextFont::_compile '%s' can't loaded outline image file '%s'"
 					, m_name.c_str()
 					, m_pathOutlineImage.c_str() 
 					);

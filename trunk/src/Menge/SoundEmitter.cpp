@@ -45,7 +45,7 @@ namespace Menge
 	{
 		if( m_resourceSound == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' resource is null"
+			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' resource is null"
 				, this->getName().c_str()				
 				);
 
@@ -54,7 +54,7 @@ namespace Menge
 
         if( m_resourceSound.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' resource '%s' not compile"
+            LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
                 );
@@ -66,7 +66,7 @@ namespace Menge
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: '%s' sound buffer not create"
+            LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: '%s' sound buffer not create"
                 , this->getName().c_str() 
                 );
 
@@ -80,7 +80,7 @@ namespace Menge
 
 		if( m_sourceID == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "SoundEmitter::_compile: sound emitter '%s' not compiled"
+			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_compile: sound emitter '%s' not compiled"
 				, this->getName().c_str() 
 				);
 

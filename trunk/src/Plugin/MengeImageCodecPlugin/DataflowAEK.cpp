@@ -36,7 +36,7 @@ namespace Menge
 
 		if( binary_aek_header != 0xAEAEBABE )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid magic header"
+			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid magic header"
 				);
 
 			return nullptr;
@@ -49,7 +49,7 @@ namespace Menge
 
 		if( binary_aek_version != binary_aek_version_valid )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid version %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid version %d:%d"
 				, binary_aek_version
 				, binary_aek_version_valid
 				);
@@ -79,7 +79,7 @@ namespace Menge
 		if( ARCHIVE_SERVICE(m_serviceProvider)
 			->uncompress( binary_memory, binary_size, uncompressSize, compress_memory, compress_size ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DataflowAEK::load: aek invalid uncompress"
+			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);
 
 			return nullptr;

@@ -38,7 +38,7 @@ namespace Menge
 
         if( m_playlistResource == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Playlist::setPlaylistResource no found playlist with name '%s'"
+            LOGGER_ERROR(m_serviceProvider)("Playlist::setPlaylistResource no found playlist with name '%s'"
                 , _playlistResource.c_str()
                 );
 

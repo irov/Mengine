@@ -1143,7 +1143,7 @@ namespace Menge
 
 		if( it_found == m_vertexBuffer.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine: failed to release vertex buffer" 
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine: failed to release vertex buffer" 
 				);
 
 			return;
@@ -1161,7 +1161,7 @@ namespace Menge
 
 		if( it_found == m_indexBuffer.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine: failed to release index buffer" 
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine: failed to release index buffer" 
 				);
 
 			return;
@@ -1194,7 +1194,7 @@ namespace Menge
 
 		if( RENDER_SYSTEM(m_serviceProvider)->unlockVertexBuffer( _handle ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine: failed to unlock vertex buffer" 
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine: failed to unlock vertex buffer" 
 				);
 
 			return false;
@@ -1594,7 +1594,7 @@ namespace Menge
 
 		if( m_ibHandle2D == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
 				, m_maxIndexCount 
 				);
 
@@ -1619,7 +1619,7 @@ namespace Menge
 
 		if( m_vbHandle2D == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
 				, m_maxIndexCount 
 				);
 

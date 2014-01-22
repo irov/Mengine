@@ -63,7 +63,7 @@ namespace Menge
 
             if( dlib == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [invalid load]"
+                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [invalid load]"
                     , _name.c_str() 
                     );
 
@@ -75,7 +75,7 @@ namespace Menge
 
             if( function_dllCreatePlugin == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [dllCreatePlugin]"
+                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [dllCreatePlugin]"
                     , _name.c_str() 
                     );
 
@@ -87,7 +87,7 @@ namespace Menge
             PluginInterface * plugin;
             if( dllCreatePlugin( &plugin ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [invalid create]"
+                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [invalid create]"
                     , _name.c_str() 
                     );
 
@@ -96,7 +96,7 @@ namespace Menge
 
             if( plugin == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [plugin is NULL]"
+                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [plugin is NULL]"
                     , _name.c_str() 
                     );
 
@@ -105,7 +105,7 @@ namespace Menge
 
             if( plugin->initialize( m_serviceProvider ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "PluginService::loadPlugin can't load %ls plugin [invalid initialize]"
+                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [invalid initialize]"
                     , _name.c_str() 
                     );
 

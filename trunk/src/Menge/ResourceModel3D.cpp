@@ -64,7 +64,7 @@ namespace Menge
 			if( CONVERTER_SERVICE(m_serviceProvider)
 				->convert( m_converter, m_category, m_path, m_path ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceModel3D::_convert: '%s' can't convert '%s':'%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceModel3D::_convert: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, m_path.c_str()
 					, m_converter.c_str()
@@ -82,7 +82,7 @@ namespace Menge
 
 		if( m_dataflow.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
 				, m_path.c_str()
 				);
@@ -123,7 +123,7 @@ namespace Menge
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceModel3D::_compile: '%s' not found image resource '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceModel3D::_compile: '%s' not found image resource '%s'"
 				, this->getName().c_str()
 				, m_imageResourceName.c_str() 
 				);

@@ -115,7 +115,7 @@ namespace Menge
 		//Check valid structure sizes
 		if( header.dwSize != 124 && header.ddspf.dwSize != 32)
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ImageDecoderDDS::initialize invalid dds file header" 
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize invalid dds file header" 
                 );
 
 			return false;
@@ -123,7 +123,7 @@ namespace Menge
 
 		if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
 		{
-			LOGGER_WARNING(m_serviceProvider)( "ImageDecoderDDS::initialize dds file has mipmaps" 
+			LOGGER_WARNING(m_serviceProvider)("ImageDecoderDDS::initialize dds file has mipmaps" 
                 );                        
 
 			return false;				 
@@ -140,7 +140,7 @@ namespace Menge
         
         if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ImageDecoderDDS::initialize dds file no compress" 
+            LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize dds file no compress" 
                 );
 
             return false;

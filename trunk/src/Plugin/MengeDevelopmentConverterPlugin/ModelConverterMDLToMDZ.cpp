@@ -36,7 +36,7 @@ namespace Menge
         FileGroupInterface * fileGroup;
         if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleConverterPTCToPTZ::convert_: not found file group '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: not found file group '%s'"
                 , m_options.pakName.c_str()
                 );
 
@@ -67,7 +67,7 @@ namespace Menge
 
         if( archive_size == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleConverterPTCToPTZ::convert_: %s invalid compressBound %d"
+            LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: %s invalid compressBound %d"
                 , m_options.inputFileName.c_str()
                 , data_size
                 );
@@ -84,7 +84,7 @@ namespace Menge
         if( ARCHIVE_SERVICE(m_serviceProvider)
             ->compress( archive_memory, archive_size, comress_size, data_memory, data_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ParticleConverterPTCToPTZ::convert_: %s invalid compress"
+            LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: %s invalid compress"
                 , m_options.inputFileName.c_str()
                 );
 			

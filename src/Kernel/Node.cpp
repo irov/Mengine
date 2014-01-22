@@ -295,7 +295,7 @@ namespace Menge
 	{
 		if( _node == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Node::addChildren '%s' invalid add NULL node"
+			LOGGER_ERROR(m_serviceProvider)("Node::addChildren '%s' invalid add NULL node"
 				, this->getName().c_str()
 				);
 
@@ -311,7 +311,7 @@ namespace Menge
 	{
 		if( _node == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Node::addChildrenFront '%s' invalid add NULL node"
+			LOGGER_ERROR(m_serviceProvider)("Node::addChildrenFront '%s' invalid add NULL node"
 				, this->getName().c_str()
 				);
 
@@ -327,7 +327,7 @@ namespace Menge
 	{
 		if( _node == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Node::addChildrenAfter '%s' invalid add NULL node (node)"
+			LOGGER_ERROR(m_serviceProvider)("Node::addChildrenAfter '%s' invalid add NULL node (node)"
 				, this->getName().c_str()
 				);
 
@@ -336,7 +336,7 @@ namespace Menge
 
 		if( _after == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Node::addChildrenAfter '%s' invalid add NULL node (after)"
+			LOGGER_ERROR(m_serviceProvider)("Node::addChildrenAfter '%s' invalid add NULL node (after)"
 				, this->getName().c_str()
 				);
 

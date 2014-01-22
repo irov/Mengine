@@ -90,7 +90,7 @@ namespace Menge
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceSound::_isValid: %s can't open sound file %s:%s"
+            LOGGER_ERROR(m_serviceProvider)("ResourceSound::_isValid: %s can't open sound file %s:%s"
                 , m_name.c_str()
                 , category.c_str()
                 , m_path.c_str() 
@@ -104,7 +104,7 @@ namespace Menge
 
         if( codec == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SoundEngine::_isValid: %s can't create sound decoder for file %s:%s"
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't create sound decoder for file %s:%s"
                 , m_name.c_str()
                 , category.c_str()
                 , m_path.c_str() 
@@ -115,7 +115,7 @@ namespace Menge
 
 		if( codec->initialize( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "SoundEngine::_isValid: %s can't initialize sound decoder for file %s:%s"
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't initialize sound decoder for file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
 				, m_path.c_str() 
@@ -143,7 +143,7 @@ namespace Menge
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SoundEngine::isValid '%s' can't create buffer '%s'"
+            LOGGER_ERROR(m_serviceProvider)("SoundEngine::isValid '%s' can't create buffer '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
                 );
@@ -165,7 +165,7 @@ namespace Menge
 
         if( soundBuffer == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceSound::createSoundBuffer: '%s' can't load sound '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceSound::createSoundBuffer: '%s' can't load sound '%s'"
                 , this->getName().c_str() 
                 , m_path.c_str()
                 );

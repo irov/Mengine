@@ -84,7 +84,7 @@ namespace Menge
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
                 , m_codec.c_str()
@@ -95,7 +95,7 @@ namespace Menge
 
 		if( decoder->initialize( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
 				, this->getName().c_str()
 				, m_path.c_str()
 				, m_codec.c_str()

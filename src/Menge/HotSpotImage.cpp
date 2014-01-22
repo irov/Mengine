@@ -32,7 +32,7 @@ namespace Menge
 
         if( m_resourceHIT == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' resource is null"
+            LOGGER_ERROR(m_serviceProvider)("HotSpotImage::_compile: '%s' resource is null"
                 , this->getName().c_str()
                 );
 
@@ -41,7 +41,7 @@ namespace Menge
 
         if( m_resourceHIT.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
+            LOGGER_ERROR(m_serviceProvider)("HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
                 , this->getName().c_str()
                 , m_resourceHIT->getName().c_str()
                 );

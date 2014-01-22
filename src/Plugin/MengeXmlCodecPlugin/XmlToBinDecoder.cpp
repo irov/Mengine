@@ -103,7 +103,7 @@ namespace Menge
         (void)_buffer;
         (void)_bufferSize;
 
-        LOGGER_WARNING(m_serviceProvider)( "Xml2BinDecoder::decode: xml to bin:\nxml - %s\nbin - %s"
+        LOGGER_WARNING(m_serviceProvider)("Xml2BinDecoder::decode: xml to bin:\nxml - %s\nbin - %s"
             , m_options.pathXml.c_str()
             , m_options.pathBin.c_str()
             );
@@ -117,7 +117,7 @@ namespace Menge
 
         if( protocol_stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error open protocol %s"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error open protocol %s"
                 , m_options.pathProtocol.c_str()
                 );
 
@@ -134,7 +134,7 @@ namespace Menge
 
 		if( xml_protocol.readProtocol( &protocol_buf[0], protocol_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error read protocol %s error:\n%s"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error read protocol %s error:\n%s"
                 , m_options.pathProtocol.c_str()
                 , xml_protocol.getError().c_str()
                 );
@@ -147,7 +147,7 @@ namespace Menge
 
         if( xml_stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error open xml %s"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error open xml %s"
                 , m_options.pathXml.c_str()
                 );
 
@@ -158,7 +158,7 @@ namespace Menge
 
         if( xml_size == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error open xml %s (file size == 0)"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error open xml %s (file size == 0)"
                 , m_options.pathXml.c_str()
                 );
 
@@ -187,7 +187,7 @@ namespace Menge
         size_t header_size;
         if( xml_metabuf.header( &header_buf[0], 16, header_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error header %s error:\n%s"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error header %s error:\n%s"
                 , m_options.pathXml.c_str()
                 , xml_metabuf.getError().c_str()
                 );
@@ -200,7 +200,7 @@ namespace Menge
         size_t bin_size;
 		if( xml_metabuf.convert( &bin_buf[0], xml_size * 2, &xml_buf[0], xml_size, bin_size ) == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error convert %s error:\n%s"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error convert %s error:\n%s"
                 , m_options.pathXml.c_str()
                 , xml_metabuf.getError().c_str()
                 );
@@ -217,7 +217,7 @@ namespace Menge
         if( ARCHIVE_SERVICE(m_serviceProvider)
             ->compress( &compress_buf[0], bound_size, compress_size, &bin_buf[0], bin_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error compress bin %s"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error compress bin %s"
                 , m_options.pathBin.c_str()
                 );
 
@@ -229,7 +229,7 @@ namespace Menge
 
         if( bin_stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Xml2BinDecoder::decode: error create bin %s"
+            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error create bin %s"
                 , m_options.pathBin.c_str()
                 );
 

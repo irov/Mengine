@@ -29,7 +29,7 @@ namespace Menge
                 const char * envString = eventToString( _event );
                 const char * objRepr = pybind::object_repr( py_result );
 
-                LOGGER_ERROR(_serviceProvider)( "Eventable: '%s' '%s' must return 'None', but return '%s'"
+                LOGGER_ERROR(_serviceProvider)("Eventable: '%s' '%s' must return 'None', but return '%s'"
                     , envString
                     , pybind::object_repr( _pyevent )
                     , objRepr
@@ -56,7 +56,7 @@ namespace Menge
                 const char * typeName = typeid(T).name();
                 const char * objRepr = pybind::object_repr( pyresult );
 
-                LOGGER_ERROR(_serviceProvider)( "Eventable: '%s' '%s' must return '%s', but return '%s'"
+                LOGGER_ERROR(_serviceProvider)("Eventable: '%s' '%s' must return '%s', but return '%s'"
                     , envString
                     , pybind::object_repr( _pyevent )
                     , typeName

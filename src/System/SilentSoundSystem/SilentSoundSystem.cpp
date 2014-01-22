@@ -73,7 +73,7 @@ namespace Menge
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "SilentSoundSystem: failed to load sound buffer from decoder" 
+			LOGGER_ERROR(m_serviceProvider)("SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
 				);
 
 			buffer->destroy();

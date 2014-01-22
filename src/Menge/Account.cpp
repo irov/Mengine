@@ -69,7 +69,7 @@ namespace Menge
 		
 		if( it != m_settings.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::addSetting: account '%ls' setting '%s' already exist"
+			LOGGER_ERROR(m_serviceProvider)("Account::addSetting: account '%ls' setting '%s' already exist"
                 , m_name.c_str()
 				, _setting.c_str() 
 				);
@@ -91,7 +91,7 @@ namespace Menge
 		Setting * st = nullptr;		
 		if( m_settings.has( _setting, &st ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::changeSetting account %ls setting '%s' does not exist. Can't change"
+			LOGGER_ERROR(m_serviceProvider)("Account::changeSetting account %ls setting '%s' does not exist. Can't change"
                 , m_name.c_str()
 				, _setting.c_str()
 				);
@@ -114,7 +114,7 @@ namespace Menge
 		const Setting * st;
 		if( m_settings.has( _setting, &st ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::getSetting account '%ls' setting '%s' does not exist. Can't get"
+			LOGGER_ERROR(m_serviceProvider)("Account::getSetting account '%ls' setting '%s' does not exist. Can't get"
                 , m_name.c_str()
 				, _setting.c_str()
 				);
@@ -136,7 +136,7 @@ namespace Menge
 	{
         if( FILE_SERVICE(m_serviceProvider)->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, nullptr, 0, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::load account '%ls' settings not found '%s'"
+            LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' settings not found '%s'"
                 , m_name.c_str()
                 , m_settingsPath.c_str() 
                 );
@@ -149,7 +149,7 @@ namespace Menge
 
         if( file == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::load can't open file for read. Account '%ls' settings not load '%s'"
+            LOGGER_ERROR(m_serviceProvider)("Account::load can't open file for read. Account '%ls' settings not load '%s'"
                 , m_name.c_str() 
                 , m_settingsPath.c_str()
                 );
@@ -160,7 +160,7 @@ namespace Menge
         Ini ini(m_serviceProvider);
 		if( ini.load( file ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::load parsing Account '%ls' settings failed '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Account::load parsing Account '%ls' settings failed '%s'"
                 , m_name.c_str()
 				, m_settingsPath.c_str() 
 				);
@@ -184,7 +184,7 @@ namespace Menge
 
 		if( m_projectVersion != projectVersion )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::load account '%ls' failed invalid project version '%d' need '%d'"
+			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%d' need '%d'"
 				, m_name.c_str()
 				, projectVersion
 				, m_projectVersion
@@ -204,7 +204,7 @@ namespace Menge
 
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value, m_serviceProvider ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Account::load account '%ls' failed get setting '%s'"
+                LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed get setting '%s'"
                     , m_name.c_str()
                     , key.c_str() 
                     );
@@ -223,7 +223,7 @@ namespace Menge
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Account::save can't open file for writing. Account '%ls' settings not saved %s"
+			LOGGER_ERROR(m_serviceProvider)("Account::save can't open file for writing. Account '%ls' settings not saved %s"
 				, m_name.c_str() 
                 , m_settingsPath.c_str()
 				);
@@ -293,7 +293,7 @@ namespace Menge
 
         if( file == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (file not found)"
+            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (file not found)"
                 , m_name.c_str()
                 , fullpath.c_str()
                 );
@@ -306,7 +306,7 @@ namespace Menge
         size_t load_crc32 = 0;
         if( file->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (load crc32)"
+            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load crc32)"
                 , m_name.c_str()
                 , fullpath.c_str()
                 );
@@ -317,7 +317,7 @@ namespace Menge
         size_t load_data_size = 0;
         if( file->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls invalid load file %s (load data size)"
+            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load data size)"
                 , m_name.c_str()
                 , fullpath.c_str()
                 );
@@ -335,7 +335,7 @@ namespace Menge
 
         if( load_crc32 != check_crc32 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls: invalid load file %s (crc32 incorect)"
+            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (crc32 incorect)"
                 , m_name.c_str()
                 , fullpath.c_str()
                 );
@@ -349,7 +349,7 @@ namespace Menge
         if( ARCHIVE_SERVICE(m_serviceProvider)
             ->uncompress( &_data[0], load_data_size, uncompress_size, &archive_blob[0], load_compress_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::loadBinaryFile: account %ls: invalid load file %s (uncompress failed)"
+            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (uncompress failed)"
                 , m_name.c_str()
                 , fullpath.c_str()
                 );
@@ -374,7 +374,7 @@ namespace Menge
 
         if( file == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write file %s (not create)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s (not create)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );
@@ -384,7 +384,7 @@ namespace Menge
 
         if( _data.empty() == true )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls write empty file %s"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls write empty file %s"
                 , m_name.c_str()
                 , _filename.c_str()
                 );
@@ -399,7 +399,7 @@ namespace Menge
 
         if( archive_size == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write file %s (archive_size is zero)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s (archive_size is zero)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );
@@ -413,7 +413,7 @@ namespace Menge
         if( ARCHIVE_SERVICE(m_serviceProvider)
             ->compress( &archive_blob[0], archive_size, comress_size, &_data[0], _data.size() ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'crc32' %s (compress failed)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'crc32' %s (compress failed)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );
@@ -425,7 +425,7 @@ namespace Menge
 
         if( file->write( &value_crc32, sizeof(value_crc32) ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'crc32' %s (not create)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'crc32' %s (not create)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );
@@ -435,7 +435,7 @@ namespace Menge
 
         if( file->write( &data_size, sizeof(data_size) ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'data size' %s (not create)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'data size' %s (not create)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );
@@ -445,7 +445,7 @@ namespace Menge
                 
         if( file->write( &archive_blob[0], comress_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Account::writeBinaryFile: account %ls invalid write 'data' %s (not create)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'data' %s (not create)"
                 , m_name.c_str()
                 , _filename.c_str()
                 );

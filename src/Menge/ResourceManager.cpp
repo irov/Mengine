@@ -86,14 +86,14 @@ namespace Menge
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceManager::loadResource: resource '%s:%s' not found"
+				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: resource '%s:%s' not found"
 					, _pakName.c_str()
 					, _path.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceManager::loadResource: Invalid parse resource '%s:%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: Invalid parse resource '%s:%s'"
                     , _pakName.c_str()
                     , _path.c_str()
 					);

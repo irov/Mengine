@@ -144,7 +144,7 @@ namespace Menge
 
 		if( streamRGB == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with RGB data '%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with RGB data '%s' was not found"
 				, this->getName().c_str()
 				, _fileNameRGB.c_str()
 				);
@@ -156,7 +156,7 @@ namespace Menge
 
 		if( imageDecoderRGB == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image decoder for file '%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image decoder for file '%s' was not found"
 				, this->getName().c_str()
 				, _fileNameRGB.c_str() 
 				);
@@ -170,7 +170,7 @@ namespace Menge
 
 		if( streamAlpha == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with alpha channel data '%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' Image file with alpha channel data '%s' was not found"
 				, this->getName().c_str()
 				, _fileNameAlpha.c_str() 
 				);
@@ -183,7 +183,7 @@ namespace Menge
 
 		if( imageDecoderAlpha == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: Image decoder for file '%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: Image decoder for file '%s' was not found"
 				, _fileNameAlpha.c_str() 
 				);
 			
@@ -197,7 +197,7 @@ namespace Menge
 
 		if( texture == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t create texture %s width %i height %i "
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t create texture %s width %i height %i "
 				, this->getName().c_str()
 				, _fileNameAlpha.c_str()
 				, dataInfoRGB->width
@@ -218,7 +218,7 @@ namespace Menge
 		
 		if( buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t lock buffer '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t lock buffer '%s'"
 				, this->getName().c_str()
 				, _fileNameAlpha.c_str() 
 				);
@@ -230,7 +230,7 @@ namespace Menge
 
         if( this->loadAlphaData_( buffer, pitch, imageDecoderAlpha ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load alpha data '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load alpha data '%s'"
                 , this->getName().c_str()
                 , _fileNameAlpha.c_str() 
                 );
@@ -244,7 +244,7 @@ namespace Menge
 
 		if( this->loadRGBData_( buffer, pitch, imageDecoderRGB ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load rgb data '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceImageCombineRGBAndAlpha::createTextureRGBAndAlpha_: '%s' can`t load rgb data '%s'"
                 , this->getName().c_str()
                 , _fileNameAlpha.c_str() 
                 );

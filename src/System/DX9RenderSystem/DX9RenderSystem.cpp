@@ -367,7 +367,7 @@ namespace Menge
 
 		if( m_hd3d9 == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Failed to load d3d9.dll"
+			LOGGER_ERROR(m_serviceProvider)("Failed to load d3d9.dll"
                 );
 
 			return false;
@@ -376,7 +376,7 @@ namespace Menge
 		PDIRECT3DCREATE9 pDirect3DCreate9 = (PDIRECT3DCREATE9)::GetProcAddress( m_hd3d9, "Direct3DCreate9" );
 		if( pDirect3DCreate9 == NULL )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Failed to get Direct3DCreate9 proc address"
+			LOGGER_ERROR(m_serviceProvider)("Failed to get Direct3DCreate9 proc address"
                 );
 
 			return false;
@@ -390,7 +390,7 @@ namespace Menge
 
 		if( m_pD3D == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Can't create D3D interface" 
+			LOGGER_ERROR(m_serviceProvider)("Can't create D3D interface" 
                 );
 
 			return false;
@@ -421,7 +421,7 @@ namespace Menge
 
 		IF_DXCALL(m_serviceProvider, m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Can't determine adapter identifier" 
+			LOGGER_ERROR(m_serviceProvider)("Can't determine adapter identifier" 
 				);
 			
 			return false;
@@ -429,7 +429,7 @@ namespace Menge
 
         IF_DXCALL(m_serviceProvider, m_pD3D, GetAdapterIdentifier, ( m_adapterToUse, 0, &AdID ) )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Can't determine adapter identifier" 
+            LOGGER_ERROR(m_serviceProvider)("Can't determine adapter identifier" 
                 );
 
             return false;
@@ -451,7 +451,7 @@ namespace Menge
         D3DDISPLAYMODE Mode;
         IF_DXCALL( m_serviceProvider, m_pD3D, GetAdapterDisplayMode, ( m_adapterToUse, &Mode ) )
         {
-			LOGGER_ERROR(m_serviceProvider)( "Can't determine desktop video mode"
+			LOGGER_ERROR(m_serviceProvider)("Can't determine desktop video mode"
                 );
 
 			return false;
@@ -459,7 +459,7 @@ namespace Menge
 
 		if( Mode.Format == D3DFMT_UNKNOWN )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Can't determine desktop video mode D3DFMT_UNKNOWN"
+			LOGGER_ERROR(m_serviceProvider)("Can't determine desktop video mode D3DFMT_UNKNOWN"
 				);
 
 			return false;
@@ -506,7 +506,7 @@ namespace Menge
 		
 		if( Format == D3DFMT_UNKNOWN )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Can't find appropriate full screen video mode" 
+			LOGGER_ERROR(m_serviceProvider)("Can't find appropriate full screen video mode" 
 				);
 
 			return false;
@@ -639,7 +639,7 @@ namespace Menge
         D3DDISPLAYMODE Mode;
 		IF_DXCALL( m_serviceProvider, m_pD3D, GetAdapterDisplayMode, (D3DADAPTER_DEFAULT, &Mode) ) 
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::createRenderWindow Can't determine desktop video mode" 
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow Can't determine desktop video mode" 
                 );
 
 			return false;
@@ -727,7 +727,7 @@ namespace Menge
 
 		if( FAILED ( hr ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::createRenderWindow Can't create D3D device (hr:%u, hwnd:%u)"
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow Can't create D3D device (hr:%u, hwnd:%u)"
 				, hr
 				, (HWND)_winHandle 
 				);
@@ -745,7 +745,7 @@ namespace Menge
 
 		if( this->initLost_() == false ) 
 		{
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::createRenderWindow invalid init lost"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow invalid init lost"
                 );
 
 			return false;
@@ -894,7 +894,7 @@ namespace Menge
         
 		if( this->d3dCreateTexture_( _width, _height, 1, 0,	_format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createImage: can't create texture %dx%d %d"
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createImage: can't create texture %dx%d %d"
 				, _width
 				, _height
 				, _format
@@ -928,7 +928,7 @@ namespace Menge
 
 		if( d3dCreateTexture_( _width, _height, 1, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createDynamicImage: can't create texture %dx%d %d"
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createDynamicImage: can't create texture %dx%d %d"
 				, _width
 				, _height
 				, _format
@@ -961,7 +961,7 @@ namespace Menge
 		IDirect3DTexture9 * dxTextureInterface = nullptr;		
 		if( this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, _format, D3DPOOL_DEFAULT, &dxTextureInterface ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createRenderTargetImage: can't  create render texture %dx%d %d"
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createRenderTargetImage: can't  create render texture %dx%d %d"
 				, _width
 				, _height
 				, _format
@@ -973,7 +973,7 @@ namespace Menge
         IDirect3DSurface9 * dxSurfaceInterface = nullptr;
 		IF_DXCALL( m_serviceProvider, dxTextureInterface, GetSurfaceLevel, (0, &dxSurfaceInterface) )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem.createRenderTargetImage: can't get surface level %dx%d %d"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createRenderTargetImage: can't get surface level %dx%d %d"
                 , _width
                 , _height
                 , _format
@@ -1014,7 +1014,7 @@ namespace Menge
 
             if( Mode.Format == D3DFMT_UNKNOWN ) 
             {
-                LOGGER_ERROR(m_serviceProvider)( "Can't determine desktop video mode D3DFMT_UNKNOWN"
+                LOGGER_ERROR(m_serviceProvider)("Can't determine desktop video mode D3DFMT_UNKNOWN"
                     );
 
                 return false;
@@ -1034,7 +1034,7 @@ namespace Menge
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::resetDevice_: restore failed"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::resetDevice_: restore failed"
                 );
 
             return false;
@@ -1069,7 +1069,7 @@ namespace Menge
         }
         else if( FAILED(hr) )
         {
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::beginScene: invalid TestCooperativeLevel %d"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::beginScene: invalid TestCooperativeLevel %d"
                 , hr
                 );
 
@@ -1150,7 +1150,7 @@ namespace Menge
         }
         else if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::swapBuffers failed to swap buffers" );
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::swapBuffers failed to swap buffers" );
 		}
 
 		++m_frames;
@@ -1252,7 +1252,7 @@ namespace Menge
 
 		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetViewport, (&VP) )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::setRenderViewport: failed viewport (%d, %d, %d, %d)"
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setRenderViewport: failed viewport (%d, %d, %d, %d)"
 				, VP.X
 				, VP.Y
 				, VP.X + VP.Width
@@ -1275,7 +1275,7 @@ namespace Menge
 
 		if( this->restore_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::changeWindowMode: Graphics change mode failed" 
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::changeWindowMode: Graphics change mode failed" 
                 );
 		}        
 	}
@@ -1875,7 +1875,7 @@ namespace Menge
         }
         else if( FAILED( hr ) == true )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::restore_ failed to reset device (hr:%p)"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ failed to reset device (hr:%p)"
                 , hr 
                 );
 
@@ -1884,7 +1884,7 @@ namespace Menge
 
 		if( this->initLost_() == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::restore_ invalid init lost"
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ invalid init lost"
                 );
 
 			return false;
@@ -1895,7 +1895,7 @@ namespace Menge
         {
             if( m_listener->onRenderSystemDeviceRestored() == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::restore_ invalid onRenderSystemDeviceRestored"
+                LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ invalid onRenderSystemDeviceRestored"
                     );
 
                 return false;
@@ -2837,7 +2837,7 @@ namespace Menge
 
 		if( this->restore_() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "DX9RenderSystem::setVSync: Graphics change mode failed" 
+            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setVSync: Graphics change mode failed" 
                 );
         }
 	}

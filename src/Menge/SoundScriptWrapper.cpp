@@ -161,7 +161,7 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "soundPlay: can't get resource '%s'"
+				LOGGER_ERROR(m_serviceProvider)("soundPlay: can't get resource '%s'"
 					, _resourceName.c_str()
 					);
 
@@ -180,7 +180,7 @@ namespace	Menge
 
             if( sourceID == 0 )
             {
-                LOGGER_ERROR(m_serviceProvider)( "voicePlay: can't get resource '%s'"
+                LOGGER_ERROR(m_serviceProvider)("voicePlay: can't get resource '%s'"
                     , _resourceName.c_str()
                     );
 
@@ -199,7 +199,7 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "soundPlayFromPosition: can't get resource '%s'"
+				LOGGER_ERROR(m_serviceProvider)("soundPlayFromPosition: can't get resource '%s'"
 					, _resourceName.c_str()
 					);
 
@@ -209,7 +209,7 @@ namespace	Menge
 			if( SOUND_SERVICE(m_serviceProvider)
 				->setPosMs( sourceID, _position ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "soundPlayFromPosition: set pos '%s' '%f'"
+                LOGGER_ERROR(m_serviceProvider)("soundPlayFromPosition: set pos '%s' '%f'"
                     , _resourceName.c_str()
                     , _position
                     );
@@ -220,7 +220,7 @@ namespace	Menge
 			if( SOUND_SERVICE(m_serviceProvider)
 				->play( sourceID ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "soundPlayFromPosition: play '%s' '%f'"
+                LOGGER_ERROR(m_serviceProvider)("soundPlayFromPosition: play '%s' '%f'"
                     , _resourceName.c_str()
                     , _position
                     );

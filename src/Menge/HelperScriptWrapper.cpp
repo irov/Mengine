@@ -467,7 +467,7 @@ namespace Menge
 
 			if( currentAccount == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Error addSetting: currentAccount is none [%s]"
+				LOGGER_ERROR(m_serviceProvider)("Error addSetting: currentAccount is none [%s]"
                     , _setting.c_str()
 					);
 
@@ -484,7 +484,7 @@ namespace Menge
 
             if( currentAccount == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "changeSetting: currentAccount is none [%s]"
+                LOGGER_ERROR(m_serviceProvider)("changeSetting: currentAccount is none [%s]"
                     , _setting.c_str()
                     );
 
@@ -503,7 +503,7 @@ namespace Menge
 
             if( currentAccount == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "getSetting: currentAccount is none [%s]"
+                LOGGER_ERROR(m_serviceProvider)("getSetting: currentAccount is none [%s]"
                     , _setting.c_str()
                     );
 
@@ -522,7 +522,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSetting: currentAccount is none [%s]"
+				LOGGER_ERROR(m_serviceProvider)("getSetting: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
@@ -543,7 +543,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingUInt: currentAccount is none [%s]"
+				LOGGER_ERROR(m_serviceProvider)("getSettingUInt: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
@@ -555,7 +555,7 @@ namespace Menge
 			size_t value;
 			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingUInt: can't scanf from [%s]"
+				LOGGER_ERROR(m_serviceProvider)("getSettingUInt: can't scanf from [%s]"
 					, _setting.c_str()
 					);
 
@@ -574,7 +574,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingFloat: currentAccount is none [%s]"
+				LOGGER_ERROR(m_serviceProvider)("getSettingFloat: currentAccount is none [%s]"
 					, _setting.c_str()
 					);
 
@@ -586,7 +586,7 @@ namespace Menge
 			float value;
 			if( Utils::wstringToFloat( setting, value ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getSettingFloat: can't scanf from [%S]"
+				LOGGER_ERROR(m_serviceProvider)("getSettingFloat: can't scanf from [%S]"
 					, _setting.c_str()
 					);
 
@@ -605,7 +605,7 @@ namespace Menge
 						
 			if( account == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getAccountSetting account '%ls' is none"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSetting account '%ls' is none"
 					, _accountID.c_str()
 					);
 
@@ -626,7 +626,7 @@ namespace Menge
 
 			if( account == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getAccountSettingUInt account '%ls' is none"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls' is none"
 					, _accountID.c_str()
 					);
 
@@ -638,7 +638,7 @@ namespace Menge
 			size_t value;
 			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "getAccountSettingUInt account '%ls'can't scanf from '%s'"
+				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls'can't scanf from '%s'"
                     , _accountID.c_str()
 					, _setting.c_str()
 					);
@@ -711,7 +711,7 @@ namespace Menge
 
 			//if( currentAccount == NULL )
 			//{
-			//	LOGGER_ERROR(m_serviceProvider)( "Error saveCurrentAccount: currentAccount is none"
+			//	LOGGER_ERROR(m_serviceProvider)("Error saveCurrentAccount: currentAccount is none"
 			//		);
 
 			//	return;
@@ -745,7 +745,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Error getCurrentAccountName: currentAccount is none"
+				LOGGER_ERROR(m_serviceProvider)("Error getCurrentAccountName: currentAccount is none"
 					);
 
 				return Utils::emptyWString();
@@ -761,7 +761,7 @@ namespace Menge
             String utf8_filename;
             if( Helper::unicodeToUtf8( m_serviceProvider, _filename, utf8_filename ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "s_writeAccountBinaryFile: invalid file %ls convert to utf8"                    
+                LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid file %ls convert to utf8"                    
                     , _filename.c_str()
                     );
 
@@ -773,7 +773,7 @@ namespace Menge
 
 			if( currentAccount == nullptr )
 			{                
-				LOGGER_ERROR(m_serviceProvider)( "s_writeAccountBinaryFile: invalid write file %ls (currentAccount is none)"
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write file %ls (currentAccount is none)"
                     , _filename.c_str()
 					);
 
@@ -786,7 +786,7 @@ namespace Menge
             {
                 const WString & accountName = currentAccount->getName();
 
-                LOGGER_ERROR(m_serviceProvider)( "s_writeAccountBinaryFile: account %ls invalid write file %ls"
+                LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: account %ls invalid write file %ls"
                     , accountName.c_str()
                     , _filename.c_str()
                     );
@@ -802,7 +802,7 @@ namespace Menge
             String utf8_filename;
             if( Helper::unicodeToUtf8( m_serviceProvider, _filename, utf8_filename ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "s_loadAccountBinaryFile: invalid convert filename %ls to utf8"
+                LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: invalid convert filename %ls to utf8"
                     , _filename.c_str()
                     );
 
@@ -814,7 +814,7 @@ namespace Menge
 
 			if( currentAccount == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "s_loadAccountBinaryFile: invalid load file %ls (currentAccount is none)"
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: invalid load file %ls (currentAccount is none)"
                     , _filename.c_str()
 					);
 
@@ -828,7 +828,7 @@ namespace Menge
             {
                 const WString & accountName = currentAccount->getName();
 
-                LOGGER_ERROR(m_serviceProvider)( "s_loadAccountBinaryFile: account %ls invalid load file %ls"
+                LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: account %ls invalid load file %ls"
                     , accountName.c_str()
                     , _filename.c_str()
                     );

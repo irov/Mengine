@@ -117,7 +117,7 @@ namespace Menge
 
         if( textureAlpha == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load alpha image file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load alpha image file '%s'"
                 , this->getName().c_str()
                 , m_fileNameAlpha.c_str()
                 );

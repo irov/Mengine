@@ -68,7 +68,7 @@ namespace Menge
 
             if( playlist->initialize( _playlistResource ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Amplifier: no found playlist with name '%s'"
+                LOGGER_ERROR(m_serviceProvider)("Amplifier: no found playlist with name '%s'"
                     , _playlistResource.c_str()
                     );
 
@@ -285,7 +285,7 @@ namespace Menge
 
 		if( m_buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AmplifierService::prepareSound_: AmplifierService can't load sample '%s'"
+			LOGGER_ERROR(m_serviceProvider)("AmplifierService::prepareSound_: AmplifierService can't load sample '%s'"
 				, _file.c_str() 
 				);
 
@@ -297,7 +297,7 @@ namespace Menge
 
 		if( m_sourceID == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AmplifierService::prepareSound_: AmplifierService can't create sound source '%s'"
+			LOGGER_ERROR(m_serviceProvider)("AmplifierService::prepareSound_: AmplifierService can't create sound source '%s'"
 				, _file.c_str()
 				);
 
@@ -307,7 +307,7 @@ namespace Menge
 		if( SOUND_SERVICE(m_serviceProvider)
 			->setPosMs( m_sourceID, _pos ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "AmplifierService::prepareSound_: AmplifierService can't set sound '%s' pos '%f'"
+			LOGGER_ERROR(m_serviceProvider)("AmplifierService::prepareSound_: AmplifierService can't set sound '%s' pos '%f'"
 				, _file.c_str()
 				, _pos
 				);

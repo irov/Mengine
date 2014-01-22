@@ -17,7 +17,7 @@ namespace Menge
 
 		const char * message = alGetString( error );
 
-		LOGGER_ERROR(_serviceProvider)( "OAL Error: (%s %d) %d:%s"
+		LOGGER_ERROR(_serviceProvider)("OAL Error: (%s %d) %d:%s"
 			, _file
 			, _line
             , error

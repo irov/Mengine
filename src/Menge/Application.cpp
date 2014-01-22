@@ -308,7 +308,7 @@ namespace Menge
 
                 if( node == nullptr )
                 {
-                    LOGGER_ERROR(m_serviceProvider)( "NodePrototypeGenerator can't generate %s %s"
+                    LOGGER_ERROR(m_serviceProvider)("NodePrototypeGenerator can't generate %s %s"
                         , _category.c_str()
                         , _prototype.c_str()
                         );
@@ -366,7 +366,7 @@ namespace Menge
         PROTOTYPE_SERVICE(serviceProvider)\
             ->addPrototype( CONST_STRING(serviceProvider, Node), Helper::stringizeString( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
 
-		LOGGER_INFO(m_serviceProvider)( "Creating Object Factory..." );
+		LOGGER_ERROR(m_serviceProvider)("Creating Object Factory..." );
 
 		NODE_FACTORY( m_serviceProvider, Node );
 
@@ -427,7 +427,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeLoaderEngine_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Loader Engine..." );
+		LOGGER_ERROR(m_serviceProvider)("Initializing Loader Engine..." );
 
 		LoaderServiceInterface * loaderService;
         if( SERVICE_CREATE( LoaderService, &loaderService ) == false )
@@ -449,7 +449,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializePrototypeManager_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing PrototypeManager..." );
+        LOGGER_ERROR(m_serviceProvider)("Inititalizing PrototypeManager..." );
 
         PrototypeServiceInterface * prototypeService;
 
@@ -467,7 +467,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeWatchdog_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Watchdog..." );
+        LOGGER_ERROR(m_serviceProvider)("Inititalizing Watchdog..." );
 
         WatchdogInterface * watchdog;
         if( SERVICE_CREATE( Watchdog, &watchdog ) == false )
@@ -484,7 +484,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeProfiler_()
     {
-        //LOGGER_INFO(m_serviceProvider)( "Inititalizing ProfilerService..." );
+        //LOGGER_ERROR(m_serviceProvider)("Inititalizing ProfilerService..." );
 
         //ProfilerServiceInterface * profiler;
         //if( SERVICE_CREATE( ProfilerService, &profiler ) == false )
@@ -520,7 +520,7 @@ namespace Menge
 
                 if( scene == nullptr )
                 {
-                    LOGGER_ERROR(m_serviceProvider)( "SceneCategoryGenerator can't create %s %s"
+                    LOGGER_ERROR(m_serviceProvider)("SceneCategoryGenerator can't create %s %s"
                         , _category.c_str()
                         , _prototype.c_str()
                         );
@@ -609,7 +609,7 @@ namespace Menge
 
                 if( resource == nullptr )
                 {
-                    LOGGER_ERROR(m_serviceProvider)( "ResourcePrototypeGenerator can't generate %s %s"
+                    LOGGER_ERROR(m_serviceProvider)("ResourcePrototypeGenerator can't generate %s %s"
                         , _category.c_str()
                         , _prototype.c_str()
                         );
@@ -854,7 +854,7 @@ namespace Menge
 
 		if( m_createRenderWindow == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "Application::createRenderWindow failed to create render window" 
+            LOGGER_ERROR(m_serviceProvider)("Application::createRenderWindow failed to create render window" 
                             );            
 
 			return false;
@@ -1701,7 +1701,7 @@ namespace Menge
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
 
-		LOGGER_INFO(m_serviceProvider)( "Application::invalidateWindow_ Render Viewport %f %f - %f %f"
+		LOGGER_ERROR(m_serviceProvider)("Application::invalidateWindow_ Render Viewport %f %f - %f %f"
 			, m_renderViewport.begin.x
 			, m_renderViewport.begin.y
 			, m_renderViewport.getWidth()
@@ -1997,7 +1997,7 @@ namespace Menge
 
 		if( m_cursorResource == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)( "Application::setCursorIcon: can't find resource cursor %s"
+            LOGGER_ERROR(m_serviceProvider)("Application::setCursorIcon: can't find resource cursor %s"
                 , _resourceName.c_str()
                 );
 

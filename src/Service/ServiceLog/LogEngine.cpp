@@ -86,7 +86,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LogEngine::registerLogger( LoggerInterface* _logger )
+	bool LogEngine::registerLogger( LoggerInterface * _logger )
 	{
 		TVectorLoggers::iterator it_find = 
 			std::find( m_loggers.begin(), m_loggers.end(), _logger );

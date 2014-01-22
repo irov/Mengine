@@ -71,7 +71,7 @@ namespace Menge
 			
 			if( resource == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceWindow: '%s' Image resource not found resource '%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceWindow: '%s' Image resource not found resource '%s'"
 					, m_name.c_str()
 					, m_images[i].resourceName.c_str() 
 					);

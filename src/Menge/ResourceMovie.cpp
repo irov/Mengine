@@ -492,7 +492,7 @@ namespace Menge
 			if( CONVERTER_SERVICE(m_serviceProvider)
 				->convert( m_converter, m_category, c_xml_path, m_path ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::_convert: '%s' can't convert '%s':'%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, c_xml_path.c_str()
 					, m_converter.c_str()
@@ -510,7 +510,7 @@ namespace Menge
 
 		if( m_codecType.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
 				, m_path.c_str()
 				);

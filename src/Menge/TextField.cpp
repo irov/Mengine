@@ -390,11 +390,22 @@ namespace Menge
 		{
 			return;
 		}
+
+		if( m_textEntry == nullptr )
+		{
+			return;
+		}
 				
-		const String & text = this->getText();
+		if( this->updateTextCache_() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ '%s' invalid update text cache %s"
+				, this->getName().c_str()
+				, m_textEntry->getKey().c_str()
+				);
+		}
 
 		TVectorString lines;
-		Utils::split( lines, text, false, "\n" );
+		Utils::split( lines, m_cacheText, false, "\n" );
 
 		float charOffset = this->calcCharOffset();
 		
@@ -868,7 +879,7 @@ namespace Menge
 		return key;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextFormatArgs( const TVectorString & _args )
+	bool TextField::setTextFormatArgs( const TVectorString & _args )
 	{
 		if( m_textEntry == nullptr )
 		{
@@ -876,13 +887,15 @@ namespace Menge
 				, this->getName().c_str()
 				);
 
-			return;
+			return false;
 		}
 
 		m_textFormatArgs = _args;
 
 		this->invalidateFont();
 		this->invalidateTextLines();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::removeTextFormatArgs()
@@ -909,9 +922,26 @@ namespace Menge
 			return Utils::emptyString();
 		}
 
+		if( this->updateTextCache_() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::getText '%s' invalid update text cache %s"
+				, this->getName().c_str()
+				, m_textEntry->getKey().c_str()
+				);
+		}
+
+		return m_cacheText;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	bool TextField::updateTextCache_() const
+	{
+		m_cacheText.clear();
+
 		const ConstString & textValue = m_textEntry->getText();
 
-		StringFormat format(textValue.c_str());
+		const char * str_textValue = textValue.c_str();
+		
+		StringFormat format(str_textValue);
 
 		try
 		{
@@ -925,6 +955,8 @@ namespace Menge
 
 				format = format % arg;
 			}
+
+			m_cacheText = format.str();
 		}
 		catch( const boost::io::too_many_args & _ex )
 		{
@@ -936,12 +968,22 @@ namespace Menge
 				, _ex.what()
 				);
 
-			return m_cacheText;
+			return false;
+		}
+		catch( const boost::io::too_few_args & _ex )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::getText %s TextID %s text %s invalid setup args %d error %s"
+				, this->getName().c_str()
+				, m_textEntry->getKey().c_str()
+				, textValue.c_str()
+				, m_textFormatArgs.size()
+				, _ex.what()
+				);
+
+			return false;
 		}
 
-		m_cacheText = format.str();
-
-		return m_cacheText;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setVerticalNoneAlign()

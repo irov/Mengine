@@ -162,7 +162,7 @@ namespace	Menge
 	{
 		if( m_resourceAnimation == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation::_compile: '%s' resource is null"
+			LOGGER_ERROR(m_serviceProvider)("Animation::_compile: '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -171,7 +171,7 @@ namespace	Menge
 
         if( m_resourceAnimation.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Animation::_compile: '%s' resource '%s' is not compile"
+            LOGGER_ERROR(m_serviceProvider)("Animation::_compile: '%s' resource '%s' is not compile"
                 , m_name.c_str()
                 , m_resourceAnimation->getName().c_str()
                 );
@@ -197,7 +197,7 @@ namespace	Menge
 
 		if( this->isActivate() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' play not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' play not activate"
 				, getName().c_str()
 				);
 
@@ -228,7 +228,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' stop not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' stop not activate"
 				, getName().c_str()
 				);
 
@@ -245,7 +245,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation: '%s' end not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation: '%s' end not activate"
 				, getName().c_str()
 				);
 
@@ -334,7 +334,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameCount: '%s' not compiled resource"
+			LOGGER_ERROR(m_serviceProvider)("Animation.getFrameCount: '%s' not compiled resource"
 				, m_name.c_str()
 				);
 
@@ -350,7 +350,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation.getFrameDelay: '%s' not compiled resource"
+			LOGGER_ERROR(m_serviceProvider)("Animation.getFrameDelay: '%s' not compiled resource"
 				, m_name.c_str()
 				);
 
@@ -366,7 +366,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation.setCurrentFrame: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation.setCurrentFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -377,7 +377,7 @@ namespace	Menge
 
 		if( _frame >= sequenceCount )	
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
+			LOGGER_ERROR(m_serviceProvider)("Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
 				, m_name.c_str()
 				, _frame
 				, sequenceCount
@@ -417,7 +417,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation._setTiming: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation._setTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -433,7 +433,7 @@ namespace	Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Animation._getTiming: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Animation._getTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 

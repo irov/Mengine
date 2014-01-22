@@ -112,7 +112,7 @@ namespace Menge
 	{
 		if( m_resourceVideo == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' resource is null"
+			LOGGER_ERROR(m_serviceProvider)("Video::_compile '%s' resource is null"
 				, this->getName().c_str()
 				);	
 
@@ -121,7 +121,7 @@ namespace Menge
 
         if( m_resourceVideo.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Video::_compile '%s' resource '%s' is not compile"
+            LOGGER_ERROR(m_serviceProvider)("Video::_compile '%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
                 );	
@@ -131,7 +131,7 @@ namespace Menge
 
 		if ( this->compileDecoder_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Video::_compile %s can`t create video decoder '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Video::_compile %s can`t create video decoder '%s'"
 				, this->getName().c_str()
 				, m_resourceVideo->getName().c_str() 
 				);	
@@ -180,7 +180,7 @@ namespace Menge
 
         if( m_videoDecoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Video::_compileDecoder '%s' can't create video decoder"
+            LOGGER_ERROR(m_serviceProvider)("Video::_compileDecoder '%s' can't create video decoder"
                 , this->getName().c_str()
                 );
 
@@ -230,7 +230,7 @@ namespace Menge
 
 		if( this->isActivate() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Video::_play: '%s' play not activate"
+			LOGGER_ERROR(m_serviceProvider)("Video::_play: '%s' play not activate"
 				, this->getName().c_str()
 				);
 
@@ -425,7 +425,7 @@ namespace Menge
 			}
 			else if( state == VDRS_FAILURE )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Video::_sync: '%s' error reading frame timing %4.2f total timing %4.2f"
+				LOGGER_ERROR(m_serviceProvider)("Video::_sync: '%s' error reading frame timing %4.2f total timing %4.2f"
 					, this->getName().c_str()
 					, _timing
 					, m_timing

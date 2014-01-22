@@ -182,7 +182,7 @@ namespace Menge
                 , m_dataInfo.length
                 );
 
-            return false;
+			_timing = m_dataInfo.length;
         }
               
         double al_pos = (double)(_timing * 0.001f);

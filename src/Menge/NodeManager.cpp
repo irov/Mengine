@@ -77,7 +77,7 @@ namespace Menge
     {
         if( m_homeless == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "NodeManager::addHomeless: not initialize"
+            LOGGER_ERROR(m_serviceProvider)("NodeManager::addHomeless: not initialize"
                 );
 
             return;
@@ -89,7 +89,7 @@ namespace Menge
         {
             Node * parent = _homeless->getParent();
 
-            LOGGER_ERROR(m_serviceProvider)( "NodeManager::addHomeless: '%s' have parent '%s'"
+            LOGGER_ERROR(m_serviceProvider)("NodeManager::addHomeless: '%s' have parent '%s'"
                 , _homeless->getName().c_str()
                 , parent->getName().c_str()
                 );

@@ -95,7 +95,7 @@ namespace Menge
 
         if ( converter == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert: can't create converter '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: can't create converter '%s'"
                 , _converter.c_str()
                 );
 
@@ -109,7 +109,7 @@ namespace Menge
         if( FILE_SERVICE(m_serviceProvider)
             ->hasFileGroup( _category, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert: can't get file system '%s' for converter '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: can't get file system '%s' for converter '%s'"
                 , _category.c_str()
                 , _converter.c_str()
                 );
@@ -148,7 +148,7 @@ namespace Menge
         if( FILE_SERVICE(m_serviceProvider)
             ->existFile( options.pakName, options.inputFileName, nullptr, 0, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert: input file '%s' not found"
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: input file '%s' not found"
                 , options.inputFileName.c_str()
                 );
 
@@ -163,7 +163,7 @@ namespace Menge
 
             if( oldFile == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert '%s' can't open input file '%s' (time)"
+                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open input file '%s' (time)"
                     , _converter.c_str()
                     , options.inputFileName.c_str()
                     );
@@ -181,7 +181,7 @@ namespace Menge
 
             if( newFile == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert '%s' can't open output file '%s' (time)"
+                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open output file '%s' (time)"
                     , _converter.c_str()
                     , options.outputFileName.c_str()
                     );
@@ -201,13 +201,13 @@ namespace Menge
 	                return true;
 				}
 
-				LOGGER_WARNING(m_serviceProvider)( "ConverterEngine::convert invalid version '%s'"
+				LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert invalid version '%s'"
 					, options.outputFileName.c_str()
 					);
             }
         }
 
-		LOGGER_WARNING(m_serviceProvider)( "ConverterEngine::convert '%s'\nfrom: %s\nto: %s\n"
+		LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert '%s'\nfrom: %s\nto: %s\n"
 			, _converter.c_str()
 			, options.inputFileName.c_str()
 			, options.outputFileName.c_str()
@@ -215,7 +215,7 @@ namespace Menge
 
         if( converter->convert() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
                 , _converter.c_str()
                 , options.inputFileName.c_str()
                 , options.outputFileName.c_str()

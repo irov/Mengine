@@ -255,7 +255,7 @@ namespace Menge
 
 		if( m_application->initialize() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Application initialize failed" 
+			LOGGER_ERROR(m_serviceProvider)("Application initialize failed" 
 				);
 
 			return false;
@@ -397,7 +397,7 @@ namespace Menge
 
 		if( m_fileService->initialize() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to initialize fileService"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to initialize fileService"
 				);
 
 			return false;
@@ -410,7 +410,7 @@ namespace Menge
 
 		if( m_windowsLayer->getCurrentDirectory( m_currentPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to get current directory"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to get current directory"
 				);
 
 			return false;
@@ -419,7 +419,7 @@ namespace Menge
 		String utf8_currentPath;        
 		if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to convert %ls to utf8"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to convert %ls to utf8"
 				, m_currentPath.c_str()
 				);
 
@@ -430,7 +430,7 @@ namespace Menge
 		// mount root		
 		if( m_fileService->mountFileGroup( ConstString::none(), ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount application directory %ls"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
 				, m_currentPath.c_str()
 				);
 
@@ -443,7 +443,7 @@ namespace Menge
 		// mount root		
 		if( m_fileService->mountFileGroup( c_dev, ConstString::none(), ConstString::none(), c_dir, false ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, m_currentPath.c_str()
 				);
 
@@ -517,7 +517,7 @@ namespace Menge
 		String utf8_userPath;
 		if( Helper::unicodeToUtf8( m_serviceProvider, m_userPath, utf8_userPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed user directory %ls convert to ut8f"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed user directory %ls convert to ut8f"
 				, m_userPath.c_str()
 				);
 
@@ -529,7 +529,7 @@ namespace Menge
 		// mount user directory
 		if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none(), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
 				, m_userPath.c_str()
 				);
 
@@ -569,7 +569,7 @@ namespace Menge
 		String utf8_logFilename;
 		if( Helper::unicodeToUtf8( m_serviceProvider, unicode_logFilename, utf8_logFilename ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed log directory %ls convert to ut8f"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed log directory %ls convert to ut8f"
 				, unicode_logFilename.c_str()
 				);
 
@@ -1322,7 +1322,7 @@ namespace Menge
 		StartupSettings settings;
 		if( this->setupApplicationSetting_( settings ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to setup application %ls"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to setup application %ls"
 				, m_currentPath.c_str()
 				);
 
@@ -1424,7 +1424,7 @@ namespace Menge
 
 		if( m_application->setup( m_commandLine, settings.applicationSettings ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Application setup failed" 
+			LOGGER_ERROR(m_serviceProvider)("Application setup failed" 
 				);
 
 			return false;
@@ -1527,7 +1527,7 @@ namespace Menge
 
 		if( m_application->createGame( settings.personalityModule, Helper::stringizeString(m_serviceProvider, languagePack), settings.resourcePacks, settings.languagePacks ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Application create game failed"
+			LOGGER_ERROR(m_serviceProvider)("Application create game failed"
 				);
 
 			return false;
@@ -1553,7 +1553,7 @@ namespace Menge
 
 			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, wprojectTitle ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "Application invalid running monitor"
+				LOGGER_ERROR(m_serviceProvider)("Application invalid running monitor"
 					);
 
 				return false;
@@ -1628,7 +1628,7 @@ namespace Menge
 
 		if( m_application->initializeGame( settings.appParams, scriptInit ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
+			LOGGER_ERROR(m_serviceProvider)("Application invalid initialize game"
 				);
 
 			return false;
@@ -1645,7 +1645,7 @@ namespace Menge
 
 		if( m_windowsLayer->setProcessDPIAware() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Application not setup Process DPI Aware"
+			LOGGER_ERROR(m_serviceProvider)("Application not setup Process DPI Aware"
 				);
 		}
 
@@ -1660,7 +1660,7 @@ namespace Menge
 
 		if( m_application->createRenderWindow( m_hWnd ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Application not create render window"
+			LOGGER_ERROR(m_serviceProvider)("Application not create render window"
 				);
 
 			return false;
@@ -3204,7 +3204,7 @@ namespace Menge
 
 		if( err != 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "WinApplication::cmd: command:\n%ls\nerror: %d"
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::cmd: command:\n%ls\nerror: %d"
 				, _command.c_str()
 				, errno
 				);

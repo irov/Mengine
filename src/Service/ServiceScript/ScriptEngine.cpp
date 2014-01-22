@@ -316,7 +316,7 @@ namespace Menge
 	{
 		if( _generator == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.createEntity: can't create object '%s' (_generator == 0)"
+			LOGGER_ERROR(m_serviceProvider)("ScriptEngine.createEntity: can't create object '%s' (_generator == 0)"
 				, _type.c_str()
 				);
 
@@ -327,7 +327,7 @@ namespace Menge
 
 		if( py_entity == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.createEntity: can't create object '%s' (invalid create)"
+			LOGGER_ERROR(m_serviceProvider)("ScriptEngine.createEntity: can't create object '%s' (invalid create)"
 				, _type.c_str()
 				);
 
@@ -338,7 +338,7 @@ namespace Menge
 
         if( entity == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "ScriptEngine.createEntity: can't extract entity '%s' (invalid cast)"
+            LOGGER_ERROR(m_serviceProvider)("ScriptEngine.createEntity: can't extract entity '%s' (invalid cast)"
                 , _type.c_str()
                 );
 

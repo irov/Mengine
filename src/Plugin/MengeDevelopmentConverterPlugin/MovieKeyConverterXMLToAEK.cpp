@@ -90,13 +90,13 @@ namespace Menge
 		{
 			if( exist == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)( "MovieKeyConverter::convert: KeyFramesFile '%s' not found"
+				LOGGER_ERROR(m_serviceProvider)("MovieKeyConverter::convert: KeyFramesFile '%s' not found"
 					, m_options.inputFileName.c_str()
 					);
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)( "MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
+				LOGGER_ERROR(m_serviceProvider)("MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
 					, m_options.inputFileName.c_str()
 					);
 			}

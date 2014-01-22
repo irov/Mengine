@@ -218,9 +218,9 @@ namespace Menge
 				}
 			}
 						
-			_textField->setTextFormatArgs( cs_args );
-
-			return pybind::ret_none();
+			bool result = _textField->setTextFormatArgs( cs_args );
+			
+			return pybind::ret_bool( result );
         }
 		//////////////////////////////////////////////////////////////////////////
 		TVectorWString textfield_getTextFormatArgs( TextField * _textField )
@@ -303,7 +303,7 @@ namespace Menge
 
             if( resourceMovie == NULL )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Movie.getFrameDuration: '%s' not activate"
+                LOGGER_ERROR(m_serviceProvider)("Movie.getFrameDuration: '%s' not activate"
                     , _movie->getName().c_str()
                     );
 
@@ -321,7 +321,7 @@ namespace Menge
 
             if( resourceMovie == NULL )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Movie.getDuration: '%s' not activate"
+                LOGGER_ERROR(m_serviceProvider)("Movie.getDuration: '%s' not activate"
                     , _movie->getName().c_str()
                     );
 
@@ -339,7 +339,7 @@ namespace Menge
 
             if( resourceMovie == NULL )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Movie.getFrameCount: '%s' not activate"
+                LOGGER_ERROR(m_serviceProvider)("Movie.getFrameCount: '%s' not activate"
                     , _movie->getName().c_str()
                     );
 
@@ -357,7 +357,7 @@ namespace Menge
 
             if( resourceMovie == NULL )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Movie.getSize: '%s' not activate"
+                LOGGER_ERROR(m_serviceProvider)("Movie.getSize: '%s' not activate"
                     , _movie->getName().c_str()
                     );
 
@@ -864,7 +864,7 @@ namespace Menge
 
             if( arrow == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Error: can't setup arrow '%s'"
+                LOGGER_ERROR(m_serviceProvider)("Error: can't setup arrow '%s'"
                     , _prototype.c_str()
                     );
 
@@ -980,7 +980,7 @@ namespace Menge
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Menge.getResourceReference: not exist resource %s"
+                LOGGER_ERROR(m_serviceProvider)("Menge.getResourceReference: not exist resource %s"
                     , _nameResource.c_str() 
                     );
 
@@ -1054,7 +1054,7 @@ namespace Menge
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)( "Error: Image resource not getting '%s'"
+                LOGGER_ERROR(m_serviceProvider)("Error: Image resource not getting '%s'"
                     , _resource.c_str() 
                     );
 

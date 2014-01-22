@@ -108,7 +108,7 @@ namespace Menge
 	{
 		if( this->isActivate() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Movie.setTiming: '%s' not activate"
+			LOGGER_ERROR(m_serviceProvider)("Movie.setTiming: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -134,7 +134,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Movie.getTiming: '%s' not compile"
+			LOGGER_ERROR(m_serviceProvider)("Movie.getTiming: '%s' not compile"
 				, m_name.c_str()
 				);
 
@@ -1578,7 +1578,7 @@ namespace Menge
 
         if( m_resourceMovie.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Movie::_compile '%s' movie resource %s not compile"
+            LOGGER_ERROR(m_serviceProvider)("Movie::_compile '%s' movie resource %s not compile"
                 , m_name.c_str() 
                 , m_resourceMovie->getName().c_str()
                 );
@@ -2575,7 +2575,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Warning: Movie::_setSpeedFactor not compile '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Warning: Movie::_setSpeedFactor not compile '%s'"
 				, m_name.c_str() 
 				);	
 			

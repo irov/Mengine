@@ -33,7 +33,7 @@ namespace Menge
         FileGroupInterface * fileGroup;
         if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SoundConverterFFMPEGToOGG::convert_: not found file group '%s'"
+            LOGGER_ERROR(m_serviceProvider)("SoundConverterFFMPEGToOGG::convert_: not found file group '%s'"
                 , m_options.pakName.c_str()
                 );
 
@@ -51,7 +51,7 @@ namespace Menge
         WString unicode_input;
         if( Helper::utf8ToUnicode( m_serviceProvider, full_input, unicode_input ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SoundConverterFFMPEGToOGG::convert_: invalid convert input utf8 to unicode %s"
+            LOGGER_ERROR(m_serviceProvider)("SoundConverterFFMPEGToOGG::convert_: invalid convert input utf8 to unicode %s"
                 , full_input.c_str()
                 );
 
@@ -61,7 +61,7 @@ namespace Menge
         WString unicode_output;
         if( Helper::utf8ToUnicode( m_serviceProvider, full_output, unicode_output ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "SoundConverterFFMPEGToOGG::convert_: invalid convert output utf8 to unicode %s"
+            LOGGER_ERROR(m_serviceProvider)("SoundConverterFFMPEGToOGG::convert_: invalid convert output utf8 to unicode %s"
                 , full_output.c_str()
                 );
             
@@ -78,7 +78,7 @@ namespace Menge
         if( PLATFORM_SERVICE(m_serviceProvider)
             ->cmd( buffer ) == false )
         {
-			LOGGER_ERROR(m_serviceProvider)( "SoundConverterFFMPEGToOGG::convert_: invalid convert:"
+			LOGGER_ERROR(m_serviceProvider)("SoundConverterFFMPEGToOGG::convert_: invalid convert:"
 				);
 
 			return false;

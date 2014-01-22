@@ -12,7 +12,7 @@ namespace Menge
 
 		ServiceProviderInterface * serviceProvider = imageEncoderPNG->getServiceProvider();
 
-		LOGGER_ERROR(serviceProvider)( "ImageEncoderPNG::s_handlerError %s"
+		LOGGER_ERROR(serviceProvider)("ImageEncoderPNG::s_handlerError %s"
 			, _error 
 			);
         
@@ -26,7 +26,7 @@ namespace Menge
 
         ServiceProviderInterface * serviceProvider = imageEncoderPNG->getServiceProvider();
 
-        LOGGER_WARNING(serviceProvider)( "ImageEncoderPNG::s_handlerWarning %s"
+        LOGGER_WARNING(serviceProvider)("ImageEncoderPNG::s_handlerWarning %s"
             , _error 
             );       
     }
@@ -78,7 +78,7 @@ namespace Menge
 
 		if( info_ptr == NULL )  
 		{
-			LOGGER_ERROR(m_serviceProvider)( "PNG encoder error: Can't create info structure" );
+			LOGGER_ERROR(m_serviceProvider)("PNG encoder error: Can't create info structure" );
 			return 0;
 		}
 
@@ -102,7 +102,7 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_serviceProvider)( "PNG codec error: unsupported image format channels %d"
+			LOGGER_ERROR(m_serviceProvider)("PNG codec error: unsupported image format channels %d"
                 , dataInfo->channels
                 );
 
@@ -162,7 +162,7 @@ namespace Menge
 
 		if( m_png_ptr == NULL )  
 		{
-			LOGGER_ERROR(m_serviceProvider)( "PNG encoder error: Can't create write structure" 
+			LOGGER_ERROR(m_serviceProvider)("PNG encoder error: Can't create write structure" 
                 );
 
 			return false;

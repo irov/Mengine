@@ -129,7 +129,7 @@ namespace Menge
 			}break;
 		default:
 			{
-				LOGGER_ERROR(m_serviceProvider)( "ImageDecoderPVRTZ::initialize not supported format"				
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPVRTZ::initialize not supported format"				
 					);
 
 				return false;

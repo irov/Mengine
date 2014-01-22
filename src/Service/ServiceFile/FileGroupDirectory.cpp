@@ -41,20 +41,20 @@ namespace Menge
 		
         if( _create == false )
 		{
-			LOGGER_WARNING(m_serviceProvider)( "FileSystemDirectory::initialize failed to open directory %s"
+			LOGGER_WARNING(m_serviceProvider)("FileSystemDirectory::initialize failed to open directory %s"
 				, m_path.c_str() 
 				);
                 
 			return false;
 		}
 
-		LOGGER_WARNING(m_serviceProvider)( "FileSystemDirectory::initialize create directory %s"
+		LOGGER_WARNING(m_serviceProvider)("FileSystemDirectory::initialize create directory %s"
 			, m_path.c_str() 
 			);
 
 		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_folder, m_path ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::initialize failed to create directory %s"
+			LOGGER_ERROR(m_serviceProvider)("FileSystemDirectory::initialize failed to create directory %s"
 				, m_path.c_str() 
 				);
 
@@ -99,7 +99,7 @@ namespace Menge
 	{
         if( _stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed _stream == NULL"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemDirectory::openInputFile failed _stream == NULL"
                 );
 
             return false;
@@ -109,7 +109,7 @@ namespace Menge
 
 		if( file->open( m_path, _dir, _filename, _filenamelen ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openInputFile failed open file '%s':'%s'"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemDirectory::openInputFile failed open file '%s':'%s'"
                 , m_path.c_str()
                 , _dir.c_str()
                 );
@@ -132,7 +132,7 @@ namespace Menge
 	{
         if( _stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openOutputFile failed _stream == NULL"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemDirectory::openOutputFile failed _stream == NULL"
                 );
 
             return false;
@@ -142,7 +142,7 @@ namespace Menge
 
         if( file->open( m_path, _filename ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "FileSystemDirectory::openOutputFile failed open file '%s':'%s'"
+            LOGGER_ERROR(m_serviceProvider)("FileSystemDirectory::openOutputFile failed open file '%s':'%s'"
                 , m_path.c_str()
                 , _filename.c_str()
                 );

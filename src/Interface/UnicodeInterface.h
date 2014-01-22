@@ -5,6 +5,8 @@
 
 #	include "Interface/ServiceInterface.h"
 
+#	include "Core/ConstString.h"
+
 namespace Menge
 {
     const size_t UNICODE_UNSIZE = (size_t)-1;
@@ -110,5 +112,12 @@ namespace Menge
 
             return result;
         }
+		//////////////////////////////////////////////////////////////////////////
+		inline bool utf8ToUnicode( ServiceProviderInterface * _serviceProvide, const ConstString & _utf8, WString & _unicode )
+		{
+			bool result = utf8ToUnicodeSize( _serviceProvide, _utf8.c_str(), _utf8.size(), _unicode );
+
+			return result;
+		}
     }
 }

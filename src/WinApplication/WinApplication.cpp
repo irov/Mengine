@@ -2989,7 +2989,7 @@ namespace Menge
 	void WinApplication::notifyCursorIconSetup( const FilePath & _name, void * _buffer, size_t _size )
 	{
 		WString unicode_name;        
-		if( Helper::utf8ToUnicodeSize( m_serviceProvider, _name.c_str(), _name.size(), unicode_name ) == false )
+		if( Helper::utf8ToUnicode( m_serviceProvider, _name, unicode_name ) == false )
 		{
 			return;
 		}

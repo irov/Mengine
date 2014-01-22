@@ -96,6 +96,8 @@ namespace Menge
 				ColourValue colorFont;
 				ColourValue colorOutline;
 
+				bool isOverride = false;
+
 				size_t params = 0;
 				
 				for( size_t i = 0; i != _count; ++i )
@@ -218,9 +220,24 @@ namespace Menge
 
 						params |= EFP_COLOR_OUTLINE;
 					}
+					else if( strcmp( key, "Override" ) == 0 )
+					{						
+						size_t Override = 0;
+						if( sscanf( value, "%d", &Override ) != 1 )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s Override %s"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, value
+								);
+						}
+
+						isOverride = (Override != 0);
+					}
 				}
 
-				m_textManager->addTextEntry( text_key, text, font, colorFont, colorOutline, lineOffset, charOffset, params );
+				m_textManager->addTextEntry( text_key, text, font, colorFont, colorOutline, lineOffset, charOffset, params, isOverride );
 			}
 
 			void callback_end_node( const char * _node )
@@ -409,17 +426,27 @@ namespace Menge
 		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params )
+	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params, bool _isOverride )
 	{
 		TextEntryPtr textEntry_has;
 		if( m_texts.has_copy( _key, textEntry_has ) == true )
 		{
-			const ConstString & text = textEntry_has->getText();
+			if( _isOverride == false )
+			{
+				const ConstString & text = textEntry_has->getText();
 
-			LOGGER_INFO(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s with text '%s'"
-				, _key.c_str()
-				, text.c_str()
-				);
+				WString ws_text;
+				Helper::utf8ToUnicode( m_serviceProvider, text, ws_text );
+
+				LOGGER_ERROR(m_serviceProvider)( "TextManager::addTextEntry: duplicate key found %s with text '%ls'"
+					, _key.c_str()
+					, ws_text.c_str()
+					);
+			}
+			else
+			{
+				textEntry_has->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
+			}
 			
             return;
 		}

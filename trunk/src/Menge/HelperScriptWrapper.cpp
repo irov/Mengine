@@ -872,7 +872,7 @@ namespace Menge
 			const ConstString & text = entry->getText();
 
             WString unicode;
-            if( Helper::utf8ToUnicodeSize(m_serviceProvider, text.c_str(), text.size(), unicode ) == false )
+            if( Helper::utf8ToUnicode(m_serviceProvider, text, unicode ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid text key %s convert %s to unicode"
                     , _key.c_str()

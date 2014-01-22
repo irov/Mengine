@@ -49,7 +49,7 @@ namespace Menge
         full_output += m_options.outputFileName.c_str();
 
         WString unicode_input;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, full_input.c_str(), full_input.size(), unicode_input ) == false )
+        if( Helper::utf8ToUnicode( m_serviceProvider, full_input, unicode_input ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "VideoConverterFFMPEGToWEBM::convert_: invalid convert input utf8 to unicode %s"
                 , full_input.c_str()
@@ -59,7 +59,7 @@ namespace Menge
         }
                 
         WString unicode_output;
-        if( Helper::utf8ToUnicodeSize( m_serviceProvider, full_output.c_str(), full_output.size(), unicode_output ) == false )
+        if( Helper::utf8ToUnicode( m_serviceProvider, full_output, unicode_output ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "VideoConverterFFMPEGToWEBM::convert_: invalid convert output utf8 to unicode %s"
                 , full_output.c_str()

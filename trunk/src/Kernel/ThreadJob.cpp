@@ -57,10 +57,11 @@ namespace Menge
 			}
 
 			desc.mutex->lock();
-
-			desc.worker = _worker;
-			desc.id = ++m_enumerator;
-			desc.status = ETS_WORK;
+			{
+				desc.worker = _worker;
+				desc.id = ++m_enumerator;
+				desc.status = ETS_WORK;
+			}
 
 			desc.mutex->unlock();
 
@@ -91,15 +92,15 @@ namespace Menge
 			}
 
 			desc.mutex->lock();
+			{
+				ThreadWorkerInterfacePtr worker = desc.worker;
 
-			ThreadWorkerInterfacePtr worker = desc.worker;
-			
-			desc.id = 0;
-			desc.worker = nullptr;
-			desc.status = ETS_FREE;
-			
-			worker->onDone( _id );
+				desc.id = 0;
+				desc.worker = nullptr;
+				desc.status = ETS_FREE;
 
+				worker->onDone( _id );
+			}
 			desc.mutex->unlock();
 			
 			break;
@@ -120,9 +121,14 @@ namespace Menge
 				}
 				
 				desc.mutex->lock();
-				if( desc.worker->onWork( desc.id ) == false )
 				{
-					desc.status = ETS_DONE;
+					if( desc.status == ETS_WORK )
+					{
+						if( desc.worker->onWork( desc.id ) == false )
+						{
+							desc.status = ETS_DONE;
+						}
+					}
 				}
 				desc.mutex->unlock();	
 			}
@@ -146,14 +152,16 @@ namespace Menge
 			}
 
 			desc.mutex->lock();
-			ThreadWorkerInterfacePtr worker = desc.worker; 
-			size_t id = desc.id;
-			
-			desc.worker = nullptr;
-			desc.id = 0;
-			desc.status = ETS_FREE;
+			{
+				ThreadWorkerInterfacePtr worker = desc.worker; 
+				size_t id = desc.id;
 
-			worker->onDone( id );
+				desc.worker = nullptr;
+				desc.id = 0;
+				desc.status = ETS_FREE;
+
+				worker->onDone( id );
+			}
 			desc.mutex->unlock();
 		}
 	}

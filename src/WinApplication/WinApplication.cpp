@@ -206,6 +206,9 @@ namespace Menge
 		, m_pluginService(nullptr)
 		, m_converterService(nullptr)
 		, m_moduleService(nullptr)
+		, m_dataService(nullptr)
+		, m_cacheService(nullptr)
+		, m_httpSystem(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1126,21 +1129,21 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Inititalizing Http Service..." );
 
-		HttpSystemInterface * cacheSystem;
+		HttpSystemInterface * httpSystem;
 
-		if( SERVICE_CREATE( HttpSystem, &cacheSystem ) == false )
+		if( SERVICE_CREATE( HttpSystem, &httpSystem ) == false )
 		{
 			return false;
 		}
 
-		SERVICE_REGISTRY( m_serviceProvider, cacheSystem );
+		SERVICE_REGISTRY( m_serviceProvider, httpSystem );
 
-		if( cacheSystem->initialize() == false )
+		if( httpSystem->initialize() == false )
 		{
 			return false;
 		}
 
-		m_cacheSystem = cacheSystem;
+		m_httpSystem = httpSystem;
 
 		return true;
 	}

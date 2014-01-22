@@ -226,7 +226,7 @@ namespace Menge
 		ModuleServiceInterface * m_moduleService;
 		DataServiceInterface * m_dataService;
 		CacheServiceInterface * m_cacheService;
-		HttpSystemInterface * m_cacheSystem;
+		HttpSystemInterface * m_httpSystem;
 
 		FileLogger * m_fileLog;
 

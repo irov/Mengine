@@ -11,6 +11,8 @@
 
 #   include "stdex/pool.h"
 
+#	include <vector>
+
 namespace Menge
 {
 	class MarmaladeThreadIdentity;
@@ -33,12 +35,12 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ThreadIdentity * createThread( ThreadListener * _listener, int _priority ) override;
-		bool joinThread( ThreadIdentity * _thread ) override;
+		ThreadIdentityPtr createThread( const ThreadTaskInterfacePtr & _listener, int _priority ) override;
+		bool joinThread( const ThreadIdentityPtr & _thread ) override;
 		void sleep( unsigned int _ms ) override;
 
     public:
-        ThreadMutexInterface * createMutex() override;
+        ThreadMutexInterfacePtr createMutex() override;
 	
 	protected:
         typedef stdex::template_pool<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;

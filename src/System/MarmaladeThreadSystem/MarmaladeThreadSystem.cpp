@@ -77,7 +77,7 @@ namespace Menge
 		m_threadIdentities.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentity * MarmaladeThreadSystem::createThread( ThreadListener * _thread, int _priority )
+	ThreadIdentityPtr MarmaladeThreadSystem::createThread( const ThreadTaskInterfacePtr & _listener, int _priority )
 	{
         s3eThread * thread = s3eThreadCreate( &Detail::s_tread_job, _thread, NULL );
 
@@ -98,7 +98,7 @@ namespace Menge
 		return identity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeThreadSystem::joinThread( ThreadIdentity * _thread )
+	bool MarmaladeThreadSystem::joinThread( const ThreadIdentityPtr & _thread )
 	{
 		MarmaladeThreadIdentity * identity = static_cast<MarmaladeThreadIdentity*>(_thread);
 
@@ -126,7 +126,7 @@ namespace Menge
         ::usleep( _ms * 1000 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterface * MarmaladeThreadSystem::createMutex()
+    ThreadMutexInterfacePtr MarmaladeThreadSystem::createMutex()
     {
         MarmaladeThreadMutex * mutex = m_poolMarmaladeThreadMutex.createObjectT();
         mutex->initialize( m_serviceProvider );

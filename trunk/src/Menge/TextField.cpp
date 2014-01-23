@@ -958,19 +958,7 @@ namespace Menge
 
 			m_cacheText = format.str();
 		}
-		catch( const boost::io::too_many_args & _ex )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getText %s TextID %s text %s invalid setup args %d error %s"
-				, this->getName().c_str()
-				, m_textEntry->getKey().c_str()
-				, textValue.c_str()
-				, m_textFormatArgs.size()
-				, _ex.what()
-				);
-
-			return false;
-		}
-		catch( const boost::io::too_few_args & _ex )
+		catch( const boost::io::format_error & _ex )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::getText %s TextID %s text %s invalid setup args %d error %s"
 				, this->getName().c_str()

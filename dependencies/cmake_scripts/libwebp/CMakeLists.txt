@@ -4,9 +4,6 @@ project( webp )
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libwebp )
 
-# needed packages
-#find_package(ZLIB REQUIRED)
-
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${SOURCE_DIR}/config.h COPYONLY)
 
 set(sources
@@ -45,7 +42,7 @@ set(sources
 add_definitions(-DHAVE_CONFIG_H)
 
 # NOW BUILD OUR TARGET
-include_directories(${SOURCE_DIR} ${ZLIB_INCLUDE_DIR})
+include_directories( ${SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../../zlib )
 
 add_library( ${PROJECT_NAME}_static STATIC ${sources} )
 

@@ -38,6 +38,17 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_countX == 0 || m_countY == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' count X|Y not setup %d:%d"
+				, m_name.c_str() 
+				, m_countX
+				, m_countY
+				);
+
+			return false;
+		}
+
 		size_t imageSize = m_images.size();
 		m_elements.reserve( imageSize );
 

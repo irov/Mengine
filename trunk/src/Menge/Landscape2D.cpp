@@ -60,6 +60,15 @@ namespace	Menge
 		{
 			ResourceImage * image = *it;
 
+			if( image == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' images resource not setup"
+					, m_name.c_str() 
+					);
+
+				return false;
+			}
+
 			Element el;
 			el.resource = image;
 

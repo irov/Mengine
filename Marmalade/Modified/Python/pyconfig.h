@@ -194,7 +194,7 @@ void fprintf(FILE *, char *, ...);) *and* <stdarg.h> */
 
 /* Define to the version of this package. */
 /* #undef PACKAGE_VERSION */
-#define VERSION "2.6"
+#define VERSION "2.7"
 #define PREFIX ""
 
 /* Define as the integral type used for Unicode representation. */

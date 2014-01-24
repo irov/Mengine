@@ -231,7 +231,7 @@ namespace Menge
 		, m_dstBlendFactor(GL_ZERO)
 		, m_activeTextureStage(0)
 		, m_activeTexture(0)
-		, m_activeRenderTarget(NULL)
+		, m_activeRenderTarget(nullptr)
 		, m_VBHandleGenerator(0)
 		, m_IBHandleGenerator(0)
 	{
@@ -1065,12 +1065,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr MarmaladeRenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
     {
-        return NULL;
+        return nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr MarmaladeRenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-		return NULL;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )

@@ -358,8 +358,9 @@ namespace Menge
 
         m_nodeService->initialize();
 
-//#	define NODE_FACTORY( serviceProvider, Type )\
-//		nodeService->registerFactory( Helper::stringizeString( serviceProvider, #Type), new FactoryPool<Type, 128> )
+/*#	define NODE_FACTORY( serviceProvider, Type )\
+		nodeService->registerFactory( Helper::stringizeString( serviceProvider, #Type), new FactoryPool<Type, 128> )
+*/
 
 #	define NODE_FACTORY( serviceProvider, Type )\
         PROTOTYPE_SERVICE(serviceProvider)\

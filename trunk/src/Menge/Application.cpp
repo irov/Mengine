@@ -51,7 +51,6 @@
 #	include "HotSpotShape.h"
 #	include "Layer2DTexture.h"
 #	include "PhysicalBody2D.h"
-#	include "Layer2DPhysic.h"
 #	include "Landscape2D.h"
 // All Resource type
 //#	include "ResourceSequence.h"

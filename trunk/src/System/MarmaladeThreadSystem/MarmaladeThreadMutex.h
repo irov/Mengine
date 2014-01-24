@@ -26,4 +26,6 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
         s3eThreadLock * m_cs;
     };
+
+	typedef stdex::intrusive_ptr<MarmaladeThreadMutex> MarmaladeThreadMutexPtr;
 }

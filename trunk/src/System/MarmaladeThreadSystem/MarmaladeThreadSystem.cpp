@@ -13,21 +13,14 @@ namespace Menge
 	namespace Detail
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void * s_tread_job( void * _listener )
+		static void * s_tread_job( void * _task )
 		{
 			//ThreadHolder * threadHolder = (ThreadHolder *)_threadHolder;
-			Menge::ThreadListener * threadListener = static_cast<Menge::ThreadListener*>(_listener);
+			ThreadTaskInterface * task = static_cast<ThreadTaskInterface *>(_task);
 
-#if defined(WIN32) && defined(PTW32_STATIC_LIB)
-			pthread_win32_thread_attach_np();
-#endif
+			task->main();
 
-			threadListener->main();
-
-#if defined(WIN32) && defined(PTW32_STATIC_LIB)
-			pthread_win32_thread_detach_np();
-#endif		
-			return threadListener;
+			return task;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -64,24 +57,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadSystem::finalize()
 	{
-		for(TVectorPosixThreadIdentity::iterator
-			it = m_threadIdentities.begin(),
-			it_end = m_threadIdentities.end();
-		it != it_end;
-		++it )
-		{
-			MarmaladeThreadIdentity * identity = *it;
-			delete identity;
-		}
-
 		m_threadIdentities.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentityPtr MarmaladeThreadSystem::createThread( const ThreadTaskInterfacePtr & _listener, int _priority )
+	ThreadIdentityPtr MarmaladeThreadSystem::createThread( const ThreadTaskInterfacePtr & _task, int _priority )
 	{
-        s3eThread * thread = s3eThreadCreate( &Detail::s_tread_job, _thread, NULL );
+		ThreadTaskInterface * task_ptr = _task.get();
+        s3eThread * s3e_thread = s3eThreadCreate( &Detail::s_tread_job, (void *)task_ptr, NULL );
 
-		if( thread == nullptr )
+		if( s3e_thread == nullptr )
 		{			
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createThread: invalid create thread error code - %s"
                 , s3eThreadGetErrorString()
@@ -90,8 +74,8 @@ namespace Menge
 			return nullptr;
 		}
 		
-		MarmaladeThreadIdentity * identity = m_poolWin32ThreadIdentity.createT(); 
-        identity->initialize( thread );
+		MarmaladeThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT(); 
+        identity->initialize( s3e_thread, _task );
         
 		m_threadIdentities.push_back( identity );
 	
@@ -100,12 +84,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadSystem::joinThread( const ThreadIdentityPtr & _thread )
 	{
-		MarmaladeThreadIdentity * identity = static_cast<MarmaladeThreadIdentity*>(_thread);
+		MarmaladeThreadIdentityPtr identity = stdex::intrusive_static_cast<MarmaladeThreadIdentityPtr>(_thread);
 
-		s3eThread * thread = identity->getThread();
+		s3eThread * s3e_thread = identity->getThread();
 
-		ThreadListener * listener = nullptr;
-		s3eResult result = s3eThreadJoin( thread, (void**)&listener );
+		ThreadTaskInterface * task = nullptr;
+		s3eResult result = s3eThreadJoin( s3e_thread, (void**)&task );
 
 		if( result == S3E_RESULT_ERROR )
 		{
@@ -116,7 +100,7 @@ namespace Menge
 			return false;
 		}
 
-		listener->join();
+		task->join();
 
         return true;
 	}
@@ -128,7 +112,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr MarmaladeThreadSystem::createMutex()
     {
-        MarmaladeThreadMutex * mutex = m_poolMarmaladeThreadMutex.createObjectT();
+        MarmaladeThreadMutexPtr mutex = m_poolMarmaladeThreadMutex.createObjectT();
         mutex->initialize( m_serviceProvider );
 
         return mutex;

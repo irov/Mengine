@@ -984,7 +984,13 @@ namespace Menge
 			}
 			else
 			{
-				Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
+				mt::box2f bb_vertices;
+				Helper::makeRenderBoundingBox( bb_vertices, _vertices, _verticesNum );
+
+				const mt::mat4f & wm = rp.camera->getCameraWorldMatrix();
+
+				mt::mul_v2_m4( bb.minimum, bb_vertices.minimum, wm );
+				mt::mul_v2_m4( bb.maximum, bb_vertices.maximum, wm );
 			}
 
 			if( mt::is_intersect( rp.bb, bb ) == false )

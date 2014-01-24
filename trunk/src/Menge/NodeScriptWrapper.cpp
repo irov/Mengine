@@ -78,7 +78,6 @@
 
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
-#	include "Layer2DPhysic.h"
 #	include "Layer2DTexture.h"
 
 #   include "ResourceImage.h"

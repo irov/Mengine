@@ -38,3 +38,5 @@ typedef void * nullptr_t;
 #   define MENGE_RENDER_TEXTURE_RGBA
 
 #   define STDEX_UNSUPPOT_NULLPTR_T
+
+#   define _snprintf snprintf

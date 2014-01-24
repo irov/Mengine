@@ -34,7 +34,6 @@ namespace Menge
     public:
         bool isKeyDown( Menge::KeyCode _code ) const;
         bool isAnyKeyDown() const;
-        bool isModifierDown( Menge::KeyCode _code ) const;
 
     protected:
         void fillKeys_();

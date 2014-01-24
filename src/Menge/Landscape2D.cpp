@@ -72,7 +72,7 @@ namespace	Menge
 			Element el;
 			el.resource = image;
 
-			if( el.resource->compile() == false )
+			if( el.resource->incrementReference() == 0 )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Landscape2D::compileResources_ '%s' image resource %s not compile"
 					, m_name.c_str() 
@@ -112,9 +112,13 @@ namespace	Menge
 		{
 			Element & el = *it;
 			
-			el.resource->release();
+			el.resource->decrementReference();
+			el.resource = nullptr;
+
 			el.material = nullptr;
 		}
+
+		m_elements.clear();
 
 		m_verticesWM.clear();
 	}

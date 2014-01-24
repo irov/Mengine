@@ -6,9 +6,9 @@
 #   include "Interface/NotificationServiceInterace.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/ThreadSystemInterface.h"
-#   include "Interface/PhysicSystem2DInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/SoundSystemInterface.h"
+#	include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/CodecInterface.h"
@@ -149,8 +149,8 @@ namespace Menge
         CodecServiceInterface * m_codecService;
         ThreadServiceInterface * m_threadService;
         ParticleServiceInterface * m_particleService;
-        PhysicService2DInterface * m_physicService2D;
         RenderServiceInterface * m_renderService;
+		PhysicSystemInterface * m_physicSystem;
 		RenderTextureServiceInterface * m_renderTextureManager;
 		RenderMaterialServiceInterface * m_renderMaterialManager;
         SoundServiceInterface * m_soundService;

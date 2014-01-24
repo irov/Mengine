@@ -43,13 +43,13 @@ namespace Menge
         ThreadMutexInterfacePtr createMutex() override;
 	
 	protected:
-        typedef stdex::template_pool<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;
+        typedef FactoryPool<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;
         TPoolMarmaladeThreadIdentity m_poolWin32ThreadIdentity;
 
         typedef FactoryPool<MarmaladeThreadMutex, 16> TPoolMarmaladeThreadMutex;
         TPoolMarmaladeThreadMutex m_poolMarmaladeThreadMutex;
 
-		typedef std::vector<MarmaladeThreadIdentity *> TVectorPosixThreadIdentity;
+		typedef std::vector<MarmaladeThreadIdentityPtr> TVectorPosixThreadIdentity;
 		TVectorPosixThreadIdentity m_threadIdentities;
 
 		ServiceProviderInterface * m_serviceProvider;

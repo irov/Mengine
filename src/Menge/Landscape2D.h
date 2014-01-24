@@ -35,6 +35,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+	protected:
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
     protected:

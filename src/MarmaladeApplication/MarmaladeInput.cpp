@@ -118,24 +118,6 @@ namespace Menge
         return isDown;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeInput::isModifierDown( Menge::KeyCode _code ) const
-    {
-        switch ( _code )
-        {
-        case Menge::KM_CTRL:
-        case Menge::KM_SHIFT:
-        case Menge::KM_ALT:
-            break;
-        default:
-            return false;
-            break;
-        }
-
-        bool isDown = this->isKeyDown( _code );
-
-        return isDown;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MarmaladeInput::s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input )
     {
         int32 cursorX = s3ePointerGetTouchX( 0 );

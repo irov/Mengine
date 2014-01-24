@@ -58,8 +58,7 @@ SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
 SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureServiceInterface);
 SERVICE_EXTERN(RenderMaterialManager, Menge::RenderMaterialServiceInterface);
 
-SERVICE_EXTERN(PhysicSystem2D, Menge::PhysicSystem2DInterface);
-SERVICE_EXTERN(PhysicService2D, Menge::PhysicService2DInterface);
+SERVICE_EXTERN(PhysicSystem, Menge::PhysicSystemInterface);
 
 SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
 SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);

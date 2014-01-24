@@ -3118,8 +3118,6 @@ namespace Menge
 					}
 
 					_value.push_back( key );
-
-					pybind::decref( py_resource_image );
 				}
 			}
 			else

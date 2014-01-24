@@ -8,9 +8,10 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeThreadIdentity::initialize( s3eThread * _thread )
+    void MarmaladeThreadIdentity::initialize( s3eThread * _thread, const ThreadTaskInterfacePtr & _task )
     {
         m_thread = _thread;
+		m_task = _task;
     }
 	//////////////////////////////////////////////////////////////////////////
 	s3eThread * MarmaladeThreadIdentity::getThread() const

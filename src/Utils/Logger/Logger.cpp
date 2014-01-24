@@ -31,7 +31,7 @@ namespace Menge
             char msg [] = "LoggerOperator::operator invalid message :(\n";
             this->logMessage( msg, sizeof(msg) );
 
-			size = snprintf( str, 2048 - 1, "%s", _message );
+			size = _snprintf( str, 2048 - 1, "%s", _message );
 
 			if( size < 0 )
 			{

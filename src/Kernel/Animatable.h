@@ -61,8 +61,9 @@ namespace Menge
 
 	public:
 		bool isPlay() const;
-		size_t getPlayId() const;
+		bool isInterrupt() const;
 
+		size_t getPlayId() const;
 		float getPlayTime() const;
 
 	protected:
@@ -87,6 +88,7 @@ namespace Menge
         float m_scretch;
 		
 		bool m_play;
+		bool m_interrupt;
 
 		bool m_loop;
 		bool m_reverse;

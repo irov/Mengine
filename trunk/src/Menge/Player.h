@@ -210,7 +210,8 @@ namespace Menge
 
 	protected:
 		size_t m_showDebugText;
-		TextField* m_debugText;
+		TextField * m_debugText;
+		Camera2D * m_debugCamera2D;
 //#	endif
 	};
 }

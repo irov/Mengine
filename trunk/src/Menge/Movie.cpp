@@ -1837,7 +1837,6 @@ namespace Menge
 		//Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_OPACITY, ("onMovieApplyInternalOpacity"), _embed );
 
 		this->registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
-		this->registerEvent( EVENT_MOVIE_LOOP, ("onMovieLoop"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _current, float _timing )
@@ -1918,7 +1917,9 @@ namespace Menge
                     //needUpdate = false;
 
 					bool loop = this->getLoop();
-                    if( loop == false && --m_playIterator == 0 )
+					bool interrupt = this->isInterrupt();
+
+                    if( loop == false && --m_playIterator == 0 || interrupt == true )
                     {
                         lastFrame = frameCount;
                         m_currentFrame = frameCount;
@@ -1930,8 +1931,7 @@ namespace Menge
                     else
                     {   
                         //this->setTiming( 0.f );
-						EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_LOOP)( "(OOi)", this->getEmbed(), pybind::get_bool(loop), m_playIterator );
-                        
+
                         float beginTiming = m_frameTiming + loopSegment.x;
 
                         this->setTiming( beginTiming );

@@ -3543,6 +3543,7 @@ namespace Menge
             .def( "getIntervalBegin", &Animatable::getIntervalBegin )
             .def( "getIntervalEnd", &Animatable::getIntervalEnd )
             .def( "interrupt", &ParticleEmitter::interrupt )
+			.def( "isInterrupt", &ParticleEmitter::isInterrupt )
             ;
 
         pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
@@ -3630,6 +3631,9 @@ namespace Menge
 			.def( "getCamera2D", &CameraTarget2D::getCamera2D )
 			.def( "setSpeed", &CameraTarget2D::setSpeed )
 			.def( "getSpeed", &CameraTarget2D::getSpeed )
+			.def( "setFixedHorizont", &CameraTarget2D::setFixedHorizont )
+			.def( "getFixedHorizont", &CameraTarget2D::getFixedHorizont )
+			.def( "isFixedHorizont", &CameraTarget2D::isFixedHorizont )
 			;
 
         //pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)

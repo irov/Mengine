@@ -183,7 +183,7 @@ namespace Menge
     bool MarmaladeApplication::initializeApplicationService_()
     {
         ApplicationInterface * application;
-        if( createApplication( &application ) == false )
+        if( SERVICE_CREATE( Application, &application ) == false )
         {
             return false;
         }
@@ -214,7 +214,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Notification Service..." );
 
         NotificationServiceInterface * notificationService;
-        if( createNotificationService( &notificationService ) == false )
+        if( SERVICE_CREATE( NotificationService, &notificationService ) == false )
         {
             return false;
         }
@@ -232,7 +232,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
 
         ThreadSystemInterface * threadSystem;
-        if( createThreadSystem( &threadSystem ) == false )
+        if( SERVICE_CREATE( ThreadSystem, &threadSystem ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
                 );
@@ -248,7 +248,7 @@ namespace Menge
         threadSystem->initialize();
 
         ThreadServiceInterface * threadService;
-        if( createThreadService( &threadService ) == false )
+        if( SERVICE_CREATE( ThreadService, &threadService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
                 );
@@ -276,7 +276,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
 
         FileSystemInterface * fileSystem;
-        if( createFileSystem( &fileSystem ) == false )
+        if( SERVICE_CREATE( FileSystem, &fileSystem ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileSystem"
                 );
@@ -290,7 +290,7 @@ namespace Menge
         }
 
         FileServiceInterface * fileService;
-        if( createFileService( &fileService ) == false )
+        if( SERVICE_CREATE( FileService, &fileService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileService"
                 );
@@ -392,7 +392,7 @@ namespace Menge
     bool MarmaladeApplication::initializeStringizeService_()
     {
         StringizeServiceInterface * stringizeService;
-        if( createStringizeService( &stringizeService ) == false )
+        if( SERVICE_CREATE( StringizeService, &stringizeService ) == false )
         {
             return false;
         }
@@ -408,7 +408,7 @@ namespace Menge
     bool MarmaladeApplication::initializeLogEngine_()
     {
         LogServiceInterface * logService;
-        if( createLogService( &logService ) == false )
+        if( SERVICE_CREATE( LogService, &logService ) == false )
         {
             return false;
         }
@@ -488,7 +488,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
 
         ArchiveServiceInterface * archiveService;
-        if( createArchiveService( &archiveService ) == false )
+        if( SERVICE_CREATE( ArchiveService, &archiveService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeArchiveService_ failed to create ArchiveService"
                 );
@@ -511,7 +511,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Unicode Service..." );
 
         UnicodeSystemInterface * unicodeSystem;
-        if( createUnicodeSystem( &unicodeSystem ) == false )
+        if( SERVICE_CREATE( UnicodeSystem, &unicodeSystem ) == false )
         {
             return false;
         }
@@ -522,7 +522,7 @@ namespace Menge
         }
 
         UnicodeServiceInterface * unicodeService;
-        if( createUnicodeService( &unicodeService ) == false )
+        if( SERVICE_CREATE( UnicodeService, &unicodeService ) == false )
         {
             return false;
         }
@@ -542,7 +542,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
 
         ParticleSystemInterface * particleSystem;
-        if( createParticleSystem( &particleSystem ) == false )
+        if( SERVICE_CREATE( ParticleSystem, &particleSystem ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
                 );
@@ -556,7 +556,7 @@ namespace Menge
         }
 
         ParticleServiceInterface * particleService;
-        if( createParticleService( &particleService ) == false )
+        if( SERVICE_CREATE( ParticleService, &particleService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
                 );
@@ -632,7 +632,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
 
         RenderSystemInterface * renderSystem;
-        if( createRenderSystem( &renderSystem ) == false )
+        if( SERVICE_CREATE( RenderSystem, &renderSystem ) == false )
         {
             return false;
         }
@@ -651,7 +651,7 @@ namespace Menge
         }
 
         RenderServiceInterface * renderService;
-        if( createRenderService( &renderService ) == false )
+        if( SERVICE_CREATE( RenderService, &renderService ) == false )
         {
             return false;
         }
@@ -740,7 +740,7 @@ namespace Menge
         }
 
         SoundServiceInterface * soundService;
-        if( createSoundService( &soundService ) == false )
+        if( SERVICE_CREATE( SoundService, &soundService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
                 );
@@ -773,7 +773,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Silent Sound Service..." );
 
         SoundSystemInterface * soundSystem;
-        if( createSilentSoundSystem( &soundSystem ) == false )
+        if( SERVICE_CREATE( SilentSoundSystem, &soundSystem ) == false )
         {
             return false;
         }
@@ -792,7 +792,7 @@ namespace Menge
         }
 
         SoundServiceInterface * soundService;
-        if( createSoundService( &soundService ) == false )
+        if( SERVICE_CREATE( SoundService, &soundService ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Application::initializeSilentSoundEngine_ Failed to create Sound Engine"
                 );
@@ -823,7 +823,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Script Service..." );
 
         ScriptServiceInterface * scriptService;
-        if( createScriptService( &scriptService ) == false )
+        if( SERVICE_CREATE( ScriptService, &scriptService ) == false )
         {
             return false;
         }
@@ -917,7 +917,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
 
         CodecServiceInterface * codecService;
-        if( createCodecService( &codecService ) == false )
+        if( SERVICE_CREATE( CodecService, &codecService ) == false )
         {
             return false;
         }
@@ -937,7 +937,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
 
         ConverterServiceInterface * converterService;
-        if( createConverterService( &converterService ) == false )
+        if( SERVICE_CREATE( ConverterService, &converterService ) == false )
         {
             return false;
         }
@@ -955,7 +955,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Input Service..." );
 
         InputServiceInterface * inputService;
-        if( createInputService( &inputService ) == false )
+        if( SERVICE_CREATE( InputService, &inputService ) == false )
         {
             return false;
         }
@@ -990,7 +990,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Amplifier Service..." );
 
         AmplifierServiceInterface * amplifierService;
-        if( createAmplifierService( &amplifierService ) == false )
+        if( SERVICE_CREATE( AmplifierService, &amplifierService ) == false )
         {
             return false;
         }
@@ -1099,7 +1099,7 @@ namespace Menge
         Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
 
         ServiceProviderInterface * serviceProvider;
-        if( createServiceProvider( &serviceProvider ) == false )
+        if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
         {
             return false;
         }

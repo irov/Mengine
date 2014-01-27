@@ -70,6 +70,7 @@ namespace Menge
 		, m_debugText(nullptr)
 		, m_camera2D(nullptr)
 		, m_viewport2D(nullptr)
+		, m_debugCamera2D(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -541,6 +542,15 @@ namespace Menge
 
 		this->setRenderViewport( m_viewport2D );
 
+		m_debugCamera2D = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
+
+		m_debugCamera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
+
+		m_debugCamera2D->setRenderport( vp );
+
+		m_debugCamera2D->enable();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -562,6 +572,12 @@ namespace Menge
         {
             m_camera2D->destroy();
 			m_camera2D = nullptr;
+		}
+
+		if( m_debugCamera2D != nullptr )
+		{
+			m_debugCamera2D->destroy();
+			m_debugCamera2D = nullptr;
 		}
 
 		if( m_arrowCamera2D != nullptr )
@@ -1290,7 +1306,7 @@ namespace Menge
                 ->getGameViewport( gameViewportAspect, gameViewport );
 
             m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
-			m_debugText->render( m_renderViewport, m_renderCamera, debugMask );
+			m_debugText->render( m_renderViewport, m_debugCamera2D, debugMask );
 		}
 //#	endif
 		//m_renderCamera2D->setLocalPosition( pos );
@@ -1298,12 +1314,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onAppMouseLeave()
 	{
-		if( m_arrow )
+		if( m_arrow != nullptr )
 		{
 			m_arrow->onAppMouseLeave();
 		}
 
-		if( m_scene && m_scene->isActivate() )
+		if( m_scene != nullptr && m_scene->isActivate() == true )
 		{
 			m_scene->onAppMouseLeave();
 		}
@@ -1321,7 +1337,7 @@ namespace Menge
 			m_arrow->onAppMouseEnter();
 		}
 
-		if( m_scene != nullptr && m_scene->isActivate() )
+		if( m_scene != nullptr && m_scene->isActivate() == true )
 		{
 			m_scene->onAppMouseEnter();
 		}
@@ -1356,7 +1372,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )
 	{
-		if( m_scene && m_scene->isActivate() )
+		if( m_scene != nullptr && m_scene->isActivate() == true )
 		{
 			m_scene->onFocus( _focus );
 		}

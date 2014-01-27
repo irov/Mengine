@@ -7,6 +7,8 @@ namespace Menge
 	CameraTarget2D::CameraTarget2D()
 		: m_camera(nullptr)
 		, m_speed(0.f)
+		, m_fixedHorizont(false)
+		, m_horizont(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,7 +59,15 @@ namespace Menge
 		
 		mt::vec2f target2d_wp;
 		target2d_wp.x = target_wp.x;
-		target2d_wp.y = target_wp.y;
+
+		if( m_fixedHorizont == false )
+		{
+			target2d_wp.y = target_wp.y;
+		}
+		else
+		{
+			target2d_wp.y = m_horizont;
+		}
 
 		float length = mt::length_v2_v2( camera_vpwm_center, target2d_wp );
 
@@ -84,4 +94,21 @@ namespace Menge
 
 		m_camera->setLocalPosition( new_lp );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void CameraTarget2D::setFixedHorizont( float _horizont )
+	{
+		m_fixedHorizont = true;
+		m_horizont = _horizont;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float CameraTarget2D::getFixedHorizont() const
+	{
+		return m_horizont;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool CameraTarget2D::isFixedHorizont() const
+	{
+		return m_fixedHorizont;
+	}
+
 }

@@ -22,10 +22,18 @@ namespace Menge
 		float getSpeed() const;
 
 	public:
+		void setFixedHorizont( float _horizont );
+		float getFixedHorizont() const;
+		bool isFixedHorizont() const;
+
+	public:
 		void _update( float _current, float _timing ) override;
 
 	protected:
 		Camera2D * m_camera;
 		float m_speed;
+
+		bool m_fixedHorizont;
+		float m_horizont;
 	};	
 }

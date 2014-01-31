@@ -460,7 +460,7 @@ namespace Menge
 			return v_accounts;
 		}
 
-		void s_addSetting( const ConstString & _setting, const WString & _defaultValue, PyObject * _applyFunc )
+		bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, PyObject * _applyFunc )
 		{
 			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -471,10 +471,12 @@ namespace Menge
                     , _setting.c_str()
 					);
 
-				return;
+				return false;
 			}
 			
-			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
+			bool result = currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
+
+			return result;
 		}
 
 		bool s_changeSetting( const ConstString & _setting, const WString & _value )
@@ -491,9 +493,9 @@ namespace Menge
                 return false;
             }
 
-            currentAccount->changeSetting( _setting, _value );
+            bool result = currentAccount->changeSetting( _setting, _value );
 
-            return true;
+            return result;
 		}
 
         bool s_hasSetting( const ConstString & _setting )

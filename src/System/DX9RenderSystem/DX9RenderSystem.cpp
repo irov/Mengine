@@ -290,7 +290,7 @@ namespace Menge
 		return D3DTEXF_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int s_format_id_( D3DFORMAT _format )
+	static size_t s_format_id_( D3DFORMAT _format )
 	{
 		switch(_format) {
 		case D3DFMT_R5G6B5:		return 1;

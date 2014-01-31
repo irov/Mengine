@@ -34,10 +34,11 @@ namespace Menge
 		void update() override;
 
 	public:
-		bool isKeyDown( KeyCode _keyCode ) override;
+		bool isKeyDown( size_t _keyCode ) const override;
+		bool isExclusiveKeyDown( size_t _keyCode ) const override;
 		
 		bool isAnyMouseButtonDown() const override;
-		bool isMouseButtonDown( int _button ) const override;
+		bool isMouseButtonDown( size_t _button ) const override;
 
         void setCursorPosition( const mt::vec2f & _point ) override;
 		const mt::vec2f & getCursorPosition() const override;
@@ -46,6 +47,9 @@ namespace Menge
 
 		void addMousePositionProvider( InputMousePositionProvider * _provider ) override;
 		void removeMousePositionProvider( InputMousePositionProvider * _provider ) override;
+
+	public:
+		void onFocus( bool _focus ) override;
 
 	public:
 		void onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -118,12 +122,12 @@ namespace Menge
 		typedef std::vector<MousePositionParams> TVectorMousePositionParams;
 
     protected:
-		void keyEvent( const KeyEventParams& _params );
-		void mouseButtonEvent( const MouseButtonParams& _params );
-		void mouseMoveEvent( const MouseMoveParams& _params );
-		void mousePositionEvent( const MousePositionParams& _params );
-        void mouseEnterEvent( const MousePositionParams& _params );
-        void mouseLeaveEvent( const MousePositionParams& _params );
+		void keyEvent_( const KeyEventParams& _params );
+		void mouseButtonEvent_( const MouseButtonParams& _params );
+		void mouseMoveEvent_( const MouseMoveParams& _params );
+		void mousePositionEvent_( const MousePositionParams& _params );
+        void mouseEnterEvent_( const MousePositionParams& _params );
+        void mouseLeaveEvent_( const MousePositionParams& _params );
 
 	protected:		
 		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local );
@@ -142,7 +146,7 @@ namespace Menge
 		TVectorMouseMoveParams m_mouseMoveEventParams;
 		TVectorMousePositionParams m_mousePositionEventParams;
 
-		unsigned char m_keyBuffer[256];
+		bool m_keyBuffer[256];
 		bool m_mouseBuffer[3];
 
 		mt::vec2f m_inputScale;

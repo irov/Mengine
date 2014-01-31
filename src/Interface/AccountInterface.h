@@ -18,8 +18,8 @@ namespace Menge
         virtual const FilePath & getFolder() const = 0;
 
     public:
-        virtual void addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) = 0;
-        virtual void changeSetting( const ConstString & _setting, const WString& _value ) = 0;
+        virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) = 0;
+        virtual bool changeSetting( const ConstString & _setting, const WString& _value ) = 0;
         virtual const WString& getSetting( const ConstString & _setting ) const = 0;
         virtual bool hasSetting( const ConstString & _setting ) const = 0;
 

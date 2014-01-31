@@ -32,8 +32,8 @@ namespace Menge
         const FilePath & getFolder() const override;
 
     public:
-		void addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
-		void changeSetting( const ConstString & _setting, const WString& _value ) override;
+		bool addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
+		bool changeSetting( const ConstString & _setting, const WString& _value ) override;
 		const WString& getSetting( const ConstString & _setting ) const override;
         bool hasSetting( const ConstString & _setting ) const override;
 

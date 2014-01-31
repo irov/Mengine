@@ -2873,6 +2873,7 @@ namespace Menge
 		m_inputService->onMousePosition( 0, point );
 
 		m_application->onFocus( m_active, point );
+		m_inputService->onFocus( m_active );
 
 		bool turnSound = m_active;
 		m_application->onTurnSound( turnSound );

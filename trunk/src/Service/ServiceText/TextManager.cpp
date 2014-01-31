@@ -438,8 +438,10 @@ namespace Menge
 				WString ws_text;
 				Helper::utf8ToUnicode( m_serviceProvider, text, ws_text );
 
-				LOGGER_ERROR(m_serviceProvider)("TextManager::addTextEntry: duplicate key found %s with text '%ls'"
-					, _key.c_str()
+				LOGGER_ERROR(m_serviceProvider)("TextManager::addTextEntry: duplicate key found %s with text:"
+					, _key.c_str()					
+					);
+				LOGGER_ERROR(m_serviceProvider)("'%ls'"
 					, ws_text.c_str()
 					);
 			}

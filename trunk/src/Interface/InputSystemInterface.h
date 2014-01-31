@@ -285,10 +285,12 @@ namespace Menge
 		virtual void update() = 0;
 
 	public:
-		virtual bool isKeyDown( KeyCode _keyCode ) = 0;
+		virtual bool isKeyDown( size_t _keyCode ) const = 0;
+		virtual bool isExclusiveKeyDown( size_t _keyCode ) const = 0;
 
+	public:
 		virtual bool isAnyMouseButtonDown() const = 0;
-		virtual bool isMouseButtonDown( int _button ) const = 0;
+		virtual bool isMouseButtonDown( size_t _button ) const = 0;
 
         virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
 		virtual const mt::vec2f & getCursorPosition() const = 0;
@@ -297,6 +299,9 @@ namespace Menge
 
 		virtual void addMousePositionProvider( InputMousePositionProvider * _provider ) = 0;
 		virtual void removeMousePositionProvider( InputMousePositionProvider * _provider ) = 0;
+
+	public:
+		virtual void onFocus( bool _focus ) = 0;
 
 	public:
 		virtual void onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;

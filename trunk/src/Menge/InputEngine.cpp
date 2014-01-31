@@ -41,7 +41,7 @@ namespace Menge
 		m_notifyChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
             ->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &InputEngine::notifyChangeWindowResolution );
 
-		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), 0x00 );
+		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
 
 		m_mouseBuffer[0] = false;
 		m_mouseBuffer[1] = false;
@@ -90,37 +90,37 @@ namespace Menge
             case ET_KEY:
                 {
                     const KeyEventParams& params = (*it_keyParams);
-                    this->keyEvent( params );
+                    this->keyEvent_( params );
                     ++it_keyParams;
                 }break;
             case ET_MOUSEBUTTON:
                 {
                     const MouseButtonParams& params = (*it_mouseButtonParams);
-                    this->mouseButtonEvent( params );
+                    this->mouseButtonEvent_( params );
                     ++it_mouseButtonParams;
                 }break;
             case ET_MOUSEMOVE:
                 {
                     const MouseMoveParams& params = (*it_mouseMoveParams);
-                    this->mouseMoveEvent( params );
+                    this->mouseMoveEvent_( params );
                     ++it_mouseMoveParams;
                 }break;
             case ET_MOUSEPOSITION:
                 {
                     const MousePositionParams & params = (*it_mousePositionParams);
-                    this->mousePositionEvent( params );
+                    this->mousePositionEvent_( params );
                     ++it_mousePositionParams;
                 }break;
             case ET_MOUSEENTER:
                 {
                     const MousePositionParams & params = (*it_mousePositionParams);
-                    this->mouseEnterEvent(params);
+                    this->mouseEnterEvent_(params);
                     ++it_mousePositionParams;
                 }break;
             case ET_MOUSELEAVE:
                 {
                     const MousePositionParams & params = (*it_mousePositionParams);
-                    this->mouseLeaveEvent(params);
+                    this->mouseLeaveEvent_(params);
                     ++it_mousePositionParams;
                 }
             }
@@ -135,9 +135,30 @@ namespace Menge
         m_mousePositionEventParams.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isKeyDown( KeyCode _keyCode )
+	bool InputEngine::isKeyDown( size_t _keyCode ) const
 	{
-		return m_keyBuffer[ static_cast<int>( _keyCode ) ] == 1;
+		bool isDown = m_keyBuffer[_keyCode];
+
+		return isDown;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::isExclusiveKeyDown( size_t _keyCode ) const
+	{
+		bool isDown = m_keyBuffer[_keyCode];
+
+		if( isDown == false )
+		{
+			return false;
+		}
+
+		size_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+		
+		if( keyDownCount != 1 )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAnyMouseButtonDown() const
@@ -145,9 +166,9 @@ namespace Menge
 		return m_mouseBuffer[0] || m_mouseBuffer[1] || m_mouseBuffer[2];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isMouseButtonDown( int _button ) const
+	bool InputEngine::isMouseButtonDown( size_t _button ) const
 	{
-		return m_mouseBuffer[ _button ];
+		return m_mouseBuffer[_button];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::validCursorPosition( const mt::vec2f & _point ) const
@@ -230,6 +251,11 @@ namespace Menge
         m_mousePositionProviders.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::onFocus( bool _focus )
+	{
+		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		m_eventsAdd.push_back( ET_KEY );
@@ -272,22 +298,18 @@ namespace Menge
         m_mousePositionEventParams.push_back( params );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::keyEvent( const KeyEventParams& _params )
+	void InputEngine::keyEvent_( const KeyEventParams& _params )
 	{
-		unsigned char state = _params.isDown ? 1 : 0;
-		if( m_keyBuffer[_params.key] != state )
-		{
-			m_keyBuffer[_params.key] = state;
+		m_keyBuffer[_params.key] = _params.isDown;
 
-			mt::vec2f point;
-			this->applyCursorPosition_( _params.point, point );
+		mt::vec2f point;
+		this->applyCursorPosition_( _params.point, point );
 
-			APPLICATION_SERVICE(m_serviceProvider)
-				->onKeyEvent( point, _params.key, _params.character, _params.isDown );
-		}
+		APPLICATION_SERVICE(m_serviceProvider)
+			->onKeyEvent( point, _params.key, _params.character, _params.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseButtonEvent( const MouseButtonParams & _params )
+	void InputEngine::mouseButtonEvent_( const MouseButtonParams & _params )
 	{
 		m_mouseBuffer[ _params.button ] = _params.isDown;
 
@@ -298,7 +320,7 @@ namespace Menge
 			->onMouseButtonEvent( _params.touchId, point, _params.button, _params.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseMoveEvent( const MouseMoveParams& _params )
+	void InputEngine::mouseMoveEvent_( const MouseMoveParams& _params )
 	{
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
@@ -307,7 +329,7 @@ namespace Menge
 			->onMouseMove( _params.touchId, point, _params.x, _params.y, _params.whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mousePositionEvent( const MousePositionParams& _params )
+	void InputEngine::mousePositionEvent_( const MousePositionParams& _params )
 	{
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
@@ -316,7 +338,7 @@ namespace Menge
 			->onMousePosition( _params.touchId, point );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void InputEngine::mouseEnterEvent( const MousePositionParams& _params )
+    void InputEngine::mouseEnterEvent_( const MousePositionParams& _params )
     {
         mt::vec2f point;
         this->applyCursorPosition_( _params.point, point );
@@ -325,7 +347,7 @@ namespace Menge
             ->onAppMouseEnter( point );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputEngine::mouseLeaveEvent( const MousePositionParams& _params )
+    void InputEngine::mouseLeaveEvent_( const MousePositionParams& _params )
     {
         mt::vec2f point;
         this->applyCursorPosition_( _params.point, point );

@@ -4,7 +4,6 @@
 #	include "Interface/UnicodeInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#   include "Core/Ini.h"
 #   include "Core/IniUtil.h"
 
 #   include "Logger/Logger.h"
@@ -35,8 +34,8 @@ namespace Menge
             return false;
         }
 
-        Ini ini(m_serviceProvider);
-        if( ini.load( applicationInputStream ) == false )
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, applicationInputStream, m_serviceProvider ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::load Invalid load application settings %s"
                 , _applicationPath.c_str()
@@ -120,8 +119,9 @@ namespace Menge
             return false;
         }
 
-        Ini ini(m_serviceProvider);
-        if( ini.load( gameInputStream ) == false )
+
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, gameInputStream, m_serviceProvider ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::loadGame_ Invalid load game settings '%s'"
                 , _gameIniPath.c_str()
@@ -181,8 +181,8 @@ namespace Menge
             return false;
         }
 
-        Ini ini(m_serviceProvider);
-        if( ini.load( resourceInputStream ) == false )
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, resourceInputStream, m_serviceProvider ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::loadResourcePacks_ Invalid load resource settings '%s'"
                 , _resourceIni.c_str()

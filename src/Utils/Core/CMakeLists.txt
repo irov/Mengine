@@ -20,8 +20,6 @@ src
         
     GlyphChar.h
     
-    Ini.h
-    Ini.cpp
     IniUtil.h
     IniUtil.cpp
     

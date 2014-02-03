@@ -54,8 +54,8 @@ namespace Menge
 	TimingManager::~TimingManager()
 	{
         for( TListTimings::const_iterator
-            it = m_events.begin(),
-            it_end = m_events.end();
+            it = m_timings.begin(),
+            it_end = m_timings.end();
         it != it_end;
         ++it )
         {
@@ -88,7 +88,7 @@ namespace Menge
 		event.portions = _portions;
 		event.global = _global;
 				
-		m_events.push_back(event);
+		m_timings.push_back(event);
 
 		return event.id;
 	}
@@ -96,9 +96,9 @@ namespace Menge
 	bool TimingManager::findTimigEvent_( size_t _id, const TimingEvent *& _event ) const
 	{
 		TListTimings::const_iterator it_find = 
-			std::find_if( m_events.begin(), m_events.end(), FTimingFind(_id) );
+			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
 
-		if( it_find == m_events.end() )
+		if( it_find == m_timings.end() )
 		{
 			return false;	
 		}
@@ -111,9 +111,9 @@ namespace Menge
 	bool TimingManager::findTimigEvent_( size_t _id, TimingEvent *& _event )
 	{
 		TListTimings::iterator it_find = 
-			std::find_if( m_events.begin(), m_events.end(), FTimingFind(_id) );
+			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
 
-		if( it_find == m_events.end() )
+		if( it_find == m_timings.end() )
 		{
 			return false;	
 		}
@@ -138,8 +138,8 @@ namespace Menge
 	void TimingManager::removeAll( bool _global )
 	{
 		for( TListTimings::iterator 
-			it = m_events.begin(), 
-			it_end = m_events.end();
+			it = m_timings.begin(), 
+			it_end = m_timings.end();
 		it != it_end;
 		++it )
 		{
@@ -169,8 +169,8 @@ namespace Menge
 		m_freeze = _freeze;
 
 		for( TListTimings::iterator 
-			it = m_events.begin(), 
-			it_end = m_events.end();
+			it = m_timings.begin(), 
+			it_end = m_timings.end();
 		it != it_end;
 		++it )
 		{
@@ -193,38 +193,40 @@ namespace Menge
 	{
         (void)_current;
 
-		if( m_events.empty() == true )
+		if( m_timings.empty() == true )
 		{
 			return;
 		}
 
-		for( TListTimings::iterator 
-			it = m_events.begin(),
-			it_end = m_events.end();
+		for( TListTimings::size_type 
+			it = 0,
+			it_end = m_timings.size();
 		it != it_end;
-		++it)
+		++it )
 		{
-			if( it->dead == true )
+			TimingEvent & event = m_timings[it];
+
+			if( event.dead == true )
 			{
 				continue;
 			}
 
-			if( it->freeze )
+			if( event.freeze == true )
 			{
 				continue;
 			}
 
-			it->timing += _timing;
+			event.timing += _timing;
 			
-			if( it->portions == true )
+			if( event.portions == true )
 			{
-				while( it->timing > it->delay )
+				while( event.timing > event.delay )
 				{
-					it->timing -= it->delay;
+					event.timing -= event.delay;
 
-					it->dead = it->listener->updateTiming( it->id, it->delay );
+					event.dead = event.listener->updateTiming( event.id, event.delay );
 
-					if( it->dead == true )
+					if( event.dead == true )
 					{
 						break;
 					}
@@ -232,11 +234,11 @@ namespace Menge
 			}
 			else
 			{
-				it->dead = it->listener->updateTiming( it->id, _timing );
+				event.dead = event.listener->updateTiming( event.id, _timing );
 			}
 		}
 
-		TListTimings::iterator it_erase = std::remove_if( m_events.begin(), m_events.end(), FTimingDead());
-		m_events.erase( it_erase, m_events.end() );
+		TListTimings::iterator it_erase = std::remove_if( m_timings.begin(), m_timings.end(), FTimingDead());
+		m_timings.erase( it_erase, m_timings.end() );
 	}
 }

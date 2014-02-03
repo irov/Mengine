@@ -9,7 +9,6 @@
 
 #	include "Consts.h"
 
-#	include "Core/Ini.h"
 #	include "Core/IniUtil.h"
 
 #	include "Core/String.h"
@@ -415,8 +414,8 @@ namespace Menge
             return false;
         }
 		
-        Ini ini(m_serviceProvider);
-		if( ini.load( file ) == false )
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, file, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts parsing accounts failed '%s'"
 				, m_accountsPath.c_str()

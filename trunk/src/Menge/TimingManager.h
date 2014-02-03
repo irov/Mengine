@@ -61,7 +61,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		typedef std::vector<TimingEvent> TListTimings;
-		TListTimings m_events;
+		TListTimings m_timings;
 		
 		size_t m_enumerator;
 		bool m_freeze;		

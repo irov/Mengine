@@ -161,8 +161,8 @@ namespace Menge
             return false;
         }
 
-        Ini ini(m_serviceProvider);
-		if( ini.load( file ) == false )
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, file, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::load parsing Account '%ls' settings failed '%s'"
                 , m_name.c_str()

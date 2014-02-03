@@ -6,7 +6,6 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Core/String.h"
-#	include "Core/Ini.h"
 #	include "Core/IniUtil.h"
 
 #	include "Logger/Logger.h"
@@ -290,8 +289,8 @@ namespace Menge
 			return false;
 		}
 
-		Ini ini(m_serviceProvider);
-		if( ini.load( stream ) == false )
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, stream, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts Invalid load settings %s"
 				, _path.c_str()
@@ -441,6 +440,7 @@ namespace Menge
 				LOGGER_ERROR(m_serviceProvider)("TextManager::addTextEntry: duplicate key found %s with text:"
 					, _key.c_str()					
 					);
+
 				LOGGER_ERROR(m_serviceProvider)("'%ls'"
 					, ws_text.c_str()
 					);
@@ -498,9 +498,7 @@ namespace Menge
 	TextFontInterfacePtr TextManager::getFont( const ConstString & _name )
 	{		
 		TextFontPtr font_has;
-		bool result = m_fonts.has_copy( _name, font_has );
-
-		if( result == false )
+		if( m_fonts.has_copy( _name, font_has ) == false )
 		{
 			return nullptr;
 		}

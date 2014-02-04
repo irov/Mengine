@@ -24,6 +24,7 @@ namespace Menge
 		public:
 			PickerVisitor( TVectorPickerTrapStates & _traps )
 				: m_traps(_traps)
+				, m_currentRenderCamera(nullptr)				
 			{
 			}
 
@@ -33,8 +34,16 @@ namespace Menge
 			}
 
 		public:
-			void visit( Node * _node )
+			void visit( const RenderCameraInterface * _renderCamera, Node * _node )
 			{
+				const RenderCameraInterface * nodeRenderCamera = _node->getRenderCamera();
+				
+				if( nodeRenderCamera == nullptr )
+				{
+					nodeRenderCamera = _renderCamera;
+				}
+
+				m_currentRenderCamera = nodeRenderCamera;
 				_node->visit( this );
 
 				TListNodeChild & child = _node->getChild();
@@ -43,7 +52,7 @@ namespace Menge
 				{
 					Node * children = (*it);
 
-					this->visit( children );
+					this->visit( nodeRenderCamera, children );
 				}
 			}
 
@@ -59,11 +68,17 @@ namespace Menge
 					return;
 				}
 
-				m_traps.push_back( trapState );
+				PickerTrapStateDesc desc;
+				desc.state = trapState;
+				desc.camera = m_currentRenderCamera;
+
+				m_traps.push_back( desc );
 			}
 
 		protected:
 			TVectorPickerTrapStates & m_traps;
+
+			const RenderCameraInterface * m_currentRenderCamera;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,7 +135,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			PickerTrapState * state = *it;
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -225,7 +240,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = (*it);
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -259,7 +274,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = (*it);
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -298,7 +313,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = (*it);
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -338,7 +353,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = (*it);
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -377,7 +392,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = (*it);
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -421,9 +436,9 @@ namespace Menge
 		}
 
 		m_states.clear();
-		PickerVisitor pv(m_states);
 
-		pv.visit( m_scene );
+		PickerVisitor pv(m_states);
+		pv.visit( m_camera, m_scene );
 
 		for( TVectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
@@ -431,7 +446,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = (*it);
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -473,7 +488,7 @@ namespace Menge
         }
 				
 		PickerVisitor pv(_states);
-		pv.visit( m_scene );
+		pv.visit( m_camera, m_scene );
         
 		bool handle = false;
 
@@ -483,7 +498,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PickerTrapState * state = (*it);
+			PickerTrapState * state = it->state;
 
 			if( state->dead == true )
 			{
@@ -492,7 +507,8 @@ namespace Menge
 
 			MousePickerTrapInterface * trap = state->trap;
 
-			bool picked = trap->pick( _point, m_camera, m_arrow );
+			const RenderCameraInterface * camera = it->camera;
+			bool picked = trap->pick( _point, camera, m_arrow );
 
 			if( ( handle == false || m_handleValue == false ) && m_block == false && picked == true )
 			{

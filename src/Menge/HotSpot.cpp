@@ -17,7 +17,7 @@
 
 #	include "Logger/Logger.h"
 
-namespace	Menge
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()

@@ -9,7 +9,13 @@
 
 namespace Menge
 {	
-	typedef std::vector<PickerTrapState *> TVectorPickerTrapStates;
+	struct PickerTrapStateDesc
+	{
+		PickerTrapState * state;
+		const RenderCameraInterface * camera;
+	};
+
+	typedef std::vector<PickerTrapStateDesc> TVectorPickerTrapStates;
 	
 	class MousePickerSystem
 		: public MousePickerSystemInterface

@@ -12,11 +12,6 @@
 
 namespace Menge
 {
-	class Camera2D;
-	class ResourceImage;
-
-	class ScheduleManager;
-
 	class Scene
 		: public Entity
 	{

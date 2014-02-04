@@ -3575,7 +3575,7 @@ namespace Menge
             .def( "addChildrenAfter", &Node::addChildrenAfter )
             .def( "removeChildren", &Node::removeChildren )
             .def( "removeAllChild", &Node::removeAllChild )
-            .def( "removeFromParent", &Node::removeFromParent )
+            .def( "removeFromParent", &Node::removeFromParent )			
             //.def_static( "getChild", &ScriptMethod::s_getChild )
             .def( "findChildren", &Node::findChildren )            
             .def( "emptyChild", &Node::emptyChild )
@@ -3590,12 +3590,13 @@ namespace Menge
             //.def( "getListener", &Node::getListener )
 
             .def( "getWorldPosition", &Node::getWorldPosition )
+			.def( "setWorldPosition", &Node::setWorldPosition )
             //.def( "getWorldDirection", &Node::getWorldDirection )
             .def_proxy_static( "getCameraPosition", nodeScriptMethod, &NodeScriptMethod::s_getCameraPosition )
 
-            .def( "setWorldPosition", &Node::setWorldPosition )
-
             .def( "getWorldColor", &Node::getWorldColor )
+
+			.def( "setRenderCamera", &Node::setRenderCamera )
 
             .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
 
@@ -3628,8 +3629,12 @@ namespace Menge
             //.def( "getViewport", &RenderCameraInterface::getViewport )
             ;
 
-        pybind::interface_<Camera2D, pybind::bases<Node, RenderCameraInterface> >("Camera2D", false)
-            .def( "setRenderTarget", &Camera2D::setRenderTarget )
+		pybind::interface_<Camera, pybind::bases<RenderCameraInterface> >("Camera")
+			.def( "setRenderTarget", &Camera2D::setRenderTarget )
+			;
+
+        pybind::interface_<Camera2D, pybind::bases<Node, Camera> >("Camera2D", false)
+            .def( "setRenderport", &Camera2D::setRenderport )
             ;		
 
 		pybind::interface_<CameraTarget2D, pybind::bases<Node> >("CameraTarget2D", false)

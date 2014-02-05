@@ -17,6 +17,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
 		: m_viewport(0.f, 0.f, 0.f, 0.f)
+		, m_renderCamera(nullptr)
 		, m_hasViewport(false)
 		, m_renderViewport(nullptr)
 	{
@@ -95,10 +96,10 @@ namespace	Menge
     {
         if( m_renderViewport == nullptr )
         {
-			m_camera2D = NODE_SERVICE(m_serviceProvider)
+			m_renderCamera = NODE_SERVICE(m_serviceProvider)
 				->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
 
-			this->addChildren( m_camera2D );
+			this->addChildren( m_renderCamera );
 
             m_renderViewport = NODE_SERVICE(m_serviceProvider)
 				->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
@@ -115,10 +116,10 @@ namespace	Menge
 			this->addChildren( m_renderViewport );
 		}
 
-		m_camera2D->setRenderport( m_viewport );
+		m_renderCamera->setRenderport( m_viewport );
         m_renderViewport->setViewport( m_viewport );
 
-		Node::setRenderCamera( m_camera2D );
+		Node::setRenderCamera( m_renderCamera );
 		Node::setRenderViewport( m_renderViewport );
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -142,10 +143,10 @@ namespace	Menge
 		    m_renderViewport = nullptr;
         }
 
-		if( m_camera2D != nullptr )
+		if( m_renderCamera != nullptr )
 		{
-			m_camera2D->destroy();
-			m_camera2D = nullptr;
+			m_renderCamera->destroy();
+			m_renderCamera = nullptr;
 		}
 
 		Node::setRenderCamera( nullptr );

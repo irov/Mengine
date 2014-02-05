@@ -15,14 +15,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateColor()
     {
-        //const ColourValue & local_colour = this->getLocalColor();
-
-        //m_propagate->setLocalColor( local_colour );
-
-        //const ColourValue & personal_colour = this->getPersonalColor();
-
-        //m_propagate->setPersonalColor( personal_colour );
-
+        if( m_propagate == nullptr )
+		{
+			return;
+		}
 
 		const ColourValue & personal_colour = this->getPersonalColor();
 
@@ -31,6 +27,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateWorldMatrix()
     {
+		if( m_propagate == nullptr )
+		{
+			return;
+		}
+		
         mt::vec3f position;
         mt::vec3f origin;
         mt::vec3f coordinate;

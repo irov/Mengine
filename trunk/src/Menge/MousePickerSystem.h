@@ -12,6 +12,7 @@ namespace Menge
 	struct PickerTrapStateDesc
 	{
 		PickerTrapState * state;
+		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
 	};
 
@@ -30,6 +31,7 @@ namespace Menge
 	public:
 		void setArrow( Arrow * _arrow ) override;
 		void setScene( Scene * _scene ) override;
+		void setRenderViewport( const RenderViewportInterface * _viewport ) override;
 		void setRenderCamera( const RenderCameraInterface * _camera ) override;
 
 	public:
@@ -73,6 +75,8 @@ namespace Menge
 
 		Arrow * m_arrow;
 		Scene * m_scene;
+
+		const RenderViewportInterface * m_viewport;
 		const RenderCameraInterface * m_camera;
 
 		typedef std::list<PickerTrapState> TPickerTrapState;

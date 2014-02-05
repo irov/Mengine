@@ -25,7 +25,7 @@ namespace Menge
 		return m_hotspot;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotspotMousePickerAdapter::pick( const mt::vec2f& _point, const RenderCameraInterface * _camera, Arrow * _arrow )
+	bool HotspotMousePickerAdapter::pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow )
 	{
 		if( m_hotspot->isActivate() == false )
 		{
@@ -39,7 +39,7 @@ namespace Menge
             return false;
         }
 
-        HotspotMousePickerVisitor mp(m_hotspot, _camera, _point, _arrow);
+        HotspotMousePickerVisitor mp(m_hotspot, _viewport, _camera, _point, _arrow);
 
         bool result = mp.test( layer );
 

@@ -17,7 +17,7 @@ namespace Menge
 		HotSpot * getHotspot() const;
 
     public:
-        bool pick( const mt::vec2f& _point, const RenderCameraInterface * _camera, Arrow * _arrow ) override;
+        bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow ) override;
 
     public:
         bool onMouseEnter( const mt::vec2f & _point ) override;

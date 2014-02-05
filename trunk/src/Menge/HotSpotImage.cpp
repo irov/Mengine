@@ -71,7 +71,7 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPoint( const mt::mat4f& _transform, const mt::vec2f & _point )
+	bool HotSpotImage::testPoint( const mt::vec2f & _point )
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -81,15 +81,12 @@ namespace Menge
 		mt::vec2f pointIn1;
 		mt::mul_v2_m4( pointIn1, _point, invWM );
 
-		mt::vec2f pointIn2;
-		mt::mul_v2_m4( pointIn2, pointIn1, _transform );
-
-		bool result = m_resourceHIT->testPoint( pointIn2, m_alphaTest );
+		bool result = m_resourceHIT->testPoint( pointIn1, m_alphaTest );
 
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
+	bool HotSpotImage::testRadius( const mt::vec2f & _point, float _radius )
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -98,11 +95,8 @@ namespace Menge
 
 		mt::vec2f pointIn1;
 		mt::mul_v2_m4( pointIn1, _point, invWM );
-
-		mt::vec2f pointIn2;
-		mt::mul_v2_m4( pointIn2, pointIn1, _transform );
-
-		bool result = m_resourceHIT->testRadius( pointIn2, _radius, m_alphaTest );
+		
+		bool result = m_resourceHIT->testRadius( pointIn1, _radius, m_alphaTest );
 
 		return result != m_outward;
 	}

@@ -24,7 +24,8 @@ namespace Menge
 		public:
 			PickerVisitor( TVectorPickerTrapStates & _traps )
 				: m_traps(_traps)
-				, m_currentRenderCamera(nullptr)				
+				, m_currentViewport(nullptr)
+				, m_currentCamera(nullptr)				
 			{
 			}
 
@@ -34,16 +35,27 @@ namespace Menge
 			}
 
 		public:
-			void visit( const RenderCameraInterface * _renderCamera, Node * _node )
+			void visit( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Node * _node )
 			{
-				const RenderCameraInterface * nodeRenderCamera = _node->getRenderCamera();
+				const RenderViewportInterface * nodeViewport = _node->getRenderViewport();
+				const RenderCameraInterface * nodeCamera = _node->getRenderCamera();
 				
-				if( nodeRenderCamera == nullptr )
+				//const RenderCameraInterface * nodeRenderCamera = nullptr;
+				//const RenderViewportInterface * nodeViewport = nullptr;
+				
+				if( nodeViewport == nullptr )
 				{
-					nodeRenderCamera = _renderCamera;
+					nodeViewport = _viewport;
 				}
 
-				m_currentRenderCamera = nodeRenderCamera;
+				if( nodeCamera == nullptr )
+				{
+					nodeCamera = _camera;
+				}
+
+				m_currentViewport = nodeViewport;
+				m_currentCamera = nodeCamera;
+				
 				_node->visit( this );
 
 				TListNodeChild & child = _node->getChild();
@@ -52,7 +64,7 @@ namespace Menge
 				{
 					Node * children = (*it);
 
-					this->visit( nodeRenderCamera, children );
+					this->visit( nodeViewport, nodeCamera, children );
 				}
 			}
 
@@ -70,7 +82,8 @@ namespace Menge
 
 				PickerTrapStateDesc desc;
 				desc.state = trapState;
-				desc.camera = m_currentRenderCamera;
+				desc.viewport = m_currentViewport;
+				desc.camera = m_currentCamera;
 
 				m_traps.push_back( desc );
 			}
@@ -78,7 +91,8 @@ namespace Menge
 		protected:
 			TVectorPickerTrapStates & m_traps;
 
-			const RenderCameraInterface * m_currentRenderCamera;
+			const RenderViewportInterface * m_currentViewport;
+			const RenderCameraInterface * m_currentCamera;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -89,6 +103,7 @@ namespace Menge
         , m_handleValue(true)
 		, m_arrow(nullptr)
 		, m_scene(nullptr)
+		, m_viewport(nullptr)
 		, m_camera(nullptr)
 		, m_pickerTrapCount(0)
 	{
@@ -112,6 +127,11 @@ namespace Menge
 	void MousePickerSystem::setScene( Scene * _scene )
 	{
 		m_scene = _scene;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::setRenderViewport( const RenderViewportInterface * _viewport )
+	{
+		m_viewport = _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::setRenderCamera( const RenderCameraInterface * _camera )
@@ -438,7 +458,7 @@ namespace Menge
 		m_states.clear();
 
 		PickerVisitor pv(m_states);
-		pv.visit( m_camera, m_scene );
+		pv.visit( m_viewport, m_camera, m_scene );
 
 		for( TVectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
@@ -488,7 +508,7 @@ namespace Menge
         }
 				
 		PickerVisitor pv(_states);
-		pv.visit( m_camera, m_scene );
+		pv.visit( m_viewport, m_camera, m_scene );
         
 		bool handle = false;
 
@@ -507,8 +527,9 @@ namespace Menge
 
 			MousePickerTrapInterface * trap = state->trap;
 
+			const RenderViewportInterface * viewport = it->viewport;
 			const RenderCameraInterface * camera = it->camera;
-			bool picked = trap->pick( _point, camera, m_arrow );
+			bool picked = trap->pick( _point, viewport, camera, m_arrow );
 
 			if( ( handle == false || m_handleValue == false ) && m_block == false && picked == true )
 			{

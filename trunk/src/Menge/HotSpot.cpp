@@ -260,14 +260,12 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::testPoint( const mt::mat4f& _transform, const mt::vec2f & _point )
+    bool HotSpot::testPoint( const mt::vec2f & _point )
     {
 		const Polygon & polygonWM = this->getPolygonWM();
 
-		polygon_wm( m_polygonWMVM, polygonWM, _transform );
-
 		mt::box2f bb;
-		if( polygon_to_box2f( bb, m_polygonWMVM ) == false )
+		if( polygon_to_box2f( bb, polygonWM ) == false )
 		{
 			return false;
 		}
@@ -279,25 +277,25 @@ namespace Menge
 
 		GeometryPoint p(_point.x, _point.y);
 
-		bool intersect = boost::geometry::intersects( m_polygonWMVM, p );
+		bool intersect = boost::geometry::intersects( polygonWM, p );
 
 		return intersect != m_outward;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius )
+	bool HotSpot::testRadius( const mt::vec2f & _point, float _radius )
 	{
 		(void)_radius;
 
-		bool intersect = this->testPoint( _transform, _point );
+		bool intersect = this->testPoint( _point );
 
 		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPolygon( const mt::mat4f& _transform, const mt::vec2f & _point, const Polygon & _screenPoly )
+	bool HotSpot::testPolygon( const mt::vec2f & _point, const Polygon & _screenPoly )
 	{
 		const Polygon & polygonWM = this->getPolygonWM();
 
-		polygon_wm_and_transpose( m_polygonWMVM, polygonWM, _transform, -_point );
+		polygon_transpose( m_polygonWMVM, polygonWM, -_point );
 
 		mt::box2f bb;
 		if( polygon_to_box2f( bb, m_polygonWMVM ) == false )

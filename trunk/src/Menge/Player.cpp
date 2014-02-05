@@ -1044,6 +1044,11 @@ namespace Menge
 	void Player::setRenderViewport( RenderViewportInterface * _renderViewport )
 	{
 		m_renderViewport = _renderViewport;
+
+		if( m_mousePickerSystem != nullptr )
+		{
+			m_mousePickerSystem->setRenderViewport( m_renderViewport );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderViewportInterface * Player::getRenderViewport() const 

@@ -98,6 +98,9 @@ namespace Menge
 
 	public:
 		virtual bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
+
+	public:
+		virtual bool isLayerPermanentlyHide( size_t _layerIndex ) const = 0;
 	};
 
 	typedef stdex::intrusive_ptr<MovieFramePackInterface> MovieFramePackInterfacePtr;

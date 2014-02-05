@@ -40,6 +40,9 @@ namespace Menge
 		bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const override;
 
 	public:
+		bool isLayerPermanentlyHide( size_t _layerIndex ) const override;
+
+	public:
         void addLayerTimeRemap( size_t _layerIndex, const MovieLayerTimeRemap & _timeremap );
 		MovieLayerTimeRemap & mutableLayerTimeRemap( size_t _layerIndex );
 

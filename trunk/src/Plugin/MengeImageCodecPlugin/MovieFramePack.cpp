@@ -253,4 +253,23 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MovieFramePack::isLayerPermanentlyHide( size_t _layerIndex ) const
+	{
+		if( (_layerIndex - 1) >= m_layers.size() )
+		{
+			return false;
+		}
+
+		const MovieLayerFrame & layer = m_layers[_layerIndex - 1];
+		
+		if( layer.immutable == true || layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_OPACITY )
+		{
+			bool hide = (layer.source.opacity == 0.f);
+
+			return hide;
+		}
+
+		return false;
+	}
 }

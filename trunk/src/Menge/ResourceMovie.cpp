@@ -183,6 +183,25 @@ namespace Menge
 
                 return false;
             }
+
+			if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
+				|| layer.layerType == CONST_STRING(m_serviceProvider, MovieText)
+				|| layer.layerType == CONST_STRING(m_serviceProvider, MovieTextCenter) 
+				)
+			{
+				bool hide = framePack->isLayerPermanentlyHide( layer.index );
+
+				if( hide == true )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' permanently hide"
+						, this->getName().c_str()
+						, layer.index
+						, layer.name.c_str()
+						);
+
+					return false;
+				}
+			}
         }
 
         return true;

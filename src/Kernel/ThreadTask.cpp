@@ -94,6 +94,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	void ThreadTask::_onComplete( bool _successful )
 	{
+		(void)_successful;
 		//Empty
 	}
 }

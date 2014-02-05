@@ -41,9 +41,9 @@ namespace Menge
 		MousePickerTrapInterface * getPickerTrap();
 		    
 	public:
-		virtual bool testPoint( const mt::mat4f& _transform, const mt::vec2f & _point );
-		virtual bool testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius );
-		virtual bool testPolygon( const mt::mat4f& _transform, const mt::vec2f & _point, const Polygon & _polygon );
+		virtual bool testPoint( const mt::vec2f & _point );
+		virtual bool testRadius( const mt::vec2f & _point, float _radius );
+		virtual bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon );
 
     public:        
         void onPickerEnter();

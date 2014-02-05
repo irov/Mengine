@@ -8,8 +8,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-    HotspotMousePickerVisitor::HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow )
+    HotspotMousePickerVisitor::HotspotMousePickerVisitor( HotSpot * _layerspaceHotspot, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const mt::vec2f & _point, Arrow * _arrow )
         : m_hotspot(_layerspaceHotspot)
+		, m_viewport(_viewport)
         , m_camera(_camera)
         , m_point(_point)
         , m_arrow(_arrow)
@@ -50,8 +51,14 @@ namespace Menge
         //const Polygon & screenPoly = _arrow->getPolygon();
 
         //bool result = _layerspaceHotspot->testPolygon( lwm, screenPoly, click_wm );
+		//const mt::mat4f & vm = m_camera->getWorldM();
 
 		const mt::mat4f & vm = m_camera->getCameraViewMatrix();
+
+		mt::mat4f vm_inv;
+		mt::inv_m4( vm_inv, vm );
+
+		const Viewport & viewport = m_viewport->getViewport();
 
 		EArrowType arrowType = m_arrow->getArrowType();
 
@@ -63,19 +70,34 @@ namespace Menge
 
 				mt::vec2f p = m_point + pc;
 
-				m_result = m_hotspot->testPoint( vm, p );
+				mt::vec2f p_vm;
+				mt::mul_v2_m4( p_vm, p, vm );
+
+				p_vm += viewport.begin;
+
+				m_result = m_hotspot->testPoint( p_vm );
 			}break;
 		case EAT_RADIUS:
 			{
 				float radius = m_arrow->getRadius();
 
-				m_result = m_hotspot->testRadius( vm, m_point, radius );
+				mt::vec2f p_vm;
+				mt::mul_v2_m4( p_vm, m_point, vm_inv );
+
+				p_vm += viewport.begin;
+
+				m_result = m_hotspot->testRadius( p_vm, radius );
 			}break;
 		case EAT_POLYGON:
 			{
 				const Polygon & polygon = m_arrow->getPolygon();
+
+				mt::vec2f p_vm;
+				mt::mul_v2_m4( p_vm, m_point, vm );
+
+				p_vm += viewport.begin;
 				
-				m_result = m_hotspot->testPolygon( vm, m_point, polygon );
+				m_result = m_hotspot->testPolygon( p_vm, polygon );
 			}break;
 		}
     }

@@ -14,8 +14,8 @@ namespace Menge
 		~HotSpotImage();
 
 	public:
-		bool testPoint( const mt::mat4f& _transform, const mt::vec2f & _point ) override;
-		bool testRadius( const mt::mat4f& _transform, const mt::vec2f & _point, float _radius ) override;
+		bool testPoint( const mt::vec2f & _point ) override;
+		bool testRadius( const mt::vec2f & _point, float _radius ) override;
 		
 	public:
 		void setAlphaTest( float _value );

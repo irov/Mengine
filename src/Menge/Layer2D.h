@@ -38,7 +38,7 @@ namespace Menge
 	protected:
 		Viewport m_viewport;
 		
-		Camera2D * m_camera2D;
+		Camera2D * m_renderCamera;
 		RenderViewport * m_renderViewport;
 		//Viewport m_viewportWM;
 		//mt::mat4f m_viewMatrix;

@@ -457,7 +457,7 @@ namespace Menge
 				return true;
 			}
 
-			if( it->parent == 0 || it->parent == -1 )
+			if( it->parent == 0 || it->parent == (size_t)-1 )
 			{
 				return false;
 			}

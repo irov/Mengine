@@ -91,6 +91,18 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool TextFont::hasGlyph( GlyphCode _char ) const
+	{
+		const TextGlyphChar * ch = m_glyph->getGlyphChar( _char );
+
+		if( ch == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextFont::getName() const
 	{
 		return m_name;

@@ -4,6 +4,8 @@
 
 #	include <io.h>
 #	include <cstdio>
+#	include <locale.h>
+#	include <fcntl.h>
 
 #   include <iostream>
 
@@ -105,21 +107,21 @@ namespace Menge
 		
 		// redirect unbuffered STDOUT to the console
 		lStdHandle[0] = GetStdHandle(STD_OUTPUT_HANDLE);
-		hConHandle[0] = _open_osfhandle((intptr_t)lStdHandle[0], 0x4000);
+		hConHandle[0] = _open_osfhandle((intptr_t)lStdHandle[0], _O_TEXT);
 		fp[0] = _fdopen( hConHandle[0], "w" );
 		*stdout = *fp[0];
 		setvbuf( stdout, NULL, _IONBF, 0 );
 
 		// redirect unbuffered STDIN to the console
 		lStdHandle[1] = GetStdHandle(STD_INPUT_HANDLE);
-		hConHandle[1] = _open_osfhandle((intptr_t)lStdHandle[1], 0x4000);
+		hConHandle[1] = _open_osfhandle((intptr_t)lStdHandle[1], _O_TEXT);
 		fp[1] = _fdopen( hConHandle[1], "r" );
 		*stdin = *fp[1];
 		setvbuf( stdin, NULL, _IONBF, 0 );
 		
 		// redirect unbuffered STDERR to the console
 		lStdHandle[2] = GetStdHandle(STD_ERROR_HANDLE);
-		hConHandle[2] = _open_osfhandle((intptr_t)lStdHandle[2], 0x4000);
+		hConHandle[2] = _open_osfhandle((intptr_t)lStdHandle[2], _O_TEXT);
 		fp[2] = _fdopen( hConHandle[2], "w" );
 		*stderr = *fp[2];
 		setvbuf( stderr, NULL, _IONBF, 0 );
@@ -134,7 +136,7 @@ namespace Menge
 		{
 			FreeLibrary( hKernel32 );
 		}
-
+		
 		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -168,6 +170,25 @@ namespace Menge
 		::SetConsoleTextAttribute( m_ConsoleHandle, textColor);
 
 		std::cout.write( _data, _count );
+		//std::wcout.write( ws_data.c_str(), ws_data.size );
+
+		//UINT CP = GetConsoleCP();
+		//SetConsoleCP(65001);
+
+		//DWORD data_len;
+		//WriteConsole( GetStdHandle(STD_OUTPUT_HANDLE), ws_data.data(), ws_data.size(), &data_len, NULL );
+		//SetConsoleCP(CP);
+
+		//_setmode(_fileno(stdout), 0x40000); 
+		//wprintf( ws_data.c_str() );
+
+		//char * locale = setlocale(LC_ALL, "en_US.utf8"); // Get the CRT's current locale.
+		//std::locale lollocale(locale);
+		//setlocale(LC_ALL, locale); // Restore the CRT.
+
+		//std::wcout.imbue(lollocale); // Now set the std::wcout to have the locale that we got from the CRT.
+		//std::wcout << ws_data;
+
 
 		//::SetConsoleScreenBufferInfo(m_ConsoleHandle, consoleInfo);
 		::SetConsoleTextAttribute(m_ConsoleHandle, consoleInfo.wAttributes);

@@ -39,10 +39,12 @@ namespace Menge
 		TextEntryInterfacePtr getTextEntry( const ConstString& _key ) const override;
 		
 	public:
-		bool existFont( const ConstString & _name ) const override;
+		bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
 
 		TextFontInterfacePtr getFont( const ConstString & _name ) override;
 		void releaseFont( const TextFontInterfacePtr & _font ) override;
+
+		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
 		
 	public:
 		const ConstString & getDefaultFontName() const override;

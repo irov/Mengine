@@ -135,6 +135,8 @@
 
 #	include "Kernel/Join.h"
 
+#   include <utf8.h>
+
 #	include <sstream>
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
@@ -1322,6 +1324,100 @@ namespace Menge
 			if( stdex::xml_sax_parse( (char *)memory, pysc ) == false )
 			{
 				return false;
+			}
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_visitFonts( PyObject * _cb )
+		{
+			class MyVisitorTextFont
+				: public VisitorTextFontInterface
+			{
+			public:
+				MyVisitorTextFont( PyObject * _cb )
+					: m_cb(_cb)
+				{
+				}
+
+			protected:
+				void onTextFont( const TextFontInterfacePtr & _font ) override
+				{
+					const ConstString & name = _font->getName();
+
+					pybind::call( m_cb, "(O)", pybind::ptr(name) );
+				}
+
+			protected:
+				PyObject * m_cb;
+
+			private:
+				void operator = ( const MyVisitorTextFont & )
+				{
+				}
+			};
+
+			MyVisitorTextFont mvtf(_cb);
+
+			TEXT_SERVICE(m_serviceProvider)
+				->visitFonts( &mvtf );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_validateFont( const ConstString & _fontName, const String & _text, PyObject * _cb )
+		{
+			TextFontInterfacePtr font;
+			if( TEXT_SERVICE(m_serviceProvider)
+				->existFont( _fontName, font ) == false )
+			{
+				return false;
+			}
+
+			WString text_ws;
+
+			if( Helper::utf8ToUnicode(m_serviceProvider, _text, text_ws) == false )
+			{
+				return false;
+			}
+
+			for( WString::const_iterator
+				it = text_ws.begin(),
+				it_end = text_ws.end();
+			it != it_end;
+			++it )
+			{
+				WChar ws_ch = *it;
+				WString ws_str(&ws_ch, 1);
+
+				Char text_utf8[8];
+				size_t text_utf8_len = 0;
+				if( UNICODE_SERVICE(m_serviceProvider)
+					->unicodeToUtf8( ws_str.c_str(), ws_str.size(), text_utf8, 8, &text_utf8_len ) == false )
+				{
+					pybind::call( _cb, "(snO)", "invalid utf8 ", 0, pybind::ptr(ws_str) );
+					
+					continue;
+				}
+
+				size_t code = 0;
+				const char * test_text = text_utf8;
+				utf8::internal::utf_error err = utf8::internal::validate_next( test_text, test_text + text_utf8_len, code );
+				
+				if( err != utf8::internal::UTF8_OK )
+				{
+					pybind::call( _cb, "(snO)", "validate utf8 ", code, pybind::ptr(ws_str) );
+
+					continue;
+				}
+
+				GlyphCode glyphChar;
+				glyphChar.setCode( code );
+
+				if( font->hasGlyph( glyphChar ) == false )
+				{					
+					pybind::call( _cb, "(snO)", "not found glyph ", code, pybind::ptr(ws_str) );
+
+					continue;
+				}
 			}
 
 			return true;
@@ -4324,6 +4420,9 @@ namespace Menge
 			
 			pybind::def_functor( "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
 			pybind::def_functor( "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
+
+			pybind::def_functor( "visitFonts", nodeScriptMethod, &NodeScriptMethod::s_visitFonts );
+			pybind::def_functor( "validateFont", nodeScriptMethod, &NodeScriptMethod::s_validateFont );
 
 			pybind::def_functor( "prefetchResources", nodeScriptMethod, &NodeScriptMethod::s_prefetchResources );
         }

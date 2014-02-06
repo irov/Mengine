@@ -41,6 +41,7 @@ namespace Menge
 		virtual const ConstString & getName() const = 0;
 
 	public:
+		virtual bool hasGlyph( GlyphCode _char ) const = 0;
 		virtual bool getGlyph( GlyphCode _char, GlyphCode _prev, Glyph * _glyph ) const = 0;
 
 	public:
@@ -82,6 +83,12 @@ namespace Menge
 
 	typedef stdex::intrusive_ptr<TextEntryInterface> TextEntryInterfacePtr;
 
+	class VisitorTextFontInterface
+	{
+	public:
+		virtual void onTextFont( const TextFontInterfacePtr & _font ) = 0;
+	};
+
 	class TextServiceInterface
 		: public ServiceInterface
 	{
@@ -99,10 +106,12 @@ namespace Menge
 		virtual TextEntryInterfacePtr getTextEntry( const ConstString& _key ) const = 0;        
 
 	public:
-		virtual bool existFont( const ConstString & _name ) const = 0;
+		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
 
 		virtual TextFontInterfacePtr getFont( const ConstString & _name ) = 0;
 		virtual void releaseFont( const TextFontInterfacePtr & _font ) = 0;
+
+		virtual void visitFonts( VisitorTextFontInterface * _vistitor ) = 0;
 
 	public:
 		virtual const ConstString & getDefaultFontName() const = 0;

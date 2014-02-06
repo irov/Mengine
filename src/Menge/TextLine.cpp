@@ -96,6 +96,12 @@ namespace Menge
 					, code_next
 					);
 
+				glyph.uv = mt::vec4f(0.f, 0.f, 0.f, 0.f);
+				glyph.offset = mt::vec2f(0.f, 0.f);
+				glyph.advance = 0.f;
+				glyph.size = mt::vec2f(0.f, 0.f);
+				glyph.kerning = 0.f;
+
 				successful = false;
 			}			
 					

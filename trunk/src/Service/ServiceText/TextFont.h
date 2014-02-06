@@ -34,6 +34,7 @@ namespace Menge
 
 	public:
 		bool getGlyph( GlyphCode _char, GlyphCode _next, Glyph * _glyph ) const override;
+		bool hasGlyph( GlyphCode _char ) const override;
 
 	public:
 		float getFontHeight() const override;

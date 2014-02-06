@@ -488,9 +488,12 @@ namespace Menge
 		return result;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::existFont( const ConstString & _name ) const
-	{		
-		bool result = m_fonts.exist( _name );
+	bool TextManager::existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const
+	{	
+		TextFontPtr font;
+		bool result = m_fonts.has_copy( _name, font );
+
+		_font = font;
 
 		return result;
 	}
@@ -521,6 +524,20 @@ namespace Menge
 		TextFontPtr font = stdex::intrusive_static_cast<TextFontPtr>(_font);
 
 		font->decrementReference();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextManager::visitFonts( VisitorTextFontInterface * _vistitor )
+	{
+		for( TMapTextFont::iterator
+			it = m_fonts.begin(),
+			it_end = m_fonts.end();
+		it != it_end;
+		++it )
+		{
+			const TextFontPtr & font = m_fonts.get_value( it );
+
+			_vistitor->onTextFont( font );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextManager::getDefaultFontName() const

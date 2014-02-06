@@ -1326,6 +1326,69 @@ namespace Menge
 
 			return true;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		size_t s_prefetchResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+		{
+			class MyResourceVisitor
+				: public ResourceVisitor
+			{
+			public:
+				MyResourceVisitor( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+					: m_category(_category)
+					, m_groupName(_groupName)
+					, m_cb(_cb)
+				{
+					pybind::incref( m_cb );
+				}
+
+				~MyResourceVisitor()
+				{
+					pybind::decref( m_cb );
+				}
+
+			protected:
+				void visit( ResourceReference* _resource )
+				{
+					const ConstString & category = _resource->getCategory();
+
+					if( category != m_category )
+					{
+						return;
+					}
+
+					const ConstString & group = _resource->getGroup();
+
+					if( group != m_groupName )
+					{
+						return;
+					}
+
+					PyObject * py_resource = pybind::ptr( _resource );
+
+					if( py_resource == nullptr )
+					{
+						return;
+					}
+
+					pybind::call( m_cb, "(O)", py_resource );
+
+					pybind::decref( py_resource );
+				}
+
+			protected:
+				ConstString m_category;
+				ConstString m_groupName;
+
+				PyObject * m_cb;
+			};
+
+			MyResourceVisitor rv_gac(_category, _groupName, _cb);
+
+			RESOURCE_SERVICE(m_serviceProvider)
+				->visitResources( &rv_gac );
+
+			return 0;
+		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
@@ -4261,6 +4324,8 @@ namespace Menge
 			
 			pybind::def_functor( "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
 			pybind::def_functor( "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
+
+			pybind::def_functor( "prefetchResources", nodeScriptMethod, &NodeScriptMethod::s_prefetchResources );
         }
     }
 }

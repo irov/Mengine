@@ -70,8 +70,19 @@ namespace Menge
 			glyphChar.setCode( code );
 
 			size_t code_next = 0;
-			const char * text_it_next = text_it + 1;
-			utf8::internal::validate_next( text_it_next, text_end, code_next );
+			const char * text_it_next = text_it;		
+			utf8::internal::utf_error err_next = utf8::internal::validate_next( text_it_next, text_end, code_next );
+
+			if( err_next != utf8::internal::UTF8_OK )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph |%s| err code %d"
+					, _font->getName().c_str()
+					, text_it
+					, err
+					);
+
+				successful = false;
+			}
 
             GlyphCode glyphCharNext;
             glyphCharNext.setCode( code_next );
@@ -79,9 +90,10 @@ namespace Menge
 			Glyph glyph;
 			if( _font->getGlyph( glyphChar, glyphCharNext, &glyph ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph %d"
+				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph %d:%d"
 					, _font->getName().c_str()
 					, code
+					, code_next
 					);
 
 				successful = false;

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/ImageCodecInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"

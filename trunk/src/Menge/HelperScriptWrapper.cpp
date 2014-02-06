@@ -353,7 +353,7 @@ namespace Menge
             }
 
         protected:
-            void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) override
+            void visitRenderTexture( const RenderTextureInterface * _texture ) override
             {
                 const FilePath & filePath = _texture->getFileName();
 

@@ -32,12 +32,21 @@ namespace Menge
     public:
         RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) override;
 
+	protected:
+		ImageDecoderInterfacePtr createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
+		RenderTextureInterfacePtr createTextureFromDecoder_( const ImageDecoderInterfacePtr & _decoder );
+
+	public:
+		void prefetchTextureDecoder( const FilePath& _filename, const ImageDecoderInterfacePtr & _decoder ) override;
+		void unfetchTextureDecoder( const FilePath& _filename ) override;
+		bool hasTextureDecoder( const FilePath& _filename, ImageDecoderInterfacePtr & _decoder ) override;
+
     public:
         RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
         RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
         RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 
-        RenderTextureInterfacePtr getTexture( const FilePath& _filename ) override;
+        RenderTextureInterfacePtr getTexture( const FilePath & _filename ) const override;
 
     public:
         bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const override;
@@ -68,7 +77,13 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef stdex::binary_vector<FilePath, RenderTextureInterface *> TMapTextures;
+		struct RenderTextureDesc
+		{
+			RenderTextureInterface * texture;
+			ImageDecoderInterfacePtr decoder;
+		};
+
+        typedef stdex::binary_vector<FilePath, RenderTextureDesc> TMapTextures;
         TMapTextures m_textures;
 
         typedef FactoryPool<RenderTexture, 128> TFactoryRenderTexture;

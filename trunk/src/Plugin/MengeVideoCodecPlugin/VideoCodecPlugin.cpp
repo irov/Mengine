@@ -94,7 +94,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoCodecPlugin::destroy()
 	{
-
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),
 			it_end = m_decoders.end();

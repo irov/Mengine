@@ -426,7 +426,7 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResourceReference( const ConstString& _name ) const
+	ResourceReference * ResourceManager::getResourceReference( const ConstString & _name ) const
 	{
 		const ResourceEntry * entry = nullptr;
 		if( m_resources.has( _name, &entry ) == false )
@@ -440,6 +440,10 @@ namespace Menge
 		
         if( entry->isLocked == true )
 		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' is LOCK!"
+				, _name.c_str()
+				);
+
 			return nullptr;
 		}
 		

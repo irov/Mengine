@@ -1,4 +1,4 @@
-#	include "TextGlyph.h"
+﻿#	include "TextGlyph.h"
 
 #	include "Interface/StreamInterface.h"
 #	include "Interface/StringizeInterface.h"

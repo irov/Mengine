@@ -68,27 +68,29 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const
     {
-		RenderTextureInterface * texture;
-		bool result = m_textures.has( _filename, &texture );
+		RenderTextureDesc desc;
+		bool result = m_textures.has_copy( _filename, desc );
 
 		if( _texture != nullptr )
 		{
-			*_texture = texture;
+			*_texture = desc.texture;
 		}
-
-		return result;
+		
+		return result == true && desc.texture != nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath& _filename )
+    RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath& _filename ) const
     {
-        TMapTextures::iterator it_find = m_textures.find( _filename );
+        TMapTextures::const_iterator it_find = m_textures.find( _filename );
 
         if( it_find == m_textures.end() )
         {
             return nullptr;
         }
 
-        RenderTextureInterface * texture = it_find->second;
+		const RenderTextureDesc & desc = m_textures.get_value( it_find );
+
+        RenderTextureInterface * texture = desc.texture;
 
         return texture;
     }
@@ -309,7 +311,9 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const RenderTextureInterfacePtr & texture = it->second;
+			const RenderTextureDesc & desc = m_textures.get_value( it );
+
+			const RenderTextureInterface * texture = desc.texture;
 
             _visitor->visitRenderTexture( texture );
         }
@@ -320,104 +324,213 @@ namespace Menge
         _texture->setFileName( _filename );
 
         RenderTextureInterface * texture_ptr = _texture.get();
-        m_textures.insert( _filename, texture_ptr );
 
-		const RenderImageInterfacePtr & image = _texture->getImage();
+		RenderTextureDesc desc;
+		desc.texture = texture_ptr;
+		desc.decoder = nullptr;
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s %d:%d"
+        m_textures.insert( _filename, desc );
+
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s"
             , _filename.c_str()
-            , image->getHWWidth()
-            , image->getHWHeight()
             );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codec )
+    RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
     {
-        TMapTextures::iterator it_find = m_textures.find( _filename );
+        TMapTextures::iterator it_found = m_textures.find( _fileName );
 
-        if( it_find != m_textures.end() )
+        if( it_found != m_textures.end() )
         {
-            RenderTextureInterface * texture = it_find->second;
+			RenderTextureDesc & desc = m_textures.get_value( it_found );
 
-            return texture;
+			if( desc.texture == nullptr && desc.decoder != nullptr )
+			{
+				RenderTextureInterfacePtr texture = this->createTextureFromDecoder_( desc.decoder );
+				
+				if( texture == nullptr )
+				{
+					LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: decode texture for file '%s:%s' error"
+						, _pakName.c_str()
+						, _fileName.c_str()
+						);
+
+					return nullptr;
+				}
+
+				desc.texture = texture.get();
+
+				return texture;
+			}
+
+			RenderTextureInterface * cache_texture = desc.texture;
+
+            return cache_texture;
         }
 
-        InputStreamInterfacePtr stream = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _filename );
+		ImageDecoderInterfacePtr imageDecoder = this->createImageDecoder_( _pakName, _fileName, _codec );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: Image file '%s' was not found"
-                , _filename.c_str() 
-                );
-
-            return nullptr;
-        }	
-
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( _codec );
-
-        if( imageDecoder == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: Image decoder for file '%s' was not found"
-                , _filename.c_str() 
-                );
-
-            return nullptr;
-        }
-
-		if( imageDecoder->initialize( stream ) == false )
+		if( imageDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: Image decoder for file '%s' was not initialize"
-				, _filename.c_str() 
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid create decoder '%s':'%s'"
+				, _pakName.c_str()
+				, _fileName.c_str()
 				);
 
 			return nullptr;
 		}
 
-        const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
+		RenderTextureInterfacePtr texture = this->createTextureFromDecoder_( imageDecoder );
 
-        BEGIN_WATCHDOG(m_serviceProvider, "texture create");
+		if( texture == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid create texure '%s':'%s'"
+				, _pakName.c_str()
+				, _fileName.c_str()				
+				);
 
-        size_t image_width = dataInfo->width;
-        size_t image_height = dataInfo->height;
-        size_t image_channels = dataInfo->channels;
+			return nullptr;
+		}
 
-        RenderTextureInterfacePtr texture = this->createTexture( image_width, image_height, image_channels, dataInfo->format );
-
-        END_WATCHDOG(m_serviceProvider, "texture create")("texture create %s"
-            , _filename.c_str()
-            );
-
-        if( texture == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: invalid create texture %d:%d channels %d format %d for file '%s'"
-                , image_width
-                , image_height
-                , image_channels
-                , dataInfo->format
-                , _filename.c_str() 
-                );
-
-            return nullptr;
-        }
-
-        const Rect & rect = texture->getHWRect();
-
-        if( this->loadTextureRectImageData( texture, rect, imageDecoder ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: decode texture for file '%s:%s' error"
-                , _pakName.c_str()
-                , _filename.c_str() 
-                );
-
-            return nullptr;
-        }		
-
-        this->cacheFileTexture( _filename, texture );
+        this->cacheFileTexture( _fileName, texture );
 
         return texture;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void RenderTextureManager::prefetchTextureDecoder( const FilePath& _fileName, const ImageDecoderInterfacePtr & _decoder )
+	{
+		TMapTextures::iterator it_found = m_textures.find( _fileName );
+
+		if( it_found != m_textures.end() )
+		{
+			RenderTextureDesc & desc = m_textures.get_value( it_found );
+
+			desc.decoder = _decoder;
+		}
+		else
+		{
+			RenderTextureDesc desc;
+			desc.texture = nullptr;
+			desc.decoder = _decoder;
+
+			m_textures.insert( _fileName, desc );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderTextureManager::unfetchTextureDecoder( const FilePath& _fileName )
+	{
+		TMapTextures::iterator it_found = m_textures.find( _fileName );
+
+		if( it_found != m_textures.end() )
+		{
+			return;
+		}
+
+		RenderTextureDesc & desc = m_textures.get_value( it_found );
+
+		desc.decoder = nullptr;
+
+		if( desc.texture != nullptr )
+		{
+			return;
+		}
+
+		m_textures.erase( it_found );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderTextureManager::hasTextureDecoder( const FilePath& _fileName, ImageDecoderInterfacePtr & _decoder )
+	{
+		TMapTextures::iterator it_found = m_textures.find( _fileName );
+
+		if( it_found != m_textures.end() )
+		{
+			return false;
+		}
+
+		RenderTextureDesc & desc = m_textures.get_value( it_found );
+
+		if( desc.decoder == nullptr )
+		{
+			return false;
+		}
+
+		_decoder = desc.decoder;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ImageDecoderInterfacePtr RenderTextureManager::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
+	{
+		InputStreamInterfacePtr stream = 
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _fileName );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image file '%s' was not found"
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}	
+
+		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+			->createDecoderT<ImageDecoderInterfacePtr>( _codec );
+
+		if( imageDecoder == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder for file '%s' was not found"
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		if( imageDecoder->initialize( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder for file '%s' was not initialize"
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		return imageDecoder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderTextureInterfacePtr RenderTextureManager::createTextureFromDecoder_( const ImageDecoderInterfacePtr & _decoder )
+	{
+		const ImageCodecDataInfo* dataInfo = _decoder->getCodecDataInfo();
+
+		size_t image_width = dataInfo->width;
+		size_t image_height = dataInfo->height;
+		size_t image_channels = dataInfo->channels;
+
+		RenderTextureInterfacePtr texture = this->createTexture( image_width, image_height, image_channels, dataInfo->format );
+		
+		if( texture == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTextureFromDecoder_: invalid create texture %d:%d channels %d format %d"
+				, image_width
+				, image_height
+				, image_channels
+				, dataInfo->format
+				);
+
+			return nullptr;
+		}
+
+		const Rect & rect = texture->getHWRect();
+
+		if( this->loadTextureRectImageData( texture, rect, _decoder ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTextureFromDecoder_: invalid decode texture"
+				);
+
+			return nullptr;
+		}
+
+		return texture;
+	}
 	//////////////////////////////////////////////////////////////////////////	
 	void RenderTextureManager::updateImageParams_( size_t & _width, size_t & _height, size_t & _channels, PixelFormat & _format ) const
 	{
@@ -467,7 +580,21 @@ namespace Menge
     {
         const FilePath & filename = _texture->getFileName();
 
-        m_textures.erase( filename );
+		TMapTextures::iterator it_found = m_textures.find( filename );
+
+		if( it_found != m_textures.end() )
+		{
+			RenderTextureDesc & desc = m_textures.get_value( it_found );
+
+			if( desc.decoder != nullptr )
+			{
+				desc.texture = nullptr;
+			}
+			else
+			{
+				m_textures.erase( it_found );
+			}
+		}
 
         size_t memroy_size = _texture->getMemoryUse();
 

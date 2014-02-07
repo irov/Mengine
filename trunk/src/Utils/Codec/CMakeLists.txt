@@ -12,6 +12,8 @@ src
     SoundDecoder.cpp
     ImageDecoder.h
     ImageDecoder.cpp
+    ImageDecoderMemory.h
+    ImageDecoderMemory.cpp
     ImageEncoder.cpp
     ImageEncoder.h        
 

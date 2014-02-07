@@ -1429,17 +1429,15 @@ namespace Menge
 				: public ResourceVisitor
 			{
 			public:
-				MyResourceVisitor( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
-					: m_category(_category)
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+					: m_serviceProvider(_serviceProvider)
+					, m_category(_category)
 					, m_groupName(_groupName)
-					, m_cb(_cb)
 				{
-					pybind::incref( m_cb );
 				}
 
 				~MyResourceVisitor()
 				{
-					pybind::decref( m_cb );
 				}
 
 			protected:
@@ -1459,26 +1457,19 @@ namespace Menge
 						return;
 					}
 
-					PyObject * py_resource = pybind::ptr( _resource );
-
-					if( py_resource == nullptr )
+					if( _resource->getType() != CONST_STRING(m_serviceProvider, ResourceImageDefault) )
 					{
 						return;
 					}
-
-					pybind::call( m_cb, "(O)", py_resource );
-
-					pybind::decref( py_resource );
 				}
 
 			protected:
+				ServiceProviderInterface * m_serviceProvider;
 				ConstString m_category;
 				ConstString m_groupName;
-
-				PyObject * m_cb;
 			};
 
-			MyResourceVisitor rv_gac(_category, _groupName, _cb);
+			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitResources( &rv_gac );

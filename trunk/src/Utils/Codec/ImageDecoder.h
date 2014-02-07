@@ -19,8 +19,8 @@ namespace Menge
 
     protected:
         virtual bool _initialize();
-
-    public:
+		
+	public:
         bool setOptions( CodecOptions * _options ) override;
 
     protected:
@@ -29,6 +29,9 @@ namespace Menge
     public:
         const InputStreamInterfacePtr & getStream() const override;
 		const ImageCodecDataInfo * getCodecDataInfo() const override;
+
+	public:
+		void setImageCodecDataInfo( const ImageCodecDataInfo & _dataInfo );
 
     protected:
         void sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch );

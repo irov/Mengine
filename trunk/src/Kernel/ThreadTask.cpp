@@ -80,12 +80,14 @@ namespace Menge
 	{
 		this->_onUpdate();
 
-		if( m_complete == true )
+		bool complete = m_complete;
+
+		if( complete == true )
 		{
 			this->_onComplete( m_successful );
 		}
 
-		return m_complete;
+		return complete;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::_onUpdate()

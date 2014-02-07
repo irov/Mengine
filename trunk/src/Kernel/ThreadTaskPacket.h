@@ -31,7 +31,7 @@
 //	public:
 //		const TVectorThreadTask & getTasks() const;
 //
-//	
+//
 //	protected:
 //		void onTaskRun( ThreadTask * _task ) override;
 //		void onTaskComplete( ThreadTask * _task ) override;

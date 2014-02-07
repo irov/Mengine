@@ -77,6 +77,11 @@ namespace Menge
 	{
 		return &m_dataInfo;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoder::setImageCodecDataInfo( const ImageCodecDataInfo & _dataInfo )
+	{
+		m_dataInfo = _dataInfo;
+	}
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoder::sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch )
     {
@@ -113,5 +118,4 @@ namespace Menge
             }
         }
     }
-
 }

@@ -12,7 +12,6 @@ namespace Menge
 		~ThreadTask();
 		
 	public:	
-		bool isComplete() const;
 		bool isCancel() const;
 
 	public:

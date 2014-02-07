@@ -83,7 +83,7 @@ namespace Menge
 		INIT_CONST( RenderViewport );
         INIT_CONST( Camera3D );
         INIT_CONST( TextField );
-        INIT_CONST( ConsoleFont );
+        INIT_CONST( __CONSOLE_FONT__ );
         INIT_CONST( SoundEmitter );
         INIT_CONST( RigidBody2D );
         INIT_CONST( WorldPhysObject );
@@ -120,6 +120,8 @@ namespace Menge
 		
 		INIT_CONST( Generic );
 		INIT_CONST( Fade );
+
+		INIT_CONST( memoryImage );
 
 #	undef INIT_CONST
 

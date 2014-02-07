@@ -8,7 +8,7 @@
 
 namespace Menge
 {
-	class ServiceProviderInterface;
+	
 
     class ThreadTaskInterface
         : public FactorablePtr

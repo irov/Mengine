@@ -14,6 +14,8 @@ src
     RenderMaterial.cpp
     RenderMaterialManager.h
     RenderMaterialManager.cpp
+    ThreadTaskPrefetchTextureDecoder.h
+    ThreadTaskPrefetchTextureDecoder.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

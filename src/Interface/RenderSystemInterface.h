@@ -328,6 +328,19 @@ namespace Menge
     public:
         virtual void visitRenderTexture( const RenderTextureInterface * _texture ) = 0;
     };
+	//////////////////////////////////////////////////////////////////////////
+	class RenderTextureDecoderReceiverInterface
+	{
+	public:
+		virtual void onReceiverTextureDecoder( const ImageDecoderInterfacePtr & _decoder ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	class RenderTextureDecoderListenerInterface
+	{
+	public:
+		virtual void onTextureDecoderReady( const ImageDecoderInterfacePtr & _decoder ) = 0;
+		virtual void onTextureDecoderCancel() = 0;
+	};
     //////////////////////////////////////////////////////////////////////////
     class RenderTextureServiceInterface
         : public ServiceInterface
@@ -347,9 +360,8 @@ namespace Menge
         virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 
 	public:
-		virtual void prefetchTextureDecoder( const FilePath& _filename, const ImageDecoderInterfacePtr & _decoder ) = 0;
+		virtual RenderTextureDecoderReceiverInterface * prefetchTextureDecoder( const FilePath& _filename, RenderTextureDecoderListenerInterface * _listener ) = 0;
 		virtual void unfetchTextureDecoder( const FilePath& _filename ) = 0;
-		virtual bool hasTextureDecoder( const FilePath& _filename, ImageDecoderInterfacePtr & _decoder ) = 0;
 
 	public:
         virtual RenderTextureInterfacePtr getTexture( const FilePath & _filename ) const = 0;

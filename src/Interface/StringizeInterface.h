@@ -34,7 +34,7 @@ namespace Menge
 			return cstr;
 		}
         //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size )
+        inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size = (size_t)-1 )
         {
             ConstString cstr;
             STRINGIZE_SERVICE(_serviceProvider)

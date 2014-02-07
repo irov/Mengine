@@ -88,14 +88,17 @@
 
 #	include "ScriptWrapper.h"
 
-#	include <ctime>
-#	include <sstream>
+#	include "Codec/ImageDecoderMemory.h"
+#	include "Codec/DecoderFactory.h"
 
 #	include "Config/Config.h"
 
 #   include "Core/String.h"
 
 #   include "stdex/allocator.h"
+
+#	include <ctime>
+#	include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN(Consts, Menge::Consts);
@@ -250,6 +253,12 @@ namespace Menge
         ScriptWrapper::helperWrap( m_serviceProvider );
         ScriptWrapper::soundWrap( m_serviceProvider );
         ScriptWrapper::entityWrap( m_serviceProvider );
+
+
+		m_imageDecoderMemory = new DecoderFactory<ImageDecoderMemory>(m_serviceProvider, CONST_STRING(m_serviceProvider, memoryImage) );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerDecoder( CONST_STRING(m_serviceProvider, memoryImage), m_imageDecoderMemory );
 		
 		return true;
 	}
@@ -1382,6 +1391,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
+		CODEC_SERVICE(m_serviceProvider)
+			->unregisterDecoder( CONST_STRING(m_serviceProvider, memoryImage) );
+
 		if( m_game != nullptr )
 		{
 			m_game->finalizeRenderResources();

@@ -68,15 +68,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const
     {
-		RenderTextureDesc desc;
-		bool result = m_textures.has_copy( _filename, desc );
+		RenderTextureInterface * texture;
+		bool result = m_textures.has( _filename, &texture );
 
 		if( _texture != nullptr )
 		{
-			*_texture = desc.texture;
+			*_texture = texture;
 		}
 		
-		return result == true && desc.texture != nullptr;
+		return result;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath& _filename ) const
@@ -88,9 +88,7 @@ namespace Menge
             return nullptr;
         }
 
-		const RenderTextureDesc & desc = m_textures.get_value( it_find );
-
-        RenderTextureInterface * texture = desc.texture;
+		RenderTextureInterface * texture = m_textures.get_value( it_find );
 
         return texture;
     }
@@ -311,9 +309,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-			const RenderTextureDesc & desc = m_textures.get_value( it );
-
-			const RenderTextureInterface * texture = desc.texture;
+			const RenderTextureInterface * texture = m_textures.get_value( it );
 
             _visitor->visitRenderTexture( texture );
         }
@@ -325,11 +321,7 @@ namespace Menge
 
         RenderTextureInterface * texture_ptr = _texture.get();
 
-		RenderTextureDesc desc;
-		desc.texture = texture_ptr;
-		desc.decoder = nullptr;
-
-        m_textures.insert( _filename, desc );
+        m_textures.insert( _filename, texture_ptr );
 
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s"
             , _filename.c_str()
@@ -342,42 +334,25 @@ namespace Menge
 
         if( it_found != m_textures.end() )
         {
-			RenderTextureDesc & desc = m_textures.get_value( it_found );
-
-			if( desc.texture == nullptr && desc.decoder != nullptr )
-			{
-				RenderTextureInterfacePtr texture = this->createTextureFromDecoder_( desc.decoder );
-				
-				if( texture == nullptr )
-				{
-					LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTexture: decode texture for file '%s:%s' error"
-						, _pakName.c_str()
-						, _fileName.c_str()
-						);
-
-					return nullptr;
-				}
-
-				desc.texture = texture.get();
-
-				return texture;
-			}
-
-			RenderTextureInterface * cache_texture = desc.texture;
+			RenderTextureInterface * cache_texture = m_textures.get_value( it_found );
 
             return cache_texture;
         }
-
-		ImageDecoderInterfacePtr imageDecoder = this->createImageDecoder_( _pakName, _fileName, _codec );
-
-		if( imageDecoder == nullptr )
+				
+		ImageDecoderInterfacePtr imageDecoder;
+		if( this->hasTextureDecoder( _fileName, imageDecoder ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid create decoder '%s':'%s'"
-				, _pakName.c_str()
-				, _fileName.c_str()
-				);
+			imageDecoder = this->createImageDecoder_( _pakName, _fileName, _codec );
 
-			return nullptr;
+			if( imageDecoder == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid create decoder '%s':'%s'"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					);
+
+				return nullptr;
+			}
 		}
 
 		RenderTextureInterfacePtr texture = this->createTextureFromDecoder_( imageDecoder );
@@ -397,66 +372,61 @@ namespace Menge
         return texture;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void RenderTextureManager::prefetchTextureDecoder( const FilePath& _fileName, const ImageDecoderInterfacePtr & _decoder )
+	RenderTextureDecoderReceiverInterface * RenderTextureManager::prefetchTextureDecoder( const FilePath& _fileName, RenderTextureDecoderListenerInterface * _listener )
 	{
-		TMapTextures::iterator it_found = m_textures.find( _fileName );
+		TMapPrefetchers::iterator it_found = m_prefetchers.find( _fileName );
 
-		if( it_found != m_textures.end() )
+		if( it_found == m_prefetchers.end() )
 		{
-			RenderTextureDesc & desc = m_textures.get_value( it_found );
-
-			desc.decoder = _decoder;
+			RenderTexturePrefetcherDesc * new_prefetcher = new RenderTexturePrefetcherDesc;
+			
+			it_found = m_prefetchers.insert( _fileName, new_prefetcher ).first;
 		}
-		else
+
+		RenderTexturePrefetcherDesc * prefetcher = m_prefetchers.get_value( it_found );
+
+		if( prefetcher->addListener( _listener ) == false )
 		{
-			RenderTextureDesc desc;
-			desc.texture = nullptr;
-			desc.decoder = _decoder;
-
-			m_textures.insert( _fileName, desc );
+			return nullptr;
 		}
+
+		return prefetcher;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTextureManager::unfetchTextureDecoder( const FilePath& _fileName )
 	{
-		TMapTextures::iterator it_found = m_textures.find( _fileName );
+		TMapPrefetchers::iterator it_found = m_prefetchers.find( _fileName );
 
-		if( it_found != m_textures.end() )
+		if( it_found != m_prefetchers.end() )
 		{
 			return;
 		}
 
-		RenderTextureDesc & desc = m_textures.get_value( it_found );
+		RenderTexturePrefetcherDesc * prefetcher = m_prefetchers.get_value( it_found );
 
-		desc.decoder = nullptr;
+		prefetcher->unfetch();
 
-		if( desc.texture != nullptr )
-		{
-			return;
-		}
+		delete prefetcher;
 
-		m_textures.erase( it_found );
+		m_prefetchers.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderTextureManager::hasTextureDecoder( const FilePath& _fileName, ImageDecoderInterfacePtr & _decoder )
+	bool RenderTextureManager::hasTextureDecoder( const FilePath& _fileName, ImageDecoderInterfacePtr & _decoder ) const
 	{
-		TMapTextures::iterator it_found = m_textures.find( _fileName );
+		TMapPrefetchers::const_iterator it_found = m_prefetchers.find( _fileName );
 
-		if( it_found != m_textures.end() )
+		if( it_found == m_prefetchers.end() )
 		{
 			return false;
 		}
 
-		RenderTextureDesc & desc = m_textures.get_value( it_found );
+		const RenderTexturePrefetcherDesc * prefetcher = m_prefetchers.get_value( it_found );
 
-		if( desc.decoder == nullptr )
-		{
-			return false;
-		}
+		const ImageDecoderInterfacePtr & decoder = prefetcher->getDecoder();
 
-		_decoder = desc.decoder;
+		_decoder = decoder;
 
-		return true;
+		return decoder != nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderInterfacePtr RenderTextureManager::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
@@ -580,21 +550,7 @@ namespace Menge
     {
         const FilePath & filename = _texture->getFileName();
 
-		TMapTextures::iterator it_found = m_textures.find( filename );
-
-		if( it_found != m_textures.end() )
-		{
-			RenderTextureDesc & desc = m_textures.get_value( it_found );
-
-			if( desc.decoder != nullptr )
-			{
-				desc.texture = nullptr;
-			}
-			else
-			{
-				m_textures.erase( it_found );
-			}
-		}
+		m_textures.erase( filename );
 
         size_t memroy_size = _texture->getMemoryUse();
 

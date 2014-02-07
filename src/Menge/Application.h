@@ -200,6 +200,8 @@ namespace Menge
         void invalidateWindow_();
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		ConsoleInterface * m_console;
 
 		typedef std::map<String, DynamicLibraryInterface *> TDynamicLibraries;
@@ -244,8 +246,8 @@ namespace Menge
 		bool m_resetTiming;
 		float m_phycisTiming;
 		float m_maxTiming;
-		
-		ServiceProviderInterface * m_serviceProvider;
+
+		DecoderFactoryInterfacePtr m_imageDecoderMemory;
 
 		LoaderServiceInterface * m_loaderService;
 		ResourceServiceInterface * m_resourceService;

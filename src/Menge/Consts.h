@@ -83,7 +83,7 @@ namespace Menge
 		DECL_CONST( Camera2D );
 		DECL_CONST( Camera3D );
 		DECL_CONST( TextField );
-		DECL_CONST( ConsoleFont );		
+		DECL_CONST( __CONSOLE_FONT__ );		
 		DECL_CONST( SoundEmitter );
 		DECL_CONST( RigidBody2D );
 		DECL_CONST( WorldPhysObject );
@@ -124,6 +124,8 @@ namespace Menge
 
 		DECL_CONST( Generic );
 		DECL_CONST( Fade );
+
+		DECL_CONST( memoryImage );
 
 #	undef DECL_CONST
 

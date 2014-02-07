@@ -11,8 +11,85 @@
 
 #   include "Factory/FactoryPool.h"
 
+#	include <list>
+
 namespace Menge
 {
+	class RenderTexturePrefetcherDesc
+		: public RenderTextureDecoderReceiverInterface
+	{
+	public:
+		RenderTexturePrefetcherDesc()
+		{
+		}
+
+	public:
+		const ImageDecoderInterfacePtr & getDecoder() const
+		{
+			return m_decoder;
+		}
+
+	public:
+		bool addListener( RenderTextureDecoderListenerInterface * _listener )
+		{
+			if( m_decoder == nullptr )
+			{
+				m_listeners.push_back( _listener );
+
+				return true;
+			}
+
+			_listener->onTextureDecoderReady( m_decoder );
+
+			return false;
+		}
+
+	public:
+		void unfetch()
+		{
+			m_decoder = nullptr;
+
+			for( TVectorListeners::iterator
+				it = m_listeners.begin(),
+				it_end = m_listeners.end();
+			it != it_end;
+			++it )
+			{
+				RenderTextureDecoderListenerInterface * listener = *it;
+
+				listener->onTextureDecoderCancel();
+			}
+
+			m_listeners.clear();
+		}
+
+	protected:
+		void onReceiverTextureDecoder( const ImageDecoderInterfacePtr & _decoder ) override
+		{
+			m_decoder = _decoder;
+
+			for( TVectorListeners::iterator
+				it = m_listeners.begin(),
+				it_end = m_listeners.end();
+			it != it_end;
+			++it )
+			{
+				RenderTextureDecoderListenerInterface * listener = *it;
+
+				listener->onTextureDecoderReady( m_decoder );
+			}
+
+			m_listeners.clear();
+		}
+
+	protected:
+		ImageDecoderInterfacePtr m_decoder;
+
+		typedef std::list<RenderTextureDecoderListenerInterface *> TVectorListeners;
+		TVectorListeners m_listeners;
+	};
+
+
     class RenderTextureManager
         : public RenderTextureServiceInterface
         , public RenderTextureInterfaceListener
@@ -37,9 +114,11 @@ namespace Menge
 		RenderTextureInterfacePtr createTextureFromDecoder_( const ImageDecoderInterfacePtr & _decoder );
 
 	public:
-		void prefetchTextureDecoder( const FilePath& _filename, const ImageDecoderInterfacePtr & _decoder ) override;
+		RenderTextureDecoderReceiverInterface * prefetchTextureDecoder( const FilePath& _filename, RenderTextureDecoderListenerInterface * _listener ) override;
 		void unfetchTextureDecoder( const FilePath& _filename ) override;
-		bool hasTextureDecoder( const FilePath& _filename, ImageDecoderInterfacePtr & _decoder ) override;
+
+	protected:
+		bool hasTextureDecoder( const FilePath& _filename, ImageDecoderInterfacePtr & _decoder ) const;
 
     public:
         RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
@@ -77,14 +156,11 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		struct RenderTextureDesc
-		{
-			RenderTextureInterface * texture;
-			ImageDecoderInterfacePtr decoder;
-		};
-
-        typedef stdex::binary_vector<FilePath, RenderTextureDesc> TMapTextures;
+        typedef stdex::binary_vector<FilePath, RenderTextureInterface *> TMapTextures;
         TMapTextures m_textures;
+
+		typedef stdex::binary_vector<FilePath, RenderTexturePrefetcherDesc *> TMapPrefetchers;
+		TMapPrefetchers m_prefetchers;
 
         typedef FactoryPool<RenderTexture, 128> TFactoryRenderTexture;
         TFactoryRenderTexture m_factoryRenderTexture;

@@ -82,7 +82,7 @@ namespace Menge
 				float radius = m_arrow->getRadius();
 
 				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, m_point, vm_inv );
+				mt::mul_v2_m4( p_vm, m_point, vm );
 
 				p_vm += viewport.begin;
 

@@ -71,9 +71,9 @@ namespace Menge
 				mt::vec2f p = m_point + pc;
 
 				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, p, vm );
+				mt::mul_v2_m4( p_vm, p, vm_inv );
 
-				p_vm += viewport.begin;
+				p_vm -= viewport.begin;
 
 				m_result = m_hotspot->testPoint( p_vm );
 			}break;
@@ -82,9 +82,9 @@ namespace Menge
 				float radius = m_arrow->getRadius();
 
 				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, m_point, vm );
+				mt::mul_v2_m4( p_vm, m_point, vm_inv );
 
-				p_vm += viewport.begin;
+				p_vm -= viewport.begin;
 
 				m_result = m_hotspot->testRadius( p_vm, radius );
 			}break;
@@ -93,10 +93,10 @@ namespace Menge
 				const Polygon & polygon = m_arrow->getPolygon();
 
 				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, m_point, vm );
+				mt::mul_v2_m4( p_vm, m_point, vm_inv );
 
-				p_vm += viewport.begin;
-				
+				p_vm -= viewport.begin;
+
 				m_result = m_hotspot->testPolygon( p_vm, polygon );
 			}break;
 		}

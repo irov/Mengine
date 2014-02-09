@@ -12,6 +12,28 @@ ModulePathFinder
     PathFinderWay.h
 )
 
+ADD_FILTER(
+Collision
+    ModuleCollisionGround.cpp
+    ModuleCollisionGround.h
+    PythonCollisionRadar.cpp
+    PythonCollisionRadar.h
+    PythonCollisionObject.cpp
+    PythonCollisionObject.h
+    CollisionGround.cpp
+    CollisionGround.h
+    CollisionObject.cpp
+    CollisionObject.h
+    CollisionRadar.cpp
+    CollisionRadar.h
+    CollisionMotor.cpp
+    CollisionMotor.h
+    CollisionMotorFollow.cpp
+    CollisionMotorFollow.h
+    CollisionMotorPosition.cpp
+    CollisionMotorPosition.h
+)
+
 INCLUDE_DIRECTORIES(    
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}/poly2tri

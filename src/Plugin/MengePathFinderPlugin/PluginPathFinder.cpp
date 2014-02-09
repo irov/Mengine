@@ -2,9 +2,12 @@
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
-#	include "Interface/ModuleInterface.h"
 
 #	include "Factory/FactoryDefault.h"
+
+#	include "ModulePathFinder.h"
+#	include "ModuleCollisionGround.h"
+
 
 extern "C" // only required if using g++
 {
@@ -28,11 +31,12 @@ extern "C" // only required if using g++
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class PathFinderFactoryInterface
+	template<class T>
+	class ModuleFactory
 		: public ModuleFactoryInterface
 	{
 	public:
-		PathFinderFactoryInterface( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
+		ModuleFactory( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
 			: m_serviceProvider(_serviceProvider)
 			, m_name(_name)
 		{
@@ -41,11 +45,11 @@ namespace Menge
 	public:
 		ModuleInterfacePtr createModule() override
 		{
-			ModulePathFinder * modulePathFinder = m_factory.createObjectT();
-			modulePathFinder->setServiceProvider( m_serviceProvider );
-			modulePathFinder->setName( m_name );
+			ModuleInterface * module = m_factory.createObjectT();
+			module->setServiceProvider( m_serviceProvider );
+			module->setName( m_name );
 
-			return modulePathFinder;
+			return module;
 		}
 
 	protected:
@@ -58,8 +62,8 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_name;
 
-		typedef FactoryDefault<ModulePathFinder> TFactoryModulePathFinder;
-		TFactoryModulePathFinder m_factory;
+		typedef FactoryDefault<T> TFactoryModule;
+		TFactoryModule m_factory;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	PluginPathFinder::PluginPathFinder()
@@ -71,10 +75,14 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 
-		m_factoryModulePathFinder = new PathFinderFactoryInterface(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ModulePathFinder"));
+		m_factoryModulePathFinder = new ModuleFactory<ModulePathFinder>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ModulePathFinder"));
+		m_factoryModuleCollisionGround = new ModuleFactory<ModuleCollisionGround>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ModuleCollisionGround"));
 		
 		MODULE_SERVICE(m_serviceProvider)
 			->registerModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
+
+		MODULE_SERVICE(m_serviceProvider)
+			->registerModule( Helper::stringizeString(m_serviceProvider, "ModuleCollisionGround"), m_factoryModuleCollisionGround );
 
 		return true;
 	}
@@ -84,7 +92,11 @@ namespace Menge
 		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder") );
 
+		MODULE_SERVICE(m_serviceProvider)
+			->unregisterModule( Helper::stringizeString(m_serviceProvider, "ModuleCollisionGround") );
+
 		m_factoryModulePathFinder = nullptr;
+		m_factoryModuleCollisionGround = nullptr;
 
 		delete this;
 	}

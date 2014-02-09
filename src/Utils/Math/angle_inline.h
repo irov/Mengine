@@ -133,7 +133,7 @@ namespace mt
 
 		float x = mt::acos32( cos );
 
-		if (_vec.y < 0)
+		if( _vec.y > 0.f )
 		{
 			return -x;
 		}

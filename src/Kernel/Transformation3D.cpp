@@ -171,6 +171,16 @@ namespace Menge
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::lookAt( const mt::vec3f & _at )
+	{
+		mt::vec3f dir;
+		mt::norm_v3( dir, _at - m_position );
+
+		float rotationX = mt::signed_angle( dir.to_vec2f() );
+
+		this->setRotateX( rotationX );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateLocalMatrix_() const
 	{
 		m_invalidateLocalMatrix = false;

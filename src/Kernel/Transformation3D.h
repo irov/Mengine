@@ -70,6 +70,7 @@ namespace Menge
 		
 	public:
 		void translate( const mt::vec3f & _delta );
+		void lookAt( const mt::vec3f & _at );
 
 	public:
 		void invalidateWorldMatrix();        

@@ -3571,6 +3571,7 @@ namespace Menge
             .def( "getAngle", &Transformation3D::getRotateX )
 
             .def( "translate", &Transformation3D::translate )
+			.def( "lookAt", &Transformation3D::lookAt )
 
             .def( "resetTransformation", &Transformation3D::resetTransformation )
             .def( "setRelationTransformation", &Transformation3D::setRelationTransformation )

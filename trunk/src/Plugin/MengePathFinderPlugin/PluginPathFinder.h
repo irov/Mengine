@@ -1,8 +1,7 @@
 #	pragma once
 
 #	include "Interface/PluginInterface.h"
-
-#	include "ModulePathFinder.h"
+#	include "Interface/ModuleInterface.h"
 
 namespace Menge
 {	
@@ -20,5 +19,6 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		ModuleFactoryInterfacePtr m_factoryModulePathFinder;
+		ModuleFactoryInterfacePtr m_factoryModuleCollisionGround;
 	};
 }

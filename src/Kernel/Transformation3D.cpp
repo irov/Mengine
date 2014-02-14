@@ -173,11 +173,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up )
 	{
-		mt::mat4f mlookat;
-		mt::make_lookat_m4( mlookat, _position, _at - _position, _up, 1.f );
+		mt::vec3f dir = _at - _position;
+
+		mt::mat4f mr;
+		mt::make_rotate_m4_direction( mr, dir, _up );
 
 		mt::vec3f euler;
-		mt::make_euler_angles( euler, mlookat );
+		mt::make_euler_angles( euler, mr );
 
 		this->setLocalPosition( _position );
 		this->setRotation( euler );
@@ -197,7 +199,7 @@ namespace Menge
 		mat_scale.v2.z = m_scale.z;
 		
 		mt::mat4f mat_rot;
-		mt::make_rotate_m4( mat_rot, m_euler.x, m_euler.y, m_euler.z );
+		mt::make_rotate_m4_euler( mat_rot, m_euler.x, m_euler.y, m_euler.z );
         
 		mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
 

@@ -709,7 +709,7 @@ namespace mt
 		return sin;
 	}
 
-	MATH_FUNCTION_INLINE void make_rotate_m4(mat4f & _out, float _x, float _y, float _z)
+	MATH_FUNCTION_INLINE void make_rotate_m4_euler(mat4f & _out, float _x, float _y, float _z)
 	{
 		float ca = cosf_fast( _x );
 		float cb = cosf_fast( _y );
@@ -748,6 +748,52 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 
+	MATH_FUNCTION_INLINE void make_rotate_m4_direction( mat4f & _out, const vec3f & _direction, const vec3f & _up )
+	{
+		vec3f xaxis; 
+		mt::cross_v3_v3_norm( xaxis, _up, _direction );
+
+		vec3f yaxis;
+		mt::cross_v3_v3_norm( yaxis, _direction, xaxis );
+
+		vec3f zaxis;
+		mt::norm_v3( zaxis, _direction );
+
+		_out.v0.x = zaxis.x;
+		_out.v0.y = zaxis.y;
+		_out.v0.z = zaxis.z;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = xaxis.x;
+		_out.v1.y = xaxis.y;
+		_out.v1.z = xaxis.z;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = yaxis.x;
+		_out.v2.y = yaxis.y;
+		_out.v2.z = yaxis.z;
+		_out.v2.w = 0.f;
+
+		//_out.v0.x = xaxis.x;
+		//_out.v0.y = yaxis.x;
+		//_out.v0.z = zaxis.x;
+		//_out.v0.w = 0.f;
+
+		//_out.v1.x = xaxis.y;
+		//_out.v1.y = yaxis.y;
+		//_out.v1.z = zaxis.y;
+		//_out.v1.w = 0.f;
+
+		//_out.v2.x = xaxis.z;
+		//_out.v2.y = yaxis.z;
+		//_out.v2.z = zaxis.z;
+		//_out.v2.w = 0.f;
+
+		_out.v3.x = 0.f;
+		_out.v3.y = 0.f;
+		_out.v3.z = 0.f;
+		_out.v3.w = 1.f;		
+	}
 
 	MATH_FUNCTION_INLINE void make_rotate_x_axis_m4(mat4f & _out, float _angle)
 	{
@@ -936,42 +982,5 @@ namespace mt
 		_out.x = ( 1.0f + vec.x ) * _width * 0.5f; 
 		_out.y = ( 1.0f + vec.y ) * _height * 0.5f;
 		_out.z = vec.z; 
-	}
-
-	MATH_FUNCTION_INLINE void make_euler_angles( mt::vec3f & _euler, const mat4f & _rotate )
-	{
-		float sinY = _rotate.v2.x;
-
-		float x;
-		float y;
-		float z;
-				
-		if( fabsf( fabsf( sinY ) - 1.f ) < m_eps )
-		{
-			x = 0.f;
-
-			if( fabsf( sinY + 1.f ) < m_eps )
-			{
-				y = m_half_pi;
-				z = x + atan2f( _rotate.v0.y, _rotate.v0.z );
-			}
-			else
-			{
-				y = -m_half_pi;
-				z = -x + atan2f( -_rotate.v0.y, -_rotate.v0.z );
-			}
-		}
-		else
-		{
-			y = -asinf( sinY );
-			float cosY = cosf( y );
-
-			x = atan2f( _rotate.v1.x / cosY, _rotate.v0.x / cosY );
-			z = atan2f( _rotate.v2.y / cosY, _rotate.v2.z / cosY );
-		}
-
-		_euler.x = -y;
-		_euler.y = -x;
-		_euler.z = -z;
 	}
 }

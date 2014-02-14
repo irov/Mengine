@@ -105,7 +105,9 @@ namespace mt
 	MATH_FUNCTION_INLINE void make_projection_ortho_lh_m4( mat4f & _out , float _left, float _right, float _top, float _bottom, float _near, float _far );
 	MATH_FUNCTION_INLINE void make_projection_frustum_m4( mat4f & _out , float _left, float _right, float _top, float _bottom, float _near, float _far );
 
-	MATH_FUNCTION_INLINE void make_rotate_m4(mat4f & _out, float _x, float _y, float _z);
+	MATH_FUNCTION_INLINE void make_rotate_m4_euler(mat4f & _out, float _x, float _y, float _z);
+	MATH_FUNCTION_INLINE void make_rotate_m4_direction(mat4f & _out, const vec3f & _direction, const vec3f & _up );
+
 
 	MATH_FUNCTION_INLINE void make_rotate_x_axis_m4( mat4f & _out, float _angle );
 	MATH_FUNCTION_INLINE void make_rotate_y_axis_m4( mat4f & _out, float _angle );

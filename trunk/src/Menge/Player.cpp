@@ -348,7 +348,7 @@ namespace Menge
 
 			if( cb != nullptr )
 			{
-				pybind::call( cb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
+				pybind::call( cb, "(OO)", pybind::get_none(), pybind::get_bool(false) );
 
 				pybind::decref( cb );
 			}

@@ -18,9 +18,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 43;
+        _needVersion = 44;
 
-        if( version != 43 )
+        if( version != 44 )
         {
             return false;
         }
@@ -1945,6 +1945,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMovie::Meta_ResourceMovie()
         : Meta_Resource()
+        , Anchor_Point_successful(false)
         , Duration_Value_successful(false)
         , FrameDuration_Value_successful(false)
         , Height_Value_successful(false)
@@ -1970,6 +1971,17 @@ namespace Metacode
     
         switch( _id )
         {
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->Anchor_Point ) == false )
+                {
+                    return false;
+                }
+    
+                this->Anchor_Point_successful = true;
+    
+                return true;
+            }break;
         case 4:
             {
                 if( this->read( _buff, _size, _read, this->Duration_Value ) == false )
@@ -2072,19 +2084,19 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 13:
+        case 14:
             {
                 includes_Meta_MovieCamera3D.reserve( _count );
                 return true;
                 break;
             }
-        case 11:
+        case 12:
             {
                 includes_Meta_MovieLayer2D.reserve( _count );
                 return true;
                 break;
             }
-        case 12:
+        case 13:
             {
                 includes_Meta_MovieLayer3D.reserve( _count );
                 return true;
@@ -2104,7 +2116,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 13:
+        case 14:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
     
@@ -2116,7 +2128,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 11:
+        case 12:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
     
@@ -2128,7 +2140,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 12:
+        case 13:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
     
@@ -2163,7 +2175,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
     {
-        return 13;
+        return 14;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2272,7 +2284,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
     {
-        return 11;
+        return 12;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
@@ -2463,7 +2475,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
     {
-        return 12;
+        return 13;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )

@@ -9,15 +9,13 @@ namespace Menge
 	class CollisionTesterInterface;
 
 	class CollisionObject
+		: public Node
 	{
 	public:
 		CollisionObject();
 		~CollisionObject();
 
 	public:
-		void setNode( Node * _node );
-		Node * getNode() const;
-
 		void setRadius( float _radius );
 		float getRadius() const;
 
@@ -28,14 +26,23 @@ namespace Menge
 		CollisionMotor * getMotor() const;
 
 	public:
+		void setDead( bool _dead );
+		bool getDead() const;
+
+	public:
+		void setGhost( bool _ghost );
+		bool getGhost() const;
+
+	public:
 		void update( float _timing );
 
 	protected:
-		Node * m_node;
-
 		float m_radius;
 		float m_mass;
 
 		CollisionMotor * m_motor;
+
+		bool m_ghost;
+		bool m_dead;
 	};	
 }

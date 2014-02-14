@@ -106,14 +106,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setTiming( float _timing )
 	{
-		if( this->isActivate() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.setTiming: '%s' not activate"
-				, m_name.c_str()
-				);
+		//if( this->isActivate() == false )
+		//{
+		//	LOGGER_ERROR(m_serviceProvider)("Movie.setTiming: '%s' not activate"
+		//		, m_name.c_str()
+		//		);
 
-			return;
-		}
+		//	return;
+		//}
 
         //const ConstString & group = m_resourceMovie->getGroup();
 
@@ -124,10 +124,13 @@ namespace Menge
 	
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		m_currentFrame = (size_t)floorf( (_timing / frameDuration) );
+		m_currentFrame = (size_t)floorf( (_timing / frameDuration) + 0.5f );
 		m_frameTiming = _timing - m_currentFrame * frameDuration;
 
-		this->updateTiming_();
+		if( this->isActivate() == true )
+		{
+			this->updateTiming_();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Movie::_getTiming() const
@@ -1097,6 +1100,12 @@ namespace Menge
         }
 
         this->createCamera3D_();
+
+		mt::vec3f anchorPoint;
+		if( m_resourceMovie->getAnchorPoint( anchorPoint ) == true )
+		{
+			this->setOrigin( anchorPoint );
+		}
 
         return true;
     }

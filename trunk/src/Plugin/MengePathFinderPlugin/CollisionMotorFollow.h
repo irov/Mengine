@@ -18,12 +18,11 @@ namespace Menge
 		void setMinimalDistance( float _distance );
 		float getMinimalDistance() const;
 
-	public:
+	protected:
 		void update( float _timing, CollisionObject * _object ) override;
 
 	protected:
 		CollisionObject * m_target;
-
-		float m_minimalDistance;
+		float m_minimalDistance;			
 	};	
 }

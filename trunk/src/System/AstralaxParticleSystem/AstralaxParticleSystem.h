@@ -40,8 +40,11 @@ namespace Menge
 
 	protected:
 		void fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count );
-		bool loadEmitter( const char * _magicName, HM_FILE _file, AstralaxEmitterContainer * _container );
-		void loadEmittersFolder( const char * _path, HM_FILE _file, AstralaxEmitterContainer * _container );
+		bool loadEmitter( const char * _magicName, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
+		bool loadEmittersFolder( const char * _path, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
+
+	protected:
+		bool loadEmitters_( HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

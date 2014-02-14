@@ -58,37 +58,63 @@ namespace Menge
 		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem::loadEmittersFolder( const char * _path, HM_FILE _file, AstralaxEmitterContainer * _container )
+	bool AstralaxParticleSystem::loadEmitters_( HM_FILE _file, const AstralaxEmitterContainerPtr & _container )
 	{
-		Magic_SetCurrentFolder( _file, _path );
-		
 		MAGIC_FIND_DATA find;
 		const char* magicName = Magic_FindFirst( _file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
-		
+
 		while( magicName != nullptr )
 		{
 			if( find.animate == 1 )
 			{
 				if( this->loadEmitter( magicName, _file, _container ) == false )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmittersFolder %s invalid load emitter %s"
-                        , _path
-                        , magicName
-                        );
-                }
+				{
+					LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmitters_ invalid load emitter %s"
+						, magicName
+						);
+
+					return false;
+				}
 			}
 			else
 			{		
-				this->loadEmittersFolder( magicName, _file, _container );
+				if( this->loadEmittersFolder( magicName, _file, _container ) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmitters_ invalid load animate emitter %s"
+						, magicName
+						);
+
+					return false;
+				}
 			}
-		
+
 			magicName = Magic_FindNext( _file, &find );
 		}
-			
-		Magic_SetCurrentFolder( _file, ".." );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem::loadEmitter( const char * _magicName, HM_FILE _file, AstralaxEmitterContainer * _container )
+	bool AstralaxParticleSystem::loadEmittersFolder( const char * _path, HM_FILE _file, const AstralaxEmitterContainerPtr & _container )
+	{
+		Magic_SetCurrentFolder( _file, _path );
+		
+		bool result = this->loadEmitters_( _file, _container );
+			
+		Magic_SetCurrentFolder( _file, ".." );
+
+		if( result == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmittersFolder invalid load emitters %s"
+				, _path
+				);
+
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxParticleSystem::loadEmitter( const char * _magicName, HM_FILE _file, const AstralaxEmitterContainerPtr & _container )
 	{		
         m_loadEmitterCacheFullname = _magicName;
 		
@@ -138,17 +164,28 @@ namespace Menge
 			return nullptr;
 		}
 
-		AstralaxEmitterContainer * container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
+		AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
 
 		if( container->initialize( _name, m_serviceProvider ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container %s"
+				, _name.c_str()
+				);
+
 			Magic_CloseFile( file );
 
 			return nullptr;
 		}
 
 		//Load emitters from root folder
-		this->loadEmittersFolder( "//", file, container );
+		if( this->loadEmittersFolder( "//", file, container ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid load emitters %s"
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
 
 		int atlasCount = Magic_GetStaticAtlasCount( file );
 

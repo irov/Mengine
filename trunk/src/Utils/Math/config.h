@@ -8,7 +8,7 @@ namespace mt
 	const float m_e = 2.71828182845904523536f;
 	const float	m_deg2rad = m_pi / 180.0f;
 	const float	m_rad2deg = 180.0f / m_pi;
-
+	const float m_eps = 0.00001f;
 }
 
 #	define MATH_FORCE_INLINE 1

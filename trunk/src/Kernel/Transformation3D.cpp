@@ -12,7 +12,7 @@ namespace Menge
 		, m_coordinate(0.f, 0.f, 0.f)
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
-		, m_rotation(0.f, 0.f, 0.f)
+		, m_euler(0.f, 0.f, 0.f)
 		, m_relationTransformation(nullptr)
         , m_invalidateWorldMatrix(true)
         , m_invalidateLocalMatrix(true)
@@ -88,12 +88,12 @@ namespace Menge
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
-		if( fabsf(m_rotation.x - norm_angle) < 0.00001f )
+		if( fabsf(m_euler.x - norm_angle) < 0.00001f )
 		{
 			return;
 		}
 
-		m_rotation.x = norm_angle;
+		m_euler.x = norm_angle;
 
 		this->invalidateLocalMatrix();
 	}
@@ -102,12 +102,12 @@ namespace Menge
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
-		if( fabsf(m_rotation.y - norm_angle) < 0.00001f )
+		if( fabsf(m_euler.y - norm_angle) < 0.00001f )
 		{
 			return;
 		}
 
-		m_rotation.y = norm_angle;
+		m_euler.y = norm_angle;
 
 		this->invalidateLocalMatrix();
 	}
@@ -116,19 +116,19 @@ namespace Menge
 	{
 		float norm_angle = mt::angle_norm(_angle);
 
-		if( fabsf(m_rotation.z - norm_angle) < 0.00001f )
+		if( fabsf(m_euler.z - norm_angle) < 0.00001f )
 		{
 			return;
 		}
 
-		m_rotation.z = norm_angle;
+		m_euler.z = norm_angle;
 
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setRotation( const mt::vec3f & _rotate )
+	void Transformation3D::setRotation( const mt::vec3f & _euler )
 	{
-		m_rotation = _rotate;
+		m_euler = _euler;
 
         this->invalidateLocalMatrix();
 	}
@@ -139,7 +139,7 @@ namespace Menge
 		m_origin = _origin;
         m_coordinate = _coordinate;
 		m_scale = _scale;
-		m_rotation = _rotate;
+		m_euler = _rotate;
 
 		this->invalidateLocalMatrix();
 	}
@@ -150,7 +150,7 @@ namespace Menge
         _origin = m_origin;
         _coordinate = m_coordinate;
         _scale = m_scale;
-        _rotate = m_rotation;
+        _rotate = m_euler;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::resetTransformation()
@@ -159,7 +159,7 @@ namespace Menge
 		m_coordinate = mt::vec3f(0.f, 0.f, 0.f);
 		m_position = mt::vec3f(0.f, 0.f, 0.f);
 		m_scale = mt::vec3f(1.f, 1.f, 1.f);
-		m_rotation = mt::vec3f(0.f, 0.f, 0.f);
+		m_euler = mt::vec3f(0.f, 0.f, 0.f);
 
 		this->invalidateLocalMatrix();
 	}
@@ -171,17 +171,19 @@ namespace Menge
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::lookAt( const mt::vec3f & _at )
+	void Transformation3D::lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up )
 	{
-		mt::vec3f dir;
-		mt::norm_v3( dir, _at - m_position );
+		mt::mat4f mlookat;
+		mt::make_lookat_m4( mlookat, _position, _at - _position, _up, 1.f );
 
-		float rotationX = mt::signed_angle( dir.to_vec2f() );
+		mt::vec3f euler;
+		mt::make_euler_angles( euler, mlookat );
 
-		this->setRotateX( rotationX );
+		this->setLocalPosition( _position );
+		this->setRotation( euler );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::updateLocalMatrix_() const
+	void Transformation3D::updateLocalMatrix() const
 	{
 		m_invalidateLocalMatrix = false;
 
@@ -195,7 +197,7 @@ namespace Menge
 		mat_scale.v2.z = m_scale.z;
 		
 		mt::mat4f mat_rot;
-		mt::make_rotate_m4( mat_rot, m_rotation.x, m_rotation.y, m_rotation.z );
+		mt::make_rotate_m4( mat_rot, m_euler.x, m_euler.y, m_euler.z );
         
 		mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
 
@@ -204,7 +206,7 @@ namespace Menge
 		m_localMatrix.v3.z += m_position.z + m_coordinate.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::updateWorldMatrix_() const
+	void Transformation3D::updateWorldMatrix() const
 	{
 		m_invalidateWorldMatrix = false;
 

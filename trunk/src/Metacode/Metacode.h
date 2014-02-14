@@ -2060,6 +2060,46 @@ namespace Metacode
         public:
             unsigned int getId() const override;
         public:
+            bool has_Anchor_Point() const
+            {
+                return Anchor_Point_successful;
+            }
+            
+            bool get_Anchor_Point( mt::vec3f & _value ) const
+            {
+                if( Anchor_Point_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Anchor_Point;
+            
+                return true;
+            }
+            
+            bool swap_Anchor_Point( mt::vec3f & _value ) const
+            {
+                if( Anchor_Point_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Anchor_Point);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Anchor_Point( C * _self, M _method )
+            {
+                if( Anchor_Point_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Anchor_Point );
+            }
+            
             bool has_Duration_Value() const
             {
                 return Duration_Value_successful;
@@ -3273,6 +3313,8 @@ namespace Metacode
             
         protected:
         protected:
+            bool Anchor_Point_successful;
+            mutable mt::vec3f Anchor_Point;
             bool Duration_Value_successful;
             mutable float Duration_Value;
             bool FrameDuration_Value_successful;

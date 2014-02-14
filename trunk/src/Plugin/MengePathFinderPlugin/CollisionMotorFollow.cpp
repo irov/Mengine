@@ -12,6 +12,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	CollisionMotorFollow::~CollisionMotorFollow()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void CollisionMotorFollow::setTarget( CollisionObject * _target )
 	{
 		m_target = _target;
@@ -34,11 +38,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionMotorFollow::update( float _timing, CollisionObject * _object )
 	{
-		Node * obj_node = _object->getNode();
-		mt::vec3f obj_pos = obj_node->getLocalPosition();
+		bool rotating = false;
+		bool translating = false;
+		bool finish = false;
 
-		Node * target_node = m_target->getNode();
-		mt::vec3f target_pos = target_node->getLocalPosition();
+		mt::vec3f obj_pos = _object->getWorldPosition();
+
+		mt::vec3f target_pos = m_target->getWorldPosition();
 
 		mt::vec3f diff_pos = target_pos - obj_pos;
 
@@ -46,14 +52,16 @@ namespace Menge
 		mt::norm_v2( dir, diff_pos.to_vec2f() );
 
 		float dir_angle = mt::signed_angle( dir );
-		float obj_angle = obj_node->getRotateX();
+		float obj_angle = _object->getRotateX();
 
 		float diff_angle = mt::angle_length( obj_angle, dir_angle );
 
 		float step_angle = m_angularSpeed * _timing * 0.001f;
 
-		if( fabsf(step_angle - fabsf(diff_angle)) > 0.0001f )
+		if( fabsf(diff_angle) > 0.0001f )
 		{
+			rotating = true;
+
 			if( step_angle >= fabsf(diff_angle) )
 			{
 				obj_angle = dir_angle;
@@ -63,38 +71,54 @@ namespace Menge
 				obj_angle += step_angle * diff_angle;
 			}
 
-			obj_node->setRotateX( obj_angle );
+			_object->setRotateX( obj_angle );
 		}
-		
-		float length_pos = diff_pos.length();
 
-		float obj_radius = _object->getRadius();
-		float target_radius = m_target->getRadius();
-
-		float needDistance = obj_radius + target_radius + m_minimalDistance;
-
-		if( length_pos > needDistance )
+		if( m_moveStop == false )
 		{
-			float needStep = length_pos - needDistance;
-		
-			float step_pos = m_linearSpeed * _timing * 0.001f;
+			float length_pos = diff_pos.length();
 
-			float translate_pos = 0.f;
-			if( step_pos >= needStep )
+			float obj_radius = _object->getRadius();
+			float target_radius = m_target->getRadius();
+
+			float needDistance = obj_radius + target_radius + m_minimalDistance;
+			
+			if( length_pos - needDistance > 0.001f )
 			{
-				translate_pos = needStep;
+				translating = true;
+
+				float needStep = length_pos - needDistance;
+
+				float step_pos = m_linearSpeed * _timing * 0.001f;
+
+				float translate_pos = 0.f;
+				if( step_pos >= needStep )
+				{
+					translate_pos = needStep;
+					finish = true;
+				}
+				else
+				{
+					translate_pos = step_pos;
+				}
+
+				mt::vec3f translate;
+				translate.x = dir.x * translate_pos;
+				translate.y = dir.y * translate_pos;
+				translate.z = 0.f;
+
+				_object->translate( translate );
 			}
 			else
 			{
-				translate_pos = step_pos;
+				finish = true;
 			}
-
-			mt::vec3f translate;
-			translate.x = dir.x * translate_pos;
-			translate.y = dir.y * translate_pos;
-			translate.z = 0.f;
-
-			obj_node->translate( translate );
 		}
+		else
+		{
+			finish = m_finish;
+		}
+		
+		this->updateState_( _object, rotating, translating, finish );
 	}
 }

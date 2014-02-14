@@ -175,6 +175,7 @@ namespace Menge
 		const mt::vec2f & getSize() const;
 
         const mt::vec2f & getLoopSegment() const;
+		bool getAnchorPoint( mt::vec3f & _anchorPoint ) const;
 
     public:
 		const TVectorMovieLayers & getLayers() const;
@@ -208,6 +209,9 @@ namespace Menge
 		float m_duration;
 
         mt::vec2f m_loopSegment;
+
+		bool m_hasAnchorPoint;
+		mt::vec3f m_anchorPoint;
 		
         FilePath m_path;
 		ConstString m_codecType;

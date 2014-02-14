@@ -31,6 +31,8 @@ ADD_FILTER(
 Node
 	Node.cpp
 	Node.h
+    NodePrototypeGenerator.h
+    ScriptClassWrapper.h
 )
 
 ADD_FILTER(

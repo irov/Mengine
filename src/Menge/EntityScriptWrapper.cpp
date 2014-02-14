@@ -1,6 +1,6 @@
 #	include "ScriptWrapper.h"
 
-#	include "ScriptClassWrapper.h"
+#	include "Kernel/ScriptClassWrapper.h"
 
 #	include "Kernel/Entity.h"
 #	include "Kernel/Scene.h"

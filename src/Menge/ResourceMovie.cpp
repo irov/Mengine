@@ -31,6 +31,8 @@ namespace Menge
 		, m_size(0.f, 0.f)
 		, m_maxLayerIndex(0)
 		, m_hasCamera3D(false)
+		, m_hasAnchorPoint(false)
+		, m_anchorPoint(0.f, 0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -67,6 +69,13 @@ namespace Menge
     {
         return m_loopSegment;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::getAnchorPoint( mt::vec3f & _anchorPoint ) const
+	{
+		_anchorPoint = m_anchorPoint;
+
+		return m_hasAnchorPoint;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorMovieLayers & ResourceMovie::getLayers() const
 	{
@@ -217,6 +226,8 @@ namespace Menge
         metadata->get_Width_Value( m_size.x );
         metadata->get_Height_Value( m_size.y );
         metadata->get_Loop_Segment( m_loopSegment );
+
+		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
                 
         metadata->swap_KeyFramesPackPath_Path( m_path );
 		metadata->swap_KeyFramesPackPath_Codec( m_codecType );

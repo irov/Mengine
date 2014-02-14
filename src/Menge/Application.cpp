@@ -22,6 +22,7 @@
 #	include "HotSpot.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
+#	include "Gyroscope.h"
 #	include "TilePolygon.h"
 #	include "Point.h"
 #	include "SoundEmitter.h"
@@ -87,6 +88,8 @@
 #	include "Interface/UnicodeInterface.h"
 
 #	include "ScriptWrapper.h"
+
+#	include "Kernel/NodePrototypeGenerator.h"
 
 #	include "Codec/ImageDecoderMemory.h"
 #	include "Codec/DecoderFactory.h"
@@ -296,59 +299,6 @@ namespace Menge
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        template<class Type, size_t Count>
-        class NodePrototypeGenerator
-            : public PrototypeGeneratorInterface
-        {
-        public:
-            NodePrototypeGenerator( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider(_serviceProvider)
-            {
-            }
-
-        protected:
-            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
-            {
-                Node * node = m_factory.createObjectT();
-
-                if( node == nullptr )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("NodePrototypeGenerator can't generate %s %s"
-                        , _category.c_str()
-                        , _prototype.c_str()
-                        );
-
-                    return nullptr;
-                }
-
-				node->setServiceProvider( m_serviceProvider );
-                node->setType( _prototype );                
-
-                return node;
-            }
-
-            size_t count() const override
-            {
-                size_t count = m_factory.countObject();
-
-                return count;
-            }
-
-            void destroy() override
-            {
-                delete this;
-            }
-
-        protected:
-            ServiceProviderInterface * m_serviceProvider;
-
-            typedef FactoryPool<Type, Count> TNodeFactory;
-            TNodeFactory m_factory;
-        };
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
 	{	
@@ -384,6 +334,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Scene );
 
 		NODE_FACTORY( m_serviceProvider, Animation );
+		NODE_FACTORY( m_serviceProvider, Gyroscope );
 		
 #   ifdef MENGE_PARTICLES
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter );

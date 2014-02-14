@@ -57,11 +57,6 @@ Engine\\\\Input
 )
 
 ADD_FILTER(
-Engine\\\\Script
-	ScriptClassWrapper.h
-)
-
-ADD_FILTER(
 Arrow
 	Arrow.cpp
 	Arrow.h
@@ -147,6 +142,12 @@ ADD_FILTER(
 Object2D\\\\Model3D
 	Model3D.cpp
 	Model3D.h
+)
+
+ADD_FILTER(
+Object2D\\\\Gyroscope
+	Gyroscope.cpp
+	Gyroscope.h
 )
 
 ADD_FILTER(

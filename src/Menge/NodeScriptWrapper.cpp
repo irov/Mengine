@@ -8,14 +8,13 @@
 #   include "Interface/CacheInterface.h"
 #	include "Interface/HttpSystemInterface.h"
 
+#	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/ThreadTask.h"
 #	include "Kernel/Scene.h"
 
 #	include "Game.h"
 
 #	include "Consts.h"
-
-#	include "ScriptClassWrapper.h"
 
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ScheduleManagerInterface.h"
@@ -64,6 +63,7 @@
 #	include "Landscape2D.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
+#	include "Gyroscope.h"
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
@@ -541,7 +541,7 @@ namespace Menge
             bool updateTiming( size_t _id, float _timing ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_script, "(if)", _id, _timing );
+                    ->callFunction( m_script, "(ifO)", _id, _timing, pybind::get_bool(false) );
 
                 return false;
             }
@@ -549,7 +549,7 @@ namespace Menge
             void removeTiming( size_t _id ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_script, "(iO)", _id, pybind::get_bool(true) );
+                    ->callFunction( m_script, "(ifO)", _id, 0.f, pybind::get_bool(true) );
             }
 
             void deleteTimingListener() const override
@@ -948,6 +948,14 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void destroyNode( Node * _node )
         {
+			if( _node == nullptr)
+			{
+				LOGGER_ERROR(m_serviceProvider)("Menge.destroyNode invalid take None object"
+					);
+
+				return;
+			}
+
             _node->destroy();
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3101,6 +3109,7 @@ namespace Menge
         //SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Sprite );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Animation );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Gyroscope );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Arrow );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, TextField );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, SoundEmitter );
@@ -3629,6 +3638,10 @@ namespace Menge
 			;
 
         pybind::interface_<ResourceMovie, pybind::bases<ResourceReference> >("ResourceMovie", false)
+			.def("getSize", &ResourceMovie::getSize)
+			.def("getLoopSegment", &ResourceMovie::getLoopSegment)
+			.def("getFrameCount", &ResourceMovie::getFrameCount)
+			.def("getFrameDuration", &ResourceMovie::getFrameDuration)
 			.def("getDuration", &ResourceMovie::getDuration)
             ;        
 
@@ -4093,6 +4106,9 @@ namespace Menge
                     .def_depricated( "setSpriteSize", &Sprite::setCustomSize, "use setCustomSize" )
                     .def( "setCustomSize", &Sprite::setCustomSize )
                     ;
+
+				pybind::interface_<Gyroscope, pybind::bases<Node> >("Gyroscope", false)
+					;
 
                 {
                     pybind::interface_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)

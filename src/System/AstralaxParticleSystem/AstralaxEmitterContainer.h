@@ -72,4 +72,6 @@ namespace Menge
 
 		TVectorParticleEmitterAtlas m_atlas;
 	};
+
+	typedef stdex::intrusive_ptr<AstralaxEmitterContainer> AstralaxEmitterContainerPtr;
 }

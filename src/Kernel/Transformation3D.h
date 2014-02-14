@@ -55,7 +55,7 @@ namespace Menge
 		void setRotateZ( float _angle );
 		inline float getRotateZ() const;
 
-		void setRotation( const mt::vec3f & _rotation );
+		void setRotation( const mt::vec3f & _euler );
 		inline const mt::vec3f & getRotation() const;
 
 	public:
@@ -70,7 +70,7 @@ namespace Menge
 		
 	public:
 		void translate( const mt::vec3f & _delta );
-		void lookAt( const mt::vec3f & _at );
+		void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up );
 
 	public:
 		void invalidateWorldMatrix();        
@@ -82,9 +82,9 @@ namespace Menge
     protected:
         void invalidateLocalMatrix();
 
-	protected:
-		void updateLocalMatrix_() const;
-		void updateWorldMatrix_() const;
+	public:
+		virtual void updateLocalMatrix() const;
+		virtual void updateWorldMatrix() const;
 
 	protected:
         mt::vec3f m_position;
@@ -92,7 +92,7 @@ namespace Menge
 		mt::vec3f m_coordinate;
 
 		mt::vec3f m_scale;
-		mt::vec3f m_rotation;
+		mt::vec3f m_euler;
 
 		Transformation3D * m_relationTransformation;
 
@@ -131,22 +131,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline float Transformation3D::getRotateX() const
 	{
-		return m_rotation.x;
+		return m_euler.x;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float Transformation3D::getRotateY() const
 	{
-		return m_rotation.y;
+		return m_euler.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline float Transformation3D::getRotateZ() const
 	{
-		return m_rotation.z;
+		return m_euler.z;
 	}
     //////////////////////////////////////////////////////////////////////////
     inline const mt::vec3f & Transformation3D::getRotation() const
     {
-        return m_rotation;
+        return m_euler;
     }
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Transformation3D::isInvalidateWorldMatrix()const
@@ -158,7 +158,7 @@ namespace Menge
 	{
 		if( m_invalidateLocalMatrix == true )
 		{
-			this->updateLocalMatrix_();
+			this->updateLocalMatrix();
 		}		
 
 		return m_localMatrix;
@@ -168,7 +168,7 @@ namespace Menge
 	{
 		if( m_invalidateWorldMatrix == true )
 		{
-			this->updateWorldMatrix_();
+			this->updateWorldMatrix();
 		}
 
 		return m_worldMatrix;

@@ -25,17 +25,16 @@ namespace Menge
 		bool initialize() override;
 		void finalize() override;
 
+	public:
 		void setName( const ConstString & _name ) override;
 		const ConstString & getName() const override;
 
 	public:
 		CollisionGround * createCollisionGround();
 
-	public:
-		PythonCollisionObject * createCollisionObject( PyObject * _cb );
-		CollisionMotorPosition * createCollisionMotorPosition();
-		CollisionMotorFollow * createCollisionMotorFollow();
-		PythonCollisionRadar * createCollisionRadar( PyObject * _pyEnter, PyObject * _pyLeave );
+	public:		
+		CollisionMotorPosition * createCollisionMotorPosition( PyObject * _cb );
+		CollisionMotorFollow * createCollisionMotorFollow( PyObject * _cb );		
 
 	public:
 		void update( float _time, float _timing ) override;

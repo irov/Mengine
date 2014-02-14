@@ -5,33 +5,51 @@
 namespace Menge
 {
 	class CollisionObject;
-	typedef std::vector<class CollisionObject *> TVectorObjects;
 
 	class CollisionRadar
+		: public Node
 	{
 	public:
 		CollisionRadar();
 		~CollisionRadar();
 
 	public:
-		void setNode( Node * _node );
-		Node * getNode() const;
-
 		void setRadius( float _radius );
 		float getRadius() const;
 
 	public:
-		TVectorObjects & getObjects();
+		void setExceptCollisionObject( CollisionObject * _object );
+		CollisionObject * getExceptCollisionObject() const;
 
 	public:
+		bool inside( CollisionObject * _object ) const;
+		
+	public:
+		void insertObject( CollisionObject * _object );
+		void removeObject( CollisionObject * _object );
+
+	public:
+		void setDead( bool _dead );
+		bool getDead() const;
+		
+	protected:
+		virtual bool onRadarObjectFilter( CollisionObject * _object );
 		virtual void onRadarObjectEnter( CollisionObject * _object );
 		virtual void onRadarObjectLeave( CollisionObject * _object );
 
 	protected:
-		Node * m_node;
-
 		float m_radius;
+		CollisionObject * m_exceptObject;
 
-		TVectorObjects m_objects;
+		struct CollisionObjectDesc
+		{
+			CollisionObject * object;
+			bool real;
+		};
+
+		typedef std::vector<CollisionObjectDesc> TVectorCollisionObjects;
+		TVectorCollisionObjects m_objects;
+
+		bool m_dead;
 	};	
 }

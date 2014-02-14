@@ -112,6 +112,7 @@ namespace mt
 	MATH_FUNCTION_INLINE void make_rotate_z_axis_m4( mat4f & _out, float _angle );
 
 	MATH_FUNCTION_INLINE void make_scale_m4( mat4f & _out, float _x, float _y, float _z );
+	MATH_FUNCTION_INLINE void make_translation_m4_v3( mat4f & _out, const mt::vec3f & _pos );
 	MATH_FUNCTION_INLINE void make_translation_m4( mat4f & _out, float _x, float _y, float _z );
 
 	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up, float _sign );

@@ -22,6 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * PythonCollisionObject::getPythonUser() const
 	{
+		pybind::incref( m_user );
 		return m_user;
 	}
 }

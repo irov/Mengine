@@ -1,11 +1,8 @@
 #	include "Kernel/Scriptable.h"
 
 #	include "Interface/ScriptSystemInterface.h"
-#	include "Logger/Logger.h"
 
 #	include "pybind/pybind.hpp"
-
-#	include <assert.h>
 
 namespace Menge
 {
@@ -40,8 +37,6 @@ namespace Menge
 
 		m_embed = _embed;
 
-		//PyObject * py_dict = pybind::dict_from( _embed );
-
 		this->_embedding( m_embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,10 +53,6 @@ namespace Menge
 
 			this->setEmbed( embed );
 		}
-		//else
-		//{
-			//pybind::incref( m_embed );
-		//}
 
 		return m_embed;
 	}

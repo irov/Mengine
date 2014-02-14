@@ -17,7 +17,7 @@ set(sources
     ${SOURCE_DIR}/src/dec/tree.c
     ${SOURCE_DIR}/src/dec/vp8.c
     ${SOURCE_DIR}/src/dec/vp8l.c
-    ${SOURCE_DIR}/src/dec/webp.c    
+    ${SOURCE_DIR}/src/dec/webp.c
     
     ${SOURCE_DIR}/src/dsp/cpu.c
     ${SOURCE_DIR}/src/dsp/dec.c
@@ -29,14 +29,17 @@ set(sources
     ${SOURCE_DIR}/src/dsp/upsampling_sse2.c
     ${SOURCE_DIR}/src/dsp/yuv.c
 
+    ${SOURCE_DIR}/src/utils/alpha_processing.c
     ${SOURCE_DIR}/src/utils/bit_reader.c
     ${SOURCE_DIR}/src/utils/color_cache.c
     ${SOURCE_DIR}/src/utils/filters.c
     ${SOURCE_DIR}/src/utils/huffman.c
+    ${SOURCE_DIR}/src/utils/quant_levels.c
     ${SOURCE_DIR}/src/utils/quant_levels_dec.c
+    ${SOURCE_DIR}/src/utils/random.c
     ${SOURCE_DIR}/src/utils/rescaler.c
     ${SOURCE_DIR}/src/utils/thread.c
-    ${SOURCE_DIR}/src/utils/utils.c
+    ${SOURCE_DIR}/src/utils/utils.c    
 )
 
 add_definitions(-DHAVE_CONFIG_H)

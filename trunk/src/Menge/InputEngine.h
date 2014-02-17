@@ -36,6 +36,7 @@ namespace Menge
 	public:
 		bool isKeyDown( size_t _keyCode ) const override;
 		bool isExclusiveKeyDown( size_t _keyCode ) const override;
+		bool isAnyKeyDown() const override;
 		
 		bool isAnyMouseButtonDown() const override;
 		bool isMouseButtonDown( size_t _button ) const override;

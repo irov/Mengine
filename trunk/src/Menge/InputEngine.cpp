@@ -161,6 +161,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::isAnyKeyDown() const
+	{
+		size_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+
+		return keyDownCount != 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAnyMouseButtonDown() const
 	{
 		return m_mouseBuffer[0] || m_mouseBuffer[1] || m_mouseBuffer[2];

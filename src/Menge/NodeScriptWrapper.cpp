@@ -818,6 +818,11 @@ namespace Menge
 			return INPUT_SERVICE(m_serviceProvider)
 				->isExclusiveKeyDown( _key );
 		}		
+		bool s_isAnyKeyDown()
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isAnyKeyDown();
+		}
         //////////////////////////////////////////////////////////////////////////
         void s_setTimingFactor( float _factor )
         {
@@ -4308,6 +4313,7 @@ namespace Menge
 
             pybind::def_functor( "isKeyDown", nodeScriptMethod, &NodeScriptMethod::s_isKeyDown );
 			pybind::def_functor( "isExclusiveKeyDown", nodeScriptMethod, &NodeScriptMethod::s_isExclusiveKeyDown );
+			pybind::def_functor( "isAnyKeyDown", nodeScriptMethod, &NodeScriptMethod::s_isAnyKeyDown );
             pybind::def_functor( "isMouseButtonDown", nodeScriptMethod, &NodeScriptMethod::s_isMouseButtonDown );
             pybind::def_functor( "isInViewport", nodeScriptMethod, &NodeScriptMethod::s_isInViewport );
             //pybind::def_function( "getResourceCount", &ScriptMethod::s_getResourceCount );

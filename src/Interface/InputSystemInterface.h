@@ -287,6 +287,7 @@ namespace Menge
 	public:
 		virtual bool isKeyDown( size_t _keyCode ) const = 0;
 		virtual bool isExclusiveKeyDown( size_t _keyCode ) const = 0;
+		virtual bool isAnyKeyDown() const = 0;
 
 	public:
 		virtual bool isAnyMouseButtonDown() const = 0;

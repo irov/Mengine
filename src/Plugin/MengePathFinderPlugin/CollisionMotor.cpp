@@ -63,16 +63,60 @@ namespace Menge
 	{
 		float norm_angle = mt::angle_norm( _angle );
 
+		float pi_deltha [] = {
+			- mt::m_pi * 1.f / 12.f,
+			mt::m_pi * 0.f / 12.f, 
+			mt::m_pi * 1.f / 12.f,
+
+			mt::m_pi * 1.f / 12.f,
+			mt::m_pi * 2.f / 12.f, 
+			mt::m_pi * 4.f / 12.f,
+			
+			mt::m_pi * 4.f / 12.f,
+			mt::m_pi * 6.f / 12.f,
+			mt::m_pi * 8.f / 12.f,
+
+			mt::m_pi * 8.f / 12.f,
+			mt::m_pi * 10.f / 12.f, 
+			mt::m_pi * 11.f / 12.f,
+			
+			mt::m_pi * 11.f / 12.f,
+			mt::m_pi * 12.f / 12.f,
+			mt::m_pi * 13.f / 12.f,
+
+			mt::m_pi * 13.f / 12.f,
+			mt::m_pi * 14.f / 12.f,
+			mt::m_pi * 16.f / 12.f,
+
+			mt::m_pi * 16.f / 12.f,
+			mt::m_pi * 18.f / 12.f,
+			mt::m_pi * 20.f / 12.f,
+
+			mt::m_pi * 20.f / 12.f,
+			mt::m_pi * 22.f / 12.f,
+			mt::m_pi * 23.f / 12.f,
+		};
+
+
 		for( size_t i = 0; i != 8; ++i )
 		{
-			float test_angle = mt::m_pi * 0.25f * i;
+			float low_angle = pi_deltha[ i * 3 + 0];
+			float test_angle = pi_deltha[ i * 3 + 1];
+			float hight_angle = pi_deltha[ i * 3 + 2];
 
-			float length_angle = mt::angle_length( norm_angle, test_angle );
+			float rad = mt::angle_norm360( norm_angle );
 
-			if( fabsf(length_angle) < 0.125f )
+			if( mt::angle_length( norm_angle, low_angle ) > 0.f )
 			{
-				return i;
+				continue;
 			}
+
+			if( mt::angle_length( norm_angle, hight_angle ) < 0.f )
+			{
+				continue;
+			}
+
+			return i;
 		}
 
 		return 0;

@@ -1310,6 +1310,11 @@ int Magic_EmitterToInterval1_Stream(HM_EMITTER hmEmitter, float speed_factor, HM
 
 void Magic_DestroyAll();
 
+// eng: Sets the coordinates of the emitter (attached physic objects are moved too)
+// rus: Устанавливает координаты эмиттера (происходит перемещение всех прицепленных физ. объектов)
+int Magic_SetEmitterPositionWithAttachedPhysicObjects(HM_EMITTER hmEmitter, MAGIC_POSITION* pos);
+
+
 #ifdef __cplusplus
 }
 #endif

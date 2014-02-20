@@ -4,10 +4,6 @@ ADD_FILTER(
 src
 	CacheManager.cpp
 	CacheManager.h
-    CacheBuffer.cpp
-    CacheBuffer.h
-    CacheBufferMemory.cpp
-    CacheBufferMemory.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

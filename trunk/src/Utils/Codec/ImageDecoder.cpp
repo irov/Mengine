@@ -78,9 +78,9 @@ namespace Menge
 		return &m_dataInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoder::setImageCodecDataInfo( const ImageCodecDataInfo & _dataInfo )
+	void ImageDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
 	{
-		m_dataInfo = _dataInfo;
+		m_dataInfo = *static_cast<const ImageCodecDataInfo *>(_dataInfo);
 	}
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoder::sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch )

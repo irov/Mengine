@@ -25,6 +25,7 @@ namespace Menge
 		bool setOptions( CodecOptions * _options ) override;
 
 	public:
+		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
 		const XmlCodecDataInfo * getCodecDataInfo() const override;
 
 	public:		

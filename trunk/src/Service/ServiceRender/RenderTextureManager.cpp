@@ -3,7 +3,7 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/StringizeInterface.h"
-#	include "Interface/PlatformInterface.h"
+#	include "Interface/PrefetcherInterface.h"
 
 #   include "Logger/Logger.h"
 
@@ -57,7 +57,7 @@ namespace Menge
 
 		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_R8G8B8 );
-		
+	
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -340,7 +340,8 @@ namespace Menge
         }
 				
 		ImageDecoderInterfacePtr imageDecoder;
-		if( this->hasTextureDecoder( _fileName, imageDecoder ) == false )
+		if( PREFETCHER_SERVICE(m_serviceProvider)
+			->getImageDecoder( _fileName, imageDecoder ) == false )
 		{
 			imageDecoder = this->createImageDecoder_( _pakName, _fileName, _codec );
 
@@ -371,63 +372,6 @@ namespace Menge
 
         return texture;
     }
-	//////////////////////////////////////////////////////////////////////////
-	RenderTextureDecoderReceiverInterface * RenderTextureManager::prefetchTextureDecoder( const FilePath& _fileName, RenderTextureDecoderListenerInterface * _listener )
-	{
-		TMapPrefetchers::iterator it_found = m_prefetchers.find( _fileName );
-
-		if( it_found == m_prefetchers.end() )
-		{
-			RenderTexturePrefetcherDesc * new_prefetcher = new RenderTexturePrefetcherDesc;
-			
-			it_found = m_prefetchers.insert( _fileName, new_prefetcher ).first;
-		}
-
-		RenderTexturePrefetcherDesc * prefetcher = m_prefetchers.get_value( it_found );
-
-		if( prefetcher->addListener( _listener ) == false )
-		{
-			return nullptr;
-		}
-
-		return prefetcher;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderTextureManager::unfetchTextureDecoder( const FilePath& _fileName )
-	{
-		TMapPrefetchers::iterator it_found = m_prefetchers.find( _fileName );
-
-		if( it_found != m_prefetchers.end() )
-		{
-			return;
-		}
-
-		RenderTexturePrefetcherDesc * prefetcher = m_prefetchers.get_value( it_found );
-
-		prefetcher->unfetch();
-
-		delete prefetcher;
-
-		m_prefetchers.erase( it_found );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderTextureManager::hasTextureDecoder( const FilePath& _fileName, ImageDecoderInterfacePtr & _decoder ) const
-	{
-		TMapPrefetchers::const_iterator it_found = m_prefetchers.find( _fileName );
-
-		if( it_found == m_prefetchers.end() )
-		{
-			return false;
-		}
-
-		const RenderTexturePrefetcherDesc * prefetcher = m_prefetchers.get_value( it_found );
-
-		const ImageDecoderInterfacePtr & decoder = prefetcher->getDecoder();
-
-		_decoder = decoder;
-
-		return decoder != nullptr;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderInterfacePtr RenderTextureManager::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
 	{
@@ -577,7 +521,7 @@ namespace Menge
         int pitch = 0;
         unsigned char * textureBuffer = _texture->lock( &pitch, _rect, false );
 
-        if( textureBuffer == NULL )
+        if( textureBuffer == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid lock");
 

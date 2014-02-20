@@ -1,23 +1,22 @@
-SET( MY_LIB_NAME Factory )
+SET( MY_LIB_NAME ServicePrefetcher )
 
 ADD_FILTER(
 src
-    Factorable.h
-    Factorable.cpp  
-    FactorableUnique.h
-	Factory.h
-	Factory.cpp
-    FactoryManager.h
-    FactoryManager.cpp
-    FactoryDefault.h    
-    FactoryPool.h
-    FactorablePtr.h
-    FactorablePtr.cpp
+    PrefetcherManager.h
+	PrefetcherManager.cpp    
+    PrefetcherReceiver.h
+    ThreadTaskPrefetchDataflow.h
+    ThreadTaskPrefetchDataflow.cpp
+    ThreadTaskPrefetchImageDecoder.h
+    ThreadTaskPrefetchImageDecoder.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils ) 
+INCLUDE_DIRECTORIES( 
+    ${Mengine_SOURCE_DIR} 
+    ${Mengine_SOURCE_DIR}/Utils 
+    ) 
 
 SET( MENGE_DEPENDENCIES
  ${MENGE_DEPENDENCIES}

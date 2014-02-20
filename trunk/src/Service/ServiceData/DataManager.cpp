@@ -46,11 +46,26 @@ namespace Menge
 		m_dataflows.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	DataflowInterfacePtr DataManager::getDataflow( const ConstString & _type ) const
+	{
+		DataflowInterfacePtr dataflow;
+		if( m_dataflows.has_copy( _type, dataflow ) == false )
+		{	
+			LOGGER_ERROR(m_serviceProvider)("DataManager::getDataflow '%s' don't register"
+				, _type.c_str()
+				);
+
+			return nullptr;
+		}
+
+		return dataflow;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataManager::dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream )
 	{
 		DataflowInterfacePtr dataflow;
 		if( m_dataflows.has_copy( _type, dataflow ) == false )
-		{
+		{	
 			LOGGER_ERROR(m_serviceProvider)("DataManager::dataflow '%s' don't register"
 				, _type.c_str()
 				);

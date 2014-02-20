@@ -8,11 +8,13 @@
 
 namespace Menge
 {
-	
-
     class ThreadTaskInterface
         : public FactorablePtr
     {
+	public:
+		virtual bool isComplete() const = 0;
+		virtual bool isCancel() const = 0;
+
     public:
 		virtual void main() = 0;
 		virtual void join() = 0;
@@ -24,6 +26,18 @@ namespace Menge
     };
 
 	typedef stdex::intrusive_ptr<ThreadTaskInterface> ThreadTaskInterfacePtr;
+
+	class ThreadPoolInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual void addTask( const ThreadTaskInterfacePtr & _task ) = 0;
+
+	public:
+		virtual void cancel() = 0;
+	};
+
+	typedef stdex::intrusive_ptr<ThreadPoolInterface> ThreadPoolInterfacePtr;
 
 	class ThreadIdentity
 		: public FactorablePtr
@@ -78,6 +92,9 @@ namespace Menge
         virtual bool addTask( const ThreadTaskInterfacePtr & _task, int _priority ) = 0;
         virtual void joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
         virtual void cancelTask( const ThreadTaskInterfacePtr & _task ) = 0;
+
+	public:
+		virtual ThreadPoolInterfacePtr runTaskPool() = 0;
 
     public:
         virtual ThreadMutexInterfacePtr createMutex() = 0;

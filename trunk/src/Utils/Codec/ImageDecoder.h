@@ -28,10 +28,10 @@ namespace Menge
 
     public:
         const InputStreamInterfacePtr & getStream() const override;
-		const ImageCodecDataInfo * getCodecDataInfo() const override;
 
 	public:
-		void setImageCodecDataInfo( const ImageCodecDataInfo & _dataInfo );
+		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
+		const ImageCodecDataInfo * getCodecDataInfo() const override;
 
     protected:
         void sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch );

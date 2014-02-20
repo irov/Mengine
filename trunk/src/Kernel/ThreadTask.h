@@ -11,8 +11,9 @@ namespace Menge
 		ThreadTask();
 		~ThreadTask();
 		
-	public:	
-		bool isCancel() const;
+	public:
+		bool isComplete() const override;
+		bool isCancel() const override;
 
 	public:
 		void main() override;
@@ -34,8 +35,9 @@ namespace Menge
 
 		virtual void _onComplete( bool _successful );
 		
-	protected:
-		volatile bool m_complete;
+	private:
+		bool m_complete;
+		volatile bool m_finish;
 		volatile bool m_successful;
 		volatile bool m_cancel;
 	};

@@ -12,6 +12,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	CacheManager::CacheManager()
 		: m_serviceProvider(nullptr)
+		, m_enumeratorId(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -31,92 +32,136 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool CacheManager::initialize()
 	{
+		m_memoryMutex = THREAD_SERVICE(m_serviceProvider)
+			->createMutex();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CacheManager::finalize()
 	{
-		for( TVectorCacheBufferMemories::iterator
-			it = m_memories.begin(),
-			it_end = m_memories.end();
+		for( TVectorCacheBufferMemory::iterator
+			it = m_buffers.begin(),
+			it_end = m_buffers.end();
 		it != it_end;
 		++it )
 		{
 			const CacheBufferMemory & memory = *it;
 
-			delete [] memory.buffer;
+			delete [] memory.memory;
 		}
 
-		m_memories.clear();
+		m_buffers.clear();
+
+		m_memoryMutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferInterfacePtr CacheManager::lockBuffer( size_t _size )
+	size_t CacheManager::lockBuffer( size_t _size, void ** _memory )
 	{
-		size_t size_found = (size_t)-1;
-		size_t size_unlock = 0;
-		TVectorCacheBufferMemories::iterator it_found = m_memories.end();
+		m_memoryMutex->lock();
 
-		TVectorCacheBufferMemories::iterator it_unlock = m_memories.end();
-		
-		for( TVectorCacheBufferMemories::iterator
-			it = m_memories.begin(),
-			it_end = m_memories.end();
+		size_t minSize = (size_t)(0);
+		size_t maxSize = (size_t)(-1);
+
+		const size_t INVALID_ID = (size_t)(-1);
+
+		size_t minIndex = INVALID_ID;
+		size_t maxIndex = INVALID_ID;
+
+		for( TVectorCacheBufferMemory::size_type
+			it = 0,
+			it_end = m_buffers.size();
 		it != it_end;
 		++it )
 		{
-			const CacheBufferMemory & memory = *it;
-			
-			if( memory.lock == true )
+			CacheBufferMemory & buffer = m_buffers[it];
+
+			if( buffer.lock == true )
 			{
 				continue;
 			}
 
-			if( size_unlock < memory.size )
+			if( buffer.size > minSize && buffer.size <= _size )
 			{
-				size_unlock = memory.size;
-				it_unlock = it;
+				minSize = buffer.size;
+				minIndex = it;
 			}
 
-			if( memory.size < _size )
+			if( buffer.size < maxSize && buffer.size >= _size )
 			{
-				continue;
-			}
-
-			if( size_found > memory.size )
-			{
-				size_found = memory.size;
-				it_found = it;
+				maxSize = buffer.size;
+				maxIndex = it;
 			}
 		}
 
-		if( it_found != m_memories.end() )
-		{
-		} 
-		else if( it_unlock != m_memories.end() )
-		{
-			CacheBufferMemory & memory = *it_unlock;
+		size_t buffer_id = 0;
 
-			memory.buffer = (TBlobject::value_type *)realloc( memory.buffer, _size );
-			memory.size = _size;
+		if( maxIndex != INVALID_ID )
+		{
+			CacheBufferMemory & buffer = m_buffers[maxIndex];
+			
+			buffer.lock = true;
 
-			it_found = it_unlock;
+			*_memory = buffer.memory;
+
+			buffer_id = buffer.id;
+		}
+		else if( minIndex != INVALID_ID )
+		{
+			CacheBufferMemory & buffer = m_buffers[minIndex];
+
+			buffer.lock = true;
+			buffer.memory = realloc( buffer.memory, _size );
+			buffer.size = _size;
+
+			*_memory = buffer.memory;
+
+			buffer_id = buffer.id;
 		}
 		else
 		{
-			CacheBufferMemory memory;
-			memory.buffer = (TBlobject::value_type *)malloc(_size);
-			memory.size = _size;
-			memory.lock = false;
+			size_t new_id = ++m_enumeratorId;
 
-			it_found = m_memories.insert( m_memories.end(), memory );
+			CacheBufferMemory buffer;
+			buffer.id = new_id;
+			buffer.lock = true;
+			buffer.memory = malloc( _size );
+			buffer.size = _size;
+
+			m_buffers.push_back( buffer );
+
+			*_memory = buffer.memory;
+
+			buffer_id = buffer.id;
 		}
 
-		CacheBufferMemory & memory = *it_found;
-		memory.lock = true;
+		m_memoryMutex->unlock();
 
-		CacheBuffer * buffer = m_factoryCacheBuffer.createObjectT();
-		buffer->setBuffer( &memory );
+		return buffer_id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CacheManager::unlockBuffer( size_t _bufferId )
+	{
+		m_memoryMutex->lock();
 
-		return buffer;
+		for( TVectorCacheBufferMemory::iterator
+			it = m_buffers.begin(),
+			it_end = m_buffers.end();
+		it != it_end;
+		++it )
+		{
+			CacheBufferMemory & buffer = *it;
+
+			if( buffer.id != _bufferId )
+			{
+				continue;
+			}
+
+			buffer.lock = false;
+
+			break;
+		}
+
+		m_memoryMutex->unlock();
 	}
 }

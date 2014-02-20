@@ -26,6 +26,9 @@ namespace Menge
 		void unregisterDataflow( const ConstString& _type ) override;
 
 	public:
+		DataflowInterfacePtr getDataflow( const ConstString & _type ) const override;
+
+	public:
 		DataInterfacePtr dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:

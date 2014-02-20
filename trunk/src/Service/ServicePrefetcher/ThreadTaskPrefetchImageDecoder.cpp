@@ -1,26 +1,39 @@
-#	include "ThreadTaskPrefetchTextureDecoder.h"
+#	include "ThreadTaskPrefetchImageDecoder.h"
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Core/MemoryInput.h"
+#	include "Factory/FactorableUnique.h"
 
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskPrefetchTextureDecoder::ThreadTaskPrefetchTextureDecoder( ServiceProviderInterface * _serviceProvider, const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec, RenderTextureDecoderReceiverInterface * _receiver )
-		: m_serviceProvider(_serviceProvider)
-		, m_pakName(_pakName)
-		, m_fileName(_fileName)
-		, m_codec(_codec)
-		, m_receiver(_receiver)
+	ThreadTaskPrefetchImageDecoder::ThreadTaskPrefetchImageDecoder()
+		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPrefetchTextureDecoder::_onRun()
+	void ThreadTaskPrefetchImageDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadTaskPrefetchImageDecoder::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
+	{
+		m_pakName = _pakName;
+		m_fileName = _fileName;
+		m_codec = _codec;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ImageDecoderInterfacePtr & ThreadTaskPrefetchImageDecoder::getDecoder() const
+	{
+		return m_imageDecoderMemory;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadTaskPrefetchImageDecoder::_onRun()
 	{
 		m_stream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( m_pakName, m_fileName );
@@ -61,7 +74,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPrefetchTextureDecoder::_onMain()
+	bool ThreadTaskPrefetchImageDecoder::_onMain()
 	{		
 		if( m_imageDecoder->initialize( m_stream ) == false )
 		{
@@ -76,9 +89,18 @@ namespace Menge
 
 		size_t memoryUse = dataInfo->width * dataInfo->height * dataInfo->channels;
 
-		MemoryInputPtr memoryStream = new MemoryInput();
+		MemoryInputPtr memoryStream = new FactorableUnique<MemoryInput>();
 
 		void * buffer = memoryStream->newMemory( memoryUse );
+
+		ImageCodecOptions options;
+		options.channels = dataInfo->channels;
+		options.pitch = dataInfo->width * dataInfo->channels;
+
+		if( m_imageDecoder->setOptions( &options ) == false )
+		{
+			return false;
+		}
 
 		size_t decodeByte = m_imageDecoder->decode( buffer, memoryUse );
 
@@ -96,26 +118,19 @@ namespace Menge
 			return nullptr;
 		}
 
-		m_imageDecoderMemory->setImageCodecDataInfo( *dataInfo );
+		m_imageDecoderMemory->setCodecDataInfo( dataInfo );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchTextureDecoder::_onComplete( bool _successful )
+	void ThreadTaskPrefetchImageDecoder::_onComplete( bool _successful )
 	{
 		if( _successful == false )
 		{
 			return;
 		}
 
-		if( m_receiver != nullptr )
-		{
-			m_receiver->onReceiverTextureDecoder( m_imageDecoderMemory );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchTextureDecoder::destroy()
-	{
-		delete this;
+		m_stream = nullptr;
+		m_imageDecoder = nullptr;		
 	}
 }

@@ -1,12 +1,9 @@
 #	pragma once
 
 #	include "Interface/CacheInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
-#	include "CacheBuffer.h"
-
-#	include "Factory/FactoryPool.h"
-
-#	include <list>
+#	include <vector>
 
 namespace Menge
 {
@@ -26,15 +23,25 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		CacheBufferInterfacePtr lockBuffer( size_t _size ) override;
+		size_t lockBuffer( size_t _size, void ** _memory ) override;
+		void unlockBuffer( size_t _bufferId ) override;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
-				
-		typedef FactoryPool<CacheBuffer, 4> TFactoryPoolCacheBuffer;
-		TFactoryPoolCacheBuffer m_factoryCacheBuffer;
 
-		typedef std::list<CacheBufferMemory> TVectorCacheBufferMemories;
-		TVectorCacheBufferMemories m_memories;
+		struct CacheBufferMemory
+		{
+			size_t id;
+			void * memory;
+			size_t size;
+			bool lock;
+		};
+
+		typedef std::vector<CacheBufferMemory> TVectorCacheBufferMemory;
+		TVectorCacheBufferMemory m_buffers;
+
+		size_t m_enumeratorId;
+				
+		ThreadMutexInterfacePtr m_memoryMutex;
 	};
 }

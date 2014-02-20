@@ -1,10 +1,12 @@
 #	pragma once
 
-#	include "Kernel/ThreadTask.h"
-
 #	include "Interface/ThreadSystemInterface.h"
 
-#	include <list>
+#	include "ThreadPool.h"
+
+#	include "Factory/FactoryPool.h"
+
+#	include <vector>
 
 namespace Menge
 {    
@@ -39,6 +41,9 @@ namespace Menge
         void cancelTask( const ThreadTaskInterfacePtr & _task ) override;
 
 	public:
+		ThreadPoolInterfacePtr runTaskPool() override;
+
+	public:
         void update() override;
 
     public:
@@ -59,7 +64,13 @@ namespace Menge
 
         size_t m_threadCount;
         
-        typedef std::list<ThreadTaskHandle> TVectorThreadTaskHandle;
+        typedef std::vector<ThreadTaskHandle> TVectorThreadTaskHandle;
         TVectorThreadTaskHandle m_taskThread;
+				
+		typedef std::vector<ThreadPoolPtr> TVectorThreadPool;
+		TVectorThreadPool m_threadPools;
+
+		typedef FactoryPool<ThreadPool, 4> TFactoryThreadPool;
+		TFactoryThreadPool m_factoryThreadPool;
 	};
 }	// namespace Menge

@@ -177,6 +177,10 @@ namespace Menge
         const mt::vec2f & getLoopSegment() const;
 		bool getAnchorPoint( mt::vec3f & _anchorPoint ) const;
 
+	public:
+		const FilePath & getFileName() const;
+		const ConstString & getDataflowType() const;
+
     public:
 		const TVectorMovieLayers & getLayers() const;
 		const MovieLayerCamera3D & getCamera3D() const;
@@ -214,7 +218,7 @@ namespace Menge
 		mt::vec3f m_anchorPoint;
 		
         FilePath m_path;
-		ConstString m_codecType;
+		ConstString m_dataflowType;
 		ConstString m_converter;
 
 		MovieFramePackInterfacePtr m_keyFramePack;

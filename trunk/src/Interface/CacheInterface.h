@@ -10,24 +10,6 @@
 
 namespace Menge
 {
-	class CacheBufferInterface
-		: public FactorablePtr
-	{
-	public:
-		 virtual TBlobject::value_type * getMemory() const = 0;
-
-	public:
-		template<class T>
-		T * getMemoryT() const
-		{
-			TBlobject::value_type * memory = this->getMemory();
-
-			return reinterpret_cast<T *>(memory);
-		}
-	};
-
-	typedef stdex::intrusive_ptr<CacheBufferInterface> CacheBufferInterfacePtr;
-
 	class CacheServiceInterface
 		: public ServiceInterface
 	{
@@ -38,7 +20,8 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual CacheBufferInterfacePtr lockBuffer( size_t _size ) = 0;
+		virtual size_t lockBuffer( size_t _size, void ** _memory ) = 0;
+		virtual void unlockBuffer( size_t _bufferId ) = 0;
 	};
 
 #   define CACHE_SERVICE( serviceProvider )\

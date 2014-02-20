@@ -1,6 +1,7 @@
 #	include "ImageDecoderPNG.h"
 
 #   include "Config/Blobject.h"
+#	include "Core/CacheMemoryBuffer.h"
 
 #	include "Logger/Logger.h"
 
@@ -252,10 +253,8 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
 			{
-				CacheBufferInterfacePtr row_buffer = CACHE_SERVICE(m_serviceProvider)
-					->lockBuffer( m_row_bytes );
-
-				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
+				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes);
+				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
                 png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -286,10 +285,8 @@ namespace Menge
 		{				
 			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
 			{
-				CacheBufferInterfacePtr row_buffer = CACHE_SERVICE(m_serviceProvider)
-					->lockBuffer( m_row_bytes );
-
-				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
+				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes);
+				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -307,10 +304,8 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-				CacheBufferInterfacePtr row_buffer = CACHE_SERVICE(m_serviceProvider)
-					->lockBuffer( m_row_bytes );
-
-				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
+				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes);
+				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
                 png_bytep bufferCursor = (png_bytep)_buffer;
 

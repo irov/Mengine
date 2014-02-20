@@ -173,35 +173,63 @@ namespace Menge
 
 		_task->cancel();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	ThreadPoolInterfacePtr ThreadEngine::runTaskPool()
+	{
+		ThreadPoolPtr taskPool = m_factoryThreadPool.createObjectT();
+
+		taskPool->setServiceProvider( m_serviceProvider );
+
+		m_threadPools.push_back( taskPool );
+
+		return taskPool;
+	}
 	///////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::update()
 	{
 		this->testComplete_();
-		//this->injectTasks_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::testComplete_()
 	{
-		if( m_taskThread.empty() == true )
-		{
-			return;
-		}
-		
-		for( TVectorThreadTaskHandle::iterator 
-			it = m_taskThread.begin(),
-			it_end = m_taskThread.end();
+		for( TVectorThreadTaskHandle::size_type it = 0,
+			it_end = m_taskThread.size();
 		it != it_end;
 		/*++it*/ )
 		{
-			const ThreadTaskInterfacePtr & task = it->task;
-			
+			const ThreadTaskHandle & handle = m_taskThread[it];
+
+			const ThreadTaskInterfacePtr & task = handle.task;
+
 			if( task->update() == false )
 			{
 				++it;
 			}
 			else
 			{
-				it = m_taskThread.erase( it );
+				m_taskThread[it] = m_taskThread.back();
+				m_taskThread.pop_back();
+				--it_end;
+			}
+		}
+
+		for( TVectorThreadPool::size_type 
+			it = 0,
+			it_end = m_threadPools.size();
+		it != it_end;
+		/*++it*/ )
+		{
+			const ThreadPoolPtr & pool = m_threadPools[it];
+
+			if( pool->update() == false )
+			{
+				++it;
+			}
+			else
+			{
+				m_threadPools[it] = m_threadPools.back();
+				m_taskThread.pop_back();
+				--it_end;
 			}
 		}
 	}

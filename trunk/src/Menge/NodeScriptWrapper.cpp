@@ -7,6 +7,7 @@
 #   include "Interface/NodeInterface.h"
 #   include "Interface/CacheInterface.h"
 #	include "Interface/HttpSystemInterface.h"
+#	include "Interface/PrefetcherInterface.h"
 
 #	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/ThreadTask.h"
@@ -132,6 +133,7 @@
 
 #	include "Utils/Core/Rect.h"
 #	include "Utils/Core/String.h"
+#	include "Utils/Core/CacheMemoryBuffer.h"
 
 #	include "Kernel/Join.h"
 
@@ -1326,10 +1328,9 @@ namespace Menge
 
 			size_t size = stream->size();
 
-			CacheBufferInterfacePtr cacheBuffer = CACHE_SERVICE(m_serviceProvider)
-				->lockBuffer( size + 1 );
+			CacheMemoryBuffer binary_buffer(m_serviceProvider, size + 1);
+			TBlobject::value_type * memory = binary_buffer.getMemoryT<TBlobject::value_type>();
 
-			TBlobject::value_type * memory = cacheBuffer->getMemory();
 			stream->read( memory, size );
 			memory[size] = 0;
 			
@@ -1436,7 +1437,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_prefetchResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+		void s_prefetchResources( const ConstString & _category, const ConstString & _groupName )
 		{
 			class MyResourceVisitor
 				: public ResourceVisitor
@@ -1454,26 +1455,52 @@ namespace Menge
 				}
 
 			protected:
-				void visit( ResourceReference* _resource )
+				bool filterResource( ResourceReference * _resource ) const
 				{
 					const ConstString & category = _resource->getCategory();
 
-					if( category != m_category )
+					if( m_category != category )
 					{
-						return;
+						return false;
 					}
 
 					const ConstString & group = _resource->getGroup();
 
-					if( group != m_groupName )
+					if( m_groupName != group )
+					{
+						return false;
+					}
+
+					return true;
+				}
+
+			protected:
+				void visit( ResourceImageDefault * _resource ) override
+				{
+					if( this->filterResource( _resource ) == false )
 					{
 						return;
 					}
 
-					if( _resource->getType() != CONST_STRING(m_serviceProvider, ResourceImageDefault) )
+					const FilePath & fileName = _resource->getFileName();
+					const ConstString & codecType = _resource->getCodecType();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->prefetchImageDecoder( m_category, fileName, codecType );
+				}
+
+				void visit( ResourceMovie * _resource ) override
+				{
+					if( this->filterResource( _resource ) == false )
 					{
 						return;
 					}
+
+					const FilePath & fileName = _resource->getFileName();
+					const ConstString & dataflowType = _resource->getDataflowType();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->prefetchData( m_category, fileName, dataflowType );
 				}
 
 			protected:
@@ -1486,8 +1513,82 @@ namespace Menge
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitResources( &rv_gac );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
+		{
+			class MyResourceVisitor
+				: public ResourceVisitor
+			{
+			public:
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+					: m_serviceProvider(_serviceProvider)
+					, m_category(_category)
+					, m_groupName(_groupName)
+				{
+				}
 
-			return 0;
+				~MyResourceVisitor()
+				{
+				}
+
+			protected:
+				bool filterResource( ResourceReference * _resource ) const
+				{
+					const ConstString & category = _resource->getCategory();
+
+					if( m_category != category )
+					{
+						return false;
+					}
+
+					const ConstString & group = _resource->getGroup();
+
+					if( m_groupName != group )
+					{
+						return false;
+					}
+
+					return true;
+				}
+
+			protected:
+				void visit( ResourceImageDefault * _resource ) override
+				{
+					if( this->filterResource( _resource ) == false )
+					{
+						return;
+					}
+
+					const FilePath & fileName = _resource->getFileName();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->unfetchImageDecoder( fileName );
+				}
+
+				void visit( ResourceMovie * _resource ) override
+				{
+					if( this->filterResource( _resource ) == false )
+					{
+						return;
+					}
+
+					const FilePath & fileName = _resource->getFileName();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->unfetchData( fileName );
+				}
+
+			protected:
+				ServiceProviderInterface * m_serviceProvider;
+				ConstString m_category;
+				ConstString m_groupName;
+			};
+
+			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
+
+			RESOURCE_SERVICE(m_serviceProvider)
+				->visitResources( &rv_gac );
 		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
@@ -4439,6 +4540,7 @@ namespace Menge
 			pybind::def_functor( "validateFont", nodeScriptMethod, &NodeScriptMethod::s_validateFont );
 
 			pybind::def_functor( "prefetchResources", nodeScriptMethod, &NodeScriptMethod::s_prefetchResources );
+			pybind::def_functor( "unfetchResources", nodeScriptMethod, &NodeScriptMethod::s_unfetchResources );
         }
     }
 }

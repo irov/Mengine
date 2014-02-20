@@ -291,7 +291,7 @@ namespace Menge
 			else
 			{
 				_radar->insertObject( object );
-			}			
+			}
 		}
 	}
 }

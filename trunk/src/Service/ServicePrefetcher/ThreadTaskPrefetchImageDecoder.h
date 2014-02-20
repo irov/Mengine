@@ -7,14 +7,25 @@
 
 #	include "Kernel/ThreadTask.h"
 
+#	include "Core/MemoryInput.h"
+
 namespace Menge
 {
-	class ThreadTaskPrefetchTextureDecoder
+	class ThreadTaskPrefetchImageDecoder
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskPrefetchTextureDecoder( ServiceProviderInterface * _serviceProvider, const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec, RenderTextureDecoderReceiverInterface * _receiver );
+		ThreadTaskPrefetchImageDecoder();
+	
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+
+	public:
+		void initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
 		
+	public:
+		const ImageDecoderInterfacePtr & getDecoder() const;
+
 	protected:
 		bool _onRun() override;
 
@@ -25,20 +36,17 @@ namespace Menge
 		void _onComplete( bool _successful ) override;
 
 	protected:
-		void destroy() override;
-
-	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
 		ConstString m_pakName;
 		FilePath m_fileName; 
 		ConstString m_codec;
-
-		RenderTextureDecoderReceiverInterface * m_receiver;
-
+				
 		InputStreamInterfacePtr m_stream;
 		ImageDecoderInterfacePtr m_imageDecoder;
 
-		ImageDecoderMemoryPtr m_imageDecoderMemory;
+		ImageDecoderInterfacePtr m_imageDecoderMemory;
 	};
+
+	typedef stdex::intrusive_ptr<ThreadTaskPrefetchImageDecoder> ThreadTaskPrefetchImageDecoderPtr;
 }

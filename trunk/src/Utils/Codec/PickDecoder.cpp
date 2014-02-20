@@ -55,6 +55,11 @@ namespace Menge
         return m_stream;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void PickDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+	{
+		m_dataInfo = *static_cast<const PickCodecDataInfo *>(_dataInfo);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const PickCodecDataInfo * PickDecoder::getCodecDataInfo() const 
 	{
 		return &m_dataInfo;

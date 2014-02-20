@@ -46,17 +46,17 @@ namespace Menge
 	{
 		size_t cnt = _count;
 		// Read over end of memory?
-		if ( m_pos + cnt > m_end )
+		if( m_pos + cnt > m_end )
 		{
 			cnt = m_end - m_pos;
 		}
 
-		if ( cnt == 0 )
+		if( cnt == 0 )
 		{
 			return 0;
 		}
 
-		std::copy( m_pos, m_pos + cnt, static_cast<unsigned char*>(_buf) );
+		memcpy( _buf, m_pos, cnt );
 
 		m_pos += cnt;
 

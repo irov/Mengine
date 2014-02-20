@@ -55,6 +55,11 @@ namespace Menge
         return m_stream;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+	{
+		m_dataInfo = *static_cast<const VideoCodecDataInfo *>(_dataInfo);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const VideoCodecDataInfo * VideoDecoder::getCodecDataInfo() const 
 	{
 		return &m_dataInfo;

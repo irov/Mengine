@@ -4,7 +4,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTask::ThreadTask()
-		: m_complete(false)
+		: m_finish(false)
+		, m_complete(false)
 		, m_successful(false)
 		, m_cancel(false)
 	{
@@ -19,13 +20,13 @@ namespace Menge
 		if( m_cancel == true )
 		{
 			m_successful = false;
-			m_complete = true;
+			m_finish = true;
 
 			return;
 		}
 
 		m_successful = this->_onMain();
-		m_complete = true;
+		m_finish = true;
 	}
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::join()
@@ -45,6 +46,11 @@ namespace Menge
 		return state;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ThreadTask::isComplete() const
+	{
+		return m_complete;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::isCancel() const
 	{
 		return m_cancel;
@@ -62,6 +68,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::cancel()
 	{
+		if( m_cancel == true )
+		{
+			return;
+		}
+
 		m_cancel = true;
 
 		this->_onCancel();
@@ -73,16 +84,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::update()
 	{
+		if( m_cancel == true )
+		{
+			return true;
+		}
+
+		if( m_complete == true )
+		{
+			return true;
+		}
+
 		this->_onUpdate();
 
-		bool complete = m_complete;
-
-		if( complete == true )
+		if( m_finish == true )
 		{
+			m_complete = true;
+
 			this->_onComplete( m_successful );
 		}
 
-		return complete;
+		return m_complete;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::_onUpdate()

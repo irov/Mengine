@@ -8,6 +8,7 @@
 #   include "Factory/FactorablePtr.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/FilePath.h"
 
 namespace Menge
 {
@@ -53,9 +54,12 @@ namespace Menge
 		virtual void registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow ) = 0;
 		virtual void unregisterDataflow( const ConstString& _type ) = 0;
 		
+	public:
+		virtual DataflowInterfacePtr getDataflow( const ConstString & _type ) const = 0;
+
     public:
 		virtual DataInterfacePtr dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream ) = 0;
-
+			
 	public:
         template<class T>
         T dataflowT( const ConstString & _type, const InputStreamInterfacePtr & _stream )

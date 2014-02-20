@@ -50,8 +50,8 @@ namespace Menge
         if( stream == nullptr )
         {
             return false;
-        }	
-                
+        }
+
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
             ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType );
 
@@ -105,12 +105,6 @@ namespace Menge
 	bool ResourceImageDefault::_compile()
 	{	
 		const ConstString & category = this->getCategory();
-
-		if( m_codecType.empty() == true )
-		{
-            m_codecType = CODEC_SERVICE(m_serviceProvider)
-                ->findCodecType( m_fileName );
-		}
 			
 		if( this->loadImageFrame_( category, m_fileName, m_codecType ) == false )
 		{

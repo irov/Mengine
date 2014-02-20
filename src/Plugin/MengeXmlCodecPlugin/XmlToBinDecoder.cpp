@@ -86,6 +86,11 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void XmlToBinDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const XmlCodecDataInfo * XmlToBinDecoder::getCodecDataInfo() const
 	{
 		return nullptr;

@@ -4,6 +4,7 @@
 #	include "Interface/CacheInterface.h"
 
 #	include "Core/BlobjectRead.h"
+#	include "Core/CacheMemoryBuffer.h"
 
 #	include "Logger/Logger.h"
 
@@ -63,17 +64,13 @@ namespace Menge
 		size_t compress_size;
 		_stream->read( &compress_size, sizeof(compress_size) );
 
-		CacheBufferInterfacePtr compress_buffer = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( compress_size );
-
-		TBlobject::value_type * compress_memory = compress_buffer->getMemory();
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size);
+		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
 
 		_stream->read( compress_memory, compress_size );
 
-		CacheBufferInterfacePtr binary_buffer = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( binary_size );
-
-		TBlobject::value_type * binary_memory = binary_buffer->getMemory();
+		CacheMemoryBuffer binary_buffer(m_serviceProvider, binary_size);
+		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
 
 		size_t uncompressSize = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)

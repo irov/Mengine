@@ -37,6 +37,9 @@ src
         
 	MemoryProxyInput.h
 	MemoryProxyInput.cpp
+    
+    CacheMemoryBuffer.h
+    CacheMemoryBuffer.cpp
 	
     ValueInterpolator.h
     

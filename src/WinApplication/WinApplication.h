@@ -21,6 +21,7 @@
 #   include "Interface/PluginInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 #	include "Interface/HttpSystemInterface.h"
+#	include "Interface/PrefetcherInterface.h"
 
 
 #   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
@@ -128,6 +129,7 @@ namespace Menge
 		bool initializeDataManager_();
 		bool initializeCacheManager_();
 		bool initializeHttpService_();
+		bool initializePrefetcherService_();
 
 
 	protected:
@@ -227,6 +229,8 @@ namespace Menge
 		DataServiceInterface * m_dataService;
 		CacheServiceInterface * m_cacheService;
 		HttpSystemInterface * m_httpSystem;
+
+		PrefetcherServiceInterface * m_prefetcherService;
 
 		FileLogger * m_fileLog;
 

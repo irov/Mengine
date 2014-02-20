@@ -479,7 +479,8 @@ namespace Menge
 
             ResourceReference * resource = entry.resource;
 
-            _visitor->visit( resource );
+			resource->accept( _visitor );
+            //_visitor->visit( resource );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -503,7 +504,7 @@ namespace Menge
 		{
 			ResourceReference * resource = *it;
 
-			_visitor->visit( resource );
+			resource->accept( _visitor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

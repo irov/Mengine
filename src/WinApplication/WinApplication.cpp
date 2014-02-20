@@ -87,6 +87,7 @@ SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
 
 SERVICE_EXTERN(HttpSystem, Menge::HttpSystemInterface);
+SERVICE_EXTERN(PrefetcherService, Menge::PrefetcherServiceInterface); 
 
 extern "C" // only required if using g++
 {
@@ -1148,6 +1149,29 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::initializePrefetcherService_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Prefetcher Service..." );
+
+		PrefetcherServiceInterface * prefetcherService;
+
+		if( SERVICE_CREATE( PrefetcherService, &prefetcherService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, prefetcherService );
+
+		if( prefetcherService->initialize() == false )
+		{
+			return false;
+		}
+
+		m_prefetcherService = prefetcherService;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeConverterEngine_()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
@@ -1391,6 +1415,11 @@ namespace Menge
 		}
 
 		if( this->initializeHttpService_() == false )
+		{
+			return false;
+		}
+
+		if( this->initializePrefetcherService_() == false )
 		{
 			return false;
 		}

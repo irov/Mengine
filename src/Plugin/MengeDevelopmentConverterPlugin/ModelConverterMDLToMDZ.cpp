@@ -8,7 +8,10 @@
 #   include "Interface/CacheInterface.h"
 
 #	include "Logger/Logger.h"
+
 #   include "Core/FilePath.h"
+#	include "Core/CacheMemoryBuffer.h"
+
 #   include "Config/Blobject.h"
 
 #   include "WindowsLayer/WindowsIncluder.h"
@@ -55,10 +58,8 @@ namespace Menge
 
         size_t data_size = input->size();
 
-		CacheBufferInterfacePtr data_buffer = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( data_size );
-        
-		TBlobject::value_type * data_memory = data_buffer->getMemory();
+		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size);
+		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
 
         input->read( data_memory, data_size );
 
@@ -75,10 +76,8 @@ namespace Menge
             return false;
         }
 
-		CacheBufferInterfacePtr archive_buffer = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( archive_size );
-
-		TBlobject::value_type * archive_memory = archive_buffer->getMemory();
+		CacheMemoryBuffer archive_buffer(m_serviceProvider, archive_size);
+		TBlobject::value_type * archive_memory = archive_buffer.getMemoryT<TBlobject::value_type>();
 		
         size_t comress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)

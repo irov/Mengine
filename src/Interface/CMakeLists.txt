@@ -46,7 +46,8 @@ src
     WindowsLayerInterface.h
     ArchiveInterface.h
     ProfilerInterface.h
-    Model3DInterface.h    
+    Model3DInterface.h
+    PrefetcherInterface.h
     
 	dummy.cpp
 )

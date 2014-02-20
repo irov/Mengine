@@ -6,6 +6,8 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CacheInterface.h"
 
+#	include "Core/CacheMemoryBuffer.h"
+
 #	include "Logger/Logger.h"
 
 #	include "stdex/xml_sax_parser.h"
@@ -360,11 +362,9 @@ namespace Menge
 		}
 
 		size_t xml_buffer_size = stream->size();
-
-		CacheBufferInterfacePtr buffer = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( xml_buffer_size + 1 );
-
-		char * memory = buffer->getMemoryT<char>();
+		
+		CacheMemoryBuffer buffer(m_serviceProvider, xml_buffer_size + 1);
+		char * memory = buffer.getMemoryT<char>();
 
 		stream->read( memory, xml_buffer_size );
 		memory[xml_buffer_size] = 0;

@@ -48,7 +48,10 @@ namespace Menge
 
 	public:
         virtual const InputStreamInterfacePtr & getStream() const = 0;
-		virtual const CodecDataInfo* getCodecDataInfo() const = 0;
+
+	public:
+		virtual void setCodecDataInfo( const CodecDataInfo * _dataInfo ) = 0;
+		virtual const CodecDataInfo * getCodecDataInfo() const = 0;
 
 	public:
 		virtual size_t decode( void * _buffer, size_t _bufferSize ) = 0;

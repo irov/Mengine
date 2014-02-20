@@ -28,6 +28,9 @@ namespace Menge
 
     public:
         const InputStreamInterfacePtr & getStream() const override;
+
+	public:
+		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
 		const SoundCodecDataInfo * getCodecDataInfo() const override;
 
 	protected:

@@ -4,6 +4,7 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/ConverterInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/PrefetcherInterface.h"
 
 #	include "ResourceImageDefault.h"
 
@@ -77,6 +78,16 @@ namespace Menge
 		return m_hasAnchorPoint;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const FilePath & ResourceMovie::getFileName() const
+	{
+		return m_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceMovie::getDataflowType() const
+	{
+		return m_dataflowType;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const TVectorMovieLayers & ResourceMovie::getLayers() const
 	{
 		return m_layers;
@@ -120,6 +131,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_isValid() const
     {
+		if( fabsf(m_frameDuration) < 0.0001f )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_isValid: '%s'm_frameDuration == 0.f"
+				, this->getName().c_str()
+				);
+
+			return false;
+		}
+
         for( TVectorMovieLayers::const_iterator
             it = m_layers.begin(),
             it_end = m_layers.end();
@@ -167,7 +187,7 @@ namespace Menge
 		}
 
 		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)
-			->dataflowT<MovieFramePackInterfacePtr>( m_codecType, stream );
+			->dataflowT<MovieFramePackInterfacePtr>( m_dataflowType, stream );
 
 		if( framePack == nullptr )
 		{
@@ -230,11 +250,11 @@ namespace Menge
 		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
                 
         metadata->swap_KeyFramesPackPath_Path( m_path );
-		metadata->swap_KeyFramesPackPath_Codec( m_codecType );
+		metadata->swap_KeyFramesPackPath_Codec( m_dataflowType );
 		metadata->swap_KeyFramesPackPath_Converter( m_converter );
 
 		//FIX THIS
-		if( m_codecType.empty() == true )
+		if( m_dataflowType.empty() == true )
 		{
 			m_converter = CONST_STRING(m_serviceProvider, xmlToAekMovie);
 		}
@@ -532,13 +552,13 @@ namespace Menge
 			}
 		}
 
-		if( m_codecType.empty() == true )
+		if( m_dataflowType.empty() == true )
 		{
-			m_codecType = CODEC_SERVICE(m_serviceProvider)
+			m_dataflowType = CODEC_SERVICE(m_serviceProvider)
 				->findCodecType( m_path );
 		}
 
-		if( m_codecType.empty() == true )
+		if( m_dataflowType.empty() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
@@ -558,15 +578,6 @@ namespace Menge
 			return false;
 		}
 
-		if( fabsf(m_frameDuration) < 0.0001f )
-		{
-            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s'm_frameDuration == 0.f"
-                , this->getName().c_str()
-                );
-
-			return false;
-		}
-
 		if( m_path.empty() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t have Key Frames Pack Path"
@@ -578,31 +589,38 @@ namespace Menge
 
 		const ConstString& category = this->getCategory();
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( category, m_path );
-
-		if( stream == nullptr )
+		DataInterfacePtr data;
+		if( PREFETCHER_SERVICE(m_serviceProvider)
+			->getData( m_path, data ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t open Frames Pack '%s'"
-				, this->getName().c_str()
-				, m_path.c_str()
-				);
+			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+				->openInputFile( category, m_path );
 
-			return false;
+			if( stream == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t open Frames Pack '%s'"
+					, this->getName().c_str()
+					, m_path.c_str()
+					);
+
+				return false;
+			}
+
+			data = DATA_SERVICE(m_serviceProvider)
+				->dataflow( m_dataflowType, stream );
+
+			if( data == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
+					, this->getName().c_str()
+					, m_path.c_str()
+					);
+
+				return false;
+			}
 		}
 
-		m_keyFramePack = DATA_SERVICE(m_serviceProvider)
-			->dataflowT<MovieFramePackInterfacePtr>( m_codecType, stream );
-
-		if( m_keyFramePack == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
-				, this->getName().c_str()
-				, m_path.c_str()
-				);
-
-			return false;
-		}
+		m_keyFramePack = data;
 
 		for( TVectorMovieLayers::iterator
 			it = m_layers.begin(),

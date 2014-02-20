@@ -54,6 +54,11 @@ namespace Menge
         return m_stream;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void SoundDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+	{
+		m_dataInfo = *static_cast<const SoundCodecDataInfo *>(_dataInfo);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const SoundCodecDataInfo * SoundDecoder::getCodecDataInfo() const 
 	{
 		return &m_dataInfo;

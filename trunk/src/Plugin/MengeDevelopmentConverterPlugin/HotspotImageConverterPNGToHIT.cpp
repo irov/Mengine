@@ -40,7 +40,7 @@ namespace Menge
 		}
 
 		bool status = decoder->initialize( _stream );
-
+		
 		return status;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +154,8 @@ namespace Menge
         di.mipmapsize = bufferSize + mimmap_size;
 
         encoder->encode( buffer, &di );
+
+		encoder->finalize();
 
         delete [] buffer;
 

@@ -212,8 +212,6 @@ namespace Menge
 	ImageDecoderJPEG::~ImageDecoderJPEG()
 	{
 		// skip all rows
-        m_jpegObject.output_scanline = m_jpegObject.output_height;
-        jpeg_finish_decompress( &m_jpegObject );
         jpeg_destroy_decompress( &m_jpegObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -249,11 +247,8 @@ namespace Menge
 		m_dataInfo.height = m_jpegObject.image_height;
 		m_dataInfo.quality = getQuality( &m_jpegObject );
 		
-        int numComponents = m_jpegObject.num_components;
-		m_dataInfo.channels = numComponents;
-		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * numComponents;
-
-		jpeg_start_decompress( &m_jpegObject );
+		m_dataInfo.channels = m_jpegObject.num_components;
+		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * m_dataInfo.channels;	
 
 		return true;
 	}
@@ -270,6 +265,17 @@ namespace Menge
 
             return 0;
         }
+
+		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
+		{
+			// If we get here, the JPEG code has signaled an error.
+			// We need to clean up the JPEG object and return.
+			jpeg_destroy_decompress( &m_jpegObject );
+
+			return false;
+		}
+
+		jpeg_start_decompress( &m_jpegObject );
 
 		if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
@@ -327,6 +333,8 @@ namespace Menge
             }
         }
 
+		jpeg_finish_decompress( &m_jpegObject );
+		
         size_t readSize = m_options.pitch * m_dataInfo.height;
 		
 		return readSize;

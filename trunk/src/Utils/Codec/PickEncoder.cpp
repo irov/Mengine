@@ -4,33 +4,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PickEncoder::PickEncoder()
-        : m_serviceProvider(nullptr)
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PickEncoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * PickEncoder::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-    bool PickEncoder::initialize( const OutputStreamInterfacePtr & _stream )
-    {
-        m_stream = _stream;
-
-        bool result = this->_initialize();
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PickEncoder::_initialize()
-    {
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool PickEncoder::setOptions( CodecOptions * _options )
     {
@@ -47,10 +22,5 @@ namespace Menge
     bool PickEncoder::_invalidateOptions()
     {
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr PickEncoder::getStream() const
-    {
-        return m_stream;
     }
 }

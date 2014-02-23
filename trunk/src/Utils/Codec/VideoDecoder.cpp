@@ -4,34 +4,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoder::VideoDecoder()
-        : m_serviceProvider(nullptr)
-        , m_stream(nullptr)
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * VideoDecoder::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::initialize( const InputStreamInterfacePtr & _stream )
-    {        
-        m_stream = _stream;
-
-        bool status = this->_initialize();
-
-        return status;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::_initialize()
-    {
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool VideoDecoder::setOptions( CodecOptions * _options )
     {
@@ -48,11 +22,6 @@ namespace Menge
     bool VideoDecoder::_invalidateOptions()
     {
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const InputStreamInterfacePtr & VideoDecoder::getStream() const
-    {
-        return m_stream;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )

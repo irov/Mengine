@@ -17,6 +17,7 @@ namespace Menge
 
     public:
         bool initialize( const InputStreamInterfacePtr & _stream ) override;
+		void finalize();
 
     protected:
         const InputStreamInterfacePtr & getStream() const override;

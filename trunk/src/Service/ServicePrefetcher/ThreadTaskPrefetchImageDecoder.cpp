@@ -94,8 +94,8 @@ namespace Menge
 		void * buffer = memoryStream->newMemory( memoryUse );
 
 		ImageCodecOptions options;
-		options.channels = dataInfo->channels;
-		options.pitch = dataInfo->width * dataInfo->channels;
+		options.channels = 4;
+		options.pitch = dataInfo->width * 4;
 
 		if( m_imageDecoder->setOptions( &options ) == false )
 		{

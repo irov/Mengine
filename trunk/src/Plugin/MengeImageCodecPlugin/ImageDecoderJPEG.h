@@ -30,13 +30,11 @@ namespace Menge
 
     protected:
 		bool _initialize() override;
+		void _finalize() override;
 
     protected:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
         
-	private:
-		int getQuality( jpeg_decompress_struct* _jpegObject );
-
 	private:
 		jpeg_decompress_struct m_jpegObject;
 		DecoderJPEGErrorManager m_errorMgr;

@@ -76,6 +76,9 @@ namespace Menge
 	{
 		CACHE_SERVICE(m_serviceProvider)
 			->unlockBuffer( m_bufferId );
+
+		m_bufferId = 0;
+		m_memory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderWEBP::decode( void * _buffer, size_t _bufferSize )

@@ -2,32 +2,21 @@
 
 #	include "Interface/ImageCodecInterface.h"
 
+#	include "Codec/Decoder.h"
+
 namespace Menge
 {
 	class ImageDecoder
-		: public ImageDecoderInterface
+		: public Decoder<ImageDecoderInterface>
 	{
 	public:
 		ImageDecoder();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-        bool initialize( const InputStreamInterfacePtr & _stream ) override;
-
-    protected:
-        virtual bool _initialize();
 		
 	public:
         bool setOptions( CodecOptions * _options ) override;
 
     protected:
         virtual bool _invalidateOptions();
-
-    public:
-        const InputStreamInterfacePtr & getStream() const override;
 
 	public:
 		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
@@ -38,9 +27,6 @@ namespace Menge
         void sweezleAlpha3( size_t _width, size_t _height, void * _buffer, size_t _pitch );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-        InputStreamInterfacePtr m_stream;
-
         ImageCodecOptions m_options;
 		ImageCodecDataInfo m_dataInfo;
 	};    

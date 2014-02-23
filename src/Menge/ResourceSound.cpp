@@ -99,10 +99,10 @@ namespace Menge
             return false;
         }
 
-        SoundDecoderInterfacePtr codec = CODEC_SERVICE(m_serviceProvider)
+        SoundDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
             ->createDecoderT<SoundDecoderInterfacePtr>( m_codec );
 
-        if( codec == nullptr )
+        if( decoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't create sound decoder for file %s:%s"
                 , m_name.c_str()
@@ -113,7 +113,7 @@ namespace Menge
             return false;
         }
 
-		if( codec->initialize( stream ) == false )
+		if( decoder->initialize( stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't initialize sound decoder for file %s:%s"
 				, m_name.c_str()
@@ -124,7 +124,7 @@ namespace Menge
 			return false;
 		}
 
-        const SoundCodecDataInfo * dataInfo = codec->getCodecDataInfo();
+        const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
         if( dataInfo->length > 500.f && m_isStreamable == false )
         {
@@ -136,7 +136,7 @@ namespace Menge
                 );
         }
 
-        codec = nullptr;
+        decoder = nullptr;
         stream = nullptr;
 
         SoundBufferInterface * buffer = this->createSoundBuffer();

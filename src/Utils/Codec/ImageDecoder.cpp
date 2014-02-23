@@ -6,33 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoder::ImageDecoder()
-		: m_serviceProvider(nullptr)
-        , m_stream(nullptr)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ImageDecoder::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::initialize( const InputStreamInterfacePtr & _stream )
-    {
-        m_stream = _stream;
-        
-        bool status = this->_initialize();
-
-        return status;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoder::_initialize()
-	{
-		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoder::setOptions( CodecOptions * _options )
@@ -66,11 +40,6 @@ namespace Menge
     bool ImageDecoder::_invalidateOptions()
     {
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const InputStreamInterfacePtr & ImageDecoder::getStream() const
-    {
-        return m_stream;
     }
 	//////////////////////////////////////////////////////////////////////////
 	const ImageCodecDataInfo * ImageDecoder::getCodecDataInfo() const 

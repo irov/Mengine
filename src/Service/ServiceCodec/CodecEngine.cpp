@@ -64,7 +64,7 @@ namespace Menge
                 );
 
 			return nullptr;
-		}        
+		}
 
 		DecoderInterfacePtr decoder = decoderFactory->createDecoder();
 

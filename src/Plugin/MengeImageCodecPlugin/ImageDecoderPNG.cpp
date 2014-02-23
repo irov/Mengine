@@ -1,12 +1,12 @@
 #	include "ImageDecoderPNG.h"
 
+#	include "Interface/CacheInterface.h"
+
 #   include "Config/Blobject.h"
 #	include "Core/CacheMemoryBuffer.h"
 
 #	include "Logger/Logger.h"
 
-//#	include "Interface/InputSystemInterface.h"
-#	include "Interface/CacheInterface.h"
 
 #	define PNG_BYTES_TO_CHECK 8
 

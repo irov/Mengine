@@ -1,38 +1,48 @@
 #	include "ImageDecoderWEBP.h"
+
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/CacheInterface.h"
+
+#	include "Core/CacheMemoryBuffer.h"
+
+#	include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderWEBP::ImageDecoderWEBP()
+		: m_bufferId(0)
+		, m_memory(nullptr)
+		, m_memorySize(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderWEBP::~ImageDecoderWEBP()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    typedef std::vector<uint8_t> TVectorWEBPBuffer;
-    static TVectorWEBPBuffer s_WEBPBuffer;
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderWEBP::_initialize()
 	{
-		size_t dataSize = m_stream->size();
+		size_t bufferSize = m_stream->size();
 				
-		//We must write all data into buffer in initialise because WebP Mux can not determine alpha data in small chunk
-		//m_dataBuffer = new uint8_t [m_dataSize];
-        s_WEBPBuffer.resize( dataSize );
+		void * memory = nullptr;
+		m_bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( bufferSize, &memory );
 
-		uint8_t * buffer = &s_WEBPBuffer[0];
-		size_t bufferSize = s_WEBPBuffer.size();
+		m_memory = static_cast<uint8_t *>(memory);
+		m_memorySize = bufferSize;
 
-		m_stream->read( buffer, bufferSize );
+		m_stream->read( m_memory, m_memorySize );
 		
-        VP8StatusCode status = WebPGetFeatures( buffer, bufferSize, &m_features );
+        VP8StatusCode status = WebPGetFeatures( m_memory, m_memorySize, &m_features );
 
         if( status != VP8_STATUS_OK )
         {
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::_initialize invalid WebPGetFeatures %d"
+				, status
+				);
+
             return false;
         }
 		
@@ -57,9 +67,15 @@ namespace Menge
 		
         m_options.pitch = m_dataInfo.width * m_dataInfo.channels;
 
-		m_dataInfo.size = s_WEBPBuffer.size();
+		m_dataInfo.size = bufferSize;
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoderWEBP::_finalize()
+	{
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( m_bufferId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderWEBP::decode( void * _buffer, size_t _bufferSize )
@@ -71,7 +87,7 @@ namespace Menge
         {
             if( m_dataInfo.channels == 3 && m_options.channels == 4 )
             {
-                if( WebPDecodeBGRInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+                if( WebPDecodeBGRInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
                 {
                     return 0;
                 }
@@ -80,7 +96,7 @@ namespace Menge
             }
             else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
             {
-                if( WebPDecodeBGRInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+                if( WebPDecodeBGRInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
                 {
                     return 0;
                 }
@@ -90,7 +106,7 @@ namespace Menge
         {
             if( m_dataInfo.channels == 4 && m_options.channels == 4 )
             {
-                if( WebPDecodeBGRAInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+                if( WebPDecodeBGRAInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
                 {
                     return 0;
                 }
@@ -101,7 +117,7 @@ namespace Menge
 		{
 			if( m_dataInfo.channels == 3 && m_options.channels == 4 )
 			{
-				if( WebPDecodeRGBInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+				if( WebPDecodeRGBInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
 				{
 					return 0;
 				}
@@ -110,7 +126,7 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
 			{
-				if( WebPDecodeRGBInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+				if( WebPDecodeRGBInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
 				{
 					return 0;
 				}
@@ -120,7 +136,7 @@ namespace Menge
 		{
 			if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-				if( WebPDecodeRGBAInto( &s_WEBPBuffer[0], s_WEBPBuffer.size(), webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+				if( WebPDecodeRGBAInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
 				{
 					return 0;
 				}

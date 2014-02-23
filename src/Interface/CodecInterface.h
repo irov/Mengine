@@ -42,6 +42,7 @@ namespace Menge
 
     public:
         virtual bool initialize( const InputStreamInterfacePtr & _stream ) = 0;
+		virtual void finalize() = 0;
 
     public:
         virtual bool setOptions( CodecOptions * _options ) = 0;
@@ -78,6 +79,7 @@ namespace Menge
 
     public:
         virtual bool initialize( const OutputStreamInterfacePtr & _stream ) = 0;
+		virtual void finalize() = 0;
 
     public:
         virtual bool setOptions( CodecOptions * _options ) = 0;

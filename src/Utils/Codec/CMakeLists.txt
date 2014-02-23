@@ -2,6 +2,8 @@ SET( MY_LIB_NAME Codec )
 
 ADD_FILTER(
 src
+    Decoder.h
+    Encoder.h
     PickEncoder.cpp
     PickEncoder.h
     PickDecoder.cpp

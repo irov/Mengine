@@ -16,11 +16,17 @@ namespace Menge
 
 	public:
 		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 	protected:
-        WebPBitstreamFeatures m_features;		
+        WebPBitstreamFeatures m_features;
+
+		size_t m_bufferId;
+		uint8_t * m_memory;
+		size_t m_memorySize;
 	};
-}	// namespace Menge
+}
+

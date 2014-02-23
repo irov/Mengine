@@ -205,14 +205,46 @@ namespace Menge
 		src->pub.next_input_byte = NULL;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static int s_getQuality( jpeg_decompress_struct* _jpegObject )
+	{
+		if( _jpegObject->quant_tbl_ptrs[0] == nullptr )
+		{
+			return 100;
+		}
+
+		UINT16 val1 = _jpegObject->quant_tbl_ptrs[0]->quantval[0];
+		UINT16 val2 = _jpegObject->quant_tbl_ptrs[0]->quantval[1];
+
+		val1 = ( val1 * 100 - 50 ) / 16;
+		val2 = ( val2 * 100 - 50 ) / 11;
+
+		if( val1 > 100 )
+		{
+			val1 = 5000 / val1;
+		}
+		else
+		{
+			val1 = (200 - val1)/2;
+		}
+
+		if( val2 > 100 )
+		{
+			val2 = 5000 / val2;
+		}
+		else
+		{
+			val2 = (200 - val2)/2;
+		}
+
+		return (val1 + val2)/2;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::ImageDecoderJPEG()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::~ImageDecoderJPEG()
 	{
-		// skip all rows
-        jpeg_destroy_decompress( &m_jpegObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderJPEG::_initialize()
@@ -245,7 +277,7 @@ namespace Menge
 		m_dataInfo.mipmaps = 0;
 		m_dataInfo.width = m_jpegObject.image_width;
 		m_dataInfo.height = m_jpegObject.image_height;
-		m_dataInfo.quality = getQuality( &m_jpegObject );
+		m_dataInfo.quality = s_getQuality( &m_jpegObject );
 		
 		m_dataInfo.channels = m_jpegObject.num_components;
 		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * m_dataInfo.channels;	
@@ -333,6 +365,7 @@ namespace Menge
             }
         }
 
+		m_jpegObject.output_scanline = m_jpegObject.output_height;
 		jpeg_finish_decompress( &m_jpegObject );
 		
         size_t readSize = m_options.pitch * m_dataInfo.height;
@@ -340,37 +373,8 @@ namespace Menge
 		return readSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int ImageDecoderJPEG::getQuality( jpeg_decompress_struct* _jpegObject )
+	void ImageDecoderJPEG::_finalize()
 	{
-		if( _jpegObject->quant_tbl_ptrs[0] == nullptr )
-		{
-			return 100;
-		}
-
-		UINT16 val1 = _jpegObject->quant_tbl_ptrs[0]->quantval[0];
-		UINT16 val2 = _jpegObject->quant_tbl_ptrs[0]->quantval[1];
-
-		val1 = ( val1 * 100 - 50 ) / 16;
-		val2 = ( val2 * 100 - 50 ) / 11;
-
-		if( val1 > 100 )
-		{
-			val1 = 5000 / val1;
-		}
-		else
-		{
-			val1 = (200 - val1)/2;
-		}
-
-		if( val2 > 100 )
-		{
-			val2 = 5000 / val2;
-		}
-		else
-		{
-			val2 = (200 - val2)/2;
-		}
-
-		return (val1 + val2)/2;
+		jpeg_destroy_decompress( &m_jpegObject );
 	}
 }	// namespace Menge

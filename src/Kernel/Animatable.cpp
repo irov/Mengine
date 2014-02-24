@@ -148,7 +148,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animatable::play( float _time )
 	{
-		//printf("Animatable play\n");
 		m_interrupt = false;
 
 		m_playTime = _time;		

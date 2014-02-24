@@ -303,8 +303,17 @@ namespace Menge
 			return nullptr;
 		}
 
+		const SoundCodecDataInfo * dataInfo = desc.codec->getCodecDataInfo();
+
+		bool true_stream = _isStream;
+
+		if( dataInfo->length < 500 )
+		{
+			true_stream = false;
+		}
+
 		SoundBufferInterface * sample = SOUND_SYSTEM(m_serviceProvider)
-            ->createSoundBuffer( desc.codec, _isStream );
+            ->createSoundBuffer( desc.codec, true_stream );
 
         if( sample == nullptr )
         {

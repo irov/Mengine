@@ -167,7 +167,7 @@ namespace Menge
 		//	, _time
 		//	);
 
-        //if( m_resourceMovieName == "MovieCutScene_CutScene1"
+        //if( m_resourceMovie->getName() == "Movie101_Underworld_MG_Sound_Letter_Insert"
         //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
         //    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
         //    )
@@ -2250,7 +2250,6 @@ namespace Menge
             }
             else if( _endFrame <= indexIn && _beginFrame <= indexOut && _beginFrame > indexIn )
             {
-                //printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
                 node->localHide(true);
 
                 if( layer.isAnimatable() == true )
@@ -2444,7 +2443,6 @@ namespace Menge
             {
 				size_t frameId = indexOut - indexIn;
 
-                //printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
                 node->localHide( true );
 
                 if( layer.isAnimatable() == true )

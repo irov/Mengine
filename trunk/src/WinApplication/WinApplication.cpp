@@ -2083,6 +2083,12 @@ namespace Menge
 			m_renderSystem = nullptr;
 		}
 
+		if( m_prefetcherService != nullptr )
+		{
+			SERVICE_DESTROY( PrefetcherService, m_prefetcherService );
+			m_prefetcherService = nullptr;
+		}
+
 		if( m_threadService != nullptr )
 		{
 			m_threadService->finalize();

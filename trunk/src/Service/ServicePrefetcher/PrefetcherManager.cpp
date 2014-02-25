@@ -37,9 +37,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::finalize()
 	{
-		m_threadPool->cancel();
-		m_threadPool = nullptr;
-
 		for( TMapPrefetchImageDecoderReceiver::iterator
 			it = m_prefetchImageDecoderReceiver.begin(),
 			it_end = m_prefetchImageDecoderReceiver.end();
@@ -47,7 +44,9 @@ namespace Menge
 		++it )
 		{
 			PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it );
-			receiver.prefetcher->cancel();
+
+			THREAD_SERVICE(m_serviceProvider)
+				->joinTask( receiver.prefetcher );
 		}
 
 		m_prefetchImageDecoderReceiver.clear();
@@ -59,10 +58,15 @@ namespace Menge
 		++it )
 		{
 			PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it );
-			receiver.prefetcher->cancel();
+
+			THREAD_SERVICE(m_serviceProvider)
+				->joinTask( receiver.prefetcher );
 		}
 
 		m_prefetchDataReceiver.clear();
+
+		m_threadPool->cancel();
+		m_threadPool = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
@@ -212,8 +216,41 @@ namespace Menge
 	PrefetcherDebugInfo PrefetcherManager::getDebugInfo() const
 	{
 		PrefetcherDebugInfo info;
-		info.decoderCount = m_prefetchImageDecoderReceiver.size();
-		info.dataCount = m_prefetchDataReceiver.size();
+
+		info.decoderCount = 0;
+		info.dataCount = 0;
+
+		for( TMapPrefetchImageDecoderReceiver::const_iterator
+			it = m_prefetchImageDecoderReceiver.begin(),
+			it_end = m_prefetchImageDecoderReceiver.end();
+		it != it_end;
+		++it )
+		{
+			const PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it );
+
+			if( receiver.prefetcher->isComplete() == false )
+			{
+				continue;
+			}
+
+			++info.decoderCount;
+		}
+
+		for( TMapPrefetchDataReceiver::const_iterator
+			it = m_prefetchDataReceiver.begin(),
+			it_end = m_prefetchDataReceiver.end();
+		it != it_end;
+		++it )
+		{
+			const PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it );
+
+			if( receiver.prefetcher->isComplete() == false )
+			{
+				continue;
+			}
+
+			++info.dataCount;
+		}
 
 		return info;
 	}

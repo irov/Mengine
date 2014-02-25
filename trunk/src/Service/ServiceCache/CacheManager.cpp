@@ -46,9 +46,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const CacheBufferMemory & memory = *it;
+			const CacheBufferMemory & buffer = *it;
 
-			delete [] memory.memory;
+			free( buffer.memory );
 		}
 
 		m_buffers.clear();

@@ -87,7 +87,7 @@ namespace Menge
 
 		const ImageCodecDataInfo * dataInfo = m_imageDecoder->getCodecDataInfo();
 
-		size_t memoryUse = dataInfo->width * dataInfo->height * dataInfo->channels;
+		size_t memoryUse = dataInfo->width * dataInfo->height * 4;
 
 		MemoryInputPtr memoryStream = new FactorableUnique<MemoryInput>();
 

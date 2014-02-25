@@ -47,21 +47,36 @@ namespace Menge
 			if( m_threadTasks.empty() == true )
 			{
 				return false;
-			}			
+			}
 						
-			ThreadTaskInterfacePtr threadTask = m_threadTasks.pop();
+			while( m_threadTasks.empty() == false )
+			{
+				ThreadTaskInterfacePtr threadTask = m_threadTasks.pop();
 
-			if( THREAD_SERVICE(m_serviceProvider)
-				->addTask( threadTask, 0 ) == false )
+				if( threadTask->isComplete() == true ||
+					threadTask->isCancel() == true )
+				{
+					continue;
+				}
+
+				if( THREAD_SERVICE(m_serviceProvider)
+					->addTask( threadTask, 0 ) == false )
+				{
+					return false;
+				}
+
+				m_currentTask = threadTask;
+
+				break;
+			}
+
+			if( m_currentTask == nullptr )
 			{
 				return false;
 			}
-
-			m_currentTask = threadTask;
 		}
 
-		if( m_currentTask->update() == true || 
-			m_currentTask->isComplete() == true ||
+		if( m_currentTask->isComplete() == true ||
 			m_currentTask->isCancel() == true )
 		{
 			m_currentTask = nullptr;

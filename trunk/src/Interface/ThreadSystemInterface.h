@@ -17,11 +17,10 @@ namespace Menge
 
     public:
 		virtual void main() = 0;
-		virtual void join() = 0;
 
 	public:
 		virtual bool run() = 0;
-        virtual void cancel() = 0;
+        virtual bool cancel() = 0;
         virtual bool update() = 0;
     };
 

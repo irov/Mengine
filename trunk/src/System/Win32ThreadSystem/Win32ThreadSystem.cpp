@@ -4,6 +4,8 @@
 
 #   include <algorithm>
 
+#	include <process.h>
+
 SERVICE_FACTORY( ThreadSystem, Menge::ThreadSystemInterface, Menge::Win32ThreadSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -35,22 +37,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::finalize()
 	{
-		for(TVectorPosixThreadIdentity::iterator
-			it = m_threadIdentities.begin(),
-			it_end = m_threadIdentities.end();
-		it != it_end;
-		++it )
-		{
-			const Win32ThreadIdentityPtr & identity = *it;
+		//for(TVectorPosixThreadIdentity::iterator
+		//	it = m_threadIdentities.begin(),
+		//	it_end = m_threadIdentities.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	const Win32ThreadIdentityPtr & identity = *it;
 
-            HANDLE handle = identity->getHandle();
-            CloseHandle( handle );
-		}
+  //          HANDLE handle = identity->getHandle();
+  //          CloseHandle( handle );
+		//}
 
-		m_threadIdentities.clear();
+		//m_threadIdentities.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
-    static DWORD WINAPI s_tread_job( LPVOID _userData )
+    static unsigned int __stdcall s_tread_job( void * _userData )
     {
         ThreadTaskInterface * threadListener = static_cast<ThreadTaskInterface*>(_userData);
 
@@ -62,7 +64,9 @@ namespace Menge
 	ThreadIdentityPtr Win32ThreadSystem::createThread( const ThreadTaskInterfacePtr & _thread, int _priority )
 	{
 		ThreadTaskInterface * thread_ptr = _thread.get();
-        HANDLE handle = CreateThread( NULL, 0, &s_tread_job, (LPVOID)thread_ptr, 0, NULL);
+        //HANDLE handle = CreateThread( NULL, 0, &s_tread_job, (LPVOID)thread_ptr, 0, NULL);
+
+		HANDLE handle = (HANDLE)_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)thread_ptr, 0, NULL );
 
 		if( handle == NULL )
         {
@@ -106,7 +110,7 @@ namespace Menge
         Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
         identity->initialize( handle, _thread );
 
-        m_threadIdentities.push_back( identity );
+        //m_threadIdentities.push_back( identity );
 		
 		return identity;
 	}
@@ -115,19 +119,19 @@ namespace Menge
 	{
 		Win32ThreadIdentityPtr identity = stdex::intrusive_static_cast<Win32ThreadIdentityPtr>(_thread);
 
+		const ThreadTaskInterfacePtr & listener = identity->getListener();
+		listener->cancel();
+
 		HANDLE treadHandle = identity->getHandle();
 
 		WaitForSingleObject( treadHandle, INFINITE );
 
         CloseHandle( treadHandle );
 
-        m_threadIdentities.erase( 
-            std::remove( m_threadIdentities.begin(), m_threadIdentities.end(), identity )
-            , m_threadIdentities.end() 
-            );
-
-        const ThreadTaskInterfacePtr & listener = identity->getListener();
-        listener->join();
+        //m_threadIdentities.erase( 
+        //    std::remove( m_threadIdentities.begin(), m_threadIdentities.end(), identity )
+        //    , m_threadIdentities.end() 
+        //    );
     
         return true;
     }

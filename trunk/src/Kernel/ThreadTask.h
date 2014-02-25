@@ -17,16 +17,14 @@ namespace Menge
 
 	public:
 		void main() override;
-        void join() override;
 
 	public:
 		bool run() override;
-		void cancel() override;
+		bool cancel() override;
 		bool update() override;
 				
 	protected:
 		virtual bool _onMain();
-		virtual void _onJoin();
 
 	protected:
 		virtual bool _onRun();

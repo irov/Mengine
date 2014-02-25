@@ -16,7 +16,6 @@ namespace Menge
 	{
 	public:
 		ThreadTaskPrefetchImageDecoder();
-		~ThreadTaskPrefetchImageDecoder();
 	
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );

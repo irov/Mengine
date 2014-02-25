@@ -10,6 +10,12 @@
 
 namespace Menge
 {
+	struct PrefetcherDebugInfo
+	{
+		size_t decoderCount;
+		size_t dataCount;
+	};
+
 	class PrefetcherServiceInterface
 		: public ServiceInterface
 	{
@@ -32,6 +38,9 @@ namespace Menge
 
 	public:
 		virtual bool getData( const FilePath & _fileName, DataInterfacePtr & _data ) const = 0;
+
+	public:
+		virtual PrefetcherDebugInfo getDebugInfo() const = 0;
 	};
 
 #   define PREFETCHER_SERVICE( serviceProvider )\

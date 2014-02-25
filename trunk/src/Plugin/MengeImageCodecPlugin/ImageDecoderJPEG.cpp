@@ -302,7 +302,6 @@ namespace Menge
 		{
 			// If we get here, the JPEG code has signaled an error.
 			// We need to clean up the JPEG object and return.
-			jpeg_destroy_decompress( &m_jpegObject );
 
 			return false;
 		}

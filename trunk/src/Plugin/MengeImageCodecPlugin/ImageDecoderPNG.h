@@ -15,6 +15,7 @@ namespace Menge
 
 	public:
 		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;

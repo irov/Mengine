@@ -98,14 +98,14 @@ namespace Menge
 	{
 		TMapPrefetchImageDecoderReceiver::iterator it_found = m_prefetchImageDecoderReceiver.find( _fileName );
 
-		if( it_found != m_prefetchImageDecoderReceiver.end() )
+		if( it_found == m_prefetchImageDecoderReceiver.end() )
 		{
 			return;
 		}
 
 		PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it_found );
 
-		if( --receiver.refcount == 0 )
+		if( --receiver.refcount > 0 )
 		{
 			return;
 		}
@@ -171,14 +171,14 @@ namespace Menge
 	{
 		TMapPrefetchDataReceiver::iterator it_found = m_prefetchDataReceiver.find( _fileName );
 
-		if( it_found != m_prefetchDataReceiver.end() )
+		if( it_found == m_prefetchDataReceiver.end() )
 		{
 			return;
 		}
 
 		PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it_found );
 
-		if( --receiver.refcount == 0 )
+		if( --receiver.refcount > 0 )
 		{
 			return;
 		}
@@ -207,5 +207,14 @@ namespace Menge
 		_data = receiver.prefetcher->getData();
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PrefetcherDebugInfo PrefetcherManager::getDebugInfo() const
+	{
+		PrefetcherDebugInfo info;
+		info.decoderCount = m_prefetchImageDecoderReceiver.size();
+		info.dataCount = m_prefetchDataReceiver.size();
+
+		return info;
 	}
 }

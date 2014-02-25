@@ -38,6 +38,9 @@ namespace Menge
 	public:
 		bool getData( const FilePath & _fileName, DataInterfacePtr & _data ) const override;
 
+	public:
+		PrefetcherDebugInfo getDebugInfo() const override;
+
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 

@@ -45,8 +45,8 @@ namespace Menge
         typedef FactoryPool<Win32ThreadMutex, 16> TPoolWin32ThreadMutex;
         TPoolWin32ThreadMutex m_poolWin32ThreadMutex;
 
-		typedef std::vector<Win32ThreadIdentityPtr> TVectorPosixThreadIdentity;
-		TVectorPosixThreadIdentity m_threadIdentities;
+		//typedef std::vector<Win32ThreadIdentityPtr> TVectorPosixThreadIdentity;
+		//TVectorPosixThreadIdentity m_threadIdentities;
 
 		ServiceProviderInterface * m_serviceProvider;
 	};

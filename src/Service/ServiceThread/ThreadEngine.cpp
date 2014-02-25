@@ -148,7 +148,10 @@ namespace Menge
 			return false;
 		}
 
-		_task->cancel();
+		if( _task->cancel() == false )
+		{
+			return true;
+		}
 
 		if( THREAD_SYSTEM(m_serviceProvider)
             ->joinThread( threadIdentity ) == false )
@@ -158,8 +161,6 @@ namespace Menge
 
             return false;
         }
-
-        this->testComplete_();
 
         return true;
 	}

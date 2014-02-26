@@ -26,7 +26,7 @@ namespace Menge
 
 	typedef stdex::intrusive_ptr<ThreadTaskInterface> ThreadTaskInterfacePtr;
 
-	class ThreadPoolInterface
+	class ThreadQueueInterface
 		: public FactorablePtr
 	{
 	public:
@@ -36,7 +36,7 @@ namespace Menge
 		virtual void cancel() = 0;
 	};
 
-	typedef stdex::intrusive_ptr<ThreadPoolInterface> ThreadPoolInterfacePtr;
+	typedef stdex::intrusive_ptr<ThreadQueueInterface> ThreadQueueInterfacePtr;
 
 	class ThreadIdentity
 		: public FactorablePtr
@@ -93,7 +93,7 @@ namespace Menge
         virtual void cancelTask( const ThreadTaskInterfacePtr & _task ) = 0;
 
 	public:
-		virtual ThreadPoolInterfacePtr runTaskPool() = 0;
+		virtual ThreadQueueInterfacePtr runTaskQueue( size_t _countThread, size_t _packetSize ) = 0;
 
     public:
         virtual ThreadMutexInterfacePtr createMutex() = 0;

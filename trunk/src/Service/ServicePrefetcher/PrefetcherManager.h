@@ -7,6 +7,14 @@
 
 #	include "stdex/binary_vector.h"
 
+#	ifndef MENGINE_PREFETCHER_THREAD_COUNT
+#	define MENGINE_PREFETCHER_THREAD_COUNT 2
+#	endif MENGINE_PREFETCHER_THREAD_COUNT
+
+#	ifndef MENGINE_PREFETCHER_PACKET_SIZE
+#	define MENGINE_PREFETCHER_PACKET_SIZE 16
+#	endif MENGINE_PREFETCHER_PACKET_SIZE
+
 namespace Menge
 {
 	class PrefetcherManager
@@ -44,7 +52,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		ThreadPoolInterfacePtr m_threadPool;
+		ThreadQueueInterfacePtr m_threadPool;
 
 		struct PrefetchImageDecoderReceiver
 		{

@@ -31,6 +31,7 @@ namespace Menge
 		virtual void _onCancel();
 		virtual void _onUpdate();
 
+	protected:
 		virtual void _onComplete( bool _successful );
 		
 	private:

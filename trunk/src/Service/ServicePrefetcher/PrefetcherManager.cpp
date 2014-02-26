@@ -30,7 +30,7 @@ namespace Menge
 	bool PrefetcherManager::initialize()
 	{
 		m_threadPool = THREAD_SERVICE(m_serviceProvider)
-			->runTaskPool();
+			->runTaskQueue( MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
 
 		return true;
 	}

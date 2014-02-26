@@ -1,44 +1,36 @@
-//#	pragma once
-//
-//#	include "ThreadTask.h"
-//
-//#	include <vector>
-//
-//namespace Menge
-//{
-//	typedef std::vector<ThreadTaskInterface *> TVectorThreadTask;
-//
-//	class ThreadTaskPacket;
-//
-//	class ThreadTaskPacketListener
-//	{
-//	public:
-//		virtual void onTaskPacketComplete( ThreadTaskPacket * _paket ) = 0;
-//	};
-//
-//	class ThreadTask;
-//	typedef stdex::intrusive_ptr<class ThreadTask> ThreadTaskPtr;
-//
-//	class ThreadTaskPacket
-//		: public ThreadTaskListener
-//	{
-//	public:
-//		ThreadTaskPacket( ThreadTaskPacketListener * _listener );
-//
-//	public:
-//		void addTask( ThreadTask * _task );
-//
-//	public:
-//		const TVectorThreadTask & getTasks() const;
-//
-//
-//	protected:
-//		void onTaskRun( ThreadTask * _task ) override;
-//		void onTaskComplete( ThreadTask * _task ) override;
-//
-//	protected:	
-//		TVectorThreadTask m_tasks;
-//
-//		ThreadTaskPacketListener * m_listener;
-//	};
-//}
+#	pragma once
+
+#	include "ThreadTask.h"
+
+#	include <vector>
+
+namespace Menge
+{
+	class ThreadTaskPacket
+		: public ThreadTask
+	{
+	public:
+		ThreadTaskPacket();
+
+	public:
+		void addTask( const ThreadTaskPtr & _task );
+		size_t countTask() const;
+		
+	protected:
+		bool _onMain() override;
+
+	protected:
+		bool _onRun() override;
+		void _onCancel() override;
+		void _onUpdate() override;
+
+	protected:
+		void _onComplete( bool _successful ) override;
+
+	protected:
+		typedef std::vector<ThreadTaskPtr> TVectorThreadTasks;
+		TVectorThreadTasks m_tasks;
+	};
+
+	typedef stdex::intrusive_ptr<ThreadTaskPacket> ThreadTaskPacketPtr;
+}

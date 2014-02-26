@@ -4,8 +4,8 @@ ADD_FILTER(
 src
 	ThreadEngine.h
 	ThreadEngine.cpp
-    ThreadPool.h
-    ThreadPool.cpp    
+    ThreadQueue.h
+    ThreadQueue.cpp    
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

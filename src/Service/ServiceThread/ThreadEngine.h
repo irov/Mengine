@@ -2,7 +2,7 @@
 
 #	include "Interface/ThreadSystemInterface.h"
 
-#	include "ThreadPool.h"
+#	include "ThreadQueue.h"
 
 #	include "Factory/FactoryPool.h"
 
@@ -41,7 +41,7 @@ namespace Menge
         void cancelTask( const ThreadTaskInterfacePtr & _task ) override;
 
 	public:
-		ThreadPoolInterfacePtr runTaskPool() override;
+		ThreadQueueInterfacePtr runTaskQueue( size_t _countThread, size_t _packetSize ) override;
 
 	public:
         void update() override;
@@ -70,7 +70,7 @@ namespace Menge
 		typedef std::vector<ThreadPoolPtr> TVectorThreadPool;
 		TVectorThreadPool m_threadPools;
 
-		typedef FactoryPool<ThreadPool, 4> TFactoryThreadPool;
-		TFactoryThreadPool m_factoryThreadPool;
+		typedef FactoryPool<ThreadQueue, 4> TFactoryThreadQueue;
+		TFactoryThreadQueue m_factoryThreadQueue;
 	};
 }	// namespace Menge

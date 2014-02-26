@@ -1,43 +1,112 @@
-//#	include "ThreadTaskPacket.h"
-//
-//#	include <algorithm>
-//
-//namespace Menge
-//{
-//	//////////////////////////////////////////////////////////////////////////
-//	ThreadTaskPacket::ThreadTaskPacket( ThreadTaskPacketListener * _listener )
-//		: m_listener(_listener)
-//	{
-//	}
-//	//////////////////////////////////////////////////////////////////////////
-//	void ThreadTaskPacket::addTask( ThreadTask * _task )
-//	{
-//		//_task->addListener( this );
-//
-//		m_tasks.push_back( _task );	
-//	}
-//	//////////////////////////////////////////////////////////////////////////
-//	const TVectorThreadTask & ThreadTaskPacket::getTasks() const
-//	{
-//		return m_tasks;
-//	}
-//	//////////////////////////////////////////////////////////////////////////
-//	void ThreadTaskPacket::onTaskRun( ThreadTask * _task )
-//	{
-//        (void)_task;
-//		//ToDo
-//	}
-//	//////////////////////////////////////////////////////////////////////////
-//	void ThreadTaskPacket::onTaskComplete( ThreadTask * _task )
-//	{
-//		TVectorThreadTask::iterator it_found = std::find( m_tasks.begin(), m_tasks.end(), _task );
-//		m_tasks.erase( it_found );
-//
-//		if( m_tasks.empty() == false )
-//		{
-//			return;
-//		}
-//
-//		m_listener->onTaskPacketComplete( this );
-//	}
-//}
+#	include "ThreadTaskPacket.h"
+
+namespace Menge
+{
+	//////////////////////////////////////////////////////////////////////////
+	ThreadTaskPacket::ThreadTaskPacket()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadTaskPacket::addTask( const ThreadTaskPtr & _task )
+	{
+		m_tasks.push_back( _task );	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ThreadTaskPacket::countTask() const
+	{
+		size_t count = m_tasks.size();
+
+		return count;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadTaskPacket::_onMain()
+	{
+		for( TVectorThreadTasks::iterator
+			it = m_tasks.begin(),
+			it_end = m_tasks.end();
+		it != it_end;
+		++it )
+		{
+			const ThreadTaskPtr & task = *it;
+
+			if( task->isCancel() == true ||
+				task->isComplete() == true )
+			{
+				continue;
+			}
+
+			task->main();
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadTaskPacket::_onRun()
+	{
+		for( TVectorThreadTasks::iterator
+			it = m_tasks.begin(),
+			it_end = m_tasks.end();
+		it != it_end;
+		++it )
+		{
+			const ThreadTaskPtr & task = *it;
+
+			if( task->isCancel() == true ||
+				task->isComplete() == true )
+			{
+				continue;
+			}
+
+			task->run();
+		}
+
+		return true;			 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadTaskPacket::_onCancel()
+	{
+		for( TVectorThreadTasks::iterator
+			it = m_tasks.begin(),
+			it_end = m_tasks.end();
+		it != it_end;
+		++it )
+		{
+			const ThreadTaskPtr & task = *it;
+
+			if( task->isCancel() == true ||
+				task->isComplete() == true )
+			{
+				continue;
+			}
+
+			task->cancel();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadTaskPacket::_onUpdate()
+	{
+		for( TVectorThreadTasks::iterator
+			it = m_tasks.begin(),
+			it_end = m_tasks.end();
+		it != it_end;
+		++it )
+		{
+			const ThreadTaskPtr & task = *it;
+
+			if( task->isCancel() == true ||
+				task->isComplete() == true )
+			{
+				continue;
+			}
+
+			task->update();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadTaskPacket::_onComplete( bool _successful )
+	{
+		(void)_successful;
+
+		m_tasks.clear();
+	}
+}

@@ -18,6 +18,7 @@
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/ImageCodecInterface.h"
 #	include "Interface/LoaderInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -46,6 +47,9 @@ SERVICE_EXTERN(FileSystem, Menge::FileSystemInterface);
 SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
 
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
+
+SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
+SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
 //////////////////////////////////////////////////////////////////////////
 extern "C" // only required if using g++
@@ -180,7 +184,7 @@ namespace Menge
 		{
 			return false;
 		}
-
+		
 		if( SERVICE_REGISTRY(serviceProvider, codecService) == false )
 		{
 			return false;
@@ -192,7 +196,50 @@ namespace Menge
 			return false;
 		}
 
+		dataService->initialize();
+
 		if( SERVICE_REGISTRY(serviceProvider, dataService) == false )
+		{
+			return false;
+		}
+
+		ThreadSystemInterface * threadSystem;
+		if( SERVICE_CREATE( ThreadSystem, &threadSystem ) == false )
+		{
+			LOGGER_ERROR(serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
+				);
+
+			return false;
+		}
+
+		if( SERVICE_REGISTRY(serviceProvider, threadSystem) == false )
+		{
+			return false;
+		}
+
+		if( threadSystem->initialize() == false )
+		{
+			LOGGER_ERROR(serviceProvider)("WinApplication::initializeThreadEngine_ failed to initialize ThreadSystem"
+				);
+
+			return false;
+		}
+
+		ThreadServiceInterface * threadService;
+		if( SERVICE_CREATE( ThreadService, &threadService ) == false )
+		{
+			LOGGER_ERROR(serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
+				);
+
+			return false;               
+		}
+
+		if( SERVICE_REGISTRY( serviceProvider, threadService ) == false )
+		{
+			return false;
+		}
+
+		if( threadService->initialize( 16 ) == false )
 		{
 			return false;
 		}
@@ -204,6 +251,11 @@ namespace Menge
 		}
 
 		if( SERVICE_REGISTRY(serviceProvider, cacheService) == false )
+		{
+			return false;
+		}
+
+		if( cacheService->initialize() == false )
 		{
 			return false;
 		}
@@ -305,7 +357,7 @@ struct PyModuleDef module_def = {
 	PyModuleDef_HEAD_INIT,
 	"ToolsBuilderPlugin",
 	NULL,
-	-1,
+	-1, 
 	ModuleMethods,
 	NULL, NULL, NULL, NULL
 };

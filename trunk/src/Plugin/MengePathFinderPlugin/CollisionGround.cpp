@@ -84,6 +84,27 @@ namespace Menge
 		*it_found = m_radarsAdd.back();
 		m_radarsAdd.pop_back();
 	}
+	namespace
+	{
+		
+		class FEraseDeadObject
+		{
+		public:
+			bool operator()( CollisionObject * _object )
+			{ 
+				return _object->getDead();
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		class FEraseDeadRadar
+		{
+		public:
+			bool operator()( CollisionRadar * _radar ) const
+			{ 
+				return _radar->getDead();
+			}
+		};
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionGround::update( float _timing )
 	{
@@ -165,26 +186,7 @@ namespace Menge
 			this->collisionRadar_( radar );
 		}
 
-		class FEraseDeadObject
-		{
-		public:
-			bool operator()( CollisionObject * _object ) 
-			{ 
-				return _object->getDead();
-			}
-		};
-
 		m_objects.erase( std::remove_if( m_objects.begin(), m_objects.end(), FEraseDeadObject()), m_objects.end() );
-
-		class FEraseDeadRadar
-		{
-		public:
-			bool operator()( CollisionRadar * _radar ) 
-			{ 
-				return _radar->getDead();
-			}
-		};
-
 		m_radars.erase( std::remove_if( m_radars.begin(), m_radars.end(), FEraseDeadRadar()), m_radars.end() );
 	}	
 	//////////////////////////////////////////////////////////////////////////

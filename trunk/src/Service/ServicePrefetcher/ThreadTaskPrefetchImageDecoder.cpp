@@ -2,6 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
+#	include "Interface/CacheInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "Factory/FactorableUnique.h"
@@ -87,15 +88,15 @@ namespace Menge
 
 		const ImageCodecDataInfo * dataInfo = m_imageDecoder->getCodecDataInfo();
 
-		size_t memoryUse = dataInfo->width * dataInfo->height * 4;
+		size_t memoryUse = dataInfo->width * dataInfo->height * dataInfo->channels;
 
-		MemoryInputPtr memoryStream = new FactorableUnique<MemoryInput>();
-
-		void * buffer = memoryStream->newMemory( memoryUse );
+		void * buffer;
+		InputStreamInterfacePtr memoryStream = CACHE_SERVICE(m_serviceProvider)
+			->lockStream( memoryUse, &buffer );
 
 		ImageCodecOptions options;
-		options.channels = 4;
-		options.pitch = dataInfo->width * 4;
+		options.channels = dataInfo->channels;
+		options.pitch = dataInfo->width * dataInfo->channels;
 
 		if( m_imageDecoder->setOptions( &options ) == false )
 		{

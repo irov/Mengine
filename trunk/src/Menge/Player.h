@@ -5,7 +5,7 @@
 #	include "Core/ConstString.h"
 #	include "Core/Resolution.h"
 
-#   include "Factory/FactoryDefault.h"
+#   include "Factory/FactoryStore.h"
 
 #	include "Math/vec3.h"
 
@@ -173,12 +173,12 @@ namespace Menge
 		ScheduleManagerInterface * m_scheduleManager;
 		ScheduleManagerInterface * m_scheduleManagerGlobal;
 
-        FactoryDefault<ScheduleManager> m_factoryScheduleManager;
+        FactoryDefaultStore<ScheduleManager> m_factoryScheduleManager;
 
 		TimingManagerInterface * m_timingManager;
         TimingManagerInterface * m_timingManagerGlobal;
 
-        FactoryDefault<TimingManager> m_factoryTimingManager;
+        FactoryDefaultStore<TimingManager> m_factoryTimingManager;
 
 		Affectorable * m_affectorable;
 		Affectorable * m_affectorableGlobal;

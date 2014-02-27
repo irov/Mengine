@@ -6,7 +6,7 @@
 #	include "OALSoundBufferStream.h"
 #	include "OALSoundSource.h"
 
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #	include <al.h>
 #	include <alc.h>
@@ -54,13 +54,13 @@ namespace Menge
 		ALCcontext* m_context;
 		ALCdevice* m_device;
 
-        typedef FactoryPool<OALSoundBuffer, 32> TPoolOALSoundBuffer;
+        typedef FactoryPoolStore<OALSoundBuffer, 32> TPoolOALSoundBuffer;
         TPoolOALSoundBuffer m_poolOALSoundBuffer;
 
-        typedef FactoryPool<OALSoundBufferStream, 32> TPoolOALSoundBufferStream;
+        typedef FactoryPoolStore<OALSoundBufferStream, 32> TPoolOALSoundBufferStream;
         TPoolOALSoundBufferStream m_poolOALSoundBufferStream;
 
-        typedef FactoryPool<OALSoundSource, 32> TPoolOALSoundSource;
+        typedef FactoryPoolStore<OALSoundSource, 32> TPoolOALSoundSource;
         TPoolOALSoundSource m_poolOALSoundSource;
     };
 }	// namespace Menge

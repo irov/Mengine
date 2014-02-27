@@ -245,6 +245,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::~ImageDecoderJPEG()
 	{
+		jpeg_destroy_decompress( &m_jpegObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderJPEG::_initialize()
@@ -279,7 +280,7 @@ namespace Menge
 		m_dataInfo.height = m_jpegObject.image_height;
 		m_dataInfo.quality = s_getQuality( &m_jpegObject );
 		
-		m_dataInfo.channels = m_jpegObject.num_components;
+		m_dataInfo.channels = 4;//m_jpegObject.num_components;
 		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * m_dataInfo.channels;	
 
 		return true;
@@ -330,14 +331,13 @@ namespace Menge
             if( m_options.channels == 4 || m_options.channels == 3 )
             {
                 JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
-                size_t bufferSize = _bufferSize;
-                while( (m_jpegObject.output_scanline < m_jpegObject.output_height) && (bufferSize >= m_options.pitch) ) 
+
+                for( size_t j = 0; j != m_dataInfo.height; ++j )
                 {
                     jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
 
                     // Assume put_scanline_someplace wants a pointer and sample count.
                     rgb_buffer += m_options.pitch;
-                    bufferSize -= m_options.pitch;
                 }
 
                 if( m_options.channels == 4 && (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
@@ -370,10 +370,5 @@ namespace Menge
         size_t readSize = m_options.pitch * m_dataInfo.height;
 		
 		return readSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderJPEG::_finalize()
-	{
-		jpeg_destroy_decompress( &m_jpegObject );
 	}
 }	// namespace Menge

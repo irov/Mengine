@@ -20,6 +20,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderWEBP::~ImageDecoderWEBP()
 	{
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( m_bufferId );
+
+		m_bufferId = 0;
+		m_memory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderWEBP::_initialize()
@@ -70,15 +75,6 @@ namespace Menge
 		m_dataInfo.size = bufferSize;
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderWEBP::_finalize()
-	{
-		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( m_bufferId );
-
-		m_bufferId = 0;
-		m_memory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderWEBP::decode( void * _buffer, size_t _bufferSize )

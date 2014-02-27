@@ -630,7 +630,7 @@ namespace Menge
             PyObject * m_pyObject;
         };
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPool<PyObjectScheduleListener, 8> TFactoryPyObjectScheduleListener;
+		typedef FactoryPoolStore<PyObjectScheduleListener, 8> TFactoryPyObjectScheduleListener;
 		TFactoryPyObjectScheduleListener m_factoryPyObjectScheduleListener;
         //////////////////////////////////////////////////////////////////////////
         size_t schedule( float _timing, PyObject * _script )
@@ -1796,7 +1796,7 @@ namespace Menge
 			PyObject * m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPool<NodeAffectorCallback, 4> m_factoryNodeAffectorCallback;
+		FactoryPoolStore<NodeAffectorCallback, 4> m_factoryNodeAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCallback * createNodeAffectorCallback( Scriptable * _scriptable, PyObject * _cb )
 		{

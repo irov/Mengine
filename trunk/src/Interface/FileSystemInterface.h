@@ -16,6 +16,7 @@ namespace Menge
 	{
 	public:
 		virtual bool open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) = 0;
+		virtual bool time( uint64_t & _time ) const = 0;
 	};
 
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;

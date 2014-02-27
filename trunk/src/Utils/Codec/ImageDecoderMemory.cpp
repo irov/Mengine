@@ -11,6 +11,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderMemory::decode( void * _buffer, size_t _bufferSize )
 	{
+		if( _bufferSize != m_options.pitch * m_dataInfo.height )
+		{
+			return 0;
+		}
+
 		m_stream->seek( 0 );
 		
 		size_t read_byte = 0;		
@@ -18,7 +23,7 @@ namespace Menge
 		for( size_t j = 0; j != m_dataInfo.height; ++j )
 		{
 			read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * m_dataInfo.channels );
-
+			
 			buffer_ptr += m_options.pitch;
 		}		
 

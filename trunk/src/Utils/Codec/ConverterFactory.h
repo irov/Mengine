@@ -4,7 +4,7 @@
 
 #   include "Core/ConstString.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 namespace Menge
 {
@@ -48,7 +48,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;		
         ConstString m_name;
 
-		typedef FactoryPool<T, 8> TFactoryConverter;
+		typedef FactoryPoolStore<T, 8> TFactoryConverter;
 		TFactoryConverter m_factory;
     };
 }

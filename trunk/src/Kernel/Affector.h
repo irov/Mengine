@@ -5,7 +5,7 @@
 #	include "Kernel/Scriptable.h"
 
 #   include "Factory/Factorable.h"
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #	include "Core/ValueInterpolator.h"
 
@@ -254,7 +254,7 @@ namespace Menge
                 return affector;
             }
 
-            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
             TFactoryAffector m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
@@ -281,7 +281,7 @@ namespace Menge
             }
 
         protected:
-            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
             TFactoryAffector m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
@@ -308,7 +308,7 @@ namespace Menge
 		    }
 
         protected:
-            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
             TFactoryAffector m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
@@ -335,7 +335,7 @@ namespace Menge
 		    }
 
         protected:
-            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
             TFactoryAffector m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
@@ -362,7 +362,7 @@ namespace Menge
             }
 
         protected:
-            typedef FactoryPool<AffectorType, 4> TFactoryAffector;
+            typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
             TFactoryAffector m_factory;
         };
         //////////////////////////////////////////////////////////////////////////

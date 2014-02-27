@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Factory.h"
+#	include "FactorableUnique.h"
 
 namespace Menge
 {
@@ -10,24 +11,13 @@ namespace Menge
 	{
 	public:
 		FactoryDefault()
-			: m_count(0)
 		{
 		}
-
-    public:
-        T * createObjectT()
-        {
-            Factorable * obj = this->createObject();
-			
-            return static_cast<T *>(obj);
-        }
 
     protected:
 		Factorable * _createObject() override
 		{
 			T * t = new T();
-
-			++m_count;
 
 			return t;
 		}
@@ -35,20 +25,17 @@ namespace Menge
         void _destroyObject( Factorable * _obj ) override
 		{
 			delete static_cast<T *>(_obj);
-
-			--m_count;
 		}
 
-	protected:
-		size_t m_count;
+	public:
+		T * createObjectT()
+		{
+			Factorable * obj = this->createObject();
+
+			T * t = static_cast<T *>(obj);
+
+			return t;
+		}
+
 	};
-
-	namespace Helper
-	{
-		template<class T>
-		Factory * createFactoryDefault()
-		{ 
-			return new FactoryDefault<T>();
-		}
-	}
 }

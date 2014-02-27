@@ -40,6 +40,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CacheManager::finalize()
 	{
+		m_memoryMutex->lock();
+
 		for( TVectorCacheBufferMemory::iterator
 			it = m_buffers.begin(),
 			it_end = m_buffers.end();
@@ -48,10 +50,20 @@ namespace Menge
 		{
 			const CacheBufferMemory & buffer = *it;
 
+			if( buffer.lock == true )
+			{
+				LOGGER_ERROR(m_serviceProvider)("CacheManager::finalize dont unlock buffer %d size %d"
+					, buffer.id
+					, buffer.size
+					);
+			}
+
 			free( buffer.memory );
 		}
 
 		m_buffers.clear();
+
+		m_memoryMutex->unlock();
 
 		m_memoryMutex = nullptr;
 	}
@@ -163,5 +175,16 @@ namespace Menge
 		}
 
 		m_memoryMutex->unlock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	InputStreamInterfacePtr CacheManager::lockStream( size_t _size, void ** _memory )
+	{
+		MemoryCacheInputPtr memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
+
+		void * memory = memoryCache->cacheMemory( _size );
+
+		*_memory = memory;
+
+		return memoryCache;
 	}
 }

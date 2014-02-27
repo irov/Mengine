@@ -20,6 +20,8 @@ namespace Menge
 
 		++m_count;
 
+		intrusive_ptr_add_ref( this );
+
 		return object;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,8 @@ namespace Menge
 		--m_count;
 
 		this->_destroyObject( _object );
+
+		intrusive_ptr_dec_ref( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Factory::countObject() const

@@ -5,7 +5,7 @@
 #	include "Kernel/Node.h"
 
 #	include "Core/ConstString.h"
-#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryStore.h"
 
 #	include "Logger/Logger.h"
 
@@ -57,7 +57,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		typedef FactoryPool<Type, Count> TNodeFactory;
+		typedef FactoryPoolStore<Type, Count> TNodeFactory;
 		TNodeFactory m_factory;
 	};
 }

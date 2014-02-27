@@ -7,7 +7,7 @@
 #	include "AstralaxEmitterContainer.h"
 #	include "AstralaxEmitter.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -49,7 +49,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef FactoryPool<AstralaxEmitterContainer, 16> TFactoryPoolAstralaxEmitterContainer;
+        typedef FactoryPoolStore<AstralaxEmitterContainer, 16> TFactoryPoolAstralaxEmitterContainer;
         TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
 
 		String m_loadEmitterCacheFullname;

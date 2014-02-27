@@ -4,7 +4,7 @@
 
 #	include "ThreadQueue.h"
 
-#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryStore.h"
 
 #	include <vector>
 
@@ -70,7 +70,7 @@ namespace Menge
 		typedef std::vector<ThreadPoolPtr> TVectorThreadPool;
 		TVectorThreadPool m_threadPools;
 
-		typedef FactoryPool<ThreadQueue, 4> TFactoryThreadQueue;
+		typedef FactoryPoolStore<ThreadQueue, 4> TFactoryThreadQueue;
 		TFactoryThreadQueue m_factoryThreadQueue;
 	};
 }	// namespace Menge

@@ -3,7 +3,7 @@
 #	include "Interface/ThreadSystemInterface.h"
 
 #	include "Kernel/ThreadTaskPacket.h"
-#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryStore.h"
 
 #	include "stdex/queue.h"
 
@@ -46,7 +46,7 @@ namespace Menge
 		typedef std::vector<ThreadTaskInterfacePtr> TVectorCurrentThreadTask;
 		TVectorCurrentThreadTask m_currentTasks;
 
-		typedef FactoryPool<ThreadTaskPacket, 4> TFactoryPoolTaskPacket;
+		typedef FactoryPoolStore<ThreadTaskPacket, 4> TFactoryPoolTaskPacket;
 		TFactoryPoolTaskPacket m_factoryPoolTaskPacket;
 
 		bool m_cancel;

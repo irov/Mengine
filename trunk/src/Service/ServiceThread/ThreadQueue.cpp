@@ -44,6 +44,11 @@ namespace Menge
 		{
 			ThreadTaskInterfacePtr & currentTask = *it;
 
+			if( currentTask == nullptr )
+			{
+				continue;
+			}
+
 			currentTask->cancel();
 			currentTask = nullptr;
 		}

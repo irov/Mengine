@@ -5,7 +5,7 @@
 
 #   include "Core/MemoryProxyInput.h"
 
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 namespace Menge
 {
@@ -48,7 +48,7 @@ namespace Menge
         unsigned char* m_end;
         size_t m_size;
 
-        typedef FactoryPool<MemoryProxyInput, 16> TFactoryMemoryProxyInput;
+        typedef FactoryPoolStore<MemoryProxyInput, 16> TFactoryMemoryProxyInput;
         TFactoryMemoryProxyInput m_factoryMemoryProxyInput;
 	};
 }	// namespace Menge

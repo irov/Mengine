@@ -3,7 +3,7 @@
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 #   include "Factory/FactoryDefault.h"
 
 #   include "ConstStringHolderPythonString.h"
@@ -101,7 +101,7 @@ namespace Menge
 		typedef stdex::binary_vector<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
-        typedef FactoryPool<ConstStringHolderPythonString, 256> FactoryPoolPythonString;
+        typedef FactoryPoolStore<ConstStringHolderPythonString, 256> FactoryPoolPythonString;
         FactoryPoolPythonString m_poolPythonString;
 	};
 }

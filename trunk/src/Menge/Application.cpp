@@ -598,7 +598,7 @@ namespace Menge
         protected:
             ServiceProviderInterface * m_serviceProvider;
 
-            typedef FactoryPool<Type, Count> TNodeFactory;
+            typedef FactoryPoolStore<Type, Count> TNodeFactory;
             TNodeFactory m_factory;
         };
     }    

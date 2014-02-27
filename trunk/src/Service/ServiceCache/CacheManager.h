@@ -3,6 +3,10 @@
 #	include "Interface/CacheInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 
+#	include "MemoryCacheInput.h"
+
+#	include "Factory/FactoryStore.h"
+
 #	include <vector>
 
 namespace Menge
@@ -26,6 +30,9 @@ namespace Menge
 		size_t lockBuffer( size_t _size, void ** _memory ) override;
 		void unlockBuffer( size_t _bufferId ) override;
 
+	public:
+		InputStreamInterfacePtr lockStream( size_t _size, void ** _memory ) override;
+
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
@@ -43,5 +50,8 @@ namespace Menge
 		size_t m_enumeratorId;
 				
 		ThreadMutexInterfacePtr m_memoryMutex;
+
+		typedef FactoryPoolStore<MemoryCacheInput, 16> TFactoryPoolMemoryCacheInput;
+		TFactoryPoolMemoryCacheInput m_factoryPoolMemoryCacheInput;
 	};
 }

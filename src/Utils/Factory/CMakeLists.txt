@@ -7,6 +7,7 @@ src
     FactorableUnique.h
 	Factory.h
 	Factory.cpp
+    FactoryStore.h
     FactoryManager.h
     FactoryManager.cpp
     FactoryDefault.h    

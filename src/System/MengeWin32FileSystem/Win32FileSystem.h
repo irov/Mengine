@@ -8,7 +8,7 @@
 #	include "Win32OutputStream.h"
 #	include "Win32MappedInputStream.h"
 
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 namespace Menge
 {
@@ -48,13 +48,13 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef FactoryPool<Win32InputStream, 8> TFactoryFileInputStream;
+        typedef FactoryPoolStore<Win32InputStream, 8> TFactoryFileInputStream;
         TFactoryFileInputStream m_factoryInputStream;
 
-        typedef FactoryPool<Win32OutputStream, 4> TFactoryFileOutputStream;
+        typedef FactoryPoolStore<Win32OutputStream, 4> TFactoryFileOutputStream;
         TFactoryFileOutputStream m_factoryOutputStream;
 
-        typedef FactoryPool<Win32MappedInputStream, 4> TFactoryMappedInputStream;
+        typedef FactoryPoolStore<Win32MappedInputStream, 4> TFactoryMappedInputStream;
         TFactoryMappedInputStream m_factoryMappedInputStream;
     };
 }

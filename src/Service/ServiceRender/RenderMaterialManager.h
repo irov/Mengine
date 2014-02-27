@@ -4,7 +4,7 @@
 
 #	include "RenderMaterial.h"
 
-#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryStore.h"
 
 #   include "stdex/binary_vector.h"
 
@@ -58,13 +58,13 @@ namespace Menge
         typedef stdex::binary_vector<ConstString, RenderStageGroup *> TMapRenderStage;
         TMapRenderStage m_stages;
 
-		typedef FactoryPool<RenderStageGroup, 256> TFactoryRenderStage; 
+		typedef FactoryPoolStore<RenderStageGroup, 256> TFactoryRenderStage; 
 		TFactoryRenderStage m_factoryStage;
 
 		typedef std::vector<RenderMaterial *> TVectorRenderMaterial;
 		TVectorRenderMaterial m_materials;
 
-		typedef FactoryPool<RenderMaterial, 256> TFactoryRenderMaterial; 
+		typedef FactoryPoolStore<RenderMaterial, 256> TFactoryRenderMaterial; 
 		TFactoryRenderMaterial m_factoryMaterial;
     };
 }

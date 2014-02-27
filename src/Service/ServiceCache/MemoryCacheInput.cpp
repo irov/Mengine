@@ -1,4 +1,6 @@
-#	include "MemoryInput.h"
+#	include "MemoryCacheInput.h"
+
+#	include "Interface/CacheInterface.h"
 
 #	include <memory.h>
 #	include <algorithm>
@@ -6,37 +8,47 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInput::MemoryInput()
-		: m_data(nullptr)
+	MemoryCacheInput::MemoryCacheInput()
+		: m_serviceProvider(nullptr)
+		, m_bufferId(0)
+		, m_data(nullptr)
 		, m_pos(nullptr)
 		, m_end(nullptr)
 		, m_size(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInput::~MemoryInput()
+	MemoryCacheInput::~MemoryCacheInput()
 	{
-        delete [] m_data;
-        m_data = nullptr;
+		if( m_bufferId != 0 )
+		{
+			CACHE_SERVICE(m_serviceProvider)
+				->unlockBuffer( m_bufferId );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryInput::newMemory( size_t _size )
+	void MemoryCacheInput::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
-        if( m_data != nullptr )
-        {
-            delete [] m_data;
-            m_data = nullptr;
-        }
-
-		m_data = new unsigned char [_size];
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void * MemoryCacheInput::cacheMemory( size_t _size )
+	{
 		m_size = _size;
+
+		void * memory;
+		m_bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( m_size, &memory );
+
+		m_data = reinterpret_cast<unsigned char *>(memory);
+
 		m_pos = m_data;
 		m_end = m_data + m_size;
 
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MemoryInput::read( void* _buf, size_t _count )
+	size_t MemoryCacheInput::read( void * _buf, size_t _count )
 	{
 		size_t cnt = _count;
 		// Read over end of memory?
@@ -57,7 +69,7 @@ namespace Menge
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MemoryInput::seek( size_t _pos )
+	bool MemoryCacheInput::seek( size_t _pos )
 	{
 		if( _pos > m_size )
 		{
@@ -69,19 +81,19 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MemoryInput::size() const 
+	size_t MemoryCacheInput::size() const 
 	{
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MemoryInput::tell() const
+	size_t MemoryCacheInput::tell() const
 	{
         size_t distance = std::distance( m_data, m_pos );
 
 		return distance;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MemoryInput::time( uint64_t & _time ) const
+	bool MemoryCacheInput::time( uint64_t & _time ) const
 	{
         (void)_time;
 

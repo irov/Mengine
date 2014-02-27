@@ -3,7 +3,7 @@
 #	include "ThreadTaskPrefetchImageDecoder.h"
 #	include "ThreadTaskPrefetchDataflow.h"
 
-#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryStore.h"
 
 #	include "stdex/binary_vector.h"
 
@@ -60,7 +60,7 @@ namespace Menge
 			ThreadTaskPrefetchImageDecoderPtr prefetcher;
 		};
 
-		typedef FactoryPool<ThreadTaskPrefetchImageDecoder, 16> TFactoryThreadTaskPrefetchImageDecoder;
+		typedef FactoryPoolStore<ThreadTaskPrefetchImageDecoder, 16> TFactoryThreadTaskPrefetchImageDecoder;
 		TFactoryThreadTaskPrefetchImageDecoder m_factoryThreadTaskPrefetchImageDecoder;
 		
 		typedef stdex::binary_vector<FilePath, PrefetchImageDecoderReceiver> TMapPrefetchImageDecoderReceiver;
@@ -72,7 +72,7 @@ namespace Menge
 			ThreadTaskPrefetchDataflowPtr prefetcher;
 		};
 
-		typedef FactoryPool<ThreadTaskPrefetchDataflow, 16> TFactoryThreadTaskPrefetchDataflow;
+		typedef FactoryPoolStore<ThreadTaskPrefetchDataflow, 16> TFactoryThreadTaskPrefetchDataflow;
 		TFactoryThreadTaskPrefetchDataflow m_factoryThreadTaskPrefetchDataflow;
 
 		typedef stdex::binary_vector<FilePath, PrefetchDataReceiver> TMapPrefetchDataReceiver;

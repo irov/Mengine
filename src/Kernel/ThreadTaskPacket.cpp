@@ -29,12 +29,6 @@ namespace Menge
 		{
 			const ThreadTaskPtr & task = *it;
 
-			if( task->isCancel() == true ||
-				task->isComplete() == true )
-			{
-				continue;
-			}
-
 			task->main();
 		}
 
@@ -51,12 +45,6 @@ namespace Menge
 		{
 			const ThreadTaskPtr & task = *it;
 
-			if( task->isCancel() == true ||
-				task->isComplete() == true )
-			{
-				continue;
-			}
-
 			task->run();
 		}
 
@@ -72,12 +60,6 @@ namespace Menge
 		++it )
 		{
 			const ThreadTaskPtr & task = *it;
-
-			if( task->isCancel() == true ||
-				task->isComplete() == true )
-			{
-				continue;
-			}
 
 			task->cancel();
 		}

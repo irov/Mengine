@@ -12,6 +12,7 @@ namespace Menge
 		~ThreadTask();
 		
 	public:
+		bool isRun() const override;
 		bool isComplete() const override;
 		bool isCancel() const override;
 
@@ -35,6 +36,7 @@ namespace Menge
 		virtual void _onComplete( bool _successful );
 		
 	private:
+		bool m_run;
 		bool m_complete;
 		volatile bool m_finish;
 		volatile bool m_successful;

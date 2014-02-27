@@ -18,7 +18,7 @@ namespace Menge
 	private:
 		void destroy() override;
 
-    public:
+	public:
         size_t getReference() const;
 
     protected:

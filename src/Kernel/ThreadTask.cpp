@@ -4,7 +4,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTask::ThreadTask()
-		: m_finish(false)
+		: m_run(false)
+		, m_finish(false)
 		, m_complete(false)
 		, m_successful(false)
 		, m_cancel(false)
@@ -17,6 +18,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::main()
 	{
+		if( m_run == false ||
+			m_finish == true ||
+			m_complete == true )
+		{
+			return;
+		}
+
 		if( m_cancel == true )
 		{
 			m_successful = false;
@@ -31,9 +39,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::run()
 	{
-		bool state = this->_onRun();
+		if( m_run == true ||
+			m_cancel == true ||
+			m_finish == true ||
+			m_complete == true )
+		{
+			return false;
+		}
 
-		return state;
+		m_run = this->_onRun();
+
+		return m_run;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadTask::isRun() const
+	{
+		return m_run;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::isComplete() const
@@ -58,7 +79,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::cancel()
 	{
-		if( m_cancel == true ||
+		if( m_run == false ||
+			m_cancel == true ||
 			m_finish == true ||
 			m_complete == true )
 		{
@@ -74,11 +96,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::_onCancel()
 	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::update()
 	{
-		if( m_cancel == true ||
+		if( m_run == false ||
+			m_cancel == true ||
 			m_complete == true )
 		{
 			return true;
@@ -98,6 +122,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::_onUpdate()
 	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////	
 	void ThreadTask::_onComplete( bool _successful )

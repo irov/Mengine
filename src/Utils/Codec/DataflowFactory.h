@@ -39,7 +39,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		typedef FactoryDefault<T> TFactoryDecoder;
+		typedef FactoryDefaultStore<T> TFactoryDecoder;
 		TFactoryDecoder m_factory;
 	};
 }

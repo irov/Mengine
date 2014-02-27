@@ -51,8 +51,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{
-		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactoryDefault<FileGroupDirectory>() );
-		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "zip"), new FactoryDefault<FileGroupZip>() );
+		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<FileGroupDirectory> >() );
+		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
 
         return true;
 	}

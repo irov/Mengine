@@ -102,11 +102,6 @@ namespace Menge
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void XmlToBinDecoder::finalize()
-	{
-		m_stream = nullptr;
-	}
-	////////////////////////////////////////////////////////////////////////////
 	size_t XmlToBinDecoder::decode( void * _buffer, size_t _bufferSize )
 	{
         (void)_buffer;

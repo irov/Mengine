@@ -1953,12 +1953,6 @@ namespace Menge
 			SERVICE_DESTROY( DataService, m_dataService );
 		}
 
-		if( m_cacheService != nullptr )
-		{
-			m_cacheService->finalize();
-			SERVICE_DESTROY( CacheService, m_cacheService );
-		}
-
 		if( m_pluginService != nullptr )
 		{
 			SERVICE_DESTROY( PluginService, m_pluginService );
@@ -2058,7 +2052,7 @@ namespace Menge
 		{
 			m_renderSystem->finalize();
 		}
-
+		
 		if( m_renderService != nullptr )
 		{
 			SERVICE_DESTROY( RenderService, m_renderService );
@@ -2085,6 +2079,8 @@ namespace Menge
 
 		if( m_prefetcherService != nullptr )
 		{
+			m_prefetcherService->finalize();
+
 			SERVICE_DESTROY( PrefetcherService, m_prefetcherService );
 			m_prefetcherService = nullptr;
 		}
@@ -2144,6 +2140,12 @@ namespace Menge
 		{
 			SERVICE_DESTROY( ArchiveService, m_archiveService );
 			m_archiveService = nullptr;
+		}
+
+		if( m_cacheService != nullptr )
+		{
+			m_cacheService->finalize();
+			SERVICE_DESTROY( CacheService, m_cacheService );
 		}
 
 		if( m_alreadyRunningMonitor != nullptr )

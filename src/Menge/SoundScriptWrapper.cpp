@@ -452,7 +452,7 @@ namespace	Menge
 			PyObject * m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		FactoryPool<MusicAffectorCallback, 4> m_factoryMusicAffectorCallback;
+		FactoryPoolStore<MusicAffectorCallback, 4> m_factoryMusicAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
 		MusicAffectorCallback * createMusicAffectorCallback( PyObject * _cb )
 		{

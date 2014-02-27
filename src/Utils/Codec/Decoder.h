@@ -9,13 +9,7 @@ namespace Menge
 	public:
 		Decoder()
 			: m_serviceProvider(nullptr)
-			, m_initialize(false)
 		{
-		}
-
-		~Decoder()
-		{
-			this->finalize();
 		}
 
 	public:
@@ -32,39 +26,17 @@ namespace Menge
 	public:
 		bool initialize( const InputStreamInterfacePtr & _stream ) override
 		{
-			if( m_initialize == true )
-			{
-				return false;
-			}
-
 			m_stream = _stream;
 
-			m_initialize = this->_initialize();
+			bool successful = this->_initialize();
 
-			return m_initialize;
-		}
-
-		void finalize() override
-		{
-			if( m_initialize == false )
-			{
-				return;
-			}
-
-			this->_finalize();
-
-			m_stream = nullptr;
+			return successful;
 		}
 
 	protected:
 		virtual bool _initialize()
 		{
 			return true;
-		}
-
-		virtual void _finalize()
-		{
-			//Empty
 		}
 
 	public:
@@ -76,7 +48,5 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 		InputStreamInterfacePtr m_stream;
-
-		bool m_initialize;
 	};    
 }

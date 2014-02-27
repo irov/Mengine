@@ -9,7 +9,7 @@
 
 #   include "stdex/binary_vector.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 #	include "Factory/FactoryDefault.h"
 
 #	include <list>
@@ -78,7 +78,7 @@ namespace Menge
         typedef stdex::binary_vector<FilePath, RenderTextureInterface *> TMapTextures;
         TMapTextures m_textures;
 
-        typedef FactoryPool<RenderTexture, 128> TFactoryRenderTexture;
+        typedef FactoryPoolStore<RenderTexture, 128> TFactoryRenderTexture;
         TFactoryRenderTexture m_factoryRenderTexture;
 
         size_t m_textureEnumerator;

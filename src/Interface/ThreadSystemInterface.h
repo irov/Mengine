@@ -12,6 +12,7 @@ namespace Menge
         : public FactorablePtr
     {
 	public:
+		virtual bool isRun() const = 0;
 		virtual bool isComplete() const = 0;
 		virtual bool isCancel() const = 0;
 

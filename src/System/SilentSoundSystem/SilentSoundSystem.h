@@ -2,7 +2,7 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #	include "SilentSoundBuffer.h"
 #	include "SilentSoundSource.h"
@@ -46,10 +46,10 @@ namespace Menge
 
         size_t m_enumerate;
 
-        typedef FactoryPool<SilentSoundBuffer, 32> TPoolSilentSoundBuffer;
+        typedef FactoryPoolStore<SilentSoundBuffer, 32> TPoolSilentSoundBuffer;
         TPoolSilentSoundBuffer m_poolSilentSoundBuffer;
 
-        typedef FactoryPool<SilentSoundSource, 32> TPoolSilentSoundSource;
+        typedef FactoryPoolStore<SilentSoundSource, 32> TPoolSilentSoundSource;
         TPoolSilentSoundSource m_poolSilentSoundSource;
 	};
 }	// namespace Menge

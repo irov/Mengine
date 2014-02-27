@@ -5,7 +5,7 @@
 #	include "TextGlyphChar.h"
 
 #	include "Factory/FactorablePtr.h"
-#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryStore.h"
 
 namespace Menge
 {
@@ -52,7 +52,7 @@ namespace Menge
 		typedef stdex::binary_vector<GlyphCode, TextGlyphChar *, GlyphCharLess> TMapGlyphChar;
 		TMapGlyphChar m_chars;
 
-		typedef FactoryPool<TextGlyphChar, 256> TFactoryTextGlyphChar;
+		typedef FactoryPoolStore<TextGlyphChar, 256> TFactoryTextGlyphChar;
 		TFactoryTextGlyphChar m_factoryTextGlyphChar;
 	};
 	//////////////////////////////////////////////////////////////////////////

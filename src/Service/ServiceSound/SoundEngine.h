@@ -9,7 +9,7 @@
 #   include "ThreadWorkerSoundBufferUpdate.h"
 
 #	include "Core/ConstString.h"
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #	include	"math/vec3.h"
 
@@ -160,7 +160,7 @@ namespace Menge
 		
         ThreadJobPtr m_threadSoundBufferUpdate;
 
-        typedef FactoryPool<ThreadWorkerSoundBufferUpdate, 32> TPoolWorkerTaskSoundBufferUpdate;
+        typedef FactoryPoolStore<ThreadWorkerSoundBufferUpdate, 32> TPoolWorkerTaskSoundBufferUpdate;
         TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;
 
         bool m_silent;

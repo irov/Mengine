@@ -72,16 +72,16 @@ namespace Menge
 		
 		ConstString m_defaultFontName;
 
-		typedef FactoryPool<TextEntry, 512> TFactoryTextEntry;
+		typedef FactoryPoolStore<TextEntry, 512> TFactoryTextEntry;
 		TFactoryTextEntry m_factoryTextEntry;
 
-		typedef FactoryPool<TextFont, 16> TFactoryTextFont;
+		typedef FactoryPoolStore<TextFont, 16> TFactoryTextFont;
 		TFactoryTextFont m_factoryTextFont;
 
-		typedef FactoryPool<TextGlyph, 16> TFactoryTextGlyph;
+		typedef FactoryPoolStore<TextGlyph, 16> TFactoryTextGlyph;
 		TFactoryTextGlyph m_factoryTextGlyph;
 
-		typedef FactoryPool<TextLocalePak, 4> TFactoryTextLocalePak;
+		typedef FactoryPoolStore<TextLocalePak, 4> TFactoryTextLocalePak;
 		TFactoryTextLocalePak m_factoryTextLocalePak;
 	};
 }

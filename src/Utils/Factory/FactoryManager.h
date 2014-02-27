@@ -3,6 +3,7 @@
 #   include "Interface/ServiceInterface.h"
 
 #	include "Factory/Factorable.h"
+#	include "Factory/Factory.h"
 
 #	include "Core/ConstString.h"
 
@@ -10,12 +11,10 @@
 
 namespace Menge
 {
-    class Factory;
-
     class VisitorFactoryManager
     {
     public:
-        virtual void visit( const ConstString & _type, Factory * _factory ) = 0;
+        virtual void visit( const ConstString & _type, const FactoryPtr & _factory ) = 0;
     };
     
 	class FactoryManager
@@ -28,7 +27,7 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void registerFactory( const ConstString & _type, Factory * _factory );
+		void registerFactory( const ConstString & _type, const FactoryPtr & _factory );
 		void unregisterFactory( const ConstString & _type );
 
 	public:
@@ -60,7 +59,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef stdex::binary_vector<ConstString, Factory *> TMapFactory;
+        typedef stdex::binary_vector<ConstString, FactoryPtr> TMapFactory;
 		TMapFactory m_factories;
 	};
 }

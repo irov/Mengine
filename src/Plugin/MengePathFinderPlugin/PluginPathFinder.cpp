@@ -62,7 +62,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_name;
 
-		typedef FactoryDefault<T> TFactoryModule;
+		typedef FactoryDefaultStore<T> TFactoryModule;
 		TFactoryModule m_factory;
 	};
 	//////////////////////////////////////////////////////////////////////////

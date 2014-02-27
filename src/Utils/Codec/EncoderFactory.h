@@ -2,6 +2,8 @@
 
 #   include "Interface/CodecInterface.h"
 
+#	include "Factory/FactoryStore.h"
+
 namespace Menge
 {
     template<class T>
@@ -44,7 +46,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
         ConstString m_name;
 
-        typedef FactoryPool<T, 8> TFacrotyDecoder;
+        typedef FactoryPoolStore<T, 8> TFacrotyDecoder;
         TFacrotyDecoder m_factory;
     };
 }

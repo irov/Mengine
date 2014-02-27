@@ -7,7 +7,7 @@
 
 #	include "Config/Blobject.h"
 
-#	include "Factory/FactoryPool.h"
+#	include "Factory/FactoryStore.h"
 
 namespace Menge
 {
@@ -28,7 +28,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		typedef FactoryPool<MovieFramePack, 32> TFactoryPoolMovieFramePack;
+		typedef FactoryPoolStore<MovieFramePack, 32> TFactoryPoolMovieFramePack;
 		TFactoryPoolMovieFramePack m_poolMovieFramePack;
 	};
 }

@@ -4,7 +4,7 @@
 
 #   include "DX9RenderTexture.h"
 
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #   include "stdex/binary_vector.h"
 
@@ -242,10 +242,10 @@ namespace Menge
 
         IDirect3DTexture9 * m_currentTexture[8];
 
-        typedef FactoryPool<DX9Texture, 128> TFactoryDX9Texture;
+        typedef FactoryPoolStore<DX9Texture, 128> TFactoryDX9Texture;
         TFactoryDX9Texture m_factoryDX9Texture;
 
-        typedef FactoryPool<DX9RenderTexture, 4> TFactoryDX9RenderTexture;
+        typedef FactoryPoolStore<DX9RenderTexture, 4> TFactoryDX9RenderTexture;
         TFactoryDX9RenderTexture m_factoryDX9RenderTexture;
 		
 		bool m_syncReady;

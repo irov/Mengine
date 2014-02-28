@@ -197,15 +197,15 @@ namespace Menge
             }
             
 #	ifndef MENGE_MASTER_RELEASE
-            if( resource->convert() == false )
-            {
-                LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid convert"
-                    , name.c_str()
-                    , type.c_str()
-                    );
+			if( resource->convert() == false )
+			{
+				LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid convert"
+					, name.c_str()
+					, type.c_str()
+					);
 
-                continue;
-            }
+				continue;
+			}
 #	endif
         }
 

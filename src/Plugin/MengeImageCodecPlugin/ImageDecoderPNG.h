@@ -4,6 +4,8 @@
 
 #	include "png.h"
 
+//#	include "stdex/memory_cache.h"
+
 namespace Menge
 {
 	class ImageDecoderPNG
@@ -21,11 +23,9 @@ namespace Menge
 
 	private:
 		png_structp m_png_ptr;
+		png_infop m_info_ptr;
 		png_uint_32 m_row_bytes;
-
-		bool m_supportA8;
-
-    protected:
-		void cleanup_();
+		
+		//stdex::memory_cache m_memories;
 	};
 }	// namespace Menge

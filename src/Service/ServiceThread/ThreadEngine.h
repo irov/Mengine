@@ -63,6 +63,8 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
         size_t m_threadCount;
+
+		//ThreadMutexInterfacePtr m_allocatorPoolMutex;
         
         typedef std::vector<ThreadTaskHandle> TVectorThreadTaskHandle;
         TVectorThreadTaskHandle m_taskThread;

@@ -78,6 +78,22 @@ namespace Menge
 
 	//	memories->unlock_memory( _ptr );
 	//}
+	////////////////////////////////////////////////////////////////////////////
+	//static png_voidp s_png_malloc_ptr( png_structp _png, png_alloc_size_t _size )
+	//{
+	//	printf("+ %d\n"
+	//		, _size
+	//		);
+
+	//	void * memory = malloc(_size);
+
+	//	return memory;
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//static void s_png_free_ptr( png_structp _png, png_voidp _ptr )
+	//{		
+	//	free( _ptr );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
 		: m_png_ptr(nullptr)
@@ -108,6 +124,7 @@ namespace Menge
         // create the chunk manage structure
 		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
         //m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, &m_memories, &s_png_malloc_ptr, &s_png_free_ptr );
+		//m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, nullptr, &s_png_malloc_ptr, &s_png_free_ptr );
 		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
 
         if( m_png_ptr == nullptr )
@@ -126,7 +143,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
                 );
 
-            png_destroy_write_struct(&m_png_ptr, nullptr);
+            png_destroy_write_struct( &m_png_ptr, nullptr );
 
             return false;
         }
@@ -275,7 +292,7 @@ namespace Menge
 					png_read_row( m_png_ptr, row_memory, nullptr );
 
 					size_t row_alpha = m_row_bytes / 4;
-					for( size_t j = 0; j < row_alpha; ++j )
+					for( size_t j = 0; j != row_alpha; ++j )
 					{
 						bufferCursor[j] = row_memory[j*4+3];
 					}

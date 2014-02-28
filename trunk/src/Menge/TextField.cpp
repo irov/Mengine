@@ -158,6 +158,11 @@ namespace Menge
 	{	
 		Node::_render( _viewport, _camera );
 
+		if( m_textEntry == nullptr )
+		{
+			return;
+		}
+
 		this->renderOutline_( _viewport, _camera );
 
 		const RenderMaterialInterfacePtr & material = this->getMaterialFont();

@@ -7,6 +7,8 @@
 
 #	include <algorithm>
 
+#	include "stdex/allocator.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ThreadService, Menge::ThreadServiceInterface, Menge::ThreadEngine );
 //////////////////////////////////////////////////////////////////////////
@@ -32,10 +34,25 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+	////////////////////////////////////////////////////////////////////////////
+	//static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
+	//{
+	//	_mutex->lock();
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
+	//{
+	//	_mutex->unlock();
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::initialize( size_t _threadCount )
 	{
         m_threadCount = _threadCount;
+
+		//m_allocatorPoolMutex = THREAD_SYSTEM(m_serviceProvider)
+		//	->createMutex();
+
+		//stdex_threadsafe( m_allocatorPoolMutex.get(), (stdex_thread_lock_t)&s_stdex_thread_lock, (stdex_thread_unlock_t)&s_stdex_thread_unlock );
                 
         return true;
 	}
@@ -56,6 +73,9 @@ namespace Menge
 		}
 
 		m_taskThread.clear();
+
+		//stdex_threadsafe( nullptr, nullptr, nullptr );
+		//m_allocatorPoolMutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ThreadEngine::taskInProgress() const

@@ -7,6 +7,7 @@
 
 #	include "Logger/Logger.h"
 
+#	include "stdex/allocator.h"
 
 #	define PNG_BYTES_TO_CHECK 8
 
@@ -57,25 +58,37 @@ namespace Menge
 
 	//	// empty flush implementation
 	//}
-	//////////////////////////////////////////////////////////////////////////
-	static void PNGAPI s_cleanup( png_structp _png_ptr )
-	{
-		if( _png_ptr != nullptr )
-		{
-			png_destroy_read_struct( &_png_ptr, 0, (png_infopp)0 );
-			_png_ptr = nullptr;
-		}
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//static png_voidp s_png_malloc_ptr( png_structp _png, png_alloc_size_t _size )
+	//{
+	//	printf("+ %d\n"
+	//		, _size
+	//		);
+
+	//	stdex::memory_cache * memories = (stdex::memory_cache *)png_get_mem_ptr( _png );
+
+	//	void * memory = memories->lock_memory( _size );
+
+	//	return memory;
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//static void s_png_free_ptr( png_structp _png, png_voidp _ptr )
+	//{
+	//	stdex::memory_cache * memories = (stdex::memory_cache *)png_get_mem_ptr( _png );
+
+	//	memories->unlock_memory( _ptr );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
 		: m_png_ptr(nullptr)
+		, m_info_ptr(nullptr)
 		, m_row_bytes(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::~ImageDecoderPNG()
-	{		
-		s_cleanup( m_png_ptr );
+	{	
+		png_destroy_read_struct( &m_png_ptr, &m_info_ptr, nullptr );
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPNG::_initialize()
@@ -94,7 +107,8 @@ namespace Menge
 
         // create the chunk manage structure
 		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
-        m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, s_handlerError, s_handlerWarning );
+        //m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, &m_memories, &s_png_malloc_ptr, &s_png_free_ptr );
+		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
 
         if( m_png_ptr == nullptr )
         {
@@ -105,9 +119,9 @@ namespace Menge
         }
 
         // create the info structure
-        png_infop info_ptr = png_create_info_struct( m_png_ptr );
+        m_info_ptr = png_create_info_struct( m_png_ptr );
 
-        if( info_ptr == nullptr ) 
+        if( m_info_ptr == nullptr ) 
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
                 );
@@ -122,7 +136,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize" 
                 );
 
-            png_destroy_write_struct(&m_png_ptr, &info_ptr);           
+            png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
 
             return false;
         }
@@ -135,7 +149,7 @@ namespace Menge
         png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );
 
         // read the IHDR chunk
-        png_read_info( m_png_ptr, info_ptr );
+        png_read_info( m_png_ptr, m_info_ptr );
 
         png_uint_32 width = 0;
         png_uint_32 height = 0;
@@ -143,7 +157,7 @@ namespace Menge
         int bit_depth = 0;
         int interlace_method = 0;
 
-        png_get_IHDR( m_png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, NULL, NULL );
+        png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, NULL, NULL );
 
         //png_set_interlace_handling( m_png_ptr );
         if( interlace_method != PNG_INTERLACE_NONE )
@@ -151,7 +165,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize PNG is interlacing (Engine not support to read this png format)"
                 );
 			
-            png_destroy_info_struct( m_png_ptr, &info_ptr );
+            png_destroy_info_struct( m_png_ptr, &m_info_ptr );
                
             return false;
         }
@@ -175,7 +189,7 @@ namespace Menge
         };
 
         // all transformations have been registered; now update info_ptr data
-        png_read_update_info( m_png_ptr, info_ptr );
+        png_read_update_info( m_png_ptr, m_info_ptr );
 
         //if( setjmp( png_jmpbuf( m_png_ptr ) ) ) 
         //{
@@ -186,11 +200,11 @@ namespace Menge
         //    return false;
         //}
 
-        png_get_IHDR(m_png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, 0, 0, 0);
+        png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, 0, 0, 0 );
 
-        m_row_bytes = png_get_rowbytes(m_png_ptr, info_ptr);
+        m_row_bytes = png_get_rowbytes( m_png_ptr, m_info_ptr );
 
-        png_byte channels = png_get_channels(m_png_ptr, info_ptr);
+        png_byte channels = png_get_channels( m_png_ptr, m_info_ptr );
 
         size_t decodedDataSize = m_row_bytes * height;
 
@@ -201,8 +215,6 @@ namespace Menge
         m_dataInfo.mipmaps = 0;
         m_dataInfo.flags = 0;
         m_dataInfo.channels = channels;
-
-        png_destroy_info_struct( m_png_ptr, &info_ptr );
 
         if( bit_depth != 8 )
         {
@@ -229,7 +241,7 @@ namespace Menge
             return 0;
         }
 
-        if (setjmp(png_jmpbuf(m_png_ptr)))  
+        if( setjmp( png_jmpbuf( m_png_ptr ) ) )  
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode" );
 
@@ -381,9 +393,7 @@ namespace Menge
             }
 		}
 
-		png_read_end(m_png_ptr, nullptr);
-
-		png_destroy_read_struct(&m_png_ptr, nullptr, nullptr);
+		png_read_end( m_png_ptr, m_info_ptr );
 
 		return _bufferSize;
 	}

@@ -11,6 +11,15 @@ namespace Menge
 		: public Factorable
 	{
 	public:
+		StringSizeBuffer()
+		{
+		}
+
+		~StringSizeBuffer()
+		{
+		}
+
+	public:
 		const char * initialize( const char * _value, size_t _size )
 		{
 			memcpy( m_buff, _value, _size );

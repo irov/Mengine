@@ -3,6 +3,7 @@
 #   include "Interface/VideoCodecInterface.h"
 
 #	include "Kernel/ResourceReference.h"
+#	include "Kernel/ResourceCacher.h"
 
 #	include "Math/vec2.h"
 
@@ -12,6 +13,7 @@ namespace Menge
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceVideo )
+
 	public:
 		ResourceVideo();
 		~ResourceVideo();
@@ -25,10 +27,15 @@ namespace Menge
 
 	public:
 		const FilePath & getFilePath() const;
-		const ConstString& getCodecType() const;
+		const ConstString & getCodecType() const;
 
     public:
         VideoDecoderInterfacePtr createVideoDecoder() const;
+		void destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder ) const;
+		
+	protected:
+		void _cache() override;
+		void _uncache() override;
 
 	public:
 		const mt::vec2f& getFrameSize() const;
@@ -49,6 +56,9 @@ namespace Menge
 		ConstString m_codecType;
 
         float m_frameRate;
+
+		typedef ResourceCacher<VideoDecoderInterfacePtr> TCacherVideoDecoder;
+		mutable TCacherVideoDecoder m_videoDecoderCacher;
 
         bool m_alpha;
         bool m_noSeek;

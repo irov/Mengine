@@ -2,12 +2,13 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
+#	include "OALSoundBufferBase.h"
+
 #	include <al.h>
 
 namespace Menge
 {
 	class OALSoundSystem;
-	class OALSoundBufferBase;
 
 	class OALSoundSource
 		: public SoundSourceInterface
@@ -38,8 +39,8 @@ namespace Menge
 		float getPosMs() const override;
 		bool setPosMs( float _posMs ) override;
 
-		void setSoundBuffer( SoundBufferInterface* _soundBuffer ) override;
-		SoundBufferInterface* getSoundBuffer() const override;
+		void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) override;
+		SoundBufferInterfacePtr getSoundBuffer() const override;
 
 	public:
 		void setHeadMode( bool _headMode );
@@ -61,7 +62,7 @@ namespace Menge
 		ALuint m_sourceId;
 		float m_timing;
 
-		OALSoundBufferBase* m_soundBuffer;
+		OALSoundBufferBasePtr m_soundBuffer;
 
         bool m_headMode;
         bool m_playing;

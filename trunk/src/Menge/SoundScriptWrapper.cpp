@@ -29,7 +29,7 @@ namespace	Menge
 			: public SoundListenerInterface
 		{
 		public:
-			MySoundNodeListenerInterface( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, size_t _sourceID, SoundBufferInterface * _soundBuffer, PyObject * _cb )
+			MySoundNodeListenerInterface( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, size_t _sourceID, const SoundBufferInterfacePtr & _soundBuffer, PyObject * _cb )
 				: m_serviceProvider(_serviceProvider)
                 , m_resource(_resource)
 				, m_sourceID(_sourceID)
@@ -69,11 +69,7 @@ namespace	Menge
 					m_resource = nullptr;
 				}
 
-                if( m_soundBuffer != nullptr )
-                {
-                    m_soundBuffer->destroy();
-                    m_soundBuffer = nullptr;
-                }
+				m_soundBuffer = nullptr;
 
 				delete this;
 			}
@@ -82,7 +78,7 @@ namespace	Menge
             ServiceProviderInterface * m_serviceProvider;
             ResourceSound * m_resource;
 			size_t m_sourceID;	
-            SoundBufferInterface * m_soundBuffer;
+            SoundBufferInterfacePtr m_soundBuffer;
 			PyObject * m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
@@ -107,7 +103,7 @@ namespace	Menge
 				return 0;
 			}
 
-			SoundBufferInterface * soundBuffer = resource->createSoundBuffer();
+			SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer();
 
             if( soundBuffer == nullptr )
             {
@@ -121,7 +117,6 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-                soundBuffer->destroy();
                 resource->decrementReference();
                 
 				return 0;
@@ -140,7 +135,6 @@ namespace	Menge
                     , volume
 					);
 
-                soundBuffer->destroy();
                 resource->decrementReference();
 
                 return 0;

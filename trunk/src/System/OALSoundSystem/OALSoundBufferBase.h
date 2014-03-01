@@ -36,4 +36,6 @@ namespace Menge
 		float m_length;
 		bool m_isStereo;		
 	};
+
+	typedef stdex::intrusive_ptr<OALSoundBufferBase> OALSoundBufferBasePtr;
 }	// namespace Menge

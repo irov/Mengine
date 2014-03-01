@@ -176,11 +176,11 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
+	void SilentSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
 	{
 		this->unloadBuffer_();
 
-		m_soundBuffer = static_cast<SilentSoundBuffer*>( _soundBuffer );
+		m_soundBuffer = stdex::intrusive_static_cast<SilentSoundBufferPtr>( _soundBuffer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::unloadBuffer_()
@@ -203,7 +203,7 @@ namespace Menge
 		return m_headMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* SilentSoundSource::getSoundBuffer() const
+	SoundBufferInterfacePtr SilentSoundSource::getSoundBuffer() const
 	{
 		return m_soundBuffer;
 	}

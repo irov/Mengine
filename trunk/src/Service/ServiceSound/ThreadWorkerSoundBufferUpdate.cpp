@@ -21,7 +21,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ThreadWorkerSoundBufferUpdate::initialize( ServiceProviderInterface * _serviceProvider, SoundBufferInterface * _soundBuffer )
+    void ThreadWorkerSoundBufferUpdate::initialize( ServiceProviderInterface * _serviceProvider, const SoundBufferInterfacePtr & _soundBuffer )
     {
         m_serviceProvider = _serviceProvider;
         m_soundBuffer = _soundBuffer;

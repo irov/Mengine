@@ -186,7 +186,7 @@ namespace Menge
         //}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
+	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
 		OALSoundSource * soundSource = m_poolOALSoundSource.createObjectT();
@@ -199,7 +199,7 @@ namespace Menge
 		return soundSource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
+	SoundBufferInterfacePtr OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
 		OALSoundBufferBase * base = nullptr;
 
@@ -225,8 +225,6 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem: Failed to create sound buffer from stream" 
 				);
 
-			base->destroy();
-			
             return nullptr;
 		}
 

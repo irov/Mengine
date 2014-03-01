@@ -131,6 +131,7 @@ Resource
 	Resource.h
     ResourceReference.cpp
     ResourceReference.h
+    ResourceCacher.h
     ResourceHolder.cpp
     ResourceHolder.h
 	ResourceDeclare.h

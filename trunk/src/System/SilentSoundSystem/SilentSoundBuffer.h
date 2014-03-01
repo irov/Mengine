@@ -34,4 +34,6 @@ namespace Menge
         float m_length;
         bool m_isStereo;        
 	};
+
+	typedef stdex::intrusive_ptr<SilentSoundBuffer> SilentSoundBufferPtr;
 }

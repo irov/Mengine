@@ -20,7 +20,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSound::ResourceSound()
 		: m_isStreamable(false)
-		, m_soundBuffer(0)
 		, m_defaultVolume(1.f)
 	{
 	}
@@ -79,6 +78,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
 	{
+		m_soundBufferCacher.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_isValid() const
@@ -139,7 +139,7 @@ namespace Menge
         decoder = nullptr;
         stream = nullptr;
 
-        SoundBufferInterface * buffer = this->createSoundBuffer();
+        SoundBufferInterfacePtr buffer = this->createSoundBuffer();
 
         if( buffer == nullptr )
         {
@@ -150,17 +150,22 @@ namespace Menge
 
             return false;
         }
-
-        buffer->destroy();
-
+		
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * ResourceSound::createSoundBuffer() const
+	SoundBufferInterfacePtr ResourceSound::createSoundBuffer() const
 	{
+		SoundBufferInterfacePtr cacheSoundBuffer = m_soundBufferCacher.findCache();
+
+		if( cacheSoundBuffer != nullptr )
+		{
+			return cacheSoundBuffer;
+		}
+
         const ConstString & category = this->getCategory();
 
-        SoundBufferInterface * soundBuffer = SOUND_SERVICE(m_serviceProvider)
+        SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE(m_serviceProvider)
             ->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
 
         if( soundBuffer == nullptr )
@@ -173,7 +178,24 @@ namespace Menge
             return nullptr;			
         }
 
+		m_soundBufferCacher.addCache( soundBuffer );
+
         return soundBuffer;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceSound::destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const
+	{
+		m_soundBufferCacher.removeCache( _soundBuffer );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceSound::_cache()
+	{
+		m_soundBufferCacher.lock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceSound::_uncache()
+	{
+		m_soundBufferCacher.unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceSound::getDefaultVolume() const

@@ -177,7 +177,7 @@ namespace Menge
 		this->updateVolume_();
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t SoundEngine::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable )
+	size_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable )
 	{
 		SoundSourceInterface * sourceInterface = SOUND_SYSTEM(m_serviceProvider)
             ->createSoundSource( _isHeadMode, _sample );
@@ -263,7 +263,7 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream )
+	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream )
 	{
 		SoundDesc desc;
 
@@ -312,10 +312,10 @@ namespace Menge
 			true_stream = false;
 		}
 
-		SoundBufferInterface * sample = SOUND_SYSTEM(m_serviceProvider)
+		SoundBufferInterfacePtr buffer = SOUND_SYSTEM(m_serviceProvider)
             ->createSoundBuffer( desc.codec, true_stream );
 
-        if( sample == nullptr )
+        if( buffer == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
                 , _pakName.c_str()
@@ -330,7 +330,7 @@ namespace Menge
 			desc.codec = nullptr;
 		}
 
-		return sample;
+		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundSource( size_t _sourceID )
@@ -867,7 +867,7 @@ namespace Menge
 
         _source->worker = worker;
 
-        SoundBufferInterface * soundBuffer = _source->source->getSoundBuffer();
+        SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
 
         _source->worker->initialize( m_serviceProvider, soundBuffer );
 

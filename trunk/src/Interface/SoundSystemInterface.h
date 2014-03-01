@@ -32,11 +32,13 @@ namespace Menge
 	};
 
 	class SoundBufferInterface
-        : public Factorable
+        : public FactorablePtr
 	{
 	public:
 		virtual void update() = 0;
 	};
+
+	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;
 
 	class SoundSourceInterface
         : public Factorable
@@ -61,8 +63,8 @@ namespace Menge
 		virtual float getPosMs() const = 0;
 		virtual bool setPosMs( float _posMs ) = 0;
 
-		virtual void setSoundBuffer( SoundBufferInterface* _soundBuffer ) = 0;
-		virtual SoundBufferInterface* getSoundBuffer() const = 0;
+		virtual void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) = 0;
+		virtual SoundBufferInterfacePtr getSoundBuffer() const = 0;
 	};
 
 	class SoundSulkCallbackInterface
@@ -84,8 +86,8 @@ namespace Menge
 		virtual void onTurnSound( bool _turn ) = 0;
 
     public:
-		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) = 0;
-		virtual SoundBufferInterface * createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
+		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;
+		virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
 	};
 
 #   define SOUND_SYSTEM( serviceProvider )\
@@ -108,10 +110,10 @@ namespace Menge
 		virtual void onTurnSound( bool _turn ) = 0;
 
 	public:
-		virtual size_t createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, ESoundSourceType _type, bool _streamable ) = 0;
+		virtual size_t createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable ) = 0;
 
     public:
-		virtual SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
+		virtual SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
 
 	public:
 		virtual void setSoundVolume( const ConstString & _type, float _volume ) = 0;

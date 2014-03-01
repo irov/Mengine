@@ -64,6 +64,17 @@ namespace Menge
 		bool convertDefault_( const ConstString & _converter, const ConstString & _path, ConstString & _out, ConstString & _codecType );
 
 	public:
+		bool cache();
+		void uncache();
+
+	public:
+		inline bool isCache() const;
+
+	protected:
+		virtual void _cache();
+		virtual void _uncache();
+
+	public:
 		virtual void accept( ResourceVisitor * _visitor ) = 0;
 
 	protected:
@@ -78,6 +89,8 @@ namespace Menge
         
 		ConstString m_category;
 		ConstString m_group;
+
+		bool m_cache;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ResourceReference::getCategory() const
@@ -88,5 +101,10 @@ namespace Menge
 	inline const ConstString & ResourceReference::getGroup() const
 	{
 		return m_group;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool ResourceReference::isCache() const
+	{
+		return m_cache;
 	}
 }

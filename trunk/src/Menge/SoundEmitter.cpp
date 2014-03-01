@@ -106,13 +106,13 @@ namespace Menge
 
 		m_sourceID = 0;
 
-        m_resourceSound.release();
+		if( m_soundBuffer != nullptr )
+		{
+			m_resourceSound->destroySoundBuffer( m_soundBuffer );
+			m_soundBuffer = nullptr;
+		}
 
-        if( m_soundBuffer != nullptr )
-        {
-            m_soundBuffer->destroy();            
-            m_soundBuffer = nullptr;
-        }
+        m_resourceSound.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setResourceSound( ResourceSound * _resourceSound )

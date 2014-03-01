@@ -29,7 +29,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::initialize()
 	{
-		m_threadPool = THREAD_SERVICE(m_serviceProvider)
+		m_threadQueue = THREAD_SERVICE(m_serviceProvider)
 			->runTaskQueue( MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
 
 		return true;
@@ -65,8 +65,8 @@ namespace Menge
 
 		m_prefetchDataReceiver.clear();
 
-		m_threadPool->cancel();
-		m_threadPool = nullptr;
+		m_threadQueue->cancel();
+		m_threadQueue = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
@@ -86,7 +86,7 @@ namespace Menge
 
 			m_prefetchImageDecoderReceiver.insert( _fileName, receiver );
 
-			m_threadPool->addTask( task );
+			m_threadQueue->addTask( task );
 
 			return true;
 		}
@@ -159,7 +159,7 @@ namespace Menge
 
 			m_prefetchDataReceiver.insert( _fileName, receiver );
 
-			m_threadPool->addTask( task );
+			m_threadQueue->addTask( task );
 
 			return true;
 		}

@@ -52,7 +52,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		ThreadQueueInterfacePtr m_threadPool;
+		ThreadQueueInterfacePtr m_threadQueue;
 
 		struct PrefetchImageDecoderReceiver
 		{

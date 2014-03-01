@@ -227,16 +227,16 @@ namespace Menge
 
 			const ResourceReference * resource = entry.resource;
 
-            if( resource->isValid() == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
-                    , resource->getName().c_str()
-                    , resource->getType().c_str()
-                    );
+			if( resource->isValid() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
+					, resource->getName().c_str()
+					, resource->getType().c_str()
+					);
 
-                LOGGER_WARNING(m_serviceProvider)("======================================================================");
-                LOGGER_WARNING(m_serviceProvider)("");
-            }
+				LOGGER_WARNING(m_serviceProvider)("======================================================================");
+				LOGGER_WARNING(m_serviceProvider)("");
+			}
         }
 
         LOG_SERVICE(m_serviceProvider)->logMessage( Menge::LM_WARNING, 0, "\n", 2 );

@@ -30,7 +30,7 @@ namespace Menge
 	{
 		size_t soundId;
 
-		SoundSourceInterface * source;
+		SoundSourceInterfacePtr source;
 		SoundListenerInterface * listener;
 
 		ThreadWorkerSoundBufferUpdatePtr worker;

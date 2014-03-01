@@ -28,7 +28,7 @@ namespace Menge
 		void onTurnSound( bool _turn ) override;
 
 	public:
-		SoundSourceInterface* createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) override;
+		SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) override;
 		SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
 
 	public:

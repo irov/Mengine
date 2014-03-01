@@ -53,7 +53,7 @@ namespace Menge
         (void)_turn;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface* SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
+	SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{		
 		SilentSoundSource * soundSource = m_poolSilentSoundSource.createObjectT();
 

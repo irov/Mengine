@@ -58,7 +58,16 @@ namespace Menge
     {   
         VideoDecoderInterfacePtr decoder = this->createVideoDecoder();
 
-        if( decoder == nullptr )
+		bool valid = this->checkValidVideoDecoder_( decoder );
+
+		this->destroyVideoDecoder( decoder );
+
+		return valid;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceVideo::checkValidVideoDecoder_( const VideoDecoderInterfacePtr & _decoder ) const
+	{
+        if( _decoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceVideo::isValid '%s' can't create decoder '%s'"
                 , this->getName().c_str()
@@ -70,18 +79,18 @@ namespace Menge
 
         if( m_noSeek == false )
         {
-            const VideoCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+            const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
 			
 			for( float pts = 0.f; pts < 200.f; pts += dataInfo->frameTiming )
 			{
-				decoder->seek( pts );
+				_decoder->seek( pts );
             
 				float current_pts;
 				EVideoDecoderReadState state = VDRS_FAILURE;
 				
 				while( true, true )
 				{
-					state = decoder->readNextFrame( current_pts );
+					state = _decoder->readNextFrame( current_pts );
 
 					if( state == VDRS_SKIP )
 					{
@@ -121,7 +130,7 @@ namespace Menge
 				}
 			}
 
-            decoder->seek( 0.f );
+            _decoder->seek( 0.f );
         }
 
         return true;

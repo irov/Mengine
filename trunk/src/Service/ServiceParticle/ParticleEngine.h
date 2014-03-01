@@ -43,7 +43,5 @@ namespace Menge
 
 		size_t m_maxParticlesNum;
 		size_t m_renderParticleNum;
-
-		TBlobject m_fileBuffer;
 	};
 };

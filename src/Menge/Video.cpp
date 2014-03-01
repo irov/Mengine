@@ -197,11 +197,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_release()
 	{
+		if( m_videoDecoder != nullptr )
+		{
+			m_resourceVideo->destroyVideoDecoder( m_videoDecoder );
+			m_videoDecoder = nullptr;
+		}
+
         m_resourceVideo.release();
 
 		m_textures[0] = nullptr;
-
-		m_videoDecoder = nullptr;
 
 		m_material = nullptr;
     }

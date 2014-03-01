@@ -261,11 +261,11 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
+	void OALSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
 	{
 		this->unloadBuffer_();
 
-		m_soundBuffer = static_cast<OALSoundBufferBase*>( _soundBuffer );
+		m_soundBuffer = stdex::intrusive_static_cast<OALSoundBufferBasePtr>(_soundBuffer);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::unloadBuffer_()
@@ -349,7 +349,7 @@ namespace Menge
 		OAL_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* OALSoundSource::getSoundBuffer() const
+	SoundBufferInterfacePtr OALSoundSource::getSoundBuffer() const
 	{
 		return m_soundBuffer;
 	}

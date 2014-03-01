@@ -53,19 +53,19 @@ namespace Menge
         (void)_turn;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface* SilentSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
+	SoundSourceInterface* SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{		
 		SilentSoundSource * soundSource = m_poolSilentSoundSource.createObjectT();
 
 		soundSource->initialize(this);
 		
 		soundSource->setHeadMode( _isHeadMode );
-		soundSource->setSoundBuffer( _sample );
+		soundSource->setSoundBuffer( _buffer );
 
 		return soundSource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
+	SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
         (void)_isStream;
 
@@ -76,8 +76,6 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
 				);
 
-			buffer->destroy();
-			
             return nullptr;
 		}
 

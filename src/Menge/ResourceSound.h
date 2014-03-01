@@ -1,11 +1,12 @@
 #	pragma once
 
+#	include "Interface/SoundSystemInterface.h"
+
 #	include "Kernel/ResourceReference.h"
+#	include "Kernel/ResourceCacher.h"
 
 namespace Menge
 {
-	class SoundBufferInterface;
-
 	class ResourceSound
 		: public ResourceReference
 	{
@@ -33,7 +34,12 @@ namespace Menge
         bool _isValid() const override;
 
 	public:
-		SoundBufferInterface * createSoundBuffer() const;
+		SoundBufferInterfacePtr createSoundBuffer() const;
+		void destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const;
+
+	protected:
+		void _cache() override;
+		void _uncache() override;
 
 	protected:
 		bool _compile() override;
@@ -46,7 +52,9 @@ namespace Menge
 		ConstString m_converter;
 		float m_defaultVolume;
 
+		typedef ResourceCacher<SoundBufferInterfacePtr> TCacherSoundBuffer;
+		mutable TCacherSoundBuffer m_soundBufferCacher;
+
 		bool m_isStreamable;
-		SoundBufferInterface * m_soundBuffer;
 	};
 }

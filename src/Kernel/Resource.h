@@ -10,12 +10,11 @@ namespace Menge
 		Resource();
 
 	public:
-		virtual bool compile();
-		virtual void release();
-
 		inline bool isCompile() const;
 
-		virtual size_t memoryUse() const;
+	public:
+		virtual bool compile();
+		virtual void release();
 
 	public:
 		bool recompile();
@@ -26,6 +25,9 @@ namespace Menge
 
 		virtual void _recompile();
         virtual void _uncompile();
+
+	public:
+		virtual size_t memoryUse() const;
 
 	protected:
 		bool m_compile;

@@ -2,10 +2,11 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
+#	include "SilentSoundBuffer.h"
+
 namespace Menge
 {
-	class SilentSoundSystem;
-	class SilentSoundBuffer;
+	class SilentSoundSystem;	
 
 	class SilentSoundSource
 		: public SoundSourceInterface
@@ -36,8 +37,8 @@ namespace Menge
 		float getPosMs() const override;
 		bool setPosMs( float _posMs ) override;
 
-		void setSoundBuffer( SoundBufferInterface* _soundBuffer ) override;
-		SoundBufferInterface* getSoundBuffer() const override;
+		void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) override;
+		SoundBufferInterfacePtr getSoundBuffer() const override;
 
 	public:
 		void setHeadMode( bool _headMode );
@@ -53,7 +54,7 @@ namespace Menge
 		size_t m_sourceId;
 		float m_timing;
 
-		SilentSoundBuffer * m_soundBuffer;		
+		SilentSoundBufferPtr m_soundBuffer;		
 		SilentSoundSystem * m_soundSystem;
 
     private:

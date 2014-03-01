@@ -134,14 +134,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceVideo::_release()
 	{
+		m_videoDecoderCacher.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
     VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder() const
-    {        
+    {   
+		VideoDecoderInterfacePtr cacheVideoDecoder = m_videoDecoderCacher.findCache();
+
+		if( cacheVideoDecoder != nullptr )
+		{
+			return cacheVideoDecoder;
+		}
+
         const ConstString & category = this->getCategory();
 
-        InputStreamInterfacePtr videoStream = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( category, m_path );
+        InputStreamInterfacePtr videoStream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( category, m_path );
 
         if( videoStream == nullptr )
         {
@@ -199,8 +207,25 @@ namespace Menge
             return nullptr;
         }
 
+		m_videoDecoderCacher.addCache( videoDecoder );
+
         return videoDecoder;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder ) const
+	{
+		m_videoDecoderCacher.removeCache( _decoder );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::_cache()
+	{
+		m_videoDecoderCacher.lock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::_uncache()
+	{
+		m_videoDecoderCacher.unlock();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::isAlpha() const
 	{

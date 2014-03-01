@@ -61,7 +61,7 @@ namespace	Menge
 		Playlist * m_currentPlayList;
 
 		size_t m_sourceID;
-		SoundBufferInterface * m_buffer;
+		SoundBufferInterfacePtr m_buffer;
 
 		bool m_play;
 		bool m_needRefocus;

@@ -1590,6 +1590,142 @@ namespace Menge
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitResources( &rv_gac );
 		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_cacheResources( const ConstString & _category, const ConstString & _groupName )
+		{
+			class MyResourceVisitor
+				: public ResourceVisitor
+			{
+			public:
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+					: m_serviceProvider(_serviceProvider)
+					, m_category(_category)
+					, m_groupName(_groupName)
+				{
+				}
+
+				~MyResourceVisitor()
+				{
+				}
+
+			protected:
+				bool filterResource( ResourceReference * _resource ) const
+				{
+					if( _resource->isCompile() == false )
+					{
+						return false;
+					}
+
+					const ConstString & category = _resource->getCategory();
+
+					if( m_category != category )
+					{
+						return false;
+					}
+
+					const ConstString & group = _resource->getGroup();
+
+					if( m_groupName != group )
+					{
+						return false;
+					}
+
+					return true;
+				}
+
+			protected:
+				void visit( ResourceReference * _resource ) override
+				{
+					if( this->filterResource( _resource ) == false )
+					{
+						return;
+					}
+
+					_resource->cache();
+				}
+
+			protected:
+				ServiceProviderInterface * m_serviceProvider;
+				ConstString m_category;
+				ConstString m_groupName;
+			};
+
+			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
+
+			RESOURCE_SERVICE(m_serviceProvider)
+				->visitResources( &rv_gac );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_uncacheResources( const ConstString & _category, const ConstString & _groupName )
+		{
+			class MyResourceVisitor
+				: public ResourceVisitor
+			{
+			public:
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+					: m_serviceProvider(_serviceProvider)
+					, m_category(_category)
+					, m_groupName(_groupName)
+				{
+				}
+
+				~MyResourceVisitor()
+				{
+				}
+
+			protected:
+				bool filterResource( ResourceReference * _resource ) const
+				{
+					if( _resource->isCompile() == false )
+					{
+						return false;
+					}
+
+					if( _resource->isCache() == false )
+					{
+						return false;
+					}
+
+					const ConstString & category = _resource->getCategory();
+
+					if( m_category != category )
+					{
+						return false;
+					}
+
+					const ConstString & group = _resource->getGroup();
+
+					if( m_groupName != group )
+					{
+						return false;
+					}
+
+					return true;
+				}
+
+			protected:
+				void visit( ResourceReference * _resource ) override
+				{
+					if( this->filterResource( _resource ) == false )
+					{
+						return;
+					}
+
+					_resource->uncache();
+				}
+
+
+			protected:
+				ServiceProviderInterface * m_serviceProvider;
+				ConstString m_category;
+				ConstString m_groupName;
+			};
+
+			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
+
+			RESOURCE_SERVICE(m_serviceProvider)
+				->visitResources( &rv_gac );
+		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
@@ -1689,11 +1825,11 @@ namespace Menge
                 return size;
             }
             
-            resourceImage->incrementReference();
+            //resourceImage->incrementReference();
 
-            size = resourceImage->getSize();
+            size = resourceImage->getMaxSize();
 
-            resourceImage->decrementReference();
+            //resourceImage->decrementReference();
             
             return size;
         }
@@ -3726,6 +3862,8 @@ namespace Menge
         pybind::interface_<ResourceReference, pybind::bases<Resource, Identity, Reference> >("ResourceReference", false)
             .def( "getCategory", &ResourceReference::getCategory )
             .def( "getGroup", &ResourceReference::getGroup )
+			.def( "cache", &ResourceReference::cache )
+			.def( "uncache", &ResourceReference::uncache )
             ;
 
         pybind::interface_<ResourceImage, pybind::bases<ResourceReference> >("ResourceImage", false)
@@ -4541,6 +4679,9 @@ namespace Menge
 
 			pybind::def_functor( "prefetchResources", nodeScriptMethod, &NodeScriptMethod::s_prefetchResources );
 			pybind::def_functor( "unfetchResources", nodeScriptMethod, &NodeScriptMethod::s_unfetchResources );
+
+			pybind::def_functor( "cacheResources", nodeScriptMethod, &NodeScriptMethod::s_cacheResources );
+			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
         }
     }
 }

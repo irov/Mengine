@@ -59,7 +59,7 @@ namespace Menge
 	private:
 		ResourceHolder<ResourceSound> m_resourceSound;
 
-        SoundBufferInterface * m_soundBuffer;
+        SoundBufferInterfacePtr m_soundBuffer;
         
 		size_t m_sourceID;
 

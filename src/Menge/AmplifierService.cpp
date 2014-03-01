@@ -328,11 +328,7 @@ namespace Menge
 
         m_sourceID = 0;
 
-        if( m_buffer != nullptr )
-        {
-            m_buffer->destroy();
-	    	m_buffer = nullptr;
-        }
+    	m_buffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& AmplifierService::getPlayTrack() const

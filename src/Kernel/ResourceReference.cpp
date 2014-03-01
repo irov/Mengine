@@ -18,6 +18,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference::ResourceReference()
         : m_serviceProvider(nullptr)
+		, m_cache(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -149,4 +150,42 @@ namespace Menge
 
         return embedding;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceReference::cache()
+	{
+		if( this->incrementReference() == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceReference::cache: '%s:%s' invalid increment reference"
+				, this->getGroup().c_str()
+				, this->getName().c_str()				
+				);
+
+			return false;
+		}
+
+		m_cache = true;
+
+		this->_cache();
+
+		return true; 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceReference::uncache()
+	{
+		m_cache = false;
+
+		this->_uncache();
+
+		this->decrementReference();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceReference::_cache()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceReference::_uncache()
+	{
+		//Empty
+	}
 }

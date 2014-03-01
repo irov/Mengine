@@ -1,13 +1,15 @@
 #	include "LoaderEngine.h"
 
-#	include "metabuf/Metabuf.hpp"
-#   include "Metacode.h"
-
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/XmlCodecInterface.h"
 #	include "Interface/StringizeInterface.h"
+
+#	include "metabuf/Metabuf.hpp"
+#   include "Metacode.h"
+
+#	include "Core/CacheMemoryBuffer.h"
 
 #   include "Logger/Logger.h"
 
@@ -150,14 +152,14 @@ namespace Menge
         size_t bin_size;
         _stream->read( &bin_size, sizeof(bin_size) );
 
-        m_bufferBin.resize( bin_size );
-
+	
         size_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
-        
-		m_bufferCompress.resize( compress_size );
 
-		size_t compress_reading = _stream->read( &m_bufferCompress[0], compress_size );
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size);
+		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
+		
+		size_t compress_reading = _stream->read( compress_memory, compress_size );
 
 		if( compress_reading != compress_size )
 		{
@@ -169,12 +171,12 @@ namespace Menge
 			return false;
 		}
 
-        unsigned char * buffer = &m_bufferBin[0];
-        unsigned char * source = &m_bufferCompress[0];
-
+		CacheMemoryBuffer binary_buffer(m_serviceProvider, bin_size);
+		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
+		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( buffer, bin_size, uncompress_size, source, compress_size ) == false )
+            ->uncompress( binary_memory, bin_size, uncompress_size, compress_memory, compress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid uncompress"
                 );
@@ -185,7 +187,7 @@ namespace Menge
         size_t read_size = 0;
 
         size_t stringCount;
-        if( Metacode::readStrings( buffer, bin_size, read_size, stringCount, (void *)m_serviceProvider ) == false )
+        if( Metacode::readStrings( binary_memory, bin_size, read_size, stringCount, (void *)m_serviceProvider ) == false )
         {
             return false;
         }
@@ -199,7 +201,7 @@ namespace Menge
         ++it )
         {
             size_t stringSize;
-            const char * str = Metacode::readString( buffer, bin_size, read_size, stringSize, (void *)m_serviceProvider );
+            const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, (void *)m_serviceProvider );
 
             if( str == nullptr )
             {
@@ -209,7 +211,7 @@ namespace Menge
             *it = Helper::stringizeStringSize(m_serviceProvider, str, stringSize);
         }
 
-        if( _metadata->parseRoot( buffer, bin_size, read_size, (void *)this ) == false )
+        if( _metadata->parseRoot( binary_memory, bin_size, read_size, (void *)this ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid parse (error)"
                 );

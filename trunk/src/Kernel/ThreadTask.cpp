@@ -33,7 +33,9 @@ namespace Menge
 			return;
 		}
 
-		m_successful = this->_onMain();
+		bool successful = this->_onMain();
+
+		m_successful = successful;
 		m_finish = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,8 +81,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::cancel()
 	{
-		if( m_run == false ||
-			m_cancel == true ||
+		if( m_cancel == true ||
 			m_finish == true ||
 			m_complete == true )
 		{
@@ -101,8 +102,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::update()
 	{
-		if( m_run == false ||
-			m_cancel == true ||
+		if( m_run == false ||			
 			m_complete == true )
 		{
 			return true;

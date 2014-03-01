@@ -84,12 +84,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine::flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
-		if( PARTICLE_SYSTEM(m_serviceProvider)->flushParticles( _viewMatrix, _emitter, _meshes, _particles, _particlesLimit, _flush ) == false )
-        {
-            return false;
-        }
+		bool successful = PARTICLE_SYSTEM(m_serviceProvider)
+			->flushParticles( _viewMatrix, _emitter, _meshes, _particles, _particlesLimit, _flush );
 
-        return true;
+        return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ParticleEngine::getMaxParticlesCount() const

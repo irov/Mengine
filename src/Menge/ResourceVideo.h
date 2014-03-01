@@ -46,6 +46,9 @@ namespace Menge
         bool _isValid() const override;
 
 	protected:
+		bool checkValidVideoDecoder_( const VideoDecoderInterfacePtr & _decoder ) const;
+
+	protected:
 		bool _compile() override;
 		void _release() override;
 			

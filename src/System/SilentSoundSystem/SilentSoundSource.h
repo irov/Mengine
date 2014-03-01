@@ -61,4 +61,6 @@ namespace Menge
         void apply_( size_t _source );
 		void unloadBuffer_();
 	};
+
+	typedef stdex::intrusive_ptr<SilentSoundSource> SilentSoundSourcePtr;
 }	// namespace Menge

@@ -1,6 +1,7 @@
 #	include "ParticleEngine.h"
 
 #   include "Interface/FileSystemInterface.h"
+#	include "Interface/CacheInterface.h"
 
 #   include "Config/Blobject.h"
 
@@ -38,8 +39,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterfacePtr ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
 	{
-		InputStreamInterfacePtr file = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _fileSystemName, _filename );
+		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _fileSystemName, _filename );
 		
 		if( file == nullptr )
 		{
@@ -53,9 +54,11 @@ namespace Menge
 
 		size_t fileSize = file->size();
 
-        m_fileBuffer.resize(fileSize);
+		void * memory = nullptr;
+		size_t bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( fileSize, &memory );
 
-		unsigned char * buffer = &m_fileBuffer[0];
+		unsigned char * buffer = static_cast<unsigned char *>(memory);
 
 		file->read( buffer, fileSize );
 
@@ -63,6 +66,9 @@ namespace Menge
 
 		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(m_serviceProvider)
             ->createEmitterContainerFromMemory( _filename, buffer );
+
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( bufferId );
 
 		if( container == nullptr )
 		{

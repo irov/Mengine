@@ -138,7 +138,7 @@ namespace Menge
 
         decoder = nullptr;
         stream = nullptr;
-
+		
         SoundBufferInterfacePtr buffer = this->createSoundBuffer();
 
         if( buffer == nullptr )
@@ -150,6 +150,8 @@ namespace Menge
 
             return false;
         }
+
+		this->destroySoundBuffer( buffer );
 		
         return true;
     }

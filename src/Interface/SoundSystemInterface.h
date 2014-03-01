@@ -14,9 +14,6 @@
 
 namespace Menge
 {
-	class SoundSourceInterface;
-	class ServiceProviderInterface;
-
     enum ESoundSourceType
     {
         EST_SOUND,
@@ -41,7 +38,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;
 
 	class SoundSourceInterface
-        : public Factorable
+        : public FactorablePtr
 	{
 	public:
 		virtual bool play() = 0;
@@ -67,6 +64,8 @@ namespace Menge
 		virtual SoundBufferInterfacePtr getSoundBuffer() const = 0;
 	};
 
+	typedef stdex::intrusive_ptr<SoundSourceInterface> SoundSourceInterfacePtr;
+
 	class SoundSulkCallbackInterface
 	{
 	public:
@@ -86,7 +85,7 @@ namespace Menge
 		virtual void onTurnSound( bool _turn ) = 0;
 
     public:
-		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;
+		virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;
 		virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
 	};
 

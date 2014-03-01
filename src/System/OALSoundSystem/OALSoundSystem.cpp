@@ -186,7 +186,7 @@ namespace Menge
         //}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample )
+	SoundSourceInterfacePtr OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
 		OALSoundSource * soundSource = m_poolOALSoundSource.createObjectT();
@@ -194,7 +194,7 @@ namespace Menge
         soundSource->initialize( m_serviceProvider, this );
         		
 		soundSource->setHeadMode( _isHeadMode );
-		soundSource->setSoundBuffer( _sample );
+		soundSource->setSoundBuffer( _buffer );
 
 		return soundSource;
 	}

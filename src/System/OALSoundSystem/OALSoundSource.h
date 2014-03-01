@@ -69,4 +69,6 @@ namespace Menge
         bool m_pausing;
         bool m_loop;
 	};
+
+	typedef stdex::intrusive_ptr<OALSoundSource> OALSoundSourcePtr;
 }	// namespace Menge

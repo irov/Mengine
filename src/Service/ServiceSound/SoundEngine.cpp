@@ -63,7 +63,7 @@ namespace Menge
 			this->stopSoundBufferUpdate_( source );
 
             source->source->stop();
-            source->source->destroy();
+            source->source = nullptr;
 
             m_poolSoundSourceDesc.destroyT( source );
         }
@@ -177,10 +177,10 @@ namespace Menge
 		this->updateVolume_();
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable )
+	size_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
 	{
-		SoundSourceInterface * sourceInterface = SOUND_SYSTEM(m_serviceProvider)
-            ->createSoundSource( _isHeadMode, _sample );
+		SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM(m_serviceProvider)
+            ->createSoundSource( _isHeadMode, _buffer );
 
 		if( sourceInterface == nullptr )
 		{
@@ -220,7 +220,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::updateSourceVolume_( SoundSourceDesc * _source, float _volume )
     {
-        SoundSourceInterface * sourceInterface = _source->source;
+        const SoundSourceInterfacePtr & sourceInterface = _source->source;
         
         if( this->isMute() == true || m_turn == false )
         {
@@ -353,7 +353,7 @@ namespace Menge
 		source->listener = nullptr;
 
         source->source->stop();
-        source->source->destroy();
+        source->source = nullptr;
 
 		m_soundSourceMap.erase( it_find );
         

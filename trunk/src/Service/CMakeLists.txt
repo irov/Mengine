@@ -16,6 +16,7 @@ ADD_SUBDIRECTORY( ServicePrefetcher )
 ADD_SUBDIRECTORY( ServiceScript )
 ADD_SUBDIRECTORY( ServiceSound )
 ADD_SUBDIRECTORY( ServiceThread )
+ADD_SUBDIRECTORY( ServiceConfig )
 ADD_SUBDIRECTORY( ServiceProfiler )
 ADD_SUBDIRECTORY( ServiceArchive )
 

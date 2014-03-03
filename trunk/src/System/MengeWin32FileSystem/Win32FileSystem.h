@@ -6,7 +6,8 @@
 
 #	include "Win32InputStream.h"
 #	include "Win32OutputStream.h"
-#	include "Win32MappedInputStream.h"
+#	include "Win32MappedFile.h"
+#	include "Win32SharedFile.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -33,7 +34,8 @@ namespace Menge
 		FileOutputStreamInterfacePtr createOutputStream() override;
 		
     public:
-        MappedFileInputStreamInterfacePtr createMappedInputStream() override;
+        MappedFileInterfacePtr createMappedFile() override;
+		MappedFileInterfacePtr createSharedFile() override;
 
     public:
 		bool existFile( const FilePath & _folder, const FilePath& _dir, const char * _filename, size_t _filenamelen  ) const override;
@@ -54,7 +56,10 @@ namespace Menge
         typedef FactoryPoolStore<Win32OutputStream, 4> TFactoryFileOutputStream;
         TFactoryFileOutputStream m_factoryOutputStream;
 
-        typedef FactoryPoolStore<Win32MappedInputStream, 4> TFactoryMappedInputStream;
-        TFactoryMappedInputStream m_factoryMappedInputStream;
+        typedef FactoryPoolStore<Win32MappedFile, 4> TFactoryWin32MappedFile;
+        TFactoryWin32MappedFile m_factoryWin32MappedFile;
+
+		typedef FactoryPoolStore<Win32SharedFile, 4> TFactoryWin32SharedFile;
+		TFactoryWin32SharedFile m_factoryWin32SharedFile;
     };
 }

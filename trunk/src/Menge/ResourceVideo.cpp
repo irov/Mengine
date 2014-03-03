@@ -152,6 +152,8 @@ namespace Menge
 
 		if( cacheVideoDecoder != nullptr )
 		{
+			cacheVideoDecoder->seek( 0.f );
+
 			return cacheVideoDecoder;
 		}
 

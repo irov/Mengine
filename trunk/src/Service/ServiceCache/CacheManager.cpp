@@ -1,5 +1,7 @@
 #	include "CacheManager.h"
 
+#	include "Core/MutexGuard.h"
+
 #	include "Logger/Logger.h"
 
 #	include <malloc.h>
@@ -41,6 +43,7 @@ namespace Menge
 	void CacheManager::finalize()
 	{
 		m_memoryMutex->lock();
+		//MutexGuard guard(m_memoryMutex);
 
 		for( TVectorCacheBufferMemory::iterator
 			it = m_buffers.begin(),
@@ -175,16 +178,5 @@ namespace Menge
 		}
 
 		m_memoryMutex->unlock();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr CacheManager::lockStream( size_t _size, void ** _memory )
-	{
-		MemoryCacheInputPtr memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
-
-		void * memory = memoryCache->cacheMemory( _size );
-
-		*_memory = memory;
-
-		return memoryCache;
 	}
 }

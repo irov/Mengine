@@ -14,6 +14,7 @@ namespace Menge
 	public:
 		virtual bool isRun() const = 0;
 		virtual bool isComplete() const = 0;
+		virtual bool isSuccessful() const = 0;
 		virtual bool isCancel() const = 0;
 
     public:

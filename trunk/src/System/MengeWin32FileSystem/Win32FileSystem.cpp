@@ -50,14 +50,23 @@ namespace Menge
         return outputStream;
     }
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInputStreamInterfacePtr Win32FileSystem::createMappedInputStream()
+    MappedFileInterfacePtr Win32FileSystem::createMappedFile()
     {
-        Win32MappedInputStream * mappedStream = m_factoryMappedInputStream.createObjectT();
+        Win32MappedFile * mappedStream = m_factoryWin32MappedFile.createObjectT();
 
         mappedStream->setServiceProvider( m_serviceProvider );
 
         return mappedStream;
     }
+	//////////////////////////////////////////////////////////////////////////
+	MappedFileInterfacePtr Win32FileSystem::createSharedFile()
+	{
+		Win32SharedFile * mappedStream = m_factoryWin32SharedFile.createObjectT();
+
+		mappedStream->setServiceProvider( m_serviceProvider );
+
+		return mappedStream;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::existFile( const FilePath & _folder, const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
 	{

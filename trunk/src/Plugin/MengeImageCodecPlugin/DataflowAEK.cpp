@@ -30,7 +30,14 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream )
+	DataInterfacePtr DataflowAEK::create()
+	{
+		MovieFramePack * pack = m_poolMovieFramePack.createObjectT();
+
+		return pack;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
 		size_t binary_aek_header;
 		_stream->read( &binary_aek_header, sizeof(binary_aek_header) );
@@ -40,7 +47,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid magic header"
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		size_t binary_aek_version_valid = DATAFLOW_VERSION_AEK;
@@ -55,7 +62,7 @@ namespace Menge
 				, binary_aek_version_valid
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		size_t binary_size;
@@ -79,7 +86,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		BlobjectRead ar(binary_memory, binary_size);
@@ -87,7 +94,7 @@ namespace Menge
 		size_t maxIndex;
 		ar >> maxIndex;
 
-		MovieFramePack * pack = m_poolMovieFramePack.createObjectT();
+		MovieFramePack * pack = stdex::intrusive_get<MovieFramePack>(_data);
 
 		pack->initialize( maxIndex );
 
@@ -190,6 +197,6 @@ namespace Menge
 			}
 		}
 
-		return pack;
+		return true;
 	}
 }

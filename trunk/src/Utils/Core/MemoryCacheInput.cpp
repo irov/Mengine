@@ -88,7 +88,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryCacheInput::tell() const
 	{
-        size_t distance = std::distance( m_data, m_pos );
+        size_t distance = m_pos - m_data;
 
 		return distance;
 	}

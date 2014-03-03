@@ -30,7 +30,14 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataInterfacePtr DataflowMDL::load( const InputStreamInterfacePtr & _stream )
+	DataInterfacePtr DataflowMDL::create()
+	{
+		Model3DPack * pack = m_poolModel3DPack.createObjectT();
+
+		return pack;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DataflowMDL::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
 		size_t magic_header;
 		_stream->read( &magic_header, sizeof(magic_header) );
@@ -40,7 +47,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: mdl invalid magic header"
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		size_t version_valid = DATAFLOW_VERSION_MDL;
@@ -55,7 +62,7 @@ namespace Menge
 				, version_valid
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		size_t binary_size;
@@ -79,7 +86,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		BlobjectRead ar(binary_memory, binary_size);
@@ -118,10 +125,10 @@ namespace Menge
 				, MENGINE_MODEL_MAX_INDICES
 				);
 
-			return nullptr;
+			return false;
 		}
 
-		Model3DPack * pack = m_poolModel3DPack.createObjectT();
+		Model3DPack * pack = stdex::intrusive_get<Model3DPack>(_data);
 
 		pack->initialize( frameCount, vertexCount, indicesCount, frameDelay );
 		pack->setCamera( cameraFOV, cameraWidth / cameraHeight, cameraRightSign );
@@ -140,6 +147,6 @@ namespace Menge
 			ar.readPODs( frame.indecies, indicesCount );
 		}
 
-		return pack;
+		return true;
 	}
 }

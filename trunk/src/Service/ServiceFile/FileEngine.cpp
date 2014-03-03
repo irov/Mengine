@@ -91,7 +91,7 @@ namespace Menge
 			return false;
 		}
 
-		if( fs->initialize( m_serviceProvider, _folder, _path, _type, _create ) == false )
+		if( fs->initialize( m_serviceProvider, _folder, _path, _create ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't initialize FileSystem for object '%s'"
 				, _path.c_str() 
@@ -246,23 +246,23 @@ namespace Menge
 		return file;
 	}
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInputStreamInterfacePtr FileEngine::openMappedInputStream( const FilePath & _foldername, const FilePath& _filename )
+    MappedFileInterfacePtr FileEngine::createMappedFile( const FilePath & _foldername, const FilePath& _filename )
     {
-        MappedFileInputStreamInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
-            ->createMappedInputStream();
+        MappedFileInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
+            ->createMappedFile();
 
         if( mappedFile == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedInputStream can't create output file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't create output file '%s'"
                 , _filename.c_str()
                 );
 
             return nullptr;
         }
 
-        if( mappedFile->open( _foldername, _filename, nullptr, 0 ) == false )
+        if( mappedFile->initialize( _foldername, _filename, nullptr, 0 ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedInputStream can't open output file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't open output file '%s'"
                 , _filename.c_str()
                 );
 
@@ -271,6 +271,32 @@ namespace Menge
 
         return mappedFile;
     }
+	//////////////////////////////////////////////////////////////////////////
+	MappedFileInterfacePtr FileEngine::createSharedFile( const FilePath & _foldername, const FilePath& _filename )
+	{
+		MappedFileInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
+			->createSharedFile();
+
+		if( mappedFile == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't create output file '%s'"
+				, _filename.c_str()
+				);
+
+			return nullptr;
+		}
+
+		if( mappedFile->initialize( _foldername, _filename, nullptr, 0 ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't open output file '%s'"
+				, _filename.c_str()
+				);
+
+			return nullptr;
+		}
+
+		return mappedFile;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool FileEngine::existDirectory( const ConstString& _fileSystemName, const FilePath& _path )
     {

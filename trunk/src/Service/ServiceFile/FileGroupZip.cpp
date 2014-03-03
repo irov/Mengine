@@ -52,7 +52,7 @@ namespace Menge
     //    return x;
     //}
     //////////////////////////////////////////////////////////////////////////
-    static int s_read_int( const MappedFileInputStreamInterfacePtr & _stream )
+    static int s_read_int( const InputStreamInterfacePtr & _stream )
     {
         unsigned char buff[4];
 
@@ -84,7 +84,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create )
+	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, bool _create )
 	{
         (void)_create;
 
@@ -92,115 +92,132 @@ namespace Menge
 
         m_folder = _folder;
         m_path = _path;
-        m_type = _type;
-       
-		MappedFileInputStreamInterfacePtr zipMappedFile = FILE_SYSTEM(m_serviceProvider)
-            ->createMappedInputStream();
 
-        if( zipMappedFile == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize can't create mapped input stream for path %s"
-                , m_path.c_str()
-                );
+		if( this->loadHeader_() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize can't load header %s"
+				, m_path.c_str()
+				);
 
-            return false;
-        }
-        
-        if( zipMappedFile->open( ConstString::none(), m_path, nullptr, 0 ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize can't open zip file data %s"
-                , m_path.c_str()
-                );
+			return false;
+		}
 
-            return false;
-        }
-       
+		m_zipMappedFile = FILE_SERVICE(m_serviceProvider)
+			->createMappedFile( ConstString::none(), m_path );
+
+		if( m_zipMappedFile == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize can't create mapped input stream for path %s"
+				, m_path.c_str()
+				);
+
+			return false;
+		}
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileGroupZip::loadHeader_()
+	{
+		InputStreamInterfacePtr zipFile = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( ConstString::none(), m_path );
+
+		if( zipFile == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ can't open input stream for path %s"
+				, m_path.c_str()
+				);
+
+			return false;
+		}
+
 		//uint32 signature = 0;
-        
-        size_t zip_size = zipMappedFile->size();
-        zipMappedFile->seek( zip_size - 22 );
 
-        int header_position = zipMappedFile->tell();
+		size_t zip_size = zipFile->size();
+		zipFile->seek( zip_size - 22 );
 
-        unsigned char endof_central_dir[22];
+		int header_position = zipFile->tell();
 
-        if( zipMappedFile->read( endof_central_dir, 22 ) != 22 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize invalid zip format %s"
-                , _path.c_str()
-                );
+		unsigned char endof_central_dir[22];
 
-            return false;
-        }
+		if( zipFile->read( endof_central_dir, 22 ) != 22 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ invalid zip format %s"
+				, m_path.c_str()
+				);
 
-        if( s_get_int(endof_central_dir) != 0x06054B50 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize bad 'End of Central Dir' signature zip %s"
-                , _path.c_str()
-                );
+			return false;
+		}
 
-            return false;
-        }
+		if( s_get_int( endof_central_dir ) != 0x06054B50 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ bad 'End of Central Dir' signature zip %s"
+				, m_path.c_str()
+				);
 
-        int header_size = s_get_int(endof_central_dir + 12);
-        int header_offset = s_get_int(endof_central_dir + 16);
-        int arc_offset = header_position - header_offset - header_size;
-        
-        header_offset += arc_offset;
-        
+			return false;
+		}
+
+		int header_size = s_get_int(endof_central_dir + 12);
+		int header_offset = s_get_int(endof_central_dir + 16);
+		int arc_offset = header_position - header_offset - header_size;
+
+		header_offset += arc_offset;
+
 		char fileNameBuffer[MAX_FILENAME];
 
 		while( true, true )
 		{
-            zipMappedFile->seek( header_offset );
+			zipFile->seek( header_offset );
 
-			int signature = s_read_int( zipMappedFile );
+			int signature = s_read_int( zipFile );
 
 			if( signature != 0x02014B50 )
 			{
 				break;
 			}
-            			
-            ZipCentralDirectoryFileHeader header;
 
-            zipMappedFile->seek( header_offset + 10 );
+			ZipCentralDirectoryFileHeader header;
 
-            zipMappedFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
-            zipMappedFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
-            zipMappedFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
-            zipMappedFile->read( &header.crc32, sizeof( header.crc32 ) );
-            zipMappedFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
-            zipMappedFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
-            zipMappedFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
-            zipMappedFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
-            zipMappedFile->read( &header.commentLen, sizeof( header.commentLen ) );
+			zipFile->seek( header_offset + 10 );
 
-            zipMappedFile->seek( header_offset + 42 );
-            
-            uint32_t localFileHeaderOffset; 
-            zipMappedFile->read( &localFileHeaderOffset, sizeof(localFileHeaderOffset) );
+			zipFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
+			zipFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
+			zipFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
+			zipFile->read( &header.crc32, sizeof( header.crc32 ) );
+			zipFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
+			zipFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
+			zipFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
+			zipFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
+			zipFile->read( &header.commentLen, sizeof( header.commentLen ) );
 
-            uint32_t fileOffset = localFileHeaderOffset + 30 + header.fileNameLen + header.extraFieldLen;
+			zipFile->seek( header_offset + 42 );
 
-            zipMappedFile->seek( header_offset + 46 );
-            zipMappedFile->read( &fileNameBuffer, header.fileNameLen );
+			uint32_t localFileHeaderOffset; 
+			zipFile->read( &localFileHeaderOffset, sizeof(localFileHeaderOffset) );
 
-            uint32_t header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
-            header_offset += header_size;
+			uint32_t fileOffset = localFileHeaderOffset + 30 + header.fileNameLen + header.extraFieldLen;
 
-            if( header.compressedSize == 0 ) // if folder
-            {
-                //m_folders.insert( fileName );
+			zipFile->seek( header_offset + 46 );
+			zipFile->read( &fileNameBuffer, header.fileNameLen );
 
-                continue;
-            }
+			uint32_t header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
+			header_offset += header_size;
 
-            FilePath fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
-                        						
+			if( header.compressedSize == 0 ) // if folder
+			{
+				//m_folders.insert( fileName );
+
+				continue;
+			}
+
+			FilePath fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
+
 			if( header.compressionMethod != 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileSystemZip::initialize compressed %d file '%s'"
-                    , header.compressionMethod
+				LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ %s compressed %d file '%s'"
+					, m_path.c_str()
+					, header.compressionMethod
 					, fileName.c_str() 
 					);
 
@@ -208,20 +225,16 @@ namespace Menge
 			}
 
 			FileInfo fi;
-            
-            fi.seek_pos = fileOffset;
-            fi.file_size = header.compressedSize;
-            fi.unz_size = header.uncompressedSize;
-            fi.compr_method = header.compressionMethod;            			
-                        
+
+			fi.seek_pos = fileOffset;
+			fi.file_size = header.compressedSize;
+			fi.unz_size = header.uncompressedSize;
+			fi.compr_method = header.compressionMethod;            			
+
 			m_files.insert( fileName, fi );
-			
-			Utils::skip( zipMappedFile.get(), header.compressedSize );
+
+			Utils::skip( zipFile, header.compressedSize );
 		}
-
-        zipMappedFile->seek( 0 );
-
-        m_zipMappedFile = zipMappedFile;
 
 		return true;
 	}
@@ -235,11 +248,6 @@ namespace Menge
 	{
 		return m_path;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & FileGroupZip::getType() const
-    {
-        return m_type;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	class FileGroupZip_FinderValueFiles
 	{
@@ -303,27 +311,6 @@ namespace Menge
 		TMapFileInfo::const_iterator it_found = m_files.find( c_path );
 				
 		return it_found;
-		//size_t hash = stdex::const_string_make_hash( filename );
-
-		//const TMapFileInfo::buffer_type & buffer = m_files.get_buffer_();
-
-		//FileGroupZip_FinderValueFiles key(filename, hash);
-
-		//TMapFileInfo::const_iterator it_lower_bound = std::lower_bound( buffer.begin(), buffer.end(), key, FileGroupZip_FinderPredFiles() );		
-
-		//TMapFileInfo::const_iterator it_end = buffer.end();
-
-		//if( it_lower_bound == it_end )
-		//{
-		//	return it_end;
-		//}
-
-		//if( FileGroupZip_FinderPredFiles()( *it_lower_bound, key ) == true )
-		//{
-		//	return it_end;
-		//}
-
-		//return it_lower_bound;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
@@ -340,7 +327,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterfacePtr FileGroupZip::createInputFile()
 	{
-		InputStreamInterfacePtr stream = m_zipMappedFile->createInputMemory();
+		InputStreamInterfacePtr stream = m_zipMappedFile->createFileStream();
 
 		return stream;
 	}
@@ -361,13 +348,16 @@ namespace Menge
 
 		const FileInfo & fi = m_files.get_value( it_lower_bound );
 
-		m_zipMappedFile->openInputMemory( _stream, fi.seek_pos, fi.file_size );
+		bool successful = m_zipMappedFile->openFileStream( _stream, fi.seek_pos, fi.file_size );
 
-		return true;
+		return successful;
 	}
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile()
     {
+		LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createOutputFile %s unsupport method"
+			);
+
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

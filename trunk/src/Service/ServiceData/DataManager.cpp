@@ -73,7 +73,25 @@ namespace Menge
 			return nullptr;
 		}
 
-		DataInterfacePtr data = dataflow->load( _stream );
+		DataInterfacePtr data = dataflow->create();
+
+		if( data == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("DataManager::dataflow '%s' invalid create data"
+				, _type.c_str()
+				);
+
+			return nullptr;
+		}
+
+		if( dataflow->load( data, _stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("DataManager::dataflow '%s' invalid load data"
+				, _type.c_str()
+				);
+
+			return nullptr;
+		}
 
 		return data;		
 	}

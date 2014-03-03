@@ -27,7 +27,8 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
-		virtual DataInterfacePtr load( const InputStreamInterfacePtr & _stream ) = 0;        
+		virtual DataInterfacePtr create() = 0;
+		virtual bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) = 0;
 	};
 
 	typedef stdex::intrusive_ptr<DataflowInterface> DataflowInterfacePtr;

@@ -8,8 +8,12 @@ src
 	Win32FileSystem.h
 	Win32InputStream.h
 	Win32InputStream.cpp
-	Win32MappedInputStream.h
-	Win32MappedInputStream.cpp
+    Win32MappedFile.h
+    Win32MappedFile.cpp
+	Win32MappedFileInputStream.h
+	Win32MappedFileInputStream.cpp
+    Win32SharedFile.h
+    Win32SharedFile.cpp
 )
 add_definitions(-DUNICODE)
 

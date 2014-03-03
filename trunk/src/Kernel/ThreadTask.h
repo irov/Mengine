@@ -14,6 +14,7 @@ namespace Menge
 	public:
 		bool isRun() const override;
 		bool isComplete() const override;
+		bool isSuccessful() const override;
 		bool isCancel() const override;
 
 	public:

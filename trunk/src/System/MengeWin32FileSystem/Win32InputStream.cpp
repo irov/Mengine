@@ -12,6 +12,7 @@ namespace Menge
         : m_serviceProvider(NULL)
         , m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
+		, m_offset(0)
         , m_carriage(0)
         , m_capacity(0)
         , m_reading(0)
@@ -36,40 +37,48 @@ namespace Menge
             m_hFile = INVALID_HANDLE_VALUE;
         }
     }
-    //////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32InputStream::openRange( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, size_t _offset, size_t _size )
 	{
-        WChar filePath[MAX_PATH];
-        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _dir, _filename, _filenamelen, filePath, MAX_PATH ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
-                , _folder.c_str()
-                , _dir.c_str()
-                );
-
-            return false;
-        }
-        
-		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
-            filePath, // file to open
-			GENERIC_READ, // open for reading
-			FILE_SHARE_READ, // share for reading, exclusive for mapping
-			OPEN_EXISTING // existing file only
-            );
-
-		if ( m_hFile == INVALID_HANDLE_VALUE)
+		WChar filePath[MAX_PATH];
+		if( this->openFile_( _folder, _dir, _filename, _filenamelen, filePath ) == false )
 		{
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid open"
-                , filePath
-                );
+			return false;
+		}
+
+		m_offset = _offset;
+		m_size = _size;
+
+		DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>( m_offset ), NULL, FILE_BEGIN );
+
+		if( dwPtr == INVALID_SET_FILE_POINTER )
+		{
+			DWORD dwError = GetLastError();
+
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::openRange %ls offset %d:%d get error '%d'"
+				, filePath
+				, m_offset
+				, m_size
+				, dwError
+				);
 
 			return false;
 		}
 
-		m_size = ::GetFileSize( m_hFile, NULL );
+		return true;
+	}
+    //////////////////////////////////////////////////////////////////////////
+	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
+	{
+		WChar filePath[MAX_PATH];
+		if( this->openFile_( _folder, _dir, _filename, _filenamelen, filePath ) == false )
+		{
+			return false;
+		}
 
-		if( m_size == INVALID_FILE_SIZE )
+		DWORD size = ::GetFileSize( m_hFile, NULL );
+
+		if( size == INVALID_FILE_SIZE )
 		{
             this->close_();
 
@@ -77,6 +86,41 @@ namespace Menge
                 , filePath
                 );
             
+			return false;
+		}
+
+		m_offset = 0;
+		m_size = (size_t)size;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32InputStream::openFile_( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, WChar * _filePath )
+	{		
+		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+			->concatenateFilePath( _folder, _dir, _filename, _filenamelen, _filePath, MAX_PATH ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
+				, _folder.c_str()
+				, _dir.c_str()
+				);
+
+			return false;
+		}
+
+		m_hFile = WINDOWSLAYER_SERVICE(m_serviceProvider)->createFile( 
+			_filePath, // file to open
+			GENERIC_READ, // open for reading
+			FILE_SHARE_READ, // share for reading, exclusive for mapping
+			OPEN_EXISTING // existing file only
+			);
+
+		if ( m_hFile == INVALID_HANDLE_VALUE)
+		{
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid open"
+				, _filePath
+				);
+
 			return false;
 		}
 
@@ -190,7 +234,7 @@ namespace Menge
         }
         else
         {
-    		DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>( _pos ), NULL, FILE_BEGIN );
+    		DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>( m_offset + _pos ), NULL, FILE_BEGIN );
 
             if( dwPtr == INVALID_SET_FILE_POINTER )
             {
@@ -208,7 +252,7 @@ namespace Menge
             m_carriage = 0;
             m_capacity = 0;
 
-            m_reading = dwPtr;
+            m_reading = dwPtr - m_offset;
         }
 
         return true;

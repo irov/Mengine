@@ -35,6 +35,7 @@ namespace Menge
 
 	public:
 		SoundBufferInterfacePtr createSoundBuffer() const;
+		SoundBufferInterfacePtr createSoundBufferNoCache() const;
 		void destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const;
 
 	protected:

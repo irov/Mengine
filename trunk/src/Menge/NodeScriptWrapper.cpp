@@ -1825,11 +1825,11 @@ namespace Menge
                 return size;
             }
             
-            //resourceImage->incrementReference();
+            resourceImage->incrementReference();
 
-            size = resourceImage->getMaxSize();
+            size = resourceImage->getSize();
 
-            //resourceImage->decrementReference();
+            resourceImage->decrementReference();
             
             return size;
         }

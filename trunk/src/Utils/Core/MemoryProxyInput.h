@@ -12,7 +12,7 @@ namespace Menge
 		~MemoryProxyInput();
 
     public:
-        void setMemory( void * _memory, size_t _size );
+        void setMemory( void * _memory, size_t _offset, size_t _size );
         void * getMemory( size_t & _size ) const;
 
 	public:
@@ -25,9 +25,9 @@ namespace Menge
 		bool time( uint64_t & _time ) const override;
 
 	protected:
-		unsigned char* m_data;
-		unsigned char* m_pos;
-		unsigned char* m_end;
+		unsigned char * m_data;
+		unsigned char * m_pos;
+		unsigned char * m_end;
 
 		size_t m_size;
 	};

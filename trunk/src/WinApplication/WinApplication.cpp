@@ -2146,6 +2146,7 @@ namespace Menge
 		{
 			m_cacheService->finalize();
 			SERVICE_DESTROY( CacheService, m_cacheService );
+			m_cacheService = nullptr;
 		}
 
 		if( m_alreadyRunningMonitor != nullptr )

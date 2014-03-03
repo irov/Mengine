@@ -23,9 +23,6 @@ namespace Menge
 	public:
 		virtual size_t lockBuffer( size_t _size, void ** _memory ) = 0;
 		virtual void unlockBuffer( size_t _bufferId ) = 0;
-
-	public:
-		virtual InputStreamInterfacePtr lockStream( size_t _size, void ** _memory ) = 0;
 	};
 
 #   define CACHE_SERVICE( serviceProvider )\

@@ -37,11 +37,17 @@ src
         
 	MemoryProxyInput.h
 	MemoryProxyInput.cpp
+
+    MemoryCacheInput.h
+    MemoryCacheInput.cpp
     
     CacheMemoryBuffer.h
     CacheMemoryBuffer.cpp
 	
     ValueInterpolator.h
+    
+    MutexGuard.h
+    MutexGuard.cpp
     
     String.h
 	String.cpp

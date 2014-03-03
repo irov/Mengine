@@ -6,6 +6,7 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Factory/FactorableUnique.h"
+#	include "Core/MemoryCacheInput.h"
 
 #	include "Logger/Logger.h"
 
@@ -90,9 +91,9 @@ namespace Menge
 
 		size_t memoryUse = dataInfo->width * dataInfo->height * dataInfo->channels;
 
-		void * buffer;
-		InputStreamInterfacePtr memoryStream = CACHE_SERVICE(m_serviceProvider)
-			->lockStream( memoryUse, &buffer );
+		
+		MemoryCacheInput * memoryStream = new FactorableUnique<MemoryCacheInput>;
+		void * buffer = memoryStream->cacheMemory( memoryUse );
 
 		ImageCodecOptions options;
 		options.channels = dataInfo->channels;

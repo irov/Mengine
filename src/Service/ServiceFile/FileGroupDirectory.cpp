@@ -16,13 +16,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create )
+	bool FileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, bool _create )
 	{
         m_serviceProvider = _serviceProvider;
 
         m_folder = _folder;
 		m_path = _path;
-        m_type = _type;
 
         if( this->initializeDirectory_( _create ) == false )
         {
@@ -34,7 +33,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupDirectory::initializeDirectory_( bool _create )
     {
-        if( FILE_SYSTEM(m_serviceProvider)->existFolder( m_path, ConstString::none() ) == true )
+        if( FILE_SYSTEM(m_serviceProvider)->existFolder( m_folder, m_path ) == true )
 		{
             return true;
         }
@@ -73,11 +72,6 @@ namespace Menge
 	{
 		return m_path;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & FileGroupDirectory::getType() const
-    {
-        return m_type;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
 	{

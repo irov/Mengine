@@ -14,12 +14,11 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath& _path, const ConstString & _type, bool _create ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, bool _create ) override;
 		void finalize() override;
-
+		
     public:
         const FilePath & getPath() const override;
-        const ConstString & getType() const override;
         
 	public:
 		bool existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const override;
@@ -38,14 +37,16 @@ namespace Menge
         bool removeDirectory( const FilePath& _path ) override;
         bool removeFile( const FilePath& _filename ) override;
 
-	private:
+	protected:
+		bool loadHeader_();
+
+	protected:
         ServiceProviderInterface * m_serviceProvider;
 
         FilePath m_folder;
 		FilePath m_path;
-        ConstString m_type;
 
-		MappedFileInputStreamInterfacePtr m_zipMappedFile;
+		MappedFileInterfacePtr m_zipMappedFile;
 		
 		struct FileInfo
 		{

@@ -23,7 +23,8 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		DataInterfacePtr load( const InputStreamInterfacePtr & _stream ) override;
+		DataInterfacePtr create() override;
+		bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

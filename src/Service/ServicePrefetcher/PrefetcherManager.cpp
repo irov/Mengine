@@ -135,7 +135,17 @@ namespace Menge
 			return false;
 		}
 
-		ImageDecoderInterfacePtr prefetch_decoder = receiver.prefetcher->getDecoder();
+		if( receiver.prefetcher->isSuccessful() == false )
+		{
+			return false;
+		}
+
+		const ImageDecoderInterfacePtr & prefetch_decoder = receiver.prefetcher->getDecoder();
+
+		if( prefetch_decoder == nullptr )
+		{
+			return false;
+		}
 		
 		_decoder = prefetch_decoder;
 
@@ -208,7 +218,19 @@ namespace Menge
 			return false;
 		}
 
-		_data = receiver.prefetcher->getData();
+		if( receiver.prefetcher->isSuccessful() == false )
+		{
+			return false;
+		}
+
+		const DataInterfacePtr & prefetch_data = receiver.prefetcher->getData();
+
+		if( prefetch_data == nullptr )
+		{
+			return false;
+		}
+
+		_data = prefetch_data;
 
 		return true;
 	}

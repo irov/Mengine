@@ -4,8 +4,6 @@ ADD_FILTER(
 src
 	CacheManager.cpp
 	CacheManager.h
-    MemoryCacheInput.cpp
-    MemoryCacheInput.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

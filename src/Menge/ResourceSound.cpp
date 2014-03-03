@@ -139,7 +139,7 @@ namespace Menge
         decoder = nullptr;
         stream = nullptr;
 		
-        SoundBufferInterfacePtr buffer = this->createSoundBuffer();
+        SoundBufferInterfacePtr buffer = this->createSoundBufferNoCache();
 
         if( buffer == nullptr )
         {
@@ -150,9 +150,7 @@ namespace Menge
 
             return false;
         }
-
-		this->destroySoundBuffer( buffer );
-		
+				
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -165,24 +163,31 @@ namespace Menge
 			return cacheSoundBuffer;
 		}
 
-        const ConstString & category = this->getCategory();
-
-        SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE(m_serviceProvider)
-            ->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
-
-        if( soundBuffer == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ResourceSound::createSoundBuffer: '%s' can't load sound '%s'"
-                , this->getName().c_str() 
-                , m_path.c_str()
-                );
-
-            return nullptr;			
-        }
+        SoundBufferInterfacePtr soundBuffer = this->createSoundBufferNoCache();
 
 		m_soundBufferCacher.addCache( soundBuffer );
 
         return soundBuffer;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SoundBufferInterfacePtr ResourceSound::createSoundBufferNoCache() const
+	{
+		const ConstString & category = this->getCategory();
+
+		SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE(m_serviceProvider)
+			->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
+
+		if( soundBuffer == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceSound::createSoundBuffer: '%s' can't load sound '%s'"
+				, this->getName().c_str() 
+				, m_path.c_str()
+				);
+
+			return nullptr;			
+		}
+
+		return soundBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const

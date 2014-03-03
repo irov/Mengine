@@ -40,7 +40,8 @@ namespace Menge
 		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
         
     public:
-        MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath & _foldername, const FilePath& _filename ) override;     
+        MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _filename ) override;
+		MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _filename ) override;
         
 	public:
         bool existDirectory( const ConstString& _fileSystemName, const FilePath& _path ) override;

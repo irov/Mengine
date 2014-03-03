@@ -103,7 +103,7 @@ namespace	Menge
 				return 0;
 			}
 
-			SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer();
+			SoundBufferInterfacePtr soundBuffer = resource->createSoundBufferNoCache();
 
             if( soundBuffer == nullptr )
             {

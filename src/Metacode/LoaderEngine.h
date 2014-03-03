@@ -48,10 +48,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		ConstString m_protocolPath;
-
-		TBlobject m_bufferBin;
-        TBlobject m_bufferCompress;
-		        
+			        
         TVectorConstString m_bufferConstString;
 	};
 }

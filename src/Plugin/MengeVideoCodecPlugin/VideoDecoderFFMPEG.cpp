@@ -9,41 +9,50 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-	static int ReadIOWrapper(void * _opaque, uint8_t *_bufer, int bufferSize)
+	static int s_readIOWrapper( void * _opaque, uint8_t *_bufer, int bufferSize )
 	{
 		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
 
-        int res = stream->read( _bufer , bufferSize );
+        size_t res = stream->read( _bufer , bufferSize );
 		
         return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int64_t SeekIOWrapper(void *_opaque, int64_t _offset, int _whence)
+	static int64_t s_seekIOWrapper( void *_opaque, int64_t _offset, int _whence )
 	{
 		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
 		
-		if( _whence == AVSEEK_SIZE )
+		switch( _whence )
 		{
-			size_t size = stream->size();
+		case AVSEEK_SIZE:
+			{
+				size_t size = stream->size();
+	
+				return size;
+			}break;
+		case SEEK_SET:
+			{
+				size_t offset;
 
-			return size;
+				if( _offset < 0 )
+				{
+					size_t pos = stream->tell();
+
+					offset = pos + _offset;
+				}
+				else
+				{
+					offset = _offset;
+				}
+
+				stream->seek( offset );
+			}break;
+		default:
+			{
+				return -1;
+			}break;
 		}
 		
-		size_t offset;
-		
-		if( _offset < 0 )
-		{
-			size_t pos = stream->tell();
-
-			offset = pos + _offset;
-		}
-		else
-		{
-			offset = _offset;
-		}
-		
-		stream->seek( offset );
-
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -72,13 +81,13 @@ namespace Menge
 
         uint8_t filebuffer[probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE];
        
-        size_t stram_size = m_stream->size();
-        size_t probe_size = probe_buffer_io_size > stram_size ? stram_size : probe_buffer_io_size;
+        size_t stream_size = m_stream->size();
+        size_t probe_size = probe_buffer_io_size > stream_size ? stream_size : probe_buffer_io_size;
 
-        memset( filebuffer + probe_size, 0, FF_INPUT_BUFFER_PADDING_SIZE );
+        memset( filebuffer, 0, probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE );
 
         m_stream->read( filebuffer, probe_size );
-        m_stream->seek( SEEK_SET );
+        m_stream->seek( 0 );
 
         AVProbeData pd;
         pd.filename = "";
@@ -104,9 +113,9 @@ namespace Menge
 			, VIDEO_FFMPEG_BUFFER_IO_SIZE //size of IO buffer
 			, 0 //write flag set to 0
 			, m_stream.get() //IO source - it will be send as opaque argument to IO callbacks
-			, ReadIOWrapper //read callback 
+			, s_readIOWrapper //read callback 
 			, NULL //write callback
-			, SeekIOWrapper //seek callback
+			, s_seekIOWrapper //seek callback
 			);
 
 		//m_IOContext.is_streamed = 0;

@@ -1,6 +1,7 @@
 #	include "MemoryProxyInput.h"
 
-#	include <algorithm>
+//#	include <algorithm>
+#	include <memory.h>
 
 namespace Menge
 {
@@ -17,9 +18,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryProxyInput::setMemory( void * _memory, size_t _size )
+	void MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )
 	{
-		m_data = static_cast<unsigned char*>( _memory );
+		m_data = static_cast<unsigned char*>( _memory ) + _offset;
+
 		m_size = _size;
 		m_pos = m_data;
 		m_end = m_data + m_size;
@@ -32,7 +34,7 @@ namespace Menge
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MemoryProxyInput::read( void* _buf, size_t _count )
+	size_t MemoryProxyInput::read( void * _buf, size_t _count )
 	{
 		size_t cnt = _count;
 		// Read over end of memory?
@@ -72,7 +74,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryProxyInput::tell() const
 	{
-        size_t distance = std::distance( m_data, m_pos );
+        size_t distance = m_pos - m_data;
 
 		return distance;
 	}

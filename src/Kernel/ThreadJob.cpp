@@ -1,5 +1,7 @@
 #	include "ThreadJob.h"
 
+#	include "Core/MutexGuard.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge 
@@ -56,13 +58,13 @@ namespace Menge
 				continue;
 			}
 
+			
 			desc.mutex->lock();
 			{
 				desc.worker = _worker;
 				desc.id = ++m_enumerator;
 				desc.status = ETS_WORK;
 			}
-
 			desc.mutex->unlock();
 
 			return desc.id;
@@ -129,8 +131,8 @@ namespace Menge
 							desc.status = ETS_DONE;
 						}
 					}
-				}
-				desc.mutex->unlock();	
+				}	
+				desc.mutex->unlock();
 			}
 
 			THREAD_SERVICE(m_serviceProvider)

@@ -59,15 +59,28 @@ namespace Menge
 
 			return false;
 		}
+
+		m_data = m_dataflow->create();
+
+		if( m_data == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' dataflow invalid create data '%s'"
+				, m_pakName.c_str()
+				, m_fileName.c_str()
+				, m_dataflowType.c_str()
+				);
+
+			return false;
+		}
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchDataflow::_onMain()
 	{
-		m_data = m_dataflow->load( m_stream );
+		bool successful = m_dataflow->load( m_data, m_stream );
 
-		return true;
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetchDataflow::_onComplete( bool _successful )

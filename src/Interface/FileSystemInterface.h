@@ -16,20 +16,22 @@ namespace Menge
 	{
 	public:
 		virtual bool open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) = 0;
-		virtual bool time( uint64_t & _time ) const = 0;
 	};
 
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
 
-	class MappedFileInputStreamInterface
-		: public FileInputStreamInterface
+	class MappedFileInterface
+		: public FactorablePtr
 	{
 	public:
-        virtual InputStreamInterfacePtr createInputMemory() = 0;
-        virtual void openInputMemory( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) = 0;
+		virtual bool initialize( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) = 0;
+
+	public:
+        virtual InputStreamInterfacePtr createFileStream() = 0;
+        virtual bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) = 0;
 	};
 
-    typedef stdex::intrusive_ptr<MappedFileInputStreamInterface> MappedFileInputStreamInterfacePtr;
+    typedef stdex::intrusive_ptr<MappedFileInterface> MappedFileInterfacePtr;
 	
 	class FileOutputStreamInterface
 		: public OutputStreamInterface
@@ -56,7 +58,8 @@ namespace Menge
         virtual FileOutputStreamInterfacePtr createOutputStream() = 0;
 
     public:
-        virtual MappedFileInputStreamInterfacePtr createMappedInputStream() = 0;
+        virtual MappedFileInterfacePtr createMappedFile() = 0;
+		virtual MappedFileInterfacePtr createSharedFile() = 0;
 
     public:		
         virtual bool existFolder( const FilePath & _folder, const FilePath & _path ) const = 0;
@@ -71,12 +74,11 @@ namespace Menge
         : public Factorable
     {
     public:
-        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath& _path, const ConstString & _type, bool _create ) = 0;
+        virtual bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, bool _create ) = 0;
         virtual void finalize() = 0;
 
     public:
         virtual const FilePath & getPath() const = 0;
-        virtual const ConstString & getType() const = 0;
 
     public:
         virtual bool existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const = 0;
@@ -120,7 +122,8 @@ namespace Menge
 		virtual OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
 
     public:
-        virtual MappedFileInputStreamInterfacePtr openMappedInputStream( const FilePath & _foldername, const FilePath& _filename ) = 0;
+        virtual MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _filename ) = 0;
+		virtual MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _filename ) = 0;
 
     public:
         virtual bool existDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;

@@ -5,12 +5,12 @@ namespace Menge
 	namespace Utils
 	{
 		//////////////////////////////////////////////////////////////////////////
-		void skip( InputStreamInterface * _stream, size_t _count )
+		void skip( const InputStreamInterfacePtr & _stream, size_t _count )
 		{
 			_stream->seek( _stream->tell() + _count );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool eof( InputStreamInterface * _stream )
+		bool eof( const InputStreamInterfacePtr & _stream )
 		{
 			return _stream->tell() == _stream->size();
 		}

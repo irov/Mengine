@@ -97,7 +97,16 @@ namespace Menge
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );        
         metadata->get_File_TextureSize( m_textureSize );
-        metadata->get_File_MaxSize( m_maxSize );
+        
+		if( metadata->get_File_MaxSize( m_maxSize ) == false )
+		{
+			return false;
+		}
+
+		if( m_maxSize.x == 0.f || m_maxSize.y == 0.f )
+		{
+			return false;
+		}
 
         return true;
     }

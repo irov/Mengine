@@ -72,6 +72,9 @@ namespace Menge
 
 			return false;
 		}
+
+		m_memoryCache = CACHE_SERVICE(m_serviceProvider)
+			->createCacheInput();
 		
 		return true;
 	}
@@ -90,10 +93,8 @@ namespace Menge
 		const ImageCodecDataInfo * dataInfo = m_imageDecoder->getCodecDataInfo();
 
 		size_t memoryUse = dataInfo->width * dataInfo->height * dataInfo->channels;
-
-		
-		MemoryCacheInput * memoryStream = new FactorableUnique<MemoryCacheInput>;
-		void * buffer = memoryStream->cacheMemory( memoryUse );
+				
+		void * buffer = m_memoryCache->cacheMemory( memoryUse );
 
 		ImageCodecOptions options;
 		options.channels = dataInfo->channels;
@@ -111,7 +112,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_imageDecoderMemory->initialize( memoryStream ) == false )
+		if( m_imageDecoderMemory->initialize( m_memoryCache ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Memory decoder for file '%s' was not initialize"
 				, m_fileName.c_str() 
@@ -134,5 +135,6 @@ namespace Menge
 
 		m_stream = nullptr;
 		m_imageDecoder = nullptr;		
+		m_memoryCache = nullptr;
 	}
 }

@@ -27,6 +27,9 @@ namespace Menge
 	public:
 		size_t lockBuffer( size_t _size, void ** _memory ) override;
 		void unlockBuffer( size_t _bufferId ) override;
+
+	public:
+		MemoryCacheInputPtr createCacheInput() override;
 		
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -45,5 +48,8 @@ namespace Menge
 		size_t m_enumeratorId;
 			
 		ThreadMutexInterfacePtr m_memoryMutex;
+
+		typedef FactoryPoolStore<MemoryCacheInput, 16> TFactoryPoolMemoryCacheInput;
+		TFactoryPoolMemoryCacheInput m_factoryPoolMemoryCacheInput;
 	};
 }

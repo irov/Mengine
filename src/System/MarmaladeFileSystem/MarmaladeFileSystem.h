@@ -6,7 +6,7 @@
 #	include "MarmaladeOutputStream.h"
 #	include "MarmaladeMappedInputStream.h"
 
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 namespace Menge
 {
@@ -31,7 +31,8 @@ namespace Menge
 		FileOutputStreamInterfacePtr createOutputStream() override;
 		
     public:
-        MappedFileInputStreamInterfacePtr createMappedInputStream() override;
+        MappedFileInterfacePtr createMappedFile() override;
+		MappedFileInterfacePtr createSharedFile() override;
 
     public:
 		bool existFile( const FilePath & _folder, const FilePath& _dir, const char * _filename, size_t _filenamelen ) const override;
@@ -45,13 +46,13 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef FactoryPool<MarmaladeInputStream, 8> TFactoryFileInputStream;
+        typedef FactoryPoolStore<MarmaladeInputStream, 8> TFactoryFileInputStream;
         TFactoryFileInputStream m_factoryInputStream;
 
-        typedef FactoryPool<MarmaladeOutputStream, 4> TFactoryFileOutputStream;
+        typedef FactoryPoolStore<MarmaladeOutputStream, 4> TFactoryFileOutputStream;
         TFactoryFileOutputStream m_factoryOutputStream;
 
-        typedef FactoryPool<MarmaladeMappedInputStream, 4> TFactoryMappedInputStream;
+        typedef FactoryPoolStore<MarmaladeMappedInputStream, 4> TFactoryMappedInputStream;
         TFactoryMappedInputStream m_factoryMappedInputStream;
 	};
 }

@@ -86,10 +86,13 @@ namespace Menge
 	{
 		MarmaladeThreadIdentityPtr identity = stdex::intrusive_static_cast<MarmaladeThreadIdentityPtr>(_thread);
 
+		const ThreadTaskInterfacePtr & task = identity->getTask();
+		task->cancel();
+
 		s3eThread * s3e_thread = identity->getThread();
 
-		ThreadTaskInterface * task = nullptr;
-		s3eResult result = s3eThreadJoin( s3e_thread, (void**)&task );
+		ThreadTaskInterface * join_task = nullptr;
+		s3eResult result = s3eThreadJoin( s3e_thread, (void**)&join_task );
 
 		if( result == S3E_RESULT_ERROR )
 		{
@@ -99,8 +102,6 @@ namespace Menge
 
 			return false;
 		}
-
-		task->join();
 
         return true;
 	}

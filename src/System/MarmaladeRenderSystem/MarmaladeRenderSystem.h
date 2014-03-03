@@ -6,7 +6,7 @@
 
 #   include "MarmaladeTexture.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #   include "stdex/binary_vector.h"
 
@@ -224,7 +224,7 @@ namespace Menge
 		size_t m_activeTextureStage;
 		GLuint m_activeTexture;
 
-        typedef FactoryPool<MarmaladeTexture, 128> TFactoryOGLTexture;
+        typedef FactoryPoolStore<MarmaladeTexture, 128> TFactoryOGLTexture;
         TFactoryOGLTexture m_factoryOGLTexture;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];

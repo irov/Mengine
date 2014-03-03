@@ -12,10 +12,15 @@ namespace Menge
     {
         m_thread = _thread;
 		m_task = _task;
-    }
+    }	
 	//////////////////////////////////////////////////////////////////////////
 	s3eThread * MarmaladeThreadIdentity::getThread() const
 	{
 		return m_thread;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ThreadTaskInterfacePtr & MarmaladeThreadIdentity::getTask() const
+	{
+		return m_task;
 	}
 }

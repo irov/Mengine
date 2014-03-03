@@ -14,9 +14,12 @@ namespace Menge
 
     public:
         void initialize( s3eThread * _thread, const ThreadTaskInterfacePtr & _task );
-
+		
 	public:
 		s3eThread * getThread() const;
+
+	public:
+		const ThreadTaskInterfacePtr & getTask() const;
 
 	protected:
 		s3eThread * m_thread;

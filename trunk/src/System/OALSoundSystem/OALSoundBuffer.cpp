@@ -38,7 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
-		m_alBufferId = m_soundSystem->genBufferId();		
+		m_alBufferId = m_soundSystem->genBufferId();
 
 		if( m_alBufferId == 0 )
 		{

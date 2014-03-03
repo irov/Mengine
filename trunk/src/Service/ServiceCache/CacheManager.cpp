@@ -179,4 +179,12 @@ namespace Menge
 
 		m_memoryMutex->unlock();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MemoryCacheInputPtr CacheManager::createCacheInput()
+	{
+		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
+
+		return memoryCache;
+	}
+
 }

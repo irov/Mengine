@@ -53,7 +53,7 @@ namespace Menge
         return outStream;
     }
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInputStreamInterfacePtr MarmaladeFileSystem::createMappedInputStream()
+    MappedFileInterfacePtr MarmaladeFileSystem::createMappedFile()
     {
         MarmaladeMappedInputStream* inputStream = m_factoryMappedInputStream.createObjectT();
 
@@ -62,6 +62,12 @@ namespace Menge
         //Do not support
         return inputStream;
     }
+	//////////////////////////////////////////////////////////////////////////
+	MappedFileInterfacePtr MarmaladeFileSystem::createSharedFile()
+	{
+		//Do not support
+		return nullptr;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileSystem::existFile( const FilePath & _folder, const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
 	{

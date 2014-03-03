@@ -3,6 +3,8 @@
 
 #	include "Interface/SoundCodecInterface.h"
 
+#	include "Core/CacheMemoryBuffer.h"
+
 #	include "OALError.h"
 
 namespace Menge
@@ -51,9 +53,11 @@ namespace Menge
 		m_channels = dataInfo->channels;
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
+		
+		CacheMemoryBuffer binary_buffer(m_serviceProvider, size);
+		void * binary_memory = binary_buffer.getMemory();
 
-		char* buffer = new char[ size /*+ fixed_sound_buffer_size*/ ];
-		size_t decode_size = _soundDecoder->decode( buffer, size );
+		size_t decode_size = _soundDecoder->decode( binary_memory, size );
         decode_size -= decode_size % 4;
 
 		if( m_channels == 1 )
@@ -67,11 +71,9 @@ namespace Menge
 			m_isStereo = true;
 		}
 
-		alBufferData( m_alBufferId, m_format, buffer, decode_size, m_frequency );
+		alBufferData( m_alBufferId, m_format, binary_memory, decode_size, m_frequency );
 		OAL_CHECK_ERROR(m_serviceProvider);
-
-		delete[] buffer;		
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
 
 #   include "s3eThread.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
 #   include "stdex/pool.h"
 
@@ -43,10 +43,10 @@ namespace Menge
         ThreadMutexInterfacePtr createMutex() override;
 	
 	protected:
-        typedef FactoryPool<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;
+        typedef FactoryPoolStore<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;
         TPoolMarmaladeThreadIdentity m_poolWin32ThreadIdentity;
 
-        typedef FactoryPool<MarmaladeThreadMutex, 16> TPoolMarmaladeThreadMutex;
+        typedef FactoryPoolStore<MarmaladeThreadMutex, 16> TPoolMarmaladeThreadMutex;
         TPoolMarmaladeThreadMutex m_poolMarmaladeThreadMutex;
 
 		typedef std::vector<MarmaladeThreadIdentityPtr> TVectorPosixThreadIdentity;

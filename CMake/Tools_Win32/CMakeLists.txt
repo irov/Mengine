@@ -53,6 +53,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Metacode ${CMAKE_TEMP_DIR}/Metacode )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/WindowsLayer ${CMAKE_TEMP_DIR}/WindowsLayer )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/MengeWin32FileSystem ${CMAKE_TEMP_DIR}/System/MengeWin32FileSystem )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32UnicodeSystem ${CMAKE_TEMP_DIR}/System/Win32UnicodeSystem )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32ThreadSystem ${CMAKE_TEMP_DIR}/System/Win32ThreadSystem )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceProvider ${CMAKE_TEMP_DIR}/Service/ServiceProvider )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceStringize ${CMAKE_TEMP_DIR}/Service/ServiceStringize )
@@ -65,6 +66,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConverter ${CMAKE_TEMP_DIR}/Servi
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceLog ${CMAKE_TEMP_DIR}/Service/ServiceLog )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServicePlugin ${CMAKE_TEMP_DIR}/Service/ServicePlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceUnicode ${CMAKE_TEMP_DIR}/Service/ServiceUnicode )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceThread ${CMAKE_TEMP_DIR}/Service/ServiceThread )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeDevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeDevelopmentConverterPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeImageCodecPlugin )

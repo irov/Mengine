@@ -363,15 +363,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getTextSize() const
 	{
-		if( this->isCompile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getTextLength '%s' not compile"
-                , this->getName().c_str()
-				);
-
-			return m_textSize;
-		}
-
 		if( this->isInvalidateTextLines() == true )
 		{
 			this->updateTextLines_();

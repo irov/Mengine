@@ -110,7 +110,7 @@ namespace Menge
 				);
 
 			::CloseHandle( m_hMapping );
-			m_hMapping = NULL;
+			m_hMapping = INVALID_HANDLE_VALUE;
 
 			::CloseHandle( m_hFile );
 			m_hFile = INVALID_HANDLE_VALUE;

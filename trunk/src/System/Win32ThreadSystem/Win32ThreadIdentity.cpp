@@ -5,14 +5,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadIdentity::Win32ThreadIdentity()
         : m_handle(NULL)
-        , m_thread(nullptr)
+        , m_task(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::initialize( HANDLE _handle, const ThreadTaskInterfacePtr & _thread )
     {
         m_handle = _handle;
-        m_thread = _thread;
+        m_task = _thread;
     }
 	//////////////////////////////////////////////////////////////////////////
 	HANDLE Win32ThreadIdentity::getHandle() const
@@ -20,8 +20,8 @@ namespace Menge
 		return m_handle;
 	}
     //////////////////////////////////////////////////////////////////////////
-    const ThreadTaskInterfacePtr & Win32ThreadIdentity::getListener() const
+    const ThreadTaskInterfacePtr & Win32ThreadIdentity::getTask() const
     {
-        return m_thread;
+        return m_task;
     }
 }

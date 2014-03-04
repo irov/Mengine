@@ -33,9 +33,9 @@ namespace Menge
         m_soundSystem = _soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBuffer::update()
+    bool OALSoundBuffer::update()
     {
-        //Empty
+        return false;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )

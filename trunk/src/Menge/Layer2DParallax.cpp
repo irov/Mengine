@@ -29,28 +29,6 @@ namespace	Menge
 		return m_parallax;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DParallax::_activate()
-	{
-		Node::_activate();
-
-		if( m_scene == nullptr )
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2DParallax::_deactivate()
-	{
-		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2DParallax::_addChildren( Node * _node )
-	{
-		_node->setLayer( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer2DParallax::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node * _node ) const
 	{
 		//Viewport vp = _viewport;

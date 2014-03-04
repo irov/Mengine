@@ -36,6 +36,12 @@ namespace Menge
 	public:
 		void setLayer( Layer * _layer ) override;
 
+	protected:
+		bool _activate() override;
+		
+	protected:
+		void _addChildren( Node * _node ) override;
+
     protected:
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 

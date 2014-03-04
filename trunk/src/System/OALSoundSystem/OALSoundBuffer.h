@@ -17,7 +17,7 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
 
     public:
-        void update() override;
+        bool update() override;
 
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;

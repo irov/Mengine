@@ -127,6 +127,12 @@ Object2D\\\\Sprite
 )
 
 ADD_FILTER(
+Object2D\\\\Isometric
+	Isometric.cpp
+	Isometric.h
+)
+
+ADD_FILTER(
 Object2D\\\\Landscape2D
 	Landscape2D.cpp
 	Landscape2D.h
@@ -365,6 +371,8 @@ Scene\\\\Layer2D
 	Layer2D.h
 	Layer2DParallax.cpp
 	Layer2DParallax.h
+    Layer2DIsometric.cpp
+    Layer2DIsometric.h
 )
 
 ADD_FILTER(

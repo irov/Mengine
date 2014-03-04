@@ -25,9 +25,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_activate()
 	{
-		Node::_activate();
-
-		if( m_scene == nullptr )
+		if( Layer::_activate() == false )
 		{
 			return false;
 		}
@@ -49,11 +47,6 @@ namespace	Menge
 
         Node::_deactivate();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::_addChildren( Node * _node )
-	{
-		_node->setLayer( this );
-	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2D::cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point )
 	{

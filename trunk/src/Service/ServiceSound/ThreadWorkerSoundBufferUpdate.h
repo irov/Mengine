@@ -21,6 +21,9 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider, const SoundBufferInterfacePtr & _soundSource );
 
 	public:
+		bool isDone() const;
+
+	public:
 		bool onWork( size_t _id ) override;
 		void onDone( size_t _id ) override;
 
@@ -28,6 +31,8 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		SoundBufferInterfacePtr m_soundBuffer;
+
+		bool m_done;
 	};
 
 	typedef stdex::intrusive_ptr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;

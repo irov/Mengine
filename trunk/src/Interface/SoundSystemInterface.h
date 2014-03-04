@@ -32,7 +32,7 @@ namespace Menge
         : public FactorablePtr
 	{
 	public:
-		virtual void update() = 0;
+		virtual bool update() = 0;
 	};
 
 	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;

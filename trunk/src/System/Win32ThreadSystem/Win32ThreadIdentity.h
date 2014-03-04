@@ -17,12 +17,12 @@ namespace Menge
 
     public:
 		HANDLE getHandle() const;
-        const ThreadTaskInterfacePtr & getListener() const;
+        const ThreadTaskInterfacePtr & getTask() const;
 		
 	protected:
 		HANDLE m_handle;
 
-        ThreadTaskInterfacePtr m_thread;
+        ThreadTaskInterfacePtr m_task;
 	};
 
 	typedef stdex::intrusive_ptr<Win32ThreadIdentity> Win32ThreadIdentityPtr;

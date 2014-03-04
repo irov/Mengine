@@ -14,6 +14,7 @@ namespace Menge
 	ThreadWorkerSoundBufferUpdate::ThreadWorkerSoundBufferUpdate()
 		: m_serviceProvider(nullptr)
 		, m_soundBuffer(nullptr)
+		, m_done(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,17 +28,22 @@ namespace Menge
         m_soundBuffer = _soundBuffer;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool ThreadWorkerSoundBufferUpdate::isDone() const
+	{
+		return m_done;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ThreadWorkerSoundBufferUpdate::onWork( size_t _id )
  	{
         (void)_id;
 
-        m_soundBuffer->update();
+        bool continue_update = m_soundBuffer->update();
 
-		return true;
+		return continue_update;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadWorkerSoundBufferUpdate::onDone( size_t _id )
 	{
-        (void)_id;
+		m_done = true;        
 	}
 }	// namespace Menge

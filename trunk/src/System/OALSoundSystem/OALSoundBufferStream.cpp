@@ -306,14 +306,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferStream::update()
+	bool OALSoundBufferStream::update()
 	{
 		if( this->m_updating == false )
 		{
-			return;
+			return true;
 		}
-
-        bool is_end = false;
 
         //// Check the status of the Source.  If it is not playing, then playback was completed,
         //// or the Source was starved of audio data, and needs to be restarted.
@@ -345,27 +343,26 @@ namespace Menge
             {
                 continue;
             }
-
-            if( bytesWritten < OPENAL_STREAM_BUFFER_SIZE )
-            {
-                is_end = true;
-            }
 		}
 
-		if( state != AL_PLAYING && processed == 0 )
+		if( state != AL_PLAYING && state != AL_PAUSED )
 		{
 			// If there are Buffers in the Source Queue then the Source was starved of audio
 			// data, so needs to be restarted (because there is more audio data to play)
-			int queuedBuffers;
+			ALint queuedBuffers;
 			alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
             OAL_CHECK_ERROR(m_serviceProvider);
 
-			if( queuedBuffers )
+			if( queuedBuffers == 0 )
 			{
-				alSourcePlay( m_sourceId );
-                OAL_CHECK_ERROR(m_serviceProvider);
+				return false;
 			}
+			
+			alSourcePlay( m_sourceId );
+			OAL_CHECK_ERROR(m_serviceProvider);
 		}	
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
     bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, unsigned int & _bytes  )

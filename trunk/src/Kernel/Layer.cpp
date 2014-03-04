@@ -19,6 +19,21 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Layer::_activate()
+	{
+		if( Node::_activate() == false )
+		{
+			return false;
+		}
+
+		if( m_scene == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
 	{
 		m_main = _main;
@@ -72,6 +87,11 @@ namespace Menge
 
 		_screen.x = sc.x;
 		_screen.y = sc.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::_addChildren( Node * _node )
+	{
+		_node->setLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )

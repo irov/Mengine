@@ -133,7 +133,7 @@ namespace Menge
         gameInputStream = nullptr;
 
 		_settings.alreadyRunning = false;
-        _settings.maxfps = true;
+        _settings.maxfps = false;
 
 		_settings.applicationSettings.fixedContentResolution = true;
 		_settings.applicationSettings.windowModeCheck = false;

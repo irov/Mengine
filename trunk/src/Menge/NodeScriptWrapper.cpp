@@ -79,6 +79,7 @@
 
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
+#	include "Layer2DIsometric.h"
 #	include "Layer2DTexture.h"
 
 #   include "ResourceImage.h"
@@ -1726,6 +1727,69 @@ namespace Menge
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitResources( &rv_gac );
 		}
+		//////////////////////////////////////////////////////////////////////////
+		size_t s_rotateToIsometric( float _angle )
+		{
+			float norm_angle = mt::angle_norm( _angle );
+
+			float pi_deltha [] = {
+				- mt::m_pi * 1.f / 12.f,
+				mt::m_pi * 0.f / 12.f, 
+				mt::m_pi * 1.f / 12.f,
+
+				mt::m_pi * 1.f / 12.f,
+				mt::m_pi * 2.f / 12.f, 
+				mt::m_pi * 4.f / 12.f,
+
+				mt::m_pi * 4.f / 12.f,
+				mt::m_pi * 6.f / 12.f,
+				mt::m_pi * 8.f / 12.f,
+
+				mt::m_pi * 8.f / 12.f,
+				mt::m_pi * 10.f / 12.f, 
+				mt::m_pi * 11.f / 12.f,
+
+				mt::m_pi * 11.f / 12.f,
+				mt::m_pi * 12.f / 12.f,
+				mt::m_pi * 13.f / 12.f,
+
+				mt::m_pi * 13.f / 12.f,
+				mt::m_pi * 14.f / 12.f,
+				mt::m_pi * 16.f / 12.f,
+
+				mt::m_pi * 16.f / 12.f,
+				mt::m_pi * 18.f / 12.f,
+				mt::m_pi * 20.f / 12.f,
+
+				mt::m_pi * 20.f / 12.f,
+				mt::m_pi * 22.f / 12.f,
+				mt::m_pi * 23.f / 12.f,
+			};
+
+
+			for( size_t i = 0; i != 8; ++i )
+			{
+				float low_angle = pi_deltha[ i * 3 + 0];
+				float test_angle = pi_deltha[ i * 3 + 1];
+				float hight_angle = pi_deltha[ i * 3 + 2];
+
+				float rad = mt::angle_norm360( norm_angle );
+
+				if( mt::angle_length( norm_angle, low_angle ) > 0.f )
+				{
+					continue;
+				}
+
+				if( mt::angle_length( norm_angle, hight_angle ) < 0.f )
+				{
+					continue;
+				}
+
+				return i;
+			}
+
+			return 0;
+		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
@@ -3342,6 +3406,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DParallax );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DIsometric );
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
@@ -4269,6 +4334,10 @@ namespace Menge
                     .def( "getParallaxFactor", &Layer2DParallax::getParallaxFactor )
                     ;
 
+				
+				pybind::interface_<Layer2DIsometric, pybind::bases<Layer> >("Layer2DIsometric", false)
+					;
+
                 //pybind::interface_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false)
                 //    ;
 
@@ -4682,6 +4751,8 @@ namespace Menge
 
 			pybind::def_functor( "cacheResources", nodeScriptMethod, &NodeScriptMethod::s_cacheResources );
 			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
+
+			pybind::def_functor( "rotateToIsometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
         }
     }
 }

@@ -40,6 +40,7 @@
 #	include "Video.h"
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
+#	include "Layer2DIsometric.h"
 #	include "Layer2DLoop.h"
 #	include "RenderViewport.h"
 #	include "Camera2D.h"
@@ -367,6 +368,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Layer2D );
 		NODE_FACTORY( m_serviceProvider, Landscape2D );
 		NODE_FACTORY( m_serviceProvider, Layer2DParallax );
+		NODE_FACTORY( m_serviceProvider, Layer2DIsometric );
 		//NODE_FACTORY( m_serviceProvider, Layer2DPhysic );
 		//NODE_FACTORY( Layer2DLoop );
 		//NODE_FACTORY( Layer2DAccumulator );

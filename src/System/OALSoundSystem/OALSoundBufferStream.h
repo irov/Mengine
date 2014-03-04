@@ -28,7 +28,7 @@ namespace Menge
 		bool getTimePos( ALenum _source, float & _pos ) const override;
 
 	public:
-		void update() override;
+		bool update() override;
 
     protected:
         bool bufferData_( ALuint _alBufferId, unsigned int & _bytes );

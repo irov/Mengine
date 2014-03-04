@@ -465,13 +465,11 @@ namespace Menge
 			{
 				continue;
 			}
+			
+			//float length_ms = source->source->getLengthMs();
+			//float pos_ms = source->source->getPosMs();
 
-			source->timing -= _timing;
-
-			float length_ms = source->source->getLengthMs();
-			float pos_ms = source->source->getPosMs();
-
-			if( fabsf(length_ms - pos_ms) < 0.0001f || source->timing <= 0.f )
+			if( /*fabsf(length_ms - pos_ms) < 0.0001f || */source->timing <= 0.f )
 			{
 				source->state = ESS_STOP;
 				this->stopSoundBufferUpdate_( source );
@@ -484,6 +482,8 @@ namespace Menge
 
 				m_listeners.push_back( desc );
 			}
+
+			source->timing -= _timing;
 		}
 
 		for( TVectorSoundListeners::iterator

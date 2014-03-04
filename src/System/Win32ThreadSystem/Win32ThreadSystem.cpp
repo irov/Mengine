@@ -119,7 +119,7 @@ namespace Menge
 	{
 		Win32ThreadIdentityPtr identity = stdex::intrusive_static_cast<Win32ThreadIdentityPtr>(_thread);
 
-		const ThreadTaskInterfacePtr & listener = identity->getListener();
+		const ThreadTaskInterfacePtr & listener = identity->getTask();
 		listener->cancel();
 
 		HANDLE treadHandle = identity->getHandle();
@@ -128,7 +128,7 @@ namespace Menge
 
         CloseHandle( treadHandle );
 
-        //m_threadIdentities.erase( 
+        //m_threadIdentities.erase(		
         //    std::remove( m_threadIdentities.begin(), m_threadIdentities.end(), identity )
         //    , m_threadIdentities.end() 
         //    );

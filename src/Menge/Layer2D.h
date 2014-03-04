@@ -31,9 +31,6 @@ namespace Menge
     protected:
         bool _activate() override;
         void _deactivate() override;
-    
-    protected:
-		void _addChildren( Node * _node ) override;
 
 	protected:
 		Viewport m_viewport;

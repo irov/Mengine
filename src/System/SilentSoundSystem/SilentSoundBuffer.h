@@ -12,7 +12,7 @@ namespace Menge
 		~SilentSoundBuffer();
 
     public:        
-        void update() override;
+        bool update() override;
 
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder );

@@ -21,9 +21,9 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundBuffer::update()
+    bool SilentSoundBuffer::update()
     {
-        //Empty
+        return false;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool SilentSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )

@@ -162,6 +162,11 @@ files
     ("../src/Service/ServiceStringize")	
 	"*.h"
 	"*.cpp"    
+	
+	[Service/ServicePrefetcher]
+    ("../src/Service/ServicePrefetcher")	
+	"*.h"
+	"*.cpp"   
     
     [Service/ServiceUnicode]
     ("../src/Service/ServiceUnicode")	

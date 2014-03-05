@@ -23,17 +23,18 @@ includepaths
 	"../src"
 	"../src/Utils"
 	"../dependencies"
-	"../dependencies/pugixml/src"
 	"../dependencies/pybind/include"
 	"../dependencies/boost"
-	"../dependencies/simpleini"
 	"../dependencies/metabuf"
+
+	"./Modified/pugixml/src"
+#	"../dependencies/pugixml/src"
     
     "./Modified/Python"
     "./Modified/ogg/include"
-	"../dependencies/Python"
+	"../dependencies/Python-2.7.6"
     
-    "../dependencies/simpleini"
+#    "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/ogg/include"
     "../dependencies/vorbis/include"
@@ -67,11 +68,11 @@ files
     "include/pybind/*.hpp"
 	"src/*.cpp"
     
-    [simpleini]
-    ("../dependencies/simpleini")
-    SimpleIni.h
-    ConvertUTF.c
-    ConvertUTF.h
+#    [simpleini]
+#    ("../dependencies/simpleini")
+#    SimpleIni.h
+#    ConvertUTF.c
+#    ConvertUTF.h
     
     [zlib]
     ("../dependencies/zlib")
@@ -101,38 +102,38 @@ files
     uncompr.c
     zutil.c
     
-    [webp]
-    ("../dependencies/libwebp/src")
-    dec/alpha.c
-    dec/buffer.c
-    dec/frame.c
-    dec/idec.c
-    dec/io.c
-    dec/layer.c
-    dec/quant.c
-    dec/tree.c
-    dec/vp8.c
-    dec/vp8l.c
-    dec/webp.c    
+    #[webp]
+    #("../dependencies/libwebp/src")
+    #dec/alpha.c
+    #dec/buffer.c
+    #dec/frame.c
+    #dec/idec.c
+    #dec/io.c
+    #dec/layer.c
+    #dec/quant.c
+    #dec/tree.c
+    #dec/vp8.c
+    #dec/vp8l.c
+    #dec/webp.c    
     
-    dsp/cpu.c
-    dsp/dec.c
-    #dsp/dec_neon.c
-    #dsp/dec_sse2.c
-    dsp/lossless.c
-    dsp/upsampling.c
-    #dsp/upsampling_neon.c
-    #dsp/upsampling_sse2.c
-    dsp/yuv.c
+    #dsp/cpu.c
+    #dsp/dec.c
+    ##dsp/dec_neon.c
+    ##dsp/dec_sse2.c
+    #dsp/lossless.c
+    #dsp/upsampling.c
+    ##dsp/upsampling_neon.c
+    ##dsp/upsampling_sse2.c
+    #dsp/yuv.c
 
-    utils/bit_reader.c
-    utils/color_cache.c
-    utils/filters.c
-    utils/huffman.c
-    utils/quant_levels_dec.c
-    utils/rescaler.c
-    utils/thread.c
-    utils/utils.c
+    #utils/bit_reader.c
+    #utils/color_cache.c
+    #utils/filters.c
+    #utils/huffman.c
+    #utils/quant_levels_dec.c
+    #utils/rescaler.c
+    #utils/thread.c
+    #utils/utils.c
        
     [vorbis]
     ("../dependencies/vorbis")
@@ -167,9 +168,14 @@ files
     src/framing.c    
 
     [pugixml]
-    ("../dependencies/pugixml")
-    src/pugixml.hpp
+	("Modified/pugixml")
+	src/pugixml.hpp
+	src/pugiconfig.hpp
     src/pugixml.cpp    
+
+#    ("../dependencies/pugixml")
+#    src/pugixml.hpp
+#    src/pugixml.cpp    
     
     [stdex]
     ("../dependencies/stdex")

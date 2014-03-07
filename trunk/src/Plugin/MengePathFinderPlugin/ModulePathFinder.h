@@ -4,8 +4,6 @@
 
 #	include "PathFinderMap.h"
 
-#	include "poly2tri.h"
-
 namespace Menge
 {
 	class ModulePathFinder

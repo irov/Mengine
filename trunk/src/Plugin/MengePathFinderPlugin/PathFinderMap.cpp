@@ -9,6 +9,7 @@ namespace Menge
 		, m_obstacleEnumerator(0)
 		, m_cachePointUse(0)
 		, m_unitSize(20.f)
+		, m_sweepContext(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -137,7 +138,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_makePolyPointFromPolygon( Poly2Tri::Point * _cachePoint, size_t & _cachePointUse, const Polygon & _polygon, Poly2Tri::TVectorPoint & _points )
+	static bool s_makePolyPointFromPolygon( PFMPoint * _cachePoint, size_t & _cachePointUse, const Polygon & _polygon, Points & _points )
 	{
 		size_t numpoints = boost::geometry::num_points( _polygon );
 
@@ -163,13 +164,14 @@ namespace Menge
 				return false;
 			}
 
-			Poly2Tri::Point & p = _cachePoint[_cachePointUse];
+			PFMPoint & p = _cachePoint[_cachePointUse];
 			++_cachePointUse;
 
 			p.x = v.x;
 			p.y = v.y;
-			p.weight = 0.f;
 			p.edge_list.clear();
+			p.weight = 0.f;
+			p.neighbor.clear();
 
 			_points.push_back( &p );
 		}
@@ -177,12 +179,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void s_pointAddNeighbor( PFMPoint * p, PFMPoint * n )
+	{
+		p->neighbor.push_back( n );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::generateMap()
 	{
-		Poly2Tri::TVectorPoint mapPoints;
+		Points mapPoints;
 		s_makePolyPointFromPolygon( m_cachePoint, m_cachePointUse, m_mapPolygon, mapPoints );
-
-		m_sweepContext.setPoint( mapPoints );
+		
+		m_sweepContext = new p2t::SweepContext( mapPoints );
 
 		for( TObstacles::const_iterator
 			it = m_obstales.begin(),
@@ -192,51 +199,91 @@ namespace Menge
 		{
 			const Polygon & p = it->bigHole;
 
-			Poly2Tri::TVectorPoint holePoint;
+			Points holePoint;
 			s_makePolyPointFromPolygon( m_cachePoint, m_cachePointUse, p, holePoint );
 
-			m_sweepContext.AddHole( holePoint );
+			m_sweepContext->AddHole( holePoint );
 		}
 
-		Poly2Tri::Sweep sweep;
-		sweep.Triangulate(m_sweepContext);
+		p2t::Sweep sweep;
+		sweep.Triangulate(*m_sweepContext);
+
+		Triangles & triangles = m_sweepContext->GetTriangles();
+
+		for( Triangles::iterator
+			it = triangles.begin(),
+			it_end = triangles.end();
+		it != it_end;
+		++it )
+		{
+			p2t::Triangle * tr = *it;
+
+			if( tr->IsInterior() == false )
+			{
+				continue;
+			}
+
+			PFMPoint * p0 = (PFMPoint *)tr->GetPoint(0);
+			PFMPoint * p1 = (PFMPoint *)tr->GetPoint(1);
+			PFMPoint * p2 = (PFMPoint *)tr->GetPoint(2);
+
+			s_pointAddNeighbor( p0, p1 );
+			s_pointAddNeighbor( p0, p2 );
+			s_pointAddNeighbor( p1, p0 );
+			s_pointAddNeighbor( p1, p2 );
+			s_pointAddNeighbor( p2, p0 );
+			s_pointAddNeighbor( p2, p1 );
+		}
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static float s_makePointDeterm( float x1, float y1, float x2, float y2, float x3, float y3 )
 	{
-		float D = (x3 - x1) * (y2 - y1) - (y3 - y1) * (x2 - x1);
+		float D = (x3 - x1) * (y1 - y2) - (y3 - y1) * (x2 - x1);
 
 		return D;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static const Poly2Tri::Triangle * s_findTriangle( const Poly2Tri::TVectorTriangle & _triangles, const mt::vec2f & _point )
+	static bool s_existPointInTriangle( p2t::Triangle * _tr, const mt::vec2f & _point )
 	{
-		for( Poly2Tri::TVectorTriangle::const_iterator
+		p2t::Point * p0 = _tr->GetPoint(0);
+		p2t::Point * p1 = _tr->GetPoint(1);
+		p2t::Point * p2 = _tr->GetPoint(2);
+
+		mt::vec2f A(p0->x, p0->y);
+		mt::vec2f B(p1->x, p1->y);
+		mt::vec2f C(p2->x, p2->y);
+		mt::vec2f P(_point);
+
+		mt::vec2f v0 = C - A;
+		mt::vec2f v1 = B - A;
+		mt::vec2f v2 = P - A;
+
+		float dot00 = mt::dot_v2_v2(v0, v0);
+		float dot01 = mt::dot_v2_v2(v0, v1);
+		float dot02 = mt::dot_v2_v2(v0, v2);
+		float dot11 = mt::dot_v2_v2(v1, v1);
+		float dot12 = mt::dot_v2_v2(v1, v2);
+
+		float invDenom = 1.f / (dot00 * dot11 - dot01 * dot01);
+		float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+		float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+		return (u >= -0.001f) && (v >= -0.001f) && (u + v <= 1.001f);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static p2t::Triangle * s_findTriangle( Triangles & _triangles, const mt::vec2f & _point )
+	{
+		for( Triangles::iterator
 			it = _triangles.begin(),
 			it_end = _triangles.end();
 		it != it_end;
 		++it )
 		{
-			const Poly2Tri::Triangle * tr = *it;
+			p2t::Triangle * tr = *it;
 
-			Poly2Tri::Point * p0 = tr->GetPoint(0);
-			Poly2Tri::Point * p1 = tr->GetPoint(1);
-			Poly2Tri::Point * p2 = tr->GetPoint(2);
-
-			
-			if( s_makePointDeterm( p0->x, p0->y, p1->x, p1->y, _point.x, _point.y ) > 0.f )
-			{
-				continue;
-			}
-			
-			if( s_makePointDeterm( p1->x, p1->y, p2->x, p2->y, _point.x, _point.y ) > 0.f )
-			{
-				continue;
-			}
-
-			if( s_makePointDeterm( p2->x, p2->y, p0->x, p0->y, _point.x, _point.y ) > 0.f )
+			if( s_existPointInTriangle( tr, _point ) == false )
 			{
 				continue;
 			}
@@ -247,204 +294,75 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static float s_wavePathPoint( float _x, float _y, Poly2Tri::Point * _point )
+	static float s_lengthPoint( float _x, float _y, p2t::Point * _point )
 	{
 		float wavelength = sqrtf( (_point->x - _x) * (_point->x - _x) + (_point->y - _y) * (_point->y - _y) );
 
 		return wavelength;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_wavePathTriangle( const Poly2Tri::Triangle * _triangle )
+	static void s_wavePathPoint( PFMPoint * _point )
+	{	
+		float x = _point->x;
+		float y = _point->y;
+		float weight = _point->weight;
+
+		for( PFMPoint::TVectorNeighbor::iterator
+			it = _point->neighbor.begin(),
+			it_end = _point->neighbor.end();
+		it != it_end;
+		++it )
+		{
+			PFMPoint * neighbor = *it;
+
+			float length = s_lengthPoint( x, y, neighbor );
+			float neighbor_weight = weight + length;
+
+
+			if( neighbor->weight <= neighbor_weight )
+			{
+				continue;
+			}
+
+			neighbor->weight = neighbor_weight;
+
+			s_wavePathPoint( neighbor );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_slitherPath( PFMPoint * _minimal, PFMPoint * _p0, PFMPoint * _p1, PFMPoint * _p2, TVectorWayPoint & _wp )
 	{
-		if( _triangle == nullptr || _triangle->IsInterior() == false )
+		PFMPoint * minimalNeighbor = _minimal;
+
+		_wp.push_back( mt::vec2f(minimalNeighbor->x, minimalNeighbor->y) );
+
+		if( minimalNeighbor == _p0 || minimalNeighbor == _p1 || minimalNeighbor == _p2 )
 		{
 			return;
 		}
 
-		Poly2Tri::Point * p0 = _triangle->GetPoint( 0 );
-		Poly2Tri::Point * p1 = _triangle->GetPoint( 1 );
-		Poly2Tri::Point * p2 = _triangle->GetPoint( 2 );
-				
-		float w01 = s_wavePathPoint( p0->x, p0->y, p1 );
-		float w12 = s_wavePathPoint( p1->x, p1->y, p2 );
-		float w20 = s_wavePathPoint( p2->x, p2->y, p0 );
-				
-		bool accept = false;
-		//////////////////////////////////////////////////////////////////////////
-		if( p1->weight > p0->weight + w01 + 1.f )
+		for( PFMPoint::TVectorNeighbor::iterator
+			it = _minimal->neighbor.begin(),
+			it_end = _minimal->neighbor.end();
+		it != it_end;
+		++it )
 		{
-			p1->weight = p0->weight + w01;
+			PFMPoint * neighbor = *it;
 
-			accept = true;
+			if( neighbor->weight > minimalNeighbor->weight )
+			{
+				continue;
+			}
+
+			minimalNeighbor = neighbor;
 		}
 
-		if( p0->weight > p1->weight + w01 + 1.f )
-		{
-			p0->weight = p1->weight + w01;
-
-			accept = true;
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		if( p2->weight > p0->weight + w20 + 1.f )
-		{
-			p2->weight = p0->weight + w20;
-
-			accept = true;
-		}
-
-		if( p0->weight > p2->weight + w20 + 1.f )
-		{
-			p0->weight = p2->weight + w20;
-
-			accept = true;
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		if( p1->weight > p2->weight + w12 + 1.f )
-		{
-			p1->weight = p2->weight + w12;
-
-			accept = true;
-		}
-
-		if( p2->weight > p1->weight + w12 + 1.f )
-		{
-			p2->weight = p1->weight + w12;
-
-			accept = true;
-		}
-
-		if( accept == false )
+		if( minimalNeighbor == _minimal )
 		{
 			return;
 		}
 
-		Poly2Tri::Triangle * n0 = _triangle->GetNeighbor( 0 );
-		Poly2Tri::Triangle * n1 = _triangle->GetNeighbor( 1 );
-		Poly2Tri::Triangle * n2 = _triangle->GetNeighbor( 2 );
-
-		s_wavePathTriangle( n0 );
-		s_wavePathTriangle( n1 );
-		s_wavePathTriangle( n2 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static Poly2Tri::Point * s_findMinimalTriangle( Poly2Tri::Triangle * _tr )
-	{
-		if( _tr == nullptr || _tr->IsInterior() == false )
-		{
-			return nullptr;
-		}
-
-		Poly2Tri::Point * p0 = _tr->GetPoint( 0 );
-		Poly2Tri::Point * p1 = _tr->GetPoint( 1 );
-		Poly2Tri::Point * p2 = _tr->GetPoint( 2 );
-
-		if( p0->weight < p1->weight )
-		{
-			if( p0->weight < p2->weight )
-			{
-				return p0;
-			}
-			else
-			{
-				return p2;
-			}
-		}
-		else
-		{
-			if( p1->weight < p2->weight )
-			{
-				return p1;
-			}
-			else
-			{
-				return p2;
-			}
-		}
-
-		//return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<Poly2Tri::Point *> TVectorPathPoint;
-	//////////////////////////////////////////////////////////////////////////
-	static void s_slitherPath( Poly2Tri::Point * _pt, const Poly2Tri::Triangle * _from, const Poly2Tri::Triangle * _to, TVectorPathPoint & _path )
-	{
-		if( _from == _to )
-		{
-			return;
-		}
-
-		Poly2Tri::Triangle * tr_neihgbor0 = _from->GetNeighbor( 0 );
-		Poly2Tri::Triangle * tr_neihgbor1 = _from->GetNeighbor( 1 );
-		Poly2Tri::Triangle * tr_neihgbor2 = _from->GetNeighbor( 2 );
-
-		Poly2Tri::Point * p0_min = s_findMinimalTriangle( tr_neihgbor0 );
-		Poly2Tri::Point * p1_min = s_findMinimalTriangle( tr_neihgbor1 );
-		Poly2Tri::Point * p2_min = s_findMinimalTriangle( tr_neihgbor2 );
-
-		float w0_min = p0_min ? p0_min->weight : 1024.f * 1024.f;
-		float w1_min = p1_min ? p1_min->weight : 1024.f * 1024.f;
-		float w2_min = p2_min ? p2_min->weight : 1024.f * 1024.f;
-
-		if( w0_min <= w1_min && w0_min <= w2_min )
-		{
-			if( p0_min == nullptr )
-			{
-				return;
-			}
-			
-			if( _pt != p0_min )
-			{
-				_path.push_back( p0_min );
-			}
-
-			s_slitherPath( p0_min, tr_neihgbor0, _to, _path );
-		}
-		else if( w1_min <= w0_min && w1_min <= w2_min )
-		{
-			if( p1_min == nullptr )
-			{
-				return;
-			}
-			
-			if( _pt != p1_min )
-			{
-				_path.push_back( p1_min );
-			}
-
-			s_slitherPath( p1_min, tr_neihgbor1, _to, _path );
-		}
-		else if( w2_min <= w0_min && w2_min <= w1_min )
-		{
-			if( p2_min == nullptr )
-			{
-				return;
-			}
-
-			if( _pt != p2_min )
-			{
-				_path.push_back( p2_min );
-			}
-
-			s_slitherPath( p2_min, tr_neihgbor2, _to, _path );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_pathToWay( const mt::vec2f & _from, const mt::vec2f & _to, TVectorWayPoint & _ways, const TVectorPathPoint & _path )
-	{
-		size_t pathCount = _path.size();
-		_ways.reserve( pathCount + 2 );
-
-		_ways.push_back( _from );
-
-		for( size_t i = 0; i != pathCount; ++i )
-		{
-			Poly2Tri::Point * point = _path[i];
-			_ways.push_back( mt::vec2f(point->x, point->y) );
-		}
-
-		_ways.push_back( _to );
+		s_slitherPath( minimalNeighbor, _p0, _p1, _p2, _wp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways )
@@ -474,7 +392,7 @@ namespace Menge
 				mt::vec2f perp;
 				mt::perp_left_v2( perp, dir );
 
-				perp *= m_unitSize * 0.5f;
+				perp *= m_unitSize * 0.25f;
 
 				Polygon way_polygon;
 				boost::geometry::append( way_polygon, p0 + perp );
@@ -519,12 +437,32 @@ namespace Menge
 		_fileter.push_back( pb );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static PFMPoint * s_minimalWeightPoint( PFMPoint * _p0, PFMPoint * _p1, PFMPoint * _p2 )
+	{
+		if( _p0->weight <= _p1->weight && _p0->weight <= _p2->weight )
+		{
+			return _p0;
+		}
+
+		if( _p1->weight <= _p2->weight && _p1->weight <= _p0->weight )
+		{
+			return _p1;
+		}
+
+		if( _p2->weight <= _p0->weight && _p2->weight <= _p1->weight )
+		{
+			return _p2;
+		}
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
-		const Poly2Tri::TVectorTriangle & triangles = m_sweepContext.GetTriangles();
-
-		const Poly2Tri::Triangle * tr_from = s_findTriangle( triangles, _from );
-		const Poly2Tri::Triangle * tr_to = s_findTriangle( triangles, _to );
+		Triangles & triangles = m_sweepContext->GetTriangles();
+		
+		p2t::Triangle * tr_from = s_findTriangle( triangles, _from );
+		p2t::Triangle * tr_to = s_findTriangle( triangles, _to );
 
 		if( tr_to == nullptr || tr_to->IsInterior() == false || tr_from == nullptr || tr_from->IsInterior() == false )
 		{
@@ -536,31 +474,38 @@ namespace Menge
 			m_cachePoint[i].weight = 1024.f * 1024.f;
 		}
 		
-		Poly2Tri::Point * p_to0 = tr_to->GetPoint( 0 );
-		Poly2Tri::Point * p_to1 = tr_to->GetPoint( 1 );
-		Poly2Tri::Point * p_to2 = tr_to->GetPoint( 2 );
+		PFMPoint * p_to0 = (PFMPoint *)tr_to->GetPoint( 0 );
+		PFMPoint * p_to1 = (PFMPoint *)tr_to->GetPoint( 1 );
+		PFMPoint * p_to2 = (PFMPoint *)tr_to->GetPoint( 2 );
 
-		p_to0->weight = s_wavePathPoint( _to.x, _to.y, p_to0 );
-		p_to1->weight = s_wavePathPoint( _to.x, _to.y, p_to1 );
-		p_to2->weight = s_wavePathPoint( _to.x, _to.y, p_to2 );
-				
-		Poly2Tri::Triangle * n0 = tr_to->GetNeighbor( 0 );
-		Poly2Tri::Triangle * n1 = tr_to->GetNeighbor( 1 );
-		Poly2Tri::Triangle * n2 = tr_to->GetNeighbor( 2 );
+		p_to0->weight = s_lengthPoint( _to.x, _to.y, p_to0 );
+		p_to1->weight = s_lengthPoint( _to.x, _to.y, p_to1 );
+		p_to2->weight = s_lengthPoint( _to.x, _to.y, p_to2 );
 
-		s_wavePathTriangle( n0 );
-		s_wavePathTriangle( n1 );
-		s_wavePathTriangle( n2 );
+		s_wavePathPoint( p_to0 );
+		s_wavePathPoint( p_to1 );
+		s_wavePathPoint( p_to2 );
 
-		TVectorPathPoint path;
-		s_slitherPath( nullptr, tr_from, tr_to, path );
+		PFMPoint * p_from0 = (PFMPoint *)tr_from->GetPoint( 0 );
+		PFMPoint * p_from1 = (PFMPoint *)tr_from->GetPoint( 1 );
+		PFMPoint * p_from2 = (PFMPoint *)tr_from->GetPoint( 2 );
+	
+		PFMPoint * minimalPoint = s_minimalWeightPoint( p_from0, p_from1, p_from2 );
 
 		TVectorWayPoint wayPoints;
-		s_pathToWay( _from, _to, wayPoints, path );
-						
-		TVectorWayPoint wayPointsFilters;
 
-		this->filterWayPoints_( wayPointsFilters, wayPoints );
+		wayPoints.push_back( _from );
+		s_slitherPath( minimalPoint, p_to0, p_to1, p_to2, wayPoints );
+		wayPoints.push_back( _to );
+				
+		TVectorWayPoint wayPointsFilters2;
+		this->filterWayPoints_( wayPointsFilters2, wayPoints );
+
+		TVectorWayPoint wayPointsFilters1;
+		this->filterWayPoints_( wayPointsFilters1, wayPointsFilters2 );
+
+		TVectorWayPoint wayPointsFilters;
+		this->filterWayPoints_( wayPointsFilters, wayPointsFilters1 );
 		
 
 		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
@@ -572,21 +517,45 @@ namespace Menge
 		return way;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::removePath( PathFinderWay * _way )
+	{
+		TVectorPathFinderWay::iterator it_found = std::find( m_pathFinderWays.begin(), m_pathFinderWays.end(), _way );
+
+		if( it_found == m_pathFinderWays.end() )
+		{
+			return;
+		}
+
+		delete *it_found;
+
+		m_pathFinderWays.erase( it_found );		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::setCamera2D( const RenderCameraInterface * _camera )
+	{
+		m_camera = _camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-		const Poly2Tri::TVectorTriangle & triangles = m_sweepContext.GetTriangles();
+		if( m_camera != nullptr )
+		{
+			_camera = m_camera;
+		}
 
-		for( Poly2Tri::TVectorTriangle::const_iterator
+		const Triangles & triangles = m_sweepContext->GetTriangles();
+
+		for( Triangles::const_iterator
 			it = triangles.begin(),
 			it_end = triangles.end();
 		it != it_end;
 		++it )
 		{
-			Poly2Tri::Triangle * tr = *it;
+			p2t::Triangle * tr = *it;
 
-			const Poly2Tri::Point * p0 = tr->GetPoint(0);
-			const Poly2Tri::Point * p1 = tr->GetPoint(1);
-			const Poly2Tri::Point * p2 = tr->GetPoint(2);
+			const p2t::Point * p0 = tr->GetPoint(0);
+			const p2t::Point * p1 = tr->GetPoint(1);
+			const p2t::Point * p2 = tr->GetPoint(2);
 
 			RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 				->getDebugRenderVertex2D( 3 * 2 );

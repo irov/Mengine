@@ -332,8 +332,11 @@ namespace Menge
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
 
+		float correct_x = _params.x * m_inputScale.x;
+		float correct_y = _params.y * m_inputScale.y;
+
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseMove( _params.touchId, point, _params.x, _params.y, _params.whell );
+			->onMouseMove( _params.touchId, point, correct_x, correct_y, _params.whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mousePositionEvent_( const MousePositionParams& _params )

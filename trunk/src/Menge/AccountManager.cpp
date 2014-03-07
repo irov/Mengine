@@ -330,9 +330,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::hasDefaultAccount() const
 	{
-		bool result = m_defaultAccountID.empty() == false;
+		if( m_defaultAccountID.empty() == true )
+		{
+			return false;
+		}
 
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::selectDefaultAccount()

@@ -7,6 +7,7 @@
 #   include "Kernel/Eventable.h"
 
 #	include "pybind/system.hpp"
+#	include "pybind/extract.hpp"
 
 namespace Menge
 {
@@ -30,7 +31,8 @@ namespace Menge
         Eventable * eventable = this->getPickerEventable();
 
 		eventable->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
-		eventable->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );		
+		eventable->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_BUTTON_POSITION, ("onHandleMouseButtonEventPosition"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
@@ -135,7 +137,21 @@ namespace Menge
 		{
             Eventable * eventable = this->getPickerEventable();
 
-			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIIO)", this->getPickerEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIIO)"
+				, this->getPickerEmbed()
+				, _touchId
+				, _button
+				, pybind::get_bool(_isDown) 
+				);
+
+			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_BUTTON_POSITION)( handle, m_defaultHandle, "(OIffIO)"
+				, this->getPickerEmbed()
+				, _touchId
+				, _point.x
+				, _point.y
+				, _button
+				, pybind::get_bool(_isDown) 
+				);
 		}
 
 		return handle;

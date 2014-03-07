@@ -2,8 +2,6 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#	include "poly2tri.h"
-
 #	include "Math/vec2.h"
 
 namespace Menge

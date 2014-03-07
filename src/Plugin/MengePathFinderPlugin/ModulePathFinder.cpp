@@ -37,6 +37,8 @@ namespace Menge
 			.def( "addObstacle", &PathFinderMap::addObstacle )
 			.def( "generateMap", &PathFinderMap::generateMap )
 			.def( "findPath", &PathFinderMap::findPath )
+			.def( "removePath", &PathFinderMap::removePath )
+			.def( "setCamera2D", &PathFinderMap::setCamera2D )
 			;
 
 		pybind::interface_<PathFinderWay>("PathFinderWay")

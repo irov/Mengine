@@ -6,12 +6,24 @@
 
 #	include "Core/Polygon.h"
 
-#	include "poly2tri.h"
+#	include "poly2tri/poly2tri.h"
 
 #	include <list>
 
 namespace Menge
 {
+	typedef std::vector<p2t::Point *> Points;
+	typedef std::vector<p2t::Triangle *> Triangles;
+
+	struct PFMPoint
+		: public p2t::Point
+	{
+		float weight;
+
+		typedef std::vector<PFMPoint *> TVectorNeighbor;
+		TVectorNeighbor neighbor;
+	};
+
 	class PathFinderMap
 	{
 	public:
@@ -31,6 +43,10 @@ namespace Menge
 
 	public:
 		PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to );
+		void removePath( PathFinderWay * _way );
+
+	public:
+		void setCamera2D( const RenderCameraInterface * _camera );
 
 	public:
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
@@ -58,12 +74,14 @@ namespace Menge
 		typedef std::list<Obstacle> TObstacles;
 		TObstacles m_obstales;
 
-		Poly2Tri::Point m_cachePoint[1024];
+		PFMPoint m_cachePoint[1024];
 		size_t m_cachePointUse;
-
-		Poly2Tri::SweepContext m_sweepContext;
+				
+		p2t::SweepContext * m_sweepContext;
 
 		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
 		TVectorPathFinderWay m_pathFinderWays;
+
+		const RenderCameraInterface * m_camera;
 	};
 }

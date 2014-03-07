@@ -28,6 +28,8 @@ src
     WinApplicationInitializer.h
 	WinTimer.cpp
 	WinTimer.h
+    WinMouseEvent.cpp
+    WinMouseEvent.h
 )
 
 add_definitions(-DUNICODE)
@@ -60,8 +62,6 @@ foreach(dependency ${APPLICATION_DEPENDENCIES})
 endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 TARGET_LINK_LIBRARIES( WinApplication ${APPLICATION_LIBS} ) 
-
-TARGET_LINK_LIBRARIES( WinApplication Comctl32.lib )
 
 if(NOT MSVC)
     TARGET_LINK_LIBRARIES( WinApplication libole32.a )

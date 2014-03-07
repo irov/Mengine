@@ -27,6 +27,7 @@
 #   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
 
 #	include "WinTimer.h"
+#	include "WinMouseEvent.h"
 
 #	include <map>
 
@@ -167,6 +168,8 @@ namespace Menge
 		bool m_cursorInArea;
 		bool m_clickOutArea;
 		HCURSOR m_cursor;
+
+		WinMouseEvent m_mouseEvent;
 
 		typedef std::map<WString, HCURSOR> TMapCursors;
 		TMapCursors m_cursors;

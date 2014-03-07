@@ -2481,28 +2481,38 @@ namespace Menge
 
 		switch( uMsg )
 		{
-		case WM_NCMOUSEMOVE:
-		case WM_MOUSELEAVE:
+		case WM_TIMER:
 			{
-				if( m_cursorInArea == true )
+				if( wParam == UTIMER_MOUSE_EVENT )
 				{
-					m_cursorInArea = false;
-
-					mt::vec2f point;
-					this->getCursorPosition( point );
-
-					m_inputService->onMouseLeave( 0, point );
-				}
-
-				if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
-				{
-					m_clickOutArea = true;
+					m_mouseEvent.verify( hWnd );
 				}
 
 				handle = true;
 				_result = FALSE;
 			}break;
-		case WM_MOUSEHOVER:
+		case UWM_MOUSE_LEAVE:
+			{
+				if( m_cursorInArea == true )
+				{
+					m_cursorInArea = false;
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
+					mt::vec2f point;
+					this->getCursorPosition( point );
+
+					m_inputService->onMouseLeave( 0, point );
+
+					if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
+					{
+						m_clickOutArea = true;
+					}
+				}
+
+				handle = true;
+				_result = FALSE;
+			}break;
 		case WM_MOUSEMOVE:
 			{
 				//::SetFocus( m_hWnd );
@@ -2510,21 +2520,16 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition( point );
 
+				m_mouseEvent.notify( hWnd );
+
 				if( m_cursorInArea == false )
 				{
 					m_cursorInArea = true;
 
+					InvalidateRect(hWnd, NULL, FALSE);
+					UpdateWindow(hWnd);
+
 					m_inputService->onMouseEnter( 0, point );
-
-					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
-					BOOL track = _TrackMouseEvent( &mouseEvent );
-
-					if( track == FALSE )
-					{
-						LOGGER_ERROR(m_serviceProvider)("_TrackMouseEvent sizeof(TRACKMOUSEEVENT), TME_LEAVE, %d, HOVER_DEFAULT"
-							, m_hWnd
-							);
-					}
 				}
 
 				if( m_clickOutArea == true ) 
@@ -2550,13 +2555,13 @@ namespace Menge
 				float fdx = (float)dx;
 				float fdy = (float)dy;
 
-				const Resolution & contentResolution = m_application->getContentResolution();
-				mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
+				//const Resolution & contentResolution = m_application->getContentResolution();
+				//mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
 
-				float fdx_scale = fdx * resolutionScale.x;
-				float fdy_scale = fdy * resolutionScale.y;
+				//float fdx_scale = fdx * resolutionScale.x;
+				//float fdy_scale = fdy * resolutionScale.y;
 
-				m_inputService->onMouseMove( 0, point, fdx_scale, fdy_scale, 0 );
+				m_inputService->onMouseMove( 0, point, fdx, fdy, 0 );
 
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -2589,9 +2594,6 @@ namespace Menge
 			break;
 		case WM_LBUTTONDOWN:
 			{
-				//printf("WM_LBUTTONDOWN m_active %d\n", m_active); 
-				//::SetFocus( m_hWnd );
-
 				mt::vec2f point;
 				this->getCursorPosition( point );
 
@@ -3015,8 +3017,6 @@ namespace Menge
 		m_clipingCursorRect.top = p1.y;
 		m_clipingCursorRect.right = p2.x;
 		m_clipingCursorRect.bottom = p2.y;
-
-		//printf( "%d %d - %d %d\n", p1.x, p1.y, p2.x, p2.y );
 
 		m_clipingCursor = ::ClipCursor( &m_clipingCursorRect );	// Bound cursor
 	}

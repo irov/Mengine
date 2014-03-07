@@ -1,5 +1,7 @@
 #	include "AlreadyRunningMonitor.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -15,6 +17,7 @@ namespace Menge
 		// try to create mutex to sure that we are not running already
 		WString mutexName = WString(L"MengineMutex_") + _title;
 		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
+		
 		DWORD error = ::GetLastError();
 		// already running
 
@@ -27,6 +30,9 @@ namespace Menge
 		{
 			HWND otherHwnd = ::FindWindow( _windowClassName.c_str(), _title.c_str() );
 			::SetForegroundWindow( otherHwnd );
+
+			LOGGER_ERROR(m_serviceProvider)("AlreadyRunningMonitor FOCUS to other instance of engine"
+				);
 
 			return false;
 		}
@@ -47,7 +53,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AlreadyRunningMonitor::stop()
 	{
-		if( m_mutex )
+		if( m_mutex != INVALID_HANDLE_VALUE )
 		{
 			::CloseHandle( m_mutex );
 			m_mutex = INVALID_HANDLE_VALUE;

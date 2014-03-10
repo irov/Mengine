@@ -15,7 +15,7 @@ namespace Menge
 		: public InputStreamInterface
 	{
 	public:
-		virtual bool open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) = 0;
+		virtual bool open( const FilePath & _folder, const FilePath & _fileName ) = 0;
 	};
 
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
@@ -24,7 +24,7 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
-		virtual bool initialize( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) = 0;
+		virtual bool initialize( const FilePath & _folder, const FilePath & _fileName ) = 0;
 
 	public:
         virtual InputStreamInterfacePtr createFileStream() = 0;
@@ -48,7 +48,7 @@ namespace Menge
         SERVICE_DECLARE( "FileSystem" )
 
 	public:
-		virtual bool existFile( const FilePath & _folder, const FilePath& _dir, const char * _filename, size_t _filenamelen ) const = 0;
+		virtual bool existFile( const FilePath & _folder, const FilePath & _fileName ) const = 0;
 
 	public:
         virtual bool deleteFile( const FilePath & _folder, const FilePath & _filename ) = 0;
@@ -81,21 +81,21 @@ namespace Menge
         virtual const FilePath & getPath() const = 0;
 
     public:
-        virtual bool existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const = 0;
+        virtual bool existFile( const FilePath & _fileName ) const = 0;
 
     public:
         virtual InputStreamInterfacePtr createInputFile() = 0;
-        virtual bool openInputFile( const FilePath& _dir, const char * _filename, size_t _filenamelen, const InputStreamInterfacePtr & _stream ) = 0;
+        virtual bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream ) = 0;
 			
     public:
         virtual OutputStreamInterfacePtr createOutputFile() = 0;
-        virtual bool openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _stream ) = 0;
+        virtual bool openOutputFile( const FilePath & _filename, const OutputStreamInterfacePtr & _stream ) = 0;
 
     public:
-        virtual bool existDirectory( const FilePath& _path ) = 0;
-        virtual bool createDirectory( const FilePath& _path ) = 0;
-        virtual bool removeDirectory( const FilePath& _path ) = 0;
-        virtual bool removeFile( const FilePath& _filename ) = 0;
+        virtual bool existDirectory( const FilePath & _path ) const = 0;
+        virtual bool createDirectory( const FilePath & _path ) = 0;
+        virtual bool removeDirectory( const FilePath & _path ) = 0;
+        virtual bool removeFile( const FilePath & _filename ) = 0;
     };
 
 	typedef stdex::intrusive_ptr<FileGroupInterface> FileGroupInterfacePtr;
@@ -109,23 +109,23 @@ namespace Menge
         virtual bool initialize() = 0;
 
     public:
-        virtual bool mountFileGroup( const ConstString& _fileGroupName, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
-        virtual void unmountFileGroup( const ConstString& _fileGroupName ) = 0;
+        virtual bool mountFileGroup( const ConstString & _fileGroupName, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
+        virtual void unmountFileGroup( const ConstString & _fileGroupName ) = 0;
 
     public:
-        virtual bool hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const = 0;
-        virtual FileGroupInterfacePtr getFileGroup( const ConstString& _fileGroupName ) const = 0;
+        virtual bool hasFileGroup( const ConstString & _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const = 0;
+        virtual FileGroupInterfacePtr getFileGroup( const ConstString & _fileGroupName ) const = 0;
 
 	public:
-		virtual bool existFile( const ConstString& _fileGroupName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterfacePtr * _fileGroup ) const = 0;
+		virtual bool existFile( const ConstString & _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const = 0;
 
 	public:
-		virtual InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath & _filename ) = 0;
-		virtual OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath & _filename ) = 0;
+		virtual InputStreamInterfacePtr openInputFile( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
+		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:
-        virtual MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _filename ) = 0;
-		virtual MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _filename ) = 0;
+        virtual MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _fileName ) = 0;
+		virtual MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _fileName ) = 0;
 
     public:
         virtual bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const = 0;

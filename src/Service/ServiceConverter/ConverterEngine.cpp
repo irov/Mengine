@@ -147,7 +147,7 @@ namespace Menge
         }
 
         if( FILE_SERVICE(m_serviceProvider)
-            ->existFile( options.pakName, options.inputFileName, nullptr, 0, nullptr ) == false )
+            ->existFile( options.pakName, options.inputFileName, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: input file '%s' not found"
                 , options.inputFileName.c_str()
@@ -157,7 +157,7 @@ namespace Menge
         }
 
         if( FILE_SERVICE(m_serviceProvider)
-            ->existFile( options.pakName, options.outputFileName, nullptr, 0, nullptr ) == true )
+            ->existFile( options.pakName, options.outputFileName, nullptr ) == true )
         {			
             InputStreamInterfacePtr oldFile = FILE_SERVICE(m_serviceProvider)
                 ->openInputFile( options.pakName, options.inputFileName );

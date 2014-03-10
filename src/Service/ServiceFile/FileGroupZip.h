@@ -21,21 +21,21 @@ namespace Menge
         const FilePath & getPath() const override;
         
 	public:
-		bool existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const override;
+		bool existFile( const FilePath & _fileName ) const override;
 
     public:
 		InputStreamInterfacePtr createInputFile() override;
-		bool openInputFile( const FilePath& _dir, const char * _filename, size_t _filenamelen, const InputStreamInterfacePtr & _file ) override;
+		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file ) override;
 
     public:
         OutputStreamInterfacePtr createOutputFile() override;
-        bool openOutputFile( const FilePath& _filename, const OutputStreamInterfacePtr & _file ) override;
+        bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _file ) override;
 
     public:
-        bool existDirectory( const FilePath& _path ) override;
-        bool createDirectory( const FilePath& _path ) override;
-        bool removeDirectory( const FilePath& _path ) override;
-        bool removeFile( const FilePath& _filename ) override;
+        bool existDirectory( const FilePath & _path ) const override;
+        bool createDirectory( const FilePath & _path ) override;
+        bool removeDirectory( const FilePath & _path ) override;
+        bool removeFile( const FilePath & _filename ) override;
 
 	protected:
 		bool loadHeader_();
@@ -61,7 +61,5 @@ namespace Menge
 
 	private:
 		friend class FileGroupZip_FinderPredFiles;
-
-		TMapFileInfo::buffer_type::const_iterator findDirFile_( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const;
 	};
 }	// namespace Menge

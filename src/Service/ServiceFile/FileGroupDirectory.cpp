@@ -73,10 +73,10 @@ namespace Menge
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
+	bool FileGroupDirectory::existFile( const FilePath & _fileName ) const
 	{
 		bool exist = FILE_SYSTEM(m_serviceProvider)
-            ->existFile( m_path, _dir, _filename, _filenamelen );
+            ->existFile( m_path, _fileName );
 
         return exist;
 	}
@@ -89,7 +89,7 @@ namespace Menge
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupDirectory::openInputFile( const FilePath& _dir, const char * _filename, size_t _filenamelen, const InputStreamInterfacePtr & _stream )
+	bool FileGroupDirectory::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream )
 	{
         if( _stream == nullptr )
         {
@@ -101,11 +101,11 @@ namespace Menge
 
         FileInputStreamInterfacePtr file = stdex::intrusive_static_cast<FileInputStreamInterfacePtr>(_stream);
 
-		if( file->open( m_path, _dir, _filename, _filenamelen ) == false )
+		if( file->open( m_path, _fileName ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("FileSystemDirectory::openInputFile failed open file '%s':'%s'"
                 , m_path.c_str()
-                , _dir.c_str()
+                , _fileName.c_str()
                 );
 
             return false;
@@ -147,9 +147,10 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupDirectory::existDirectory( const FilePath& _path )
+    bool FileGroupDirectory::existDirectory( const FilePath & _path ) const
     {
-        if( FILE_SYSTEM(m_serviceProvider)->existFolder( m_path, _path ) == false )
+        if( FILE_SYSTEM(m_serviceProvider)
+			->existFolder( m_path, _path ) == false )
         {
             return false;
         }
@@ -159,7 +160,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::createDirectory( const FilePath & _path )
 	{
-		if( FILE_SYSTEM(m_serviceProvider)->createFolder( m_path, _path ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)
+			->createFolder( m_path, _path ) == false )
         {
             return false;
         }
@@ -169,7 +171,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::removeDirectory( const FilePath & _path )
 	{
-		if( FILE_SYSTEM(m_serviceProvider)->deleteFolder( m_path, _path ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)
+			->deleteFolder( m_path, _path ) == false )
         {
             return false;
         }
@@ -179,7 +182,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupDirectory::removeFile( const FilePath & _filename )
 	{
-		if( FILE_SYSTEM(m_serviceProvider)->deleteFile( m_path, _filename ) == false )
+		if( FILE_SYSTEM(m_serviceProvider)
+			->deleteFile( m_path, _filename ) == false )
         {
             return false;
         }

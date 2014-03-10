@@ -1,12 +1,14 @@
 #	include "PickDecoderHIT.h"
 #   include "PickVerifyHIT.h"
 
+#	include "Interface/FileSystemInterface.h"
+#	include "Interface/ArchiveInterface.h"
+
+#	include "Core/CacheMemoryBuffer.h"
+
 #   include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
-
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ArchiveInterface.h"
 
 namespace Menge
 {
@@ -67,10 +69,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t PickDecoderHIT::decode( void * _buffer, size_t _bufferSize )
 	{	        
-        static TBlobject compressBuffer;
-        compressBuffer.resize( m_mipmapcompresssize );
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, m_mipmapcompresssize);
+		void * compress_memory = compress_buffer.getMemory();
 
-        int read = m_stream->read( &compressBuffer[0], m_mipmapcompresssize );
+        int read = m_stream->read( compress_memory, m_mipmapcompresssize );
 
         if( read == 0 )
         {
@@ -82,7 +84,7 @@ namespace Menge
 
         size_t destLen;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( _buffer, _bufferSize, destLen, &compressBuffer[0], m_mipmapcompresssize ) == false )
+            ->uncompress( _buffer, _bufferSize, destLen, compress_memory, m_mipmapcompresssize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid uncompress"
                 );

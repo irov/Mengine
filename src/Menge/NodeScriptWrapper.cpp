@@ -1259,7 +1259,7 @@ namespace Menge
 		bool s_existFile( const ConstString & _fileGroup, const FilePath & _path )
 		{
 			bool result = FILE_SERVICE(m_serviceProvider)
-				->existFile( _fileGroup, _path, nullptr, 0, nullptr );
+				->existFile( _fileGroup, _path, nullptr );
 
 			return result;
 		}

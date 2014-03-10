@@ -268,56 +268,11 @@ namespace Menge
 		size_t m_hash;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class FileGroupZip_FinderPredFiles
+	bool FileGroupZip::existFile( const FilePath & _fileName ) const
 	{
-	public:
-		bool operator() ( const FileGroupZip::TMapFileInfo::binary_value_store_type & _store, const FileGroupZip_FinderValueFiles & _key ) const
-		{
-			size_t store_hash = _store.key.hash();
-			size_t key_hash = _key.m_hash;
+		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
 
-			if( store_hash < key_hash )
-			{
-				return true;
-			}
-
-			if( store_hash > key_hash )
-			{
-				return false;
-			}
-
-			const char * store_str = _store.key.c_str();
-			
-			int res = strcmp( store_str, _key.m_filename );
-
-			return res < 0;
-		}
-	};
-	//////////////////////////////////////////////////////////////////////////
-	FileGroupZip::TMapFileInfo::const_iterator FileGroupZip::findDirFile_( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
-	{
-		char filename[MAX_PATH];
-
-		const char * dir_str = _dir.c_str();
-		size_t dir_size = _dir.size();
-		
-		memcpy( filename, dir_str, dir_size );
-		memcpy( filename + dir_size, _filename, _filenamelen );
-
-		filename[ dir_size + _filenamelen ] = 0;
-
-		ConstString c_path = Helper::stringizeStringSize(m_serviceProvider, filename, dir_size + _filenamelen );		
-
-		TMapFileInfo::const_iterator it_found = m_files.find( c_path );
-				
-		return it_found;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::existFile( const FilePath& _dir, const char * _filename, size_t _filenamelen ) const
-	{
-		TMapFileInfo::const_iterator it_lower_bound = this->findDirFile_( _dir, _filename, _filenamelen );
-
-		if( it_lower_bound == m_files.end() )
+		if( it_found == m_files.end() )
 		{
 			return false;
 		}
@@ -332,21 +287,21 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::openInputFile( const FilePath& _dir, const char * _filename, size_t _filenamelen, const InputStreamInterfacePtr & _stream )
+	bool FileGroupZip::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream )
 	{
 		if( _stream == nullptr )
 		{
 			return false;
 		}
 
-		TMapFileInfo::const_iterator it_lower_bound = this->findDirFile_( _dir, _filename, _filenamelen );
+		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
 
-		if( it_lower_bound == m_files.end() )
+		if( it_found == m_files.end() )
 		{
 			return false;
 		}
 
-		const FileInfo & fi = m_files.get_value( it_lower_bound );
+		const FileInfo & fi = m_files.get_value( it_found );
 
 		bool successful = m_zipMappedFile->openFileStream( _stream, fi.seek_pos, fi.file_size );
 
@@ -373,7 +328,7 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::existDirectory( const FilePath& _path )
+    bool FileGroupZip::existDirectory( const FilePath & _path ) const
     {
         //bool result = m_folders.has( _path );
 

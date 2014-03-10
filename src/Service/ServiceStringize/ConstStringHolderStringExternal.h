@@ -15,7 +15,7 @@ namespace Menge
 		{
 			m_value = _value;
 
-			this->setup( m_value, _size );
+			this->setup( m_value, _size, false );
 		}
 
 	protected:

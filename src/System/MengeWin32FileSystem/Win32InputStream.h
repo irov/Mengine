@@ -20,10 +20,10 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool openRange( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, size_t _offset, size_t _size );
+		bool openRange( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size );
 
 	public:
-		bool open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) override;
+		bool open( const FilePath & _folder, const FilePath & _fileName ) override;
 		
 	public:
 		size_t read( void* _buf, size_t _count ) override;
@@ -35,7 +35,7 @@ namespace Menge
         bool time( uint64_t & _time ) const override;
 
     protected:
-		bool openFile_( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, WChar * _filePath );
+		bool openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath );
         void close_();
 
     protected:

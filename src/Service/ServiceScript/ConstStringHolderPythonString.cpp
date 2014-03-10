@@ -17,7 +17,7 @@ namespace Menge
         const char * data = pybind::string_to_char( m_value );
         size_t size = pybind::string_size( m_value );
 
-        this->setup( data, size );
+        this->setup( data, size, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderPythonString::_releaseString()

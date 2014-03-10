@@ -66,7 +66,7 @@ namespace Menge
 		}
 
 		if( FILE_SERVICE(m_serviceProvider)
-			->existFile( _category, _path, nullptr, 0, nullptr ) == true )
+			->existFile( _category, _path, nullptr ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset category '%s' file alredy exist '%s'"
 				, _category.c_str()

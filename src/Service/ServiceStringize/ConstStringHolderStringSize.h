@@ -47,7 +47,7 @@ namespace Menge
         {			
 			m_store = _store;
 
-            this->setup( _value, _size );
+            this->setup( _value, _size, true );
         }
 
     protected:

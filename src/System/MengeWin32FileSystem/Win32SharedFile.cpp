@@ -10,7 +10,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32SharedFile::Win32SharedFile()
 		: m_serviceProvider(nullptr)
-        , m_filenamelen(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -23,13 +22,10 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32SharedFile::initialize( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
+	bool Win32SharedFile::initialize( const FilePath & _folder, const FilePath & _fileName )
 	{
 		m_folder = _folder;
-		m_dir = _dir;
-
-		memcpy( m_filename, _filename, _filenamelen );
-		m_filenamelen = _filenamelen;
+		m_fileName = _fileName;
 				
 		return true;
 	}
@@ -47,7 +43,7 @@ namespace Menge
 	{
 		Win32InputStream * stream = stdex::intrusive_get<Win32InputStream>(_stream);
 
-		if( stream->openRange( m_folder, m_dir, m_filename, m_filenamelen, _offset, _size ) == false )
+		if( stream->openRange( m_folder, m_fileName, _offset, _size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32SharedFile::openFileStream invalid share file"
 				);

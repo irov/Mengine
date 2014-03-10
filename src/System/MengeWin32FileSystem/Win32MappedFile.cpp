@@ -51,15 +51,15 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32MappedFile::initialize( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
+	bool Win32MappedFile::initialize( const FilePath & _folder, const FilePath & _fileName )
 	{
         WChar filePath[MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _dir, _filename, _filenamelen, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( _folder, _fileName, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folder.c_str()
-                , _dir.c_str()
+                , _fileName.c_str()
                 );
 
             return false;

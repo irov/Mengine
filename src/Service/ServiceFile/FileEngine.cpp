@@ -294,7 +294,7 @@ namespace Menge
 		return mappedFile;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool FileEngine::existDirectory( const ConstString& _fileGroupName, const FilePath& _path )
+    bool FileEngine::existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const
     {
         TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileGroupName );
         if( it_find == m_fileSystemMap.end() )

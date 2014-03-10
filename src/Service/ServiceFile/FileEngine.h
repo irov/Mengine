@@ -42,7 +42,7 @@ namespace Menge
 		MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _filename ) override;
         
 	public:
-        bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
+        bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const override;
 		bool createDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
 		bool removeDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
 		bool removeFile( const ConstString& _fileGroupName, const FilePath& _filename ) override;

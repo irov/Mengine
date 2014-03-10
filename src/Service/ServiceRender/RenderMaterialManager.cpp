@@ -118,6 +118,36 @@ namespace Menge
             rs.depthBufferWriteEnable = false;
 
             rs.blendSrc = BF_SOURCE_ALPHA;
+            rs.blendDst = BF_ONE;
+
+            RenderTextureStage & ts0 = rs.textureStage[0];
+
+            ts0.colorOp = TOP_MODULATE;
+            ts0.colorArg1 = TARG_TEXTURE;
+            ts0.colorArg2 = TARG_DIFFUSE;
+            ts0.alphaOp = TOP_SELECTARG1;
+            ts0.alphaArg1 = TARG_DIFFUSE;
+
+            RenderTextureStage & ts1 = rs.textureStage[1];
+
+            ts1.colorOp = TOP_SELECTARG1;
+            ts1.colorArg1 = TARG_CURRENT;
+            ts1.alphaOp = TOP_MODULATE;
+            ts1.alphaArg1 = TARG_TEXTURE;
+            ts1.alphaArg2 = TARG_CURRENT;
+            ts1.texCoordIndex = 1;
+
+            this->createRenderStageGroup( Helper::stringizeString(m_serviceProvider, "ExternalAlphaIntensive"), rs );
+        }
+
+        {
+            RenderStage rs;
+
+            rs.alphaBlendEnable = true;
+            rs.alphaTestEnable = false;
+            rs.depthBufferWriteEnable = false;
+
+            rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 
             RenderTextureStage & ts0 = rs.textureStage[0];
@@ -138,6 +168,36 @@ namespace Menge
             ts1.texCoordIndex = 1;
 
             this->createRenderStageGroup( Helper::stringizeString(m_serviceProvider, "ExternalAlpha_OnlyColor"), rs );
+        }
+
+        {
+            RenderStage rs;
+
+            rs.alphaBlendEnable = true;
+            rs.alphaTestEnable = false;
+            rs.depthBufferWriteEnable = false;
+
+            rs.blendSrc = BF_SOURCE_ALPHA;
+            rs.blendDst = BF_ONE;
+
+            RenderTextureStage & ts0 = rs.textureStage[0];
+
+            ts0.colorOp = TOP_SELECTARG1;
+            ts0.colorArg1 = TARG_DIFFUSE;
+            //ts0.colorArg2 = TARG_DIFFUSE;
+            ts0.alphaOp = TOP_SELECTARG1;
+            ts0.alphaArg1 = TARG_DIFFUSE;
+
+            RenderTextureStage & ts1 = rs.textureStage[1];
+
+            ts1.colorOp = TOP_SELECTARG1;
+            ts1.colorArg1 = TARG_CURRENT;
+            ts1.alphaOp = TOP_MODULATE;
+            ts1.alphaArg1 = TARG_TEXTURE;
+            ts1.alphaArg2 = TARG_CURRENT;
+            ts1.texCoordIndex = 1;
+
+            this->createRenderStageGroup( Helper::stringizeString(m_serviceProvider, "ExternalAlphaIntensive_OnlyColor"), rs );
         }
 
         {

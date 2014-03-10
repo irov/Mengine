@@ -94,6 +94,8 @@ namespace Menge
         INIT_CONST( OnlyColor );
         INIT_CONST( ExternalAlpha );
         INIT_CONST( ExternalAlpha_OnlyColor );
+        INIT_CONST( ExternalAlphaIntensive );
+        INIT_CONST( ExternalAlphaIntensive_OnlyColor );
         INIT_CONST( Debug );
         INIT_CONST( ParticleIntensive );
         INIT_CONST( ParticleBlend );

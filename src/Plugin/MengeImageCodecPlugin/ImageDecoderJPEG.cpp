@@ -1,7 +1,7 @@
 #	include "ImageDecoderJPEG.h"
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Utils/Logger/Logger.h"
+#	include "Logger/Logger.h"
 
 #	define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
 
@@ -205,7 +205,7 @@ namespace Menge
 		src->pub.next_input_byte = NULL;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int s_getQuality( jpeg_decompress_struct* _jpegObject )
+	static int s_getQuality( jpeg_decompress_struct * _jpegObject )
 	{
 		if( _jpegObject->quant_tbl_ptrs[0] == nullptr )
 		{
@@ -274,13 +274,15 @@ namespace Menge
 		// step 3: read handle parameters with jpeg_read_header()
 		jpeg_read_header( &m_jpegObject, TRUE );
 
+		jpeg_calc_output_dimensions( &m_jpegObject );
+
 		m_dataInfo.depth = 1;
 		m_dataInfo.mipmaps = 0;
 		m_dataInfo.width = m_jpegObject.image_width;
 		m_dataInfo.height = m_jpegObject.image_height;
 		m_dataInfo.quality = s_getQuality( &m_jpegObject );
 		
-		m_dataInfo.channels = 4;//m_jpegObject.num_components;
+		m_dataInfo.channels = m_jpegObject.out_color_components;
 		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * m_dataInfo.channels;	
 
 		return true;

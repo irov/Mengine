@@ -232,7 +232,7 @@ namespace Menge
             {
                 const FilePath & path = *it_path;
                                 
-                FileGroupInterface * fileGroup;
+				FileGroupInterfacePtr fileGroup;
                 if( fileService->existFile( mp.pak, path, _modulePath, _modulePathLen, &fileGroup ) == false )
                 {
                     continue;

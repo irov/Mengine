@@ -2,6 +2,7 @@
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StreamInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 #	include "Codec/ImageDecoderMemory.h"
 
@@ -42,10 +43,14 @@ namespace Menge
 		FilePath m_fileName; 
 		ConstString m_codec;
 				
+	protected:
+		FileGroupInterfacePtr m_group;
 		InputStreamInterfacePtr m_stream;
 		ImageDecoderInterfacePtr m_imageDecoder;
 
 		MemoryCacheInputPtr m_memoryCache;
+
+	protected:
 		ImageDecoderInterfacePtr m_imageDecoderMemory;
 	};
 

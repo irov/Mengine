@@ -353,7 +353,7 @@ namespace Menge
 		XmlCodecOptions options;
         options.pathProtocol = m_protocolPath;
 		
-        FileGroupInterface * fileGroup = FILE_SERVICE(m_serviceProvider)
+        FileGroupInterfacePtr fileGroup = FILE_SERVICE(m_serviceProvider)
             ->getFileGroup( _pak );
 
         if( fileGroup == nullptr )

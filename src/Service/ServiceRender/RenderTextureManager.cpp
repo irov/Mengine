@@ -224,15 +224,15 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::saveImage( const RenderTextureInterfacePtr & _texture, const ConstString & _fileSystemName, const ConstString & _codecName, const FilePath & _filename )
+    bool RenderTextureManager::saveImage( const RenderTextureInterfacePtr & _texture, const ConstString & _fileGroupName, const ConstString & _codecName, const FilePath & _filename )
     {
         OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( _fileSystemName, _filename );
+            ->openOutputFile( _fileGroupName, _filename );
 
         if( stream == NULL )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create file '%s' '%s'"
-                , _fileSystemName.c_str()
+                , _fileGroupName.c_str()
                 , _filename.c_str() 
                 );
 

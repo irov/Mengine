@@ -8,8 +8,6 @@
 
 namespace Menge
 {
-	class FileGroupInterface;
-
 	class FileEngine
 		: public FileServiceInterface
 	{
@@ -25,36 +23,36 @@ namespace Menge
 		bool initialize() override;
 
 	public:	// FileEngine Interface
-		bool mountFileGroup( const ConstString& _fileSystemName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create ) override;
-		void unmountFileGroup( const ConstString& _fileSystemName ) override;
+		bool mountFileGroup( const ConstString& _fileGroupName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create ) override;
+		void unmountFileGroup( const ConstString& _fileGroupName ) override;
 
     public:
-        bool hasFileGroup( const ConstString& _fileSystemName, FileGroupInterface ** _fileGroup ) const override;
-        FileGroupInterface * getFileGroup( const ConstString& _fileSystemName ) const override;
+        bool hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const override;
+        FileGroupInterfacePtr getFileGroup( const ConstString& _fileGroupName ) const override;
         
     public:
-		bool existFile( const ConstString& _fileSystemName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterface ** _group ) const override;
+		bool existFile( const ConstString& _fileGroupName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterfacePtr * _fileGroup ) const override;
 
 	public:
-		InputStreamInterfacePtr openInputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
-		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
+		InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath& _filename ) override;
+		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _filename ) override;
         
     public:
         MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _filename ) override;
 		MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _filename ) override;
         
 	public:
-        bool existDirectory( const ConstString& _fileSystemName, const FilePath& _path ) override;
-		bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path ) override;
-		bool removeDirectory( const ConstString& _fileSystemName, const FilePath& _path ) override;
-		bool removeFile( const ConstString& _fileSystemName, const FilePath& _filename ) override;
+        bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
+		bool createDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
+		bool removeDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
+		bool removeFile( const ConstString& _fileGroupName, const FilePath& _filename ) override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
         FactoryManager m_factoryFileGroup;
 
-		typedef stdex::binary_vector<ConstString, FileGroupInterface *> TMapFileSystem;
+		typedef stdex::binary_vector<ConstString, FileGroupInterfacePtr> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;
 	};
 }

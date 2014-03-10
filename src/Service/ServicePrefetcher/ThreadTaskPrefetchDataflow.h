@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/DataInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 #	include "Kernel/ThreadTask.h"
 
@@ -42,9 +43,11 @@ namespace Menge
 		ConstString m_dataflowType;
 		
 	protected:
+		FileGroupInterfacePtr m_group;
 		InputStreamInterfacePtr m_stream;
 		DataflowInterfacePtr m_dataflow;
 		
+	protected:
 		DataInterfacePtr m_data;
 	};
 

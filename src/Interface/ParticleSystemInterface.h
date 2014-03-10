@@ -167,7 +167,7 @@ namespace Menge
         virtual bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
         virtual size_t renderParticlesCount( size_t _count ) = 0;
 
-        virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
+        virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _filename ) = 0;
 
     public:
         virtual size_t getMaxParticlesCount() const = 0;

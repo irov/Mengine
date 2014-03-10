@@ -30,7 +30,7 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool SoundConverterFFMPEGToOGG::convert()
 	{
-        FileGroupInterface * fileGroup;
+        FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundConverterFFMPEGToOGG::convert_: not found file group '%s'"

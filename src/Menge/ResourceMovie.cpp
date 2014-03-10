@@ -6,7 +6,8 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 
-#	include "ResourceImageDefault.h"
+//#	include "ResourceImageDefault.h"
+#	include "ResourceShape.h"
 
 #	include "Consts.h"
 
@@ -71,13 +72,6 @@ namespace Menge
         return m_loopSegment;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getAnchorPoint( mt::vec3f & _anchorPoint ) const
-	{
-		_anchorPoint = m_anchorPoint;
-
-		return m_hasAnchorPoint;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const FilePath & ResourceMovie::getFileName() const
 	{
 		return m_path;
@@ -101,6 +95,40 @@ namespace Menge
 	const MovieLayerCamera3D & ResourceMovie::getCamera3D() const
 	{
 		return m_camera3D;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceShape * ResourceMovie::getSocketShape( const ConstString & _socketName ) const
+	{
+		for( TVectorMovieLayers::const_iterator 
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.name != _socketName )
+			{
+				continue;
+			}
+			
+			ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceReferenceT<ResourceShape>( layer.source );
+				
+			return resourceShape;
+		}
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::hasAnchorPoint() const
+	{
+		return m_hasAnchorPoint;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & ResourceMovie::getAnchorPoint() const
+	{
+		return m_anchorPoint;
 	}
     //////////////////////////////////////////////////////////////////////////
     namespace

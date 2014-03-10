@@ -1100,10 +1100,10 @@ namespace Menge
         }
 
         this->createCamera3D_();
-
-		mt::vec3f anchorPoint;
-		if( m_resourceMovie->getAnchorPoint( anchorPoint ) == true )
+				
+		if( m_resourceMovie->hasAnchorPoint() == true )
 		{
+			const mt::vec3f & anchorPoint = m_resourceMovie->getAnchorPoint();
 			this->setOrigin( anchorPoint );
 		}
 

@@ -71,7 +71,7 @@ namespace Menge
     (Menge::Helper::getService<Menge::FileSystemInterface>(serviceProvider))
 
     class FileGroupInterface
-        : public Factorable
+        : public FactorablePtr
     {
     public:
         virtual bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, bool _create ) = 0;
@@ -97,6 +97,8 @@ namespace Menge
         virtual bool removeDirectory( const FilePath& _path ) = 0;
         virtual bool removeFile( const FilePath& _filename ) = 0;
     };
+
+	typedef stdex::intrusive_ptr<FileGroupInterface> FileGroupInterfacePtr;
 	
     class FileServiceInterface 
         : public ServiceInterface
@@ -107,29 +109,29 @@ namespace Menge
         virtual bool initialize() = 0;
 
     public:
-        virtual bool mountFileGroup( const ConstString& _fileSystemName, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
-        virtual void unmountFileGroup( const ConstString& _fileSystemName ) = 0;
+        virtual bool mountFileGroup( const ConstString& _fileGroupName, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create ) = 0;
+        virtual void unmountFileGroup( const ConstString& _fileGroupName ) = 0;
 
     public:
-        virtual bool hasFileGroup( const ConstString& _fileSystemName, FileGroupInterface ** _fileGroup ) const = 0;
-        virtual FileGroupInterface * getFileGroup( const ConstString& _fileSystemName ) const = 0;
+        virtual bool hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const = 0;
+        virtual FileGroupInterfacePtr getFileGroup( const ConstString& _fileGroupName ) const = 0;
 
 	public:
-		virtual bool existFile( const ConstString& _fileSystemName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterface ** _group ) const = 0;
+		virtual bool existFile( const ConstString& _fileGroupName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterfacePtr * _fileGroup ) const = 0;
 
 	public:
-		virtual InputStreamInterfacePtr openInputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
-		virtual OutputStreamInterfacePtr openOutputFile( const ConstString& _fileSystemName, const FilePath & _filename ) = 0;
+		virtual InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath & _filename ) = 0;
+		virtual OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath & _filename ) = 0;
 
     public:
         virtual MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _filename ) = 0;
 		virtual MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _filename ) = 0;
 
     public:
-        virtual bool existDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;
-        virtual bool createDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;
-        virtual bool removeDirectory( const ConstString& _fileSystemName, const FilePath& _path ) = 0;
-        virtual bool removeFile( const ConstString& _fileSystemName, const FilePath& _filename ) = 0;
+        virtual bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) = 0;
+        virtual bool createDirectory( const ConstString& _fileGroupName, const FilePath& _path ) = 0;
+        virtual bool removeDirectory( const ConstString& _fileGroupName, const FilePath& _path ) = 0;
+        virtual bool removeFile( const ConstString& _fileGroupName, const FilePath& _filename ) = 0;
 	};
 
 #   define FILE_SERVICE( serviceProvider )\

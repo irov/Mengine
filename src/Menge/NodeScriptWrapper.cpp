@@ -1230,7 +1230,7 @@ namespace Menge
 			, const FilePath & _descriptionPath
 			)
 		{
-			FileGroupInterface * fileGroup;
+			FileGroupInterfacePtr fileGroup;
 			if( FILE_SERVICE(m_serviceProvider)
 				->hasFileGroup( _fileGroup, &fileGroup ) == false )
 			{
@@ -3952,6 +3952,9 @@ namespace Menge
 			.def("getFrameCount", &ResourceMovie::getFrameCount)
 			.def("getFrameDuration", &ResourceMovie::getFrameDuration)
 			.def("getDuration", &ResourceMovie::getDuration)
+			.def("getSocketShape", &ResourceMovie::getSocketShape)
+			.def("hasAnchorPoint", &ResourceMovie::hasAnchorPoint)
+			.def("getAnchorPoint", &ResourceMovie::getAnchorPoint)
             ;        
 
         pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)
@@ -3976,7 +3979,8 @@ namespace Menge
             ;                   
 
         pybind::interface_<ResourceShape, pybind::bases<ResourceReference> >("ResourceShape", false)
-            ;                   
+			.def( "getPolygon", &ResourceShape::getPolygon )
+            ;
 
         pybind::interface_<ResourceWindow, pybind::bases<ResourceReference> >("ResourceWindow", false)
             ;    

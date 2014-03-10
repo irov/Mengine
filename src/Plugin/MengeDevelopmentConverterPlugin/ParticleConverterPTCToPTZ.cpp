@@ -34,7 +34,7 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool ParticleConverterPTCToPTZ::convert()
 	{
-        FileGroupInterface * fileGroup;
+        FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: not found file group '%s'"

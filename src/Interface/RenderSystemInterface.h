@@ -358,7 +358,7 @@ namespace Menge
         virtual void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:
-        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const ConstString & _codecName, const FilePath & _filename ) = 0;
+        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _filename ) = 0;
 
     public:
         virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;

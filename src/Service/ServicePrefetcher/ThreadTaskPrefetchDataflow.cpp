@@ -33,19 +33,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchDataflow::_onRun()
 	{
-		m_stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( m_pakName, m_fileName );
+		m_group = FILE_SERVICE(m_serviceProvider)
+			->getFileGroup( m_pakName );
 
-		if( m_stream == nullptr )
+		if( m_group == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun: invalide open file '%s':'%s'"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun can't get group '%s'"
 				, m_pakName.c_str()
-				, m_fileName.c_str()
 				);
 
 			return false;
 		}
-		
+
+		m_stream = m_group->createInputFile();
+
+		if( m_stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchDataflow::_onRun can't create input file '%s'"
+				, m_pakName.c_str()
+				);
+
+			return nullptr;
+		}
+	
 		m_dataflow = DATA_SERVICE(m_serviceProvider)
 			->getDataflow( m_dataflowType );
 			
@@ -78,6 +88,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchDataflow::_onMain()
 	{
+		if( m_group->openInputFile( m_fileName, nullptr, 0, m_stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
+				, m_pakName.c_str()
+				, m_fileName.c_str()
+				);
+
+			return false;
+		}
+
 		bool successful = m_dataflow->load( m_data, m_stream );
 
 		return successful;
@@ -90,6 +110,7 @@ namespace Menge
 			return;
 		}
 
+		m_group = nullptr;
 		m_stream = nullptr;
 		m_dataflow = nullptr;
 	}

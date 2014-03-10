@@ -672,6 +672,8 @@ namespace Menge
 			.def_convert( &ScriptMethod::Viewport_convert, nullptr )
 			.def_member( "begin", &Viewport::begin )
 			.def_member( "end", &Viewport::end )
+			.def( "getWidth", &Viewport::getWidth )
+			.def( "getHeight", &Viewport::getHeight )
 			;
 
 		pybind::struct_<ColourValue>("Color")

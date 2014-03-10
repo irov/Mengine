@@ -94,6 +94,8 @@ namespace Menge
 		DECL_CONST( OnlyColor );
 		DECL_CONST( ExternalAlpha );
         DECL_CONST( ExternalAlpha_OnlyColor );
+		DECL_CONST( ExternalAlphaIntensive );
+        DECL_CONST( ExternalAlphaIntensive_OnlyColor );
 		DECL_CONST( Debug );
 		DECL_CONST( ParticleIntensive );
 		DECL_CONST( ParticleBlend );

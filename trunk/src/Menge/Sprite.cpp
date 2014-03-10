@@ -1,4 +1,4 @@
-#	include "Sprite.h" 
+#	include "Sprite.h"
 #	include "Layer2D.h"
 
 #	include "Interface/RenderSystemInterface.h"
@@ -25,7 +25,7 @@ namespace	Menge
 		, m_isCustomSize(false)
 		, m_customSize(0.f, 0.f)
         , m_invalidateMaterial(true)
-	{ 
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -40,7 +40,7 @@ namespace	Menge
 		}
 
         this->updateResource_();
-        
+
         this->invalidateMaterial();
 		this->invalidateBoundingBox();
 
@@ -52,7 +52,7 @@ namespace	Menge
 		if( m_resourceImage == nullptr )
 		{
             LOGGER_ERROR(m_serviceProvider)("Sprite::compileResource_ '%s' image resource null"
-                , m_name.c_str() 
+                , m_name.c_str()
                 );
 
             return false;
@@ -61,7 +61,7 @@ namespace	Menge
         if( m_resourceImage.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Sprite::compileResource_ '%s' image resource %s not compile"
-                , m_name.c_str() 
+                , m_name.c_str()
                 , m_resourceImage->getName().c_str()
                 );
 
@@ -77,7 +77,7 @@ namespace	Menge
 
         m_textures[0] = nullptr;
         m_textures[1] = nullptr;
-		
+
 		m_material = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ namespace	Menge
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceImage * Sprite::getResourceImage() const
-    {        
+    {
         return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -151,26 +151,50 @@ namespace	Menge
 
         if( textureAlpha != nullptr )
         {
-            if( m_disableTextureColor == true )
+			if( m_blendAdd == true )
             {
-				m_texturesNum = 2;
+				if( m_disableTextureColor == true )
+				{
+					m_texturesNum = 2;
 
-                stageName = CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor);
-            }
-            else if( m_resourceImage->isAlpha() == true || m_solid == false )
-            {   
-				m_texturesNum = 2;
+					stageName = CONST_STRING(m_serviceProvider, ExternalAlphaIntensive_OnlyColor);
+				}
+				else if( m_resourceImage->isAlpha() == true || m_solid == false )
+				{
+					m_texturesNum = 2;
 
-                stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
-            }
-            else
-            {   
-				m_texturesNum = 1;
+					stageName = CONST_STRING(m_serviceProvider, ExternalAlphaIntensive);
+				}
+				else
+				{
+					m_texturesNum = 1;
 
-                stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+					stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+				}
             }
+			else
+			{
+				if( m_disableTextureColor == true )
+				{
+					m_texturesNum = 2;
+
+					stageName = CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor);
+				}
+				else if( m_resourceImage->isAlpha() == true || m_solid == false )
+				{
+					m_texturesNum = 2;
+
+					stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
+				}
+				else
+				{
+					m_texturesNum = 1;
+
+					stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+				}
+			}
         }
-		else 
+		else
 		{
 			m_texturesNum = 1;
 
@@ -212,7 +236,7 @@ namespace	Menge
 	void Sprite::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
 		Node::_render( _viewport, _camera );
-		
+
 		const RenderVertex2D * vertices = this->getVerticesWM();
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 

@@ -55,7 +55,7 @@ namespace Menge
         void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
-        bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileSystemName, const ConstString & _codecName, const FilePath & _filename ) override;
+        bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _filename ) override;
 
     public:
         void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;

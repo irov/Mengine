@@ -16,6 +16,8 @@
 
 namespace Menge
 {
+	class ResourceShape;
+
     const size_t MOVIE_LAYER_NODE = 0x0001;
     const size_t MOVIE_LAYER_ANIMATABLE = 0x0002;
     const size_t MOVIE_LAYER_MOVIE = 0x0004;
@@ -175,7 +177,6 @@ namespace Menge
 		const mt::vec2f & getSize() const;
 
         const mt::vec2f & getLoopSegment() const;
-		bool getAnchorPoint( mt::vec3f & _anchorPoint ) const;
 
 	public:
 		const FilePath & getFileName() const;
@@ -184,6 +185,13 @@ namespace Menge
     public:
 		const TVectorMovieLayers & getLayers() const;
 		const MovieLayerCamera3D & getCamera3D() const;
+
+	public:
+		ResourceShape * getSocketShape( const ConstString & _socketName ) const;
+
+	public:
+		bool hasAnchorPoint() const;
+		const mt::vec3f & getAnchorPoint() const;
 
 	public:
 		bool hasCamera3D() const;

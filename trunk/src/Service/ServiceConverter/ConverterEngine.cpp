@@ -106,6 +106,7 @@ namespace Menge
         options.pakName = _category;
         options.inputFileName = _in;
 
+
         if( FILE_SERVICE(m_serviceProvider)
             ->hasFileGroup( _category, nullptr ) == false )
         {

@@ -26,7 +26,7 @@ namespace Menge
         void update() override;
 
 	public:
-		ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename ) override;
+		ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _filename ) override;
 
 		bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override; 
 

@@ -27,14 +27,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
 	{
-		for( TMapFileSystem::iterator 
-			it = m_fileSystemMap.begin(), 
-			it_end = m_fileSystemMap.end();
-		it != it_end;
-		++it )
-		{
-			it->second->destroy();
-		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void FileEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -57,32 +49,32 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileGroup( const ConstString& _fileSystemName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create )
+	bool FileEngine::mountFileGroup( const ConstString& _fileGroupName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create )
 	{
-		LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileSystemName '%s' _path '%s':'%s' _type '%s'"
-			, _fileSystemName.c_str() 
+		LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s':'%s' _type '%s'"
+			, _fileGroupName.c_str() 
 			, _folder.c_str()
 			, _path.c_str()
 			, _type.c_str()
 			);
         
-		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileGroupName );
 		if( it_find != m_fileSystemMap.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem FileSystem with name '%s' is already mount\n"
 				"Remount would be performed"
-				, _fileSystemName.c_str() 
+				, _fileGroupName.c_str() 
 				);
 
 			return false;
 		}
 
-		FileGroupInterface * fs = m_factoryFileGroup.createObjectT<FileGroupInterface>( _type );
+		FileGroupInterfacePtr fs = m_factoryFileGroup.createObjectT<FileGroupInterface>( _type );
 
 		if( fs == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s':'%s'"
-                , _fileSystemName.c_str()
+                , _fileGroupName.c_str()
                 , _type.c_str()
                 , _folder.c_str()
 				, _path.c_str() 
@@ -97,89 +89,93 @@ namespace Menge
 				, _path.c_str() 
 				);
 
-			fs->destroy();
-
 			return false;
 		}
 
-		m_fileSystemMap.insert( _fileSystemName, fs );
+		m_fileSystemMap.insert( _fileGroupName, fs );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unmountFileGroup( const ConstString& _fileSystemName )
+	void FileEngine::unmountFileGroup( const ConstString& _fileGroupName )
 	{
-		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileGroupName );
 		if( it_find == m_fileSystemMap.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::unmountFileGroup '%s' not mount"
-				, _fileSystemName.c_str() 
+				, _fileGroupName.c_str() 
 				);
 
 			return;
 		}
 
-        FileGroupInterface * groupInterface = it_find->second;
+        const FileGroupInterfacePtr & groupInterface = m_fileSystemMap.get_value( it_find );
 
         groupInterface->finalize();
-		groupInterface->destroy();
+
 
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const ConstString& _fileSystemName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterface ** _group ) const
+	bool FileEngine::existFile( const ConstString& _fileGroupName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterfacePtr * _fileGroup ) const
 	{
-		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileGroupName );
 		if( it_find == m_fileSystemMap.end() )
 		{
 			return false;
 		}
 		
-		FileGroupInterface * fileGroup = it_find->second;
+		const FileGroupInterfacePtr & fileGroup = m_fileSystemMap.get_value( it_find );
 
 		if( fileGroup->existFile( _dir, _filename, _filenamelen ) == false )
         {
             return false;
         }
 
-        if( _group != nullptr )
-        {
-            *_group = fileGroup;
-        }
+		if( _fileGroup != nullptr )
+		{
+			*_fileGroup = fileGroup;
+		}
 
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool FileEngine::hasFileGroup( const ConstString& _fileSystemName, FileGroupInterface ** _fileGroup ) const
+    bool FileEngine::hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const
     {
-		bool result = m_fileSystemMap.has( _fileSystemName, _fileGroup );
+		FileGroupInterfacePtr fileGroup;
+		bool result = m_fileSystemMap.has_copy( _fileGroupName, fileGroup );
+
+		if( _fileGroup != nullptr )
+		{
+			*_fileGroup = fileGroup;
+		}
 
 		return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	FileGroupInterface * FileEngine::getFileGroup( const ConstString& _fileSystemName ) const
+	FileGroupInterfacePtr FileEngine::getFileGroup( const ConstString & _fileGroupName ) const
 	{
-		FileGroupInterface * fileSystem;
-		if( m_fileSystemMap.has( _fileSystemName, &fileSystem ) == false )
+		FileGroupInterfacePtr fileGroup;
+		if( m_fileSystemMap.has_copy( _fileGroupName, fileGroup ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::getFileGroup '%s' not mount"
-				, _fileSystemName.c_str()
+				, _fileGroupName.c_str()
 				);
 
 			return nullptr;
 		}
 
-		return fileSystem;
+		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _fileSystemName, const FilePath & _filename )
+	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _fileGroupName, const FilePath & _filename )
 	{
-		FileGroupInterface * group = this->getFileGroup( _fileSystemName );
+		FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
 		if( group == nullptr )
 		{
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't get group '%s'"
-                , _fileSystemName.c_str()
+                , _fileGroupName.c_str()
                 );
 
 			return nullptr;
@@ -190,7 +186,7 @@ namespace Menge
 		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't create input file '%s'"
-				, _fileSystemName.c_str()
+				, _fileGroupName.c_str()
 				);
 
 			return nullptr;
@@ -199,7 +195,7 @@ namespace Menge
 		if( group->openInputFile( _filename, nullptr, 0, file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't open input file '%s' '%s'"
-				, _fileSystemName.c_str()
+				, _fileGroupName.c_str()
 				, _filename.c_str()
 				);
 
@@ -209,14 +205,14 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterfacePtr FileEngine::openOutputFile( const ConstString & _fileSystemName, const FilePath & _filename )
+	OutputStreamInterfacePtr FileEngine::openOutputFile( const ConstString & _fileGroupName, const FilePath & _filename )
 	{
-        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
+        FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
         if( group == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't get group '%s'"
-                , _fileSystemName.c_str()
+                , _fileGroupName.c_str()
                 );
 
             return nullptr;
@@ -227,7 +223,7 @@ namespace Menge
 		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't create output file '%s'"
-				, _fileSystemName.c_str()
+				, _fileGroupName.c_str()
 				);
 
 			return nullptr;
@@ -236,7 +232,7 @@ namespace Menge
 		if( group->openOutputFile( _filename, file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't open output file '%s' '%s'"
-				, _fileSystemName.c_str()
+				, _fileGroupName.c_str()
 				, _filename.c_str()
 				);
 			
@@ -298,15 +294,15 @@ namespace Menge
 		return mappedFile;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool FileEngine::existDirectory( const ConstString& _fileSystemName, const FilePath& _path )
+    bool FileEngine::existDirectory( const ConstString& _fileGroupName, const FilePath& _path )
     {
-        TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
+        TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileGroupName );
         if( it_find == m_fileSystemMap.end() )
         {
             return false;
         }
 
-        FileGroupInterface * fileGroup = it_find->second;
+        const FileGroupInterfacePtr & fileGroup = m_fileSystemMap.get_value( it_find );
 
         if( fileGroup->existDirectory( _path ) == false )
         {
@@ -316,14 +312,14 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const FilePath & _path )
+	bool FileEngine::createDirectory( const ConstString& _fileGroupName, const FilePath & _path )
 	{
-        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
+        FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
         if( group == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::createDirectory '%s' not mount"
-				, _fileSystemName.c_str() 
+				, _fileGroupName.c_str() 
 				);
 
 			return false;
@@ -337,14 +333,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::removeDirectory( const ConstString& _fileSystemName, const FilePath & _path )
+	bool FileEngine::removeDirectory( const ConstString& _fileGroupName, const FilePath & _path )
 	{
-        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
+        FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
 		if( group == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::removeDirectory '%s' not mount"
-				, _fileSystemName.c_str() 
+				, _fileGroupName.c_str() 
 				);
 
 			return false;
@@ -358,14 +354,14 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::removeFile( const ConstString& _fileSystemName, const FilePath & _filename )
+	bool FileEngine::removeFile( const ConstString& _fileGroupName, const FilePath & _filename )
 	{
-        FileGroupInterface * group = this->getFileGroup( _fileSystemName );
+        FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
         if( group == NULL )
         {
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::removeFile '%s' not mount"
-				, _fileSystemName.c_str() 
+				, _fileGroupName.c_str() 
 				);
 
 			return false;

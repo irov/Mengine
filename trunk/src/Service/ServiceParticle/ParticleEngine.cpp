@@ -37,15 +37,15 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterfacePtr ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const FilePath & _filename )
+	ParticleEmitterContainerInterfacePtr ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _filename )
 	{
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _fileSystemName, _filename );
+			->openInputFile( _fileGroupName, _filename );
 		
 		if( file == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEngine %s can't open file %s"				
-				, _fileSystemName.c_str()
+				, _fileGroupName.c_str()
 				, _filename.c_str() 
 				);
 

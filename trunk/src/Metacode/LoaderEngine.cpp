@@ -246,9 +246,9 @@ namespace Menge
         
         FilePath path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
 
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, path_xml, nullptr, 0, nullptr ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, path_xml, nullptr ) == false )
 		{
-			if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr, 0, nullptr ) == false )
+			if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 			{
 				_exist = false;
 
@@ -270,7 +270,7 @@ namespace Menge
 
 		_exist = true;
 
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr, 0, nullptr ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 		{
 			if( this->makeBin_( _pak, path_xml, _path ) == false )
 			{
@@ -394,7 +394,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist )
 	{
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr, 0, nullptr ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 		{
 			_exist = false;
 

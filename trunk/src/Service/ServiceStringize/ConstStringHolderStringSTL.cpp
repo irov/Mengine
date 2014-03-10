@@ -17,7 +17,7 @@ namespace Menge
 		memcpy( m_buff, _value, _size );
 		m_buff[_size] = '\0';
 
-        this->setup( m_buff, _size );
+        this->setup( m_buff, _size, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderStringSTL::_releaseString()

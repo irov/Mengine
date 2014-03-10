@@ -231,16 +231,30 @@ namespace Menge
             ++it_path )
             {
                 const FilePath & path = *it_path;
-                                
+
+				Char fullPath[MAX_PATH];
+				const char * path_str = path.c_str();
+				size_t path_size = path.size();
+
+				memcpy( fullPath, path_str, path_size );
+				memcpy( fullPath + path_size, _modulePath, _modulePathLen );
+
+				size_t fullPath_size = path_size + _modulePathLen;
+				fullPath[ fullPath_size ] = 0;
+
+				ConstString c_fullPath_temp = Helper::stringizeStringExternal( m_serviceProvider, fullPath, fullPath_size );
+
 				FileGroupInterfacePtr fileGroup;
-                if( fileService->existFile( mp.pak, path, _modulePath, _modulePathLen, &fileGroup ) == false )
+                if( fileService->existFile( mp.pak, c_fullPath_temp, &fileGroup ) == false )
                 {
                     continue;
                 }
 
+				ConstString c_fullPath = Helper::stringizeStringSize( m_serviceProvider, fullPath, fullPath_size );
+
 				InputStreamInterfacePtr stream = fileGroup->createInputFile();
 
-				if( fileGroup->openInputFile( path, _modulePath, _modulePathLen, stream ) == false )
+				if( fileGroup->openInputFile( c_fullPath, stream ) == false )
 				{
 					return nullptr;
 				}

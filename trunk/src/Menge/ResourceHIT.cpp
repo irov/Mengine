@@ -141,7 +141,7 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         bool exist = FILE_SERVICE(m_serviceProvider)
-            ->existFile( category, m_path, nullptr, 0, nullptr );
+            ->existFile( category, m_path, nullptr );
 
         if( exist == false )
         {
@@ -151,7 +151,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHIT::setPath( const FilePath& _path )
+	void ResourceHIT::setPath( const FilePath & _path )
 	{
 		m_path = _path;
 

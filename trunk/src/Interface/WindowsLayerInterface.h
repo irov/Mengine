@@ -86,7 +86,7 @@ namespace Menge
         //LONG deleteRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName );
 
         virtual bool makeFormatMessage( HRESULT _hresult, WString & _out ) = 0;
-        virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, WChar * _filePath, size_t _capacity ) = 0;
+        virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity ) = 0;
     };
 
 #   define WINDOWSLAYER_SERVICE( serviceProvider )\

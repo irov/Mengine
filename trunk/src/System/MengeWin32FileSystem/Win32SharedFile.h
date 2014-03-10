@@ -20,7 +20,7 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) override;
+		bool initialize( const FilePath & _folder, const FilePath & _fileName ) override;
 
 	public:
         InputStreamInterfacePtr createFileStream() override;
@@ -30,10 +30,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
         
 		FilePath m_folder;
-		FilePath m_dir;
-
-		CHAR m_filename[MAX_PATH];
-		size_t m_filenamelen;
+		FilePath m_fileName;
 
         typedef FactoryPoolStore<Win32InputStream, 16> TFactoryWin32InputStream;
         TFactoryWin32InputStream m_factoryWin32InputStream;

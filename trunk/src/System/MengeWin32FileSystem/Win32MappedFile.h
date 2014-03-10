@@ -22,7 +22,7 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen ) override;
+		bool initialize( const FilePath & _folder, const FilePath & _fileName ) override;
 
 	public:
         InputStreamInterfacePtr createFileStream() override;

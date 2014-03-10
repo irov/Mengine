@@ -117,7 +117,7 @@ namespace Menge
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const ConstString& _fileGroupName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterfacePtr * _fileGroup ) const
+	bool FileEngine::existFile( const ConstString& _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const
 	{
 		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileGroupName );
 		if( it_find == m_fileSystemMap.end() )
@@ -127,7 +127,7 @@ namespace Menge
 		
 		const FileGroupInterfacePtr & fileGroup = m_fileSystemMap.get_value( it_find );
 
-		if( fileGroup->existFile( _dir, _filename, _filenamelen ) == false )
+		if( fileGroup->existFile( _fileName ) == false )
         {
             return false;
         }
@@ -168,7 +168,7 @@ namespace Menge
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _fileGroupName, const FilePath & _filename )
+	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
 		FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
@@ -192,11 +192,11 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( group->openInputFile( _filename, nullptr, 0, file ) == false )
+		if( group->openInputFile( _fileName, file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't open input file '%s' '%s'"
 				, _fileGroupName.c_str()
-				, _filename.c_str()
+				, _fileName.c_str()
 				);
 
 			return nullptr;
@@ -205,7 +205,7 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterfacePtr FileEngine::openOutputFile( const ConstString & _fileGroupName, const FilePath & _filename )
+	OutputStreamInterfacePtr FileEngine::openOutputFile( const ConstString & _fileGroupName, const FilePath & _fileName )
 	{
         FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
@@ -229,11 +229,11 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( group->openOutputFile( _filename, file ) == false )
+		if( group->openOutputFile( _fileName, file ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openOutputFile can't open output file '%s' '%s'"
 				, _fileGroupName.c_str()
-				, _filename.c_str()
+				, _fileName.c_str()
 				);
 			
 			return nullptr;
@@ -242,7 +242,7 @@ namespace Menge
 		return file;
 	}
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInterfacePtr FileEngine::createMappedFile( const FilePath & _foldername, const FilePath& _filename )
+    MappedFileInterfacePtr FileEngine::createMappedFile( const FilePath & _fileGroupName, const FilePath & _fileName )
     {
         MappedFileInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
             ->createMappedFile();
@@ -250,16 +250,16 @@ namespace Menge
         if( mappedFile == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't create output file '%s'"
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return nullptr;
         }
 
-        if( mappedFile->initialize( _foldername, _filename, nullptr, 0 ) == false )
+        if( mappedFile->initialize( _fileGroupName, _fileName ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't open output file '%s'"
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return nullptr;
@@ -268,7 +268,7 @@ namespace Menge
         return mappedFile;
     }
 	//////////////////////////////////////////////////////////////////////////
-	MappedFileInterfacePtr FileEngine::createSharedFile( const FilePath & _foldername, const FilePath& _filename )
+	MappedFileInterfacePtr FileEngine::createSharedFile( const FilePath & _fileGroupName, const FilePath & _fileName )
 	{
 		MappedFileInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
 			->createSharedFile();
@@ -276,16 +276,16 @@ namespace Menge
 		if( mappedFile == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't create output file '%s'"
-				, _filename.c_str()
+				, _fileName.c_str()
 				);
 
 			return nullptr;
 		}
 
-		if( mappedFile->initialize( _foldername, _filename, nullptr, 0 ) == false )
+		if( mappedFile->initialize( _fileGroupName, _fileName ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't open output file '%s'"
-				, _filename.c_str()
+				, _fileName.c_str()
 				);
 
 			return nullptr;
@@ -354,7 +354,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::removeFile( const ConstString& _fileGroupName, const FilePath & _filename )
+	bool FileEngine::removeFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
         FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
@@ -367,7 +367,7 @@ namespace Menge
 			return false;
 		}
 		
-		if( group->removeFile( _filename ) == false )
+		if( group->removeFile( _fileName ) == false )
         {
             return false;
         }

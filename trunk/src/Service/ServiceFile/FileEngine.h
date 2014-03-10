@@ -31,15 +31,15 @@ namespace Menge
         FileGroupInterfacePtr getFileGroup( const ConstString& _fileGroupName ) const override;
         
     public:
-		bool existFile( const ConstString& _fileGroupName, const FilePath& _dir, const char * _filename, size_t _filenamelen, FileGroupInterfacePtr * _fileGroup ) const override;
+		bool existFile( const ConstString& _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const override;
 
 	public:
-		InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath& _filename ) override;
-		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _filename ) override;
+		InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
+		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
         
     public:
-        MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _filename ) override;
-		MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _filename ) override;
+        MappedFileInterfacePtr createMappedFile( const FilePath & _fileGroupName, const FilePath& _fileName ) override;
+		MappedFileInterfacePtr createSharedFile( const FilePath & _fileGroupName, const FilePath& _fileName ) override;
         
 	public:
         bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const override;

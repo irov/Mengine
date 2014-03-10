@@ -28,15 +28,15 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32OutputStream::open( const FilePath & _folder, const FilePath& _filename )
+	bool Win32OutputStream::open( const FilePath & _folder, const FilePath& _fileName )
 	{        
         WChar filePath[MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, ConstString::none(), _filename.c_str(), _filename.size(), filePath, MAX_PATH ) == false )
+			->concatenateFilePath( _folder, _fileName, filePath, MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folder.c_str()
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return false;

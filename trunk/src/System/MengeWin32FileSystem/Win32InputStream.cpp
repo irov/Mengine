@@ -38,10 +38,10 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::openRange( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, size_t _offset, size_t _size )
+	bool Win32InputStream::openRange( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
 	{
 		WChar filePath[MAX_PATH];
-		if( this->openFile_( _folder, _dir, _filename, _filenamelen, filePath ) == false )
+		if( this->openFile_( _folder, _fileName, filePath ) == false )
 		{
 			return false;
 		}
@@ -68,10 +68,10 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
+	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _fileName )
 	{
 		WChar filePath[MAX_PATH];
-		if( this->openFile_( _folder, _dir, _filename, _filenamelen, filePath ) == false )
+		if( this->openFile_( _folder, _fileName, filePath ) == false )
 		{
 			return false;
 		}
@@ -95,14 +95,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::openFile_( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen, WChar * _filePath )
+	bool Win32InputStream::openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath )
 	{		
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _dir, _filename, _filenamelen, _filePath, MAX_PATH ) == false )
+			->concatenateFilePath( _folder, _fileName, _filePath, MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
 				, _folder.c_str()
-				, _dir.c_str()
+				, _fileName.c_str()
 				);
 
 			return false;

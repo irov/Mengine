@@ -469,7 +469,7 @@ namespace Menge
 			//float length_ms = source->source->getLengthMs();
 			//float pos_ms = source->source->getPosMs();
 
-			if( /*fabsf(length_ms - pos_ms) < 0.0001f || */source->timing <= 0.f )
+			if( (source->worker != nullptr && source->worker->isDone() == true) || source->timing <= 0.f )
 			{
 				source->state = ESS_STOP;
 				this->stopSoundBufferUpdate_( source );

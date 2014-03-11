@@ -16,6 +16,7 @@
 #	include <boost/geometry/geometries/polygon.hpp>
 #	include <boost/geometry/geometries/box.hpp>
 #	include <boost/geometry/geometries/point_xy.hpp>
+#	include <boost/geometry/geometries/segment.hpp>
 
 #	include <boost/geometry/strategies/agnostic/point_in_poly_winding.hpp>
 
@@ -78,6 +79,7 @@ namespace Menge
 	typedef boost::geometry::model::d2::point_xy<float> GeometryPoint;
     typedef boost::geometry::model::polygon<mt::vec2f> Polygon;
     typedef boost::geometry::model::box<mt::vec2f> Box;
+	typedef boost::geometry::model::segment<mt::vec2f> Segment;
 
     bool triangulate_polygon( const Polygon & _polygon, TVectorPoints & _result );
     bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result );

@@ -78,7 +78,7 @@ namespace Menge
 
 		s_enlargePolygonFromLow( big_polygon, m_unitSize );		
 
-		if( this->testHoles_( big_polygon ) == true )
+		if( this->testHolesPolygon_( big_polygon ) == true )
 		{
 			return 0;
 		}
@@ -117,7 +117,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderMap::testHoles_( const Polygon & _polygon ) const
+	bool PathFinderMap::testHolesPolygon_( const Polygon & _polygon ) const
 	{
 		for( TObstacles::const_iterator
 			it = m_obstales.begin(),
@@ -236,13 +236,6 @@ namespace Menge
 		}
 		
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static float s_makePointDeterm( float x1, float y1, float x2, float y2, float x3, float y3 )
-	{
-		float D = (x3 - x1) * (y1 - y2) - (y3 - y1) * (x2 - x1);
-
-		return D;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_existPointInTriangle( p2t::Triangle * _tr, const mt::vec2f & _point )
@@ -365,6 +358,19 @@ namespace Menge
 		s_slitherPath( minimalNeighbor, _p0, _p1, _p2, _wp );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const
+	{
+		Polygon way_polygon;
+		boost::geometry::append( way_polygon, _p0 );
+		boost::geometry::append( way_polygon, _p1 );
+
+		boost::geometry::correct( way_polygon );
+
+		bool test = this->testHolesPolygon_( way_polygon );
+
+		return test;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways )
 	{
 		size_t wayCount = _ways.size();
@@ -386,19 +392,21 @@ namespace Menge
 			{
 				const mt::vec2f & p1 = _ways[j];
 
-				mt::vec2f dir;
-				mt::norm_v2( dir, p1 - p0 );
+				//mt::vec2f dir;
+				//mt::norm_v2( dir, p1 - p0 );
 
-				mt::vec2f perp;
-				mt::perp_left_v2( perp, dir );
+				//mt::vec2f perp;
+				//mt::perp_left_v2( perp, dir );
 
-				perp *= m_unitSize * 0.25f;
+				//Segment segment(p1, p0);
+
+				//perp *= m_unitSize * 0.25f;
 
 				Polygon way_polygon;
-				boost::geometry::append( way_polygon, p0 + perp );
-				boost::geometry::append( way_polygon, p1 + perp );
-				boost::geometry::append( way_polygon, p1 - perp );
-				boost::geometry::append( way_polygon, p0 - perp );
+				boost::geometry::append( way_polygon, p0 );
+				boost::geometry::append( way_polygon, p1 );
+				//boost::geometry::append( way_polygon, p1 - perp );
+				//boost::geometry::append( way_polygon, p0 - perp );
 
 				boost::geometry::correct( way_polygon );
 
@@ -459,6 +467,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
+		if( this->testHolesSegment_( _from, _to ) == false )
+		{
+			TVectorWayPoint wayPoints;
+
+			wayPoints.push_back( _from );
+			wayPoints.push_back( _to );
+
+			PathFinderWay * way = new PathFinderWay(m_serviceProvider);
+
+			way->initialize( _from, _to, wayPoints );
+
+			m_pathFinderWays.push_back( way );
+
+			return way;
+		}
+
 		Triangles & triangles = m_sweepContext->GetTriangles();
 		
 		p2t::Triangle * tr_from = s_findTriangle( triangles, _from );
@@ -507,7 +531,6 @@ namespace Menge
 		TVectorWayPoint wayPointsFilters;
 		this->filterWayPoints_( wayPointsFilters, wayPointsFilters1 );
 		
-
 		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
 
 		way->initialize( _from, _to, wayPointsFilters );

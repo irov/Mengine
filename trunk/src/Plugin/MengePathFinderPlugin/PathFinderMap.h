@@ -52,7 +52,8 @@ namespace Menge
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
 
 	protected:
-		bool testHoles_( const Polygon & _polygon ) const;
+		bool testHolesPolygon_( const Polygon & _polygon ) const;
+		bool testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const;
 		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
 
 	protected:

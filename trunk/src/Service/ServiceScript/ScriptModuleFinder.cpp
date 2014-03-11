@@ -242,10 +242,11 @@ namespace Menge
 				size_t fullPath_size = path_size + _modulePathLen;
 				fullPath[ fullPath_size ] = 0;
 
-				ConstString c_fullPath_temp = Helper::stringizeStringExternal( m_serviceProvider, fullPath, fullPath_size );
+				ConstStringHolderLocal holder_fullPath_local( fullPath, fullPath_size );
+				ConstString c_fullPath_local(&holder_fullPath_local);
 
 				FileGroupInterfacePtr fileGroup;
-                if( fileService->existFile( mp.pak, c_fullPath_temp, &fileGroup ) == false )
+                if( fileService->existFile( mp.pak, c_fullPath_local, &fileGroup ) == false )
                 {
                     continue;
                 }

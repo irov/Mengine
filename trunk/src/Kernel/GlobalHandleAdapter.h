@@ -24,16 +24,16 @@ namespace Menge
 		void setEventListener( PyObject * _listener );
 
 	public:
-		void activateGlobalHandle();
-		void deactivateGlobalHandle();
+		bool activateGlobalHandle();
+		bool deactivateGlobalHandle();
 
 	public:
-		void enableGlobalMouseEvent( bool _value );
-		void enableGlobalKeyEvent( bool _value );
+		bool enableGlobalMouseEvent( bool _value );
+		bool enableGlobalKeyEvent( bool _value );
 
 	protected:
-		void applyGlobalMouseEvent_( bool _value );
-		void applyGlobalKeyEvent_( bool _value );
+		bool applyGlobalMouseEvent_( bool _value );
+		bool applyGlobalKeyEvent_( bool _value );
 
 	public:
 		void handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;

@@ -27,63 +27,93 @@ namespace Menge
 		eventable->registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::activateGlobalHandle()
+	bool GlobalHandleAdapter::activateGlobalHandle()
 	{
 		if( m_globalKeyEvent == true )
 		{
-			this->applyGlobalKeyEvent_( true );
+			if( this->applyGlobalKeyEvent_( true ) == false )
+			{
+				return false;
+			}
 		}
 
 		if( m_globalMouseEvent == true )
 		{
-			this->applyGlobalMouseEvent_( true );
+			if( this->applyGlobalMouseEvent_( true ) == false )
+			{
+				return false;
+			}
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::deactivateGlobalHandle()
+	bool GlobalHandleAdapter::deactivateGlobalHandle()
 	{
 		if( m_globalKeyEvent == true )
 		{
-			this->applyGlobalKeyEvent_( false );
+			if( this->applyGlobalKeyEvent_( false ) == false )
+			{
+				return false;
+			}
 		}
 
 		if( m_globalMouseEvent == true )
 		{
-			this->applyGlobalMouseEvent_( false );
+			if( this->applyGlobalMouseEvent_( false ) == false )
+			{
+				return false;
+			}
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::enableGlobalMouseEvent( bool _value )
+	bool GlobalHandleAdapter::enableGlobalMouseEvent( bool _value )
 	{
 		if( m_globalMouseEvent == _value )
 		{
-			return;
+			return true;
 		}
 
-		m_globalMouseEvent = _value; 
+		m_globalMouseEvent = _value;
 
-		if( this->isEnableGlobalHandle() )
+		bool enable = this->isEnableGlobalHandle();
+
+		if( enable == true )
 		{
-			this->applyGlobalMouseEvent_( m_globalMouseEvent );
+			if( this->applyGlobalMouseEvent_( m_globalMouseEvent ) == false )
+			{
+				return false;
+			}
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::enableGlobalKeyEvent( bool _value )
+	bool GlobalHandleAdapter::enableGlobalKeyEvent( bool _value )
 	{
 		if( m_globalKeyEvent == _value )
 		{
-			return;
+			return true;
 		}
 
 		m_globalKeyEvent = _value;
 
-		if( this->isEnableGlobalHandle() == true )
+		bool enable = this->isEnableGlobalHandle();
+
+		if( enable == true )
 		{
-			this->applyGlobalKeyEvent_( m_globalKeyEvent );
+			if( this->applyGlobalKeyEvent_( m_globalKeyEvent ) == false )
+			{
+				return false;
+			}
 		}
+
+		return true;			 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::applyGlobalMouseEvent_( bool _value )
+	bool GlobalHandleAdapter::applyGlobalMouseEvent_( bool _value )
 	{
         GlobalHandleSystemInterface * globalHandleSystem = 
             this->getGlobalHandleSystem();
@@ -91,17 +121,27 @@ namespace Menge
 		if( _value == true )
 		{
 			m_globalMouseId = globalHandleSystem->addGlobalMouseEventable( this );
+
+			if( m_globalMouseId == 0 )
+			{
+				return false;
+			}
 		}
 		else
 		{
 			GlobalMouseHandler * handler = globalHandleSystem->removeGlobalMouseEventable( m_globalMouseId );
-            (void)handler;
-
-            m_globalMouseId = 0;
+			m_globalMouseId = 0;
+            
+			if( handler == nullptr )
+			{
+				return false;
+			}            
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::applyGlobalKeyEvent_( bool _value )
+	bool GlobalHandleAdapter::applyGlobalKeyEvent_( bool _value )
 	{
         GlobalHandleSystemInterface * globalHandleSystem = 
             this->getGlobalHandleSystem();
@@ -109,14 +149,24 @@ namespace Menge
 		if( _value == true )
 		{
 			m_globalKeyId = globalHandleSystem->addGlobalKeyEventable( this );
+
+			if( m_globalKeyId == 0 )
+			{
+				return false;
+			}
 		}
 		else
 		{
 			GlobalKeyHandler * handler = globalHandleSystem->removeGlobalKeyEventable( m_globalKeyId );
-            (void)handler;
-
             m_globalKeyId = 0;
+
+			if( handler == nullptr )
+			{
+				return false;
+			}
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleAdapter::handleGlobalMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )

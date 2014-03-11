@@ -151,18 +151,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
-		if( m_active == false )
+		if( m_afterActive == false || m_active == false )
 		{
 			return;
 		}
+
+		m_afterActive = false;
 
         this->setShallowGrave();
 
 		m_cameraRevision = 0;
 
 		this->_deactivate();
-
-		m_afterActive = false;
 
 		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
 		{
@@ -173,14 +173,9 @@ namespace Menge
 
 		m_active = false;
 
-        this->updateRendering_();
-
-		//if( this->isCompile() == true )
-		//{
-		//	this->release();
-		//}
-
 		this->_afterDeactivate();		
+
+		this->updateRendering_();
 
 		this->removeShallowGrave();
 	}
@@ -679,7 +674,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
 	{
-		GlobalHandleAdapter::activateGlobalHandle();
+		if( GlobalHandleAdapter::activateGlobalHandle() == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -694,7 +692,13 @@ namespace Menge
 		Affectorable::stopAllAffectors();
 		//Affectorable::clear();
 
-		GlobalHandleAdapter::deactivateGlobalHandle();
+		if( GlobalHandleAdapter::deactivateGlobalHandle() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Node::_deactivate %s:%s invalid deactivate global handle"
+				, this->getType().c_str()
+				, this->getName().c_str()
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_afterDeactivate()

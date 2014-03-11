@@ -32,7 +32,9 @@ namespace Menge
 	{
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PREPARATION)("()");
 
-		return Node::_activate();
+		bool successful = Node::_activate();
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterActivate()

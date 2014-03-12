@@ -81,6 +81,8 @@ namespace Menge
     typedef boost::geometry::model::box<mt::vec2f> Box;
 	typedef boost::geometry::model::segment<mt::vec2f> Segment;
 
+	typedef std::vector<Polygon> TVectorPolygon;
+
     bool triangulate_polygon( const Polygon & _polygon, TVectorPoints & _result );
     bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result );
 	

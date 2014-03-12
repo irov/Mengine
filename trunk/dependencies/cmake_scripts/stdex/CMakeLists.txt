@@ -11,6 +11,7 @@ ${SOURCE_DIR}/src/memory_cache.cpp
 ${SOURCE_DIR}/src/const_string.cpp
 ${SOURCE_DIR}/src/const_string_holder.cpp
 ${SOURCE_DIR}/src/const_string_holder_none.cpp
+${SOURCE_DIR}/src/const_string_holder_local.cpp
 ${SOURCE_DIR}/src/xml_sax_parser.cpp
 ${SOURCE_DIR}/src/ini.cpp
 )

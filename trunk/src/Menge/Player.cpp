@@ -1247,8 +1247,6 @@ namespace Menge
 
 			    PROTOTYPE_SERVICE(m_serviceProvider)
 				    ->visitGenerators( &pfmv );
-
-                ss << "Entities: " << Entity::s_enum << std::endl;
             }
 			else if( m_showDebugText == 4 )
             {

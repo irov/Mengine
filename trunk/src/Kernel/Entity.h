@@ -13,8 +13,6 @@ namespace Menge
         Entity();
         ~Entity();
 
-        static size_t s_enum;
-
 	public:
 		void setPrototype( const ConstString & _prototype );
 		const ConstString & getPrototype() const;

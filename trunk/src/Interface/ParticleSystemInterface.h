@@ -152,7 +152,7 @@ namespace Menge
 		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const void * _buffer ) = 0;
 		
 	public:
-        virtual bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
+        virtual bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM( serviceProvider )\
@@ -164,7 +164,7 @@ namespace Menge
         SERVICE_DECLARE("ParticleService")
 
     public:
-        virtual bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
+        virtual bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
         virtual size_t renderParticlesCount( size_t _count ) = 0;
 
         virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _filename ) = 0;

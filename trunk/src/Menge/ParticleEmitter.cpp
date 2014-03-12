@@ -37,8 +37,13 @@
 namespace	Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static const size_t maxParticleCount = 2000;
-    static const size_t maxMeshCount = 100;
+#	ifndef MENGINE_PARTICLE_MAX_COUNT
+#	define MENGINE_PARTICLE_MAX_COUNT 2000
+#	endif
+	//////////////////////////////////////////////////////////////////////////
+#	ifndef MENGINE_PARTICLE_MAX_MESH
+#	define MENGINE_PARTICLE_MAX_MESH 100
+#	endif MENGINE_PARTICLE_MAX_MESH
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::ParticleEmitter()
 		: m_emitter(nullptr)
@@ -395,8 +400,8 @@ namespace	Menge
 
 		ARGB color_argb = color.getAsARGB();
 
-        static ParticleVertices s_particles[maxParticleCount];
-		static ParticleMesh s_meshes[maxMeshCount];
+        ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
+		ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
 		//s_particles.clear();
 		//s_meshes.clear();
 
@@ -424,7 +429,7 @@ namespace	Menge
 		ParticleEmitterRenderFlush flush;
 
 		if( PARTICLE_SERVICE(m_serviceProvider)
-			->flushEmitter( viewMatrix, m_emitter, s_meshes, s_particles, maxParticleCount, flush ) == false )
+			->flushEmitter( viewMatrix, m_emitter, s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
 		{
 			return false;
 		}

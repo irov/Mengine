@@ -307,13 +307,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::keyEvent_( const KeyEventParams& _params )
 	{
+		bool repeating = ( m_keyBuffer[_params.key] == true && _params.isDown == true );
+		
 		m_keyBuffer[_params.key] = _params.isDown;
 
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onKeyEvent( point, _params.key, _params.character, _params.isDown );
+			->onKeyEvent( point, _params.key, _params.character, _params.isDown, repeating );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseButtonEvent_( const MouseButtonParams & _params )

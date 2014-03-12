@@ -113,18 +113,19 @@ namespace Menge
         return m_player;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	bool Game::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
 			EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY)( handle, false, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY2)( handle, false, "(IIOO)", _key, _char, pybind::get_bool(_isDown), pybind::get_bool(_repeating) );
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleKeyEvent( _point, _key, _char, _isDown );
+			handle = m_player->handleKeyEvent( _point, _key, _char, _isDown, _repeating );
 		}	
 
 		return handle;
@@ -137,6 +138,7 @@ namespace Menge
 		if( handle == false )
 		{
 			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON2)( handle, false, "(IffIO)", _touchId, _point.x, _point.y, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( handle == false )
@@ -257,7 +259,9 @@ namespace Menge
         this->registerEvent( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
 
         this->registerEvent( EVENT_KEY, "onHandleKeyEvent", _embed );
+		this->registerEvent( EVENT_KEY2, "onHandleKeyEvent2", _embed );
         this->registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
+		this->registerEvent( EVENT_MOUSE_BUTTON2, "onHandleMouseButtonEvent2", _embed );
         this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
         this->registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
         this->registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );

@@ -246,7 +246,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
 		m_states.clear();
 		if( this->proccesTraps_( _point, m_states ) == false )
@@ -269,7 +269,7 @@ namespace Menge
 				
 			MousePickerTrapInterface * trap = state->trap;
 
-			if( trap->handleKeyEvent( _point, _key, _char, _isDown ) == false )
+			if( trap->handleKeyEvent( _point, _key, _char, _isDown, _repeating ) == false )
 			{
 				continue;
 			}

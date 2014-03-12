@@ -31,8 +31,9 @@ namespace Menge
         Eventable * eventable = this->getPickerEventable();
 
 		eventable->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
+		eventable->registerEvent( EVENT_KEY2, ("onHandleKeyEvent2"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
-		eventable->registerEvent( EVENT_MOUSE_BUTTON_POSITION, ("onHandleMouseButtonEventPosition"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_BUTTON2, ("onHandleMouseButtonEvent2"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
@@ -111,7 +112,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	bool MousePickerAdapter::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
         (void)_point; //TODO
 
@@ -122,6 +123,7 @@ namespace Menge
             Eventable * eventable = this->getPickerEventable();
 
 			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_KEY)( handle, m_defaultHandle, "(OIIO)", this->getPickerEmbed(), _key, _char, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_KEY2)( handle, m_defaultHandle, "(OIIOO)", this->getPickerEmbed(), _key, _char, pybind::get_bool(_isDown), pybind::get_bool(_repeating) );
 		}
 
 		return handle;
@@ -144,7 +146,7 @@ namespace Menge
 				, pybind::get_bool(_isDown) 
 				);
 
-			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_BUTTON_POSITION)( handle, m_defaultHandle, "(OIffIO)"
+			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_BUTTON2)( handle, m_defaultHandle, "(OIffIO)"
 				, this->getPickerEmbed()
 				, _touchId
 				, _point.x

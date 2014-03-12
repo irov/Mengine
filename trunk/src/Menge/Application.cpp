@@ -899,7 +899,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
 		if( m_console != NULL )
 		{
@@ -1049,7 +1049,9 @@ namespace Menge
             }
 		}
 
-		return m_game->handleKeyEvent( _point, _key, _char, _isDown );
+		bool handle = m_game->handleKeyEvent( _point, _key, _char, _isDown, _repeating );
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )

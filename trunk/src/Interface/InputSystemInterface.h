@@ -242,7 +242,7 @@ namespace Menge
 	class InputSystemHandler
 	{
 	public:
-		virtual bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+		virtual bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) = 0;
 
 	public:
 		virtual bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
@@ -263,7 +263,7 @@ namespace Menge
     class GlobalKeyHandler
     {
     public:
-        virtual void handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+        virtual void handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) = 0;
     };
 
 	class InputMousePositionProvider

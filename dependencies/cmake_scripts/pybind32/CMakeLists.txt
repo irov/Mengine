@@ -5,7 +5,7 @@ project(pybind32)
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind )
 
 # OUR SOURCES
-set( pybind32_sources
+set( sources
 ${SOURCE_DIR}/src/class_core.cpp
 ${SOURCE_DIR}/src/class_info.cpp
 ${SOURCE_DIR}/src/class_type_scope.cpp
@@ -20,6 +20,7 @@ ${SOURCE_DIR}/src/member_type.cpp
 ${SOURCE_DIR}/src/method_type.cpp
 ${SOURCE_DIR}/src/system.cpp
 ${SOURCE_DIR}/src/type_cast.cpp
+${SOURCE_DIR}/src/stl_type_cast.cpp
 )
 
 if(NOT MSVC)
@@ -35,10 +36,9 @@ include_directories(${SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python32)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
-
 IF(WIN32)
     include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32/PC)
 ENDIF(WIN32)
 
-add_library( ${PROJECT_NAME}_static STATIC ${pybind32_sources} )
+add_library( ${PROJECT_NAME}_static STATIC ${sources} )
 

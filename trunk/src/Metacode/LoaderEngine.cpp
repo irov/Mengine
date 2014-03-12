@@ -80,23 +80,21 @@ namespace Menge
 		if( reimport == true )
 		{
             file_bin = nullptr;
+			
+			PathString cache_path_xml;
+			
+			cache_path_xml += _path;
+			
+			cache_path_xml.replace_last( "xml" );
 
-            static String cache_path_xml;
-            
-            cache_path_xml.assign( _path.c_str(), _path.size() );
-
-            FilePath::size_type size = cache_path_xml.size();
-            cache_path_xml[size-3] = L'x';
-            cache_path_xml[size-2] = L'm';
-            cache_path_xml[size-1] = L'l';
-
-            FilePath path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
-
-			if( this->makeBin_( _pak, path_xml, _path ) == false )
+			ConstStringHolderLocal holder_path_xml_local( cache_path_xml.c_str(), cache_path_xml.size() );
+			ConstString c_path_xml_local(&holder_path_xml_local);
+			
+			if( this->makeBin_( _pak, c_path_xml_local, _path ) == false )
 			{
                 LOGGER_ERROR(m_serviceProvider)("LoaderEngine::import invlid rebild bin %s from xml %s"
                     , _path.c_str()
-                    , path_xml.c_str()
+                    , c_path_xml_local.c_str()
                     );
 
 				return false;
@@ -235,18 +233,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist )
 	{
-		static String cache_path_xml;
-        
-        cache_path_xml.assign( _path.c_str(), _path.size() );
+		PathString cache_path_xml;
+		
+		cache_path_xml += _path;
+		cache_path_xml.replace_last( "xml" );
 
-        FilePath::size_type size = cache_path_xml.size();
-        cache_path_xml[size-3] = L'x';
-        cache_path_xml[size-2] = L'm';
-        cache_path_xml[size-1] = L'l';
+		ConstStringHolderLocal holder_path_xml_local( cache_path_xml.c_str(), cache_path_xml.size() );
+		ConstString c_path_xml_local(&holder_path_xml_local);
         
-        FilePath path_xml = Helper::stringizeString( m_serviceProvider, cache_path_xml );
-
-		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, path_xml, nullptr ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, c_path_xml_local, nullptr ) == false )
 		{
 			if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 			{
@@ -272,7 +267,7 @@ namespace Menge
 
 		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, _path, nullptr ) == false )
 		{
-			if( this->makeBin_( _pak, path_xml, _path ) == false )
+			if( this->makeBin_( _pak, c_path_xml_local, _path ) == false )
 			{
 				_file = nullptr;
 
@@ -289,7 +284,7 @@ namespace Menge
 		}
 
 		InputStreamInterfacePtr file_xml = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, path_xml );
+            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, c_path_xml_local );
 
 		if( file_xml == nullptr )
 		{
@@ -309,7 +304,7 @@ namespace Menge
 			//Rebild bin file from xml
             file_bin = nullptr;
 
-			if( this->makeBin_( _pak, path_xml, _path ) == false )
+			if( this->makeBin_( _pak, c_path_xml_local, _path ) == false )
 			{
 				_file = nullptr;
 

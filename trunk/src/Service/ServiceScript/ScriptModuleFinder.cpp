@@ -232,17 +232,12 @@ namespace Menge
             {
                 const FilePath & path = *it_path;
 
-				Char fullPath[MAX_PATH];
-				const char * path_str = path.c_str();
-				size_t path_size = path.size();
+				PathString fullPath;
 
-				memcpy( fullPath, path_str, path_size );
-				memcpy( fullPath + path_size, _modulePath, _modulePathLen );
+				fullPath += path;
+				fullPath.append( _modulePath, _modulePathLen );
 
-				size_t fullPath_size = path_size + _modulePathLen;
-				fullPath[ fullPath_size ] = 0;
-
-				ConstStringHolderLocal holder_fullPath_local( fullPath, fullPath_size );
+				ConstStringHolderLocal holder_fullPath_local( fullPath.c_str(), fullPath.size() );
 				ConstString c_fullPath_local(&holder_fullPath_local);
 
 				FileGroupInterfacePtr fileGroup;
@@ -251,7 +246,7 @@ namespace Menge
                     continue;
                 }
 
-				ConstString c_fullPath = Helper::stringizeStringSize( m_serviceProvider, fullPath, fullPath_size );
+				ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, fullPath );
 
 				InputStreamInterfacePtr stream = fileGroup->createInputFile();
 

@@ -1089,7 +1089,7 @@ namespace Menge
             const RenderTextureInterfacePtr & texture = resource->getTexture();
 
             RENDERTEXTURE_SERVICE(m_serviceProvider)
-                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), Helper::stringizeString(m_serviceProvider, "pngImage"), _filename );
+                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), Helper::stringizeStringSize(m_serviceProvider, "pngImage"), _filename );
         }
         //////////////////////////////////////////////////////////////////////////
         void setParticlesEnabled( bool _enabled )

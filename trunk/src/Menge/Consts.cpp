@@ -25,7 +25,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Consts::initialize()
     {
-#	define INIT_CONST( Const ) c_##Const = Helper::stringizeString(m_serviceProvider, #Const )
+#	define INIT_CONST( Const ) \
+		c_##Const = Helper::stringizeStringSize(m_serviceProvider, #Const )
 
         INIT_CONST( dir );
         INIT_CONST( pak );

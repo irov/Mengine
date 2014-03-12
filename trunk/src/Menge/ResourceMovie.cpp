@@ -560,12 +560,13 @@ namespace Menge
 		if( m_converter.empty() == false )
 		{
 			//FIX THIS
-			String xml_path = m_path.c_str();
-			xml_path[ xml_path.size() - 3 ] = 'x';
-			xml_path[ xml_path.size() - 2 ] = 'm';
-			xml_path[ xml_path.size() - 1 ] = 'l';
 
-			ConstString c_xml_path = Helper::stringizeString(m_serviceProvider, xml_path);
+			PathString xml_path;
+			
+			xml_path += m_path;
+			xml_path.replace_last( "xml" );
+
+			ConstString c_xml_path = Helper::stringizeString( m_serviceProvider, xml_path );
 
 			if( CONVERTER_SERVICE(m_serviceProvider)
 				->convert( m_converter, m_category, c_xml_path, m_path ) == false )

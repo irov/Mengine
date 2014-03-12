@@ -324,7 +324,7 @@ namespace Menge
 
 #	define NODE_FACTORY( serviceProvider, Type )\
         PROTOTYPE_SERVICE(serviceProvider)\
-            ->addPrototype( CONST_STRING(serviceProvider, Node), Helper::stringizeString( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
+            ->addPrototype( CONST_STRING(serviceProvider, Node), Helper::stringizeStringSize( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
 
 		LOGGER_ERROR(m_serviceProvider)("Creating Object Factory..." );
 
@@ -399,7 +399,7 @@ namespace Menge
 
         SERVICE_REGISTRY( m_serviceProvider, loaderService );
 
-		if( loaderService->initialize( Helper::stringizeString(m_serviceProvider, "protocol.xml") ) == false )
+		if( loaderService->initialize( Helper::stringizeStringSize(m_serviceProvider, "protocol.xml") ) == false )
 		{
 			return false;
 		}
@@ -621,7 +621,7 @@ namespace Menge
 
 
 #	define RESOURCE_FACTORY( serviceProvider, Type ) \
-    PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), Helper::stringizeString(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
+    PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), Helper::stringizeStringSize(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
 
@@ -848,7 +848,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeGame( const TMapParams & _params, const String & _scriptInitParams )
 	{
-		FilePath accountPath = Helper::stringizeString( m_serviceProvider, "accounts.ini" );
+		FilePath accountPath = Helper::stringizeStringSize( m_serviceProvider, "accounts.ini" );
 
 		if( m_game->initialize( accountPath, m_projectVersion, _params ) == false )
 		{
@@ -1787,7 +1787,7 @@ namespace Menge
 			return Utils::emptyConstString();
 		}
 
-        ConstString key = Helper::stringizeString(m_serviceProvider, "APPLICATION_TITLE");
+        ConstString key = Helper::stringizeStringSize(m_serviceProvider, "APPLICATION_TITLE");
 
         TextEntryInterfacePtr entry;
 		if( TEXT_SERVICE(m_serviceProvider)->existText( key, &entry ) == false )

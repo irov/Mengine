@@ -124,7 +124,7 @@ namespace Menge
 
 #   define DEF_CONST_STRING( serviceProvider, S )\
         {\
-        ConstString cstr = Helper::stringizeString(serviceProvider, S);\
+        ConstString cstr = Helper::stringizeStringSize(serviceProvider, S);\
         PyObject * py_obj = pybind::ptr( cstr );\
         pybind::set_attr( py_dc, S, py_obj );\
         }

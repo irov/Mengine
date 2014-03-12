@@ -72,7 +72,7 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleSystem::handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	void GlobalHandleSystem::handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
         for( TVectorGlobalKeyHandler::size_type
             it = 0,
@@ -87,7 +87,7 @@ namespace Menge
                 continue;
             }
 
-            desc.handler->handleGlobalKeyEvent( _point, _key, _char, _isDown );
+            desc.handler->handleGlobalKeyEvent( _point, _key, _char, _isDown, _repeating );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

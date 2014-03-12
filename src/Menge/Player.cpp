@@ -673,20 +673,20 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	bool Player::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
 		bool handler = false;
 
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleGlobalKeyEvent( _point, _key, _char, _isDown );			
+			m_globalHandleSystem->handleGlobalKeyEvent( _point, _key, _char, _isDown, _repeating );			
 		}
 
 		if( m_mousePickerSystem )
 		{
 			if( handler == false )
 			{
-				handler = m_mousePickerSystem->handleKeyEvent( _point, _key, _char, _isDown );
+				handler = m_mousePickerSystem->handleKeyEvent( _point, _key, _char, _isDown, _repeating );
 			}
 		}
 

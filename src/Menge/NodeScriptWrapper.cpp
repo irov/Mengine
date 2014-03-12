@@ -2869,9 +2869,10 @@ namespace Menge
 			}
 
 		protected:
-			void handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override
+			void handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override
 			{				
 				(void)_point;
+				(void)_repeating;
 
 				PyObject * py_handler = m_cb;
 

@@ -1792,6 +1792,37 @@ namespace Menge
 
 			return 0;
 		}
+		typedef std::vector<HotSpot *> TVectorHotSpot;
+		//////////////////////////////////////////////////////////////////////////
+		Polygon s_hotspotCorrect( HotSpot * _base, const TVectorHotSpot & _overlap )
+		{
+			const Polygon & base_polygon = _base->getPolygon();
+
+			Polygon correct_polygon;
+
+			for( TVectorHotSpot::const_iterator
+				it = _overlap.begin(),
+				it_end = _overlap.end();
+			it != it_end;
+			++it )
+			{
+				const HotSpot * overlap_hotspot = *it;
+
+				const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
+
+				std::deque<Menge::Polygon> output;
+				boost::geometry::intersection( correct_polygon, overlap_polygon, output );
+
+				if( output.empty() == true )
+				{
+					return Polygon();
+				}
+
+				correct_polygon = output[0];
+			}
+
+			return correct_polygon;
+		}
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & s_getCursorPosition()
         {
@@ -3509,8 +3540,10 @@ namespace Menge
         
         pybind::registration_type_cast<TBlobject>( new extract_TBlobject_type );
 
-		pybind::registration_type_cast<TVectorResourceImage>( new pybind::extract_stl_vector_type<ResourceImage *> );
-        pybind::registration_type_cast<TMapParams>( new pybind::extract_stl_map_type<ConstString, WString> );
+		pybind::registration_stl_vector_type_cast<ResourceImage *>();
+		pybind::registration_stl_vector_type_cast<HotSpot *>();
+		
+        pybind::registration_stl_map_type_cast<ConstString, WString>();
 
         classWrapping( _serviceProvider );
 
@@ -4424,6 +4457,8 @@ namespace Menge
 			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
 
 			pybind::def_functor( "rotateToIsometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
+
+			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );
         }
     }
 }

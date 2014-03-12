@@ -10,5 +10,5 @@ namespace Menge
     typedef stdex::const_string ConstString;
 	typedef stdex::const_string_holder_local ConstStringHolderLocal;
 
-	typedef std::vector<ConstString> TVectorConstString;
+	typedef std::vector<ConstString> TVectorConstString;		
 } 

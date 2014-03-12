@@ -3,6 +3,7 @@
 #	include "Interface/ServiceInterface.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/FilePath.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
@@ -42,6 +43,13 @@ namespace Menge
 
             return cstr;
         }
+		//////////////////////////////////////////////////////////////////////////
+		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const char * _value )
+		{
+			ConstString cstr = stringizeStringSize( _serviceProvider, _value, (size_t)-1 );
+
+			return cstr;
+		}
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const String & _value )
         {
@@ -49,6 +57,13 @@ namespace Menge
 
             return cstr;
         }
+		//////////////////////////////////////////////////////////////////////////
+		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const PathString & _value )
+		{
+			ConstString cstr = stringizeStringSize( _serviceProvider, _value.c_str(), _value.size() );
+
+			return cstr;
+		}
     }
 }
 

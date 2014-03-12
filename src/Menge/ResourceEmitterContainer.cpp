@@ -190,10 +190,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ConstString ResourceEmitterContainer::makeTexturePath_( const FilePath & _filepath ) const
     {        
-        static String cache_path;
-        cache_path.assign( m_folder.c_str(), m_folder.size() );
-        cache_path += MENGE_FOLDER_RESOURCE_DELIM;
-        cache_path.append( _filepath.c_str(), _filepath.size() );
+		PathString cache_path;
+        
+		cache_path += m_folder;
+		cache_path += MENGE_FOLDER_RESOURCE_DELIM;
+		cache_path += _filepath;
 
         ConstString name = Helper::stringizeString( m_serviceProvider, cache_path );
 

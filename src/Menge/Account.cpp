@@ -45,11 +45,11 @@ namespace Menge
     {
         m_folder = _folder;
 
-        String settingsPath;
-        settingsPath.append( m_folder.c_str(), m_folder.size() ); 
-        settingsPath += MENGE_FOLDER_DELIM;
-        settingsPath += "settings.ini";
-
+		PathString settingsPath;
+		settingsPath.append( m_folder );
+		settingsPath.append( MENGE_FOLDER_DELIM );
+		settingsPath.append( "settings.ini" );
+        
         m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -285,13 +285,14 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
     bool Account::loadBinaryFile( const FilePath & _filename, TBlobject & _data )
-    {
-        static String cachepath;
-        cachepath.assign( m_folder.c_str(), m_folder.size() );
-        cachepath += MENGE_FOLDER_DELIM;
-        cachepath.append( _filename.c_str(), _filename.size() );
+    {        
+		PathString path;
 
-        ConstString fullpath = Helper::stringizeString( m_serviceProvider, cachepath );
+		path += m_folder;
+		path += MENGE_FOLDER_DELIM;
+		path += _filename;
+
+		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
 
         InputStreamInterfacePtr file = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath );
@@ -367,12 +368,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Account::writeBinaryFile( const FilePath & _filename, const TBlobject & _data )
     {
-        static String cachepath;
-        cachepath.assign( m_folder.c_str(), m_folder.size() );
-        cachepath += MENGE_FOLDER_DELIM;
-        cachepath.append( _filename.c_str(), _filename.size() );
+		PathString path;
+		
+		path += m_folder;
+		path += MENGE_FOLDER_DELIM;
+		path += _filename;
 
-        ConstString fullpath = Helper::stringizeString( m_serviceProvider, cachepath );
+		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
 
         OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), fullpath );

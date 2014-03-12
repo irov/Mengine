@@ -4,6 +4,8 @@
 
 #   include "Core/ConstString.h"
 
+#	include "stdex/array_string.h"
+
 #   include <vector>
 
 namespace Menge
@@ -13,6 +15,7 @@ namespace Menge
 #   endif
 
     typedef ConstString FilePath; //UTF8
+	typedef stdex::array_string<MAX_PATH> PathString;
 
     typedef std::vector<FilePath> TVectorFilePath;
 

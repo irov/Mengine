@@ -77,12 +77,10 @@ namespace Menge
 
 		Metacode::Meta_KeyFramesPack keyFramesPack;
 
-		String binPath( m_options.inputFileName.c_str(), m_options.inputFileName.size() );
+		PathString binPath;
 
-		String::size_type size = binPath.size();
-		binPath[size-3] = L'b';
-		binPath[size-2] = L'i';
-		binPath[size-1] = L'n';
+		binPath += m_options.inputFileName;
+		binPath.replace_last( "bin" );
 
 		FilePath path_bin = Helper::stringizeString( m_serviceProvider, binPath );
 

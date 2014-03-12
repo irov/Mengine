@@ -118,15 +118,16 @@ namespace Menge
             return false;
         }
 
-        static String cache_path;
-        cache_path.assign( _in.c_str(), _in.size() );
-
-        static String outputFile;
-        String::size_type pointPos = cache_path.find_last_of( '.' );
-        outputFile = cache_path.substr( 0 , pointPos );
-        outputFile += converter->getConvertExt();
-
-        options.outputFileName = Helper::stringizeString( m_serviceProvider, outputFile );
+        PathString cache_path;
+		
+		cache_path += _in;
+				
+		cache_path.cut_before_last_of( '.' );
+		
+		const String & ext = converter->getConvertExt();
+		cache_path += ext;
+		
+        options.outputFileName = Helper::stringizeString( m_serviceProvider, cache_path );
 
         converter->setOptions( &options );
 

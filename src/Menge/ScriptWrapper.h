@@ -1,7 +1,5 @@
 #	pragma once
 
-//#	include <xxbind/xxbind.hpp>
-
 namespace Menge
 {
     class ServiceProviderInterface;

@@ -19,6 +19,8 @@
 #	include "Utils/Core/Viewport.h"
 #	include "Utils/Core/Rect.h"
 
+#	include "pybind/stl_type_cast.hpp"
+
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
 #   pragma warning(disable:4800)
@@ -592,6 +594,8 @@ namespace Menge
 	void ScriptWrapper::mathWrap( ServiceProviderInterface * _serviceProvider )
 	{
         (void)_serviceProvider;
+
+		pybind::registration_stl_vector_type_cast<Polygon>();
 
 		pybind::struct_<mt::vec2f>("vec2f")
 			.def_constructor( pybind::init<float,float>() )

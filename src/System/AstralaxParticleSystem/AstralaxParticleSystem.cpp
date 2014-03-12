@@ -210,7 +210,7 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem::flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
+	bool AstralaxParticleSystem::flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
         (void)_viewMatrix;
 
@@ -237,11 +237,12 @@ namespace Menge
 
 		while( rendering.count != 0 )
 		{
-            if( _particlesLimit <= _flush.particleCount + rendering.count )
+            if( _particlesLimit <= _flush.particleCount + rendering.count || 
+				_meshLimit <= _flush.meshCount )
             {
                 return false;
             }
-                        
+                       
             ParticleMesh & mesh = _meshes[_flush.meshCount];
 
 			mesh.begin = _flush.particleCount;
@@ -253,7 +254,7 @@ namespace Menge
 
 			_flush.particleCount += rendering.count;
 			++_flush.meshCount;
-
+			
 			Magic_CreateNextRenderedParticlesList( &rendering );
 		}
 

@@ -36,7 +36,13 @@ namespace Menge
 		ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const void * _buffer ) override;
 
 	public:	
-		bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
+		bool flushParticles( const mt::mat4f & _viewMatrix
+			, ParticleEmitterInterface * _emitter
+			, ParticleMesh * _meshes
+			, size_t _meshLimit
+			, ParticleVertices * _particles
+			, size_t _particlesLimit
+			, ParticleEmitterRenderFlush & _flush ) override;
 
 	protected:
 		void fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count );

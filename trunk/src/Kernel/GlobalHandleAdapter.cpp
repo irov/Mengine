@@ -25,6 +25,7 @@ namespace Menge
 		eventable->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, ("onGlobalHandleMouseButtonEventBegin"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON_END, ("onGlobalHandleMouseButtonEventEnd"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), _listener );
+		eventable->registerEvent( EVENT_GLOBAL_MOUSE_WHELL, ("onGlobalHandleMouseWhell"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_KEY2, ("onGlobalHandleKeyEvent2"), _listener );
 	}

@@ -451,14 +451,10 @@ namespace Menge
 		mt::mat4f vm_inv;
 		mt::inv_m4( vm_inv, vm );
 
-		const Viewport & viewport = m_renderViewport->getViewport();
-
 		mt::vec2f p = p_pm;
 
 		mt::vec2f p_vm;
 		mt::mul_v2_m4( p_vm, p, vm_inv );
-
-		p_vm -= viewport.begin;
 
 		_worldPoint = p_vm;
 	}
@@ -550,9 +546,9 @@ namespace Menge
 		m_contentResolution = _contentResolution;
 		m_currentResolution = _currentResolution;
 
-		float crx = float( m_contentResolution.getWidth() );
-		float cry = float( m_contentResolution.getHeight() );
-		Viewport vp(0.f, 0.f, crx, cry);
+		mt::vec2f cr;
+		m_contentResolution.calcSize(cr);
+		Viewport vp(0.f, 0.f, cr.x, cr.y);
 
 		m_camera2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );

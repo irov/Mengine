@@ -1831,12 +1831,16 @@ namespace Menge
 			return correct_polygon;
 		}
         //////////////////////////////////////////////////////////////////////////
-        const mt::vec2f & s_getCursorPosition()
+        mt::vec2f s_getCursorPosition()
         {
             const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
                 ->getCursorPosition();
 
-            return pos;
+			mt::vec2f wp;
+			PLAYER_SERVICE(m_serviceProvider)
+				->calcGlobalMouseWorldPosition( pos, wp );
+
+            return wp;
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_isInViewport( const mt::vec2f & _pos )

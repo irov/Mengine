@@ -130,12 +130,29 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcMouseWorldPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
 	{
+		const Viewport & viewport = _viewport->getViewport();
+
+		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getContentResolution();
+
+		mt::vec2f contentResolutionSize;
+		contentResolution.calcSize( contentResolutionSize );
+
+		mt::vec2f viewportSize;
+		viewport.calcSize( viewportSize );
+
+		mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
+		mt::vec2f vp_end = viewport.end / contentResolutionSize;
+		mt::vec2f vp_size = viewportSize / contentResolutionSize;
+
+		mt::vec2f sp = (_screenPoint - vp_begin) / vp_size;
+
 		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
 
 		mt::mat4f pm_inv;
 		mt::inv_m4( pm_inv, pm );
 
-		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f(1.f, 1.f);
+		mt::vec2f p1 = sp * 2.f - mt::vec2f(1.f, 1.f);
 		p1.y = -p1.y;
 
 		mt::vec2f p_pm;
@@ -145,27 +162,40 @@ namespace	Menge
 
 		mt::mat4f vm_inv;
 		mt::inv_m4( vm_inv, vm );
-
-		const Viewport & viewport = _viewport->getViewport();
 
 		mt::vec2f p = p_pm;
 
 		mt::vec2f p_vm;
 		mt::mul_v2_m4( p_vm, p, vm_inv );
 
-		p_vm -= viewport.begin;
-
 		_worldPoint = p_vm;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcPointClick( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
 	{
+		const Viewport & viewport = _viewport->getViewport();
+
+		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getContentResolution();
+
+		mt::vec2f contentResolutionSize;
+		contentResolution.calcSize( contentResolutionSize );
+
+		mt::vec2f viewportSize;
+		viewport.calcSize( viewportSize );
+
+		mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
+		mt::vec2f vp_end = viewport.end / contentResolutionSize;
+		mt::vec2f vp_size = viewportSize / contentResolutionSize;
+
+		mt::vec2f sp = (_screenPoint - vp_begin) / vp_size;
+
 		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
 
 		mt::mat4f pm_inv;
 		mt::inv_m4( pm_inv, pm );
 
-		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f(1.f, 1.f);
+		mt::vec2f p1 = sp * 2.f - mt::vec2f(1.f, 1.f);
 		p1.y = -p1.y;
 
 		mt::vec2f p_pm;
@@ -175,9 +205,7 @@ namespace	Menge
 
 		mt::mat4f vm_inv;
 		mt::inv_m4( vm_inv, vm );
-
-		const Viewport & viewport = _viewport->getViewport();
-
+		
 		EArrowType arrowType = this->getArrowType();
 
 		switch( arrowType )
@@ -191,8 +219,6 @@ namespace	Menge
 				mt::vec2f p_vm;
 				mt::mul_v2_m4( p_vm, p, vm_inv );
 
-				p_vm -= viewport.begin;
-
 				_worldPoint = p_vm;
 			}break;
 		case EAT_RADIUS:
@@ -202,8 +228,6 @@ namespace	Menge
 				mt::vec2f p_vm;
 				mt::mul_v2_m4( p_vm, p, vm_inv );
 
-				p_vm -= viewport.begin;
-
 				_worldPoint = p_vm;
 			}break;
 		case EAT_POLYGON:
@@ -212,8 +236,6 @@ namespace	Menge
 
 				mt::vec2f p_vm;
 				mt::mul_v2_m4( p_vm, p, vm_inv );
-
-				p_vm -= viewport.begin;
 
 				_worldPoint = p_vm;
 			}break;
@@ -265,7 +287,22 @@ namespace	Menge
 
 		mt::vec2f p_screen = (p_vm_pm + mt::vec2f(1.f, 1.f)) / 2.f;
 
-		_screenPoint = p_screen;
+		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getContentResolution();
+
+		mt::vec2f contentResolutionSize;
+		contentResolution.calcSize( contentResolutionSize );
+
+		mt::vec2f viewportSize;
+		viewport.calcSize( viewportSize );
+
+		mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
+		mt::vec2f vp_end = viewport.end / contentResolutionSize;
+		mt::vec2f vp_size = viewportSize / contentResolutionSize;
+
+		mt::vec2f sp = vp_begin + p_screen * vp_size;
+
+		_screenPoint = sp;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

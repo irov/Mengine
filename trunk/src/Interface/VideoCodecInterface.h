@@ -45,7 +45,7 @@ namespace Menge
 	public:
 		//virtual int sync( float _timing ) = 0;
 		virtual bool seek( float _timing ) = 0;
-		virtual bool eof() = 0;
+		virtual bool eof() const = 0;
 		virtual float getTiming() const = 0;
 
     public:

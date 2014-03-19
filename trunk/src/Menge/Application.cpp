@@ -1062,13 +1062,13 @@ namespace Menge
 		}
 
 		m_game->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
-		bool result = m_game->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
+		bool handle = m_game->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
 		m_game->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
 
-		return result;
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _dx, float _dy, int _whell )
+	bool Application::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _dx, float _dy )
 	{
 		if( INPUT_SERVICE(m_serviceProvider)
 			->validCursorPosition( _point ) == false )
@@ -1083,7 +1083,16 @@ namespace Menge
 			this->onAppMouseEnter( _point );
 		}
 
-		return m_game->handleMouseMove( _touchId, _point, _dx, _dy, _whell );
+		bool handle = m_game->handleMouseMove( _touchId, _point, _dx, _dy );
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	{
+		bool handle = m_game->handleMouseWhell( _touchId, _point, _whell );
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onMousePosition( unsigned int _touchId, const mt::vec2f & _point )

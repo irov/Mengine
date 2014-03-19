@@ -7,12 +7,17 @@ src
 	VideoCodecPlugin.cpp
 #    VideoCodecDecoderSystem.h
 #    VideoCodecDecoderSystem.cpp
+    VideoI420ToRGB24.h
+    VideoI420ToRGB24.cpp
+    VideoMkvReader.h
+    VideoMkvReader.cpp
+    
     VideoDecoderFFMPEG.cpp
 	VideoDecoderFFMPEG.h
     VideoDecoderGVF.cpp
     VideoDecoderGVF.h
-#    VideoDecoderVPX.cpp
-#    VideoDecoderVPX.h
+    VideoDecoderVPX.cpp
+    VideoDecoderVPX.h
     VideoDecoderGVFPrefetcher.h
     VideoDecoderGVFPrefetcher.cpp
 #    VideoDecoderOGGTheora.cpp
@@ -22,6 +27,7 @@ src
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 					 
 					 ${THIRDPARTY_DIR}/ffmpeg/include   
                      ${THIRDPARTY_DIR}/libwebp/src
+                     ${THIRDPARTY_DIR}/libwebm
                      ${THIRDPARTY_DIR}/libvpx
 )
 
@@ -40,7 +46,8 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX} )
-#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libvpx_static${MENGINE_LIB_SUFFIX} )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libvpx_static${MENGINE_LIB_SUFFIX} )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libwebm_static${MENGINE_LIB_SUFFIX} )
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}webp_static${MENGINE_LIB_SUFFIX} )
 
 IF(MSVC)

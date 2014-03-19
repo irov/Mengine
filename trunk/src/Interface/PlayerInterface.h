@@ -35,6 +35,10 @@ namespace Menge
         virtual void setArrow( Arrow * _arrow ) = 0;
         virtual Arrow * getArrow() const = 0;
 
+	public:
+		virtual void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) = 0;
+		virtual void calcGlobalMouseWorldDeltha( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) = 0;
+
     public:
         virtual void setRenderCamera( RenderCameraInterface * _camera) = 0;
         virtual const RenderCameraInterface * getRenderCamera() const = 0;
@@ -65,7 +69,7 @@ namespace Menge
         virtual bool isJoin( Node * _left, Node * _right ) const = 0;
 
         virtual void getJoins( Node * _node, TVectorNode & _joins ) const = 0;
-
+		
     public:
         virtual void toggleDebugText() = 0;
     };

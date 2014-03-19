@@ -185,6 +185,12 @@ namespace mt
 		_out.y = _a.y * _b.y;
 	}
 
+	MATH_FUNCTION_INLINE void div_v2_v2(vec2f& _out, const vec2f& _a, const vec2f& _b)
+	{
+		_out.x = _a.x / _b.x;
+		_out.y = _a.y / _b.y;
+	}
+
 	MATH_FUNCTION_INLINE vec2f operator*(const vec2f& _a, const vec2f& _b)
 	{
 		vec2f out;
@@ -203,6 +209,13 @@ namespace mt
 	{
 		vec2f out;
 		mul_v2_f(out, _rhs, _val);
+		return out;
+	}
+
+	MATH_FUNCTION_INLINE vec2f operator/(const vec2f& _a, const vec2f& _b)
+	{
+		vec2f out;
+		div_v2_v2(out, _a, _b);
 		return out;
 	}
 

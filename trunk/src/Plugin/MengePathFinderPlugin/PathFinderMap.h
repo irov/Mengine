@@ -49,7 +49,7 @@ namespace Menge
 		void setCamera2D( const RenderCameraInterface * _camera );
 
 	public:
-		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
+		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask );
 
 	protected:
 		bool testHolesPolygon_( const Polygon & _polygon ) const;

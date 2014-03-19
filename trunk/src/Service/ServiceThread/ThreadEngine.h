@@ -41,7 +41,7 @@ namespace Menge
         void cancelTask( const ThreadTaskInterfacePtr & _task ) override;
 
 	public:
-		ThreadQueueInterfacePtr runTaskQueue( size_t _countThread, size_t _packetSize ) override;
+		ThreadQueueInterfacePtr runTaskQueue( size_t _countThread, size_t _packetSize, int _priority ) override;
 
 	public:
         void update() override;

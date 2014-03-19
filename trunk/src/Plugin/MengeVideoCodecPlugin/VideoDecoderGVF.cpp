@@ -103,7 +103,7 @@ namespace Menge
        m_pitch = _pitch;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderGVF::eof()
+	bool VideoDecoderGVF::eof() const
 	{
 		if( Utils::eof( m_stream.get() ) == true )
 		{

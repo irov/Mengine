@@ -28,6 +28,10 @@ namespace Menge
 		void setRenderport( const Viewport & _viewport );
 
 	public:
+		void setRenderportScale( float _scale );
+		float getRenderportScale() const;
+
+	public:
 		const Viewport & getCameraRenderport() const override;
 
 	public:
@@ -58,7 +62,8 @@ namespace Menge
 	protected:
 		size_t m_cameraRevision;
 
-		Viewport m_renderport;
+		Viewport m_renderport;		
+		float m_renderportScale;
 
 		Observer * m_observerChangeWindowResolution;
 
@@ -74,6 +79,46 @@ namespace Menge
 	inline size_t Camera2D::getCameraRevision() const
 	{
 		return m_cameraRevision;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const Viewport & Camera2D::getCameraRenderport() const
+	{
+		if( m_invalidateProjectionMatrix == true )
+		{
+			this->updateProjectionMatrix_();
+		}
+
+		return m_renderport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera2D::getCameraWorldMatrix() const
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_worldMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera2D::getCameraProjectionMatrix() const
+	{
+		if( m_invalidateProjectionMatrix == true )
+		{
+			this->updateProjectionMatrix_();
+		}
+
+		return m_projectionMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera2D::getCameraViewMatrix() const
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_viewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline void Camera2D::invalidateMatrix_()

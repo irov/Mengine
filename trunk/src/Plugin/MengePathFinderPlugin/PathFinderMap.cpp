@@ -206,7 +206,7 @@ namespace Menge
 		}
 
 		p2t::Sweep sweep;
-		sweep.Triangulate(*m_sweepContext);
+		sweep.Triangulate( *m_sweepContext );
 
 		Triangles & triangles = m_sweepContext->GetTriangles();
 
@@ -559,11 +559,21 @@ namespace Menge
 		m_camera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
+		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
+		{
+			return;
+		}
+
 		if( m_camera != nullptr )
 		{
 			_camera = m_camera;
+		}
+
+		if( m_sweepContext == nullptr )
+		{
+			return;
 		}
 
 		const Triangles & triangles = m_sweepContext->GetTriangles();

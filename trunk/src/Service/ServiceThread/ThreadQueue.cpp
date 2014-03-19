@@ -6,6 +6,7 @@ namespace Menge
 	ThreadQueue::ThreadQueue()
 		: m_serviceProvider(nullptr)
 		, m_cancel(false)
+		, m_priority(0)
 		, m_packetSize(1)
 	{
 	}
@@ -22,6 +23,11 @@ namespace Menge
 	void ThreadQueue::setThreadCount( size_t _count )
 	{
 		m_currentTasks.resize( _count );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ThreadQueue::setThreadPriority( int _priority )
+	{
+		m_priority = _priority;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadQueue::setPacketSize( size_t _size )
@@ -115,7 +121,7 @@ namespace Menge
 			if( packet->countTask() > 0 )
 			{
 				if( THREAD_SERVICE(m_serviceProvider)
-					->addTask( packet, 0 ) == false )
+					->addTask( packet, m_priority ) == false )
 				{
 					return;
 				}

@@ -101,11 +101,6 @@ namespace Menge
 		//this->invalidateMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Camera3D::getCameraRenderport() const
-	{
-		return m_renderport;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::updateMatrix_() const
 	{
 		m_invalidateMatrix = false;

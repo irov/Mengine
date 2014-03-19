@@ -81,6 +81,12 @@ namespace Menge
 		m_invalidateMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	inline const Viewport & Camera3D::getCameraRenderport() const
+	{
+		return m_renderport;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Camera3D::getCameraWorldMatrix() const
 	{
 		return m_worldMatrix;

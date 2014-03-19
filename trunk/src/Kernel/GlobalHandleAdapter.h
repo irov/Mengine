@@ -42,7 +42,8 @@ namespace Menge
 		void handleGlobalMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		void handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;		
+		void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
+		void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override;
 
 	protected:
 		virtual bool isEnableGlobalHandle() const = 0;

@@ -195,13 +195,14 @@ namespace Menge
 		_task->cancel();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( size_t _countThread, size_t _packetSize )
+	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( size_t _countThread, size_t _packetSize, int _priority )
 	{
 		ThreadPoolPtr taskPool = m_factoryThreadQueue.createObjectT();
 
 		taskPool->setServiceProvider( m_serviceProvider );
 		taskPool->setThreadCount( _countThread );
 		taskPool->setPacketSize( _packetSize );
+		taskPool->setThreadPriority( _priority );
 
 		m_threadPools.push_back( taskPool );
 

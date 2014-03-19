@@ -43,13 +43,9 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotspotMousePickerVisitor::test_()
-	{
-		const mt::mat4f & vm = m_camera->getCameraViewMatrix();
-
-		mt::mat4f vm_inv;
-		mt::inv_m4( vm_inv, vm );
-
-		const Viewport & viewport = m_viewport->getViewport();
+	{		
+		mt::vec2f wp;
+		m_arrow->calcPointClick( m_camera, m_viewport, m_point, wp );
 
 		EArrowType arrowType = m_arrow->getArrowType();
 
@@ -57,38 +53,19 @@ namespace Menge
 		{
 		case EAT_POINT:
 			{
-				const mt::vec2f & pc = m_arrow->getPointClick();
-
-				mt::vec2f p = m_point + pc;
-
-				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, p, vm_inv );
-
-				p_vm -= viewport.begin;
-
-				m_result = m_hotspot->testPoint( p_vm );
+				m_result = m_hotspot->testPoint( wp );
 			}break;
 		case EAT_RADIUS:
 			{
 				float radius = m_arrow->getRadius();
 
-				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, m_point, vm_inv );
-
-				p_vm -= viewport.begin;
-
-				m_result = m_hotspot->testRadius( p_vm, radius );
+				m_result = m_hotspot->testRadius( wp, radius );
 			}break;
 		case EAT_POLYGON:
 			{
 				const Polygon & polygon = m_arrow->getPolygon();
 
-				mt::vec2f p_vm;
-				mt::mul_v2_m4( p_vm, m_point, vm_inv );
-
-				p_vm -= viewport.begin;
-
-				m_result = m_hotspot->testPolygon( p_vm, polygon );
+				m_result = m_hotspot->testPolygon( wp, polygon );
 			}break;
 		}
     }

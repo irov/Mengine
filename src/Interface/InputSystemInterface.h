@@ -248,7 +248,8 @@ namespace Menge
 		virtual bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
-		virtual bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
+		virtual bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
+		virtual bool handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
 	};
 
     class GlobalMouseHandler
@@ -257,7 +258,8 @@ namespace Menge
         virtual void handleGlobalMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
         virtual void handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
         virtual void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
-        virtual void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
+        virtual void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
+		virtual void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
     };
 
     class GlobalKeyHandler
@@ -295,7 +297,6 @@ namespace Menge
 
         virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
 		virtual const mt::vec2f & getCursorPosition() const = 0;
-        virtual void calcCursorUnviewport( const mt::vec2f & _point, mt::vec2f & _result ) const = 0;
 		virtual bool validCursorPosition( const mt::vec2f & _point ) const = 0;
 
 		virtual void addMousePositionProvider( InputMousePositionProvider * _provider ) = 0;
@@ -309,7 +310,10 @@ namespace Menge
 
 	public:
 		virtual void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
-		virtual void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
+		virtual void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
+		virtual void onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
+
+	public:
 		virtual void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;
         virtual void onMouseEnter( unsigned int _touchId, const mt::vec2f & _point ) = 0;
         virtual void onMouseLeave( unsigned int _touchId, const mt::vec2f & _point ) = 0;

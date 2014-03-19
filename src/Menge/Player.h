@@ -52,7 +52,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution );
+        bool initialize( const Resolution & _contentResolution, const Resolution & _currentResolution );
         void finalize();
 
 	public:
@@ -71,6 +71,10 @@ namespace Menge
 	public:
 		void setArrow( Arrow * _arrow ) override;
 		Arrow * getArrow() const override;
+
+	public:
+		void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) override;
+		void calcGlobalMouseWorldDeltha( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
 
     public:
         MousePickerSystemInterface * getMousePickerSystem() const override;
@@ -116,7 +120,8 @@ namespace Menge
 		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
+		bool handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override;
 
 
 		void onFocus( bool _focus );

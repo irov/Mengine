@@ -43,7 +43,6 @@ namespace Menge
 
         void setCursorPosition( const mt::vec2f & _point ) override;
 		const mt::vec2f & getCursorPosition() const override;
-        void calcCursorUnviewport( const mt::vec2f & _point, mt::vec2f & _result ) const override;
 		bool validCursorPosition( const mt::vec2f & _point ) const override;
 
 		void addMousePositionProvider( InputMousePositionProvider * _provider ) override;
@@ -57,26 +56,22 @@ namespace Menge
 
 	public:
 		void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+		void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
+		void onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override;
 
 		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
         void onMouseEnter( unsigned int _touchId, const mt::vec2f & _point ) override;
         void onMouseLeave( unsigned int _touchId, const mt::vec2f & _point ) override;
 
-
-	protected:
-		void notifyChangeWindowResolution(  bool _fullscreen, Resolution _resolution );
-
 	private:
 		ServiceProviderInterface * m_serviceProvider;
         
-		Observer * m_notifyChangeWindowResolution;
-
 		enum EventType
 		{
 			ET_KEY = 0,
 			ET_MOUSEBUTTON,
 			ET_MOUSEMOVE,
+			ET_MOUSEWHELL,
 			ET_MOUSEPOSITION,
             ET_MOUSEENTER,
             ET_MOUSELEAVE
@@ -126,6 +121,7 @@ namespace Menge
 		void keyEvent_( const KeyEventParams& _params );
 		void mouseButtonEvent_( const MouseButtonParams& _params );
 		void mouseMoveEvent_( const MouseMoveParams& _params );
+		void mouseWhellEvent_( const MouseMoveParams& _params );
 		void mousePositionEvent_( const MousePositionParams& _params );
         void mouseEnterEvent_( const MousePositionParams& _params );
         void mouseLeaveEvent_( const MousePositionParams& _params );
@@ -135,7 +131,6 @@ namespace Menge
 
 	private:
 		mt::vec2f m_cursorPosition;
-		mt::vec2f m_dimentions;
 
 		typedef std::vector<InputMousePositionProvider*> TVectorMousePositionProviders;
 		TVectorMousePositionProviders m_mousePositionProviders;
@@ -149,10 +144,5 @@ namespace Menge
 
 		bool m_keyBuffer[256];
 		bool m_mouseBuffer[3];
-
-		mt::vec2f m_inputScale;
-        mt::vec2f m_inputOffset;
-
-        Viewport m_inputViewport;		
 	};
 }

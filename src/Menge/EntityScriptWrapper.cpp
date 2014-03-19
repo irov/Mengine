@@ -285,8 +285,8 @@ namespace Menge
 
 		pybind::superclass_<Arrow, pybind::bases<Entity> >("Arrow", (void *)_serviceProvider, &superclass_new_Arrow, &superclass_dealloc_only_python, false)
             .def_constructor( pybind::init<>() )
-			.def( "setOffsetClick", &Arrow::setPointClick )
-			.def( "getOffsetClick", &Arrow::getPointClick )
+			.def( "setOffsetClick", &Arrow::setOffsetClick )
+			.def( "getOffsetClick", &Arrow::getOffsetClick )
 			.def( "setPolygon", &Arrow::setPolygon )
 			.def( "getPolygon", &Arrow::getPolygon )
 			.def( "setRadius", &Arrow::setRadius )

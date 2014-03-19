@@ -183,18 +183,35 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
+	bool Game::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, false, "(Iffi)", _touchId, _x, _y, _whell );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, false, "(Iffff)", _touchId, _point.x, _point.y, _x, _y );
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseMove( _touchId, _point, _x, _y, _whell );
+			handle = m_player->handleMouseMove( _touchId, _point, _x, _y );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	{
+		bool handle = false;
+
+		if( handle == false )
+		{
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHELL)( handle, false, "(Iffi)", _touchId, _point.x, _point.y, _whell );
+		}
+
+		if( handle == false )
+		{
+			handle = m_player->handleMouseWhell( _touchId, _point, _whell );
 		}
 
 		return handle;
@@ -265,6 +282,7 @@ namespace Menge
         this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
         this->registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
         this->registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
+		this->registerEvent( EVENT_MOUSE_WHELL, "onHandleMouseWhell", _embed );
 
         this->registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
         this->registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );
@@ -389,13 +407,23 @@ namespace Menge
 		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
             ->getCurrentResolution();
 
-		if( m_player->initialize( m_defaultArrow, contentResolution, currentResolution ) == false )
+		if( m_player->initialize( contentResolution, currentResolution ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("Game::initialize failed initialize player"
                 );
 
 			return false;
 		}
+
+		if( m_defaultArrow == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::initialize default arrow not found"
+				);
+
+			return false;
+		}
+
+		m_player->setArrow( m_defaultArrow );
 
 		return true;
 	}

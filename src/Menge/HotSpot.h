@@ -67,6 +67,7 @@ namespace Menge
 		void invalidatePolygonWM();
 		void updatePolygonWM_();
 
+	public:
 		inline const Polygon & getPolygonWM();
 
 	protected:

@@ -15,10 +15,6 @@ namespace Menge
 	InputEngine::InputEngine()
 		: m_serviceProvider(nullptr)
 		, m_cursorPosition(0.f, 0.f)
-        , m_dimentions(0.f, 0.f)
-		, m_inputScale(1.f, 1.f)
-        , m_inputOffset(0.f, 0.f)
-        , m_inputViewport(0.f, 0.f, 0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,9 +34,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize()
 	{
-		m_notifyChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
-            ->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &InputEngine::notifyChangeWindowResolution );
-
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
 
 		m_mouseBuffer[0] = false;
@@ -59,13 +52,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::finalize()
 	{
-		NOTIFICATION_SERVICE(m_serviceProvider)
-			->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_notifyChangeWindowResolution );
-
-		m_notifyChangeWindowResolution = 0;
-
         m_events.clear();
         m_eventsAdd.clear();
+
+		m_keyEventParams.clear();
+		m_mouseButtonEventParams.clear();
+		m_mouseMoveEventParams.clear();
+		m_mousePositionEventParams.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()
@@ -105,6 +98,12 @@ namespace Menge
                     this->mouseMoveEvent_( params );
                     ++it_mouseMoveParams;
                 }break;
+			case ET_MOUSEWHELL:
+				{
+					const MouseMoveParams& params = (*it_mouseMoveParams);
+					this->mouseWhellEvent_( params );
+					++it_mouseMoveParams;
+				}break;				
             case ET_MOUSEPOSITION:
                 {
                     const MousePositionParams & params = (*it_mousePositionParams);
@@ -180,12 +179,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::validCursorPosition( const mt::vec2f & _point ) const
 	{
-		if( _point.x < 0.f || _point.x > m_dimentions.x )
+		if( _point.x < 0.f || _point.x > 1.f )
 		{
 			return false;
 		}
 
-		if( _point.y < 0.f || _point.y > m_dimentions.y )
+		if( _point.y < 0.f || _point.y > 1.f )
 		{
 			return false;
 		}
@@ -195,19 +194,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
 	{		       
-        m_cursorPosition.x = m_inputOffset.x + (_point.x - m_inputViewport.begin.x) * m_inputScale.x;
-        m_cursorPosition.y = m_inputOffset.y + (_point.y - m_inputViewport.begin.y) * m_inputScale.y;
+		//mt::vec2f cursorPosition = m_inputOffset + (_point - m_inputViewport.begin) * m_inputScale;
+		//mt::vec2f cursorPosition = _point * m_inputScale;
+		mt::vec2f cursorPosition = _point;
 
-		for( TVectorMousePositionProviders::iterator
-			it = m_mousePositionProviders.begin(),
-			it_end = m_mousePositionProviders.end();
-		it != it_end;
-		++it )
+		_local = cursorPosition;
+
+		bool change = false;
+		if( mt::cmp_v2_v2( m_cursorPosition, cursorPosition ) == false )
 		{
-			(*it)->onMousePositionChange( m_cursorPosition );
+			change = true;
 		}
 
-		_local = m_cursorPosition;
+		m_cursorPosition = cursorPosition;
+		
+		if( change == true )
+		{
+			for( TVectorMousePositionProviders::iterator
+				it = m_mousePositionProviders.begin(),
+				it_end = m_mousePositionProviders.end();
+			it != it_end;
+			++it )
+			{
+				(*it)->onMousePositionChange( m_cursorPosition );
+			}
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::setCursorPosition( const mt::vec2f & _point )
@@ -220,22 +231,6 @@ namespace Menge
 	{
 		return m_cursorPosition;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void InputEngine::calcCursorUnviewport( const mt::vec2f & _point, mt::vec2f & _result ) const
-    {
-        mt::vec2f cp;
-            
-        cp.x = _point.x - m_inputOffset.x;
-        cp.y = _point.y - m_inputOffset.y;
-
-        cp.x /= m_inputScale.x;
-        cp.y /= m_inputScale.y;
-
-        cp.x += m_inputViewport.begin.x;
-        cp.y += m_inputViewport.begin.y;
-
-        _result = cp;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::addMousePositionProvider( InputMousePositionProvider * _provider )
 	{
@@ -260,6 +255,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::onFocus( bool _focus )
 	{
+		(void)_focus;
+
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -277,12 +274,19 @@ namespace Menge
 		m_mouseButtonEventParams.push_back( params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
+	void InputEngine::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
 	{
 		m_eventsAdd.push_back( ET_MOUSEMOVE );
-		MouseMoveParams params = { _touchId, _point, _x, _y, _whell };
+		MouseMoveParams params = { _touchId, _point, _x, _y, 0 };
 		m_mouseMoveEventParams.push_back( params );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	{
+		m_eventsAdd.push_back( ET_MOUSEWHELL );
+		MouseMoveParams params = { _touchId, _point, 0.f, 0.f, _whell };
+		m_mouseMoveEventParams.push_back( params );
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::onMousePosition( unsigned int _touchId, const mt::vec2f & _point )
 	{
@@ -334,11 +338,17 @@ namespace Menge
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
 
-		float correct_x = _params.x * m_inputScale.x;
-		float correct_y = _params.y * m_inputScale.y;
+		APPLICATION_SERVICE(m_serviceProvider)
+			->onMouseMove( _params.touchId, point, _params.x, _params.y );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::mouseWhellEvent_( const MouseMoveParams& _params )
+	{
+		mt::vec2f point;
+		this->applyCursorPosition_( _params.point, point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseMove( _params.touchId, point, correct_x, correct_y, _params.whell );
+			->onMouseWhell( _params.touchId, point, _params.whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mousePositionEvent_( const MousePositionParams& _params )
@@ -367,45 +377,4 @@ namespace Menge
         APPLICATION_SERVICE(m_serviceProvider)
             ->onAppMouseLeave();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )
-	{
-        (void)_fullscreen;
-        (void)_resolution;
-
-		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
-            ->getContentResolution();
-
-		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
-            ->getRenderViewport();
-
-		size_t contentResolutionWidth = contentResolution.getWidth();
-		size_t contentResolutionHeight = contentResolution.getHeight();
-        
-        float renderViewportWidth = renderViewport.getWidth();
-        float renderViewportHeight = renderViewport.getHeight();
-
-		m_dimentions.x = float(contentResolutionWidth);
-		m_dimentions.y = float(contentResolutionHeight);
-
-        float gameViewportAspect;
-        Viewport gameViewport;
-
-        APPLICATION_SERVICE(m_serviceProvider)
-            ->getGameViewport( gameViewportAspect, gameViewport );
-
-        m_inputViewport.begin = renderViewport.begin;
-        m_inputViewport.end = renderViewport.end;
-
-        m_inputOffset = gameViewport.begin;
-
-        float gameViewportWidth = gameViewport.getWidth();
-        float gameViewportHeight = gameViewport.getHeight();
-
-        float width_scale = renderViewportWidth / gameViewportWidth;
-        float height_scale = renderViewportHeight / gameViewportHeight;
-
-        m_inputScale.x = 1.f / width_scale;
-        m_inputScale.y = 1.f / height_scale;
-	}
 }

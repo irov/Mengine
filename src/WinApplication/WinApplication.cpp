@@ -1687,7 +1687,7 @@ namespace Menge
 		m_hWnd = this->createWindow( wprojectTitle, windowResolution, fullscreen );
 
 		mt::vec2f point;
-		this->getCursorPosition( point );
+		this->calcCursorPosition( point );
 		m_inputService->setCursorPosition( point );
 
 		if( m_application->createRenderWindow( m_hWnd ) == false )
@@ -2384,7 +2384,7 @@ namespace Menge
 				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
-				this->getCursorPosition(point);
+				this->calcCursorPosition(point);
 
 				unsigned int tvk = translateVirtualKey_( vkc, vk );
 
@@ -2397,7 +2397,7 @@ namespace Menge
 				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
-				this->getCursorPosition(point);
+				this->calcCursorPosition(point);
 
 				unsigned int tvk = translateVirtualKey_( vkc, vk );
 
@@ -2500,7 +2500,7 @@ namespace Menge
 					UpdateWindow(hWnd);
 
 					mt::vec2f point;
-					this->getCursorPosition( point );
+					this->calcCursorPosition( point );
 
 					m_inputService->onMouseLeave( 0, point );
 
@@ -2518,7 +2518,7 @@ namespace Menge
 				//::SetFocus( m_hWnd );
 
 				mt::vec2f point;
-				this->getCursorPosition( point );
+				this->calcCursorPosition( point );
 
 				m_mouseEvent.notify( hWnd );
 
@@ -2561,7 +2561,19 @@ namespace Menge
 				//float fdx_scale = fdx * resolutionScale.x;
 				//float fdy_scale = fdy * resolutionScale.y;
 
-				m_inputService->onMouseMove( 0, point, fdx, fdy, 0 );
+				RECT rect;
+				if( GetClientRect( m_hWnd, &rect ) == FALSE )
+				{
+					return false;
+				}
+
+				float width = static_cast<float>(rect.right - rect.left);
+				float height = static_cast<float>(rect.bottom - rect.top);
+
+				fdx /= width;
+				fdy /= height;
+
+				m_inputService->onMouseMove( 0, point, fdx, fdy );
 
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -2574,11 +2586,11 @@ namespace Menge
 				int zDelta = (int)(short)( HIWORD(wParam) );
 
 				mt::vec2f point;
-				this->getCursorPosition( point );				
+				this->calcCursorPosition( point );				
 
 				int wheel = zDelta / WHEEL_DELTA;
 
-				m_inputService->onMouseMove( 0, point, 0, 0, wheel );
+				m_inputService->onMouseWhell( 0, point, wheel );
 
 				handle = true;
 				_result = FALSE;
@@ -2595,7 +2607,7 @@ namespace Menge
 		case WM_LBUTTONDOWN:
 			{
 				mt::vec2f point;
-				this->getCursorPosition( point );
+				this->calcCursorPosition( point );
 
 				m_inputService->onMouseButtonEvent( 0, point, 0, true );				
 
@@ -2608,7 +2620,7 @@ namespace Menge
 				if( m_isDoubleClick == false )
 				{
 					mt::vec2f point;
-					this->getCursorPosition(point);
+					this->calcCursorPosition(point);
 
 					m_inputService->onMouseButtonEvent( 0, point, 0, false );					
 				}
@@ -2623,7 +2635,7 @@ namespace Menge
 				//::SetFocus(m_hWnd);
 
 				mt::vec2f point;
-				this->getCursorPosition(point);
+				this->calcCursorPosition(point);
 
 				m_inputService->onMouseButtonEvent( 0, point, 1, true );				
 
@@ -2635,7 +2647,7 @@ namespace Menge
 				if( m_isDoubleClick == false )
 				{
 					mt::vec2f point;
-					this->getCursorPosition(point);
+					this->calcCursorPosition(point);
 
 					m_inputService->onMouseButtonEvent( 0, point, 1, false );
 				}
@@ -2650,7 +2662,7 @@ namespace Menge
 				//::SetFocus(m_hWnd);
 
 				mt::vec2f point;
-				this->getCursorPosition(point);
+				this->calcCursorPosition(point);
 
 				m_inputService->onMouseButtonEvent( 0, point, 2, true );	
 
@@ -2660,7 +2672,7 @@ namespace Menge
 		case WM_MBUTTONUP:
 			{
 				mt::vec2f point;
-				this->getCursorPosition(point);
+				this->calcCursorPosition(point);
 
 				m_inputService->onMouseButtonEvent( 0, point, 2, false );	
 
@@ -2674,7 +2686,7 @@ namespace Menge
 				UINT vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
-				this->getCursorPosition(point);
+				this->calcCursorPosition(point);
 
 				UINT tvk = this->translateVirtualKey_( vkc, vk );
 
@@ -2690,7 +2702,7 @@ namespace Menge
 				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
 
 				mt::vec2f point;
-				this->getCursorPosition(point);
+				this->calcCursorPosition(point);
 
 				UINT tvk = this->translateVirtualKey_( vkc, vk );
 
@@ -2908,7 +2920,7 @@ namespace Menge
 		}
 
 		mt::vec2f point;
-		this->getCursorPosition(point);
+		this->calcCursorPosition(point);
 
 		m_inputService->onMousePosition( 0, point );
 
@@ -2919,14 +2931,38 @@ namespace Menge
 		m_application->onTurnSound( turnSound );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::getCursorPosition( mt::vec2f & _point )
+	bool WinApplication::calcCursorPosition( mt::vec2f & _point ) const
 	{
 		POINT cPos;
-		::GetCursorPos( &cPos );
-		::ScreenToClient( m_hWnd, &cPos );
+		if( ::GetCursorPos( &cPos ) == FALSE )
+		{
+			return false;
+		}
 
-		_point.x = static_cast<float>(cPos.x);
-		_point.y = static_cast<float>(cPos.y);
+		if( ::ScreenToClient( m_hWnd, &cPos ) == FALSE )
+		{
+			return false;
+		}
+
+		float x = static_cast<float>(cPos.x);
+		float y = static_cast<float>(cPos.y);
+
+		RECT rect;
+		if( GetClientRect( m_hWnd, &rect ) == FALSE )
+		{
+			return false;
+		}
+
+		float width = static_cast<float>(rect.right - rect.left);
+		float height = static_cast<float>(rect.bottom - rect.top);
+
+		_point.x = x / width;
+		_point.y = y / height;
+
+		//_point.x = x;
+		//_point.y = y;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::getDesktopResolution( Resolution & _resolution ) const

@@ -48,13 +48,20 @@ namespace Menge
 		return aspect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Resolution::getScale( const Resolution & _resolution ) const
+	void Resolution::calcSize( mt::vec2f & _size ) const
 	{
-		mt::vec2f scale;
+		_size.x = float(m_width);
+		_size.y = float(m_height);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Resolution::calcScale( const Resolution & _resolution, mt::vec2f & _scale ) const
+	{
+		mt::vec2f self_size;
+		this->calcSize( self_size );
 
-		scale.x = float(m_width) / float(_resolution.getWidth());
-		scale.y = float(m_height) / float(_resolution.getHeight());
+		mt::vec2f other_size;
+		_resolution.calcSize( other_size );
 
-		return scale;
+		_scale = self_size / other_size;
 	}
 }

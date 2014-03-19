@@ -95,7 +95,7 @@ namespace Menge
         virtual void cancelTask( const ThreadTaskInterfacePtr & _task ) = 0;
 
 	public:
-		virtual ThreadQueueInterfacePtr runTaskQueue( size_t _countThread, size_t _packetSize ) = 0;
+		virtual ThreadQueueInterfacePtr runTaskQueue( size_t _countThread, size_t _packetSize, int _priority ) = 0;
 
     public:
         virtual ThreadMutexInterfacePtr createMutex() = 0;

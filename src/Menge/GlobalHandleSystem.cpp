@@ -1,5 +1,7 @@
 #	include "GlobalHandleSystem.h"
 
+#	include "Interface/PlayerInterface.h"
+
 #   include "Logger/Logger.h"
 
 #	include <algorithm>
@@ -148,9 +150,17 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleSystem::handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
+	void GlobalHandleSystem::handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
 	{
-        for( TVectorGlobalMouseHandler::size_type
+		mt::vec2f wp;
+		PLAYER_SERVICE(m_serviceProvider)
+			->calcGlobalMouseWorldPosition( _point, wp );
+
+		mt::vec2f deltha;
+		PLAYER_SERVICE(m_serviceProvider)
+			->calcGlobalMouseWorldDeltha( _point, mt::vec2f(_x, _y), deltha );
+
+		for( TVectorGlobalMouseHandler::size_type
             it = 0,
             it_end = m_globalMouseHandler.size();
         it != it_end;
@@ -163,8 +173,27 @@ namespace Menge
                 continue;
             }
 
-            desc.handler->handleGlobalMouseMove( _touchId, _point, _x, _y, _whell );
+            desc.handler->handleGlobalMouseMove( _touchId, wp, deltha.x, deltha.y );
         }
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GlobalHandleSystem::handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	{
+		for( TVectorGlobalMouseHandler::size_type
+			it = 0,
+			it_end = m_globalMouseHandler.size();
+		it != it_end;
+		++it)
+		{
+			const GlobalMouseHandleDesc & desc = m_globalMouseHandler[it];
+
+			if( desc.dead == true )
+			{
+				continue;
+			}
+
+			desc.handler->handleGlobalMouseWhell( _touchId, _point, _whell );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t GlobalHandleSystem::addGlobalMouseEventable( GlobalMouseHandler * _handler )

@@ -18,6 +18,7 @@ namespace	Menge
 		, m_observerChangeWindowResolution(nullptr)
 		, m_invalidateMatrix(true)
 		, m_invalidateProjectionMatrix(true)
+		, m_renderportScale(1.f)
 	{
 		mt::ident_m4(m_worldMatrix);
 	}
@@ -62,11 +63,6 @@ namespace	Menge
 		this->invalidateViewport_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Camera2D::getCameraRenderport() const
-	{
-		return m_renderport;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateMatrix_() const
 	{
 		m_invalidateMatrix = false;
@@ -83,57 +79,48 @@ namespace	Menge
 		float gameViewportAspect;
 		Viewport gameViewport;
 
+		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getContentResolution();
+
 		APPLICATION_SERVICE(m_serviceProvider)
 			->getGameViewport( gameViewportAspect, gameViewport );
 
-		Viewport renderViewport = m_renderport;
-		if( renderViewport.begin.x < gameViewport.begin.x )
+		mt::vec2f contentResolutionSize;
+		contentResolution.calcSize( contentResolutionSize );
+
+		mt::vec2f viewportMaskBegin = gameViewport.begin / contentResolutionSize;
+		mt::vec2f viewportMaskEnd = gameViewport.end / contentResolutionSize;
+
+		Viewport renderViewport;
+		renderViewport.begin = m_renderport.begin;
+		renderViewport.end = m_renderport.end;
+
+		Viewport gameViewportSc;
+		gameViewportSc.begin = m_renderport.begin * viewportMaskBegin;
+		gameViewportSc.end = m_renderport.end * viewportMaskEnd;
+		
+		if( renderViewport.begin.x < gameViewportSc.begin.x )
 		{
-			renderViewport.begin.x = gameViewport.begin.x;
+			renderViewport.begin.x = gameViewportSc.begin.x;
 		}
 
-		if( renderViewport.begin.y < gameViewport.begin.y )
+		if( renderViewport.begin.y < gameViewportSc.begin.y )
 		{
-			renderViewport.begin.y = gameViewport.begin.y;
+			renderViewport.begin.y = gameViewportSc.begin.y;
 		}
 
-		if( renderViewport.end.x > gameViewport.end.x )
+		if( renderViewport.end.x > gameViewportSc.end.x )
 		{
-			renderViewport.end.x = gameViewport.end.x;
+			renderViewport.end.x = gameViewportSc.end.x;
 		}
 
-		if( renderViewport.end.y > gameViewport.end.y )
+		if( renderViewport.end.y > gameViewportSc.end.y )
 		{
-			renderViewport.end.y = gameViewport.end.y;
+			renderViewport.end.y = gameViewportSc.end.y;
 		}
-
+		
 		RENDER_SERVICE(m_serviceProvider)
-			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, -1000.0f, 1000.0f );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera2D::getCameraWorldMatrix() const
-	{
-		return m_worldMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera2D::getCameraProjectionMatrix() const
-	{
-		if( m_invalidateProjectionMatrix == true )
-		{
-			this->updateProjectionMatrix_();
-		}
-
-		return m_projectionMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera2D::getCameraViewMatrix() const
-	{
-		if( m_invalidateMatrix == true )
-		{
-			this->updateMatrix_();
-		}
-
-		return m_viewMatrix;
+			->makeProjectionOrthogonal( m_projectionMatrix, m_renderport, -1000.0f, 1000.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

@@ -32,14 +32,14 @@ namespace	Menge
 		return m_arrowType;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setPointClick( const mt::vec2f & _offsetClick )
+	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
 	{
 		m_arrowType = EAT_POINT;
 
 		m_pointClick = _offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Arrow::getPointClick() const
+	const mt::vec2f & Arrow::getOffsetClick() const
 	{
 		return m_pointClick;
 	}
@@ -75,9 +75,12 @@ namespace	Menge
 		Entity::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMousePositionChange( const mt::vec2f & _position )
+	void Arrow::onMousePositionChange( const mt::vec2f & _screenPosition )
 	{
-		mt::vec3f v3(_position.x, _position.y, 0.f);
+		mt::vec2f wp;
+		this->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _screenPosition, wp );
+
+		mt::vec3f v3(wp.x, wp.y, 0.f);
 
 		this->setLocalPosition( v3 );
 	}
@@ -113,7 +116,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onAppMouseEnter()
 	{
-		if( !m_hided )
+		if( m_hided == false )
 		{
 			Node::hide( false );
 		}
@@ -123,6 +126,146 @@ namespace	Menge
 	{
 		Node::hide( _value );
 		m_hided = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::calcMouseWorldPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
+	{
+		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
+
+		mt::mat4f pm_inv;
+		mt::inv_m4( pm_inv, pm );
+
+		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f(1.f, 1.f);
+		p1.y = -p1.y;
+
+		mt::vec2f p_pm;
+		mt::mul_v2_m4( p_pm, p1, pm_inv );
+
+		const mt::mat4f & vm = _camera->getCameraViewMatrix();
+
+		mt::mat4f vm_inv;
+		mt::inv_m4( vm_inv, vm );
+
+		const Viewport & viewport = _viewport->getViewport();
+
+		mt::vec2f p = p_pm;
+
+		mt::vec2f p_vm;
+		mt::mul_v2_m4( p_vm, p, vm_inv );
+
+		p_vm -= viewport.begin;
+
+		_worldPoint = p_vm;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::calcPointClick( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
+	{
+		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
+
+		mt::mat4f pm_inv;
+		mt::inv_m4( pm_inv, pm );
+
+		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f(1.f, 1.f);
+		p1.y = -p1.y;
+
+		mt::vec2f p_pm;
+		mt::mul_v2_m4( p_pm, p1, pm_inv );
+
+		const mt::mat4f & vm = _camera->getCameraViewMatrix();
+
+		mt::mat4f vm_inv;
+		mt::inv_m4( vm_inv, vm );
+
+		const Viewport & viewport = _viewport->getViewport();
+
+		EArrowType arrowType = this->getArrowType();
+
+		switch( arrowType )
+		{
+		case EAT_POINT:
+			{
+				const mt::vec2f & pc = this->getOffsetClick();
+
+				mt::vec2f p = p_pm + pc;
+
+				mt::vec2f p_vm;
+				mt::mul_v2_m4( p_vm, p, vm_inv );
+
+				p_vm -= viewport.begin;
+
+				_worldPoint = p_vm;
+			}break;
+		case EAT_RADIUS:
+			{
+				mt::vec2f p = p_pm;
+
+				mt::vec2f p_vm;
+				mt::mul_v2_m4( p_vm, p, vm_inv );
+
+				p_vm -= viewport.begin;
+
+				_worldPoint = p_vm;
+			}break;
+		case EAT_POLYGON:
+			{
+				mt::vec2f p = p_pm;
+
+				mt::vec2f p_vm;
+				mt::mul_v2_m4( p_vm, p, vm_inv );
+
+				p_vm -= viewport.begin;
+
+				_worldPoint = p_vm;
+			}break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::calcPointDeltha( const RenderCameraInterface * _camera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const
+	{
+		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
+
+		mt::mat4f pm_inv;
+		mt::inv_m4( pm_inv, pm );
+
+		mt::vec2f p1 = (_screenPoint + _screenDeltha) * 2.f - mt::vec2f(1.f, 1.f);
+		p1.y = -p1.y;
+
+		mt::vec2f p_pm;
+		mt::mul_v2_m4( p_pm, p1, pm_inv );
+
+		mt::vec2f p2 = (_screenPoint) * 2.f - mt::vec2f(1.f, 1.f);
+		p2.y = -p2.y;
+
+		mt::vec2f p_pm_base;
+		mt::mul_v2_m4( p_pm_base, p2, pm_inv );
+
+		mt::vec2f deltha = p_pm - p_pm_base;
+
+		_worldDeltha = deltha;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::calcMouseScreenPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _worldPoint, mt::vec2f & _screenPoint ) const
+	{
+		const mt::mat4f & vm = _camera->getCameraViewMatrix();
+
+		mt::vec2f p = _worldPoint;
+
+		mt::vec2f p_vm;
+		mt::mul_v2_m4( p_vm, p, vm );
+
+		const Viewport & viewport = _viewport->getViewport();
+		p_vm += viewport.begin;
+
+		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
+
+		mt::vec2f p_vm_pm;
+		mt::mul_v2_m4( p_vm_pm, p_vm, pm );
+
+		p_vm_pm.y = -p_vm_pm.y;
+
+		mt::vec2f p_screen = (p_vm_pm + mt::vec2f(1.f, 1.f)) / 2.f;
+
+		_screenPoint = p_screen;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

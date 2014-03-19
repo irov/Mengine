@@ -454,10 +454,12 @@ namespace Menge
             return pwm;
         }
         //////////////////////////////////////////////////////////////////////////
-        Polygon s_polygon_wm( const Polygon & _polygon, const mt::mat4f & _wm )
+        Polygon s_polygon_wm( Node * _node, const Polygon & _polygon )
         {
+			const mt::mat4f & wm = _node->getWorldMatrix();
+
             Polygon polygon;
-            polygon_wm(polygon, _polygon, _wm);
+            polygon_wm(polygon, _polygon, wm);
 
             return polygon;
         }
@@ -1136,34 +1138,39 @@ namespace Menge
             return APPLICATION_SERVICE(m_serviceProvider)
                 ->getMouseBounded();
         }
+		//////////////////////////////////////////////////////////////////////////
+		void s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f & _screen )
+		{
+			Arrow * arrow = PLAYER_SERVICE(m_serviceProvider)
+				->getArrow();
+
+			const RenderCameraInterface * renderCamera = arrow->getRenderCamera();
+			const RenderViewportInterface * renderViewport = arrow->getRenderViewport();
+
+			arrow->calcMouseScreenPosition( renderCamera, renderViewport, _pos, _screen );
+		}
         //////////////////////////////////////////////////////////////////////////
         void s_pushMouseMove( size_t _touchId, const mt::vec2f & _pos )
         {
             const mt::vec2f & cp = INPUT_SERVICE(m_serviceProvider)
                 ->getCursorPosition();
 
-            mt::vec2f mp = _pos - cp;
+			mt::vec2f pos_screen;
+			this->s_calcMouseScreenPosition( _pos, pos_screen );
 
-            mt::vec2f vmp;
-            INPUT_SERVICE(m_serviceProvider)
-                ->calcCursorUnviewport( mp, vmp );
-
-            mt::vec2f vpos;
-            INPUT_SERVICE(m_serviceProvider)
-                ->calcCursorUnviewport( _pos, vpos );
+            mt::vec2f mp = pos_screen - cp;
 
             INPUT_SERVICE(m_serviceProvider)
-                ->onMouseMove( _touchId, vpos, vmp.x, vmp.y, 0 );
+                ->onMouseMove( _touchId, cp, mp.x, mp.y );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_pushMouseButtonEvent( size_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
         {
-            mt::vec2f vpos;
-            INPUT_SERVICE(m_serviceProvider)
-                ->calcCursorUnviewport( _pos, vpos );
+			mt::vec2f pos_screen;
+			this->s_calcMouseScreenPosition( _pos, pos_screen );
 
             INPUT_SERVICE(m_serviceProvider)
-                ->onMouseButtonEvent( _touchId, vpos, _button, _isDown );
+                ->onMouseButtonEvent( _touchId, pos_screen, _button, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_platformEvent( const ConstString & _event, const TMapParams & _params )
@@ -2506,7 +2513,7 @@ namespace Menge
                 //Empty
             }
             //////////////////////////////////////////////////////////////////////////
-            void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override
+            void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override
             {
                 (void)_touchId;
                 (void)_point;
@@ -2516,7 +2523,7 @@ namespace Menge
                 pybind::incref( py_event );
 
                 PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
-                    ->askFunction( py_event, "(Iffi)", _touchId, _x, _y, _whell );
+                    ->askFunction( py_event, "(Iffff)", _touchId, _point.x, _point.y, _x, _y );
 
                 if( pybind::is_none(py_result) == false )
                 {
@@ -2529,6 +2536,15 @@ namespace Menge
                 pybind::decref( py_result );
                 pybind::decref( py_event );
             }
+			//////////////////////////////////////////////////////////////////////////
+			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			{
+				(void)_touchId;
+				(void)_point;
+				(void)_whell;
+
+				//Empty
+			}
 
         protected:
             ServiceProviderInterface * m_serviceProvider;
@@ -2627,15 +2643,24 @@ namespace Menge
                 //Empty
             }
             //////////////////////////////////////////////////////////////////////////
-            void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override
+            void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override
             {
                 (void)_touchId;
                 (void)_point;
                 (void)_x;
                 (void)_y;
-                (void)_whell;
+
                  //Empty
             }
+			//////////////////////////////////////////////////////////////////////////
+			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			{
+				(void)_touchId;
+				(void)_point;
+				(void)_whell;
+
+				//Empty
+			}
 
         protected:
             ServiceProviderInterface * m_serviceProvider;
@@ -2714,15 +2739,24 @@ namespace Menge
                 //Empty
             }
             //////////////////////////////////////////////////////////////////////////
-            void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override
+            void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override
             {
                 (void)_touchId;
                 (void)_point;
                 (void)_x;
                 (void)_y;
-                (void)_whell;
+                
                 //Empty
             }
+			//////////////////////////////////////////////////////////////////////////
+			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			{
+				(void)_touchId;
+				(void)_point;
+				(void)_whell;
+
+				//Empty
+			}
 
         protected:
             ServiceProviderInterface * m_serviceProvider;
@@ -2765,6 +2799,7 @@ namespace Menge
 				(void)_point;
 				(void)_button;
 				(void)_isDown;
+
 				//Empty
 			}
 			//////////////////////////////////////////////////////////////////////////
@@ -2789,7 +2824,6 @@ namespace Menge
 
 				pybind::decref( py_result );
 				pybind::decref( py_handler );
-				//Empty
 			}
 			//////////////////////////////////////////////////////////////////////////
 			void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override
@@ -2798,16 +2832,28 @@ namespace Menge
 				(void)_point;
 				(void)_button;
 				(void)_isDown;
+
 				//Empty
 			}
+
 			//////////////////////////////////////////////////////////////////////////
-			void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell ) override
+			void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override
 			{
 				(void)_touchId;
 				(void)_point;
 				(void)_x;
 				(void)_y;
+
+				//Empty
+			}
+
+			//////////////////////////////////////////////////////////////////////////
+			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			{
+				(void)_touchId;
+				(void)_point;
 				(void)_whell;
+
 				//Empty
 			}
 
@@ -4062,6 +4108,7 @@ namespace Menge
                     .def( "clearPoints", &HotSpot::clearPoints )
                     .def( "getPolygon", &HotSpot::getPolygon )
                     .def( "setPolygon", &HotSpot::setPolygon )
+					.def( "getPolygonWM", &HotSpot::getPolygonWM )
 					.def( "setOutward", &HotSpot::setOutward )
 					.def( "getOutward", &HotSpot::getOutward )
                     .def( "setDefaultHandle", &HotSpot::setDefaultHandle )

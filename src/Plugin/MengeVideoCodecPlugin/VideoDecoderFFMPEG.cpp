@@ -482,7 +482,7 @@ namespace Menge
         m_pitch = _pitch;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::eof()
+	bool VideoDecoderFFMPEG::eof() const
 	{
 		if( Utils::eof( m_stream.get() ) == true )
 		{

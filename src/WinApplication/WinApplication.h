@@ -149,7 +149,7 @@ namespace Menge
 		unsigned int translateVirtualKey_( unsigned int _vkc, unsigned int _vk );
 
 	protected:
-		void getCursorPosition( mt::vec2f & _point );
+		bool calcCursorPosition( mt::vec2f & _point ) const;
 
 	private:
 		WinTimer * m_winTimer;

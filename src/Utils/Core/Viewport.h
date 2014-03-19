@@ -37,7 +37,7 @@ namespace Menge
 		bool empty() const;
 
 	public:
-		void getSize( mt::vec2f & _size ) const;
+		void calcSize( mt::vec2f & _size ) const;
 		void centerize( const mt::vec2f & _center );
 		void getCenter( mt::vec2f & _point ) const;
 		

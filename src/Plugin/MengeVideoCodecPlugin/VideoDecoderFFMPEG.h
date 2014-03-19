@@ -35,7 +35,7 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 	
 	public:	
-		bool eof() override;
+		bool eof() const override;
 		//int sync( float _timing ) override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;

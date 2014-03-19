@@ -80,7 +80,7 @@ namespace Menge
 		(void)_timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void ModulePathFinder::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		for( TPathFinderMaps::iterator 
 			it = m_maps.begin(),
@@ -90,7 +90,7 @@ namespace Menge
 		{
 			PathFinderMap * map = *it;
 
-			map->render( _viewport, _camera );
+			map->render( _viewport, _camera, _debugMask );
 		}
 	}
 }

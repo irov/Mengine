@@ -21,6 +21,7 @@ namespace Menge
 
 	public:
 		void setThreadCount( size_t _count );
+		void setThreadPriority( int _priority );
 		void setPacketSize( size_t _size );
 
 	public:
@@ -38,6 +39,7 @@ namespace Menge
 	private:
 		ServiceProviderInterface * m_serviceProvider;
 
+		int m_priority;
 		size_t m_packetSize;
 
 		typedef stdex::queue<ThreadTaskInterfacePtr> TVectorThreadTask;

@@ -76,7 +76,7 @@ namespace Menge
 
 		m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegVideo")) );
         m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
-        //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
+        m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
 		
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),

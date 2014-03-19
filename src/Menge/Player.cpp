@@ -411,6 +411,8 @@ namespace Menge
 		}
 
 		m_arrow = _arrow;
+		m_arrow->setRenderCamera( m_arrowCamera2D );
+		m_arrow->setRenderViewport( m_renderViewport );
 
 		if( m_arrow != nullptr)
 		{
@@ -429,6 +431,60 @@ namespace Menge
 	Arrow * Player::getArrow() const
 	{
 		return m_arrow;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint )
+	{
+		const mt::mat4f & pm = m_renderCamera->getCameraProjectionMatrix();
+
+		mt::mat4f pm_inv;
+		mt::inv_m4( pm_inv, pm );
+
+		mt::vec2f p1 = _screenPoint * 2.f - mt::vec2f(1.f, 1.f);
+		p1.y = -p1.y;
+
+		mt::vec2f p_pm;
+		mt::mul_v2_m4( p_pm, p1, pm_inv );
+
+		const mt::mat4f & vm = m_renderCamera->getCameraViewMatrix();
+
+		mt::mat4f vm_inv;
+		mt::inv_m4( vm_inv, vm );
+
+		const Viewport & viewport = m_renderViewport->getViewport();
+
+		mt::vec2f p = p_pm;
+
+		mt::vec2f p_vm;
+		mt::mul_v2_m4( p_vm, p, vm_inv );
+
+		p_vm -= viewport.begin;
+
+		_worldPoint = p_vm;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::calcGlobalMouseWorldDeltha( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha )
+	{
+		const mt::mat4f & pm = m_renderCamera->getCameraProjectionMatrix();
+
+		mt::mat4f pm_inv;
+		mt::inv_m4( pm_inv, pm );
+
+		mt::vec2f p1 = (_screenPoint + _screenDeltha) * 2.f - mt::vec2f(1.f, 1.f);
+		p1.y = -p1.y;
+
+		mt::vec2f p_pm;
+		mt::mul_v2_m4( p_pm, p1, pm_inv );
+
+		mt::vec2f p2 = (_screenPoint) * 2.f - mt::vec2f(1.f, 1.f);
+		p2.y = -p2.y;
+
+		mt::vec2f p_pm_base;
+		mt::mul_v2_m4( p_pm_base, p2, pm_inv );
+
+		mt::vec2f deltha = p_pm - p_pm_base;
+
+		_worldDeltha = deltha;
 	}
     //////////////////////////////////////////////////////////////////////////
     MousePickerSystemInterface * Player::getMousePickerSystem() const
@@ -471,7 +527,7 @@ namespace Menge
 		return m_affectorableGlobal;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution )
+	bool Player::initialize( const Resolution & _contentResolution, const Resolution & _currentResolution )
 	{
 		m_mousePickerSystem = new MousePickerSystem(m_serviceProvider);
 		m_globalHandleSystem = new GlobalHandleSystem(m_serviceProvider);
@@ -494,16 +550,6 @@ namespace Menge
 		m_contentResolution = _contentResolution;
 		m_currentResolution = _currentResolution;
 
-		if( _arrow == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Player::init default arrow not found"
-                );
-
-			return false;
-		}
-
-		this->setArrow( _arrow );
-
 		float crx = float( m_contentResolution.getWidth() );
 		float cry = float( m_contentResolution.getHeight() );
 		Viewport vp(0.f, 0.f, crx, cry);
@@ -522,27 +568,21 @@ namespace Menge
 		this->setRenderCamera( m_camera2D );
 
 
-		m_arrowCamera2D = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
-
-		m_arrowCamera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
-
-		m_arrowCamera2D->setRenderport( vp );
-
-		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
-		//camera->setLocalPosition(vp_pos);
-
-		m_arrowCamera2D->enable();
-
 		m_viewport2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
 		
 		m_viewport2D->setViewport( vp );
-
 		m_viewport2D->enable();
 
 		this->setRenderViewport( m_viewport2D );
 
+		m_arrowCamera2D = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
+
+		m_arrowCamera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
+		m_arrowCamera2D->setRenderport( vp );
+		m_arrowCamera2D->enable();
+				
 		m_debugCamera2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
 
@@ -753,13 +793,11 @@ namespace Menge
         return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y, int _whell )
+	bool Player::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
 	{
-		//m_arrow->onMouseMove( _x, _y );
-        
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleGlobalMouseMove( _touchId, _point, _x, _y, _whell );
+			m_globalHandleSystem->handleGlobalMouseMove( _touchId, _point, _x, _y );
 		}
 
         bool handler = false;
@@ -768,7 +806,27 @@ namespace Menge
 		{
 			if( handler == false )
 			{
-				handler = m_mousePickerSystem->handleMouseMove( _touchId, _point, _x, _y, _whell );
+				handler = m_mousePickerSystem->handleMouseMove( _touchId, _point, _x, _y );
+			}
+		}
+
+		return handler;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	{
+		if( m_globalHandleSystem )
+		{
+			m_globalHandleSystem->handleGlobalMouseWhell( _touchId, _point, _whell );
+		}
+
+		bool handler = false;
+
+		if( m_mousePickerSystem )
+		{
+			if( handler == false )
+			{
+				handler = m_mousePickerSystem->handleMouseWhell( _touchId, _point, _whell );
 			}
 		}
 
@@ -1149,7 +1207,7 @@ namespace Menge
 		//renderEngine->newRenderPass( m_renderCamera2D );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->render( m_renderViewport, m_renderCamera );
+			->render( m_renderViewport, m_renderCamera, debugMask );
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{

@@ -1,0 +1,77 @@
+#	include "VideoI420ToRGB24.h"
+
+#	define YG 74 /* static_cast<int8>(1.164 * 64 + 0.5) */
+
+#	define UB 127 /* min(63,static_cast<int8>(2.018 * 64)) */
+#	define UG -25 /* static_cast<int8>(-0.391 * 64 - 0.5) */
+#	define UR 0
+
+#	define VB 0
+#	define VG -52 /* static_cast<int8>(-0.813 * 64 - 0.5) */
+#	define VR 102 /* static_cast<int8>(1.596 * 64 + 0.5) */
+
+#	define BB UB * 128 + VB * 128
+#	define BG UG * 128 + VG * 128
+#	define BR UR * 128 + VR * 128
+
+
+namespace Menge
+{
+	//////////////////////////////////////////////////////////////////////////
+	inline static unsigned char Clip(int val) 
+	{
+		if( val < 0 )
+		{
+			return static_cast<unsigned char>(0);
+		} 
+		else if (val > 255) 
+		{
+			return static_cast<unsigned char>(255);
+		}
+
+		return static_cast<unsigned char>(val);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline static void YuvPixel(unsigned char y, unsigned char u, unsigned char v, unsigned char* rgb_buf)
+	{
+		int y1 = (static_cast<int>(y) - 16) * YG;
+		rgb_buf[0] = Clip(static_cast<int>((u * UB + v * VB) - (BB) + y1) >> 6);
+		rgb_buf[1] = Clip(static_cast<int>((u * UG + v * VG) - (BG) + y1) >> 6);
+		rgb_buf[2] = Clip(static_cast<int>((u * UR + v * VR) - (BR) + y1) >> 6);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline static void I422ToARGBRow(const unsigned char* y_buf, const unsigned char* u_buf,
+		const unsigned char* v_buf, unsigned char* rgb_buf, int width)
+	{
+		for (int x = 0; x < width - 1; x += 2) {
+			YuvPixel(y_buf[0], u_buf[0], v_buf[0], rgb_buf + 0);
+			YuvPixel(y_buf[1], u_buf[0], v_buf[0], rgb_buf + 4);
+			y_buf += 2;
+			u_buf += 1;
+			v_buf += 1;
+			rgb_buf += 8;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace Utils
+	{
+		void I420ToRGB24(
+			const unsigned char* src_y, int src_stride_y,
+			const unsigned char* src_u, int src_stride_u,
+			const unsigned char* src_v, int src_stride_v,
+			unsigned char* dst_rgb, int dst_stride_rgb,
+			int width, int height)
+		{
+			for (int y = 0; y < height; ++y) {
+				I422ToARGBRow(src_y, src_u, src_v, dst_rgb, width);
+				dst_rgb += dst_stride_rgb;
+				src_y += src_stride_y;
+				if (y & 1) {
+					src_u += src_stride_u;
+					src_v += src_stride_v;
+
+				}
+			}
+		}
+	}
+}	// namespace Menge

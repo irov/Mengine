@@ -1,6 +1,6 @@
 #	include "HotspotMousePickerAdapter.h"
 
-#   include "Interface/PlayerInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 #   include "HotspotMousePickerVisitor.h"
 
@@ -39,8 +39,7 @@ namespace Menge
             return false;
         }
 
-        HotspotMousePickerVisitor mp(m_hotspot, _viewport, _camera, _point, _arrow);
-
+		HotspotMousePickerVisitor mp(m_hotspot, _viewport, _camera, _point, _arrow);
         bool result = mp.test( layer );
 
         return result;

@@ -848,8 +848,8 @@ namespace Menge
 		
 		if( vp_x >= windowSize.x || 
 			vp_y >= windowSize.y ||
-			vp_x + vp_width <= 0 || 
-			vp_y + vp_height <= 0 )
+			vp_x + vp_width <= 0.f || 
+			vp_y + vp_height <= 0.f )
 		{
 			renderViewport.begin.x = 0.f;
 			renderViewport.begin.y = 0.f;

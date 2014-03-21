@@ -736,8 +736,8 @@ namespace Menge
 		}
 
 
-		PFMPoint * point_from = createPoint2_( _from.x, _from.x );
-		PFMPoint * point_to = createPoint2_( _to.x, _to.x );
+		PFMPoint * point_from = createPoint2_( _from.x, _from.y );
+		PFMPoint * point_to = createPoint2_( _to.x, _to.y );
 
 		Points::size_type points_size = m_points.size();
 

@@ -125,6 +125,12 @@ namespace Menge
             Eventable * eventable = this->getPickerEventable();
 
 			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_KEY)( handle, m_defaultHandle, "(OIIO)", this->getPickerEmbed(), _key, _char, pybind::get_bool(_isDown) );
+
+			if( m_picker == nullptr )
+			{
+				return handle;
+			}
+
 			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_KEY2)( handle, m_defaultHandle, "(OIIOO)", this->getPickerEmbed(), _key, _char, pybind::get_bool(_isDown), pybind::get_bool(_repeating) );
 		}
 
@@ -147,6 +153,11 @@ namespace Menge
 				, _button
 				, pybind::get_bool(_isDown) 
 				);
+
+			if( m_picker == nullptr )
+			{
+				return handle;
+			}
 
 			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_BUTTON2)( handle, m_defaultHandle, "(OIffIO)"
 				, this->getPickerEmbed()

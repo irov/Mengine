@@ -14,6 +14,7 @@ namespace	Menge
 		, m_observerChangeWindowResolution(nullptr)
 		, m_invalidateMatrix(true)
 		, m_invalidateProjectionMatrix(true)
+		, m_widescreenSupport(true)
 	{
 		mt::ident_m4(m_worldMatrix);
 	}
@@ -57,6 +58,17 @@ namespace	Menge
 
 		this->invalidateViewport_();
 	}
+	void Camera2D::setWidescreenSupport( bool _value )
+	{
+		m_widescreenSupport = _value;
+
+		this->invalidateViewport_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Camera2D::getWidescreenSupport() const
+	{
+		return m_widescreenSupport;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateMatrix_() const
 	{
@@ -74,11 +86,11 @@ namespace	Menge
 		float gameViewportAspect;
 		Viewport gameViewport;
 
-		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
-			->getContentResolution();
-
 		APPLICATION_SERVICE(m_serviceProvider)
 			->getGameViewport( gameViewportAspect, gameViewport );
+
+		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getContentResolution();
 
 		mt::vec2f contentResolutionSize;
 		contentResolution.calcSize( contentResolutionSize );

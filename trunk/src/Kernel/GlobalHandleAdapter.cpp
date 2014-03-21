@@ -180,6 +180,12 @@ namespace Menge
         Scriptable * scriptable = this->getGlobalHandleScriptable();
 		
         EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON)( "(OIIO)", scriptable->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+
+		if( m_globalMouseEvent == false )
+		{
+			return;
+		}
+
 		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON2)( "(OIffIO)", scriptable->getEmbed(), _touchId, _point.x, _point.y, _button, pybind::get_bool(_isDown) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -229,6 +235,12 @@ namespace Menge
         Scriptable * scriptable = this->getGlobalHandleScriptable();
 
         EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_KEY)( "(OIIO)", scriptable->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
+
+		if( m_globalKeyEvent == false )
+		{
+			return;
+		}
+
 		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_KEY2)( "(OIIOO)", scriptable->getEmbed(), _key, _char, pybind::get_bool(_isDown), pybind::get_bool(_repeating) );
 	}
     //////////////////////////////////////////////////////////////////////////

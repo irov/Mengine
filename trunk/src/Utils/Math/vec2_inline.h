@@ -73,6 +73,14 @@ namespace mt
 		return *this;
 	}
 
+	MATH_METHOD_INLINE vec2f& vec2f::operator/=(const vec2f & _rhs)
+	{
+		x /= _rhs.x;
+		y /= _rhs.y;
+
+		return *this;
+	}
+
 	MATH_METHOD_INLINE vec2f& vec2f::operator*=(const vec2f & _rhs)
 	{
 		x *= _rhs.x;

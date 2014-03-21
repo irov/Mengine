@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/NotificationServiceInterace.h"
 
 #	include "Kernel/Node.h"
 
@@ -17,6 +18,10 @@ namespace Menge
 	public:
 		RenderViewport();
 		
+	protected:
+		bool _activate() override;
+		void _deactivate() override;
+
 	public:
 		void setViewport( const Viewport & _viewport );
 
@@ -33,7 +38,12 @@ namespace Menge
 		void updateViewport_() const;
 
 	protected:
+		void notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution );
+
+	protected:
 		Viewport m_viewport;
+
+		Observer * m_observerChangeWindowResolution;
 
 		mutable Viewport m_viewportWM;		
 		mutable bool m_invalidateViewport;

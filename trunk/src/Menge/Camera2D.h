@@ -2,17 +2,14 @@
 
 #	include "Camera.h"
 
+#	include "Interface/NotificationServiceInterace.h"
+
 #	include "Kernel/Node.h"
 
 #	include "Core/Viewport.h"
 
 namespace Menge
 {
-	class Scene;
-	class Viewport;
-
-	class Observer;
-
 	class Camera2D
 		: public Node
         , public Camera
@@ -63,7 +60,6 @@ namespace Menge
 		size_t m_cameraRevision;
 
 		Viewport m_renderport;		
-		float m_renderportScale;
 
 		Observer * m_observerChangeWindowResolution;
 

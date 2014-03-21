@@ -8,6 +8,7 @@ namespace Menge
 		: m_serviceProvider(_serviceProvider)
 		, m_obstacleEnumerator(0)
 		, m_cachePointUse(0)
+		, m_cachePointUse2(0)
 		, m_unitSize(20.f)
 		, m_sweepContext(nullptr)
 	{
@@ -78,7 +79,7 @@ namespace Menge
 
 		s_enlargePolygonFromLow( big_polygon, m_unitSize );		
 
-		if( this->testHolesPolygon_( big_polygon ) == true )
+		if( this->testBigHolesPolygon_( big_polygon ) == true )
 		{
 			return 0;
 		}
@@ -125,7 +126,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const Polygon & p = it->bigHole;
+			const Polygon & p = it->hole;
 
 			bool intersect = boost::geometry::intersects( p, _polygon );
 
@@ -138,7 +139,68 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_makePolyPointFromPolygon( PFMPoint * _cachePoint, size_t & _cachePointUse, const Polygon & _polygon, Points & _points )
+	bool PathFinderMap::testBigHolesPolygon_( const Polygon & _polygon ) const
+	{
+		for( TObstacles::const_iterator
+			it = m_obstales.begin(),
+			it_end = m_obstales.end();
+		it != it_end;
+		++it )
+		{
+			const Polygon & p = it->hole;
+
+			bool intersect = boost::geometry::intersects( p, _polygon );
+
+			if( intersect == true )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PFMPoint * PathFinderMap::createPoint_( float _x, float _y )
+	{
+		if( m_cachePointUse >= 1024 )
+		{
+			return nullptr;
+		}
+
+		PFMPoint & p = m_cachePoint[m_cachePointUse];
+		++m_cachePointUse;
+
+		p.x = _x;
+		p.y = _y;
+
+		p.edge_list.clear();
+		p.weight = 0.f;
+		p.neighbor.clear();
+
+		return &p;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PFMPoint * PathFinderMap::createPoint2_( float _x, float _y )
+	{
+		if( m_cachePointUse2 >= 1024 )
+		{
+			return nullptr;
+		}
+
+		PFMPoint & p = m_cachePoint2[m_cachePointUse2];
+		++m_cachePointUse2;
+
+		p.x = _x;
+		p.y = _y;
+
+		p.edge_list.clear();
+		p.weight = 0.f;
+		p.neighbor.clear();
+
+		return &p;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::makePolyPointFromPolygon_( const Polygon & _polygon, Points & _points )
 	{
 		size_t numpoints = boost::geometry::num_points( _polygon );
 
@@ -159,21 +221,14 @@ namespace Menge
 		{
 			const mt::vec2f & v = ring[it];
 
-			if( _cachePointUse >= 1024 )
+			PFMPoint * p = this->createPoint_( v.x, v.y );
+
+			if( p == nullptr )
 			{
 				return false;
 			}
 
-			PFMPoint & p = _cachePoint[_cachePointUse];
-			++_cachePointUse;
-
-			p.x = v.x;
-			p.y = v.y;
-			p.edge_list.clear();
-			p.weight = 0.f;
-			p.neighbor.clear();
-
-			_points.push_back( &p );
+			_points.push_back( p );
 		}
 
 		return true;
@@ -184,10 +239,99 @@ namespace Menge
 		p->neighbor.push_back( n );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void s_findOutPoint( p2t::Triangle * _tr0, p2t::Triangle * _tr1, PFMPoint ** _p0, PFMPoint ** _p1 )
+	{
+		PFMPoint * p00 = (PFMPoint *)_tr0->GetPoint(0);
+		PFMPoint * p01 = (PFMPoint *)_tr0->GetPoint(1);
+		PFMPoint * p02 = (PFMPoint *)_tr0->GetPoint(2);
+
+		if( _tr1->Contains( p00 ) == false )
+		{
+			*_p0 = p00;
+		}
+		else if( _tr1->Contains( p01 ) == false )
+		{
+			*_p0 = p01;
+		}
+		else if( _tr1->Contains( p02 ) == false )
+		{
+			*_p0 = p02;
+		}
+		
+		PFMPoint * p10 = (PFMPoint *)_tr1->GetPoint(0);
+		PFMPoint * p11 = (PFMPoint *)_tr1->GetPoint(1);
+		PFMPoint * p12 = (PFMPoint *)_tr1->GetPoint(2);
+
+		if( _tr0->Contains( p10 ) == false )
+		{
+			*_p1 = p10;
+		}
+		else if( _tr0->Contains( p11 ) == false )
+		{
+			*_p1 = p11;
+		}
+		else if( _tr0->Contains( p12 ) == false )
+		{
+			*_p1 = p12;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::generateMap()
 	{
+		m_points.clear();
+
+		for( TObstacles::const_iterator
+			it = m_obstales.begin(),
+			it_end = m_obstales.end();
+		it != it_end;
+		++it )
+		{
+			const Polygon & p = it->bigHole;
+
+			this->makePolyPointFromPolygon_( p, m_points );
+		}
+
+		Points::size_type points_size = m_points.size();
+
+		for( Points::size_type
+			it = 0,
+			it_end = points_size - 1;
+		it != it_end;
+		++it )
+		{
+			PFMPoint * p0 = (PFMPoint *)m_points[it];
+
+			mt::vec2f v0(p0->x, p0->y);
+
+			for( Points::size_type
+				it_next = it + 1,
+				it_next_end = points_size;
+			it_next != it_next_end;
+			++it_next )
+			{
+				PFMPoint * p1 = (PFMPoint *)m_points[it_next];
+								
+				mt::vec2f v1(p1->x, p1->y);
+
+				if( testHolesSegment_( v0, v1 ) == true )
+				{
+					continue;
+				}
+
+				s_pointAddNeighbor( p0, p1 );
+				s_pointAddNeighbor( p1, p0 );
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::generateMap2()
+	{
+		m_cachePointUse = 0;
+
 		Points mapPoints;
-		s_makePolyPointFromPolygon( m_cachePoint, m_cachePointUse, m_mapPolygon, mapPoints );
+		this->makePolyPointFromPolygon_( m_mapPolygon, mapPoints );
 		
 		m_sweepContext = new p2t::SweepContext( mapPoints );
 
@@ -200,7 +344,7 @@ namespace Menge
 			const Polygon & p = it->bigHole;
 
 			Points holePoint;
-			s_makePolyPointFromPolygon( m_cachePoint, m_cachePointUse, p, holePoint );
+			this->makePolyPointFromPolygon_( p, holePoint );
 
 			m_sweepContext->AddHole( holePoint );
 		}
@@ -233,6 +377,56 @@ namespace Menge
 			s_pointAddNeighbor( p1, p2 );
 			s_pointAddNeighbor( p2, p0 );
 			s_pointAddNeighbor( p2, p1 );
+		}
+
+		for( Triangles::iterator
+			it = triangles.begin(),
+			it_end = triangles.end();
+		it != it_end;
+		++it )
+		{
+			p2t::Triangle * tr = *it;
+
+			if( tr->IsInterior() == false )
+			{
+				continue;
+			}
+
+			p2t::Triangle * tr0 = tr->GetNeighbor(0);
+
+			if( tr0 != nullptr && tr0->IsInterior() == true )
+			{
+				PFMPoint * p0;
+				PFMPoint * p1;
+
+				s_findOutPoint( tr, tr0, &p0, &p1 );
+
+				s_pointAddNeighbor( p0, p1 );
+			}
+
+			p2t::Triangle * tr1 = tr->GetNeighbor(1);
+
+			if( tr1 != nullptr && tr1->IsInterior() == true )
+			{
+				PFMPoint * p0;
+				PFMPoint * p1;
+
+				s_findOutPoint( tr, tr1, &p0, &p1 );
+
+				s_pointAddNeighbor( p0, p1 );
+			}
+
+			p2t::Triangle * tr2 = tr->GetNeighbor(2);
+
+			if( tr2 != nullptr && tr2->IsInterior() == true )
+			{
+				PFMPoint * p0;
+				PFMPoint * p1;
+
+				s_findOutPoint( tr, tr2, &p0, &p1 );
+
+				s_pointAddNeighbor( p0, p1 );
+			}
 		}
 		
 		return true;
@@ -323,11 +517,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_slitherPath( PFMPoint * _minimal, PFMPoint * _p0, PFMPoint * _p1, PFMPoint * _p2, TVectorWayPoint & _wp )
+	static void s_slitherPath3( PFMPoint * _minimal, PFMPoint * _p0, PFMPoint * _p1, PFMPoint * _p2, PFMPoints & _points )
 	{
 		PFMPoint * minimalNeighbor = _minimal;
 
-		_wp.push_back( mt::vec2f(minimalNeighbor->x, minimalNeighbor->y) );
+		_points.push_back( minimalNeighbor );
 
 		if( minimalNeighbor == _p0 || minimalNeighbor == _p1 || minimalNeighbor == _p2 )
 		{
@@ -355,15 +549,57 @@ namespace Menge
 			return;
 		}
 
-		s_slitherPath( minimalNeighbor, _p0, _p1, _p2, _wp );
+		s_slitherPath3( minimalNeighbor, _p0, _p1, _p2, _points );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_slitherPath1( PFMPoint * _minimal, PFMPoint * _p0, PFMPoints & _points )
+	{
+		PFMPoint * minimalNeighbor = _minimal;
+
+		_points.push_back( minimalNeighbor );
+
+		if( minimalNeighbor == _p0 )
+		{
+			return;
+		}
+
+		for( PFMPoint::TVectorNeighbor::iterator
+			it = _minimal->neighbor.begin(),
+			it_end = _minimal->neighbor.end();
+		it != it_end;
+		++it )
+		{
+			PFMPoint * neighbor = *it;
+
+			if( neighbor->weight > minimalNeighbor->weight )
+			{
+				continue;
+			}
+
+			minimalNeighbor = neighbor;
+		}
+
+		if( minimalNeighbor == _minimal )
+		{
+			return;
+		}
+
+		s_slitherPath1( minimalNeighbor, _p0, _points );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const
 	{
-		Polygon way_polygon;
-		boost::geometry::append( way_polygon, _p0 );
-		boost::geometry::append( way_polygon, _p1 );
+		mt::vec2f dir;
+		mt::norm_v2( dir, _p1 - _p0 );
 
+		mt::vec2f perp;
+		mt::perp_v2( perp, dir );
+		
+		Polygon way_polygon;
+		boost::geometry::append( way_polygon, _p0 + perp );
+		boost::geometry::append( way_polygon, _p1 + perp );
+		boost::geometry::append( way_polygon, _p1 - perp );
+		boost::geometry::append( way_polygon, _p0 - perp );
 		boost::geometry::correct( way_polygon );
 
 		bool test = this->testHolesPolygon_( way_polygon );
@@ -371,78 +607,62 @@ namespace Menge
 		return test;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways )
+	static bool s_addNeignborWayPoint( PFMPoint * _current, PFMPoint * _next )
 	{
-		size_t wayCount = _ways.size();
-		
-		if( wayCount == 0 )
+		float length = s_lengthPoint( _current->x, _current->y, _next );
+
+		if( _next->weight <= _current->weight - length )
 		{
-			return;
+			return false;
 		}
 
-		const mt::vec2f & pf = _ways.front();
+		_next->weight = _current->weight + length;
 
-		_fileter.push_back( pf );
+		_current->neighbor.push_back( _next );
+		_next->neighbor.push_back( _current );
 
-		for( size_t i = 0; i != wayCount - 2; )
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::calcNeighborPoints_( PFMPoints & _wayPoints ) const
+	{
+		PFMPoints::size_type point_size = _wayPoints.size();
+
+		for( PFMPoints::size_type 
+			it_current = 0,
+			it_current_end = point_size - 1;
+		it_current != it_current_end;
+		++it_current )
 		{
-			const mt::vec2f & p0 = _ways[i + 0];
+			PFMPoint * point_current = _wayPoints[it_current];
 
-			for( size_t j = i + 2; j != wayCount; ++j )
+			PFMPoints::size_type it_next = it_current + 1;
+			PFMPoint * point_next = _wayPoints[it_next];
+
+			if( s_addNeignborWayPoint( point_current, point_next ) == false )
 			{
-				const mt::vec2f & p1 = _ways[j];
+				continue;
+			}
+		
+			for( PFMPoints::size_type 
+				it_forward = it_next + 1,
+				it_forward_end = point_size; 
+			it_forward != it_forward_end; 
+			++it_forward )
+			{	
+				PFMPoint * point_forward = _wayPoints[it_forward];
 
-				//mt::vec2f dir;
-				//mt::norm_v2( dir, p1 - p0 );
+				mt::vec2f p0(point_current->x, point_current->y);
+				mt::vec2f p1(point_forward->x, point_forward->y);
 
-				//mt::vec2f perp;
-				//mt::perp_left_v2( perp, dir );
-
-				//Segment segment(p1, p0);
-
-				//perp *= m_unitSize * 0.25f;
-
-				Polygon way_polygon;
-				boost::geometry::append( way_polygon, p0 );
-				boost::geometry::append( way_polygon, p1 );
-				//boost::geometry::append( way_polygon, p1 - perp );
-				//boost::geometry::append( way_polygon, p0 - perp );
-
-				boost::geometry::correct( way_polygon );
-
-				bool intersects = false;
-
-				for( TObstacles::iterator
-					it = m_obstales.begin(),
-					it_end = m_obstales.end();
-				it != it_end;
-				++it )
+				if( this->testHolesSegment_( p0, p1 ) == true )
 				{
-					const Polygon & hole = it->hole;
-
-					if( boost::geometry::intersects( hole, way_polygon ) == true )
-					{
-						intersects = true;
-						break;
-					}
-				}
-
-				i = j - 1;
-
-				if( intersects == true )
-				{
-					const mt::vec2f & p2 = _ways[i];
-
-					_fileter.push_back( p2 );
-
 					break;
 				}
+
+				s_addNeignborWayPoint( point_current, point_forward );
 			}
 		}
-
-		const mt::vec2f & pb = _ways.back();
-
-		_fileter.push_back( pb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static PFMPoint * s_minimalWeightPoint( PFMPoint * _p0, PFMPoint * _p1, PFMPoint * _p2 )
@@ -465,7 +685,57 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PFMPoint * PathFinderMap::findNearestPoint_( const mt::vec2f & _v ) const
+	{
+		PFMPoint * minimal_point = nullptr;
+		float minimal_length = 1024.f * 1024.f;
+
+		for( Points::const_iterator
+			it = m_points.begin(),
+			it_end = m_points.end();
+		it != it_end;
+		++it )
+		{
+			PFMPoint * p = (PFMPoint *)*it;
+
+			mt::vec2f pv(p->x, p->y);
+
+			float length = mt::length_v2_v2( _v, pv );
+			
+			if( length < minimal_length )
+			{
+				minimal_length = length;
+				minimal_point = p;
+			}
+		}
+
+		return minimal_point;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
+	{
+		if( this->testHolesSegment_( _from, _to ) == false )
+		{
+			TVectorWayPoint wayPoints;
+
+			wayPoints.push_back( _from );
+			wayPoints.push_back( _to );
+
+			PathFinderWay * way = new PathFinderWay(m_serviceProvider);
+
+			way->initialize( _from, _to, wayPoints );
+
+			m_pathFinderWays.push_back( way );
+
+			return way;
+		}
+
+		//PFMPoint * p = this->findNearestPoint_()
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PathFinderWay * PathFinderMap::findPath2( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
 		if( this->testHolesSegment_( _from, _to ) == false )
 		{
@@ -495,7 +765,7 @@ namespace Menge
 		
 		for( size_t i = 0; i != m_cachePointUse; ++i )
 		{
-			m_cachePoint[i].weight = 1024.f * 1024.f;
+			m_cachePoint[i].weight = 1024.f * 1024.f;			
 		}
 		
 		PFMPoint * p_to0 = (PFMPoint *)tr_to->GetPoint( 0 );
@@ -516,24 +786,111 @@ namespace Menge
 	
 		PFMPoint * minimalPoint = s_minimalWeightPoint( p_from0, p_from1, p_from2 );
 
-		TVectorWayPoint wayPoints;
+		PFMPoints wayPoints;				
+		s_slitherPath3( minimalPoint, p_to0, p_to1, p_to2, wayPoints );
+		
+		m_cachePointUse2 = 0;
 
-		wayPoints.push_back( _from );
-		s_slitherPath( minimalPoint, p_to0, p_to1, p_to2, wayPoints );
-		wayPoints.push_back( _to );
-				
-		TVectorWayPoint wayPointsFilters2;
-		this->filterWayPoints_( wayPointsFilters2, wayPoints );
+		PFMPoints wayPoints2;
+		PFMPoint * p_from = this->createPoint2_( _from.x, _from.y );
+		PFMPoint * p_to = this->createPoint2_( _to.x, _to.y );
 
-		TVectorWayPoint wayPointsFilters1;
-		this->filterWayPoints_( wayPointsFilters1, wayPointsFilters2 );
+		wayPoints2.push_back( p_from );
 
-		TVectorWayPoint wayPointsFilters;
-		this->filterWayPoints_( wayPointsFilters, wayPointsFilters1 );
+		for( PFMPoints::const_iterator
+			it = wayPoints.begin(),
+			it_end = wayPoints.end();
+		it != it_end;
+		++it )
+		{
+			const PFMPoint * p = *it;
+
+			PFMPoint * p2 = this->createPoint2_( p->x, p->y );
+
+			wayPoints2.push_back( p2 );
+		}
+
+		wayPoints2.push_back( p_to );
+
+		for( PFMPoints::iterator
+			it = wayPoints2.begin(),
+			it_end = wayPoints2.end();
+		it != it_end;
+		++it )
+		{
+			PFMPoint * p = *it;
+
+			p->weight = 1024.f * 1024.f;
+		}
+
+		p_from->weight = 0.f;
+		
+		this->calcNeighborPoints_( wayPoints2 );
+
+		printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+			);
+
+		for( PFMPoints::const_iterator
+			it = wayPoints2.begin(),
+			it_end = wayPoints2.end();
+		it != it_end;
+		++it )
+		{
+			const PFMPoint * point = *it;
+
+			printf("point %.0f:%.0f to"
+				, point->x
+				, point->y
+				);
+
+			for( PFMPoint::TVectorNeighbor::const_iterator
+				it_neigbor = point->neighbor.begin(),
+				it_neigbor_end = point->neighbor.end();
+			it_neigbor != it_neigbor_end;
+			++it_neigbor )
+			{
+				const PFMPoint * n = *it_neigbor;
+
+				printf(" %.0f:%0.f"
+					, n->x
+					, n->y
+					);
+			}
+
+			printf("\n");
+		}
+
+		PFMPoint * first = wayPoints2.front();
+		PFMPoint * last = wayPoints2.back();
+
+		PFMPoints wayPoints3;
+		s_slitherPath1( last, first, wayPoints3 );
+
+		//TVectorWayPoint wayPointsFilters2;
+		//this->filterWayPoints_( wayPointsFilters2, wayPoints );
+
+		//TVectorWayPoint wayPointsFilters1;
+		//this->filterWayPoints_( wayPointsFilters1, wayPointsFilters2 );
+
+		//TVectorWayPoint wayPointsFilters;
+		//this->filterWayPoints_( wayPointsFilters, wayPointsFilters1 );
+
+		TVectorWayPoint wayPoints4;
+
+		for( PFMPoints::const_reverse_iterator
+			it = wayPoints3.rbegin(),
+			it_end = wayPoints3.rend();
+		it != it_end;
+		++it )
+		{
+			const PFMPoint * point = *it;
+
+			wayPoints4.push_back( mt::vec2f(point->x, point->y) );
+		}
 		
 		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
 
-		way->initialize( _from, _to, wayPointsFilters );
+		way->initialize( _from, _to, wayPoints4 );
 		
 		m_pathFinderWays.push_back( way );
 
@@ -571,68 +928,134 @@ namespace Menge
 			_camera = m_camera;
 		}
 
-		if( m_sweepContext == nullptr )
+		if( m_sweepContext != nullptr )
 		{
-			return;
+			const Triangles & triangles = m_sweepContext->GetTriangles();
+
+			for( Triangles::const_iterator
+				it = triangles.begin(),
+				it_end = triangles.end();
+			it != it_end;
+			++it )
+			{
+				p2t::Triangle * tr = *it;
+
+				const p2t::Point * p0 = tr->GetPoint(0);
+				const p2t::Point * p1 = tr->GetPoint(1);
+				const p2t::Point * p2 = tr->GetPoint(2);
+
+				RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+					->getDebugRenderVertex2D( 3 * 2 );
+
+				vertices[0].pos.x = p0->x;
+				vertices[0].pos.y = p0->y;
+				vertices[0].pos.z = 0.f;
+
+				vertices[1].pos.x = p1->x;
+				vertices[1].pos.y = p1->y;
+				vertices[1].pos.z = 0.f;
+
+
+				vertices[2].pos.x = p1->x;
+				vertices[2].pos.y = p1->y;
+				vertices[2].pos.z = 0.f;
+
+				vertices[3].pos.x = p2->x;
+				vertices[3].pos.y = p2->y;
+				vertices[3].pos.z = 0.f;
+
+
+				vertices[4].pos.x = p2->x;
+				vertices[4].pos.y = p2->y;
+				vertices[4].pos.z = 0.f;
+
+				vertices[5].pos.x = p0->x;
+				vertices[5].pos.y = p0->y;
+				vertices[5].pos.z = 0.f;
+
+				for( size_t i = 0; i != 6; ++i )
+				{
+					vertices[i].color = 0xffffffff;
+					vertices[i].uv.x = 0.f;
+					vertices[i].uv.y = 0.f;
+					vertices[i].uv2.x = 0.f;
+					vertices[i].uv2.y = 0.f;
+				}
+
+				const RenderMaterialInterfacePtr & material = RENDER_SERVICE(m_serviceProvider)
+					->getDebugMaterial();
+
+				RENDER_SERVICE(m_serviceProvider)
+					->addRenderLine( _viewport, _camera, material, vertices, 6, nullptr );
+			}
 		}
 
-		const Triangles & triangles = m_sweepContext->GetTriangles();
-
-		for( Triangles::const_iterator
-			it = triangles.begin(),
-			it_end = triangles.end();
+		for( Points::const_iterator
+			it = m_points.begin(),
+			it_end = m_points.end();
 		it != it_end;
 		++it )
 		{
-			p2t::Triangle * tr = *it;
+			PFMPoint * p = (PFMPoint*)*it;
+			
+			size_t numpoints = p->neighbor.size();
 
-			const p2t::Point * p0 = tr->GetPoint(0);
-			const p2t::Point * p1 = tr->GetPoint(1);
-			const p2t::Point * p2 = tr->GetPoint(2);
-
-			RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
-				->getDebugRenderVertex2D( 3 * 2 );
-
-			vertices[0].pos.x = p0->x;
-			vertices[0].pos.y = p0->y;
-			vertices[0].pos.z = 0.f;
-
-			vertices[1].pos.x = p1->x;
-			vertices[1].pos.y = p1->y;
-			vertices[1].pos.z = 0.f;
-
-
-			vertices[2].pos.x = p1->x;
-			vertices[2].pos.y = p1->y;
-			vertices[2].pos.z = 0.f;
-
-			vertices[3].pos.x = p2->x;
-			vertices[3].pos.y = p2->y;
-			vertices[3].pos.z = 0.f;
-
-
-			vertices[4].pos.x = p2->x;
-			vertices[4].pos.y = p2->y;
-			vertices[4].pos.z = 0.f;
-
-			vertices[5].pos.x = p0->x;
-			vertices[5].pos.y = p0->y;
-			vertices[5].pos.z = 0.f;
-
-			for( size_t i = 0; i != 6; ++i )
+			if( numpoints == 0 )
 			{
-				vertices[i].color = 0xffffffff;
-				vertices[i].uv.x = 0.f;
-				vertices[i].uv.y = 0.f;
-				vertices[i].uv2.x = 0.f;
-				vertices[i].uv2.y = 0.f;
+				continue;
 			}
 
-			const RenderMaterialInterfacePtr & material = RENDER_SERVICE(m_serviceProvider)
+			size_t vertexCount = numpoints * 2;
+
+			RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+				->getDebugRenderVertex2D( vertexCount );
+
+			if( vertices == nullptr )
+			{
+				return;
+			}
+
+			for( PFMPoint::TVectorNeighbor::size_type
+				it_neighbor = 0,
+				it_neighbor_end = p->neighbor.size();
+			it_neighbor != it_neighbor_end;
+			++it_neighbor )
+			{		
+				PFMPoint * n = (PFMPoint*)p->neighbor[it_neighbor];
+
+				RenderVertex2D & v0 = vertices[it_neighbor*2+0];
+
+				v0.pos.x = p->x;
+				v0.pos.y = p->y;
+				v0.pos.z = 0.f;
+
+				v0.color = 0xFF00FFFF;
+				v0.uv.x = 0.f;
+				v0.uv.y = 0.f;
+				v0.uv2.x = 0.f;
+				v0.uv2.y = 0.f;
+
+				RenderVertex2D & v1 = vertices[it_neighbor*2+1];
+
+				v1.pos.x = n->x;
+				v1.pos.y = n->y;
+				v1.pos.z = 0.f;
+
+				v1.color = 0xFF00FFFF;
+				v1.uv.x = 0.f;
+				v1.uv.y = 0.f;
+				v1.uv2.x = 0.f;
+				v1.uv2.y = 0.f;
+			}
+
+			const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
 				->getDebugMaterial();
 
-			RENDER_SERVICE(m_serviceProvider)
-				->addRenderLine( _viewport, _camera, material, vertices, 6, nullptr );
+			RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
+				, vertices
+				, vertexCount
+				, nullptr
+				);
 		}
 
 		for( TObstacles::iterator

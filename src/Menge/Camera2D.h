@@ -24,9 +24,10 @@ namespace Menge
 	public:
 		void setRenderport( const Viewport & _viewport );
 
+
 	public:
-		void setRenderportScale( float _scale );
-		float getRenderportScale() const;
+		void setWidescreenSupport( bool _value );
+		bool getWidescreenSupport() const;
 
 	public:
 		const Viewport & getCameraRenderport() const override;
@@ -64,6 +65,8 @@ namespace Menge
 		Observer * m_observerChangeWindowResolution;
 
 		mt::mat4f m_worldMatrix;
+
+		bool m_widescreenSupport;
 		
 		mutable mt::mat4f m_viewMatrix;
 		mutable mt::mat4f m_projectionMatrix;

@@ -82,24 +82,6 @@ namespace Menge
 
 		m_viewportWM.begin = (viewportWM.begin - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
 		m_viewportWM.end = (viewportWM.end - viewportMaskBegin) / viewportMaskSize * contentResolutionSize;
-
-		if( m_viewportWM.begin.x < 0.f )
-		{
-			m_viewportWM.begin.x = 0.f;
-		}
-		else if( m_viewportWM.begin.x > contentResolutionSize.x )
-		{
-			m_viewportWM.begin.x = contentResolutionSize.x;
-		}
-
-		if( m_viewportWM.begin.y < 0.f )
-		{
-			m_viewportWM.begin.y = 0.f;
-		}
-		else if( m_viewportWM.begin.y > contentResolutionSize.y )
-		{
-			m_viewportWM.begin.y = contentResolutionSize.y;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

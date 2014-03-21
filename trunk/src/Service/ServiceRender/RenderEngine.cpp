@@ -834,6 +834,49 @@ namespace Menge
 		//renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
 		//renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
 
+		float vp_x = ::floorf( renderViewport.begin.x + 0.5f );
+		float vp_y = ::floorf( renderViewport.begin.y + 0.5f );
+
+		float width = renderViewport.getWidth();
+		float height = renderViewport.getHeight();
+
+		float vp_width = ::floorf( width + 0.5f );
+		float vp_height = ::floorf( height + 0.5f );
+
+		mt::vec2f windowSize;
+		m_windowResolution.calcSize( windowSize );
+		
+		if( vp_x >= windowSize.x || 
+			vp_y >= windowSize.y ||
+			vp_x + vp_width <= 0 || 
+			vp_y + vp_height <= 0 )
+		{
+			renderViewport.begin.x = 0.f;
+			renderViewport.begin.y = 0.f;
+			renderViewport.end.x = 0.f;
+			renderViewport.end.x = 0.f;
+		}
+		else
+		{
+			if( vp_x < 0.f )
+			{
+				renderViewport.begin.x = 0.f;
+			}
+			else if( vp_x + vp_width > windowSize.x )
+			{
+				renderViewport.end.x = windowSize.x;
+			}
+
+			if( vp_y < 0.f )
+			{
+				renderViewport.begin.y = 0.f;
+			}
+			else if( vp_y + vp_height > windowSize.y )
+			{
+				renderViewport.end.y = windowSize.y;
+			}
+		}
+
 		RENDER_SYSTEM(m_serviceProvider)
 			->setViewport( renderViewport );
 

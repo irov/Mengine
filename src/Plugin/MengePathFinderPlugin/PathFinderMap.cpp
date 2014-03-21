@@ -275,6 +275,30 @@ namespace Menge
 			*_p1 = p12;
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////	
+	void PathFinderMap::attachNeighbor_( Points & _points, Points::size_type _begin, Points::size_type _end, PFMPoint * _p0 ) const
+	{
+		mt::vec2f v0(_p0->x, _p0->y);
+
+		for( Points::size_type
+			it_next = _begin,
+			it_next_end = _end;
+		it_next != it_next_end;
+		++it_next )
+		{
+			PFMPoint * p1 = (PFMPoint *)_points[it_next];
+
+			mt::vec2f v1(p1->x, p1->y);
+
+			if( this->testHolesSegment_( v0, v1 ) == true )
+			{
+				continue;
+			}
+
+			s_pointAddNeighbor( _p0, p1 );
+			s_pointAddNeighbor( p1, _p0 );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::generateMap()
 	{
@@ -301,26 +325,7 @@ namespace Menge
 		{
 			PFMPoint * p0 = (PFMPoint *)m_points[it];
 
-			mt::vec2f v0(p0->x, p0->y);
-
-			for( Points::size_type
-				it_next = it + 1,
-				it_next_end = points_size;
-			it_next != it_next_end;
-			++it_next )
-			{
-				PFMPoint * p1 = (PFMPoint *)m_points[it_next];
-								
-				mt::vec2f v1(p1->x, p1->y);
-
-				if( testHolesSegment_( v0, v1 ) == true )
-				{
-					continue;
-				}
-
-				s_pointAddNeighbor( p0, p1 );
-				s_pointAddNeighbor( p1, p0 );
-			}
+			this->attachNeighbor_( m_points, it + 1, points_size, p0 );
 		}
 
 		return true;
@@ -729,6 +734,16 @@ namespace Menge
 
 			return way;
 		}
+
+
+		PFMPoint * point_from = createPoint2_( _from.x, _from.x );
+		PFMPoint * point_to = createPoint2_( _to.x, _to.x );
+
+		Points::size_type points_size = m_points.size();
+
+		this->attachNeighbor_( m_points, 0, points_size, point_from );
+		this->attachNeighbor_( m_points, 0, points_size, point_to );
+
 
 		//PFMPoint * p = this->findNearestPoint_()
 

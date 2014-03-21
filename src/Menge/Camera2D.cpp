@@ -92,6 +92,9 @@ namespace	Menge
 		mt::mul_v2_m4( renderViewport.begin, m_renderport.begin, wm );
 		mt::mul_v2_m4( renderViewport.end, m_renderport.end, wm );
 
+		mt::vec2f contentResolutionSizeWM;
+		mt::mul_v2_m4( contentResolutionSizeWM, contentResolutionSize, wm );
+
 		Viewport gameViewportSc;
 		gameViewportSc.begin = contentResolutionSize * viewportMaskBegin;
 		gameViewportSc.end = contentResolutionSize * viewportMaskEnd;

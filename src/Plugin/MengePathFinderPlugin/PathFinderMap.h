@@ -61,6 +61,7 @@ namespace Menge
 		bool testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const;
 		void calcNeighborPoints_( PFMPoints & _wayPoints ) const;
 		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
+		void attachNeighbor_( Points & _points, Points::size_type _begin, Points::size_type _end, PFMPoint * _p0 ) const;
 
 		PFMPoint * findNearestPoint_( const mt::vec2f & _v ) const;
 

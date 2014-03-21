@@ -57,9 +57,12 @@ namespace	Menge
 		const mt::vec2f & cursor_pos = INPUT_SERVICE(m_serviceProvider)
 			->getCursorPosition();
 
+		mt::vec2f wp;
+		this->calcMouseWorldPosition( m_renderCamera, m_renderViewport, cursor_pos, wp );
+
 		mt::vec3f pos;
-		pos.x = cursor_pos.x;
-		pos.y = cursor_pos.y;
+		pos.x = wp.x;
+		pos.y = wp.y;
 		pos.z = 0.f;
 
 		this->setLocalPosition( pos );

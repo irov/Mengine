@@ -1200,55 +1200,17 @@ namespace Menge
 
 		D3DVIEWPORT9 VP;
 
-		VP.X = (int)::floorf( _viewport.begin.x + 0.5f );
-		VP.Y = (int)::floorf( _viewport.begin.y + 0.5f );
+		VP.X = (DWORD)::floorf( _viewport.begin.x + 0.5f );
+		VP.Y = (DWORD)::floorf( _viewport.begin.y + 0.5f );
 
 		float width = _viewport.getWidth();
 		float height = _viewport.getHeight();
 
-		VP.Width = (int)::floorf( width + 0.5f );
-		VP.Height = (int)::floorf( height + 0.5f );
+		VP.Width = (DWORD)::floorf( width + 0.5f );
+		VP.Height = (DWORD)::floorf( height + 0.5f );
 
 		VP.MinZ = 0.f;
 		VP.MaxZ = 1.f;
-
-        size_t resolutionWidth = m_windowResolution.getWidth();
-        size_t resolutionHeight = m_windowResolution.getHeight();
-
-        if( VP.X >= resolutionWidth || 
-            VP.Y >= resolutionHeight ||
-            VP.X + VP.Width <= 0 || 
-            VP.Y + VP.Height <= 0 )
-        {
-            LOGGER_INFO(m_serviceProvider)("DX9RenderSystem::setViewport set zero Viewport (%d, %d, %d, %d)"
-                , VP.X
-                , VP.Y
-                , VP.X + VP.Width
-                , VP.Y + VP.Height
-                );
-
-            D3DVIEWPORT9 VP_Zero;
-            VP_Zero.X = 0;
-            VP_Zero.Y = 0;
-            VP_Zero.Width = 0;
-            VP_Zero.Height = 0;
-            VP_Zero.MinZ = 0.f;
-            VP_Zero.MaxZ = 1.f;
-
-            DXCALL( m_serviceProvider, m_pD3DDevice, SetViewport, (&VP_Zero) );
-
-            return;
-        }
-
-        if( VP.X + VP.Width > resolutionWidth )
-        {
-            VP.Width = resolutionWidth - VP.X;
-        }
-
-        if( VP.Y + VP.Height > resolutionHeight )
-        {
-            VP.Height = resolutionHeight - VP.Y;
-        }
 
 		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetViewport, (&VP) )
 		{

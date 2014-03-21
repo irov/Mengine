@@ -1,11 +1,7 @@
 #	include "Camera2D.h"
 
-#	include "Game.h"
-#	include "Application.h"
-
-#	include "Interface/RenderSystemInterface.h"
-
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/GameInterface.h"
+#	include "Interface/ApplicationInterface.h"
 #	include "Interface/NotificatorInterface.h"
 
 #	include "Logger/Logger.h"
@@ -18,7 +14,6 @@ namespace	Menge
 		, m_observerChangeWindowResolution(nullptr)
 		, m_invalidateMatrix(true)
 		, m_invalidateProjectionMatrix(true)
-		, m_renderportScale(1.f)
 	{
 		mt::ident_m4(m_worldMatrix);
 	}
@@ -92,13 +87,15 @@ namespace	Menge
 		mt::vec2f viewportMaskEnd = gameViewport.end / contentResolutionSize;
 
 		Viewport renderViewport;
-		renderViewport.begin = m_renderport.begin;
-		renderViewport.end = m_renderport.end;
+
+		const mt::mat4f & wm = this->getWorldMatrix();
+		mt::mul_v2_m4( renderViewport.begin, m_renderport.begin, wm );
+		mt::mul_v2_m4( renderViewport.end, m_renderport.end, wm );
 
 		Viewport gameViewportSc;
-		gameViewportSc.begin = m_renderport.begin * viewportMaskBegin;
-		gameViewportSc.end = m_renderport.end * viewportMaskEnd;
-		
+		gameViewportSc.begin = contentResolutionSize * viewportMaskBegin;
+		gameViewportSc.end = contentResolutionSize * viewportMaskEnd;
+
 		if( renderViewport.begin.x < gameViewportSc.begin.x )
 		{
 			renderViewport.begin.x = gameViewportSc.begin.x;
@@ -118,9 +115,15 @@ namespace	Menge
 		{
 			renderViewport.end.y = gameViewportSc.end.y;
 		}
-		
+
+		mt::mat4f wm_inv;
+		mt::inv_m4( wm_inv, wm );
+
+		mt::mul_v2_m4( renderViewport.begin, renderViewport.begin, wm_inv );
+		mt::mul_v2_m4( renderViewport.end, renderViewport.end, wm_inv );
+
 		RENDER_SERVICE(m_serviceProvider)
-			->makeProjectionOrthogonal( m_projectionMatrix, m_renderport, -1000.0f, 1000.0f );
+			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, -1000.0f, 1000.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

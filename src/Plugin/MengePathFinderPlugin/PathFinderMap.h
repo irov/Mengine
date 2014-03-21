@@ -24,6 +24,8 @@ namespace Menge
 		TVectorNeighbor neighbor;
 	};
 
+	typedef std::vector<PFMPoint *> PFMPoints;
+
 	class PathFinderMap
 	{
 	public:
@@ -40,9 +42,11 @@ namespace Menge
 		
 	public:
 		bool generateMap();
+		bool generateMap2();
 
 	public:
 		PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to );
+		PathFinderWay * findPath2( const mt::vec2f & _from, const mt::vec2f & _to );
 		void removePath( PathFinderWay * _way );
 
 	public:
@@ -52,9 +56,18 @@ namespace Menge
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask );
 
 	protected:
+		bool testBigHolesPolygon_( const Polygon & _polygon ) const;
 		bool testHolesPolygon_( const Polygon & _polygon ) const;
 		bool testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const;
+		void calcNeighborPoints_( PFMPoints & _wayPoints ) const;
 		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
+
+		PFMPoint * findNearestPoint_( const mt::vec2f & _v ) const;
+
+	protected:
+		PFMPoint * createPoint_( float _x, float _y );
+		PFMPoint * createPoint2_( float _x, float _y );
+		bool makePolyPointFromPolygon_( const Polygon & _polygon, Points & _points );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -77,7 +90,12 @@ namespace Menge
 
 		PFMPoint m_cachePoint[1024];
 		size_t m_cachePointUse;
-				
+
+		PFMPoint m_cachePoint2[1024];
+		size_t m_cachePointUse2;
+
+		Points m_points;
+
 		p2t::SweepContext * m_sweepContext;
 
 		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;

@@ -608,7 +608,7 @@ namespace Menge
 
 		size_t compress_size = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( &compress[0], compress_bound, compress_size, &_buffer[0], binary_aek_size ) == false )
+			->compress( &compress[0], compress_bound, &_buffer[0], binary_aek_size, compress_size ) == false )
 		{
 			return false;
 		}

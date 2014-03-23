@@ -353,7 +353,7 @@ namespace Menge
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( &_data[0], load_data_size, uncompress_size, &archive_blob[0], load_compress_size ) == false )
+            ->decompress( &_data[0], load_data_size, &archive_blob[0], load_compress_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (uncompress failed)"
                 , m_name.c_str()
@@ -418,7 +418,7 @@ namespace Menge
 
         size_t comress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( &archive_blob[0], archive_size, comress_size, &_data[0], _data.size() ) == false )
+            ->compress( &archive_blob[0], archive_size, &_data[0], _data.size(), comress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'crc32' %s (compress failed)"
                 , m_name.c_str()

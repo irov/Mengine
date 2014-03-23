@@ -1,53 +1,55 @@
-#	include "ArchiveService.h"
+#	include "ZipArchiveService.h"
 
 #	include "Logger/Logger.h"
 
 #   include "zlib.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ArchiveService, Menge::ArchiveServiceInterface, Menge::ArchiveService );
+//SERVICE_FACTORY( ArchiveService, Menge::ArchiveServiceInterface, Menge::ZipArchiveService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveService::ArchiveService()
+	ZipArchiveService::ZipArchiveService()
         : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveService::~ArchiveService()
+	ZipArchiveService::~ZipArchiveService()
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ArchiveService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void ZipArchiveService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ArchiveService::getServiceProvider() const
+    ServiceProviderInterface * ZipArchiveService::getServiceProvider() const
     {
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ArchiveService::compressBound( size_t _size )
+    size_t ZipArchiveService::compressBound( size_t _size ) const
     {
         uLong size = ::compressBound( _size );
 
-        return size;
+		size_t total_size = size;
+
+        return total_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::compress( void * _distance, size_t _bufferSize, size_t & _compressSize, const void * _source, size_t _sourceSize )
+    bool ZipArchiveService::compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize )
     {
         uLongf compressSize = _bufferSize;
 
-        Bytef * z_dst_buffer = (Bytef *)_distance;
-        Bytef * z_src_buffer = (Bytef *)_source;
+        Bytef * dst_buffer = (Bytef *)_distance;
+        const Bytef * src_buffer = (const Bytef *)_source;
 
-        int zerr = ::compress( z_dst_buffer, &compressSize, z_src_buffer, _sourceSize );
+        int zerr = ::compress( dst_buffer, &compressSize, src_buffer, _sourceSize );
 
         if( zerr != Z_OK )
         {
-            LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress invalid compress code [%d]"
+            LOGGER_ERROR(m_serviceProvider)("ZipArchiveService::compress invalid compress code [%d]"
                 , zerr
                 );
 
@@ -59,18 +61,18 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::uncompress( void * _distance, size_t _bufferSize, size_t & _uncompressSize, const void * _source, size_t _sourceSize )
+    bool ZipArchiveService::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _uncompressSize )
     {
         uLongf destLen = _bufferSize;
 
-        Bytef * z_dst_buffer = (Bytef *)_distance;
-        Bytef * z_src_buffer = (Bytef *)_source;
+        Bytef * dst_buffer = (Bytef *)_distance;
+        const Bytef * src_buffer = (const Bytef *)_source;
 
-        int zerr = ::uncompress( z_dst_buffer, &destLen, z_src_buffer, _sourceSize );
+        int zerr = ::uncompress( dst_buffer, &destLen, src_buffer, _sourceSize );
 
         if( zerr != Z_OK )
         {
-            LOGGER_ERROR(m_serviceProvider)("ArchiveService::uncompress invalid uncompress code [%d]"
+            LOGGER_ERROR(m_serviceProvider)("ZipArchiveService::decompress invalid uncompress code [%d]"
                 , zerr
                 );
 

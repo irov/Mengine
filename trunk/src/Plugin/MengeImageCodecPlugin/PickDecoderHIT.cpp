@@ -25,7 +25,6 @@ namespace Menge
     bool PickDecoderHIT::_initialize()
     {
         size_t magic;
-
         m_stream->read( &magic, sizeof(magic) );
 
         if( magic != hit_magic )
@@ -51,8 +50,8 @@ namespace Menge
 
         m_stream->read( &m_dataInfo.width, sizeof(m_dataInfo.width) );
         m_stream->read( &m_dataInfo.height, sizeof(m_dataInfo.height) );
-        m_stream->read( &m_dataInfo.mipmaplevel, sizeof(m_dataInfo.mipmaplevel) );        
-        m_stream->read( &m_dataInfo.mipmapsize, sizeof(m_dataInfo.mipmapsize) );
+        m_stream->read( &m_dataInfo.mipmaplevel, sizeof(m_dataInfo.mipmaplevel) );
+        m_stream->read( &m_dataInfo.mipmapsize, sizeof(m_dataInfo.mipmapsize) );	
 
         m_stream->read( &m_mipmapcompresssize, sizeof(m_mipmapcompresssize) );
 
@@ -72,7 +71,7 @@ namespace Menge
 		CacheMemoryBuffer compress_buffer(m_serviceProvider, m_mipmapcompresssize);
 		void * compress_memory = compress_buffer.getMemory();
 
-        int read = m_stream->read( compress_memory, m_mipmapcompresssize );
+        size_t read = m_stream->read( compress_memory, m_mipmapcompresssize );
 
         if( read == 0 )
         {
@@ -82,9 +81,9 @@ namespace Menge
             return 0;
         }
 
-        size_t destLen;
+        size_t decompressSize;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( _buffer, _bufferSize, destLen, compress_memory, m_mipmapcompresssize ) == false )
+            ->decompress( _buffer, _bufferSize, compress_memory, m_mipmapcompresssize, decompressSize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid uncompress"
                 );
@@ -92,7 +91,7 @@ namespace Menge
             return 0;
         }
         
-		return destLen;
+		return decompressSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

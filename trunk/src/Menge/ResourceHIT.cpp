@@ -90,7 +90,7 @@ namespace Menge
                 , m_codec.c_str()
                 );
 
-            return nullptr;
+            return false;
         }
 
 		if( decoder->initialize( stream ) == false )
@@ -101,7 +101,7 @@ namespace Menge
 				, m_codec.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
         const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();

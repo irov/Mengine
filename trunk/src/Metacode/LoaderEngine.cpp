@@ -147,10 +147,29 @@ namespace Menge
             return false;
         }
 
+		size_t format_version;
+		_stream->read( &format_version, sizeof(format_version) );
+
+		if( format_version != FORMAT_VERSION_BIN )
+		{
+			if( _reimport == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::importBin_ invalid format version read %d need %d"
+					, format_version
+					, FORMAT_VERSION_BIN
+					);
+			}
+			else
+			{
+				*_reimport = true;
+			}   
+
+			return false;
+		}
+
         size_t bin_size;
         _stream->read( &bin_size, sizeof(bin_size) );
 
-	
         size_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
@@ -161,11 +180,18 @@ namespace Menge
 
 		if( compress_reading != compress_size )
 		{
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid compress size %d need %d"
-                , compress_reading
-                , compress_size
-                );
-
+			if( _reimport == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid compress size %d need %d"
+					, compress_reading
+					, compress_size
+					);
+			}
+			else
+			{
+				*_reimport = true;
+			}
+			
 			return false;
 		}
 
@@ -174,10 +200,17 @@ namespace Menge
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( binary_memory, bin_size, uncompress_size, compress_memory, compress_size ) == false )
+            ->decompress( binary_memory, bin_size, compress_memory, compress_size, uncompress_size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid uncompress"
-                );
+			if( _reimport == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid uncompress"
+					);
+			}
+			else
+			{
+				*_reimport = true;
+			}
 
             return false;
         }

@@ -159,7 +159,7 @@ namespace Menge
 
 		size_t uncompress_size;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->uncompress( _buffer, m_uncompress_size, uncompress_size, compress_buffer, m_compress_size ) == false )
+			->decompress( _buffer, m_uncompress_size, compress_buffer, m_compress_size, uncompress_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::decode uncompress failed"
 				);

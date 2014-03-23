@@ -12,11 +12,11 @@ namespace Menge
         SERVICE_DECLARE( "ArchiveService" )
 
     public:
-        virtual size_t compressBound( size_t _size ) = 0;
+        virtual size_t compressBound( size_t _size ) const = 0;
 
     public:
-        virtual bool compress( void * _buffer, size_t _bufferSize, size_t & _compressSize, const void * _source, size_t _sourceSize ) = 0;
-        virtual bool uncompress( void * _buffer, size_t _bufferSize, size_t & _uncompressSize, const void * _source, size_t _sourceSize ) = 0;
+        virtual bool compress( void * _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize ) = 0;
+        virtual bool decompress( void * _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _uncompressSize ) = 0;
     };
 
 #   define ARCHIVE_SERVICE( serviceProvider )\

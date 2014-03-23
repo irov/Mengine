@@ -401,7 +401,7 @@ namespace Menge
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->uncompress( code_memory, code_size, uncompress_size, compress_memory, compress_size ) == false )
+            ->decompress( code_memory, code_size, compress_memory, compress_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScriptModuleFinder::unmarshal_code_ uncompress failed"
                 );

@@ -1,5 +1,6 @@
 #	include "XmlToBinDecoder.h"
 
+#   include "Interface/LoaderInterface.h"
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
@@ -87,6 +88,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XmlToBinDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
 	{
+		(void)_dataInfo;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -219,7 +221,7 @@ namespace Menge
         
         size_t compress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( &compress_buf[0], bound_size, compress_size, &bin_buf[0], bin_size ) == false )
+            ->compress( &compress_buf[0], bound_size, &bin_buf[0], bin_size, compress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error compress bin %s"
                 , m_options.pathBin.c_str()
@@ -241,6 +243,8 @@ namespace Menge
         }
 
         bin_stream->write( &header_buf[0], Metabuf::header_size );
+
+		bin_stream->write( &FORMAT_VERSION_BIN, sizeof(FORMAT_VERSION_BIN) );
         
         bin_stream->write( &bin_size, sizeof(bin_size) );
         bin_stream->write( &compress_size, sizeof(compress_size) );

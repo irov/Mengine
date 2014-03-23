@@ -81,7 +81,7 @@ namespace Menge
 		
         size_t comress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( archive_memory, archive_size, comress_size, data_memory, data_size ) == false )
+            ->compress( archive_memory, archive_size, data_memory, data_size, comress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: %s invalid compress"
                 , m_options.inputFileName.c_str()
@@ -95,6 +95,7 @@ namespace Menge
 
 		output->write( &DATAFLOW_MAGIC_MDL, sizeof(DATAFLOW_MAGIC_MDL) );
 		output->write( &DATAFLOW_VERSION_MDL, sizeof(DATAFLOW_VERSION_MDL) );
+
         output->write( &data_size, sizeof(data_size) );
         output->write( &comress_size, sizeof(comress_size) );
         output->write( archive_memory, comress_size );

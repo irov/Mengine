@@ -40,6 +40,20 @@ namespace Menge
 		}
 
 		bool status = decoder->initialize( _stream );
+
+		const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+		size_t mipmapsize = dataInfo->mipmapsize;
+		unsigned char * mipmap = new unsigned char [mipmapsize];
+
+		size_t decode_mipmapsize = decoder->decode( mipmap, mipmapsize );
+
+		delete [] mipmap;
+
+		if( decode_mipmapsize != mipmapsize )
+		{
+			return false;                
+		}
 		
 		return status;
 	}

@@ -4,23 +4,23 @@
 
 namespace Menge
 {
-	class ArchiveService
+	class ZipArchiveService
 		: public ArchiveServiceInterface
 	{
 	public:
-		ArchiveService();
-		~ArchiveService();
+		ZipArchiveService();
+		~ZipArchiveService();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
         
     public:
-        size_t compressBound( size_t _size ) override;
+        size_t compressBound( size_t _size ) const override;
 
     public:
-        bool compress( void * _distance, size_t _bufferSize, size_t & _compressSize, const void * _source, size_t _sourceSize ) override;
-        bool uncompress( void * _distance, size_t _bufferSize, size_t & _uncompressSize, const void * _source, size_t _sourceSize ) override;
+        bool compress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _compressSize ) override;
+        bool decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _uncompressSize ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

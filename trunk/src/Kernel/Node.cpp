@@ -429,11 +429,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TListNodeChild & Node::getChild()
-	{
-		return m_child;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeChildren( Node * _node )
 	{
 		if( stdex::intrusive_has( m_child.begin(), m_child.end(), _node ) == false )

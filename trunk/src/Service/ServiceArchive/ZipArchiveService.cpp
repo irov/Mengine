@@ -5,7 +5,7 @@
 #   include "zlib.h"
 
 //////////////////////////////////////////////////////////////////////////
-//SERVICE_FACTORY( ArchiveService, Menge::ArchiveServiceInterface, Menge::ZipArchiveService );
+SERVICE_FACTORY( ArchiveService, Menge::ArchiveServiceInterface, Menge::ZipArchiveService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

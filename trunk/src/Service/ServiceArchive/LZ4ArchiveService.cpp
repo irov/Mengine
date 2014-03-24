@@ -6,7 +6,7 @@
 #   include "lz4hc.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ArchiveService, Menge::ArchiveServiceInterface, Menge::LZ4ArchiveService );
+//SERVICE_FACTORY( ArchiveService, Menge::ArchiveServiceInterface, Menge::LZ4ArchiveService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

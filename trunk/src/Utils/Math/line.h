@@ -4,16 +4,13 @@
 
 #	include "vec2.h"
 
-#	include <vector>
-#	include <algorithm>
-
 namespace mt
 {
 	MATH_FUNCTION_INLINE bool line_intersect_v2(
-			const mt::vec2f & begin_,
-			const mt::vec2f & end_,
-			const mt::vec2f & other_line_begin_,
-			const mt::vec2f & other_line_end_,
+			const mt::vec2f & _begin,
+			const mt::vec2f & _end,
+			const mt::vec2f & _other_line_begin,
+			const mt::vec2f & _other_line_end,
 			mt::vec2f & intersection);
 };
 

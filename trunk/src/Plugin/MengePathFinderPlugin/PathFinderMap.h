@@ -6,18 +6,26 @@
 
 #	include "Core/Polygon.h"
 
-#	include "poly2tri/poly2tri.h"
-
 #	include <list>
 
 namespace Menge
 {
-	typedef std::vector<p2t::Point *> Points;
-	typedef std::vector<p2t::Triangle *> Triangles;
-
 	struct PFMPoint
-		: public p2t::Point
 	{
+		PFMPoint()
+			: v(0.f, 0.f)
+			, weight(0.f)
+		{
+		}
+
+		PFMPoint( const mt::vec2f & _v )
+			: v(_v)
+			, weight(0.f)
+		{
+		}
+
+		mt::vec2f v;
+
 		float weight;
 
 		typedef std::vector<PFMPoint *> TVectorNeighbor;
@@ -42,11 +50,9 @@ namespace Menge
 		
 	public:
 		bool generateMap();
-		bool generateMap2();
 
 	public:
 		PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to );
-		PathFinderWay * findPath2( const mt::vec2f & _from, const mt::vec2f & _to );
 		void removePath( PathFinderWay * _way );
 
 	public:
@@ -61,14 +67,13 @@ namespace Menge
 		bool testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const;
 		void calcNeighborPoints_( PFMPoints & _wayPoints ) const;
 		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
-		void attachNeighbor_( Points & _points, Points::size_type _begin, Points::size_type _end, PFMPoint * _p0 ) const;
+		void attachNeighbor_( PFMPoints & _points, PFMPoints::size_type _begin, PFMPoints::size_type _end, PFMPoint * _p0 ) const;
 
 		PFMPoint * findNearestPoint_( const mt::vec2f & _v ) const;
 
 	protected:
-		PFMPoint * createPoint_( float _x, float _y );
-		PFMPoint * createPoint2_( float _x, float _y );
-		bool makePolyPointFromPolygon_( const Polygon & _polygon, Points & _points );
+		PFMPoint * createPoint_( const mt::vec2f & _v );
+		bool makePolyPointFromPolygon_( const Polygon & _polygon, PFMPoints & _points );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -95,10 +100,8 @@ namespace Menge
 		PFMPoint m_cachePoint2[1024];
 		size_t m_cachePointUse2;
 
-		Points m_points;
-
-		p2t::SweepContext * m_sweepContext;
-
+		PFMPoints m_points;
+				
 		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
 		TVectorPathFinderWay m_pathFinderWays;
 

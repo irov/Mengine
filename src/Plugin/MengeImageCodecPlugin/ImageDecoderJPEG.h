@@ -37,5 +37,7 @@ namespace Menge
 	private:
 		jpeg_decompress_struct m_jpegObject;
 		DecoderJPEGErrorManager m_errorMgr;
+
+		bool m_initialize;
 	};
 }	// namespace Menge

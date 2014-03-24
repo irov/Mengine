@@ -240,12 +240,16 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::ImageDecoderJPEG()
+		: m_initialize(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::~ImageDecoderJPEG()
 	{
-		jpeg_destroy_decompress( &m_jpegObject );
+		if( m_initialize == true )
+		{
+			jpeg_destroy_decompress( &m_jpegObject );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderJPEG::_initialize()
@@ -283,7 +287,9 @@ namespace Menge
 		m_dataInfo.quality = s_getQuality( &m_jpegObject );
 		
 		m_dataInfo.channels = m_jpegObject.out_color_components;
-		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * m_dataInfo.channels;	
+		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * m_dataInfo.channels;
+
+		m_initialize = true;
 
 		return true;
 	}

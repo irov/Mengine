@@ -274,16 +274,16 @@ namespace Menge
 		m_child.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::removeFromParent()
+	bool Node::removeFromParent()
 	{
-		if( m_parent == 0 )
+		if( m_parent == nullptr )
 		{
-			return;
+			return true;
 		}
 
-		m_parent->removeChildren( this );
+		bool result = m_parent->removeChildren( this );
 
-		//this->disable();
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
@@ -434,16 +434,16 @@ namespace Menge
 		return m_child;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::removeChildren( Node * _node )
+	bool Node::removeChildren( Node * _node )
 	{
-        if( intrusive_has( m_child.begin(), m_child.end(), _node ) == false )
+		if( stdex::intrusive_has( m_child.begin(), m_child.end(), _node ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Node::removeChildren %s not found children %s"
                 , this->getName().c_str()
                 , _node->getName().c_str()
                 );
 
-            return;
+            return false;
         }
 
         _node->deactivate();
@@ -452,10 +452,12 @@ namespace Menge
 
         if( parent != this )
         {
-            return;
+            return false;
         }
 
         this->removeChildren_( _node );
+
+		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Node::removeChildren_( Node * _node )

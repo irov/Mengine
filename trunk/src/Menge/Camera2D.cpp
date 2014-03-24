@@ -100,42 +100,49 @@ namespace	Menge
 
 		Viewport renderViewport;
 
-		const mt::mat4f & wm = this->getWorldMatrix();
-		mt::mul_v2_m4( renderViewport.begin, m_renderport.begin, wm );
-		mt::mul_v2_m4( renderViewport.end, m_renderport.end, wm );
-
-		mt::vec2f contentResolutionSizeWM;
-		mt::mul_v2_m4( contentResolutionSizeWM, contentResolutionSize, wm );
-
-		Viewport gameViewportSc;
-		gameViewportSc.begin = contentResolutionSize * viewportMaskBegin;
-		gameViewportSc.end = contentResolutionSize * viewportMaskEnd;
-
-		if( renderViewport.begin.x < gameViewportSc.begin.x )
+		if( m_widescreenSupport == true )
 		{
-			renderViewport.begin.x = gameViewportSc.begin.x;
-		}
+			const mt::mat4f & wm = this->getWorldMatrix();
+			mt::mul_v2_m4( renderViewport.begin, m_renderport.begin, wm );
+			mt::mul_v2_m4( renderViewport.end, m_renderport.end, wm );
 
-		if( renderViewport.begin.y < gameViewportSc.begin.y )
+			mt::vec2f contentResolutionSizeWM;
+			mt::mul_v2_m4( contentResolutionSizeWM, contentResolutionSize, wm );
+
+			Viewport gameViewportSc;
+			gameViewportSc.begin = contentResolutionSize * viewportMaskBegin;
+			gameViewportSc.end = contentResolutionSize * viewportMaskEnd;
+
+			if( renderViewport.begin.x < gameViewportSc.begin.x )
+			{
+				renderViewport.begin.x = gameViewportSc.begin.x;
+			}
+
+			if( renderViewport.begin.y < gameViewportSc.begin.y )
+			{
+				renderViewport.begin.y = gameViewportSc.begin.y;
+			}
+
+			if( renderViewport.end.x > gameViewportSc.end.x )
+			{
+				renderViewport.end.x = gameViewportSc.end.x;
+			}
+
+			if( renderViewport.end.y > gameViewportSc.end.y )
+			{
+				renderViewport.end.y = gameViewportSc.end.y;
+			}
+
+			mt::mat4f wm_inv;
+			mt::inv_m4( wm_inv, wm );
+
+			mt::mul_v2_m4( renderViewport.begin, renderViewport.begin, wm_inv );
+			mt::mul_v2_m4( renderViewport.end, renderViewport.end, wm_inv );
+		}
+		else
 		{
-			renderViewport.begin.y = gameViewportSc.begin.y;
+			renderViewport = m_renderport;
 		}
-
-		if( renderViewport.end.x > gameViewportSc.end.x )
-		{
-			renderViewport.end.x = gameViewportSc.end.x;
-		}
-
-		if( renderViewport.end.y > gameViewportSc.end.y )
-		{
-			renderViewport.end.y = gameViewportSc.end.y;
-		}
-
-		mt::mat4f wm_inv;
-		mt::inv_m4( wm_inv, wm );
-
-		mt::mul_v2_m4( renderViewport.begin, renderViewport.begin, wm_inv );
-		mt::mul_v2_m4( renderViewport.end, renderViewport.end, wm_inv );
 
 		RENDER_SERVICE(m_serviceProvider)
 			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, -1000.0f, 1000.0f );

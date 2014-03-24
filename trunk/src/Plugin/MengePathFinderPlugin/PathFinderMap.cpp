@@ -177,6 +177,24 @@ namespace Menge
 		return &p;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PFMPoint * PathFinderMap::createPoint2_( const mt::vec2f & _v )
+	{
+		if( m_cachePointUse2 >= 1024 )
+		{
+			return nullptr;
+		}
+
+		PFMPoint & p = m_cachePoint2[m_cachePointUse2];
+		++m_cachePointUse2;
+
+		p.v = _v;
+
+		p.weight = 0.f;
+		p.neighbor.clear();
+
+		return &p;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::makePolyPointFromPolygon_( const Polygon & _polygon, PFMPoints & _points )
 	{
 		size_t numpoints = boost::geometry::num_points( _polygon );
@@ -294,16 +312,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_slitherPath1( PFMPoint * _minimal, PFMPoint * _p0, PFMPoints & _points )
+	static void s_slitherPath1( PFMPoint * _minimal, PFMPoint * _p0, TVectorWayPoint & _points )
 	{
-		PFMPoint * minimalNeighbor = _minimal;
+		_points.push_back( _minimal->v );
 
-		_points.push_back( minimalNeighbor );
-
-		if( minimalNeighbor == _p0 )
+		if( _minimal == _p0 )
 		{
 			return;
 		}
+
+		PFMPoint * next = _minimal;
 
 		for( PFMPoint::TVectorNeighbor::iterator
 			it = _minimal->neighbor.begin(),
@@ -313,20 +331,24 @@ namespace Menge
 		{
 			PFMPoint * neighbor = *it;
 
-			if( neighbor->weight > minimalNeighbor->weight )
+			float length = mt::length_v2_v2( _minimal->v, neighbor->v );
+			float neighbor_weight = _minimal->weight - length;
+
+			if( fabsf( neighbor->weight - neighbor_weight ) > 0.001f )
 			{
 				continue;
 			}
 
-			minimalNeighbor = neighbor;
+			next = neighbor;
+			break;
 		}
 
-		if( minimalNeighbor == _minimal )
+		if( next == _minimal )
 		{
 			return;
 		}
 
-		s_slitherPath1( minimalNeighbor, _p0, _points );
+		s_slitherPath1( next, _p0, _points );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const
@@ -404,6 +426,25 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void s_removeNeighbor( PFMPoint * _point )
+	{
+		for( PFMPoint::TVectorNeighbor::const_iterator
+			it = _point->neighbor.begin(),
+			it_end = _point->neighbor.end();
+		it != it_end;
+		++it )
+		{
+			PFMPoint * neighbor = *it;
+
+			PFMPoint::TVectorNeighbor::const_iterator it_found = 
+				std::find( neighbor->neighbor.begin(), neighbor->neighbor.end(), _point );
+
+			neighbor->neighbor.erase( it_found );
+		}
+
+		_point->neighbor.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
 		if( this->testHolesSegment_( _from, _to ) == false )
@@ -421,19 +462,40 @@ namespace Menge
 
 			return way;
 		}
-
-
-		PFMPoint point_from(_from);
-		PFMPoint point_to(_to);
+		
+		PFMPoint point_from( _from );
+		PFMPoint point_to( _to );
 
 		PFMPoints::size_type points_size = m_points.size();
 
 		this->attachNeighbor_( m_points, 0, points_size, &point_from );
 		this->attachNeighbor_( m_points, 0, points_size, &point_to );
+
+		for( PFMPoints::iterator
+			it = m_points.begin(),
+			it_end = m_points.end();
+		it != it_end;
+		++it )
+		{
+			PFMPoint * p = *it;
+
+			p->weight = 1024.f * 1024.f;
+		}
+
+		point_to.weight = 0.f;
+		point_from.weight = 1024.f * 1024.f;
 		
+		s_wavePathPoint( &point_to );
+
+		TVectorWayPoint wayPoints;
+		s_slitherPath1( &point_from, &point_to, wayPoints );
+
+		s_removeNeighbor( &point_from );
+		s_removeNeighbor( &point_to );
+				
 		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
 
-		//way->initialize( _from, _to, wayPoints4 );
+		way->initialize( _from, _to, wayPoints );
 
 		m_pathFinderWays.push_back( way );
 

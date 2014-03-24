@@ -23,8 +23,7 @@ namespace Menge
 
 	public:
 		void setRenderport( const Viewport & _viewport );
-
-
+		
 	public:
 		void setWidescreenSupport( bool _value );
 		bool getWidescreenSupport() const;

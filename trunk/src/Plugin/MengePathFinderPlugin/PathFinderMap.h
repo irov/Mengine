@@ -73,6 +73,7 @@ namespace Menge
 
 	protected:
 		PFMPoint * createPoint_( const mt::vec2f & _v );
+		PFMPoint * createPoint2_( const mt::vec2f & _v );
 		bool makePolyPointFromPolygon_( const Polygon & _polygon, PFMPoints & _points );
 
 	protected:

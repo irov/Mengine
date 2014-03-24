@@ -112,6 +112,7 @@ svn\bin\svn checkout https://svn.code.sf.net/p/pybind/code/trunk pybind
 svn\bin\svn checkout https://svn.code.sf.net/p/metabuf/code/trunk metabuf
 svn\bin\svn checkout https://svn.code.sf.net/p/stdex2/code/trunk stdex
 svn\bin\svn checkout http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
+svn\bin\svn checkout http://lz4.googlecode.com/svn/trunk lz4
 :: svn\bin\svn checkout https://svn.code.sf.net/p/xxbind/code/trunk xxbind
 ::svn\bin\svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator
 :: svn\bin\svn checkout http://simpleini.googlecode.com/svn/trunk simpleini

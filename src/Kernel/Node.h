@@ -135,9 +135,9 @@ namespace Menge
 		bool addChildren( Node * _node );
 		bool addChildrenFront( Node* _node );
 		bool addChildrenAfter( Node* _node, Node * _after );
-		void removeChildren( Node * _node );        
+		bool removeChildren( Node * _node );        
 		void removeAllChild();
-		void removeFromParent();
+		bool removeFromParent();
 		
 		void destroyAllChild();
 

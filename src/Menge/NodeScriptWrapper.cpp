@@ -283,7 +283,7 @@ namespace Menge
                 PyObject * py_arg = pybind::list_new(2);
 
                 pybind::list_setitem( py_arg, 0, py_name );
-                pybind::list_setitem( py_arg, 1, py_hotspot );                
+                pybind::list_setitem( py_arg, 1, py_hotspot );
 
                 pybind::list_appenditem( m_list, py_arg );
                 pybind::decref( py_arg );

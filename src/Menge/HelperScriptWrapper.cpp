@@ -600,12 +600,12 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject* s_getAccountSetting( const WString & _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSetting( const WString & _accountID, const ConstString & _setting )
 		{
 			AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
 						
-			if( account == NULL )
+			if( account == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getAccountSetting account '%ls' is none"
 					, _accountID.c_str()
@@ -621,12 +621,12 @@ namespace Menge
 			return py_value;
 		}
 
-		PyObject* s_getAccountSettingUInt( const WString& _accountID, const ConstString & _setting )
+		PyObject * s_getAccountSettingUInt( const WString& _accountID, const ConstString & _setting )
 		{
 			AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
 
-			if( account == NULL )
+			if( account == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls' is none"
 					, _accountID.c_str()

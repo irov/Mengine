@@ -141,7 +141,8 @@ namespace Menge
 		
 		void destroyAllChild();
 
-		TListNodeChild & getChild();
+		inline TListNodeChild & getChild();
+		inline const TListNodeChild & getChild() const;
 
 		Node * findChildren( const ConstString & _name, bool _recursion ) const;
 		bool hasChildren( const ConstString & _name, bool _recursive ) const;
@@ -311,6 +312,16 @@ namespace Menge
 	inline bool Node::isRenderable() const
 	{
 		return m_rendering;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline TListNodeChild & Node::getChild()
+	{
+		return m_child;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const TListNodeChild & Node::getChild() const
+	{
+		return m_child;
 	}
 }
 

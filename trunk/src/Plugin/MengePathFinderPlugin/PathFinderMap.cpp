@@ -29,24 +29,26 @@ namespace Menge
 		m_unitSize = _size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_enlargePolygonFromLow( Polygon & _big, float _radius )
+	static void s_enlargePolygonRingFromLow( Polygon::ring_type & _ring, float _radius )
 	{
-		size_t numpoints = boost::geometry::num_points( _big );
-
-		if( numpoints == 0 )
+		if( _ring.empty() == true )
 		{
 			return;
 		}
 
-		--numpoints;
+		size_t numpoints = _ring.size();
 
-		Polygon::ring_type & ring = _big.outer();
+		--numpoints;
 
 		for( size_t i = 0; i != numpoints; ++i )
 		{
-			const mt::vec2f & p0 = ring[(i-1) % numpoints];
-			const mt::vec2f & p1 = ring[(i+0) % numpoints];
-			const mt::vec2f & p2 = ring[(i+1) % numpoints];
+			size_t i0 = (i + numpoints - 1) % numpoints;
+			size_t i1 = (i + numpoints + 0) % numpoints;
+			size_t i2 = (i + numpoints + 1) % numpoints;
+
+			const mt::vec2f & p0 = _ring[i0];
+			const mt::vec2f & p1 = _ring[i1];
+			const mt::vec2f & p2 = _ring[i2];
 
 			mt::vec2f v0 = p1 - p0;
 			mt::vec2f v0_norm;
@@ -66,8 +68,76 @@ namespace Menge
 
 			d_norm *= _radius;
 
-			mt::vec2f & p_new = ring[i];
+			mt::vec2f & p_new = _ring[i];
 			p_new += d_norm;
+		}
+
+		_ring[numpoints] = _ring[0];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_reducePolygonRingFromLow( Polygon::ring_type & _ring, float _radius )
+	{
+		if( _ring.empty() == true )
+		{
+			return;
+		}
+
+		size_t numpoints = _ring.size();
+
+		--numpoints;
+
+		for( size_t i = 0; i != numpoints; ++i )
+		{
+			size_t i0 = (i + numpoints - 1) % numpoints;
+			size_t i1 = (i + numpoints + 0) % numpoints;
+			size_t i2 = (i + numpoints + 1) % numpoints;
+			
+			const mt::vec2f & p0 = _ring[i0];
+			const mt::vec2f & p1 = _ring[i1];
+			const mt::vec2f & p2 = _ring[i2];
+
+			mt::vec2f v0 = p1 - p0;
+			mt::vec2f v0_norm;
+			mt::norm_v2( v0_norm, v0 );
+			mt::vec2f v0_norm_perp;
+			mt::perp_v2( v0_norm_perp, v0_norm );
+
+			mt::vec2f v1 = p2 - p1;
+			mt::vec2f v1_norm;
+			mt::norm_v2( v1_norm, v1 );
+			mt::vec2f v1_norm_perp;
+			mt::perp_v2( v1_norm_perp, v1_norm );
+
+			mt::vec2f d = v0_norm_perp + v1_norm_perp;
+			mt::vec2f d_norm;
+			mt::norm_v2( d_norm, d );
+
+			d_norm *= _radius;
+
+			mt::vec2f & p_new = _ring[i];
+			p_new += d_norm;
+		}
+
+		_ring[numpoints] = _ring[0];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_enlargePolygonFromLow( Polygon & _big, float _radius )
+	{
+		Polygon::ring_type & ring = _big.outer();
+
+		s_enlargePolygonRingFromLow( ring, _radius );
+
+		Polygon::inner_container_type & inners = _big.inners();
+
+		for( Polygon::inner_container_type::iterator
+			it = inners.begin(),
+			it_end = inners.end();
+		it != it_end;
+		++it )
+		{
+			Polygon::ring_type & ring = *it;
+
+			s_reducePolygonRingFromLow( ring, _radius );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -76,7 +146,7 @@ namespace Menge
 		Polygon big_polygon = _polygon;
 		boost::geometry::correct( big_polygon );
 
-		s_enlargePolygonFromLow( big_polygon, m_unitSize );		
+		s_enlargePolygonFromLow( big_polygon, m_unitSize );
 
 		if( this->testBigHolesPolygon_( big_polygon ) == true )
 		{
@@ -195,18 +265,16 @@ namespace Menge
 		return &p;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderMap::makePolyPointFromPolygon_( const Polygon & _polygon, PFMPoints & _points )
+	bool PathFinderMap::makePolyPointFromRing_( const Polygon::ring_type & _ring, PFMPoints & _points )
 	{
-		size_t numpoints = boost::geometry::num_points( _polygon );
-
-		if( numpoints == 0 )
+		if( _ring.empty() == true )
 		{
-			return false;
+			return true;
 		}
+		
+		size_t numpoints = _ring.size();
 
 		--numpoints;
-
-		const Polygon::ring_type & ring = _polygon.outer();
 
 		for( size_t
 			it = 0,
@@ -214,7 +282,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const mt::vec2f & v = ring[it];
+			const mt::vec2f & v = _ring[it];
 
 			PFMPoint * p = this->createPoint_( v );
 
@@ -224,6 +292,34 @@ namespace Menge
 			}
 
 			_points.push_back( p );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::makePolyPointFromPolygon_( const Polygon & _polygon, PFMPoints & _points )
+	{
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		if( this->makePolyPointFromRing_( ring, _points ) == false )
+		{
+			return false;
+		}
+
+		const Polygon::inner_container_type & inner_container = _polygon.inners();
+
+		for( Polygon::inner_container_type::const_iterator 
+			it = inner_container.begin(),
+			it_end = inner_container.end();
+		it != it_end;
+		++it )
+		{
+			const Polygon::ring_type & ring = *it;
+
+			if( this->makePolyPointFromRing_( ring, _points ) == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -285,10 +381,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_wavePathPoint( PFMPoint * _point )
-	{	
+	static void s_wavePathPoint2( PFMPoint * _point, PFMPoints & _nexts )
+	{
 		float weight = _point->weight;
-
+		
 		for( PFMPoint::TVectorNeighbor::iterator
 			it = _point->neighbor.begin(),
 			it_end = _point->neighbor.end();
@@ -308,17 +404,40 @@ namespace Menge
 
 			neighbor->weight = neighbor_weight;
 
-			s_wavePathPoint( neighbor );
+			_nexts.push_back( neighbor );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_slitherPath1( PFMPoint * _minimal, PFMPoint * _p0, TVectorWayPoint & _points )
+	static void s_wavePathPoint( PFMPoint * _point )
+	{	
+		PFMPoints nexts;
+		s_wavePathPoint2( _point, nexts );
+
+		while( nexts.empty() == false )
+		{
+			PFMPoints nexts2;
+			for( PFMPoints::iterator
+				it = nexts.begin(),
+				it_end = nexts.end();
+			it != it_end;
+			++it )
+			{
+				PFMPoint * neighbor = *it;
+
+				s_wavePathPoint2( neighbor, nexts2 );
+			}
+
+			nexts = nexts2;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_slitherPath1( PFMPoint * _minimal, PFMPoint * _p0, TVectorWayPoint & _points )
 	{
 		_points.push_back( _minimal->v );
 
 		if( _minimal == _p0 )
 		{
-			return;
+			return true;
 		}
 
 		PFMPoint * next = _minimal;
@@ -345,10 +464,12 @@ namespace Menge
 
 		if( next == _minimal )
 		{
-			return;
+			return false;
 		}
 
-		s_slitherPath1( next, _p0, _points );
+		bool result = s_slitherPath1( next, _p0, _points );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const
@@ -364,6 +485,20 @@ namespace Menge
 		boost::geometry::append( way_polygon, _p1 + perp );
 		boost::geometry::append( way_polygon, _p1 - perp );
 		boost::geometry::append( way_polygon, _p0 - perp );
+		boost::geometry::correct( way_polygon );
+
+		bool test = this->testHolesPolygon_( way_polygon );
+
+		return test;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::testHolesPoint_( const mt::vec2f & _p ) const
+	{
+		Polygon way_polygon;
+		boost::geometry::append( way_polygon, _p + mt::vec2f(-0.5f, -0.5f) );
+		boost::geometry::append( way_polygon, _p + mt::vec2f(+0.5f, -0.f) );
+		boost::geometry::append( way_polygon, _p + mt::vec2f(+0.5f, +0.5f) );
+		boost::geometry::append( way_polygon, _p + mt::vec2f(-0.5f, +0.5f) );
 		boost::geometry::correct( way_polygon );
 
 		bool test = this->testHolesPolygon_( way_polygon );
@@ -428,7 +563,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_removeNeighbor( PFMPoint * _point )
 	{
-		for( PFMPoint::TVectorNeighbor::const_iterator
+		for( PFMPoint::TVectorNeighbor::iterator
 			it = _point->neighbor.begin(),
 			it_end = _point->neighbor.end();
 		it != it_end;
@@ -436,7 +571,7 @@ namespace Menge
 		{
 			PFMPoint * neighbor = *it;
 
-			PFMPoint::TVectorNeighbor::const_iterator it_found = 
+			PFMPoint::TVectorNeighbor::iterator it_found = 
 				std::find( neighbor->neighbor.begin(), neighbor->neighbor.end(), _point );
 
 			neighbor->neighbor.erase( it_found );
@@ -447,6 +582,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
+		if( this->testHolesPoint_( _to ) == true )
+		{
+			return nullptr;
+		}
+
 		if( this->testHolesSegment_( _from, _to ) == false )
 		{
 			TVectorWayPoint wayPoints;
@@ -488,7 +628,10 @@ namespace Menge
 		s_wavePathPoint( &point_to );
 
 		TVectorWayPoint wayPoints;
-		s_slitherPath1( &point_from, &point_to, wayPoints );
+		if( s_slitherPath1( &point_from, &point_to, wayPoints ) == false )
+		{
+			return nullptr;
+		}
 
 		s_removeNeighbor( &point_from );
 		s_removeNeighbor( &point_to );
@@ -519,6 +662,66 @@ namespace Menge
 	void PathFinderMap::setCamera2D( const RenderCameraInterface * _camera )
 	{
 		m_camera = _camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Polygon::ring_type & _ring, uint32_t _color )
+	{
+		size_t numpoints = _ring.size();
+
+		if( numpoints == 0 )
+		{
+			return;
+		}
+
+		size_t vertexCount = numpoints * 2;
+
+		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+			->getDebugRenderVertex2D( vertexCount );
+
+		if( vertices == nullptr )
+		{
+			return;
+		}
+
+		for( size_t i = 0; i != numpoints; ++i )
+		{
+			size_t j = (i + 1) % numpoints;
+
+			mt::vec2f trP0 = _ring[i];
+			RenderVertex2D & v0 = vertices[i*2+0];
+
+			v0.pos.x = trP0.x;
+			v0.pos.y = trP0.y;
+			v0.pos.z = 0.f;
+
+			v0.color = _color;
+			v0.uv.x = 0.f;
+			v0.uv.y = 0.f;
+			v0.uv2.x = 0.f;
+			v0.uv2.y = 0.f;
+
+			mt::vec2f trP1 = _ring[j];
+			RenderVertex2D & v1 = vertices[i*2+1];
+
+			v1.pos.x = trP1.x;
+			v1.pos.y = trP1.y;
+			v1.pos.z = 0.f;
+
+			v1.color = _color;
+			v1.uv.x = 0.f;
+			v1.uv.y = 0.f;
+			v1.uv2.x = 0.f;
+			v1.uv2.y = 0.f;
+		}
+
+		const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
+			->getDebugMaterial();
+
+		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
+			, vertices
+			, vertexCount
+			, nullptr
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
@@ -608,65 +811,49 @@ namespace Menge
 		++it )
 		{
 			const Polygon & polygon = it->hole;
+			
+			const Polygon::ring_type & ring = polygon.outer();
 
-			size_t numpoints = boost::geometry::num_points(polygon);
+			this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFFFF00 );
 
-			if( numpoints == 0 )
+			const Polygon::inner_container_type & inners = polygon.inners();
+
+			for( Polygon::inner_container_type::const_iterator
+				it = inners.begin(),
+				it_end = inners.end();
+			it != it_end;
+			++it )
 			{
-				continue;
+				const Polygon::ring_type & ring = *it;
+
+				this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFFFF00 );
 			}
+		}
 
-			size_t vertexCount = numpoints * 2;
-
-			RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
-				->getDebugRenderVertex2D( vertexCount );
-
-			if( vertices == nullptr )
-			{
-				return;
-			}
+		for( TObstacles::iterator
+			it = m_obstales.begin(),
+			it_end = m_obstales.end();
+		it != it_end;
+		++it )
+		{
+			const Polygon & polygon = it->bigHole;
 
 			const Polygon::ring_type & ring = polygon.outer();
 
-			for( size_t i = 0; i != numpoints; ++i )
+			this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFF0000 );
+
+			const Polygon::inner_container_type & inners = polygon.inners();
+
+			for( Polygon::inner_container_type::const_iterator
+				it = inners.begin(),
+				it_end = inners.end();
+			it != it_end;
+			++it )
 			{
-				size_t j = (i + 1) % numpoints;
+				const Polygon::ring_type & ring = *it;
 
-				mt::vec2f trP0 = ring[i];
-				RenderVertex2D & v0 = vertices[i*2+0];
-
-				v0.pos.x = trP0.x;
-				v0.pos.y = trP0.y;
-				v0.pos.z = 0.f;
-
-				v0.color = 0xFF00FFFF;
-				v0.uv.x = 0.f;
-				v0.uv.y = 0.f;
-				v0.uv2.x = 0.f;
-				v0.uv2.y = 0.f;
-
-				mt::vec2f trP1 = ring[j];
-				RenderVertex2D & v1 = vertices[i*2+1];
-
-				v1.pos.x = trP1.x;
-				v1.pos.y = trP1.y;
-				v1.pos.z = 0.f;
-
-				v1.color = 0xFF00FFFF;
-				v1.uv.x = 0.f;
-				v1.uv.y = 0.f;
-				v1.uv2.x = 0.f;
-				v1.uv2.y = 0.f;
+				this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFF0000 );
 			}
-
-			const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
-				->getDebugMaterial();
-
-			RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
-				, vertices
-				, vertexCount
-				, nullptr
-				);
 		}
 
 		for( TVectorPathFinderWay::iterator

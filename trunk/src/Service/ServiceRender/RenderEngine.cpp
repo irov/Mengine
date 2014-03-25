@@ -1133,7 +1133,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )
 	{
-		if( m_debugRenderVertex2D.size() + _count > m_debugRenderVertex2D.capacity() )
+		size_t renderVertex2DSize = m_debugRenderVertex2D.size();
+		size_t renderVertex2DCapacity = m_debugRenderVertex2D.capacity();
+
+		if( renderVertex2DSize + _count > renderVertex2DCapacity )
 		{
 			return nullptr;
 		}

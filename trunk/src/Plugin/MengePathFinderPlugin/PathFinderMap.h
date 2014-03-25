@@ -62,9 +62,13 @@ namespace Menge
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask );
 
 	protected:
+		void renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Polygon::ring_type & _ring, uint32_t _color );
+
+	protected:
 		bool testBigHolesPolygon_( const Polygon & _polygon ) const;
 		bool testHolesPolygon_( const Polygon & _polygon ) const;
 		bool testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const;
+		bool testHolesPoint_( const mt::vec2f & _p ) const;
 		void calcNeighborPoints_( PFMPoints & _wayPoints ) const;
 		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
 		void attachNeighbor_( PFMPoints & _points, PFMPoints::size_type _begin, PFMPoints::size_type _end, PFMPoint * _p0 ) const;
@@ -74,6 +78,8 @@ namespace Menge
 	protected:
 		PFMPoint * createPoint_( const mt::vec2f & _v );
 		PFMPoint * createPoint2_( const mt::vec2f & _v );
+
+		bool makePolyPointFromRing_( const Polygon::ring_type & _ring, PFMPoints & _points );
 		bool makePolyPointFromPolygon_( const Polygon & _polygon, PFMPoints & _points );
 
 	protected:

@@ -189,7 +189,7 @@ namespace Menge
 
 		m_enable = true;
 
-		if( m_parent )
+		if( m_parent != nullptr )
 		{
 			if( m_parent->isActivate() == false )
 			{

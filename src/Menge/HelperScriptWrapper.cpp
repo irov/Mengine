@@ -310,6 +310,26 @@ namespace Menge
 			return py_list;
 		}
 
+		Polygon s_intersectionPolygons( Polygon _p1, Polygon _p2 )
+		{
+			boost::geometry::correct( _p1 );
+			boost::geometry::correct( _p2 );
+
+			std::deque<Polygon> output;
+			boost::geometry::difference( _p1, _p2, output );
+
+			if( output.empty() == true )
+			{
+				return _p1;
+			}
+
+			Polygon inter = output[0];
+
+			boost::geometry::correct( inter );
+
+			return inter;
+		}
+
 #	ifdef PYBIND_VISIT_OBJECTS
 		class MyObjectVisits
 			: public pybind::pybind_visit_objects
@@ -1219,7 +1239,7 @@ namespace Menge
 		pybind::def_functor( "intersectsBoxes", helperScriptMethod, &HelperScriptMethod::s_intersectsBoxes );
 
 		pybind::def_functor( "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );
-
+		pybind::def_functor( "intersectionPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectionPolygons );
 
 		pybind::def_functor( "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
         pybind::def_functor( "textures", helperScriptMethod, &HelperScriptMethod::s_textures );

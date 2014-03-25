@@ -551,8 +551,8 @@ namespace Menge
             return false;
         }
 
-        END_WATCHDOG(m_serviceProvider, "texture decode")("texture decode %s"
-            , _texture->getFileName().c_str()
+        END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s"
+            , _texture->getFileName().c_str()			
             );
 
         //this->sweezleAlpha( _texture, textureBuffer, pitch );
@@ -562,7 +562,7 @@ namespace Menge
 
         _texture->unlock();
 
-        END_WATCHDOG(m_serviceProvider, "texture unlock")("texture unlock %s"
+        END_WATCHDOG(m_serviceProvider, "texture unlock", 1)("texture unlock %s"
             , _texture->getFileName().c_str()
             );
 		

@@ -1,6 +1,8 @@
 #	include "PathFinderMap.h"
 #	include "PathFinderWay.h"
 
+#	include "Interface/WatchdogInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -354,6 +356,8 @@ namespace Menge
 	{
 		m_points.clear();
 
+		BEGIN_WATCHDOG(m_serviceProvider, "generateMap");
+
 		for( TObstacles::const_iterator
 			it = m_obstales.begin(),
 			it_end = m_obstales.end();
@@ -377,6 +381,8 @@ namespace Menge
 
 			this->attachNeighbor_( m_points, it + 1, points_size, p0 );
 		}
+
+		END_WATCHDOG(m_serviceProvider, "generateMap", 0)("generateMap");
 
 		return true;
 	}
@@ -602,6 +608,8 @@ namespace Menge
 
 			return way;
 		}
+
+		BEGIN_WATCHDOG(m_serviceProvider, "findPath");
 		
 		PFMPoint point_from( _from );
 		PFMPoint point_to( _to );
@@ -609,7 +617,12 @@ namespace Menge
 		PFMPoints::size_type points_size = m_points.size();
 
 		this->attachNeighbor_( m_points, 0, points_size, &point_from );
+
+		END_WATCHDOG(m_serviceProvider, "findPath", 0)("path find");
+
 		this->attachNeighbor_( m_points, 0, points_size, &point_to );
+
+		
 
 		for( PFMPoints::iterator
 			it = m_points.begin(),
@@ -641,6 +654,8 @@ namespace Menge
 		way->initialize( _from, _to, wayPoints );
 
 		m_pathFinderWays.push_back( way );
+
+		
 
 		return way;
 	}
@@ -736,73 +751,73 @@ namespace Menge
 			_camera = m_camera;
 		}
 
-		for( PFMPoints::const_iterator
-			it = m_points.begin(),
-			it_end = m_points.end();
-		it != it_end;
-		++it )
-		{
-			PFMPoint * p = *it;
-			
-			size_t numpoints = p->neighbor.size();
+		//for( PFMPoints::const_iterator
+		//	it = m_points.begin(),
+		//	it_end = m_points.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	PFMPoint * p = *it;
+		//	
+		//	size_t numpoints = p->neighbor.size();
 
-			if( numpoints == 0 )
-			{
-				continue;
-			}
+		//	if( numpoints == 0 )
+		//	{
+		//		continue;
+		//	}
 
-			size_t vertexCount = numpoints * 2;
+		//	size_t vertexCount = numpoints * 2;
 
-			RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
-				->getDebugRenderVertex2D( vertexCount );
+		//	RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+		//		->getDebugRenderVertex2D( vertexCount );
 
-			if( vertices == nullptr )
-			{
-				return;
-			}
+		//	if( vertices == nullptr )
+		//	{
+		//		return;
+		//	}
 
-			for( PFMPoint::TVectorNeighbor::size_type
-				it_neighbor = 0,
-				it_neighbor_end = p->neighbor.size();
-			it_neighbor != it_neighbor_end;
-			++it_neighbor )
-			{		
-				PFMPoint * n = p->neighbor[it_neighbor];
+		//	for( PFMPoint::TVectorNeighbor::size_type
+		//		it_neighbor = 0,
+		//		it_neighbor_end = p->neighbor.size();
+		//	it_neighbor != it_neighbor_end;
+		//	++it_neighbor )
+		//	{		
+		//		PFMPoint * n = p->neighbor[it_neighbor];
 
-				RenderVertex2D & v0 = vertices[it_neighbor*2+0];
+		//		RenderVertex2D & v0 = vertices[it_neighbor*2+0];
 
-				v0.pos.x = p->v.x;
-				v0.pos.y = p->v.y;
-				v0.pos.z = 0.f;
+		//		v0.pos.x = p->v.x;
+		//		v0.pos.y = p->v.y;
+		//		v0.pos.z = 0.f;
 
-				v0.color = 0xFF00FFFF;
-				v0.uv.x = 0.f;
-				v0.uv.y = 0.f;
-				v0.uv2.x = 0.f;
-				v0.uv2.y = 0.f;
+		//		v0.color = 0xFF00FFFF;
+		//		v0.uv.x = 0.f;
+		//		v0.uv.y = 0.f;
+		//		v0.uv2.x = 0.f;
+		//		v0.uv2.y = 0.f;
 
-				RenderVertex2D & v1 = vertices[it_neighbor*2+1];
+		//		RenderVertex2D & v1 = vertices[it_neighbor*2+1];
 
-				v1.pos.x = n->v.x;
-				v1.pos.y = n->v.y;
-				v1.pos.z = 0.f;
+		//		v1.pos.x = n->v.x;
+		//		v1.pos.y = n->v.y;
+		//		v1.pos.z = 0.f;
 
-				v1.color = 0xFF00FFFF;
-				v1.uv.x = 0.f;
-				v1.uv.y = 0.f;
-				v1.uv2.x = 0.f;
-				v1.uv2.y = 0.f;
-			}
+		//		v1.color = 0xFF00FFFF;
+		//		v1.uv.x = 0.f;
+		//		v1.uv.y = 0.f;
+		//		v1.uv2.x = 0.f;
+		//		v1.uv2.y = 0.f;
+		//	}
 
-			const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
-				->getDebugMaterial();
+		//	const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
+		//		->getDebugMaterial();
 
-			RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
-				, vertices
-				, vertexCount
-				, nullptr
-				);
-		}
+		//	RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
+		//		, vertices
+		//		, vertexCount
+		//		, nullptr
+		//		);
+		//}
 
 		for( TObstacles::iterator
 			it = m_obstales.begin(),

@@ -35,6 +35,7 @@ namespace Menge
 		pybind::interface_<PathFinderMap>("PathFinderMap")
 			.def( "setMap", &PathFinderMap::setMap )
 			.def( "addObstacle", &PathFinderMap::addObstacle )
+			.def( "removeObstacle", &PathFinderMap::removeObstacle )
 			.def( "generateMap", &PathFinderMap::generateMap )
 			.def( "findPath", &PathFinderMap::findPath )
 			.def( "removePath", &PathFinderMap::removePath )

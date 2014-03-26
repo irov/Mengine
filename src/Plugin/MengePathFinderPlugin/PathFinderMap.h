@@ -15,24 +15,43 @@ namespace Menge
 		PFMPoint()
 			: v(0.f, 0.f)
 			, weight(0.f)
+			, neighbor_left(nullptr)
+			, neighbor_right(nullptr)
 		{
 		}
 
 		PFMPoint( const mt::vec2f & _v )
 			: v(_v)
 			, weight(0.f)
+			, neighbor_left(nullptr)
+			, neighbor_right(nullptr)
 		{
 		}
 
 		mt::vec2f v;
-
-		float weight;
-
+		
 		typedef std::vector<PFMPoint *> TVectorNeighbor;
-		TVectorNeighbor neighbor;
+		TVectorNeighbor neighbor_other;
+
+		PFMPoint * neighbor_left;
+		PFMPoint * neighbor_right;
+
+		mutable float weight;
 	};
 
 	typedef std::vector<PFMPoint *> PFMPoints;
+
+	struct Obstacle
+	{
+		size_t id;
+
+		Polygon hole;
+		Polygon bigHole;
+
+		PFMPoints points;
+	};
+
+	typedef std::vector<Obstacle *> TVectorObstacles;
 
 	class PathFinderMap
 	{
@@ -63,6 +82,7 @@ namespace Menge
 
 	protected:
 		void renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Polygon::ring_type & _ring, uint32_t _color );
+		void renderPointsNeighbor_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const PFMPoints & _points, uint32_t _color );
 
 	protected:
 		bool testBigHolesPolygon_( const Polygon & _polygon ) const;
@@ -71,7 +91,9 @@ namespace Menge
 		bool testHolesPoint_( const mt::vec2f & _p ) const;
 		void calcNeighborPoints_( PFMPoints & _wayPoints ) const;
 		void filterWayPoints_( TVectorWayPoint & _fileter, const TVectorWayPoint & _ways );
-		void attachNeighbor_( PFMPoints & _points, PFMPoints::size_type _begin, PFMPoints::size_type _end, PFMPoint * _p0 ) const;
+		void attachNeighbor2_( TVectorObstacles::size_type _begin, TVectorObstacles::size_type _end, PFMPoint * _point );
+		void attachNeighbor_( PFMPoint * _point );
+		void fillObstaclePointWeight_( float _weight ) const;
 
 		PFMPoint * findNearestPoint_( const mt::vec2f & _v ) const;
 
@@ -88,27 +110,17 @@ namespace Menge
 		Polygon m_mapPolygon;
 		float m_unitSize;
 
-		struct Obstacle
-		{
-			size_t id;
-
-			Polygon hole;
-			Polygon bigHole;
-		};
-
 		size_t m_obstacleEnumerator;
-
-		typedef std::list<Obstacle> TObstacles;
-		TObstacles m_obstales;
+	
+		TVectorObstacles m_obstacles;
+		bool m_invalidateMap;
 
 		PFMPoint m_cachePoint[1024];
 		size_t m_cachePointUse;
 
 		PFMPoint m_cachePoint2[1024];
 		size_t m_cachePointUse2;
-
-		PFMPoints m_points;
-				
+			
 		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
 		TVectorPathFinderWay m_pathFinderWays;
 

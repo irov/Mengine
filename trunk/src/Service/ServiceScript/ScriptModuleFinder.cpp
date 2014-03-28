@@ -344,7 +344,7 @@ namespace Menge
     {
         size_t file_size = _stream->size();
 
-		CacheMemoryBuffer source_buffer(m_serviceProvider, file_size + 2);
+		CacheMemoryBuffer source_buffer(m_serviceProvider, file_size + 2, "unmarshal_source_");
 		char * source_memory = source_buffer.getMemoryT<char>();
 
         if( file_size > 0 )
@@ -391,12 +391,12 @@ namespace Menge
         size_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size);
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "unmarshal_code_compress");
 		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
 
 		_stream->read( compress_memory, compress_size );
 		
-		CacheMemoryBuffer code_buffer(m_serviceProvider, code_size);
+		CacheMemoryBuffer code_buffer(m_serviceProvider, code_size, "unmarshal_code_buffer");
 		TBlobject::value_type * code_memory = code_buffer.getMemoryT<TBlobject::value_type>();
 
         size_t uncompress_size;

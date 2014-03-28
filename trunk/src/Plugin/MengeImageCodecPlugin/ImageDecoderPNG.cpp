@@ -51,49 +51,6 @@ namespace Menge
 
 		stream->read( _data, (std::streamsize)_size );
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//static void PNGAPI s_flushProc( png_structp png_ptr ) 
-	//{
- //       (void)png_ptr;
-
-	//	// empty flush implementation
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//static png_voidp s_png_malloc_ptr( png_structp _png, png_alloc_size_t _size )
-	//{
-	//	printf("+ %d\n"
-	//		, _size
-	//		);
-
-	//	stdex::memory_cache * memories = (stdex::memory_cache *)png_get_mem_ptr( _png );
-
-	//	void * memory = memories->lock_memory( _size );
-
-	//	return memory;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//static void s_png_free_ptr( png_structp _png, png_voidp _ptr )
-	//{
-	//	stdex::memory_cache * memories = (stdex::memory_cache *)png_get_mem_ptr( _png );
-
-	//	memories->unlock_memory( _ptr );
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//static png_voidp s_png_malloc_ptr( png_structp _png, png_alloc_size_t _size )
-	//{
-	//	printf("+ %d\n"
-	//		, _size
-	//		);
-
-	//	void * memory = malloc(_size);
-
-	//	return memory;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//static void s_png_free_ptr( png_structp _png, png_voidp _ptr )
-	//{		
-	//	free( _ptr );
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
 		: m_png_ptr(nullptr)
@@ -282,7 +239,7 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
 			{
-				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes);
+				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_1");
 				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
                 png_bytep bufferCursor = (png_bytep)_buffer;
@@ -314,7 +271,7 @@ namespace Menge
 		{				
 			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
 			{
-				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes);
+				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_1_4");
 				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
@@ -333,7 +290,7 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes);
+				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_4");
 				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
                 png_bytep bufferCursor = (png_bytep)_buffer;

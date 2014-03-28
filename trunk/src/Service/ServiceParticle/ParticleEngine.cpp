@@ -1,13 +1,13 @@
 #	include "ParticleEngine.h"
 
 #   include "Interface/FileSystemInterface.h"
-#	include "Interface/CacheInterface.h"
 
 #   include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
 
 #	include "Core/Viewport.h"
+#	include "Core/CacheMemoryBuffer.h"
 
 #	include "math/box2.h"
 
@@ -54,21 +54,25 @@ namespace Menge
 
 		size_t fileSize = file->size();
 
-		void * memory = nullptr;
-		size_t bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( fileSize, &memory );
+		CacheMemoryBuffer container_buffer(m_serviceProvider, fileSize, "ParticleEngine");
+		void * container_memory = container_buffer.getMemory();
 
-		unsigned char * buffer = static_cast<unsigned char *>(memory);
+		if( container_memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleEngine %s can't open file %s"				
+				, _fileGroupName.c_str()
+				, _filename.c_str() 
+				);
 
-		file->read( buffer, fileSize );
+			return nullptr;
+		}
+		
+		file->read( container_memory, fileSize );
 
 		file = nullptr;
 
 		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(m_serviceProvider)
-            ->createEmitterContainerFromMemory( _filename, buffer );
-
-		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( bufferId );
+            ->createEmitterContainerFromMemory( _filename, container_memory );
 
 		if( container == nullptr )
 		{

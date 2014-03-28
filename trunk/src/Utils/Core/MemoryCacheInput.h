@@ -16,7 +16,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
-        void * cacheMemory( size_t _size );
+        void * cacheMemory( size_t _size, const char * _doc );
 
 	public:
 		size_t read( void * _buf, size_t _count ) override;
@@ -28,15 +28,18 @@ namespace Menge
 		bool time( uint64_t & _time ) const override;
 
 	protected:
+		void uncache_();
+
+	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
 		size_t m_bufferId;
 
 		unsigned char * m_data;
-		unsigned char * m_pos;
-		unsigned char * m_end;
-
 		size_t m_size;
+
+		unsigned char * m_pos;
+		unsigned char * m_end;		
 	};
 
 	typedef stdex::intrusive_ptr<MemoryCacheInput> MemoryCacheInputPtr;

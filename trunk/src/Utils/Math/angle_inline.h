@@ -1,6 +1,5 @@
 #	include	"angle.h"
 #	include	"simplex.h"
-#	include <assert.h>
 
 namespace mt
 {
@@ -124,8 +123,7 @@ namespace mt
 		float len = _vec.length();
 
 		if( len < 0.00001f )
-		{
-			assert(!"vec with zero length! ");
+		{			
 			return 0.f;
 		}
 

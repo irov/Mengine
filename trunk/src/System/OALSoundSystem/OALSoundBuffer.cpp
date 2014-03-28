@@ -54,7 +54,7 @@ namespace Menge
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
 		
-		CacheMemoryBuffer binary_buffer(m_serviceProvider, size);
+		CacheMemoryBuffer binary_buffer(m_serviceProvider, size, "OALSoundBuffer");
 		void * binary_memory = binary_buffer.getMemory();
 
 		size_t decode_size = _soundDecoder->decode( binary_memory, size );

@@ -56,7 +56,7 @@ namespace Menge
 
         size_t data_size = input->size();
 
-		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size);
+		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ParticleConverterPTCToPTZ_data");
 		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
 
         input->read( data_memory, data_size );
@@ -74,7 +74,7 @@ namespace Menge
             return false;
         }
 
-		CacheMemoryBuffer archive_buffer(m_serviceProvider, archive_size);
+		CacheMemoryBuffer archive_buffer(m_serviceProvider, archive_size, "ParticleConverterPTCToPTZ_archive");
 		TBlobject::value_type * archive_memory = archive_buffer.getMemoryT<TBlobject::value_type>();
 
         size_t comress_size;

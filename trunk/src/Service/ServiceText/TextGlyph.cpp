@@ -363,7 +363,7 @@ namespace Menge
 
 		size_t xml_buffer_size = stream->size();
 		
-		CacheMemoryBuffer buffer(m_serviceProvider, xml_buffer_size + 1);
+		CacheMemoryBuffer buffer(m_serviceProvider, xml_buffer_size + 1, "TextGlyph");
 		char * memory = buffer.getMemoryT<char>();
 
 		stream->read( memory, xml_buffer_size );

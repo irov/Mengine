@@ -338,7 +338,7 @@ namespace Menge
 
             return cache_texture;
         }
-				
+			
 		ImageDecoderInterfacePtr imageDecoder;
 		if( PREFETCHER_SERVICE(m_serviceProvider)
 			->getImageDecoder( _fileName, imageDecoder ) == false )
@@ -507,7 +507,8 @@ namespace Menge
         m_debugInfo.textureMemory -= memroy_size;
         --m_debugInfo.textureCount;
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::destroyTexture_ destroy texture %dx%d %d memory %d:%d"
+        LOGGER_INFO(m_serviceProvider)( "RenderEngine::destroyTexture_ destroy %s texture %dx%d %d memory %d:%d"
+			, filename.c_str()
             , HWWidth
             , HWHeight
             , HWPixelFormat

@@ -149,6 +149,25 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::testPoint( const mt::vec2f & _polygon )
+	{
+		bool test = this->testHolesPoint_( _polygon );
+
+		return test;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::testObstacle( const Polygon & _polygon )
+	{
+		Polygon big_polygon = _polygon;
+		boost::geometry::correct( big_polygon );
+
+		s_enlargePolygonFromLow( big_polygon, m_unitSize );
+
+		bool test = this->testBigHolesPolygon_( big_polygon );
+		
+		return test;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t PathFinderMap::addObstacle( const Polygon & _polygon )
 	{		
 		Polygon big_polygon = _polygon;

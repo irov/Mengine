@@ -50,7 +50,7 @@ namespace Menge
 
 		PFMPoints points;
 	};
-
+	
 	typedef std::vector<Obstacle *> TVectorObstacles;
 
 	class PathFinderMap
@@ -64,6 +64,8 @@ namespace Menge
 		void setUnitSize( float _size );
 
 	public:
+		bool testPoint( const mt::vec2f & _polygon );
+		bool testObstacle( const Polygon & _polygon );
 		size_t addObstacle( const Polygon & _polygon );
 		void removeObstacle( size_t _id );
 		
@@ -120,6 +122,8 @@ namespace Menge
 
 		PFMPoint m_cachePoint2[1024];
 		size_t m_cachePointUse2;
+
+
 			
 		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
 		TVectorPathFinderWay m_pathFinderWays;

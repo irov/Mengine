@@ -12,13 +12,23 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_bufferId(0)
 		, m_data(nullptr)
-		, m_pos(nullptr)
-		, m_end(nullptr)
 		, m_size(0)
+		, m_pos(nullptr)
+		, m_end(nullptr)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInput::~MemoryCacheInput()
+	{
+		this->uncache_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MemoryCacheInput::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MemoryCacheInput::uncache_()
 	{
 		if( m_bufferId != 0 )
 		{
@@ -27,20 +37,23 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryCacheInput::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void * MemoryCacheInput::cacheMemory( size_t _size, const char * _doc )
 	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void * MemoryCacheInput::cacheMemory( size_t _size )
-	{
-		m_size = _size;
+		this->uncache_();
 
 		void * memory;
-		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( m_size, &memory );
+		size_t bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( _size, &memory, _doc );
+
+		if( bufferId == 0 )
+		{
+			return nullptr;
+		}
+
+		m_bufferId = bufferId;
 
 		m_data = reinterpret_cast<unsigned char *>(memory);
+		m_size = _size;
 
 		m_pos = m_data;
 		m_end = m_data + m_size;

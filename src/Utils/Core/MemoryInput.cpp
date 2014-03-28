@@ -8,27 +8,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInput::MemoryInput()
 		: m_data(nullptr)
-		, m_pos(nullptr)
-		, m_end(nullptr)
 		, m_size(0)
+		, m_pos(nullptr)
+		, m_end(nullptr)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInput::~MemoryInput()
 	{
-        delete [] m_data;
+        free( m_data );
         m_data = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * MemoryInput::newMemory( size_t _size )
 	{
-        if( m_data != nullptr )
-        {
-            delete [] m_data;
-            m_data = nullptr;
-        }
+		void * memory = realloc( m_data, _size );
 
-		m_data = new unsigned char [_size];
+		if( memory == nullptr )
+		{
+			return nullptr;
+		}
+
+		m_data = static_cast<unsigned char *>(memory);
 		m_size = _size;
 		m_pos = m_data;
 		m_end = m_data + m_size;

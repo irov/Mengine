@@ -24,11 +24,11 @@ namespace Menge
 		bool time( uint64_t & _time ) const override;
 
 	protected:
-		unsigned char* m_data;
-		unsigned char* m_pos;
-		unsigned char* m_end;
-
+		unsigned char * m_data;
 		size_t m_size;
+
+		unsigned char * m_pos;
+		unsigned char * m_end;		
 	};
 
 	typedef stdex::intrusive_ptr<MemoryInput> MemoryInputPtr;

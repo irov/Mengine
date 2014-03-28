@@ -153,14 +153,23 @@ namespace Menge
         size_t width = (size_t)(m_frameSize.x + 0.5f);
         size_t height = (size_t)(m_frameSize.y + 0.5f);
 
-		m_textures[0] = RENDERTEXTURE_SERVICE(m_serviceProvider)
+		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
             ->createDynamicTexture( width, height, channels, PF_UNKNOWN );
 
-        const ConstString & resourceVideoName = m_resourceVideo->getName();
+		if( dynamicTexture == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Video::_compile '%s' resource '%s' can`t create dynamic texture"
+				, this->getName().c_str()
+				, m_resourceVideo->getName().c_str() 
+				);	
 
-        m_textures[0]->setFileName( resourceVideoName );
+			return false;
+		}
 
-		//m_material->textureStage[0].texture = m_resourceImage;
+        const ConstString & resourceVideoName = m_resourceVideo->getName();		
+        dynamicTexture->setFileName( resourceVideoName );
+
+		m_textures[0] = dynamicTexture;
 
 		this->updateUV_();
 		this->invalidateMaterial_();

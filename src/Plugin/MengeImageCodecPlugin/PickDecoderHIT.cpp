@@ -68,7 +68,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t PickDecoderHIT::decode( void * _buffer, size_t _bufferSize )
 	{	        
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, m_mipmapcompresssize);
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, m_mipmapcompresssize, "PickDecoderHIT");
 		void * compress_memory = compress_buffer.getMemory();
 
         size_t read = m_stream->read( compress_memory, m_mipmapcompresssize );

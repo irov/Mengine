@@ -33,10 +33,23 @@ namespace Menge
 			return successful;
 		}
 
+	public:
+		void finalize() override
+		{
+			this->_finalize();
+
+			m_stream = nullptr;			
+		}
+
 	protected:
 		virtual bool _initialize()
 		{
 			return true;
+		}
+
+		virtual void _finalize()
+		{
+			//Empty
 		}
 
 	public:

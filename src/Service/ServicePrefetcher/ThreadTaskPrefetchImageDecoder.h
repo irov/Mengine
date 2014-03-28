@@ -8,7 +8,7 @@
 
 #	include "Kernel/ThreadTask.h"
 
-#	include "Core/MemoryCacheInput.h"
+#	include "Core/MemoryInput.h"
 
 namespace Menge
 {
@@ -47,8 +47,7 @@ namespace Menge
 		FileGroupInterfacePtr m_group;
 		InputStreamInterfacePtr m_stream;
 		ImageDecoderInterfacePtr m_imageDecoder;
-
-		MemoryCacheInputPtr m_memoryCache;
+		MemoryInputPtr m_memoryInput;
 
 	protected:
 		ImageDecoderInterfacePtr m_imageDecoderMemory;

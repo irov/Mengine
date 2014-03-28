@@ -9,7 +9,7 @@ namespace Menge
 	class CacheMemoryBuffer
 	{
 	public:
-		CacheMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size );
+		CacheMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc );
 		~CacheMemoryBuffer();
 
 	public:

@@ -11,7 +11,7 @@ namespace Menge
 	{
 	public:
 		ImageDecoder();
-		
+
 	public:
         bool setOptions( CodecOptions * _options ) override;
 

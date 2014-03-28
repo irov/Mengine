@@ -5,19 +5,28 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	CacheMemoryBuffer::CacheMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size )
+	CacheMemoryBuffer::CacheMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc )
 		: m_serviceProvider(_serviceProvider)
+		, m_bufferId(0)
+		, m_memory(nullptr)
 	{
 		void * memory = nullptr;
-		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( _size, &memory );
+		size_t bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( _size, &memory, _doc );
 
-		m_memory = static_cast<unsigned char *>(memory);
+		if( bufferId != 0 )
+		{
+			m_bufferId = bufferId;
+			m_memory = static_cast<unsigned char *>(memory);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CacheMemoryBuffer::~CacheMemoryBuffer()
 	{
-		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( m_bufferId );
+		if( m_bufferId != 0 )
+		{
+			CACHE_SERVICE(m_serviceProvider)
+				->unlockBuffer( m_bufferId );
+		}
 	}	
 }

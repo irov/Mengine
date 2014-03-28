@@ -71,10 +71,20 @@ namespace Menge
 		m_memoryMutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t CacheManager::lockBuffer( size_t _size, void ** _memory )
+	size_t CacheManager::lockBuffer( size_t _size, void ** _memory, const char * _doc )
 	{
 		m_memoryMutex->lock();
 
+		size_t buffer_id = 
+			this->lockBufferNoMutex_( _size, _memory, _doc );
+
+		m_memoryMutex->unlock();
+
+		return buffer_id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t CacheManager::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc )
+	{
 		size_t minSize = (size_t)(0);
 		size_t maxSize = (size_t)(-1);
 
@@ -108,51 +118,70 @@ namespace Menge
 				maxIndex = it;
 			}
 		}
-
-		size_t buffer_id = 0;
-
+		
 		if( maxIndex != INVALID_ID )
 		{
 			CacheBufferMemory & buffer = m_buffers[maxIndex];
 			
-			buffer.lock = true;
+			buffer.doc = _doc;
+			buffer.lock = true;			
 
 			*_memory = buffer.memory;
 
-			buffer_id = buffer.id;
+			return buffer.id;
 		}
 		else if( minIndex != INVALID_ID )
 		{
 			CacheBufferMemory & buffer = m_buffers[minIndex];
+						
+			void * memory = realloc( buffer.memory, _size );
 
-			buffer.lock = true;
-			buffer.memory = realloc( buffer.memory, _size );
+			if( memory == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("CacheManager::lockBuffer invalid realloc %p memory %d to %d"
+					, buffer.memory
+					, buffer.size
+					, _size
+					);
+				
+				return 0;
+			}
+						
+			buffer.memory = memory;
 			buffer.size = _size;
+			buffer.doc = _doc;
+			buffer.lock = true;
 
 			*_memory = buffer.memory;
 
-			buffer_id = buffer.id;
+			return buffer.id;
 		}
-		else
+		
+		void * memory = malloc( _size );
+
+		if( memory == nullptr )
 		{
-			size_t new_id = ++m_enumeratorId;
+			LOGGER_ERROR(m_serviceProvider)("CacheManager::lockBuffer invalid malloc memory %d"
+				, _size
+				);
 
-			CacheBufferMemory buffer;
-			buffer.id = new_id;
-			buffer.lock = true;
-			buffer.memory = malloc( _size );
-			buffer.size = _size;
-
-			m_buffers.push_back( buffer );
-
-			*_memory = buffer.memory;
-
-			buffer_id = buffer.id;
+			return 0;
 		}
 
-		m_memoryMutex->unlock();
+		size_t new_id = ++m_enumeratorId;
 
-		return buffer_id;
+		CacheBufferMemory buffer;
+		buffer.id = new_id;		
+		buffer.memory = memory;
+		buffer.size = _size;
+		buffer.doc = _doc;		
+		buffer.lock = true;
+
+		m_buffers.push_back( buffer );
+
+		*_memory = buffer.memory;
+
+		return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CacheManager::unlockBuffer( size_t _bufferId )
@@ -180,11 +209,24 @@ namespace Menge
 		m_memoryMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheInputPtr CacheManager::createCacheInput()
+	MemoryCacheInputPtr CacheManager::createMemoryCacheInput()
 	{
 		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
 
 		return memoryCache;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MemoryProxyInputPtr CacheManager::createMemoryProxyInput()
+	{
+		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput.createObjectT();
 
+		return memoryProxy;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MemoryInputPtr CacheManager::createMemoryInput()
+	{
+		MemoryInput * memory = m_factoryPoolMemoryInput.createObjectT();
+
+		return memory;
+	}
 }

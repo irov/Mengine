@@ -1338,7 +1338,7 @@ namespace Menge
 
 			size_t size = stream->size();
 
-			CacheMemoryBuffer binary_buffer(m_serviceProvider, size + 1);
+			CacheMemoryBuffer binary_buffer(m_serviceProvider, size + 1, "parseXml");
 			TBlobject::value_type * memory = binary_buffer.getMemoryT<TBlobject::value_type>();
 
 			stream->read( memory, size );

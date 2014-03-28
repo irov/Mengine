@@ -173,7 +173,7 @@ namespace Menge
         size_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size);
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "importBin_compress");
 		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
 		
 		size_t compress_reading = _stream->read( compress_memory, compress_size );
@@ -195,7 +195,7 @@ namespace Menge
 			return false;
 		}
 
-		CacheMemoryBuffer binary_buffer(m_serviceProvider, bin_size);
+		CacheMemoryBuffer binary_buffer(m_serviceProvider, bin_size, "importBin_binary");
 		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
 		
         size_t uncompress_size = 0;

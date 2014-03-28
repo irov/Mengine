@@ -19,7 +19,7 @@ namespace Menge
 	DX9Texture::~DX9Texture()
 	{
         if( m_d3dTexture != nullptr )
-        {
+        {			
             m_d3dTexture->Release();
             m_d3dTexture = nullptr;
         }

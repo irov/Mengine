@@ -33,7 +33,9 @@ namespace Menge
 	bool ModulePathFinder::initialize()
 	{
 		pybind::interface_<PathFinderMap>("PathFinderMap")
-			.def( "setMap", &PathFinderMap::setMap )
+			.def( "setMap", &PathFinderMap::setMap )			
+			.def( "testPoint", &PathFinderMap::testPoint )
+			.def( "testObstacle", &PathFinderMap::testObstacle )
 			.def( "addObstacle", &PathFinderMap::addObstacle )
 			.def( "removeObstacle", &PathFinderMap::removeObstacle )
 			.def( "generateMap", &PathFinderMap::generateMap )

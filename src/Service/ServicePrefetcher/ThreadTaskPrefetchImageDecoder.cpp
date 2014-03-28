@@ -83,8 +83,8 @@ namespace Menge
 			return false;
 		}
 
-		m_memoryCache = CACHE_SERVICE(m_serviceProvider)
-			->createCacheInput();
+		m_memoryInput = CACHE_SERVICE(m_serviceProvider)
+			->createMemoryInput();
 		
 		return true;
 	}
@@ -117,15 +117,24 @@ namespace Menge
 				, m_fileName.c_str() 
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		const ImageCodecDataInfo * dataInfo = m_imageDecoder->getCodecDataInfo();
 
 		size_t memoryUse = dataInfo->width * dataInfo->height * dataInfo->channels;
-				
-		void * buffer = m_memoryCache->cacheMemory( memoryUse );
+		void * memory = m_memoryInput->newMemory( memoryUse );
 
+		if( memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onMain: '%s' invalid alloc memory '%d'"
+				, m_fileName.c_str() 
+				, memoryUse
+				);
+
+			return false;
+		}
+				
 		ImageCodecOptions options;
 		options.channels = dataInfo->channels;
 		options.pitch = dataInfo->width * dataInfo->channels;
@@ -135,14 +144,16 @@ namespace Menge
 			return false;
 		}
 
-		size_t decodeByte = m_imageDecoder->decode( buffer, memoryUse );
-
+		size_t decodeByte = m_imageDecoder->decode( memory, memoryUse );
+		
 		if( decodeByte != memoryUse )
 		{
 			return false;
 		}
 
-		if( m_imageDecoderMemory->initialize( m_memoryCache ) == false )
+		m_imageDecoder->finalize();
+		
+		if( m_imageDecoderMemory->initialize( m_memoryInput ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Memory decoder for file '%s' was not initialize"
 				, m_fileName.c_str() 
@@ -158,14 +169,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetchImageDecoder::_onComplete( bool _successful )
 	{
-		if( _successful == false )
-		{
-			return;
-		}
+		(void) _successful;
 
 		m_group = nullptr;
 		m_stream = nullptr;
 		m_imageDecoder = nullptr;		
-		m_memoryCache = nullptr;
+		m_memoryInput = nullptr;
 	}
 }

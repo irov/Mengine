@@ -105,10 +105,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetchDataflow::_onComplete( bool _successful )
 	{
-		if( _successful == false )
-		{
-			return;
-		}
+		(void) _successful;
 
 		m_group = nullptr;
 		m_stream = nullptr;

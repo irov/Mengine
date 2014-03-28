@@ -26,11 +26,13 @@ namespace Menge
 
 	protected:
 		unsigned char * m_data;
-		unsigned char * m_pos;
-		unsigned char * m_end;
-
 		size_t m_size;
+
+		unsigned char * m_pos;
+		unsigned char * m_end;		
 	};
+
+	typedef stdex::intrusive_ptr<MemoryProxyInput> MemoryProxyInputPtr;
 }	// namespace Menge
 
 

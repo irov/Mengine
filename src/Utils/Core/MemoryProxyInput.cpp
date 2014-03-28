@@ -1,16 +1,15 @@
 #	include "MemoryProxyInput.h"
 
-//#	include <algorithm>
 #	include <memory.h>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryProxyInput::MemoryProxyInput()
-		: m_data(NULL)
-		, m_pos(NULL)
-		, m_end(NULL)
+		: m_data(nullptr)
 		, m_size(0)
+		, m_pos(nullptr)
+		, m_end(nullptr)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -21,8 +20,8 @@ namespace Menge
 	void MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )
 	{
 		m_data = static_cast<unsigned char*>( _memory ) + _offset;
-
 		m_size = _size;
+
 		m_pos = m_data;
 		m_end = m_data + m_size;
 	}

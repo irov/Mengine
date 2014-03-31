@@ -12,6 +12,12 @@ namespace Menge
 
 	struct StartupSettings
 	{
+		StartupSettings()
+			: maxfps(false)
+			, alreadyRunning(false)
+		{
+		}
+
 		ApplicationSettings applicationSettings;
 
         WString personalityModule;

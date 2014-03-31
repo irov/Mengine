@@ -65,6 +65,11 @@ namespace Menge
 			m_ptr = new FactorableUnique<TFactoryType>();
 		}
 
+		~FactoryPoolStore()
+		{
+			m_ptr = nullptr;
+		}
+
 	public:
 		Factorable * createObject()
 		{

@@ -132,14 +132,6 @@ namespace Menge
 
         gameInputStream = nullptr;
 
-		_settings.alreadyRunning = false;
-        _settings.maxfps = false;
-
-		_settings.applicationSettings.fixedContentResolution = true;
-		_settings.applicationSettings.windowModeCheck = false;
-		_settings.applicationSettings.fullscreen = true;        
-		_settings.applicationSettings.vsync = true;
-
 		IniUtil::getIniValue( ini, "Project", "Name", _settings.projectName, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Project", "Company", _settings.companyName, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Project", "Codename", _settings.applicationSettings.projectCodename, m_serviceProvider );

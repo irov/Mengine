@@ -17,6 +17,16 @@ namespace Menge
 {
 	struct ApplicationSettings
 	{
+		ApplicationSettings()
+			: projectVersion(0)
+			, bits(32)
+			, fullscreen(true)
+			, vsync(true)
+			, windowModeCheck(false)
+			, fixedContentResolution(true)
+		{
+		}
+
 		FilePath baseDir;
 
 		ConstString platformName;

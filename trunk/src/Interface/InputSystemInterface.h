@@ -249,7 +249,7 @@ namespace Menge
 		virtual bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
-		virtual bool handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
+		virtual bool handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
 	};
 
     class GlobalMouseHandler
@@ -259,7 +259,7 @@ namespace Menge
         virtual void handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
         virtual void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
         virtual void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
-		virtual void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
+		virtual void handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
     };
 
     class GlobalKeyHandler
@@ -311,7 +311,7 @@ namespace Menge
 	public:
 		virtual void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
 		virtual void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
-		virtual void onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
+		virtual void onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
 
 	public:
 		virtual void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;

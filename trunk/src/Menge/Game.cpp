@@ -200,18 +200,18 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	bool Game::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHELL)( handle, false, "(Iffi)", _touchId, _point.x, _point.y, _whell );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHEEL)( handle, false, "(Iffi)", _touchId, _point.x, _point.y, _wheel );
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseWhell( _touchId, _point, _whell );
+			handle = m_player->handleMouseWheel( _touchId, _point, _wheel );
 		}
 
 		return handle;
@@ -282,7 +282,7 @@ namespace Menge
         this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
         this->registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
         this->registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
-		this->registerEvent( EVENT_MOUSE_WHELL, "onHandleMouseWhell", _embed );
+		this->registerEvent( EVENT_MOUSE_WHEEL, "onHandleMouseWheel", _embed );
 
         this->registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
         this->registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );

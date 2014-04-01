@@ -1088,9 +1088,9 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	bool Application::onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
-		bool handle = m_game->handleMouseWhell( _touchId, _point, _whell );
+		bool handle = m_game->handleMouseWheel( _touchId, _point, _wheel );
 
 		return handle;
 	}

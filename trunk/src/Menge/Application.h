@@ -144,7 +144,7 @@ namespace Menge
 		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
 		bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;		
 		bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		bool onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override;
+		bool onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
 		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
 		
 		

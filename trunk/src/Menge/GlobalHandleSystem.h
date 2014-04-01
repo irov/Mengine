@@ -47,7 +47,7 @@ namespace Menge
 		void handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		void handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		void handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override;
+		void handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

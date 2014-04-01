@@ -25,7 +25,7 @@ namespace Menge
 		eventable->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, ("onGlobalHandleMouseButtonEventBegin"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON_END, ("onGlobalHandleMouseButtonEventEnd"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), _listener );
-		eventable->registerEvent( EVENT_GLOBAL_MOUSE_WHELL, ("onGlobalHandleMouseWhell"), _listener );
+		eventable->registerEvent( EVENT_GLOBAL_MOUSE_WHEEL, ("onGlobalHandleMouseWheel"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), _listener );
 		eventable->registerEvent( EVENT_GLOBAL_KEY2, ("onGlobalHandleKeyEvent2"), _listener );
 	}
@@ -219,12 +219,12 @@ namespace Menge
 		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_MOVE)( "(OIffff)", scriptable->getEmbed(), _touchId, _point.x, _point.y, _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	void GlobalHandleAdapter::handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
 		Eventable * eventable = this->getGlobalHandleEventable();
 		Scriptable * scriptable = this->getGlobalHandleScriptable();
 
-		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_WHELL)( "(OIffi)", scriptable->getEmbed(), _touchId, _point.x, _point.y, _whell );
+		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_WHEEL)( "(OIffi)", scriptable->getEmbed(), _touchId, _point.x, _point.y, _wheel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleAdapter::handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )

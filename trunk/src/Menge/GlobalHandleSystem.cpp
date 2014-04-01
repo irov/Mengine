@@ -177,7 +177,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleSystem::handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	void GlobalHandleSystem::handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
 		for( TVectorGlobalMouseHandler::size_type
 			it = 0,
@@ -192,7 +192,7 @@ namespace Menge
 				continue;
 			}
 
-			desc.handler->handleGlobalMouseWhell( _touchId, _point, _whell );
+			desc.handler->handleGlobalMouseWheel( _touchId, _point, _wheel );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

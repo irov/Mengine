@@ -57,7 +57,7 @@ namespace Menge
 	public:
 		void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
 		void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		void onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override;
+		void onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
 
 		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
         void onMouseEnter( unsigned int _touchId, const mt::vec2f & _point ) override;
@@ -71,7 +71,7 @@ namespace Menge
 			ET_KEY = 0,
 			ET_MOUSEBUTTON,
 			ET_MOUSEMOVE,
-			ET_MOUSEWHELL,
+			ET_MOUSEWHEEL,
 			ET_MOUSEPOSITION,
             ET_MOUSEENTER,
             ET_MOUSELEAVE
@@ -102,7 +102,7 @@ namespace Menge
 
 			float x;
 			float y;
-			int whell;
+			int wheel;
 		};
 
 		struct MousePositionParams
@@ -121,7 +121,7 @@ namespace Menge
 		void keyEvent_( const KeyEventParams& _params );
 		void mouseButtonEvent_( const MouseButtonParams& _params );
 		void mouseMoveEvent_( const MouseMoveParams& _params );
-		void mouseWhellEvent_( const MouseMoveParams& _params );
+		void mouseWheelEvent_( const MouseMoveParams& _params );
 		void mousePositionEvent_( const MousePositionParams& _params );
         void mouseEnterEvent_( const MousePositionParams& _params );
         void mouseLeaveEvent_( const MousePositionParams& _params );

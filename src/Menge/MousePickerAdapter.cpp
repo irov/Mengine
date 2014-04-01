@@ -37,7 +37,7 @@ namespace Menge
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
-		eventable->registerEvent( EVENT_MOUSE_WHELL, ("onHandleMouseWhell"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_WHEEL, ("onHandleMouseWheel"), _listener );
 		
 
 		eventable->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onLeaveEvent );
@@ -210,7 +210,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	bool MousePickerAdapter::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
 		(void)_point; //TODO
 
@@ -220,7 +220,7 @@ namespace Menge
 		{
 			Eventable * eventable = this->getPickerEventable();
 
-			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_WHELL)( handle, m_defaultHandle, "(OIffi)", this->getPickerEmbed(), _touchId, _point.x, _point.y, _whell );
+			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_WHEEL)( handle, m_defaultHandle, "(OIffi)", this->getPickerEmbed(), _touchId, _point.x, _point.y, _wheel );
 		}
 
 		return handle;

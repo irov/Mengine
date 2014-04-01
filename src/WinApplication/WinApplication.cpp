@@ -2590,7 +2590,7 @@ namespace Menge
 
 				int wheel = zDelta / WHEEL_DELTA;
 
-				m_inputService->onMouseWhell( 0, point, wheel );
+				m_inputService->onMouseWheel( 0, point, wheel );
 
 				handle = true;
 				_result = FALSE;

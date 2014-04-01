@@ -469,7 +469,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	bool MousePickerSystem::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
 		m_states.clear();
 		if( this->proccesTraps_( _point, m_states ) == false )
@@ -505,7 +505,7 @@ namespace Menge
 			mt::vec2f wp;
 			m_arrow->calcPointClick( camera, viewport, _point, wp );
 
-			if( trap->handleMouseWhell( _touchId, wp, _whell ) == false )
+			if( trap->handleMouseWheel( _touchId, wp, _wheel ) == false )
 			{
 				continue;
 			}

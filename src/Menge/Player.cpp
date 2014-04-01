@@ -809,11 +809,11 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	bool Player::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
 		if( m_globalHandleSystem )
 		{
-			m_globalHandleSystem->handleGlobalMouseWhell( _touchId, _point, _whell );
+			m_globalHandleSystem->handleGlobalMouseWheel( _touchId, _point, _wheel );
 		}
 
 		bool handler = false;
@@ -822,7 +822,7 @@ namespace Menge
 		{
 			if( handler == false )
 			{
-				handler = m_mousePickerSystem->handleMouseWhell( _touchId, _point, _whell );
+				handler = m_mousePickerSystem->handleMouseWheel( _touchId, _point, _wheel );
 			}
 		}
 

@@ -98,10 +98,10 @@ namespace Menge
                     this->mouseMoveEvent_( params );
                     ++it_mouseMoveParams;
                 }break;
-			case ET_MOUSEWHELL:
+			case ET_MOUSEWHEEL:
 				{
 					const MouseMoveParams& params = (*it_mouseMoveParams);
-					this->mouseWhellEvent_( params );
+					this->mouseWheelEvent_( params );
 					++it_mouseMoveParams;
 				}break;				
             case ET_MOUSEPOSITION:
@@ -281,10 +281,10 @@ namespace Menge
 		m_mouseMoveEventParams.push_back( params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell )
+	void InputEngine::onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
-		m_eventsAdd.push_back( ET_MOUSEWHELL );
-		MouseMoveParams params = { _touchId, _point, 0.f, 0.f, _whell };
+		m_eventsAdd.push_back( ET_MOUSEWHEEL );
+		MouseMoveParams params = { _touchId, _point, 0.f, 0.f, _wheel };
 		m_mouseMoveEventParams.push_back( params );
 	}	
 	//////////////////////////////////////////////////////////////////////////
@@ -342,13 +342,13 @@ namespace Menge
 			->onMouseMove( _params.touchId, point, _params.x, _params.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseWhellEvent_( const MouseMoveParams& _params )
+	void InputEngine::mouseWheelEvent_( const MouseMoveParams& _params )
 	{
 		mt::vec2f point;
 		this->applyCursorPosition_( _params.point, point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseWhell( _params.touchId, point, _params.whell );
+			->onMouseWheel( _params.touchId, point, _params.wheel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mousePositionEvent_( const MousePositionParams& _params )

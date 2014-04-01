@@ -2541,11 +2541,11 @@ namespace Menge
                 pybind::decref( py_event );
             }
 			//////////////////////////////////////////////////////////////////////////
-			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			void handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override
 			{
 				(void)_touchId;
 				(void)_point;
-				(void)_whell;
+				(void)_wheel;
 
 				//Empty
 			}
@@ -2657,11 +2657,11 @@ namespace Menge
                  //Empty
             }
 			//////////////////////////////////////////////////////////////////////////
-			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			void handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override
 			{
 				(void)_touchId;
 				(void)_point;
-				(void)_whell;
+				(void)_wheel;
 
 				//Empty
 			}
@@ -2753,11 +2753,11 @@ namespace Menge
                 //Empty
             }
 			//////////////////////////////////////////////////////////////////////////
-			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			void handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override
 			{
 				(void)_touchId;
 				(void)_point;
-				(void)_whell;
+				(void)_wheel;
 
 				//Empty
 			}
@@ -2852,11 +2852,11 @@ namespace Menge
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			void handleGlobalMouseWhell( unsigned int _touchId, const mt::vec2f & _point, int _whell ) override
+			void handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override
 			{
 				(void)_touchId;
 				(void)_point;
-				(void)_whell;
+				(void)_wheel;
 
 				//Empty
 			}

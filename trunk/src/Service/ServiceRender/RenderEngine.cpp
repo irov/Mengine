@@ -854,7 +854,7 @@ namespace Menge
 			renderViewport.begin.x = 0.f;
 			renderViewport.begin.y = 0.f;
 			renderViewport.end.x = 0.f;
-			renderViewport.end.x = 0.f;
+			renderViewport.end.y = 0.f;
 		}
 		else
 		{
@@ -862,7 +862,8 @@ namespace Menge
 			{
 				renderViewport.begin.x = 0.f;
 			}
-			else if( vp_x + vp_width > windowSize.x )
+			
+			if( vp_x + vp_width > windowSize.x )
 			{
 				renderViewport.end.x = windowSize.x;
 			}
@@ -871,7 +872,8 @@ namespace Menge
 			{
 				renderViewport.begin.y = 0.f;
 			}
-			else if( vp_y + vp_height > windowSize.y )
+			
+			if( vp_y + vp_height > windowSize.y )
 			{
 				renderViewport.end.y = windowSize.y;
 			}

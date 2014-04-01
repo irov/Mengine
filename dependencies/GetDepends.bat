@@ -4,7 +4,7 @@
 
 if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
-%toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/project/boost/boost/1.53.0/boost_1_53_0.7z
+%toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.7z
 
 %toolsdir%\wget\wget.exe --no-clobber http://stahlworks.com/dev/unzip.exe
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
@@ -30,7 +30,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.15.1.tar.bz2
 
 
-%toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.5/Python-2.7.5.tgz
+%toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.6/Python-2.7.6.tgz
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/3.3.1/Python-3.3.1.tgz
 
 :: %toolsdir%\wget\wget.exe --no-clobber http://download.icu-project.org/files/icu4c/49.1.2/icu4c-49_1_2-src.zip
@@ -43,8 +43,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 unzip -o 7za465.zip 7za.exe
 
 if EXIST boost rmdir /s /q boost
-7za x -y boost_1_53_0.7z
-move boost_1_53_0 boost
+7za x -y boost_1_54_0.7z
+move boost_1_54_0 boost
 
 :: extracting thirdparties
 if EXIST CMake rmdir /s /q CMake
@@ -71,7 +71,6 @@ move jpeg-9 libjpeg
 if EXIST Python275 rmdir /s /q Python275
 7za x -y Python-2.7.5.tgz
 7za x -y Python-2.7.5.tar
-move Python-2.7.5 Python275
 
 if EXIST Python331 rmdir /s /q Python331
 7za x -y Python-3.3.1.tgz

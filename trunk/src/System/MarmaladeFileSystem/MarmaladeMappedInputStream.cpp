@@ -43,9 +43,9 @@ namespace Menge
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeMappedInputStream::initialize( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
+    bool MarmaladeMappedInputStream::initialize( const FilePath & _folder, const FilePath & _fileName )
     {
-        if( m_inputStream.open( _folder, _dir, _filename, _filenamelen ) == false )
+        if( m_inputStream.open( _folder, _fileName ) == false )
         {
             return false;
         }

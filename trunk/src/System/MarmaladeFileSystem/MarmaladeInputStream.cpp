@@ -27,14 +27,14 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath & _dir, const char * _filename, size_t _filenamelen )
+	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath & _fileName )
 	{
 		m_folder = _folder;
-		m_filename = _dir;
+		m_filename = _fileName;
 
 		Char filePath[MAX_PATH];
 		if( MARMALADELAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_folder, _dir, _filename, _filenamelen, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( _folder, _fileName, filePath, MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid concatenate '%s':'%s'"
 				, m_folder.c_str()
@@ -252,7 +252,7 @@ namespace Menge
 
 		char filePath[MAX_PATH];
 		if( MARMALADELAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_folder, ConstString::none(), m_filename.c_str(), m_filename.size(), filePath, MAX_PATH ) == false )
+			->concatenateFilePath( m_folder, m_filename, filePath, MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::time invalid concatenate '%s':'%s'"
 				, m_folder.c_str()

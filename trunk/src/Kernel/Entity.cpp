@@ -71,15 +71,15 @@ namespace Menge
 	{
 		Node::_embedding( _embed );
 
-		this->registerEvent( EVENT_CREATE, "onCreate", _embed );
-		this->registerEvent( EVENT_DESTROY, "onDestroy", _embed );
+		this->registerEventMethod( EVENT_CREATE, "onCreate", _embed );
+		this->registerEventMethod( EVENT_DESTROY, "onDestroy", _embed );
 		
-		this->registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
-		this->registerEvent( EVENT_ACTIVATE, "onActivate", _embed );
-        this->registerEvent( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", _embed );
-		this->registerEvent( EVENT_DEACTIVATE, "onDeactivate", _embed );
-		this->registerEvent( EVENT_COMPILE, "onCompile", _embed );
-		this->registerEvent( EVENT_RELEASE, "onRelease", _embed );
+		this->registerEventMethod( EVENT_PREPARATION, "onPreparation", _embed );
+		this->registerEventMethod( EVENT_ACTIVATE, "onActivate", _embed );
+        this->registerEventMethod( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", _embed );
+		this->registerEventMethod( EVENT_DEACTIVATE, "onDeactivate", _embed );
+		this->registerEventMethod( EVENT_COMPILE, "onCompile", _embed );
+		this->registerEventMethod( EVENT_RELEASE, "onRelease", _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()

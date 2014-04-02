@@ -16,8 +16,9 @@ namespace Menge
 		: m_serviceProvider(nullptr)        
 		, m_defaultHandle(false)
         , m_picker(nullptr)
-		, m_onEnterEvent(false)
-		, m_onLeaveEvent(false)
+		, m_onMouseMoveEvent(false)
+		, m_onMouseEnterEvent(false)
+		, m_onMouseLeaveEvent(false)
 	{		
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -35,13 +36,12 @@ namespace Menge
 		eventable->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON2, ("onHandleMouseButtonEvent2"), _listener );
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
-		eventable->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
-		eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );		
 		eventable->registerEvent( EVENT_MOUSE_WHEEL, ("onHandleMouseWheel"), _listener );
 		
-
-		eventable->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onLeaveEvent );
-		eventable->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onEnterEvent );
+		m_onMouseMoveEvent = eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
+		m_onMouseLeaveEvent = eventable->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener );
+		m_onMouseEnterEvent = eventable->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::setDefaultHandle( bool _handle )
@@ -90,7 +90,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::onMouseLeave()
 	{
-		if( m_onLeaveEvent == true )
+		if( m_onMouseLeaveEvent == true )
 		{
             Eventable * eventable = this->getPickerEventable();
 
@@ -104,7 +104,7 @@ namespace Menge
 
 		bool handle = m_defaultHandle;
 
-        if( m_onEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+        if( m_onMouseEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         {
             Eventable * eventable = this->getPickerEventable();
 
@@ -198,11 +198,11 @@ namespace Menge
 	{
         (void)_point; //TODO
 
-		bool handle = false;
+		bool handle = m_defaultHandle;
 
-		if( handle == false )
+		if( m_onMouseMoveEvent == true )
 		{
-            Eventable * eventable = this->getPickerEventable();
+			Eventable * eventable = this->getPickerEventable();
 
 			EVENTABLE_ASK(m_serviceProvider, eventable, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffff)", this->getPickerEmbed(), _touchId, _point.x, _point.y, _x, _y );
 		}

@@ -26,12 +26,15 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( EEventName _event, const char * _method, PyObject * _module, bool * _exist = NULL );
+		bool registerEvent( EEventName _event, const char * _method, PyObject * _dict );
+		bool registerEventMethod( EEventName _event, const char * _method, PyObject * _module );
+
 		PyObject * getEvent( EEventName _event ) const;
 		bool hasEvent( EEventName _event ) const;
 
 	protected:
 		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
+		PyObject * getEventMethod_( const char * _method, PyObject * _module ) const;
 		void removeEvent_( EEventName _event );
 
 	private:

@@ -65,8 +65,8 @@ namespace Menge
 
 		size_t m_currentFrame;
 		
-		bool m_onEndFrameEvent;
-		bool m_onEndFrameTick;
-		bool m_onEndAnimationEvent;
+		bool m_onFrameEndEvent;
+		bool m_onFrameEndTick;
+		bool m_onAnimationEndEvent;
 	};
 }

@@ -919,6 +919,22 @@ namespace Menge
 		}
 		
 		this->_setEventListener( _kwds );
+
+#	ifdef _DEBUG
+		size_t pos = 0;
+
+		PyObject * key;
+		PyObject * value;
+		while( pybind::dict_next( _kwds, pos, &key, &value ) == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Node::setEventListener %s:%s invalid event %s:%s"
+				, m_name.c_str()
+				, m_type.c_str()
+				, pybind::object_str( key )
+				, pybind::object_str( value )
+				);
+		}
+#	endif
 		
         PyObject * py_none = pybind::ret_none();
 

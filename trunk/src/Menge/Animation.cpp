@@ -18,9 +18,9 @@ namespace	Menge
 	Animation::Animation()
 		: m_frameTiming(0.f)
 		, m_currentFrame(0)
-		, m_onEndFrameTick(false)
-		, m_onEndFrameEvent(false)
-		, m_onEndAnimationEvent(false)
+		, m_onFrameEndTick(false)
+		, m_onFrameEndEvent(false)
+		, m_onAnimationEndEvent(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,12 +74,12 @@ namespace	Menge
             {
                 m_frameTiming -= frameDelay;
 
-                if( m_onEndFrameEvent == true )
+                if( m_onFrameEndEvent == true )
                 {
                     EVENTABLE_CALL(m_serviceProvider, this, EVENT_FRAME_END)( "(OI)", this->getEmbed(), m_currentFrame );
                 }
 
-                if( m_onEndFrameTick == true )
+                if( m_onFrameEndTick == true )
                 {
                     EVENTABLE_CALL(m_serviceProvider, this, EVENT_FRAME_TICK)( "(OII)", this->getEmbed(), m_currentFrame, frameCount );
                 }
@@ -235,7 +235,7 @@ namespace	Menge
 			return;
 		}
         
-		if( m_onEndAnimationEvent == true )
+		if( m_onAnimationEndEvent == true )
 		{
 			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 		}
@@ -252,7 +252,7 @@ namespace	Menge
 			return;
 		}
         
-		if( m_onEndAnimationEvent == true )
+		if( m_onAnimationEndEvent == true )
 		{
 			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 		}
@@ -319,10 +319,9 @@ namespace	Menge
 	{
 		Sprite::_setEventListener( _listener );
 
-		this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener, &m_onEndFrameEvent );
-		this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener, &m_onEndFrameTick );
-
-		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener, &m_onEndAnimationEvent );
+		m_onFrameEndEvent = this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
+		m_onFrameEndTick = this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
+		m_onAnimationEndEvent = this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animation::getCurrentFrame() const

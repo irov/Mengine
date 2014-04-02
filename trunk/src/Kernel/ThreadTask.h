@@ -37,8 +37,8 @@ namespace Menge
 		virtual void _onComplete( bool _successful );
 		
 	private:
-		bool m_run;
-		bool m_complete;
+		volatile bool m_run;
+		volatile bool m_complete;
 		volatile bool m_finish;
 		volatile bool m_successful;
 		volatile bool m_cancel;

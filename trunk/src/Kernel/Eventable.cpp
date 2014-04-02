@@ -147,19 +147,9 @@ namespace Menge
         m_mapEvent.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module, bool * _exist )
+	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _dict )
 	{
-		if( _module == 0 )
-		{
-			this->removeEvent_( _event );
-
-			if( _exist != nullptr )
-			{
-				*_exist	= false;
-			}
-		}
-
-		PyObject * ev = this->getEvent_( _method, _module );
+		PyObject * ev = this->getEvent_( _method, _dict );
 
 		if( ev == nullptr )
 		{
@@ -172,17 +162,7 @@ namespace Menge
 
 			this->removeEvent_( _event );
 
-			if( _exist != nullptr )
-			{
-				*_exist	= false;
-			}
-
-			return true;
-		}
-
-		if( _exist != nullptr )
-		{
-			*_exist	= true;
+			return false;
 		}
 
 		TMapEvent::iterator it_find = m_mapEvent.find(_event);
@@ -203,6 +183,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::registerEventMethod( EEventName _event, const char * _method, PyObject * _module )
+	{
+		PyObject * ev = this->getEventMethod_( _method, _module );
+
+		if( ev == nullptr )
+		{
+			return false;
+		}
+
+		TMapEvent::iterator it_find = m_mapEvent.find( _event );
+
+		if( it_find != m_mapEvent.end() )
+		{
+			return false;
+		}
+		
+		m_mapEvent.insert( _event, ev );
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Eventable::removeEvent_( EEventName _event )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_event);
@@ -216,34 +217,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent_( const char * _method, PyObject * _dict ) const
 	{
-		if( _dict == nullptr )
+		if( pybind::dict_check( _dict ) == false )
 		{
-			return 0;
+			return nullptr;
 		}
-
-		if( pybind::dict_check( _dict ) == true )
-		{
-			if( pybind::dict_contains( _dict, _method ) == false )
-			{
-				return nullptr;
-			}
-
-			PyObject * py_event = pybind::dict_get( _dict, _method );
 		
-			pybind::incref( py_event );
-
-			return py_event;
-		}
-
-		if( pybind::has_attr( _dict, _method ) == false )
+		if( pybind::dict_contains( _dict, _method ) == false )
 		{
 			return nullptr;
 		}
 
-		PyObject * py_event = pybind::get_attr( _dict, _method );
+		PyObject * py_event = pybind::dict_get( _dict, _method );
+		
+		pybind::incref( py_event );
+
+		pybind::dict_remove( _dict, _method );
 
 		return py_event;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Eventable::getEventMethod_( const char * _method, PyObject * _module ) const
+	{
+		if( pybind::has_attr( _module, _method ) == false )
+		{
+			return nullptr;
+		}
+
+		PyObject * py_event = pybind::get_attr( _module, _method );
+
+		return py_event;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::hasEvent( EEventName _event ) const
 	{

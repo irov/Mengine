@@ -271,42 +271,42 @@ namespace Menge
 
         pybind::incref( m_embed );
 
-        this->registerEvent( EVENT_FULLSCREEN, "onFullscreen", _embed );
-        this->registerEvent( EVENT_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution", _embed );
-        this->registerEvent( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
+        this->registerEventMethod( EVENT_FULLSCREEN, "onFullscreen", _embed );
+        this->registerEventMethod( EVENT_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution", _embed );
+        this->registerEventMethod( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
 
-        this->registerEvent( EVENT_KEY, "onHandleKeyEvent", _embed );
-		this->registerEvent( EVENT_KEY2, "onHandleKeyEvent2", _embed );
-        this->registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
-		this->registerEvent( EVENT_MOUSE_BUTTON2, "onHandleMouseButtonEvent2", _embed );
-        this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
-        this->registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
-        this->registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
-		this->registerEvent( EVENT_MOUSE_WHEEL, "onHandleMouseWheel", _embed );
+        this->registerEventMethod( EVENT_KEY, "onHandleKeyEvent", _embed );
+		this->registerEventMethod( EVENT_KEY2, "onHandleKeyEvent2", _embed );
+        this->registerEventMethod( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
+		this->registerEventMethod( EVENT_MOUSE_BUTTON2, "onHandleMouseButtonEvent2", _embed );
+        this->registerEventMethod( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
+        this->registerEventMethod( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
+        this->registerEventMethod( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
+		this->registerEventMethod( EVENT_MOUSE_WHEEL, "onHandleMouseWheel", _embed );
 
-        this->registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
-        this->registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );
+        this->registerEventMethod( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
+        this->registerEventMethod( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );
 
-        this->registerEvent( EVENT_ON_TIMING_FACTOR, "onTimingFactor", _embed );
+        this->registerEventMethod( EVENT_ON_TIMING_FACTOR, "onTimingFactor", _embed );
 
-        this->registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
-        this->registerEvent( EVENT_INITIALIZE, "onInitialize", _embed );
-        this->registerEvent( EVENT_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources", _embed );
-        this->registerEvent( EVENT_ACCOUNT_FINALIZE, "onAccountFinalize", _embed );
-        this->registerEvent( EVENT_FINALIZE, "onFinalize", _embed );
-        this->registerEvent( EVENT_DESTROY, "onDestroy", _embed );
+        this->registerEventMethod( EVENT_PREPARATION, "onPreparation", _embed );
+        this->registerEventMethod( EVENT_INITIALIZE, "onInitialize", _embed );
+        this->registerEventMethod( EVENT_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources", _embed );
+        this->registerEventMethod( EVENT_ACCOUNT_FINALIZE, "onAccountFinalize", _embed );
+        this->registerEventMethod( EVENT_FINALIZE, "onFinalize", _embed );
+        this->registerEventMethod( EVENT_DESTROY, "onDestroy", _embed );
 
-        this->registerEvent( EVENT_FOCUS, "onFocus", _embed );
+        this->registerEventMethod( EVENT_FOCUS, "onFocus", _embed );
 
-        this->registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
-        this->registerEvent( EVENT_DELETE_ACCOUNT, "onDeleteAccount", _embed );
-        this->registerEvent( EVENT_SELECT_ACCOUNT, "onSelectAccount", _embed );
-        this->registerEvent( EVENT_UNSELECT_ACCOUNT, "onUnselectAccount", _embed );
+        this->registerEventMethod( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
+        this->registerEventMethod( EVENT_DELETE_ACCOUNT, "onDeleteAccount", _embed );
+        this->registerEventMethod( EVENT_SELECT_ACCOUNT, "onSelectAccount", _embed );
+        this->registerEventMethod( EVENT_UNSELECT_ACCOUNT, "onUnselectAccount", _embed );
 
-        this->registerEvent( EVENT_CURSOR_MODE, "onCursorMode", _embed );
+        this->registerEventMethod( EVENT_CURSOR_MODE, "onCursorMode", _embed );
 
-        this->registerEvent( EVENT_USER, "onUserEvent", _embed );
-        this->registerEvent( EVENT_CLOSE, "onCloseWindow", _embed );
+        this->registerEventMethod( EVENT_USER, "onUserEvent", _embed );
+        this->registerEventMethod( EVENT_CLOSE, "onCloseWindow", _embed );
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * Game::getEmbed() const

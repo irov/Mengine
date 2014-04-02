@@ -553,10 +553,10 @@ namespace	Menge
 		pybind::def_functor( "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
 		pybind::def_functor( "musicStop", soundScriptMethod, &SoundScriptMethod::musicStop );
         pybind::def_functor( "musicPause", soundScriptMethod, &SoundScriptMethod::musicPause );
-        pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );        
+        pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );
 		pybind::def_functor( "musicShuffle", soundScriptMethod, &SoundScriptMethod::musicShuffle );
 		pybind::def_functor( "musicGetPlaying", soundScriptMethod, &SoundScriptMethod::s_musicGetPlaying );
-		pybind::def_functor( "musicGetPlayingTrackIndex", soundScriptMethod, &SoundScriptMethod::s_musicGetPlayingTrackIndex );		
+		pybind::def_functor( "musicGetPlayingTrackIndex", soundScriptMethod, &SoundScriptMethod::s_musicGetPlayingTrackIndex );
 		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::s_musicSetVolume );
 		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
 		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );

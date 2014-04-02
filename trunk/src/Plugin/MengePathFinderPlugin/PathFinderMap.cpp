@@ -30,7 +30,9 @@ namespace Menge
 
 		m_unitSize = _unitSize;
 
-		
+		uint32_t map_width = _width / _gridSize + 0.5f;
+		uint32_t map_height = _height / _gridSize + 0.5f;
+		m_map.initialize( map_width, map_height );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_enlargePolygonRingFromLow( Polygon::ring_type & _ring, float _radius )
@@ -185,6 +187,8 @@ namespace Menge
 		boost::geometry::correct( obstacle->hole );
 
 		obstacle->bigHole = big_polygon;
+
+		this->obstacleCellMask_( obstacle, 1 );
 				
 		m_obstacles.push_back( obstacle );
 
@@ -201,10 +205,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( (*it)->id != _id )
+			Obstacle * obstacle = (*it);
+
+			if( obstacle->id != _id )
 			{
 				continue;
 			}
+
+			this->obstacleCellMask_( obstacle, 0 );
 
 			m_obstacles.erase( it );
 
@@ -256,25 +264,118 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void s_polygonToBox( const Polygon & _polygon, mt::vec2f & _min, mt::vec2f & _max )
+	{
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		const mt::vec2f & v0 = ring[0];
+		_min = v0;
+		_max = v0;
+
+		Polygon::ring_type::size_type size = ring.size() - 1;
+
+		for( Polygon::ring_type::size_type i = 1; i != size; ++i )
+		{
+			const mt::vec2f & v = ring[i];
+
+			if( _min.x > v.x )
+			{
+				_min.x = v.x;
+			}
+
+			if( _min.y > v.y )
+			{
+				_min.y = v.y;
+			}
+
+			if( _max.x < v.x )
+			{
+				_max.x = v.x;
+			}
+
+			if( _max.y < v.y )
+			{
+				_max.y = v.y;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask )
+	{
+		const Polygon & polygon = _obstacle->bigHole;
+
+		mt::vec2f minp;
+		mt::vec2f maxp;
+		s_polygonToBox( polygon, minp, maxp );
+
+		uint32_t map_width = m_map.getWidth();
+		uint32_t map_height = m_map.getHeight();
+
+		uint32_t map_begin_i = minp.x / m_gridSize;
+		uint32_t map_begin_j = minp.y / m_gridSize;
+
+		uint32_t map_end_i = maxp.x / m_gridSize;
+		uint32_t map_end_j = maxp.y / m_gridSize;
+
+		for( uint32_t j = map_begin_j; j != map_end_j; ++j )
+		{
+			for( uint32_t i = map_begin_i; i != map_end_i; ++i )
+			{
+				float x = (i * m_gridSize) + m_gridSize * 0.5f;
+				float y = (j * m_gridSize) + m_gridSize * 0.5f;
+
+				GeometryPoint point(x, y);
+				if( boost::geometry::intersects( polygon, point ) == false )
+				{
+					continue;
+				}
+
+				m_map.setCellMask( i, j, _mask );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::generateMap()
 	{
-		for( TVectorObstacles::iterator
-			it = m_obstacles.begin(),
-			it_end = m_obstacles.end();
-		it != it_end;
-		++it )
-		{
-			Obstacle * obstacle = *it;
+		//m_map.clear();
 
+		//for( TVectorObstacles::iterator
+		//	it = m_obstacles.begin(),
+		//	it_end = m_obstacles.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	Obstacle * obstacle = *it;
 
-		}
+		//	uint32_t map_width = m_map.getWidth();
+		//	uint32_t map_height = m_map.getHeight();
 
-		m_invalidateMap = false;
+		//	for( uint32_t j = 0; j != map_height; ++j )
+		//	{
+		//		for( uint32_t i = 0; i != map_width; ++i )
+		//		{
+		//			float x = (i * m_gridSize) + m_gridSize * 0.5f;
+		//			float y = (j * m_gridSize) + m_gridSize * 0.5f;
+
+		//			const Polygon & polygon = obstacle->bigHole;
+
+		//			GeometryPoint point(x, y);
+		//			if( boost::geometry::intersects( polygon, point ) == false )
+		//			{
+		//				continue;
+		//			}
+
+		//			m_map.setCellMask( i, j, 1 );
+		//		}
+		//	}
+		//}
+
+		//m_invalidateMap = false;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_intersectsPolygonSegment( const Polygon::ring_type & _ring, const Segment & _segment )
+	static bool s_intersectsPolygonRingSegment( const Polygon::ring_type & _ring, const Segment & _segment )
 	{
 		if( _ring.empty() == true )
 		{
@@ -311,7 +412,7 @@ namespace Menge
 		{
 			const Polygon::ring_type & ring = *it;
 
-			if( s_intersectsPolygonSegment( ring, _segment ) == true )
+			if( s_intersectsPolygonRingSegment( ring, _segment ) == true )
 			{
 				return true;
 			}
@@ -324,7 +425,7 @@ namespace Menge
 
 		const Polygon::ring_type & ring = _polygon.outer();
 
-		if( s_intersectsPolygonSegment( ring, _segment ) == true )
+		if( s_intersectsPolygonRingSegment( ring, _segment ) == true )
 		{
 			return true;
 		}
@@ -353,9 +454,17 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_intersectsPolygonPoint( const Polygon & _polygon, const mt::vec2f & _point )
+	{
+		GeometryPoint point(_point.x, _point.y);
+		bool intersect = boost::geometry::intersects( _polygon, point );
+
+		return intersect;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesPoint_( const mt::vec2f & _p ) const
 	{
-		GeometryPoint point(_p.x, _p.y);
+		
 
 		for( TVectorObstacles::const_iterator
 			it = m_obstacles.begin(),
@@ -365,7 +474,7 @@ namespace Menge
 		{
 			const Polygon & p = (*it)->hole;
 
-			bool intersect = boost::geometry::intersects( p, point );
+			bool intersect = s_intersectsPolygonPoint( p, _p );
 
 			if( intersect == true )
 			{
@@ -386,11 +495,39 @@ namespace Menge
 			}
 		}
 
+		uint32_t fx = _from.x / m_gridSize;
+		uint32_t fy = _from.y / m_gridSize;
+
+		uint32_t tx = _to.x / m_gridSize;
+		uint32_t ty = _to.y / m_gridSize;
+
+		bool successful = m_map.findPath( fx, fy, tx, ty );
+
+		if( successful == false )
+		{
+			return nullptr;
+		}
+
+		size_t points_size;
+		fastpathfinder::point * points = m_map.getPathFilter( points_size );
+
+		TVectorWayPoint wayPoints;
+		
+		for( size_t i = 0; i != points_size; ++i )
+		{
+			fastpathfinder::point p = points[i];
+
+			float x = p.x * m_gridSize + m_gridSize * 0.5f;
+			float y = p.y * m_gridSize + m_gridSize * 0.5f;
+
+			wayPoints.push_back( mt::vec2f(x, y) );
+		}
+
 		//BEGIN_WATCHDOG(m_serviceProvider, "findPath");
 								
 		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
 
-		//way->initialize( _from, _to, wayPoints );
+		way->initialize( _from, _to, wayPoints );
 
 		m_pathFinderWays.push_back( way );
 
@@ -541,6 +678,36 @@ namespace Menge
 				this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFF0000 );
 			}
 		}
+
+		//uint32_t map_width = m_map.getWidth();
+		//uint32_t map_height = m_map.getHeight();
+
+		//for( uint32_t j = 0; j != map_height; ++j )
+		//{
+		//	for( uint32_t i = 0; i != map_width; ++i )
+		//	{
+		//		uint32_t mask = m_map.getCellMask( i, j );
+
+		//		if( mask == 0 )
+		//		{
+		//			continue;
+		//		}
+
+		//		float x = ( i * m_gridSize ) + m_gridSize * 0.5f;
+		//		float y = ( j * m_gridSize ) + m_gridSize * 0.5f;
+
+		//		Polygon polygon;
+		//		boost::geometry::append(polygon, mt::vec2f(x + m_gridSize * 0.25f, y - m_gridSize * 0.00f) );
+		//		boost::geometry::append(polygon, mt::vec2f(x + m_gridSize * 0.00f, y - m_gridSize * 0.25f) );
+		//		boost::geometry::append(polygon, mt::vec2f(x - m_gridSize * 0.25f, y + m_gridSize * 0.00f) );
+		//		boost::geometry::append(polygon, mt::vec2f(x - m_gridSize * 0.00f, y + m_gridSize * 0.25f) );
+		//		boost::geometry::correct(polygon);
+
+		//		const Polygon::ring_type & ring = polygon.outer();
+
+		//		this->renderPolygonRing_( _viewport, _camera, ring, 0xFF00FF00 );
+		//	}
+		//}
 
 		for( TVectorPathFinderWay::iterator
 			it = m_pathFinderWays.begin(),

@@ -52,12 +52,15 @@ namespace Menge
 
 	protected:
 		void renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Polygon::ring_type & _ring, uint32_t _color );
-
+		
 	protected:
 		bool testBigHolesPolygon_( const Polygon & _polygon ) const;
 		bool testHolesPolygon_( const Polygon & _polygon ) const;
 		bool testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const;
 		bool testHolesPoint_( const mt::vec2f & _p ) const;
+
+	protected:
+		void obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

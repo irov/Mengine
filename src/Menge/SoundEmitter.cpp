@@ -269,8 +269,8 @@ namespace Menge
 	{
 		Node::_setEventListener( _listener );
 
-		this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener, &m_onSoundPauseEvent );
-		this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener, &m_onSoundStopEvent );
+		m_onSoundPauseEvent = this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener );
+		m_onSoundStopEvent = this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_interrupt( size_t _enumerator )

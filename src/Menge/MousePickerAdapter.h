@@ -55,7 +55,8 @@ namespace Menge
 		bool m_defaultHandle;
 
 	private:
-		bool m_onEnterEvent;
-		bool m_onLeaveEvent;
+		bool m_onMouseEnterEvent;
+		bool m_onMouseLeaveEvent;
+		bool m_onMouseMoveEvent;
 	};
 }

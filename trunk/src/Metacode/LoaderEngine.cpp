@@ -103,7 +103,7 @@ namespace Menge
 			file_bin = FILE_SERVICE(m_serviceProvider)
                 ->openInputFile( _pak, _path );
 
-			done = this->importBin_( file_bin, _metadata, NULL );
+			done = this->importBin_( file_bin, _metadata, nullptr );
 		}
 #	endif
 

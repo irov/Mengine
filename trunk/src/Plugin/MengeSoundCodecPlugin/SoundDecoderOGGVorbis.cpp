@@ -81,7 +81,7 @@ namespace Menge
         //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 1" );
         InputStreamInterface * streamInterface = m_stream.get();
 
-        int opcall_err = ov_open_callbacks( streamInterface, &m_oggVorbisFile, NULL, 0, vorbisCallbacks );
+        int opcall_err = ov_open_callbacks( streamInterface, &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
         
         if( opcall_err < 0 )
         {

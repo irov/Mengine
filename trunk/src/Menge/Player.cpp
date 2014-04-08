@@ -98,7 +98,7 @@ namespace Menge
 
 		m_switchSceneName = _name;
 		
-		if( m_scene != NULL && m_switchSceneName == m_scene->getName() )
+		if( m_scene != nullptr && m_switchSceneName == m_scene->getName() )
 		{
 			m_restartScene = true;
 		}
@@ -109,7 +109,7 @@ namespace Menge
 		m_destroyOldScene = _destroyOld;
 		m_destroyAfterSwitch = _destroyAfterSwitch;
 
-		if( _cb != NULL && pybind::is_none(_cb) == false )
+		if( _cb != nullptr && pybind::is_none(_cb) == false )
 		{
 			m_changeSceneCb = _cb;
 
@@ -129,7 +129,7 @@ namespace Menge
         m_switchScene = false;
 		m_removeScene = true;
 
-		if( _cb != NULL && pybind::is_none(_cb) == false )
+		if( _cb != nullptr && pybind::is_none(_cb) == false )
 		{
 			m_removeSceneCb = _cb;
 

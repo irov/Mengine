@@ -123,7 +123,7 @@ namespace Menge
 	{
 			menge_dst_ptr dest;
 
-			if (cinfo->dest == NULL)
+			if( cinfo->dest == nullptr )
 			{
 				cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small)
 					((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(DestinationManager));

@@ -16,7 +16,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SilentSoundSystem::SilentSoundSystem()
-		: m_serviceProvider(NULL)
+		: m_serviceProvider(nullptr)
         , m_enumerate(0)
 	{
 	}

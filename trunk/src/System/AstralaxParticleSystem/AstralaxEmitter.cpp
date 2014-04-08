@@ -17,7 +17,7 @@ namespace Menge
 		, m_total_rate(0.f)
         , m_time(0.f)
 		, m_looped(false)
-		, m_listener(NULL)
+		, m_listener(nullptr)
 		, m_angle(0.f)
 		, m_tempScale(1)
         , m_basePosition(0.f, 0.f, 0.f)
@@ -173,7 +173,7 @@ namespace Menge
 			//size_t width = 0;
 
 			Magic_Restart( _emitter );
-			Magic_EmitterToInterval1( _emitter, 1 ,NULL );
+			Magic_EmitterToInterval1( _emitter, 1, nullptr );
 
 			while( curTime  <  duration )
 			{
@@ -191,7 +191,7 @@ namespace Menge
 			}
 
 			Magic_Restart( _emitter );
-			Magic_EmitterToInterval1( _emitter, 1 ,NULL );
+			Magic_EmitterToInterval1( _emitter, 1, nullptr );
 		}
 		return box;
 	}
@@ -218,7 +218,7 @@ namespace Menge
 			if( Magic_IsInterval1( m_id ) == true )
 			{
 				//Magic_SetInterval1( m_id, m_leftBorder );
-				Magic_EmitterToInterval1( m_id, 1.f, NULL );
+				Magic_EmitterToInterval1( m_id, 1.f, nullptr );
 			}
 		}
 
@@ -437,13 +437,13 @@ namespace Menge
 		if( Magic_IsInterval1( m_id ) == true )
 		{
 			//Magic_SetInterval1( m_id, m_leftBorder );
-			Magic_EmitterToInterval1( m_id, 1.f, NULL );
+			Magic_EmitterToInterval1( m_id, 1.f, nullptr );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setAngle( float _radians )
 	{
-		m_angle = _radians * 180.0f / 3.1415926f;
+		m_angle = _radians * 180.f / 3.1415926f;
 
 		Magic_SetDiagramAddition( m_id, MAGIC_DIAGRAM_DIRECTION, -1, m_angle );
 		int k_par = Magic_GetParticlesTypeCount( m_id );

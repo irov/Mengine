@@ -229,7 +229,7 @@ namespace Menge
         OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( _fileGroupName, _filename );
 
-        if( stream == NULL )
+        if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create file '%s' '%s'"
                 , _fileGroupName.c_str()

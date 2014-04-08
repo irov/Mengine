@@ -16,7 +16,7 @@ namespace Menge
 	{
 		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			m_images[i].resource = NULL;
+			m_images[i].resource = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ namespace Menge
 	{
 		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			m_images[i].resource = NULL;
+			m_images[i].resource = nullptr;
 
 			if( m_images[i].resourceName.empty() == true )
 			{
@@ -89,10 +89,10 @@ namespace Menge
 	{
 		for( int i = 0; i < ResourceWindow_Count; i++ )
 		{
-			if( m_images[i].resource != NULL )
+			if( m_images[i].resource != nullptr )
 			{
 				m_images[i].resource->decrementReference();
-				m_images[i].resource = NULL;
+				m_images[i].resource = nullptr;
 			}
 		}
 	}

@@ -114,7 +114,7 @@ namespace Menge
 			, 0 //write flag set to 0
 			, m_stream.get() //IO source - it will be send as opaque argument to IO callbacks
 			, s_readIOWrapper //read callback 
-			, NULL //write callback
+			, nullptr //write callback
 			, s_seekIOWrapper //seek callback
 			);
 
@@ -126,7 +126,7 @@ namespace Menge
 
 		m_formatContext->pb = m_IOContext;
         
-        int open_input_error = avformat_open_input( &m_formatContext, "", inputFormat, NULL );
+        int open_input_error = avformat_open_input( &m_formatContext, "", inputFormat, nullptr );
 
 		if( open_input_error < 0 )
 		{
@@ -137,7 +137,7 @@ namespace Menge
 			return false;
 		}
 
-		int find_stream_info_error = avformat_find_stream_info( m_formatContext, NULL );
+		int find_stream_info_error = avformat_find_stream_info( m_formatContext, nullptr );
 
 		if( find_stream_info_error < 0 )
 		{
@@ -515,7 +515,7 @@ namespace Menge
 		}
 
 		m_imgConvertContext = sws_getCachedContext(
-            NULL
+            nullptr
             , m_codecContext->width
             , m_codecContext->height
             , m_codecContext->pix_fmt
@@ -524,9 +524,9 @@ namespace Menge
             , (::PixelFormat)m_outputPixelFormat
             //, SWS_BICUBIC
             , SWS_FAST_BILINEAR
-			, NULL 
-            , NULL
-            , NULL );
+			, nullptr 
+            , nullptr
+            , nullptr );
 
 		if( m_imgConvertContext == nullptr )
 		{
@@ -539,9 +539,9 @@ namespace Menge
                 , (::PixelFormat)m_outputPixelFormat
                 //, SWS_BICUBIC
                 , SWS_FAST_BILINEAR
-                , NULL 
-                , NULL
-                , NULL );
+                , nullptr 
+                , nullptr
+                , nullptr );
 
             if( m_imgConvertContext == nullptr )
             {

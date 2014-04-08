@@ -267,7 +267,7 @@ namespace Menge
                 , _id
                 );
 
-            return NULL;
+            return nullptr;
         }
 
         it_found->dead = true;

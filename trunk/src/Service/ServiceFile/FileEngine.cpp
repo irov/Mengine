@@ -358,7 +358,7 @@ namespace Menge
 	{
         FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
-        if( group == NULL )
+        if( group == nullptr )
         {
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::removeFile '%s' not mount"
 				, _fileGroupName.c_str() 

@@ -10,7 +10,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LogEngine::LogEngine()
 		: m_verboseLevel(LM_ERROR)
-        , m_serviceProvider(NULL)
+        , m_serviceProvider(nullptr)
         , m_verboseFlag(0)
 	{
 	}

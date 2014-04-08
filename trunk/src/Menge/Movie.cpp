@@ -1245,7 +1245,7 @@ namespace Menge
 		ResourceImageSolid * resource = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceImageSolid>( _layer.source );
 
-		if( resource == NULL )
+		if( resource == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile sprite '%s' imageSolid resource = NULL"
 				, m_name.c_str()

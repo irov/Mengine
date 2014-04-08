@@ -18,6 +18,10 @@
 namespace Metabuf
 {
     //////////////////////////////////////////////////////////////////////////
+	void archive_read( ArchiveReader & ar, bool & _value, void * _userData );
+	void archive_read( ArchiveReader & ar, uint32_t & _value, void * _userData );
+	void archive_read( ArchiveReader & ar, float & _value, void * _userData );
+	//////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, Menge::String & _value, void * _userData );
     void archive_read( ArchiveReader & ar, Menge::ConstString & _value, void * _userData );
     void archive_read( ArchiveReader & ar, Menge::WChar & _value, void * _userData );
@@ -25,7 +29,7 @@ namespace Metabuf
     void archive_read( ArchiveReader & ar, Menge::ColourValue & _value, void * _userData );
     void archive_read( ArchiveReader & ar, Menge::GlyphCode & _value, void * _userData );
     void archive_read( ArchiveReader & ar, Menge::Polygon & _value, void * _userData );
-    void archive_read( ArchiveReader & ar, Menge::Floats & _value, void * _userData );
+    void archive_read( ArchiveReader & ar, Menge::Floats & _value, void * _userData );	
     void archive_read( ArchiveReader & ar, mt::vec2f & _value, void * _userData );
     void archive_read( ArchiveReader & ar, mt::vec3f & _value, void * _userData );
     void archive_read( ArchiveReader & ar, mt::vec4f & _value, void * _userData );    

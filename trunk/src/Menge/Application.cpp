@@ -149,6 +149,7 @@ namespace Menge
 		, m_developmentMode(false)
         , m_nofullscreenMode(false)
         , m_resourceCheck(true)
+		, m_resourceCheckCritical(true)
 		, m_cursorResource(nullptr)
 		, m_fixedContentResolution(false)
 		, m_vsync(false)
@@ -754,8 +755,17 @@ namespace Menge
 
         if( m_developmentMode == true && m_resourceCheck == true )
         {
-            RESOURCE_SERVICE(m_serviceProvider)
-                ->validationResources();
+            if( RESOURCE_SERVICE(m_serviceProvider)
+                ->validationResources() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Resources validation is invalid!!!!!!!!!!!!!"
+					);
+
+				if( m_resourceCheckCritical == true )
+				{
+					return false;
+				}
+			}
         }
 
         String personalityModule;                
@@ -891,6 +901,12 @@ namespace Menge
         {
             m_resourceCheck = false;
         }
+
+		String::size_type idx_noresourcecheckcritical = _arguments.find( " -noresourcecheckcritical " );
+		if( idx_noresourcecheckcritical != String::npos )
+		{
+			m_resourceCheckCritical = false;
+		}
 
         String::size_type idx_nofullscreen = _arguments.find( " -nofullscreen " );
         if( idx_nofullscreen != String::npos )

@@ -56,7 +56,7 @@ namespace Menge
 		const ConstString & getResourceType( const ConstString & _name ) const;
 
     public:
-        void validationResources() const override;
+        bool validationResources() const override;
 
 	public:
 		void visitResources( ResourceVisitor * _visitor ) const override;

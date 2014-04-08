@@ -2,7 +2,8 @@
 
 namespace Metacode
 {
-    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, void * _userData )
+    //////////////////////////////////////////////////////////////////////////
+    static bool readHeader2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, void * _userData )
     {
         Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
@@ -27,8 +28,23 @@ namespace Metacode
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, void * _userData )
+    {
+        try
+        {
+            bool successful = readHeader2( _buff, _size, _read, _readVersion, _needVersion, _userData );
 
-    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount, void * _userData )
+            return successful;
+        }
+        catch( const Metabuf::ArchiveException & )
+        {
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool readStrings2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount, void * _userData )
     {
         Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
@@ -39,8 +55,23 @@ namespace Metacode
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount, void * _userData )
+    {
+        try
+        {
+            bool successful = readStrings2( _buff, _size, _read, _stringCount, _userData );
 
-    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, void * _userData )
+            return successful;
+        }
+        catch( const Metabuf::ArchiveException & )
+        {
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, void * _userData )
     {
         Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
@@ -54,6 +85,22 @@ namespace Metacode
 
         return value;
     }
+    //////////////////////////////////////////////////////////////////////////
+    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, void * _userData )
+    {
+        try
+        {
+            const char * value = readString2( _buff, _size, _read, _stringSize, _userData );
+
+            return value;
+        }
+        catch( const Metabuf::ArchiveException & )
+        {
+        }
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_DataBlock()
         : Metabuf::Metadata()

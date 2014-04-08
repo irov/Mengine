@@ -41,6 +41,12 @@ namespace Menge
 				
 		if( exist == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s not exist file %s:%s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_fileName.c_str()
+				);
+
 			return false;
 		}
         
@@ -49,6 +55,12 @@ namespace Menge
 
         if( stream == nullptr )
         {
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s invalid open file %s:%s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_fileName.c_str()
+				);
+
             return false;
         }
 
@@ -57,11 +69,25 @@ namespace Menge
 
         if( imageDecoder == nullptr )
         {
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_fileName.c_str()
+				, m_codecType.c_str()
+				);
+
             return false;
         }
 
 		if( imageDecoder->initialize( stream ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_fileName.c_str()
+				, m_codecType.c_str()
+				);
+
 			return false;
 		}
 

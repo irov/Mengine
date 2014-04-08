@@ -33,6 +33,9 @@ namespace Menge
 		bool hasEvent( EEventName _event ) const;
 
 	protected:
+		void unregisterEvents_();
+
+	protected:
 		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
 		PyObject * getEventMethod_( const char * _method, PyObject * _module ) const;
 		void removeEvent_( EEventName _event );

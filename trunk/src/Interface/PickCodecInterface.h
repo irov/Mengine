@@ -17,11 +17,11 @@ namespace Menge
 		{
 		}
 
-        size_t width;
-		size_t height;		
+        uint32_t width;
+		uint32_t height;		
 		
-        size_t mipmaplevel;
-        size_t mipmapsize;
+        uint32_t mipmaplevel;
+        uint32_t mipmapsize;
 	};
 
 	struct PickCodecOptions

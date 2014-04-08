@@ -309,7 +309,7 @@ namespace Menge
 
         size_t file_size = file->size();
 
-        size_t load_crc32 = 0;
+        uint32_t load_crc32 = 0;
         if( file->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load crc32)"
@@ -320,7 +320,7 @@ namespace Menge
             return false;
         }
 
-        size_t load_data_size = 0;
+        uint32_t load_data_size = 0;
         if( file->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load data size)"
@@ -334,7 +334,9 @@ namespace Menge
         size_t load_compress_size = file_size - sizeof(load_crc32) - sizeof(load_data_size);
 
         TBlobject archive_blob(load_compress_size);
-        file->read( &archive_blob[0], load_compress_size );
+		TBlobject::value_type * archive_blob_buffer = &archive_blob[0];
+        file->read( archive_blob_buffer, load_compress_size );
+
         file = nullptr;
 
         size_t check_crc32 = make_crc32( &archive_blob[0], load_compress_size );

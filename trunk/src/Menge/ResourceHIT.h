@@ -52,10 +52,10 @@ namespace Menge
         ConstString m_codec;
         ConstString m_converter;
 
-		size_t m_width;
-		size_t m_height;
-        size_t m_mipmaplevel;
-        size_t m_mipmapsize;
+		uint32_t m_width;
+		uint32_t m_height;
+        uint32_t m_mipmaplevel;
+        uint32_t m_mipmapsize;
 
         unsigned char * m_mipmap;
 	};

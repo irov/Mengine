@@ -39,7 +39,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowMDL::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		size_t magic_header;
+		uint32_t magic_header;
 		_stream->read( &magic_header, sizeof(magic_header) );
 
 		if( magic_header != DATAFLOW_MAGIC_MDL )
@@ -52,7 +52,7 @@ namespace Menge
 
 		size_t version_valid = DATAFLOW_VERSION_MDL;
 
-		size_t version;
+		uint32_t version;
 		_stream->read( &version, sizeof(version) );
 
 		if( version != version_valid )
@@ -65,10 +65,10 @@ namespace Menge
 			return false;
 		}
 
-		size_t binary_size;
+		uint32_t binary_size;
 		_stream->read( &binary_size, sizeof(binary_size) );
 
-		size_t compress_size;
+		uint32_t compress_size;
 		_stream->read( &compress_size, sizeof(compress_size) );
 
 		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "DataflowMDL_compress");

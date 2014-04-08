@@ -135,20 +135,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Eventable::~Eventable()
 	{
-        for( TMapEvent::iterator
-            it = m_mapEvent.begin(),
-            it_end = m_mapEvent.end();
-        it != it_end;
-        ++it)
-        {
-            pybind::decref( it->second );
-        }
-
-        m_mapEvent.clear();
+		this->unregisterEvents_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _dict )
 	{
+		if( _dict == nullptr )
+		{
+			this->removeEvent_( _event );
+
+			return false;
+		}
+
 		PyObject * ev = this->getEvent_( _method, _dict );
 
 		if( ev == nullptr )
@@ -185,6 +183,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEventMethod( EEventName _event, const char * _method, PyObject * _module )
 	{
+		if( _module == nullptr )
+		{
+			this->removeEvent_( _event );
+
+			return false;
+		}
+
 		PyObject * ev = this->getEventMethod_( _method, _module );
 
 		if( ev == nullptr )
@@ -210,7 +215,9 @@ namespace Menge
 
 		if( it_find != m_mapEvent.end() )
 		{
-			pybind::decref( it_find->second );
+			PyObject * py_event  = it_find->second;
+			pybind::decref( py_event );
+
 			m_mapEvent.erase( it_find );
 		}
 	}
@@ -270,6 +277,20 @@ namespace Menge
 		}
 
 		return it_find->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Eventable::unregisterEvents_()
+	{
+		for( TMapEvent::iterator
+			it = m_mapEvent.begin(),
+			it_end = m_mapEvent.end();
+		it != it_end;
+		++it)
+		{
+			pybind::decref( it->second );
+		}
+
+		m_mapEvent.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
     EventableCallOperator::EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent )
